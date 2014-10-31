@@ -8,6 +8,21 @@ define([
     var Nacl = window.nacl;
     var $ = jQuery;
 
+    var INITIAL_STATE = [
+        '<p>',
+        'This is <strong>CryptPad</strong>, the zero knowledge realtime collaborative editor.',
+        '<br>',
+        'What you type here is encrypted so only people who have the link can access it.',
+        '<br>',
+        'Even the server cannot see what you type.',
+        '</p>',
+        '<p>',
+        '<small>',
+        '<i>What you see here, what you hear here, when you leave here, let it stay here</i>',
+        '</small>',
+        '</p>',
+    ].join('');
+
     var module = { exports: {} };
 
     var parseKey = function (str) {
@@ -36,9 +51,9 @@ define([
             removeButtons: 'Source,Maximize',
         });
         editor.on('instanceReady', function () {
-            //editor.execCommand('maximize');
+            editor.execCommand('maximize');
             var ifr = window.ifr = $('iframe')[0];
-            ifr.contentDocument.body.innerHTML = '<p>It works!</p>';
+            ifr.contentDocument.body.innerHTML = INITIAL_STATE;
 
             var rtw =
                 RTWysiwyg.start(window.location.href.replace(/#.*$/, '').replace(/^http/, 'ws'),
