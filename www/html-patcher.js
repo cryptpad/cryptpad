@@ -460,7 +460,7 @@ define([
             throw new Error();
         }
         try {
-            applyHTMLOp(docText, op, dom, rangy, ifrWindow);
+            applyHTMLOpHammer(docText, op, dom, rangy, ifrWindow);
             var result = patchString(docText, op.offset, op.toRemove, op.toInsert);
             var innerHTML = getInnerHTML(dom);
             if (result !== innerHTML) {
