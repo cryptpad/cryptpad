@@ -6,12 +6,21 @@ Unity is Strength - Collaboration is Key
 
 CryptPad is a **zero knowledge** realtime collaborative editor.
 Encryption carried out in your web browser protects the data from the server, the cloud
-and the NSA. This project uses the [CKEdit] Visual Editor and the [ChainPad] realtime
+and the NSA. This project uses the [CKEditor] Visual Editor and the [ChainPad] realtime
 engine. The secret key is stored in the URL [fragment identifier] which is never sent to
 the server but is available to javascript so by sharing the URL, you give authorization
+to others who want to participate.
+
+To install:
+
+    git clone <this repo>
+    npm install
+    npm install -g bower ## if necessary
+    bower install
+    ## edit server.js to modify configuration (use your own mongodb instance)
+    node ./server.js
 
 
-Realtime Collaboration with 
-
-
-[fragment identifier]: http://en.wikipedia.org/wiki/Fragment_identifier
+[ChainPad]: https://github.com/xwiki-contrib/chainpad
+[CKEditor]: http://ckeditor.com/
+[fragment identifier]: https://en.wikipedia.org/wiki/Fragment_identifier
