@@ -1,2 +1,3 @@
 www/bower/*
 node_modules
+/config.js

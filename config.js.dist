@@ -1,0 +1,5 @@
+module.exports = {
+    httpPort: 3000,
+    mongoUri: "mongodb://demo_user:demo_password@ds027769.mongolab.com:27769/demo_database",
+    mongoCollectionName: 'cryptpad'
+};

@@ -17,7 +17,7 @@ To install:
     npm install
     npm install -g bower ## if necessary
     bower install
-    ## edit server.js to modify configuration (use your own mongodb instance)
+    ## copy config.js.dist to config.js and modify configuration (use your own mongodb instance)
     node ./server.js
 
 

@@ -4,11 +4,7 @@ var WebSocketServer = require('ws').Server;
 var ChainPadSrv = require('./ChainPadSrv');
 var Storage = require('./Storage');
 
-var config = {
-    httpPort: 3000,
-    mongoUri: "mongodb://demo_user:demo_password@ds027769.mongolab.com:27769/demo_database",
-    mongoCollectionName: 'cryptpad'
-};
+var config = require('./config');
 
 var app = Express();
 app.use(Express.static(__dirname + '/www'));
