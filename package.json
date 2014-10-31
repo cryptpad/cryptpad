@@ -1,0 +1,9 @@
+{
+    "name": "cryptpad",
+    "description": "realtime collaborative visual editor with zero knowlege server",
+    "dependencies": {
+        "express": "~4.10.1",
+        "ws": "~0.4.32",
+        "mongodb": "~2.0.5"
+    }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "cryptpad",
+  "version": "0.1.0",
+  "authors": [
+    "Caleb James DeLisle <cjd@cjdns.fr>"
+  ],
+  "description": "realtime collaborative visual editor with zero knowlege server",
+  "main": "www/index.html",
+  "moduleType": [
+    "node"
+  ],
+  "license": "AGPLv3",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.1",
+    "tweetnacl": "~0.12.2",
+    "ckeditor": "~4.4.5",
+    "requirejs": "~2.1.15"
+  }
+}
