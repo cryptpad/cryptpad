@@ -486,10 +486,6 @@ window.ErrorBox = ErrorBox;
 
             //createDebugLink(realtime, doc, allMessages, toolbar);
 
-            createLagElement(socket,
-                             realtime,
-                             toolbar.find('.rtwysiwyg-toolbar-rightside'));
-
             createUserList(realtime,
                            userName,
                            toolbar.find('.rtwysiwyg-toolbar-leftside'));
@@ -534,6 +530,9 @@ window.ErrorBox = ErrorBox;
                 // if we spot ourselves being added to the document, we'll switch
                 // 'initializing' off because it means we're fully synced.
                 initializing = false;
+                createLagElement(socket,
+                                 realtime,
+                                 toolbar.find('.rtwysiwyg-toolbar-rightside'));
                 incomingPatch();
             });
 
