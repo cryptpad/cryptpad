@@ -31,7 +31,7 @@ var insert = function (coll, channelName, content, cb) {
 };
 
 var getMessages = function (coll, channelName, cb) {
-    coll.find({chan:channelName}).forEach(function (doc) {
+    coll.find({chan:channelName}).sort( { _id: 1 } ).forEach(function (doc) {
         cb(doc.msg);
     }, function (err) {
         if (!err) { return; }

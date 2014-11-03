@@ -933,6 +933,11 @@ var handleMessage = ChainPad.handleMessage = function (realtime, msgStr) {
     }
 
     if (msg.messageType === Message.DISCONNECT) {
+        if (msg.userName === '') {
+            realtime.userList = [];
+            userListChange(realtime);
+            return;
+        }
         var idx = realtime.userList.indexOf(msg.userName);
         if (Common.PARANOIA) { Common.assert(idx > -1); }
         if (idx > -1) {

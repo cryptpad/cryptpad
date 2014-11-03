@@ -16,12 +16,17 @@
  */
 define([
     'html-patcher',
+    'errorbox',
+    'messages',
     'rangy',
     'chainpad',
     'otaml',
     'bower/jquery/dist/jquery.min',
     'bower/tweetnacl/nacl-fast.min'
-], function (HTMLPatcher) {
+], function (HTMLPatcher, ErrorBox, Messages) {
+
+window.ErrorBox = ErrorBox;
+
     var $ = window.jQuery;
     var Rangy = window.rangy;
     Rangy.init();
@@ -29,11 +34,7 @@ define([
     var Otaml = window.Otaml;
     var Nacl = window.nacl;
 
-var ErrorBox = {};
-
     var PARANOIA = true;
-
-
 
     var module = { exports: {} };
 
@@ -106,26 +107,34 @@ var ErrorBox = {};
     };
 
     var isSocketDisconnected = function (socket, realtime) {
-        return socket._socket.readyState === socket.CLOSING
-            || socket._socket.readyState === socket.CLOSED
+        var sock = socket._socket;
+        return sock.readyState === sock.CLOSING
+            || sock.readyState === sock.CLOSED
             || (realtime.getLag().waiting && realtime.getLag().lag > MAX_LAG_BEFORE_DISCONNECT);
     };
 
-    var updateUserList = function (myUserName, listElement, userList, messages) {
+    var updateUserList = function (myUserName, listElement, userList) {
         var meIdx = userList.indexOf(myUserName);
         if (meIdx === -1) {
-            listElement.text(messages.disconnected);
+            listElement.text(Messages.disconnected);
             return;
         }
-        listElement.text(messages.editingWith + ' ' + (userList.length - 1) + ' people');
+        if (userList.length === 1) {
+            listElement.text(Messages.editingAlone);
+        } else if (userList.length === 2) {
+            listElement.text(Messages.editingWithOneOtherPerson);
+        } else {
+            listElement.text(Messages.editingWith + ' ' + (userList.length - 1) +
+                Messages.otherPeople);
+        }
     };
 
-    var createUserList = function (realtime, myUserName, container, messages) {
+    var createUserList = function (realtime, myUserName, container) {
         var id = uid();
         $(container).prepend('<div class="' + USER_LIST_CLS + '" id="'+id+'"></div>');
         var listElement = $('#'+id);
         realtime.onUserListChange(function (userList) {
-            updateUserList(myUserName, listElement, userList, messages);
+            updateUserList(myUserName, listElement, userList);
         });
         return listElement;
     };
@@ -269,10 +278,10 @@ var ErrorBox = {};
         return 'rtwysiwyg-uid-' + String(Math.random()).substring(2);
     };
 
-    var checkLag = function (realtime, lagElement, messages) {
+    var checkLag = function (realtime, lagElement) {
         var lag = realtime.getLag();
         var lagSec = lag.lag/1000;
-        var lagMsg = messages.lag + ' ';
+        var lagMsg = Messages.lag + ' ';
         if (lag.waiting && lagSec > 1) {
             lagMsg += "?? " + Math.floor(lagSec);
         } else {
@@ -281,12 +290,12 @@ var ErrorBox = {};
         lagElement.text(lagMsg);
     };
 
-    var createLagElement = function (socket, realtime, container, messages) {
+    var createLagElement = function (socket, realtime, container) {
         var id = uid();
         $(container).append('<div class="' + LAG_ELEM_CLS + '" id="'+id+'"></div>');
         var lagElement = $('#'+id);
         var intr = setInterval(function () {
-            checkLag(realtime, lagElement, messages);
+            checkLag(realtime, lagElement);
         }, 3000);
         socket.onClose.push(function () { clearTimeout(intr); });
         return lagElement;
@@ -306,11 +315,11 @@ var ErrorBox = {};
             '.' + TOOLBAR_CLS + ' {',
             '    color: #666;',
             '    font-weight: bold;',
-            '    background-color: #f0f0ee;',
-            '    border-bottom: 1px solid #DDD;',
-            '    border-top: 3px solid #CCC;',
-            '    border-right: 2px solid #CCC;',
-            '    border-left: 2px solid #CCC;',
+//            '    background-color: #f0f0ee;',
+//            '    border-bottom: 1px solid #DDD;',
+//            '    border-top: 3px solid #CCC;',
+//            '    border-right: 2px solid #CCC;',
+//            '    border-left: 2px solid #CCC;',
             '    height: 26px;',
             '    margin-bottom: -3px;',
             '    display: inline-block;',
@@ -319,7 +328,7 @@ var ErrorBox = {};
             '.' + TOOLBAR_CLS + ' div {',
             '    padding: 0 10px;',
             '    height: 1.5em;',
-            '    background: #f0f0ee;',
+//            '    background: #f0f0ee;',
             '    line-height: 25px;',
             '    height: 22px;',
             '}',
@@ -338,6 +347,7 @@ var ErrorBox = {};
             '.' + DEBUG_LINK_CLS + ':link { color:transparent; }',
             '.' + DEBUG_LINK_CLS + ':link:hover { color:blue; }',
             '.gwt-TabPanelBottom { border-top: 0 none; }',
+
             '</style>'
          ].join('\n'));
         return toolbar;
@@ -417,8 +427,7 @@ var ErrorBox = {};
         return spl[0] + res.length + ':' + res;
     };
 
-    var start = module.exports.start =
-        function (websocketUrl, userName, messages, channel, cryptKey)
+    var start = module.exports.start = function (websocketUrl, userName, channel, cryptKey)
     {
         var passwd = 'y';
         var wysiwygDiv = document.getElementById('cke_1_contents');
@@ -427,10 +436,11 @@ var ErrorBox = {};
         var socket = makeWebsocket(websocketUrl);
         var onEvent = function () { };
 
-        var toolbar = createRealtimeToolbar('#xwikieditcontent');
+        var toolbar = createRealtimeToolbar('#cke_1_toolbox');
 
         socket.onClose.push(function () {
             $(toolbar).remove();
+            checkSocket();
         });
 
         var allMessages = [];
@@ -474,17 +484,15 @@ var ErrorBox = {};
                                 getDocHTML(doc),
                                 { transformFunction: Otaml.transform });
 
-            //createDebugLink(realtime, doc, allMessages, toolbar, messages);
+            //createDebugLink(realtime, doc, allMessages, toolbar);
 
             createLagElement(socket,
                              realtime,
-                             toolbar.find('.rtwysiwyg-toolbar-rightside'),
-                             messages);
+                             toolbar.find('.rtwysiwyg-toolbar-rightside'));
 
             createUserList(realtime,
                            userName,
-                           toolbar.find('.rtwysiwyg-toolbar-leftside'),
-                           messages);
+                           toolbar.find('.rtwysiwyg-toolbar-leftside'));
 
             onEvent = function () {
                 if (isErrorState) { return; }
@@ -522,11 +530,10 @@ var ErrorBox = {};
             };
 
             realtime.onUserListChange(function (userList) {
-                if (!initializing && userList.indexOf(userName) === -1) { return; }
+                if (!initializing || userList.indexOf(userName) === -1) { return; }
                 // if we spot ourselves being added to the document, we'll switch
                 // 'initializing' off because it means we're fully synced.
                 initializing = false;
-                userDocBeforePatch = realtime.getUserDoc();
                 incomingPatch();
             });
 

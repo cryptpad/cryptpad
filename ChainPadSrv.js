@@ -103,7 +103,7 @@ var dropClient = function (ctx, userpass) {
         var chanName = client.channels[i];
         var chan = ctx.channels[chanName];
         var idx = chan.indexOf(client);
-        if (idx < 0) { throw new Error(); }
+        if (idx < 0) { continue; }
         console.log("Removing ["+client.userName+"] from channel ["+chanName+"]");
         chan.splice(idx, 1);
         if (chan.length === 0) {
@@ -122,6 +122,7 @@ var handleMessage = function (ctx, socket, msg) {
     msg = popPassword(msg);
 
     if (parsed.content[0] === REGISTER) {
+        if (parsed.user.length === 0) { throw new Error(); }
 console.log("[" + userPass + "] registered");
         var client = ctx.registeredClients[userPass] = ctx.registeredClients[userPass] || {
             channels: [parsed.channelId],
@@ -131,17 +132,27 @@ console.log("[" + userPass + "] registered");
         client.socket = socket;
 
         var chan = ctx.channels[parsed.channelId] = ctx.channels[parsed.channelId] || [];
+        var newChan = (chan.length === 0);
         chan.name = parsed.channelId;
-        chan.push(client);
 
         // we send a register ack right away but then we fallthrough
         // to let other users know that we were registered.
         sendMsg(mkMessage('', parsed.channelId, [1,0]), socket);
-        sendChannelMessage(ctx, chan, msg, function () {
-            ctx.store.getMessages(chan.name, function (msg) {
-                sendMsg(msg, socket);
+
+        var sendMsgs = function () {
+            sendChannelMessage(ctx, chan, msg, function () {
+                chan.push(client);
+                ctx.store.getMessages(chan.name, function (msg) {
+                    sendMsg(msg, socket);
+                });
             });
-        });
+        };
+        if (newChan) {
+            sendChannelMessage(ctx, chan, mkMessage('', chan.name, [DISCONNECT,0]), sendMsgs);
+        } else {
+            sendMsgs();
+        }
+        return;
     }
 
     if (parsed.content[0] === PING) {
