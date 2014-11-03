@@ -99,9 +99,6 @@ window.ErrorBox = ErrorBox;
 
     var SPINNER = [ '-', '\\', '|', '/' ];
     var kickSpinner = function (spinnerElement, reversed) {
-        var now = (new Date()).getTime();
-        if (spinnerElement.time && (now - spinnerElement.time) < 50) { return; }
-        spinnerElement.time = now;
         var txt = spinnerElement.textContent || '-';
         var inc = (reversed) ? -1 : 1;
         spinnerElement.textContent = SPINNER[(SPINNER.indexOf(txt) + inc) % SPINNER.length];
