@@ -12,6 +12,7 @@ define(function () {
     out.editingWith = 'Editing with';
     out.otherPeople = 'other people';
     out.disconnected = 'Disconnected';
+    out.synchronizing = 'Synchronizing';
     out.lag = 'Lag';
 
     out.initialState = [

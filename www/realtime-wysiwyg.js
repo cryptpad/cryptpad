@@ -62,6 +62,8 @@ window.ErrorBox = ErrorBox;
     /** Key in the localStore which indicates realtime activity should be disallowed. */
     var LOCALSTORAGE_DISALLOW = 'rtwysiwyg-disallow';
 
+    var SPINNER_DISAPPEAR_TIME = 3000;
+
     // ------------------ Trapping Keyboard Events ---------------------- //
 
     var bindEvents = function (element, events, callback, unbind) {
@@ -95,6 +97,20 @@ window.ErrorBox = ErrorBox;
                    unbind);
     };
 
+    var SPINNER = [ '-', '\\', '|', '/' ];
+    var kickSpinner = function (spinnerElement, reversed) {
+        var now = (new Date()).getTime();
+        if (spinnerElement.time && (now - spinnerElement.time) < 50) { return; }
+        spinnerElement.time = now;
+        var txt = spinnerElement.textContent || '-';
+        var inc = (reversed) ? -1 : 1;
+        spinnerElement.textContent = SPINNER[(SPINNER.indexOf(txt) + inc) % SPINNER.length];
+        spinnerElement.timeout && clearTimeout(spinnerElement.timeout);
+        spinnerElement.timeout = setTimeout(function () {
+            spinnerElement.textContent = '';
+        }, SPINNER_DISAPPEAR_TIME);
+    };
+
     var checkLag = function (realtime, lagElement) {
         var lag = realtime.getLag();
         var lagSec = lag.lag/1000;
@@ -116,7 +132,7 @@ window.ErrorBox = ErrorBox;
     var updateUserList = function (myUserName, listElement, userList) {
         var meIdx = userList.indexOf(myUserName);
         if (meIdx === -1) {
-            listElement.text(Messages.disconnected);
+            listElement.text(Messages.synchronizing);
             return;
         }
         if (userList.length === 1) {
@@ -301,6 +317,12 @@ window.ErrorBox = ErrorBox;
         return lagElement;
     };
 
+    var createSpinner = function (container) {
+        var id = uid();
+        $(container).append('<div class="rtwysiwyg-spinner" id="'+id+'"></div>');
+        return $('#'+id)[0];
+    };
+
     var createRealtimeToolbar = function (container) {
         var id = uid();
         $(container).prepend(
@@ -340,6 +362,9 @@ window.ErrorBox = ErrorBox;
             '}',
             '.rtwysiwyg-lag {',
             '    float: right;',
+            '}',
+            '.rtwysiwyg-spinner {',
+            '    float: left;',
             '}',
             '.gwt-TabBar {',
             '    display:none;',
@@ -490,6 +515,8 @@ window.ErrorBox = ErrorBox;
                            userName,
                            toolbar.find('.rtwysiwyg-toolbar-leftside'));
 
+            var spinner = createSpinner(toolbar.find('.rtwysiwyg-toolbar-rightside'));
+
             onEvent = function () {
                 if (isErrorState) { return; }
                 if (initializing) { return; }
@@ -514,7 +541,9 @@ window.ErrorBox = ErrorBox;
 
             var userDocBeforePatch;
             var incomingPatch = function () {
-                if (isErrorState || initializing) { return; }
+                if (isErrorState) { return; }
+                kickSpinner(spinner);
+                if (initializing) { return; }
                 userDocBeforePatch = userDocBeforePatch || getFixedDocText(doc, ifr.contentWindow);
                 if (PARANOIA && userDocBeforePatch != getFixedDocText(doc, ifr.contentWindow)) {
                     error(false, "userDocBeforePatch != getFixedDocText(doc, ifr.contentWindow)");
