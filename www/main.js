@@ -1,9 +1,10 @@
 define([
+    'api/config?cb=' + Math.random().toString(16).substring(2),
     'realtime-wysiwyg',
     'bower/jquery/dist/jquery.min',
     'bower/ckeditor/ckeditor',
-    'bower/tweetnacl/nacl-fast.min'
-], function (RTWysiwyg) {
+    'bower/tweetnacl/nacl-fast.min',
+], function (Config, RTWysiwyg) {
     var Ckeditor = window.CKEDITOR;
     var Nacl = window.nacl;
     var $ = jQuery;
@@ -56,7 +57,7 @@ define([
             ifr.contentDocument.body.innerHTML = INITIAL_STATE;
 
             var rtw =
-                RTWysiwyg.start(window.location.href.replace(/#.*$/, '').replace(/^http/, 'ws'),
+                RTWysiwyg.start(Config.websocketURL,
                                 userName(),
                                 {},
                                 Nacl.util.encodeBase64(key.lookupKey).substring(0,10),
