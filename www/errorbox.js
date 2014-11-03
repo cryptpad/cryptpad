@@ -79,7 +79,6 @@ define([
         }
 
         $modalbox.modalBox({
-            onOpen: boxOpened,
             onClose: function () { $('.modalBox').remove(); }
         });
         $('.iw-modalOverlay').css({'z-index':10000});
