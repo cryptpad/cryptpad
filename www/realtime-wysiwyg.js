@@ -18,12 +18,13 @@ define([
     'html-patcher',
     'errorbox',
     'messages',
+    'bower/reconnectingWebsocket/reconnecting-websocket',
     'rangy',
     'chainpad',
     'otaml',
     'bower/jquery/dist/jquery.min',
     'bower/tweetnacl/nacl-fast.min'
-], function (HTMLPatcher, ErrorBox, Messages) {
+], function (HTMLPatcher, ErrorBox, Messages, ReconnectingWebSocket) {
 
 window.ErrorBox = ErrorBox;
 
@@ -129,33 +130,29 @@ window.ErrorBox = ErrorBox;
     var updateUserList = function (myUserName, listElement, userList) {
         var meIdx = userList.indexOf(myUserName);
         if (meIdx === -1) {
-            listElement.text(Messages.synchronizing);
+            listElement.textContent = Messages.synchronizing;
             return;
         }
         if (userList.length === 1) {
-            listElement.text(Messages.editingAlone);
+            listElement.textContent = Messages.editingAlone;
         } else if (userList.length === 2) {
-            listElement.text(Messages.editingWithOneOtherPerson);
+            listElement.textContent = Messages.editingWithOneOtherPerson;
         } else {
-            listElement.text(Messages.editingWith + ' ' + (userList.length - 1) +
-                Messages.otherPeople);
+            listElement.textContent = Messages.editingWith + ' ' + (userList.length - 1) +
+                Messages.otherPeople;
         }
     };
 
-    var createUserList = function (realtime, myUserName, container) {
+    var createUserList = function (container) {
         var id = uid();
         $(container).prepend('<div class="' + USER_LIST_CLS + '" id="'+id+'"></div>');
-        var listElement = $('#'+id);
-        realtime.onUserListChange(function (userList) {
-            updateUserList(myUserName, listElement, userList);
-        });
-        return listElement;
+        return $('#'+id)[0];
     };
 
     var abort = function (socket, realtime) {
         realtime.abort();
         try { socket._socket.close(); } catch (e) { }
-        $('.'+USER_LIST_CLS).text("Disconnected");
+        $('.'+USER_LIST_CLS).text(Messages.disconnected);
         $('.'+LAG_ELEM_CLS).text("");
     };
 
@@ -300,18 +297,13 @@ window.ErrorBox = ErrorBox;
         } else {
             lagMsg += lagSec;
         }
-        lagElement.text(lagMsg);
+        lagElement.textContent = lagMsg;
     };
 
-    var createLagElement = function (socket, realtime, container) {
+    var createLagElement = function (container) {
         var id = uid();
         $(container).append('<div class="' + LAG_ELEM_CLS + '" id="'+id+'"></div>');
-        var lagElement = $('#'+id);
-        var intr = setInterval(function () {
-            checkLag(realtime, lagElement);
-        }, 3000);
-        socket.onClose.push(function () { clearTimeout(intr); });
-        return lagElement;
+        return $('#'+id)[0];
     };
 
     var createSpinner = function (container) {
@@ -376,7 +368,7 @@ window.ErrorBox = ErrorBox;
     };
 
     var makeWebsocket = function (url) {
-        var socket = new WebSocket(url);
+        var socket = new ReconnectingWebSocket(url);
         var out = {
             onOpen: [],
             onClose: [],
@@ -460,16 +452,12 @@ window.ErrorBox = ErrorBox;
 
         var toolbar = createRealtimeToolbar('#cke_1_toolbox');
 
-        socket.onClose.push(function () {
-            $(toolbar).remove();
-            checkSocket();
-        });
-
         var allMessages = [];
         var isErrorState = false;
         var initializing = true;
         var recoverableErrorCount = 0;
         var error = function (recoverable, err) {
+console.log(new Error().stack);
             console.log('error: ' + err.stack);
             if (recoverable && recoverableErrorCount++ < MAX_RECOVERABLE_ERRORS) { return; }
             var realtime = socket.realtime;
@@ -489,15 +477,19 @@ window.ErrorBox = ErrorBox;
         };
         var checkSocket = function () {
             if (isSocketDisconnected(socket, socket.realtime) && !socket.intentionallyClosing) {
-                isErrorState = true;
-                abort(socket, socket.realtime);
-                ErrorBox.show('disconnected', getDocHTML(doc));
+                //isErrorState = true;
+                //abort(socket, socket.realtime);
+                //ErrorBox.show('disconnected', getDocHTML(doc));
                 return true;
             }
             return false;
         };
 
         socket.onOpen.push(function (evt) {
+            if (!initializing) {
+                socket.realtime.start();
+                return;
+            }
 
             var realtime = socket.realtime =
                 ChainPad.create(userName,
@@ -508,11 +500,14 @@ window.ErrorBox = ErrorBox;
 
             //createDebugLink(realtime, doc, allMessages, toolbar);
 
-            createUserList(realtime,
-                           userName,
-                           toolbar.find('.rtwysiwyg-toolbar-leftside'));
-
+            var userListElement = createUserList(toolbar.find('.rtwysiwyg-toolbar-leftside'));
             var spinner = createSpinner(toolbar.find('.rtwysiwyg-toolbar-rightside'));
+            var lagElement = createLagElement(toolbar.find('.rtwysiwyg-toolbar-rightside'));
+
+            setInterval(function () {
+                if (initializing || isSocketDisconnected(socket, realtime)) { return; }
+                checkLag(realtime, lagElement);
+            }, 3000);
 
             onEvent = function () {
                 if (isErrorState) { return; }
@@ -552,13 +547,11 @@ window.ErrorBox = ErrorBox;
             };
 
             realtime.onUserListChange(function (userList) {
+                updateUserList(userName, userListElement, userList);
                 if (!initializing || userList.indexOf(userName) === -1) { return; }
                 // if we spot ourselves being added to the document, we'll switch
                 // 'initializing' off because it means we're fully synced.
                 initializing = false;
-                createLagElement(socket,
-                                 realtime,
-                                 toolbar.find('.rtwysiwyg-toolbar-rightside'));
                 incomingPatch();
             });
 
@@ -578,21 +571,19 @@ window.ErrorBox = ErrorBox;
                 try {
                     socket.send(message);
                 } catch (e) {
-                    if (!checkSocket()) { error(true, e.stack); }
+                    error(true, e.stack);
                 }
             });
 
             realtime.onPatch(incomingPatch);
 
-            socket.onError.push(function (err) {
-                if (isErrorState) { return; }
-                if (!checkSocket()) { error(true, err); }
-            });
-
             bindAllEvents(wysiwygDiv, doc.body, onEvent, false);
 
             setInterval(function () {
-                if (isErrorState || checkSocket()) { return; }
+                if (isErrorState || checkSocket()) {
+                    userListElement.textContent = Messages.reconnecting;
+                    lagElement.textContent = '';
+                }
             }, 200);
 
             realtime.start();

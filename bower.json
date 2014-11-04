@@ -22,6 +22,7 @@
     "tweetnacl": "~0.12.2",
     "ckeditor": "~4.4.5",
     "requirejs": "~2.1.15",
-    "modalBox": "~1.0.2"
+    "modalBox": "~1.0.2",
+    "reconnectingWebsocket": ""
   }
 }

@@ -13,6 +13,7 @@ define(function () {
     out.otherPeople = 'other people';
     out.disconnected = 'Disconnected';
     out.synchronizing = 'Synchronizing';
+    out.reconnecting = 'Reconnecting...';
     out.lag = 'Lag';
 
     out.initialState = [

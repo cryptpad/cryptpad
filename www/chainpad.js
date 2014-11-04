@@ -649,7 +649,6 @@ var sync = function (realtime) {
 };
 
 var getMessages = function (realtime) {
-    if (realtime.registered === true) { return; }
     realtime.registered = true;
     /*var to = schedule(realtime, function () {
         throw new Error("failed to connect to the server");
@@ -1135,6 +1134,7 @@ module.exports.create = function (userName, authToken, channelId, initialState, 
         }),
         start: enterChainPad(realtime, function () {
             getMessages(realtime);
+            if (realtime.syncSchedule) { unschedule(realtime, realtime.syncSchedule); }
             realtime.syncSchedule = schedule(realtime, function () { sync(realtime); });
         }),
         abort: enterChainPad(realtime, function () {
