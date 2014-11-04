@@ -36,6 +36,9 @@ define([
         var key = parseKey(window.location.hash.substring(1));
         var editor = Ckeditor.replace('editor1', {
             removeButtons: 'Source,Maximize',
+            // This plugin inserts html crap into the document which is not part of the document
+            // itself and causes problems when it's sent across the wire and reflected back.
+            removePlugins = 'magicline'
         });
         editor.on('instanceReady', function () {
             editor.execCommand('maximize');
