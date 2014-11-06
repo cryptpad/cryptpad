@@ -1,6 +1,6 @@
-<center>
-<img src="https://github.com/cjdelisle/cryptpad/raw/master/cryptofist.png" width="48">
-</center>
+<p align="center">
+<img src="https://github.com/cjdelisle/cryptpad/raw/master/cryptofist.png" width="60%">
+</p>
 
 Unity is Strength - Collaboration is Key
 
