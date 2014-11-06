@@ -19,7 +19,7 @@ app.get('/api/config', function(req, res){
 });
 
 var httpServer = Http.createServer(app);
-httpServer.listen(config.httpPort);
+httpServer.listen(config.httpPort, "::");
 console.log('listening on port ' + config.httpPort);
 
 var wsConfig = { server: httpServer };
