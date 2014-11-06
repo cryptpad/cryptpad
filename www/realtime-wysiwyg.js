@@ -451,11 +451,6 @@ window.ErrorBox = ErrorBox;
         var onEvent = function () { };
 
         var toolbar = createRealtimeToolbar('#cke_1_toolbox');
-        var userListElement = createUserList(toolbar.find('.rtwysiwyg-toolbar-leftside'));
-        var spinner = createSpinner(toolbar.find('.rtwysiwyg-toolbar-rightside'));
-        var lagElement = createLagElement(toolbar.find('.rtwysiwyg-toolbar-rightside'));
-
-        var userList
 
         var allMessages = [];
         var isErrorState = false;
@@ -493,7 +488,6 @@ console.log(new Error().stack);
         socket.onOpen.push(function (evt) {
             if (!initializing) {
                 socket.realtime.start();
-                updateUserList(userName, userListElement, userList);
                 return;
             }
 
@@ -505,6 +499,10 @@ console.log(new Error().stack);
                                 { transformFunction: Otaml.transform });
 
             //createDebugLink(realtime, doc, allMessages, toolbar);
+
+            var userListElement = createUserList(toolbar.find('.rtwysiwyg-toolbar-leftside'));
+            var spinner = createSpinner(toolbar.find('.rtwysiwyg-toolbar-rightside'));
+            var lagElement = createLagElement(toolbar.find('.rtwysiwyg-toolbar-rightside'));
 
             setInterval(function () {
                 if (initializing || isSocketDisconnected(socket, realtime)) { return; }
