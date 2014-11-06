@@ -1,8 +1,8 @@
-# CryptPad
+![cryptofist.png](https://github.com/cjdelisle/cryptpad/raw/master/cryptofist.png "CryptPad")
 
 Unity is Strength - Collaboration is Key
 
-## hold on, it's still a prototype...
+
 
 ![and_so_it_begins.png](https://github.com/cjdelisle/cryptpad/raw/master/and_so_it_begins.png "We are the 99%")
 
