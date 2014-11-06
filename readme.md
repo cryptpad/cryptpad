@@ -1,4 +1,6 @@
-![cryptofist.png](https://github.com/cjdelisle/cryptpad/raw/master/cryptofist.png "CryptPad")
+<center>
+<img src="https://github.com/cjdelisle/cryptpad/raw/master/cryptofist.png" style="width:65%">
+</center>
 
 Unity is Strength - Collaboration is Key
 
