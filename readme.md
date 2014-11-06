@@ -1,5 +1,6 @@
 <p align="center">
 <img src="https://github.com/cjdelisle/cryptpad/raw/master/cryptofist.png" width="60%">
+The **Zero-Knowledge** Realtime Visual Editor
 </p>
 
 Unity is Strength - Collaboration is Key
