@@ -43,6 +43,13 @@ the battery out of your computer before it spawns Agent Smith.
 
 Still there are other low-lives in the world so using CryptPad over HTTPS is probably a good idea.
 
+## Contributing
+
+We love Open Source and we love contribution. It is our intent to keep this project available
+under the AGPL license forever but in order to finance more development on this and other FOSS
+projects, we also wish to sell other licenses to this software. Before making a pull request,
+please read and
+[sign the Commons Management Agreement](https://www.clahub.com/agreements/cjdelisle/cryptpad).
 
 
 
