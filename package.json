@@ -1,6 +1,7 @@
 {
     "name": "cryptpad",
     "description": "realtime collaborative visual editor with zero knowlege server",
+    "version": "0.1.0",
     "dependencies": {
         "express": "~4.10.1",
         "ws": "~0.4.32",

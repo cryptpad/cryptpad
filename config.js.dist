@@ -3,5 +3,10 @@ module.exports = {
     websocketPort: 3001,
     mongoUri: "mongodb://demo_user:demo_password@ds027769.mongolab.com:27769/demo_database",
     // mongoUri: "mongodb://localhost:27017/cryptpad",
-    mongoCollectionName: 'cryptpad'
+    mongoCollectionName: 'cryptpad',
+    //privKeyAndCertFiles: [
+    //  '/etc/apache2/ssl/my_secret.key',
+    //  '/etc/apache2/ssl/my_public_cert.crt',
+    //  '/etc/apache2/ssl/my_certificate_authorities_cert_chain.ca'
+    //],
 };
