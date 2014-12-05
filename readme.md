@@ -51,6 +51,12 @@ projects, we also wish to sell other licenses to this software. Before making a 
 please read and
 [sign the Commons Management Agreement](https://www.clahub.com/agreements/cjdelisle/cryptpad).
 
+### License
+
+This software is and will always be available under the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the License, or (at your option)
+any later version. If you wish to use this technology in a proprietary product, please contact
+sales@xwiki.com
 
 
 [ChainPad]: https://github.com/xwiki-contrib/chainpad
