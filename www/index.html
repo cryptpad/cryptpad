@@ -3,7 +3,10 @@
 <head>
     <!--<title>Sample - CKEditor</title>-->
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
-    <script data-main="main" src="bower/requirejs/require.js"></script>
+    <script src="bower/requirejs/require.js"></script>
+    <script>
+      require(['main'], function(main) { main(); });
+    </script>
 </head>
 <body>
     <form action="#" method="post">
