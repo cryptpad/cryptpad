@@ -27,12 +27,16 @@ define([
     };
 
     $(function () {
-        if (window.location.href.indexOf('#') === -1) {
-            window.location.href = window.location.href + '#' + genKey();
-        }
         $(window).on('hashchange', function() {
             window.location.reload();
         });
+        if (window.location.href.indexOf('#') === -1) {
+            $('#create-pad').click(function (ev) {
+                ev.preventDefault();
+                window.location.href = window.location.href + '#' + genKey();
+            });
+            return;
+        }
         var key = parseKey(window.location.hash.substring(1));
         var editor = Ckeditor.replace('editor1', {
             removeButtons: 'Source,Maximize',

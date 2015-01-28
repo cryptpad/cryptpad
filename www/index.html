@@ -4,13 +4,60 @@
     <!--<title>Sample - CKEditor</title>-->
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
     <script data-main="main" src="bower/requirejs/require.js"></script>
+    <script>
+        if (window.location.href.indexOf('#') === -1) {
+            document.head.innerHTML +=
+                '<link rel="stylesheet" type="text/css" href="index.css" />';
+        }
+    </script>
+    <style>
+        #whatis {
+            padding-left: 15%;
+            padding-right: 15%;
+            font-size: medium;
+        }
+        #create-pad {
+            background-color: #009afd;
+            font-weight:bold;
+            font-size:large;
+            width:150px;
+            height:35px;
+        }
+    </style>
 </head>
 <body>
-    <form action="#" method="post">
-        <textarea cols="80" id="editor1" name="editor1" rows="10">
-          Loading... (or maybe you have Javascript disabled?)
+    <a href="https://github.com/cjdelisle/cryptpad"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/121cd7cbdc3e4855075ea8b558508b91ac463ac2/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_green_007200.png"></a>
+    <div id="whatis">
+      <h1>Unity is Strength - Collaboration is Key</h1>
+      <p>CryptPad is the <strong>zero knowledge</strong> realtime collaborative editor.
+      Encryption carried out in your web browser protects the data from the server, the cloud
+      and the NSA. This project uses the <a href="http://ckeditor.com/">CKEditor</a> Visual Editor and the <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a> realtime
+      engine. The secret key is stored in the URL <a href="https://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a> which is never sent to
+      the server but is available to javascript so by sharing the URL, you give authorization
+      to others who want to participate.</p>
+      </code></pre><h2 id="security">Security</h2>
+      <p>CryptPad is <em>private</em> not <em>anonymous</em>. Privacy protects your data, anonymity protects you.
+      As such, it is possible for a collaborator on the pad to include some silly/ugly/nasty things
+      in a CryptPad such as an image which reveals your IP address when your browser automatically
+      loads it or a script which plays Rick Asleys&#39;s greatest hits. It is acceptable for anyone
+      who does not have the key to be able to change anything in the pad or add anything, even the
+      server.</p>
+      <p>The server does have a certain power, it can send you evil javascript which does the wrong
+      thing (leaks the key or the data back to the server or to someone else). This is however an
+      <a href="https://en.wikipedia.org/wiki/Attack_(computing)#Types_of_attacks">active attack</a> which makes it detectable. The NSA really hates doing these because they might
+      get caught and laughed at and humiliated in front of the whole world (again). If you&#39;re making
+      the NSA mad enough for them to use an active attack against you, Great Success Highfive, now take
+      the battery out of your computer before it spawns Agent Smith.</p>
+    </div>
+    <form id="go" action="#" method="post">
+        <center>
+          <h5>Try it out!</h5>
+          <br/>
+          <input id="create-pad" type="submit" name="x" value="Create Pad!" />
+        </center>
+        <textarea style="display:none" cols="80" id="editor1" name="editor1" rows="10">
         </textarea>
-      </form>
+    </form>
 </body>
 </html>
 
