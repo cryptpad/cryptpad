@@ -186,7 +186,7 @@ var create = module.exports.create = function (socketServer, store) {
                 handleMessage(ctx, socket, message);
             } catch (e) {
                 console.log(e.stack);
-                socket.close();
+                try { socket.close(); } catch (e) { }
             }
         });
         socket.on('close', function (evt) {
