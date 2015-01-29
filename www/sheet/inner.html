@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="-1">
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <title>jQuery.sheet - The Ajax Spreadsheet DTS Lazy Loading</title>
+    <script src="/bower_components/jquery-legacy/dist/jquery.js"></script>
+    <script src="/bower_components/jquery.sheet/parser/formula/formula.js"></script>
+    <script src="/bower_components/jquery.sheet/jquery.sheet.js"></script>
+    <script>
+        var numColumns = 10;
+        var numRows = 20;
+        var spreadsheetJson = [ { "title": "", "rows": [ ] } ];
+        for (var i = 0; i < numRows; i++) {
+            var columns = [];
+            spreadsheetJson[0].rows.push({ columns: columns });
+            for (var j = 0; j < numColumns; j++) { columns[j] = { "value": "" }; }
+        }
+
+        $.sheet.preLoad('/bower_components/jquery.sheet/');
+        $(function () {
+            window.sheetLdr = new Sheet.JSONLoader( spreadsheetJson );
+            window.sh = $('#sheet-json').height($(window).height()).width($(window).width()).sheet({
+                loader: window.sheetLdr,
+                minSize: { rows:numRows, cols:numColumns }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="sheet-json" title="CryptSheet"></div>
+</body>
+</html>

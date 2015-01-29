@@ -1,10 +1,10 @@
 define([
-    'api/config?cb=' + Math.random().toString(16).substring(2),
-    'realtime-wysiwyg',
-    'messages',
-    'bower/jquery/dist/jquery.min',
-    'bower/ckeditor/ckeditor',
-    'bower/tweetnacl/nacl-fast.min',
+    '/api/config?cb=' + Math.random().toString(16).substring(2),
+    '/pad/realtime-wysiwyg.js',
+    '/common/messages.js',
+    '/bower_components/jquery/dist/jquery.min.js',
+    '/bower_components/ckeditor/ckeditor.js',
+    '/bower_components/tweetnacl/nacl-fast.min.js',
 ], function (Config, RTWysiwyg, Messages) {
     var Ckeditor = window.CKEDITOR;
     var Nacl = window.nacl;
@@ -31,10 +31,7 @@ define([
             window.location.reload();
         });
         if (window.location.href.indexOf('#') === -1) {
-            $('#create-pad').click(function (ev) {
-                ev.preventDefault();
-                window.location.href = window.location.href + '#' + genKey();
-            });
+            window.location.href = window.location.href + '#' + genKey();
             return;
         }
         var key = parseKey(window.location.hash.substring(1));

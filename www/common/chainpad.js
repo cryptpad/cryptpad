@@ -589,6 +589,18 @@ var unschedule = function (realtime, schedule) {
     clearTimeout(schedule);
 };
 
+var onMessage = function (realtime, message, callback) {
+    if (!realtime.messageHandlers.length) {
+        callback("no onMessage() handler registered");
+    }
+    for (var i = 0; i < realtime.messageHandlers.length; i++) {
+        realtime.messageHandlers[i](message, function () {
+            callback.apply(null, arguments);
+            callback = function () { };
+        });
+    }
+};
+
 var sync = function (realtime) {
     if (Common.PARANOIA) { check(realtime); }
     if (realtime.syncSchedule) {
@@ -622,7 +634,7 @@ var sync = function (realtime) {
 
     var strMsg = Message.toString(msg);
 
-    realtime.onMessage(strMsg, function (err) {
+    onMessage(realtime, strMsg, function (err) {
         if (err) {
             debug(realtime, "Posting to server failed [" + err + "]");
         }
@@ -657,7 +669,7 @@ var getMessages = function (realtime) {
                              realtime.authToken,
                              realtime.channelId,
                              Message.REGISTER);
-    realtime.onMessage(Message.toString(msg), function (err) {
+    onMessage(realtime, Message.toString(msg), function (err) {
         if (err) { throw err; }
     });
 };
@@ -670,7 +682,7 @@ var sendPing = function (realtime) {
                              realtime.channelId,
                              Message.PING,
                              realtime.lastPingTime);
-    realtime.onMessage(Message.toString(msg), function (err) {
+    onMessage(realtime, Message.toString(msg), function (err) {
         if (err) { throw err; }
     });
 };
@@ -706,9 +718,7 @@ var create = ChainPad.create = function (userName, authToken, channelId, initial
         patchHandlers: [],
         opHandlers: [],
 
-        onMessage: function (message, callback) {
-            callback("no onMessage() handler registered");
-        },
+        messageHandlers: [],
 
         schedules: [],
 
@@ -1127,7 +1137,8 @@ module.exports.create = function (userName, authToken, channelId, initialState, 
             doOperation(realtime, Operation.create(offset, 0, str));
         }),
         onMessage: enterChainPad(realtime, function (handler) {
-            realtime.onMessage = handler;
+            Common.assert(typeof(handler) === 'function');
+            realtime.messageHandlers.push(handler);
         }),
         message: enterChainPad(realtime, function (message) {
             handleMessage(realtime, message);

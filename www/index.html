@@ -3,25 +3,32 @@
 <head>
     <!--<title>Sample - CKEditor</title>-->
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
-    <script data-main="main" src="bower/requirejs/require.js"></script>
-    <script>
-        if (window.location.href.indexOf('#') === -1) {
-            document.head.innerHTML +=
-                '<link rel="stylesheet" type="text/css" href="index.css" />';
-        }
-    </script>
+    <link rel="stylesheet" type="text/css" href="index.css" />
     <style>
         #whatis {
             padding-left: 15%;
             padding-right: 15%;
             font-size: medium;
         }
-        #create-pad {
-            background-color: #009afd;
+        .create {
+            background-color: rgb(77, 146, 68);
+            background-image: linear-gradient(rgb(39, 100, 0) 0%, rgb(77, 146, 68) 100%);
+            border-bottom-color: rgb(77, 146, 68);
+            color: rgb(243, 243, 243);
             font-weight:bold;
             font-size:large;
-            width:150px;
-            height:35px;
+            margin-right: 5px;
+            margin-left: 5px;
+        }
+        .buttons {
+            margin-top: 10px;
+        }
+        .button {
+          padding: 2px 6px 2px 6px;
+          border-top: 1px solid #CCCCCC;
+          border-right: 1px solid #333333;
+          border-bottom: 1px solid #333333;
+          border-left: 1px solid #CCCCCC;
         }
     </style>
 </head>
@@ -48,16 +55,14 @@
       get caught and laughed at and humiliated in front of the whole world (again). If you&#39;re making
       the NSA mad enough for them to use an active attack against you, Great Success Highfive, now take
       the battery out of your computer before it spawns Agent Smith.</p>
+      <center>
+        <h5>Try it out!</h5>
+        <div class="buttons">
+          <a class="button create" href="pad">CREATE PAD</a>
+          <a class="button create" href="sheet">CREATE SPREADSHEET</a>
+        </div>
+      </center>
     </div>
-    <form id="go" action="#" method="post">
-        <center>
-          <h5>Try it out!</h5>
-          <br/>
-          <input id="create-pad" type="submit" name="x" value="Create Pad!" />
-        </center>
-        <textarea style="display:none" cols="80" id="editor1" name="editor1" rows="10">
-        </textarea>
-    </form>
 </body>
 </html>
 

@@ -16,12 +16,14 @@
  */
 require.config({
     'shim': {
-        'bower/modalBox/modalBox-min': ['bower/jquery/dist/jquery.min'],
+        '/bower_components/modalBox/modalBox-min.js': [
+            '/bower_components/jquery/dist/jquery.min.js'
+        ],
     }
 });
 define([
-    'messages',
-    'bower/modalBox/modalBox-min'
+    '/common/messages.js',
+    '/bower_components/modalBox/modalBox-min.js'
 ], function (Messages) {
 
     var STYLE = [

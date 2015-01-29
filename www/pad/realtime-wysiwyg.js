@@ -15,15 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 define([
-    'html-patcher',
-    'errorbox',
-    'messages',
-    'bower/reconnectingWebsocket/reconnecting-websocket',
-    'rangy',
-    'chainpad',
-    'otaml',
-    'bower/jquery/dist/jquery.min',
-    'bower/tweetnacl/nacl-fast.min'
+    '/pad/html-patcher.js',
+    '/pad/errorbox.js',
+    '/common/messages.js',
+    '/bower_components/reconnectingWebsocket/reconnecting-websocket.js',
+    '/pad/rangy.js',
+    '/common/chainpad.js',
+    '/common/otaml.js',
+    '/bower_components/jquery/dist/jquery.min.js',
+    '/bower_components/tweetnacl/nacl-fast.min.js'
 ], function (HTMLPatcher, ErrorBox, Messages, ReconnectingWebSocket) {
 
 window.ErrorBox = ErrorBox;

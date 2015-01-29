@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 define([
-    'bower/jquery/dist/jquery.min',
-    'otaml'
+    '/bower_components/jquery/dist/jquery.min.js',
+    '/common/otaml.js'
 ], function () {
 
     var $ = jQuery;
