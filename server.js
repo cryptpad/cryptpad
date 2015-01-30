@@ -18,6 +18,14 @@ app.use(Express.static(__dirname + '/www'));
 app.use("/bower_components/jquery.sheet/bower_components",
     Express.static(__dirname + '/www/bower_components'));
 
+var customize = "/customize";
+if (!Fs.existsSync(__dirname + "/customize")) {
+    customize = "/customize.dist";
+    console.log("Cryptpad is customizable, see customize.dist/readme.md for details");
+}
+app.use("/customize/", Express.static(__dirname + customize));
+app.get("/", function(req, res) { res.sendfile(__dirname + customize + '/index.html'); });
+
 var httpsOpts;
 if (config.privKeyAndCertFiles) {
     var privKeyAndCerts = '';

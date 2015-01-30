@@ -58,8 +58,11 @@ published by the Free Software Foundation, either version 3 of the License, or (
 any later version. If you wish to use this technology in a proprietary product, please contact
 sales@xwiki.com
 
+* Icons thanks to http://www.famfamfam.com/ licensed [Creative Commons Attribution 2.5 License]
+
 
 [ChainPad]: https://github.com/xwiki-contrib/chainpad
 [CKEditor]: http://ckeditor.com/
 [fragment identifier]: https://en.wikipedia.org/wiki/Fragment_identifier
 [active attack]: https://en.wikipedia.org/wiki/Attack_(computing)#Types_of_attacks
+[Creative Commons Attribution 2.5 License]: http://creativecommons.org/licenses/by/2.5/
