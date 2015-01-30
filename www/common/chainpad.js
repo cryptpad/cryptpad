@@ -1093,14 +1093,16 @@ var handleMessage = ChainPad.handleMessage = function (realtime, msgStr) {
         Common.assert(newUserInterfaceContent === realtime.userInterfaceContent);
     }
 
-    // push the uncommittedPatch out to the user interface.
-    for (var i = 0; i < realtime.patchHandlers.length; i++) {
-        realtime.patchHandlers[i](uncommittedPatch);
-    }
-    if (realtime.opHandlers.length) {
-        for (var i = uncommittedPatch.operations.length-1; i >= 0; i--) {
-            for (var j = 0; j < realtime.opHandlers.length; j++) {
-                realtime.opHandlers[j](uncommittedPatch.operations[i]);
+    if (uncommittedPatch.operations.length) {
+        // push the uncommittedPatch out to the user interface.
+        for (var i = 0; i < realtime.patchHandlers.length; i++) {
+            realtime.patchHandlers[i](uncommittedPatch);
+        }
+        if (realtime.opHandlers.length) {
+            for (var i = uncommittedPatch.operations.length-1; i >= 0; i--) {
+                for (var j = 0; j < realtime.opHandlers.length; j++) {
+                    realtime.opHandlers[j](uncommittedPatch.operations[i]);
+                }
             }
         }
     }
