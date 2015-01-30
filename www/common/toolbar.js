@@ -1,4 +1,6 @@
-var Toolbar = function ($, container, Messages, myUserName, realtime) {
+define([
+    '/common/messages.js'
+], function (Messages) {
 
     /** Id of the element for getting debug info. */
     var DEBUG_LINK_CLS = 'rtwysiwyg-debug-link';
@@ -22,15 +24,15 @@ var Toolbar = function ($, container, Messages, myUserName, realtime) {
         return 'rtwysiwyg-uid-' + String(Math.random()).substring(2);
     };
 
-    var createRealtimeToolbar = function (container) {
+    var createRealtimeToolbar = function ($container) {
         var id = uid();
-        $(container).prepend(
+        $container.prepend(
             '<div class="' + TOOLBAR_CLS + '" id="' + id + '">' +
                 '<div class="rtwysiwyg-toolbar-leftside"></div>' +
                 '<div class="rtwysiwyg-toolbar-rightside"></div>' +
             '</div>'
         );
-        var toolbar = $('#'+id);
+        var toolbar = $container.find('#'+id);
         toolbar.append([
             '<style>',
             '.' + TOOLBAR_CLS + ' {',
@@ -77,10 +79,10 @@ var Toolbar = function ($, container, Messages, myUserName, realtime) {
         return toolbar;
     };
 
-    var createSpinner = function (container) {
+    var createSpinner = function ($container) {
         var id = uid();
-        $(container).append('<div class="rtwysiwyg-spinner" id="'+id+'"></div>');
-        return $('#'+id)[0];
+        $container.append('<div class="rtwysiwyg-spinner" id="'+id+'"></div>');
+        return $container.find('#'+id)[0];
     };
 
     var kickSpinner = function (spinnerElement, reversed) {
@@ -93,10 +95,10 @@ var Toolbar = function ($, container, Messages, myUserName, realtime) {
         }, SPINNER_DISAPPEAR_TIME);
     };
 
-    var createUserList = function (container) {
+    var createUserList = function ($container) {
         var id = uid();
-        $(container).prepend('<div class="' + USER_LIST_CLS + '" id="'+id+'"></div>');
-        return $('#'+id)[0];
+        $container.prepend('<div class="' + USER_LIST_CLS + '" id="'+id+'"></div>');
+        return $container.find('#'+id)[0];
     };
 
     var updateUserList = function (myUserName, listElement, userList) {
@@ -115,10 +117,10 @@ var Toolbar = function ($, container, Messages, myUserName, realtime) {
         }
     };
 
-    var createLagElement = function (container) {
+    var createLagElement = function ($container) {
         var id = uid();
-        $(container).append('<div class="' + LAG_ELEM_CLS + '" id="'+id+'"></div>');
-        return $('#'+id)[0];
+        $container.append('<div class="' + LAG_ELEM_CLS + '" id="'+id+'"></div>');
+        return $container.find('#'+id)[0];
     };
 
     var checkLag = function (realtime, lagElement) {
@@ -133,40 +135,49 @@ var Toolbar = function ($, container, Messages, myUserName, realtime) {
         lagElement.textContent = lagMsg;
     };
 
+    var create = function ($container, myUserName, realtime) {
+        var toolbar = createRealtimeToolbar($container);
+        var userListElement = createUserList(toolbar.find('.rtwysiwyg-toolbar-leftside'));
+        var spinner = createSpinner(toolbar.find('.rtwysiwyg-toolbar-rightside'));
+        var lagElement = createLagElement(toolbar.find('.rtwysiwyg-toolbar-rightside'));
 
-    var toolbar = createRealtimeToolbar(container);
-    var userListElement = createUserList(toolbar.find('.rtwysiwyg-toolbar-leftside'));
-    var spinner = createSpinner(toolbar.find('.rtwysiwyg-toolbar-rightside'));
-    var lagElement = createLagElement(toolbar.find('.rtwysiwyg-toolbar-rightside'));
+        var connected = false;
 
-    var connected = false;
+        realtime.onUserListChange(function (userList) {
+            if (userList.indexOf(myUserName) !== -1) { connected = true; }
+            if (!connected) { return; }
+            updateUserList(myUserName, userListElement, userList);
+        });
 
-    realtime.onUserListChange(function (userList) {
-        if (userList.indexOf(myUserName) !== -1) { connected = true; }
-        if (!connected) { return; }
-        updateUserList(myUserName, userListElement, userList);
-    });
+        var ks = function () {
+            if (connected) { kickSpinner(spinner, false); }
+        };
 
-    var ks = function () {
-        if (connected) { kickSpinner(spinner, false); }
+        realtime.onPatch(ks);
+        // Try to filter out non-patch messages, doesn't have to be perfect this is just the spinner
+        realtime.onMessage(function (msg) { if (msg.indexOf(':[2,') > -1) { ks(); } });
+
+        setInterval(function () {
+            if (!connected) { return; }
+            checkLag(realtime, lagElement);
+        }, 3000);
+
+        return {
+            failed: function () {
+                connected = false;
+                userListElement.textContent = '';
+                lagElement.textContent = '';
+            },
+            reconnecting: function () {
+                connected = false;
+                userListElement.textContent = Messages.reconnecting;
+                lagElement.textContent = '';
+            },
+            connected: function () {
+                connected = true;
+            }
+        };
     };
 
-    realtime.onPatch(ks);
-    realtime.onMessage(ks);
-
-    setInterval(function () {
-        if (!connected) { return; }
-        checkLag(realtime, lagElement);
-    }, 3000);
-
-    return {
-        reconnecting: function () {
-            connected = false;
-            userListElement.textContent = Messages.reconnecting;
-            lagElement.textContent = '';
-        },
-        connected: function () {
-            connected = true;
-        }
-    };
-};
+    return { create: create };
+});

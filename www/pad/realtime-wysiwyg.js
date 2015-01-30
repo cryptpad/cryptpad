@@ -19,13 +19,13 @@ define([
     '/pad/errorbox.js',
     '/common/messages.js',
     '/bower_components/reconnectingWebsocket/reconnecting-websocket.js',
+    '/common/crypto.js',
+    '/common/toolbar.js',
     '/pad/rangy.js',
     '/common/chainpad.js',
     '/common/otaml.js',
-    '/common/toolbar.js',
     '/bower_components/jquery/dist/jquery.min.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js'
-], function (HTMLPatcher, ErrorBox, Messages, ReconnectingWebSocket) {
+], function (HTMLPatcher, ErrorBox, Messages, ReconnectingWebSocket, Crypto, Toolbar) {
 
 window.ErrorBox = ErrorBox;
 
@@ -34,7 +34,6 @@ window.ErrorBox = ErrorBox;
     Rangy.init();
     var ChainPad = window.ChainPad;
     var Otaml = window.Otaml;
-    var Nacl = window.nacl;
 
     var PARANOIA = true;
 
@@ -48,23 +47,6 @@ window.ErrorBox = ErrorBox;
 
     /** Maximum number of milliseconds of lag before we fail the connection. */
     var MAX_LAG_BEFORE_DISCONNECT = 20000;
-
-    /** Id of the element for getting debug info. */
-    var DEBUG_LINK_CLS = 'rtwysiwyg-debug-link';
-
-    /** Id of the div containing the user list. */
-    var USER_LIST_CLS = 'rtwysiwyg-user-list';
-
-    /** Id of the div containing the lag info. */
-    var LAG_ELEM_CLS = 'rtwysiwyg-lag';
-
-    /** The toolbar class which contains the user list, debug link and lag. */
-    var TOOLBAR_CLS = 'rtwysiwyg-toolbar';
-
-    /** Key in the localStore which indicates realtime activity should be disallowed. */
-    var LOCALSTORAGE_DISALLOW = 'rtwysiwyg-disallow';
-
-    var SPINNER_DISAPPEAR_TIME = 3000;
 
     // ------------------ Trapping Keyboard Events ---------------------- //
 
@@ -108,9 +90,8 @@ window.ErrorBox = ErrorBox;
 
     var abort = function (socket, realtime) {
         realtime.abort();
+        realtime.toolbar.failed();
         try { socket._socket.close(); } catch (e) { }
-        $('.'+USER_LIST_CLS).text(Messages.disconnected);
-        $('.'+LAG_ELEM_CLS).text("");
     };
 
     var createDebugInfo = function (cause, realtime, docHTML, allMessages) {
@@ -266,55 +247,6 @@ window.ErrorBox = ErrorBox;
         return out;
     };
 
-    var encryptStr = function (str, key) {
-        var array = Nacl.util.decodeUTF8(str);
-        var nonce = Nacl.randomBytes(24);
-        var packed = Nacl.secretbox(array, nonce, key);
-        if (!packed) { throw new Error(); }
-        return Nacl.util.encodeBase64(nonce) + "|" + Nacl.util.encodeBase64(packed);
-    };
-    var decryptStr = function (str, key) {
-        var arr = str.split('|');
-        if (arr.length !== 2) { throw new Error(); }
-        var nonce = Nacl.util.decodeBase64(arr[0]);
-        var packed = Nacl.util.decodeBase64(arr[1]);
-        var unpacked = Nacl.secretbox.open(packed, nonce, key);
-        if (!unpacked) { throw new Error(); }
-        return Nacl.util.encodeUTF8(unpacked);
-    };
-
-    // this is crap because of bencoding messages... it should go away....
-    var splitMessage = function (msg, sending) {
-        var idx = 0;
-        var nl;
-        for (var i = ((sending) ? 0 : 1); i < 3; i++) {
-            nl = msg.indexOf(':',idx);
-            idx = nl + Number(msg.substring(idx,nl)) + 1;
-        }
-        return [ msg.substring(0,idx), msg.substring(msg.indexOf(':',idx) + 1) ];
-    };
-
-    var encrypt = function (msg, key) {
-        var spl = splitMessage(msg, true);
-        var json = JSON.parse(spl[1]);
-        // non-patches are not encrypted.
-        if (json[0] !== 2) { return msg; }
-        json[1] = encryptStr(JSON.stringify(json[1]), key);
-        var res = JSON.stringify(json);
-        return spl[0] + res.length + ':' + res;
-    };
-
-    var decrypt = function (msg, key) {
-        var spl = splitMessage(msg, false);
-        var json = JSON.parse(spl[1]);
-        // non-patches are not encrypted.
-        if (json[0] !== 2) { return msg; }
-        if (typeof(json[1]) !== 'string') { throw new Error(); }
-        json[1] = JSON.parse(decryptStr(json[1], key));
-        var res = JSON.stringify(json);
-        return spl[0] + res.length + ':' + res;
-    };
-
     var start = module.exports.start = function (websocketUrl, userName, channel, cryptKey)
     {
         var passwd = 'y';
@@ -370,7 +302,8 @@ console.log(new Error().stack);
                                 getDocHTML(doc),
                                 { transformFunction: Otaml.transform });
 
-            var toolbar = Toolbar($, $('#cke_1_toolbox'), Messages, userName, realtime);
+            var toolbar = realtime.toolbar =
+                Toolbar.create($('#cke_1_toolbox'), userName, realtime);
 
             onEvent = function () {
                 if (isErrorState) { return; }
@@ -417,7 +350,7 @@ console.log(new Error().stack);
 
             socket.onMessage.push(function (evt) {
                 if (isErrorState) { return; }
-                var message = decrypt(evt.data, cryptKey);
+                var message = Crypto.decrypt(evt.data, cryptKey);
                 allMessages.push(message);
                 if (!initializing) {
                     if (PARANOIA) { onEvent(); }
@@ -427,7 +360,7 @@ console.log(new Error().stack);
             });
             realtime.onMessage(function (message) {
                 if (isErrorState) { return; }
-                message = encrypt(message, cryptKey);
+                message = Crypto.encrypt(message, cryptKey);
                 try {
                     socket.send(message);
                 } catch (e) {
