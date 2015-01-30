@@ -142,9 +142,14 @@ console.log("[" + userPass + "] registered");
         var sendMsgs = function () {
             sendChannelMessage(ctx, chan, msg, function () {
                 chan.push(client);
-                ctx.store.getMessages(chan.name, function (msg) {
-                    sendMsg(msg, socket);
-                });
+                try {
+                    ctx.store.getMessages(chan.name, function (msg) {
+                        sendMsg(msg, socket);
+                    });
+                } catch (e) {
+                    console.log(e.stack);
+                    try { socket.close(); } catch (e) { }
+                }
             });
         };
         if (newChan) {
