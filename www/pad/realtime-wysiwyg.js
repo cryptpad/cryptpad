@@ -22,6 +22,7 @@ define([
     '/pad/rangy.js',
     '/common/chainpad.js',
     '/common/otaml.js',
+    '/common/toolbar.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/bower_components/tweetnacl/nacl-fast.min.js'
 ], function (HTMLPatcher, ErrorBox, Messages, ReconnectingWebSocket) {
@@ -98,55 +99,11 @@ window.ErrorBox = ErrorBox;
                    unbind);
     };
 
-    var SPINNER = [ '-', '\\', '|', '/' ];
-    var kickSpinner = function (spinnerElement, reversed) {
-        var txt = spinnerElement.textContent || '-';
-        var inc = (reversed) ? -1 : 1;
-        spinnerElement.textContent = SPINNER[(SPINNER.indexOf(txt) + inc) % SPINNER.length];
-        spinnerElement.timeout && clearTimeout(spinnerElement.timeout);
-        spinnerElement.timeout = setTimeout(function () {
-            spinnerElement.textContent = '';
-        }, SPINNER_DISAPPEAR_TIME);
-    };
-
-    var checkLag = function (realtime, lagElement) {
-        var lag = realtime.getLag();
-        var lagSec = lag.lag/1000;
-        lagElement.textContent = "Lag: ";
-        if (lag.waiting && lagSec > 1) {
-            lagElement.textContent += "?? " + Math.floor(lagSec);
-        } else {
-            lagElement.textContent += lagSec;
-        }
-    };
-
     var isSocketDisconnected = function (socket, realtime) {
         var sock = socket._socket;
         return sock.readyState === sock.CLOSING
             || sock.readyState === sock.CLOSED
             || (realtime.getLag().waiting && realtime.getLag().lag > MAX_LAG_BEFORE_DISCONNECT);
-    };
-
-    var updateUserList = function (myUserName, listElement, userList) {
-        var meIdx = userList.indexOf(myUserName);
-        if (meIdx === -1) {
-            listElement.textContent = Messages.synchronizing;
-            return;
-        }
-        if (userList.length === 1) {
-            listElement.textContent = Messages.editingAlone;
-        } else if (userList.length === 2) {
-            listElement.textContent = Messages.editingWithOneOtherPerson;
-        } else {
-            listElement.textContent = Messages.editingWith + ' ' + (userList.length - 1) +
-                Messages.otherPeople;
-        }
-    };
-
-    var createUserList = function (container) {
-        var id = uid();
-        $(container).prepend('<div class="' + USER_LIST_CLS + '" id="'+id+'"></div>');
-        return $('#'+id)[0];
     };
 
     var abort = function (socket, realtime) {
@@ -284,89 +241,6 @@ window.ErrorBox = ErrorBox;
         return docText;
     };
 
-    var uid = function () {
-        return 'rtwysiwyg-uid-' + String(Math.random()).substring(2);
-    };
-
-    var checkLag = function (realtime, lagElement) {
-        var lag = realtime.getLag();
-        var lagSec = lag.lag/1000;
-        var lagMsg = Messages.lag + ' ';
-        if (lag.waiting && lagSec > 1) {
-            lagMsg += "?? " + Math.floor(lagSec);
-        } else {
-            lagMsg += lagSec;
-        }
-        lagElement.textContent = lagMsg;
-    };
-
-    var createLagElement = function (container) {
-        var id = uid();
-        $(container).append('<div class="' + LAG_ELEM_CLS + '" id="'+id+'"></div>');
-        return $('#'+id)[0];
-    };
-
-    var createSpinner = function (container) {
-        var id = uid();
-        $(container).append('<div class="rtwysiwyg-spinner" id="'+id+'"></div>');
-        return $('#'+id)[0];
-    };
-
-    var createRealtimeToolbar = function (container) {
-        var id = uid();
-        $(container).prepend(
-            '<div class="' + TOOLBAR_CLS + '" id="' + id + '">' +
-                '<div class="rtwysiwyg-toolbar-leftside"></div>' +
-                '<div class="rtwysiwyg-toolbar-rightside"></div>' +
-            '</div>'
-        );
-        var toolbar = $('#'+id);
-        toolbar.append([
-            '<style>',
-            '.' + TOOLBAR_CLS + ' {',
-            '    color: #666;',
-            '    font-weight: bold;',
-//            '    background-color: #f0f0ee;',
-//            '    border-bottom: 1px solid #DDD;',
-//            '    border-top: 3px solid #CCC;',
-//            '    border-right: 2px solid #CCC;',
-//            '    border-left: 2px solid #CCC;',
-            '    height: 26px;',
-            '    margin-bottom: -3px;',
-            '    display: inline-block;',
-            '    width: 100%;',
-            '}',
-            '.' + TOOLBAR_CLS + ' div {',
-            '    padding: 0 10px;',
-            '    height: 1.5em;',
-//            '    background: #f0f0ee;',
-            '    line-height: 25px;',
-            '    height: 22px;',
-            '}',
-            '.rtwysiwyg-toolbar-leftside {',
-            '    float: left;',
-            '}',
-            '.rtwysiwyg-toolbar-rightside {',
-            '    float: right;',
-            '}',
-            '.rtwysiwyg-lag {',
-            '    float: right;',
-            '}',
-            '.rtwysiwyg-spinner {',
-            '    float: left;',
-            '}',
-            '.gwt-TabBar {',
-            '    display:none;',
-            '}',
-            '.' + DEBUG_LINK_CLS + ':link { color:transparent; }',
-            '.' + DEBUG_LINK_CLS + ':link:hover { color:blue; }',
-            '.gwt-TabPanelBottom { border-top: 0 none; }',
-
-            '</style>'
-         ].join('\n'));
-        return toolbar;
-    };
-
     var makeWebsocket = function (url) {
         var socket = new ReconnectingWebSocket(url);
         var out = {
@@ -450,8 +324,6 @@ window.ErrorBox = ErrorBox;
         var socket = makeWebsocket(websocketUrl);
         var onEvent = function () { };
 
-        var toolbar = createRealtimeToolbar('#cke_1_toolbox');
-
         var allMessages = [];
         var isErrorState = false;
         var initializing = true;
@@ -498,16 +370,7 @@ console.log(new Error().stack);
                                 getDocHTML(doc),
                                 { transformFunction: Otaml.transform });
 
-            //createDebugLink(realtime, doc, allMessages, toolbar);
-
-            var userListElement = createUserList(toolbar.find('.rtwysiwyg-toolbar-leftside'));
-            var spinner = createSpinner(toolbar.find('.rtwysiwyg-toolbar-rightside'));
-            var lagElement = createLagElement(toolbar.find('.rtwysiwyg-toolbar-rightside'));
-
-            setInterval(function () {
-                if (initializing || isSocketDisconnected(socket, realtime)) { return; }
-                checkLag(realtime, lagElement);
-            }, 3000);
+            var toolbar = Toolbar($, $('#cke_1_toolbox'), Messages, userName, realtime);
 
             onEvent = function () {
                 if (isErrorState) { return; }
@@ -533,9 +396,7 @@ console.log(new Error().stack);
 
             var userDocBeforePatch;
             var incomingPatch = function () {
-                if (isErrorState) { return; }
-                kickSpinner(spinner);
-                if (initializing) { return; }
+                if (isErrorState || initializing) { return; }
                 userDocBeforePatch = userDocBeforePatch || getFixedDocText(doc, ifr.contentWindow);
                 if (PARANOIA && userDocBeforePatch != getFixedDocText(doc, ifr.contentWindow)) {
                     error(false, "userDocBeforePatch != getFixedDocText(doc, ifr.contentWindow)");
@@ -547,7 +408,6 @@ console.log(new Error().stack);
             };
 
             realtime.onUserListChange(function (userList) {
-                updateUserList(userName, userListElement, userList);
                 if (!initializing || userList.indexOf(userName) === -1) { return; }
                 // if we spot ourselves being added to the document, we'll switch
                 // 'initializing' off because it means we're fully synced.
@@ -581,12 +441,12 @@ console.log(new Error().stack);
 
             setInterval(function () {
                 if (isErrorState || checkSocket()) {
-                    userListElement.textContent = Messages.reconnecting;
-                    lagElement.textContent = '';
+                    toolbar.reconnecting();
                 }
             }, 200);
 
             realtime.start();
+            toolbar.connected();
 
             //console.log('started');
         });
