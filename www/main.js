@@ -36,7 +36,14 @@ define([
         return Nacl.util.encodeBase64(Nacl.randomBytes(8));
     };
 
-    return function (url) {
+    /**
+     * Returned function for initializing CryptPAD
+     *
+     * @element the HTML element to be replaced with the editor.
+     * @url the url for retrieving the module for websocket configuration.
+     * @cryptpadLoadedCallback a function that is called when the CryptPAD initialization is done.
+     */
+    return function (element, url, cryptpadLoadedCallback) {
         if (!url) {
             url = 'api/config?cb=' + Math.random().toString(16).substring(2)
         }
@@ -58,14 +65,14 @@ define([
                     window.location.reload();
                 });
                 var key = parseKey(params.key);
-                var editor = Ckeditor.replace('editor1', {
+                var editor = Ckeditor.replace(element, {
                     removeButtons: 'Source,Maximize',
                     // This plugin inserts html crap into the document which is not part of the document
                     // itself and causes problems when it's sent across the wire and reflected back.
                     removePlugins: 'magicline'
                 });
                 editor.on('instanceReady', function () {
-                    editor.execCommand('maximize');
+                    //editor.execCommand('maximize');
                     var ifr = window.ifr = $('iframe')[0];
                     ifr.contentDocument.body.innerHTML = Messages.initialState;
 
@@ -77,6 +84,15 @@ define([
                     editor.on('change', function () {
                         rtw.onEvent();
                     });
+
+                    /* If passed call the callback function and pass relevant data for accessing CryptPAD */
+                    if (cryptpadLoadedCallback) {
+                        cryptpadLoadedCallback({
+                            getKey: function () {
+                                return params.key
+                            }
+                        });
+                    }
                 });
             });
         });
