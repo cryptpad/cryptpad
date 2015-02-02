@@ -247,10 +247,11 @@ window.ErrorBox = ErrorBox;
         return out;
     };
 
-    var start = module.exports.start = function (websocketUrl, userName, channel, cryptKey)
+    var start = module.exports.start =
+        function (window, websocketUrl, userName, channel, cryptKey)
     {
         var passwd = 'y';
-        var wysiwygDiv = document.getElementById('cke_1_contents');
+        var wysiwygDiv = window.document.getElementById('cke_1_contents');
         var ifr = wysiwygDiv.getElementsByTagName('iframe')[0];
         var doc = ifr.contentWindow.document;
         var socket = makeWebsocket(websocketUrl);
@@ -303,7 +304,7 @@ console.log(new Error().stack);
                                 { transformFunction: Otaml.transform });
 
             var toolbar = realtime.toolbar =
-                Toolbar.create($('#cke_1_toolbox'), userName, realtime);
+                Toolbar.create(window.$('#cke_1_toolbox'), userName, realtime);
 
             onEvent = function () {
                 if (isErrorState) { return; }

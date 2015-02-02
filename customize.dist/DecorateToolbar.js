@@ -1,7 +1,17 @@
 define([
     '/bower_components/jquery/dist/jquery.min.js'
-], function ($) {
-    var main = function ($toolbar) {
-        $toolbar.append('<p>Made With <img src="/customize/"> in Paris</p>')
-    Dt.main($('.rtwysiwyg-toolbar-rightside'));
+], function () {
+    var $ = window.jQuery;
+    var main = function () {
+        $.ajax({
+            url: '/customize/BottomBar.html',
+            success: function (ret) {
+                $('iframe').height('96%');
+                $('body').append(ret);
+            }
+        });
+    };
+    return {
+        main: main
+    };
 });

@@ -5,7 +5,8 @@ define([
     '/common/toolbar.js',
     '/common/chainpad.js',
     '/bower_components/jquery/dist/jquery.min.js',
-    '/common/otaml.js'
+    '/common/otaml.js',
+    '/customize/sheet.js'
 ], function (Config, Messages, Crypto, Toolbar) {
     var $ = jQuery;
     var ChainPad = window.ChainPad;

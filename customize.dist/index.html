@@ -20,8 +20,8 @@
             margin-right: 5px;
             margin-left: 5px;
         }
-        .buttons {
-            margin-top: 10px;
+        .buttons h5 {
+            margin-bottom: 10px;
         }
         .button {
           padding: 2px 6px 2px 6px;
@@ -31,6 +31,7 @@
           border-left: 1px solid #CCCCCC;
         }
     </style>
+    <script src="/bower_components/requirejs/require.js"></script>
 </head>
 <body>
     <a href="https://github.com/xwiki-labs/cryptpad"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/121cd7cbdc3e4855075ea8b558508b91ac463ac2/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_green_007200.png"></a>
@@ -56,10 +57,18 @@
       the NSA mad enough for them to use an active attack against you, Great Success Highfive, now take
       the battery out of your computer before it spawns Agent Smith.</p>
       <center>
-        <h5>Try it out!</h5>
-        <div class="buttons">
-          <a class="button create" href="pad">CREATE PAD</a>
-          <a class="button create" href="sheet">CREATE SPREADSHEET</a>
+        <noscript><strong>OOPS</strong> In order to do encryption in your browser, Javascript is really <strong>really</strong> required.</noscript>
+        <script>
+            require(['/common/crypto.js'], function (Crypto) {
+                document.getElementById('buttons').setAttribute('style', '');
+                document.getElementById('create-pad').setAttribute('href', '/pad/#' + Crypto.genKey());
+                document.getElementById('create-sheet').setAttribute('href', '/sheet/#' + Crypto.genKey());
+            });
+        </script>
+        <div id="buttons" class="buttons" style="display:none;">
+          <h5>Try it out!</h5>
+          <a id="create-pad" class="button create" href="pad">CREATE PAD</a>
+          <a id="create-sheet" class="button create" href="sheet">CREATE SPREADSHEET</a>
         </div>
       </center>
     </div>

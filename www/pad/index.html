@@ -3,9 +3,24 @@
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
     <script data-main="main" src="/bower_components/requirejs/require.js"></script>
+    <style>
+        #pad-iframe {
+            position:fixed;
+            top:0px;
+            left:0px;
+            bottom:0px;
+            right:0px;
+            width:100%;
+            height:100%;
+            border:none;
+            margin:0;
+            padding:0;
+            overflow:hidden;
+        }
+    </style>
 </head>
 <body>
-    <textarea style="display:none" cols="80" id="editor1" name="editor1" rows="10"></textarea>
+    <iframe id="pad-iframe" src="inner.html"></iframe>
 </body>
 </html>
 

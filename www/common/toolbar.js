@@ -48,12 +48,24 @@ define([
             '    display: inline-block;',
             '    width: 100%;',
             '}',
+            '.' + TOOLBAR_CLS + ' a {',
+            '    float: right;',
+            '}',
             '.' + TOOLBAR_CLS + ' div {',
             '    padding: 0 10px;',
             '    height: 1.5em;',
 //            '    background: #f0f0ee;',
             '    line-height: 25px;',
             '    height: 22px;',
+            '}',
+            '.' + TOOLBAR_CLS + ' div.rtwysiwyg-back {',
+            '    padding: 0;',
+            '    font-weight: bold;',
+            '    cursor: pointer;',
+            '    color: #000;',
+            '}',
+            '.rtwysiwyg-toolbar-leftside div {',
+            '    float: left;',
             '}',
             '.rtwysiwyg-toolbar-leftside {',
             '    float: left;',
@@ -79,6 +91,16 @@ define([
         return toolbar;
     };
 
+    var createEscape = function ($container) {
+        var id = uid();
+        $container.append('<div class="rtwysiwyg-back" id="' + id + '">&#8656; Back</div>');
+        var $ret = $container.find('#'+id);
+        $ret.on('click', function () {
+            window.location.href = '/';
+        });
+        return $ret[0];
+    };
+
     var createSpinner = function ($container) {
         var id = uid();
         $container.append('<div class="rtwysiwyg-spinner" id="'+id+'"></div>');
@@ -97,7 +119,7 @@ define([
 
     var createUserList = function ($container) {
         var id = uid();
-        $container.prepend('<div class="' + USER_LIST_CLS + '" id="'+id+'"></div>');
+        $container.append('<div class="' + USER_LIST_CLS + '" id="'+id+'"></div>');
         return $container.find('#'+id)[0];
     };
 
@@ -137,6 +159,7 @@ define([
 
     var create = function ($container, myUserName, realtime) {
         var toolbar = createRealtimeToolbar($container);
+        createEscape(toolbar.find('.rtwysiwyg-toolbar-leftside'));
         var userListElement = createUserList(toolbar.find('.rtwysiwyg-toolbar-leftside'));
         var spinner = createSpinner(toolbar.find('.rtwysiwyg-toolbar-rightside'));
         var lagElement = createLagElement(toolbar.find('.rtwysiwyg-toolbar-rightside'));

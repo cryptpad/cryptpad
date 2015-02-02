@@ -4,26 +4,26 @@
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
     <script data-main="main" src="/bower_components/requirejs/require.js"></script>
     <style>
-        iframe {
+        #sheet-iframe {
             position:fixed;
             top:0px;
             left:0px;
             bottom:0px;
             right:0px;
             width:100%;
-            height:100%;
+            height:96%;
             border:none;
             margin:0;
             padding:0;
             overflow:hidden;
         }
-        textarea {
+        #sheet-json {
             display:none;
         }
     </style>
 </head>
 <body>
-    <iframe src="inner.html"></iframe>
     <textarea id="sheet-json"></textarea>
+    <iframe id="sheet-iframe" src="inner.html"></iframe>
 </body>
 </html>

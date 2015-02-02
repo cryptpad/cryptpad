@@ -24,7 +24,7 @@ if (!Fs.existsSync(__dirname + "/customize")) {
     console.log("Cryptpad is customizable, see customize.dist/readme.md for details");
 }
 app.use("/customize/", Express.static(__dirname + customize));
-app.get("/", function(req, res) { res.sendfile(__dirname + customize + '/index.html'); });
+app.get("/", function(req, res) { res.sendFile(__dirname + customize + '/index.html'); });
 
 var httpsOpts;
 if (config.privKeyAndCertFiles) {
