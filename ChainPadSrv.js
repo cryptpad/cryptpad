@@ -68,7 +68,7 @@ var sendChannelMessage = function (ctx, channel, msg, cb) {
                 sendMsg(msg, user.socket);
             } catch (e) {
                 console.log(e.stack);
-                try { dropClient(ctx, user.userPass); } catch (e) { }
+                try { user.socket.close(); } catch (e) { }
             }
         });
         cb && cb();
@@ -130,7 +130,6 @@ console.log("[" + userPass + "] registered");
         };
         if (user.socket && user.socket !== socket) { user.socket.close(); }
         user.socket = socket;
-        user.userPass = userPass;
 
         var chan = ctx.channels[parsed.channelId] = ctx.channels[parsed.channelId] || [];
         var newChan = (chan.length === 0);
@@ -142,7 +141,7 @@ console.log("[" + userPass + "] registered");
 
         var sendMsgs = function () {
             sendChannelMessage(ctx, chan, msg, function () {
-                chan.push(client);
+                chan.push(user);
                 ctx.store.getMessages(chan.name, function (msg) {
                     try {
                         sendMsg(msg, socket);
