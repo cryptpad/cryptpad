@@ -1489,13 +1489,8 @@ h6 {
 
 a {
     cursor: pointer;
-    color: #35D7BB;
+    color: rgb(39, 176, 0);
     text-decoration: none
-}
-
-a:hover,a:focus {
-    border-bottom-color: #35D7BB;
-    color: #dff9f4
 }
 
 img {

@@ -157,12 +157,34 @@ define([
         lagElement.textContent = lagMsg;
     };
 
+    // this is a little hack, it should go in it's own file.
+    var rememberPad = function () {
+        var recentPadsStr = localStorage['CryptPad_RECENTPADS'];
+        var recentPads = [];
+        if (recentPadsStr) { recentPads = JSON.parse(recentPadsStr); }
+        if (window.location.href.indexOf('#') === -1) { return; }
+        var now = new Date();
+        var out = [];
+        for (var i = recentPads.length; i >= 0; i--) {
+            if (recentPads[i] &&
+                now.getTime() - recentPads[i][1] < (1000*60*60*24*30) &&
+                recentPads[i][0] !== window.location.href)
+            {
+                out.push(recentPads[i]);
+            }
+        }
+        out.push([window.location.href, now.getTime()]);
+        localStorage['CryptPad_RECENTPADS'] = JSON.stringify(out);
+    }
+
     var create = function ($container, myUserName, realtime) {
         var toolbar = createRealtimeToolbar($container);
         createEscape(toolbar.find('.rtwysiwyg-toolbar-leftside'));
         var userListElement = createUserList(toolbar.find('.rtwysiwyg-toolbar-leftside'));
         var spinner = createSpinner(toolbar.find('.rtwysiwyg-toolbar-rightside'));
         var lagElement = createLagElement(toolbar.find('.rtwysiwyg-toolbar-rightside'));
+
+        rememberPad();
 
         var connected = false;
 

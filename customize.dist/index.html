@@ -20,8 +20,9 @@
             margin-right: 5px;
             margin-left: 5px;
         }
-        .buttons h5 {
-            margin-bottom: 10px;
+        .buttons {
+            margin-bottom: 50px;
+            margin-top: 20px;
         }
         .button {
           padding: 2px 6px 2px 6px;
@@ -30,48 +31,140 @@
           border-bottom: 1px solid #333333;
           border-left: 1px solid #CCCCCC;
         }
+
+        table.scroll {
+            /* width: 100%; */ /* Optional */
+            /* border-collapse: collapse; */
+            border-spacing: 0;
+            border: 2px solid black;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        table.scroll tbody,
+        table.scroll thead { display: block; }
+
+        table.scroll tbody {
+            height: 100px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        tbody { border-top: 2px solid black; }
+
+        tbody td, thead th {
+            /* width: 20%; */ /* Optional */
+            border-right: 1px solid black;
+            /* white-space: nowrap; */
+            padding-top: 0px;
+            padding-bottom: 0px;
+            padding-right: 20px;
+        }
+
+        tbody td:last-child, thead th:last-child {
+            border-right: none;
+        }
+
     </style>
     <script src="/bower_components/requirejs/require.js"></script>
 </head>
 <body>
     <a href="https://github.com/xwiki-labs/cryptpad"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/121cd7cbdc3e4855075ea8b558508b91ac463ac2/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_green_007200.png"></a>
     <div id="whatis">
-      <h1>CryptPad: Unity is Strength - Collaboration is Key</h1>
+      <center>
+          <img class="imgcenter" src="/customize/cryptofist_small.png" />
+          <h1>Unity is Strength - Collaboration is Key</h1>
+      </center>
       <p>CryptPad is the <strong>zero knowledge</strong> realtime collaborative editor.
       Encryption carried out in your web browser protects the data from the server, the cloud
-      and the NSA. This project uses the <a href="http://ckeditor.com/">CKEditor</a> Visual Editor and the <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a> realtime
-      engine. The secret key is stored in the URL <a href="https://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a> which is never sent to
-      the server but is available to javascript so by sharing the URL, you give authorization
-      to others who want to participate.</p>
-      </code></pre><h2 id="security">Security</h2>
-      <p>CryptPad is <em>private</em> not <em>anonymous</em>. Privacy protects your data, anonymity protects you.
-      As such, it is possible for a collaborator on the pad to include some silly/ugly/nasty things
-      in a CryptPad such as an image which reveals your IP address when your browser automatically
-      loads it or a script which plays Rick Asleys&#39;s greatest hits. It is acceptable for anyone
-      who does not have the key to be able to change anything in the pad or add anything, even the
-      server.</p>
-      <p>The server does have a certain power, it can send you evil javascript which does the wrong
-      thing (leaks the key or the data back to the server or to someone else). This is however an
-      <a href="https://en.wikipedia.org/wiki/Attack_(computing)#Types_of_attacks">active attack</a> which makes it detectable. The NSA really hates doing these because they might
-      get caught and laughed at and humiliated in front of the whole world (again). If you&#39;re making
-      the NSA mad enough for them to use an active attack against you, Great Success Highfive, now take
-      the battery out of your computer before it spawns Agent Smith.</p>
+      and the NSA. This project uses the <a href="http://ckeditor.com/">CKEditor</a> Visual Editor
+      the <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a> realtime engine and now
+      <a href="http://visop-dev.com/Project+jQuery.sheet">jQuery.sheet</a> for realtime spreadsheet
+      editing! The secret encryption key is stored in the URL
+      <a href="https://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a> which is
+      never sent to the server but is available to javascript so by sharing the URL, you give
+      authorization to others who want to participate.</p>
+
+      </code></pre><h2 id="howitworks">How It Works</h2>
+      <p>CryptPad uses a varient of the
+      <a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a>
+      algorithm which is able to find distributed consensus using a Nakamoto Blockchain, a construct
+      popularized by <a href="https://en.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. This way the
+      algorithm can avoid the need for a central server to resolve Operational Transform Edit
+      Conflicts and without the need for resolving conflicts, the server can be kept unaware of the
+      content which is being edited on the pad.</p>
+
+      <p><strong>NOTE</strong> Pads and spreadsheets will be removed after 30 days of inactivity</p>
       <center>
-        <noscript><strong>OOPS</strong> In order to do encryption in your browser, Javascript is really <strong>really</strong> required.</noscript>
+        <noscript>
+          <p>
+            <strong>OOPS</strong> In order to do encryption in your browser, Javascript is really
+            <strong>really</strong> required.
+          </p>
+        </noscript>
         <script>
             require(['/common/crypto.js'], function (Crypto) {
                 document.getElementById('buttons').setAttribute('style', '');
                 document.getElementById('create-pad').setAttribute('href', '/pad/#' + Crypto.genKey());
                 document.getElementById('create-sheet').setAttribute('href', '/sheet/#' + Crypto.genKey());
             });
+            require([
+                '/customize/DecorateToolbar.js',
+                '/bower_components/jquery/dist/jquery.min.js'
+            ], function (Dt) {
+                var $ = window.$;
+                Dt.main($('#bottom-bar'));
+                var recentPadsStr = localStorage['CryptPad_RECENTPADS'];
+                var recentPads;
+                if (recentPadsStr) { recentPads = JSON.parse(recentPadsStr); }
+                if (!recentPads) { return; }
+                recentPads.sort(function (a,b) { return b[1] - a[1]; });
+                var $table = $('table.scroll');
+                var $tbody = $table.find('tbody');
+                var now = new Date();
+                var hasRecent = false;
+                for (var i = 0; i < recentPads.length; i++) {
+                    if (!recentPads[i]) { continue; }
+                    if (now.getTime() - recentPads[i][1] > (1000*60*60*24*30)) { continue; }
+                    hasRecent = true
+                    var name = (recentPads[i][0].indexOf('/sheet/') !== -1) ? 'Sheet' : 'Pad';
+                    var date = new Date(recentPads[i][1]).toLocaleDateString();
+                    if (date === now.toLocaleDateString()) {
+                        date = new Date(recentPads[i][1]).toLocaleTimeString().replace(/ /g, '');
+                    }
+                    $tbody.append('<tr>' +
+                       '<td>' + name + '</td>' +
+                       '<td><a href="' + recentPads[i][0] + '"' + '">' + recentPads[i][0] + '</a></td>' +
+                       '<td>' + date + '</td>' +
+                       '</tr>');
+                }
+
+                if (recentPads.length < 5) {
+                    $tbody.attr('style', 'height: ' + (28 * recentPads.length + 2) + 'px');
+                } else {
+                    $tbody.attr('style', 'height: ' + (28 * 5) + 'px');
+                }
+                if (hasRecent) {
+                    $('table').attr('style', '');
+                    $('#tryit').text('Your Recent pads (stored only in browser)');
+                }
+            });
         </script>
+        <h5 id="tryit">Try it out!</h5>
+
+        <table class="recent scroll" style="display:none">
+            <tbody>
+            </tbody>
+        </table>
+
         <div id="buttons" class="buttons" style="display:none;">
-          <h5>Try it out!</h5>
-          <a id="create-pad" class="button create" href="pad">CREATE PAD</a>
-          <a id="create-sheet" class="button create" href="sheet">CREATE SPREADSHEET</a>
+          <a id="create-pad" class="button create" href="pad">CREATE NEW PAD</a>
+          <a id="create-sheet" class="button create" href="sheet">CREATE NEW SPREADSHEET</a>
         </div>
       </center>
     </div>
+
+    <div id="bottom-bar"></div>
 </body>
 </html>
 
