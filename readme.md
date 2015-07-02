@@ -1,3 +1,5 @@
+[![XWiki labs logo](https://raw.githubusercontent.com/xwiki-labs/xwiki-labs-logo/master/projects/xwikilabs/xlabs-project.png "XWiki labs")](https://labs.xwiki.com/xwiki/bin/view/Main/WebHome)
+
 <p align="center">
 <img src="https://github.com/cjdelisle/cryptpad/raw/master/cryptofist.png" width="60%">
 </p>
