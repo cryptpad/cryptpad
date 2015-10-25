@@ -22,6 +22,7 @@ var COLLECTION_NAME = 'cryptpad';
 var insert = function (coll, channelName, content, cb) {
     var val = {chan: channelName, msg:content, time: (new Date()).getTime()};
     coll.insertOne(val, {}, function (err, r) {
+        console.log(r);
         if (err || (r.insertedCount !== 1)) {
             console.log('failed to insert ' + err);
             return;
@@ -31,7 +32,12 @@ var insert = function (coll, channelName, content, cb) {
 };
 
 var getMessages = function (coll, channelName, cb) {
-    coll.find({chan:channelName}).sort( { _id: 1 } ).forEach(function (doc) {
+    // find entries with a matching channelname
+    coll.find({chan:channelName})
+    // sort by _id, ascending
+    .sort( { _id: 1 } )
+    // iterate over entries
+    .forEach(function (doc) {
         cb(doc.msg);
     }, function (err) {
         if (!err) { return; }

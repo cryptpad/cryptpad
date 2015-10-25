@@ -1,6 +1,7 @@
 module.exports = {
     httpPort: 3000,
     websocketPort: 3001,
+    storage: './storage/mongo',
     mongoUri: "mongodb://demo_user:demo_password@ds027769.mongolab.com:27769/demo_database",
     // mongoUri: "mongodb://localhost:27017/cryptpad",
     mongoCollectionName: 'cryptpad',

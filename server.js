@@ -4,10 +4,12 @@ var Https = require('https');
 var Fs = require('fs');
 var WebSocketServer = require('ws').Server;
 var ChainPadSrv = require('./ChainPadSrv');
-var Storage = require('./Storage');
 
 var config = require('./config');
 config.websocketPort = config.websocketPort || config.httpPort;
+
+// support multiple storage back ends
+var Storage = require(config.storage||'./storage/mongo');
 
 var app = Express();
 app.use(Express.static(__dirname + '/www'));
@@ -61,12 +63,14 @@ app.get('/api/config', function(req, res){
 
 var httpServer = httpsOpts ? Https.createServer(httpsOpts, app) : Http.createServer(app);
 
-httpServer.listen(config.httpPort);
-console.log('listening on port ' + config.httpPort);
+httpServer.listen(config.httpPort,config.httpAddress,function(){
+    console.log('listening on %s',config.httpPort);
+});
 
 var wsConfig = { server: httpServer };
 if (config.websocketPort !== config.httpPort) {
-    wsConfig = { port: config.websocketPort };
+    console.log("setting up a new websocket server");
+    wsConfig = { port: config.websocketPort};
 }
 
 var wsSrv = new WebSocketServer(wsConfig);
