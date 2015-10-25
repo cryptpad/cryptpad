@@ -35,7 +35,6 @@ var getMessages = function(channelName, cb){
     db.filter(function(val){
         return val.chan == channelName;
     }).forEach(function(doc){
-        console.log(doc);
         cb(doc.msg);
     });
 };
