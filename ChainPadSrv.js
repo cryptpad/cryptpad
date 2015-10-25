@@ -24,31 +24,18 @@ var PING         = 4;
 var PONG         = 5;
 
 var parseMessage = function (msg) {
-    var passLen = msg.substring(0,msg.indexOf(':'));
-    msg = msg.substring(passLen.length+1);
-    var pass = msg.substring(0,Number(passLen));
-    msg = msg.substring(pass.length);
-
-    var unameLen = msg.substring(0,msg.indexOf(':'));
-    msg = msg.substring(unameLen.length+1);
-    var userName = msg.substring(0,Number(unameLen));
-    msg = msg.substring(userName.length);
-
-    var channelIdLen = msg.substring(0,msg.indexOf(':'));
-    msg = msg.substring(channelIdLen.length+1);
-    var channelId = msg.substring(0,Number(channelIdLen));
-    msg = msg.substring(channelId.length);
-
-    var contentStrLen = msg.substring(0,msg.indexOf(':'));
-    msg = msg.substring(contentStrLen.length+1);
-    var contentStr = msg.substring(0,Number(contentStrLen));
-
-    return {
-        user: userName,
-        pass: pass,
-        channelId: channelId,
-        content: JSON.parse(contentStr)
-    };
+    var orig=msg,
+        res ={};
+    // two or more? use a for
+    ['pass','user','channelId','content'].forEach(function(attr){
+        var len=msg.substring(0,msg.indexOf(':'));
+        msg=msg.substring(len.length+1);
+        var prop=msg.substring(0,Number(len));
+        msg = msg.substring(prop.length);
+        res[attr]=prop;
+    });
+    res.content=JSON.parse(res.content);
+    return res;
 };
 
 // get the password off the message before sending it to other clients.
