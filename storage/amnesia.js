@@ -1,7 +1,7 @@
 console.log("Loading amnesiadb. This is a horrible idea in production, as data *will not* persist\n");
 
 /*
-    As the comment says, this module does nothing to make your data persist
+    As the log statement says, this module does nothing to persist your data
     across sessions. If your process crashes for any reason, all pads will die.
 
     This might be useful if you want to debug other parts of the codebase, if
