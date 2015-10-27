@@ -10,14 +10,6 @@ module.exports.create=function(conf,cb){
         transport: kad.transports.UDP,
     });
 
-    var dht2=kad({
-        address: conf.kadAddress,
-        port:conf.kadPort+1,
-        storage:levelup('./kadstore2.db'),
-        seeds:[],
-        transport: kad.transports.UDP,
-    });
-
     var indices={},
         Channel={};
 
