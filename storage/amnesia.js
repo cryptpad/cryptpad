@@ -1,5 +1,3 @@
-console.log("Loading amnesiadb. This is a horrible idea in production, as data *will not* persist\n");
-
 /*
     As the log statement says, this module does nothing to persist your data
     across sessions. If your process crashes for any reason, all pads will die.
@@ -14,34 +12,32 @@ console.log("Loading amnesiadb. This is a horrible idea in production, as data *
     Enjoy!
 */
 
-var db=[],
-    index=0;
-
-var insert = function(channelName, content, cb){
-    var val = {
-        id:index++,
-        chan: channelName,
-        msg: content,
-        time: new Date().getTime(),
-    };
-    db.push(val);
-    cb();
-};
-
-var getMessages = function(channelName, cb){
-    db.sort(function(a,b){
-        return a.id - b.id;
-    });
-    db.filter(function(val){
-        return val.chan == channelName;
-    }).forEach(function(doc){
-        cb(doc.msg);
-    });
-};
-
 module.exports.create = function(conf, cb){
+    console.log("Loading amnesiadb. This is a horrible idea in production,"+
+        "as data *will not* persist\n");
+
+    var db=[],
+        index=0;
     cb({
-        message: insert,
-        getMessages: getMessages,
+        message: function(channelName, content, cb){
+            var val = {
+                id:index++,
+                chan: channelName,
+                msg: content,
+                time: new Date().getTime(),
+            };
+            db.push(val);
+            cb();
+        },
+        getMessages: function(channelName, cb){
+            db.sort(function(a,b){
+                return a.id - b.id;
+            });
+            db.filter(function(val){
+                return val.chan == channelName;
+            }).forEach(function(doc){
+                cb(doc.msg);
+            });
+        },
     });
 };
