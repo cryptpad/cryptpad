@@ -24,16 +24,18 @@ var PING         = 4;
 var PONG         = 5;
 
 var parseMessage = function (msg) {
-    var orig=msg,
-        res ={};
+    var res ={};
     // two or more? use a for
     ['pass','user','channelId','content'].forEach(function(attr){
-        var len=msg.substring(0,msg.indexOf(':'));
-        msg=msg.substring(len.length+1);
-        var prop=msg.substring(0,Number(len));
-        msg = msg.substring(prop.length);
-        res[attr]=prop;
+        var len=msg.slice(0,msg.indexOf(':')),
+        // taking an offset lets us slice out the prop
+        // and saves us one string copy
+            o=len.length+1,
+            prop=res[attr]=msg.slice(o,Number(len)+o);
+        // slice off the property and its descriptor
+        msg = msg.slice(prop.length+o);
     });
+    // content is the only attribute that's not a string
     res.content=JSON.parse(res.content);
     return res;
 };
