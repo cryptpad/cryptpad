@@ -3,3 +3,4 @@ node_modules
 /config.js
 customization
 .*.swp
+*.db
