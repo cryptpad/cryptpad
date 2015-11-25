@@ -124,6 +124,7 @@
                 document.getElementById('buttons').setAttribute('style', '');
                 document.getElementById('create-pad').setAttribute('href', '/pad/#' + Crypto.genKey());
                 document.getElementById('create-sheet').setAttribute('href', '/sheet/#' + Crypto.genKey());
+                document.getElementById('create-code').setAttribute('href', '/code/#' + Crypto.genKey());
             });
             require([
                 '/customize/DecorateToolbar.js',
@@ -144,7 +145,7 @@
                     if (!recentPads[i]) { continue; }
                     if (now.getTime() - recentPads[i][1] > (1000*60*60*24*30)) { continue; }
                     hasRecent = true
-                    var name = (recentPads[i][0].indexOf('/sheet/') !== -1) ? 'Sheet' : 'Pad';
+                    var name = (recentPads[i][0].indexOf('/sheet/') !== -1) ? 'Sheet' : (recentPads[i][0].indexOf('/code/') !== -1) ? 'Code' : 'Pad';;
                     var date = new Date(recentPads[i][1]).toLocaleDateString();
                     if (date === now.toLocaleDateString()) {
                         date = new Date(recentPads[i][1]).toLocaleTimeString().replace(/ /g, '');
@@ -177,6 +178,7 @@
         <div id="buttons" class="buttons" style="display:none;">
           <a id="create-pad" class="button create" href="pad">CREATE NEW PAD</a>
           <a id="create-sheet" class="button create" href="sheet">CREATE NEW SPREADSHEET</a>
+          <a id="create-code" class="button create" href="code">CREATE NEW CODE COLLABORATION PAD</a>
         </div>
       </center>
     </div>
