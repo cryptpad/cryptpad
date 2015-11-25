@@ -31,5 +31,14 @@ define(function () {
         '</p>',
     ].join('');
 
+    out.codeInitialState = [
+        '/*\n',
+        'This is CryptPad, the zero knowledge realtime collaborative editor.\n',
+        'What you type here is encrypted so only people who have the link can access it.\n',
+        'Even the server cannot see what you type.\n',
+        'What you see here, what you hear here, when you leave here, let it stay here\n',
+        '*/'
+    ].join('');
+
     return out;
 });

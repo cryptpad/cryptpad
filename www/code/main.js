@@ -9,8 +9,6 @@ define([
     var $ = window.jQuery;
     var ifrw = $('#pad-iframe')[0].contentWindow;
     var CMeditor = ifrw.CodeMirror;
-    console.log(CMeditor);
-    var Ckeditor = ifrw.CKEDITOR;
 
     $(function () {
         $(window).on('hashchange', function() {
@@ -33,8 +31,7 @@ define([
           extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }},
           foldGutter: true,
           gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-          mode: "javascript",
-
+          mode: "javascript"
         });
         editor.setValue(Messages.codeInitialState);
 
