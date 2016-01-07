@@ -1,10 +1,10 @@
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
-    '/code/realtime-wysiwyg.js',
+    '/code/rtwiki.js',
     '/common/messages.js',
     '/common/crypto.js',
     '/bower_components/jquery/dist/jquery.min.js'
-], function (Config, RTWysiwyg, Messages, Crypto) {
+], function (Config, RTWiki, Messages, Crypto) {
     '/customize/pad.js'
     var $ = window.jQuery;
     var ifrw = $('#pad-iframe')[0].contentWindow;
@@ -36,7 +36,7 @@ define([
         editor.setValue(Messages.codeInitialState);
 
         var rtw =
-            RTWysiwyg.start(ifrw,
+            RTWiki.start(ifrw,
                             Config.websocketURL,
                             Crypto.rand64(8),
                             key.channel,
