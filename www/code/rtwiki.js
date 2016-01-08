@@ -4,11 +4,13 @@ define([
   //'RTWiki_ErrorBox',
   //'RTWiki_WebHome_chainpad'
   '/common/crypto.js',
-  '/bower_components/jquery/dist/jquery.min.js',
   '/code/errorbox.js',
+  '/common/messages.js',
+  '/common/toolbar.js',
   '/common/chainpad.js',
-  '/common/otaml.js'
-], function(Crypto, TextArea, ErrorBox) {
+  '/common/otaml.js',
+  '/bower_components/jquery/dist/jquery.min.js'
+], function(Crypto, ErrorBox, Messages, Toolbar) {
     var $ = window.jQuery;
     var ChainPad = window.ChainPad;
     var Otaml = window.Otaml;
@@ -643,21 +645,19 @@ define([
                                    userName,
                                    channel,
                                    messages,
-                                   demoMode,
-                                   language,
                                    cryptKey)
     {
         debug("Opening websocket");
-        var toolbar = createRealtimeToolbar('#cme_toolbox');/* To check */
         var textArea = windowCM.document.getElementById('editor1');
         var cmDiv = windowCM.document.getElementsByClassName('CodeMirror')[0];
         var cmEditor = cmDiv.CodeMirror;
-        
+        var onEvent = function () { };
         var socket = new WebSocket(websocketUrl);
         socket.onClose = [];
         socket.onMessage = [];
         var initState = $(textArea).val();
         var realtime = socket.realtime = ChainPad.create(userName, 'x', channel, initState);
+        var toolbar = realtime.toolbar = Toolbar.create(windowCM.$('#cme_toolbox'), userName, realtime);
         // for debugging
         window.rtwiki_chainpad = realtime;
 
@@ -692,6 +692,7 @@ define([
             if (socket.intentionallyClosing || isErrorState) { return false; }
             if (isSocketDisconnected(socket, realtime)) {
                 realtime.abort();
+                realtime.toolbar.failed();
                 socket.close();
                 ErrorBox.show('disconnected');
                 isErrorState = true;
@@ -706,16 +707,16 @@ define([
 
             var userListElement = createUserList(realtime,
                                                  userName,
-                                                 toolbar.find('.rtwiki-toolbar-leftside'),
+                                                 [],
                                                  messages);
             userListElement.text(messages.initializing);
             createLagElement(socket,
                              realtime,
-                             toolbar.find('.rtwiki-toolbar-rightside'),
+                             [],
                              messages);
 
             setAutosaveHiddenState(true);
-            socket.onEvent = function () {
+            onEvent = function () {
                 if (isErrorState) { return; }
                 if (initializing) { return; }
                 var oldDocText = realtime.getUserDoc();
@@ -741,8 +742,6 @@ define([
                 realtime.message(message);
             });
             realtime.onMessage(function (message) { message = Crypto.encrypt(message, cryptKey);socket.send(message); });
-            bindAllEvents(cmDiv, socket.onEvent, false);
-            $(textArea).attr("disabled", "disabled");
             
             var userDocBeforePatch;
             var incomingPatch = function () {
@@ -787,24 +786,24 @@ define([
                 }
             };
             realtime.onPatch(incomingPatch);
-            //**//
             realtime.onUserListChange(function (userList) {
                 if (initializing && userList.indexOf(userName) > -1) {
                     initializing = false;
-                    cmEditor.setValue(realtime.getUserDoc());
                     incomingPatch();
-                    /*$(textArea).val(realtime.getUserDoc());
-                    TextArea.attach($(textArea)[0], realtime);
-                    $(textArea).removeAttr("disabled");*/
                 }
                 if (!initializing) {
                     updateUserList(userName, userListElement, userList, messages);
                 }
             });
-
-
             debug("Bound websocket");
+            bindAllEvents(cmDiv, onEvent, false);
+            setInterval(function () {
+                if (isErrorState || checkSocket()) {
+                    toolbar.reconnecting();
+                }
+            }, 200);
             realtime.start();
+            toolbar.connected();
         };
         socket.onclose = function (evt) {
             for (var i = 0; i < socket.onClose.length; i++) {
@@ -829,13 +828,14 @@ define([
             toolbar.remove();
             setAutosaveHiddenState(false);
         });
-
+        socket.onEvent = function(){
+          onEvent();
+        };
         return socket;
     };
     
-    var cmEditor = function (cmWindow, websocketUrl, userName, messages, channel, demoMode, language, cryptkey) {
+    var cmEditor = function (cmWindow, websocketUrl, userName, messages, channel, cryptkey) {
         var cmTextarea = $(cmWindow.document.getElementById('editor1'));
-        
         if (!cmTextarea.length) {
             warn("WARNING: Could not find textarea to bind to");
             return;
@@ -845,10 +845,8 @@ define([
                                 userName,
                                 channel,
                                 messages,
-                                demoMode,
-                                language,
                                 cryptkey);
-      return {
+        return {
         onEvent: function() {
           socket.onEvent();
         }
@@ -863,11 +861,7 @@ define([
         if (!websocketUrl) {
             throw new Error("No WebSocket URL, please ensure Realtime Backend is installed.");
         }
-        var demoMode = false;
-        var language = "en";
-        var messages = [];
-        // Do not forget to remove demoMode and language variables, also check for messages
-        var cme = cmEditor(window, websocketUrl, userName, messages, channel, demoMode, language, cryptkey);
+        var cme = cmEditor(window, websocketUrl, userName, Messages, channel, cryptkey);
         return {
             onEvent: function () { 
               cme.onEvent();
