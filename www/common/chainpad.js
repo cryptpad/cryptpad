@@ -487,6 +487,7 @@ var toString = Message.toString = function (msg) {
 var fromString = Message.fromString = function (str) {
     var msg = str;
 
+    // FIXME factor this as you did on the serverside code
     var unameLen = msg.substring(0,msg.indexOf(':'));
     msg = msg.substring(unameLen.length+1);
     var userName = msg.substring(0,Number(unameLen));

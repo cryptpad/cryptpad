@@ -281,6 +281,7 @@ var transformB = function (html, toTransform, transformBy) {
     var out = Operation.merge(inverse, toApply);
 };
 
+// FIXME looks like the old transform is deprecated? figure out why
 var transform = module.exports.transform = function (html, toTransform, transformBy) {
 
     return transformB(html, toTransform, transformBy);
