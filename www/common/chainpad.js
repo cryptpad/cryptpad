@@ -487,7 +487,6 @@ var toString = Message.toString = function (msg) {
 var fromString = Message.fromString = function (str) {
     var msg = str;
 
-    // FIXME factor this as you did on the serverside code
     var unameLen = msg.substring(0,msg.indexOf(':'));
     msg = msg.substring(unameLen.length+1);
     var userName = msg.substring(0,Number(unameLen));
@@ -1110,6 +1109,53 @@ var handleMessage = ChainPad.handleMessage = function (realtime, msgStr) {
     if (Common.PARANOIA) { check(realtime); }
 };
 
+var wasEverState = function (content, realtime) {
+    Common.assert(typeof(content) === 'string');
+    // without this we would never get true on the ^HEAD
+    if (realtime.authDoc === content) {
+        return true;
+    }
+
+    var hash = Sha.hex_sha256(content);
+
+    var patchMsg = realtime.best;
+    do {
+        if (patchMsg.content.parentHash === hash) { return true; }
+    } while ((patchMsg = getParent(realtime, patchMsg)));
+    return false;
+};
+
+var getDepthOfState = function (content, minDepth, realtime) {
+    Common.assert(typeof(content) === 'string');
+
+    // minimum depth is an optional argument which defaults to zero
+    var minDepth = minDepth || 0;
+
+    if (minDepth === 0 && realtime.authDoc === content) {
+        return 0;
+    }
+
+    var hash = Sha.hex_sha256(content);
+
+    var patchMsg = realtime.best;
+    var depth = 0;
+
+    do {
+        if (depth < minDepth) {
+            // you haven't exceeded the minimum depth
+        } else {
+            //console.log("Exceeded minimum depth");
+            // you *have* exceeded the minimum depth
+            if (patchMsg.content.parentHash === hash) {
+                // you found it!
+                return depth + 1;
+            }
+        }
+        depth++;
+    } while ((patchMsg = getParent(realtime, patchMsg)));
+    return;
+};
+
 module.exports.create = function (userName, authToken, channelId, initialState, conf) {
     Common.assert(typeof(userName) === 'string');
     Common.assert(typeof(authToken) === 'string');
@@ -1168,6 +1214,12 @@ module.exports.create = function (userName, authToken, channelId, initialState, 
                 return { waiting:1, lag: (new Date()).getTime() - realtime.lastPingTime };
             }
             return { waiting:0, lag: realtime.lastPingLag };
+        },
+        wasEverState: function (content) {
+            return wasEverState(content, realtime);
+        },
+        getDepthOfState: function (content, minDepth) {
+            return getDepthOfState(content, minDepth, realtime);
         }
     };
 };
