@@ -10,7 +10,7 @@ define([
     var ifrw = $('#pad-iframe')[0].contentWindow;
     var Ckeditor = ifrw.CKEDITOR;
 
-    $(function () {
+    var andThen = function () {
         $(window).on('hashchange', function() {
             window.location.reload();
         });
@@ -32,12 +32,26 @@ define([
             ifrw.$('iframe')[0].contentDocument.body.innerHTML = Messages.initialState;
 
             var rtw =
-                RTWysiwyg.start(ifrw,
-                                Config.websocketURL,
-                                Crypto.rand64(8),
-                                key.channel,
-                                key.cryptKey);
+                RTWysiwyg.start(ifrw, // window
+                                Config.websocketURL, // websocketUrl
+                                Crypto.rand64(8), // userName
+                                key.channel, // channel
+                                key.cryptKey); // cryptKey
             editor.on('change', function () { rtw.onEvent(); });
         });
-    });
+        window.editor = editor;
+        window.RTWysiwyg = RTWysiwyg;
+    };
+
+    var interval = 100;
+    var first = function () {
+        if (Ckeditor = ifrw.CKEDITOR) {
+            andThen();
+        } else {
+            console.log("Ckeditor was not defined. Trying again in %sms",interval);
+            setTimeout(first, interval);
+        }
+    };
+
+    $(first);
 });
