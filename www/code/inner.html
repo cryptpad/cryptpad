@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="codemirror.js"></script>
+    <link rel="stylesheet" href="codemirror.css">
+    <link rel="stylesheet" href="codemirror-5.7/addon/dialog/dialog.css">
+    <link rel="stylesheet" href="codemirror-5.7/addon/fold/foldgutter.css" />
+    <script src="codemirror-5.7/mode/javascript/javascript.js"></script>
+    <script src="codemirror-5.7/addon/edit/closebrackets.js"></script>
+    <script src="codemirror-5.7/addon/edit/matchbrackets.js"></script>
+    <script src="codemirror-5.7/addon/edit/trailingspace.js"></script>
+    <script src="codemirror-5.7/addon/selection/active-line.js"></script>
+    <script src="codemirror-5.7/addon/search/search.js"></script>
+    <script src="codemirror-5.7/addon/search/match-highlighter.js"></script>
+    <script src="codemirror-5.7/addon/search/searchcursor.js"></script>
+    <script src="codemirror-5.7/addon/dialog/dialog.js"></script>
+    <script src="codemirror-5.7/addon/fold/foldcode.js"></script>
+    <script src="codemirror-5.7/addon/fold/foldgutter.js"></script>
+    <script src="codemirror-5.7/addon/fold/brace-fold.js"></script>
+    <script src="codemirror-5.7/addon/fold/xml-fold.js"></script>
+    <script src="codemirror-5.7/addon/fold/markdown-fold.js"></script>
+    <script src="codemirror-5.7/addon/fold/comment-fold.js"></script>
+    <style>
+      html {
+        height: 100%;
+      }
+      body {
+        height: 100%;
+        margin: 0px;
+      }
+      .CodeMirror {
+        position: absolute;
+        top: 30px;
+        bottom: 5px;
+        left: 5px;
+        right: 5px;
+        height: auto;
+      }
+      #cme_toolbox {
+        font: 12px Arial,Helvetica,Tahoma,Verdana,sans-serif;
+        height: 25px;
+        background: -webkit-linear-gradient(#EEEEEE, #DADADA); /* For Safari 5.1 to 6.0 */
+        background: -o-linear-gradient(white, #DDDDDD); /* For Opera 11.1 to 12.0 */
+        background: -moz-linear-gradient(white, #DDDDDD); /* For Firefox 3.6 to 15 */
+        background: linear-gradient(white, #DDDDDD); /* Standard syntax */
+      }
+      .CodeMirror-focused .cm-matchhighlight {
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQI12NgYGBgkKzc8x9CMDAwAAAmhwSbidEoSQAAAABJRU5ErkJggg==);
+        background-position: bottom;
+        background-repeat: repeat-x;
+      }
+    </style>
+</head>
+<body>
+  <div id="cme_toolbox"></div>
+  <textarea id="editor1" name="editor1"></textarea>
+</body>
+</html>
+
