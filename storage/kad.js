@@ -10,43 +10,23 @@ module.exports.create=function(conf,cb){
         transport: kad.transports.UDP,
     });
 
-    var indices={},
-        Channel={};
-
-    var makeChannel=function(cName){
-        Channel[cName]={
-            lastModified:0,
-            messages:[],
-        };
-    },
-    makeIndex=function(cName){
-        indices[cName]=-1;
-    },
-    loadIndex=function(cName,out){
-        indices[cName]=parseInt(out);
-        typeof indices[cName] !== 'number' &&
-            console.error('FOUND A NON-NUMERIC INDEX for channel: %s',cName);
-    },
-    getIndex=function(cName,f){
-        if(typeof indices[cName] !== 'undefined'){
-            f(indices[cName]);
-        }else{
-            dht.get(cName+'=>index',function(e,out){
-                e?  makeIndex(cName): loadIndex(cName,out);
-                f(indices[cName]);
-            });
-        }
+    var getIndex=function(cName,f){
+        dht.get(cName+'=>index',function(e,out){
+            e && console.error(e) || f(Number(out));
+        });
     };
 
     cb({
         message:function(cName, content, cb){
             getIndex(cName, function(index){
-                var index = ++indices[cName];
+                index+=1;
                 dht.put(cName+'=>index', ''+index,function(e){
-                    e && console.error(e);
+                    e && console.error("ERROR updating index (%s): %s",index,e) ||
+                    console.log("PUT SUCCESS: %s", cName+'=>index')
                 });
                 dht.put(cName+'=>'+index, content, function(e){
-                    e && console.error(e);
+                    e && console.error("ERROR updating value at %s: %s",cName+'=>'+index,e)||
+                    console.log("PUT SUCCESS: %s", cName+'=>index')
                     cb();
                 });
             });
@@ -55,7 +35,8 @@ module.exports.create=function(conf,cb){
             getIndex(cName, function(index){
                 for(var i=index;i>=0;i--){
                     dht.get(cName+'=>'+i,function(e,out){
-                        if(e) return console.error(e);
+                        if(e) return console.error("DHT GET ERROR: %s",e);
+                        console.log("GET SUCCESS: %s", cName+'=>index')
                         cb(out);
                     });
                 }
