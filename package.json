@@ -4,6 +4,6 @@
   "version": "0.1.0",
   "dependencies": {
     "express": "~4.10.1",
-    "ws": "~0.8.0"
+    "ws": "^1.0.1"
   }
 }
