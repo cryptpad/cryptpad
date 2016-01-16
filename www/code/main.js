@@ -8,7 +8,7 @@ define([
     '/customize/pad.js'
     var $ = window.jQuery;
     var ifrw = $('#pad-iframe')[0].contentWindow;
-    var CMeditor = ifrw.CodeMirror;
+    var CMeditor;
 
     $(function () {
         $(window).on('hashchange', function() {
@@ -18,32 +18,50 @@ define([
             window.location.href = window.location.href + '#' + Crypto.genKey();
             return;
         }
-        var key = Crypto.parseKey(window.location.hash.substring(1));
-        var editor = CMeditor.fromTextArea($('#pad-iframe').contents().find('#editor1')[0], {
-          lineNumbers: true,
-          lineWrapping: true,
-          autoCloseBrackets: true,
-          matchBrackets : true,
-          showTrailingSpace : true,
-          styleActiveLine : true,
-          search: true,
-          highlightSelectionMatches: {showToken: /\w+/},
-          extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }},
-          foldGutter: true,
-          gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-          mode: "javascript"
-        });
-        editor.setValue(Messages.codeInitialState);
 
-        var rtw =
-            RTWiki.start(ifrw,
-                            Config.websocketURL,
-                            Crypto.rand64(8),
-                            key.channel,
-                            key.cryptKey);
-        editor.on('change', function() {
-            editor.save();
-            rtw.onEvent();
-        });
+        var andThen = function () {
+            var key = Crypto.parseKey(window.location.hash.substring(1));
+            var editor = CMeditor.fromTextArea($('#pad-iframe').contents().find('#editor1')[0], {
+                lineNumbers: true,
+                lineWrapping: true,
+                autoCloseBrackets: true,
+                matchBrackets : true,
+                showTrailingSpace : true,
+                styleActiveLine : true,
+                search: true,
+                highlightSelectionMatches: {showToken: /\w+/},
+                extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }},
+                foldGutter: true,
+                gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+                mode: "javascript"
+            });
+            editor.setValue(Messages.codeInitialState);
+
+            var rtw =
+                RTWiki.start(ifrw,
+                                Config.websocketURL,
+                                Crypto.rand64(8),
+                                key.channel,
+                                key.cryptKey);
+            editor.on('change', function() {
+                editor.save();
+                rtw.onEvent();
+            });
+        };
+
+        var interval = 100;
+
+        var first = function () {
+            if (CMeditor = ifrw.CodeMirror) {
+                // it exists, call your continuation
+                andThen();
+            } else {
+                console.log("CMeditor was not defined. Trying again in %sms", interval);
+                // try again in 'interval' ms
+                setTimeout(first, interval);
+            }
+        };
+
+        first();
     });
 });
