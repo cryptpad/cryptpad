@@ -8,7 +8,6 @@ define([
     '/customize/pad.js'
     var $ = window.jQuery;
     var ifrw = $('#pad-iframe')[0].contentWindow;
-    var CMeditor;
 
     $(function () {
         $(window).on('hashchange', function() {
@@ -19,7 +18,7 @@ define([
             return;
         }
 
-        var andThen = function () {
+        var andThen = function (CMeditor) {
             var key = Crypto.parseKey(window.location.hash.substring(1));
             var editor = CMeditor.fromTextArea($('#pad-iframe').contents().find('#editor1')[0], {
                 lineNumbers: true,
@@ -52,11 +51,11 @@ define([
         var interval = 100;
 
         var first = function () {
-            if (CMeditor = ifrw.CodeMirror) {
+            if (ifrw.CodeMirror) {
                 // it exists, call your continuation
-                andThen();
+                andThen(ifrw.CodeMirror);
             } else {
-                console.log("CMeditor was not defined. Trying again in %sms", interval);
+                console.log("CodeMirror was not defined. Trying again in %sms", interval);
                 // try again in 'interval' ms
                 setTimeout(first, interval);
             }
