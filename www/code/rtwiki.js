@@ -437,7 +437,11 @@ define([
         }, 500);
         socket.onClose.push(function () {
             clearTimeout(to);
-            toolbar.remove();
+            if (toolbar && typeof toolbar.remove === 'function') {
+                toolbar.remove();
+            } else {
+                warn("toolbar.remove is not a function"); //why not?
+            }
             setAutosaveHiddenState(false);
         });
 
@@ -752,6 +756,12 @@ define([
                   //error(false, "userDocBeforePatch != textAreaVal");
                 }
                 var op = attempt(Otaml.makeTextOperation)(userDocBeforePatch, realtime.getUserDoc());
+
+                if (typeof op === 'undefined') {
+                    warn("TypeError: op is undefined");
+                    return;
+                } 
+
                 var oldValue = textAreaVal;
                 var newValue = realtime.getUserDoc();
                 // Fix cursor and/or selection
@@ -825,7 +835,11 @@ define([
         }, 500);
         socket.onClose.push(function () {
             clearTimeout(to);
-            toolbar.remove();
+            if (toolbar && typeof toolbar.remove === 'function') {
+                toolbar.remove();
+            } else {
+                warn("toolbar.remove is not a function"); //why not?
+            }
             setAutosaveHiddenState(false);
         });
         socket.onEvent = function(){
