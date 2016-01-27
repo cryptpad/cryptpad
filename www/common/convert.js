@@ -53,5 +53,11 @@ define([
         });
         return convert;
     }());
+
+    convert.core = {
+        vdom: vdom,
+        hyperjson: hyperjson,
+        hyperscript: hyperscript
+    };
     return convert;
 });
