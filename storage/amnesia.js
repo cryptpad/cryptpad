@@ -14,7 +14,7 @@
 
 module.exports.create = function(conf, cb){
     console.log("Loading amnesiadb. This is a horrible idea in production,"+
-        "as data *will not* persist\n");
+        " as data *will not* persist\n");
 
     var db=[],
         index=0;
