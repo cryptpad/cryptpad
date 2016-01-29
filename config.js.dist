@@ -41,8 +41,8 @@ module.exports = {
      */
     // mongoUri: "mongodb://demo_user:demo_password@ds027769.mongolab.com:27769/demo_database",
 
-    /* mongoUri should really be used to refer to a 
-     *
+    /* mongoUri should really be used to refer to a local installation of mongodb
+     * to install the mongodb client, run `npm install mongodb`
      */
     // mongoUri: "mongodb://localhost:27017/cryptpad",
     // mongoCollectionName: 'cryptpad',
