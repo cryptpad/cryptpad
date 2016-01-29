@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+    <script data-main="main" src="/bower_components/requirejs/require.js"></script>
+    <style>
+        *{
+            padding: 0px;
+            margin: 0px;
+        }
+
+        .half {
+            position: fixed;
+            box-sizing: border-box;
+            border: 1px solid blue;
+            width: 50vw;
+            height: 100vh;
+            font-size: 15px;
+            background-color: #222;
+            color: #CCC;
+            top: 0px;
+        }
+
+        textarea{
+            left: 0px;
+        }
+        #target {
+            right: 0px;
+            overflow: scroll;
+        }
+    </style>
+</head>
+<body>
+    <textarea class="half"></textarea>
+    <div id="target" class="half"></div>
+</body>
+</html>
+
