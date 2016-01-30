@@ -22,6 +22,10 @@ define([
     var $textarea = $('textarea'),
         $target = $('#target');
 
+    Marked.setOptions({
+        sanitize: true
+    });
+
     var draw = function (content) {
         // draw stuff
         $target.html(Marked(content));

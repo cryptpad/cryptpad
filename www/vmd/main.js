@@ -13,6 +13,10 @@ define([
     var Vdom = Convert.core.vdom,
         Hyperjson = Convert.core.hyperjson,
         Hyperscript = Convert.core.hyperscript;
+
+    window.Vdom = Vdom;
+    window.Hyperjson = Hyperjson;
+    window.Hyperscript = Hyperscript;
     
     $(window).on('hashchange', function() {
         window.location.reload();
@@ -27,11 +31,16 @@ define([
     var $textarea = $('textarea'),
         $target = $('#target');
 
-/*
-    var draw = function (content) {
-        // draw stuff
-        $target.html(Marked(content));
-    };  */
+    var stripScripts = function (md) {
+        return md.replace(/<[\s\S]*?script[\s\S]*?>[\s\S]*?<\/script[\s\S]*?>/ig, "");
+    };
+
+    window.$textarea = $textarea;
+
+    // set markdwon rendering options
+    Marked.setOptions({
+        sanitize: true
+    });
 
     window.draw = (function () {
         var target = $target[0],
@@ -41,22 +50,68 @@ define([
 
         var Previous = Convert.dom.to.vdom(inner);
         return function (md) {
-            var rendered = Marked(md);
-
+            // strip scripts or people get xss
+            var rendered = stripScripts(Marked(md||""));
             // make a dom
             var R = $('<div id="inner">'+rendered+'</div>')[0];
-
             var New = Convert.dom.to.vdom(R);
-
             var patches = Vdom.diff(Previous, New);
-
             Vdom.patch(inner, patches);
-            
             Previous = New;
+            return patches;
+        };
+    }());
+
+    window.colour = (function () {
+        var r = 0.6,
+            n = 24,
+            i = 0,
+            t = [],
+            rgb = [0,2,4];
+
+        while(i<n)t.push(i++);
+
+        var colours = t.map(function (c, I) {
+            return '#'+ rgb.map(function (j) {
+                var x = ((Math.sin(r*(I+22)+j)*127+128) *0x01<<0)
+                    .toString(16);
+                return x.length<2?"0"+x:x;
+            }).join("");
+        });
+
+        var J = 0;
+        return function () {
+            var j = J++;
+            if (colours[j]) {
+                return colours[j];
+            }
+            J = 0;
+            return colours[0];
         };
     }());
 
     var redrawTimeout;
+
+    var $inner = $('#inner');
+
+    window.makeRainbow = false
+    var makeRainbows = function () {
+        $inner
+            .find('*:not(.untouched)')
+            .css({
+                'border': '5px solid '+colour(),
+                margin: '5px'
+            })
+            .addClass('untouched');
+    };
+
+    var lazyDraw = function (md) {
+        redrawTimeout && clearTimeout(redrawTimeout);
+        redrawTimeout = setTimeout(function () {
+            draw(md);
+            makeRainbox && makeRainbows();
+        }, 450);
+    };
 
     var rts = $textarea.toArray().map(function (e, i) {
         var rt = Realtime.start(e, // window
@@ -66,10 +121,7 @@ define([
             key.cryptKey,
             null,
             function (){
-                redrawTimeout && clearTimeout(redrawTimeout);
-                setTimeout(function () {
-                    draw($textarea.val());
-                }, 500);
+                lazyDraw($textarea.val());
             }); // cryptKey
         return rt;
     })[0];
@@ -78,7 +130,9 @@ define([
     window.rts = rts;
 
     $textarea.on('change keyup keydown', function () {
-        //console.log("pewpew");
-        draw($textarea.val());
+        redrawTimeout && clearTimeout(redrawTimeout);
+        redrawTimeout = setTimeout(function () {
+            lazyDraw($textarea.val());
+        }, 500);
     });
 });
