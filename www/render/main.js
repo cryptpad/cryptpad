@@ -109,7 +109,7 @@ define([
         redrawTimeout && clearTimeout(redrawTimeout);
         redrawTimeout = setTimeout(function () {
             draw(md);
-            makeRainbox && makeRainbows();
+            makeRainbow && makeRainbows();
         }, 450);
     };
 
