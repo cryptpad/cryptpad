@@ -59,12 +59,18 @@ module.exports.create = function(conf,cb){
         getMessages: function(cName, cb){
             /* get all messages relating to a channel */
             getIndex(cName, function(index){
-                for(var i=index;i>=0;i--){
-                    db.get(cName+'=>'+i,function(e,out){
-                        if(e) return console.error(e);
-                        cb(out);
-                    });
-                }             
+                var last = index,
+                    i = 0,
+                    next = function () {
+                        db.get(cName+'=>'+i, function (e,out) {
+                            if(e) return console.error(e);
+                            cb(out);
+                            if (++i <= last) {
+                                next();
+                            }
+                        });
+                    };
+                next();
             });
         },
     });
