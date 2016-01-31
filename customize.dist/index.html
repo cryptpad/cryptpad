@@ -65,6 +65,9 @@
             border-right: none;
         }
 
+        .remove {
+            cursor: pointer;
+        }
     </style>
     <script src="/bower_components/requirejs/require.js"></script>
     <!-- Piwik -->
@@ -132,7 +135,8 @@
             ], function (Dt) {
                 var $ = window.$;
                 Dt.main($('#bottom-bar'));
-                var recentPadsStr = localStorage['CryptPad_RECENTPADS'];
+                var localStorageKey = 'CryptPad_RECENTPADS';
+                var recentPadsStr = localStorage[localStorageKey];
                 var recentPads;
                 if (recentPadsStr) { recentPads = JSON.parse(recentPadsStr); }
                 if (!recentPads) { return; }
@@ -141,21 +145,56 @@
                 var $tbody = $table.find('tbody');
                 var now = new Date();
                 var hasRecent = false;
-                for (var i = 0; i < recentPads.length; i++) {
-                    if (!recentPads[i]) { continue; }
-                    if (now.getTime() - recentPads[i][1] > (1000*60*60*24*30)) { continue; }
-                    hasRecent = true
-                    var name = (recentPads[i][0].indexOf('/sheet/') !== -1) ? 'Sheet' : (recentPads[i][0].indexOf('/code/') !== -1) ? 'Code' : 'Pad';;
-                    var date = new Date(recentPads[i][1]).toLocaleDateString();
-                    if (date === now.toLocaleDateString()) {
-                        date = new Date(recentPads[i][1]).toLocaleTimeString().replace(/ /g, '');
+
+                var memorySpan = 1000 * 60 * 60 * 24 * 30; // thirty days
+
+                var forgetPad = function (url) {
+                    if (recentPads) {
+                        recentPads = recentPads.filter(function (pad) {
+                            // remove the pad in question
+                            return pad[0] !== url;
+                        });
+                        localStorage[localStorageKey] = JSON.stringify(recentPads);
+
                     }
-                    $tbody.append('<tr>' +
+                };
+
+                // show recent pads if they exist
+                recentPads.length && recentPads.some(function (pad, index) {
+                    if (!pad) return true;
+                    if (now.getTime() - pad[1] > memorySpan) return true;
+
+                    hasRecent = true;
+
+                    // TODO add support for newer types...
+                    var name = /\/sheet\//.test(pad[0])?
+                        'Sheet':
+                        /\/code\//.test(pad[0])?
+                            'Code':
+                            'Pad';
+
+                    var date = new Date(pad[1]).toLocaleDateString();
+                    if (date === now.toLocaleDateString()) {
+                        date = new Date(pad[1]).toLocaleTimeString().replace(/ /g, '');
+                    }
+
+                    var id = 'pad-'+index;
+                    $tbody.append('<tr id="'+id+'">' +
                        '<td>' + name + '</td>' +
-                       '<td><a href="' + recentPads[i][0] + '"' + '">' + recentPads[i][0] + '</a></td>' +
+                       '<td><a href="' + pad[0] + '"' + '">' + pad[0] + '</a></td>' +
                        '<td>' + date + '</td>' +
+                       '<td class="remove">remove</td>'+
                        '</tr>');
-                }
+
+                    var $row = $('#'+id);
+                    $row.find('.remove').click(function () {
+                        forgetPad(pad[0]);
+                        $row.fadeOut(750, function () {
+                            $row.remove();
+                            if (!$table.find('tr').length) { $table.remove(); }
+                        });
+                    });
+                });
 
                 if (recentPads.length < 5) {
                     $tbody.attr('style', 'height: ' + (28 * recentPads.length + 2) + 'px');
