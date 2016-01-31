@@ -31,13 +31,9 @@ define([
     var $textarea = $('textarea'),
         $target = $('#target');
 
-    var stripScripts = function (md) {
-        return md.replace(/<[\s\S]*?script[\s\S]*?>[\s\S]*?<\/script[\s\S]*?>/ig, "");
-    };
-
     window.$textarea = $textarea;
 
-    // set markdwon rendering options
+    // set markdown rendering options :: strip html to prevent XSS
     Marked.setOptions({
         sanitize: true
     });
@@ -50,8 +46,7 @@ define([
 
         var Previous = Convert.dom.to.vdom(inner);
         return function (md) {
-            // strip scripts or people get xss
-            var rendered = stripScripts(Marked(md||""));
+            var rendered = Marked(md||"");
             // make a dom
             var R = $('<div id="inner">'+rendered+'</div>')[0];
             var New = Convert.dom.to.vdom(R);
@@ -90,8 +85,6 @@ define([
         };
     }());
 
-    var redrawTimeout;
-
     var $inner = $('#inner');
 
     window.makeRainbow = false
@@ -105,6 +98,7 @@ define([
             .addClass('untouched');
     };
 
+    var redrawTimeout;
     var lazyDraw = function (md) {
         redrawTimeout && clearTimeout(redrawTimeout);
         redrawTimeout = setTimeout(function () {
@@ -118,15 +112,14 @@ define([
             Config.websocketURL, // websocketUrl
             Crypto.rand64(8), // userName
             key.channel, // channel
-            key.cryptKey,
-            null,
-            function (){
+            key.cryptKey, // cryptkey
+            null, // docBody
+            function (){ // onChange received
                 lazyDraw($textarea.val());
-            }); // cryptKey
+            });
         return rt;
     })[0];
 
-    //rts.onEvent
     window.rts = rts;
 
     $textarea.on('change keyup keydown', function () {
