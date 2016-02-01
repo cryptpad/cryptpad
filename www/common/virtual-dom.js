@@ -1319,6 +1319,10 @@ function walk(a, b, patch, index) {
     }
 }
 
+/* FIXME
+    I think this is where it's wiping out younger siblings of a redrawn child
+    That's no good, because it causes redraws on children that should persist
+*/
 function diffChildren(a, b, patch, apply, index) {
     var aChildren = a.children
     var orderedSet = reorder(aChildren, b.children)
