@@ -49,19 +49,21 @@ define([
 
             var vdom1 = Convert.dom.to.vdom(inner);
 
+            var onChange = function (shjson) {
+                var authDoc = JSON.parse(shjson);
+                var vdom2 = Convert.hjson.to.vdom(authDoc);
+                var patches = Vdom.diff(vdom1, vdom2);
+                Vdom.patch(inner, patches);
+                vdom1 = vdom2;
+            };
+
             window.rti = realtimeInput.start($textarea[0],
                                     Config.websocketURL,
                                     Crypto.rand64(8),
                                     key.channel,
                                     key.cryptKey,
                                     inner,
-                                    function (shjson) {
-                                        var authDoc = JSON.parse(shjson);
-                                        var vdom2 = Convert.hjson.to.vdom(authDoc);
-                                        var patches = Vdom.diff(vdom1, vdom2);
-                                        Vdom.patch(inner, patches);
-                                        vdom1 = vdom2;
-                                    });
+                                    onChange);
 
             $textarea.val(JSON.stringify(Convert.dom.to.hjson(inner)));
 
