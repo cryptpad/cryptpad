@@ -37,7 +37,7 @@ var check = Patch.check = function (patch, docLength_opt) {
     Common.assert(Array.isArray(patch.operations));
     Common.assert(/^[0-9a-f]{64}$/.test(patch.parentHash));
     for (var i = patch.operations.length - 1; i >= 0; i--) {
-        Operation.check(patch.operations[i], docLength_opt);
+        Operation.check(patch.operations[i], docLength_opt); // INTEREST
         if (i > 0) {
             Common.assert(!Operation.shouldMerge(patch.operations[i], patch.operations[i-1]));
         }
@@ -211,7 +211,7 @@ var equals = Patch.equals = function (patchA, patchB) {
     return true;
 };
 
-var transform = Patch.transform = function (origToTransform, transformBy, doc, transformFunction) {
+var transform = Patch.transform = function (origToTransform, transformBy, doc, transformFunction) { // INTEREST
     if (Common.PARANOIA) {
         check(origToTransform, doc.length);
         check(transformBy, doc.length);
@@ -228,7 +228,7 @@ var transform = Patch.transform = function (origToTransform, transformBy, doc, t
             toTransform.operations[i] = Operation.transform(text,
                                                             toTransform.operations[i],
                                                             transformBy.operations[j],
-                                                            transformFunction);
+                                                            transformFunction); // INTEREST
             if (!toTransform.operations[i]) {
                 break;
             }
@@ -697,14 +697,14 @@ var onPong = function (realtime, msg) {
         schedule(realtime, function () { sendPing(realtime); }, realtime.pingCycle);
 };
 
-var create = ChainPad.create = function (userName, authToken, channelId, initialState, config) {
+var create = ChainPad.create = function (userName, authToken, channelId, initialState, config) { // INTEREST
 
     var realtime = {
         type: 'ChainPad',
 
         authDoc: '',
 
-        config: config || {},
+        config: config || {}, // INTEREST
 
         userName: userName,
         authToken: authToken,
@@ -884,7 +884,7 @@ var applyPatch = function (realtime, author, patch) {
     } else {
         realtime.uncommitted =
             Patch.transform(
-                realtime.uncommitted, patch, realtime.authDoc, realtime.config.transformFunction);
+                realtime.uncommitted, patch, realtime.authDoc, realtime.config.transformFunction); // INTEREST
     }
     realtime.uncommitted.parentHash = patch.inverseOf.parentHash;
 
@@ -1252,7 +1252,7 @@ var check = Operation.check = function (op, docLength_opt) {
     Common.assert(Common.isUint(op.toRemove));
     Common.assert(typeof(op.toInsert) === 'string');
     Common.assert(op.toRemove > 0 || op.toInsert.length > 0);
-    Common.assert(typeof(docLength_opt) !== 'number' || op.offset + op.toRemove <= docLength_opt);
+    Common.assert(typeof(docLength_opt) !== 'number' || op.offset + op.toRemove <= docLength_opt); // INTEREST
 };
 
 var create = Operation.create = function (offset, toRemove, toInsert) {
@@ -1443,7 +1443,7 @@ var rebase = Operation.rebase = function (oldOp, newOp) {
  * @param transformBy an existing operation which also has the same base.
  * @return toTransform *or* null if the result is a no-op.
  */
-var transform0 = Operation.transform0 = function (text, toTransform, transformBy) {
+var transform0 = Operation.transform0 = function (text, toTransform, transformBy) { // INTEREST
     if (toTransform.offset > transformBy.offset) {
         if (toTransform.offset > transformBy.offset + transformBy.toRemove) {
             // simple rebase
@@ -1476,14 +1476,14 @@ var transform0 = Operation.transform0 = function (text, toTransform, transformBy
  * @param transformBy an existing operation which also has the same base.
  * @return a modified clone of toTransform *or* toTransform itself if no change was made.
  */
-var transform = Operation.transform = function (text, toTransform, transformBy, transformFunction) {
+var transform = Operation.transform = function (text, toTransform, transformBy, transformFunction) { // INTEREST
     if (Common.PARANOIA) {
         check(toTransform);
         check(transformBy);
     }
-    transformFunction = transformFunction || transform0;
+    transformFunction = transformFunction || transform0; // INTEREST
     toTransform = clone(toTransform);
-    var result = transformFunction(text, toTransform, transformBy);
+    var result = transformFunction(text, toTransform, transformBy); // INTEREST
     if (Common.PARANOIA && result) { check(result); }
     return result;
 };

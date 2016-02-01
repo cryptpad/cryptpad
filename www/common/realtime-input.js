@@ -168,7 +168,21 @@ define([
             var realtime = socket.realtime = ChainPad.create(userName,
                                 passwd,
                                 channel,
-                                $(textarea).val());
+                                $(textarea).val(),
+                                {
+                                    transformFunction: function (text, toTransform, transformBy) {
+                                        console.log({
+                                            text: text,
+                                            toTransform: toTransform,
+                                            transformBy: transformBy
+                                        });
+
+                                        // returning false breaks out of the loop
+                                        // which transforms conflicting operations
+                                        // in theory this should prevent us from producing bad JSON
+                                        return null;
+                                    }
+                                });
 
             onEvent = function () {
                 if (isErrorState || initializing) { return; }
