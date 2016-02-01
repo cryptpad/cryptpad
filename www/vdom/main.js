@@ -54,7 +54,9 @@ define([
                 var vdom2 = Convert.hjson.to.vdom(authDoc);
                 var patches = Vdom.diff(vdom1, vdom2);
                 Vdom.patch(inner, patches);
-                vdom1 = vdom2;
+                // try resyncing the dom?
+                vdom1 = Convert.dom.to.vdom(inner);
+                // vdom1 = vdom2;
             };
 
             window.rti = realtimeInput.start($textarea[0],
