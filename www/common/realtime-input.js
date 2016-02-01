@@ -156,6 +156,12 @@ define([
 
         var $textarea = $(textarea);
 
+        var inputDisabled = function (cond) {
+            $textarea.attr("disabled", cond||false);
+        };
+
+        inputDisabled(false);
+
         var bump = function () {};
 
         socket.onOpen.push(function (evt) {
@@ -177,7 +183,7 @@ define([
                                             transformBy: transformBy
                                         });
 
-                                        // returning false breaks out of the loop
+                                        // returning **null** breaks out of the loop
                                         // which transforms conflicting operations
                                         // in theory this should prevent us from producing bad JSON
                                         return null;
@@ -191,16 +197,22 @@ define([
             };
 
             realtime.onUserListChange(function (userList) {
-                if (!initializing || userList.indexOf(userName) === -1) { return; }
+                if (!initializing || userList.indexOf(userName) === -1) {
+                    return;
+                }
                 // if we spot ourselves being added to the document, we'll switch
                 // 'initializing' off because it means we're fully synced.
 
                 // we should only see this happen once
                 initializing = false;
+                debug("Done initializing:");
                 debug("Userlist: ["+userList.join(",")+"]");
+                /* TODO execute a callback here */
+
+                inputDisabled(true);
             });
 
-            var whoami = new RegExp(userName.replace(/./, function (c) {
+            var whoami = new RegExp(userName.replace(/\/\+/g, function (c) {
                 return '\\' +c;
             }));
 
@@ -209,7 +221,6 @@ define([
                 verbose(evt.data);
                 if (isErrorState) { return; }
 
-                //console.log(evt);
                 var message = Crypto.decrypt(evt.data, cryptKey);
                 verbose(message);
                 allMessages.push(message);
@@ -220,12 +231,17 @@ define([
                 }
                 realtime.message(message);
                 if (/\[5,/.test(message)) { verbose("pong"); }
-                if (/\[2,/.test(message)) {
-                    verbose("Got a patch");
-                    if (whoami.test(message)) {
-                        verbose("Received own message");
-                    } else {
-                        onRemote && onRemote(realtime.getAuthDoc());
+
+                if (!initializing) {
+                    if (/\[2,/.test(message)) {
+                        //verbose("Got a patch");
+                        if (whoami.test(message)) {
+                            //verbose("Received own message");
+                        } else {
+                            //verbose("Received remote message");
+                            // obviously this is only going to get called if 
+                            onRemote && onRemote(realtime.getAuthDoc());
+                        }
                     }
                 }
             });
@@ -255,12 +271,10 @@ define([
 
             socket.onerror = warn;
 
-            debug('started');
-
             var socketChecker = setInterval(function () {
                 if (checkSocket(socket)) {
                     warn("Socket disconnected!");
-                    $textarea.attr('disabled', true);
+                    inputDisabled(true);
 
                     recoverableErrorCount += 1;
 
@@ -270,7 +284,7 @@ define([
                         socketChecker && clearInterval(socketChecker);
                     }
                 } else {
-                    $textarea.attr('disabled', false);
+                    inputDisabled(false);
                 }
             },200);
 
@@ -280,6 +294,7 @@ define([
             sharejs.attach(textarea, realtime);
 
             realtime.start();
+            debug('started');
 
             // this has three names :|
             bump = realtime.bumpSharejs;
