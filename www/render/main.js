@@ -120,8 +120,6 @@ define([
         return rt;
     })[0];
 
-    window.rts = rts;
-
     $textarea.on('change keyup keydown', function () {
         redrawTimeout && clearTimeout(redrawTimeout);
         redrawTimeout = setTimeout(function () {
