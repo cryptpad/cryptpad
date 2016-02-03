@@ -147,7 +147,7 @@ define([
         var doc = config.doc || null;
 
         // trying to deprecate onRemote, prefer loading it via the conf
-        onRemote = config.onRemote || onRemote;
+        onRemote = config.onRemote || null;
 
         transformFunction = config.transformFunction || null;
 
