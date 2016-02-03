@@ -26,16 +26,28 @@
             top: 0px;
             right: 0px;
             border: 0px;
-            height: 100vh;
+            height: 50vh;
             width: 50vw;
             background-color: #222;
             color: #ccc;
+        }
+        #problemo {
+            position: fixed;
+            top: 50vh;
+            right: 0px;
+            height: 50vh;
+            width: 50vw;
+            background: #999;
+            color: #111;
+            border: none;
+            overflow-y: auto;
         }
     </style>
 </head>
 <body>
     <iframe id="pad-iframe" src="inner.html"></iframe>
     <textarea id="feedback"></textarea>
+    <pre id="problemo"></pre>
 </body>
 </html>
 
