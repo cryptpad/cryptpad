@@ -64,8 +64,11 @@ define([
 
     var bindAllEvents = function (textarea, docBody, onEvent, unbind)
     {
-        // FIXME why docBody?
-
+        /*
+            we use docBody for the purposes of CKEditor.
+            because otherwise special keybindings like ctrl-b and ctrl-i
+            would open bookmarks and info instead of applying bold/italic styles
+        */
         docBody && bindEvents(docBody,
                    ['textInput', 'keydown', 'keyup', 'select', 'cut', 'paste'],
                    onEvent,
@@ -133,17 +136,20 @@ define([
     };
 
     var start = module.exports.start =
-        function (textarea, websocketUrl, userName, channel, cryptKey, doc, onRemote)
+        function (textarea, websocketUrl, userName, channel, cryptKey, config)
     {
+
         var passwd = 'y';
 
-        console.log({
-            textarea: textarea,
-            websocketUrl: websocketUrl,
-            userName: userName,
-            channel: channel,
-            cryptKey: cryptKey
-        });
+        // make sure configuration is defined
+        config = config || {};
+
+        var doc = config.doc || null;
+
+        // trying to deprecate onRemote, prefer loading it via the conf
+        onRemote = config.onRemote || onRemote;
+
+        transformFunction = config.transformFunction || null;
 
         var socket = makeWebsocket(websocketUrl);
         // define this in case it gets called before the rest of our stuff is ready.
@@ -155,12 +161,6 @@ define([
         var recoverableErrorCount = 0;
 
         var $textarea = $(textarea);
-
-        var inputDisabled = function (cond) {
-            $textarea.attr("disabled", cond||false);
-        };
-
-        inputDisabled(false);
 
         var bump = function () {};
 
@@ -176,24 +176,11 @@ define([
                                 channel,
                                 $(textarea).val(),
                                 {
-                                    transformFunction: function (text, toTransform, transformBy) {
-                                        console.log({
-                                            text: text,
-                                            toTransform: toTransform,
-                                            transformBy: transformBy
-                                        });
-
-                                        // returning **null** breaks out of the loop
-                                        // which transforms conflicting operations
-                                        // in theory this should prevent us from producing bad JSON
-                                        return null;
-                                    }
+                                    transformFunction: config.transformFunction
                                 });
 
             onEvent = function () {
                 if (isErrorState || initializing) { return; }
-/*                var currentDoc = $textarea.val();
-                if (currentDoc !== realtime.getUserDoc()) { warn("currentDoc !== realtime.getUserDoc()"); } */
             };
 
             realtime.onUserListChange(function (userList) {
@@ -202,14 +189,13 @@ define([
                 }
                 // if we spot ourselves being added to the document, we'll switch
                 // 'initializing' off because it means we're fully synced.
-
-                // we should only see this happen once
                 initializing = false;
-                debug("Done initializing:");
-                debug("Userlist: ["+userList.join(",")+"]");
-                /* TODO execute a callback here */
 
-                inputDisabled(true);
+                // execute an onReady callback if one was supplied
+                // pass an object so we can extend this later
+                config.onReady && config.onReady({
+                    userList: userList
+                });
             });
 
             var whoami = new RegExp(userName.replace(/\/\+/g, function (c) {
@@ -274,7 +260,6 @@ define([
             var socketChecker = setInterval(function () {
                 if (checkSocket(socket)) {
                     warn("Socket disconnected!");
-                    inputDisabled(true);
 
                     recoverableErrorCount += 1;
 
@@ -284,7 +269,7 @@ define([
                         socketChecker && clearInterval(socketChecker);
                     }
                 } else {
-                    inputDisabled(false);
+                    // TODO
                 }
             },200);
 
@@ -296,7 +281,6 @@ define([
             realtime.start();
             debug('started');
 
-            // this has three names :|
             bump = realtime.bumpSharejs;
         });
         return {

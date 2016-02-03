@@ -49,7 +49,14 @@ define([
 
             var vdom1 = Convert.dom.to.vdom(inner);
 
-            var onChange = function (shjson) {
+            var applyHjson = function (shjson) {
+                // where is your cursor?
+                // TODO optimize this if it works
+                /*
+                var sel = editor.getSelection(); // { rev, document, root, isLocked, _ }
+                var element = sel.getStartElement();
+                var ranges = sel.getRanges(); // [0] // {startContainer, startOffset, endContainer, endOffset, collapsed, document, root}
+                */
                 var authDoc = JSON.parse(shjson);
                 var vdom2 = Convert.hjson.to.vdom(authDoc);
                 var patches = Vdom.diff(vdom1, vdom2);
@@ -57,15 +64,57 @@ define([
                 // try resyncing the dom?
                 vdom1 = Convert.dom.to.vdom(inner);
                 // vdom1 = vdom2;
+
+/*
+                // correct the cursor after doing dom stuff
+                sel.selectElement(element);
+                ranges[0].setStart(element.getFirst(), ranges[0].startOffset); // 
+                ranges[0].setEnd(element.getFirst(), ranges[0].endOffset);
+                sel.selectRanges([ranges[0]]);
+*/
+
             };
 
-            window.rti = realtimeInput.start($textarea[0],
-                                    Config.websocketURL,
-                                    Crypto.rand64(8),
-                                    key.channel,
-                                    key.cryptKey,
-                                    inner,
-                                    onChange);
+            window.rti = realtimeInput.start($textarea[0], // synced element
+                                    Config.websocketURL, // websocketURL, ofc
+                                    Crypto.rand64(8), // userName
+                                    key.channel, // channelName
+                                    key.cryptKey, // key
+                                    { // configuration :D
+                                        doc: inner,
+
+                                        onReady: function (info) {
+                                            applyHjson($textarea.val());
+                                            $textarea.trigger('keyup');
+                                        },
+
+                                        onRemote: applyHjson,
+
+                                        transformFunction : function (text, toTransform, transformBy) {
+                                            /* FIXME 
+                                                operational transform on json shouldn't be in all editors
+                                                just those transmitting/expecting JSON
+                                            */
+                                            false && console.log({
+                                                text: text,
+                                                toTransform: toTransform,
+                                                transformBy: transformBy
+                                            });
+
+                                            // returning **null** breaks out of the loop
+                                            // which transforms conflicting operations
+                                            // in theory this should prevent us from producing bad JSON
+                                            return null;
+                                        }
+                                        /*
+                                            FIXME NOT A REAL FUNCTION WONT WORK
+                                            transformFunction: function (state0str, toTransform, transformBy) {
+                                                var state1A = JSON.parse(Operation.apply(state0str, transformBy));
+                                                var state1B = JSON.parse(Operation.apply(state0str, toTransform));
+                                                var state0  = JSON.parse(state0str);
+                                            }
+                                        */
+                                    });
 
             $textarea.val(JSON.stringify(Convert.dom.to.hjson(inner)));
 

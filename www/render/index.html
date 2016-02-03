@@ -34,9 +34,18 @@
         code {
             font-family: monospace;
         }
-        /* TODO
-            bump up text size on mobile
-        */
+
+        /* bigger text size for difficult to read elements */
+        blockquote, p, pre, code, li {
+            font-size: 20px;
+        }
+
+        /* tables */
+        table, thead, tbody, th, tr, td{
+            border: 1pt solid #586e75;
+            background-color: #002b36;
+            padding: 15px;
+        }
     </style>
 </head>
 <body>
@@ -46,4 +55,3 @@
     <textarea></textarea>
 </body>
 </html>
-

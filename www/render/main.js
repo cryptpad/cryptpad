@@ -28,7 +28,7 @@ define([
 
     var key = Crypto.parseKey(window.location.hash.substring(1));
 
-    var $textarea = $('textarea'),
+    var $textarea = $('textarea').first(),
         $target = $('#target');
 
     window.$textarea = $textarea;
@@ -107,18 +107,23 @@ define([
         }, 450);
     };
 
-    var rts = $textarea.toArray().map(function (e, i) {
-        var rt = Realtime.start(e, // window
+    var rts = Realtime.start($textarea[0], // window
             Config.websocketURL, // websocketUrl
             Crypto.rand64(8), // userName
             key.channel, // channel
             key.cryptKey, // cryptkey
-            null, // docBody
-            function (){ // onChange received
-                lazyDraw($textarea.val());
+            {
+                // when remote editors do things...
+                onRemote: function () {
+                    lazyDraw($textarea.val());
+                },
+                // when your editor is ready
+                onReady: function (info) {
+                    info.userList && console.log("Userlist: [%s]", info.userList.join(','));
+                    console.log("Realtime is ready!");
+                    $textarea.trigger('keyup');
+                }
             });
-        return rt;
-    })[0];
 
     $textarea.on('change keyup keydown', function () {
         redrawTimeout && clearTimeout(redrawTimeout);
