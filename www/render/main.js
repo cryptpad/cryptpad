@@ -5,9 +5,10 @@ define([
     '/common/crypto.js',
     '/common/marked.js',
     '/common/convert.js',
+    '/common/rainbow.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, Realtime, Messages, Crypto, Marked, Convert) { 
+], function (Config, Realtime, Messages, Crypto, Marked, Convert, Rainbow) { 
     var $ = jQuery;
 
     var Vdom = Convert.core.vdom,
@@ -57,33 +58,7 @@ define([
         };
     }());
 
-    window.colour = (function () {
-        var r = 0.6,
-            n = 24,
-            i = 0,
-            t = [],
-            rgb = [0,2,4];
-
-        while(i<n)t.push(i++);
-
-        var colours = t.map(function (c, I) {
-            return '#'+ rgb.map(function (j) {
-                var x = ((Math.sin(r*(I+22)+j)*127+128) *0x01<<0)
-                    .toString(16);
-                return x.length<2?"0"+x:x;
-            }).join("");
-        });
-
-        var J = 0;
-        return function () {
-            var j = J++;
-            if (colours[j]) {
-                return colours[j];
-            }
-            J = 0;
-            return colours[0];
-        };
-    }());
+    window.colour = Rainbow();
 
     var $inner = $('#inner');
 
