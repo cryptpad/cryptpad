@@ -179,6 +179,11 @@ define([
                                     transformFunction: config.transformFunction
                                 });
 
+
+            config.onInit && config.onInit({
+                realtime: realtime
+            });
+
             onEvent = function () {
                 if (isErrorState || initializing) { return; }
             };
