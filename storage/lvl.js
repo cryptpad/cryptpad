@@ -3,19 +3,27 @@ var nThen = require('nthen');
 
 var getIndex = function(db, cName, cb) {
     db.get(cName+'=>index', function(e, out){
-        if (e && !e.notFound) { throw e; }
-        cb(parseInt(out || 0));
+        if (e) {
+            if (e.notFound) {
+                cb(-1);
+            } else {
+                throw e;
+            }
+            return;
+        }
+        cb(parseInt(out));
     });
 };
 
 var insert = function (db, channelName, content, cb) {
     var index;
     nThen(function (waitFor) {
-        getIndex(db, channelName, waitFor(function (i) { index = i; }));
-    }).nThen(function (waitFor) {
-        db.put(channelName+'=>index', ''+index, waitFor(function (e) { if (e) { throw e; } }));
+        getIndex(db, channelName, waitFor(function (i) { index = i+1; }));
     }).nThen(function (waitFor) {
         db.put(channelName+'=>'+index, content, waitFor(function (e) { if (e) { throw e; } }));
+    }).nThen(function (waitFor) {
+        db.put(channelName+'=>index', ''+index, waitFor(function (e) { if (e) { throw e; } }));
+        console.log(index);
     }).nThen(cb);
 };
 
