@@ -5,6 +5,14 @@ define([
     // do some function for the start and end of the cursor
     var startAndStop = function (f) { ['start', 'end'].forEach(f); };
 
+    var log = function (x) {
+        console.log(x);
+    };
+
+    var error = function (x) {
+        console.log(x);
+    };
+
     return function (CK, editor, inner) {
         var makeCKElement = function (el) { return new CK.dom.node(el); };
 
@@ -27,12 +35,13 @@ define([
         };
 
         cursor.update = function () {
-            console.log("Updating cursor position");
+            log("Updating cursor position");
             // get ranges
             var ranges = editor.getSelection().getRanges();
             // there should be at least one
             if (!ranges.length) { 
-                console.error("No ranges");
+                // FIXME make error
+                log("No ranges");
                 return;
             }
 
@@ -70,7 +79,7 @@ define([
                 }
             });
             if (success) {
-                console.log("Found cursor!");
+                log("Found cursor!");
             }
             return success;
         };
@@ -90,7 +99,7 @@ define([
         // TODO under what circumstances will the length of getRanges be zero?
         var range;
         cursor.replace = function () {
-            console.log("Attempting to replace cursor");
+            log("Attempting to replace cursor");
 
             cursor.find();
 
@@ -113,7 +122,7 @@ define([
 
             var ranges = sel.getRanges();
             if (!ranges.length) {
-                console.log("No cursor range found");
+                log("No cursor range found");
                 if (!range) {
                     return;
                 }
@@ -128,15 +137,16 @@ define([
 
         var seekToOffset = function (el, offset) {
             if (!el) {
-                console.log("No element provided!");
+                log("No element provided!");
                 return null;
             }
-            console.log("Seeking to offset");
-            console.log(el, offset);
+            log("Seeking to offset");
+            // FIXME better debugging
+            // console.log(el, offset);
             if (!el.textContent) {
                 // FIXME wat
                 var el2 = Tree.previousNode(el, inner);
-                console.log("No text content available!");
+                log("No text content available!");
                 return null;
             }
             if (offset === 0) {
