@@ -230,8 +230,8 @@ define([
                             //verbose("Received own message");
                         } else {
                             //verbose("Received remote message");
-                            // obviously this is only going to get called if 
-                            onRemote && onRemote(realtime.getAuthDoc());
+                            // obviously this is only going to get called if
+                            onRemote && onRemote(realtime.getUserDoc());
                         }
                     }
                 }
@@ -290,7 +290,7 @@ define([
         });
         return {
             onEvent: function () {
-                onEvent(); 
+                onEvent();
             },
             bumpSharejs: function () { bump(); }
         };

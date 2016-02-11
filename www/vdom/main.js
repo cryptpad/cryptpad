@@ -6,12 +6,15 @@ define([
     '/common/convert.js',
     '/common/toolbar.js',
     '/common/cursor.js',
+    '/bower_components/diff-dom/diffDOM.js',
+
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
 ], function (Config, Messages, Crypto, realtimeInput, Convert, Toolbar, Cursor) {
     var $ = window.jQuery;
     var ifrw = $('#pad-iframe')[0].contentWindow;
     window.Ckeditor = ifrw.CKEDITOR;
+    var DiffDom = window.diffDOM;
 
     var userName = Crypto.rand64(8),
         toolbar;
@@ -59,16 +62,11 @@ define([
 
             var applyHjson = function (shjson) {
                 console.log("Applying HJSON");
-                // before integrating external changes, check in your own
-                vdom1 = Convert.dom.to.vdom(inner);
-                // the authoritative document is hyperjson, parse it
-                var authDoc = JSON.parse(shjson);
-                // use the authdoc to construct a second vdom
-                var vdom2 = Convert.hjson.to.vdom(authDoc);
-                // diff it against your version
-                var patches = Vdom.diff(vdom1, vdom2);
-                // apply the resulting patches               
-                Vdom.patch(inner, patches);
+                var userDocStateDom = Vdom.create(Convert.hjson.to.vdom(JSON.parse(shjson)));
+                userDocStateDom.setAttribute("contentEditable", "true"); // lol wtf
+                var patch = (new DiffDom()).diff(inner, userDocStateDom);
+                console.log(userDocStateDom.outerHTML);
+                (new DiffDom()).apply(inner, patch);
             };
 
             var onRemote = function (shjson) {
@@ -104,7 +102,7 @@ define([
                                         onInit: onInit,
 
                                         transformFunction : function (text, toTransform, transformBy) {
-                                            /* FIXME 
+                                            /* FIXME
                                                 operational transform on json shouldn't be in all editors
                                                 just those transmitting/expecting JSON
                                             */
