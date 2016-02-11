@@ -372,7 +372,7 @@ var random = Patch.random = function (doc, opCount) {
 var PARANOIA = module.exports.PARANOIA = false;
 
 /* throw errors over non-compliant messages which would otherwise be treated as invalid */
-var TESTING = module.exports.TESTING = true;
+var TESTING = module.exports.TESTING = false;
 
 var assert = module.exports.assert = function (expr) {
     if (!expr) { throw new Error("Failed assertion"); }
@@ -1283,7 +1283,7 @@ var clone = Operation.clone = function (op) {
 
 /**
  * @param op the operation to apply.
- * @param doc the content to apply the operation on 
+ * @param doc the content to apply the operation on
  */
 var apply = Operation.apply = function (op, doc)
 {
