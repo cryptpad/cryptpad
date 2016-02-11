@@ -65,20 +65,19 @@ define([
                 var userDocStateDom = Vdom.create(Convert.hjson.to.vdom(JSON.parse(shjson)));
                 userDocStateDom.setAttribute("contentEditable", "true"); // lol wtf
                 var patch = (new DiffDom()).diff(inner, userDocStateDom);
-                console.log(userDocStateDom.outerHTML);
                 (new DiffDom()).apply(inner, patch);
             };
 
             var onRemote = function (shjson) {
                 // remember where the cursor is
-                cursor.update()
+                //cursor.update()
 
                 applyHjson(shjson);
 
-                cursor.find();
+                //cursor.find();
 
                 // put the cursor back where you left it
-                cursor.replace();
+                //cursor.replace();
             };
 
             var onInit = function (info) {
@@ -139,14 +138,14 @@ define([
 
                 $textarea.val(JSON.stringify(hjson));
                 rti.bumpSharejs();
-                cursor.update()
+                //cursor.update()
             });
 
-            ['mouseup', 'keyup'].forEach(function (type) {
+            /*['mouseup', 'keyup'].forEach(function (type) {
                 editor.document.on(type, function (e) {
                     cursor.update();
                 });
-            });
+            });*/
 
         });
     };
