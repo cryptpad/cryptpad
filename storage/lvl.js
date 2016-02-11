@@ -3,8 +3,8 @@ var nThen = require('nthen');
 
 var getIndex = function(db, cName, cb) {
     db.get(cName+'=>index', function(e, out){
-        if (e) { throw e; }
-        cb(parseInt(out));
+        if (e && !e.notFound) { throw e; }
+        cb(parseInt(out || 0));
     });
 };
 
