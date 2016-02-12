@@ -5,7 +5,6 @@ define([
     '/common/crypto.js',
     '/bower_components/jquery/dist/jquery.min.js'
 ], function (Config, RTWiki, Messages, Crypto) {
-    '/customize/pad.js'
     var $ = window.jQuery;
     var ifrw = $('#pad-iframe')[0].contentWindow;
 
