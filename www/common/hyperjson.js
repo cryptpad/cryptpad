@@ -81,7 +81,8 @@ define([], function () {
 
         // third element of the array is an array of child nodes
         var children = [];
-        for(var i = 0; i < el.childNodes.length; i++){
+        var i = 0;
+        for(; i < el.childNodes.length; i++){
           children.push(DOM2HyperJSON(el.childNodes[i]));
         }
         result.push(children);
