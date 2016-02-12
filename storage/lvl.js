@@ -23,7 +23,6 @@ var insert = function (db, channelName, content, cb) {
         db.put(channelName+'=>'+index, content, waitFor(function (e) { if (e) { throw e; } }));
     }).nThen(function (waitFor) {
         db.put(channelName+'=>index', ''+index, waitFor(function (e) { if (e) { throw e; } }));
-        console.log(index);
     }).nThen(cb);
 };
 
