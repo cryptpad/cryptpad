@@ -47,7 +47,9 @@ define([], function () {
           return;
         }
         var attributes = {};
-        for(var i = 0; i < el.attributes.length; i++){
+
+        var i = 0;
+        for(;i < el.attributes.length; i++){
           var attr = el.attributes[i];
           if(attr.name && attr.value){
             if(attr.name == "style"){
@@ -81,7 +83,9 @@ define([], function () {
 
         // third element of the array is an array of child nodes
         var children = [];
-        var i = 0;
+
+        // js hint complains if we use 'var' here
+        i = 0;
         for(; i < el.childNodes.length; i++){
           children.push(DOM2HyperJSON(el.childNodes[i]));
         }

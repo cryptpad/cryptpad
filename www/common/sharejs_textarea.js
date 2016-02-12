@@ -51,19 +51,19 @@ define(function () {
  * This algorithm is O(N). I suspect you could speed it up somehow using regular expressions.
  */
 var applyChange = function(ctx, oldval, newval) {
-  // Strings are immutable and have reference equality. I think this test is O(1), so its worth doing.
-  if (oldval === newval) return;
+    // Strings are immutable and have reference equality. I think this test is O(1), so its worth doing.
+    if (oldval === newval) return;
 
-  var commonStart = 0;
-  while (oldval.charAt(commonStart) === newval.charAt(commonStart)) {
-    commonStart++;
-  }
+    var commonStart = 0;
+    while (oldval.charAt(commonStart) === newval.charAt(commonStart)) {
+        commonStart++;
+    }
 
-  var commonEnd = 0;
-  while (oldval.charAt(oldval.length - 1 - commonEnd) === newval.charAt(newval.length - 1 - commonEnd) &&
-      commonEnd + commonStart < oldval.length && commonEnd + commonStart < newval.length) {
-    commonEnd++;
-  }
+    var commonEnd = 0;
+    while (oldval.charAt(oldval.length - 1 - commonEnd) === newval.charAt(newval.length - 1 - commonEnd) &&
+        commonEnd + commonStart < oldval.length && commonEnd + commonStart < newval.length) {
+        commonEnd++;
+    }
 
     var bugz = {
         commonStart:commonStart,
@@ -71,14 +71,14 @@ var applyChange = function(ctx, oldval, newval) {
         oldvalLength: oldval.length,
         newvalLength: newval.length
     };
-  if (oldval.length !== commonStart + commonEnd) {
-      ctx.localChange && ctx.localChange(true);
-    ctx.remove(commonStart, oldval.length - commonStart - commonEnd);
-  }
-  if (newval.length !== commonStart + commonEnd) {
-      ctx.localChange && ctx.localChange(true);
-    ctx.insert(commonStart, newval.slice(commonStart, newval.length - commonEnd));
-  }
+    if (oldval.length !== commonStart + commonEnd) {
+        if (ctx.localChange) { ctx.localChange(true); }
+        ctx.remove(commonStart, oldval.length - commonStart - commonEnd);
+    }
+    if (newval.length !== commonStart + commonEnd) {
+        if (ctx.localChange) { ctx.localChange(true); }
+        ctx.insert(commonStart, newval.slice(commonStart, newval.length - commonEnd));
+    }
 };
 
 /**
@@ -95,31 +95,32 @@ var cannonicalize = function (content) {
 // specified.
 var attachTextarea = function(elem, ctx) {
 
-  // initial state will always fail the !== check in genop.
-  var content = {};
+    // initial state will always fail the !== check in genop.
+    var content = {};
+    var newSelection;
 
-  // Replace the content of the text area with newText, and transform the
-  // current cursor by the specified function.
-  var replaceText = function(newText, transformCursor) {
-    if (transformCursor) {
-      var newSelection = [transformCursor(elem.selectionStart), transformCursor(elem.selectionEnd)];
-    }
+    // Replace the content of the text area with newText, and transform the
+    // current cursor by the specified function.
+    var replaceText = function(newText, transformCursor) {
+        if (transformCursor) {
+            newSelection = [transformCursor(elem.selectionStart), transformCursor(elem.selectionEnd)];
+        }
 
-    // Fixate the window's scroll while we set the element's value. Otherwise
-    // the browser scrolls to the element.
-    var scrollTop = elem.scrollTop;
-    elem.value = newText;
-    content = elem.value; // Not done on one line so the browser can do newline conversion.
-    if (elem.scrollTop !== scrollTop) elem.scrollTop = scrollTop;
+        // Fixate the window's scroll while we set the element's value. Otherwise
+        // the browser scrolls to the element.
+        var scrollTop = elem.scrollTop;
+        elem.value = newText;
+        content = elem.value; // Not done on one line so the browser can do newline conversion.
+        if (elem.scrollTop !== scrollTop) elem.scrollTop = scrollTop;
 
-    // Setting the selection moves the cursor. We'll just have to let your
-    // cursor drift if the element isn't active, though usually users don't
-    // care.
-    if (newSelection && window.document.activeElement === elem) {
-      elem.selectionStart = newSelection[0];
-      elem.selectionEnd = newSelection[1];
-    }
-  };
+        // Setting the selection moves the cursor. We'll just have to let your
+        // cursor drift if the element isn't active, though usually users don't
+        // care.
+        if (newSelection && window.document.activeElement === elem) {
+            elem.selectionStart = newSelection[0];
+            elem.selectionEnd = newSelection[1];
+        }
+    };
 
   //replaceText(ctx.get());
 

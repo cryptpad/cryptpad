@@ -140,12 +140,17 @@ define([
                 log("No element provided!");
                 return null;
             }
+
+            var el2,
+                adjusted,
+                initialLength;
+
             log("Seeking to offset");
             // FIXME better debugging
             // console.log(el, offset);
             if (!el.textContent) {
                 // FIXME wat
-                var el2 = Tree.previousNode(el, inner);
+                el2 = Tree.previousNode(el, inner);
                 log("No text content available!");
                 return null;
             }
@@ -157,19 +162,20 @@ define([
             }
             if (offset < 0) {
                 // seek backwards
-                var el2 = Tree.previousNode(el, inner);
+                el2 = Tree.previousNode(el, inner);
                 if (!el2) { return null; }
-                var adjusted = el2.textContent.length;
+                adjusted = el2.textContent.length;
                 // FIXME TypeError: el.textContent is undefined
                 return seekToOffset(el2, (l - 1) - el.textContent.length);
             } else {
-                var l = el.textContent.length;
+                initialLength = el.textContent.length;
                 if (offset > l) {
-                    var el2 = Tree.nextNode(el, inner);
+                    el2 = Tree.nextNode(el, inner);
                     if (!el2) { return null; }
-                    var adjusted = el2.textContent.length;
+                    adjusted = el2.textContent.length;
+
                 // FIXME TypeError: el.textContent is undefined
-                    return seekToOffset(el2, (l - 1) - el.textContent.length);
+                    return seekToOffset(el2, (initialLength - 1) - el.textContent.length);
                 } else {
                     return {
                         el: el,
