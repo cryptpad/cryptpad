@@ -95,7 +95,7 @@ define([
             if (PARANOIA && getInnerHTML(dom) !== docText) { throw new Error(); }
         }
 
-        if (PARANOIA && docText.indexOf(content, idx) !== idx) { throw new Error() }
+        if (PARANOIA && docText.indexOf(content, idx) !== idx) { throw new Error(); }
         return idx;
     };
 
