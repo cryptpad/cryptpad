@@ -7,5 +7,11 @@
     "ws": "^1.0.1",
     "level": "~1.4.0",
     "nthen": "~0.1.0"
+  },
+  "devDependencies": {
+    "jshint": "~2.9.1"
+  },
+  "scripts": {
+      "lint": "jshint --config .jshintrc --exclude-path .jshintignore ."
   }
 }
