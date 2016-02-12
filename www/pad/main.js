@@ -10,7 +10,7 @@ define([
     var ifrw = $('#pad-iframe')[0].contentWindow;
     var Ckeditor = ifrw.CKEDITOR;
 
-    var andThen = function () {
+    var andThen = function (Ckeditor) {
         $(window).on('hashchange', function() {
             window.location.reload();
         });
@@ -45,9 +45,9 @@ define([
 
     var interval = 100;
     var first = function () {
-        // FIXME assignment in conditional
-        if (Ckeditor = ifrw.CKEDITOR) {
-            andThen();
+        Ckeditor = ifrw.CKEDITOR;
+        if (Ckeditor) {
+            andThen(Ckeditor);
         } else {
             console.log("Ckeditor was not defined. Trying again in %sms",interval);
             setTimeout(first, interval);

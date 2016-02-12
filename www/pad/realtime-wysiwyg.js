@@ -210,7 +210,7 @@ window.ErrorBox = ErrorBox;
                     }
                     return x;
                 }
-            };
+            }
             throw new Error();
         });
     };
