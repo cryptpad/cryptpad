@@ -4,3 +4,4 @@ node_modules
 customization
 .*.swp
 *.db
+/customize/
