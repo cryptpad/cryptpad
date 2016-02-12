@@ -281,20 +281,20 @@ console.log(new Error().stack);
                 var newCursor;
                 var newSelection;
                 if(oldCursorCMStart !== oldCursorCMEnd) { // Selection
-                  if (op.toRemove > 0) {
-                    var newSelection = [transformCursorCMRemove(oldValue, oldCursorCMStart, op.offset, op.toRemove), transformCursorCMRemove(oldValue, oldCursorCMEnd, op.offset, op.toRemove)];
-                  }
-                  if (op.toInsert.length > 0) {
-                    var newSelection = [transformCursorCMInsert(oldValue, oldCursorCMStart, op.offset, op.toInsert), transformCursorCMInsert(oldValue, oldCursorCMEnd, op.offset, op.toInsert)];
-                  }
+                    if (op.toRemove > 0) {
+                        newSelection = [transformCursorCMRemove(oldValue, oldCursorCMStart, op.offset, op.toRemove), transformCursorCMRemove(oldValue, oldCursorCMEnd, op.offset, op.toRemove)];
+                    }
+                    if (op.toInsert.length > 0) {
+                        newSelection = [transformCursorCMInsert(oldValue, oldCursorCMStart, op.offset, op.toInsert), transformCursorCMInsert(oldValue, oldCursorCMEnd, op.offset, op.toInsert)];
+                    }
                 }
                 else { // Cursor
-                  if (op.toRemove > 0) {
-                    var newCursor = transformCursorCMRemove(oldValue, oldCursor, op.offset, op.toRemove);
-                  }
-                  if (op.toInsert.length > 0) {
-                    var newCursor = transformCursorCMInsert(oldValue, oldCursor, op.offset, op.toInsert);
-                  }
+                    if (op.toRemove > 0) {
+                        newCursor = transformCursorCMRemove(oldValue, oldCursor, op.offset, op.toRemove);
+                    }
+                    if (op.toInsert.length > 0) {
+                        newCursor = transformCursorCMInsert(oldValue, oldCursor, op.offset, op.toInsert);
+                    }
                 }
                 $(doc).val(newValue);
                 cmEditor.setValue(newValue);

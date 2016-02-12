@@ -93,23 +93,24 @@ var attachTextarea = function(elem, ctx, cmElem) {
   // Replace the content of the text area with newText, and transform the
   // current cursor by the specified function.
   var replaceText = function(newText, transformCursor, transformCursorCM) {
+      var newCursor;
+      var newSelection;
+
     if(cmElem) {
       // Fix cursor here?
       var cursorCM = cmElem.getCursor();
       var cursorCMStart = cmElem.getCursor('from');
       var cursorCMEnd = cmElem.getCursor('to');
-      var newCursor;
-      var newSelection;
       if(cursorCMStart !== cursorCMEnd) {
-        newSelection = [transformCursorCM(elem.value, cursorCMStart), transformCursorCM(elem.value, cursorCMEnd)];
+          newSelection = [transformCursorCM(elem.value, cursorCMStart), transformCursorCM(elem.value, cursorCMEnd)];
       }
       else {
-        newCursor = transformCursorCM(elem.value, cursorCM);
+          newCursor = transformCursorCM(elem.value, cursorCM);
       }
     }
     
     if (transformCursor && !cmElem) {
-      var newSelection = [transformCursor(elem.selectionStart), transformCursor(elem.selectionEnd)];
+        newSelection = [transformCursor(elem.selectionStart), transformCursor(elem.selectionEnd)];
     }
 
     // Fixate the window's scroll while we set the element's value. Otherwise

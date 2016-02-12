@@ -33,7 +33,7 @@ define([
     var warn = function (x) { };
     var debug = function (x) { };
     //debug = function (x) { console.log(x) };
-    warn = function (x) { console.log(x) };
+    warn = function (x) { console.log(x); };
     var setStyle = function () {
         $('head').append([
             '<style>',
@@ -70,6 +70,11 @@ define([
         return 'rtwiki-uid-' + String(Math.random()).substring(2);
     };
 
+    // only used within updateUserList so far
+    var decodeUser = function (all, one) {
+        return decodeURIComponent(one);
+    };
+
     var updateUserList = function (myUserName, listElement, userList, messages) {
         var meIdx = userList.indexOf(myUserName);
         if (meIdx === -1) {
@@ -79,6 +84,7 @@ define([
         var userMap = {};
         userMap[messages.myself] = 1;
         userList.splice(meIdx, 1);
+
         for (var i = 0; i < userList.length; i++) {
             var user;
             if (userList[i].indexOf('xwiki:XWiki.XWikiGuest') === 0) {
@@ -88,9 +94,7 @@ define([
                     user = messages.guest;
                 }
             } else {
-                user = userList[i].replace(/^.*-([^-]*)%2d[0-9]*$/, function(all, one) {
-                    return decodeURIComponent(one);
-                });
+                user = userList[i].replace(/^.*-([^-]*)%2d[0-9]*$/, decodeUser);
             }
             userMap[user] = userMap[user] || 0;
             if (user === messages.guest && userMap[user] > 0) {
@@ -232,7 +236,7 @@ define([
                 $(textArea).scrollTop(heightOne - heightTwo);
             }
             andThen();
-        })
+        });
     };
 
     var saveDocument = function (textArea, language, andThen) {
@@ -771,20 +775,20 @@ define([
                 var newCursor;
                 var newSelection;
                 if(oldCursorCMStart !== oldCursorCMEnd) { // Selection
-                  if (op.toRemove > 0) {
-                    var newSelection = [transformCursorCMRemove(oldValue, oldCursorCMStart, op.offset, op.toRemove), transformCursorCMRemove(oldValue, oldCursorCMEnd, op.offset, op.toRemove)];
-                  }
-                  if (op.toInsert.length > 0) {
-                    var newSelection = [transformCursorCMInsert(oldValue, oldCursorCMStart, op.offset, op.toInsert), transformCursorCMInsert(oldValue, oldCursorCMEnd, op.offset, op.toInsert)];
-                  }
+                    if (op.toRemove > 0) {
+                        newSelection = [transformCursorCMRemove(oldValue, oldCursorCMStart, op.offset, op.toRemove), transformCursorCMRemove(oldValue, oldCursorCMEnd, op.offset, op.toRemove)];
+                    }
+                    if (op.toInsert.length > 0) {
+                        newSelection = [transformCursorCMInsert(oldValue, oldCursorCMStart, op.offset, op.toInsert), transformCursorCMInsert(oldValue, oldCursorCMEnd, op.offset, op.toInsert)];
+                    }
                 }
                 else { // Cursor
-                  if (op.toRemove > 0) {
-                    var newCursor = transformCursorCMRemove(oldValue, oldCursor, op.offset, op.toRemove);
-                  }
-                  if (op.toInsert.length > 0) {
-                    var newCursor = transformCursorCMInsert(oldValue, oldCursor, op.offset, op.toInsert);
-                  }
+                    if (op.toRemove > 0) {
+                        newCursor = transformCursorCMRemove(oldValue, oldCursor, op.offset, op.toRemove);
+                    }
+                    if (op.toInsert.length > 0) {
+                        newCursor = transformCursorCMInsert(oldValue, oldCursor, op.offset, op.toInsert);
+                    }
                 }
                 $(textArea).val(newValue);
                 cmEditor.setValue(newValue);
@@ -861,10 +865,10 @@ define([
                                 messages,
                                 cryptkey);
         return {
-        onEvent: function() {
-          socket.onEvent();
-        }
-      }
+            onEvent: function() {
+              socket.onEvent();
+            }
+        };
     };
   
     var start = module.exports.start = function (window, websocketUrl,
