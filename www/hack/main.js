@@ -34,7 +34,7 @@ define([
         var content = $textarea.val();
 
         try {
-            eval(content);
+            eval(content); // jshint ignore:line
         } catch (err) {
             alert(err.message);
         }
