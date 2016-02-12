@@ -13,7 +13,7 @@ define([
 ], function (Config, Messages, Crypto, realtimeInput, Convert, Toolbar, Cursor) {
     var $ = window.jQuery;
     var ifrw = $('#pad-iframe')[0].contentWindow;
-    window.Ckeditor = ifrw.CKEDITOR;
+    //window.Ckeditor = ifrw.CKEDITOR;
     var DiffDom = window.diffDOM;
 
     var userName = Crypto.rand64(8),
@@ -46,7 +46,7 @@ define([
         });
 
 
-        editor.on('instanceReady', function () {
+        editor.on('instanceReady', function (Ckeditor) {
             editor.execCommand('maximize');
             var documentBody = ifrw.$('iframe')[0].contentDocument.body;
 
@@ -74,10 +74,10 @@ define([
 
                 applyHjson(shjson);
 
-                //cursor.find();
+                cursor.find();
 
                 // put the cursor back where you left it
-                //cursor.replace();
+                cursor.replace();
             };
 
             var onInit = function (info) {
@@ -138,22 +138,22 @@ define([
 
                 $textarea.val(JSON.stringify(hjson));
                 rti.bumpSharejs();
-                //cursor.update()
+                cursor.update();
             });
 
-            /*['mouseup', 'keyup'].forEach(function (type) {
+            ['mouseup', 'keyup'].forEach(function (type) {
                 editor.document.on(type, function (e) {
                     cursor.update();
                 });
-            });*/
-
+            });
         });
     };
 
     var interval = 100;
     var first = function () {
-        if (Ckeditor = ifrw.CKEDITOR) {
-            andThen();
+        Ckeditor = ifrw.CKEDITOR;
+        if (Ckeditor) {
+            andThen(Ckeditor);
         } else {
             console.log("Ckeditor was not defined. Trying again in %sms",interval);
             setTimeout(first, interval);

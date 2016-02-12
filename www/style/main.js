@@ -31,7 +31,7 @@ define([
         var to,
             delay = 500;
         return function (content) {
-            to && clearTimeout(to);
+            if (to) { clearTimeout(to); }
             to = setTimeout(function () {
                 $style.text(content);
             },delay);

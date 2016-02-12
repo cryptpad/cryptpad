@@ -15,7 +15,7 @@ define([
     var module = { exports: {} };
 
     var sheetToJson = function (ifrWindow) {
-        var xx = ifrWindow.sh[0].jS
+        var xx = ifrWindow.sh[0].jS;
         var m = [];
         for (var i = 0; i < xx.spreadsheets.length; i++) {
           m[i]=[];
