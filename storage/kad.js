@@ -1,6 +1,11 @@
 var kad=require("kad");
 var levelup=require("levelup");
 
+/*
+    THiS FILE IS NOT PRODUCTION READY
+    DON'T USE IT!
+*/
+
 module.exports.create=function(conf,cb){
     var dht= kad({
         address:conf.kadAddress,
