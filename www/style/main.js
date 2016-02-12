@@ -6,6 +6,7 @@ define([
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
 ], function (Config, Realtime, Messages, Crypto) { 
+    // TODO consider adding support for less.js
     var $ = jQuery;
     $(window).on('hashchange', function() {
         window.location.reload();

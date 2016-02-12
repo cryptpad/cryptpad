@@ -62,7 +62,7 @@ define([
 
     var $inner = $('#inner');
 
-    window.makeRainbow = false
+    window.makeRainbow = false;
     var makeRainbows = function () {
         $inner
             .find('*:not(.untouched)')
@@ -75,10 +75,10 @@ define([
 
     var redrawTimeout;
     var lazyDraw = function (md) {
-        redrawTimeout && clearTimeout(redrawTimeout);
+        if (redrawTimeout) { clearTimeout(redrawTimeout); }
         redrawTimeout = setTimeout(function () {
             draw(md);
-            makeRainbow && makeRainbows();
+            if (makeRainbow) { makeRainbows(); }
         }, 450);
     };
 
@@ -94,14 +94,14 @@ define([
                 },
                 // when your editor is ready
                 onReady: function (info) {
-                    info.userList && console.log("Userlist: [%s]", info.userList.join(','));
+                    if (info.userList) { console.log("Userlist: [%s]", info.userList.join(',')); }
                     console.log("Realtime is ready!");
                     $textarea.trigger('keyup');
                 }
             });
 
     $textarea.on('change keyup keydown', function () {
-        redrawTimeout && clearTimeout(redrawTimeout);
+        if (redrawTimeout) { clearTimeout(redrawTimeout); }
         redrawTimeout = setTimeout(function () {
             lazyDraw($textarea.val());
         }, 500);

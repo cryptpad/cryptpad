@@ -199,17 +199,5 @@ define([], function () {
         } while (node && node !== parent);
     };
 
-    // FIXME remove
-    tree.flatten = function (el, ancestor, cursorContainer) {
-        var list = [];
-        for (var el = ancestor; el = tree.getNext(next, ancestor);) {
-            if (cf || el === cursorContainer) {
-                cf = true;
-                list.push(el.tagName);
-            }
-        }
-        return list;
-    };
-
     return tree;
 });
