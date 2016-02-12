@@ -69,7 +69,7 @@ define([
 
     var showError = function (errorType, docHtml, moreInfo) {
         $('body').append('<div class="modalBox"></div>');
-        var $modalbox = $('.modalBox')
+        var $modalbox = $('.modalBox');
         $modalbox.append(CONTENT + STYLE);
 
         $modalbox.find('.errorType').text(Messages['errorBox_errorType_' + errorType]);

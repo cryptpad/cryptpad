@@ -1,7 +1,7 @@
 define([], function () {
     return function (n) {
+        n = n || 24; // default is 24 colours
         var r = 0.6,
-            n = n || 24, // default is 24 colours
             i = 0,
             t = [],
             rgb = [0,2,4];

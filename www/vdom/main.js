@@ -104,12 +104,12 @@ define([
                                             /* FIXME
                                                 operational transform on json shouldn't be in all editors
                                                 just those transmitting/expecting JSON
-                                            */
-                                            false && console.log({
+                                            console.log({
                                                 text: text,
                                                 toTransform: toTransform,
                                                 transformBy: transformBy
-                                            });
+                                            }); 
+                                            */
 
                                             var resultOp = ChainPad.Operation.transform0(text, toTransform, transformBy);
                                             var text2 = ChainPad.Operation.apply(transformBy, text);

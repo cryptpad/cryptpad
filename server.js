@@ -35,7 +35,7 @@ if (config.privKeyAndCertFiles) {
         privKeyAndCerts = privKeyAndCerts + Fs.readFileSync(file);
     });
     var array = privKeyAndCerts.split('\n-----BEGIN ');
-    for (var i = 1; i < array.length; i++) { array[i] = '-----BEGIN ' + array[i] }
+    for (var i = 1; i < array.length; i++) { array[i] = '-----BEGIN ' + array[i]; }
     var privKey;
     for (var i = 0; i < array.length; i++) {
         if (array[i].indexOf('PRIVATE KEY-----\n') !== -1) {
@@ -49,7 +49,7 @@ if (config.privKeyAndCertFiles) {
         cert: array.shift(),
         key: privKey,
         ca: array
-    }
+    };
 }
 
 app.get('/api/config', function(req, res){

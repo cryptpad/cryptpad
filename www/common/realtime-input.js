@@ -69,10 +69,12 @@ define([
             because otherwise special keybindings like ctrl-b and ctrl-i
             would open bookmarks and info instead of applying bold/italic styles
         */
-        docBody && bindEvents(docBody,
-                   ['textInput', 'keydown', 'keyup', 'select', 'cut', 'paste'],
-                   onEvent,
-                   unbind);
+        if (docBody) {
+            bindEvents(docBody,
+               ['textInput', 'keydown', 'keyup', 'select', 'cut', 'paste'],
+               onEvent,
+               unbind);
+        }
         bindEvents(textarea,
                    ['mousedown','mouseup','click','change'],
                    onEvent,
@@ -179,10 +181,11 @@ define([
                                     transformFunction: config.transformFunction
                                 });
 
-
-            config.onInit && config.onInit({
-                realtime: realtime
-            });
+            if (config.onInit) {
+                config.onInit({
+                    realtime: realtime
+                });
+            }
 
             onEvent = function () {
                 if (isErrorState || initializing) { return; }
@@ -198,9 +201,11 @@ define([
 
                 // execute an onReady callback if one was supplied
                 // pass an object so we can extend this later
-                config.onReady && config.onReady({
-                    userList: userList
-                });
+                if (config.onReady) {
+                    config.onReady({
+                        userList: userList
+                    });
+                }
             });
 
             var whoami = new RegExp(userName.replace(/\/\+/g, function (c) {
@@ -231,7 +236,7 @@ define([
                         } else {
                             //verbose("Received remote message");
                             // obviously this is only going to get called if
-                            onRemote && onRemote(realtime.getUserDoc());
+                            if (onRemote) { onRemote(realtime.getUserDoc()); }
                         }
                     }
                 }
@@ -271,14 +276,14 @@ define([
                     if (recoverableErrorCount >= MAX_RECOVERABLE_ERRORS) {
                         warn("Giving up!");
                         abort(socket, realtime);
-                        socketChecker && clearInterval(socketChecker);
+                        if (socketChecker) { clearInterval(socketChecker); }
                     }
                 } else {
                     // TODO
                 }
             },200);
 
-            bindAllEvents(textarea, doc, onEvent, false)
+            bindAllEvents(textarea, doc, onEvent, false);
 
             // attach textarea?
             sharejs.attach(textarea, realtime);

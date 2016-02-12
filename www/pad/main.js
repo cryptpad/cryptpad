@@ -45,6 +45,7 @@ define([
 
     var interval = 100;
     var first = function () {
+        // FIXME assignment in conditional
         if (Ckeditor = ifrw.CKEDITOR) {
             andThen();
         } else {

@@ -111,7 +111,7 @@ define([
         var txt = spinnerElement.textContent || '-';
         var inc = (reversed) ? -1 : 1;
         spinnerElement.textContent = SPINNER[(SPINNER.indexOf(txt) + inc) % SPINNER.length];
-        spinnerElement.timeout && clearTimeout(spinnerElement.timeout);
+        if (spinnerElement.timeout) { clearTimeout(spinnerElement.timeout); }
         spinnerElement.timeout = setTimeout(function () {
             spinnerElement.textContent = '';
         }, SPINNER_DISAPPEAR_TIME);
@@ -134,8 +134,7 @@ define([
         } else if (userList.length === 2) {
             listElement.textContent = Messages.editingWithOneOtherPerson;
         } else {
-            listElement.textContent = Messages.editingWith + ' ' + (userList.length - 1) + ' '
-                Messages.otherPeople;
+            listElement.textContent = Messages.editingWith + ' ' + (userList.length - 1) + ' ' + Messages.otherPeople;
         }
     };
 
