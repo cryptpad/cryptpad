@@ -21,7 +21,7 @@ define([
 
     var key = Crypto.parseKey(window.location.hash.slice(1));
 
-    var $style = $('style').eq(1),
+    var $style = $('style').first(),
         $css = $('#css'),
         $edit = $('#edit');
 
