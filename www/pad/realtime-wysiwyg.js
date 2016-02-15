@@ -332,13 +332,13 @@ console.log(new Error().stack);
             var incomingPatch = function () {
                 if (isErrorState || initializing) { return; }
                 userDocBeforePatch = userDocBeforePatch || getFixedDocText(doc, ifr.contentWindow);
-                if (PARANOIA && userDocBeforePatch != getFixedDocText(doc, ifr.contentWindow)) {
-                    error(false, "userDocBeforePatch != getFixedDocText(doc, ifr.contentWindow)");
+                if (PARANOIA && userDocBeforePatch !== getFixedDocText(doc, ifr.contentWindow)) {
+                    error(false, "userDocBeforePatch !== getFixedDocText(doc, ifr.contentWindow)");
                 }
                 var op = attempt(makeHTMLOperation)(userDocBeforePatch, realtime.getUserDoc());
                 if (!op) { return; }
                 attempt(HTMLPatcher.applyOp)(
-                    userDocBeforePatch, op, doc.body, rangy, ifr.contentWindow);
+                    userDocBeforePatch, op, doc.body, Rangy, ifr.contentWindow);
             };
 
             realtime.onUserListChange(function (userList) {

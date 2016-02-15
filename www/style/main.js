@@ -7,7 +7,7 @@ define([
     '/customize/pad.js'
 ], function (Config, Realtime, Messages, Crypto) { 
     // TODO consider adding support for less.js
-    var $ = jQuery;
+    var $ = window.jQuery;
     $(window).on('hashchange', function() {
         window.location.reload();
     });

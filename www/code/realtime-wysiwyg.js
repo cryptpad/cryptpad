@@ -268,7 +268,7 @@ console.log(new Error().stack);
             var incomingPatch = function () {
                 if (isErrorState || initializing) { return; }
                 userDocBeforePatch = userDocBeforePatch || getDocHTML(doc);
-                if (PARANOIA && userDocBeforePatch != getDocHTML(doc)) {
+                if (PARANOIA && userDocBeforePatch !== getDocHTML(doc)) {
                     error(false, "userDocBeforePatch != getDocHTML(doc)");
                 }
                 var op = attempt(Otaml.makeTextOperation)(userDocBeforePatch, realtime.getUserDoc());

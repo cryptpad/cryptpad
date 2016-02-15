@@ -25,6 +25,7 @@ define([
     '/common/messages.js',
     '/bower_components/modalBox/modalBox-min.js'
 ], function (Messages) {
+    var $ = window.jQuery;
 
     var STYLE = [
         '<style>',

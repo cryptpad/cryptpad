@@ -8,7 +8,7 @@ define([
     '/common/otaml.js',
     '/customize/sheet.js'
 ], function (Config, Messages, Crypto, Toolbar) {
-    var $ = jQuery;
+    var $ = window.jQuery;
     var ChainPad = window.ChainPad;
     var Otaml = window.Otaml;
 
@@ -51,7 +51,9 @@ define([
     };
 
     var applyChange = function(ctx, oldval, newval) {
-      if (oldval === newval) return;
+      if (oldval === newval) {
+          return;
+      }
 
       var commonStart = 0;
       while (oldval.charAt(commonStart) === newval.charAt(commonStart)) {

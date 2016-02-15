@@ -9,7 +9,7 @@ define([
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
 ], function (Config, Realtime, Messages, Crypto, Marked, Convert, Rainbow) { 
-    var $ = jQuery;
+    var $ = window.jQuery;
 
     var Vdom = Convert.core.vdom,
         Hyperjson = Convert.core.hyperjson,
@@ -39,7 +39,7 @@ define([
         sanitize: true
     });
 
-    window.draw = (function () {
+    var draw = window.draw = (function () {
         var target = $target[0],
             inner = $target.find('#inner')[0];
 
@@ -58,7 +58,8 @@ define([
         };
     }());
 
-    window.colour = Rainbow();
+    // FIXME
+    var colour = window.colour = Rainbow();
 
     var $inner = $('#inner');
 
@@ -78,7 +79,7 @@ define([
         if (redrawTimeout) { clearTimeout(redrawTimeout); }
         redrawTimeout = setTimeout(function () {
             draw(md);
-            if (makeRainbow) { makeRainbows(); }
+            if (window.makeRainbow) { makeRainbows(); }
         }, 450);
     };
 

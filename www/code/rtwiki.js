@@ -30,6 +30,8 @@ define([
     // How long to wait before determining that the connection is lost.
     var MAX_LAG_BEFORE_DISCONNECT = 30000;
 
+    var MAX_RECOVERABLE_ERRORS = 15;
+
     var warn = function (x) { };
     var debug = function (x) { };
     //debug = function (x) { console.log(x) };
@@ -409,7 +411,7 @@ define([
                 if (initializing && userList.indexOf(userName) > -1) {
                     initializing = false;
                     $(textArea).val(realtime.getUserDoc());
-                    TextArea.attach($(textArea)[0], realtime);
+                    textArea.attach($(textArea)[0], realtime);
                     $(textArea).removeAttr("disabled");
                 }
                 if (!initializing) {
@@ -676,6 +678,7 @@ define([
             return onbeforeunload(ev);
         };
         var isErrorState = false;
+        var recoverableErrorCount = 0;
         var error = function (recoverable, err) {
             console.log(new Error().stack);
             console.log('error: ' + err.stack);
@@ -683,7 +686,9 @@ define([
             var realtime = socket.realtime;
             var docHtml = $(textArea).val();
             isErrorState = true;
-            handleError(socket, realtime, err, docHtml, allMessages);
+
+            // FIXME pull this in from more mainline version
+            //handleError(socket, realtime, err, docHtml, allMessages);
         };
         var attempt = function (func) {
             return function () {
@@ -756,8 +761,8 @@ define([
                 if (isErrorState || initializing) { return; }
                 var textAreaVal = $(textArea).val();
                 userDocBeforePatch = userDocBeforePatch || textAreaVal;
-                if (userDocBeforePatch != textAreaVal) {
-                  //error(false, "userDocBeforePatch != textAreaVal");
+                if (userDocBeforePatch !== textAreaVal) {
+                  //error(false, "userDocBeforePatch !== textAreaVal");
                 }
                 var op = attempt(Otaml.makeTextOperation)(userDocBeforePatch, realtime.getUserDoc());
 

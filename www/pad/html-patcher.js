@@ -19,7 +19,7 @@ define([
     '/common/otaml.js'
 ], function () {
 
-    var $ = jQuery;
+    var $ = window.jQuery;
     var Otaml = window.Otaml;
     var module = { exports: {} };
     var PARANOIA = true;

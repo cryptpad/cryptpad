@@ -8,6 +8,11 @@
  * Build date: 8 December 2013
  */
 
+/*
+    TODO FIXME use www/common/rangy if possible...
+
+*/
+
 (function(global) {
     var amdSupported = (typeof global.define == "function" && global.define.amd);
 

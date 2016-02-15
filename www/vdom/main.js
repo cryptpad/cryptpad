@@ -1,3 +1,6 @@
+/*
+    globals define console 
+*/
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
     '/common/messages.js',
@@ -13,8 +16,10 @@ define([
 ], function (Config, Messages, Crypto, realtimeInput, Convert, Toolbar, Cursor) {
     var $ = window.jQuery;
     var ifrw = $('#pad-iframe')[0].contentWindow;
+    var Ckeditor; // to be initialized later...
     //window.Ckeditor = ifrw.CKEDITOR;
     var DiffDom = window.diffDOM;
+    var ChainPad = window.ChainPad;
 
     var userName = Crypto.rand64(8),
         toolbar;
@@ -35,7 +40,7 @@ define([
 
         var fixThings = false;
         var key = Crypto.parseKey(window.location.hash.substring(1));
-        window.editor = Ckeditor.replace('editor1', {
+        var editor = window.editor = Ckeditor.replace('editor1', {
             // https://dev.ckeditor.com/ticket/10907
             needsBrFiller: fixThings,
             needsNbspFiller: fixThings,
@@ -45,7 +50,6 @@ define([
             removePlugins: 'magicline,resize'
         });
 
-
         editor.on('instanceReady', function (Ckeditor) {
             editor.execCommand('maximize');
             var documentBody = ifrw.$('iframe')[0].contentDocument.body;
@@ -54,7 +58,7 @@ define([
 
             var inner = documentBody;
             window.inner = inner;
-            window.cursor = Cursor(Ckeditor, editor, inner);
+            var cursor = window.cursor = Cursor(Ckeditor, editor, inner);
 
             var $textarea = $('#feedback');
 
@@ -62,7 +66,9 @@ define([
 
             var applyHjson = function (shjson) {
                 console.log("Applying HJSON");
-                var userDocStateDom = Vdom.create(Convert.hjson.to.vdom(JSON.parse(shjson)));
+                var userDocStateDom = Convert.hjson.to.dom(JSON.parse(shjson));
+                //var userDocStateDom = Vdom.create(Convert.hjson.to.vdom(JSON.parse(shjson)));
+                
                 userDocStateDom.setAttribute("contentEditable", "true"); // lol wtf
                 var patch = (new DiffDom()).diff(inner, userDocStateDom);
                 (new DiffDom()).apply(inner, patch);
@@ -77,14 +83,15 @@ define([
                 cursor.find();
 
                 // put the cursor back where you left it
-                cursor.replace();
+                // FIXME put this back in
+                //cursor.replace();
             };
 
             var onInit = function (info) {
                 // TODO initialize the toolbar
             };
 
-            window.rti = realtimeInput.start($textarea[0], // synced element
+            var rti = realtimeInput.start($textarea[0], // synced element
                                     Config.websocketURL, // websocketURL, ofc
                                     userName, // userName
                                     key.channel, // channelName

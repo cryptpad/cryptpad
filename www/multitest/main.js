@@ -6,7 +6,7 @@ define([
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
 ], function (Config, Realtime, Messages, Crypto) { 
-    var $ = jQuery;
+    var $ = window.jQuery;
     $(window).on('hashchange', function() {
         window.location.reload();
     });
