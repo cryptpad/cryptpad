@@ -34,7 +34,7 @@ module.exports.create = function(conf, cb){
                 return a.id - b.id;
             });
             db.filter(function(val){
-                return val.chan == channelName;
+                return val.chan === channelName;
             }).forEach(function(doc){
                 cb(doc.msg);
             });

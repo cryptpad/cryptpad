@@ -14,7 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-var WebSocket = require('ws');
+
+// triggers jsh because we're not in a browser and WebSocket is a thing
+var WebSocket = require('ws'); // jshint ignore:line
 
 var REGISTER     = 0;
 var REGISTER_ACK = 1;
@@ -60,7 +62,7 @@ var sendChannelMessage = function (ctx, channel, msg, cb) {
                 try { user.socket.close(); } catch (e) { }
             }
         });
-        cb && cb();
+        if (cb) { cb(); }
     });
 };
 
@@ -184,7 +186,7 @@ var create = module.exports.create = function (socketServer, store) {
             }
         });
         socket.on('close', function (evt) {
-            for (client in ctx.registeredClients) {
+            for (var client in ctx.registeredClients) {
                 if (ctx.registeredClients[client].socket === socket) {
                     dropClient(ctx, client);
                 }

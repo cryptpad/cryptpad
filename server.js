@@ -1,3 +1,6 @@
+/*
+    globals require console
+*/
 var Express = require('express');
 var Http = require('http');
 var Https = require('https');

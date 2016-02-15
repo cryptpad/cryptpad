@@ -1,3 +1,6 @@
+/*
+    globals define
+*/
 define([
     '/bower_components/jquery/dist/jquery.min.js'
 ], function () {

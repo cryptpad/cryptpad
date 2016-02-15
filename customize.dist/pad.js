@@ -1,3 +1,6 @@
+/*
+    globals define console
+*/
 require([
     '/customize/DecorateToolbar.js',
     '/bower_components/jquery/dist/jquery.min.js'

@@ -1,3 +1,6 @@
+/*
+    globals module
+*/
 module.exports = {
 
     // the address you want to bind to, :: means all ipv4 and ipv6 addresses
