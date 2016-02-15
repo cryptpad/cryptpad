@@ -2,5 +2,14 @@
     "laxcomma": true,
     "laxbreak": true,
     "node": true,
-    "sub": true
+    "sub": true,
+    "curly": true,
+    "eqeqeq": true,
+    "iterator": true,
+    "latedef": true,
+    "nocomma": true,
+    "notypeof": true,
+    "shadow": false,
+    "undef": true,
+    "unused": false
 }
