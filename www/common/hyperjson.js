@@ -52,7 +52,7 @@ define([], function () {
         for(;i < el.attributes.length; i++){
           var attr = el.attributes[i];
           if(attr.name && attr.value){
-            if(attr.name == "style"){
+            if(attr.name === "style"){
               attributes.style = parseStyle(el);
             }
             else{

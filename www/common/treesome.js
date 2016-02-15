@@ -161,7 +161,8 @@ define([], function () {
         var i = 0, success = false;
         // FIXME can't be trusted if element is not found.
         tree.some(ancestor, function (e, index) {
-            return (++i, e === el);
+            ++i;
+            return e === el;
         });
         return i;
     };
@@ -173,21 +174,23 @@ define([], function () {
                 // terminate
                 return true;
             } else {
-                return (++i === n) ?
-                ((el = e), true):
-                false;
+                if (++i === n) {
+                    el = e;
+                    return true;
+                } else {
+                    return false;
+                }
             }
         });
         return el;
     };
 
     tree.contains = function (el, ancestor) {
-        ancestor = ancestor || inner;
         return el && ancestor.contains && ancestor.contains(el);
     };
 
     tree.check = function (el, ancestor) {
-        return tree.nthFromEnd(Tree.distanceFromEnd(el, ancestor), ancestor) === el;
+        return tree.nthFromEnd(tree.distanceFromEnd(el, ancestor), ancestor) === el;
     };
 
     // TODO see if we can use this

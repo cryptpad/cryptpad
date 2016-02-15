@@ -52,7 +52,9 @@ define(function () {
  */
 var applyChange = function(ctx, oldval, newval) {
     // Strings are immutable and have reference equality. I think this test is O(1), so its worth doing.
-    if (oldval === newval) return;
+    if (oldval === newval) {
+        return;
+    }
 
     var commonStart = 0;
     while (oldval.charAt(commonStart) === newval.charAt(commonStart)) {
@@ -111,7 +113,7 @@ var attachTextarea = function(elem, ctx) {
         var scrollTop = elem.scrollTop;
         elem.value = newText;
         content = elem.value; // Not done on one line so the browser can do newline conversion.
-        if (elem.scrollTop !== scrollTop) elem.scrollTop = scrollTop;
+        if (elem.scrollTop !== scrollTop) { elem.scrollTop = scrollTop; }
 
         // Setting the selection moves the cursor. We'll just have to let your
         // cursor drift if the element isn't active, though usually users don't

@@ -149,9 +149,9 @@ define([
         var doc = config.doc || null;
 
         // trying to deprecate onRemote, prefer loading it via the conf
-        onRemote = config.onRemote || null;
+        var onRemote = config.onRemote || null;
 
-        transformFunction = config.transformFunction || null;
+        var transformFunction = config.transformFunction || null;
 
         var socket = makeWebsocket(websocketUrl);
         // define this in case it gets called before the rest of our stuff is ready.

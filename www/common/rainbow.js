@@ -6,7 +6,7 @@ define([], function () {
             t = [],
             rgb = [0,2,4];
 
-        while(i<n)t.push(i++);
+        while(i<n) { t.push(i++); }
 
         var colours = t.map(function (c, I) {
             return '#'+ rgb.map(function (j) {
