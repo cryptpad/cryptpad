@@ -3,7 +3,7 @@ define([
     '/common/realtime-input.js',
     '/common/messages.js',
     '/common/crypto.js',
-    '/common/marked.js',
+    '/bower_components/marked/marked.min.js',
     '/common/convert.js',
     '/common/rainbow.js',
     '/bower_components/jquery/dist/jquery.min.js',

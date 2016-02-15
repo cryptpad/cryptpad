@@ -26,6 +26,7 @@
     "requirejs": "~2.1.15",
     "modalBox": "~1.0.2",
     "reconnectingWebsocket": "",
-    "diff-dom": "~2.0.0"
+    "diff-dom": "~2.0.0",
+    "marked": "~0.3.5"
   }
 }
