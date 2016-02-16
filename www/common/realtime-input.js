@@ -16,13 +16,14 @@
  */
 define([
     '/common/messages.js',
+    // TODO remove in favour of netflux
     '/bower_components/reconnectingWebsocket/reconnecting-websocket.js',
     '/common/crypto.js',
     '/common/toolbar.js',
     '/common/sharejs_textarea.js',
     '/common/chainpad.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages, ReconnectingWebSocket, Crypto, Toolbar, sharejs) {
+], function (Messages,/*FIXME*/ ReconnectingWebSocket, Crypto, Toolbar, sharejs) {
     var $ = window.jQuery;
     var ChainPad = window.ChainPad;
     var PARANOIA = true;
@@ -81,6 +82,7 @@ define([
                    unbind);
     };
 
+    /* websocket stuff */
     var isSocketDisconnected = function (socket, realtime) {
         var sock = socket._socket;
         return sock.readyState === sock.CLOSING
@@ -99,6 +101,8 @@ define([
         }
     };
 
+    // TODO before removing websocket implementation
+    // bind abort to onLeaving
     var abort = function (socket, realtime) {
         realtime.abort();
         try { socket._socket.close(); } catch (e) { warn(e); }
@@ -136,6 +140,7 @@ define([
         socket.onmessage = mkHandler('onMessage');
         return out;
     };
+    /* end websocket stuff */
 
     var start = module.exports.start =
         function (textarea, websocketUrl, userName, channel, cryptKey, config)
@@ -153,7 +158,13 @@ define([
 
         var transformFunction = config.transformFunction || null;
 
-        var socket = makeWebsocket(websocketUrl);
+        var socket;
+       
+        if (config.socketAdaptor) {
+            // do netflux stuff
+        } else {
+            socket = makeWebsocket(websocketUrl);
+        }
         // define this in case it gets called before the rest of our stuff is ready.
         var onEvent = function () { };
 
@@ -169,6 +180,8 @@ define([
         socket.onOpen.push(function (evt) {
             if (!initializing) {
                 console.log("Starting");
+                // realtime is passed around as an attribute of the socket
+                // FIXME??
                 socket.realtime.start();
                 return;
             }
@@ -182,12 +195,14 @@ define([
                                 });
 
             if (config.onInit) {
+                // extend as you wish
                 config.onInit({
                     realtime: realtime
                 });
             }
 
             onEvent = function () {
+                // This looks broken
                 if (isErrorState || initializing) { return; }
             };
 
@@ -202,6 +217,7 @@ define([
                 // execute an onReady callback if one was supplied
                 // pass an object so we can extend this later
                 if (config.onReady) {
+                    // extend as you wish
                     config.onReady({
                         userList: userList
                     });
@@ -267,6 +283,7 @@ define([
 
             socket.onerror = warn;
 
+            // TODO confirm that we can rely on netflux API
             var socketChecker = setInterval(function () {
                 if (checkSocket(socket)) {
                     warn("Socket disconnected!");
@@ -285,7 +302,8 @@ define([
 
             bindAllEvents(textarea, doc, onEvent, false);
 
-            // attach textarea?
+            // attach textarea
+            // NOTE: should be able to remove the websocket without damaging this
             sharejs.attach(textarea, realtime);
 
             realtime.start();
