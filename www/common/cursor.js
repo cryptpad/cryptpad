@@ -1,7 +1,10 @@
 define([
-    '/common/treesome.js'
-], function (Tree) {
-    window.Tree = Tree;
+    '/common/treesome.js',
+    '/bower_components/rangy/rangy-core.min.js'
+], function (Tree, Rangy) {
+
+    var Rangy = window.Rangy = Rangy;
+    var Tree = window.Tree = Tree;
     // do some function for the start and end of the cursor
     var startAndStop = function (f) { ['start', 'end'].forEach(f); };
 
@@ -13,10 +16,26 @@ define([
         console.log(x);
     };
 
-    return function (CK, editor, inner) {
-        var makeCKElement = function (el) { return new CK.dom.node(el); };
+    var verbose = function (x) {
+        if (window.verboseMode) { console.log(x); }
+    };
 
+    /* takes
+        the CK lib,
+        an instantiated editor
+        the document used by the editor
+    */
+    return function (CK, editor, inner) {
         var cursor = {};
+
+        cursor.CK = CK;
+        cursor.editor = editor;
+
+        // CKE has its own internal node datatype that we'll need
+        var makeCKElement = cursor.makeCKElement = function (el) { return new CK.dom.node(el); };
+
+        // there ought to only be one cursor at a time, so let's just
+        // keep it internally
         var Range = cursor.Range = {
             start: {
                 el: null,
@@ -27,21 +46,23 @@ define([
                 offset:0
             }
         };
-        //window.cursor = cursor;
-    
+
+        /* FIXME we shouldn't use this, as only one might have been lost */
         cursor.lost = function () {
             return !(Tree.contains(Range.start.el.$, inner) &&
                 Tree.contains(Range.end.el.$, inner));
         };
 
+        // used by vdom.onRemote
+        // used by vdom.editor.on('change'
+        // used by vdom.document.on('keyup mouseup'
         cursor.update = function () {
-            log("Updating cursor position");
+            verbose("Updating cursor position");
             // get ranges
             var ranges = editor.getSelection().getRanges();
             // there should be at least one
             if (!ranges.length) { 
-                // FIXME make error
-                log("No ranges");
+                error("No ranges");
                 return;
             }
 
@@ -56,13 +77,15 @@ define([
                 if (!Range[pos].el || Range[pos].el.$ !== range[C].$) {
                     // update it
                     Range[pos].el = range[C];
-                    Range[pos].tags = Tree.tagsUntilElement(range[C].$, inner);
+                    // FIXME WAT
+                    //Range[pos].tags = Tree.tagsUntilElement(range[C].$, inner);
                 }
                 // update offsets no matter what
                 Range[pos].offset = range[O];
             });
         };
 
+        // used by vdom.onRemote
         cursor.find = function () {
             var success = true;
             startAndStop(function (pos) {
@@ -89,15 +112,7 @@ define([
             Range.end.offset += delta;
         };
 
-        // FIXME remove
-        window.recoverCursor = function () {
-            cursor.update();
-            var success = cursor.find();
-            return success;
-        };
-
-        // TODO under what circumstances will the length of getRanges be zero?
-        var range;
+        // used by vdom.onRemote
         cursor.replace = function () {
             log("Attempting to replace cursor");
 
@@ -128,84 +143,142 @@ define([
                 }
             }
 
-            // FIXME rename 'range', since it's going to get confusing
-            var range = ranges[0] || range; // {startContainer, startOffset, endContainer, endOffset, collapsed, document, root}
+            range = ranges[0]; // {startContainer, startOffset, endContainer, endOffset, collapsed, document, root}
             range.setStart(Range.start.el, Range.start.offset);
             range.setEnd(Range.end.el, Range.end.offset);
             sel.selectRanges([range]);
         };
 
-        var seekToOffset = function (el, offset) {
-            if (!el) {
-                log("No element provided!");
-                return null;
-            }
+        // assumes a negative index
+        var seekLeft = cursor.seekLeft = function (el, delta, current) {
+            var textLength;
+            var previous;
 
-            var el2,
-                adjusted,
-                initialLength;
+            // normalize
 
-            log("Seeking to offset");
-            // FIXME better debugging
-            // console.log(el, offset);
-            if (!el.textContent) {
-                // FIXME wat
-                el2 = Tree.previousNode(el, inner);
-                log("No text content available!");
-                return null;
-            }
-            if (offset === 0) {
-                return {
-                    el: el,
-                    offset: offset
-                };
-            }
-            if (offset < 0) {
-                // seek backwards
-                el2 = Tree.previousNode(el, inner);
-                if (!el2) { return null; }
-                adjusted = el2.textContent.length;
-                // FIXME TypeError: el.textContent is undefined
-                return seekToOffset(el2, (l - 1) - el.textContent.length);
+            if (-delta >= current) {
+                delta += current;
+                current = 0;
             } else {
-                initialLength = el.textContent.length;
-                if (offset > l) {
-                    el2 = Tree.nextNode(el, inner);
-                    if (!el2) { return null; }
-                    adjusted = el2.textContent.length;
+                current += delta;
+                delta = 0;
+            }
 
-                // FIXME TypeError: el.textContent is undefined
-                    return seekToOffset(el2, (initialLength - 1) - el.textContent.length);
+            while (delta) {
+                previous = el;
+                el = Tree.previousNode(el, inner);
+                if (el) {
+                    textLength = el.textContent.length;
+                    if (-delta >= textLength) {
+                        delta -= textLength;
+                    } else {
+                        current = textLength + delta;
+                        delta = 0;
+                    }
                 } else {
                     return {
+                        el: previous,
+                        offset: 0,
+                        error: "out of bounds"
+                    };
+                }
+            }
+            return {
+                el: el,
+                offset: current
+            };
+        };
+
+        // seekRight assumes a positive delta
+        var seekRight = cursor.seekRight = function (el, delta, current) {
+            var textLength;
+            var previous;
+
+            // normalize
+            delta += current;
+            current = 0;
+
+            while (delta) {
+                if (el) {
+                    textLength = el.textContent.length;
+                    if (delta >= textLength) {
+                        delta -= textLength;
+                        previous = el;
+                        el = Tree.nextNode(el, inner);
+                    } else {
+                        current = delta;
+                        delta = 0;
+                    }
+                } else {
+                    return {
+                        el: previous,
+                        offset: previous.textContent.length -1,
+                        error: "out of bounds"
+                    };
+                }
+            }
+            return {
+                el: el,
+                offset: current
+            };
+        };
+
+        var seekToDelta = cursor.seekToDelta = function (el, delta, current) {
+            var result = null;
+            if (el) {
+                if (delta < 0)  {
+                    return seekLeft(el, delta, current);
+                } else if (delta > 0) {
+                    return seekRight(el, delta, current);
+                } else {
+                    result = {
                         el: el,
                         offset: offset
                     };
                 }
             }
+            return result;
         };
 
+        cursor.seekTest = function (delta) {
+            var start = cursor.Range.start;
+            var last = seekToDelta(start.el.$, delta, start.offset);
+
+            if (last.error) {
+                return last.error;
+            }
+
+            var result = seekToDelta(last.el, -delta, last.offset);
+
+            if (start.el.$ !== result.el) {
+                return "didn't find the right element";
+            }
+            if (start.offset !== result.offset) {
+                return "didn't find the right offset";
+            }
+        };
+
+
+        /* FIXME
+            TypeError: a.getLength is not a function
+        */
         cursor.delta = function (d) {
             //d = d === 0? 0 : d < 0? -1: 1;
-            cursor.Range.start.offset += d;
+            //cursor.Range.start.offset += d;
 
             //var temp = cursor.Range.start.
             /*  seekToOffset(cursor.Range.start.el.$, d); // might be null
-
                 if seeking backward and result is null, drop them at the start of the document
-                if seeking forward and result is null, drop them at the end */
+                if seeking forward and result is null, drop them at the end
+            */
 
             var Selected = ['start', 'end'].map(function (pos) {
                 var el = cursor.Range[pos].el,
                     offset = cursor.Range[pos].offset;
-                return seekToOffset(el, offset + d);
+                return seekToDelta(el, d, cursor.Range[pos].offset);
             });
 
-            /* TODO validate Selected
-
-
-            */
-
+            /* TODO validate Selected */
             if (!(Selected[0] && Selected[1])) {
                 // one of the cursor positions is undefined
                 return;
