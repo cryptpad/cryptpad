@@ -1,38 +1,18 @@
 define([
     '/common/treesome.js',
     '/bower_components/rangy/rangy-core.min.js'
-], function (Tree, Rangy) {
-
-    var Rangy = window.Rangy = Rangy;
-    var Tree = window.Tree = Tree;
+], function (Tree, Rangy, saveRestore) {
+    window.Rangy = Rangy;
+    window.Tree = Tree;
     // do some function for the start and end of the cursor
-    var startAndStop = function (f) { ['start', 'end'].forEach(f); };
 
-    var log = function (x) {
-        console.log(x);
-    };
+    var log = function (x) { console.log(x); };
+    var error = function (x) { console.log(x); };
+    var verbose = function (x) { if (window.verboseMode) { console.log(x); } };
 
-    var error = function (x) {
-        console.log(x);
-    };
-
-    var verbose = function (x) {
-        if (window.verboseMode) { console.log(x); }
-    };
-
-    /* takes
-        the CK lib,
-        an instantiated editor
-        the document used by the editor
-    */
-    return function (CK, editor, inner) {
+    /* accepts the document used by the editor */
+    return function (inner) {
         var cursor = {};
-
-        cursor.CK = CK;
-        cursor.editor = editor;
-
-        // CKE has its own internal node datatype that we'll need
-        var makeCKElement = cursor.makeCKElement = function (el) { return new CK.dom.node(el); };
 
         // there ought to only be one cursor at a time, so let's just
         // keep it internally
@@ -51,102 +31,6 @@ define([
         cursor.lost = function () {
             return !(Tree.contains(Range.start.el.$, inner) &&
                 Tree.contains(Range.end.el.$, inner));
-        };
-
-        // used by vdom.onRemote
-        // used by vdom.editor.on('change'
-        // used by vdom.document.on('keyup mouseup'
-        cursor.update = function () {
-            verbose("Updating cursor position");
-            // get ranges
-            var ranges = editor.getSelection().getRanges();
-            // there should be at least one
-            if (!ranges.length) { 
-                error("No ranges");
-                return;
-            }
-
-            var range = ranges[0];
-
-            // get cursor start/end elements and offsets
-            startAndStop(function (pos) {
-                var C = pos + 'Container',
-                    O = pos + 'Offset';
-
-                // if the element has changed
-                if (!Range[pos].el || Range[pos].el.$ !== range[C].$) {
-                    // update it
-                    Range[pos].el = range[C];
-                    // FIXME WAT
-                    //Range[pos].tags = Tree.tagsUntilElement(range[C].$, inner);
-                }
-                // update offsets no matter what
-                Range[pos].offset = range[O];
-            });
-        };
-
-        // used by vdom.onRemote
-        cursor.find = function () {
-            var success = true;
-            startAndStop(function (pos) {
-                var tags = Range[pos].tags;
-                var node = Tree.findSameHierarchy(tags, inner);
-
-                if (node) {
-                    var temp = makeCKElement(node);
-                    if (temp.tagName || temp.nodeName) {
-                        Range[pos].el = temp;
-                    }
-                } else {
-                    success = false;
-                }
-            });
-            if (success) {
-                log("Found cursor!");
-            }
-            return success;
-        };
-
-        cursor.shift = function (delta) {
-            Range.start.offset += delta;
-            Range.end.offset += delta;
-        };
-
-        // used by vdom.onRemote
-        cursor.replace = function () {
-            log("Attempting to replace cursor");
-
-            cursor.find();
-
-/*          startAndStop(function (pos) {
-                var el = Range[pos].el;
-                //Range[pos].el = makeCKElement(el);
-                Range[pos].el.$.nodeName = el.nodeName || el.tagName;
-            });     */
-
-/*          if (cursor.lost()) {
-                console.log("cursor lost");
-                if (!cursor.find()) {
-                    console.log("Couldn't find cursor!");
-                    return false;
-                } else {
-                }
-            }       */
-
-            var sel = editor.getSelection(); // { rev, document, root, isLocked, _ }
-
-            var ranges = sel.getRanges();
-            if (!ranges.length) {
-                log("No cursor range found");
-                if (!range) {
-                    return;
-                }
-            }
-
-            range = ranges[0]; // {startContainer, startOffset, endContainer, endOffset, collapsed, document, root}
-            range.setStart(Range.start.el, Range.start.offset);
-            range.setEnd(Range.end.el, Range.end.offset);
-            sel.selectRanges([range]);
         };
 
         // assumes a negative index
@@ -169,7 +53,7 @@ define([
                 el = Tree.previousNode(el, inner);
                 if (el) {
                     textLength = el.textContent.length;
-                    if (-delta >= textLength) {
+                    if (-delta > textLength) {
                         delta -= textLength;
                     } else {
                         current = textLength + delta;
@@ -210,9 +94,15 @@ define([
                         delta = 0;
                     }
                 } else {
+                    // don't ever return a negative index
+                    if (previous.textContent.length) {
+                        textLength = previous.textContent.length - 1;
+                    } else {
+                        textLength = 0;
+                    }
                     return {
                         el: previous,
-                        offset: previous.textContent.length -1,
+                        offset: textLength,
                         error: "out of bounds"
                     };
                 }
@@ -233,66 +123,89 @@ define([
                 } else {
                     result = {
                         el: el,
-                        offset: offset
+                        offset: current
                     };
                 }
+            } else {
+                error("[seekToDelta] el is undefined");
             }
             return result;
         };
 
-        cursor.seekTest = function (delta) {
-            var start = cursor.Range.start;
-            var last = seekToDelta(start.el.$, delta, start.offset);
+        /* cursor.update takes notes about wherever the cursor was last seen
+            in the event of a cursor loss, the information produced by side
+            effects of this function should be used to recover the cursor
 
-            if (last.error) {
-                return last.error;
-            }
+            returns an error string if no range is found
+        */
+        cursor.update = function (sel, root) {
+            verbose("cursor.update");
+            root = root || inner;
+            sel = sel || Rangy.getSelection(root);
+            //if (!sel.rangeCount) { return 'no ranges found'; }
+            var range = sel.getRangeAt(0);
+  
+            // Big R Range is caught in closure, and maintains persistent state
+            Range.start.el = range.startContainer;
+            Range.start.offset = range.startOffset;
+            Range.start.parents = Tree.parentsOf(Range.start.el, root);
 
-            var result = seekToDelta(last.el, -delta, last.offset);
-
-            if (start.el.$ !== result.el) {
-                return "didn't find the right element";
-            }
-            if (start.offset !== result.offset) {
-                return "didn't find the right offset";
-            }
+            Range.end.el = range.endContainer;
+            Range.end.offset = range.endOffset;
+            Range.end.parents = Tree.parentsOf(Range.end.el, root);
         };
 
-
-        /* FIXME
-            TypeError: a.getLength is not a function
+        /* cursor.find uses information produced by side effects of 'update'
+            to recover the cursor
         */
-        cursor.delta = function (d) {
-            //d = d === 0? 0 : d < 0? -1: 1;
-            //cursor.Range.start.offset += d;
+        cursor.find = function () { };
 
-            //var temp = cursor.Range.start.
-            /*  seekToOffset(cursor.Range.start.el.$, d); // might be null
-                if seeking backward and result is null, drop them at the start of the document
-                if seeking forward and result is null, drop them at the end
+        /* 
+
+        */
+        cursor.recover = function () { };
+
+        cursor.delta = function (delta, collapse) {
+            var sel = Rangy.getSelection(inner);
+
+            // update returns errors if there are problems
+            // and updates the persistent Range object
+            var err = cursor.update(sel, inner);
+            if (err) { return err; }
+
+            // create a range to modify
+            var range = Rangy.createRange();
+
+            /*
+                The assumption below is that Range.(start|end).el
+                actually exists. This might not be the case.
+                TODO check if start and end elements are defined
             */
 
-            var Selected = ['start', 'end'].map(function (pos) {
-                var el = cursor.Range[pos].el,
-                    offset = cursor.Range[pos].offset;
-                return seekToDelta(el, d, cursor.Range[pos].offset);
-            });
+            // using infromation about wherever you were last...
+            // move both parts by some delta
+            var start = seekToDelta(Range.start.el, delta, Range.start.offset);
+            var end = seekToDelta(Range.end.el, delta, Range.end.offset);
 
-            /* TODO validate Selected */
-            if (!(Selected[0] && Selected[1])) {
-                // one of the cursor positions is undefined
-                return;
+            /*  if range is backwards, cursor.delta fails
+                so check if they're in the expected order
+                before setting the new range */
+            if (Tree.orderOfNodes(start.el, end.el, inner) === -1) {
+                range.setStart(end.el, end.offset);
+                range.setEnd(start.el, start.offset);
             } else {
-                startAndStop(function (pos, index) {
-                    cursor.Range[pos].el = makeCKElement(Selected[index].el);
-                    cursor.Range[pos].offset = Selected[index].offset;
-                });
+                range.setStart(start.el, start.offset);
+                range.setEnd(end.el, end.offset);
             }
 
-            var ranges = editor.getSelection().getRanges();
-            ranges[0].setStart(cursor.Range.start.el, cursor.Range.start.offset);
-            var sel = editor.getSelection();
-            sel.selectRanges([ranges[0]]);
+            // actually set the cursor to the new range
+            sel.setSingleRange(range);
+            if (delta < 0) {
+                // seeking left, so start might have an error
+                return start.error;
+            } else {
+                return end.error;
+            }
         };
 
         return cursor;
