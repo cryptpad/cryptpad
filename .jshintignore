@@ -9,3 +9,4 @@ www/common/hyperscript.js
 www/common/chainpad.js
 www/code/rangy.js
 storage/kad.js
+www/common/otaml.js
