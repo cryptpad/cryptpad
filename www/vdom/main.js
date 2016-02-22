@@ -6,17 +6,16 @@ define([
     '/common/convert.js',
     '/common/toolbar.js',
     '/common/cursor.js',
+    '/common/json-ot.js',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, Messages, Crypto, realtimeInput, Convert, Toolbar, Cursor) {
+], function (Config, Messages, Crypto, realtimeInput, Convert, Toolbar, Cursor, JsonOT) {
     var $ = window.jQuery;
     var ifrw = $('#pad-iframe')[0].contentWindow;
     var Ckeditor; // to be initialized later...
     //window.Ckeditor = ifrw.CKEDITOR;
     var DiffDom = window.diffDOM;
-    var ChainPad = window.ChainPad;
-
     var userName = Crypto.rand64(8),
         toolbar;
 
@@ -41,8 +40,6 @@ define([
             removePlugins: 'magicline,resize'
         });
 
-        var CKE = Ckeditor;
-
         editor.on('instanceReady', function (Ckeditor) {
             editor.execCommand('maximize');
             var documentBody = ifrw.$('iframe')[0].contentDocument.body;
@@ -51,7 +48,7 @@ define([
 
             var inner = documentBody;
             window.inner = inner;
-            var cursor = window.cursor = Cursor(CKE, editor, inner);
+            var cursor = window.cursor = Cursor(inner);
 
             var $textarea = $('#feedback');
 
@@ -79,27 +76,7 @@ define([
                 //cursor.replace();
             };
 
-            var onInit = function (info) {
-                // TODO initialize the toolbar
-            };
-
-            var rejectIfNotValidJson = function (text, toTransform, transformBy) {
-                var resultOp = ChainPad.Operation.transform0(text, toTransform, transformBy);
-                var text2 = ChainPad.Operation.apply(transformBy, text);
-                var text3 = ChainPad.Operation.apply(resultOp, text2);
-                try {
-                    JSON.parse(text3);
-                    return resultOp;
-                } catch (e) {
-                    console.log(e);
-                }
-
-                // returning **null** breaks out of the loop
-                // which transforms conflicting operations
-                // in theory this should prevent us from producing bad JSON
-                return null;
-            };
-
+            var onInit = function (info) { /* TODO initialize the toolbar */ };
 
             var rti = realtimeInput.start($textarea[0], // synced element
                                     Config.websocketURL, // websocketURL, ofc
@@ -108,7 +85,6 @@ define([
                                     key.cryptKey, // key
                                     { // configuration :D
                                         doc: inner,
-
                                         // first thing called
                                         onInit: onInit,
 
@@ -116,13 +92,11 @@ define([
                                             applyHjson($textarea.val());
                                             $textarea.trigger('keyup');
                                         },
-
                                         // when remote changes occur
                                         onRemote: onRemote,
-
-                                        transformFunction : rejectIfNotValidJson,
-
-                                        // pass in websocket/netflux object
+                                        // really basic operational transform
+                                        transformFunction : JsonOT.validate
+                                        // pass in websocket/netflux object TODO
                                     });
 
             $textarea.val(JSON.stringify(Convert.dom.to.hjson(inner)));
@@ -132,11 +106,15 @@ define([
 
                 $textarea.val(JSON.stringify(hjson));
                 rti.bumpSharejs();
+                
+                // update the cursor on changes to the editor
                 cursor.update();
             });
 
+            // a mouseup or keyup might change the cursor but not the contents
             ['mouseup', 'keyup'].forEach(function (type) {
                 editor.document.on(type, function (e) {
+                    // when this is the case, update the cursor
                     cursor.update();
                 });
             });
