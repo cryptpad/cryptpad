@@ -146,7 +146,7 @@ define([], function () {
             if (root && el.parentNode === root.childNodes[0]) { return null; }
             return rightmostNode(previousNode(el.parentNode));
         } else {
-            return rightmostNode(el.parentNode.childNodes[i-1])
+            return rightmostNode(el.parentNode.childNodes[i-1]);
         }
     };
 
@@ -160,6 +160,23 @@ define([], function () {
         } else {
             return leftmostNode(el.parentNode.childNodes[i], root);
         }
+    };
+
+    var orderOfNodes = tree.orderOfNodes = function (a, b, root) {
+        // b might not be supplied
+        if (!b) { return; }
+        // a and b might be the same element
+        if (a === b) { return 0; }
+
+        var cur = b;
+        while (cur) {
+            cur = previousNode(cur, root);
+            // if you find 'a' while traversing backwards
+            // they are in the expected order
+            if (cur === a) { return 1; }
+        }
+        // otherwise 
+        return -1;
     };
 
     return tree;
