@@ -89,6 +89,7 @@ define([], function () {
     var indexOfNode = tree.indexOfNode = function (el) {
         if (!(el && el.parentNode)) {
             console.log("No parentNode found!");
+            throw new Error('No parentNode found!');
         }
         return Array.prototype.indexOf.call(el.parentNode.childNodes, el);
     };
