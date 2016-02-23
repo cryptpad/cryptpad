@@ -14,7 +14,6 @@ define([
     var $ = window.jQuery;
     var ifrw = $('#pad-iframe')[0].contentWindow;
     var Ckeditor; // to be initialized later...
-    //window.Ckeditor = ifrw.CKEDITOR;
     var DiffDom = window.diffDOM;
     var userName = Crypto.rand64(8),
         toolbar;
@@ -52,12 +51,8 @@ define([
 
             var $textarea = $('#feedback');
 
-            var vdom1 = Convert.dom.to.vdom(inner);
-
             var applyHjson = function (shjson) {
-                console.log("Applying HJSON");
                 var userDocStateDom = Convert.hjson.to.dom(JSON.parse(shjson));
-                
                 userDocStateDom.setAttribute("contentEditable", "true"); // lol wtf
                 var patch = (new DiffDom()).diff(inner, userDocStateDom);
                 (new DiffDom()).apply(inner, patch);
@@ -65,15 +60,31 @@ define([
 
             var onRemote = function (shjson) {
                 // remember where the cursor is
-                //cursor.update()
+                cursor.update()
 
+                // build a dom from HJSON, diff, and patch the editor
                 applyHjson(shjson);
 
-                //cursor.find();
+                // 1 if start is lost, 2 if end is lost, 3 if both, else 0
+                var cursorState = cursor.isLost();
+                if (cursorState) {
+                    console.log("cursor is lost!");
+                    cursor.find();
 
-                // put the cursor back where you left it
-                // FIXME put this back in
-                //cursor.replace();
+                    // pass in the cursorState so we don't try to recover nodes
+                    // which weren't lost to begin with
+                    cursor.recover(cursorState);
+
+                    cursorState = cursor.isLost();
+                    if (cursorState) {
+                        console.log("cursor is STILL lost after trying to recover");
+                    } else {
+                        console.log("recovered the cursor!");
+                    }
+                } else {
+                    // cursor is not lost
+                    console.log("cursor retained");
+                }
             };
 
             var onInit = function (info) { /* TODO initialize the toolbar */ };
@@ -106,18 +117,15 @@ define([
 
                 $textarea.val(JSON.stringify(hjson));
                 rti.bumpSharejs();
-                
-                // update the cursor on changes to the editor
-                cursor.update();
             });
 
             // a mouseup or keyup might change the cursor but not the contents
-            ['mouseup', 'keyup'].forEach(function (type) {
+/*          ['mouseup', 'keyup'].forEach(function (type) {
                 editor.document.on(type, function (e) {
                     // when this is the case, update the cursor
-                    cursor.update();
+                    //cursor.update();
                 });
-            });
+            }); */
         });
     };
 
