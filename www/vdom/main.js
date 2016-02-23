@@ -73,7 +73,9 @@ define([
 
                     // pass in the cursorState so we don't try to recover nodes
                     // which weren't lost to begin with
-                    cursor.recover(cursorState);
+                    // TODO recover doesn't handle its arguments correctly
+                    // so for now just pass in 3 :(
+                    cursor.recover(3||cursorState);
 
                     cursorState = cursor.isLost();
                     if (cursorState) {
