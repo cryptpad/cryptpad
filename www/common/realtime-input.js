@@ -224,7 +224,7 @@ define([
                 }
             });
 
-            var whoami = new RegExp(userName.replace(/\/\+/g, function (c) {
+            var whoami = new RegExp(userName.replace(/[\/\+]/g, function (c) {
                 return '\\' +c;
             }));
 
