@@ -27,12 +27,6 @@ define([
             }
         };
 
-        /* FIXME we shouldn't use this, as only one might have been lost */
-        cursor.lost = function () {
-            return !(Tree.contains(Range.start.el.$, inner) &&
-                Tree.contains(Range.end.el.$, inner));
-        };
-
         // assumes a negative index
         var seekLeft = cursor.seekLeft = function (el, delta, current) {
             var textLength;
@@ -226,29 +220,11 @@ define([
                 //return 'no ranges found';
             }
             var range = sel.getRangeAt(0);
-  
-            // Big R Range is caught in closure, and maintains persistent state
 
+            // Big R Range is caught in closure, and maintains persistent state
             ['start', 'end'].forEach(function (pos) {
                 Range[pos].el = range[pos+'Container'];
                 Range[pos].offset = range[pos+'Offset'];
-                Range[pos].parents = Tree.parentsOf(Range[pos].el, root);
-
-                // trailing is either an array or false
-                var trailing = getTrailingNodes(Range[pos].el);
-
-                // if it's false, then the cursor has been lost
-                // TODO do a more careful check to see if the cursor has been destroyed.
-                Range[pos].lost = !trailing;
-
-                if (Range[pos].lost) {
-                    // don't overwrite the previous trailing nodes
-                    // that array will be used to recover the cursor
-
-                } else {
-                    // if you haven't lost the cursor, update the node list
-                    Range[pos].trailing = trailing;
-                }
             });
         };
 
@@ -256,6 +232,8 @@ define([
             1 -> start is lost
             2 -> end is lost
             3 -> both are lost */
+        /*  sometimes the selection gets dropped and this doesn't realize it
+            figure out why (TODO FIXME) */
         var isLost = cursor.isLost = function () {
             var state = ['start', 'end'].map(function (pos, i) {
                 return Tree.contains(Range[pos].el, inner)? 0 : i + 1;
@@ -263,16 +241,125 @@ define([
             return state[0] | state[1];
         };
 
+        var exists = cursor.exists = function () {
+            return (Range.start.el?1:0) | (Range.end.el?2:0);
+        };
+
+        /*
+            0 if neither
+            1 if start
+            2 if end
+            3 if start and end
+        */
+        var inNode = cursor.inNode = function (el) {
+            var state = ['start', 'end'].map(function (pos, i) {
+                return Tree.contains(el, Range[pos].el)? i +1: 0;
+            });
+            return state[0] | state[1];
+        };
+
+        var confineOffsetToElement = cursor.confineOffsetToElement = function (el, offset) {
+            return Math.max(Math.min(offset, el.textContent.length), 0);
+        };
+
+        var makeSelection = cursor.makeSelection = function () {
+            var sel = Rangy.getSelection(inner);
+            return sel;
+        };
+
+        var makeRange = cursor.makeRange = function () {
+            return Rangy.createRange();
+        };
+
+        var fixStart = cursor.fixStart = function (el, offset) {
+            Range.start.el = el;
+            Range.start.offset = confineOffsetToElement(el, 
+                (typeof offset !== 'undefined') ? offset : Range.start.offset);
+        };
+
+        var fixEnd = cursor.fixEnd = function (el, offset) {
+            Range.end.el = el;
+            Range.end.offset = confineOffsetToElement(el,
+                (typeof offset !== 'undefined') ? offset : Range.end.offset);
+        };
+
+        var fixSelection = cursor.fixSelection = function (sel, range) {
+            if (Tree.contains(Range.start.el, inner) && Tree.contains(Range.end.el, inner)) {
+                var order = Tree.orderOfNodes(Range.start.el, Range.end.el, inner);
+                var backward;
+
+                // this could all be one line but nobody would be able to read it
+                if (order === -1) {
+                    // definitely backward
+                    backward = true;
+                } else if (order === 0) {
+                    // might be backward, check offsets to know for sure
+                    backward = (Range.start.offset > Range.end.offset);
+                } else {
+                    // definitely not backward
+                    backward = false;
+                }
+
+                if (backward) {
+                    range.setStart(Range.end.el, Range.end.offset);
+                    range.setEnd(Range.start.el, Range.start.offset);
+                } else {
+                    range.setStart(Range.start.el, Range.start.offset);
+                    range.setEnd(Range.end.el, Range.end.offset);
+                }
+
+                // actually set the cursor to the new range
+                sel.setSingleRange(range);
+            } else {
+                var errText = "[cursor.fixSelection] At least one of the "+
+                    "cursor nodes did not exist, could not fix selection";
+                console.error(errText);
+                return errText;
+            }
+        };
+
+        var pushDelta = cursor.pushDelta = function (oldVal, newVal, offset) {
+            if (oldVal === newVal) { return; }
+            var commonStart = 0;
+            while (oldVal.charAt(commonStart) === newVal.charAt(commonStart)) {
+                commonStart++;
+            }
+
+            var commonEnd = 0;
+            while (oldVal.charAt(oldVal.length - 1 - commonEnd) === newVal.charAt(newVal.length - 1 - commonEnd) &&
+                commonEnd + commonStart < oldVal.length && commonEnd + commonStart < newVal.length) {
+                commonEnd++;
+            }
+
+            var insert = false, remove = false;
+            if (oldVal.length !== commonStart + commonEnd) {
+                // there was a removal?
+                remove = true;
+            }
+            if (newVal.length !== commonStart + commonEnd) {
+                // there was an insertion?
+                insert = true;
+            }
+
+            var lengthDelta = newVal.length - oldVal.length;
+
+            return {
+                commonStart: commonStart,
+                commonEnd: commonEnd,
+                delta: lengthDelta,
+                insert: insert,
+                remove: remove
+            };
+        };
+
+        /* FIXME for some reason this only works when we pass in 3 */
         var recover = cursor.recover = function (lost) {
             var sel = Rangy.getSelection(inner);
 
             // create a range to modify
             var range = Rangy.createRange();
 
-            /*  if range is backwards, cursor.delta fails
-                so check if they're in the expected order
-                before setting the new range */
-
+            /* FIXME verify offsets as well */
             if (lost & 1) {
                 Range.start.el = recoverNodeByTrailing(Range.start.trailing);
             }
@@ -280,7 +367,11 @@ define([
                 Range.end.el = recoverNodeByTrailing(Range.end.trailing);
             }
 
-            // el.parentNode is null
+            // TODO ensure that the nodes actually exist...
+
+            /*  if range is backwards, cursor.delta fails
+                so check if they're in the expected order
+                before setting the new range */
             var order = Tree.orderOfNodes(Range.start.el, Range.end.el, inner);
             var backward;
 
@@ -306,6 +397,51 @@ define([
 
             // actually set the cursor to the new range
             sel.setSingleRange(range);
+        };
+
+        /* getLength assumes that both nodes exist inside of the active editor.  */
+        var getLength = cursor.getLength = function () {
+            if (Range.start.el === Range.end.el) {
+                if (Range.start.offset === Range.end.offset) { return 0; }
+                if (Range.start.offset < Range.end.offset) {
+                    return Range.end.offset - Range.start.offset;
+                } else {
+                    return Range.start.offset - Range.end.offset;
+                }
+            } else {
+                var order = Tree.orderOfNodes(Range.start.el, Range.end.el, inner);
+                var L;
+                var cur;
+
+                /*
+                    we know that the cursor elements are different, and that we
+                    must traverse to find the total length. We also know the
+                    order of the nodes (probably 1 or -1)
+                */
+                if (order === 1) {
+                    L = (Range.start.el.textContent.length - Range.start.offset);
+                    cur = Tree.nextNode(Range.start.el, inner);
+                    while (cur && cur !== Range.end.el) {
+                        L += cur.textContent.length;
+                        cur = Tree.nextNode(cur, inner);
+                    }
+                    L += Range.end.offset;
+                    return L;
+                } else if (order === -1) {
+                    L = (Range.end.el.textContent - Range.end.offset);
+                    cur = Tree.nextNode(Range.end.el, inner);
+                    while (cur && cur !== Range.start.el) {
+                        L += cur.textContent.length;
+                        cur = Tree.nextNode(cur, inner);
+                    }
+                    L += Range.start.offset;
+                    return -L;
+                } else {
+                    console.error("unexpected ordering of nodes...");
+                    return null;
+                    // ???
+                }
+            }
         };
 
         cursor.delta = function (delta1, delta2) {
