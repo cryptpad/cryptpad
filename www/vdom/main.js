@@ -7,7 +7,8 @@ define([
     '/common/toolbar.js',
     '/common/cursor.js',
     '/common/json-ot.js',
-    '/bower_components/diff-dom/diffDOM.js',
+    //'/bower_components/diff-dom/diffDOM.js',
+    '/common/diffDOM.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
 ], function (Config, Messages, Crypto, realtimeInput, Convert, Toolbar, Cursor, JsonOT) {
@@ -45,72 +46,141 @@ define([
 
             documentBody.innerHTML = Messages.initialState;
 
-            var inner = documentBody;
-            window.inner = inner;
+            var inner = window.inner = documentBody;
             var cursor = window.cursor = Cursor(inner);
 
             var $textarea = $('#feedback');
 
+            var diffOptions = {
+                preDiffApply: function (info) {
+                    var frame;
+
+                    // no use trying to recover the cursor if it doesn't exist
+                    if (!cursor.exists()) { return; }
+
+                    info.frame = frame = cursor.inNode(info.node);
+
+                    if (frame) {
+                        var debug = info.debug = {
+                            frame: frame,
+                            action: info.diff.action,
+                            cursorLength: cursor.getLength(),
+                            node: info.node
+                        };
+
+                        if (info.diff.action === 'removeTextElement') {
+                            // crap. there will be a text element removal.
+                            // that's bad news.
+
+                            if (frame === 1) {
+                                // it's the starting element.
+
+
+                            } else if (frame === 2) {
+                                // it's the ending element.
+
+                            } else {
+                                // both were removed.
+                                // there might not be much we can do
+
+                                // the diff is going to run the following:
+                                // info.node.parentNode.removeChild(node);
+                            }
+
+                            // avoid doing anything more?
+                            // let the diff do its business.
+                            return;
+                        }
+
+                        if (info.diff.oldValue) { debug.oldValue = info.diff.oldValue; }
+                        if (info.diff.newValue) { debug.newValue = info.diff.newValue; }
+                        if (typeof info.diff.oldValue === 'string' && typeof info.diff.newValue === 'string') {
+                            var pushes = cursor.pushDelta(info.diff.oldValue, info.diff.newValue);
+                            debug.commonStart = pushes.commonStart;
+                            debug.commonEnd = pushes.commonEnd;
+                            debug.insert = pushes.insert;
+                            debug.remove = pushes.remove;
+
+                            if (frame & 1) {
+                                // push cursor start if necessary
+                                if (pushes.commonStart < cursor.Range.start.offset) {
+                                    cursor.Range.start.offset += pushes.delta;
+                                }
+                            }
+                            if (frame & 2) {
+                                // push cursor end if necessary
+                                if (pushes.commonStart < cursor.Range.end.offset) {
+                                    cursor.Range.end.offset += pushes.delta;
+                                }
+                            }
+                        }
+                        console.log("###################################");
+                        console.log(debug);
+
+                        return;
+                    } else {
+                        console.log("###################################");
+                        console.log(info.diff.action);
+                        return;
+                    }
+                },
+                postDiffApply: function (info) {
+                    if (info.frame) {
+                        if (info.node) {
+                            if (info.frame & 1) { cursor.fixStart(info.node); }
+                            if (info.frame & 2) { cursor.fixEnd(info.node); }
+                        } else { console.error("info.node did not exist"); }
+
+                        var sel = cursor.makeSelection();
+                        var range = cursor.makeRange();
+
+                        cursor.fixSelection(sel, range);
+                    }
+                }
+            };
+
+            // apply patches, and try not to lose the cursor in the process!
             var applyHjson = function (shjson) {
                 var userDocStateDom = Convert.hjson.to.dom(JSON.parse(shjson));
                 userDocStateDom.setAttribute("contentEditable", "true"); // lol wtf
-                var patch = (new DiffDom()).diff(inner, userDocStateDom);
-                (new DiffDom()).apply(inner, patch);
+                var DD = new DiffDom(diffOptions);
+                var patch = (DD).diff(inner, userDocStateDom);
+                (DD).apply(inner, patch);
             };
 
             var onRemote = function (shjson) {
                 // remember where the cursor is
-                cursor.update()
+                cursor.update();
 
                 // build a dom from HJSON, diff, and patch the editor
                 applyHjson(shjson);
-
-                // 1 if start is lost, 2 if end is lost, 3 if both, else 0
-                var cursorState = cursor.isLost();
-                if (cursorState) {
-                    console.log("cursor is lost!");
-                    cursor.find();
-
-                    // pass in the cursorState so we don't try to recover nodes
-                    // which weren't lost to begin with
-                    // TODO recover doesn't handle its arguments correctly
-                    // so for now just pass in 3 :(
-                    cursor.recover(3||cursorState);
-
-                    cursorState = cursor.isLost();
-                    if (cursorState) {
-                        console.log("cursor is STILL lost after trying to recover");
-                    } else {
-                        console.log("recovered the cursor!");
-                    }
-                } else {
-                    // cursor is not lost
-                    console.log("cursor retained");
-                }
             };
 
             var onInit = function (info) { /* TODO initialize the toolbar */ };
 
-            var rti = realtimeInput.start($textarea[0], // synced element
+            var realtimeOptions = {
+                // configuration :D
+                doc: inner,
+                // first thing called
+                onInit: onInit,
+
+                onReady: function (info) {
+                    applyHjson($textarea.val());
+                    $textarea.trigger('keyup');
+                },
+                // when remote changes occur
+                onRemote: onRemote,
+                // really basic operational transform
+                transformFunction : JsonOT.validate
+                // pass in websocket/netflux object TODO
+            };
+
+            var rti = window.rti = realtimeInput.start($textarea[0], // synced element
                                     Config.websocketURL, // websocketURL, ofc
                                     userName, // userName
                                     key.channel, // channelName
                                     key.cryptKey, // key
-                                    { // configuration :D
-                                        doc: inner,
-                                        // first thing called
-                                        onInit: onInit,
-
-                                        onReady: function (info) {
-                                            applyHjson($textarea.val());
-                                            $textarea.trigger('keyup');
-                                        },
-                                        // when remote changes occur
-                                        onRemote: onRemote,
-                                        // really basic operational transform
-                                        transformFunction : JsonOT.validate
-                                        // pass in websocket/netflux object TODO
-                                    });
+                                    realtimeOptions);
 
             $textarea.val(JSON.stringify(Convert.dom.to.hjson(inner)));
 
@@ -120,14 +190,6 @@ define([
                 $textarea.val(JSON.stringify(hjson));
                 rti.bumpSharejs();
             });
-
-            // a mouseup or keyup might change the cursor but not the contents
-/*          ['mouseup', 'keyup'].forEach(function (type) {
-                editor.document.on(type, function (e) {
-                    // when this is the case, update the cursor
-                    //cursor.update();
-                });
-            }); */
         });
     };
 
