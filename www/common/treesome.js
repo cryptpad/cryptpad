@@ -18,7 +18,7 @@ define([], function () {
             if (tree.some(root.children[last], predicate)) {
                 return true;
             } // otherwise none of the nodes inside it matched.
-           
+
             // check the node itself
             if (predicate(root.children[last], last)) {
                 return true;
@@ -32,7 +32,7 @@ define([], function () {
     var someText = tree.someIncludingText = function (root, predicate) {
         // take the index of the last element in the current root
         var last = root.childNodes.length - 1;
-        
+
         // it might be a leaf node
         if (last < 0) { return false; }
 
@@ -45,7 +45,7 @@ define([], function () {
             if (tree.someIncludingText(root.childNodes[last], predicate)) {
                 return true;
             } // otherwise none of the nodes inside it matched.
-           
+
             // check the node itself
             if (predicate(root.childNodes[last], last)) {
                 return true;
@@ -96,13 +96,13 @@ define([], function () {
 
     // not being used internally, but is useful externally
     tree.contains = function (el, root) {
-        return el && root.contains && root.contains(el);
+        return el && root && root.contains && root.contains(el);
     };
 
     var siblingCount = tree.siblingCount = function (el) {
         return el.parentNode.childNodes.length;
     };
-    
+
     var childCount = tree.childCount = function (el) {
         return el.childNodes.length;
     };
