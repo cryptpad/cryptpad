@@ -10,3 +10,4 @@ www/common/chainpad.js
 www/code/rangy.js
 storage/kad.js
 www/common/otaml.js
+www/common/diffDOM.js
