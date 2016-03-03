@@ -8,7 +8,6 @@ define([
     '/common/cursor.js',
     '/common/json-ot.js',
     '/bower_components/diff-dom/diffDOM.js',
-    //'/common/diffDOM.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
 ], function (Config, Messages, Crypto, realtimeInput, Convert, Toolbar, Cursor, JsonOT) {
@@ -16,6 +15,9 @@ define([
     var ifrw = $('#pad-iframe')[0].contentWindow;
     var Ckeditor; // to be initialized later...
     var DiffDom = window.diffDOM;
+
+    window.Toolbar = Toolbar;
+
     var userName = Crypto.rand64(8),
         toolbar;
 
@@ -124,7 +126,7 @@ define([
             // apply patches, and try not to lose the cursor in the process!
             var applyHjson = function (shjson) {
                 var userDocStateDom = Convert.hjson.to.dom(JSON.parse(shjson));
-                userDocStateDom.setAttribute("contentEditable", "true"); // lol wtf
+                userDocStateDom.setAttribute("contenteditable", "true"); // lol wtf
                 var DD = new DiffDom(diffOptions);
                 var patch = (DD).diff(inner, userDocStateDom);
                 (DD).apply(inner, patch);
@@ -140,7 +142,11 @@ define([
                 }
             };
 
-            var onInit = function (info) { /* TODO initialize the toolbar */ };
+            var onInit = function (info) {
+                var $bar = $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox');
+                toolbar = Toolbar.create($bar, userName, info.realtime);
+                /* TODO handle disconnects and such*/
+            };
 
             var realtimeOptions = {
                 // configuration :D
