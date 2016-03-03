@@ -133,19 +133,35 @@ define([
             };
 
             var onRemote = function (shjson) {
-                if (!initializing) {
-                    // remember where the cursor is
-                    cursor.update();
+                if (!initializing) { return; }
 
-                    // build a dom from HJSON, diff, and patch the editor
-                    applyHjson(shjson);
-                }
+                // remember where the cursor is
+                cursor.update();
+
+                // build a dom from HJSON, diff, and patch the editor
+                applyHjson(shjson);
             };
 
             var onInit = function (info) {
                 var $bar = $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox');
-                toolbar = Toolbar.create($bar, userName, info.realtime);
+                toolbar = info.realtime.toolbar = Toolbar.create($bar, userName, info.realtime);
                 /* TODO handle disconnects and such*/
+            };
+
+            var onReady = function (info) {
+                console.log("Unlocking editor");
+                initializing = false;
+                setEditable(true);
+                applyHjson($textarea.val());
+                $textarea.trigger('keyup');
+            };
+
+            var onAbort = function (info) {
+                console.log("Aborting the session!");
+                // stop the user from continuing to edit
+                setEditable(false);
+
+                // TODO inform them that the session was torn down
             };
 
             var realtimeOptions = {
@@ -154,15 +170,14 @@ define([
                 // first thing called
                 onInit: onInit,
 
-                onReady: function (info) {
-                    console.log("Unlocking editor");
-                    initializing = false;
-                    setEditable(true);
-                    applyHjson($textarea.val());
-                    $textarea.trigger('keyup');
-                },
+                onReady: onReady,
+
                 // when remote changes occur
                 onRemote: onRemote,
+
+                // handle aborts
+                onAbort: onAbort,
+
                 // really basic operational transform
                 transformFunction : JsonOT.validate
                 // pass in websocket/netflux object TODO
