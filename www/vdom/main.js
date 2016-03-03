@@ -51,78 +51,58 @@ define([
 
             var $textarea = $('#feedback');
 
+            var setEditable = function (bool) {
+                inner.setAttribute('contenteditable',
+                    (typeof (bool) !== 'undefined'? bool : true));
+            };
+
+            // don't let the user edit until the pad is ready
+            setEditable(false);
+
             var diffOptions = {
                 preDiffApply: function (info) {
-                    var frame;
 
                     // no use trying to recover the cursor if it doesn't exist
                     if (!cursor.exists()) { return; }
 
-                    info.frame = frame = cursor.inNode(info.node);
+                    /*  frame is either 0, 1, 2, or 3, depending on which
+                        cursor frames were affected: none, first, last, or both
+                    */
+                    var frame = info.frame = cursor.inNode(info.node);
 
-                    if (frame) {
-                        var debug = info.debug = {
-                            frame: frame,
-                            action: info.diff.action,
-                            cursorLength: cursor.getLength(),
-                            node: info.node
-                        };
+                    if (!frame) { return; }
 
-                        if (info.diff.action === 'removeTextElement') {
-                            // crap. there will be a text element removal.
-                            // that's bad news.
+                    var debug = info.debug = {
+                        frame: frame,
+                        action: info.diff.action,
+                        cursorLength: cursor.getLength(),
+                        node: info.node
+                    };
 
-                            if (frame === 1) {
-                                // it's the starting element.
+                    if (info.diff.oldValue) { debug.oldValue = info.diff.oldValue; }
+                    if (info.diff.newValue) { debug.newValue = info.diff.newValue; }
+                    if (typeof info.diff.oldValue === 'string' && typeof info.diff.newValue === 'string') {
+                        var pushes = cursor.pushDelta(info.diff.oldValue, info.diff.newValue);
+                        debug.commonStart = pushes.commonStart;
+                        debug.commonEnd = pushes.commonEnd;
+                        debug.insert = pushes.insert;
+                        debug.remove = pushes.remove;
 
-
-                            } else if (frame === 2) {
-                                // it's the ending element.
-
-                            } else {
-                                // both were removed.
-                                // there might not be much we can do
-
-                                // the diff is going to run the following:
-                                // info.node.parentNode.removeChild(node);
-                            }
-
-                            // avoid doing anything more?
-                            // let the diff do its business.
-                            return;
-                        }
-
-                        if (info.diff.oldValue) { debug.oldValue = info.diff.oldValue; }
-                        if (info.diff.newValue) { debug.newValue = info.diff.newValue; }
-                        if (typeof info.diff.oldValue === 'string' && typeof info.diff.newValue === 'string') {
-                            var pushes = cursor.pushDelta(info.diff.oldValue, info.diff.newValue);
-                            debug.commonStart = pushes.commonStart;
-                            debug.commonEnd = pushes.commonEnd;
-                            debug.insert = pushes.insert;
-                            debug.remove = pushes.remove;
-
-                            if (frame & 1) {
-                                // push cursor start if necessary
-                                if (pushes.commonStart < cursor.Range.start.offset) {
-                                    cursor.Range.start.offset += pushes.delta;
-                                }
-                            }
-                            if (frame & 2) {
-                                // push cursor end if necessary
-                                if (pushes.commonStart < cursor.Range.end.offset) {
-                                    cursor.Range.end.offset += pushes.delta;
-                                }
+                        if (frame & 1) {
+                            // push cursor start if necessary
+                            if (pushes.commonStart < cursor.Range.start.offset) {
+                                cursor.Range.start.offset += pushes.delta;
                             }
                         }
-                        console.log("###################################");
-                        console.log(debug);
-
-                        return;
-                    } else {
-                        console.log("###################################");
-                        console.log(info.diff.action);
-                        return;
+                        if (frame & 2) {
+                            // push cursor end if necessary
+                            if (pushes.commonStart < cursor.Range.end.offset) {
+                                cursor.Range.end.offset += pushes.delta;
+                            }
+                        }
                     }
+                    console.log("###################################");
+                    console.log(debug);
                 },
                 postDiffApply: function (info) {
                     if (info.frame) {
@@ -139,6 +119,8 @@ define([
                 }
             };
 
+            var initializing = true;
+
             // apply patches, and try not to lose the cursor in the process!
             var applyHjson = function (shjson) {
                 var userDocStateDom = Convert.hjson.to.dom(JSON.parse(shjson));
@@ -149,11 +131,13 @@ define([
             };
 
             var onRemote = function (shjson) {
-                // remember where the cursor is
-                cursor.update();
+                if (!initializing) {
+                    // remember where the cursor is
+                    cursor.update();
 
-                // build a dom from HJSON, diff, and patch the editor
-                applyHjson(shjson);
+                    // build a dom from HJSON, diff, and patch the editor
+                    applyHjson(shjson);
+                }
             };
 
             var onInit = function (info) { /* TODO initialize the toolbar */ };
@@ -165,6 +149,9 @@ define([
                 onInit: onInit,
 
                 onReady: function (info) {
+                    console.log("Unlocking editor");
+                    initializing = false;
+                    setEditable(true);
                     applyHjson($textarea.val());
                     $textarea.trigger('keyup');
                 },
