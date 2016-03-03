@@ -20,19 +20,13 @@ define([
             methods = {
                 dom:{
                     dom: Self,
-                    hjson: hyperjson.fromDOM,
-                    vdom: function (D) {
-                        return hyperjson.callOn(hyperjson.fromDOM(D), vdom.h);
-                    }
+                    hjson: hyperjson.fromDOM
                 },
                 hjson:{
                     hjson: Self,
                     dom: function (H) {
                         // hyperjson.fromDOM,
                         return hyperjson.callOn(H, hyperscript);
-                    },
-                    vdom: function (H) {
-                        return hyperjson.callOn(H, vdom.h);
                     }
                 }
             },
