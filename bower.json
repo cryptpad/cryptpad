@@ -26,7 +26,7 @@
     "requirejs": "~2.1.15",
     "modalBox": "~1.0.2",
     "reconnectingWebsocket": "",
-    "diff-dom": "git@github.com:fiduswriter/diffDOM.git#6fdb82c8a4f2096c07c129797a313fe13769e094",
+    "diff-dom": "https://github.com/fiduswriter/diffDOM.git#6fdb82c8a4f2096c07c129797a313fe13769e094",
     "marked": "~0.3.5",
     "rangy": "rangy-release#~1.3.0"
   }
