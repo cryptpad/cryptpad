@@ -105,6 +105,7 @@ define([
     // bind abort to onLeaving
     var abort = function (socket, realtime) {
         realtime.abort();
+        realtime.toolbar.failed();
         try { socket._socket.close(); } catch (e) { warn(e); }
     };
 
@@ -159,7 +160,7 @@ define([
         var transformFunction = config.transformFunction || null;
 
         var socket;
-       
+
         if (config.socketAdaptor) {
             // do netflux stuff
         } else {
@@ -293,6 +294,11 @@ define([
                     if (recoverableErrorCount >= MAX_RECOVERABLE_ERRORS) {
                         warn("Giving up!");
                         abort(socket, realtime);
+                        if (config.onAbort) {
+                            config.onAbort({
+                                socket
+                            });
+                        }
                         if (socketChecker) { clearInterval(socketChecker); }
                     }
                 } else {
