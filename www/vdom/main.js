@@ -7,8 +7,8 @@ define([
     '/common/toolbar.js',
     '/common/cursor.js',
     '/common/json-ot.js',
-    //'/bower_components/diff-dom/diffDOM.js',
-    '/common/diffDOM.js',
+    '/bower_components/diff-dom/diffDOM.js',
+    //'/common/diffDOM.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
 ], function (Config, Messages, Crypto, realtimeInput, Convert, Toolbar, Cursor, JsonOT) {
