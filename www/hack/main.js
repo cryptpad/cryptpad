@@ -20,14 +20,43 @@ define([
     var $textarea = $('textarea'),
         $run = $('#run');
 
-    var rts = $textarea.toArray().map(function (e, i) {
-        var rt = Realtime.start(e, // window
-            Config.websocketURL, // websocketUrl
-            Crypto.rand64(8), // userName
-            key.channel, // channel
-            key.cryptKey); // cryptKey
-        return rt;
-    });
+    /*
+        onRemote
+        onInit
+        onReady
+        onAbort
+        transformFunction
+    */
+
+    var config = {};
+    var initializing = true;
+
+    $textarea.attr('disabled', true);
+
+    var onInit = config.onInit = function (info) { };
+
+    var onRemote = config.onRemote = function (contents) {
+        if (initializing) { return; }
+        // TODO do something on external messages
+        // http://webdesign.tutsplus.com/tutorials/how-to-display-update-notifications-in-the-browser-tab--cms-23458
+    };
+
+    var onReady = config.onReady = function (info) {
+        initializing = false;
+        $textarea.attr('disabled', false);
+    };
+
+    var onAbort = config.onAbort = function (info) {
+        $textarea.attr('disabled', true);
+        window.alert("Server Connection Lost");
+    };
+
+    var rt = Realtime.start($textarea[0], // window
+        Config.websocketURL, // websocketUrl
+        Crypto.rand64(8), // userName
+        key.channel, // channel
+        key.cryptKey,
+        config); // cryptKey
 
     $run.click(function (e) {
         e.preventDefault();
@@ -38,6 +67,7 @@ define([
         } catch (err) {
             // FIXME don't use alert, make an errorbox
             window.alert(err.message);
+            console.error(err);
         }
     });
 });
