@@ -105,7 +105,6 @@ define([
     // bind abort to onLeaving
     var abort = function (socket, realtime) {
         realtime.abort();
-        realtime.toolbar.failed();
         try { socket._socket.close(); } catch (e) { warn(e); }
     };
 
