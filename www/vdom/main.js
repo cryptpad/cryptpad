@@ -133,7 +133,7 @@ define([
             };
 
             var onRemote = function (shjson) {
-                if (!initializing) { return; }
+                if (initializing) { return; }
 
                 // remember where the cursor is
                 cursor.update();
@@ -160,7 +160,6 @@ define([
                 console.log("Aborting the session!");
                 // stop the user from continuing to edit
                 setEditable(false);
-
                 // TODO inform them that the session was torn down
             };
 
