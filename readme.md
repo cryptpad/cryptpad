@@ -20,10 +20,18 @@ to others who want to participate.
 To install:
 
     git clone <this repo>
+    cd cryptpad
     npm install
     npm install -g bower ## if necessary
     bower install
-    ## copy config.js.dist to config.js and modify configuration (use your own mongodb instance)
+
+    ## copy config.js.dist to config.js 
+    cp config.js.dist config.js
+
+    ## modify configuration to use your own mongodb instance
+    ## for example aon the default mongodb port `mongodb://localhost:27017/demo_database`
+    $EDITOR config.js
+
     node ./server.js
 
 

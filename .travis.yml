@@ -1,4 +1,8 @@
 language: node_js
-node_js:
-  - "0.12"
-script: npm run-script lint
+branches:
+  only:
+      - master
+      - diffdom
+      node_js:
+        - "0.12"
+
