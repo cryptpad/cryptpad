@@ -296,15 +296,15 @@ define([
                         abort(socket, realtime);
                         if (config.onAbort) {
                             config.onAbort({
-                                socket
+                                socket: socket
                             });
                         }
                         if (socketChecker) { clearInterval(socketChecker); }
                     }
                 } else {
-                    // TODO
+                    // it's working as expected, continue
                 }
-            },200);
+            }, 200);
 
             bindAllEvents(textarea, doc, onEvent, false);
 
