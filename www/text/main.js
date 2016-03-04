@@ -16,13 +16,32 @@ define([
     }
 
     var key = Crypto.parseKey(window.location.hash.substring(1));
+    var initializing = true;
+    var $textarea = $('textarea');
 
-    var rts = $('textarea').toArray().map(function (e, i) {
-        var rt = Realtime.start(e, // window
-            Config.websocketURL, // websocketUrl
-            Crypto.rand64(8), // userName
-            key.channel, // channel
-            key.cryptKey); // cryptKey
-        return rt;
-    });
+    var config = {};
+
+    var onInit = config.onInit = function (info) { };
+
+    var onRemote = config.onRemote = function (contents) {
+        if (initializing) { return; }
+        // TODO...
+    };
+
+    var onReady = config.onReady = function (info) {
+        initializing = false;
+        $textarea.attr('disabled', false);
+    };
+
+    var onAbort = config.onAbort = function (info) {
+        $textarea.attr('disabled', true);
+        window.alert("Server Connection Lost");
+    };
+
+    var rt = Realtime.start($textarea[0], // window
+        Config.websocketURL, // websocketUrl
+        Crypto.rand64(8), // userName
+        key.channel, // channel
+        key.cryptKey,
+        config); // cryptKey
 });
