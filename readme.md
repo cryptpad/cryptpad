@@ -34,6 +34,38 @@ To install:
 
     node ./server.js
 
+## Maintenance
+
+To get access to the most recent codebase:
+
+```
+cd /your/cryptpad/instance/location;
+git pull
+```
+
+To update dependencies:
+
+```
+# clientside dependencies
+bower update;
+
+# serverside dependencies
+npm update;
+```
+
+To reset your instance of Cryptpad and remove all the data that is being stored:
+
+If you are using the leveldb adaptor, this is as simple as deleting the folder which contains your leveldb datastore:
+
+```
+# change into your cryptpade directory
+cd /your/cryptpad/instance/location;
+
+# delete the datastore
+rm -rf ./cryptpad.db
+```
+
+If you are using the mongodb adaptor, [drop the relevant collection](https://docs.mongodb.org/manual/reference/method/db.collection.drop/#db.collection.drop).
 
 ## Security
 
