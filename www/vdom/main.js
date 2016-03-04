@@ -161,6 +161,7 @@ define([
                 // stop the user from continuing to edit
                 setEditable(false);
                 // TODO inform them that the session was torn down
+                toolbar.failed();
             };
 
             var realtimeOptions = {
