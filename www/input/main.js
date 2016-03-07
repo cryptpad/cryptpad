@@ -11,7 +11,7 @@ define([
     Crypto) {
 
     var $ = window.jQuery;
-    
+
     var $textarea = $('input');
 
     $(window).on('hashchange', function() {
@@ -28,10 +28,13 @@ define([
 
     var key = Crypto.parseKey(window.location.hash.substring(1));
 
-    var rttext =
-        RTText.start(   $textarea[0], // window
-                        Config.websocketURL, // websocketUrl
-                        Crypto.rand64(8), // userName
-                        key.channel, // channel
-                        key.cryptKey); // cryptKey
+    var config = {
+        textarea: $textarea[0],
+        websocketURL: Config.websocketURL,
+        userName: Crypto.rand64(8),
+        channel: key.channel,
+        key.cryptKey
+    };
+
+    var rttext = RTText.start(config);
 });

@@ -19,7 +19,12 @@ define([
     var initializing = true;
     var $textarea = $('textarea');
 
-    var config = {};
+    var config = {
+        websocketURL: Config.websocketURL,
+        userName: Crypto.rand64(8),
+        channel: key.channel,
+        cryptKey: key.cryptKey
+    };
 
     var onInit = config.onInit = function (info) { };
 
@@ -38,10 +43,5 @@ define([
         window.alert("Server Connection Lost");
     };
 
-    var rt = Realtime.start($textarea[0], // window
-        Config.websocketURL, // websocketUrl
-        Crypto.rand64(8), // userName
-        key.channel, // channel
-        key.cryptKey,
-        config); // cryptKey
+    var rt = Realtime.start(config);
 });

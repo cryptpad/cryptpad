@@ -83,23 +83,26 @@ define([
         }, 450);
     };
 
-    var rts = Realtime.start($textarea[0], // window
-            Config.websocketURL, // websocketUrl
-            Crypto.rand64(8), // userName
-            key.channel, // channel
-            key.cryptKey, // cryptkey
-            {
-                // when remote editors do things...
-                onRemote: function () {
-                    lazyDraw($textarea.val());
-                },
-                // when your editor is ready
-                onReady: function (info) {
-                    if (info.userList) { console.log("Userlist: [%s]", info.userList.join(',')); }
-                    console.log("Realtime is ready!");
-                    $textarea.trigger('keyup');
-                }
-            });
+    var config = {
+        textarea: $textarea[0],
+        websocketURL: Config.websocketURL,
+        userName: Crypto.rand64(8),
+        channel: key.channel,
+        cryptKey: key.cryptKey,
+
+        // when remote editors do things...
+        onRemote: function () {
+            lazyDraw($textarea.val());
+        },
+        // when your editor is ready
+        onReady: function (info) {
+            if (info.userList) { console.log("Userlist: [%s]", info.userList.join(',')); }
+            console.log("Realtime is ready!");
+            $textarea.trigger('keyup');
+        }
+    };
+
+    var rts = Realtime.start(config);
 
     $textarea.on('change keyup keydown', function () {
         if (redrawTimeout) { clearTimeout(redrawTimeout); }

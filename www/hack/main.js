@@ -28,7 +28,13 @@ define([
         transformFunction
     */
 
-    var config = {};
+    var config = {
+        textarea: $textarea[0],
+        websocketURL: Config.websocketURL,
+        userName: Crypto.rand64(8),
+        channel: key.channel,
+        cryptKey: key.cryptKey,
+    };
     var initializing = true;
 
     $textarea.attr('disabled', true);
@@ -51,12 +57,7 @@ define([
         window.alert("Server Connection Lost");
     };
 
-    var rt = Realtime.start($textarea[0], // window
-        Config.websocketURL, // websocketUrl
-        Crypto.rand64(8), // userName
-        key.channel, // channel
-        key.cryptKey,
-        config); // cryptKey
+    var rt = Realtime.start(config);
 
     $run.click(function (e) {
         e.preventDefault();

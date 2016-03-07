@@ -47,16 +47,20 @@ define([
         .on('change', draw);
 
     var rts = $('textarea').toArray().map(function (e, i) {
-        var rt = Realtime.start(e, // window
-            Config.websocketURL, // websocketUrl
-            userName, // userName
-            key.channel, // channel
-            key.cryptKey, // cryptKey
-            {
-                onRemote: draw,
-                onInit: draw,
-                onReady: draw
-            });
+
+        var config = {
+            onRemote: draw,
+            onInit: draw,
+            onReady: draw,
+
+            textarea: e,
+            websocketURL: Config.websocketURL,
+            userName: userName,
+            channel: key.channel,
+            cryptKey: key.cryptKey
+        };
+
+        var rt = Realtime.start(config);
         return rt;
     });
 });

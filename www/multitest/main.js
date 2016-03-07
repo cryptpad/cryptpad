@@ -18,11 +18,15 @@ define([
     var key = Crypto.parseKey(window.location.hash.substring(1));
 
     var rts = $('textarea').toArray().map(function (e, i) {
-        var rt = Realtime.start(e, // window
-            Config.websocketURL, // websocketUrl
-            Crypto.rand64(8), // userName
-            key.channel, // channel
-            key.cryptKey); // cryptKey
+        var config = {
+            textarea: e,
+            websocketURL: Config.websocketURL,
+            userName: Crypto.rand64(8),
+            channel: key.channel,
+            cryptKey: key.cryptKey
+        };
+
+        var rt = Realtime.start(config);
         return rt;
     });
 });
