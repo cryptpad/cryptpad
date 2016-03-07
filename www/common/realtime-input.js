@@ -16,7 +16,7 @@
  */
 define([
     '/common/messages.js',
-    '/common/Netflux.js',
+    '/common/netflux.js',
     '/common/crypto.js',
     '/common/toolbar.js',
     '/common/sharejs_textarea.js',
@@ -74,8 +74,13 @@ define([
     };
 
     var start = module.exports.start =
-        function (textarea, websocketUrl, userName, channel, cryptKey, config)
+        function (config)
     {
+        var textarea = config.textarea;
+        var websocketUrl = config.websocketURL;
+        var userName = config.userName;
+        var channel = config.channel;
+        var cryptKey = config.cryptKey;
 
         var passwd = 'y';
 
