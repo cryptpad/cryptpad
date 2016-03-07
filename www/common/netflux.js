@@ -1025,12 +1025,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.protocol = _ServiceProvider2.default.get(cs.EXCHANGEPROTOCOL_SERVICE);
 	    this.defaults = {
 	      signaling: 'ws://localhost:9000',
-	      /**
-	       * If an error is encountered but it is recoverable, do not immediately fail
-	       * but if it keeps firing errors over and over, do fail.
-	       */
-	      recoverableErrorCount: 0,
-	      MAX_RECOVERABLE_ERRORS: 15,
 	      // Maximum number of milliseconds of lag before we fail the connection.
 	      MAX_LAG_BEFORE_DISCONNECT: 20000
 	    };
@@ -1040,6 +1034,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _createClass(WebSocketService, [{
 	    key: 'join',
 	    value: function join(key) {
+	      var _this = this;
+
 	      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
 	      var settings = Object.assign({}, this.settings, options);
@@ -1051,24 +1047,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	          resolve(socket);
 	        };
 	        socket.onerror = reject;
+	        // Check the status of the socket connection
+	        var isSocketDisconnected = function isSocketDisconnected(realtime, sock) {
+	          return sock.readyState === sock.CLOSING || sock.readyState === sock.CLOSED || realtime.getLag().waiting && realtime.getLag().lag > _this.settings.MAX_LAG_BEFORE_DISCONNECT;
+	        };
+	        socket.checkSocket = function (realtime) {
+	          if (isSocketDisconnected(realtime, socket) && !socket.intentionallyClosing) {
+	            return true;
+	          } else {
+	            return false;
+	          }
+	        };
 	      });
 	    }
-
-	    // Check the status of the socket connection
-	    /*var isSocketDisconnected = function (realtime) {
-	      let sock = ws._socket;
-	        return sock.readyState === sock.CLOSING
-	            || sock.readyState === sock.CLOSED
-	            || (realtime.getLag().waiting && realtime.getLag().lag > MAX_LAG_BEFORE_DISCONNECT);
-	    }
-	    var checkSocket = module.exports.checkSocket = function (realtime) {
-	        if (isSocketDisconnected(realtime) && !socket.intentionallyClosing) {
-	            return true;
-	        } else {
-	            return false;
-	        }
-	    };*/
-
 	  }]);
 
 	  return WebSocketService;

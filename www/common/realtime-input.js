@@ -31,7 +31,7 @@ define([
     var debug = function (x) { console.log(x); },
         warn = function (x) { console.error(x); },
         verbose = function (x) { console.log(x); };
-    // verbose = function () {}; // comment out to enable verbose logging
+    verbose = function () {}; // comment out to enable verbose logging
 
     // ------------------ Trapping Keyboard Events ---------------------- //
 
@@ -130,7 +130,7 @@ define([
             });
 
             // Check the connection to the channel
-            //checkConnection(wc);
+            checkConnection(wc);
 
             bindAllEvents(textarea, doc, onEvent, false);
 
@@ -202,31 +202,32 @@ define([
         }
 
         var checkConnection = function(wc) {
-          //TODO
-            /*var socketChecker = setInterval(function () {
-                if (netflux.checkSocket(realtime)) {
-                    warn("Socket disconnected!");
+            if(wc.channels && wc.channels.size > 0) {
+                var channels = Array.from(wc.channels);
+                var channel = channels[0];
+                
+                var socketChecker = setInterval(function () {
+                    if (channel.checkSocket(realtime)) {
+                        warn("Socket disconnected!");
 
-                    recoverableErrorCount += 1;
+                        recoverableErrorCount += 1;
 
-                    if (recoverableErrorCount >= MAX_RECOVERABLE_ERRORS) {
-                        warn("Giving up!");
-                        realtime.abort();
-                        wc.leave()
-                            .then(null, function(err) {
-                                warn(err);
-                            });
-                        if (config.onAbort) {
-                            config.onAbort({
-                                socket: socket
-                            });
+                        if (recoverableErrorCount >= MAX_RECOVERABLE_ERRORS) {
+                            warn("Giving up!");
+                            realtime.abort();
+                            try { channel.close(); } catch (e) { warn(e); }
+                            if (config.onAbort) {
+                                config.onAbort({
+                                    socket: channel
+                                });
+                            }
+                            if (socketChecker) { clearInterval(socketChecker); }
                         }
-                        if (socketChecker) { clearInterval(socketChecker); }
+                    } else {
+                        // it's working as expected, continue
                     }
-                } else {
-                    // it's working as expected, continue
-                }
-            }, 200);*/
+                }, 200);
+            }
         }
 
         return {
