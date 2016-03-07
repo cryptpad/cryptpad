@@ -165,6 +165,21 @@ define([
             };
 
             var realtimeOptions = {
+                // the textarea that we will sync
+                textarea: $textarea[0],
+
+                // the websocket URL (deprecated?)
+                websocketURL: Config.websocketURL,
+
+                // our username
+                userName: userName,
+
+                // the channel we will communicate over
+                channel: key.channel,
+
+                // our encryption key
+                cryptKey: key.cryptKey,
+
                 // configuration :D
                 doc: inner,
                 // first thing called
@@ -183,12 +198,7 @@ define([
                 // pass in websocket/netflux object TODO
             };
 
-            var rti = window.rti = realtimeInput.start($textarea[0], // synced element
-                                    Config.websocketURL, // websocketURL, ofc
-                                    userName, // userName
-                                    key.channel, // channelName
-                                    key.cryptKey, // key
-                                    realtimeOptions);
+            var rti = window.rti = realtimeInput.start(realtimeOptions);
 
             $textarea.val(JSON.stringify(Convert.dom.to.hjson(inner)));
 
