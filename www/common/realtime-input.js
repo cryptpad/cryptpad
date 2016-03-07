@@ -30,7 +30,11 @@ define([
 
     var debug = function (x) { console.log(x); },
         warn = function (x) { console.error(x); },
-        verbose = function (x) { console.log(x); };
+        verbose = function (x) {
+            if (window.verboseLogging) {
+                console.log(x);
+            }
+        };
     // verbose = function () {}; // comment out to enable verbose logging
 
     // ------------------ Trapping Keyboard Events ---------------------- //
