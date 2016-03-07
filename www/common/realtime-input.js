@@ -101,9 +101,20 @@ define([
         var initializing = true;
 
         var bump = function () {};
+        
+        var onPeerMessage = function (peer, msg) {
+            if(peer === '_HISTORY_KEEPER_') {
+                var msgHistory = JSON.parse(msg[4]);
+                onMessage(msgHistory[1], msgHistory[4]);
+            }
+            else {
+                warn('Illegal direct message');
+            }
+        };
 
         var options = {
-          signaling: websocketUrl,
+          // signaling: websocketUrl,
+          signaling: 'ws://localhost:9000',
           topology: 'StarTopologyService',
           protocol: 'WebSocketProtocolService',
           connector: 'WebSocketService',
@@ -111,26 +122,42 @@ define([
         };
         var realtime;
 
+        // Add the Facade's peer messages handler
+        Netflux._onPeerMessage = onPeerMessage;
         // Connect to the WebSocket server
         Netflux.join(channel, options).then(function(wc) {
+
             wc.onMessage = onMessage; // On receiving message
             wc.onJoining = onJoining; // On user joining the session
 
             // Open a Chainpad session
             realtime = createRealtime();
-            realtime.onUserListChange(function (userList) {
-                var opt = {userList : userList};
-                // TODO : onJoining should only a a "newPeer" parameter
-                wc.onJoining(opt);
-            });
+            
+            // we're fully synced
+            initializing = false;
+
+            // execute an onReady callback if one was supplied
+            if (config.onReady) {
+                config.onReady();
+            }
+            
             // On sending message
             realtime.onMessage(function(message) {
+              // Do not send authentication messages since it is handled by Netflux
+              var parsed = parseMessage(message);
+              if (parsed.content[0] !== 0) {
                 message = Crypto.encrypt(message, cryptKey);
                 wc.send(message);
+              }
             });
+            
+            // Get the channel history
+            var hc;
+            wc.peers.forEach(function (p) { if (!hc || p.linkQuality > hc.linkQuality) { hc = p; } });
+            hc.send(JSON.stringify(['GET_HISTORY', wc.id]));
 
             // Check the connection to the channel
-            checkConnection(wc);
+            //checkConnection(wc);
 
             bindAllEvents(textarea, doc, onEvent, false);
 
@@ -156,8 +183,11 @@ define([
             return '\\' +c;
         }));
 
-        var onMessage = function(user, message) {
+        var onMessage = function(peer, msg) {
 
+            // remove the password
+            var passLen = msg.substring(0,msg.indexOf(':'));
+            var message = msg.substring(passLen.length+1 + Number(passLen));
             message = Crypto.decrypt(message, cryptKey);
 
             verbose(message);
@@ -183,22 +213,13 @@ define([
                 }
             }
         }
-        var onJoining = function(optionnalData) {
-            var userList = optionnalData.userList || [];
-            if (!initializing || userList.indexOf(userName) === -1) {
-                return;
-            }
-            // if we spot ourselves being added to the document, we'll switch
-            // 'initializing' off because it means we're fully synced.
-            initializing = false;
+        
+        var onJoining = function(peer, channel) {
 
-            // execute an onReady callback if one was supplied
-            // pass an object so we can extend this later
-            if (config.onReady) {
-                config.onReady({
-                    userList: userList
-                });
-            }
+        }
+
+        var onLeaving = function(peer, channel) {
+
         }
 
         var checkConnection = function(wc) {
@@ -229,6 +250,23 @@ define([
                 }, 200);
             }
         }
+
+        var parseMessage = function (msg) {
+            var res ={};
+            // two or more? use a for
+            ['pass','user','channelId','content'].forEach(function(attr){
+                var len=msg.slice(0,msg.indexOf(':')),
+                // taking an offset lets us slice out the prop
+                // and saves us one string copy
+                    o=len.length+1,
+                    prop=res[attr]=msg.slice(o,Number(len)+o);
+                // slice off the property and its descriptor
+                msg = msg.slice(prop.length+o);
+            });
+            // content is the only attribute that's not a string
+            res.content=JSON.parse(res.content);
+            return res;
+        };
 
         return {
             onEvent: function () {

@@ -129,9 +129,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          webChannel.onopen = function () {
 	            resolve(webChannel);
 	          };
-	          if (settings.openWebChannel && settings.openWebChannel === true) {
-	            webChannel.onopen();
-	          }
 	        });
 	      });
 	    }
@@ -215,8 +212,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.protocol = cs.EXCHANGEPROTOCOL_SERVICE;
 
 	    // Public attributes
-	    this.topology = this.settings.topology;
-	    this.topologyService = _ServiceProvider2.default.get(this.topology);
 	    this.id;
 	    this.myID = this._generateID();
 	    this.channels = new Set();
@@ -290,7 +285,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.topologyService = _ServiceProvider2.default.get(topologyServiceName);
 	    },
 	    get: function get() {
-	      return this.settings.topology;
+	      return this.settigns.topology;
 	    }
 	  }]);
 
@@ -619,7 +614,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        for (var _iterator = webChannel.channels[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
 	          var c = _step.value;
 
-	          c.send(data);
+	          var msg = JSON.stringify([c.seq++, data.type, webChannel.id, data.msg]);
+	          c.send(msg);
 	        }
 	      } catch (err) {
 	        _didIteratorError = true;
@@ -647,7 +643,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        for (var _iterator2 = webChannel.channels[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
 	          var c = _step2.value;
 
-	          c.send(data);
+	          var msg = JSON.stringify([c.seq++, data.type, id, data.msg]);
+	          c.send(msg);
 	        }
 	      } catch (err) {
 	        _didIteratorError2 = true;
@@ -1024,9 +1021,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.NAME = this.constructor.name;
 	    this.protocol = _ServiceProvider2.default.get(cs.EXCHANGEPROTOCOL_SERVICE);
 	    this.defaults = {
-	      signaling: 'ws://localhost:9000',
-	      // Maximum number of milliseconds of lag before we fail the connection.
-	      MAX_LAG_BEFORE_DISCONNECT: 20000
+	      signaling: 'ws://localhost:9000'
 	    };
 	    this.settings = Object.assign({}, this.defaults, options);
 	  }
@@ -1034,30 +1029,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _createClass(WebSocketService, [{
 	    key: 'join',
 	    value: function join(key) {
-	      var _this = this;
-
 	      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
 	      var settings = Object.assign({}, this.settings, options);
 	      return new Promise(function (resolve, reject) {
 	        var connection = undefined;
 	        var socket = new window.WebSocket(settings.signaling);
+	        socket.seq = 1;
 	        socket.facade = options.facade || null;
 	        socket.onopen = function () {
+	          if (key && key !== '') {
+	            socket.send(JSON.stringify([socket.seq++, 'JOIN', key]));
+	          } else {
+	            socket.send(JSON.stringify([socket.seq++, 'JOIN']));
+	          }
 	          resolve(socket);
 	        };
 	        socket.onerror = reject;
-	        // Check the status of the socket connection
-	        var isSocketDisconnected = function isSocketDisconnected(realtime, sock) {
-	          return sock.readyState === sock.CLOSING || sock.readyState === sock.CLOSED || realtime.getLag().waiting && realtime.getLag().lag > _this.settings.MAX_LAG_BEFORE_DISCONNECT;
-	        };
-	        socket.checkSocket = function (realtime) {
-	          if (isSocketDisconnected(realtime, socket) && !socket.intentionallyClosing) {
-	            return true;
-	          } else {
-	            return false;
-	          }
-	        };
 	      });
 	    }
 	  }]);
@@ -1202,18 +1190,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _createClass(WebSocketProtocolService, [{
 	    key: 'onmessage',
 	    value: function onmessage(e) {
-	      var msg = e.data;
+	      var msg = JSON.parse(e.data);
 	      var socket = e.currentTarget;
 	      var webChannel = socket.webChannel;
 	      var topology = cs.STAR_SERVICE;
-	      webChannel.topology = topology;
-	      webChannel.topologyService = _ServiceProvider2.default.get(topology);
-	      webChannel.onMessage('', msg);
+	      var topologyService = _ServiceProvider2.default.get(topology);
 
-	      /*
-	      let topology = cs.STAR_SERVICE
-	      let topologyService = ServiceProvider.get(topology)
-	        if (msg[0] !== 0) {
+	      if (msg[0] !== 0) {
 	        return;
 	      }
 	      if (msg[1] === 'IDENT') {
@@ -1227,56 +1210,65 @@ return /******/ (function(modules) { // webpackBootstrap
 	        socket.send(JSON.stringify(msg));
 	        return;
 	      }
-	      if (msg[2] === 'MSG') {
-	      }
+	      if (msg[2] === 'MSG') {}
 	      // We have received a new direct message from another user
 	      if (msg[2] === 'MSG' && msg[3] === socket.uid) {
 	        // Find the peer exists in one of our channels or create a new one
-	        if(typeof socket.facade._onPeerMessage === "function")
-	          socket.facade._onPeerMessage(msg[1], msg);
+	        if (typeof socket.facade._onPeerMessage === "function") socket.facade._onPeerMessage(msg[1], msg);
 	      }
 	      if (msg[2] === 'JOIN' && (webChannel.id == null || webChannel.id === msg[3])) {
-	        if(!webChannel.id) { // New unnamed channel : get its name from the first "JOIN" message
-	          var chanName = window.location.hash = msg[3];
-	          webChannel.id = chanName;
-	        }
-	          if (msg[1] === socket.uid) { // If the user catches himself registering, he is synchronized with the server
-	          webChannel.onopen();
-	        }
-	        else { // Trigger onJoining() when another user is joining the channel
-	            // Register the user in the list of peers in the channel
-	          var linkQuality = (msg[1] === '_HISTORY_KEEPER_') ? 1000 : 0;
-	          var sendToPeer = function(data) {
-	            topologyService.sendTo(msg[1], webChannel, {type : 'MSG', msg: data});
+	        if (!webChannel.id) {
+	          // New unnamed channel : get its name from the first "JOIN" message
+	          if (!window.location.hash) {
+	            var chanName = window.location.hash = msg[3];
 	          }
-	          var peer = {id: msg[1], connector: socket, linkQuality: linkQuality, send: sendToPeer};
-	          if(webChannel.peers.indexOf(peer) === -1) {
+	          webChannel.id = msg[3];
+	        }
+
+	        if (msg[1] === socket.uid) {
+	          // If the user catches himself registering, he is synchronized with the server
+	          webChannel.onopen();
+	        } else {
+	          // Trigger onJoining() when another user is joining the channel
+
+	          // Register the user in the list of peers in the channel
+	          var linkQuality = msg[1] === '_HISTORY_KEEPER_' ? 1000 : 0;
+	          var sendToPeer = function sendToPeer(data) {
+	            topologyService.sendTo(msg[1], webChannel, { type: 'MSG', msg: data });
+	          };
+	          var peer = { id: msg[1], connector: socket, linkQuality: linkQuality, send: sendToPeer };
+	          if (webChannel.peers.indexOf(peer) === -1) {
 	            webChannel.peers.push(peer);
 	          }
-	            if(typeof webChannel.onJoining === "function")
-	            webChannel.onJoining(msg[1]);
+
+	          if (typeof webChannel.onJoining === "function") webChannel.onJoining(msg[1]);
 	        }
 	      }
-	      // We have received a new message in that channel
+	      // We have received a new message in that channel from another peer
 	      if (msg[2] === 'MSG' && msg[3] === webChannel.id) {
 	        // Find the peer who sent the message and display it
 	        //TODO Use Peer instead of peer.id (msg[1]) :
-	        if(typeof webChannel.onMessage === "function")
-	          
+	        if (typeof webChannel.onMessage === "function") webChannel.onMessage(msg[1], msg[4]);
 	      }
 	      // Someone else has left the channel, remove him from the list of peers
 	      if (msg[2] === 'LEAVE' && msg[3] === webChannel.id) {
 	        //TODO Use Peer instead of peer.id (msg[1]) :
-	        if(typeof webChannel.onLeaving === "function")
-	          webChannel.onLeaving(msg[1], webChannel);
+	        if (typeof webChannel.onLeaving === "function") webChannel.onLeaving(msg[1], webChannel);
 	      }
-	      */
 	    }
 	  }, {
 	    key: 'message',
 	    value: function message(code, data) {
-	      // The message is already prepared and encrypted
-	      return data.data;
+	      var type = undefined;
+	      switch (code) {
+	        case cs.USER_DATA:
+	          type = 'MSG';
+	          break;
+	        case cs.JOIN_START:
+	          type = 'JOIN';
+	          break;
+	      }
+	      return { type: type, msg: data.data };
 	    }
 	  }]);
 
