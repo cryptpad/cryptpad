@@ -16,31 +16,22 @@
  */
 define([
     '/common/messages.js',
-    // TODO remove in favour of netflux
-    '/bower_components/reconnectingWebsocket/reconnecting-websocket.js',
+    '/common/Netflux.js',
     '/common/crypto.js',
     '/common/toolbar.js',
     '/common/sharejs_textarea.js',
     '/common/chainpad.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages,/*FIXME*/ ReconnectingWebSocket, Crypto, Toolbar, sharejs) {
+], function (Messages, Netflux, Crypto, Toolbar, sharejs) {
     var $ = window.jQuery;
     var ChainPad = window.ChainPad;
     var PARANOIA = true;
     var module = { exports: {} };
 
-    /**
-     * If an error is encountered but it is recoverable, do not immediately fail
-     * but if it keeps firing errors over and over, do fail.
-     */
-    var MAX_RECOVERABLE_ERRORS = 15;
-
-    /** Maximum number of milliseconds of lag before we fail the connection. */
-    var MAX_LAG_BEFORE_DISCONNECT = 20000;
-
     var debug = function (x) { console.log(x); },
         warn = function (x) { console.error(x); },
-        verbose = function (x) { /*console.log(x);*/ };
+        verbose = function (x) { console.log(x); };
+    // verbose = function () {}; // comment out to enable verbose logging
 
     // ------------------ Trapping Keyboard Events ---------------------- //
 
@@ -82,67 +73,6 @@ define([
                    unbind);
     };
 
-    /* websocket stuff */
-    var isSocketDisconnected = function (socket, realtime) {
-        var sock = socket._socket;
-        return sock.readyState === sock.CLOSING
-            || sock.readyState === sock.CLOSED
-            || (realtime.getLag().waiting && realtime.getLag().lag > MAX_LAG_BEFORE_DISCONNECT);
-    };
-
-    // this differs from other functions with similar names in that
-    // you are expected to pass a socket into it.
-    var checkSocket = function (socket) {
-        if (isSocketDisconnected(socket, socket.realtime) &&
-            !socket.intentionallyClosing) {
-            return true;
-        } else {
-            return false;
-        }
-    };
-
-    // TODO before removing websocket implementation
-    // bind abort to onLeaving
-    var abort = function (socket, realtime) {
-        realtime.abort();
-        realtime.toolbar.failed();
-        try { socket._socket.close(); } catch (e) { warn(e); }
-    };
-
-    var handleError = function (socket, realtime, err, docHTML, allMessages) {
-        // var internalError = createDebugInfo(err, realtime, docHTML, allMessages);
-        abort(socket, realtime);
-    };
-
-    var makeWebsocket = function (url) {
-        var socket = new ReconnectingWebSocket(url);
-        var out = {
-            onOpen: [],
-            onClose: [],
-            onError: [],
-            onMessage: [],
-            send: function (msg) { socket.send(msg); },
-            close: function () { socket.close(); },
-            _socket: socket
-        };
-        var mkHandler = function (name) {
-            return function (evt) {
-                for (var i = 0; i < out[name].length; i++) {
-                    if (out[name][i](evt) === false) {
-                        console.log(name +"Handler");
-                        return;
-                    }
-                }
-            };
-        };
-        socket.onopen = mkHandler('onOpen');
-        socket.onclose = mkHandler('onClose');
-        socket.onerror = mkHandler('onError');
-        socket.onmessage = mkHandler('onMessage');
-        return out;
-    };
-    /* end websocket stuff */
-
     var start = module.exports.start =
         function (textarea, websocketUrl, userName, channel, cryptKey, config)
     {
@@ -153,147 +83,134 @@ define([
         config = config || {};
 
         var doc = config.doc || null;
-
+        
         // trying to deprecate onRemote, prefer loading it via the conf
-        var onRemote = config.onRemote || null;
+        onRemote = config.onRemote || null;
 
-        var transformFunction = config.transformFunction || null;
+        transformFunction = config.transformFunction || null;
 
-        var socket;
-
-        if (config.socketAdaptor) {
-            // do netflux stuff
-        } else {
-            socket = makeWebsocket(websocketUrl);
-        }
         // define this in case it gets called before the rest of our stuff is ready.
         var onEvent = function () { };
 
         var allMessages = [];
-        var isErrorState = false;
         var initializing = true;
-        var recoverableErrorCount = 0;
-
-        var $textarea = $(textarea);
 
         var bump = function () {};
 
-        socket.onOpen.push(function (evt) {
+        var options = {
+          signaling: websocketUrl,
+          topology: 'StarTopologyService',
+          protocol: 'WebSocketProtocolService',
+          connector: 'WebSocketService',
+          openWebChannel: true
+        };
+        var realtime;
+        
+        // Connect to the WebSocket server
+        Netflux.join(channel, options).then(function(wc) {
+            wc.onMessage = onMessage; // On receiving message
+            wc.onJoining = onJoining; // On user joining the session
+
+            // Open a Chainpad session
+            realtime = createRealtime();
+            realtime.onUserListChange(function (userList) {
+                var opt = {userList : userList};
+                // TODO : onJoining should only a a "newPeer" parameter
+                wc.onJoining(opt);
+            });
+            // On sending message
+            realtime.onMessage(function(message) {
+                message = Crypto.encrypt(message, cryptKey);
+                wc.send(message);
+            });
+
+            // Check the connection to the channel
+            //checkConnection(wc);
+
+            bindAllEvents(textarea, doc, onEvent, false);
+
+            sharejs.attach(textarea, realtime);
+            bump = realtime.bumpSharejs;
+
+            realtime.start();
+        }, function(error) {
+            warn(error);
+        });
+
+        var createRealtime = function() {
+            return ChainPad.create(userName,
+                                        passwd,
+                                        channel,
+                                        $(textarea).val(),
+                                        {
+                                        transformFunction: config.transformFunction
+                                        });
+        }
+        
+        var whoami = new RegExp(userName.replace(/[\/\+]/g, function (c) {
+            return '\\' +c;
+        }));
+
+        var onMessage = function(user, message) {
+
+            message = Crypto.decrypt(message, cryptKey);
+            
+            verbose(message);
+            allMessages.push(message);
             if (!initializing) {
-                console.log("Starting");
-                // realtime is passed around as an attribute of the socket
-                // FIXME??
-                socket.realtime.start();
+                if (PARANOIA) {
+                    onEvent();
+                }
+            }
+            realtime.message(message);
+            if (/\[5,/.test(message)) { verbose("pong"); }
+
+            if (!initializing) {
+                if (/\[2,/.test(message)) {
+                    //verbose("Got a patch");
+                    if (whoami.test(message)) {
+                        //verbose("Received own message");
+                    } else {
+                        //verbose("Received remote message");
+                        // obviously this is only going to get called if
+                        if (onRemote) { onRemote(realtime.getUserDoc()); }
+                    }
+                }
+            }
+        }
+        var onJoining = function(optionnalData) {
+            var userList = optionnalData.userList || [];
+            if (!initializing || userList.indexOf(userName) === -1) {
                 return;
             }
+            // if we spot ourselves being added to the document, we'll switch
+            // 'initializing' off because it means we're fully synced.
+            initializing = false;
 
-            var realtime = socket.realtime = ChainPad.create(userName,
-                                passwd,
-                                channel,
-                                $(textarea).val(),
-                                {
-                                    transformFunction: config.transformFunction
-                                });
-
-            if (config.onInit) {
-                // extend as you wish
-                config.onInit({
-                    realtime: realtime
+            // execute an onReady callback if one was supplied
+            // pass an object so we can extend this later
+            if (config.onReady) {
+                config.onReady({
+                    userList: userList
                 });
             }
+        }
 
-            onEvent = function () {
-                // This looks broken
-                if (isErrorState || initializing) { return; }
-            };
-
-            realtime.onUserListChange(function (userList) {
-                if (!initializing || userList.indexOf(userName) === -1) {
-                    return;
-                }
-                // if we spot ourselves being added to the document, we'll switch
-                // 'initializing' off because it means we're fully synced.
-                initializing = false;
-
-                // execute an onReady callback if one was supplied
-                // pass an object so we can extend this later
-                if (config.onReady) {
-                    // extend as you wish
-                    config.onReady({
-                        userList: userList
-                    });
-                }
-            });
-
-            var whoami = new RegExp(userName.replace(/[\/\+]/g, function (c) {
-                return '\\' +c;
-            }));
-
-            // when you receive a message...
-            socket.onMessage.push(function (evt) {
-                verbose(evt.data);
-                if (isErrorState) { return; }
-
-                var message = Crypto.decrypt(evt.data, cryptKey);
-                verbose(message);
-                allMessages.push(message);
-                if (!initializing) {
-                    if (PARANOIA) {
-                        onEvent();
-                    }
-                }
-                realtime.message(message);
-                if (/\[5,/.test(message)) { verbose("pong"); }
-
-                if (!initializing) {
-                    if (/\[2,/.test(message)) {
-                        //verbose("Got a patch");
-                        if (whoami.test(message)) {
-                            //verbose("Received own message");
-                        } else {
-                            //verbose("Received remote message");
-                            // obviously this is only going to get called if
-                            if (onRemote) { onRemote(realtime.getUserDoc()); }
-                        }
-                    }
-                }
-            });
-
-            // when a message is ready to send
-            realtime.onMessage(function (message) {
-                if (isErrorState) { return; }
-                message = Crypto.encrypt(message, cryptKey);
-                try {
-                    socket.send(message);
-                } catch (e) {
-                    warn(e);
-                }
-            });
-
-            // actual socket bindings
-            socket.onmessage = function (evt) {
-                for (var i = 0; i < socket.onMessage.length; i++) {
-                    if (socket.onMessage[i](evt) === false) { return; }
-                }
-            };
-            socket.onclose = function (evt) {
-                for (var i = 0; i < socket.onMessage.length; i++) {
-                    if (socket.onClose[i](evt) === false) { return; }
-                }
-            };
-
-            socket.onerror = warn;
-
-            // TODO confirm that we can rely on netflux API
-            var socketChecker = setInterval(function () {
-                if (checkSocket(socket)) {
+        var checkConnection = function(wc) {
+          //TODO
+            /*var socketChecker = setInterval(function () {
+                if (netflux.checkSocket(realtime)) {
                     warn("Socket disconnected!");
 
                     recoverableErrorCount += 1;
 
                     if (recoverableErrorCount >= MAX_RECOVERABLE_ERRORS) {
                         warn("Giving up!");
-                        abort(socket, realtime);
+                        realtime.abort();
+                        wc.leave()
+                            .then(null, function(err) {
+                                warn(err);
+                            });
                         if (config.onAbort) {
                             config.onAbort({
                                 socket: socket
@@ -304,19 +221,9 @@ define([
                 } else {
                     // it's working as expected, continue
                 }
-            }, 200);
+            }, 200);*/
+        }
 
-            bindAllEvents(textarea, doc, onEvent, false);
-
-            // attach textarea
-            // NOTE: should be able to remove the websocket without damaging this
-            sharejs.attach(textarea, realtime);
-
-            realtime.start();
-            debug('started');
-
-            bump = realtime.bumpSharejs;
-        });
         return {
             onEvent: function () {
                 onEvent();
