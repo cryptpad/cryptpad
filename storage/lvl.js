@@ -38,7 +38,7 @@ var getMessages = function (db, channelName, msgHandler) {
                 if (i < index) { again(i+1); }
             }));
         };
-        again(0);
+        if (index > -1) { again(0); }
     });
 };
 
