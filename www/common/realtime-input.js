@@ -113,8 +113,8 @@ define([
         };
 
         var options = {
-          // signaling: websocketUrl,
-          signaling: 'ws://localhost:8000',
+          signaling: websocketUrl,
+          // signaling: 'ws://localhost:8000',
           key: channel
           // topology: 'StarTopologyService',
           // protocol: 'WebSocketProtocolService',
