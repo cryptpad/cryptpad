@@ -127,27 +127,46 @@ define([
         // Add the Facade's peer messages handler
         Netflux._onPeerMessage = onPeerMessage;
         
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+        if(getParameterByName("server")) {
+          console.log('SERVER');
+          console.log(channel);
         var webchannel = Netflux.create();
         webchannel.openForJoining(options).then(function(data) {
-          console.log('keys');
-          console.log(channel);
-          console.log(data);
-          webchannel.onmessage = onMessage; // On receiving message
-          webchannel.onJoining = onJoining; // On user joining the session
-          webchannel.onLeaving = onLeaving; // On user leaving the session
         
         // console.log('resolved');
         
-          onOpen();
+          onOpen(webchannel);
         
         }, function(err) {
           console.log('rejected');
           console.error(err);
         });
-        
-        var onOpen = function() {
+        }
+        else {
+          console.log('CLIENT');
+          console.log(channel);
           // Connect to the WebSocket server
           Netflux.join(channel, options).then(function(wc) {
+              onOpen(wc);
+          }, function(error) {
+              warn(error);
+          });
+        }
+        
+        var onOpen = function(wc) {
+          
+              console.log('joined the channel');
+              console.log(wc.myID);
 
               wc.onmessage = onMessage; // On receiving message
               wc.onJoining = onJoining; // On user joining the session
@@ -166,12 +185,16 @@ define([
               
               // On sending message
               realtime.onMessage(function(message) {
+                // TODO: put in ChaindpadAdapter
                 // Do not send authentication messages since it is handled by Netflux
                 var parsed = parseMessage(message);
                 if (parsed.content[0] !== 0) {
+                  console.log('ENVOI '+message);
                   message = Crypto.encrypt(message, cryptKey);
                   wc.send(message);
+                  onMessage('', message);
                 }
+                // END-TODO
               });
               
               // Get the channel history
@@ -188,9 +211,7 @@ define([
               bump = realtime.bumpSharejs;
 
               realtime.start();
-          }, function(error) {
-              warn(error);
-          });
+          
         } 
 
         var createRealtime = function() {
@@ -208,12 +229,18 @@ define([
         }));
 
         var onMessage = function(peer, msg) {
+          
+          // TODO : put in ChainpadAdapter
 
             // remove the password
             var passLen = msg.substring(0,msg.indexOf(':'));
             var message = msg.substring(passLen.length+1 + Number(passLen));
+            
             message = Crypto.decrypt(message, cryptKey);
-
+            console.log('RECOIS '+message);
+            
+          // END-TODO ChainpadAdapter
+            
             verbose(message);
             allMessages.push(message);
             if (!initializing) {

@@ -500,6 +500,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'broadcast',
 	    value: function broadcast(webChannel, data) {
+	      console.log(data);
 	      var _iteratorNormalCompletion = true;
 	      var _didIteratorError = false;
 	      var _iteratorError = undefined;
@@ -508,6 +509,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        for (var _iterator = webChannel.channels[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
 	          var c = _step.value;
 
+	          console.log(c);
 	          c.send(data);
 	        }
 	      } catch (err) {

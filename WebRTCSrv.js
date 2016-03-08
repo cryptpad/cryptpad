@@ -5,10 +5,6 @@ const UNSUPPORTED_DATA = 1007
 const POLICY_VIOLATION = 1008
 const CLOSE_UNSUPPORTED = 1003
 
-// let server = new WebSocketServer({port: PORT}, () => {
-  // console.log('Server runs on: ws://localhost:' + PORT)
-// })
-
 var run = module.exports.run = function(storage, server) {
   server.on('connection', (socket) => {
     socket.on('message', (data) => {
