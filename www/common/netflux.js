@@ -254,7 +254,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          _this.topologyService.broadcast(_this, protocol.message(cs.JOIN_FINISH, id));
 	          _this.onJoining(id);
 	        });
-	      }).then(function (data) {
+	      }, settings).then(function (data) {
 	        return data;
 	      });
 	    }
@@ -747,6 +747,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      return new Promise(function (resolve, reject) {
 	        var connections = [];
+	        console.log(settings);
 	        var socket = new window.WebSocket(settings.signaling);
 	        socket.onopen = function () {
 	          socket.send(JSON.stringify({ key: settings.key }));
@@ -804,8 +805,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return new Promise(function (resolve, reject) {
 	        var connection = undefined;
 	        var socket = new window.WebSocket(settings.signaling);
+	        console.log('Socket created');
 	        socket.onopen = function () {
 	          connection = new _this2.RTCPeerConnection(settings.webRTCOptions);
+	          console.log('RTC created');
 	          connection.onicecandidate = function (e) {
 	            if (e.candidate !== null) {
 	              var candidate = {
@@ -816,6 +819,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	          };
 	          var dc = connection.createDataChannel(key);
+	          console.log('data channel created');
+	          console.log(dc);
 	          dc.onopen = function () {
 	            resolve(dc);
 	          };
@@ -827,6 +832,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        };
 	        socket.onmessage = function (e) {
 	          var msg = JSON.parse(e.data);
+	          console.log('message');
+	          console.log(msg);
 	          if (Reflect.has(msg, 'data')) {
 	            if (Reflect.has(msg.data, 'answer')) {
 	              var sd = Object.assign(new _this2.RTCSessionDescription(), msg.data.answer);

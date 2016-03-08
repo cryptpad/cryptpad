@@ -113,61 +113,85 @@ define([
         };
 
         var options = {
-          signaling: websocketUrl,
-          // signaling: 'ws://localhost:9000',
-          topology: 'StarTopologyService',
-          protocol: 'WebSocketProtocolService',
-          connector: 'WebSocketService',
-          openWebChannel: true
+          // signaling: websocketUrl,
+          signaling: 'ws://localhost:8000',
+          key: channel
+          // topology: 'StarTopologyService',
+          // protocol: 'WebSocketProtocolService',
+          // connector: 'WebSocketService',
+          // openWebChannel: true
         };
+        console.log(options);
         var realtime;
 
         // Add the Facade's peer messages handler
         Netflux._onPeerMessage = onPeerMessage;
-        // Connect to the WebSocket server
-        Netflux.join(channel, options).then(function(wc) {
-
-            wc.onMessage = onMessage; // On receiving message
-            wc.onJoining = onJoining; // On user joining the session
-
-            // Open a Chainpad session
-            realtime = createRealtime();
-            
-            // we're fully synced
-            initializing = false;
-
-            // execute an onReady callback if one was supplied
-            if (config.onReady) {
-                config.onReady();
-            }
-            
-            // On sending message
-            realtime.onMessage(function(message) {
-              // Do not send authentication messages since it is handled by Netflux
-              var parsed = parseMessage(message);
-              if (parsed.content[0] !== 0) {
-                message = Crypto.encrypt(message, cryptKey);
-                wc.send(message);
-              }
-            });
-            
-            // Get the channel history
-            var hc;
-            wc.peers.forEach(function (p) { if (!hc || p.linkQuality > hc.linkQuality) { hc = p; } });
-            hc.send(JSON.stringify(['GET_HISTORY', wc.id]));
-
-            // Check the connection to the channel
-            //checkConnection(wc);
-
-            bindAllEvents(textarea, doc, onEvent, false);
-
-            sharejs.attach(textarea, realtime);
-            bump = realtime.bumpSharejs;
-
-            realtime.start();
-        }, function(error) {
-            warn(error);
+        
+        var webchannel = Netflux.create();
+        webchannel.openForJoining(options).then(function(data) {
+          console.log('keys');
+          console.log(channel);
+          console.log(data);
+          webchannel.onmessage = onMessage; // On receiving message
+          webchannel.onJoining = onJoining; // On user joining the session
+          webchannel.onLeaving = onLeaving; // On user leaving the session
+        
+        // console.log('resolved');
+        
+          onOpen();
+        
+        }, function(err) {
+          console.log('rejected');
+          console.error(err);
         });
+        
+        var onOpen = function() {
+          // Connect to the WebSocket server
+          Netflux.join(channel, options).then(function(wc) {
+
+              wc.onmessage = onMessage; // On receiving message
+              wc.onJoining = onJoining; // On user joining the session
+              wc.onLeaving = onLeaving; // On user leaving the session
+
+              // Open a Chainpad session
+              realtime = createRealtime();
+              
+              // we're fully synced
+              initializing = false;
+
+              // execute an onReady callback if one was supplied
+              if (config.onReady) {
+                  config.onReady();
+              }
+              
+              // On sending message
+              realtime.onMessage(function(message) {
+                // Do not send authentication messages since it is handled by Netflux
+                var parsed = parseMessage(message);
+                if (parsed.content[0] !== 0) {
+                  message = Crypto.encrypt(message, cryptKey);
+                  wc.send(message);
+                }
+              });
+              
+              // Get the channel history
+              // var hc;
+              // wc.peers.forEach(function (p) { if (!hc || p.linkQuality > hc.linkQuality) { hc = p; } });
+              // hc.send(JSON.stringify(['GET_HISTORY', wc.id]));
+
+              // Check the connection to the channel
+              //checkConnection(wc);
+
+              bindAllEvents(textarea, doc, onEvent, false);
+
+              sharejs.attach(textarea, realtime);
+              bump = realtime.bumpSharejs;
+
+              realtime.start();
+          }, function(error) {
+              warn(error);
+          });
+        } 
 
         var createRealtime = function() {
             return ChainPad.create(userName,
@@ -215,11 +239,11 @@ define([
         }
         
         var onJoining = function(peer, channel) {
-
+          console.log('Someone joined : '+peer)
         }
 
         var onLeaving = function(peer, channel) {
-
+          console.log('Someone left : '+peer)
         }
 
         var checkConnection = function(wc) {
