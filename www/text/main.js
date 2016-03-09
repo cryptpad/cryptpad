@@ -20,6 +20,7 @@ define([
     var $textarea = $('textarea');
 
     var config = {
+        textarea: $textarea[0],
         websocketURL: Config.websocketURL,
         userName: Crypto.rand64(8),
         channel: key.channel,
