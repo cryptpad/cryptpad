@@ -102,16 +102,8 @@ define([
 
         var bump = function () {};
         
-        var onPeerMessage = function (peer, msg) {
-            if(peer === '_HISTORY_KEEPER_') {
-                var msgHistory = JSON.parse(msg[4]);
-                onMessage(msgHistory[1], msgHistory[4]);
-            }
-            else {
-                warn('Illegal direct message');
-            }
-        };
-
+        var messagesHistory = [];
+        
         var options = {
           signaling: websocketUrl,
           // signaling: 'ws://localhost:8000',
@@ -125,7 +117,7 @@ define([
         var realtime;
 
         // Add the Facade's peer messages handler
-        Netflux._onPeerMessage = onPeerMessage;
+        // Netflux._onPeerMessage = onPeerMessage;
         
         function getParameterByName(name, url) {
             if (!url) url = window.location.href;
@@ -171,6 +163,9 @@ define([
               wc.onmessage = onMessage; // On receiving message
               wc.onJoining = onJoining; // On user joining the session
               wc.onLeaving = onLeaving; // On user leaving the session
+              wc.onPeerMessage = function(peerId, type) {
+                onPeerMessage(peerId, wc); // On user leaving the session
+              }
 
               // Open a Chainpad session
               realtime = createRealtime();
@@ -191,12 +186,21 @@ define([
                 if (parsed.content[0] !== 0) {
                   console.log('ENVOI '+message);
                   message = Crypto.encrypt(message, cryptKey);
-                  wc.send(message);
-                  onMessage('', message);
+                  wc.send(message).then(function() {
+                    onMessage('', message);
+                  });
                 }
                 // END-TODO
               });
               
+              var hc;
+              for (let c of wc.channels) { hc = c; break; }
+              if(hc) {
+                console.log('history keeper :');
+                console.log(hc);
+                console.log('onPeer '+hc.peerID)
+                wc.getHistory(hc.peerID);
+              }
               // Get the channel history
               // var hc;
               // wc.peers.forEach(function (p) { if (!hc || p.linkQuality > hc.linkQuality) { hc = p; } });
@@ -227,16 +231,28 @@ define([
         var whoami = new RegExp(userName.replace(/[\/\+]/g, function (c) {
             return '\\' +c;
         }));
+        
+        var onPeerMessage = function(peerID, wc) {
+          console.log(messagesHistory);
+          console.log('RTsendTo '+peerID);
+            messagesHistory.forEach(function(msg) {
+              console.log(msg);
+              //var message = Crypto.encrypt('1:y'+msg, cryptKey);
+              wc.sendTo(peerID, msg);
+            });
+        };
 
         var onMessage = function(peer, msg) {
           
           // TODO : put in ChainpadAdapter
 
             // remove the password
+            messagesHistory.push(msg);
             var passLen = msg.substring(0,msg.indexOf(':'));
             var message = msg.substring(passLen.length+1 + Number(passLen));
             
             message = Crypto.decrypt(message, cryptKey);
+            
             console.log('RECOIS '+message);
             
           // END-TODO ChainpadAdapter

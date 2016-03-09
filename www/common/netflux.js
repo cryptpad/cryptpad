@@ -226,8 +226,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'send',
 	    value: function send(data) {
-	      var protocol = _ServiceProvider2.default.get(this.settings.protocol);
-	      this.topologyService.broadcast(this, protocol.message(cs.USER_DATA, { id: this.myID, data: data }));
+	      var channel = this;
+	      return new Promise(function (resolve, reject) {
+	        if (channel.channels.size === 0) {
+	          console.log('sizenull');resolve();
+	        }
+	        var protocol = _ServiceProvider2.default.get(channel.settings.protocol);
+	        channel.topologyService.broadcast(channel, protocol.message(cs.USER_DATA, { id: channel.myID, data: data })).then(resolve, reject);
+	      });
+	    }
+	  }, {
+	    key: 'getHistory',
+	    value: function getHistory(historyKeeperID) {
+	      var channel = this;
+	      return new Promise(function (resolve, reject) {
+	        console.log(channel);
+	        console.log('Je veux history ' + channel.myID);
+	        var protocol = _ServiceProvider2.default.get(channel.settings.protocol);
+	        channel.topologyService.sendTo(historyKeeperID, channel, protocol.message(cs.GET_HISTORY, { id: channel.myID, data: '' })).then(resolve, reject);
+	      });
+	    }
+	  }, {
+	    key: 'sendTo',
+	    value: function sendTo(id, msg) {
+	      var channel = this;
+	      return new Promise(function (resolve, reject) {
+	        var protocol = _ServiceProvider2.default.get(channel.settings.protocol);
+	        console.log('WCsendTo ' + id);
+	        channel.topologyService.sendTo(id, channel, protocol.message(cs.USER_DATA, { id: channel.myID, data: msg })).then(resolve, reject);
+	      });
 	    }
 	  }, {
 	    key: 'openForJoining',
@@ -305,6 +332,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	// API user's message
 	var USER_DATA = exports.USER_DATA = 0;
+	var GET_HISTORY = exports.GET_HISTORY = 6;
 
 	// Internal messages
 	var JOIN_START = exports.JOIN_START = 2;
@@ -379,7 +407,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function get(code) {
 	      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-	      var service = undefined;
+	      var service = void 0;
 	      switch (code) {
 	        case cs.WEBRTC_SERVICE:
 	          service = new _WebRTCService2.default(options);
@@ -441,6 +469,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
 	    _classCallCheck(this, FullyConnectedService);
+
+	    console.log('SERVICE FULLY CONNECTED CONSTRUCTED');
 	  }
 
 	  _createClass(FullyConnectedService, [{
@@ -500,62 +530,70 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'broadcast',
 	    value: function broadcast(webChannel, data) {
-	      console.log(data);
-	      var _iteratorNormalCompletion = true;
-	      var _didIteratorError = false;
-	      var _iteratorError = undefined;
+	      return new Promise(function (resolve, reject) {
+	        var _iteratorNormalCompletion = true;
+	        var _didIteratorError = false;
+	        var _iteratorError = undefined;
 
-	      try {
-	        for (var _iterator = webChannel.channels[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	          var c = _step.value;
-
-	          console.log(c);
-	          c.send(data);
-	        }
-	      } catch (err) {
-	        _didIteratorError = true;
-	        _iteratorError = err;
-	      } finally {
 	        try {
-	          if (!_iteratorNormalCompletion && _iterator.return) {
-	            _iterator.return();
+	          for (var _iterator = webChannel.channels[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	            var c = _step.value;
+
+	            c.send(data);
 	          }
+	        } catch (err) {
+	          _didIteratorError = true;
+	          _iteratorError = err;
 	        } finally {
-	          if (_didIteratorError) {
-	            throw _iteratorError;
+	          try {
+	            if (!_iteratorNormalCompletion && _iterator.return) {
+	              _iterator.return();
+	            }
+	          } finally {
+	            if (_didIteratorError) {
+	              throw _iteratorError;
+	            }
 	          }
 	        }
-	      }
+
+	        resolve();
+	      });
 	    }
 	  }, {
 	    key: 'sendTo',
 	    value: function sendTo(id, webChannel, data) {
-	      var _iteratorNormalCompletion2 = true;
-	      var _didIteratorError2 = false;
-	      var _iteratorError2 = undefined;
+	      console.log('sending to ' + id);
 
-	      try {
-	        for (var _iterator2 = webChannel.channels[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-	          var c = _step2.value;
+	      return new Promise(function (resolve, reject) {
+	        var _iteratorNormalCompletion2 = true;
+	        var _didIteratorError2 = false;
+	        var _iteratorError2 = undefined;
 
-	          if (c.peerID == id) {
-	            c.send(data);
-	          }
-	        }
-	      } catch (err) {
-	        _didIteratorError2 = true;
-	        _iteratorError2 = err;
-	      } finally {
 	        try {
-	          if (!_iteratorNormalCompletion2 && _iterator2.return) {
-	            _iterator2.return();
+	          for (var _iterator2 = webChannel.channels[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	            var c = _step2.value;
+
+	            if (c.peerID == id) {
+	              c.send(data);
+	            }
 	          }
+	        } catch (err) {
+	          _didIteratorError2 = true;
+	          _iteratorError2 = err;
 	        } finally {
-	          if (_didIteratorError2) {
-	            throw _iteratorError2;
+	          try {
+	            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	              _iterator2.return();
+	            }
+	          } finally {
+	            if (_didIteratorError2) {
+	              throw _iteratorError2;
+	            }
 	          }
 	        }
-	      }
+
+	        resolve();
+	      });
 	    }
 	  }, {
 	    key: 'leave',
@@ -805,7 +843,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var settings = Object.assign({}, this.settings, options);
 	      return new Promise(function (resolve, reject) {
-	        var connection = undefined;
+	        var connection = void 0;
 	        var socket = new window.WebSocket(settings.signaling);
 	        console.log('Socket created');
 	        socket.onopen = function () {
@@ -928,8 +966,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                  }, function () {});
 	                })();
 	              } else if (msg.sdp.type === 'answer') {
-	                var sd = Object.assign(new this.RTCSessionDescription(), msg.sdp);
-	                webChannel.connections.get(msg.senderPeerID).setRemoteDescription(sd, function () {}, function () {});
+	                var _sd = Object.assign(new this.RTCSessionDescription(), msg.sdp);
+	                webChannel.connections.get(msg.senderPeerID).setRemoteDescription(_sd, function () {}, function () {});
 	              }
 	            } else if (Reflect.has(msg, 'candidate')) {
 	              webChannel.connections.get(msg.senderPeerID).addIceCandidate(new this.RTCIceCandidate(msg.candidate));
@@ -1042,7 +1080,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var settings = Object.assign({}, this.settings, options);
 	      return new Promise(function (resolve, reject) {
-	        var connection = undefined;
+	        var connection = void 0;
 	        var socket = new window.WebSocket(settings.signaling);
 	        socket.seq = 1;
 	        socket.facade = options.facade || null;
@@ -1108,6 +1146,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        case cs.USER_DATA:
 	          webChannel.onmessage(msg.id, msg.data);
 	          break;
+	        case cs.GET_HISTORY:
+	          console.log("SOMEONE WANTS HISTORY");
+	          webChannel.onPeerMessage(msg.id, msg.code);
+	          break;
 	        case cs.SERVICE_DATA:
 	          var service = _ServiceProvider2.default.get(msg.service);
 	          service.onmessage(channel, msg.data);
@@ -1138,6 +1180,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        case cs.USER_DATA:
 	          msg.id = data.id;
 	          msg.data = data.data;
+	          break;
+	        case cs.GET_HISTORY:
+	          msg.id = data.id;
 	          break;
 	        case cs.SERVICE_DATA:
 	          msg.service = data.service;
@@ -1268,7 +1313,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'message',
 	    value: function message(code, data) {
-	      var type = undefined;
+	      var type = void 0;
 	      switch (code) {
 	        case cs.USER_DATA:
 	          type = 'MSG';

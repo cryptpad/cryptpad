@@ -36,6 +36,7 @@ var run = module.exports.run = function(storage, server) {
               socket.master = master
               master.joiningClients.push(socket)
               let id = master.joiningClients.length - 1
+              console.log(id);
               master.send(JSON.stringify({id, data: msg.data}))
               return
             }
@@ -54,10 +55,30 @@ var run = module.exports.run = function(storage, server) {
     })
 
     socket.on('close', (event) => {
-      if (socket.hasOwnProperty('joiningClients')) {
-        for (let client of socket.joiningClients) {
-          client.close(POLICY_VIOLATION, 'The peer is no longer available')
+      console.log('someone has closed');
+      // If not master
+      if (socket.hasOwnProperty('master')) {
+        let masterClients = socket.master.joiningClients
+        for (let client of masterClients) {
+          if(client.id === socket.id) {
+            console.log('close client '+client.key)
+            client.close(POLICY_VIOLATION, 'The peer is no longer available')
+            //masterClients.splice(masterClients.indexOf(client),1);
+          }
         }
+      }
+      else if (socket.hasOwnProperty('joiningClients')) {
+        let firstClient
+        let masterClients = socket.joiningClients
+        for (let client of masterClients) {
+          firstClient = client
+          break;
+        }
+        firstClient.close(POLICY_VIOLATION, 'The master is no longer available')
+        //masterClients.splice(masterClients.indexOf(firstClient),1);
+        firstClient.joiningClients = masterClients
+        console.log('change master from '+socket.key+' to '+firstClient.key)
+        socket = firstClient
       }
     })
   })
