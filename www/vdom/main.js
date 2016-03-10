@@ -170,6 +170,7 @@ define([
 
                 // the websocket URL (deprecated?)
                 websocketURL: Config.websocketURL,
+                webrtcURL: Config.webrtcURL,
 
                 // our username
                 userName: userName,

@@ -72,12 +72,23 @@ define([
                    onEvent,
                    unbind);
     };
+    
+    var getParameterByName = function (name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    };
 
     var start = module.exports.start =
         function (config)
     {
         var textarea = config.textarea;
         var websocketUrl = config.websocketURL;
+        var webrtcUrl = config.webrtcURL;
         var userName = config.userName;
         var channel = config.channel;
         var cryptKey = config.cryptKey;
@@ -103,52 +114,41 @@ define([
         var bump = function () {};
         
         var messagesHistory = [];
-        
+
         var options = {
-          signaling: websocketUrl,
-          // signaling: 'ws://localhost:8000',
           key: channel
-          // topology: 'StarTopologyService',
-          // protocol: 'WebSocketProtocolService',
-          // connector: 'WebSocketService',
-          // openWebChannel: true
-        };
-        console.log(options);
+        }
+
+        var rtc = true;
+        var connected = false;
         var realtime;
 
-        // Add the Facade's peer messages handler
-        // Netflux._onPeerMessage = onPeerMessage;
-        
-        function getParameterByName(name, url) {
-            if (!url) url = window.location.href;
-            name = name.replace(/[\[\]]/g, "\\$&");
-            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-                results = regex.exec(url);
-            if (!results) return null;
-            if (!results[2]) return '';
-            return decodeURIComponent(results[2].replace(/\+/g, " "));
-        }
-
-        if(getParameterByName("server")) {
-          console.log('SERVER');
-          console.log(channel);
-        var webchannel = Netflux.create();
-        webchannel.openForJoining(options).then(function(data) {
-        
-        // console.log('resolved');
-        
-          onOpen(webchannel);
-        
-        }, function(err) {
-          console.log('rejected');
-          console.error(err);
-        });
+        if(!getParameterByName("webrtc")) {
+          rtc = false;
+          options.signaling = websocketUrl;
+          options.topology = 'StarTopologyService';
+          options.protocol = 'WebSocketProtocolService';
+          options.connector = 'WebSocketService';
+          options.openWebChannel = true;
         }
         else {
-          console.log('CLIENT');
-          console.log(channel);
-          // Connect to the WebSocket server
+          options.signaling = webrtcUrl;
+        }
+
+        if(rtc) {
+          // Check if the WebRTC channel exists and create it if necessary
+          var webchannel = Netflux.create();
+          webchannel.openForJoining(options).then(function(data) {
+              connected = true;
+              onOpen(webchannel);
+          }, function(error) {
+              warn(error);
+          });
+        }
+        if(!connected) {
+          // Connect to the WebSocket/WebRTC channel
           Netflux.join(channel, options).then(function(wc) {
+              connected = true;
               onOpen(wc);
           }, function(error) {
               warn(error);
@@ -156,65 +156,64 @@ define([
         }
         
         var onOpen = function(wc) {
-          
-              console.log('joined the channel');
-              console.log(wc.myID);
+            // Add the handlers to the WebChannel
+            wc.onmessage = onMessage; // On receiving message
+            wc.onJoining = onJoining; // On user joining the session
+            wc.onLeaving = onLeaving; // On user leaving the session
+            wc.onPeerMessage = function(peerId, type) {
+              onPeerMessage(peerId, type, wc);
+            }
 
-              wc.onmessage = onMessage; // On receiving message
-              wc.onJoining = onJoining; // On user joining the session
-              wc.onLeaving = onLeaving; // On user leaving the session
-              wc.onPeerMessage = function(peerId, type) {
-                onPeerMessage(peerId, wc); // On user leaving the session
+            // Open a Chainpad session
+            realtime = createRealtime();
+            
+            // we're fully synced
+            initializing = false;
+
+            // execute an onReady callback if one was supplied
+            if (config.onReady) {
+                config.onReady();
+            }
+            
+            // On sending message
+            realtime.onMessage(function(message) {
+              // Prevent Chainpad from sending authentication messages since it is handled by Netflux
+              var parsed = parseMessage(message);
+              if (parsed.content[0] !== 0) {
+                message = Crypto.encrypt(message, cryptKey);
+                wc.send(message).then(function() {
+                  // Send the message back to Chainpad once it is sent to all peers if using the WebRTC protocol
+                  if(rtc) { onMessage('', message); }
+                });
               }
+            });
 
-              // Open a Chainpad session
-              realtime = createRealtime();
-              
-              // we're fully synced
-              initializing = false;
-
-              // execute an onReady callback if one was supplied
-              if (config.onReady) {
-                  config.onReady();
-              }
-              
-              // On sending message
-              realtime.onMessage(function(message) {
-                // TODO: put in ChaindpadAdapter
-                // Do not send authentication messages since it is handled by Netflux
-                var parsed = parseMessage(message);
-                if (parsed.content[0] !== 0) {
-                  console.log('ENVOI '+message);
-                  message = Crypto.encrypt(message, cryptKey);
-                  wc.send(message).then(function() {
-                    onMessage('', message);
-                  });
-                }
-                // END-TODO
-              });
-              
-              var hc;
+            // Get the channel history
+            var hc;
+            if(rtc) {
               for (let c of wc.channels) { hc = c; break; }
               if(hc) {
-                console.log('history keeper :');
-                console.log(hc);
-                console.log('onPeer '+hc.peerID)
                 wc.getHistory(hc.peerID);
               }
-              // Get the channel history
-              // var hc;
-              // wc.peers.forEach(function (p) { if (!hc || p.linkQuality > hc.linkQuality) { hc = p; } });
-              // hc.send(JSON.stringify(['GET_HISTORY', wc.id]));
+            }
+            else {
+              // TODO : Improve WebSocket service to use the latest Netflux's API
+              wc.peers.forEach(function (p) { if (!hc || p.linkQuality > hc.linkQuality) { hc = p; } });
+              hc.send(JSON.stringify(['GET_HISTORY', wc.id]));
+            }
+            
+            // Check the connection to the channel
+            if(!rtc) {
+              // TODO
+              // checkConnection(wc);
+            }
 
-              // Check the connection to the channel
-              //checkConnection(wc);
+            bindAllEvents(textarea, doc, onEvent, false);
 
-              bindAllEvents(textarea, doc, onEvent, false);
+            sharejs.attach(textarea, realtime);
+            bump = realtime.bumpSharejs;
 
-              sharejs.attach(textarea, realtime);
-              bump = realtime.bumpSharejs;
-
-              realtime.start();
+            realtime.start();
           
         } 
 
@@ -232,30 +231,23 @@ define([
             return '\\' +c;
         }));
         
-        var onPeerMessage = function(peerID, wc) {
-          console.log(messagesHistory);
-          console.log('RTsendTo '+peerID);
-            messagesHistory.forEach(function(msg) {
-              console.log(msg);
-              //var message = Crypto.encrypt('1:y'+msg, cryptKey);
-              wc.sendTo(peerID, msg);
-            });
+        var onPeerMessage = function(peerID, type, wc) {
+            if(type === 6) {
+                messagesHistory.forEach(function(msg) {
+                  console.log(msg);
+                  wc.sendTo(peerID, msg);
+                });
+            }
         };
 
         var onMessage = function(peer, msg) {
           
-          // TODO : put in ChainpadAdapter
-
             // remove the password
             messagesHistory.push(msg);
             var passLen = msg.substring(0,msg.indexOf(':'));
             var message = msg.substring(passLen.length+1 + Number(passLen));
             
             message = Crypto.decrypt(message, cryptKey);
-            
-            console.log('RECOIS '+message);
-            
-          // END-TODO ChainpadAdapter
             
             verbose(message);
             allMessages.push(message);

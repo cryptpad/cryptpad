@@ -229,7 +229,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var channel = this;
 	      return new Promise(function (resolve, reject) {
 	        if (channel.channels.size === 0) {
-	          console.log('sizenull');resolve();
+	          resolve();
 	        }
 	        var protocol = _ServiceProvider2.default.get(channel.settings.protocol);
 	        channel.topologyService.broadcast(channel, protocol.message(cs.USER_DATA, { id: channel.myID, data: data })).then(resolve, reject);
@@ -240,8 +240,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getHistory(historyKeeperID) {
 	      var channel = this;
 	      return new Promise(function (resolve, reject) {
-	        console.log(channel);
-	        console.log('Je veux history ' + channel.myID);
 	        var protocol = _ServiceProvider2.default.get(channel.settings.protocol);
 	        channel.topologyService.sendTo(historyKeeperID, channel, protocol.message(cs.GET_HISTORY, { id: channel.myID, data: '' })).then(resolve, reject);
 	      });
@@ -407,7 +405,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function get(code) {
 	      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-	      var service = void 0;
+	      var service = undefined;
 	      switch (code) {
 	        case cs.WEBRTC_SERVICE:
 	          service = new _WebRTCService2.default(options);
@@ -562,8 +560,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'sendTo',
 	    value: function sendTo(id, webChannel, data) {
-	      console.log('sending to ' + id);
-
 	      return new Promise(function (resolve, reject) {
 	        var _iteratorNormalCompletion2 = true;
 	        var _didIteratorError2 = false;
@@ -646,60 +642,68 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _createClass(StarTopologyService, [{
 	    key: "broadcast",
 	    value: function broadcast(webChannel, data) {
-	      var _iteratorNormalCompletion = true;
-	      var _didIteratorError = false;
-	      var _iteratorError = undefined;
+	      return new Promise(function (resolve, reject) {
+	        var _iteratorNormalCompletion = true;
+	        var _didIteratorError = false;
+	        var _iteratorError = undefined;
 
-	      try {
-	        for (var _iterator = webChannel.channels[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	          var c = _step.value;
-
-	          var msg = JSON.stringify([c.seq++, data.type, webChannel.id, data.msg]);
-	          c.send(msg);
-	        }
-	      } catch (err) {
-	        _didIteratorError = true;
-	        _iteratorError = err;
-	      } finally {
 	        try {
-	          if (!_iteratorNormalCompletion && _iterator.return) {
-	            _iterator.return();
+	          for (var _iterator = webChannel.channels[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	            var c = _step.value;
+
+	            var msg = JSON.stringify([c.seq++, data.type, webChannel.id, data.msg]);
+	            c.send(msg);
 	          }
+	        } catch (err) {
+	          _didIteratorError = true;
+	          _iteratorError = err;
 	        } finally {
-	          if (_didIteratorError) {
-	            throw _iteratorError;
+	          try {
+	            if (!_iteratorNormalCompletion && _iterator.return) {
+	              _iterator.return();
+	            }
+	          } finally {
+	            if (_didIteratorError) {
+	              throw _iteratorError;
+	            }
 	          }
 	        }
-	      }
+
+	        resolve();
+	      });
 	    }
 	  }, {
 	    key: "sendTo",
 	    value: function sendTo(id, webChannel, data) {
-	      var _iteratorNormalCompletion2 = true;
-	      var _didIteratorError2 = false;
-	      var _iteratorError2 = undefined;
+	      return new Promise(function (resolve, reject) {
+	        var _iteratorNormalCompletion2 = true;
+	        var _didIteratorError2 = false;
+	        var _iteratorError2 = undefined;
 
-	      try {
-	        for (var _iterator2 = webChannel.channels[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-	          var c = _step2.value;
-
-	          var msg = JSON.stringify([c.seq++, data.type, id, data.msg]);
-	          c.send(msg);
-	        }
-	      } catch (err) {
-	        _didIteratorError2 = true;
-	        _iteratorError2 = err;
-	      } finally {
 	        try {
-	          if (!_iteratorNormalCompletion2 && _iterator2.return) {
-	            _iterator2.return();
+	          for (var _iterator2 = webChannel.channels[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	            var c = _step2.value;
+
+	            var msg = JSON.stringify([c.seq++, data.type, id, data.msg]);
+	            c.send(msg);
 	          }
+	        } catch (err) {
+	          _didIteratorError2 = true;
+	          _iteratorError2 = err;
 	        } finally {
-	          if (_didIteratorError2) {
-	            throw _iteratorError2;
+	          try {
+	            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	              _iterator2.return();
+	            }
+	          } finally {
+	            if (_didIteratorError2) {
+	              throw _iteratorError2;
+	            }
 	          }
 	        }
-	      }
+
+	        resolve();
+	      });
 	    }
 	  }]);
 
@@ -787,7 +791,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      return new Promise(function (resolve, reject) {
 	        var connections = [];
-	        console.log(settings);
 	        var socket = new window.WebSocket(settings.signaling);
 	        socket.onopen = function () {
 	          socket.send(JSON.stringify({ key: settings.key }));
@@ -843,12 +846,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var settings = Object.assign({}, this.settings, options);
 	      return new Promise(function (resolve, reject) {
-	        var connection = void 0;
+	        var connection = undefined;
 	        var socket = new window.WebSocket(settings.signaling);
-	        console.log('Socket created');
 	        socket.onopen = function () {
 	          connection = new _this2.RTCPeerConnection(settings.webRTCOptions);
-	          console.log('RTC created');
 	          connection.onicecandidate = function (e) {
 	            if (e.candidate !== null) {
 	              var candidate = {
@@ -859,8 +860,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	          };
 	          var dc = connection.createDataChannel(key);
-	          console.log('data channel created');
-	          console.log(dc);
 	          dc.onopen = function () {
 	            resolve(dc);
 	          };
@@ -872,8 +871,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        };
 	        socket.onmessage = function (e) {
 	          var msg = JSON.parse(e.data);
-	          console.log('message');
-	          console.log(msg);
 	          if (Reflect.has(msg, 'data')) {
 	            if (Reflect.has(msg.data, 'answer')) {
 	              var sd = Object.assign(new _this2.RTCSessionDescription(), msg.data.answer);
@@ -966,8 +963,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                  }, function () {});
 	                })();
 	              } else if (msg.sdp.type === 'answer') {
-	                var _sd = Object.assign(new this.RTCSessionDescription(), msg.sdp);
-	                webChannel.connections.get(msg.senderPeerID).setRemoteDescription(_sd, function () {}, function () {});
+	                var sd = Object.assign(new this.RTCSessionDescription(), msg.sdp);
+	                webChannel.connections.get(msg.senderPeerID).setRemoteDescription(sd, function () {}, function () {});
 	              }
 	            } else if (Reflect.has(msg, 'candidate')) {
 	              webChannel.connections.get(msg.senderPeerID).addIceCandidate(new this.RTCIceCandidate(msg.candidate));
@@ -1080,7 +1077,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var settings = Object.assign({}, this.settings, options);
 	      return new Promise(function (resolve, reject) {
-	        var connection = void 0;
+	        var connection = undefined;
 	        var socket = new window.WebSocket(settings.signaling);
 	        socket.seq = 1;
 	        socket.facade = options.facade || null;
@@ -1147,7 +1144,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          webChannel.onmessage(msg.id, msg.data);
 	          break;
 	        case cs.GET_HISTORY:
-	          console.log("SOMEONE WANTS HISTORY");
 	          webChannel.onPeerMessage(msg.id, msg.code);
 	          break;
 	        case cs.SERVICE_DATA:
@@ -1267,8 +1263,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (msg[2] === 'MSG') {}
 	      // We have received a new direct message from another user
 	      if (msg[2] === 'MSG' && msg[3] === socket.uid) {
-	        // Find the peer exists in one of our channels or create a new one
-	        if (typeof socket.facade._onPeerMessage === "function") socket.facade._onPeerMessage(msg[1], msg);
+	        // If it comes form the history keeper, send it to the user
+	        if (msg[1] === '_HISTORY_KEEPER_') {
+	          var msgHistory = JSON.parse(msg[4]);
+	          webChannel.onmessage(msgHistory[1], msgHistory[4]);
+	        }
 	      }
 	      if (msg[2] === 'JOIN' && (webChannel.id == null || webChannel.id === msg[3])) {
 	        if (!webChannel.id) {
@@ -1302,7 +1301,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (msg[2] === 'MSG' && msg[3] === webChannel.id) {
 	        // Find the peer who sent the message and display it
 	        //TODO Use Peer instead of peer.id (msg[1]) :
-	        if (typeof webChannel.onMessage === "function") webChannel.onMessage(msg[1], msg[4]);
+	        if (typeof webChannel.onmessage === "function") webChannel.onmessage(msg[1], msg[4]);
 	      }
 	      // Someone else has left the channel, remove him from the list of peers
 	      if (msg[2] === 'LEAVE' && msg[3] === webChannel.id) {
@@ -1313,7 +1312,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'message',
 	    value: function message(code, data) {
-	      var type = void 0;
+	      var type = undefined;
 	      switch (code) {
 	        case cs.USER_DATA:
 	          type = 'MSG';

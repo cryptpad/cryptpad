@@ -11,6 +11,8 @@ module.exports = {
     httpPort: 3000,
     // the port used for websockets
     websocketPort: 3001,
+    // the port used for webrtc (uncomment to use the WebRTC server)
+    // webrtcPort: 3002,
 
     // You now have a choice of storage engines
 

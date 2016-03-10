@@ -123,9 +123,12 @@
           </p>
         </noscript>
         <script>
-            require(['/common/crypto.js'], function (Crypto) {
+            require(['/common/crypto.js', '/api/config?cb=' + Math.random().toString(16).substring(2)], function (Crypto, Config) {
                 document.getElementById('buttons').setAttribute('style', '');
                 document.getElementById('create-pad').setAttribute('href', '/pad/#' + Crypto.genKey());
+                if(Config.webrtcURL !== '') {
+                  document.getElementById('create-rtcpad').setAttribute('href', '/vdom/?webrtc=1#' + Crypto.genKey());
+                }
                 document.getElementById('create-sheet').setAttribute('href', '/sheet/#' + Crypto.genKey());
                 document.getElementById('create-code').setAttribute('href', '/code/#' + Crypto.genKey());
             });
@@ -216,6 +219,7 @@
 
         <div id="buttons" class="buttons" style="display:none;">
           <a id="create-pad" class="button create" href="pad">CREATE NEW PAD</a>
+          <a id="create-rtcpad" class="button create" href="pad">CREATE NEW WEBRTC PAD</a>
           <a id="create-sheet" class="button create" href="sheet">CREATE NEW SPREADSHEET</a>
           <a id="create-code" class="button create" href="code">CREATE NEW CODE COLLABORATION PAD</a>
         </div>
