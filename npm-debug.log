@@ -1,0 +1,49 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'run-script',
+1 verbose cli   'lint' ]
+2 info using npm@3.6.0
+3 info using node@v5.6.0
+4 verbose run-script [ 'prelint', 'lint', 'postlint' ]
+5 info lifecycle cryptpad@0.1.0~prelint: cryptpad@0.1.0
+6 silly lifecycle cryptpad@0.1.0~prelint: no script for prelint, continuing
+7 info lifecycle cryptpad@0.1.0~lint: cryptpad@0.1.0
+8 verbose lifecycle cryptpad@0.1.0~lint: unsafe-perm in lifecycle true
+9 verbose lifecycle cryptpad@0.1.0~lint: PATH: C:\Program Files\nodejs\node_modules\npm\bin\node-gyp-bin;C:\Users\Yann\Documents\Git projects\cryptpad\node_modules\.bin;C:\Users\Yann\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\local\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\Yann\bin;C:\ProgramData\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;E:\apache-maven-3.3.9\bin;C:\Program Files (x86)\Skype\Phone;C:\Program Files (x86)\GNU\GnuPG\pub;C:\Users\Yann\.gnupg;C:\Program Files\nodejs;C:\Users\Yann\AppData\Roaming\npm;C:\Program Files\Git\usr\bin\vendor_perl;C:\Program Files\Git\usr\bin\core_perl
+10 verbose lifecycle cryptpad@0.1.0~lint: CWD: C:\Users\Yann\Documents\Git projects\cryptpad
+11 silly lifecycle cryptpad@0.1.0~lint: Args: [ '/d /s /c',
+11 silly lifecycle   'jshint --config .jshintrc --exclude-path .jshintignore .' ]
+12 silly lifecycle cryptpad@0.1.0~lint: Returned: code: 2  signal: null
+13 info lifecycle cryptpad@0.1.0~lint: Failed to exec lint script
+14 verbose stack Error: cryptpad@0.1.0 lint: `jshint --config .jshintrc --exclude-path .jshintignore .`
+14 verbose stack Exit status 2
+14 verbose stack     at EventEmitter.<anonymous> (C:\Program Files\nodejs\node_modules\npm\lib\utils\lifecycle.js:232:16)
+14 verbose stack     at emitTwo (events.js:100:13)
+14 verbose stack     at EventEmitter.emit (events.js:185:7)
+14 verbose stack     at ChildProcess.<anonymous> (C:\Program Files\nodejs\node_modules\npm\lib\utils\spawn.js:24:14)
+14 verbose stack     at emitTwo (events.js:100:13)
+14 verbose stack     at ChildProcess.emit (events.js:185:7)
+14 verbose stack     at maybeClose (internal/child_process.js:827:16)
+14 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:211:5)
+15 verbose pkgid cryptpad@0.1.0
+16 verbose cwd C:\Users\Yann\Documents\Git projects\cryptpad
+17 error Windows_NT 10.0.10586
+18 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "run-script" "lint"
+19 error node v5.6.0
+20 error npm  v3.6.0
+21 error code ELIFECYCLE
+22 error cryptpad@0.1.0 lint: `jshint --config .jshintrc --exclude-path .jshintignore .`
+22 error Exit status 2
+23 error Failed at the cryptpad@0.1.0 lint script 'jshint --config .jshintrc --exclude-path .jshintignore .'.
+23 error Make sure you have the latest version of node.js and npm installed.
+23 error If you do, this is most likely a problem with the cryptpad package,
+23 error not with npm itself.
+23 error Tell the author that this fails on your system:
+23 error     jshint --config .jshintrc --exclude-path .jshintignore .
+23 error You can get information on how to open an issue for this project with:
+23 error     npm bugs cryptpad
+23 error Or if that isn't available, you can get their info via:
+23 error     npm owner ls cryptpad
+23 error There is likely additional logging output above.
+24 verbose exit [ 1, true ]

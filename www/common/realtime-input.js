@@ -72,14 +72,14 @@ define([
                    onEvent,
                    unbind);
     };
-    
+
     var getParameterByName = function (name, url) {
-        if (!url) url = window.location.href;
+        if (!url) { url = window.location.href; }
         name = name.replace(/[\[\]]/g, "\\$&");
         var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
             results = regex.exec(url);
-        if (!results) return null;
-        if (!results[2]) return '';
+        if (!results) { return null; }
+        if (!results[2]) { return ''; }
         return decodeURIComponent(results[2].replace(/\+/g, " "));
     };
 
@@ -112,12 +112,66 @@ define([
         var initializing = true;
 
         var bump = function () {};
-        
+
         var messagesHistory = [];
+
+        var mkMessage = function (user, channel, content) {
+            content = JSON.stringify(content);
+            return user.length + ':' + user +
+                channel.length + ':' + channel +
+                content.length + ':' + content;
+        };
+
+        var chainpadAdapter = {
+            usernamesMapping : {},
+            msgIn : function(peerId, msg) {
+                console.log('RECU : '+ msg);
+                var parsed = parseMessage(msg);
+                if(parsed.content[0] === 0) {
+                  if(peerId) {
+                    this.usernamesMapping[peerId] = parsed.user;
+                  }
+                }
+                // Remove the password from the message
+                var passLen = msg.substring(0,msg.indexOf(':'));
+                var message = msg.substring(passLen.length+1 + Number(passLen));
+                try {
+                    var decryptedMsg = Crypto.decrypt(message, cryptKey);
+                    messagesHistory.push(decryptedMsg);
+                    return decryptedMsg;
+                } catch (err) {
+                    return message;
+                }
+                
+            },
+            msgOut : function(msg) {
+                console.log('ENVOI : '+ msg);
+                var parsed = parseMessage(msg);
+                if(parsed.content[0] === 0) { // Someone is registering
+                    onMessage('', '1:y'+mkMessage('', channel, [1,0]));
+                    onMessage('', '1:y'+mkMessage('', channel, [3,0]));
+                    return msg;
+                }
+                if(parsed.content[0] === 4) { // Someone is registering
+                    console.log('ping');
+                    console.log(parsed);
+                    parsed.content[0] = 5;
+                    onMessage('', '1:y'+mkMessage(parsed.user, parsed.channelId, parsed.content));
+                    return;
+                }
+                return Crypto.encrypt(msg, cryptKey);
+            }
+            leaving : function(peerId) {
+              if(this.usernamesMapping[peerId]) {
+                var chainpadUser = this.usernamesMapping[peerId]
+                onMessage('', '1:y'+mkMessage(chainpadUser, channel, [3,0]));
+              }
+            }
+        };
 
         var options = {
           key: channel
-        }
+        };
 
         var rtc = true;
         var connected = false;
@@ -134,6 +188,86 @@ define([
         else {
           options.signaling = webrtcUrl;
         }
+
+        var createRealtime = function() {
+            return ChainPad.create(userName,
+                                        passwd,
+                                        channel,
+                                        $(textarea).val(),
+                                        {
+                                        transformFunction: config.transformFunction
+                                        });
+        };
+
+        var onOpen = function(wc) {
+            // Add the handlers to the WebChannel
+            wc.onmessage = onMessage; // On receiving message
+            wc.onJoining = onJoining; // On user joining the session
+            wc.onLeaving = onLeaving; // On user leaving the session
+            wc.onPeerMessage = function(peerId, type) {
+              onPeerMessage(peerId, type, wc);
+            }
+
+            // Open a Chainpad session
+            realtime = createRealtime();
+
+            if(config.onInit) {
+                config.onInit({
+                    realtime: realtime
+                });
+            }
+
+            // we're fully synced
+            initializing = false;
+
+            // execute an onReady callback if one was supplied
+            if (config.onReady) {
+                config.onReady();
+            }
+
+            // On sending message
+            realtime.onMessage(function(message) {
+                // Prevent Chainpad from sending authentication messages since it is handled by Netflux
+                message = chainpadAdapter.msgOut(message);
+                if(message) {
+                  wc.send(message).then(function() {
+                    // Send the message back to Chainpad once it is sent to all peers if using the WebRTC protocol
+                    if(rtc) { onMessage('', message); }
+                  });
+                }
+            });
+
+            // Get the channel history
+            var hc;
+            if(rtc) {
+              for (let c of wc.channels) { hc = c; break; }
+              if(hc) {
+                wc.getHistory(hc.peerID);
+              }
+            }
+            else {
+              // TODO : Improve WebSocket service to use the latest Netflux's API
+              wc.peers.forEach(function (p) { if (!hc || p.linkQuality > hc.linkQuality) { hc = p; } });
+              hc.send(JSON.stringify(['GET_HISTORY', wc.id]));
+            }
+
+            // Check the connection to the channel
+            if(!rtc) {
+              // TODO
+              // checkConnection(wc);
+            }
+
+            bindAllEvents(textarea, doc, onEvent, false);
+
+            sharejs.attach(textarea, realtime);
+            bump = realtime.bumpSharejs;
+
+            realtime.start();
+
+            // window.setInterval(function() {
+                // console.log(realtime.getLag());
+            // }, 1000);
+        };
 
         if(rtc) {
           // Check if the WebRTC channel exists and create it if necessary
@@ -154,83 +288,12 @@ define([
               warn(error);
           });
         }
-        
-        var onOpen = function(wc) {
-            // Add the handlers to the WebChannel
-            wc.onmessage = onMessage; // On receiving message
-            wc.onJoining = onJoining; // On user joining the session
-            wc.onLeaving = onLeaving; // On user leaving the session
-            wc.onPeerMessage = function(peerId, type) {
-              onPeerMessage(peerId, type, wc);
-            }
 
-            // Open a Chainpad session
-            realtime = createRealtime();
-            
-            // we're fully synced
-            initializing = false;
-
-            // execute an onReady callback if one was supplied
-            if (config.onReady) {
-                config.onReady();
-            }
-            
-            // On sending message
-            realtime.onMessage(function(message) {
-              // Prevent Chainpad from sending authentication messages since it is handled by Netflux
-              var parsed = parseMessage(message);
-              if (parsed.content[0] !== 0) {
-                message = Crypto.encrypt(message, cryptKey);
-                wc.send(message).then(function() {
-                  // Send the message back to Chainpad once it is sent to all peers if using the WebRTC protocol
-                  if(rtc) { onMessage('', message); }
-                });
-              }
-            });
-
-            // Get the channel history
-            var hc;
-            if(rtc) {
-              for (let c of wc.channels) { hc = c; break; }
-              if(hc) {
-                wc.getHistory(hc.peerID);
-              }
-            }
-            else {
-              // TODO : Improve WebSocket service to use the latest Netflux's API
-              wc.peers.forEach(function (p) { if (!hc || p.linkQuality > hc.linkQuality) { hc = p; } });
-              hc.send(JSON.stringify(['GET_HISTORY', wc.id]));
-            }
-            
-            // Check the connection to the channel
-            if(!rtc) {
-              // TODO
-              // checkConnection(wc);
-            }
-
-            bindAllEvents(textarea, doc, onEvent, false);
-
-            sharejs.attach(textarea, realtime);
-            bump = realtime.bumpSharejs;
-
-            realtime.start();
-          
-        } 
-
-        var createRealtime = function() {
-            return ChainPad.create(userName,
-                                        passwd,
-                                        channel,
-                                        $(textarea).val(),
-                                        {
-                                        transformFunction: config.transformFunction
-                                        });
-        }
 
         var whoami = new RegExp(userName.replace(/[\/\+]/g, function (c) {
             return '\\' +c;
         }));
-        
+
         var onPeerMessage = function(peerID, type, wc) {
             if(type === 6) {
                 messagesHistory.forEach(function(msg) {
@@ -241,14 +304,13 @@ define([
         };
 
         var onMessage = function(peer, msg) {
-          
+
             // remove the password
-            messagesHistory.push(msg);
-            var passLen = msg.substring(0,msg.indexOf(':'));
-            var message = msg.substring(passLen.length+1 + Number(passLen));
             
-            message = Crypto.decrypt(message, cryptKey);
             
+
+            message = chainpadAdapter.msgIn(peer, msg);
+
             verbose(message);
             allMessages.push(message);
             if (!initializing) {
@@ -256,6 +318,7 @@ define([
                     onEvent();
                 }
             }
+            console.log(message);
             realtime.message(message);
             if (/\[5,/.test(message)) { verbose("pong"); }
 
@@ -272,12 +335,13 @@ define([
                 }
             }
         }
-        
+
         var onJoining = function(peer, channel) {
           console.log('Someone joined : '+peer)
         }
 
         var onLeaving = function(peer, channel) {
+          chainpadAdapter.leaving(peer);
           console.log('Someone left : '+peer)
         }
 
@@ -285,7 +349,7 @@ define([
             if(wc.channels && wc.channels.size > 0) {
                 var channels = Array.from(wc.channels);
                 var channel = channels[0];
-                
+
                 var socketChecker = setInterval(function () {
                     if (channel.checkSocket(realtime)) {
                         warn("Socket disconnected!");
