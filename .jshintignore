@@ -13,3 +13,4 @@ www/common/otaml.js
 www/common/diffDOM.js
 www/common/netflux.js
 NetFluxWebsocketServer.js
+WebRTCSrv.js
