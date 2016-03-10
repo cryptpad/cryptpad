@@ -33,7 +33,7 @@ define([
         websocketURL: Config.websocketURL,
         userName: Crypto.rand64(8),
         channel: key.channel,
-        key.cryptKey
+        cryptKey: key.cryptKey
     };
 
     var rttext = RTText.start(config);
