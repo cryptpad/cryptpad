@@ -11,3 +11,6 @@ www/code/rangy.js
 storage/kad.js
 www/common/otaml.js
 www/common/diffDOM.js
+www/common/netflux.js
+NetFluxWebsocketServer.js
+WebRTCSrv.js
