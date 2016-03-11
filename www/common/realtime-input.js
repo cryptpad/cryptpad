@@ -28,6 +28,12 @@ define([
     var PARANOIA = true;
     var module = { exports: {} };
 
+    /**
+     * If an error is encountered but it is recoverable, do not immediately fail
+     * but if it keeps firing errors over and over, do fail.
+     */
+    var MAX_RECOVERABLE_ERRORS = 15;
+
     var debug = function (x) { console.log(x); },
         warn = function (x) { console.error(x); },
         verbose = function (x) { console.log(x); };
@@ -92,7 +98,6 @@ define([
         var userName = config.userName;
         var channel = config.channel;
         var cryptKey = config.cryptKey;
-
         var passwd = 'y';
 
         // make sure configuration is defined
@@ -101,19 +106,35 @@ define([
         var doc = config.doc || null;
 
         // trying to deprecate onRemote, prefer loading it via the conf
-        onRemote = config.onRemote || null;
-
-        transformFunction = config.transformFunction || null;
+        var onRemote = config.onRemote || null;
 
         // define this in case it gets called before the rest of our stuff is ready.
         var onEvent = function () { };
 
         var allMessages = [];
         var initializing = true;
-
+        var recoverableErrorCount = 0;
         var bump = function () {};
-
         var messagesHistory = [];
+        var chainpadAdapter = {};
+        var realtime;
+
+        var parseMessage = function (msg) {
+            var res ={};
+            // two or more? use a for
+            ['pass','user','channelId','content'].forEach(function(attr){
+                var len=msg.slice(0,msg.indexOf(':')),
+                // taking an offset lets us slice out the prop
+                // and saves us one string copy
+                    o=len.length+1,
+                    prop=res[attr]=msg.slice(o,Number(len)+o);
+                // slice off the property and its descriptor
+                msg = msg.slice(prop.length+o);
+            });
+            // content is the only attribute that's not a string
+            res.content=JSON.parse(res.content);
+            return res;
+        };
 
         var mkMessage = function (user, channel, content) {
             content = JSON.stringify(content);
@@ -122,7 +143,55 @@ define([
                 content.length + ':' + content;
         };
 
-        var chainpadAdapter = {
+        var onPeerMessage = function(toId, type, wc) {
+            if(type === 6) {
+                messagesHistory.forEach(function(msg) {
+                    var fromId = chainpadAdapter.historyOut('1:y'+msg) || wc.myID;
+                    wc.sendTo(fromId, toId, '1:y'+msg);
+                });
+            }
+        };
+
+        var whoami = new RegExp(userName.replace(/[\/\+]/g, function (c) {
+            return '\\' +c;
+        }));
+
+        var onMessage = function(peer, msg) {
+
+            var message = chainpadAdapter.msgIn(peer, msg);
+
+            verbose(message);
+            allMessages.push(message);
+            if (!initializing) {
+                if (PARANOIA) {
+                    onEvent();
+                }
+            }
+            realtime.message(message);
+            if (/\[5,/.test(message)) { verbose("pong"); }
+
+            if (!initializing) {
+                if (/\[2,/.test(message)) {
+                    //verbose("Got a patch");
+                    if (whoami.test(message)) {
+                        //verbose("Received own message");
+                    } else {
+                        //verbose("Received remote message");
+                        // obviously this is only going to get called if
+                        if (onRemote) { onRemote(realtime.getUserDoc()); }
+                    }
+                }
+            }
+        };
+
+        var onJoining = function(peer) {
+        };
+
+        var onLeaving = function(peer) {
+          chainpadAdapter.leaving(peer);
+        };
+
+        chainpadAdapter = {
             usernamesMapping : {},
             msgIn : function(peerId, msg) {
                 var parsed = parseMessage(msg);
@@ -158,7 +227,7 @@ define([
             },
             leaving : function(peerId) {
                 if(this.usernamesMapping[peerId]) {
-                    var chainpadUser = this.usernamesMapping[peerId]
+                    var chainpadUser = this.usernamesMapping[peerId];
                     onMessage('', '1:y'+mkMessage(chainpadUser, channel, [3,0]));
                 }
             },
@@ -168,7 +237,7 @@ define([
                     var value = parsed.user;
                     var obj = this.usernamesMapping;
                     // Find the key (peerId) associated to the chainpad user in the map
-                    var peerId = Object.keys(obj).filter(function(key) {return obj[key] === value})[0];
+                    var peerId = Object.keys(obj).filter(function(key) {return obj[key] === value;})[0];
                     return peerId;
                 }
                 return;
@@ -180,7 +249,6 @@ define([
         };
 
         var rtc = true;
-        var realtime;
 
         if(!getParameterByName("webrtc") || !webrtcUrl) {
           rtc = false;
@@ -211,11 +279,11 @@ define([
             wc.onLeaving = onLeaving; // On user leaving the session
             wc.onPeerMessage = function(peerId, type) {
               onPeerMessage(peerId, type, wc);
-            }
+            };
 
             window.onunload = function() {
               wc.leave();
-            }
+            };
 
             // Open a Chainpad session
             realtime = createRealtime();
@@ -249,7 +317,7 @@ define([
             // Get the channel history
             var hc;
             if(rtc) {
-              for (let c of wc.channels) { hc = c; break; }
+              wc.channels.forEach(function (c) { if(!hc) { hc = c; } });
               if(hc) {
                 wc.getHistory(hc.peerID);
               }
@@ -298,54 +366,6 @@ define([
 
         joinChannel();
 
-        var whoami = new RegExp(userName.replace(/[\/\+]/g, function (c) {
-            return '\\' +c;
-        }));
-
-        var onPeerMessage = function(toId, type, wc) {
-            if(type === 6) {
-                messagesHistory.forEach(function(msg) {
-                    var fromId = chainpadAdapter.historyOut('1:y'+msg) || wc.myID;
-                    wc.sendTo(fromId, toId, '1:y'+msg);
-                });
-            }
-        };
-
-        var onMessage = function(peer, msg) {
-
-            message = chainpadAdapter.msgIn(peer, msg);
-
-            verbose(message);
-            allMessages.push(message);
-            if (!initializing) {
-                if (PARANOIA) {
-                    onEvent();
-                }
-            }
-            realtime.message(message);
-            if (/\[5,/.test(message)) { verbose("pong"); }
-
-            if (!initializing) {
-                if (/\[2,/.test(message)) {
-                    //verbose("Got a patch");
-                    if (whoami.test(message)) {
-                        //verbose("Received own message");
-                    } else {
-                        //verbose("Received remote message");
-                        // obviously this is only going to get called if
-                        if (onRemote) { onRemote(realtime.getUserDoc()); }
-                    }
-                }
-            }
-        }
-
-        var onJoining = function(peer) {
-        }
-
-        var onLeaving = function(peer) {
-          chainpadAdapter.leaving(peer);
-        }
-
         var checkConnection = function(wc) {
             if(wc.channels && wc.channels.size > 0) {
                 var channels = Array.from(wc.channels);
@@ -373,23 +393,6 @@ define([
                     }
                 }, 200);
             }
-        }
-
-        var parseMessage = function (msg) {
-            var res ={};
-            // two or more? use a for
-            ['pass','user','channelId','content'].forEach(function(attr){
-                var len=msg.slice(0,msg.indexOf(':')),
-                // taking an offset lets us slice out the prop
-                // and saves us one string copy
-                    o=len.length+1,
-                    prop=res[attr]=msg.slice(o,Number(len)+o);
-                // slice off the property and its descriptor
-                msg = msg.slice(prop.length+o);
-            });
-            // content is the only attribute that's not a string
-            res.content=JSON.parse(res.content);
-            return res;
         };
 
         return {
