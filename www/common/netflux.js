@@ -129,7 +129,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          webChannel.onopen = function () {
 	            resolve(webChannel);
 	          };
-	        });
+	        }, reject);
 	      });
 	    }
 	  }, {
@@ -222,7 +222,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  _createClass(WebChannel, [{
 	    key: 'leave',
-	    value: function leave() {}
+	    value: function leave() {
+	      this.topologyService.leave(this);
+	    }
 	  }, {
 	    key: 'send',
 	    value: function send(data) {
@@ -246,12 +248,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }, {
 	    key: 'sendTo',
-	    value: function sendTo(id, msg) {
+	    value: function sendTo(fromId, toId, msg) {
 	      var channel = this;
 	      return new Promise(function (resolve, reject) {
 	        var protocol = _ServiceProvider2.default.get(channel.settings.protocol);
-	        console.log('WCsendTo ' + id);
-	        channel.topologyService.sendTo(id, channel, protocol.message(cs.USER_DATA, { id: channel.myID, data: msg })).then(resolve, reject);
+	        channel.topologyService.sendTo(toId, channel, protocol.message(cs.USER_DATA, { id: fromId, data: msg })).then(resolve, reject);
 	      });
 	    }
 	  }, {
@@ -405,7 +406,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function get(code) {
 	      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-	      var service = undefined;
+	      var service = void 0;
 	      switch (code) {
 	        case cs.WEBRTC_SERVICE:
 	          service = new _WebRTCService2.default(options);
@@ -467,8 +468,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
 	    _classCallCheck(this, FullyConnectedService);
-
-	    console.log('SERVICE FULLY CONNECTED CONSTRUCTED');
 	  }
 
 	  _createClass(FullyConnectedService, [{
@@ -594,7 +593,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'leave',
 	    value: function leave(webChannel) {
-	      this.broadcast(webChannel);
+	      var protocol = _ServiceProvider2.default.get(cs.EXCHANGEPROTOCOL_SERVICE);
+	      this.broadcast(webChannel, protocol.message(cs.LEAVING, { id: webChannel.myID }));
 	    }
 	  }, {
 	    key: '_generateID',
@@ -846,7 +846,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var settings = Object.assign({}, this.settings, options);
 	      return new Promise(function (resolve, reject) {
-	        var connection = undefined;
+	        var connection = void 0;
 	        var socket = new window.WebSocket(settings.signaling);
 	        socket.onopen = function () {
 	          connection = new _this2.RTCPeerConnection(settings.webRTCOptions);
@@ -868,6 +868,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	              socket.send(JSON.stringify({ join: key, data: { offer: connection.localDescription.toJSON() } }));
 	            }, reject);
 	          }, reject);
+	        };
+	        socket.onclose = function (e) {
+	          reject(e);
 	        };
 	        socket.onmessage = function (e) {
 	          var msg = JSON.parse(e.data);
@@ -963,8 +966,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                  }, function () {});
 	                })();
 	              } else if (msg.sdp.type === 'answer') {
-	                var sd = Object.assign(new this.RTCSessionDescription(), msg.sdp);
-	                webChannel.connections.get(msg.senderPeerID).setRemoteDescription(sd, function () {}, function () {});
+	                var _sd = Object.assign(new this.RTCSessionDescription(), msg.sdp);
+	                webChannel.connections.get(msg.senderPeerID).setRemoteDescription(_sd, function () {}, function () {});
 	              }
 	            } else if (Reflect.has(msg, 'candidate')) {
 	              webChannel.connections.get(msg.senderPeerID).addIceCandidate(new this.RTCIceCandidate(msg.candidate));
@@ -1077,7 +1080,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var settings = Object.assign({}, this.settings, options);
 	      return new Promise(function (resolve, reject) {
-	        var connection = undefined;
+	        var connection = void 0;
 	        var socket = new window.WebSocket(settings.signaling);
 	        socket.seq = 1;
 	        socket.facade = options.facade || null;
@@ -1146,6 +1149,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        case cs.GET_HISTORY:
 	          webChannel.onPeerMessage(msg.id, msg.code);
 	          break;
+	        case cs.LEAVING:
+	          webChannel.onLeaving(msg.id);
+	          break;
 	        case cs.SERVICE_DATA:
 	          var service = _ServiceProvider2.default.get(msg.service);
 	          service.onmessage(channel, msg.data);
@@ -1178,6 +1184,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	          msg.data = data.data;
 	          break;
 	        case cs.GET_HISTORY:
+	          msg.id = data.id;
+	          break;
+	        case cs.LEAVING:
 	          msg.id = data.id;
 	          break;
 	        case cs.SERVICE_DATA:
@@ -1312,7 +1321,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'message',
 	    value: function message(code, data) {
-	      var type = undefined;
+	      var type = void 0;
 	      switch (code) {
 	        case cs.USER_DATA:
 	          type = 'MSG';

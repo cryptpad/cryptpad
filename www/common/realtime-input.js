@@ -125,7 +125,6 @@ define([
         var chainpadAdapter = {
             usernamesMapping : {},
             msgIn : function(peerId, msg) {
-                console.log('RECU : '+ msg);
                 var parsed = parseMessage(msg);
                 if(parsed.content[0] === 0) {
                   if(peerId) {
@@ -142,30 +141,37 @@ define([
                 } catch (err) {
                     return message;
                 }
-                
+
             },
             msgOut : function(msg) {
-                console.log('ENVOI : '+ msg);
                 var parsed = parseMessage(msg);
                 if(parsed.content[0] === 0) { // Someone is registering
                     onMessage('', '1:y'+mkMessage('', channel, [1,0]));
-                    onMessage('', '1:y'+mkMessage('', channel, [3,0]));
                     return msg;
                 }
                 if(parsed.content[0] === 4) { // Someone is registering
-                    console.log('ping');
-                    console.log(parsed);
                     parsed.content[0] = 5;
                     onMessage('', '1:y'+mkMessage(parsed.user, parsed.channelId, parsed.content));
                     return;
                 }
                 return Crypto.encrypt(msg, cryptKey);
-            }
+            },
             leaving : function(peerId) {
-              if(this.usernamesMapping[peerId]) {
-                var chainpadUser = this.usernamesMapping[peerId]
-                onMessage('', '1:y'+mkMessage(chainpadUser, channel, [3,0]));
-              }
+                if(this.usernamesMapping[peerId]) {
+                    var chainpadUser = this.usernamesMapping[peerId]
+                    onMessage('', '1:y'+mkMessage(chainpadUser, channel, [3,0]));
+                }
+            },
+            historyOut : function(msg) {
+                var parsed = parseMessage(msg);
+                if(parsed.content[0] === 0) {
+                    var value = parsed.user;
+                    var obj = this.usernamesMapping;
+                    // Find the key (peerId) associated to the chainpad user in the map
+                    var peerId = Object.keys(obj).filter(function(key) {return obj[key] === value})[0];
+                    return peerId;
+                }
+                return;
             }
         };
 
@@ -174,10 +180,9 @@ define([
         };
 
         var rtc = true;
-        var connected = false;
         var realtime;
 
-        if(!getParameterByName("webrtc")) {
+        if(!getParameterByName("webrtc") || !webrtcUrl) {
           rtc = false;
           options.signaling = websocketUrl;
           options.topology = 'StarTopologyService';
@@ -208,6 +213,10 @@ define([
               onPeerMessage(peerId, type, wc);
             }
 
+            window.onunload = function() {
+              wc.leave();
+            }
+
             // Open a Chainpad session
             realtime = createRealtime();
 
@@ -232,7 +241,7 @@ define([
                 if(message) {
                   wc.send(message).then(function() {
                     // Send the message back to Chainpad once it is sent to all peers if using the WebRTC protocol
-                    if(rtc) { onMessage('', message); }
+                    if(rtc) { onMessage(wc.myID, message); }
                   });
                 }
             });
@@ -263,51 +272,46 @@ define([
             bump = realtime.bumpSharejs;
 
             realtime.start();
-
-            // window.setInterval(function() {
-                // console.log(realtime.getLag());
-            // }, 1000);
         };
 
-        if(rtc) {
-          // Check if the WebRTC channel exists and create it if necessary
-          var webchannel = Netflux.create();
-          webchannel.openForJoining(options).then(function(data) {
-              connected = true;
-              onOpen(webchannel);
-          }, function(error) {
-              warn(error);
-          });
-        }
-        if(!connected) {
-          // Connect to the WebSocket/WebRTC channel
-          Netflux.join(channel, options).then(function(wc) {
-              connected = true;
-              onOpen(wc);
-          }, function(error) {
-              warn(error);
-          });
-        }
+        var createRTCChannel = function () {
+            // Check if the WebRTC channel exists and create it if necessary
+            var webchannel = Netflux.create();
+            webchannel.openForJoining(options).then(function(data) {
+                onOpen(webchannel);
+            }, function(error) {
+                warn(error);
+            });
+        };
 
+        var joinChannel = function() {
+            // Connect to the WebSocket/WebRTC channel
+            Netflux.join(channel, options).then(function(wc) {
+                onOpen(wc);
+            }, function(error) {
+                if(rtc && error.code === 1008) {// Unexisting RTC channel
+                    createRTCChannel();
+                }
+                else { warn(error); }
+            });
+        };
+
+        joinChannel();
 
         var whoami = new RegExp(userName.replace(/[\/\+]/g, function (c) {
             return '\\' +c;
         }));
 
-        var onPeerMessage = function(peerID, type, wc) {
+        var onPeerMessage = function(toId, type, wc) {
             if(type === 6) {
                 messagesHistory.forEach(function(msg) {
-                  console.log(msg);
-                  wc.sendTo(peerID, msg);
+                    var fromId = chainpadAdapter.historyOut('1:y'+msg) || wc.myID;
+                    wc.sendTo(fromId, toId, '1:y'+msg);
                 });
             }
         };
 
         var onMessage = function(peer, msg) {
-
-            // remove the password
-            
-            
 
             message = chainpadAdapter.msgIn(peer, msg);
 
@@ -318,7 +322,6 @@ define([
                     onEvent();
                 }
             }
-            console.log(message);
             realtime.message(message);
             if (/\[5,/.test(message)) { verbose("pong"); }
 
@@ -336,13 +339,11 @@ define([
             }
         }
 
-        var onJoining = function(peer, channel) {
-          console.log('Someone joined : '+peer)
+        var onJoining = function(peer) {
         }
 
-        var onLeaving = function(peer, channel) {
+        var onLeaving = function(peer) {
           chainpadAdapter.leaving(peer);
-          console.log('Someone left : '+peer)
         }
 
         var checkConnection = function(wc) {
