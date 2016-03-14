@@ -49,7 +49,6 @@ var popPassword = function (msg) {
 };
 
 var sendMsg = function (msg, socket) {
-    console.log('>> '+msg);
     socket.send(msg);
 };
 
@@ -109,7 +108,6 @@ var dropClient = function (ctx, userpass) {
 };
 
 var handleMessage = function (ctx, socket, msg) {
-    console.log('<< '+msg);
     var parsed = parseMessage(msg);
     var userPass = parsed.user + ':' + parsed.pass;
     msg = popPassword(msg);

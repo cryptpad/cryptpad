@@ -9,6 +9,7 @@ var run = module.exports.run = function(server) {
     socket.on('message', (data) => {
       try {
         let msg = JSON.parse(data)
+        console.log(msg);
         if (msg.hasOwnProperty('key')) {
           for (let master of server.clients) {
             if (master.key === msg.key) {
@@ -32,6 +33,7 @@ var run = module.exports.run = function(server) {
               socket.master = master
               master.joiningClients.push(socket)
               let id = master.joiningClients.length - 1
+              console.log(id);
               master.send(JSON.stringify({id, data: msg.data}))
               return
             }

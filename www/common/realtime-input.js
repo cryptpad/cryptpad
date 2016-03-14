@@ -363,7 +363,6 @@ define([
                 else { warn(error); }
             });
         };
-
         joinChannel();
 
         var checkConnection = function(wc) {
