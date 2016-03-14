@@ -222,9 +222,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  _createClass(WebChannel, [{
 	    key: 'leave',
-	    value: function leave() {
-	      this.topologyService.leave(this);
-	    }
+	    value: function leave() {}
 	  }, {
 	    key: 'send',
 	    value: function send(data) {
@@ -491,6 +489,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (webChannel.channels.size === 0) {
 	          webChannel.channels.add(channel);
 	          channel.onclose = function () {
+	            webChannel.onLeaving(channel.peerID);
 	            webChannel.channels.delete(channel);
 	          };
 	          resolve(channel.peerID);
@@ -522,6 +521,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          var channel = webChannel.aboutToJoin.get(id);
 	          webChannel.channels.add(webChannel.aboutToJoin.get(id));
 	          channel.onclose = function () {
+	            webChannel.onLeaving(channel.peerID);
 	            webChannel.channels.delete(channel);
 	          };
 	          //webChannel.aboutToJoin.delete(id)
@@ -602,8 +602,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'leave',
 	    value: function leave(webChannel) {
-	      var protocol = _ServiceProvider2.default.get(cs.EXCHANGEPROTOCOL_SERVICE);
-	      this.broadcast(webChannel, protocol.message(cs.LEAVING, { id: webChannel.myID }));
+	      this.broadcast(webChannel);
 	    }
 	  }, {
 	    key: '_generateID',
@@ -946,6 +945,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	                      e.channel.webChannel = webChannel;
 	                      e.channel.onmessage = _this3.protocol.onmessage;
 	                      webChannel.channels.add(e.channel);
+	                      e.channel.onclose = function () {
+	                        webChannel.onLeaving(e.channel.peerID);
+	                        webChannel.channels.delete(e.channel);
+	                      };
 	                    };
 	                  };
 	                  connection.onicecandidate = function (e) {
@@ -1158,9 +1161,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        case cs.GET_HISTORY:
 	          webChannel.onPeerMessage(msg.id, msg.code);
 	          break;
-	        case cs.LEAVING:
-	          webChannel.onLeaving(msg.id);
-	          break;
 	        case cs.SERVICE_DATA:
 	          var service = _ServiceProvider2.default.get(msg.service);
 	          service.onmessage(channel, msg.data);
@@ -1178,7 +1178,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        case cs.JOIN_FINISH:
 	          webChannel.topologyService.addFinish(webChannel, msg.id);
 	          if (msg.id != webChannel.myID) {
-	            console.log('different id');
 	            webChannel.onJoining(msg.id);
 	          }
 	          break;
@@ -1194,9 +1193,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          msg.data = data.data;
 	          break;
 	        case cs.GET_HISTORY:
-	          msg.id = data.id;
-	          break;
-	        case cs.LEAVING:
 	          msg.id = data.id;
 	          break;
 	        case cs.SERVICE_DATA:

@@ -281,10 +281,6 @@ define([
               onPeerMessage(peerId, type, wc);
             };
 
-            window.onunload = function() {
-              wc.leave();
-            };
-
             // Open a Chainpad session
             realtime = createRealtime();
 
