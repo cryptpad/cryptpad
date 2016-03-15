@@ -184,11 +184,25 @@ define([
             }
         };
 
+        var userList = {
+          onChange : function() {},
+          users: []
+        };
         var onJoining = function(peer) {
+          var list = userList.users;
+          if(list.indexOf(peer) === -1) {
+            userList.users.push(peer);
+          }
+          userList.onChange();
         };
 
         var onLeaving = function(peer) {
-          chainpadAdapter.leaving(peer);
+          var list = userList.users;
+          var index = list.indexOf(peer);
+          if(index !== -1) {
+            userList.users.splice(index, 1);
+          }
+          userList.onChange();
         };
 
         chainpadAdapter = {
@@ -212,15 +226,17 @@ define([
                 }
 
             },
-            msgOut : function(msg) {
+            msgOut : function(msg, wc) {
                 var parsed = parseMessage(msg);
                 if(parsed.content[0] === 0) { // Someone is registering
                     onMessage('', '1:y'+mkMessage('', channel, [1,0]));
-                    return msg;
+                    // return msg;
+                    return;
                 }
                 if(parsed.content[0] === 4) { // Someone is registering
                     parsed.content[0] = 5;
                     onMessage('', '1:y'+mkMessage(parsed.user, parsed.channelId, parsed.content));
+                    wc.sendPing();
                     return;
                 }
                 return Crypto.encrypt(msg, cryptKey);
@@ -286,9 +302,13 @@ define([
 
             if(config.onInit) {
                 config.onInit({
-                    realtime: realtime
+                    realtime: realtime,
+                    webChannel: wc,
+                    userList: userList
                 });
             }
+            // Trigger onJoining with our own Cryptpad username to tell the toolbar that we are synced
+            onJoining(userName);
 
             // we're fully synced
             initializing = false;
@@ -301,7 +321,7 @@ define([
             // On sending message
             realtime.onMessage(function(message) {
                 // Prevent Chainpad from sending authentication messages since it is handled by Netflux
-                message = chainpadAdapter.msgOut(message);
+                message = chainpadAdapter.msgOut(message, wc);
                 if(message) {
                   wc.send(message).then(function() {
                     // Send the message back to Chainpad once it is sent to all peers if using the WebRTC protocol

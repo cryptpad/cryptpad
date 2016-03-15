@@ -236,6 +236,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	      });
 	    }
 	  }, {
+	    key: 'sendPing',
+	    value: function sendPing() {
+	      var channel = this;
+	      return new Promise(function (resolve, reject) {
+	        if (channel.channels.size === 0) {
+	          resolve();
+	        }
+	        var protocol = _ServiceProvider2.default.get(channel.settings.protocol);
+	        channel.topologyService.broadcast(channel, protocol.message(cs.PING, { data: '' })).then(resolve, reject);
+	      });
+	    }
+	  }, {
 	    key: 'getHistory',
 	    value: function getHistory(historyKeeperID) {
 	      var channel = this;
@@ -335,6 +347,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var JOIN_START = exports.JOIN_START = 2;
 	var JOIN_FINISH = exports.JOIN_FINISH = 4;
 	var YOUR_NEW_ID = exports.YOUR_NEW_ID = 5;
+	var PING = exports.PING = 7;
 
 	// Internal message to a specific Service
 	var SERVICE_DATA = exports.SERVICE_DATA = 3;
@@ -630,7 +643,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 6 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -648,7 +661,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  _createClass(StarTopologyService, [{
-	    key: "broadcast",
+	    key: 'broadcast',
 	    value: function broadcast(webChannel, data) {
 	      return new Promise(function (resolve, reject) {
 	        var _iteratorNormalCompletion = true;
@@ -659,7 +672,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	          for (var _iterator = webChannel.channels[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
 	            var c = _step.value;
 
-	            var msg = JSON.stringify([c.seq++, data.type, webChannel.id, data.msg]);
+	            var msg = undefined;
+	            if (data.type === 'PING') {
+	              var date = new Date().getTime();
+	              // webChannel.lastPing = date;
+	              msg = JSON.stringify([0, 'PING', date]);
+	            } else {
+	              msg = JSON.stringify([c.seq++, data.type, webChannel.id, data.msg]);
+	            }
 	            c.send(msg);
 	          }
 	        } catch (err) {
@@ -681,7 +701,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      });
 	    }
 	  }, {
-	    key: "sendTo",
+	    key: 'sendTo',
 	    value: function sendTo(id, webChannel, data) {
 	      return new Promise(function (resolve, reject) {
 	        var _iteratorNormalCompletion2 = true;
@@ -1178,7 +1198,43 @@ return /******/ (function(modules) { // webpackBootstrap
 	        case cs.JOIN_FINISH:
 	          webChannel.topologyService.addFinish(webChannel, msg.id);
 	          if (msg.id != webChannel.myID) {
+	            // A new user has just registered
 	            webChannel.onJoining(msg.id);
+	          } else {
+	            (function () {
+	              // We're fully synced, trigger onJoining for all existing users
+	              var waitForOnJoining = function waitForOnJoining() {
+	                if (typeof webChannel.onJoining !== "function") {
+	                  setTimeout(waitForOnJoining, 500);
+	                  return;
+	                }
+	                var _iteratorNormalCompletion = true;
+	                var _didIteratorError = false;
+	                var _iteratorError = undefined;
+
+	                try {
+	                  for (var _iterator = webChannel.channels[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	                    var c = _step.value;
+
+	                    webChannel.onJoining(c.peerID);
+	                  }
+	                } catch (err) {
+	                  _didIteratorError = true;
+	                  _iteratorError = err;
+	                } finally {
+	                  try {
+	                    if (!_iteratorNormalCompletion && _iterator.return) {
+	                      _iterator.return();
+	                    }
+	                  } finally {
+	                    if (_didIteratorError) {
+	                      throw _iteratorError;
+	                    }
+	                  }
+	                }
+	              };
+	              waitForOnJoining();
+	            })();
 	          }
 	          break;
 	      }
@@ -1260,12 +1316,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var webChannel = socket.webChannel;
 	      var topology = cs.STAR_SERVICE;
 	      var topologyService = _ServiceProvider2.default.get(topology);
+	      var HISTORY_KEEPER = '_HISTORY_KEEPER_';
 
 	      if (msg[0] !== 0) {
 	        return;
 	      }
 	      if (msg[1] === 'IDENT') {
 	        socket.uid = msg[2];
+	        webChannel.myID = msg[2];
 	        webChannel.peers = [];
 	        webChannel.topology = topology;
 	        return;
@@ -1275,11 +1333,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	        socket.send(JSON.stringify(msg));
 	        return;
 	      }
+	      if (msg[1] === 'PONG') {
+	        var lag = new Date().getTime() - msg[2];
+	        webChannel.getLag = function () {
+	          return lag;
+	        };
+	        return;
+	      }
 	      if (msg[2] === 'MSG') {}
 	      // We have received a new direct message from another user
 	      if (msg[2] === 'MSG' && msg[3] === socket.uid) {
 	        // If it comes form the history keeper, send it to the user
-	        if (msg[1] === '_HISTORY_KEEPER_') {
+	        if (msg[1] === HISTORY_KEEPER) {
 	          var msgHistory = JSON.parse(msg[4]);
 	          webChannel.onmessage(msgHistory[1], msgHistory[4]);
 	        }
@@ -1298,9 +1363,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          webChannel.onopen();
 	        } else {
 	          // Trigger onJoining() when another user is joining the channel
-
 	          // Register the user in the list of peers in the channel
-	          var linkQuality = msg[1] === '_HISTORY_KEEPER_' ? 1000 : 0;
+	          var linkQuality = msg[1] === HISTORY_KEEPER ? 1000 : 0;
 	          var sendToPeer = function sendToPeer(data) {
 	            topologyService.sendTo(msg[1], webChannel, { type: 'MSG', msg: data });
 	          };
@@ -1309,7 +1373,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	            webChannel.peers.push(peer);
 	          }
 
-	          if (typeof webChannel.onJoining === "function") webChannel.onJoining(msg[1]);
+	          if (msg[1] !== HISTORY_KEEPER) {
+	            // Trigger onJoining with that peer once the function is loaded (i.e. once the channel is synced)
+	            var waitForOnJoining = function waitForOnJoining() {
+	              if (typeof webChannel.onJoining !== "function") {
+	                setTimeout(waitForOnJoining, 500);
+	                return;
+	              }
+	              webChannel.onJoining(msg[1]);
+	            };
+	            waitForOnJoining();
+	          }
 	        }
 	      }
 	      // We have received a new message in that channel from another peer
@@ -1334,6 +1408,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	          break;
 	        case cs.JOIN_START:
 	          type = 'JOIN';
+	          break;
+	        case cs.PING:
+	          type = 'PING';
 	          break;
 	      }
 	      return { type: type, msg: data.data };

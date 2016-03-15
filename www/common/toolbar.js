@@ -123,6 +123,17 @@ define([
         return $container.find('#'+id)[0];
     };
 
+    var getOtherUsers = function(myUserName, userList) {
+      var length = userList.length;
+      var list = (length > 1) ? ' : ' : '';
+      userList.forEach(function(user) {
+        if(user !== myUserName) {
+          list += user + ', ';
+        }
+      });
+      return (length > 1) ? list.slice(0, -2) : list;
+    }
+
     var updateUserList = function (myUserName, listElement, userList) {
         var meIdx = userList.indexOf(myUserName);
         if (meIdx === -1) {
@@ -132,9 +143,9 @@ define([
         if (userList.length === 1) {
             listElement.textContent = Messages.editingAlone;
         } else if (userList.length === 2) {
-            listElement.textContent = Messages.editingWithOneOtherPerson;
+            listElement.textContent = Messages.editingWithOneOtherPerson + getOtherUsers(myUserName, userList);
         } else {
-            listElement.textContent = Messages.editingWith + ' ' + (userList.length - 1) + ' ' + Messages.otherPeople;
+            listElement.textContent = Messages.editingWith + ' ' + (userList.length - 1) + ' ' + Messages.otherPeople + getOtherUsers(myUserName, userList);
         }
     };
 
@@ -144,14 +155,20 @@ define([
         return $container.find('#'+id)[0];
     };
 
-    var checkLag = function (realtime, lagElement) {
-        var lag = realtime.getLag();
-        var lagSec = lag.lag/1000;
+    var checkLag = function (webChannel, lagElement) {
+        if(typeof webChannel.getLag !== "function") { return; }
+        var lag = webChannel.getLag();
         var lagMsg = Messages.lag + ' ';
-        if (lag.waiting && lagSec > 1) {
-            lagMsg += "?? " + Math.floor(lagSec);
-        } else {
-            lagMsg += lagSec;
+        if(lag) {
+          var lagSec = lag/1000;
+          if (lag.waiting && lagSec > 1) {
+              lagMsg += "?? " + Math.floor(lagSec);
+          } else {
+              lagMsg += lagSec;
+          }
+        }
+        else {
+          lagMsg += "??";
         }
         lagElement.textContent = lagMsg;
     };
@@ -182,7 +199,7 @@ define([
         localStorage['CryptPad_RECENTPADS'] = JSON.stringify(out);
     };
 
-    var create = function ($container, myUserName, realtime) {
+    var create = function ($container, myUserName, realtime, webChannel, userList) {
         var toolbar = createRealtimeToolbar($container);
         createEscape(toolbar.find('.rtwysiwyg-toolbar-leftside'));
         var userListElement = createUserList(toolbar.find('.rtwysiwyg-toolbar-leftside'));
@@ -193,11 +210,12 @@ define([
 
         var connected = false;
 
-        realtime.onUserListChange(function (userList) {
-            if (userList.indexOf(myUserName) !== -1) { connected = true; }
-            if (!connected) { return; }
-            updateUserList(myUserName, userListElement, userList);
-        });
+        userList.onChange = function() {
+          var users = userList.users;
+          if (users.indexOf(myUserName) !== -1) { connected = true; }
+          if (!connected) { return; }
+          updateUserList(myUserName, userListElement, users);
+        }
 
         var ks = function () {
             if (connected) { kickSpinner(spinner, false); }
@@ -209,7 +227,7 @@ define([
 
         setInterval(function () {
             if (!connected) { return; }
-            checkLag(realtime, lagElement);
+            checkLag(webChannel, lagElement);
         }, 3000);
 
         return {

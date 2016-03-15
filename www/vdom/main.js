@@ -144,7 +144,7 @@ define([
 
             var onInit = function (info) {
                 var $bar = $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox');
-                toolbar = info.realtime.toolbar = Toolbar.create($bar, userName, info.realtime);
+                toolbar = info.realtime.toolbar = Toolbar.create($bar, userName, info.realtime, info.webChannel, info.userList);
                 /* TODO handle disconnects and such*/
             };
 
