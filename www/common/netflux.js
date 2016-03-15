@@ -258,11 +258,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }, {
 	    key: 'sendTo',
-	    value: function sendTo(fromId, toId, msg) {
+	    value: function sendTo(id, msg) {
 	      var channel = this;
 	      return new Promise(function (resolve, reject) {
 	        var protocol = _ServiceProvider2.default.get(channel.settings.protocol);
-	        channel.topologyService.sendTo(toId, channel, protocol.message(cs.USER_DATA, { id: fromId, data: msg })).then(resolve, reject);
+	        channel.topologyService.sendTo(id, channel, protocol.message(cs.USER_DATA, { id: channel.myID, data: msg })).then(resolve, reject);
 	      });
 	    }
 	  }, {

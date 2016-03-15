@@ -146,8 +146,7 @@ define([
         var onPeerMessage = function(toId, type, wc) {
             if(type === 6) {
                 messagesHistory.forEach(function(msg) {
-                    var fromId = chainpadAdapter.historyOut('1:y'+msg) || wc.myID;
-                    wc.sendTo(fromId, toId, '1:y'+msg);
+                    wc.sendTo(toId, '1:y'+msg);
                 });
             }
         };
@@ -206,14 +205,8 @@ define([
         };
 
         chainpadAdapter = {
-            usernamesMapping : {},
             msgIn : function(peerId, msg) {
                 var parsed = parseMessage(msg);
-                if(parsed.content[0] === 0) {
-                  if(peerId) {
-                    this.usernamesMapping[peerId] = parsed.user;
-                  }
-                }
                 // Remove the password from the message
                 var passLen = msg.substring(0,msg.indexOf(':'));
                 var message = msg.substring(passLen.length+1 + Number(passLen));
@@ -228,35 +221,17 @@ define([
             },
             msgOut : function(msg, wc) {
                 var parsed = parseMessage(msg);
-                if(parsed.content[0] === 0) { // Someone is registering
+                if(parsed.content[0] === 0) { // We're registering : send a REGISTER_ACK to Chainpad
                     onMessage('', '1:y'+mkMessage('', channel, [1,0]));
-                    // return msg;
                     return;
                 }
-                if(parsed.content[0] === 4) { // Someone is registering
+                if(parsed.content[0] === 4) { // PING message from Chainpad
                     parsed.content[0] = 5;
                     onMessage('', '1:y'+mkMessage(parsed.user, parsed.channelId, parsed.content));
                     wc.sendPing();
                     return;
                 }
                 return Crypto.encrypt(msg, cryptKey);
-            },
-            leaving : function(peerId) {
-                if(this.usernamesMapping[peerId]) {
-                    var chainpadUser = this.usernamesMapping[peerId];
-                    onMessage('', '1:y'+mkMessage(chainpadUser, channel, [3,0]));
-                }
-            },
-            historyOut : function(msg) {
-                var parsed = parseMessage(msg);
-                if(parsed.content[0] === 0) {
-                    var value = parsed.user;
-                    var obj = this.usernamesMapping;
-                    // Find the key (peerId) associated to the chainpad user in the map
-                    var peerId = Object.keys(obj).filter(function(key) {return obj[key] === value;})[0];
-                    return peerId;
-                }
-                return;
             }
         };
 
