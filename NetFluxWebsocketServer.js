@@ -1,6 +1,7 @@
 ;(function () { 'use strict';
 let Crypto = require('crypto');
 let WebSocket = require('ws');
+let LogStore = require('./storage/LogStore');
 
 let LAG_MAX_BEFORE_DISCONNECT = 30000;
 let LAG_MAX_BEFORE_PING = 15000;
@@ -142,7 +143,7 @@ let run = module.exports.run = function (storage, socketServer) {
     let ctx = {
         users: {},
         channels: {},
-        store: storage
+        store: LogStore.create('messages.log', storage)
     };
     setInterval(function () {
         Object.keys(ctx.users).forEach(function (userId) {
