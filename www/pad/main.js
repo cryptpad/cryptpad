@@ -145,7 +145,11 @@ define([
                 buttonElmt.addEventListener("click", function() {
                    var newName = prompt("Change your name :", myUserName)
                    if (newName && newName.trim()) {
-                       myUserName = newName.trim();
+                       var myUserNameTemp = newName.trim();
+                       if(newName.trim().length > 32) {
+                         myUserNameTemp = myUserNameTemp.substr(0, 31);
+                       }
+                       myUserName = myUserNameTemp;
                        myData[myID] = {
                           name: myUserName
                        };
