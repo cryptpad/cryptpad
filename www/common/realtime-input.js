@@ -148,6 +148,7 @@ define([
                 messagesHistory.forEach(function(msg) {
                     wc.sendTo(toId, '1:y'+msg);
                 });
+                wc.sendTo(toId, '0');
             }
         };
 
@@ -155,8 +156,12 @@ define([
             return '\\' +c;
         }));
 
-        var onMessage = function(peer, msg) {
+        var onMessage = function(peer, msg, wc) {
 
+            if(msg === 0 || msg === '0') {
+                onReady(wc);
+                return;
+            }
             var message = chainpadAdapter.msgIn(peer, msg);
 
             verbose(message);
@@ -263,22 +268,7 @@ define([
                                         });
         };
 
-        var onOpen = function(wc) {
-            // Add the handlers to the WebChannel
-            wc.onmessage = onMessage; // On receiving message
-            wc.onJoining = onJoining; // On user joining the session
-            wc.onLeaving = onLeaving; // On user leaving the session
-            wc.onPeerMessage = function(peerId, type) {
-              onPeerMessage(peerId, type, wc);
-            };
-            if(config.setMyID) {
-                config.setMyID({
-                    myID: wc.myID
-                });
-            }
-            // Open a Chainpad session
-            realtime = createRealtime();
-
+        var onReady = function(wc) {
             if(config.onInit) {
                 config.onInit({
                     myID: wc.myID,
@@ -297,6 +287,25 @@ define([
             if (config.onReady) {
                 config.onReady();
             }
+        }
+
+        var onOpen = function(wc) {
+            // Add the handlers to the WebChannel
+            wc.onmessage = function(peer, msg) { // On receiving message
+                onMessage(peer, msg, wc);
+            };
+            wc.onJoining = onJoining; // On user joining the session
+            wc.onLeaving = onLeaving; // On user leaving the session
+            wc.onPeerMessage = function(peerId, type) {
+              onPeerMessage(peerId, type, wc);
+            };
+            if(config.setMyID) {
+                config.setMyID({
+                    myID: wc.myID
+                });
+            }
+            // Open a Chainpad session
+            realtime = createRealtime();
 
             // On sending message
             realtime.onMessage(function(message) {
@@ -343,6 +352,7 @@ define([
             var webchannel = Netflux.create();
             webchannel.openForJoining(options).then(function(data) {
                 onOpen(webchannel);
+                onReady(webchannel);
             }, function(error) {
                 warn(error);
             });

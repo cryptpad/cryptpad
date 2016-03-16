@@ -1340,11 +1340,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        };
 	        return;
 	      }
-	      if (msg[2] === 'MSG') {}
 	      // We have received a new direct message from another user
 	      if (msg[2] === 'MSG' && msg[3] === socket.uid) {
 	        // If it comes form the history keeper, send it to the user
 	        if (msg[1] === HISTORY_KEEPER) {
+	          if (msg[4] === 0) {
+	            webChannel.onmessage(msg[1], msg[4]);
+	            return;
+	          }
 	          var msgHistory = JSON.parse(msg[4]);
 	          webChannel.onmessage(msgHistory[1], msgHistory[4]);
 	        }

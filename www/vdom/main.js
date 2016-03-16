@@ -158,11 +158,9 @@ define([
             // apply patches, and try not to lose the cursor in the process!
             var applyHjson = function (shjson) {
                 var hjson = JSON.parse(shjson);
-                console.log(hjson);
                 var peerUserList = hjson[hjson.length-1];
                 if(peerUserList.mydata) {
                   var userData = peerUserList.mydata;
-                  console.log(userData);
                   addToUserList(userData);
                   delete hjson[hjson.length-1];
                 }
