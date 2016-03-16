@@ -127,16 +127,20 @@ define([
     };
 
     var getOtherUsers = function(myUserName, userList, userData) {
-      var length = userList.length;
-      var list = (length > 1) ? ' : ' : '';
+      var i = 0;
+      var list = '';
       userList.forEach(function(user) {
         if(user !== myUserName) {
           var data = (userData) ? (userData[user] || null) : null;
-          var userName = (data) ? data.name : user;
-          list += userName + ', ';
+          var userName = (data) ? data.name : null;
+          if(userName) {
+            if(i === 0) list = ' : ';
+            list += userName + ', ';
+            i++;
+          }
         }
       });
-      return (length > 1) ? list.slice(0, -2) : list;
+      return (i > 0) ? list.slice(0, -2) : list;
     }
 
     var createChangeName = function($container, userList, buttonID) {
