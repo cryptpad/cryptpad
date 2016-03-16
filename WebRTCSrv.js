@@ -6,6 +6,7 @@ const CLOSE_UNSUPPORTED = 1003
 
 var run = module.exports.run = function(server) {
   server.on('connection', (socket) => {
+    if(socket.upgradeReq.url !== '/cryptpad_webrtc') { return; }
     socket.on('message', (data) => {
       try {
         let msg = JSON.parse(data)

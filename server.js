@@ -63,8 +63,8 @@ app.get('/api/config', function(req, res){
     res.send('define(' + JSON.stringify({
         websocketURL:'ws' + ((httpsOpts) ? 's' : '') + '://' + host + ':' +
             config.websocketPort + '/cryptpad_websocket',
-        webrtcURL: (config.webrtcPort) ? 'ws' + ((httpsOpts) ? 's' : '') + '://' + host + ':' +
-            config.webrtcPort : ''
+        webrtcURL:'ws' + ((httpsOpts) ? 's' : '') + '://' + host + ':' +
+            config.websocketPort + '/cryptpad_webrtc',
     }) + ');');
 });
 
@@ -74,31 +74,14 @@ httpServer.listen(config.httpPort,config.httpAddress,function(){
     console.log('listening on %s',config.httpPort);
 });
 
-if(config.websocketPort) {
-    var wsConfig = { server: httpServer };
-    if (config.websocketPort !== config.httpPort) {
-        console.log("setting up a new websocket server");
-        wsConfig = { port: config.websocketPort};
-    }
-    var wsSrv = new WebSocketServer(wsConfig);
-    Storage.create(config, function (store) {
-        console.log('DB connected');
-        // ChainPadSrv.create(wsSrv, store);
-        NetfluxSrv.run(store, wsSrv);
-        //WebRTCSrv.run(store, wsSrv);
-    });
+var wsConfig = { server: httpServer };
+if (config.websocketPort !== config.httpPort) {
+    console.log("setting up a new websocket server");
+    wsConfig = { port: config.websocketPort};
 }
-if(config.webrtcPort) {
-    var wrConfig = { server: httpServer };
-    if (config.webrtcPort !== config.httpPort) {
-        console.log("setting up a new webrtc server");
-        wrConfig = { port: config.webrtcPort};
-    }
-    var wrSrv = new WebSocketServer(wrConfig);
-    WebRTCSrv.run(wrSrv);
-    // Storage.create(config, function (store) {
-        // console.log('DB connected for WebRTC');
-        // ChainPadSrv.create(wsSrv, store);
-        //NetfluxSrv.run(store, wsSrv);
-    // });
-}
+var wsSrv = new WebSocketServer(wsConfig);
+Storage.create(config, function (store) {
+    console.log('DB connected');
+    NetfluxSrv.run(store, wsSrv);
+    WebRTCSrv.run(wsSrv);
+});

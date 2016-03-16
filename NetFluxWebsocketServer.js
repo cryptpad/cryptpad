@@ -157,6 +157,7 @@ let run = module.exports.run = function (storage, socketServer) {
         });
     }, 5000);
     socketServer.on('connection', function(socket) {
+        if(socket.upgradeReq.url !== '/cryptpad_websocket') { return; }
         let conn = socket.upgradeReq.connection;
         let user = {
             addr: conn.remoteAddress + '|' + conn.remotePort,
