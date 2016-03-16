@@ -271,19 +271,24 @@ define([
             wc.onPeerMessage = function(peerId, type) {
               onPeerMessage(peerId, type, wc);
             };
-
+            if(config.setMyID) {
+                config.setMyID({
+                    myID: wc.myID
+                });
+            }
             // Open a Chainpad session
             realtime = createRealtime();
 
             if(config.onInit) {
                 config.onInit({
+                    myID: wc.myID,
                     realtime: realtime,
                     webChannel: wc,
                     userList: userList
                 });
             }
             // Trigger onJoining with our own Cryptpad username to tell the toolbar that we are synced
-            onJoining(userName);
+            onJoining(wc.myID);
 
             // we're fully synced
             initializing = false;

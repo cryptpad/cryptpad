@@ -122,10 +122,51 @@ define([
             };
 
             var initializing = true;
+            var userList = []; // List of pretty name of all users (mapped with their server ID)
+            var toolbarList; // List of users still connected to the channel (server IDs)
+            var addToUserList = function(data) {
+                for (var attrname in data) { userList[attrname] = data[attrname]; }
+                if(toolbarList && typeof toolbarList.onChange === "function") {
+                    toolbarList.onChange(userList);
+                }
+            };
+            
+            var myData = {};
+            var myUserName = ''; // My "pretty name"
+            var myID; // My server ID
+            
+            var setMyID = function(info) {
+              myID = info.myID || null;
+              myUserName = myID;
+            };
+
+            var createChangeName = function(id, $container) {
+                var buttonElmt = $container.find('#'+id)[0];
+                buttonElmt.addEventListener("click", function() {
+                   var newName = prompt("Change your name :", myUserName)
+                   if (newName && newName.trim()) {
+                       myUserName = newName.trim();
+                       myData[myID] = {
+                          name: myUserName
+                       };
+                       addToUserList(myData);
+                       editor.fire( 'change' );
+                   }
+                });
+            };
 
             // apply patches, and try not to lose the cursor in the process!
             var applyHjson = function (shjson) {
-                var userDocStateDom = Convert.hjson.to.dom(JSON.parse(shjson));
+                var hjson = JSON.parse(shjson);
+                console.log(hjson);
+                var peerUserList = hjson[hjson.length-1];
+                if(peerUserList.mydata) {
+                  var userData = peerUserList.mydata;
+                  console.log(userData);
+                  addToUserList(userData);
+                  delete hjson[hjson.length-1];
+                }
+                var userDocStateDom = Convert.hjson.to.dom(hjson);
                 userDocStateDom.setAttribute("contenteditable", "true"); // lol wtf
                 var DD = new DiffDom(diffOptions);
                 var patch = (DD).diff(inner, userDocStateDom);
@@ -144,7 +185,13 @@ define([
 
             var onInit = function (info) {
                 var $bar = $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox');
-                toolbar = info.realtime.toolbar = Toolbar.create($bar, userName, info.realtime, info.webChannel, info.userList);
+                toolbarList = info.userList;
+                var config = {
+                    userList: userList,
+                    changeNameID: 'cryptpad-changeName'
+                };
+                toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.webChannel, info.userList, config);
+                createChangeName('cryptpad-changeName', $bar);
                 /* TODO handle disconnects and such*/
             };
 
@@ -164,6 +211,8 @@ define([
                 toolbar.failed();
             };
 
+            
+            
             var realtimeOptions = {
                 // the textarea that we will sync
                 textarea: $textarea[0],
@@ -188,6 +237,8 @@ define([
 
                 onReady: onReady,
 
+                setMyID: setMyID,
+
                 // when remote changes occur
                 onRemote: onRemote,
 
@@ -205,7 +256,10 @@ define([
 
             editor.on('change', function () {
                 var hjson = Convert.core.hyperjson.fromDOM(inner);
-
+                if(myData !== {}) {
+                    hjson[hjson.length] = {mydata: myData};
+                    myData = {};
+                }
                 $textarea.val(JSON.stringify(hjson));
                 rti.bumpSharejs();
             });
