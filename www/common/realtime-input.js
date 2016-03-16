@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+window.Reflect = { has: (x,y) => { return (y in x); } };
 define([
     '/common/messages.js',
     '/common/netflux.js',
