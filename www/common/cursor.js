@@ -136,10 +136,9 @@ define([
             verbose("cursor.update");
             root = root || inner;
             sel = sel || Rangy.getSelection(root);
-            // FIXME under what circumstances are no ranges found?
             if (!sel.rangeCount) {
                 error('[cursor.update] no ranges found');
-                //return 'no ranges found';
+                return;
             }
             var range = sel.getRangeAt(0);
 
