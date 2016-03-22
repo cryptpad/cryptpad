@@ -12,7 +12,12 @@ define([
             JSON.parse(text3);
             return resultOp;
         } catch (e) {
-            console.log(e);
+            console.error(e);
+            console.log({
+                resultOp: resultOp,
+                text2: text2,
+                text3: text3
+            });
         }
 
         // returning **null** breaks out of the loop
