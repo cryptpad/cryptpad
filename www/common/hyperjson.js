@@ -17,7 +17,7 @@ define([], function () {
 
     var callOnHyperJSON = function (hj, cb) {
         var children;
-        
+
         if (hj && hj[2]) {
             children = hj[2].map(function (child) {
                 if (isArray(child)) {
@@ -37,6 +37,14 @@ define([], function () {
         }
         // this should return the top level element of your new DOM
         return cb(hj[0], hj[1], children);
+    };
+
+    var prependDot = function (token) {
+        return '.' + token;
+    };
+
+    var isTruthy = function (x) {
+        return x;
     };
 
     var DOM2HyperJSON = function(el){
@@ -73,7 +81,14 @@ define([], function () {
           delete attributes.id;
         }
         if(attributes.class){
-          sel = sel +'.'+ attributes.class.replace(/ /g,".");
+            /* TODO this can be done with RegExps alone, and it will be faster
+                but this works and is a little less error prone, albeit slower
+                come back and speed it up when it comes time to optimize */
+          sel = sel +'.'+ attributes.class
+            .split(/\s+/)
+            .split(isTruthy)
+            .map(prependDot)
+            .join('');
           delete attributes.class;
         }
         result.push(sel);
