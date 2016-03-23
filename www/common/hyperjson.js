@@ -84,9 +84,10 @@ define([], function () {
             /* TODO this can be done with RegExps alone, and it will be faster
                 but this works and is a little less error prone, albeit slower
                 come back and speed it up when it comes time to optimize */
+
           sel = sel + attributes.class
             .split(/\s+/)
-            .split(isTruthy)
+            .filter(isTruthy)
             .map(prependDot)
             .join('');
           delete attributes.class;
