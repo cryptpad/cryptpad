@@ -47,12 +47,19 @@ define([], function () {
         return x;
     };
 
-    var DOM2HyperJSON = function(el){
+    var DOM2HyperJSON = function(el, predicate){
         if(!el.tagName && el.nodeType === Node.TEXT_NODE){
             return el.textContent;
         }
         if(!el.attributes){
           return;
+        }
+
+        if (predicate) {
+            if (!predicate(el)) {
+                // shortcircuit
+                return;
+            }
         }
         var attributes = {};
 
@@ -102,10 +109,12 @@ define([], function () {
 
         // js hint complains if we use 'var' here
         i = 0;
+
         for(; i < el.childNodes.length; i++){
-          children.push(DOM2HyperJSON(el.childNodes[i]));
+            children.push(DOM2HyperJSON(el.childNodes[i], predicate));
         }
-        result.push(children);
+
+        result.push(children.filter(isTruthy));
 
         return result;
     };
