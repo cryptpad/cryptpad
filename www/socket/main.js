@@ -68,6 +68,12 @@ define([
 
             var diffOptions = {
                 preDiffApply: function (info) {
+                    /* TODO DiffDOM will filter out magicline plugin elements
+                        in practice this will make it impossible to use it
+                        while someone else is typing, which could be annoying
+
+                        we should check when such an element is going to be
+                        removed, and prevent that from happening. */
 
                     // no use trying to recover the cursor if it doesn't exist
                     if (!cursor.exists()) { return; }
@@ -190,8 +196,8 @@ define([
                 onAbort: onAbort,
 
                 // really basic operational transform
+                // reject patch if it results in invalid JSON
                 transformFunction : JsonOT.validate
-                // pass in websocket/netflux object TODO
             };
 
             var rti = module.realtimeInput = window.rti = realtimeInput.start($textarea[0], // synced element
