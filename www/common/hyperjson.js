@@ -47,6 +47,13 @@ define([], function () {
         return x;
     };
 
+    /* DOM2HyperJSON accepts a DOM element/node
+        and converts it into Hyperjson. It optionally accepts a predicate
+        which is used for filtering out subtrees of the DOM from the result.
+
+        The function, if provided, must return true for elements which
+        should be preserved, and 'false' for elements which should be removed.
+    */
     var DOM2HyperJSON = function(el, predicate){
         if(!el.tagName && el.nodeType === Node.TEXT_NODE){
             return el.textContent;
