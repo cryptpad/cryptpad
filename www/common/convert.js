@@ -5,7 +5,7 @@ define([
 ], function (vdom, hyperjson, hyperscript) {
     // complain if you don't find the required APIs
     if (!(vdom && hyperjson && hyperscript)) { throw new Error(); }
-    
+
     // Generate a matrix of conversions
     /*
         convert.dom.to.hjson, convert.hjson.to.dom,
@@ -46,7 +46,7 @@ define([
                         return hyperjson.fromDOM(vdom.create(V));
                     }
                 }
-            }, 
+            },
             convert = {};
         Object.keys(methods).forEach(function (method) {
             convert[method] = { to: methods[method] };
