@@ -369,7 +369,7 @@ var random = Patch.random = function (doc, opCount) {
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var PARANOIA = module.exports.PARANOIA = true;
+var PARANOIA = module.exports.PARANOIA = false;
 
 /* throw errors over non-compliant messages which would otherwise be treated as invalid */
 var TESTING = module.exports.TESTING = false;
@@ -1046,8 +1046,7 @@ var handleMessage = ChainPad.handleMessage = function (realtime, msgStr) {
     if (Sha.hex_sha256(authDocAtTimeOfPatch) !== patch.parentHash) {
         debug(realtime, "patch [" + msg.hashOf + "] parentHash is not valid");
         if (Common.PARANOIA) { check(realtime); }
-        if (Common.TESTING) { throw new Error(); }
-        delete realtime.messages[msg.hashOf];
+        //delete realtime.messages[msg.hashOf];
         return;
     }
 
