@@ -197,6 +197,11 @@ define([
                 // build a dom from HJSON, diff, and patch the editor
                 applyHjson(shjson);
                 //updateDebugTextarea(shjson);
+
+                var shjson2 = JSON.stringify(Convert.core.hyperjson.fromDOM(inner));
+                if (shjson2 !== shjson) {
+                    throw new Error("change after conversion");
+                }
             };
 
             var onInit = function (info) {
@@ -260,9 +265,7 @@ define([
             var rti = module.realtimeInput = window.rti = realtimeInput.start(realtimeOptions);
 
             var propogate = window.cryptpad_propogate = function () {
-                var hjson = Convert.core.hyperjson.fromDOM(inner, isNotMagicLine);
-                var shjson = JSON.stringify(hjson);
-
+                var shjson = JSON.stringify(Convert.core.hyperjson.fromDOM(inner, isNotMagicLine));
                 if (!rti.propogate(shjson)) { return; }
                 rti.onEvent(shjson);
             };

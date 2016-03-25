@@ -211,7 +211,6 @@ define([
                     warn("realtime.getUserDoc() !== newText");
                 }
                 //try{throw new Error();}catch(e){console.log(e.stack);}
-                console.log("2: " + realtime.Sha.hex_sha256(realtime.getUserDoc()));
             };
 
             // pass your shiny new realtime into initialization functions
@@ -276,10 +275,7 @@ define([
                 allMessages.push(message);
                 if (!initializing) {
                     // FIXME this is out of sync with the application logic
-                    console.log("xxx");
                     window.cryptpad_propogate();
-                } else {
-                    console.log("init");
                 }
                 realtime.message(message);
                 if (/\[5,/.test(message)) { verbose("pong"); }

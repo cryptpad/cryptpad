@@ -35,6 +35,7 @@ var applyChange = function(ctx, oldval, newval) {
     if (newval.length !== commonStart + commonEnd) {
         if (ctx.localChange) { ctx.localChange(true); }
         ctx.insert(commonStart, newval.slice(commonStart, newval.length - commonEnd));
+        console.log("insert: " + newval.slice(commonStart, newval.length - commonEnd));
     }
 };
 
@@ -63,10 +64,8 @@ var attachTextarea = function(config) {
             if (ctx.getUserDoc() !== newContent) {
                 console.log("Expected that: `ctx.getUserDoc() === newContent`!");
             }
-            console.log("1: " + ctx.Sha.hex_sha256(ctx.getUserDoc()));
             return true;
         }
-        console.log("no change");
         return false;
     };
 };
