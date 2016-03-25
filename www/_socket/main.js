@@ -40,7 +40,7 @@ define([
     var setRandomizedInterval = function (func, target, range) {
         var timeout;
         var again = function () {
-            setTimeout(function () {
+            timeout = setTimeout(function () {
                 again();
                 func();
             }, target - (range / 2) + Math.random() * range);
@@ -273,13 +273,13 @@ define([
             var testInput = window.testInput = function (el, offset) {
                 var i = 0,
                     j = offset,
-                    input = "The quick red fox jumped over the lazy brown dog. ",
+                    input = "The quick red fox jumps over the lazy brown dog. ",
                     l = input.length,
                     errors = 0,
                     max_errors = 15,
                     interval;
                 var cancel = function () {
-                    //if (interval) { interval.cancel(); }
+                    if (interval) { interval.cancel(); }
                 };
 
                 interval = setRandomizedInterval(function () {
