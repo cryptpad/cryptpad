@@ -90,7 +90,7 @@ define([
             var $textarea = $('#feedback');
 
             var setEditable = function (bool) {
-                // inner.style.backgroundColor = bool? 'unset': 'grey';
+                inner.style.backgroundColor = bool? 'unset': 'grey';
                 inner.setAttribute('contenteditable', bool);
             };
 
@@ -197,7 +197,7 @@ define([
 
                 var shjson2 = JSON.stringify(Convert.core.hyperjson.fromDOM(inner));
                 if (shjson2 !== shjson) {
-                    rti.propogate(shjson2);
+                    rti.patchText(shjson2);
                 }
             };
 
@@ -220,8 +220,8 @@ define([
             var onAbort = function (info) {
                 console.log("Aborting the session!");
                 // stop the user from continuing to edit
+                // by setting the editable to false
                 setEditable(false);
-                // TODO inform them that the session was torn down
                 toolbar.failed();
             };
 
@@ -246,7 +246,6 @@ define([
                 // reject patch if it results in invalid JSON
                 transformFunction : JsonOT.validate,
 
-                // websocketURL, ofc
                 websocketURL: Config.websocketURL,
 
                 // username
@@ -259,15 +258,16 @@ define([
                 cryptKey: key.cryptKey
             };
 
-            var rti = module.realtimeInput = window.rti = realtimeInput.start(realtimeOptions);
+            var rti = module.realtimeInput = realtimeInput.start(realtimeOptions);
 
+            // FIXME Spaghetti code. realtime-input needs access to this variable..
             var propogate = window.cryptpad_propogate = function () {
                 var shjson = JSON.stringify(Convert.core.hyperjson.fromDOM(inner, isNotMagicLine));
-                if (!rti.propogate(shjson)) { return; }
+                if (!rti.patchText(shjson)) { return; }
                 rti.onEvent(shjson);
             };
 
-            var testInput = window.testInput = function (el, offset) {
+            var testInput = function (el, offset) {
                 var i = 0,
                     j = offset,
                     input = "The quick red fox jumps over the lazy brown dog. ",

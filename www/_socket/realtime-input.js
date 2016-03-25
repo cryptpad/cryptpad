@@ -19,10 +19,10 @@ define([
     '/bower_components/reconnectingWebsocket/reconnecting-websocket.js',
     '/common/crypto.js',
     '/_socket/toolbar.js',
-    '/_socket/sharejs_textarea-transport-only.js',
+    '/_socket/text-patcher.js',
     '/common/chainpad.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages,/*FIXME*/ ReconnectingWebSocket, Crypto, Toolbar, sharejs) {
+], function (Messages,/*FIXME*/ ReconnectingWebSocket, Crypto, Toolbar, TextPatcher) {
     var $ = window.jQuery;
     var ChainPad = window.ChainPad;
     var PARANOIA = true;
@@ -326,8 +326,7 @@ define([
             // TODO maybe push this out to the application layer.
             //bindAllEvents(null, doc, onEvent, false);
 
-            // TODO rename 'sharejs.attach' to imply what we want to do
-            var genOp = toReturn.propogate = sharejs.attach({
+            toReturn.patchText = TextPatcher.create({
                 realtime: realtime
             });
 

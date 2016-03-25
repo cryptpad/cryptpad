@@ -7,9 +7,6 @@ define(function () {
 
     it performs a diff on the two values, and generates patches
     which are then passed into `ctx.remove` and `ctx.insert`
-
-
-
 */
 var applyChange = function(ctx, oldval, newval) {
     // Strings are immutable and have reference equality. I think this test is O(1), so its worth doing.
@@ -39,7 +36,7 @@ var applyChange = function(ctx, oldval, newval) {
     }
 };
 
-var attachTextarea = function(config) {
+var create = function(config) {
     var ctx = config.realtime;
 
     // initial state will always fail the !== check in genop.
@@ -70,5 +67,5 @@ var attachTextarea = function(config) {
     };
 };
 
-return { attach: attachTextarea };
+return { create: create };
 });
