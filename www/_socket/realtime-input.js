@@ -172,7 +172,7 @@ define([
         // wrap up the reconnecting websocket with our additional stack logic
         var socket = makeWebsocket(websocketUrl);
 
-        var allMessages = [];
+        var allMessages = window.chainpad_allMessages = [];
         var isErrorState = false;
         var initializing = true;
         var recoverableErrorCount = 0;

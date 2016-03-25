@@ -1033,12 +1033,12 @@ var handleMessage = ChainPad.handleMessage = function (realtime, msgStr) {
 
     // toApply.length-1 because we do not want to apply the new patch.
     for (var i = 0; i < toApply.length-1; i++) {
+        if (Common.PARANOIA) {
+            Common.assert(Sha.hex_sha256(authDocAtTimeOfPatch) === toApply[i].content.parentHash);
+        }
         if (typeof(toApply[i].content.inverseOf) === 'undefined') {
             toApply[i].content.inverseOf = Patch.invert(toApply[i].content, authDocAtTimeOfPatch);
             toApply[i].content.inverseOf.inverseOf = toApply[i].content;
-        }
-        if (Common.PARANOIA) {
-            Common.assert(Sha.hex_sha256(authDocAtTimeOfPatch) === toApply[i].content.parentHash);
         }
         authDocAtTimeOfPatch = Patch.apply(toApply[i].content, authDocAtTimeOfPatch);
     }

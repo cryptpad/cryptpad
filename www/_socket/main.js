@@ -174,14 +174,11 @@ define([
             // apply patches, and try not to lose the cursor in the process!
             var applyHjson = function (shjson) {
                 //setEditable(false);
-                console.log(now());
                 var userDocStateDom = Convert.hjson.to.dom(JSON.parse(shjson));
                 userDocStateDom.setAttribute("contenteditable", "true"); // lol wtf
-                console.log(now());
                 //assertStateMatches();
                 var patch = (DD).diff(inner, userDocStateDom);
                 (DD).apply(inner, patch);
-                console.log(now());
                 // push back to the textarea so we get a userDocState
                 //setEditable(true);
             };
