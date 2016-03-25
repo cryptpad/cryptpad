@@ -1043,11 +1043,17 @@ var handleMessage = ChainPad.handleMessage = function (realtime, msgStr) {
         authDocAtTimeOfPatch = Patch.apply(toApply[i].content, authDocAtTimeOfPatch);
     }
 
-    if (Sha.hex_sha256(authDocAtTimeOfPatch) !== patch.parentHash) {
+    var authDocHashAtTimeOfPatch = Sha.hex_sha256(authDocAtTimeOfPatch);
+    if (authDocHashAtTimeOfPatch !== patch.parentHash) {
         debug(realtime, "patch [" + msg.hashOf + "] parentHash is not valid");
         if (Common.PARANOIA) { check(realtime); }
         //delete realtime.messages[msg.hashOf];
         return;
+    }
+    if (authDocAtTimeOfPatch === realtime.authDoc &&
+        authDocHashAtTimeOfPatch !== realtime.best.inverseOf.parentHash)
+    {
+        throw new Error("authDoc does not match chain head");
     }
 
     var simplePatch =
