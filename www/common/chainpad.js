@@ -1163,6 +1163,7 @@ module.exports.create = function (userName, authToken, channelId, initialState, 
     Common.assert(typeof(initialState) === 'string');
     var realtime = ChainPad.create(userName, authToken, channelId, initialState, conf);
     return {
+        Sha: Sha,
         onPatch: enterChainPad(realtime, function (handler) {
             Common.assert(typeof(handler) === 'function');
             realtime.patchHandlers.push(handler);

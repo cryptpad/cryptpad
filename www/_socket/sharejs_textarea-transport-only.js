@@ -46,27 +46,28 @@ var attachTextarea = function(config) {
     var content = {};
 
     // FIXME this is only necessary because we need to be able to update the
-    // textarea. This is being deprecated, however. Instead 
+    // textarea. This is being deprecated, however. Instead
     var replaceText = function(newText) {
         content = newText;
     };
 
     // *** remote -> local changes
-    ctx.onRemove(function(pos, length) {
+    ctx.onPatch(function(pos, length) {
         replaceText(ctx.getUserDoc());
     });
 
-    ctx.onInsert(function(pos, text) {
-        replaceText(ctx.getUserDoc());
-    });
-
+    // propogate()
     return function (newContent) {
         if (newContent !== content) {
             applyChange(ctx, ctx.getUserDoc(), newContent);
             if (ctx.getUserDoc() !== newContent) {
                 console.log("Expected that: `ctx.getUserDoc() === newContent`!");
             }
+            console.log("1: " + ctx.Sha.hex_sha256(ctx.getUserDoc()));
+            return true;
         }
+        console.log("no change");
+        return false;
     };
 };
 

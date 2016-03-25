@@ -37,6 +37,25 @@ define([
         return true;
     };
 
+    var setRandomizedInterval = function (func, target, range) {
+        var timeout;
+        var again = function () {
+            setTimeout(function () {
+                again();
+                func();
+            }, target - (range / 2) + Math.random() * range);
+        };
+        again();
+        return {
+            cancel: function () {
+                if (timeout) {
+                    clearTimeout(timeout);
+                    timeout = undefined;
+                }
+            }
+        };
+    }
+
     var andThen = function (Ckeditor) {
         $(window).on('hashchange', function() {
             window.location.reload();
@@ -149,20 +168,22 @@ define([
                 }, 0);
             };
 
+            var now = function () { return new Date().getTime() };
+
+            var DD = new DiffDom(diffOptions);
             // apply patches, and try not to lose the cursor in the process!
             var applyHjson = function (shjson) {
-                setEditable(false);
+                //setEditable(false);
+                console.log(now());
                 var userDocStateDom = Convert.hjson.to.dom(JSON.parse(shjson));
                 userDocStateDom.setAttribute("contenteditable", "true"); // lol wtf
-                var DD = new DiffDom(diffOptions);
-
+                console.log(now());
                 //assertStateMatches();
-
                 var patch = (DD).diff(inner, userDocStateDom);
                 (DD).apply(inner, patch);
-
+                console.log(now());
                 // push back to the textarea so we get a userDocState
-                setEditable(true);
+                //setEditable(true);
             };
 
             var onRemote = function (info) {
@@ -238,11 +259,11 @@ define([
 
             var rti = module.realtimeInput = window.rti = realtimeInput.start(realtimeOptions);
 
-            var propogate = function () {
+            var propogate = window.cryptpad_propogate = function () {
                 var hjson = Convert.core.hyperjson.fromDOM(inner, isNotMagicLine);
                 var shjson = JSON.stringify(hjson);
 
-                rti.propogate(shjson);
+                if (!rti.propogate(shjson)) { return; }
                 rti.onEvent(shjson);
             };
 
@@ -255,10 +276,10 @@ define([
                     max_errors = 15,
                     interval;
                 var cancel = function () {
-                    if (interval) { window.clearInterval(interval); }
+                    //if (interval) { interval.cancel(); }
                 };
 
-                interval = window.setInterval(function () {
+                interval = setRandomizedInterval(function () {
                     propogate();
                     try {
                         el.replaceData(j, 0, input.charAt(i));
@@ -270,14 +291,14 @@ define([
                         }
 
                         console.error(err);
-                        var next = document.createTextNode("");
-                        el.parentNode.appendChild(next);
+                        var next = document.createTextNode("-");
+                        window.inner.appendChild(next);
                         el = next;
-                        j = 0;
+                        j = -1;
                     }
                     i = (i + 1) % l;
                     j++;
-                }, 200);
+                }, 200, 50);
 
                 return {
                     cancel: cancel
