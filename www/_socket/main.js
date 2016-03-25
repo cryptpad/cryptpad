@@ -200,7 +200,7 @@ define([
 
                 var shjson2 = JSON.stringify(Convert.core.hyperjson.fromDOM(inner));
                 if (shjson2 !== shjson) {
-                    throw new Error("change after conversion");
+                    rti.propogate(shjson2);
                 }
             };
 
