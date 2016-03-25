@@ -369,7 +369,7 @@ var random = Patch.random = function (doc, opCount) {
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var PARANOIA = module.exports.PARANOIA = false;
+var PARANOIA = module.exports.PARANOIA = true;
 
 /* throw errors over non-compliant messages which would otherwise be treated as invalid */
 var TESTING = module.exports.TESTING = false;
@@ -999,13 +999,14 @@ var handleMessage = ChainPad.handleMessage = function (realtime, msgStr) {
             && Common.strcmp(realtime.best.hashOf, msg.hashOf) > 0))
         {
             // switch chains
+            debug(realtime, "Patch [" + msg.hashOf + "] is best, switching chains.");
             while (commonAncestor && !isAncestorOf(realtime, commonAncestor, msg)) {
                 toRevert.push(commonAncestor);
                 commonAncestor = getParent(realtime, commonAncestor);
             }
             Common.assert(commonAncestor);
         } else {
-            debug(realtime, "Patch [" + msg.hashOf + "] chain is ["+pcMsg+"] best chain is ["+pcBest+"]");
+            debug(realtime, "Patch [" + msg.hashOf + "] chain not best, staying.");
             if (Common.PARANOIA) { check(realtime); }
             return;
         }
@@ -1025,6 +1026,9 @@ var handleMessage = ChainPad.handleMessage = function (realtime, msgStr) {
 
     for (var i = 0; i < toRevert.length; i++) {
         authDocAtTimeOfPatch = Patch.apply(toRevert[i].content.inverseOf, authDocAtTimeOfPatch);
+        if (Common.PARANOIA) {
+            Common.assert(Sha.hex_sha256(authDocAtTimeOfPatch) === toRevert[i].content.parentHash);
+        }
     }
 
     // toApply.length-1 because we do not want to apply the new patch.
@@ -1032,6 +1036,9 @@ var handleMessage = ChainPad.handleMessage = function (realtime, msgStr) {
         if (typeof(toApply[i].content.inverseOf) === 'undefined') {
             toApply[i].content.inverseOf = Patch.invert(toApply[i].content, authDocAtTimeOfPatch);
             toApply[i].content.inverseOf.inverseOf = toApply[i].content;
+        }
+        if (Common.PARANOIA) {
+            Common.assert(Sha.hex_sha256(authDocAtTimeOfPatch) === toApply[i].content.parentHash);
         }
         authDocAtTimeOfPatch = Patch.apply(toApply[i].content, authDocAtTimeOfPatch);
     }
