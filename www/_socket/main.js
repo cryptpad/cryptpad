@@ -84,12 +84,31 @@ define([
 
             var diffOptions = {
                 preDiffApply: function (info) {
-                    /* TODO DiffDOM will filter out magicline plugin elements
+                    /* DiffDOM will filter out magicline plugin elements
                         in practice this will make it impossible to use it
-                        while someone else is typing, which could be annoying
+                        while someone else is typing, which could be annoying.
 
                         we should check when such an element is going to be
                         removed, and prevent that from happening. */
+                    if (info.node && info.node.tagName === 'SPAN' &&
+                        info.node.contentEditable === "true") {
+                        // it seems to be a magicline plugin element...
+                        if (info.diff.action === 'removeElement') {
+                            // and you're about to remove it...
+                            // this probably isn't what you want
+
+                            /*
+                                I have never seen this in the console, but the
+                                magic line is still getting removed on remote
+                                edits. This suggests that it's getting removed
+                                by something other than diffDom.
+                            */
+                            console.log("preventing removal of the magic line!");
+
+                            // return true to prevent diff application
+                            return true;
+                        }
+                    }
 
                     // no use trying to recover the cursor if it doesn't exist
                     if (!cursor.exists()) { return; }
