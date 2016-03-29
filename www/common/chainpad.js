@@ -999,14 +999,13 @@ var handleMessage = ChainPad.handleMessage = function (realtime, msgStr) {
             && Common.strcmp(realtime.best.hashOf, msg.hashOf) > 0))
         {
             // switch chains
-            debug(realtime, "Patch [" + msg.hashOf + "] is best, switching chains.");
             while (commonAncestor && !isAncestorOf(realtime, commonAncestor, msg)) {
                 toRevert.push(commonAncestor);
                 commonAncestor = getParent(realtime, commonAncestor);
             }
             Common.assert(commonAncestor);
         } else {
-            debug(realtime, "Patch [" + msg.hashOf + "] chain not best, staying.");
+            debug(realtime, "Patch [" + msg.hashOf + "] chain is ["+pcMsg+"] best chain is ["+pcBest+"]");
             if (Common.PARANOIA) { check(realtime); }
             return;
         }
@@ -1026,16 +1025,10 @@ var handleMessage = ChainPad.handleMessage = function (realtime, msgStr) {
 
     for (var i = 0; i < toRevert.length; i++) {
         authDocAtTimeOfPatch = Patch.apply(toRevert[i].content.inverseOf, authDocAtTimeOfPatch);
-        if (Common.PARANOIA) {
-            Common.assert(Sha.hex_sha256(authDocAtTimeOfPatch) === toRevert[i].content.parentHash);
-        }
     }
 
     // toApply.length-1 because we do not want to apply the new patch.
     for (var i = 0; i < toApply.length-1; i++) {
-        if (Common.PARANOIA) {
-            Common.assert(Sha.hex_sha256(authDocAtTimeOfPatch) === toApply[i].content.parentHash);
-        }
         if (typeof(toApply[i].content.inverseOf) === 'undefined') {
             toApply[i].content.inverseOf = Patch.invert(toApply[i].content, authDocAtTimeOfPatch);
             toApply[i].content.inverseOf.inverseOf = toApply[i].content;
@@ -1043,17 +1036,12 @@ var handleMessage = ChainPad.handleMessage = function (realtime, msgStr) {
         authDocAtTimeOfPatch = Patch.apply(toApply[i].content, authDocAtTimeOfPatch);
     }
 
-    var authDocHashAtTimeOfPatch = Sha.hex_sha256(authDocAtTimeOfPatch);
-    if (authDocHashAtTimeOfPatch !== patch.parentHash) {
+    if (Sha.hex_sha256(authDocAtTimeOfPatch) !== patch.parentHash) {
         debug(realtime, "patch [" + msg.hashOf + "] parentHash is not valid");
         if (Common.PARANOIA) { check(realtime); }
-        //delete realtime.messages[msg.hashOf];
+        if (Common.TESTING) { throw new Error(); }
+        delete realtime.messages[msg.hashOf];
         return;
-    }
-    if (authDocAtTimeOfPatch === realtime.authDoc &&
-        authDocHashAtTimeOfPatch !== realtime.best.inverseOf.parentHash)
-    {
-        throw new Error("authDoc does not match chain head");
     }
 
     var simplePatch =
@@ -1175,7 +1163,6 @@ module.exports.create = function (userName, authToken, channelId, initialState, 
     Common.assert(typeof(initialState) === 'string');
     var realtime = ChainPad.create(userName, authToken, channelId, initialState, conf);
     return {
-        Sha: Sha,
         onPatch: enterChainPad(realtime, function (handler) {
             Common.assert(typeof(handler) === 'function');
             realtime.patchHandlers.push(handler);
