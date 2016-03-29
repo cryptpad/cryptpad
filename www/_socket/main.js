@@ -152,7 +152,7 @@ define([
                 }
             };
 
-            var now = function () { return new Date().getTime() };
+            var now = function () { return new Date().getTime(); };
 
             var realtimeOptions = {
                 // configuration :D
@@ -202,7 +202,7 @@ define([
 
                 var shjson2 = JSON.stringify(Hyperjson.fromDOM(inner));
                 if (shjson2 !== shjson) {
-                    rti.patchText(shjson2);
+                    module.realtimeInput.patchText(shjson2);
                 }
             };
 
