@@ -372,7 +372,7 @@ var random = Patch.random = function (doc, opCount) {
 var PARANOIA = module.exports.PARANOIA = false;
 
 /* throw errors over non-compliant messages which would otherwise be treated as invalid */
-var TESTING = module.exports.TESTING = false;
+var TESTING = module.exports.TESTING = true;
 
 var assert = module.exports.assert = function (expr) {
     if (!expr) { throw new Error("Failed assertion"); }
