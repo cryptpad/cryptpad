@@ -3,22 +3,24 @@ define([
     '/common/messages.js',
     '/common/crypto.js',
     '/_socket/realtime-input.js',
-    '/common/convert.js',
+    '/common/hyperjson.js',
+    '/common/hyperscript.js',
     '/_socket/toolbar.js',
     '/common/cursor.js',
     '/common/json-ot.js',
+    '/_socket/typingTest.js',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, Messages, Crypto, realtimeInput, Convert, Toolbar, Cursor, JsonOT) {
+], function (Config, Messages, Crypto, realtimeInput, Hyperjson, Hyperscript, Toolbar, Cursor, JsonOT, TypingTest) {
     var $ = window.jQuery;
     var ifrw = $('#pad-iframe')[0].contentWindow;
     var Ckeditor; // to be initialized later...
     var DiffDom = window.diffDOM;
 
-    window.Convert = Convert;
-
-    window.Toolbar = Toolbar;
+    var hjsonToDom = function (H) {
+        return Hyperjson.callOn(H, Hyperscript);
+    };
 
     var userName = Crypto.rand64(8),
         toolbar;
@@ -36,25 +38,6 @@ define([
         }
         return true;
     };
-
-    var setRandomizedInterval = function (func, target, range) {
-        var timeout;
-        var again = function () {
-            timeout = setTimeout(function () {
-                again();
-                func();
-            }, target - (range / 2) + Math.random() * range);
-        };
-        again();
-        return {
-            cancel: function () {
-                if (timeout) {
-                    clearTimeout(timeout);
-                    timeout = undefined;
-                }
-            }
-        };
-    }
 
     var andThen = function (Ckeditor) {
         $(window).on('hashchange', function() {
@@ -87,10 +70,12 @@ define([
             var inner = window.inner = documentBody;
             var cursor = window.cursor = Cursor(inner);
 
-            var $textarea = $('#feedback');
-
             var setEditable = function (bool) {
-                inner.style.backgroundColor = bool? 'unset': 'grey';
+                // careful about putting attributes onto the DOM
+                // they get put into the chain, and you can have trouble
+                // getting rid of them later
+
+                //inner.style.backgroundColor = bool? 'white': 'grey';
                 inner.setAttribute('contenteditable', bool);
             };
 
@@ -148,99 +133,14 @@ define([
                 }
             };
 
-            var initializing = true;
-
-            var assertStateMatches = function () {
-                var userDocState = module.realtimeInput.realtime.getUserDoc();
-                var currentState = $textarea.val();
-                if (currentState !== userDocState) {
-                    console.log({
-                        userDocState: userDocState,
-                        currentState: currentState
-                    });
-                    throw new Error("currentState !== userDocState");
-                }
-            };
-
-            var updateDebugTextarea = function (shjson) {
-                window.setTimeout(function () {
-                    $textarea.val(shjson);
-                }, 0);
-            };
-
             var now = function () { return new Date().getTime() };
-
-            var DD = new DiffDom(diffOptions);
-            // apply patches, and try not to lose the cursor in the process!
-            var applyHjson = function (shjson) {
-                //setEditable(false);
-                var userDocStateDom = Convert.hjson.to.dom(JSON.parse(shjson));
-                userDocStateDom.setAttribute("contenteditable", "true"); // lol wtf
-                //assertStateMatches();
-                var patch = (DD).diff(inner, userDocStateDom);
-                (DD).apply(inner, patch);
-                // push back to the textarea so we get a userDocState
-                //setEditable(true);
-            };
-
-            var onRemote = function (info) {
-                if (initializing) { return; }
-
-                var shjson = info.realtime.getUserDoc();
-
-                // remember where the cursor is
-                cursor.update();
-
-                // build a dom from HJSON, diff, and patch the editor
-                applyHjson(shjson);
-                //updateDebugTextarea(shjson);
-
-                var shjson2 = JSON.stringify(Convert.core.hyperjson.fromDOM(inner));
-                if (shjson2 !== shjson) {
-                    rti.patchText(shjson2);
-                }
-            };
-
-            var onInit = function (info) {
-                var $bar = $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox');
-                toolbar = info.realtime.toolbar = Toolbar.create($bar, userName, info.realtime);
-                /* TODO handle disconnects and such*/
-            };
-
-            var onReady = function (info) {
-                console.log("Unlocking editor");
-                initializing = false;
-                setEditable(true);
-
-                var shjson = info.realtime.getUserDoc();
-
-                applyHjson(shjson);
-            };
-
-            var onAbort = function (info) {
-                console.log("Aborting the session!");
-                // stop the user from continuing to edit
-                // by setting the editable to false
-                setEditable(false);
-                toolbar.failed();
-            };
 
             var realtimeOptions = {
                 // configuration :D
                 doc: inner,
-                // first thing called
-                onInit: onInit,
-
-                onReady: onReady,
-
-                // when remote changes occur
-                onRemote: onRemote,
-
-                // handle aborts
-                onAbort: onAbort,
 
                 // provide initialstate...
-                initialState: JSON.stringify(Convert.core.hyperjson.fromDOM(inner, isNotMagicLine)),
+                initialState: JSON.stringify(Hyperjson.fromDOM(inner, isNotMagicLine)),
 
                 // really basic operational transform
                 // reject patch if it results in invalid JSON
@@ -258,57 +158,72 @@ define([
                 cryptKey: key.cryptKey
             };
 
+            var DD = new DiffDom(diffOptions);
+
+            // apply patches, and try not to lose the cursor in the process!
+            var applyHjson = function (shjson) {
+                var userDocStateDom = hjsonToDom(JSON.parse(shjson));
+                userDocStateDom.setAttribute("contenteditable", "true"); // lol wtf
+                var patch = (DD).diff(inner, userDocStateDom);
+                (DD).apply(inner, patch);
+            };
+
+            var initializing = true;
+
+            var onRemote = realtimeOptions.onRemote = function (info) {
+                if (initializing) { return; }
+
+                var shjson = info.realtime.getUserDoc();
+
+                // remember where the cursor is
+                cursor.update();
+
+                // build a dom from HJSON, diff, and patch the editor
+                applyHjson(shjson);
+
+                var shjson2 = JSON.stringify(Hyperjson.fromDOM(inner));
+                if (shjson2 !== shjson) {
+                    rti.patchText(shjson2);
+                }
+            };
+
+            var onInit = realtimeOptions.onInit = function (info) {
+                var $bar = $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox');
+                toolbar = info.realtime.toolbar = Toolbar.create($bar, userName, info.realtime);
+                /* TODO handle disconnects and such*/
+            };
+
+            var onReady = realtimeOptions.onReady = function (info) {
+                console.log("Unlocking editor");
+                initializing = false;
+                setEditable(true);
+
+                var shjson = info.realtime.getUserDoc();
+
+                applyHjson(shjson);
+            };
+
+            var onAbort = realtimeOptions.onAbort = function (info) {
+                console.log("Aborting the session!");
+                // stop the user from continuing to edit
+                // by setting the editable to false
+                setEditable(false);
+                toolbar.failed();
+            };
+
             var rti = module.realtimeInput = realtimeInput.start(realtimeOptions);
 
             // FIXME Spaghetti code. realtime-input needs access to this variable..
             var propogate = window.cryptpad_propogate = function () {
-                var shjson = JSON.stringify(Convert.core.hyperjson.fromDOM(inner, isNotMagicLine));
+                var shjson = JSON.stringify(Hyperjson.fromDOM(inner, isNotMagicLine));
                 if (!rti.patchText(shjson)) { return; }
                 rti.onEvent(shjson);
-            };
-
-            var testInput = function (el, offset) {
-                var i = 0,
-                    j = offset,
-                    input = "The quick red fox jumps over the lazy brown dog. ",
-                    l = input.length,
-                    errors = 0,
-                    max_errors = 15,
-                    interval;
-                var cancel = function () {
-                    if (interval) { interval.cancel(); }
-                };
-
-                interval = setRandomizedInterval(function () {
-                    propogate();
-                    try {
-                        el.replaceData(j, 0, input.charAt(i));
-                    } catch (err) {
-                        errors++;
-                        if (errors >= max_errors) {
-                            console.log("Max error number exceeded");
-                            cancel();
-                        }
-
-                        console.error(err);
-                        var next = document.createTextNode("-");
-                        window.inner.appendChild(next);
-                        el = next;
-                        j = -1;
-                    }
-                    i = (i + 1) % l;
-                    j++;
-                }, 200, 50);
-
-                return {
-                    cancel: cancel
-                };
             };
 
             var easyTest = window.easyTest = function () {
                 cursor.update();
                 var start = cursor.Range.start;
-                var test = testInput(start.el, start.offset);
+                var test = TypingTest.testInput(start.el, start.offset, propogate);
                 propogate();
                 return test;
             };
