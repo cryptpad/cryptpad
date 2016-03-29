@@ -224,8 +224,9 @@ define([
                 verbose(message);
                 allMessages.push(message);
                 if (!initializing) {
-                    // FIXME this is out of sync with the application logic
-                    window.cryptpad_propogate();
+                    if (toReturn.onLocal) {
+                        toReturn.onLocal();
+                    }
                 }
                 realtime.message(message);
             });

@@ -232,8 +232,16 @@ define([
 
             var rti = module.realtimeInput = realtimeInput.start(realtimeOptions);
 
-            // FIXME Spaghetti code. realtime-input needs access to this variable..
-            var propogate = window.cryptpad_propogate = function () {
+            /*
+                It's incredibly important that you assign 'rti.onLocal'
+                It's used inside of realtimeInput to make sure that all changes
+                make it into chainpad.
+
+                It's being assigned this way because it can't be passed in, and
+                and can't be easily returned from realtime input without making
+                the code less extensible.
+            */
+            var propogate = rti.onLocal = function () {
                 var shjson = JSON.stringify(Hyperjson.fromDOM(inner, isNotMagicLine));
                 if (!rti.patchText(shjson)) { return; }
                 rti.onEvent(shjson);
