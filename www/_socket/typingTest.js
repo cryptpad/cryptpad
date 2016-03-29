@@ -45,8 +45,7 @@ define(function () {
                 var next = document.createTextNode("");
                 window.inner.appendChild(next);
                 el = next;
-                j = 0;
-                return;
+                j = -1;
             }
             i = (i + 1) % l;
             j++;
