@@ -373,6 +373,26 @@ define([
             };
         };
 
+        cursor.brFix = function () {
+            cursor.update();
+            var start = Range.start;
+            var end = Range.end;
+            if (!start.el) { return; }
+
+            if (start.el === end.el && start.offset === end.offset) {
+                if (start.el.tagName === 'BR') {
+                    // get the parent element, which ought to be a P.
+                    var P = start.el.parentNode;
+
+                    [cursor.fixStart, cursor.fixEnd].forEach(function (f) {
+                        f(P, 0);
+                    });
+
+                    cursor.fixSelection(cursor.makeSelection(), cursor.makeRange());
+                }
+            }
+        };
+
         return cursor;
     };
 });
