@@ -46,49 +46,7 @@ define([
         console.error(x);
         recoverableErrors++;
         if (recoverableErrors >= MAX_RECOVERABLE_ERRORS) {
-            alert("FAIL");
-        }
-    };
-
-    // ------------------ Trapping Keyboard Events ---------------------- //
-
-    var _unused_bindEvents = function (element, events, callback, unbind) {
-        for (var i = 0; i < events.length; i++) {
-            var e = events[i];
-            if (element.addEventListener) {
-                if (unbind) {
-                    element.removeEventListener(e, callback, false);
-                } else {
-                    element.addEventListener(e, callback, false);
-                }
-            } else {
-                if (unbind) {
-                    element.detachEvent('on' + e, callback);
-                } else {
-                    element.attachEvent('on' + e, callback);
-                }
-            }
-        }
-    };
-
-    var _unused_bindAllEvents = function (textarea, docBody, onEvent, unbind)
-    {
-        /*
-            we use docBody for the purposes of CKEditor.
-            because otherwise special keybindings like ctrl-b and ctrl-i
-            would open bookmarks and info instead of applying bold/italic styles
-        */
-        if (docBody) {
-            bindEvents(docBody,
-               ['textInput', 'keydown', 'keyup', 'select', 'cut', 'paste'],
-               onEvent,
-               unbind);
-        }
-        if (textarea) {
-            bindEvents(textarea,
-               ['mousedown','mouseup','click','change'],
-               onEvent,
-               unbind);
+            window.alert("FAIL");
         }
     };
 
@@ -180,14 +138,6 @@ define([
         var toReturn = { socket: socket };
 
         socket.onOpen.push(function (evt) {
-            if (!initializing) {
-                console.log("Starting");
-                // realtime is passed around as an attribute of the socket
-                // FIXME??
-                socket.realtime.start();
-                return;
-            }
-
             var realtime = toReturn.realtime = socket.realtime =
                 // everybody has a username, and we assume they don't collide
                 // usernames are used to determine whether a message is remote
@@ -278,16 +228,6 @@ define([
                     window.cryptpad_propogate();
                 }
                 realtime.message(message);
-                if (/\[5,/.test(message)) { verbose("pong"); }
-
-                if (!initializing) {
-                    if (/\[2,/.test(message)) {
-                        //verbose("Got a patch");
-
-//TODO clean this all up
-
-                    }
-                }
             });
 
             // actual socket bindings
@@ -322,9 +262,6 @@ define([
                     }
                 } // it's working as expected, continue
             }, 200);
-
-            // TODO maybe push this out to the application layer.
-            //bindAllEvents(null, doc, onEvent, false);
 
             toReturn.patchText = TextPatcher.create({
                 realtime: realtime
