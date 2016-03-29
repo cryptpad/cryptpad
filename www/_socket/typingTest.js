@@ -18,10 +18,10 @@ define(function () {
         };
     };
 
-    var testInput = function (el, offset, cb) {
+    var testInput = function (doc, el, offset, cb) {
         var i = 0,
             j = offset,
-            input = "The quick red fox jumps over the lazy brown dog. ",
+            input = " The quick red fox jumps over the lazy brown dog.",
             l = input.length,
             errors = 0,
             max_errors = 15,
@@ -43,7 +43,7 @@ define(function () {
 
                 console.error(err);
                 var next = document.createTextNode("");
-                window.inner.appendChild(next);
+                doc.appendChild(next);
                 el = next;
                 j = -1;
             }
