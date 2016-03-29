@@ -230,7 +230,13 @@ define([
                 toolbar.failed();
             };
 
-            var rti = module.realtimeInput = realtimeInput.start(realtimeOptions);
+            var rti = window.CRYPTPAD_REALTIME = module.realtimeInput = 
+                realtimeInput.start(realtimeOptions);
+
+            var brFilter = function (hj) {
+                if (hj[1].type === '_moz') { hj[1].type = undefined; }
+                return hj;
+            };
 
             /*
                 It's incredibly important that you assign 'rti.onLocal'
@@ -242,15 +248,24 @@ define([
                 the code less extensible.
             */
             var propogate = rti.onLocal = function () {
-                var shjson = JSON.stringify(Hyperjson.fromDOM(inner, isNotMagicLine));
+                var shjson = JSON.stringify(Hyperjson.fromDOM(inner, isNotMagicLine, brFilter));
                 if (!rti.patchText(shjson)) { return; }
-                rti.onEvent(shjson);
+                //rti.onEvent(shjson);
             };
+
+            /* hitting enter makes a new line, but places the cursor inside
+                of the <br> instead of the <p>. This makes it such that you
+                cannot type until you click, which is rather unnacceptable.
+                If the cursor is ever inside such a <br>, you probably want
+                to push it out to the parent element, which ought to be a
+                paragraph tag. This needs to be done on keydown, otherwise
+                the first such keypress will not be inserted into the P. */
+            inner.addEventListener('keydown', cursor.brFix);
 
             var easyTest = window.easyTest = function () {
                 cursor.update();
                 var start = cursor.Range.start;
-                var test = TypingTest.testInput(start.el, start.offset, propogate);
+                var test = TypingTest.testInput(inner, start.el, start.offset, propogate);
                 propogate();
                 return test;
             };
