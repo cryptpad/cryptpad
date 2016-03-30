@@ -18,6 +18,8 @@ define([
     var Ckeditor; // to be initialized later...
     var DiffDom = window.diffDOM;
 
+    window.Hyperjson = Hyperjson;
+
     var hjsonToDom = function (H) {
         return Hyperjson.callOn(H, Hyperscript);
     };
@@ -25,7 +27,9 @@ define([
     var userName = Crypto.rand64(8),
         toolbar;
 
-    var module = {};
+    var module = window.REALTIME_MODULE = {
+        localChangeInProgress: 0
+    };
 
     var isNotMagicLine = function (el) {
         // factor as:
@@ -179,18 +183,37 @@ define([
 
             var DD = new DiffDom(diffOptions);
 
+            var localWorkInProgress = function (stage) {
+                if (module.localChangeInProgress) {
+                    console.error("Applied a change while a local patch was in progress");
+                    alert("local work was interrupted at stage: " + stage);
+                    //module.realtimeInput.onLocal();
+                    return true;
+                }
+                return false;
+            };
+
             // apply patches, and try not to lose the cursor in the process!
             var applyHjson = function (shjson) {
+
+                localWorkInProgress(1); // check if this would interrupt local work
+
                 var userDocStateDom = hjsonToDom(JSON.parse(shjson));
+                localWorkInProgress(2); // check again
                 userDocStateDom.setAttribute("contenteditable", "true"); // lol wtf
+                localWorkInProgress(3); // check again
                 var patch = (DD).diff(inner, userDocStateDom);
+                localWorkInProgress(4); // check again
                 (DD).apply(inner, patch);
+                localWorkInProgress(5); // check again
             };
 
             var initializing = true;
 
             var onRemote = realtimeOptions.onRemote = function (info) {
                 if (initializing) { return; }
+
+                localWorkInProgress(0);
 
                 var shjson = info.realtime.getUserDoc();
 
@@ -202,6 +225,7 @@ define([
 
                 var shjson2 = JSON.stringify(Hyperjson.fromDOM(inner));
                 if (shjson2 !== shjson) {
+                    console.error("shjson2 !== shjson");
                     module.realtimeInput.patchText(shjson2);
                 }
             };
@@ -209,6 +233,7 @@ define([
             var onInit = realtimeOptions.onInit = function (info) {
                 var $bar = $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox');
                 toolbar = info.realtime.toolbar = Toolbar.create($bar, userName, info.realtime);
+
                 /* TODO handle disconnects and such*/
             };
 
@@ -230,16 +255,15 @@ define([
                 toolbar.failed();
             };
 
-            var rti = window.CRYPTPAD_REALTIME = module.realtimeInput = 
-                realtimeInput.start(realtimeOptions);
+            var rti = module.realtimeInput = realtimeInput.start(realtimeOptions);
 
+            /* catch `type="_moz"` before it goes over the wire */
             var brFilter = function (hj) {
                 if (hj[1].type === '_moz') { hj[1].type = undefined; }
                 return hj;
             };
 
-            /*
-                It's incredibly important that you assign 'rti.onLocal'
+            /*  It's incredibly important that you assign 'rti.onLocal'
                 It's used inside of realtimeInput to make sure that all changes
                 make it into chainpad.
 
@@ -248,9 +272,20 @@ define([
                 the code less extensible.
             */
             var propogate = rti.onLocal = function () {
+                /*  if the problem were a matter of external patches being
+                    applied while a local patch were in progress, then we would
+                    expect to be able to check and find
+                    'module.localChangeInProgress' with a non-zero value while
+                    we were applying a remote change.
+                */
+                module.localChangeInProgress += 1;
                 var shjson = JSON.stringify(Hyperjson.fromDOM(inner, isNotMagicLine, brFilter));
-                if (!rti.patchText(shjson)) { return; }
-                //rti.onEvent(shjson);
+                if (!rti.patchText(shjson)) {
+                    module.localChangeInProgress -= 1;
+                    return;
+                }
+                rti.onEvent(shjson);
+                module.localChangeInProgress -= 1;
             };
 
             /* hitting enter makes a new line, but places the cursor inside
