@@ -25,14 +25,37 @@ var applyChange = function(ctx, oldval, newval) {
         commonEnd++;
     }
 
+    var result;
+
+    /*  throw some assertions in here before dropping patches into the realtime
+
+    */
+
     if (oldval.length !== commonStart + commonEnd) {
         if (ctx.localChange) { ctx.localChange(true); }
-        ctx.remove(commonStart, oldval.length - commonStart - commonEnd);
+        result = oldval.length - commonStart - commonEnd;
+        ctx.remove(commonStart, result);
+        console.log('removal at position: %s, length: %s', commonStart, result);
+        console.log("remove: [" + oldval.slice(commonStart, commonStart + result ) + ']');
     }
     if (newval.length !== commonStart + commonEnd) {
         if (ctx.localChange) { ctx.localChange(true); }
-        ctx.insert(commonStart, newval.slice(commonStart, newval.length - commonEnd));
-        //console.log("insert: " + newval.slice(commonStart, newval.length - commonEnd));
+        result = newval.slice(commonStart, newval.length - commonEnd);
+        ctx.insert(commonStart, result);
+        console.log("insert: [" + result + "]");
+    }
+
+    var userDoc;
+    try {
+        var userDoc = ctx.getUserDoc();
+        JSON.parse(userDoc);
+    } catch (err) {
+        console.error('[textPatcherParseErr]');
+        console.error(err);
+        window.REALTIME_MODULE.textPatcher_parseError = {
+            error: err,
+            userDoc: userDoc
+        };
     }
 };
 
@@ -43,15 +66,9 @@ var create = function(config) {
     // because nothing will equal this object
     var content = {};
 
-    // FIXME this is only necessary because we need to be able to update the
-    // textarea. This is being deprecated, however. Instead
-    var replaceText = function(newText) {
-        content = newText;
-    };
-
     // *** remote -> local changes
     ctx.onPatch(function(pos, length) {
-        replaceText(ctx.getUserDoc());
+        content = ctx.getUserDoc()
     });
 
     // propogate()
