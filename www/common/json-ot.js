@@ -14,14 +14,36 @@ define([
                 return resultOp;
             } catch (e) {
                 console.error(e);
-                console.log({
+                var info = window.REALTIME_MODULE.ot_parseError = {
+                    type: 'resultParseError',
                     resultOp: resultOp,
+
+                    toTransform: toTransform,
+                    transformBy: transformBy,
+
+                    text1: text,
                     text2: text2,
-                    text3: text3
-                });
+                    text3: text3,
+                    error: e
+                };
+                console.log('Debugging info available at `window.REALTIME_MODULE.ot_parseError`');
             }
         } catch (x) {
             console.error(x);
+            console.error(e);
+            var info = window.REALTIME_MODULE.ot_applyError = {
+                type: 'resultParseError',
+                resultOp: resultOp,
+
+                toTransform: toTransform,
+                transformBy: transformBy,
+
+                text1: text,
+                text2: text2,
+                text3: text3,
+                error: e
+            };
+            console.log('Debugging info available at `window.REALTIME_MODULE.ot_applyError`');
         }
 
         // returning **null** breaks out of the loop
