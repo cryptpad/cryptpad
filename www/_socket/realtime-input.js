@@ -18,10 +18,11 @@ define([
     '/common/messages.js',
     '/bower_components/reconnectingWebsocket/reconnecting-websocket.js',
     '/common/crypto.js',
-    '/common/sharejs_textarea.js',
+    '/_socket/toolbar.js',
+    '/_socket/text-patcher.js',
     '/common/chainpad.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages, ReconnectingWebSocket, Crypto, sharejs) {
+], function (Messages,/*FIXME*/ ReconnectingWebSocket, Crypto, Toolbar, TextPatcher) {
     var $ = window.jQuery;
     var ChainPad = window.ChainPad;
     var PARANOIA = true;
@@ -33,51 +34,20 @@ define([
      */
     var MAX_RECOVERABLE_ERRORS = 15;
 
+    var recoverableErrors = 0;
+
     /** Maximum number of milliseconds of lag before we fail the connection. */
     var MAX_LAG_BEFORE_DISCONNECT = 20000;
 
-    var debug = function (x) { console.log(x); },
-        warn = function (x) { console.error(x); },
-        verbose = function (x) { /*console.log(x);*/ };
-
-    // ------------------ Trapping Keyboard Events ---------------------- //
-
-    var bindEvents = function (element, events, callback, unbind) {
-        for (var i = 0; i < events.length; i++) {
-            var e = events[i];
-            if (element.addEventListener) {
-                if (unbind) {
-                    element.removeEventListener(e, callback, false);
-                } else {
-                    element.addEventListener(e, callback, false);
-                }
-            } else {
-                if (unbind) {
-                    element.detachEvent('on' + e, callback);
-                } else {
-                    element.attachEvent('on' + e, callback);
-                }
-            }
+    var debug = function (x) { console.log(x); };
+    var warn = function (x) { console.error(x); };
+    var verbose = function (x) { /*console.log(x);*/ };
+    var error = function (x) {
+        console.error(x);
+        recoverableErrors++;
+        if (recoverableErrors >= MAX_RECOVERABLE_ERRORS) {
+            window.alert("FAIL");
         }
-    };
-
-    var bindAllEvents = function (textarea, docBody, onEvent, unbind)
-    {
-        /*
-            we use docBody for the purposes of CKEditor.
-            because otherwise special keybindings like ctrl-b and ctrl-i
-            would open bookmarks and info instead of applying bold/italic styles
-        */
-        if (docBody) {
-            bindEvents(docBody,
-               ['textInput', 'keydown', 'keyup', 'select', 'cut', 'paste'],
-               onEvent,
-               unbind);
-        }
-        bindEvents(textarea,
-                   ['mousedown','mouseup','click','change'],
-                   onEvent,
-                   unbind);
     };
 
     /* websocket stuff */
@@ -113,11 +83,17 @@ define([
 
     var makeWebsocket = function (url) {
         var socket = new ReconnectingWebSocket(url);
+        /* create a set of handlers to use instead of the native socket handler
+            these handlers will iterate over all of the functions pushed to the
+            arrays bearing their name.
+
+            The first such function to return `false` will prevent subsequent
+            functions from being executed. */
         var out = {
-            onOpen: [],
-            onClose: [],
-            onError: [],
-            onMessage: [],
+            onOpen: [], // takes care of launching the post-open logic
+            onClose: [], // takes care of cleanup
+            onError: [], // in case of error, socket will close, and fire this
+            onMessage: [], // used for the bulk of our logic
             send: function (msg) { socket.send(msg); },
             close: function () { socket.close(); },
             _socket: socket
@@ -132,6 +108,8 @@ define([
                 }
             };
         };
+
+        // bind your new handlers to the important listeners on the socket
         socket.onopen = mkHandler('onOpen');
         socket.onclose = mkHandler('onClose');
         socket.onerror = mkHandler('onError');
@@ -140,62 +118,52 @@ define([
     };
     /* end websocket stuff */
 
-    var start = module.exports.start =
-        function (textarea, websocketUrl, userName, channel, cryptKey, config)
-    {
-
+    var start = module.exports.start = function (config) {
+        //var textarea = config.textarea;
+        var websocketUrl = config.websocketURL;
+        var userName = config.userName;
+        var channel = config.channel;
+        var cryptKey = config.cryptKey;
         var passwd = 'y';
-
-        // make sure configuration is defined
-        config = config || {};
-
         var doc = config.doc || null;
 
-        // trying to deprecate onRemote, prefer loading it via the conf
-        var onRemote = config.onRemote || null;
+        // wrap up the reconnecting websocket with our additional stack logic
+        var socket = makeWebsocket(websocketUrl);
 
-        var transformFunction = config.transformFunction || null;
-
-        var socket;
-
-        if (config.socketAdaptor) {
-            // do netflux stuff
-        } else {
-            socket = makeWebsocket(websocketUrl);
-        }
-        // define this in case it gets called before the rest of our stuff is ready.
-        var onEvent = function () { };
-
-        var allMessages = [];
+        var allMessages = window.chainpad_allMessages = [];
         var isErrorState = false;
         var initializing = true;
         var recoverableErrorCount = 0;
 
-        var $textarea = $(textarea);
-
-        var bump = function () {};
-
-        var toReturn = {
-            socket: socket
-        };
+        var toReturn = { socket: socket };
 
         socket.onOpen.push(function (evt) {
-            if (!initializing) {
-                console.log("Starting");
-                // realtime is passed around as an attribute of the socket
-                // FIXME??
-                socket.realtime.start();
-                return;
-            }
+            var realtime = toReturn.realtime = socket.realtime =
+                // everybody has a username, and we assume they don't collide
+                // usernames are used to determine whether a message is remote
+                // or local in origin. This could mess with expected behaviour
+                // if someone spoofed.
+                ChainPad.create(userName,
+                    passwd, // password, to be deprecated (maybe)
+                    channel, // the channel we're to connect to
 
-            var realtime = toReturn.realtime = socket.realtime = ChainPad.create(userName,
-                                passwd,
-                                channel,
-                                $(textarea).val(),
-                                {
-                                    transformFunction: config.transformFunction
-                                });
+                    // initialState argument. (optional)
+                    config.initialState || '',
 
+                    // transform function (optional), which handles conflicts
+                    { transformFunction: config.transformFunction });
+
+            var onEvent = toReturn.onEvent = function (newText) {
+                if (isErrorState || initializing) { return; }
+                // assert things here...
+                if (realtime.getUserDoc() !== newText) {
+                    // this is a problem
+                    warn("realtime.getUserDoc() !== newText");
+                }
+                //try{throw new Error();}catch(e){console.log(e.stack);}
+            };
+
+            // pass your shiny new realtime into initialization functions
             if (config.onInit) {
                 // extend as you wish
                 config.onInit({
@@ -203,11 +171,10 @@ define([
                 });
             }
 
-            onEvent = function () {
-                // This looks broken
-                if (isErrorState || initializing) { return; }
-            };
-
+            /* UI hints on userList changes are handled within the toolbar
+                so we don't actually need to do anything here except confirm
+                whether we've successfully joined the session, and call our
+                'onReady' function */
             realtime.onUserListChange(function (userList) {
                 if (!initializing || userList.indexOf(userName) === -1) {
                     return;
@@ -221,14 +188,32 @@ define([
                 if (config.onReady) {
                     // extend as you wish
                     config.onReady({
-                        userList: userList
+                        userList: userList,
+                        realtime: realtime
                     });
                 }
             });
 
-            var whoami = new RegExp(userName.replace(/[\/\+]/g, function (c) {
-                return '\\' +c;
-            }));
+            // when a message is ready to send
+            // Don't confuse this onMessage with socket.onMessage
+            realtime.onMessage(function (message) {
+                if (isErrorState) { return; }
+                message = Crypto.encrypt(message, cryptKey);
+                try {
+                    socket.send(message);
+                } catch (e) {
+                    warn(e);
+                }
+            });
+
+            realtime.onPatch(function () {
+                if (config.onRemote) {
+                    config.onRemote({
+                        realtime: realtime
+                        //realtime.getUserDoc()
+                    });
+                }
+            });
 
             // when you receive a message...
             socket.onMessage.push(function (evt) {
@@ -239,37 +224,11 @@ define([
                 verbose(message);
                 allMessages.push(message);
                 if (!initializing) {
-                    if (PARANOIA) {
-                        // FIXME this is out of sync with the application logic
-                        onEvent();
+                    if (toReturn.onLocal) {
+                        toReturn.onLocal();
                     }
                 }
                 realtime.message(message);
-                if (/\[5,/.test(message)) { verbose("pong"); }
-
-                if (!initializing) {
-                    if (/\[2,/.test(message)) {
-                        //verbose("Got a patch");
-                        if (whoami.test(message)) {
-                            //verbose("Received own message");
-                        } else {
-                            //verbose("Received remote message");
-                            // obviously this is only going to get called if
-                            if (onRemote) { onRemote(realtime.getUserDoc()); }
-                        }
-                    }
-                }
-            });
-
-            // when a message is ready to send
-            realtime.onMessage(function (message) {
-                if (isErrorState) { return; }
-                message = Crypto.encrypt(message, cryptKey);
-                try {
-                    socket.send(message);
-                } catch (e) {
-                    warn(e);
-                }
             });
 
             // actual socket bindings
@@ -286,7 +245,6 @@ define([
 
             socket.onerror = warn;
 
-            // TODO confirm that we can rely on netflux API
             var socketChecker = setInterval(function () {
                 if (checkSocket(socket)) {
                     warn("Socket disconnected!");
@@ -303,25 +261,16 @@ define([
                         }
                         if (socketChecker) { clearInterval(socketChecker); }
                     }
-                } else {
-                    // it's working as expected, continue
-                }
+                } // it's working as expected, continue
             }, 200);
 
-            bindAllEvents(textarea, doc, onEvent, false);
-
-            // attach textarea
-            // NOTE: should be able to remove the websocket without damaging this
-            sharejs.attach(textarea, realtime);
+            toReturn.patchText = TextPatcher.create({
+                realtime: realtime
+            });
 
             realtime.start();
             debug('started');
-
-            bump = realtime.bumpSharejs;
         });
-
-        toReturn.onEvent = function () { onEvent(); };
-        toReturn.bumpSharejs = function () { bump(); };
 
         return toReturn;
     };

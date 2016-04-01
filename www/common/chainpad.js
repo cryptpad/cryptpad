@@ -372,7 +372,7 @@ var random = Patch.random = function (doc, opCount) {
 var PARANOIA = module.exports.PARANOIA = false;
 
 /* throw errors over non-compliant messages which would otherwise be treated as invalid */
-var TESTING = module.exports.TESTING = false;
+var TESTING = module.exports.TESTING = true;
 
 var assert = module.exports.assert = function (expr) {
     if (!expr) { throw new Error("Failed assertion"); }
@@ -1443,7 +1443,13 @@ var rebase = Operation.rebase = function (oldOp, newOp) {
  * @param transformBy an existing operation which also has the same base.
  * @return toTransform *or* null if the result is a no-op.
  */
-var transform0 = Operation.transform0 = function (text, toTransform, transformBy) {
+
+var transform0 = Operation.transform0 = function (text, toTransformOrig, transformByOrig) {
+    // Cloning the original transformations makes this algorithm such that it
+    // **DOES NOT MUTATE ANYMORE**
+    var toTransform = Operation.clone(toTransformOrig);
+    var transformBy = Operation.clone(transformByOrig);
+
     if (toTransform.offset > transformBy.offset) {
         if (toTransform.offset > transformBy.offset + transformBy.toRemove) {
             // simple rebase

@@ -54,7 +54,7 @@ define([], function () {
         The function, if provided, must return true for elements which
         should be preserved, and 'false' for elements which should be removed.
     */
-    var DOM2HyperJSON = function(el, predicate){
+    var DOM2HyperJSON = function(el, predicate, filter){
         if(!el.tagName && el.nodeType === Node.TEXT_NODE){
             return el.textContent;
         }
@@ -118,12 +118,16 @@ define([], function () {
         i = 0;
 
         for(; i < el.childNodes.length; i++){
-            children.push(DOM2HyperJSON(el.childNodes[i], predicate));
+            children.push(DOM2HyperJSON(el.childNodes[i], predicate, filter));
         }
 
         result.push(children.filter(isTruthy));
 
-        return result;
+        if (filter) {
+            return filter(result);
+        } else {
+            return result;
+        }
     };
 
     return {

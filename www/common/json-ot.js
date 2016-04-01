@@ -5,19 +5,45 @@ define([
     var JsonOT = {};
 
     var validate = JsonOT.validate = function (text, toTransform, transformBy) {
-        var resultOp = ChainPad.Operation.transform0(text, toTransform, transformBy);
-        var text2 = ChainPad.Operation.apply(transformBy, text);
-        var text3 = ChainPad.Operation.apply(resultOp, text2);
         try {
-            JSON.parse(text3);
-            return resultOp;
-        } catch (e) {
+            var resultOp = ChainPad.Operation.transform0(text, toTransform, transformBy);
+            var text2 = ChainPad.Operation.apply(transformBy, text);
+            var text3 = ChainPad.Operation.apply(resultOp, text2);
+            try {
+                JSON.parse(text3);
+                return resultOp;
+            } catch (e) {
+                console.error(e);
+                var info = window.REALTIME_MODULE.ot_parseError = {
+                    type: 'resultParseError',
+                    resultOp: resultOp,
+
+                    toTransform: toTransform,
+                    transformBy: transformBy,
+
+                    text1: text,
+                    text2: text2,
+                    text3: text3,
+                    error: e
+                };
+                console.log('Debugging info available at `window.REALTIME_MODULE.ot_parseError`');
+            }
+        } catch (x) {
+            console.error(x);
             console.error(e);
-            console.log({
+            var info = window.REALTIME_MODULE.ot_applyError = {
+                type: 'resultParseError',
                 resultOp: resultOp,
+
+                toTransform: toTransform,
+                transformBy: transformBy,
+
+                text1: text,
                 text2: text2,
-                text3: text3
-            });
+                text3: text3,
+                error: e
+            };
+            console.log('Debugging info available at `window.REALTIME_MODULE.ot_applyError`');
         }
 
         // returning **null** breaks out of the loop
