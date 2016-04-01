@@ -20,10 +20,10 @@ define([
     '/common/netflux.js',
     '/common/crypto.js',
     '/common/toolbar.js',
-    '/common/sharejs_textarea.js',
+    '/_socket/text-patcher.js',
     '/common/chainpad.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages, Netflux, Crypto, Toolbar, sharejs) {
+], function (Messages, Netflux, Crypto, Toolbar, TextPatcher) {
     var $ = window.jQuery;
     var ChainPad = window.ChainPad;
     var PARANOIA = true;
@@ -61,25 +61,6 @@ define([
         }
     };
 
-    var bindAllEvents = function (textarea, docBody, onEvent, unbind)
-    {
-        /*
-            we use docBody for the purposes of CKEditor.
-            because otherwise special keybindings like ctrl-b and ctrl-i
-            would open bookmarks and info instead of applying bold/italic styles
-        */
-        if (docBody) {
-            bindEvents(docBody,
-               ['textInput', 'keydown', 'keyup', 'select', 'cut', 'paste'],
-               onEvent,
-               unbind);
-        }
-        bindEvents(textarea,
-                   ['mousedown','mouseup','click','change'],
-                   onEvent,
-                   unbind);
-    };
-
     var getParameterByName = function (name, url) {
         if (!url) { url = window.location.href; }
         name = name.replace(/[\[\]]/g, "\\$&");
@@ -93,7 +74,6 @@ define([
     var start = module.exports.start =
         function (config)
     {
-        var textarea = config.textarea;
         var websocketUrl = config.websocketURL;
         var webrtcUrl = config.webrtcURL;
         var userName = config.userName;
@@ -106,19 +86,16 @@ define([
 
         var doc = config.doc || null;
 
-        // trying to deprecate onRemote, prefer loading it via the conf
-        var onRemote = config.onRemote || null;
-
-        // define this in case it gets called before the rest of our stuff is ready.
-        var onEvent = function () { };
-
         var allMessages = [];
         var initializing = true;
         var recoverableErrorCount = 0;
-        var bump = function () {};
+        var toReturn = {};
         var messagesHistory = [];
         var chainpadAdapter = {};
         var realtime;
+        
+        // define this in case it gets called before the rest of our stuff is ready.
+        var onEvent = toReturn.onEvent = function (newText) { };
 
         var parseMessage = function (msg) {
             var res ={};
@@ -167,11 +144,11 @@ define([
 
             verbose(message);
             allMessages.push(message);
-            if (!initializing) {
-                if (PARANOIA) {
-                    onEvent();
-                }
-            }
+            // if (!initializing) {
+                // if (toReturn.onLocal) {
+                    // toReturn.onLocal();
+                // }
+            // }
             realtime.message(message);
             if (/\[5,/.test(message)) { verbose("pong"); }
 
@@ -183,7 +160,11 @@ define([
                     } else {
                         //verbose("Received remote message");
                         // obviously this is only going to get called if
-                        if (onRemote) { onRemote(realtime.getUserDoc()); }
+                        if (config.onRemote) { 
+                            config.onRemote({
+                                realtime: realtime
+                            }); 
+                        }
                     }
                 }
             }
@@ -263,7 +244,7 @@ define([
             return ChainPad.create(userName,
                                         passwd,
                                         channel,
-                                        $(textarea).val(),
+                                        config.initialState || {},
                                         {
                                         transformFunction: config.transformFunction
                                         });
@@ -286,7 +267,9 @@ define([
 
             // execute an onReady callback if one was supplied
             if (config.onReady) {
-                config.onReady();
+                config.onReady({
+                    realtime: realtime
+                });
             }
         }
 
@@ -334,16 +317,10 @@ define([
               hc.send(JSON.stringify(['GET_HISTORY', wc.id]));
             }
 
-            // Check the connection to the channel
-            if(!rtc) {
-              // TODO
-              // checkConnection(wc);
-            }
-
-            bindAllEvents(textarea, doc, onEvent, false);
-
-            sharejs.attach(textarea, realtime);
-            bump = realtime.bumpSharejs;
+            
+            toReturn.patchText = TextPatcher.create({
+                realtime: realtime
+            });
 
             realtime.start();
         };
@@ -401,12 +378,7 @@ define([
             }
         };
 
-        return {
-            onEvent: function () {
-                onEvent();
-            },
-            bumpSharejs: function () { bump(); }
-        };
+        return toReturn;
     };
     return module.exports;
 });
