@@ -148,7 +148,7 @@ define([
                     channel, // the channel we're to connect to
 
                     // initialState argument. (optional)
-                    config.initialState || '',
+                    config.initialState || '{}',
 
                     // transform function (optional), which handles conflicts
                     { transformFunction: config.transformFunction });
