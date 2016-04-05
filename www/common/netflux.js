@@ -673,19 +673,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var c = _step.value;
 
 	            var msg = undefined;
+	            // Create the string message
 	            if (data.type === 'PING') {
 	              var date = new Date().getTime();
-	              msg = JSON.stringify([0, 'PING', date]);
+	              msg = JSON.stringify([c.seq++, 'PING', date]);
 	            } else {
 	              msg = JSON.stringify([c.seq++, data.type, webChannel.id, data.msg]);
-	              if (data.type === 'MSG') {
-	                var srvMsg = JSON.parse(msg);
-	                srvMsg.shift();
-	                srvMsg.unshift(webChannel.myID);
-	                srvMsg.unshift(0);
-	                webChannel.waitingAck[c.seq - 1] = srvMsg;
-	              }
 	            }
+	            // Store the message with his sequence number to know what message has caused the reception of an ACK
+	            // This is used in WebSocketProtocolService
+	            var srvMsg = JSON.parse(msg);
+	            srvMsg.shift();
+	            srvMsg.unshift(webChannel.myID);
+	            srvMsg.unshift(0);
+	            webChannel.waitingAck[c.seq - 1] = srvMsg;
+	            // Send the message to the server
 	            c.send(msg);
 	          }
 	        } catch (err) {
@@ -1340,20 +1342,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	        socket.send(JSON.stringify(msg));
 	        return;
 	      }
-	      if (msg[1] === 'ACK' && parseInt(msg[2]) === msg[2]) {
-	        var lag = new Date().getTime() - msg[2];
-	        webChannel.getLag = function () {
-	          return lag;
-	        };
-	        return;
-	      }
 	      if (msg[1] === 'ACK') {
 	        var seq = msg[0];
 	        if (webChannel.waitingAck[seq]) {
 	          var newMsg = webChannel.waitingAck[seq];
+	          if (parseInt(newMsg[3]) === newMsg[3]) {
+	            // PING message
+	            var lag = new Date().getTime() - newMsg[3];
+	            webChannel.getLag = function () {
+	              return lag;
+	            };
+	          } else {
+	            if (typeof webChannel.onmessage === "function") webChannel.onmessage(newMsg[1], newMsg[4]);
+	          }
 	          delete webChannel.waitingAck[seq];
-	          if (typeof webChannel.onmessage === "function") webChannel.onmessage(newMsg[1], newMsg[4]);
 	        }
+	        return;
 	      }
 	      // We have received a new direct message from another user
 	      if (msg[2] === 'MSG' && msg[3] === socket.uid) {
@@ -1366,6 +1370,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          var msgHistory = JSON.parse(msg[4]);
 	          webChannel.onmessage(msgHistory[1], msgHistory[4]);
 	        }
+	        return;
 	      }
 	      if (msg[2] === 'JOIN' && (webChannel.id == null || webChannel.id === msg[3])) {
 	        if (!webChannel.id) {
@@ -1408,17 +1413,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	            waitForOnJoining();
 	          }
 	        }
+	        return;
 	      }
 	      // We have received a new message in that channel from another peer
 	      if (msg[2] === 'MSG' && msg[3] === webChannel.id) {
 	        // Find the peer who sent the message and display it
 	        //TODO Use Peer instead of peer.id (msg[1]) :
 	        if (typeof webChannel.onmessage === "function") webChannel.onmessage(msg[1], msg[4]);
+	        return;
 	      }
 	      // Someone else has left the channel, remove him from the list of peers
 	      if (msg[2] === 'LEAVE' && msg[3] === webChannel.id) {
 	        //TODO Use Peer instead of peer.id (msg[1]) :
 	        if (typeof webChannel.onLeaving === "function") webChannel.onLeaving(msg[1], webChannel);
+	        return;
 	      }
 	    }
 	  }, {

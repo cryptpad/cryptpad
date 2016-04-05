@@ -86,7 +86,7 @@ const handleMessage = function (ctx, user, msg) {
             return;
         }
         let chanName = obj || randName();
-        sendMsg(ctx, user, [seq, 'ACK', chanName]);
+        sendMsg(ctx, user, [seq, 'ACK']);
         let chan = ctx.channels[chanName] = ctx.channels[chanName] || [];
         chan.id = chanName;
         if (USE_HISTORY_KEEPER) {
@@ -114,7 +114,7 @@ const handleMessage = function (ctx, user, msg) {
             sendMsg(ctx, user, [seq, 'ERROR', 'ENOENT', obj]);
             return;
         }
-        sendMsg(ctx, user, [seq, 'ACK', '']);
+        sendMsg(ctx, user, [seq, 'ACK']);
         let target;
         json.unshift(user.id);
         if ((target = ctx.channels[obj])) {
@@ -138,13 +138,13 @@ const handleMessage = function (ctx, user, msg) {
             sendMsg(ctx, user, [seq, 'ERROR', err]);
             return;
         }
-        sendMsg(ctx, user, [seq, 'ACK', chan.id]);
+        sendMsg(ctx, user, [seq, 'ACK']);
         json.unshift(user.id);
         sendChannelMessage(ctx, chan, [user.id, 'LEAVE', chan.id]);
         chan.splice(idx, 1);
     }
     if (cmd === 'PING') {
-        sendMsg(ctx, user, [seq, 'ACK', obj]);
+        sendMsg(ctx, user, [seq, 'ACK']);
         return;
     }
 };
