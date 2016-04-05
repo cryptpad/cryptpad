@@ -78,7 +78,8 @@ define([
         var webrtcUrl = config.webrtcURL;
         var userName = config.userName;
         var channel = config.channel;
-        var cryptKey = config.cryptKey;
+        var chanKey = config.cryptKey;
+        var cryptKey = Crypto.parseKey(chanKey).cryptKey;
         var passwd = 'y';
 
         // make sure configuration is defined
@@ -93,7 +94,7 @@ define([
         var messagesHistory = [];
         var chainpadAdapter = {};
         var realtime;
-        
+
         // define this in case it gets called before the rest of our stuff is ready.
         var onEvent = toReturn.onEvent = function (newText) { };
 
@@ -114,10 +115,10 @@ define([
             return res;
         };
 
-        var mkMessage = function (user, channel, content) {
+        var mkMessage = function (user, chan, content) {
             content = JSON.stringify(content);
             return user.length + ':' + user +
-                channel.length + ':' + channel +
+                chan.length + ':' + chan +
                 content.length + ':' + content;
         };
 
@@ -160,10 +161,10 @@ define([
                     } else {
                         //verbose("Received remote message");
                         // obviously this is only going to get called if
-                        if (config.onRemote) { 
+                        if (config.onRemote) {
                             config.onRemote({
                                 realtime: realtime
-                            }); 
+                            });
                         }
                     }
                 }
@@ -223,7 +224,7 @@ define([
         };
 
         var options = {
-          key: channel
+          key: ''
         };
 
         var rtc = true;
@@ -240,7 +241,7 @@ define([
           options.signaling = webrtcUrl;
         }
 
-        var createRealtime = function() {
+        var createRealtime = function(chan) {
             return ChainPad.create(userName,
                                         passwd,
                                         channel,
@@ -274,6 +275,8 @@ define([
         }
 
         var onOpen = function(wc) {
+            channel = wc.id;
+            window.location.hash = channel + '|' + chanKey;
             // Add the handlers to the WebChannel
             wc.onmessage = function(peer, msg) { // On receiving message
                 onMessage(peer, msg, wc);
@@ -317,7 +320,7 @@ define([
               hc.send(JSON.stringify(['GET_HISTORY', wc.id]));
             }
 
-            
+
             toReturn.patchText = TextPatcher.create({
                 realtime: realtime
             });

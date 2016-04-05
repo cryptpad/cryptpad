@@ -675,10 +675,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var msg = undefined;
 	            if (data.type === 'PING') {
 	              var date = new Date().getTime();
-	              // webChannel.lastPing = date;
 	              msg = JSON.stringify([0, 'PING', date]);
 	            } else {
 	              msg = JSON.stringify([c.seq++, data.type, webChannel.id, data.msg]);
+	              if (data.type === 'MSG') {
+	                var srvMsg = JSON.parse(msg);
+	                srvMsg.shift();
+	                srvMsg.unshift(webChannel.myID);
+	                srvMsg.unshift(0);
+	                webChannel.waitingAck[c.seq - 1] = srvMsg;
+	              }
 	            }
 	            c.send(msg);
 	          }
@@ -1316,15 +1322,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var webChannel = socket.webChannel;
 	      var topology = cs.STAR_SERVICE;
 	      var topologyService = _ServiceProvider2.default.get(topology);
-	      var HISTORY_KEEPER = '_HISTORY_KEEPER_';
+	      var history_keeper = webChannel.hc;
 
-	      if (msg[0] !== 0) {
+	      if (msg[0] !== 0 && msg[1] !== 'ACK') {
 	        return;
 	      }
-	      if (msg[1] === 'IDENT') {
-	        socket.uid = msg[2];
-	        webChannel.myID = msg[2];
+	      if (msg[2] === 'IDENT' && msg[1] === '') {
+	        socket.uid = msg[3];
+	        webChannel.myID = msg[3];
 	        webChannel.peers = [];
+	        webChannel.waitingAck = [];
 	        webChannel.topology = topology;
 	        return;
 	      }
@@ -1333,17 +1340,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        socket.send(JSON.stringify(msg));
 	        return;
 	      }
-	      if (msg[1] === 'PONG') {
+	      if (msg[1] === 'ACK' && parseInt(msg[2]) === msg[2]) {
 	        var lag = new Date().getTime() - msg[2];
 	        webChannel.getLag = function () {
 	          return lag;
 	        };
 	        return;
 	      }
+	      if (msg[1] === 'ACK') {
+	        var seq = msg[0];
+	        if (webChannel.waitingAck[seq]) {
+	          var newMsg = webChannel.waitingAck[seq];
+	          delete webChannel.waitingAck[seq];
+	          if (typeof webChannel.onmessage === "function") webChannel.onmessage(newMsg[1], newMsg[4]);
+	        }
+	      }
 	      // We have received a new direct message from another user
 	      if (msg[2] === 'MSG' && msg[3] === socket.uid) {
-	        // If it comes form the history keeper, send it to the user
-	        if (msg[1] === HISTORY_KEEPER) {
+	        // If it comes from the history keeper, send it to the user
+	        if (msg[1] === history_keeper) {
 	          if (msg[4] === 0) {
 	            webChannel.onmessage(msg[1], msg[4]);
 	            return;
@@ -1367,7 +1382,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        } else {
 	          // Trigger onJoining() when another user is joining the channel
 	          // Register the user in the list of peers in the channel
-	          var linkQuality = msg[1] === HISTORY_KEEPER ? 1000 : 0;
+	          if (webChannel.peers.length === 0 && msg[1].length === 16) {
+	            // We've just catched the history keeper
+	            history_keeper = msg[1];
+	            webChannel.hc = history_keeper;
+	          }
+	          var linkQuality = msg[1] === history_keeper ? 1000 : 0;
 	          var sendToPeer = function sendToPeer(data) {
 	            topologyService.sendTo(msg[1], webChannel, { type: 'MSG', msg: data });
 	          };
@@ -1376,7 +1396,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            webChannel.peers.push(peer);
 	          }
 
-	          if (msg[1] !== HISTORY_KEEPER) {
+	          if (msg[1] !== history_keeper) {
 	            // Trigger onJoining with that peer once the function is loaded (i.e. once the channel is synced)
 	            var waitForOnJoining = function waitForOnJoining() {
 	              if (typeof webChannel.onJoining !== "function") {

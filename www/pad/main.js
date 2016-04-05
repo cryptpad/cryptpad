@@ -44,16 +44,24 @@ define([
     };
 
     var andThen = function (Ckeditor) {
-        $(window).on('hashchange', function() {
-            window.location.reload();
-        });
+        // $(window).on('hashchange', function() {
+            // window.location.reload();
+        // });
+        var key;
+        var channel = '';
         if (window.location.href.indexOf('#') === -1) {
-            window.location.href = window.location.href + '#' + Crypto.genKey();
-            return;
+            key = Crypto.genKey();
+            // window.location.href = window.location.href + '#' + Crypto.genKey();
+            // return;
+        }
+        else {
+            var hash = window.location.hash.substring(1);
+            channel = hash.substr(0,32);
+            key = hash.substr(33);
         }
 
         var fixThings = false;
-        var key = Crypto.parseKey(window.location.hash.substring(1));
+        // var key = Crypto.parseKey(window.location.hash.substring(1));
         var editor = window.editor = Ckeditor.replace('editor1', {
             // https://dev.ckeditor.com/ticket/10907
             needsBrFiller: fixThings,
@@ -220,10 +228,10 @@ define([
                 userName: userName,
 
                 // the channel we will communicate over
-                channel: key.channel,
+                channel: channel,
 
                 // our encryption key
-                cryptKey: key.cryptKey,
+                cryptKey: key,
 
                 // configuration :D
                 doc: inner,
