@@ -36,7 +36,8 @@ define([
     var isNotMagicLine = function (el) {
         // factor as:
         // return !(el.tagName === 'SPAN' && el.contentEditable === 'false');
-        var filter = (el.tagName === 'SPAN' && el.contentEditable === 'false');
+        var filter = (el.tagName === 'SPAN' &&
+            el.getAttribute('contentEditable') === 'false');
         if (filter) {
             console.log("[hyperjson.serializer] prevented an element" +
                 "from being serialized:", el);
@@ -97,7 +98,7 @@ define([
                         we should check when such an element is going to be
                         removed, and prevent that from happening. */
                     if (info.node && info.node.tagName === 'SPAN' &&
-                        info.node.contentEditable === "true") {
+                        info.node.getAttribute('contentEditable') === "false") {
                         // it seems to be a magicline plugin element...
                         if (info.diff.action === 'removeElement') {
                             // and you're about to remove it...
