@@ -28,7 +28,9 @@ define([
         toolbar;
 
     var module = window.REALTIME_MODULE = {
-        localChangeInProgress: 0
+        localChangeInProgress: 0,
+        Hyperjson: Hyperjson,
+        Hyperscript: Hyperscript
     };
 
     var isNotMagicLine = function (el) {
@@ -163,7 +165,8 @@ define([
                 doc: inner,
 
                 // provide initialstate...
-                initialState: JSON.stringify(Hyperjson.fromDOM(inner, isNotMagicLine)),
+                initialState: JSON.stringify(Hyperjson
+                    .fromDOM(inner, isNotMagicLine)) || '{}',
 
                 // really basic operational transform
                 // reject patch if it results in invalid JSON
@@ -200,6 +203,21 @@ define([
 
                 var userDocStateDom = hjsonToDom(JSON.parse(shjson));
                 localWorkInProgress(2); // check again
+
+
+                /*  in the DOM contentEditable is "false"
+                    while "contenteditable" is undefined.
+
+                    When it goes over the wire, it seems hyperjson transforms it.
+                    of course, hyperjson simply gets attributes from the DOM.
+
+                    el.attributes returns 'contenteditable', so we have to correct for that
+
+                    There are quite possibly all sorts of other attributes which might lose
+                    information, and we won't know what they are until after we've lost them.
+
+                    this comes from hyperscript line 101. FIXME maybe
+                */
                 userDocStateDom.setAttribute("contenteditable", "true"); // lol wtf
                 localWorkInProgress(3); // check again
                 var patch = (DD).diff(inner, userDocStateDom);
