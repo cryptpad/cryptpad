@@ -674,8 +674,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            var msg = undefined;
 	            // Create the string message
+	            var date = new Date().getTime();
 	            if (data.type === 'PING') {
-	              var date = new Date().getTime();
 	              msg = JSON.stringify([c.seq++, 'PING', date]);
 	            } else {
 	              msg = JSON.stringify([c.seq++, data.type, webChannel.id, data.msg]);
@@ -686,10 +686,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            srvMsg.shift();
 	            srvMsg.unshift(webChannel.myID);
 	            srvMsg.unshift(0);
-	            webChannel.waitingAck[c.seq - 1] = srvMsg;
+	            webChannel.waitingAck[c.seq - 1] = { resolve: resolve, reject: reject, time: date, data: srvMsg };
 	            // Send the message to the server
 	            c.send(msg);
 	          }
+	          // resolve();
 	        } catch (err) {
 	          _didIteratorError = true;
 	          _iteratorError = err;
@@ -704,8 +705,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	          }
 	        }
-
-	        resolve();
 	      });
 	    }
 	  }, {
@@ -1108,7 +1107,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.NAME = this.constructor.name;
 	    this.protocol = _ServiceProvider2.default.get(cs.EXCHANGEPROTOCOL_SERVICE);
 	    this.defaults = {
-	      signaling: 'ws://localhost:9000'
+	      signaling: 'ws://localhost:9000',
+	      REQUEST_TIMEOUT: 5000
 	    };
 	    this.settings = Object.assign({}, this.defaults, options);
 	  }
@@ -1122,6 +1122,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return new Promise(function (resolve, reject) {
 	        var connection = undefined;
 	        var socket = new window.WebSocket(settings.signaling);
+	        setInterval(function () {
+	          if (socket.webChannel && socket.webChannel.waitingAck) {
+	            var waitingAck = socket.webChannel.waitingAck;
+	            for (var id in waitingAck) {
+	              var req = waitingAck[id];
+	              var now = new Date().getTime();
+	              if (now - req.time > settings.REQUEST_TIMEOUT) {
+	                delete socket.webChannel.waitingAck[id];
+	                req.reject({ type: 'TIMEOUT', message: 'waited ' + now - req.time + 'ms' });
+	              }
+	            }
+	          }
+	        }, 5000);
 	        socket.seq = 1;
 	        socket.facade = options.facade || null;
 	        socket.onopen = function () {
@@ -1345,15 +1358,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (msg[1] === 'ACK') {
 	        var seq = msg[0];
 	        if (webChannel.waitingAck[seq]) {
-	          var newMsg = webChannel.waitingAck[seq];
-	          if (parseInt(newMsg[3]) === newMsg[3]) {
-	            // PING message
+	          var waitingAck = webChannel.waitingAck[seq];
+	          waitingAck.resolve();
+	          var newMsg = waitingAck.data;
+	          if (newMsg[2] === 'PING') {
+	            // PING message : set the lag
 	            var lag = new Date().getTime() - newMsg[3];
 	            webChannel.getLag = function () {
 	              return lag;
 	            };
-	          } else {
-	            if (typeof webChannel.onmessage === "function") webChannel.onmessage(newMsg[1], newMsg[4]);
 	          }
 	          delete webChannel.waitingAck[seq];
 	        }

@@ -294,14 +294,17 @@ define([
             // Open a Chainpad session
             realtime = createRealtime();
 
-            // On sending message
+            // Sending a message...
             realtime.onMessage(function(message) {
-                // Prevent Chainpad from sending authentication messages since it is handled by Netflux
+                // Filter messages sent by Chainpad to make it compatible with Netflux
                 message = chainpadAdapter.msgOut(message, wc);
                 if(message) {
                   wc.send(message).then(function() {
-                    // Send the message back to Chainpad once it is sent to all peers if using the WebRTC protocol
-                    if(rtc) { onMessage(wc.myID, message); }
+                    // Send the message back to Chainpad once it is sent to the recipients.
+                    onMessage(wc.myID, message);
+                  }, function(err) {
+                    // The message has not been sent, display the error.
+                    console.error(err);
                   });
                 }
             });

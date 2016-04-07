@@ -98,7 +98,7 @@ define([
                         we should check when such an element is going to be
                         removed, and prevent that from happening. */
                     if (info.node && info.node.tagName === 'SPAN' &&
-                        info.node.contentEditable === "true") {
+                        info.node.contentEditable === false) {
                         // it seems to be a magicline plugin element...
                         if (info.diff.action === 'removeElement') {
                             // and you're about to remove it...
