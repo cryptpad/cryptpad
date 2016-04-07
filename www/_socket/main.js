@@ -190,8 +190,7 @@ define([
             var localWorkInProgress = function (stage) {
                 if (module.localChangeInProgress) {
                     console.error("Applied a change while a local patch was in progress");
-                    alert("local work was interrupted at stage: " + stage);
-                    //module.realtimeInput.onLocal();
+                    console.error("local work was interrupted at stage: " + stage);
                     return true;
                 }
                 return false;
