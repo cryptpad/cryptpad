@@ -17,7 +17,7 @@
 window.Reflect = { has: (x,y) => { return (y in x); } };
 define([
     '/common/messages.js',
-    '/common/netflux-client.js',
+    '/padrtc/netflux.js',
     '/common/crypto.js',
     '/common/toolbar.js',
     '/_socket/text-patcher.js',
@@ -76,6 +76,7 @@ define([
         function (config)
     {
         var websocketUrl = config.websocketURL;
+        var webrtcUrl = config.webrtcURL;
         var userName = config.userName;
         var channel = config.channel;
         var chanKey = config.cryptKey;
@@ -122,19 +123,24 @@ define([
                 content.length + ':' + content;
         };
 
+        var onPeerMessage = function(toId, type, wc) {
+            if(type === 6) {
+                messagesHistory.forEach(function(msg) {
+                    wc.sendTo(toId, '1:y'+msg);
+                });
+                wc.sendTo(toId, '0');
+            }
+        };
+
         var whoami = new RegExp(userName.replace(/[\/\+]/g, function (c) {
             return '\\' +c;
         }));
 
-        var onMessage = function(peer, msg, wc, network) {
+        var onMessage = function(peer, msg, wc) {
 
-            var hc = (wc && wc.history_keeper) ? wc.history_keeper : null;
-            if(wc && (msg === 0 || msg === '0')) {
-                onReady(wc, network);
+            if(msg === 0 || msg === '0') {
+                onReady(wc);
                 return;
-            }
-            else if (peer === hc){
-                msg = JSON.parse(msg)[4];
             }
             var message = chainpadAdapter.msgIn(peer, msg);
 
@@ -171,10 +177,8 @@ define([
           users: []
         };
         var onJoining = function(peer) {
-          if(peer.length !== 32) { return; }
           var list = userList.users;
-          var index = list.indexOf(peer);
-          if(index === -1) {
+          if(list.indexOf(peer) === -1) {
             userList.users.push(peer);
           }
           userList.onChange();
@@ -213,16 +217,31 @@ define([
                 if(parsed.content[0] === 4) { // PING message from Chainpad
                     parsed.content[0] = 5;
                     onMessage('', '1:y'+mkMessage(parsed.user, parsed.channelId, parsed.content));
-                    // wc.sendPing();
+                    wc.sendPing();
                     return;
                 }
                 return Crypto.encrypt(msg, cryptKey);
             }
         };
 
-        var options = {
-          key: ''
-        };
+        var options = {};
+
+        var rtc = true;
+
+        if(channel.trim().length > 0) {
+          options.key = channel;
+        }
+        if(!webrtcUrl) {
+          rtc = false;
+          options.signaling = websocketUrl;
+          options.topology = 'StarTopologyService';
+          options.protocol = 'WebSocketProtocolService';
+          options.connector = 'WebSocketService';
+          options.openWebChannel = true;
+        }
+        else {
+          options.signaling = webrtcUrl;
+        }
 
         var createRealtime = function(chan) {
             return ChainPad.create(userName,
@@ -234,12 +253,12 @@ define([
                                         });
         };
 
-        var onReady = function(wc, network) {
+        var onReady = function(wc) {
             if(config.onInit) {
                 config.onInit({
                     myID: wc.myID,
                     realtime: realtime,
-                    getLag: network.getLag,
+                    getLag: wc.getLag,
                     userList: userList
                 });
             }
@@ -257,21 +276,18 @@ define([
             }
         }
 
-        var onOpen = function(wc, network) {
+        var onOpen = function(wc) {
             channel = wc.id;
             window.location.hash = channel + '|' + chanKey;
-
-            // Add the existing peers in the userList
-            wc.members.forEach(onJoining);
-
             // Add the handlers to the WebChannel
-            wc.on('message', function (msg, sender) { //Channel msg
-                onMessage(sender, msg, wc, network);
-            });
-            wc.on('join', onJoining);
-            wc.on('leave', onLeaving);
-
-
+            wc.onmessage = function(peer, msg) { // On receiving message
+                onMessage(peer, msg, wc);
+            };
+            wc.onJoining = onJoining; // On user joining the session
+            wc.onLeaving = onLeaving; // On user leaving the session
+            wc.onPeerMessage = function(peerId, type) {
+              onPeerMessage(peerId, type, wc);
+            };
             if(config.setMyID) {
                 config.setMyID({
                     myID: wc.myID
@@ -285,7 +301,7 @@ define([
                 // Filter messages sent by Chainpad to make it compatible with Netflux
                 message = chainpadAdapter.msgOut(message, wc);
                 if(message) {
-                  wc.bcast(message).then(function() {
+                  wc.send(message).then(function() {
                     // Send the message back to Chainpad once it is sent to the recipients.
                     onMessage(wc.myID, message);
                   }, function(err) {
@@ -297,11 +313,17 @@ define([
 
             // Get the channel history
             var hc;
-            wc.members.forEach(function (p) { 
-              if (p.length === 16) { hc = p; } 
-            });
-            wc.history_keeper = hc;
-            if (hc) { network.sendto(hc, JSON.stringify(['GET_HISTORY', wc.id])); }
+            if(rtc) {
+              wc.channels.forEach(function (c) { if(!hc) { hc = c; } });
+              if(hc) {
+                wc.getHistory(hc.peerID);
+              }
+            }
+            else {
+              // TODO : Improve WebSocket service to use the latest Netflux's API
+              wc.peers.forEach(function (p) { if (!hc || p.linkQuality > hc.linkQuality) { hc = p; } });
+              hc.send(JSON.stringify(['GET_HISTORY', wc.id]));
+            }
 
 
             toReturn.patchText = TextPatcher.create({
@@ -311,30 +333,63 @@ define([
             realtime.start();
         };
 
-        var findChannelById = function(webChannels, channelId) {
-          var webChannel;
-          webChannels.forEach(function(chan) {
-            if(chan.id == channelId) { webChannel = chan; return;}
-          });
-          return webChannel;
-        }
-
-        // Connect to the WebSocket channel
-        Netflux.connect(websocketUrl).then(function(network) {
-            network.on('message', function (msg, sender) { // Direct message
-                var wchan = findChannelById(network.webChannels, channel);
-                if(wchan) {
-                  onMessage(sender, msg, wchan, network);
-                }
-            });
-            network.join(channel || null).then(function(wc) {
-                onOpen(wc, network);
+        var createRTCChannel = function () {
+            // Check if the WebRTC channel exists and create it if necessary
+            var webchannel = Netflux.create();
+            webchannel.openForJoining(options).then(function(data) {
+              console.log(data);
+                webchannel.id = data.key
+                onOpen(webchannel);
+                onReady(webchannel);
             }, function(error) {
-                console.error(error);
-            })
-        }, function(error) {
-            warn(error);
-        });
+                warn(error);
+            });
+        };
+
+        var joinChannel = function() {
+            // Connect to the WebSocket/WebRTC channel
+            Netflux.join(channel, options).then(function(wc) {
+                if(channel.trim().length > 0) {
+                  wc.id = channel
+                }
+                onOpen(wc);
+            }, function(error) {
+                if(rtc && error.code === 1008) {// Unexisting RTC channel
+                    createRTCChannel();
+                }
+                else { warn(error); }
+            });
+        };
+        joinChannel();
+
+        var checkConnection = function(wc) {
+            if(wc.channels && wc.channels.size > 0) {
+                var channels = Array.from(wc.channels);
+                var channel = channels[0];
+
+                var socketChecker = setInterval(function () {
+                    if (channel.checkSocket(realtime)) {
+                        warn("Socket disconnected!");
+
+                        recoverableErrorCount += 1;
+
+                        if (recoverableErrorCount >= MAX_RECOVERABLE_ERRORS) {
+                            warn("Giving up!");
+                            realtime.abort();
+                            try { channel.close(); } catch (e) { warn(e); }
+                            if (config.onAbort) {
+                                config.onAbort({
+                                    socket: channel
+                                });
+                            }
+                            if (socketChecker) { clearInterval(socketChecker); }
+                        }
+                    } else {
+                        // it's working as expected, continue
+                    }
+                }, 200);
+            }
+        };
 
         return toReturn;
     };

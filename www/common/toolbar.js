@@ -132,7 +132,7 @@ define([
       userList.forEach(function(user) {
         if(user !== myUserName) {
           var data = (userData) ? (userData[user] || null) : null;
-          var userName = (data) ? data.name : null;
+          var userName = (data) ? data.name : user;
           if(userName) {
             if(i === 0) list = ' : ';
             list += userName + ', ';
@@ -170,9 +170,9 @@ define([
         return $container.find('#'+id)[0];
     };
 
-    var checkLag = function (webChannel, lagElement) {
-        if(typeof webChannel.getLag !== "function") { return; }
-        var lag = webChannel.getLag();
+    var checkLag = function (getLag, lagElement) {
+        if(typeof getLag !== "function") { return; }
+        var lag = getLag();
         var lagMsg = Messages.lag + ' ';
         if(lag) {
           var lagSec = lag/1000;
@@ -214,7 +214,7 @@ define([
         localStorage['CryptPad_RECENTPADS'] = JSON.stringify(out);
     };
 
-    var create = function ($container, myUserName, realtime, webChannel, userList, config) {
+    var create = function ($container, myUserName, realtime, getLag, userList, config) {
         var toolbar = createRealtimeToolbar($container);
         createEscape(toolbar.find('.rtwysiwyg-toolbar-leftside'));
         var userListElement = createUserList(toolbar.find('.rtwysiwyg-toolbar-leftside'));
@@ -223,7 +223,7 @@ define([
         var userData = config.userData;
         var changeNameID = config.changeNameID;
 
-        // Check if the suer is allowed to change his name
+        // Check if the user is allowed to change his name
         if(changeNameID) {
             // Create the button and update the element containing the user list
             userListElement = createChangeName($container, userListElement, changeNameID);
@@ -253,7 +253,7 @@ define([
 
         setInterval(function () {
             if (!connected) { return; }
-            checkLag(webChannel, lagElement);
+            checkLag(getLag, lagElement);
         }, 3000);
 
         return {

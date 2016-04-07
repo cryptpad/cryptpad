@@ -101,9 +101,8 @@ const handleMessage = function (ctx, user, msg) {
     if (cmd === 'MSG') {
         if (obj === HISTORY_KEEPER_ID) {
             let parsed;
-            try { parsed = JSON.parse(json[2]); } catch (err) { return; }
+            try { parsed = JSON.parse(json[2]); } catch (err) { console.error(err); return; }
             if (parsed[0] === 'GET_HISTORY') {
-                console.log('getHistory ' + parsed[1]);
                 getHistory(ctx, parsed[1], function (msg) {
                     sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(msg)]);
                 });
@@ -168,6 +167,7 @@ let run = module.exports.run = function (storage, socketServer) {
         });
     }, 5000);
     socketServer.on('connection', function(socket) {
+        if(socket.upgradeReq.url !== '/cryptpad_websocket') { return; }
         let conn = socket.upgradeReq.connection;
         let user = {
             addr: conn.remoteAddress + '|' + conn.remotePort,
