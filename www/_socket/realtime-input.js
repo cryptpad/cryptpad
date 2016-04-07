@@ -147,8 +147,9 @@ define([
                     passwd, // password, to be deprecated (maybe)
                     channel, // the channel we're to connect to
 
-                    // initialState argument. (optional)
-                    config.initialState || '{}',
+                    /*  optional unless your application expects JSON
+                        from getUserDoc */
+                    config.initialState || '',
 
                     // transform function (optional), which handles conflicts
                     { transformFunction: config.transformFunction });
@@ -160,7 +161,6 @@ define([
                     // this is a problem
                     warn("realtime.getUserDoc() !== newText");
                 }
-                //try{throw new Error();}catch(e){console.log(e.stack);}
             };
 
             // pass your shiny new realtime into initialization functions
