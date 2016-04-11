@@ -173,8 +173,8 @@ define([
           newCursor.ch = removedTextColumnIndex;
         }
       }
-      else if(cursor.line === removedTextLineNumber && cursor.ch > removedTextLineNumber) {
-        newCursor.ch -= Math.min(length, cursor.ch-removedTextLineNumber);
+      else if(cursor.line === removedTextLineNumber && cursor.ch > removedTextColumnIndex) {
+        newCursor.ch -= Math.min(length, cursor.ch-removedTextColumnIndex);
       }
       return newCursor;
     };
@@ -327,7 +327,8 @@ define([
                 var oldCursorCMEnd = cmEditor.getCursor('to');
                 var newCursor;
                 var newSelection;
-                if(oldCursorCMStart !== oldCursorCMEnd) { // Selection
+                if(oldCursorCMStart.line !== oldCursorCMEnd.line
+                    && oldCursorCMStart.ch !== oldCursorCMEnd.ch) { // Selection
                     if (op.toRemove > 0) {
                         newSelection = [transformCursorCMRemove(oldValue, oldCursorCMStart, op.offset, op.toRemove), transformCursorCMRemove(oldValue, oldCursorCMEnd, op.offset, op.toRemove)];
                     }
