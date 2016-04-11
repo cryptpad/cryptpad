@@ -132,7 +132,7 @@ define([
       userList.forEach(function(user) {
         if(user !== myUserName) {
           var data = (userData) ? (userData[user] || null) : null;
-          var userName = (data) ? data.name : user;
+          var userName = (data) ? data.name : null;
           if(userName) {
             if(i === 0) list = ' : ';
             list += userName + ', ';
