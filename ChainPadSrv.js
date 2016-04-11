@@ -177,6 +177,7 @@ var create = module.exports.create = function (socketServer, store) {
     };
 
     socketServer.on('connection', function(socket) {
+        if(socket.upgradeReq.url !== '/cryptpad_websocket_old') { return; }
         socket.on('message', function(message) {
             try {
                 handleMessage(ctx, socket, message);

@@ -84,5 +84,6 @@ var wsSrv = new WebSocketServer(wsConfig);
 Storage.create(config, function (store) {
     console.log('DB connected');
     NetfluxSrv.run(store, wsSrv);
+    ChainPadSrv.create(wsSrv, store);
     WebRTCSrv.run(wsSrv);
 });
