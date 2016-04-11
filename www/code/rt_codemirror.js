@@ -309,7 +309,6 @@ define([
             var incomingPatch = function () {
                 if (isErrorState || initializing) { return; }
                 var textAreaVal = $(textArea).val();
-                                console.log($(textArea).val());
                 userDocBeforePatch = userDocBeforePatch || textAreaVal;
                 if (userDocBeforePatch !== textAreaVal) {
                   //error(false, "userDocBeforePatch !== textAreaVal");
@@ -346,7 +345,8 @@ define([
                 }
                 $(textArea).val(newValue);
                 userDocBeforePatch = newValue;
-                cmEditor.setValue(newValue);
+                cmEditor.setCursor({line:0, ch:0});
+                try { cmEditor.setValue(newValue); } catch (err) { console.error(err); }
                 if(newCursor) {
                   cmEditor.setCursor(newCursor);
                 }

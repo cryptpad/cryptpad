@@ -123,19 +123,6 @@ define([
         return $container.find('#'+id)[0];
     };
 
-    var getOtherUsers = function(myUserName, userList) {
-      var i = 0;
-      var list = '';
-      userList.forEach(function(user) {
-        if(user !== myUserName) {
-          if(i === 0) list = ' : ';
-          list += user + ', ';
-          i++;
-        }
-      });
-      return (i > 0) ? list.slice(0, -2) : list;
-    }
-
     var updateUserList = function (myUserName, listElement, userList) {
         var meIdx = userList.indexOf(myUserName);
         if (meIdx === -1) {
@@ -143,11 +130,11 @@ define([
             return;
         }
         if (userList.length === 1) {
-            listElement.innerHTML = Messages.editingAlone;
+            listElement.textContent = Messages.editingAlone;
         } else if (userList.length === 2) {
-            listElement.innerHTML = Messages.editingWithOneOtherPerson + getOtherUsers(myUserName, userList);
+            listElement.textContent = Messages.editingWithOneOtherPerson;
         } else {
-            listElement.innerHTML = Messages.editingWith + ' ' + (userList.length - 1) + ' ' + Messages.otherPeople + getOtherUsers(myUserName, userList);
+            listElement.textContent = Messages.editingWith + ' ' + (userList.length - 1) + ' ' + Messages.otherPeople;
         }
     };
 
