@@ -134,20 +134,20 @@ define([
           var data = (userData) ? (userData[user] || null) : null;
           var userName = (data) ? data.name : null;
           if(userName) {
-            if(i === 0) list = ' : ';
+            if(i === 0) { list = ' : '; }
             list += userName + ', ';
             i++;
           }
         }
       });
       return (i > 0) ? list.slice(0, -2) : list;
-    }
+    };
 
     var createChangeName = function($container, userList, buttonID) {
         var id = uid();
         userList.innerHTML = '<span class="cke_toolgroup" id="' + buttonID + '"><a id="' + USERNAME_BUTTON_ID + '" class="cke_button">Change name</a></span><span id="' + id + '"></span>';
         return $container.find('#'+id)[0];
-    }
+    };
 
     var updateUserList = function (myUserName, listElement, userList, userData) {
         var meIdx = userList.indexOf(myUserName);
@@ -241,7 +241,7 @@ define([
             userData = newUserData;
           }
           updateUserList(myUserName, userListElement, users, userData);
-        }
+        };
 
         var ks = function () {
             if (connected) { kickSpinner(spinner, false); }
