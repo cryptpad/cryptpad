@@ -20,7 +20,7 @@ define([
     '/common/crypto.js',
     '/_socket/toolbar.js',
     '/_socket/text-patcher.js',
-    '/_socket/chainpad.js',
+    '/common/chainpad.js',
     '/bower_components/jquery/dist/jquery.min.js',
 ], function (Messages,/*FIXME*/ ReconnectingWebSocket, Crypto, Toolbar, TextPatcher) {
     var $ = window.jQuery;
