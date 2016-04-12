@@ -223,7 +223,10 @@ var transform = Patch.transform = function (origToTransform, transformBy, doc, t
     toTransform = clone(origToTransform);
     var text = doc;
     for (var i = toTransform.operations.length-1; i >= 0; i--) {
-        text = Operation.apply(toTransform.operations[i], text);
+        /*  this line caused diffs to be applied against the incorrect text
+            which resulted in bad merges that weren't noticeable until we
+            tried to patch json.  */
+        //text = Operation.apply(toTransform.operations[i], text);
         for (var j = transformBy.operations.length-1; j >= 0; j--) {
             toTransform.operations[i] = Operation.transform(text,
                                                             toTransform.operations[i],
