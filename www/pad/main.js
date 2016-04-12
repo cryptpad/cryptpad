@@ -8,10 +8,11 @@ define([
     '/common/toolbar.js',
     '/common/cursor.js',
     '/common/json-ot.js',
+    '/common/TypingTests.js',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, Messages, Crypto, realtimeInput, Hyperjson, Hyperscript, Toolbar, Cursor, JsonOT) {
+], function (Config, Messages, Crypto, realtimeInput, Hyperjson, Hyperscript, Toolbar, Cursor, JsonOT, TypingTest) {
     var $ = window.jQuery;
     var ifrw = $('#pad-iframe')[0].contentWindow;
     var Ckeditor; // to be initialized later...
@@ -328,6 +329,17 @@ define([
             inner.addEventListener('keydown', cursor.brFix);
 
             editor.on('change', propogate);
+
+            // export the typing tests to the window.
+            // call like `test = easyTest()`
+            // terminate the test like `test.cancel()`
+            var easyTest = window.easyTest = function () {
+                cursor.update();
+                var start = cursor.Range.start;
+                var test = TypingTest.testInput(inner, start.el, start.offset, propogate);
+                propogate();
+                return test;
+            };
         });
     };
 
