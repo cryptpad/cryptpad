@@ -220,7 +220,7 @@ var transform = Patch.transform = function (origToTransform, transformBy, doc, t
     Common.assert(origToTransform.parentHash === transformBy.parentHash);
     var resultOfTransformBy = apply(transformBy, doc);
 
-    toTransform = clone(origToTransform);
+    var toTransform = clone(origToTransform);
     var text = doc;
     for (var i = toTransform.operations.length-1; i >= 0; i--) {
         /*  this line caused diffs to be applied against the incorrect text
