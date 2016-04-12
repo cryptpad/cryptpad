@@ -181,13 +181,6 @@ define([
 
             // apply patches, and try not to lose the cursor in the process!
             var applyHjson = function (shjson) {
-                // var hjson = JSON.parse(shjson);
-                // var peerUserList = hjson[hjson.length-1];
-                // if(peerUserList.metadata) {
-                  // var userData = peerUserList.metadata;
-                  // addToUserList(userData);
-                  // delete hjson[hjson.length-1];
-                // }
                 var userDocStateDom = hjsonToDom(JSON.parse(shjson));
                 userDocStateDom.setAttribute("contenteditable", "true"); // lol wtf
                 var patch = (DD).diff(inner, userDocStateDom);
@@ -296,8 +289,6 @@ define([
                 return hj;
             };
 
-            // $textarea.val(JSON.stringify(Convert.dom.to.hjson(inner)));
-
             /*  It's incredibly important that you assign 'rti.onLocal'
                 It's used inside of realtimeInput to make sure that all changes
                 make it into chainpad.
@@ -307,16 +298,14 @@ define([
                 the code less extensible.
             */
             var propogate = rti.onLocal = function () {
-                /*  if the problem were a matter of external patches being
-                    applied while a local patch were in progress, then we would
-                    expect to be able to check and find
-                    'module.localChangeInProgress' with a non-zero value while
-                    we were applying a remote change.
-                */
+                // serialize your DOM into an object
                 var hjson = Hyperjson.fromDOM(inner, isNotMagicLine, brFilter);
+
+                // append the userlist to the hyperjson structure
                 if(Object.keys(myData).length > 0) {
                     hjson[hjson.length] = {metadata: userList};
                 }
+                // stringify the json and send it into chainpad
                 var shjson = JSON.stringify(hjson);
                 if (!rti.patchText(shjson)) {
                     return;
