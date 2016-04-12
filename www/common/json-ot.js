@@ -5,15 +5,16 @@ define([
     var JsonOT = {};
 
     var validate = JsonOT.validate = function (text, toTransform, transformBy) {
+        var resultOp, text2, text3;
         try {
             // text = O (mutual common ancestor)
             // toTransform = A (the first incoming operation)
             // transformBy = B (the second incoming operation)
             // threeway merge (0, A, B)
 
-            var resultOp = ChainPad.Operation.transform0(text, toTransform, transformBy);
-            var text2 = ChainPad.Operation.apply(transformBy, text);
-            var text3 = ChainPad.Operation.apply(resultOp, text2);
+            resultOp = ChainPad.Operation.transform0(text, toTransform, transformBy);
+            text2 = ChainPad.Operation.apply(transformBy, text);
+            text3 = ChainPad.Operation.apply(resultOp, text2);
             try {
                 JSON.parse(text3);
                 return resultOp;
@@ -35,8 +36,7 @@ define([
             }
         } catch (x) {
             console.error(x);
-            console.error(e);
-            var info = window.REALTIME_MODULE.ot_applyError = {
+            window.REALTIME_MODULE.ot_applyError = {
                 type: 'resultParseError',
                 resultOp: resultOp,
 
@@ -46,7 +46,7 @@ define([
                 text1: text,
                 text2: text2,
                 text3: text3,
-                error: e
+                error: x
             };
             console.log('Debugging info available at `window.REALTIME_MODULE.ot_applyError`');
         }
