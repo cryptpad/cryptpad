@@ -4,6 +4,9 @@ define([
     var ChainPad = window.ChainPad;
     var JsonOT = {};
 
+/*  FIXME
+    resultOp after transform0() might be null, in which case you should return null
+    because it is simply a transformation which yields a "do nothing" operation */
     var validate = JsonOT.validate = function (text, toTransform, transformBy) {
         var resultOp, text2, text3;
         try {
@@ -13,6 +16,11 @@ define([
             // threeway merge (0, A, B)
 
             resultOp = ChainPad.Operation.transform0(text, toTransform, transformBy);
+
+            /*  if after operational transform we find that no op is necessary
+                return null to ignore this patch */
+            if (!resultOp) { return null; }
+
             text2 = ChainPad.Operation.apply(transformBy, text);
             text3 = ChainPad.Operation.apply(resultOp, text2);
             try {
