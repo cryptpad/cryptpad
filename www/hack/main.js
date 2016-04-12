@@ -3,9 +3,10 @@ define([
     '/common/realtime-input.js',
     '/common/messages.js',
     '/common/crypto.js',
+    '/common/cursor.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, Realtime, Messages, Crypto) { 
+], function (Config, Realtime, Messages, Crypto, Cursor) { 
     var $ = window.jQuery;
     $(window).on('hashchange', function() {
         window.location.reload();
@@ -58,6 +59,48 @@ define([
     };
 
     var rt = Realtime.start(config);
+
+    var cursor = Cursor($textarea[0]);
+
+    var splice = function (str, index, chars) {
+        var count = chars.length;
+        return str.slice(0, index) + chars + str.slice((index -1) + count);
+    };
+
+    var setSelectionRange = function (input, start, end) {
+        if (input.setSelectionRange) {
+            input.focus();
+            input.setSelectionRange(start, end);
+        } else if (input.createTextRange) {
+            var range = input.createTextRange();
+            range.collapse(true);
+            range.moveEnd('character', end);
+            range.moveStart('character', start);
+            range.select();
+        }
+    };
+
+    var setCursor = function (el, pos) {
+        setSelectionRange(el, pos, pos);
+    };
+
+    $textarea.on('keypress', function (e) {
+        switch (e.key) {
+            case 'Tab':
+                // insert a tab wherever the cursor is...
+                var position = $textarea.prop("selectionStart");
+                if (typeof position !== 'undefined') {
+                    $textarea.val(function (i, val) {
+                        return splice(val, position, "\t");
+                    });
+                    setCursor($textarea[0], position +1);
+                }
+                // prevent default behaviour for tab
+                e.preventDefault();
+            default:
+                break;
+        }
+    });
 
     $run.click(function (e) {
         e.preventDefault();
