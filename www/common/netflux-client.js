@@ -151,7 +151,7 @@ const onMessage = (ctx, evt) => {
             handlers = chan._.onMessage;
         }
         handlers.forEach((h) => {
-            try { h(msg[4], msg[1]); } catch (e) { console.log(e.stack); }
+            try { h(msg[4], msg[1]); } catch (e) { console.error(e); }
         });
     }
 
