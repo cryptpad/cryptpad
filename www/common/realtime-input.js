@@ -89,14 +89,11 @@ define([
 
         var allMessages = [];
         var initializing = true;
-        var recoverableErrorCount = 0;
+        var recoverableErrorCount = 0; // unused
         var toReturn = {};
         var messagesHistory = [];
         var chainpadAdapter = {};
         var realtime;
-
-        // define this in case it gets called before the rest of our stuff is ready.
-        var onEvent = toReturn.onEvent = function (newText) { };
 
         var parseMessage = function (msg) {
             var res ={};
@@ -122,67 +119,66 @@ define([
                 content.length + ':' + content;
         };
 
-        var whoami = new RegExp(userName.replace(/[\/\+]/g, function (c) {
-            return '\\' +c;
-        }));
+        var userList = {
+            onChange : function() {},
+            users: []
+        };
+
+        var onJoining = function(peer) {
+            if(peer.length !== 32) { return; }
+            var list = userList.users;
+            var index = list.indexOf(peer);
+            if(index === -1) {
+                userList.users.push(peer);
+            }
+            userList.onChange();
+        };
+
+        var onReady = function(wc, network) {
+            if(config.onInit) {
+                config.onInit({
+                    myID: wc.myID,
+                    realtime: realtime,
+                    getLag: network.getLag,
+                    userList: userList
+                });
+            }
+            // Trigger onJoining with our own Cryptpad username to tell the toolbar that we are synced
+            onJoining(wc.myID);
+
+            // we're fully synced
+            initializing = false;
+
+            // execute an onReady callback if one was supplied
+            if (config.onReady) {
+                config.onReady({
+                    realtime: realtime
+                });
+            }
+        };
 
         var onMessage = function(peer, msg, wc, network) {
-
+            // unpack the history keeper from the webchannel
             var hc = (wc && wc.history_keeper) ? wc.history_keeper : null;
+
             if(wc && (msg === 0 || msg === '0')) {
-                // FIXME onReady is defined below, so JSHINT complains
-                /* jshint ignore:start */
                 onReady(wc, network);
-                /* jshint ignore:end */
                 return;
             }
-            else if (peer === hc){
+            if (peer === hc){
+                // if the peer is the 'history keeper', extract their message
                 msg = JSON.parse(msg)[4];
             }
             var message = chainpadAdapter.msgIn(peer, msg);
 
             verbose(message);
             allMessages.push(message);
-            // if (!initializing) {
-                // if (toReturn.onLocal) {
-                    // toReturn.onLocal();
-                // }
-            // }
+
+            // pass the message into Chainpad
             realtime.message(message);
-            if (/\[5,/.test(message)) { verbose("pong"); }
-
-            if (!initializing) {
-                if (/\[2,/.test(message)) {
-                    //verbose("Got a patch");
-                    if (whoami.test(message)) {
-                        //verbose("Received own message");
-                    } else {
-                        //verbose("Received remote message");
-                        // obviously this is only going to get called if
-                        if (config.onRemote) {
-                            config.onRemote({
-                                realtime: realtime
-                            });
-                        }
-                    }
-                }
-            }
         };
 
-        var userList = {
-          onChange : function() {},
-          users: []
-        };
-        var onJoining = function(peer) {
-          if(peer.length !== 32) { return; }
-          var list = userList.users;
-          var index = list.indexOf(peer);
-          if(index === -1) {
-            userList.users.push(peer);
-          }
-          userList.onChange();
-        };
-
+        // update UI components to show that one of the other peers has left
         var onLeaving = function(peer) {
           var list = userList.users;
           var index = list.indexOf(peer);
@@ -192,6 +188,7 @@ define([
           userList.onChange();
         };
 
+        // shim between chainpad and netflux
         chainpadAdapter = {
             msgIn : function(peerId, msg) {
                 var parsed = parseMessage(msg);
@@ -223,10 +220,6 @@ define([
             }
         };
 
-        var options = {
-          key: ''
-        };
-
         var createRealtime = function(chan) {
             return ChainPad.create(userName,
                                         passwd,
@@ -237,28 +230,6 @@ define([
                                         });
         };
 
-        var onReady = function(wc, network) {
-            if(config.onInit) {
-                config.onInit({
-                    myID: wc.myID,
-                    realtime: realtime,
-                    getLag: network.getLag,
-                    userList: userList
-                });
-            }
-            // Trigger onJoining with our own Cryptpad username to tell the toolbar that we are synced
-            onJoining(wc.myID);
-
-            // we're fully synced
-            initializing = false;
-
-            // execute an onReady callback if one was supplied
-            if (config.onReady) {
-                config.onReady({
-                    realtime: realtime
-                });
-            }
-        };
 
         var onOpen = function(wc, network) {
             channel = wc.id;
@@ -283,6 +254,13 @@ define([
             // Open a Chainpad session
             realtime = createRealtime();
 
+            toReturn.onEvent = function (newText) {
+                // assert to show that we're not out of sync
+                if (realtime.getUserDoc() !== newText) {
+                    warn("realtime.getUserDoc() !== newText");
+                }
+            };
+
             // Sending a message...
             realtime.onMessage(function(message) {
                 // Filter messages sent by Chainpad to make it compatible with Netflux
@@ -295,6 +273,14 @@ define([
                     // The message has not been sent, display the error.
                     console.error(err);
                   });
+                }
+            });
+
+            realtime.onPatch(function () {
+                if (config.onRemote) {
+                    config.onRemote({
+                        realtime: realtime
+                    });
                 }
             });
 
@@ -315,21 +301,31 @@ define([
         };
 
         var findChannelById = function(webChannels, channelId) {
-          var webChannel;
-          webChannels.forEach(function(chan) {
-            if(chan.id === channelId) { webChannel = chan; return;}
-          });
-          return webChannel;
+            var webChannel;
+
+            // Array.some terminates once a truthy value is returned
+            // best case is faster than forEach, though webchannel arrays seem
+            // to consistently have a length of 1
+            webChannels.some(function(chan) {
+                if(chan.id === channelId) { webChannel = chan; return true;}
+            });
+            return webChannel;
         };
 
         // Connect to the WebSocket channel
         Netflux.connect(websocketUrl).then(function(network) {
+            // pass messages that come out of netflux into our local handler
+
+            // TODO avoid calling findChannelById for each message
+            // but only if we can prove it won't introduce bugs
             network.on('message', function (msg, sender) { // Direct message
                 var wchan = findChannelById(network.webChannels, channel);
                 if(wchan) {
                   onMessage(sender, msg, wchan, network);
                 }
             });
+
+            // join the netflux network, promise to handle opening of the channel
             network.join(channel || null).then(function(wc) {
                 onOpen(wc, network);
             }, function(error) {
