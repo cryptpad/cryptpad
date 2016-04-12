@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-window.Reflect = { has: (x,y) => { return (y in x); } };
+window.Reflect = { has: function (x,y) { return (y in x); } };
 define([
     '/common/messages.js',
     '/common/netflux-client.js',
@@ -130,7 +130,10 @@ define([
 
             var hc = (wc && wc.history_keeper) ? wc.history_keeper : null;
             if(wc && (msg === 0 || msg === '0')) {
+                // FIXME onReady is defined below, so JSHINT complains
+                /* jshint ignore:start */
                 onReady(wc, network);
+                /* jshint ignore:end */
                 return;
             }
             else if (peer === hc){
@@ -255,7 +258,7 @@ define([
                     realtime: realtime
                 });
             }
-        }
+        };
 
         var onOpen = function(wc, network) {
             channel = wc.id;
@@ -314,10 +317,10 @@ define([
         var findChannelById = function(webChannels, channelId) {
           var webChannel;
           webChannels.forEach(function(chan) {
-            if(chan.id == channelId) { webChannel = chan; return;}
+            if(chan.id === channelId) { webChannel = chan; return;}
           });
           return webChannel;
-        }
+        };
 
         // Connect to the WebSocket channel
         Netflux.connect(websocketUrl).then(function(network) {
@@ -331,7 +334,7 @@ define([
                 onOpen(wc, network);
             }, function(error) {
                 console.error(error);
-            })
+            });
         }, function(error) {
             warn(error);
         });
