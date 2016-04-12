@@ -12,8 +12,14 @@
             box-sizing: border-box;
         }
         textarea{
+            position: absolute;
+            top: 5vh;
+            left: 0px;
+            border: 0px;
+
+            padding-top: 15px;
             width: 100%;
-            height: 100vh;
+            height: 95vh;
             max-width: 100%;
             max-height: 100vh;
 
@@ -32,26 +38,41 @@
             color: #637476;
         }
 
-        #run {
+        #panel {
             position: fixed;
             top: 0px;
             right: 0px;
-
-            z-index: 100;
-            width: 5vw;
+            width: 100%;
             height: 5vh;
+            z-index: 95;
+            background-color: #777;
+            /* min-height: 75px; */
+        }
+        #run {
+            display: block;
+            float: right;
+            height: 100%;
+            width: 10vw;
+            z-index: 100;
+            line-height: 5vw;
+            font-size: 1.5em;
             background-color: #222;
             color: #CCC;
-
-            display: block;
             text-align: center;
+            border-radius: 5%;
+            border: 0px;
         }
 
     </style>
 </head>
 <body>
     <textarea></textarea>
-    <a href="#" id="run">RUN</a>
+    <div id="panel">
+            <!-- TODO update this element when new users join -->
+            <span id="users"></span>
+            <!-- what else should go in the panel? -->
+            <a href="#" id="run">RUN</a>
+    </div>
 </body>
 </html>
 

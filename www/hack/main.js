@@ -84,16 +84,35 @@ define([
         setSelectionRange(el, pos, pos);
     };
 
+    var state = {};
+
+    // TODO
+    $textarea.on('keydown', function (e) {
+        // track when control keys are pushed down
+        //switch (e.key) { }
+    });
+
+    // TODO
+    $textarea.on('keyup', function (e) {
+        // track when control keys are released
+    });
+
     $textarea.on('keypress', function (e) {
         switch (e.key) {
             case 'Tab':
                 // insert a tab wherever the cursor is...
-                var position = $textarea.prop("selectionStart");
-                if (typeof position !== 'undefined') {
-                    $textarea.val(function (i, val) {
-                        return splice(val, position, "\t");
-                    });
-                    setCursor($textarea[0], position +1);
+                var start = $textarea.prop('selectionStart');
+                var end = $textarea.prop('selectionEnd');
+                if (typeof start !== 'undefined') {
+                    if (start === end) {
+                        $textarea.val(function (i, val) {
+                            return splice(val, start, "\t");
+                        });
+                        setCursor($textarea[0], start +1);
+                    } else {
+                        // indentation?? this ought to be fun.
+
+                    }
                 }
                 // prevent default behaviour for tab
                 e.preventDefault();
