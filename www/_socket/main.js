@@ -8,7 +8,7 @@ define([
     '/_socket/toolbar.js',
     '/common/cursor.js',
     '/common/json-ot.js',
-    '/_socket/typingTest.js',
+    '/common/TypingTests.js',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
