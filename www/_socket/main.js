@@ -28,7 +28,6 @@ define([
         toolbar;
 
     var module = window.REALTIME_MODULE = {
-        localChangeInProgress: 0,
         Hyperjson: Hyperjson,
         Hyperscript: Hyperscript
     };
@@ -187,23 +186,9 @@ define([
 
             var DD = new DiffDom(diffOptions);
 
-            var localWorkInProgress = function (stage) {
-                if (module.localChangeInProgress) {
-                    console.error("Applied a change while a local patch was in progress");
-                    console.error("local work was interrupted at stage: " + stage);
-                    return true;
-                }
-                return false;
-            };
-
             // apply patches, and try not to lose the cursor in the process!
             var applyHjson = function (shjson) {
-
-                localWorkInProgress(1); // check if this would interrupt local work
-
                 var userDocStateDom = hjsonToDom(JSON.parse(shjson));
-                localWorkInProgress(2); // check again
-
 
                 /*  in the DOM contentEditable is "false"
                     while "contenteditable" is undefined.
@@ -219,19 +204,14 @@ define([
                     this comes from hyperscript line 101. FIXME maybe
                 */
                 userDocStateDom.setAttribute("contenteditable", "true"); // lol wtf
-                localWorkInProgress(3); // check again
                 var patch = (DD).diff(inner, userDocStateDom);
-                localWorkInProgress(4); // check again
                 (DD).apply(inner, patch);
-                localWorkInProgress(5); // check again
             };
 
             var initializing = true;
 
             var onRemote = realtimeOptions.onRemote = function (info) {
                 if (initializing) { return; }
-
-                localWorkInProgress(0);
 
                 var shjson = info.realtime.getUserDoc();
 
@@ -290,20 +270,11 @@ define([
                 the code less extensible.
             */
             var propogate = rti.onLocal = function () {
-                /*  if the problem were a matter of external patches being
-                    applied while a local patch were in progress, then we would
-                    expect to be able to check and find
-                    'module.localChangeInProgress' with a non-zero value while
-                    we were applying a remote change.
-                */
-                module.localChangeInProgress += 1;
                 var shjson = JSON.stringify(Hyperjson.fromDOM(inner, isNotMagicLine, brFilter));
                 if (!rti.patchText(shjson)) {
-                    module.localChangeInProgress -= 1;
                     return;
                 }
                 rti.onEvent(shjson);
-                module.localChangeInProgress -= 1;
             };
 
             /* hitting enter makes a new line, but places the cursor inside
