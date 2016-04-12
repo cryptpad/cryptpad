@@ -1,14 +1,12 @@
 define(function () {
 
-/* applyChange takes:
-    ctx: the context (aka the realtime)
-    oldval: the old value
-    newval: the new value
+/*  diff takes two strings, the old content, and the desired content
+    it returns the difference between these two strings in the form
+    of an 'Operation' (as defined in chainpad.js).
 
-    it performs a diff on the two values, and generates patches
-    which are then passed into `ctx.remove` and `ctx.insert`
+    diff is purely functional.
 */
-var applyChange = function(ctx, oldval, newval) {
+var diff = function (oldval, newval) {
     // Strings are immutable and have reference equality. I think this test is O(1), so its worth doing.
     if (oldval === newval) {
         return;
@@ -25,38 +23,66 @@ var applyChange = function(ctx, oldval, newval) {
         commonEnd++;
     }
 
-    var result;
+    var toRemove;
+    var toInsert;
 
-    /*  throw some assertions in here before dropping patches into the realtime
-
-    */
-
+    /*  throw some assertions in here before dropping patches into the realtime */
     if (oldval.length !== commonStart + commonEnd) {
-        if (ctx.localChange) { ctx.localChange(true); }
-        result = oldval.length - commonStart - commonEnd;
-        ctx.remove(commonStart, result);
-        console.log('removal at position: %s, length: %s', commonStart, result);
-        console.log("remove: [" + oldval.slice(commonStart, commonStart + result ) + ']');
+        toRemove = oldval.length - commonStart - commonEnd;
     }
     if (newval.length !== commonStart + commonEnd) {
-        if (ctx.localChange) { ctx.localChange(true); }
-        result = newval.slice(commonStart, newval.length - commonEnd);
-        ctx.insert(commonStart, result);
-        console.log("insert: [" + result + "]");
+        toInsert = newval.slice(commonStart, newval.length - commonEnd);
     }
 
-    var userDoc;
-    try {
-        var userDoc = ctx.getUserDoc();
-        JSON.parse(userDoc);
-    } catch (err) {
-        console.error('[textPatcherParseErr]');
-        console.error(err);
-        window.REALTIME_MODULE.textPatcher_parseError = {
-            error: err,
-            userDoc: userDoc
-        };
-    }
+    return {
+        type: 'Operation',
+        offset: commonStart,
+        toInsert: toInsert,
+        toRemove: toRemove
+    };
+}
+
+/*  patch accepts a realtime facade and an operation (which might be falsey)
+    it applies the operation to the realtime as components (remove/insert)
+
+    patch has no return value, and operates solely through side effects on
+    the realtime facade.
+*/
+var patch = function (ctx, op) {
+    if (!op) { return; }
+    if (op.toRemove) { ctx.remove(op.offset, op.toRemove); }
+    if (op.toInsert) { ctx.insert(op.offset, op.toInsert); }
+};
+
+/*  log accepts a string and an operation, and prints an object to the console
+    the object will display the content which is to be removed, and the content
+    which will be inserted in its place.
+
+    log is useful for debugging, but can otherwise be disabled.
+*/
+var log = function (text, op) {
+    if (!op) { return; }
+    console.log({
+        insert: op.toInsert,
+        remove: text.slice(op.offset, op.offset + op.toRemove)
+    });
+};
+
+/* applyChange takes:
+    ctx: the context (aka the realtime)
+    oldval: the old value
+    newval: the new value
+
+    it performs a diff on the two values, and generates patches
+    which are then passed into `ctx.remove` and `ctx.insert`.
+
+    Due to its reliance on patch, applyChange has side effects on the supplied
+    realtime facade.
+*/
+var applyChange = function(ctx, oldval, newval) {
+    var op = diff(oldval, newval);
+    // log(oldval, op)
+    patch(ctx, op);
 };
 
 var create = function(config) {
@@ -84,5 +110,11 @@ var create = function(config) {
     };
 };
 
-return { create: create };
+return {
+    create: create, // create a TextPatcher object
+    diff: diff, // diff two strings
+    patch: patch, // apply an operation to a chainpad's realtime facade
+    log: log, // print the components of an operation
+    applyChange: applyChange // a convenient wrapper around diff/log/patch
+};
 });
