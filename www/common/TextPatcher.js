@@ -40,7 +40,7 @@ var diff = function (oldval, newval) {
         toInsert: toInsert,
         toRemove: toRemove
     };
-}
+};
 
 /*  patch accepts a realtime facade and an operation (which might be falsey)
     it applies the operation to the realtime as components (remove/insert)
@@ -94,7 +94,7 @@ var create = function(config) {
 
     // *** remote -> local changes
     ctx.onPatch(function(pos, length) {
-        content = ctx.getUserDoc()
+        content = ctx.getUserDoc();
     });
 
     // propogate()
