@@ -28,13 +28,16 @@ define([
         toolbar;
 
     var module = window.REALTIME_MODULE = {
-        localChangeInProgress: 0
+        localChangeInProgress: 0,
+        Hyperjson: Hyperjson,
+        Hyperscript: Hyperscript
     };
 
     var isNotMagicLine = function (el) {
         // factor as:
         // return !(el.tagName === 'SPAN' && el.contentEditable === 'false');
-        var filter = (el.tagName === 'SPAN' && el.contentEditable === 'false');
+        var filter = (el.tagName === 'SPAN' &&
+            el.getAttribute('contentEditable') === 'false');
         if (filter) {
             console.log("[hyperjson.serializer] prevented an element" +
                 "from being serialized:", el);
@@ -95,7 +98,7 @@ define([
                         we should check when such an element is going to be
                         removed, and prevent that from happening. */
                     if (info.node && info.node.tagName === 'SPAN' &&
-                        info.node.contentEditable === "true") {
+                        info.node.getAttribute('contentEditable') === "false") {
                         // it seems to be a magicline plugin element...
                         if (info.diff.action === 'removeElement') {
                             // and you're about to remove it...
@@ -163,7 +166,8 @@ define([
                 doc: inner,
 
                 // provide initialstate...
-                initialState: JSON.stringify(Hyperjson.fromDOM(inner, isNotMagicLine)),
+                initialState: JSON.stringify(Hyperjson
+                    .fromDOM(inner, isNotMagicLine)) || '{}',
 
                 // really basic operational transform
                 // reject patch if it results in invalid JSON
@@ -186,8 +190,7 @@ define([
             var localWorkInProgress = function (stage) {
                 if (module.localChangeInProgress) {
                     console.error("Applied a change while a local patch was in progress");
-                    alert("local work was interrupted at stage: " + stage);
-                    //module.realtimeInput.onLocal();
+                    console.error("local work was interrupted at stage: " + stage);
                     return true;
                 }
                 return false;
@@ -200,6 +203,21 @@ define([
 
                 var userDocStateDom = hjsonToDom(JSON.parse(shjson));
                 localWorkInProgress(2); // check again
+
+
+                /*  in the DOM contentEditable is "false"
+                    while "contenteditable" is undefined.
+
+                    When it goes over the wire, it seems hyperjson transforms it.
+                    of course, hyperjson simply gets attributes from the DOM.
+
+                    el.attributes returns 'contenteditable', so we have to correct for that
+
+                    There are quite possibly all sorts of other attributes which might lose
+                    information, and we won't know what they are until after we've lost them.
+
+                    this comes from hyperscript line 101. FIXME maybe
+                */
                 userDocStateDom.setAttribute("contenteditable", "true"); // lol wtf
                 localWorkInProgress(3); // check again
                 var patch = (DD).diff(inner, userDocStateDom);
