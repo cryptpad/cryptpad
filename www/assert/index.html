@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script data-main="main" src="/bower_components/requirejs/require.js"></script>
+</head>
+<body>
+
+<h1>Serialization tests</h1>
+
+<h2>Test 1</h2>
+<h3>class strings</h3>
+<!-- put in weird HTML that might cause problems -->
+<div id="target"><p class=" alice bob charlie has.dot" id="bang">pewpewpew</p></div>
+
+<hr>
+
+<h2>Test 2</h2>
+<h3>XWiki Macros</h3>
+
+<!-- Can we serialize XWiki Macros? -->
+<div id="widget"><div data-cke-widget-id="0" tabindex="-1" data-cke-widget-wrapper="1" data-cke-filter="off" class="cke_widget_wrapper cke_widget_block" data-cke-display-name="macro:velocity" contenteditable="false"><div class="macro cke_widget_element" data-macro="startmacro:velocity|-||-|Here is a macro" data-cke-widget-data="%7B%22classes%22%3A%7B%22macro%22%3A1%7D%7D" data-cke-widget-upcasted="1" data-cke-widget-keep-attr="0" data-widget="xwiki-macro"><p>Here is a macro</p></div><span style='background: rgba(220, 220, 220, 0.5) url("/common/cryptofist.png") repeat scroll 0% 0%; top: -15px; left: 0px; display: block;' class="cke_reset cke_widget_drag_handler_container"><img title="Click and drag to move" src="data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==" data-cke-widget-drag-handler="1" class="cke_reset cke_widget_drag_handler" height="15" width="15"></span></div></div>
+
+<hr>

@@ -18,11 +18,10 @@ define([
     '/common/messages.js',
     '/bower_components/reconnectingWebsocket/reconnecting-websocket.js',
     '/common/crypto.js',
-    '/_socket/toolbar.js',
-    '/_socket/text-patcher.js',
+    '/common/TextPatcher.js',
     '/common/chainpad.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages,/*FIXME*/ ReconnectingWebSocket, Crypto, Toolbar, TextPatcher) {
+], function (Messages, ReconnectingWebSocket, Crypto, TextPatcher) {
     var $ = window.jQuery;
     var ChainPad = window.ChainPad;
     var PARANOIA = true;
