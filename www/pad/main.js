@@ -156,7 +156,7 @@ define([
             var createChangeName = function(id, $container) {
                 var buttonElmt = $container.find('#'+id)[0];
                 buttonElmt.addEventListener("click", function() {
-                   var newName = prompt("Change your name :", myUserName)
+                   var newName = window.prompt("Change your name :", myUserName);
                    if (newName && newName.trim()) {
                        var myUserNameTemp = newName.trim();
                        if(newName.trim().length > 32) {
