@@ -2,7 +2,7 @@ define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
     '/common/messages.js',
     '/common/crypto.js',
-    '/_socket/realtime-input.js',
+    '/common/RealtimeTextSocket.js',
     '/common/hyperjson.js',
     '/common/hyperscript.js',
     '/_socket/toolbar.js',
