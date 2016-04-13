@@ -264,7 +264,8 @@ define([
             }, 200);
 
             toReturn.patchText = TextPatcher.create({
-                realtime: realtime
+                realtime: realtime,
+                logging: true
             });
 
             realtime.start();
