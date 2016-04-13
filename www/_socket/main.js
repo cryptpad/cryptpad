@@ -1,3 +1,4 @@
+require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
     '/common/messages.js',
@@ -9,14 +10,19 @@ define([
     '/common/cursor.js',
     '/common/json-ot.js',
     '/common/TypingTests.js',
+    'json.sortify',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, Messages, Crypto, realtimeInput, Hyperjson, Hyperscript, Toolbar, Cursor, JsonOT, TypingTest) {
+], function (Config, Messages, Crypto, realtimeInput, Hyperjson, Hyperscript, Toolbar, Cursor, JsonOT, TypingTest, JSONSortify) {
     var $ = window.jQuery;
     var ifrw = $('#pad-iframe')[0].contentWindow;
     var Ckeditor; // to be initialized later...
     var DiffDom = window.diffDOM;
+
+    var stringify = function (obj) {
+        return JSONSortify(obj);
+    };
 
     window.Hyperjson = Hyperjson;
 
@@ -52,7 +58,7 @@ define([
     };
 
     var stringifyDOM = function (dom) {
-        return JSON.stringify(Hyperjson.fromDOM(dom, isNotMagicLine, brFilter));
+        return stringify(Hyperjson.fromDOM(dom, isNotMagicLine, brFilter));
     };
 
     var andThen = function (Ckeditor) {
@@ -233,7 +239,6 @@ define([
                 applyHjson(shjson);
 
                 var shjson2 = stringifyDOM(inner);
-
                 if (shjson2 !== shjson) {
                     console.error("shjson2 !== shjson");
                     module.realtimeInput.patchText(shjson2);
