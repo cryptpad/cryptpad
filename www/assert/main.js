@@ -10,11 +10,17 @@ define([
     window.TextPatcher = TextPatcher;
 
     var assertions = 0;
+    var failed = false;
+    var failedOn;
+    var failMessage;
 
     var assert = function (test, msg) {
         if (test()) {
             assertions++;
         } else {
+            failed = true;
+            failedOn = assertions;
+            failMessage = msg;
             throw new Error(msg || '');
         }
     };
@@ -43,8 +49,69 @@ define([
         }, "Round trip serialization introduced artifacts.");
     };
 
-    roundTrip($('#target')[0]);
-    roundTrip($('#widget')[0]);
+    [   '#target',
+        '#widget',
+    ].forEach(function (sel) {
+        roundTrip($(sel)[0]);
+    });
 
-    console.log("%s test%s passed", assertions, assertions === 1? '':'s');
+    var strungJSON = function (orig) {
+        var result;
+        assert(function () {
+            result = JSON.stringify(JSON.parse(orig));
+            return result === orig;
+        }, "expected result (" + result + ") to equal original (" + orig + ")");
+    };
+
+    [   '{"border":"1","style":{"width":"500px"}}',
+        '{"style":{"width":"500px"},"border":"1"}',
+    ].forEach(function (orig) {
+        strungJSON(orig);
+    });
+
+    /*  TODO Test how browsers handle weird elements
+        like "_moz-resizing":"true"
+
+        and anything else you can think of.
+
+        Start with Hyperjson, turn it into a DOM and come back
+    */
+
+
+    // report successes
+
+    var swap = function (str, dict) {
+        return str.replace(/\{\{(.*?)\}\}/g, function (all, key) {
+            return dict[key] || all;
+        });
+    };
+
+    var multiline = function (f) {
+        var str;
+        f.toString().replace(/\/\*(.*)\*\\/g, function (all, out) {
+            str = out;
+        });
+        return str;
+    };
+
+    $("body").html(function (i, val) {
+        var dict = {
+            previous: val,
+            passedAssertions: assertions,
+            plural: (assertions === 1? '' : 's'),
+        };
+
+        var SUCCESS = swap(multiline(function(){/*
+<h3 class="report">{{passedAssertions}} test{{plural}} passed.</h3>
+
+{{previous}}
+        */}), dict);
+
+        var FAILURE = swap(
+
+
+        return report;
+    });
+
+    console.log(report);
 });
