@@ -58,7 +58,7 @@ define([
         window.alert("Server Connection Lost");
     };
 
-    var rt = Realtime.start(config);
+    var rt = window.rt = Realtime.start(config);
 
     var cursor = Cursor($textarea[0]);
 
@@ -114,11 +114,18 @@ define([
 
                     }
                 }
+                // simulate a keypress so the event goes through..
                 // prevent default behaviour for tab
                 e.preventDefault();
+                rt.bumpSharejs();
+                break;
             default:
                 break;
         }
+    });
+
+    $textarea.on('change', function () {
+        rt.bumpSharejs();
     });
 
     $run.click(function (e) {
