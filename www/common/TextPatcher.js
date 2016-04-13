@@ -23,8 +23,8 @@ var diff = function (oldval, newval) {
         commonEnd++;
     }
 
-    var toRemove;
-    var toInsert;
+    var toRemove = 0;
+    var toInsert = '';
 
     /*  throw some assertions in here before dropping patches into the realtime */
     if (oldval.length !== commonStart + commonEnd) {
