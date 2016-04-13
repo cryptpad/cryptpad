@@ -368,7 +368,7 @@ var random = Patch.random = function (doc, opCount) {
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var PARANOIA = module.exports.PARANOIA = false;
+var PARANOIA = module.exports.PARANOIA = true;
 
 /* throw errors over non-compliant messages which would otherwise be treated as invalid */
 var TESTING = module.exports.TESTING = true;
@@ -832,7 +832,7 @@ var check = ChainPad.check = function(realtime) {
         Common.assert(uiDoc === realtime.userInterfaceContent);
     }
 
-    var doc = realtime.authDoc;
+    /*var doc = realtime.authDoc;
     var patchMsg = realtime.best;
     Common.assert(patchMsg.content.inverseOf.parentHash === realtime.uncommitted.parentHash);
     var patches = [];
@@ -844,7 +844,7 @@ var check = ChainPad.check = function(realtime) {
     while ((patchMsg = patches.pop())) {
         doc = Patch.apply(patchMsg.content, doc);
     }
-    Common.assert(doc === realtime.authDoc);
+    Common.assert(doc === realtime.authDoc);*/
 };
 
 var doOperation = ChainPad.doOperation = function (realtime, op) {

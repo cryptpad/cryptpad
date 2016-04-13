@@ -23,8 +23,8 @@ var diff = function (oldval, newval) {
         commonEnd++;
     }
 
-    var toRemove;
-    var toInsert;
+    var toRemove = 0;
+    var toInsert = '';
 
     /*  throw some assertions in here before dropping patches into the realtime */
     if (oldval.length !== commonStart + commonEnd) {
@@ -79,14 +79,15 @@ var log = function (text, op) {
     Due to its reliance on patch, applyChange has side effects on the supplied
     realtime facade.
 */
-var applyChange = function(ctx, oldval, newval) {
+var applyChange = function(ctx, oldval, newval, logging) {
     var op = diff(oldval, newval);
-    // log(oldval, op)
+    if (logging) { log(oldval, op) }
     patch(ctx, op);
 };
 
 var create = function(config) {
     var ctx = config.realtime;
+    var logging = config.logging;
 
     // initial state will always fail the !== check in genop.
     // because nothing will equal this object
@@ -100,7 +101,7 @@ var create = function(config) {
     // propogate()
     return function (newContent) {
         if (newContent !== content) {
-            applyChange(ctx, ctx.getUserDoc(), newContent);
+            applyChange(ctx, ctx.getUserDoc(), newContent, logging);
             if (ctx.getUserDoc() !== newContent) {
                 console.log("Expected that: `ctx.getUserDoc() === newContent`!");
             }
