@@ -1,3 +1,4 @@
+require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
     '/common/messages.js',
@@ -9,14 +10,19 @@ define([
     '/common/cursor.js',
     '/common/json-ot.js',
     '/common/TypingTests.js',
+    'json.sortify',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, Messages, Crypto, realtimeInput, Hyperjson, Hyperscript, Toolbar, Cursor, JsonOT, TypingTest) {
+], function (Config, Messages, Crypto, realtimeInput, Hyperjson, Hyperscript, Toolbar, Cursor, JsonOT, TypingTest, JSONSortify) {
     var $ = window.jQuery;
     var ifrw = $('#pad-iframe')[0].contentWindow;
     var Ckeditor; // to be initialized later...
     var DiffDom = window.diffDOM;
+
+    var stringify = function (obj) {
+        return JSONSortify(obj);
+    };
 
     window.Hyperjson = Hyperjson;
 
@@ -165,7 +171,7 @@ define([
                 doc: inner,
 
                 // provide initialstate...
-                initialState: JSON.stringify(Hyperjson
+                initialState: stringify(Hyperjson
                     .fromDOM(inner, isNotMagicLine)) || '{}',
 
                 // really basic operational transform
@@ -221,7 +227,7 @@ define([
                 // build a dom from HJSON, diff, and patch the editor
                 applyHjson(shjson);
 
-                var shjson2 = JSON.stringify(Hyperjson.fromDOM(inner));
+                var shjson2 = stringify(Hyperjson.fromDOM(inner));
                 if (shjson2 !== shjson) {
                     console.error("shjson2 !== shjson");
                     module.realtimeInput.patchText(shjson2);
@@ -270,7 +276,7 @@ define([
                 the code less extensible.
             */
             var propogate = rti.onLocal = function () {
-                var shjson = JSON.stringify(Hyperjson.fromDOM(inner, isNotMagicLine, brFilter));
+                var shjson = stringify(Hyperjson.fromDOM(inner, isNotMagicLine, brFilter));
                 if (!rti.patchText(shjson)) {
                     return;
                 }
