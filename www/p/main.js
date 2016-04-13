@@ -5,7 +5,7 @@ define([
     '/common/RealtimeTextSocket.js',
     '/common/hyperjson.js',
     '/common/hyperscript.js',
-    '/_socket/toolbar.js',
+    '/p/toolbar.js',
     '/common/cursor.js',
     '/common/json-ot.js',
     '/common/TypingTests.js',
