@@ -189,7 +189,7 @@ define([
                 // reject patch if it results in invalid JSON
                 transformFunction : JsonOT.validate,
 
-                websocketURL: Config.websocketURL,
+                websocketURL: Config.websocketURL+'_old',
 
                 // username
                 userName: userName,
