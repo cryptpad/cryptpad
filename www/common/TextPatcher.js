@@ -81,7 +81,7 @@ var log = function (text, op) {
 */
 var applyChange = function(ctx, oldval, newval, logging) {
     var op = diff(oldval, newval);
-    if (logging) { log(oldval, op) }
+    if (logging) { log(oldval, op); }
     patch(ctx, op);
 };
 
