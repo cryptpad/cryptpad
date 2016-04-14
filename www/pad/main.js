@@ -80,7 +80,7 @@ define([
         else {
             var hash = window.location.hash.substring(1);
             channel = hash.substr(0,32);
-            key = hash.substr(33);
+            key = hash.substr(32);
         }
 
         var fixThings = false;
