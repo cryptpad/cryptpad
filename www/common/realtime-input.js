@@ -14,17 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-window.Reflect = { has: function (x,y) { return (y in x); } };
 define([
     '/common/messages.js',
     '/common/netflux-client.js',
     '/common/crypto.js',
-    '/common/toolbar.js',
     '/common/TextPatcher.js',
     '/common/es6-promise.min.js',
     '/common/chainpad.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages, Netflux, Crypto, Toolbar, TextPatcher) {
+], function (Messages, Netflux, Crypto, TextPatcher) {
     var $ = window.jQuery;
     var ChainPad = window.ChainPad;
     var PARANOIA = true;
@@ -40,37 +38,6 @@ define([
         warn = function (x) { console.error(x); },
         verbose = function (x) { console.log(x); };
     verbose = function () {}; // comment out to enable verbose logging
-
-    // ------------------ Trapping Keyboard Events ---------------------- //
-
-    var bindEvents = function (element, events, callback, unbind) {
-        for (var i = 0; i < events.length; i++) {
-            var e = events[i];
-            if (element.addEventListener) {
-                if (unbind) {
-                    element.removeEventListener(e, callback, false);
-                } else {
-                    element.addEventListener(e, callback, false);
-                }
-            } else {
-                if (unbind) {
-                    element.detachEvent('on' + e, callback);
-                } else {
-                    element.attachEvent('on' + e, callback);
-                }
-            }
-        }
-    };
-
-    var getParameterByName = function (name, url) {
-        if (!url) { url = window.location.href; }
-        name = name.replace(/[\[\]]/g, "\\$&");
-        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-            results = regex.exec(url);
-        if (!results) { return null; }
-        if (!results[2]) { return ''; }
-        return decodeURIComponent(results[2].replace(/\+/g, " "));
-    };
 
     var start = module.exports.start =
         function (config)
