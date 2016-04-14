@@ -141,6 +141,11 @@ define([
             verbose(message);
             allMessages.push(message);
 
+            if (!initializing) {
+                if (toReturn.onLocal) {
+                    toReturn.onLocal();
+                }
+            }
             // pass the message into Chainpad
             realtime.message(message);
         };
@@ -167,6 +172,7 @@ define([
                     messagesHistory.push(decryptedMsg);
                     return decryptedMsg;
                 } catch (err) {
+                    console.error(err);
                     return message;
                 }
 
@@ -283,8 +289,6 @@ define([
         Netflux.connect(websocketUrl).then(function(network) {
             // pass messages that come out of netflux into our local handler
 
-            // TODO avoid calling findChannelById for each message
-            // but only if we can prove it won't introduce bugs
             network.on('message', function (msg, sender) { // Direct message
                 var wchan = findChannelById(network.webChannels, channel);
                 if(wchan) {
