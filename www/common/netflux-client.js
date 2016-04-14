@@ -4,7 +4,7 @@ define(() => {
 const MAX_LAG_BEFORE_PING = 15000;
 const MAX_LAG_BEFORE_DISCONNECT = 30000;
 const PING_CYCLE = 5000;
-const REQUEST_TIMEOUT = 5000;
+const REQUEST_TIMEOUT = 30000;
 
 const now = () => new Date().getTime();
 
@@ -205,7 +205,7 @@ const connect = (websocketURL) => {
             const req = ctx.requests[id];
             if (now() - req.time > REQUEST_TIMEOUT) {
                 delete ctx.requests[id];
-                req.reject({ type: 'TIMEOUT', message: 'waited ' + now() - req.time + 'ms' });
+                if(typeof req.reject === "function") { req.reject({ type: 'TIMEOUT', message: 'waited ' + now() - req.time + 'ms' }); }
             }
         }
     }, 5000);
