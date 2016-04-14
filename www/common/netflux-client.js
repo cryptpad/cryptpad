@@ -133,7 +133,7 @@ const onMessage = (ctx, evt) => {
         return;
     }
     if (msg[2] === 'PING') {
-        msg[1] = 'PONG';
+        msg[2] = 'PONG';
         ctx.ws.send(JSON.stringify(msg));
         return;
     }

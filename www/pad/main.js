@@ -32,7 +32,8 @@ define([
     };
 
     var module = window.REALTIME_MODULE = {
-        localChangeInProgress: 0
+        Hyperjson: Hyperjson,
+        Hyperscript: Hyperscript
     };
 
     var userName = Crypto.rand64(8),
@@ -104,8 +105,7 @@ define([
             var cursor = window.cursor = Cursor(inner);
 
             var setEditable = function (bool) {
-                inner.setAttribute('contenteditable',
-                    (typeof (bool) !== 'undefined'? bool : true));
+                inner.setAttribute('contenteditable', bool);
             };
 
             // don't let the user edit until the pad is ready
@@ -113,25 +113,53 @@ define([
 
             var diffOptions = {
                 preDiffApply: function (info) {
-                    /*  Don't remove local instances of the magicline plugin */
+                    /* DiffDOM will filter out magicline plugin elements
+                        in practice this will make it impossible to use it
+                        while someone else is typing, which could be annoying.
+
+                        we should check when such an element is going to be
+                        removed, and prevent that from happening. */
                     if (info.node && info.node.tagName === 'SPAN' &&
-                        info.node.getAttribute('contentEditable') === 'false') {
-                        return true;
+                        info.node.getAttribute('contentEditable') === "false") {
+                        // it seems to be a magicline plugin element...
+                        if (info.diff.action === 'removeElement') {
+                            // and you're about to remove it...
+                            // this probably isn't what you want
+
+                            /*
+                                I have never seen this in the console, but the
+                                magic line is still getting removed on remote
+                                edits. This suggests that it's getting removed
+                                by something other than diffDom.
+                            */
+                            console.log("preventing removal of the magic line!");
+
+                            // return true to prevent diff application
+                            return true;
+                        }
                     }
 
+                    // no use trying to recover the cursor if it doesn't exist
                     if (!cursor.exists()) { return; }
+
+                    /*  frame is either 0, 1, 2, or 3, depending on which
+                        cursor frames were affected: none, first, last, or both
+                    */
                     var frame = info.frame = cursor.inNode(info.node);
+
                     if (!frame) { return; }
-                    if (typeof info.diff.oldValue === 'string' &&
-                        typeof info.diff.newValue === 'string') {
-                        var pushes = cursor.pushDelta(info.diff.oldValue,
-                            info.diff.newValue);
+
+                    if (typeof info.diff.oldValue === 'string' && typeof info.diff.newValue === 'string') {
+                        var pushes = cursor.pushDelta(info.diff.oldValue, info.diff.newValue);
+
                         if (frame & 1) {
+                            // push cursor start if necessary
                             if (pushes.commonStart < cursor.Range.start.offset) {
                                 cursor.Range.start.offset += pushes.delta;
                             }
                         }
                         if (frame & 2) {
+                            // push cursor end if necessary
                             if (pushes.commonStart < cursor.Range.end.offset) {
                                 cursor.Range.end.offset += pushes.delta;
                             }
@@ -143,7 +171,7 @@ define([
                         if (info.node) {
                             if (info.frame & 1) { cursor.fixStart(info.node); }
                             if (info.frame & 2) { cursor.fixEnd(info.node); }
-                        } else { console.log("info.node did not exist"); }
+                        } else { console.error("info.node did not exist"); }
 
                         var sel = cursor.makeSelection();
                         var range = cursor.makeRange();
