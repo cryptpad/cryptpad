@@ -1,10 +1,10 @@
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
-    '/code/rtwiki.js',
+    '/code/rt_codemirror.js',
     '/common/messages.js',
     '/common/crypto.js',
     '/bower_components/jquery/dist/jquery.min.js'
-], function (Config, RTWiki, Messages, Crypto) {
+], function (Config, RTCode, Messages, Crypto) {
     var $ = window.jQuery;
     var ifrw = $('#pad-iframe')[0].contentWindow;
 
@@ -36,7 +36,7 @@ define([
             editor.setValue(Messages.codeInitialState);
 
             var rtw =
-                RTWiki.start(ifrw,
+                RTCode.start(ifrw,
                                 Config.websocketURL,
                                 Crypto.rand64(8),
                                 key.channel,

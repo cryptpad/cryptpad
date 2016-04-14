@@ -8,6 +8,9 @@ define([
     /** Id of the div containing the user list. */
     var USER_LIST_CLS = 'rtwysiwyg-user-list';
 
+    /** Id of the button to change my username. */
+    var USERNAME_BUTTON_ID = 'rtwysiwyg-change-username';
+
     /** Id of the div containing the lag info. */
     var LAG_ELEM_CLS = 'rtwysiwyg-lag';
 
@@ -123,18 +126,41 @@ define([
         return $container.find('#'+id)[0];
     };
 
-    var updateUserList = function (myUserName, listElement, userList) {
+    var getOtherUsers = function(myUserName, userList, userData) {
+      var i = 0;
+      var list = '';
+      userList.forEach(function(user) {
+        if(user !== myUserName) {
+          var data = (userData) ? (userData[user] || null) : null;
+          var userName = (data) ? data.name : null;
+          if(userName) {
+            if(i === 0) { list = ' : '; }
+            list += userName + ', ';
+            i++;
+          }
+        }
+      });
+      return (i > 0) ? list.slice(0, -2) : list;
+    };
+
+    var createChangeName = function($container, userList, buttonID) {
+        var id = uid();
+        userList.innerHTML = '<span class="cke_toolgroup" id="' + buttonID + '"><a id="' + USERNAME_BUTTON_ID + '" class="cke_button">Change name</a></span><span id="' + id + '"></span>';
+        return $container.find('#'+id)[0];
+    };
+
+    var updateUserList = function (myUserName, listElement, userList, userData) {
         var meIdx = userList.indexOf(myUserName);
         if (meIdx === -1) {
             listElement.textContent = Messages.synchronizing;
             return;
         }
         if (userList.length === 1) {
-            listElement.textContent = Messages.editingAlone;
+            listElement.innerHTML = Messages.editingAlone;
         } else if (userList.length === 2) {
-            listElement.textContent = Messages.editingWithOneOtherPerson;
+            listElement.innerHTML = Messages.editingWithOneOtherPerson + getOtherUsers(myUserName, userList, userData);
         } else {
-            listElement.textContent = Messages.editingWith + ' ' + (userList.length - 1) + ' ' + Messages.otherPeople;
+            listElement.innerHTML = Messages.editingWith + ' ' + (userList.length - 1) + ' ' + Messages.otherPeople + getOtherUsers(myUserName, userList, userData);
         }
     };
 
@@ -144,14 +170,20 @@ define([
         return $container.find('#'+id)[0];
     };
 
-    var checkLag = function (realtime, lagElement) {
-        var lag = realtime.getLag();
-        var lagSec = lag.lag/1000;
+    var checkLag = function (getLag, lagElement) {
+        if(typeof getLag !== "function") { return; }
+        var lag = getLag();
         var lagMsg = Messages.lag + ' ';
-        if (lag.waiting && lagSec > 1) {
-            lagMsg += "?? " + Math.floor(lagSec);
-        } else {
-            lagMsg += lagSec;
+        if(lag) {
+          var lagSec = lag/1000;
+          if (lag.waiting && lagSec > 1) {
+              lagMsg += "?? " + Math.floor(lagSec);
+          } else {
+              lagMsg += lagSec;
+          }
+        }
+        else {
+          lagMsg += "??";
         }
         lagElement.textContent = lagMsg;
     };
@@ -182,22 +214,34 @@ define([
         localStorage['CryptPad_RECENTPADS'] = JSON.stringify(out);
     };
 
-    var create = function ($container, myUserName, realtime) {
+    var create = function ($container, myUserName, realtime, getLag, userList, config) {
         var toolbar = createRealtimeToolbar($container);
         createEscape(toolbar.find('.rtwysiwyg-toolbar-leftside'));
         var userListElement = createUserList(toolbar.find('.rtwysiwyg-toolbar-leftside'));
         var spinner = createSpinner(toolbar.find('.rtwysiwyg-toolbar-rightside'));
         var lagElement = createLagElement(toolbar.find('.rtwysiwyg-toolbar-rightside'));
+        var userData = config.userData;
+        var changeNameID = config.changeNameID;
+
+        // Check if the user is allowed to change his name
+        if(changeNameID) {
+            // Create the button and update the element containing the user list
+            userListElement = createChangeName($container, userListElement, changeNameID);
+        }
 
         rememberPad();
 
         var connected = false;
 
-        realtime.onUserListChange(function (userList) {
-            if (userList.indexOf(myUserName) !== -1) { connected = true; }
-            if (!connected) { return; }
-            updateUserList(myUserName, userListElement, userList);
-        });
+        userList.onChange = function(newUserData) {
+          var users = userList.users;
+          if (users.indexOf(myUserName) !== -1) { connected = true; }
+          if (!connected) { return; }
+          if(newUserData) { // Someone has changed his name/color
+            userData = newUserData;
+          }
+          updateUserList(myUserName, userListElement, users, userData);
+        };
 
         var ks = function () {
             if (connected) { kickSpinner(spinner, false); }
@@ -209,7 +253,7 @@ define([
 
         setInterval(function () {
             if (!connected) { return; }
-            checkLag(realtime, lagElement);
+            checkLag(getLag, lagElement);
         }, 3000);
 
         return {

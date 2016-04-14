@@ -32,6 +32,7 @@ define([
     var config = {
         textarea: $textarea[0],
         websocketURL: Config.websocketURL,
+        webrtcURL: Config.webrtcURL,
         userName: Crypto.rand64(8),
         channel: key.channel,
         cryptKey: key.cryptKey,

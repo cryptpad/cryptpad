@@ -5,3 +5,4 @@ customization
 .*.swp
 *.db
 /customize/
+messages.log

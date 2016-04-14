@@ -7,6 +7,9 @@ var Https = require('https');
 var Fs = require('fs');
 var WebSocketServer = require('ws').Server;
 var ChainPadSrv = require('./ChainPadSrv');
+// var NetfluxSrv = require('./NetFluxWebsocketServer');
+var NetfluxSrv = require('./NetfluxWebsocketSrv');
+var WebRTCSrv = require('./WebRTCSrv');
 
 var config = require('./config');
 config.websocketPort = config.websocketPort || config.httpPort;
@@ -60,7 +63,9 @@ app.get('/api/config', function(req, res){
     res.setHeader('Content-Type', 'text/javascript');
     res.send('define(' + JSON.stringify({
         websocketURL:'ws' + ((httpsOpts) ? 's' : '') + '://' + host + ':' +
-            config.websocketPort + '/cryptpad_websocket'
+            config.websocketPort + '/cryptpad_websocket',
+        webrtcURL:'ws' + ((httpsOpts) ? 's' : '') + '://' + host + ':' +
+            config.websocketPort + '/cryptpad_webrtc',
     }) + ');');
 });
 
@@ -75,9 +80,10 @@ if (config.websocketPort !== config.httpPort) {
     console.log("setting up a new websocket server");
     wsConfig = { port: config.websocketPort};
 }
-
 var wsSrv = new WebSocketServer(wsConfig);
 Storage.create(config, function (store) {
     console.log('DB connected');
+    NetfluxSrv.run(store, wsSrv);
     ChainPadSrv.create(wsSrv, store);
+    WebRTCSrv.run(wsSrv);
 });
