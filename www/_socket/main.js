@@ -51,6 +51,16 @@ define([
         return true;
     };
 
+    /* catch `type="_moz"` before it goes over the wire */
+    var brFilter = function (hj) {
+        if (hj[1].type === '_moz') { hj[1].type = undefined; }
+        return hj;
+    };
+
+    var stringifyDOM = function (dom) {
+        return stringify(Hyperjson.fromDOM(dom, isNotMagicLine, brFilter));
+    };
+
     var andThen = function (Ckeditor) {
         $(window).on('hashchange', function() {
             window.location.reload();
@@ -81,6 +91,8 @@ define([
 
             var inner = window.inner = documentBody;
             var cursor = window.cursor = Cursor(inner);
+
+
 
             var setEditable = function (bool) {
                 // careful about putting attributes onto the DOM
@@ -171,8 +183,7 @@ define([
                 doc: inner,
 
                 // provide initialstate...
-                initialState: stringify(Hyperjson
-                    .fromDOM(inner, isNotMagicLine)) || '{}',
+                initialState: stringifyDOM(inner) || '{}',
 
                 // really basic operational transform
                 // reject patch if it results in invalid JSON
@@ -227,7 +238,7 @@ define([
                 // build a dom from HJSON, diff, and patch the editor
                 applyHjson(shjson);
 
-                var shjson2 = stringify(Hyperjson.fromDOM(inner));
+                var shjson2 = stringifyDOM(inner);
                 if (shjson2 !== shjson) {
                     console.error("shjson2 !== shjson");
                     module.realtimeInput.patchText(shjson2);
@@ -261,11 +272,6 @@ define([
 
             var rti = module.realtimeInput = realtimeInput.start(realtimeOptions);
 
-            /* catch `type="_moz"` before it goes over the wire */
-            var brFilter = function (hj) {
-                if (hj[1].type === '_moz') { hj[1].type = undefined; }
-                return hj;
-            };
 
             /*  It's incredibly important that you assign 'rti.onLocal'
                 It's used inside of realtimeInput to make sure that all changes
@@ -276,7 +282,7 @@ define([
                 the code less extensible.
             */
             var propogate = rti.onLocal = function () {
-                var shjson = stringify(Hyperjson.fromDOM(inner, isNotMagicLine, brFilter));
+                var shjson = stringifyDOM(inner);
                 if (!rti.patchText(shjson)) {
                     return;
                 }
