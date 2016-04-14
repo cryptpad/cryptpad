@@ -12,17 +12,28 @@ define([
     var assertions = 0;
     var failed = false;
     var failedOn;
-    var failMessage;
+    var failMessages = [];
+
+    var ASSERTS = [];
+    var runASSERTS = function () {
+        ASSERTS.forEach(function (f, index) {
+            f(index);
+        });
+    };
 
     var assert = function (test, msg) {
-        if (test()) {
-            assertions++;
-        } else {
-            failed = true;
-            failedOn = assertions;
-            failMessage = msg;
-            throw new Error(msg || '');
-        }
+        ASSERTS.push(function (i) {
+            if (test()) {
+                assertions++;
+            } else {
+                failed = true;
+                failedOn = assertions;
+                failMessages.push({
+                    test: i,
+                    message: msg
+                });
+            }
+        });
     };
 
     var $body = $('body');
@@ -69,6 +80,8 @@ define([
         strungJSON(orig);
     });
 
+    //assert(function () { }, "this is expected to fail");
+
     /*  TODO Test how browsers handle weird elements
         like "_moz-resizing":"true"
 
@@ -77,41 +90,63 @@ define([
         Start with Hyperjson, turn it into a DOM and come back
     */
 
-
-    // report successes
-
     var swap = function (str, dict) {
         return str.replace(/\{\{(.*?)\}\}/g, function (all, key) {
-            return dict[key] || all;
+            return typeof dict[key] !== 'undefined'? dict[key] : all;
         });
     };
 
     var multiline = function (f) {
         var str;
-        f.toString().replace(/\/\*(.*)\*\\/g, function (all, out) {
+        f.toString().replace(/\/\*([\s\S]*)\*\//g, function (all, out) {
             str = out;
         });
-        return str;
+        return str || '';
     };
+
+    var formatFailures = function () {
+        var template = multiline(function () { /*
+<pre class="error">
+Failed on test number {{test}} with error:
+> "{{message}}"
+</pre>
+<br>
+
+*/});
+        return failMessages.map(function (obj) {
+            console.log(obj);
+            return swap(template, obj);
+        }).join("\n");
+    };
+
+    runASSERTS();
 
     $("body").html(function (i, val) {
         var dict = {
             previous: val,
+            totalAssertions: ASSERTS.length,
             passedAssertions: assertions,
             plural: (assertions === 1? '' : 's'),
+            failMessages: formatFailures()
         };
 
         var SUCCESS = swap(multiline(function(){/*
-<h3 class="report">{{passedAssertions}} test{{plural}} passed.</h3>
+<div class="report">{{passedAssertions}} / {{totalAssertions}} test{{plural}} passed.
+
+{{failMessages}}
+
+</div>
+
 
 {{previous}}
         */}), dict);
 
-        var FAILURE = swap(
-
+        var report = SUCCESS;
 
         return report;
     });
 
-    console.log(report);
+    var $report = $('.report');
+    $report.addClass(failed?'failure':'success');
+
 });
