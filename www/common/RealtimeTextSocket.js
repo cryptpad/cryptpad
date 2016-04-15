@@ -209,7 +209,6 @@ define([
                 if (config.onRemote) {
                     config.onRemote({
                         realtime: realtime
-                        //realtime.getUserDoc()
                     });
                 }
             });
