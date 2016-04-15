@@ -1,6 +1,6 @@
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
-    '/common/realtime-input.js',
+    '/common/realtime-textarea.js',
     '/common/messages.js',
     '/common/crypto.js',
     '/bower_components/jquery/dist/jquery.min.js',
