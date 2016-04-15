@@ -143,7 +143,7 @@ When you try to synchronize data between two clients, they can fall into cycles 
 Some browsers will accept certain changes, even though they wouldn't generate those representations themselves.
 Some browsers will immediately correct the representation and fall into an endless loop which is only limited in speed by the fact that it has to travel over the network for each iteration.
 
-![Browser Wars](/assets/browser_wars_by_shoze.jpg)
+![Browser Wars](http://media02.hongkiat.com/battle-of-browsers-artworks/browser-wars.jpg)
 
 In the case of a text editor which uses a textarea element for a user interface, some browsers represent line breaks with `\n`, while other use `\r\n`.
 This is easy to fix, since all browsers seem to tolerate the `\r` being stripped.
