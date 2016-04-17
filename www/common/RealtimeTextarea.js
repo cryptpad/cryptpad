@@ -18,10 +18,9 @@ define([
     '/common/messages.js',
     '/bower_components/reconnectingWebsocket/reconnecting-websocket.js',
     '/common/crypto.js',
-    '/common/TextPatcher.js',
     '/common/chainpad.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages, ReconnectingWebSocket, Crypto, TextPatcher) {
+], function (Messages, ReconnectingWebSocket, Crypto) {
     var $ = window.jQuery;
     var ChainPad = window.ChainPad;
     var PARANOIA = true;
@@ -199,12 +198,6 @@ define([
                     }
                 }
             },200);
-
-            // TODO implement callbacks and replace sharejs entirely
-            toReturn.patchText = TextPatcher.create({
-                realtime: realtime,
-                logging: true
-            });
 
             realtime.start();
         });
