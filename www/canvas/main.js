@@ -37,7 +37,8 @@ define([
 
     $width.on('change', updateBrushWidth);
 
-    var palette = ['red', 'blue', 'green', 'white', 'black', 'purple', 'gray'];
+    var palette = ['red', 'blue', 'green', 'white', 'black', 'purple',
+        'gray', 'beige', 'brown', 'cyan', 'darkcyan', 'gold', 'yellow', 'pink'];
     var $colors = $('#colors');
     $colors.html(function (i, val) {
         return palette.map(function (c) {
