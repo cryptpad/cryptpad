@@ -85,6 +85,20 @@ var applyChange = function(ctx, oldval, newval, logging) {
     patch(ctx, op);
 };
 
+var transformCursor = function (cursor, op) {
+    var pos = op.offset;
+    var remove = op.toRemove;
+    var insert = op.toInsert.length;
+    if (typeof cursor === 'undefined') { return; }
+    if (typeof remove === 'number' && pos < cursor) {
+        cursor -= Math.min(remove, cursor - pos);
+    }
+    if (typeof insert === 'number' && pos < cursor) {
+        cursor += insert;
+    }
+    return cursor;
+};
+
 var create = function(config) {
     var ctx = config.realtime;
     var logging = config.logging;
@@ -116,6 +130,7 @@ return {
     diff: diff, // diff two strings
     patch: patch, // apply an operation to a chainpad's realtime facade
     log: log, // print the components of an operation
+    transformCursor: transformCursor, // transform the position of a cursor
     applyChange: applyChange // a convenient wrapper around diff/log/patch
 };
 });
