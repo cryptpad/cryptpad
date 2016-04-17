@@ -94,6 +94,7 @@ define([
     /* end websocket stuff */
 
     var start = module.exports.start = function (config) { 
+
         var websocketUrl = config.websocketURL;
         var userName = config.userName;
         var channel = config.channel;
@@ -153,8 +154,8 @@ define([
 
                 // super important step that avoids us having
                 // the 'backspace bug'
-                if (toReturn.onLocal) {
-                    toReturn.onLocal();
+                if (config.onLocal) {
+                    config.onLocal();
                 }
 
                 realtime.message(message);
