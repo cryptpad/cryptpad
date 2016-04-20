@@ -46,14 +46,15 @@ define([
             var success = cloned.outerHTML === target.outerHTML;
 
             if (!success) {
+                var op = TextPatcher.diff(target.outerHTML, cloned.outerHTML);
                 window.DEBUG = {
                     error: "Expected equality between A and B",
                     A: target.outerHTML,
                     B: cloned.outerHTML,
-                    target: target,
-                    diff: TextPatcher.diff(target.outerHTML, cloned.outerHTML)
+                    diff: op
                 };
                 console.log(JSON.stringify(window.DEBUG, null, 2));
+                TextPatcher.log(op);
             }
 
             return success;
@@ -62,6 +63,7 @@ define([
 
     [   '#target',
         '#widget',
+        '#quot',
     ].forEach(function (sel) {
         roundTrip($(sel)[0]);
     });

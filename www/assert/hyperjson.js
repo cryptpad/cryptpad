@@ -24,7 +24,8 @@ define([], function () {
                     return callOnHyperJSON(child, cb);
                 } else if (typeof (child) === 'string') {
                     // string nodes have leading and trailing quotes
-                    return child.replace(/(^"|"$)/g,"");
+                    // don't strip them!
+                    return child; //child.replace(/(^"|"$)/g,"");
                 } else {
                     // the above branches should cover all methods
                     // if we hit this, there is a problem
