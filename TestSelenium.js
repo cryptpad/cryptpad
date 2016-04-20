@@ -1,6 +1,6 @@
 /* global process */
 var WebDriver = require("selenium-webdriver");
-var Http = require("http");
+var Https = require("https");
 
 var driver;
 if (process.env.SAUCE_USERNAME !== undefined) {
@@ -18,7 +18,7 @@ if (process.env.SAUCE_USERNAME !== undefined) {
 }
 
 var logSauceLink = function (cb) {
-    Http.request("https://saucelabs.com/rest/v1.1/" + process.env.SAUCE_USERNAME +
+    Https.request("https://saucelabs.com/rest/v1.1/" + process.env.SAUCE_USERNAME +
             "/jobs?auto_only=true&full=true&limit=50&subaccounts=true", function (resp) {
         var str = '';
         resp.on('data', function (chunk) { str += chunk; });

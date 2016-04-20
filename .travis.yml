@@ -14,7 +14,6 @@ node_js:
 before_script:
   - npm run-script lint
   - cp config.js.dist config.js
-  - npm install
   - npm install bower
   - ./node_modules/bower/bin/bower install
   - node ./server.js &
