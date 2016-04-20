@@ -228,8 +228,7 @@ define([
             }
         };
 
-        // TODO deprecate
-        var pushDelta = /* cursor.pushDelta =*/ function (oldVal, newVal, offset) {
+        var pushDelta = cursor.pushDelta = function (oldVal, newVal, offset) {
             if (oldVal === newVal) { return; }
             var commonStart = 0;
             while (oldVal.charAt(commonStart) === newVal.charAt(commonStart)) {
