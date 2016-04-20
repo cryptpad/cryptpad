@@ -222,8 +222,8 @@ define([
                 verbose(message);
                 allMessages.push(message);
                 if (!initializing) {
-                    if (toReturn.onLocal) {
-                        toReturn.onLocal();
+                    if (config.onLocal) {
+                        config.onLocal();
                     }
                 }
                 realtime.message(message);

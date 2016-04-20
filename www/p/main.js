@@ -291,24 +291,13 @@ define([
                 toolbar.failed();
             };
 
-            var rti = module.realtimeInput = realtimeInput.start(realtimeOptions);
-
-
-            /*  It's incredibly important that you assign 'rti.onLocal'
-                It's used inside of realtimeInput to make sure that all changes
-                make it into chainpad.
-
-                It's being assigned this way because it can't be passed in, and
-                and can't be easily returned from realtime input without making
-                the code less extensible.
-            */
-            var propogate = rti.onLocal = function () {
+            var onLocal = realtimeOptions.onLocal = function () {
+                if (initializing) { return; }
                 var shjson = stringifyDOM(inner);
-                if (!rti.patchText(shjson)) {
-                    return;
-                }
-                rti.onEvent(shjson);
+                rti.patchText(shjson);
             };
+
+            var rti = module.realtimeInput = realtimeInput.start(realtimeOptions);
 
             /* hitting enter makes a new line, but places the cursor inside
                 of the <br> instead of the <p>. This makes it such that you
@@ -322,12 +311,13 @@ define([
             var easyTest = window.easyTest = function () {
                 cursor.update();
                 var start = cursor.Range.start;
-                var test = TypingTest.testInput(inner, start.el, start.offset, propogate);
-                propogate();
+                var test = TypingTest.testInput(inner, start.el, start.offset, onLocal);
+                // why twice?
+                onLocale();
                 return test;
             };
 
-            editor.on('change', propogate);
+            editor.on('change', onLocal);
         });
     };
 
