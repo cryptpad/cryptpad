@@ -1,9 +1,11 @@
+require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
     '/bower_components/jquery/dist/jquery.min.js',
     '/common/hyperjson.js', // serializing classes as an attribute
     '/common/hyperscript.js', // using setAttribute
-    '/common/TextPatcher.js'
-], function (jQuery, Hyperjson, Hyperscript, TextPatcher) {
+    '/common/TextPatcher.js',
+    'json.sortify',
+], function (jQuery, Hyperjson, Hyperscript, TextPatcher, JSONSortify) {
     var $ = window.jQuery;
     window.Hyperjson = Hyperjson;
     window.Hyperscript = Hyperscript;
@@ -38,6 +40,10 @@ define([
 
     var $body = $('body');
 
+    /*  FIXME
+        Chrome reorganizes your HTML such that id and class are in a opposite
+        orders. We need to do an equality check on the hyperjson, outerHTML
+        differences are not informative. */
     var roundTrip = function (target) {
         assert(function () {
             var hjson = Hyperjson.fromDOM(target);
