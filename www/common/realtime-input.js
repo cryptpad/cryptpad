@@ -197,7 +197,7 @@ define([
             return ChainPad.create(userName,
                                         passwd,
                                         channel,
-                                        config.initialState || {},
+                                        config.initialState || '',
                                         {
                                         transformFunction: config.transformFunction
                                         });
@@ -206,7 +206,7 @@ define([
 
         var onOpen = function(wc, network) {
             channel = wc.id;
-            window.location.hash = channel + '|' + chanKey;
+            window.location.hash = channel + chanKey;
 
             // Add the existing peers in the userList
             wc.members.forEach(onJoining);
@@ -267,7 +267,8 @@ define([
 
 
             toReturn.patchText = TextPatcher.create({
-                realtime: realtime
+                realtime: realtime,
+                logging: true
             });
 
             realtime.start();
