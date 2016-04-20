@@ -1,7 +1,7 @@
 define([
     '/bower_components/jquery/dist/jquery.min.js',
-    '/assert/hyperjson.js', // serializing classes as an attribute
-    '/assert/hyperscript.js', // using setAttribute
+    '/common/hyperjson.js', // serializing classes as an attribute
+    '/common/hyperscript.js', // using setAttribute
     '/common/TextPatcher.js'
 ], function (jQuery, Hyperjson, Hyperscript, TextPatcher) {
     var $ = window.jQuery;
