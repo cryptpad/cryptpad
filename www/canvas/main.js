@@ -8,14 +8,14 @@ define([
     '/common/messages.js',
     '/common/crypto.js',
     '/common/TextPatcher.js',
-    '/bower_components/fabric.js/dist/fabric.min.js',
     'json.sortify',
+    '/bower_components/fabric.js/dist/fabric.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, Realtime, Messages, Crypto, TextPatcher, Fabric, JSONSortify) { 
+], function (Config, Realtime, Messages, Crypto, TextPatcher, JSONSortify) {
     var module = window.APP = { };
     var $ = module.$ = window.jQuery;
-    module.Fabric = window.fabric;
+    var Fabric = module.Fabric = window.fabric;
 
     $(window).on('hashchange', function() {
         window.location.reload();
