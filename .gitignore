@@ -6,3 +6,4 @@ customization
 *.db
 /customize/
 messages.log
+.DS_Store

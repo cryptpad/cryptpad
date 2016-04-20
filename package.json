@@ -13,6 +13,7 @@
     "selenium-webdriver": "^2.53.1"
   },
   "scripts": {
-      "lint": "jshint --config .jshintrc --exclude-path .jshintignore ."
+      "lint": "jshint --config .jshintrc --exclude-path .jshintignore .",
+      "test": "node TestSelenium.js"
   }
 }
