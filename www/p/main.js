@@ -11,10 +11,11 @@ define([
     '/common/json-ot.js',
     '/common/TypingTests.js',
     'json.sortify',
+    '/common/TextPatcher.js',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, Messages, Crypto, realtimeInput, Hyperjson, Hyperscript, Toolbar, Cursor, JsonOT, TypingTest, JSONSortify) {
+], function (Config, Messages, Crypto, realtimeInput, Hyperjson, Hyperscript, Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher) {
     var $ = window.jQuery;
     var ifrw = $('#pad-iframe')[0].contentWindow;
     var Ckeditor; // to be initialized later...
@@ -35,7 +36,9 @@ define([
 
     var module = window.REALTIME_MODULE = {
         Hyperjson: Hyperjson,
-        Hyperscript: Hyperscript
+        Hyperscript: Hyperscript,
+        logFights: true,
+        fights: [],
     };
 
     var isNotMagicLine = function (el) {
@@ -91,8 +94,6 @@ define([
 
             var inner = window.inner = documentBody;
             var cursor = window.cursor = Cursor(inner);
-
-
 
             var setEditable = function (bool) {
                 // careful about putting attributes onto the DOM
@@ -240,8 +241,28 @@ define([
 
                 var shjson2 = stringifyDOM(inner);
                 if (shjson2 !== shjson) {
+                    /* the client's browser made changes when pushing content
+                       into the dom */
                     console.error("shjson2 !== shjson");
+                    // push those changes back over the wire
                     module.realtimeInput.patchText(shjson2);
+
+                    /*  pushing back over the wire is necessary, but it can
+                        result in a feedback loop, which we call a browser
+                        fight */
+                    if (module.logFights) {
+                        // what changed?
+                        var op = TextPatcher.diff(shjson, shjson2);
+                        // log the changes
+                        TextPatcher.log(shjson, op);
+
+                        var sop = JSON.stringify(op);
+
+                        if (module.fights.indexOf(sop) === -1) {
+                            module.fights.push(sop);
+                            console.log("Found a new type of browser disagreement");
+                        }
+                    }
                 }
             };
 
