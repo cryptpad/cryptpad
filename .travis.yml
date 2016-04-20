@@ -1,12 +1,12 @@
 language: node_js
 branches:
   only:
-      - master
-      - diffdom
-      - beta
-      - netflux
-      node_js:
-        - "4.2.1"
+    - master
+    - diffdom
+    - beta
+    - netflux
+node_js:
+  - "4.2.1"
 before_script:
   - cp config.js.dist
   - npm install
