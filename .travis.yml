@@ -1,8 +1,8 @@
 language: node_js
 env:
   matrix:
-    - "TEST_SUITE=saucelabs BROWSER='firefox:19:Windows 2012'"
-    - "TEST_SUITE=saucelabs BROWSER='chrome::Windows 2008'"
+    - "BROWSER='firefox:19:Windows 2012'"
+    - "BROWSER='chrome::Windows 2008'"
 branches:
   only:
     - master
@@ -12,6 +12,7 @@ branches:
 node_js:
   - "4.2.1"
 before_script:
+  - npm run-script lint
   - cp config.js.dist config.js
   - npm install
   - npm install bower
