@@ -8,7 +8,7 @@ branches:
 node_js:
   - "4.2.1"
 before_script:
-  - cp config.js.dist
+  - cp config.js.dist config.js
   - npm install
   - npm install bower
   - ./node_modules/bower/bin/bower install
