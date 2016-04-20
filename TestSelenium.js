@@ -3,6 +3,7 @@ const WebDriver = require("selenium-webdriver");
 
 let driver;
 if (process.env.SAUCE_USERNAME != undefined) {
+    const browserArray = process.env.BROWSER.split(':');
     driver = new WebDriver.Builder().usingServer(
         'http://'+ process.env.SAUCE_USERNAME+':'+process.env.SAUCE_ACCESS_KEY+'@ondemand.saucelabs.com:80/wd/hub'
     ).withCapabilities({
@@ -10,8 +11,7 @@ if (process.env.SAUCE_USERNAME != undefined) {
         "build": process.env.TRAVIS_BUILD_NUMBER,
         "username": process.env.SAUCE_USERNAME,
         "accessKey": process.env.SAUCE_ACCESS_KEY,
-        "browserName": "chrome"
-    }).build();
+    }).forBrowser(browserArray[0], browserArray[1], browserArray[2]).build();
 } else {
     driver = new WebDriver.Builder().withCapabilities({ browserName: "chrome" }).build();
 }

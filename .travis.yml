@@ -1,4 +1,8 @@
 language: node_js
+env:
+  matrix:
+    - "TEST_SUITE=saucelabs BROWSER='firefox:19:Windows 2012'"
+    - "TEST_SUITE=saucelabs BROWSER='chrome::Windows 2008'"
 branches:
   only:
     - master
