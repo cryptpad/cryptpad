@@ -31,6 +31,7 @@ var logSauceLink = function (cb) {
                     console.log(banner + "\n\n\n");
                 }
             });
+            console.log(str);
             cb();
         });
     });
