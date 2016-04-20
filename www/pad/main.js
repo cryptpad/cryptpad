@@ -11,15 +11,18 @@ define([
     '/common/json-ot.js',
     '/common/TypingTests.js',
     'json.sortify',
+    '/common/TextPatcher.js',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, Messages, Crypto, realtimeInput, Hyperjson, Hyperscript, Toolbar, Cursor, JsonOT, TypingTest, JSONSortify) {
+], function (Config, Messages, Crypto, realtimeInput, Hyperjson, Hyperscript,
+    Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher) {
+
     var $ = window.jQuery;
     var ifrw = $('#pad-iframe')[0].contentWindow;
     var Ckeditor; // to be initialized later...
     var DiffDom = window.diffDOM;
-    
+
     var stringify = function (obj) {
         return JSONSortify(obj);
     };
@@ -288,7 +291,7 @@ define([
                 var shjson2 = stringifyDOM(inner);
                 if (shjson2 !== shjson) {
                     console.error("shjson2 !== shjson");
-                    module.realtimeInput.patchText(shjson2);
+                    module.patchText(shjson2);
                 }
             };
 
@@ -304,12 +307,21 @@ define([
                 /* TODO handle disconnects and such*/
             };
 
+            // this should only ever get called once, when the chain syncs
             var onReady = realtimeOptions.onReady = function (info) {
-                console.log("Unlocking editor");
-                initializing = false;
-                setEditable(true);
+                module.patchText = TextPatcher.create({
+                    realtime: info.realtime,
+                    logging: false,
+                });
+
+                module.realtime = info.realtime;
+
                 var shjson = info.realtime.getUserDoc();
                 applyHjson(shjson);
+
+                console.log("Unlocking editor");
+                setEditable(true);
+                initializing = false;
             };
 
             var onAbort = realtimeOptions.onAbort = function (info) {
@@ -320,21 +332,9 @@ define([
                 toolbar.failed();
             };
 
+            var onLocal = realtimeOptions.onLocal = function () {
+                if (initializing) { return; }
 
-
-
-
-            var rti = module.realtimeInput = realtimeInput.start(realtimeOptions);
-
-            /*  It's incredibly important that you assign 'rti.onLocal'
-                It's used inside of realtimeInput to make sure that all changes
-                make it into chainpad.
-
-                It's being assigned this way because it can't be passed in, and
-                and can't be easily returned from realtime input without making
-                the code less extensible.
-            */
-            var propogate = rti.onLocal = function () {
                 // serialize your DOM into an object
                 var hjson = Hyperjson.fromDOM(inner, isNotMagicLine, brFilter);
 
@@ -344,11 +344,14 @@ define([
                 }
                 // stringify the json and send it into chainpad
                 var shjson = stringify(hjson);
-                if (!rti.patchText(shjson)) {
-                    return;
+                module.patchText(shjson);
+
+                if (module.realtime.getUserDoc() !== shjson) {
+                    console.error("realtime.getUserDoc() !== shjson");
                 }
-                rti.onEvent(shjson);
             };
+
+            var rti = module.realtimeInput = realtimeInput.start(realtimeOptions);
 
             /* hitting enter makes a new line, but places the cursor inside
                 of the <br> instead of the <p>. This makes it such that you
@@ -359,7 +362,7 @@ define([
                 the first such keypress will not be inserted into the P. */
             inner.addEventListener('keydown', cursor.brFix);
 
-            editor.on('change', propogate);
+            editor.on('change', onLocal);
 
             // export the typing tests to the window.
             // call like `test = easyTest()`
@@ -367,8 +370,8 @@ define([
             var easyTest = window.easyTest = function () {
                 cursor.update();
                 var start = cursor.Range.start;
-                var test = TypingTest.testInput(inner, start.el, start.offset, propogate);
-                propogate();
+                var test = TypingTest.testInput(inner, start.el, start.offset, onLocal);
+                onLocal();
                 return test;
             };
         });
