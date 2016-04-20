@@ -24,7 +24,8 @@ define([], function () {
                     return callOnHyperJSON(child, cb);
                 } else if (typeof (child) === 'string') {
                     // string nodes have leading and trailing quotes
-                    return child.replace(/(^"|"$)/g,"");
+                    // don't strip them!
+                    return child; //child.replace(/(^"|"$)/g,"");
                 } else {
                     // the above branches should cover all methods
                     // if we hit this, there is a problem
@@ -94,21 +95,6 @@ define([], function () {
             // unless we come across a strange browser in the wild
           sel = sel +'#'+ attributes.id;
           delete attributes.id;
-        }
-        if(attributes.class){
-            // actually parse out classes so that we produce a valid selector
-            // string. leading or trailing spaces would have caused it to choke
-            // these are really common in generated html
-            /* TODO this can be done with RegExps alone, and it will be faster
-                but this works and is a little less error prone, albeit slower
-                come back and speed it up when it comes time to optimize */
-          sel = sel + attributes.class
-            .split(/\s+/g)
-            .filter(isValidClass)
-            .map(classify)
-            .join('')
-            .replace(/\.\./g, '.');
-          delete attributes.class;
         }
         result.push(sel);
 
