@@ -15,7 +15,7 @@ define([
 ], function (Config, Realtime, Messages, Crypto, TextPatcher, Fabric, JSONSortify) { 
     var module = window.APP = { };
     var $ = module.$ = window.jQuery;
-    var Fabric = module.Fabric = window.fabric;
+    module.Fabric = window.fabric;
 
     $(window).on('hashchange', function() {
         window.location.reload();
