@@ -27,8 +27,9 @@ define([
             }
         };
 
+        // TODO deprecate
         // assumes a negative index
-        var seekLeft = cursor.seekLeft = function (el, delta, current) {
+        var seekLeft /* = cursor.seekLeft*/ = function (el, delta, current) {
             var textLength;
             var previous;
 
@@ -67,8 +68,9 @@ define([
             };
         };
 
+        // TODO deprecate
         // seekRight assumes a positive delta
-        var seekRight = cursor.seekRight = function (el, delta, current) {
+        var seekRight = /* cursor.seekRight = */ function (el, delta, current) {
             var textLength;
             var previous;
 
@@ -107,7 +109,8 @@ define([
             };
         };
 
-        var seekToDelta = cursor.seekToDelta = function (el, delta, current) {
+        // TODO deprecate
+        var seekToDelta = /* cursor.seekToDelta = */ function (el, delta, current) {
             var result = null;
             if (el) {
                 if (delta < 0)  {
@@ -136,10 +139,9 @@ define([
             verbose("cursor.update");
             root = root || inner;
             sel = sel || Rangy.getSelection(root);
-            if (!sel.rangeCount) {
-                error('[cursor.update] no ranges found');
-                return;
-            }
+
+            // if the root element has no focus, there will be no range
+            if (!sel.rangeCount) { return; }
             var range = sel.getRangeAt(0);
 
             // Big R Range is caught in closure, and maintains persistent state
@@ -147,19 +149,6 @@ define([
                 Range[pos].el = range[pos+'Container'];
                 Range[pos].offset = range[pos+'Offset'];
             });
-        };
-
-        /*  0 -> neither is lost
-            1 -> start is lost
-            2 -> end is lost
-            3 -> both are lost */
-        /*  sometimes the selection gets dropped and this doesn't realize it
-            figure out why (TODO FIXME) */
-        var isLost = cursor.isLost = function () {
-            var state = ['start', 'end'].map(function (pos, i) {
-                return Tree.contains(Range[pos].el, inner)? 0 : i + 1;
-            });
-            return state[0] | state[1];
         };
 
         var exists = cursor.exists = function () {
@@ -239,7 +228,8 @@ define([
             }
         };
 
-        var pushDelta = cursor.pushDelta = function (oldVal, newVal, offset) {
+        // TODO deprecate
+        var pushDelta = /* cursor.pushDelta =*/ function (oldVal, newVal, offset) {
             if (oldVal === newVal) { return; }
             var commonStart = 0;
             while (oldVal.charAt(commonStart) === newVal.charAt(commonStart)) {
@@ -274,6 +264,7 @@ define([
         };
 
         /* getLength assumes that both nodes exist inside of the active editor.  */
+        // unused currently
         var getLength = cursor.getLength = function () {
             if (Range.start.el === Range.end.el) {
                 if (Range.start.offset === Range.end.offset) { return 0; }
@@ -315,7 +306,9 @@ define([
             }
         };
 
-        cursor.delta = function (delta1, delta2) {
+        // previously used for testing
+        // TODO deprecate
+        var delta = /* cursor.delta = */ function (delta1, delta2) {
             var sel = Rangy.getSelection(inner);
             delta2 = (typeof delta2 !== 'undefined') ? delta2 : delta1;
 
@@ -381,8 +374,10 @@ define([
 
             if (start.el === end.el && start.offset === end.offset) {
                 if (start.el.tagName === 'BR') {
-                    // get the parent element, which ought to be a P.
-                    var P = start.el.parentNode;
+                    var br = start.el;
+
+                    var P = (Tree.indexOfNode(br) === 0 ?
+                        br.parentNode: br.previousSibling);
 
                     [cursor.fixStart, cursor.fixEnd].forEach(function (f) {
                         f(P, 0);
