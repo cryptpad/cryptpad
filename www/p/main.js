@@ -60,7 +60,7 @@ define([
         return hj;
     };
 
-    var stringifyDOM = function (dom) {
+    var stringifyDOM = module.stringifyDOM = function (dom) {
         return stringify(Hyperjson.fromDOM(dom, isNotMagicLine, brFilter));
     };
 
