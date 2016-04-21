@@ -54,6 +54,15 @@ var patch = function (ctx, op) {
     if (op.toInsert) { ctx.insert(op.offset, op.toInsert); }
 };
 
+/*  format has the same signature as log, but doesn't log to the console
+    use it to get the pretty version of a diff */
+var format = function (text, op) {
+    return op?{
+        insert: op.toInsert,
+        remove: text.slice(op.offset, op.offset + op.toRemove)
+    }: { insert: '', remove: '' };
+};
+
 /*  log accepts a string and an operation, and prints an object to the console
     the object will display the content which is to be removed, and the content
     which will be inserted in its place.
@@ -62,10 +71,7 @@ var patch = function (ctx, op) {
 */
 var log = function (text, op) {
     if (!op) { return; }
-    console.log({
-        insert: op.toInsert,
-        remove: text.slice(op.offset, op.offset + op.toRemove)
-    });
+    console.log(format(text, op));
 };
 
 /* applyChange takes:
@@ -129,8 +135,9 @@ return {
     create: create, // create a TextPatcher object
     diff: diff, // diff two strings
     patch: patch, // apply an operation to a chainpad's realtime facade
+    format: format,
     log: log, // print the components of an operation
     transformCursor: transformCursor, // transform the position of a cursor
-    applyChange: applyChange // a convenient wrapper around diff/log/patch
+    applyChange: applyChange, // a convenient wrapper around diff/log/patch
 };
 });
