@@ -1,9 +1,4 @@
-require.config({
-    paths: {
-        'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify'
-    }
-});
-
+require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
     '/bower_components/jquery/dist/jquery.min.js',
     '/common/hyperjson.js', // serializing classes as an attribute
@@ -184,7 +179,7 @@ define([
         var template = multiline(function () { /*
 <p class="error">
 Failed on test number {{test}} with error message:
-"{{message}}" 
+"{{message}}"
 
 </p>
 <p>
