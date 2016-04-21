@@ -41,7 +41,9 @@ var insert = function (db, channelName, content, cb) {
 var getMessages = function (db, channelName, msgHandler, cb) {
     var index;
     nThen(function (waitFor) {
-        getIndex(db, channelName, waitFor(function (i) { index = i; }));
+        getIndex(db, channelName, waitFor(function (i) {
+            index = i;
+        }));
     }).nThen(function (waitFor) {
         var again = function (i) {
             db.get(channelName + '=>' + i, waitFor(function (e, out) {
@@ -52,6 +54,7 @@ var getMessages = function (db, channelName, msgHandler, cb) {
             }));
         };
         if (index > -1) { again(0); }
+        else if (cb) { cb(); }
     });
 };
 
