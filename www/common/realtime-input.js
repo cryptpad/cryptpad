@@ -101,14 +101,6 @@ define([
         };
 
         var onReady = function(wc, network) {
-            if(config.onInit) {
-                config.onInit({
-                    myID: wc.myID,
-                    realtime: realtime,
-                    getLag: network.getLag,
-                    userList: userList
-                });
-            }
             // Trigger onJoining with our own Cryptpad username to tell the toolbar that we are synced
             onJoining(wc.myID);
 
@@ -206,7 +198,6 @@ define([
 
         var onOpen = function(wc, network) {
             channel = wc.id;
-            window.location.hash = channel + chanKey;
 
             // Add the existing peers in the userList
             wc.members.forEach(onJoining);
@@ -218,7 +209,6 @@ define([
             wc.on('join', onJoining);
             wc.on('leave', onLeaving);
 
-
             if(config.setMyID) {
                 config.setMyID({
                     myID: wc.myID
@@ -226,6 +216,18 @@ define([
             }
             // Open a Chainpad session
             realtime = createRealtime();
+
+            if(config.onInit) {
+                config.onInit({
+                    myID: wc.myID,
+                    realtime: realtime,
+                    getLag: network.getLag,
+                    userList: userList,
+
+                    // channel
+                    channel: channel,
+                });
+            }
 
             // Sending a message...
             realtime.onMessage(function(message) {
