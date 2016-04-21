@@ -60,6 +60,20 @@ define([
         return hj;
     };
 
+    /*  TODO integrate into flow to prevent browser fights over style */
+    var setStyle = function (elem, newStyleAttr) {
+        elem.setAttribute("data-chainpad-origstyle", newStyleAttr);
+        elem.setAttribute("style", newStyleAttr);
+        elem.setAttribute("data-chainpad-styleclone", elem.getAttribute("style"));
+    };
+
+    /*  TODO integrate into flow to prevent browser fights over style */
+    var getStyle = function (elem) {
+        var st = elem.getAttribute("style");
+        if (elem.getAttribute("data-chainpad-styleclone") !== st) { return st; }
+        return elem.getAttribute("data-chainpad-origstyle");
+    };
+
     var stringifyDOM = module.stringifyDOM = function (dom) {
         return stringify(Hyperjson.fromDOM(dom, isNotMagicLine, brFilter));
     };
