@@ -21,21 +21,26 @@ That function must accept two arguments:
 
 ## Methods
 
-### message(channelName, content, callback)
+### message(channelName, content, handler)
 
 When Cryptpad receives a message, it saves it into its datastore using its equivalent of a table for its channel name, and then relays the message to every other client which is participating in the same channel.
 
-Relaying logic exists outside of the storage module, you simply need to store the message then execute the callback on success.
+Relaying logic exists outside of the storage module, you simply need to store the message then execute the handler on success.
 
-### getMessages(channelName, callback)
+### getMessages(channelName, handler, callback)
 
 When a new client joins, they request the entire history of messages for a particular channel.
 This method retreives those messages, and delivers them in order.
 
-In theory, it should be possible for Chainpad to make sense of out of order messages, however, this has not yet been implemented.
-In practice, out of order messages make your clientside application likely to fail.
+In practice, out of order messages make your clientside application more likely to fail, however, they are generally tolerated.
 As a channel accumulates a greater number of messages, the likelihood of the application receiving them in the wrong order becomes greater.
-This results in older sessions becoming less reliable
+This results in older sessions becoming less reliable.
+
+This function accepts the name of the channel in which the user is interested, the handler for each message, and the callback to be executed when the last message has been fetched and handled.
+
+**Note**, the callback is a new addition to this API.
+It is only implemented within the leveldb adaptor, making our latest code incompatible with the other back ends.
+While we migrate to our new Netflux API, only the leveldb adaptor will be supported.
 
 ## Documenting your adaptor
 
