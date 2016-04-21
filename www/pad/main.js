@@ -107,7 +107,7 @@ define([
             var inner = window.inner = documentBody;
             var cursor = window.cursor = Cursor(inner);
 
-            var setEditable = function (bool) {
+            var setEditable = module.setEditable = function (bool) {
                 inner.setAttribute('contenteditable', bool);
             };
 
@@ -304,7 +304,9 @@ define([
                 };
                 toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
                 createChangeName('cryptpad-changeName', $bar);
-                /* TODO handle disconnects and such*/
+
+                // set the hash
+                window.location.hash = info.channel + key;
             };
 
             // this should only ever get called once, when the chain syncs
