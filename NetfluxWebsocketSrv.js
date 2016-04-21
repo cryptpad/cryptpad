@@ -66,8 +66,8 @@ dropUser = function (ctx, user) {
     });
 };
 
-const getHistory = function (ctx, channelName, handler) {
-    ctx.store.getMessages(channelName, function (msgStr) { handler(JSON.parse(msgStr)); });
+const getHistory = function (ctx, channelName, handler, cb) {
+    ctx.store.getMessages(channelName, function (msgStr) { handler(JSON.parse(msgStr)); }, cb);
 };
 
 const randName = function () { return Crypto.randomBytes(16).toString('hex'); };
@@ -105,8 +105,9 @@ const handleMessage = function (ctx, user, msg) {
             if (parsed[0] === 'GET_HISTORY') {
                 getHistory(ctx, parsed[1], function (msg) {
                     sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(msg)]);
+                }, function () {
+                    sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, 0]);
                 });
-                sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, 0]);
             }
             return;
         }
