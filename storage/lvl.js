@@ -38,7 +38,7 @@ var insert = function (db, channelName, content, cb) {
     }
 };
 
-var getMessages = function (db, channelName, msgHandler) {
+var getMessages = function (db, channelName, msgHandler, cb) {
     var index;
     nThen(function (waitFor) {
         getIndex(db, channelName, waitFor(function (i) { index = i; }));
@@ -48,6 +48,7 @@ var getMessages = function (db, channelName, msgHandler) {
                 if (e) { throw e; }
                 msgHandler(out);
                 if (i < index) { again(i+1); }
+                else if (cb) { cb(); }
             }));
         };
         if (index > -1) { again(0); }
@@ -62,8 +63,8 @@ module.exports.create = function (conf, cb) {
         message: function (channelName, content, cb) {
             insert(db, channelName, content, cb);
         },
-        getMessages: function (channelName, msgHandler) {
-            getMessages(db, channelName, msgHandler);
+        getMessages: function (channelName, msgHandler, cb) {
+            getMessages(db, channelName, msgHandler, cb);
         }
     });
 };
