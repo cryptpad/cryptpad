@@ -259,7 +259,7 @@ define([
                        into the dom */
                     console.error("shjson2 !== shjson");
                     // push those changes back over the wire
-                    module.realtimeInput.patchText(shjson2);
+                    module.patchText(shjson2);
 
                     /*  pushing back over the wire is necessary, but it can
                         result in a feedback loop, which we call a browser
@@ -294,13 +294,17 @@ define([
             };
 
             var onReady = realtimeOptions.onReady = function (info) {
-                console.log("Unlocking editor");
-                initializing = false;
-                setEditable(true);
-
                 var shjson = info.realtime.getUserDoc();
 
+                module.patchText = TextPatcher.create({
+                    realtime: info.realtime,
+                    logging: true,
+                });
+
                 applyHjson(shjson);
+                console.log("Unlocking editor");
+                setEditable(true);
+                initializing = false;
             };
 
             var onAbort = realtimeOptions.onAbort = function (info) {
@@ -314,7 +318,7 @@ define([
             var onLocal = realtimeOptions.onLocal = function () {
                 if (initializing) { return; }
                 var shjson = stringifyDOM(inner);
-                rti.patchText(shjson);
+                module.patchText(shjson);
             };
 
             var rti = module.realtimeInput = realtimeInput.start(realtimeOptions);
@@ -333,7 +337,7 @@ define([
                 var start = cursor.Range.start;
                 var test = TypingTest.testInput(inner, start.el, start.offset, onLocal);
                 // why twice?
-                onLocale();
+                onLocal();
                 return test;
             };
 
