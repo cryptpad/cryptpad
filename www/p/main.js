@@ -255,12 +255,18 @@ define([
                         var op = TextPatcher.diff(shjson, shjson2);
                         // log the changes
                         TextPatcher.log(shjson, op);
+                        var sop = JSON.stringify(TextPatcher.format(shjson, op));
 
-                        var sop = JSON.stringify(op);
-
-                        if (module.fights.indexOf(sop) === -1) {
+                        var index = module.fights.indexOf(sop);
+                        if (index === -1) {
                             module.fights.push(sop);
                             console.log("Found a new type of browser disagreement");
+                            console.log("You can inspect the list in your " +
+                                "console at `REALTIME_MODULE.fights`");
+                            console.log(module.fights);
+                        } else {
+                            console.log("Encountered a known browser disagreement: " +
+                                "available at `REALTIME_MODULE.fights[%s]`", index);
                         }
                     }
                 }
