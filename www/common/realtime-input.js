@@ -18,11 +18,10 @@ define([
     '/common/messages.js',
     '/common/netflux-client.js',
     '/common/crypto.js',
-    '/common/TextPatcher.js',
     '/common/es6-promise.min.js',
     '/common/chainpad.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages, Netflux, Crypto, TextPatcher) {
+], function (Messages, Netflux, Crypto) {
     var $ = window.jQuery;
     var ChainPad = window.ChainPad;
     var PARANOIA = true;
@@ -117,6 +116,7 @@ define([
             initializing = false;
 
             // execute an onReady callback if one was supplied
+            // FIXME this should be once the chain has synced
             if (config.onReady) {
                 config.onReady({
                     realtime: realtime
@@ -227,13 +227,6 @@ define([
             // Open a Chainpad session
             realtime = createRealtime();
 
-            toReturn.onEvent = function (newText) {
-                // assert to show that we're not out of sync
-                if (realtime.getUserDoc() !== newText) {
-                    warn("realtime.getUserDoc() !== newText");
-                }
-            };
-
             // Sending a message...
             realtime.onMessage(function(message) {
                 // Filter messages sent by Chainpad to make it compatible with Netflux
@@ -265,12 +258,6 @@ define([
             wc.history_keeper = hc;
             if (hc) { network.sendto(hc, JSON.stringify(['GET_HISTORY', wc.id])); }
 
-
-            toReturn.patchText = TextPatcher.create({
-                realtime: realtime,
-                logging: true
-            });
-
             realtime.start();
         };
 
@@ -289,6 +276,16 @@ define([
         // Connect to the WebSocket channel
         Netflux.connect(websocketUrl).then(function(network) {
             // pass messages that come out of netflux into our local handler
+
+            network.on('disconnect', function (evt) {
+                // TODO also abort if Netflux times out
+                // that will be managed in Netflux-client.js
+                if (config.onAbort) {
+                    config.onAbort({
+                        reason: evt.reason
+                    });
+                }
+            });
 
             network.on('message', function (msg, sender) { // Direct message
                 var wchan = findChannelById(network.webChannels, channel);
