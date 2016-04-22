@@ -250,14 +250,10 @@ define([
                 // our encryption key
                 cryptKey: key,
 
-                // configuration :D
-                doc: inner,
-
                 setMyID: setMyID,
 
                 // really basic operational transform
                 transformFunction : JsonOT.validate
-                // pass in websocket/netflux object TODO
             };
 
             var onRemote = realtimeOptions.onRemote = function (info) {
