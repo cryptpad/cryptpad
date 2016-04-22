@@ -19,7 +19,7 @@ module.exports = {
      * it will not scale well if your server stays alive for a long time.
      * but it is completely dependency free
      */
-    storage: './storage/amnesia',
+    //storage: './storage/amnesia',
 
     /* the 'lvl' storage module uses leveldb
      * it persists, and will perform better than amnesiadb
@@ -31,8 +31,8 @@ module.exports = {
      *
      * to delete all pads, run `rm -rf $YOUR_DB`
      */
-    // storage: './storage/lvl',
-    // levelPath: './test.level.db'
+    storage: './storage/lvl',
+    levelPath: './test.level.db'
 
     /* mongo is the original storage engine for cryptpad
      * it has been more thoroughly tested, but requires a little more setup
