@@ -4,10 +4,9 @@ define([
     var ChainPad = window.ChainPad;
     var JsonOT = {};
 
-/*  FIXME
-    resultOp after transform0() might be null, in which case you should return null
-    because it is simply a transformation which yields a "do nothing" operation */
     var validate = JsonOT.validate = function (text, toTransform, transformBy) {
+        var DEBUG = window.REALTIME_DEBUG = window.REALTIME_DEBUG || {};
+
         var resultOp, text2, text3;
         try {
             // text = O (mutual common ancestor)
@@ -28,7 +27,7 @@ define([
                 return resultOp;
             } catch (e) {
                 console.error(e);
-                var info = window.REALTIME_MODULE.ot_parseError = {
+                var info = DEBUG.ot_parseError = {
                     type: 'resultParseError',
                     resultOp: resultOp,
 
@@ -40,11 +39,11 @@ define([
                     text3: text3,
                     error: e
                 };
-                console.log('Debugging info available at `window.REALTIME_MODULE.ot_parseError`');
+                console.log('Debugging info available at `window.REALTIME_DEBUG.ot_parseError`');
             }
         } catch (x) {
             console.error(x);
-            window.REALTIME_MODULE.ot_applyError = {
+            window.DEBUG.ot_applyError = {
                 type: 'resultParseError',
                 resultOp: resultOp,
 
@@ -56,7 +55,7 @@ define([
                 text3: text3,
                 error: x
             };
-            console.log('Debugging info available at `window.REALTIME_MODULE.ot_applyError`');
+            console.log('Debugging info available at `window.REALTIME_DEBUG.ot_applyError`');
         }
 
         // returning **null** breaks out of the loop
