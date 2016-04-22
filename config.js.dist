@@ -10,7 +10,7 @@ module.exports = {
     // the port on which your httpd will listen
     httpPort: 3000,
     // the port used for websockets
-    websocketPort: 3001,
+    websocketPort: 3000,
 
     // You now have a choice of storage engines
 
