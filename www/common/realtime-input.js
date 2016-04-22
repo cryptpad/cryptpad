@@ -51,8 +51,6 @@ define([
         // make sure configuration is defined
         config = config || {};
 
-        var doc = config.doc || null;
-
         var allMessages = [];
         var initializing = true;
         var recoverableErrorCount = 0; // unused
@@ -107,8 +105,6 @@ define([
             // we're fully synced
             initializing = false;
 
-            // execute an onReady callback if one was supplied
-            // FIXME this should be once the chain has synced
             if (config.onReady) {
                 config.onReady({
                     realtime: realtime
