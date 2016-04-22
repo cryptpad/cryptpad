@@ -1,0 +1,50 @@
+* hack
+  - good
+* code
+  - this is actually a fair bit of work (maybe)
+* canvas
+  - seems to work
+  - should have json-ot
+* form
+  - doesn't work yet
+  - don't bother developing for websocket, move to netflux asap
+* p
+  - using sockets, pad is the fixed version
+  - move things over and deprecate
+* pad
+  - using netflux already, but might require some updates from /p/
+* padrtc
+  - using netflux, but it's not really useful
+* render
+  - idek man
+* style
+  - works, using netflux
+* text
+  - works
+
+
+## Remaining
+
+* code
+  - use netflux
+* form
+  - use netflux
+  - get it working
+  - audit json-ot
+* pad
+  - update /pad/ from /p/
+  - then delete p
+* p
+  - see above
+* padrtc
+  - idk
+* render
+  - get it working
+  - use diffdom
+  - continue to use rainbow?
+* style
+  - push initial styles into new documents
+* text
+  - support tabs?
+
+

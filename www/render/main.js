@@ -8,7 +8,7 @@ define([
     '/common/rainbow.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, Realtime, Messages, Crypto, Marked, Convert, Rainbow) { 
+], function (Config, Realtime, Crypto, Marked, Convert, Rainbow) { 
     var $ = window.jQuery;
 
     var Vdom = Convert.core.vdom,

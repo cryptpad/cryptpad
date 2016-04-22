@@ -3,23 +3,40 @@ define([
     '/code/rt_codemirror.js',
     '/common/messages.js',
     '/common/crypto.js',
+    '/common/realtime-input.js',
+    '/common/TextPatcher.js',
     '/bower_components/jquery/dist/jquery.min.js'
-], function (Config, RTCode, Messages, Crypto) {
+], function (Config, RTCode, Messages, Crypto, Realtime, TextPatcher) {
     var $ = window.jQuery;
     var ifrw = $('#pad-iframe')[0].contentWindow;
+    var module = {};
 
     $(function () {
-        $(window).on('hashchange', function() {
-            window.location.reload();
-        });
-        if (window.location.href.indexOf('#') === -1) {
-            window.location.href = window.location.href + '#' + Crypto.genKey();
-            return;
+        var userName = Crypto.rand64(8);
+
+        var key;
+        var channel = '';
+        if (!/#/.test(window.location.href)) {
+            key = Crypto.genKey();
+        } else {
+            var hash = window.location.hash.slice(1);
+            channel = hash.slice(0, 32);
+            key = hash.slice(32);
         }
 
+        var config = {
+            userName: userName,
+            websocketURL: Config.websocketURL,
+            channel: channel,
+            cryptKey: key,
+            crypto: Crypto,
+        };
+
         var andThen = function (CMeditor) {
-            var key = Crypto.parseKey(window.location.hash.substring(1));
-            var editor = CMeditor.fromTextArea($('#pad-iframe').contents().find('#editor1')[0], {
+            var $pad = $('#pad-iframe');
+            var $textarea = $pad.contents().find('#editor1');
+
+            var editor = CMeditor.fromTextArea($textarea[0], {
                 lineNumbers: true,
                 lineWrapping: true,
                 autoCloseBrackets: true,
@@ -35,16 +52,50 @@ define([
             });
             editor.setValue(Messages.codeInitialState);
 
-            var rtw =
-                RTCode.start(ifrw,
-                                Config.websocketURL,
-                                Crypto.rand64(8),
-                                key.channel,
-                                key.cryptKey);
-            editor.on('change', function() {
+            // TODO lock editor until chain is synced
+            // then unlock
+            var setEditable = function () { };
+
+            var initializing = true;
+
+            var onInit = config.onInit = function (info) {
+                window.location.hash = info.channel + key;
+                var realtime = info.realtime;
+                module.patchText = TextPatcher.create({
+                    realtime: realtime,
+                    logging: true,
+                });
+                $(window).on('hashchange', function() {
+                    window.location.reload();
+                });
+            };
+
+            var onReady = config.onReady = function (info) {
+                console.log("READY!");
+                
+                initializing = false;
+            };
+
+            var onRemote = config.onRemote = function (info) {
+                if (initializing) { return; }
+                // check cursor
+                // apply changes to textarea
+                // replace cursor
+            };
+
+            var onLocal = config.onLocal = function () {
                 editor.save();
-                rtw.onEvent();
-            });
+                //rtw.onEvent();
+            };
+
+            var onAbort = config.onAbort = function (info) {
+                // TODO  alert the user
+                // inform of network disconnect
+            };
+
+            var realtime = module.realtime = Realtime.start(config);
+
+            editor.on('change', onLocal);
         };
 
         var interval = 100;
