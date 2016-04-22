@@ -1,6 +1,6 @@
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
-    '/common/RealtimeTextarea.js',
+    '/common/RealtimeTextSocket.js',
     '/common/messages.js',
     '/common/crypto.js',
     '/common/TextPatcher.js',
