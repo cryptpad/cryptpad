@@ -1,20 +1,27 @@
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
-    '/common/RealtimeTextarea.js',
+    '/common/realtime-input.js',
     '/common/crypto.js',
     '/common/TextPatcher.js',
     '/bower_components/jquery/dist/jquery.min.js'
 ], function (Config, Realtime, Crypto, TextPatcher) {
     var $ = window.jQuery;
+    /*
     $(window).on('hashchange', function() {
         window.location.reload();
-    });
-    if (window.location.href.indexOf('#') === -1) {
-        window.location.href = window.location.href + '#' + Crypto.genKey();
-        return;
-    }
+    });*/
 
-    var key = Crypto.parseKey(window.location.hash.substring(1));
+    var key;
+    var channel = '';
+    if (window.location.href.indexOf('#') === -1) {
+        key = Crypto.genKey();
+        //window.location.href = window.location.href + '#' + Crypto.genKey();
+        //return;
+    } else {
+        var hash = window.location.hash.substr(1);
+        channel = hash.substr(0,32);
+        key = hash.substr(32);
+    }
 
     var $textarea = $('textarea'),
         $run = $('#run');
@@ -29,13 +36,14 @@ define([
         transformFunction
     */
 
+    var userName = Crypto.rand64(8);
+
     var config = {
-        textarea: $textarea[0],
-        websocketURL: Config.websocketURL + '_old',
-        webrtcURL: Config.webrtcURL,
-        userName: Crypto.rand64(8),
-        channel: key.channel,
-        cryptKey: key.cryptKey,
+        initialState: '',
+        websocketURL: Config.websocketURL,
+        userName: userName,
+        channel: channel,
+        cryptKey: key,
     };
     var initializing = true;
 
@@ -44,7 +52,9 @@ define([
 
     setEditable(false);
 
-    var onInit = config.onInit = function (info) { };
+    var onInit = config.onInit = function (info) {
+        window.location.hash = info.channel + key;
+    };
 
     var onRemote = config.onRemote = function (info) {
         if (initializing) { return; }

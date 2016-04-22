@@ -1,6 +1,6 @@
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
-    '/common/RealtimeTextSocket.js',
+    '/common/realtime-input.js',
     '/common/messages.js',
     '/common/crypto.js',
     '/common/TextPatcher.js',
@@ -11,22 +11,37 @@ define([
     $(window).on('hashchange', function() {
         window.location.reload();
     });
+    /*
     if (window.location.href.indexOf('#') === -1) {
         window.location.href = window.location.href + '#' + Crypto.genKey();
         return;
+    }*/
+
+
+    var key;
+    var channel = '';
+    if (window.location.href.indexOf('#') === -1) {
+        key = Crypto.genKey();
+    } else {
+        var hash = window.location.hash.substr(1);
+        channel = hash.substr(0, 32);
+        key = hash.substr(32);
     }
 
     var module = window.APP = {};
-    var key = Crypto.parseKey(window.location.hash.substring(1));
+
+    var userName = module.userName = Crypto.rand64(8);
+
     var initializing = true;
     var $textarea = $('textarea');
 
     var config = module.config = {
+        initialState: '',
         textarea: $textarea[0],
-        websocketURL: Config.websocketURL + '_old',
-        userName: Crypto.rand64(8),
-        channel: key.channel,
-        cryptKey: key.cryptKey
+        websocketURL: Config.websocketURL,
+        userName: userName,
+        channel: channel,
+        cryptKey: key,
     };
 
     var setEditable = function (bool) { $textarea.attr('disabled', !bool); };
@@ -34,7 +49,9 @@ define([
 
     setEditable(false);
 
-    var onInit = config.onInit = function (info) { };
+    var onInit = config.onInit = function (info) {
+        window.location.hash = info.channel + key;
+    };
 
     var onRemote = config.onRemote = function (info) {
         if (initializing) { return; }
