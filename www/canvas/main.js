@@ -67,6 +67,7 @@ define([
         userName: Crypto.rand64(8),
         channel: channel,
         cryptKey: key,
+        crypto: Crypto,
     };
 
     var onInit = config.onInit = function (info) {

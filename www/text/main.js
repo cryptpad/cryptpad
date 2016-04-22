@@ -1,22 +1,12 @@
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
     '/common/realtime-input.js',
-    '/common/messages.js',
     '/common/crypto.js',
     '/common/TextPatcher.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, Realtime, Messages, Crypto, TextPatcher) { 
+], function (Config, Realtime, Crypto, TextPatcher) { 
     var $ = window.jQuery;
-    $(window).on('hashchange', function() {
-        window.location.reload();
-    });
-    /*
-    if (window.location.href.indexOf('#') === -1) {
-        window.location.href = window.location.href + '#' + Crypto.genKey();
-        return;
-    }*/
-
 
     var key;
     var channel = '';
@@ -42,6 +32,7 @@ define([
         userName: userName,
         channel: channel,
         cryptKey: key,
+        crypto: Crypto,
     };
 
     var setEditable = function (bool) { $textarea.attr('disabled', !bool); };
@@ -51,6 +42,9 @@ define([
 
     var onInit = config.onInit = function (info) {
         window.location.hash = info.channel + key;
+        $(window).on('hashchange', function() {
+            window.location.reload();
+        });
     };
 
     var onRemote = config.onRemote = function (info) {
