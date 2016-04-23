@@ -194,9 +194,6 @@ define([
             var now = function () { return new Date().getTime(); };
 
             var realtimeOptions = {
-                // configuration :D
-                doc: inner,
-
                 // provide initialstate...
                 initialState: stringifyDOM(inner) || '{}',
 
@@ -213,7 +210,9 @@ define([
                 channel: key.channel,
 
                 // encryption key
-                cryptKey: key.cryptKey
+                cryptKey: key.cryptKey,
+
+                crypto: Crypto,
             };
 
             var DD = new DiffDom(diffOptions);

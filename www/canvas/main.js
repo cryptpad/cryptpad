@@ -4,7 +4,7 @@ require.config({ paths: {
 
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
-    '/common/RealtimeTextarea.js',
+    '/common/realtime-input.js',
     '/common/messages.js',
     '/common/crypto.js',
     '/common/TextPatcher.js',
@@ -17,12 +17,15 @@ define([
     var $ = module.$ = window.jQuery;
     var Fabric = module.Fabric = window.fabric;
 
-    $(window).on('hashchange', function() {
-        window.location.reload();
-    });
-    if (window.location.href.indexOf('#') === -1) {
-        window.location.href = window.location.href + '#' + Crypto.genKey();
-        return;
+
+    var key;
+    var channel = '';
+    if (!/#/.test(window.location.href)) {
+        key = Crypto.genKey();
+    } else {
+        var hash = window.location.hash.slice(1);
+        channel = hash.slice(0, 32);
+        key = hash.slice(32);
     }
 
     /* Initialize Fabric */
@@ -56,17 +59,23 @@ define([
         $canvas.css('border-color', bool? 'black': 'red');
     };
 
-    var key = Crypto.parseKey(window.location.hash.substring(1));
     var initializing = true;
 
     var config = module.config = {
-        websocketURL: Config.websocketURL + '_old',
+        // TODO initialState ?
+        websocketURL: Config.websocketURL,
         userName: Crypto.rand64(8),
-        channel: key.channel,
-        cryptKey: key.cryptKey
+        channel: channel,
+        cryptKey: key,
+        crypto: Crypto,
     };
 
-    var onInit = config.onInit = function (info) { };
+    var onInit = config.onInit = function (info) {
+        window.location.hash = info.channel + key;
+        $(window).on('hashchange', function() {
+            window.location.reload();
+        });
+    };
 
     var onRemote = config.onRemote = function () {
         if (initializing) { return; }

@@ -15,16 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 define([
-    '/common/messages.js',
     '/common/netflux-client.js',
-    '/common/crypto.js',
     '/common/es6-promise.min.js',
     '/common/chainpad.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages, Netflux, Crypto) {
+], function (Netflux) {
     var $ = window.jQuery;
     var ChainPad = window.ChainPad;
     var PARANOIA = true;
+    var USE_HISTORY = true;
     var module = { exports: {} };
 
     /**
@@ -44,16 +43,14 @@ define([
         var websocketUrl = config.websocketURL;
         var userName = config.userName;
         var channel = config.channel;
-        var chanKey = config.cryptKey;
+        var chanKey = config.cryptKey || '';
+        var Crypto = config.crypto;
         var cryptKey = Crypto.parseKey(chanKey).cryptKey;
         var passwd = 'y';
 
         // make sure configuration is defined
         config = config || {};
 
-        var doc = config.doc || null;
-
-        var allMessages = [];
         var initializing = true;
         var recoverableErrorCount = 0; // unused
         var toReturn = {};
@@ -101,14 +98,17 @@ define([
         };
 
         var onReady = function(wc, network) {
+            if(config.setMyID) {
+                config.setMyID({
+                    myID: wc.myID
+                });
+            }
             // Trigger onJoining with our own Cryptpad username to tell the toolbar that we are synced
             onJoining(wc.myID);
 
             // we're fully synced
             initializing = false;
 
-            // execute an onReady callback if one was supplied
-            // FIXME this should be once the chain has synced
             if (config.onReady) {
                 config.onReady({
                     realtime: realtime
@@ -131,11 +131,10 @@ define([
             var message = chainpadAdapter.msgIn(peer, msg);
 
             verbose(message);
-            allMessages.push(message);
 
             if (!initializing) {
-                if (toReturn.onLocal) {
-                    toReturn.onLocal();
+                if (config.onLocal) {
+                    config.onLocal();
                 }
             }
             // pass the message into Chainpad
@@ -209,11 +208,6 @@ define([
             wc.on('join', onJoining);
             wc.on('leave', onLeaving);
 
-            if(config.setMyID) {
-                config.setMyID({
-                    myID: wc.myID
-                });
-            }
             // Open a Chainpad session
             realtime = createRealtime();
 
@@ -253,14 +247,22 @@ define([
             });
 
             // Get the channel history
-            var hc;
-            wc.members.forEach(function (p) { 
-              if (p.length === 16) { hc = p; } 
-            });
-            wc.history_keeper = hc;
-            if (hc) { network.sendto(hc, JSON.stringify(['GET_HISTORY', wc.id])); }
+            if(USE_HISTORY) {
+              var hc;
+
+              wc.members.forEach(function (p) {
+                if (p.length === 16) { hc = p; }
+              });
+              wc.history_keeper = hc;
+
+              if (hc) { network.sendto(hc, JSON.stringify(['GET_HISTORY', wc.id])); }
+            }
 
             realtime.start();
+
+            if(!USE_HISTORY) {
+              onReady(wc, network);
+            }
         };
 
         var findChannelById = function(webChannels, channelId) {

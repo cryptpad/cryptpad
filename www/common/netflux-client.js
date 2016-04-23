@@ -51,6 +51,7 @@ const mkChannel = (ctx, id) => {
     };
     const chan = {
         _: internal,
+        time: now(),
         id: id,
         members: internal.members,
         bcast: (msg) => channelBcast(ctx, chan.id, msg),
