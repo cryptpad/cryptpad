@@ -261,8 +261,8 @@ define([
             var updateUserList = function(shjson) {
                 // Extract the user list (metadata) from the hyperjson
                 var hjson = JSON.parse(shjson);
-                var peerUserList = hjson[hjson.length-1];
-                if(peerUserList.metadata) {
+                var peerUserList = hjson[3];
+                if(peerUserList && peerUserList.metadata) {
                   var userData = peerUserList.metadata;
                   // Update the local user data
                   addToUserList(userData);
@@ -313,7 +313,7 @@ define([
             var onReady = realtimeOptions.onReady = function (info) {
                 module.patchText = TextPatcher.create({
                     realtime: info.realtime,
-                    logging: false,
+                    logging: true,
                 });
 
                 module.realtime = info.realtime;
@@ -342,7 +342,7 @@ define([
 
                 // append the userlist to the hyperjson structure
                 if(Object.keys(myData).length > 0) {
-                    hjson[hjson.length] = {metadata: userList};
+                    hjson[3] = {metadata: userList};
                 }
                 // stringify the json and send it into chainpad
                 var shjson = stringify(hjson);
