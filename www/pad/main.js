@@ -269,7 +269,7 @@ define([
                   hjson.pop();
                 }
                 return hjson;
-            }
+            };
 
             var onRemote = realtimeOptions.onRemote = function (info) {
                 if (initializing) { return; }
