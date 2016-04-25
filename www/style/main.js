@@ -9,6 +9,9 @@ define([
     // TODO consider adding support for less.js
     var $ = window.jQuery;
 
+    var $style = $('style').first(),
+        $edit = $('#edit');
+
     var module = window.APP = {};
 
     var key;
@@ -78,8 +81,6 @@ define([
         // nope
     };
 
-    var $style = $('style').first(),
-        $edit = $('#edit');
 
     $edit.attr('href', '/text/'+ window.location.hash);
 
