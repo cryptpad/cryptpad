@@ -6,10 +6,6 @@ define([
     '/bower_components/jquery/dist/jquery.min.js'
 ], function (Config, Realtime, Crypto, TextPatcher) {
     var $ = window.jQuery;
-    /*
-    $(window).on('hashchange', function() {
-        window.location.reload();
-    });*/
 
     var key;
     var channel = '';
@@ -44,6 +40,7 @@ define([
         userName: userName,
         channel: channel,
         cryptKey: key,
+        crypto: Crypto,
     };
     var initializing = true;
 
@@ -54,6 +51,7 @@ define([
 
     var onInit = config.onInit = function (info) {
         window.location.hash = info.channel + key;
+        $(window).on('hashchange', function() { window.location.reload(); });
     };
 
     var onRemote = config.onRemote = function (info) {

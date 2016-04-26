@@ -87,7 +87,6 @@ define([
         }
 
         var fixThings = false;
-        // var key = Crypto.parseKey(window.location.hash.substring(1));
         var editor = window.editor = Ckeditor.replace('editor1', {
             // https://dev.ckeditor.com/ticket/10907
             needsBrFiller: fixThings,
@@ -184,7 +183,6 @@ define([
                 }
             };
 
-            var now = function () { return new Date().getTime(); };
 
             var initializing = true;
             var userList = {}; // List of pretty name of all users (mapped with their server ID)
@@ -250,10 +248,27 @@ define([
                 // our encryption key
                 cryptKey: key,
 
+                // method which allows us to get the id of the user
                 setMyID: setMyID,
+
+                // Crypto object to avoid loading it twice in Cryptpad
+                crypto: Crypto,
 
                 // really basic operational transform
                 transformFunction : JsonOT.validate
+            };
+
+            var updateUserList = function(shjson) {
+                // Extract the user list (metadata) from the hyperjson
+                var hjson = JSON.parse(shjson);
+                var peerUserList = hjson[3];
+                if(peerUserList && peerUserList.metadata) {
+                  var userData = peerUserList.metadata;
+                  // Update the local user data
+                  addToUserList(userData);
+                  hjson.pop();
+                }
+                return hjson;
             };
 
             var onRemote = realtimeOptions.onRemote = function (info) {
@@ -265,18 +280,7 @@ define([
                 cursor.update();
 
                 // Extract the user list (metadata) from the hyperjson
-                var hjson = JSON.parse(shjson);
-                var peerUserList = hjson[hjson.length-1];
-                if(peerUserList.metadata) {
-                  var userData = peerUserList.metadata;
-                  // Update the local user data
-                  userList = userData;
-                  // Send the new data to the toolbar
-                  if(toolbarList && typeof toolbarList.onChange === "function") {
-                    toolbarList.onChange(userList);
-                  }
-                  hjson.pop();
-                }
+                var hjson = updateUserList(shjson);
 
                 // build a dom from HJSON, diff, and patch the editor
                 applyHjson(shjson);
@@ -309,7 +313,7 @@ define([
             var onReady = realtimeOptions.onReady = function (info) {
                 module.patchText = TextPatcher.create({
                     realtime: info.realtime,
-                    logging: false,
+                    logging: true,
                 });
 
                 module.realtime = info.realtime;
@@ -338,7 +342,7 @@ define([
 
                 // append the userlist to the hyperjson structure
                 if(Object.keys(myData).length > 0) {
-                    hjson[hjson.length] = {metadata: userList};
+                    hjson[3] = {metadata: userList};
                 }
                 // stringify the json and send it into chainpad
                 var shjson = stringify(hjson);
