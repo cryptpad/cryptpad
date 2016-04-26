@@ -110,8 +110,8 @@ define([
             var onLocal = config.onLocal = function () {
                 if (initializing) { return; }
                 console.log("LOCAL");
-                module.patchText(canonicalize($textarea.val()));
                 editor.save();
+                module.patchText(canonicalize($textarea.val()));
             };
 
             var onAbort = config.onAbort = function (info) {
@@ -123,15 +123,6 @@ define([
             var realtime = module.realtime = Realtime.start(config);
 
             editor.on('change', onLocal);
-
-            ['keydown', /*'keyup',*/ 'select', 'mousedown', 'mouseup', 'click'].forEach(function (evt) {
-                $textarea.on(evt, function () {
-                    onRemote();
-                    onLocal();
-                });
-                // onLocal?
-            });
-
         };
 
         var interval = 100;
