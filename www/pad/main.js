@@ -36,7 +36,9 @@ define([
 
     var module = window.REALTIME_MODULE = {
         Hyperjson: Hyperjson,
-        Hyperscript: Hyperscript
+        Hyperscript: Hyperscript,
+        logFights: true,
+        fights: []
     };
 
     var userName = Crypto.rand64(8),
@@ -290,6 +292,29 @@ define([
                 if (shjson2 !== shjson) {
                     console.error("shjson2 !== shjson");
                     module.patchText(shjson2);
+
+                    /*  pushing back over the wire is necessary, but it can
+                        result in a feedback loop, which we call a browser
+                        fight */
+                    if (module.logFights) {
+                        // what changed?
+                        var op = TextPatcher.diff(shjson, shjson2);
+                        // log the changes
+                        TextPatcher.log(shjson, op);
+                        var sop = JSON.stringify(TextPatcher.format(shjson, op));
+
+                        var index = module.fights.indexOf(sop);
+                        if (index === -1) {
+                            module.fights.push(sop);
+                            console.log("Found a new type of browser disagreement");
+                            console.log("You can inspect the list in your " +
+                                "console at `REALTIME_MODULE.fights`");
+                            console.log(module.fights);
+                        } else {
+                            console.log("Encountered a known browser disagreement: " +
+                                "available at `REALTIME_MODULE.fights[%s]`", index);
+                        }
+                    }
                 }
             };
 
