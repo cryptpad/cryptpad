@@ -144,8 +144,7 @@ define([
                 var realtime = module.realtime = info.realtime;
                 module.patchText = TextPatcher.create({
                     realtime: realtime,
-                    logging: true,
-                    //initialState: Messages.codeInitialState
+                    //logging: true
                 });
 
                 var userDoc = module.realtime.getUserDoc();
