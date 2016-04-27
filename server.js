@@ -6,8 +6,6 @@ var Http = require('http');
 var Https = require('https');
 var Fs = require('fs');
 var WebSocketServer = require('ws').Server;
-var ChainPadSrv = require('./ChainPadSrv');
-// var NetfluxSrv = require('./NetFluxWebsocketServer');
 var NetfluxSrv = require('./NetfluxWebsocketSrv');
 var WebRTCSrv = require('./WebRTCSrv');
 
@@ -84,6 +82,5 @@ var wsSrv = new WebSocketServer(wsConfig);
 Storage.create(config, function (store) {
     console.log('DB connected');
     NetfluxSrv.run(store, wsSrv);
-    ChainPadSrv.create(wsSrv, store);
     WebRTCSrv.run(wsSrv);
 });
