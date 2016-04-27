@@ -50,8 +50,13 @@ define([
                 extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }},
                 foldGutter: true,
                 gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-                mode: "javascript"
+                mode: "javascript",
+                readOnly: true
             });
+
+            var setEditable = module.setEditable = function (bool) {
+                editor.setOption('readOnly', !bool);
+            };
 
             var userList = {}; // List of pretty name of all users (mapped with their server ID)
             var toolbarList; // List of users still connected to the channel (server IDs)
@@ -101,9 +106,6 @@ define([
                 transformFunction: JsonOT.validate
             };
 
-            // TODO lock editor until chain is synced
-            // then unlock
-            var setEditable = function () { };
             var canonicalize = function (t) { return t.replace(/\r\n/g, '\n'); };
 
             var initializing = true;
@@ -118,17 +120,6 @@ define([
                 toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
                 createChangeName('cryptpad-changeName', $bar);
                 window.location.hash = info.channel + key;
-
-
-
-                /*if (!hash) {
-                    editor.setValue(Messages.codeInitialState);
-                    module.patchText(Messages.codeInitialState);
-                    module.patchText(Messages.codeInitialState);
-                    editor.setValue(Messages.codeInitialState);
-                }*/
-
-                //$(window).on('hashchange', function() { window.location.reload(); });
             };
 
             var updateUserList = function(shjson) {
@@ -161,6 +152,7 @@ define([
 
                 editor.setValue(newDoc);
 
+                setEditable(true);
                 initializing = false;
             };
 
@@ -179,7 +171,7 @@ define([
                 }
                 return pos;
             }
-            
+
             var posToCursor = function(position, newText) {
                 var cursor = {
                     line: 0,
@@ -202,12 +194,12 @@ define([
 
                 var hjson = JSON.parse(shjson);
                 var remoteDoc = hjson.content;
-                
+
                 //get old cursor here
                 var oldCursor = {};
                 oldCursor.selectionStart = cursorToPos(editor.getCursor('from'), oldDoc);
                 oldCursor.selectionEnd = cursorToPos(editor.getCursor('to'), oldDoc);
-                
+
                 editor.setValue(remoteDoc);
                 editor.save();
 
@@ -220,7 +212,7 @@ define([
                 }
                 else {
                     editor.setSelection(posToCursor(selects[0], remoteDoc), posToCursor(selects[1], remoteDoc));
-                }                                
+                }
 
                 var localDoc = canonicalize($textarea.val());
                 var hjson2 = {
@@ -232,11 +224,6 @@ define([
                     console.error("shjson2 !== shjson");
                     module.patchText(shjson2);
                 }
-
-
-                // check cursor
-                // apply changes to textarea
-                // replace cursor
             };
 
             var onLocal = config.onLocal = function () {
@@ -260,8 +247,8 @@ define([
             };
 
             var onAbort = config.onAbort = function (info) {
-                // TODO  alert the user
                 // inform of network disconnect
+                setEditable(false);
                 window.alert("Network Connection Lost!");
             };
 
