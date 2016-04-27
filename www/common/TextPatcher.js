@@ -120,8 +120,8 @@ var create = function(config) {
     });
 
     // propogate()
-    return function (newContent) {
-        if (newContent !== content) {
+    return function (newContent, force) {
+        if (newContent !== content || force) {
             applyChange(ctx, ctx.getUserDoc(), newContent, logging);
             if (ctx.getUserDoc() !== newContent) {
                 console.log("Expected that: `ctx.getUserDoc() === newContent`!");
