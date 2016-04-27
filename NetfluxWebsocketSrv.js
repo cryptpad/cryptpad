@@ -103,6 +103,7 @@ const handleMessage = function (ctx, user, msg) {
             let parsed;
             try { parsed = JSON.parse(json[2]); } catch (err) { console.error(err); return; }
             if (parsed[0] === 'GET_HISTORY') {
+                sendMsg(ctx, user, [seq, 'ACK']);
                 getHistory(ctx, parsed[1], function (msg) {
                     sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(msg)]);
                 }, function () {
