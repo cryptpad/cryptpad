@@ -10,7 +10,6 @@ define([
 
     /** Id of the button to change my username. */
     var USERNAME_BUTTON_GROUP = 'cryptpad-changeName';
-    var USERNAME_BUTTON_ID = 'rtwysiwyg-change-username';
 
     /** Id of the div containing the lag info. */
     var LAG_ELEM_CLS = 'rtwysiwyg-lag';
@@ -68,10 +67,10 @@ define([
             '    cursor: pointer;',
             '    color: #000;',
             '}',
-            '#' + USERNAME_BUTTON_GROUP + ' {',
+            '.' + USERNAME_BUTTON_GROUP + ' {',
             '    float: left;',
             '}',
-            '#' + USERNAME_BUTTON_GROUP + ' button {',
+            '.' + USERNAME_BUTTON_GROUP + ' button {',
             '    padding: 0;',
             '    margin-right: 5px;',
             '}',
@@ -96,6 +95,7 @@ define([
             '.' + DEBUG_LINK_CLS + ':link { color:transparent; }',
             '.' + DEBUG_LINK_CLS + ':link:hover { color:blue; }',
             '.gwt-TabPanelBottom { border-top: 0 none; }',
+            '.' + TOOLBAR_CLS + ' button { box-sizing: border-box; height: 101%; background-color: inherit; border: 1px solid #A6A6A6; border-radius: 5px; margin-right: 5px;}',
 
             '</style>'
          ].join('\n'));
@@ -153,7 +153,7 @@ define([
 
     var createChangeName = function($container, userList, buttonID) {
         var id = uid();
-        userList.innerHTML = '<span class="cke_toolgroup" id="' + buttonID + '"><a id="' + USERNAME_BUTTON_ID + '" class="cke_button"><button>Change name</button></a></span><span id="' + id + '"></span>';
+        userList.innerHTML = '<button id="' + buttonID + '" class="'+USERNAME_BUTTON_GROUP+'" >Change name</button><span id="' + id + '"></span>';
         return $container.find('#'+id)[0];
     };
 
