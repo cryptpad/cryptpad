@@ -1,7 +1,6 @@
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
     '/common/realtime-input.js',
-    '/common/messages.js',
     '/common/crypto.js',
     '/bower_components/marked/marked.min.js',
     '/common/convert.js',
@@ -15,29 +14,37 @@ define([
         Hyperjson = Convert.core.hyperjson,
         Hyperscript = Convert.core.hyperscript;
 
-    window.Vdom = Vdom;
-    window.Hyperjson = Hyperjson;
-    window.Hyperscript = Hyperscript;
-    
-    $(window).on('hashchange', function() {
-        window.location.reload();
-    });
-    if (window.location.href.indexOf('#') === -1) {
-        window.location.href = window.location.href + '#' + Crypto.genKey();
-        return;
+    var key;
+    var channel = '';
+    var hash = false;
+    if (!/#/.test(window.location.href)) {
+        key = Crypto.genKey();
+    } else {
+        hash = window.location.hash.slice(1);
+        channel = hash.slice(0, 32);
+        key = hash.slice(32);
     }
-
-    var key = Crypto.parseKey(window.location.hash.substring(1));
-
-    var $textarea = $('textarea').first(),
-        $target = $('#target');
-
-    window.$textarea = $textarea;
 
     // set markdown rendering options :: strip html to prevent XSS
     Marked.setOptions({
         sanitize: true
     });
+
+    var module = window.APP = {
+        Vdom: Vdom,
+        Hyperjson: Hyperjson,
+        Hyperscript: Hyperscript
+    };
+
+    var $target = module.$target = $('#target');
+
+    var config = {
+        websocketURL: Config.websocketURL,
+        userName: Crypto.rand64(8),
+        channel: channel,
+        cryptKey: key,
+        crypto: Crypto
+    };
 
     var draw = window.draw = (function () {
         var target = $target[0],
@@ -58,8 +65,7 @@ define([
         };
     }());
 
-    // FIXME
-    var colour = window.colour = Rainbow();
+    var colour = module.colour = Rainbow();
 
     var $inner = $('#inner');
 
@@ -83,31 +89,43 @@ define([
         }, 450);
     };
 
-    var config = {
-        textarea: $textarea[0],
-        websocketURL: Config.websocketURL,
-        userName: Crypto.rand64(8),
-        channel: key.channel,
-        cryptKey: key.cryptKey,
+    var initializing = true;
 
-        // when remote editors do things...
-        onRemote: function () {
-            lazyDraw($textarea.val());
-        },
-        // when your editor is ready
-        onReady: function (info) {
-            if (info.userList) { console.log("Userlist: [%s]", info.userList.join(',')); }
-            console.log("Realtime is ready!");
-            $textarea.trigger('keyup');
-        }
+    var onInit = config.onInit = function (info) {
+        window.location.hash = info.channel + key;
+        module.realtime = info.realtime;
+    };
+
+    // when your editor is ready
+    var onReady = config.onReady = function (info) {
+        //if (info.userList) { console.log("Userlist: [%s]", info.userList.join(',')); }
+        console.log("Realtime is ready!");
+
+        var userDoc = module.realtime.getUserDoc();
+        lazyDraw(userDoc);
+
+        initializing = false;
+    };
+
+    // when remote editors do things...
+    var onRemote = config.onRemote = function () {
+        if (initializing) { return; }
+        var userDoc = module.realtime.getUserDoc();
+        lazyDraw(userDoc);
+    };
+
+    var onLocal = config.onLocal = function () {
+        // we're not really expecting any local events for this editor...
+        /*  but we might add a second pane in the future so that you don't need
+            a second window to edit your markdown */
+        if (initializing) { return; }
+        var userDoc = module.realtime.getUserDoc();
+        lazyDraw(userDoc);
+    };
+
+    var onAbort = config.onAbort = function () {
+        window.alert("Network Connection Lost");
     };
 
     var rts = Realtime.start(config);
-
-    $textarea.on('change keyup keydown', function () {
-        if (redrawTimeout) { clearTimeout(redrawTimeout); }
-        redrawTimeout = setTimeout(function () {
-            lazyDraw($textarea.val());
-        }, 500);
-    });
 });
