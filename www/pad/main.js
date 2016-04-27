@@ -47,7 +47,7 @@ define([
     var isNotMagicLine = function (el) {
         // factor as:
         // return !(el.tagName === 'SPAN' && el.contentEditable === 'false');
-        var filter = (el.tagName === 'SPAN' && el.contentEditable === 'false');
+        var filter = (el.tagName === 'SPAN' && el.getAttribute('contentEditable') === 'false');
         if (filter) {
             console.log("[hyperjson.serializer] prevented an element" +
                 "from being serialized:", el);
@@ -60,6 +60,20 @@ define([
     var brFilter = function (hj) {
         if (hj[1].type === '_moz') { hj[1].type = undefined; }
         return hj;
+    };
+
+    /*  TODO integrate into flow to prevent browser fights over style */
+    var setStyle = function (elem, newStyleAttr) {
+        elem.setAttribute("data-chainpad-origstyle", newStyleAttr);
+        elem.setAttribute("style", newStyleAttr);
+        elem.setAttribute("data-chainpad-styleclone", elem.getAttribute("style"));
+    };
+
+    /*  TODO integrate into flow to prevent browser fights over style */
+    var getStyle = function (elem) {
+        var st = elem.getAttribute("style");
+        if (elem.getAttribute("data-chainpad-styleclone") !== st) { return st; }
+        return elem.getAttribute("data-chainpad-origstyle");
     };
 
     var andThen = function (Ckeditor) {
@@ -225,6 +239,9 @@ define([
             // apply patches, and try not to lose the cursor in the process!
             var applyHjson = function (shjson) {
                 var userDocStateDom = hjsonToDom(JSON.parse(shjson));
+
+                // we *might* be able to remove this now
+                // changes to hyperscript fixed this bug *maybe* --ansuz
                 userDocStateDom.setAttribute("contenteditable", "true"); // lol wtf
                 var patch = (DD).diff(inner, userDocStateDom);
                 (DD).apply(inner, patch);
