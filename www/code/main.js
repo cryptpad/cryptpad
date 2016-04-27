@@ -9,7 +9,8 @@ define([
     '/common/toolbar.js',
     'json.sortify',
     '/common/json-ot.js',
-    '/bower_components/jquery/dist/jquery.min.js'
+    '/bower_components/jquery/dist/jquery.min.js',
+    '/customize/pad.js'
 ], function (Config, /*RTCode,*/ Messages, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT) {
     var $ = window.jQuery;
     var module = window.APP = {};
