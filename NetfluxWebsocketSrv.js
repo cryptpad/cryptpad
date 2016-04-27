@@ -8,6 +8,8 @@ const HISTORY_KEEPER_ID = Crypto.randomBytes(8).toString('hex');
 
 const USE_HISTORY_KEEPER = true;
 const USE_FILE_BACKUP_STORAGE = true;
+const LOG_MESSAGES = false;
+
 
 let dropUser;
 
@@ -15,7 +17,7 @@ const now = function () { return (new Date()).getTime(); };
 
 const sendMsg = function (ctx, user, msg) {
     try {
-        console.log('<' + JSON.stringify(msg));
+        if (LOG_MESSAGES) { console.log('<' + JSON.stringify(msg)); }
         user.socket.send(JSON.stringify(msg));
     } catch (e) {
         console.log(e.stack);
@@ -181,7 +183,7 @@ let run = module.exports.run = function (storage, socketServer) {
         ctx.users[user.id] = user;
         sendMsg(ctx, user, [0, '', 'IDENT', user.id]);
         socket.on('message', function(message) {
-            console.log('>'+message);
+            if (LOG_MESSAGES) { console.log('>'+message); }
             try {
                 handleMessage(ctx, user, message);
             } catch (e) {
