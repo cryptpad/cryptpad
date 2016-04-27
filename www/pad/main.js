@@ -353,7 +353,7 @@ define([
             var onReady = realtimeOptions.onReady = function (info) {
                 module.patchText = TextPatcher.create({
                     realtime: info.realtime,
-                    logging: true,
+                    //logging: true,
                 });
 
                 module.realtime = info.realtime;
