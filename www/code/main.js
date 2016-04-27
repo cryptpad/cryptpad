@@ -1,3 +1,4 @@
+require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
 //    '/code/rt_codemirror.js',
@@ -5,14 +6,20 @@ define([
     '/common/crypto.js',
     '/common/realtime-input.js',
     '/common/TextPatcher.js',
+    '/common/toolbar.js',
+    'json.sortify',
     '/bower_components/jquery/dist/jquery.min.js'
-], function (Config, /*RTCode,*/ Messages, Crypto, Realtime, TextPatcher) {
+], function (Config, /*RTCode,*/ Messages, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify) {
     var $ = window.jQuery;
     var module = window.APP = {};
     var ifrw = module.ifrw = $('#pad-iframe')[0].contentWindow;
+    var stringify = function (obj) {
+        return JSONSortify(obj);
+    };
 
     $(function () {
-        var userName = Crypto.rand64(8);
+        var userName = Crypto.rand64(8),
+            toolbar;
 
         var key;
         var channel = '';
@@ -24,15 +31,6 @@ define([
             channel = hash.slice(0, 32);
             key = hash.slice(32);
         }
-
-        var config = {
-            //initialState: Messages.codeInitialState,
-            userName: userName,
-            websocketURL: Config.websocketURL,
-            channel: channel,
-            cryptKey: key,
-            crypto: Crypto,
-        };
 
         var andThen = function (CMeditor) {
             var $pad = $('#pad-iframe');
@@ -53,6 +51,53 @@ define([
                 mode: "javascript"
             });
 
+            var userList = {}; // List of pretty name of all users (mapped with their server ID)
+            var toolbarList; // List of users still connected to the channel (server IDs)
+            var addToUserList = function(data) {
+                for (var attrname in data) { userList[attrname] = data[attrname]; }
+                if(toolbarList && typeof toolbarList.onChange === "function") {
+                    toolbarList.onChange(userList);
+                }
+            };
+
+            var myData = {};
+            var myUserName = ''; // My "pretty name"
+            var myID; // My server ID
+
+            var setMyID = function(info) {
+              myID = info.myID || null;
+              myUserName = myID;
+            };
+
+            var createChangeName = function(id, $container) {
+                var buttonElmt = $container.find('#'+id)[0];
+                buttonElmt.addEventListener("click", function() {
+                   var newName = window.prompt("Change your name :", myUserName);
+                   if (newName && newName.trim()) {
+                       var myUserNameTemp = newName.trim();
+                       if(newName.trim().length > 32) {
+                         myUserNameTemp = myUserNameTemp.substr(0, 32);
+                       }
+                       myUserName = myUserNameTemp;
+                       myData[myID] = {
+                          name: myUserName
+                       };
+                       addToUserList(myData);
+                       onLocal();
+                   }
+                });
+            };
+
+            var config = {
+                //initialState: Messages.codeInitialState,
+                userName: userName,
+                websocketURL: Config.websocketURL,
+                channel: channel,
+                cryptKey: key,
+                crypto: Crypto,
+                setMyID: setMyID,
+            };
+
             // TODO lock editor until chain is synced
             // then unlock
             var setEditable = function () { };
@@ -61,7 +106,39 @@ define([
             var initializing = true;
 
             var onInit = config.onInit = function (info) {
+                var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
+                toolbarList = info.userList;
+                var config = {
+                    userData: userList,
+                    changeNameID: 'cryptpad-changeName'
+                };
+                toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
+                createChangeName('cryptpad-changeName', $bar);
                 window.location.hash = info.channel + key;
+
+
+
+                /*if (!hash) {
+                    editor.setValue(Messages.codeInitialState);
+                    module.patchText(Messages.codeInitialState);
+                    module.patchText(Messages.codeInitialState);
+                    editor.setValue(Messages.codeInitialState);
+                }*/
+
+                //$(window).on('hashchange', function() { window.location.reload(); });
+            };
+
+            var updateUserList = function(shjson) {
+                // Extract the user list (metadata) from the hyperjson
+                var hjson = (shjson === "") ? "" : JSON.parse(shjson);
+                if(hjson && hjson.metadata) {
+                  var userData = hjson.metadata;
+                  // Update the local user data
+                  addToUserList(userData);
+                }
+            }
+
+            var onReady = config.onReady = function (info) {
                 var realtime = module.realtime = info.realtime;
                 module.patchText = TextPatcher.create({
                     realtime: realtime,
@@ -69,38 +146,52 @@ define([
                     //initialState: Messages.codeInitialState
                 });
 
-
-                if (!hash) {
-                    editor.setValue(Messages.codeInitialState);
-                    module.patchText(Messages.codeInitialState);
-                    module.patchText(Messages.codeInitialState);
-                    editor.setValue(Messages.codeInitialState);
-                }
-
-                //$(window).on('hashchange', function() { window.location.reload(); });
-            };
-
-            var onReady = config.onReady = function (info) {
-                console.log("READY!");
-
                 var userDoc = module.realtime.getUserDoc();
 
-                editor.setValue(userDoc);
+                var newDoc = "";
+                if(userDoc !== "") {
+                    var hjson = JSON.parse(userDoc);
+                    newDoc = hjson.content;
+                }
+
+                // Update the user list (metadata) from the hyperjson
+                //updateUserList(shjson);
+
+                editor.setValue(newDoc);
 
                 initializing = false;
             };
 
             var onRemote = config.onRemote = function (info) {
                 if (initializing) { return; }
-                console.log("REMOTE");
 
                 var oldDoc = $textarea.val();
-                var userDoc = module.realtime.getUserDoc();
+                var shjson = module.realtime.getUserDoc();
 
-                $textarea.val(userDoc);
-                editor.setValue(userDoc);
+                // Update the user list (metadata) from the hyperjson
+                updateUserList(shjson);
 
+                var hjson = JSON.parse(shjson);
+                var remoteDoc = hjson.content;
+                editor.setValue(remoteDoc);
                 editor.save();
+
+                var op = TextPatcher.diff(oldDoc, remoteDoc);
+                //Fix cursor here
+
+                var localDoc = $textarea.val();
+                var hjson2 = {
+                  content: localDoc,
+                  metadata: userList
+                };
+
+                var shjson2 = stringify(hjson2);
+
+                if (shjson2 !== shjson) {
+                    console.error("shjson2 !== shjson");
+                    module.patchText(shjson2);
+                }
+
 
                 // check cursor
                 // apply changes to textarea
@@ -109,9 +200,22 @@ define([
 
             var onLocal = config.onLocal = function () {
                 if (initializing) { return; }
-                console.log("LOCAL");
+
                 editor.save();
-                module.patchText(canonicalize($textarea.val()));
+                var textValue = canonicalize($textarea.val());
+                var obj = {content: textValue};
+
+                // append the userlist to the hyperjson structure
+                obj.metadata = userList;
+
+                // stringify the json and send it into chainpad
+                var shjson = stringify(obj);
+
+                module.patchText(shjson);
+
+                if (module.realtime.getUserDoc() !== shjson) {
+                    console.error("realtime.getUserDoc() !== shjson");
+                }
             };
 
             var onAbort = config.onAbort = function (info) {
