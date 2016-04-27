@@ -92,6 +92,7 @@ var applyChange = function(ctx, oldval, newval, logging) {
 };
 
 var transformCursor = function (cursor, op) {
+    if (!op) { return cursor; }
     var pos = op.offset;
     var remove = op.toRemove;
     var insert = op.toInsert.length;

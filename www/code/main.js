@@ -8,8 +8,9 @@ define([
     '/common/TextPatcher.js',
     '/common/toolbar.js',
     'json.sortify',
+    '/common/json-ot.js',
     '/bower_components/jquery/dist/jquery.min.js'
-], function (Config, /*RTCode,*/ Messages, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify) {
+], function (Config, /*RTCode,*/ Messages, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT) {
     var $ = window.jQuery;
     var module = window.APP = {};
     var ifrw = module.ifrw = $('#pad-iframe')[0].contentWindow;
@@ -96,6 +97,7 @@ define([
                 cryptKey: key,
                 crypto: Crypto,
                 setMyID: setMyID,
+                transformFunction: JsonOT.validate
             };
 
             // TODO lock editor until chain is synced
@@ -162,10 +164,37 @@ define([
                 initializing = false;
             };
 
+            var cursorToPos = function(cursor, oldText) {
+                var cLine = cursor.line;
+                var cCh = cursor.ch;
+                var pos = 0;
+                var textLines = oldText.split("\n");
+                for (var line = 0; line <= cLine; line++) {
+                    if(line < cLine) {
+                        pos += textLines[line].length+1;
+                    }
+                    else if(line === cLine) {
+                        pos += cCh;
+                    }
+                }
+                return pos;
+            }
+            
+            var posToCursor = function(position, newText) {
+                var cursor = {
+                    line: 0,
+                    ch: 0
+                };
+                var textLines = newText.substr(0, position).split("\n");
+                cursor.line = textLines.length - 1;
+                cursor.ch = textLines[cursor.line].length;
+                return cursor;
+            }
+
             var onRemote = config.onRemote = function (info) {
                 if (initializing) { return; }
 
-                var oldDoc = $textarea.val();
+                var oldDoc = canonicalize($textarea.val());
                 var shjson = module.realtime.getUserDoc();
 
                 // Update the user list (metadata) from the hyperjson
@@ -173,20 +202,32 @@ define([
 
                 var hjson = JSON.parse(shjson);
                 var remoteDoc = hjson.content;
+                
+                //get old cursor here
+                var oldCursor = {};
+                oldCursor.selectionStart = cursorToPos(editor.getCursor('from'), oldDoc);
+                oldCursor.selectionEnd = cursorToPos(editor.getCursor('to'), oldDoc);
+                
                 editor.setValue(remoteDoc);
                 editor.save();
 
                 var op = TextPatcher.diff(oldDoc, remoteDoc);
-                //Fix cursor here
+                var selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
+                    return TextPatcher.transformCursor(oldCursor[attr], op);
+                });
+                if(selects[0] === selects[1]) {
+                    editor.setCursor(posToCursor(selects[0], remoteDoc));
+                }
+                else {
+                    editor.setSelection(posToCursor(selects[0], remoteDoc), posToCursor(selects[1], remoteDoc));
+                }                                
 
-                var localDoc = $textarea.val();
+                var localDoc = canonicalize($textarea.val());
                 var hjson2 = {
                   content: localDoc,
                   metadata: userList
                 };
-
                 var shjson2 = stringify(hjson2);
-
                 if (shjson2 !== shjson) {
                     console.error("shjson2 !== shjson");
                     module.patchText(shjson2);
