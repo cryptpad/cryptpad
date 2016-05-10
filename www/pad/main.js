@@ -277,7 +277,10 @@ define([
                 crypto: Crypto,
 
                 // really basic operational transform
-                transformFunction : JsonOT.validate
+                transformFunction : JsonOT.validate,
+
+                // cryptpad debug logging (default is 1)
+                // logLevel: 0,
             };
 
             var updateUserList = function(shjson) {
