@@ -190,7 +190,8 @@ define([
                                         channel,
                                         config.initialState || '',
                                         {
-                                        transformFunction: config.transformFunction
+                                        transformFunction: config.transformFunction,
+                                        logLevel: typeof(config.logLevel) !== 'undefined'? config.logLevel : 1
                                         });
         };
 
