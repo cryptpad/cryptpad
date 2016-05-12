@@ -18,7 +18,9 @@ define([
         key = hash.substr(32);
     }
 
-    var module = window.APP = {};
+    var module = window.APP = {
+        TextPatcher: TextPatcher
+    };
 
     var userName = module.userName = Crypto.rand64(8);
 
