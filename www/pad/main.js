@@ -4,7 +4,7 @@ define([
     '/common/messages.js',
     '/common/crypto.js',
     '/common/realtime-input.js',
-    '/bower_components/hyperjson/hyperjson.js',
+    '/bower_components/hyperjson/hyperjson.amd.js',
     '/common/hyperscript.js',
     '/common/toolbar.js',
     '/common/cursor.js',
