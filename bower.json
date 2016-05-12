@@ -31,6 +31,6 @@
     "rangy": "rangy-release#~1.3.0",
     "json.sortify": "~2.1.0",
     "fabric.js": "fabric#~1.6.0",
-    "hyperjson": "~1.2.0"
+    "hyperjson": "~1.2.2"
   }
 }
