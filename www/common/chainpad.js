@@ -220,10 +220,9 @@ var transform = Patch.transform = function (origToTransform, transformBy, doc, t
     Common.assert(origToTransform.parentHash === transformBy.parentHash);
     var resultOfTransformBy = apply(transformBy, doc);
 
-    toTransform = clone(origToTransform);
+    var toTransform = clone(origToTransform);
     var text = doc;
     for (var i = toTransform.operations.length-1; i >= 0; i--) {
-        text = Operation.apply(toTransform.operations[i], text);
         for (var j = transformBy.operations.length-1; j >= 0; j--) {
             toTransform.operations[i] = Operation.transform(text,
                                                             toTransform.operations[i],
@@ -369,10 +368,10 @@ var random = Patch.random = function (doc, opCount) {
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var PARANOIA = module.exports.PARANOIA = false;
+var PARANOIA = module.exports.PARANOIA = true;
 
 /* throw errors over non-compliant messages which would otherwise be treated as invalid */
-var TESTING = module.exports.TESTING = false;
+var TESTING = module.exports.TESTING = true;
 
 var assert = module.exports.assert = function (expr) {
     if (!expr) { throw new Error("Failed assertion"); }
@@ -833,7 +832,7 @@ var check = ChainPad.check = function(realtime) {
         Common.assert(uiDoc === realtime.userInterfaceContent);
     }
 
-    var doc = realtime.authDoc;
+    /*var doc = realtime.authDoc;
     var patchMsg = realtime.best;
     Common.assert(patchMsg.content.inverseOf.parentHash === realtime.uncommitted.parentHash);
     var patches = [];
@@ -845,7 +844,7 @@ var check = ChainPad.check = function(realtime) {
     while ((patchMsg = patches.pop())) {
         doc = Patch.apply(patchMsg.content, doc);
     }
-    Common.assert(doc === realtime.authDoc);
+    Common.assert(doc === realtime.authDoc);*/
 };
 
 var doOperation = ChainPad.doOperation = function (realtime, op) {
@@ -1443,7 +1442,13 @@ var rebase = Operation.rebase = function (oldOp, newOp) {
  * @param transformBy an existing operation which also has the same base.
  * @return toTransform *or* null if the result is a no-op.
  */
-var transform0 = Operation.transform0 = function (text, toTransform, transformBy) {
+
+var transform0 = Operation.transform0 = function (text, toTransformOrig, transformByOrig) {
+    // Cloning the original transformations makes this algorithm such that it
+    // **DOES NOT MUTATE ANYMORE**
+    var toTransform = Operation.clone(toTransformOrig);
+    var transformBy = Operation.clone(transformByOrig);
+
     if (toTransform.offset > transformBy.offset) {
         if (toTransform.offset > transformBy.offset + transformBy.toRemove) {
             // simple rebase

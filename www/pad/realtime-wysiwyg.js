@@ -327,10 +327,11 @@ console.log(new Error().stack);
                     error(false, 'realtime.getUserDoc() !== docText');
                 }
             };
-
+var now = function () { return new Date().getTime(); };
             var userDocBeforePatch;
             var incomingPatch = function () {
                 if (isErrorState || initializing) { return; }
+                console.log("before patch " + now());
                 userDocBeforePatch = userDocBeforePatch || getFixedDocText(doc, ifr.contentWindow);
                 if (PARANOIA && userDocBeforePatch !== getFixedDocText(doc, ifr.contentWindow)) {
                     error(false, "userDocBeforePatch !== getFixedDocText(doc, ifr.contentWindow)");
@@ -339,6 +340,7 @@ console.log(new Error().stack);
                 if (!op) { return; }
                 attempt(HTMLPatcher.applyOp)(
                     userDocBeforePatch, op, doc.body, Rangy, ifr.contentWindow);
+                console.log("after patch " + now());
             };
 
             realtime.onUserListChange(function (userList) {
