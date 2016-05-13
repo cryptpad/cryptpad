@@ -51,7 +51,7 @@ define([
     var cursorTypes = ['textarea', 'password', 'text'];
 
     var canonicalize = function (text) { return text.replace(/\r\n/g, '\n'); };
-    $elements.each(function (element) {
+    $elements.each(function (index, element) {
         var $this = $(this);
 
         var id = uid();
