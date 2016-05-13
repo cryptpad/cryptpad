@@ -11,7 +11,7 @@ define([
     '/common/json-ot.js',
     '/common/TypingTests.js',
     'json.sortify',
-    '/common/TextPatcher.js',
+    '/bower_components/textpatcher/TextPatcher.amd.js',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'

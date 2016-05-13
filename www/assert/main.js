@@ -3,7 +3,7 @@ define([
     '/bower_components/jquery/dist/jquery.min.js',
     '/common/hyperjson.js', // serializing classes as an attribute
     '/common/hyperscript.js', // using setAttribute
-    '/common/TextPatcher.js',
+    '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
 ], function (jQuery, Hyperjson, Hyperscript, TextPatcher, Sortify) {
     var $ = window.jQuery;

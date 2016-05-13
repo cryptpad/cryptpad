@@ -2,7 +2,7 @@ define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
     '/common/realtime-input.js',
     '/common/crypto.js',
-    '/common/TextPatcher.js',
+    '/bower_components/textpatcher/TextPatcher.amd.js',
     '/bower_components/jquery/dist/jquery.min.js'
 ], function (Config, Realtime, Crypto, TextPatcher) {
     var $ = window.jQuery;

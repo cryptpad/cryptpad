@@ -7,7 +7,7 @@ define([
     '/common/realtime-input.js',
     '/common/messages.js',
     '/common/crypto.js',
-    '/common/TextPatcher.js',
+    '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
     '/common/json-ot.js',
     '/bower_components/fabric.js/dist/fabric.min.js',
