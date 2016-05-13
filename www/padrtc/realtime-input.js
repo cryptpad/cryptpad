@@ -20,7 +20,7 @@ define([
     '/padrtc/netflux.js',
     '/common/crypto.js',
     '/common/toolbar.js',
-    '/common/TextPatcher.js',
+    '/padrtc/TextPatcher.js',
     '/common/es6-promise.min.js',
     '/common/chainpad.js',
     '/bower_components/jquery/dist/jquery.min.js',
