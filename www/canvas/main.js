@@ -9,10 +9,11 @@ define([
     '/common/crypto.js',
     '/common/TextPatcher.js',
     'json.sortify',
+    '/common/json-ot.js',
     '/bower_components/fabric.js/dist/fabric.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, Realtime, Messages, Crypto, TextPatcher, JSONSortify) {
+], function (Config, Realtime, Messages, Crypto, TextPatcher, JSONSortify, JsonOT) {
     var module = window.APP = { };
     var $ = module.$ = window.jQuery;
     var Fabric = module.Fabric = window.fabric;
@@ -68,6 +69,7 @@ define([
         channel: channel,
         cryptKey: key,
         crypto: Crypto,
+        transformFunction: JsonOT.validate,
     };
 
     var onInit = config.onInit = function (info) {
