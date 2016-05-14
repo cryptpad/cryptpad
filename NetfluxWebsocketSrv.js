@@ -2,13 +2,13 @@
 const Crypto = require('crypto');
 const LogStore = require('./storage/LogStore');
 
+
 const LAG_MAX_BEFORE_DISCONNECT = 30000;
 const LAG_MAX_BEFORE_PING = 15000;
 const HISTORY_KEEPER_ID = Crypto.randomBytes(8).toString('hex');
 
 const USE_HISTORY_KEEPER = true;
 const USE_FILE_BACKUP_STORAGE = true;
-const LOG_MESSAGES = false;
 
 
 let dropUser;
@@ -17,7 +17,7 @@ const now = function () { return (new Date()).getTime(); };
 
 const sendMsg = function (ctx, user, msg) {
     try {
-        if (LOG_MESSAGES) { console.log('<' + JSON.stringify(msg)); }
+        if (ctx.config.logToStdout) { console.log('<' + JSON.stringify(msg)); }
         user.socket.send(JSON.stringify(msg));
     } catch (e) {
         console.log(e.stack);
@@ -153,11 +153,12 @@ const handleMessage = function (ctx, user, msg) {
     }
 };
 
-let run = module.exports.run = function (storage, socketServer) {
+let run = module.exports.run = function (storage, socketServer, config) {
     let ctx = {
         users: {},
         channels: {},
-        store: (USE_FILE_BACKUP_STORAGE) ? LogStore.create('messages.log', storage) : storage
+        store: (USE_FILE_BACKUP_STORAGE) ? LogStore.create('messages.log', storage) : storage,
+        config: config
     };
     setInterval(function () {
         Object.keys(ctx.users).forEach(function (userId) {
@@ -183,7 +184,7 @@ let run = module.exports.run = function (storage, socketServer) {
         ctx.users[user.id] = user;
         sendMsg(ctx, user, [0, '', 'IDENT', user.id]);
         socket.on('message', function(message) {
-            if (LOG_MESSAGES) { console.log('>'+message); }
+            if (ctx.config.logToStdout) { console.log('>'+message); }
             try {
                 handleMessage(ctx, user, message);
             } catch (e) {
