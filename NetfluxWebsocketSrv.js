@@ -62,6 +62,17 @@ dropUser = function (ctx, user) {
         if (chan.length === 0) {
             console.log("Removing empty channel ["+chanName+"]");
             delete ctx.channels[chanName];
+
+            /*  Call removeChannel if it is a function and channel removal is
+                set to true in the config file */
+            if (ctx.config.removeChannels && typeof(ctx.store.removeChannel) === 'function') {
+                ctx.timeouts[chanName] = setTimeout(function () {
+                    ctx.store.removeChannel(chanName, function (err) {
+                        if (err) { console.error("[removeChannelErr]: %s", err); }
+                        console.log("Deleted channel [%s] history from database...", chanName);
+                    });
+                }, ctx.config.channelRemovalTimeout);
+            }
         } else {
             sendChannelMessage(ctx, chan, [user.id, 'LEAVE', chanName, 'Quit: [ dropUser() ]']);
         }
@@ -91,6 +102,12 @@ const handleMessage = function (ctx, user, msg) {
         let chanName = obj || randName();
         sendMsg(ctx, user, [seq, 'JACK', chanName]);
         let chan = ctx.channels[chanName] = ctx.channels[chanName] || [];
+
+        // prevent removal of the channel if there is a pending timeout
+        if (ctx.config.removeChannels && ctx.timeouts[chanName]) {
+            clearTimeout(ctx.timeouts[chanName]);
+        }
+
         chan.id = chanName;
         if (USE_HISTORY_KEEPER) {
             sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'JOIN', chanName]);
@@ -154,9 +171,16 @@ const handleMessage = function (ctx, user, msg) {
 };
 
 let run = module.exports.run = function (storage, socketServer, config) {
+    /*  Channel removal timeout defaults to 60000ms (one minute) */
+    config.channelRemovalTimeout =
+        typeof(config.channelRemovalTimeout) === 'number'?
+            config.channelRemovalTimeout:
+            60000;
+
     let ctx = {
         users: {},
         channels: {},
+        timeouts: {},
         store: (USE_FILE_BACKUP_STORAGE) ? LogStore.create('messages.log', storage) : storage,
         config: config
     };
