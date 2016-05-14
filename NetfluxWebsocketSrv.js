@@ -69,7 +69,9 @@ dropUser = function (ctx, user) {
                 ctx.timeouts[chanName] = setTimeout(function () {
                     ctx.store.removeChannel(chanName, function (err) {
                         if (err) { console.error("[removeChannelErr]: %s", err); }
-                        console.log("Deleted channel [%s] history from database...", chanName);
+                        else {
+                            console.log("Deleted channel [%s] history from database...", chanName);
+                        }
                     });
                 }, ctx.config.channelRemovalTimeout);
             }
