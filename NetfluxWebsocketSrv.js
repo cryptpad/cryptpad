@@ -65,15 +65,20 @@ dropUser = function (ctx, user) {
 
             /*  Call removeChannel if it is a function and channel removal is
                 set to true in the config file */
-            if (ctx.config.removeChannels && typeof(ctx.store.removeChannel) === 'function') {
-                ctx.timeouts[chanName] = setTimeout(function () {
-                    ctx.store.removeChannel(chanName, function (err) {
-                        if (err) { console.error("[removeChannelErr]: %s", err); }
-                        else {
-                            console.log("Deleted channel [%s] history from database...", chanName);
-                        }
-                    });
-                }, ctx.config.channelRemovalTimeout);
+            if (ctx.config.removeChannels) {
+                if (typeof(ctx.store.removeChannel) === 'function') {
+                    ctx.timeouts[chanName] = setTimeout(function () {
+                        ctx.store.removeChannel(chanName, function (err) {
+                            if (err) { console.error("[removeChannelErr]: %s", err); }
+                            else {
+                                console.log("Deleted channel [%s] history from database...", chanName);
+                            }
+                        });
+                    }, ctx.config.channelRemovalTimeout);
+                } else {
+                    console.error("You have configured your server to remove empty channels, " +
+                        "however, the database adaptor you are using has not implemented this behaviour.");
+                }
             }
         } else {
             sendChannelMessage(ctx, chan, [user.id, 'LEAVE', chanName, 'Quit: [ dropUser() ]']);
