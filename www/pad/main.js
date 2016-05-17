@@ -48,7 +48,9 @@ define([
     var isNotMagicLine = function (el) {
         // factor as:
         // return !(el.tagName === 'SPAN' && el.contentEditable === 'false');
-        var filter = (el.tagName === 'SPAN' && el.getAttribute('contentEditable') === 'false');
+        var filter = (el.tagName === 'SPAN' &&
+            el.getAttribute('contentEditable') === 'false' &&
+            /position:absolute;border-top:1px dashed/.test(ml.getAttribute('style')));
         if (filter) {
             console.log("[hyperjson.serializer] prevented an element" +
                 "from being serialized:", el);
