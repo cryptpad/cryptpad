@@ -42,6 +42,12 @@ This function accepts the name of the channel in which the user is interested, t
 It is only implemented within the leveldb adaptor, making our latest code incompatible with the other back ends.
 While we migrate to our new Netflux API, only the leveldb adaptor will be supported.
 
+## removeChannel(channelName, callback)
+
+This method is called (optionally, see config.js.dist for more info) some amount of time after the last client in a channel disconnects.
+
+It should remove any history of that channel, and execute a callback which takes an error message as an argument.
+
 ## Documenting your adaptor
 
 Naturally, you should comment your code well before making a PR.
