@@ -81,6 +81,6 @@ if (config.websocketPort !== config.httpPort) {
 var wsSrv = new WebSocketServer(wsConfig);
 Storage.create(config, function (store) {
     console.log('DB connected');
-    NetfluxSrv.run(store, wsSrv);
+    NetfluxSrv.run(store, wsSrv, config);
     WebRTCSrv.run(wsSrv);
 });

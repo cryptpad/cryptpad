@@ -12,6 +12,20 @@ module.exports = {
     // the port used for websockets
     websocketPort: 3000,
 
+    /*  Cryptpad can log activity to stdout
+     *  This may be useful for debugging
+     */
+    logToStdout: false,
+
+    /*  Cryptpad can be configured to remove channels some number of ms
+        after the last remaining client has disconnected.
+
+        Default behaviour is to keep channels forever.
+        If you enable channel removal, the default removal time is one minute
+    */
+    removeChannels: false,
+    channelRemovalTimeout: 60000,
+
     // You now have a choice of storage engines
 
     /* amnesiadb only exists in memory.
