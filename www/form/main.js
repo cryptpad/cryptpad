@@ -57,6 +57,9 @@ define([
         var id = uid();
         var type = getInputType($this);
 
+        // ignore hidden elements
+        if (type === 'hidden') { return; }
+
         $this   // give each element a uid
             .data('rtform-uid', id)
                 // get its type
@@ -144,10 +147,18 @@ define([
 
         console.log(userDoc);
 
+        // flush received values to the map
+        // but only if you don't have them locally
+        // this *shouldn't* break cursors
+        Object.keys(parsed).forEach(function (key) {
+            if (UI.ids.indexOf(key) === -1) { Map[key] = parsed[key]; }
+        });
+
         UI.each(function (ui, i, list) {
             var newval = parsed[ui.id];
             var oldval = ui.value();
 
+            if (typeof(newval) === 'undefined') { return; }
             if (newval === oldval) { return; }
 
             var op;
