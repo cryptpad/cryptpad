@@ -33,7 +33,7 @@ define([
     var uid = module.uid = Formula.uid;
 
     var getInputType = Formula.getInputType;
-    var $elements = module.elements = $('input, select, textarea')
+    var $elements = module.elements = $('input, select, textarea');
 
     var eventsByType = Formula.eventsByType;
 
@@ -128,17 +128,17 @@ define([
         });
     };
 
+    var readValues = function () {
+        UI.each(function (ui, i, list) {
+            Map[ui.id] = ui.value();
+        });
+    };
+
     var onLocal = config.onLocal = function () {
         if (initializing) { return; }
         /* serialize local changes */
         readValues();
         module.patchText(Sortify(Map));
-    };
-
-    var readValues = function () {
-        UI.each(function (ui, i, list) {
-            Map[ui.id] = ui.value();
-        });
     };
 
     var updateValues = function () {
@@ -162,10 +162,11 @@ define([
             if (newval === oldval) { return; }
 
             var op;
+            var selects;
             var element = ui.element;
             if (ui.preserveCursor) {
                 op = TextPatcher.diff(oldval, newval);
-                var selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
+                selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
                     var before = element[attr];
                     var after = TextPatcher.transformCursor(element[attr], op);
                     return after;
@@ -175,8 +176,8 @@ define([
             ui.value(newval);
             ui.update();
 
-            if (op) {
-                console.log(selects);
+            if (op && ui.preserveCursor) {
+                //console.log(selects);
                 element.selectionStart = selects[0];
                 element.selectionEnd = selects[1];
             }

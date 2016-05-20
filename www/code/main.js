@@ -76,6 +76,41 @@ define([
               myUserName = myID;
             };
 
+            var config = {
+                //initialState: Messages.codeInitialState,
+                userName: userName,
+                websocketURL: Config.websocketURL,
+                channel: channel,
+                cryptKey: key,
+                crypto: Crypto,
+                setMyID: setMyID,
+                transformFunction: JsonOT.validate
+            };
+
+            var canonicalize = function (t) { return t.replace(/\r\n/g, '\n'); };
+
+            var initializing = true;
+
+            var onLocal = config.onLocal = function () {
+                if (initializing) { return; }
+
+                editor.save();
+                var textValue = canonicalize($textarea.val());
+                var obj = {content: textValue};
+
+                // append the userlist to the hyperjson structure
+                obj.metadata = userList;
+
+                // stringify the json and send it into chainpad
+                var shjson = stringify(obj);
+
+                module.patchText(shjson);
+
+                if (module.realtime.getUserDoc() !== shjson) {
+                    console.error("realtime.getUserDoc() !== shjson");
+                }
+            };
+
             var createChangeName = function(id, $container) {
                 var buttonElmt = $container.find('#'+id)[0];
                 buttonElmt.addEventListener("click", function() {
@@ -94,21 +129,6 @@ define([
                    }
                 });
             };
-
-            var config = {
-                //initialState: Messages.codeInitialState,
-                userName: userName,
-                websocketURL: Config.websocketURL,
-                channel: channel,
-                cryptKey: key,
-                crypto: Crypto,
-                setMyID: setMyID,
-                transformFunction: JsonOT.validate
-            };
-
-            var canonicalize = function (t) { return t.replace(/\r\n/g, '\n'); };
-
-            var initializing = true;
 
             var onInit = config.onInit = function (info) {
                 var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
@@ -130,7 +150,7 @@ define([
                   // Update the local user data
                   addToUserList(userData);
                 }
-            }
+            };
 
             var onReady = config.onReady = function (info) {
                 var realtime = module.realtime = info.realtime;
@@ -170,7 +190,7 @@ define([
                     }
                 }
                 return pos;
-            }
+            };
 
             var posToCursor = function(position, newText) {
                 var cursor = {
@@ -181,7 +201,7 @@ define([
                 cursor.line = textLines.length - 1;
                 cursor.ch = textLines[cursor.line].length;
                 return cursor;
-            }
+            };
 
             var onRemote = config.onRemote = function (info) {
                 if (initializing) { return; }
@@ -223,26 +243,6 @@ define([
                 if (shjson2 !== shjson) {
                     console.error("shjson2 !== shjson");
                     module.patchText(shjson2);
-                }
-            };
-
-            var onLocal = config.onLocal = function () {
-                if (initializing) { return; }
-
-                editor.save();
-                var textValue = canonicalize($textarea.val());
-                var obj = {content: textValue};
-
-                // append the userlist to the hyperjson structure
-                obj.metadata = userList;
-
-                // stringify the json and send it into chainpad
-                var shjson = stringify(obj);
-
-                module.patchText(shjson);
-
-                if (module.realtime.getUserDoc() !== shjson) {
-                    console.error("realtime.getUserDoc() !== shjson");
                 }
             };
 

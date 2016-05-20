@@ -295,7 +295,7 @@ define([
                   addToUserList(userData);
                   hjson.pop();
                 }
-            }
+            };
 
             var onRemote = realtimeOptions.onRemote = function (info) {
                 if (initializing) { return; }
