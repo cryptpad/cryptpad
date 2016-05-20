@@ -37,6 +37,8 @@ define([
         verbose = function (x) { console.log(x); };
     verbose = function () {}; // comment out to enable verbose logging
 
+    var unBencode = function (str) { return str.replace(/^\d+:/, ''); };
+
     var start = module.exports.start =
         function (config)
     {
@@ -59,27 +61,7 @@ define([
         var realtime;
 
         var parseMessage = function (msg) {
-            var res ={};
-            // two or more? use a for
-            ['pass','user','channelId','content'].forEach(function(attr){
-                var len=msg.slice(0,msg.indexOf(':')),
-                // taking an offset lets us slice out the prop
-                // and saves us one string copy
-                    o=len.length+1,
-                    prop=res[attr]=msg.slice(o,Number(len)+o);
-                // slice off the property and its descriptor
-                msg = msg.slice(prop.length+o);
-            });
-            // content is the only attribute that's not a string
-            res.content=JSON.parse(res.content);
-            return res;
-        };
-
-        var mkMessage = function (user, chan, content) {
-            content = JSON.stringify(content);
-            return user.length + ':' + user +
-                chan.length + ':' + chan +
-                content.length + ':' + content;
+            return unBencode(msg);//.slice(msg.indexOf(':[') + 1);
         };
 
         var userList = {
@@ -137,6 +119,12 @@ define([
                     config.onLocal();
                 }
             }
+
+            // slice off the bencoded header
+            // Why are we getting bencoded stuff to begin with?
+            // FIXME this shouldn't be necessary
+            message = unBencode(message);//.slice(message.indexOf(':[') + 1);
+
             // pass the message into Chainpad
             realtime.message(message);
         };
@@ -154,10 +142,7 @@ define([
         // shim between chainpad and netflux
         chainpadAdapter = {
             msgIn : function(peerId, msg) {
-                var parsed = parseMessage(msg);
-                // Remove the password from the message
-                var passLen = msg.substring(0,msg.indexOf(':'));
-                var message = msg.substring(passLen.length+1 + Number(passLen));
+                var message = parseMessage(msg);
                 try {
                     var decryptedMsg = Crypto.decrypt(message, cryptKey);
                     messagesHistory.push(decryptedMsg);
@@ -166,33 +151,24 @@ define([
                     console.error(err);
                     return message;
                 }
-
             },
             msgOut : function(msg, wc) {
-                var parsed = parseMessage(msg);
-                if(parsed.content[0] === 0) { // We're registering : send a REGISTER_ACK to Chainpad
-                    onMessage('', '1:y'+mkMessage('', channel, [1,0]));
-                    return;
+                try {
+                    return Crypto.encrypt(msg, cryptKey);
+                } catch (err) {
+                    console.log(msg);
+                    throw err;
                 }
-                if(parsed.content[0] === 4) { // PING message from Chainpad
-                    parsed.content[0] = 5;
-                    onMessage('', '1:y'+mkMessage(parsed.user, parsed.channelId, parsed.content));
-                    // wc.sendPing();
-                    return;
-                }
-                return Crypto.encrypt(msg, cryptKey);
             }
         };
 
         var createRealtime = function(chan) {
-            return ChainPad.create(userName,
-                                        passwd,
-                                        channel,
-                                        config.initialState || '',
-                                        {
-                                        transformFunction: config.transformFunction,
-                                        logLevel: typeof(config.logLevel) !== 'undefined'? config.logLevel : 1
-                                        });
+            return ChainPad.create({
+                userName: userName,
+                initialState: config.initialState,
+                transformFunction: config.transformFunction,
+                logLevel: typeof(config.logLevel) !== 'undefined'? config.logLevel : 1
+            });
         };
 
 
@@ -225,13 +201,12 @@ define([
             }
 
             // Sending a message...
-            realtime.onMessage(function(message) {
+            realtime.onMessage(function(message, cb) {
                 // Filter messages sent by Chainpad to make it compatible with Netflux
                 message = chainpadAdapter.msgOut(message, wc);
                 if(message) {
                   wc.bcast(message).then(function() {
-                    // Send the message back to Chainpad once it is sent to the recipients.
-                    onMessage(wc.myID, message);
+                    cb();
                   }, function(err) {
                     // The message has not been sent, display the error.
                     console.error(err);
@@ -283,8 +258,6 @@ define([
             // pass messages that come out of netflux into our local handler
 
             network.on('disconnect', function (evt) {
-                // TODO also abort if Netflux times out
-                // that will be managed in Netflux-client.js
                 if (config.onAbort) {
                     config.onAbort({
                         reason: evt.reason
