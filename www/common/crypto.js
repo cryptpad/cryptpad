@@ -41,6 +41,10 @@ define([
         if (!isBencoded(msg)) {
             return encryptStr(msg, key);
         }
+
+        /*  Currently this fails because messages have already been tampered
+            with before they get here.  */
+
         var spl = splitMessage(msg, true);
         var json = JSON.parse(spl[1]);
         // non-patches are not encrypted.
