@@ -1,38 +1,94 @@
-define(function () {
-    var compare = {};
+define([
+    '/bower_components/proxy-polyfill/proxy.min.js', // https://github.com/GoogleChrome/proxy-polyfill
+],function () {
+    var Proxy = window.Proxy;
 
-    var isArray = compare.isArray = function (obj) {
-        return Object.prototype.toString.call(obj)==='[object Array]'
+    var ListMap = {};
+
+    var isArray = ListMap.isArray = function (obj) {
+        return Object.prototype.toString.call(obj)==='[object Array]';
     };
 
-    var type = compare.type = function (dat) {
-        return dat === null?
-            'null':
-            isArray(dat)?'array': typeof(dat);
+    /*  Arrays and nulls both register as 'object' when using native typeof
+        we need to distinguish them as their own types, so use this instead. */
+    var type = ListMap.type = function (dat) {
+        return dat === null?  'null': isArray(dat)?'array': typeof(dat);
     };
 
-    /*  compare objects A and B, where A is the _older_ of the two */
-    compare.objects = function (A, B, f, path) {
+    var handlers = ListMap.handlers = {
+        get: function (obj, prop) {
+            // FIXME magic?
+            if (prop === 'length' && typeof(obj.length) === 'number') { return obj.length; }
+
+            return obj[prop];
+        },
+        set: function (obj, prop, value) {
+            if (prop === 'on') {
+                throw new Error("'on' is a reserved attribute name for realtime lists and maps");
+            }
+            if (obj[prop] === value) { return value; }
+
+            var t_value = ListMap.type(value);
+            if (['array', 'object'].indexOf(t_value) !== -1) {
+                console.log("Constructing new proxy for value with type [%s]", t_value);
+                var proxy = obj[prop] = ListMap.makeProxy(value);
+            } else {
+                console.log("Setting [%s] to [%s]", prop, value);
+                obj[prop] = value;
+            }
+
+            // FIXME this is NO GOOD
+            ListMap.onLocal();
+            return obj[prop];
+        }
+    };
+
+    var makeProxy = ListMap.makeProxy = function (obj) {
+        return new Proxy(obj, handlers);
+    };
+
+    var recursiveProxies = ListMap.recursiveProxies = function (obj) {
+        var t_obj = type(obj);
+
+        var proxy;
+
+        switch (t_obj) {
+            case 'object':
+                proxy = makeProxy({});
+                ListMap.objects(proxy, obj, makeProxy, []);
+                return proxy;
+            case 'array':
+                proxy = makeProxy([]);
+                ListMap.arrays(proxy, obj, makeProxy, []);
+                return proxy;
+            default:
+                return obj;
+        }
+    };
+
+    /*  ListMap objects A and B, where A is the _older_ of the two */
+    ListMap.objects = function (A, B, f, path) {
         var Akeys = Object.keys(A);
         var Bkeys = Object.keys(B);
 
-        console.log("inspecting path [%s]", path.join(','));
+        //console.log("inspecting path [%s]", path.join(','));
 
         /*  iterating over the keys in B will tell you if a new key exists
             it will not tell you if a key has been removed.
             to accomplish that you will need to iterate over A's keys */
         Bkeys.forEach(function (b) {
-            console.log(b);
+            //console.log(b);
+            var t_b = type(B[b]);
+
             if (Akeys.indexOf(b) === -1) {
                 // there was an insertion
                 console.log("Inserting new key: [%s]", b);
 
-                var t_b = type(B[b]);
                 switch (t_b) {
                     case 'undefined':
                         // umm. this should never happen?
                         throw new Error("undefined type has key. this shouldn't happen?");
-                        break;
+                        //break;
                     case 'array':
                         console.log('construct list');
                         A[b] = f(B[b]);
@@ -48,7 +104,6 @@ define(function () {
             } else {
                 // the key already existed
                 var t_a = type(A[b]);
-                var t_b = type(B[b]);
 
                 if (t_a !== t_b) {
                     // its type changed!
@@ -86,10 +141,10 @@ define(function () {
                         nextPath.push(b);
                         if (t_a === 'object') {
                             // it's an object
-                            compare.objects(A[b], B[b], f, nextPath);
+                            ListMap.objects(A[b], B[b], f, nextPath);
                         } else {
                             // it's an array
-                            compare.arrays(A[b], B[b], f, nextPath);
+                            ListMap.arrays(A[b], B[b], f, nextPath);
                         }
                     }
                 }
@@ -104,11 +159,11 @@ define(function () {
         });
     };
 
-    compare.arrays = function (A, B, f, path) {
+    ListMap.arrays = function (A, B, f, path) {
         var l_A = A.length;
         var l_B = B.length;
 
-        // TODO do things with the path
+        // TODO do things with the path (callbacks)
 
         if (l_A !== l_B) {
             // B is longer than Aj
@@ -144,10 +199,10 @@ define(function () {
 
                     switch (t_b) {
                         case 'object':
-                            compare.objects(A[i], b, f, nextPath);
+                            ListMap.objects(A[i], b, f, nextPath);
                             break;
                         case 'array':
-                            compare.arrays(A[i], b, f, nextPath);
+                            ListMap.arrays(A[i], b, f, nextPath);
                             break;
                         default:
                             A[i] = b;
@@ -182,10 +237,10 @@ define(function () {
                     // same type
                     switch (t_b) {
                         case 'object':
-                            compare.objects(A[i], B[i], f, nextPath);
+                            ListMap.objects(A[i], B[i], f, nextPath);
                             break;
                         case 'array':
-                            compare.arrays(A[i], B[i], f, nextPath);
+                            ListMap.arrays(A[i], B[i], f, nextPath);
                             break;
                         default:
                             A[i] = B[i];
@@ -196,5 +251,29 @@ define(function () {
         }
     };
 
-    return compare;
+    var update = ListMap.update = function (A, B) {
+
+        var t_A = type(A);
+        var t_B = type(B);
+
+        if (t_A !== t_B) {
+            throw new Error("Proxy updates can't result in type changes");
+        }
+
+        switch (t_B) {
+            case 'array':
+                // idk
+                break;
+            case 'object':
+                ListMap.objects(A, B, function (obj) {
+                    console.log("constructing new proxy for type [%s]", type(obj));
+                    return makeProxy(obj);
+                }, []);
+                break;
+            default:
+                throw new Error("unsupported realtime datatype");
+        }
+    };
+
+    return ListMap;
 });
