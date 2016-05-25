@@ -32,7 +32,7 @@
     "json.sortify": "~2.1.0",
     "fabric.js": "fabric#~1.6.0",
     "hyperjson": "~1.2.2",
-    "textpatcher": "^1.1.1",
+    "textpatcher": "^1.2.0",
     "proxy-polyfill": "^0.1.5"
   }
 }
