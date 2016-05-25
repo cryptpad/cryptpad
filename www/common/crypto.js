@@ -22,50 +22,12 @@ define([
         return Nacl.util.encodeUTF8(unpacked);
     };
 
-    var isBencoded = function (msg) {
-        return /^\d+:/;
-    };
-
-    // this is crap because of bencoding messages... it should go away....
-    var splitMessage = function (msg, sending) {
-        var idx = 0;
-        var nl;
-        for (var i = ((sending) ? 0 : 1); i < 3; i++) {
-            nl = msg.indexOf(':',idx);
-            idx = nl + Number(msg.substring(idx,nl)) + 1;
-        }
-        return [ msg.substring(0,idx), msg.substring(msg.indexOf(':',idx) + 1) ];
-    };
-
     var encrypt = module.exports.encrypt = function (msg, key) {
-        if (!isBencoded(msg)) {
-            return encryptStr(msg, key);
-        }
-
-        /*  Currently this fails because messages have already been tampered
-            with before they get here.  */
-
-        var spl = splitMessage(msg, true);
-        var json = JSON.parse(spl[1]);
-        // non-patches are not encrypted.
-        if (json[0] !== 2) { return msg; }
-        json[1] = encryptStr(JSON.stringify(json[1]), key);
-        var res = JSON.stringify(json);
-        return spl[0] + res.length + ':' + res;
+        return encryptStr(msg, key);
     };
 
     var decrypt = module.exports.decrypt = function (msg, key) {
-        if (!isBencoded(msg)) {
-            return decryptStr(msg, key);
-        }
-        var spl = splitMessage(msg, false);
-        var json = JSON.parse(spl[1]);
-        // non-patches are not encrypted.
-        if (json[0] !== 2) { return msg; }
-        if (typeof(json[1]) !== 'string') { throw new Error(); }
-        json[1] = JSON.parse(decryptStr(json[1], key));
-        var res = JSON.stringify(json);
-        return spl[0] + res.length + ':' + res;
+        return decryptStr(msg, key);
     };
 
     var parseKey = module.exports.parseKey = function (str) {
