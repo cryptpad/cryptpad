@@ -57,8 +57,10 @@ define([
         var id = uid();
         var type = getInputType($this);
 
-        // ignore hidden elements
-        if (type === 'hidden') { return; }
+        // ignore hidden inputs, submit inputs, and buttons
+        if (['button', 'submit', 'hidden'].indexOf(type) !== -1) {
+            return;
+        }
 
         $this   // give each element a uid
             .data('rtform-uid', id)
