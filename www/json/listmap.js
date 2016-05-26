@@ -15,6 +15,35 @@ define([
         return dat === null?  'null': isArray(dat)?'array': typeof(dat);
     };
 
+    var makeHandlers = function (cb) {
+        return {
+            get: function (obj, prop) {
+                // FIXME magic?
+                if (prop === 'length' && typeof(obj.length) === 'number') { return obj.length; }
+
+                return obj[prop];
+            },
+            set: function (obj, prop, value) {
+                if (prop === 'on') {
+                    throw new Error("'on' is a reserved attribute name for realtime lists and maps");
+                }
+                if (obj[prop] === value) { return value; }
+
+                var t_value = ListMap.type(value);
+                if (['array', 'object'].indexOf(t_value) !== -1) {
+                    console.log("Constructing new proxy for value with type [%s]", t_value);
+                    var proxy = obj[prop] = ListMap.makeProxy(value);
+                } else {
+                    console.log("Setting [%s] to [%s]", prop, value);
+                    obj[prop] = value;
+                }
+
+                cb();
+                return obj[prop];
+            },
+        };
+    };
+
     var handlers = ListMap.handlers = {
         get: function (obj, prop) {
             // FIXME magic?
@@ -43,8 +72,10 @@ define([
         }
     };
 
-    var makeProxy = ListMap.makeProxy = function (obj) {
-        return new Proxy(obj, handlers);
+    var makeProxy = ListMap.makeProxy = function (obj, local) {
+        local = local || ListMap.onLocal;
+
+        return new Proxy(obj, handlers); //makeHandlers(ListMap.onLocal));
     };
 
     var recursiveProxies = ListMap.recursiveProxies = function (obj) {
@@ -66,6 +97,12 @@ define([
         }
     };
 
+    var onChange = function (path, key) {
+        var P = path.slice(0);
+        P.push(key);
+        console.log('change at path [%s]', P.join(','));
+    };
+
     /*  ListMap objects A and B, where A is the _older_ of the two */
     ListMap.objects = function (A, B, f, path) {
         var Akeys = Object.keys(A);
@@ -83,6 +120,7 @@ define([
             if (Akeys.indexOf(b) === -1) {
                 // there was an insertion
                 console.log("Inserting new key: [%s]", b);
+                onChange(path, b);
 
                 switch (t_b) {
                     case 'undefined':
@@ -90,11 +128,11 @@ define([
                         throw new Error("undefined type has key. this shouldn't happen?");
                         //break;
                     case 'array':
-                        console.log('construct list');
+                        //console.log('construct list');
                         A[b] = f(B[b]);
                         break;
                     case 'object':
-                        console.log('construct map');
+                        //console.log('construct map');
                         A[b] = f(B[b]);
                         break;
                     default:
@@ -113,12 +151,12 @@ define([
                             delete A[b];
                             break;
                         case 'array':
-                            console.log('construct list');
+                            //console.log('construct list');
                             A[b] = f(B[b]);
                             // make a new proxy
                             break;
                         case 'object':
-                            console.log('construct map');
+                            //console.log('construct map');
                             A[b] = f(B[b]);
                             // make a new proxy
                             break;
@@ -133,6 +171,7 @@ define([
                     if (['array', 'object'].indexOf(t_a) === -1) {
                         // we can do deep equality...
                         if (A[b] !== B[b]) {
+                            onChange(path, b);
                             console.log("changed values from [%s] to [%s]", A[b], B[b]);
                             A[b] = B[b];
                         }
@@ -152,6 +191,7 @@ define([
         });
         Akeys.forEach(function (a) {
             if (Bkeys.indexOf(a) === -1 || type(B[a]) === 'undefined') {
+                onChange(path, a);
                 console.log("Deleting [%s]", a);
                 // the key was deleted!
                 delete A[a];
@@ -205,6 +245,7 @@ define([
                             ListMap.arrays(A[i], b, f, nextPath);
                             break;
                         default:
+                            onChange(path, i);
                             A[i] = b;
                             break;
                     }
@@ -262,11 +303,14 @@ define([
 
         switch (t_B) {
             case 'array':
+                ListMap.arrays(A, B, function (obj) {
+                    return makeProxy(obj);
+                });
                 // idk
                 break;
             case 'object':
                 ListMap.objects(A, B, function (obj) {
-                    console.log("constructing new proxy for type [%s]", type(obj));
+                    //console.log("constructing new proxy for type [%s]", type(obj));
                     return makeProxy(obj);
                 }, []);
                 break;
