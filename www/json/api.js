@@ -3,20 +3,18 @@ define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
     '/common/crypto.js',
     '/common/realtime-input.js',
-    '/json/listmap.js',
     '/common/json-ot.js',
     'json.sortify',
     '/bower_components/textpatcher/TextPatcher.amd.js',
+    '/json/deep-proxy.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Crypto, Realtime, ListMap, JsonOT, Sortify, TextPatcher) {
+], function (Config, Crypto, Realtime, JsonOT, Sortify, TextPatcher, DeepProxy) {
     var api = {};
-
-    api.ListMap = ListMap;
 
     var create = api.create = function (cfg) {
         /* validate your inputs before proceeding */
 
-        if (['object', 'array'].indexOf(ListMap.type(cfg.data))) {
+        if (['object', 'array'].indexOf(DeepProxy.type(cfg.data))) {
             throw new Error('unsupported datatype');
         }
 
@@ -28,39 +26,15 @@ define([
             cryptKey: cfg.cryptKey,
             crypto: Crypto,
             websocketURL: Config.websocketURL,
+            logLevel: 0
         };
 
         var rt;
-        var proxy = ListMap.makeProxy(cfg.data);
         var realtime;
 
-        var onInit = config.onInit = function (info) {
-            realtime = info.realtime;
-            // create your patcher
-            realtime.patchText = TextPatcher.create({
-                realtime: realtime,
-                logging: config.logging || false,
-            });
+        var proxy;
 
-            // onInit
-            cfg.onInit(info);
-        };
-
-        var onReady = config.onReady = function (info) {
-            var userDoc = realtime.getUserDoc();
-            var parsed = JSON.parse(userDoc);
-
-            // update your proxy to the state of the userDoc
-            Object.keys(parsed).forEach(function (key) {
-                proxy[key] = ListMap.recursiveProxies(parsed[key]);
-            });
-
-            // onReady
-            cfg.onReady(info);
-        };
-
-        // FIXME
-        var onLocal = config.onLocal = ListMap.onLocal = function () {
+        var onLocal = config.onLocal = function () {
             var strung = Sortify(proxy);
 
             realtime.patchText(strung);
@@ -78,11 +52,36 @@ define([
             // TODO actually emit 'change' events, or something like them
         };
 
+        proxy = DeepProxy.create(cfg.data, onLocal, true);
+
+        var onInit = config.onInit = function (info) {
+            realtime = info.realtime;
+            // create your patcher
+            realtime.patchText = TextPatcher.create({
+                realtime: realtime,
+                logging: config.logging || false,
+            });
+
+            // onInit
+            cfg.onInit(info);
+        };
+
+        var onReady = config.onReady = function (info) {
+            var userDoc = realtime.getUserDoc();
+            var parsed = JSON.parse(userDoc);
+
+            DeepProxy.update(proxy, parsed);
+
+            // onReady
+            cfg.onReady(info);
+        };
+
+
         var onRemote = config.onRemote = function (info) {
             var userDoc = realtime.getUserDoc();
             var parsed = JSON.parse(userDoc);
 
-            ListMap.update(proxy, parsed);
+            DeepProxy.update(proxy, parsed, onLocal);
 
             // onRemote
             if (cfg.onRemote) {
