@@ -78,4 +78,48 @@ Since objects are deserialized and created on each client, you will not be able 
 
 Object equality _might_ work if the comparison is performed on the same client that initially created the object, but relying on this kind of behaviour is not advisable.
 
+## Listeners
+
+You can add a listener to an attribute (via its path relative to the root realtime object).
+
+There are various types of listeners
+
+* change
+* remove
+* disconnect
+* ready
+
+### Semantics
+
+Suppose you have a realtime object `A` containing nested structures.
+
+```
+{
+    a: {
+        b: {
+            c: 5
+        }
+    },
+    d: {
+        e: [
+            1,
+            4,
+            9
+        ]
+    }
+}
+```
+
+If you want to be alerted whenever the second element in the array `e` within `d` changes, you can attach a listener like so:
+
+```
+A.on('change', ['d', 'e', 1], function (oldval, newval, path, rootObject) {
+    /* do something with these values */
+    console.log("value changes from %s to %s", oldval, newval);
+});
+```
+
+## Known Bugs
+
+there is currently an issue with popping the last element of an array.
 
