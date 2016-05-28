@@ -46,7 +46,7 @@ define([
     };
 
     var pathMatches = deepProxy.pathMatches = function (path, pattern) {
-        console.log("Comparing checking if path:[%s] matches pattern:[%s]", path.join(','), pattern.join(','));
+        console.log("checking if path:[%s] matches pattern:[%s]", path.join(','), pattern.join(','));
         return !pattern.some(function (x, i) {
             return x !== path[i];
         });
@@ -67,13 +67,19 @@ define([
                     pattern = type(pattern) === 'array'?  pattern: [pattern];
 
                     console.log("[MOCK] adding change listener at path [%s]", pattern.join(','));
-                    events.change.push(function (oldval, newval, path, root) {
-                        if (pathMatches(path, pattern)) {
-                            f(oldval, newval, path, root);
-                        } else {
-                            console.log("path did not match pattern!");
-                        }
+                    events.change.push({
+                        cb: function (oldval, newval, path, root) {
+                            if (pathMatches(path, pattern)) {
+                                return f(oldval, newval, path, root);
+                            } else {
+                                console.log("path did not match pattern!");
+                            }
+                        },
+                        pattern: pattern,
                     });
+                    // sort into descending order so we evaluate in order of specificity
+                    events.change.sort(function (a, b) { return b.length - a.length; });
+
                     break;
                 case 'ready':
                     break;
@@ -117,8 +123,8 @@ define([
 
         /*  TODO make this such that we can halt propogation to less specific
             paths? */
-        root._events.change.forEach(function (f, i) {
-            f(oldval, newval, P, root);
+        root._events.change.forEach(function (handler, i) {
+            return handler.cb(oldval, newval, P, root);
         });
     };
 
@@ -143,7 +149,7 @@ define([
 
         /*  iterating over the keys in B will tell you if a new key exists
             it will not tell you if a key has been removed.
-            to accomplish that you will need to iterate over A's keys 
+            to accomplish that you will need to iterate over A's keys
         */
 
         /*  TODO return a truthy or falsey value (in 'objects' and 'arrays')
@@ -264,7 +270,9 @@ define([
                 // the key was deleted!
                 delete A[a];
 
-                onRemove(path, a, root, old, B[a]);
+                // FIXME
+                //onRemove(path, a, root, old, B[a]);
+                onChange(path, a, root, old, B[a]);
             }
         });
 
@@ -338,15 +346,15 @@ define([
                 }
             });
 
-
             if (l_A > l_B) {
                 // A was longer than B, so there have been deletions
                 var i = l_B;
                 var t_a;
 
-                for (; i < l_B; i++) {
-                    // it was most definitely a deletion
-                    onRemove(path, i, root, A[i], undefined);
+                for (; i <= l_B; i++) {
+                    // FIXME
+                    //onRemove(path, i, root, A[i], undefined);
+                    onChange(path, i, root, A[i], B[i]);
                 }
                 // cool
             }
