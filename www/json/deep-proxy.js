@@ -6,6 +6,13 @@ define([
 
     var deepProxy = {};
 
+    // for passing messages while recursing. use powers of two in case we ever
+    // need to pass multiple message types (via bitpacking)
+    var Messages = deepProxy.Messages = {
+        CHANGE: 1,
+        REMOVE: 2
+    };
+
     var isArray = deepProxy.isArray = function (obj) {
         return Object.prototype.toString.call(obj)==='[object Array]';
     };
@@ -21,10 +28,8 @@ define([
     var setter = deepProxy.set = function (cb) {
         return function (obj, prop, value) {
             if (prop === 'on') {
-                return;
                 throw new Error("'on' is a reserved attribute name for realtime lists and maps");
             }
-            if (obj[prop] === value) { return value; }
 
             var t_value = type(value);
             if (['array', 'object'].indexOf(t_value) !== -1) {
@@ -36,7 +41,7 @@ define([
             }
 
             cb();
-            return obj[prop];
+            return obj[prop] || true; // always return truthey or you have problems
         };
     };
 
@@ -58,6 +63,9 @@ define([
         var on = function (evt, pattern, f) {
             switch (evt) {
                 case 'change':
+                    // pattern needs to be an array
+                    pattern = type(pattern) === 'array'?  pattern: [pattern];
+
                     console.log("[MOCK] adding change listener at path [%s]", pattern.join(','));
                     events.change.push(function (oldval, newval, path, root) {
                         if (pathMatches(path, pattern)) {
@@ -85,10 +93,6 @@ define([
             } else if (prop === '_events') {
                 return events;
             }
-
-            // FIXME magic?
-            if (prop === 'length' && typeof(obj.length) === 'number') { return obj.length; }
-
             return obj[prop];
         };
     };
@@ -286,7 +290,7 @@ define([
                 var t_a = type(A[i]);
                 var t_b = type(b);
 
-                var old = B[i];
+                var old = A[i];
 
                 if (t_a !== t_b) {
                     // type changes are always destructive

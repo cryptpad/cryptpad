@@ -76,7 +76,6 @@ define([
             cfg.onReady(info);
         };
 
-
         var onRemote = config.onRemote = function (info) {
             var userDoc = realtime.getUserDoc();
             var parsed = JSON.parse(userDoc);
