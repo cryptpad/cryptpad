@@ -1,24 +1,16 @@
 define([
     '/json/api.js',
     '/common/crypto.js',
+    '/common/cryptpad-common.js',
     //'/customize/pad.js'
-], function (RtListMap, Crypto) {
+], function (RtListMap, Crypto, Common) {
     var $ = window.jQuery;
 
-    var key;
-    var channel = '';
-    var hash = false;
-    if (!/#/.test(window.location.href)) {
-        key = Crypto.genKey();
-    } else {
-        hash = window.location.hash.slice(1);
-        channel = hash.slice(0,32);
-        key = hash.slice(32);
-    }
+    var secret = Common.getSecrets();
 
     var config = {
-        channel: channel,
-        cryptKey: key,
+        channel: secret.channel,
+        cryptKey: secret.key,
         data: {},
     };
 
@@ -38,7 +30,7 @@ define([
     // or just remove?
     var onInit = config.onInit = function (info) {
         console.log("initializing!");
-        window.location.hash = info.channel + key;
+        window.location.hash = info.channel + secret.key;
     };
 
     // TODO replace with `proxy.on('ready'` ?
