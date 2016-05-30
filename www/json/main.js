@@ -63,4 +63,8 @@ define([
             $repl.val('');
         }
     });
+
+    // debugging TODO remove
+    //rt.proxy.on('change', 'u', (o, n) => console.log("'u' changed!", o,n));
+    //rt.proxy.on('change', ['u', 2], (o, n) => (console.log("'u[2]' changed!", o, n), true));
 });
