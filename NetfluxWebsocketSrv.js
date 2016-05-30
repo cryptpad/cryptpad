@@ -106,6 +106,10 @@ const getHistory = function (ctx, channelName, handler, cb) {
             }
             //console.log(messageBuf[startPoint]);
         }
+        if (cpCount < 2) {
+            // no checkpoints.
+            for (var x = msgBuff2.pop(); x; x = msgBuff2.pop()) { handler(x); }
+        }
         cb();
     });
 };
