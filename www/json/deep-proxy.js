@@ -66,7 +66,7 @@ define([
                     // pattern needs to be an array
                     pattern = type(pattern) === 'array'?  pattern: [pattern];
 
-                    console.log("[MOCK] adding change listener at path [%s]", pattern.join(','));
+                    //console.log("adding change listener at path [%s]", pattern.join(','));
                     events.change.push({
                         cb: function (oldval, newval, path, root) {
                             if (pathMatches(path, pattern)) {
