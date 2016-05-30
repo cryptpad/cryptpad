@@ -142,21 +142,19 @@ define([
         // shim between chainpad and netflux
         chainpadAdapter = {
             msgIn : function(peerId, msg) {
-                msg = msg.replace(/^cp\|/, '');
+                var message = parseMessage(msg);
                 try {
-                    var decryptedMsg = Crypto.decrypt(msg, cryptKey);
+                    var decryptedMsg = Crypto.decrypt(message, cryptKey);
                     messagesHistory.push(decryptedMsg);
                     return decryptedMsg;
                 } catch (err) {
                     console.error(err);
-                    return msg;
+                    return message;
                 }
             },
             msgOut : function(msg, wc) {
                 try {
-                    var cmsg = Crypto.encrypt(msg, cryptKey);
-                    if (msg.indexOf('[4') === 0) { cmsg = 'cp|' + cmsg; }
-                    return cmsg;
+                    return Crypto.encrypt(msg, cryptKey);
                 } catch (err) {
                     console.log(msg);
                     throw err;
