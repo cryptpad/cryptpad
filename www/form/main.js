@@ -91,7 +91,7 @@ define([
                 return function (content) {
                     return typeof content !== 'undefined' ?
                         $this.val(content):
-                        canonicalize($this.val());
+                        typeof($this.val()) === 'string'? canonicalize($this.val()): $this.val();
                 };
             }
         }());

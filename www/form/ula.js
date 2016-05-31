@@ -17,6 +17,7 @@ define([], function () {
         number: 'change',
         range: 'keyup change',
         'select-one': 'change',
+        'select-multiple': 'change',
         textarea: 'change keyup',
     };
 
