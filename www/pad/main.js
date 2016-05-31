@@ -50,7 +50,9 @@ define([
         // return !(el.tagName === 'SPAN' && el.contentEditable === 'false');
         var filter = (el.tagName === 'SPAN' &&
             el.getAttribute('contentEditable') === 'false' &&
-            /magicline/.test(el.getAttribute('style')));
+            /dashed/.test(el.getAttribute('style')) &&
+            /(rgb\(255|red)/.test(el.getAttribute('style')));
+            ///magicline/.test(el.getAttribute('style')));
         if (filter) {
             console.log("[hyperjson.serializer] prevented an element" +
                 "from being serialized:", el);
