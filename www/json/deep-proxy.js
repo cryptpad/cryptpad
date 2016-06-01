@@ -75,7 +75,6 @@ define([
                             if (pathMatches(path, pattern)) {
                                 return f(oldval, newval, path, root);
                             }
-                            //else { console.log("path did not match pattern!"); }
                         },
                         pattern: pattern,
                     });
