@@ -259,10 +259,10 @@ define([
         Netflux.connect(websocketUrl).then(function(network) {
             // pass messages that come out of netflux into our local handler
 
-            network.on('disconnect', function (evt) {
+            network.on('disconnect', function (reason) {
                 if (config.onAbort) {
                     config.onAbort({
-                        reason: evt.reason
+                        reason: reason
                     });
                 }
             });
