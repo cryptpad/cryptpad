@@ -23,6 +23,10 @@ define([
         return dat === null?  'null': isArray(dat)?'array': typeof(dat);
     };
 
+    var isProxyable = deepProxy.isProxyable = function (obj) {
+        return ['object', 'array'].indexOf(type(obj)) !== -1;
+    };
+
     /*  Any time you set a value, check its type.
         If that type is proxyable, make a new proxy. */
     var setter = deepProxy.set = function (cb) {
@@ -32,11 +36,9 @@ define([
             }
 
             var t_value = type(value);
-            if (['array', 'object'].indexOf(t_value) !== -1) {
-                //console.log("Constructing new proxy for value with type [%s]", t_value);
+            if (isProxyable(t_value)) {
                 var proxy = obj[prop] = deepProxy.create(value, cb);
             } else {
-                //console.log("Setting [%s] to [%s]", prop, value);
                 obj[prop] = value;
             }
 
@@ -46,11 +48,12 @@ define([
     };
 
     var pathMatches = deepProxy.pathMatches = function (path, pattern) {
-        console.log("checking if path:[%s] matches pattern:[%s]", path.join(','), pattern.join(','));
         return !pattern.some(function (x, i) {
             return x !== path[i];
         });
     };
+
+    var lengthDescending = function (a, b) { return b.pattern.length - a.pattern.length; };
 
     var getter = deepProxy.get = function (cb) {
         var events = {
@@ -58,39 +61,69 @@ define([
             change: [],
             ready: [],
             remove: [],
+            create: [],
         };
 
         var on = function (evt, pattern, f) {
             switch (evt) {
                 case 'change':
                     // pattern needs to be an array
-                    pattern = type(pattern) === 'array'?  pattern: [pattern];
+                    pattern = type(pattern) === 'array'? pattern: [pattern];
 
-                    //console.log("adding change listener at path [%s]", pattern.join(','));
                     events.change.push({
                         cb: function (oldval, newval, path, root) {
                             if (pathMatches(path, pattern)) {
                                 return f(oldval, newval, path, root);
-                            } else {
-                                console.log("path did not match pattern!");
                             }
+                            //else { console.log("path did not match pattern!"); }
                         },
                         pattern: pattern,
                     });
                     // sort into descending order so we evaluate in order of specificity
-                    events.change.sort(function (a, b) { return b.length - a.length; });
+                    events.change.sort(lengthDescending);
+
+                    break;
+                case 'delete':
+                    pattern = type(pattern) === 'array'? pattern: [pattern];
+
+                    events.remove.push({
+                        cb: function (oldval, path, root) {
+                            if (pathMatches(path, pattern)) { return f(oldval, path, root); }
+                        },
+                        pattern: pattern,
+                    });
+
+                    events.remove.sort(lengthDescending);
 
                     break;
                 case 'ready':
+                    events.ready.push({
+                        // on('ready' has a different signature than 
+                        // change and delete, so use 'pattern', not 'f'
+
+                        cb: function (info) {
+                            pattern(info);
+                        }
+                    });
                     break;
                 case 'disconnect':
+                    events.disconnect.push({
+                        cb: function (info) {
+                            // as above
+                            pattern(info);
+                        }
+                    });
                     break;
-                case 'delete':
-                    break;
+                case 'create':
+                    events.create.push({
+                        cb: function (info) {
+                            pattern(info);
+                        }
+                    });
                 default:
                     break;
             }
-            return true;
+            return this;
         };
 
         return function (obj, prop) {
@@ -110,8 +143,38 @@ define([
         };
     };
 
-    var create = deepProxy.create = function (obj, opt, root) {
+    var create = deepProxy.create = function (obj, opt) {
+        /*  recursively create proxies in case users do:
+            `x.a = {b: {c: 5}};
+
+            otherwise the inner object is not a proxy, which leads to incorrect
+            behaviour on the client that initiated the object (but not for
+            clients that receive the objects) */
+
+        // if the user supplied a callback, use it to create handlers
+        // this saves a bit of work in recursion
         var methods = type(opt) === 'function'? handlers(opt) : opt;
+        switch (type(obj)) {
+            case 'object':
+                var keys = Object.keys(obj);
+                keys.forEach(function (k) {
+                    if (isProxyable(obj[k])) {
+                        obj[k] = create(obj[k], opt);
+                    }
+                });
+                break;
+            case 'array':
+                obj.forEach(function (o, i) {
+                    if (isProxyable(o)) {
+                        obj[i] = create(obj[i], opt);
+                    }
+                });
+                break;
+            default:
+                // if it's not an array or object, you don't need to proxy it
+                throw new Error('attempted to make a proxy of an unproxyable object');
+        }
+
         return new Proxy(obj, methods);
     };
 
@@ -119,19 +182,61 @@ define([
     var onChange = function (path, key, root, oldval, newval) {
         var P = path.slice(0);
         P.push(key);
-        console.log('change at path [%s]', P.join(','));
 
-        /*  TODO make this such that we can halt propogation to less specific
-            paths? */
-        root._events.change.forEach(function (handler, i) {
-            return handler.cb(oldval, newval, P, root);
+        /*  returning false in your callback terminates 'bubbling up'
+            we can accomplish this with Array.some because we've presorted
+            listeners by the specificity of their path
+        */
+        root._events.change.some(function (handler, i) {
+            return handler.cb(oldval, newval, P, root) === false;
         });
     };
 
-    // newval doesn't really make sense here
-    var onRemove = function (path, key, root, oldval, newval) {
-        console.log("onRemove is stubbed for now");
-        return false;
+    var find = deepProxy.find = function (map, path) {
+        /* safely search for nested values in an object via a path */
+        return (map && path.reduce(function (p, n) {
+            return typeof p[n] !== 'undefined' && p[n];
+        }, map)) || undefined;
+    };
+
+    var onRemove = function (path, key, root) {
+        var newpath = path.concat(key);
+        var X = find(root, newpath);
+
+        var t_X = type(X);
+
+        /*  TODO 'find' is correct but unnecessarily expensive.
+            optimize it. */
+
+        switch (t_X) {
+            case 'array':
+                // remove all of the array's children
+                X.forEach(function (x, i) {
+                    onRemove(newpath, i, root);
+                });
+
+                root._events.remove.forEach(function (handler, i) {
+                    return handler.cb(X, newpath, root);
+                });
+
+                break;
+            case 'object':
+                // remove all of the object's children
+                Object.keys(X).forEach(function (key, i) {
+                    onRemove(newpath, key, root);
+                });
+
+                root._events.remove.forEach(function (handler, i) {
+                    return handler.cb(X, newpath, root);
+                });
+
+                break;
+            default:
+                root._events.remove.forEach(function (handler, i) {
+                    return handler.cb(X, newpath, root);
+                });
+                break;
+        }
     };
 
     /*  compare a new object 'B' against an existing proxy object 'A'
@@ -162,16 +267,12 @@ define([
             the event if possible)
         */
 
-        var hasChanged = false;
-
         Bkeys.forEach(function (b) {
-            //console.log(b);
             var t_b = type(B[b]);
             var old = A[b];
 
             if (Akeys.indexOf(b) === -1) {
                 // there was an insertion
-                //console.log("Inserting new key: [%s]", b);
 
                 // mind the fallthrough behaviour
                 switch (t_b) {
@@ -187,7 +288,6 @@ define([
                 }
 
                 // insertions are a change
-                hasChanged = true;
 
                 // onChange(path, key, root, oldval, newval)
                 onChange(path, b, root, old, B[b]);
@@ -203,18 +303,16 @@ define([
                     case 'undefined':
                         // deletions are a removal
                         //delete A[b];
-                        //onRemove(path, b, root, old, undefined);
+                        onRemove(path, b, root);
 
                         // this should never happen?
                         throw new Error("first pass should never reveal undefined keys");
                         //break;
                     case 'array':
-                        //console.log('construct list');
                         A[b] = f(B[b]);
                         // make a new proxy
                         break;
                     case 'object':
-                        //console.log('construct map');
                         A[b] = f(B[b]);
                         // make a new proxy
                         break;
@@ -236,7 +334,6 @@ define([
                     // not equal, so assign
                     A[b] = B[b];
 
-                    hasChanged = true;
                     onChange(path, b, root, old, B[b]);
                 }
                 return;
@@ -246,44 +343,28 @@ define([
             var nextPath = path.slice(0).concat(b);
             if (t_a === 'object') {
                 // it's an object
-
-                if (objects.call(root, A[b], B[b], f, nextPath, root)) {
-                    hasChanged = true;
-                    // TODO do you want to call onChange when an object changes?
-                    //onChange(path, b, root, old, B[b]);
-                }
+                objects.call(root, A[b], B[b], f, nextPath, root);
             } else {
                 // it's an array
-                if (deepProxy.arrays.call(root, A[b], B[b], f, nextPath, root)) {
-                    hasChanged = true;
-
-                    // TODO do you want to call onChange when an object changes?
-                    //onChange(path, b, root, old, B[b]);
-                }
+                deepProxy.arrays.call(root, A[b], B[b], f, nextPath, root);
             }
         });
         Akeys.forEach(function (a) {
             var old = A[a];
 
+            // the key was deleted
             if (Bkeys.indexOf(a) === -1 || type(B[a]) === 'undefined') {
-                //console.log("Deleting [%s]", a);
-                // the key was deleted!
+                onRemove(path, a, root);
                 delete A[a];
-
-                // FIXME
-                //onRemove(path, a, root, old, B[a]);
-                onChange(path, a, root, old, B[a]);
             }
         });
 
-        return hasChanged;
+        return;
     };
 
     var arrays = deepProxy.arrays = function (A, B, f, path, root) {
         var l_A = A.length;
         var l_B = B.length;
-
-        var hasChanged = false;
 
         if (l_A !== l_B) {
             // B is longer than Aj
@@ -315,7 +396,6 @@ define([
                             break;
                     }
 
-                    hasChanged = true;
                     // path, key, root object, oldvalue, newvalue
                     onChange(path, i, root, old, b);
                 } else {
@@ -324,14 +404,10 @@ define([
 
                     switch (t_b) {
                         case 'object':
-                            if (objects.call(root, A[i], b, f, nextPath, root)) {
-                                hasChanged = true;
-                                onChange(path, i, root, old, b);
-                            }
+                            objects.call(root, A[i], b, f, nextPath, root);
                             break;
                         case 'array':
                             if (arrays.call(root, A[i], b, f, nextPath, root)) {
-                                hasChanged = true;
                                 onChange(path, i, root, old, b);
                             }
                             break;
@@ -339,7 +415,6 @@ define([
                             if (b !== A[i]) {
                                 A[i] = b;
                                 onChange(path, i, root, old, b);
-                                hasChanged = true;
                             }
                             break;
                     }
@@ -352,9 +427,8 @@ define([
                 var t_a;
 
                 for (; i <= l_B; i++) {
-                    // FIXME
-                    //onRemove(path, i, root, A[i], undefined);
-                    onChange(path, i, root, A[i], B[i]);
+                    // recursively delete
+                    onRemove(path, i, root);
                 }
                 // cool
             }
@@ -372,8 +446,13 @@ define([
 
             // they have different types
             if (t_a !== t_b) {
-                // watch out for fallthrough behaviour
                 switch (t_b) {
+                    case 'undefined':
+                        onRemove(path, i, root);
+                        break;
+
+                // watch out for fallthrough behaviour
+                    // if it's an object or array, create a proxy
                     case 'object':
                     case 'array':
                         A[i] = f(B[i]);
@@ -383,7 +462,6 @@ define([
                         break;
                 }
 
-                hasChanged = true;
                 onChange(path, i, root, old, B[i]);
                 return;
             }
@@ -393,28 +471,27 @@ define([
 
             // same type
             switch (t_b) {
+                case 'undefined':
+                    throw new Error('existing key had type `undefined`. this should never happen');
                 case 'object':
                     if (objects.call(root, A[i], B[i], f, nextPath, root)) {
-                        hasChanged = true;
                         onChange(path, i, root, old, B[i]);
                     }
                     break;
                 case 'array':
                     if (arrays.call(root, A[i], B[i], f, nextPath, root)) {
-                        hasChanged = true;
                         onChange(path, i, root, old, B[i]);
                     }
                     break;
                 default:
                     if (A[i] !== B[i]) {
                         A[i] = B[i];
-                        hasChanged = true;
                         onChange(path, i, root, old, B[i]);
                     }
                     break;
             }
         });
-        return hasChanged;
+        return;
     };
 
     var update = deepProxy.update = function (A, B, cb) {
@@ -439,7 +516,7 @@ define([
                 }, [], A);
                 break;
             default:
-                throw new Error("unsupported realtime datatype");
+                throw new Error("unsupported realtime datatype:" + t_B);
         }
     };
 
