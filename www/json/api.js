@@ -14,8 +14,8 @@ define([
     var create = api.create = function (cfg) {
         /* validate your inputs before proceeding */
 
-        if (['object', 'array'].indexOf(DeepProxy.type(cfg.data))) {
-            throw new Error('unsupported datatype');
+        if (!DeepProxy.isProxyable(cfg.data)) {
+            throw new Error('unsupported datatype: '+ DeepProxy.type(cfg.data));
         }
 
         var config = {
@@ -48,8 +48,6 @@ define([
             if (cfg.onLocal) {
                 cfg.onLocal();
             }
-
-            // TODO actually emit 'change' events, or something like them
         };
 
         proxy = DeepProxy.create(cfg.data, onLocal, true);
@@ -62,35 +60,38 @@ define([
                 logging: config.logging || false,
             });
 
-            // onInit
-            cfg.onInit(info);
+            proxy._events.create.forEach(function (handler) {
+                handler.cb(info);
+            });
         };
+
+        var initializing = true;
 
         var onReady = config.onReady = function (info) {
             var userDoc = realtime.getUserDoc();
             var parsed = JSON.parse(userDoc);
 
-            DeepProxy.update(proxy, parsed);
+            DeepProxy.update(proxy, parsed, onLocal);
 
-            // onReady
-            cfg.onReady(info);
+            proxy._events.ready.forEach(function (handler) {
+                handler.cb(info);
+            });
+
+            initializing = false;
         };
 
         var onRemote = config.onRemote = function (info) {
+            if (initializing) { return; }
             var userDoc = realtime.getUserDoc();
             var parsed = JSON.parse(userDoc);
 
             DeepProxy.update(proxy, parsed, onLocal);
-
-            // onRemote
-            if (cfg.onRemote) {
-                cfg.onRemote(info);
-            }
         };
 
         var onAbort = config.onAbort = function (info) {
-            // onAbort
-            cfg.onAbort(info);
+            proxy._events.disconnect.forEach(function (handler) {
+                handler.cb(info);
+            });
         };
 
         rt = Realtime.start(config);
