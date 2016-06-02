@@ -216,8 +216,7 @@ define([
             var myID; // My server ID
 
             var setMyID = function(info) {
-              myID = info.myID || null;
-              myUserName = myID;
+                myID = info.myID || null;
             };
 
             var createChangeName = function(id, $container) {
