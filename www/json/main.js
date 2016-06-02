@@ -30,33 +30,32 @@ define([
 
     var rt = module.rt = RtListMap.create(config);
     rt.proxy.on('create', function (info) {
-        console.log("initializing!");
+        console.log("initializing...");
         window.location.hash = info.channel + secret.key;
-        console.log(info);
     }).on('ready', function (info) {
-        console.log("ready");
-
-        console.log(info);
+        console.log("...your realtime object is ready");
 
         rt.proxy
             // on(event, path, cb)
             .on('change', [], function (o, n, p) {
                 console.log("root change event firing for path [%s]: %s => %s", p.join(','), o, n);
-            }).on('change', ['a', 'b', 'c'], function (o, n, p) {
+            })
+            .on('remove', [], function (o, p, root) {
+                console.log("Removal of value [%s] at path [%s]", o, p.join(','));
+            })
+            .on('change', ['a', 'b', 'c'], function (o, n, p) {
                 console.log("Deeper change event at [%s]: %s => %s", p.join(','), o, n);
                 console.log("preventing propogation...");
                 return false;
+            })
+            .on('disconnect', function (info) {
+                setEditable(false);
+                window.alert("Network connection lost");
             });
-
-        rt.proxy.on('disconnect', function (info) {
-            setEditable(false);
-            console.log(info);
-            window.alert("Network connection lost");
-        });
 
         // set up user interface hooks
         $repl.on('keyup', function (e) {
-            if (e.which === 13) {
+            if (e.which === 13 /* enter keycode */) {
                 var value = $repl.val();
 
                 if (!value.trim()) { return; }
