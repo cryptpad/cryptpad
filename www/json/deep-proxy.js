@@ -35,8 +35,7 @@ define([
                 throw new Error("'on' is a reserved attribute name for realtime lists and maps");
             }
 
-            var t_value = type(value);
-            if (isProxyable(t_value)) {
+            if (isProxyable(value)) {
                 var proxy = obj[prop] = deepProxy.create(value, cb);
             } else {
                 obj[prop] = value;
@@ -82,7 +81,7 @@ define([
                     events.change.sort(lengthDescending);
 
                     break;
-                case 'delete':
+                case 'remove':
                     pattern = type(pattern) === 'array'? pattern: [pattern];
 
                     events.remove.push({
@@ -119,6 +118,7 @@ define([
                             pattern(info);
                         }
                     });
+                    break;
                 default:
                     break;
             }
@@ -198,7 +198,7 @@ define([
         }, map)) || undefined;
     };
 
-    var onRemove = function (path, key, root) {
+    var onRemove = function (path, key, root, old, top) {
         var newpath = path.concat(key);
         var X = find(root, newpath);
 
@@ -209,24 +209,32 @@ define([
 
         switch (t_X) {
             case 'array':
+
+                if (top) {
+                    // the top of an onremove should emit an onchange instead
+                    onChange(path, key, root, old, undefined);// no newval since it's a deletion
+                } else {
+                    root._events.remove.forEach(function (handler, i) {
+                        return handler.cb(X, newpath, root);
+                    });
+                }
                 // remove all of the array's children
                 X.forEach(function (x, i) {
                     onRemove(newpath, i, root);
                 });
 
-                root._events.remove.forEach(function (handler, i) {
-                    return handler.cb(X, newpath, root);
-                });
-
                 break;
             case 'object':
+                if (top) {
+                    onChange(path, key, root, old, undefined);// no newval since it's a deletion
+                } else {
+                    root._events.remove.forEach(function (handler, i) {
+                        return handler.cb(X, newpath, root, old, false);
+                    });
+                }
                 // remove all of the object's children
                 Object.keys(X).forEach(function (key, i) {
-                    onRemove(newpath, key, root);
-                });
-
-                root._events.remove.forEach(function (handler, i) {
-                    return handler.cb(X, newpath, root);
+                    onRemove(newpath, key, root, X[key], false);
                 });
 
                 break;
@@ -300,13 +308,7 @@ define([
                 console.log("type changed from [%s] to [%s]", t_a, t_b);
                 switch (t_b) {
                     case 'undefined':
-                        // deletions are a removal
-                        //delete A[b];
-                        onRemove(path, b, root);
-
-                        // this should never happen?
                         throw new Error("first pass should never reveal undefined keys");
-                        //break;
                     case 'array':
                         A[b] = f(B[b]);
                         // make a new proxy
@@ -353,7 +355,7 @@ define([
 
             // the key was deleted
             if (Bkeys.indexOf(a) === -1 || type(B[a]) === 'undefined') {
-                onRemove(path, a, root);
+                onRemove(path, a, root, old, true);
                 delete A[a];
             }
         });
@@ -384,6 +386,8 @@ define([
                     // type changes are always destructive
                     // that's good news because destructive is easy
                     switch (t_b) {
+                        case 'undefined':
+                            throw new Error('this should never happen');
                         case 'object':
                             A[i] = f(b);
                             break;
@@ -424,10 +428,13 @@ define([
                 // A was longer than B, so there have been deletions
                 var i = l_B;
                 var t_a;
+                var old;
 
                 for (; i <= l_B; i++) {
                     // recursively delete
-                    onRemove(path, i, root);
+                    old = A[i];
+
+                    onRemove(path, i, root, old, true);
                 }
                 // cool
             }
@@ -447,7 +454,7 @@ define([
             if (t_a !== t_b) {
                 switch (t_b) {
                     case 'undefined':
-                        onRemove(path, i, root);
+                        onRemove(path, i, root, old, true);
                         break;
 
                 // watch out for fallthrough behaviour
