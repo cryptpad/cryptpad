@@ -17,7 +17,7 @@
 define([
     '/common/netflux-client.js',
     '/common/es6-promise.min.js',
-    '/common/chainpad.js',
+    '/bower_components/chainpad/chainpad.dist.js',
     '/bower_components/jquery/dist/jquery.min.js',
 ], function (Netflux) {
     var $ = window.jQuery;
