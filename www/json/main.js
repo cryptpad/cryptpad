@@ -1,7 +1,7 @@
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
     '/common/chainpad-listmap.js',
-    '/common/crypto.js',
+    '/bower_components/chainpad-crypto/crypto.js',
     '/common/cryptpad-common.js',
     //'/customize/pad.js'
 ], function (Config, RtListMap, Crypto, Common) {
@@ -14,6 +14,7 @@ define([
         channel: secret.channel,
         cryptKey: secret.key,
         data: {},
+        crypto: Crypto
     };
 
     var module = window.APP = {};
