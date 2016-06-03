@@ -61,9 +61,7 @@ define([
         var realtime;
         var network;
 
-        var parseMessage = function (msg) {
-            return unBencode(msg);//.slice(msg.indexOf(':[') + 1);
-        };
+        var parseMessage = function (msg) { return unBencode(msg); };
 
         var userList = {
             onChange : function() {},
