@@ -59,6 +59,7 @@ define([
         var messagesHistory = [];
         var chainpadAdapter = {};
         var realtime;
+        var network;
 
         var parseMessage = function (msg) {
             return unBencode(msg);//.slice(msg.indexOf(':[') + 1);
@@ -188,7 +189,7 @@ define([
             wc.on('leave', onLeaving);
 
             // Open a Chainpad session
-            realtime = createRealtime();
+            toReturn.realtime = realtime = createRealtime();
 
             if(config.onInit) {
                 config.onInit({
@@ -255,9 +256,28 @@ define([
             return webChannel;
         };
 
-        // Connect to the WebSocket channel
-        Netflux.connect(websocketUrl).then(function(network) {
+        var joinSession = function (endPoint, cb) {
+            // a websocket URL has been provided
+            // connect to it with Netflux.
+            if (typeof(endPoint) === 'string') {
+                Netflux.connect(endPoint).then(cb);
+            } else if (typeof(endPoint.then) ==- 'function') {
+                // a netflux network promise was provided
+                // connect to it and use a channel
+                endPoint.then(cb);
+            } else {
+                // assume it's a network and try to connect.
+                cb(network);
+            }
+        };
+
+        /*  Connect to the Netflux network, or fall back to a WebSocket
+            in theory this lets us connect to more netflux channels using only
+            one network. */
+        joinSession(network || websocketUrl, function (network) {
             // pass messages that come out of netflux into our local handler
+
+            toReturn.network = network;
 
             network.on('disconnect', function (reason) {
                 if (config.onAbort) {
