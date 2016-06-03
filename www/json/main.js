@@ -1,5 +1,5 @@
 define([
-    '/json/api.js',
+    '/common/chainpad-listmap.js',
     '/common/crypto.js',
     '/common/cryptpad-common.js',
     //'/customize/pad.js'
@@ -48,6 +48,7 @@ define([
                 console.log("preventing propogation...");
                 return false;
             })
+            // on(event, cb)
             .on('disconnect', function (info) {
                 setEditable(false);
                 window.alert("Network connection lost");
