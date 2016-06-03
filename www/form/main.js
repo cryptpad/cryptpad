@@ -6,7 +6,7 @@ define([
     '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
     '/form/ula.js',
-    '/common/json-ot.js',
+    '/bower_components/chainpad-json-validator/json-ot.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
 ], function (Config, Realtime, Crypto, TextPatcher, Sortify, Formula, JsonOT) {
@@ -43,8 +43,29 @@ define([
         ids: [],
         each: function (f) {
             UI.ids.forEach(function (id, i, list) {
+                if (!UI[id]) { return; }
                 f(UI[id], i, list);
             });
+        },
+        add: function (id, ui) {
+            if (UI.ids.indexOf(id) === -1) {
+                UI.ids.push(id);
+
+                UI[id] = ui;
+                return true;
+            } else {
+                // it already exists
+
+                return false;
+            }
+        },
+        remove: function (id) {
+            delete UI[id];
+            var idx = UI.ids.indexOf(id);
+            if (idx > -1) {
+                UI.ids.splice(idx, 1);
+                return true;
+            }
         }
     };
 
@@ -67,9 +88,7 @@ define([
                 // get its type
             .data('rt-ui-type', type);
 
-        UI.ids.push(id);
-
-        var component = UI[id] = {
+        var component = {
             id: id,
             $: $this,
             element: element,
@@ -77,6 +96,8 @@ define([
             preserveCursor: cursorTypes.indexOf(type) !== -1,
             name: $this.prop('name'),
         };
+
+        UI.add(id, component);
 
         component.value = (function () {
             var checker = ['radio', 'checkbox'].indexOf(type) !== -1;
