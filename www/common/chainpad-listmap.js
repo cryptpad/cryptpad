@@ -1,13 +1,12 @@
 require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
-    '/common/crypto.js',
-    '/common/realtime-input.js',
+    '/common/realtime-input.js', // TODO publish on bower
     '/bower_components/chainpad-json-validator/json-ot.js',
     'json.sortify',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/bower_components/proxy-polyfill/proxy.min.js', // https://github.com/GoogleChrome/proxy-polyfill
-], function (Crypto, Realtime, JsonOT, Sortify, TextPatcher) {
+], function (Realtime, JsonOT, Sortify, TextPatcher) {
     var api = {};
     // linter complains if this isn't defined
     var Proxy = window.Proxy;
@@ -543,13 +542,26 @@ define([
             throw new Error('unsupported datatype: '+ DeepProxy.type(cfg.data));
         }
 
+        if (!cfg.crypto) {
+            // complain and stub
+            console.log("[chainpad-listmap] no crypto module provided. messages will not be encrypted");
+            cfg.crypto = {
+                encrypt: function (msg) {
+                    return msg;
+                },
+                descrypt: function (msg) {
+                    return msg;
+                }
+            };
+        }
+
         var config = {
             initialState: Sortify(cfg.data),
             transformFunction: JsonOT.validate,
-            userName: Crypto.rand64(8),
+            userName: cfg.crypto.rand64(8), // TODO stub this in case there is no crypto module provided?
             channel: cfg.channel,
-            cryptKey: cfg.cryptKey,
-            crypto: Crypto,
+            cryptKey: cfg.cryptKey, // TODO make sure things work without this code
+            crypto: cfg.crypto, // stub if not provided
             websocketURL: cfg.websocketURL,
             logLevel: 0
         };
