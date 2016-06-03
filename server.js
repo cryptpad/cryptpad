@@ -18,12 +18,6 @@ var Storage = require(config.storage||'./storage/mongo');
 var app = Express();
 app.use(Express.static(__dirname + '/www'));
 
-// Bower is broken and does not allow components nested within components...
-// And jquery.sheet expects it!
-// *Workaround*
-app.use("/bower_components/jquery.sheet/bower_components",
-    Express.static(__dirname + '/www/bower_components'));
-
 var customize = "/customize";
 if (!Fs.existsSync(__dirname + "/customize")) {
     customize = "/customize.dist";
