@@ -1,7 +1,7 @@
 require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
     '/bower_components/jquery/dist/jquery.min.js',
-    '/common/hyperjson.js', // serializing classes as an attribute
+    '/bower_components/hyperjson/hyperjson.amd.js', // serializing classes as an attribute
     '/common/hyperscript.js', // using setAttribute
     '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
