@@ -3,7 +3,7 @@ define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
     '/common/crypto.js',
     '/common/realtime-input.js',
-    '/common/json-ot.js',
+    '/bower_components/chainpad-json-validator/json-ot.js',
     'json.sortify',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     '/bower_components/jquery/dist/jquery.min.js',

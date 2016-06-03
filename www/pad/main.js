@@ -8,7 +8,7 @@ define([
     '/common/hyperscript.js',
     '/common/toolbar.js',
     '/common/cursor.js',
-    '/common/json-ot.js',
+    '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/TypingTests.js',
     'json.sortify',
     '/bower_components/textpatcher/TextPatcher.amd.js',

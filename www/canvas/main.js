@@ -9,7 +9,7 @@ define([
     '/common/crypto.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
-    '/common/json-ot.js',
+    '/bower_components/chainpad-json-validator/json-ot.js',
     '/bower_components/fabric.js/dist/fabric.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
