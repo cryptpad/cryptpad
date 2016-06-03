@@ -1,14 +1,16 @@
 define([
+    '/api/config?cb=' + Math.random().toString(16).substring(2),
     '/common/chainpad-listmap.js',
     '/common/crypto.js',
     '/common/cryptpad-common.js',
     //'/customize/pad.js'
-], function (RtListMap, Crypto, Common) {
+], function (Config, RtListMap, Crypto, Common) {
     var $ = window.jQuery;
 
     var secret = Common.getSecrets();
 
     var config = {
+        websocketURL: Config.websocketURL,
         channel: secret.channel,
         cryptKey: secret.key,
         data: {},

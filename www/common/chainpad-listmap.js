@@ -1,6 +1,5 @@
 require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
-    '/api/config?cb=' + Math.random().toString(16).substring(2),
     '/common/crypto.js',
     '/common/realtime-input.js',
     '/bower_components/chainpad-json-validator/json-ot.js',
@@ -8,7 +7,7 @@ define([
     '/bower_components/textpatcher/TextPatcher.amd.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/bower_components/proxy-polyfill/proxy.min.js', // https://github.com/GoogleChrome/proxy-polyfill
-], function (Config, Crypto, Realtime, JsonOT, Sortify, TextPatcher) {
+], function (Crypto, Realtime, JsonOT, Sortify, TextPatcher) {
     var api = {};
     // linter complains if this isn't defined
     var Proxy = window.Proxy;
@@ -66,6 +65,10 @@ define([
                 remove: [],
                 create: [],
             };
+
+            /*  TODO implement 'off' as well.
+                change 'setter' to warn users when they attempt to set 'off'
+            */
 
             var on = function (evt, pattern, f) {
                 switch (evt) {
@@ -547,7 +550,7 @@ define([
             channel: cfg.channel,
             cryptKey: cfg.cryptKey,
             crypto: Crypto,
-            websocketURL: Config.websocketURL,
+            websocketURL: cfg.websocketURL,
             logLevel: 0
         };
 
