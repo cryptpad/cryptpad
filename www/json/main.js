@@ -1,6 +1,6 @@
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
-    '/common/chainpad-listmap.js',
+    '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/cryptpad-common.js',
     '/bower_components/jquery/dist/jquery.min.js',
