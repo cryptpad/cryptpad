@@ -1,10 +1,9 @@
 require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
-    '/common/realtime-input.js', // TODO publish on bower
+    '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-json-validator/json-ot.js',
     'json.sortify',
     '/bower_components/textpatcher/TextPatcher.amd.js',
-    '/bower_components/jquery/dist/jquery.min.js',
     '/bower_components/proxy-polyfill/proxy.min.js', // https://github.com/GoogleChrome/proxy-polyfill
 ], function (Realtime, JsonOT, Sortify, TextPatcher) {
     var api = {};
