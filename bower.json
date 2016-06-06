@@ -36,6 +36,7 @@
     "chainpad-json-validator": "^0.1.1",
     "chainpad-crypto": "^0.1.1",
     "netflux-websocket": "^0.1.0",
-    "chainpad-netflux": "^0.1.0"
+    "chainpad-netflux": "^0.1.0",
+    "chainpad-listmap": "^0.1.0"
   }
 }
