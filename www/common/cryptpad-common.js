@@ -1,5 +1,5 @@
 define([
-    '/common/crypto.js',
+    '/bower_components/chainpad-crypto/crypto.js'
 ], function (Crypto) {
     var common = {};
 
