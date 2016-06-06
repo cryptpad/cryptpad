@@ -34,6 +34,8 @@
     "proxy-polyfill": "^0.1.5",
     "chainpad": "^0.2.2",
     "chainpad-json-validator": "^0.1.1",
-    "chainpad-crypto": "^0.1.1"
+    "chainpad-crypto": "^0.1.1",
+    "netflux-websocket": "^0.1.0",
+    "chainpad-netflux": "^0.1.0"
   }
 }
