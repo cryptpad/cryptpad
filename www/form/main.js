@@ -1,8 +1,8 @@
 require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
-    '/common/realtime-input.js',
-    '/common/crypto.js',
+    '/bower_components/chainpad-netflux/chainpad-netflux.js',
+    '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
     '/form/ula.js',

@@ -4,9 +4,9 @@ require.config({ paths: {
 
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
-    '/common/realtime-input.js',
+    '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/common/messages.js',
-    '/common/crypto.js',
+    '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
     '/bower_components/chainpad-json-validator/json-ot.js',

@@ -1,14 +1,13 @@
 require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
-//    '/code/rt_codemirror.js',
     '/common/messages.js',
-    '/common/crypto.js',
-    '/common/realtime-input.js',
+    '/bower_components/chainpad-crypto/crypto.js',
+    '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     '/common/toolbar.js',
     'json.sortify',
-    '/common/json-ot.js',
+    '/bower_components/chainpad-json-validator/json-ot.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
 ], function (Config, /*RTCode,*/ Messages, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT) {

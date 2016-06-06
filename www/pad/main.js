@@ -2,8 +2,8 @@ require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/J
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
     '/common/messages.js',
-    '/common/crypto.js',
-    '/common/realtime-input.js',
+    '/bower_components/chainpad-crypto/crypto.js',
+    '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/hyperjson/hyperjson.amd.js',
     '/common/hyperscript.js',
     '/common/toolbar.js',
