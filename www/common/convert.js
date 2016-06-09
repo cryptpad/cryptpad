@@ -1,6 +1,6 @@
 define([
     '/common/virtual-dom.js',
-    '/common/hyperjson.js',
+    '/bower_components/hyperjson/hyperjson.amd.js',
     '/common/hyperscript.js'
 ], function (vdom, hyperjson, hyperscript) {
     // complain if you don't find the required APIs

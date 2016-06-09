@@ -1,12 +1,12 @@
 require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
-    '/common/realtime-input.js',
-    '/common/crypto.js',
+    '/bower_components/chainpad-netflux/chainpad-netflux.js',
+    '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
     '/form/ula.js',
-    '/common/json-ot.js',
+    '/bower_components/chainpad-json-validator/json-ot.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
 ], function (Config, Realtime, Crypto, TextPatcher, Sortify, Formula, JsonOT) {
@@ -33,7 +33,7 @@ define([
     var uid = module.uid = Formula.uid;
 
     var getInputType = Formula.getInputType;
-    var $elements = module.elements = $('input, select, textarea')
+    var $elements = module.elements = $('input, select, textarea');
 
     var eventsByType = Formula.eventsByType;
 
@@ -43,8 +43,29 @@ define([
         ids: [],
         each: function (f) {
             UI.ids.forEach(function (id, i, list) {
+                if (!UI[id]) { return; }
                 f(UI[id], i, list);
             });
+        },
+        add: function (id, ui) {
+            if (UI.ids.indexOf(id) === -1) {
+                UI.ids.push(id);
+
+                UI[id] = ui;
+                return true;
+            } else {
+                // it already exists
+
+                return false;
+            }
+        },
+        remove: function (id) {
+            delete UI[id];
+            var idx = UI.ids.indexOf(id);
+            if (idx > -1) {
+                UI.ids.splice(idx, 1);
+                return true;
+            }
         }
     };
 
@@ -57,17 +78,17 @@ define([
         var id = uid();
         var type = getInputType($this);
 
-        // ignore hidden elements
-        if (type === 'hidden') { return; }
+        // ignore hidden inputs, submit inputs, and buttons
+        if (['button', 'submit', 'hidden'].indexOf(type) !== -1) {
+            return;
+        }
 
         $this   // give each element a uid
             .data('rtform-uid', id)
                 // get its type
             .data('rt-ui-type', type);
 
-        UI.ids.push(id);
-
-        var component = UI[id] = {
+        var component = {
             id: id,
             $: $this,
             element: element,
@@ -75,6 +96,8 @@ define([
             preserveCursor: cursorTypes.indexOf(type) !== -1,
             name: $this.prop('name'),
         };
+
+        UI.add(id, component);
 
         component.value = (function () {
             var checker = ['radio', 'checkbox'].indexOf(type) !== -1;
@@ -89,7 +112,7 @@ define([
                 return function (content) {
                     return typeof content !== 'undefined' ?
                         $this.val(content):
-                        canonicalize($this.val());
+                        typeof($this.val()) === 'string'? canonicalize($this.val()): $this.val();
                 };
             }
         }());
@@ -128,17 +151,17 @@ define([
         });
     };
 
+    var readValues = function () {
+        UI.each(function (ui, i, list) {
+            Map[ui.id] = ui.value();
+        });
+    };
+
     var onLocal = config.onLocal = function () {
         if (initializing) { return; }
         /* serialize local changes */
         readValues();
         module.patchText(Sortify(Map));
-    };
-
-    var readValues = function () {
-        UI.each(function (ui, i, list) {
-            Map[ui.id] = ui.value();
-        });
     };
 
     var updateValues = function () {
@@ -162,10 +185,11 @@ define([
             if (newval === oldval) { return; }
 
             var op;
+            var selects;
             var element = ui.element;
             if (ui.preserveCursor) {
                 op = TextPatcher.diff(oldval, newval);
-                var selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
+                selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
                     var before = element[attr];
                     var after = TextPatcher.transformCursor(element[attr], op);
                     return after;
@@ -175,8 +199,8 @@ define([
             ui.value(newval);
             ui.update();
 
-            if (op) {
-                console.log(selects);
+            if (op && ui.preserveCursor) {
+                //console.log(selects);
                 element.selectionStart = selects[0];
                 element.selectionEnd = selects[1];
             }

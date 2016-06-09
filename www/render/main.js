@@ -1,7 +1,7 @@
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
-    '/common/realtime-input.js',
-    '/common/crypto.js',
+    '/bower_components/chainpad-netflux/chainpad-netflux.js',
+    '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/marked/marked.min.js',
     '/common/convert.js',
     '/common/rainbow.js',

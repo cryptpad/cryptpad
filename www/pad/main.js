@@ -2,13 +2,13 @@ require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/J
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
     '/common/messages.js',
-    '/common/crypto.js',
-    '/common/realtime-input.js',
+    '/bower_components/chainpad-crypto/crypto.js',
+    '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/hyperjson/hyperjson.amd.js',
     '/common/hyperscript.js',
     '/common/toolbar.js',
     '/common/cursor.js',
-    '/common/json-ot.js',
+    '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/TypingTests.js',
     'json.sortify',
     '/bower_components/textpatcher/TextPatcher.amd.js',
@@ -50,7 +50,9 @@ define([
         // return !(el.tagName === 'SPAN' && el.contentEditable === 'false');
         var filter = (el.tagName === 'SPAN' &&
             el.getAttribute('contentEditable') === 'false' &&
-            /position:absolute;border-top:1px dashed/.test(el.getAttribute('style')));
+            /dashed/.test(el.getAttribute('style')) &&
+            /(rgb\(255|red)/.test(el.getAttribute('style')));
+            ///magicline/.test(el.getAttribute('style')));
         if (filter) {
             console.log("[hyperjson.serializer] prevented an element" +
                 "from being serialized:", el);
@@ -214,8 +216,7 @@ define([
             var myID; // My server ID
 
             var setMyID = function(info) {
-              myID = info.myID || null;
-              myUserName = myID;
+                myID = info.myID || null;
             };
 
             var createChangeName = function(id, $container) {
@@ -295,7 +296,7 @@ define([
                   addToUserList(userData);
                   hjson.pop();
                 }
-            }
+            };
 
             var onRemote = realtimeOptions.onRemote = function (info) {
                 if (initializing) { return; }

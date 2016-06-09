@@ -87,7 +87,31 @@ dropUser = function (ctx, user) {
 };
 
 const getHistory = function (ctx, channelName, handler, cb) {
-    ctx.store.getMessages(channelName, function (msgStr) { handler(JSON.parse(msgStr)); }, cb);
+    var messageBuf = [];
+    ctx.store.getMessages(channelName, function (msgStr) {
+        messageBuf.push(JSON.parse(msgStr));
+    }, function () {
+        var startPoint;
+        var cpCount = 0;
+        var msgBuff2 = [];
+        for (startPoint = messageBuf.length - 1; startPoint >= 0; startPoint--) {
+            var msg = messageBuf[startPoint];
+            msgBuff2.push(msg);
+            if (msg[2] === 'MSG' && msg[4].indexOf('cp|') === 0) {
+                cpCount++;
+                if (cpCount >= 2) {
+                    for (var x = msgBuff2.pop(); x; x = msgBuff2.pop()) { handler(x); }
+                    break;
+                }
+            }
+            //console.log(messageBuf[startPoint]);
+        }
+        if (cpCount < 2) {
+            // no checkpoints.
+            for (var x = msgBuff2.pop(); x; x = msgBuff2.pop()) { handler(x); }
+        }
+        cb();
+    });
 };
 
 const randName = function () { return Crypto.randomBytes(16).toString('hex'); };
