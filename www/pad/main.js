@@ -45,6 +45,7 @@ define([
     var userName = Crypto.rand64(8),
         toolbar;
 
+    // TODO update this filter to use the .non-realtime class
     var isNotMagicLine = function (el) {
         // factor as:
         // return !(el.tagName === 'SPAN' && el.contentEditable === 'false');
@@ -104,6 +105,7 @@ define([
         }
 
         var fixThings = false;
+
         var editor = window.editor = Ckeditor.replace('editor1', {
             // https://dev.ckeditor.com/ticket/10907
             needsBrFiller: fixThings,
@@ -114,7 +116,17 @@ define([
             removePlugins: 'resize'
         });
 
+
         editor.on('instanceReady', function (Ckeditor) {
+
+            /* add a class to the magicline plugin so we can pick it out more easily */
+            $('iframe')[0].contentWindow.CKEDITOR.instances.editor1.plugins.magicline
+                .backdoor.that.line.$.setAttribute('class', 'non-realtime');
+
+            /*  in XWiki this is 
+                CKEDITOR.instances.content.plugins.magicline.backdoor.that.line
+                    .$.setAttribute('class', 'non-realtime') */
+
             editor.execCommand('maximize');
             var documentBody = ifrw.$('iframe')[0].contentDocument.body;
 
@@ -422,6 +434,9 @@ define([
     var interval = 100;
     var first = function () {
         Ckeditor = ifrw.CKEDITOR;
+
+        console.log(Ckeditor);
+
         if (Ckeditor) {
             andThen(Ckeditor);
         } else {
