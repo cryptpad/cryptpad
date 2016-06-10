@@ -10,7 +10,21 @@ module.exports = {
     // the port on which your httpd will listen
     httpPort: 3000,
     // the port used for websockets
-    websocketPort: 3001,
+    websocketPort: 3000,
+
+    /*  Cryptpad can log activity to stdout
+     *  This may be useful for debugging
+     */
+    logToStdout: false,
+
+    /*  Cryptpad can be configured to remove channels some number of ms
+        after the last remaining client has disconnected.
+
+        Default behaviour is to keep channels forever.
+        If you enable channel removal, the default removal time is one minute
+    */
+    removeChannels: false,
+    channelRemovalTimeout: 60000,
 
     // You now have a choice of storage engines
 
@@ -19,7 +33,7 @@ module.exports = {
      * it will not scale well if your server stays alive for a long time.
      * but it is completely dependency free
      */
-    storage: './storage/amnesia',
+    //storage: './storage/amnesia',
 
     /* the 'lvl' storage module uses leveldb
      * it persists, and will perform better than amnesiadb
@@ -31,8 +45,8 @@ module.exports = {
      *
      * to delete all pads, run `rm -rf $YOUR_DB`
      */
-    // storage: './storage/lvl',
-    // levelPath: './test.level.db'
+    storage: './storage/lvl',
+    levelPath: './test.level.db'
 
     /* mongo is the original storage engine for cryptpad
      * it has been more thoroughly tested, but requires a little more setup

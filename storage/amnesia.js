@@ -18,6 +18,11 @@ module.exports.create = function(conf, cb){
 
     var db=[],
         index=0;
+
+    if (conf.removeChannels) {
+        console.log("Server is set to remove channels %sms after the last remaining client leaves.", conf.channelRemovalTimeout);
+    }
+
     cb({
         message: function(channelName, content, cb){
             var val = {
@@ -27,17 +32,25 @@ module.exports.create = function(conf, cb){
                 time: new Date().getTime(),
             };
             db.push(val);
-            cb();
+            if (cb) { cb(); }
         },
-        getMessages: function(channelName, cb){
+        getMessages: function(channelName, handler, cb){
             db.sort(function(a,b){
                 return a.id - b.id;
             });
             db.filter(function(val){
                 return val.chan === channelName;
             }).forEach(function(doc){
-                cb(doc.msg);
+                handler(doc.msg);
             });
+            if (cb) { cb(); }
+        },
+        removeChannel: function (channelName, cb) {
+            var err = false;
+            db = db.filter(function (msg) {
+                return msg.chan !== channelName;
+            });
+            cb(err);
         },
     });
 };

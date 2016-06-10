@@ -98,7 +98,10 @@ function context () {
           } else if (k.substr(0, 5) === "data-") {
             e.setAttribute(k, l[k])
           } else {
-            e[k] = l[k]
+            e.setAttribute(k, l[k])
+            if (e.getAttribute(k) !== l[k]) {
+              e[k] = l[k]
+            }
           }
         }
       } else if ('function' === typeof l) {

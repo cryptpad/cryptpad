@@ -5,3 +5,5 @@ customization
 .*.swp
 *.db
 /customize/
+messages.log
+.DS_Store

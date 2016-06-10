@@ -33,7 +33,7 @@ define(function () {
         interval = setRandomizedInterval(function () {
             cb();
             try {
-                el.replaceData(j, 0, input.charAt(i));
+                el.replaceData(Math.min(j, el.length), 0, input.charAt(i));
             } catch (err) {
                 errors++;
                 if (errors >= max_errors) {

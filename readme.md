@@ -25,7 +25,7 @@ To install:
     npm install -g bower ## if necessary
     bower install
 
-    ## copy config.js.dist to config.js 
+    ## copy config.js.dist to config.js
     cp config.js.dist config.js
 
     ## modify configuration to use your own mongodb instance
@@ -66,6 +66,13 @@ rm -rf ./cryptpad.db
 ```
 
 If you are using the mongodb adaptor, [drop the relevant collection](https://docs.mongodb.org/manual/reference/method/db.collection.drop/#db.collection.drop).
+
+## Testing
+
+To test CryptPad, go to http://your.server:3000/assert/
+
+You can use WebDriver to run this test automatically by running TestSelenium.js but you will need chromedriver installed.
+If you use Mac, you can `brew install chromedriver`.
 
 ## Security
 

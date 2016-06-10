@@ -1,25 +1,28 @@
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
-    '/common/realtime-input.js',
-    '/common/messages.js',
-    '/common/crypto.js',
-    '/common/cursor.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-    '/customize/pad.js'
-], function (Config, Realtime, Messages, Crypto, Cursor) { 
+    '/bower_components/chainpad-netflux/chainpad-netflux.js',
+    '/bower_components/chainpad-crypto/crypto.js',
+    '/bower_components/textpatcher/TextPatcher.amd.js',
+    '/bower_components/jquery/dist/jquery.min.js'
+], function (Config, Realtime, Crypto, TextPatcher) {
     var $ = window.jQuery;
-    $(window).on('hashchange', function() {
-        window.location.reload();
-    });
-    if (window.location.href.indexOf('#') === -1) {
-        window.location.href = window.location.href + '#' + Crypto.genKey();
-        return;
-    }
 
-    var key = Crypto.parseKey(window.location.hash.substring(1));
+    var key;
+    var channel = '';
+    if (window.location.href.indexOf('#') === -1) {
+        key = Crypto.genKey();
+        //window.location.href = window.location.href + '#' + Crypto.genKey();
+        //return;
+    } else {
+        var hash = window.location.hash.substr(1);
+        channel = hash.substr(0,32);
+        key = hash.substr(32);
+    }
 
     var $textarea = $('textarea'),
         $run = $('#run');
+
+    var module = {};
 
     /*
         onRemote
@@ -29,38 +32,71 @@ define([
         transformFunction
     */
 
+    var userName = Crypto.rand64(8);
+
     var config = {
-        textarea: $textarea[0],
+        initialState: '',
         websocketURL: Config.websocketURL,
-        userName: Crypto.rand64(8),
-        channel: key.channel,
-        cryptKey: key.cryptKey,
+        userName: userName,
+        channel: channel,
+        cryptKey: key,
+        crypto: Crypto,
     };
     var initializing = true;
 
-    $textarea.attr('disabled', true);
+    var setEditable = function (bool) { $textarea.attr('disabled', !bool); };
+    var canonicalize = function (text) { return text.replace(/\r\n/g, '\n'); };
 
-    var onInit = config.onInit = function (info) { };
+    setEditable(false);
 
-    var onRemote = config.onRemote = function (contents) {
+    var onInit = config.onInit = function (info) {
+        window.location.hash = info.channel + key;
+        $(window).on('hashchange', function() { window.location.reload(); });
+    };
+
+    var onRemote = config.onRemote = function (info) {
         if (initializing) { return; }
+
+        var userDoc = info.realtime.getUserDoc();
+        var current = canonicalize($textarea.val());
+
+        var op = TextPatcher.diff(current, userDoc);
+
+        var elem = $textarea[0];
+
+        var selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
+            return TextPatcher.transformCursor(elem[attr], op);
+        });
+
+        $textarea.val(userDoc);
+        elem.selectionStart = selects[0];
+        elem.selectionEnd = selects[1];
+
         // TODO do something on external messages
         // http://webdesign.tutsplus.com/tutorials/how-to-display-update-notifications-in-the-browser-tab--cms-23458
     };
 
     var onReady = config.onReady = function (info) {
+        module.patchText = TextPatcher.create({
+            realtime: info.realtime
+        //    logging: true
+        });
         initializing = false;
-        $textarea.attr('disabled', false);
+        setEditable(true);
+        $textarea.val(info.realtime.getUserDoc());
     };
 
     var onAbort = config.onAbort = function (info) {
-        $textarea.attr('disabled', true);
+        setEditable(false);
         window.alert("Server Connection Lost");
     };
 
-    var rt = window.rt = Realtime.start(config);
+    var onLocal = config.onLocal = function () {
+        if (initializing) { return; }
+        module.patchText(canonicalize($textarea.val()));
+    };
 
-    var cursor = Cursor($textarea[0]);
+    var rt = window.rt = Realtime.start(config);
 
     var splice = function (str, index, chars) {
         var count = chars.length;
@@ -97,7 +133,9 @@ define([
         // track when control keys are released
     });
 
+    //$textarea.on('change', onLocal);
     $textarea.on('keypress', function (e) {
+        onLocal();
         switch (e.key) {
             case 'Tab':
                 // insert a tab wherever the cursor is...
@@ -117,16 +155,18 @@ define([
                 // simulate a keypress so the event goes through..
                 // prevent default behaviour for tab
                 e.preventDefault();
-                rt.bumpSharejs();
+
+                onLocal();
                 break;
             default:
                 break;
         }
     });
 
-    $textarea.on('change', function () {
-        rt.bumpSharejs();
-    });
+    ['cut', 'paste', 'change', 'keyup', 'keydown', 'select', 'textInput']
+        .forEach(function (evt) {
+            $textarea.on(evt, onLocal);
+        });
 
     $run.click(function (e) {
         e.preventDefault();
