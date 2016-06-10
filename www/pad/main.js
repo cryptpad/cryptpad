@@ -435,8 +435,6 @@ define([
     var first = function () {
         Ckeditor = ifrw.CKEDITOR;
 
-        console.log(Ckeditor);
-
         if (Ckeditor) {
             andThen(Ckeditor);
         } else {
