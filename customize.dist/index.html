@@ -128,8 +128,9 @@
         <script>
             require([
                 '/customize/DecorateToolbar.js',
+                '/bower_components/lil-uri/uri.min.js',
                 '/bower_components/jquery/dist/jquery.min.js'
-            ], function (Dt) {
+            ], function (Dt, LilUri) {
                 var $ = window.$;
                 Dt.main($('#bottom-bar'));
                 var localStorageKey = 'CryptPad_RECENTPADS';
@@ -152,23 +153,27 @@
                             return pad[0] !== url;
                         });
                         localStorage[localStorageKey] = JSON.stringify(recentPads);
-
                     }
                 };
 
-                // show recent pads if they exist
+                var padTypes = {
+                    '/pad/': 'Pad',
+                    '/code/': 'Code'
+                };
+
                 recentPads.length && recentPads.some(function (pad, index) {
                     if (!pad) return true;
+
+                    // don't link to old pads
                     if (now.getTime() - pad[1] > memorySpan) return true;
 
                     hasRecent = true;
 
-                    // TODO add support for newer types...
-                    var name = /\/sheet\//.test(pad[0])?
-                        'Sheet':
-                        /\/code\//.test(pad[0])?
-                            'Code':
-                            'Pad';
+                    // split up the uri
+                    var uri = LilUri(pad[0]);
+
+                    // derive the name
+                    var name = padTypes[uri.path()];
 
                     var date = new Date(pad[1]).toLocaleDateString();
                     if (date === now.toLocaleDateString()) {
@@ -212,8 +217,8 @@
         </table>
 
         <div id="buttons" class="buttons">
-          <a id="create-pad" class="button create" href="/pad/">CREATE NEW WYSIWYG PAD</a>
-          <a id="create-code" class="button create" href="/code/">CREATE NEW CODE PAD</a>
+          <a id="create-pad" class="button create" href="pad">CREATE NEW WYSIWYG PAD</a>
+          <a id="create-code" class="button create" href="code">CREATE NEW CODE PAD</a>
         </div>
       </center>
     </div>
