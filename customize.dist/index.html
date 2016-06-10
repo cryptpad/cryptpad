@@ -94,15 +94,19 @@
       <center>
           <img class="imgcenter" src="/customize/cryptofist_small.png" />
           <h1>Unity is Strength - Collaboration is Key</h1>
+
+          <h2>With the support of</h2>
+
+          <img class="imgcenter" src="/customize/openpaas.png" />
+
       </center>
       <p>CryptPad is the <strong>zero knowledge</strong> realtime collaborative editor.
-      Encryption carried out in your web browser protects the data from the server, the cloud
-      and the NSA. This project uses the <a href="http://ckeditor.com/">CKEditor</a> Visual Editor
-      the <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a> realtime engine. The secret
-      encryption key is stored in the URL
-      <a href="https://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a> which is
-      never sent to the server but is available to javascript so by sharing the URL, you give
-      authorization to others who want to participate.</p>
+      Encryption carried out in your web browser protects the data from the server, the cloud,
+      and the NSA.
+      The secret encryption key is stored in the URL <a href="https://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a> which is never sent to the server but is available to javascript so by sharing the URL, you give authorization to others who want to participate.</p>
+
+      <p>This project uses the <a href="http://ckeditor.com/">CKEditor</a> Visual Editor
+      the <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a> realtime engine.</p>
 
       </code></pre><h2 id="howitworks">How It Works</h2>
       <p>CryptPad uses a variant of the
@@ -113,7 +117,7 @@
       Conflicts and without the need for resolving conflicts, the server can be kept unaware of the
       content which is being edited on the pad.</p>
 
-      <p><strong>NOTE</strong> Pads and spreadsheets will be removed after 30 days of inactivity</p>
+      <p><strong>NOTE</strong> Collaborative documents will be removed after 30 days of inactivity</p>
       <center>
         <noscript>
           <p>
@@ -122,15 +126,6 @@
           </p>
         </noscript>
         <script>
-            require(['/common/crypto.js', '/api/config?cb=' + Math.random().toString(16).substring(2)], function (Crypto, Config) {
-                document.getElementById('buttons').setAttribute('style', '');
-                document.getElementById('create-pad').setAttribute('href', '/pad/');
-                if(Config.webrtcURL !== '') {
-                  document.getElementById('create-rtcpad').setAttribute('href', '/padrtc/');
-                }
-                document.getElementById('create-sheet').setAttribute('href', '/sheet/#' + Crypto.genKey());
-                document.getElementById('create-code').setAttribute('href', '/code/#' + Crypto.genKey());
-            });
             require([
                 '/customize/DecorateToolbar.js',
                 '/bower_components/jquery/dist/jquery.min.js'
@@ -216,11 +211,9 @@
             </tbody>
         </table>
 
-        <div id="buttons" class="buttons" style="display:none;">
-          <a id="create-pad" class="button create" href="pad">CREATE NEW PAD</a>
-          <a id="create-rtcpad" class="button create" href="pad">CREATE NEW WEBRTC PAD</a>
-          <!--<a id="create-sheet" class="button create" href="sheet">CREATE NEW SPREADSHEET</a>-->
-          <a id="create-code" class="button create" href="code">CREATE NEW CODE COLLABORATION PAD</a>
+        <div id="buttons" class="buttons">
+          <a id="create-pad" class="button create" href="/pad/">CREATE NEW WYSIWYG PAD</a>
+          <a id="create-code" class="button create" href="/code/">CREATE NEW CODE PAD</a>
         </div>
       </center>
     </div>

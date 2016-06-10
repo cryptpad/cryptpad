@@ -6,6 +6,8 @@
           bottom:0px;
           right:0px;
           height:4%;
+          height: 2.5em;
+
           display: inline-block;
           width: 100%;
           background: rgb(23, 35, 34);
@@ -21,6 +23,7 @@
           display:block;
           float:left;
           padding-top:3px;
+          color: rgb(39, 176, 0);
       }
       .bottom-bar-left {
           display:block;
@@ -48,6 +51,10 @@
       .bottom-bar-xwiki {
           top: 3px;
       }
+      .bottom-bar-openpaas {
+          top: 3px;
+          max-width: 120px;
+      }
   </style>
   <div class="bottom-bar">
     <div class="bottom-bar-left">
@@ -60,9 +67,10 @@
         </a>
       </p>
     </div>
+    <!--
     <div class="bottom-bar-center">
       <p><a href="https://github.com/xwiki-labs/cryptpad">Fork me on GitHub</a></p>
-    </div>
+    </div> -->
     <div class="bottom-bar-right">
       <p>
       <a href="http://labs.xwiki.com/" title="XWiki Labs">
@@ -70,8 +78,11 @@
         <img src="/customize/logo-xwiki2.png"
            alt="XWiki SAS"
            class="bottom-bar-xwiki"
-        />
-        Labs Project
+        /> Labs Project </a> with the support of 
+        <a href="http://ng.open-paas.org/" title="OpenPaaS::ng"> <img src="/customize/openpaasng.png"
+            alt="OpenPaaS-ng"
+            class="bottom-bar-openpaas" />
+        </a>
       </a>
       </p>
     </div>
