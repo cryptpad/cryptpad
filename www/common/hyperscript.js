@@ -82,7 +82,7 @@ function context () {
           }
           else if(k === 'style') {
             if('string' === typeof l[k]) {
-              e.style.cssText = l[k]
+              e.setAttribute(k, l[k]);   //e.style.cssText = l[k]
             }else{
               for (var s in l[k]) (function(s, v) {
                 if('function' === typeof v) {
