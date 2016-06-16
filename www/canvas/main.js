@@ -12,8 +12,11 @@ define([
     '/bower_components/chainpad-json-validator/json-ot.js',
     '/bower_components/fabric.js/dist/fabric.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
+    '/bower_components/file-saver/FileSaver.min.js',
     '/customize/pad.js'
 ], function (Config, Realtime, Messages, Crypto, TextPatcher, JSONSortify, JsonOT) {
+    var saveAs = window.saveAs;
+
     var module = window.APP = { };
     var $ = module.$ = window.jQuery;
     var Fabric = module.Fabric = window.fabric;
@@ -60,12 +63,21 @@ define([
         $canvas.css('border-color', bool? 'black': 'red');
     };
 
+    var saveImage = module.saveImage = function () {
+        $canvas[0].toBlob(function (blob) {
+            var defaultName = "pretty-picture.png";
+            saveAs(blob, window.prompt("What would you like to name your image?",
+                    defaultName) || "pretty-picture.png");
+        });
+    };
+
     var initializing = true;
 
     var config = module.config = {
+        initialState: '{}',
         // TODO initialState ?
         websocketURL: Config.websocketURL,
-        userName: Crypto.rand64(8),
+        //userName: Crypto.rand64(8),
         channel: channel,
         cryptKey: key,
         crypto: Crypto,
@@ -106,6 +118,10 @@ define([
     var onAbort = config.onAbort = function (info) {
         setEditable(false);
         window.alert("Server Connection Lost");
+
+        if (window.confirm("Would you like to save your image?")) {
+            saveImage();
+        }
     };
 
     var rt = Realtime.start(config);
@@ -116,5 +132,7 @@ define([
         canvas.clear();
     });
 
-
+    $('#save').on('click', function () {
+        saveImage();
+    });
 });
