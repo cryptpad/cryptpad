@@ -45,41 +45,16 @@ define([
     var userName = Crypto.rand64(8),
         toolbar;
 
-    // TODO update this filter to use the .non-realtime class
     var isNotMagicLine = function (el) {
-        // factor as:
-        // return !(el.tagName === 'SPAN' && el.contentEditable === 'false');
-        var filter = (el.tagName === 'SPAN' &&
-            el.getAttribute('contentEditable') === 'false' &&
-            /dashed/.test(el.getAttribute('style')) &&
-            /(rgb\(255|red)/.test(el.getAttribute('style')));
-            ///magicline/.test(el.getAttribute('style')));
-        if (filter) {
-            console.log("[hyperjson.serializer] prevented an element" +
-                "from being serialized:", el);
-            return false;
-        }
-        return true;
+        return !(el && typeof(el.getAttribute) === 'function' &&
+            el.getAttribute('class') &&
+            el.getAttribute('class').split(' ').indexOf('non-realtime') !== -1);
     };
 
     /* catch `type="_moz"` before it goes over the wire */
     var brFilter = function (hj) {
         if (hj[1].type === '_moz') { hj[1].type = undefined; }
         return hj;
-    };
-
-    /*  TODO integrate into flow to prevent browser fights over style */
-    var setStyle = function (elem, newStyleAttr) {
-        elem.setAttribute("data-chainpad-origstyle", newStyleAttr);
-        elem.setAttribute("style", newStyleAttr);
-        elem.setAttribute("data-chainpad-styleclone", elem.getAttribute("style"));
-    };
-
-    /*  TODO integrate into flow to prevent browser fights over style */
-    var getStyle = function (elem) {
-        var st = elem.getAttribute("style");
-        if (elem.getAttribute("data-chainpad-styleclone") !== st) { return st; }
-        return elem.getAttribute("data-chainpad-origstyle");
     };
 
     var andThen = function (Ckeditor) {
@@ -120,12 +95,13 @@ define([
         editor.on('instanceReady', function (Ckeditor) {
 
             /* add a class to the magicline plugin so we can pick it out more easily */
-            $('iframe')[0].contentWindow.CKEDITOR.instances.editor1.plugins.magicline
-                .backdoor.that.line.$.setAttribute('class', 'non-realtime');
 
-            /*  in XWiki this is 
-                CKEDITOR.instances.content.plugins.magicline.backdoor.that.line
-                    .$.setAttribute('class', 'non-realtime') */
+            var ml = $('iframe')[0].contentWindow.CKEDITOR.instances.editor1.plugins.magicline
+                .backdoor.that.line.$;
+
+            [ml, ml.parentElement].forEach(function (el) {
+                el.setAttribute('class', 'non-realtime');
+            });
 
             editor.execCommand('maximize');
             var documentBody = ifrw.$('iframe')[0].contentDocument.body;
@@ -263,7 +239,7 @@ define([
                 (DD).apply(inner, patch);
             };
 
-            var stringifyDOM = function (dom) {
+            var stringifyDOM = module.stringifyDOM = function (dom) {
                 var hjson = Hyperjson.fromDOM(dom, isNotMagicLine, brFilter);
                 hjson[3] = {metadata: userList};
                 return stringify(hjson);
@@ -398,8 +374,8 @@ define([
 
                 // stringify the json and send it into chainpad
                 var shjson = stringifyDOM(inner);
-                module.patchText(shjson);
 
+                module.patchText(shjson);
                 if (module.realtime.getUserDoc() !== shjson) {
                     console.error("realtime.getUserDoc() !== shjson");
                 }
