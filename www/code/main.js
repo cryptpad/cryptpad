@@ -8,10 +8,12 @@ define([
     '/common/toolbar.js',
     'json.sortify',
     '/bower_components/chainpad-json-validator/json-ot.js',
+    '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
 ], function (Config, /*RTCode,*/ Messages, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT) {
     var $ = window.jQuery;
+    var saveAs = window.saveAs;
     var module = window.APP = {};
     var ifrw = module.ifrw = $('#pad-iframe')[0].contentWindow;
     var stringify = function (obj) {
@@ -55,6 +57,15 @@ define([
 
             var setEditable = module.setEditable = function (bool) {
                 editor.setOption('readOnly', !bool);
+            };
+
+            var exportText = module.exportText = function () {
+                var text = editor.getValue();
+                var filename = window.prompt("What would you like to name your file?");
+                if (filename) {
+                    var blob = new Blob([text], {type: "text/plain;charset=utf-8"});
+                    saveAs(blob, filename);
+                }
             };
 
             var userList = {}; // List of pretty name of all users (mapped with their server ID)
@@ -134,10 +145,13 @@ define([
                 toolbarList = info.userList;
                 var config = {
                     userData: userList,
-                    changeNameID: 'cryptpad-changeName'
+                    changeNameID: 'cryptpad-changeName',
+                    saveContentID: 'cryptpad-saveContent',
                 };
                 toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
                 createChangeName('cryptpad-changeName', $bar);
+                $bar.find('#cryptpad-saveContent').click(exportText);
+
                 window.location.hash = info.channel + key;
             };
 

@@ -14,6 +14,8 @@ define([
     /** Id of the div containing the lag info. */
     var LAG_ELEM_CLS = 'rtwysiwyg-lag';
 
+    var SAVE_ELEMENT_CLS = 'cryptpad-saveContent';
+
     /** The toolbar class which contains the user list, debug link and lag. */
     var TOOLBAR_CLS = 'rtwysiwyg-toolbar';
 
@@ -96,6 +98,7 @@ define([
             '.' + DEBUG_LINK_CLS + ':link:hover { color:blue; }',
             '.gwt-TabPanelBottom { border-top: 0 none; }',
             '.' + TOOLBAR_CLS + ' button { box-sizing: border-box; height: 101%; background-color: inherit; border: 1px solid #A6A6A6; border-radius: 5px; margin-right: 5px;}',
+            '.' + TOOLBAR_CLS + ' ' + SAVE_ELEMENT_CLS + '{ float: right; margin-right: 5px;                        }',
 
             '</style>'
          ].join('\n'));
@@ -178,6 +181,11 @@ define([
         return $container.find('#'+id)[0];
     };
 
+    var createSaveElement = function (id, $container) {
+        $container.append('<button class="'+ SAVE_ELEMENT_CLS + '" id="' + id + '">SAVE</button>');
+        return $container.find('#'+id)[0];
+    };
+
     var checkLag = function (getLag, lagElement) {
         if(typeof getLag !== "function") { return; }
         var lag = getLag();
@@ -230,11 +238,17 @@ define([
         var lagElement = createLagElement(toolbar.find('.rtwysiwyg-toolbar-rightside'));
         var userData = config.userData;
         var changeNameID = config.changeNameID;
+        var saveContentID = config.saveContentID;
+        var saveElement;
 
         // Check if the user is allowed to change his name
         if(changeNameID) {
             // Create the button and update the element containing the user list
             userListElement = createChangeName($container, userListElement, changeNameID);
+        }
+
+        if (saveContentID) {
+            saveElement = createSaveElement(saveContentID, toolbar.find('.rtwysiwyg-toolbar-rightside'));
         }
 
         rememberPad();
