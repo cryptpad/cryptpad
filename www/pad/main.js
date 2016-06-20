@@ -4,8 +4,7 @@ define([
     '/common/messages.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
-    '/bower_components/hyperjson/hyperjson.amd.js',
-    '/common/hyperscript.js',
+    '/bower_components/hyperjson/hyperjson.js',
     '/common/toolbar.js',
     '/common/cursor.js',
     '/bower_components/chainpad-json-validator/json-ot.js',
@@ -16,7 +15,7 @@ define([
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, Messages, Crypto, realtimeInput, Hyperjson, Hyperscript,
+], function (Config, Messages, Crypto, realtimeInput, Hyperjson,
     Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad) {
 
     var $ = window.jQuery;
@@ -32,12 +31,11 @@ define([
     window.Hyperjson = Hyperjson;
 
     var hjsonToDom = function (H) {
-        return Hyperjson.callOn(H, Hyperscript);
+        return Hyperjson.toDOM(H); //callOn(H, Hyperscript);
     };
 
     var module = window.REALTIME_MODULE = {
         Hyperjson: Hyperjson,
-        Hyperscript: Hyperscript,
         TextPatcher: TextPatcher,
         logFights: true,
         fights: []
