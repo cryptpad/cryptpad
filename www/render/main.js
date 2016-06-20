@@ -3,16 +3,14 @@ define([
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/marked/marked.min.js',
-    '/common/convert.js',
-    '/common/rainbow.js',
+    '/bower_components/hyperjson/hyperjson.js',
+    //'/common/convert.js',
     '/bower_components/jquery/dist/jquery.min.js',
+    '/bower_components/diff-dom/diffDOM.js',
     '/customize/pad.js'
-], function (Config, Realtime, Crypto, Marked, Convert, Rainbow) { 
+], function (Config, Realtime, Crypto, Marked, Hyperjson) {
     var $ = window.jQuery;
-
-    var Vdom = Convert.core.vdom,
-        Hyperjson = Convert.core.hyperjson,
-        Hyperscript = Convert.core.hyperscript;
+    var DiffDom = window.diffDOM;
 
     var key;
     var channel = '';
@@ -27,20 +25,15 @@ define([
 
     // set markdown rendering options :: strip html to prevent XSS
     Marked.setOptions({
-        sanitize: true
+        //sanitize: true
     });
 
-    var module = window.APP = {
-        Vdom: Vdom,
-        Hyperjson: Hyperjson,
-        Hyperscript: Hyperscript
-    };
+    var module = window.APP = { };
 
     var $target = module.$target = $('#target');
 
     var config = {
         websocketURL: Config.websocketURL,
-        userName: Crypto.rand64(8),
         channel: channel,
         cryptKey: key,
         crypto: Crypto
@@ -51,41 +44,26 @@ define([
             inner = $target.find('#inner')[0];
 
         if (!target) { throw new Error(); }
+        var DD = new DiffDom({});
 
-        var Previous = Convert.dom.to.vdom(inner);
         return function (md) {
             var rendered = Marked(md||"");
             // make a dom
-            var R = $('<div id="inner">'+rendered+'</div>')[0];
-            var New = Convert.dom.to.vdom(R);
-            var patches = Vdom.diff(Previous, New);
-            Vdom.patch(inner, patches);
+            var New = $('<div id="inner">'+rendered+'</div>')[0];
+
+            var patches = (DD).diff(inner, New);
+            DD.apply(inner, patches);
             Previous = New;
             return patches;
         };
     }());
 
-    var colour = module.colour = Rainbow();
-
     var $inner = $('#inner');
-
-    window.makeRainbow = false;
-    var makeRainbows = function () {
-        $inner
-            .find('*:not(.untouched)')
-            .css({
-                'border': '5px solid '+colour(),
-                margin: '5px'
-            })
-            .addClass('untouched');
-    };
-
     var redrawTimeout;
     var lazyDraw = function (md) {
         if (redrawTimeout) { clearTimeout(redrawTimeout); }
         redrawTimeout = setTimeout(function () {
             draw(md);
-            if (window.makeRainbow) { makeRainbows(); }
         }, 450);
     };
 
@@ -98,12 +76,9 @@ define([
 
     // when your editor is ready
     var onReady = config.onReady = function (info) {
-        //if (info.userList) { console.log("Userlist: [%s]", info.userList.join(',')); }
         console.log("Realtime is ready!");
-
         var userDoc = module.realtime.getUserDoc();
         lazyDraw(userDoc);
-
         initializing = false;
     };
 
