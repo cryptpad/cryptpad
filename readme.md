@@ -100,6 +100,8 @@ projects, we also wish to sell other licenses to this software. Before making a 
 please read and
 [sign the Commons Management Agreement](https://www.clahub.com/agreements/cjdelisle/cryptpad).
 
+If you have any questions or comments, or if you're interested in contributing to Cryptpad, come say hi on IRC, `#cryptpad` on Freenode.
+
 ### License
 
 This software is and will always be available under the GNU Affero General Public License as
