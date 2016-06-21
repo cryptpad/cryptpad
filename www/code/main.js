@@ -26,17 +26,6 @@ define([
             toolbar;
 
         var secret = Cryptpad.getSecrets();
-/*
-        var key;
-        var channel = '';
-        var hash = false;
-        if (!/#/.test(window.location.href)) {
-            key = Crypto.genKey();
-        } else {
-            hash = window.location.hash.slice(1);
-            channel = hash.slice(0, 32);
-            key = hash.slice(32);
-        }*/
 
         var andThen = function (CMeditor) {
             var $pad = $('#pad-iframe');
@@ -156,6 +145,7 @@ define([
                 $bar.find('#cryptpad-saveContent').click(exportText);
 
                 window.location.hash = info.channel + secret.key;
+                Cryptpad.rememberPad();
             };
 
             var updateUserList = function(shjson) {

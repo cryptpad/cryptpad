@@ -324,6 +324,7 @@ define([
 
                 // set the hash
                 window.location.hash = info.channel + secret.key;
+                Cryptpad.rememberPad();
             };
 
             // this should only ever get called once, when the chain syncs

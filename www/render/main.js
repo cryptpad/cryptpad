@@ -45,7 +45,6 @@ define([
 
             var patches = (DD).diff(inner, New);
             DD.apply(inner, patches);
-            Previous = New;
             return patches;
         };
     }());
