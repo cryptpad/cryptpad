@@ -13,9 +13,9 @@ define([
     var config = {
         websocketURL: Config.websocketURL,
         channel: secret.channel,
-        cryptKey: secret.key,
+        //cryptKey: secret.key,
         data: {},
-        crypto: Crypto
+        crypto: Crypto.createEncryptor(secret.key)
     };
 
     var module = window.APP = {};

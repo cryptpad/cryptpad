@@ -3,20 +3,13 @@ define([
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
+    '/common/cryptpad-common.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, Realtime, Crypto, TextPatcher) { 
+], function (Config, Realtime, Crypto, TextPatcher, Cryptpad) { 
     var $ = window.jQuery;
 
-    var key;
-    var channel = '';
-    if (window.location.href.indexOf('#') === -1) {
-        key = Crypto.genKey();
-    } else {
-        var hash = window.location.hash.substr(1);
-        channel = hash.substr(0, 32);
-        key = hash.substr(32);
-    }
+    var secret = Cryptpad.getSecrets();
 
     var module = window.APP = {
         TextPatcher: TextPatcher
@@ -29,12 +22,9 @@ define([
 
     var config = module.config = {
         initialState: '',
-        textarea: $textarea[0],
         websocketURL: Config.websocketURL,
-        userName: userName,
-        channel: channel,
-        cryptKey: key,
-        crypto: Crypto,
+        channel: secret.channel,
+        crypto: Crypto.createEncryptor(secret.key),
     };
 
     var setEditable = function (bool) { $textarea.attr('disabled', !bool); };
@@ -43,7 +33,7 @@ define([
     setEditable(false);
 
     var onInit = config.onInit = function (info) {
-        window.location.hash = info.channel + key;
+        window.location.hash = info.channel + secret.key;
         $(window).on('hashchange', function() {
             window.location.reload();
         });

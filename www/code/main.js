@@ -8,10 +8,11 @@ define([
     '/common/toolbar.js',
     'json.sortify',
     '/bower_components/chainpad-json-validator/json-ot.js',
+    '/common/cryptpad-common.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, /*RTCode,*/ Messages, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT) {
+], function (Config, /*RTCode,*/ Messages, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad) {
     var $ = window.jQuery;
     var saveAs = window.saveAs;
     var module = window.APP = {};
@@ -24,6 +25,8 @@ define([
         var userName = Crypto.rand64(8),
             toolbar;
 
+        var secret = Cryptpad.getSecrets();
+/*
         var key;
         var channel = '';
         var hash = false;
@@ -33,7 +36,7 @@ define([
             hash = window.location.hash.slice(1);
             channel = hash.slice(0, 32);
             key = hash.slice(32);
-        }
+        }*/
 
         var andThen = function (CMeditor) {
             var $pad = $('#pad-iframe');
@@ -90,9 +93,9 @@ define([
                 //initialState: Messages.codeInitialState,
                 userName: userName,
                 websocketURL: Config.websocketURL,
-                channel: channel,
-                cryptKey: key,
-                crypto: Crypto,
+                channel: secret.channel,
+                //cryptKey: key,
+                crypto: Crypto.createEncryptor(secret.key),
                 setMyID: setMyID,
                 transformFunction: JsonOT.validate
             };
@@ -152,7 +155,7 @@ define([
                 createChangeName('cryptpad-changeName', $bar);
                 $bar.find('#cryptpad-saveContent').click(exportText);
 
-                window.location.hash = info.channel + key;
+                window.location.hash = info.channel + secret.key;
             };
 
             var updateUserList = function(shjson) {

@@ -7,21 +7,13 @@ define([
     'json.sortify',
     '/form/ula.js',
     '/bower_components/chainpad-json-validator/json-ot.js',
+    '/common/cryptpad-common.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, Realtime, Crypto, TextPatcher, Sortify, Formula, JsonOT) {
+], function (Config, Realtime, Crypto, TextPatcher, Sortify, Formula, JsonOT, Cryptpad) {
     var $ = window.jQuery;
 
-    var key;
-    var channel = '';
-    var hash = false;
-    if (!/#/.test(window.location.href)) {
-        key = Crypto.genKey();
-    } else {
-        hash = window.location.hash.slice(1);
-        channel = hash.slice(0,32);
-        key = hash.slice(32);
-    }
+    var secret = Cryptpad.getSecrets();
 
     var module = window.APP = {
         TextPatcher: TextPatcher,
@@ -125,9 +117,8 @@ define([
         initialState: Sortify(Map) || '{}',
         websocketURL: Config.websocketURL,
         userName: Crypto.rand64(8),
-        channel: channel,
-        cryptKey: key,
-        crypto: Crypto,
+        channel: secret.channel,
+        crypto: Crypto.createEncryptor(secret.key),
         transformFunction: JsonOT.validate
     };
 
@@ -142,7 +133,7 @@ define([
 
     var onInit = config.onInit = function (info) {
         var realtime = module.realtime = info.realtime;
-        window.location.hash = info.channel + key;
+        window.location.hash = info.channel + secret.key;
 
         // create your patcher
         module.patchText = TextPatcher.create({

@@ -3,9 +3,10 @@ define([
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
+    '/common/cryptpad-common.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, Realtime, Crypto, TextPatcher) { 
+], function (Config, Realtime, Crypto, TextPatcher, Cryptpad) {
     // TODO consider adding support for less.js
     var $ = window.jQuery;
 
@@ -14,21 +15,11 @@ define([
 
     var module = window.APP = {};
 
-    var key;
-    var channel = '';
-    if (!/#/.test(window.location.href)) {
-        key = Crypto.genKey();    
-    } else {
-        var hash = window.location.hash.slice(1);
-        channel = hash.slice(0, 32);
-        key = hash.slice(32);
-    }
-
+    var secret = Cryptpad.getSecrets();
     var config = {
         websocketURL: Config.websocketURL,
-        channel: channel,
-        cryptKey: key,
-        crypto: Crypto,
+        channel: secret.channel,
+        crypto: Crypto.createEncryptor(secret.key),
     };
 
     var userName = module.userName = config.userName = Crypto.rand64(8);
@@ -49,7 +40,7 @@ define([
     var initializing = true;
 
     var onInit = config.onInit = function (info) {
-        window.location.hash = info.channel + key;
+        window.location.hash = info.channel + secret.key;
         var realtime = module.realtime = info.realtime;
         module.patchText = TextPatcher.create({
             realtime: realtime,

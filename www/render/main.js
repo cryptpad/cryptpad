@@ -4,28 +4,20 @@ define([
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/marked/marked.min.js',
     '/bower_components/hyperjson/hyperjson.js',
+    '/common/cryptpad-common.js',
     //'/common/convert.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/bower_components/diff-dom/diffDOM.js',
     '/customize/pad.js'
-], function (Config, Realtime, Crypto, Marked, Hyperjson) {
+], function (Config, Realtime, Crypto, Marked, Hyperjson, Cryptpad) {
     var $ = window.jQuery;
     var DiffDom = window.diffDOM;
 
-    var key;
-    var channel = '';
-    var hash = false;
-    if (!/#/.test(window.location.href)) {
-        key = Crypto.genKey();
-    } else {
-        hash = window.location.hash.slice(1);
-        channel = hash.slice(0, 32);
-        key = hash.slice(32);
-    }
+    var secret = Cryptpad.getSecrets();
 
     // set markdown rendering options :: strip html to prevent XSS
     Marked.setOptions({
-        //sanitize: true
+        sanitize: true
     });
 
     var module = window.APP = { };
@@ -34,9 +26,9 @@ define([
 
     var config = {
         websocketURL: Config.websocketURL,
-        channel: channel,
-        cryptKey: key,
-        crypto: Crypto
+        channel: secret.channel,
+        //cryptKey: secret.key,
+        crypto: Crypto.createEncryptor(secret.key)
     };
 
     var draw = window.draw = (function () {
@@ -70,7 +62,7 @@ define([
     var initializing = true;
 
     var onInit = config.onInit = function (info) {
-        window.location.hash = info.channel + key;
+        window.location.hash = info.channel + secret.key;
         module.realtime = info.realtime;
     };
 

@@ -209,8 +209,6 @@ define([
             var applyHjson = function (shjson) {
                 var userDocStateDom = hjsonToDom(JSON.parse(shjson));
 
-                // we *might* be able to remove this now
-                // changes to hyperscript fixed this bug *maybe* --ansuz
                 userDocStateDom.setAttribute("contenteditable", "true"); // lol wtf
                 var patch = (DD).diff(inner, userDocStateDom);
                 (DD).apply(inner, patch);
@@ -238,14 +236,24 @@ define([
                 // method which allows us to get the id of the user
                 setMyID: setMyID,
 
-                // Crypto object to avoid loading it twice in Cryptpad
-                crypto: Crypto,
+                // Pass in encrypt and decrypt methods
+                crypto: Crypto.createEncryptor(secret.key),
 
                 // really basic operational transform
                 transformFunction : JsonOT.validate,
 
                 // cryptpad debug logging (default is 1)
                 // logLevel: 0,
+
+                validateContent: function (content) {
+                    try {
+                        JSON.parse(content);
+                        return true;
+                    } catch (e) {
+                        console.log("Failed to parse, rejecting patch");
+                        return false;
+                    }
+                }
             };
 
             var updateUserList = function(shjson) {

@@ -10,18 +10,20 @@ define([
     '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
     '/bower_components/chainpad-json-validator/json-ot.js',
+    '/common/cryptpad-common.js',
     '/bower_components/fabric.js/dist/fabric.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/customize/pad.js'
-], function (Config, Realtime, Messages, Crypto, TextPatcher, JSONSortify, JsonOT) {
+], function (Config, Realtime, Messages, Crypto, TextPatcher, JSONSortify, JsonOT, Cryptpad) {
     var saveAs = window.saveAs;
 
     var module = window.APP = { };
     var $ = module.$ = window.jQuery;
     var Fabric = module.Fabric = window.fabric;
 
-
+    var secret = Cryptpad.getSecrets();
+    /*
     var key;
     var channel = '';
     if (!/#/.test(window.location.href)) {
@@ -30,7 +32,7 @@ define([
         var hash = window.location.hash.slice(1);
         channel = hash.slice(0, 32);
         key = hash.slice(32);
-    }
+    }*/
 
     /* Initialize Fabric */
     var canvas = module.canvas = new Fabric.Canvas('canvas');
@@ -78,14 +80,14 @@ define([
         // TODO initialState ?
         websocketURL: Config.websocketURL,
         //userName: Crypto.rand64(8),
-        channel: channel,
-        cryptKey: key,
-        crypto: Crypto,
+        channel: secret.channel,
+        //cryptKey: key,
+        crypto: Crypto.createEncryptor(secret.key),
         transformFunction: JsonOT.validate,
     };
 
     var onInit = config.onInit = function (info) {
-        window.location.hash = info.channel + key;
+        window.location.hash = info.channel + secret.key;
         $(window).on('hashchange', function() {
             window.location.reload();
         });
