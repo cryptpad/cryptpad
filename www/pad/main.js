@@ -12,6 +12,7 @@ define([
     'json.sortify',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     '/common/cryptpad-common.js',
+    '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
@@ -19,6 +20,7 @@ define([
     Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad) {
 
     var $ = window.jQuery;
+    var saveAs = window.saveAs;
     var ifrw = $('#pad-iframe')[0].contentWindow;
     var Ckeditor; // to be initialized later...
     var DiffDom = window.diffDOM;
@@ -98,6 +100,13 @@ define([
 
             var diffOptions = {
                 preDiffApply: function (info) {
+                    if (info.node && info.node.tagName === 'BODY') {
+                        if (info.diff.action === 'removeAttribute' &&
+                            ['class', 'spellcheck'].indexOf(info.diff.name) !== -1) {
+                            return true;
+                        }
+                    }
+
                     /* DiffDOM will filter out magicline plugin elements
                         in practice this will make it impossible to use it
                         while someone else is typing, which could be annoying.
@@ -312,15 +321,61 @@ define([
                 }
             };
 
+            var getHTML = function (Dom) {
+                var data = inner.innerHTML;
+                Dom = Dom || (new DOMParser()).parseFromString(data,"text/html");
+                return ('<!DOCTYPE html>\n' +
+                    '<html>\n' +
+                    Dom.head.outerHTML + '\n' +
+                    Dom.body.outerHTML);
+            };
+
+            var domFromHTML = function (html) {
+                return new DOMParser().parseFromString(html, 'text/html');
+            };
+
+            var exportFile = function () {
+                var html = getHTML();
+                console.log(html === getHTML(domFromHTML(html)));
+
+                console.log(html);
+                var filename = window.prompt('What would you like to name your file?', "MyPad.html");
+                if (filename) {
+                    var blob = new Blob([html], {type: "text/html;charset=utf-8"});
+                    saveAs(blob, filename);
+                }
+            };
+
             var onInit = realtimeOptions.onInit = function (info) {
                 var $bar = $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox');
                 toolbarList = info.userList;
                 var config = {
                     userData: userList,
-                    changeNameID: 'cryptpad-changeName'
+                    changeNameID: 'cryptpad-changeName',
+                    exportContentID: 'cryptpad-saveContent',
+                    importContentID: 'cryptpad-loadContent',
                 };
                 toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
                 createChangeName('cryptpad-changeName', $bar);
+
+                var $saver = $bar.find('#cryptpad-saveContent').click(exportFile);
+
+                var $loader = $bar.find('#cryptpad-loadContent').click(function () {
+                    var $files = $('<input type="file">').click()
+                    $files.on('change', function (e) {
+                        var file = e.target.files[0];
+                        var reader = new FileReader();
+
+                        reader.onload = function (e) {
+                            var result = e.target.result;
+                            console.log(result);
+                            var shjson = stringify(Hyperjson.fromDOM(domFromHTML(result).body));
+                            applyHjson(shjson);
+                            onLocal();
+                        };
+                        reader.readAsText(file, 'text/plain');
+                    });
+                });
 
                 // set the hash
                 window.location.hash = info.channel + secret.key;

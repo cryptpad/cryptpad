@@ -15,6 +15,7 @@ define([
     var LAG_ELEM_CLS = 'rtwysiwyg-lag';
 
     var SAVE_ELEMENT_CLS = 'cryptpad-saveContent';
+    var LOAD_ELEMENT_CLS = 'cryptpad-loadContent';
 
     /** The toolbar class which contains the user list, debug link and lag. */
     var TOOLBAR_CLS = 'rtwysiwyg-toolbar';
@@ -38,70 +39,106 @@ define([
             '</div>'
         );
         var toolbar = $container.find('#'+id);
-        toolbar.append([
-            '<style>',
-            '.' + TOOLBAR_CLS + ' {',
-            '    color: #666;',
-            '    font-weight: bold;',
-//            '    background-color: #f0f0ee;',
-//            '    border-bottom: 1px solid #DDD;',
-//            '    border-top: 3px solid #CCC;',
-//            '    border-right: 2px solid #CCC;',
-//            '    border-left: 2px solid #CCC;',
-            '    height: 26px;',
-            '    margin-bottom: -3px;',
-            '    display: inline-block;',
-            '    width: 100%;',
-            '}',
-            '.' + TOOLBAR_CLS + ' a {',
-            '    float: right;',
-            '}',
-            '.' + TOOLBAR_CLS + ' div {',
-            '    padding: 0 10px;',
-            '    height: 1.5em;',
-//            '    background: #f0f0ee;',
-            '    line-height: 25px;',
-            '    height: 22px;',
-            '}',
-            '.' + TOOLBAR_CLS + ' div.rtwysiwyg-back {',
-            '    padding: 0;',
-            '    font-weight: bold;',
-            '    cursor: pointer;',
-            '    color: #000;',
-            '}',
-            '.' + USERNAME_BUTTON_GROUP + ' {',
-            '    float: left;',
-            '}',
-            '.' + USERNAME_BUTTON_GROUP + ' button {',
-            '    padding: 0;',
-            '    margin-right: 5px;',
-            '}',
-            '.rtwysiwyg-toolbar-leftside div {',
-            '    float: left;',
-            '}',
-            '.rtwysiwyg-toolbar-leftside {',
-            '    float: left;',
-            '}',
-            '.rtwysiwyg-toolbar-rightside {',
-            '    float: right;',
-            '}',
-            '.rtwysiwyg-lag {',
-            '    float: right;',
-            '}',
-            '.rtwysiwyg-spinner {',
-            '    float: left;',
-            '}',
-            '.gwt-TabBar {',
-            '    display:none;',
-            '}',
-            '.' + DEBUG_LINK_CLS + ':link { color:transparent; }',
-            '.' + DEBUG_LINK_CLS + ':link:hover { color:blue; }',
-            '.gwt-TabPanelBottom { border-top: 0 none; }',
-            '.' + TOOLBAR_CLS + ' button { box-sizing: border-box; height: 101%; background-color: inherit; border: 1px solid #A6A6A6; border-radius: 5px; margin-right: 5px;}',
-            '.' + TOOLBAR_CLS + ' ' + SAVE_ELEMENT_CLS + '{ float: right; margin-right: 5px;                        }',
 
-            '</style>'
-         ].join('\n'));
+        var swap = function (str, dict) {
+            return str.replace(/\{\{(.*?)\}\}/g, function (all, block) {
+                //console.log(block);
+                return dict[block] || block;
+            });
+        };
+
+        var css = swap(function(){/*
+<style>
+.{{TOOLBAR_CLS}} {
+    color: #666;
+    font-weight: bold;
+    height: 26px;
+    margin-bottom: -3px;
+    display: inline-block;
+    width: 100%;
+}
+.{{TOOLBAR_CLS}} a {
+    float: right;
+}
+.{{TOOLBAR_CLS}} div {
+    padding: 0 10px;
+    height: 1.5em;
+    line-height: 25px;
+    height: 22px;
+}
+.{{TOOLBAR_CLS}} div.rtwysiwyg-back {
+    padding: 0;
+    font-weight: bold;
+    cursor: pointer;
+    color: #000;
+}
+.{{USERNAME_BUTTON_GROUP}} {
+    float: left;
+    cursor: pointer;
+}
+.{{USERNAME_BUTTON_GROUP}} button {
+    padding: 0;
+    margin-right: 5px;
+}
+.rtwysiwyg-toolbar-leftside div {
+    float: left;
+}
+.rtwysiwyg-toolbar-leftside {
+    float: left;
+}
+.rtwysiwyg-toolbar-rightside {
+    float: right;
+}
+.rtwysiwyg-lag {
+    float: right;
+}
+.rtwysiwyg-spinner {
+    float: left;
+}
+.gwt-TabBar {
+    display:none;
+}
+.{{DEBUG_LINK_CLS}}:link {
+    color:transparent;
+}
+.{{DEBUG_LINK_CLS}}:link:hover {
+    color:blue;
+}
+.gwt-TabPanelBottom {
+    border-top: 0 none;
+}
+.{{TOOLBAR_CLS}} button {
+    box-sizing: border-box;
+    height: 101%;
+    background-color: inherit;
+    border: 1px solid #A6A6A6;
+    border-radius: 5px;
+    margin-right: 5px;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+.{{TOOLBAR_CLS}} .{{SAVE_ELEMENT_CLS}}, .{{TOOLBAR_CLS}} .{{LOAD_ELEMENT_CLS}} {
+    float: right;
+    margin-right: 5px;
+    cursor: pointer;
+}
+.{{TOOLBAR_CLS}} .{{SAVE_ELEMENT_CLS}}:after {
+    content: 'EXPORT';
+}
+
+.{{TOOLBAR_CLS}} .{{LOAD_ELEMENT_CLS}}:after {
+    content: 'IMPORT';
+}
+</style>
+        */}.toString().slice(14,-3), {
+            TOOLBAR_CLS: TOOLBAR_CLS,
+            SAVE_ELEMENT_CLS: SAVE_ELEMENT_CLS,
+            LOAD_ELEMENT_CLS: LOAD_ELEMENT_CLS,
+            USERNAME_BUTTON_GROUP: USERNAME_BUTTON_GROUP,
+            DEBUG_LINK_CLS: DEBUG_LINK_CLS,
+        }).trim();
+
+        toolbar.append(css);
         return toolbar;
     };
 
@@ -182,7 +219,12 @@ define([
     };
 
     var createSaveElement = function (id, $container) {
-        $container.append('<button class="'+ SAVE_ELEMENT_CLS + '" id="' + id + '">SAVE</button>');
+        $container.append('<button class="'+ SAVE_ELEMENT_CLS + '" id="' + id + '"></button>');
+        return $container.find('#'+id)[0];
+    };
+
+    var createLoadElement = function (id, $container) {
+        $container.append('<button class="'+ LOAD_ELEMENT_CLS + '" id="' + id + '"></button>');
         return $container.find('#'+id)[0];
     };
 
@@ -212,8 +254,10 @@ define([
         var lagElement = createLagElement(toolbar.find('.rtwysiwyg-toolbar-rightside'));
         var userData = config.userData;
         var changeNameID = config.changeNameID;
-        var saveContentID = config.saveContentID;
+        var saveContentID = config.saveContentID || config.exportContentID;
+        var loadContentID = config.loadContentID || config.importContentID;
         var saveElement;
+        var loadElement;
 
         // Check if the user is allowed to change his name
         if(changeNameID) {
@@ -223,6 +267,10 @@ define([
 
         if (saveContentID) {
             saveElement = createSaveElement(saveContentID, toolbar.find('.rtwysiwyg-toolbar-rightside'));
+        }
+
+        if (loadContentID) {
+            loadElement = createLoadElement(loadContentID, toolbar.find('.rtwysiwyg-toolbar-rightside'));
         }
 
         var connected = false;
