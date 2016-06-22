@@ -45,5 +45,17 @@ define([
         localStorage[storageKey] = JSON.stringify(out);
     };
 
+    var importContent = common.importContent = function (type, f) {
+        return function () {
+            var $files = $('<input type="file">').click()
+            $files.on('change', function (e) {
+                var file = e.target.files[0];
+                var reader = new FileReader();
+                reader.onload = function (e) { f(e.target.result); };
+                reader.readAsText(file, type);
+            });
+        };
+    };
+
     return common;
 });

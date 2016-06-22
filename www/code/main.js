@@ -28,6 +28,10 @@ define([
         var secret = Cryptpad.getSecrets();
 
         var andThen = function (CMeditor) {
+            var CodeMirror = module.CodeMirror = CMeditor;
+            CodeMirror.modeURL = "/code/codemirror-5.13.2/mode/%N/%N.js";
+
+
             var $pad = $('#pad-iframe');
             var $textarea = $pad.contents().find('#editor1');
 
@@ -46,6 +50,11 @@ define([
                 mode: "javascript",
                 readOnly: true
             });
+
+            var setMode = module.setMode = function (mode) {
+                CodeMirror.autoLoadMode(editor, mode);
+                editor.setOption('mode', mode);
+            };
 
             var setEditable = module.setEditable = function (bool) {
                 editor.setOption('readOnly', !bool);
@@ -138,11 +147,18 @@ define([
                 var config = {
                     userData: userList,
                     changeNameID: 'cryptpad-changeName',
-                    saveContentID: 'cryptpad-saveContent',
+                    exportContentID: 'cryptpad-saveContent',
+                    importContentID: 'cryptpad-loadContent',
                 };
                 toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
                 createChangeName('cryptpad-changeName', $bar);
                 $bar.find('#cryptpad-saveContent').click(exportText);
+
+                $bar.find('#cryptpad-loadContent')
+                    .click(Cryptpad.importContent('text/plain', function (content) {
+                        editor.setValue(content);
+                        config.onLocal();
+                    }));
 
                 window.location.hash = info.channel + secret.key;
                 Cryptpad.rememberPad();

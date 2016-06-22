@@ -360,22 +360,12 @@ define([
 
                 var $saver = $bar.find('#cryptpad-saveContent').click(exportFile);
 
-                var $loader = $bar.find('#cryptpad-loadContent').click(function () {
-                    var $files = $('<input type="file">').click()
-                    $files.on('change', function (e) {
-                        var file = e.target.files[0];
-                        var reader = new FileReader();
-
-                        reader.onload = function (e) {
-                            var result = e.target.result;
-                            console.log(result);
-                            var shjson = stringify(Hyperjson.fromDOM(domFromHTML(result).body));
-                            applyHjson(shjson);
-                            onLocal();
-                        };
-                        reader.readAsText(file, 'text/plain');
-                    });
-                });
+                $bar.find('#cryptpad-loadContent')
+                    .click(Cryptpad.importContent('text/plain', function (content) {
+                        var shjson = stringify(Hyperjson.fromDOM(domFromHTML(content).body));
+                        applyHjson(shjson);
+                        onLocal();
+                    }));
 
                 // set the hash
                 window.location.hash = info.channel + secret.key;
