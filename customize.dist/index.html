@@ -46,7 +46,7 @@
         table.scroll thead { display: block; }
 
         table.scroll tbody {
-            height: 100px;
+            max-height: 100px;
             overflow-y: auto;
             overflow-x: hidden;
         }
@@ -142,6 +142,7 @@
                 recentPads.sort(function (a,b) { return b[1] - a[1]; });
                 var $table = $('table.scroll');
                 var $tbody = $table.find('tbody');
+                var $tryit = $('#tryit');
                 var now = new Date();
                 var hasRecent = false;
 
@@ -194,19 +195,28 @@
                         forgetPad(pad[0]);
                         $row.fadeOut(750, function () {
                             $row.remove();
-                            if (!$table.find('tr').length) { $table.remove(); }
+                            if (!$table.find('tr').length) {
+                                $table.remove();
+                                $tryit.text("Try it out!");
+                            }
+                            setTableHeight();
                         });
                     });
                 });
 
-                if (recentPads.length < 5) {
-                    $tbody.attr('style', 'height: ' + (28 * recentPads.length + 2) + 'px');
-                } else {
-                    $tbody.attr('style', 'height: ' + (28 * 5) + 'px');
-                }
+                var setTableHeight = function () {
+                    if (recentPads.length < 5) {
+                        $tbody.attr('style', 'height: ' + (28 * recentPads.length + 2) + 'px');
+                    } else {
+                        $tbody.attr('style', 'height: ' + (28 * 5) + 'px');
+                    }
+                };
+
+                setTableHeight();
+
                 if (hasRecent) {
                     $('table').attr('style', '');
-                    $('#tryit').text('Your Recent pads (stored only in browser)');
+                    $tryit.text('Your Recent pads (stored only in browser)');
                 }
             });
         </script>
@@ -218,8 +228,8 @@
         </table>
 
         <div id="buttons" class="buttons">
-          <a id="create-pad" class="button create" href="pad">CREATE NEW WYSIWYG PAD</a>
-          <a id="create-code" class="button create" href="code">CREATE NEW CODE PAD</a>
+          <a id="create-pad" class="button create" href="/pad/">CREATE NEW WYSIWYG PAD</a>
+          <a id="create-code" class="button create" href="/code/">CREATE NEW CODE PAD</a>
         </div>
       </center>
     </div>
