@@ -9,10 +9,11 @@ define([
     'json.sortify',
     '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/cryptpad-common.js',
+    '/code/modes.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, /*RTCode,*/ Messages, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad) {
+], function (Config, /*RTCode,*/ Messages, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad, Modes) {
     var $ = window.jQuery;
     var saveAs = window.saveAs;
     var module = window.APP = {};
@@ -159,6 +160,20 @@ define([
                         editor.setValue(content);
                         config.onLocal();
                     }));
+
+                var dropdown = '<select id="language-mode">\n' +
+                    Modes.map(function (o) {
+                        return '<option value="' + o.mode + '">' + o.language + '</option>';
+                    }).join('\n') +
+                    '</select>';
+
+
+                $bar.find('.rtwysiwyg-toolbar-rightside').append(dropdown);
+
+                $bar.find('#language-mode').on('change', function () {
+                    console.log($(this).val());
+                    setMode($(this).val());
+                });
 
                 window.location.hash = info.channel + secret.key;
                 Cryptpad.rememberPad();
