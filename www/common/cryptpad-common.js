@@ -51,7 +51,7 @@ define([
             $files.on('change', function (e) {
                 var file = e.target.files[0];
                 var reader = new FileReader();
-                reader.onload = function (e) { f(e.target.result); };
+                reader.onload = function (e) { f(e.target.result, file); };
                 reader.readAsText(file, type);
             });
         };
