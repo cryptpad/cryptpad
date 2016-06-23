@@ -2,8 +2,8 @@ define([
     '/common/treesome.js',
     '/bower_components/rangy/rangy-core.min.js'
 ], function (Tree, Rangy, saveRestore) {
-    window.Rangy = Rangy;
-    window.Tree = Tree;
+    //window.Rangy = Rangy;
+    //window.Tree = Tree;
     // do some function for the start and end of the cursor
 
     var log = function (x) { console.log(x); };
