@@ -28,7 +28,7 @@
     "json.sortify": "~2.1.0",
     "fabric.js": "fabric#~1.6.0",
     "hyperjson": "~1.3.0",
-    "textpatcher": "^1.2.0",
+    "textpatcher": "^1.3.0",
     "proxy-polyfill": "^0.1.5",
     "chainpad": "^0.2.2",
     "chainpad-json-validator": "^0.1.1",
