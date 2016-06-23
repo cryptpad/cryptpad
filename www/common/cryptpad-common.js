@@ -1,6 +1,8 @@
 define([
-    '/bower_components/chainpad-crypto/crypto.js'
+    '/bower_components/chainpad-crypto/crypto.js',
+    '/bower_components/jquery/dist/jquery.min.js',
 ], function (Crypto) {
+    var $ = window.jQuery;
     var common = {};
 
     var getSecrets = common.getSecrets = function () {
@@ -47,7 +49,7 @@ define([
 
     var importContent = common.importContent = function (type, f) {
         return function () {
-            var $files = $('<input type="file">').click()
+            var $files = $('<input type="file">').click();
             $files.on('change', function (e) {
                 var file = e.target.files[0];
                 var reader = new FileReader();

@@ -364,7 +364,7 @@ define([
                     .click(Cryptpad.importContent('text/plain', function (content) {
                         var shjson = stringify(Hyperjson.fromDOM(domFromHTML(content).body));
                         applyHjson(shjson);
-                        onLocal();
+                        realtimeOptions.onLocal();
                     }));
 
                 // set the hash
