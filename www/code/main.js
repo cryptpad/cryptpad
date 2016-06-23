@@ -30,8 +30,7 @@ define([
 
         var andThen = function (CMeditor) {
             var CodeMirror = module.CodeMirror = CMeditor;
-            CodeMirror.modeURL = "/code/codemirror-5.13.2/mode/%N/%N.js";
-
+            CodeMirror.modeURL = "/code/CodeMirror-5.16.0/mode/%N/%N.js";
 
             var $pad = $('#pad-iframe');
             var $textarea = $pad.contents().find('#editor1');
@@ -126,7 +125,7 @@ define([
             var createChangeName = function(id, $container) {
                 var buttonElmt = $container.find('#'+id)[0];
                 buttonElmt.addEventListener("click", function() {
-                   var newName = window.prompt("Change your name :", myUserName);
+                   var newName = window.prompt("Change your name :");
                    if (newName && newName.trim()) {
                        var myUserNameTemp = newName.trim();
                        if(newName.trim().length > 32) {
@@ -163,7 +162,8 @@ define([
 
                 var dropdown = '<select id="language-mode">\n' +
                     Modes.map(function (o) {
-                        return '<option value="' + o.mode + '">' + o.language + '</option>';
+                        var selected = o.mode === 'javascript'? ' selected="selected"' : '';
+                        return '<option value="' + o.mode + '"'+selected+'>' + o.language + '</option>';
                     }).join('\n') +
                     '</select>';
 

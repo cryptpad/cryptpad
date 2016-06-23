@@ -129,6 +129,13 @@ define([
 .{{TOOLBAR_CLS}} .{{LOAD_ELEMENT_CLS}}:after {
     content: 'IMPORT';
 }
+
+.{{TOOLBAR_CLS}} select {
+    border: 0px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding-left: 5px;
+}
 </style>
         */}.toString().slice(14,-3), {
             TOOLBAR_CLS: TOOLBAR_CLS,
