@@ -52,6 +52,10 @@ define([
             });
 
             var setMode = module.setMode = function (mode) {
+                if (mode === 'text') {
+                    editor.setOption('mode', 'text');
+                    return;
+                }
                 CodeMirror.autoLoadMode(editor, mode);
                 editor.setOption('mode', mode);
             };
@@ -155,9 +159,22 @@ define([
                 $bar.find('#cryptpad-saveContent').click(exportText);
 
                 $bar.find('#cryptpad-loadContent')
-                    .click(Cryptpad.importContent('text/plain', function (content) {
+                    .click(Cryptpad.importContent('text/plain', function (content, file) {
+                        var mime = CodeMirror.findModeByMIME(file.type);
+
+                        var mode = mime && mime.mode || null;
+
+                        if (Modes.some(function (o) { return o.mode === mode; })) {
+                            setMode(mode);
+                            $bar.find('#language-mode').val(mode);
+                        } else {
+                            console.log("Couldn't find a suitable highlighting mode: %s", mode);
+                            setMode('text');
+                            $bar.find('#language-mode').val('text');
+                        }
+
                         editor.setValue(content);
-                        config.onLocal();
+                        onLocal();
                     }));
 
                 var dropdown = '<select id="language-mode">\n' +
@@ -170,9 +187,9 @@ define([
 
                 $bar.find('.rtwysiwyg-toolbar-rightside').append(dropdown);
 
-                $bar.find('#language-mode').on('change', function () {
-                    console.log($(this).val());
-                    setMode($(this).val());
+                var $language = $bar.find('#language-mode').on('change', function () {
+                    var mode = $language.val();
+                    setMode(mode);
                 });
 
                 window.location.hash = info.channel + secret.key;

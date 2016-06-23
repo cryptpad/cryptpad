@@ -97,6 +97,7 @@ define(function () {
         "stylus stylus",
         "swift swift",
         "tcl tcl",
+        "text text",
         "textile textile",
         "tiddlywiki tiddlywiki",
         "tiki tiki",
