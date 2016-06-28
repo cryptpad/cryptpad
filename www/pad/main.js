@@ -69,7 +69,8 @@ define([
             removeButtons: 'Source,Maximize',
             // magicline plugin inserts html crap into the document which is not part of the
             // document itself and causes problems when it's sent across the wire and reflected back
-            removePlugins: 'resize'
+            removePlugins: 'resize',
+            extraPlugins: 'autolink',
         });
 
         editor.on('instanceReady', function (Ckeditor) {
