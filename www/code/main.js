@@ -213,7 +213,7 @@ define([
                     }));
 
                 /*  Let the user select different syntax highlighting modes */
-                var syntaxDropdown = '<select id="language-mode">\n' +
+                var syntaxDropdown = '<select title="syntax highlighting" id="language-mode">\n' +
                     Modes.map(function (o) {
                         var selected = o.mode === 'javascript'? ' selected="selected"' : '';
                         return '<option value="' + o.mode + '"'+selected+'>' + o.language + '</option>';
@@ -225,7 +225,7 @@ define([
                 var lastTheme = localStorage.getItem(themeKey) || 'default';
 
                 /*  Let the user select different themes */
-                var themeDropdown = '<select id="display-theme">\n' +
+                var themeDropdown = '<select title="color theme" id="display-theme">\n' +
                     Themes.map(function (o) {
                         var selected = o.name === lastTheme? ' selected="selected"': '';
                         return '<option value="' + o.name + '"'+selected+'>' + o.name + '</option>';
