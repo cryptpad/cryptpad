@@ -10,10 +10,11 @@ define([
     '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/cryptpad-common.js',
     '/code/modes.js',
+    '/code/themes.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, /*RTCode,*/ Messages, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad, Modes) {
+], function (Config, /*RTCode,*/ Messages, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad, Modes, Themes) {
     var $ = window.jQuery;
     var saveAs = window.saveAs;
     var module = window.APP = {};
@@ -51,14 +52,45 @@ define([
                 readOnly: true
             });
 
-            var setMode = module.setMode = function (mode) {
+            var setMode = module.setMode = function (mode, $select) {
                 if (mode === 'text') {
                     editor.setOption('mode', 'text');
                     return;
                 }
                 CodeMirror.autoLoadMode(editor, mode);
                 editor.setOption('mode', mode);
+                if ($select && select.val) { $select.val(mode); }
             };
+
+
+            var setTheme = module.setTheme = (function () {
+                var path = './theme/';
+
+                var $head = $(ifrw.document.head);
+
+                var themeLoaded = module.themeLoaded = function (theme) {
+                    return $head.find('link[href*="'+theme+'"]').length;
+                };
+
+                var loadTheme = module.loadTheme = function (theme) {
+                    $head.append($('<link />', {
+                        rel: 'stylesheet',
+                        href: path + theme + '.css',
+                    }));
+                };
+
+                return function (theme, $select) {
+                    if (!theme) {
+                        editor.setOption('theme', 'default');
+                    } else {
+                        if (!themeLoaded(theme)) {
+                            loadTheme(theme);
+                        }
+                        editor.setOption('theme', theme);
+                    }
+                    if ($select && select.val) { $select.val(theme || 'default'); }
+                };
+            }());
 
             var setEditable = module.setEditable = function (bool) {
                 editor.setOption('readOnly', !bool);
@@ -177,19 +209,38 @@ define([
                         onLocal();
                     }));
 
-                var dropdown = '<select id="language-mode">\n' +
+                var syntaxDropdown = '<select id="language-mode">\n' +
                     Modes.map(function (o) {
                         var selected = o.mode === 'javascript'? ' selected="selected"' : '';
                         return '<option value="' + o.mode + '"'+selected+'>' + o.language + '</option>';
                     }).join('\n') +
                     '</select>';
 
+                var themeDropdown = '<select id="display-theme">\n' +
+                    Themes.map(function (o) {
+                        var selected = o.name === 'default'? ' selected="selected"': '';
+                        return '<option value="' + o.name + '"'+selected+'>' + o.name + '</option>';
+                    }).join('\n') +
+                    '</select>';
 
-                $bar.find('.rtwysiwyg-toolbar-rightside').append(dropdown);
+                $bar.find('.rtwysiwyg-toolbar-rightside')
+                    .append(syntaxDropdown);
 
-                var $language = $bar.find('#language-mode').on('change', function () {
+                var $language = module.$language = $bar.find('#language-mode').on('change', function () {
                     var mode = $language.val();
                     setMode(mode);
+                });
+
+                $bar.find('.rtwysiwyg-toolbar-rightside')
+                    .append(themeDropdown);
+
+                var $theme = $bar.find('select#display-theme');
+                console.log($theme);
+
+                $theme.on('change', function () {
+                    var theme = $theme.val();
+                    console.log("Setting theme to %s", theme);
+                    setTheme(theme);
                 });
 
                 window.location.hash = info.channel + secret.key;
