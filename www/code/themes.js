@@ -5,6 +5,7 @@ define(function () {
         "abcdef abcdef.css",
         "ambiance-mobile ambiance-mobile.css",
         "ambiance ambiance.css",
+        "ansuz ansuz.css",
         "base16-dark base16-dark.css",
         "base16-light base16-light.css",
         "bespin bespin.css",
