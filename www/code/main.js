@@ -88,7 +88,7 @@ define([
                         }
                         editor.setOption('theme', theme);
                     }
-                    if ($select && select.val) { $select.val(theme || 'default'); }
+                    if ($select && $select.val) { $select.val(theme || 'default'); }
                 };
             }());
 
@@ -188,8 +188,11 @@ define([
                 };
                 toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
                 createChangeName('cryptpad-changeName', $bar);
+
+                /*  Let the user export their content with a click */
                 $bar.find('#cryptpad-saveContent').click(exportText);
 
+                /*  Let the user import content with a click */
                 $bar.find('#cryptpad-loadContent')
                     .click(Cryptpad.importContent('text/plain', function (content, file) {
                         var mime = CodeMirror.findModeByMIME(file.type);
@@ -209,6 +212,7 @@ define([
                         onLocal();
                     }));
 
+                /*  Let the user select different syntax highlighting modes */
                 var syntaxDropdown = '<select id="language-mode">\n' +
                     Modes.map(function (o) {
                         var selected = o.mode === 'javascript'? ' selected="selected"' : '';
@@ -216,9 +220,14 @@ define([
                     }).join('\n') +
                     '</select>';
 
+                /*  Remember the user's last choice of theme using localStorage */
+                var themeKey = 'CRYPTPAD_CODE_THEME';
+                var lastTheme = localStorage.getItem(themeKey) || 'default';
+
+                /*  Let the user select different themes */
                 var themeDropdown = '<select id="display-theme">\n' +
                     Themes.map(function (o) {
-                        var selected = o.name === 'default'? ' selected="selected"': '';
+                        var selected = o.name === lastTheme? ' selected="selected"': '';
                         return '<option value="' + o.name + '"'+selected+'>' + o.name + '</option>';
                     }).join('\n') +
                     '</select>';
@@ -235,12 +244,15 @@ define([
                     .append(themeDropdown);
 
                 var $theme = $bar.find('select#display-theme');
-                console.log($theme);
+
+                setTheme(lastTheme, $theme);
 
                 $theme.on('change', function () {
                     var theme = $theme.val();
                     console.log("Setting theme to %s", theme);
-                    setTheme(theme);
+                    setTheme(theme, $theme);
+                    // remember user choices
+                    localStorage.setItem(themeKey, theme);
                 });
 
                 window.location.hash = info.channel + secret.key;
