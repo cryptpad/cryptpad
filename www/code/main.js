@@ -59,7 +59,7 @@ define([
                 }
                 CodeMirror.autoLoadMode(editor, mode);
                 editor.setOption('mode', mode);
-                if ($select && select.val) { $select.val(mode); }
+                if ($select && $select.val) { $select.val(mode); }
             };
 
 
