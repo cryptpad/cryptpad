@@ -44,6 +44,7 @@ define([
                     href: pad[0],
                     atime: pad[1],
                     title: pad[2],
+                    ctime: pad[1],
                 };
             } else if (typeof(pad) === 'object') {
                 if (!pad.ctime) { pad.ctime = pad.atime; }
