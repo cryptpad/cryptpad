@@ -43,17 +43,16 @@ define([
                 return {
                     href: pad[0],
                     atime: pad[1],
-                    title: pad[2],
+                    title: pad[2] || '',
                     ctime: pad[1],
                 };
             } else if (typeof(pad) === 'object') {
                 if (!pad.ctime) { pad.ctime = pad.atime; }
-                /*
-                if (pad.date) {
-                    pad.atime = pad.date;
-                    delete pad.date;
-                    pad.date = undefined;
-                }*/
+                if (!pad.title) {
+                    pad.href.replace(/#(.*)$/, function (x, hash) {
+                        pad.title = hash.slice(0,8);
+                    });
+                }
                 return pad;
             } else {
                 console.error("[Cryptpad.migrateRecentPads] pad had unexpected value");

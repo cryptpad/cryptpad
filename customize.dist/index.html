@@ -162,7 +162,7 @@
                 };
 
                 var truncateTitle = function (title, len) {
-                    if (title.length > len) {
+                    if (typeof(title) === 'string' && title.length > len) {
                         return title.slice(0, len) + '…';
                     }
                     return title;
