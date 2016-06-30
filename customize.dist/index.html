@@ -161,6 +161,13 @@
                     '/code/': 'Code'
                 };
 
+                var truncateTitle = function (title, len) {
+                    if (title.length > len) {
+                        return title.slice(0, len) + '…';
+                    }
+                    return title;
+                };
+
                 var recentPads = Cryptpad.getRecentPads();
                 recentPads.sort(Cryptpad.mostRecent);
 
@@ -193,8 +200,8 @@
                         var id = 'pad-'+index;
                         $tbody.append('<tr id="'+id+'">' +
                            '<td>' + name + '</td>' +
-                           '<td>' + title + '</td>' +
-                           '<td><a href="' + pad.href + '">' + pad.href + '</a></td>' +
+                           //'<td>' + title + '</td>' +
+                           '<td><a href="' + pad.href + '" title="'+ pad.title + '">' +  truncateTitle(pad.title, 20) + '</a></td>' +
                            '<td>' + created + '</td>' + // created
                            '<td>' + date + '</td>' +
                            '<td class="remove">✖</td>'+
@@ -231,7 +238,7 @@
 
             <tr>
                 <th>Type</th>
-                <th>Title</th>
+                <!-- <th>Title</th> -->
                 <th>Link</th>
                 <th>Created</th>
                 <th>Last Accessed</th>
