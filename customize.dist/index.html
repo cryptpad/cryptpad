@@ -46,9 +46,9 @@
         table.scroll thead { display: block; }
 
         table.scroll tbody {
-            max-height: 100px;
+         /* max-height: 100px;
             overflow-y: auto;
-            overflow-x: hidden;
+            overflow-x: hidden; */
         }
 
         tbody { border-top: 2px solid black; }
@@ -68,6 +68,7 @@
 
         .remove {
             cursor: pointer;
+            color: #ab0000;
         }
     </style>
     <script src="/bower_components/requirejs/require.js"></script>
@@ -163,46 +164,59 @@
                     '/code/': 'Code'
                 };
 
-                recentPads.length && recentPads.some(function (pad, index) {
-                    if (!pad) return true;
+                var makeRecentPadsTable = function () {
+                    recentPads.length && recentPads.some(function (pad, index) {
+                        if (!pad) return true;
 
-                    // don't link to old pads
-                    if (now.getTime() - pad[1] > memorySpan) return true;
+                        // don't link to old pads
+                        if (now.getTime() - pad[1] > memorySpan) return true;
 
-                    hasRecent = true;
+                        hasRecent = true;
 
-                    // split up the uri
-                    var uri = LilUri(pad[0]);
+                        // split up the uri
+                        var uri = LilUri(pad[0]);
 
-                    // derive the name
-                    var name = padTypes[uri.path()];
+                        // derive the name
+                        var name = padTypes[uri.path()];
 
-                    var date = new Date(pad[1]).toLocaleDateString();
-                    if (date === now.toLocaleDateString()) {
-                        date = new Date(pad[1]).toLocaleTimeString().replace(/ /g, '');
-                    }
+                        var title = pad[2] || '';
 
-                    var id = 'pad-'+index;
-                    $tbody.append('<tr id="'+id+'">' +
-                       '<td>' + name + '</td>' +
-                       '<td><a href="' + pad[0] + '"' + '">' + pad[0] + '</a></td>' +
-                       '<td>' + date + '</td>' +
-                       '<td class="remove">remove</td>'+
-                       '</tr>');
+                        var date = new Date(pad[1]).toLocaleDateString();
+                        if (date === now.toLocaleDateString()) {
+                            date = new Date(pad[1]).toLocaleTimeString().replace(/ /g, '');
+                        }
 
-                    var $row = $('#'+id);
-                    $row.find('.remove').click(function () {
-                        forgetPad(pad[0]);
-                        $row.fadeOut(750, function () {
-                            $row.remove();
-                            if (!$table.find('tr').length) {
-                                $table.remove();
-                                $tryit.text("Try it out!");
-                            }
-                            setTableHeight();
+                        var id = 'pad-'+index;
+                        $tbody.append('<tr id="'+id+'">' +
+                           '<td>' + name + '</td>' +
+                           '<td>' + title + '</td>' +
+                           '<td><a href="' + pad[0] + '">' + pad[0] + '</a></td>' +
+                           '<td>' + date + '</td>' +
+                           '<td class="remove">✖</td>'+
+                           '</tr>');
+
+                        var $row = $('#'+id);
+                        $row.find('.remove').click(function () {
+                            forgetPad(pad[0]);
+                            $row.fadeOut(750, function () {
+                                $row.remove();
+                                if (!$table.find('tr').length) {
+                                    $table.remove();
+                                    $tryit.text("Try it out!");
+                                }
+                                setTableHeight();
+                            });
                         });
                     });
-                });
+                };
+
+                if (recentPads.length) {
+                    recentPads.sort(function (a, b) {
+                        // b - a
+                        return new Date(b[1]).getTime() - new Date(a[1]).getTime();
+                    });
+                    makeRecentPadsTable();
+                }
 
                 var setTableHeight = function () {
                     if (recentPads.length < 5) {
