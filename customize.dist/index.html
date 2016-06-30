@@ -49,7 +49,7 @@
 
         tbody { border-top: 2px solid black; }
 
-        tbody td, thead th {
+        tbody td {
             /* width: 20%; */ /* Optional */
             border-right: 1px solid black;
             /* white-space: nowrap; */
@@ -61,8 +61,18 @@
         tbody td:last-child, thead th:last-child {
             border-right: none;
         }
-        tbody tr:nth-child(even) {
+        tbody tr:nth-child(odd) {
             background-color: #ddd;
+        }
+        tbody tr th {
+            box-sizing: border-box;
+            border: 1px solid black;
+        }
+        tbody tr th:last-child {
+            border-right: 0px;
+        }
+        tbody tr th:first-of-type {
+            border-left: 0px;
         }
 
         .remove {
@@ -129,77 +139,73 @@
         <script>
             require([
                 '/customize/DecorateToolbar.js',
+                '/common/cryptpad-common.js',
                 '/bower_components/lil-uri/uri.min.js',
                 '/bower_components/jquery/dist/jquery.min.js'
-            ], function (Dt, LilUri) {
+            ], function (DecorateToolbar, Cryptpad, LilUri) {
                 var $ = window.$;
-                Dt.main($('#bottom-bar'));
-                var localStorageKey = 'CryptPad_RECENTPADS';
-                var recentPadsStr = localStorage[localStorageKey];
-                var recentPads;
-                if (recentPadsStr) { recentPads = JSON.parse(recentPadsStr); }
-                if (!recentPads) { return; }
-                recentPads.sort(function (a,b) { return b[1] - a[1]; });
+                DecorateToolbar.main($('#bottom-bar'));
+
                 var $table = $('table.scroll');
                 var $tbody = $table.find('tbody');
                 var $tryit = $('#tryit');
                 var now = new Date();
                 var hasRecent = false;
 
-                var memorySpan = 1000 * 60 * 60 * 24 * 30; // thirty days
+                var memorySpan = Cryptpad.timeframe; // thirty days
 
-                var forgetPad = function (url) {
-                    if (recentPads) {
-                        recentPads = recentPads.filter(function (pad) {
-                            // remove the pad in question
-                            return pad[0] !== url;
-                        });
-                        localStorage[localStorageKey] = JSON.stringify(recentPads);
-                    }
-                };
+                var forgetPad = Cryptpad.forgetPad;
 
                 var padTypes = {
                     '/pad/': 'Pad',
                     '/code/': 'Code'
                 };
 
+                var recentPads = Cryptpad.getRecentPads();
+                recentPads.sort(Cryptpad.mostRecent);
+
                 var makeRecentPadsTable = function () {
                     recentPads.length && recentPads.some(function (pad, index) {
-                        if (!pad) return true;
+                        if (!pad) return;
+
+                        console.log(pad);
 
                         // don't link to old pads
-                        if (now.getTime() - pad[1] > memorySpan) return true;
+                        if (now.getTime() - new Date(pad.atime).getTime() > memorySpan) return true;
 
                         hasRecent = true;
 
                         // split up the uri
-                        var uri = LilUri(pad[0]);
+                        var uri = LilUri(pad.href);
 
                         // derive the name
                         var name = padTypes[uri.path()];
 
-                        var title = pad[2] || uri.parts.hash.slice(0,8);
+                        var title = pad.title || uri.parts.hash.slice(0,8);
 
-                        var date = new Date(pad[1]).toLocaleDateString();
+                        var date = new Date(pad.atime).toLocaleDateString();
+                        var created = new Date(pad.ctime).toLocaleDateString();
+
                         if (date === now.toLocaleDateString()) {
-                            date = new Date(pad[1]).toLocaleTimeString().replace(/ /g, '');
+                            date = new Date(pad.atime).toLocaleTimeString().replace(/ /g, '');
                         }
 
                         var id = 'pad-'+index;
                         $tbody.append('<tr id="'+id+'">' +
                            '<td>' + name + '</td>' +
                            '<td>' + title + '</td>' +
-                           '<td><a href="' + pad[0] + '">' + pad[0] + '</a></td>' +
+                           '<td><a href="' + pad.href + '">' + pad.href + '</a></td>' +
+                           '<td>' + created + '</td>' + // created
                            '<td>' + date + '</td>' +
                            '<td class="remove">✖</td>'+
                            '</tr>');
 
                         var $row = $('#'+id);
                         $row.find('.remove').click(function () {
-                            forgetPad(pad[0]);
+                            forgetPad(pad.href);
                             $row.fadeOut(750, function () {
                                 $row.remove();
-                                if (!$table.find('tr').length) {
+                                if (!$table.find('tr').find('td').length) {
                                     $table.remove();
                                     $tryit.text("Try it out!");
                                 }
@@ -209,10 +215,7 @@
                 };
 
                 if (recentPads.length) {
-                    recentPads.sort(function (a, b) {
-                        // b - a
-                        return new Date(b[1]).getTime() - new Date(a[1]).getTime();
-                    });
+                    recentPads.sort(Cryptpad.mostRecent);
                     makeRecentPadsTable();
                 }
                 if (hasRecent) {
@@ -225,6 +228,16 @@
 
         <table class="recent scroll" style="display:none">
             <tbody>
+
+            <tr>
+                <th>Type</th>
+                <th>Title</th>
+                <th>Link</th>
+                <th>Created</th>
+                <th>Last Accessed</th>
+                <th></th> <!-- remove column -->
+            </tr>
+
             </tbody>
         </table>
 

@@ -220,7 +220,9 @@ define([
                         var title = window.prompt("How would you like this pad to be titled?",
                             Cryptpad.getPadTitle());
 
-                        if (title === null) {
+                        if (title === null) { return; }
+                        if (Cryptpad.causesNamingConflict(title)) {
+                            window.alert("Another pad already has that title");
                             return;
                         }
                         Cryptpad.setPadTitle(title);

@@ -381,6 +381,10 @@ define([
                         var title = window.prompt("How would you like to title this pad?", suggestion);
 
                         if (title === null) { return; }
+                        if (Cryptpad.causesNamingConflict(title)) {
+                            window.alert("Another pad already has that title");
+                            return;
+                        }
 
                         Cryptpad.setPadTitle(title);
                         document.title = title;
