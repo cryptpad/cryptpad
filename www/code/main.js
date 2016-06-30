@@ -183,17 +183,23 @@ define([
                 var config = {
                     userData: userList,
                     changeNameID: 'cryptpad-changeName',
-                    exportContentID: 'cryptpad-saveContent',
-                    importContentID: 'cryptpad-loadContent',
                 };
                 toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
                 createChangeName('cryptpad-changeName', $bar);
 
-                /*  Let the user export their content with a click */
-                $bar.find('#cryptpad-saveContent').click(exportText);
+                var $rightside = $bar.find('.rtwysiwyg-toolbar-rightside');
 
-                /*  Let the user import content with a click */
-                $bar.find('#cryptpad-loadContent')
+                /* add an export button */
+                var $export = $('<button>')
+                    .text('EXPORT')
+                    .addClass('rightside-button')
+                    .click(exportText);
+                $rightside.append($export);
+
+                /* add an import button */
+                var $import = $('<button>')
+                    .text('IMPORT')
+                    .addClass('rightside-button')
                     .click(Cryptpad.importContent('text/plain', function (content, file) {
                         var mime = CodeMirror.findModeByMIME(file.type);
 
@@ -211,11 +217,14 @@ define([
                         editor.setValue(content);
                         onLocal();
                     }));
+                $rightside.append($import);
 
+                /* add a rename button */
                 var $setTitle = $('<button>', {
                         id: 'name-pad'
                     })
-                    .addClass('cryptpad-rename')
+                    .addClass('rightside-button')
+                    .text('RENAME')
                     .click(function () {
                         var title = window.prompt("How would you like this pad to be titled?",
                             Cryptpad.getPadTitle());
@@ -228,9 +237,24 @@ define([
                         Cryptpad.setPadTitle(title);
                         document.title = title;
                     });
+                $rightside.append($setTitle);
 
-                $bar.find('.rtwysiwyg-toolbar-rightside')
-                    .append($setTitle);
+                /* add a forget button */
+                var $forgetPad = $('<button>', {
+                        id: 'cryptpad-forget',
+                    })
+                    .text('FORGET')
+                    .addClass('cryptpad-forget rightside-button')
+                    .click(function () {
+                        var href = window.location.href;
+                        var question = "Clicking OK will remove the URL for this pad from localStorage, are you sure?";
+
+                        if (window.confirm(question)) {
+                            Cryptpad.forgetPad(href);
+                            document.title = window.location.hash.slice(1,9);
+                        }
+                    });
+                $rightside.append($forgetPad);
 
                 /*  Let the user select different syntax highlighting modes */
                 var syntaxDropdown = '<select title="syntax highlighting" id="language-mode">\n' +
@@ -252,16 +276,14 @@ define([
                     }).join('\n') +
                     '</select>';
 
-                $bar.find('.rtwysiwyg-toolbar-rightside')
-                    .append(syntaxDropdown);
+                $rightside.append(syntaxDropdown);
 
                 var $language = module.$language = $bar.find('#language-mode').on('change', function () {
                     var mode = $language.val();
                     setMode(mode);
                 });
 
-                $bar.find('.rtwysiwyg-toolbar-rightside')
-                    .append(themeDropdown);
+                $rightside.append(themeDropdown);
 
                 var $theme = $bar.find('select#display-theme');
 

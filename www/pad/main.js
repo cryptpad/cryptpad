@@ -354,27 +354,35 @@ define([
                 var config = {
                     userData: userList,
                     changeNameID: 'cryptpad-changeName',
-                    exportContentID: 'cryptpad-saveContent',
-                    importContentID: 'cryptpad-loadContent',
                 };
                 toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
                 createChangeName('cryptpad-changeName', $bar);
 
-                var $saver = $bar.find('#cryptpad-saveContent').click(exportFile);
+                var $rightside = $bar.find('.rtwysiwyg-toolbar-rightside');
 
-                $bar.find('#cryptpad-loadContent')
+                /* add an export button */
+                var $export = $('<button>')
+                    .text('EXPORT')
+                    .addClass('rightside-button')
+                    .click(exportFile);
+
+                /* add an import button */
+                var $import = $('<button>')
+                    .text('IMPORT')
+                    .addClass('rightside-button')
                     .click(Cryptpad.importContent('text/plain', function (content) {
                         var shjson = stringify(Hyperjson.fromDOM(domFromHTML(content).body));
                         applyHjson(shjson);
                         realtimeOptions.onLocal();
                     }));
+                $rightside.append($export).append($import);
 
-                var $rightside = $bar.find('.rtwysiwyg-toolbar-rightside');
-
+                /* add a rename button */
                 var $rename = $('<button>', {
                         id: 'name-pad',
                     })
-                    .addClass('cryptpad-rename')
+                    .addClass('cryptpad-rename rightside-button')
+                    .text('RENAME')
                     .click(function () {
                         var suggestion = $(inner).find('h1:first-of-type').text();
 
@@ -389,8 +397,24 @@ define([
                         Cryptpad.setPadTitle(title);
                         document.title = title;
                     });
-
                 $rightside.append($rename);
+
+                /* add a forget button */
+                var $forgetPad = $('<button>', {
+                        id: 'cryptpad-forget',
+                    })
+                    .text("FORGET")
+                    .addClass('cryptpad-forget rightside-button')
+                    .click(function () {
+                        var href = window.location.href;
+                        var question = "Clicking OK will remove the URL for this pad from localStorage, are you sure?";
+
+                        if (window.confirm(question)) {
+                            Cryptpad.forgetPad(href);
+                            document.title = window.location.hash.slice(1,9);
+                        }
+                    });
+                $rightside.append($forgetPad);
 
                 // set the hash
                 window.location.hash = info.channel + secret.key;

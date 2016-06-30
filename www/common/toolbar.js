@@ -14,10 +14,6 @@ define([
     /** Id of the div containing the lag info. */
     var LAG_ELEM_CLS = 'rtwysiwyg-lag';
 
-    var SAVE_ELEMENT_CLS = 'cryptpad-saveContent';
-    var LOAD_ELEMENT_CLS = 'cryptpad-loadContent';
-    var SET_TITLE_CLS = 'cryptpad-rename';
-
     /** The toolbar class which contains the user list, debug link and lag. */
     var TOOLBAR_CLS = 'rtwysiwyg-toolbar';
 
@@ -118,22 +114,16 @@ define([
     padding-right: 5px;
     padding-left: 5px;
 }
-.{{TOOLBAR_CLS}} .{{SAVE_ELEMENT_CLS}}, .{{TOOLBAR_CLS}} .{{LOAD_ELEMENT_CLS}}, .{{TOOLBAR_CLS}} .{{SET_TITLE_CLS}} {
+.{{TOOLBAR_CLS}} .rightside-button {
     float: right;
-    margin-right: 5px;
     cursor: pointer;
 }
-.{{TOOLBAR_CLS}} .{{SAVE_ELEMENT_CLS}}:after {
-    content: 'EXPORT';
+
+.{{TOOLBAR_CLS}} .leftside-button {
+    cursor: pointer;
+    float: left;
 }
 
-.{{TOOLBAR_CLS}} .{{LOAD_ELEMENT_CLS}}:after {
-    content: 'IMPORT';
-}
-
-.{{TOOLBAR_CLS}} .{{SET_TITLE_CLS}}:after {
-    content: 'RENAME';
-}
 .{{TOOLBAR_CLS}} select {
     border: 0px;
     margin-left: 5px;
@@ -143,9 +133,6 @@ define([
 </style>
         */}.toString().slice(14,-3), {
             TOOLBAR_CLS: TOOLBAR_CLS,
-            SAVE_ELEMENT_CLS: SAVE_ELEMENT_CLS,
-            LOAD_ELEMENT_CLS: LOAD_ELEMENT_CLS,
-            SET_TITLE_CLS: SET_TITLE_CLS,
             USERNAME_BUTTON_GROUP: USERNAME_BUTTON_GROUP,
             DEBUG_LINK_CLS: DEBUG_LINK_CLS,
         }).trim();
@@ -230,16 +217,6 @@ define([
         return $container.find('#'+id)[0];
     };
 
-    var createSaveElement = function (id, $container) {
-        $container.append('<button class="'+ SAVE_ELEMENT_CLS + '" id="' + id + '"></button>');
-        return $container.find('#'+id)[0];
-    };
-
-    var createLoadElement = function (id, $container) {
-        $container.append('<button class="'+ LOAD_ELEMENT_CLS + '" id="' + id + '"></button>');
-        return $container.find('#'+id)[0];
-    };
-
     var checkLag = function (getLag, lagElement) {
         if(typeof getLag !== "function") { return; }
         var lag = getLag();
@@ -275,14 +252,6 @@ define([
         if(changeNameID) {
             // Create the button and update the element containing the user list
             userListElement = createChangeName($container, userListElement, changeNameID);
-        }
-
-        if (saveContentID) {
-            saveElement = createSaveElement(saveContentID, toolbar.find('.rtwysiwyg-toolbar-rightside'));
-        }
-
-        if (loadContentID) {
-            loadElement = createLoadElement(loadContentID, toolbar.find('.rtwysiwyg-toolbar-rightside'));
         }
 
         var connected = false;
