@@ -45,11 +45,7 @@
         table.scroll tbody,
         table.scroll thead { display: block; }
 
-        table.scroll tbody {
-            max-height: 100px;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
+        table.scroll tbody { }
 
         tbody { border-top: 2px solid black; }
 
@@ -179,7 +175,7 @@
                         // derive the name
                         var name = padTypes[uri.path()];
 
-                        var title = pad[2] || '';
+                        var title = pad[2] || uri.parts.hash.slice(0,8);
 
                         var date = new Date(pad[1]).toLocaleDateString();
                         if (date === now.toLocaleDateString()) {
@@ -204,7 +200,6 @@
                                     $table.remove();
                                     $tryit.text("Try it out!");
                                 }
-                                setTableHeight();
                             });
                         });
                     });
@@ -217,17 +212,6 @@
                     });
                     makeRecentPadsTable();
                 }
-
-                var setTableHeight = function () {
-                    if (recentPads.length < 5) {
-                        $tbody.attr('style', 'height: ' + (28 * recentPads.length + 2) + 'px');
-                    } else {
-                        $tbody.attr('style', 'height: ' + (28 * 5) + 'px');
-                    }
-                };
-
-                setTableHeight();
-
                 if (hasRecent) {
                     $('table').attr('style', '');
                     $tryit.text('Your Recent pads (stored only in browser)');
