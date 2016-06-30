@@ -212,6 +212,24 @@ define([
                         onLocal();
                     }));
 
+                var $setTitle = $('<button>', {
+                        id: 'name-pad'
+                    })
+                    .addClass('cryptpad-rename')
+                    .click(function () {
+                        var title = window.prompt("How would you like this pad to be titled?",
+                            Cryptpad.getPadTitle());
+
+                        if (title === null) {
+                            return;
+                        }
+                        Cryptpad.setPadTitle(title);
+                        document.title = title;
+                    });
+
+                $bar.find('.rtwysiwyg-toolbar-rightside')
+                    .append($setTitle);
+
                 /*  Let the user select different syntax highlighting modes */
                 var syntaxDropdown = '<select title="syntax highlighting" id="language-mode">\n' +
                     Modes.map(function (o) {
@@ -256,7 +274,8 @@ define([
                 });
 
                 window.location.hash = info.channel + secret.key;
-                Cryptpad.rememberPad();
+                var title = document.title = Cryptpad.getPadTitle();
+                Cryptpad.rememberPad(title);
             };
 
             var updateUserList = function(shjson) {

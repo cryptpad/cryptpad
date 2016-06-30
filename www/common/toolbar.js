@@ -16,6 +16,7 @@ define([
 
     var SAVE_ELEMENT_CLS = 'cryptpad-saveContent';
     var LOAD_ELEMENT_CLS = 'cryptpad-loadContent';
+    var SET_TITLE_CLS = 'cryptpad-rename';
 
     /** The toolbar class which contains the user list, debug link and lag. */
     var TOOLBAR_CLS = 'rtwysiwyg-toolbar';
@@ -109,7 +110,7 @@ define([
 }
 .{{TOOLBAR_CLS}} button {
     box-sizing: border-box;
-    height: 101%;
+    height: 100%;
     background-color: inherit;
     border: 1px solid #A6A6A6;
     border-radius: 5px;
@@ -117,7 +118,7 @@ define([
     padding-right: 5px;
     padding-left: 5px;
 }
-.{{TOOLBAR_CLS}} .{{SAVE_ELEMENT_CLS}}, .{{TOOLBAR_CLS}} .{{LOAD_ELEMENT_CLS}} {
+.{{TOOLBAR_CLS}} .{{SAVE_ELEMENT_CLS}}, .{{TOOLBAR_CLS}} .{{LOAD_ELEMENT_CLS}}, .{{TOOLBAR_CLS}} .{{SET_TITLE_CLS}} {
     float: right;
     margin-right: 5px;
     cursor: pointer;
@@ -130,6 +131,9 @@ define([
     content: 'IMPORT';
 }
 
+.{{TOOLBAR_CLS}} .{{SET_TITLE_CLS}}:after {
+    content: 'RENAME';
+}
 .{{TOOLBAR_CLS}} select {
     border: 0px;
     margin-left: 5px;
@@ -141,6 +145,7 @@ define([
             TOOLBAR_CLS: TOOLBAR_CLS,
             SAVE_ELEMENT_CLS: SAVE_ELEMENT_CLS,
             LOAD_ELEMENT_CLS: LOAD_ELEMENT_CLS,
+            SET_TITLE_CLS: SET_TITLE_CLS,
             USERNAME_BUTTON_GROUP: USERNAME_BUTTON_GROUP,
             DEBUG_LINK_CLS: DEBUG_LINK_CLS,
         }).trim();

@@ -71,6 +71,7 @@ define([
             // document itself and causes problems when it's sent across the wire and reflected back
             removePlugins: 'resize',
             extraPlugins: 'autolink',
+            //skin: 'moono',
         });
 
         editor.on('instanceReady', function (Ckeditor) {
@@ -368,9 +369,30 @@ define([
                         realtimeOptions.onLocal();
                     }));
 
+                var $rightside = $bar.find('.rtwysiwyg-toolbar-rightside');
+
+                var $rename = $('<button>', {
+                        id: 'name-pad',
+                    })
+                    .addClass('cryptpad-rename')
+                    .click(function () {
+                        var suggestion = $(inner).find('h1:first-of-type').text();
+
+                        var title = window.prompt("How would you like to title this pad?", suggestion);
+
+                        if (title === null) { return; }
+
+                        Cryptpad.setPadTitle(title);
+                        document.title = title;
+                    });
+
+                $rightside.append($rename);
+
                 // set the hash
                 window.location.hash = info.channel + secret.key;
-                Cryptpad.rememberPad();
+
+                var title = document.title = Cryptpad.getPadTitle();
+                Cryptpad.rememberPad(title);
             };
 
             // this should only ever get called once, when the chain syncs
