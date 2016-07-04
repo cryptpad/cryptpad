@@ -11,6 +11,10 @@ define([
             success: function (ret) {
                 $('iframe').height('96%');
                 $('body').append(ret);
+                $('head').append($('<link>', {
+                    rel: 'stylesheet',
+                    href: '/customize/main.css'
+                }));
             }
         });
     };

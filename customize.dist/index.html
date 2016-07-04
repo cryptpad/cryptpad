@@ -1,85 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <!--<title>Sample - CKEditor</title>-->
+    <title>Cryptpad :: Zero Knowledge, Collaborative Real Time Editing</title>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
-    <link rel="stylesheet" type="text/css" href="customize/index.css" />
-    <style>
-        #whatis {
-            padding-left: 15%;
-            padding-right: 15%;
-            font-size: medium;
-            padding-bottom: 1em;
-        }
-        .create {
-            background-color: rgb(77, 146, 68);
-            background-image: linear-gradient(rgb(39, 100, 0) 0%, rgb(77, 146, 68) 100%);
-            border-bottom-color: rgb(77, 146, 68);
-            color: rgb(243, 243, 243);
-            font-weight:bold;
-            font-size:large;
-            margin-right: 5px;
-            margin-left: 5px;
-        }
-        .buttons {
-            margin-bottom: 50px;
-            margin-top: 20px;
-        }
-        .button {
-          padding: 2px 6px 2px 6px;
-          border-top: 1px solid #CCCCCC;
-          border-right: 1px solid #333333;
-          border-bottom: 1px solid #333333;
-          border-left: 1px solid #CCCCCC;
-        }
-
-        table.scroll {
-            /* width: 100%; */ /* Optional */
-            /* border-collapse: collapse; */
-            border-spacing: 0;
-            border: 2px solid black;
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-
-        table.scroll tbody,
-        table.scroll thead { display: block; }
-
-        table.scroll tbody { }
-
-        tbody { border-top: 2px solid black; }
-
-        tbody td {
-            /* width: 20%; */ /* Optional */
-            border-right: 1px solid black;
-            /* white-space: nowrap; */
-            padding-top: 0px;
-            padding-bottom: 0px;
-            padding-right: 20px;
-        }
-
-        tbody td:last-child, thead th:last-child {
-            border-right: none;
-        }
-        tbody tr:nth-child(odd) {
-            background-color: #ddd;
-        }
-        tbody tr th {
-            box-sizing: border-box;
-            border: 1px solid black;
-        }
-        tbody tr th:last-child {
-            border-right: 0px;
-        }
-        tbody tr th:first-of-type {
-            border-left: 0px;
-        }
-
-        .remove {
-            cursor: pointer;
-            color: #ab0000;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="customize/main.css" />
+    <script data-main="/customize/main" src="/bower_components/requirejs/require.js"></script>
     <script src="/bower_components/requirejs/require.js"></script>
     <!-- Piwik -->
     <script type="text/javascript">
@@ -100,35 +25,21 @@
     <!-- End Piwik Code -->
 </head>
 <body>
-    <a href="https://github.com/xwiki-labs/cryptpad"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/121cd7cbdc3e4855075ea8b558508b91ac463ac2/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_green_007200.png"></a>
-    <div id="whatis">
+    <a href="https://your-url" class="github-corner"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#46e981; color:#fff; position: absolute; top: 0; border: 0; right: 0;"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <div id="main">
       <center>
-          <img class="imgcenter" src="/customize/cryptofist_small.png" />
+          <img class="imgcenter cryptofist" src="/customize/cryptofist_small.png" />
           <h1>Unity is Strength - Collaboration is Key</h1>
 
-          <h2>With the support of</h2>
-
-          <img class="imgcenter" src="/customize/openpaas.png" />
-
       </center>
-      <p>CryptPad is the <strong>zero knowledge</strong> realtime collaborative editor.
-      Encryption carried out in your web browser protects the data from the server, the cloud,
-      and the NSA.
-      The secret encryption key is stored in the URL <a href="https://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a> which is never sent to the server but is available to javascript so by sharing the URL, you give authorization to others who want to participate.</p>
+      <p>CryptPad is the <strong>zero knowledge</strong> realtime collaborative editor.  Encryption carried out in your web browser protects the data from the server, the cloud, and the NSA.  The secret encryption key is stored in the URL <a href="https://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a> which is never sent to the server but is available to javascript so by sharing the URL, you give authorization to others who want to participate.</p>
 
-      <p>This project uses the <a href="http://ckeditor.com/">CKEditor</a> Visual Editor
-      the <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a> realtime engine.</p>
+      <p>This project uses the <a href="http://ckeditor.com/">CKEditor</a> Visual Editor, <a href="https://codemirror.net/">CodeMirror</a>, and the <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a> realtime engine.</p>
 
       </code></pre><h2 id="howitworks">How It Works</h2>
-      <p>CryptPad uses a variant of the
-      <a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a>
-      algorithm which is able to find distributed consensus using a Nakamoto Blockchain, a construct
-      popularized by <a href="https://en.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. This way the
-      algorithm can avoid the need for a central server to resolve Operational Transform Edit
-      Conflicts and without the need for resolving conflicts, the server can be kept unaware of the
-      content which is being edited on the pad.</p>
+      <p>CryptPad uses a variant of the <a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> algorithm which is able to find distributed consensus using a Nakamoto Blockchain, a construct popularized by <a href="https://en.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. This way the algorithm can avoid the need for a central server to resolve Operational Transform Edit Conflicts and without the need for resolving conflicts, the server can be kept unaware of the content which is being edited on the pad.</p>
 
-      <p><strong>NOTE</strong> Collaborative documents will be removed after 30 days of inactivity</p>
       <center>
         <noscript>
           <p>
@@ -136,101 +47,6 @@
             <strong>really</strong> required.
           </p>
         </noscript>
-        <script>
-            require([
-                '/customize/DecorateToolbar.js',
-                '/common/cryptpad-common.js',
-                '/bower_components/lil-uri/uri.min.js',
-                '/bower_components/jquery/dist/jquery.min.js'
-            ], function (DecorateToolbar, Cryptpad, LilUri) {
-                var $ = window.$;
-                DecorateToolbar.main($('#bottom-bar'));
-
-                var $table = $('table.scroll');
-                var $tbody = $table.find('tbody');
-                var $tryit = $('#tryit');
-                var now = new Date();
-                var hasRecent = false;
-
-                var memorySpan = Cryptpad.timeframe; // thirty days
-
-                var forgetPad = Cryptpad.forgetPad;
-
-                var padTypes = {
-                    '/pad/': 'Pad',
-                    '/code/': 'Code'
-                };
-
-                var truncateTitle = function (title, len) {
-                    if (typeof(title) === 'string' && title.length > len) {
-                        return title.slice(0, len) + '…';
-                    }
-                    return title;
-                };
-
-                var recentPads = Cryptpad.getRecentPads();
-                recentPads.sort(Cryptpad.mostRecent);
-
-                var makeRecentPadsTable = function () {
-                    recentPads.length && recentPads.some(function (pad, index) {
-                        if (!pad) return;
-
-                        console.log(pad);
-
-                        // don't link to old pads
-                        if (now.getTime() - new Date(pad.atime).getTime() > memorySpan) return true;
-
-                        hasRecent = true;
-
-                        // split up the uri
-                        var uri = LilUri(pad.href);
-
-                        // derive the name
-                        var name = padTypes[uri.path()];
-
-                        var title = pad.title || uri.parts.hash.slice(0,8);
-
-                        var date = new Date(pad.atime).toLocaleDateString();
-                        var created = new Date(pad.ctime).toLocaleDateString();
-
-                        if (date === now.toLocaleDateString()) {
-                            date = new Date(pad.atime).toLocaleTimeString().replace(/ /g, '');
-                        }
-
-                        var id = 'pad-'+index;
-                        $tbody.append('<tr id="'+id+'">' +
-                           '<td>' + name + '</td>' +
-                           //'<td>' + title + '</td>' +
-                           '<td><a href="' + pad.href + '" title="'+ pad.title + '">' + truncateTitle(pad.title, 48) + '</a></td>' +
-                           '<td>' + created + '</td>' + // created
-                           '<td>' + date + '</td>' +
-                           '<td class="remove">✖</td>'+
-                           '</tr>');
-
-                        var $row = $('#'+id);
-                        $row.find('.remove').click(function () {
-                            forgetPad(pad.href);
-                            $row.fadeOut(750, function () {
-                                $row.remove();
-                                if (!$table.find('tr').find('td').length) {
-                                    $table.remove();
-                                    $tryit.text("Try it out!");
-                                }
-                            });
-                        });
-                    });
-                };
-
-                if (recentPads.length) {
-                    recentPads.sort(Cryptpad.mostRecent);
-                    makeRecentPadsTable();
-                }
-                if (hasRecent) {
-                    $('table').attr('style', '');
-                    $tryit.text('Your Recent pads (stored only in browser)');
-                }
-            });
-        </script>
         <h5 id="tryit">Try it out!</h5>
 
         <table class="recent scroll" style="display:none">
@@ -238,7 +54,6 @@
 
             <tr>
                 <th>Type</th>
-                <!-- <th>Title</th> -->
                 <th>Link</th>
                 <th>Created</th>
                 <th>Last Accessed</th>
