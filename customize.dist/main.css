@@ -1,23 +1,9 @@
-@font-face {
-  font-family: lato;
-  src: url('/customize/fonts/lato/Lato-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-}
-@font-face {
-  font-family: lato;
-  src: url('/customize/fonts/lato/Lato-Black.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
-}
-@font-face {
-  font-family: lato;
-  src: url('/customize/fonts/lato/Lato-Italic.ttf') format('truetype');
-  font-weight: 400;
-  font-style: italic;
-}
+/*
+    Apparently Chrome fails to render fonts half the time, so we just have to drop
+    lato for now :(
+*/
 .lato {
-  font-family: lato, sans-serif;
+  font-family: lato, Helvetica, sans-serif;
   font-size: 1.02em;
 }
 html {
@@ -90,18 +76,19 @@ a {
   color: #46E981;
   text-decoration: none;
 }
+a:hover {
+  color: #a1f4bf;
+}
 img {
   height: auto;
   max-width: 100%;
 }
 img.cryptofist {
   filter: invert(100%);
+  -webkit-filter: invert(100%);
 }
 p {
   padding-top: .66001rem;
-  -webkit-font-feature-settings: 'kern' 1, 'onum' 1, 'liga' 1;
-  -moz-font-feature-settings: 'kern' 1, 'onum' 1, 'liga' 1;
-  font-feature-settings: 'kern' 1, 'onum' 1, 'liga' 1;
   margin-top: 0;
 }
 p,
@@ -114,7 +101,7 @@ td,
 a,
 table,
 tr {
-  font-family: lato, sans-serif;
+  font-family: lato, Helvetica, sans-serif;
   font-size: 1.02em;
 }
 #main {
@@ -125,7 +112,7 @@ tr {
 }
 /* buttons */
 .create {
-  border: 1px solid #46E981;
+  border: 2px solid #46E981;
   border-radius: 10px;
   background-color: #302B28;
   color: #46E981;
@@ -133,6 +120,10 @@ tr {
   font-size: large;
   margin-right: 5px;
   margin-left: 5px;
+}
+.create:hover {
+  border: 2px solid #a1f4bf;
+  color: #46E981;
 }
 .buttons {
   margin-bottom: 50px;
@@ -203,7 +194,6 @@ tbody td:last-child {
   border-top: 1px solid #444;
 }
 .bottom-bar a {
-  color: #27b000;
   color: #46E981;
   text-decoration: none;
 }

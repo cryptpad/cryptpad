@@ -1,7 +1,10 @@
 @base: #302B28;
+@light-base: lighten(@base, 20%);
 @fore: #fafafa;
 
 @cp-green: #46E981;
+@cp-accent: lighten(@cp-green, 20%);
+
 @cp-red: #FF0073; // remove red
 @cp-outline: #444;
 
@@ -14,12 +17,16 @@
     }
 }
 
-.fontface(lato, '/customize/fonts/lato/Lato-Regular.ttf', normal, 400);
-.fontface(lato, '/customize/fonts/lato/Lato-Black.ttf', normal, 700);
-.fontface(lato, '/customize/fonts/lato/Lato-Italic.ttf', italic, 400);
+/*
+    Apparently Chrome fails to render fonts half the time, so we just have to drop
+    lato for now :(
+*/
+//.fontface(lato, '/customize/fonts/lato/Lato-Regular.ttf', normal, 400);
+//.fontface(lato, '/customize/fonts/lato/Lato-Black.ttf', normal, 700);
+//.fontface(lato, '/customize/fonts/lato/Lato-Italic.ttf', italic, 400);
 
 .lato {
-    font-family: lato, sans-serif;
+    font-family: lato, Helvetica, sans-serif;
     font-size: 1.02em;
 }
 
@@ -97,6 +104,10 @@ a {
     cursor: pointer;
     color: @cp-green;
     text-decoration: none;
+
+    &:hover {
+        color: @cp-accent;
+    }
 }
 
 img {
@@ -105,14 +116,15 @@ img {
 
     &.cryptofist {
         filter: invert(100%);
+        -webkit-filter: invert(100%);
     }
 }
 
 p {
     padding-top: .66001rem;
-    -webkit-font-feature-settings: 'kern' 1,'onum' 1,'liga' 1;
-    -moz-font-feature-settings: 'kern' 1,'onum' 1,'liga' 1;
-    font-feature-settings: 'kern' 1,'onum' 1,'liga' 1;
+    //-webkit-font-feature-settings: 'kern' 1,'onum' 1,'liga' 1;
+    //-moz-font-feature-settings: 'kern' 1,'onum' 1,'liga' 1;
+    //font-feature-settings: 'kern' 1,'onum' 1,'liga' 1;
     margin-top: 0;
 }
 
@@ -122,6 +134,7 @@ p,pre {
 
 p, pre, td, a, table, tr {
     .lato;
+    //color: @fore;
 }
 
 #main {
@@ -134,7 +147,8 @@ p, pre, td, a, table, tr {
 
 /* buttons */
 .create {
-    border: 1px solid @cp-green;
+    @thick: 2px;
+    border: @thick solid @cp-green;
     border-radius: 10px;
     background-color: @base;
     color: @cp-green;
@@ -143,6 +157,10 @@ p, pre, td, a, table, tr {
     font-size: large;
     margin-right: 5px;
     margin-left: 5px;
+    &:hover {
+        border: @thick solid @cp-accent;
+        color: @cp-green;
+    }
 }
 .buttons {
     margin-bottom: 50px;
@@ -175,7 +193,7 @@ tbody {
             text-decoration: underline;
         }
         &:nth-child(odd) {
-            background-color: lighten(@base, 20%); //darken(@base, 20%);
+            background-color: @light-base;
         }
         th:first-of-type {
             border-left: 0px;
@@ -222,7 +240,6 @@ tbody {
     border-top: 1px solid @cp-outline;
 
     a {
-        color: rgb(39, 176, 0);
         color: @cp-green;
         text-decoration: none;
     }
@@ -234,7 +251,6 @@ tbody {
         display:block;
         float:left;
         padding-top:3px;
-        //color: rgb(39, 176, 0);
         color: @fore;
     }
     img {
