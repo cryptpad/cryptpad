@@ -10,10 +10,12 @@
   },
   "devDependencies": {
     "jshint": "~2.9.1",
-    "selenium-webdriver": "^2.53.1"
+    "selenium-webdriver": "^2.53.1",
+    "less": "2.7.1"
   },
   "scripts": {
       "lint": "jshint --config .jshintrc --exclude-path .jshintignore .",
-      "test": "node TestSelenium.js"
+      "test": "node TestSelenium.js",
+      "style": "lessc ./customize.dist/src/cryptpad.less > ./customize.dist/main.css"
   }
 }
