@@ -73,6 +73,7 @@ define([
 
             var $row = $('#'+id);
             $row.find('.remove').click(function () {
+                if (!window.confirm("Are you sure you'd like to forget this pad (" + shortTitle + ")?")) { return; }
                 forgetPad(pad.href);
                 $row.fadeOut(750, function () {
                     $row.remove();
