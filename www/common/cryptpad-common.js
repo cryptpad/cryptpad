@@ -40,10 +40,16 @@ define([
     var migrateRecentPads = common.migrateRecentPads = function (pads) {
         return pads.map(function (pad) {
             if (isArray(pad)) {
+                var href = pad[0];
+                var hash;
+                href.replace(/\#(.*)$/, function (a, h) {
+                    hash = h;
+                });
+
                 return {
                     href: pad[0],
                     atime: pad[1],
-                    title: pad[2] || '',
+                    title: pad[2] || hash && hash.slice(0,8),
                     ctime: pad[1],
                 };
             } else if (typeof(pad) === 'object') {
