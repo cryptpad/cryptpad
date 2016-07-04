@@ -51,6 +51,7 @@ define([
             var name = padTypes[uri.path()];
 
             var title = pad.title || uri.parts.hash.slice(0,8);
+            var shortTitle = truncateTitle(pad.title, 48);
 
             var date = new Date(pad.atime).toLocaleDateString();
             var created = new Date(pad.ctime).toLocaleDateString();
@@ -60,13 +61,14 @@ define([
             }
 
             var id = 'pad-'+index;
+
             $tbody.append('<tr id="'+id+'">' +
                '<td>' + name + '</td>' +
                //'<td>' + title + '</td>' +
-               '<td><a href="' + pad.href + '" title="'+ pad.title + '">' + truncateTitle(pad.title, 48) + '</a></td>' +
+               '<td><a href="' + pad.href + '" title="'+ pad.title + '">' + shortTitle + '</a></td>' +
                '<td>' + created + '</td>' + // created
                '<td>' + date + '</td>' +
-               '<td class="remove">✖</td>'+
+               '<td class="remove" title="forget \''+shortTitle+'\'">✖</td>'+
                '</tr>');
 
             var $row = $('#'+id);
