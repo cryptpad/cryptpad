@@ -26,7 +26,7 @@ define([
     };
 
     var storageKey = common.storageKey = 'CryptPad_RECENTPADS';
-    var timeframe = common.timeframe = 1000 * 60 * 60 * 24 * 30;
+    //var timeframe = common.timeframe = 1000 * 60 * 60 * 24 * 30;
 
     /*
         the first time this gets called, your local storage will migrate to a
@@ -115,9 +115,6 @@ define([
                 pad.title = title;
             }
             return pad;
-        }).filter(function (pad) {
-            // remove pads with an expired atime
-            return (now.getTime() - new Date(pad.atime).getTime()) < timeframe;
         });
 
         if (!isUpdate) {
