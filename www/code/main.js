@@ -11,10 +11,12 @@ define([
     '/common/cryptpad-common.js',
     '/code/modes.js',
     '/code/themes.js',
+    '/common/visible.js',
+    '/common/notify.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, /*RTCode,*/ Messages, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad, Modes, Themes) {
+], function (Config, /*RTCode,*/ Messages, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad, Modes, Themes, Visible, Notify) {
     var $ = window.jQuery;
     var saveAs = window.saveAs;
     var module = window.APP = {};
@@ -332,6 +334,12 @@ define([
 
                 editor.setValue(newDoc);
 
+                if (Visible.isSupported()) {
+                    Visible.onChange(function (yes) {
+                        if (yes) { unnotify(); }
+                    });
+                }
+
                 setEditable(true);
                 initializing = false;
             };
@@ -361,6 +369,20 @@ define([
                 cursor.line = textLines.length - 1;
                 cursor.ch = textLines[cursor.line].length;
                 return cursor;
+            };
+
+            var unnotify = function () {
+                if (module.tabNotification &&
+                    typeof(module.tabNotification.cancel) === 'function') {
+                    module.tabNotification.cancel();
+                }
+            };
+
+            var notify = function () {
+                if (Visible.isSupported() && !Visible.currently()) {
+                    unnotify();
+                    module.tabNotification = Notify.tab(document.title, 1000, 10);
+                }
             };
 
             var onRemote = config.onRemote = function (info) {
@@ -404,6 +426,8 @@ define([
                     console.error("shjson2 !== shjson");
                     module.patchText(shjson2);
                 }
+
+                notify();
             };
 
             var onAbort = config.onAbort = function (info) {
