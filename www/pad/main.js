@@ -12,12 +12,15 @@ define([
     'json.sortify',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     '/common/cryptpad-common.js',
+    '/common/visible.js',
+    '/common/notify.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
 ], function (Config, Messages, Crypto, realtimeInput, Hyperjson,
-    Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad) {
+    Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad,
+    Visible, Notify) {
 
     var $ = window.jQuery;
     var saveAs = window.saveAs;
@@ -314,6 +317,20 @@ define([
                 }
             };
 
+            var unnotify = function () {
+                if (module.tabNotification &&
+                    typeof(module.tabNotification.cancel) === 'function') {
+                    module.tabNotification.cancel();
+                }
+            };
+
+            var notify = function () {
+                if (Visible.isSupported() && !Visible.currently()) {
+                    unnotify();
+                    module.tabNotification = Notify.tab(document.title, 1000, 10);
+                }
+            };
+
             var onRemote = realtimeOptions.onRemote = function (info) {
                 if (initializing) { return; }
 
@@ -356,6 +373,7 @@ define([
                         }
                     }
                 }
+                notify();
             };
 
             var getHTML = function (Dom) {
@@ -469,6 +487,12 @@ define([
 
                 var shjson = info.realtime.getUserDoc();
                 applyHjson(shjson);
+
+                if (Visible.isSupported()) {
+                    Visible.onChange(function (yes) {
+                        if (yes) { unnotify(); }
+                    });
+                }
 
                 console.log("Unlocking editor");
                 setEditable(true);
