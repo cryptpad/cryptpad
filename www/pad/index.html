@@ -48,32 +48,6 @@
 </head>
 <body>
     <iframe id="pad-iframe" src="inner.html"></iframe>
-    <div id="debug"><button>DEBUG</button></div>
-    <textarea id="feedback"></textarea>
-    <script>
-      require(['/bower_components/jquery/dist/jquery.min.js'], function() {
-        var $ = window.$;
-        $('#debug').on('click', function() {
-          if($('#feedback').is(':visible')) {
-            $('#pad-iframe').css({
-              'width' : '100%'
-            });
-            $('#debug').css({
-              'right' : '0%'
-            });
-          }
-          else {
-            $('#pad-iframe').css({
-              'width' : '70%'
-            });
-            $('#debug').css({
-              'right' : '30%'
-            });
-          }
-          $('#feedback').toggle();
-        });
-      });
-    </script>
 </body>
 </html>
 

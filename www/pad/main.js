@@ -100,8 +100,43 @@ define([
             // don't let the user edit until the pad is ready
             setEditable(false);
 
+            var forbiddenTags = [
+                'SCRIPT',
+                'IFRAME',
+                'OBJECT',
+                'APPLET',
+                'VIDEO',
+                'AUDIO'
+            ];
+
             var diffOptions = {
                 preDiffApply: function (info) {
+                    /*
+                        Don't accept attributes that begin with 'on'
+                        these are probably listeners, and we don't want to
+                        send scripts over the wire.
+                    */
+                    if (['addAttribute', 'modifyAttribute'].indexOf(info.diff.action) !== -1) {
+                        if (/^on/.test(info.diff.name)) {
+                            console.log("Rejecting forbidden element attribute with name (%s)", info.diff.name);
+                            return true;
+                        }
+                    }
+                    /*
+                        Also reject any elements which would insert any one of
+                        our forbidden tag types: script, iframe, object,
+                            applet, video, or audio
+                    */
+                    if (['addElement', 'replaceElement'].indexOf(info.diff.action) !== -1) {
+                        if (info.diff.element && forbiddenTags.indexOf(info.diff.element.nodeName) !== -1) {
+                            console.log("Rejecting forbidden tag of type (%s)", info.diff.element.nodeName);
+                            return true;
+                        } else if (info.diff.newValue && forbiddenTags.indexOf(info.diff.newValue.nodeType) !== -1) {
+                            console.log("Rejecting forbidden tag of type (%s)", info.diff.newValue.nodeName);
+                            return true;
+                        }
+                    }
+
                     if (info.node && info.node.tagName === 'BODY') {
                         if (info.diff.action === 'removeAttribute' &&
                             ['class', 'spellcheck'].indexOf(info.diff.name) !== -1) {
