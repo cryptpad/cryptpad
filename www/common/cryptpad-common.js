@@ -1,7 +1,8 @@
 define([
     '/bower_components/chainpad-crypto/crypto.js',
+    '/bower_components/alertifyjs/dist/js/alertify.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Crypto) {
+], function (Crypto, Alertify) {
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
@@ -9,6 +10,7 @@ define([
     Additionally, there is some basic functionality for import/export.
 */
     var $ = window.jQuery;
+
     var common = {};
 
     var isArray = function (o) { return Object.prototype.toString.call(o) === '[object Array]'; };
@@ -184,6 +186,44 @@ define([
                 reader.readAsText(file, type);
             });
         };
+    };
+
+    var styleAlerts = common.styleAlerts = function (href) {
+        href = href || '/customize/alertify.css';
+        $('head').append($('<link>', {
+            rel: 'stylesheet',
+            id: 'alertifyCSS',
+            href: href,
+        }));
+    };
+
+    common.alert = function (msg, cb) {
+        Alertify.alert(msg, cb);
+    };
+
+    common.prompt = function (msg, def, cb, opt) {
+        opt = opt || {};
+        Alertify
+            .defaultValue(def || '')
+            .okBtn(opt.ok || 'OK')
+            .cancelBtn(opt.cancel || 'Cancel')
+            .prompt(msg, function (val, ev) {
+                cb(val, ev);
+            }, function (ev) {
+                cb(null, ev);
+            });
+    };
+
+    common.confirm = function (msg, cb, opt) {
+        opt = opt || {};
+        Alertify
+            .okBtn(opt.ok || 'OK')
+            .cancelBtn(opt.cancel || 'Cancel')
+            .confirm(msg, function () {
+                cb(true);
+            }, function () {
+                cb(false);
+            });
     };
 
     return common;
