@@ -2,7 +2,7 @@ define([
     '/customize/DecorateToolbar.js',
     '/common/cryptpad-common.js',
     '/bower_components/lil-uri/uri.min.js',
-    '/bower_components/jquery/dist/jquery.min.js'
+    '/bower_components/jquery/dist/jquery.min.js',
 ], function (DecorateToolbar, Cryptpad, LilUri) {
     var $ = window.$;
     DecorateToolbar.main($('#bottom-bar'));
@@ -37,7 +37,7 @@ define([
         recentPads.some(function (pad, index) {
             if (!pad) { return; }
 
-            console.log(pad);
+            //console.log(pad);
 
             // don't link to old pads
             if (now.getTime() - new Date(pad.atime).getTime() > memorySpan) { return true; }

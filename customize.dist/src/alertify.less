@@ -1,0 +1,241 @@
+@import "./variables.less";
+
+.alertify-logs {
+    > * {
+        padding: @padding-base @padding-base * 2;
+        color: #fff;
+        box-shadow: @box-shadow;
+        border-radius: @border-radius;
+        &, &.default {
+            // FIXME
+            background: rgba(0, 0, 0, .8);
+        }
+        &.error {
+          background: @danger-color;
+        }
+        &.success {
+          background: @success-color;
+        }
+    }
+}
+
+.alertify {
+
+    position: fixed;
+    background-color: @alertify-bg;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+
+    &.hide {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    &, &.show {
+        box-sizing: border-box;
+        transition: all .33s cubic-bezier(.25, .8, .25, 1);
+    }
+
+    &, * {
+        box-sizing: border-box;
+    }
+
+    .dialog {
+       padding: 12px;
+    }
+
+    .dialog, .alert {
+
+        & > div {
+            background-color: @light-base;
+            border-radius: 5px;
+        }
+
+        width: 100%;
+        margin: 0 auto;
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+
+        > * {
+            width: 400px;
+            max-width: 95%;
+            margin: 0 auto;
+            text-align: center;
+            padding: @padding-base;
+            background: #fff;
+            // FIXME
+            box-shadow: 0 2px 4px -1px rgba(0,0,0,.14), 0 4px 5px 0 rgba(0,0,0,.098), 0 1px 10px 0 rgba(0,0,0,.084);
+        }
+
+        .msg {
+          padding: @padding-base;
+          margin-bottom: @padding-base;
+          margin: 0;
+          text-align: left;
+        }
+
+        input:not(.form-control){
+            background-color: @alertify-input-bg;
+            color: @alertify-input-fg;
+
+            border: 0px;
+            border-radius: 5px;
+
+            margin-bottom: 15px;
+            width: 100%;
+            font-size: 100%;
+            padding: @padding-base;
+            &:focus {
+                outline-offset: -2px;
+            }
+        }
+        nav {
+
+            text-align: right;
+
+            button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button) {
+
+                background-color: @alertify-btn-bg;
+                box-sizing: border-box;
+                color: @alertify-btn-fg;
+                position: relative;
+                outline: 0;
+                border: 0;
+                display: inline-block;
+                align-items: center;
+                padding: 0 6px;
+                margin: 6px 8px;
+                line-height: 36px;
+                min-height: 36px;
+                white-space: nowrap;
+                min-width: 88px;
+                text-align: center;
+                text-transform: uppercase;
+                font-size: 14px;
+                text-decoration: none;
+                cursor: pointer;
+                border: 1px solid transparent;
+                border-radius: 2px;
+
+                &:hover, &:active {
+                    background-color: @alertify-btn-bg-hover;
+                }
+
+                &:focus {
+                    // FIXME
+                    //border: 1px solid rgba(0, 0, 0, .1);
+                }
+
+            }
+
+            button.btn {
+                margin: 6px 4px;
+            }
+
+        }
+    }
+}
+
+.alertify-logs {
+
+    position: fixed;
+    z-index: 99999;
+
+    &.bottom, &:not(.top) {
+        bottom: 16px;
+        // Bottom left placement. Default. Use for transitions.
+        &.left, &:not(.right) {
+            > * {
+
+            }
+        }
+        // Top right placement
+        &.right {
+            > * {
+
+            }
+        }
+    }
+
+    // All left positions.
+    &.left, &:not(.right) {
+        left: 16px;
+        > * {
+            float: left;
+            transform: translate3d(0, 0, 0);
+            height: auto;
+
+            &.show {
+                left: 0;
+            }
+            &, &.hide {
+                left: -110%;
+            }
+        }
+    }
+
+    &.right {
+        right: 16px;
+        > * {
+            float: right;
+            transform: translate3d(0, 0, 0);
+            &.show {
+                right: 0;
+                opacity: 1;
+            }
+            &, &.hide {
+                right: -110%;
+                opacity: 0;
+            }
+        }
+    }
+
+    &.top {
+        top: 0;
+        // Top left placement, use for transitions.
+        &.left, &:not(.right) {
+            > * {
+
+            }
+        }
+        // Top right placement, use for transitions
+        &.right {
+            > * {
+
+            }
+        }
+    }
+
+    > * {
+        box-sizing: border-box;
+        transition: all .4s cubic-bezier(.25, .8, .25, 1);
+        position: relative;
+        clear: both;
+        backface-visibility: hidden;
+        perspective: 1000;
+
+        & {
+            max-height: 0;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        &.show {
+            margin-top: @padding-base;
+            opacity: 1;
+            max-height: 1000px;
+            padding: @padding-base;
+            pointer-events: auto;
+        }
+    }
+
+}

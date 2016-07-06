@@ -1,12 +1,4 @@
-@base: #302B28;
-@light-base: lighten(@base, 20%);
-@fore: #fafafa;
-
-@cp-green: #46E981;
-@cp-accent: lighten(@cp-green, 20%);
-
-@cp-red: #FF0073; // remove red
-@cp-outline: #444;
+@import "./variables.less";
 
 .fontface(@family, @src, @style: normal, @weight: 400, @fmt: 'truetype'){
     @font-face{
@@ -289,4 +281,5 @@ tbody {
     top: 3px;
     max-width: 100px;
 }
+
 

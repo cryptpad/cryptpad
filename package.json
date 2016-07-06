@@ -16,6 +16,6 @@
   "scripts": {
       "lint": "jshint --config .jshintrc --exclude-path .jshintignore .",
       "test": "node TestSelenium.js",
-      "style": "lessc ./customize.dist/src/cryptpad.less > ./customize.dist/main.css"
+      "style": "lessc ./customize.dist/src/cryptpad.less > ./customize.dist/main.css && lessc ./customize.dist/src/alertify.less > ./customize.dist/alertify.css"
   }
 }
