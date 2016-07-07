@@ -6,6 +6,7 @@ define([
 ], function (DecorateToolbar, Cryptpad, LilUri) {
     var $ = window.$;
     DecorateToolbar.main($('#bottom-bar'));
+    Cryptpad.styleAlerts();
 
     var $table = $('table.scroll');
     var $tbody = $table.find('tbody');
@@ -62,27 +63,37 @@ define([
 
             var id = 'pad-'+index;
 
-            $tbody.append('<tr id="'+id+'">' +
-               '<td>' + name + '</td>' +
-               //'<td>' + title + '</td>' +
-               '<td><a href="' + pad.href + '" title="'+ pad.title + '">' + shortTitle + '</a></td>' +
-               '<td>' + created + '</td>' + // created
-               '<td>' + date + '</td>' +
-               '<td class="remove" title="forget \''+shortTitle+'\'">✖</td>'+
-               '</tr>');
+            var $row = $('<tr>', {
+                id: id
+            });
 
-            var $row = $('#'+id);
-            $row.find('.remove').click(function () {
-                if (!window.confirm("Are you sure you'd like to forget this pad (" + shortTitle + ")?")) { return; }
-                forgetPad(pad.href);
-                $row.fadeOut(750, function () {
-                    $row.remove();
-                    if (!$table.find('tr').find('td').length) {
-                        $table.remove();
-                        $tryit.text("Try it out!");
-                    }
+            var $remove = $('<td>', {
+                'class': 'remove',
+                title: "forget '"+shortTitle + "'"
+            }).text('✖').click(function () {
+                Cryptpad.confirm("Are you sure you'd like to forget this pad (" + shortTitle + ")?", function (yes) {
+                    if (!yes) { return; }
+                    forgetPad(pad.href);
+                    $row.fadeOut(750, function () {
+                        $row.remove();
+                        if (!$table.find('tr').find('td').length) {
+                            $table.remove();
+                            $tryit.text("Try it out!");
+                        }
+                    });
                 });
             });
+
+            $row
+                .append($('<td>').text(name))
+                .append($('<td>').append($('<a>', {
+                    href: pad.href,
+                    title: pad.title,
+                }).text(shortTitle)))
+                .append($('<td>').text(created))
+                .append($('<td>').text(date))
+                .append($remove);
+            $tbody.append($row);
         });
     };
 
