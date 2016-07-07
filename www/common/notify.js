@@ -51,13 +51,13 @@
             var alt = favicon.getAttribute('data-alt-favicon');
         }
 
-        var cancel = function () {
+        var cancel = function (pending) {
             // only run one tab notification at a time
             if (Module[key]) {
                 window.clearInterval(Module[key]);
                 document.title = original;
                 if (favicon) {
-                    favicon.setAttribute('href', main);
+                    favicon.setAttribute('href', pending? alt : main);
                 }
 
                 return true;
@@ -78,13 +78,15 @@
 
         Module[key] = window.setInterval(function () {
             if (count > 0) { return step(); }
-            cancel();
+            cancel(true);
+
         }, frequency);
         step();
 
         return {
             cancel: cancel,
             original: original
+
         };
     };
 
