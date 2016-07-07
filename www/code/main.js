@@ -100,11 +100,15 @@ define([
 
             var exportText = module.exportText = function () {
                 var text = editor.getValue();
-                var filename = window.prompt("What would you like to name your file?");
-                if (filename) {
-                    var blob = new Blob([text], {type: "text/plain;charset=utf-8"});
-                    saveAs(blob, filename);
-                }
+
+                Cryptpad.prompt('What would you like to name your file?',
+                    document.title, function (filename) {
+                        if (filename === null) { return; }
+                        var blob = new Blob([text], {
+                            type: 'text/plain;charset=utf-8'
+                        });
+                        saveAs(blob, filename);
+                    });
             };
 
             var userList = {}; // List of pretty name of all users (mapped with their server ID)
@@ -163,19 +167,19 @@ define([
             var createChangeName = function(id, $container) {
                 var buttonElmt = $container.find('#'+id)[0];
                 buttonElmt.addEventListener("click", function() {
-                   var newName = window.prompt("Change your name :");
-                   if (newName && newName.trim()) {
-                       var myUserNameTemp = newName.trim();
-                       if(newName.trim().length > 32) {
-                         myUserNameTemp = myUserNameTemp.substr(0, 32);
-                       }
-                       myUserName = myUserNameTemp;
-                       myData[myID] = {
-                          name: myUserName
-                       };
-                       addToUserList(myData);
-                       onLocal();
-                   }
+                    Cryptpad.prompt("Change your name:", '', function (newName) {
+                        if (!(typeof(newName) === 'string' && newName.trim())) { return; }
+                        var myUserNameTemp = newName.trim();
+                        if(newName.trim().length > 32) {
+                          myUserNameTemp = myUserNameTemp.substr(0, 32);
+                        }
+                        myUserName = myUserNameTemp;
+                        myData[myID] = {
+                           name: myUserName
+                        };
+                        addToUserList(myData);
+                        onLocal();
+                    });
                 });
             };
 
@@ -228,16 +232,16 @@ define([
                     .addClass('rightside-button')
                     .text('RENAME')
                     .click(function () {
-                        var title = window.prompt("How would you like this pad to be titled?",
-                            Cryptpad.getPadTitle());
-
-                        if (title === null) { return; }
-                        if (Cryptpad.causesNamingConflict(title)) {
-                            window.alert("Another pad already has that title");
-                            return;
-                        }
-                        Cryptpad.setPadTitle(title);
-                        document.title = title;
+                        Cryptpad.prompt("How would you like this pad to be titled?",
+                            Cryptpad.getPadTitle(), function (title, ev) {
+                                if (title === null) { return; }
+                                if (Cryptpad.causesNamingConflict(title)) {
+                                    Cryptpad.alert("Another pad already has that title");
+                                    return;
+                                }
+                                Cryptpad.setPadTitle(title);
+                                document.title = title;
+                            });
                     });
                 $rightside.append($setTitle);
 
@@ -250,11 +254,11 @@ define([
                     .click(function () {
                         var href = window.location.href;
                         var question = "Clicking OK will remove the URL for this pad from localStorage, are you sure?";
-
-                        if (window.confirm(question)) {
+                        Cryptpad.confirm(question, function (yes) {
+                            if (!yes) { return; }
                             Cryptpad.forgetPad(href);
                             document.title = window.location.hash.slice(1,9);
-                        }
+                        });
                     });
                 $rightside.append($forgetPad);
 
@@ -302,6 +306,8 @@ define([
                 window.location.hash = info.channel + secret.key;
                 var title = document.title = Cryptpad.getPadTitle();
                 Cryptpad.rememberPad(title);
+
+                Cryptpad.styleAlerts();
             };
 
             var updateUserList = function(shjson) {
