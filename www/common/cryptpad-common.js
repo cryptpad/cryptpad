@@ -197,32 +197,87 @@ define([
         }));
     };
 
+    var findCancelButton = common.findCancelButton = function () {
+        return $('button.cancel');
+    };
+
+    var findOKButton = common.findOKButton = function () {
+        return $('button.ok');
+    };
+
+    var listenForKeys = function (yes, no) {
+        var handler = function (e) {
+            switch (e.which) {
+                case 27: // cancel
+                    if (typeof(no) === 'function') { no(e); }
+                    no();
+                    break;
+                case 13: // enter
+                    if (typeof(yes) === 'function') { yes(e); }
+                    break;
+            }
+        };
+
+        $(window).keyup(handler);
+        return handler;
+    };
+
+    var stopListening = function (handler) {
+        $(window).off('keyup', handler);
+    };
+
     common.alert = function (msg, cb) {
-        Alertify.alert(msg, cb);
+        cb = cb || function () {};
+        var keyHandler = listenForKeys(function (e) { // yes
+            findOKButton().click();
+        });
+        Alertify.alert(msg, function (ev) {
+            cb(ev);
+            stopListening(keyHandler);
+        });
     };
 
     common.prompt = function (msg, def, cb, opt) {
         opt = opt || {};
+        cb = cb || function () {};
+
+        var keyHandler = listenForKeys(function (e) { // yes
+            findOKButton().click();
+        }, function (e) { // no
+            findCancelButton().click();
+        });
+
         Alertify
             .defaultValue(def || '')
             .okBtn(opt.ok || 'OK')
             .cancelBtn(opt.cancel || 'Cancel')
             .prompt(msg, function (val, ev) {
                 cb(val, ev);
+                stopListening(keyHandler);
             }, function (ev) {
                 cb(null, ev);
+                stopListening(keyHandler);
             });
     };
 
     common.confirm = function (msg, cb, opt) {
         opt = opt || {};
+        cb = cb || function () {};
+        var keyHandler = listenForKeys(function (e) {
+            findOKButton().click();
+        }, function (e) {
+            findCancelButton().click();
+        });
+
         Alertify
             .okBtn(opt.ok || 'OK')
             .cancelBtn(opt.cancel || 'Cancel')
             .confirm(msg, function () {
                 cb(true);
+                stopListening(keyHandler);
             }, function () {
                 cb(false);
+                stopListening(keyHandler);
             });
     };
 
