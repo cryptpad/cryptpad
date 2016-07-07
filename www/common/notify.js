@@ -49,6 +49,7 @@
         if (favicon) {
             var main = favicon.getAttribute('data-main-favicon');
             var alt = favicon.getAttribute('data-alt-favicon');
+            favicon.setAttribute('href', main);
         }
 
         var cancel = function (pending) {
