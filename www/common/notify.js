@@ -47,7 +47,7 @@
 
         var favicon = document.getElementById('favicon');
         if (favicon) {
-            var main = favicon.getAttribute('href');
+            var main = favicon.getAttribute('data-main-favicon');
             var alt = favicon.getAttribute('data-alt-favicon');
         }
 
