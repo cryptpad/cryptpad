@@ -39,11 +39,12 @@ define([
         return Hyperjson.toDOM(H); //callOn(H, Hyperscript);
     };
 
-    var module = window.REALTIME_MODULE = {
+    var module = window.REALTIME_MODULE = window.APP = {
         Hyperjson: Hyperjson,
         TextPatcher: TextPatcher,
         logFights: true,
-        fights: []
+        fights: [],
+        Cryptpad: Cryptpad
     };
 
     var toolbar;
@@ -236,19 +237,19 @@ define([
             var createChangeName = function(id, $container) {
                 var buttonElmt = $container.find('#'+id)[0];
                 buttonElmt.addEventListener("click", function() {
-                   var newName = window.prompt("Change your name :", myUserName);
-                   if (newName && newName.trim()) {
-                       var myUserNameTemp = newName.trim();
-                       if(newName.trim().length > 32) {
-                         myUserNameTemp = myUserNameTemp.substr(0, 32);
-                       }
-                       myUserName = myUserNameTemp;
-                       myData[myID] = {
-                          name: myUserName
-                       };
-                       addToUserList(myData);
-                       editor.fire( 'change' );
-                   }
+                    Cryptpad.prompt("Change your name:", '', function (newName) {
+                        if (!(typeof(newName) === 'string' && newName.trim())) { return; }
+                        var myUserNameTemp = newName.trim();
+                        if(myUserNameTemp.length > 32) {
+                            myUserNameTemp = myUserNameTemp.substr(0, 32);
+                        }
+                        myUserName = myUserNameTemp;
+                        myData[myID] = {
+                            name: myUserName
+                        };
+                        addToUserList(myData);
+                        editor.fire('change');
+                    });
                 });
             };
 
@@ -389,16 +390,35 @@ define([
                 return new DOMParser().parseFromString(html, 'text/html');
             };
 
+            var getHeadingText = function () {
+                if (['h1', 'h2', 'h3'].some(function (t) {
+                    var $header = $(inner).find(t + ':first-of-type');
+                    if ($header.length && $header.text()) {
+                        text = $header.text();
+                        return true;
+                    }
+                })) { return text; }
+            };
+
+            var suggestName = module.suggestName = function () {
+                var hash = window.location.hash.slice(1, 9);
+
+                if (document.title === hash) {
+                    return getHeadingText() || hash;
+                } else {
+                    return document.title || getHeadingText() || hash;
+                }
+            };
+
             var exportFile = function () {
                 var html = getHTML();
-                console.log(html === getHTML(domFromHTML(html)));
-
-                console.log(html);
-                var filename = window.prompt('What would you like to name your file?', "MyPad.html");
-                if (filename) {
+                var suggestion = suggestName();
+                Cryptpad.prompt("What would you like to name your file?",
+                    suggestion.replace(/ /g, '-') + '.html', function (filename) {
+                    if (!(typeof(filename) === 'string' && filename)) { return; }
                     var blob = new Blob([html], {type: "text/html;charset=utf-8"});
                     saveAs(blob, filename);
-                }
+                });
             };
 
             var onInit = realtimeOptions.onInit = function (info) {
@@ -437,18 +457,18 @@ define([
                     .addClass('cryptpad-rename rightside-button')
                     .text('RENAME')
                     .click(function () {
-                        var suggestion = $(inner).find('h1:first-of-type').text();
+                        var suggestion = suggestName();
 
-                        var title = window.prompt("How would you like to title this pad?", suggestion);
+                        Cryptpad.prompt("How would you like to title this pad?", suggestion, function (title) {
+                            if (title === null) { return; }
+                            if (Cryptpad.causesNamingConflict(title)) {
+                                Cryptpad.alert("Another pad already has that title");
+                                return;
+                            }
 
-                        if (title === null) { return; }
-                        if (Cryptpad.causesNamingConflict(title)) {
-                            window.alert("Another pad already has that title");
-                            return;
-                        }
-
-                        Cryptpad.setPadTitle(title);
-                        document.title = title;
+                            Cryptpad.setPadTitle(title);
+                            document.title = title;
+                        });
                     });
                 $rightside.append($rename);
 
@@ -461,11 +481,11 @@ define([
                     .click(function () {
                         var href = window.location.href;
                         var question = "Clicking OK will remove the URL for this pad from localStorage, are you sure?";
-
-                        if (window.confirm(question)) {
+                        Cryptpad.confirm(question, function (yes) {
+                            if (!yes) { return; }
                             Cryptpad.forgetPad(href);
                             document.title = window.location.hash.slice(1,9);
-                        }
+                        });
                     });
                 $rightside.append($forgetPad);
 
@@ -474,6 +494,7 @@ define([
 
                 var title = document.title = Cryptpad.getPadTitle();
                 Cryptpad.rememberPad(title);
+                Cryptpad.styleAlerts();
             };
 
             // this should only ever get called once, when the chain syncs
