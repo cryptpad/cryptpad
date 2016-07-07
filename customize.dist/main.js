@@ -33,6 +33,10 @@ define([
     var recentPads = Cryptpad.getRecentPads();
     recentPads.sort(Cryptpad.mostRecent);
 
+    var fixHTML = function (html) {
+        return html.replace(/</g, '&lt;');
+    };
+
     var makeRecentPadsTable = function () {
         if (!recentPads.length) { return; }
         recentPads.some(function (pad, index) {
@@ -71,7 +75,7 @@ define([
                 'class': 'remove',
                 title: "forget '"+shortTitle + "'"
             }).text('✖').click(function () {
-                Cryptpad.confirm("Are you sure you'd like to forget this pad (" + shortTitle + ")?", function (yes) {
+                Cryptpad.confirm(fixHTML("Are you sure you'd like to forget this pad (" + shortTitle + ")?"), function (yes) {
                     if (!yes) { return; }
                     forgetPad(pad.href);
                     $row.fadeOut(750, function () {
