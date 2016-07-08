@@ -1,160 +1,88 @@
 define([
-    '/common/messages.js'
+    '/common/messages.js',
+    '/bower_components/jquery/dist/jquery.min.js',
 ], function (Messages) {
+    var $ = window.jQuery;
 
-    /** Id of the element for getting debug info. */
-    var DEBUG_LINK_CLS = 'rtwysiwyg-debug-link';
+    var Bar = {
+        constants: {},
+    };
 
     /** Id of the div containing the user list. */
-    var USER_LIST_CLS = 'rtwysiwyg-user-list';
+    var USER_LIST_CLS = Bar.constants.userlist = 'cryptpad-user-list';
 
     /** Id of the button to change my username. */
-    var USERNAME_BUTTON_GROUP = 'cryptpad-changeName';
+    var USERNAME_BUTTON_GROUP = Bar.constants.changeName = 'cryptpad-changeName';
 
     /** Id of the div containing the lag info. */
-    var LAG_ELEM_CLS = 'rtwysiwyg-lag';
+    var LAG_ELEM_CLS = Bar.constants.lag = 'cryptpad-lag';
 
     /** The toolbar class which contains the user list, debug link and lag. */
-    var TOOLBAR_CLS = 'rtwysiwyg-toolbar';
+    var TOOLBAR_CLS = Bar.constants.toolbar = 'cryptpad-toolbar';
+
+    var LEFTSIDE_CLS = Bar.constants.leftside = 'cryptpad-toolbar-leftside';
+    var RIGHTSIDE_CLS = Bar.constants.rightside = 'cryptpad-toolbar-rightside';
+
+    var BACK_CLS = Bar.constants.back = 'cryptpad-back';
+
+    var SPINNER_CLS = Bar.constants.spinner = 'cryptpad-spinner';
 
     /** Key in the localStore which indicates realtime activity should be disallowed. */
-    var LOCALSTORAGE_DISALLOW = 'rtwysiwyg-disallow';
+    // TODO remove? will never be used in cryptpad
+    var LOCALSTORAGE_DISALLOW = Bar.constants.localstorageDisallow = 'cryptpad-disallow';
 
     var SPINNER_DISAPPEAR_TIME = 3000;
     var SPINNER = [ '-', '\\', '|', '/' ];
 
     var uid = function () {
-        return 'rtwysiwyg-uid-' + String(Math.random()).substring(2);
+        return 'cryptpad-uid-' + String(Math.random()).substring(2);
+    };
+
+    var $style;
+
+    var styleToolbar = function ($container, href) {
+        href = href || '/customize/toolbar.css';
+
+        $.ajax({
+            url: href,
+            dataType: 'text',
+            success: function (data) {
+                $container.append($('<style>').text(data));
+            },
+        });
     };
 
     var createRealtimeToolbar = function ($container) {
-        var id = uid();
-        $container.prepend(
-            '<div class="' + TOOLBAR_CLS + '" id="' + id + '">' +
-                '<div class="rtwysiwyg-toolbar-leftside"></div>' +
-                '<div class="rtwysiwyg-toolbar-rightside"></div>' +
-            '</div>'
-        );
-        var toolbar = $container.find('#'+id);
+        var $toolbar = $('<div>', {
+            'class': TOOLBAR_CLS,
+            id: uid(),
+        })
+        .append($('<div>', {'class': LEFTSIDE_CLS}))
+        .append($('<div>', {'class': RIGHTSIDE_CLS}));
 
-        var swap = function (str, dict) {
-            return str.replace(/\{\{(.*?)\}\}/g, function (all, block) {
-                //console.log(block);
-                return dict[block] || block;
-            });
-        };
-
-        var css = swap(function(){/*
-<style>
-.{{TOOLBAR_CLS}} {
-    color: #666;
-    font-weight: bold;
-    height: 26px;
-    margin-bottom: -3px;
-    display: inline-block;
-    width: 100%;
-}
-.{{TOOLBAR_CLS}} a {
-    float: right;
-}
-.{{TOOLBAR_CLS}} div {
-    padding: 0 10px;
-    height: 1.5em;
-    line-height: 25px;
-    height: 22px;
-}
-.{{TOOLBAR_CLS}} div.rtwysiwyg-back {
-    padding: 0;
-    font-weight: bold;
-    cursor: pointer;
-    color: #000;
-}
-.{{USERNAME_BUTTON_GROUP}} {
-    float: left;
-    cursor: pointer;
-}
-.{{USERNAME_BUTTON_GROUP}} button {
-    padding: 0;
-    margin-right: 5px;
-}
-.rtwysiwyg-toolbar-leftside div {
-    float: left;
-}
-.rtwysiwyg-toolbar-leftside {
-    float: left;
-}
-.rtwysiwyg-toolbar-rightside {
-    float: right;
-}
-.rtwysiwyg-lag {
-    float: right;
-}
-.rtwysiwyg-spinner {
-    float: left;
-}
-.gwt-TabBar {
-    display:none;
-}
-.{{DEBUG_LINK_CLS}}:link {
-    color:transparent;
-}
-.{{DEBUG_LINK_CLS}}:link:hover {
-    color:blue;
-}
-.gwt-TabPanelBottom {
-    border-top: 0 none;
-}
-.{{TOOLBAR_CLS}} button {
-    box-sizing: border-box;
-    height: 100%;
-    background-color: inherit;
-    border: 1px solid #A6A6A6;
-    border-radius: 5px;
-    margin-right: 5px;
-    padding-right: 5px;
-    padding-left: 5px;
-}
-.{{TOOLBAR_CLS}} .rightside-button {
-    float: right;
-    cursor: pointer;
-}
-
-.{{TOOLBAR_CLS}} .leftside-button {
-    cursor: pointer;
-    float: left;
-}
-
-.{{TOOLBAR_CLS}} select {
-    border: 0px;
-    margin-left: 5px;
-    margin-right: 5px;
-    padding-left: 5px;
-}
-</style>
-        */}.toString().slice(14,-3), {
-            TOOLBAR_CLS: TOOLBAR_CLS,
-            USERNAME_BUTTON_GROUP: USERNAME_BUTTON_GROUP,
-            DEBUG_LINK_CLS: DEBUG_LINK_CLS,
-        }).trim();
-
-        toolbar.append(css);
-        return toolbar;
+        $container.prepend($toolbar);
+        styleToolbar($container);
+        return $toolbar;
     };
 
     var createEscape = function ($container) {
-        var id = uid();
-        $container.append('<div class="rtwysiwyg-back" id="' + id + '">&#8656; Back</div>');
-        var $ret = $container.find('#'+id);
-        $ret.on('click', function () {
+        var $back = $('<div>', {
+            'class': BACK_CLS,
+            id: uid(),
+        }).html('&#8656; Back').click(function () {
             window.location.href = '/';
         });
-        return $ret[0];
+        $container.append($back);
+        return $back[0];
     };
 
     var createSpinner = function ($container) {
-        var id = uid();
-        $container.append('<div class="rtwysiwyg-spinner" id="'+id+'"></div>');
-        return $container.find('#'+id)[0];
+        var $spinner = $('<div>', {
+            id: uid(),
+            'class': SPINNER_CLS,
+        });
+        $container.append($spinner);
+        return $spinner[0];
     };
 
     var kickSpinner = function (spinnerElement, reversed) {
@@ -168,9 +96,12 @@ define([
     };
 
     var createUserList = function ($container) {
-        var id = uid();
-        $container.append('<div class="' + USER_LIST_CLS + '" id="'+id+'"></div>');
-        return $container.find('#'+id)[0];
+        var $userlist = $('<div>', {
+            'class': USER_LIST_CLS,
+            id: uid(),
+        });
+        $container.append($userlist);
+        return $userlist[0];
     };
 
     var getOtherUsers = function(myUserName, userList, userData) {
@@ -191,9 +122,17 @@ define([
     };
 
     var createChangeName = function($container, userList, buttonID) {
-        var id = uid();
-        userList.innerHTML = '<button id="' + buttonID + '" class="'+USERNAME_BUTTON_GROUP+'" >Change name</button><span id="' + id + '"></span>';
-        return $container.find('#'+id)[0];
+        var $span = $('<span>', {
+            id: uid(),
+        });
+        var $button = $('<button>', {
+            id: buttonID,
+            'class': USERNAME_BUTTON_GROUP,
+        }).text('Change name');
+
+        $(userList).append($button);
+        $button.after($span);
+        return $span[0];
     };
 
     var updateUserList = function (myUserName, listElement, userList, userData) {
@@ -212,9 +151,12 @@ define([
     };
 
     var createLagElement = function ($container) {
-        var id = uid();
-        $container.append('<div class="' + LAG_ELEM_CLS + '" id="'+id+'"></div>');
-        return $container.find('#'+id)[0];
+        var $lag = $('<div>', {
+            'class': LAG_ELEM_CLS,
+            id: uid(),
+        });
+        $container.append($lag);
+        return $lag[0];
     };
 
     var checkLag = function (getLag, lagElement) {
@@ -235,12 +177,12 @@ define([
         lagElement.textContent = lagMsg;
     };
 
-    var create = function ($container, myUserName, realtime, getLag, userList, config) {
+    var create = Bar.create = function ($container, myUserName, realtime, getLag, userList, config) {
         var toolbar = createRealtimeToolbar($container);
-        createEscape(toolbar.find('.rtwysiwyg-toolbar-leftside'));
-        var userListElement = createUserList(toolbar.find('.rtwysiwyg-toolbar-leftside'));
-        var spinner = createSpinner(toolbar.find('.rtwysiwyg-toolbar-rightside'));
-        var lagElement = createLagElement(toolbar.find('.rtwysiwyg-toolbar-rightside'));
+        createEscape(toolbar.find('.' + LEFTSIDE_CLS));
+        var userListElement = createUserList(toolbar.find('.' + LEFTSIDE_CLS));
+        var spinner = createSpinner(toolbar.find('.' + RIGHTSIDE_CLS));
+        var lagElement = createLagElement(toolbar.find('.' + RIGHTSIDE_CLS));
         var userData = config.userData;
         var changeNameID = config.changeNameID;
         var saveContentID = config.saveContentID || config.exportContentID;
@@ -296,5 +238,5 @@ define([
         };
     };
 
-    return { create: create };
+    return Bar;
 });
