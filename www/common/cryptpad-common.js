@@ -281,5 +281,13 @@ define([
             });
     };
 
+    common.log = function (msg) {
+        Alertify.success(msg);
+    };
+
+    common.warn = function (msg) {
+        Alertify.error(msg);
+    };
+
     return common;
 });
