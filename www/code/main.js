@@ -19,7 +19,9 @@ define([
 ], function (Config, /*RTCode,*/ Messages, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad, Modes, Themes, Visible, Notify) {
     var $ = window.jQuery;
     var saveAs = window.saveAs;
-    var module = window.APP = {};
+    var module = window.APP = {
+        Cryptpad: Cryptpad,
+    };
     var ifrw = module.ifrw = $('#pad-iframe')[0].contentWindow;
     var stringify = function (obj) {
         return JSONSortify(obj);
@@ -184,16 +186,17 @@ define([
             };
 
             var onInit = config.onInit = function (info) {
+                //Cryptpad.warn("Initializing realtime session...");
                 var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
                 toolbarList = info.userList;
                 var config = {
                     userData: userList,
-                    changeNameID: 'cryptpad-changeName',
+                    changeNameID: Toolbar.constants.changeName,
                 };
-                toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
-                createChangeName('cryptpad-changeName', $bar);
+                toolbar = module.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
+                createChangeName(Toolbar.constants.changeName, $bar);
 
-                var $rightside = $bar.find('.rtwysiwyg-toolbar-rightside');
+                var $rightside = $bar.find('.' + Toolbar.constants.rightside);
 
                 /* add an export button */
                 var $export = $('<button>')
@@ -307,7 +310,6 @@ define([
                 var title = document.title = Cryptpad.getPadTitle();
                 Cryptpad.rememberPad(title);
 
-                Cryptpad.styleAlerts();
             };
 
             var updateUserList = function(shjson) {
@@ -317,6 +319,20 @@ define([
                   var userData = hjson.metadata;
                   // Update the local user data
                   addToUserList(userData);
+                }
+            };
+
+            var unnotify = module.unnotify = function () {
+                if (module.tabNotification &&
+                    typeof(module.tabNotification.cancel) === 'function') {
+                    module.tabNotification.cancel();
+                }
+            };
+
+            var notify = module.notify = function () {
+                if (Visible.isSupported() && !Visible.currently()) {
+                    unnotify();
+                    module.tabNotification = Notify.tab(document.title, 1000, 10);
                 }
             };
 
@@ -348,6 +364,7 @@ define([
 
                 setEditable(true);
                 initializing = false;
+                //Cryptpad.log("Your document is ready");
             };
 
             var cursorToPos = function(cursor, oldText) {
@@ -375,20 +392,6 @@ define([
                 cursor.line = textLines.length - 1;
                 cursor.ch = textLines[cursor.line].length;
                 return cursor;
-            };
-
-            var unnotify = function () {
-                if (module.tabNotification &&
-                    typeof(module.tabNotification.cancel) === 'function') {
-                    module.tabNotification.cancel();
-                }
-            };
-
-            var notify = function () {
-                if (Visible.isSupported() && !Visible.currently()) {
-                    unnotify();
-                    module.tabNotification = Notify.tab(document.title, 1000, 10);
-                }
             };
 
             var onRemote = config.onRemote = function (info) {
@@ -439,9 +442,10 @@ define([
             var onAbort = config.onAbort = function (info) {
                 // inform of network disconnect
                 setEditable(false);
-                window.alert("Network Connection Lost!");
+                Cryptpad.alert("Network Connection Lost!");
             };
 
+            Cryptpad.styleAlerts();
             var realtime = module.realtime = Realtime.start(config);
 
             editor.on('change', onLocal);
