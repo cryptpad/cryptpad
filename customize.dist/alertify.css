@@ -1,6 +1,8 @@
 .alertify-logs > * {
-  padding: 12px 24px;
-  color: #fff;
+  padding: 12px 48px;
+  color: #fafafa;
+  font-weight: bold;
+  font-size: large;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
   border-radius: 1px;
 }
@@ -9,10 +11,11 @@
   background: rgba(0, 0, 0, 0.8);
 }
 .alertify-logs > *.error {
-  background: rgba(244, 67, 54, 0.8);
+  background: #FF0073;
 }
 .alertify-logs > *.success {
-  background: rgba(76, 175, 80, 0.9);
+  background: #46E981;
+  color: #302B28;
 }
 .alertify {
   position: fixed;
@@ -82,10 +85,6 @@
   font-size: 100%;
   padding: 12px;
 }
-.alertify .dialog input:not(.form-control):focus,
-.alertify .alert input:not(.form-control):focus {
-  outline-offset: -2px;
-}
 .alertify .dialog nav,
 .alertify .alert nav {
   text-align: right;
@@ -94,7 +93,6 @@
 .alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button) {
   background-color: transparent;
   box-sizing: border-box;
-  color: #fafafa;
   position: relative;
   outline: 0;
   border: 0;
@@ -111,14 +109,19 @@
   font-size: 14px;
   text-decoration: none;
   cursor: pointer;
-  border: 1px solid transparent;
-  border-radius: 2px;
+  color: #fafafa;
+  border: 1px solid #302B28;
+  border-radius: 5px;
 }
 .alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):hover,
 .alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):hover,
 .alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):active,
 .alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):active {
-  background-color: rgba(0, 100, 0, 0.15);
+  background-color: rgba(0, 0, 0, 0.15);
+}
+.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):focus,
+.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):focus {
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 .alertify .dialog nav button.btn,
 .alertify .alert nav button.btn {

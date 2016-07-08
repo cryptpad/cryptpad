@@ -2,8 +2,12 @@
 
 .alertify-logs {
     > * {
-        padding: @padding-base @padding-base * 2;
-        color: #fff;
+        padding: @padding-base @padding-base * 4;
+        color: @fore;
+
+        font-weight: bold;
+        font-size: large;
+
         box-shadow: @box-shadow;
         border-radius: @border-radius;
         &, &.default {
@@ -11,10 +15,11 @@
             background: rgba(0, 0, 0, .8);
         }
         &.error {
-          background: @danger-color;
+            background: @danger-color;
         }
         &.success {
-          background: @success-color;
+            background: @success-color;
+            color: @success-fore;
         }
     }
 }
@@ -92,7 +97,7 @@
             font-size: 100%;
             padding: @padding-base;
             &:focus {
-                outline-offset: -2px;
+                //outline-offset: -2px;
             }
         }
         nav {
@@ -103,7 +108,6 @@
 
                 background-color: @alertify-btn-bg;
                 box-sizing: border-box;
-                color: @alertify-btn-fg;
                 position: relative;
                 outline: 0;
                 border: 0;
@@ -120,8 +124,10 @@
                 font-size: 14px;
                 text-decoration: none;
                 cursor: pointer;
-                border: 1px solid transparent;
-                border-radius: 2px;
+
+                color: @alertify-btn-fg;
+                border: 1px solid @base;
+                border-radius: 5px;
 
                 &:hover, &:active {
                     background-color: @alertify-btn-bg-hover;
@@ -129,7 +135,7 @@
 
                 &:focus {
                     // FIXME
-                    //border: 1px solid rgba(0, 0, 0, .1);
+                    border: 1px solid rgba(0, 0, 0, .1);
                 }
 
             }

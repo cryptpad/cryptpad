@@ -1,0 +1,71 @@
+.cryptpad-toolbar {
+  box-sizing: border-box;
+  color: #666;
+  font-weight: bold;
+  height: 26px;
+  margin-bottom: -3px;
+  display: inline-block;
+  width: 100%;
+  z-index: 9001;
+}
+.cryptpad-toolbar a {
+  float: right;
+}
+.cryptpad-toolbar div {
+  padding: 0 10px;
+  height: 1.5em;
+  line-height: 25px;
+  height: 22px;
+}
+.cryptpad-toolbar div.rtwysiwyg-back {
+  padding: 0;
+  font-weight: bold;
+  cursor: pointer;
+  color: #000;
+}
+.cryptpad-toolbar button {
+  height: 100%;
+  background-color: inherit;
+  border: 1px solid #A6A6A6;
+  border-radius: 5px;
+  margin-right: 5px;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+.cryptpad-toolbar .rightside-button {
+  float: right;
+  cursor: pointer;
+}
+.cryptpad-toolbar .leftside-button {
+  cursor: pointer;
+  float: left;
+}
+.cryptpad-toolbar select {
+  border: 0px;
+  margin-left: 5px;
+  margin-right: 5px;
+  padding-left: 5px;
+}
+.cryptpad-changeName {
+  float: left;
+  cursor: pointer;
+}
+.cryptpad-changeName button {
+  padding: 0;
+  margin-right: 5px;
+}
+.cryptpad-toolbar-leftside {
+  float: left;
+}
+.cryptpad-toolbar-leftside div {
+  float: left;
+}
+.cryptpad-toolbar-rightside {
+  text-align: right;
+}
+.cryptpad-lag {
+  float: right;
+}
+.cryptpad-spinner {
+  float: left;
+}
