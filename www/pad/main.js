@@ -391,6 +391,7 @@ define([
             };
 
             var getHeadingText = function () {
+                var text;
                 if (['h1', 'h2', 'h3'].some(function (t) {
                     var $header = $(inner).find(t + ':first-of-type');
                     if ($header.length && $header.text()) {
@@ -426,12 +427,12 @@ define([
                 toolbarList = info.userList;
                 var config = {
                     userData: userList,
-                    changeNameID: 'cryptpad-changeName',
+                    changeNameID: Toolbar.constants.changeName,
                 };
                 toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
-                createChangeName('cryptpad-changeName', $bar);
+                createChangeName(Toolbar.constants.changeName, $bar);
 
-                var $rightside = $bar.find('.rtwysiwyg-toolbar-rightside');
+                var $rightside = $bar.find('.' + Toolbar.constants.rightside);
 
                 /* add an export button */
                 var $export = $('<button>')
@@ -526,6 +527,7 @@ define([
                 setEditable(false);
                 // TODO inform them that the session was torn down
                 toolbar.failed();
+                Cryptpad.alert("Network connection lost!");
             };
 
             var onLocal = realtimeOptions.onLocal = function () {
