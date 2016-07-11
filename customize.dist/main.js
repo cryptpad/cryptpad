@@ -2,7 +2,7 @@ define([
     '/customize/DecorateToolbar.js',
     '/common/cryptpad-common.js',
     '/bower_components/lil-uri/uri.min.js',
-    '/common/email.js',
+    '/customize/email.js',
     '/bower_components/jquery/dist/jquery.min.js',
 ], function (DecorateToolbar, Cryptpad, LilUri, Email) {
     var $ = window.$;
