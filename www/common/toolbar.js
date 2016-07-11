@@ -69,7 +69,7 @@ define([
         var $back = $('<div>', {
             'class': BACK_CLS,
             id: uid(),
-        }).html('&#8656; Back').click(function () {
+        }).html(Messages.back).click(function () {
             window.location.href = '/';
         });
         $container.append($back);
@@ -128,7 +128,7 @@ define([
         var $button = $('<button>', {
             id: buttonID,
             'class': USERNAME_BUTTON_GROUP,
-        }).text('Change name');
+        }).text(Messages.changeNameButton);
 
         $(userList).append($button);
         $button.after($span);

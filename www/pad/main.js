@@ -237,7 +237,7 @@ define([
             var createChangeName = function(id, $container) {
                 var buttonElmt = $container.find('#'+id)[0];
                 buttonElmt.addEventListener("click", function() {
-                    Cryptpad.prompt("Change your name:", '', function (newName) {
+                    Cryptpad.prompt(Messages.changeNamePrompt, '', function (newName) {
                         if (!(typeof(newName) === 'string' && newName.trim())) { return; }
                         var myUserNameTemp = newName.trim();
                         if(myUserNameTemp.length > 32) {
@@ -414,8 +414,8 @@ define([
             var exportFile = function () {
                 var html = getHTML();
                 var suggestion = suggestName();
-                Cryptpad.prompt("What would you like to name your file?",
-                    suggestion.replace(/ /g, '-') + '.html', function (filename) {
+                Cryptpad.prompt(Messages.exportPrompt,
+                    Cryptpad.fixFileName(suggestion) + '.html', function (filename) {
                     if (!(typeof(filename) === 'string' && filename)) { return; }
                     var blob = new Blob([html], {type: "text/html;charset=utf-8"});
                     saveAs(blob, filename);
@@ -436,13 +436,13 @@ define([
 
                 /* add an export button */
                 var $export = $('<button>')
-                    .text('EXPORT')
+                    .text(Messages.exportButton)
                     .addClass('rightside-button')
                     .click(exportFile);
 
                 /* add an import button */
                 var $import = $('<button>')
-                    .text('IMPORT')
+                    .text(Messages.importButton)
                     .addClass('rightside-button')
                     .click(Cryptpad.importContent('text/plain', function (content) {
                         var shjson = stringify(Hyperjson.fromDOM(domFromHTML(content).body));
@@ -456,14 +456,14 @@ define([
                         id: 'name-pad',
                     })
                     .addClass('cryptpad-rename rightside-button')
-                    .text('RENAME')
+                    .text(Messages.renameButton)
                     .click(function () {
                         var suggestion = suggestName();
 
-                        Cryptpad.prompt("How would you like to title this pad?", suggestion, function (title) {
+                        Cryptpad.prompt(Messages.renamePrompt, suggestion, function (title) {
                             if (title === null) { return; }
                             if (Cryptpad.causesNamingConflict(title)) {
-                                Cryptpad.alert("Another pad already has that title");
+                                Cryptpad.alert(Messages.renameConflict);
                                 return;
                             }
 
@@ -477,12 +477,11 @@ define([
                 var $forgetPad = $('<button>', {
                         id: 'cryptpad-forget',
                     })
-                    .text("FORGET")
+                    .text(Messages.forgetButton)
                     .addClass('cryptpad-forget rightside-button')
                     .click(function () {
                         var href = window.location.href;
-                        var question = "Clicking OK will remove the URL for this pad from localStorage, are you sure?";
-                        Cryptpad.confirm(question, function (yes) {
+                        Cryptpad.confirm(Messages.forgetPrompt, function (yes) {
                             if (!yes) { return; }
                             Cryptpad.forgetPad(href);
                             document.title = window.location.hash.slice(1,9);
@@ -527,7 +526,7 @@ define([
                 setEditable(false);
                 // TODO inform them that the session was torn down
                 toolbar.failed();
-                Cryptpad.alert("Network connection lost!");
+                Cryptpad.alert(Messages.disconnectAlert);
             };
 
             var onLocal = realtimeOptions.onLocal = function () {

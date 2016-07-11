@@ -16,6 +16,28 @@ define(function () {
     out.reconnecting = 'Reconnecting...';
     out.lag = 'Lag';
 
+    out.importButton = 'IMPORT';
+
+    out.exportButton = 'EXPORT';
+    out.exportPrompt = 'What would you like to name your file?';
+
+    out.back = '&#8656; Back';
+
+    out.changeNameButton = 'Change name';
+    out.changeNamePrompt = 'Change your name: ';
+
+    out.renameButton = 'RENAME';
+    out.renamePrompt = 'How would you like to title this pad?';
+    out.renameConflict = 'Another pad already has that title';
+
+    out.forgetButton = 'FORGET';
+    out.forgetPrompt = 'Clicking OK will remove the URL for this pad from localStorage, are you sure?';
+
+    out.disconnectAlert = 'Network connection lost!';
+
+    out.tryIt = 'Try it out!';
+    out.recentPads = 'Your recent pads (stored only in your browser)';
+
     out.initialState = [
         '<p>',
         'This is <strong>CryptPad</strong>, the zero knowledge realtime collaborative editor.',
@@ -33,10 +55,10 @@ define(function () {
 
     out.codeInitialState = [
         '/*\n',
-        'This is CryptPad, the zero knowledge realtime collaborative editor.\n',
-        'What you type here is encrypted so only people who have the link can access it.\n',
-        'Even the server cannot see what you type.\n',
-        'What you see here, what you hear here, when you leave here, let it stay here\n',
+        '   This is CryptPad, the zero knowledge realtime collaborative editor.\n',
+        '   What you type here is encrypted so only people who have the link can access it.\n',
+        '   Even the server cannot see what you type.\n',
+        '   What you see here, what you hear here, when you leave here, let it stay here.\n',
         '*/'
     ].join('');
 

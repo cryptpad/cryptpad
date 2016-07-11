@@ -168,6 +168,10 @@ define([
         return title;
     };
 
+    var fixFileName = common.fixFileName = function (filename) {
+        return filename.replace(/ /g, '-').replace(/\//g, '_');
+    };
+
     var causesNamingConflict = common.causesNamingConflict = function (title) {
         var href = window.location.href;
         return getRecentPads().some(function (pad) {

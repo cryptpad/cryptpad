@@ -1,10 +1,11 @@
 define([
+    '/common/messages.js',
     '/customize/DecorateToolbar.js',
     '/common/cryptpad-common.js',
     '/bower_components/lil-uri/uri.min.js',
     '/customize/email.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (DecorateToolbar, Cryptpad, LilUri, Email) {
+], function (Messages, DecorateToolbar, Cryptpad, LilUri, Email) {
     var $ = window.$;
 
     var email = Email.makeScrambler(1);
@@ -88,14 +89,14 @@ define([
                 'class': 'remove',
                 title: "forget '"+shortTitle + "'"
             }).text('✖').click(function () {
-                Cryptpad.confirm(fixHTML("Are you sure you'd like to forget this pad (" + shortTitle + ")?"), function (yes) {
+                Cryptpad.confirm(Messages.forgetPrompt + ' (' + fixHTML(shortTitle) + ')', function (yes) {
                     if (!yes) { return; }
                     forgetPad(pad.href);
                     $row.fadeOut(750, function () {
                         $row.remove();
                         if (!$table.find('tr').find('td').length) {
                             $table.remove();
-                            $tryit.text("Try it out!");
+                            $tryit.text(Messages.tryIt);
                         }
                     });
                 });
@@ -120,7 +121,7 @@ define([
     }
     if (hasRecent) {
         $('table').attr('style', '');
-        $tryit.text('Your Recent pads (stored only in browser)');
+        $tryit.text(Messages.recentPads);
     }
 });
 

@@ -66,6 +66,7 @@ define([
                 if ($select && $select.val) { $select.val(mode); }
             };
 
+            editor.setValue(Messages.codeInitialState); // HERE
 
             var setTheme = module.setTheme = (function () {
                 var path = './theme/';
@@ -103,7 +104,7 @@ define([
             var exportText = module.exportText = function () {
                 var text = editor.getValue();
 
-                Cryptpad.prompt('What would you like to name your file?',
+                Cryptpad.prompt(Messages.exportPrompt,
                     document.title, function (filename) {
                         if (filename === null) { return; }
                         var blob = new Blob([text], {
@@ -169,7 +170,7 @@ define([
             var createChangeName = function(id, $container) {
                 var buttonElmt = $container.find('#'+id)[0];
                 buttonElmt.addEventListener("click", function() {
-                    Cryptpad.prompt("Change your name:", '', function (newName) {
+                    Cryptpad.prompt(Messages.changeNamePrompt, '', function (newName) {
                         if (!(typeof(newName) === 'string' && newName.trim())) { return; }
                         var myUserNameTemp = newName.trim();
                         if(newName.trim().length > 32) {
@@ -200,14 +201,14 @@ define([
 
                 /* add an export button */
                 var $export = $('<button>')
-                    .text('EXPORT')
+                    .text(Messages.exportButton)
                     .addClass('rightside-button')
                     .click(exportText);
                 $rightside.append($export);
 
                 /* add an import button */
                 var $import = $('<button>')
-                    .text('IMPORT')
+                    .text(Messages.importButton)
                     .addClass('rightside-button')
                     .click(Cryptpad.importContent('text/plain', function (content, file) {
                         var mime = CodeMirror.findModeByMIME(file.type);
@@ -233,13 +234,13 @@ define([
                         id: 'name-pad'
                     })
                     .addClass('rightside-button')
-                    .text('RENAME')
+                    .text(Messages.renameButton)
                     .click(function () {
-                        Cryptpad.prompt("How would you like this pad to be titled?",
+                        Cryptpad.prompt(Messages.renamePrompt,
                             Cryptpad.getPadTitle(), function (title, ev) {
                                 if (title === null) { return; }
                                 if (Cryptpad.causesNamingConflict(title)) {
-                                    Cryptpad.alert("Another pad already has that title");
+                                    Cryptpad.alert(Messages.renameConflict);
                                     return;
                                 }
                                 Cryptpad.setPadTitle(title);
@@ -252,12 +253,11 @@ define([
                 var $forgetPad = $('<button>', {
                         id: 'cryptpad-forget',
                     })
-                    .text('FORGET')
+                    .text(Messages.forgetButton)
                     .addClass('cryptpad-forget rightside-button')
                     .click(function () {
                         var href = window.location.href;
-                        var question = "Clicking OK will remove the URL for this pad from localStorage, are you sure?";
-                        Cryptpad.confirm(question, function (yes) {
+                        Cryptpad.confirm(Messages.forgetPrompt, function (yes) {
                             if (!yes) { return; }
                             Cryptpad.forgetPad(href);
                             document.title = window.location.hash.slice(1,9);
@@ -354,7 +354,7 @@ define([
                 // Update the user list (metadata) from the hyperjson
                 //updateUserList(shjson);
 
-                editor.setValue(newDoc);
+                editor.setValue(newDoc || Messages.codeInitialState);
 
                 if (Visible.isSupported()) {
                     Visible.onChange(function (yes) {
@@ -442,7 +442,7 @@ define([
             var onAbort = config.onAbort = function (info) {
                 // inform of network disconnect
                 setEditable(false);
-                Cryptpad.alert("Network Connection Lost!");
+                Cryptpad.alert(Messages.disconnectAlert);
             };
 
             Cryptpad.styleAlerts();
