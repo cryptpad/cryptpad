@@ -17,7 +17,7 @@
   line-height: 25px;
   height: 22px;
 }
-.cryptpad-toolbar div.rtwysiwyg-back {
+.cryptpad-toolbar div.cryptpad-back {
   padding: 0;
   font-weight: bold;
   cursor: pointer;
