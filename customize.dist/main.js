@@ -2,9 +2,22 @@ define([
     '/customize/DecorateToolbar.js',
     '/common/cryptpad-common.js',
     '/bower_components/lil-uri/uri.min.js',
+    '/common/email.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (DecorateToolbar, Cryptpad, LilUri) {
+], function (DecorateToolbar, Cryptpad, LilUri, Email) {
     var $ = window.$;
+
+    var email = Email.makeScrambler(1);
+
+    // slip past the spammers, then unscramble mailto links
+    $('a[href^="mailto:"]').each(function () {
+        $(this).attr('href', function (i, href) {
+            return href.replace(/:(.*$)/, function (a, address) {
+                return ':' + email.decrypt(address);
+            });
+        });
+    });
+
     DecorateToolbar.main($('#bottom-bar'));
     Cryptpad.styleAlerts();
 
