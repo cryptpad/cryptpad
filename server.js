@@ -41,9 +41,9 @@ var handleFile = function (target, res, fallback, next) {
     stream.pipe(res);
 };
 
-app.use("/customize/", Express.static(__dirname + '/customize', staticOpts));
+app.use("/customize", Express.static(__dirname + '/customize'));
 app.use("/customize", Express.static(__dirname + '/customize.dist'));
-app.use("/", function(req, res, next) {
+app.use(/^\/$/, function(req, res, next) {
     handleFile(__dirname + '/customize/index.html', // try piping this file first
         res, __dirname + '/customize.dist/index.html', // if it doesn't exist
         next); // finally, fall through
