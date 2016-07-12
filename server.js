@@ -18,13 +18,36 @@ var Storage = require(config.storage||'./storage/mongo');
 var app = Express();
 app.use(Express.static(__dirname + '/www'));
 
-var customize = "/customize";
-if (!Fs.existsSync(__dirname + "/customize")) {
-    customize = "/customize.dist";
+Fs.exists(__dirname + "/customize", function (e) {
+    if (e) { return; }
     console.log("Cryptpad is customizable, see customize.dist/readme.md for details");
-}
-app.use("/customize/", Express.static(__dirname + customize));
-app.get("/", function(req, res) { res.sendFile(__dirname + customize + '/index.html'); });
+});
+
+var staticOpts = {
+    index: 'index.html'
+};
+
+var handleFile = function (target, res, fallback, next) {
+    var stream = Fs.createReadStream(target).on('error', function (e) {
+        if (fallback) {
+            handleFile(fallback, res, undefined, next);
+            return;
+        } else {
+            next();
+        }
+    }).on('end', function () {
+        res.end();
+    });
+    stream.pipe(res);
+};
+
+app.use("/customize/", Express.static(__dirname + '/customize', staticOpts));
+app.use("/customize", Express.static(__dirname + '/customize.dist'));
+app.use("/", function(req, res, next) {
+    handleFile(__dirname + '/customize/index.html', // try piping this file first
+        res, __dirname + '/customize.dist/index.html', // if it doesn't exist
+        next); // finally, fall through
+});
 
 var httpsOpts;
 if (config.privKeyAndCertFiles) {
