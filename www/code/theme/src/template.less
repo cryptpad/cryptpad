@@ -1,0 +1,67 @@
+@gutter-bg: #282a36;
+@gutter-fg: #f8f8f2;
+
+@cursor-left: #f8f8f0;
+@line-number-fg: #6d8a88;
+@selected-bg: rgba(255, 255, 255, 0.10);
+
+@comment-fg: #6272a4;
+@string-fg: #f1fa8c;
+@number-fg: #bd93f9;
+@variable-fg: #50fa7b;
+@variable2-fg: white;
+
+@def-fg: #ffb86c;
+@keyword-fg: ff79c6;
+
+@variable3-fg: #50fa7b;
+@property-fg: #66d9ef;
+
+.cm-s-transition {
+    &.CodeMirror, .CodeMirror-gutters {
+      background-color: @gutter-bg !important;
+      color: @gutter-fg !important;
+      border: none;
+    }
+    .CodeMirror-gutters { color: @gutter-bg; }
+    .CodeMirror-cursor { border-left: solid thin @cursor-left; }
+
+    .CodeMirror-linenumber { color: @line-number-fg; }
+    &.CodeMirror-focused div.CodeMirror-selected { background: @selected-bg; }
+
+    .CodeMirror-line::selection,
+    .cm-s-transition .CodeMirror-line > span::selection,
+    .cm-s-transition .CodeMirror-line > span > span::selection {
+        background: @selected-bg;
+    }
+
+    .CodeMirror-line::-moz-selection,
+    .cm-s-transition .CodeMirror-line > span::-moz-selection,
+    .cm-s-transition .CodeMirror-line > span > span::-moz-selection {
+        background: @selected-bg;
+    }
+    span.cm-comment { color: @comment-fg; }
+    span.cm-string, .cm-s-transition span.cm-string-2 { color: @string-fg; }
+    span.cm-number { color: @number-fg; }
+    span.cm-variable { color: @variable-fg; }
+    span.cm-variable-2 { color: @variable2-fg; }
+    span.cm-def { color: @def-fg; }
+    span.cm-keyword { color: @keyword-fg; }
+    span.cm-operator { color: @keyword-fg; }
+    span.cm-keyword { color: @keyword-fg; }
+    span.cm-atom { color: @number-fg; }
+    span.cm-meta { color: @gutter-fg; }
+    span.cm-tag { color: @keyword-fg; }
+    span.cm-attribute { color: @variable3-fg; }
+    span.cm-qualifier { color: @variable3-fg; }
+    span.cm-property { color: @property-fg; }
+    span.cm-builtin { color: @variable3-fg; }
+    span.cm-variable-3 { color: @variable3-fg; }
+
+    .CodeMirror-activeline-background { background: @selected-bg; }
+    .CodeMirror-matchingbracket {
+        text-decoration: underline;
+        color: white !important;
+    }
+}
+
