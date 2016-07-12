@@ -1,5 +1,5 @@
 define([
-    '/common/messages.js',
+    '/customize/messages.js',
     '/customize/DecorateToolbar.js',
     '/common/cryptpad-common.js',
     '/bower_components/lil-uri/uri.min.js',
