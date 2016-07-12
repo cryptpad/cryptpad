@@ -5,7 +5,6 @@ require.config({ paths: {
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
-    '/common/messages.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
@@ -15,7 +14,7 @@ define([
     '/bower_components/jquery/dist/jquery.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/customize/pad.js'
-], function (Config, Realtime, Messages, Crypto, TextPatcher, JSONSortify, JsonOT, Cryptpad) {
+], function (Config, Realtime, Crypto, TextPatcher, JSONSortify, JsonOT, Cryptpad) {
     var saveAs = window.saveAs;
 
     var module = window.APP = { };
