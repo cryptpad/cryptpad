@@ -121,7 +121,11 @@
 }
 .alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):focus,
 .alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):focus {
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px dotted #302B28;
+}
+.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button)::-moz-focus-inner,
+.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button)::-moz-focus-inner {
+  border: 0;
 }
 .alertify .dialog nav button.btn,
 .alertify .alert nav button.btn {

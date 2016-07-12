@@ -25,7 +25,6 @@
 }
 
 .alertify {
-
     position: fixed;
     background-color: @alertify-bg;
     left: 0;
@@ -134,16 +133,16 @@
                 }
 
                 &:focus {
-                    // FIXME
-                    border: 1px solid rgba(0, 0, 0, .1);
+                    border: 1px dotted @base;
                 }
-
+                &::-moz-focus-inner {
+                    border:0;
+                }
             }
 
             button.btn {
                 margin: 6px 4px;
             }
-
         }
     }
 }
