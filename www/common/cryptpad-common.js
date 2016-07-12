@@ -1,8 +1,9 @@
 define([
+    '/customize/messages.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/alertifyjs/dist/js/alertify.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Crypto, Alertify) {
+], function (Messages, Crypto, Alertify) {
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
@@ -253,8 +254,8 @@ define([
 
         Alertify
             .defaultValue(def || '')
-            .okBtn(opt.ok || 'OK')
-            .cancelBtn(opt.cancel || 'Cancel')
+            .okBtn(opt.ok || Messages.okButton || 'OK')
+            .cancelBtn(opt.cancel || Messages.cancelButton || 'Cancel')
             .prompt(msg, function (val, ev) {
                 cb(val, ev);
                 stopListening(keyHandler);
@@ -274,8 +275,8 @@ define([
         });
 
         Alertify
-            .okBtn(opt.ok || 'OK')
-            .cancelBtn(opt.cancel || 'Cancel')
+            .okBtn(opt.ok || Messages.okButton || 'OK')
+            .cancelBtn(opt.cancel || Messages.cancelButton || 'Cancel')
             .confirm(msg, function () {
                 cb(true);
                 stopListening(keyHandler);

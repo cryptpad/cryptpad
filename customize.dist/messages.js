@@ -38,6 +38,9 @@ define(function () {
     out.tryIt = 'Try it out!';
     out.recentPads = 'Your recent pads (stored only in your browser)';
 
+    out.okButton = 'OK (enter)';
+    out.cancelButton = 'Cancel (esc)';
+
     out.initialState = [
         '<p>',
         'This is <strong>CryptPad</strong>, the zero knowledge realtime collaborative editor.',
