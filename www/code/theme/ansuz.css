@@ -3,6 +3,8 @@
   background-color: #2E3436 !important;
   color: #719FC9 !important;
   border: none;
+  font-weight: bold;
+  /* color: red !important;*/
 }
 .cm-s-ansuz .CodeMirror-gutters {
   color: #2E3436;
@@ -46,13 +48,13 @@
   color: #ffb86c;
 }
 .cm-s-ansuz span.cm-keyword {
-  color: ff79c6;
+  color: #ff79c6;
 }
 .cm-s-ansuz span.cm-operator {
-  color: ff79c6;
+  color: #ff79c6;
 }
 .cm-s-ansuz span.cm-keyword {
-  color: ff79c6;
+  color: #ff79c6;
 }
 .cm-s-ansuz span.cm-atom {
   color: #bd93f9;
@@ -61,7 +63,7 @@
   color: #719FC9;
 }
 .cm-s-ansuz span.cm-tag {
-  color: ff79c6;
+  color: #ff79c6;
 }
 .cm-s-ansuz span.cm-attribute {
   color: #50fa7b;
