@@ -1,5 +1,5 @@
 define([
-    '/common/messages.js',
+    '/customize/messages.js',
     '/bower_components/jquery/dist/jquery.min.js',
 ], function (Messages) {
     var $ = window.jQuery;
