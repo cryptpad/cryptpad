@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Zero Knowledge Date Picker</title>
+    <link rel="icon" type="image/png"
+        href="/customize/main-favicon.png"
+        data-main-favicon="/customize/main-favicon.png"
+        data-alt-favicon="/customize/alt-favicon.png"
+        id="favicon" />
+    <script data-main="main" src="/bower_components/requirejs/require.js"></script>
+    <style>
+        html, body { width: 100; }
+        #main {
+            width: 90%;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div id="main">
+
+<h1>CryptPoll</h1>
+<h2>Schedule or vote in <em>real time</em></h2>
+
+<p>Enter your name in the input field below and check the box for times when you are available</p>
+
+<hr>
+
+<form class="realtime">
+    <input type="text" id="title" placeholder="title"><br />
+    <input type="text" id="location" placeholder="title"><br />
+    <textarea id="description" placeholder="description"></textarea>
+
+    <!-- Table markup-->
+    <table id="table">
+
+        <!-- Table header -->
+            <thead>
+                <tr>
+                    <td>
+                        <div id="adduser" title="click to add a user">Users</div>
+                    </td>
+                </tr>
+            </thead>
+        <!-- Table footer -->
+            <tfoot>
+                <tr>
+                    <td>
+                        <div id="addoption" title="click to add an option">Options</div>
+                    </td>
+                </tr>
+            </tfoot>
+        <!-- Table body -->
+            <tbody>
+            </tbody>
+    </table>
+
+</form>
