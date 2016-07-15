@@ -34,7 +34,8 @@ define([
 
     var padTypes = {
         '/pad/': 'Pad',
-        '/code/': 'Code'
+        '/code/': 'Code',
+        '/poll/': 'Poll',
     };
 
     var truncateTitle = function (title, len) {

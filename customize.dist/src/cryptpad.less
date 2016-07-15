@@ -170,6 +170,10 @@ p, pre, td, a, table, tr {
     padding: @vpad @hpad @vpad @hpad;
 
     border-radius: 5px;
+    margin-top: 2 * 6px;
+    margin-bottom: 2 * 6px;
+    white-space: nowrap;
+    display: inline-block;
 }
 
 /* Tables */
@@ -282,4 +286,82 @@ tbody {
     max-width: 100px;
 }
 
+
+// form things
+form.realtime {
+    > input {
+        &[type="text"] {
+
+        }
+    }
+    > textarea {
+        width: 50%;
+        height: 15vh;
+    }
+
+    padding: 0px;
+    margin: 0px;
+
+    table {
+        border-collapse: collapse;
+        tr {
+            td {
+                //border: 1px solid white;
+            }
+        }
+
+        input {
+            height: 100%;
+            width: 100%;
+            border: 3px solid @base;
+            display: table-cell;
+        }
+
+
+        thead {
+            tr {
+                td {
+
+                }
+            }
+        }
+        tbody {
+            tr {
+                td {
+
+                }
+            }
+        }
+        tfoot {
+            tr {
+                td {
+
+                    z-index: 4000;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+
+    #adduser,
+    #addoption {
+        color: @cp-green;
+        border: 1px solid @cp-green;
+        padding: 15px;
+    }
+
+    .corner (@tl: 0px, @tr: 0px, @br: 0px, @bl: 0px) {
+        border-radius: @tl @tr @br @bl;
+    }
+
+    #addoption {
+        //.corner(0px, 0px, 
+        border-bottom-left-radius: 5px;
+    }
+
+    #adduser {
+        border-top-left-radius: 5px;
+    }
+
+}
 

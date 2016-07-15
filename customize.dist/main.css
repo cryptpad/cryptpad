@@ -136,6 +136,10 @@ tr {
 .button {
   padding: 4px 12px 4px 12px;
   border-radius: 5px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  white-space: nowrap;
+  display: inline-block;
 }
 /* Tables */
 table {
@@ -238,4 +242,37 @@ tbody td:last-child {
 .bottom-bar-openpaas {
   top: 3px;
   max-width: 100px;
+}
+form.realtime {
+  padding: 0px;
+  margin: 0px;
+}
+form.realtime > textarea {
+  width: 50%;
+  height: 15vh;
+}
+form.realtime table {
+  border-collapse: collapse;
+}
+form.realtime table input {
+  height: 100%;
+  width: 100%;
+  border: 3px solid #302B28;
+  display: table-cell;
+}
+form.realtime table tfoot tr td {
+  z-index: 4000;
+  cursor: pointer;
+}
+form.realtime #adduser,
+form.realtime #addoption {
+  color: #46E981;
+  border: 1px solid #46E981;
+  padding: 15px;
+}
+form.realtime #addoption {
+  border-bottom-left-radius: 5px;
+}
+form.realtime #adduser {
+  border-top-left-radius: 5px;
 }
