@@ -285,6 +285,10 @@ define([
         .on('disconnect', function (info) {
             setEditable(false);
         });
+
+        var title = document.title = Cryptpad.getPadTitle();
+        Cryptpad.rememberPad(title);
+        Cryptpad.styleAlerts();
     };
 
     var config = {
