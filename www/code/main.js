@@ -200,14 +200,18 @@ define([
                 var $rightside = $bar.find('.' + Toolbar.constants.rightside);
 
                 /* add an export button */
-                var $export = $('<button>')
+                var $export = $('<button>', {
+                    title: Messages.exportButtonTitle,
+                })
                     .text(Messages.exportButton)
                     .addClass('rightside-button')
                     .click(exportText);
                 $rightside.append($export);
 
                 /* add an import button */
-                var $import = $('<button>')
+                var $import = $('<button>',{
+                    title: Messages.importButtonTitle
+                })
                     .text(Messages.importButton)
                     .addClass('rightside-button')
                     .click(Cryptpad.importContent('text/plain', function (content, file) {
@@ -231,7 +235,8 @@ define([
 
                 /* add a rename button */
                 var $setTitle = $('<button>', {
-                        id: 'name-pad'
+                        id: 'name-pad',
+                        title: Messages.renameButtonTitle,
                     })
                     .addClass('rightside-button')
                     .text(Messages.renameButton)
@@ -252,6 +257,7 @@ define([
                 /* add a forget button */
                 var $forgetPad = $('<button>', {
                         id: 'cryptpad-forget',
+                        title: Messages.forgetButtonTitle,
                     })
                     .text(Messages.forgetButton)
                     .addClass('cryptpad-forget rightside-button')

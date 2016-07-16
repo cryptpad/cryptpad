@@ -435,13 +435,17 @@ define([
                 var $rightside = $bar.find('.' + Toolbar.constants.rightside);
 
                 /* add an export button */
-                var $export = $('<button>')
+                var $export = $('<button>', {
+                    title: Messages.exportButtonTitle,
+                })
                     .text(Messages.exportButton)
                     .addClass('rightside-button')
                     .click(exportFile);
 
                 /* add an import button */
-                var $import = $('<button>')
+                var $import = $('<button>', {
+                    title: Messages.importButtonTitle
+                })
                     .text(Messages.importButton)
                     .addClass('rightside-button')
                     .click(Cryptpad.importContent('text/plain', function (content) {
@@ -454,6 +458,7 @@ define([
                 /* add a rename button */
                 var $rename = $('<button>', {
                         id: 'name-pad',
+                        title: Messages.renameButtonTitle,
                     })
                     .addClass('cryptpad-rename rightside-button')
                     .text(Messages.renameButton)
@@ -476,6 +481,7 @@ define([
                 /* add a forget button */
                 var $forgetPad = $('<button>', {
                         id: 'cryptpad-forget',
+                        title: Messages.forgetButtonTitle,
                     })
                     .text(Messages.forgetButton)
                     .addClass('cryptpad-forget rightside-button')
@@ -492,7 +498,7 @@ define([
                 // set the hash
                 window.location.hash = info.channel + secret.key;
 
-                var title = document.title = Cryptpad.getPadTitle();
+                var title = document.title = Cryptpad.getPadTitle() || $title.val();
                 Cryptpad.rememberPad(title);
                 Cryptpad.styleAlerts();
             };
