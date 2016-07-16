@@ -498,7 +498,7 @@ define([
                 // set the hash
                 window.location.hash = info.channel + secret.key;
 
-                var title = document.title = Cryptpad.getPadTitle() || $title.val();
+                var title = document.title = Cryptpad.getPadTitle();
                 Cryptpad.rememberPad(title);
                 Cryptpad.styleAlerts();
             };
