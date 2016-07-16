@@ -14,10 +14,6 @@ define([
     var $ = window.jQuery;
 
     /*  TODO
-        * design a data structure for a collaborative date picker
-        * add new input fields to the interface when they are found in the object
-          but do not exist locally
-
         * set range of dates/times
           * (pair of date pickers)
         * hide options within that range
@@ -25,7 +21,9 @@ define([
         * add notes to a particular time slot
 
         * check or uncheck options for a particular user
-        * mark preference level?
+        * mark preference level? (+1, 0, -1)
+
+        * delete/hide columns/rows
 
         // let users choose what they want the default input to be...
 
@@ -289,6 +287,54 @@ define([
         var title = document.title = Cryptpad.getPadTitle();
         Cryptpad.rememberPad(title);
         Cryptpad.styleAlerts();
+
+
+        var $toolbar = $('#toolbar');
+
+        $toolbar.find('sub a').text('⇐ back to Cryptpad');
+
+        var Button = function (opt) {
+            return $('<button>', opt);
+        };
+
+        var suggestName = function () {
+            var hash = window.location.hash.slice(1, 9);
+            if (document.title === hash) {
+                return $title.val() || hash;
+            }
+            return document.title || $title.val() || hash;
+        };
+
+        $toolbar.append(Button({
+            id: 'rename',
+            'class': 'rename button action',
+            title: Messages.renameButtonTitle,
+        }).text(Messages.renameButton).click(function () {
+            var suggestion = suggestName();
+            Cryptpad.prompt(Messages.renamePrompt,
+                suggestion, function (title, ev) {
+                    if (title === null) { return; }
+                    if (Cryptpad.causesNamingConflict(title)) {
+                        Cryptpad.alert(Messages.renameConflict);
+                        return;
+                    }
+                    Cryptpad.setPadTitle(title);
+                    document.title = title;
+                });
+        }));
+
+        $toolbar.append(Button({
+            id: 'forget',
+            'class': 'forget button action',
+            title: Messages.forgetButtonTitle,
+        }).text(Messages.forgetButton).click(function () {
+            var href = window.location.href;
+            Cryptpad.confirm(Messages.forgetPrompt, function (yes) {
+                if (!yes) { return; }
+                Cryptpad.forgetPad(href);
+                document.title = window.location.hash.slice(1, 9);
+            });
+        }));
     };
 
     var config = {
