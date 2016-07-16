@@ -17,8 +17,10 @@ define(function () {
     out.lag = 'Lag';
 
     out.importButton = 'IMPORT';
+    out.importButtonTitle = 'Import a document from a local file';
 
     out.exportButton = 'EXPORT';
+    out.exportButtonTitle = 'Export this document to a local file';
     out.exportPrompt = 'What would you like to name your file?';
 
     out.back = '&#8656; Back';
@@ -27,10 +29,12 @@ define(function () {
     out.changeNamePrompt = 'Change your name: ';
 
     out.renameButton = 'RENAME';
+    out.renameButtonTitle = 'Change the title under which this document is listed on your home page';
     out.renamePrompt = 'How would you like to title this pad?';
     out.renameConflict = 'Another pad already has that title';
 
     out.forgetButton = 'FORGET';
+    out.forgetButtonTitle = 'remove this document from your home page listings'
     out.forgetPrompt = 'Clicking OK will remove the URL for this pad from localStorage, are you sure?';
 
     out.disconnectAlert = 'Network connection lost!';

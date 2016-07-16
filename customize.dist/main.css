@@ -115,7 +115,8 @@ tr {
   padding-bottom: 1em;
 }
 /* buttons */
-.create {
+.create,
+.action {
   border: 2px solid #46E981;
   border-radius: 10px;
   background-color: #302B28;
@@ -125,7 +126,8 @@ tr {
   margin-right: 5px;
   margin-left: 5px;
 }
-.create:hover {
+.create:hover,
+.action:hover {
   border: 2px solid #a1f4bf;
   color: #46E981;
 }
