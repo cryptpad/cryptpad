@@ -34,7 +34,7 @@ define(function () {
     out.renameConflict = 'Another pad already has that title';
 
     out.forgetButton = 'FORGET';
-    out.forgetButtonTitle = 'remove this document from your home page listings'
+    out.forgetButtonTitle = 'remove this document from your home page listings';
     out.forgetPrompt = 'Clicking OK will remove the URL for this pad from localStorage, are you sure?';
 
     out.disconnectAlert = 'Network connection lost!';
