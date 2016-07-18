@@ -37,10 +37,51 @@ define([
             return $width.length;
         };
 
+        var remove = function ($sel) {
+            $sel.fadeOut(750, function () {
+                $sel.remove();
+            });
+        };
+
+        var removeColumn = function (uid) {
+            //var I/
+            var $col = $('th[data-rt-uid="' + uid + '"]');
+            if (!$col.length) { return; }
+
+            /*  removing a column is difficult because the elements
+                all have different parents.  */
+
+            // use the th
+            var th = $col[0];
+
+            // find its index in the tr
+            var index = Array.prototype.slice
+                .call(th.parentElement.children).indexOf(th);
+
+            // remove it
+            remove($col);
+
+            // remove all elements in the body which have the same index
+            $body.find('tr').each(function () {
+                var $this = $(this);
+                $this.find('td').eq(index).each(function () {
+                    remove($(this));
+                });
+            });
+        };
+
+        var removeRow = function (uid) {
+            var $row = $body.find('tr[data-rt-uid="' + uid + '"]');
+            if (!$row.length) { return; }
+            remove($row);
+        };
+
         return {
             $: $t,
             addRow: addRow,
             addColumn: addColumn,
+            removeRow: removeRow,
+            removeColumn: removeColumn,
         };
     };
     return Table;
