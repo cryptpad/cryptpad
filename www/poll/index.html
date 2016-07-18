@@ -16,6 +16,9 @@
             width: 90%;
             margin: auto;
         }
+        .clickable {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -34,7 +37,6 @@
 
 <form class="realtime">
     <input type="text" id="title" placeholder="title"><br />
-    <input type="text" id="location" placeholder="title"><br />
     <textarea id="description" placeholder="description"></textarea>
 
     <!-- Table markup-->
@@ -44,7 +46,7 @@
             <thead>
                 <tr>
                     <td>
-                        <div id="adduser" title="click to add a user">Users</div>
+                        <div id="adduser" class="clickable" title="click to add a user">Users</div>
                     </td>
                 </tr>
             </thead>
@@ -52,7 +54,7 @@
             <tfoot>
                 <tr>
                     <td>
-                        <div id="addoption" title="click to add an option">Options</div>
+                        <div id="addoption" class="clickable" title="click to add an option">Options</div>
                     </td>
                 </tr>
             </tfoot>
