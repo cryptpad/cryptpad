@@ -13,6 +13,9 @@ define([
 ], function (Config, Messages, Table, TextPatcher, Listmap, Crypto, Cryptpad, Visible, Notify) {
     var $ = window.jQuery;
 
+    Cryptpad.styleAlerts();
+    console.log("Initializing your realtime session...");
+
     /*  TODO
         * set range of dates/times
           * (pair of date pickers)
@@ -95,6 +98,11 @@ define([
     var coluid = Uid('x');
     var rowuid = Uid('y');
 
+    var addIfAbsent = function (A, e) {
+        if (A.indexOf(e) !== -1) { return; }
+        A.push(e);
+    };
+
     var makeUser = function (proxy, id, value) {
         var $user = Input({
             id: id,
@@ -103,7 +111,9 @@ define([
         }).on('keyup', function () {
             proxy.table.cols[id] = $user.val() || "";
         });
+
         proxy.table.cols[id] = value || "";
+        addIfAbsent(proxy.table.colsOrder, id);
         table.addColumn($user, Checkbox, id);
         return $user;
     };
@@ -124,6 +134,7 @@ define([
         });
 
         proxy.table.rows[id] = value || "";
+        addIfAbsent(proxy.table.rowsOrder, id);
 
         table.addRow($option, Checkbox, id);
         return $option;
@@ -153,36 +164,47 @@ define([
 
     var ready = function (info) {
         console.log("Your realtime object is ready");
-        setEditable(true);
 
         var proxy = module.rt.proxy;
 
+        // ensure that proxy.info and proxy.table exist
         ['info', 'table'].forEach(function (k) {
             if (typeof(proxy[k]) === 'undefined') { proxy[k] = {}; }
         });
 
+        // table{cols,rows,cells}
         ['cols', 'rows', 'cells'].forEach(function (k) {
             if (typeof(proxy.table[k]) === 'undefined') { proxy.table[k] = {}; }
         });
 
-        var each = function (o, f) {
-            Object.keys(o).forEach(f);
-        };
+        // table{rowsOrder,colsOrder}
+        ['rows', 'cols'].forEach(function (k) {
+            var K = k + 'Order';
+
+            if (typeof(proxy.table[K]) === 'undefined') {
+                console.log("Creating %s", K);
+                proxy.table[K] = [];
+
+                Object.keys(proxy.table[k]).forEach(function (uid) {
+                    addIfAbsent(proxy.table[K], uid);
+                });
+            }
+        });
 
         // cols
-        each(proxy.table.cols, function (uid) {
+        proxy.table.colsOrder.forEach(function (uid) {
             var val = proxy.table.cols[uid];
             makeUser(proxy, uid, val).val(val);
         });
 
         // rows
-        each(proxy.table.rows, function (uid) {
+        proxy.table.rowsOrder.forEach(function (uid) {
             var val = proxy.table.rows[uid];
             makeOption(proxy, uid, val).val(val);
         });
 
         // cells
-        each(proxy.table.cells, function (uid) {
+        Object.keys(proxy.table.cells).forEach(function (uid) {
             var p = parseXY(uid);
             document.getElementById(uid).checked = proxy.table.cells[uid] ? true : false;
         });
@@ -200,6 +222,7 @@ define([
             }
         });
 
+        // listen for visibility changes
         if (Visible.isSupported()) {
             Visible.onChange(function (yes) {
                 if (yes) { unnotify(); }
@@ -286,8 +309,6 @@ define([
 
         var title = document.title = Cryptpad.getPadTitle();
         Cryptpad.rememberPad(title);
-        Cryptpad.styleAlerts();
-
 
         var $toolbar = $('#toolbar');
 
@@ -304,6 +325,19 @@ define([
             }
             return document.title || $title.val() || hash;
         };
+
+        $toolbar.append(Button({
+            id: 'forget',
+            'class': 'forget button action',
+            title: Messages.forgetButtonTitle,
+        }).text(Messages.forgetButton).click(function () {
+            var href = window.location.href;
+            Cryptpad.confirm(Messages.forgetPrompt, function (yes) {
+                if (!yes) { return; }
+                Cryptpad.forgetPad(href);
+                document.title = window.location.hash.slice(1, 9);
+            });
+        }));
 
         $toolbar.append(Button({
             id: 'rename',
@@ -323,18 +357,7 @@ define([
                 });
         }));
 
-        $toolbar.append(Button({
-            id: 'forget',
-            'class': 'forget button action',
-            title: Messages.forgetButtonTitle,
-        }).text(Messages.forgetButton).click(function () {
-            var href = window.location.href;
-            Cryptpad.confirm(Messages.forgetPrompt, function (yes) {
-                if (!yes) { return; }
-                Cryptpad.forgetPad(href);
-                document.title = window.location.hash.slice(1, 9);
-            });
-        }));
+        setEditable(true);
     };
 
     var config = {
