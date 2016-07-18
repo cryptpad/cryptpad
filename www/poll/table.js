@@ -8,9 +8,6 @@ define([
         var $body = $t.find('tbody');
         var $foot = $t.find('tfoot');
 
-        var width = $body.find('tr:first-of-type td').length;
-        var height = $body.find('tr').length;
-
         var addRow = function (first, Rest, uid) {
             var $row = $('<tr>', {
                 'data-rt-uid': uid,
@@ -22,7 +19,6 @@ define([
             });
 
             $body.append($row);
-            height++;
             return $row;
         };
 
@@ -31,15 +27,14 @@ define([
                 'data-rt-uid': uid,
             }).append(first));
 
-            $body.find('tr').each(function (i) {
+            var $width = $body.find('tr').each(function (i) {
                 // each checkbox needs a uid corresponding to its role
                 var rowId = $(this).data('rt-uid');
                 $(this).append($('<td>').append(Rest(xy(uid, rowId))));
             });
 
             $foot.find('tr').append($('<td>', { }));
-            width++;
-            return width;
+            return $width.length;
         };
 
         return {
