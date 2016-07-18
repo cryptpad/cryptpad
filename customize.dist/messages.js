@@ -24,6 +24,7 @@ define(function () {
     out.exportPrompt = 'What would you like to name your file?';
 
     out.back = '&#8656; Back';
+    out.backToCryptpad = '&#8656; Back to Cryptpad';
 
     out.changeNameButton = 'Change name';
     out.changeNamePrompt = 'Change your name: ';
