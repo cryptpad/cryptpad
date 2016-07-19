@@ -24,6 +24,7 @@
         #adduser, #addoption {
             font-weight: bold;
         }
+
     </style>
 </head>
 <body>
@@ -67,5 +68,36 @@
             <tbody>
             </tbody>
     </table>
-
 </form>
+
+
+<div class="modal" id="wizard-modal">
+    <button id="close-wizard" class="button action" title="close wizard">Close wizard</button>
+    <div class="center">
+        <div id="modal-toolbar">
+            <button id="get-options" class="action button">Compute Options</button>
+
+        </div>
+
+        <h2>Automatically create a number of options by entering any number of dates and times segments </h2>
+
+        <table id="wizard-table">
+            <thead>
+                <tr>
+                    <td>
+                        <div id="adddate" class="clickable">+ Dates</div>
+                    </td>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <td>
+                        <div id="addtime" class="clickable">+ Times</div>
+                    </td>
+                </tr>
+            </tfoot>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -45,7 +45,7 @@ define([
 
         var removeColumn = function (uid) {
             //var I/
-            var $col = $('th[data-rt-uid="' + uid + '"]');
+            var $col = $head.find('th[data-rt-uid="' + uid + '"]');
             if (!$col.length) { return; }
 
             /*  removing a column is difficult because the elements

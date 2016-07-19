@@ -2,6 +2,7 @@ define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
     '/customize/messages.js',
     '/poll/table.js',
+    '/poll/wizard.js',
     '/bower_components/textpatcher/TextPatcher.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
@@ -10,7 +11,7 @@ define([
     '/common/notify.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, Messages, Table, TextPatcher, Listmap, Crypto, Cryptpad, Visible, Notify) {
+], function (Config, Messages, Table, Wizard, TextPatcher, Listmap, Crypto, Cryptpad, Visible, Notify) {
     var $ = window.jQuery;
 
     Cryptpad.styleAlerts();
@@ -38,6 +39,8 @@ define([
     var secret = Cryptpad.getSecrets();
 
     var module = window.APP = {};
+
+    module.Wizard = Wizard;
 
     // special UI elements
     var $title = $('#title').attr('placeholder', Messages.dateTitleHint || 'title');
@@ -87,7 +90,8 @@ define([
     };
     var Text = function () { return Input({type:'text'}); };
 
-    var table = module.table = Table($('table'), xy);
+    var table = module.table = Table($('#table'), xy);
+
     var setEditable = function (bool) {
         module.isEditable = bool;
         items.forEach(function ($item) {
@@ -101,6 +105,49 @@ define([
     var addIfAbsent = function (A, e) {
         if (A.indexOf(e) !== -1) { return; }
         A.push(e);
+    };
+
+    var removeRow = function (proxy, uid) {
+        // remove proxy.table.rows[uid]
+
+        proxy.table.rows[uid] = undefined;
+        delete proxy.table.rows[uid];
+
+        // remove proxy.table.rowsOrder
+
+        var order = proxy.table.rowsOrder;
+        order.splice(order.indexOf(uid), 1);
+
+        // remove all cells including uid
+        // proxy.table.cells
+        Object.keys(proxy.table.cells).forEach(function (cellUid) {
+            if (cellUid.indexOf(uid) === -1) { return; }
+            proxy.table.cells[cellUid] = undefined;
+            delete proxy.table.cells[cellUid];
+        });
+
+        // remove elements from DOM
+        table.removeRow(uid);
+    };
+
+    var removeColumn = function (proxy, uid) {
+        // remove proxy.table.cols[uid]
+        proxy.table.cols[uid] = undefined;
+        delete proxy.table.rows[uid];
+
+        // remove proxy.table.colsOrder
+        var order = proxy.table.colsOrder;
+        order.splice(order.indexOf(uid), 1);
+
+        // remove all cells including uid
+        Object.keys(proxy.table.cells).forEach(function (cellUid) {
+            if (cellUid.indexOf(uid) === -1) { return; }
+            proxy.table.cells[cellUid] = undefined;
+            delete proxy.table.cells[cellUid];
+        });
+
+        // remove elements from DOM
+        table.removeColumn(uid);
     };
 
     var makeUser = function (proxy, id, value) {
@@ -118,12 +165,6 @@ define([
         return $user;
     };
 
-    $('#adduser').click(function () {
-        if (!module.isEditable) { return; }
-        var id = coluid();
-        makeUser(module.rt.proxy, id).focus();
-    });
-
     var makeOption = function (proxy, id, value) {
         var $option = Input({
             type: 'text',
@@ -137,13 +178,40 @@ define([
         addIfAbsent(proxy.table.rowsOrder, id);
 
         table.addRow($option, Checkbox, id);
+
+
+        console.log(table.$[0]);
+
         return $option;
     };
+
+    $('#adduser').click(function () {
+        if (!module.isEditable) { return; }
+        var id = coluid();
+        makeUser(module.rt.proxy, id).focus();
+    });
 
     $('#addoption').click(function () {
         if (!module.isEditable) { return; }
         var id = rowuid();
         makeOption(module.rt.proxy, id).focus();
+    });
+
+    Wizard.$getOptions.click(function () {
+        Cryptpad.confirm("Are you really ready to add these options to your poll?", function (yes) {
+            if (!yes) { return; }
+            var options = Wizard.computeSlots(function (a, b) {
+                return a + ' ('+ b + ')'
+            });
+
+            var proxy = module.rt.proxy;
+
+            options.forEach(function (text) {
+                var id = rowuid();
+                makeOption(proxy, id).val(text);
+            });
+            console.log(options);
+        });
     });
 
     // notifications
@@ -355,6 +423,17 @@ define([
                     Cryptpad.setPadTitle(title);
                     document.title = title;
                 });
+        }));
+
+        $toolbar.append(Button({
+            id: 'wizard',
+            'class': 'wizard button action',
+            title: 'wizard!',
+        }).text('WIZARD').click(function () {
+            Wizard.show();
+            if (Wizard.hasBeenDisplayed) { return; }
+            Cryptpad.log("click the button in the top left to return to your poll");
+            Wizard.hasBeenDisplayed = true;
         }));
 
         setEditable(true);
