@@ -201,7 +201,7 @@ define([
         Cryptpad.confirm("Are you really ready to add these options to your poll?", function (yes) {
             if (!yes) { return; }
             var options = Wizard.computeSlots(function (a, b) {
-                return a + ' ('+ b + ')'
+                return a + ' ('+ b + ')';
             });
 
             var proxy = module.rt.proxy;
