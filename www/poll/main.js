@@ -155,7 +155,7 @@ define([
             id: id,
             type: 'text',
             placeholder: 'your name',
-        }).on('keyup', function () {
+        }).on('keyup change', function () {
             proxy.table.cols[id] = $user.val() || "";
         });
 
@@ -178,9 +178,6 @@ define([
         addIfAbsent(proxy.table.rowsOrder, id);
 
         table.addRow($option, Checkbox, id);
-
-
-        console.log(table.$[0]);
 
         return $option;
     };
@@ -208,7 +205,7 @@ define([
 
             options.forEach(function (text) {
                 var id = rowuid();
-                makeOption(proxy, id).val(text);
+                makeOption(proxy, id, text).val(text);
             });
             console.log(options);
         });
