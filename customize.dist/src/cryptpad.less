@@ -288,6 +288,18 @@ tbody {
 
 
 // form things
+
+// MIXINS
+.bottom-left(@s: 5px) { border-bottom-left-radius: @s; }
+.bottom-left {
+    .bottom-left;
+}
+
+.top-left(@s: 5px) { border-top-left-radius: @s; }
+.top-left {
+    .top-left;
+}
+
 form.realtime {
     > input {
         &[type="text"] {
@@ -350,18 +362,91 @@ form.realtime {
         padding: 15px;
     }
 
-    .corner (@tl: 0px, @tr: 0px, @br: 0px, @bl: 0px) {
-        border-radius: @tl @tr @br @bl;
-    }
-
-    #addoption {
-        //.corner(0px, 0px, 
-        border-bottom-left-radius: 5px;
-    }
-
-    #adduser {
-        border-top-left-radius: 5px;
-    }
-
+    #adduser { .top-left; }
+    #addoption { .bottom-left; }
 }
 
+div.modal {
+    box-sizing: border-box;
+    z-index: 9001;
+    position: fixed;
+
+    top: 0px;
+    left: 0px;
+
+    width: 100%;
+    height: 100vh;
+    display: none;
+
+    background-color: @base;
+
+    .center {
+        position: relative;
+
+        width: 80%;
+        height: 80%;
+        margin: auto;
+        border: 1px solid @light-base;
+
+        text-align: center;
+
+    }
+
+    &.shown {
+        display: block;
+    }
+
+    table {
+        //width: 80%;
+        margin: 30px;
+
+        border-collapse: collapse;
+        tr {
+            td {
+                //border: 1px solid white;
+            }
+        }
+
+        input {
+            height: 100%;
+            width: 100%;
+            border: 3px solid @base;
+            display: table-cell;
+        }
+
+
+        thead {
+            tr {
+                td {
+
+                }
+            }
+        }
+        tbody {
+            tr {
+                td {
+
+                }
+            }
+        }
+        tfoot {
+            tr {
+                td {
+
+                    z-index: 4000;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+
+    #addtime,
+    #adddate {
+        color: @cp-green;
+        border: 1px solid @cp-green;
+        padding: 15px;
+    }
+
+    #adddate { .top-left; }
+    #addtime { .bottom-left; }
+}

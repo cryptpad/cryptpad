@@ -245,6 +245,12 @@ tbody td:last-child {
   top: 3px;
   max-width: 100px;
 }
+.bottom-left {
+  border-bottom-left-radius: 5px;
+}
+.top-left {
+  border-top-left-radius: 5px;
+}
 form.realtime {
   padding: 0px;
   margin: 0px;
@@ -272,9 +278,57 @@ form.realtime #addoption {
   border: 1px solid #46E981;
   padding: 15px;
 }
+form.realtime #adduser {
+  border-top-left-radius: 5px;
+}
 form.realtime #addoption {
   border-bottom-left-radius: 5px;
 }
-form.realtime #adduser {
+div.modal {
+  box-sizing: border-box;
+  z-index: 9001;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100vh;
+  display: none;
+  background-color: #302B28;
+}
+div.modal .center {
+  position: relative;
+  width: 80%;
+  height: 80%;
+  margin: auto;
+  border: 1px solid #685d56;
+  text-align: center;
+}
+div.modal.shown {
+  display: block;
+}
+div.modal table {
+  margin: 30px;
+  border-collapse: collapse;
+}
+div.modal table input {
+  height: 100%;
+  width: 100%;
+  border: 3px solid #302B28;
+  display: table-cell;
+}
+div.modal table tfoot tr td {
+  z-index: 4000;
+  cursor: pointer;
+}
+div.modal #addtime,
+div.modal #adddate {
+  color: #46E981;
+  border: 1px solid #46E981;
+  padding: 15px;
+}
+div.modal #adddate {
   border-top-left-radius: 5px;
+}
+div.modal #addtime {
+  border-bottom-left-radius: 5px;
 }
