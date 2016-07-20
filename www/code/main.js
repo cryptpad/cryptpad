@@ -190,7 +190,7 @@ define([
             var getHeadingText = function () {
                 var lines = editor.getValue().split(/\n/);
 
-                var text;
+                var text = '';
                 lines.some(function (line) {
                     // lisps?
                     var lispy = /^\s*(;|#\|)(.*?)$/;
