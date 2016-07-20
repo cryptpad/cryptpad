@@ -57,6 +57,7 @@ define([
             });
 
             var setMode = module.setMode = function (mode, $select) {
+                module.highlightMode = mode;
                 if (mode === 'text') {
                     editor.setOption('mode', 'text');
                     return;
@@ -186,6 +187,54 @@ define([
                 });
             };
 
+            var getHeadingText = function () {
+                var lines = editor.getValue().split(/\n/);
+
+                var text;
+                lines.some(function (line) {
+                    // lisps?
+                    var lispy = /^\s*(;|#\|)(.*?)$/;
+                    if (lispy.test(line)) {
+                        line.replace(lispy, function (a, one, two) {
+                            text = two;
+                        });
+                        return true;
+                    }
+
+                    // lines beginning with a hash are potentially valuable
+                    // works for markdown, python, bash, etc.
+                    var hash = /^#(.*?)$/;
+                    if (hash.test(line)) {
+                        line.replace(hash, function (a, one) {
+                            text = one;
+                        });
+                        return true;
+                    }
+
+                    // lines including a c-style comment are also valuable
+                    var clike = /^\s*(\/\*|\/\/)(.*?)$/;
+                    if (clike.test(line)) {
+                        line.replace(clike, function (a, one, two) {
+                            text = two;
+                        });
+                        return true;
+                    }
+                });
+
+                return text.trim();
+            };
+
+            var suggestName = function () {
+                var hash = window.location.hash.slice(1, 9);
+
+                if (document.title === hash) {
+                    return getHeadingText() || hash;
+                } else {
+                    return document.title || getHeadingText() ||
+                        Cryptpad.getPadTitle() || hash;
+                }
+            };
+
             var onInit = config.onInit = function (info) {
                 //Cryptpad.warn("Initializing realtime session...");
                 var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
@@ -241,8 +290,10 @@ define([
                     .addClass('rightside-button')
                     .text(Messages.renameButton)
                     .click(function () {
+                        var suggestion = suggestName();
+
                         Cryptpad.prompt(Messages.renamePrompt,
-                            Cryptpad.getPadTitle(), function (title, ev) {
+                            suggestion, function (title, ev) {
                                 if (title === null) { return; }
                                 if (Cryptpad.causesNamingConflict(title)) {
                                     Cryptpad.alert(Messages.renameConflict);
