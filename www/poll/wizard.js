@@ -25,7 +25,10 @@ define([
     var table = W.table = Table($table, xy);
 
     W.cleanup = function () {
-        // TODO reset table to fresh state
+        $table.find('tbody tr').remove();
+        $table.find('thead th').remove();
+        //table.rows.forEach(table.removeRow);
+        //table.cols.forEach(table.removeColumn);
     };
 
     W.show = function () {
@@ -139,6 +142,9 @@ define([
     var $toolbar = $('#modal-toolbar');
 
     var $getOptions = W.$getOptions = $('#get-options');
+    var $clearTable = W.$clearTable = ($('#clear-table').click(function () {
+        W.cleanup();
+    }));
 
     return W;
 });
