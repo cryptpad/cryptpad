@@ -8,6 +8,9 @@ define([
         var $body = $t.find('tbody');
         var $foot = $t.find('tfoot');
 
+        var rows = [];
+        var cols = [];
+
         var addRow = function (first, Rest, uid) {
             var $row = $('<tr>', {
                 'data-rt-uid': uid,
@@ -17,6 +20,8 @@ define([
                 var colId = $(this).data('rt-uid');
                 $row.append($('<td>').append(Rest(xy(colId, uid))));
             });
+
+            rows.push(uid);
 
             $body.append($row);
             return $row;
@@ -33,6 +38,8 @@ define([
                 $(this).append($('<td>').append(Rest(xy(uid, rowId))));
             });
 
+            cols.push(uid);
+
             $foot.find('tr').append($('<td>', { }));
             return $width.length;
         };
@@ -41,6 +48,12 @@ define([
             $sel.fadeOut(750, function () {
                 $sel.remove();
             });
+        };
+
+        var removeFromArray = function (A, e) {
+            var i = A.indexOf(e);
+            if (i === -1) { return; }
+            A.splice(i, 1);
         };
 
         var removeColumn = function (uid) {
@@ -61,6 +74,8 @@ define([
             // remove it
             remove($col);
 
+            removeFromArray(cols, uid);
+
             // remove all elements in the body which have the same index
             $body.find('tr').each(function () {
                 var $this = $(this);
@@ -74,6 +89,7 @@ define([
             var $row = $body.find('tr[data-rt-uid="' + uid + '"]');
             if (!$row.length) { return; }
             remove($row);
+            removeFromArray(rows, uid);
         };
 
         return {
@@ -82,6 +98,8 @@ define([
             addColumn: addColumn,
             removeRow: removeRow,
             removeColumn: removeColumn,
+            rows: rows,
+            cols: cols,
         };
     };
     return Table;
