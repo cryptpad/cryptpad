@@ -453,6 +453,7 @@ define([
 
             var onRemote = config.onRemote = function (info) {
                 if (initializing) { return; }
+                var scroll = editor.getScrollInfo();
 
                 var oldDoc = canonicalize($textarea.val());
                 var shjson = module.realtime.getUserDoc();
@@ -475,12 +476,15 @@ define([
                 var selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
                     return TextPatcher.transformCursor(oldCursor[attr], op);
                 });
+
                 if(selects[0] === selects[1]) {
                     editor.setCursor(posToCursor(selects[0], remoteDoc));
                 }
                 else {
                     editor.setSelection(posToCursor(selects[0], remoteDoc), posToCursor(selects[1], remoteDoc));
                 }
+
+                editor.scrollTo(scroll.left, scroll.top);
 
                 var localDoc = canonicalize($textarea.val());
                 var hjson2 = {
