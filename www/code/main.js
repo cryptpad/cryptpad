@@ -332,17 +332,22 @@ define([
                     }).join('\n') +
                     '</select>';
 
+                setMode(lastLanguage);
+
                 /*  Remember the user's last choice of theme using localStorage */
                 var themeKey = 'CRYPTPAD_CODE_THEME';
                 var lastTheme = localStorage.getItem(themeKey) || 'default';
 
                 /*  Let the user select different themes */
-                var themeDropdown = '<select title="color theme" id="display-theme">\n' +
-                    Themes.map(function (o) {
-                        var selected = o.name === lastTheme? ' selected="selected"': '';
-                        return '<option value="' + o.name + '"'+selected+'>' + o.name + '</option>';
-                    }).join('\n') +
-                    '</select>';
+                var $themeDropdown = $('<select>', {
+                    title: 'color theme',
+                    id: 'display-theme',
+                });
+                Themes.forEach(function (o) {
+                    $themeDropdown.append($('<option>', {
+                        selected: o.name === lastTheme,
+                    }).val(o.name).text(o.name));
+                });
 
                 $rightside.append(syntaxDropdown);
 
@@ -352,7 +357,7 @@ define([
                     Cryptpad.setPadAttribute('language', mode);
                 });
 
-                $rightside.append(themeDropdown);
+                $rightside.append($themeDropdown);
 
                 var $theme = $bar.find('select#display-theme');
 
