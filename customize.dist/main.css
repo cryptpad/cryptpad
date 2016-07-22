@@ -179,7 +179,7 @@ tbody tr th:last-child {
   border-right: 0px;
 }
 tbody .remove {
-  cursor: pointer;
+  cursor: pointer !important;
   color: #FF0073;
 }
 tbody td {
@@ -264,9 +264,12 @@ form.realtime table {
 }
 form.realtime table input {
   height: 100%;
-  width: 100%;
+  width: 90%;
   border: 3px solid #302B28;
-  display: table-cell;
+}
+form.realtime table thead tr th .remove {
+  color: #FF0073;
+  cursor: pointer;
 }
 form.realtime table tfoot tr td {
   z-index: 4000;
@@ -312,9 +315,12 @@ div.modal table {
 }
 div.modal table input {
   height: 100%;
-  width: 100%;
+  width: 90%;
   border: 3px solid #302B28;
-  display: table-cell;
+}
+div.modal table thead tr th span.remove {
+  color: red;
+  cursor: pointer;
 }
 div.modal table tfoot tr td {
   z-index: 4000;

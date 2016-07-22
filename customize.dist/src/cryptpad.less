@@ -211,7 +211,7 @@ tbody {
         }
     }
     .remove {
-        cursor: pointer;
+        cursor: pointer !important;
         color: @cp-red;
     }
 
@@ -324,15 +324,19 @@ form.realtime {
 
         input {
             height: 100%;
-            width: 100%;
+            width: 90%;
             border: 3px solid @base;
-            display: table-cell;
+            //display: table-cell;
         }
 
 
         thead {
             tr {
-                td {
+                th {
+                    .remove {
+                        color: @cp-red;
+                        cursor: pointer;
+                    }
 
                 }
             }
@@ -347,7 +351,6 @@ form.realtime {
         tfoot {
             tr {
                 td {
-
                     z-index: 4000;
                     cursor: pointer;
                 }
@@ -389,7 +392,6 @@ div.modal {
         border: 1px solid @light-base;
 
         text-align: center;
-
     }
 
     &.shown {
@@ -409,16 +411,18 @@ div.modal {
 
         input {
             height: 100%;
-            width: 100%;
+            width: 90%;
             border: 3px solid @base;
-            display: table-cell;
+            //display: table-cell;
         }
-
 
         thead {
             tr {
-                td {
-
+                th {
+                    span.remove {
+                        color: red;
+                        cursor: pointer;
+                    }
                 }
             }
         }

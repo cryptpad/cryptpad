@@ -150,6 +150,12 @@ define([
         table.removeColumn(uid);
     };
 
+    var removeFromArray = function (A, e) {
+        var i = A.indexOf(e);
+        if (i === -1) { return; }
+        A.splice(i, 1);
+    };
+
     var makeUser = function (proxy, id, value) {
         var $user = Input({
             id: id,
@@ -159,9 +165,19 @@ define([
             proxy.table.cols[id] = $user.val() || "";
         });
 
+        var $wrapper = $('<div>')
+            .append($user)
+            .append($('<span>', {
+                'class': 'remove',
+                'title': 'remove column', // TODO translate
+            }).text('✖').click(function () {
+                removeColumn(proxy, id);
+                table.removeColumn(id);
+            }))
+
         proxy.table.cols[id] = value || "";
         addIfAbsent(proxy.table.colsOrder, id);
-        table.addColumn($user, Checkbox, id);
+        table.addColumn($wrapper, Checkbox, id);
         return $user;
     };
 
@@ -174,10 +190,20 @@ define([
             proxy.table.rows[id] = $option.val();
         });
 
+        var $wrapper = $('<div>')
+            .append($option)
+            .append($('<span>', {
+                'class': 'remove',
+                'title': 'remove row', // TODO translate
+            }).text('✖').click(function () {
+                removeRow(proxy, id);
+                table.removeRow(id);
+            }));
+
         proxy.table.rows[id] = value || "";
         addIfAbsent(proxy.table.rowsOrder, id);
 
-        table.addRow($option, Checkbox, id);
+        var $row = table.addRow($wrapper, Checkbox, id);
 
         return $option;
     };
