@@ -116,6 +116,14 @@ define([
             return pad.href !== href;
         });
         setRecentPads(recentPads);
+
+        var hash;
+        href.replace(/#(.*)$/, function (h) { hash = h; });
+        if (!hash) { return; }
+        Object.keys(localStorage).forEach(function (k) {
+            if (k.indexOf(hash) === 0) { localStorage.removeItem(k); }
+        });
+
     };
 
     var rememberPad = common.rememberPad = window.rememberPad = function (title) {
