@@ -168,21 +168,32 @@ define([
                 }
             };
 
+            var setName = module.setName = function (newName) {
+                if (!(typeof(newName) === 'string' && newName.trim())) { return; }
+                var myUserNameTemp = newName.trim();
+                if(newName.trim().length > 32) {
+                  myUserNameTemp = myUserNameTemp.substr(0, 32);
+                }
+                myUserName = myUserNameTemp;
+                myData[myID] = {
+                   name: myUserName
+                };
+                addToUserList(myData);
+                Cryptpad.setPadAttribute('username', myUserName);
+                onLocal();
+            };
+
+            var getLastName = function () {
+                return Cryptpad.getPadAttribute('username') || '';
+            };
+
             var createChangeName = function(id, $container) {
                 var buttonElmt = $container.find('#'+id)[0];
+
+                var lastName = getLastName();
                 buttonElmt.addEventListener("click", function() {
-                    Cryptpad.prompt(Messages.changeNamePrompt, '', function (newName) {
-                        if (!(typeof(newName) === 'string' && newName.trim())) { return; }
-                        var myUserNameTemp = newName.trim();
-                        if(newName.trim().length > 32) {
-                          myUserNameTemp = myUserNameTemp.substr(0, 32);
-                        }
-                        myUserName = myUserNameTemp;
-                        myData[myID] = {
-                           name: myUserName
-                        };
-                        addToUserList(myData);
-                        onLocal();
+                    Cryptpad.prompt(Messages.changeNamePrompt, lastName, function (newName) {
+                        setName(newName);
                     });
                 });
             };
@@ -427,9 +438,16 @@ define([
                     });
                 }
 
+
                 setEditable(true);
                 initializing = false;
                 //Cryptpad.log("Your document is ready");
+
+                var lastName = getLastName();
+                if (typeof(lastName) === 'string' && lastName.length) {
+                    console.log("Setting previous name to %s", lastName);
+                    setName(lastName);
+                }
             };
 
             var cursorToPos = function(cursor, oldText) {
