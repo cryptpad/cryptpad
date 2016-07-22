@@ -173,7 +173,7 @@ define([
             }).text('✖').click(function () {
                 removeColumn(proxy, id);
                 table.removeColumn(id);
-            }))
+            }));
 
         proxy.table.cols[id] = value || "";
         addIfAbsent(proxy.table.colsOrder, id);
