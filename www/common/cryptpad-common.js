@@ -71,6 +71,20 @@ define([
         });
     };
 
+    var getHash = common.getHash = function () {
+        return window.location.hash.slice(1);
+    };
+
+    var setPadAttribute = common.setPadAttribute = function (attr, value) {
+        var hash = getHash();
+        localStorage.setItem([getHash(),attr].join('.'), value);
+        return value;
+    };
+
+    var getPadAttribute = common.getPadAttribute = function (attr) {
+        return localStorage.getItem([getHash(),attr].join('.'));
+    };
+
     /* fetch and migrate your pad history from localStorage */
     var getRecentPads = common.getRecentPads = function () {
         var recentPadsStr = localStorage[storageKey];
