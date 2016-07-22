@@ -322,10 +322,12 @@ define([
                     });
                 $rightside.append($forgetPad);
 
+                var lastLanguage = Cryptpad.getPadAttribute('language') || 'javascript';
+
                 /*  Let the user select different syntax highlighting modes */
                 var syntaxDropdown = '<select title="syntax highlighting" id="language-mode">\n' +
                     Modes.map(function (o) {
-                        var selected = o.mode === 'javascript'? ' selected="selected"' : '';
+                        var selected = o.mode === lastLanguage? ' selected="selected"' : '';
                         return '<option value="' + o.mode + '"'+selected+'>' + o.language + '</option>';
                     }).join('\n') +
                     '</select>';
@@ -347,6 +349,7 @@ define([
                 var $language = module.$language = $bar.find('#language-mode').on('change', function () {
                     var mode = $language.val();
                     setMode(mode);
+                    Cryptpad.setPadAttribute('language', mode);
                 });
 
                 $rightside.append(themeDropdown);
