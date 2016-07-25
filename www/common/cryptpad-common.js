@@ -216,6 +216,9 @@ define([
     };
 
     var styleAlerts = common.styleAlerts = function (href) {
+        var $link = $('link[href="/customize/alertify.css"]');
+        if ($link.length) { return; }
+
         href = href || '/customize/alertify.css';
         $('head').append($('<link>', {
             rel: 'stylesheet',
