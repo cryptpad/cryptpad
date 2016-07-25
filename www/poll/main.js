@@ -94,9 +94,7 @@ define([
 
     var setEditable = function (bool) {
         module.isEditable = bool;
-        items.forEach(function ($item) {
-            $item.attr('disabled', !bool);
-        });
+        $('input, textarea').attr('disabled', !bool);
     };
 
     var coluid = Uid('x');
@@ -477,5 +475,9 @@ define([
             realtime: realtime,
             logging: true,
         });
-    }).on('ready', ready);
+    }).on('ready', ready)
+    .on('disconnect', function () {
+        setEditable(false);
+        Cryptpad.alert("Network connection lost!");
+    });
 });
