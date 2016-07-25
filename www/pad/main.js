@@ -234,21 +234,32 @@ define([
                 myID = info.myID || null;
             };
 
+            var getLastName = function () {
+                return Cryptpad.getPadAttribute('username') || '';
+            };
+
+            var setName = module.setName = function (newName) {
+                if (!(typeof(newName) === 'string' && newName.trim())) { return; }
+                var myUserNameTemp = newName.trim();
+                if(myUserNameTemp.length > 32) {
+                    myUserNameTemp = myUserNameTemp.substr(0, 32);
+                }
+                myUserName = myUserNameTemp;
+                myData[myID] = {
+                    name: myUserName
+                };
+                addToUserList(myData);
+                editor.fire('change');
+
+                Cryptpad.setPadAttribute('username', newName);
+            };
+
             var createChangeName = function(id, $container) {
                 var buttonElmt = $container.find('#'+id)[0];
+                var lastName = getLastName();
                 buttonElmt.addEventListener("click", function() {
-                    Cryptpad.prompt(Messages.changeNamePrompt, '', function (newName) {
-                        if (!(typeof(newName) === 'string' && newName.trim())) { return; }
-                        var myUserNameTemp = newName.trim();
-                        if(myUserNameTemp.length > 32) {
-                            myUserNameTemp = myUserNameTemp.substr(0, 32);
-                        }
-                        myUserName = myUserNameTemp;
-                        myData[myID] = {
-                            name: myUserName
-                        };
-                        addToUserList(myData);
-                        editor.fire('change');
+                    Cryptpad.prompt(Messages.changeNamePrompt, lastName, function (newName) {
+                        setName(newName);
                     });
                 });
             };
@@ -524,6 +535,10 @@ define([
                 console.log("Unlocking editor");
                 setEditable(true);
                 initializing = false;
+                var lastName = getLastName();
+                if (typeof(lastName) === 'string' && lastName.length) {
+                    setName(lastName);
+                }
             };
 
             var onAbort = realtimeOptions.onAbort = function (info) {

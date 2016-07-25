@@ -445,7 +445,6 @@ define([
 
                 var lastName = getLastName();
                 if (typeof(lastName) === 'string' && lastName.length) {
-                    console.log("Setting previous name to %s", lastName);
                     setName(lastName);
                 }
             };
