@@ -1,10 +1,13 @@
 define(function () {
-    return [
-        "apl apl",
+    var Modes = {};
+
+    // mode language (extension)
+    var list = Modes.list = [
+        "apl apl .apl",
         "asciiarmor asciiarmor",
         "asn.1 asn.1",
         "asterisk asterisk",
-        "brainfuck brainfuck",
+        "brainfuck brainfuck .b",
         "clike clike",
         "clojure clojure",
         "cmake cmake",
@@ -12,7 +15,7 @@ define(function () {
         "coffeescript coffeescript",
         "commonlisp commonlisp",
         "crystal crystal",
-        "css css",
+        "css css .css",
         "cypher cypher",
         "d d",
         "dart dart",
@@ -24,36 +27,36 @@ define(function () {
         "ebnf ebnf",
         "ecl ecl",
         "eiffel eiffel",
-        "elm elm",
+        "elm elm .elm",
         "erlang erlang",
         "factor factor",
         "fcl fcl",
         "forth forth",
         "fortran fortran",
         "gas gas",
-        "gfm gfm",
+        "gfm gfm .md",
         "gherkin gherkin",
         "go go",
         "groovy groovy",
         "haml haml",
         "handlebars handlebars",
-        "haskell haskell",
+        "haskell haskell .hs",
         "haskell-literate haskell-literate",
         "haxe haxe",
         "htmlembedded htmlembedded",
-        "htmlmixed htmlmixed",
+        "htmlmixed htmlmixed .html",
         "http http",
         "idl idl",
         "index.html index.html",
         "jade jade",
-        "javascript javascript",
+        "javascript javascript .js",
         "jinja2 jinja2",
-        "jsx jsx",
+        "jsx jsx .jsx",
         "julia julia",
         "livescript livescript",
         "loadmode.js loadmode.js",
         "lua lua",
-        "markdown markdown",
+        "markdown markdown .md",
         "mathematica mathematica",
         "meta.js meta.js",
         "mirc mirc",
@@ -74,7 +77,7 @@ define(function () {
         "properties properties",
         "protobuf protobuf",
         "puppet puppet",
-        "python python",
+        "python python .py",
         "q q",
         "r r",
         "rpm rpm",
@@ -82,8 +85,8 @@ define(function () {
         "ruby ruby",
         "rust rust",
         "sass sass",
-        "scheme scheme",
-        "shell shell",
+        "scheme scheme .scm",
+        "shell shell .sh",
         "sieve sieve",
         "slim slim",
         "smalltalk smalltalk",
@@ -97,7 +100,7 @@ define(function () {
         "stylus stylus",
         "swift swift",
         "tcl tcl",
-        "text text",
+        "text text .txt",
         "textile textile",
         "tiddlywiki tiddlywiki",
         "tiki tiki",
@@ -117,14 +120,27 @@ define(function () {
         "xml xml",
         //"xwiki xwiki21",
         "xquery xquery",
-        "yaml yaml",
+        "yaml yaml .yaml",
         "yaml-frontmatter yaml-frontmatter",
         "z80 z80"
     ].map(function (line) {
         var kv = line.split(/\s/);
         return {
             language: kv[0].replace(/_/g, ' '),
-            mode: kv[1]
+            mode: kv[1],
+            ext: kv[2],
         };
     });
+
+    var extensionOf = Modes.extensionOf = function (mode) {
+        var ext = '';
+        list.some(function (o) {
+            if (o.mode !== mode) { return; }
+            ext = o.ext || '';
+            return true;
+        });
+        return ext;
+    };
+
+    return Modes;
 });

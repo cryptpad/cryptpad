@@ -102,19 +102,6 @@ define([
                 editor.setOption('readOnly', !bool);
             };
 
-            var exportText = module.exportText = function () {
-                var text = editor.getValue();
-
-                Cryptpad.prompt(Messages.exportPrompt,
-                    document.title, function (filename) {
-                        if (filename === null) { return; }
-                        var blob = new Blob([text], {
-                            type: 'text/plain;charset=utf-8'
-                        });
-                        saveAs(blob, filename);
-                    });
-            };
-
             var userList = {}; // List of pretty name of all users (mapped with their server ID)
             var toolbarList; // List of users still connected to the channel (server IDs)
             var addToUserList = function(data) {
@@ -246,6 +233,22 @@ define([
                 }
             };
 
+            var exportText = module.exportText = function () {
+                var text = editor.getValue();
+
+                var ext = Modes.extensionOf(module.highlightMode);
+
+                var title = Cryptpad.fixFileName(suggestName()) + ext;
+
+                Cryptpad.prompt(Messages.exportPrompt, title, function (filename) {
+                        if (filename === null) { return; }
+                        var blob = new Blob([text], {
+                            type: 'text/plain;charset=utf-8'
+                        });
+                        saveAs(blob, filename);
+                    });
+            };
+
             var onInit = config.onInit = function (info) {
                 //Cryptpad.warn("Initializing realtime session...");
                 var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
@@ -279,7 +282,7 @@ define([
 
                         var mode = mime && mime.mode || null;
 
-                        if (Modes.some(function (o) { return o.mode === mode; })) {
+                        if (Modes.list.some(function (o) { return o.mode === mode; })) {
                             setMode(mode);
                             $bar.find('#language-mode').val(mode);
                         } else {
@@ -337,7 +340,7 @@ define([
 
                 /*  Let the user select different syntax highlighting modes */
                 var syntaxDropdown = '<select title="syntax highlighting" id="language-mode">\n' +
-                    Modes.map(function (o) {
+                    Modes.list.map(function (o) {
                         var selected = o.mode === lastLanguage? ' selected="selected"' : '';
                         return '<option value="' + o.mode + '"'+selected+'>' + o.language + '</option>';
                     }).join('\n') +
