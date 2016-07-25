@@ -179,6 +179,16 @@ define([
         return $user;
     };
 
+    var scrollDown = module.scrollDown = function (px) {
+        var top = $(window).scrollTop() + px + 'px';
+        $('html, body').animate({
+            scrollTop: top,
+        }, {
+            duration: 200,
+            easing: 'swing',
+        });
+    };
+
     var makeOption = function (proxy, id, value) {
         var $option = Input({
             type: 'text',
@@ -202,6 +212,7 @@ define([
         addIfAbsent(proxy.table.rowsOrder, id);
 
         var $row = table.addRow($wrapper, Checkbox, id);
+        scrollDown($row.height());
 
         return $option;
     };
