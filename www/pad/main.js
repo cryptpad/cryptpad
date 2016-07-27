@@ -393,8 +393,9 @@ define([
                 Dom = Dom || (new DOMParser()).parseFromString(data,"text/html");
                 return ('<!DOCTYPE html>\n' +
                     '<html>\n' +
-                    Dom.head.outerHTML + '\n' +
-                    Dom.body.outerHTML);
+                    (typeof(Hyperjson.toString) === 'function'?
+                        Hyperjson.toString(Hyperjson.fromDOM(Dom.body)):
+                        Dom.head.outerHTML) + '\n');
             };
 
             var domFromHTML = function (html) {
