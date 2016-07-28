@@ -18,7 +18,9 @@ define([
 
             $head.find('th').each(function (i) {
                 var colId = $(this).data('rt-uid');
-                $row.append($('<td>').append(Rest(xy(colId, uid))));
+                $row.append($('<td>', {
+                    'class': 'checkbox-cell',
+                }).append(Rest(xy(colId, uid))));
             });
 
             rows.push(uid);
@@ -35,7 +37,9 @@ define([
             var $width = $body.find('tr').each(function (i) {
                 // each checkbox needs a uid corresponding to its role
                 var rowId = $(this).data('rt-uid');
-                $(this).append($('<td>').append(Rest(xy(uid, rowId))));
+                $(this).append($('<td>', {
+                    'class': 'checkbox-cell',
+                }).append(Rest(xy(uid, rowId))));
             });
 
             cols.push(uid);
@@ -92,6 +96,14 @@ define([
             removeFromArray(rows, uid);
         };
 
+        var colExists = function (uid) {
+            return cols.indexOf(uid) !== -1;
+        };
+
+        var rowExists = function (uid) {
+            return rows.indexOf(uid) !== -1;
+        };
+
         return {
             $: $t,
             addRow: addRow,
@@ -99,7 +111,9 @@ define([
             removeRow: removeRow,
             removeColumn: removeColumn,
             rows: rows,
+            rowExists: rowExists,
             cols: cols,
+            colExists: colExists,
         };
     };
     return Table;

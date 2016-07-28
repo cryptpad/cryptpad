@@ -1,9 +1,10 @@
 define([
     '/customize/messages.js',
+    '/customize/store.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/alertifyjs/dist/js/alertify.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages, Crypto, Alertify) {
+], function (Messages, Store, Crypto, Alertify) {
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
@@ -28,8 +29,8 @@ define([
         return secret;
     };
 
+
     var storageKey = common.storageKey = 'CryptPad_RECENTPADS';
-    //var timeframe = common.timeframe = 1000 * 60 * 60 * 24 * 30;
 
     /*
         the first time this gets called, your local storage will migrate to a
@@ -75,35 +76,40 @@ define([
         return window.location.hash.slice(1);
     };
 
-    var setPadAttribute = common.setPadAttribute = function (attr, value) {
-        var hash = getHash();
-        localStorage.setItem([getHash(),attr].join('.'), value);
-        return value;
+    var setPadAttribute = common.setPadAttribute = function (attr, value, cb) {
+        Store.set([getHash(), attr].join('.'), value, function (err, data) {
+            cb(err, data);
+        })
     };
 
-    var getPadAttribute = common.getPadAttribute = function (attr) {
-        return localStorage.getItem([getHash(),attr].join('.'));
+    var getPadAttribute = common.getPadAttribute = function (attr, cb) {
+        Store.get([getHash(), attr].join('.'), function (err, data) {
+            cb(err, data);
+        });
     };
 
     /* fetch and migrate your pad history from localStorage */
-    var getRecentPads = common.getRecentPads = function () {
-        var recentPadsStr = localStorage[storageKey];
-
-        var recentPads = [];
-        if (recentPadsStr) {
-            try {
-                recentPads = JSON.parse(recentPadsStr);
-            } catch (err) {
-                // couldn't parse the localStorage?
-                // just overwrite it.
+    var getRecentPads = common.getRecentPads = function (cb) {
+        Store.get(storageKey, function (err, recentPadsStr) {
+            var recentPads = [];
+            if (recentPadsStr) {
+                try {
+                    recentPads = JSON.parse(recentPadsStr);
+                } catch (err) {
+                    // couldn't parse the localStorage?
+                    // just overwrite it.
+                }
             }
-        }
-        return migrateRecentPads(recentPads);
+
+            cb(void 0, migrateRecentPads(recentPads));
+        });
     };
 
     /* commit a list of pads to localStorage */
-    var setRecentPads = common.setRecentPads = function (pads) {
-        localStorage.setItem(storageKey, JSON.stringify(pads));
+    var setRecentPads = common.setRecentPads = function (pads, cb) {
+        Store.set(storageKey, JSON.stringify(pads), function (err, data) {
+            cb(err, data);
+        });
     };
 
     /* Sort pads according to how recently they were accessed */
@@ -111,96 +117,150 @@ define([
         return new Date(b.atime).getTime() - new Date(a.atime).getTime();
     };
 
-    var forgetPad = common.forgetPad = function (href) {
-        var recentPads = getRecentPads().filter(function (pad) {
-            return pad.href !== href;
-        });
-        setRecentPads(recentPads);
-
+    var forgetPad = common.forgetPad = function (href, cb) {
         var hash;
-        href.replace(/#(.*)$/, function (h) { hash = h; });
-        if (!hash) { return; }
-        Object.keys(localStorage).forEach(function (k) {
-            if (k.indexOf(hash) === 0) { localStorage.removeItem(k); }
-        });
+        href.replace(/#(.*)$/, function (x, h) { hash = h; });
+        if (!hash) {
+            return;
+        }
 
+        getRecentPads(function (err, recentPads) {
+            setRecentPads(recentPads.filter(function (pad) {
+                return pad.href !== href;
+            }), function (err, data) {
+                if (err) {
+                    cb(err);
+                    return;
+                }
+
+                Store.dump(function (err, storage) {
+                    if (err) {
+                        cb(err);
+                        return;
+                    }
+                    var toRemove = [];
+                    Object.keys(storage).forEach(function (k) {
+                        if (k.indexOf(hash) === 0) {
+                            toRemove.push(k);
+                        }
+                    });
+
+                    Store.removeBatch(toRemove, function (err, data) {
+                        cb(err, data);
+                    });
+                });
+            });
+        });
     };
 
-    var rememberPad = common.rememberPad = window.rememberPad = function (title) {
+    var rememberPad = common.rememberPad = window.rememberPad = function (title, cb) {
         // bail out early
         if (!/#/.test(window.location.hash)) { return; }
 
-        var pads = getRecentPads();
-
-        var now = new Date();
-        var href = window.location.href;
-
-        var isUpdate = false;
-
-        var out = pads.map(function (pad) {
-            if (pad && pad.href === href) {
-                isUpdate = true;
-                // bump the atime
-                pad.atime = now;
-
-                pad.title = title;
+        getRecentPads(function (err, pads) {
+            if (err) {
+                cb(err);
+                return;
             }
-            return pad;
-        });
 
-        if (!isUpdate) {
-            // href, atime, name
-            out.push({
-                href: href,
-                atime: now,
-                ctime: now,
-                title: title || window.location.hash.slice(1,9),
+            //var pads = getRecentPads();
+
+            var now = new Date();
+            var href = window.location.href;
+
+            var isUpdate = false;
+
+            var out = pads.map(function (pad) {
+                if (pad && pad.href === href) {
+                    isUpdate = true;
+                    // bump the atime
+                    pad.atime = now;
+
+                    pad.title = title;
+                }
+                return pad;
             });
-        }
-        setRecentPads(out);
-    };
 
-    var setPadTitle = common.setPadTitle = function (name) {
-        var href = window.location.href;
-        var recent = getRecentPads();
-
-        var renamed = recent.map(function (pad) {
-            if (pad.href === href) {
-                // update the atime
-                pad.atime = new Date().toISOString();
-
-                // set the name
-                pad.title = name;
+            if (!isUpdate) {
+                // href, atime, name
+                out.push({
+                    href: href,
+                    atime: now,
+                    ctime: now,
+                    title: title || window.location.hash.slice(1,9),
+                });
             }
-            return pad;
+            setRecentPads(out, function (err, data) {
+                cb(err, data);
+            });
         });
-
-        setRecentPads(renamed);
     };
 
-    var getPadTitle = common.getPadTitle = function () {
+    var setPadTitle = common.setPadTitle = function (name, cb) {
+        var href = window.location.href;
+
+        getRecentPads(function (err, recent) {
+            if (err) {
+                cb(err);
+                return;
+            }
+            var renamed = recent.map(function (pad) {
+                if (pad.href === href) {
+                    // update the atime
+                    pad.atime = new Date().toISOString();
+
+                    // set the name
+                    pad.title = name;
+                }
+                return pad;
+            });
+
+            setRecentPads(renamed, function (err, data) {
+                cb(err, data);
+            });
+        });
+    };
+
+    var getPadTitle = common.getPadTitle = function (cb) {
         var href = window.location.href;
         var hashSlice = window.location.hash.slice(1,9);
         var title = '';
-        getRecentPads().some(function (pad) {
-            if (pad.href === href) {
-                title = pad.title || hashSlice;
-                return true;
+
+        getRecentPads(function (err, pads) {
+            if (err) {
+                cb(err);
+                return;
             }
+            pads.some(function (pad) {
+                if (pad.href === href) {
+                    title = pad.title || hashSlice;
+                    return true;
+                }
+            });
+
+            cb(void 0, title);
         });
-        return title;
     };
+
+    var causesNamingConflict = common.causesNamingConflict = function (title, cb) {
+        var href = window.location.href;
+
+        getRecentPads(function (err, pads) {
+            if (err) {
+                cb(err);
+                return;
+            }
+            var conflicts = pads.some(function (pad) {
+                return pad.title === title &&
+                    pad.href !== href;
+            });
+            cb(void 0, conflicts);
+        });
+    };
+
 
     var fixFileName = common.fixFileName = function (filename) {
         return filename.replace(/ /g, '-').replace(/\//g, '_');
-    };
-
-    var causesNamingConflict = common.causesNamingConflict = function (title) {
-        var href = window.location.href;
-        return getRecentPads().some(function (pad) {
-            return pad.title === title &&
-                pad.href !== href;
-        });
     };
 
     var importContent = common.importContent = function (type, f) {

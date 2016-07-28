@@ -166,21 +166,30 @@ define([
                    name: myUserName
                 };
                 addToUserList(myData);
-                Cryptpad.setPadAttribute('username', myUserName);
-                onLocal();
+                Cryptpad.setPadAttribute('username', myUserName, function (err, data) {
+                    if (err) {
+                        console.log("Couldn't set username");
+                        console.error(err);
+                        return;
+                    }
+                    onLocal();
+                });
             };
 
-            var getLastName = function () {
-                return Cryptpad.getPadAttribute('username') || '';
+            var getLastName = function (cb) {
+                Cryptpad.getPadAttribute('username', function (err, userName) {
+                    cb(err, userName || '');
+                });
             };
 
             var createChangeName = function(id, $container) {
                 var buttonElmt = $container.find('#'+id)[0];
 
-                var lastName = getLastName();
-                buttonElmt.addEventListener("click", function() {
-                    Cryptpad.prompt(Messages.changeNamePrompt, lastName, function (newName) {
-                        setName(newName);
+                getLastName(function (err, lastName) {
+                    buttonElmt.addEventListener("click", function() {
+                        Cryptpad.prompt(Messages.changeNamePrompt, lastName, function (newName) {
+                            setName(newName);
+                        });
                     });
                 });
             };
@@ -228,8 +237,7 @@ define([
                 if (document.title === hash) {
                     return getHeadingText() || hash;
                 } else {
-                    return document.title || getHeadingText() ||
-                        Cryptpad.getPadTitle() || hash;
+                    return document.title || getHeadingText() || hash;
                 }
             };
 
@@ -250,7 +258,6 @@ define([
             };
 
             var onInit = config.onInit = function (info) {
-                //Cryptpad.warn("Initializing realtime session...");
                 var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
                 toolbarList = info.userList;
                 var config = {
@@ -309,12 +316,28 @@ define([
                         Cryptpad.prompt(Messages.renamePrompt,
                             suggestion, function (title, ev) {
                                 if (title === null) { return; }
-                                if (Cryptpad.causesNamingConflict(title)) {
-                                    Cryptpad.alert(Messages.renameConflict);
-                                    return;
-                                }
-                                Cryptpad.setPadTitle(title);
-                                document.title = title;
+
+                                Cryptpad.causesNamingConflict(title, function (err, conflicts) {
+                                    if (err) {
+                                        console.log("Unable to determine if name caused a conflict");
+                                        console.error(err);
+                                        return;
+                                    }
+
+                                    if (conflicts) {
+                                        Cryptpad.alert(Messages.renameConflict);
+                                        return;
+                                    }
+
+                                    Cryptpad.setPadTitle(title, function (err, data) {
+                                        if (err) {
+                                            console.log("unable to set pad title");
+                                            console.log(err);
+                                            return;
+                                        }
+                                        document.title = title;
+                                    });
+                                });
                             });
                     });
                 $rightside.append($setTitle);
@@ -330,65 +353,104 @@ define([
                         var href = window.location.href;
                         Cryptpad.confirm(Messages.forgetPrompt, function (yes) {
                             if (!yes) { return; }
-                            Cryptpad.forgetPad(href);
-                            document.title = window.location.hash.slice(1,9);
+                            Cryptpad.forgetPad(href, function (err, data) {
+                                if (err) {
+                                    console.log("unable to forget pad");
+                                    console.error(err);
+                                    return;
+                                }
+                                document.title = window.location.hash.slice(1,9);
+                            });
                         });
                     });
                 $rightside.append($forgetPad);
 
-                var lastLanguage = Cryptpad.getPadAttribute('language') || 'javascript';
+                // TODO use cb
+                var configureLanguage = function (cb) {
+                    // FIXME this is async so make it happen as early as possible
+                    Cryptpad.getPadAttribute('language', function (err, lastLanguage) {
+                        if (err) {
+                            console.log("Unable to get pad language");
+                        }
 
-                /*  Let the user select different syntax highlighting modes */
-                var syntaxDropdown = '<select title="syntax highlighting" id="language-mode">\n' +
-                    Modes.list.map(function (o) {
-                        var selected = o.mode === lastLanguage? ' selected="selected"' : '';
-                        return '<option value="' + o.mode + '"'+selected+'>' + o.language + '</option>';
-                    }).join('\n') +
-                    '</select>';
+                        lastLanguage = lastLanguage || 'javascript';
 
-                setMode(lastLanguage);
+                        /*  Let the user select different syntax highlighting modes */
+                        var syntaxDropdown = '<select title="syntax highlighting" id="language-mode">\n' +
+                            Modes.list.map(function (o) {
+                                var selected = o.mode === lastLanguage? ' selected="selected"' : '';
+                                return '<option value="' + o.mode + '"'+selected+'>' + o.language + '</option>';
+                            }).join('\n') +
+                            '</select>';
 
-                /*  Remember the user's last choice of theme using localStorage */
-                var themeKey = 'CRYPTPAD_CODE_THEME';
-                var lastTheme = localStorage.getItem(themeKey) || 'default';
+                        setMode(lastLanguage);
 
-                /*  Let the user select different themes */
-                var $themeDropdown = $('<select>', {
-                    title: 'color theme',
-                    id: 'display-theme',
-                });
-                Themes.forEach(function (o) {
-                    $themeDropdown.append($('<option>', {
-                        selected: o.name === lastTheme,
-                    }).val(o.name).text(o.name));
-                });
+                        $rightside.append(syntaxDropdown);
 
-                $rightside.append(syntaxDropdown);
+                        var $language = module.$language = $bar.find('#language-mode').on('change', function () {
+                            var mode = $language.val();
+                            setMode(mode);
+                            Cryptpad.setPadAttribute('language', mode, function (err, data) {
+                                // TODO
+                            });
+                        });
+                        cb();
+                    });
+                };
 
-                var $language = module.$language = $bar.find('#language-mode').on('change', function () {
-                    var mode = $language.val();
-                    setMode(mode);
-                    Cryptpad.setPadAttribute('language', mode);
-                });
 
-                $rightside.append($themeDropdown);
+                var configureTheme = function () {
+                    /*  Remember the user's last choice of theme using localStorage */
+                    var themeKey = 'CRYPTPAD_CODE_THEME';
+                    var lastTheme = localStorage.getItem(themeKey) || 'default';
 
-                var $theme = $bar.find('select#display-theme');
+                    /*  Let the user select different themes */
+                    var $themeDropdown = $('<select>', {
+                        title: 'color theme',
+                        id: 'display-theme',
+                    });
+                    Themes.forEach(function (o) {
+                        $themeDropdown.append($('<option>', {
+                            selected: o.name === lastTheme,
+                        }).val(o.name).text(o.name));
+                    });
 
-                setTheme(lastTheme, $theme);
 
-                $theme.on('change', function () {
-                    var theme = $theme.val();
-                    console.log("Setting theme to %s", theme);
-                    setTheme(theme, $theme);
-                    // remember user choices
-                    localStorage.setItem(themeKey, theme);
+                    $rightside.append($themeDropdown);
+
+                    var $theme = $bar.find('select#display-theme');
+
+                    setTheme(lastTheme, $theme);
+
+                    $theme.on('change', function () {
+                        var theme = $theme.val();
+                        console.log("Setting theme to %s", theme);
+                        setTheme(theme, $theme);
+                        // remember user choices
+                        localStorage.setItem(themeKey, theme);
+                    });
+                };
+
+                configureLanguage(function () {
+                    configureTheme();
                 });
 
                 window.location.hash = info.channel + secret.key;
-                var title = document.title = Cryptpad.getPadTitle();
-                Cryptpad.rememberPad(title);
-
+                Cryptpad.getPadTitle(function (err, title) {
+                    if (err) {
+                        console.log("Unable to get pad title");
+                        console.error(err);
+                        return;
+                    }
+                    document.title = title || window.location.hash.slice(1,9);
+                    Cryptpad.rememberPad(title, function (err, data) {
+                        if (err) {
+                            console.log("Unable to set pad title");
+                            console.error(err);
+                            return;
+                        }
+                    });
+                });
             };
 
             var updateUserList = function(shjson) {
@@ -446,10 +508,16 @@ define([
                 initializing = false;
                 //Cryptpad.log("Your document is ready");
 
-                var lastName = getLastName();
-                if (typeof(lastName) === 'string' && lastName.length) {
-                    setName(lastName);
-                }
+                getLastName(function (err, lastName) {
+                    if (err) {
+                        console.log("Could not get previous name");
+                        console.error(err);
+                        return;
+                    }
+                    if (typeof(lastName) === 'string' && lastName.length) {
+                        setName(lastName);
+                    }
+                });
             };
 
             var cursorToPos = function(cursor, oldText) {

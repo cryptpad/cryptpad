@@ -78,15 +78,33 @@ define([
 
         var proxy = module.rt.proxy;
 
+        var $div = $('<div>', {
+            'class': 'checkbox-contain',
+        });
+
+        var $label = $('<label>', {
+            'for': id,
+        });
+
         var $check = Input({
             id: id,
             name: id,
-            type:'checkbox'
-        }).click(function () {
+            type:'checkbox',
+        }).on('change', function () {
             console.log("(%s, %s) => %s", p.x, p.y, $check[0].checked);
-            proxy.table.cells[id] = $check[0].checked? 1: 0;
+            var checked = proxy.table.cells[id] = $check[0].checked? 1: 0;
+            if (checked) {
+                $label.addClass('yes');
+            }
+            else {
+                $label.removeClass('yes');
+            }
         });
-        return $check;
+
+        $div.append($check);
+        $check.after($label);
+
+        return $div; //$check;
     };
     var Text = function () { return Input({type:'text'}); };
 
@@ -163,7 +181,9 @@ define([
             proxy.table.cols[id] = $user.val() || "";
         });
 
-        var $wrapper = $('<div>')
+        var $wrapper = $('<div>', {
+            'class': 'text-cell',
+        })
             .append($user)
             .append($('<span>', {
                 'class': 'remove',
@@ -198,7 +218,9 @@ define([
             proxy.table.rows[id] = $option.val();
         });
 
-        var $wrapper = $('<div>')
+        var $wrapper = $('<div>', {
+            'class': 'text-cell',
+        })
             .append($option)
             .append($('<span>', {
                 'class': 'remove',
@@ -267,9 +289,15 @@ define([
 
         var proxy = module.rt.proxy;
 
+        var First = false;
+
         // ensure that proxy.info and proxy.table exist
         ['info', 'table'].forEach(function (k) {
-            if (typeof(proxy[k]) === 'undefined') { proxy[k] = {}; }
+            if (typeof(proxy[k]) === 'undefined') {
+                // you seem to be the first person to have visited this pad...
+                First = true;
+                proxy[k] = {};
+            }
         });
 
         // table{cols,rows,cells}
@@ -305,8 +333,16 @@ define([
 
         // cells
         Object.keys(proxy.table.cells).forEach(function (uid) {
-            var p = parseXY(uid);
-            document.getElementById(uid).checked = proxy.table.cells[uid] ? true : false;
+            //var p = parseXY(uid);
+            var box = document.getElementById(uid);
+            if (!box) {
+                console.log("Couldn't find an element with uid [%s]", uid);
+                return;
+            }
+            var checked = box.checked = proxy.table.cells[uid] ? true : false;
+            if (checked) {
+                $(box).parent().find('label').addClass('yes');
+            }
         });
 
         items.forEach(function ($item) {
@@ -330,6 +366,9 @@ define([
         }
 
         proxy
+        .on('change', [], function () {
+            notify();
+        })
         .on('change', ['info'], function (o, n, p) {
             var $target = $('#' + p[1]);
             var el = $target[0];
@@ -352,7 +391,6 @@ define([
             }
 
             console.log("change: (%s, %s, [%s])", o, n, p.join(', '));
-            notify();
         })
         .on('change', ['table'], function (o, n, p) {
             var id = p[p.length -1];
@@ -393,7 +431,18 @@ define([
                     break;
                 case 'cells':
                     console.log("[Table.cell change] %s (%s => %s)@[%s]", id, o, n, p.slice(0, -1).join(', '));
-                    el.checked = proxy.table.cells[id] ? true: false;
+                    var checked = el.checked = proxy.table.cells[id] ? true: false;
+
+                    var $parent = $(el).parent();
+
+                    if (!$parent.length) { console.log("couldn't find parent element of checkbox"); return; }
+
+                    if (checked) {
+                        $parent.find('label').addClass('yes');
+                        //$(el).parent().
+                    } else {
+                        $parent.find('label').removeClass('yes');
+                    }
                     break;
                 default:
                     console.log("[Table change] (%s => %s)@[%s]", o, n, p.join(', '));
@@ -401,14 +450,61 @@ define([
             }
         })
         .on('remove', [], function (o, p, root) {
-            console.log("remove: (%s, [%s])", o, p.join(', '));
+            //console.log("remove: (%s, [%s])", o, p.join(', '));
+            //console.log(p, o, p.length);
+
+            switch (p[1]) {
+                case 'cols':
+                    console.log("[Table.cols removal] [%s]", p[2]);
+                    table.removeColumn(p[2]);
+                    return false;
+                case 'rows':
+                    console.log("[Table.rows removal] [%s]", p[2]);
+                    table.removeRow(p[2]);
+                    return false;
+                case 'rowsOrder':
+                    Object.keys(proxy.table.rows)
+                        .forEach(function (rowId) {
+                            if (proxy.table.rowsOrder.indexOf(rowId) === -1) {
+                                proxy.table.rows[rowId] = undefined;
+                                delete proxy.table.rows[rowId];
+                            }
+                        });
+                    break;
+                case 'colsOrder':
+                    Object.keys(proxy.table.cols)
+                        .forEach(function (colId) {
+                            if (proxy.table.colsOrder.indexOf(colId) === -1) {
+                                proxy.table.cols[colId] = undefined;
+                                delete proxy.table.cols[colId];
+                            }
+
+                        });
+                    break;
+                case 'cells':
+                    // cool story bro
+                    break;
+                default:
+                    console.log("[Table removal] [%s]", p.join(', '));
+                    break;
+            }
+
         })
         .on('disconnect', function (info) {
             setEditable(false);
         });
 
-        var title = document.title = Cryptpad.getPadTitle();
-        Cryptpad.rememberPad(title);
+        Cryptpad.getPadTitle(function (err, title) {
+            title = document.title = title || window.location.hash.slice(1, 9);
+
+            Cryptpad.rememberPad(title, function (err, data) {
+                if (err) {
+                    console.log("unable to remember pad");
+                    console.log(err);
+                    return;
+                }
+            });
+        });
 
         var $toolbar = $('#toolbar');
 
@@ -434,8 +530,14 @@ define([
             var href = window.location.href;
             Cryptpad.confirm(Messages.forgetPrompt, function (yes) {
                 if (!yes) { return; }
-                Cryptpad.forgetPad(href);
-                document.title = window.location.hash.slice(1, 9);
+                Cryptpad.forgetPad(href, function (err, data) {
+                    if (err) {
+                        console.log("unable to forget pad");
+                        console.error(err);
+                        return;
+                    }
+                    document.title = window.location.hash.slice(1, 9);
+                });
             });
         }));
 
@@ -448,12 +550,21 @@ define([
             Cryptpad.prompt(Messages.renamePrompt,
                 suggestion, function (title, ev) {
                     if (title === null) { return; }
-                    if (Cryptpad.causesNamingConflict(title)) {
-                        Cryptpad.alert(Messages.renameConflict);
-                        return;
-                    }
-                    Cryptpad.setPadTitle(title);
-                    document.title = title;
+
+                    Cryptpad.causesNamingConflict(title, function (err, conflicts) {
+                        if (conflicts) {
+                            Cryptpad.alert(Messages.renameConflict);
+                            return;
+                        }
+                        Cryptpad.setPadTitle(title, function (err, data) {
+                            if (err) {
+                                console.log("unable to set pad title");
+                                console.error(err);
+                                return;
+                            }
+                            document.title = title;
+                        });
+                    });
                 });
         }));
 
@@ -469,6 +580,19 @@ define([
         }));
 
         setEditable(true);
+
+        if (First) {
+            // assume the first user to the poll wants to be the administrator...
+            // TODO prompt them with questions to set up their poll...
+        }
+        /*  TODO
+            even if the user isn't the first, check their storage to see if
+            they've visited before and if they 'own' a column in the table.
+            if they do, make it editable and suggest that they fill it in.
+
+            if they have not visited, make a column for them.
+            don't propogate changes from this column until they make changes
+        */
     };
 
     var config = {

@@ -28,8 +28,6 @@ define([
     var now = new Date();
     var hasRecent = false;
 
-    var memorySpan = Cryptpad.timeframe; // thirty days
-
     var forgetPad = Cryptpad.forgetPad;
 
     var padTypes = {
@@ -45,22 +43,16 @@ define([
         return title;
     };
 
-    var recentPads = Cryptpad.getRecentPads();
-    recentPads.sort(Cryptpad.mostRecent);
-
     var fixHTML = function (html) {
         return html.replace(/</g, '&lt;');
     };
 
-    var makeRecentPadsTable = function () {
+
+
+    var makeRecentPadsTable = function (recentPads) {
         if (!recentPads.length) { return; }
         recentPads.some(function (pad, index) {
             if (!pad) { return; }
-
-            //console.log(pad);
-
-            // don't link to old pads
-            if (now.getTime() - new Date(pad.atime).getTime() > memorySpan) { return true; }
 
             hasRecent = true;
 
@@ -92,13 +84,19 @@ define([
             }).text('✖').click(function () {
                 Cryptpad.confirm(Messages.forgetPrompt + ' (' + fixHTML(shortTitle) + ')', function (yes) {
                     if (!yes) { return; }
-                    forgetPad(pad.href);
-                    $row.fadeOut(750, function () {
-                        $row.remove();
-                        if (!$table.find('tr').find('td').length) {
-                            $table.remove();
-                            $tryit.text(Messages.tryIt);
+                    forgetPad(pad.href, function (err, data) {
+                        if (err) {
+                            console.log("Unable to forget pad");
+                            console.log(err);
+                            return;
                         }
+                        $row.fadeOut(750, function () {
+                            $row.remove();
+                            if (!$table.find('tr').find('td').length) {
+                                $table.remove();
+                                $tryit.text(Messages.tryIt);
+                            }
+                        });
                     });
                 });
             });
@@ -116,13 +114,23 @@ define([
         });
     };
 
-    if (recentPads.length) {
-        recentPads.sort(Cryptpad.mostRecent);
-        makeRecentPadsTable();
-    }
-    if (hasRecent) {
-        $('table').attr('style', '');
-        $tryit.text(Messages.recentPads);
-    }
+    Cryptpad.getRecentPads(function (err, recentPads) {
+        if (err) {
+            console.log("unable to get recent pads");
+            console.error(err);
+            return;
+        }
+
+        if (recentPads.length) {
+            recentPads.sort(Cryptpad.mostRecent);
+            makeRecentPadsTable(recentPads);
+        }
+
+        if (hasRecent) {
+            $('table').attr('style', '');
+            $tryit.text(Messages.recentPads);
+        }
+        //recentPads.sort(Cryptpad.mostRecent);
+    });
 });
 

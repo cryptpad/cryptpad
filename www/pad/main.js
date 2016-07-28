@@ -234,8 +234,10 @@ define([
                 myID = info.myID || null;
             };
 
-            var getLastName = function () {
-                return Cryptpad.getPadAttribute('username') || '';
+            var getLastName = function (cb) {
+                Cryptpad.getPadAttribute('username', function (err, userName) {
+                    cb(err, userName || '');
+                });
             };
 
             var setName = module.setName = function (newName) {
@@ -251,15 +253,21 @@ define([
                 addToUserList(myData);
                 editor.fire('change');
 
-                Cryptpad.setPadAttribute('username', newName);
+                Cryptpad.setPadAttribute('username', newName, function (err, data) {
+                    if (err) {
+                        console.error("Couldn't set username");
+                    }
+                });
             };
 
             var createChangeName = function(id, $container) {
                 var buttonElmt = $container.find('#'+id)[0];
-                var lastName = getLastName();
-                buttonElmt.addEventListener("click", function() {
-                    Cryptpad.prompt(Messages.changeNamePrompt, lastName, function (newName) {
-                        setName(newName);
+                //var lastName = getLastName();
+                getLastName(function (err, lastName) {
+                    buttonElmt.addEventListener("click", function() {
+                        Cryptpad.prompt(Messages.changeNamePrompt, lastName, function (newName) {
+                            setName(newName);
+                        });
                     });
                 });
             };
@@ -479,13 +487,21 @@ define([
 
                         Cryptpad.prompt(Messages.renamePrompt, suggestion, function (title) {
                             if (title === null) { return; }
-                            if (Cryptpad.causesNamingConflict(title)) {
-                                Cryptpad.alert(Messages.renameConflict);
-                                return;
-                            }
+                            Cryptpad.causesNamingConflict(title, function (err, conflicts) {
+                                if (conflicts) {
+                                    Cryptpad.alert(Messages.renameConflict);
+                                    return;
+                                }
 
-                            Cryptpad.setPadTitle(title);
-                            document.title = title;
+                                Cryptpad.setPadTitle(title, function (err, data) {
+                                    if (err) {
+                                        console.log("Couldn't set pad title");
+                                        console.error(err);
+                                        return;
+                                    }
+                                    document.title = title;
+                                });
+                            });
                         });
                     });
                 $rightside.append($rename);
@@ -501,8 +517,9 @@ define([
                         var href = window.location.href;
                         Cryptpad.confirm(Messages.forgetPrompt, function (yes) {
                             if (!yes) { return; }
-                            Cryptpad.forgetPad(href);
-                            document.title = window.location.hash.slice(1,9);
+                            Cryptpad.forgetPad(href, function (err, data) {
+                                document.title = window.location.hash.slice(1,9);
+                            });
                         });
                     });
                 $rightside.append($forgetPad);
@@ -510,8 +527,21 @@ define([
                 // set the hash
                 window.location.hash = info.channel + secret.key;
 
-                var title = document.title = Cryptpad.getPadTitle();
-                Cryptpad.rememberPad(title);
+                Cryptpad.getPadTitle(function (err, title) {
+                    if (err) {
+                        console.error(err);
+                        console.log("Couldn't get pad title");
+                        return;
+                    }
+                    document.title = title || window.location.hash.slice(1, 9);
+                    Cryptpad.rememberPad(title, function (err, data) {
+                        if (err) {
+                            console.log("Couldn't remember pad");
+                            console.error(err);
+                        }
+                    });
+                });
+
                 Cryptpad.styleAlerts();
             };
 
@@ -536,10 +566,13 @@ define([
                 console.log("Unlocking editor");
                 setEditable(true);
                 initializing = false;
-                var lastName = getLastName();
-                if (typeof(lastName) === 'string' && lastName.length) {
-                    setName(lastName);
-                }
+
+                getLastName(function (err, lastName) {
+                    if (typeof(lastName) === 'string' && lastName.length) {
+                        setName(lastName);
+                    }
+                });
+                //var lastName = getLastName();
             };
 
             var onAbort = realtimeOptions.onAbort = function (info) {
