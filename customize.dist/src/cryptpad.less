@@ -318,17 +318,62 @@ form.realtime {
         border-collapse: collapse;
         tr {
             td {
-                //border: 1px solid white;
+                padding: 0px;
+                margin: 0px;
+
+                div.text-cell {
+                    padding: 0px;
+                    margin: 0px;
+                        height: 100%;
+                    input {
+                        width: 90%;
+                        height: 100%;
+                        border: 0px;
+                    }
+                    .remove {
+                    }
+                }
+
+                &.checkbox-cell {
+                    margin: 0px;
+                    padding: 0px;
+
+                    div.checkbox-contain {
+                        display: block;
+                        height: 100%;
+                        width: 100%;
+
+                        input {
+                            &[type="checkbox"] {
+                                display: none;
+                                ~ label {
+                                    display: block;
+                                    font-weight: bold;
+
+                                    background-color: @cp-red;
+                                    color: @base;
+                                    &:after { content: "✖"; }
+
+                                    display: block;
+                                    &.yes {
+                                        background-color: @cp-green;
+                                        &:after { content: "✔"; }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
         input {
-            height: 100%;
-            width: 90%;
-            border: 3px solid @base;
-            //display: table-cell;
+            &[type="text"] {
+                height: 100%;
+                width: 90%;
+                border: 3px solid @base;
+            }
         }
-
 
         thead {
             tr {

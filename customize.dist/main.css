@@ -262,7 +262,48 @@ form.realtime > textarea {
 form.realtime table {
   border-collapse: collapse;
 }
-form.realtime table input {
+form.realtime table tr td {
+  padding: 0px;
+  margin: 0px;
+}
+form.realtime table tr td div.text-cell {
+  padding: 0px;
+  margin: 0px;
+  height: 100%;
+}
+form.realtime table tr td div.text-cell input {
+  width: 90%;
+  height: 100%;
+  border: 0px;
+}
+form.realtime table tr td.checkbox-cell {
+  margin: 0px;
+  padding: 0px;
+}
+form.realtime table tr td.checkbox-cell div.checkbox-contain {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"] {
+  display: none;
+}
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"] ~ label {
+  font-weight: bold;
+  background-color: #FF0073;
+  color: #302B28;
+  display: block;
+}
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"] ~ label:after {
+  content: "✖";
+}
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"] ~ label.yes {
+  background-color: #46E981;
+}
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"] ~ label.yes:after {
+  content: "✔";
+}
+form.realtime table input[type="text"] {
   height: 100%;
   width: 90%;
   border: 3px solid #302B28;
