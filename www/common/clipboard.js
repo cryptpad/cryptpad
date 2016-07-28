@@ -1,4 +1,7 @@
-define(function () {
+define([
+    '/bower_components/jquery/dist/jquery.min.js',
+], function () {
+    var $ = window.jQuery;
     var Clipboard = {};
 
     // copy arbitrary text to the clipboard

@@ -79,7 +79,7 @@ define([
     var setPadAttribute = common.setPadAttribute = function (attr, value, cb) {
         Store.set([getHash(), attr].join('.'), value, function (err, data) {
             cb(err, data);
-        })
+        });
     };
 
     var getPadAttribute = common.getPadAttribute = function (attr, cb) {
@@ -95,7 +95,7 @@ define([
             if (recentPadsStr) {
                 try {
                     recentPads = JSON.parse(recentPadsStr);
-                } catch (err) {
+                } catch (E) {
                     // couldn't parse the localStorage?
                     // just overwrite it.
                 }
