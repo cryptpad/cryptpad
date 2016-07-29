@@ -29,7 +29,6 @@ define([
         return secret;
     };
 
-
     var storageKey = common.storageKey = 'CryptPad_RECENTPADS';
 
     /*
@@ -90,24 +89,18 @@ define([
 
     /* fetch and migrate your pad history from localStorage */
     var getRecentPads = common.getRecentPads = function (cb) {
-        Store.get(storageKey, function (err, recentPadsStr) {
-            var recentPads = [];
-            if (recentPadsStr) {
-                try {
-                    recentPads = JSON.parse(recentPadsStr);
-                } catch (E) {
-                    // couldn't parse the localStorage?
-                    // just overwrite it.
-                }
+        Store.get(storageKey, function (err, recentPads) {
+            if (isArray(recentPads)) {
+                cb(void 0, migrateRecentPads(recentPads));
+                return;
             }
-
-            cb(void 0, migrateRecentPads(recentPads));
+            cb(void 0, []);
         });
     };
 
     /* commit a list of pads to localStorage */
     var setRecentPads = common.setRecentPads = function (pads, cb) {
-        Store.set(storageKey, JSON.stringify(pads), function (err, data) {
+        Store.set(storageKey, pads, function (err, data) {
             cb(err, data);
         });
     };
@@ -125,24 +118,24 @@ define([
         }
 
         getRecentPads(function (err, recentPads) {
+            console.log(recentPads);
             setRecentPads(recentPads.filter(function (pad) {
-                return pad.href !== href;
+                if (pad.href !== href) {
+                    return true;
+                }
             }), function (err, data) {
                 if (err) {
                     cb(err);
                     return;
                 }
 
-                Store.dump(function (err, storage) {
+                Store.keys(function (err, keys) {
                     if (err) {
                         cb(err);
                         return;
                     }
-                    var toRemove = [];
-                    Object.keys(storage).forEach(function (k) {
-                        if (k.indexOf(hash) === 0) {
-                            toRemove.push(k);
-                        }
+                    var toRemove = keys.filter(function (k) {
+                        return k.indexOf(hash) === 0;
                     });
 
                     Store.removeBatch(toRemove, function (err, data) {
@@ -151,6 +144,16 @@ define([
                 });
             });
         });
+    };
+
+    var makePad = function (href, title) {
+        var now = new Date();
+        return {
+            href: href,
+            atime: now,
+            ctime: now,
+            title: title || window.location.hash.slice(1, 9),
+        };
     };
 
     var rememberPad = common.rememberPad = window.rememberPad = function (title, cb) {
@@ -182,13 +185,8 @@ define([
             });
 
             if (!isUpdate) {
-                // href, atime, name
-                out.push({
-                    href: href,
-                    atime: now,
-                    ctime: now,
-                    title: title || window.location.hash.slice(1,9),
-                });
+                // href, ctime, atime, title
+                out.push(makePad(href, title));
             }
             setRecentPads(out, function (err, data) {
                 cb(err, data);
@@ -204,8 +202,12 @@ define([
                 cb(err);
                 return;
             }
+
+            var contains;
+
             var renamed = recent.map(function (pad) {
                 if (pad.href === href) {
+                    contains = true;
                     // update the atime
                     pad.atime = new Date().toISOString();
 
@@ -214,6 +216,10 @@ define([
                 }
                 return pad;
             });
+
+            if (!contains) {
+                renamed.push(makePad(href, name));
+            }
 
             setRecentPads(renamed, function (err, data) {
                 cb(err, data);

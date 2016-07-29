@@ -12,8 +12,8 @@ define(function () {
 
     // Store uses nodebacks...
     Store.set = function (key, val, cb) {
-        localStorage.setItem(key, val);
-        cb(void 0, val);
+        localStorage.setItem(key, JSON.stringify(val));
+        cb();
     };
 
     // implement in alternative store
@@ -24,15 +24,26 @@ define(function () {
         cb(void 0, map);
     };
 
+    var safeGet = window.safeGet = function (key) {
+        var val = localStorage.getItem(key);
+        try {
+            return JSON.parse(val);
+        } catch (err) {
+            console.log(val);
+            console.error(err);
+            return val;
+        }
+    };
+
     Store.get = function (key, cb) {
-        cb(void 0, localStorage.getItem(key));
+        cb(void 0, safeGet(key));
     };
 
     // implement in alternative store
     Store.getBatch = function (keys, cb) {
         var res = {};
         keys.forEach(function (key) {
-            res[key] = localStorage.getItem(key);
+            res[key] = safeGet(key);
         });
         cb(void 0, res);
     };
@@ -50,13 +61,8 @@ define(function () {
         cb();
     };
 
-    // implement in alternative store...
-    Store.dump = function (cb) {
-        var map = {};
-        Object.keys(localStorage).forEach(function (key) {
-            map[key] = localStorage.getItem(key);
-        });
-        cb(void 0, map);
+    Store.keys = function (cb) {
+        cb(void 0, Object.keys(localStorage));
     };
 
     return Store;
