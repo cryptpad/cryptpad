@@ -47,8 +47,6 @@ define([
         return html.replace(/</g, '&lt;');
     };
 
-
-
     var makeRecentPadsTable = function (recentPads) {
         if (!recentPads.length) { return; }
         recentPads.some(function (pad, index) {
@@ -130,7 +128,6 @@ define([
             $('table').attr('style', '');
             $tryit.text(Messages.recentPads);
         }
-        //recentPads.sort(Cryptpad.mostRecent);
     });
 });
 
