@@ -19,7 +19,7 @@ define(function () {
     // implement in alternative store
     Store.setBatch = function (map, cb) {
         Object.keys(map).forEach(function (key) {
-            localStorage.setItem(key, map[key]);
+            localStorage.setItem(key, JSON.stringify(map[key]));
         });
         cb(void 0, map);
     };
