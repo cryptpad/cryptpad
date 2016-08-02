@@ -3,8 +3,9 @@ define([
     '/customize/store.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/alertifyjs/dist/js/alertify.js',
+    '/bower_components/spin.js/spin.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages, Store, Crypto, Alertify) {
+], function (Messages, Store, Crypto, Alertify, Spinner) {
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
@@ -442,6 +443,52 @@ define([
 
     common.warn = function (msg) {
         Alertify.error(msg);
+    };
+
+    common.spinner = function (parent) {
+        var $target = $('<div>', {
+            //
+        }).hide();
+
+        $(parent).append($target);
+
+        var opts = {
+            lines: 9, // The number of lines to draw
+            length: 12, // The length of each line
+            width: 11, // The line thickness
+            radius: 20, // The radius of the inner circle
+            scale: 2, // Scales overall size of the spinner
+            corners: 1, // Corner roundness (0..1)
+            color: '#777', // #rgb or #rrggbb or array of colors
+            opacity: 0.3, // Opacity of the lines
+            rotate: 31, // The rotation offset
+            direction: 1, // 1: clockwise, -1: counterclockwise
+            speed: 0.9, // Rounds per second
+            trail: 49, // Afterglow percentage
+            fps: 20, // Frames per second when using setTimeout() as a fallback for CSS
+            zIndex: 2e9, // The z-index (defaults to 2000000000)
+            className: 'spinner', // The CSS class to assign to the spinner
+            top: '50%', // Top position relative to parent
+            left: '50%', // Left position relative to parent
+            shadow: false, // Whether to render a shadow
+            hwaccel: false, // Whether to use hardware acceleration
+            position: 'absolute', // Element positioning
+        }
+        var spinner = new Spinner(opts).spin($target[0]);
+
+        return {
+            show: function () {
+                $target.show();
+                return this;
+            },
+            hide: function () {
+                $target.hide();
+                return this;
+            },
+            get: function () {
+                return spinner;
+            },
+        };
     };
 
     return common;
