@@ -1,25 +1,11 @@
 node_modules/
 www/bower_components/
 www/code/codemirror*
-www/code/mode/
-www/code/codemirror.js
-www/pad/rangy.js
-www/common/virtual-dom.js
-www/common/hyperscript.js
 www/common/chainpad.js
-www/code/rangy.js
 storage/kad.js
 www/common/otaml.js
-www/common/diffDOM.js
-www/common/netflux.js
-
-www/padrtc
-www/common/netflux-client.js
-www/common/es6-promise.min.js
-www/_pad
 
 NetFluxWebsocketSrv.js
 NetFluxWebsocketServer.js
 WebRTCSrv.js
 
-www/assert/hyperscript.js
