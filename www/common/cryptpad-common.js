@@ -34,12 +34,35 @@ define([
 
     var isArray = function (o) { return Object.prototype.toString.call(o) === '[object Array]'; };
 
+    common.redirect = function (hash) {
+        var hostname = window.location.hostname;
+
+        // don't do anything funny unless you're on a cryptpad subdomain
+        if (!/cryptpad.fr/i.test(hostname)) { return; }
+
+        if (hash.length >= 56) {
+            // you're on the right domain
+            return;
+        }
+
+        // old.cryptpad only supports these apps, so only redirect on a match
+        if (['/pad/', '/p/', '/code/'].indexOf(window.location.pathname) === -1) {
+            return;
+        }
+
+        // if you make it this far then there's something wrong with your hash
+        // you should probably be on old.cryptpad.fr...
+
+        window.location.hostname = 'old.cryptpad.fr';
+    };
+
     var getSecrets = common.getSecrets = function () {
         var secret = {};
         if (!/#/.test(window.location.href)) {
             secret.key = Crypto.genKey();
         } else {
             var hash = window.location.hash.slice(1);
+            common.redirect(hash);
             secret.channel = hash.slice(0, 32);
             secret.key = hash.slice(32);
         }
