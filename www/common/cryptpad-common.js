@@ -38,7 +38,7 @@ define([
         var hostname = window.location.hostname;
 
         // don't do anything funny unless you're on a cryptpad subdomain
-        if (!/cryptpad.fr/i.test(hostname)) { return; }
+        if (!/cryptpad.fr$/i.test(hostname)) { return; }
 
         if (hash.length >= 56) {
             // you're on the right domain
