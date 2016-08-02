@@ -38,7 +38,9 @@ define([
 
     var secret = Cryptpad.getSecrets();
 
-    var module = window.APP = {};
+    var module = window.APP = {
+        Cryptpad: Cryptpad,
+    };
 
     module.Wizard = Wizard;
 
