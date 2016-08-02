@@ -112,22 +112,26 @@ define([
         });
     };
 
-    Cryptpad.getRecentPads(function (err, recentPads) {
-        if (err) {
-            console.log("unable to get recent pads");
-            console.error(err);
-            return;
-        }
+    Cryptpad.ready(function () {
+        console.log("ready");
+        Cryptpad.getRecentPads(function (err, recentPads) {
+            console.log(recentPads);
+            if (err) {
+                console.log("unable to get recent pads");
+                console.error(err);
+                return;
+            }
 
-        if (recentPads.length) {
-            recentPads.sort(Cryptpad.mostRecent);
-            makeRecentPadsTable(recentPads);
-        }
+            if (recentPads.length) {
+                recentPads.sort(Cryptpad.mostRecent);
+                makeRecentPadsTable(recentPads);
+            }
 
-        if (hasRecent) {
-            $('table').attr('style', '');
-            $tryit.text(Messages.recentPads);
-        }
+            if (hasRecent) {
+                $('table').attr('style', '');
+                $tryit.text(Messages.recentPads);
+            }
+        });
     });
 });
 

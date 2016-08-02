@@ -13,6 +13,23 @@ define([
 */
     var $ = window.jQuery;
 
+    var store;
+
+    var getStore = function () {
+        if (!store) {
+            throw new Error("Store is not ready!");
+        }
+        return store;
+    };
+
+    Store.ready(function (err, Store) {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        store = Store;
+    });
+
     var common = {};
 
     var isArray = function (o) { return Object.prototype.toString.call(o) === '[object Array]'; };
@@ -76,20 +93,20 @@ define([
     };
 
     var setPadAttribute = common.setPadAttribute = function (attr, value, cb) {
-        Store.set([getHash(), attr].join('.'), value, function (err, data) {
+        getStore().set([getHash(), attr].join('.'), value, function (err, data) {
             cb(err, data);
         });
     };
 
     var getPadAttribute = common.getPadAttribute = function (attr, cb) {
-        Store.get([getHash(), attr].join('.'), function (err, data) {
+        getStore().get([getHash(), attr].join('.'), function (err, data) {
             cb(err, data);
         });
     };
 
     /* fetch and migrate your pad history from localStorage */
     var getRecentPads = common.getRecentPads = function (cb) {
-        Store.get(storageKey, function (err, recentPads) {
+        getStore().get(storageKey, function (err, recentPads) {
             if (isArray(recentPads)) {
                 cb(void 0, migrateRecentPads(recentPads));
                 return;
@@ -100,7 +117,7 @@ define([
 
     /* commit a list of pads to localStorage */
     var setRecentPads = common.setRecentPads = function (pads, cb) {
-        Store.set(storageKey, pads, function (err, data) {
+        getStore().set(storageKey, pads, function (err, data) {
             cb(err, data);
         });
     };
@@ -129,7 +146,7 @@ define([
                     return;
                 }
 
-                Store.keys(function (err, keys) {
+                getStore().keys(function (err, keys) {
                     if (err) {
                         cb(err);
                         return;
@@ -264,6 +281,25 @@ define([
         });
     };
 
+    // local name?
+    common.ready = function (f) {
+        var state = 0;
+
+        var env = {};
+
+        var cb = function () {
+            state--;
+            if (!state) {
+                f(void 0, env);
+            }
+        };
+
+        state++;
+        Store.ready(function (err, store) {
+            env.store = store;
+            cb();
+        });
+    };
 
     var fixFileName = common.fixFileName = function (filename) {
         return filename.replace(/ /g, '-').replace(/\//g, '_');

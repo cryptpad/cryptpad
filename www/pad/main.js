@@ -623,11 +623,19 @@ define([
     };
 
     var interval = 100;
+    var second = function (Ckeditor) {
+        Cryptpad.ready(function (err, env) {
+            // TODO handle error
+            andThen(Ckeditor);
+        });
+    };
+
     var first = function () {
         Ckeditor = ifrw.CKEDITOR;
 
         if (Ckeditor) {
-            andThen(Ckeditor);
+            //andThen(Ckeditor);
+            second(Ckeditor);
         } else {
             console.log("Ckeditor was not defined. Trying again in %sms",interval);
             setTimeout(first, interval);

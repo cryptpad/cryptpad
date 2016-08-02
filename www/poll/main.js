@@ -602,17 +602,22 @@ define([
         crypto: Crypto.createEncryptor(secret.key),
     };
 
-    var rt = module.rt = Listmap.create(config);
-    rt.proxy.on('create', function (info) {
-        var realtime = module.realtime = info.realtime;
-        window.location.hash = info.channel + secret.key;
-        module.patchText = TextPatcher.create({
-            realtime: realtime,
-            logging: true,
+    // don't initialize until the store is ready.
+    Cryptpad.ready(function () {
+
+        var rt = module.rt = Listmap.create(config);
+        rt.proxy.on('create', function (info) {
+            var realtime = module.realtime = info.realtime;
+            window.location.hash = info.channel + secret.key;
+            module.patchText = TextPatcher.create({
+                realtime: realtime,
+                logging: true,
+            });
+        }).on('ready', ready)
+        .on('disconnect', function () {
+            setEditable(false);
+            Cryptpad.alert("Network connection lost!");
         });
-    }).on('ready', ready)
-    .on('disconnect', function () {
-        setEditable(false);
-        Cryptpad.alert("Network connection lost!");
     });
+
 });

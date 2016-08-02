@@ -610,10 +610,18 @@ define([
 
         var interval = 100;
 
+        var second = function (CM) {
+            Cryptpad.ready(function (err, env) {
+                // TODO handle error
+                andThen(CM);
+            });
+        };
+
         var first = function () {
             if (ifrw.CodeMirror) {
                 // it exists, call your continuation
-                andThen(ifrw.CodeMirror);
+                //andThen(ifrw.CodeMirror);
+                second(ifrw.CodeMirror);
             } else {
                 console.log("CodeMirror was not defined. Trying again in %sms", interval);
                 // try again in 'interval' ms

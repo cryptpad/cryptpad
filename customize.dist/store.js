@@ -65,5 +65,11 @@ define(function () {
         cb(void 0, Object.keys(localStorage));
     };
 
+    Store.ready = function (f) {
+        if (typeof(f) === 'function') {
+            f(void 0, Store);
+        }
+    };
+
     return Store;
 });
