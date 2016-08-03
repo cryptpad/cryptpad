@@ -103,6 +103,8 @@ define([
                         pad.title = hash.slice(0,8);
                     });
                 }
+                pad.href = pad.href.replace(/^https:\/\/beta\.cryptpad\.fr/,
+                    'https://cryptpad.fr');
                 return pad;
             } else {
                 console.error("[Cryptpad.migrateRecentPads] pad had unexpected value");
@@ -209,8 +211,6 @@ define([
                 cb(err);
                 return;
             }
-
-            //var pads = getRecentPads();
 
             var now = new Date();
             var href = window.location.href;
