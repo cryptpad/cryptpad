@@ -159,7 +159,6 @@ define([
         }
 
         getRecentPads(function (err, recentPads) {
-            console.log(recentPads);
             setRecentPads(recentPads.filter(function (pad) {
                 if (pad.href !== href) {
                     return true;
@@ -179,7 +178,10 @@ define([
                         return k.indexOf(hash) === 0;
                     });
 
-                    if (!toRemove.length) { return; }
+                    if (!toRemove.length) {
+                        cb();
+                        return;
+                    }
                     Store.removebatch(toRemove, function (err, data) {
                         cb(err, data);
                     });

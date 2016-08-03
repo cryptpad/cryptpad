@@ -108,7 +108,7 @@
             send('set', key, val, cb);
         };
 
-        var batchset = frame.batchset = function (map, cb) {
+        var batchset = frame.setBatch = function (map, cb) {
             send('batchset', void 0, map, cb);
         };
 
@@ -116,7 +116,7 @@
             send('get', key, void 0, cb);
         };
 
-        var batchget = frame.batchget = function (keys, cb) {
+        var batchget = frame.getBatch = function (keys, cb) {
             send('batchget', void 0, keys, cb);
         };
 
@@ -124,7 +124,7 @@
             send('remove', key, void 0, cb);
         };
 
-        var batchremove = frame.batchremove = function (keys, cb) {
+        var batchremove = frame.removeBatch = function (keys, cb) {
             send('batchremove', void 0, keys, cb);
         };
 

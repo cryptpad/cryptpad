@@ -115,7 +115,6 @@ define([
     Cryptpad.ready(function () {
         console.log("ready");
         Cryptpad.getRecentPads(function (err, recentPads) {
-            console.log(recentPads);
             if (err) {
                 console.log("unable to get recent pads");
                 console.error(err);
