@@ -476,7 +476,7 @@ define([
             shadow: false, // Whether to render a shadow
             hwaccel: false, // Whether to use hardware acceleration
             position: 'absolute', // Element positioning
-        }
+        };
         var spinner = new Spinner(opts).spin($target[0]);
 
         return {
