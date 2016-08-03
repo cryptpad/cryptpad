@@ -179,6 +179,7 @@ define([
                         return k.indexOf(hash) === 0;
                     });
 
+                    if (!toRemove.length) { return; }
                     Store.removebatch(toRemove, function (err, data) {
                         cb(err, data);
                     });
