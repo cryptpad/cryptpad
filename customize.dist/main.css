@@ -156,10 +156,15 @@ tbody tr {
   text-align: center;
 }
 tbody tr:first-of-type th {
+  font-size: 20px;
   border-top: 0px;
   font-weight: bold;
   padding: 10px;
   text-decoration: underline;
+}
+tbody tr:first-of-type th.table-refresh {
+  color: #46E981;
+  text-decoration: none;
 }
 tbody tr:nth-child(odd) {
   background-color: #685d56;

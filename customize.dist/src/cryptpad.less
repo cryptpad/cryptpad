@@ -188,10 +188,17 @@ tbody {
     tr {
         text-align: center;
         &:first-of-type th{
+            font-size: 20px;
             border-top: 0px;
             font-weight: bold;
             padding: 10px;
             text-decoration: underline;
+            &.table-refresh {
+                color: @cp-green;
+                text-decoration: none;
+                //border-bottom: 0px;
+            }
+
         }
         &:nth-child(odd) {
             background-color: @light-base;
@@ -210,6 +217,7 @@ tbody {
             border-right: 0px;
         }
     }
+
     .remove {
         cursor: pointer !important;
         color: @cp-red;

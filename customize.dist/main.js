@@ -49,6 +49,12 @@ define([
 
     var makeRecentPadsTable = function (recentPads) {
         if (!recentPads.length) { return; }
+
+        $('tbody tr').each(function (i, e) {
+            if (!i) { return; }
+            $(this).remove();
+        });
+
         recentPads.some(function (pad, index) {
             if (!pad) { return; }
 
@@ -112,8 +118,7 @@ define([
         });
     };
 
-    Cryptpad.ready(function () {
-        console.log("ready");
+    var refreshTable = function () {
         Cryptpad.getRecentPads(function (err, recentPads) {
             if (err) {
                 console.log("unable to get recent pads");
@@ -131,6 +136,12 @@ define([
                 $tryit.text(Messages.recentPads);
             }
         });
+    };
+
+    Cryptpad.ready(function () {
+        console.log("ready");
+        refreshTable();
+        $('.table-refresh').click(refreshTable);
     });
 });
 
