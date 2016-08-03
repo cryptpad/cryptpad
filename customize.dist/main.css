@@ -2,6 +2,16 @@ a.github-corner > svg {
   fill: #46E981;
   color: #302B28;
 }
+.table-refresh > svg {
+  width: .9em;
+  height: .9em;
+  fill: #46E981;
+  -webkit-transform: translate(0, 15%);
+  -moz-transform: translate(0, 15%);
+  -o-transform: translate(0, 15%);
+  -ms-transform: translate(0, 15%);
+  transform: translate(0, 15%);
+}
 /*
     Apparently Chrome fails to render fonts half the time, so we just have to drop
     lato for now :(
@@ -181,12 +191,13 @@ tbody tr th,
 tbody tr td {
   color: #fafafa;
 }
-tbody tr th:last-child {
-  border-right: 0px;
-}
-tbody .remove {
+tbody tr th.remove,
+tbody tr td.remove {
   cursor: pointer !important;
   color: #FF0073;
+}
+tbody tr th:last-child {
+  border-right: 0px;
 }
 tbody td {
   border-right: 1px solid black;
