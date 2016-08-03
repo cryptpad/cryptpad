@@ -165,6 +165,7 @@ tbody tr:first-of-type th {
 tbody tr:first-of-type th.table-refresh {
   color: #46E981;
   text-decoration: none;
+  cursor: pointer;
 }
 tbody tr:nth-child(odd) {
   background-color: #685d56;
