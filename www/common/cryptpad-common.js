@@ -184,7 +184,7 @@ define([
                         cb();
                         return;
                     }
-                    Store.removebatch(toRemove, function (err, data) {
+                    getStore().removeBatch(toRemove, function (err, data) {
                         cb(err, data);
                     });
                 });
