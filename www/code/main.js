@@ -219,7 +219,7 @@ define([
                     }
 
                     // lines including a c-style comment are also valuable
-                    var clike = /^\s*(\/\*|\/\/)(.*?)$/;
+                    var clike = /^\s*(\/\*|\/\/)(.*?)(\*\/)$/;
                     if (clike.test(line)) {
                         line.replace(clike, function (a, one, two) {
                             text = two;
