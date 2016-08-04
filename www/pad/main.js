@@ -44,7 +44,8 @@ define([
         TextPatcher: TextPatcher,
         logFights: true,
         fights: [],
-        Cryptpad: Cryptpad
+        Cryptpad: Cryptpad,
+        spinner: Cryptpad.spinner(document.body),
     };
 
     var toolbar;
@@ -92,12 +93,28 @@ define([
             editor.execCommand('maximize');
             var documentBody = ifrw.$('iframe')[0].contentDocument.body;
 
+            var inner = window.inner = documentBody;
+
+            // hide all content until the realtime doc is ready
+            $(inner).css({
+                color: 'white',
+                'background-color': 'white',
+            });
             documentBody.innerHTML = Messages.initialState;
 
-            var inner = window.inner = documentBody;
             var cursor = window.cursor = Cursor(inner);
 
             var setEditable = module.setEditable = function (bool) {
+                if (bool) {
+                    $(inner).css({
+                        color: 'unset',
+                        'background-color': 'unset',
+                    });
+                    $(module.spinner.get().el).fadeOut(750);
+                } else {
+                    module.spinner.show();
+                }
+
                 inner.setAttribute('contenteditable', bool);
             };
 
@@ -562,6 +579,8 @@ define([
                         if (yes) { unnotify(); }
                     });
                 }
+
+                //if (!inner.innerText.trim()) { documentBody.innerHTML = Messages.initialState; }
 
                 console.log("Unlocking editor");
                 setEditable(true);
