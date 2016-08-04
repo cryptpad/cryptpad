@@ -19,9 +19,14 @@ define([
 ], function (Config, /*RTCode,*/ Messages, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad, Modes, Themes, Visible, Notify) {
     var $ = window.jQuery;
     var saveAs = window.saveAs;
+
     var module = window.APP = {
         Cryptpad: Cryptpad,
+        spinner: Cryptpad.spinner(document.body),
     };
+
+    module.spinner.show();
+
     var ifrw = module.ifrw = $('#pad-iframe')[0].contentWindow;
     var stringify = function (obj) {
         return JSONSortify(obj);
@@ -503,7 +508,7 @@ define([
                     });
                 }
 
-
+                $(module.spinner.get().el).fadeOut(750);
                 setEditable(true);
                 initializing = false;
                 //Cryptpad.log("Your document is ready");
