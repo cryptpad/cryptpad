@@ -8,6 +8,11 @@
         data-alt-favicon="/customize/alt-favicon.png"
         id="favicon" />
     <script data-main="main" src="/bower_components/requirejs/require.js"></script>
+    <script>
+        require.config({
+            waitSeconds: 60,
+        });
+    </script>
     <style>
         html, body {
             margin: 0px;
