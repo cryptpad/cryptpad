@@ -150,6 +150,9 @@ define([
                 // append the userlist to the hyperjson structure
                 obj.metadata = userList;
 
+                // set mode too...
+                obj.highlightMode = module.highlightMode;
+
                 // stringify the json and send it into chainpad
                 var shjson = stringify(obj);
 
@@ -370,37 +373,25 @@ define([
                     });
                 $rightside.append($forgetPad);
 
-                // TODO use cb
                 var configureLanguage = function (cb) {
                     // FIXME this is async so make it happen as early as possible
-                    Cryptpad.getPadAttribute('language', function (err, lastLanguage) {
-                        if (err) {
-                            console.log("Unable to get pad language");
-                        }
 
-                        lastLanguage = lastLanguage || 'javascript';
-
-                        /*  Let the user select different syntax highlighting modes */
-                        var syntaxDropdown = '<select title="syntax highlighting" id="language-mode">\n' +
-                            Modes.list.map(function (o) {
-                                var selected = o.mode === lastLanguage? ' selected="selected"' : '';
-                                return '<option value="' + o.mode + '"'+selected+'>' + o.language + '</option>';
-                            }).join('\n') +
-                            '</select>';
-
-                        setMode(lastLanguage);
-
-                        $rightside.append(syntaxDropdown);
-
-                        var $language = module.$language = $bar.find('#language-mode').on('change', function () {
-                            var mode = $language.val();
-                            setMode(mode);
-                            Cryptpad.setPadAttribute('language', mode, function (err, data) {
-                                // TODO
-                            });
-                        });
-                        cb();
+                    /*  Let the user select different syntax highlighting modes */
+                    var $language = module.$language = $('<select>', {
+                        title: 'syntax highlighting',
+                        id: 'language-mode',
+                    }).on('change', function () {
+                        setMode($language.val());
+                        onLocal();
                     });
+
+                    Modes.list.map(function (o) {
+                        $language.append($('<option>', {
+                            value: o.mode,
+                        }).text(o.language));
+                    });
+                    $rightside.append($language);
+                    cb();
                 };
 
 
@@ -495,6 +486,15 @@ define([
                 if(userDoc !== "") {
                     var hjson = JSON.parse(userDoc);
                     newDoc = hjson.content;
+
+                    if (hjson.highlightMode) {
+                        setMode(hjson.highlightMode, module.$language);
+                    }
+                }
+
+                if (!module.highlightMode) {
+                    setMode('javascript', module.$language);
+                    console.log("%s => %s", module.highlightMode, module.$language.val());
                 }
 
                 // Update the user list (metadata) from the hyperjson
@@ -565,6 +565,11 @@ define([
                 var hjson = JSON.parse(shjson);
                 var remoteDoc = hjson.content;
 
+                var highlightMode = hjson.highlightMode;
+                if (highlightMode && highlightMode !== module.highlightMode) {
+                    setMode(highlightMode, module.$language);
+                }
+
                 //get old cursor here
                 var oldCursor = {};
                 oldCursor.selectionStart = cursorToPos(editor.getCursor('from'), oldDoc);
@@ -590,11 +595,13 @@ define([
                 var localDoc = canonicalize($textarea.val());
                 var hjson2 = {
                   content: localDoc,
-                  metadata: userList
+                  metadata: userList,
+                  highlightMode: highlightMode,
                 };
                 var shjson2 = stringify(hjson2);
                 if (shjson2 !== shjson) {
                     console.error("shjson2 !== shjson");
+                    TextPatcher.log(shjson, TextPatcher.diff(shjson, shjson2));
                     module.patchText(shjson2);
                 }
 
