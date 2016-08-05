@@ -153,18 +153,31 @@ define([
         return new Date(b.atime).getTime() - new Date(a.atime).getTime();
     };
 
+    var parsePadUrl = common.parsePadUrl = function (href) {
+        var patt = /^https*:\/\/([^\/]*)\/(.*?)\/#(.*)$/i;
+
+        var ret = {};
+        href.replace(patt, function (a, domain, type, hash) {
+            ret.domain = domain;
+            ret.type = type;
+            ret.hash = hash;
+            return '';
+        });
+        return ret;
+    };
+
     var forgetPad = common.forgetPad = function (href, cb) {
-        var hash;
-        href.replace(/#(.*)$/, function (x, h) { hash = h; });
-        if (!hash) {
-            return;
-        }
+        var parsed = parsePadUrl(href);
 
         getRecentPads(function (err, recentPads) {
             setRecentPads(recentPads.filter(function (pad) {
-                if (pad.href !== href) {
-                    return true;
+                var p = parsePadUrl(pad.href);
+                // find duplicates
+                if (parsed.hash === p.hash && parsed.type === p.type) {
+                    console.log("Found a duplicate");
+                    return;
                 }
+                return true;
             }), function (err, data) {
                 if (err) {
                     cb(err);
@@ -177,7 +190,7 @@ define([
                         return;
                     }
                     var toRemove = keys.filter(function (k) {
-                        return k.indexOf(hash) === 0;
+                        return k.indexOf(parsed.hash) === 0;
                     });
 
                     if (!toRemove.length) {
@@ -215,15 +228,18 @@ define([
             var now = new Date();
             var href = window.location.href;
 
+            var parsed = parsePadUrl(window.location.href);
             var isUpdate = false;
 
             var out = pads.map(function (pad) {
-                if (pad && pad.href === href) {
+                var p = parsePadUrl(pad.href);
+                if (p.hash === parsed.hash && p.type === parsed.type) {
                     isUpdate = true;
                     // bump the atime
                     pad.atime = now;
 
                     pad.title = title;
+                    pad.href = href;
                 }
                 return pad;
             });
@@ -240,6 +256,7 @@ define([
 
     var setPadTitle = common.setPadTitle = function (name, cb) {
         var href = window.location.href;
+        var parsed = parsePadUrl(href);
 
         getRecentPads(function (err, recent) {
             if (err) {
@@ -250,13 +267,15 @@ define([
             var contains;
 
             var renamed = recent.map(function (pad) {
-                if (pad.href === href) {
+                var p = parsePadUrl(pad.href);
+                if (p.hash === parsed.hash && p.type === parsed.type) {
                     contains = true;
                     // update the atime
                     pad.atime = new Date().toISOString();
 
                     // set the name
                     pad.title = name;
+                    pad.href = href;
                 }
                 return pad;
             });
@@ -273,6 +292,7 @@ define([
 
     var getPadTitle = common.getPadTitle = function (cb) {
         var href = window.location.href;
+        var parsed = parsePadUrl(window.location.href);
         var hashSlice = window.location.hash.slice(1,9);
         var title = '';
 
@@ -282,7 +302,8 @@ define([
                 return;
             }
             pads.some(function (pad) {
-                if (pad.href === href) {
+                var p = parsePadUrl(pad.href);
+                if (p.hash === parsed.hash && p.type === parsed.type) {
                     title = pad.title || hashSlice;
                     return true;
                 }
@@ -295,14 +316,25 @@ define([
     var causesNamingConflict = common.causesNamingConflict = function (title, cb) {
         var href = window.location.href;
 
+        var parsed = parsePadUrl(href);
         getRecentPads(function (err, pads) {
             if (err) {
                 cb(err);
                 return;
             }
             var conflicts = pads.some(function (pad) {
-                return pad.title === title &&
-                    pad.href !== href;
+                // another pad is already using that title
+                if (pad.title === title) {
+                    var p = parsePadUrl(href);
+
+                    if (p.type === parsed.type && p.hash === parsed.hash) {
+                        // the duplicate pad has the same type and hash
+                        // allow renames
+                    } else {
+                        // it's an entirely different pad... it conflicts
+                        return true;
+                    }
+                }
             });
             cb(void 0, conflicts);
         });
