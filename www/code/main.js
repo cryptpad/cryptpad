@@ -297,7 +297,7 @@ define([
                         var mime = CodeMirror.findModeByMIME(file.type);
 
                         if (!mime) {
-                            var ext = /.+\.([^.]+)$/.exec(val);
+                            var ext = /.+\.([^.]+)$/.exec(file.name);
                             if (ext[1]) {
                                 mode = CodeMirror.findModeByExtension(ext[1]);
                             }
