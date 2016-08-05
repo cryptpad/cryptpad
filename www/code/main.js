@@ -293,11 +293,19 @@ define([
                     .text(Messages.importButton)
                     .addClass('rightside-button')
                     .click(Cryptpad.importContent('text/plain', function (content, file) {
+                        var mode;
                         var mime = CodeMirror.findModeByMIME(file.type);
 
-                        var mode = mime && mime.mode || null;
+                        if (!mime) {
+                            var ext = /.+\.([^.]+)$/.exec(val);
+                            if (ext[1]) {
+                                mode = CodeMirror.findModeByExtension(ext[1]);
+                            }
+                        } else {
+                            mode = mime && mime.mode || null;
+                        }
 
-                        if (Modes.list.some(function (o) { return o.mode === mode; })) {
+                        if (mode && Modes.list.some(function (o) { return o.mode === mode; })) {
                             setMode(mode);
                             $bar.find('#language-mode').val(mode);
                         } else {
