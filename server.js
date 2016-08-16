@@ -43,9 +43,10 @@ var handleFile = function (target, res, fallback, next) {
 
 app.use("/customize", Express.static(__dirname + '/customize'));
 app.use("/customize", Express.static(__dirname + '/customize.dist'));
-app.use(/^\/$/, function(req, res, next) {
-    handleFile(__dirname + '/customize/index.html', // try piping this file first
-        res, __dirname + '/customize.dist/index.html', // if it doesn't exist
+app.use(/^\/[^\/]*$/, function(req, res, next) {
+    var file = req.originalUrl.slice(1) || 'index.html';
+    handleFile(__dirname + '/customize' + file, // try piping this file first
+        res, __dirname + '/customize.dist/' + file, // if it doesn't exist
         next); // finally, fall through
 });
 
