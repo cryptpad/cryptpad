@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script data-main="main" src="/bower_components/requirejs/require.js"></script>
+    <style>
+        html, body{
+            padding: 0px;
+            margin: 0px;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        #bar {
+            height: 40px;
+        }
+        textarea{
+            width: 100%;
+            height: calc(100vh - 40px);
+            max-width: 100%;
+            max-height: 100vh;
+
+            font-size: 18px;
+            background-color: #073642;
+            color: #839496;
+
+            overflow-x: hidden;
+
+            /* disallow textarea resizes */
+            resize: none;
+        }
+        textarea[disabled] {
+            background-color: #275662;
+            color: #637476;
+        }
+
+        #modal {
+            display: none;
+        }
+        #modal.shown {
+            display: block;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            z-index: 100;
+            background-color: black;
+            color: white;
+            height: 100vh;
+            width: 100%;
+        }
+
+        #content {
+            width: 90%;
+            margin: auto;
+        }
+
+        #content h1, h2, h3, h4, h5, h6 {
+            text-align: center;
+        }
+
+        #content p, #content ul, #content ol{
+            font-size: 23px;
+        }
+
+
+
+    </style>
+</head>
+<body>
+    <div id="bar">
+        <button id="present">presentation mode 
+        </button>
+    </div>
+    <textarea></textarea>
+    <div id="modal">
+        <div id="content"></div>
+    </div>
+    <div id="nope"></div>
+</body>
+</html>
+
