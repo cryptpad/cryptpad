@@ -9,10 +9,12 @@ define([
     '/common/cryptpad-common.js',
     '/common/visible.js',
     '/common/notify.js',
+    '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
 ], function (Config, Messages, Table, Wizard, TextPatcher, Listmap, Crypto, Cryptpad, Visible, Notify) {
     var $ = window.jQuery;
+    var saveAs = window.saveAs;
 
     Cryptpad.styleAlerts();
     console.log("Initializing your realtime session...");
@@ -288,6 +290,7 @@ define([
 
     var ready = function (info) {
         console.log("Your realtime object is ready");
+        module.ready = true;
 
         var proxy = module.rt.proxy;
 
@@ -320,6 +323,8 @@ define([
                 });
             }
         });
+
+        // HERE TODO make this idempotent so you can call it again
 
         // cols
         proxy.table.colsOrder.forEach(function (uid) {
@@ -581,12 +586,63 @@ define([
             Wizard.hasBeenDisplayed = true;
         }));
 
+        /* Import/Export buttons */
+        /*
+        $toolbar.append(Button({
+            id: 'import',
+            'class': 'import button action',
+            title: 'IMPORT', // TODO translate
+        }).text('IMPORT') // TODO translate
+        .click(function () {
+            var proxy = module.rt.proxy;
+
+            console.log("pew pew");
+            if (!module.ready) { return; }
+
+            console.log("bang bang");
+            Cryptpad.importContent('text/plain', function (content, file) {
+                var parsed;
+                try {
+                    parsed = JSON.parse(content);
+                } catch (err) {
+                    Cryptpad.alert("Could not parse imported content");
+                    return;
+                }
+                console.log(content);
+                //module.rt.update(parsed);
+            })();
+        }));
+
+        $toolbar.append(Button({
+            id: 'export',
+            'class': 'export button action',
+            title: 'EXPORT', // TODO translate
+        }).text("EXPORT") // TODO translate
+        .click(function () {
+            if (!module.ready) { return; }
+            var proxy = module.rt.proxy;
+
+            var title = suggestName();
+
+            var text = JSON.stringify(proxy, null, 2);
+
+            Cryptpad.prompt(Messages.exportPrompt, title + '.json', function (filename) {
+                if (filename === null) { return; }
+                var blob = new Blob([text], {
+                    type: 'application/json',
+                });
+                saveAs(blob, filename);
+            });
+        }));*/
+
+
         setEditable(true);
 
         if (First) {
             // assume the first user to the poll wants to be the administrator...
             // TODO prompt them with questions to set up their poll...
         }
+
         /*  TODO
             even if the user isn't the first, check their storage to see if
             they've visited before and if they 'own' a column in the table.
