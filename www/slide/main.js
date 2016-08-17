@@ -59,6 +59,20 @@ define([
         $(window).on('hashchange', function() {
             window.location.reload();
         });
+        Cryptpad.getPadTitle(function (err, title) {
+            if (err) {
+                console.error(err);
+                console.log("Couldn't get pad title");
+                return;
+            }
+            document.title = title || window.location.hash.slice(1, 9);
+            Cryptpad.rememberPad(title, function (err, data) {
+                if (err) {
+                    console.log("Couldn't remember pad");
+                    console.error(err);
+                }
+            });
+        });
     };
 
     var onRemote = config.onRemote = function (info) {

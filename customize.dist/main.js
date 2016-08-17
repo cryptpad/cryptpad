@@ -34,6 +34,7 @@ define([
         '/pad/': 'Pad',
         '/code/': 'Code',
         '/poll/': 'Poll',
+        '/slide/': 'Presentation',
     };
 
     var truncateTitle = function (title, len) {
