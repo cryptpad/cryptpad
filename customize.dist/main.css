@@ -302,23 +302,26 @@ form.realtime table tr td.checkbox-cell div.checkbox-contain {
   height: 100%;
   width: 100%;
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"] {
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.mine) {
   display: none;
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"] ~ label {
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.mine) ~ .cover {
   font-weight: bold;
   background-color: #FF0073;
   color: #302B28;
   display: block;
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"] ~ label:after {
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.mine) ~ .cover:after {
   content: "✖";
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"] ~ label.yes {
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.mine) ~ .cover.yes {
   background-color: #46E981;
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"] ~ label.yes:after {
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.mine) ~ .cover.yes:after {
   content: "✔";
+}
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.mine) ~ .cover.mine {
+  display: none;
 }
 form.realtime table input[type="text"] {
   height: 100%;
@@ -333,7 +336,6 @@ form.realtime table tfoot tr td {
   z-index: 4000;
   cursor: pointer;
 }
-form.realtime #adduser,
 form.realtime #addoption {
   color: #46E981;
   border: 1px solid #46E981;
@@ -341,6 +343,7 @@ form.realtime #addoption {
 }
 form.realtime #adduser {
   border-top-left-radius: 5px;
+  padding: 15px;
 }
 form.realtime #addoption {
   border-bottom-left-radius: 5px;

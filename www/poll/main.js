@@ -70,12 +70,6 @@ define([
         };
     };
 
-    var find = function (map, path) {
-        return (map && path.reduce(function (p, n) {
-            return typeof p[n] !== 'undefined' && p[n];
-        }, map)) || undefined;
-    };
-
     var Input = function (opt) { return $('<input>', opt); };
     var Checkbox = function (id) {
         var p = parseXY(id);
@@ -86,8 +80,9 @@ define([
             'class': 'checkbox-contain',
         });
 
-        var $label = $('<label>', {
+        var $cover = $('<span>', {
             'for': id,
+            'class': 'cover'
         });
 
         var $check = Input({
@@ -98,15 +93,21 @@ define([
             console.log("(%s, %s) => %s", p.x, p.y, $check[0].checked);
             var checked = proxy.table.cells[id] = $check[0].checked? 1: 0;
             if (checked) {
-                $label.addClass('yes');
+                $cover.addClass('yes');
             }
             else {
-                $label.removeClass('yes');
+                $cover.removeClass('yes');
             }
         });
 
+        if (p.x === module.userId) {
+            $check.addClass('mine');
+        } else {
+            console.log(module.userId, p.x);
+        }
+
         $div.append($check);
-        $check.after($label);
+        $check.after($cover);
 
         return $div; //$check;
     };
@@ -116,7 +117,13 @@ define([
 
     var setEditable = function (bool) {
         module.isEditable = bool;
-        $('input, textarea').attr('disabled', !bool);
+
+        items.forEach(function ($item) {
+            $item.attr('disabled', !bool);
+        });
+        $('input[id^="y"]').each(function (i, e) {
+            $(this).attr('disabled', !bool);
+        });
     };
 
     var coluid = Uid('x');
@@ -181,6 +188,7 @@ define([
             id: id,
             type: 'text',
             placeholder: 'your name',
+            disabled: true,
         }).on('keyup change', function () {
             proxy.table.cols[id] = $user.val() || "";
         });
@@ -193,8 +201,12 @@ define([
                 'class': 'remove',
                 'title': 'remove column', // TODO translate
             }).text('✖').click(function () {
-                removeColumn(proxy, id);
-                table.removeColumn(id);
+                Cryptpad.confirm("Are you sure you'd like to remove this user?", // TODO translate
+                    function (yes) {
+                        if (!yes) { return; }
+                        removeColumn(proxy, id);
+                        table.removeColumn(id);
+                    });
             }));
 
         proxy.table.cols[id] = value || "";
@@ -243,11 +255,22 @@ define([
         return $option;
     };
 
+    /*
     $('#adduser').click(function () {
         if (!module.isEditable) { return; }
         var id = coluid();
         makeUser(module.rt.proxy, id).focus();
     });
+    */
+
+    var makeUserEditable = module.makeUserEditable = function (id, bool) {
+        var $name = $('input[type="text"][id="' + id + '"]').attr('disabled', !bool);
+
+        var $sel = $('input[id^="' + id + '"]')
+            [bool?'addClass':'removeClass']('mine');
+
+        return $sel;
+    };
 
     $('#addoption').click(function () {
         if (!module.isEditable) { return; }
@@ -348,7 +371,7 @@ define([
             }
             var checked = box.checked = proxy.table.cells[uid] ? true : false;
             if (checked) {
-                $(box).parent().find('label').addClass('yes');
+                $(box).parent().find('.cover').addClass('yes');
             }
         });
 
@@ -445,10 +468,10 @@ define([
                     if (!$parent.length) { console.log("couldn't find parent element of checkbox"); return; }
 
                     if (checked) {
-                        $parent.find('label').addClass('yes');
+                        $parent.find('.cover').addClass('yes');
                         //$(el).parent().
                     } else {
-                        $parent.find('label').removeClass('yes');
+                        $parent.find('.cover').removeClass('yes');
                     }
                     break;
                 default:
@@ -643,14 +666,52 @@ define([
             // TODO prompt them with questions to set up their poll...
         }
 
-        /*  TODO
-            even if the user isn't the first, check their storage to see if
-            they've visited before and if they 'own' a column in the table.
-            if they do, make it editable and suggest that they fill it in.
+        Cryptpad.getPadAttribute('column', function (err, column) {
+            if (err) {
+                console.log("unable to retrieve column");
+                return;
+            }
 
-            if they have not visited, make a column for them.
-            don't propogate changes from this column until they make changes
-        */
+            module.userId = column;
+
+            var promptForName = function () {
+                // HERE
+                Cryptpad.prompt("What is your name?", "", function (name, ev) {
+                    if (name === null) {
+                        name = '';
+                    }
+
+                    if (!module.isEditable) { return; }
+                    var id = module.userId = coluid();
+
+                    Cryptpad.setPadAttribute('column', id, function (err) {
+                        if (err) {
+                            console.error("Couldn't remember your column id");
+                            return;
+                        }
+
+                        console.log(id);
+                        makeUser(module.rt.proxy, id, name).focus().val(name);
+                        makeUserEditable(id, true);
+                    });
+                });
+            };
+
+            if (column === null) {
+                //console.log("Looks like you're new to this poll, why don't you make a column");
+                promptForName();
+                return;
+            }
+
+            // column might be defined, but that column might have been deleted...
+            if (proxy.table.colsOrder.indexOf(column) === -1) {
+                promptForName();
+                return;
+            }
+
+            // if column is defined, then you can just make that column editable
+            makeUserEditable(column, true);
+        });
     };
 
     var config = {

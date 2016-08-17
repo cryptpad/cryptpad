@@ -373,19 +373,29 @@ form.realtime {
 
                         input {
                             &[type="checkbox"] {
-                                display: none;
-                                ~ label {
-                                    display: block;
-                                    font-weight: bold;
+                                &.mine {
+                                    // idk
+                                }
 
-                                    background-color: @cp-red;
-                                    color: @base;
-                                    &:after { content: "✖"; }
+                                &:not(.mine) {
+                                    display: none;
 
-                                    display: block;
-                                    &.yes {
-                                        background-color: @cp-green;
-                                        &:after { content: "✔"; }
+                                    ~ .cover {
+                                        display: block;
+                                        font-weight: bold;
+
+                                        background-color: @cp-red;
+                                        color: @base;
+                                        &:after { content: "✖"; }
+
+                                        display: block;
+                                        &.yes {
+                                            background-color: @cp-green;
+                                            &:after { content: "✔"; }
+                                        }
+                                        &.mine {
+                                            display: none;
+                                        }
                                     }
                                 }
                             }
@@ -431,14 +441,18 @@ form.realtime {
         }
     }
 
-    #adduser,
+    //#adduser,
     #addoption {
         color: @cp-green;
         border: 1px solid @cp-green;
         padding: 15px;
     }
 
-    #adduser { .top-left; }
+    #adduser {
+        .top-left;
+        //border: 1px solid grey;
+        padding: 15px;
+    }
     #addoption { .bottom-left; }
 }
 
