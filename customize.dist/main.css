@@ -191,8 +191,8 @@ tbody tr th,
 tbody tr td {
   color: #fafafa;
 }
-tbody tr th .remove,
-tbody tr td .remove {
+tbody tr th.remove,
+tbody tr td.remove {
   cursor: pointer;
   color: #FF0073;
 }
