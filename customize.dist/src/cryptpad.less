@@ -33,14 +33,6 @@ a.github-corner > svg {
     .translate(0, 15%);
 }
 
-/*
-    Apparently Chrome fails to render fonts half the time, so we just have to drop
-    lato for now :(
-*/
-//.fontface(lato, '/customize/fonts/lato/Lato-Regular.ttf', normal, 400);
-//.fontface(lato, '/customize/fonts/lato/Lato-Black.ttf', normal, 700);
-//.fontface(lato, '/customize/fonts/lato/Lato-Italic.ttf', italic, 400);
-
 .lato {
     font-family: lato, Helvetica, sans-serif;
     font-size: 1.02em;
@@ -138,9 +130,6 @@ img {
 
 p {
     padding-top: .66001rem;
-    //-webkit-font-feature-settings: 'kern' 1,'onum' 1,'liga' 1;
-    //-moz-font-feature-settings: 'kern' 1,'onum' 1,'liga' 1;
-    //font-feature-settings: 'kern' 1,'onum' 1,'liga' 1;
     margin-top: 0;
 }
 
@@ -150,7 +139,6 @@ p,pre {
 
 p, pre, td, a, table, tr {
     .lato;
-    //color: @fore;
 }
 
 #main {
@@ -234,7 +222,6 @@ tbody {
 
             &.remove {
                 cursor: pointer;
-                color: @cp-red;
             }
         }
         th:last-child {
@@ -328,6 +315,8 @@ tbody {
     .top-left;
 }
 
+.remove { color: @cp-red; }
+
 form.realtime {
     > input {
         &[type="text"] {
@@ -357,8 +346,6 @@ form.realtime {
                         width: 90%;
                         height: 100%;
                         border: 0px;
-                    }
-                    .remove {
                     }
                 }
 
@@ -429,7 +416,6 @@ form.realtime {
                         font-weight: bold;
                     }
                     .remove {
-                        color: @cp-red;
                         cursor: pointer;
                         font-size: 20px;
                     }
@@ -501,13 +487,11 @@ div.modal {
     }
 
     table {
-        //width: 80%;
         margin: 30px;
 
         border-collapse: collapse;
         tr {
             td {
-                //border: 1px solid white;
             }
         }
 
@@ -515,14 +499,12 @@ div.modal {
             height: 100%;
             width: 90%;
             border: 3px solid @base;
-            //display: table-cell;
         }
 
         thead {
             tr {
                 th {
                     span.remove {
-                        color: @cp-red;
                         cursor: pointer;
                     }
                 }

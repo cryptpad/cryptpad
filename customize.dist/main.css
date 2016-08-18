@@ -12,10 +12,6 @@ a.github-corner > svg {
   -ms-transform: translate(0, 15%);
   transform: translate(0, 15%);
 }
-/*
-    Apparently Chrome fails to render fonts half the time, so we just have to drop
-    lato for now :(
-*/
 .lato {
   font-family: lato, Helvetica, sans-serif;
   font-size: 1.02em;
@@ -194,7 +190,6 @@ tbody tr td {
 tbody tr th.remove,
 tbody tr td.remove {
   cursor: pointer;
-  color: #FF0073;
 }
 tbody tr th:last-child {
   border-right: 0px;
@@ -267,6 +262,9 @@ tbody td:last-child {
 }
 .top-left {
   border-top-left-radius: 5px;
+}
+.remove {
+  color: #FF0073;
 }
 form.realtime {
   padding: 0px;
@@ -344,7 +342,6 @@ form.realtime table thead tr th input[type="text"][disabled] {
   font-weight: bold;
 }
 form.realtime table thead tr th .remove {
-  color: #FF0073;
   cursor: pointer;
   font-size: 20px;
 }
@@ -405,7 +402,6 @@ div.modal table input {
   border: 3px solid #302B28;
 }
 div.modal table thead tr th span.remove {
-  color: #FF0073;
   cursor: pointer;
 }
 div.modal table tfoot tr td {
