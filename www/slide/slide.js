@@ -40,7 +40,7 @@ define([
     var update = Slide.update = function (content) {
         if (!Slide.shown) { return; }
         console.log(content);
-        Slide.content = content.split(/\n\-\-\-\n/).filter(truthy);
+        Slide.content = content.split(/\n\s*\-\-\-\s*\n/).filter(truthy);
         draw(Slide.index);
     };
 
@@ -52,7 +52,7 @@ define([
 
     var right = Slide.right = function () {
         console.log('right');
-        var i = Slide.index = Math.min(Slide.content.length, Slide.index + 1);
+        var i = Slide.index = Math.min(Slide.content.length -1, Slide.index + 1);
         Slide.draw(i);
     };
 
@@ -62,6 +62,7 @@ define([
             case 37:
                 Slide.left();
                 break;
+            case 32:
             case 39: // right
                 Slide.right();
                 break;
