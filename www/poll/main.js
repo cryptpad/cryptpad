@@ -300,8 +300,13 @@ define([
     $('#adduser').click(function () {
         if (!module.isEditable) { return; }
         var id = coluid();
-        makeUser(module.rt.proxy, id);
-        makeUserEditable(id, true).focus();
+
+        var msg = "Enter a name"; // TODO translate
+        Cryptpad.prompt(msg, "", function (name) {
+            if (name === null) { return; }
+            makeUser(module.rt.proxy, id, name).val(name);
+            makeUserEditable(id, true).focus();
+        });
     });
 
     $('#addoption').click(function () {
