@@ -81,9 +81,12 @@ define([
         });
 
         var $cover = $('<span>', {
-            'for': id,
             'class': 'cover'
         });
+
+        var $label = $('<label>', {
+            'for': id,
+        }); //.text("WAT");
 
         var $check = Input({
             id: id,
@@ -104,7 +107,10 @@ define([
             $check.addClass('editable');
         }
 
-        $div.append($check);
+        $div
+            //.append($label)
+            .append($check)
+            .append($label);
         $check.after($cover);
 
         return $div; //$check;
@@ -189,7 +195,8 @@ define([
         $edit[bool?'addClass':'removeClass']('editable');
 
         var $sel = $('input[id^="' + id + '"]')
-            [bool?'addClass':'removeClass']('editable');
+            [bool?'addClass':'removeClass']('editable')
+            .attr('disabled', !bool);
 
         if (bool) {
             module.rt.proxy.table.colsOrder.forEach(function (coluid) {
@@ -408,7 +415,7 @@ define([
             }
             var checked = box.checked = proxy.table.cells[uid] ? true : false;
             if (checked) {
-                $(box).parent().find('.cover').addClass('yes');
+                $(box).closest('.checkbox-contain').find('.cover').addClass('yes');
             }
         });
 
@@ -500,13 +507,12 @@ define([
                     console.log("[Table.cell change] %s (%s => %s)@[%s]", id, o, n, p.slice(0, -1).join(', '));
                     var checked = el.checked = proxy.table.cells[id] ? true: false;
 
-                    var $parent = $(el).parent();
+                    var $parent = $(el).closest('.checkbox-contain');
 
                     if (!$parent.length) { console.log("couldn't find parent element of checkbox"); return; }
 
                     if (checked) {
                         $parent.find('.cover').addClass('yes');
-                        //$(el).parent().
                     } else {
                         $parent.find('.cover').removeClass('yes');
                     }

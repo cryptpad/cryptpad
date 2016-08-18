@@ -301,6 +301,16 @@ form.realtime table tr td.checkbox-cell div.checkbox-contain {
   display: block;
   height: 100%;
   width: 100%;
+  position: relative;
+}
+form.realtime table tr td.checkbox-cell div.checkbox-contain label {
+  background-color: transparent;
+  display: block;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  width: 100%;
 }
 form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) {
   display: none;
