@@ -360,15 +360,12 @@ form.realtime table thead tr th .edit:after {
 form.realtime table thead tr th .edit.editable {
   display: none;
 }
-form.realtime table tfoot tr td {
-  z-index: 4000;
-  cursor: pointer;
-}
 form.realtime #adduser,
 form.realtime #addoption {
   color: #46E981;
   border: 1px solid #46E981;
   padding: 15px;
+  cursor: pointer;
 }
 form.realtime #adduser {
   border-top-left-radius: 5px;
