@@ -315,7 +315,10 @@ tbody {
     .top-left;
 }
 
-.remove { color: @cp-red; }
+.remove {
+    color: @cp-red;
+    cursor: pointer !important;
+}
 
 form.realtime {
     > input {
@@ -440,6 +443,12 @@ form.realtime {
         tfoot {
             tr {
                 td {
+                    text-align: center;
+                    .save {
+                        padding: 15px;
+                        border-top-left-radius: 5px;
+                        border-top-right-radius: 5px;
+                    }
                 }
             }
         }
@@ -505,7 +514,6 @@ div.modal {
             tr {
                 th {
                     span.remove {
-                        cursor: pointer;
                     }
                 }
             }
@@ -520,7 +528,6 @@ div.modal {
         tfoot {
             tr {
                 td {
-
                     z-index: 4000;
                     cursor: pointer;
                 }

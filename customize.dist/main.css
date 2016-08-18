@@ -265,6 +265,7 @@ tbody td:last-child {
 }
 .remove {
   color: #FF0073;
+  cursor: pointer !important;
 }
 form.realtime {
   padding: 0px;
@@ -357,6 +358,14 @@ form.realtime table thead tr th .edit:after {
 form.realtime table thead tr th .edit.editable {
   display: none;
 }
+form.realtime table tfoot tr td {
+  text-align: center;
+}
+form.realtime table tfoot tr td .save {
+  padding: 15px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
 form.realtime #adduser,
 form.realtime #addoption {
   color: #46E981;
@@ -400,9 +409,6 @@ div.modal table input {
   height: 100%;
   width: 90%;
   border: 3px solid #302B28;
-}
-div.modal table thead tr th span.remove {
-  cursor: pointer;
 }
 div.modal table tfoot tr td {
   z-index: 4000;

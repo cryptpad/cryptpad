@@ -199,10 +199,27 @@ define([
             .attr('disabled', !bool);
 
         if (bool) {
+            var $target = $('tfoot td')
+                .eq(module.rt.proxy.table.colsOrder.indexOf(id) + 1);
+
+            if ($target.length) {
+                var $save = $('<span>', {
+                    'class': 'save action',
+                    'for': id,
+                })
+                .text('COMMIT') // TODO translate
+                .click(function () {
+                    makeUserEditable(id, false);
+                });
+                $target.append($save);
+            }
+
             module.activeColumn = id;
             module.rt.proxy.table.colsOrder.forEach(function (coluid) {
                 if (coluid !== id) { makeUserEditable(coluid, false); }
             });
+        } else {
+            $('.save[for="' + id + '"]').remove();
         }
 
         return $sel;
