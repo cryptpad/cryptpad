@@ -232,8 +232,8 @@ tbody {
         th, td {
             color: @fore;
 
-            &.remove {
-                cursor: pointer !important;
+            .remove {
+                cursor: pointer;
                 color: @cp-red;
             }
         }
@@ -373,11 +373,7 @@ form.realtime {
 
                         input {
                             &[type="checkbox"] {
-                                &.mine {
-                                    // idk
-                                }
-
-                                &:not(.mine) {
+                                &:not(.editable) {
                                     display: none;
 
                                     ~ .cover {
@@ -408,7 +404,7 @@ form.realtime {
         input {
             &[type="text"] {
                 height: 100%;
-                width: 90%;
+                width: 80%;
                 border: 3px solid @base;
             }
         }
@@ -419,8 +415,16 @@ form.realtime {
                     .remove {
                         color: @cp-red;
                         cursor: pointer;
+                        font-size: 20px;
                     }
-
+                    .edit {
+                        color: @cp-green;
+                        cursor: pointer;
+                        width: 10%;
+                        font-size: 20px;
+                        &:after { content: '✐'; }
+                        &.editable { display: none; }
+                    }
                 }
             }
         }
@@ -441,18 +445,14 @@ form.realtime {
         }
     }
 
-    //#adduser,
+    #adduser,
     #addoption {
         color: @cp-green;
         border: 1px solid @cp-green;
         padding: 15px;
     }
 
-    #adduser {
-        .top-left;
-        //border: 1px solid grey;
-        padding: 15px;
-    }
+    #adduser { .top-left; }
     #addoption { .bottom-left; }
 }
 
@@ -507,7 +507,7 @@ div.modal {
             tr {
                 th {
                     span.remove {
-                        color: red;
+                        color: @cp-red;
                         cursor: pointer;
                     }
                 }

@@ -100,10 +100,8 @@ define([
             }
         });
 
-        if (p.x === module.userId) {
-            $check.addClass('mine');
-        } else {
-            console.log(module.userId, p.x);
+        if (p.x === module.activeColumn) {
+            $check.addClass('editable');
         }
 
         $div.append($check);
@@ -183,6 +181,25 @@ define([
         A.splice(i, 1);
     };
 
+    var makeUserEditable = module.makeUserEditable = function (id, bool) {
+        var $name = $('input[type="text"][id="' + id + '"]').attr('disabled', !bool);
+
+        var $edit = $name.parent().find('.edit');
+
+        $edit[bool?'addClass':'removeClass']('editable');
+
+        var $sel = $('input[id^="' + id + '"]')
+            [bool?'addClass':'removeClass']('editable');
+
+        if (bool) {
+            module.rt.proxy.table.colsOrder.forEach(function (coluid) {
+                if (coluid !== id) { makeUserEditable(coluid, false); }
+            });
+        }
+
+        return $sel;
+    };
+
     var makeUser = function (proxy, id, value) {
         var $user = Input({
             id: id,
@@ -193,11 +210,22 @@ define([
             proxy.table.cols[id] = $user.val() || "";
         });
 
-        var $wrapper = $('<div>', {
-            'class': 'text-cell',
-        })
-            .append($user)
-            .append($('<span>', {
+        var $edit = $('<span>', {
+                'class': 'edit',
+                title: 'edit column', // TODO translate
+            }).click(function () {
+                if ($edit.hasClass('editable')) { return; }
+                Cryptpad.confirm("Are you sure you'd like to edit this user?",
+                    function (yes) {
+                        if (!yes) { return; }
+                        makeUserEditable(id, true);
+                        $edit.addClass('editable');
+                        $edit.text("");
+                        module.activeColumn = id;
+                    });
+            });
+
+        var $remove = $('<span>', {
                 'class': 'remove',
                 'title': 'remove column', // TODO translate
             }).text('✖').click(function () {
@@ -207,7 +235,14 @@ define([
                         removeColumn(proxy, id);
                         table.removeColumn(id);
                     });
-            }));
+            });
+
+        var $wrapper = $('<div>', {
+            'class': 'text-cell',
+        })
+            .append($edit)
+            .append($user)
+            .append($remove);
 
         proxy.table.cols[id] = value || "";
         addIfAbsent(proxy.table.colsOrder, id);
@@ -234,17 +269,24 @@ define([
             proxy.table.rows[id] = $option.val();
         });
 
+        var $remove = $('<span>', {
+            'class': 'remove',
+            'title': 'remove row', // TODO translate
+        }).text('✖').click(function () {
+            // TODO translate
+            var msg = "Are you sure you'd like to remove this option?";
+            Cryptpad.confirm(msg, function (yes) {
+                if (!yes) { return; }
+                removeRow(proxy, id);
+                table.removeRow(id);
+            });
+        });
+
         var $wrapper = $('<div>', {
             'class': 'text-cell',
         })
             .append($option)
-            .append($('<span>', {
-                'class': 'remove',
-                'title': 'remove row', // TODO translate
-            }).text('✖').click(function () {
-                removeRow(proxy, id);
-                table.removeRow(id);
-            }));
+            .append($remove);
 
         proxy.table.rows[id] = value || "";
         addIfAbsent(proxy.table.rowsOrder, id);
@@ -255,22 +297,12 @@ define([
         return $option;
     };
 
-    /*
     $('#adduser').click(function () {
         if (!module.isEditable) { return; }
         var id = coluid();
-        makeUser(module.rt.proxy, id).focus();
+        makeUser(module.rt.proxy, id);
+        makeUserEditable(id, true).focus();
     });
-    */
-
-    var makeUserEditable = module.makeUserEditable = function (id, bool) {
-        var $name = $('input[type="text"][id="' + id + '"]').attr('disabled', !bool);
-
-        var $sel = $('input[id^="' + id + '"]')
-            [bool?'addClass':'removeClass']('mine');
-
-        return $sel;
-    };
 
     $('#addoption').click(function () {
         if (!module.isEditable) { return; }
@@ -672,7 +704,7 @@ define([
                 return;
             }
 
-            module.userId = column;
+            module.activeColumn = column;
 
             var promptForName = function () {
                 // HERE
@@ -682,7 +714,7 @@ define([
                     }
 
                     if (!module.isEditable) { return; }
-                    var id = module.userId = coluid();
+                    var id = module.activeColumn = coluid();
 
                     Cryptpad.setPadAttribute('column', id, function (err) {
                         if (err) {

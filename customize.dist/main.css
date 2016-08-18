@@ -191,9 +191,9 @@ tbody tr th,
 tbody tr td {
   color: #fafafa;
 }
-tbody tr th.remove,
-tbody tr td.remove {
-  cursor: pointer !important;
+tbody tr th .remove,
+tbody tr td .remove {
+  cursor: pointer;
   color: #FF0073;
 }
 tbody tr th:last-child {
@@ -302,40 +302,54 @@ form.realtime table tr td.checkbox-cell div.checkbox-contain {
   height: 100%;
   width: 100%;
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.mine) {
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) {
   display: none;
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.mine) ~ .cover {
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover {
   font-weight: bold;
   background-color: #FF0073;
   color: #302B28;
   display: block;
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.mine) ~ .cover:after {
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover:after {
   content: "✖";
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.mine) ~ .cover.yes {
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.yes {
   background-color: #46E981;
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.mine) ~ .cover.yes:after {
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.yes:after {
   content: "✔";
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.mine) ~ .cover.mine {
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.mine {
   display: none;
 }
 form.realtime table input[type="text"] {
   height: 100%;
-  width: 90%;
+  width: 80%;
   border: 3px solid #302B28;
 }
 form.realtime table thead tr th .remove {
   color: #FF0073;
   cursor: pointer;
+  font-size: 20px;
+}
+form.realtime table thead tr th .edit {
+  color: #46E981;
+  cursor: pointer;
+  width: 10%;
+  font-size: 20px;
+}
+form.realtime table thead tr th .edit:after {
+  content: '✐';
+}
+form.realtime table thead tr th .edit.editable {
+  display: none;
 }
 form.realtime table tfoot tr td {
   z-index: 4000;
   cursor: pointer;
 }
+form.realtime #adduser,
 form.realtime #addoption {
   color: #46E981;
   border: 1px solid #46E981;
@@ -343,7 +357,6 @@ form.realtime #addoption {
 }
 form.realtime #adduser {
   border-top-left-radius: 5px;
-  padding: 15px;
 }
 form.realtime #addoption {
   border-bottom-left-radius: 5px;
@@ -380,7 +393,7 @@ div.modal table input {
   border: 3px solid #302B28;
 }
 div.modal table thead tr th span.remove {
-  color: red;
+  color: #FF0073;
   cursor: pointer;
 }
 div.modal table tfoot tr td {
