@@ -257,6 +257,8 @@ define([
                 Cryptpad.confirm("Are you sure you'd like to remove this user?", // TODO translate
                     function (yes) {
                         if (!yes) { return; }
+                        // remove commit button, and anything else...
+                        makeUserEditable(id, false);
                         removeColumn(proxy, id);
                         table.removeColumn(id);
                     });
