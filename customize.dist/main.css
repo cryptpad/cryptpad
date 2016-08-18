@@ -328,6 +328,11 @@ form.realtime table input[type="text"] {
   width: 80%;
   border: 3px solid #302B28;
 }
+form.realtime table thead tr th input[type="text"][disabled] {
+  background-color: transparent;
+  color: #fafafa;
+  font-weight: bold;
+}
 form.realtime table thead tr th .remove {
   color: #FF0073;
   cursor: pointer;
