@@ -93,7 +93,7 @@ define([
             name: id,
             type:'checkbox',
         }).on('change', function () {
-            console.log("(%s, %s) => %s", p.x, p.y, $check[0].checked);
+            //console.log("(%s, %s) => %s", p.x, p.y, $check[0].checked);
             var checked = proxy.table.cells[id] = $check[0].checked? 1: 0;
             if (checked) {
                 $cover.addClass('yes');
@@ -335,7 +335,7 @@ define([
                 var id = rowuid();
                 makeOption(proxy, id, text).val(text);
             });
-            console.log(options);
+            //console.log(options);
         });
     });
 
@@ -382,7 +382,7 @@ define([
             var K = k + 'Order';
 
             if (typeof(proxy.table[K]) === 'undefined') {
-                console.log("Creating %s", K);
+                //console.log("Creating %s", K);
                 proxy.table[K] = [];
 
                 Object.keys(proxy.table[k]).forEach(function (uid) {
