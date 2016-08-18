@@ -199,6 +199,7 @@ define([
             .attr('disabled', !bool);
 
         if (bool) {
+            module.activeColumn = id;
             module.rt.proxy.table.colsOrder.forEach(function (coluid) {
                 if (coluid !== id) { makeUserEditable(coluid, false); }
             });
@@ -715,8 +716,7 @@ define([
                 return;
             }
 
-            module.activeColumn = column;
-
+            module.activeColumn = '';
             var promptForName = function () {
                 // HERE
                 Cryptpad.prompt("What is your name?", "", function (name, ev) {
@@ -751,9 +751,6 @@ define([
                 promptForName();
                 return;
             }
-
-            // if column is defined, then you can just make that column editable
-            makeUserEditable(column, true);
         });
     };
 
