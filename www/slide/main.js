@@ -8,10 +8,11 @@ define([
     '/slide/slide.js',
     '/common/notify.js',
     '/common/visible.js',
+    '/common/clipboard.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, Messages, Realtime, Crypto, TextPatcher, Cryptpad, Slide, Notify, Visible) {
+], function (Config, Messages, Realtime, Crypto, TextPatcher, Cryptpad, Slide, Notify, Visible, Clipboard) {
     var $ = window.jQuery;
     var saveAs = window.saveAs;
 
@@ -202,12 +203,29 @@ define([
             });
         });
 
+        var $share = Button({
+            id: 'share',
+            'class': 'export button action',
+            title: 'copy url', // TODO translate
+        })
+        .text('SHARE')
+        .click(function () {
+            var text = window.location.href;
+            var success = Clipboard.copy(text);
+            if (success) {
+                Cryptpad.log("copied URL to clipboard");
+                return;
+            }
+            Cryptpad.warn("failed to copy URL to clipboard");
+        });
+
         $bar
             .append($present)
             .append($forget)
             .append($rename)
             .append($import)
-            .append($export);
+            .append($export)
+            .append($share);
     };
 
     var onRemote = config.onRemote = function (info) {
