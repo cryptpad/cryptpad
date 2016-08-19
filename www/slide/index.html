@@ -4,30 +4,41 @@
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <script data-main="main" src="/bower_components/requirejs/require.js"></script>
+    <link rel="icon" type="image/png"
+        href="/customize/main-favicon.png"
+        data-main-favicon="/customize/main-favicon.png"
+        data-alt-favicon="/customize/alt-favicon.png"
+        id="favicon" />
+    <link rel="stylesheet" href="/customize/main.css" />
     <style>
         html, body{
+            height: 100%;
+            width: 100%;
             padding: 0px;
             margin: 0px;
             overflow: hidden;
             box-sizing: border-box;
+            position: relative;
         }
-        #bar {
-            height: 40px;
+        #bar > button {
+            margin: 5px;
         }
         textarea{
             width: 100%;
-            height: calc(100vh - 40px);
-            max-width: 100%;
-            max-height: 100vh;
+            min-height: 90%;
 
-            font-size: 18px;
+            display: block;
+            position: relative;
+
+            font-size: 25px;
             background-color: #073642;
-            color: #839496;
+            color: #DDD;
 
             overflow-x: hidden;
 
             /* disallow textarea resizes */
             resize: none;
+            border: 0px;
         }
         textarea[disabled] {
             background-color: #275662;
@@ -58,19 +69,23 @@
             text-align: center;
         }
 
-        #content p, #content ul, #content ol{
-            font-size: 23px;
+        h1 { font-size: 40px; }
+        h2 { font-size: 37px; }
+        h3 { font-size: 34px; }
+        h4 { font-size: 31px; }
+        h5 { font-size: 27px; }
+        h6 { font-size: 24px; }
+
+        #content p,
+        #content ul,
+        #content ol {
+            font-size: 26px;
         }
-
-
 
     </style>
 </head>
 <body>
-    <div id="bar">
-        <button id="present">presentation mode 
-        </button>
-    </div>
+    <div id="bar"></div>
     <textarea></textarea>
     <div id="modal">
         <div id="content"></div>

@@ -1,14 +1,17 @@
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
+    '/customize/messages.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     '/common/cryptpad-common.js',
     '/slide/slide.js',
+    '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, Realtime, Crypto, TextPatcher, Cryptpad, Slide) {
+], function (Config, Messages, Realtime, Crypto, TextPatcher, Cryptpad, Slide) {
     var $ = window.jQuery;
+    var saveAs = window.saveAs;
 
     /*
         TODO
@@ -21,6 +24,8 @@ define([
         * ui hint for escaping presentation mode
     */
 
+    Cryptpad.styleAlerts();
+
     var secret = Cryptpad.getSecrets();
 
     var module = window.APP = {
@@ -28,19 +33,25 @@ define([
         Slide: Slide,
     };
 
-    var userName = module.userName = Crypto.rand64(8);
-
     var initializing = true;
     var $textarea = $('textarea');
+
+    var suggestName = function () {
+        var title = '';
+        var patt = /^#\s+(.*)\s*$/;
+        $textarea.val().split("\n").some(function (line) {
+            if (!patt.test(line)) { return; }
+            line.replace(patt, function (a, b) {
+                title = b;
+            });
+            return true;
+        });
+        return title;
+    };
 
     var $modal = $('#modal');
     var $content = $('#content');
     Slide.setModal($modal, $content);
-
-    var $present = $('#present').click(function () {
-        Slide.show(true, $textarea.val());
-        Cryptpad.log("Hit ESC to exit presentation mode");
-    });
 
     var config = module.config = {
         initialState: '',
@@ -53,6 +64,17 @@ define([
     var canonicalize = function (text) { return text.replace(/\r\n/g, '\n'); };
 
     setEditable(false);
+
+    var onLocal = config.onLocal = function () {
+        if (initializing) { return; }
+        var content = canonicalize($textarea.val());
+        module.patchText(content);
+        Slide.update(content);
+    };
+
+    var Button = function (opt) {
+        return $('<button>', opt);
+    };
 
     var onInit = config.onInit = function (info) {
         window.location.hash = info.channel + secret.key;
@@ -73,6 +95,105 @@ define([
                 }
             });
         });
+
+        var $bar = $('#bar');
+
+        var $present = Button({
+            id: 'present',
+            'class': 'present button action',
+            title: 'enter presentation mode',
+        })
+        .text("PRESENT")
+        .click(function () {
+            Slide.show(true, $textarea.val());
+            Cryptpad.log("Hit ESC to exit presentation mode");
+        });
+
+        var $forget = Button({
+            id: 'forget',
+            'class': 'forget button action',
+            title: Messages.forgetButtonTitle,
+        })
+        .text(Messages.forgetButton)
+        .click(function () {
+            var href = window.location.href;
+            Cryptpad.confirm(Messages.forgetPrompt, function (yes) {
+                if (!yes) { return; }
+                Cryptpad.forgetPad(href, function (err) {
+                    if (err) {
+                        console.log("unable to forget pad");
+                        console.log(err);
+                        return;
+                    }
+                    document.title = window.location.hash.slice(1,9);
+                });
+            });
+        });
+
+        var $rename = Button({
+            id: 'rename',
+            'class': 'rename button action',
+            title: Messages.renameButtonTitle,
+        })
+        .text(Messages.renameButton)
+        .click(function () {
+            var suggestion = suggestName();
+            Cryptpad.prompt(Messages.renamePrompt,
+                suggestion, function (title, ev) {
+                if (title === null) { return; }
+                Cryptpad.causesNamingConflict(title, function (err, conflicts) {
+                    if (conflicts) {
+                        Cryptpad.alert(Messages.renameConflict);
+                        return;
+                    }
+                    Cryptpad.setPadTitle(title, function (err) {
+                        if (err) {
+                            console.log("unable to set pad title");
+                            console.error(err);
+                            return;
+                        }
+                        document.title = title;
+                    });
+                });
+            });
+        });
+
+        var $import = Button({
+            id: 'import',
+            'class': 'import button action',
+            title: Messages.importButtonTitle,
+        })
+        .text(Messages.importButton)
+        .click(Cryptpad.importContent('text/plain', function (content, file) {
+            $textarea.val(content);
+            onLocal();
+        }));
+
+        var $export = Button({
+            id: 'export',
+            'class': 'export button action',
+            title: Messages.exportButtonTitle,
+        })
+        .text(Messages.exportButton)
+        .click(function () {
+            var text = $textarea.val();
+            var title = Cryptpad.fixFileName(suggestName()) + '.txt';
+
+            Cryptpad.prompt(Messages.exportPrompt, title, function (filename) {
+                if (filename === null) { return; }
+                var blob = new Blob([text], {
+                    type: 'text/plain;charset=utf-8',
+                });
+                saveAs(blob, filename);
+            });
+        });
+
+        $bar
+            .append($present)
+            .append($forget)
+            .append($rename)
+            .append($import)
+            .append($export);
     };
 
     var onRemote = config.onRemote = function (info) {
@@ -94,12 +215,6 @@ define([
         Slide.update(content);
     };
 
-    var onLocal = config.onLocal = function () {
-        if (initializing) { return; }
-        var content = canonicalize($textarea.val());
-        module.patchText(content);
-        Slide.update(content);
-    };
 
     var onReady = config.onReady = function (info) {
         var realtime = module.realtime = info.realtime;
@@ -108,6 +223,7 @@ define([
         });
 
         var content = canonicalize(realtime.getUserDoc());
+
         $textarea.val(content);
 
         Slide.update(content);
@@ -118,7 +234,7 @@ define([
 
     var onAbort = config.onAbort = function (info) {
         $textarea.attr('disabled', true);
-        window.alert("Server Connection Lost");
+        Cryptpad.alert("Server Connection Lost");
     };
 
     var rt = Realtime.start(config);
@@ -127,6 +243,4 @@ define([
         .forEach(function (evt) {
             $textarea.on(evt, onLocal);
         });
-
-
 });
