@@ -6,10 +6,12 @@ define([
     '/bower_components/textpatcher/TextPatcher.amd.js',
     '/common/cryptpad-common.js',
     '/slide/slide.js',
+    '/common/notify.js',
+    '/common/visible.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, Messages, Realtime, Crypto, TextPatcher, Cryptpad, Slide) {
+], function (Config, Messages, Realtime, Crypto, TextPatcher, Cryptpad, Slide, Notify, Visible) {
     var $ = window.jQuery;
     var saveAs = window.saveAs;
 
@@ -47,6 +49,18 @@ define([
             return true;
         });
         return title;
+    };
+
+    var unnotify = function () {
+        if (!(module.tabNofification &&
+            typeof(module.tabNofification.cancel) === 'function')) { return; }
+        module.tabNofification.cancel();
+    };
+
+    var notify = function () {
+        if (!(Visible.isSupported() && !Visible.currently())) { return; }
+        unnotify();
+        module.tabNofification = Notify.tab(document.title, 1000, 10);
     };
 
     var $modal = $('#modal');
@@ -213,8 +227,9 @@ define([
         elem.selectionEnd = selects[1];
 
         Slide.update(content);
-    };
 
+        notify();
+    };
 
     var onReady = config.onReady = function (info) {
         var realtime = module.realtime = info.realtime;
@@ -227,6 +242,12 @@ define([
         $textarea.val(content);
 
         Slide.update(content);
+
+        if (Visible.isSupported()) {
+            Visible.onChange(function (yes) {
+                if (yes) { unnotify(); }
+            });
+        }
 
         setEditable(true);
         initializing = false;
