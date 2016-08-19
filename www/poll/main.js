@@ -125,9 +125,14 @@ define([
         items.forEach(function ($item) {
             $item.attr('disabled', !bool);
         });
-        $('input[id^="y"]').each(function (i, e) {
-            $(this).attr('disabled', !bool);
-        });
+
+        if (!bool) {
+            $('input[id^="y"]').each(function (i, e) {
+                var $option = $(this);
+                $option.attr('disabled', true);
+                console.log($option.val());
+            });
+        }
     };
 
     var coluid = Uid('x');
@@ -209,6 +214,7 @@ define([
                 })
                 .text('COMMIT') // TODO translate
                 .click(function () {
+                    module.activeColumn = '';
                     makeUserEditable(id, false);
                 });
                 $target.append($save);
@@ -287,6 +293,20 @@ define([
         });
     };
 
+    var makeOptionEditable = function (id, bool) {
+        if (bool) {
+            module.rt.proxy.table.rowsOrder.forEach(function (rowuid) {
+                $('#' + rowuid)
+                    .attr('disabled', rowuid !== id)
+                    .closest('td')
+                    .find('.edit')
+                    .removeClass('editable');
+            });
+            return;
+        }
+        $('input[id^="y"]').attr('disabled', true);
+    };
+
     var makeOption = function (proxy, id, value) {
         var $option = Input({
             type: 'text',
@@ -294,6 +314,22 @@ define([
             id: id,
         }).on('keyup change', function () {
             proxy.table.rows[id] = $option.val();
+        }).attr('disabled', true);
+
+        var $edit = $('<span>', {
+            'class': 'edit',
+            title: 'edit option', // TODO translate
+        })
+        .click(function () {
+            if ($edit.hasClass('editable')) { return; }
+            Cryptpad.confirm("Are you sure you'd like to edit this option?",
+                function (yes) {
+                    if (!yes) { return; }
+                    makeOptionEditable(id, true);
+                    $edit.addClass('editable');
+                    $edit.text("");
+                    module.activeOption = id;
+                });
         });
 
         var $remove = $('<span>', {
@@ -312,6 +348,7 @@ define([
         var $wrapper = $('<div>', {
             'class': 'text-cell',
         })
+            .append($edit)
             .append($option)
             .append($remove);
 
@@ -339,7 +376,13 @@ define([
     $('#addoption').click(function () {
         if (!module.isEditable) { return; }
         var id = rowuid();
-        makeOption(module.rt.proxy, id).focus();
+
+        var msg = "Propose an option";
+        Cryptpad.prompt(msg, "", function (option) {
+            if (option === null) { return; }
+            makeOption(module.rt.proxy, id, option).val(option).focus();
+        });
+        //makeOption(module.rt.proxy, id).focus();
     });
 
     Wizard.$getOptions.click(function () {

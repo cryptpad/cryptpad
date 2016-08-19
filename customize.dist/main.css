@@ -288,9 +288,14 @@ form.realtime table tr td div.text-cell {
   height: 100%;
 }
 form.realtime table tr td div.text-cell input {
-  width: 90%;
+  width: 80%;
   height: 100%;
   border: 0px;
+}
+form.realtime table tr td div.text-cell input[disabled] {
+  background-color: transparent;
+  color: #fafafa;
+  font-weight: bold;
 }
 form.realtime table tr td.checkbox-cell {
   margin: 0px;
@@ -337,6 +342,18 @@ form.realtime table input[type="text"] {
   width: 80%;
   border: 3px solid #302B28;
 }
+form.realtime table .edit {
+  color: #46E981;
+  cursor: pointer;
+  width: 10%;
+  font-size: 20px;
+}
+form.realtime table .edit:after {
+  content: '✐';
+}
+form.realtime table .edit.editable {
+  display: none;
+}
 form.realtime table thead tr th input[type="text"][disabled] {
   background-color: transparent;
   color: #fafafa;
@@ -345,18 +362,6 @@ form.realtime table thead tr th input[type="text"][disabled] {
 form.realtime table thead tr th .remove {
   cursor: pointer;
   font-size: 20px;
-}
-form.realtime table thead tr th .edit {
-  color: #46E981;
-  cursor: pointer;
-  width: 10%;
-  font-size: 20px;
-}
-form.realtime table thead tr th .edit:after {
-  content: '✐';
-}
-form.realtime table thead tr th .edit.editable {
-  display: none;
 }
 form.realtime table tfoot tr td {
   text-align: center;

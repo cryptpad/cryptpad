@@ -346,9 +346,14 @@ form.realtime {
                     margin: 0px;
                         height: 100%;
                     input {
-                        width: 90%;
+                        width: 80%;
                         height: 100%;
                         border: 0px;
+                        &[disabled] {
+                            background-color: transparent;
+                            color: @fore;
+                            font-weight: bold;
+                        }
                     }
                 }
 
@@ -409,6 +414,14 @@ form.realtime {
                 border: 3px solid @base;
             }
         }
+        .edit {
+            color: @cp-green;
+            cursor: pointer;
+            width: 10%;
+            font-size: 20px;
+            &:after { content: '✐'; }
+            &.editable { display: none; }
+        }
 
         thead {
             tr {
@@ -421,14 +434,6 @@ form.realtime {
                     .remove {
                         cursor: pointer;
                         font-size: 20px;
-                    }
-                    .edit {
-                        color: @cp-green;
-                        cursor: pointer;
-                        width: 10%;
-                        font-size: 20px;
-                        &:after { content: '✐'; }
-                        &.editable { display: none; }
                     }
                 }
             }
