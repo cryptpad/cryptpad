@@ -361,7 +361,8 @@ define([
     };
 
     var fixFileName = common.fixFileName = function (filename) {
-        return filename.replace(/ /g, '-').replace(/\//g, '_');
+        return filename.replace(/ /g, '-').replace(/[\/\?]/g, '_')
+            .replace(/_+/g, '_');
     };
 
     var importContent = common.importContent = function (type, f) {
