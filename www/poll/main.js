@@ -379,7 +379,7 @@ define([
 
         var msg = "Propose an option";
         Cryptpad.prompt(msg, "", function (option) {
-            if (option === null) { return; }
+            if (option === null || !option) { return; }
             makeOption(module.rt.proxy, id, option).val(option).focus();
         });
         //makeOption(module.rt.proxy, id).focus();
