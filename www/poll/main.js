@@ -44,14 +44,33 @@ define([
         Cryptpad: Cryptpad,
     };
 
+    module.getResults = function () {
+        if (!module.ready) { return []; }
+        var table = module.rt.proxy.table;
+        var cells = table.cells;
+        var rows = table.rows;
+
+        return Object.keys(rows).map(function (id) {
+            var text = rows[id];
+            var count = Object.keys(cells).filter(function (c) {
+                return c.indexOf(id) !== -1 && cells[c];
+            }).length;
+            return {
+                text: text,
+                count: count,
+            };
+        }).sort(function (a,b) {
+            return b.count - a.count;
+        });
+    };
+
     module.Wizard = Wizard;
 
     // special UI elements
     var $title = $('#title').attr('placeholder', Messages.dateTitleHint || 'title');
-    var $location = $('#location').attr('placeholder', Messages.dateLocationHint || 'location');
     var $description = $('#description').attr('placeholder', Messages.dateDescription || 'description');
 
-    var items = [$title, $location, $description];
+    var items = [$title, $description];
 
     var Uid = function (prefix, f) {
         f = f || function () {
