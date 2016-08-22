@@ -79,9 +79,10 @@ If you use Mac, you can `brew install chromedriver`.
 CryptPad is *private*, not *anonymous*. Privacy protects your data, anonymity protects you.
 As such, it is possible for a collaborator on the pad to include some silly/ugly/nasty things
 in a CryptPad such as an image which reveals your IP address when your browser automatically
-loads it or a script which plays Rick Astleys's greatest hits. It is acceptable for anyone
+loads it or a script which plays Rick Astleys's greatest hits. It is possible for anyone
 who does not have the key to be able to change anything in the pad or add anything, even the
-server.
+server, however the clients will notice this because the content hashes in ChainPad will fail to
+validate.
 
 The server does have a certain power, it can send you evil javascript which does the wrong
 thing (leaks the key or the data back to the server or to someone else). This is however an
