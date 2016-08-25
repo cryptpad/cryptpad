@@ -259,7 +259,7 @@ define([
 
             var setName = module.setName = function (newName) {
                 if (!(typeof(newName) === 'string' && newName.trim())) { return; }
-                var myUserNameTemp = newName.trim();
+                var myUserNameTemp = Cryptpad.fixHTML(newName.trim());
                 if(myUserNameTemp.length > 32) {
                     myUserNameTemp = myUserNameTemp.substr(0, 32);
                 }
