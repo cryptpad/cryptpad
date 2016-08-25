@@ -580,18 +580,14 @@ define([
                     });
                 }
 
-                //if (!inner.innerText.trim()) { documentBody.innerHTML = Messages.initialState; }
-
-                console.log("Unlocking editor");
-                setEditable(true);
-                initializing = false;
-
                 getLastName(function (err, lastName) {
                     if (typeof(lastName) === 'string' && lastName.length) {
                         setName(lastName);
                     }
+                    console.log("Unlocking editor");
+                    setEditable(true);
+                    initializing = false;
                 });
-                //var lastName = getLastName();
             };
 
             var onAbort = realtimeOptions.onAbort = function (info) {
