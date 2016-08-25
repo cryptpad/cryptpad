@@ -206,7 +206,7 @@ define([
     };
 
     var makePad = function (href, title) {
-        var now = new Date();
+        var now = ''+new Date();
         return {
             href: href,
             atime: now,
@@ -225,7 +225,7 @@ define([
                 return;
             }
 
-            var now = new Date();
+            var now = ''+new Date();
             var href = window.location.href;
 
             var parsed = parsePadUrl(window.location.href);
