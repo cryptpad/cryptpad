@@ -276,7 +276,9 @@ define([
         Cryptpad.alert("Server Connection Lost");
     };
 
-    var rt = Realtime.start(config);
+    Cryptpad.ready(function () {
+        var rt = Realtime.start(config);
+    });
 
     ['cut', 'paste', 'change', 'keyup', 'keydown', 'select', 'textInput']
         .forEach(function (evt) {
