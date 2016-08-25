@@ -3,11 +3,13 @@ define([
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/cryptpad-common.js',
+    '/bower_components/tweetnacl/nacl-fast.min.js',
     '/bower_components/scrypt-async/scrypt-async.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
 ], function (Config, Listmap, Crypto, Cryptpad) {
     var $ = window.jQuery;
     var Scrypt = window.scrypt;
+    var Nacl = window.nacl;
 
     Cryptpad.styleAlerts();
 
@@ -50,7 +52,7 @@ define([
                 input.salt,
                 8, // memoryCost (n)
                 1024, // block size parameter (r)
-                48, // dkLen
+                128, // dkLen
                 undefined && 200, // interruptStep
                 function (S) {
                     print("Login took " + ((+new Date()) -time )+ "ms");
@@ -62,7 +64,17 @@ define([
 
     var read = function (proxy) {
         console.log("Proxy ready!");
+
+        var otime = +new Date(proxy.atime)
+
         var atime = proxy.atime = ('' + new Date());
+
+        if (otime) {
+            print("Last visit was " +
+                (((+new Date(atime)) - otime) / 1000) +
+                " seconds ago");
+        }
+
         proxy.ctime = proxy.ctime || atime;
         proxy.schema = proxy.schema || 'login_data';
         print(JSON.stringify(proxy, null, 2), 'pre');
@@ -93,8 +105,14 @@ define([
     var authenticated = function (password, next) {
         console.log("Authenticated!");
         var secret = {};
+
         secret.channel = password.slice(0, 32);
-        secret.key = password.slice(32);
+        secret.key = password.slice(32, 48);
+        secret.junk = password.slice(48, 64); // consider reordering things
+        secret.curve = password.slice(64, 96);
+        secret.ed = password.slice(96, 128);
+
+        print(JSON.stringify(secret, null, 2), 'pre');
 
         var config = {
             websocketURL: Config.websocketURL,
