@@ -603,6 +603,18 @@ define([
                 Cryptpad.alert(Messages.disconnectAlert);
             };
 
+            var onConnectionChange = realtimeOptions.onConnectionChange = function (info) {
+                setEditable(info.state);
+                toolbar.failed();
+                if (info.state) {
+                    initializing = true;
+                    toolbar.reconnecting(info.myId);
+                    Cryptpad.findOKButton().click();
+                } else {
+                    Cryptpad.alert(Messages.disconnectAlert);
+                }
+            };
+
             var onLocal = realtimeOptions.onLocal = function () {
                 if (initializing) { return; }
 

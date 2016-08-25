@@ -74,8 +74,17 @@ define([
     };
 
     var onAbort = config.onAbort = function (info) {
-        $textarea.attr('disabled', true);
+        setEditable(false);
         window.alert("Server Connection Lost");
+    };
+
+    var onConnectionChange = config.onConnectionChange = function (info) {
+        if (info.state) {
+            initializing = true;
+        } else {
+            setEditable(false);
+            window.alert("Server Connection Lost. Trying to reconnect...");
+        }
     };
 
     var rt = Realtime.start(config);
