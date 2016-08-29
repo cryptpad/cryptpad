@@ -35,6 +35,17 @@ define([
 
     var isArray = function (o) { return Object.prototype.toString.call(o) === '[object Array]'; };
 
+    var fixHTML = common.fixHTML = function (html) {
+        return html.replace(/</g, '&lt;');
+    };
+
+    var truncate = common.truncate = function (text, len) {
+        if (typeof(text) === 'string' && text.length > len) {
+            return text.slice(0, len) + '…';
+        }
+        return text;
+    };
+
     common.redirect = function (hash) {
         var hostname = window.location.hostname;
 
