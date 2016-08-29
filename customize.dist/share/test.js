@@ -5,10 +5,12 @@ define([
     var $ = window.jQuery;
 
     var domain = 'https://beta.cryptpad.fr';
+    domain = 'http://localhost:3000';
 
     var path = '/customize/share/frame.html';
 
     var acceptResponseFrom = [
+        /.*/i,
         /cryptpad.fr$/
     ];
 
@@ -77,14 +79,14 @@ define([
 
             var keys = Object.keys(map);
 
-            frame.batchset(map, function (err, data) {
+            frame.setBatch(map, function (err, data) {
                 if (handleErr(err)) { return; }
-                frame.batchget(keys, function (err, data) {
+                frame.getBatch(keys, function (err, data) {
                     if (handleErr(err)) { return; }
-                    frame.batchremove(Object.keys(map), function (err) {
+                    frame.removeBatch(Object.keys(map), function (err) {
                         if (handleErr(err)) { return; }
 
-                        frame.batchget(keys, function (err, data) {
+                        frame.getBatch(keys, function (err, data) {
                             if (areNull(keys, data)) { unlock(i); }
                         });
                     });
@@ -100,15 +102,15 @@ define([
             var keys = Object.keys(map);
 
             // set some keys to arbitrary values
-            frame.batchset(map, function (err) {
+            frame.setBatch(map, function (err) {
                 if (handleErr(err)) { return; }
 
                 // remove those values
-                frame.batchremove(keys, function (err) {
+                frame.removeBatch(keys, function (err) {
                     if (handleErr(err)) { return; }
 
                     // check that they were actually removed
-                    frame.batchget(keys, function (err, data) {
+                    frame.getBatch(keys, function (err, data) {
                         if (handleErr(err)) { return; }
 
                         // all keys should be null after you've removed them
