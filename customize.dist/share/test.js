@@ -5,12 +5,10 @@ define([
     var $ = window.jQuery;
 
     var domain = 'https://beta.cryptpad.fr';
-    domain = 'http://localhost:3000';
 
     var path = '/customize/share/frame.html';
 
     var acceptResponseFrom = [
-        /.*/i,
         /cryptpad.fr$/
     ];
 
