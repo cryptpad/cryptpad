@@ -49,6 +49,15 @@
             });
         };
 
+        var changeHandlers = frame.changeHandlers = [];
+
+        var change = frame.change = function (f) {
+            if (typeof(f) !== 'function') {
+                throw new Error('[Frame.change] expected callback');
+            }
+            changeHandlers.push(f);
+        };
+
         var _listener = function (e) {
             if (!frame.accepts(e.origin)) {
                 console.log("message from %s rejected!", e.origin);
@@ -63,6 +72,14 @@
                 console.log("No uid!");
                 return;
             }
+
+            if (uid === 'change' && changeHandlers.length) {
+                changeHandlers.forEach(function (f) {
+                    f(data);
+                });
+                return;
+            }
+
             if (timeouts[uid]) {
                 window.clearTimeout(timeouts[uid]);
             }
@@ -89,6 +106,11 @@
             };
 
             var id = req._uid = uid();
+            // uid must not equal 'change'
+            while(id === 'change') {
+                id = req._uid = uid();
+            }
+
             if (typeof(cb) === 'function') {
                 //console.log("setting callback!");
                 listeners[id] = cb;

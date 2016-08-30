@@ -81,3 +81,13 @@ window.addEventListener('message', function(e) {
     }
 });
 
+window.addEventListener('storage', function (ev) {
+    parent.postMessage(JSON.stringify({
+        _uid: 'change',
+        data: {
+            key: ev.key,
+            oldValue: ev.oldValue,
+            newValue: ev.newValue,
+        }
+    }), '*');
+});
