@@ -83,7 +83,11 @@ define(function () {
             // start listening for changes
             window.addEventListener('storage', function (e) {
                 changeHandlers.forEach(function (f) {
-                    f(e);
+                    f({
+                        key: e.key,
+                        oldValue: e.oldValue,
+                        newValue: e.newValue,
+                    });
                 });
             });
         }
