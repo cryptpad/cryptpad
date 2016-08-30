@@ -70,5 +70,8 @@ define(function () {
         '*/'
     ].join('');
 
+    out.loginText = '<p>Your username and password are used to generate a unique key which is never known by our server.</p>\n' +
+                    '<p>Be careful not to forget your credentials, as they are impossible to recover</p>';
+
     return out;
 });
