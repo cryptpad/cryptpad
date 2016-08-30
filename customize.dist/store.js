@@ -71,5 +71,23 @@ define(function () {
         }
     };
 
+    var changeHandlers = Store.changeHandlers = [];
+
+    Store.change = function (f) {
+        if (typeof(f) !== 'function') {
+            throw new Error('[Store.change] callback must be a function');
+        }
+        changeHandlers.push(f);
+
+        if (changeHandlers.length === 1) {
+            // start listening for changes
+            window.addEventListener('storage', function (e) {
+                changeHandlers.forEach(function (f) {
+                    f(e);
+                });
+            });
+        }
+    };
+
     return Store;
 });
