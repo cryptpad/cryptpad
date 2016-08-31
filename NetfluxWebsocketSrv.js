@@ -157,7 +157,8 @@ const handleMessage = function (ctx, user, msg) {
                 getHistory(ctx, parsed[1], function (msg) {
                     sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(msg)]);
                 }, function () {
-                    sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, 0]);
+                    let parsedMsg = {state: 1, channel: parsed[1]};
+                    sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(parsedMsg)]);
                 });
             }
             return;
