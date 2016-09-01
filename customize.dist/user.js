@@ -3,34 +3,38 @@ define([
     '/customize/messages.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
+    '/customize/store.js',
+
     '/bower_components/scrypt-async/scrypt-async.min.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function (Config, Messages, Listmap, Crypto) {
+], function (Config, Messages, Listmap, Crypto, Store) {
     var Scrypt = window.scrypt;
     var Nacl = window.nacl;
 
-    var localKey = 'cryptpad_user_session';
-
     var User = {};
+    var localKey = User.localKey = 'cryptpad_user_session';
+    var store;
+
+    Store.ready(function (err, s) {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        store = s;
+    });
 
     var isArray = function (o) { return Object.prototype.toString.call(o) === '[object Array]'; };
 
-    var session = User.session = function (secret) {
-        // TODO use store.js, not localStorage?
+    var session = User.session = function (secret, cb) {
         if (secret) {
-            localStorage.setItem(localKey, JSON.stringify(secret));
+            store.set(localKey, secret, cb);
             return;
         }
         if (secret === null) {
-            localStorage.removeItem(localKey);
-            return;
+            store.remove(localKey, cb);
         }
-        var temp = localStorage.getItem(localKey);
-        try {
-            return JSON.parse(temp);
-        } catch (err) {
-            return null;
-        }
+
+        store.get(localKey, cb);
     };
 
     /*  64 uint8s symmetric keys
@@ -91,11 +95,12 @@ define([
         initialize(rt.proxy, secret, cb);
     };
 
-    /*  Asynchronously derive 128 random uint8s given a uname and password
+    var disconnect = User.disconnect = function (cb) {
+        var err = "User.disconnect is not implemented yet";
+        cb(err);
+    };
 
-        cb(proxy, secret)
-    */
-    var login = User.login = function (uname, pw, cb) {
+    var genSecret = User.genSecret = function (uname, pw, cb) {
         Scrypt(pw,
             uname,
             15, // memory cost parameter
@@ -105,8 +110,19 @@ define([
             function (bytes) {
                 var secret = parse128(bytes);
                 secret.username = uname;
-                session(secret);
+                cb(void 0, secret);
+        });
+    };
+
+    /*  Asynchronously derive 128 random uint8s given a uname and password
+
+        cb(proxy, secret)
+    */
+    var login = User.login = function (uname, pw, cb) {
+        genSecret(uname, pw, function (err, secret) {
+            session(secret, function (err) {
                 connect(secret, cb);
+            });
         });
     };
 
