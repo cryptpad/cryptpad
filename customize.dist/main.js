@@ -8,6 +8,10 @@ define([
 ], function (Messages, DecorateToolbar, Cryptpad, LilUri, Email) {
     var $ = window.$;
 
+    var APP = window.APP = {
+        Cryptpad: Cryptpad,
+    };
+
     var email = Email.makeScrambler(1);
 
     // slip past the spammers, then unscramble mailto links
@@ -22,14 +26,6 @@ define([
     DecorateToolbar.main($('#bottom-bar'));
     Cryptpad.styleAlerts();
 
-    var $table = $('table.scroll');
-    var $tbody = $table.find('tbody');
-    var $tryit = $('#tryit');
-    var now = new Date();
-    var hasRecent = false;
-
-    var forgetPad = Cryptpad.forgetPad;
-
     var padTypes = {
         '/pad/': 'Pad',
         '/code/': 'Code',
@@ -37,16 +33,13 @@ define([
         '/slide/': 'Presentation',
     };
 
-    var truncateTitle = function (title, len) {
-        if (typeof(title) === 'string' && title.length > len) {
-            return title.slice(0, len) + '…';
-        }
-        return title;
-    };
+    var $table = $('table.scroll');
+    var $tbody = $table.find('tbody');
+    var $tryit = $('#tryit');
+    var now = new Date();
+    var hasRecent = false;
 
-    var fixHTML = function (html) {
-        return html.replace(/</g, '&lt;');
-    };
+    var forgetPad = Cryptpad.forgetPad;
 
     var makeRecentPadsTable = function (recentPads) {
         if (!recentPads.length) { return; }
@@ -68,7 +61,7 @@ define([
             var name = padTypes[uri.path()];
 
             var title = pad.title || uri.parts.hash.slice(0,8);
-            var shortTitle = truncateTitle(pad.title, 48);
+            var shortTitle = Cryptpad.truncate(pad.title, 48);
 
             var date = new Date(pad.atime).toLocaleDateString();
             var created = new Date(pad.ctime).toLocaleDateString();
@@ -87,7 +80,7 @@ define([
                 'class': 'remove',
                 title: "forget '"+shortTitle + "'"
             }).text('✖').click(function () {
-                Cryptpad.confirm(Messages.forgetPrompt + ' (' + fixHTML(shortTitle) + ')', function (yes) {
+                Cryptpad.confirm(Messages.forgetPrompt + ' (' + Cryptpad.fixHTML(shortTitle) + ')', function (yes) {
                     if (!yes) { return; }
                     forgetPad(pad.href, function (err, data) {
                         if (err) {
@@ -142,7 +135,14 @@ define([
     Cryptpad.ready(function () {
         console.log("ready");
         refreshTable();
-        $('.table-refresh').click(refreshTable);
+
+        if (Cryptpad.store && Cryptpad.store.change) {
+            Cryptpad.store.change(function (data) {
+                if (data.key === 'CryptPad_RECENTPADS') {
+                    refreshTable();
+                }
+            });
+        }
     });
 });
 

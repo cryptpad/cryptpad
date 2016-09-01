@@ -4,8 +4,11 @@ define([
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/alertifyjs/dist/js/alertify.js',
     '/bower_components/spin.js/spin.min.js',
+
+    '/customize/user.js',
+
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages, Store, Crypto, Alertify, Spinner) {
+], function (Messages, Store, Crypto, Alertify, Spinner, User) {
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
@@ -14,13 +17,32 @@ define([
 */
     var $ = window.jQuery;
 
+    var common = {};
     var store;
+    var userProxy;
+    var userStore;
 
-    var getStore = function () {
-        if (!store) {
-            throw new Error("Store is not ready!");
+    var getStore = common.getStore = function (legacy) {
+        if (!legacy && userStore) { return userStore; }
+        if (store) { return store; }
+        throw new Error("Store is not ready!");
+    };
+
+    /*
+     *  cb(err, proxy);
+     */
+    var authorize = common.authorize = function (cb) {
+        console.log("Authorizing");
+        var secret = User.session();
+        if (!secret) {
+            // user is not authenticated
+            cb('user is not authenticated', void 0);
         }
-        return store;
+
+        // for now we assume that things always work
+        User.connect(secret, function (err, proxy) {
+            cb(void 0, proxy);
+        });
     };
 
     Store.ready(function (err, Store) {
@@ -31,7 +53,6 @@ define([
         store = Store;
     });
 
-    var common = {};
 
     var isArray = function (o) { return Object.prototype.toString.call(o) === '[object Array]'; };
 
@@ -84,6 +105,9 @@ define([
     var storageKey = common.storageKey = 'CryptPad_RECENTPADS';
 
     /*
+     *  localStorage formatting
+     */
+    /*
         the first time this gets called, your local storage will migrate to a
         new format. No more indices for values, everything is named now.
 
@@ -129,41 +153,6 @@ define([
         return window.location.hash.slice(1);
     };
 
-    var setPadAttribute = common.setPadAttribute = function (attr, value, cb) {
-        getStore().set([getHash(), attr].join('.'), value, function (err, data) {
-            cb(err, data);
-        });
-    };
-
-    var getPadAttribute = common.getPadAttribute = function (attr, cb) {
-        getStore().get([getHash(), attr].join('.'), function (err, data) {
-            cb(err, data);
-        });
-    };
-
-    /* fetch and migrate your pad history from localStorage */
-    var getRecentPads = common.getRecentPads = function (cb) {
-        getStore().get(storageKey, function (err, recentPads) {
-            if (isArray(recentPads)) {
-                cb(void 0, migrateRecentPads(recentPads));
-                return;
-            }
-            cb(void 0, []);
-        });
-    };
-
-    /* commit a list of pads to localStorage */
-    var setRecentPads = common.setRecentPads = function (pads, cb) {
-        getStore().set(storageKey, pads, function (err, data) {
-            cb(err, data);
-        });
-    };
-
-    /* Sort pads according to how recently they were accessed */
-    var mostRecent = common.mostRecent = function (a, b) {
-        return new Date(b.atime).getTime() - new Date(a.atime).getTime();
-    };
-
     var parsePadUrl = common.parsePadUrl = function (href) {
         var patt = /^https*:\/\/([^\/]*)\/(.*?)\/#(.*)$/i;
 
@@ -177,7 +166,57 @@ define([
         return ret;
     };
 
-    var forgetPad = common.forgetPad = function (href, cb) {
+    var makePad = function (href, title) {
+        var now = ''+new Date();
+        return {
+            href: href,
+            atime: now,
+            ctime: now,
+            title: title || window.location.hash.slice(1, 9),
+        };
+    };
+
+    /* Sort pads according to how recently they were accessed */
+    var mostRecent = common.mostRecent = function (a, b) {
+        return new Date(b.atime).getTime() - new Date(a.atime).getTime();
+    };
+
+    // STORAGE
+    var setPadAttribute = common.setPadAttribute = function (attr, value, cb, legacy) {
+        getStore(legacy).set([getHash(), attr].join('.'), value, function (err, data) {
+            cb(err, data);
+        });
+    };
+
+    // STORAGE
+    var getPadAttribute = common.getPadAttribute = function (attr, cb, legacy) {
+        getStore(legacy).get([getHash(), attr].join('.'), function (err, data) {
+            cb(err, data);
+        });
+    };
+
+    // STORAGE
+    /* fetch and migrate your pad history from localStorage */
+    var getRecentPads = common.getRecentPads = function (cb, legacy) {
+        getStore(legacy).get(storageKey, function (err, recentPads) {
+            if (isArray(recentPads)) {
+                cb(void 0, migrateRecentPads(recentPads));
+                return;
+            }
+            cb(void 0, []);
+        });
+    };
+
+    // STORAGE
+    /* commit a list of pads to localStorage */
+    var setRecentPads = common.setRecentPads = function (pads, cb, legacy) {
+        getStore(legacy).set(storageKey, pads, function (err, data) {
+            cb(err, data);
+        });
+    };
+
+    // STORAGE
+    var forgetPad = common.forgetPad = function (href, cb, legacy) {
         var parsed = parsePadUrl(href);
 
         getRecentPads(function (err, recentPads) {
@@ -195,7 +234,7 @@ define([
                     return;
                 }
 
-                getStore().keys(function (err, keys) {
+                getStore(legacy).keys(function (err, keys) {
                     if (err) {
                         cb(err);
                         return;
@@ -208,24 +247,15 @@ define([
                         cb();
                         return;
                     }
-                    getStore().removeBatch(toRemove, function (err, data) {
+                    getStore(legacy).removeBatch(toRemove, function (err, data) {
                         cb(err, data);
                     });
                 });
-            });
-        });
+            }, legacy);
+        }, legacy);
     };
 
-    var makePad = function (href, title) {
-        var now = ''+new Date();
-        return {
-            href: href,
-            atime: now,
-            ctime: now,
-            title: title || window.location.hash.slice(1, 9),
-        };
-    };
-
+    // STORAGE
     var rememberPad = common.rememberPad = window.rememberPad = function (title, cb) {
         // bail out early
         if (!/#/.test(window.location.hash)) { return; }
@@ -265,6 +295,7 @@ define([
         });
     };
 
+    // STORAGE
     var setPadTitle = common.setPadTitle = function (name, cb) {
         var href = window.location.href;
         var parsed = parsePadUrl(href);
@@ -301,6 +332,7 @@ define([
         });
     };
 
+    // STORAGE
     var getPadTitle = common.getPadTitle = function (cb) {
         var href = window.location.href;
         var parsed = parsePadUrl(window.location.href);
@@ -324,6 +356,7 @@ define([
         });
     };
 
+    // STORAGE
     var causesNamingConflict = common.causesNamingConflict = function (title, cb) {
         var href = window.location.href;
 
@@ -364,13 +397,30 @@ define([
             }
         };
 
-        state++;
+        state = 2;
         Store.ready(function (err, store) {
-            env.store = store;
+            common.store = env.store = store;
+            cb();
+        });
+
+        // HERE
+        authorize(function (err, proxy) {
+            if (err) {
+                // not logged in
+            }
+            if (!proxy) {
+                cb();
+                return;
+            }
+            userProxy = env.proxy = proxy;
+            userStore = env.userStore = User.prepareStore(proxy);
             cb();
         });
     };
 
+    /*
+     *  Saving files
+     */
     var fixFileName = common.fixFileName = function (filename) {
         return filename.replace(/ /g, '-').replace(/[\/\?]/g, '_')
             .replace(/_+/g, '_');
@@ -388,6 +438,9 @@ define([
         };
     };
 
+    /*
+     *  Alertifyjs
+     */
     var styleAlerts = common.styleAlerts = function (href) {
         var $link = $('link[href="/customize/alertify.css"]');
         if ($link.length) { return; }
@@ -492,6 +545,9 @@ define([
         Alertify.error(msg);
     };
 
+    /*
+     *  spinner
+     */
     common.spinner = function (parent) {
         var $target = $('<div>', {
             //

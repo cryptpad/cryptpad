@@ -102,7 +102,7 @@ define([
                 console.log("Couldn't get pad title");
                 return;
             }
-            document.title = title || window.location.hash.slice(1, 9);
+            document.title = APP.title = title || window.location.hash.slice(1, 9);
             Cryptpad.rememberPad(title, function (err, data) {
                 if (err) {
                     console.log("Couldn't remember pad");
@@ -140,7 +140,7 @@ define([
                         console.log(err);
                         return;
                     }
-                    document.title = window.location.hash.slice(1,9);
+                    document.title = APP.title = window.location.hash.slice(1,9);
                 });
             });
         });
@@ -167,7 +167,7 @@ define([
                             console.error(err);
                             return;
                         }
-                        document.title = title;
+                        document.title = APP.title = title;
                     });
                 });
             });
@@ -266,6 +266,15 @@ define([
                 if (yes) { unnotify(); }
             });
         }
+
+        Slide.onChange(function (o, n, l) {
+            if (n !== null) {
+                document.title = APP.title + ' (' + (++n) + '/' + l +  ')';
+                return;
+            }
+            console.log("Exiting presentation mode");
+            document.title = APP.title;
+        });
 
         setEditable(true);
         initializing = false;
