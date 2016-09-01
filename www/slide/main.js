@@ -31,7 +31,7 @@ define([
 
     var secret = Cryptpad.getSecrets();
 
-    var module = window.APP = {
+    var APP = window.APP = {
         TextPatcher: TextPatcher,
         Slide: Slide,
     };
@@ -53,22 +53,22 @@ define([
     };
 
     var unnotify = function () {
-        if (!(module.tabNofification &&
-            typeof(module.tabNofification.cancel) === 'function')) { return; }
-        module.tabNofification.cancel();
+        if (!(APP.tabNofification &&
+            typeof(APP.tabNofification.cancel) === 'function')) { return; }
+        APP.tabNofification.cancel();
     };
 
     var notify = function () {
         if (!(Visible.isSupported() && !Visible.currently())) { return; }
         unnotify();
-        module.tabNofification = Notify.tab(document.title, 1000, 10);
+        APP.tabNofification = Notify.tab(document.title, 1000, 10);
     };
 
     var $modal = $('#modal');
     var $content = $('#content');
     Slide.setModal($modal, $content);
 
-    var config = module.config = {
+    var config = APP.config = {
         initialState: '',
         websocketURL: Config.websocketURL,
         channel: secret.channel,
@@ -83,7 +83,7 @@ define([
     var onLocal = config.onLocal = function () {
         if (initializing) { return; }
         var content = canonicalize($textarea.val());
-        module.patchText(content);
+        APP.patchText(content);
         Slide.update(content);
     };
 
@@ -230,7 +230,7 @@ define([
 
     var onRemote = config.onRemote = function (info) {
         if (initializing) { return; }
-        var userDoc = module.realtime.getUserDoc();
+        var userDoc = APP.realtime.getUserDoc();
         var content = canonicalize($textarea.val());
 
         var op = TextPatcher.diff(content, userDoc);
@@ -250,8 +250,8 @@ define([
     };
 
     var onReady = config.onReady = function (info) {
-        var realtime = module.realtime = info.realtime;
-        module.patchText = TextPatcher.create({
+        var realtime = APP.realtime = info.realtime;
+        APP.patchText = TextPatcher.create({
             realtime: realtime
         });
 
