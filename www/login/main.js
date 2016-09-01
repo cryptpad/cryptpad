@@ -65,7 +65,7 @@ define([
     var read = function (proxy) {
         console.log("Proxy ready!");
 
-        var otime = +new Date(proxy.atime)
+        var otime = +new Date(proxy.atime);
 
         var atime = proxy.atime = ('' + new Date());
 
