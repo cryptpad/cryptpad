@@ -5,10 +5,9 @@ define([
     '/bower_components/marked/marked.min.js',
     '/bower_components/hyperjson/hyperjson.js',
     '/common/cryptpad-common.js',
-    //'/common/convert.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/bower_components/diff-dom/diffDOM.js',
-    '/customize/pad.js'
+    //'/customize/pad.js'
 ], function (Config, Realtime, Crypto, Marked, Hyperjson, Cryptpad) {
     var $ = window.jQuery;
     var DiffDom = window.diffDOM;
@@ -27,7 +26,6 @@ define([
     var config = {
         websocketURL: Config.websocketURL,
         channel: secret.channel,
-        //cryptKey: secret.key,
         crypto: Crypto.createEncryptor(secret.key)
     };
 
@@ -49,7 +47,6 @@ define([
         };
     }());
 
-    var $inner = $('#inner');
     var redrawTimeout;
     var lazyDraw = function (md) {
         if (redrawTimeout) { clearTimeout(redrawTimeout); }
@@ -65,11 +62,23 @@ define([
         module.realtime = info.realtime;
     };
 
+    var getContent = function (userDoc) {
+        try {
+            var parsed = JSON.parse(userDoc);
+            if (typeof(parsed.content) !== 'string') {
+                throw new Error();
+            }
+            return parsed.content;
+        } catch (err) {
+            return userDoc;
+        }
+    };
+
     // when your editor is ready
     var onReady = config.onReady = function (info) {
         console.log("Realtime is ready!");
         var userDoc = module.realtime.getUserDoc();
-        lazyDraw(userDoc);
+        lazyDraw(getContent(userDoc));
         initializing = false;
     };
 
@@ -77,7 +86,7 @@ define([
     var onRemote = config.onRemote = function () {
         if (initializing) { return; }
         var userDoc = module.realtime.getUserDoc();
-        lazyDraw(userDoc);
+        lazyDraw(getContent(userDoc));
     };
 
     var onLocal = config.onLocal = function () {

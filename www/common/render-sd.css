@@ -2,7 +2,17 @@ html {
   font-family: sans-serif;
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
+
+  /*background-color: #073642;*/
+  color: #839496;
+
+  font-family: 'PT Sans', sans-serif;
 }
+body {
+  background-color: #002b36;
+}
+
+
 a:focus {
   outline: thin dotted;
 }
@@ -39,13 +49,11 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
 }
-html {
-  font-family: 'PT Sans', sans-serif;
-}
 pre,
 code {
   font-family: 'Inconsolata', sans-serif;
 }
+
 h1,
 h2,
 h3,
@@ -54,18 +62,6 @@ h5,
 h6 {
   font-family: 'PT Sans Narrow', sans-serif;
   font-weight: 700;
-}
-html {
-  background-color: #073642;
-  color: #839496;
-  margin: 1em;
-}
-body {
-  background-color: #002b36;
-  margin: 0 auto;
-  max-width: 23cm;
-  border: 1pt solid #586e75;
-  padding: 1em;
 }
 code {
   background-color: #073642;
@@ -94,7 +90,6 @@ pre {
   background-color: #002b36;
   color: #839496;
   border: 1pt solid #586e75;
-  padding: 1em;
   box-shadow: 5pt 5pt 8pt #073642;
 }
 pre code {
@@ -118,3 +113,4 @@ h5 {
 h6 {
   font-size: 1.15em;
 }
+
