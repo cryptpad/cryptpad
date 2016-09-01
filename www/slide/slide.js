@@ -12,12 +12,32 @@ define([
         index: 0,
         lastIndex: 0,
         content: [],
+        changeHandlers: [],
     };
     var $modal;
     var $content;
     Slide.setModal = function ($m, $c) {
         $modal = Slide.$modal = $m;
         $content = Slide.$content = $c;
+    };
+
+    Slide.onChange = function (f) {
+        if (typeof(f) === 'function') {
+            Slide.changeHandlers.push(f);
+        }
+    };
+
+    var change = function (oldIndex, newIndex) {
+        if (oldIndex === newIndex) {
+            return false;
+        }
+        if (Slide.changeHandlers.length) {
+            Slide.changeHandlers.some(function (f, i) {
+                // HERE
+                f(oldIndex, newIndex, Slide.content.length);
+            });
+            return true;
+        }
     };
 
     var forbiddenTags = Slide.forbiddenTags = [
@@ -87,10 +107,10 @@ define([
 
         if (typeof(patch) === 'string') {
             $content.html(Marked(c));
-            return;
         } else {
             DD.apply($content[0], patch);
         }
+        change(Slide.lastIndex, Slide.index);
     };
 
     var show = Slide.show = function (bool, content) {
@@ -99,8 +119,10 @@ define([
             Slide.update(content);
             Slide.draw(Slide.index);
             $modal.addClass('shown');
+            change(null, Slide.index);
             return;
         }
+        change(Slide.index, null);
         $modal.removeClass('shown');
     };
 
@@ -115,12 +137,16 @@ define([
 
     var left = Slide.left = function () {
         console.log('left');
+        Slide.lastIndex = Slide.index;
+
         var i = Slide.index = Math.max(0, Slide.index - 1);
         Slide.draw(i);
     };
 
     var right = Slide.right = function () {
         console.log('right');
+        Slide.lastIndex = Slide.index;
+
         var i = Slide.index = Math.min(Slide.content.length -1, Slide.index + 1);
         Slide.draw(i);
     };

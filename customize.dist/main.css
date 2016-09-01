@@ -384,7 +384,8 @@ form.realtime #adduser {
 form.realtime #addoption {
   border-bottom-left-radius: 5px;
 }
-div.modal {
+div.modal,
+div#modal {
   box-sizing: border-box;
   z-index: 9001;
   position: fixed;
@@ -395,7 +396,75 @@ div.modal {
   display: none;
   background-color: #302B28;
 }
-div.modal .center {
+div.modal #content,
+div#modal #content {
+  box-sizing: border-box;
+  border: 1px solid white;
+  vertical-align: middle;
+  padding: 2.5vw;
+  width: 100vw;
+  height: 56.25vw;
+  max-height: 100vh;
+  max-width: 177.78vh;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+div.modal #content p,
+div#modal #content p,
+div.modal #content li,
+div#modal #content li,
+div.modal #content pre,
+div#modal #content pre,
+div.modal #content code,
+div#modal #content code {
+  font-size: 2.5vw;
+  line-height: 3vw;
+}
+div.modal #content h1,
+div#modal #content h1 {
+  font-size: 5vw;
+  line-height: 6vw;
+}
+div.modal #content h2,
+div#modal #content h2 {
+  font-size: 4.2vw;
+  line-height: 5.04vw;
+}
+div.modal #content h3,
+div#modal #content h3 {
+  font-size: 3.6vw;
+  line-height: 4.32vw;
+}
+div.modal #content h4,
+div#modal #content h4 {
+  font-size: 3vw;
+  line-height: 3.6vw;
+}
+div.modal #content h5,
+div#modal #content h5 {
+  font-size: 2.2vw;
+  line-height: 2.64vw;
+}
+div.modal #content h6,
+div#modal #content h6 {
+  font-size: 1.6vw;
+  line-height: 1.92vw;
+}
+div.modal #content pre > code,
+div#modal #content pre > code {
+  display: block;
+  position: relative;
+  border: 1px solid #333;
+  width: 90%;
+  margin: auto;
+  padding-left: .25vw;
+}
+div.modal .center,
+div#modal .center {
   position: relative;
   width: 80%;
   height: 80%;
@@ -403,31 +472,39 @@ div.modal .center {
   border: 1px solid #685d56;
   text-align: center;
 }
-div.modal.shown {
+div.modal.shown,
+div#modal.shown {
   display: block;
 }
-div.modal table {
+div.modal table,
+div#modal table {
   margin: 30px;
   border-collapse: collapse;
 }
-div.modal table input {
+div.modal table input,
+div#modal table input {
   height: 100%;
   width: 90%;
   border: 3px solid #302B28;
 }
-div.modal table tfoot tr td {
+div.modal table tfoot tr td,
+div#modal table tfoot tr td {
   z-index: 4000;
   cursor: pointer;
 }
 div.modal #addtime,
-div.modal #adddate {
+div#modal #addtime,
+div.modal #adddate,
+div#modal #adddate {
   color: #46E981;
   border: 1px solid #46E981;
   padding: 15px;
 }
-div.modal #adddate {
+div.modal #adddate,
+div#modal #adddate {
   border-top-left-radius: 5px;
 }
-div.modal #addtime {
+div.modal #addtime,
+div#modal #addtime {
   border-bottom-left-radius: 5px;
 }

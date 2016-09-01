@@ -471,7 +471,63 @@ form.realtime {
     #addoption { .bottom-left; }
 }
 
-div.modal {
+.viewportRatio (@x, @y, @p: 100) {
+    width: @p * 100vw;
+    height: @y * (@p * 100vw) / @x;
+    max-width: @x / @y * (@p * 100vh);
+    max-height: (@p * 100vh);
+}
+
+div.modal, div#modal {
+
+    #content {
+        box-sizing: border-box;
+        .size (@n) {
+            font-size: @n * 1vw;
+            line-height: @n * 1.2vw;
+        }
+
+        border: 1px solid white;
+
+        vertical-align: middle;
+        padding: 2.5vw;
+
+
+        width: 100vw;
+        height: 56.25vw; // height:width ratio = 9/16 = .5625
+        //background: pink;
+        max-height: 100vh;
+        max-width: 177.78vh; // 16/9 = 1.778
+        margin: auto;
+        position: absolute;
+        top:0;bottom:0; // vertical center
+        left:0;right:0; // horizontal center
+
+        p, li, pre, code {
+            .size(2.5);
+        }
+
+        h1 { .size(5); }
+        h2 { .size(4.2); }
+        h3 { .size(3.6); }
+        h4 { .size (3); }
+        h5 { .size(2.2); }
+        h6 { .size(1.6); }
+
+
+        pre > code {
+
+            display: block;
+            position: relative;
+            border: 1px solid #333;
+            width: 90%;
+            margin: auto;
+            padding-left: .25vw;
+
+        }
+
+    }
+
     box-sizing: border-box;
     z-index: 9001;
     position: fixed;
