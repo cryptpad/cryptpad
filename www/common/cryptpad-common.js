@@ -17,10 +17,18 @@ define([
 */
     var $ = window.jQuery;
 
-    var common = {};
+    var common = {
+        User: User,
+    };
     var store;
     var userProxy;
     var userStore;
+
+    var find = common.find = function (map, path) {
+        return (map && path.reduce(function (p, n) {
+            return typeof(p[n]) !== 'undefined' && p[n];
+        }, map));
+    };
 
     var getStore = common.getStore = function (legacy) {
         if (!legacy && userStore) { return userStore; }
@@ -33,15 +41,34 @@ define([
      */
     var authorize = common.authorize = function (cb) {
         console.log("Authorizing");
-        var secret = User.session();
-        if (!secret) {
-            // user is not authenticated
-            cb('user is not authenticated', void 0);
-        }
 
-        // for now we assume that things always work
-        User.connect(secret, function (err, proxy) {
-            cb(void 0, proxy);
+        User.session(void 0, function (err, secret) {
+            if (!secret) {
+                // user is not authenticated
+                cb('user is not authenticated', void 0);
+            }
+
+            // for now we assume that things always work
+            User.connect(secret, function (err, proxy) {
+                cb(void 0, proxy);
+            });
+        });
+    };
+
+    // HERE
+    var deauthorize = common.deauthorize = function (cb) {
+        console.log("Deauthorizing");
+
+        // erase session data from storage
+        User.session(null, function (err) {
+            if (err) {
+                console.error(err);
+            }
+            /*
+                TODO better abort for this stuff...
+            */
+            userStore = undefined;
+            userProxy = undefined;
         });
     };
 
@@ -391,30 +418,52 @@ define([
         var env = {};
 
         var cb = function () {
-            state--;
-            if (!state) {
-                f(void 0, env);
-            }
+            f(void 0, env);
         };
 
-        state = 2;
         Store.ready(function (err, store) {
             common.store = env.store = store;
-            cb();
-        });
 
-        // HERE
-        authorize(function (err, proxy) {
-            if (err) {
-                // not logged in
-            }
-            if (!proxy) {
+            authorize(function (err, proxy) {
+            /*
+                TODO
+                listen for log(in|out) events
+                update information accordingly
+            */
+
+                store.change(function (data) {
+                    if (data.key === User.localKey) {
+                        // HERE
+                        if (!data.newValue) {
+                            deauthorize(function (err) {
+                                console.log("Deauthorized!!");
+                            });
+                        } else {
+                            authorize(function (err, proxy) {
+                                if (err) {
+                                    // not logged in
+                                }
+                                if (!proxy) {
+                                    userProxy = proxy;
+                                    userStore =  User.prepareStore(proxy);
+                                }
+                            });
+                        }
+                    }
+                });
+
+                if (err) {
+                    // not logged in
+                }
+                if (!proxy) {
+                    cb();
+                    return;
+                }
+                userProxy = env.proxy = proxy;
+                userStore = env.userStore = User.prepareStore(proxy);
                 cb();
-                return;
-            }
-            userProxy = env.proxy = proxy;
-            userStore = env.userStore = User.prepareStore(proxy);
-            cb();
+
+            });
         });
     };
 
