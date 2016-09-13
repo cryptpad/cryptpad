@@ -77,26 +77,29 @@ var getChannel = function (env, id, callback) {
     }
     var path = mkPath(env, id);
     var fileExists;
+    var errorState;
     nThen(function (waitFor) {
         checkPath(path, waitFor(function (err, exists) {
             if (err) {
-                waitFor.abort();
+                errorState = true;
                 complete(err);
                 return;
             }
             fileExists = exists;
         }));
     }).nThen(function (waitFor) {
+        if (errorState) { return; }
         if (!fileExists) { return; }
         readMessages(path, function (msg) {
             channel.messages.push(msg);
         }, waitFor(function (err) {
             if (err) {
-                waitFor.abort();
+                errorState = true;
                 complete(err);
             }
         }));
     }).nThen(function (waitFor) {
+        if (errorState) { return; }
         var stream = channel.writeStream = Fs.createWriteStream(path, { flags: 'a' });
         stream.on('open', waitFor());
         stream.on('error', function (err) {
@@ -110,6 +113,7 @@ var getChannel = function (env, id, callback) {
             }
         });
     }).nThen(function (waitFor) {
+        if (errorState) { return; }
         complete();
     });
 };
