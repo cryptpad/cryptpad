@@ -427,7 +427,7 @@ define([
                 var id = rowuid();
                 makeOption(proxy, id, text).val(text);
             });
-            //console.log(options);
+            Wizard.hide();
         });
     });
 
