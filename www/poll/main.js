@@ -649,17 +649,6 @@ define([
             setEditable(false);
         });
 
-        Cryptpad.getPadTitle(function (err, title) {
-            title = document.title = title || window.location.hash.slice(1, 9);
-
-            Cryptpad.rememberPad(title, function (err, data) {
-                if (err) {
-                    console.log("unable to remember pad");
-                    console.log(err);
-                    return;
-                }
-            });
-        });
 
         var $toolbar = $('#toolbar');
 
@@ -669,12 +658,15 @@ define([
             return $('<button>', opt);
         };
 
-        var suggestName = function () {
-            var hash = window.location.hash.slice(1, 9);
-            if (document.title === hash) {
-                return $title.val() || hash;
+        var suggestName = module.suggestName = function () {
+            var parsed = Cryptpad.parsePadUrl(window.location.href);
+            var name = Cryptpad.getDefaultName(parsed, []);
+
+            if (document.title.slice(0, name.length) === name) {
+                return $title.val() || document.title;
+            } else {
+                return document.title || $title.val() || name;
             }
-            return document.title || $title.val() || hash;
         };
 
         $toolbar.append(Button({
@@ -691,7 +683,8 @@ define([
                         console.error(err);
                         return;
                     }
-                    document.title = window.location.hash.slice(1, 9);
+                    var parsed = Cryptpad.parsePadUrl(href);
+                    document.title = Cryptpad.getDefaultName(parsed, []);
                 });
             });
         }));
@@ -848,10 +841,21 @@ define([
         var rt = module.rt = Listmap.create(config);
         rt.proxy.on('create', function (info) {
             var realtime = module.realtime = info.realtime;
-            window.location.hash = info.channel + secret.key;
+            window.location.hash = Cryptpad.getHashFromKeys(info.channel, secret.key);
             module.patchText = TextPatcher.create({
                 realtime: realtime,
                 logging: true,
+            });
+            Cryptpad.getPadTitle(function (err, title) {
+                title = document.title = title || info.channel.slice(0, 8);
+
+                Cryptpad.rememberPad(title, function (err, data) {
+                    if (err) {
+                        console.log("unable to remember pad");
+                        console.log(err);
+                        return;
+                    }
+                });
             });
         }).on('ready', ready)
         .on('disconnect', function () {
