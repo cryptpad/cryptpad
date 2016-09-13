@@ -33,7 +33,11 @@ const sendChannelMessage = function (ctx, channel, msgStruct) {
       }
     });
     if (USE_HISTORY_KEEPER && msgStruct[2] === 'MSG') {
-        ctx.store.message(channel.id, JSON.stringify(msgStruct), function () { });
+        ctx.store.message(channel.id, JSON.stringify(msgStruct), function (err) {
+            if (err) {
+                console.log("Error writing message: " + err);
+            }
+        });
     }
 };
 
@@ -90,7 +94,11 @@ const getHistory = function (ctx, channelName, handler, cb) {
     var messageBuf = [];
     ctx.store.getMessages(channelName, function (msgStr) {
         messageBuf.push(JSON.parse(msgStr));
-    }, function () {
+    }, function (err) {
+        if (err) {
+            console.log("Error getting messages " + err.stack);
+            // TODO: handle this better
+        }
         var startPoint;
         var cpCount = 0;
         var msgBuff2 = [];
