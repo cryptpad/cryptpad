@@ -193,6 +193,25 @@ define([
         return ret;
     };
 
+    var isNameAvailable = function (title, parsed, pads) {
+        return !pads.some(function (pad) {
+            // another pad is already using that title
+            if (pad.title === title) {
+                return true;
+            }
+        });
+    };
+
+    // Create untitled documents when no name is given
+    var getDefaultName = function (parsed, recentPads) {
+        var type = parsed.type;
+        var untitledIndex = 1;
+        var name = (Messages.type)[type] + ' - ' + new Date().toString().split(' ').slice(0,4).join(' ');
+        if (isNameAvailable(name, parsed, recentPads)) { return name; }
+        while (!isNameAvailable(name + ' - ' + untitledIndex, parsed, recentPads)) { untitledIndex++; }
+        return name + ' - ' + untitledIndex;
+    };
+
     var makePad = function (href, title) {
         var now = ''+new Date();
         return {
@@ -379,6 +398,8 @@ define([
                 }
             });
 
+            if (title === '') { title = getDefaultName(parsed, pads); }
+
             cb(void 0, title);
         });
     };
@@ -396,7 +417,7 @@ define([
             var conflicts = pads.some(function (pad) {
                 // another pad is already using that title
                 if (pad.title === title) {
-                    var p = parsePadUrl(href);
+                    var p = parsePadUrl(pad.href);
 
                     if (p.type === parsed.type && p.hash === parsed.hash) {
                         // the duplicate pad has the same type and hash
