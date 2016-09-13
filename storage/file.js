@@ -138,8 +138,7 @@ module.exports.create = function (conf, cb) {
             Object.keys(env.channels).forEach(function (id) {
                 var channel = env.channels[id];
                 if (now - channel.atime > (1000 * 60)) {
-                    console.log("Cleaning up channel [%s]", id);
-
+                    //console.log("Cleaning up idle channel [%s]", id);
                     channel.stream.close();
                     delete env.channels[id];
                 }
