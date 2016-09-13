@@ -147,7 +147,7 @@ tr {
   margin-top: 12px;
   margin-bottom: 12px;
   white-space: nowrap;
-  display: inline-block;
+  display: none;
 }
 /* Tables */
 table {

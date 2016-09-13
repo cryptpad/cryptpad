@@ -1,11 +1,12 @@
 define([
     '/customize/messages.js',
     '/customize/DecorateToolbar.js',
+    '/customize/application_config.js',
     '/common/cryptpad-common.js',
     '/bower_components/lil-uri/uri.min.js',
     '/customize/email.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages, DecorateToolbar, Cryptpad, LilUri, Email) {
+], function (Messages, DecorateToolbar, Config, Cryptpad, LilUri, Email) {
     var $ = window.$;
 
     var APP = window.APP = {
@@ -40,6 +41,12 @@ define([
     var hasRecent = false;
 
     var forgetPad = Cryptpad.forgetPad;
+
+    var displayCreateButtons = function () {
+        Config.availablePadTypes.forEach(function (el) {
+            $('#create-' + el).show();
+        });
+    };
 
     var makeRecentPadsTable = function (recentPads) {
         if (!recentPads.length) { return; }
@@ -132,6 +139,7 @@ define([
         });
     };
 
+    displayCreateButtons();
     Cryptpad.ready(function () {
         console.log("ready");
         refreshTable();
