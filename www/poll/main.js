@@ -303,12 +303,19 @@ define([
     };
 
     var scrollDown = module.scrollDown = function (px) {
+        if (module.scrolling) { return; }
+
+        module.scrolling = true;
+
         var top = $(window).scrollTop() + px + 'px';
         $('html, body').animate({
             scrollTop: top,
         }, {
             duration: 200,
             easing: 'swing',
+            complete: function () {
+                module.scrolling = false;
+            }
         });
     };
 
@@ -375,7 +382,10 @@ define([
         addIfAbsent(proxy.table.rowsOrder, id);
 
         var $row = table.addRow($wrapper, Checkbox, id);
-        scrollDown($row.height());
+
+        if (module.ready) {
+            scrollDown($row.height());
+        }
 
         return $option;
     };
