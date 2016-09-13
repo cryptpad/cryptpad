@@ -39,7 +39,7 @@ var checkPath = function (path, callback) {
         }
         var dirPath = path.replace(/\/[^\/]*$/, '/');
         Fs.mkdir(dirPath, function (err) {
-            if (err && err !== 'EEXIST') {
+            if (err && err.code !== 'EEXIST') {
                 callback(err);
                 return;
             }
