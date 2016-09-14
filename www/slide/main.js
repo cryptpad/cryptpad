@@ -1,3 +1,4 @@
+require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify'} });
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
     '/customize/messages.js',
@@ -9,10 +10,11 @@ define([
     '/common/notify.js',
     '/common/visible.js',
     '/common/clipboard.js',
+    'json.sortify',
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, Messages, Realtime, Crypto, TextPatcher, Cryptpad, Slide, Notify, Visible, Clipboard) {
+], function (Config, Messages, Realtime, Crypto, TextPatcher, Cryptpad, Slide, Notify, Visible, Clipboard, JSONSortify) {
     var $ = window.jQuery;
     var saveAs = window.saveAs;
 
@@ -35,6 +37,8 @@ define([
         TextPatcher: TextPatcher,
         Slide: Slide,
     };
+
+    var Stringify = APP.Stringify = JSONSortify;
 
     var initializing = true;
     var $textarea = $('textarea');
@@ -69,7 +73,7 @@ define([
     Slide.setModal($modal, $content);
 
     var config = APP.config = {
-        initialState: '',
+        initialState: '{}',
         websocketURL: Config.websocketURL,
         channel: secret.channel,
         crypto: Crypto.createEncryptor(secret.key),
@@ -80,11 +84,34 @@ define([
 
     setEditable(false);
 
+    var safelyParseContent = function (S, k, first) {
+        if (!first) { return JSON.parse(S); }
+        try { return JSON.parse(S); }
+        catch (err) {
+            console.log("Migrating text content to object form");
+            var O = {};
+            O[k] = S;
+            return O;
+        }
+    };
+
+    var getUserObj = function (rt) {
+        return safelyParseContent(rt.getUserDoc(), 'content');
+    };
+
     var onLocal = config.onLocal = function () {
         if (initializing) { return; }
-        var content = canonicalize($textarea.val());
+
+        var textContent = canonicalize($textarea.val());
+
+        var userObj = getUserObj(APP.realtime);
+
+        userObj.content = textContent;
+
+        var content = Stringify(userObj);
+
         APP.patchText(content);
-        Slide.update(content);
+        Slide.update(textContent);
     };
 
     var Button = function (opt) {
@@ -227,10 +254,11 @@ define([
             .append($export)
             .append($share);
     };
-
     var onRemote = config.onRemote = function (info) {
         if (initializing) { return; }
-        var userDoc = APP.realtime.getUserDoc();
+        var userObj = getUserObj(APP.realtime);
+        var userDoc = userObj.content;
+
         var content = canonicalize($textarea.val());
 
         var op = TextPatcher.diff(content, userDoc);
@@ -255,7 +283,8 @@ define([
             realtime: realtime
         });
 
-        var content = canonicalize(realtime.getUserDoc());
+        var userObj = getUserObj(APP.realtime);
+        var content = canonicalize(userObj.content || '');
 
         $textarea.val(content);
 
