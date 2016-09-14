@@ -148,8 +148,10 @@ var getMessages = function (env, chanName, handler, cb) {
         }
         try {
             chan.messages
-                .filter(function (x) { return x; })
-                .forEach(handler);
+                .forEach(function (message) {
+                    if (!message) { return; }
+                    handler(message);
+                });
         } catch (err2) {
             console.error(err2);
             cb(err2);
