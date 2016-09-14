@@ -74,7 +74,7 @@ var getChannel = function (env, id, callback) {
             delete env.channels[id];
         }
         whenLoaded.forEach(function (wl) { wl(err, (err) ? undefined : channel); });
-    }
+    };
     var path = mkPath(env, id);
     var fileExists;
     var errorState;
@@ -146,7 +146,15 @@ var getMessages = function (env, chanName, handler, cb) {
             cb(err);
             return;
         }
-        chan.messages.forEach(handler);
+        try {
+            chan.messages
+                .filter(function (x) { return x; })
+                .forEach(handler);
+        } catch (err2) {
+            console.error(err2);
+            cb(err2);
+            return;
+        }
         chan.atime = +new Date();
         cb();
     });
