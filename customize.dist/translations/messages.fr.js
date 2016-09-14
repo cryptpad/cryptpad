@@ -17,7 +17,7 @@ define(function () {
     out.lag = 'Latence';
 
     out.importButton = 'IMPORTER';
-    out.importButtonTitle = 'Importer un document depuis un fichir local';
+    out.importButtonTitle = 'Importer un document depuis un fichier local';
 
     out.exportButton = 'EXPORTER';
     out.exportButtonTitle = 'Exporter ce document vers un fichier local';
@@ -46,29 +46,59 @@ define(function () {
     out.okButton = 'OK (Entrée)';
     out.cancelButton = 'Annuler (Echap)';
 
-    out.initialState = [
-        '<p>',
-        'Voici <strong>CryptPad</strong>, l\'éditeur collaboratif en temps-réel "zero knowledge".',
-        '<br>',
-        'Ce que vous tapez ici est crypté et donc seules les personnes possédant l\'adresse de la page y ont accès.',
-        '<br>',
-        'Même le serveur ne peut pas voir ce que vous tapez.',
-        '</p>',
-        '<p>',
-        '<small>',
-        '<i>Ce que vous voyez ici, ce que vous entendez ici, quand vous quittez, ça reste ici</i>',
-        '</small>',
-        '</p>',
-    ].join('');
+    /* We don't want to change the initial states since they may interfere with Chainpad
+     * out.initialState = '';
+     * out.codeInitialState = '';
+     */
 
-    out.codeInitialState = [
-        '/*\n',
-        '   Voici Cryptpad, l\'éditeur collaboratif en temps-réel "zero knowledge".\n',
-        '   Ce que vous tapez ici est crypté et donc seules les personnes possédant l\'adresse de la page y ont accès.\n',
-        '   Même le serveur ne peut pas voir ce que vous tape.\n',
-        '   Ce que vous voyez ici, ce que vous entendez ici, quand vous quittez, ça reste ici.\n',
-        '*/'
-    ].join('');
+    out.loginText = '<p>Votre nom d\'utilisateur et votre mot de passe sont utilisés pour générer une clé unique qui reste inconnue de notre serveur.</p>\n' +
+                    '<p>Faites attention de ne pas oublier vos identifiants puisqu\'ils seront impossible à récupérer.</p>';
+
+    out.main_title = "Cryptpad: Editeur collaboratif en temps réel, zero knowledge";
+
+    out.main_p1 = 'CryptPad l\'éditeur collaboratif en temps réel <strong>zero knowledge</strong>. Le cryptage est effectué depuis votre navigateur, ce qui protège les données contre le serveur, le cloud, et la NSA. La clé de cryptage est stockée dans l\'<a href="https://fr.wikipedia.org/wiki/Identificateur_de_fragment">identifieur de fragment</a> de l\'URL qui n\'est jamais envoyée au serveur mais est accessible depuis javascript, de sorte qu\'en partageant l\'URL, vous donner l\'accès au pad à ceux qui souhaitent participer.';
+    out.main_p2 = 'Ce projet utilise l\'éditeur visuel (WYSIWYG) <a href="http://ckeditor.com/">CKEditor</a>, l\'éditeur de code source <a href="https://codemirror.net/">CodeMirror</a>, et le moteur temps-réel <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a>.';
+    out.main_howitworks = 'Comment ça fonctionne';
+    out.main_howitworks_p1 = 'CryptPad utilise une variante de l\'algorithme d\'<a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> qui est capable de trouver un consensus distribué en utilisant une chaîne de bloc Nakamoto, un outil popularisé par le <a href="https://fr.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. De cette manière, l\'algorithme évite la nécessité d\'utiliser un serveur central pour résoudre les conflits d\'édition de l\'Operational Transformation, et sans ce besoin de résolution des conflits le serveur peut rester ignorant du contenu qui est édité dans le pad.';
+    out.main_about = 'À propos';
+    out.main_about_p1 = 'Vous pouvez en apprendre davantage sur notre <a href="/privacy.html" title="">politique de confidentialité</a> et nos <a href="/terms.html">conditions d\'utilisation</a>.';
+    out.main_about_p2 = 'Si vous avez des questions ou commentaires, vous pouvez <a href="https://twitter.com/cryptpad">nous tweeter</a>, ouvrir une issue sur <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">Github</a>, venir dire bonjour sur IRC (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), ou <a href="mailto:sftfbsdiAyxjlj/dpn">nous envoyer un email</a>.';
+    out.main_oops = '<strong>OUPS</strong> Afin de pouvoir réaliser le cryptage depuis votre navigateur, Javascript est <strong>vraiment</strong> requis.';
+
+    out.table_type = 'Type';
+    out.table_link = 'Lien';
+    out.table_created = 'Créé le';
+    out.table_last = 'Dernier accès';
+
+    out.button_newpad = 'CRÉER UN PAD WYSIWYG';
+    out.button_newcode = 'CRÉER UN PAD DE CODE';
+    out.button_newpoll = 'CRÉER UN SONDAGE';
+
+    out.policy_title = 'Politique de confidentialité de Cryptpad';
+    out.policy_whatweknow = 'Ce que nous savons de vous';
+    out.policy_whatweknow_p1 = 'En tant qu\'application hébergée sur le web, Cryptpad a accès aux meta-données exposées par le protocole HTTP. Ceci inclus votre adresse IP et d\'autres en-têtes HTTP qui peuvent être utilisées pour identifier votre propre navigateur. Vous pouvez voir quelles informations votre navigateur partage en visitant <a target="_blank" href="https://www.whatismybrowser.com/detect/what-http-headers-is-my-browser-sending" title="what http headers is my browser sending">WhatIsMyBrowser.com</a>.';
+    out.policy_whatweknow_p2 = 'Nous utilisons <a href="https://piwik.org/" target="_blank" title="open source analytics platform">Piwik</a>, une plateforme open source d\'analytique, afin d\'en apprendre plus sur nos utilisateurs. Piwik nous indique comment vous avez trouvé Cryptpad, que ce soit par une entrée directe, par un moteur de recherche ou depuis un lien provenant d\'un autre site web tel que Reddit ou Twitter. Nous savons également quand vous visitez le site, sur quels liens vous cliquez dans les pages informatives et combien de temps vous restez sur une page donnée.';
+    out.policy_whatweknow_p3 = 'Ces outils d\'analytique sont utilisés uniquement sur les pages informatives. Nous ne collectons aucune information concernant votre utilisation de nos applications "zero knowledge".';
+    out.policy_howweuse = 'Comment nous utilisons ce que nous apprenons';
+    out.policy_howweuse_p1 = 'Nous utilisons ces informations pour prendre de meilleures décisions concernant la communication autour de Cryptpad, en évaluant le succès de ce qui a été realisé par le passé. Les informations concernant votre localisation nous permettent de savoir si nous devons considérer l\'ajout de traductions de Cryptpad dans d\'autres langues que l\'anglais.';
+    out.policy_howweuse_p2 = "Les informations concernant votre navigateur (que ce soit un système d\'exploitation de bureau ou d\'appareil portable) nous aident à prendre des décisions lors de la priorisation des ajouts et améliorations de fonctionnalités. Notre équipe de développement est petite, et nous essayons de prendre des décisions qui amélioreront l\'expérience du plus grand nombre d\'utilisateurs possible.";
+    out.policy_whatwetell = 'Ce que nous dévoilons à d\'autres à propos de vous';
+    out.policy_whatwetell_p1 = 'Nous ne fournissons aucune information que nous récoltons ou que vous nous fournissez à des tierces parties à moins d\'y être contraints par la loi.';
+    out.policy_links = 'Liens vers d\'autres sites';
+    out.policy_links_p1 = 'Ce site contient des liens vers d\'autres sites, certains étant produits par d\'autres organisations. Nous ne sommes responsables des pratiques de confidentialité ou du contenu d\'aucun site externe. De manière générale, les liens vers des sites externes sont lancés dans une nouvelle fenêtre (ou onglet) du navigateur, pour rendre clair le fait que vous quittez Cryptpad.fr.';
+    out.policy_ads = 'Publicité';
+    out.policy_ads_p1 = 'Nous n\'affichons pas de publicité en ligne, bien que nous puissions afficher des liens vers les sites des organisations qui financent nos recherches.';
+    out.policy_choices = 'Vos choix';
+    out.policy_choices_open = 'Notre code est open source, ce qui signifie que vous avez toujours la possibilité d\'héberger votre propre instance de Cryptpad.';
+    out.policy_choices_vpn = 'Si vous souhaitez utiliser notre instance hébergée (cryptpad.fr) mais que vous ne souhaitez pas exposer votre adresse IP, vous pouvez la protéger en utilisant le <a href="https://www.torproject.org/projects/torbrowser.html.en" title="downloads from the Tor project" target="_blank">navigateur Tor</a>, ou un <a href="https://riseup.net/fr/vpn" title="VPNs provided by Riseup" target="_blank">VPN</a>.';
+    out.policy_choices_ads = 'Si vous souhaitez uniquement bloquer notre plateforme d\'analytique, vous pouvez utiliser un bloqueur de publicités tel que <a href="https://www.eff.org/fr/privacybadger" title="download privacy badger" target="_blank">Privacy Badger</a>.';
+
+    out.tos_title = "Conditions d'utilisation de Cryptpad";
+    out.tos_legal = "Veuillez ne pas être malveillant, abusif, ou faire quoi que ce soit d'illégal.";
+    out.tos_availability = "Nous espérons que vous trouvez ce service utile, mais nous ne pouvons garantir ses performances et disponibilités. Nous vous recommandons d'exporter vos données régurlièrement.";
+    out.tos_e2ee = "Les document sur Cryptpad peuvent être lus et modifiés par quiconque est en mesure de deviner ou d'obtenir de quelque manière que ce soit l'identificateur de fragment (hash) du document. Nous vous recommandons d'utiliser des technologies de messagerie cryptées de bout à bout (end-to-end encryption ou e2ee) pour partager les URLs, et déclinons toute responsabilité dans le cas ou une telle URL serait divulguée.";
+    out.tos_logs = "Les meta-données fournies par votre navigateur au serveur peuvent être enregistrées dans le but de maintenir le service.";
+    out.tos_3rdparties = "Nous ne fournissons aucune donnée individuelle à des tierces parties à moins d'y être contraints par la loi.";
 
     return out;
 });
