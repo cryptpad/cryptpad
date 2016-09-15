@@ -716,5 +716,11 @@ define([
         };
     };
 
+    $('[data-localization]').each(function (i, e) {
+        var $el = $(this);
+        var key = $el.data('localization');
+        $el.html(Messages[key]);
+    });
+
     return common;
 });
