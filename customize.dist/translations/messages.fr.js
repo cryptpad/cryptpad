@@ -1,15 +1,20 @@
 define(function () {
     var out = {};
 
+    out.main_title = "Cryptpad: Editeur collaboratif en temps réel, zero knowledge";
+
+
     out.errorBox_errorType_disconnected = 'Connexion perdue';
     out.errorBox_errorExplanation_disconnected = [
         'La connexion au serveur a été perdue. Vous pouvez essayer de vous reconnecter en rechargeant la page',
         'ou vous pouvez revoir votre travail en fermant cette boîte de dialogue.',
     ].join('');
 
-    out.editingAlone = 'Edition seul(e)';
-    out.editingWithOneOtherPerson = 'Edition avec une autre personne';
-    out.editingWith = 'Edition avec';
+    out.common_connectionLost = 'Connexion au serveur perdue';
+
+    out.editingAlone = 'Pas d\'autre participant';
+    out.editingWithOneOtherPerson = 'Édition avec une autre personne';
+    out.editingWith = 'Édition avec';
     out.otherPeople = 'autres personnes';
     out.disconnected = 'Déconnecté';
     out.synchronizing = 'Synchronisation';
@@ -24,7 +29,7 @@ define(function () {
     out.exportPrompt = 'Comment souhaitez-vous nommer ce fichier ?';
 
     out.back = '&#8656; Retour';
-    out.backToCryptpad = '&#8656; Retour vers Cryptpad';
+    out.backToCryptpad = '⇐ Retour vers Cryptpad';
 
     out.changeNameButton = 'Changer de nom';
     out.changeNamePrompt = 'Changer votre nom : ';
@@ -38,6 +43,17 @@ define(function () {
     out.forgetButtonTitle = 'Enlever ce document de la liste en page d\'accueil';
     out.forgetPrompt = 'Cliquer sur OK supprimera l\'URL de ce document de la mémoire de votre navigateur (localStorage), êtes-vous sûr ?';
 
+    out.shareButton = 'PARTAGER';
+    out.shareButtonTitle = "Copier l'URL dans le presse-papiers";
+    out.shareSuccess = 'URL copiée dans le presse-papiers';
+    out.shareFailed = "Échec de la copie de l'URL dans le presse-papiers";
+
+    out.presentButton = 'PRÉSENTER';
+    out.presentButtonTitle = "Entrer en mode présentation";
+    out.presentSuccess = 'Appuyer sur Échap pour quitter le mode présentation';
+
+    out.commitButton = 'VALIDER';
+
     out.disconnectAlert = 'Perte de la connexion au réseau !';
 
     out.tryIt = 'Essayez-le !';
@@ -45,11 +61,6 @@ define(function () {
 
     out.okButton = 'OK (Entrée)';
     out.cancelButton = 'Annuler (Echap)';
-
-    /* We don't want to change the initial states since they may interfere with Chainpad
-     * out.initialState = '';
-     * out.codeInitialState = '';
-     */
 
     out.loginText = '<p>Votre nom d\'utilisateur et votre mot de passe sont utilisés pour générer une clé unique qui reste inconnue de notre serveur.</p>\n' +
                     '<p>Faites attention de ne pas oublier vos identifiants puisqu\'ils seront impossible à récupérer.</p>';
@@ -60,9 +71,55 @@ define(function () {
     out.type.poll = 'Sondage';
     out.type.slide = 'Présentation';
 
-    out.main_title = "Cryptpad: Editeur collaboratif en temps réel, zero knowledge";
+    out.forget = "Oublier";
 
-    out.main_p1 = 'CryptPad l\'éditeur collaboratif en temps réel <strong>zero knowledge</strong>. Le cryptage est effectué depuis votre navigateur, ce qui protège les données contre le serveur, le cloud, et la NSA. La clé de cryptage est stockée dans l\'<a href="https://fr.wikipedia.org/wiki/Identificateur_de_fragment">identifieur de fragment</a> de l\'URL qui n\'est jamais envoyée au serveur mais est accessible depuis javascript, de sorte qu\'en partageant l\'URL, vous donner l\'accès au pad à ceux qui souhaitent participer.';
+    // Polls
+
+    out.poll_title = "Sélecteur de date Zero Knowledge";
+    out.poll_subtitle = "Planification de rendez-vous et sondages en <em>temps-réel</em> et Zero Knowledge";
+
+    out.poll_p_save = "Vos modifications sont mises à jour instantanément, donc vous n'avez jamais besoin de sauver le contenu.";
+    out.poll_p_encryption = "Tout ce que vous entrez est crypté donc seules les personnes possédant le lien du sondage y ont accès. Même le serveur ne peut pas voir le contenu.";
+    out.poll_p_howtouse = "Entrez votre nom dans le champ ci-dessous et cochez les cases lorsque les options vous conviennent.";
+
+    out.promptName = "Quel est votre nom ?";
+
+    out.wizardButton = 'ASSISTANT';
+    out.wizardLog = "Cliquez sur le bouton dans le coin supérieur gauche pour retourner au sondage";
+    out.wizardTitle = "Utiliser l'assistant pour créer votre sondage";
+    out.wizardConfirm = "Êtes-vous vraiment prêt à ajouter ces options au sondage ?";
+
+    out.poll_closeWizardButton = "Fermer l'assistant";
+    out.poll_closeWizardButtonTitle = "Fermer l'assistant";
+    out.poll_wizardComputeButton = "Générer les options";
+    out.poll_wizardClearButton = "Vider le tableau";
+    out.poll_wizardDescription = "Créer automatiquement des options en entrant des dates et des horaires correspondant";
+    out.poll_wizardAddDateButton = "+ Dates";
+    out.poll_wizardAddTimeButton = "+ Horaires";
+
+    out.poll_addUserButton = "+ Utilisateurs";
+    out.poll_addUserButtonTitle = "Cliquer pour ajouter un utilisateur";
+    out.poll_addOptionButton = "+ Options";
+    out.poll_addOptionButtonTitle = "Cliquer pour ajouter une option";
+    out.poll_addOption = "Indiquer la nouvelle option";
+    out.poll_optionPlaceholder = "Option";
+    out.poll_addUser = "Entrer un nom";
+    out.poll_userPlaceholder = "Votre nom";
+    out.poll_removeOption = "Êtes-vous sûr de vouloir supprimer cette option ?";
+    out.poll_removeOptionTitle = "Supprimer la ligne";
+    out.poll_removeUser = "Êtes-vous sûr de vouloir supprimer cet utilisateur ?";
+    out.poll_removeUserTitle = "Supprimer la colonne";
+    out.poll_editOption = "Êtes-vous sûr de vouloir éditer cette option ?";
+    out.poll_editOptionTitle = "Éditer la ligne";
+    out.poll_editUser = "Êtes-vous sûr de vouloir éditer les choix de cet utilisateur ?";
+    out.poll_editUserTitle = "Éditer la colonne";
+
+    out.poll_titleHint = "Titre";
+    out.poll_descriptionHint = "Description";
+
+    // index.html
+
+    out.main_p1 = 'CryptPad est l\'éditeur collaboratif en temps réel <strong>zero knowledge</strong>. Le cryptage est effectué depuis votre navigateur, ce qui protège les données contre le serveur, le cloud, et la NSA. La clé de cryptage est stockée dans l\'<a href="https://fr.wikipedia.org/wiki/Identificateur_de_fragment">identifieur de fragment</a> de l\'URL qui n\'est jamais envoyée au serveur mais est accessible depuis javascript, de sorte qu\'en partageant l\'URL, vous donner l\'accès au pad à ceux qui souhaitent participer.';
     out.main_p2 = 'Ce projet utilise l\'éditeur visuel (WYSIWYG) <a href="http://ckeditor.com/">CKEditor</a>, l\'éditeur de code source <a href="https://codemirror.net/">CodeMirror</a>, et le moteur temps-réel <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a>.';
     out.main_howitworks = 'Comment ça fonctionne';
     out.main_howitworks_p1 = 'CryptPad utilise une variante de l\'algorithme d\'<a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> qui est capable de trouver un consensus distribué en utilisant une chaîne de bloc Nakamoto, un outil popularisé par le <a href="https://fr.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. De cette manière, l\'algorithme évite la nécessité d\'utiliser un serveur central pour résoudre les conflits d\'édition de l\'Operational Transformation, et sans ce besoin de résolution des conflits le serveur peut rester ignorant du contenu qui est édité dans le pad.';
@@ -80,6 +137,8 @@ define(function () {
     out.button_newcode = 'CRÉER UN PAD DE CODE';
     out.button_newpoll = 'CRÉER UN SONDAGE';
     out.button_newslide = 'CRÉER UNE PRÉSENTATION';
+
+    // privacy.html
 
     out.policy_title = 'Politique de confidentialité de Cryptpad';
     out.policy_whatweknow = 'Ce que nous savons de vous';
@@ -100,12 +159,19 @@ define(function () {
     out.policy_choices_vpn = 'Si vous souhaitez utiliser notre instance hébergée (cryptpad.fr) mais que vous ne souhaitez pas exposer votre adresse IP, vous pouvez la protéger en utilisant le <a href="https://www.torproject.org/projects/torbrowser.html.en" title="downloads from the Tor project" target="_blank">navigateur Tor</a>, ou un <a href="https://riseup.net/fr/vpn" title="VPNs provided by Riseup" target="_blank">VPN</a>.';
     out.policy_choices_ads = 'Si vous souhaitez uniquement bloquer notre plateforme d\'analytique, vous pouvez utiliser un bloqueur de publicités tel que <a href="https://www.eff.org/fr/privacybadger" title="download privacy badger" target="_blank">Privacy Badger</a>.';
 
+    // terms.html
+
     out.tos_title = "Conditions d'utilisation de Cryptpad";
     out.tos_legal = "Veuillez ne pas être malveillant, abusif, ou faire quoi que ce soit d'illégal.";
     out.tos_availability = "Nous espérons que vous trouvez ce service utile, mais nous ne pouvons garantir ses performances et disponibilités. Nous vous recommandons d'exporter vos données régurlièrement.";
     out.tos_e2ee = "Les document sur Cryptpad peuvent être lus et modifiés par quiconque est en mesure de deviner ou d'obtenir de quelque manière que ce soit l'identificateur de fragment (hash) du document. Nous vous recommandons d'utiliser des technologies de messagerie cryptées de bout à bout (end-to-end encryption ou e2ee) pour partager les URLs, et déclinons toute responsabilité dans le cas ou une telle URL serait divulguée.";
     out.tos_logs = "Les meta-données fournies par votre navigateur au serveur peuvent être enregistrées dans le but de maintenir le service.";
     out.tos_3rdparties = "Nous ne fournissons aucune donnée individuelle à des tierces parties à moins d'y être contraints par la loi.";
+
+    // BottomBar.html
+
+    out.bottom_love = '<a href="http://www.xwiki.com/fr" target="_blank">Fait avec <img class="bottom-bar-heart" src="/customize/heart.png" /> en <img class="bottom-bar-fr" src="/customize/fr.png" /></a>';
+    out.bottom_support = '<a href="http://labs.xwiki.com/" title="XWiki Labs" target="_blank">Un projet <img src="/customize/logo-xwiki2.png" alt="XWiki SAS" class="bottom-bar-xwiki"/> Labs</a> avec le soutien de <a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
 
     return out;
 });

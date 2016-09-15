@@ -116,12 +116,12 @@ define([
         var $present = Button({
             id: 'present',
             'class': 'present button action',
-            title: 'enter presentation mode',
+            title: Messages.presentButtonTitle,
         })
-        .text("PRESENT")
+        .text(Messages.presentButton)
         .click(function () {
             Slide.show(true, $textarea.val());
-            Cryptpad.log("Hit ESC to exit presentation mode");
+            Cryptpad.log(Messages.presentSuccess);
         });
 
         var $forget = Button({
@@ -206,18 +206,18 @@ define([
 
         var $share = Button({
             id: 'share',
-            'class': 'export button action',
-            title: 'copy url', // TODO translate
+            'class': 'share button action',
+            title: Messages.shareButtonTitle,
         })
-        .text('SHARE')
+        .text(Messages.shareButton)
         .click(function () {
             var text = window.location.href;
             var success = Clipboard.copy(text);
             if (success) {
-                Cryptpad.log("copied URL to clipboard");
+                Cryptpad.log(Messages.shareSuccess);
                 return;
             }
-            Cryptpad.warn("failed to copy URL to clipboard");
+            Cryptpad.warn(Messages.shareFailed);
         });
 
         $bar
@@ -283,7 +283,7 @@ define([
 
     var onAbort = config.onAbort = function (info) {
         $textarea.attr('disabled', true);
-        Cryptpad.alert("Server Connection Lost");
+        Cryptpad.alert(Messages.common_connectionLost);
     };
 
     Cryptpad.ready(function () {

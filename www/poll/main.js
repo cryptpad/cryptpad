@@ -67,8 +67,8 @@ define([
     module.Wizard = Wizard;
 
     // special UI elements
-    var $title = $('#title').attr('placeholder', Messages.dateTitleHint || 'title');
-    var $description = $('#description').attr('placeholder', Messages.dateDescription || 'description');
+    var $title = $('#title').attr('placeholder', Messages.poll_titleHint || 'title');
+    var $description = $('#description').attr('placeholder', Messages.poll_descriptionHint || 'description');
 
     var items = [$title, $description];
 
@@ -231,7 +231,7 @@ define([
                     'class': 'save action',
                     'for': id,
                 })
-                .text('COMMIT') // TODO translate
+                .text(Messages.commitButton)
                 .click(function () {
                     module.activeColumn = '';
                     makeUserEditable(id, false);
@@ -254,7 +254,7 @@ define([
         var $user = Input({
             id: id,
             type: 'text',
-            placeholder: 'your name',
+            placeholder: Messages.poll_userPlaceholder,
             disabled: true,
         }).on('keyup change', function () {
             proxy.table.cols[id] = $user.val() || "";
@@ -262,10 +262,10 @@ define([
 
         var $edit = $('<span>', {
                 'class': 'edit',
-                title: 'edit column', // TODO translate
+                title: Messages.poll_editUserTitle,
             }).click(function () {
                 if ($edit.hasClass('editable')) { return; }
-                Cryptpad.confirm("Are you sure you'd like to edit this user?",
+                Cryptpad.confirm(Messages.poll_editUser,
                     function (yes) {
                         if (!yes) { return; }
                         makeUserEditable(id, true);
@@ -277,9 +277,9 @@ define([
 
         var $remove = $('<span>', {
                 'class': 'remove',
-                'title': 'remove column', // TODO translate
+                'title': Messages.poll_removeUserTitle,
             }).text('✖').click(function () {
-                Cryptpad.confirm("Are you sure you'd like to remove this user?", // TODO translate
+                Cryptpad.confirm(Messages.poll_removeUser,
                     function (yes) {
                         if (!yes) { return; }
                         // remove commit button, and anything else...
@@ -329,7 +329,7 @@ define([
     var makeOption = function (proxy, id, value) {
         var $option = Input({
             type: 'text',
-            placeholder: 'option',
+            placeholder: Messages.optionPlaceholder,
             id: id,
         }).on('keyup change', function () {
             proxy.table.rows[id] = $option.val();
@@ -337,11 +337,11 @@ define([
 
         var $edit = $('<span>', {
             'class': 'edit',
-            title: 'edit option', // TODO translate
+            title: Messages.poll_editOptionTitle,
         })
         .click(function () {
             if ($edit.hasClass('editable')) { return; }
-            Cryptpad.confirm("Are you sure you'd like to edit this option?",
+            Cryptpad.confirm(Messages.poll_editOption,
                 function (yes) {
                     if (!yes) { return; }
                     makeOptionEditable(id, true);
@@ -353,10 +353,9 @@ define([
 
         var $remove = $('<span>', {
             'class': 'remove',
-            'title': 'remove row', // TODO translate
+            'title': Messages.poll_removeOptionTitle,
         }).text('✖').click(function () {
-            // TODO translate
-            var msg = "Are you sure you'd like to remove this option?";
+            var msg = Messages.poll_removeOption;
             Cryptpad.confirm(msg, function (yes) {
                 if (!yes) { return; }
                 removeRow(proxy, id);
@@ -384,7 +383,7 @@ define([
         if (!module.isEditable) { return; }
         var id = coluid();
 
-        var msg = "Enter a name"; // TODO translate
+        var msg = Messages.poll_addUser;
         Cryptpad.prompt(msg, "", function (name) {
             if (name === null) { return; }
             makeUser(module.rt.proxy, id, name).val(name);
@@ -396,7 +395,7 @@ define([
         if (!module.isEditable) { return; }
         var id = rowuid();
 
-        var msg = "Propose an option";
+        var msg = Messages.poll_addOption;
         Cryptpad.prompt(msg, "", function (option) {
             if (option === null || !option) { return; }
             makeOption(module.rt.proxy, id, option).val(option).focus();
@@ -405,7 +404,7 @@ define([
     });
 
     Wizard.$getOptions.click(function () {
-        Cryptpad.confirm("Are you really ready to add these options to your poll?", function (yes) {
+        Cryptpad.confirm(Messages.wizardConfirm, function (yes) {
             if (!yes) { return; }
             var options = Wizard.computeSlots(function (a, b) {
                 return a + ' ('+ b + ')';
@@ -652,7 +651,7 @@ define([
 
         var $toolbar = $('#toolbar');
 
-        $toolbar.find('sub a').text('⇐ back to Cryptpad');
+        $toolbar.find('sub a').text(Messages.backToCryptpad);
 
         var Button = function (opt) {
             return $('<button>', opt);
@@ -719,11 +718,11 @@ define([
         $toolbar.append(Button({
             id: 'wizard',
             'class': 'wizard button action',
-            title: 'wizard!',
-        }).text('WIZARD').click(function () {
+            title: Messages.wizardTitle,
+        }).text(Messages.wizardButton).click(function () {
             Wizard.show();
             if (Wizard.hasBeenDisplayed) { return; }
-            Cryptpad.log("click the button in the top left to return to your poll");
+            Cryptpad.log(Messages.wizardLog);
             Wizard.hasBeenDisplayed = true;
         }));
 
@@ -793,7 +792,7 @@ define([
             module.activeColumn = '';
             var promptForName = function () {
                 // HERE
-                Cryptpad.prompt("What is your name?", "", function (name, ev) {
+                Cryptpad.prompt(Messages.promptName, "", function (name, ev) {
                     if (name === null) {
                         name = '';
                     }
@@ -860,7 +859,7 @@ define([
         }).on('ready', ready)
         .on('disconnect', function () {
             setEditable(false);
-            Cryptpad.alert("Network connection lost!");
+            Cryptpad.alert(Messages.common_connectionLost);
         });
     });
 

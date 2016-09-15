@@ -1,11 +1,16 @@
 define(function () {
     var out = {};
 
+    out.main_title = "Cryptpad: Zero Knowledge, Collaborative Real Time Editing";
+
+
     out.errorBox_errorType_disconnected = 'Connection Lost';
     out.errorBox_errorExplanation_disconnected = [
         'Lost connection to server, you may reconnect by reloading the page or review your work ',
         'by clicking outside of this box.'
     ].join('');
+
+    out.common_connectionLost = 'Server Connection Lost';
 
     out.editingAlone = 'Editing alone';
     out.editingWithOneOtherPerson = 'Editing with one other person';
@@ -24,7 +29,7 @@ define(function () {
     out.exportPrompt = 'What would you like to name your file?';
 
     out.back = '&#8656; Back';
-    out.backToCryptpad = '&#8656; Back to Cryptpad';
+    out.backToCryptpad = '⇐ Back to Cryptpad';
 
     out.changeNameButton = 'Change name';
     out.changeNamePrompt = 'Change your name: ';
@@ -38,48 +43,82 @@ define(function () {
     out.forgetButtonTitle = 'remove this document from your home page listings';
     out.forgetPrompt = 'Clicking OK will remove the URL for this pad from localStorage, are you sure?';
 
+    out.shareButton = 'SHARE';
+    out.shareButtonTitle = "Copy URL to clipboard";
+    out.shareSuccess = 'Copied URL to clipboard';
+    out.shareFailed = "Failed to copy URL to clipboard";
+
+    out.presentButton = 'PRESENT';
+    out.presentButtonTitle = "Enter presentation mode";
+    out.presentSuccess = 'Hit ESC to exit presentation mode';
+
+    out.commitButton = 'COMMIT';
+
     out.disconnectAlert = 'Network connection lost!';
 
-    out.tryIt = 'Try it out!';
+    out.tryIt = ' out!';
     out.recentPads = 'Your recent pads (stored only in your browser)';
 
     out.okButton = 'OK (enter)';
     out.cancelButton = 'Cancel (esc)';
 
-    out.initialState = [
-        '<p>',
-        'This is <strong>CryptPad</strong>, the zero knowledge realtime collaborative editor.',
-        '<br>',
-        'What you type here is encrypted so only people who have the link can access it.',
-        '<br>',
-        'Even the server cannot see what you type.',
-        '</p>',
-        '<p>',
-        '<small>',
-        '<i>What you see here, what you hear here, when you leave here, let it stay here</i>',
-        '</small>',
-        '</p>',
-    ].join('');
-
-    out.codeInitialState = [
-        '/*\n',
-        '   This is CryptPad, the zero knowledge realtime collaborative editor.\n',
-        '   What you type here is encrypted so only people who have the link can access it.\n',
-        '   Even the server cannot see what you type.\n',
-        '   What you see here, what you hear here, when you leave here, let it stay here.\n',
-        '*/'
-    ].join('');
-
     out.loginText = '<p>Your username and password are used to generate a unique key which is never known by our server.</p>\n' +
                     '<p>Be careful not to forget your credentials, as they are impossible to recover</p>';
 
+    // TODO : move at the beginning
     out.type = {};
     out.type.pad = 'Pad';
     out.type.code = 'Code';
     out.type.poll = 'Poll';
     out.type.slide = 'Presentation';
 
-    out.main_title = "Cryptpad: Zero Knowledge, Collaborative Real Time Editing";
+    out.forget = "Forget";
+
+    // Polls
+
+    out.poll_title = "Zero Knowledge Date Picker";
+    out.poll_subtitle = "Zero Knowledge, <em>realtime</em> scheduling";
+
+    out.poll_p_save = "Your settings are updated instantly, so you never need to save.";
+    out.poll_p_encryption = "All your input is encrypted so only people who have the link can access it. Even the server cannot see what you change.";
+    out.poll_p_howtouse = "Enter your name in the input field below and check the box for times when you are available";
+
+    out.promptName = "What is you name ?";
+
+    out.wizardButton = 'WIZARD';
+    out.wizardLog = "Click the button in the top left to return to your poll";
+    out.wizardTitle = "Use the wizard to create your poll";
+    out.wizardConfirm = "Are you really ready to add these options to your poll?";
+
+    out.poll_closeWizardButton = "Close wizard";
+    out.poll_closeWizardButtonTitle = "Close wizard";
+    out.poll_wizardComputeButton = "Compute Options";
+    out.poll_wizardClearButton = "Clear Table";
+    out.poll_wizardDescription = "Automatically create a number of options by entering any number of dates and times segments";
+    out.poll_wizardAddDateButton = "+ Dates";
+    out.poll_wizardAddTimeButton = "+ Times";
+
+    out.poll_addUserButton = "+ Users";
+    out.poll_addUserButtonTitle = "Click to add a user";
+    out.poll_addOptionButton = "+ Options";
+    out.poll_addOptionButtonTitle = "Click to add an option";
+    out.poll_addOption = "Propose an option";
+    out.poll_optionPlaceholder = "Option";
+    out.poll_addUser = "Enter a name";
+    out.poll_userPlaceholder = "Your name";
+    out.poll_removeOption = "Are you sure you'd like to remove this option?";
+    out.poll_removeOptionTitle = "Remove the row";
+    out.poll_removeUser = "Are you sure you'd like to remove this user?";
+    out.poll_removeUserTitle = "Remove the column";
+    out.poll_editOption = "Are you sure you'd like to edit this option?";
+    out.poll_editOptionTitle = "Edit the row";
+    out.poll_editUser = "Are you sure you'd like to edit this user?";
+    out.poll_editUserTitle = "Edit the column";
+
+    out.poll_titleHint = "Title";
+    out.poll_descriptionHint = "Description";
+
+    // index.html
 
     out.main_p1 = 'CryptPad is the <strong>zero knowledge</strong> realtime collaborative editor.  Encryption carried out in your web browser protects the data from the server, the cloud, and the NSA.  The secret encryption key is stored in the URL <a href="https://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a> which is never sent to the server but is available to javascript so by sharing the URL, you give authorization to others who want to participate.';
     out.main_p2 = 'This project uses the <a href="http://ckeditor.com/">CKEditor</a> Visual Editor, <a href="https://codemirror.net/">CodeMirror</a>, and the <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a> realtime engine.';
@@ -100,6 +139,8 @@ define(function () {
     out.button_newpoll = 'CREATE NEW POLL';
     out.button_newslide = 'CREATE NEW PRESENTATION';
 
+    // privacy.html
+
     out.policy_title = 'Cryptpad Privacy Policy';
     out.policy_whatweknow = 'What we know about you';
     out.policy_whatweknow_p1 = 'As an application that is hosted on the web, Cryptpad has access to metadata exposed by the HTTP protocol. This includes your IP address, and various other HTTP headers that can be used to identify your particular browser. You can see what information your browser is sharing by visiting <a target="_blank" href="https://www.whatismybrowser.com/detect/what-http-headers-is-my-browser-sending" title="what http headers is my browser sending">WhatIsMyBrowser.com</a>.';
@@ -119,12 +160,19 @@ define(function () {
     out.policy_choices_vpn = 'If you want to use our hosted instance, but don\'t want to expose your IP address, you can protect your IP using the <a href="https://www.torproject.org/projects/torbrowser.html.en" title="downloads from the Tor project" target="_blank">Tor browser bundle</a>, or a <a href="https://riseup.net/en/vpn" title="VPNs provided by Riseup" target="_blank">VPN</a>.';
     out.policy_choices_ads = 'If you just want to block our analytics platform, you can use adblocking tools like <a href="https://www.eff.org/privacybadger" title="download privacy badger" target="_blank">Privacy Badger</a>.';
 
+    // terms.html
+
     out.tos_title = "Cryptpad Terms of Service";
     out.tos_legal = "Please don't be malicious, abusive, or do anything illegal.";
     out.tos_availability = "We hope you find this service useful, but availability or performance cannot be guaranteed. Please export your data regularly.";
     out.tos_e2ee = "Cryptpad documents can be read or modified by anyone who can guess or otherwise obtain the document's fragment identifier. We recommend that you use end-to-end-encrypted (e2ee) messaging technology to share URLs, and assume no liability in the event that such a URL is leaked.";
     out.tos_logs = "Metadata provided by your browser to the server may be logged for the purpose of maintaining the service.";
     out.tos_3rdparties = "We do not provide individualized data to third parties unless required to by law.";
+
+    // BottomBar.html
+
+    out.bottom_love = '<a href="http://www.xwiki.com/" target="_blank">Made with <img class="bottom-bar-heart" src="/customize/heart.png" /> in <img class="bottom-bar-fr" src="/customize/fr.png" /></a>';
+    out.bottom_support = '<a href="http://labs.xwiki.com/" title="XWiki Labs" target="_blank">An <img src="/customize/logo-xwiki2.png" alt="XWiki SAS" class="bottom-bar-xwiki"/> Labs Project </a> with the support of <a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
 
     return out;
 });
