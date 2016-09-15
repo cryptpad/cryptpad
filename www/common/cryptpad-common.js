@@ -716,5 +716,7 @@ define([
         };
     };
 
+    Messages._applyTranslation();
+
     return common;
 });

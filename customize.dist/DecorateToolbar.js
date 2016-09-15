@@ -2,8 +2,10 @@
     globals define
 */
 define([
+    '/customize/languageSelector.js',
+    '/customize/messages.js',
     '/bower_components/jquery/dist/jquery.min.js'
-], function () {
+], function (LS, Messages) {
     var $ = window.jQuery;
     var main = function () {
         $.ajax({
@@ -15,6 +17,8 @@ define([
                     rel: 'stylesheet',
                     href: '/customize/main.css'
                 }));
+                LS.main();
+                Messages._applyTranslation();
             }
         });
     };

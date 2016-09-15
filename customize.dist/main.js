@@ -28,10 +28,10 @@ define([
     Cryptpad.styleAlerts();
 
     var padTypes = {
-        '/pad/': 'Pad',
-        '/code/': 'Code',
-        '/poll/': 'Poll',
-        '/slide/': 'Presentation',
+        '/pad/': Messages.type.pad,
+        '/code/': Messages.type.code,
+        '/poll/': Messages.type.poll,
+        '/slide/': Messages.type.slide,
     };
 
     var $table = $('table.scroll');
@@ -85,7 +85,7 @@ define([
 
             var $remove = $('<td>', {
                 'class': 'remove',
-                title: "forget '"+shortTitle + "'"
+                title: Messages.forget + " '"+shortTitle + "'"
             }).text('✖').click(function () {
                 Cryptpad.confirm(Messages.forgetPrompt + ' (' + Cryptpad.fixHTML(shortTitle) + ')', function (yes) {
                     if (!yes) { return; }

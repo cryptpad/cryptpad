@@ -1,52 +1,51 @@
-define(function () {
-    var out = {};
+define(['/customize/languageSelector.js',
+        '/customize/translations/messages.js',
+        '/customize/translations/messages.fr.js',
+        '/bower_components/jquery/dist/jquery.min.js'], function(LS, Default, French) {
+    var $ = window.jQuery;
 
-    out.errorBox_errorType_disconnected = 'Connection Lost';
-    out.errorBox_errorExplanation_disconnected = [
-        'Lost connection to server, you may reconnect by reloading the page or review your work ',
-        'by clicking outside of this box.'
-    ].join('');
+    var map = {
+        'fr': French
+    };
 
-    out.editingAlone = 'Editing alone';
-    out.editingWithOneOtherPerson = 'Editing with one other person';
-    out.editingWith = 'Editing with';
-    out.otherPeople = 'other people';
-    out.disconnected = 'Disconnected';
-    out.synchronizing = 'Synchronizing';
-    out.reconnecting = 'Reconnecting...';
-    out.lag = 'Lag';
+    var defaultLanguage = 'en';
 
-    out.importButton = 'IMPORT';
-    out.importButtonTitle = 'Import a document from a local file';
+    var language = LS.getLanguage();
 
-    out.exportButton = 'EXPORT';
-    out.exportButtonTitle = 'Export this document to a local file';
-    out.exportPrompt = 'What would you like to name your file?';
+    var messages;
 
-    out.back = '&#8656; Back';
-    out.backToCryptpad = '&#8656; Back to Cryptpad';
+    if (!language || language === defaultLanguage || language === 'default' || !map[language]) {
+        messages = Default;
+    }
+    else {
+        // Add the translated keys to the returned object
+        messages = $.extend(true, {}, Default, map[language]);
+    }
 
-    out.changeNameButton = 'Change name';
-    out.changeNamePrompt = 'Change your name: ';
+    // Get keys with parameters
+    messages._getKey = function (key, argArray) {
+        if (!messages[key]) { return '?'; }
+        var text = messages[key];
+        return text.replace(/\{(\d+)\}/g, function (str, p1) {
+            return argArray[p1] || null;
+        });
+    };
 
-    out.renameButton = 'RENAME';
-    out.renameButtonTitle = 'Change the title under which this document is listed on your home page';
-    out.renamePrompt = 'How would you like to title this pad?';
-    out.renameConflict = 'Another pad already has that title';
+    messages._applyTranslation = function () {
+        $('[data-localization]').each(function (i, e) {
+            var $el = $(this);
+            var key = $el.data('localization');
+            $el.html(messages[key]);
+        });
+        $('[data-localization-title]').each(function (i, e) {
+            var $el = $(this);
+            var key = $el.data('localization-title');
+            $el.attr('title', messages[key]);
+        });
+    };
 
-    out.forgetButton = 'FORGET';
-    out.forgetButtonTitle = 'remove this document from your home page listings';
-    out.forgetPrompt = 'Clicking OK will remove the URL for this pad from localStorage, are you sure?';
-
-    out.disconnectAlert = 'Network connection lost!';
-
-    out.tryIt = 'Try it out!';
-    out.recentPads = 'Your recent pads (stored only in your browser)';
-
-    out.okButton = 'OK (enter)';
-    out.cancelButton = 'Cancel (esc)';
-
-    out.initialState = [
+    // Non translatable keys
+    messages.initialState = [
         '<p>',
         'This is <strong>CryptPad</strong>, the zero knowledge realtime collaborative editor.',
         '<br>',
@@ -61,7 +60,7 @@ define(function () {
         '</p>',
     ].join('');
 
-    out.codeInitialState = [
+    messages.codeInitialState = [
         '/*\n',
         '   This is CryptPad, the zero knowledge realtime collaborative editor.\n',
         '   What you type here is encrypted so only people who have the link can access it.\n',
@@ -70,14 +69,5 @@ define(function () {
         '*/'
     ].join('');
 
-    out.loginText = '<p>Your username and password are used to generate a unique key which is never known by our server.</p>\n' +
-                    '<p>Be careful not to forget your credentials, as they are impossible to recover</p>';
-
-    out.type = {};
-    out.type.pad = 'Pad';
-    out.type.code = 'Code';
-    out.type.poll = 'Poll';
-    out.type.slide = 'Presentation';
-
-    return out;
+    return messages;
 });
