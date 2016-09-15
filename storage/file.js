@@ -162,6 +162,11 @@ var getMessages = function (env, chanName, handler, cb) {
     });
 };
 
+var removeChannel = function (env, channelName, cb) {
+    var filename = Path.join(env.root, channelName.slice(0, 2), channelName + '.ndjson');
+    Fs.unlink(filename, cb);
+};
+
 module.exports.create = function (conf, cb) {
     var env = {
         root: conf.filePath || './datastore',
@@ -181,8 +186,9 @@ module.exports.create = function (conf, cb) {
                 getMessages(env, channelName, msgHandler, cb);
             },
             removeChannel: function (channelName, cb) {
-                console.log("[storage/file.removeChannel()] Not implemented");
-                cb();
+                removeChannel(env, channelName, function (err) {
+                    cb(err);
+                });
             },
         });
     });
