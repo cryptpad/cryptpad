@@ -13,7 +13,7 @@ define(['/bower_components/jquery/dist/jquery.min.js'], function() {
     };
 
     var getBrowserLanguage = function () {
-        return navigator.language || navigator.userLanguage;;
+        return navigator.language || navigator.userLanguage;
     };
 
     var getLanguage = out.getLanguage = function () {
