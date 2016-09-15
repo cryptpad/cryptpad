@@ -100,7 +100,7 @@ define([
         // don't do anything funny unless you're on a cryptpad subdomain
         if (!/cryptpad.fr$/i.test(hostname)) { return; }
 
-        if (hash.length >= 56) {
+        if (hash.length >= 25) {
             // you're on the right domain
             return;
         }
@@ -116,15 +116,67 @@ define([
         window.location.hostname = 'old.cryptpad.fr';
     };
 
+    var hexToBase64 = common.hexToBase64 = function (hex) {
+        var hexArray = hex
+            .replace(/\r|\n/g, "")
+            .replace(/([\da-fA-F]{2}) ?/g, "0x$1 ")
+            .replace(/ +$/, "")
+            .split(" ");
+        var byteString = String.fromCharCode.apply(null, hexArray);
+        return window.btoa(byteString).replace(/\//g, '-').slice(0,-2);
+    };
+
+    var base64ToHex = common.base64ToHex = function (b64String) {
+        var hexArray = [];
+        atob(b64String.replace(/-/g, '/') + "==").split("").forEach(function(e){
+            var h = e.charCodeAt(0).toString(16);
+            if (h.length === 1) { h = "0"+h; }
+            hexArray.push(h);
+        });
+        return hexArray.join("");
+    };
+
+    var getHashFromKeys = common.getHashFromKeys = function (chanKey, cryptKey) {
+        return '/1/' + hexToBase64(chanKey) + '/' + cryptKey.replace(/\//g, '-');
+    };
+
     var getSecrets = common.getSecrets = function () {
         var secret = {};
         if (!/#/.test(window.location.href)) {
             secret.key = Crypto.genKey();
         } else {
             var hash = window.location.hash.slice(1);
+            if (hash.length === 0) {
+                secret.key = Crypto.genKey();
+                return secret;
+            }
             common.redirect(hash);
-            secret.channel = hash.slice(0, 32);
-            secret.key = hash.slice(32);
+            // old hash system : #{hexChanKey}{cryptKey}
+            // new hash system : #/{hashVersion}/{b64ChanKey}/{cryptKey}
+            if (hash.slice(0,1) !== '/' && hash.length >= 56) {
+                // Old hash
+                secret.channel = hash.slice(0, 32);
+                secret.key = hash.slice(32);
+            }
+            else {
+                // New hash
+                var hashArray = hash.split('/');
+                if (hashArray.length < 4) {
+                    common.alert("Unable to parse the key");
+                    throw new Error("Unable to parse the key");
+                }
+                var version = hashArray[1];
+                if (version === "1") {
+                    secret.channel = base64ToHex(hashArray[2]);
+                    secret.key = hashArray[3].replace(/-/g, '/'); //TODO replace / by -
+                    if (secret.channel.length !== 32 || secret.key.length !== 24) {
+                        common.alert("The channel key and/or the encryption key is invalid");
+                        console.log("Channel key length : " + secret.channel.length + " != 32");
+                        console.log("Encryption key length : " + secret.key.length + " != 24");
+                        throw new Error("The channel key and/or the encryption key is invalid");
+                    }
+                }
+            }
         }
         return secret;
     };
@@ -191,6 +243,25 @@ define([
             return '';
         });
         return ret;
+    };
+
+    var isNameAvailable = function (title, parsed, pads) {
+        return !pads.some(function (pad) {
+            // another pad is already using that title
+            if (pad.title === title) {
+                return true;
+            }
+        });
+    };
+
+    // Create untitled documents when no name is given
+    var getDefaultName = common.getDefaultName = function (parsed, recentPads) {
+        var type = parsed.type;
+        var untitledIndex = 1;
+        var name = (Messages.type)[type] + ' - ' + new Date().toString().split(' ').slice(0,4).join(' ');
+        if (isNameAvailable(name, parsed, recentPads)) { return name; }
+        while (!isNameAvailable(name + ' - ' + untitledIndex, parsed, recentPads)) { untitledIndex++; }
+        return name + ' - ' + untitledIndex;
     };
 
     var makePad = function (href, title) {
@@ -379,6 +450,8 @@ define([
                 }
             });
 
+            if (title === '') { title = getDefaultName(parsed, pads); }
+
             cb(void 0, title);
         });
     };
@@ -396,7 +469,7 @@ define([
             var conflicts = pads.some(function (pad) {
                 // another pad is already using that title
                 if (pad.title === title) {
-                    var p = parsePadUrl(href);
+                    var p = parsePadUrl(pad.href);
 
                     if (p.type === parsed.type && p.hash === parsed.hash) {
                         // the duplicate pad has the same type and hash

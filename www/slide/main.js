@@ -92,7 +92,7 @@ define([
     };
 
     var onInit = config.onInit = function (info) {
-        window.location.hash = info.channel + secret.key;
+        window.location.hash = Cryptpad.getHashFromKeys(info.channel, secret.key);
         $(window).on('hashchange', function() {
             window.location.reload();
         });
@@ -102,7 +102,7 @@ define([
                 console.log("Couldn't get pad title");
                 return;
             }
-            document.title = APP.title = title || window.location.hash.slice(1, 9);
+            document.title = APP.title = title || info.channel.slice(0, 8);
             Cryptpad.rememberPad(title, function (err, data) {
                 if (err) {
                     console.log("Couldn't remember pad");
@@ -140,7 +140,8 @@ define([
                         console.log(err);
                         return;
                     }
-                    document.title = APP.title = window.location.hash.slice(1,9);
+                    var parsed = Cryptpad.parsePadUrl(href);
+                    document.title = APP.title = Cryptpad.getDefaultName(parsed, []);
                 });
             });
         });

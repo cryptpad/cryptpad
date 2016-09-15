@@ -25,6 +25,8 @@ define([
         spinner: Cryptpad.spinner(document.body),
     };
 
+    Cryptpad.styleAlerts();
+
     module.spinner.show();
 
     var ifrw = module.ifrw = $('#pad-iframe')[0].contentWindow;
@@ -240,12 +242,13 @@ define([
             };
 
             var suggestName = function () {
-                var hash = window.location.hash.slice(1, 9);
+                var parsed = Cryptpad.parsePadUrl(window.location.href);
+                var name = Cryptpad.getDefaultName(parsed, []);
 
-                if (document.title === hash) {
-                    return getHeadingText() || hash;
+                if (document.title.slice(0, name.length) === name) {
+                    return getHeadingText() || document.title;
                 } else {
-                    return document.title || getHeadingText() || hash;
+                    return document.title || getHeadingText() || name;
                 }
             };
 
@@ -375,7 +378,8 @@ define([
                                     console.error(err);
                                     return;
                                 }
-                                document.title = window.location.hash.slice(1,9);
+                                var parsed = Cryptpad.parsePadUrl(href);
+                                document.title = Cryptpad.getDefaultName(parsed, []);
                             });
                         });
                     });
@@ -439,14 +443,14 @@ define([
                     configureTheme();
                 });
 
-                window.location.hash = info.channel + secret.key;
+                window.location.hash = Cryptpad.getHashFromKeys(info.channel, secret.key);
                 Cryptpad.getPadTitle(function (err, title) {
                     if (err) {
                         console.log("Unable to get pad title");
                         console.error(err);
                         return;
                     }
-                    document.title = title || window.location.hash.slice(1,9);
+                    document.title = title || info.channel.slice(0, 8);
                     Cryptpad.rememberPad(title, function (err, data) {
                         if (err) {
                             console.log("Unable to set pad title");
@@ -622,7 +626,6 @@ define([
                 Cryptpad.alert(Messages.disconnectAlert);
             };
 
-            Cryptpad.styleAlerts();
             var realtime = module.realtime = Realtime.start(config);
 
             editor.on('change', onLocal);

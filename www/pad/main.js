@@ -21,12 +21,13 @@ define([
 ], function (Config, Messages, Crypto, realtimeInput, Hyperjson,
     Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad,
     Visible, Notify) {
-
     var $ = window.jQuery;
     var saveAs = window.saveAs;
     var ifrw = $('#pad-iframe')[0].contentWindow;
     var Ckeditor; // to be initialized later...
     var DiffDom = window.diffDOM;
+
+    Cryptpad.styleAlerts();
 
     var stringify = function (obj) {
         return JSONSortify(obj);
@@ -439,12 +440,13 @@ define([
             };
 
             var suggestName = module.suggestName = function () {
-                var hash = window.location.hash.slice(1, 9);
+                var parsed = Cryptpad.parsePadUrl(window.location.href);
+                var name = Cryptpad.getDefaultName(parsed, []);
 
-                if (document.title === hash) {
-                    return getHeadingText() || hash;
+                if (document.title.slice(0, name.length) === name) {
+                    return getHeadingText() || document.title;
                 } else {
-                    return document.title || getHeadingText() || hash;
+                    return document.title || getHeadingText() || name;
                 }
             };
 
@@ -535,14 +537,15 @@ define([
                         Cryptpad.confirm(Messages.forgetPrompt, function (yes) {
                             if (!yes) { return; }
                             Cryptpad.forgetPad(href, function (err, data) {
-                                document.title = window.location.hash.slice(1,9);
+                                var parsed = Cryptpad.parsePadUrl(href);
+                                document.title = Cryptpad.getDefaultName(parsed, []);
                             });
                         });
                     });
                 $rightside.append($forgetPad);
 
                 // set the hash
-                window.location.hash = info.channel + secret.key;
+                window.location.hash = Cryptpad.getHashFromKeys(info.channel, secret.key);
 
                 Cryptpad.getPadTitle(function (err, title) {
                     if (err) {
@@ -550,7 +553,7 @@ define([
                         console.log("Couldn't get pad title");
                         return;
                     }
-                    document.title = title || window.location.hash.slice(1, 9);
+                    document.title = title || info.channel.slice(0, 8);
                     Cryptpad.rememberPad(title, function (err, data) {
                         if (err) {
                             console.log("Couldn't remember pad");
@@ -558,8 +561,6 @@ define([
                         }
                     });
                 });
-
-                Cryptpad.styleAlerts();
             };
 
             // this should only ever get called once, when the chain syncs
