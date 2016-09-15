@@ -34,7 +34,9 @@ const sendChannelMessage = function (ctx, channel, msgStruct) {
     });
     if (USE_HISTORY_KEEPER && msgStruct[2] === 'MSG') {
         ctx.store.message(channel.id, JSON.stringify(msgStruct), function (err) {
-            if (err) {
+            if (err && typeof(err) !== 'function') {
+                // ignore functions because older datastores
+                // might pass waitFors into the callback
                 console.log("Error writing message: " + err);
             }
         });
