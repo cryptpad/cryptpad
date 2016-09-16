@@ -303,7 +303,12 @@ define([
 
             var stringifyDOM = module.stringifyDOM = function (dom) {
                 var hjson = Hyperjson.fromDOM(dom, isNotMagicLine, brFilter);
-                hjson[3] = {metadata: userList};
+                hjson[3] = {
+                    metadata: {
+                        users: userList,
+                        title: document.title
+                    }
+                };
                 return stringify(hjson);
             };
 
@@ -343,15 +348,34 @@ define([
                 }
             };
 
-            var updateUserList = function(shjson) {
+            var updateTitle = function (newTitle) {
+                if (newTitle === document.title) { return; }
+                // Change the title now, and set it back to the old value if there is an error
+                var oldTitle = document.title;
+                document.title = newTitle;
+                Cryptpad.setPadTitle(newTitle, function (err, data) {
+                    if (err) {
+                        console.log("Couldn't set pad title");
+                        console.error(err);
+                        document.title = oldTitle;
+                        return;
+                    }
+                });
+            };
+
+            var updateMetadata = function(shjson) {
                 // Extract the user list (metadata) from the hyperjson
                 var hjson = JSON.parse(shjson);
-                var peerUserList = hjson[3];
-                if(peerUserList && peerUserList.metadata) {
-                  var userData = peerUserList.metadata;
-                  // Update the local user data
-                  addToUserList(userData);
-                  hjson.pop();
+                var peerMetadata = hjson[3];
+                if (peerMetadata && peerMetadata.metadata) {
+                    if (peerMetadata.metadata.users) {
+                        var userData = peerMetadata.metadata.users;
+                        // Update the local user data
+                        addToUserList(userData);
+                    }
+                    if (peerMetadata.metadata.title) {
+                        updateTitle(peerMetadata.metadata.title);
+                    }
                 }
             };
 
@@ -378,7 +402,7 @@ define([
                 cursor.update();
 
                 // Update the user list (metadata) from the hyperjson
-                updateUserList(shjson);
+                updateMetadata(shjson);
 
                 // build a dom from HJSON, diff, and patch the editor
                 applyHjson(shjson);
@@ -519,6 +543,7 @@ define([
                                         return;
                                     }
                                     document.title = title;
+                                    editor.fire('change');
                                 });
                             });
                         });

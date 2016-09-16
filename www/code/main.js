@@ -150,7 +150,10 @@ define([
                 var obj = {content: textValue};
 
                 // append the userlist to the hyperjson structure
-                obj.metadata = userList;
+                obj.metadata = {
+                    users: userList,
+                    title: document.title
+                };
 
                 // set mode too...
                 obj.highlightMode = module.highlightMode;
@@ -355,6 +358,7 @@ define([
                                             return;
                                         }
                                         document.title = title;
+                                        onLocal();
                                     });
                                 });
                             });
@@ -461,13 +465,33 @@ define([
                 });
             };
 
-            var updateUserList = function(shjson) {
+            var updateTitle = function (newTitle) {
+                if (newTitle === document.title) { return; }
+                // Change the title now, and set it back to the old value if there is an error
+                var oldTitle = document.title;
+                document.title = newTitle;
+                Cryptpad.setPadTitle(newTitle, function (err, data) {
+                    if (err) {
+                        console.log("Couldn't set pad title");
+                        console.error(err);
+                        document.title = oldTitle;
+                        return;
+                    }
+                });
+            };
+
+            var updateMetadata = function(shjson) {
                 // Extract the user list (metadata) from the hyperjson
-                var hjson = (shjson === "") ? "" : JSON.parse(shjson);
-                if(hjson && hjson.metadata) {
-                  var userData = hjson.metadata;
-                  // Update the local user data
-                  addToUserList(userData);
+                var json = (shjson === "") ? "" : JSON.parse(shjson);
+                if (json && json.metadata) {
+                    if (json.metadata.users) {
+                        var userData = json.metadata.users;
+                        // Update the local user data
+                        addToUserList(userData);
+                    }
+                    if (json.metadata.title) {
+                        updateTitle(json.metadata.title);
+                    }
                 }
             };
 
@@ -572,7 +596,7 @@ define([
                 var shjson = module.realtime.getUserDoc();
 
                 // Update the user list (metadata) from the hyperjson
-                updateUserList(shjson);
+                updateMetadata(shjson);
 
                 var hjson = JSON.parse(shjson);
                 var remoteDoc = hjson.content;
@@ -607,7 +631,10 @@ define([
                 var localDoc = canonicalize($textarea.val());
                 var hjson2 = {
                   content: localDoc,
-                  metadata: userList,
+                  metadata: {
+                      users: userList,
+                      title: document.title
+                  },
                   highlightMode: highlightMode,
                 };
                 var shjson2 = stringify(hjson2);
