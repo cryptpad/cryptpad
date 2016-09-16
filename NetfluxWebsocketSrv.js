@@ -1,5 +1,6 @@
 ;(function () { 'use strict';
 const Crypto = require('crypto');
+const Nacl = require('tweetnacl');
 const LogStore = require('./storage/LogStore');
 
 
@@ -27,6 +28,15 @@ const sendMsg = function (ctx, user, msg) {
 
 const sendChannelMessage = function (ctx, channel, msgStruct) {
     msgStruct.unshift(0);
+    if (msgStruct[2] === 'MSG' && channel.validateKey) {
+        let msg = Nacl.util.decodeBase64(msgStruct[4]);
+        let validated = Nacl.sign.open(msg, channel.validateKey);
+        if (!validated) {
+            console.log("Unsigned message rejected");
+            return;
+        }
+        msgStruct[4] = Nacl.util.encodeUTF8(validated);
+    }
     channel.forEach(function (user) {
       if(msgStruct[2] !== 'MSG' || user.id !== msgStruct[1]) { // We don't want to send back a message to its sender, in order to save bandwidth
         sendMsg(ctx, user, msgStruct);
@@ -147,6 +157,17 @@ const handleMessage = function (ctx, user, msg) {
         // prevent removal of the channel if there is a pending timeout
         if (ctx.config.removeChannels && ctx.timeouts[chanName]) {
             clearTimeout(ctx.timeouts[chanName]);
+        }
+
+        // validation key?
+        if (json[2]) {
+            if (chan.validateKey && Nacl.util.encodeBase64(chan.validateKey) !== json[2]) {
+                sendMsg(ctx, user, [seq, 'ERROR', 'INVALID_KEY', obj]);
+                return;
+            }
+            if (!chan.validateKey) {
+                chan.validateKey = Nacl.util.decodeBase64(json[2]);
+            }
         }
 
         chan.id = chanName;

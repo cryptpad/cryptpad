@@ -115,7 +115,6 @@ define([
                 } else {
                     module.spinner.show();
                 }
-
                 inner.setAttribute('contenteditable', bool);
             };
 
@@ -317,14 +316,15 @@ define([
                 // the channel we will communicate over
                 channel: secret.channel,
 
-                // our encryption key
-                cryptKey: secret.key,
+                // our public key. send -1 if view mode
+                validateKey: secret.keys.validateKey || undefined,
+                readOnly: secret.keys.editKeyStr ? undefined : 1,
 
                 // method which allows us to get the id of the user
                 setMyID: setMyID,
 
                 // Pass in encrypt and decrypt methods
-                crypto: Crypto.createEncryptor(secret.key),
+                crypto: Crypto.createEncryptor(secret.keys),
 
                 // really basic operational transform
                 transformFunction : JsonOT.validate,
@@ -545,7 +545,10 @@ define([
                 $rightside.append($forgetPad);
 
                 // set the hash
-                window.location.hash = Cryptpad.getHashFromKeys(info.channel, secret.key);
+                if (secret.keys.editKeyStr) {
+                    window.location.hash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+                }
+                console.log("View Hash : " + Cryptpad.getViewHashFromKeys(info.channel, secret.keys));
 
                 Cryptpad.getPadTitle(function (err, title) {
                     if (err) {
