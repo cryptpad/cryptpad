@@ -65,6 +65,7 @@ define([
 
     var andThen = function (Ckeditor) {
         var secret = Cryptpad.getSecrets();
+        var readOnly = !secret.keys.editKeyStr;
 
         var fixThings = false;
 
@@ -115,7 +116,9 @@ define([
                 } else {
                     module.spinner.show();
                 }
-                inner.setAttribute('contenteditable', bool);
+                if (!readOnly || !bool) {
+                    inner.setAttribute('contenteditable', bool);
+                }
             };
 
             // don't let the user edit until the pad is ready
@@ -189,6 +192,12 @@ define([
                             // return true to prevent diff application
                             return true;
                         }
+                    }
+
+                    // Do not change the contenteditable value in view mode
+                    if (readOnly && info.node && info.node.tagName === 'BODY' &&
+                        info.diff.action === 'modifyAttribute' && info.diff.name === 'contenteditable') {
+                        return true;
                     }
 
                     // no use trying to recover the cursor if it doesn't exist
@@ -295,7 +304,9 @@ define([
             var applyHjson = function (shjson) {
                 var userDocStateDom = hjsonToDom(JSON.parse(shjson));
 
-                userDocStateDom.setAttribute("contenteditable", "true"); // lol wtf
+                if (!readOnly) {
+                    userDocStateDom.setAttribute("contenteditable", "true"); // lol wtf
+                }
                 var patch = (DD).diff(inner, userDocStateDom);
                 (DD).apply(inner, patch);
             };
@@ -318,7 +329,7 @@ define([
 
                 // our public key. send -1 if view mode
                 validateKey: secret.keys.validateKey || undefined,
-                readOnly: secret.keys.editKeyStr ? undefined : 1,
+                readOnly: readOnly,
 
                 // method which allows us to get the id of the user
                 setMyID: setMyID,
@@ -382,6 +393,8 @@ define([
 
                 // build a dom from HJSON, diff, and patch the editor
                 applyHjson(shjson);
+
+                if (readOnly) { return; }
 
                 var shjson2 = stringifyDOM(inner);
                 if (shjson2 !== shjson) {
@@ -467,9 +480,11 @@ define([
                 var config = {
                     userData: userList,
                     changeNameID: Toolbar.constants.changeName,
+                    readOnly: readOnly
                 };
+                if (readOnly) {delete config.changeNameID; }
                 toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
-                createChangeName(Toolbar.constants.changeName, $bar);
+                if (!readOnly) { createChangeName(Toolbar.constants.changeName, $bar); }
 
                 var $rightside = $bar.find('.' + Toolbar.constants.rightside);
 
@@ -545,7 +560,7 @@ define([
                 $rightside.append($forgetPad);
 
                 // set the hash
-                if (secret.keys.editKeyStr) {
+                if (!readOnly) {
                     window.location.hash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
                 }
                 console.log("View Hash : " + Cryptpad.getViewHashFromKeys(info.channel, secret.keys));
@@ -585,12 +600,17 @@ define([
                 }
 
                 getLastName(function (err, lastName) {
-                    if (typeof(lastName) === 'string' && lastName.length) {
-                        setName(lastName);
-                    }
                     console.log("Unlocking editor");
                     setEditable(true);
                     initializing = false;
+                    myData[myID] = {
+                        name: ""
+                    };
+                    addToUserList(myData);
+                    if (typeof(lastName) === 'string' && lastName.length) {
+                        setName(lastName);
+                    }
+                    onLocal();
                 });
             };
 
@@ -617,6 +637,7 @@ define([
 
             var onLocal = realtimeOptions.onLocal = function () {
                 if (initializing) { return; }
+                if (readOnly) { return; }
 
                 // stringify the json and send it into chainpad
                 var shjson = stringifyDOM(inner);

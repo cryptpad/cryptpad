@@ -135,12 +135,21 @@ define([
         return $span[0];
     };
 
-    var updateUserList = function (myUserName, listElement, userList, userData) {
+    var arrayIntersect = function(a, b) {
+        return $.grep(a, function(i) {
+            return $.inArray(i, b) > -1;
+        });
+    };
+
+    var updateUserList = function (myUserName, listElement, userList, userData, readOnly) {
         var meIdx = userList.indexOf(myUserName);
         if (meIdx === -1) {
             listElement.textContent = Messages.synchronizing;
             return;
         }
+        console.log(userList);
+        userList = readOnly === -1 ? userList : arrayIntersect(userList, Object.keys(userData));
+        console.log(userList);
         if (userList.length === 1) {
             listElement.innerHTML = Messages.editingAlone;
         } else if (userList.length === 2) {
@@ -187,6 +196,8 @@ define([
         var changeNameID = config.changeNameID;
         var saveContentID = config.saveContentID || config.exportContentID;
         var loadContentID = config.loadContentID || config.importContentID;
+        // readOnly = 1 (readOnly enabled), 0 (disabled), -1 (old pad without readOnly mode)
+        var readOnly = (typeof config.readOnly !== "undefined") ? (readOnly ? 1 : 0) : -1;
         var saveElement;
         var loadElement;
 
@@ -205,7 +216,7 @@ define([
           if(newUserData) { // Someone has changed his name/color
             userData = newUserData;
           }
-          updateUserList(myUserName, userListElement, users, userData);
+          updateUserList(myUserName, userListElement, users, userData, readOnly);
         };
 
         var ks = function () {
