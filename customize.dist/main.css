@@ -147,7 +147,12 @@ tr {
   margin-top: 12px;
   margin-bottom: 12px;
   white-space: nowrap;
+}
+.create {
   display: none;
+}
+.action {
+  display: inline-block;
 }
 /* Tables */
 table {

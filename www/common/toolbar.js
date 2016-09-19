@@ -235,7 +235,7 @@ define([
         return {
             failed: function () {
                 connected = false;
-                userListElement.textContent = 'Disconnected';
+                userListElement.textContent = Messages.disconnected;
                 lagElement.textContent = '';
             },
             reconnecting: function (userId) {
