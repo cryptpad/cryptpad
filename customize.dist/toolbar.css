@@ -83,3 +83,8 @@
 .cryptpad-spinner {
   float: left;
 }
+.cryptpad-readonly {
+  margin-right: 20px;
+  font-weight: bold;
+  text-transform: uppercase;
+}

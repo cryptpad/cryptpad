@@ -20,6 +20,12 @@ define(function () {
     out.synchronizing = 'Synchronisation';
     out.reconnecting = 'Reconnexion...';
     out.lag = 'Latence';
+    out.readonly = 'Lecture seule';
+    out.nobodyIsEditing = "Personne n'édite le document";
+    out.onePersonIsEditing = 'Une personne édite le document';
+    out.peopleAreEditing = '{0} personnes éditent le document';
+    out.oneViewer = '1 lecteur';
+    out.viewers = '{0} lecteurs';
 
     out.importButton = 'IMPORTER';
     out.importButtonTitle = 'Importer un document depuis un fichier local';

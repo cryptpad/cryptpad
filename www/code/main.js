@@ -39,6 +39,7 @@ define([
             toolbar;
 
         var secret = Cryptpad.getSecrets();
+        var readOnly = !secret.keys.editKeyStr;
 
         var andThen = function (CMeditor) {
             var CodeMirror = module.CodeMirror = CMeditor;
@@ -106,6 +107,7 @@ define([
             }());
 
             var setEditable = module.setEditable = function (bool) {
+                if (readOnly && bool) { return; }
                 editor.setOption('readOnly', !bool);
             };
 
@@ -132,8 +134,10 @@ define([
                 userName: userName,
                 websocketURL: Config.websocketURL,
                 channel: secret.channel,
-                //cryptKey: key,
-                crypto: Crypto.createEncryptor(secret.key),
+                // our public key
+                validateKey: secret.keys.validateKey || undefined,
+                readOnly: readOnly,
+                crypto: Crypto.createEncryptor(secret.keys),
                 setMyID: setMyID,
                 transformFunction: JsonOT.validate
             };
@@ -274,9 +278,11 @@ define([
                 var config = {
                     userData: userList,
                     changeNameID: Toolbar.constants.changeName,
+                    readOnly: readOnly
                 };
+                if (readOnly) {delete config.changeNameID; }
                 toolbar = module.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
-                createChangeName(Toolbar.constants.changeName, $bar);
+                if (!readOnly) { createChangeName(Toolbar.constants.changeName, $bar); }
 
                 var $rightside = $bar.find('.' + Toolbar.constants.rightside);
 
@@ -443,7 +449,11 @@ define([
                     configureTheme();
                 });
 
-                window.location.hash = Cryptpad.getHashFromKeys(info.channel, secret.key);
+                // set the hash
+                if (!readOnly) {
+                    window.location.hash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+                }
+                console.log("View Hash : " + Cryptpad.getViewHashFromKeys(info.channel, secret.keys));
                 Cryptpad.getPadTitle(function (err, title) {
                     if (err) {
                         console.log("Unable to get pad title");
@@ -510,7 +520,7 @@ define([
                 }
 
                 // Update the user list (metadata) from the hyperjson
-                //updateUserList(shjson);
+                updateUserList(userDoc);
 
                 editor.setValue(newDoc || Messages.codeInitialState);
 
@@ -531,9 +541,17 @@ define([
                         console.error(err);
                         return;
                     }
+                    // Update the toolbar list:
+                    // Add the current user in the metadata if he has edit rights
+                    if (readOnly) { return; }
+                    myData[myID] = {
+                        name: ""
+                    };
+                    addToUserList(myData);
                     if (typeof(lastName) === 'string' && lastName.length) {
                         setName(lastName);
                     }
+                    onLocal();
                 });
             };
 
@@ -604,17 +622,19 @@ define([
 
                 editor.scrollTo(scroll.left, scroll.top);
 
-                var localDoc = canonicalize($textarea.val());
-                var hjson2 = {
-                  content: localDoc,
-                  metadata: userList,
-                  highlightMode: highlightMode,
-                };
-                var shjson2 = stringify(hjson2);
-                if (shjson2 !== shjson) {
-                    console.error("shjson2 !== shjson");
-                    TextPatcher.log(shjson, TextPatcher.diff(shjson, shjson2));
-                    module.patchText(shjson2);
+                if (!readOnly) {
+                    var localDoc = canonicalize($textarea.val());
+                    var hjson2 = {
+                      content: localDoc,
+                      metadata: userList,
+                      highlightMode: highlightMode,
+                    };
+                    var shjson2 = stringify(hjson2);
+                    if (shjson2 !== shjson) {
+                        console.error("shjson2 !== shjson");
+                        TextPatcher.log(shjson, TextPatcher.diff(shjson, shjson2));
+                        module.patchText(shjson2);
+                    }
                 }
 
                 notify();

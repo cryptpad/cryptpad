@@ -327,7 +327,7 @@ define([
                 // the channel we will communicate over
                 channel: secret.channel,
 
-                // our public key. send -1 if view mode
+                // our public key
                 validateKey: secret.keys.validateKey || undefined,
                 readOnly: readOnly,
 
@@ -593,6 +593,9 @@ define([
                 var shjson = info.realtime.getUserDoc();
                 applyHjson(shjson);
 
+                // Update the user list (metadata) from the hyperjson
+                updateUserList(shjson);
+
                 if (Visible.isSupported()) {
                     Visible.onChange(function (yes) {
                         if (yes) { unnotify(); }
@@ -603,6 +606,9 @@ define([
                     console.log("Unlocking editor");
                     setEditable(true);
                     initializing = false;
+                    // Update the toolbar list:
+                    // Add the current user in the metadata if he has edit rights
+                    if (readOnly) { return; }
                     myData[myID] = {
                         name: ""
                     };
