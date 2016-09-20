@@ -603,6 +603,21 @@ define([
                     break;
             }
         })
+        .on('change', ['metadata'], function (o, n, p) {
+            var newTitle = n.title;
+            if (newTitle === document.title) { return; }
+            // Change the title now, and set it back to the old value if there is an error
+            var oldTitle = document.title;
+            document.title = newTitle;
+            Cryptpad.setPadTitle(newTitle, function (err, data) {
+                if (err) {
+                    console.log("Couldn't set pad title");
+                    console.error(err);
+                    document.title = oldTitle;
+                    return;
+                }
+            });
+        })
         .on('remove', [], function (o, p, root) {
             //console.log("remove: (%s, [%s])", o, p.join(', '));
             //console.log(p, o, p.length);
@@ -710,6 +725,13 @@ define([
                                 return;
                             }
                             document.title = title;
+                            var proxy = module.rt.proxy;
+                            if (proxy.metadata) {
+                                proxy.metadata.title = title;
+                            }
+                            else {
+                                proxy.metadata = {title: title};
+                            }
                         });
                     });
                 });
@@ -837,7 +859,7 @@ define([
     // don't initialize until the store is ready.
     Cryptpad.ready(function () {
 
-        var rt = module.rt = Listmap.create(config);
+        var rt = window.rt = module.rt = Listmap.create(config);
         rt.proxy.on('create', function (info) {
             var realtime = module.realtime = info.realtime;
             window.location.hash = Cryptpad.getHashFromKeys(info.channel, secret.key);
