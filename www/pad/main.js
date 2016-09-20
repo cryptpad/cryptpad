@@ -613,6 +613,7 @@ define([
                     console.log("Unlocking editor");
                     setEditable(true);
                     initializing = false;
+                    onLocal();
                 });
             };
 
