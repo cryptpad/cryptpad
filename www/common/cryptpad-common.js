@@ -497,12 +497,15 @@ define([
         Store.ready(function (err, store) {
             common.store = env.store = store;
 
+            cb();
+            return;
+/*
             authorize(function (err, proxy) {
             /*
                 TODO
                 listen for log(in|out) events
                 update information accordingly
-            */
+            * /
 
                 store.change(function (data) {
                     if (data.key === User.localKey) {
@@ -536,7 +539,7 @@ define([
                 userStore = env.userStore = User.prepareStore(proxy);
                 cb();
 
-            });
+            }); */
         });
     };
 
