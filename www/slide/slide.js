@@ -28,15 +28,11 @@ define([
     };
 
     var change = function (oldIndex, newIndex) {
-        if (oldIndex === newIndex) {
-            return false;
-        }
         if (Slide.changeHandlers.length) {
             Slide.changeHandlers.some(function (f, i) {
                 // HERE
                 f(oldIndex, newIndex, Slide.content.length);
             });
-            return true;
         }
     };
 
@@ -132,7 +128,9 @@ define([
         Slide.content = content.split(/\n\s*\-\-\-\s*\n/).filter(truthy);
         if (old !== Slide.content[Slide.index]) {
             draw(Slide.index);
+            return;
         }
+        change(Slide.lastIndex, Slide.index);
     };
 
     var left = Slide.left = function () {

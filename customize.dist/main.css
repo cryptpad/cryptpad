@@ -426,38 +426,38 @@ div.modal #content pre,
 div#modal #content pre,
 div.modal #content code,
 div#modal #content code {
-  font-size: 2.5vw;
-  line-height: 3vw;
+  font-size: 2.75vw;
+  line-height: 3.025vw;
 }
 div.modal #content h1,
 div#modal #content h1 {
   font-size: 5vw;
-  line-height: 6vw;
+  line-height: 5.5vw;
 }
 div.modal #content h2,
 div#modal #content h2 {
   font-size: 4.2vw;
-  line-height: 5.04vw;
+  line-height: 4.62vw;
 }
 div.modal #content h3,
 div#modal #content h3 {
   font-size: 3.6vw;
-  line-height: 4.32vw;
+  line-height: 3.96vw;
 }
 div.modal #content h4,
 div#modal #content h4 {
   font-size: 3vw;
-  line-height: 3.6vw;
+  line-height: 3.3vw;
 }
 div.modal #content h5,
 div#modal #content h5 {
   font-size: 2.2vw;
-  line-height: 2.64vw;
+  line-height: 2.42vw;
 }
 div.modal #content h6,
 div#modal #content h6 {
   font-size: 1.6vw;
-  line-height: 1.92vw;
+  line-height: 1.76vw;
 }
 div.modal #content pre > code,
 div#modal #content pre > code {
