@@ -139,11 +139,14 @@ define([
 
     var getEditHashFromKeys = common.getEditHashFromKeys = function (chanKey, keys) {
         if (typeof keys === 'string') {
-            return chanKey + Crypto.b64RemoveSlashes(keys);
+            return chanKey + keys;
         }
         return '/1/edit/' + hexToBase64(chanKey) + '/' + Crypto.b64RemoveSlashes(keys.editKeyStr);
     };
     var getViewHashFromKeys = common.getViewHashFromKeys = function (chanKey, keys) {
+        if (typeof keys === 'string') {
+            return;
+        }
         return '/1/view/' + hexToBase64(chanKey) + '/' + Crypto.b64RemoveSlashes(keys.viewKeyStr);
     };
     var getHashFromKeys = common.getHashFromKeys = getEditHashFromKeys;
@@ -178,7 +181,7 @@ define([
                 var version = hashArray[1];
                 /*if (version === "1") {
                     secret.channel = base64ToHex(hashArray[2]);
-                    secret.key = hashArray[3].replace(/-/g, '/'); //TODO replace / by -
+                    secret.key = hashArray[3].replace(/-/g, '/');
                     if (secret.channel.length !== 32 || secret.key.length !== 24) {
                         common.alert("The channel key and/or the encryption key is invalid");
                         throw new Error("The channel key and/or the encryption key is invalid");

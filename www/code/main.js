@@ -39,7 +39,10 @@ define([
             toolbar;
 
         var secret = Cryptpad.getSecrets();
-        var readOnly = !secret.keys.editKeyStr;
+        var readOnly = secret.keys && !secret.keys.editKeyStr;
+        if (!secret.keys) {
+            secret.keys = secret.key;
+        }
 
         var andThen = function (CMeditor) {
             var CodeMirror = module.CodeMirror = CMeditor;
@@ -398,21 +401,20 @@ define([
                     });
                 $rightside.append($forgetPad);
 
-                /* add a 'links' button */
-                var $links = $('<button>', {
-                    title: Messages.linksButtonTitle
-                })
-                    .text(Messages.linksButton)
-                    .addClass('rightside-button')
-                    .click(function () {
-                        var baseUrl = window.location.origin + window.location.pathname + '#';
-                        var content = '<b>' + Messages.readonlyUrl + '</b> : <a target="_blank">' + baseUrl + viewHash + '</a>';
-                        if (!readOnly) {
-                            content += '<br><b>' + Messages.editUrl + '</b> : <a target="_blank">' + baseUrl + editHash + '</a>';
-                        }
-                        Cryptpad.alert(content);
-                    });
-                $rightside.append($links);
+                if (!readOnly && viewHash) {
+                    /* add a 'links' button */
+                    var $links = $('<button>', {
+                        title: Messages.getViewButtonTitle
+                    })
+                        .text(Messages.getViewButton)
+                        .addClass('rightside-button')
+                        .click(function () {
+                            var baseUrl = window.location.origin + window.location.pathname + '#';
+                            var content = '<b>' + Messages.readonlyUrl + '</b><br><a target="_blank">' + baseUrl + viewHash + '</a><br>';
+                            Cryptpad.alert(content);
+                        });
+                    $rightside.append($links);
+                }
 
                 var configureLanguage = function (cb) {
                     // FIXME this is async so make it happen as early as possible

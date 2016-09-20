@@ -64,11 +64,10 @@ define(function () {
     out.presentSuccess = 'Hit ESC to exit presentation mode';
 
     out.commitButton = 'COMMIT';
-    
-    out.linksButton = 'LINKS';
-    out.linksButtonTitle = 'Get the available links for this document';
+
+    out.getViewButton = 'READ-ONLY URL';
+    out.getViewButtonTitle = 'Get the read-only URL for this document';
     out.readonlyUrl = 'Read only URL';
-    out.editUrl = 'Edit URL';
 
     out.disconnectAlert = 'Network connection lost!';
 

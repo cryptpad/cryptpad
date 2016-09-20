@@ -65,10 +65,9 @@ define(function () {
 
     out.commitButton = 'VALIDER';
 
-    out.linksButton = 'LIENS';
-    out.linksButtonTitle = 'Obtenir les liens disponibles pour accéder à ce document';
-    out.readonlyUrl = 'Lien de lecture seule';
-    out.editUrl = "Lien d'édition";
+    out.getViewButton = 'LECTURE SEULE';
+    out.getViewButtonTitle = "Obtenir l'adresse d'accès à ce document en lecture seule";
+    out.readonlyUrl = 'URL de lecture seule';
 
     out.disconnectAlert = 'Perte de la connexion au réseau !';
 
