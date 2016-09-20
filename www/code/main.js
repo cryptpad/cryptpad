@@ -286,6 +286,13 @@ define([
 
                 var $rightside = $bar.find('.' + Toolbar.constants.rightside);
 
+                var editHash;
+                var viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
+
+                if (!readOnly) {
+                    editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+                }
+
                 /* add an export button */
                 var $export = $('<button>', {
                     title: Messages.exportButtonTitle,
@@ -391,6 +398,22 @@ define([
                     });
                 $rightside.append($forgetPad);
 
+                /* add a 'links' button */
+                var $links = $('<button>', {
+                    title: Messages.linksButtonTitle
+                })
+                    .text(Messages.linksButton)
+                    .addClass('rightside-button')
+                    .click(function () {
+                        var baseUrl = window.location.origin + window.location.pathname + '#';
+                        var content = '<b>' + Messages.readonlyUrl + '</b> : <a target="_blank">' + baseUrl + viewHash + '</a>';
+                        if (!readOnly) {
+                            content += '<br><b>' + Messages.editUrl + '</b> : <a target="_blank">' + baseUrl + editHash + '</a>';
+                        }
+                        Cryptpad.alert(content);
+                    });
+                $rightside.append($links);
+
                 var configureLanguage = function (cb) {
                     // FIXME this is async so make it happen as early as possible
 
@@ -451,9 +474,9 @@ define([
 
                 // set the hash
                 if (!readOnly) {
-                    window.location.hash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+                    window.location.hash = editHash;
                 }
-                console.log("View Hash : " + Cryptpad.getViewHashFromKeys(info.channel, secret.keys));
+
                 Cryptpad.getPadTitle(function (err, title) {
                     if (err) {
                         console.log("Unable to get pad title");

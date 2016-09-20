@@ -3,6 +3,11 @@ define(function () {
 
     out.main_title = "Cryptpad: Zero Knowledge, Collaborative Real Time Editing";
 
+    out.type = {};
+    out.type.pad = 'Pad';
+    out.type.code = 'Code';
+    out.type.poll = 'Poll';
+    out.type.slide = 'Presentation';
 
     out.errorBox_errorType_disconnected = 'Connection Lost';
     out.errorBox_errorExplanation_disconnected = [
@@ -59,6 +64,11 @@ define(function () {
     out.presentSuccess = 'Hit ESC to exit presentation mode';
 
     out.commitButton = 'COMMIT';
+    
+    out.linksButton = 'LINKS';
+    out.linksButtonTitle = 'Get the available links for this document';
+    out.readonlyUrl = 'Read only URL';
+    out.editUrl = 'Edit URL';
 
     out.disconnectAlert = 'Network connection lost!';
 
@@ -70,13 +80,6 @@ define(function () {
 
     out.loginText = '<p>Your username and password are used to generate a unique key which is never known by our server.</p>\n' +
                     '<p>Be careful not to forget your credentials, as they are impossible to recover</p>';
-
-    // TODO : move at the beginning
-    out.type = {};
-    out.type.pad = 'Pad';
-    out.type.code = 'Code';
-    out.type.poll = 'Poll';
-    out.type.slide = 'Presentation';
 
     out.forget = "Forget";
 
