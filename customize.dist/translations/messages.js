@@ -56,7 +56,7 @@ define(function () {
 
     out.disconnectAlert = 'Network connection lost!';
 
-    out.tryIt = ' out!';
+    out.tryIt = 'Try it out!';
     out.recentPads = 'Your recent pads (stored only in your browser)';
 
     out.okButton = 'OK (enter)';
