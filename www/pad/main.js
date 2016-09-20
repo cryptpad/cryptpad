@@ -588,6 +588,18 @@ define([
                 });
             };
 
+            var onLocal = realtimeOptions.onLocal = function () {
+                if (initializing) { return; }
+
+                // stringify the json and send it into chainpad
+                var shjson = stringifyDOM(inner);
+
+                module.patchText(shjson);
+                if (module.realtime.getUserDoc() !== shjson) {
+                    console.error("realtime.getUserDoc() !== shjson");
+                }
+            };
+
             // this should only ever get called once, when the chain syncs
             var onReady = realtimeOptions.onReady = function (info) {
                 module.patchText = TextPatcher.create({
@@ -638,17 +650,6 @@ define([
                 }
             };
 
-            var onLocal = realtimeOptions.onLocal = function () {
-                if (initializing) { return; }
-
-                // stringify the json and send it into chainpad
-                var shjson = stringifyDOM(inner);
-
-                module.patchText(shjson);
-                if (module.realtime.getUserDoc() !== shjson) {
-                    console.error("realtime.getUserDoc() !== shjson");
-                }
-            };
 
             var rti = module.realtimeInput = realtimeInput.start(realtimeOptions);
 
