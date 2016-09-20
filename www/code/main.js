@@ -35,8 +35,7 @@ define([
     };
 
     $(function () {
-        var userName = Crypto.rand64(8),
-            toolbar;
+        var toolbar;
 
         var secret = Cryptpad.getSecrets();
 
@@ -129,10 +128,9 @@ define([
 
             var config = {
                 //initialState: Messages.codeInitialState,
-                userName: userName,
+                initialState: '{}',
                 websocketURL: Config.websocketURL,
                 channel: secret.channel,
-                //cryptKey: key,
                 crypto: Crypto.createEncryptor(secret.key),
                 setMyID: setMyID,
                 transformFunction: JsonOT.validate
@@ -549,6 +547,7 @@ define([
                 initializing = false;
                 //Cryptpad.log("Your document is ready");
 
+                onLocal(); // push local state to avoid parse errors later.
                 getLastName(function (err, lastName) {
                     if (err) {
                         console.log("Could not get previous name");
