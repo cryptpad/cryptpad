@@ -13,6 +13,7 @@ const USE_FILE_BACKUP_STORAGE = true;
 
 
 let dropUser;
+let historyKeeperKeys = {};
 
 const now = function () { return (new Date()).getTime(); };
 
@@ -28,21 +29,22 @@ const sendMsg = function (ctx, user, msg) {
 
 const sendChannelMessage = function (ctx, channel, msgStruct) {
     msgStruct.unshift(0);
-    if (msgStruct[2] === 'MSG' && channel.validateKey) {
-        let msg = Nacl.util.decodeBase64(msgStruct[4]);
-        let validated = Nacl.sign.open(msg, channel.validateKey);
-        if (!validated) {
-            console.log("Unsigned message rejected");
-            return;
-        }
-        msgStruct[4] = Nacl.util.encodeUTF8(validated);
-    }
     channel.forEach(function (user) {
       if(msgStruct[2] !== 'MSG' || user.id !== msgStruct[1]) { // We don't want to send back a message to its sender, in order to save bandwidth
         sendMsg(ctx, user, msgStruct);
       }
     });
     if (USE_HISTORY_KEEPER && msgStruct[2] === 'MSG') {
+        if (historyKeeperKeys[channel.id]) {
+            let signedMsg = msgStruct[4].replace(/^cp\|/, '');
+            signedMsg = Nacl.util.decodeBase64(signedMsg);
+            let validateKey = Nacl.util.decodeBase64(historyKeeperKeys[channel.id]);
+            let validated = Nacl.sign.open(signedMsg, validateKey);
+            if (!validated) {
+                console.log("Signed message rejected");
+                return;
+            }
+        }
         ctx.store.message(channel.id, JSON.stringify(msgStruct), function (err) {
             if (err && typeof(err) !== 'function') {
                 // ignore functions because older datastores
@@ -78,6 +80,7 @@ dropUser = function (ctx, user) {
         if (chan.length === 0) {
             console.log("Removing empty channel ["+chanName+"]");
             delete ctx.channels[chanName];
+            delete historyKeeperKeys[chanName];
 
             /*  Call removeChannel if it is a function and channel removal is
                 set to true in the config file */
@@ -130,7 +133,7 @@ const getHistory = function (ctx, channelName, handler, cb) {
             // no checkpoints.
             for (var x = msgBuff2.pop(); x; x = msgBuff2.pop()) { handler(x); }
         }
-        cb();
+        cb(messageBuf);
     });
 };
 
@@ -159,17 +162,6 @@ const handleMessage = function (ctx, user, msg) {
             clearTimeout(ctx.timeouts[chanName]);
         }
 
-        // validation key?
-        if (json[2]) {
-            if (chan.validateKey && Nacl.util.encodeBase64(chan.validateKey) !== json[2]) {
-                sendMsg(ctx, user, [seq, 'ERROR', 'INVALID_KEY', obj]);
-                return;
-            }
-            if (!chan.validateKey) {
-                chan.validateKey = Nacl.util.decodeBase64(json[2]);
-            }
-        }
-
         chan.id = chanName;
         if (USE_HISTORY_KEEPER) {
             sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'JOIN', chanName]);
@@ -185,9 +177,17 @@ const handleMessage = function (ctx, user, msg) {
             try { parsed = JSON.parse(json[2]); } catch (err) { console.error(err); return; }
             if (parsed[0] === 'GET_HISTORY') {
                 sendMsg(ctx, user, [seq, 'ACK']);
+                if (historyKeeperKeys[parsed[1]]) {
+                    var key = {channel: parsed[1], validateKey: historyKeeperKeys[parsed[1]]};
+                    sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(key)])
+                }
                 getHistory(ctx, parsed[1], function (msg) {
                     sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(msg)]);
-                }, function () {
+                }, function (messages) {
+                    // parsed[2] is a validation key if it exists
+                    if (messages.length === 0 && parsed[2] && !historyKeeperKeys[parsed[1]]) {
+                        historyKeeperKeys[parsed[1]] = parsed[2];
+                    }
                     sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, 0]);
                 });
             }
