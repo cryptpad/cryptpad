@@ -305,38 +305,40 @@ define([
                     .click(exportText);
                 $rightside.append($export);
 
-                /* add an import button */
-                var $import = $('<button>',{
-                    title: Messages.importButtonTitle
-                })
-                    .text(Messages.importButton)
-                    .addClass('rightside-button')
-                    .click(Cryptpad.importContent('text/plain', function (content, file) {
-                        var mode;
-                        var mime = CodeMirror.findModeByMIME(file.type);
+                if (!readOnly) {
+                    /* add an import button */
+                    var $import = $('<button>',{
+                        title: Messages.importButtonTitle
+                    })
+                        .text(Messages.importButton)
+                        .addClass('rightside-button')
+                        .click(Cryptpad.importContent('text/plain', function (content, file) {
+                            var mode;
+                            var mime = CodeMirror.findModeByMIME(file.type);
 
-                        if (!mime) {
-                            var ext = /.+\.([^.]+)$/.exec(file.name);
-                            if (ext[1]) {
-                                mode = CodeMirror.findModeByExtension(ext[1]);
+                            if (!mime) {
+                                var ext = /.+\.([^.]+)$/.exec(file.name);
+                                if (ext[1]) {
+                                    mode = CodeMirror.findModeByExtension(ext[1]);
+                                }
+                            } else {
+                                mode = mime && mime.mode || null;
                             }
-                        } else {
-                            mode = mime && mime.mode || null;
-                        }
 
-                        if (mode && Modes.list.some(function (o) { return o.mode === mode; })) {
-                            setMode(mode);
-                            $bar.find('#language-mode').val(mode);
-                        } else {
-                            console.log("Couldn't find a suitable highlighting mode: %s", mode);
-                            setMode('text');
-                            $bar.find('#language-mode').val('text');
-                        }
+                            if (mode && Modes.list.some(function (o) { return o.mode === mode; })) {
+                                setMode(mode);
+                                $bar.find('#language-mode').val(mode);
+                            } else {
+                                console.log("Couldn't find a suitable highlighting mode: %s", mode);
+                                setMode('text');
+                                $bar.find('#language-mode').val('text');
+                            }
 
-                        editor.setValue(content);
-                        onLocal();
-                    }));
-                $rightside.append($import);
+                            editor.setValue(content);
+                            onLocal();
+                        }));
+                    $rightside.append($import);
+                }
 
                 /* add a rename button */
                 var $setTitle = $('<button>', {
@@ -410,7 +412,7 @@ define([
                         .addClass('rightside-button')
                         .click(function () {
                             var baseUrl = window.location.origin + window.location.pathname + '#';
-                            var content = '<b>' + Messages.readonlyUrl + '</b><br><a target="_blank">' + baseUrl + viewHash + '</a><br>';
+                            var content = '<b>' + Messages.readonlyUrl + '</b><br><a>' + baseUrl + viewHash + '</a><br>';
                             Cryptpad.alert(content);
                         });
                     $rightside.append($links);
@@ -470,9 +472,14 @@ define([
                     });
                 };
 
-                configureLanguage(function () {
+                if (!readOnly) {
+                    configureLanguage(function () {
+                        configureTheme();
+                    });
+                }
+                else {
                     configureTheme();
-                });
+                }
 
                 // set the hash
                 if (!readOnly) {

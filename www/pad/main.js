@@ -86,6 +86,11 @@ define([
 
         editor.on('instanceReady', function (Ckeditor) {
 
+            if (readOnly) {
+                $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox > .cke_toolbar').hide();
+            }
+
+
             /* add a class to the magicline plugin so we can pick it out more easily */
 
             var ml = $('iframe')[0].contentWindow.CKEDITOR.instances.editor1.plugins.magicline
@@ -397,33 +402,33 @@ define([
                 // build a dom from HJSON, diff, and patch the editor
                 applyHjson(shjson);
 
-                if (readOnly) { return; }
+                if (!readOnly) {
+                    var shjson2 = stringifyDOM(inner);
+                    if (shjson2 !== shjson) {
+                        console.error("shjson2 !== shjson");
+                        module.patchText(shjson2);
 
-                var shjson2 = stringifyDOM(inner);
-                if (shjson2 !== shjson) {
-                    console.error("shjson2 !== shjson");
-                    module.patchText(shjson2);
+                        /*  pushing back over the wire is necessary, but it can
+                            result in a feedback loop, which we call a browser
+                            fight */
+                        if (module.logFights) {
+                            // what changed?
+                            var op = TextPatcher.diff(shjson, shjson2);
+                            // log the changes
+                            TextPatcher.log(shjson, op);
+                            var sop = JSON.stringify(TextPatcher.format(shjson, op));
 
-                    /*  pushing back over the wire is necessary, but it can
-                        result in a feedback loop, which we call a browser
-                        fight */
-                    if (module.logFights) {
-                        // what changed?
-                        var op = TextPatcher.diff(shjson, shjson2);
-                        // log the changes
-                        TextPatcher.log(shjson, op);
-                        var sop = JSON.stringify(TextPatcher.format(shjson, op));
-
-                        var index = module.fights.indexOf(sop);
-                        if (index === -1) {
-                            module.fights.push(sop);
-                            console.log("Found a new type of browser disagreement");
-                            console.log("You can inspect the list in your " +
-                                "console at `REALTIME_MODULE.fights`");
-                            console.log(module.fights);
-                        } else {
-                            console.log("Encountered a known browser disagreement: " +
-                                "available at `REALTIME_MODULE.fights[%s]`", index);
+                            var index = module.fights.indexOf(sop);
+                            if (index === -1) {
+                                module.fights.push(sop);
+                                console.log("Found a new type of browser disagreement");
+                                console.log("You can inspect the list in your " +
+                                    "console at `REALTIME_MODULE.fights`");
+                                console.log(module.fights);
+                            } else {
+                                console.log("Encountered a known browser disagreement: " +
+                                    "available at `REALTIME_MODULE.fights[%s]`", index);
+                            }
                         }
                     }
                 }
@@ -505,19 +510,22 @@ define([
                     .text(Messages.exportButton)
                     .addClass('rightside-button')
                     .click(exportFile);
+                $rightside.append($export);
 
-                /* add an import button */
-                var $import = $('<button>', {
-                    title: Messages.importButtonTitle
-                })
-                    .text(Messages.importButton)
-                    .addClass('rightside-button')
-                    .click(Cryptpad.importContent('text/plain', function (content) {
-                        var shjson = stringify(Hyperjson.fromDOM(domFromHTML(content).body));
-                        applyHjson(shjson);
-                        realtimeOptions.onLocal();
-                    }));
-                $rightside.append($export).append($import);
+                if (!readOnly) {
+                    /* add an import button */
+                    var $import = $('<button>', {
+                        title: Messages.importButtonTitle
+                    })
+                        .text(Messages.importButton)
+                        .addClass('rightside-button')
+                        .click(Cryptpad.importContent('text/plain', function (content) {
+                            var shjson = stringify(Hyperjson.fromDOM(domFromHTML(content).body));
+                            applyHjson(shjson);
+                            realtimeOptions.onLocal();
+                        }));
+                    $rightside.append($import);
+                }
 
                 /* add a rename button */
                 var $rename = $('<button>', {
@@ -578,7 +586,7 @@ define([
                         .addClass('rightside-button')
                         .click(function () {
                             var baseUrl = window.location.origin + window.location.pathname + '#';
-                            var content = '<b>' + Messages.readonlyUrl + '</b><br><a target="_blank">' + baseUrl + viewHash + '</a><br>';
+                            var content = '<b>' + Messages.readonlyUrl + '</b><br><a>' + baseUrl + viewHash + '</a><br>';
                             Cryptpad.alert(content);
                         });
                     $rightside.append($links);
