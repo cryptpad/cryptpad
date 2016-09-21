@@ -41,8 +41,7 @@
         }
     };
 
-    var tab = Module.tab = function (msg, frequency, count) {
-        var original = document.title;
+    var tab = Module.tab = function (frequency, count) {
         var key = '_pendingTabNotification';
 
         var favicon = document.getElementById('favicon');
@@ -56,7 +55,6 @@
             // only run one tab notification at a time
             if (Module[key]) {
                 window.clearInterval(Module[key]);
-                document.title = original;
                 if (favicon) {
                     favicon.setAttribute('href', pending? alt : main);
                 }
@@ -69,11 +67,9 @@
         cancel();
 
         var step = function () {
-            document.title = (document.title === original) ? msg : original;
             if (favicon) {
                 favicon.setAttribute('href', favicon.getAttribute('href') === main? alt : main);
             }
-
             --count;
         };
 
@@ -86,8 +82,6 @@
 
         return {
             cancel: cancel,
-            original: original
-
         };
     };
 

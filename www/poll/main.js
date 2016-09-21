@@ -430,7 +430,7 @@ define([
     var notify = function () {
         if (!(Visible.isSupported() && !Visible.currently())) { return; }
         unnotify();
-        module.tabNotification = Notify.tab(document.title, 1000, 10);
+        module.tabNotification = Notify.tab(1000, 10);
     };
 
     // don't make changes until the interface is ready
@@ -725,6 +725,7 @@ define([
                                 return;
                             }
                             document.title = title;
+                            module.tabNotification.update(title);
                             var proxy = module.rt.proxy;
                             if (proxy.metadata) {
                                 proxy.metadata.title = title;

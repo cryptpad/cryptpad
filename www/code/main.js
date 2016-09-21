@@ -503,7 +503,7 @@ define([
             var notify = module.notify = function () {
                 if (Visible.isSupported() && !Visible.currently()) {
                     unnotify();
-                    module.tabNotification = Notify.tab(document.title, 1000, 10);
+                    module.tabNotification = Notify.tab(1000, 10);
                 }
             };
 

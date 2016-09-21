@@ -65,7 +65,7 @@ define([
     var notify = function () {
         if (!(Visible.isSupported() && !Visible.currently())) { return; }
         unnotify();
-        APP.tabNofification = Notify.tab(document.title, 1000, 10);
+        APP.tabNofification = Notify.tab(1000, 10);
     };
 
     var $modal = $('#modal');
