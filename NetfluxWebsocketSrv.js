@@ -27,6 +27,16 @@ const sendMsg = function (ctx, user, msg) {
     }
 };
 
+const storeMessage = function (ctx, channel, msg) {
+    ctx.store.message(channel.id, msg, function (err) {
+        if (err && typeof(err) !== 'function') {
+            // ignore functions because older datastores
+            // might pass waitFors into the callback
+            console.log("Error writing message: " + err);
+        }
+    });
+};
+
 const sendChannelMessage = function (ctx, channel, msgStruct) {
     msgStruct.unshift(0);
     channel.forEach(function (user) {
@@ -45,13 +55,7 @@ const sendChannelMessage = function (ctx, channel, msgStruct) {
                 return;
             }
         }
-        ctx.store.message(channel.id, JSON.stringify(msgStruct), function (err) {
-            if (err && typeof(err) !== 'function') {
-                // ignore functions because older datastores
-                // might pass waitFors into the callback
-                console.log("Error writing message: " + err);
-            }
-        });
+        storeMessage(ctx, channel, JSON.stringify(msgStruct));
     }
 };
 
@@ -107,8 +111,15 @@ dropUser = function (ctx, user) {
 
 const getHistory = function (ctx, channelName, handler, cb) {
     var messageBuf = [];
+    var messageKey;
     ctx.store.getMessages(channelName, function (msgStr) {
-        messageBuf.push(JSON.parse(msgStr));
+        var parsed = JSON.parse(msgStr);
+        if (parsed.validateKey) {
+            historyKeeperKeys[channelName] = parsed.validateKey;
+            handler(parsed);
+            return;
+        }
+        messageBuf.push(parsed);
     }, function (err) {
         if (err) {
             console.log("Error getting messages " + err.stack);
@@ -177,15 +188,13 @@ const handleMessage = function (ctx, user, msg) {
             try { parsed = JSON.parse(json[2]); } catch (err) { console.error(err); return; }
             if (parsed[0] === 'GET_HISTORY') {
                 sendMsg(ctx, user, [seq, 'ACK']);
-                if (historyKeeperKeys[parsed[1]]) {
-                    var key = {channel: parsed[1], validateKey: historyKeeperKeys[parsed[1]]};
-                    sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(key)])
-                }
                 getHistory(ctx, parsed[1], function (msg) {
                     sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(msg)]);
                 }, function (messages) {
                     // parsed[2] is a validation key if it exists
                     if (messages.length === 0 && parsed[2] && !historyKeeperKeys[parsed[1]]) {
+                        var key = {channel: parsed[1], validateKey: parsed[2]};
+                        storeMessage(ctx, ctx.channels[parsed[1]], JSON.stringify(key));
                         historyKeeperKeys[parsed[1]] = parsed[2];
                     }
                     sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, 0]);
