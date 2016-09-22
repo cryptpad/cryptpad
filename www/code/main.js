@@ -151,6 +151,7 @@ define([
 
             var onLocal = config.onLocal = function () {
                 if (initializing) { return; }
+                if (readOnly) { return; }
 
                 editor.save();
                 var textValue = canonicalize($textarea.val());
