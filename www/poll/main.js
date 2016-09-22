@@ -39,6 +39,14 @@ define([
     */
 
     var secret = Cryptpad.getSecrets();
+    var readOnly = secret.keys && !secret.keys.editKeyStr;
+    if (!secret.keys) {
+        secret.keys = secret.key;
+    }
+    if (readOnly) {
+        $('#mainTitle').html($('#mainTitle').html() + ' - ' + Messages.readonly);
+        $('#adduser, #addoption, #howToUse').remove();
+    }
 
     var module = window.APP = {
         Cryptpad: Cryptpad,
@@ -139,6 +147,7 @@ define([
     var table = module.table = Table($('#table'), xy);
 
     var setEditable = function (bool) {
+        if (readOnly && bool) { return; }
         module.isEditable = bool;
 
         items.forEach(function ($item) {
@@ -163,6 +172,7 @@ define([
     };
 
     var removeRow = function (proxy, uid) {
+        if (readOnly) { return; }
         // remove proxy.table.rows[uid]
 
         proxy.table.rows[uid] = undefined;
@@ -186,6 +196,7 @@ define([
     };
 
     var removeColumn = function (proxy, uid) {
+        if (readOnly) { return; }
         // remove proxy.table.cols[uid]
         proxy.table.cols[uid] = undefined;
         delete proxy.table.rows[uid];
@@ -212,6 +223,7 @@ define([
     };
 
     var makeUserEditable = module.makeUserEditable = function (id, bool) {
+        if (readOnly) { return; }
         var $name = $('input[type="text"][id="' + id + '"]').attr('disabled', !bool);
 
         var $edit = $name.parent().find('.edit');
@@ -289,6 +301,11 @@ define([
                     });
             });
 
+        if (readOnly) {
+            $edit = '';
+            $remove = '';
+        }
+
         var $wrapper = $('<div>', {
             'class': 'text-cell',
         })
@@ -313,6 +330,7 @@ define([
     };
 
     var makeOptionEditable = function (id, bool) {
+        if (readOnly) { return; }
         if (bool) {
             module.rt.proxy.table.rowsOrder.forEach(function (rowuid) {
                 $('#' + rowuid)
@@ -362,6 +380,11 @@ define([
                 table.removeRow(id);
             });
         });
+
+        if (readOnly) {
+            $edit = '';
+            $remove = '';
+        }
 
         var $wrapper = $('<div>', {
             'class': 'text-cell',
@@ -738,16 +761,33 @@ define([
                 });
         }));
 
-        $toolbar.append(Button({
-            id: 'wizard',
-            'class': 'wizard button action',
-            title: Messages.wizardTitle,
-        }).text(Messages.wizardButton).click(function () {
-            Wizard.show();
-            if (Wizard.hasBeenDisplayed) { return; }
-            Cryptpad.log(Messages.wizardLog);
-            Wizard.hasBeenDisplayed = true;
-        }));
+        if (!readOnly) {
+            $toolbar.append(Button({
+                id: 'wizard',
+                'class': 'wizard button action',
+                title: Messages.wizardTitle,
+            }).text(Messages.wizardButton).click(function () {
+                Wizard.show();
+                if (Wizard.hasBeenDisplayed) { return; }
+                Cryptpad.log(Messages.wizardLog);
+                Wizard.hasBeenDisplayed = true;
+            }));
+        }
+
+        if (!readOnly && module.viewHash) {
+            /* add a 'links' button */
+            var $links = $('<button>', {
+                title: Messages.getViewButtonTitle
+            })
+                .text(Messages.getViewButton)
+                .addClass('button action')
+                .click(function () {
+                    var baseUrl = window.location.origin + window.location.pathname + '#';
+                    var content = '<b>' + Messages.readonlyUrl + '</b><br><a>' + baseUrl + module.viewHash + '</a><br>';
+                    Cryptpad.alert(content);
+                });
+            $toolbar.append($links);
+        }
 
         /* Import/Export buttons */
         /*
@@ -807,6 +847,7 @@ define([
         }
 
         Cryptpad.getPadAttribute('column', function (err, column) {
+            if (readOnly) { return; }
             if (err) {
                 console.log("unable to retrieve column");
                 return;
@@ -854,7 +895,10 @@ define([
         websocketURL: Config.websocketURL,
         channel: secret.channel,
         data: {},
-        crypto: Crypto.createEncryptor(secret.key),
+        // our public key
+        validateKey: secret.keys.validateKey || undefined,
+        readOnly: readOnly,
+        crypto: Crypto.createEncryptor(secret.keys),
     };
 
     // don't initialize until the store is ready.
@@ -863,7 +907,17 @@ define([
         var rt = window.rt = module.rt = Listmap.create(config);
         rt.proxy.on('create', function (info) {
             var realtime = module.realtime = info.realtime;
-            window.location.hash = Cryptpad.getHashFromKeys(info.channel, secret.key);
+
+            var editHash;
+            var viewHash = module.viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
+            if (!readOnly) {
+                editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+            }
+            // set the hash
+            if (!readOnly) {
+                window.location.hash = editHash;
+            }
+
             module.patchText = TextPatcher.create({
                 realtime: realtime,
                 logging: true,

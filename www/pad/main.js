@@ -65,6 +65,10 @@ define([
 
     var andThen = function (Ckeditor) {
         var secret = Cryptpad.getSecrets();
+        var readOnly = secret.keys && !secret.keys.editKeyStr;
+        if (!secret.keys) {
+            secret.keys = secret.key;
+        }
 
         var fixThings = false;
 
@@ -81,6 +85,11 @@ define([
         });
 
         editor.on('instanceReady', function (Ckeditor) {
+
+            if (readOnly) {
+                $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox > .cke_toolbar').hide();
+            }
+
 
             /* add a class to the magicline plugin so we can pick it out more easily */
 
@@ -115,8 +124,9 @@ define([
                 } else {
                     module.spinner.show();
                 }
-
-                inner.setAttribute('contenteditable', bool);
+                if (!readOnly || !bool) {
+                    inner.setAttribute('contenteditable', bool);
+                }
             };
 
             // don't let the user edit until the pad is ready
@@ -190,6 +200,12 @@ define([
                             // return true to prevent diff application
                             return true;
                         }
+                    }
+
+                    // Do not change the contenteditable value in view mode
+                    if (readOnly && info.node && info.node.tagName === 'BODY' &&
+                        info.diff.action === 'modifyAttribute' && info.diff.name === 'contenteditable') {
+                        return true;
                     }
 
                     // no use trying to recover the cursor if it doesn't exist
@@ -296,7 +312,9 @@ define([
             var applyHjson = function (shjson) {
                 var userDocStateDom = hjsonToDom(JSON.parse(shjson));
 
-                userDocStateDom.setAttribute("contenteditable", "true"); // lol wtf
+                if (!readOnly) {
+                    userDocStateDom.setAttribute("contenteditable", "true"); // lol wtf
+                }
                 var patch = (DD).diff(inner, userDocStateDom);
                 (DD).apply(inner, patch);
             };
@@ -322,14 +340,15 @@ define([
                 // the channel we will communicate over
                 channel: secret.channel,
 
-                // our encryption key
-                cryptKey: secret.key,
+                // our public key
+                validateKey: secret.keys.validateKey || undefined,
+                readOnly: readOnly,
 
                 // method which allows us to get the id of the user
                 setMyID: setMyID,
 
                 // Pass in encrypt and decrypt methods
-                crypto: Crypto.createEncryptor(secret.key),
+                crypto: Crypto.createEncryptor(secret.keys),
 
                 // really basic operational transform
                 transformFunction : JsonOT.validate,
@@ -407,31 +426,33 @@ define([
                 // build a dom from HJSON, diff, and patch the editor
                 applyHjson(shjson);
 
-                var shjson2 = stringifyDOM(inner);
-                if (shjson2 !== shjson) {
-                    console.error("shjson2 !== shjson");
-                    module.patchText(shjson2);
+                if (!readOnly) {
+                    var shjson2 = stringifyDOM(inner);
+                    if (shjson2 !== shjson) {
+                        console.error("shjson2 !== shjson");
+                        module.patchText(shjson2);
 
-                    /*  pushing back over the wire is necessary, but it can
-                        result in a feedback loop, which we call a browser
-                        fight */
-                    if (module.logFights) {
-                        // what changed?
-                        var op = TextPatcher.diff(shjson, shjson2);
-                        // log the changes
-                        TextPatcher.log(shjson, op);
-                        var sop = JSON.stringify(TextPatcher.format(shjson, op));
+                        /*  pushing back over the wire is necessary, but it can
+                            result in a feedback loop, which we call a browser
+                            fight */
+                        if (module.logFights) {
+                            // what changed?
+                            var op = TextPatcher.diff(shjson, shjson2);
+                            // log the changes
+                            TextPatcher.log(shjson, op);
+                            var sop = JSON.stringify(TextPatcher.format(shjson, op));
 
-                        var index = module.fights.indexOf(sop);
-                        if (index === -1) {
-                            module.fights.push(sop);
-                            console.log("Found a new type of browser disagreement");
-                            console.log("You can inspect the list in your " +
-                                "console at `REALTIME_MODULE.fights`");
-                            console.log(module.fights);
-                        } else {
-                            console.log("Encountered a known browser disagreement: " +
-                                "available at `REALTIME_MODULE.fights[%s]`", index);
+                            var index = module.fights.indexOf(sop);
+                            if (index === -1) {
+                                module.fights.push(sop);
+                                console.log("Found a new type of browser disagreement");
+                                console.log("You can inspect the list in your " +
+                                    "console at `REALTIME_MODULE.fights`");
+                                console.log(module.fights);
+                            } else {
+                                console.log("Encountered a known browser disagreement: " +
+                                    "available at `REALTIME_MODULE.fights[%s]`", index);
+                            }
                         }
                     }
                 }
@@ -491,11 +512,20 @@ define([
                 var config = {
                     userData: userList,
                     changeNameID: Toolbar.constants.changeName,
+                    readOnly: readOnly
                 };
+                if (readOnly) {delete config.changeNameID; }
                 toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
-                createChangeName(Toolbar.constants.changeName, $bar);
+                if (!readOnly) { createChangeName(Toolbar.constants.changeName, $bar); }
 
                 var $rightside = $bar.find('.' + Toolbar.constants.rightside);
+
+                var editHash;
+                var viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
+
+                if (!readOnly) {
+                    editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+                }
 
                 /* add an export button */
                 var $export = $('<button>', {
@@ -504,19 +534,22 @@ define([
                     .text(Messages.exportButton)
                     .addClass('rightside-button')
                     .click(exportFile);
+                $rightside.append($export);
 
-                /* add an import button */
-                var $import = $('<button>', {
-                    title: Messages.importButtonTitle
-                })
-                    .text(Messages.importButton)
-                    .addClass('rightside-button')
-                    .click(Cryptpad.importContent('text/plain', function (content) {
-                        var shjson = stringify(Hyperjson.fromDOM(domFromHTML(content).body));
-                        applyHjson(shjson);
-                        realtimeOptions.onLocal();
-                    }));
-                $rightside.append($export).append($import);
+                if (!readOnly) {
+                    /* add an import button */
+                    var $import = $('<button>', {
+                        title: Messages.importButtonTitle
+                    })
+                        .text(Messages.importButton)
+                        .addClass('rightside-button')
+                        .click(Cryptpad.importContent('text/plain', function (content) {
+                            var shjson = stringify(Hyperjson.fromDOM(domFromHTML(content).body));
+                            applyHjson(shjson);
+                            realtimeOptions.onLocal();
+                        }));
+                    $rightside.append($import);
+                }
 
                 /* add a rename button */
                 var $rename = $('<button>', {
@@ -569,8 +602,25 @@ define([
                     });
                 $rightside.append($forgetPad);
 
+                if (!readOnly && viewHash) {
+                    /* add a 'links' button */
+                    var $links = $('<button>', {
+                        title: Messages.getViewButtonTitle
+                    })
+                        .text(Messages.getViewButton)
+                        .addClass('rightside-button')
+                        .click(function () {
+                            var baseUrl = window.location.origin + window.location.pathname + '#';
+                            var content = '<b>' + Messages.readonlyUrl + '</b><br><a>' + baseUrl + viewHash + '</a><br>';
+                            Cryptpad.alert(content);
+                        });
+                    $rightside.append($links);
+                }
+
                 // set the hash
-                window.location.hash = Cryptpad.getHashFromKeys(info.channel, secret.key);
+                if (!readOnly) {
+                    window.location.hash = editHash;
+                }
 
                 Cryptpad.getPadTitle(function (err, title) {
                     if (err) {
@@ -588,18 +638,6 @@ define([
                 });
             };
 
-            var onLocal = realtimeOptions.onLocal = function () {
-                if (initializing) { return; }
-
-                // stringify the json and send it into chainpad
-                var shjson = stringifyDOM(inner);
-
-                module.patchText(shjson);
-                if (module.realtime.getUserDoc() !== shjson) {
-                    console.error("realtime.getUserDoc() !== shjson");
-                }
-            };
-
             // this should only ever get called once, when the chain syncs
             var onReady = realtimeOptions.onReady = function (info) {
                 module.patchText = TextPatcher.create({
@@ -612,6 +650,9 @@ define([
                 var shjson = info.realtime.getUserDoc();
                 applyHjson(shjson);
 
+                // Update the user list (metadata) from the hyperjson
+                updateUserList(shjson);
+
                 if (Visible.isSupported()) {
                     Visible.onChange(function (yes) {
                         if (yes) { unnotify(); }
@@ -619,12 +660,19 @@ define([
                 }
 
                 getLastName(function (err, lastName) {
-                    if (typeof(lastName) === 'string' && lastName.length) {
-                        setName(lastName);
-                    }
                     console.log("Unlocking editor");
                     setEditable(true);
                     initializing = false;
+                    // Update the toolbar list:
+                    // Add the current user in the metadata if he has edit rights
+                    if (readOnly) { return; }
+                    myData[myID] = {
+                        name: ""
+                    };
+                    addToUserList(myData);
+                    if (typeof(lastName) === 'string' && lastName.length) {
+                        setName(lastName);
+                    }
                     onLocal();
                 });
             };
@@ -650,6 +698,18 @@ define([
                 }
             };
 
+            var onLocal = realtimeOptions.onLocal = function () {
+                if (initializing) { return; }
+                if (readOnly) { return; }
+
+                // stringify the json and send it into chainpad
+                var shjson = stringifyDOM(inner);
+
+                module.patchText(shjson);
+                if (module.realtime.getUserDoc() !== shjson) {
+                    console.error("realtime.getUserDoc() !== shjson");
+                }
+            };
 
             var rti = module.realtimeInput = realtimeInput.start(realtimeOptions);
 

@@ -128,7 +128,7 @@ define([
 
     var base64ToHex = common.base64ToHex = function (b64String) {
         var hexArray = [];
-        atob(b64String.replace(/-/g, '/') + "==").split("").forEach(function(e){
+        atob(b64String.replace(/-/g, '/')).split("").forEach(function(e){
             var h = e.charCodeAt(0).toString(16);
             if (h.length === 1) { h = "0"+h; }
             hexArray.push(h);
@@ -136,18 +136,31 @@ define([
         return hexArray.join("");
     };
 
-    var getHashFromKeys = common.getHashFromKeys = function (chanKey, cryptKey) {
-        return '/1/' + hexToBase64(chanKey) + '/' + cryptKey.replace(/\//g, '-');
+
+    var getEditHashFromKeys = common.getEditHashFromKeys = function (chanKey, keys) {
+        if (typeof keys === 'string') {
+            return chanKey + keys;
+        }
+        return '/1/edit/' + hexToBase64(chanKey) + '/' + Crypto.b64RemoveSlashes(keys.editKeyStr);
     };
+    var getViewHashFromKeys = common.getViewHashFromKeys = function (chanKey, keys) {
+        if (typeof keys === 'string') {
+            return;
+        }
+        return '/1/view/' + hexToBase64(chanKey) + '/' + Crypto.b64RemoveSlashes(keys.viewKeyStr);
+    };
+    var getHashFromKeys = common.getHashFromKeys = getEditHashFromKeys;
 
     var getSecrets = common.getSecrets = function () {
         var secret = {};
         if (!/#/.test(window.location.href)) {
-            secret.key = Crypto.genKey();
+            secret.keys = Crypto.createEditCryptor();
+            secret.key = Crypto.createEditCryptor().editKeyStr;
         } else {
             var hash = window.location.hash.slice(1);
             if (hash.length === 0) {
-                secret.key = Crypto.genKey();
+                secret.keys = Crypto.createEditCryptor();
+                secret.key = Crypto.createEditCryptor().editKeyStr;
                 return secret;
             }
             common.redirect(hash);
@@ -166,14 +179,34 @@ define([
                     throw new Error("Unable to parse the key");
                 }
                 var version = hashArray[1];
-                if (version === "1") {
+                /*if (version === "1") {
                     secret.channel = base64ToHex(hashArray[2]);
-                    secret.key = hashArray[3].replace(/-/g, '/'); //TODO replace / by -
+                    secret.key = hashArray[3].replace(/-/g, '/');
                     if (secret.channel.length !== 32 || secret.key.length !== 24) {
                         common.alert("The channel key and/or the encryption key is invalid");
-                        console.log("Channel key length : " + secret.channel.length + " != 32");
-                        console.log("Encryption key length : " + secret.key.length + " != 24");
                         throw new Error("The channel key and/or the encryption key is invalid");
+                    }
+                }*/
+                if (version === "1") {
+                    var mode = hashArray[2];
+                    if (mode === 'edit') {
+                        secret.channel = base64ToHex(hashArray[3]);
+                        var keys = Crypto.createEditCryptor(hashArray[4].replace(/-/g, '/'));
+                        secret.keys = keys;
+                        secret.key = keys.editKeyStr;
+                        if (secret.channel.length !== 32 || secret.key.length !== 24) {
+                            common.alert("The channel key and/or the encryption key is invalid");
+                            throw new Error("The channel key and/or the encryption key is invalid");
+                        }
+                    }
+                    else if (mode === 'view') {
+                        secret.channel = base64ToHex(hashArray[3]);
+                        var keys = Crypto.createViewCryptor(hashArray[4].replace(/-/g, '/'));
+                        secret.keys = keys;
+                        if (secret.channel.length !== 32) {
+                            common.alert("The channel key is invalid");
+                            throw new Error("The channel key is invalid");
+                        }
                     }
                 }
             }
