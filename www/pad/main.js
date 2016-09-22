@@ -651,7 +651,7 @@ define([
                 applyHjson(shjson);
 
                 // Update the user list (metadata) from the hyperjson
-                updateUserList(shjson);
+                updateMetadata(shjson);
 
                 if (Visible.isSupported()) {
                     Visible.onChange(function (yes) {

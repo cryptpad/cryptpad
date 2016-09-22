@@ -576,7 +576,7 @@ define([
                 }
 
                 // Update the user list (metadata) from the hyperjson
-                updateUserList(userDoc);
+                updateMetadata(userDoc);
 
                 editor.setValue(newDoc || Messages.codeInitialState);
 
