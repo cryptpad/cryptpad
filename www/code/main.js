@@ -186,7 +186,7 @@ define([
                    name: myUserName
                 };
                 addToUserList(myData);
-                Cryptpad.setPadAttribute('username', myUserName, function (err, data) {
+                Cryptpad.setAttribute('username', myUserName, function (err, data) {
                     if (err) {
                         console.log("Couldn't set username");
                         console.error(err);
@@ -197,7 +197,7 @@ define([
             };
 
             var getLastName = function (cb) {
-                Cryptpad.getPadAttribute('username', function (err, userName) {
+                Cryptpad.getAttribute('username', function (err, userName) {
                     cb(err, userName || '');
                 });
             };
