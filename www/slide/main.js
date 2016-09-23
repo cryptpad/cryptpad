@@ -322,7 +322,7 @@ define([
         elem.selectionStart = selects[0];
         elem.selectionEnd = selects[1];
 
-        Slide.update(content);
+        Slide.update(userDoc);
 
         notify();
     };
