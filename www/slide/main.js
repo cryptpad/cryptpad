@@ -32,6 +32,11 @@ define([
     Cryptpad.styleAlerts();
 
     var secret = Cryptpad.getSecrets();
+    var readOnly = secret.keys && !secret.keys.editKeyStr;
+    Slide.readOnly = readOnly;
+    if (!secret.keys) {
+        secret.keys = secret.key;
+    }
 
     var APP = window.APP = {
         TextPatcher: TextPatcher,
@@ -72,14 +77,30 @@ define([
     var $content = $('#content');
     Slide.setModal($modal, $content);
 
+    var enterPresentationMode = function (shouldLog) {
+        Slide.show(true, $textarea.val());
+        if (shouldLog) {
+            Cryptpad.log(Messages.presentSuccess);
+        }
+    };
+
+    if (readOnly) {
+        enterPresentationMode(false);
+    }
+
     var config = APP.config = {
         initialState: '{}',
         websocketURL: Config.websocketURL,
         channel: secret.channel,
-        crypto: Crypto.createEncryptor(secret.key),
+        crypto: Crypto.createEncryptor(secret.keys),
+        validateKey: secret.keys.validateKey || undefined,
+        readOnly: readOnly,
     };
 
-    var setEditable = function (bool) { $textarea.attr('disabled', !bool); };
+    var setEditable = function (bool) {
+        if (readOnly && bool) { return; }
+        $textarea.attr('disabled', !bool);
+    };
     var canonicalize = function (text) { return text.replace(/\r\n/g, '\n'); };
 
     setEditable(false);
@@ -101,6 +122,7 @@ define([
 
     var onLocal = config.onLocal = function () {
         if (initializing) { return; }
+        if (readOnly) { return; }
 
         var textContent = canonicalize($textarea.val());
 
@@ -119,7 +141,13 @@ define([
     };
 
     var onInit = config.onInit = function (info) {
-        window.location.hash = Cryptpad.getHashFromKeys(info.channel, secret.key);
+        var editHash;
+        var viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
+        if (!readOnly) {
+            editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+            window.location.hash = editHash;
+        }
+
         $(window).on('hashchange', function() {
             window.location.reload();
         });
@@ -147,8 +175,7 @@ define([
         })
         .text(Messages.presentButton)
         .click(function () {
-            Slide.show(true, $textarea.val());
-            Cryptpad.log(Messages.presentSuccess);
+            enterPresentationMode(true);
         });
 
         var $forget = Button({
@@ -247,13 +274,35 @@ define([
             Cryptpad.warn(Messages.shareFailed);
         });
 
+        /* add a 'links' button */
+        var $links = Button({
+            title: Messages.getViewButtonTitle,
+            'class': 'links button action',
+        })
+            .text(Messages.getViewButton)
+            .click(function () {
+                var baseUrl = window.location.origin + window.location.pathname + '#';
+                var content = '<b>' + Messages.readonlyUrl + '</b><br><a>' + baseUrl + viewHash + '</a><br>';
+                Cryptpad.alert(content);
+            });
+
+        if (readOnly) {
+            $links = '';
+            $import = '';
+            $present = '';
+        }
+        if (!viewHash) {
+            $links = '';
+        }
+
         $bar
             .append($present)
             .append($forget)
             .append($rename)
             .append($import)
             .append($export)
-            .append($share);
+            .append($share)
+            .append($links);
     };
     var onRemote = config.onRemote = function (info) {
         if (initializing) { return; }
