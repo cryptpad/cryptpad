@@ -269,7 +269,7 @@ define([
             };
 
             var getLastName = function (cb) {
-                Cryptpad.getPadAttribute('username', function (err, userName) {
+                Cryptpad.getAttribute('username', function (err, userName) {
                     cb(err, userName || '');
                 });
             };
@@ -287,7 +287,7 @@ define([
                 addToUserList(myData);
                 editor.fire('change');
 
-                Cryptpad.setPadAttribute('username', newName, function (err, data) {
+                Cryptpad.setAttribute('username', newName, function (err, data) {
                     if (err) {
                         console.error("Couldn't set username");
                     }

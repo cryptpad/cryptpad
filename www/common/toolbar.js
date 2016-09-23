@@ -27,6 +27,9 @@ define([
 
     var SPINNER_CLS = Bar.constants.spinner = 'cryptpad-spinner';
 
+    var USERNAME_CLS = Bar.constants.username = 'cryptpad-toolbar-username';
+
+    var READONLY_CLS = Bar.constants.readonly = 'cryptpad-readonly';
     /** Key in the localStore which indicates realtime activity should be disallowed. */
     // TODO remove? will never be used in cryptpad
     var LOCALSTORAGE_DISALLOW = Bar.constants.localstorageDisallow = 'cryptpad-disallow';
@@ -121,16 +124,16 @@ define([
       return (i > 0) ? list.slice(0, -2) : list;
     };
 
-    var createChangeName = function($container, userList, buttonID) {
+    var createChangeName = function($container, buttonID) {
         var $span = $('<span>', {
             id: uid(),
         });
         var $button = $('<button>', {
             id: buttonID,
-            'class': USERNAME_BUTTON_GROUP,
+            'class': 'rightside-button',
         }).text(Messages.changeNameButton);
 
-        $(userList).append($button);
+        $container.append($button);
         $button.after($span);
         return $span[0];
     };
@@ -157,7 +160,7 @@ define([
         var innerHTML;
         var numberOfViewUsers = numberOfUsers - userList.length;
         if (readOnly === 1) {
-            innerHTML = '<span class="cryptpad-readonly">' + Messages.readonly + '</span>';
+            innerHTML = '<span class="' + READONLY_CLS + '">' + Messages.readonly + '</span>';
             if (userList.length === 0) {
                 innerHTML += Messages.nobodyIsEditing;
             } else if (userList.length === 1) {
@@ -178,6 +181,9 @@ define([
             }
         }
         innerHTML += getViewers(numberOfViewUsers);
+        if (userData[myUserName] && userData[myUserName].name) {
+            innerHTML = '<span class="' + USERNAME_CLS + '">' + userData[myUserName].name + '</span> | ' + innerHTML;
+        }
         listElement.innerHTML = innerHTML;
     };
 
@@ -226,7 +232,8 @@ define([
         // Check if the user is allowed to change his name
         if(changeNameID) {
             // Create the button and update the element containing the user list
-            userListElement = createChangeName($container, userListElement, changeNameID);
+            //userListElement = createChangeName($container, userListElement, changeNameID);
+            createChangeName(toolbar.find('.' + RIGHTSIDE_CLS), changeNameID);
         }
 
         var connected = false;

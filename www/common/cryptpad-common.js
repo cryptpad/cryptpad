@@ -318,6 +318,12 @@ define([
             cb(err, data);
         });
     };
+    var setAttribute = common.setAttribute = function (attr, value, cb, legacy) {
+        getStore(legacy).set(["cryptpad", attr].join('.'), value, function (err, data) {
+            cb(err, data);
+        });
+    };
+
 
     // STORAGE
     var getPadAttribute = common.getPadAttribute = function (attr, cb, legacy) {
@@ -325,6 +331,12 @@ define([
             cb(err, data);
         });
     };
+    var getAttribute = common.getAttribute = function (attr, cb, legacy) {
+        getStore(legacy).get(["cryptpad", attr].join('.'), function (err, data) {
+            cb(err, data);
+        });
+    };
+
 
     // STORAGE
     /* fetch and migrate your pad history from localStorage */
