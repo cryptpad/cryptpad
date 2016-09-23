@@ -148,7 +148,7 @@ define([
         if (!n || !parseInt(n) || n === 0) { return ''; }
         if (n === 1) { return '; + ' + Messages.oneViewer; }
         return '; + ' + Messages._getKey('viewers', [n]);
-    }
+    };
     var updateUserList = function (myUserName, listElement, userList, userData, readOnly) {
         var meIdx = userList.indexOf(myUserName);
         if (meIdx === -1) {

@@ -275,7 +275,7 @@ define([
             };
 
             var setName = module.setName = function (newName) {
-                if (!(typeof(newName) === 'string')) { return; }
+                if (typeof(newName) !== 'string') { return; }
                 var myUserNameTemp = Cryptpad.fixHTML(newName.trim());
                 if(myUserNameTemp.length > 32) {
                     myUserNameTemp = myUserNameTemp.substr(0, 32);
@@ -673,7 +673,7 @@ define([
                     if (typeof(lastName) === 'string' && lastName.length) {
                         setName(lastName);
                     }
-                    onLocal();
+                    realtimeOptions.onLocal();
                 });
             };
 

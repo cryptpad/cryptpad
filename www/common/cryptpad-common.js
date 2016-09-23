@@ -201,8 +201,7 @@ define([
                     }
                     else if (mode === 'view') {
                         secret.channel = base64ToHex(hashArray[3]);
-                        var keys = Crypto.createViewCryptor(hashArray[4].replace(/-/g, '/'));
-                        secret.keys = keys;
+                        secret.keys = Crypto.createViewCryptor(hashArray[4].replace(/-/g, '/'));
                         if (secret.channel.length !== 32) {
                             common.alert("The channel key is invalid");
                             throw new Error("The channel key is invalid");
