@@ -137,6 +137,12 @@ tr {
   border: 2px solid #a1f4bf;
   color: #46E981;
 }
+.create {
+  display: none;
+}
+.action {
+  display: inline-block;
+}
 .buttons {
   margin-bottom: 50px;
   margin-top: 20px;
@@ -147,12 +153,6 @@ tr {
   margin-top: 12px;
   margin-bottom: 12px;
   white-space: nowrap;
-}
-.create {
-  display: none;
-}
-.action {
-  display: inline-block;
 }
 /* Tables */
 table {
