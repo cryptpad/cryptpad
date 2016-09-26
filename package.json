@@ -5,7 +5,8 @@
   "dependencies": {
     "express": "~4.10.1",
     "ws": "^1.0.1",
-    "nthen": "~0.1.0"
+    "nthen": "~0.1.0",
+    "tweetnacl": "~0.12.2"
   },
   "devDependencies": {
     "jshint": "~2.9.1",

@@ -27,6 +27,9 @@ define([
 
     var SPINNER_CLS = Bar.constants.spinner = 'cryptpad-spinner';
 
+    var USERNAME_CLS = Bar.constants.username = 'cryptpad-toolbar-username';
+
+    var READONLY_CLS = Bar.constants.readonly = 'cryptpad-readonly';
     /** Key in the localStore which indicates realtime activity should be disallowed. */
     // TODO remove? will never be used in cryptpad
     var LOCALSTORAGE_DISALLOW = Bar.constants.localstorageDisallow = 'cryptpad-disallow';
@@ -121,33 +124,67 @@ define([
       return (i > 0) ? list.slice(0, -2) : list;
     };
 
-    var createChangeName = function($container, userList, buttonID) {
+    var createChangeName = function($container, buttonID) {
         var $span = $('<span>', {
             id: uid(),
         });
         var $button = $('<button>', {
             id: buttonID,
-            'class': USERNAME_BUTTON_GROUP,
+            'class': 'rightside-button',
         }).text(Messages.changeNameButton);
 
-        $(userList).append($button);
+        $container.append($button);
         $button.after($span);
         return $span[0];
     };
 
-    var updateUserList = function (myUserName, listElement, userList, userData) {
+    var arrayIntersect = function(a, b) {
+        return $.grep(a, function(i) {
+            return $.inArray(i, b) > -1;
+        });
+    };
+
+    var getViewers = function (n) {
+        if (!n || !parseInt(n) || n === 0) { return ''; }
+        if (n === 1) { return '; + ' + Messages.oneViewer; }
+        return '; + ' + Messages._getKey('viewers', [n]);
+    };
+    var updateUserList = function (myUserName, listElement, userList, userData, readOnly) {
         var meIdx = userList.indexOf(myUserName);
         if (meIdx === -1) {
             listElement.textContent = Messages.synchronizing;
             return;
         }
-        if (userList.length === 1) {
-            listElement.innerHTML = Messages.editingAlone;
-        } else if (userList.length === 2) {
-            listElement.innerHTML = Messages.editingWithOneOtherPerson + getOtherUsers(myUserName, userList, userData);
-        } else {
-            listElement.innerHTML = Messages.editingWith + ' ' + (userList.length - 1) + ' ' + Messages.otherPeople + getOtherUsers(myUserName, userList, userData);
+        var numberOfUsers = userList.length;
+        userList = readOnly === -1 ? userList : arrayIntersect(userList, Object.keys(userData));
+        var innerHTML;
+        var numberOfViewUsers = numberOfUsers - userList.length;
+        if (readOnly === 1) {
+            innerHTML = '<span class="' + READONLY_CLS + '">' + Messages.readonly + '</span>';
+            if (userList.length === 0) {
+                innerHTML += Messages.nobodyIsEditing;
+            } else if (userList.length === 1) {
+                innerHTML += Messages.onePersonIsEditing + getOtherUsers(myUserName, userList, userData);
+            } else {
+                innerHTML += Messages._getKey('peopleAreEditing', [userList.length]) + getOtherUsers(myUserName, userList, userData);
+            }
+            // Remove the current user
+            numberOfViewUsers--;
         }
+        else {
+            if (userList.length === 1) {
+                innerHTML = Messages.editingAlone;
+            } else if (userList.length === 2) {
+                innerHTML = Messages.editingWithOneOtherPerson + getOtherUsers(myUserName, userList, userData);
+            } else {
+                innerHTML = Messages.editingWith + ' ' + (userList.length - 1) + ' ' + Messages.otherPeople + getOtherUsers(myUserName, userList, userData);
+            }
+        }
+        innerHTML += getViewers(numberOfViewUsers);
+        if (userData[myUserName] && userData[myUserName].name) {
+            innerHTML = '<span class="' + USERNAME_CLS + '">' + userData[myUserName].name + '</span> | ' + innerHTML;
+        }
+        listElement.innerHTML = innerHTML;
     };
 
     var createLagElement = function ($container) {
@@ -187,13 +224,16 @@ define([
         var changeNameID = config.changeNameID;
         var saveContentID = config.saveContentID || config.exportContentID;
         var loadContentID = config.loadContentID || config.importContentID;
+        // readOnly = 1 (readOnly enabled), 0 (disabled), -1 (old pad without readOnly mode)
+        var readOnly = (typeof config.readOnly !== "undefined") ? (config.readOnly ? 1 : 0) : -1;
         var saveElement;
         var loadElement;
 
         // Check if the user is allowed to change his name
         if(changeNameID) {
             // Create the button and update the element containing the user list
-            userListElement = createChangeName($container, userListElement, changeNameID);
+            //userListElement = createChangeName($container, userListElement, changeNameID);
+            createChangeName(toolbar.find('.' + RIGHTSIDE_CLS), changeNameID);
         }
 
         var connected = false;
@@ -205,7 +245,7 @@ define([
           if(newUserData) { // Someone has changed his name/color
             userData = newUserData;
           }
-          updateUserList(myUserName, userListElement, users, userData);
+          updateUserList(myUserName, userListElement, users, userData, readOnly);
         };
 
         var ks = function () {

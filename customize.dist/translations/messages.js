@@ -3,6 +3,11 @@ define(function () {
 
     out.main_title = "Cryptpad: Zero Knowledge, Collaborative Real Time Editing";
 
+    out.type = {};
+    out.type.pad = 'Pad';
+    out.type.code = 'Code';
+    out.type.poll = 'Poll';
+    out.type.slide = 'Presentation';
 
     out.errorBox_errorType_disconnected = 'Connection Lost';
     out.errorBox_errorExplanation_disconnected = [
@@ -20,6 +25,12 @@ define(function () {
     out.synchronizing = 'Synchronizing';
     out.reconnecting = 'Reconnecting...';
     out.lag = 'Lag';
+    out.readonly = 'Read only';
+    out.nobodyIsEditing = 'Nobody is editing';
+    out.onePersonIsEditing = 'One person is editing';
+    out.peopleAreEditing = '{0} people are editing';
+    out.oneViewer = '1 viewer';
+    out.viewers = '{0} viewers';
 
     out.importButton = 'IMPORT';
     out.importButtonTitle = 'Import a document from a local file';
@@ -54,6 +65,10 @@ define(function () {
 
     out.commitButton = 'COMMIT';
 
+    out.getViewButton = 'READ-ONLY URL';
+    out.getViewButtonTitle = 'Get the read-only URL for this document';
+    out.readonlyUrl = 'Read only URL';
+
     out.disconnectAlert = 'Network connection lost!';
 
     out.tryIt = 'Try it out!';
@@ -64,13 +79,6 @@ define(function () {
 
     out.loginText = '<p>Your username and password are used to generate a unique key which is never known by our server.</p>\n' +
                     '<p>Be careful not to forget your credentials, as they are impossible to recover</p>';
-
-    // TODO : move at the beginning
-    out.type = {};
-    out.type.pad = 'Pad';
-    out.type.code = 'Code';
-    out.type.poll = 'Poll';
-    out.type.slide = 'Presentation';
 
     out.forget = "Forget";
 

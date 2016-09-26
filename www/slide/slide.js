@@ -160,7 +160,9 @@ define([
                 Slide.right();
                 break;
             case 27: // esc
-                show(false);
+                if (!Slide.readOnly) {
+                    show(false);
+                }
                 break;
             default:
                 console.log(e.which);

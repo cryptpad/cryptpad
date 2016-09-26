@@ -1,5 +1,6 @@
 ;(function () { 'use strict';
 const Crypto = require('crypto');
+const Nacl = require('tweetnacl');
 const LogStore = require('./storage/LogStore');
 
 
@@ -12,6 +13,7 @@ const USE_FILE_BACKUP_STORAGE = true;
 
 
 let dropUser;
+let historyKeeperKeys = {};
 
 const now = function () { return (new Date()).getTime(); };
 
@@ -25,6 +27,16 @@ const sendMsg = function (ctx, user, msg) {
     }
 };
 
+const storeMessage = function (ctx, channel, msg) {
+    ctx.store.message(channel.id, msg, function (err) {
+        if (err && typeof(err) !== 'function') {
+            // ignore functions because older datastores
+            // might pass waitFors into the callback
+            console.log("Error writing message: " + err);
+        }
+    });
+};
+
 const sendChannelMessage = function (ctx, channel, msgStruct) {
     msgStruct.unshift(0);
     channel.forEach(function (user) {
@@ -33,13 +45,17 @@ const sendChannelMessage = function (ctx, channel, msgStruct) {
       }
     });
     if (USE_HISTORY_KEEPER && msgStruct[2] === 'MSG') {
-        ctx.store.message(channel.id, JSON.stringify(msgStruct), function (err) {
-            if (err && typeof(err) !== 'function') {
-                // ignore functions because older datastores
-                // might pass waitFors into the callback
-                console.log("Error writing message: " + err);
+        if (historyKeeperKeys[channel.id]) {
+            let signedMsg = msgStruct[4].replace(/^cp\|/, '');
+            signedMsg = Nacl.util.decodeBase64(signedMsg);
+            let validateKey = Nacl.util.decodeBase64(historyKeeperKeys[channel.id]);
+            let validated = Nacl.sign.open(signedMsg, validateKey);
+            if (!validated) {
+                console.log("Signed message rejected");
+                return;
             }
-        });
+        }
+        storeMessage(ctx, channel, JSON.stringify(msgStruct));
     }
 };
 
@@ -68,6 +84,7 @@ dropUser = function (ctx, user) {
         if (chan.length === 0) {
             console.log("Removing empty channel ["+chanName+"]");
             delete ctx.channels[chanName];
+            delete historyKeeperKeys[chanName];
 
             /*  Call removeChannel if it is a function and channel removal is
                 set to true in the config file */
@@ -94,8 +111,15 @@ dropUser = function (ctx, user) {
 
 const getHistory = function (ctx, channelName, handler, cb) {
     var messageBuf = [];
+    var messageKey;
     ctx.store.getMessages(channelName, function (msgStr) {
-        messageBuf.push(JSON.parse(msgStr));
+        var parsed = JSON.parse(msgStr);
+        if (parsed.validateKey) {
+            historyKeeperKeys[channelName] = parsed.validateKey;
+            handler(parsed);
+            return;
+        }
+        messageBuf.push(parsed);
     }, function (err) {
         if (err) {
             console.log("Error getting messages " + err.stack);
@@ -120,7 +144,7 @@ const getHistory = function (ctx, channelName, handler, cb) {
             // no checkpoints.
             for (var x = msgBuff2.pop(); x; x = msgBuff2.pop()) { handler(x); }
         }
-        cb();
+        cb(messageBuf);
     });
 };
 
@@ -166,8 +190,15 @@ const handleMessage = function (ctx, user, msg) {
                 sendMsg(ctx, user, [seq, 'ACK']);
                 getHistory(ctx, parsed[1], function (msg) {
                     sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(msg)]);
-                }, function () {
-                    sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, 0]);
+                }, function (messages) {
+                    // parsed[2] is a validation key if it exists
+                    if (messages.length === 0 && parsed[2] && !historyKeeperKeys[parsed[1]]) {
+                        var key = {channel: parsed[1], validateKey: parsed[2]};
+                        storeMessage(ctx, ctx.channels[parsed[1]], JSON.stringify(key));
+                        historyKeeperKeys[parsed[1]] = parsed[2];
+                    }
+                    let parsedMsg = {state: 1, channel: parsed[1]};
+                    sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(parsedMsg)]);
                 });
             }
             return;

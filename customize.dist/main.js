@@ -106,9 +106,17 @@ define([
                 });
             });
 
+            var readOnly = false;
+            if (pad.href.indexOf('#') !== -1) {
+                var modeArray = pad.href.split('#')[1].split('/');
+                if (modeArray.length >= 3 && modeArray[2] === 'view') {
+                    readOnly =  true;
+                }
+            }
+            var readOnlyText = readOnly ? '(' + Messages.readonly + ') ' : '';
             $row
                 .append($('<td>').text(name))
-                .append($('<td>').append($('<a>', {
+                .append($('<td>').append(readOnlyText).append($('<a>', {
                     href: pad.href,
                     title: pad.title,
                 }).text(shortTitle)))
@@ -134,6 +142,9 @@ define([
 
             if (hasRecent) {
                 $('table').attr('style', '');
+                // Race condition here, this is triggered before the localization in HTML
+                // so we have to remove the data-localization attr
+                $tryit.removeAttr('data-localization');
                 $tryit.text(Messages.recentPads);
             }
         });
