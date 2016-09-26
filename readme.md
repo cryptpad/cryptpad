@@ -17,22 +17,30 @@ engine. The secret key is stored in the URL [fragment identifier] which is never
 the server but is available to javascript so by sharing the URL, you give authorization
 to others who want to participate.
 
-To install:
 
-    git clone <this repo>
-    cd cryptpad
-    npm install
-    npm install -g bower ## if necessary
-    bower install
+# Installation
 
-    ## copy config.js.dist to config.js
-    cp config.js.dist config.js
+Cryptpad depends on the Nodejs runtime.
+We recommend installing it via [NVM](https://github.com/creationix/nvm "Node Version Manager") to ensure that you are running an up to date version.
 
-    ## modify configuration to use your own mongodb instance
-    ## for example aon the default mongodb port `mongodb://localhost:27017/demo_database`
-    $EDITOR config.js
+Once you have a recent runtime:
 
-    node ./server.js
+```
+git clone <this repo>
+cd cryptpad
+npm install
+npm install -g bower ## if necessary
+bower install
+
+## copy config.js.dist to config.js
+cp config.js.dist config.js
+
+## modify configuration to use your own mongodb instance
+## for example aon the default mongodb port `mongodb://localhost:27017/demo_database`
+$EDITOR config.js
+
+node ./server.js
+```
 
 ## Maintenance
 
