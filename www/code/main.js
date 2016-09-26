@@ -703,7 +703,20 @@ define([
             var onAbort = config.onAbort = function (info) {
                 // inform of network disconnect
                 setEditable(false);
+                toolbar.failed();
                 Cryptpad.alert(Messages.disconnectAlert);
+            };
+
+            var onConnectionChange = config.onConnectionChange = function (info) {
+                setEditable(info.state);
+                toolbar.failed();
+                if (info.state) {
+                    initializing = true;
+                    toolbar.reconnecting(info.myId);
+                    Cryptpad.findOKButton().click();
+                } else {
+                    Cryptpad.alert(Messages.disconnectAlert);
+                }
             };
 
             var realtime = module.realtime = Realtime.start(config);
