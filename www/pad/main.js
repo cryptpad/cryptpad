@@ -297,13 +297,6 @@ define([
             var createChangeName = function(id, $container) {
                 var buttonElmt = $container.find('#'+id)[0];
                 //var lastName = getLastName();
-                getLastName(function (err, lastName) {
-                    buttonElmt.addEventListener("click", function() {
-                        Cryptpad.prompt(Messages.changeNamePrompt, lastName, function (newName) {
-                            setName(newName);
-                        });
-                    });
-                });
             };
 
             var DD = new DiffDom(diffOptions);
@@ -511,12 +504,12 @@ define([
                 toolbarList = info.userList;
                 var config = {
                     userData: userList,
-                    changeNameID: Toolbar.constants.changeName,
+                    //changeNameID: Toolbar.constantdds.changeName,
                     readOnly: readOnly
                 };
                 if (readOnly) {delete config.changeNameID; }
                 toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
-                if (!readOnly) { createChangeName(Toolbar.constants.changeName, $bar); }
+                //if (!readOnly) { createChangeName(Toolbar.constants.changeName, $bar); }
 
                 var $rightside = $bar.find('.' + Toolbar.constants.rightside);
 
@@ -527,22 +520,23 @@ define([
                     editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
                 }
 
+                getLastName(function (err, lastName) {
+                    var $username = Cryptpad.createButton('username', true)
+                        .click(function() {
+                        Cryptpad.prompt(Messages.changeNamePrompt, lastName, function (newName) {
+                            setName(newName);
+                        });
+                    });
+                    $rightside.append($username);
+                });
+
                 /* add an export button */
-                var $export = $('<button>', {
-                    title: Messages.exportButtonTitle,
-                })
-                    .text(Messages.exportButton)
-                    .addClass('rightside-button')
-                    .click(exportFile);
+                var $export = Cryptpad.createButton('export', true).click(exportFile);
                 $rightside.append($export);
 
                 if (!readOnly) {
                     /* add an import button */
-                    var $import = $('<button>', {
-                        title: Messages.importButtonTitle
-                    })
-                        .text(Messages.importButton)
-                        .addClass('rightside-button')
+                    var $import = Cryptpad.createButton('import', true)
                         .click(Cryptpad.importContent('text/plain', function (content) {
                             var shjson = stringify(Hyperjson.fromDOM(domFromHTML(content).body));
                             applyHjson(shjson);
@@ -552,12 +546,7 @@ define([
                 }
 
                 /* add a rename button */
-                var $rename = $('<button>', {
-                        id: 'name-pad',
-                        title: Messages.renameButtonTitle,
-                    })
-                    .addClass('cryptpad-rename rightside-button')
-                    .text(Messages.renameButton)
+                var $rename = Cryptpad.createButton('rename', true)
                     .click(function () {
                         var suggestion = suggestName();
 
@@ -584,12 +573,7 @@ define([
                 $rightside.append($rename);
 
                 /* add a forget button */
-                var $forgetPad = $('<button>', {
-                        id: 'cryptpad-forget',
-                        title: Messages.forgetButtonTitle,
-                    })
-                    .text(Messages.forgetButton)
-                    .addClass('cryptpad-forget rightside-button')
+                var $forgetPad = Cryptpad.createButton('forget', true)
                     .click(function () {
                         var href = window.location.href;
                         Cryptpad.confirm(Messages.forgetPrompt, function (yes) {
@@ -604,11 +588,7 @@ define([
 
                 if (!readOnly && viewHash) {
                     /* add a 'links' button */
-                    var $links = $('<button>', {
-                        title: Messages.getViewButtonTitle
-                    })
-                        .text(Messages.getViewButton)
-                        .addClass('rightside-button')
+                    var $links = Cryptpad.createButton('readonly', true)
                         .click(function () {
                             var baseUrl = window.location.origin + window.location.pathname + '#';
                             var content = '<b>' + Messages.readonlyUrl + '</b><br><a>' + baseUrl + viewHash + '</a><br>';

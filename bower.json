@@ -39,6 +39,7 @@
     "diff-dom": "#gh-pages",
     "alertifyjs": "^1.0.11",
     "spin.js": "^2.3.2",
-    "scrypt-async": "^1.2.0"
+    "scrypt-async": "^1.2.0",
+    "components-font-awesome": "^4.6.3"
   }
 }

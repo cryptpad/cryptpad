@@ -31,6 +31,7 @@ define(function () {
     out.peopleAreEditing = '{0} personnes éditent le document';
     out.oneViewer = '1 lecteur';
     out.viewers = '{0} lecteurs';
+    out.anonymous = "Vous êtes actuellement anonyme";
 
     out.importButton = 'IMPORTER';
     out.importButtonTitle = 'Importer un document depuis un fichier local';
@@ -179,7 +180,7 @@ define(function () {
 
     // BottomBar.html
 
-    out.bottom_love = '<a href="http://www.xwiki.com/fr" target="_blank" rel="noopener noreferrer">Fait avec <img class="bottom-bar-heart" src="/customize/heart.png" /> en <img class="bottom-bar-fr" src="/customize/fr.png" /></a>';
+    out.bottom_france = '<a href="http://www.xwiki.com/fr" target="_blank" rel="noopener noreferrer">Fait avec <img class="bottom-bar-heart" src="/customize/heart.png" /> en <img class="bottom-bar-fr" src="/customize/fr.png" /></a>';
     out.bottom_support = '<a href="http://labs.xwiki.com/" title="XWiki Labs" target="_blank" rel="noopener noreferrer">Un projet <img src="/customize/logo-xwiki2.png" alt="XWiki SAS" class="bottom-bar-xwiki"/> Labs</a> avec le soutien de <a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
 
     return out;

@@ -608,6 +608,69 @@ define([
     };
 
     /*
+     * Buttons
+     */
+    var createButton = common.createButton = function (type, rightside) {
+        var button;
+        var size = "17px";
+        switch (type) {
+            case 'export':
+                button = $('<button>', {
+                    title: Messages.exportButtonTitle,
+                    'class': "fa fa-download",
+                    style: 'font:'+size+' FontAwesome'
+                });
+                break;
+            case 'import':
+                button = $('<button>', {
+                    title: Messages.importButtonTitle,
+                    'class': "fa fa-upload",
+                    style: 'font:'+size+' FontAwesome'
+                });
+                break;
+            case 'rename':
+                button = $('<button>', {
+                    id: 'name-pad',
+                    title: Messages.renameButtonTitle,
+                    'class': "fa fa-bookmark cryptpad-rename",
+                    style: 'font:'+size+' FontAwesome'
+                });
+                break;
+            case 'forget':
+                button = $('<button>', {
+                    id: 'cryptpad-forget',
+                    title: Messages.forgetButtonTitle,
+                    'class': "fa fa-trash cryptpad-forget",
+                    style: 'font:'+size+' FontAwesome'
+                });
+                break;
+            case 'username':
+                button = $('<button>', {
+                    title: Messages.changeNameButton,
+                    'class': "fa fa-user",
+                    style: 'font:'+size+' FontAwesome'
+                });
+                break;
+            case 'readonly':
+                button = $('<button>', {
+                    title: Messages.getViewButtonTitle,
+                    'class': "fa fa-eye",
+                    style: 'font:'+size+' FontAwesome'
+                });
+                break;
+            default:
+                button = $('<button>', {
+                    'class': "fa fa-question",
+                    style: 'font:'+size+' FontAwesome'
+                });
+        }
+        if (rightside) {
+            button.addClass('rightside-button')
+        }
+        return button;
+    };
+
+    /*
      *  Alertifyjs
      */
     var styleAlerts = common.styleAlerts = function (href) {
