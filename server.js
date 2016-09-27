@@ -23,32 +23,10 @@ Fs.exists(__dirname + "/customize", function (e) {
     console.log("Cryptpad is customizable, see customize.dist/readme.md for details");
 });
 
-var staticOpts = {
-    index: 'index.html'
-};
-
-var handleFile = function (target, res, fallback, next) {
-    var stream = Fs.createReadStream(target).on('error', function (e) {
-        if (fallback) {
-            handleFile(fallback, res, undefined, next);
-            return;
-        } else {
-            next();
-        }
-    }).on('end', function () {
-        res.end();
-    });
-    stream.pipe(res);
-};
-
 app.use("/customize", Express.static(__dirname + '/customize'));
 app.use("/customize", Express.static(__dirname + '/customize.dist'));
-app.use(/^\/[^\/]*$/, function(req, res, next) {
-    var file = req.originalUrl.slice(1) || 'index.html';
-    handleFile(__dirname + '/customize' + file, // try piping this file first
-        res, __dirname + '/customize.dist/' + file, // if it doesn't exist
-        next); // finally, fall through
-});
+app.use(/^\/[^\/]*$/, Express.static('customize'));
+app.use(/^\/[^\/]*$/, Express.static('customize.dist'));
 
 var httpsOpts;
 if (config.privKeyAndCertFiles) {
