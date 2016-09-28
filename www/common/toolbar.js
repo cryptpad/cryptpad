@@ -11,9 +11,6 @@ define([
     /** Id of the div containing the user list. */
     var USER_LIST_CLS = Bar.constants.userlist = 'cryptpad-user-list';
 
-    /** Id of the button to change my username. */
-    var USERNAME_BUTTON_GROUP = Bar.constants.changeName = 'cryptpad-changeName';
-
     /** Id of the div containing the lag info. */
     var LAG_ELEM_CLS = Bar.constants.lag = 'cryptpad-lag';
 
@@ -22,8 +19,6 @@ define([
 
     var LEFTSIDE_CLS = Bar.constants.leftside = 'cryptpad-toolbar-leftside';
     var RIGHTSIDE_CLS = Bar.constants.rightside = 'cryptpad-toolbar-rightside';
-
-    var BACK_CLS = Bar.constants.back = 'cryptpad-back';
 
     var SPINNER_CLS = Bar.constants.spinner = 'cryptpad-spinner';
 
@@ -70,17 +65,6 @@ define([
         return $toolbar;
     };
 
-    var createEscape = function ($container) {
-        var $back = $('<div>', {
-            'class': BACK_CLS,
-            id: uid(),
-        }).html(Messages.back).click(function () {
-            window.location.href = '/';
-        });
-        $container.append($back);
-        return $back[0];
-    };
-
     var createSpinner = function ($container) {
         var $spinner = $('<div>', {
             id: uid(),
@@ -124,20 +108,6 @@ define([
         }
       });
       return (i > 0) ? list.slice(0, -2) : list;
-    };
-
-    var createChangeName = function($container, buttonID) {
-        var $span = $('<span>', {
-            id: uid(),
-        });
-        var $button = $('<button>', {
-            id: buttonID,
-            'class': 'rightside-button',
-        }).text(Messages.changeNameButton);
-
-        $container.append($button);
-        $button.after($span);
-        return $span[0];
     };
 
     var arrayIntersect = function(a, b) {
@@ -215,15 +185,15 @@ define([
           var title = Messages.lag + ' : ' + lag + ' ms\n';
           if (lag.waiting || lag > 1000) {
             lagLight.addClass('lag-orange');
-            title += 'Your connection to the server is slow, it may impact the performance of the collaborative editor.';
+            title += Messages.orangeLight;
           } else {
             lagLight.addClass('lag-green');
-            title += "Everything is working fine";
+            title += Messages.greenLight;
           }
         }
         else if (!firstConnection){
           lagLight.addClass('lag-red');
-          title = "You are disconnected from the server!";
+          title = Messages.redLight;
         }
         lagLight.attr('title', title);
         $(lagElement).html('');
@@ -232,25 +202,14 @@ define([
 
     var create = Bar.create = function ($container, myUserName, realtime, getLag, userList, config) {
         var toolbar = createRealtimeToolbar($container);
-        createEscape(toolbar.find('.' + LEFTSIDE_CLS));
         var userListElement = createUserList(toolbar.find('.' + LEFTSIDE_CLS));
         var spinner = createSpinner(toolbar.find('.' + RIGHTSIDE_CLS));
         var lagElement = createLagElement(toolbar.find('.' + RIGHTSIDE_CLS));
         var userData = config.userData;
-        var changeNameID = config.changeNameID;
-        var saveContentID = config.saveContentID || config.exportContentID;
-        var loadContentID = config.loadContentID || config.importContentID;
         // readOnly = 1 (readOnly enabled), 0 (disabled), -1 (old pad without readOnly mode)
         var readOnly = (typeof config.readOnly !== "undefined") ? (config.readOnly ? 1 : 0) : -1;
         var saveElement;
         var loadElement;
-
-        // Check if the user is allowed to change his name
-        if(changeNameID) {
-            // Create the button and update the element containing the user list
-            //userListElement = createChangeName($container, userListElement, changeNameID);
-            createChangeName(toolbar.find('.' + RIGHTSIDE_CLS), changeNameID);
-        }
 
         var connected = false;
 

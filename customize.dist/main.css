@@ -230,7 +230,6 @@ tbody td:last-child {
   font-family: Arial, Helvetica, Tahoma, Verdana, sans-serif;
   font-size: 20px;
   display: block;
-  float: right;
   margin-left: 10px;
   padding-top: 3px;
   color: #fafafa;
@@ -253,15 +252,19 @@ tbody td:last-child {
   float: left;
   padding-left: 10px;
 }
+.bottom-bar-left p {
+  float: right;
+}
 .bottom-bar-right {
   display: block;
   float: right;
   padding-right: 20px;
 }
 .bottom-bar-center {
-  margin-left: auto;
-  margin-right: auto;
   width: 20%;
+  position: absolute;
+  left: 40%;
+  text-align: center;
 }
 .bottom-bar-heart {
   top: 2px;

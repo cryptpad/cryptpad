@@ -33,6 +33,10 @@ define(function () {
     out.viewers = '{0} lecteurs';
     out.anonymous = "Vous êtes actuellement anonyme";
 
+    out.greenLight = "Tout fonctionne bien";
+    out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur"
+    out.redLight = "Vous êtes déconnectés de la session";
+
     out.importButton = 'IMPORTER';
     out.importButtonTitle = 'Importer un document depuis un fichier local';
 
@@ -182,6 +186,12 @@ define(function () {
 
     out.bottom_france = '<a href="http://www.xwiki.com/fr" target="_blank" rel="noopener noreferrer">Fait avec <img class="bottom-bar-heart" src="/customize/heart.png" /> en <img class="bottom-bar-fr" src="/customize/fr.png" /></a>';
     out.bottom_support = '<a href="http://labs.xwiki.com/" title="XWiki Labs" target="_blank" rel="noopener noreferrer">Un projet <img src="/customize/logo-xwiki2.png" alt="XWiki SAS" class="bottom-bar-xwiki"/> Labs</a> avec le soutien de <a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
+
+    // Header.html
+
+    out.header_france = '<a href="http://www.xwiki.com/fr" target="_blank" rel="noopener noreferrer">Fait avec <img class="bottom-bar-heart" src="/customize/heart.png" /> en <img class="bottom-bar-fr" title="France" alt="France" src="/customize/fr.png" /> par <img src="/customize/logo-xwiki.png" alt="XWiki SAS" class="bottom-bar-xwiki"/></a>';
+    out.header_support = '<a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
+    out.header_logoTitle = "Aller vers la page d'accueil";
 
     return out;
 });

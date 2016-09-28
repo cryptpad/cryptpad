@@ -82,10 +82,10 @@ define([
             removePlugins: 'resize',
             extraPlugins: 'autolink,colorbutton,colordialog,font',
             //skin: 'moono',
+            toolbarGroups: [{"name":"clipboard","groups":["clipboard","undo"]},{"name":"editing","groups":["find","selection"]},{"name":"links"},{"name":"insert"},{"name":"forms"},{"name":"tools"},{"name":"document","groups":["mode","document","doctools"]},{"name":"others"},{"name":"basicstyles","groups":["basicstyles","cleanup"]},{"name":"paragraph","groups":["list","indent","blocks","align","bidi"]},{"name":"styles"},{"name":"colors"},{"name":"about"}]
         });
 
         editor.on('instanceReady', function (Ckeditor) {
-
             if (readOnly) {
                 $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox > .cke_toolbar').hide();
             }
@@ -294,11 +294,6 @@ define([
                 });
             };
 
-            var createChangeName = function(id, $container) {
-                var buttonElmt = $container.find('#'+id)[0];
-                //var lastName = getLastName();
-            };
-
             var DD = new DiffDom(diffOptions);
 
             // apply patches, and try not to lose the cursor in the process!
@@ -504,12 +499,10 @@ define([
                 toolbarList = info.userList;
                 var config = {
                     userData: userList,
-                    //changeNameID: Toolbar.constantdds.changeName,
                     readOnly: readOnly
                 };
                 if (readOnly) {delete config.changeNameID; }
                 toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
-                //if (!readOnly) { createChangeName(Toolbar.constants.changeName, $bar); }
 
                 var $rightside = $bar.find('.' + Toolbar.constants.rightside);
 
