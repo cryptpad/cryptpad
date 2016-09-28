@@ -209,10 +209,9 @@ tbody td:last-child {
   border-right: none;
 }
 /* Bottom Bar */
+.top-bar,
 .bottom-bar {
   position: fixed;
-  bottom: 0px;
-  right: 0px;
   height: 4%;
   height: 2.5em;
   display: inline-block;
@@ -220,22 +219,34 @@ tbody td:last-child {
   background: #302B28;
   border-top: 1px solid #444;
 }
+.top-bar a,
 .bottom-bar a {
   color: #46E981;
   text-decoration: none;
 }
+.top-bar p,
 .bottom-bar p {
   margin: -1px;
   font-family: Arial, Helvetica, Tahoma, Verdana, sans-serif;
   font-size: 20px;
   display: block;
-  float: left;
+  float: right;
+  margin-left: 10px;
   padding-top: 3px;
   color: #fafafa;
 }
+.top-bar img,
 .bottom-bar img {
   margin-right: 4px;
   position: relative;
+}
+.bottom-bar {
+  bottom: 0px;
+  right: 0px;
+}
+.top-bar {
+  top: 0px;
+  right: 0px;
 }
 .bottom-bar-left {
   display: block;
