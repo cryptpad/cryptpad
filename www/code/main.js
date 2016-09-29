@@ -45,7 +45,7 @@ define([
 
         var andThen = function (CMeditor) {
             var CodeMirror = module.CodeMirror = CMeditor;
-            CodeMirror.modeURL = "/code/codemirror-5.16.0/mode/%N/%N.js";
+            CodeMirror.modeURL = "/bower_components/codemirror/mode/%N/%N.js";
 
             var $pad = $('#pad-iframe');
             var $textarea = $pad.contents().find('#editor1');
