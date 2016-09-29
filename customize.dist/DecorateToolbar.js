@@ -9,21 +9,12 @@ define([
     var $ = window.jQuery;
     var main = function () {
         var url = window.location.pathname;
-        var isHtml = /\.html/.test(url) || url === '/';
+        var isHtml = /\.html/.test(url) || url === '/' || url === '';
         $.ajax({
             url: isHtml ? '/customize/BottomBar.html' : '/customize/Header.html',
             success: function (ret) {
                 $('iframe').height('96%');
-                if (isHtml) {
-                    $('body').append(ret);
-                }
-                else {
-                    $('body').prepend(ret);
-                }
-                $('head').append($('<link>', {
-                    rel: 'stylesheet',
-                    href: '/customize/main.css'
-                }));
+                $('body').append(ret);
                 LS.main();
                 Messages._applyTranslation();
             }
