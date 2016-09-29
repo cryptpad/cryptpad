@@ -51,7 +51,7 @@ define(function () {
     out.renameConflict = 'Another pad already has that title';
 
     out.forgetButton = 'FORGET';
-    out.forgetButtonTitle = 'remove this document from your home page listings';
+    out.forgetButtonTitle = 'Remove this document from your home page listings';
     out.forgetPrompt = 'Clicking OK will remove the URL for this pad from localStorage, are you sure?';
 
     out.shareButton = 'SHARE';
@@ -135,7 +135,6 @@ define(function () {
     out.main_about = 'About';
     out.main_about_p1 = 'You can read more about our <a href="/privacy.html" title="">privacy policy</a> and <a href="/terms.html">terms of service</a>.';
     out.main_about_p2 = 'If you have any questions or comments, you can <a href="https://twitter.com/cryptpad">tweet us</a>, open an issue <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">on github</a>, come say hi on irc (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), or <a href="mailto:sftfbsdiAyxjlj/dpn">send us an email</a>.';
-    out.main_oops = '<strong>OOPS</strong> In order to do encryption in your browser, Javascript is really <strong>really</strong> required.';
 
     out.table_type = 'Type';
     out.table_link = 'Link';
