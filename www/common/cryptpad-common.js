@@ -616,14 +616,14 @@ define([
         switch (type) {
             case 'export':
                 button = $('<button>', {
-                    title: Messages.exportButtonTitle,
+                    title: Messages.exportButton + '\n' + Messages.exportButtonTitle,
                     'class': "fa fa-download",
                     style: 'font:'+size+' FontAwesome'
                 });
                 break;
             case 'import':
                 button = $('<button>', {
-                    title: Messages.importButtonTitle,
+                    title: Messages.importButton + '\n' + Messages.importButtonTitle,
                     'class': "fa fa-upload",
                     style: 'font:'+size+' FontAwesome'
                 });
@@ -631,7 +631,7 @@ define([
             case 'rename':
                 button = $('<button>', {
                     id: 'name-pad',
-                    title: Messages.renameButtonTitle,
+                    title: Messages.renameButton + '\n' + Messages.renameButtonTitle,
                     'class': "fa fa-bookmark cryptpad-rename",
                     style: 'font:'+size+' FontAwesome'
                 });
@@ -639,22 +639,29 @@ define([
             case 'forget':
                 button = $('<button>', {
                     id: 'cryptpad-forget',
-                    title: Messages.forgetButtonTitle,
+                    title: Messages.forgetButton + '\n' + Messages.forgetButtonTitle,
                     'class': "fa fa-trash cryptpad-forget",
                     style: 'font:'+size+' FontAwesome'
                 });
                 break;
             case 'username':
                 button = $('<button>', {
-                    title: Messages.changeNameButton,
+                    title: Messages.userButton + '\n' + Messages.userButtonTitle,
                     'class': "fa fa-user",
                     style: 'font:'+size+' FontAwesome'
                 });
                 break;
             case 'readonly':
                 button = $('<button>', {
-                    title: Messages.getViewButtonTitle,
+                    title: Messages.getViewButton + '\n' + Messages.getViewButtonTitle,
                     'class': "fa fa-eye",
+                    style: 'font:'+size+' FontAwesome'
+                });
+                break;
+            case 'present':
+                button = $('<button>', {
+                    title: Messages.presentButton + '\n' + Messages.presentButtonTitle,
+                    'class': "fa fa-play-circle",
                     style: 'font:'+size+' FontAwesome'
                 });
                 break;

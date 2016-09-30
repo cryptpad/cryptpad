@@ -14,6 +14,7 @@ define([
         content: [],
         changeHandlers: [],
     };
+    var ifrw = $('#pad-iframe')[0].contentWindow;
     var $modal;
     var $content;
     Slide.setModal = function ($m, $c) {
@@ -149,7 +150,7 @@ define([
         Slide.draw(i);
     };
 
-    $(document).on('keyup', function (e) {
+    $(ifrw).on('keyup', function (e) {
         if (!Slide.shown) { return; }
         switch(e.which) {
             case 37:

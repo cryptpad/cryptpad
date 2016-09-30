@@ -47,7 +47,8 @@ define(function () {
     out.back = '&#8656; Back';
     out.backToCryptpad = '⇐ Back to Cryptpad';
 
-    out.changeNameButton = 'Change name';
+    out.userButton = 'USER';
+    out.userButtonTitle = 'Change your username';
     out.changeNamePrompt = 'Change your name: ';
 
     out.renameButton = 'RENAME';

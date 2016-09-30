@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/bower_components/codemirror/lib/codemirror.js"></script>
+    <link rel="stylesheet" href="/bower_components/codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="/bower_components/codemirror/addon/dialog/dialog.css">
+    <link rel="stylesheet" href="/bower_components/codemirror/addon/fold/foldgutter.css" />
+    <script src="/bower_components/codemirror/mode/javascript/javascript.js"></script>
+    <script src="/bower_components/codemirror/addon/mode/loadmode.js"></script>
+    <script src="/bower_components/codemirror/mode/meta.js"></script>
+
+    <script src="/bower_components/codemirror/addon/mode/overlay.js"></script>
+    <script src="/bower_components/codemirror/addon/mode/multiplex.js"></script>
+    <script src="/bower_components/codemirror/addon/mode/simple.js"></script>
+
+    <script src="/bower_components/codemirror/addon/edit/closebrackets.js"></script>
+    <script src="/bower_components/codemirror/addon/edit/matchbrackets.js"></script>
+    <script src="/bower_components/codemirror/addon/edit/trailingspace.js"></script>
+    <script src="/bower_components/codemirror/addon/selection/active-line.js"></script>
+    <script src="/bower_components/codemirror/addon/search/search.js"></script>
+    <script src="/bower_components/codemirror/addon/search/match-highlighter.js"></script>
+    <script src="/bower_components/codemirror/addon/search/searchcursor.js"></script>
+    <script src="/bower_components/codemirror/addon/dialog/dialog.js"></script>
+    <script src="/bower_components/codemirror/addon/fold/foldcode.js"></script>
+    <script src="/bower_components/codemirror/addon/fold/foldgutter.js"></script>
+    <script src="/bower_components/codemirror/addon/fold/brace-fold.js"></script>
+    <script src="/bower_components/codemirror/addon/fold/xml-fold.js"></script>
+    <script src="/bower_components/codemirror/addon/fold/markdown-fold.js"></script>
+    <script src="/bower_components/codemirror/addon/fold/comment-fold.js"></script>
+    <style>
+        html, body{
+            height: 100%;
+            width: 100%;
+            padding: 0px;
+            margin: 0px;
+            overflow: hidden;
+            box-sizing: border-box;
+            position: relative;
+        }
+        #bar > button {
+            margin: 5px;
+        }
+        textarea{
+            width: 100%;
+            min-height: 90%;
+
+            display: block;
+            position: relative;
+
+            font-size: 25px;
+            background-color: #073642;
+            color: #DDD;
+
+            overflow-x: hidden;
+
+            /* disallow textarea resizes */
+            resize: none;
+            border: 0px;
+        }
+        textarea[disabled] {
+            background-color: #275662;
+            color: #637476;
+        }
+
+        #modal {
+            display: none;
+        }
+        #modal.shown {
+            display: block;
+            position: fixed;
+            top: 25px;
+            left: 0px;
+            z-index: 100;
+            background-color: black;
+            color: white;
+            height: 100vh;
+            width: 100%;
+        }
+
+        #content {
+            width: 90%;
+            margin: auto;
+        }
+
+        #content h1, h2, h3, h4, h5, h6 {
+            text-align: center;
+        }
+
+        h1 { font-size: 40px; }
+        h2 { font-size: 37px; }
+        h3 { font-size: 34px; }
+        h4 { font-size: 31px; }
+        h5 { font-size: 27px; }
+        h6 { font-size: 24px; }
+
+        #content p,
+        #content ul,
+        #content ol {
+            font-size: 26px;
+        }
+        #content img {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            margin: auto;
+        }
+              html {
+        height: 100%;
+      }
+      body {
+        height: 100%;
+        margin: 0px;
+      }
+      .CodeMirror {
+        position: absolute;
+        top: 25px;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+        height: auto;
+      }
+      #cme_toolbox {
+        font: 12px Arial,Helvetica,Tahoma,Verdana,sans-serif;
+        height: 25px;
+        background: -webkit-linear-gradient(#EEEEEE, #DADADA); /* For Safari 5.1 to 6.0 */
+        background: -o-linear-gradient(white, #DDDDDD); /* For Opera 11.1 to 12.0 */
+        background: -moz-linear-gradient(white, #DDDDDD); /* For Firefox 3.6 to 15 */
+        background: linear-gradient(white, #DDDDDD); /* Standard syntax */
+      }
+      .CodeMirror-focused .cm-matchhighlight {
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQI12NgYGBgkKzc8x9CMDAwAAAmhwSbidEoSQAAAABJRU5ErkJggg==);
+        background-position: bottom;
+        background-repeat: repeat-x;
+      }
+    </style>
+</head>
+<body>
+    <div id="bar"></div>
+<!--    <textarea></textarea>-->
+    <div id="cme_toolbox"></div>
+    <textarea id="editor1" name="editor1"></textarea>
+    <div id="modal">
+        <div id="content"></div>
+    </div>
+    <div id="nope"></div>
+</body>
+</html>
+
