@@ -171,7 +171,6 @@ module.exports.create = function (conf, cb) {
         root: conf.filePath || './datastore',
         channels: { },
     };
-    console.log('storing data in ' + env.root);
     Fs.mkdir(env.root, function (err) {
         if (err && err.code !== 'EEXIST') {
             // TODO: somehow return a nice error

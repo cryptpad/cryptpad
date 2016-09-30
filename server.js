@@ -66,7 +66,7 @@ app.get('/api/config', function(req, res){
 var httpServer = httpsOpts ? Https.createServer(httpsOpts, app) : Http.createServer(app);
 
 httpServer.listen(config.httpPort,config.httpAddress,function(){
-    console.log('listening on %s',config.httpPort);
+    console.log('[%s] listening on port %s', new Date().toISOString(), config.httpPort);
 });
 
 var wsConfig = { server: httpServer };
@@ -76,7 +76,6 @@ if (config.websocketPort !== config.httpPort) {
 }
 var wsSrv = new WebSocketServer(wsConfig);
 Storage.create(config, function (store) {
-    console.log('DB connected');
     NetfluxSrv.run(store, wsSrv, config);
     WebRTCSrv.run(wsSrv);
 });
