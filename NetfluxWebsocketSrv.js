@@ -14,7 +14,12 @@ let historyKeeperKeys = {};
 
 const now = function () { return (new Date()).getTime(); };
 
+const socketSendable = function (socket) {
+    return socket && socket.readyState === 1;
+};
+
 const sendMsg = function (ctx, user, msg) {
+    if (!socketSendable(user.socket)) { return; }
     try {
         if (ctx.config.logToStdout) { console.log('<' + JSON.stringify(msg)); }
         user.socket.send(JSON.stringify(msg));
