@@ -1,6 +1,5 @@
 require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
-    '/api/config?cb=' + Math.random().toString(16).substring(2),
     '/customize/messages.js?app=pad',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
@@ -18,7 +17,7 @@ define([
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, Messages, Crypto, realtimeInput, Hyperjson,
+], function (Messages, Crypto, realtimeInput, Hyperjson,
     Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad,
     Visible, Notify) {
     var $ = window.jQuery;
@@ -323,7 +322,7 @@ define([
                 initialState: stringifyDOM(inner) || '{}',
 
                 // the websocket URL
-                websocketURL: Config.websocketURL,
+                websocketURL: Cryptpad.getWebsocketURL(),
 
                 // the channel we will communicate over
                 channel: secret.channel,
