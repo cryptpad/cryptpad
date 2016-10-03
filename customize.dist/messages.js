@@ -79,7 +79,7 @@ define(['/customize/languageSelector.js',
         '---',
         '\n',
         '# How to use\n',
-        '1. Write your slides content using the markdown syntax\n',
+        '1. Write your slides content using markdown syntax\n',
         '2. Separate your slides with ---\n',
         '3. Click on the "Play" button to see the result'
     ].join('');

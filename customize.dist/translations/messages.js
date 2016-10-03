@@ -68,6 +68,8 @@ define(function () {
     out.presentButton = 'PRESENT';
     out.presentButtonTitle = "Enter presentation mode";
     out.presentSuccess = 'Hit ESC to exit presentation mode';
+    out.sourceButton = 'VIEW SOURCE';
+    out.sourceButtonTitle = "Leave presentation mode";
 
     out.commitButton = 'COMMIT';
 

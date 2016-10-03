@@ -67,6 +67,8 @@ define(function () {
     out.presentButton = 'PRÉSENTER';
     out.presentButtonTitle = "Entrer en mode présentation";
     out.presentSuccess = 'Appuyer sur Échap pour quitter le mode présentation';
+    out.sourceButton = 'VOIR LA SOURCE';
+    out.sourceButtonTitle = "Quitter le mode présentation";
 
     out.commitButton = 'VALIDER';
 

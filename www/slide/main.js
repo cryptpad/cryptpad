@@ -9,8 +9,8 @@ define([
     'json.sortify',
     '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/cryptpad-common.js',
-    '/code/modes.js',
-    '/code/themes.js',
+    '/common/modes.js',
+    '/common/themes.js',
     '/common/visible.js',
     '/common/notify.js',
     '/slide/slide.js',
@@ -38,14 +38,25 @@ define([
         return JSONSortify(obj);
     };
 
+    var setTabTitle = function () {
+        var slideNumber = '';
+        if (Slide.index && Slide.content.length) {
+            slideNumber = ' (' + Slide.index + '/' + Slide.content.length + ')';
+        }
+        document.title = APP.title + slideNumber;
+    };
+
     $(function () {
         var toolbar;
 
         var secret = Cryptpad.getSecrets();
         var readOnly = secret.keys && !secret.keys.editKeyStr;
+        Slide.readOnly = readOnly;
         if (!secret.keys) {
             secret.keys = secret.key;
         }
+
+        var presentMode = Slide.isPresentURL();
 
         var andThen = function (CMeditor) {
             var CodeMirror = module.CodeMirror = CMeditor;
@@ -85,7 +96,7 @@ define([
             editor.setValue(Messages.slideInitialState); // HERE
 
             var setTheme = module.setTheme = (function () {
-                var path = './theme/';
+                var path = '/common/theme/';
 
                 var $head = $(ifrw.document.head);
 
@@ -116,7 +127,7 @@ define([
             var $modal = $pad.contents().find('#modal');
             var $content = $pad.contents().find('#content');
 
-            Slide.setModal($modal, $content);
+            Slide.setModal($modal, $content, $pad);
 
             var enterPresentationMode = function (shouldLog) {
                 Slide.show(true, $textarea.val());
@@ -124,9 +135,12 @@ define([
                     Cryptpad.log(Messages.presentSuccess);
                 }
             };
+            var leavePresentationMode = function () {
+                Slide.show(false);
+            };
 
-            if (readOnly) {
-                enterPresentationMode(false);
+            if (presentMode) {
+                enterPresentationMode(true);
             }
 
             var setEditable = module.setEditable = function (bool) {
@@ -180,7 +194,7 @@ define([
                 // append the userlist to the hyperjson structure
                 obj.metadata = {
                     users: userList,
-                    title: document.title
+                    title: APP.title
                 };
 
                 // stringify the json and send it into chainpad
@@ -244,10 +258,10 @@ define([
                 var parsed = Cryptpad.parsePadUrl(window.location.href);
                 var name = Cryptpad.getDefaultName(parsed, []);
 
-                if (document.title.slice(0, name.length) === name) {
-                    return getHeadingText() || document.title;
+                if (APP.title.slice(0, name.length) === name) {
+                    return getHeadingText() || APP.title;
                 } else {
-                    return document.title || getHeadingText() || name;
+                    return APP.title || getHeadingText() || name;
                 }
             };
 
@@ -358,7 +372,8 @@ define([
                                             console.log(err);
                                             return;
                                         }
-                                        document.title = APP.title = title;
+                                        APP.title = title;
+                                        setTabTitle();
                                         onLocal();
                                     });
                                 });
@@ -379,7 +394,8 @@ define([
                                     return;
                                 }
                                 var parsed = Cryptpad.parsePadUrl(href);
-                                document.title = APP.title = Cryptpad.getDefaultName(parsed, []);
+                                APP.title = Cryptpad.getDefaultName(parsed, []);
+                                setTabTitle();
                             });
                         });
                     });
@@ -390,7 +406,7 @@ define([
                     var $links = Cryptpad.createButton('readonly', true)
                         .click(function () {
                             var baseUrl = window.location.origin + window.location.pathname + '#';
-                            var url = baseUrl + viewHash;
+                            var url = baseUrl + viewHash + '/present';
                             var content = '<b>' + Messages.readonlyUrl + '</b><br><a href="' + url + '" target="_blank" rel="noopener noreferrer">' + url + '</a><br>';
                             Cryptpad.alert(content);
                         });
@@ -398,10 +414,20 @@ define([
                 }
 
                 var $present = Cryptpad.createButton('present', true)
-                .click(function () {
+                    .click(function () {
                     enterPresentationMode(true);
                 });
+                if (presentMode) {
+                    $present.hide();
+                }
                 $rightside.append($present);
+
+                var $leavePresent = Cryptpad.createButton('source', true)
+                    .click(leavePresentationMode);
+                if (!presentMode) {
+                    $leavePresent.hide();
+                }
+                $rightside.append($leavePresent);
 
                 $language = $('<span>', {
                     'style': "margin-right: 10px;"
@@ -441,12 +467,14 @@ define([
                     });
                 };
 
-                if (!readOnly) {
-                    configureTheme();
+                configureTheme();
+
+                if (presentMode) {
+                    $('#top-bar').hide();
                 }
 
                 // set the hash
-                if (!readOnly) {
+                if (!window.location.hash || window.location.hash === '#') {
                     window.location.hash = editHash;
                 }
 
@@ -468,15 +496,17 @@ define([
             };
 
             var updateTitle = function (newTitle) {
-                if (newTitle === document.title) { return; }
+                if (newTitle === APP.title) { return; }
                 // Change the title now, and set it back to the old value if there is an error
-                var oldTitle = document.title;
-                document.title = newTitle;
+                var oldTitle = APP.title;
+                APP.title = newTitle;
+                setTabTitle();
                 Cryptpad.setPadTitle(newTitle, function (err, data) {
                     if (err) {
                         console.log("Couldn't set pad title");
                         console.error(err);
-                        document.title = oldTitle;
+                        APP.title = oldTitle;
+                        setTabTitle();
                         return;
                     }
                 });
@@ -655,7 +685,7 @@ define([
                       content: localDoc,
                       metadata: {
                           users: userList,
-                          title: document.title
+                          title: APP.title
                       },
                       highlightMode: highlightMode,
                     };

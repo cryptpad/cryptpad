@@ -661,11 +661,18 @@ define([
             case 'present':
                 button = $('<button>', {
                     title: Messages.presentButton + '\n' + Messages.presentButtonTitle,
-                    'class': "fa fa-play-circle",
+                    'class': "fa fa-play-circle cryptpad-present-button", // class used in slide.js
                     style: 'font:'+size+' FontAwesome'
                 });
                 break;
-            default:
+            case 'source':
+                button = $('<button>', {
+                    title: Messages.sourceButton + '\n' + Messages.sourceButtonTitle,
+                    'class': "fa fa-stop-circle cryptpad-source-button", // class used in slide.js
+                    style: 'font:'+size+' FontAwesome'
+                });
+                break;
+             default:
                 button = $('<button>', {
                     'class': "fa fa-question",
                     style: 'font:'+size+' FontAwesome'
