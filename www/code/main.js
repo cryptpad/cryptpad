@@ -9,8 +9,8 @@ define([
     'json.sortify',
     '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/cryptpad-common.js',
-    '/code/modes.js',
-    '/code/themes.js',
+    '/common/modes.js',
+    '/common/themes.js',
     '/common/visible.js',
     '/common/notify.js',
     '/bower_components/file-saver/FileSaver.min.js',
@@ -45,7 +45,7 @@ define([
 
         var andThen = function (CMeditor) {
             var CodeMirror = module.CodeMirror = CMeditor;
-            CodeMirror.modeURL = "/code/codemirror-5.16.0/mode/%N/%N.js";
+            CodeMirror.modeURL = "/bower_components/codemirror/mode/%N/%N.js";
 
             var $pad = $('#pad-iframe');
             var $textarea = $pad.contents().find('#editor1');
@@ -80,7 +80,7 @@ define([
             editor.setValue(Messages.codeInitialState); // HERE
 
             var setTheme = module.setTheme = (function () {
-                var path = './theme/';
+                var path = '/common/theme/';
 
                 var $head = $(ifrw.document.head);
 

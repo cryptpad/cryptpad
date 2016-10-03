@@ -47,7 +47,8 @@ define(function () {
     out.back = '&#8656; Back';
     out.backToCryptpad = '⇐ Back to Cryptpad';
 
-    out.changeNameButton = 'Change name';
+    out.userButton = 'USER';
+    out.userButtonTitle = 'Change your username';
     out.changeNamePrompt = 'Change your name: ';
 
     out.renameButton = 'RENAME';
@@ -67,6 +68,8 @@ define(function () {
     out.presentButton = 'PRESENT';
     out.presentButtonTitle = "Enter presentation mode";
     out.presentSuccess = 'Hit ESC to exit presentation mode';
+    out.sourceButton = 'VIEW SOURCE';
+    out.sourceButtonTitle = "Leave presentation mode";
 
     out.commitButton = 'COMMIT';
 
