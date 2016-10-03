@@ -158,9 +158,11 @@ define([
 
                 // append the userlist to the hyperjson structure
                 obj.metadata = {
-                    users: userList,
-                    title: document.title
+                    users: userList
                 };
+                if (!isDefaultTitle()) {
+                    obj.metadata.title = document.title;
+                }
 
                 // set mode too...
                 obj.highlightMode = module.highlightMode;
@@ -239,11 +241,15 @@ define([
                 return text.trim();
             };
 
+            var isDefaultTitle = function () {
+                var parsed = Cryptpad.parsePadUrl(window.location.href);
+                return Cryptpad.isDefaultName(parsed, document.title);
+            };
             var suggestName = function () {
                 var parsed = Cryptpad.parsePadUrl(window.location.href);
                 var name = Cryptpad.getDefaultName(parsed, []);
 
-                if (document.title.slice(0, name.length) === name) {
+                if (Cryptpad.isDefaultName(parsed, document.title)) {
                     return getHeadingText() || document.title;
                 } else {
                     return document.title || getHeadingText() || name;
@@ -328,42 +334,42 @@ define([
                             onLocal();
                         }));
                     $rightside.append($import);
-                }
 
-                /* add a rename button */
-                var $setTitle = Cryptpad.createButton('rename', true)
-                    .click(function () {
-                        var suggestion = suggestName();
+                    /* add a rename button */
+                    var $setTitle = Cryptpad.createButton('rename', true)
+                        .click(function () {
+                            var suggestion = suggestName();
 
-                        Cryptpad.prompt(Messages.renamePrompt,
-                            suggestion, function (title, ev) {
-                                if (title === null) { return; }
+                            Cryptpad.prompt(Messages.renamePrompt,
+                                suggestion, function (title, ev) {
+                                    if (title === null) { return; }
 
-                                Cryptpad.causesNamingConflict(title, function (err, conflicts) {
-                                    if (err) {
-                                        console.log("Unable to determine if name caused a conflict");
-                                        console.error(err);
-                                        return;
-                                    }
-
-                                    if (conflicts) {
-                                        Cryptpad.alert(Messages.renameConflict);
-                                        return;
-                                    }
-
-                                    Cryptpad.setPadTitle(title, function (err, data) {
+                                    Cryptpad.causesNamingConflict(title, function (err, conflicts) {
                                         if (err) {
-                                            console.log("unable to set pad title");
-                                            console.log(err);
+                                            console.log("Unable to determine if name caused a conflict");
+                                            console.error(err);
                                             return;
                                         }
-                                        document.title = title;
-                                        onLocal();
+
+                                        if (conflicts) {
+                                            Cryptpad.alert(Messages.renameConflict);
+                                            return;
+                                        }
+
+                                        Cryptpad.setPadTitle(title, function (err, data) {
+                                            if (err) {
+                                                console.log("unable to set pad title");
+                                                console.log(err);
+                                                return;
+                                            }
+                                            document.title = title;
+                                            onLocal();
+                                        });
                                     });
                                 });
-                            });
-                    });
-                $rightside.append($setTitle);
+                        });
+                    $rightside.append($setTitle);
+                }
 
                 /* add a forget button */
                 var $forgetPad = Cryptpad.createButton('forget', true)
@@ -657,11 +663,13 @@ define([
                     var hjson2 = {
                       content: localDoc,
                       metadata: {
-                          users: userList,
-                          title: document.title
+                          users: userList
                       },
                       highlightMode: highlightMode,
                     };
+                    if (!isDefaultTitle()) {
+                        hjson2.metadata.title = document.title;
+                    }
                     var shjson2 = stringify(hjson2);
                     if (shjson2 !== shjson) {
                         console.error("shjson2 !== shjson");

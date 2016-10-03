@@ -295,6 +295,10 @@ define([
         while (!isNameAvailable(name + ' - ' + untitledIndex, parsed, recentPads)) { untitledIndex++; }
         return name + ' - ' + untitledIndex;
     };
+    var isDefaultName = common.isDefaultName = function (parsed, title) {
+        var name = getDefaultName(parsed, []);
+        return title.slice(0, name.length) === name;
+    };
 
     var makePad = function (href, title) {
         var now = ''+new Date();
