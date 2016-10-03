@@ -9,8 +9,22 @@ module.exports = {
 
     // the port on which your httpd will listen
     httpPort: 3000,
-    // the port used for websockets
-    websocketPort: 3000,
+
+    /*  your server's websocket url is configurable
+        (default: '/cryptpad_websocket')
+
+        websocketPath can be relative, of the form '/path/to/websocket'
+        or absolute, specifying a particular URL
+
+        'wss://cryptpad.fr:3000/cryptpad_websocket'
+    */
+    websocketPath: '/cryptpad_websocket',
+
+    /*  it is assumed that your websocket will bind to the same port as http
+        you can override this behaviour by supplying a number via websocketPort
+    */
+    //websocketPort: 3000,
+
 
     /*  Cryptpad can log activity to stdout
      *  This may be useful for debugging
