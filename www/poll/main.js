@@ -923,7 +923,7 @@ define([
             Cryptpad.getPadTitle(function (err, title) {
                 title = document.title = title || info.channel.slice(0, 8);
 
-                Cryptpad.rememberPad(title, function (err, data) {
+                Cryptpad.setPadTitle(title, function (err, data) {
                     if (err) {
                         console.log("unable to remember pad");
                         console.log(err);

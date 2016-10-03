@@ -137,6 +137,26 @@ define([
     };
 
 
+    var parseHash = common.parseHash = function (hash) {
+        var parsed = {};
+        if (hash.slice(0,1) !== '/' && hash.length >= 56) {
+            // Old hash
+            parsed.channel = hash.slice(0, 32);
+            parsed.key = hash.slice(32);
+            parsed.version = 0;
+            return parsed;
+        }
+        var hashArr = hash.split('/');
+        if (hashArr[1] && hashArr[1] === '1') {
+            parsed.version = 1;
+            parsed.mode = hashArr[2];
+            parsed.channel = hashArr[3];
+            parsed.key = hashArr[4];
+            parsed.present = hashArr[5] && hashArr[5] === 'present';
+            return parsed;
+        }
+        return;
+    };
     var getEditHashFromKeys = common.getEditHashFromKeys = function (chanKey, keys) {
         if (typeof keys === 'string') {
             return chanKey + keys;
@@ -402,50 +422,9 @@ define([
     };
 
     // STORAGE
-    var rememberPad = common.rememberPad = window.rememberPad = function (title, cb) {
-        // bail out early
-        if (!/#/.test(window.location.hash)) { return; }
-
-        getRecentPads(function (err, pads) {
-            if (err) {
-                cb(err);
-                return;
-            }
-
-            var now = ''+new Date();
-            var href = window.location.href;
-
-            var parsed = parsePadUrl(window.location.href);
-            var isUpdate = false;
-
-            var out = pads.map(function (pad) {
-                var p = parsePadUrl(pad.href);
-                if (p.hash === parsed.hash && p.type === parsed.type) {
-                    isUpdate = true;
-                    // bump the atime
-                    pad.atime = now;
-
-                    pad.title = title;
-                    pad.href = href;
-                }
-                return pad;
-            });
-
-            if (!isUpdate) {
-                // href, ctime, atime, title
-                out.push(makePad(href, title));
-            }
-            setRecentPads(out, function (err, data) {
-                cb(err, data);
-            });
-        });
-    };
-
-    // STORAGE
     var setPadTitle = common.setPadTitle = function (name, cb) {
         var href = window.location.href;
         var parsed = parsePadUrl(href);
-
         getRecentPads(function (err, recent) {
             if (err) {
                 cb(err);
@@ -456,7 +435,26 @@ define([
 
             var renamed = recent.map(function (pad) {
                 var p = parsePadUrl(pad.href);
-                if (p.hash === parsed.hash && p.type === parsed.type) {
+
+                if (p.type !== parsed.type) { return pad; }
+
+                // Version 1 : we have up to 4 differents hash for 1 pad, keep the strongest :
+                // Edit > Edit (present) > View > View (present)
+                var bypass = false;
+                var pHash = parseHash(p.hash);
+                var parsedHash = parseHash(parsed.hash);
+                if (pHash.version === 1 && parsedHash.version === 1 && pHash.channel === parsedHash.channel) {
+                    if (pHash.mode === 'view' && parsedHash.mode === 'edit') { bypass = true; }
+                    else if (pHash.mode === parsedHash.mode && pHash.present) { bypass = true; }
+                    else {
+                        // Editing a "weaker" version of a stored hash : update the date and do not push the current hash
+                        pad.atime = new Date().toISOString();
+                        contains = true;
+                        return pad;
+                    }
+                }
+
+                if (p.hash === parsed.hash || bypass) {
                     contains = true;
                     // update the atime
                     pad.atime = new Date().toISOString();

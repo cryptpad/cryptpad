@@ -608,7 +608,7 @@ define([
                         return;
                     }
                     document.title = title || info.channel.slice(0, 8);
-                    Cryptpad.rememberPad(title, function (err, data) {
+                    Cryptpad.setPadTitle(title, function (err, data) {
                         if (err) {
                             console.log("Couldn't remember pad");
                             console.error(err);
