@@ -32,6 +32,8 @@
             padding:0;
             overflow:hidden;
         }
+        /* We use !important here to override the 96% set to the element in DecorateToolbar.js
+           when we enter fullscreen mode. It allows us to avoid changing the iframe's size in JS */
         #pad-iframe.fullscreen {
             top: 0px;
             height: 100% !important;
