@@ -4,11 +4,12 @@ define([
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/alertifyjs/dist/js/alertify.js',
     '/bower_components/spin.js/spin.min.js',
+    '/common/clipboard.js',
 
     '/customize/user.js',
 
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages, Store, Crypto, Alertify, Spinner, User) {
+], function (Messages, Store, Crypto, Alertify, Spinner, Clipboard, User) {
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
@@ -610,7 +611,7 @@ define([
     /*
      * Buttons
      */
-    var createButton = common.createButton = function (type, rightside) {
+    var createButton = common.createButton = function (type, rightside, data, callback) {
         var button;
         var size = "17px";
         switch (type) {
@@ -620,6 +621,9 @@ define([
                     'class': "fa fa-download",
                     style: 'font:'+size+' FontAwesome'
                 });
+                if (callback) {
+                    button.click(callback);
+                }
                 break;
             case 'import':
                 button = $('<button>', {
@@ -627,6 +631,11 @@ define([
                     'class': "fa fa-upload",
                     style: 'font:'+size+' FontAwesome'
                 });
+                if (callback) {
+                    button.click(common.importContent('text/plain', function (content, file) {
+                        callback(content, file);
+                    }));
+                }
                 break;
             case 'rename':
                 button = $('<button>', {
@@ -635,6 +644,40 @@ define([
                     'class': "fa fa-bookmark cryptpad-rename",
                     style: 'font:'+size+' FontAwesome'
                 });
+                if (data && data.suggestName && callback) {
+                    var suggestName = data.suggestName;
+                    button.click(function() {
+                        var suggestion = suggestName();
+
+                        common.prompt(Messages.renamePrompt,
+                            suggestion, function (title, ev) {
+                                if (title === null) { return; }
+
+                                common.causesNamingConflict(title, function (err, conflicts) {
+                                    if (err) {
+                                        console.log("Unable to determine if name caused a conflict");
+                                        console.error(err);
+                                        callback(err, title);
+                                        return;
+                                    }
+
+                                    if (conflicts) {
+                                        common.alert(Messages.renameConflict);
+                                        return;
+                                    }
+
+                                    common.setPadTitle(title, function (err, data) {
+                                        if (err) {
+                                            console.log("unable to set pad title");
+                                            console.log(err);
+                                            return;
+                                        }
+                                        callback(null, title);
+                                    });
+                                });
+                            });
+                    });
+                }
                 break;
             case 'forget':
                 button = $('<button>', {
@@ -643,6 +686,25 @@ define([
                     'class': "fa fa-trash cryptpad-forget",
                     style: 'font:'+size+' FontAwesome'
                 });
+                if (callback) {
+                    button.click(function() {
+                        var href = window.location.href;
+                        common.confirm(Messages.forgetPrompt, function (yes) {
+                            if (!yes) { return; }
+                            common.forgetPad(href, function (err, data) {
+                                if (err) {
+                                    console.log("unable to forget pad");
+                                    console.error(err);
+                                    callback(err, null);
+                                    return;
+                                }
+                                var parsed = common.parsePadUrl(href);
+                                callback(null, common.getDefaultName(parsed, []));
+                            });
+                        });
+
+                    });
+                }
                 break;
             case 'username':
                 button = $('<button>', {
@@ -650,6 +712,14 @@ define([
                     'class': "fa fa-user",
                     style: 'font:'+size+' FontAwesome'
                 });
+                if (data && data.lastName && callback) {
+                    var lastName = data.lastName;
+                    button.click(function() {
+                        common.prompt(Messages.changeNamePrompt, lastName, function (newName) {
+                            callback(newName);
+                        });
+                    });
+                }
                 break;
             case 'readonly':
                 button = $('<button>', {
@@ -657,6 +727,37 @@ define([
                     'class': "fa fa-eye",
                     style: 'font:'+size+' FontAwesome'
                 });
+                if (data && data.viewHash) {
+                    var viewHash = data.viewHash;
+                    button.click(function() {
+                        var baseUrl = window.location.origin + window.location.pathname + '#';
+                        var url = baseUrl + viewHash;
+                        var $content = $('<div>').text(Messages.readonlyUrl);
+                        var $copy = $('<button>', {
+                                id: "cryptpad-readonly-copy",
+                                'class': "button action"
+                            }).text(Messages.copyReadOnly);
+                        var $open = $('<button>', {
+                                id: "cryptpad-readonly-open",
+                                'class': "button action"
+                            }).text(Messages.openReadOnly);
+                        $content.append('<br>').append($copy).append($open);
+                        common.alert($content.html());
+                        $("#cryptpad-readonly-copy").click(function() {
+                            var success = Clipboard.copy(url);
+                            if (success) {
+                                common.log(Messages.shareSuccess);
+                                common.findOKButton().click();
+                                return;
+                            }
+                        });
+                        $("#cryptpad-readonly-open").click(function() {
+                            window.open(url);
+                        });
+
+                        if (callback) { callback(); }
+                    });
+                }
                 break;
             case 'present':
                 button = $('<button>', {

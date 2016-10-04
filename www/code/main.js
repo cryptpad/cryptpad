@@ -265,6 +265,32 @@ define([
                         saveAs(blob, filename);
                     });
             };
+            var importText = function (content, file) {
+                var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
+                var mode;
+                var mime = CodeMirror.findModeByMIME(file.type);
+
+                if (!mime) {
+                    var ext = /.+\.([^.]+)$/.exec(file.name);
+                    if (ext[1]) {
+                        mode = CodeMirror.findModeByExtension(ext[1]);
+                    }
+                } else {
+                    mode = mime && mime.mode || null;
+                }
+
+                if (mode && Modes.list.some(function (o) { return o.mode === mode; })) {
+                    setMode(mode);
+                    $bar.find('#language-mode').val(mode);
+                } else {
+                    console.log("Couldn't find a suitable highlighting mode: %s", mode);
+                    setMode('text');
+                    $bar.find('#language-mode').val('text');
+                }
+
+                editor.setValue(content);
+                onLocal();
+            };
 
             var onInit = config.onInit = function (info) {
                 var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
@@ -285,113 +311,45 @@ define([
                     editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
                 }
 
+                /* add a "change username" button */
                 getLastName(function (err, lastName) {
-                    var $username = Cryptpad.createButton('username', true)
-                        .click(function() {
-                        Cryptpad.prompt(Messages.changeNamePrompt, lastName, function (newName) {
-                            setName(newName);
-                        });
-                    });
+                    var usernameCb = function (newName) {
+                        setName (newName);
+                    };
+                    var $username = Cryptpad.createButton('username', true, {lastName: lastName}, usernameCb);
                     $rightside.append($username);
                 });
 
                 /* add an export button */
-                var $export = Cryptpad.createButton('export', true).click(exportText);
+                var $export = Cryptpad.createButton('export', true, {}, exportText);
                 $rightside.append($export);
 
                 if (!readOnly) {
                     /* add an import button */
-                    var $import = Cryptpad.createButton('import', true)
-                        .click(Cryptpad.importContent('text/plain', function (content, file) {
-                            var mode;
-                            var mime = CodeMirror.findModeByMIME(file.type);
-
-                            if (!mime) {
-                                var ext = /.+\.([^.]+)$/.exec(file.name);
-                                if (ext[1]) {
-                                    mode = CodeMirror.findModeByExtension(ext[1]);
-                                }
-                            } else {
-                                mode = mime && mime.mode || null;
-                            }
-
-                            if (mode && Modes.list.some(function (o) { return o.mode === mode; })) {
-                                setMode(mode);
-                                $bar.find('#language-mode').val(mode);
-                            } else {
-                                console.log("Couldn't find a suitable highlighting mode: %s", mode);
-                                setMode('text');
-                                $bar.find('#language-mode').val('text');
-                            }
-
-                            editor.setValue(content);
-                            onLocal();
-                        }));
+                    var $import = Cryptpad.createButton('import', true, {}, importText);
                     $rightside.append($import);
                 }
 
                 /* add a rename button */
-                var $setTitle = Cryptpad.createButton('rename', true)
-                    .click(function () {
-                        var suggestion = suggestName();
-
-                        Cryptpad.prompt(Messages.renamePrompt,
-                            suggestion, function (title, ev) {
-                                if (title === null) { return; }
-
-                                Cryptpad.causesNamingConflict(title, function (err, conflicts) {
-                                    if (err) {
-                                        console.log("Unable to determine if name caused a conflict");
-                                        console.error(err);
-                                        return;
-                                    }
-
-                                    if (conflicts) {
-                                        Cryptpad.alert(Messages.renameConflict);
-                                        return;
-                                    }
-
-                                    Cryptpad.setPadTitle(title, function (err, data) {
-                                        if (err) {
-                                            console.log("unable to set pad title");
-                                            console.log(err);
-                                            return;
-                                        }
-                                        document.title = title;
-                                        onLocal();
-                                    });
-                                });
-                            });
-                    });
+                var renameCb = function (err, title) {
+                    if (err) { return; }
+                    document.title = title;
+                    onLocal();
+                };
+                var $setTitle = Cryptpad.createButton('rename', true, {suggestName: suggestName}, renameCb);
                 $rightside.append($setTitle);
 
                 /* add a forget button */
-                var $forgetPad = Cryptpad.createButton('forget', true)
-                    .click(function () {
-                        var href = window.location.href;
-                        Cryptpad.confirm(Messages.forgetPrompt, function (yes) {
-                            if (!yes) { return; }
-                            Cryptpad.forgetPad(href, function (err, data) {
-                                if (err) {
-                                    console.log("unable to forget pad");
-                                    console.error(err);
-                                    return;
-                                }
-                                var parsed = Cryptpad.parsePadUrl(href);
-                                document.title = Cryptpad.getDefaultName(parsed, []);
-                            });
-                        });
-                    });
+                var forgetCb = function (err, title) {
+                    if (err) { return; }
+                    document.title = title;
+                };
+                var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
                 $rightside.append($forgetPad);
 
                 if (!readOnly && viewHash) {
                     /* add a 'links' button */
-                    var $links = Cryptpad.createButton('readonly', true)
-                        .click(function () {
-                            var baseUrl = window.location.origin + window.location.pathname + '#';
-                            var content = '<b>' + Messages.readonlyUrl + '</b><br><a>' + baseUrl + viewHash + '</a><br>';
-                            Cryptpad.alert(content);
-                        });
+                    var $links = Cryptpad.createButton('readonly', true, {viewHash: viewHash});
                     $rightside.append($links);
                 }
 

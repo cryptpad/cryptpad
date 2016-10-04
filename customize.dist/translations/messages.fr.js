@@ -74,7 +74,10 @@ define(function () {
 
     out.getViewButton = 'LECTURE SEULE';
     out.getViewButtonTitle = "Obtenir l'adresse d'accès à ce document en lecture seule";
-    out.readonlyUrl = 'URL de lecture seule';
+    out.readonlyUrl = 'Document en lecture seule';
+    out.copyReadOnly = "Copier l'URL dans le presse-papiers";
+    out.openReadOnly = "Ouvrir dans un nouvel onglet";
+
 
     out.disconnectAlert = 'Perte de la connexion au réseau !';
 
