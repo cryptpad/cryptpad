@@ -146,6 +146,11 @@ define([
 
             var canonicalize = function (t) { return t.replace(/\r\n/g, '\n'); };
 
+            var isDefaultTitle = function () {
+                var parsed = Cryptpad.parsePadUrl(window.location.href);
+                return Cryptpad.isDefaultName(parsed, document.title);
+            };
+
             var initializing = true;
 
             var onLocal = config.onLocal = function () {
@@ -241,10 +246,6 @@ define([
                 return text.trim();
             };
 
-            var isDefaultTitle = function () {
-                var parsed = Cryptpad.parsePadUrl(window.location.href);
-                return Cryptpad.isDefaultName(parsed, document.title);
-            };
             var suggestName = function () {
                 var parsed = Cryptpad.parsePadUrl(window.location.href);
                 var name = Cryptpad.getDefaultName(parsed, []);
@@ -335,14 +336,15 @@ define([
                     var $import = Cryptpad.createButton('import', true, {}, importText);
                     $rightside.append($import);
 
-                /* add a rename button */
-                var renameCb = function (err, title) {
-                    if (err) { return; }
-                    document.title = title;
-                    onLocal();
-                };
-                var $setTitle = Cryptpad.createButton('rename', true, {suggestName: suggestName}, renameCb);
-                $rightside.append($setTitle);
+                    /* add a rename button */
+                    var renameCb = function (err, title) {
+                        if (err) { return; }
+                        document.title = title;
+                        onLocal();
+                    };
+                    var $setTitle = Cryptpad.createButton('rename', true, {suggestName: suggestName}, renameCb);
+                    $rightside.append($setTitle);
+                }
 
                 /* add a forget button */
                 var forgetCb = function (err, title) {

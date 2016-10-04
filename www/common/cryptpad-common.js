@@ -47,8 +47,6 @@ define([
         var host = window.location.host;
         var url = protocol + '//' + host + path;
 
-        console.log(url);
-
         return url;
     };
 
@@ -797,7 +795,7 @@ define([
                 });
         }
         if (rightside) {
-            button.addClass('rightside-button')
+            button.addClass('rightside-button');
         }
         return button;
     };

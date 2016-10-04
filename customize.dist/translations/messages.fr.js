@@ -34,7 +34,7 @@ define(function () {
     out.anonymous = "Vous êtes actuellement anonyme";
 
     out.greenLight = "Tout fonctionne bien";
-    out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur"
+    out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur";
     out.redLight = "Vous êtes déconnectés de la session";
 
     out.importButton = 'IMPORTER';

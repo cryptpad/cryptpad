@@ -726,7 +726,6 @@ define([
         var renameCb = function (err, title) {
             if (err) { return; }
             document.title = title;
-            module.tabNotification && module.tabNotification.update(title);
             var proxy = module.rt.proxy;
             if (proxy.metadata) {
                 proxy.metadata.title = title;
