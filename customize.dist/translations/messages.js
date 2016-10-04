@@ -75,7 +75,9 @@ define(function () {
 
     out.getViewButton = 'READ-ONLY URL';
     out.getViewButtonTitle = 'Get the read-only URL for this document';
-    out.readonlyUrl = 'Read only URL';
+    out.readonlyUrl = 'Read only document';
+    out.copyReadOnly = "Copy URL to clipboard";
+    out.openReadOnly = "Open in a new tab";
 
     out.disconnectAlert = 'Network connection lost!';
 

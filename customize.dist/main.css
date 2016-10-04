@@ -154,6 +154,9 @@ tr {
   margin-bottom: 12px;
   white-space: nowrap;
 }
+.alertify button {
+  margin: 3px 0px;
+}
 /* Tables */
 table {
   border-collapse: collapse;
