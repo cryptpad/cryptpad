@@ -294,6 +294,21 @@ define([
                 });
             };
 
+            var isDefaultTitle = function () {
+                var parsed = Cryptpad.parsePadUrl(window.location.href);
+                return Cryptpad.isDefaultName(parsed, document.title);
+            };
+            var suggestName = function () {
+                var parsed = Cryptpad.parsePadUrl(window.location.href);
+                var name = Cryptpad.getDefaultName(parsed, []);
+
+                if (Cryptpad.isDefaultName(parsed, document.title)) {
+                    return getHeadingText() || document.title;
+                } else {
+                    return document.title || getHeadingText() || name;
+                }
+            };
+
             var DD = new DiffDom(diffOptions);
 
             // apply patches, and try not to lose the cursor in the process!
@@ -312,9 +327,11 @@ define([
                 hjson[3] = {
                     metadata: {
                         users: userList,
-                        title: document.title
                     }
                 };
+                if (!isDefaultTitle()) {
+                    hjson[3].metadata.title = document.title;
+                }
                 return stringify(hjson);
             };
 
@@ -472,17 +489,6 @@ define([
                 })) { return text; }
             };
 
-            var suggestName = module.suggestName = function () {
-                var parsed = Cryptpad.parsePadUrl(window.location.href);
-                var name = Cryptpad.getDefaultName(parsed, []);
-
-                if (document.title.slice(0, name.length) === name) {
-                    return getHeadingText() || document.title;
-                } else {
-                    return document.title || getHeadingText() || name;
-                }
-            };
-
             var exportFile = function () {
                 var html = getHTML();
                 var suggestion = suggestName();
@@ -536,34 +542,34 @@ define([
                             realtimeOptions.onLocal();
                         }));
                     $rightside.append($import);
-                }
 
-                /* add a rename button */
-                var $rename = Cryptpad.createButton('rename', true)
-                    .click(function () {
-                        var suggestion = suggestName();
+                    /* add a rename button */
+                    var $rename = Cryptpad.createButton('rename', true)
+                        .click(function () {
+                            var suggestion = suggestName();
 
-                        Cryptpad.prompt(Messages.renamePrompt, suggestion, function (title) {
-                            if (title === null) { return; }
-                            Cryptpad.causesNamingConflict(title, function (err, conflicts) {
-                                if (conflicts) {
-                                    Cryptpad.alert(Messages.renameConflict);
-                                    return;
-                                }
-
-                                Cryptpad.setPadTitle(title, function (err, data) {
-                                    if (err) {
-                                        console.log("Couldn't set pad title");
-                                        console.error(err);
+                            Cryptpad.prompt(Messages.renamePrompt, suggestion, function (title) {
+                                if (title === null) { return; }
+                                Cryptpad.causesNamingConflict(title, function (err, conflicts) {
+                                    if (conflicts) {
+                                        Cryptpad.alert(Messages.renameConflict);
                                         return;
                                     }
-                                    document.title = title;
-                                    editor.fire('change');
+
+                                    Cryptpad.setPadTitle(title, function (err, data) {
+                                        if (err) {
+                                            console.log("Couldn't set pad title");
+                                            console.error(err);
+                                            return;
+                                        }
+                                        document.title = title;
+                                        editor.fire('change');
+                                    });
                                 });
                             });
                         });
-                    });
-                $rightside.append($rename);
+                    $rightside.append($rename);
+                }
 
                 /* add a forget button */
                 var $forgetPad = Cryptpad.createButton('forget', true)
@@ -602,7 +608,7 @@ define([
                         return;
                     }
                     document.title = title || info.channel.slice(0, 8);
-                    Cryptpad.rememberPad(title, function (err, data) {
+                    Cryptpad.setPadTitle(title, function (err, data) {
                         if (err) {
                             console.log("Couldn't remember pad");
                             console.error(err);
