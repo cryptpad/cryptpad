@@ -1,6 +1,5 @@
 require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
-    '/api/config?cb=' + Math.random().toString(16).substring(2),
     '/customize/messages.js?app=code',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
@@ -17,7 +16,7 @@ define([
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, /*RTCode,*/ Messages, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad, Modes, Themes, Visible, Notify, Slide) {
+], function (Messages, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad, Modes, Themes, Visible, Notify, Slide) {
     var $ = window.jQuery;
     var saveAs = window.saveAs;
 
@@ -169,7 +168,7 @@ define([
             var config = {
                 //initialState: Messages.codeInitialState,
                 initialState: '{}',
-                websocketURL: Config.websocketURL,
+                websocketURL: Cryptpad.getWebsocketURL(),
                 channel: secret.channel,
                 // our public key
                 validateKey: secret.keys.validateKey || undefined,

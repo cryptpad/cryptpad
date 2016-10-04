@@ -865,7 +865,7 @@ define([
     };
 
     var config = {
-        websocketURL: Config.websocketURL,
+        websocketURL: Cryptpad.getWebsocketURL(),
         channel: secret.channel,
         data: {},
         // our public key
