@@ -1,4 +1,5 @@
 define([
+    '/api/config?cb=' + Math.random().toString(16).slice(2),
     '/customize/messages.js',
     '/customize/store.js',
     '/bower_components/chainpad-crypto/crypto.js',
@@ -8,7 +9,7 @@ define([
     '/customize/user.js',
 
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages, Store, Crypto, Alertify, Spinner, User) {
+], function (Config, Messages, Store, Crypto, Alertify, Spinner, User) {
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
@@ -34,6 +35,20 @@ define([
         if (!legacy && userStore) { return userStore; }
         if (store) { return store; }
         throw new Error("Store is not ready!");
+    };
+
+    var getWebsocketURL = common.getWebsocketURL = function () {
+        if (!Config.websocketPath) { return Config.websocketURL; }
+        var path = Config.websocketPath;
+        if (/^ws{1,2}:\/\//.test(path)) { return path; }
+
+        var protocol = window.location.protocol.replace(/http/, 'ws');
+        var host = window.location.host;
+        var url = protocol + '//' + host + path;
+
+        console.log(url);
+
+        return url;
     };
 
     /*
