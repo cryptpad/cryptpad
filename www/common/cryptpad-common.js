@@ -743,7 +743,7 @@ define([
                     'class': "fa fa-user",
                     style: 'font:'+size+' FontAwesome'
                 });
-                if (data && data.lastName && callback) {
+                if (data && typeof data.lastName !== "undefined" && callback) {
                     var lastName = data.lastName;
                     button.click(function() {
                         common.prompt(Messages.changeNamePrompt, lastName, function (newName) {
