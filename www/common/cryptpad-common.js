@@ -558,6 +558,9 @@ define([
             common.store = env.store = store;
 
             $(function() {
+                // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
+                // won't work. We have to reset it now to make sure it uses a correct "body"
+                Alertify.reset();
                 if($('#pad-iframe').length) {
                     var $iframe = $('#pad-iframe');
                     var iframe = $iframe[0];
