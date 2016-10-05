@@ -446,20 +446,20 @@ define([
             }
 
             var contains;
-
             var renamed = recent.map(function (pad) {
                 var p = parsePadUrl(pad.href);
 
                 if (p.type !== parsed.type) { return pad; }
 
+                var shouldUpdate = p.hash === parsed.hash;
+
                 // Version 1 : we have up to 4 differents hash for 1 pad, keep the strongest :
                 // Edit > Edit (present) > View > View (present)
-                var bypass = false;
                 var pHash = parseHash(p.hash);
                 var parsedHash = parseHash(parsed.hash);
-                if (pHash.version === 1 && parsedHash.version === 1 && pHash.channel === parsedHash.channel) {
-                    if (pHash.mode === 'view' && parsedHash.mode === 'edit') { bypass = true; }
-                    else if (pHash.mode === parsedHash.mode && pHash.present) { bypass = true; }
+                if (!shouldUpdate && pHash.version === 1 && parsedHash.version === 1 && pHash.channel === parsedHash.channel) {
+                    if (pHash.mode === 'view' && parsedHash.mode === 'edit') { shouldUpdate = true; }
+                    else if (pHash.mode === parsedHash.mode && pHash.present) { shouldUpdate = true; }
                     else {
                         // Editing a "weaker" version of a stored hash : update the date and do not push the current hash
                         pad.atime = new Date().toISOString();
@@ -468,7 +468,7 @@ define([
                     }
                 }
 
-                if (p.hash === parsed.hash || bypass) {
+                if (shouldUpdate) {
                     contains = true;
                     // update the atime
                     pad.atime = new Date().toISOString();
