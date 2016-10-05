@@ -557,7 +557,20 @@ define([
         Store.ready(function (err, store) {
             common.store = env.store = store;
 
-            cb();
+            $(function() {
+                if($('#pad-iframe').length) {
+                    var $iframe = $('#pad-iframe');
+                    var iframe = $iframe[0];
+                    var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    if (iframeDoc.readyState === 'complete') {
+                        cb();
+                        return;
+                    }
+                    $iframe.load(cb);
+                    return;
+                }
+                cb();
+            });
             return;
 /*
             authorize(function (err, proxy) {
