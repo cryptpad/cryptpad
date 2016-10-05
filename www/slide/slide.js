@@ -14,14 +14,15 @@ define([
         content: [],
         changeHandlers: [],
     };
-    var ifrw = $('#pad-iframe')[0].contentWindow;
+    var ifrw;
     var $modal;
     var $content;
     var $pad;
-    Slide.setModal = function ($m, $c, $p) {
+    Slide.setModal = function ($m, $c, $p, iframe) {
         $modal = Slide.$modal = $m;
         $content = Slide.$content = $c;
         $pad = Slide.$pad = $p;
+        ifrw = Slide.ifrw = iframe;
     };
 
     Slide.onChange = function (f) {

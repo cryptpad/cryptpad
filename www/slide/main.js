@@ -32,7 +32,6 @@ define([
 
     module.spinner.show();
 
-    var ifrw = module.ifrw = $('#pad-iframe')[0].contentWindow;
     var stringify = function (obj) {
         return JSONSortify(obj);
     };
@@ -46,6 +45,7 @@ define([
     };
 
     $(function () {
+        var ifrw = module.ifrw = $('#pad-iframe')[0].contentWindow;
         var toolbar;
 
         var secret = Cryptpad.getSecrets();
@@ -126,7 +126,7 @@ define([
             var $modal = $pad.contents().find('#modal');
             var $content = $pad.contents().find('#content');
 
-            Slide.setModal($modal, $content, $pad);
+            Slide.setModal($modal, $content, $pad, ifrw);
 
             var enterPresentationMode = function (shouldLog) {
                 Slide.show(true, $textarea.val());
