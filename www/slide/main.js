@@ -15,6 +15,7 @@ define([
     '/slide/slide.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
+    '/common/jscolor.js',
     '/customize/pad.js'
 ], function (Messages, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad, Modes, Themes, Visible, Notify, Slide) {
     var $ = window.jQuery;
@@ -429,7 +430,26 @@ define([
                     });
                 };
 
+                var configureColors = function () {
+                    /*var $background = $('<input>', {
+                        id: "cryptpad-bg-color",
+                        value: "#5367ce"
+                    }).colorpicker();*/
+                    console.log(jscolor);
+                    var $background = $('<input>', {
+                        value: 'BACKGROUND',
+                    });
+                    $rightside[0].appendChild($background[0]);
+                    var picker = new jscolor($background[0]);
+                    console.log($background);
+                    $background.addClass('jscolor-active');
+//                    $rightside[0].appendChild($background[0]);
+                    //console.log($pad.contents().find('#cryptpad-bg-color'));
+
+                };
+
                 configureTheme();
+                configureColors();
 
                 if (presentMode) {
                     $('#top-bar').hide();
