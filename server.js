@@ -10,12 +10,38 @@ var NetfluxSrv = require('./NetfluxWebsocketSrv');
 var WebRTCSrv = require('./WebRTCSrv');
 
 var config = require('./config');
-config.websocketPort = config.websocketPort || config.httpPort;
+var websocketPort = config.websocketPort || config.httpPort;
 
 // support multiple storage back ends
-var Storage = require(config.storage||'./storage/mongo');
+var Storage = require(config.storage||'./storage/file');
 
 var app = Express();
+
+app.use(function (req, res, next) {
+    var host = req.headers.host;
+    if (config.websocketPort) {
+        host = host.replace(/\:[0-9]+/, ':' + config.websocketPort);
+    }
+    var proto = httpsOpts ? 'wss://' : 'ws://'
+    res.setHeader('Content-Security-Policy', [
+        "default-src 'none'",
+        "style-src 'unsafe-inline' 'self'",
+
+        // No way to load ckeditor without unsafe-eval and unsafe-inline
+        // https://dev.ckeditor.com/ticket/8584
+        "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+
+        "connect-src 'self' " + proto + host,
+        "child-src 'self'",
+        "font-src 'self'",
+
+        // data: is used by codemirror, (insecure remote) images are included by people making
+        //       documents in ckeditor.
+        "img-src data: *"
+    ].join('; '));
+    next();
+});
+
 app.use(Express.static(__dirname + '/www'));
 
 Fs.exists(__dirname + "/customize", function (e) {
@@ -57,9 +83,9 @@ app.get('/api/config', function(req, res){
     res.setHeader('Content-Type', 'text/javascript');
     res.send('define(' + JSON.stringify({
         websocketURL:'ws' + ((httpsOpts) ? 's' : '') + '://' + host + ':' +
-            config.websocketPort + '/cryptpad_websocket',
+            websocketPort + '/cryptpad_websocket',
         webrtcURL:'ws' + ((httpsOpts) ? 's' : '') + '://' + host + ':' +
-            config.websocketPort + '/cryptpad_webrtc',
+            websocketPort + '/cryptpad_webrtc',
     }) + ');');
 });
 
@@ -70,9 +96,9 @@ httpServer.listen(config.httpPort,config.httpAddress,function(){
 });
 
 var wsConfig = { server: httpServer };
-if (config.websocketPort !== config.httpPort) {
+if (websocketPort !== config.httpPort) {
     console.log("setting up a new websocket server");
-    wsConfig = { port: config.websocketPort};
+    wsConfig = { port: websocketPort};
 }
 var wsSrv = new WebSocketServer(wsConfig);
 Storage.create(config, function (store) {
