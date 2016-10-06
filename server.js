@@ -41,6 +41,11 @@ app.use(function (req, res, next) {
         //       documents in ckeditor.
         "img-src data: *"
     ].join('; '));
+
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+
     next();
 });
 
