@@ -180,9 +180,10 @@ define([
         var lagLight = $('<div>', {
             'class': 'lag'
         });
+        var title;
         if(lag) {
           firstConnection = false;
-          var title = Messages.lag + ' : ' + lag + ' ms\n';
+          title = Messages.lag + ' : ' + lag + ' ms\n';
           if (lag.waiting || lag > 1000) {
             lagLight.addClass('lag-orange');
             title += Messages.orangeLight;

@@ -456,6 +456,21 @@ define([
         module.tabNotification = Notify.tab(1000, 10);
     };
 
+    var updateTitle = function (newTitle) {
+        if (newTitle === document.title) { return; }
+        // Change the title now, and set it back to the old value if there is an error
+        var oldTitle = document.title;
+        document.title = newTitle;
+        Cryptpad.setPadTitle(newTitle, function (err, data) {
+            if (err) {
+                console.log("Couldn't set pad title");
+                console.error(err);
+                document.title = oldTitle;
+                return;
+            }
+        });
+    };
+
     // don't make changes until the interface is ready
     setEditable(false);
 
@@ -464,8 +479,11 @@ define([
         module.ready = true;
 
         var proxy = module.rt.proxy;
-
         var First = false;
+
+        if (proxy.metadata && proxy.metadata.title) {
+            updateTitle(proxy.metadata.title);
+        }
 
         // ensure that proxy.info and proxy.table exist
         ['info', 'table'].forEach(function (k) {
@@ -627,19 +645,8 @@ define([
             }
         })
         .on('change', ['metadata'], function (o, n, p) {
-            var newTitle = n.title;
-            if (newTitle === document.title) { return; }
-            // Change the title now, and set it back to the old value if there is an error
-            var oldTitle = document.title;
-            document.title = newTitle;
-            Cryptpad.setPadTitle(newTitle, function (err, data) {
-                if (err) {
-                    console.log("Couldn't set pad title");
-                    console.error(err);
-                    document.title = oldTitle;
-                    return;
-                }
-            });
+            var newTitle = proxy.metadata.title;
+            updateTitle(newTitle);
         })
         .on('remove', [], function (o, p, root) {
             //console.log("remove: (%s, [%s])", o, p.join(', '));
@@ -704,60 +711,34 @@ define([
             }
         };
 
-        $toolbar.append(Button({
-            id: 'forget',
-            'class': 'forget button action',
-            title: Messages.forgetButtonTitle,
-        }).text(Messages.forgetButton).click(function () {
-            var href = window.location.href;
-            Cryptpad.confirm(Messages.forgetPrompt, function (yes) {
-                if (!yes) { return; }
-                Cryptpad.forgetPad(href, function (err, data) {
-                    if (err) {
-                        console.log("unable to forget pad");
-                        console.error(err);
-                        return;
-                    }
-                    var parsed = Cryptpad.parsePadUrl(href);
-                    document.title = Cryptpad.getDefaultName(parsed, []);
-                });
-            });
-        }));
+        /* add a forget button */
+        var forgetCb = function (err, title) {
+            if (err) { return; }
+            document.title = title;
+        };
+        var $forgetPad = Cryptpad.createButton('forget', false, {}, forgetCb)
+            .text(Messages.forgetButton)
+            .removeAttr('style')
+            .attr('class', 'action button forget');
+        $toolbar.append($forgetPad);
 
-        $toolbar.append(Button({
-            id: 'rename',
-            'class': 'rename button action',
-            title: Messages.renameButtonTitle,
-        }).text(Messages.renameButton).click(function () {
-            var suggestion = suggestName();
-            Cryptpad.prompt(Messages.renamePrompt,
-                suggestion, function (title, ev) {
-                    if (title === null) { return; }
-
-                    Cryptpad.causesNamingConflict(title, function (err, conflicts) {
-                        if (conflicts) {
-                            Cryptpad.alert(Messages.renameConflict);
-                            return;
-                        }
-                        Cryptpad.setPadTitle(title, function (err, data) {
-                            if (err) {
-                                console.log("unable to set pad title");
-                                console.error(err);
-                                return;
-                            }
-                            document.title = title;
-                            module.tabNotification.update(title);
-                            var proxy = module.rt.proxy;
-                            if (proxy.metadata) {
-                                proxy.metadata.title = title;
-                            }
-                            else {
-                                proxy.metadata = {title: title};
-                            }
-                        });
-                    });
-                });
-        }));
+        /* add a rename button */
+        var renameCb = function (err, title) {
+            if (err) { return; }
+            document.title = title;
+            var proxy = module.rt.proxy;
+            if (proxy.metadata) {
+                proxy.metadata.title = title;
+            }
+            else {
+                proxy.metadata = {title: title};
+            }
+        };
+        var $setTitle = Cryptpad.createButton('rename', true, {suggestName: suggestName}, renameCb)
+            .text(Messages.renameButton)
+            .removeAttr('style')
+            .attr('class', 'action button rename');
+        $toolbar.append($setTitle);
 
         if (!readOnly) {
             $toolbar.append(Button({
@@ -774,16 +755,10 @@ define([
 
         if (!readOnly && module.viewHash) {
             /* add a 'links' button */
-            var $links = $('<button>', {
-                title: Messages.getViewButtonTitle
-            })
+            var $links = Cryptpad.createButton('readonly', true, {viewHash: module.viewHash})
                 .text(Messages.getViewButton)
-                .addClass('button action')
-                .click(function () {
-                    var baseUrl = window.location.origin + window.location.pathname + '#';
-                    var content = '<b>' + Messages.readonlyUrl + '</b><br><a>' + baseUrl + module.viewHash + '</a><br>';
-                    Cryptpad.alert(content);
-                });
+                .removeAttr('style')
+                .attr('class', 'action button readonly');
             $toolbar.append($links);
         }
 
@@ -890,7 +865,7 @@ define([
     };
 
     var config = {
-        websocketURL: Config.websocketURL,
+        websocketURL: Cryptpad.getWebsocketURL(),
         channel: secret.channel,
         data: {},
         // our public key
@@ -923,7 +898,7 @@ define([
             Cryptpad.getPadTitle(function (err, title) {
                 title = document.title = title || info.channel.slice(0, 8);
 
-                Cryptpad.rememberPad(title, function (err, data) {
+                Cryptpad.setPadTitle(title, function (err, data) {
                     if (err) {
                         console.log("unable to remember pad");
                         console.log(err);

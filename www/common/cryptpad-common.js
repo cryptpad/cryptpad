@@ -1,14 +1,16 @@
 define([
+    '/api/config?cb=' + Math.random().toString(16).slice(2),
     '/customize/messages.js',
     '/customize/store.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/alertifyjs/dist/js/alertify.js',
     '/bower_components/spin.js/spin.min.js',
+    '/common/clipboard.js',
 
     '/customize/user.js',
 
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages, Store, Crypto, Alertify, Spinner, User) {
+], function (Config, Messages, Store, Crypto, Alertify, Spinner, Clipboard, User) {
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
@@ -34,6 +36,18 @@ define([
         if (!legacy && userStore) { return userStore; }
         if (store) { return store; }
         throw new Error("Store is not ready!");
+    };
+
+    var getWebsocketURL = common.getWebsocketURL = function () {
+        if (!Config.websocketPath) { return Config.websocketURL; }
+        var path = Config.websocketPath;
+        if (/^ws{1,2}:\/\//.test(path)) { return path; }
+
+        var protocol = window.location.protocol.replace(/http/, 'ws');
+        var host = window.location.host;
+        var url = protocol + '//' + host + path;
+
+        return url;
     };
 
     /*
@@ -137,6 +151,26 @@ define([
     };
 
 
+    var parseHash = common.parseHash = function (hash) {
+        var parsed = {};
+        if (hash.slice(0,1) !== '/' && hash.length >= 56) {
+            // Old hash
+            parsed.channel = hash.slice(0, 32);
+            parsed.key = hash.slice(32);
+            parsed.version = 0;
+            return parsed;
+        }
+        var hashArr = hash.split('/');
+        if (hashArr[1] && hashArr[1] === '1') {
+            parsed.version = 1;
+            parsed.mode = hashArr[2];
+            parsed.channel = hashArr[3];
+            parsed.key = hashArr[4];
+            parsed.present = hashArr[5] && hashArr[5] === 'present';
+            return parsed;
+        }
+        return;
+    };
     var getEditHashFromKeys = common.getEditHashFromKeys = function (chanKey, keys) {
         if (typeof keys === 'string') {
             return chanKey + keys;
@@ -295,6 +329,10 @@ define([
         while (!isNameAvailable(name + ' - ' + untitledIndex, parsed, recentPads)) { untitledIndex++; }
         return name + ' - ' + untitledIndex;
     };
+    var isDefaultName = common.isDefaultName = function (parsed, title) {
+        var name = getDefaultName(parsed, []);
+        return title.slice(0, name.length) === name;
+    };
 
     var makePad = function (href, title) {
         var now = ''+new Date();
@@ -398,50 +436,9 @@ define([
     };
 
     // STORAGE
-    var rememberPad = common.rememberPad = window.rememberPad = function (title, cb) {
-        // bail out early
-        if (!/#/.test(window.location.hash)) { return; }
-
-        getRecentPads(function (err, pads) {
-            if (err) {
-                cb(err);
-                return;
-            }
-
-            var now = ''+new Date();
-            var href = window.location.href;
-
-            var parsed = parsePadUrl(window.location.href);
-            var isUpdate = false;
-
-            var out = pads.map(function (pad) {
-                var p = parsePadUrl(pad.href);
-                if (p.hash === parsed.hash && p.type === parsed.type) {
-                    isUpdate = true;
-                    // bump the atime
-                    pad.atime = now;
-
-                    pad.title = title;
-                    pad.href = href;
-                }
-                return pad;
-            });
-
-            if (!isUpdate) {
-                // href, ctime, atime, title
-                out.push(makePad(href, title));
-            }
-            setRecentPads(out, function (err, data) {
-                cb(err, data);
-            });
-        });
-    };
-
-    // STORAGE
     var setPadTitle = common.setPadTitle = function (name, cb) {
         var href = window.location.href;
         var parsed = parsePadUrl(href);
-
         getRecentPads(function (err, recent) {
             if (err) {
                 cb(err);
@@ -449,10 +446,29 @@ define([
             }
 
             var contains;
-
             var renamed = recent.map(function (pad) {
                 var p = parsePadUrl(pad.href);
-                if (p.hash === parsed.hash && p.type === parsed.type) {
+
+                if (p.type !== parsed.type) { return pad; }
+
+                var shouldUpdate = p.hash === parsed.hash;
+
+                // Version 1 : we have up to 4 differents hash for 1 pad, keep the strongest :
+                // Edit > Edit (present) > View > View (present)
+                var pHash = parseHash(p.hash);
+                var parsedHash = parseHash(parsed.hash);
+                if (!shouldUpdate && pHash.version === 1 && parsedHash.version === 1 && pHash.channel === parsedHash.channel) {
+                    if (pHash.mode === 'view' && parsedHash.mode === 'edit') { shouldUpdate = true; }
+                    else if (pHash.mode === parsedHash.mode && pHash.present) { shouldUpdate = true; }
+                    else {
+                        // Editing a "weaker" version of a stored hash : update the date and do not push the current hash
+                        pad.atime = new Date().toISOString();
+                        contains = true;
+                        return pad;
+                    }
+                }
+
+                if (shouldUpdate) {
                     contains = true;
                     // update the atime
                     pad.atime = new Date().toISOString();
@@ -541,7 +557,23 @@ define([
         Store.ready(function (err, store) {
             common.store = env.store = store;
 
-            cb();
+            $(function() {
+                // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
+                // won't work. We have to reset it now to make sure it uses a correct "body"
+                Alertify.reset();
+                if($('#pad-iframe').length) {
+                    var $iframe = $('#pad-iframe');
+                    var iframe = $iframe[0];
+                    var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    if (iframeDoc.readyState === 'complete') {
+                        cb();
+                        return;
+                    }
+                    $iframe.load(cb);
+                    return;
+                }
+                cb();
+            });
             return;
 /*
             authorize(function (err, proxy) {
@@ -610,7 +642,7 @@ define([
     /*
      * Buttons
      */
-    var createButton = common.createButton = function (type, rightside) {
+    var createButton = common.createButton = function (type, rightside, data, callback) {
         var button;
         var size = "17px";
         switch (type) {
@@ -620,6 +652,9 @@ define([
                     'class': "fa fa-download",
                     style: 'font:'+size+' FontAwesome'
                 });
+                if (callback) {
+                    button.click(callback);
+                }
                 break;
             case 'import':
                 button = $('<button>', {
@@ -627,6 +662,11 @@ define([
                     'class': "fa fa-upload",
                     style: 'font:'+size+' FontAwesome'
                 });
+                if (callback) {
+                    button.click(common.importContent('text/plain', function (content, file) {
+                        callback(content, file);
+                    }));
+                }
                 break;
             case 'rename':
                 button = $('<button>', {
@@ -635,6 +675,40 @@ define([
                     'class': "fa fa-bookmark cryptpad-rename",
                     style: 'font:'+size+' FontAwesome'
                 });
+                if (data && data.suggestName && callback) {
+                    var suggestName = data.suggestName;
+                    button.click(function() {
+                        var suggestion = suggestName();
+
+                        common.prompt(Messages.renamePrompt,
+                            suggestion, function (title, ev) {
+                                if (title === null) { return; }
+
+                                common.causesNamingConflict(title, function (err, conflicts) {
+                                    if (err) {
+                                        console.log("Unable to determine if name caused a conflict");
+                                        console.error(err);
+                                        callback(err, title);
+                                        return;
+                                    }
+
+                                    if (conflicts) {
+                                        common.alert(Messages.renameConflict);
+                                        return;
+                                    }
+
+                                    common.setPadTitle(title, function (err, data) {
+                                        if (err) {
+                                            console.log("unable to set pad title");
+                                            console.log(err);
+                                            return;
+                                        }
+                                        callback(null, title);
+                                    });
+                                });
+                            });
+                    });
+                }
                 break;
             case 'forget':
                 button = $('<button>', {
@@ -643,6 +717,25 @@ define([
                     'class': "fa fa-trash cryptpad-forget",
                     style: 'font:'+size+' FontAwesome'
                 });
+                if (callback) {
+                    button.click(function() {
+                        var href = window.location.href;
+                        common.confirm(Messages.forgetPrompt, function (yes) {
+                            if (!yes) { return; }
+                            common.forgetPad(href, function (err, data) {
+                                if (err) {
+                                    console.log("unable to forget pad");
+                                    console.error(err);
+                                    callback(err, null);
+                                    return;
+                                }
+                                var parsed = common.parsePadUrl(href);
+                                callback(null, common.getDefaultName(parsed, []));
+                            });
+                        });
+
+                    });
+                }
                 break;
             case 'username':
                 button = $('<button>', {
@@ -650,6 +743,14 @@ define([
                     'class': "fa fa-user",
                     style: 'font:'+size+' FontAwesome'
                 });
+                if (data && typeof data.lastName !== "undefined" && callback) {
+                    var lastName = data.lastName;
+                    button.click(function() {
+                        common.prompt(Messages.changeNamePrompt, lastName, function (newName) {
+                            callback(newName);
+                        });
+                    });
+                }
                 break;
             case 'readonly':
                 button = $('<button>', {
@@ -657,6 +758,37 @@ define([
                     'class': "fa fa-eye",
                     style: 'font:'+size+' FontAwesome'
                 });
+                if (data && data.viewHash) {
+                    var viewHash = data.viewHash;
+                    button.click(function() {
+                        var baseUrl = window.location.origin + window.location.pathname + '#';
+                        var url = baseUrl + viewHash;
+                        var $content = $('<div>').text(Messages.readonlyUrl);
+                        var $copy = $('<button>', {
+                                id: "cryptpad-readonly-copy",
+                                'class': "button action"
+                            }).text(Messages.copyReadOnly);
+                        var $open = $('<button>', {
+                                id: "cryptpad-readonly-open",
+                                'class': "button action"
+                            }).text(Messages.openReadOnly);
+                        $content.append('<br>').append($copy).append($open);
+                        common.alert($content.html());
+                        $("#cryptpad-readonly-copy").click(function() {
+                            var success = Clipboard.copy(url);
+                            if (success) {
+                                common.log(Messages.shareSuccess);
+                                common.findOKButton().click();
+                                return;
+                            }
+                        });
+                        $("#cryptpad-readonly-open").click(function() {
+                            window.open(url);
+                        });
+
+                        if (callback) { callback(); }
+                    });
+                }
                 break;
             case 'present':
                 button = $('<button>', {
@@ -679,7 +811,7 @@ define([
                 });
         }
         if (rightside) {
-            button.addClass('rightside-button')
+            button.addClass('rightside-button');
         }
         return button;
     };

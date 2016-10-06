@@ -34,7 +34,7 @@ define(function () {
     out.anonymous = "Vous êtes actuellement anonyme";
 
     out.greenLight = "Tout fonctionne bien";
-    out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur"
+    out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur";
     out.redLight = "Vous êtes déconnectés de la session";
 
     out.importButton = 'IMPORTER';
@@ -74,7 +74,10 @@ define(function () {
 
     out.getViewButton = 'LECTURE SEULE';
     out.getViewButtonTitle = "Obtenir l'adresse d'accès à ce document en lecture seule";
-    out.readonlyUrl = 'URL de lecture seule';
+    out.readonlyUrl = 'Document en lecture seule';
+    out.copyReadOnly = "Copier l'URL dans le presse-papiers";
+    out.openReadOnly = "Ouvrir dans un nouvel onglet";
+
 
     out.disconnectAlert = 'Perte de la connexion au réseau !';
 
@@ -142,7 +145,6 @@ define(function () {
     out.main_about = 'À propos';
     out.main_about_p1 = 'Vous pouvez en apprendre davantage sur notre <a href="/privacy.html" title="">politique de confidentialité</a> et nos <a href="/terms.html">conditions d\'utilisation</a>.';
     out.main_about_p2 = 'Si vous avez des questions ou commentaires, vous pouvez <a href="https://twitter.com/cryptpad">nous tweeter</a>, ouvrir une issue sur <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">Github</a>, venir dire bonjour sur IRC (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), ou <a href="mailto:research@xwiki.com">nous envoyer un email</a>.';
-    out.main_oops = '<strong>OUPS</strong> Afin de pouvoir réaliser le cryptage depuis votre navigateur, Javascript est <strong>vraiment</strong> requis.';
 
     out.table_type = 'Type';
     out.table_link = 'Lien';

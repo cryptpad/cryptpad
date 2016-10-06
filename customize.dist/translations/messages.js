@@ -57,7 +57,7 @@ define(function () {
     out.renameConflict = 'Another pad already has that title';
 
     out.forgetButton = 'FORGET';
-    out.forgetButtonTitle = 'remove this document from your home page listings';
+    out.forgetButtonTitle = 'Remove this document from your home page listings';
     out.forgetPrompt = 'Clicking OK will remove the URL for this pad from localStorage, are you sure?';
 
     out.shareButton = 'SHARE';
@@ -75,7 +75,9 @@ define(function () {
 
     out.getViewButton = 'READ-ONLY URL';
     out.getViewButtonTitle = 'Get the read-only URL for this document';
-    out.readonlyUrl = 'Read only URL';
+    out.readonlyUrl = 'Read only document';
+    out.copyReadOnly = "Copy URL to clipboard";
+    out.openReadOnly = "Open in a new tab";
 
     out.disconnectAlert = 'Network connection lost!';
 
@@ -142,8 +144,8 @@ define(function () {
     out.main_howitworks_p1 = 'CryptPad uses a variant of the <a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> algorithm which is able to find distributed consensus using a Nakamoto Blockchain, a construct popularized by <a href="https://en.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. This way the algorithm can avoid the need for a central server to resolve Operational Transform Edit Conflicts and without the need for resolving conflicts, the server can be kept unaware of the content which is being edited on the pad.';
     out.main_about = 'About';
     out.main_about_p1 = 'You can read more about our <a href="/privacy.html" title="">privacy policy</a> and <a href="/terms.html">terms of service</a>.';
+
     out.main_about_p2 = 'If you have any questions or comments, you can <a href="https://twitter.com/cryptpad">tweet us</a>, open an issue <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">on github</a>, come say hi on irc (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), or <a href="mailto:research@xwiki.com">send us an email</a>.';
-    out.main_oops = '<strong>OOPS</strong> In order to do encryption in your browser, Javascript is really <strong>really</strong> required.';
 
     out.table_type = 'Type';
     out.table_link = 'Link';

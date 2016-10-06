@@ -14,7 +14,12 @@ let historyKeeperKeys = {};
 
 const now = function () { return (new Date()).getTime(); };
 
+const socketSendable = function (socket) {
+    return socket && socket.readyState === 1;
+};
+
 const sendMsg = function (ctx, user, msg) {
+    if (!socketSendable(user.socket)) { return; }
     try {
         if (ctx.config.logToStdout) { console.log('<' + JSON.stringify(msg)); }
         user.socket.send(JSON.stringify(msg));
@@ -272,7 +277,7 @@ let run = module.exports.run = function (storage, socketServer, config) {
         });
     }, 5000);
     socketServer.on('connection', function(socket) {
-        if(socket.upgradeReq.url !== '/cryptpad_websocket') { return; }
+        if(socket.upgradeReq.url !== (config.websocketPath || '/cryptpad_websocket')) { return; }
         let conn = socket.upgradeReq.connection;
         let user = {
             addr: conn.remoteAddress + '|' + conn.remotePort,

@@ -83,10 +83,9 @@ app.get('/api/config', function(req, res){
     var host = req.headers.host.replace(/\:[0-9]+/, '');
     res.setHeader('Content-Type', 'text/javascript');
     res.send('define(' + JSON.stringify({
+        websocketPath: config.websocketPath,
         websocketURL:'ws' + ((httpsOpts) ? 's' : '') + '://' + host + ':' +
             websocketPort + '/cryptpad_websocket',
-        webrtcURL:'ws' + ((httpsOpts) ? 's' : '') + '://' + host + ':' +
-            websocketPort + '/cryptpad_webrtc',
     }) + ');');
 });
 

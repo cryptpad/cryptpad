@@ -12,9 +12,6 @@ define([
         Cryptpad: Cryptpad,
     };
 
-    DecorateToolbar.main($('#bottom-bar'));
-    Cryptpad.styleAlerts();
-
     var padTypes = {
         '/pad/': Messages.type.pad,
         '/code/': Messages.type.code,
@@ -22,9 +19,9 @@ define([
         '/slide/': Messages.type.slide,
     };
 
-    var $table = $('table.scroll');
-    var $tbody = $table.find('tbody');
-    var $tryit = $('#tryit');
+    var $table;
+    var $tbody;
+    var $tryit;
     var now = new Date();
     var hasRecent = false;
 
@@ -138,11 +135,18 @@ define([
         });
     };
 
-    displayCreateButtons();
     Cryptpad.ready(function () {
         console.log("ready");
-        refreshTable();
 
+        $table = $('table.scroll');
+        $tbody = $table.find('tbody');
+        $tryit = $('#tryit');
+
+        DecorateToolbar.main($('#bottom-bar'));
+        Cryptpad.styleAlerts();
+
+        displayCreateButtons();
+        refreshTable();
         if (Cryptpad.store && Cryptpad.store.change) {
             Cryptpad.store.change(function (data) {
                 if (data.key === 'CryptPad_RECENTPADS') {
