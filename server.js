@@ -17,12 +17,14 @@ var Storage = require(config.storage||'./storage/file');
 
 var app = Express();
 
+var httpsOpts;
+
 app.use(function (req, res, next) {
     var host = req.headers.host;
     if (config.websocketPort) {
         host = host.replace(/\:[0-9]+/, ':' + config.websocketPort);
     }
-    var proto = httpsOpts ? 'wss://' : 'ws://'
+    var proto = httpsOpts ? 'wss://' : 'ws://';
     res.setHeader('Content-Security-Policy', [
         "default-src 'none'",
         "style-src 'unsafe-inline' 'self'",
@@ -54,7 +56,6 @@ app.use("/customize", Express.static(__dirname + '/customize.dist'));
 app.use(/^\/[^\/]*$/, Express.static('customize'));
 app.use(/^\/[^\/]*$/, Express.static('customize.dist'));
 
-var httpsOpts;
 if (config.privKeyAndCertFiles) {
     var privKeyAndCerts = '';
     config.privKeyAndCertFiles.forEach(function (file) {
