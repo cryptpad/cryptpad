@@ -11,9 +11,6 @@ define([
     /** Id of the div containing the user list. */
     var USER_LIST_CLS = Bar.constants.userlist = 'cryptpad-user-list';
 
-    /** Id of the button to change my username. */
-    var USERNAME_BUTTON_GROUP = Bar.constants.changeName = 'cryptpad-changeName';
-
     /** Id of the div containing the lag info. */
     var LAG_ELEM_CLS = Bar.constants.lag = 'cryptpad-lag';
 
@@ -22,8 +19,6 @@ define([
 
     var LEFTSIDE_CLS = Bar.constants.leftside = 'cryptpad-toolbar-leftside';
     var RIGHTSIDE_CLS = Bar.constants.rightside = 'cryptpad-toolbar-rightside';
-
-    var BACK_CLS = Bar.constants.back = 'cryptpad-back';
 
     var SPINNER_CLS = Bar.constants.spinner = 'cryptpad-spinner';
 
@@ -42,6 +37,8 @@ define([
     };
 
     var $style;
+
+    var firstConnection = true;
 
     var styleToolbar = function ($container, href) {
         href = href || '/customize/toolbar.css';
@@ -66,17 +63,6 @@ define([
         $container.prepend($toolbar);
         styleToolbar($container);
         return $toolbar;
-    };
-
-    var createEscape = function ($container) {
-        var $back = $('<div>', {
-            'class': BACK_CLS,
-            id: uid(),
-        }).html(Messages.back).click(function () {
-            window.location.href = '/';
-        });
-        $container.append($back);
-        return $back[0];
     };
 
     var createSpinner = function ($container) {
@@ -124,20 +110,6 @@ define([
       return (i > 0) ? list.slice(0, -2) : list;
     };
 
-    var createChangeName = function($container, buttonID) {
-        var $span = $('<span>', {
-            id: uid(),
-        });
-        var $button = $('<button>', {
-            id: buttonID,
-            'class': 'rightside-button',
-        }).text(Messages.changeNameButton);
-
-        $container.append($button);
-        $button.after($span);
-        return $span[0];
-    };
-
     var arrayIntersect = function(a, b) {
         return $.grep(a, function(i) {
             return $.inArray(i, b) > -1;
@@ -181,8 +153,12 @@ define([
             }
         }
         innerHTML += getViewers(numberOfViewUsers);
-        if (userData[myUserName] && userData[myUserName].name) {
-            innerHTML = '<span class="' + USERNAME_CLS + '">' + userData[myUserName].name + '</span> | ' + innerHTML;
+        if (userData[myUserName]) {
+            var name = userData[myUserName].name;
+            if (!name) {
+                name = '<span title="' + Messages.anonymous + '" class="fa fa-user-secret" style="font-family:FontAwesome"></span>';
+            }
+            innerHTML = '<span class="' + USERNAME_CLS + '">' + name + '</span> | ' + innerHTML;
         }
         listElement.innerHTML = innerHTML;
     };
@@ -197,44 +173,43 @@ define([
     };
 
     var checkLag = function (getLag, lagElement) {
-        if(typeof getLag !== "function") { return; }
-        var lag = getLag();
-        var lagMsg = Messages.lag + ' ';
+        var lag;
+        if(typeof getLag === "function") {
+            lag = getLag();
+        }
+        var lagLight = $('<div>', {
+            'class': 'lag'
+        });
         if(lag) {
-          var lagSec = lag/1000;
-          if (lag.waiting && lagSec > 1) {
-              lagMsg += "?? " + Math.floor(lagSec);
+          firstConnection = false;
+          var title = Messages.lag + ' : ' + lag + ' ms\n';
+          if (lag.waiting || lag > 1000) {
+            lagLight.addClass('lag-orange');
+            title += Messages.orangeLight;
           } else {
-              lagMsg += lagSec;
+            lagLight.addClass('lag-green');
+            title += Messages.greenLight;
           }
         }
-        else {
-          lagMsg += "??";
+        else if (!firstConnection){
+          lagLight.addClass('lag-red');
+          title = Messages.redLight;
         }
-        lagElement.textContent = lagMsg;
+        lagLight.attr('title', title);
+        $(lagElement).html('');
+        $(lagElement).append(lagLight);
     };
 
     var create = Bar.create = function ($container, myUserName, realtime, getLag, userList, config) {
         var toolbar = createRealtimeToolbar($container);
-        createEscape(toolbar.find('.' + LEFTSIDE_CLS));
         var userListElement = createUserList(toolbar.find('.' + LEFTSIDE_CLS));
         var spinner = createSpinner(toolbar.find('.' + RIGHTSIDE_CLS));
         var lagElement = createLagElement(toolbar.find('.' + RIGHTSIDE_CLS));
         var userData = config.userData;
-        var changeNameID = config.changeNameID;
-        var saveContentID = config.saveContentID || config.exportContentID;
-        var loadContentID = config.loadContentID || config.importContentID;
         // readOnly = 1 (readOnly enabled), 0 (disabled), -1 (old pad without readOnly mode)
         var readOnly = (typeof config.readOnly !== "undefined") ? (config.readOnly ? 1 : 0) : -1;
         var saveElement;
         var loadElement;
-
-        // Check if the user is allowed to change his name
-        if(changeNameID) {
-            // Create the button and update the element containing the user list
-            //userListElement = createChangeName($container, userListElement, changeNameID);
-            createChangeName(toolbar.find('.' + RIGHTSIDE_CLS), changeNameID);
-        }
 
         var connected = false;
 
@@ -256,6 +231,7 @@ define([
         // Try to filter out non-patch messages, doesn't have to be perfect this is just the spinner
         realtime.onMessage(function (msg) { if (msg.indexOf(':[2,') > -1) { ks(); } });
 
+        checkLag(getLag, lagElement);
         setInterval(function () {
             if (!connected) { return; }
             checkLag(getLag, lagElement);
@@ -265,13 +241,13 @@ define([
             failed: function () {
                 connected = false;
                 userListElement.textContent = Messages.disconnected;
-                lagElement.textContent = '';
+                checkLag(undefined, lagElement);
             },
             reconnecting: function (userId) {
                 myUserName = userId;
                 connected = false;
                 userListElement.textContent = Messages.reconnecting;
-                lagElement.textContent = '';
+                checkLag(getLag, lagElement);
             },
             connected: function () {
                 connected = true;

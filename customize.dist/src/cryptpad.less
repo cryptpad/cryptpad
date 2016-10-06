@@ -187,7 +187,6 @@ p, pre, td, a, table, tr {
     margin-bottom: 2 * 6px;
     white-space: nowrap;
 }
-
 /* Tables */
 
 table {
@@ -248,10 +247,8 @@ tbody {
 
 /* Bottom Bar */
 
-.bottom-bar {
+.top-bar, .bottom-bar {
     position:fixed;
-    bottom:0px;
-    right:0px;
     height:4%;
     height: 2.5em;
 
@@ -270,7 +267,7 @@ tbody {
 
         font-size: 20px;
         display:block;
-        float:left;
+        margin-left: 10px;
         padding-top:3px;
         color: @fore;
     }
@@ -279,11 +276,22 @@ tbody {
         position: relative;
     }
 }
+.bottom-bar {
+    bottom: 0px;
+    right: 0px;
+}
+.top-bar {
+    top: 0px;
+    right: 0px;
+}
 
 .bottom-bar-left {
     display:block;
     float:left;
     padding-left:10px;
+}
+.bottom-bar-left p {
+    float: right;
 }
 .bottom-bar-right {
     display:block;
@@ -291,9 +299,10 @@ tbody {
     padding-right:20px
 }
 .bottom-bar-center {
-    margin-left: auto;
-    margin-right: auto;
-    width: 20%
+    width: 20%;
+    position: absolute;
+    left: 40%;
+    text-align: center;
 }
 .bottom-bar-heart {
     top: 2px;

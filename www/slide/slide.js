@@ -14,11 +14,14 @@ define([
         content: [],
         changeHandlers: [],
     };
+    var ifrw = $('#pad-iframe')[0].contentWindow;
     var $modal;
     var $content;
-    Slide.setModal = function ($m, $c) {
+    var $pad;
+    Slide.setModal = function ($m, $c, $p) {
         $modal = Slide.$modal = $m;
         $content = Slide.$content = $c;
+        $pad = Slide.$pad = $p;
     };
 
     Slide.onChange = function (f) {
@@ -109,16 +112,36 @@ define([
         change(Slide.lastIndex, Slide.index);
     };
 
+    var isPresentURL = Slide.isPresentURL = function () {
+        var hash = window.location.hash;
+        // Present mode has /present at the end of the hash
+        var urlLastFragment = hash.slice(hash.lastIndexOf('/')+1);
+        return urlLastFragment === "present";
+    };
+
     var show = Slide.show = function (bool, content) {
         Slide.shown = bool;
         if (bool) {
             Slide.update(content);
             Slide.draw(Slide.index);
             $modal.addClass('shown');
+            $(ifrw).focus();
             change(null, Slide.index);
+            if (!isPresentURL()) {
+                window.location.hash += '/present';
+            }
+            $pad.contents().find('.cryptpad-present-button').hide();
+            $pad.contents().find('.cryptpad-source-button').show();
+            $pad.addClass('fullscreen');
+            $('.top-bar').hide();
             return;
         }
+        window.location.hash = window.location.hash.replace(/\/present$/, '');
         change(Slide.index, null);
+        $pad.contents().find('.cryptpad-present-button').show();
+        $pad.contents().find('.cryptpad-source-button').hide();
+        $pad.removeClass('fullscreen');
+        $('.top-bar').show();
         $modal.removeClass('shown');
     };
 
@@ -149,7 +172,7 @@ define([
         Slide.draw(i);
     };
 
-    $(document).on('keyup', function (e) {
+    $(ifrw).on('keyup', function (e) {
         if (!Slide.shown) { return; }
         switch(e.which) {
             case 37:
@@ -160,9 +183,7 @@ define([
                 Slide.right();
                 break;
             case 27: // esc
-                if (!Slide.readOnly) {
-                    show(false);
-                }
+                show(false);
                 break;
             default:
                 console.log(e.which);

@@ -9,8 +9,8 @@ define([
     'json.sortify',
     '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/cryptpad-common.js',
-    '/code/modes.js',
-    '/code/themes.js',
+    '/common/modes.js',
+    '/common/themes.js',
     '/common/visible.js',
     '/common/notify.js',
     '/bower_components/file-saver/FileSaver.min.js',
@@ -45,7 +45,7 @@ define([
 
         var andThen = function (CMeditor) {
             var CodeMirror = module.CodeMirror = CMeditor;
-            CodeMirror.modeURL = "/code/codemirror-5.16.0/mode/%N/%N.js";
+            CodeMirror.modeURL = "/bower_components/codemirror/mode/%N/%N.js";
 
             var $pad = $('#pad-iframe');
             var $textarea = $pad.contents().find('#editor1');
@@ -80,7 +80,7 @@ define([
             editor.setValue(Messages.codeInitialState); // HERE
 
             var setTheme = module.setTheme = (function () {
-                var path = './theme/';
+                var path = '/common/theme/';
 
                 var $head = $(ifrw.document.head);
 
@@ -176,7 +176,7 @@ define([
             };
 
             var setName = module.setName = function (newName) {
-                if (!(typeof(newName) === 'string' && newName.trim())) { return; }
+                if (typeof(newName) !== 'string') { return; }
                 var myUserNameTemp = newName.trim();
                 if(newName.trim().length > 32) {
                   myUserNameTemp = myUserNameTemp.substr(0, 32);
@@ -199,18 +199,6 @@ define([
             var getLastName = function (cb) {
                 Cryptpad.getAttribute('username', function (err, userName) {
                     cb(err, userName || '');
-                });
-            };
-
-            var createChangeName = function(id, $container) {
-                var buttonElmt = $container.find('#'+id)[0];
-
-                getLastName(function (err, lastName) {
-                    buttonElmt.addEventListener("click", function() {
-                        Cryptpad.prompt(Messages.changeNamePrompt, lastName, function (newName) {
-                            setName(newName);
-                        });
-                    });
                 });
             };
 
@@ -283,12 +271,10 @@ define([
                 toolbarList = info.userList;
                 var config = {
                     userData: userList,
-                    changeNameID: Toolbar.constants.changeName,
                     readOnly: readOnly
                 };
                 if (readOnly) {delete config.changeNameID; }
                 toolbar = module.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
-                if (!readOnly) { createChangeName(Toolbar.constants.changeName, $bar); }
 
                 var $rightside = $bar.find('.' + Toolbar.constants.rightside);
 
@@ -299,22 +285,23 @@ define([
                     editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
                 }
 
+                getLastName(function (err, lastName) {
+                    var $username = Cryptpad.createButton('username', true)
+                        .click(function() {
+                        Cryptpad.prompt(Messages.changeNamePrompt, lastName, function (newName) {
+                            setName(newName);
+                        });
+                    });
+                    $rightside.append($username);
+                });
+
                 /* add an export button */
-                var $export = $('<button>', {
-                    title: Messages.exportButtonTitle,
-                })
-                    .text(Messages.exportButton)
-                    .addClass('rightside-button')
-                    .click(exportText);
+                var $export = Cryptpad.createButton('export', true).click(exportText);
                 $rightside.append($export);
 
                 if (!readOnly) {
                     /* add an import button */
-                    var $import = $('<button>',{
-                        title: Messages.importButtonTitle
-                    })
-                        .text(Messages.importButton)
-                        .addClass('rightside-button')
+                    var $import = Cryptpad.createButton('import', true)
                         .click(Cryptpad.importContent('text/plain', function (content, file) {
                             var mode;
                             var mime = CodeMirror.findModeByMIME(file.type);
@@ -344,12 +331,7 @@ define([
                 }
 
                 /* add a rename button */
-                var $setTitle = $('<button>', {
-                        id: 'name-pad',
-                        title: Messages.renameButtonTitle,
-                    })
-                    .addClass('rightside-button')
-                    .text(Messages.renameButton)
+                var $setTitle = Cryptpad.createButton('rename', true)
                     .click(function () {
                         var suggestion = suggestName();
 
@@ -384,12 +366,7 @@ define([
                 $rightside.append($setTitle);
 
                 /* add a forget button */
-                var $forgetPad = $('<button>', {
-                        id: 'cryptpad-forget',
-                        title: Messages.forgetButtonTitle,
-                    })
-                    .text(Messages.forgetButton)
-                    .addClass('cryptpad-forget rightside-button')
+                var $forgetPad = Cryptpad.createButton('forget', true)
                     .click(function () {
                         var href = window.location.href;
                         Cryptpad.confirm(Messages.forgetPrompt, function (yes) {
@@ -409,11 +386,7 @@ define([
 
                 if (!readOnly && viewHash) {
                     /* add a 'links' button */
-                    var $links = $('<button>', {
-                        title: Messages.getViewButtonTitle
-                    })
-                        .text(Messages.getViewButton)
-                        .addClass('rightside-button')
+                    var $links = Cryptpad.createButton('readonly', true)
                         .click(function () {
                             var baseUrl = window.location.origin + window.location.pathname + '#';
                             var content = '<b>' + Messages.readonlyUrl + '</b><br><a>' + baseUrl + viewHash + '</a><br>';

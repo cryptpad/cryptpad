@@ -608,6 +608,83 @@ define([
     };
 
     /*
+     * Buttons
+     */
+    var createButton = common.createButton = function (type, rightside) {
+        var button;
+        var size = "17px";
+        switch (type) {
+            case 'export':
+                button = $('<button>', {
+                    title: Messages.exportButton + '\n' + Messages.exportButtonTitle,
+                    'class': "fa fa-download",
+                    style: 'font:'+size+' FontAwesome'
+                });
+                break;
+            case 'import':
+                button = $('<button>', {
+                    title: Messages.importButton + '\n' + Messages.importButtonTitle,
+                    'class': "fa fa-upload",
+                    style: 'font:'+size+' FontAwesome'
+                });
+                break;
+            case 'rename':
+                button = $('<button>', {
+                    id: 'name-pad',
+                    title: Messages.renameButton + '\n' + Messages.renameButtonTitle,
+                    'class': "fa fa-bookmark cryptpad-rename",
+                    style: 'font:'+size+' FontAwesome'
+                });
+                break;
+            case 'forget':
+                button = $('<button>', {
+                    id: 'cryptpad-forget',
+                    title: Messages.forgetButton + '\n' + Messages.forgetButtonTitle,
+                    'class': "fa fa-trash cryptpad-forget",
+                    style: 'font:'+size+' FontAwesome'
+                });
+                break;
+            case 'username':
+                button = $('<button>', {
+                    title: Messages.userButton + '\n' + Messages.userButtonTitle,
+                    'class': "fa fa-user",
+                    style: 'font:'+size+' FontAwesome'
+                });
+                break;
+            case 'readonly':
+                button = $('<button>', {
+                    title: Messages.getViewButton + '\n' + Messages.getViewButtonTitle,
+                    'class': "fa fa-eye",
+                    style: 'font:'+size+' FontAwesome'
+                });
+                break;
+            case 'present':
+                button = $('<button>', {
+                    title: Messages.presentButton + '\n' + Messages.presentButtonTitle,
+                    'class': "fa fa-play-circle cryptpad-present-button", // class used in slide.js
+                    style: 'font:'+size+' FontAwesome'
+                });
+                break;
+            case 'source':
+                button = $('<button>', {
+                    title: Messages.sourceButton + '\n' + Messages.sourceButtonTitle,
+                    'class': "fa fa-stop-circle cryptpad-source-button", // class used in slide.js
+                    style: 'font:'+size+' FontAwesome'
+                });
+                break;
+             default:
+                button = $('<button>', {
+                    'class': "fa fa-question",
+                    style: 'font:'+size+' FontAwesome'
+                });
+        }
+        if (rightside) {
+            button.addClass('rightside-button')
+        }
+        return button;
+    };
+
+    /*
      *  Alertifyjs
      */
     var styleAlerts = common.styleAlerts = function (href) {

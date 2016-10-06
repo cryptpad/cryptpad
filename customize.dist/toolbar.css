@@ -16,7 +16,7 @@
   user-select: none;
   color: #666;
   font-weight: bold;
-  height: 26px;
+  height: 30px;
   margin-bottom: -3px;
   display: inline-block;
   width: 100%;
@@ -26,10 +26,10 @@
   float: right;
 }
 .cryptpad-toolbar div {
-  padding: 0 10px;
+  padding: 0 3px;
   height: 1.5em;
   line-height: 25px;
-  height: 22px;
+  height: 100%;
 }
 .cryptpad-toolbar div.cryptpad-back {
   padding: 0;
@@ -38,13 +38,18 @@
   color: #000;
 }
 .cryptpad-toolbar button {
-  height: 100%;
+  height: 26px;
   background-color: inherit;
+  background-image: linear-gradient(to bottom, #fff, #e4e4e4);
   border: 1px solid #A6A6A6;
-  border-radius: 5px;
+  border-bottom-color: #979797;
+  border-radius: 3px;
   margin-right: 5px;
   padding-right: 5px;
   padding-left: 5px;
+}
+.cryptpad-toolbar button:hover {
+  background-image: linear-gradient(to bottom, #f2f2f2, #ccc);
 }
 .cryptpad-toolbar .rightside-button {
   float: right;
@@ -82,4 +87,23 @@
 }
 .cryptpad-toolbar-username {
   font-style: italic;
+}
+.lag {
+  display: inline-block;
+  vertical-align: middle;
+  padding: 0 !important;
+  margin: 0 !important;
+  height: 15px !important;
+  width: 15px !important;
+  border-radius: 50%;
+  border: 1px solid #444;
+}
+.lag-green {
+  background-color: #46E981;
+}
+.lag-red {
+  background-color: #FF0073;
+}
+.lag-orange {
+  background-color: #FE9A2E;
 }

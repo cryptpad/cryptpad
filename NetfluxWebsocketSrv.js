@@ -1,8 +1,6 @@
 ;(function () { 'use strict';
 const Crypto = require('crypto');
 const Nacl = require('tweetnacl');
-const LogStore = require('./storage/LogStore');
-
 
 const LAG_MAX_BEFORE_DISCONNECT = 30000;
 const LAG_MAX_BEFORE_PING = 15000;
@@ -10,7 +8,6 @@ const HISTORY_KEEPER_ID = Crypto.randomBytes(8).toString('hex');
 
 const USE_HISTORY_KEEPER = true;
 const USE_FILE_BACKUP_STORAGE = true;
-
 
 let dropUser;
 let historyKeeperKeys = {};
@@ -79,10 +76,15 @@ dropUser = function (ctx, user) {
         let chan = ctx.channels[chanName];
         let idx = chan.indexOf(user);
         if (idx < 0) { return; }
-        console.log("Removing ["+user.id+"] from channel ["+chanName+"]");
+
+        if (ctx.verbose) {
+            console.log("Removing ["+user.id+"] from channel ["+chanName+"]");
+        }
         chan.splice(idx, 1);
         if (chan.length === 0) {
-            console.log("Removing empty channel ["+chanName+"]");
+            if (ctx.verbose) {
+                console.log("Removing empty channel ["+chanName+"]");
+            }
             delete ctx.channels[chanName];
             delete historyKeeperKeys[chanName];
 
@@ -94,7 +96,9 @@ dropUser = function (ctx, user) {
                         ctx.store.removeChannel(chanName, function (err) {
                             if (err) { console.error("[removeChannelErr]: %s", err); }
                             else {
-                                console.log("Deleted channel [%s] history from database...", chanName);
+                                if (ctx.verbose) {
+                                    console.log("Deleted channel [%s] history from database...", chanName);
+                                }
                             }
                         });
                     }, ctx.config.channelRemovalTimeout);
@@ -253,7 +257,7 @@ let run = module.exports.run = function (storage, socketServer, config) {
         users: {},
         channels: {},
         timeouts: {},
-        store: (USE_FILE_BACKUP_STORAGE) ? LogStore.create('messages.log', storage) : storage,
+        store: storage,
         config: config
     };
     setInterval(function () {

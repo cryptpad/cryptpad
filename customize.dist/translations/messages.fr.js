@@ -31,6 +31,11 @@ define(function () {
     out.peopleAreEditing = '{0} personnes éditent le document';
     out.oneViewer = '1 lecteur';
     out.viewers = '{0} lecteurs';
+    out.anonymous = "Vous êtes actuellement anonyme";
+
+    out.greenLight = "Tout fonctionne bien";
+    out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur"
+    out.redLight = "Vous êtes déconnectés de la session";
 
     out.importButton = 'IMPORTER';
     out.importButtonTitle = 'Importer un document depuis un fichier local';
@@ -42,8 +47,8 @@ define(function () {
     out.back = '&#8656; Retour';
     out.backToCryptpad = '⇐ Retour vers Cryptpad';
 
-    out.changeNameButton = 'Changer de nom';
-    out.changeNamePrompt = 'Changer votre nom : ';
+    out.userButton = 'UTILISATEUR';
+    out.userButtonTitle = "Changer votre nom d'utilisateur";
 
     out.renameButton = 'RENOMMER';
     out.renameButtonTitle = 'Changer le titre utilisé par ce document dans la page d\'accueil de Cryptpad';
@@ -62,6 +67,8 @@ define(function () {
     out.presentButton = 'PRÉSENTER';
     out.presentButtonTitle = "Entrer en mode présentation";
     out.presentSuccess = 'Appuyer sur Échap pour quitter le mode présentation';
+    out.sourceButton = 'VOIR LA SOURCE';
+    out.sourceButtonTitle = "Quitter le mode présentation";
 
     out.commitButton = 'VALIDER';
 
@@ -134,7 +141,7 @@ define(function () {
     out.main_howitworks_p1 = 'CryptPad utilise une variante de l\'algorithme d\'<a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> qui est capable de trouver un consensus distribué en utilisant une chaîne de bloc Nakamoto, un outil popularisé par le <a href="https://fr.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. De cette manière, l\'algorithme évite la nécessité d\'utiliser un serveur central pour résoudre les conflits d\'édition de l\'Operational Transformation, et sans ce besoin de résolution des conflits le serveur peut rester ignorant du contenu qui est édité dans le pad.';
     out.main_about = 'À propos';
     out.main_about_p1 = 'Vous pouvez en apprendre davantage sur notre <a href="/privacy.html" title="">politique de confidentialité</a> et nos <a href="/terms.html">conditions d\'utilisation</a>.';
-    out.main_about_p2 = 'Si vous avez des questions ou commentaires, vous pouvez <a href="https://twitter.com/cryptpad">nous tweeter</a>, ouvrir une issue sur <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">Github</a>, venir dire bonjour sur IRC (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), ou <a href="mailto:sftfbsdiAyxjlj/dpn">nous envoyer un email</a>.';
+    out.main_about_p2 = 'Si vous avez des questions ou commentaires, vous pouvez <a href="https://twitter.com/cryptpad">nous tweeter</a>, ouvrir une issue sur <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">Github</a>, venir dire bonjour sur IRC (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), ou <a href="mailto:research@xwiki.com">nous envoyer un email</a>.';
     out.main_oops = '<strong>OUPS</strong> Afin de pouvoir réaliser le cryptage depuis votre navigateur, Javascript est <strong>vraiment</strong> requis.';
 
     out.table_type = 'Type';
@@ -179,8 +186,14 @@ define(function () {
 
     // BottomBar.html
 
-    out.bottom_love = '<a href="http://www.xwiki.com/fr" target="_blank" rel="noopener noreferrer">Fait avec <img class="bottom-bar-heart" src="/customize/heart.png" /> en <img class="bottom-bar-fr" src="/customize/fr.png" /></a>';
+    out.bottom_france = '<a href="http://www.xwiki.com/fr" target="_blank" rel="noopener noreferrer">Fait avec <img class="bottom-bar-heart" src="/customize/heart.png" /> en <img class="bottom-bar-fr" src="/customize/fr.png" /></a>';
     out.bottom_support = '<a href="http://labs.xwiki.com/" title="XWiki Labs" target="_blank" rel="noopener noreferrer">Un projet <img src="/customize/logo-xwiki2.png" alt="XWiki SAS" class="bottom-bar-xwiki"/> Labs</a> avec le soutien de <a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
+
+    // Header.html
+
+    out.header_france = '<a href="http://www.xwiki.com/fr" target="_blank" rel="noopener noreferrer">Fait avec <img class="bottom-bar-heart" src="/customize/heart.png" /> en <img class="bottom-bar-fr" title="France" alt="France" src="/customize/fr.png" /> par <img src="/customize/logo-xwiki.png" alt="XWiki SAS" class="bottom-bar-xwiki"/></a>';
+    out.header_support = '<a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
+    out.header_logoTitle = "Aller vers la page d'accueil";
 
     return out;
 });

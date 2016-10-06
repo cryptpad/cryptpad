@@ -2,100 +2,46 @@
 <html>
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <script data-main="main" src="/bower_components/requirejs/require.js"></script>
+    <script>
+        require.config({
+            waitSeconds: 60,
+        });
+    </script>
     <link rel="icon" type="image/png"
         href="/customize/main-favicon.png"
+
         data-main-favicon="/customize/main-favicon.png"
         data-alt-favicon="/customize/alt-favicon.png"
         id="favicon" />
     <link rel="stylesheet" href="/customize/main.css" />
     <style>
-        html, body{
-            height: 100%;
-            width: 100%;
-            padding: 0px;
-            margin: 0px;
-            overflow: hidden;
-            box-sizing: border-box;
-            position: relative;
+        html, body {
+            overflow-y: hidden;
         }
-        #bar > button {
-            margin: 5px;
+        #pad-iframe {
+            position:fixed;
+            top:2.5em;
+            left:0px;
+            bottom:0px;
+            right:0px;
+            width:100%;
+            height:100%;
+            border:none;
+            margin:0;
+            padding:0;
+            overflow:hidden;
         }
-        textarea{
-            width: 100%;
-            min-height: 90%;
-
-            display: block;
-            position: relative;
-
-            font-size: 25px;
-            background-color: #073642;
-            color: #DDD;
-
-            overflow-x: hidden;
-
-            /* disallow textarea resizes */
-            resize: none;
-            border: 0px;
-        }
-        textarea[disabled] {
-            background-color: #275662;
-            color: #637476;
-        }
-
-        #modal {
-            display: none;
-        }
-        #modal.shown {
-            display: block;
-            position: fixed;
+        /* We use !important here to override the 96% set to the element in DecorateToolbar.js
+           when we enter fullscreen mode. It allows us to avoid changing the iframe's size in JS */
+        #pad-iframe.fullscreen {
             top: 0px;
-            left: 0px;
-            z-index: 100;
-            background-color: black;
-            color: white;
-            height: 100vh;
-            width: 100%;
-        }
-
-        #content {
-            width: 90%;
-            margin: auto;
-        }
-
-        #content h1, h2, h3, h4, h5, h6 {
-            text-align: center;
-        }
-
-        h1 { font-size: 40px; }
-        h2 { font-size: 37px; }
-        h3 { font-size: 34px; }
-        h4 { font-size: 31px; }
-        h5 { font-size: 27px; }
-        h6 { font-size: 24px; }
-
-        #content p,
-        #content ul,
-        #content ol {
-            font-size: 26px;
-        }
-        #content img {
-            position: relative;
-            max-width: 90%;
-            max-height: 90%;
-            margin: auto;
+            height: 100% !important;
         }
     </style>
 </head>
 <body>
-    <div id="bar"></div>
-    <textarea></textarea>
-    <div id="modal">
-        <div id="content"></div>
-    </div>
-    <div id="nope"></div>
+    <iframe id="pad-iframe" src="inner.html"></iframe>
 </body>
 </html>
 

@@ -689,8 +689,6 @@ define([
 
         var $toolbar = $('#toolbar');
 
-        $toolbar.find('sub a').text(Messages.backToCryptpad);
-
         var Button = function (opt) {
             return $('<button>', opt);
         };
