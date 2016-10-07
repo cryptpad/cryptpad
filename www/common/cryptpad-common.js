@@ -767,6 +767,7 @@ define([
                             }
                         });
                         $("#cryptpad-readonly-open").click(function() {
+                            common.findOKButton().click();
                             window.open(url);
                         });
 
@@ -805,7 +806,11 @@ define([
      */
     var styleAlerts = common.styleAlerts = function (href) {
         var $link = $('link[href="/customize/alertify.css"]');
-        if ($link.length) { return; }
+        if ($link.length) {
+            $link.attr('href', '');
+            $link.attr('href', '/customize/alertify.css');
+            return;
+        }
 
         href = href || '/customize/alertify.css';
         $('head').append($('<link>', {
@@ -845,6 +850,7 @@ define([
     };
 
     common.alert = function (msg, cb) {
+        common.styleAlerts();
         cb = cb || function () {};
         var keyHandler = listenForKeys(function (e) { // yes
             findOKButton().click();
@@ -856,6 +862,7 @@ define([
     };
 
     common.prompt = function (msg, def, cb, opt) {
+        common.styleAlerts();
         opt = opt || {};
         cb = cb || function () {};
 
@@ -879,6 +886,7 @@ define([
     };
 
     common.confirm = function (msg, cb, opt) {
+        common.styleAlerts();
         opt = opt || {};
         cb = cb || function () {};
         var keyHandler = listenForKeys(function (e) {
