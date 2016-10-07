@@ -438,11 +438,11 @@ define([
                     console.log(jscolor);
                     var $background = $('<input>', {
                         value: 'BACKGROUND',
+                        style: "position:absolute; top:100px; left: 50px; z-index:1000"
                     });
-                    $rightside[0].appendChild($background[0]);
                     var picker = new jscolor($background[0]);
+                    $('body').append($background);
                     console.log($background);
-                    $background.addClass('jscolor-active');
 //                    $rightside[0].appendChild($background[0]);
                     //console.log($pad.contents().find('#cryptpad-bg-color'));
 
