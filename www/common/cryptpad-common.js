@@ -108,28 +108,6 @@ define([
         return text;
     };
 
-    common.redirect = function (hash) {
-        var hostname = window.location.hostname;
-
-        // don't do anything funny unless you're on a cryptpad subdomain
-        if (!/cryptpad.fr$/i.test(hostname)) { return; }
-
-        if (hash.length >= 25) {
-            // you're on the right domain
-            return;
-        }
-
-        // old.cryptpad only supports these apps, so only redirect on a match
-        if (['/pad/', '/p/', '/code/'].indexOf(window.location.pathname) === -1) {
-            return;
-        }
-
-        // if you make it this far then there's something wrong with your hash
-        // you should probably be on old.cryptpad.fr...
-
-        window.location.hostname = 'old.cryptpad.fr';
-    };
-
     var hexToBase64 = common.hexToBase64 = function (hex) {
         var hexArray = hex
             .replace(/\r|\n/g, "")
@@ -197,7 +175,6 @@ define([
                 secret.key = Crypto.createEditCryptor().editKeyStr;
                 return secret;
             }
-            common.redirect(hash);
             // old hash system : #{hexChanKey}{cryptKey}
             // new hash system : #/{hashVersion}/{b64ChanKey}/{cryptKey}
             if (hash.slice(0,1) !== '/' && hash.length >= 56) {
