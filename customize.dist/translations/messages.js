@@ -71,6 +71,11 @@ define(function () {
     out.sourceButton = 'VIEW SOURCE';
     out.sourceButtonTitle = "Leave presentation mode";
 
+    out.backgroundButton = 'BACKGROUND COLOR';
+    out.backgroundButtonTitle = 'Change the background color in the presentation';
+    out.colorButton = 'TEXT COLOR';
+    out.colorButtonTitle = 'Change the text color in presentation mode';
+
     out.commitButton = 'COMMIT';
 
     out.getViewButton = 'READ-ONLY URL';

@@ -15,7 +15,6 @@ define([
     '/slide/slide.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
-    '/common/jscolor.js',
     '/customize/pad.js'
 ], function (Messages, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad, Modes, Themes, Visible, Notify, Slide) {
     var $ = window.jQuery;
@@ -29,6 +28,8 @@ define([
     };
     var APP = window.APP;
 
+    var SLIDE_BACKCOLOR_ID = "cryptpad-backcolor";
+    var SLIDE_COLOR_ID = "cryptpad-color";
     Cryptpad.styleAlerts();
 
     module.spinner.show();
@@ -157,6 +158,9 @@ define([
                 }
             };
 
+            var textColor;
+            var backColor;
+
             var myData = {};
             var myUserName = ''; // My "pretty name"
             var myID; // My server ID
@@ -188,23 +192,34 @@ define([
 
             var initializing = true;
 
+            var stringifyInner = function (textValue) {
+                var obj = {
+                    content: textValue,
+                    metadata: {
+                        users: userList
+                    }
+                };
+                if (!isDefaultTitle()) {
+                    obj.metadata.title = APP.title;
+                }
+                if (textColor) {
+                    obj.metadata.color = textColor;
+                }
+                if (backColor) {
+                    obj.metadata.backColor = backColor;
+                }
+                // stringify the json and send it into chainpad
+                return stringify(obj);
+            };
+
             var onLocal = config.onLocal = function () {
                 if (initializing) { return; }
                 if (readOnly) { return; }
 
                 editor.save();
-                var textValue = canonicalize($textarea.val());
-                var obj = {content: textValue};
 
-                // append the userlist to the hyperjson structure
-                obj.metadata = {
-                    users: userList
-                };
-                if (!isDefaultTitle()) {
-                    obj.metadata.title = APP.title;
-                }
-                // stringify the json and send it into chainpad
-                var shjson = stringify(obj);
+                var textValue = canonicalize($textarea.val());
+                var shjson = stringifyInner(textValue);
 
                 module.patchText(shjson);
                 Slide.update(textValue);
@@ -431,21 +446,36 @@ define([
                 };
 
                 var configureColors = function () {
-                    /*var $background = $('<input>', {
-                        id: "cryptpad-bg-color",
-                        value: "#5367ce"
-                    }).colorpicker();*/
-                    console.log(jscolor);
-                    var $background = $('<input>', {
-                        value: 'BACKGROUND',
-                        style: "position:absolute; top:100px; left: 50px; z-index:1000"
+                    $back = $('<button>', {
+                        id: SLIDE_BACKCOLOR_ID,
+                        'class': 'fa fa-square',
+                        'style': 'font-family: FontAwesome; color: #000;',
+                        title: Messages.backgroundButton + '\n' + Messages.backgroundButtonTitle
                     });
-                    var picker = new jscolor($background[0]);
-                    $('body').append($background);
-                    console.log($background);
-//                    $rightside[0].appendChild($background[0]);
-                    //console.log($pad.contents().find('#cryptpad-bg-color'));
+                    $text = $('<button>', {
+                        id: SLIDE_COLOR_ID,
+                        'class': 'fa fa-i-cursor',
+                        'style': 'font-family: FontAwesome; font-weight: bold; color: #fff; background: #000;',
+                        title: Messages.colorButton + '\n' + Messages.colorButtonTitle
+                    });
+                    $testColor = $('<input>', { type: 'color' });
+                    if ($testColor.attr('type') !== "color") {alert('not supported'); return;}
+                    $back.on('click', function() {
+                        $('<input>', { type: 'color', value: backColor })
+                            .on('change', function() {
+                                updateColors(undefined, this.value);
+                                onLocal();
+                            }).click();
+                    });
+                    $text.on('click', function() {
+                        $('<input>', { type: 'color', value: textColor })
+                            .on('change', function() {
+                                updateColors(this.value, undefined);
+                                onLocal();
+                            }).click();
+                    });
 
+                    $rightside.append($back).append($text);
                 };
 
                 configureTheme();
@@ -494,6 +524,20 @@ define([
                 });
             };
 
+            var updateColors = function (text, back) {
+                if (text) {
+                    textColor = text;
+                    $modal.css('color', text);
+                    $pad.contents().find('#' + SLIDE_COLOR_ID).css('color', text);
+                }
+                if (back) {
+                    backColor = back;
+                    $modal.css('background-color', back);
+                    $pad.contents().find('#' + SLIDE_COLOR_ID).css('background', back);
+                    $pad.contents().find('#' + SLIDE_BACKCOLOR_ID).css('color', back);
+                }
+            };
+
             var updateMetadata = function(shjson) {
                 // Extract the user list (metadata) from the hyperjson
                 var json = (shjson === "") ? "" : JSON.parse(shjson);
@@ -506,6 +550,7 @@ define([
                     if (json.metadata.title) {
                         updateTitle(json.metadata.title);
                     }
+                    updateColors(json.metadata.color, json.metadata.backColor);
                 }
             };
 
@@ -662,18 +707,8 @@ define([
                 editor.scrollTo(scroll.left, scroll.top);
 
                 if (!readOnly) {
-                    var localDoc = canonicalize($textarea.val());
-                    var hjson2 = {
-                      content: localDoc,
-                      metadata: {
-                          users: userList
-                      },
-                      highlightMode: highlightMode,
-                    };
-                    if (!isDefaultTitle()) {
-                        hjson2.metadata.title = APP.title;
-                    }
-                    var shjson2 = stringify(hjson2);
+                    var textValue = canonicalize($textarea.val());
+                    var shjson2 = stringifyInner(textValue);
                     if (shjson2 !== shjson) {
                         console.error("shjson2 !== shjson");
                         TextPatcher.log(shjson, TextPatcher.diff(shjson, shjson2));

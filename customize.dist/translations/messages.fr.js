@@ -70,6 +70,11 @@ define(function () {
     out.sourceButton = 'VOIR LA SOURCE';
     out.sourceButtonTitle = "Quitter le mode présentation";
 
+    out.backgroundButton = 'COULEUR DE FOND';
+    out.backgroundButtonTitle = 'Changer la couleur de fond de la présentation';
+    out.colorButton = 'COULEUR DU TEXTE';
+    out.colorButtonTitle = 'Changer la couleur du texte en mode présentation';
+
     out.commitButton = 'VALIDER';
 
     out.getViewButton = 'LECTURE SEULE';

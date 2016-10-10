@@ -23,6 +23,7 @@ define([
         $content = Slide.$content = $c;
         $pad = Slide.$pad = $p;
         ifrw = Slide.ifrw = iframe;
+        addEvent();
     };
 
     Slide.onChange = function (f) {
@@ -173,23 +174,51 @@ define([
         Slide.draw(i);
     };
 
-    $(ifrw).on('keyup', function (e) {
-        if (!Slide.shown) { return; }
-        switch(e.which) {
-            case 37:
-                Slide.left();
-                break;
-            case 32:
-            case 39: // right
-                Slide.right();
-                break;
-            case 27: // esc
-                show(false);
-                break;
-            default:
-                console.log(e.which);
-        }
-    });
+    var first = Slide.first = function () {$
+        console.log('first');
+        Slide.lastIndex = Slide.index;
+
+        var i = Slide.index = 0;
+        Slide.draw(i);
+    };
+
+    var last = Slide.last = function () {
+        console.log('end');
+        Slide.lastIndex = Slide.index;
+
+        var i = Slide.index = Slide.content.length - 1;
+        Slide.draw(i);
+    };
+
+    var addEvent = function () {
+        $(ifrw).on('keyup', function (e) {
+            if (!Slide.shown) { return; }
+            switch(e.which) {
+                case 33: // pageup
+                case 38: // up
+                case 37: // left
+                    Slide.left();
+                    break;
+                case 34: // pagedown
+                case 32: // space
+                case 40: // down
+                case 39: // right
+                    Slide.right();
+                    break;
+                case 36: // home
+                    Slide.first();
+                    break;
+                case 35: // end
+                    Slide.last();
+                    break
+                case 27: // esc
+                    show(false);
+                    break;
+                default:
+                    console.log(e.which);
+            }
+        });
+    };
 
     return Slide;
 });
