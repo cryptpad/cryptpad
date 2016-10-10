@@ -458,21 +458,31 @@ define([
                         'style': 'font-family: FontAwesome; font-weight: bold; color: #fff; background: #000;',
                         title: Messages.colorButton + '\n' + Messages.colorButtonTitle
                     });
-                    $testColor = $('<input>', { type: 'color' });
-                    if ($testColor.attr('type') !== "color") {alert('not supported'); return;}
+                    $testColor = $('<input>', { type: 'color', value: '!' });
+                    var $check = $pad.contents().find("#colorPicker_check");
+                    if ($testColor.attr('type') !== "color" || $testColor.val() === '!') { return; } // TODO
                     $back.on('click', function() {
-                        $('<input>', { type: 'color', value: backColor })
+                        var $picker = $('<input>', { type: 'color', value: backColor })
                             .on('change', function() {
                                 updateColors(undefined, this.value);
                                 onLocal();
-                            }).click();
+                            });
+                        $check.append($picker);
+                        setTimeout(function() {
+                            $picker.click();
+                        }, 0);
                     });
                     $text.on('click', function() {
-                        $('<input>', { type: 'color', value: textColor })
+                        var $picker = $('<input>', { type: 'color', value: textColor })
                             .on('change', function() {
                                 updateColors(this.value, undefined);
                                 onLocal();
-                            }).click();
+                                $check.html('');
+                            });
+                        $check.append($picker);
+                        setTimeout(function() {
+                            $picker.click();
+                        }, 0);
                     });
 
                     $rightside.append($back).append($text);
