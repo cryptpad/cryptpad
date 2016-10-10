@@ -5,7 +5,6 @@ define([
     '/common/cryptpad-common.js',
     '/bower_components/lil-uri/uri.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
-    '/common/jscolor.js',
 ], function (Messages, DecorateToolbar, Config, Cryptpad, LilUri) {
     var $ = window.$;
 
