@@ -1,6 +1,7 @@
 define([
     '/customize/messages.js',
     '/bower_components/jquery/dist/jquery.min.js',
+    '/bower_components/bootstrap/js/dropdown.js',
 ], function (Messages) {
     var $ = window.jQuery;
 
@@ -95,19 +96,17 @@ define([
 
     var getOtherUsers = function(myUserName, userList, userData) {
       var i = 0;
-      var list = '';
+      var list = [];
       userList.forEach(function(user) {
         if(user !== myUserName) {
           var data = (userData) ? (userData[user] || null) : null;
           var userName = (data) ? data.name : null;
           if(userName) {
-            if(i === 0) { list = ' : '; }
-            list += userName + ', ';
-            i++;
+            list.push(userName);
           }
         }
       });
-      return (i > 0) ? list.slice(0, -2) : list;
+      return list;
     };
 
     var arrayIntersect = function(a, b) {
@@ -131,34 +130,48 @@ define([
         userList = readOnly === -1 ? userList : arrayIntersect(userList, Object.keys(userData));
         var innerHTML;
         var numberOfViewUsers = numberOfUsers - userList.length;
+        var editUsersNames = getOtherUsers(myUserName, userList, userData);
+        var editTitle = Messages.editUsersIcon;
+        var anonymous = numberOfUsers - editUsersNames.length;
+
+        // Display the user list in the title property of the "edit users" icon.
+        if (readOnly === 0) {
+            editTitle += '\n' + Messages.yourself;
+            anonymous--;
+        }
+        if (editUsersNames.length > 0) {
+            editTitle += '\n' + editUsersNames.join('\n');
+        }
+        if (anonymous > 0) {
+            var text = anonymous === 1 ? Messages.anonymousUser : Messages.anonymousUsers;
+            editTitle += '\n' + anonymous + " " + text;
+        }
+
+        var $editIcon = $('<button>', {
+            'class': 'fa fa-users',
+            style: 'font-family: FontAwesome;',
+            title: editTitle
+        }).text(' ' + userList.length + ' people editing');
+        var $viewIcon = $('<span>', {
+            disabled: 'disabled',
+            'class': 'fa fa-eye',
+            style: 'font-family: FontAwesome',
+            title: Messages.viewUsersIcon
+        }).text(' ' + numberOfViewUsers + ' people viewing');
+        var innerHTML;
         if (readOnly === 1) {
             innerHTML = '<span class="' + READONLY_CLS + '">' + Messages.readonly + '</span>';
-            if (userList.length === 0) {
-                innerHTML += Messages.nobodyIsEditing;
-            } else if (userList.length === 1) {
-                innerHTML += Messages.onePersonIsEditing + getOtherUsers(myUserName, userList, userData);
-            } else {
-                innerHTML += Messages._getKey('peopleAreEditing', [userList.length]) + getOtherUsers(myUserName, userList, userData);
-            }
-            // Remove the current user
-            numberOfViewUsers--;
         }
-        else {
-            if (userList.length === 1) {
-                innerHTML = Messages.editingAlone;
-            } else if (userList.length === 2) {
-                innerHTML = Messages.editingWithOneOtherPerson + getOtherUsers(myUserName, userList, userData);
-            } else {
-                innerHTML = Messages.editingWith + ' ' + (userList.length - 1) + ' ' + Messages.otherPeople + getOtherUsers(myUserName, userList, userData);
-            }
-        }
-        innerHTML += getViewers(numberOfViewUsers);
-        if (userData[myUserName]) {
-            var name = userData[myUserName].name;
+        else  {
+            var name = userData[myUserName] && userData[myUserName].name;
             if (!name) {
                 name = '<span title="' + Messages.anonymous + '" class="fa fa-user-secret" style="font-family:FontAwesome"></span>';
             }
-            innerHTML = '<span class="' + USERNAME_CLS + '">' + name + '</span> | ' + innerHTML;
+            innerHTML = '<span class="' + USERNAME_CLS + '">' + name + '</span> | ';
+        }
+        innerHTML += $('<div>').append($editIcon).html();
+        if (readOnly !== -1) {
+            innerHTML += ' | ' + $('<div>').append($viewIcon).html();
         }
         listElement.innerHTML = innerHTML;
     };

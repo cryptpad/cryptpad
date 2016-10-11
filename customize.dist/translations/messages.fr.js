@@ -17,21 +17,17 @@ define(function () {
 
     out.common_connectionLost = 'Connexion au serveur perdue';
 
-    out.editingAlone = 'Pas d\'autre participant';
-    out.editingWithOneOtherPerson = 'Édition avec une autre personne';
-    out.editingWith = 'Édition avec';
-    out.otherPeople = 'autres personnes';
     out.disconnected = 'Déconnecté';
     out.synchronizing = 'Synchronisation';
     out.reconnecting = 'Reconnexion...';
     out.lag = 'Latence';
     out.readonly = 'Lecture seule';
-    out.nobodyIsEditing = "Personne n'édite le document";
-    out.onePersonIsEditing = 'Une personne édite le document';
-    out.peopleAreEditing = '{0} personnes éditent le document';
-    out.oneViewer = '1 lecteur';
-    out.viewers = '{0} lecteurs';
     out.anonymous = "Vous êtes actuellement anonyme";
+    out.yourself = "Vous-même";
+    out.anonymousUsers = "utilisateurs anonymes";
+    out.anonymousUser = "utilisateur anonyme";
+    out.viewUsersIcon = "UTILISATEURS EN LECTURE SEULE";
+    out.editUsersIcon = "UTILISATEURS ÉDITANT LE DOCUMENT";
 
     out.greenLight = "Tout fonctionne bien";
     out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur";

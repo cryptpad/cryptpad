@@ -17,21 +17,17 @@ define(function () {
 
     out.common_connectionLost = 'Server Connection Lost';
 
-    out.editingAlone = 'Editing alone';
-    out.editingWithOneOtherPerson = 'Editing with one other person';
-    out.editingWith = 'Editing with';
-    out.otherPeople = 'other people';
     out.disconnected = 'Disconnected';
     out.synchronizing = 'Synchronizing';
     out.reconnecting = 'Reconnecting...';
     out.lag = 'Lag';
     out.readonly = 'Read only';
-    out.nobodyIsEditing = 'Nobody is editing';
-    out.onePersonIsEditing = 'One person is editing';
-    out.peopleAreEditing = '{0} people are editing';
-    out.oneViewer = '1 viewer';
-    out.viewers = '{0} viewers';
     out.anonymous = "You are currently anonymous";
+    out.yourself = "Yourself";
+    out.anonymousUsers = "anonymous users";
+    out.anonymousUser = "anonymous user";
+    out.viewUsersIcon = "PEOPLE VIEWING";
+    out.editUsersIcon = "PEOPLE EDITING";
 
     out.greenLight = "Everything is working fine";
     out.orangeLight = "Your slow connection may impact your experience";
