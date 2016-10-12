@@ -24,7 +24,7 @@ app.use(function (req, res, next) {
     if (config.websocketPort) {
         host = host.replace(/\:[0-9]+/, ':' + config.websocketPort);
     }
-    var proto = httpsOpts ? 'wss://' : 'ws://';
+    var proto = (httpsOpts || config.useSecureWebsockets) ? 'wss://' : 'ws://';
     res.setHeader('Content-Security-Policy', [
         "default-src 'none'",
         "style-src 'unsafe-inline' 'self'",

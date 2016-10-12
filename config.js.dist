@@ -25,6 +25,11 @@ module.exports = {
      */
     //websocketPort: 3000,
 
+    /*  If Cryptpad is proxied without using https, the server needs to know.
+     *  Specify 'useSecureWebsockets: true' so that it can send
+     *  Content Security Policy Headers that prevent http and https from mixing
+     */
+     useSecureWebsockets: false,
 
     /*  Cryptpad can log activity to stdout
      *  This may be useful for debugging
