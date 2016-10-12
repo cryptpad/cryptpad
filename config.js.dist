@@ -11,18 +11,18 @@ module.exports = {
     httpPort: 3000,
 
     /*  your server's websocket url is configurable
-        (default: '/cryptpad_websocket')
-
-        websocketPath can be relative, of the form '/path/to/websocket'
-        or absolute, specifying a particular URL
-
-        'wss://cryptpad.fr:3000/cryptpad_websocket'
-    */
+     *  (default: '/cryptpad_websocket')
+     *
+     *  websocketPath can be relative, of the form '/path/to/websocket'
+     *  or absolute, specifying a particular URL
+     *
+     *  'wss://cryptpad.fr:3000/cryptpad_websocket'
+     */
     websocketPath: '/cryptpad_websocket',
 
     /*  it is assumed that your websocket will bind to the same port as http
-        you can override this behaviour by supplying a number via websocketPort
-    */
+     *  you can override this behaviour by supplying a number via websocketPort
+     */
     //websocketPort: 3000,
 
 
@@ -31,12 +31,11 @@ module.exports = {
      */
     logToStdout: false,
 
-    /*
-        Cryptpad stores each document in an individual file on your hard drive.
-        Specify a directory where files should be stored.
-        It will be created automatically if it does not already exist.
-    */
-    filePath: './datastore/',
+    /*  Cryptpad supports verbose logging
+     *  (false by default)
+     */
+     verbose: false,
+
 
     /*
         You have the option of specifying an alternative storage adaptor.
@@ -55,6 +54,23 @@ module.exports = {
         For the most up to date solution, use the default storage adaptor.
     */
     storage: './storage/file',
+
+    /*
+        Cryptpad stores each document in an individual file on your hard drive.
+        Specify a directory where files should be stored.
+        It will be created automatically if it does not already exist.
+    */
+    filePath: './datastore/',
+
+    /*  Cryptpad's file storage adaptor closes unused files after a configurale
+     *  number of milliseconds (default 30000 (30 seconds))
+     */
+    channelExpirationMs: 30000,
+
+    /*  Cryptpad's file storage adaptor is limited by the number of open files.
+     *  When the adaptor reaches openFileLimit, it will clean up older files
+     */
+    openFileLimit: 2048,
 
     /* it is recommended that you serve cryptpad over https
      * the filepaths below are used to configure your certificates
