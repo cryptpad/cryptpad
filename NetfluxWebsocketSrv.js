@@ -82,12 +82,12 @@ dropUser = function (ctx, user) {
         let idx = chan.indexOf(user);
         if (idx < 0) { return; }
 
-        if (ctx.verbose) {
+        if (ctx.config.verbose) {
             console.log("Removing ["+user.id+"] from channel ["+chanName+"]");
         }
         chan.splice(idx, 1);
         if (chan.length === 0) {
-            if (ctx.verbose) {
+            if (ctx.config.verbose) {
                 console.log("Removing empty channel ["+chanName+"]");
             }
             delete ctx.channels[chanName];
@@ -101,7 +101,7 @@ dropUser = function (ctx, user) {
                         ctx.store.removeChannel(chanName, function (err) {
                             if (err) { console.error("[removeChannelErr]: %s", err); }
                             else {
-                                if (ctx.verbose) {
+                                if (ctx.config.verbose) {
                                     console.log("Deleted channel [%s] history from database...", chanName);
                                 }
                             }
