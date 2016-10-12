@@ -22,7 +22,7 @@ define(function () {
     out.reconnecting = 'Reconnecting...';
     out.lag = 'Lag';
     out.readonly = 'Read only';
-    out.anonymous = "You are currently anonymous";
+    out.anonymous = "Anonymous";
     out.yourself = "Yourself";
     out.anonymousUsers = "anonymous users";
     out.anonymousUser = "anonymous user";
@@ -79,6 +79,14 @@ define(function () {
     out.readonlyUrl = 'Read only document';
     out.copyReadOnly = "Copy URL to clipboard";
     out.openReadOnly = "Open in a new tab";
+    out.editing = "editing";
+    out.viewing = "viewing";
+    out.editShare = "Share";
+    out.editShareTitle = "Copy the edit URL to clipboard";
+    out.viewShare = "Share view URL";
+    out.viewShareTitle = "Copy the read-only URL to clipboard";
+    out.viewOpen = "View in new tab";
+    out.viewOpenTitle = "Open the document in read-only mode in a new tab";
 
     out.disconnectAlert = 'Network connection lost!';
 

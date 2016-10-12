@@ -22,7 +22,7 @@ define(function () {
     out.reconnecting = 'Reconnexion...';
     out.lag = 'Latence';
     out.readonly = 'Lecture seule';
-    out.anonymous = "Vous êtes actuellement anonyme";
+    out.anonymous = "nonyme";
     out.yourself = "Vous-même";
     out.anonymousUsers = "utilisateurs anonymes";
     out.anonymousUser = "utilisateur anonyme";
@@ -78,7 +78,14 @@ define(function () {
     out.readonlyUrl = 'Document en lecture seule';
     out.copyReadOnly = "Copier l'URL dans le presse-papiers";
     out.openReadOnly = "Ouvrir dans un nouvel onglet";
-
+    out.editing = "en édition";
+    out.viewing = "en lecture";
+    out.editShare = "Partager l'URL";
+    out.editShareTitle = "Copier l'URL d'édition dans le presse-papiers";
+    out.viewShare = "Partager l'URL de lecture";
+    out.viewShareTitle = "Copier l'URL d'accès en lecture seule dans le presse-papiers";
+    out.viewOpen = "Voir dans un nouvel onglet";
+    out.viewOpenTitle = "Ouvrir le document en lecture seule dans un nouvel onglet";
 
     out.disconnectAlert = 'Perte de la connexion au réseau !';
 

@@ -516,6 +516,9 @@ define([
                 toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
 
                 var $rightside = $bar.find('.' + Toolbar.constants.rightside);
+                var $userBlock = $bar.find('.' + Toolbar.constants.username);
+                var $editShare = $bar.find('.' + Toolbar.constants.editShare);
+                var $viewShare = $bar.find('.' + Toolbar.constants.viewShare);
 
                 var editHash;
                 var viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
@@ -530,7 +533,7 @@ define([
                         setName (newName);
                     };
                     var $username = Cryptpad.createButton('username', true, {lastName: lastName}, usernameCb);
-                    $rightside.append($username);
+                    $userBlock.append($username);
                 });
 
                 /* add an export button */
@@ -560,10 +563,18 @@ define([
                 var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
                 $rightside.append($forgetPad);
 
-                if (!readOnly && viewHash) {
+                if (!readOnly) {
+                    var $links = Cryptpad.createButton('editshare', false, {editHash: editHash});
+                    $editShare.append($links);
+                }
+                if (viewHash) {
                     /* add a 'links' button */
-                    var $links = Cryptpad.createButton('readonly', true, {viewHash: viewHash});
-                    $rightside.append($links);
+                    var $links = Cryptpad.createButton('viewshare', false, {viewHash: viewHash + '/present'});
+                    $viewShare.append($links);
+                    if (!readOnly) {
+                        var $links = Cryptpad.createButton('viewopen', false, {viewHash: viewHash + '/present'});
+                        $viewShare.append($links);
+                    }
                 }
 
                 // set the hash

@@ -23,9 +23,19 @@ define([
 
     var SPINNER_CLS = Bar.constants.spinner = 'cryptpad-spinner';
 
+    var STATE_CLS = Bar.constants.state = 'cryptpad-state';
+
     var USERNAME_CLS = Bar.constants.username = 'cryptpad-toolbar-username';
 
     var READONLY_CLS = Bar.constants.readonly = 'cryptpad-readonly';
+
+    var USERBUTTONS_CONTAINER_CLS = Bar.constants.userButtonsContainer = "cryptpad-userbuttons-container";
+    var USERLIST_CLS = Bar.constants.userlist = "cryptpad-dropdown-users";
+    var EDITSHARE_CLS = Bar.constants.editShare = "cryptpad-dropdown-editShare";
+    var VIEWSHARE_CLS = Bar.constants.viewShare = "cryptpad-dropdown-viewShare";
+    var DROPDOWN_CONTAINER_CLS = Bar.constants.dropdownContainer = "cryptpad-dropdown-container";
+    var DROPDOWN_CLS = Bar.constants.dropdown = "cryptpad-dropdown";
+
     /** Key in the localStore which indicates realtime activity should be disallowed. */
     // TODO remove? will never be used in cryptpad
     var LOCALSTORAGE_DISALLOW = Bar.constants.localstorageDisallow = 'cryptpad-disallow';
@@ -85,11 +95,72 @@ define([
         }, SPINNER_DISAPPEAR_TIME);
     };
 
-    var createUserList = function ($container) {
+    var createUserButtons = function ($userlistElement, readOnly) {
+        var $listElement = $('<span>', {
+            id: 'userButtons',
+            'class': USERBUTTONS_CONTAINER_CLS
+        }).appendTo($userlistElement);
+
+        var $editIcon = $('<button>', {
+            'class': 'userlist dropbtn edit',
+            title: Messages.editUsersIcon
+        });
+        var $editIconSmall = $editIcon.clone().addClass('small');
+        var $viewIcon = $('<button>', {
+            'class': 'userlist dropbtn view',
+            title: Messages.viewUsersIcon
+        });
+        var $viewIconSmall = $viewIcon.clone().addClass('small');
+
+        var $dropdownEditUsers = $('<p>', {'class': USERLIST_CLS});
+        var $dropdownEditShare = $('<p>', {'class': EDITSHARE_CLS});
+        var $dropdownEditContainer = $('<div>', {'class': DROPDOWN_CONTAINER_CLS});
+        var $dropdownEdit = $('<div>', {
+            id: "cryptpad-dropdown-edit",
+            'class': DROPDOWN_CLS
+        }).append($dropdownEditUsers).append($dropdownEditShare);
+
+        var $dropdownViewShare = $('<p>', {'class': VIEWSHARE_CLS});
+        var $dropdownViewContainer = $('<div>', {'class': DROPDOWN_CONTAINER_CLS});
+        var $dropdownView = $('<div>', {
+            id: "cryptpad-dropdown-view",
+            'class': DROPDOWN_CLS
+        }).append($dropdownViewShare);
+
+        var createHandler = function ($elmt) {
+            return function () {
+                if ($elmt.is(':visible')) {
+                    $elmt.hide();
+                    return;
+                }
+                $userlistElement.find('.' + DROPDOWN_CLS).hide();
+                $elmt.show();
+            };
+        };
+        $editIcon.click(createHandler($dropdownEdit));
+        $editIconSmall.click(createHandler($dropdownEdit));
+        $viewIcon.click(createHandler($dropdownView));
+        $viewIconSmall.click(createHandler($dropdownView));
+
+        $dropdownEditContainer.append($editIcon).append($editIconSmall).append($dropdownEdit);
+        $dropdownViewContainer.append($viewIcon).append($viewIconSmall).append($dropdownView);
+
+        $listElement.append($dropdownEditContainer);
+        if (readOnly !== -1) {
+            $listElement.append($dropdownViewContainer);
+        }
+
+
+    };
+
+    var createUserList = function ($container, readOnly) {
+        var $state = $('<span>', {'class': STATE_CLS}).text(Messages.synchronizing);
+        var $usernameElement = $('<span>', {'class': USERNAME_CLS});
         var $userlist = $('<div>', {
             'class': USER_LIST_CLS,
             id: uid(),
-        });
+        }).append($state).append($usernameElement);
+        createUserButtons($userlist, readOnly);
         $container.append($userlist);
         return $userlist[0];
     };
@@ -120,60 +191,72 @@ define([
         if (n === 1) { return '; + ' + Messages.oneViewer; }
         return '; + ' + Messages._getKey('viewers', [n]);
     };
-    var updateUserList = function (myUserName, listElement, userList, userData, readOnly) {
+    var updateUserList = function (myUserName, userlistElement, userList, userData, readOnly, $stateElement) {
         var meIdx = userList.indexOf(myUserName);
         if (meIdx === -1) {
-            listElement.textContent = Messages.synchronizing;
+            $stateElement.text(Messages.synchronizing);
             return;
         }
+        $stateElement.text('');
+
+        // Make sure the user block elements are displayed
+        var $userButtons = $(userlistElement).find("#userButtons");
+        $userButtons.show();
+        var $userElement = $(userlistElement).find('.' + USERNAME_CLS);
+        $userElement.show();
+
         var numberOfUsers = userList.length;
+
+        // If we are using old pads (readonly unavailable), only editing users are in userList.
+        // With new pads, we also have readonly users in userList, so we have to intersect with
+        // the userData to have only the editing users. We can't use userData directly since it
+        // contains data about users that have already left the channel.
         userList = readOnly === -1 ? userList : arrayIntersect(userList, Object.keys(userData));
-        var innerHTML;
+
         var numberOfViewUsers = numberOfUsers - userList.length;
+
+        // Names of editing users
         var editUsersNames = getOtherUsers(myUserName, userList, userData);
-        var editTitle = Messages.editUsersIcon;
+
+        // Number of anonymous editing users
         var anonymous = numberOfUsers - editUsersNames.length;
 
-        // Display the user list in the title property of the "edit users" icon.
+        // Update the userlist
+        var editUsersList = '';
         if (readOnly === 0) {
-            editTitle += '\n' + Messages.yourself;
+            editUsersNames.unshift(Messages.yourself);
             anonymous--;
-        }
-        if (editUsersNames.length > 0) {
-            editTitle += '\n' + editUsersNames.join('\n');
         }
         if (anonymous > 0) {
             var text = anonymous === 1 ? Messages.anonymousUser : Messages.anonymousUsers;
-            editTitle += '\n' + anonymous + " " + text;
+            editUsersNames.push(anonymous + " " + text);
         }
+        if (editUsersNames.length > 0) {
+            editUsersList += editUsersNames.join('<br>');
+        }
+        $userButtons.find('.' + USERLIST_CLS).html(editUsersList);
 
-        var $editIcon = $('<button>', {
-            'class': 'fa fa-users',
-            style: 'font-family: FontAwesome;',
-            title: editTitle
-        }).text(' ' + userList.length + ' people editing');
-        var $viewIcon = $('<span>', {
-            disabled: 'disabled',
-            'class': 'fa fa-eye',
-            style: 'font-family: FontAwesome',
-            title: Messages.viewUsersIcon
-        }).text(' ' + numberOfViewUsers + ' people viewing');
-        var innerHTML;
+        // Update the buttons
+        var fa_caretdown = '<span class="fa fa-caret-down" style="font-family:FontAwesome;"></span>';
+        var fa_editusers = '<span class="fa fa-users" style="font-family:FontAwesome;"></span>';
+        var fa_viewusers = '<span class="fa fa-eye" style="font-family:FontAwesome;"></span>';
+        $userButtons.find('.userlist.edit').html(fa_editusers + ' ' + userList.length + ' ' + Messages.editing + ' ' + fa_caretdown);
+        $userButtons.find('.userlist.edit.small').html(fa_editusers + ' ' + userList.length + ' ' + fa_caretdown);
+        $userButtons.find('.userlist.view').html(fa_viewusers + ' ' + numberOfViewUsers + ' ' + Messages.viewing + ' ' + fa_caretdown);
+        $userButtons.find('.userlist.view.small').html(fa_viewusers + ' ' + numberOfViewUsers + ' ' + fa_caretdown);
+
         if (readOnly === 1) {
-            innerHTML = '<span class="' + READONLY_CLS + '">' + Messages.readonly + '</span>';
+            // TODO
+            $userElement.html('<span class="' + READONLY_CLS + '">' + Messages.readonly + '</span>');
         }
         else  {
             var name = userData[myUserName] && userData[myUserName].name;
+            var icon = '<span class="fa fa-user" style="font-family:FontAwesome;"></span>';
             if (!name) {
-                name = '<span title="' + Messages.anonymous + '" class="fa fa-user-secret" style="font-family:FontAwesome"></span>';
+                name = Messages.anonymous;
             }
-            innerHTML = '<span class="' + USERNAME_CLS + '">' + name + '</span> | ';
+            $userElement.find("button").html(icon + ' ' + name);
         }
-        innerHTML += $('<div>').append($editIcon).html();
-        if (readOnly !== -1) {
-            innerHTML += ' | ' + $('<div>').append($viewIcon).html();
-        }
-        listElement.innerHTML = innerHTML;
     };
 
     var createLagElement = function ($container) {
@@ -181,7 +264,7 @@ define([
             'class': LAG_ELEM_CLS,
             id: uid(),
         });
-        $container.append($lag);
+        $container.before($lag);
         return $lag[0];
     };
 
@@ -215,17 +298,27 @@ define([
     };
 
     var create = Bar.create = function ($container, myUserName, realtime, getLag, userList, config) {
+        var readOnly = (typeof config.readOnly !== "undefined") ? (config.readOnly ? 1 : 0) : -1;
+
         var toolbar = createRealtimeToolbar($container);
-        var userListElement = createUserList(toolbar.find('.' + LEFTSIDE_CLS));
+        var userListElement = createUserList(toolbar.find('.' + LEFTSIDE_CLS), readOnly);
         var spinner = createSpinner(toolbar.find('.' + RIGHTSIDE_CLS));
         var lagElement = createLagElement(toolbar.find('.' + RIGHTSIDE_CLS));
         var userData = config.userData;
         // readOnly = 1 (readOnly enabled), 0 (disabled), -1 (old pad without readOnly mode)
-        var readOnly = (typeof config.readOnly !== "undefined") ? (config.readOnly ? 1 : 0) : -1;
         var saveElement;
         var loadElement;
+        var $stateElement = $(userListElement).find('.' + STATE_CLS);
 
         var connected = false;
+
+        if (config.ifrw) {
+            $(config.ifrw).on('click', function (e) {
+                if (!e.target.matches('.dropbtn') && !e.target.parentElement.matches('.dropbtn')) {
+                    $container.find('.cryptpad-dropdown').hide();
+                }
+            });
+        }
 
         userList.onChange = function(newUserData) {
           var users = userList.users;
@@ -234,7 +327,7 @@ define([
           if(newUserData) { // Someone has changed his name/color
             userData = newUserData;
           }
-          updateUserList(myUserName, userListElement, users, userData, readOnly);
+          updateUserList(myUserName, userListElement, users, userData, readOnly, $stateElement);
         };
 
         var ks = function () {
@@ -254,13 +347,13 @@ define([
         return {
             failed: function () {
                 connected = false;
-                userListElement.textContent = Messages.disconnected;
+                $stateElement.text(Messages.disconnected);
                 checkLag(undefined, lagElement);
             },
             reconnecting: function (userId) {
                 myUserName = userId;
                 connected = false;
-                userListElement.textContent = Messages.reconnecting;
+                $stateElement.text(Messages.reconnecting);
                 checkLag(getLag, lagElement);
             },
             connected: function () {

@@ -31,24 +31,24 @@
     <script src="/bower_components/codemirror/addon/fold/markdown-fold.js"></script>
     <script src="/bower_components/codemirror/addon/fold/comment-fold.js"></script>
     <style>
-      html {
-        height: 100%;
+      html, body{
+          height: 100%;
+          width: 100%;
+          padding: 0px;
+          margin: 0px;
+          overflow: hidden;
+          box-sizing: border-box;
+          position: relative;
       }
       body {
-        height: 100%;
-        margin: 0px;
+          display: flex;
+          flex-flow: column;
       }
       .CodeMirror {
-        position: absolute;
-        top: 25px;
-        bottom: 0px;
-        left: 0px;
-        right: 0px;
-        height: auto;
+        height: 100%;
       }
       #cme_toolbox {
         font: 12px Arial,Helvetica,Tahoma,Verdana,sans-serif;
-        height: 25px;
         background: -webkit-linear-gradient(#EEEEEE, #DADADA); /* For Safari 5.1 to 6.0 */
         background: -o-linear-gradient(white, #DDDDDD); /* For Opera 11.1 to 12.0 */
         background: -moz-linear-gradient(white, #DDDDDD); /* For Firefox 3.6 to 15 */

@@ -716,10 +716,8 @@ define([
                 break;
             case 'username':
                 button = $('<button>', {
-                    title: Messages.userButton + '\n' + Messages.userButtonTitle,
-                    'class': "fa fa-user",
-                    style: 'font:'+size+' FontAwesome'
-                });
+                    title: Messages.userButton + '\n' + Messages.userButtonTitle
+                }).html('<span class="fa fa-user" style="font-family:FontAwesome;"></span>');
                 if (data && typeof data.lastName !== "undefined" && callback) {
                     var lastName = data.lastName;
                     button.click(function() {
@@ -729,7 +727,7 @@ define([
                     });
                 }
                 break;
-            case 'readonly':
+            /*case 'readonly':
                 button = $('<button>', {
                     title: Messages.getViewButton + '\n' + Messages.getViewButtonTitle,
                     'class': "fa fa-eye",
@@ -765,6 +763,59 @@ define([
                         });
 
                         if (callback) { callback(); }
+                    });
+                }
+                break;*/
+            case 'editshare':
+                button = $('<button>', {
+                    title: Messages.editShareTitle,
+                    'class': "button action"
+                }).text(Messages.editShare);
+                if (data && data.editHash) {
+                    var editHash = data.editHash;
+                    button.click(function () {
+                        var baseUrl = window.location.origin + window.location.pathname + '#';
+                        var url = baseUrl + editHash;
+                        var success = Clipboard.copy(url);
+                        if (success) {
+                            common.log(Messages.shareSuccess);
+                            common.findOKButton().click();
+                            return;
+                        }
+                    });
+                }
+                break;
+            case 'viewshare':
+                button = $('<button>', {
+                    title: Messages.viewShareTitle,
+                    'class': "button action"
+                }).text(Messages.viewShare);
+                if (data && data.viewHash) {
+                    var viewHash = data.viewHash;
+                    button.click(function () {
+                        var baseUrl = window.location.origin + window.location.pathname + '#';
+                        var url = baseUrl + viewHash;
+                        var success = Clipboard.copy(url);
+                        if (success) {
+                            common.log(Messages.shareSuccess);
+                            common.findOKButton().click();
+                            return;
+                        }
+                    });
+                }
+                break;
+            case 'viewopen':
+                button = $('<button>', {
+                    title: Messages.viewOpenTitle,
+                    'class': "button action"
+                }).text(Messages.viewOpen);
+                if (data && data.viewHash) {
+                    var viewHash = data.viewHash;
+                    button.click(function () {
+                        var baseUrl = window.location.origin + window.location.pathname + '#';
+                        var url = baseUrl + viewHash;
+                        common.findOKButton().click();
+                        window.open(url);
                     });
                 }
                 break;

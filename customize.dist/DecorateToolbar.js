@@ -13,7 +13,7 @@ define([
         $.ajax({
             url: isHtml ? '/customize/BottomBar.html' : '/customize/Header.html',
             success: function (ret) {
-                $('iframe').height('96%');
+                //:$('iframe').height('96%');
                 $('body').append(ret);
                 LS.main();
                 Messages._applyTranslation();
