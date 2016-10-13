@@ -318,7 +318,7 @@ define([
 
         if (config.ifrw) {
             var removeDropdowns =  function (e) {
-                if (e.target.matches('.dropbtn') || (e.target.parentElement && e.target.parentElement.matches('.dropbtn'))) {
+                if ($(e.target).parents('.cryptpad-dropdown-container').length) {
                     return;
                 }
                 $container.find('.cryptpad-dropdown').hide();
