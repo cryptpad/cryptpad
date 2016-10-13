@@ -17,21 +17,17 @@ define(function () {
 
     out.common_connectionLost = 'Connexion au serveur perdue';
 
-    out.editingAlone = 'Pas d\'autre participant';
-    out.editingWithOneOtherPerson = 'Édition avec une autre personne';
-    out.editingWith = 'Édition avec';
-    out.otherPeople = 'autres personnes';
     out.disconnected = 'Déconnecté';
     out.synchronizing = 'Synchronisation';
     out.reconnecting = 'Reconnexion...';
     out.lag = 'Latence';
     out.readonly = 'Lecture seule';
-    out.nobodyIsEditing = "Personne n'édite le document";
-    out.onePersonIsEditing = 'Une personne édite le document';
-    out.peopleAreEditing = '{0} personnes éditent le document';
-    out.oneViewer = '1 lecteur';
-    out.viewers = '{0} lecteurs';
-    out.anonymous = "Vous êtes actuellement anonyme";
+    out.anonymous = "Anonyme";
+    out.yourself = "Vous-même";
+    out.anonymousUsers = "utilisateurs anonymes";
+    out.anonymousUser = "utilisateur anonyme";
+    out.share = "Partage";
+    out.users = "Utilisateurs";
 
     out.greenLight = "Tout fonctionne bien";
     out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur";
@@ -82,7 +78,14 @@ define(function () {
     out.readonlyUrl = 'Document en lecture seule';
     out.copyReadOnly = "Copier l'URL dans le presse-papiers";
     out.openReadOnly = "Ouvrir dans un nouvel onglet";
-
+    out.editing = "en édition";
+    out.viewing = "en lecture";
+    out.editShare = "Partager l'URL";
+    out.editShareTitle = "Copier l'URL d'édition dans le presse-papiers";
+    out.viewShare = "Partager l'URL de lecture";
+    out.viewShareTitle = "Copier l'URL d'accès en lecture seule dans le presse-papiers";
+    out.viewOpen = "Voir dans un nouvel onglet";
+    out.viewOpenTitle = "Ouvrir le document en lecture seule dans un nouvel onglet";
 
     out.disconnectAlert = 'Perte de la connexion au réseau !';
 
@@ -199,6 +202,7 @@ define(function () {
     // Header.html
 
     out.header_france = '<a href="http://www.xwiki.com/fr" target="_blank" rel="noopener noreferrer">Fait avec <img class="bottom-bar-heart" src="/customize/heart.png" /> en <img class="bottom-bar-fr" title="France" alt="France" src="/customize/fr.png" /> par <img src="/customize/logo-xwiki.png" alt="XWiki SAS" class="bottom-bar-xwiki"/></a>';
+    out.header_xwiki = '<a href="http://www.xwiki.com/fr" target="_blank" rel="noopener noreferrer"><img src="/customize/logo-xwiki.png" alt="XWiki SAS" class="bottom-bar-xwiki"/></a>';
     out.header_support = '<a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
     out.header_logoTitle = "Aller vers la page d'accueil";
 

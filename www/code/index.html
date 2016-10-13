@@ -19,23 +19,35 @@
         html, body {
             overflow-y: hidden;
         }
+        #iframe-container {
+            position: fixed;
+            top: 2.6em;
+            bottom: 0px;
+            right: 0px;
+            left: 0px;
+            padding: 0px;
+        }
         #pad-iframe {
-            position:fixed;
-            top:2.5em;
-            left:0px;
-            bottom:0px;
-            right:0px;
             width:100%;
             height:100%;
             border:none;
             margin:0;
             padding:0;
             overflow:hidden;
+            box-sizing: border-box;
+        }
+        /* We use !important here to override the 96% set to the element in DecorateToolbar.js
+           when we enter fullscreen mode. It allows us to avoid changing the iframe's size in JS */
+        #pad-iframe.fullscreen {
+            top: 0px;
+            height: 100% !important;
         }
     </style>
 </head>
 <body>
-    <iframe id="pad-iframe" src="inner.html"></iframe>
+    <div id="iframe-container">
+        <iframe id="pad-iframe" src="inner.html"></iframe>
+    </div>
 </body>
 </html>
 

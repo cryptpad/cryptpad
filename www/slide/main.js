@@ -328,195 +328,6 @@ define([
                 onLocal();
             };
 
-            var onInit = config.onInit = function (info) {
-                var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
-                toolbarList = info.userList;
-                var config = {
-                    userData: userList,
-                    readOnly: readOnly
-                };
-                if (readOnly) {delete config.changeNameID; }
-                toolbar = module.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
-
-                var $rightside = $bar.find('.' + Toolbar.constants.rightside);
-
-                var editHash;
-                var viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
-
-                if (!readOnly) {
-                    editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
-                }
-
-                /* add a "change username" button */
-                getLastName(function (err, lastName) {
-                    var usernameCb = function (newName) {
-                        setName (newName);
-                    };
-                    var $username = Cryptpad.createButton('username', true, {lastName: lastName}, usernameCb);
-                    $rightside.append($username);
-                });
-
-                /* add an export button */
-                var $export = Cryptpad.createButton('export', true, {}, exportText);
-                $rightside.append($export);
-
-                if (!readOnly) {
-                    /* add an import button */
-                    var $import = Cryptpad.createButton('import', true, {}, importText);
-                    $rightside.append($import);
-
-                    /* add a rename button */
-                    var renameCb = function (err, title) {
-                        if (err) { return; }
-                        APP.title = title;
-                        setTabTitle();
-                        onLocal();
-                    };
-                    var $setTitle = Cryptpad.createButton('rename', true, {suggestName: suggestName}, renameCb);
-                    $rightside.append($setTitle);
-                }
-
-                /* add a forget button */
-                var forgetCb = function (err, title) {
-                    if (err) { return; }
-                    APP.title = title;
-                    setTabTitle();
-                };
-                var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
-                $rightside.append($forgetPad);
-
-                if (!readOnly && viewHash) {
-                    /* add a 'links' button */
-                    var $links = Cryptpad.createButton('readonly', true, {viewHash: viewHash + '/present'});
-                    $rightside.append($links);
-                }
-
-                var $present = Cryptpad.createButton('present', true)
-                    .click(function () {
-                    enterPresentationMode(true);
-                });
-                if (presentMode) {
-                    $present.hide();
-                }
-                $rightside.append($present);
-
-                var $leavePresent = Cryptpad.createButton('source', true)
-                    .click(leavePresentationMode);
-                if (!presentMode) {
-                    $leavePresent.hide();
-                }
-                $rightside.append($leavePresent);
-
-                var $language = $('<span>', {
-                    'style': "margin-right: 10px;"
-                }).text(Messages.type.slide + " (Markdown)");
-                $rightside.append($language);
-
-
-                var configureTheme = function () {
-                    /*  Remember the user's last choice of theme using localStorage */
-                    var themeKey = 'CRYPTPAD_CODE_THEME';
-                    var lastTheme = localStorage.getItem(themeKey) || 'default';
-
-                    /*  Let the user select different themes */
-                    var $themeDropdown = $('<select>', {
-                        title: 'color theme',
-                        id: 'display-theme',
-                    });
-                    Themes.forEach(function (o) {
-                        $themeDropdown.append($('<option>', {
-                            selected: o.name === lastTheme,
-                        }).val(o.name).text(o.name));
-                    });
-
-
-                    $rightside.append($themeDropdown);
-
-                    var $theme = $bar.find('select#display-theme');
-
-                    setTheme(lastTheme, $theme);
-
-                    $theme.on('change', function () {
-                        var theme = $theme.val();
-                        console.log("Setting theme to %s", theme);
-                        setTheme(theme, $theme);
-                        // remember user choices
-                        localStorage.setItem(themeKey, theme);
-                    });
-                };
-
-                var configureColors = function () {
-                    $back = $('<button>', {
-                        id: SLIDE_BACKCOLOR_ID,
-                        'class': 'fa fa-square',
-                        'style': 'font-family: FontAwesome; color: #000;',
-                        title: Messages.backgroundButton + '\n' + Messages.backgroundButtonTitle
-                    });
-                    $text = $('<button>', {
-                        id: SLIDE_COLOR_ID,
-                        'class': 'fa fa-i-cursor',
-                        'style': 'font-family: FontAwesome; font-weight: bold; color: #fff; background: #000;',
-                        title: Messages.colorButton + '\n' + Messages.colorButtonTitle
-                    });
-                    $testColor = $('<input>', { type: 'color', value: '!' });
-                    var $check = $pad.contents().find("#colorPicker_check");
-                    if ($testColor.attr('type') !== "color" || $testColor.val() === '!') { return; } // TODO
-                    $back.on('click', function() {
-                        var $picker = $('<input>', { type: 'color', value: backColor })
-                            .on('change', function() {
-                                updateColors(undefined, this.value);
-                                onLocal();
-                            });
-                        $check.append($picker);
-                        setTimeout(function() {
-                            $picker.click();
-                        }, 0);
-                    });
-                    $text.on('click', function() {
-                        var $picker = $('<input>', { type: 'color', value: textColor })
-                            .on('change', function() {
-                                updateColors(this.value, undefined);
-                                onLocal();
-                                $check.html('');
-                            });
-                        $check.append($picker);
-                        setTimeout(function() {
-                            $picker.click();
-                        }, 0);
-                    });
-
-                    $rightside.append($back).append($text);
-                };
-
-                configureTheme();
-                configureColors();
-
-                if (presentMode) {
-                    $('#top-bar').hide();
-                }
-
-                // set the hash
-                if (!window.location.hash || window.location.hash === '#') {
-                    window.location.hash = editHash;
-                }
-
-                Cryptpad.getPadTitle(function (err, title) {
-                    if (err) {
-                        console.log("Unable to get pad title");
-                        console.error(err);
-                        return;
-                    }
-                    document.title = APP.title = title || info.channel.slice(0, 8);
-                    Cryptpad.setPadTitle(title, function (err, data) {
-                        if (err) {
-                            console.log("Unable to set pad title");
-                            console.error(err);
-                            return;
-                        }
-                    });
-                });
-            };
-
             var updateTitle = function (newTitle) {
                 if (newTitle === APP.title) { return; }
                 // Change the title now, and set it back to the old value if there is an error
@@ -562,6 +373,206 @@ define([
                     }
                     updateColors(json.metadata.color, json.metadata.backColor);
                 }
+            };
+
+            var onInit = config.onInit = function (info) {
+                var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
+                toolbarList = info.userList;
+                var config = {
+                    userData: userList,
+                    readOnly: readOnly,
+                    ifrw: $('#pad-iframe')[0].contentWindow
+                };
+                if (readOnly) {delete config.changeNameID; }
+                toolbar = module.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
+
+                var $rightside = $bar.find('.' + Toolbar.constants.rightside);
+                var $userBlock = $bar.find('.' + Toolbar.constants.username);
+                var $editShare = $bar.find('.' + Toolbar.constants.editShare);
+                var $viewShare = $bar.find('.' + Toolbar.constants.viewShare);
+
+                var editHash;
+                var viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
+
+                if (!readOnly) {
+                    editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+                }
+
+                /* add a "change username" button */
+                getLastName(function (err, lastName) {
+                    var usernameCb = function (newName) {
+                        setName (newName);
+                    };
+                    var $username = Cryptpad.createButton('username', false, {lastName: lastName}, usernameCb);
+                    $userBlock.append($username).hide();
+                });
+
+                /* add an export button */
+                var $export = Cryptpad.createButton('export', true, {}, exportText);
+                $rightside.append($export);
+
+                if (!readOnly) {
+                    /* add an import button */
+                    var $import = Cryptpad.createButton('import', true, {}, importText);
+                    $rightside.append($import);
+
+                    /* add a rename button */
+                    var renameCb = function (err, title) {
+                        if (err) { return; }
+                        APP.title = title;
+                        setTabTitle();
+                        onLocal();
+                    };
+                    var $setTitle = Cryptpad.createButton('rename', true, {suggestName: suggestName}, renameCb);
+                    $rightside.append($setTitle);
+                }
+
+                /* add a forget button */
+                var forgetCb = function (err, title) {
+                    if (err) { return; }
+                    APP.title = title;
+                    setTabTitle();
+                };
+                var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
+                $rightside.append($forgetPad);
+
+                if (!readOnly) {
+                    $editShare.append(Cryptpad.createButton('editshare', false, {editHash: editHash}));
+                }
+                if (viewHash) {
+                    /* add a 'links' button */
+                    $viewShare.append(Cryptpad.createButton('viewshare', false, {viewHash: viewHash + '/present'}));
+                    if (!readOnly) {
+                        $viewShare.append(Cryptpad.createButton('viewopen', false, {viewHash: viewHash + '/present'}));
+                    }
+                }
+
+                var $present = Cryptpad.createButton('present', true)
+                    .click(function () {
+                    enterPresentationMode(true);
+                });
+                if (presentMode) {
+                    $present.hide();
+                }
+                $rightside.append($present);
+
+                var $leavePresent = Cryptpad.createButton('source', true)
+                    .click(leavePresentationMode);
+                if (!presentMode) {
+                    $leavePresent.hide();
+                }
+                $rightside.append($leavePresent);
+
+
+                var configureTheme = function () {
+                    /*var $language = $('<span>', {
+                        'style': "margin-right: 10px;",
+                        'class': 'rightside-element'
+                    }).text("Markdown");
+                    $rightside.append($language);*/
+
+                    /*  Remember the user's last choice of theme using localStorage */
+                    var themeKey = 'CRYPTPAD_CODE_THEME';
+                    var lastTheme = localStorage.getItem(themeKey) || 'default';
+
+                    /*  Let the user select different themes */
+                    var $themeDropdown = $('<select>', {
+                        title: 'color theme',
+                        id: 'display-theme',
+                        'class': 'rightside-element'
+                    });
+                    Themes.forEach(function (o) {
+                        $themeDropdown.append($('<option>', {
+                            selected: o.name === lastTheme,
+                        }).val(o.name).text(o.name));
+                    });
+
+
+                    $rightside.append($themeDropdown);
+
+                    var $theme = $bar.find('select#display-theme');
+
+                    setTheme(lastTheme, $theme);
+
+                    $theme.on('change', function () {
+                        var theme = $theme.val();
+                        console.log("Setting theme to %s", theme);
+                        setTheme(theme, $theme);
+                        // remember user choices
+                        localStorage.setItem(themeKey, theme);
+                    });
+                };
+
+                var configureColors = function () {
+                    var $back = $('<button>', {
+                        id: SLIDE_BACKCOLOR_ID,
+                        'class': 'fa fa-square rightside-button',
+                        'style': 'font-family: FontAwesome; color: #000;',
+                        title: Messages.backgroundButton + '\n' + Messages.backgroundButtonTitle
+                    });
+                    var $text = $('<button>', {
+                        id: SLIDE_COLOR_ID,
+                        'class': 'fa fa-i-cursor rightside-button',
+                        'style': 'font-family: FontAwesome; font-weight: bold; color: #fff; background: #000;',
+                        title: Messages.colorButton + '\n' + Messages.colorButtonTitle
+                    });
+                    var $testColor = $('<input>', { type: 'color', value: '!' });
+                    var $check = $pad.contents().find("#colorPicker_check");
+                    if ($testColor.attr('type') !== "color" || $testColor.val() === '!') { return; } // TODO
+                    $back.on('click', function() {
+                        var $picker = $('<input>', { type: 'color', value: backColor })
+                            .on('change', function() {
+                                updateColors(undefined, this.value);
+                                onLocal();
+                            });
+                        $check.append($picker);
+                        setTimeout(function() {
+                            $picker.click();
+                        }, 0);
+                    });
+                    $text.on('click', function() {
+                        var $picker = $('<input>', { type: 'color', value: textColor })
+                            .on('change', function() {
+                                updateColors(this.value, undefined);
+                                onLocal();
+                                $check.html('');
+                            });
+                        $check.append($picker);
+                        setTimeout(function() {
+                            $picker.click();
+                        }, 0);
+                    });
+
+                    $rightside.append($back).append($text);
+                };
+
+                configureColors();
+                configureTheme();
+
+                if (presentMode) {
+                    $('#top-bar').hide();
+                }
+
+                // set the hash
+                if (!window.location.hash || window.location.hash === '#') {
+                    window.location.hash = editHash;
+                }
+
+                Cryptpad.getPadTitle(function (err, title) {
+                    if (err) {
+                        console.log("Unable to get pad title");
+                        console.error(err);
+                        return;
+                    }
+                    document.title = APP.title = title || info.channel.slice(0, 8);
+                    Cryptpad.setPadTitle(title, function (err, data) {
+                        if (err) {
+                            console.log("Unable to set pad title");
+                            console.error(err);
+                            return;
+                        }
+                    });
+                });
             };
 
             var unnotify = module.unnotify = function () {
