@@ -727,45 +727,6 @@ define([
                     });
                 }
                 break;
-            /*case 'readonly':
-                button = $('<button>', {
-                    title: Messages.getViewButton + '\n' + Messages.getViewButtonTitle,
-                    'class': "fa fa-eye",
-                    style: 'font:'+size+' FontAwesome'
-                });
-                if (data && data.viewHash) {
-                    var viewHash = data.viewHash;
-                    button.click(function() {
-                        var baseUrl = window.location.origin + window.location.pathname + '#';
-                        var url = baseUrl + viewHash;
-                        var $content = $('<div>').text(Messages.readonlyUrl);
-                        var $copy = $('<button>', {
-                                id: "cryptpad-readonly-copy",
-                                'class': "button action"
-                            }).text(Messages.copyReadOnly);
-                        var $open = $('<button>', {
-                                id: "cryptpad-readonly-open",
-                                'class': "button action"
-                            }).text(Messages.openReadOnly);
-                        $content.append('<br>').append($copy).append($open);
-                        common.alert($content.html());
-                        $("#cryptpad-readonly-copy").click(function() {
-                            var success = Clipboard.copy(url);
-                            if (success) {
-                                common.log(Messages.shareSuccess);
-                                common.findOKButton().click();
-                                return;
-                            }
-                        });
-                        $("#cryptpad-readonly-open").click(function() {
-                            common.findOKButton().click();
-                            window.open(url);
-                        });
-
-                        if (callback) { callback(); }
-                    });
-                }
-                break;*/
             case 'editshare':
                 button = $('<button>', {
                     title: Messages.editShareTitle,
@@ -791,10 +752,9 @@ define([
                     'class': "button action"
                 }).text(Messages.viewShare);
                 if (data && data.viewHash) {
-                    var viewHash = data.viewHash;
                     button.click(function () {
                         var baseUrl = window.location.origin + window.location.pathname + '#';
-                        var url = baseUrl + viewHash;
+                        var url = baseUrl + data.viewHash;
                         var success = Clipboard.copy(url);
                         if (success) {
                             common.log(Messages.shareSuccess);
@@ -810,10 +770,9 @@ define([
                     'class': "button action"
                 }).text(Messages.viewOpen);
                 if (data && data.viewHash) {
-                    var viewHash = data.viewHash;
                     button.click(function () {
                         var baseUrl = window.location.origin + window.location.pathname + '#';
-                        var url = baseUrl + viewHash;
+                        var url = baseUrl + data.viewHash;
                         common.findOKButton().click();
                         window.open(url);
                     });

@@ -22,12 +22,12 @@ define(function () {
     out.reconnecting = 'Reconnexion...';
     out.lag = 'Latence';
     out.readonly = 'Lecture seule';
-    out.anonymous = "nonyme";
+    out.anonymous = "Anonyme";
     out.yourself = "Vous-même";
     out.anonymousUsers = "utilisateurs anonymes";
     out.anonymousUser = "utilisateur anonyme";
-    out.viewUsersIcon = "UTILISATEURS EN LECTURE SEULE";
-    out.editUsersIcon = "UTILISATEURS ÉDITANT LE DOCUMENT";
+    out.share = "Partage";
+    out.users = "Utilisateurs";
 
     out.greenLight = "Tout fonctionne bien";
     out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur";
@@ -202,6 +202,7 @@ define(function () {
     // Header.html
 
     out.header_france = '<a href="http://www.xwiki.com/fr" target="_blank" rel="noopener noreferrer">Fait avec <img class="bottom-bar-heart" src="/customize/heart.png" /> en <img class="bottom-bar-fr" title="France" alt="France" src="/customize/fr.png" /> par <img src="/customize/logo-xwiki.png" alt="XWiki SAS" class="bottom-bar-xwiki"/></a>';
+    out.header_xwiki = '<a href="http://www.xwiki.com/fr" target="_blank" rel="noopener noreferrer"><img src="/customize/logo-xwiki.png" alt="XWiki SAS" class="bottom-bar-xwiki"/></a>';
     out.header_support = '<a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
     out.header_logoTitle = "Aller vers la page d'accueil";
 

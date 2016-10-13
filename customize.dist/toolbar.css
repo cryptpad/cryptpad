@@ -24,16 +24,18 @@
   float: right;
 }
 .cryptpad-toolbar div {
-  padding: 0 3px;
-  height: 1.5em;
-  line-height: 25px;
-  height: 100%;
+  white-space: normal;
 }
 .cryptpad-toolbar div.cryptpad-back {
   padding: 0;
   font-weight: bold;
   cursor: pointer;
   color: #000;
+}
+.cryptpad-toolbar div.cryptpad-lag {
+  float: right;
+  line-height: 26px;
+  margin: 2px 0px 2px 4px;
 }
 .cryptpad-toolbar button,
 .cryptpad-toolbar .rightside-element {
@@ -72,6 +74,10 @@
     display: none;
   }
 }
+.cryptpad-toolbar .cryptpad-state {
+  line-height: 30px;
+  /* equivalent to 26px + 2*2px margin used for buttons */
+}
 .cryptpad-toolbar .rightside-button {
   float: right;
   cursor: pointer;
@@ -84,6 +90,9 @@
   vertical-align: middle;
   white-space: nowrap;
 }
+.cryptpad-toolbar .rightside-element.float {
+  float: right;
+}
 .cryptpad-toolbar select {
   border: 0px;
   margin-left: 5px;
@@ -94,7 +103,7 @@
 }
 .cryptpad-toolbar-leftside {
   float: left;
-  max-width: 35%;
+  margin-bottom: -1px;
 }
 .cryptpad-toolbar-leftside .cryptpad-dropdown-container {
   position: relative;
@@ -110,24 +119,52 @@
   overflow: auto;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   height: auto;
+  padding: 5px;
+  white-space: normal;
 }
 .cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p {
   width: 210px;
   padding: 0;
   margin: 0;
+  white-space: normal;
+}
+.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p.cryptpad-dropdown-users {
+  text-align: baseline;
+}
+.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p.cryptpad-dropdown-users .yourself {
+  font-style: italic;
+}
+.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p.cryptpad-dropdown-users .anonymous {
+  font-style: italic;
+}
+.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p h2 {
+  font-weight: bold;
+  text-align: center;
+  background-color: #EEEEEE;
+  padding: 5px 0px;
+  margin: 5px 0px;
+  font-size: 16px;
+}
+.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown button {
+  margin: 2px 0px;
+}
+.cryptpad-toolbar-leftside button {
+  margin: 2px 4px 2px 0px;
 }
 .cryptpad-toolbar-leftside .cryptpad-userbuttons-container {
   display: none;
 }
 .cryptpad-toolbar-rightside {
   text-align: right;
-}
-.cryptpad-lag {
-  float: right;
+  margin-right: 30px;
 }
 .cryptpad-spinner {
   float: left;
   display: inline-block;
+  height: 26px;
+  margin: 2px;
+  line-height: 26px;
+  font-size: 20px;
 }
 .cryptpad-readonly {
   margin-right: 20px;

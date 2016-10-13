@@ -510,7 +510,8 @@ define([
                 toolbarList = info.userList;
                 var config = {
                     userData: userList,
-                    readOnly: readOnly
+                    readOnly: readOnly,
+                    ifrw: ifrw
                 };
                 if (readOnly) {delete config.changeNameID; }
                 toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
@@ -532,8 +533,8 @@ define([
                     var usernameCb = function (newName) {
                         setName (newName);
                     };
-                    var $username = Cryptpad.createButton('username', true, {lastName: lastName}, usernameCb);
-                    $userBlock.append($username);
+                    var $username = Cryptpad.createButton('username', false, {lastName: lastName}, usernameCb);
+                    $userBlock.append($username).hide();
                 });
 
                 /* add an export button */
@@ -564,16 +565,13 @@ define([
                 $rightside.append($forgetPad);
 
                 if (!readOnly) {
-                    var $links = Cryptpad.createButton('editshare', false, {editHash: editHash});
-                    $editShare.append($links);
+                    $editShare.append(Cryptpad.createButton('editshare', false, {editHash: editHash}));
                 }
                 if (viewHash) {
                     /* add a 'links' button */
-                    var $links = Cryptpad.createButton('viewshare', false, {viewHash: viewHash + '/present'});
-                    $viewShare.append($links);
+                    $viewShare.append(Cryptpad.createButton('viewshare', false, {viewHash: viewHash}));
                     if (!readOnly) {
-                        var $links = Cryptpad.createButton('viewopen', false, {viewHash: viewHash + '/present'});
-                        $viewShare.append($links);
+                        $viewShare.append(Cryptpad.createButton('viewopen', false, {viewHash: viewHash}));
                     }
                 }
 

@@ -437,16 +437,13 @@ define([
                 $rightside.append($forgetPad);
 
                 if (!readOnly) {
-                    var $links = Cryptpad.createButton('editshare', false, {editHash: editHash});
-                    $editShare.append($links);
+                    $editShare.append(Cryptpad.createButton('editshare', false, {editHash: editHash}));
                 }
                 if (viewHash) {
                     /* add a 'links' button */
-                    var $links = Cryptpad.createButton('viewshare', false, {viewHash: viewHash + '/present'});
-                    $viewShare.append($links);
+                    $viewShare.append(Cryptpad.createButton('viewshare', false, {viewHash: viewHash + '/present'}));
                     if (!readOnly) {
-                        var $links = Cryptpad.createButton('viewopen', false, {viewHash: viewHash + '/present'});
-                        $viewShare.append($links);
+                        $viewShare.append(Cryptpad.createButton('viewopen', false, {viewHash: viewHash + '/present'}));
                     }
                 }
 

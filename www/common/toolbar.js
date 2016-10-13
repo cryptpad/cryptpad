@@ -103,24 +103,26 @@ define([
 
         var $editIcon = $('<button>', {
             'class': 'userlist dropbtn edit',
-            title: Messages.editUsersIcon
         });
         var $editIconSmall = $editIcon.clone().addClass('small');
         var $viewIcon = $('<button>', {
             'class': 'userlist dropbtn view',
-            title: Messages.viewUsersIcon
         });
         var $viewIconSmall = $viewIcon.clone().addClass('small');
 
+        var $shareTitle = $('<h2>').text(Messages.share);
         var $dropdownEditUsers = $('<p>', {'class': USERLIST_CLS});
         var $dropdownEditShare = $('<p>', {'class': EDITSHARE_CLS});
+        if (readOnly !== 1) {
+            $dropdownEditShare.append($shareTitle);
+        }
         var $dropdownEditContainer = $('<div>', {'class': DROPDOWN_CONTAINER_CLS});
         var $dropdownEdit = $('<div>', {
             id: "cryptpad-dropdown-edit",
             'class': DROPDOWN_CLS
         }).append($dropdownEditUsers).append($dropdownEditShare);
 
-        var $dropdownViewShare = $('<p>', {'class': VIEWSHARE_CLS});
+        var $dropdownViewShare = $('<p>', {'class': VIEWSHARE_CLS}).append($shareTitle.clone());
         var $dropdownViewContainer = $('<div>', {'class': DROPDOWN_CONTAINER_CLS});
         var $dropdownView = $('<div>', {
             id: "cryptpad-dropdown-view",
@@ -223,18 +225,20 @@ define([
 
         // Update the userlist
         var editUsersList = '';
-        if (readOnly === 0) {
-            editUsersNames.unshift(Messages.yourself);
+        if (readOnly !== 1) {
+            editUsersNames.unshift('<span class="yourself">' + Messages.yourself + '</span>');
             anonymous--;
         }
         if (anonymous > 0) {
             var text = anonymous === 1 ? Messages.anonymousUser : Messages.anonymousUsers;
-            editUsersNames.push(anonymous + " " + text);
+            editUsersNames.push('<span class="anonymous">' + anonymous + ' ' + text + '</span>');
         }
         if (editUsersNames.length > 0) {
             editUsersList += editUsersNames.join('<br>');
         }
-        $userButtons.find('.' + USERLIST_CLS).html(editUsersList);
+        var $usersTitle = $('<h2>').text(Messages.users);
+        var $editUsers = $userButtons.find('.' + USERLIST_CLS);
+        $editUsers.html('').append($usersTitle).append(editUsersList);
 
         // Update the buttons
         var fa_caretdown = '<span class="fa fa-caret-down" style="font-family:FontAwesome;"></span>';
@@ -313,11 +317,18 @@ define([
         var connected = false;
 
         if (config.ifrw) {
-            $(config.ifrw).on('click', function (e) {
-                if (!e.target.matches('.dropbtn') && !e.target.parentElement.matches('.dropbtn')) {
-                    $container.find('.cryptpad-dropdown').hide();
+            var removeDropdowns =  function (e) {
+                if (e.target.matches('.dropbtn') || (e.target.parentElement && e.target.parentElement.matches('.dropbtn'))) {
+                    return;
                 }
-            });
+                $container.find('.cryptpad-dropdown').hide();
+            };
+            $(config.ifrw).on('click',removeDropdowns);
+            if (config.ifrw.$('iframe').length) {
+                var innerIfrw = config.ifrw.$('iframe').each(function (i, el) {
+                    $(el.contentWindow).on('click', removeDropdowns);
+                });
+            }
         }
 
         userList.onChange = function(newUserData) {

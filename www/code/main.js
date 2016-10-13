@@ -303,7 +303,8 @@ define([
                 toolbarList = info.userList;
                 var config = {
                     userData: userList,
-                    readOnly: readOnly
+                    readOnly: readOnly,
+                    ifrw: ifrw
                 };
                 if (readOnly) {delete config.changeNameID; }
                 toolbar = module.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
@@ -326,7 +327,7 @@ define([
                         setName (newName);
                     };
                     var $username = Cryptpad.createButton('username', false, {lastName: lastName}, usernameCb);
-                    $userBlock.append($username);
+                    $userBlock.append($username).hide();
                 });
 
                 /* add an export button */
@@ -357,16 +358,13 @@ define([
                 $rightside.append($forgetPad);
 
                 if (!readOnly) {
-                    var $links = Cryptpad.createButton('editshare', false, {editHash: editHash});
-                    $editShare.append($links);
+                    $editShare.append(Cryptpad.createButton('editshare', false, {editHash: editHash}));
                 }
                 if (viewHash) {
                     /* add a 'links' button */
-                    var $links = Cryptpad.createButton('viewshare', false, {viewHash: viewHash + '/present'});
-                    $viewShare.append($links);
+                    $viewShare.append(Cryptpad.createButton('viewshare', false, {viewHash: viewHash}));
                     if (!readOnly) {
-                        var $links = Cryptpad.createButton('viewopen', false, {viewHash: viewHash + '/present'});
-                        $viewShare.append($links);
+                        $viewShare.append(Cryptpad.createButton('viewopen', false, {viewHash: viewHash}));
                     }
                 }
 
@@ -377,6 +375,7 @@ define([
                     var $language = module.$language = $('<select>', {
                         title: 'syntax highlighting',
                         id: 'language-mode',
+                        'class': 'rightside-element'
                     }).on('change', function () {
                         setMode($language.val());
                         onLocal();
@@ -401,6 +400,7 @@ define([
                     var $themeDropdown = $('<select>', {
                         title: 'color theme',
                         id: 'display-theme',
+                        'class': 'rightside-element'
                     });
                     Themes.forEach(function (o) {
                         $themeDropdown.append($('<option>', {

@@ -146,6 +146,7 @@ tr {
 .buttons {
   margin-bottom: 50px;
   margin-top: 20px;
+  line-height: 2.5em;
 }
 .button {
   padding: 4px 12px 4px 12px;
@@ -241,6 +242,34 @@ tbody td:last-child {
 .bottom-bar img {
   margin-right: 4px;
   position: relative;
+}
+@media screen and (max-width: 800px) {
+  .top-bar .big,
+  .bottom-bar .big {
+    display: none;
+  }
+}
+@media screen and (min-width: 801px) {
+  .top-bar .big,
+  .bottom-bar .big {
+    display: inline-block;
+  }
+}
+@media screen and (max-width: 800px) {
+  .top-bar .small,
+  .bottom-bar .small {
+    display: inline-block;
+  }
+}
+@media screen and (min-width: 801px) {
+  .top-bar .small,
+  .bottom-bar .small {
+    display: none;
+  }
+}
+.top-bar .small img,
+.bottom-bar .small img {
+  height: 1.25em;
 }
 .bottom-bar {
   bottom: 0px;

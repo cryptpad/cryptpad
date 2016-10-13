@@ -26,8 +26,8 @@ define(function () {
     out.yourself = "Yourself";
     out.anonymousUsers = "anonymous users";
     out.anonymousUser = "anonymous user";
-    out.viewUsersIcon = "PEOPLE VIEWING";
-    out.editUsersIcon = "PEOPLE EDITING";
+    out.share = "Share";
+    out.users = "Users";
 
     out.greenLight = "Everything is working fine";
     out.orangeLight = "Your slow connection may impact your experience";
@@ -204,6 +204,7 @@ define(function () {
     // Header.html
 
     out.header_france = '<a href="http://www.xwiki.com/" target="_blank" rel="noopener noreferrer">With <img class="bottom-bar-heart" src="/customize/heart.png" /> from <img class="bottom-bar-fr" src="/customize/fr.png" title="France" alt="France"/> by <img src="/customize/logo-xwiki.png" alt="XWiki SAS" class="bottom-bar-xwiki"/></a>';
+    out.header_xwiki = '<a href="http://www.xwiki.com/" target="_blank" rel="noopener noreferrer"><img src="/customize/logo-xwiki.png" alt="XWiki SAS" class="bottom-bar-xwiki"/></a>';
     out.header_support = '<a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
     out.header_logoTitle = 'Go to the main page';
 
