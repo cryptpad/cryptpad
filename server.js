@@ -25,7 +25,7 @@ var setHeaders = (function () {
     var headers = JSON.parse(JSON.stringify(config.httpHeaders));
     if (Object.keys(headers).length) {
         return function (res) {
-            for (header in headers) { res.setHeader(header, headers[header]); }
+            for (var header in headers) { res.setHeader(header, headers[header]); }
         };
     }
     return function () {};
