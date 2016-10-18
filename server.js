@@ -19,33 +19,20 @@ var app = Express();
 
 var httpsOpts;
 
-app.use(function (req, res, next) {
-    var host = req.headers.host;
-    if (config.websocketPort) {
-        host = host.replace(/\:[0-9]+/, ':' + config.websocketPort);
+var setHeaders = (function () {
+    if (typeof(config.httpHeaders) !== 'object') { return function () {}; }
+
+    var headers = JSON.parse(JSON.stringify(config.httpHeaders));
+    if (Object.keys(headers).length) {
+        return function (res) {
+            for (header in headers) { res.setHeader(header, headers[header]); }
+        };
     }
-    var proto = (httpsOpts || config.useSecureWebsockets) ? 'wss://' : 'ws://';
-    res.setHeader('Content-Security-Policy', [
-        "default-src 'none'",
-        "style-src 'unsafe-inline' 'self'",
+    return function () {};
+}());
 
-        // No way to load ckeditor without unsafe-eval and unsafe-inline
-        // https://dev.ckeditor.com/ticket/8584
-        "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
-
-        "connect-src 'self' " + proto + host,
-        "child-src 'self'",
-        "font-src 'self'",
-
-        // data: is used by codemirror, (insecure remote) images are included by people making
-        //       documents in ckeditor.
-        "img-src data: *"
-    ].join('; '));
-
-    res.setHeader('X-XSS-Protection', '1; mode=block');
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-
+app.use(function (req, res, next) {
+    setHeaders(res);
     next();
 });
 
@@ -55,6 +42,10 @@ Fs.exists(__dirname + "/customize", function (e) {
     if (e) { return; }
     console.log("Cryptpad is customizable, see customize.dist/readme.md for details");
 });
+
+// FIXME I think this is a regression caused by a recent PR
+// correct this hack without breaking the contributor's intended behaviour.
+app.get(/\/(privacy|index|terms)\.html/, Express.static(__dirname + '/customize.dist'));
 
 app.use("/customize", Express.static(__dirname + '/customize'));
 app.use("/customize", Express.static(__dirname + '/customize.dist'));

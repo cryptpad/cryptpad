@@ -8,6 +8,31 @@ module.exports = {
     httpAddress: '::',
 
     // the port on which your httpd will listen
+
+    /*  Cryptpad can be configured to send customized HTTP Headers
+     *  These settings may vary widely depending on your needs
+     *  Examples are provided below
+     */
+
+/*
+    httpHeaders: {
+        "Content-Security-Policy": [
+            "default-serc 'none'",
+            "style-src 'unsafe-inline' 'self'",
+            "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+            "child-src 'self' cryptpad.fr *.cryptpad.fr",
+            "font-src 'self'",
+            "connect-src 'self' wss://cryptpad.fr",
+    // data: is used by codemirror, (insecure remote) images are included by
+    // users of the wysiwyg who embed photos in their pads
+            "img-src data: *",
+        ].join('; '),
+
+        "X-XSS-Protection": "1; mode=block",
+        "X-Content-Type-Options": "nosniff",
+        // 'X-Frame-Options': 'SAMEORIGIN',
+    },*/
+
     httpPort: 3000,
 
     /*  your server's websocket url is configurable
