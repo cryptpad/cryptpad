@@ -7,6 +7,8 @@ There are a few guidelines for creating a module:
 Dependencies for your storage engine **should not** be added to Cryptpad.
 Instead, write an adaptor, and place it in `cryptpad/storage/yourAdaptor.js`.
 
+Alternatively, storage adaptors can be published to npm, and required from your config (once installed).
+
 ## Your adaptor should conform to a simple API.
 
 It must export an object with a single property, `create`, which is a function.
