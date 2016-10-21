@@ -291,12 +291,13 @@ define([
                     name: myUserName
                 };
                 addToUserList(myData);
-                editor.fire('change');
-
                 Cryptpad.setAttribute('username', newName, function (err, data) {
                     if (err) {
                         console.error("Couldn't set username");
+                        return;
                     }
+                    module.userName.lastName = myUserName;
+                    editor.fire('change');
                 });
             };
 
@@ -535,12 +536,12 @@ define([
                     editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
                 }
 
+                // Store the object sent for the "change username" button so that we can update the field value correctly
+                var userNameButtonObject = module.userName = {};
                 /* add a "change username" button */
                 getLastName(function (err, lastName) {
-                    var usernameCb = function (newName) {
-                        setName (newName);
-                    };
-                    var $username = Cryptpad.createButton('username', false, {lastName: lastName}, usernameCb);
+                    userNameButtonObject.lastName = lastName;
+                    var $username = module.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName);
                     $userBlock.append($username).hide();
                 });
 
@@ -638,6 +639,8 @@ define([
                     addToUserList(myData);
                     if (typeof(lastName) === 'string' && lastName.length) {
                         setName(lastName);
+                    } else {
+                        module.$userNameButton.click();
                     }
                     realtimeOptions.onLocal();
                 });

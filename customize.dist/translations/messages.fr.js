@@ -45,6 +45,7 @@ define(function () {
 
     out.userButton = 'UTILISATEUR';
     out.userButtonTitle = "Changer votre nom d'utilisateur";
+    out.changeNamePrompt = 'Changer votre nom (laisser vide pour rester anonyme) : ';
 
     out.renameButton = 'RENOMMER';
     out.renameButtonTitle = 'Changer le titre utilisé par ce document dans la page d\'accueil de Cryptpad';
