@@ -101,6 +101,34 @@
   border: 1px solid #A6A6A6;
   border-bottom-color: #979797;
 }
+.cryptpad-toolbar-top {
+  display: block;
+  text-align: center;
+}
+.cryptpad-toolbar-top .cryptpad-title {
+  text-align: center;
+}
+.cryptpad-toolbar-top .cryptpad-title input {
+  border: 1px solid black;
+  background: #fff;
+  cursor: auto;
+  width: 300px;
+  padding: 5px;
+  -webkit-touch-callout: text;
+  -webkit-user-select: text;
+  -khtml-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+.cryptpad-toolbar-top .cryptpad-title input:focus {
+  -webkit-touch-callout: text;
+  -webkit-user-select: text;
+  -khtml-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
 .cryptpad-toolbar-leftside {
   float: left;
   margin-bottom: -1px;
