@@ -33,7 +33,6 @@ define(['/customize/languageSelector.js',
                 if (!translation[k]) {
                     var warning = "key [" + k + "] is missing from translation [" + code + "]";
                     missing.push(warning);
-                    console.log(warning);
                 }
             });
         });
