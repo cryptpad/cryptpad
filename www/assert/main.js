@@ -4,7 +4,8 @@ define([
     '/bower_components/hyperjson/hyperjson.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
-], function (jQuery, Hyperjson, TextPatcher, Sortify) {
+    '/common/cryptpad-common.js',
+], function (jQuery, Hyperjson, TextPatcher, Sortify, Cryptpad) {
     var $ = window.jQuery;
     window.Hyperjson = Hyperjson;
     window.TextPatcher = TextPatcher;
@@ -139,6 +140,19 @@ define([
     ].forEach(function (orig) {
         strungJSON(orig);
     });
+
+    assert(function () {
+        var missing = Cryptpad.Messages._checkTranslationState();
+
+        if (missing.length !== 0) {
+            missing.forEach(function (msg) {
+                console.log('* ' + msg);
+            });
+
+            return false;
+        }
+        return true;
+    }, "expected all translation keys in default language to be present in all translations. See console for details.");
 
     var swap = function (str, dict) {
         return str.replace(/\{\{(.*?)\}\}/g, function (all, key) {
