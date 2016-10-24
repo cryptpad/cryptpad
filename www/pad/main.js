@@ -86,6 +86,8 @@ define([
 
         editor.on('instanceReady', function (Ckeditor) {
             var $bar = $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox');
+            var parsedHash = Cryptpad.parsePadUrl(window.location.href);
+            var defaultName = Cryptpad.getDefaultName(parsedHash);
 
             if (readOnly) {
                 $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox > .cke_toolbar').hide();
@@ -318,13 +320,10 @@ define([
             };
 
             var suggestName = function () {
-                var parsed = Cryptpad.parsePadUrl(window.location.href);
-                var name = Cryptpad.getDefaultName(parsed, []);
-
-                if (Cryptpad.isDefaultName(parsed, document.title)) {
-                    return getHeadingText() || document.title;
+                if (Cryptpad.isDefaultName(parsedHash, document.title)) {
+                    return getHeadingText() || defaultName;
                 } else {
-                    return document.title || getHeadingText() || name;
+                    return document.title || getHeadingText() || defaultName;
                 }
             };
 
@@ -350,6 +349,8 @@ define([
                 };
                 if (!isDefaultTitle()) {
                     hjson[3].metadata.title = document.title;
+                } else {
+                    hjson[3].metadata.title = "";
                 }
                 return stringify(hjson);
             };
@@ -396,14 +397,16 @@ define([
                 // Change the title now, and set it back to the old value if there is an error
                 var oldTitle = document.title;
                 document.title = newTitle;
-                Cryptpad.setPadTitle(newTitle, function (err, data) {
+                Cryptpad.renamePad(newTitle, function (err, data) {
                     if (err) {
                         console.log("Couldn't set pad title");
                         console.error(err);
                         document.title = oldTitle;
                         return;
                     }
-                    $bar.find('.' + Toolbar.constants.title).find('span').text(newTitle);
+                    document.title = data;
+                    $bar.find('.' + Toolbar.constants.title).find('span').text(data);
+                    $bar.find('.' + Toolbar.constants.title).find('input').val(data);
                 });
             };
 
@@ -417,7 +420,7 @@ define([
                         // Update the local user data
                         addToUserList(userData);
                     }
-                    if (peerMetadata.metadata.title) {
+                    if (typeof peerMetadata.metadata.title !== "undefined") {
                         updateTitle(peerMetadata.metadata.title);
                     }
                 }
@@ -526,7 +529,11 @@ define([
                     userData: userList,
                     readOnly: readOnly,
                     ifrw: ifrw,
-                    onRename: renameCb
+                    title: {
+                        onRename: renameCb,
+                        defaultName: defaultName
+                    },
+                    common: Cryptpad
                 };
                 if (readOnly) {delete config.changeNameID; }
                 toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);

@@ -303,29 +303,40 @@ define([
         $(lagElement).append(lagLight);
     };
 
-    var createTitle = function ($container, readOnly, cb) {
+    var createTitle = function ($container, readOnly, config, Cryptpad) {
+        var callback = config.onRename;
+        var placeholder = config.defaultName;
+
         var $titleContainer = $('<span>', {
             id: 'toolbarTitle',
             'class': TITLE_CLS
         }).appendTo($container);
         var $text = $('<span>').appendTo($titleContainer);
-        if (readOnly === 1) { return; }
+        if (readOnly === 1 || typeof(Cryptpad) === "unedfined") { return; }
         var $input = $('<input>', {
-            type: 'text'
+            type: 'text',
+            placeholder: placeholder
         }).appendTo($titleContainer).hide();
+        $input.on('mousedown', function (e) {
+            if (!$input.is(":focus")) {
+                $input.focus();
+            }
+            e.stopPropagation();
+            return true;
+        });
         $input.on('keyup', function (e) {
             if (e.which === 13) {
-                Cryptpad.renamePad(title, function (err, newtitle) {
+                var name = $input.val().trim();
+                Cryptpad.renamePad($input.val(), function (err, newtitle) {
                     if (err) { return; }
                     $text.text(newtitle);
-                    cb(null, newtitle);
+                    callback(null, newtitle);
                     $input.hide();
                     $text.show();
                 });
             }
         });
         $text.on('click', function () {
-            console.log('click');
             $text.hide();
             $input.val($text.text());
             $input.show();
@@ -335,12 +346,13 @@ define([
 
     var create = Bar.create = function ($container, myUserName, realtime, getLag, userList, config) {
         var readOnly = (typeof config.readOnly !== "undefined") ? (config.readOnly ? 1 : 0) : -1;
+        var Cryptpad = config.common;
 
         var toolbar = createRealtimeToolbar($container);
         var userListElement = createUserList(toolbar.find('.' + LEFTSIDE_CLS), readOnly);
         var spinner = createSpinner(toolbar.find('.' + RIGHTSIDE_CLS));
         var lagElement = createLagElement(toolbar.find('.' + RIGHTSIDE_CLS));
-        var $titleElement = createTitle(toolbar.find('.' + TOP_CLS), readOnly, config.onRename);
+        var $titleElement = createTitle(toolbar.find('.' + TOP_CLS), readOnly, config.title, Cryptpad);
         var userData = config.userData;
         // readOnly = 1 (readOnly enabled), 0 (disabled), -1 (old pad without readOnly mode)
         var saveElement;
