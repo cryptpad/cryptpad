@@ -531,6 +531,7 @@ define([
                     if ($testColor.attr('type') !== "color" || $testColor.val() === '!') { return; } // TODO
                     $back.on('click', function() {
                         var $picker = $('<input>', { type: 'color', value: backColor })
+                            .css({ display: 'none', })
                             .on('change', function() {
                                 updateColors(undefined, this.value);
                                 onLocal();
@@ -542,6 +543,7 @@ define([
                     });
                     $text.on('click', function() {
                         var $picker = $('<input>', { type: 'color', value: textColor })
+                            .css({ display: 'none', })
                             .on('change', function() {
                                 updateColors(this.value, undefined);
                                 onLocal();
