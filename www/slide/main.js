@@ -149,9 +149,18 @@ define([
                 editor.setOption('readOnly', !bool);
             };
 
-            var userList = {}; // List of pretty name of all users (mapped with their server ID)
+            var userList = module.userList = {}; // List of pretty name of all users (mapped with their server ID)
             var toolbarList; // List of users still connected to the channel (server IDs)
             var addToUserList = function(data) {
+                var users = module.users;
+                if (users && users.length) {
+                    for (var userKey in userList) {
+                        if (users.indexOf(userKey) === -1) {
+                            delete userList[userKey];
+                        }
+                    }
+                }
+
                 for (var attrname in data) { userList[attrname] = data[attrname]; }
                 if(toolbarList && typeof toolbarList.onChange === "function") {
                     toolbarList.onChange(userList);
@@ -592,6 +601,7 @@ define([
 
             var onReady = config.onReady = function (info) {
                 var realtime = module.realtime = info.realtime;
+                module.users = info.userList.users;
                 module.patchText = TextPatcher.create({
                     realtime: realtime,
                     //logging: true
