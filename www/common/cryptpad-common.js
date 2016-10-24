@@ -719,9 +719,8 @@ define([
                     title: Messages.userButton + '\n' + Messages.userButtonTitle
                 }).html('<span class="fa fa-user" style="font-family:FontAwesome;"></span>');
                 if (data && typeof data.lastName !== "undefined" && callback) {
-                    var lastName = data.lastName;
                     button.click(function() {
-                        common.prompt(Messages.changeNamePrompt, lastName, function (newName) {
+                        common.prompt(Messages.changeNamePrompt, data.lastName, function (newName) {
                             callback(newName);
                         });
                     });
