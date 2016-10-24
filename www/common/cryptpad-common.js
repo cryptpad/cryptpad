@@ -21,6 +21,7 @@ define([
 
     var common = {
         User: User,
+        Messages: Messages,
     };
     var store;
     var userProxy;
