@@ -62,7 +62,7 @@ define(function () {
 
     out.shareButton = 'COMPARTIR';
     out.shareButtonTitle = "Copiar URL al portapapeles";
-    out.shareSuccess = '¡URL Copiada al portapapeles!;
+    out.shareSuccess = '¡URL Copiada al portapapeles!';
     out.shareFailed = "Fallo al copiar URL al portapapeles";
 
     out.presentButton = 'PRESENTAR';
@@ -173,7 +173,7 @@ define(function () {
     out.policy_howweuse_p1 = 'Nosotros usamos esta informacion para tomar mejores decisiones como promover y promocionar Cryptpad, para evaluar cual de nuestros esfuerzos pasados han sido exitosos. La informacion sobre tu ubicacion nos permite conocer si nosotros debemos considerar mejor soporte para otros idiomas diferentes al ingles.';
     out.policy_howweuse_p2 = "La informacion sobre tu navegador (si es un sistema operativo de escritorio o movil) nos ayuda a tomar medidads en las caracteristicas que debemos priorizar y mejorar. Nuestro equipo de desarrollo es pequeño, intentamos hacer elecciones que beneficien la mayoria de los usuarios' experiencia como sea posible.";
     out.policy_whatwetell = 'Lo que nosotros le decimos a otros sobre tí';
-    out.policy_whatwetell_p1 = 'No suministramos información a terceros, ni la que usted nos proporciona a nosotros a menos de ser obligados legalmente a hacerlo. ;
+    out.policy_whatwetell_p1 = 'No suministramos información a terceros, ni la que usted nos proporciona a nosotros a menos de ser obligados legalmente a hacerlo.';
     out.policy_links = 'Links a Otros sitios';
     out.policy_links_p1 = 'Este sitio contiene links a otros sitios, incluyendo algunos producidos por otras organizaciones. Nosotros no nos responsabilisamos por el tratamiento, privacidad de los datos y contenido de sitios externos. Como regla general, los links externos son abiertos una nueva pestaña del navegador, para hacerlo claro tu estas abandonando Cryptpad.fr.';
     out.policy_ads = 'Anuncio';
