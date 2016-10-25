@@ -253,7 +253,7 @@ define([
             };
 
             var initializing = true;
-            var userList = module.userList = {}; // List of pretty name of all users (mapped with their server ID)
+            var userList = module.userList = {}; // List of pretty names for all users (mapped with their ID)
             var toolbarList; // List of users still connected to the channel (server IDs)
             var addToUserList = function(data) {
                 var users = module.users;
@@ -556,8 +556,8 @@ define([
                 /* add a "change username" button */
                 getLastName(function (err, lastName) {
                     userNameButtonObject.lastName = lastName;
-                    var $username = module.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName);
-                    $userBlock.append($username).hide();
+                    var $username = module.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName).hide();
+                    $userBlock.append($username);
                 });
 
                 /* add an export button */
@@ -604,8 +604,7 @@ define([
                         console.log("Couldn't get pad title");
                         return;
                     }
-                    updateTitle(title || info.channel.slice(0, 8));
-                    document.title = title || info.channel.slice(0, 8);
+                    updateTitle(title || defaultName);
                 });
             };
 

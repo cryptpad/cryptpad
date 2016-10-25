@@ -45,9 +45,12 @@ define([
         var andThen = function (CMeditor) {
             var CodeMirror = module.CodeMirror = CMeditor;
             CodeMirror.modeURL = "/bower_components/codemirror/mode/%N/%N.js";
-
             var $pad = $('#pad-iframe');
             var $textarea = $pad.contents().find('#editor1');
+
+            var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
+            var parsedHash = Cryptpad.parsePadUrl(window.location.href);
+            var defaultName = Cryptpad.getDefaultName(parsedHash);
 
             var editor = module.editor = CMeditor.fromTextArea($textarea[0], {
                 lineNumbers: true,
@@ -176,6 +179,9 @@ define([
                 if (!isDefaultTitle()) {
                     obj.metadata.title = document.title;
                 }
+                else {
+                    obj.metadata.title = "";
+                }
 
                 // set mode too...
                 obj.highlightMode = module.highlightMode;
@@ -256,13 +262,10 @@ define([
             };
 
             var suggestName = function () {
-                var parsed = Cryptpad.parsePadUrl(window.location.href);
-                var name = Cryptpad.getDefaultName(parsed, []);
-
-                if (Cryptpad.isDefaultName(parsed, document.title)) {
-                    return getHeadingText() || document.title;
+                if (Cryptpad.isDefaultName(parsedHash, document.title)) {
+                    return getHeadingText() || defaultName;
                 } else {
-                    return document.title || getHeadingText() || name;
+                    return document.title || getHeadingText() || defaultName;
                 }
             };
 
@@ -308,13 +311,23 @@ define([
                 onLocal();
             };
 
+            var renameCb = function (err, title) {
+                if (err) { return; }
+                document.title = title;
+                onLocal();
+            };
+
             var onInit = config.onInit = function (info) {
-                var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
                 toolbarList = info.userList;
                 var config = {
                     userData: userList,
                     readOnly: readOnly,
-                    ifrw: ifrw
+                    ifrw: ifrw,
+                    title: {
+                        onRename: renameCb,
+                        defaultName: defaultName
+                    },
+                    common: Cryptpad
                 };
                 if (readOnly) {delete config.changeNameID; }
                 toolbar = module.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
@@ -336,8 +349,8 @@ define([
                 /* add a "change username" button */
                 getLastName(function (err, lastName) {
                     userNameButtonObject.lastName = lastName;
-                    var $username = module.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName);
-                    $userBlock.append($username).hide();
+                    var $username = module.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName).hide();
+                    $userBlock.append($username);
                 });
 
                 /* add an export button */
@@ -350,11 +363,6 @@ define([
                     $rightside.append($import);
 
                     /* add a rename button */
-                    var renameCb = function (err, title) {
-                        if (err) { return; }
-                        document.title = title;
-                        onLocal();
-                    };
                     var $setTitle = Cryptpad.createButton('rename', true, {suggestName: suggestName}, renameCb);
                     $rightside.append($setTitle);
                 }
@@ -454,14 +462,7 @@ define([
                         console.error(err);
                         return;
                     }
-                    document.title = title || info.channel.slice(0, 8);
-                    Cryptpad.setPadTitle(title, function (err, data) {
-                        if (err) {
-                            console.log("Unable to set pad title");
-                            console.error(err);
-                            return;
-                        }
-                    });
+                    updateTitle(title || defaultName);
                 });
             };
 
@@ -470,13 +471,16 @@ define([
                 // Change the title now, and set it back to the old value if there is an error
                 var oldTitle = document.title;
                 document.title = newTitle;
-                Cryptpad.setPadTitle(newTitle, function (err, data) {
+                Cryptpad.renamePad(newTitle, function (err, data) {
                     if (err) {
                         console.log("Couldn't set pad title");
                         console.error(err);
                         document.title = oldTitle;
                         return;
                     }
+                    document.title = data;
+                    $bar.find('.' + Toolbar.constants.title).find('span').text(data);
+                    $bar.find('.' + Toolbar.constants.title).find('input').val(data);
                 });
             };
 
@@ -489,7 +493,7 @@ define([
                         // Update the local user data
                         addToUserList(userData);
                     }
-                    if (json.metadata.title) {
+                    if (typeof json.metadata.title !== "undefined") {
                         updateTitle(json.metadata.title);
                     }
                 }
@@ -651,6 +655,9 @@ define([
                     };
                     if (!isDefaultTitle()) {
                         hjson2.metadata.title = document.title;
+                    }
+                    else {
+                        hjson2.metadata.title = "";
                     }
                     var shjson2 = stringify(hjson2);
                     if (shjson2 !== shjson) {

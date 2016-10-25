@@ -62,9 +62,12 @@ define([
         var andThen = function (CMeditor) {
             var CodeMirror = module.CodeMirror = CMeditor;
             CodeMirror.modeURL = "/bower_components/codemirror/mode/%N/%N.js";
-
             var $pad = $('#pad-iframe');
             var $textarea = $pad.contents().find('#editor1');
+
+            var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
+            var parsedHash = Cryptpad.parsePadUrl(window.location.href);
+            var defaultName = Cryptpad.getDefaultName(parsedHash);
 
             var editor = module.editor = CMeditor.fromTextArea($textarea[0], {
                 lineNumbers: true,
@@ -211,6 +214,9 @@ define([
                 if (!isDefaultTitle()) {
                     obj.metadata.title = APP.title;
                 }
+                else {
+                    obj.metadata.title = "";
+                }
                 if (textColor) {
                     obj.metadata.color = textColor;
                 }
@@ -286,13 +292,10 @@ define([
             };
 
             var suggestName = function () {
-                var parsed = Cryptpad.parsePadUrl(window.location.href);
-                var name = Cryptpad.getDefaultName(parsed, []);
-
-                if (Cryptpad.isDefaultName(parsed, APP.title)) {
-                    return getHeadingText() || APP.title;
+                if (Cryptpad.isDefaultName(parsedHash, APP.title)) {
+                    return getHeadingText() || defaultName;
                 } else {
-                    return APP.title || getHeadingText() || name;
+                    return APP.title || getHeadingText() || defaultName;
                 }
             };
 
@@ -344,7 +347,7 @@ define([
                 var oldTitle = APP.title;
                 APP.title = newTitle;
                 setTabTitle();
-                Cryptpad.setPadTitle(newTitle, function (err, data) {
+                Cryptpad.renamePad(newTitle, function (err, data) {
                     if (err) {
                         console.log("Couldn't set pad title");
                         console.error(err);
@@ -352,6 +355,10 @@ define([
                         setTabTitle();
                         return;
                     }
+                    APP.title = data;
+                    setTabTitle();
+                    $bar.find('.' + Toolbar.constants.title).find('span').text(data);
+                    $bar.find('.' + Toolbar.constants.title).find('input').val(data);
                 });
             };
 
@@ -378,20 +385,31 @@ define([
                         // Update the local user data
                         addToUserList(userData);
                     }
-                    if (json.metadata.title) {
+                    if (typeof json.metadata.title !== "undefined") {
                         updateTitle(json.metadata.title);
                     }
                     updateColors(json.metadata.color, json.metadata.backColor);
                 }
             };
 
+            var renameCb = function (err, title) {
+                if (err) { return; }
+                APP.title = title;
+                setTabTitle();
+                onLocal();
+            };
+
             var onInit = config.onInit = function (info) {
-                var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
                 toolbarList = info.userList;
                 var config = {
                     userData: userList,
                     readOnly: readOnly,
-                    ifrw: $('#pad-iframe')[0].contentWindow
+                    ifrw: ifrw,
+                    title: {
+                        onRename: renameCb,
+                        defaultName: defaultName
+                    },
+                    common: Cryptpad
                 };
                 if (readOnly) {delete config.changeNameID; }
                 toolbar = module.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
@@ -413,8 +431,8 @@ define([
                 /* add a "change username" button */
                 getLastName(function (err, lastName) {
                     userNameButtonObject.lastName = lastName;
-                    var $username = module.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName);
-                    $userBlock.append($username).hide();
+                    var $username = module.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName).hide();
+                    $userBlock.append($username);
                 });
 
                 /* add an export button */
@@ -427,12 +445,6 @@ define([
                     $rightside.append($import);
 
                     /* add a rename button */
-                    var renameCb = function (err, title) {
-                        if (err) { return; }
-                        APP.title = title;
-                        setTabTitle();
-                        onLocal();
-                    };
                     var $setTitle = Cryptpad.createButton('rename', true, {suggestName: suggestName}, renameCb);
                     $rightside.append($setTitle);
                 }
@@ -576,14 +588,7 @@ define([
                         console.error(err);
                         return;
                     }
-                    document.title = APP.title = title || info.channel.slice(0, 8);
-                    Cryptpad.setPadTitle(title, function (err, data) {
-                        if (err) {
-                            console.log("Unable to set pad title");
-                            console.error(err);
-                            return;
-                        }
-                    });
+                    updateTitle(title || defaultName);
                 });
             };
 

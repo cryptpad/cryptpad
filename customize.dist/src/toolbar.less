@@ -39,7 +39,7 @@
         }
     }
 
-    button, .rightside-element {
+    button, select, .rightside-element {
         height: 26px;
         padding-right: 5px;
         padding-left: 5px;
@@ -108,28 +108,92 @@
 .cryptpad-toolbar-top {
     display: block;
     text-align: center;
+    height: 3em;
+    position: relative;
+    margin-bottom: 3px;
+    @media screen and (max-width: 400px) {
+        height: 6em;
+    }
     .cryptpad-title {
-        text-align: center;
+        span {
+            font-size: 1.5em;
+            vertical-align: middle;
+            line-height: 2em;
+            &:hover {
+                border: 1px solid #888;
+                border-radius: 2px;
+                background: white;
+                padding: 5px;
+            }
+        }
         input {
+            font-size: 1.5em;
+            vertical-align: middle;
+            height: 100%;
+            box-sizing: border-box;
             border: 1px solid black;
             background: #fff;
             cursor: auto;
             width: 300px;
-            padding: 5px;
-            -webkit-touch-callout: text;
-            -webkit-user-select: text;
-            -khtml-user-select: text;
-            -moz-user-select: text;
-            -ms-user-select: text;
-            user-select: text;
-            &:focus {
-                -webkit-touch-callout: text;
-                -webkit-user-select: text;
-                -khtml-user-select: text;
-                -moz-user-select: text;
-                -ms-user-select: text;
-                user-select: text;
+            padding: 0px 5px;
+        }
+    }
+    .cryptpad-link {
+        position: absolute;
+        left: 0px;
+        height: 3em;
+        @media screen and (max-width: 400px) {
+            top: 3em;
+        }
+        @media screen and (min-width: 401px) {
+            top: 0px;
+        }
+
+        a.cryptpad-logo {
+            cursor: pointer;
+            height: 3em;
+            border: 1px solid #aaa;
+            border-radius: @border-radius;
+            padding: 0px 5px;
+            text-decoration: none;
+            color: inherit;
+            img {
+                vertical-align: middle;
+                height: 3em;
+                cursor: pointer;
             }
+            span {
+                font-size: 1.5em;
+                margin-left: 5px;
+                vertical-align: middle;
+                cursor: pointer;
+            }
+        }
+        .big {
+            @media screen and (max-width: 400px) {
+                display: none;
+            }
+            @media screen and (min-width: 401px) {
+                display: inline-block;
+            }
+        }
+        .small {
+            @media screen and (max-width: 400px) {
+                display: inline-block;
+            }
+            @media screen and (min-width: 401px) {
+                display: none;
+            }
+        }
+    }
+    .cryptpad-user {
+        position: absolute;
+        right: 0;
+        @media screen and (max-width: 400px) {
+            top: 3em;
+        }
+        @media screen and (min-width: 401px) {
+            top: 0px;
         }
     }
 }

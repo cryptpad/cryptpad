@@ -1,6 +1,8 @@
 define(function () {
     var out = {};
 
+    out._languageName = 'English';
+
     out.main_title = "Cryptpad: Zero Knowledge, Collaborative Real Time Editing";
 
     out.type = {};

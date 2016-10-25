@@ -36,6 +36,7 @@ define([
     var DROPDOWN_CONTAINER_CLS = Bar.constants.dropdownContainer = "cryptpad-dropdown-container";
     var DROPDOWN_CLS = Bar.constants.dropdown = "cryptpad-dropdown";
     var TITLE_CLS = Bar.constants.title = "cryptpad-title";
+    var USER_CLS = Bar.constants.userAdmin = "cryptpad-user";
 
     /** Key in the localStore which indicates realtime activity should be disallowed. */
     // TODO remove? will never be used in cryptpad
@@ -195,7 +196,7 @@ define([
         if (n === 1) { return '; + ' + Messages.oneViewer; }
         return '; + ' + Messages._getKey('viewers', [n]);
     };
-    var updateUserList = function (myUserName, userlistElement, userList, userData, readOnly, $stateElement) {
+    var updateUserList = function (myUserName, userlistElement, userList, userData, readOnly, $stateElement, $userAdminElement) {
         var meIdx = userList.indexOf(myUserName);
         if (meIdx === -1) {
             $stateElement.text(Messages.synchronizing);
@@ -206,7 +207,7 @@ define([
         // Make sure the user block elements are displayed
         var $userButtons = $(userlistElement).find("#userButtons");
         $userButtons.show();
-        var $userElement = $(userlistElement).find('.' + USERNAME_CLS);
+        var $userElement = $userAdminElement.find('.' + USERNAME_CLS);
         $userElement.show();
 
         var numberOfUsers = userList.length;
@@ -261,7 +262,7 @@ define([
             if (!name) {
                 name = Messages.anonymous;
             }
-            $userElement.find("button").html(icon + ' ' + name);
+            $userElement.find("button").html(icon + ' ' + name).show();
         }
     };
 
@@ -303,7 +304,60 @@ define([
         $(lagElement).append(lagLight);
     };
 
+    var createLinkToMain = function ($topContainer) {
+        var $linkContainer = $('<span>', {
+            'class': "cryptpad-link"
+        }).appendTo($topContainer);
+        var $imgTag = $('<img>', {
+            src: "/customize/cryptofist_mini.png",
+            alt: "Cryptpad",
+            'class': "cryptofist"
+        });
+        var $aTagSmall = $('<a>', {
+            href: "/",
+            title: Messages.header_logoTitle,
+            'class': "cryptpad-logo"
+        }).append($imgTag);
+        $span = $('<span>').text('CryptPad');
+        var $aTagBig = $aTagSmall.clone().addClass('big').append($span);
+        $aTagSmall.addClass('small');
+
+        $linkContainer.append($aTagSmall).append($aTagBig);
+    };
+
+    var createUserAdmin = function ($topContainer) {
+        var $userContainer = $('<span>', {
+            'class': USER_CLS
+        }).appendTo($topContainer);
+
+        var $span = $('<span>' , {
+            'class': 'cryptpad-language'
+        });
+        var $select = $('<select>', {
+            'id': 'language-selector'
+        }).appendTo($userContainer);
+
+        var languages = Messages._languages;
+        for (var l in languages) {
+            $('<option>', {
+                value: l
+            }).text(languages[l]).appendTo($select);
+        }
+
+        Messages._initSelector($select);
+
+        $select.on('mousedown', function (e) {
+            e.stopPropagation();
+            return true;
+        });
+
+        var $usernameElement = $('<span>', {'class': USERNAME_CLS}).appendTo($userContainer);
+
+        return $userContainer;
+    };
+
     var createTitle = function ($container, readOnly, config, Cryptpad) {
+        config = config || {};
         var callback = config.onRename;
         var placeholder = config.defaultName;
 
@@ -311,8 +365,10 @@ define([
             id: 'toolbarTitle',
             'class': TITLE_CLS
         }).appendTo($container);
-        var $text = $('<span>').appendTo($titleContainer);
-        if (readOnly === 1 || typeof(Cryptpad) === "unedfined") { return; }
+        var $text = $('<span>', {
+            title: "CLick to edit" //TODO translate
+        }).appendTo($titleContainer);
+        if (readOnly === 1 || typeof(Cryptpad) === "undefined") { return; }
         var $input = $('<input>', {
             type: 'text',
             placeholder: placeholder
@@ -335,6 +391,10 @@ define([
                     $text.show();
                 });
             }
+            else if (e.which === 27) {
+                $input.hide();
+                $text.show();
+            }
         });
         $text.on('click', function () {
             $text.hide();
@@ -342,9 +402,11 @@ define([
             $input.show();
             $input.focus();
         });
+        return $titleContainer;
     };
 
     var create = Bar.create = function ($container, myUserName, realtime, getLag, userList, config) {
+        config = config || {};
         var readOnly = (typeof config.readOnly !== "undefined") ? (config.readOnly ? 1 : 0) : -1;
         var Cryptpad = config.common;
 
@@ -353,6 +415,8 @@ define([
         var spinner = createSpinner(toolbar.find('.' + RIGHTSIDE_CLS));
         var lagElement = createLagElement(toolbar.find('.' + RIGHTSIDE_CLS));
         var $titleElement = createTitle(toolbar.find('.' + TOP_CLS), readOnly, config.title, Cryptpad);
+        var $linkElement = createLinkToMain(toolbar.find('.' + TOP_CLS));
+        var $userAdminElement = createUserAdmin(toolbar.find('.' + TOP_CLS));
         var userData = config.userData;
         // readOnly = 1 (readOnly enabled), 0 (disabled), -1 (old pad without readOnly mode)
         var saveElement;
@@ -368,7 +432,15 @@ define([
                 }
                 $container.find('.cryptpad-dropdown').hide();
             };
-            $(config.ifrw).on('click',removeDropdowns);
+            var cancelEditTitle = function (e) {
+                if ($(e.target).parents('.' + TITLE_CLS).length) {
+                    return;
+                }
+                $titleElement.find('input').hide();
+                $titleElement.find('span').show();
+            };
+            $(config.ifrw).on('click', removeDropdowns);
+            $(config.ifrw).on('click', cancelEditTitle);
             if (config.ifrw.$('iframe').length) {
                 var innerIfrw = config.ifrw.$('iframe').each(function (i, el) {
                     $(el.contentWindow).on('click', removeDropdowns);
@@ -383,7 +455,7 @@ define([
           if(newUserData) { // Someone has changed his name/color
             userData = newUserData;
           }
-          updateUserList(myUserName, userListElement, users, userData, readOnly, $stateElement);
+          updateUserList(myUserName, userListElement, users, userData, readOnly, $stateElement, $userAdminElement);
         };
 
         var ks = function () {

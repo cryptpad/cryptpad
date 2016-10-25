@@ -20,8 +20,8 @@ define(['/bower_components/jquery/dist/jquery.min.js'], function() {
         return getStoredLanguage() || getBrowserLanguage();
     };
 
-    var main = out.main = function () {
-        var selector = $('#language-selector');
+    var main = out.main = function ($select) {
+        var selector = $select || $('#language-selector');
         if (!selector.length) { return; }
 
         // Select the current language in the list
