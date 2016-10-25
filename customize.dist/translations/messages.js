@@ -53,6 +53,7 @@ define(function () {
     out.renameButtonTitle = 'Change the title under which this document is listed on your home page';
     out.renamePrompt = 'How would you like to title this pad?';
     out.renameConflict = 'Another pad already has that title';
+    out.clickToEdit = "Click to edit";
 
     out.forgetButton = 'FORGET';
     out.forgetButtonTitle = 'Remove this document from your home page listings';
@@ -81,8 +82,8 @@ define(function () {
     out.readonlyUrl = 'Read only document';
     out.copyReadOnly = "Copy URL to clipboard";
     out.openReadOnly = "Open in a new tab";
-    out.editing = "editing";
-    out.viewing = "viewing";
+    out.editing = "editor(s)";
+    out.viewing = "viewer(s)";
     out.editShare = "Share";
     out.editShareTitle = "Copy the edit URL to clipboard";
     out.viewShare = "Share view URL";

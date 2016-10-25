@@ -53,6 +53,7 @@ define(function () {
     out.renameButtonTitle = 'Changer le titre utilisé par ce document dans la page d\'accueil de Cryptpad';
     out.renamePrompt = 'Quel titre souhaitez-vous utiliser pour ce document ?';
     out.renameConflict = 'Un autre document existe déjà avec le même titre';
+    out.clickToEdit = 'Cliquer pour modifier';
 
     out.forgetButton = 'OUBLIER';
     out.forgetButtonTitle = 'Enlever ce document de la liste en page d\'accueil';

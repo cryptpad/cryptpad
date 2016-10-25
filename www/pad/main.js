@@ -321,8 +321,8 @@ define([
             };
 
             var suggestName = function () {
-                if (Cryptpad.isDefaultName(parsedHash, document.title)) {
-                    return getHeadingText() || defaultName;
+                if (document.title === defaultName) {
+                    return getHeadingText() || "";
                 } else {
                     return document.title || getHeadingText() || defaultName;
                 }
@@ -346,13 +346,10 @@ define([
                 hjson[3] = {
                     metadata: {
                         users: userList,
+                        defaultTitle: defaultName
                     }
                 };
-                if (!isDefaultTitle()) {
-                    hjson[3].metadata.title = document.title;
-                } else {
-                    hjson[3].metadata.title = "";
-                }
+                hjson[3].metadata.title = document.title;
                 return stringify(hjson);
             };
 
@@ -411,6 +408,11 @@ define([
                 });
             };
 
+            var updateDefaultTitle = function (defaultTitle) {
+                defaultName = defaultTitle;
+                $bar.find('.' + Toolbar.constants.title).find('input').attr("placeholder", defaultName);
+            };
+
             var updateMetadata = function(shjson) {
                 // Extract the user list (metadata) from the hyperjson
                 var hjson = JSON.parse(shjson);
@@ -420,6 +422,9 @@ define([
                         var userData = peerMetadata.metadata.users;
                         // Update the local user data
                         addToUserList(userData);
+                    }
+                    if (peerMetadata.metadata.defaultTitle) {
+                        updateDefaultTitle(peerMetadata.metadata.defaultTitle);
                     }
                     if (typeof peerMetadata.metadata.title !== "undefined") {
                         updateTitle(peerMetadata.metadata.title);
@@ -532,7 +537,8 @@ define([
                     ifrw: ifrw,
                     title: {
                         onRename: renameCb,
-                        defaultName: defaultName
+                        defaultName: defaultName,
+                        suggestName: suggestName
                     },
                     common: Cryptpad
                 };

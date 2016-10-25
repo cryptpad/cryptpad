@@ -208,15 +208,11 @@ define([
                 var obj = {
                     content: textValue,
                     metadata: {
-                        users: userList
+                        users: userList,
+                        defaultTitle: defaultName
                     }
                 };
-                if (!isDefaultTitle()) {
-                    obj.metadata.title = APP.title;
-                }
-                else {
-                    obj.metadata.title = "";
-                }
+                obj.metadata.title = APP.title;
                 if (textColor) {
                     obj.metadata.color = textColor;
                 }
@@ -292,8 +288,8 @@ define([
             };
 
             var suggestName = function () {
-                if (Cryptpad.isDefaultName(parsedHash, APP.title)) {
-                    return getHeadingText() || defaultName;
+                if (APP.title === defaultName) {
+                    return getHeadingText() || "";
                 } else {
                     return APP.title || getHeadingText() || defaultName;
                 }
@@ -376,6 +372,11 @@ define([
                 }
             };
 
+            var updateDefaultTitle = function (defaultTitle) {
+                defaultName = defaultTitle;
+                $bar.find('.' + Toolbar.constants.title).find('input').attr("placeholder", defaultName);
+            };
+
             var updateMetadata = function(shjson) {
                 // Extract the user list (metadata) from the hyperjson
                 var json = (shjson === "") ? "" : JSON.parse(shjson);
@@ -384,6 +385,9 @@ define([
                         var userData = json.metadata.users;
                         // Update the local user data
                         addToUserList(userData);
+                    }
+                    if (json.metadata.defaultTitle) {
+                        updateDefaultTitle(json.metadata.defaultTitle);
                     }
                     if (typeof json.metadata.title !== "undefined") {
                         updateTitle(json.metadata.title);
@@ -407,7 +411,8 @@ define([
                     ifrw: ifrw,
                     title: {
                         onRename: renameCb,
-                        defaultName: defaultName
+                        defaultName: defaultName,
+                        suggestName: suggestName
                     },
                     common: Cryptpad
                 };

@@ -313,14 +313,23 @@ define([
             alt: "Cryptpad",
             'class': "cryptofist"
         });
+
+        // We need to override the "a" tag action here because it is inside the iframe!
         var $aTagSmall = $('<a>', {
             href: "/",
             title: Messages.header_logoTitle,
             'class': "cryptpad-logo"
         }).append($imgTag);
-        $span = $('<span>').text('CryptPad');
+        var $span = $('<span>').text('CryptPad');
         var $aTagBig = $aTagSmall.clone().addClass('big').append($span);
         $aTagSmall.addClass('small');
+        var onClick = function (e) {
+            e.preventDefault();
+            window.location = "/";
+        };
+
+        $aTagBig.click(onClick);
+        $aTagSmall.click(onClick);
 
         $linkContainer.append($aTagSmall).append($aTagBig);
     };
@@ -360,13 +369,14 @@ define([
         config = config || {};
         var callback = config.onRename;
         var placeholder = config.defaultName;
+        var suggestName = config.suggestName;
 
         var $titleContainer = $('<span>', {
             id: 'toolbarTitle',
             'class': TITLE_CLS
         }).appendTo($container);
         var $text = $('<span>', {
-            title: "CLick to edit" //TODO translate
+            title: Messages.clickToEdit
         }).appendTo($titleContainer);
         if (readOnly === 1 || typeof(Cryptpad) === "undefined") { return; }
         var $input = $('<input>', {
@@ -383,7 +393,10 @@ define([
         $input.on('keyup', function (e) {
             if (e.which === 13) {
                 var name = $input.val().trim();
-                Cryptpad.renamePad($input.val(), function (err, newtitle) {
+                if (name === "") {
+                    name = $input.attr('placeholder');
+                }
+                Cryptpad.renamePad(name, function (err, newtitle) {
                     if (err) { return; }
                     $text.text(newtitle);
                     callback(null, newtitle);
@@ -398,7 +411,8 @@ define([
         });
         $text.on('click', function () {
             $text.hide();
-            $input.val($text.text());
+            var inputVal = suggestName() || "";
+            $input.val(inputVal);
             $input.show();
             $input.focus();
         });
@@ -444,6 +458,7 @@ define([
             if (config.ifrw.$('iframe').length) {
                 var innerIfrw = config.ifrw.$('iframe').each(function (i, el) {
                     $(el.contentWindow).on('click', removeDropdowns);
+                    $(el.contentWindow).on('click', cancelEditTitle);
                 });
             }
         }

@@ -152,11 +152,14 @@
         a.cryptpad-logo {
             cursor: pointer;
             height: 3em;
-            border: 1px solid #aaa;
-            border-radius: @border-radius;
             padding: 0px 5px;
             text-decoration: none;
             color: inherit;
+            &:hover {
+                span {
+                    text-decoration: underline;
+                }
+            }
             img {
                 vertical-align: middle;
                 height: 3em;

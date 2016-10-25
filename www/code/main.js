@@ -164,30 +164,30 @@ define([
 
             var initializing = true;
 
+            var stringifyInner = function (textValue) {
+                var obj = {
+                    content: textValue,
+                    metadata: {
+                        users: userList,
+                        defaultTitle: defaultName
+                    }
+                };
+                obj.metadata.title = document.title;
+                // set mode too...
+                obj.highlightMode = module.highlightMode;
+
+                // stringify the json and send it into chainpad
+                return stringify(obj);
+            };
+
             var onLocal = config.onLocal = function () {
                 if (initializing) { return; }
                 if (readOnly) { return; }
 
                 editor.save();
+
                 var textValue = canonicalize($textarea.val());
-                var obj = {content: textValue};
-
-                // append the userlist to the hyperjson structure
-                obj.metadata = {
-                    users: userList
-                };
-                if (!isDefaultTitle()) {
-                    obj.metadata.title = document.title;
-                }
-                else {
-                    obj.metadata.title = "";
-                }
-
-                // set mode too...
-                obj.highlightMode = module.highlightMode;
-
-                // stringify the json and send it into chainpad
-                var shjson = stringify(obj);
+                var shjson = stringifyInner(textValue);
 
                 module.patchText(shjson);
 
@@ -262,8 +262,8 @@ define([
             };
 
             var suggestName = function () {
-                if (Cryptpad.isDefaultName(parsedHash, document.title)) {
-                    return getHeadingText() || defaultName;
+                if (document.title === defaultName) {
+                    return getHeadingText() || "";
                 } else {
                     return document.title || getHeadingText() || defaultName;
                 }
@@ -317,7 +317,48 @@ define([
                 onLocal();
             };
 
-            var onInit = config.onInit = function (info) {
+            var updateTitle = function (newTitle) {
+                if (newTitle === document.title) { return; }
+                // Change the title now, and set it back to the old value if there is an error
+                var oldTitle = document.title;
+                document.title = newTitle;
+                Cryptpad.renamePad(newTitle, function (err, data) {
+                    if (err) {
+                        console.log("Couldn't set pad title");
+                        console.error(err);
+                        document.title = oldTitle;
+                        return;
+                    }
+                    document.title = data;
+                    $bar.find('.' + Toolbar.constants.title).find('span').text(data);
+                    $bar.find('.' + Toolbar.constants.title).find('input').val(data);
+                });
+            };
+
+            var updateDefaultTitle = function (defaultTitle) {
+                defaultName = defaultTitle;
+                $bar.find('.' + Toolbar.constants.title).find('input').attr("placeholder", defaultName);
+            };
+
+            var updateMetadata = function(shjson) {
+                // Extract the user list (metadata) from the hyperjson
+                var json = (shjson === "") ? "" : JSON.parse(shjson);
+                if (json && json.metadata) {
+                    if (json.metadata.users) {
+                        var userData = json.metadata.users;
+                        // Update the local user data
+                        addToUserList(userData);
+                    }
+                    if (json.metadata.defaultTitle) {
+                        updateDefaultTitle(json.metadata.defaultTitle);
+                    }
+                    if (typeof json.metadata.title !== "undefined") {
+                        updateTitle(json.metadata.title);
+                    }
+                }
+            };
+
+             var onInit = config.onInit = function (info) {
                 toolbarList = info.userList;
                 var config = {
                     userData: userList,
@@ -325,7 +366,8 @@ define([
                     ifrw: ifrw,
                     title: {
                         onRename: renameCb,
-                        defaultName: defaultName
+                        defaultName: defaultName,
+                        suggestName: suggestName
                     },
                     common: Cryptpad
                 };
@@ -464,39 +506,6 @@ define([
                     }
                     updateTitle(title || defaultName);
                 });
-            };
-
-            var updateTitle = function (newTitle) {
-                if (newTitle === document.title) { return; }
-                // Change the title now, and set it back to the old value if there is an error
-                var oldTitle = document.title;
-                document.title = newTitle;
-                Cryptpad.renamePad(newTitle, function (err, data) {
-                    if (err) {
-                        console.log("Couldn't set pad title");
-                        console.error(err);
-                        document.title = oldTitle;
-                        return;
-                    }
-                    document.title = data;
-                    $bar.find('.' + Toolbar.constants.title).find('span').text(data);
-                    $bar.find('.' + Toolbar.constants.title).find('input').val(data);
-                });
-            };
-
-            var updateMetadata = function(shjson) {
-                // Extract the user list (metadata) from the hyperjson
-                var json = (shjson === "") ? "" : JSON.parse(shjson);
-                if (json && json.metadata) {
-                    if (json.metadata.users) {
-                        var userData = json.metadata.users;
-                        // Update the local user data
-                        addToUserList(userData);
-                    }
-                    if (typeof json.metadata.title !== "undefined") {
-                        updateTitle(json.metadata.title);
-                    }
-                }
             };
 
             var unnotify = module.unnotify = function () {
@@ -645,21 +654,8 @@ define([
                 editor.scrollTo(scroll.left, scroll.top);
 
                 if (!readOnly) {
-                    var localDoc = canonicalize($textarea.val());
-                    var hjson2 = {
-                      content: localDoc,
-                      metadata: {
-                          users: userList
-                      },
-                      highlightMode: highlightMode,
-                    };
-                    if (!isDefaultTitle()) {
-                        hjson2.metadata.title = document.title;
-                    }
-                    else {
-                        hjson2.metadata.title = "";
-                    }
-                    var shjson2 = stringify(hjson2);
+                    var textValue = canonicalize($textarea.val());
+                    var shjson2 = stringifyInner(textValue);
                     if (shjson2 !== shjson) {
                         console.error("shjson2 !== shjson");
                         TextPatcher.log(shjson, TextPatcher.diff(shjson, shjson2));
