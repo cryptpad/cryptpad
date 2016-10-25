@@ -576,8 +576,8 @@ define([
                     $rightside.append($import);
 
                     /* add a rename button */
-                    var $setTitle = Cryptpad.createButton('rename', true, {suggestName: suggestName}, renameCb);
-                    $rightside.append($setTitle);
+                    //var $setTitle = Cryptpad.createButton('rename', true, {suggestName: suggestName}, renameCb);
+                    //$rightside.append($setTitle);
                 }
 
                 /* add a forget button */
