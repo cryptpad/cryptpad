@@ -261,13 +261,11 @@ define([
 
                 if (users && users.length) {
                     for (var userKey in userData) {
-                        console.log(userKey);
-                        if (users.indexOf(userKey) === -1) { console.log('delete'); delete userData[userKey]; }
+                        if (users.indexOf(userKey) === -1) { delete userData[userKey]; }
                     }
                 }
 
                 if(userList && typeof userList.onChange === "function") {
-                    console.log(JSON.stringify(userData));
                     userList.onChange(userData);
                 }
             };
