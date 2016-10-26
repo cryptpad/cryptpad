@@ -28,8 +28,9 @@ define(function () {
     out.yourself = "Vous-même";
     out.anonymousUsers = "utilisateurs anonymes";
     out.anonymousUser = "utilisateur anonyme";
-    out.share = "Partage";
-    out.users = "Utilisateurs";
+    out.shareView = "URL de lecture seule";
+    out.shareEdit = "URL d'édition";
+    out.users = "Éditeurs";
 
     out.greenLight = "Tout fonctionne bien";
     out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur";
@@ -59,7 +60,7 @@ define(function () {
     out.forgetButtonTitle = 'Enlever ce document de la liste en page d\'accueil';
     out.forgetPrompt = 'Cliquer sur OK supprimera l\'URL de ce document de la mémoire de votre navigateur (localStorage), êtes-vous sûr ?';
 
-    out.shareButton = 'PARTAGER';
+    out.shareButton = 'Partager';
     out.shareButtonTitle = "Copier l'URL dans le presse-papiers";
     out.shareSuccess = 'URL copiée dans le presse-papiers';
     out.shareFailed = "Échec de la copie de l'URL dans le presse-papiers";
@@ -84,12 +85,16 @@ define(function () {
     out.openReadOnly = "Ouvrir dans un nouvel onglet";
     out.editing = "éditeur(s)";
     out.viewing = "lecteur(s)";
-    out.editShare = "Partager l'URL";
+    out.editShare = "Partager l'URL d'édition";
     out.editShareTitle = "Copier l'URL d'édition dans le presse-papiers";
     out.viewShare = "Partager l'URL de lecture";
     out.viewShareTitle = "Copier l'URL d'accès en lecture seule dans le presse-papiers";
     out.viewOpen = "Voir dans un nouvel onglet";
     out.viewOpenTitle = "Ouvrir le document en lecture seule dans un nouvel onglet";
+
+    out.notifyJoined = "{0} a rejoint la session collaborative";
+    out.notifyRenamed = "{0} a changé son nom en {1}";
+    out.notifyLeft = "{0} a quitté la session collaborative";
 
     out.disconnectAlert = 'Perte de la connexion au réseau !';
 

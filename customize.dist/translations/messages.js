@@ -28,8 +28,9 @@ define(function () {
     out.yourself = "Yourself";
     out.anonymousUsers = "anonymous users";
     out.anonymousUser = "anonymous user";
-    out.share = "Share";
-    out.users = "Users";
+    out.shareView = "Read-only URL";
+    out.shareEdit = "Edit URL";
+    out.users = "Editing users";
 
     out.greenLight = "Everything is working fine";
     out.orangeLight = "Your slow connection may impact your experience";
@@ -59,7 +60,7 @@ define(function () {
     out.forgetButtonTitle = 'Remove this document from your home page listings';
     out.forgetPrompt = 'Clicking OK will remove the URL for this pad from localStorage, are you sure?';
 
-    out.shareButton = 'SHARE';
+    out.shareButton = 'Share';
     out.shareButtonTitle = "Copy URL to clipboard";
     out.shareSuccess = 'Copied URL to clipboard';
     out.shareFailed = "Failed to copy URL to clipboard";
@@ -84,12 +85,16 @@ define(function () {
     out.openReadOnly = "Open in a new tab";
     out.editing = "editor(s)";
     out.viewing = "viewer(s)";
-    out.editShare = "Share";
+    out.editShare = "Share edit URL";
     out.editShareTitle = "Copy the edit URL to clipboard";
     out.viewShare = "Share view URL";
     out.viewShareTitle = "Copy the read-only URL to clipboard";
     out.viewOpen = "View in new tab";
     out.viewOpenTitle = "Open the document in read-only mode in a new tab";
+
+    out.notifyJoined = "{0} has joined the collaborative session";
+    out.notifyRenamed = "{0} is now known as {1}";
+    out.notifyLeft = "{0} has left the collaborative session";
 
     out.disconnectAlert = 'Network connection lost!';
 

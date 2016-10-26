@@ -105,36 +105,6 @@ define([
             'class': USERBUTTONS_CONTAINER_CLS
         }).appendTo($userlistElement);
 
-        var $editIcon = $('<button>', {
-            'class': 'userlist dropbtn edit',
-        });
-        var $editIconSmall = $editIcon.clone().addClass('small');
-        var $shareIcon = $('<button>', {
-            'class': 'userlist dropbtn share',
-        });
-        var $shareIconSmall = $shareIcon.clone().addClass('small');
-
-        var $dropdownEditUsers = $('<p>', {'class': USERLIST_CLS});
-/*        var $dropdownEditShare = $('<p>', {'class': EDITSHARE_CLS});
-        if (readOnly !== 1) {
-            $dropdownEditShare.append($shareTitle);
-        }
-*/        var $dropdownEditContainer = $('<div>', {'class': DROPDOWN_CONTAINER_CLS});
-        var $dropdownEdit = $('<div>', {
-            id: "cryptpad-dropdown-edit",
-            'class': DROPDOWN_CLS
-        }).append($dropdownEditUsers); //.append($dropdownEditShare);
-
-        var $shareTitle = $('<h2>').text(Messages.share);
-        var $shareTitle2 = $('<h2>').text(Messages.share + 'VIEW');
-        var $dropdownShareP = $('<p>', {'class': EDITSHARE_CLS}).append($shareTitle);
-        var $dropdownShareP2 = $('<p>', {'class': VIEWSHARE_CLS}).append($shareTitle2);
-        var $dropdownShareContainer = $('<div>', {'class': DROPDOWN_CONTAINER_CLS});
-        var $dropdownShare = $('<div>', {
-            id: "cryptpad-dropdown-share",
-            'class': DROPDOWN_CLS
-        }).append($dropdownShareP).append($dropdownShareP2);
-
         var createHandler = function ($elmt) {
             return function () {
                 if ($elmt.is(':visible')) {
@@ -145,20 +115,51 @@ define([
                 $elmt.show();
             };
         };
+
+        var fa_caretdown = '<span class="fa fa-caret-down" style="font-family:FontAwesome;"></span>';
+
+        // User list button
+        var $editIcon = $('<button>', {
+            'class': 'userlist dropbtn edit',
+        });
+        var $editIconSmall = $editIcon.clone().addClass('small');
+        var $dropdownEditUsers = $('<p>', {'class': USERLIST_CLS});
+        var $dropdownEditContainer = $('<div>', {'class': DROPDOWN_CONTAINER_CLS});
+        var $dropdownEdit = $('<div>', {
+            id: "cryptpad-dropdown-edit",
+            'class': DROPDOWN_CLS
+        }).append($dropdownEditUsers); //.append($dropdownEditShare);
         $editIcon.click(createHandler($dropdownEdit));
         $editIconSmall.click(createHandler($dropdownEdit));
+        $dropdownEditContainer.append($editIcon).append($editIconSmall).append($dropdownEdit);
+        $listElement.append($dropdownEditContainer);
+
+        // Share button
+        var fa_share = '<span class="fa fa-share-alt" style="font-family:FontAwesome;"></span>';
+        var fa_editusers = '<span class="fa fa-users" style="font-family:FontAwesome;"></span>';
+        var fa_viewusers = '<span class="fa fa-eye" style="font-family:FontAwesome;"></span>';
+        var $shareIcon = $('<button>', {
+            'class': 'userlist dropbtn share',
+        }).html(fa_share + ' ' + Messages.shareButton + ' ' + fa_caretdown);
+        var $shareIconSmall = $shareIcon.clone().addClass('small').html(fa_share + ' ' + fa_caretdown);
+        var $shareTitle = $('<h2>').html(fa_editusers + ' ' + Messages.shareEdit);
+        var $shareTitleView = $('<h2>').html(fa_viewusers + ' ' + Messages.shareView);
+        var $dropdownShareP = $('<p>', {'class': EDITSHARE_CLS}).append($shareTitle);
+        var $dropdownSharePView = $('<p>', {'class': VIEWSHARE_CLS}).append($shareTitleView);
+        var $dropdownShareContainer = $('<div>', {'class': DROPDOWN_CONTAINER_CLS});
+        var $dropdownShare = $('<div>', {
+            id: "cryptpad-dropdown-share",
+            'class': DROPDOWN_CLS
+        });
+        if (readOnly !== 1) {
+            // Hide the "Share edit URL" section when in read-only mode
+            $dropdownShare.append($dropdownShareP);
+        }
+        $dropdownShare.append($dropdownSharePView);
         $shareIcon.click(createHandler($dropdownShare));
         $shareIconSmall.click(createHandler($dropdownShare));
-
-        $dropdownEditContainer.append($editIcon).append($editIconSmall).append($dropdownEdit);
         $dropdownShareContainer.append($shareIcon).append($shareIconSmall).append($dropdownShare);
-
-        $listElement.append($dropdownEditContainer);
-/*        if (readOnly !== -1) {*/
-            $listElement.append($dropdownShareContainer);
-       /* }
-*/
-
+        $listElement.append($dropdownShareContainer);
     };
 
     var createUserList = function ($container, readOnly) {
@@ -206,27 +207,26 @@ define([
         }
         $stateElement.text('');
 
-        // Make sure the user block elements are displayed
+        // Make sure the elements are displayed
         var $userButtons = $(userlistElement).find("#userButtons");
         $userButtons.show();
-        var $userElement = $userAdminElement.find('.' + USERNAME_CLS);
-        $userElement.show();
 
         var numberOfUsers = userList.length;
 
         // If we are using old pads (readonly unavailable), only editing users are in userList.
         // With new pads, we also have readonly users in userList, so we have to intersect with
         // the userData to have only the editing users. We can't use userData directly since it
-        // contains data about users that have already left the channel.
+        // may contain data about users that have already left the channel.
         userList = readOnly === -1 ? userList : arrayIntersect(userList, Object.keys(userData));
 
-        var numberOfViewUsers = numberOfUsers - userList.length;
+        var numberOfEditUsers = userList.length;
+        var numberOfViewUsers = numberOfUsers - numberOfEditUsers;
 
         // Names of editing users
         var editUsersNames = getOtherUsers(myUserName, userList, userData);
 
         // Number of anonymous editing users
-        var anonymous = numberOfUsers - editUsersNames.length;
+        var anonymous = numberOfEditUsers - editUsersNames.length;
 
         // Update the userlist
         var editUsersList = '';
@@ -249,11 +249,12 @@ define([
         var fa_caretdown = '<span class="fa fa-caret-down" style="font-family:FontAwesome;"></span>';
         var fa_editusers = '<span class="fa fa-users" style="font-family:FontAwesome;"></span>';
         var fa_viewusers = '<span class="fa fa-eye" style="font-family:FontAwesome;"></span>';
-        $userButtons.find('.userlist.edit').html(fa_editusers + ' ' + userList.length + ' ' + Messages.editing + ', ' + fa_viewusers + ' ' + numberOfViewUsers + ' ' + Messages.viewing + ' ' + fa_caretdown);
-        $userButtons.find('.userlist.edit.small').html(fa_editusers + ' ' + userList.length + ', ' + fa_viewusers + ' ' + numberOfViewUsers + ' ' + fa_caretdown);
-        $userButtons.find('.userlist.share').html('SHARE ' + fa_caretdown);
-        $userButtons.find('.userlist.share.small').html('SHARE SMALL ' + fa_caretdown);
+        $userButtons.find('.userlist.edit').html(fa_editusers + ' ' + userList.length + ' ' + Messages.editing + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers + ' ' + Messages.viewing + ' ' + fa_caretdown);
+        $userButtons.find('.userlist.edit.small').html(fa_editusers + ' ' + userList.length + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers + ' ' + fa_caretdown);
 
+        // Change username button
+        var $userElement = $userAdminElement.find('.' + USERNAME_CLS);
+        $userElement.show();
         if (readOnly === 1) {
             $userElement.html('<span class="' + READONLY_CLS + '">' + Messages.readonly + '</span>');
         }
@@ -263,7 +264,6 @@ define([
             if (!name) {
                 name = Messages.anonymous;
             }
-            console.log($userElement);
             $userElement.find("button").show();
             $userElement.find("button").html(icon + ' ' + name);
         }
@@ -473,15 +473,71 @@ define([
             }
         }
 
-        userList.onChange = function(newUserData) {
-          var users = userList.users;
-          if (users.indexOf(myUserName) !== -1) { connected = true; }
-          if (!connected) { return; }
-          if(newUserData) { // Someone has changed his name/color
-            userData = newUserData;
-          }
-          updateUserList(myUserName, userListElement, users, userData, readOnly, $stateElement, $userAdminElement);
-        };
+        // Update user list
+        userList.change.push(function (newUserData) {
+            var users = userList.users;
+            if (users.indexOf(myUserName) !== -1) { connected = true; }
+            if (!connected) { return; }
+            /*if (newUserData) { // Someone has changed his name/color
+                userData = newUserData;
+            }*/
+            updateUserList(myUserName, userListElement, users, userData, readOnly, $stateElement, $userAdminElement);
+        });
+        // Display notifications when users are joining/leaving the session
+        var oldUserData;
+        if (typeof Cryptpad !== "undefined") {
+            var notify = function(type, name, oldname) {
+                // type : 1 (+1 user), 0 (rename existing user), -1 (-1 user)
+                if (typeof name === "undefined") { return; }
+                name = (name === "") ? Messages.anonymous : name;
+                switch(type) {
+                    case 1:
+                        Cryptpad.log(Messages._getKey("notifyJoined", [name]));
+                        break;
+                    case 0:
+                        oldname = (oldname === "") ? Messages.anonymous : oldname;
+                        Cryptpad.log(Messages._getKey("notifyRenamed", [oldname, name]));
+                        break;
+                    case -1:
+                        Cryptpad.log(Messages._getKey("notifyLeft", [name]));
+                        break;
+                    default:
+                        console.log("Invalid type of notification");
+                        break;
+                }
+            };
+            userList.change.push(function (newdata) {
+                // Notify for disconnected users
+                if (typeof oldUserData !== "undefined") {
+                    for (var u in oldUserData) {
+                        if (userList.users.indexOf(u) === -1) {
+                            notify(-1, oldUserData[u].name);
+                            delete oldUserData[u];
+                        }
+                    }
+                }
+                // Update the "oldUserData" object and notify for new users and names changed
+                if (typeof newdata === "undefined") { return; }
+                if (typeof oldUserData === "undefined") {
+                    oldUserData = JSON.parse(JSON.stringify(newdata));
+                    return;
+                }
+                if (readOnly === 0 && !oldUserData[myUserName]) {
+                    oldUserData = JSON.parse(JSON.stringify(newdata));
+                    return;
+                }
+                for (var k in newdata) {
+                    if (k !== myUserName && userList.users.indexOf(k) !== -1) {
+                        if (typeof oldUserData[k] === "undefined") {
+                            notify(1, newdata[k].name);
+                        } else if (oldUserData[k].name !== newdata[k].name) {
+                            notify(0, newdata[k].name, oldUserData[k].name);
+                        }
+                    }
+                }
+                oldUserData = JSON.parse(JSON.stringify(newdata));
+            });
+        }
 
         var ks = function () {
             if (connected) { kickSpinner(spinner, false); }

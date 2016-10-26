@@ -253,19 +253,22 @@ define([
             };
 
             var initializing = true;
-            var userList = module.userList = {}; // List of pretty names for all users (mapped with their ID)
-            var toolbarList; // List of users still connected to the channel (server IDs)
-            var addToUserList = function(data) {
+            var userData = module.userData = {}; // List of pretty names for all users (mapped with their ID)
+            var userList; // List of users still connected to the channel (server IDs)
+            var addToUserData = function(data) {
                 var users = module.users;
+                for (var attrname in data) { userData[attrname] = data[attrname]; }
+
                 if (users && users.length) {
-                    for (var userKey in userList) {
-                        if (users.indexOf(userKey) === -1) { delete userList[userKey]; }
+                    for (var userKey in userData) {
+                        console.log(userKey);
+                        if (users.indexOf(userKey) === -1) { console.log('delete'); delete userData[userKey]; }
                     }
                 }
 
-                for (var attrname in data) { userList[attrname] = data[attrname]; }
-                if(toolbarList && typeof toolbarList.onChange === "function") {
-                    toolbarList.onChange(userList);
+                if(userList && typeof userList.onChange === "function") {
+                    console.log(JSON.stringify(userData));
+                    userList.onChange(userData);
                 }
             };
 
@@ -293,7 +296,7 @@ define([
                 myData[myID] = {
                     name: myUserName
                 };
-                addToUserList(myData);
+                addToUserData(myData);
                 Cryptpad.setAttribute('username', newName, function (err, data) {
                     if (err) {
                         console.error("Couldn't set username");
@@ -345,7 +348,7 @@ define([
                 var hjson = Hyperjson.fromDOM(dom, isNotMagicLine, brFilter);
                 hjson[3] = {
                     metadata: {
-                        users: userList,
+                        users: userData,
                         defaultTitle: defaultName
                     }
                 };
@@ -421,7 +424,7 @@ define([
                     if (peerMetadata.metadata.users) {
                         var userData = peerMetadata.metadata.users;
                         // Update the local user data
-                        addToUserList(userData);
+                        addToUserData(userData);
                     }
                     if (peerMetadata.metadata.defaultTitle) {
                         updateDefaultTitle(peerMetadata.metadata.defaultTitle);
@@ -530,9 +533,9 @@ define([
             };
 
             var onInit = realtimeOptions.onInit = function (info) {
-                toolbarList = info.userList;
+                userList = info.userList;
                 var config = {
-                    userData: userList,
+                    userData: userData,
                     readOnly: readOnly,
                     ifrw: ifrw,
                     title: {
@@ -543,7 +546,7 @@ define([
                     common: Cryptpad
                 };
                 if (readOnly) {delete config.changeNameID; }
-                toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
+                toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, userList, config);
 
                 var $rightside = $bar.find('.' + Toolbar.constants.rightside);
                 var $userBlock = $bar.find('.' + Toolbar.constants.username);
@@ -643,16 +646,16 @@ define([
                     // Update the toolbar list:
                     // Add the current user in the metadata if he has edit rights
                     if (readOnly) { return; }
-                    myData[myID] = {
-                        name: ""
-                    };
-                    addToUserList(myData);
                     if (typeof(lastName) === 'string' && lastName.length) {
                         setName(lastName);
                     } else {
+                        myData[myID] = {
+                            name: ""
+                        };
+                        addToUserData(myData);
+                        realtimeOptions.onLocal();
                         module.$userNameButton.click();
                     }
-                    realtimeOptions.onLocal();
                 });
             };
 

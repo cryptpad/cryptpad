@@ -152,21 +152,22 @@ define([
                 editor.setOption('readOnly', !bool);
             };
 
-            var userList = module.userList = {}; // List of pretty name of all users (mapped with their server ID)
-            var toolbarList; // List of users still connected to the channel (server IDs)
-            var addToUserList = function(data) {
+            var userData = module.userData = {}; // List of pretty name of all users (mapped with their server ID)
+            var userList; // List of users still connected to the channel (server IDs)
+            var addToUserData = function(data) {
                 var users = module.users;
+                for (var attrname in data) { userData[attrname] = data[attrname]; }
+
                 if (users && users.length) {
-                    for (var userKey in userList) {
+                    for (var userKey in userData) {
                         if (users.indexOf(userKey) === -1) {
-                            delete userList[userKey];
+                            delete userData[userKey];
                         }
                     }
                 }
 
-                for (var attrname in data) { userList[attrname] = data[attrname]; }
-                if(toolbarList && typeof toolbarList.onChange === "function") {
-                    toolbarList.onChange(userList);
+                if(userList && typeof userList.onChange === "function") {
+                    userList.onChange(userData);
                 }
             };
 
@@ -208,7 +209,7 @@ define([
                 var obj = {
                     content: textValue,
                     metadata: {
-                        users: userList,
+                        users: userData,
                         defaultTitle: defaultName
                     }
                 };
@@ -250,7 +251,7 @@ define([
                 myData[myID] = {
                    name: myUserName
                 };
-                addToUserList(myData);
+                addToUserData(myData);
                 Cryptpad.setAttribute('username', myUserName, function (err, data) {
                     if (err) {
                         console.log("Couldn't set username");
@@ -384,7 +385,7 @@ define([
                     if (json.metadata.users) {
                         var userData = json.metadata.users;
                         // Update the local user data
-                        addToUserList(userData);
+                        addToUserData(userData);
                     }
                     if (json.metadata.defaultTitle) {
                         updateDefaultTitle(json.metadata.defaultTitle);
@@ -404,9 +405,9 @@ define([
             };
 
             var onInit = config.onInit = function (info) {
-                toolbarList = info.userList;
+                userList = info.userList;
                 var config = {
-                    userData: userList,
+                    userData: userData,
                     readOnly: readOnly,
                     ifrw: ifrw,
                     title: {
@@ -672,16 +673,16 @@ define([
                     // Update the toolbar list:
                     // Add the current user in the metadata if he has edit rights
                     if (readOnly) { return; }
-                    myData[myID] = {
-                        name: ""
-                    };
-                    addToUserList(myData);
                     if (typeof(lastName) === 'string' && lastName.length) {
                         setName(lastName);
                     } else {
+                        myData[myID] = {
+                            name: ""
+                        };
+                        addToUserData(myData);
+                        onLocal();
                         module.$userNameButton.click();
                     }
-                    onLocal();
                 });
             };
 
