@@ -14,8 +14,6 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  /*color: #666;*/
-  /*font-weight: bold;*/
   font: normal normal normal 12px Arial, Helvetica, Tahoma, Verdana, Sans-Serif;
   color: #000;
   display: inline-block;
@@ -115,16 +113,37 @@
     height: 67px;
   }
 }
-.cryptpad-toolbar-top .cryptpad-title span {
+.cryptpad-toolbar-top .cryptpad-title .title,
+.cryptpad-toolbar-top .cryptpad-title .pencilIcon {
   font-size: 1.5em;
   vertical-align: middle;
   line-height: 32px;
 }
-.cryptpad-toolbar-top .cryptpad-title span:hover {
+.cryptpad-toolbar-top .cryptpad-title .pencilIcon {
+  display: none;
+}
+.cryptpad-toolbar-top .cryptpad-title .pencilIcon:hover {
+  color: #999;
+}
+.cryptpad-toolbar-top .cryptpad-title .pencilIcon span {
+  cursor: pointer;
+}
+.cryptpad-toolbar-top .cryptpad-title:not(input):hover .editable {
   border: 1px solid #888;
-  border-radius: 2px;
+  border-radius: 2px 0px 0px 2px;
   background: white;
   padding: 5px;
+  border-collapse: collapse;
+}
+.cryptpad-toolbar-top .cryptpad-title:not(input):hover .pencilIcon {
+  cursor: pointer;
+  border: 1px solid #888;
+  border-radius: 0px 2px 2px 0px;
+  background: white;
+  padding: 5px;
+  display: inline;
+  margin-left: -1px;
+  border-collapse: collapse;
 }
 .cryptpad-toolbar-top .cryptpad-title input {
   font-size: 1.5em;
@@ -240,10 +259,9 @@
 .cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p.cryptpad-dropdown-users {
   text-align: baseline;
 }
-.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p.cryptpad-dropdown-users .yourself {
-  font-style: italic;
-}
-.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p.cryptpad-dropdown-users .anonymous {
+.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p.cryptpad-dropdown-users .yourself,
+.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p.cryptpad-dropdown-users .anonymous,
+.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p.cryptpad-dropdown-users .viewer {
   font-style: italic;
 }
 .cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p h2 {

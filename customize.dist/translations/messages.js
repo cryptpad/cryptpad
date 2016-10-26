@@ -30,7 +30,12 @@ define(function () {
     out.anonymousUser = "anonymous user";
     out.shareView = "Read-only URL";
     out.shareEdit = "Edit URL";
-    out.users = "Editing users";
+    out.users = "Users";
+    out.and = "And";
+    out.viewer = "viewer";
+    out.viewers = "viewers";
+    out.editor = "editor";
+    out.editors = "editors";
 
     out.greenLight = "Everything is working fine";
     out.orangeLight = "Your slow connection may impact your experience";
@@ -83,8 +88,6 @@ define(function () {
     out.readonlyUrl = 'Read only document';
     out.copyReadOnly = "Copy URL to clipboard";
     out.openReadOnly = "Open in a new tab";
-    out.editing = "editor(s)";
-    out.viewing = "viewer(s)";
     out.editShare = "Share edit URL";
     out.editShareTitle = "Copy the edit URL to clipboard";
     out.viewShare = "Share view URL";

@@ -331,7 +331,7 @@ define([
                         return;
                     }
                     document.title = data;
-                    $bar.find('.' + Toolbar.constants.title).find('span').text(data);
+                    $bar.find('.' + Toolbar.constants.title).find('span.title').text(data);
                     $bar.find('.' + Toolbar.constants.title).find('input').val(data);
                 });
             };

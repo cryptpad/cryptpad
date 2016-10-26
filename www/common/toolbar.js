@@ -238,9 +238,20 @@ define([
             var text = anonymous === 1 ? Messages.anonymousUser : Messages.anonymousUsers;
             editUsersNames.push('<span class="anonymous">' + anonymous + ' ' + text + '</span>');
         }
+        if (numberOfViewUsers > 0) {
+            var viewText = '<span class="viewer">';
+            if (numberOfEditUsers > 0) {
+                editUsersNames.push('');
+                viewText += Messages.and + ' ';
+            }
+            var viewerText = numberOfViewUsers > 1 ? Messages.viewers : Messages.viewer;
+            viewText += numberOfViewUsers + ' ' + viewerText + '</span>';
+            editUsersNames.push(viewText);
+        }
         if (editUsersNames.length > 0) {
             editUsersList += editUsersNames.join('<br>');
         }
+
         var $usersTitle = $('<h2>').text(Messages.users);
         var $editUsers = $userButtons.find('.' + USERLIST_CLS);
         $editUsers.html('').append($usersTitle).append(editUsersList);
@@ -249,8 +260,10 @@ define([
         var fa_caretdown = '<span class="fa fa-caret-down" style="font-family:FontAwesome;"></span>';
         var fa_editusers = '<span class="fa fa-users" style="font-family:FontAwesome;"></span>';
         var fa_viewusers = '<span class="fa fa-eye" style="font-family:FontAwesome;"></span>';
-        $userButtons.find('.userlist.edit').html(fa_editusers + ' ' + userList.length + ' ' + Messages.editing + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers + ' ' + Messages.viewing + ' ' + fa_caretdown);
-        $userButtons.find('.userlist.edit.small').html(fa_editusers + ' ' + userList.length + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers + ' ' + fa_caretdown);
+        var viewersText = numberOfViewUsers > 1 ? Messages.viewers : Messages.viewer;
+        var editorsText = numberOfEditUsers > 1 ? Messages.editors : Messages.editor;
+        $userButtons.find('.userlist.edit').html(fa_editusers + ' ' + numberOfEditUsers + ' ' + editorsText + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers + ' ' + viewersText + ' ' + fa_caretdown);
+        $userButtons.find('.userlist.edit.small').html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers + ' ' + fa_caretdown);
 
         // Change username button
         var $userElement = $userAdminElement.find('.' + USERNAME_CLS);
@@ -381,18 +394,33 @@ define([
         var placeholder = config.defaultName;
         var suggestName = config.suggestName;
 
+        // Buttons
         var $titleContainer = $('<span>', {
             id: 'toolbarTitle',
             'class': TITLE_CLS
         }).appendTo($container);
         var $text = $('<span>', {
-            title: Messages.clickToEdit
+            'class': 'title'
         }).appendTo($titleContainer);
+        var $pencilIcon = $('<span>', {
+            'class': 'pencilIcon'
+        });
         if (readOnly === 1 || typeof(Cryptpad) === "undefined") { return $titleContainer; }
         var $input = $('<input>', {
             type: 'text',
             placeholder: placeholder
         }).appendTo($titleContainer).hide();
+        if (readOnly !== 1) {
+            $text.attr("title", Messages.clickToEdit);
+            $text.addClass("editable");
+            var $icon = $('<span>', {
+                'class': 'fa fa-pencil readonly',
+                style: 'font-family: FontAwesome;'
+            });
+            $pencilIcon.append($icon).appendTo($titleContainer);
+        }
+
+        // Events
         $input.on('mousedown', function (e) {
             if (!$input.is(":focus")) {
                 $input.focus();
@@ -412,20 +440,26 @@ define([
                     callback(null, newtitle);
                     $input.hide();
                     $text.show();
+                    $pencilIcon.css('display', '');
                 });
             }
             else if (e.which === 27) {
                 $input.hide();
                 $text.show();
+                $pencilIcon.css('display', '');
             }
         });
-        $text.on('click', function () {
+
+        var displayInput = function () {
             $text.hide();
+            $pencilIcon.css('display', 'none');
             var inputVal = suggestName() || "";
             $input.val(inputVal);
             $input.show();
             $input.focus();
-        });
+        };
+        $text.on('click', displayInput);
+        $pencilIcon.on('click', displayInput);
         return $titleContainer;
     };
 
@@ -461,7 +495,8 @@ define([
                     return;
                 }
                 $titleElement.find('input').hide();
-                $titleElement.find('span').show();
+                $titleElement.find('span.title').show();
+                $titleElement.find('span.pencilIcon').css('display', '');
             };
             $(config.ifrw).on('click', removeDropdowns);
             $(config.ifrw).on('click', cancelEditTitle);

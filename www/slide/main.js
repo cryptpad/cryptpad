@@ -354,7 +354,7 @@ define([
                     }
                     APP.title = data;
                     setTabTitle();
-                    $bar.find('.' + Toolbar.constants.title).find('span').text(data);
+                    $bar.find('.' + Toolbar.constants.title).find('span.title').text(data);
                     $bar.find('.' + Toolbar.constants.title).find('input').val(data);
                 });
             };

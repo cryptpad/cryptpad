@@ -30,7 +30,12 @@ define(function () {
     out.anonymousUser = "utilisateur anonyme";
     out.shareView = "URL de lecture seule";
     out.shareEdit = "URL d'édition";
-    out.users = "Éditeurs";
+    out.users = "Utilisateurs";
+    out.and = "Et";
+    out.viewer = "lecteur";
+    out.viewers = "lecteurs";
+    out.editor = "éditeur";
+    out.editors = "éditeurs";
 
     out.greenLight = "Tout fonctionne bien";
     out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur";
@@ -83,8 +88,6 @@ define(function () {
     out.readonlyUrl = 'Document en lecture seule';
     out.copyReadOnly = "Copier l'URL dans le presse-papiers";
     out.openReadOnly = "Ouvrir dans un nouvel onglet";
-    out.editing = "éditeur(s)";
-    out.viewing = "lecteur(s)";
     out.editShare = "Partager l'URL d'édition";
     out.editShareTitle = "Copier l'URL d'édition dans le presse-papiers";
     out.viewShare = "Partager l'URL de lecture";
