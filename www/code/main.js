@@ -303,12 +303,16 @@ define([
                 toolbarList = info.userList;
                 var config = {
                     userData: userList,
-                    readOnly: readOnly
+                    readOnly: readOnly,
+                    ifrw: ifrw
                 };
                 if (readOnly) {delete config.changeNameID; }
                 toolbar = module.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
 
                 var $rightside = $bar.find('.' + Toolbar.constants.rightside);
+                var $userBlock = $bar.find('.' + Toolbar.constants.username);
+                var $editShare = $bar.find('.' + Toolbar.constants.editShare);
+                var $viewShare = $bar.find('.' + Toolbar.constants.viewShare);
 
                 var editHash;
                 var viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
@@ -322,8 +326,8 @@ define([
                     var usernameCb = function (newName) {
                         setName (newName);
                     };
-                    var $username = Cryptpad.createButton('username', true, {lastName: lastName}, usernameCb);
-                    $rightside.append($username);
+                    var $username = Cryptpad.createButton('username', false, {lastName: lastName}, usernameCb);
+                    $userBlock.append($username).hide();
                 });
 
                 /* add an export button */
@@ -353,10 +357,15 @@ define([
                 var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
                 $rightside.append($forgetPad);
 
-                if (!readOnly && viewHash) {
+                if (!readOnly) {
+                    $editShare.append(Cryptpad.createButton('editshare', false, {editHash: editHash}));
+                }
+                if (viewHash) {
                     /* add a 'links' button */
-                    var $links = Cryptpad.createButton('readonly', true, {viewHash: viewHash});
-                    $rightside.append($links);
+                    $viewShare.append(Cryptpad.createButton('viewshare', false, {viewHash: viewHash}));
+                    if (!readOnly) {
+                        $viewShare.append(Cryptpad.createButton('viewopen', false, {viewHash: viewHash}));
+                    }
                 }
 
                 var configureLanguage = function (cb) {
@@ -366,6 +375,7 @@ define([
                     var $language = module.$language = $('<select>', {
                         title: 'syntax highlighting',
                         id: 'language-mode',
+                        'class': 'rightside-element'
                     }).on('change', function () {
                         setMode($language.val());
                         onLocal();
@@ -390,6 +400,7 @@ define([
                     var $themeDropdown = $('<select>', {
                         title: 'color theme',
                         id: 'display-theme',
+                        'class': 'rightside-element'
                     });
                     Themes.forEach(function (o) {
                         $themeDropdown.append($('<option>', {

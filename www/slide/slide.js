@@ -18,13 +18,6 @@ define([
     var $modal;
     var $content;
     var $pad;
-    Slide.setModal = function ($m, $c, $p, iframe) {
-        $modal = Slide.$modal = $m;
-        $content = Slide.$content = $c;
-        $pad = Slide.$pad = $p;
-        ifrw = Slide.ifrw = iframe;
-        addEvent();
-    };
 
     Slide.onChange = function (f) {
         if (typeof(f) === 'function') {
@@ -135,6 +128,7 @@ define([
             $pad.contents().find('.cryptpad-present-button').hide();
             $pad.contents().find('.cryptpad-source-button').show();
             $pad.addClass('fullscreen');
+            $('#iframe-container').addClass('fullscreen');
             $('.top-bar').hide();
             return;
         }
@@ -143,6 +137,7 @@ define([
         $pad.contents().find('.cryptpad-present-button').show();
         $pad.contents().find('.cryptpad-source-button').hide();
         $pad.removeClass('fullscreen');
+        $('#iframe-container').removeClass('fullscreen');
         $('.top-bar').show();
         $modal.removeClass('shown');
     };
@@ -174,7 +169,7 @@ define([
         Slide.draw(i);
     };
 
-    var first = Slide.first = function () {$
+    var first = Slide.first = function () {
         console.log('first');
         Slide.lastIndex = Slide.index;
 
@@ -210,7 +205,7 @@ define([
                     break;
                 case 35: // end
                     Slide.last();
-                    break
+                    break;
                 case 27: // esc
                     show(false);
                     break;
@@ -218,6 +213,14 @@ define([
                     console.log(e.which);
             }
         });
+    };
+
+    Slide.setModal = function ($m, $c, $p, iframe) {
+        $modal = Slide.$modal = $m;
+        $content = Slide.$content = $c;
+        $pad = Slide.$pad = $p;
+        ifrw = Slide.ifrw = iframe;
+        addEvent();
     };
 
     return Slide;

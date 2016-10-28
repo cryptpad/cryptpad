@@ -17,21 +17,17 @@ define(function () {
 
     out.common_connectionLost = 'Server Connection Lost';
 
-    out.editingAlone = 'Editing alone';
-    out.editingWithOneOtherPerson = 'Editing with one other person';
-    out.editingWith = 'Editing with';
-    out.otherPeople = 'other people';
     out.disconnected = 'Disconnected';
     out.synchronizing = 'Synchronizing';
     out.reconnecting = 'Reconnecting...';
     out.lag = 'Lag';
     out.readonly = 'Read only';
-    out.nobodyIsEditing = 'Nobody is editing';
-    out.onePersonIsEditing = 'One person is editing';
-    out.peopleAreEditing = '{0} people are editing';
-    out.oneViewer = '1 viewer';
-    out.viewers = '{0} viewers';
-    out.anonymous = "You are currently anonymous";
+    out.anonymous = "Anonymous";
+    out.yourself = "Yourself";
+    out.anonymousUsers = "anonymous users";
+    out.anonymousUser = "anonymous user";
+    out.share = "Share";
+    out.users = "Users";
 
     out.greenLight = "Everything is working fine";
     out.orangeLight = "Your slow connection may impact your experience";
@@ -83,6 +79,14 @@ define(function () {
     out.readonlyUrl = 'Read only document';
     out.copyReadOnly = "Copy URL to clipboard";
     out.openReadOnly = "Open in a new tab";
+    out.editing = "editing";
+    out.viewing = "viewing";
+    out.editShare = "Share";
+    out.editShareTitle = "Copy the edit URL to clipboard";
+    out.viewShare = "Share view URL";
+    out.viewShareTitle = "Copy the read-only URL to clipboard";
+    out.viewOpen = "View in new tab";
+    out.viewOpenTitle = "Open the document in read-only mode in a new tab";
 
     out.disconnectAlert = 'Network connection lost!';
 
@@ -200,6 +204,7 @@ define(function () {
     // Header.html
 
     out.header_france = '<a href="http://www.xwiki.com/" target="_blank" rel="noopener noreferrer">With <img class="bottom-bar-heart" src="/customize/heart.png" /> from <img class="bottom-bar-fr" src="/customize/fr.png" title="France" alt="France"/> by <img src="/customize/logo-xwiki.png" alt="XWiki SAS" class="bottom-bar-xwiki"/></a>';
+    out.header_xwiki = '<a href="http://www.xwiki.com/" target="_blank" rel="noopener noreferrer"><img src="/customize/logo-xwiki.png" alt="XWiki SAS" class="bottom-bar-xwiki"/></a>';
     out.header_support = '<a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
     out.header_logoTitle = 'Go to the main page';
 

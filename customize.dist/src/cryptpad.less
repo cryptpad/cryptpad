@@ -175,6 +175,7 @@ p, pre, td, a, table, tr {
 .buttons {
     margin-bottom: 50px;
     margin-top: 20px;
+    line-height: 2.5em;
 }
 
 .button {
@@ -278,6 +279,27 @@ tbody {
         margin-right: 4px;
         position: relative;
     }
+
+    .big {
+        @media screen and (max-width: 800px) {
+            display: none;
+        }
+        @media screen and (min-width: 801px) {
+            display: inline-block;
+        }
+    }
+    .small {
+        @media screen and (max-width: 800px) {
+            display: inline-block;
+        }
+        @media screen and (min-width: 801px) {
+            display: none;
+        }
+        img {
+            height: 1.25em;
+        }
+    }
+
 }
 .bottom-bar {
     bottom: 0px;
