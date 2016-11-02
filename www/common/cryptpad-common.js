@@ -619,6 +619,32 @@ define([
     /*
      * Buttons
      */
+    var renamePad = common.renamePad = function (title, callback) {
+        if (title === null) { return; }
+
+        common.causesNamingConflict(title, function (err, conflicts) {
+            if (err) {
+                console.log("Unable to determine if name caused a conflict");
+                console.error(err);
+                callback(err, title);
+                return;
+            }
+
+            if (conflicts) {
+                common.alert(Messages.renameConflict);
+                return;
+            }
+
+            common.setPadTitle(title, function (err, data) {
+                if (err) {
+                    console.log("unable to set pad title");
+                    console.log(err);
+                    return;
+                }
+                callback(null, title);
+            });
+        });
+    };
     var createButton = common.createButton = function (type, rightside, data, callback) {
         var button;
         var size = "17px";
@@ -657,33 +683,9 @@ define([
                     button.click(function() {
                         var suggestion = suggestName();
 
-                        common.prompt(Messages.renamePrompt,
-                            suggestion, function (title, ev) {
-                                if (title === null) { return; }
-
-                                common.causesNamingConflict(title, function (err, conflicts) {
-                                    if (err) {
-                                        console.log("Unable to determine if name caused a conflict");
-                                        console.error(err);
-                                        callback(err, title);
-                                        return;
-                                    }
-
-                                    if (conflicts) {
-                                        common.alert(Messages.renameConflict);
-                                        return;
-                                    }
-
-                                    common.setPadTitle(title, function (err, data) {
-                                        if (err) {
-                                            console.log("unable to set pad title");
-                                            console.log(err);
-                                            return;
-                                        }
-                                        callback(null, title);
-                                    });
-                                });
-                            });
+                        common.prompt(Messages.renamePrompt, suggestion, function (title, ev) {
+                            renamePad(title, callback);
+                        });
                     });
                 }
                 break;
@@ -719,9 +721,8 @@ define([
                     title: Messages.userButton + '\n' + Messages.userButtonTitle
                 }).html('<span class="fa fa-user" style="font-family:FontAwesome;"></span>');
                 if (data && typeof data.lastName !== "undefined" && callback) {
-                    var lastName = data.lastName;
                     button.click(function() {
-                        common.prompt(Messages.changeNamePrompt, lastName, function (newName) {
+                        common.prompt(Messages.changeNamePrompt, data.lastName, function (newName) {
                             callback(newName);
                         });
                     });

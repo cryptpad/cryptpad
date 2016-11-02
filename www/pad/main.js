@@ -85,10 +85,11 @@ define([
         });
 
         editor.on('instanceReady', function (Ckeditor) {
+            var $bar = $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox');
+
             if (readOnly) {
                 $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox > .cke_toolbar').hide();
             }
-
 
             /* add a class to the magicline plugin so we can pick it out more easily */
 
@@ -291,12 +292,13 @@ define([
                     name: myUserName
                 };
                 addToUserList(myData);
-                editor.fire('change');
-
                 Cryptpad.setAttribute('username', newName, function (err, data) {
                     if (err) {
                         console.error("Couldn't set username");
+                        return;
                     }
+                    module.userName.lastName = myUserName;
+                    editor.fire('change');
                 });
             };
 
@@ -402,6 +404,7 @@ define([
                         document.title = oldTitle;
                         return;
                     }
+                    $bar.find('.' + Toolbar.constants.title).find('span').text(newTitle);
                 });
             };
 
@@ -512,13 +515,19 @@ define([
                 realtimeOptions.onLocal();
             };
 
+            var renameCb = function (err, title) {
+                if (err) { return; }
+                document.title = title;
+                editor.fire('change');
+            };
+
             var onInit = realtimeOptions.onInit = function (info) {
-                var $bar = $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox');
                 toolbarList = info.userList;
                 var config = {
                     userData: userList,
                     readOnly: readOnly,
-                    ifrw: ifrw
+                    ifrw: ifrw,
+                    onRename: renameCb
                 };
                 if (readOnly) {delete config.changeNameID; }
                 toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
@@ -535,12 +544,12 @@ define([
                     editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
                 }
 
+                // Store the object sent for the "change username" button so that we can update the field value correctly
+                var userNameButtonObject = module.userName = {};
                 /* add a "change username" button */
                 getLastName(function (err, lastName) {
-                    var usernameCb = function (newName) {
-                        setName (newName);
-                    };
-                    var $username = Cryptpad.createButton('username', false, {lastName: lastName}, usernameCb);
+                    userNameButtonObject.lastName = lastName;
+                    var $username = module.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName);
                     $userBlock.append($username).hide();
                 });
 
@@ -554,11 +563,6 @@ define([
                     $rightside.append($import);
 
                     /* add a rename button */
-                    var renameCb = function (err, title) {
-                        if (err) { return; }
-                        document.title = title;
-                        editor.fire('change');
-                    };
                     var $setTitle = Cryptpad.createButton('rename', true, {suggestName: suggestName}, renameCb);
                     $rightside.append($setTitle);
                 }
@@ -593,13 +597,8 @@ define([
                         console.log("Couldn't get pad title");
                         return;
                     }
+                    updateTitle(title || info.channel.slice(0, 8));
                     document.title = title || info.channel.slice(0, 8);
-                    Cryptpad.setPadTitle(title, function (err, data) {
-                        if (err) {
-                            console.log("Couldn't remember pad");
-                            console.error(err);
-                        }
-                    });
                 });
             };
 
@@ -638,6 +637,8 @@ define([
                     addToUserList(myData);
                     if (typeof(lastName) === 'string' && lastName.length) {
                         setName(lastName);
+                    } else {
+                        module.$userNameButton.click();
                     }
                     realtimeOptions.onLocal();
                 });

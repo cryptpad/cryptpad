@@ -149,9 +149,18 @@ define([
                 editor.setOption('readOnly', !bool);
             };
 
-            var userList = {}; // List of pretty name of all users (mapped with their server ID)
+            var userList = module.userList = {}; // List of pretty name of all users (mapped with their server ID)
             var toolbarList; // List of users still connected to the channel (server IDs)
             var addToUserList = function(data) {
+                var users = module.users;
+                if (users && users.length) {
+                    for (var userKey in userList) {
+                        if (users.indexOf(userKey) === -1) {
+                            delete userList[userKey];
+                        }
+                    }
+                }
+
                 for (var attrname in data) { userList[attrname] = data[attrname]; }
                 if(toolbarList && typeof toolbarList.onChange === "function") {
                     toolbarList.onChange(userList);
@@ -246,6 +255,7 @@ define([
                         console.error(err);
                         return;
                     }
+                    module.userName.lastName = myUserName;
                     onLocal();
                 });
             };
@@ -398,12 +408,12 @@ define([
                     editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
                 }
 
+                // Store the object sent for the "change username" button so that we can update the field value correctly
+                var userNameButtonObject = module.userName = {};
                 /* add a "change username" button */
                 getLastName(function (err, lastName) {
-                    var usernameCb = function (newName) {
-                        setName (newName);
-                    };
-                    var $username = Cryptpad.createButton('username', false, {lastName: lastName}, usernameCb);
+                    userNameButtonObject.lastName = lastName;
+                    var $username = module.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName);
                     $userBlock.append($username).hide();
                 });
 
@@ -593,6 +603,7 @@ define([
 
             var onReady = config.onReady = function (info) {
                 var realtime = module.realtime = info.realtime;
+                module.users = info.userList.users;
                 module.patchText = TextPatcher.create({
                     realtime: realtime,
                     //logging: true
@@ -657,6 +668,8 @@ define([
                     addToUserList(myData);
                     if (typeof(lastName) === 'string' && lastName.length) {
                         setName(lastName);
+                    } else {
+                        module.$userNameButton.click();
                     }
                     onLocal();
                 });
