@@ -276,15 +276,15 @@ define([
     };
 
     var parsePadUrl = common.parsePadUrl = function (href) {
-        var patt = /^https*:\/\/([^\/]*)\/(.*?)\/#(.*)$/i;
+        var patt = /^https*:\/\/([^\/]*)\/(.*?)\//i;
 
         var ret = {};
-        href.replace(patt, function (a, domain, type, hash) {
+        var hash = href.replace(patt, function (a, domain, type, hash) {
             ret.domain = domain;
             ret.type = type;
-            ret.hash = hash;
             return '';
         });
+        ret.hash = hash.replace(/#/g, '');
         return ret;
     };
 
