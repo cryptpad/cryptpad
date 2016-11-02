@@ -62,9 +62,12 @@ define([
         var andThen = function (CMeditor) {
             var CodeMirror = module.CodeMirror = CMeditor;
             CodeMirror.modeURL = "/bower_components/codemirror/mode/%N/%N.js";
-
             var $pad = $('#pad-iframe');
             var $textarea = $pad.contents().find('#editor1');
+
+            var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
+            var parsedHash = Cryptpad.parsePadUrl(window.location.href);
+            var defaultName = Cryptpad.getDefaultName(parsedHash);
 
             var editor = module.editor = CMeditor.fromTextArea($textarea[0], {
                 lineNumbers: true,
@@ -149,21 +152,22 @@ define([
                 editor.setOption('readOnly', !bool);
             };
 
-            var userList = module.userList = {}; // List of pretty name of all users (mapped with their server ID)
-            var toolbarList; // List of users still connected to the channel (server IDs)
-            var addToUserList = function(data) {
+            var userData = module.userData = {}; // List of pretty name of all users (mapped with their server ID)
+            var userList; // List of users still connected to the channel (server IDs)
+            var addToUserData = function(data) {
                 var users = module.users;
+                for (var attrname in data) { userData[attrname] = data[attrname]; }
+
                 if (users && users.length) {
-                    for (var userKey in userList) {
+                    for (var userKey in userData) {
                         if (users.indexOf(userKey) === -1) {
-                            delete userList[userKey];
+                            delete userData[userKey];
                         }
                     }
                 }
 
-                for (var attrname in data) { userList[attrname] = data[attrname]; }
-                if(toolbarList && typeof toolbarList.onChange === "function") {
-                    toolbarList.onChange(userList);
+                if(userList && typeof userList.onChange === "function") {
+                    userList.onChange(userData);
                 }
             };
 
@@ -205,12 +209,11 @@ define([
                 var obj = {
                     content: textValue,
                     metadata: {
-                        users: userList
+                        users: userData,
+                        defaultTitle: defaultName
                     }
                 };
-                if (!isDefaultTitle()) {
-                    obj.metadata.title = APP.title;
-                }
+                obj.metadata.title = APP.title;
                 if (textColor) {
                     obj.metadata.color = textColor;
                 }
@@ -248,7 +251,7 @@ define([
                 myData[myID] = {
                    name: myUserName
                 };
-                addToUserList(myData);
+                addToUserData(myData);
                 Cryptpad.setAttribute('username', myUserName, function (err, data) {
                     if (err) {
                         console.log("Couldn't set username");
@@ -286,13 +289,10 @@ define([
             };
 
             var suggestName = function () {
-                var parsed = Cryptpad.parsePadUrl(window.location.href);
-                var name = Cryptpad.getDefaultName(parsed, []);
-
-                if (Cryptpad.isDefaultName(parsed, APP.title)) {
-                    return getHeadingText() || APP.title;
+                if (APP.title === defaultName) {
+                    return getHeadingText() || "";
                 } else {
-                    return APP.title || getHeadingText() || name;
+                    return APP.title || getHeadingText() || defaultName;
                 }
             };
 
@@ -344,7 +344,7 @@ define([
                 var oldTitle = APP.title;
                 APP.title = newTitle;
                 setTabTitle();
-                Cryptpad.setPadTitle(newTitle, function (err, data) {
+                Cryptpad.renamePad(newTitle, function (err, data) {
                     if (err) {
                         console.log("Couldn't set pad title");
                         console.error(err);
@@ -352,6 +352,10 @@ define([
                         setTabTitle();
                         return;
                     }
+                    APP.title = data;
+                    setTabTitle();
+                    $bar.find('.' + Toolbar.constants.title).find('span.title').text(data);
+                    $bar.find('.' + Toolbar.constants.title).find('input').val(data);
                 });
             };
 
@@ -369,6 +373,11 @@ define([
                 }
             };
 
+            var updateDefaultTitle = function (defaultTitle) {
+                defaultName = defaultTitle;
+                $bar.find('.' + Toolbar.constants.title).find('input').attr("placeholder", defaultName);
+            };
+
             var updateMetadata = function(shjson) {
                 // Extract the user list (metadata) from the hyperjson
                 var json = (shjson === "") ? "" : JSON.parse(shjson);
@@ -376,22 +385,37 @@ define([
                     if (json.metadata.users) {
                         var userData = json.metadata.users;
                         // Update the local user data
-                        addToUserList(userData);
+                        addToUserData(userData);
                     }
-                    if (json.metadata.title) {
+                    if (json.metadata.defaultTitle) {
+                        updateDefaultTitle(json.metadata.defaultTitle);
+                    }
+                    if (typeof json.metadata.title !== "undefined") {
                         updateTitle(json.metadata.title);
                     }
                     updateColors(json.metadata.color, json.metadata.backColor);
                 }
             };
 
+            var renameCb = function (err, title) {
+                if (err) { return; }
+                APP.title = title;
+                setTabTitle();
+                onLocal();
+            };
+
             var onInit = config.onInit = function (info) {
-                var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
-                toolbarList = info.userList;
+                userList = info.userList;
                 var config = {
-                    userData: userList,
+                    userData: userData,
                     readOnly: readOnly,
-                    ifrw: $('#pad-iframe')[0].contentWindow
+                    ifrw: ifrw,
+                    title: {
+                        onRename: renameCb,
+                        defaultName: defaultName,
+                        suggestName: suggestName
+                    },
+                    common: Cryptpad
                 };
                 if (readOnly) {delete config.changeNameID; }
                 toolbar = module.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
@@ -413,8 +437,8 @@ define([
                 /* add a "change username" button */
                 getLastName(function (err, lastName) {
                     userNameButtonObject.lastName = lastName;
-                    var $username = module.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName);
-                    $userBlock.append($username).hide();
+                    var $username = module.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName).hide();
+                    $userBlock.append($username);
                 });
 
                 /* add an export button */
@@ -427,14 +451,8 @@ define([
                     $rightside.append($import);
 
                     /* add a rename button */
-                    var renameCb = function (err, title) {
-                        if (err) { return; }
-                        APP.title = title;
-                        setTabTitle();
-                        onLocal();
-                    };
-                    var $setTitle = Cryptpad.createButton('rename', true, {suggestName: suggestName}, renameCb);
-                    $rightside.append($setTitle);
+                    //var $setTitle = Cryptpad.createButton('rename', true, {suggestName: suggestName}, renameCb);
+                    //$rightside.append($setTitle);
                 }
 
                 /* add a forget button */
@@ -576,14 +594,7 @@ define([
                         console.error(err);
                         return;
                     }
-                    document.title = APP.title = title || info.channel.slice(0, 8);
-                    Cryptpad.setPadTitle(title, function (err, data) {
-                        if (err) {
-                            console.log("Unable to set pad title");
-                            console.error(err);
-                            return;
-                        }
-                    });
+                    updateTitle(title || defaultName);
                 });
             };
 
@@ -662,16 +673,16 @@ define([
                     // Update the toolbar list:
                     // Add the current user in the metadata if he has edit rights
                     if (readOnly) { return; }
-                    myData[myID] = {
-                        name: ""
-                    };
-                    addToUserList(myData);
                     if (typeof(lastName) === 'string' && lastName.length) {
                         setName(lastName);
                     } else {
+                        myData[myID] = {
+                            name: ""
+                        };
+                        addToUserData(myData);
+                        onLocal();
                         module.$userNameButton.click();
                     }
-                    onLocal();
                 });
             };
 

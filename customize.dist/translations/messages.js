@@ -1,6 +1,8 @@
 define(function () {
     var out = {};
 
+    out._languageName = 'English';
+
     out.main_title = "Cryptpad: Zero Knowledge, Collaborative Real Time Editing";
 
     out.type = {};
@@ -26,8 +28,14 @@ define(function () {
     out.yourself = "Yourself";
     out.anonymousUsers = "anonymous users";
     out.anonymousUser = "anonymous user";
-    out.share = "Share";
+    out.shareView = "Read-only URL";
+    out.shareEdit = "Edit URL";
     out.users = "Users";
+    out.and = "And";
+    out.viewer = "viewer";
+    out.viewers = "viewers";
+    out.editor = "editor";
+    out.editors = "editors";
 
     out.greenLight = "Everything is working fine";
     out.orangeLight = "Your slow connection may impact your experience";
@@ -51,12 +59,13 @@ define(function () {
     out.renameButtonTitle = 'Change the title under which this document is listed on your home page';
     out.renamePrompt = 'How would you like to title this pad?';
     out.renameConflict = 'Another pad already has that title';
+    out.clickToEdit = "Click to edit";
 
     out.forgetButton = 'FORGET';
     out.forgetButtonTitle = 'Remove this document from your home page listings';
     out.forgetPrompt = 'Clicking OK will remove the URL for this pad from localStorage, are you sure?';
 
-    out.shareButton = 'SHARE';
+    out.shareButton = 'Share';
     out.shareButtonTitle = "Copy URL to clipboard";
     out.shareSuccess = 'Copied URL to clipboard';
     out.shareFailed = "Failed to copy URL to clipboard";
@@ -79,14 +88,16 @@ define(function () {
     out.readonlyUrl = 'Read only document';
     out.copyReadOnly = "Copy URL to clipboard";
     out.openReadOnly = "Open in a new tab";
-    out.editing = "editing";
-    out.viewing = "viewing";
-    out.editShare = "Share";
+    out.editShare = "Share edit URL";
     out.editShareTitle = "Copy the edit URL to clipboard";
     out.viewShare = "Share view URL";
     out.viewShareTitle = "Copy the read-only URL to clipboard";
     out.viewOpen = "View in new tab";
     out.viewOpenTitle = "Open the document in read-only mode in a new tab";
+
+    out.notifyJoined = "{0} has joined the collaborative session";
+    out.notifyRenamed = "{0} is now known as {1}";
+    out.notifyLeft = "{0} has left the collaborative session";
 
     out.disconnectAlert = 'Network connection lost!';
 

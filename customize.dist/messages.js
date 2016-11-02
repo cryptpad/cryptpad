@@ -22,6 +22,17 @@ define(['/customize/languageSelector.js',
         messages = $.extend(true, {}, Default, map[language]);
     }
 
+    // messages_languages return the available translations and their name in an object :
+    // { "en": "English", "fr": "French", ... }
+    messages._languages = {
+        'en': Default._languageName
+    };
+    for (var l in map) {
+        messages._languages[l] = map[l]._languageName || l;
+    }
+
+    messages._initSelector = LS.main;
+
     // Get keys with parameters
     messages._getKey = function (key, argArray) {
         if (!messages[key]) { return '?'; }
