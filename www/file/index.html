@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+    <link rel="icon" type="image/png"
+        href="/customize/main-favicon.png"
+        data-main-favicon="/customize/main-favicon.png"
+        data-alt-favicon="/customize/alt-favicon.png"
+        id="favicon" />
+    <link rel="stylesheet" href="/customize/main.css" />
+    <script data-main="main" src="/bower_components/requirejs/require.js"></script>
+    <script>
+        require.config({
+            waitSeconds: 60,
+        });
+    </script>
+    <style>
+        html, body {
+            margin: 0px;
+            padding: 0px;
+        }
+        #pad-iframe {
+            position:fixed;
+            top:0px;
+            left:0px;
+            bottom:0px;
+            right:0px;
+            width:100%;
+            height:100%;
+            border:none;
+            margin:0;
+            padding:0;
+            overflow:hidden;
+        }
+    </style>
+</head>
+<body>
+    <iframe id="pad-iframe" src="inner.html"></iframe>
+</body>
+</html>
+
