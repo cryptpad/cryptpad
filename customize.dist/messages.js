@@ -24,6 +24,16 @@ define(['/customize/languageSelector.js',
         messages = $.extend(true, {}, Default, map[language]);
     }
 
+    // messages_languages return the available translations and their name in an object :
+    // { "en": "English", "fr": "French", ... }
+    messages._languages = {
+        'en': Default._languageName
+    };
+    for (var l in map) {
+        messages._languages[l] = map[l]._languageName || l;
+    }
+
+    messages._initSelector = LS.main;
     messages._checkTranslationState = function () {
         var missing = [];
         Object.keys(map).forEach(function (code) {
@@ -35,6 +45,10 @@ define(['/customize/languageSelector.js',
                     missing.push(warning);
                 }
             });
+            if (typeof(translation._languageName) !== 'string') {
+                var warning = 'key [_languageName] is missing from translation [' + code + ']';
+                missing.push(warning);
+            }
         });
         return missing;
     };

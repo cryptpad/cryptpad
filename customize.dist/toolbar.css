@@ -14,8 +14,8 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  color: #666;
-  font-weight: bold;
+  font: normal normal normal 12px Arial, Helvetica, Tahoma, Verdana, Sans-Serif;
+  color: #000;
   display: inline-block;
   width: 100%;
   z-index: 9001;
@@ -33,11 +33,12 @@
   color: #000;
 }
 .cryptpad-toolbar div.cryptpad-lag {
-  float: right;
+  float: left;
   line-height: 26px;
-  margin: 2px 0px 2px 4px;
+  margin: 2px 0px;
 }
 .cryptpad-toolbar button,
+.cryptpad-toolbar select,
 .cryptpad-toolbar .rightside-element {
   height: 26px;
   padding-right: 5px;
@@ -101,9 +102,136 @@
   border: 1px solid #A6A6A6;
   border-bottom-color: #979797;
 }
+.cryptpad-toolbar-top {
+  display: block;
+  text-align: center;
+  height: 32px;
+  position: relative;
+}
+@media screen and (max-width: 400px) {
+  .cryptpad-toolbar-top {
+    height: 67px;
+  }
+}
+.cryptpad-toolbar-top .cryptpad-title .title,
+.cryptpad-toolbar-top .cryptpad-title .pencilIcon {
+  font-size: 1.5em;
+  vertical-align: middle;
+  line-height: 32px;
+}
+.cryptpad-toolbar-top .cryptpad-title .pencilIcon {
+  display: none;
+}
+.cryptpad-toolbar-top .cryptpad-title .pencilIcon:hover {
+  color: #999;
+}
+.cryptpad-toolbar-top .cryptpad-title .pencilIcon span {
+  cursor: pointer;
+}
+.cryptpad-toolbar-top .cryptpad-title:not(input):hover .editable {
+  border: 1px solid #888;
+  border-radius: 2px 0px 0px 2px;
+  background: white;
+  padding: 5px;
+  border-collapse: collapse;
+}
+.cryptpad-toolbar-top .cryptpad-title:not(input):hover .pencilIcon {
+  cursor: pointer;
+  border: 1px solid #888;
+  border-radius: 0px 2px 2px 0px;
+  background: white;
+  padding: 5px;
+  display: inline;
+  margin-left: -1px;
+  border-collapse: collapse;
+}
+.cryptpad-toolbar-top .cryptpad-title input {
+  font-size: 1.5em;
+  vertical-align: middle;
+  height: 100%;
+  box-sizing: border-box;
+  border: 1px solid black;
+  background: #fff;
+  cursor: auto;
+  width: 300px;
+  padding: 0px 5px;
+}
+.cryptpad-toolbar-top .cryptpad-link {
+  position: absolute;
+  left: 0px;
+  height: 32px;
+}
+@media screen and (max-width: 400px) {
+  .cryptpad-toolbar-top .cryptpad-link {
+    top: 35px;
+  }
+}
+@media screen and (min-width: 401px) {
+  .cryptpad-toolbar-top .cryptpad-link {
+    top: 0px;
+  }
+}
+.cryptpad-toolbar-top .cryptpad-link a.cryptpad-logo {
+  cursor: pointer;
+  height: 32px;
+  padding: 0px 5px;
+  text-decoration: none;
+  color: inherit;
+}
+.cryptpad-toolbar-top .cryptpad-link a.cryptpad-logo:hover span {
+  text-decoration: underline;
+}
+.cryptpad-toolbar-top .cryptpad-link a.cryptpad-logo img {
+  vertical-align: middle;
+  height: 32px;
+  cursor: pointer;
+}
+.cryptpad-toolbar-top .cryptpad-link a.cryptpad-logo span {
+  font-size: 1.5em;
+  margin-left: 5px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+@media screen and (max-width: 400px) {
+  .cryptpad-toolbar-top .cryptpad-link .big {
+    display: none;
+  }
+}
+@media screen and (min-width: 401px) {
+  .cryptpad-toolbar-top .cryptpad-link .big {
+    display: inline-block;
+  }
+}
+@media screen and (max-width: 400px) {
+  .cryptpad-toolbar-top .cryptpad-link .small {
+    display: inline-block;
+  }
+}
+@media screen and (min-width: 401px) {
+  .cryptpad-toolbar-top .cryptpad-link .small {
+    display: none;
+  }
+}
+.cryptpad-toolbar-top .cryptpad-user {
+  position: absolute;
+  right: 0;
+}
+@media screen and (max-width: 400px) {
+  .cryptpad-toolbar-top .cryptpad-user {
+    top: 3em;
+  }
+}
+@media screen and (min-width: 401px) {
+  .cryptpad-toolbar-top .cryptpad-user {
+    top: 0px;
+  }
+}
 .cryptpad-toolbar-leftside {
   float: left;
   margin-bottom: -1px;
+}
+.cryptpad-toolbar-leftside .cryptpad-user-list {
+  float: right;
 }
 .cryptpad-toolbar-leftside .cryptpad-dropdown-container {
   position: relative;
@@ -131,10 +259,9 @@
 .cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p.cryptpad-dropdown-users {
   text-align: baseline;
 }
-.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p.cryptpad-dropdown-users .yourself {
-  font-style: italic;
-}
-.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p.cryptpad-dropdown-users .anonymous {
+.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p.cryptpad-dropdown-users .yourself,
+.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p.cryptpad-dropdown-users .anonymous,
+.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p.cryptpad-dropdown-users .viewer {
   font-style: italic;
 }
 .cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p h2 {
@@ -156,7 +283,6 @@
 }
 .cryptpad-toolbar-rightside {
   text-align: right;
-  margin-right: 30px;
 }
 .cryptpad-spinner {
   float: left;
@@ -167,7 +293,7 @@
   font-size: 20px;
 }
 .cryptpad-readonly {
-  margin-right: 20px;
+  margin-right: 5px;
   font-weight: bold;
   text-transform: uppercase;
 }

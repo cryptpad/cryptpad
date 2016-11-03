@@ -475,6 +475,8 @@ define([
     setEditable(false);
 
     var ready = function (info) {
+        module.users = info.userList.users;
+
         console.log("Your realtime object is ready");
         module.ready = true;
 

@@ -277,15 +277,15 @@ define([
     };
 
     var parsePadUrl = common.parsePadUrl = function (href) {
-        var patt = /^https*:\/\/([^\/]*)\/(.*?)\/#(.*)$/i;
+        var patt = /^https*:\/\/([^\/]*)\/(.*?)\//i;
 
         var ret = {};
-        href.replace(patt, function (a, domain, type, hash) {
+        var hash = href.replace(patt, function (a, domain, type, hash) {
             ret.domain = domain;
             ret.type = type;
-            ret.hash = hash;
             return '';
         });
+        ret.hash = hash.replace(/#/g, '');
         return ret;
     };
 
@@ -303,13 +303,17 @@ define([
         var type = parsed.type;
         var untitledIndex = 1;
         var name = (Messages.type)[type] + ' - ' + new Date().toString().split(' ').slice(0,4).join(' ');
-        if (isNameAvailable(name, parsed, recentPads)) { return name; }
-        while (!isNameAvailable(name + ' - ' + untitledIndex, parsed, recentPads)) { untitledIndex++; }
-        return name + ' - ' + untitledIndex;
+        return name;
+        /*
+         * Pad titles are shared in the document so it does not make sense anymore to avoid duplicates
+          if (isNameAvailable(name, parsed, recentPads)) { return name; }
+          while (!isNameAvailable(name + ' - ' + untitledIndex, parsed, recentPads)) { untitledIndex++; }
+          return name + ' - ' + untitledIndex;
+        */
     };
     var isDefaultName = common.isDefaultName = function (parsed, title) {
         var name = getDefaultName(parsed, []);
-        return title.slice(0, name.length) === name;
+        return title === name;
     };
 
     var makePad = function (href, title) {
@@ -620,6 +624,47 @@ define([
     /*
      * Buttons
      */
+    var renamePad = common.renamePad = function (title, callback) {
+        if (title === null) { return; }
+
+        if (title.trim() === "") {
+            var parsed = parsePadUrl(window.location.href);
+            title = getDefaultName(parsed);
+        }
+
+        common.setPadTitle(title, function (err, data) {
+            if (err) {
+                console.log("unable to set pad title");
+                console.log(err);
+                return;
+            }
+            callback(null, title);
+        });
+        /* Pad titles are shared in the document. We don't check for duplicates anymore.
+         common.causesNamingConflict(title, function (err, conflicts) {
+            if (err) {
+                console.log("Unable to determine if name caused a conflict");
+                console.error(err);
+                callback(err, title);
+                return;
+            }
+
+            if (conflicts) {
+                common.alert(Messages.renameConflict);
+                return;
+            }
+
+            common.setPadTitle(title, function (err, data) {
+                if (err) {
+                    console.log("unable to set pad title");
+                    console.log(err);
+                    return;
+                }
+                callback(null, title);
+            });
+        });
+        */
+    };
     var createButton = common.createButton = function (type, rightside, data, callback) {
         var button;
         var size = "17px";
@@ -658,33 +703,9 @@ define([
                     button.click(function() {
                         var suggestion = suggestName();
 
-                        common.prompt(Messages.renamePrompt,
-                            suggestion, function (title, ev) {
-                                if (title === null) { return; }
-
-                                common.causesNamingConflict(title, function (err, conflicts) {
-                                    if (err) {
-                                        console.log("Unable to determine if name caused a conflict");
-                                        console.error(err);
-                                        callback(err, title);
-                                        return;
-                                    }
-
-                                    if (conflicts) {
-                                        common.alert(Messages.renameConflict);
-                                        return;
-                                    }
-
-                                    common.setPadTitle(title, function (err, data) {
-                                        if (err) {
-                                            console.log("unable to set pad title");
-                                            console.log(err);
-                                            return;
-                                        }
-                                        callback(null, title);
-                                    });
-                                });
-                            });
+                        common.prompt(Messages.renamePrompt, suggestion, function (title, ev) {
+                            renamePad(title, callback);
+                        });
                     });
                 }
                 break;
@@ -720,9 +741,8 @@ define([
                     title: Messages.userButton + '\n' + Messages.userButtonTitle
                 }).html('<span class="fa fa-user" style="font-family:FontAwesome;"></span>');
                 if (data && typeof data.lastName !== "undefined" && callback) {
-                    var lastName = data.lastName;
                     button.click(function() {
-                        common.prompt(Messages.changeNamePrompt, lastName, function (newName) {
+                        common.prompt(Messages.changeNamePrompt, data.lastName, function (newName) {
                             callback(newName);
                         });
                     });

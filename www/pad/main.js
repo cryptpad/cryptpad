@@ -85,10 +85,13 @@ define([
         });
 
         editor.on('instanceReady', function (Ckeditor) {
+            var $bar = $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox');
+            var parsedHash = Cryptpad.parsePadUrl(window.location.href);
+            var defaultName = Cryptpad.getDefaultName(parsedHash);
+
             if (readOnly) {
                 $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox > .cke_toolbar').hide();
             }
-
 
             /* add a class to the magicline plugin so we can pick it out more easily */
 
@@ -250,19 +253,20 @@ define([
             };
 
             var initializing = true;
-            var userList = module.userList = {}; // List of pretty name of all users (mapped with their server ID)
-            var toolbarList; // List of users still connected to the channel (server IDs)
-            var addToUserList = function(data) {
+            var userData = module.userData = {}; // List of pretty names for all users (mapped with their ID)
+            var userList; // List of users still connected to the channel (server IDs)
+            var addToUserData = function(data) {
                 var users = module.users;
+                for (var attrname in data) { userData[attrname] = data[attrname]; }
+
                 if (users && users.length) {
-                    for (var userKey in userList) {
-                        if (users.indexOf(userKey) === -1) { delete userList[userKey]; }
+                    for (var userKey in userData) {
+                        if (users.indexOf(userKey) === -1) { delete userData[userKey]; }
                     }
                 }
 
-                for (var attrname in data) { userList[attrname] = data[attrname]; }
-                if(toolbarList && typeof toolbarList.onChange === "function") {
-                    toolbarList.onChange(userList);
+                if(userList && typeof userList.onChange === "function") {
+                    userList.onChange(userData);
                 }
             };
 
@@ -290,13 +294,14 @@ define([
                 myData[myID] = {
                     name: myUserName
                 };
-                addToUserList(myData);
-                editor.fire('change');
-
+                addToUserData(myData);
                 Cryptpad.setAttribute('username', newName, function (err, data) {
                     if (err) {
                         console.error("Couldn't set username");
+                        return;
                     }
+                    module.userName.lastName = myUserName;
+                    editor.fire('change');
                 });
             };
 
@@ -317,13 +322,10 @@ define([
             };
 
             var suggestName = function () {
-                var parsed = Cryptpad.parsePadUrl(window.location.href);
-                var name = Cryptpad.getDefaultName(parsed, []);
-
-                if (Cryptpad.isDefaultName(parsed, document.title)) {
-                    return getHeadingText() || document.title;
+                if (document.title === defaultName) {
+                    return getHeadingText() || "";
                 } else {
-                    return document.title || getHeadingText() || name;
+                    return document.title || getHeadingText() || defaultName;
                 }
             };
 
@@ -344,12 +346,11 @@ define([
                 var hjson = Hyperjson.fromDOM(dom, isNotMagicLine, brFilter);
                 hjson[3] = {
                     metadata: {
-                        users: userList,
+                        users: userData,
+                        defaultTitle: defaultName
                     }
                 };
-                if (!isDefaultTitle()) {
-                    hjson[3].metadata.title = document.title;
-                }
+                hjson[3].metadata.title = document.title;
                 return stringify(hjson);
             };
 
@@ -395,14 +396,22 @@ define([
                 // Change the title now, and set it back to the old value if there is an error
                 var oldTitle = document.title;
                 document.title = newTitle;
-                Cryptpad.setPadTitle(newTitle, function (err, data) {
+                Cryptpad.renamePad(newTitle, function (err, data) {
                     if (err) {
                         console.log("Couldn't set pad title");
                         console.error(err);
                         document.title = oldTitle;
                         return;
                     }
+                    document.title = data;
+                    $bar.find('.' + Toolbar.constants.title).find('span.title').text(data);
+                    $bar.find('.' + Toolbar.constants.title).find('input').val(data);
                 });
+            };
+
+            var updateDefaultTitle = function (defaultTitle) {
+                defaultName = defaultTitle;
+                $bar.find('.' + Toolbar.constants.title).find('input').attr("placeholder", defaultName);
             };
 
             var updateMetadata = function(shjson) {
@@ -413,9 +422,12 @@ define([
                     if (peerMetadata.metadata.users) {
                         var userData = peerMetadata.metadata.users;
                         // Update the local user data
-                        addToUserList(userData);
+                        addToUserData(userData);
                     }
-                    if (peerMetadata.metadata.title) {
+                    if (peerMetadata.metadata.defaultTitle) {
+                        updateDefaultTitle(peerMetadata.metadata.defaultTitle);
+                    }
+                    if (typeof peerMetadata.metadata.title !== "undefined") {
                         updateTitle(peerMetadata.metadata.title);
                     }
                 }
@@ -512,16 +524,27 @@ define([
                 realtimeOptions.onLocal();
             };
 
+            var renameCb = function (err, title) {
+                if (err) { return; }
+                document.title = title;
+                editor.fire('change');
+            };
+
             var onInit = realtimeOptions.onInit = function (info) {
-                var $bar = $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox');
-                toolbarList = info.userList;
+                userList = info.userList;
                 var config = {
-                    userData: userList,
+                    userData: userData,
                     readOnly: readOnly,
-                    ifrw: ifrw
+                    ifrw: ifrw,
+                    title: {
+                        onRename: renameCb,
+                        defaultName: defaultName,
+                        suggestName: suggestName
+                    },
+                    common: Cryptpad
                 };
                 if (readOnly) {delete config.changeNameID; }
-                toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
+                toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, userList, config);
 
                 var $rightside = $bar.find('.' + Toolbar.constants.rightside);
                 var $userBlock = $bar.find('.' + Toolbar.constants.username);
@@ -535,13 +558,13 @@ define([
                     editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
                 }
 
+                // Store the object sent for the "change username" button so that we can update the field value correctly
+                var userNameButtonObject = module.userName = {};
                 /* add a "change username" button */
                 getLastName(function (err, lastName) {
-                    var usernameCb = function (newName) {
-                        setName (newName);
-                    };
-                    var $username = Cryptpad.createButton('username', false, {lastName: lastName}, usernameCb);
-                    $userBlock.append($username).hide();
+                    userNameButtonObject.lastName = lastName;
+                    var $username = module.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName).hide();
+                    $userBlock.append($username);
                 });
 
                 /* add an export button */
@@ -554,13 +577,8 @@ define([
                     $rightside.append($import);
 
                     /* add a rename button */
-                    var renameCb = function (err, title) {
-                        if (err) { return; }
-                        document.title = title;
-                        editor.fire('change');
-                    };
-                    var $setTitle = Cryptpad.createButton('rename', true, {suggestName: suggestName}, renameCb);
-                    $rightside.append($setTitle);
+                    //var $setTitle = Cryptpad.createButton('rename', true, {suggestName: suggestName}, renameCb);
+                    //$rightside.append($setTitle);
                 }
 
                 /* add a forget button */
@@ -593,13 +611,7 @@ define([
                         console.log("Couldn't get pad title");
                         return;
                     }
-                    document.title = title || info.channel.slice(0, 8);
-                    Cryptpad.setPadTitle(title, function (err, data) {
-                        if (err) {
-                            console.log("Couldn't remember pad");
-                            console.error(err);
-                        }
-                    });
+                    updateTitle(title || defaultName);
                 });
             };
 
@@ -632,14 +644,16 @@ define([
                     // Update the toolbar list:
                     // Add the current user in the metadata if he has edit rights
                     if (readOnly) { return; }
-                    myData[myID] = {
-                        name: ""
-                    };
-                    addToUserList(myData);
                     if (typeof(lastName) === 'string' && lastName.length) {
                         setName(lastName);
+                    } else {
+                        myData[myID] = {
+                            name: ""
+                        };
+                        addToUserData(myData);
+                        realtimeOptions.onLocal();
+                        module.$userNameButton.click();
                     }
-                    realtimeOptions.onLocal();
                 });
             };
 

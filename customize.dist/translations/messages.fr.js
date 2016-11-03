@@ -1,7 +1,10 @@
 define(function () {
     var out = {};
 
+    out._languageName = "Français";
+
     out.main_title = "Cryptpad: Editeur collaboratif en temps réel, zero knowledge";
+    out.main_slogan = "L'unité est la force, la collaboration est la clé";
 
     out.type = {};
     out.type.pad = 'Pad';
@@ -26,8 +29,14 @@ define(function () {
     out.yourself = "Vous-même";
     out.anonymousUsers = "utilisateurs anonymes";
     out.anonymousUser = "utilisateur anonyme";
-    out.share = "Partage";
+    out.shareView = "URL de lecture seule";
+    out.shareEdit = "URL d'édition";
     out.users = "Utilisateurs";
+    out.and = "Et";
+    out.viewer = "lecteur";
+    out.viewers = "lecteurs";
+    out.editor = "éditeur";
+    out.editors = "éditeurs";
 
     out.greenLight = "Tout fonctionne bien";
     out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur";
@@ -51,12 +60,13 @@ define(function () {
     out.renameButtonTitle = 'Changer le titre utilisé par ce document dans la page d\'accueil de Cryptpad';
     out.renamePrompt = 'Quel titre souhaitez-vous utiliser pour ce document ?';
     out.renameConflict = 'Un autre document existe déjà avec le même titre';
+    out.clickToEdit = 'Cliquer pour modifier';
 
     out.forgetButton = 'OUBLIER';
     out.forgetButtonTitle = 'Enlever ce document de la liste en page d\'accueil';
     out.forgetPrompt = 'Cliquer sur OK supprimera l\'URL de ce document de la mémoire de votre navigateur (localStorage), êtes-vous sûr ?';
 
-    out.shareButton = 'PARTAGER';
+    out.shareButton = 'Partager';
     out.shareButtonTitle = "Copier l'URL dans le presse-papiers";
     out.shareSuccess = 'URL copiée dans le presse-papiers';
     out.shareFailed = "Échec de la copie de l'URL dans le presse-papiers";
@@ -79,14 +89,16 @@ define(function () {
     out.readonlyUrl = 'Document en lecture seule';
     out.copyReadOnly = "Copier l'URL dans le presse-papiers";
     out.openReadOnly = "Ouvrir dans un nouvel onglet";
-    out.editing = "éditeur(s)";
-    out.viewing = "lecteur(s)";
-    out.editShare = "Partager l'URL";
+    out.editShare = "Partager l'URL d'édition";
     out.editShareTitle = "Copier l'URL d'édition dans le presse-papiers";
     out.viewShare = "Partager l'URL de lecture";
     out.viewShareTitle = "Copier l'URL d'accès en lecture seule dans le presse-papiers";
     out.viewOpen = "Voir dans un nouvel onglet";
     out.viewOpenTitle = "Ouvrir le document en lecture seule dans un nouvel onglet";
+
+    out.notifyJoined = "{0} a rejoint la session collaborative";
+    out.notifyRenamed = "{0} a changé son nom en {1}";
+    out.notifyLeft = "{0} a quitté la session collaborative";
 
     out.disconnectAlert = 'Perte de la connexion au réseau !';
 
@@ -147,7 +159,7 @@ define(function () {
 
     // index.html
 
-    out.main_p1 = 'CryptPad est l\'éditeur collaboratif en temps réel <strong>zero knowledge</strong>. Le chiffrement est effectué depuis votre navigateur, ce qui protège les données contre le serveur, le cloud, et la NSA. La clé de chiffrement est stockée dans l\'<a href="https://fr.wikipedia.org/wiki/Identificateur_de_fragment">identifieur de fragment</a> de l\'URL qui n\'est jamais envoyée au serveur mais est accessible depuis javascript, de sorte qu\'en partageant l\'URL, vous donner l\'accès au pad à ceux qui souhaitent participer.';
+    out.main_p1 = 'CryptPad est l\'éditeur collaboratif en temps réel <strong>zero knowledge</strong>. Le chiffrement est effectué depuis votre navigateur, ce qui protège les données contre le serveur, le cloud, et la NSA. La clé de chiffrement est stockée dans l\'<a href="https://fr.wikipedia.org/wiki/Identificateur_de_fragment">identifieur de fragment</a> de l\'URL qui n\'est jamais envoyée au serveur mais est accessible depuis javascript, de sorte qu\'en partageant l\'URL, vous donnez l\'accès au pad à ceux qui souhaitent participer.';
     out.main_p2 = 'Ce projet utilise l\'éditeur visuel (WYSIWYG) <a href="http://ckeditor.com/">CKEditor</a>, l\'éditeur de code source <a href="https://codemirror.net/">CodeMirror</a>, et le moteur temps-réel <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a>.';
     out.main_howitworks = 'Comment ça fonctionne';
     out.main_howitworks_p1 = 'CryptPad utilise une variante de l\'algorithme d\'<a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> qui est capable de trouver un consensus distribué en utilisant une chaîne de bloc Nakamoto, un outil popularisé par le <a href="https://fr.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. De cette manière, l\'algorithme évite la nécessité d\'utiliser un serveur central pour résoudre les conflits d\'édition de l\'Operational Transformation, et sans ce besoin de résolution des conflits le serveur peut rester ignorant du contenu qui est édité dans le pad.';
