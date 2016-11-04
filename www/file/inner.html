@@ -3,51 +3,21 @@
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
     <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="file.css" />
     <script src="/bower_components/jquery/dist/jquery.min.js"></script>
-    <style>
-    html, body {
-        width: 100%;
-        height: 100%;
-        box-sizing: border-box;
-        padding: 0;
-        margin: 0;
-        position: relative;
-    }
-    #tree {
-        position:absolute;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 70%;
-        border: 2px solid blue;
-        box-sizing: border-box;
-        background: white;
-    }
-    #tree li {
-        cursor: pointer;
-    }
-    #tree li span:hover {
-        text-decoration: underline;
-    }
-    #content {
-        position: absolute;
-        top: 0;
-        left: 30%;
-        bottom: 0;
-        right: 0;
-        border: 2px solid green;
-        box-sizing: border-box;
-        background: #eee;
-    }
-    .folder, .file {
-        margin-right: 5px;
-    }
-    </style>
 </head>
 <body>
     <div id="tree">
     </div>
     <div id="content">
+    </div>
+    <div id="contextMenu" class="dropdown clearfix">
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
+            <li><a tabindex="-1" href="#" class="open">Open</a></li>
+            <li><a tabindex="-1" href="#" class="rename">Rename</a></li>
+            <li><a tabindex="-1" href="#" class="delete">Delete</a></li>
+        </ul>
     </div>
 </body>
 </html>
