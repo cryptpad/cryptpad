@@ -4,7 +4,7 @@ define(function () {
     out._languageName = 'Español';
 
     out.main_title = "Cryptpad: Zero Knowledge, Editor Colaborativo en Tiempo Real";
-    out.main_slogan = "La unidad es la fuerza - la colaboración es clave";
+    out.main_slogan = "La unidad es la fuerza - la colaboración es la clave";
 
     out.type = {};
     out.type.pad = 'Pad';
@@ -20,8 +20,6 @@ define(function () {
 
     out.common_connectionLost = 'Conexión perdida con el servidor';
 
-
-// HERE
     out.disconnected = "Desconectado";
     out.synchronizing = "Sincronización";
     out.reconnecting = "Reconectando";
@@ -35,10 +33,10 @@ define(function () {
     out.shareEdit = "Editar URL";
     out.users = "Usuarios";
     out.and = "y";
-    out.viewer = "espectadore";
+    out.viewer = "espectador";
     out.viewers = "espectadores";
     out.editor = "editor";
-    out.editors = "editors";
+    out.editors = "editores";
 
     out.editingAlone = 'Editar solo';
     out.editingWithOneOtherPerson = 'Editar con otra persona';
@@ -183,8 +181,8 @@ define(function () {
     out.main_p2 = 'Este proyecto usa <a href="http://ckeditor.com/">CKEditor</a> un editor de texto, <a href="https://codemirror.net/">CodeMirror</a>, y <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a> un motor de tiempo real.';
     out.main_howitworks = '¿Como Funciona?';
 
-    // TODO
-    out.main_howitworks_p1 = "CryptPad utiliza una variante del algoritmo de <a href='https://en.wikipedia.org/wiki/Operational_transformation'>transformación Operacional</a> que es capaz de encontrar el consenso distribuido usando un Nakamoto Blockchain, una construcción popularizada por <a href='https://en.wikipedia.org/wiki/Bitcoin'>Bitcoin</a> . De esta manera el algoritmo puede evitar la necesidad de un servidor central para resolver Conflictos de Edición de Transformación Operacional y sin necesidad de resolver conflictos, el servidor puede mantenerse inconsciente del contenido que se está editando en el pad.";
+    out.main_howitworks_p1 = "CryptPad utiliza una variante del algoritmo de <a href='https://en.wikipedia.org/wiki/Operational_transformation'>transformación Operacional</a> que es capaz de encontrar el consenso distribuido usando un <a href='https://bitcoin.org/bitcoin.pdf'>Nakamoto Blockchain</a>, una construcción popularizada por <a href='https://en.wikipedia.org/wiki/Bitcoin'>Bitcoin</a> . De esta manera el algoritmo puede evitar la necesidad de un servidor central para resolver Conflictos de Edición de Transformación Operacional y sin necesidad de resolver conflictos, el servidor puede mantenerse inconsciente del contenido que se está editando en el pad.";
+
 
     out.main_about = 'Acerca de';
     out.main_about_p1 = 'Tu puedes leer mas acerca de nuestra <a href="/privacy.html" title="">politica de privacidad</a> y <a href="/terms.html">terminos de servicio</a>.';
