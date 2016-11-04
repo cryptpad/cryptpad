@@ -17,22 +17,30 @@ engine. The secret key is stored in the URL [fragment identifier] which is never
 the server but is available to javascript so by sharing the URL, you give authorization
 to others who want to participate.
 
-To install:
 
-    git clone <this repo>
-    cd cryptpad
-    npm install
-    npm install -g bower ## if necessary
-    bower install
+# Installation
 
-    ## copy config.js.dist to config.js
-    cp config.js.dist config.js
+Cryptpad depends on the Nodejs runtime.
+We recommend installing it via [NVM](https://github.com/creationix/nvm "Node Version Manager") to ensure that you are running an up to date version.
 
-    ## modify configuration to use your own mongodb instance
-    ## for example aon the default mongodb port `mongodb://localhost:27017/demo_database`
-    $EDITOR config.js
+Once you have a recent runtime:
 
-    node ./server.js
+```
+git clone <this repo>
+cd cryptpad
+npm install
+npm install -g bower ## if necessary
+bower install
+
+## copy config.js.dist to config.js
+cp config.js.dist config.js
+
+## modify configuration to use your own mongodb instance
+## for example aon the default mongodb port `mongodb://localhost:27017/demo_database`
+$EDITOR config.js
+
+node ./server.js
+```
 
 ## Maintenance
 
@@ -92,6 +100,21 @@ the NSA mad enough for them to use an active attack against you, Great Success H
 the battery out of your computer before it spawns Agent Smith.
 
 Still there are other low-lives in the world so using CryptPad over HTTPS is probably a good idea.
+
+## Translations
+
+We'd like to make it easy for more people to use encryption in their routine activities.
+As such, we've tried to make language-specific parts of Cryptpad translatable. If you're
+able to translate Cryptpad's interface, and would like to help, please contact us!
+
+You can also see [our translation guide](/customize.dist/translations/README.md).
+
+## Contacting Us
+
+You can reach members of the Cryptpad development team on [twitter](https://twitter.com/cryptpad),
+via our [github issue tracker](https://github.com/xwiki-labs/cryptpad/issues/), on the
+[freenode](http://webchat.freenode.net/?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7)
+irc network, or by [email](mailto:research@xwiki.com).
 
 ## Contributing
 

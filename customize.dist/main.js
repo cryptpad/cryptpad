@@ -1,45 +1,37 @@
 define([
     '/customize/messages.js',
     '/customize/DecorateToolbar.js',
+    '/customize/application_config.js',
     '/common/cryptpad-common.js',
     '/bower_components/lil-uri/uri.min.js',
-    '/customize/email.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages, DecorateToolbar, Cryptpad, LilUri, Email) {
+], function (Messages, DecorateToolbar, Config, Cryptpad, LilUri) {
     var $ = window.$;
 
     var APP = window.APP = {
         Cryptpad: Cryptpad,
     };
 
-    var email = Email.makeScrambler(1);
-
-    // slip past the spammers, then unscramble mailto links
-    $('a[href^="mailto:"]').each(function () {
-        $(this).attr('href', function (i, href) {
-            return href.replace(/:(.*$)/, function (a, address) {
-                return ':' + email.decrypt(address);
-            });
-        });
-    });
-
-    DecorateToolbar.main($('#bottom-bar'));
-    Cryptpad.styleAlerts();
-
     var padTypes = {
-        '/pad/': 'Pad',
-        '/code/': 'Code',
-        '/poll/': 'Poll',
-        '/slide/': 'Presentation',
+        '/pad/': Messages.type.pad,
+        '/code/': Messages.type.code,
+        '/poll/': Messages.type.poll,
+        '/slide/': Messages.type.slide,
     };
 
-    var $table = $('table.scroll');
-    var $tbody = $table.find('tbody');
-    var $tryit = $('#tryit');
+    var $table;
+    var $tbody;
+    var $tryit;
     var now = new Date();
     var hasRecent = false;
 
     var forgetPad = Cryptpad.forgetPad;
+
+    var displayCreateButtons = function () {
+        Config.availablePadTypes.forEach(function (el) {
+            $('#create-' + el).show();
+        });
+    };
 
     var makeRecentPadsTable = function (recentPads) {
         if (!recentPads.length) { return; }
@@ -78,7 +70,7 @@ define([
 
             var $remove = $('<td>', {
                 'class': 'remove',
-                title: "forget '"+shortTitle + "'"
+                title: Messages.forget + " '"+shortTitle + "'"
             }).text('✖').click(function () {
                 Cryptpad.confirm(Messages.forgetPrompt + ' (' + Cryptpad.fixHTML(shortTitle) + ')', function (yes) {
                     if (!yes) { return; }
@@ -99,9 +91,17 @@ define([
                 });
             });
 
+            var readOnly = false;
+            if (pad.href.indexOf('#') !== -1) {
+                var modeArray = pad.href.split('#')[1].split('/');
+                if (modeArray.length >= 3 && modeArray[2] === 'view') {
+                    readOnly =  true;
+                }
+            }
+            var readOnlyText = readOnly ? '(' + Messages.readonly + ') ' : '';
             $row
                 .append($('<td>').text(name))
-                .append($('<td>').append($('<a>', {
+                .append($('<td>').append(readOnlyText).append($('<a>', {
                     href: pad.href,
                     title: pad.title,
                 }).text(shortTitle)))
@@ -127,6 +127,9 @@ define([
 
             if (hasRecent) {
                 $('table').attr('style', '');
+                // Race condition here, this is triggered before the localization in HTML
+                // so we have to remove the data-localization attr
+                $tryit.removeAttr('data-localization');
                 $tryit.text(Messages.recentPads);
             }
         });
@@ -134,8 +137,16 @@ define([
 
     Cryptpad.ready(function () {
         console.log("ready");
-        refreshTable();
 
+        $table = $('table.scroll');
+        $tbody = $table.find('tbody');
+        $tryit = $('#tryit');
+
+        DecorateToolbar.main($('#bottom-bar'));
+        Cryptpad.styleAlerts();
+
+        displayCreateButtons();
+        refreshTable();
         if (Cryptpad.store && Cryptpad.store.change) {
             Cryptpad.store.change(function (data) {
                 if (data.key === 'CryptPad_RECENTPADS') {

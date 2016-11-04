@@ -10,12 +10,32 @@ var NetfluxSrv = require('./NetfluxWebsocketSrv');
 var WebRTCSrv = require('./WebRTCSrv');
 
 var config = require('./config');
-config.websocketPort = config.websocketPort || config.httpPort;
+var websocketPort = config.websocketPort || config.httpPort;
 
 // support multiple storage back ends
-var Storage = require(config.storage||'./storage/mongo');
+var Storage = require(config.storage||'./storage/file');
 
 var app = Express();
+
+var httpsOpts;
+
+var setHeaders = (function () {
+    if (typeof(config.httpHeaders) !== 'object') { return function () {}; }
+
+    var headers = JSON.parse(JSON.stringify(config.httpHeaders));
+    if (Object.keys(headers).length) {
+        return function (res) {
+            for (var header in headers) { res.setHeader(header, headers[header]); }
+        };
+    }
+    return function () {};
+}());
+
+app.use(function (req, res, next) {
+    setHeaders(res);
+    next();
+});
+
 app.use(Express.static(__dirname + '/www'));
 
 Fs.exists(__dirname + "/customize", function (e) {
@@ -23,34 +43,15 @@ Fs.exists(__dirname + "/customize", function (e) {
     console.log("Cryptpad is customizable, see customize.dist/readme.md for details");
 });
 
-var staticOpts = {
-    index: 'index.html'
-};
-
-var handleFile = function (target, res, fallback, next) {
-    var stream = Fs.createReadStream(target).on('error', function (e) {
-        if (fallback) {
-            handleFile(fallback, res, undefined, next);
-            return;
-        } else {
-            next();
-        }
-    }).on('end', function () {
-        res.end();
-    });
-    stream.pipe(res);
-};
+// FIXME I think this is a regression caused by a recent PR
+// correct this hack without breaking the contributor's intended behaviour.
+app.get(/\/(privacy|index|terms)\.html/, Express.static(__dirname + '/customize.dist'));
 
 app.use("/customize", Express.static(__dirname + '/customize'));
 app.use("/customize", Express.static(__dirname + '/customize.dist'));
-app.use(/^\/[^\/]*$/, function(req, res, next) {
-    var file = req.originalUrl.slice(1) || 'index.html';
-    handleFile(__dirname + '/customize' + file, // try piping this file first
-        res, __dirname + '/customize.dist/' + file, // if it doesn't exist
-        next); // finally, fall through
-});
+app.use(/^\/[^\/]*$/, Express.static('customize'));
+app.use(/^\/[^\/]*$/, Express.static('customize.dist'));
 
-var httpsOpts;
 if (config.privKeyAndCertFiles) {
     var privKeyAndCerts = '';
     config.privKeyAndCertFiles.forEach(function (file) {
@@ -78,27 +79,25 @@ app.get('/api/config', function(req, res){
     var host = req.headers.host.replace(/\:[0-9]+/, '');
     res.setHeader('Content-Type', 'text/javascript');
     res.send('define(' + JSON.stringify({
+        websocketPath: config.websocketPath,
         websocketURL:'ws' + ((httpsOpts) ? 's' : '') + '://' + host + ':' +
-            config.websocketPort + '/cryptpad_websocket',
-        webrtcURL:'ws' + ((httpsOpts) ? 's' : '') + '://' + host + ':' +
-            config.websocketPort + '/cryptpad_webrtc',
+            websocketPort + '/cryptpad_websocket',
     }) + ');');
 });
 
 var httpServer = httpsOpts ? Https.createServer(httpsOpts, app) : Http.createServer(app);
 
 httpServer.listen(config.httpPort,config.httpAddress,function(){
-    console.log('listening on %s',config.httpPort);
+    console.log('[%s] listening on port %s', new Date().toISOString(), config.httpPort);
 });
 
 var wsConfig = { server: httpServer };
-if (config.websocketPort !== config.httpPort) {
+if (websocketPort !== config.httpPort) {
     console.log("setting up a new websocket server");
-    wsConfig = { port: config.websocketPort};
+    wsConfig = { port: websocketPort};
 }
 var wsSrv = new WebSocketServer(wsConfig);
 Storage.create(config, function (store) {
-    console.log('DB connected');
     NetfluxSrv.run(store, wsSrv, config);
     WebRTCSrv.run(wsSrv);
 });

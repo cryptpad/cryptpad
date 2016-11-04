@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Zero Knowledge Date Picker</title>
+    <link rel="icon" type="image/png"
+        href="/customize/main-favicon.png"
+        data-main-favicon="/customize/main-favicon.png"
+        data-alt-favicon="/customize/alt-favicon.png"
+        id="favicon" />
+    <link rel="stylesheet" href="/customize/main.css" />
+    <script data-main="main" src="/bower_components/requirejs/require.js"></script>
+    <script>
+        require.config({
+            waitSeconds: 60,
+        });
+    </script>
+    <style>
+        html, body {
+            width: 100;
+        }
+        .clickable {
+            cursor: pointer;
+        }
+        #adduser, #addoption {
+            font-weight: bold;
+        }
+
+        #lists {
+            display: inline-block;
+            border: 1px solid white;
+            height: 80vh;
+        }
+
+        #create-list {
+            display: inline-block;
+            vertical-align: top;
+            background-color: green;
+        }
+
+        .list-column {
+            vertical-align: top;
+
+            box-sizing: border-box;
+            display: inline-block;
+            width: 400px;
+            height: 100%;
+            border: 1px solid white;
+        }
+        /* input */
+        input.list-title {
+            margin: 15px;
+            width: 80%;
+            display: block;
+        }
+        .card-holder {
+            border: 1px solid #ddd;
+            width: 90%;
+            margin: auto;
+        }
+        .add-card {
+            background-color: green;
+            display: block;
+            height: 20px;
+            width: 80%;
+            cursor: pointer;
+            margin: auto;
+        }
+
+        .card-title {
+            border: 5px solid blue;
+
+        }
+
+        .card-container {
+            display: block;
+            height: 50px;
+            width: 95%;
+            margin: auto;
+            padding: 5px;
+            border: 1px solid #ccc;
+        }
+        #board {
+            margin-left: 10vw;
+            overflow-x: visible;
+        }
+
+    </style>
+</head>
+<body>
+
+<!--<div id="main"> -->
+
+<div id="toolbar" class="buttons">
+    <sub><a href="/"></a></sub>
+</div>
+
+<div id="board">
+    <div id="lists"></div>
+    <span id="create-list">Add List</span>
+</div>
+

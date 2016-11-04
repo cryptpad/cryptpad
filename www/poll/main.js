@@ -1,6 +1,6 @@
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
-    '/customize/messages.js',
+    '/customize/messages.js?app=poll',
     '/poll/table.js',
     '/poll/wizard.js',
     '/bower_components/textpatcher/TextPatcher.js',
@@ -39,6 +39,14 @@ define([
     */
 
     var secret = Cryptpad.getSecrets();
+    var readOnly = secret.keys && !secret.keys.editKeyStr;
+    if (!secret.keys) {
+        secret.keys = secret.key;
+    }
+    if (readOnly) {
+        $('#mainTitle').html($('#mainTitle').html() + ' - ' + Messages.readonly);
+        $('#adduser, #addoption, #howToUse').remove();
+    }
 
     var module = window.APP = {
         Cryptpad: Cryptpad,
@@ -67,8 +75,8 @@ define([
     module.Wizard = Wizard;
 
     // special UI elements
-    var $title = $('#title').attr('placeholder', Messages.dateTitleHint || 'title');
-    var $description = $('#description').attr('placeholder', Messages.dateDescription || 'description');
+    var $title = $('#title').attr('placeholder', Messages.poll_titleHint || 'title');
+    var $description = $('#description').attr('placeholder', Messages.poll_descriptionHint || 'description');
 
     var items = [$title, $description];
 
@@ -139,6 +147,7 @@ define([
     var table = module.table = Table($('#table'), xy);
 
     var setEditable = function (bool) {
+        if (readOnly && bool) { return; }
         module.isEditable = bool;
 
         items.forEach(function ($item) {
@@ -163,6 +172,7 @@ define([
     };
 
     var removeRow = function (proxy, uid) {
+        if (readOnly) { return; }
         // remove proxy.table.rows[uid]
 
         proxy.table.rows[uid] = undefined;
@@ -186,6 +196,7 @@ define([
     };
 
     var removeColumn = function (proxy, uid) {
+        if (readOnly) { return; }
         // remove proxy.table.cols[uid]
         proxy.table.cols[uid] = undefined;
         delete proxy.table.rows[uid];
@@ -212,6 +223,7 @@ define([
     };
 
     var makeUserEditable = module.makeUserEditable = function (id, bool) {
+        if (readOnly) { return; }
         var $name = $('input[type="text"][id="' + id + '"]').attr('disabled', !bool);
 
         var $edit = $name.parent().find('.edit');
@@ -231,7 +243,7 @@ define([
                     'class': 'save action',
                     'for': id,
                 })
-                .text('COMMIT') // TODO translate
+                .text(Messages.commitButton)
                 .click(function () {
                     module.activeColumn = '';
                     makeUserEditable(id, false);
@@ -254,7 +266,7 @@ define([
         var $user = Input({
             id: id,
             type: 'text',
-            placeholder: 'your name',
+            placeholder: Messages.poll_userPlaceholder,
             disabled: true,
         }).on('keyup change', function () {
             proxy.table.cols[id] = $user.val() || "";
@@ -262,10 +274,10 @@ define([
 
         var $edit = $('<span>', {
                 'class': 'edit',
-                title: 'edit column', // TODO translate
+                title: Messages.poll_editUserTitle,
             }).click(function () {
                 if ($edit.hasClass('editable')) { return; }
-                Cryptpad.confirm("Are you sure you'd like to edit this user?",
+                Cryptpad.confirm(Messages.poll_editUser,
                     function (yes) {
                         if (!yes) { return; }
                         makeUserEditable(id, true);
@@ -277,9 +289,9 @@ define([
 
         var $remove = $('<span>', {
                 'class': 'remove',
-                'title': 'remove column', // TODO translate
+                'title': Messages.poll_removeUserTitle,
             }).text('✖').click(function () {
-                Cryptpad.confirm("Are you sure you'd like to remove this user?", // TODO translate
+                Cryptpad.confirm(Messages.poll_removeUser,
                     function (yes) {
                         if (!yes) { return; }
                         // remove commit button, and anything else...
@@ -288,6 +300,11 @@ define([
                         table.removeColumn(id);
                     });
             });
+
+        if (readOnly) {
+            $edit = '';
+            $remove = '';
+        }
 
         var $wrapper = $('<div>', {
             'class': 'text-cell',
@@ -320,6 +337,7 @@ define([
     };
 
     var makeOptionEditable = function (id, bool) {
+        if (readOnly) { return; }
         if (bool) {
             module.rt.proxy.table.rowsOrder.forEach(function (rowuid) {
                 $('#' + rowuid)
@@ -336,7 +354,7 @@ define([
     var makeOption = function (proxy, id, value) {
         var $option = Input({
             type: 'text',
-            placeholder: 'option',
+            placeholder: Messages.optionPlaceholder,
             id: id,
         }).on('keyup change', function () {
             proxy.table.rows[id] = $option.val();
@@ -344,11 +362,11 @@ define([
 
         var $edit = $('<span>', {
             'class': 'edit',
-            title: 'edit option', // TODO translate
+            title: Messages.poll_editOptionTitle,
         })
         .click(function () {
             if ($edit.hasClass('editable')) { return; }
-            Cryptpad.confirm("Are you sure you'd like to edit this option?",
+            Cryptpad.confirm(Messages.poll_editOption,
                 function (yes) {
                     if (!yes) { return; }
                     makeOptionEditable(id, true);
@@ -360,16 +378,20 @@ define([
 
         var $remove = $('<span>', {
             'class': 'remove',
-            'title': 'remove row', // TODO translate
+            'title': Messages.poll_removeOptionTitle,
         }).text('✖').click(function () {
-            // TODO translate
-            var msg = "Are you sure you'd like to remove this option?";
+            var msg = Messages.poll_removeOption;
             Cryptpad.confirm(msg, function (yes) {
                 if (!yes) { return; }
                 removeRow(proxy, id);
                 table.removeRow(id);
             });
         });
+
+        if (readOnly) {
+            $edit = '';
+            $remove = '';
+        }
 
         var $wrapper = $('<div>', {
             'class': 'text-cell',
@@ -394,7 +416,7 @@ define([
         if (!module.isEditable) { return; }
         var id = coluid();
 
-        var msg = "Enter a name"; // TODO translate
+        var msg = Messages.poll_addUser;
         Cryptpad.prompt(msg, "", function (name) {
             if (name === null) { return; }
             makeUser(module.rt.proxy, id, name).val(name);
@@ -406,7 +428,7 @@ define([
         if (!module.isEditable) { return; }
         var id = rowuid();
 
-        var msg = "Propose an option";
+        var msg = Messages.poll_addOption;
         Cryptpad.prompt(msg, "", function (option) {
             if (option === null || !option) { return; }
             makeOption(module.rt.proxy, id, option).val(option).focus();
@@ -415,7 +437,7 @@ define([
     });
 
     Wizard.$getOptions.click(function () {
-        Cryptpad.confirm("Are you really ready to add these options to your poll?", function (yes) {
+        Cryptpad.confirm(Messages.wizardConfirm, function (yes) {
             if (!yes) { return; }
             var options = Wizard.computeSlots(function (a, b) {
                 return a + ' ('+ b + ')';
@@ -441,19 +463,39 @@ define([
     var notify = function () {
         if (!(Visible.isSupported() && !Visible.currently())) { return; }
         unnotify();
-        module.tabNotification = Notify.tab(document.title, 1000, 10);
+        module.tabNotification = Notify.tab(1000, 10);
+    };
+
+    var updateTitle = function (newTitle) {
+        if (newTitle === document.title) { return; }
+        // Change the title now, and set it back to the old value if there is an error
+        var oldTitle = document.title;
+        document.title = newTitle;
+        Cryptpad.setPadTitle(newTitle, function (err, data) {
+            if (err) {
+                console.log("Couldn't set pad title");
+                console.error(err);
+                document.title = oldTitle;
+                return;
+            }
+        });
     };
 
     // don't make changes until the interface is ready
     setEditable(false);
 
     var ready = function (info) {
+        module.users = info.userList.users;
+
         console.log("Your realtime object is ready");
         module.ready = true;
 
         var proxy = module.rt.proxy;
-
         var First = false;
+
+        if (proxy.metadata && proxy.metadata.title) {
+            updateTitle(proxy.metadata.title);
+        }
 
         // ensure that proxy.info and proxy.table exist
         ['info', 'table'].forEach(function (k) {
@@ -614,6 +656,10 @@ define([
                     break;
             }
         })
+        .on('change', ['metadata'], function (o, n, p) {
+            var newTitle = proxy.metadata.title;
+            updateTitle(newTitle);
+        })
         .on('remove', [], function (o, p, root) {
             //console.log("remove: (%s, [%s])", o, p.join(', '));
             //console.log(p, o, p.length);
@@ -659,90 +705,74 @@ define([
             setEditable(false);
         });
 
-        Cryptpad.getPadTitle(function (err, title) {
-            title = document.title = title || window.location.hash.slice(1, 9);
-
-            Cryptpad.rememberPad(title, function (err, data) {
-                if (err) {
-                    console.log("unable to remember pad");
-                    console.log(err);
-                    return;
-                }
-            });
-        });
 
         var $toolbar = $('#toolbar');
-
-        $toolbar.find('sub a').text('⇐ back to Cryptpad');
 
         var Button = function (opt) {
             return $('<button>', opt);
         };
 
-        var suggestName = function () {
-            var hash = window.location.hash.slice(1, 9);
-            if (document.title === hash) {
-                return $title.val() || hash;
+        var suggestName = module.suggestName = function () {
+            var parsed = Cryptpad.parsePadUrl(window.location.href);
+            var name = Cryptpad.getDefaultName(parsed, []);
+
+            if (document.title.slice(0, name.length) === name) {
+                return $title.val() || document.title;
+            } else {
+                return document.title || $title.val() || name;
             }
-            return document.title || $title.val() || hash;
         };
 
-        $toolbar.append(Button({
-            id: 'forget',
-            'class': 'forget button action',
-            title: Messages.forgetButtonTitle,
-        }).text(Messages.forgetButton).click(function () {
-            var href = window.location.href;
-            Cryptpad.confirm(Messages.forgetPrompt, function (yes) {
-                if (!yes) { return; }
-                Cryptpad.forgetPad(href, function (err, data) {
-                    if (err) {
-                        console.log("unable to forget pad");
-                        console.error(err);
-                        return;
-                    }
-                    document.title = window.location.hash.slice(1, 9);
-                });
-            });
-        }));
+        /* add a forget button */
+        var forgetCb = function (err, title) {
+            if (err) { return; }
+            document.title = title;
+        };
+        var $forgetPad = Cryptpad.createButton('forget', false, {}, forgetCb)
+            .text(Messages.forgetButton)
+            .removeAttr('style')
+            .attr('class', 'action button forget');
+        $toolbar.append($forgetPad);
 
-        $toolbar.append(Button({
-            id: 'rename',
-            'class': 'rename button action',
-            title: Messages.renameButtonTitle,
-        }).text(Messages.renameButton).click(function () {
-            var suggestion = suggestName();
-            Cryptpad.prompt(Messages.renamePrompt,
-                suggestion, function (title, ev) {
-                    if (title === null) { return; }
+        /* add a rename button */
+        var renameCb = function (err, title) {
+            if (err) { return; }
+            document.title = title;
+            var proxy = module.rt.proxy;
+            if (proxy.metadata) {
+                proxy.metadata.title = title;
+            }
+            else {
+                proxy.metadata = {title: title};
+            }
+        };
+        var $setTitle = Cryptpad.createButton('rename', true, {suggestName: suggestName}, renameCb)
+            .text(Messages.renameButton)
+            .removeAttr('style')
+            .attr('class', 'action button rename');
+        $toolbar.append($setTitle);
 
-                    Cryptpad.causesNamingConflict(title, function (err, conflicts) {
-                        if (conflicts) {
-                            Cryptpad.alert(Messages.renameConflict);
-                            return;
-                        }
-                        Cryptpad.setPadTitle(title, function (err, data) {
-                            if (err) {
-                                console.log("unable to set pad title");
-                                console.error(err);
-                                return;
-                            }
-                            document.title = title;
-                        });
-                    });
-                });
-        }));
+        if (!readOnly) {
+            $toolbar.append(Button({
+                id: 'wizard',
+                'class': 'wizard button action',
+                title: Messages.wizardTitle,
+            }).text(Messages.wizardButton).click(function () {
+                Wizard.show();
+                if (Wizard.hasBeenDisplayed) { return; }
+                Cryptpad.log(Messages.wizardLog);
+                Wizard.hasBeenDisplayed = true;
+            }));
+        }
 
-        $toolbar.append(Button({
-            id: 'wizard',
-            'class': 'wizard button action',
-            title: 'wizard!',
-        }).text('WIZARD').click(function () {
-            Wizard.show();
-            if (Wizard.hasBeenDisplayed) { return; }
-            Cryptpad.log("click the button in the top left to return to your poll");
-            Wizard.hasBeenDisplayed = true;
-        }));
+        if (!readOnly && module.viewHash) {
+            /* add a 'links' button */
+            var $links = Cryptpad.createButton('readonly', true, {viewHash: module.viewHash})
+                .text(Messages.getViewButton)
+                .removeAttr('style')
+                .attr('class', 'action button readonly');
+            $toolbar.append($links);
+        }
 
         /* Import/Export buttons */
         /*
@@ -802,6 +832,7 @@ define([
         }
 
         Cryptpad.getPadAttribute('column', function (err, column) {
+            if (readOnly) { return; }
             if (err) {
                 console.log("unable to retrieve column");
                 return;
@@ -810,7 +841,7 @@ define([
             module.activeColumn = '';
             var promptForName = function () {
                 // HERE
-                Cryptpad.prompt("What is your name?", "", function (name, ev) {
+                Cryptpad.prompt(Messages.promptName, "", function (name, ev) {
                     if (name === null) {
                         name = '';
                     }
@@ -846,27 +877,51 @@ define([
     };
 
     var config = {
-        websocketURL: Config.websocketURL,
+        websocketURL: Cryptpad.getWebsocketURL(),
         channel: secret.channel,
         data: {},
-        crypto: Crypto.createEncryptor(secret.key),
+        // our public key
+        validateKey: secret.keys.validateKey || undefined,
+        readOnly: readOnly,
+        crypto: Crypto.createEncryptor(secret.keys),
     };
 
     // don't initialize until the store is ready.
     Cryptpad.ready(function () {
 
-        var rt = module.rt = Listmap.create(config);
+        var rt = window.rt = module.rt = Listmap.create(config);
         rt.proxy.on('create', function (info) {
             var realtime = module.realtime = info.realtime;
-            window.location.hash = info.channel + secret.key;
+
+            var editHash;
+            var viewHash = module.viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
+            if (!readOnly) {
+                editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+            }
+            // set the hash
+            if (!readOnly) {
+                window.location.hash = editHash;
+            }
+
             module.patchText = TextPatcher.create({
                 realtime: realtime,
                 logging: true,
             });
+            Cryptpad.getPadTitle(function (err, title) {
+                title = document.title = title || info.channel.slice(0, 8);
+
+                Cryptpad.setPadTitle(title, function (err, data) {
+                    if (err) {
+                        console.log("unable to remember pad");
+                        console.log(err);
+                        return;
+                    }
+                });
+            });
         }).on('ready', ready)
         .on('disconnect', function () {
             setEditable(false);
-            Cryptpad.alert("Network connection lost!");
+            Cryptpad.alert(Messages.common_connectionLost);
         });
     });
 

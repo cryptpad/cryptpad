@@ -1,0 +1,65 @@
+#!/usr/bin/env node
+/* globals process */
+
+var Config = require("./config");
+var Fs = require("fs");
+var Storage = require(Config.storage);
+
+var args = process.argv.slice(2);
+
+if (!args.length) {
+    console.log("Insufficient arguments!");
+    console.log("Pass a path to a database backup!");
+    process.exit();
+}
+
+var dump = Fs.readFileSync(args[0], 'utf-8');
+
+var ready = function (store) {
+    var lock = 0;
+    dump.split(/\n/)
+    .filter(function (line) {
+        return line;
+    })
+    .forEach(function (line, i) {
+        lock++;
+        var parts;
+
+        var channel;
+        var msg;
+
+        line.replace(/^(.*?)\|(.*)$/, function (all, c, m) {
+            channel = c;
+            msg = m;
+            return '';
+        });
+
+        if (!channel || !msg) {
+            console.log("BAD LINE on line %s", i);
+            return;
+        }
+
+        try {
+            JSON.parse(msg);
+        } catch (err) {
+            console.log("BAD LINE on line %s", i);
+            console.log(msg);
+            console.log();
+        }
+
+        store.message(channel, msg, function () {
+            console.log(line);
+            lock--;
+            if (!lock) {
+                console.log("DONE");
+                process.exit(0);
+            }
+        });
+    });
+};
+
+Storage.create(Config, function (store) {
+    console.log("READY");
+    ready(store);
+});
+

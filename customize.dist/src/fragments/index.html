@@ -3,47 +3,49 @@
           <h1>Unity is Strength - Collaboration is Key</h1>
 
       </center>
-      <p>CryptPad is the <strong>zero knowledge</strong> realtime collaborative editor.  Encryption carried out in your web browser protects the data from the server, the cloud, and the NSA.  The secret encryption key is stored in the URL <a href="https://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a> which is never sent to the server but is available to javascript so by sharing the URL, you give authorization to others who want to participate.</p>
+      <p data-localization="main_p1"><!-- Zero Knowledge collaborative realtime editor. Protected from the NSA. --></p>
 
-      <p>This project uses the <a href="http://ckeditor.com/">CKEditor</a> Visual Editor, <a href="https://codemirror.net/">CodeMirror</a>, and the <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a> realtime engine.</p>
+      <p data-localization="main_p2"><!-- CkEditor, CodeMirror, Chainpad --></p>
 
-      <h2 id="howitworks">How It Works</h2>
-      <p>CryptPad uses a variant of the <a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> algorithm which is able to find distributed consensus using a Nakamoto Blockchain, a construct popularized by <a href="https://en.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. This way the algorithm can avoid the need for a central server to resolve Operational Transform Edit Conflicts and without the need for resolving conflicts, the server can be kept unaware of the content which is being edited on the pad.</p>
+      <h2 id="howitworks" data-localization="main_howitworks"></h2>
+      <p data-localization="main_howitworks_p1"><!-- Operational transform, Nakamoto blockchain, server kept unaware of the content--></p>
 
-      <h2 id="about-us">About</h2>
+      <h2 id="about-us" data-localization="main_about"></h2>
 
-      <p>You can read more about our <a href="/privacy.html" title="">privacy policy</a> and <a href="/terms.html">terms of service</a>.</p>
-      <p>If you have any questions or comments, you can <a href="https://twitter.com/cryptpad">tweet us</a>, open an issue <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">on github</a>, come say hi on irc (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), or <a href="mailto:sftfbsdiAyxjlj/dpn">send us an email</a>.</p>
+      <p data-localization="main_about_p1"><!-- Privacy policy, terms of service --></p>
+      <p data-localization="main_about_p2"><!-- Contact us--></p>
 
       <center>
         <noscript>
           <p>
-            <strong>OOPS</strong> In order to do encryption in your browser, Javascript is really
-            <strong>really</strong> required.
+            <strong>OOPS</strong> In order to do encryption in your browser, Javascript is really <strong>really</strong> required.
+          </p>
+          <hr>
+          <p>
+            <strong>OUPS</strong> Afin de pouvoir réaliser le cryptage depuis votre navigateur, Javascript est <strong>vraiment</strong> requis.
           </p>
         </noscript>
-        <h5 id="tryit">Try it out!</h5>
+        <h5 id="tryit" data-localization="tryIt"></h5>
 
         <table class="recent scroll" style="display:none">
             <tbody>
 
             <tr>
-                <th>Type</th>
-                <th>Link</th>
-                <th>Created</th>
-                <th>Last Accessed</th>
-                <th class="table-refresh" title="refresh list">
-                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 861.143 861.144" style="enable-background:new 0 0 861.143 861.144;" xml:space="preserve"><path d="M803.661,613.847c21.129-49.956,31.842-102.991,31.842-157.634c0-46.664-7.883-92.431-23.43-136.031   c-15.025-42.134-36.846-81.294-64.859-116.393c-27.734-34.751-60.746-64.539-98.117-88.534   c-38.072-24.445-79.621-42.192-123.492-52.748c-28.191-6.782-56.543,10.571-63.326,38.761s10.572,56.542,38.762,63.325   c64.291,15.47,122.572,52.651,164.109,104.694c20.75,26.001,36.908,54.99,48.023,86.162c11.5,32.249,17.332,66.151,17.332,100.764   c0,80.114-31.197,155.435-87.848,212.083c-56.65,56.649-131.971,87.848-212.084,87.848c-80.114,0-155.434-31.198-212.083-87.849   c-56.65-56.648-87.848-131.969-87.848-212.083c0-59.197,17.208-116.435,49.763-165.521c28.053-42.3,66.007-76.562,110.547-100.007   v58.027c0,28.995,23.505,52.5,52.5,52.5s52.5-23.505,52.5-52.5V52.5c0-28.995-23.505-52.5-52.5-52.5H144.567   c-28.995,0-52.5,23.505-52.5,52.5c0,28.995,23.505,52.5,52.5,52.5h84.328C174.456,136.276,127.939,179.822,92.9,232.655   c-44.001,66.346-67.259,143.65-67.259,223.557c0,54.643,10.714,107.679,31.843,157.634c20.398,48.225,49.587,91.524,86.759,128.695   c37.171,37.171,80.471,66.361,128.696,86.759c49.956,21.13,102.991,31.844,157.634,31.844c54.644,0,107.677-10.714,157.634-31.844   c48.225-20.397,91.523-49.587,128.695-86.759C754.073,705.371,783.262,662.071,803.661,613.847z"/></svg>
-                </th> <!-- remove column -->
+                <th data-localization="table_type"></th>
+                <th data-localization="table_link"></th>
+                <th data-localization="table_created"></th>
+                <th data-localization="table_last"></th>
+                <th></th>
             </tr>
 
             </tbody>
         </table>
 
         <div id="buttons" class="buttons">
-          <a id="create-pad" class="button create" href="/pad/">CREATE NEW WYSIWYG PAD</a>
-          <a id="create-code" class="button create" href="/code/">CREATE NEW CODE PAD</a>
-          <a id="create-poll" class="button create" href="/poll/">CREATE NEW POLL</a>
+          <a id="create-pad" class="button create" href="/pad/" data-localization="button_newpad"></a>
+          <a id="create-code" class="button create" href="/code/" data-localization="button_newcode"></a>
+          <a id="create-poll" class="button create" href="/poll/" data-localization="button_newpoll"></a>
+          <a id="create-slide" class="button create" href="/slide/" data-localization="button_newslide"></a>
         </div>
       </center>
 

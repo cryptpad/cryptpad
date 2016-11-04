@@ -1,7 +1,6 @@
 require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
-    '/api/config?cb=' + Math.random().toString(16).substring(2),
-    '/customize/messages.js',
+    '/customize/messages.js?app=pad',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/hyperjson/hyperjson.js',
@@ -18,15 +17,16 @@ define([
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, Messages, Crypto, realtimeInput, Hyperjson,
+], function (Messages, Crypto, realtimeInput, Hyperjson,
     Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad,
     Visible, Notify) {
-
     var $ = window.jQuery;
     var saveAs = window.saveAs;
     var ifrw = $('#pad-iframe')[0].contentWindow;
     var Ckeditor; // to be initialized later...
     var DiffDom = window.diffDOM;
+
+    Cryptpad.styleAlerts();
 
     var stringify = function (obj) {
         return JSONSortify(obj);
@@ -64,6 +64,10 @@ define([
 
     var andThen = function (Ckeditor) {
         var secret = Cryptpad.getSecrets();
+        var readOnly = secret.keys && !secret.keys.editKeyStr;
+        if (!secret.keys) {
+            secret.keys = secret.key;
+        }
 
         var fixThings = false;
 
@@ -77,9 +81,17 @@ define([
             removePlugins: 'resize',
             extraPlugins: 'autolink,colorbutton,colordialog,font',
             //skin: 'moono',
+            toolbarGroups: [{"name":"clipboard","groups":["clipboard","undo"]},{"name":"editing","groups":["find","selection"]},{"name":"links"},{"name":"insert"},{"name":"forms"},{"name":"tools"},{"name":"document","groups":["mode","document","doctools"]},{"name":"others"},{"name":"basicstyles","groups":["basicstyles","cleanup"]},{"name":"paragraph","groups":["list","indent","blocks","align","bidi"]},{"name":"styles"},{"name":"colors"}]
         });
 
         editor.on('instanceReady', function (Ckeditor) {
+            var $bar = $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox');
+            var parsedHash = Cryptpad.parsePadUrl(window.location.href);
+            var defaultName = Cryptpad.getDefaultName(parsedHash);
+
+            if (readOnly) {
+                $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox > .cke_toolbar').hide();
+            }
 
             /* add a class to the magicline plugin so we can pick it out more easily */
 
@@ -114,8 +126,9 @@ define([
                 } else {
                     module.spinner.show();
                 }
-
-                inner.setAttribute('contenteditable', bool);
+                if (!readOnly || !bool) {
+                    inner.setAttribute('contenteditable', bool);
+                }
             };
 
             // don't let the user edit until the pad is ready
@@ -191,6 +204,12 @@ define([
                         }
                     }
 
+                    // Do not change the contenteditable value in view mode
+                    if (readOnly && info.node && info.node.tagName === 'BODY' &&
+                        info.diff.action === 'modifyAttribute' && info.diff.name === 'contenteditable') {
+                        return true;
+                    }
+
                     // no use trying to recover the cursor if it doesn't exist
                     if (!cursor.exists()) { return; }
 
@@ -234,12 +253,20 @@ define([
             };
 
             var initializing = true;
-            var userList = {}; // List of pretty name of all users (mapped with their server ID)
-            var toolbarList; // List of users still connected to the channel (server IDs)
-            var addToUserList = function(data) {
-                for (var attrname in data) { userList[attrname] = data[attrname]; }
-                if(toolbarList && typeof toolbarList.onChange === "function") {
-                    toolbarList.onChange(userList);
+            var userData = module.userData = {}; // List of pretty names for all users (mapped with their ID)
+            var userList; // List of users still connected to the channel (server IDs)
+            var addToUserData = function(data) {
+                var users = module.users;
+                for (var attrname in data) { userData[attrname] = data[attrname]; }
+
+                if (users && users.length) {
+                    for (var userKey in userData) {
+                        if (users.indexOf(userKey) === -1) { delete userData[userKey]; }
+                    }
+                }
+
+                if(userList && typeof userList.onChange === "function") {
+                    userList.onChange(userData);
                 }
             };
 
@@ -252,13 +279,13 @@ define([
             };
 
             var getLastName = function (cb) {
-                Cryptpad.getPadAttribute('username', function (err, userName) {
+                Cryptpad.getAttribute('username', function (err, userName) {
                     cb(err, userName || '');
                 });
             };
 
             var setName = module.setName = function (newName) {
-                if (!(typeof(newName) === 'string' && newName.trim())) { return; }
+                if (typeof(newName) !== 'string') { return; }
                 var myUserNameTemp = Cryptpad.fixHTML(newName.trim());
                 if(myUserNameTemp.length > 32) {
                     myUserNameTemp = myUserNameTemp.substr(0, 32);
@@ -267,26 +294,39 @@ define([
                 myData[myID] = {
                     name: myUserName
                 };
-                addToUserList(myData);
-                editor.fire('change');
-
-                Cryptpad.setPadAttribute('username', newName, function (err, data) {
+                addToUserData(myData);
+                Cryptpad.setAttribute('username', newName, function (err, data) {
                     if (err) {
                         console.error("Couldn't set username");
+                        return;
                     }
+                    module.userName.lastName = myUserName;
+                    editor.fire('change');
                 });
             };
 
-            var createChangeName = function(id, $container) {
-                var buttonElmt = $container.find('#'+id)[0];
-                //var lastName = getLastName();
-                getLastName(function (err, lastName) {
-                    buttonElmt.addEventListener("click", function() {
-                        Cryptpad.prompt(Messages.changeNamePrompt, lastName, function (newName) {
-                            setName(newName);
-                        });
-                    });
-                });
+            var isDefaultTitle = function () {
+                var parsed = Cryptpad.parsePadUrl(window.location.href);
+                return Cryptpad.isDefaultName(parsed, document.title);
+            };
+
+            var getHeadingText = function () {
+                var text;
+                if (['h1', 'h2', 'h3'].some(function (t) {
+                    var $header = $(inner).find(t + ':first-of-type');
+                    if ($header.length && $header.text()) {
+                        text = $header.text();
+                        return true;
+                    }
+                })) { return text; }
+            };
+
+            var suggestName = function () {
+                if (document.title === defaultName) {
+                    return getHeadingText() || "";
+                } else {
+                    return document.title || getHeadingText() || defaultName;
+                }
             };
 
             var DD = new DiffDom(diffOptions);
@@ -295,14 +335,22 @@ define([
             var applyHjson = function (shjson) {
                 var userDocStateDom = hjsonToDom(JSON.parse(shjson));
 
-                userDocStateDom.setAttribute("contenteditable", "true"); // lol wtf
+                if (!readOnly) {
+                    userDocStateDom.setAttribute("contenteditable", "true"); // lol wtf
+                }
                 var patch = (DD).diff(inner, userDocStateDom);
                 (DD).apply(inner, patch);
             };
 
             var stringifyDOM = module.stringifyDOM = function (dom) {
                 var hjson = Hyperjson.fromDOM(dom, isNotMagicLine, brFilter);
-                hjson[3] = {metadata: userList};
+                hjson[3] = {
+                    metadata: {
+                        users: userData,
+                        defaultTitle: defaultName
+                    }
+                };
+                hjson[3].metadata.title = document.title;
                 return stringify(hjson);
             };
 
@@ -311,19 +359,20 @@ define([
                 initialState: stringifyDOM(inner) || '{}',
 
                 // the websocket URL
-                websocketURL: Config.websocketURL,
+                websocketURL: Cryptpad.getWebsocketURL(),
 
                 // the channel we will communicate over
                 channel: secret.channel,
 
-                // our encryption key
-                cryptKey: secret.key,
+                // our public key
+                validateKey: secret.keys.validateKey || undefined,
+                readOnly: readOnly,
 
                 // method which allows us to get the id of the user
                 setMyID: setMyID,
 
                 // Pass in encrypt and decrypt methods
-                crypto: Crypto.createEncryptor(secret.key),
+                crypto: Crypto.createEncryptor(secret.keys),
 
                 // really basic operational transform
                 transformFunction : JsonOT.validate,
@@ -342,15 +391,45 @@ define([
                 }
             };
 
-            var updateUserList = function(shjson) {
+            var updateTitle = function (newTitle) {
+                if (newTitle === document.title) { return; }
+                // Change the title now, and set it back to the old value if there is an error
+                var oldTitle = document.title;
+                document.title = newTitle;
+                Cryptpad.renamePad(newTitle, function (err, data) {
+                    if (err) {
+                        console.log("Couldn't set pad title");
+                        console.error(err);
+                        document.title = oldTitle;
+                        return;
+                    }
+                    document.title = data;
+                    $bar.find('.' + Toolbar.constants.title).find('span.title').text(data);
+                    $bar.find('.' + Toolbar.constants.title).find('input').val(data);
+                });
+            };
+
+            var updateDefaultTitle = function (defaultTitle) {
+                defaultName = defaultTitle;
+                $bar.find('.' + Toolbar.constants.title).find('input').attr("placeholder", defaultName);
+            };
+
+            var updateMetadata = function(shjson) {
                 // Extract the user list (metadata) from the hyperjson
                 var hjson = JSON.parse(shjson);
-                var peerUserList = hjson[3];
-                if(peerUserList && peerUserList.metadata) {
-                  var userData = peerUserList.metadata;
-                  // Update the local user data
-                  addToUserList(userData);
-                  hjson.pop();
+                var peerMetadata = hjson[3];
+                if (peerMetadata && peerMetadata.metadata) {
+                    if (peerMetadata.metadata.users) {
+                        var userData = peerMetadata.metadata.users;
+                        // Update the local user data
+                        addToUserData(userData);
+                    }
+                    if (peerMetadata.metadata.defaultTitle) {
+                        updateDefaultTitle(peerMetadata.metadata.defaultTitle);
+                    }
+                    if (typeof peerMetadata.metadata.title !== "undefined") {
+                        updateTitle(peerMetadata.metadata.title);
+                    }
                 }
             };
 
@@ -364,7 +443,7 @@ define([
             var notify = function () {
                 if (Visible.isSupported() && !Visible.currently()) {
                     unnotify();
-                    module.tabNotification = Notify.tab(document.title, 1000, 10);
+                    module.tabNotification = Notify.tab(1000, 10);
                 }
             };
 
@@ -377,36 +456,38 @@ define([
                 cursor.update();
 
                 // Update the user list (metadata) from the hyperjson
-                updateUserList(shjson);
+                updateMetadata(shjson);
 
                 // build a dom from HJSON, diff, and patch the editor
                 applyHjson(shjson);
 
-                var shjson2 = stringifyDOM(inner);
-                if (shjson2 !== shjson) {
-                    console.error("shjson2 !== shjson");
-                    module.patchText(shjson2);
+                if (!readOnly) {
+                    var shjson2 = stringifyDOM(inner);
+                    if (shjson2 !== shjson) {
+                        console.error("shjson2 !== shjson");
+                        module.patchText(shjson2);
 
-                    /*  pushing back over the wire is necessary, but it can
-                        result in a feedback loop, which we call a browser
-                        fight */
-                    if (module.logFights) {
-                        // what changed?
-                        var op = TextPatcher.diff(shjson, shjson2);
-                        // log the changes
-                        TextPatcher.log(shjson, op);
-                        var sop = JSON.stringify(TextPatcher.format(shjson, op));
+                        /*  pushing back over the wire is necessary, but it can
+                            result in a feedback loop, which we call a browser
+                            fight */
+                        if (module.logFights) {
+                            // what changed?
+                            var op = TextPatcher.diff(shjson, shjson2);
+                            // log the changes
+                            TextPatcher.log(shjson, op);
+                            var sop = JSON.stringify(TextPatcher.format(shjson, op));
 
-                        var index = module.fights.indexOf(sop);
-                        if (index === -1) {
-                            module.fights.push(sop);
-                            console.log("Found a new type of browser disagreement");
-                            console.log("You can inspect the list in your " +
-                                "console at `REALTIME_MODULE.fights`");
-                            console.log(module.fights);
-                        } else {
-                            console.log("Encountered a known browser disagreement: " +
-                                "available at `REALTIME_MODULE.fights[%s]`", index);
+                            var index = module.fights.indexOf(sop);
+                            if (index === -1) {
+                                module.fights.push(sop);
+                                console.log("Found a new type of browser disagreement");
+                                console.log("You can inspect the list in your " +
+                                    "console at `REALTIME_MODULE.fights`");
+                                console.log(module.fights);
+                            } else {
+                                console.log("Encountered a known browser disagreement: " +
+                                    "available at `REALTIME_MODULE.fights[%s]`", index);
+                            }
                         }
                     }
                 }
@@ -427,27 +508,6 @@ define([
                 return new DOMParser().parseFromString(html, 'text/html');
             };
 
-            var getHeadingText = function () {
-                var text;
-                if (['h1', 'h2', 'h3'].some(function (t) {
-                    var $header = $(inner).find(t + ':first-of-type');
-                    if ($header.length && $header.text()) {
-                        text = $header.text();
-                        return true;
-                    }
-                })) { return text; }
-            };
-
-            var suggestName = module.suggestName = function () {
-                var hash = window.location.hash.slice(1, 9);
-
-                if (document.title === hash) {
-                    return getHeadingText() || hash;
-                } else {
-                    return document.title || getHeadingText() || hash;
-                }
-            };
-
             var exportFile = function () {
                 var html = getHTML();
                 var suggestion = suggestName();
@@ -458,91 +518,92 @@ define([
                     saveAs(blob, filename);
                 });
             };
+            var importFile = function (content, file) {
+                var shjson = stringify(Hyperjson.fromDOM(domFromHTML(content).body));
+                applyHjson(shjson);
+                realtimeOptions.onLocal();
+            };
+
+            var renameCb = function (err, title) {
+                if (err) { return; }
+                document.title = title;
+                editor.fire('change');
+            };
 
             var onInit = realtimeOptions.onInit = function (info) {
-                var $bar = $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox');
-                toolbarList = info.userList;
+                userList = info.userList;
                 var config = {
-                    userData: userList,
-                    changeNameID: Toolbar.constants.changeName,
+                    userData: userData,
+                    readOnly: readOnly,
+                    ifrw: ifrw,
+                    title: {
+                        onRename: renameCb,
+                        defaultName: defaultName,
+                        suggestName: suggestName
+                    },
+                    common: Cryptpad
                 };
-                toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
-                createChangeName(Toolbar.constants.changeName, $bar);
+                if (readOnly) {delete config.changeNameID; }
+                toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, userList, config);
 
                 var $rightside = $bar.find('.' + Toolbar.constants.rightside);
+                var $userBlock = $bar.find('.' + Toolbar.constants.username);
+                var $editShare = $bar.find('.' + Toolbar.constants.editShare);
+                var $viewShare = $bar.find('.' + Toolbar.constants.viewShare);
+
+                var editHash;
+                var viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
+
+                if (!readOnly) {
+                    editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+                }
+
+                // Store the object sent for the "change username" button so that we can update the field value correctly
+                var userNameButtonObject = module.userName = {};
+                /* add a "change username" button */
+                getLastName(function (err, lastName) {
+                    userNameButtonObject.lastName = lastName;
+                    var $username = module.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName).hide();
+                    $userBlock.append($username);
+                });
 
                 /* add an export button */
-                var $export = $('<button>', {
-                    title: Messages.exportButtonTitle,
-                })
-                    .text(Messages.exportButton)
-                    .addClass('rightside-button')
-                    .click(exportFile);
+                var $export = Cryptpad.createButton('export', true, {}, exportFile);
+                $rightside.append($export);
 
-                /* add an import button */
-                var $import = $('<button>', {
-                    title: Messages.importButtonTitle
-                })
-                    .text(Messages.importButton)
-                    .addClass('rightside-button')
-                    .click(Cryptpad.importContent('text/plain', function (content) {
-                        var shjson = stringify(Hyperjson.fromDOM(domFromHTML(content).body));
-                        applyHjson(shjson);
-                        realtimeOptions.onLocal();
-                    }));
-                $rightside.append($export).append($import);
+                if (!readOnly) {
+                    /* add an import button */
+                    var $import = Cryptpad.createButton('import', true, {}, importFile);
+                    $rightside.append($import);
 
-                /* add a rename button */
-                var $rename = $('<button>', {
-                        id: 'name-pad',
-                        title: Messages.renameButtonTitle,
-                    })
-                    .addClass('cryptpad-rename rightside-button')
-                    .text(Messages.renameButton)
-                    .click(function () {
-                        var suggestion = suggestName();
-
-                        Cryptpad.prompt(Messages.renamePrompt, suggestion, function (title) {
-                            if (title === null) { return; }
-                            Cryptpad.causesNamingConflict(title, function (err, conflicts) {
-                                if (conflicts) {
-                                    Cryptpad.alert(Messages.renameConflict);
-                                    return;
-                                }
-
-                                Cryptpad.setPadTitle(title, function (err, data) {
-                                    if (err) {
-                                        console.log("Couldn't set pad title");
-                                        console.error(err);
-                                        return;
-                                    }
-                                    document.title = title;
-                                });
-                            });
-                        });
-                    });
-                $rightside.append($rename);
+                    /* add a rename button */
+                    //var $setTitle = Cryptpad.createButton('rename', true, {suggestName: suggestName}, renameCb);
+                    //$rightside.append($setTitle);
+                }
 
                 /* add a forget button */
-                var $forgetPad = $('<button>', {
-                        id: 'cryptpad-forget',
-                        title: Messages.forgetButtonTitle,
-                    })
-                    .text(Messages.forgetButton)
-                    .addClass('cryptpad-forget rightside-button')
-                    .click(function () {
-                        var href = window.location.href;
-                        Cryptpad.confirm(Messages.forgetPrompt, function (yes) {
-                            if (!yes) { return; }
-                            Cryptpad.forgetPad(href, function (err, data) {
-                                document.title = window.location.hash.slice(1,9);
-                            });
-                        });
-                    });
+                var forgetCb = function (err, title) {
+                    if (err) { return; }
+                    document.title = title;
+                };
+                var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
                 $rightside.append($forgetPad);
 
+                if (!readOnly) {
+                    $editShare.append(Cryptpad.createButton('editshare', false, {editHash: editHash}));
+                }
+                if (viewHash) {
+                    /* add a 'links' button */
+                    $viewShare.append(Cryptpad.createButton('viewshare', false, {viewHash: viewHash}));
+                    if (!readOnly) {
+                        $viewShare.append(Cryptpad.createButton('viewopen', false, {viewHash: viewHash}));
+                    }
+                }
+
                 // set the hash
-                window.location.hash = info.channel + secret.key;
+                if (!readOnly) {
+                    window.location.hash = editHash;
+                }
 
                 Cryptpad.getPadTitle(function (err, title) {
                     if (err) {
@@ -550,16 +611,8 @@ define([
                         console.log("Couldn't get pad title");
                         return;
                     }
-                    document.title = title || window.location.hash.slice(1, 9);
-                    Cryptpad.rememberPad(title, function (err, data) {
-                        if (err) {
-                            console.log("Couldn't remember pad");
-                            console.error(err);
-                        }
-                    });
+                    updateTitle(title || defaultName);
                 });
-
-                Cryptpad.styleAlerts();
             };
 
             // this should only ever get called once, when the chain syncs
@@ -569,10 +622,14 @@ define([
                     //logging: true,
                 });
 
+                module.users = info.userList.users;
                 module.realtime = info.realtime;
 
                 var shjson = info.realtime.getUserDoc();
                 applyHjson(shjson);
+
+                // Update the user list (metadata) from the hyperjson
+                updateMetadata(shjson);
 
                 if (Visible.isSupported()) {
                     Visible.onChange(function (yes) {
@@ -581,12 +638,22 @@ define([
                 }
 
                 getLastName(function (err, lastName) {
-                    if (typeof(lastName) === 'string' && lastName.length) {
-                        setName(lastName);
-                    }
                     console.log("Unlocking editor");
                     setEditable(true);
                     initializing = false;
+                    // Update the toolbar list:
+                    // Add the current user in the metadata if he has edit rights
+                    if (readOnly) { return; }
+                    if (typeof(lastName) === 'string' && lastName.length) {
+                        setName(lastName);
+                    } else {
+                        myData[myID] = {
+                            name: ""
+                        };
+                        addToUserData(myData);
+                        realtimeOptions.onLocal();
+                        module.$userNameButton.click();
+                    }
                 });
             };
 
@@ -613,6 +680,7 @@ define([
 
             var onLocal = realtimeOptions.onLocal = function () {
                 if (initializing) { return; }
+                if (readOnly) { return; }
 
                 // stringify the json and send it into chainpad
                 var shjson = stringifyDOM(inner);

@@ -1,52 +1,89 @@
-define(function () {
-    var out = {};
+define(['/customize/languageSelector.js',
+        '/customize/translations/messages.js',
+        '/customize/translations/messages.es.js',
+        '/customize/translations/messages.fr.js',
 
-    out.errorBox_errorType_disconnected = 'Connection Lost';
-    out.errorBox_errorExplanation_disconnected = [
-        'Lost connection to server, you may reconnect by reloading the page or review your work ',
-        'by clicking outside of this box.'
-    ].join('');
+    // 1) additional translation files can be added here...
 
-    out.editingAlone = 'Editing alone';
-    out.editingWithOneOtherPerson = 'Editing with one other person';
-    out.editingWith = 'Editing with';
-    out.otherPeople = 'other people';
-    out.disconnected = 'Disconnected';
-    out.synchronizing = 'Synchronizing';
-    out.reconnecting = 'Reconnecting...';
-    out.lag = 'Lag';
+        '/bower_components/jquery/dist/jquery.min.js'],
 
-    out.importButton = 'IMPORT';
-    out.importButtonTitle = 'Import a document from a local file';
+    // 2) name your language module here...
+        function(LS, Default, Spanish, French) {
+    var $ = window.jQuery;
 
-    out.exportButton = 'EXPORT';
-    out.exportButtonTitle = 'Export this document to a local file';
-    out.exportPrompt = 'What would you like to name your file?';
+    // 3) add your module to this map so it gets used
+    var map = {
+        'fr': French,
+        'es': Spanish,
+    };
 
-    out.back = '&#8656; Back';
-    out.backToCryptpad = '&#8656; Back to Cryptpad';
+    var defaultLanguage = 'en';
 
-    out.changeNameButton = 'Change name';
-    out.changeNamePrompt = 'Change your name: ';
+    var language = LS.getLanguage();
 
-    out.renameButton = 'RENAME';
-    out.renameButtonTitle = 'Change the title under which this document is listed on your home page';
-    out.renamePrompt = 'How would you like to title this pad?';
-    out.renameConflict = 'Another pad already has that title';
+    var messages;
 
-    out.forgetButton = 'FORGET';
-    out.forgetButtonTitle = 'remove this document from your home page listings';
-    out.forgetPrompt = 'Clicking OK will remove the URL for this pad from localStorage, are you sure?';
+    if (!language || language === defaultLanguage || language === 'default' || !map[language]) {
+        messages = Default;
+    }
+    else {
+        // Add the translated keys to the returned object
+        messages = $.extend(true, {}, Default, map[language]);
+    }
 
-    out.disconnectAlert = 'Network connection lost!';
+    // messages_languages return the available translations and their name in an object :
+    // { "en": "English", "fr": "French", ... }
+    messages._languages = {
+        'en': Default._languageName
+    };
+    for (var l in map) {
+        messages._languages[l] = map[l]._languageName || l;
+    }
 
-    out.tryIt = 'Try it out!';
-    out.recentPads = 'Your recent pads (stored only in your browser)';
+    messages._initSelector = LS.main;
+    messages._checkTranslationState = function () {
+        var missing = [];
+        Object.keys(map).forEach(function (code) {
+            var translation = map[code];
+            Object.keys(Default).forEach(function (k) {
+                if (/^_/.test(k) || /nitialState$/.test(k)) { return; }
+                if (!translation[k]) {
+                    var warning = "key [" + k + "] is missing from translation [" + code + "]";
+                    missing.push(warning);
+                }
+            });
+            if (typeof(translation._languageName) !== 'string') {
+                var warning = 'key [_languageName] is missing from translation [' + code + ']';
+                missing.push(warning);
+            }
+        });
+        return missing;
+    };
 
-    out.okButton = 'OK (enter)';
-    out.cancelButton = 'Cancel (esc)';
+    // Get keys with parameters
+    messages._getKey = function (key, argArray) {
+        if (!messages[key]) { return '?'; }
+        var text = messages[key];
+        return text.replace(/\{(\d+)\}/g, function (str, p1) {
+            return argArray[p1] || null;
+        });
+    };
 
-    out.initialState = [
+    messages._applyTranslation = function () {
+        $('[data-localization]').each(function (i, e) {
+            var $el = $(this);
+            var key = $el.data('localization');
+            $el.html(messages[key]);
+        });
+        $('[data-localization-title]').each(function (i, e) {
+            var $el = $(this);
+            var key = $el.data('localization-title');
+            $el.attr('title', messages[key]);
+        });
+    };
+
+    // Non translatable keys
+    messages.initialState = [
         '<p>',
         'This is <strong>CryptPad</strong>, the zero knowledge realtime collaborative editor.',
         '<br>',
@@ -61,7 +98,7 @@ define(function () {
         '</p>',
     ].join('');
 
-    out.codeInitialState = [
+    messages.codeInitialState = [
         '/*\n',
         '   This is CryptPad, the zero knowledge realtime collaborative editor.\n',
         '   What you type here is encrypted so only people who have the link can access it.\n',
@@ -70,8 +107,20 @@ define(function () {
         '*/'
     ].join('');
 
-    out.loginText = '<p>Your username and password are used to generate a unique key which is never known by our server.</p>\n' +
-                    '<p>Be careful not to forget your credentials, as they are impossible to recover</p>';
+    messages.slideInitialState = [
+        '# CryptSlide\n',
+        '* This is a zero knowledge realtime collaborative editor.\n',
+        '* What you type here is encrypted so only people who have the link can access it.\n',
+        '* Even the server cannot see what you type.\n',
+        '* What you see here, what you hear here, when you leave here, let it stay here.\n',
+        '\n',
+        '---',
+        '\n',
+        '# How to use\n',
+        '1. Write your slides content using markdown syntax\n',
+        '2. Separate your slides with ---\n',
+        '3. Click on the "Play" button to see the result'
+    ].join('');
 
-    return out;
+    return messages;
 });

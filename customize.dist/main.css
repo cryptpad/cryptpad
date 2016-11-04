@@ -137,9 +137,16 @@ tr {
   border: 2px solid #a1f4bf;
   color: #46E981;
 }
+.create {
+  display: none;
+}
+.action {
+  display: inline-block;
+}
 .buttons {
   margin-bottom: 50px;
   margin-top: 20px;
+  line-height: 2.5em;
 }
 .button {
   padding: 4px 12px 4px 12px;
@@ -147,7 +154,9 @@ tr {
   margin-top: 12px;
   margin-bottom: 12px;
   white-space: nowrap;
-  display: inline-block;
+}
+.alertify button {
+  margin: 3px 0px;
 }
 /* Tables */
 table {
@@ -204,10 +213,9 @@ tbody td:last-child {
   border-right: none;
 }
 /* Bottom Bar */
+.top-bar,
 .bottom-bar {
   position: fixed;
-  bottom: 0px;
-  right: 0px;
   height: 4%;
   height: 2.5em;
   display: inline-block;
@@ -215,27 +223,69 @@ tbody td:last-child {
   background: #302B28;
   border-top: 1px solid #444;
 }
+.top-bar a,
 .bottom-bar a {
   color: #46E981;
   text-decoration: none;
 }
+.top-bar p,
 .bottom-bar p {
   margin: -1px;
   font-family: Arial, Helvetica, Tahoma, Verdana, sans-serif;
   font-size: 20px;
   display: block;
-  float: left;
+  margin-left: 10px;
   padding-top: 3px;
   color: #fafafa;
 }
+.top-bar img,
 .bottom-bar img {
   margin-right: 4px;
   position: relative;
+}
+@media screen and (max-width: 800px) {
+  .top-bar .big,
+  .bottom-bar .big {
+    display: none;
+  }
+}
+@media screen and (min-width: 801px) {
+  .top-bar .big,
+  .bottom-bar .big {
+    display: inline-block;
+  }
+}
+@media screen and (max-width: 800px) {
+  .top-bar .small,
+  .bottom-bar .small {
+    display: inline-block;
+  }
+}
+@media screen and (min-width: 801px) {
+  .top-bar .small,
+  .bottom-bar .small {
+    display: none;
+  }
+}
+.top-bar .small img,
+.bottom-bar .small img {
+  height: 1.25em;
+}
+.bottom-bar {
+  bottom: 0px;
+  right: 0px;
+}
+.top-bar {
+  top: 0px;
+  right: 0px;
 }
 .bottom-bar-left {
   display: block;
   float: left;
   padding-left: 10px;
+}
+.bottom-bar-left p {
+  float: right;
 }
 .bottom-bar-right {
   display: block;
@@ -243,9 +293,10 @@ tbody td:last-child {
   padding-right: 20px;
 }
 .bottom-bar-center {
-  margin-left: auto;
-  margin-right: auto;
   width: 20%;
+  position: absolute;
+  left: 40%;
+  text-align: center;
 }
 .bottom-bar-heart {
   top: 2px;
@@ -421,38 +472,38 @@ div.modal #content pre,
 div#modal #content pre,
 div.modal #content code,
 div#modal #content code {
-  font-size: 2.5vw;
-  line-height: 3vw;
+  font-size: 2.75vw;
+  line-height: 3.025vw;
 }
 div.modal #content h1,
 div#modal #content h1 {
   font-size: 5vw;
-  line-height: 6vw;
+  line-height: 5.5vw;
 }
 div.modal #content h2,
 div#modal #content h2 {
   font-size: 4.2vw;
-  line-height: 5.04vw;
+  line-height: 4.62vw;
 }
 div.modal #content h3,
 div#modal #content h3 {
   font-size: 3.6vw;
-  line-height: 4.32vw;
+  line-height: 3.96vw;
 }
 div.modal #content h4,
 div#modal #content h4 {
   font-size: 3vw;
-  line-height: 3.6vw;
+  line-height: 3.3vw;
 }
 div.modal #content h5,
 div#modal #content h5 {
   font-size: 2.2vw;
-  line-height: 2.64vw;
+  line-height: 2.42vw;
 }
 div.modal #content h6,
 div#modal #content h6 {
   font-size: 1.6vw;
-  line-height: 1.92vw;
+  line-height: 1.76vw;
 }
 div.modal #content pre > code,
 div#modal #content pre > code {

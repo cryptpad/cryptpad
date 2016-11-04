@@ -14,12 +14,10 @@ define([
         content: [],
         changeHandlers: [],
     };
+    var ifrw;
     var $modal;
     var $content;
-    Slide.setModal = function ($m, $c) {
-        $modal = Slide.$modal = $m;
-        $content = Slide.$content = $c;
-    };
+    var $pad;
 
     Slide.onChange = function (f) {
         if (typeof(f) === 'function') {
@@ -28,15 +26,11 @@ define([
     };
 
     var change = function (oldIndex, newIndex) {
-        if (oldIndex === newIndex) {
-            return false;
-        }
         if (Slide.changeHandlers.length) {
             Slide.changeHandlers.some(function (f, i) {
                 // HERE
                 f(oldIndex, newIndex, Slide.content.length);
             });
-            return true;
         }
     };
 
@@ -113,16 +107,38 @@ define([
         change(Slide.lastIndex, Slide.index);
     };
 
+    var isPresentURL = Slide.isPresentURL = function () {
+        var hash = window.location.hash;
+        // Present mode has /present at the end of the hash
+        var urlLastFragment = hash.slice(hash.lastIndexOf('/')+1);
+        return urlLastFragment === "present";
+    };
+
     var show = Slide.show = function (bool, content) {
         Slide.shown = bool;
         if (bool) {
             Slide.update(content);
             Slide.draw(Slide.index);
             $modal.addClass('shown');
+            $(ifrw).focus();
             change(null, Slide.index);
+            if (!isPresentURL()) {
+                window.location.hash += '/present';
+            }
+            $pad.contents().find('.cryptpad-present-button').hide();
+            $pad.contents().find('.cryptpad-source-button').show();
+            $pad.addClass('fullscreen');
+            $('#iframe-container').addClass('fullscreen');
+            $('.top-bar').hide();
             return;
         }
+        window.location.hash = window.location.hash.replace(/\/present$/, '');
         change(Slide.index, null);
+        $pad.contents().find('.cryptpad-present-button').show();
+        $pad.contents().find('.cryptpad-source-button').hide();
+        $pad.removeClass('fullscreen');
+        $('#iframe-container').removeClass('fullscreen');
+        $('.top-bar').show();
         $modal.removeClass('shown');
     };
 
@@ -132,7 +148,9 @@ define([
         Slide.content = content.split(/\n\s*\-\-\-\s*\n/).filter(truthy);
         if (old !== Slide.content[Slide.index]) {
             draw(Slide.index);
+            return;
         }
+        change(Slide.lastIndex, Slide.index);
     };
 
     var left = Slide.left = function () {
@@ -151,23 +169,59 @@ define([
         Slide.draw(i);
     };
 
-    $(document).on('keyup', function (e) {
-        if (!Slide.shown) { return; }
-        switch(e.which) {
-            case 37:
-                Slide.left();
-                break;
-            case 32:
-            case 39: // right
-                Slide.right();
-                break;
-            case 27: // esc
-                show(false);
-                break;
-            default:
-                console.log(e.which);
-        }
-    });
+    var first = Slide.first = function () {
+        console.log('first');
+        Slide.lastIndex = Slide.index;
+
+        var i = Slide.index = 0;
+        Slide.draw(i);
+    };
+
+    var last = Slide.last = function () {
+        console.log('end');
+        Slide.lastIndex = Slide.index;
+
+        var i = Slide.index = Slide.content.length - 1;
+        Slide.draw(i);
+    };
+
+    var addEvent = function () {
+        $(ifrw).on('keyup', function (e) {
+            if (!Slide.shown) { return; }
+            switch(e.which) {
+                case 33: // pageup
+                case 38: // up
+                case 37: // left
+                    Slide.left();
+                    break;
+                case 34: // pagedown
+                case 32: // space
+                case 40: // down
+                case 39: // right
+                    Slide.right();
+                    break;
+                case 36: // home
+                    Slide.first();
+                    break;
+                case 35: // end
+                    Slide.last();
+                    break;
+                case 27: // esc
+                    show(false);
+                    break;
+                default:
+                    console.log(e.which);
+            }
+        });
+    };
+
+    Slide.setModal = function ($m, $c, $p, iframe) {
+        $modal = Slide.$modal = $m;
+        $content = Slide.$content = $c;
+        $pad = Slide.$pad = $p;
+        ifrw = Slide.ifrw = iframe;
+        addEvent();
+    };
 
     return Slide;
 });

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Cryptpad: Zero Knowledge, Collaborative Real Time Editing</title>
+    <title data-localization="main_title">Cryptpad: Zero Knowledge, Collaborative Real Time Editing</title>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
-    <link rel="stylesheet" type="text/css" href="customize/main.css" />
+    <link rel="stylesheet" type="text/css" href="/customize/main.css" />
     <link rel="icon" type="image/png" href="/customize/main-favicon.png" id="favicon"/>
     <script data-main="/customize/main" src="/bower_components/requirejs/require.js"></script>
     <script src="/bower_components/requirejs/require.js"></script>
@@ -40,38 +40,41 @@
     <div id="main">
       <center>
           <img class="imgcenter cryptofist" src="/customize/cryptofist_small.png" />
-          <h1>Unity is Strength - Collaboration is Key</h1>
+          <h1 data-localization="main_slogan">Unity is Strength - Collaboration is Key</h1>
 
       </center>
-      <p>CryptPad is the <strong>zero knowledge</strong> realtime collaborative editor.  Encryption carried out in your web browser protects the data from the server, the cloud, and the NSA.  The secret encryption key is stored in the URL <a href="https://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a> which is never sent to the server but is available to javascript so by sharing the URL, you give authorization to others who want to participate.</p>
+      <p data-localization="main_p1"><!-- Zero Knowledge collaborative realtime editor. Protected from the NSA. --></p>
 
-      <p>This project uses the <a href="http://ckeditor.com/">CKEditor</a> Visual Editor, <a href="https://codemirror.net/">CodeMirror</a>, and the <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a> realtime engine.</p>
+      <p data-localization="main_p2"><!-- CkEditor, CodeMirror, Chainpad --></p>
 
-      <h2 id="howitworks">How It Works</h2>
-      <p>CryptPad uses a variant of the <a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> algorithm which is able to find distributed consensus using a Nakamoto Blockchain, a construct popularized by <a href="https://en.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. This way the algorithm can avoid the need for a central server to resolve Operational Transform Edit Conflicts and without the need for resolving conflicts, the server can be kept unaware of the content which is being edited on the pad.</p>
+      <h2 id="howitworks" data-localization="main_howitworks"></h2>
+      <p data-localization="main_howitworks_p1"><!-- Operational transform, Nakamoto blockchain, server kept unaware of the content--></p>
 
-      <h2 id="about-us">About</h2>
+      <h2 id="about-us" data-localization="main_about"></h2>
 
-      <p>You can read more about our <a href="/privacy.html" title="">privacy policy</a> and <a href="/terms.html">terms of service</a>.</p>
-      <p>If you have any questions or comments, you can <a href="https://twitter.com/cryptpad">tweet us</a>, open an issue <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">on github</a>, come say hi on irc (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), or <a href="mailto:sftfbsdiAyxjlj/dpn">send us an email</a>.</p>
+      <p data-localization="main_about_p1"><!-- Privacy policy, terms of service --></p>
+      <p data-localization="main_about_p2"><!-- Contact us--></p>
 
       <center>
         <noscript>
           <p>
-            <strong>OOPS</strong> In order to do encryption in your browser, Javascript is really
-            <strong>really</strong> required.
+            <strong>OOPS</strong> In order to do encryption in your browser, Javascript is really <strong>really</strong> required.
+          </p>
+          <hr>
+          <p>
+            <strong>OUPS</strong> Afin de pouvoir réaliser le cryptage depuis votre navigateur, Javascript est <strong>vraiment</strong> requis.
           </p>
         </noscript>
-        <h5 id="tryit">Try it out!</h5>
+        <h5 id="tryit" data-localization="tryIt"></h5>
 
         <table class="recent scroll" style="display:none">
             <tbody>
 
             <tr>
-                <th>Type</th>
-                <th>Link</th>
-                <th>Created</th>
-                <th>Last Accessed</th>
+                <th data-localization="table_type"></th>
+                <th data-localization="table_link"></th>
+                <th data-localization="table_created"></th>
+                <th data-localization="table_last"></th>
                 <th></th>
             </tr>
 
@@ -79,16 +82,15 @@
         </table>
 
         <div id="buttons" class="buttons">
-          <a id="create-pad" class="button create" href="/pad/">CREATE NEW WYSIWYG PAD</a>
-          <a id="create-code" class="button create" href="/code/">CREATE NEW CODE PAD</a>
-          <a id="create-poll" class="button create" href="/poll/">CREATE NEW POLL</a>
+          <a id="create-pad" class="button create" href="/pad/" data-localization="button_newpad"></a>
+          <a id="create-code" class="button create" href="/code/" data-localization="button_newcode"></a>
+          <a id="create-poll" class="button create" href="/poll/" data-localization="button_newpoll"></a>
+          <a id="create-slide" class="button create" href="/slide/" data-localization="button_newslide"></a>
         </div>
       </center>
 
 
     </div>
-
-    <div id="bottom-bar"></div>
 </body>
 </html>
 

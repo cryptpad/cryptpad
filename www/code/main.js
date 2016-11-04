@@ -1,7 +1,6 @@
 require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
-    '/api/config?cb=' + Math.random().toString(16).substring(2),
-    '/customize/messages.js',
+    '/customize/messages.js?app=code',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
@@ -9,14 +8,14 @@ define([
     'json.sortify',
     '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/cryptpad-common.js',
-    '/code/modes.js',
-    '/code/themes.js',
+    '/common/modes.js',
+    '/common/themes.js',
     '/common/visible.js',
     '/common/notify.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/customize/pad.js'
-], function (Config, /*RTCode,*/ Messages, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad, Modes, Themes, Visible, Notify) {
+], function (Messages, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad, Modes, Themes, Visible, Notify) {
     var $ = window.jQuery;
     var saveAs = window.saveAs;
 
@@ -24,6 +23,8 @@ define([
         Cryptpad: Cryptpad,
         spinner: Cryptpad.spinner(document.body),
     };
+
+    Cryptpad.styleAlerts();
 
     module.spinner.show();
 
@@ -33,17 +34,23 @@ define([
     };
 
     $(function () {
-        var userName = Crypto.rand64(8),
-            toolbar;
+        var toolbar;
 
         var secret = Cryptpad.getSecrets();
+        var readOnly = secret.keys && !secret.keys.editKeyStr;
+        if (!secret.keys) {
+            secret.keys = secret.key;
+        }
 
         var andThen = function (CMeditor) {
             var CodeMirror = module.CodeMirror = CMeditor;
-            CodeMirror.modeURL = "/code/codemirror-5.16.0/mode/%N/%N.js";
-
+            CodeMirror.modeURL = "/bower_components/codemirror/mode/%N/%N.js";
             var $pad = $('#pad-iframe');
             var $textarea = $pad.contents().find('#editor1');
+
+            var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
+            var parsedHash = Cryptpad.parsePadUrl(window.location.href);
+            var defaultName = Cryptpad.getDefaultName(parsedHash);
 
             var editor = module.editor = CMeditor.fromTextArea($textarea[0], {
                 lineNumbers: true,
@@ -75,7 +82,7 @@ define([
             editor.setValue(Messages.codeInitialState); // HERE
 
             var setTheme = module.setTheme = (function () {
-                var path = './theme/';
+                var path = '/common/theme/';
 
                 var $head = $(ifrw.document.head);
 
@@ -104,15 +111,26 @@ define([
             }());
 
             var setEditable = module.setEditable = function (bool) {
+                if (readOnly && bool) { return; }
                 editor.setOption('readOnly', !bool);
             };
 
-            var userList = {}; // List of pretty name of all users (mapped with their server ID)
-            var toolbarList; // List of users still connected to the channel (server IDs)
-            var addToUserList = function(data) {
-                for (var attrname in data) { userList[attrname] = data[attrname]; }
-                if(toolbarList && typeof toolbarList.onChange === "function") {
-                    toolbarList.onChange(userList);
+            var userData = module.userData = {}; // List of pretty name of all users (mapped with their server ID)
+            var userList; // List of users still connected to the channel (server IDs)
+            var addToUserData = function(data) {
+                var users = module.users;
+                for (var attrname in data) { userData[attrname] = data[attrname]; }
+
+                if (users && users.length) {
+                    for (var userKey in userData) {
+                        if (users.indexOf(userKey) === -1) {
+                            delete userData[userKey];
+                        }
+                    }
+                }
+
+                if(userList && typeof userList.onChange === "function") {
+                    userList.onChange(userData);
                 }
             };
 
@@ -127,34 +145,50 @@ define([
 
             var config = {
                 //initialState: Messages.codeInitialState,
-                userName: userName,
-                websocketURL: Config.websocketURL,
+                initialState: '{}',
+                websocketURL: Cryptpad.getWebsocketURL(),
                 channel: secret.channel,
-                //cryptKey: key,
-                crypto: Crypto.createEncryptor(secret.key),
+                // our public key
+                validateKey: secret.keys.validateKey || undefined,
+                readOnly: readOnly,
+                crypto: Crypto.createEncryptor(secret.keys),
                 setMyID: setMyID,
                 transformFunction: JsonOT.validate
             };
 
             var canonicalize = function (t) { return t.replace(/\r\n/g, '\n'); };
 
+            var isDefaultTitle = function () {
+                var parsed = Cryptpad.parsePadUrl(window.location.href);
+                return Cryptpad.isDefaultName(parsed, document.title);
+            };
+
             var initializing = true;
 
-            var onLocal = config.onLocal = function () {
-                if (initializing) { return; }
-
-                editor.save();
-                var textValue = canonicalize($textarea.val());
-                var obj = {content: textValue};
-
-                // append the userlist to the hyperjson structure
-                obj.metadata = userList;
-
+            var stringifyInner = function (textValue) {
+                var obj = {
+                    content: textValue,
+                    metadata: {
+                        users: userData,
+                        defaultTitle: defaultName
+                    }
+                };
+                obj.metadata.title = document.title;
                 // set mode too...
                 obj.highlightMode = module.highlightMode;
 
                 // stringify the json and send it into chainpad
-                var shjson = stringify(obj);
+                return stringify(obj);
+            };
+
+            var onLocal = config.onLocal = function () {
+                if (initializing) { return; }
+                if (readOnly) { return; }
+
+                editor.save();
+
+                var textValue = canonicalize($textarea.val());
+                var shjson = stringifyInner(textValue);
 
                 module.patchText(shjson);
 
@@ -164,7 +198,7 @@ define([
             };
 
             var setName = module.setName = function (newName) {
-                if (!(typeof(newName) === 'string' && newName.trim())) { return; }
+                if (typeof(newName) !== 'string') { return; }
                 var myUserNameTemp = newName.trim();
                 if(newName.trim().length > 32) {
                   myUserNameTemp = myUserNameTemp.substr(0, 32);
@@ -173,32 +207,21 @@ define([
                 myData[myID] = {
                    name: myUserName
                 };
-                addToUserList(myData);
-                Cryptpad.setPadAttribute('username', myUserName, function (err, data) {
+                addToUserData(myData);
+                Cryptpad.setAttribute('username', myUserName, function (err, data) {
                     if (err) {
                         console.log("Couldn't set username");
                         console.error(err);
                         return;
                     }
+                    module.userName.lastName = myUserName;
                     onLocal();
                 });
             };
 
             var getLastName = function (cb) {
-                Cryptpad.getPadAttribute('username', function (err, userName) {
+                Cryptpad.getAttribute('username', function (err, userName) {
                     cb(err, userName || '');
-                });
-            };
-
-            var createChangeName = function(id, $container) {
-                var buttonElmt = $container.find('#'+id)[0];
-
-                getLastName(function (err, lastName) {
-                    buttonElmt.addEventListener("click", function() {
-                        Cryptpad.prompt(Messages.changeNamePrompt, lastName, function (newName) {
-                            setName(newName);
-                        });
-                    });
                 });
             };
 
@@ -227,10 +250,10 @@ define([
                     }
 
                     // lines including a c-style comment are also valuable
-                    var clike = /^\s*(\/\*|\/\/)(.*?)(\*\/)$/;
+                    var clike = /^\s*(\/\*|\/\/)(.*)?(\*\/)*$/;
                     if (clike.test(line)) {
                         line.replace(clike, function (a, one, two) {
-                            text = two;
+                            text = two.replace(/\*\/\s*$/, '').trim();
                         });
                         return true;
                     }
@@ -240,12 +263,10 @@ define([
             };
 
             var suggestName = function () {
-                var hash = window.location.hash.slice(1, 9);
-
-                if (document.title === hash) {
-                    return getHeadingText() || hash;
+                if (document.title === defaultName) {
+                    return getHeadingText() || "";
                 } else {
-                    return document.title || getHeadingText() || hash;
+                    return document.title || getHeadingText() || defaultName;
                 }
             };
 
@@ -264,122 +285,149 @@ define([
                         saveAs(blob, filename);
                     });
             };
-
-            var onInit = config.onInit = function (info) {
+            var importText = function (content, file) {
                 var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
-                toolbarList = info.userList;
+                var mode;
+                var mime = CodeMirror.findModeByMIME(file.type);
+
+                if (!mime) {
+                    var ext = /.+\.([^.]+)$/.exec(file.name);
+                    if (ext[1]) {
+                        mode = CodeMirror.findModeByExtension(ext[1]);
+                    }
+                } else {
+                    mode = mime && mime.mode || null;
+                }
+
+                if (mode && Modes.list.some(function (o) { return o.mode === mode; })) {
+                    setMode(mode);
+                    $bar.find('#language-mode').val(mode);
+                } else {
+                    console.log("Couldn't find a suitable highlighting mode: %s", mode);
+                    setMode('text');
+                    $bar.find('#language-mode').val('text');
+                }
+
+                editor.setValue(content);
+                onLocal();
+            };
+
+            var renameCb = function (err, title) {
+                if (err) { return; }
+                document.title = title;
+                onLocal();
+            };
+
+            var updateTitle = function (newTitle) {
+                if (newTitle === document.title) { return; }
+                // Change the title now, and set it back to the old value if there is an error
+                var oldTitle = document.title;
+                document.title = newTitle;
+                Cryptpad.renamePad(newTitle, function (err, data) {
+                    if (err) {
+                        console.log("Couldn't set pad title");
+                        console.error(err);
+                        document.title = oldTitle;
+                        return;
+                    }
+                    document.title = data;
+                    $bar.find('.' + Toolbar.constants.title).find('span.title').text(data);
+                    $bar.find('.' + Toolbar.constants.title).find('input').val(data);
+                });
+            };
+
+            var updateDefaultTitle = function (defaultTitle) {
+                defaultName = defaultTitle;
+                $bar.find('.' + Toolbar.constants.title).find('input').attr("placeholder", defaultName);
+            };
+
+            var updateMetadata = function(shjson) {
+                // Extract the user list (metadata) from the hyperjson
+                var json = (shjson === "") ? "" : JSON.parse(shjson);
+                if (json && json.metadata) {
+                    if (json.metadata.users) {
+                        var userData = json.metadata.users;
+                        // Update the local user data
+                        addToUserData(userData);
+                    }
+                    if (json.metadata.defaultTitle) {
+                        updateDefaultTitle(json.metadata.defaultTitle);
+                    }
+                    if (typeof json.metadata.title !== "undefined") {
+                        updateTitle(json.metadata.title);
+                    }
+                }
+            };
+
+             var onInit = config.onInit = function (info) {
+                userList = info.userList;
                 var config = {
-                    userData: userList,
-                    changeNameID: Toolbar.constants.changeName,
+                    userData: userData,
+                    readOnly: readOnly,
+                    ifrw: ifrw,
+                    title: {
+                        onRename: renameCb,
+                        defaultName: defaultName,
+                        suggestName: suggestName
+                    },
+                    common: Cryptpad
                 };
-                toolbar = module.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, config);
-                createChangeName(Toolbar.constants.changeName, $bar);
+                if (readOnly) {delete config.changeNameID; }
+                toolbar = module.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, userList, config);
 
                 var $rightside = $bar.find('.' + Toolbar.constants.rightside);
+                var $userBlock = $bar.find('.' + Toolbar.constants.username);
+                var $editShare = $bar.find('.' + Toolbar.constants.editShare);
+                var $viewShare = $bar.find('.' + Toolbar.constants.viewShare);
+
+                var editHash;
+                var viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
+
+                if (!readOnly) {
+                    editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+                }
+
+                // Store the object sent for the "change username" button so that we can update the field value correctly
+                var userNameButtonObject = module.userName = {};
+                /* add a "change username" button */
+                getLastName(function (err, lastName) {
+                    userNameButtonObject.lastName = lastName;
+                    var $username = module.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName).hide();
+                    $userBlock.append($username);
+                });
 
                 /* add an export button */
-                var $export = $('<button>', {
-                    title: Messages.exportButtonTitle,
-                })
-                    .text(Messages.exportButton)
-                    .addClass('rightside-button')
-                    .click(exportText);
+                var $export = Cryptpad.createButton('export', true, {}, exportText);
                 $rightside.append($export);
 
-                /* add an import button */
-                var $import = $('<button>',{
-                    title: Messages.importButtonTitle
-                })
-                    .text(Messages.importButton)
-                    .addClass('rightside-button')
-                    .click(Cryptpad.importContent('text/plain', function (content, file) {
-                        var mode;
-                        var mime = CodeMirror.findModeByMIME(file.type);
+                if (!readOnly) {
+                    /* add an import button */
+                    var $import = Cryptpad.createButton('import', true, {}, importText);
+                    $rightside.append($import);
 
-                        if (!mime) {
-                            var ext = /.+\.([^.]+)$/.exec(file.name);
-                            if (ext[1]) {
-                                mode = CodeMirror.findModeByExtension(ext[1]);
-                            }
-                        } else {
-                            mode = mime && mime.mode || null;
-                        }
-
-                        if (mode && Modes.list.some(function (o) { return o.mode === mode; })) {
-                            setMode(mode);
-                            $bar.find('#language-mode').val(mode);
-                        } else {
-                            console.log("Couldn't find a suitable highlighting mode: %s", mode);
-                            setMode('text');
-                            $bar.find('#language-mode').val('text');
-                        }
-
-                        editor.setValue(content);
-                        onLocal();
-                    }));
-                $rightside.append($import);
-
-                /* add a rename button */
-                var $setTitle = $('<button>', {
-                        id: 'name-pad',
-                        title: Messages.renameButtonTitle,
-                    })
-                    .addClass('rightside-button')
-                    .text(Messages.renameButton)
-                    .click(function () {
-                        var suggestion = suggestName();
-
-                        Cryptpad.prompt(Messages.renamePrompt,
-                            suggestion, function (title, ev) {
-                                if (title === null) { return; }
-
-                                Cryptpad.causesNamingConflict(title, function (err, conflicts) {
-                                    if (err) {
-                                        console.log("Unable to determine if name caused a conflict");
-                                        console.error(err);
-                                        return;
-                                    }
-
-                                    if (conflicts) {
-                                        Cryptpad.alert(Messages.renameConflict);
-                                        return;
-                                    }
-
-                                    Cryptpad.setPadTitle(title, function (err, data) {
-                                        if (err) {
-                                            console.log("unable to set pad title");
-                                            console.log(err);
-                                            return;
-                                        }
-                                        document.title = title;
-                                    });
-                                });
-                            });
-                    });
-                $rightside.append($setTitle);
+                    /* add a rename button */
+                    //var $setTitle = Cryptpad.createButton('rename', true, {suggestName: suggestName}, renameCb);
+                    //$rightside.append($setTitle);
+                }
 
                 /* add a forget button */
-                var $forgetPad = $('<button>', {
-                        id: 'cryptpad-forget',
-                        title: Messages.forgetButtonTitle,
-                    })
-                    .text(Messages.forgetButton)
-                    .addClass('cryptpad-forget rightside-button')
-                    .click(function () {
-                        var href = window.location.href;
-                        Cryptpad.confirm(Messages.forgetPrompt, function (yes) {
-                            if (!yes) { return; }
-                            Cryptpad.forgetPad(href, function (err, data) {
-                                if (err) {
-                                    console.log("unable to forget pad");
-                                    console.error(err);
-                                    return;
-                                }
-                                document.title = window.location.hash.slice(1,9);
-                            });
-                        });
-                    });
+                var forgetCb = function (err, title) {
+                    if (err) { return; }
+                    document.title = title;
+                };
+                var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
                 $rightside.append($forgetPad);
+
+                if (!readOnly) {
+                    $editShare.append(Cryptpad.createButton('editshare', false, {editHash: editHash}));
+                }
+                if (viewHash) {
+                    /* add a 'links' button */
+                    $viewShare.append(Cryptpad.createButton('viewshare', false, {viewHash: viewHash}));
+                    if (!readOnly) {
+                        $viewShare.append(Cryptpad.createButton('viewopen', false, {viewHash: viewHash}));
+                    }
+                }
 
                 var configureLanguage = function (cb) {
                     // FIXME this is async so make it happen as early as possible
@@ -388,6 +436,7 @@ define([
                     var $language = module.$language = $('<select>', {
                         title: 'syntax highlighting',
                         id: 'language-mode',
+                        'class': 'rightside-element'
                     }).on('change', function () {
                         setMode($language.val());
                         onLocal();
@@ -412,6 +461,7 @@ define([
                     var $themeDropdown = $('<select>', {
                         title: 'color theme',
                         id: 'display-theme',
+                        'class': 'rightside-element'
                     });
                     Themes.forEach(function (o) {
                         $themeDropdown.append($('<option>', {
@@ -435,36 +485,28 @@ define([
                     });
                 };
 
-                configureLanguage(function () {
+                if (!readOnly) {
+                    configureLanguage(function () {
+                        configureTheme();
+                    });
+                }
+                else {
                     configureTheme();
-                });
+                }
 
-                window.location.hash = info.channel + secret.key;
+                // set the hash
+                if (!readOnly) {
+                    window.location.hash = editHash;
+                }
+
                 Cryptpad.getPadTitle(function (err, title) {
                     if (err) {
                         console.log("Unable to get pad title");
                         console.error(err);
                         return;
                     }
-                    document.title = title || window.location.hash.slice(1,9);
-                    Cryptpad.rememberPad(title, function (err, data) {
-                        if (err) {
-                            console.log("Unable to set pad title");
-                            console.error(err);
-                            return;
-                        }
-                    });
+                    updateTitle(title || defaultName);
                 });
-            };
-
-            var updateUserList = function(shjson) {
-                // Extract the user list (metadata) from the hyperjson
-                var hjson = (shjson === "") ? "" : JSON.parse(shjson);
-                if(hjson && hjson.metadata) {
-                  var userData = hjson.metadata;
-                  // Update the local user data
-                  addToUserList(userData);
-                }
             };
 
             var unnotify = module.unnotify = function () {
@@ -477,12 +519,13 @@ define([
             var notify = module.notify = function () {
                 if (Visible.isSupported() && !Visible.currently()) {
                     unnotify();
-                    module.tabNotification = Notify.tab(document.title, 1000, 10);
+                    module.tabNotification = Notify.tab(1000, 10);
                 }
             };
 
             var onReady = config.onReady = function (info) {
                 var realtime = module.realtime = info.realtime;
+                module.users = info.userList.users;
                 module.patchText = TextPatcher.create({
                     realtime: realtime,
                     //logging: true
@@ -506,7 +549,7 @@ define([
                 }
 
                 // Update the user list (metadata) from the hyperjson
-                //updateUserList(shjson);
+                updateMetadata(userDoc);
 
                 editor.setValue(newDoc || Messages.codeInitialState);
 
@@ -521,14 +564,25 @@ define([
                 initializing = false;
                 //Cryptpad.log("Your document is ready");
 
+                onLocal(); // push local state to avoid parse errors later.
                 getLastName(function (err, lastName) {
                     if (err) {
                         console.log("Could not get previous name");
                         console.error(err);
                         return;
                     }
+                    // Update the toolbar list:
+                    // Add the current user in the metadata if he has edit rights
+                    if (readOnly) { return; }
                     if (typeof(lastName) === 'string' && lastName.length) {
                         setName(lastName);
+                    } else {
+                        myData[myID] = {
+                            name: ""
+                        };
+                        addToUserData(myData);
+                        onLocal();
+                        module.$userNameButton.click();
                     }
                 });
             };
@@ -568,7 +622,7 @@ define([
                 var shjson = module.realtime.getUserDoc();
 
                 // Update the user list (metadata) from the hyperjson
-                updateUserList(shjson);
+                updateMetadata(shjson);
 
                 var hjson = JSON.parse(shjson);
                 var remoteDoc = hjson.content;
@@ -600,17 +654,14 @@ define([
 
                 editor.scrollTo(scroll.left, scroll.top);
 
-                var localDoc = canonicalize($textarea.val());
-                var hjson2 = {
-                  content: localDoc,
-                  metadata: userList,
-                  highlightMode: highlightMode,
-                };
-                var shjson2 = stringify(hjson2);
-                if (shjson2 !== shjson) {
-                    console.error("shjson2 !== shjson");
-                    TextPatcher.log(shjson, TextPatcher.diff(shjson, shjson2));
-                    module.patchText(shjson2);
+                if (!readOnly) {
+                    var textValue = canonicalize($textarea.val());
+                    var shjson2 = stringifyInner(textValue);
+                    if (shjson2 !== shjson) {
+                        console.error("shjson2 !== shjson");
+                        TextPatcher.log(shjson, TextPatcher.diff(shjson, shjson2));
+                        module.patchText(shjson2);
+                    }
                 }
 
                 notify();
@@ -619,10 +670,22 @@ define([
             var onAbort = config.onAbort = function (info) {
                 // inform of network disconnect
                 setEditable(false);
+                toolbar.failed();
                 Cryptpad.alert(Messages.disconnectAlert);
             };
 
-            Cryptpad.styleAlerts();
+            var onConnectionChange = config.onConnectionChange = function (info) {
+                setEditable(info.state);
+                toolbar.failed();
+                if (info.state) {
+                    initializing = true;
+                    toolbar.reconnecting(info.myId);
+                    Cryptpad.findOKButton().click();
+                } else {
+                    Cryptpad.alert(Messages.disconnectAlert);
+                }
+            };
+
             var realtime = module.realtime = Realtime.start(config);
 
             editor.on('change', onLocal);

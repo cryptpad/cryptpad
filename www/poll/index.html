@@ -3,7 +3,7 @@
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Zero Knowledge Date Picker</title>
+    <title data-localization="poll_title">Zero Knowledge Date Picker</title>
     <link rel="icon" type="image/png"
         href="/customize/main-favicon.png"
         data-main-favicon="/customize/main-favicon.png"
@@ -19,9 +19,10 @@
     <style>
         html, body {
             width: 100;
+            margin-top: 1.25em;
+            height: auto;
         }
         #main {
-            width: 90%;
             margin: auto;
         }
         .clickable {
@@ -38,13 +39,12 @@
 <div id="main">
 
 <div id="toolbar" class="buttons">
-    <sub><a href="/"></a></sub>
 </div>
-<h1>CryptPoll</h1>
-<h2>Zero Knowledge, <em>realtime</em> scheduling</h2>
+<h1 id="mainTitle">CryptPoll</h1>
+<h2 data-localization="poll_subtitle"></h2>
 
-<p>Your settings are updated instantly, so you never need to save.</p>
-<p>All your input is encrypted so only people who have the link can access it. Even the server cannot see what you change.</p>
+<p data-localization="poll_p_save"></p>
+<p data-localization="poll_p_encryption"></p>
 
 <hr>
 <br>
@@ -53,7 +53,7 @@
     <input type="text" id="title" placeholder="title"><br />
     <textarea id="description" placeholder="description"></textarea>
 
-    <p>Enter your name in the input field below and check the box for times when you are available</p>
+    <p id="howToUse" data-localization="poll_p_howtouse"></p>
 
     <!-- Table markup-->
     <table id="table">
@@ -62,7 +62,7 @@
             <thead>
                 <tr>
                     <td>
-                        <div id="adduser" class="clickable" title="click to add a user">+ Users</div>
+                        <div id="adduser" class="clickable" data-localization="poll_addUserButton" data-localization-title="poll_addUserButtonTitle"></div>
                     </td>
                 </tr>
             </thead>
@@ -70,7 +70,7 @@
             <tfoot>
                 <tr>
                     <td>
-                        <div id="addoption" class="clickable" title="click to add an option">+ Options</div>
+                        <div id="addoption" class="clickable" data-localization="poll_addOptionButton" data-localization-title="poll_addOptionButtonTitle"></div>
                     </td>
                 </tr>
             </tfoot>
@@ -82,28 +82,28 @@
 
 
 <div class="modal" id="wizard-modal">
-    <button id="close-wizard" class="button action" title="close wizard">Close wizard</button>
+    <button id="close-wizard" class="button action" data-localization="poll_closeWizardButton" data-localization-title="poll_closeWizardButtonTitle"></button>
     <div class="center">
         <div id="modal-toolbar">
-            <button id="get-options" class="action button">Compute Options</button>
-            <button id="clear-table" class="action button">Clear Table</button>
+            <button id="get-options" class="action button" data-localization="poll_wizardComputeButton"></button>
+            <button id="clear-table" class="action button" data-localization="poll_wizardClearButton"></button>
 
         </div>
 
-        <h2>Automatically create a number of options by entering any number of dates and times segments </h2>
+        <h2 data-localization="poll_wizardDescription"></h2>
 
         <table id="wizard-table">
             <thead>
                 <tr>
                     <td>
-                        <div id="adddate" class="clickable">+ Dates</div>
+                        <div id="adddate" class="clickable" data-localization="poll_wizardAddDateButton"></div>
                     </td>
                 </tr>
             </thead>
             <tfoot>
                 <tr>
                     <td>
-                        <div id="addtime" class="clickable">+ Times</div>
+                        <div id="addtime" class="clickable" data-localization="poll_wizardAddTimeButton"></div>
                     </td>
                 </tr>
             </tfoot>
