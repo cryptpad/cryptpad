@@ -846,7 +846,7 @@ define([
 
         // shortcircuiting before all of this code since it's not quite the
         // behaviour we want, and it's a bit of work to make it Do The Right Thing
-
+/*
         if (First) {
             // assume the first user to the poll wants to be the administrator...
             // TODO prompt them with questions to set up their poll...
@@ -888,7 +888,7 @@ define([
 
             // column might be defined, but that column might have been deleted...
             if (proxy.table.colsOrder.indexOf(column) === -1) { return void promptForName(); }
-        });
+        });*/
     };
 
     var config = {
