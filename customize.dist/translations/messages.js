@@ -1,6 +1,8 @@
 define(function () {
     var out = {};
 
+    // translations must set this key for their language to be available in
+    // the language dropdowns that are shown throughout Cryptpad's interface
     out._languageName = 'English';
 
     out.main_title = "Cryptpad: Zero Knowledge, Collaborative Real Time Editing";
