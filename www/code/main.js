@@ -253,6 +253,7 @@ define([
                     var clike = /^\s*(\/\*|\/\/)(.*)?(\*\/)*$/;
                     if (clike.test(line)) {
                         line.replace(clike, function (a, one, two) {
+                            if (!two) { return; }
                             text = two.replace(/\*\/\s*$/, '').trim();
                         });
                         return true;
