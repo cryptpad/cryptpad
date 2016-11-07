@@ -321,9 +321,9 @@ define([
                 })) { return text; }
             };
 
-            var suggestName = function () {
+            var suggestName = function (fallback) {
                 if (document.title === defaultName) {
-                    return getHeadingText() || "";
+                    return getHeadingText() || fallback || "";
                 } else {
                     return document.title || getHeadingText() || defaultName;
                 }
@@ -510,7 +510,7 @@ define([
 
             var exportFile = function () {
                 var html = getHTML();
-                var suggestion = suggestName();
+                var suggestion = suggestName('cryptpad-document');
                 Cryptpad.prompt(Messages.exportPrompt,
                     Cryptpad.fixFileName(suggestion) + '.html', function (filename) {
                     if (!(typeof(filename) === 'string' && filename)) { return; }
