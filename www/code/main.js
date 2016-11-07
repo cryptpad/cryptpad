@@ -253,19 +253,21 @@ define([
                     var clike = /^\s*(\/\*|\/\/)(.*)?(\*\/)*$/;
                     if (clike.test(line)) {
                         line.replace(clike, function (a, one, two) {
-                            if (!two && two.replace) { return; }
+                            if (!(two && two.replace)) { return; }
                             text = two.replace(/\*\/\s*$/, '').trim();
                         });
                         return true;
                     }
+
+                    // TODO make one more pass for multiline comments
                 });
 
                 return text.trim();
             };
 
-            var suggestName = function () {
+            var suggestName = function (fallback) {
                 if (document.title === defaultName) {
-                    return getHeadingText() || "";
+                    return getHeadingText() || fallback || "";
                 } else {
                     return document.title || getHeadingText() || defaultName;
                 }
@@ -276,7 +278,7 @@ define([
 
                 var ext = Modes.extensionOf(module.highlightMode);
 
-                var title = Cryptpad.fixFileName(suggestName()) + ext;
+                var title = Cryptpad.fixFileName(suggestName('cryptpad')) + (ext || '.txt');
 
                 Cryptpad.prompt(Messages.exportPrompt, title, function (filename) {
                         if (filename === null) { return; }
