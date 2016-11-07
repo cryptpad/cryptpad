@@ -225,9 +225,9 @@ define([
         return secret;
     };
 
-    var setHash = common.setHash = function (hash) {
-        if (!/^#/.test(hash)) { hash = '#' + hash; }
+    var replaceHash = common.replaceHash = function (hash) {
         if (window.history && window.history.replaceState) {
+            if (!/^#/.test(hash)) { hash = '#' + hash; }
             return void window.history.replaceState({}, window.document.title, hash);
         }
         window.location.hash = hash;

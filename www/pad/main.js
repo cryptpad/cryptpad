@@ -601,7 +601,7 @@ define([
                 }
 
                 // set the hash
-                if (!readOnly) { Cryptpad.setHash(editHash); }
+                if (!readOnly) { Cryptpad.replaceHash(editHash); }
 
                 Cryptpad.getPadTitle(function (err, title) {
                     if (err) {
