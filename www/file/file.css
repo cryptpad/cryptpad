@@ -1,0 +1,163 @@
+/* PAGE */
+
+html, body {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    position: relative;
+}
+
+.fa {
+    width: 17px;
+    font-family: FontAwesome;
+}
+
+ul {
+    list-style: none;
+    padding-left: 10px;
+}
+
+li {
+    padding: 0px 5px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+li > span.element:hover {
+    text-decoration: underline;
+}
+
+.folder, .file {
+    margin-right: 5px;
+}
+
+.contextMenu {
+    display: none;
+    position: absolute;
+}
+
+.droppable {
+    background-color: #FE9A2E;
+    color: #222;
+}
+
+.selected {
+    border: 1px dotted #bbb;
+    background: #666;
+    color: #eee;
+}
+
+/* TREE */
+
+#tree {
+    position:absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 70%;
+    border: 2px solid blue;
+    box-sizing: border-box;
+    background: white;
+}
+
+#tree li {
+    cursor: auto;
+}
+
+#tree span.element {
+    cursor: pointer;
+}
+
+#tree .active {
+    text-decoration: underline;
+}
+
+#tree #trashTree {
+    margin-top: 2em;
+}
+
+#tree .fa.expcol {
+    margin-left: -10px;
+}
+
+#tree .non-collapsable {
+    padding-left: 12px;
+}
+
+/* Tree lines */
+
+#tree ul {
+    margin: 0px 0px 0px 10px;
+    list-style: none;
+}
+#tree ul li {
+    position: relative;
+}
+#tree ul li:before {
+    position: absolute;
+    left: -15px;
+    top: 0px;
+    content: '';
+    display: block;
+    border-left: 1px solid #ddd;
+    height: 0.75em;
+    border-bottom: 1px solid #ddd;
+    width: 10px;
+}
+#tree ul li.non-collapsable:before {
+    width: 27px;
+}
+#tree ul li:after {
+    position: absolute;
+    left: -15px;
+    bottom: -7px;
+    content: '';
+    display: block;
+    border-left: 1px solid #ddd;
+    height: 100%;
+}
+#tree ul li.root {
+    margin: 0px 0px 0px -10px;
+}
+#tree ul li.root:before {
+    display: none;
+}
+#tree ul li.root:after {
+    display: none;
+}
+#tree ul li:last-child:after {
+    display: none;
+}
+
+
+/* CONTENT */
+
+#content {
+    position: absolute;
+    top: 0;
+    left: 30%;
+    bottom: 0;
+    right: 0;
+    border: 2px solid green;
+    box-sizing: border-box;
+    background: #eee;
+}
+
+.parentFolder {
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.parentFolder:hover {
+    text-decoration: underline;
+}
+
+#folderContent {
+    display: inline-block;
+}
+

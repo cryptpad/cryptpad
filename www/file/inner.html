@@ -12,11 +12,22 @@
     </div>
     <div id="content">
     </div>
-    <div id="contextMenu" class="dropdown clearfix">
+    <div id="contextMenu" class="contextMenu dropdown clearfix" oncontextmenu="return false;">
         <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
             <li><a tabindex="-1" href="#" class="open">Open</a></li>
             <li><a tabindex="-1" href="#" class="rename">Rename</a></li>
             <li><a tabindex="-1" href="#" class="delete">Delete</a></li>
+        </ul>
+    </div>
+    <div id="trashTreeContextMenu" class="contextMenu dropdown clearfix" oncontextmenu="return false;">
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
+            <li><a tabindex="-1" href="#" class="empty">Empty the trash</a></li>
+        </ul>
+    </div>
+    <div id="trashContextMenu" class="contextMenu dropdown clearfix" oncontextmenu="return false;">
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
+            <li><a tabindex="-1" href="#" class="remove">Delete permanently</a></li>
+            <li><a tabindex="-1" href="#" class="restore">Restore</a></li>
         </ul>
     </div>
 </body>
