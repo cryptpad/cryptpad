@@ -4,7 +4,7 @@ define(function() {
     /* Select the buttons displayed on the main page to create new collaborative sessions
      * Existing types : pad, code, poll, slide
      */
-    config.availablePadTypes = ['pad', 'code', 'poll', 'slide'];
+    config.availablePadTypes = ['pad', 'code', 'slide', 'poll'];
 
     return config;
 });
