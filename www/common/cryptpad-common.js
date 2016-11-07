@@ -225,6 +225,14 @@ define([
         return secret;
     };
 
+    var setHash = common.setHash = function (hash) {
+        if (!/^#/.test(hash)) { hash = '#' + hash; }
+        if (window.history && window.history.replaceState) {
+            return void window.history.replaceState({}, window.document.title, hash);
+        }
+        window.location.hash = hash;
+    };
+
     var storageKey = common.storageKey = 'CryptPad_RECENTPADS';
 
     /*

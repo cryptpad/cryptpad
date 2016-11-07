@@ -914,9 +914,7 @@ define([
                 editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
             }
             // set the hash
-            if (!readOnly) {
-                window.location.hash = editHash;
-            }
+            if (!readOnly) { Cryptpad.setHash(editHash); }
 
             module.patchText = TextPatcher.create({
                 realtime: realtime,
