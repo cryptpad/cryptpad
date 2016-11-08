@@ -27,19 +27,122 @@ define([
     var saveAs = window.saveAs;
     var $iframe = $('#pad-iframe').contents();
     var ifrw = $('#pad-iframe')[0].contentWindow;
+
+    var ROOT = "root";
+    var ROOT_NAME = "My files";
+    var FILES_DATA = "filesData";
+    var FILES_DATA_NAME = "Unsorted files";
+    var TRASH = "trash";
+    var TRASH_NAME = "Trash";
+    var TIME_BEFORE_RENAME = 1000;
+    var LOCALSTORAGE_LAST = "cryptpad-file-lastOpened";
+    var LOCALSTORAGE_OPENED = "cryptpad-file-openedFolders";
+    var LOCALSTORAGE_VIEWMODE = "cryptpad-file-viewMode";
+    var FOLDER_CONTENT_ID = "folderContent";
+
     var files = module.files = {
         root: {
             "Directory 1": {
                 "Dir A": {
+                    "Dir D": {
+                        "Dir E": {},
+                    },
                     "File a": "#hash_a",
-                    "File b": "#hash_b"
+                    "File b": "#hash_b",
+                    "File c": "#hash_c",
+                    "File d": "#hash_d",
+                    "File e": "#hash_e",
+                    "File f": "#hash_f",
+                    "File g": "#hash_g",
+                    "File h": "#hash_h",
+                    "File i": "#hash_i",
+                    "File j": "#hash_j",
+                    "File k": "#hash_k"
                 },
+                "Dir C": {},
                 "Dir B": {},
                 "File A": "#hash_A"
             },
             "Directory 2": {
                 "File B": "#hash_B",
                 "File C": "#hash_C"
+            }
+        },
+        filesData: {
+            "#hash_a": {
+                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
+                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
+                title: "Pad A"
+            },
+            "#hash_b": {
+                ctime: "Mon Nov 07 2016 16:38:21 GMT+0100 (CET)",
+                atime: "Tue Nov 08 2016 12:38:21 GMT+0100 (CET)",
+                title: "Pad B"
+            },
+            "#hash_c": {
+                ctime: "Tue Nov 08 2016 16:34:21 GMT+0100 (CET)",
+                atime: "Sun Nov 06 2016 12:34:21 GMT+0100 (CET)",
+                title: "Pad C With A Long Title"
+            },
+            "#hash_d": {
+                ctime: "Tue Nov 08 2016 16:30:21 GMT+0100 (CET)",
+                atime: "Tue Nov 08 2016 12:30:21 GMT+0100 (CET)",
+                title: "Pad D"
+            },
+            "#hash_e": {
+                ctime: "Tue Nov 08 2016 16:26:21 GMT+0100 (CET)",
+                atime: "Tue Nov 08 2016 12:26:21 GMT+0100 (CET)",
+                title: "Pad E"
+            },
+            "#hash_f": {
+                ctime: "Tue Nov 08 2016 16:22:21 GMT+0100 (CET)",
+                atime: "Tue Nov 08 2016 12:22:21 GMT+0100 (CET)",
+                title: "Pad F"
+            },
+            "#hash_g": {
+                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
+                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
+                title: "Pad A"
+            },
+            "#hash_h": {
+                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
+                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
+                title: "Pad A"
+            },
+            "#hash_i": {
+                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
+                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
+                title: "Pad A"
+            },
+            "#hash_j": {
+                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
+                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
+                title: "Pad A"
+            },
+            "#hash_k": {
+                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
+                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
+                title: "Pad A"
+            },
+            "#hash_Z": {
+                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
+                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
+                title: "Code Z"
+            },
+            "#hash_A": {
+                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
+                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
+                title: "Code A"
+            },
+            "#hash_B": {
+                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
+                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
+                title: "Code B"
+            },
+            "#hash_C": {
+                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
+                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
+                title: "Code C"
             }
         },
         trash: {
@@ -49,15 +152,78 @@ define([
             }]
         }
     };
+    module.defaultFiles = JSON.parse(JSON.stringify(files));
     // TODO translate
     // TODO translate contextmenu in inner.html
-    var ROOT = "root";
-    var ROOT_NAME = "My files";
-    var TRASH = "trash";
-    var TRASH_NAME = "Trash";
-    var TIME_BEFORE_RENAME = 1000;
+    var getLastOpenedFolder = function () {
+        var path;
+        try {
+            path = localStorage[LOCALSTORAGE_LAST] ? JSON.parse(localStorage[LOCALSTORAGE_LAST]) : [ROOT];
+        } catch (e) {
+            path = [ROOT];
+        }
+        return path;
+    };
+    var setLastOpenedFolder = function (path) {
+        localStorage[LOCALSTORAGE_LAST] = JSON.stringify(path);
+    };
 
-    var currentPath = module.currentPath = [ROOT];
+    var initLSOpened = function () {
+        try {
+            var store = JSON.parse(localStorage[LOCALSTORAGE_OPENED]);
+            if (!$.isArray(store)) {
+                localStorage[LOCALSTORAGE_OPENED] = '[]';
+            }
+        } catch (e) {
+            localStorage[LOCALSTORAGE_OPENED] = '[]';
+        }
+    };
+    initLSOpened();
+
+    var wasFolderOpened = function (path) {
+        var store = JSON.parse(localStorage[LOCALSTORAGE_OPENED]);
+        return store.indexOf(JSON.stringify(path)) !== -1;
+    };
+    var setFolderOpened = function (path, opened) {
+        var s = JSON.stringify(path);
+        var store = JSON.parse(localStorage[LOCALSTORAGE_OPENED]);
+        if (opened && store.indexOf(s) === -1) {
+            store.push(s);
+        }
+        if (!opened) {
+            var idx = store.indexOf(s);
+            if (idx !== -1) {
+                store.splice(idx, 1);
+            }
+        }
+        localStorage[LOCALSTORAGE_OPENED] = JSON.stringify(store);
+    };
+
+    var getViewModeClass = function () {
+        var mode = localStorage[LOCALSTORAGE_VIEWMODE];
+        if (mode === 'list') { return 'list'; }
+        return 'grid';
+    };
+    var getViewMode = function () {
+        return localStorage[LOCALSTORAGE_VIEWMODE] || 'grid';
+    };
+    var setViewMode = function (mode) {
+        if (typeof(mode) !== "string") {
+            console.error("Incorrect view mode: ", mode);
+            return;
+        }
+        localStorage[LOCALSTORAGE_VIEWMODE] = mode;
+    };
+
+
+    var DEBUG = window.DEBUG = {
+        resetLocalStorage : function () {
+            delete localStorage[LOCALSTORAGE_OPENED];
+            delete localStorage[LOCALSTORAGE_LAST];
+        }
+    };
+
+    var currentPath = module.currentPath = getLastOpenedFolder();
     var lastSelectTime;
     var selectedElement;
 
@@ -76,6 +242,8 @@ define([
     var $trashEmptyIcon = $('<span>', {"class": "fa fa-trash-o"});
     var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o expcol"});
     var $expandIcon = $('<span>', {"class": "fa fa-plus-square-o expcol"});
+    var $listIcon = $('<span>', {"class": "fa fa-list"});
+    var $gridIcon = $('<span>', {"class": "fa fa-th"});
 
     var removeSelected =  function () {
         $iframe.find('.selected').removeClass("selected");
@@ -107,6 +275,63 @@ define([
 
     var isFolder = function (element) {
         return typeof(element) !== "string";
+    };
+
+    var isFolderEmpty = function (element) {
+        if (typeof(element) !== "object") { return false; }
+        return Object.keys(element).length === 0;
+    };
+
+    var hasSubfolder = function (element) {
+        if (typeof(element) !== "object") { return false; }
+        var subfolder = false;
+        for (var f in element) {
+            subfolder = isFolder(element[f]);
+            if (subfolder) { break; }
+        }
+        return subfolder;
+    };
+
+    var isSubpath = function (path, parentPath) {
+        var pathA = parentPath.slice();
+        var pathB = path.slice(0, pathA.length);
+        return comparePath(pathA, pathB);
+    };
+
+    var getAvailableName = function (parentEl, name) {
+        if (typeof(parentEl[name]) === "undefined") { return name; }
+        var newName = name;
+        var i = 1;
+        while (typeof(parentEl[newName]) !== "undefined") {
+            newName = name + "_" + i;
+            i++;
+        }
+        return newName;
+    };
+
+    var compareDays = function (date1, date2) {
+        var day1 = Date.UTC(date1.getFullYear(), date1.getMonth(), date1.getDate());
+        var day2 = Date.UTC(date2.getFullYear(), date2.getMonth(), date2.getDate());
+        var ms = Math.abs(day1-day2);
+        return Math.floor(ms/1000/60/60/24);
+    };
+
+    var getDate = function (sDate) {
+        var ret = sDate.toString();
+        try {
+            var date = new Date(sDate);
+            var today = new Date();
+            var diff = compareDays(date, today);
+            if (diff === 0) {
+                ret = date.toLocaleTimeString();
+            } else {
+                ret = date.toLocaleDateString();
+            }
+        } catch (e) {
+            // TODO
+            console.error("Unable to display that string to a date with .toLocaleString", sDate, e);
+        }
+        return ret;
     };
 
     // Find an element in a object following a path, resursively
@@ -148,7 +373,8 @@ define([
         } else {
             parentPath = elementPath.slice();
             name = parentPath.pop();
-            newName = name;
+            // Automatically rename if we were in the trash since we can't rename from the trash
+            newName = elementPath[0] === TRASH ? getAvailableName(newParent, name) : name;
         }
         var parentEl = findElement(files, parentPath);
 
@@ -159,7 +385,7 @@ define([
         }
         newParent[newName] = element;
         delete parentEl[name];
-        displayDirectory(newParentPath);
+        module.displayDirectory(newParentPath);
     };
 
     // Move to trash
@@ -184,26 +410,15 @@ define([
             trashArray.push(trashElement);
             delete parentEl[name];
             if (displayTrash) {
-                displayDirectory([TRASH]);
+                module.displayDirectory([TRASH]);
             } else {
-                displayDirectory(currentPath);
+                module.displayDirectory(currentPath);
             }
         };
         Cryptpad.confirm("Are you sure you want to move " + name + " to the trash?", function(res) {
             if (!res) { return; }
             andThen();
         });
-    };
-
-    var getAvailableName = function (parentEl, name) {
-        if (typeof(parentEl[name]) === "undefined") { return name; }
-        var newName = name;
-        var i = 1;
-        while (typeof(parentEl[newName]) !== "undefined") {
-            newName = name + "_" + i;
-            i++;
-        }
-        return newName;
     };
 
     var removeFromTrashArray = function (element, name) {
@@ -231,13 +446,12 @@ define([
         var name = getAvailableName(newParentEl, path[1]);
         newParentEl[name] = element;
         removeFromTrashArray(parentEl, path[1]);
-        displayDirectory(currentPath);
+        module.displayDirectory(currentPath);
     };
 
     var removeFromTrash = function (path) {
         if (!path || path.length < 4 || path[0] !== TRASH) { return; }
         // Remove the last element from the path to get the parent path and the element name
-        console.log(path);
         var parentPath = path.slice();
         var name;
         if (path.length === 4) { // Trash root
@@ -245,7 +459,7 @@ define([
             parentPath.pop();
             var parentElement = findElement(files, parentPath);
             removeFromTrashArray(parentElement, name);
-            displayDirectory(currentPath);
+            module.displayDirectory(currentPath);
             return;
         }
         name = parentPath.pop();
@@ -255,24 +469,25 @@ define([
             return;
         }
         delete parentEl[name];
-        displayDirectory(currentPath);
+        module.displayDirectory(currentPath);
     };
 
     var emptyTrash = function () {
         files.trash = {};
-        displayDirectory(currentPath);
+        module.displayDirectory(currentPath);
     };
 
     var onDrag = function (ev, path) {
         var data = {
             'path': path
         };
-        ev.dataTransfer.setData("data", JSON.stringify(data));
+        ev.dataTransfer.setData("text", JSON.stringify(data));
     };
 
     var onDrop = function (ev) {
         ev.preventDefault();
-        var data = ev.dataTransfer.getData("data");
+        $iframe.find('.droppable').removeClass('droppable');
+        var data = ev.dataTransfer.getData("text");
         var oldPath = JSON.parse(data).path;
         var newPath = $(ev.target).data('path') || $(ev.target).parent('li').data('path');
         if (!oldPath || !newPath) { return; }
@@ -313,8 +528,8 @@ define([
         }
         parentEl[newName] = element;
         delete parentEl[oldName];
-        resetTree();
-        displayDirectory(currentPath);
+        module.resetTree();
+        module.displayDirectory(currentPath);
     };
 
     var displayRenameInput = function ($element, path) {
@@ -379,7 +594,7 @@ define([
     };
 
     var openContextMenu = function (e) {
-        hideMenu();
+        module.hideMenu();
         onElementClick($(e.target));
         e.stopPropagation();
         var path = $(e.target).data('path') || $(e.target).parent('li').data('path');
@@ -408,7 +623,7 @@ define([
     };
 
     var openTrashTreeContextMenu = function (e) {
-        hideMenu();
+        module.hideMenu();
         onElementClick($(e.target));
         e.stopPropagation();
         var path = $(e.target).data('path') || $(e.target).parent('li').data('path');
@@ -424,7 +639,7 @@ define([
     };
 
     var openTrashContextMenu = function (e) {
-        hideMenu();
+        module.hideMenu();
         onElementClick($(e.target));
         e.stopPropagation();
         var path = $(e.target).data('path') || $(e.target).parent('li').data('path');
@@ -444,8 +659,16 @@ define([
     };
 
     var addDragAndDropHandlers = function ($element, path, isFolder, droppable) {
+        // "dragenter" is fired for an element and all its children
+        // "dragleave" may be fired when entering a child
+        // --> We store the number of enter/leave and the element entered and we remove the
+        // highlighting only when we have left everything
+        var counter = 0;
+        var dragenterList = [];
         $element.on('dragstart', function (e) {
             e.stopPropagation();
+            counter = 0;
+            dragenterList = [];
             onDrag(e.originalEvent, path);
         });
 
@@ -458,28 +681,51 @@ define([
         $element.on('drop', function (e) {
             onDrop(e.originalEvent);
         });
-        var counter = 0;
         $element.on('dragenter', function (e) {
             e.preventDefault();
             e.stopPropagation();
+            if (dragenterList.indexOf(e.target) !== -1) { return; }
+            dragenterList.push(e.target);
             counter++;
             $element.addClass('droppable');
         });
         $element.on('dragleave', function (e) {
             e.preventDefault();
             e.stopPropagation();
+            var idx = dragenterList.indexOf(e.target);
+            dragenterList.splice(idx, 1);
             counter--;
-            if (counter === 0) {
+            if (counter <= 0) {
                 $element.removeClass('droppable');
             }
         });
 
     };
 
+    var addFileData = function (parentPath, key, $span) {
+        var parentEl = findElement(files, parentPath);
+        if (!parentEl || !parentEl[key] || !isFile(parentEl[key])) { return; }
+        var element = parentEl[key];
+        if (typeof(files[FILES_DATA][element]) === "undefined") {
+            return;
+        }
+        var data = files[FILES_DATA][element];
+        $span.html('');
+        // The element with the class '.name' is underlined when the 'li' is hovered
+        $span.removeClass('name');
+        var $name = $('<span>', {'class': 'name'}).text(key);
+        var $title = $('<span>', {'class': 'title'}).text(data.title);
+        var $adate = $('<span>', {'class': 'date'}).text(getDate(data.atime));
+        var $cdate = $('<span>', {'class': 'date'}).text(getDate(data.ctime));
+        $span.append($name).append($title).append($adate).append($cdate);
+        return;
+    };
+
     var createElement = function (path, elPath, root, isFolder) {
         // Forbid drag&drop inside the trash
         var isTrash = path[0] === TRASH;
         var newPath = path.slice();
+        var key;
 
         if (isTrash && $.isArray(elPath)) {
             key = elPath[0];
@@ -490,20 +736,22 @@ define([
         }
 
         var $icon = $fileIcon.clone();
-        var spanClass = 'file-element element';
+        var spanClass = 'file-element name element';
         if (isFolder) {
-            spanClass = 'folder-element element';
-            $icon = Object.keys(root[key]).length === 0 ? $folderEmptyIcon.clone() : $folderIcon.clone();
+            spanClass = 'folder-element name element';
+            $icon = isFolderEmpty(root[key]) ? $folderEmptyIcon.clone() : $folderIcon.clone();
         }
         var $name = $('<span>', { 'class': spanClass }).text(key);
+        if(!isFolder && getViewMode() === 'list') {
+            addFileData(path, key, $name);
+        }
         var $element = $('<li>', {
             draggable: true
         }).append($icon).append($name).dblclick(function () {
             if (isFolder) {
-                displayDirectory(newPath);
+                module.displayDirectory(newPath);
                 return;
             }
-            // Prevent users from opening files from the trash TODO ??
             if (isTrash) { return; }
             openFile(root[key]);
         });
@@ -536,7 +784,7 @@ define([
             }
         }
         return title;
-    }
+    };
 
     var createTitle = function (path) {
         var isTrash = path[0] === TRASH;
@@ -556,16 +804,50 @@ define([
                         // --> parent is TRASH
                         newPath = [TRASH];
                     }
-                    displayDirectory(newPath);
+                    module.displayDirectory(newPath);
                 });
             $title.append($parentFolder);
         }
         return $title;
     };
 
+    var createViewModeButton = function () {
+        var $block = $('<div>', {
+            'class': 'btn-group changeViewModeContainer'
+        });
+
+        var $listButton = $('<button>', {
+            'class': 'btn'
+        }).append($listIcon.clone());
+        var $gridButton = $('<button>', {
+            'class': 'btn'
+        }).append($gridIcon.clone());
+
+        $listButton.click(function () {
+            $gridButton.removeClass('active');
+            $listButton.addClass('active');
+            setViewMode('list');
+            $iframe.find('#' + FOLDER_CONTENT_ID).removeClass('grid');
+        });
+        $gridButton.click(function () {
+            $listButton.removeClass('active');
+            $gridButton.addClass('active');
+            setViewMode('grid');
+            $iframe.find('#' + FOLDER_CONTENT_ID).addClass('grid');
+        });
+
+        if (getViewMode() === 'list') {
+            $listButton.addClass('active');
+        } else {
+            $gridButton.addClass('active');
+        }
+        $block.append($listButton).append($gridButton);
+        return $block;
+    };
+
     // Display the selected directory into the content part (rightside)
     // NOTE: Elements in the trash are not using the same storage structure as the others
-    var displayDirectory = function (path) {
+    var displayDirectory = module.displayDirectory = function (path) {
         currentPath = path;
         module.resetTree();
         $content.html("");
@@ -586,9 +868,16 @@ define([
             return;
         }
 
+        setLastOpenedFolder(path);
+
         var $title = createTitle(path);
 
-        var $dirContent = $('<div>', {id: "folderContent"});
+        var $modeButton = createViewModeButton().appendTo($title);
+
+        var $dirContent = $('<div>', {id: FOLDER_CONTENT_ID});
+        if (getViewModeClass()) {
+            $dirContent.addClass(getViewModeClass());
+        }
         var $list = $('<ul>').appendTo($dirContent);
 
         if (isTrashRoot) {
@@ -633,17 +922,39 @@ define([
     var createTreeElement = function (name, $icon, path, draggable, collapsable, active) {
         var $name = $('<span>', { 'class': 'folder-element element' }).text(name)
             .click(function () {
-                displayDirectory(path);
+                module.displayDirectory(path);
             });
         var $collapse;
         if (collapsable) {
-            $collapse = $collapseIcon.clone();
+            $collapse = $expandIcon.clone();
         }
         var $element = $('<li>', {
             draggable: draggable
         }).append($collapse).append($icon).append($name);
-        if (!collapsable) {
-            $element.addClass('non-collapsable');
+        if (collapsable) {
+            $element.addClass('collapsed');
+            $collapse.click(function() {
+                if ($element.hasClass('collapsed')) {
+                    // It is closed, open it
+                    $element.removeClass('collapsed');
+                    setFolderOpened(path, true);
+                    $collapse.removeClass('fa-plus-square-o');
+                    $collapse.addClass('fa-minus-square-o');
+                } else {
+                    // Collapse the folder
+                    $element.addClass('collapsed');
+                    setFolderOpened(path, false);
+                    $collapse.removeClass('fa-minus-square-o');
+                    $collapse.addClass('fa-plus-square-o');
+                    // Change the current opened folder if it was collapsed
+                    if (isSubpath(currentPath, path)) {
+                        displayDirectory(path);
+                    }
+                }
+            });
+            if (wasFolderOpened(path)) {
+                $collapse.click();
+            }
         }
         $element.data('path', path);
         addDragAndDropHandlers($element, path, true, true);
@@ -678,13 +989,13 @@ define([
 
     var createTree = function ($container, path) {
         var root = findElement(files, path);
-        if (Object.keys(root).length === 0) { return; }
+        if (isFolderEmpty(root)) { return; }
 
         // Display the root element in the tree
         var displayingRoot = comparePath([ROOT], path);
         if (displayingRoot) {
             var isRootOpened = comparePath([ROOT], currentPath);
-            var $rootIcon = Object.keys(files[ROOT]).length === 0 ?
+            var $rootIcon = isFolderEmpty(files[ROOT]) ?
                 (isRootOpened ? $folderOpenedEmptyIcon : $folderEmptyIcon) :
                 (isRootOpened ? $folderOpenedIcon : $folderIcon);
             var $rootElement = createTreeElement(ROOT_NAME, $rootIcon.clone(), [ROOT], false, false, isRootOpened);
@@ -701,11 +1012,12 @@ define([
             var newPath = path.slice();
             newPath.push(key);
             var isCurrentFolder = comparePath(newPath, currentPath);
-            var isEmpty = Object.keys(root[key]).length === 0;
+            var isEmpty = isFolderEmpty(root[key]);
+            var subfolder = hasSubfolder(root[key]);
             var $icon = isEmpty ?
                 (isCurrentFolder ? $folderOpenedEmptyIcon : $folderEmptyIcon) :
                 (isCurrentFolder ? $folderOpenedIcon : $folderIcon);
-            var $element = createTreeElement(key, $icon.clone(), newPath, true, !isEmpty, isCurrentFolder);
+            var $element = createTreeElement(key, $icon.clone(), newPath, true, subfolder, isCurrentFolder);
             $element.appendTo($list);
             $element.contextmenu(openContextMenu);
             createTree($element, newPath);
@@ -713,13 +1025,13 @@ define([
     };
 
     var createTrash = function ($container, path) {
-        var $icon = Object.keys(files.trash).length === 0 ? $trashEmptyIcon.clone() : $trashIcon.clone();
+        var $icon = isFolderEmpty(files.trash) ? $trashEmptyIcon.clone() : $trashIcon.clone();
         var isOpened = comparePath(path, currentPath);
         var $trash = $('<span>', {
                 'class': 'tree-trash element'
             }).text(TRASH_NAME).prepend($icon)
             .click(function () {
-                displayDirectory(path);
+                module.displayDirectory(path);
             });
         var $trashElement = $('<li>').append($trash);
         $trashElement.addClass('root');
@@ -737,10 +1049,10 @@ define([
         createTree($tree, [ROOT]);
         createTrash($tree, [TRASH]);
     };
-    displayDirectory(currentPath);
+    module.displayDirectory(currentPath);
     //resetTree(); //already called by displayDirectory
 
-    var hideMenu = function () {
+    var hideMenu = module.hideMenu = function () {
         $contextMenu.hide();
         $trashTreeContextMenu.hide();
         $trashContextMenu.hide();
@@ -760,7 +1072,7 @@ define([
         else if ($(this).hasClass('open')) {
             $element.dblclick();
         }
-        hideMenu();
+        module.hideMenu();
     });
 
     $trashTreeContextMenu.on('click', 'a', function (e) {
@@ -775,7 +1087,7 @@ define([
                 emptyTrash();
             });
         }
-        hideMenu();
+        module.hideMenu();
     });
 
     $trashContextMenu.on('click', 'a', function (e) {
@@ -783,8 +1095,8 @@ define([
         var path = $(this).data('path');
         var $element = $(this).data('element');
         if (!$element || !path || path.length < 2) { return; } // TODO: error
+        var name = path[path.length - 1];
         if ($(this).hasClass("remove")) {
-            var name = path[path.length - 1];
             if (path.length === 4) { name = path[1]; }
             // TODO translate
             Cryptpad.confirm("Are you sure you want to remove " + name + " from the trash permanently?", function(res) {
@@ -793,7 +1105,6 @@ define([
             });
         }
         else if ($(this).hasClass("restore")) {
-            var name = path[path.length - 1];
             if (path.length === 4) { name = path[1]; }
             // TODO translate
             Cryptpad.confirm("Are you sure you want to restore " + name + " to its previous location?", function(res) {
@@ -801,18 +1112,18 @@ define([
                 restoreTrash(path);
             });
         }
-        hideMenu();
+        module.hideMenu();
     });
 
     $(ifrw).on('click', function (e) {
         if (e.which !== 1) { return ; }
         removeSelected(e);
         removeInput(e);
-        hideMenu(e);
+        module.hideMenu(e);
     });
     $(ifrw).on('drag drop', function (e) {
         removeInput(e);
-        hideMenu(e);
+        module.hideMenu(e);
     });
     $(ifrw).on('mouseup drop', function (e) {
         $iframe.find('.droppable').removeClass('droppable');

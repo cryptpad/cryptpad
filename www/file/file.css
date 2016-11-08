@@ -7,6 +7,8 @@ html, body {
     padding: 0;
     margin: 0;
     position: relative;
+    font-size: 20px;
+    overflow: auto;
 }
 
 .fa {
@@ -26,10 +28,6 @@ li {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-}
-
-li > span.element:hover {
-    text-decoration: underline;
 }
 
 .folder, .file {
@@ -63,6 +61,7 @@ li > span.element:hover {
     border: 2px solid blue;
     box-sizing: border-box;
     background: white;
+    overflow: auto;
 }
 
 #tree li {
@@ -71,6 +70,10 @@ li > span.element:hover {
 
 #tree span.element {
     cursor: pointer;
+}
+
+#tree li > span.element:hover {
+    text-decoration: underline;
 }
 
 #tree .active {
@@ -83,10 +86,29 @@ li > span.element:hover {
 
 #tree .fa.expcol {
     margin-left: -10px;
+    font-size: 14px;
+    position: absolute;
+    left: -20px;
+    top: 9px;
+    width: auto;
+    height: 11px;
+    padding: 0;
+    margin: 0;
+    background: white;
+    z-index: 10;
+    cursor: default;
+}
+#tree .fa.expcol:before {
+    position:relative;
+    top: -1px;
 }
 
-#tree .non-collapsable {
-    padding-left: 12px;
+#tree li.collapsed ul {
+    display: none;
+}
+
+#tree li input {
+    width: calc(100% - 30px);
 }
 
 /* Tree lines */
@@ -101,16 +123,13 @@ li > span.element:hover {
 #tree ul li:before {
     position: absolute;
     left: -15px;
-    top: 0px;
+    top: -0.25em;
     content: '';
     display: block;
-    border-left: 1px solid #ddd;
-    height: 0.75em;
-    border-bottom: 1px solid #ddd;
-    width: 10px;
-}
-#tree ul li.non-collapsable:before {
-    width: 27px;
+    border-left: 1px solid #888;
+    height: 1em;
+    border-bottom: 1px solid #888;
+    width: 17.5px;
 }
 #tree ul li:after {
     position: absolute;
@@ -118,7 +137,7 @@ li > span.element:hover {
     bottom: -7px;
     content: '';
     display: block;
-    border-left: 1px solid #ddd;
+    border-left: 1px solid #888;
     height: 100%;
 }
 #tree ul li.root {
@@ -146,6 +165,12 @@ li > span.element:hover {
     border: 2px solid green;
     box-sizing: border-box;
     background: #eee;
+    overflow: auto;
+}
+
+.changeViewModeContainer {
+    border: 1px solid #ccc;
+    float: right;
 }
 
 .parentFolder {
@@ -158,6 +183,52 @@ li > span.element:hover {
 }
 
 #folderContent {
+    /*display: inline-block;*/
+}
+
+#content li:hover .name {
+    text-decoration: underline;
+}
+
+#content .grid li {
     display: inline-block;
+    margin: 10px 10px;
+    width: 140px;
+    text-align: center;
+    height: 70px;
+    vertical-align: top;
+}
+
+#content .grid li input {
+    width: 100%;
+}
+
+#content .grid li .fa {
+    display: block;
+    margin: auto;
+    font-size: 40px;
+    width: auto;
+    text-align: center;
+}
+
+#content .list li {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+}
+#content .list li .element {
+    display: inline-flex;
+    flex: 1;
+}
+
+#content .list .element span {
+    margin-right: 20px;
+    display: inline-block;
+}
+#content .list .element span.name {
+    flex: 1;
+}
+#content .list .element span.date {
+    width: 120px;
 }
 
