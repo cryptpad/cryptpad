@@ -40,6 +40,8 @@ define([
     var LOCALSTORAGE_VIEWMODE = "cryptpad-file-viewMode";
     var FOLDER_CONTENT_ID = "folderContent";
 
+    var NEW_FOLDER_NAME = "New folder"; //TODO translate
+
     var files = module.files = {
         root: {
             "Directory 1": {
@@ -82,12 +84,7 @@ define([
             "#hash_c": {
                 ctime: "Tue Nov 08 2016 16:34:21 GMT+0100 (CET)",
                 atime: "Sun Nov 06 2016 12:34:21 GMT+0100 (CET)",
-                title: "Pad C With A Long Title"
-            },
-            "#hash_d": {
-                ctime: "Tue Nov 08 2016 16:30:21 GMT+0100 (CET)",
-                atime: "Tue Nov 08 2016 12:30:21 GMT+0100 (CET)",
-                title: "Pad D"
+                title: "Pad C With A Very Very Very Long Title"
             },
             "#hash_e": {
                 ctime: "Tue Nov 08 2016 16:26:21 GMT+0100 (CET)",
@@ -140,6 +137,26 @@ define([
                 title: "Code B"
             },
             "#hash_C": {
+                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
+                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
+                title: "Code C"
+            },
+            "#hash_1": {
+                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
+                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
+                title: "Code C"
+            },
+            "#hash_2": {
+                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
+                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
+                title: "Code C"
+            },
+            "#hash_3": {
+                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
+                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
+                title: "Code C"
+            },
+            "#hash_4": {
                 ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
                 atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
                 title: "Code C"
@@ -238,6 +255,7 @@ define([
     var $folderOpenedEmptyIcon = $('<span>', {"class": "fa fa-folder-open-o folder"});
     var $fileIcon = $('<span>', {"class": "fa fa-file file"});
     var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
+    var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
     var $trashIcon = $('<span>', {"class": "fa fa-trash"});
     var $trashEmptyIcon = $('<span>', {"class": "fa fa-trash-o"});
     var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o expcol"});
@@ -284,12 +302,20 @@ define([
 
     var hasSubfolder = function (element) {
         if (typeof(element) !== "object") { return false; }
-        var subfolder = false;
+        var subfolder = 0;
         for (var f in element) {
-            subfolder = isFolder(element[f]);
-            if (subfolder) { break; }
+            subfolder += isFolder(element[f]) ? 1 : 0;
         }
         return subfolder;
+    };
+
+    var hasFile = function (element) {
+        if (typeof(element) !== "object") { return false; }
+        var file = 0;
+        for (var f in element) {
+            file += isFile(element[f]) ? 1 : 0;
+        }
+        return file;
     };
 
     var isSubpath = function (path, parentPath) {
@@ -307,6 +333,47 @@ define([
             i++;
         }
         return newName;
+    };
+
+    var compareFiles = function (fileA, fileB) {
+        return fileA === fileB;
+    };
+    var isInTree = function (file, root) {
+        if (isFile(root)) {
+            return compareFiles(file, root);
+        }
+        var inTree = false;
+        for (var e in root) {
+            inTree = isInTree(file, root[e]);
+            if (inTree) { break; }
+        };
+        return inTree;
+    };
+    var isInTrash = function (file) {
+        var inTrash = false;
+        var root = files[TRASH];
+        for (var e in root) {
+            if (!$.isArray(root[e])) { return; } //TODO error
+            root[e].some(function (trashEl, idx) {
+                inTrash = isInTree(file, trashEl.element);
+                return inTrash;
+            });
+            if (inTrash) { break; }
+        }
+        return inTrash;
+    };
+    var getUnsortedFiles = function () {
+        var filesData = Object.keys(files[FILES_DATA]);
+        var unsorted = [];
+        filesData.forEach(function (file) {
+            if (!isInTree(file, files[ROOT]) && !isInTrash(file)) {
+                unsorted.push(file);
+            }
+        });
+        return unsorted;
+    };
+    var getSortedFiles = function () {
+        console.log('get sorted files, not implemented yet');
     };
 
     var compareDays = function (date1, date2) {
@@ -388,6 +455,16 @@ define([
         module.displayDirectory(newParentPath);
     };
 
+    var createNewFolder = function (folderPath, name) {
+        var parentEl = findElement(files, folderPath);
+        var folderName = getAvailableName(parentEl, name || NEW_FOLDER_NAME);
+        parentEl[folderName] = {};
+        var newPath = folderPath.slice();
+        newPath.push(folderName);
+        module.newFolder = newPath;
+        displayDirectory(currentPath);
+    };
+
     // Move to trash
     var removeElement = function (path, displayTrash) {
         if (!path || path.length < 2 || path[0] !== ROOT) { return; }
@@ -421,8 +498,9 @@ define([
         });
     };
 
+    // Delete permanently
     var removeFromTrashArray = function (element, name) {
-        var array = files.trash[name];
+        var array = files[TRASH][name];
         if (!array || !$.isArray(array)) { return; }
         // Remove the element from the trash array
         var index = array.indexOf(element);
@@ -431,7 +509,7 @@ define([
         }
         // Remove the array is empty to have a cleaner object in chainpad
         if (array.length === 0) {
-            delete files.trash[name];
+            delete files[TRASH][name];
         }
     };
 
@@ -473,7 +551,7 @@ define([
     };
 
     var emptyTrash = function () {
-        files.trash = {};
+        files[TRASH] = {};
         module.displayDirectory(currentPath);
     };
 
@@ -595,22 +673,17 @@ define([
 
     var openContextMenu = function (e) {
         module.hideMenu();
-        onElementClick($(e.target));
         e.stopPropagation();
-        var path = $(e.target).data('path') || $(e.target).parent('li').data('path');
+        var path = $(e.target).closest('li').data('path');
         if (!path) { return; }
         $contextMenu.css({
             display: "block",
             left: e.pageX,
             top: e.pageY
         });
-        var $element = $(e.target);
         // $element should be the <span class="element">, find it if it's not the case
-        if ($element.is('li')) {
-            $element = $element.children('span.element');
-        } else if (!$element.is('.element')) {
-            $element = $element.parent('li').children('span.element');
-        }
+        var $element = $(e.target).closest('li').children('span.element');
+        onElementClick($element);
         if (!$element.length) {
             console.error("Unable to locate the .element tag", e.target);
             $contextMenu.hide();
@@ -699,26 +772,42 @@ define([
                 $element.removeClass('droppable');
             }
         });
+    };
 
+    var displayUnsorted = function () {
+        //TODO UNSORTED
     };
 
     var addFileData = function (parentPath, key, $span) {
         var parentEl = findElement(files, parentPath);
         if (!parentEl || !parentEl[key] || !isFile(parentEl[key])) { return; }
         var element = parentEl[key];
+
+        // The element with the class '.name' is underlined when the 'li' is hovered
+        var $name = $('<span>', {'class': 'name', title: key}).text(key);
+        $span.html('');
+        $span.append($name);
+
         if (typeof(files[FILES_DATA][element]) === "undefined") {
             return;
         }
         var data = files[FILES_DATA][element];
+        var $title = $('<span>', {'class': 'title listElement', title: data.title}).text(data.title);
+        var $adate = $('<span>', {'class': 'date listElement', title: getDate(data.atime)}).text(getDate(data.atime));
+        var $cdate = $('<span>', {'class': 'date listElement', title: getDate(data.ctime)}).text(getDate(data.ctime));
+        $span.append($title).append($adate).append($cdate);
+    };
+
+    var addFolderData = function (element, key, $span) {
+        if (!element || !isFolder(element)) { return; }
         $span.html('');
         // The element with the class '.name' is underlined when the 'li' is hovered
-        $span.removeClass('name');
-        var $name = $('<span>', {'class': 'name'}).text(key);
-        var $title = $('<span>', {'class': 'title'}).text(data.title);
-        var $adate = $('<span>', {'class': 'date'}).text(getDate(data.atime));
-        var $cdate = $('<span>', {'class': 'date'}).text(getDate(data.ctime));
-        $span.append($name).append($title).append($adate).append($cdate);
-        return;
+        var sf = hasSubfolder(element);
+        var files = hasFile(element);
+        var $name = $('<span>', {'class': 'name', title: key}).text(key);
+        var $subfolders = $('<span>', {'class': 'folders listElement', title: sf}).text(sf);
+        var $files = $('<span>', {'class': 'files listElement', title: files}).text(files);
+        $span.append($name).append($subfolders).append($files);
     };
 
     var createElement = function (path, elPath, root, isFolder) {
@@ -736,13 +825,15 @@ define([
         }
 
         var $icon = $fileIcon.clone();
-        var spanClass = 'file-element name element';
+        var spanClass = 'file-element element';
         if (isFolder) {
-            spanClass = 'folder-element name element';
+            spanClass = 'folder-element element';
             $icon = isFolderEmpty(root[key]) ? $folderEmptyIcon.clone() : $folderIcon.clone();
         }
         var $name = $('<span>', { 'class': spanClass }).text(key);
-        if(!isFolder && getViewMode() === 'list') {
+        if (isFolder) {
+            addFolderData(root[key], key, $name);
+        } else {
             addFileData(path, key, $name);
         }
         var $element = $('<li>', {
@@ -759,13 +850,20 @@ define([
         addDragAndDropHandlers($element, newPath, isFolder, !isTrash);
         $element.click(function(e) {
             e.stopPropagation();
-            //onElementClick($element, newPath);
+            onElementClick($element, newPath);
         });
         if (!isTrash) {
             $element.contextmenu(openContextMenu);
         } else {
             $element.contextmenu(openTrashContextMenu);
         }
+        var isNewFolder = module.newFolder && comparePath(newPath, module.newFolder);
+        if (isNewFolder) {
+            window.setTimeout(function() {
+                displayRenameInput($name, newPath);
+            }, 500);
+            delete module.newFolder;
+        };
         return $element;
     };
 
@@ -813,7 +911,7 @@ define([
 
     var createViewModeButton = function () {
         var $block = $('<div>', {
-            'class': 'btn-group changeViewModeContainer'
+            'class': 'btn-group topButtonContainer changeViewModeContainer'
         });
 
         var $listButton = $('<button>', {
@@ -828,12 +926,14 @@ define([
             $listButton.addClass('active');
             setViewMode('list');
             $iframe.find('#' + FOLDER_CONTENT_ID).removeClass('grid');
+            $iframe.find('#' + FOLDER_CONTENT_ID).addClass('list');
         });
         $gridButton.click(function () {
             $listButton.removeClass('active');
             $gridButton.addClass('active');
             setViewMode('grid');
             $iframe.find('#' + FOLDER_CONTENT_ID).addClass('grid');
+            $iframe.find('#' + FOLDER_CONTENT_ID).removeClass('list');
         });
 
         if (getViewMode() === 'list') {
@@ -842,6 +942,23 @@ define([
             $gridButton.addClass('active');
         }
         $block.append($listButton).append($gridButton);
+        return $block;
+    };
+
+    var createNewFolderButton = function () {
+        var $block = $('<div>', {
+            'class': 'btn-group topButtonContainer newFolderButtonContainer'
+        });
+
+        var $listButton = $('<button>', {
+            'class': 'btn'
+        }).text("NEW FOLDER"); //TODO translate
+
+        $listButton.click(function () {
+            createNewFolder(currentPath);
+        });
+
+        $block.append($listButton);
         return $block;
     };
 
@@ -873,12 +990,30 @@ define([
         var $title = createTitle(path);
 
         var $modeButton = createViewModeButton().appendTo($title);
+        var $newFolderButton = createNewFolderButton().appendTo($title);
 
         var $dirContent = $('<div>', {id: FOLDER_CONTENT_ID});
-        if (getViewModeClass()) {
+        var mode = getViewMode();
+        if (mode) {
             $dirContent.addClass(getViewModeClass());
         }
         var $list = $('<ul>').appendTo($dirContent);
+
+        //TODO translate
+        var $folderHeader = $('<li>', {'class': 'header listElement'});
+        var $fohElement = $('<span>', {'class': 'element'}).appendTo($folderHeader);
+        var $name = $('<span>', {'class': 'name'}).text("Folder name");
+        var $subfolders = $('<span>', {'class': 'folders listElement'}).text("# of folders");
+        var $files = $('<span>', {'class': 'files listElement'}).text("# of files");
+        $fohElement.append($name).append($subfolders).append($files);
+        var $fileHeader = $('<li>', {'class': 'file-header header listElement'});
+        var $fihElement = $('<span>', {'class': 'element'}).appendTo($fileHeader);
+        var $fhName = $('<span>', {'class': 'name'}).text("File name");
+        var $fhTitle = $('<span>', {'class': 'title '}).text("Title");
+        var $fhAdate = $('<span>', {'class': 'date'}).text("Last access");
+        var $fhCdate = $('<span>', {'class': 'date'}).text("Creation");
+        $fihElement.append($fhName).append($fhTitle).append($fhAdate).append($fhCdate);
+        // -->
 
         if (isTrashRoot) {
             // Elements in the trash are JS arrays (several elements can have the same name)
@@ -887,6 +1022,7 @@ define([
                     console.error("Trash element has a wrong type", root[key]);
                     return;
                 }
+                if (hasSubfolder(root[key])) { $list.append($folderHeader); }
                 // display sub directories
                 root[key].forEach(function (el, idx) {
                     if (isFile(el.element)) { return; }
@@ -894,6 +1030,7 @@ define([
                     var $element = createElement(path, spath, root, true);
                     $element.appendTo($list);
                 });
+                if (hasFile(root[key])) { $list.append($fileHeader); }
                 // display files
                 root[key].forEach(function (el, idx) {
                     if (isFolder(el.element)) { return; }
@@ -903,12 +1040,14 @@ define([
                 });
             });
         } else {
+            if (hasSubfolder(root)) { $list.append($folderHeader); }
             // display sub directories
             Object.keys(root).forEach(function (key) {
                 if (isFile(root[key])) { return; }
                 var $element = createElement(path, key, root, true);
                 $element.appendTo($list);
             });
+            if (hasFile(root)) { $list.append($fileHeader); }
             // display files
             Object.keys(root).forEach(function (key) {
                 if (isFolder(root[key])) { return; }
@@ -1024,8 +1163,31 @@ define([
         });
     };
 
+    var allFilesSorted = function () {
+        return getUnsortedFiles().length === 0;
+    };
+
+    var createUnsorted = function ($container, path) {
+        if (allFilesSorted()) { return; }
+        var $icon = $unsortedIcon.clone();
+        var isOpened = comparePath(path, currentPath);
+        var $unsorted = $('<span>', {
+                'class': 'tree-unsorted element'
+            }).text(FILES_DATA_NAME).prepend($icon)
+            .click(function () {
+                //module.displayDirectory(path);
+            });
+        var $unsortedElement = $('<li>').append($unsorted);
+        $unsortedElement.addClass('root');
+        $unsortedElement.data('path', [FILES_DATA]);
+        if (isOpened) { $unsorted.addClass('active'); }
+
+        var $unsortedList = $('<ul>', { id: 'trashTree' }).append($unsortedElement);
+        $container.append($unsortedList);
+    };
+
     var createTrash = function ($container, path) {
-        var $icon = isFolderEmpty(files.trash) ? $trashEmptyIcon.clone() : $trashIcon.clone();
+        var $icon = isFolderEmpty(files[TRASH]) ? $trashEmptyIcon.clone() : $trashIcon.clone();
         var isOpened = comparePath(path, currentPath);
         var $trash = $('<span>', {
                 'class': 'tree-trash element'
@@ -1047,6 +1209,7 @@ define([
     var resetTree = module.resetTree = function () {
         $tree.html('');
         createTree($tree, [ROOT]);
+        createUnsorted($tree, [FILES_DATA]);
         createTrash($tree, [TRASH]);
     };
     module.displayDirectory(currentPath);

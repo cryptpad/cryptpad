@@ -12,7 +12,8 @@ html, body {
 }
 
 .fa {
-    width: 17px;
+    min-width: 17px;
+    margin-right: 3px;
     font-family: FontAwesome;
 }
 
@@ -168,9 +169,10 @@ li {
     overflow: auto;
 }
 
-.changeViewModeContainer {
+.topButtonContainer {
     border: 1px solid #ccc;
     float: right;
+    border-radius: 4px;
 }
 
 .parentFolder {
@@ -183,10 +185,10 @@ li {
 }
 
 #folderContent {
-    /*display: inline-block;*/
+    padding-right: 10px;
 }
 
-#content li:hover .name {
+#content li:hover:not(.header) .name {
     text-decoration: underline;
 }
 
@@ -215,20 +217,63 @@ li {
     display: flex;
     flex-flow: row;
     align-items: center;
+    padding-right: 0px;
 }
 #content .list li .element {
     display: inline-flex;
     flex: 1;
 }
 
+#content .list li.file-header {
+    margin-top: 20px;
+}
+
+#content .list li.header {
+    cursor: default;
+    color: #008;
+}
+#content .list li.header .element span {
+    border-right: 1px solid #CCC;
+    text-align: left;
+}
+#content .list li.header span.name {
+    padding-left: 0;
+}
+
 #content .list .element span {
-    margin-right: 20px;
+    padding: 0px 10px;
     display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
 }
 #content .list .element span.name {
     flex: 1;
 }
 #content .list .element span.date {
-    width: 120px;
+    width: 150px;
 }
-
+#content .list .element span.title {
+    width: 250px;
+    padding-right: 0px;
+    border-right: 10px solid rgba(0, 0, 0, 0);
+}
+#content .list .element span.folders {
+    width: 150px;
+}
+#content .list .element span.files {
+    width: 150px;
+}
+#content div.grid .listElement {
+    display: none;
+}
+@media screen and (max-width: 1000px) {
+    #content .list .element span.title {
+        display: none;
+    }
+}
+@media screen and (min-width: 1001px) {
+    #content .list .element span.title {
+        display: inline;
+    }
+}
