@@ -85,6 +85,10 @@ li {
     margin-top: 2em;
 }
 
+#tree #unsortedTree {
+    margin-top: 2em;
+}
+
 #tree .fa.expcol {
     margin-left: -10px;
     font-size: 14px;
@@ -246,6 +250,8 @@ li {
     overflow: hidden;
     white-space: nowrap;
     box-sizing: border-box;
+    padding-right: 0px;
+    border-right: 10px solid rgba(0, 0, 0, 0);
 }
 #content .list .element span.name {
     flex: 1;
@@ -255,8 +261,6 @@ li {
 }
 #content .list .element span.title {
     width: 250px;
-    padding-right: 0px;
-    border-right: 10px solid rgba(0, 0, 0, 0);
 }
 #content .list .element span.folders {
     width: 150px;

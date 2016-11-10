@@ -30,8 +30,10 @@ define([
 
     var ROOT = "root";
     var ROOT_NAME = "My files";
+    var UNSORTED = "unsorted";
+    var UNSORTED_NAME = "Unsorted files";
     var FILES_DATA = "filesData";
-    var FILES_DATA_NAME = "Unsorted files";
+    var FILES_DATA_NAME = "All files";
     var TRASH = "trash";
     var TRASH_NAME = "Trash";
     var TIME_BEFORE_RENAME = 1000;
@@ -41,6 +43,27 @@ define([
     var FOLDER_CONTENT_ID = "folderContent";
 
     var NEW_FOLDER_NAME = "New folder"; //TODO translate
+    var DEBUG = true;
+
+    var debug = DEBUG ? console.log : function() {return;};
+    var fixFiles = function () {
+        // debug("Fixing file system...");
+        // Not implemented yet
+        // Explore the tree and check that everything is correct:
+        //  * 'root', 'trash' and 'filesData' exist and are objects
+        //  * Folders are objects
+        //  * Files are href
+        //  * Trash root contains only arrays, each element of the array is an object {element:.., path:..}
+        //  * Data (title, cdate, adte) are stored in filesData. filesData contains only href keys linking to object with title, cdate, adate.
+        //  * Dates (adate, cdate) can be parsed/formatted
+        // debug("File system fixed");
+    };
+    var error = function() {
+        fixFiles();
+        console.error.apply(arguments);
+    };
+    var logError = console.error;
+    var log = Cryptpad.log;
 
     var files = module.files = {
         root: {
@@ -70,6 +93,7 @@ define([
                 "File C": "#hash_C"
             }
         },
+        unsorted: ["#href1", "#href2", "#href3"],
         filesData: {
             "#hash_a": {
                 ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
@@ -160,6 +184,21 @@ define([
                 ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
                 atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
                 title: "Code C"
+            },
+            "#href1": {
+                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
+                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
+                title: "Pad unsorted 1"
+            },
+            "#href2": {
+                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
+                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
+                title: "Pad unsorted 2"
+            },
+            "#href3": {
+                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
+                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
+                title: "Pad unsorted 3"
             }
         },
         trash: {
@@ -283,6 +322,19 @@ define([
         return result;
     };
 
+    var deleteFromObject = function (path) {
+        var parentPath = path.slice();
+        var key = parentPath.pop();
+        var parentEl = findElement(files, parentPath);
+        if (path.length === 4 && path[0] === TRASH) {
+            files[TRASH][path[1]].splice(path[2], 1);
+        } else if (path[0] === UNSORTED) {
+            parentEl.splice(key, 1);
+        } else {
+            delete parentEl[key];
+        }
+    };
+
     var now = function () {
         return new Date().getTime();
     };
@@ -300,20 +352,36 @@ define([
         return Object.keys(element).length === 0;
     };
 
-    var hasSubfolder = function (element) {
+    var hasSubfolder = function (element, trashRoot) {
         if (typeof(element) !== "object") { return false; }
         var subfolder = 0;
         for (var f in element) {
-            subfolder += isFolder(element[f]) ? 1 : 0;
+            if (trashRoot) {
+                if ($.isArray(element[f])) {
+                    element[f].forEach(function (el, idx) {
+                        subfolder += isFolder(el.element) ? 1 : 0;
+                    });
+                }
+            } else {
+                subfolder += isFolder(element[f]) ? 1 : 0;
+            }
         }
         return subfolder;
     };
 
-    var hasFile = function (element) {
+    var hasFile = function (element, trashRoot) {
         if (typeof(element) !== "object") { return false; }
         var file = 0;
         for (var f in element) {
-            file += isFile(element[f]) ? 1 : 0;
+            if (trashRoot) {
+                if ($.isArray(element[f])) {
+                    element[f].forEach(function (el, idx) {
+                        file += isFile(el.element) ? 1 : 0;
+                    });
+                }
+            } else {
+                file += isFile(element[f]) ? 1 : 0;
+            }
         }
         return file;
     };
@@ -353,7 +421,10 @@ define([
         var inTrash = false;
         var root = files[TRASH];
         for (var e in root) {
-            if (!$.isArray(root[e])) { return; } //TODO error
+            if (!$.isArray(root[e])) {
+                error("Trash contains a non-array element");
+                return;
+            }
             root[e].some(function (trashEl, idx) {
                 inTrash = isInTree(file, trashEl.element);
                 return inTrash;
@@ -362,17 +433,34 @@ define([
         }
         return inTrash;
     };
+
+    var isInTrashRoot = function (path) {
+        return path[0] === TRASH && path.length === 4;
+    };
+    var getTrashElementData = function (trashPath) {
+        if (!isInTrashRoot) {
+            debug("Called getTrashElementData on a element not in trash root: ", trashpath);
+            return;
+        }
+        var parentPath = trashPath.slice();
+        parentPath.pop();
+        return findElement(files, parentPath);
+    };
+
     var getUnsortedFiles = function () {
-        var filesData = Object.keys(files[FILES_DATA]);
+        return files[UNSORTED];
+        /*var filesData = Object.keys(files[FILES_DATA]);
         var unsorted = [];
         filesData.forEach(function (file) {
             if (!isInTree(file, files[ROOT]) && !isInTrash(file)) {
                 unsorted.push(file);
             }
         });
-        return unsorted;
+        return unsorted;*/
+        //TODO
     };
     var getSortedFiles = function () {
+        // TODO
         console.log('get sorted files, not implemented yet');
     };
 
@@ -395,25 +483,33 @@ define([
                 ret = date.toLocaleDateString();
             }
         } catch (e) {
-            // TODO
-            console.error("Unable to display that string to a date with .toLocaleString", sDate, e);
+            error("Unable to format that string to a date with .toLocaleString", sDate, e);
         }
         return ret;
     };
 
+
+    // Data from filesData
+    var getTitle = function (href) {
+        if (!files[FILES_DATA][href]) {
+            error("getTitle called with a non-existing href: ", href);
+            return;
+        }
+        return files[FILES_DATA][href].title;
+    };
+
+
     // Find an element in a object following a path, resursively
     var findElement = function (root, pathInput) {
         if (!pathInput) {
-            console.error("Invalid path:\n", pathInput, "\nin root\n", root);
-            //TODO
+            error("Invalid path:\n", pathInput, "\nin root\n", root);
             return;
         }
         if (pathInput.length === 0) { return root; }
         var path = pathInput.slice();
         var key = path.shift();
         if (typeof root[key] === "undefined") {
-            console.error("Unable to find the key '" + key + "' in the root object provided:\n", root);
-            //TODO
+            debug("Unable to find the key '" + key + "' in the root object provided:\n", root);
             return;
         }
         return findElement(root[key], path);
@@ -422,37 +518,48 @@ define([
     var moveElement = function (elementPath, newParentPath) {
         if (comparePath(elementPath, newParentPath)) { return; } // Nothing to do...
         if (newParentPath[0] && newParentPath[0] === TRASH) {
-            // TODO
-            console.error("Moving to trash is forbidden. You have to use the removeElement function");
+            debug("Moving to trash is forbidden. You have to use the removeElement function");
             return;
         }
         var element = findElement(files, elementPath);
+
         var newParent = findElement(files, newParentPath);
-        var parentPath, name, newName;
-        if (elementPath.length === 4 && elementPath[0] === TRASH) {
-            // Element from the trash root:
-            // elementPath = [TRASH, "{dirName}", 0, 'element']
-            parentPath = [TRASH];
-            name = elementPath[1];
-            // Rename automatically if the name is already taken since it is impossible to rename
-            // a file or a folder directly from the trash
-            newName = getAvailableName(newParent, name);
-        } else {
-            parentPath = elementPath.slice();
-            name = parentPath.pop();
-            // Automatically rename if we were in the trash since we can't rename from the trash
-            newName = elementPath[0] === TRASH ? getAvailableName(newParent, name) : name;
+
+        if (newParentPath[0] && newParentPath[0] === UNSORTED) {
+            if (isFolder(element)) {
+                //TODO translate
+                log("You can't move a folder to the list of unsorted pads");
+                return;
+            } else {
+                if (files[UNSORTED].indexOf(element) === -1) {
+                    files[UNSORTED].push(element);
+                }
+                deleteFromObject(elementPath);
+                module.displayDirectory(currentPath);
+                return;
+            }
         }
-        var parentEl = findElement(files, parentPath);
+
+        var name;
+
+        if (elementPath[0] === UNSORTED) {
+            name = getTitle(element);
+        } else if (elementPath.length === 4 && elementPath[0] === TRASH) {
+            // Element from the trash root: elementPath = [TRASH, "{dirName}", 0, 'element']
+            name = elementPath[1];
+        } else {
+            name = elementPath[elementPath.length-1];
+        }
+        var newName = elementPath[0] !== ROOT ? getAvailableName(newParent, name) : name;
 
         if (typeof(newParent[newName]) !== "undefined") {
-            console.error("A file with the same name already exist at the new location");
-            //TODO
+            log("A file with the same name already exist at the new location. Rename the file and try again.");
             return;
         }
+
         newParent[newName] = element;
-        delete parentEl[name];
-        module.displayDirectory(newParentPath);
+        deleteFromObject(elementPath);
+        module.displayDirectory(currentPath);
     };
 
     var createNewFolder = function (folderPath, name) {
@@ -465,40 +572,49 @@ define([
         displayDirectory(currentPath);
     };
 
-    // Move to trash
-    var removeElement = function (path, displayTrash) {
-        if (!path || path.length < 2 || path[0] !== ROOT) { return; }
-        var name = path[path.length - 1];
-        var andThen = function () {
-            var element = findElement(files, path);
-            var parentPath = path.slice();
-            var name = parentPath.pop();
-            var parentEl = findElement(files, parentPath);
-            var trash = findElement(files, [TRASH]);
+    var pushToTrash = function (name, element, path) {
+        var trash = findElement(files, [TRASH]);
 
-            if (typeof(trash[name]) === "undefined") {
-                trash[name] = [];
-            }
-            var trashArray = trash[name];
-            var trashElement = {
-                element: element,
-                path: parentPath
-            };
-            trashArray.push(trashElement);
-            delete parentEl[name];
+        if (typeof(trash[name]) === "undefined") {
+            trash[name] = [];
+        }
+        var trashArray = trash[name];
+        var trashElement = {
+            element: element,
+            path: path
+        };
+        trashArray.push(trashElement);
+    };
+    // Move to trash
+    var removeElement = function (path, displayTrash, force) {
+        if (!path || path.length < 2 || path[0] === TRASH) {
+            debug("Calling removeElement from a wrong path: ", path);
+            return;
+        }
+        var element = findElement(files, path);
+        var key = path[path.length - 1];
+        var name = path[0] === UNSORTED ? getTitle(element) : key;
+        var andThen = function () {
+            var parentPath = path.slice();
+            parentPath.pop();
+            pushToTrash(name, element, parentPath);
+            deleteFromObject(path);
             if (displayTrash) {
                 module.displayDirectory([TRASH]);
             } else {
                 module.displayDirectory(currentPath);
             }
         };
+        if (force) {
+            andThen();
+            return;
+        }
         Cryptpad.confirm("Are you sure you want to move " + name + " to the trash?", function(res) {
             if (!res) { return; }
             andThen();
         });
     };
 
-    // Delete permanently
     var removeFromTrashArray = function (element, name) {
         var array = files[TRASH][name];
         if (!array || !$.isArray(array)) { return; }
@@ -514,19 +630,31 @@ define([
     };
 
     var restoreTrash = function (path) {
-        if (!path || path.length !== 4) { return; }
+        if (!path || path.length !== 4 || path[0] !== TRASH) {
+            debug("restoreTrash was called from an element not in the trash root: ", path);
+            return;
+        }
         var element = findElement(files, path);
-        var parentPath = path.slice();
-        parentPath.pop();
-        var parentEl = findElement(files, parentPath);
+        var parentEl = getTrashElementData(path);
         var newPath = parentEl.path;
+        if (newPath[0] === UNSORTED) {
+            if (files[UNSORTED].indexOf(element) === -1) {
+                files[UNSORTED].push(element);
+                removeFromTrashArray(parentEl, path[1]);
+                module.displayDirectory(currentPath);
+            }
+            return;
+        }
+        // Find the new parent element
         var newParentEl = findElement(files, newPath);
         var name = getAvailableName(newParentEl, path[1]);
+        // Move the element
         newParentEl[name] = element;
         removeFromTrashArray(parentEl, path[1]);
         module.displayDirectory(currentPath);
     };
 
+    // Delete permanently
     var removeFromTrash = function (path) {
         if (!path || path.length < 4 || path[0] !== TRASH) { return; }
         // Remove the last element from the path to get the parent path and the element name
@@ -555,36 +683,13 @@ define([
         module.displayDirectory(currentPath);
     };
 
-    var onDrag = function (ev, path) {
-        var data = {
-            'path': path
-        };
-        ev.dataTransfer.setData("text", JSON.stringify(data));
-    };
-
-    var onDrop = function (ev) {
-        ev.preventDefault();
-        $iframe.find('.droppable').removeClass('droppable');
-        var data = ev.dataTransfer.getData("text");
-        var oldPath = JSON.parse(data).path;
-        var newPath = $(ev.target).data('path') || $(ev.target).parent('li').data('path');
-        if (!oldPath || !newPath) { return; }
-        // Call removeElement when trying to move something into the trash
-        if (newPath[0] === TRASH) {
-            removeElement(oldPath, true);
-            return;
-        }
-        moveElement(oldPath, newPath);
-    };
-
     var openFile = function (fileEl) {
         window.location.hash = fileEl;
     };
 
     var renameElement = function (path, newName) {
         if (path.length <= 1) {
-            console.error('Renaming `root` is forbidden');
-            //TODO
+            logError('Renaming `root` is forbidden');
             return;
         }
         if (!newName || newName.trim() === "") { return; }
@@ -594,14 +699,12 @@ define([
         var parentPath = path.slice();
         var oldName = parentPath.pop();
         if (oldName === newName) {
-            // Nothing to do...
-            // TODO ?
             return;
         }
         var parentEl = findElement(files, parentPath);
         if (typeof(parentEl[newName]) !== "undefined") {
-            console.error('Name already used.');
-            //TODO
+            log('Name already used in that directory. Please choose another one.');
+            //TODO translate
             return;
         }
         parentEl[newName] = element;
@@ -611,7 +714,10 @@ define([
     };
 
     var displayRenameInput = function ($element, path) {
-        if (!path || path.length < 2) { return; } // TODO error
+        if (!path || path.length < 2) {
+            logError("Renaming a top level element (root, trash or filesData) is forbidden.");
+            return;
+        }
         $element.hide();
         removeSelected();
         var name = path[path.length - 1];
@@ -662,21 +768,25 @@ define([
         }*/
         removeSelected();
         if (!$element.is('li')) {
-            $element = $element.parent('li');
+            $element = $element.closest('li');
         }
-        if (!$element.length) { return ; } //TODO error
+        if (!$element.length) {
+            // TODO translate
+            log("Unable to select the targetted element. If the problem persist, try to reload the page");
+            return;
+        }
         if (!$element.hasClass("selected")) {
             $element.addClass("selected");
             lastSelectTime = now();
         }
     };
 
-    var openContextMenu = function (e) {
+    var openContextMenu = function (e, $menu) {
         module.hideMenu();
         e.stopPropagation();
         var path = $(e.target).closest('li').data('path');
         if (!path) { return; }
-        $contextMenu.css({
+        $menu.css({
             display: "block",
             left: e.pageX,
             top: e.pageY
@@ -686,49 +796,56 @@ define([
         onElementClick($element);
         if (!$element.length) {
             console.error("Unable to locate the .element tag", e.target);
-            $contextMenu.hide();
-            // TODO error
+            $menu.hide();
+            log("Unable to open the context menu for that element. If the problem persist, try to reload the page");
             return;
         }
-        $contextMenu.find('a').data('path', path);
-        $contextMenu.find('a').data('element', $element);
+        $menu.find('a').data('path', path);
+        $menu.find('a').data('element', $element);
+        return false;
+    };
+
+    var openDirectoryContextMenu = function (e) {
+        openContextMenu(e, $contextMenu);
         return false;
     };
 
     var openTrashTreeContextMenu = function (e) {
-        module.hideMenu();
-        onElementClick($(e.target));
-        e.stopPropagation();
-        var path = $(e.target).data('path') || $(e.target).parent('li').data('path');
-        if (!path) { return; }
-        $trashTreeContextMenu.css({
-            display: "block",
-            left: e.pageX,
-            top: e.pageY
-        });
-        $trashTreeContextMenu.find('a').data('path', path);
-        $trashTreeContextMenu.find('a').data('element', $(e.target));
+        openContextMenu(e, $trashTreeContextMenu);
         return false;
     };
 
     var openTrashContextMenu = function (e) {
-        module.hideMenu();
-        onElementClick($(e.target));
-        e.stopPropagation();
-        var path = $(e.target).data('path') || $(e.target).parent('li').data('path');
+        var path = $(e.target).closest('li').data('path');
         if (!path) { return; }
         $trashContextMenu.find('li').show();
         if (path.length > 4) {
             $trashContextMenu.find('a.restore').parent('li').hide();
         }
-        $trashContextMenu.css({
-            display: "block",
-            left: e.pageX,
-            top: e.pageY
-        });
-        $trashContextMenu.find('a').data('path', path);
-        $trashContextMenu.find('a').data('element', $(e.target));
+        openContextMenu(e, $trashContextMenu);
         return false;
+    };
+
+    var onDrag = function (ev, path) {
+        var data = {
+            'path': path
+        };
+        ev.dataTransfer.setData("text", JSON.stringify(data));
+    };
+
+    var onDrop = function (ev) {
+        ev.preventDefault();
+        $iframe.find('.droppable').removeClass('droppable');
+        var data = ev.dataTransfer.getData("text");
+        var oldPath = JSON.parse(data).path;
+        var newPath = $(ev.target).data('path') || $(ev.target).parent('li').data('path');
+        if (!oldPath || !newPath) { return; }
+        // Call removeElement when trying to move something into the trash
+        if (newPath[0] === TRASH) {
+            removeElement(oldPath, true);
+            return;
+        }
+        moveElement(oldPath, newPath);
     };
 
     var addDragAndDropHandlers = function ($element, path, isFolder, droppable) {
@@ -774,14 +891,8 @@ define([
         });
     };
 
-    var displayUnsorted = function () {
-        //TODO UNSORTED
-    };
-
-    var addFileData = function (parentPath, key, $span) {
-        var parentEl = findElement(files, parentPath);
-        if (!parentEl || !parentEl[key] || !isFile(parentEl[key])) { return; }
-        var element = parentEl[key];
+    var addFileData = function (element, key, $span, displayTitle) {
+        if (!isFile(element)) { return; }
 
         // The element with the class '.name' is underlined when the 'li' is hovered
         var $name = $('<span>', {'class': 'name', title: key}).text(key);
@@ -795,7 +906,10 @@ define([
         var $title = $('<span>', {'class': 'title listElement', title: data.title}).text(data.title);
         var $adate = $('<span>', {'class': 'date listElement', title: getDate(data.atime)}).text(getDate(data.atime));
         var $cdate = $('<span>', {'class': 'date listElement', title: getDate(data.ctime)}).text(getDate(data.ctime));
-        $span.append($title).append($adate).append($cdate);
+        if (displayTitle) {
+            $span.append($title);
+        }
+        $span.append($adate).append($cdate);
     };
 
     var addFolderData = function (element, key, $span) {
@@ -815,7 +929,6 @@ define([
         var isTrash = path[0] === TRASH;
         var newPath = path.slice();
         var key;
-
         if (isTrash && $.isArray(elPath)) {
             key = elPath[0];
             elPath.forEach(function (k) { newPath.push(k); });
@@ -824,6 +937,7 @@ define([
             newPath.push(key);
         }
 
+        var element = findElement(files, newPath);
         var $icon = $fileIcon.clone();
         var spanClass = 'file-element element';
         if (isFolder) {
@@ -832,9 +946,9 @@ define([
         }
         var $name = $('<span>', { 'class': spanClass }).text(key);
         if (isFolder) {
-            addFolderData(root[key], key, $name);
+            addFolderData(element, key, $name);
         } else {
-            addFileData(path, key, $name);
+            addFileData(element, key, $name, true);
         }
         var $element = $('<li>', {
             draggable: true
@@ -853,7 +967,7 @@ define([
             onElementClick($element, newPath);
         });
         if (!isTrash) {
-            $element.contextmenu(openContextMenu);
+            $element.contextmenu(openDirectoryContextMenu);
         } else {
             $element.contextmenu(openTrashContextMenu);
         }
@@ -890,6 +1004,8 @@ define([
         var name = path[path.length - 1];
         if (name === ROOT && path.length === 1) { name = ROOT_NAME; }
         else if (name === TRASH && path.length === 1) { name = TRASH_NAME; }
+        else if (name === UNSORTED && path.length === 1) { name = UNSORTED_NAME; }
+        else if (name === FILES_DATA && path.length === 1) { name = FILES_DATA_NAME; }
         else if (path.length > 1 && path[0] === TRASH) { name = getTrashTitle(path); }
         var $title = $('<h1>').text(name);
         if (path.length > 1) {
@@ -962,6 +1078,57 @@ define([
         return $block;
     };
 
+    // TODO translate
+    var getFolderListHeader = function () {
+        var $folderHeader = $('<li>', {'class': 'header listElement'});
+        var $fohElement = $('<span>', {'class': 'element'}).appendTo($folderHeader);
+        var $name = $('<span>', {'class': 'name'}).text("Folder name");
+        var $subfolders = $('<span>', {'class': 'folders listElement'}).text("# of folders");
+        var $files = $('<span>', {'class': 'files listElement'}).text("# of files");
+        $fohElement.append($name).append($subfolders).append($files);
+        return $folderHeader;
+    };
+    var getFileListHeader = function (displayTitle) {
+        var $fileHeader = $('<li>', {'class': 'file-header header listElement'});
+        var $fihElement = $('<span>', {'class': 'element'}).appendTo($fileHeader);
+        var $fhName = $('<span>', {'class': 'name'}).text("File name");
+        var $fhTitle = displayTitle ? $('<span>', {'class': 'title '}).text("Title") : '';
+        var $fhAdate = $('<span>', {'class': 'date'}).text("Last access");
+        var $fhCdate = $('<span>', {'class': 'date'}).text("Creation");
+        $fihElement.append($fhName).append($fhTitle).append($fhAdate).append($fhCdate);
+        return $fileHeader;
+    };
+
+    var displayUnsorted = function ($container) {
+        var unsorted = files[UNSORTED];
+        if (allFilesSorted()) { return; }
+        $container.append(getFileListHeader(false));
+        unsorted.forEach(function (href, idx) {
+            var file = files[FILES_DATA][href];
+            if (!file) {
+                debug("getUnsortedFiles returns an element not present in filesData: ", href);
+                return;
+            }
+            var $icon = $fileIcon.clone();
+            var $name = $('<span>', { 'class': 'file-element element' });
+            addFileData(href, file.title, $name, false);
+            var $element = $('<li>', {
+                draggable: true
+            }).append($icon).append($name).dblclick(function () {
+                openFile(href);
+            });
+            var path = [UNSORTED, idx];
+            $element.data('path', path);
+            $element.click(function(e) {
+                e.stopPropagation();
+                onElementClick($element, path);
+            });
+            addDragAndDropHandlers($element, path, false, false);
+            //$element.contextmenu(openTrashContextMenu);
+            $container.append($element);
+        });
+    };
+
     // Display the selected directory into the content part (rightside)
     // NOTE: Elements in the trash are not using the same storage structure as the others
     var displayDirectory = module.displayDirectory = function (path) {
@@ -972,13 +1139,13 @@ define([
             path = [ROOT];
         }
         var isTrashRoot = comparePath(path, [TRASH]);
+        var isUnsorted = comparePath(path, [UNSORTED]);
 
         var root = findElement(files, path);
         if (typeof(root) === "undefined") {
             // TODO translate
-            // TODO error
-            // What to do? display the root element ? [ROOT] or [TRASH] depending on where we were?
-            console.log("Unable to locate the selected directory: ", path);
+            log("The selected or last visited directory no longer exis.t Opening the parent folder...");
+            debug("Unable to locate the selected directory: ", path);
             var parentPath = path.slice();
             parentPath.pop();
             displayDirectory(parentPath);
@@ -989,9 +1156,6 @@ define([
 
         var $title = createTitle(path);
 
-        var $modeButton = createViewModeButton().appendTo($title);
-        var $newFolderButton = createNewFolderButton().appendTo($title);
-
         var $dirContent = $('<div>', {id: FOLDER_CONTENT_ID});
         var mode = getViewMode();
         if (mode) {
@@ -999,44 +1163,43 @@ define([
         }
         var $list = $('<ul>').appendTo($dirContent);
 
-        //TODO translate
-        var $folderHeader = $('<li>', {'class': 'header listElement'});
-        var $fohElement = $('<span>', {'class': 'element'}).appendTo($folderHeader);
-        var $name = $('<span>', {'class': 'name'}).text("Folder name");
-        var $subfolders = $('<span>', {'class': 'folders listElement'}).text("# of folders");
-        var $files = $('<span>', {'class': 'files listElement'}).text("# of files");
-        $fohElement.append($name).append($subfolders).append($files);
-        var $fileHeader = $('<li>', {'class': 'file-header header listElement'});
-        var $fihElement = $('<span>', {'class': 'element'}).appendTo($fileHeader);
-        var $fhName = $('<span>', {'class': 'name'}).text("File name");
-        var $fhTitle = $('<span>', {'class': 'title '}).text("Title");
-        var $fhAdate = $('<span>', {'class': 'date'}).text("Last access");
-        var $fhCdate = $('<span>', {'class': 'date'}).text("Creation");
-        $fihElement.append($fhName).append($fhTitle).append($fhAdate).append($fhCdate);
-        // -->
+        if (isUnsorted) {
+            displayUnsorted($list);
+            $content.append($title).append($dirContent);
+            return;
+        }
+
+        var $modeButton = createViewModeButton().appendTo($title);
+        var $newFolderButton = createNewFolderButton().appendTo($title);
+
+        var $folderHeader = getFolderListHeader();
+        var $fileHeader = getFileListHeader(true);
 
         if (isTrashRoot) {
             // Elements in the trash are JS arrays (several elements can have the same name)
-            Object.keys(root).forEach(function (key) {
-                if (!$.isArray(root[key])) {
-                    console.error("Trash element has a wrong type", root[key]);
-                    return;
+            [true,false].forEach(function (folder) {
+                var testElement = isFile;
+                if (!folder) {
+                    testElement = isFolder;
                 }
-                if (hasSubfolder(root[key])) { $list.append($folderHeader); }
-                // display sub directories
-                root[key].forEach(function (el, idx) {
-                    if (isFile(el.element)) { return; }
-                    var spath = [key, idx, 'element'];
-                    var $element = createElement(path, spath, root, true);
-                    $element.appendTo($list);
-                });
-                if (hasFile(root[key])) { $list.append($fileHeader); }
-                // display files
-                root[key].forEach(function (el, idx) {
-                    if (isFolder(el.element)) { return; }
-                    var spath = [key, idx, 'element'];
-                    var $element = createElement(path, spath, root, false);
-                    $element.appendTo($list);
+                if (folder) {
+                    if (hasSubfolder(root, true)) { $list.append($folderHeader); }
+                    else { return; }
+                } else {
+                    if (hasFile(root, true)) { $list.append($fileHeader); }
+                    else { return; }
+                }
+                Object.keys(root).forEach(function (key) {
+                    if (!$.isArray(root[key])) {
+                        console.error("Trash element has a wrong type", root[key]);
+                        return;
+                    }
+                    root[key].forEach(function (el, idx) {
+                        if (testElement(el.element)) { return; }
+                        var spath = [key, idx, 'element'];
+                        var $element = createElement(path, spath, root, folder);
+                        $list.append($element);
+                    });
                 });
             });
         } else {
@@ -1158,7 +1321,7 @@ define([
                 (isCurrentFolder ? $folderOpenedIcon : $folderIcon);
             var $element = createTreeElement(key, $icon.clone(), newPath, true, subfolder, isCurrentFolder);
             $element.appendTo($list);
-            $element.contextmenu(openContextMenu);
+            $element.contextmenu(openDirectoryContextMenu);
             createTree($element, newPath);
         });
     };
@@ -1171,18 +1334,19 @@ define([
         if (allFilesSorted()) { return; }
         var $icon = $unsortedIcon.clone();
         var isOpened = comparePath(path, currentPath);
-        var $unsorted = $('<span>', {
+        /*var $unsorted = $('<span>', {
                 'class': 'tree-unsorted element'
-            }).text(FILES_DATA_NAME).prepend($icon)
+            }).text(UNSORTED_NAME).prepend($icon)
             .click(function () {
-                //module.displayDirectory(path);
+                module.displayDirectory(path);
             });
         var $unsortedElement = $('<li>').append($unsorted);
         $unsortedElement.addClass('root');
-        $unsortedElement.data('path', [FILES_DATA]);
-        if (isOpened) { $unsorted.addClass('active'); }
+        $unsortedElement.data('path', [UNSORTED]);
+        if (isOpened) { $unsorted.addClass('active'); }*/
+        var $unsortedElement = createTreeElement(UNSORTED_NAME, $icon, [UNSORTED], false, false, isOpened);
 
-        var $unsortedList = $('<ul>', { id: 'trashTree' }).append($unsortedElement);
+        var $unsortedList = $('<ul>', { id: 'unsortedTree' }).append($unsortedElement);
         $container.append($unsortedList);
     };
 
@@ -1209,7 +1373,7 @@ define([
     var resetTree = module.resetTree = function () {
         $tree.html('');
         createTree($tree, [ROOT]);
-        createUnsorted($tree, [FILES_DATA]);
+        createUnsorted($tree, [UNSORTED]);
         createTrash($tree, [TRASH]);
     };
     module.displayDirectory(currentPath);
@@ -1225,7 +1389,12 @@ define([
         e.stopPropagation();
         var path = $(this).data('path');
         var $element = $(this).data('element');
-        if (!$element || !path || path.length < 2) { return; } // TODO: error
+        if (!$element || !path || path.length < 2) {
+            //TODO translate
+            log("Forbidden action");
+            debug("Directory context menu on a forbidden or unexisting element. ", $element, path);
+            return;
+        }
         if ($(this).hasClass("rename")) {
             displayRenameInput($element, path);
         }
@@ -1242,7 +1411,12 @@ define([
         e.stopPropagation();
         var path = $(this).data('path');
         var $element = $(this).data('element');
-        if (!$element || !comparePath(path, [TRASH])) { return; } // TODO: error
+        if (!$element || !comparePath(path, [TRASH])) {
+            //TODO translate
+            log("Forbidden action");
+            debug("Trash tree context menu on a forbidden or unexisting element. ", $element, path);
+            return;
+        }
         if ($(this).hasClass("empty")) {
             // TODO translate
             Cryptpad.confirm("Are you sure you want to empty the trash?", function(res) {
@@ -1257,7 +1431,12 @@ define([
         e.stopPropagation();
         var path = $(this).data('path');
         var $element = $(this).data('element');
-        if (!$element || !path || path.length < 2) { return; } // TODO: error
+        if (!$element || !path || path.length < 2) {
+            //TODO translate
+            log("Forbidden action");
+            debug("Trash context menu on a forbidden or unexisting element. ", $element, path);
+            return;
+        }
         var name = path[path.length - 1];
         if ($(this).hasClass("remove")) {
             if (path.length === 4) { name = path[1]; }
