@@ -12,7 +12,7 @@ html, body {
 }
 
 .fa {
-    min-width: 17px;
+    /*min-width: 17px;*/
     margin-right: 3px;
     font-family: FontAwesome;
 }
@@ -201,7 +201,6 @@ li {
     margin: 10px 10px;
     width: 140px;
     text-align: center;
-    height: 70px;
     vertical-align: top;
 }
 

@@ -156,6 +156,33 @@ define(function () {
     out.poll_titleHint = "Titre";
     out.poll_descriptionHint = "Description";
 
+    // File manager
+
+    out.fm_rootName = "Mes documents";
+    out.fm_trashName = "Corbeille";
+    out.fm_unsortedName = "Fichiers non triés";
+    out.fm_filesDataName = "Tous les fichiers";
+    out.fm_newFolder = "Nouveau dossier";
+    out.fm_newFolderButton = "NOUVEAU DOSSIER";
+    out.fm_folderName = "Nom du dossier";
+    out.fm_numberOfFolders = "# de dossiers";
+    out.fm_numberOfFiles = "# de fichiers";
+    out.fm_fileName = "Nom du fichier";
+    out.fm_title = "Titre";
+    out.fm_lastAccess = "Dernier accès";
+    out.fm_creation = "Création";
+    out.fm_forbidden = "Action interdite";
+    out.fm_emptyTrashDialog = "Êtes-vous sûr de vouloir vider la corbeille ?";
+    out.fm_removePermanentlyDialog = "Êtes-vous sûr de vouloir supprimer {0} de la corbeille de manière permanente ?";
+    out.fm_restoreDialog = "Êtes-vous sûr de vouloir restaurer {0} à son emplacement précédent ?";
+    out.fm_removeSeveralDialog = "Êtes-vous sûr de vouloir déplacer ces {0} éléments vers la corbeille ?"
+    out.fm_unknownFolderError = "Le dossier sélectionné ou le dernier dossier visité n'existe plus. Ouverture du dossier parent...";
+    out.fm_contextMenuError = "Impossible d'ouvrir le menu contextuel pour cet élément. Si le problème persiste, essayez de rechercher la page.";
+    out.fm_selectError = "Impossible de sélectionner l'élément ciblé. Si le problème persiste, essayez de recharger la page.";
+
+    out.fo_moveUnsortedError = "La liste des éléments non triés ne peut pas contenir de dossiers.";
+    out.fo_existingNameError = "Ce nom est déjà utilisé dans ce répertoire. Veuillez en choisir un autre.";
+
     // index.html
 
     out.main_p1 = 'CryptPad est l\'éditeur collaboratif en temps réel <strong>zero knowledge</strong>. Le chiffrement est effectué depuis votre navigateur, ce qui protège les données contre le serveur, le cloud, et la NSA. La clé de chiffrement est stockée dans l\'<a href="https://fr.wikipedia.org/wiki/Identificateur_de_fragment">identifieur de fragment</a> de l\'URL qui n\'est jamais envoyée au serveur mais est accessible depuis javascript, de sorte qu\'en partageant l\'URL, vous donnez l\'accès au pad à ceux qui souhaitent participer.';

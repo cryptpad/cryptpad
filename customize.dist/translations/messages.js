@@ -156,6 +156,33 @@ define(function () {
     out.poll_titleHint = "Title";
     out.poll_descriptionHint = "Description";
 
+    // File manager
+
+    out.fm_rootName = "My documents";
+    out.fm_trashName = "Trash";
+    out.fm_unsortedName = "Unsorted files";
+    out.fm_filesDataName = "All files";
+    out.fm_newFolder = "New folder";
+    out.fm_newFolderButton = "NEW FOLDER";
+    out.fm_folderName = "Folder name";
+    out.fm_numberOfFolders = "# of folders";
+    out.fm_numberOfFiles = "# of files";
+    out.fm_fileName = "File name";
+    out.fm_title = "Title";
+    out.fm_lastAccess = "Last access";
+    out.fm_creation = "Creation";
+    out.fm_forbidden = "Forbidden action";
+    out.fm_emptyTrashDialog = "Are you sure you want to empty the trash?";
+    out.fm_removePermanentlyDialog = "Are you sure you want to remove {0} from the trash permanently?";
+    out.fm_removeSeveralDialog = "Are you sure you want to move these {0} elements to the trash?"
+    out.fm_restoreDialog = "Are you sure you want to restore {0} to its previous location?";
+    out.fm_unknownFolderError = "The selected or last visited directory no longer exist. Opening the parent folder...";
+    out.fm_contextMenuError = "Unable to open the context menu for that element. If the problem persist, try to reload the page.";
+    out.fm_selectError = "Unable to select the targetted element. If the problem persist, try to reload the page.";
+
+    out.fo_moveUnsortedError = "You can't move a folder to the list of unsorted pads";
+    out.fo_existingNameError = "Name already used in that directory. Please choose another one.";
+
     // index.html
 
     out.main_p1 = 'CryptPad is the <strong>zero knowledge</strong> realtime collaborative editor.  Encryption carried out in your web browser protects the data from the server, the cloud, and the NSA.  The secret encryption key is stored in the URL <a href="https://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a> which is never sent to the server but is available to javascript so by sharing the URL, you give authorization to others who want to participate.';
