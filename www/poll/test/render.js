@@ -1,8 +1,9 @@
 define([
     '/common/cryptpad-common.js',
     '/bower_components/hyperjson/hyperjson.js',
+    '/bower_components/textpatcher/TextPatcher.js',
     '/bower_components/diff-dom/diffDOM.js',
-], function (Cryptpad, Hyperjson) {
+], function (Cryptpad, Hyperjson, TextPatcher) {
     var DiffDOM = window.diffDOM;
 
     var Example = {
@@ -274,6 +275,28 @@ by maintaining indexes in rowsOrder and colsOrder
         return Cryptpad.find(info, ['node', 'type']);
     };
 
+    var preserveCursor = Render.preserveCursor = function (info) {
+        if (['modifyValue', 'modifyAttribute'].indexOf(info.diff.action) !== -1) {
+            var element = info.node;
+            var o = info.oldValue || '';
+            var n = info.newValue || '';
+            var op = TextPatcher.diff(o, n);
+
+            info.selection = ['selectionStart', 'selectionEnd'].map(function (attr) {
+                var before = info.node[attr];
+                var after = TextPatcher.transformCursor(element[attr], op);
+                return after;
+            });
+        }
+    };
+
+    var recoverCursor = Render.recoverCursor = function (info) {
+        if (info.selection && info.node) {
+            info.node.selectionStart = info.selection[0];
+            info.node.selectionEnd = info.selection[1];
+        }
+    };
+
     var diffOptions = {
         preDiffApply: function (info) {
             if (!diffIsInput(info)) { return; }
@@ -281,20 +304,15 @@ by maintaining indexes in rowsOrder and colsOrder
                 case 'checkbox':
                     //console.log('checkbox');
                     //console.log("[preDiffApply]", info);
-/*
-                    ['modifyAttribute',
-                     'addAttribute',
-                     'removeAttribute'
-                    ].some(function (x) {
-                        //if (x === info.diff.action) { }
-                    });*/
                     break;
                 case 'text':
+                    preserveCursor(info);
                     break;
                 default: break;
             }
         },
         postDiffApply: function (info) {
+            if (info.selection) { recoverCursor(info); }
             /*
             if (!diffIsInput(info)) { return; }
             switch (getInputType(info)) {
