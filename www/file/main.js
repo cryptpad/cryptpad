@@ -339,6 +339,16 @@ define([
         return new Date().getTime();
     };
 
+    var isPathInRoot = function (path) {
+        return path[0] && path[0] === ROOT;
+    };
+    var isPathInUnsorted = function (path) {
+        return path[0] && path[0] === UNSORTED;
+    };
+    var isPathInTrash = function (path) {
+        return path[0] && path[0] === TRASH;
+    };
+
     var isFile = function (element) {
         return typeof(element) === "string";
     };
@@ -404,8 +414,10 @@ define([
     };
 
     var compareFiles = function (fileA, fileB) {
+        // Compare string, might change in the future
         return fileA === fileB;
     };
+
     var isInTree = function (file, root) {
         if (isFile(root)) {
             return compareFiles(file, root);
@@ -417,6 +429,7 @@ define([
         };
         return inTree;
     };
+
     var isInTrash = function (file) {
         var inTrash = false;
         var root = files[TRASH];
@@ -437,6 +450,7 @@ define([
     var isInTrashRoot = function (path) {
         return path[0] === TRASH && path.length === 4;
     };
+
     var getTrashElementData = function (trashPath) {
         if (!isInTrashRoot) {
             debug("Called getTrashElementData on a element not in trash root: ", trashpath);
@@ -449,19 +463,6 @@ define([
 
     var getUnsortedFiles = function () {
         return files[UNSORTED];
-        /*var filesData = Object.keys(files[FILES_DATA]);
-        var unsorted = [];
-        filesData.forEach(function (file) {
-            if (!isInTree(file, files[ROOT]) && !isInTrash(file)) {
-                unsorted.push(file);
-            }
-        });
-        return unsorted;*/
-        //TODO
-    };
-    var getSortedFiles = function () {
-        // TODO
-        console.log('get sorted files, not implemented yet');
     };
 
     var compareDays = function (date1, date2) {
@@ -525,7 +526,7 @@ define([
 
         var newParent = findElement(files, newParentPath);
 
-        if (newParentPath[0] && newParentPath[0] === UNSORTED) {
+        if (isPathInUnsorted(newParentPath)) {
             if (isFolder(element)) {
                 //TODO translate
                 log("You can't move a folder to the list of unsorted pads");
@@ -542,7 +543,7 @@ define([
 
         var name;
 
-        if (elementPath[0] === UNSORTED) {
+        if (isPathInUnsorted(elementPath)) {
             name = getTitle(element);
         } else if (elementPath.length === 4 && elementPath[0] === TRASH) {
             // Element from the trash root: elementPath = [TRASH, "{dirName}", 0, 'element']
@@ -550,7 +551,7 @@ define([
         } else {
             name = elementPath[elementPath.length-1];
         }
-        var newName = elementPath[0] !== ROOT ? getAvailableName(newParent, name) : name;
+        var newName = !isPathInRoot(elementPath) ? getAvailableName(newParent, name) : name;
 
         if (typeof(newParent[newName]) !== "undefined") {
             log("A file with the same name already exist at the new location. Rename the file and try again.");
@@ -593,7 +594,7 @@ define([
         }
         var element = findElement(files, path);
         var key = path[path.length - 1];
-        var name = path[0] === UNSORTED ? getTitle(element) : key;
+        var name = isPathInUnsorted(path) ? getTitle(element) : key;
         var andThen = function () {
             var parentPath = path.slice();
             parentPath.pop();
@@ -637,7 +638,7 @@ define([
         var element = findElement(files, path);
         var parentEl = getTrashElementData(path);
         var newPath = parentEl.path;
-        if (newPath[0] === UNSORTED) {
+        if (isPathInUnsorted(newPath)) {
             if (files[UNSORTED].indexOf(element) === -1) {
                 files[UNSORTED].push(element);
                 removeFromTrashArray(parentEl, path[1]);
@@ -1006,7 +1007,7 @@ define([
         else if (name === TRASH && path.length === 1) { name = TRASH_NAME; }
         else if (name === UNSORTED && path.length === 1) { name = UNSORTED_NAME; }
         else if (name === FILES_DATA && path.length === 1) { name = FILES_DATA_NAME; }
-        else if (path.length > 1 && path[0] === TRASH) { name = getTrashTitle(path); }
+        else if (isPathInTrash(path)) { name = getTrashTitle(path); }
         var $title = $('<h1>').text(name);
         if (path.length > 1) {
             var $parentFolder = $upIcon.clone().addClass("parentFolder")
@@ -1254,7 +1255,7 @@ define([
                     }
                 }
             });
-            if (wasFolderOpened(path)) {
+            if (wasFolderOpened(path) || isSubpath(currentPath, path)) {
                 $collapse.click();
             }
         }
@@ -1334,15 +1335,6 @@ define([
         if (allFilesSorted()) { return; }
         var $icon = $unsortedIcon.clone();
         var isOpened = comparePath(path, currentPath);
-        /*var $unsorted = $('<span>', {
-                'class': 'tree-unsorted element'
-            }).text(UNSORTED_NAME).prepend($icon)
-            .click(function () {
-                module.displayDirectory(path);
-            });
-        var $unsortedElement = $('<li>').append($unsorted);
-        $unsortedElement.addClass('root');
-        $unsortedElement.data('path', [UNSORTED]);
         if (isOpened) { $unsorted.addClass('active'); }*/
         var $unsortedElement = createTreeElement(UNSORTED_NAME, $icon, [UNSORTED], false, false, isOpened);
 
