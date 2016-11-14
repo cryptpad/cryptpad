@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title data-localization="poll_title">Zero Knowledge Date Picker</title>
+    <script data-main="main" src="/bower_components/requirejs/require.js"></script>
+    <script> require.config({ waitSeconds: 60, }); </script>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+            padding: 0px;
+
+            maargin-top: 1.25em;
+        }
+        .realtime {
+            border: 1px solid black;
+            display: block;
+            overflow: auto;
+
+            margin: auto;
+
+            max-height: 100%;
+            max-width: 100%;
+        }
+
+        .realtime input[type="text"] {
+            width: 5em;
+            height: 1em;
+            margin: 0px;
+        }
+
+        table, table * {
+            border: 1px solid red;
+            padding: 15px;
+        }
+
+        table thead tr td {
+            boorder-bottom: 5px solid black;
+        }
+    </style>
+</head>
+<body>
+
+<div class="realtime">
+    <button id="create-user">create user</button>
+    <button id="create-option">create option</button>
+</div>
