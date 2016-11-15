@@ -36,6 +36,12 @@ define([
     var debug = config.debug = DEBUG ? console.log : function() {return;};
     var logError = config.logError = console.error;
     var log = config.log = Cryptpad.log;
+    var DEBUG_LS = module.DEBUG_LS = {
+        resetLocalStorage : function () {
+            delete localStorage[LOCALSTORAGE_OPENED];
+            delete localStorage[LOCALSTORAGE_LAST];
+        }
+    };
 
     var filesObject = module.files = {
         root: {
@@ -245,13 +251,6 @@ define([
         return new Date().getTime();
     };
 
-    var DEBUG = window.DEBUG = {
-        resetLocalStorage : function () {
-            delete localStorage[LOCALSTORAGE_OPENED];
-            delete localStorage[LOCALSTORAGE_LAST];
-        }
-    };
-
     var keyPressed = [];
     var pressKey = function (key, state) {
         if (state) {
@@ -448,13 +447,33 @@ define([
             return false;
         };
 
+        // filesOp.moveElements is able to move several paths to a new location, including
+        // the Trash or the "Unsorted files" folder
+        var moveElements = function (paths, newPath, force, cb) {
+            var andThen = function () {
+                filesOp.moveElements(paths, newPath, cb);
+            };
+            if (newPath[0] !== TRASH || force) {
+                andThen();
+                return;
+            }
+            var msg = Messages._getKey('fm_removeSeveralDialog', [paths.length]);
+            if (paths.length === 1) {
+                var path = paths[0];
+                var name = path[0] === UNSORTED ? filesOp.getTitle(filesOp.findElement(files, path)) : path[path.length - 1];
+                msg = Messages._getKey('fm_removeDialog', [name]);
+            }
+            Cryptpad.confirm(msg, function () {
+                andThen();
+            });
+        };
         // Drag & drop:
         // The data transferred is a stringified JSON containing the path of the dragged element
         var onDrag = function (ev, path) {
             var paths = [];
             var $element = $(ev.target).closest('li');
             if ($element.hasClass('selected')) {
-                $selected = $iframe.find('.selected');
+                var $selected = $iframe.find('.selected');
                 $selected.each(function (idx, elmt) {
                     if ($(elmt).data('path')) {
                         paths.push($(elmt).data('path'));
@@ -476,28 +495,9 @@ define([
             $iframe.find('.droppable').removeClass('droppable');
             var data = ev.dataTransfer.getData("text");
             var oldPaths = JSON.parse(data).path;
-            console.log(oldPaths);
             var newPath = $(ev.target).data('path') || $(ev.target).parent('li').data('path');
             if (!oldPaths || !oldPaths.length || !newPath) { return; }
-            // Call removeElement when trying to move something into the trash
-            if (newPath[0] === TRASH) {
-                if (oldPaths.length === 1) {
-                    filesOp.removeElement(oldPaths[0]);
-                    module.displayDirectory([TRASH]);
-                } else {
-                    Cryptpad.confirm(Messages._getKey('fm_removeSeveralDialog', [oldPaths.length]), function () {
-                        oldPaths.forEach(function (oldPath) {
-                            filesOp.removeElement(oldPath, null, true);
-                        });
-                        module.displayDirectory([TRASH]);
-                    });
-                }
-                return;
-            }
-            oldPaths.forEach(function (oldPath) {
-                filesOp.moveElement(oldPath, newPath, null);
-            });
-            refresh();
+            moveElements(oldPaths, newPath, null, refresh);
         };
 
         var addDragAndDropHandlers = function ($element, path, isFolder, droppable) {
@@ -631,7 +631,7 @@ define([
                     displayRenameInput($name, newPath);
                 }, 500);
                 delete module.newFolder;
-            };
+            }
             return $element;
         };
 
@@ -758,6 +758,10 @@ define([
             return $fileHeader;
         };
 
+        var allFilesSorted = function () {
+            return filesOp.getUnsortedFiles().length === 0;
+        };
+
         // Unsorted element are represented by "href" in an array: they don't have a filename
         // and they don't hav a hierarchical structure (folder/subfolders)
         var displayUnsorted = function ($container, $fileHeader) {
@@ -824,7 +828,6 @@ define([
         // NOTE: Elements in the trash are not using the same storage structure as the others
         var displayDirectory = module.displayDirectory = function (path) {
             currentPath = path;
-            module.resetTree();
             $content.html("");
             if (!path || path.length === 0) {
                 path = [ROOT];
@@ -841,6 +844,8 @@ define([
                 displayDirectory(parentPath);
                 return;
             }
+
+            module.resetTree();
 
             setLastOpenedFolder(path);
 
@@ -993,12 +998,7 @@ define([
             });
         };
 
-        var allFilesSorted = function () {
-            return filesOp.getUnsortedFiles().length === 0;
-        };
-
         var createUnsorted = function ($container, path) {
-            if (allFilesSorted()) { return; }
             var $icon = $unsortedIcon.clone();
             var isOpened = filesOp.comparePath(path, currentPath);
             var $unsortedElement = createTreeElement(UNSORTED_NAME, $icon, [UNSORTED], false, false, isOpened);
@@ -1055,7 +1055,7 @@ define([
                 displayRenameInput($element, path);
             }
             else if($(this).hasClass("delete")) {
-                filesOp.removeElement(path, refresh);
+                moveElements([path], [TRASH], false, refresh);
             }
             else if ($(this).hasClass('open')) {
                 $element.dblclick();
@@ -1067,7 +1067,7 @@ define([
             e.stopPropagation();
             var path = $(this).data('path');
             var $element = $(this).data('element');
-            if (!$element || !comparePath(path, [TRASH])) {
+            if (!$element || !filesOp.comparePath(path, [TRASH])) {
                 log(Messages.fm_forbidden);
                 debug("Trash tree context menu on a forbidden or unexisting element. ", $element, path);
                 return;
@@ -1128,17 +1128,31 @@ define([
             pressKey(e.which, false);
         });
         $(ifrw).on('keypress', function (e) {
-            console.log(e.which);
             if (e.which === 0) {
                 var $selected = $iframe.find('.selected');
                 if (!$selected.length) { return; }
-                Cryptpad.confirm(Messages._getKey('fm_removeSeveralDialog', [$selected.length]), function () {
-                    $selected.each(function (idx, elmt) {
-                        if (!$(elmt).data('path')) { return; }
-                        filesOp.removeElement($(elmt).data('path'), null, true);
-                    });
-                    refresh();
+                var paths = [];
+                $selected.each(function (idx, elmt) {
+                    if (!$(elmt).data('path')) { return; }
+                    paths.push($(elmt).data('path'));
                 });
+                if (filesOp.isPathInTrash(currentPath)) {
+                    // If we are already in the trash, delete the elements permanently
+                    var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [paths.length]);
+                    if (paths.length === 1) {
+                        var path = paths[0];
+                        var name = filesOp.isInTrashRoot(path) ? path[1] : path[path.length - 1];
+                        msg = Messages._getKey("fm_removePermanentlyDialog", [name]);
+                    }
+                    Cryptpad.confirm(msg, function(res) {
+                        paths.forEach(function(p) {
+                            filesOp.removeFromTrash(p);
+                        });
+                        refresh();
+                    });
+                    return;
+                }
+                moveElements(paths, [TRASH], false, refresh);
             }
         });
     };

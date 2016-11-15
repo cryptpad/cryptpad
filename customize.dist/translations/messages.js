@@ -173,8 +173,10 @@ define(function () {
     out.fm_creation = "Creation";
     out.fm_forbidden = "Forbidden action";
     out.fm_emptyTrashDialog = "Are you sure you want to empty the trash?";
+    out.fm_removeSeveralPermanentlyDialog = "Are you sure you want to remove these {0} elements from the trash permanently?";
     out.fm_removePermanentlyDialog = "Are you sure you want to remove {0} from the trash permanently?";
-    out.fm_removeSeveralDialog = "Are you sure you want to move these {0} elements to the trash?"
+    out.fm_removeSeveralDialog = "Are you sure you want to move these {0} elements to the trash?";
+    out.fm_removeDialog = "Are you sure you want to move {0} to the trash?";
     out.fm_restoreDialog = "Are you sure you want to restore {0} to its previous location?";
     out.fm_unknownFolderError = "The selected or last visited directory no longer exist. Opening the parent folder...";
     out.fm_contextMenuError = "Unable to open the context menu for that element. If the problem persist, try to reload the page.";
@@ -182,6 +184,7 @@ define(function () {
 
     out.fo_moveUnsortedError = "You can't move a folder to the list of unsorted pads";
     out.fo_existingNameError = "Name already used in that directory. Please choose another one.";
+    out.fo_moveFolderToChildError = "You can't move a folder into one of its descendants";
 
     // index.html
 
