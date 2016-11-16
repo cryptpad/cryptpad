@@ -214,16 +214,20 @@ define([
             var unsortedFiles = getUnsortedFiles().slice();
             var trashFiles = getTrashFiles().slice();
             var toRemove = [];
-            Object.keys(files[FILES_DATA]).forEach(function (f) {
+            files[FILES_DATA].forEach(function (arr) {
+                var f = arr.href;
                 if (rootFiles.indexOf(f) === -1
                     && unsortedFiles.indexOf(f) === -1
                     && trashFiles.indexOf(f) === -1) {
-                    toRemove.push(f);
+                    toRemove.push(arr);
                 }
             });
             toRemove.forEach(function (f) {
-                debug("Removing", f, "from filesData");
-                delete files[FILES_DATA][f];
+                var idx = files[FILES_DATA].indexOf(f);
+                if (idx !== -1) {
+                    debug("Removing", f, "from filesData");
+                    files[FILES_DATA].splice(idx, 1);
+                }
             });
         };
 
@@ -267,13 +271,28 @@ define([
             return findElement(files, parentPath);
         };
 
+        var getFileData = exp.getFileData = function (file) {
+            if (!file) { return; }
+            var res;
+            files[FILES_DATA].some(function(arr) {
+                var href = arr.href;
+                if (href === file) {
+                    res = arr;
+                    return true;
+                }
+                return false;
+            });
+            return res;
+        };
+
         // Data from filesData
         var getTitle = exp.getTitle = function (href) {
-            if (!href || !files[FILES_DATA][href]) {
+            var data = getFileData(href);
+            if (!href || !data) {
                 error("getTitle called with a non-existing href: ", href);
                 return;
             }
-            return files[FILES_DATA][href].title;
+            return data.title;
         };
 
         var pushToTrash = function (name, element, path) {
@@ -518,8 +537,8 @@ define([
         };
 
         var addPad = exp.addPad = function (href, data) {
-            if (Object.keys(files[FILES_DATA]).indexOf(href) === -1) {
-                files[FILES_DATA][href] = data;
+            if (!getFileData(href)) {
+                files[FILES_DATA].push(data);
             }
             var unsortedFiles = getUnsortedFiles().slice();
             var rootFiles = getRootFiles().slice();
@@ -548,7 +567,7 @@ define([
 
             if (typeof(files[ROOT]) !== "object") { debug("ROOT was not an object"); files[ROOT] = {}; }
             if (typeof(files[TRASH]) !== "object") { debug("TRASH was not an object"); files[TRASH] = {}; }
-            if (typeof(files[FILES_DATA]) !== "object") { debug("FILES_DATA was not an object"); files[FILES_DATA] = {}; }
+            if (!$.isArray(files[FILES_DATA])) { debug("FILES_DATA was not an array"); files[FILES_DATA] = []; }
             if (!$.isArray(files[UNSORTED])) { debug("UNSORTED was not an array"); files[UNSORTED] = []; }
 
             var fixRoot = function (element) {
@@ -600,19 +619,26 @@ define([
                 var rootFiles = getRootFiles().slice();
                 var unsortedFiles = getUnsortedFiles().slice();
                 var trashFiles = getTrashFiles().slice();
-                for (var el in fd) {
-                    if (typeof(fd[el]) !== "object") {
-                        debug("An element in filesData was not an object.", fd[el]);
-                        delete fd[el];
+                var toClean = [];
+                fd.forEach(function (el, idx) {
+                    if (typeof(el) !== "object") {
+                        debug("An element in filesData was not an object.", el);
+                        toClean.push(el);
                     } else {
-                        if (rootFiles.indexOf(el) === -1
-                            && unsortedFiles.indexOf(el) === -1
-                            && trashFiles.indexOf(el) === -1) {
+                        if (rootFiles.indexOf(el.href) === -1
+                            && unsortedFiles.indexOf(el.href) === -1
+                            && trashFiles.indexOf(el.href) === -1) {
                             debug("An element in filesData was not in ROOT, UNSORTED or TRASH.", el);
-                            files[UNSORTED].push(el);
+                            files[UNSORTED].push(el.href);
                         }
                     }
-                }
+                });
+                toClean.forEach(function (el) {
+                    var idx = fd.indexOf(el);
+                    if (idx !== -1) {
+                        fd.splice(idx, 1);
+                    }
+                });
             };
             fixFilesData(files[FILES_DATA]);
 

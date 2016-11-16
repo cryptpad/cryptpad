@@ -365,7 +365,7 @@ define([
         };
 
         var openFile = function (fileEl) {
-            window.location.hash = fileEl;
+            window.open(fileEl);
         };
 
         var refresh = function () {
@@ -611,11 +611,11 @@ define([
             $span.html('');
             $span.append($name);
 
-            if (typeof(files[FILES_DATA][element]) === "undefined") {
+            if (!filesOp.getFileData(element)) {
                 return;
             }
             var hrefData = Cryptpad.parsePadUrl(element);
-            var data = files[FILES_DATA][element];
+            var data = filesOp.getFileData(element);
             var type = Messages.type[hrefData.type] || hrefData.type;
             var $title = $('<span>', {'class': 'title listElement', title: data.title}).text(data.title);
             var $type = $('<span>', {'class': 'date listElement', title: type}).text(type);
@@ -820,7 +820,11 @@ define([
             var $fhType = $('<span>', {'class': 'date'}).text(Messages.table_type);
             var $fhAdate = $('<span>', {'class': 'date'}).text(Messages.fm_lastAccess);
             var $fhCdate = $('<span>', {'class': 'date'}).text(Messages.fm_creation);
-            $fihElement.append($fhName).append($fhTitle).append($fhType).append($fhAdate).append($fhCdate);
+            $fihElement.append($fhName);
+            if (displayTitle) {
+                $fihElement.append($fhTitle);
+            }
+            $fihElement.append($fhType).append($fhAdate).append($fhCdate);
             return $fileHeader;
         };
 
@@ -830,12 +834,13 @@ define([
 
         // Unsorted element are represented by "href" in an array: they don't have a filename
         // and they don't hav a hierarchical structure (folder/subfolders)
-        var displayUnsorted = function ($container, $fileHeader) {
+        var displayUnsorted = function ($container) {
             var unsorted = files[UNSORTED];
             if (allFilesSorted()) { return; }
+            var $fileHeader = getFileListHeader(false);
             $container.append($fileHeader);
             unsorted.forEach(function (href, idx) {
-                var file = files[FILES_DATA][href];
+                var file = filesOp.getFileData(href);
                 if (!file) {
                     debug("getUnsortedFiles returns an element not present in filesData: ", href);
                     return;
@@ -939,7 +944,7 @@ define([
             var $fileHeader = getFileListHeader(true);
 
             if (isUnsorted) {
-                displayUnsorted($list, $fileHeader);
+                displayUnsorted($list);
             } else if (isTrashRoot) {
                 displayTrashRoot($list, $folderHeader, $fileHeader);
             } else {
