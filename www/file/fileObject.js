@@ -1,8 +1,7 @@
 define([
     '/customize/messages.js',
-    '/common/cryptpad-common.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages, Cryptpad) {
+], function (Messages) {
     var $ = window.jQuery;
     var module = {};
 
@@ -36,19 +35,6 @@ define([
                 i--;
             }
             return result;
-        };
-
-        var deleteFromObject = function (path) {
-            var parentPath = path.slice();
-            var key = parentPath.pop();
-            var parentEl = exp.findElement(files, parentPath);
-            if (path.length === 4 && path[0] === TRASH) {
-                files[TRASH][path[1]].splice(path[2], 1);
-            } else if (path[0] === UNSORTED) {
-                parentEl.splice(key, 1);
-            } else {
-                delete parentEl[key];
-            }
         };
 
         var isPathInRoot = exp.isPathInRoot = function (path) {
@@ -206,8 +192,53 @@ define([
             return ret;
         };
 
+        var removeFileFromRoot = function (root, href) {
+            if (isFile(root)) { return; }
+            for (var e in root) {
+                if (isFile(root[e])) {
+                    if (compareFiles(href, root[e])) {
+                        delete root[e];
+                    }
+                } else {
+                    removeFileFromRoot(root[e], href);
+                }
+            }
+        };
+
         var isInTrashRoot = exp.isInTrashRoot = function (path) {
             return path[0] === TRASH && path.length === 4;
+        };
+
+        var checkDeletedFiles = function () {
+            var rootFiles = getRootFiles().slice();
+            var unsortedFiles = getUnsortedFiles().slice();
+            var trashFiles = getTrashFiles().slice();
+            var toRemove = [];
+            Object.keys(files[FILES_DATA]).forEach(function (f) {
+                if (rootFiles.indexOf(f) === -1
+                    && unsortedFiles.indexOf(f) === -1
+                    && trashFiles.indexOf(f) === -1) {
+                    toRemove.push(f);
+                }
+            });
+            toRemove.forEach(function (f) {
+                debug("Removing", f, "from filesData");
+                delete files[FILES_DATA][f];
+            });
+        };
+
+        var deleteFromObject = exp.deletePathPermanently = function (path) {
+            var parentPath = path.slice();
+            var key = parentPath.pop();
+            var parentEl = exp.findElement(files, parentPath);
+            if (path.length === 4 && path[0] === TRASH) {
+                files[TRASH][path[1]].splice(path[2], 1);
+            } else if (path[0] === UNSORTED) {
+                parentEl.splice(key, 1);
+            } else {
+                delete parentEl[key];
+            }
+            checkDeletedFiles();
         };
 
         // Find an element in a object following a path, resursively
@@ -237,7 +268,7 @@ define([
         };
 
         // Data from filesData
-        var getTitle = function (href) {
+        var getTitle = exp.getTitle = function (href) {
             if (!href || !files[FILES_DATA][href]) {
                 error("getTitle called with a non-existing href: ", href);
                 return;
@@ -272,7 +303,7 @@ define([
             parentPath.pop();
             pushToTrash(name, element, parentPath);
             if (!keepOld) { deleteFromObject(path); }
-            if(cb) { cb(); }
+            if (cb) { cb(); }
         };
 
         var moveElement = exp.moveElement = function (elementPath, newParentPath, cb, keepOld) {
@@ -377,24 +408,6 @@ define([
         };
 
 
-        var checkDeletedFiles = function () {
-            var rootFiles = getRootFiles().slice();
-            var unsortedFiles = getUnsortedFiles().slice();
-            var trashFiles = getTrashFiles().slice();
-            var toRemove = [];
-            Object.keys(files[FILES_DATA]).forEach(function (f) {
-                if (rootFiles.indexOf(f) === -1
-                    && unsortedFiles.indexOf(f) === -1
-                    && trashFiles.indexOf(f) === -1) {
-                    toRemove.push(f);
-                }
-            });
-            toRemove.forEach(function (f) {
-                debug("Removing", f, "from filesData");
-                delete files[FILES_DATA][f];
-            });
-        };
-
         // Remove an element from the trash root
         var removeFromTrashArray = function (element, name) {
             var array = files[TRASH][name];
@@ -490,15 +503,41 @@ define([
             cb();
         };
 
+
+        var forgetPad = exp.forgetPad = function (href) {
+            var rootFiles = getRootFiles().slice();
+            if (rootFiles.indexOf(href) !== -1) {
+                removeFileFromRoot(files[ROOT], href);
+            }
+            var unsortedIdx = getUnsortedFiles().indexOf(href);
+            if (unsortedIdx !== -1) {
+                files[UNSORTED].splice(unsortedIdx, 1);
+            }
+            var key = getTitle(href);
+            pushToTrash(key, href, [UNSORTED]);
+        };
+
+        var addPad = exp.addPad = function (href, data) {
+            if (Object.keys(files[FILES_DATA]).indexOf(href) === -1) {
+                files[FILES_DATA][href] = data;
+            }
+            var unsortedFiles = getUnsortedFiles().slice();
+            var rootFiles = getRootFiles().slice();
+            //var trashFiles = getTrashFiles().slice();
+            if (unsortedFiles.indexOf(href) === -1 && rootFiles.indexOf(href) === -1) {
+                files[UNSORTED].push(href);
+            }
+        };
+
         var fixFiles = exp.fixFiles = function () {
             // Explore the tree and check that everything is correct:
             //  * 'root', 'trash' and 'filesData' exist and are objects
-            //  * Folders are objects
-            //  * Files are href
-            //  * Trash root contains only arrays, each element of the array is an object {element:.., path:..}
-            //  * Data (title, cdate, adte) are stored in filesData. filesData contains only href keys linking to object with title, cdate, adate.
-            //  * Dates (adate, cdate) can be parsed/formatted
-            //  * All files in filesData should be either in 'root', 'trash' or 'unsorted'. If that's not the case, copy the fily to 'unsorted'
+            //  * ROOT: Folders are objects, files are href
+            //  * TRASH: Trash root contains only arrays, each element of the array is an object {element:.., path:..}
+            //  * FILES_DATA: - Data (title, cdate, adte) are stored in filesData. filesData contains only href keys linking to object with title, cdate, adate.
+            //                - Dates (adate, cdate) can be parsed/formatted
+            //                - All files in filesData should be either in 'root', 'trash' or 'unsorted'. If that's not the case, copy the fily to 'unsorted'
+            //  * UNSORTED: Contains only files (href), and does not contains files that are in ROOT
             debug("Cleaning file system...");
 
             // Create a backup
@@ -511,6 +550,7 @@ define([
             if (typeof(files[TRASH]) !== "object") { debug("TRASH was not an object"); files[TRASH] = {}; }
             if (typeof(files[FILES_DATA]) !== "object") { debug("FILES_DATA was not an object"); files[FILES_DATA] = {}; }
             if (!$.isArray(files[UNSORTED])) { debug("UNSORTED was not an array"); files[UNSORTED] = []; }
+
             var fixRoot = function (element) {
                 for (var el in element) {
                     if (!isFile(element[el]) && !isFolder(element[el])) {
@@ -522,6 +562,7 @@ define([
                 }
             };
             fixRoot(files[ROOT]);
+
             var fixTrashRoot = function (tr) {
                 var toClean;
                 var addToClean = function (obj, idx) {
@@ -545,19 +586,20 @@ define([
             fixTrashRoot(files[TRASH]);
 
             var fixUnsorted = function (us) {
+                var rootFiles = getRootFiles().slice();
                 var toClean = [];
                 us.forEach(function (el, idx) {
-                    if (!isFile(el)) {
+                    if (!isFile(el) || rootFiles.indexOf(el) !== -1) {
                         toClean.push(idx);
                     }
                 });
             };
             fixUnsorted(files[UNSORTED]);
 
-            var rootFiles = getRootFiles().slice();
-            var unsortedFiles = getUnsortedFiles().slice();
-            var trashFiles = getTrashFiles().slice();
             var fixFilesData = function (fd) {
+                var rootFiles = getRootFiles().slice();
+                var unsortedFiles = getUnsortedFiles().slice();
+                var trashFiles = getTrashFiles().slice();
                 for (var el in fd) {
                     if (typeof(fd[el]) !== "object") {
                         debug("An element in filesData was not an object.", fd[el]);
@@ -578,12 +620,11 @@ define([
                 var backup = JSON.parse(localStorage.oldFileSystem);
                 backup.push(files);
                 localStorage.oldFileSystem = JSON.stringify(backup);
-                debug("Your file system was corrupted. It has been cleaned so that the file manager application can be used");
+                debug("Your file system was corrupted. It has been cleaned so that the pads you visit can be stored safely");
                 return;
             }
             debug("File system was clean");
         };
-        fixFiles();
 
         return exp;
     };

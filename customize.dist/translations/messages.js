@@ -181,7 +181,15 @@ define(function () {
     out.fm_unknownFolderError = "The selected or last visited directory no longer exist. Opening the parent folder...";
     out.fm_contextMenuError = "Unable to open the context menu for that element. If the problem persist, try to reload the page.";
     out.fm_selectError = "Unable to select the targetted element. If the problem persist, try to reload the page.";
-
+    // File - Context menu
+    out.fc_newfolder = "New folder";
+    out.fc_rename = "Rename";
+    out.fc_open = "Open";
+    out.fc_delete = "Delete";
+    out.fc_restore = "Restore";
+    out.fc_remove = "Delete permanently";
+    out.fc_empty = "Empty the trash";
+    // fileObject.js (logs)
     out.fo_moveUnsortedError = "You can't move a folder to the list of unsorted pads";
     out.fo_existingNameError = "Name already used in that directory. Please choose another one.";
     out.fo_moveFolderToChildError = "You can't move a folder into one of its descendants";

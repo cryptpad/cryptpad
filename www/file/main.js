@@ -1,19 +1,31 @@
 require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
-    '/customize/messages.js?app=pad',
+    '/api/config?cb=' + Math.random().toString(16).substring(2),
+    '/bower_components/chainpad-listmap/chainpad-listmap.js',
+    '/bower_components/chainpad-crypto/crypto.js',
+    '/bower_components/textpatcher/TextPatcher.amd.js',
+    '/customize/messages.js?app=file',
     'json.sortify',
     '/common/cryptpad-common.js',
     '/file/fileObject.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/bower_components/bootstrap/dist/js/bootstrap.min.js',
     '/customize/pad.js'
-], function (Messages, JSONSortify, Cryptpad, FO) {
+], function (Config, Listmap, Crypto, TextPatcher, Messages, JSONSortify, Cryptpad, FO) {
     var module = window.MODULE = {};
 
     var $ = window.jQuery;
     var saveAs = window.saveAs;
     var $iframe = $('#pad-iframe').contents();
     var ifrw = $('#pad-iframe')[0].contentWindow;
+
+    //var hash = Cryptpad.getAttribute('FS_hash', cb);
+    var hash = localStorage.FS_hash;
+    if (hash) {
+        window.location.hash = hash;
+    }
+
+    var secret = Cryptpad.getSecrets();
 
     var ROOT = "root";
     var ROOT_NAME = Messages.fm_rootName;
@@ -50,130 +62,130 @@ define([
                     "Dir D": {
                         "Dir E": {},
                     },
-                    "File a": "#hash_a",
-                    "File b": "#hash_b",
-                    "File c": "#hash_c",
-                    "File d": "#hash_d",
-                    "File e": "#hash_e",
-                    "File f": "#hash_f",
-                    "File g": "#hash_g",
-                    "File h": "#hash_h",
-                    "File i": "#hash_i",
-                    "File j": "#hash_j",
-                    "File k": "#hash_k"
+                    "File a": "https://cryptpad.fr/slide/#hash_a",
+                    "File b": "https://cryptpad.fr/pad/#hash_b",
+                    "File c": "https://cryptpad.fr/pad/#hash_c",
+                    "File d": "https://cryptpad.fr/pad/#hash_d",
+                    "File e": "https://cryptpad.fr/pad/#hash_e",
+                    "File f": "https://cryptpad.fr/pad/#hash_f",
+                    "File g": "https://cryptpad.fr/pad/#hash_g",
+                    "File h": "https://cryptpad.fr/pad/#hash_h",
+                    "File i": "https://cryptpad.fr/pad/#hash_i",
+                    "File j": "https://cryptpad.fr/pad/#hash_j",
+                    "File k": "https://cryptpad.fr/pad/#hash_k"
                 },
                 "Dir C": {},
                 "Dir B": {},
-                "File A": "#hash_A"
+                "File A": "https://cryptpad.fr/pad/#hash_A"
             },
             "Directory 2": {
-                "File B": "#hash_B",
-                "File C": "#hash_C"
+                "File B": "https://cryptpad.fr/pad/#hash_B",
+                "File C": "https://cryptpad.fr/pad/#hash_C"
             }
         },
-        unsorted: ["#href1", "#href2", "#href3"],
+        unsorted: ["https://cryptpad.fr/pad/#href1", "https://cryptpad.fr/pad/#href2", "https://cryptpad.fr/pad/#href3"],
         filesData: {
-            "#hash_a": {
+            "https://cryptpad.fr/slide/#hash_a": {
                 ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
                 atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
                 title: "Pad A"
             },
-            "#hash_b": {
+            "https://cryptpad.fr/pad/#hash_b": {
                 ctime: "Mon Nov 07 2016 16:38:21 GMT+0100 (CET)",
                 atime: "Tue Nov 08 2016 12:38:21 GMT+0100 (CET)",
                 title: "Pad B"
             },
-            "#hash_c": {
+            "https://cryptpad.fr/pad/#hash_c": {
                 ctime: "Tue Nov 08 2016 16:34:21 GMT+0100 (CET)",
                 atime: "Sun Nov 06 2016 12:34:21 GMT+0100 (CET)",
                 title: "Pad C With A Very Very Very Long Title"
             },
-            "#hash_e": {
+            "https://cryptpad.fr/pad/#hash_e": {
                 ctime: "Tue Nov 08 2016 16:26:21 GMT+0100 (CET)",
                 atime: "Tue Nov 08 2016 12:26:21 GMT+0100 (CET)",
                 title: "Pad E"
             },
-            "#hash_f": {
+            "https://cryptpad.fr/pad/#hash_f": {
                 ctime: "Tue Nov 08 2016 16:22:21 GMT+0100 (CET)",
                 atime: "Tue Nov 08 2016 12:22:21 GMT+0100 (CET)",
                 title: "Pad F"
             },
-            "#hash_g": {
+            "https://cryptpad.fr/pad/#hash_g": {
                 ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
                 atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
                 title: "Pad A"
             },
-            "#hash_h": {
+            "https://cryptpad.fr/pad/#hash_h": {
                 ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
                 atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
                 title: "Pad A"
             },
-            "#hash_i": {
+            "https://cryptpad.fr/pad/#hash_i": {
                 ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
                 atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
                 title: "Pad A"
             },
-            "#hash_j": {
+            "https://cryptpad.fr/pad/#hash_j": {
                 ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
                 atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
                 title: "Pad A"
             },
-            "#hash_k": {
+            "https://cryptpad.fr/pad/#hash_k": {
                 ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
                 atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
                 title: "Pad A"
             },
-            "#hash_Z": {
+            "https://cryptpad.fr/pad/#hash_Z": {
                 ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
                 atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
                 title: "Code Z"
             },
-            "#hash_A": {
+            "https://cryptpad.fr/pad/#hash_A": {
                 ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
                 atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
                 title: "Code A"
             },
-            "#hash_B": {
+            "https://cryptpad.fr/pad/#hash_B": {
                 ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
                 atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
                 title: "Code B"
             },
-            "#hash_C": {
+            "https://cryptpad.fr/pad/#hash_C": {
                 ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
                 atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
                 title: "Code C"
             },
-            "#hash_1": {
+            "https://cryptpad.fr/pad/#hash_1": {
                 ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
                 atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
                 title: "Code C"
             },
-            "#hash_2": {
+            "https://cryptpad.fr/pad/#hash_2": {
                 ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
                 atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
                 title: "Code C"
             },
-            "#hash_3": {
+            "https://cryptpad.fr/pad/#hash_3": {
                 ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
                 atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
                 title: "Code C"
             },
-            "#hash_4": {
+            "https://cryptpad.fr/pad/#hash_4": {
                 ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
                 atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
                 title: "Code C"
             },
-            "#href1": {
+            "https://cryptpad.fr/pad/#href1": {
                 ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
                 atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
                 title: "Pad unsorted 1"
             },
-            "#href2": {
+            "https://cryptpad.fr/pad/#href2": {
                 ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
                 atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
                 title: "Pad unsorted 2"
             },
-            "#href3": {
+            "https://cryptpad.fr/pad/#href3": {
                 ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
                 atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
                 title: "Pad unsorted 3"
@@ -181,7 +193,7 @@ define([
         },
         trash: {
             "File Z": [{
-                element: "#hash_Z",
+                element: "https://cryptpad.fr/pad/#hash_Z",
                 path: [ROOT]
             }]
         }
@@ -267,6 +279,7 @@ define([
 
     var init = function (files) {
         var filesOp = FO.init(files, config);
+        filesOp.fixFiles();
 
         var error = filesOp.error;
 
@@ -277,6 +290,7 @@ define([
         var $tree = $iframe.find("#tree");
         var $content = $iframe.find("#content");
         var $contextMenu = $iframe.find("#contextMenu");
+        var $contentContextMenu = $iframe.find("#contentContextMenu");
         var $trashTreeContextMenu = $iframe.find("#trashTreeContextMenu");
         var $trashContextMenu = $iframe.find("#trashContextMenu");
         var $folderIcon = $('<span>', {"class": "fa fa-folder folder", style:"color:#FEDE8B;text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;"});
@@ -294,6 +308,29 @@ define([
         var $expandIcon = $('<span>', {"class": "fa fa-plus-square-o expcol"});
         var $listIcon = $('<span>', {"class": "fa fa-list"});
         var $gridIcon = $('<span>', {"class": "fa fa-th"});
+
+        var appStatus = {
+            isReady: true,
+            _onReady: [],
+            onReady: function (handler) {
+                if (isReady) {
+                    handler();
+                    return;
+                }
+                appStatus._onReady.push(handler);
+            },
+            ready: function (state) {
+                appStatus.isReady = state;
+                if (state) {
+                    appStatus._onReady.forEach(function (h) {
+                        h();
+                    });
+                }
+            }
+        };
+
+        var isReady = false;
+
 
         var removeSelected =  function () {
             $iframe.find('.selected').removeClass("selected");
@@ -356,7 +393,8 @@ define([
                     removeInput();
                 }
             });
-            $input.insertAfter($element);
+            $element.parent().append($input);
+            //$input.insertAfter($element);
             $input.focus();
             $input.select();
             // We don't want to open the file/folder when clicking on the input
@@ -427,6 +465,11 @@ define([
         };
 
         var openDirectoryContextMenu = function (e) {
+            var $element = $(e.target).closest('li');
+            $contextMenu.find('li').show();
+            if ($element.hasClass('file-element')) {
+                $contextMenu.find('a.newfolder').parent('li').hide();
+            }
             openContextMenu(e, $contextMenu);
             return false;
         };
@@ -444,6 +487,22 @@ define([
                 $trashContextMenu.find('a.restore').parent('li').hide();
             }
             openContextMenu(e, $trashContextMenu);
+            return false;
+        };
+
+        var openContentContextMenu = function (e) {
+            module.hideMenu();
+            e.stopPropagation();
+            var path = $(e.target).closest('#' + FOLDER_CONTENT_ID).data('path');
+            if (!path) { return; }
+            var $menu = $contentContextMenu;
+            removeSelected();
+            $menu.css({
+                display: "block",
+                left: e.pageX,
+                top: e.pageY
+            });
+            $menu.find('a').data('path', path);
             return false;
         };
 
@@ -555,14 +614,17 @@ define([
             if (typeof(files[FILES_DATA][element]) === "undefined") {
                 return;
             }
+            var hrefData = Cryptpad.parsePadUrl(element);
             var data = files[FILES_DATA][element];
+            var type = Messages.type[hrefData.type] || hrefData.type;
             var $title = $('<span>', {'class': 'title listElement', title: data.title}).text(data.title);
+            var $type = $('<span>', {'class': 'date listElement', title: type}).text(type);
             var $adate = $('<span>', {'class': 'date listElement', title: getDate(data.atime)}).text(getDate(data.atime));
             var $cdate = $('<span>', {'class': 'date listElement', title: getDate(data.ctime)}).text(getDate(data.ctime));
             if (displayTitle) {
                 $span.append($title);
             }
-            $span.append($adate).append($cdate);
+            $span.append($type).append($adate).append($cdate);
         };
 
         var addFolderData = function (element, key, $span) {
@@ -594,8 +656,10 @@ define([
             var element = filesOp.findElement(files, newPath);
             var $icon = $fileIcon.clone();
             var spanClass = 'file-element element';
+            var liClass = 'file-item';
             if (isFolder) {
                 spanClass = 'folder-element element';
+                liClass = 'folder-item';
                 $icon = filesOp.isFolderEmpty(root[key]) ? $folderEmptyIcon.clone() : $folderIcon.clone();
             }
             var $name = $('<span>', { 'class': spanClass }).text(key);
@@ -614,6 +678,7 @@ define([
                 if (isTrash) { return; }
                 openFile(root[key]);
             });
+            $element.addClass(liClass);
             $element.data('path', newPath);
             addDragAndDropHandlers($element, newPath, isFolder, !isTrash);
             $element.click(function(e) {
@@ -627,9 +692,9 @@ define([
             }
             var isNewFolder = module.newFolder && filesOp.comparePath(newPath, module.newFolder);
             if (isNewFolder) {
-                window.setTimeout(function() {
-                    displayRenameInput($name, newPath);
-                }, 500);
+                appStatus.onReady(function () {
+                    window.setTimeout(function () { displayRenameInput($name, newPath); }, 0);
+                });
                 delete module.newFolder;
             }
             return $element;
@@ -752,9 +817,10 @@ define([
             var $fihElement = $('<span>', {'class': 'element'}).appendTo($fileHeader);
             var $fhName = $('<span>', {'class': 'name'}).text(Messages.fm_fileName);
             var $fhTitle = displayTitle ? $('<span>', {'class': 'title '}).text(Messages.fm_title) : '';
+            var $fhType = $('<span>', {'class': 'date'}).text(Messages.table_type);
             var $fhAdate = $('<span>', {'class': 'date'}).text(Messages.fm_lastAccess);
             var $fhCdate = $('<span>', {'class': 'date'}).text(Messages.fm_creation);
-            $fihElement.append($fhName).append($fhTitle).append($fhAdate).append($fhCdate);
+            $fihElement.append($fhName).append($fhTitle).append($fhType).append($fhAdate).append($fhCdate);
             return $fileHeader;
         };
 
@@ -827,6 +893,7 @@ define([
         // Display the selected directory into the content part (rightside)
         // NOTE: Elements in the trash are not using the same storage structure as the others
         var displayDirectory = module.displayDirectory = function (path) {
+            appStatus.ready(false);
             currentPath = path;
             $content.html("");
             if (!path || path.length === 0) {
@@ -852,6 +919,8 @@ define([
             var $title = createTitle(path);
 
             var $dirContent = $('<div>', {id: FOLDER_CONTENT_ID});
+            $dirContent.data('path', path);
+            $dirContent.contextmenu(openContentContextMenu);
             var mode = getViewMode();
             if (mode) {
                 $dirContent.addClass(getViewModeClass());
@@ -891,6 +960,7 @@ define([
                 });
             }
             $content.append($title).append($dirContent);
+            appStatus.ready(true);
         };
 
         var createTreeElement = function (name, $icon, path, draggable, collapsable, active) {
@@ -1040,6 +1110,7 @@ define([
             $contextMenu.hide();
             $trashTreeContextMenu.hide();
             $trashContextMenu.hide();
+            $contentContextMenu.hide();
         };
 
         $contextMenu.on("click", "a", function(e) {
@@ -1059,6 +1130,26 @@ define([
             }
             else if ($(this).hasClass('open')) {
                 $element.dblclick();
+            }
+            else if ($(this).hasClass('newfolder')) {
+                var onCreated = function (info) {
+                    module.newFolder = info.newPath;
+                    module.displayDirectory(path);;
+                };
+                filesOp.createNewFolder(path, null, onCreated);
+            }
+            module.hideMenu();
+        });
+
+        $contentContextMenu.on('click', 'a', function (e) {
+            e.stopPropagation();
+            var path = $(this).data('path');
+            if ($(this).hasClass("newfolder")) {
+                var onCreated = function (info) {
+                    module.newFolder = info.newPath;
+                    refresh();
+                };
+                filesOp.createNewFolder(path, null, onCreated);
             }
             module.hideMenu();
         });
@@ -1127,8 +1218,8 @@ define([
         $(ifrw).on('keyup', function (e) {
             pressKey(e.which, false);
         });
-        $(ifrw).on('keypress', function (e) {
-            if (e.which === 0) {
+        $(ifrw).on('keydown', function (e) {
+            if (e.which === 46) {
                 var $selected = $iframe.find('.selected');
                 if (!$selected.length) { return; }
                 var paths = [];
@@ -1136,7 +1227,14 @@ define([
                     if (!$(elmt).data('path')) { return; }
                     paths.push($(elmt).data('path'));
                 });
-                if (filesOp.isPathInTrash(currentPath)) {
+                // If we are in the trash or if we are holding the "shift" key, delete permanently,
+                // else move to trash
+                if (filesOp.isPathInTrash(currentPath) || e.shiftKey) {
+                    var todo = filesOp.removeFromTrash;
+                    if (!filesOp.isPathInTrash(currentPath)) {
+                        // If we are not in the trash, we just have to remove the key from root/unsorted
+                        todo = filesOp.deletePathPermanently;
+                    }
                     // If we are already in the trash, delete the elements permanently
                     var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [paths.length]);
                     if (paths.length === 1) {
@@ -1146,7 +1244,7 @@ define([
                     }
                     Cryptpad.confirm(msg, function(res) {
                         paths.forEach(function(p) {
-                            filesOp.removeFromTrash(p);
+                            todo(p);
                         });
                         refresh();
                     });
@@ -1156,6 +1254,67 @@ define([
             }
         });
     };
+
+    /*
     initLSOpened();
     init(filesObject);
+    */
+
+
+
+    var listmapConfig = module.config = {
+        data: {},
+        websocketURL: Cryptpad.getWebsocketURL(),
+        channel: secret.channel,
+        readOnly: false,
+        validateKey: secret.keys.validateKey || undefined,
+        crypto: Crypto.createEncryptor(secret.keys),
+    };
+
+    // don't initialize until the store is ready.
+    Cryptpad.ready(function () {
+        var rt = window.rt = module.rt = Listmap.create(listmapConfig);
+        rt.proxy.on('create', function (info) {
+            var realtime = module.realtime = info.realtime;
+
+            var editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+            window.location.hash = editHash;
+            //Cryptpad.setAttribute("FS_hash", editHash, cb, store);
+            localStorage.FS_hash = editHash;
+
+            module.patchText = TextPatcher.create({
+                realtime: realtime,
+                logging: true,
+            });
+            /*Cryptpad.getPadTitle(function (err, title) {
+                title = document.title = title || info.channel.slice(0, 8);
+
+                Cryptpad.setPadTitle(title, function (err, data) {
+                    if (err) {
+                        console.log("unable to remember pad");
+                        console.log(err);
+                        return;
+                    }
+                });
+            });*/
+        }).on('ready', function () {
+            if (JSON.stringify(rt.proxy) === '{}') {
+                var store = Cryptpad.getStore();
+                store.get(Cryptpad.storageKey, function (err, s) {
+                    rt.proxy.filesData = s;
+                    initLSOpened();
+                    init(rt.proxy);
+                });
+                return;
+            }
+            initLSOpened();
+            init(rt.proxy);
+        })
+        .on('disconnect', function () {
+            //setEditable(false);
+            Cryptpad.alert(Messages.common_connectionLost);
+        });
+    });
+
+
 });

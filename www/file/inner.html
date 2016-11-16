@@ -3,9 +3,9 @@
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
     <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="file.css" />
-    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
 </head>
 <body>
     <div id="tree">
@@ -14,20 +14,26 @@
     </div>
     <div id="contextMenu" class="contextMenu dropdown clearfix" oncontextmenu="return false;">
         <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
-            <li><a tabindex="-1" href="#" class="open">Open</a></li>
-            <li><a tabindex="-1" href="#" class="rename">Rename</a></li>
-            <li><a tabindex="-1" href="#" class="delete">Delete</a></li>
+            <li><a tabindex="-1" href="#" class="open" data-localization="fc_open">Open</a></li>
+            <li><a tabindex="-1" href="#" class="rename" data-localization="fc_rename">Rename</a></li>
+            <li><a tabindex="-1" href="#" class="delete" data-localization="fc_delete">Delete</a></li>
+            <li><a tabindex="-1" href="#" class="newfolder" data-localization="fc_newfolder">New folder</a></li>
+        </ul>
+    </div>
+    <div id="contentContextMenu" class="contextMenu dropdown clearfix" oncontextmenu="return false;">
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
+            <li><a tabindex="-1" href="#" class="newfolder" data-localization="fc_newfolder">New folder</a></li>
         </ul>
     </div>
     <div id="trashTreeContextMenu" class="contextMenu dropdown clearfix" oncontextmenu="return false;">
         <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
-            <li><a tabindex="-1" href="#" class="empty">Empty the trash</a></li>
+            <li><a tabindex="-1" href="#" class="empty" data-localization="fc_empty">Empty the trash</a></li>
         </ul>
     </div>
     <div id="trashContextMenu" class="contextMenu dropdown clearfix" oncontextmenu="return false;">
         <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
-            <li><a tabindex="-1" href="#" class="remove">Delete permanently</a></li>
-            <li><a tabindex="-1" href="#" class="restore">Restore</a></li>
+            <li><a tabindex="-1" href="#" class="remove" data-localization="fc_remove">Delete permanently</a></li>
+            <li><a tabindex="-1" href="#" class="restore" data-localization="fc_restore">Restore</a></li>
         </ul>
     </div>
 </body>

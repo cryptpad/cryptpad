@@ -11,6 +11,11 @@ html, body {
     overflow: auto;
 }
 
+body {
+    display: flex;
+    flex-flow: row;
+}
+
 .fa {
     /*min-width: 17px;*/
     margin-right: 3px;
@@ -54,15 +59,13 @@ li {
 /* TREE */
 
 #tree {
-    position:absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 70%;
     border: 2px solid blue;
     box-sizing: border-box;
     background: white;
     overflow: auto;
+    resize: horizontal;
+    width: 30%;
+    white-space: nowrap;
 }
 
 #tree li {
@@ -162,15 +165,13 @@ li {
 /* CONTENT */
 
 #content {
-    position: absolute;
-    top: 0;
-    left: 30%;
-    bottom: 0;
-    right: 0;
     border: 2px solid green;
     box-sizing: border-box;
     background: #eee;
     overflow: auto;
+    flex: 1;
+    display: flex;
+    flex-flow: column;
 }
 
 .topButtonContainer {
@@ -190,6 +191,7 @@ li {
 
 #folderContent {
     padding-right: 10px;
+    flex: 1;
 }
 
 #content li:hover:not(.header) .name {
@@ -270,12 +272,12 @@ li {
 #content div.grid .listElement {
     display: none;
 }
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1200px) {
     #content .list .element span.title {
         display: none;
     }
 }
-@media screen and (min-width: 1001px) {
+@media screen and (min-width: 1201px) {
     #content .list .element span.title {
         display: inline;
     }

@@ -181,7 +181,15 @@ define(function () {
     out.fm_unknownFolderError = "Le dossier sélectionné ou le dernier dossier visité n'existe plus. Ouverture du dossier parent...";
     out.fm_contextMenuError = "Impossible d'ouvrir le menu contextuel pour cet élément. Si le problème persiste, essayez de rechercher la page.";
     out.fm_selectError = "Impossible de sélectionner l'élément ciblé. Si le problème persiste, essayez de recharger la page.";
-
+    // File - Context menu
+    out.fc_newfolder = "Nouveau dossier";
+    out.fc_rename = "Renommer";
+    out.fc_open = "Ouvrir";
+    out.fc_delete = "Supprimer";
+    out.fc_restore = "Restaurer";
+    out.fc_remove = "Supprimer définitivement";
+    out.fc_empty = "Vider la corbeille";
+    // fileObject.js (logs)
     out.fo_moveUnsortedError = "La liste des éléments non triés ne peut pas contenir de dossiers.";
     out.fo_existingNameError = "Ce nom est déjà utilisé dans ce répertoire. Veuillez en choisir un autre.";
     out.fo_moveFolderToChildError = "Vous ne pouvez pas déplacer un dossier dans un de ses descendants";
