@@ -21,17 +21,13 @@ define([
 
     //var hash = Cryptpad.getAttribute('FS_hash', cb);
     var hash = localStorage.FS_hash;
-    if (hash) {
-        window.location.hash = hash;
-    }
-
-    var secret = Cryptpad.getSecrets();
+    var secret = Cryptpad.getSecrets(hash);
 
     var ROOT = "root";
     var ROOT_NAME = Messages.fm_rootName;
     var UNSORTED = "unsorted";
     var UNSORTED_NAME = Messages.fm_unsortedName;
-    var FILES_DATA = "filesData";
+    var FILES_DATA = Cryptpad.storageKey;
     var FILES_DATA_NAME = Messages.fm_filesDataName;
     var TRASH = "trash";
     var TRASH_NAME = Messages.fm_trashName;
@@ -44,6 +40,7 @@ define([
     var NEW_FOLDER_NAME = Messages.fm_newFolder;
 
     var config = {};
+    config.storageKey = FILES_DATA;
     var DEBUG = config.DEBUG = true;
     var debug = config.debug = DEBUG ? console.log : function() {return;};
     var logError = config.logError = console.error;
@@ -55,7 +52,7 @@ define([
         }
     };
 
-    var filesObject = module.files = {
+    var filesObject = {
         root: {
             "Directory 1": {
                 "Dir A": {
@@ -213,7 +210,7 @@ define([
         localStorage[LOCALSTORAGE_LAST] = JSON.stringify(path);
     };
 
-    var initLSOpened = function () {
+    var initLocalStorage = function () {
         try {
             var store = JSON.parse(localStorage[LOCALSTORAGE_OPENED]);
             if (!$.isArray(store)) {
@@ -562,14 +559,13 @@ define([
         var addDragAndDropHandlers = function ($element, path, isFolder, droppable) {
             // "dragenter" is fired for an element and all its children
             // "dragleave" may be fired when entering a child
+            // --> we use pointer-events: none in CSS, but we still need a counter to avoid some issues
             // --> We store the number of enter/leave and the element entered and we remove the
             // highlighting only when we have left everything
             var counter = 0;
-            var dragenterList = [];
             $element.on('dragstart', function (e) {
                 e.stopPropagation();
                 counter = 0;
-                dragenterList = [];
                 onDrag(e.originalEvent, path);
             });
 
@@ -585,18 +581,15 @@ define([
             $element.on('dragenter', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                if (dragenterList.indexOf(e.target) !== -1) { return; }
-                dragenterList.push(e.target);
                 counter++;
                 $element.addClass('droppable');
             });
             $element.on('dragleave', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                var idx = dragenterList.indexOf(e.target);
-                dragenterList.splice(idx, 1);
                 counter--;
                 if (counter <= 0) {
+                    counter = 0;
                     $element.removeClass('droppable');
                 }
             });
@@ -1283,7 +1276,6 @@ define([
             var realtime = module.realtime = info.realtime;
 
             var editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
-            window.location.hash = editHash;
             //Cryptpad.setAttribute("FS_hash", editHash, cb, store);
             localStorage.FS_hash = editHash;
 
@@ -1303,16 +1295,17 @@ define([
                 });
             });*/
         }).on('ready', function () {
+            module.files = rt.proxy;
             if (JSON.stringify(rt.proxy) === '{}') {
-                var store = Cryptpad.getStore();
+                var store = Cryptpad.getStore(true);
                 store.get(Cryptpad.storageKey, function (err, s) {
-                    rt.proxy.filesData = s;
-                    initLSOpened();
+                    rt.proxy[FILES_DATA] = s;
+                    initLocalStorage();
                     init(rt.proxy);
                 });
                 return;
             }
-            initLSOpened();
+            initLocalStorage();
             init(rt.proxy);
         })
         .on('disconnect', function () {

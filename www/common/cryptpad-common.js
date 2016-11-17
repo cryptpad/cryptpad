@@ -7,10 +7,11 @@ define([
     '/bower_components/spin.js/spin.min.js',
     '/common/clipboard.js',
 
+    '/customize/fsStore.js',
     '/customize/user.js',
 
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Messages, Store, Crypto, Alertify, Spinner, Clipboard, User) {
+], function (Config, Messages, Store, Crypto, Alertify, Spinner, Clipboard, FS, User) {
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
@@ -23,6 +24,7 @@ define([
         User: User,
     };
     var store;
+    var fsStore;
     var userProxy;
     var userStore;
 
@@ -34,7 +36,8 @@ define([
 
     var getStore = common.getStore = function (legacy) {
         if (!legacy && userStore) { return userStore; }
-        if (store) { return store; }
+        if (legacy) { return store; }
+        if (!legacy && fsStore) { return fsStore; }
         throw new Error("Store is not ready!");
     };
 
@@ -93,7 +96,6 @@ define([
         }
         store = Store;
     });
-
 
     var isArray = function (o) { return Object.prototype.toString.call(o) === '[object Array]'; };
 
@@ -163,13 +165,13 @@ define([
     };
     var getHashFromKeys = common.getHashFromKeys = getEditHashFromKeys;
 
-    var getSecrets = common.getSecrets = function () {
+    var getSecrets = common.getSecrets = function (secretHash) {
         var secret = {};
-        if (!/#/.test(window.location.href)) {
+        if (!secretHash && !/#/.test(window.location.href)) {
             secret.keys = Crypto.createEditCryptor();
             secret.key = Crypto.createEditCryptor().editKeyStr;
         } else {
-            var hash = window.location.hash.slice(1);
+            var hash = secretHash || window.location.hash.slice(1);
             if (hash.length === 0) {
                 secret.keys = Crypto.createEditCryptor();
                 secret.key = Crypto.createEditCryptor().editKeyStr;
@@ -380,40 +382,31 @@ define([
     var forgetPad = common.forgetPad = function (href, cb, legacy) {
         var parsed = parsePadUrl(href);
 
-        getRecentPads(function (err, recentPads) {
-            setRecentPads(recentPads.filter(function (pad) {
-                var p = parsePadUrl(pad.href);
-                // find duplicates
-                if (parsed.hash === p.hash && parsed.type === p.type) {
-                    console.log("Found a duplicate");
-                    return;
-                }
-                return true;
-            }), function (err, data) {
-                if (err) {
-                    cb(err);
-                    return;
-                }
+        var callback = function (err, data) {
+            if (err) {
+                cb(err);
+                return;
+            }
 
-                getStore(legacy).keys(function (err, keys) {
-                    if (err) {
-                        cb(err);
-                        return;
-                    }
-                    var toRemove = keys.filter(function (k) {
-                        return k.indexOf(parsed.hash) === 0;
-                    });
-
-                    if (!toRemove.length) {
-                        cb();
-                        return;
-                    }
-                    getStore(legacy).removeBatch(toRemove, function (err, data) {
-                        cb(err, data);
-                    });
+            getStore(legacy).keys(function (err, keys) {
+                var toRemove = keys.filter(function (k) {
+                    return k.indexOf(parsed.hash) === 0;
                 });
-            }, legacy);
-        }, legacy);
+
+                if (!toRemove.length) {
+                    cb();
+                    return;
+                }
+                getStore(legacy).removeBatch(toRemove, function (err, data) {
+                    cb(err, data);
+                });
+            });
+        };
+
+        if (typeof(getStore(legacy).forgetPad) === "function") {
+            // TODO implement forgetPad in store.js
+            getStore(legacy).forgetPad(href, callback);
+        }
     };
 
     // STORAGE
@@ -462,7 +455,12 @@ define([
             });
 
             if (!contains) {
-                renamed.push(makePad(href, name));
+                var data = makePad(href, name);
+                renamed.push(data);
+                if (typeof(getStore(legacy).addPad) === "function") {
+                    //TODO implement addPad in store.js
+                    getStore().addPad(href);
+                }
             }
 
             setRecentPads(renamed, function (err, data) {
@@ -535,8 +533,8 @@ define([
             f(void 0, env);
         };
 
-        Store.ready(function (err, store) {
-            common.store = env.store = store;
+        FS.ready(function (err, store) {
+            fsStore = common.store = env.store = store;
 
             $(function() {
                 // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
@@ -597,7 +595,7 @@ define([
                 cb();
 
             }); */
-        });
+        }, common);
     };
 
     /*

@@ -12,6 +12,7 @@ define([
     var NEW_FOLDER_NAME = Messages.fm_newFolder;
 
     var init = module.init = function (files, config) {
+        FILES_DATA = config.storageKey;
         var DEBUG = config.DEBUG || false;
         var logging = console.log;
         var log = config.log || logging;
@@ -188,6 +189,16 @@ define([
                     return;
                 }
                 root[e].forEach(addFiles);
+            }
+            return ret;
+        };
+
+        var getFilesDataFiles = function () {
+            var ret = [];
+            for (var el in files[FILES_DATA]) {
+                if (el.href && ret.indexOf(el.href) === -1) {
+                    ret.push(el.href);
+                }
             }
             return ret;
         };
@@ -536,16 +547,37 @@ define([
             pushToTrash(key, href, [UNSORTED]);
         };
 
-        var addPad = exp.addPad = function (href, data) {
-            if (!getFileData(href)) {
-                files[FILES_DATA].push(data);
-            }
+        var addUnsortedPad = exp.addPad = function (href) {
             var unsortedFiles = getUnsortedFiles().slice();
             var rootFiles = getRootFiles().slice();
-            //var trashFiles = getTrashFiles().slice();
-            if (unsortedFiles.indexOf(href) === -1 && rootFiles.indexOf(href) === -1) {
+            var trashFiles = getTrashFiles().slice();
+            if (unsortedFiles.indexOf(href) === -1 && rootFiles.indexOf(href) === -1 && trashFiles.indexOf(href) === -1) {
                 files[UNSORTED].push(href);
             }
+        };
+
+        var checkNewPads = exp.checkNewPads = function () {
+            var fd = files[FILES_DATA];
+            var rootFiles = getRootFiles().slice();
+            var unsortedFiles = getUnsortedFiles().slice();
+            var trashFiles = getTrashFiles().slice();
+            fd.forEach(function (el, idx) {
+                if (!el.href) { return; }
+                if (rootFiles.indexOf(el.href) === -1
+                    && unsortedFiles.indexOf(el.href) === -1
+                    && trashFiles.indexOf(el.href) === -1) {
+                    debug("An element in filesData was not in ROOT, UNSORTED or TRASH.", el);
+                    files[UNSORTED].push(el.href);
+                }
+            });
+        };
+
+        var checkRemovedPads = exp.checkRemovedPads = function () {
+            var fd = files[FILES_DATA];
+            var rootFiles = getRootFiles().slice();
+            var unsortedFiles = getUnsortedFiles().slice();
+            var trashFiles = getTrashFiles().slice();
+
         };
 
         var fixFiles = exp.fixFiles = function () {

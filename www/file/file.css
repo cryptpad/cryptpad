@@ -54,9 +54,11 @@ li {
     border: 1px dotted #bbb;
     background: #666;
     color: #eee;
+    margin: -1px;
 }
 
 /* TREE */
+
 
 #tree {
     border: 2px solid blue;
@@ -192,6 +194,10 @@ li {
 #folderContent {
     padding-right: 10px;
     flex: 1;
+}
+
+#content li * {
+    pointer-events: none;
 }
 
 #content li:hover:not(.header) .name {
