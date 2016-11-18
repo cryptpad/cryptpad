@@ -322,6 +322,7 @@ define([
                     appStatus._onReady.forEach(function (h) {
                         h();
                     });
+                    _onReady = [];
                 }
             }
         };
@@ -857,6 +858,28 @@ define([
             });
         };
 
+        var displayAllFiles = function ($container) {
+            var allfiles = files[FILES_DATA];
+            if (allfiles.length === 0) { return; }
+            var $fileHeader = getFileListHeader(false);
+            $container.append($fileHeader);
+            allfiles.forEach(function (file, idx) {
+                var $icon = $fileIcon.clone();
+                var $name = $('<span>', { 'class': 'file-element element' });
+                addFileData(file.href, file.title, $name, false);
+                var $element = $('<li>', {
+                    draggable: false
+                }).append($icon).append($name).dblclick(function () {
+                    openFile(file.href);
+                });
+                $element.click(function(e) {
+                    e.stopPropagation();
+                    onElementClick($element);
+                });
+                $container.append($element);
+            });
+        };
+
         var displayTrashRoot = function ($list, $folderHeader, $fileHeader) {
             // Elements in the trash are JS arrays (several elements can have the same name)
             [true,false].forEach(function (folder) {
@@ -890,7 +913,8 @@ define([
 
         // Display the selected directory into the content part (rightside)
         // NOTE: Elements in the trash are not using the same storage structure as the others
-        var displayDirectory = module.displayDirectory = function (path) {
+        var displayDirectory = module.displayDirectory = function (path, force) {
+            if (!appStatus.isReady && !force) { return; }
             appStatus.ready(false);
             currentPath = path;
             $content.html("");
@@ -899,6 +923,7 @@ define([
             }
             var isTrashRoot = filesOp.comparePath(path, [TRASH]);
             var isUnsorted = filesOp.comparePath(path, [UNSORTED]);
+            var isAllFiles = filesOp.comparePath(path, [FILES_DATA]);
 
             var root = filesOp.findElement(files, path);
             if (typeof(root) === "undefined") {
@@ -906,7 +931,7 @@ define([
                 debug("Unable to locate the selected directory: ", path);
                 var parentPath = path.slice();
                 parentPath.pop();
-                displayDirectory(parentPath);
+                displayDirectory(parentPath, true);
                 return;
             }
 
@@ -938,6 +963,8 @@ define([
 
             if (isUnsorted) {
                 displayUnsorted($list);
+            } else if (isAllFiles) {
+                displayAllFiles($list);
             } else if (isTrashRoot) {
                 displayTrashRoot($list, $folderHeader, $fileHeader);
             } else {
@@ -1075,6 +1102,15 @@ define([
             $container.append($unsortedList);
         };
 
+        var createAllFiles = function ($container, path) {
+            var $icon = $unsortedIcon.clone();
+            var isOpened = filesOp.comparePath(path, currentPath);
+            var $allfilesElement = createTreeElement(FILES_DATA_NAME, $icon, [FILES_DATA], false, false, isOpened);
+            $allfilesElement.addClass('root');
+            var $allfilesList = $('<ul>', { id: 'allfilesTree' }).append($allfilesElement);
+            $container.append($allfilesList);
+        };
+
         var createTrash = function ($container, path) {
             var $icon = filesOp.isFolderEmpty(files[TRASH]) ? $trashEmptyIcon.clone() : $trashIcon.clone();
             var isOpened = filesOp.comparePath(path, currentPath);
@@ -1099,10 +1135,9 @@ define([
             $tree.html('');
             createTree($tree, [ROOT]);
             createUnsorted($tree, [UNSORTED]);
+            createAllFiles($tree, [FILES_DATA]);
             createTrash($tree, [TRASH]);
         };
-        module.displayDirectory(currentPath);
-        //resetTree(); //already called by displayDirectory
 
         var hideMenu = module.hideMenu = function () {
             $contextMenu.hide();
@@ -1251,6 +1286,31 @@ define([
                 moveElements(paths, [TRASH], false, refresh);
             }
         });
+
+        files.on('change', [], function () {
+            var path = arguments[2];
+            if ((filesOp.isPathInUnsorted(currentPath) && filesOp.isPathInUnsorted(path)) ||
+                    (path.length >= currentPath.length && filesOp.isSubpath(path, currentPath)) ||
+                    (filesOp.isPathInTrash(currentPath) && filesOp.isPathInTrash(path))) {
+                // Reload after 50ms to make sure all the change events have been received
+                window.setTimeout(function () {
+                    module.displayDirectory(currentPath);
+                }, 50);
+            }
+            module.resetTree();
+        }).on('remove', [], function () {
+            var path = arguments[1];
+            if ((filesOp.isPathInUnsorted(currentPath) && filesOp.isPathInUnsorted(path)) ||
+                    (path.length >= currentPath.length && filesOp.isSubpath(path, currentPath)) ||
+                    (filesOp.isPathInTrash(currentPath) && filesOp.isPathInTrash(path))) {
+                // Reload after 50ms to make sure all the change events have been received
+                window.setTimeout(function () {
+                    module.displayDirectory(currentPath);
+                }, 50);            }
+            module.resetTree();
+        });
+
+        module.displayDirectory(currentPath);
     };
 
     /*

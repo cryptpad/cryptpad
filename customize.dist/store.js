@@ -71,12 +71,6 @@ define(function () {
         }
     };
 
-    Store.addPad = function () {};
-
-    Store.forgetPad = function (href, cb) {
-
-    };
-
     var changeHandlers = Store.changeHandlers = [];
 
     Store.change = function (f) {

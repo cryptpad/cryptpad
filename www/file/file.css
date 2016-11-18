@@ -86,11 +86,7 @@ li {
     text-decoration: underline;
 }
 
-#tree #trashTree {
-    margin-top: 2em;
-}
-
-#tree #unsortedTree {
+#tree #trashTree, #tree #unsortedTree, #tree #allfilesTree {
     margin-top: 2em;
 }
 

@@ -20,6 +20,12 @@ define([
 */
     var $ = window.jQuery;
 
+    // When set to true, USE_FS_STORE becomes the default store, but the localStorage store is
+    // still loaded for migration purpose. When false, the localStorage is used.
+    var USE_FS_STORE = true;
+
+    var storeToUse = USE_FS_STORE ? FS : Store;
+
     var common = {
         User: User,
     };
@@ -36,8 +42,8 @@ define([
 
     var getStore = common.getStore = function (legacy) {
         if (!legacy && userStore) { return userStore; }
-        if (legacy) { return store; }
-        if (!legacy && fsStore) { return fsStore; }
+        if ((!USE_FS_STORE || legacy) && store) { return store; }
+        if (USE_FS_STORE && !legacy && fsStore) { return fsStore; }
         throw new Error("Store is not ready!");
     };
 
@@ -379,6 +385,9 @@ define([
     };
 
     // STORAGE
+    var forgetFSPad = function (href, cb) {
+        getStore().forgetPad(href, cb);
+    };
     var forgetPad = common.forgetPad = function (href, cb, legacy) {
         var parsed = parsePadUrl(href);
 
@@ -389,6 +398,10 @@ define([
             }
 
             getStore(legacy).keys(function (err, keys) {
+                if (err) {
+                    cb(err);
+                    return;
+                }
                 var toRemove = keys.filter(function (k) {
                     return k.indexOf(parsed.hash) === 0;
                 });
@@ -402,6 +415,26 @@ define([
                 });
             });
         };
+
+        if (USE_FS_STORE && !legacy) {
+            // TODO implement forgetPad in store.js
+            forgetFSPad(href, callback);
+            return;
+        }
+
+        getRecentPads(function (err, recentPads) {
+            setRecentPads(recentPads.filter(function (pad) {
+                var p = parsePadUrl(pad.href);
+                // find duplicates
+                if (parsed.hash === p.hash && parsed.type === p.type) {
+                    console.log("Found a duplicate");
+                    return;
+                }
+                return true;
+            }), callback, legacy);
+        }, legacy);
+
+
 
         if (typeof(getStore(legacy).forgetPad) === "function") {
             // TODO implement forgetPad in store.js
@@ -457,8 +490,7 @@ define([
             if (!contains) {
                 var data = makePad(href, name);
                 renamed.push(data);
-                if (typeof(getStore(legacy).addPad) === "function") {
-                    //TODO implement addPad in store.js
+                if (USE_FS_STORE && typeof(getStore().addPad) === "function") {
                     getStore().addPad(href);
                 }
             }
@@ -533,8 +565,11 @@ define([
             f(void 0, env);
         };
 
-        FS.ready(function (err, store) {
-            fsStore = common.store = env.store = store;
+        storeToUse.ready(function (err, store) {
+            common.store = env.store = store;
+            if (USE_FS_STORE) {
+                fsStore = store;
+            }
 
             $(function() {
                 // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
