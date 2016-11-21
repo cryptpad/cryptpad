@@ -173,6 +173,11 @@ define([
 
     var getSecrets = common.getSecrets = function (secretHash) {
         var secret = {};
+        if (/#\?path=/.test(window.location.href)) {
+            var arr = window.location.hash.match(/\?path=(.+)/);
+            common.initialPath = arr[1] || undefined;
+            window.location.hash = '';
+        }
         if (!secretHash && !/#/.test(window.location.href)) {
             secret.keys = Crypto.createEditCryptor();
             secret.key = Crypto.createEditCryptor().editKeyStr;
@@ -491,7 +496,7 @@ define([
                 var data = makePad(href, name);
                 renamed.push(data);
                 if (USE_FS_STORE && typeof(getStore().addPad) === "function") {
-                    getStore().addPad(href);
+                    getStore().addPad(href, common.initialPath, name);
                 }
             }
 

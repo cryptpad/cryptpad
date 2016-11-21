@@ -31,7 +31,6 @@ define([
     var FILES_DATA_NAME = Messages.fm_filesDataName;
     var TRASH = "trash";
     var TRASH_NAME = Messages.fm_trashName;
-    var TIME_BEFORE_RENAME = 1000;
     var LOCALSTORAGE_LAST = "cryptpad-file-lastOpened";
     var LOCALSTORAGE_OPENED = "cryptpad-file-openedFolders";
     var LOCALSTORAGE_VIEWMODE = "cryptpad-file-viewMode";
@@ -520,7 +519,8 @@ define([
                 var name = path[0] === UNSORTED ? filesOp.getTitle(filesOp.findElement(files, path)) : path[path.length - 1];
                 msg = Messages._getKey('fm_removeDialog', [name]);
             }
-            Cryptpad.confirm(msg, function () {
+            Cryptpad.confirm(msg, function (res) {
+                if (!res) { return; }
                 andThen();
             });
         };
@@ -943,7 +943,6 @@ define([
 
             var $dirContent = $('<div>', {id: FOLDER_CONTENT_ID});
             $dirContent.data('path', path);
-            $dirContent.contextmenu(openContentContextMenu);
             var mode = getViewMode();
             if (mode) {
                 $dirContent.addClass(getViewModeClass());
@@ -968,6 +967,7 @@ define([
             } else if (isTrashRoot) {
                 displayTrashRoot($list, $folderHeader, $fileHeader);
             } else {
+                $dirContent.contextmenu(openContentContextMenu);
                 var $newFolderButton = createNewFolderButton().appendTo($title);
                 if (filesOp.hasSubfolder(root)) { $list.append($folderHeader); }
                 // display sub directories
@@ -1276,6 +1276,7 @@ define([
                         msg = Messages._getKey("fm_removePermanentlyDialog", [name]);
                     }
                     Cryptpad.confirm(msg, function(res) {
+                        if (!res) { return; }
                         paths.forEach(function(p) {
                             todo(p);
                         });

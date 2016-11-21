@@ -547,10 +547,19 @@ define([
             pushToTrash(key, href, [UNSORTED]);
         };
 
-        var addUnsortedPad = exp.addPad = function (href) {
+        var addUnsortedPad = exp.addPad = function (href, path, name) {
             var unsortedFiles = getUnsortedFiles().slice();
             var rootFiles = getRootFiles().slice();
             var trashFiles = getTrashFiles().slice();
+            if (path && name) {
+                var newPath = decodeURIComponent(path).split(',');
+                var parentEl = findElement(files, newPath);
+                if (parentEl) {
+                    var newName = getAvailableName(parentEl, name);
+                    parentEl[newName] = href;
+                    return;
+                }
+            }
             if (unsortedFiles.indexOf(href) === -1 && rootFiles.indexOf(href) === -1 && trashFiles.indexOf(href) === -1) {
                 files[UNSORTED].push(href);
             }

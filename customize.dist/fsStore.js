@@ -76,8 +76,8 @@ define([
         cb(void 0, Object.keys(storeObj));
     };
 
-    Store.addPad = function (href, data) {
-        filesOp.addPad(href, data);
+    Store.addPad = function (href, path, name) {
+        filesOp.addPad(href, path, name);
     };
 
     Store.forgetPad = function (href, cb) {
