@@ -375,8 +375,9 @@ define([
                 logError("Renaming a top level element (root, trash or filesData) is forbidden.");
                 return;
             }
-            $element.hide();
+            removeInput();
             removeSelected();
+            $element.hide();
             var name = path[path.length - 1];
             var $input = $('<input>', {
                 placeholder: name,
@@ -391,7 +392,6 @@ define([
                 }
             });
             $element.parent().append($input);
-            //$input.insertAfter($element);
             $input.focus();
             $input.select();
             // We don't want to open the file/folder when clicking on the input
@@ -612,9 +612,9 @@ define([
             var data = filesOp.getFileData(element);
             var type = Messages.type[hrefData.type] || hrefData.type;
             var $title = $('<span>', {'class': 'title listElement', title: data.title}).text(data.title);
-            var $type = $('<span>', {'class': 'date listElement', title: type}).text(type);
-            var $adate = $('<span>', {'class': 'date listElement', title: getDate(data.atime)}).text(getDate(data.atime));
-            var $cdate = $('<span>', {'class': 'date listElement', title: getDate(data.ctime)}).text(getDate(data.ctime));
+            var $type = $('<span>', {'class': 'type listElement', title: type}).text(type);
+            var $adate = $('<span>', {'class': 'atime listElement', title: getDate(data.atime)}).text(getDate(data.atime));
+            var $cdate = $('<span>', {'class': 'ctime listElement', title: getDate(data.ctime)}).text(getDate(data.ctime));
             if (displayTitle) {
                 $span.append($title);
             }
@@ -721,6 +721,7 @@ define([
             else if (name === UNSORTED && path.length === 1) { name = UNSORTED_NAME; }
             else if (name === FILES_DATA && path.length === 1) { name = FILES_DATA_NAME; }
             else if (filesOp.isPathInTrash(path)) { name = getTrashTitle(path); }
+            document.title = name;
             var $title = $('<h1>').text(name);
             if (path.length > 1) {
                 var $parentFolder = $upIcon.clone().addClass("parentFolder")
@@ -797,10 +798,49 @@ define([
             return $block;
         };
 
+        var SORT_FOLDER_DESC = 'sortFoldersDesc';
+        var SORT_FILE_BY = 'sortFilesBy';
+        var SORT_FILE_DESC = 'sortFilesDesc';
+        var onSortByClick = function (e) {
+            var $span = $(this);
+            if ($span.hasClass('foldername')) {
+                var value = files[SORT_FOLDER_DESC];
+                files[SORT_FOLDER_DESC] = value ? false : true;
+                refresh();
+                return;
+            }
+            var value = files[SORT_FILE_BY];
+            var descValue = files[SORT_FILE_DESC];
+            if ($span.hasClass('filename')) {
+                if (value === '') {
+                    descValue = descValue ? false : true;
+                } else {
+                    descValue = false;
+                    value = '';
+                }
+            } else {
+                var found = false;
+                ['title', 'atime', 'ctime'].forEach(function (c) {
+                    if (!found && $span.hasClass(c)) {
+                        found = true;
+                        if (value === c) { descValue = descValue ? false : true; }
+                        else {
+                            // atime and ctime should be ordered in a desc order at the first click
+                            descValue = c !== 'title';
+                            value = c;
+                        }
+                    }
+                });
+            }
+            files[SORT_FILE_BY] = value;
+            files[SORT_FILE_DESC] = descValue;
+            refresh();
+        };
+
         var getFolderListHeader = function () {
             var $folderHeader = $('<li>', {'class': 'header listElement'});
             var $fohElement = $('<span>', {'class': 'element'}).appendTo($folderHeader);
-            var $name = $('<span>', {'class': 'name'}).text(Messages.fm_folderName);
+            var $name = $('<span>', {'class': 'name foldername'}).text(Messages.fm_folderName).click(onSortByClick);
             var $subfolders = $('<span>', {'class': 'folders listElement'}).text(Messages.fm_numberOfFolders);
             var $files = $('<span>', {'class': 'files listElement'}).text(Messages.fm_numberOfFiles);
             $fohElement.append($name).append($subfolders).append($files);
@@ -809,11 +849,11 @@ define([
         var getFileListHeader = function (displayTitle) {
             var $fileHeader = $('<li>', {'class': 'file-header header listElement'});
             var $fihElement = $('<span>', {'class': 'element'}).appendTo($fileHeader);
-            var $fhName = $('<span>', {'class': 'name'}).text(Messages.fm_fileName);
-            var $fhTitle = displayTitle ? $('<span>', {'class': 'title '}).text(Messages.fm_title) : '';
-            var $fhType = $('<span>', {'class': 'date'}).text(Messages.table_type);
-            var $fhAdate = $('<span>', {'class': 'date'}).text(Messages.fm_lastAccess);
-            var $fhCdate = $('<span>', {'class': 'date'}).text(Messages.fm_creation);
+            var $fhName = $('<span>', {'class': 'name filename'}).text(Messages.fm_fileName).click(onSortByClick);
+            var $fhTitle = $('<span>', {'class': 'title '}).text(Messages.fm_title).click(onSortByClick);
+            var $fhType = $('<span>', {'class': 'type'}).text(Messages.table_type);
+            var $fhAdate = $('<span>', {'class': 'atime'}).text(Messages.fm_lastAccess).click(onSortByClick);
+            var $fhCdate = $('<span>', {'class': 'ctime'}).text(Messages.fm_creation).click(onSortByClick);
             $fihElement.append($fhName);
             if (displayTitle) {
                 $fihElement.append($fhTitle);
@@ -826,6 +866,36 @@ define([
             return filesOp.getUnsortedFiles().length === 0;
         };
 
+        var sortElements = function (folder, path, oldkeys, prop, asc, useHref, useData) {
+            var root = filesOp.findElement(files, path);
+            var test = folder ? filesOp.isFolder : filesOp.isFile;
+            var keys;
+            if (!useData) {
+                keys = oldkeys.filter(function (e) {
+                    return useHref ? test(e) : test(root[e]);
+                });
+            } else { keys = oldkeys.slice(); }
+            if (keys.length < 2) { return keys; }
+            var mult = asc ? 1 : -1;
+            var getProp = function (el, prop) {
+                if (prop) {
+                    var element = useHref || useData ? el : root[el];
+                    var e = useData ? element : filesOp.getFileData(element);
+                    if (prop === 'atime' || prop === 'ctime') {
+                        return new Date(e[prop]);
+                    }
+                    return e.title.toLowerCase();
+                }
+                return useData ? el.title.toLowerCase() : el.toLowerCase();
+            };
+            keys.sort(function(a, b) {
+                if (getProp(a, prop) < getProp(b, prop)) { return mult * -1; }
+                if (getProp(a, prop) > getProp(b, prop)) { return mult * 1; }
+                return 0;
+            });
+            return keys;
+        };
+
         // Unsorted element are represented by "href" in an array: they don't have a filename
         // and they don't hav a hierarchical structure (folder/subfolders)
         var displayUnsorted = function ($container) {
@@ -833,7 +903,9 @@ define([
             if (allFilesSorted()) { return; }
             var $fileHeader = getFileListHeader(false);
             $container.append($fileHeader);
-            unsorted.forEach(function (href, idx) {
+            var keys = unsorted;
+            var sortedFiles = sortElements(false, [UNSORTED], keys, files[SORT_FILE_BY], !files[SORT_FILE_DESC], true);
+            sortedFiles.forEach(function (href, idx) {
                 var file = filesOp.getFileData(href);
                 if (!file) {
                     debug("getUnsortedFiles returns an element not present in filesData: ", href);
@@ -863,7 +935,9 @@ define([
             if (allfiles.length === 0) { return; }
             var $fileHeader = getFileListHeader(false);
             $container.append($fileHeader);
-            allfiles.forEach(function (file, idx) {
+            var keys = allfiles;
+            var sortedFiles = sortElements(false, [FILES_DATA], keys, files[SORT_FILE_BY], !files[SORT_FILE_DESC], false, true);
+            sortedFiles.forEach(function (file, idx) {
                 var $icon = $fileIcon.clone();
                 var $name = $('<span>', { 'class': 'file-element element' });
                 addFileData(file.href, file.title, $name, false);
@@ -971,14 +1045,17 @@ define([
                 var $newFolderButton = createNewFolderButton().appendTo($title);
                 if (filesOp.hasSubfolder(root)) { $list.append($folderHeader); }
                 // display sub directories
-                Object.keys(root).forEach(function (key) {
+                var keys = Object.keys(root);
+                var sortedFolders = sortElements(true, path, keys, null, !files[SORT_FOLDER_DESC]);
+                var sortedFiles = sortElements(false, path, keys, files[SORT_FILE_BY], !files[SORT_FILE_DESC]);
+                sortedFolders.forEach(function (key) {
                     if (filesOp.isFile(root[key])) { return; }
                     var $element = createElement(path, key, root, true);
                     $element.appendTo($list);
                 });
                 if (filesOp.hasFile(root)) { $list.append($fileHeader); }
                 // display files
-                Object.keys(root).forEach(function (key) {
+                sortedFiles.forEach(function (key) {
                     if (filesOp.isFolder(root[key])) { return; }
                     var $element = createElement(path, key, root, false);
                     $element.appendTo($list);
@@ -988,7 +1065,22 @@ define([
             appStatus.ready(true);
         };
 
-        var createTreeElement = function (name, $icon, path, draggable, collapsable, active) {
+        var refreshFilesData = function () {
+            $content.find('li').each(function (i, e) {
+                var $el = $(e);
+                if ($el.data('path')) {
+                    var path = $el.data('path');
+                    var element = filesOp.findElement(files, path);
+                    if (!filesOp.isFile(element)) { return; }
+                    var data = filesOp.getFileData(element);
+                    $el.find('.title').attr('title', data.title).text(data.title);
+                    $el.find('.atime').attr('title', getDate(data.atime)).text(getDate(data.atime));
+                    $el.find('.ctime').attr('title', getDate(data.ctime)).text(getDate(data.ctime));
+                }
+            });
+        };
+
+        var createTreeElement = function (name, $icon, path, draggable, droppable, collapsable, active) {
             var $name = $('<span>', { 'class': 'folder-element element' }).text(name)
                 .click(function () {
                     module.displayDirectory(path);
@@ -1027,32 +1119,7 @@ define([
                 }
             }
             $element.data('path', path);
-            addDragAndDropHandlers($element, path, true, true);
-            $element.on('dragstart', function (e) {
-                e.stopPropagation();
-                onDrag(e.originalEvent, path);
-            });
-            $element.on('dragover', function (e) {
-                e.preventDefault();
-            });
-            $element.on('drop', function (e) {
-                onDrop(e.originalEvent);
-            });
-            var counter = 0;
-            $element.on('dragenter', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                counter++;
-                $element.addClass('droppable');
-            });
-            $element.on('dragleave', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                counter--;
-                if (counter === 0) {
-                    $element.removeClass('droppable');
-                }
-            });
+            addDragAndDropHandlers($element, path, true, droppable);
             if (active) { $name.addClass('active'); }
             return $element;
         };
@@ -1067,7 +1134,7 @@ define([
                 var $rootIcon = filesOp.isFolderEmpty(files[ROOT]) ?
                     (isRootOpened ? $folderOpenedEmptyIcon : $folderEmptyIcon) :
                     (isRootOpened ? $folderOpenedIcon : $folderIcon);
-                var $rootElement = createTreeElement(ROOT_NAME, $rootIcon.clone(), [ROOT], false, false, isRootOpened);
+                var $rootElement = createTreeElement(ROOT_NAME, $rootIcon.clone(), [ROOT], false, true, false, isRootOpened);
                 $rootElement.addClass('root');
                 var $root = $('<ul>').append($rootElement).appendTo($container);
                 $container = $rootElement;
@@ -1086,7 +1153,7 @@ define([
                 var $icon = isEmpty ?
                     (isCurrentFolder ? $folderOpenedEmptyIcon : $folderEmptyIcon) :
                     (isCurrentFolder ? $folderOpenedIcon : $folderIcon);
-                var $element = createTreeElement(key, $icon.clone(), newPath, true, subfolder, isCurrentFolder);
+                var $element = createTreeElement(key, $icon.clone(), newPath, true, true, subfolder, isCurrentFolder);
                 $element.appendTo($list);
                 $element.contextmenu(openDirectoryContextMenu);
                 createTree($element, newPath);
@@ -1096,7 +1163,7 @@ define([
         var createUnsorted = function ($container, path) {
             var $icon = $unsortedIcon.clone();
             var isOpened = filesOp.comparePath(path, currentPath);
-            var $unsortedElement = createTreeElement(UNSORTED_NAME, $icon, [UNSORTED], false, false, isOpened);
+            var $unsortedElement = createTreeElement(UNSORTED_NAME, $icon, [UNSORTED], false, true, false, isOpened);
             $unsortedElement.addClass('root');
             var $unsortedList = $('<ul>', { id: 'unsortedTree' }).append($unsortedElement);
             $container.append($unsortedList);
@@ -1105,7 +1172,7 @@ define([
         var createAllFiles = function ($container, path) {
             var $icon = $unsortedIcon.clone();
             var isOpened = filesOp.comparePath(path, currentPath);
-            var $allfilesElement = createTreeElement(FILES_DATA_NAME, $icon, [FILES_DATA], false, false, isOpened);
+            var $allfilesElement = createTreeElement(FILES_DATA_NAME, $icon, [FILES_DATA], false, false, false, isOpened);
             $allfilesElement.addClass('root');
             var $allfilesList = $('<ul>', { id: 'allfilesTree' }).append($allfilesElement);
             $container.append($allfilesList);
@@ -1183,6 +1250,10 @@ define([
                     refresh();
                 };
                 filesOp.createNewFolder(path, null, onCreated);
+            }
+            else if ($(this).hasClass("newdoc")) {
+                var type = $(this).data('type') || 'pad';
+                $(this).attr('href','/' + type + '/#?path=' + encodeURIComponent(path));
             }
             module.hideMenu();
         });
@@ -1296,7 +1367,9 @@ define([
                 // Reload after 50ms to make sure all the change events have been received
                 window.setTimeout(function () {
                     module.displayDirectory(currentPath);
-                }, 50);
+                }, 200);
+            } else if (path.length && path[0] === FILES_DATA) {
+                refreshFilesData();
             }
             module.resetTree();
         }).on('remove', [], function () {
@@ -1307,7 +1380,8 @@ define([
                 // Reload after 50ms to make sure all the change events have been received
                 window.setTimeout(function () {
                     module.displayDirectory(currentPath);
-                }, 50);            }
+                }, 200);
+            }
             module.resetTree();
         });
 
@@ -1344,17 +1418,6 @@ define([
                 realtime: realtime,
                 logging: true,
             });
-            /*Cryptpad.getPadTitle(function (err, title) {
-                title = document.title = title || info.channel.slice(0, 8);
-
-                Cryptpad.setPadTitle(title, function (err, data) {
-                    if (err) {
-                        console.log("unable to remember pad");
-                        console.log(err);
-                        return;
-                    }
-                });
-            });*/
         }).on('ready', function () {
             module.files = rt.proxy;
             if (JSON.stringify(rt.proxy) === '{}') {

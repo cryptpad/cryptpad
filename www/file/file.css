@@ -66,8 +66,10 @@ li {
     background: white;
     overflow: auto;
     resize: horizontal;
-    width: 30%;
+    width: 350px;
     white-space: nowrap;
+    max-width: 500px;
+    min-width: 200px;
 }
 
 #tree li {
@@ -192,7 +194,7 @@ li {
     flex: 1;
 }
 
-#content li * {
+#content li:not(.header) * {
     pointer-events: none;
 }
 
@@ -257,9 +259,31 @@ li {
     border-right: 10px solid rgba(0, 0, 0, 0);
 }
 #content .list .element span.name {
+    width: 478px;
+}
+#content .list .header span.name {
+    width: 500px;
+}
+/*#content .list .element span.name {
     flex: 1;
 }
-#content .list .element span.date {
+#content .list .file-element span.name {
+    min-width: 378px;
+    max-width: 478px;
+}
+#content .list .file-header span.name {
+    min-width: 400px;
+    max-width: 500px;
+}
+@media screen and (max-width: 1570px) {
+    #content .list .file-header span.name {
+        max-width: 400px;
+    }
+    #content .list .file-element span.name {
+        max-width: 378px;
+    }
+}*/
+#content .list .element span.type, #content .list .element span.atime, #content .list .element span.ctime {
     width: 150px;
 }
 #content .list .element span.title {
