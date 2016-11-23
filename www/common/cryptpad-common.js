@@ -103,7 +103,8 @@ define([
         store = Store;
     });
 
-    var isArray = function (o) { return Object.prototype.toString.call(o) === '[object Array]'; };
+    // var isArray = function (o) { return Object.prototype.toString.call(o) === '[object Array]'; };
+    var isArray = $.isArray;
 
     var fixHTML = common.fixHTML = function (html) {
         return html.replace(/</g, '&lt;');

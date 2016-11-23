@@ -172,6 +172,7 @@ define(function () {
     out.fm_lastAccess = "Last access";
     out.fm_creation = "Creation";
     out.fm_forbidden = "Forbidden action";
+    out.fm_originalPath = "Original path";
     out.fm_emptyTrashDialog = "Are you sure you want to empty the trash?";
     out.fm_removeSeveralPermanentlyDialog = "Are you sure you want to remove these {0} elements from the trash permanently?";
     out.fm_removePermanentlyDialog = "Are you sure you want to remove {0} from the trash permanently?";
@@ -189,10 +190,16 @@ define(function () {
     out.fc_restore = "Restore";
     out.fc_remove = "Delete permanently";
     out.fc_empty = "Empty the trash";
+    out.fc_newpad = "New text pad";
+    out.fc_newcode = "New code pad";
+    out.fc_newslide = "New presentation";
+    out.fc_newpoll = "New poll";
+    out.fc_prop = "Properties";
     // fileObject.js (logs)
     out.fo_moveUnsortedError = "You can't move a folder to the list of unsorted pads";
     out.fo_existingNameError = "Name already used in that directory. Please choose another one.";
     out.fo_moveFolderToChildError = "You can't move a folder into one of its descendants";
+    out.fo_unableToRestore = "Unable to restore that file to its original location. You can try to move it to a new location.";
 
     // index.html
 

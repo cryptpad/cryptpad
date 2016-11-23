@@ -266,7 +266,7 @@ define([
             var path = pathInput.slice();
             var key = path.shift();
             if (typeof root[key] === "undefined") {
-                debug("Unable to find the key '" + key + "' in the root object provided:\n", root);
+                debug("Unable to find the key '" + key + "' in the root object provided:", root);
                 return;
             }
             return findElement(root[key], path);
@@ -356,6 +356,7 @@ define([
                     log(Messages.fo_moveUnsortedError);
                     return;
                 } else {
+                    if (isPathInUnsorted(elementPath)) { console.log('inunsorted'); return; }
                     if (files[UNSORTED].indexOf(element) === -1) {
                         files[UNSORTED].push(element);
                     }
@@ -392,6 +393,7 @@ define([
         // the other elements. We have to move them all and then remove them from unsorted
         var moveUnsortedElements = exp.moveUnsortedElements = function (paths, newParentPath, cb) {
             if (!paths || paths.length === 0) { return; }
+            if (isPathInUnsorted(newParentPath)) { return; }
             var elements = {};
             // Get the elements
             paths.forEach(function (p) {
@@ -410,7 +412,7 @@ define([
                     files[UNSORTED].splice(idx, 1);
                 }
             });
-            if(cb) { cb(); }
+            if (cb) { cb(); }
         };
 
         var moveElements = exp.moveElements = function (paths, newParentPath, cb) {
@@ -472,6 +474,13 @@ define([
             }
             // Find the new parent element
             var newParentEl = findElement(files, newPath);
+            while (newPath.length > 1 && !newParentEl) {
+                newPath.pop();
+                newParentEl = findElement(files, newPath);
+            }
+            if (!newParentEl) {
+                log(Messages.fo_unableToRestore);
+            }
             var name = getAvailableName(newParentEl, path[1]);
             // Move the element
             newParentEl[name] = element;

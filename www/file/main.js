@@ -482,6 +482,7 @@ define([
             $trashContextMenu.find('li').show();
             if (path.length > 4) {
                 $trashContextMenu.find('a.restore').parent('li').hide();
+                $trashContextMenu.find('a.properties').parent('li').hide();
             }
             openContextMenu(e, $trashContextMenu);
             return false;
@@ -895,7 +896,32 @@ define([
             });
             return keys;
         };
-
+        var sortTrashElements = function (folder, oldkeys, prop, asc) {
+            var root = files[TRASH];
+            var test = folder ? filesOp.isFolder : filesOp.isFile;
+            var keys = oldkeys.filter(function (e) {
+                return test(e.element);
+            });
+            if (keys.length < 2) { return keys; }
+            var mult = asc ? 1 : -1;
+            var getProp = function (el, prop) {
+                if (prop && !folder) {
+                    var element = el.element;
+                    var e = filesOp.getFileData(element);
+                    if (prop === 'atime' || prop === 'ctime') {
+                        return new Date(e[prop]);
+                    }
+                    return e.title.toLowerCase();
+                }
+                return el.name.toLowerCase();
+            };
+            keys.sort(function(a, b) {
+                if (getProp(a, prop) < getProp(b, prop)) { return mult * -1; }
+                if (getProp(a, prop) > getProp(b, prop)) { return mult * 1; }
+                return 0;
+            });
+            return keys;
+        };
         // Unsorted element are represented by "href" in an array: they don't have a filename
         // and they don't hav a hierarchical structure (folder/subfolders)
         var displayUnsorted = function ($container) {
@@ -955,19 +981,13 @@ define([
         };
 
         var displayTrashRoot = function ($list, $folderHeader, $fileHeader) {
+            var filesList = [];
+            var root = files[TRASH];
             // Elements in the trash are JS arrays (several elements can have the same name)
             [true,false].forEach(function (folder) {
                 var testElement = filesOp.isFile;
                 if (!folder) {
                     testElement = filesOp.isFolder;
-                }
-                var root = files[TRASH];
-                if (folder) {
-                    if (filesOp.hasSubfolder(root, true)) { $list.append($folderHeader); }
-                    else { return; }
-                } else {
-                    if (filesOp.hasFile(root, true)) { $list.append($fileHeader); }
-                    else { return; }
                 }
                 Object.keys(root).forEach(function (key) {
                     if (!$.isArray(root[key])) {
@@ -977,12 +997,26 @@ define([
                     root[key].forEach(function (el, idx) {
                         if (testElement(el.element)) { return; }
                         var spath = [key, idx, 'element'];
-                        var $element = createElement([TRASH], spath, root, folder);
-                        $list.append($element);
+                        filesList.push({
+                            element: el.element,
+                            spath: spath,
+                            name: key
+                        });
                     });
                 });
             });
-
+            var sortedFolders = sortTrashElements(true, filesList, null, !files[SORT_FOLDER_DESC]);
+            var sortedFiles = sortTrashElements(false, filesList, files[SORT_FILE_BY], !files[SORT_FILE_DESC]);
+            if (filesOp.hasSubfolder(root, true)) { $list.append($folderHeader); }
+            sortedFolders.forEach(function (f) {
+                var $element = createElement([TRASH], f.spath, root, true);
+                $list.append($element);
+            });
+            if (filesOp.hasFile(root, true)) { $list.append($fileHeader); }
+            sortedFiles.forEach(function (f) {
+                var $element = createElement([TRASH], f.spath, root, false);
+                $list.append($element);
+            });
         };
 
         // Display the selected directory into the content part (rightside)
@@ -1299,6 +1333,11 @@ define([
                     if (!res) { return; }
                     filesOp.restoreTrash(path, refresh);
                 });
+            }
+            else if ($(this).hasClass("properties")) {
+                if (path.length !== 4) { return; }
+                var element = filesOp.getTrashElementData(path);
+                Cryptpad.alert(Messages.fm_originalPath + ":<br>" + element.path.join('/'));
             }
             module.hideMenu();
         });

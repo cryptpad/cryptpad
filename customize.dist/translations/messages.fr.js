@@ -172,6 +172,7 @@ define(function () {
     out.fm_lastAccess = "Dernier accès";
     out.fm_creation = "Création";
     out.fm_forbidden = "Action interdite";
+    out.fm_originalPath = "Chemin d'origine";
     out.fm_emptyTrashDialog = "Êtes-vous sûr de vouloir vider la corbeille ?";
     out.fm_removeSeveralPermanentlyDialog = "Êtes-vous sûr de vouloir supprimer ces {0} éléments de manière permanente ?";
     out.fm_removePermanentlyDialog = "Êtes-vous sûr de vouloir supprimer {0} de la corbeille de manière permanente ?";
@@ -189,10 +190,16 @@ define(function () {
     out.fc_restore = "Restaurer";
     out.fc_remove = "Supprimer définitivement";
     out.fc_empty = "Vider la corbeille";
+    out.fc_newpad = "Nouveau pad de texte";
+    out.fc_newcode = "Nouveau pad de code";
+    out.fc_newslide = "Nouvelle présentation";
+    out.fc_newpoll = "Nouveau sondage";
+    out.fc_prop = "Propriétés";
     // fileObject.js (logs)
     out.fo_moveUnsortedError = "La liste des éléments non triés ne peut pas contenir de dossiers.";
     out.fo_existingNameError = "Ce nom est déjà utilisé dans ce répertoire. Veuillez en choisir un autre.";
     out.fo_moveFolderToChildError = "Vous ne pouvez pas déplacer un dossier dans un de ses descendants";
+    out.fo_unableToRestore = "Impossible de restaurer ce fichier à son emplacement d'origine. Vous pouvez essayer de le déplacer à un nouvel emplacement.";
 
     // index.html
 
