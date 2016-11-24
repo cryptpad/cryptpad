@@ -19,8 +19,7 @@ define([
     var $iframe = $('#pad-iframe').contents();
     var ifrw = $('#pad-iframe')[0].contentWindow;
 
-    //var hash = Cryptpad.getAttribute('FS_hash', cb);
-    var hash = localStorage.FS_hash;
+    var hash = window.location.hash || localStorage.FS_hash;
     var secret = Cryptpad.getSecrets(hash);
 
     var ROOT = "root";
@@ -41,8 +40,12 @@ define([
     var config = {};
     config.storageKey = FILES_DATA;
     var DEBUG = config.DEBUG = true;
-    var debug = config.debug = DEBUG ? console.log : function() {return;};
-    var logError = config.logError = console.error;
+    var debug = config.debug = DEBUG ? function () {
+        console.log.apply(console, arguments);
+    } : function () { return; };
+    var logError = config.logError = function () {
+        console.error.apply(console, arguments);
+    };
     var log = config.log = Cryptpad.log;
     var DEBUG_LS = module.DEBUG_LS = {
         resetLocalStorage : function () {
@@ -50,151 +53,6 @@ define([
             delete localStorage[LOCALSTORAGE_LAST];
         }
     };
-
-    var filesObject = {
-        root: {
-            "Directory 1": {
-                "Dir A": {
-                    "Dir D": {
-                        "Dir E": {},
-                    },
-                    "File a": "https://cryptpad.fr/slide/#hash_a",
-                    "File b": "https://cryptpad.fr/pad/#hash_b",
-                    "File c": "https://cryptpad.fr/pad/#hash_c",
-                    "File d": "https://cryptpad.fr/pad/#hash_d",
-                    "File e": "https://cryptpad.fr/pad/#hash_e",
-                    "File f": "https://cryptpad.fr/pad/#hash_f",
-                    "File g": "https://cryptpad.fr/pad/#hash_g",
-                    "File h": "https://cryptpad.fr/pad/#hash_h",
-                    "File i": "https://cryptpad.fr/pad/#hash_i",
-                    "File j": "https://cryptpad.fr/pad/#hash_j",
-                    "File k": "https://cryptpad.fr/pad/#hash_k"
-                },
-                "Dir C": {},
-                "Dir B": {},
-                "File A": "https://cryptpad.fr/pad/#hash_A"
-            },
-            "Directory 2": {
-                "File B": "https://cryptpad.fr/pad/#hash_B",
-                "File C": "https://cryptpad.fr/pad/#hash_C"
-            }
-        },
-        unsorted: ["https://cryptpad.fr/pad/#href1", "https://cryptpad.fr/pad/#href2", "https://cryptpad.fr/pad/#href3"],
-        filesData: {
-            "https://cryptpad.fr/slide/#hash_a": {
-                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
-                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
-                title: "Pad A"
-            },
-            "https://cryptpad.fr/pad/#hash_b": {
-                ctime: "Mon Nov 07 2016 16:38:21 GMT+0100 (CET)",
-                atime: "Tue Nov 08 2016 12:38:21 GMT+0100 (CET)",
-                title: "Pad B"
-            },
-            "https://cryptpad.fr/pad/#hash_c": {
-                ctime: "Tue Nov 08 2016 16:34:21 GMT+0100 (CET)",
-                atime: "Sun Nov 06 2016 12:34:21 GMT+0100 (CET)",
-                title: "Pad C With A Very Very Very Long Title"
-            },
-            "https://cryptpad.fr/pad/#hash_e": {
-                ctime: "Tue Nov 08 2016 16:26:21 GMT+0100 (CET)",
-                atime: "Tue Nov 08 2016 12:26:21 GMT+0100 (CET)",
-                title: "Pad E"
-            },
-            "https://cryptpad.fr/pad/#hash_f": {
-                ctime: "Tue Nov 08 2016 16:22:21 GMT+0100 (CET)",
-                atime: "Tue Nov 08 2016 12:22:21 GMT+0100 (CET)",
-                title: "Pad F"
-            },
-            "https://cryptpad.fr/pad/#hash_g": {
-                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
-                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
-                title: "Pad A"
-            },
-            "https://cryptpad.fr/pad/#hash_h": {
-                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
-                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
-                title: "Pad A"
-            },
-            "https://cryptpad.fr/pad/#hash_i": {
-                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
-                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
-                title: "Pad A"
-            },
-            "https://cryptpad.fr/pad/#hash_j": {
-                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
-                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
-                title: "Pad A"
-            },
-            "https://cryptpad.fr/pad/#hash_k": {
-                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
-                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
-                title: "Pad A"
-            },
-            "https://cryptpad.fr/pad/#hash_Z": {
-                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
-                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
-                title: "Code Z"
-            },
-            "https://cryptpad.fr/pad/#hash_A": {
-                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
-                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
-                title: "Code A"
-            },
-            "https://cryptpad.fr/pad/#hash_B": {
-                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
-                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
-                title: "Code B"
-            },
-            "https://cryptpad.fr/pad/#hash_C": {
-                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
-                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
-                title: "Code C"
-            },
-            "https://cryptpad.fr/pad/#hash_1": {
-                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
-                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
-                title: "Code C"
-            },
-            "https://cryptpad.fr/pad/#hash_2": {
-                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
-                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
-                title: "Code C"
-            },
-            "https://cryptpad.fr/pad/#hash_3": {
-                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
-                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
-                title: "Code C"
-            },
-            "https://cryptpad.fr/pad/#hash_4": {
-                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
-                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
-                title: "Code C"
-            },
-            "https://cryptpad.fr/pad/#href1": {
-                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
-                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
-                title: "Pad unsorted 1"
-            },
-            "https://cryptpad.fr/pad/#href2": {
-                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
-                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
-                title: "Pad unsorted 2"
-            },
-            "https://cryptpad.fr/pad/#href3": {
-                ctime: "Tue Nov 08 2016 16:42:21 GMT+0100 (CET)",
-                atime: "Tue Nov 08 2016 12:42:21 GMT+0100 (CET)",
-                title: "Pad unsorted 3"
-            }
-        },
-        trash: {
-            "File Z": [{
-                element: "https://cryptpad.fr/pad/#hash_Z",
-                path: [ROOT]
-            }]
-        }
-    };
-    module.defaultFiles = JSON.parse(JSON.stringify(filesObject));
 
     var getLastOpenedFolder = function () {
         var path;
@@ -289,11 +147,12 @@ define([
         var $contentContextMenu = $iframe.find("#contentContextMenu");
         var $trashTreeContextMenu = $iframe.find("#trashTreeContextMenu");
         var $trashContextMenu = $iframe.find("#trashContextMenu");
+
+
+        // Icons
         var $folderIcon = $('<span>', {"class": "fa fa-folder folder", style:"color:#FEDE8B;text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;"});
-        //var $folderEmptyIcon = $('<span>', {"class": "fa fa-folder folder", style:"color:pink"});
         var $folderEmptyIcon = $folderIcon.clone();
         var $folderOpenedIcon = $('<span>', {"class": "fa fa-folder-open folder", style:"color:#FEDE8B;text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;"});
-        //var $folderOpenedEmptyIcon = $('<span>', {"class": "fa fa-folder-open-o folder"});
         var $folderOpenedEmptyIcon = $folderOpenedIcon.clone();
         var $fileIcon = $('<span>', {"class": "fa fa-file-text-o file"});
         var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
@@ -304,6 +163,10 @@ define([
         var $expandIcon = $('<span>', {"class": "fa fa-plus-square-o expcol"});
         var $listIcon = $('<span>', {"class": "fa fa-list"});
         var $gridIcon = $('<span>', {"class": "fa fa-th"});
+        var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up"});
+        var $sortDescIcon = $('<span>', {"class": "fa fa-angle-down"});
+
+
 
         var appStatus = {
             isReady: true,
@@ -838,6 +701,15 @@ define([
             refresh();
         };
 
+        var addFolderSortIcon = function ($list) {
+            var $icon = $sortAscIcon.clone();
+            if (files[SORT_FOLDER_DESC]) {
+                $icon = $sortDescIcon.clone();
+            }
+            if (typeof(files[SORT_FOLDER_DESC]) !== "undefined") {
+                $list.find('.foldername').prepend($icon);
+            }
+        };
         var getFolderListHeader = function () {
             var $folderHeader = $('<li>', {'class': 'header listElement'});
             var $fohElement = $('<span>', {'class': 'element'}).appendTo($folderHeader);
@@ -845,7 +717,20 @@ define([
             var $subfolders = $('<span>', {'class': 'folders listElement'}).text(Messages.fm_numberOfFolders);
             var $files = $('<span>', {'class': 'files listElement'}).text(Messages.fm_numberOfFiles);
             $fohElement.append($name).append($subfolders).append($files);
+            addFolderSortIcon($fohElement);
             return $folderHeader;
+        };
+        var addFileSortIcon = function ($list) {
+            var $icon = $sortAscIcon.clone();
+            if (files[SORT_FILE_DESC]) {
+                $icon = $sortDescIcon.clone();
+            }
+            var classSorted;
+            if (files[SORT_FILE_BY] === '') { classSorted = 'filename'; }
+            else if (files[SORT_FILE_BY]) { classSorted = files[SORT_FILE_BY]; }
+            if (classSorted) {
+                $list.find('.' + classSorted).prepend($icon);
+            }
         };
         var getFileListHeader = function (displayTitle) {
             var $fileHeader = $('<li>', {'class': 'file-header header listElement'});
@@ -860,6 +745,7 @@ define([
                 $fihElement.append($fhTitle);
             }
             $fihElement.append($fhType).append($fhAdate).append($fhCdate);
+            addFileSortIcon($fihElement);
             return $fileHeader;
         };
 
@@ -931,12 +817,13 @@ define([
             $container.append($fileHeader);
             var keys = unsorted;
             var sortedFiles = sortElements(false, [UNSORTED], keys, files[SORT_FILE_BY], !files[SORT_FILE_DESC], true);
-            sortedFiles.forEach(function (href, idx) {
+            sortedFiles.forEach(function (href) {
                 var file = filesOp.getFileData(href);
                 if (!file) {
                     debug("getUnsortedFiles returns an element not present in filesData: ", href);
                     return;
                 }
+                var idx = files[UNSORTED].indexOf(href);
                 var $icon = $fileIcon.clone();
                 var $name = $('<span>', { 'class': 'file-element element' });
                 addFileData(href, file.title, $name, false);
@@ -963,7 +850,7 @@ define([
             $container.append($fileHeader);
             var keys = allfiles;
             var sortedFiles = sortElements(false, [FILES_DATA], keys, files[SORT_FILE_BY], !files[SORT_FILE_DESC], false, true);
-            sortedFiles.forEach(function (file, idx) {
+            sortedFiles.forEach(function (file) {
                 var $icon = $fileIcon.clone();
                 var $name = $('<span>', { 'class': 'file-element element' });
                 addFileData(file.href, file.title, $name, false);
@@ -1247,6 +1134,40 @@ define([
             $contentContextMenu.hide();
         };
 
+        var stringifyPath = function (path) {
+            if (!$.isArray(path)) { return; }
+            var rootName = function (s) {
+                var prettyName;
+                switch (s) {
+                    case ROOT:
+                        prettyName = ROOT_NAME;
+                        break;
+                    case UNSORTED:
+                        prettyName = UNSORTED_NAME;
+                        break;
+                    case FILES_DATA:
+                        prettyName = FILES_DATA_NAME;
+                        break;
+                    case TRASH:
+                        prettyName = TRASH_NAME;
+                        break;
+                    default:
+                        prettyName = s;
+                }
+                return prettyName;
+            };
+            var $div = $('<div>');
+            var i = 0;
+            var space = 10;
+            path.forEach(function (s) {
+                if (i === 0) { s = rootName(s) }
+                $div.append($('<span>', {'style': 'margin: 0 0 0 ' + i * space + 'px;'}).text(s));
+                $div.append($('<br>'));
+                i++;
+            });
+            return $div.html();
+        };
+
         $contextMenu.on("click", "a", function(e) {
             e.stopPropagation();
             var path = $(this).data('path');
@@ -1337,7 +1258,8 @@ define([
             else if ($(this).hasClass("properties")) {
                 if (path.length !== 4) { return; }
                 var element = filesOp.getTrashElementData(path);
-                Cryptpad.alert(Messages.fm_originalPath + ":<br>" + element.path.join('/'));
+                var sPath = stringifyPath(element.path);
+                Cryptpad.alert('<strong>' + Messages.fm_originalPath + "</strong>:<br>" + sPath);
             }
             module.hideMenu();
         });
@@ -1404,9 +1326,7 @@ define([
                     (path.length >= currentPath.length && filesOp.isSubpath(path, currentPath)) ||
                     (filesOp.isPathInTrash(currentPath) && filesOp.isPathInTrash(path))) {
                 // Reload after 50ms to make sure all the change events have been received
-                window.setTimeout(function () {
-                    module.displayDirectory(currentPath);
-                }, 200);
+                window.setTimeout(refresh, 200);
             } else if (path.length && path[0] === FILES_DATA) {
                 refreshFilesData();
             }
@@ -1417,14 +1337,12 @@ define([
                     (path.length >= currentPath.length && filesOp.isSubpath(path, currentPath)) ||
                     (filesOp.isPathInTrash(currentPath) && filesOp.isPathInTrash(path))) {
                 // Reload after 50ms to make sure all the change events have been received
-                window.setTimeout(function () {
-                    module.displayDirectory(currentPath);
-                }, 200);
+                window.setTimeout(refresh, 200);
             }
             module.resetTree();
         });
 
-        module.displayDirectory(currentPath);
+        refresh();
     };
 
     /*
@@ -1450,8 +1368,9 @@ define([
             var realtime = module.realtime = info.realtime;
 
             var editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
-            //Cryptpad.setAttribute("FS_hash", editHash, cb, store);
-            localStorage.FS_hash = editHash;
+            if (!window.location.hash) {
+                localStorage.FS_hash = editHash;
+            }
 
             module.patchText = TextPatcher.create({
                 realtime: realtime,

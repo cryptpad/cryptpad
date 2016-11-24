@@ -14,7 +14,9 @@ define([
     var init = module.init = function (files, config) {
         FILES_DATA = config.storageKey;
         var DEBUG = config.DEBUG || false;
-        var logging = console.log;
+        var logging = function () {
+            console.log.apply(console, arguments);
+        };
         var log = config.log || logging;
         var logError = config.logError || logging;
         var debug = config.debug || logging;
@@ -23,7 +25,7 @@ define([
 
         var error = exp.error = function() {
             exp.fixFiles();
-            console.error.apply(null, arguments);
+            console.error.apply(console, arguments);
         };
 
         var comparePath  = exp.comparePath = function (a, b) {
@@ -154,7 +156,10 @@ define([
         };
 
         var getUnsortedFiles = exp.getUnsortedFiles = function () {
-            return files[UNSORTED];
+            if (!files[UNSORTED]) {
+                files[UNSORTED] = [];
+            }
+            return files[UNSORTED].slice();
         };
 
         var getFilesRecursively = function (root, arr) {
@@ -221,9 +226,9 @@ define([
         };
 
         var checkDeletedFiles = function () {
-            var rootFiles = getRootFiles().slice();
-            var unsortedFiles = getUnsortedFiles().slice();
-            var trashFiles = getTrashFiles().slice();
+            var rootFiles = getRootFiles();
+            var unsortedFiles = getUnsortedFiles();
+            var trashFiles = getTrashFiles();
             var toRemove = [];
             files[FILES_DATA].forEach(function (arr) {
                 var f = arr.href;
@@ -356,7 +361,7 @@ define([
                     log(Messages.fo_moveUnsortedError);
                     return;
                 } else {
-                    if (isPathInUnsorted(elementPath)) { console.log('inunsorted'); return; }
+                    if (isPathInUnsorted(elementPath)) { return; }
                     if (files[UNSORTED].indexOf(element) === -1) {
                         files[UNSORTED].push(element);
                     }
@@ -557,9 +562,9 @@ define([
         };
 
         var addUnsortedPad = exp.addPad = function (href, path, name) {
-            var unsortedFiles = getUnsortedFiles().slice();
-            var rootFiles = getRootFiles().slice();
-            var trashFiles = getTrashFiles().slice();
+            var unsortedFiles = getUnsortedFiles();
+            var rootFiles = getRootFiles();
+            var trashFiles = getTrashFiles();
             if (path && name) {
                 var newPath = decodeURIComponent(path).split(',');
                 var parentEl = findElement(files, newPath);
@@ -574,28 +579,11 @@ define([
             }
         };
 
-        var checkNewPads = exp.checkNewPads = function () {
-            var fd = files[FILES_DATA];
-            var rootFiles = getRootFiles().slice();
-            var unsortedFiles = getUnsortedFiles().slice();
-            var trashFiles = getTrashFiles().slice();
-            fd.forEach(function (el, idx) {
-                if (!el.href) { return; }
-                if (rootFiles.indexOf(el.href) === -1
-                    && unsortedFiles.indexOf(el.href) === -1
-                    && trashFiles.indexOf(el.href) === -1) {
-                    debug("An element in filesData was not in ROOT, UNSORTED or TRASH.", el);
-                    files[UNSORTED].push(el.href);
-                }
+        var uniq = function (a) {
+            var seen = {};
+            return a.filter(function(item) {
+                return seen.hasOwnProperty(item) ? false : (seen[item] = true);
             });
-        };
-
-        var checkRemovedPads = exp.checkRemovedPads = function () {
-            var fd = files[FILES_DATA];
-            var rootFiles = getRootFiles().slice();
-            var unsortedFiles = getUnsortedFiles().slice();
-            var trashFiles = getTrashFiles().slice();
-
         };
 
         var fixFiles = exp.fixFiles = function () {
@@ -663,12 +651,13 @@ define([
                     }
                 });
             };
+            files[UNSORTED] = uniq(files[UNSORTED]);
             fixUnsorted(files[UNSORTED]);
 
             var fixFilesData = function (fd) {
-                var rootFiles = getRootFiles().slice();
-                var unsortedFiles = getUnsortedFiles().slice();
-                var trashFiles = getTrashFiles().slice();
+                var rootFiles = getRootFiles();
+                var unsortedFiles = getUnsortedFiles();
+                var trashFiles = getTrashFiles();
                 var toClean = [];
                 fd.forEach(function (el, idx) {
                     if (typeof(el) !== "object") {

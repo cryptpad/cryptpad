@@ -61,7 +61,7 @@ li {
 
 
 #tree {
-    border: 2px solid blue;
+    border-right: 1px solid #ccc;
     box-sizing: border-box;
     background: white;
     overflow: auto;
@@ -70,6 +70,7 @@ li {
     white-space: nowrap;
     max-width: 500px;
     min-width: 200px;
+    padding: 10px 0px;
 }
 
 #tree li {
@@ -165,13 +166,16 @@ li {
 /* CONTENT */
 
 #content {
-    border: 2px solid green;
     box-sizing: border-box;
     background: #eee;
     overflow: auto;
     flex: 1;
     display: flex;
     flex-flow: column;
+}
+
+#content h1 {
+    padding-left: 10px;
 }
 
 .topButtonContainer {
@@ -241,9 +245,12 @@ li {
     cursor: default;
     color: #008;
 }
-#content .list li.header .element span {
+#content .list li.header .element span:not(.fa) {
     border-right: 1px solid #CCC;
     text-align: left;
+}
+#content .list li.header .element span.fa {
+    float: right;
 }
 #content .list li.header span.name {
     padding-left: 0;
@@ -264,27 +271,8 @@ li {
 #content .list .header span.name {
     width: 500px;
 }
-/*#content .list .element span.name {
-    flex: 1;
-}
-#content .list .file-element span.name {
-    min-width: 378px;
-    max-width: 478px;
-}
-#content .list .file-header span.name {
-    min-width: 400px;
-    max-width: 500px;
-}
-@media screen and (max-width: 1570px) {
-    #content .list .file-header span.name {
-        max-width: 400px;
-    }
-    #content .list .file-element span.name {
-        max-width: 378px;
-    }
-}*/
 #content .list .element span.type, #content .list .element span.atime, #content .list .element span.ctime {
-    width: 150px;
+    width: 175px;
 }
 #content .list .element span.title {
     width: 250px;
