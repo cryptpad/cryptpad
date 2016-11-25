@@ -384,8 +384,12 @@ form.realtime {
                     padding: 0px;
                     margin: 0px;
                         height: 100%;
+
+                    width: 500px;
+
                     input {
                         width: 80%;
+                        width: 90%;
                         height: 100%;
                         border: 0px;
                         &[disabled] {
@@ -399,9 +403,10 @@ form.realtime {
                 &.checkbox-cell {
                     margin: 0px;
                     padding: 0px;
+                    height: 100%;
 
                     div.checkbox-contain {
-                        display: block;
+                        display: inline-block;
                         height: 100%;
                         width: 100%;
                         position: relative;
@@ -427,6 +432,11 @@ form.realtime {
 
                                         background-color: @cp-red;
                                         color: @base;
+
+                                        &:after {
+                                            height: 100%;
+                                        }
+
                                         &:after { content: "✖"; }
 
                                         display: block;
