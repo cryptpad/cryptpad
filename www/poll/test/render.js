@@ -194,11 +194,16 @@ by maintaining indexes in rowsOrder and colsOrder
         return [null].concat(rows).map(function (row, i) {
             if (i === 0) {
                 return [null].concat(cols.map(function (col) {
-                    return {
+                    var result = {
                         'data-rt-id': col,
                         type: 'text',
-                        value: getColumnValue(obj, col) || "",
+                        value: getColumnValue(obj, col) || ""
                     };
+                    if (getColumnValue(obj, col) === false) {
+                        result.placeholder = 'new column here'; //TODO translate
+                        result['class'] = 'uncommitted';
+                    }
+                    return result;
                 }));
             }
 
@@ -215,7 +220,9 @@ by maintaining indexes in rowsOrder and colsOrder
                     type: 'checkbox',
                     autocomplete: 'nope'
                 };
-
+                if (getColumnValue(obj, col) === false) {
+                    result['class'] = 'uncommitted-cell';
+                }
                 if (val) { result.checked = true; }
                 return result;
             }));
@@ -232,9 +239,10 @@ by maintaining indexes in rowsOrder and colsOrder
     var makeHeadingCell = Render.makeHeadingCell = function (cell) {
         if (!cell) { return ['TD', {}, []]; }
         if (cell.type === 'text') {
+            var removeElement = cell['class'] !== "uncommitted" ? makeRemoveElement(cell['data-rt-id']) : '';
             return ['TD', {}, [
                 ['INPUT', cell, []],
-                makeRemoveElement(cell['data-rt-id'])
+                removeElement
             ]];
         }
         return ['TD', cell, []];
@@ -294,8 +302,8 @@ by maintaining indexes in rowsOrder and colsOrder
         return ['TABLE', {id:'table'}, [head, body]];
     };
 
-    var asHTML = Render.asHTML = function (obj) {
-        return Hyperjson.toDOM(toHyperjson(cellMatrix(obj)));
+    var asHTML = Render.asHTML = function (obj, rows, cols) {
+        return Hyperjson.toDOM(toHyperjson(cellMatrix(obj, rows, cols)));
     };
 
     var diffIsInput = Render.diffIsInput = function (info) {
@@ -369,7 +377,9 @@ by maintaining indexes in rowsOrder and colsOrder
     var updateTable = Render.updateTable = function (table, obj, conf) {
         var DD = new DiffDOM(diffOptions);
 
-        var matrix = cellMatrix(obj);
+        var rows = conf ? conf.rows : null;
+        var cols = conf ? conf.cols : null;
+        var matrix = cellMatrix(obj, rows, cols);
 
         var hj = toHyperjson(matrix);
 

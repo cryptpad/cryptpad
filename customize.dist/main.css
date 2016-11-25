@@ -337,9 +337,11 @@ form.realtime table tr td div.text-cell {
   padding: 0px;
   margin: 0px;
   height: 100%;
+  width: 500px;
 }
 form.realtime table tr td div.text-cell input {
   width: 80%;
+  width: 90%;
   height: 100%;
   border: 0px;
 }
@@ -351,9 +353,10 @@ form.realtime table tr td div.text-cell input[disabled] {
 form.realtime table tr td.checkbox-cell {
   margin: 0px;
   padding: 0px;
+  height: 100%;
 }
 form.realtime table tr td.checkbox-cell div.checkbox-contain {
-  display: block;
+  display: inline-block;
   height: 100%;
   width: 100%;
   position: relative;
@@ -375,6 +378,9 @@ form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbo
   background-color: #FF0073;
   color: #302B28;
   display: block;
+}
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover:after {
+  height: 100%;
 }
 form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover:after {
   content: "✖";

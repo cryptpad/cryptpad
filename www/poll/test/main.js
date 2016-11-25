@@ -21,6 +21,18 @@ define([
         //$bar: $('#toolbar').css({ border: '1px solid white', background: 'grey', 'margin-bottom': '1vh', }),
     };
 
+    var sortColumns = function (order, firstcol) {
+        var colsOrder = order.slice();
+        colsOrder.sort(function (a, b) {
+            return (a === firstcol) ? -1 :
+                        ((b === firstcol) ? 1 : 0);
+        });
+        if (colsOrder.indexOf(firstcol) === -1) {
+            colsOrder.unshift(firstcol);
+        }
+        return colsOrder;
+    };
+
     /*  Any time the realtime object changes, call this function */
     var change = function (o, n, path) {
         if (path && path.join) {
@@ -29,7 +41,13 @@ define([
         }
 
         var table = APP.$table[0];
-        Render.updateTable(table, APP.proxy);
+
+        var colsOrder = sortColumns(APP.proxy.table.colsOrder, APP.userid);
+        var conf = {
+            cols: colsOrder
+        };
+
+        Render.updateTable(table, APP.proxy, conf);
 
         /*  FIXME browser autocomplete fills in new fields sometimes
             calling updateTable twice removes the autofilled in values
@@ -38,7 +56,7 @@ define([
             https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion
         */
         window.setTimeout(function () {
-            Render.updateTable(table, APP.proxy);
+            Render.updateTable(table, APP.proxy, conf);
         });
     };
 
@@ -52,6 +70,8 @@ define([
         var id = getRealtimeId(input);
 
         console.log(input);
+
+        if ($(input).hasClass("uncommitted-cell")) { console.log('do nothing'); return; }
 
         switch (type) {
             case 'text':
@@ -151,7 +171,9 @@ define([
 
         prepareProxy(proxy, Render.Example);
 
-        var $table = APP.$table = $(Render.asHTML(proxy));
+        var colsOrder = sortColumns(proxy.table.colsOrder, userid);
+
+        var $table = APP.$table = $(Render.asHTML(proxy, null, colsOrder));
         var $createRow = APP.$createRow = $('#create-option').click(function () {
             // 
             console.error("BUTTON CLICKED! LOL");
@@ -227,6 +249,7 @@ define([
             Cryptpad.getPadAttribute('userid', function (e, userid) {
                 if (e) { console.error(e); }
                 if (userid === null) { userid = Render.coluid(); }
+                APP.userid = userid;
                 Cryptpad.setPadAttribute('userid', userid, function (e) {
                     ready(info, userid);
                 });
