@@ -21,6 +21,7 @@ define([
         //$bar: $('#toolbar').css({ border: '1px solid white', background: 'grey', 'margin-bottom': '1vh', }),
     };
 
+    /*  Any time the realtime object changes, call this function */
     var change = function (o, n, path) {
         if (path && path.join) {
             console.log("Change from [%s] to [%s] at [%s]",
@@ -45,6 +46,7 @@ define([
         return input.getAttribute && input.getAttribute('data-rt-id');
     };
 
+    /*  Called whenever an event is fired on an input element */
     var handleInput = function (input) {
         var type = input.type.toLowerCase();
         var id = getRealtimeId(input);
@@ -64,6 +66,7 @@ define([
         }
     };
 
+    /*  Called whenever an event is fired on a span */
     var handleSpan = function (span) {
         var id = span.getAttribute('data-rt-id');
         var type = Render.typeofId(id);
@@ -75,6 +78,10 @@ define([
             Render.removeColumn(APP.proxy, id, function () {
                 change();
             });
+        } else if (type === 'cell') {
+            change();
+        } else {
+            console.log("UNHANDLED");
         }
     };
 
@@ -91,6 +98,7 @@ define([
                 handleInput(target);
                 break;
             case 'SPAN':
+            case 'LABEL':
                 handleSpan(target);
                 break;
             case undefined:
@@ -102,6 +110,9 @@ define([
         }
     };
 
+    /*
+        Make sure that the realtime data structure has all the required fields
+    */
     var prepareProxy = function (proxy, schema) {
         if (proxy && proxy.version === 1) { return; }
         console.log("Configuring proxy schema...");
@@ -111,8 +122,22 @@ define([
         proxy.version = 1;
     };
 
-    var ready = function (info) {
+    /*
+
+    */
+    var publish = APP.publish = function (bool) {
+        if (!APP.ready || APP.proxy.published) { return; }
+        APP.proxy.published = true;
+        APP.$publish.hide();
+
+        ['textarea', '#title'].forEach(function (sel) {
+            $(sel).attr('disabled', bool);
+        });
+    };
+
+    var ready = function (info, userid) {
         console.log("READY");
+        console.log('userid: %s', userid);
 
         var proxy = APP.proxy;
 
@@ -140,6 +165,14 @@ define([
         proxy
             .on('change', [], change)
             .on('remove', [], change);
+
+        if (!proxy.published) {
+            var $publish = APP.$publish = $('#publish')
+                .show()
+                .click(function () {
+                    publish(true);
+                });
+        }
 
         APP.ready = true;
     };
@@ -180,7 +213,15 @@ define([
         APP.proxy = rt.proxy;
         rt.proxy
         .on('create', create)
-        .on('ready', ready)
+        .on('ready', function (info) {
+            Cryptpad.getPadAttribute('userid', function (e, userid) {
+                if (e) { console.error(e); }
+                if (userid === null) { userid = Render.coluid(); }
+                Cryptpad.setPadAttribute('userid', userid, function (e) {
+                    ready(info, userid);
+                });
+            });
+        })
         .on('disconnect', disconnect);
     });
 });

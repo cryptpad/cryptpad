@@ -222,7 +222,10 @@ by maintaining indexes in rowsOrder and colsOrder
     };
 
     var makeRemoveElement = Render.makeRemoveElement = function (id) {
-        return ['SPAN', { 'data-rt-id': id, }, ['x']];
+        return ['SPAN', {
+            'data-rt-id': id,
+            class: 'remove',
+        }, ['✖']];
     };
 
     var makeHeadingCell = Render.makeHeadingCell = function (cell) {
@@ -236,16 +239,45 @@ by maintaining indexes in rowsOrder and colsOrder
         return ['TD', cell, []];
     };
 
+    var clone = function (o) {
+        return JSON.parse(JSON.stringify(o));
+    };
+
+    var makeCheckbox = Render.makeCheckbox = function (cell) {
+        var attrs = clone(cell);
+
+        // FIXME
+        attrs.id = cell['data-rt-id'];
+
+        var labelClass = 'cover';
+        if (cell.checked) {
+            labelClass += ' yes';
+        }
+
+        return ['TD', {class:"checkbox-cell"}, [
+            ['DIV', {class: 'checkbox-contain'}, [
+                ['INPUT', attrs, []],
+                ['SPAN', {class: labelClass}, []],
+                ['LABEL', {
+                    for: attrs.id,
+                    'data-rt-id': attrs.id,
+                }, []]
+            ]]
+        ]];
+    };
+
     var makeBodyCell = Render.makeBodyCell = function (cell) {
         if (cell.type === 'text') {
             return ['TD', {}, [
-                ['INPUT', cell, []],
-                makeRemoveElement(cell['data-rt-id'])
+                    ['DIV', {class: 'text-cell'}, [
+                        ['INPUT', cell, []],
+                        makeRemoveElement(cell['data-rt-id'])
+                    ]]
             ]];
         }
 
         if (cell.type === 'checkbox') {
-            return ['TD', {}, [ ['INPUT', cell, []] ]];
+            return makeCheckbox(cell);
         }
         return ['TD', cell, []];
     };
@@ -258,7 +290,7 @@ by maintaining indexes in rowsOrder and colsOrder
         if (!matrix || !matrix.length) { return; }
         var head = ['THEAD', {}, [ ['TR', {}, matrix[0].map(makeHeadingCell)] ]];
         var body = ['TBODY', {}, matrix.slice(1).map(makeBodyRow)];
-        return ['TABLE', {}, [head, body]];
+        return ['TABLE', {id:'table'}, [head, body]];
     };
 
     var asHTML = Render.asHTML = function (obj) {
@@ -278,12 +310,15 @@ by maintaining indexes in rowsOrder and colsOrder
     var preserveCursor = Render.preserveCursor = function (info) {
         if (['modifyValue', 'modifyAttribute'].indexOf(info.diff.action) !== -1) {
             var element = info.node;
+
+            if (typeof(element.selectionStart) !== 'number') { return; }
+
             var o = info.oldValue || '';
             var n = info.newValue || '';
             var op = TextPatcher.diff(o, n);
 
             info.selection = ['selectionStart', 'selectionEnd'].map(function (attr) {
-                var before = info.node[attr];
+                var before = element[attr];
                 var after = TextPatcher.transformCursor(element[attr], op);
                 return after;
             });
@@ -291,9 +326,14 @@ by maintaining indexes in rowsOrder and colsOrder
     };
 
     var recoverCursor = Render.recoverCursor = function (info) {
-        if (info.selection && info.node) {
-            info.node.selectionStart = info.selection[0];
-            info.node.selectionEnd = info.selection[1];
+        try {
+            if (info.selection && info.node) {
+                info.node.selectionStart = info.selection[0];
+                info.node.selectionEnd = info.selection[1];
+            }
+        } catch (err) {
+            //console.log(info.node);
+            //console.error(err);
         }
     };
 

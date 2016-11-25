@@ -4,6 +4,7 @@
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title data-localization="poll_title">Zero Knowledge Date Picker</title>
+    <link rel="stylesheet" href="/customize/main.css" />
     <script data-main="main" src="/bower_components/requirejs/require.js"></script>
     <script> require.config({ waitSeconds: 60, }); </script>
     <style>
@@ -12,39 +13,49 @@
             height: 100%;
             margin: 0px;
             padding: 0px;
-
-            maargin-top: 1.25em;
+            border: 0px;
         }
         .realtime {
-            border: 1px solid black;
             display: block;
             overflow: auto;
-
-            margin: auto;
 
             max-height: 100%;
             max-width: 100%;
         }
 
         .realtime input[type="text"] {
-            width: 5em;
             height: 1em;
             margin: 0px;
         }
-
-        table, table * {
-            border: 1px solid red;
-            padding: 15px;
+        .text-cell input[type="text"] {
+            width: 400px;
         }
 
-        table thead tr td {
-            boorder-bottom: 5px solid black;
+        /*input#title, textarea { wiidth: 50px; }*/
+
+        input[type="text"][disabled], textarea[disabled] {
+            background-color: transparent;
+            font: white;
+            border: 0px;
         }
+
+        td label {
+            border: .5px solid black;
+        }
+
     </style>
 </head>
 <body>
 
-<div class="realtime">
-    <button id="create-user">create user</button>
-    <button id="create-option">create option</button>
-</div>
+
+<button id="create-option">create option</button>
+<button id="create-user">create user</button>
+<button id="publish" style="display: none;">publish poll</button>
+
+
+<form class="realtime">
+    <br />
+    <input type="text" id="title"><br />
+    <textarea rows=5 cols=50></textarea><br />
+
+</form>
