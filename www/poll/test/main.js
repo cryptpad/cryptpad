@@ -51,9 +51,13 @@ define([
         var type = input.type.toLowerCase();
         var id = getRealtimeId(input);
 
+        console.log(input);
+
         switch (type) {
             case 'text':
                 console.log("text[rt-id='%s'] [%s]", id, input.value);
+
+                if (!input.value) { return void console.log("Hit enter?"); }
                 Render.setValue(APP.proxy, id, input.value);
                 break;
             case 'checkbox':
@@ -85,9 +89,13 @@ define([
         }
     };
 
-    var handleClick = function (e) {
+    var handleClick = function (e, isKeyup) {
         if (!APP.ready) { return; }
         var target = e && e.target;
+
+        if (isKeyup) {
+            console.log("Keyup!");
+        }
 
         if (!target) { return void console.log("NO TARGET"); }
 
@@ -145,6 +153,8 @@ define([
 
         var $table = APP.$table = $(Render.asHTML(proxy));
         var $createRow = APP.$createRow = $('#create-option').click(function () {
+            // 
+            console.error("BUTTON CLICKED! LOL");
             Render.createRow(proxy, function () {
                 change();
             });
@@ -160,7 +170,7 @@ define([
 
         $table
             .click(handleClick)
-            .on('keyup', handleClick);
+            .on('keyup', function (e) { handleClick(e, true); });
 
         proxy
             .on('change', [], change)
