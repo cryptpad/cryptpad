@@ -8,8 +8,8 @@ define([
 
     var Example = {
         info: {
-            title: 'my title',
-            description: 'my description',
+            title: '',
+            description: '',
         },
         table: {
 /*  TODO
@@ -52,6 +52,10 @@ by maintaining indexes in rowsOrder and colsOrder
         if (isColumn(id)) { return 'col'; }
         if (isCell(id)) { return 'cell'; }
         return null;
+    };
+
+    var getCoordinates = Render.getCoordinates = function (id) {
+        return id.split('_');
     };
 
     var getColumnValue = Render.getColumnValue = function (obj, colId) {
@@ -143,6 +147,7 @@ by maintaining indexes in rowsOrder and colsOrder
 
     var setValue = Render.setValue = function (obj, id, value) {
         var type = typeofId(id);
+
         switch (type) {
             case 'row': return setRowValue(obj, id, value);
             case 'col': return setColumnValue(obj, id, value);
@@ -199,10 +204,6 @@ by maintaining indexes in rowsOrder and colsOrder
                         type: 'text',
                         value: getColumnValue(obj, col) || ""
                     };
-                    if (getColumnValue(obj, col) === false) {
-                        result.placeholder = 'new column here'; //TODO translate
-                        result['class'] = 'uncommitted';
-                    }
                     return result;
                 }));
             }
@@ -214,15 +215,11 @@ by maintaining indexes in rowsOrder and colsOrder
             }].concat(cols.map(function (col) {
                 var id = [col, rows[i-1]].join('_');
                 var val = cells[id] || false;
-
                 var result = {
                     'data-rt-id': id,
                     type: 'checkbox',
                     autocomplete: 'nope'
                 };
-                if (getColumnValue(obj, col) === false) {
-                    result['class'] = 'uncommitted-cell';
-                }
                 if (val) { result.checked = true; }
                 return result;
             }));

@@ -1,5 +1,6 @@
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
+    '/customize/messages.js?app=poll',
     '/bower_components/textpatcher/TextPatcher.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
@@ -12,13 +13,13 @@ define([
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
     //'/customize/pad.js'
-], function (Config, TextPatcher, Listmap, Crypto, Cryptpad, Hyperjson, Render, Toolbar) {
+], function (Config, Messages, TextPatcher, Listmap, Crypto, Cryptpad, Hyperjson, Render, Toolbar) {
     var $ = window.jQuery;
     var APP = window.APP = {
         Toolbar: Toolbar,
         Hyperjson: Hyperjson,
         Render: Render,
-        //$bar: $('#toolbar').css({ border: '1px solid white', background: 'grey', 'margin-bottom': '1vh', }),
+        $bar: $('#toolbar').css({ border: '1px solid white', background: 'grey', 'margin-bottom': '1vh', }),
     };
 
     var sortColumns = function (order, firstcol) {
@@ -27,10 +28,37 @@ define([
             return (a === firstcol) ? -1 :
                         ((b === firstcol) ? 1 : 0);
         });
-        if (colsOrder.indexOf(firstcol) === -1) {
-            colsOrder.unshift(firstcol);
-        }
         return colsOrder;
+    };
+
+    var mergeUncommitted = function (proxy, uncommitted, commit) {
+        var newObj;
+        if (commit) {
+            newObj = proxy;
+        } else {
+            newObj = $.extend(true, {}, proxy);
+        }
+        // We have uncommitted data only if the user's column is not in the proxy
+        // If it is already is the proxy, nothing to merge
+        if (proxy.table.colsOrder.indexOf(APP.userid) !== -1) {
+            return newObj;
+        }
+        // Merge uncommitted into the proxy
+        uncommitted.table.colsOrder.forEach(function (x) {
+            if (newObj.table.colsOrder.indexOf(x) !== -1) { return; }
+            newObj.table.colsOrder.push(x);
+        });
+        for (var k in uncommitted.table.cols) {
+            if (!newObj.table.cols[k]) {
+                newObj.table.cols[k] = uncommitted.table.cols[k];
+            }
+        }
+        for (var k in uncommitted.table.cells) {
+            if (!newObj.table.cells[k]) {
+                newObj.table.cells[k] = uncommitted.table.cells[k];
+            }
+        }
+        return newObj;
     };
 
     /*  Any time the realtime object changes, call this function */
@@ -42,12 +70,14 @@ define([
 
         var table = APP.$table[0];
 
-        var colsOrder = sortColumns(APP.proxy.table.colsOrder, APP.userid);
+        var displayedObj = mergeUncommitted(APP.proxy, APP.uncommitted);
+
+        var colsOrder = sortColumns(displayedObj.table.colsOrder, APP.userid);
         var conf = {
             cols: colsOrder
         };
 
-        Render.updateTable(table, APP.proxy, conf);
+        Render.updateTable(table, displayedObj, conf);
 
         /*  FIXME browser autocomplete fills in new fields sometimes
             calling updateTable twice removes the autofilled in values
@@ -56,7 +86,8 @@ define([
             https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion
         */
         window.setTimeout(function () {
-            Render.updateTable(table, APP.proxy, conf);
+            var displayedObj2 = mergeUncommitted(APP.proxy, APP.uncommitted);
+            Render.updateTable(table, displayedObj2, conf);
         });
     };
 
@@ -71,18 +102,22 @@ define([
 
         console.log(input);
 
-        if ($(input).hasClass("uncommitted-cell")) { console.log('do nothing'); return; }
+        var object = APP.proxy;
+
+        var x = Render.getCoordinates(id)[0];
+        if (type !== "row" && x === APP.userid && APP.proxy.table.colsOrder.indexOf(x) === -1) {
+            object = APP.uncommitted;
+        }
 
         switch (type) {
             case 'text':
                 console.log("text[rt-id='%s'] [%s]", id, input.value);
-
                 if (!input.value) { return void console.log("Hit enter?"); }
-                Render.setValue(APP.proxy, id, input.value);
+                Render.setValue(object, id, input.value);
                 break;
             case 'checkbox':
                 console.log("checkbox[tr-id='%s'] %s", id, input.checked);
-                Render.setValue(APP.proxy, id, input.checked);
+                Render.setValue(object, id, input.checked);
                 break;
             default:
                 console.log("Input[type='%s']", type);
@@ -163,17 +198,36 @@ define([
         });
     };
 
+
+    var copyObject = function (obj) {
+        return JSON.parse(JSON.stringify(obj));
+    };
+
+    // special UI elements
+    var $title = $('#title').attr('placeholder', Messages.poll_titleHint || 'title');
+    var $description = $('#description').attr('placeholder', Messages.poll_descriptionHint || 'description');
+
+    var items = [$title, $description];
+
     var ready = function (info, userid) {
         console.log("READY");
         console.log('userid: %s', userid);
 
         var proxy = APP.proxy;
+        var uncommitted = APP.uncommitted = {};
+        prepareProxy(proxy, copyObject(Render.Example));
+        prepareProxy(uncommitted, copyObject(Render.Example));
+        if (proxy.table.colsOrder.indexOf(userid) === -1 &&
+                uncommitted.table.colsOrder.indexOf(userid) === -1) {
+            uncommitted.table.colsOrder.unshift(userid);
+        }
 
-        prepareProxy(proxy, Render.Example);
+        var displayedObj = mergeUncommitted(proxy, uncommitted, false);
 
-        var colsOrder = sortColumns(proxy.table.colsOrder, userid);
+        var colsOrder = sortColumns(displayedObj.table.colsOrder, userid);
 
-        var $table = APP.$table = $(Render.asHTML(proxy, null, colsOrder));
+
+        var $table = APP.$table = $(Render.asHTML(displayedObj, null, colsOrder));
         var $createRow = APP.$createRow = $('#create-option').click(function () {
             // 
             console.error("BUTTON CLICKED! LOL");
@@ -188,6 +242,28 @@ define([
             });
         });
 
+        //TODO
+        var $commit = APP.$commit = $('#commit').click(function () {
+            var uncommittedCopy = JSON.parse(JSON.stringify(APP.uncommitted));
+            APP.uncommitted = {};
+            prepareProxy(APP.uncommitted, copyObject(Render.Example));
+            mergeUncommitted(proxy, uncommittedCopy, true);
+            change();
+        });
+
+        items.forEach(function ($item) {
+            var id = $item.attr('id');
+
+            $item.on('change keyup', function () {
+                var val = $item.val();
+                proxy.info[id] = val;
+            });
+
+            if (typeof(proxy.info[id]) !== 'undefined') {
+                $item.val(proxy.info[id]);
+            }
+        });
+
         $('.realtime').append($table);
 
         $table
@@ -195,7 +271,30 @@ define([
             .on('keyup', function (e) { handleClick(e, true); });
 
         proxy
-            .on('change', [], change)
+            .on('change', ['info'], function (o, n, p) {
+                var $target = $('#' + p[1]);
+                var el = $target[0];
+                var selects;
+                var op;
+
+                if (el && ['textarea', 'text'].indexOf(el.type) !== -1) {
+                    op = TextPatcher.diff(o, n);
+                    selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
+                        var before = el[attr];
+                        var after = TextPatcher.transformCursor(el[attr], op);
+                        return after;
+                    });
+                    $target.val(n);
+
+                    if (op) {
+                        el.selectionStart = selects[0];
+                        el.selectionEnd = selects[1];
+                    }
+                }
+
+                console.log("change: (%s, %s, [%s])", o, n, p.join(', '));
+            })
+            .on('change', ['table'], change)
             .on('remove', [], change);
 
         if (!proxy.published) {
@@ -220,6 +319,14 @@ define([
             realtime: realtime,
             logging: true,
         });
+
+        var userList = info.userList;
+        var config = {
+            userData: {},
+            readOnly: false,
+            common: Cryptpad
+        };
+        toolbar = info.realtime.toolbar = Toolbar.create(APP.$bar, info.myID, info.realtime, info.getLag, userList, config);
 
         Cryptpad.replaceHash(editHash);
     };
