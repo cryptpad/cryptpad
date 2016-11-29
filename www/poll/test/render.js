@@ -202,7 +202,8 @@ by maintaining indexes in rowsOrder and colsOrder
                     var result = {
                         'data-rt-id': col,
                         type: 'text',
-                        value: getColumnValue(obj, col) || ""
+                        value: getColumnValue(obj, col) || "",
+                        placeholder: 'User' //TODO translate
                     };
                     return result;
                 }));
@@ -212,6 +213,7 @@ by maintaining indexes in rowsOrder and colsOrder
                 'data-rt-id': row,
                 value: getRowValue(obj, row),
                 type: 'text',
+                placeholder: 'Option' //TODO translate
             }].concat(cols.map(function (col) {
                 var id = [col, rows[i-1]].join('_');
                 var val = cells[id] || false;

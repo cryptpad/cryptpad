@@ -391,6 +391,9 @@ form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbo
 form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.yes:after {
   content: "✔";
 }
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.uncommitted {
+  background: #ddd;
+}
 form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.mine {
   display: none;
 }

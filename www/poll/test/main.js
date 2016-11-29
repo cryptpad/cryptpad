@@ -15,6 +15,10 @@ define([
     //'/customize/pad.js'
 ], function (Config, Messages, TextPatcher, Listmap, Crypto, Cryptpad, Hyperjson, Render, Toolbar) {
     var $ = window.jQuery;
+
+    var HIDE_INTRODUCTION_TEXT = "hide_poll_text";
+    var defaultName;
+
     var APP = window.APP = {
         Toolbar: Toolbar,
         Hyperjson: Hyperjson,
@@ -31,6 +35,10 @@ define([
         return colsOrder;
     };
 
+    var isOwnColumnCommitted = function () {
+        return APP.proxy && APP.proxy.table.colsOrder.indexOf(APP.userid) !== -1;
+    };
+
     var mergeUncommitted = function (proxy, uncommitted, commit) {
         var newObj;
         if (commit) {
@@ -40,7 +48,7 @@ define([
         }
         // We have uncommitted data only if the user's column is not in the proxy
         // If it is already is the proxy, nothing to merge
-        if (proxy.table.colsOrder.indexOf(APP.userid) !== -1) {
+        if (isOwnColumnCommitted()) {
             return newObj;
         }
         // Merge uncommitted into the proxy
@@ -59,6 +67,28 @@ define([
             }
         }
         return newObj;
+    };
+
+    var styleUncommittedColumn = function () {
+        var id = APP.userid;
+        if (isOwnColumnCommitted()) { return; }
+        $('[data-rt-id^="' + id + '"]').closest('td').addClass("uncommitted");
+        $('td.uncommitted .remove').remove();
+        $('td.uncommitted .cover').addClass("uncommitted");
+        $('.uncommitted input[type="text"]').attr("placeholder", "New column here"); //TODO
+    };
+
+    var updateTableButtons = function () {
+        if ($('.checkbox-cell').length && !isOwnColumnCommitted()) {
+            $('#commit').show();
+            $('#commit').css('width', $($('.checkbox-cell')[0]).width());
+        } else {
+            $('#commit').hide();
+        }
+        var width = $('#table').outerWidth();
+        if (width) {
+            $('#create-user').css('left', width + 30 + 'px');
+        }
     };
 
     /*  Any time the realtime object changes, call this function */
@@ -88,6 +118,8 @@ define([
         window.setTimeout(function () {
             var displayedObj2 = mergeUncommitted(APP.proxy, APP.uncommitted);
             Render.updateTable(table, displayedObj2, conf);
+            updateTableButtons();
+            styleUncommittedColumn();
         });
     };
 
@@ -193,7 +225,7 @@ define([
         APP.proxy.published = true;
         APP.$publish.hide();
 
-        ['textarea', '#title'].forEach(function (sel) {
+        ['textarea'].forEach(function (sel) {
             $(sel).attr('disabled', bool);
         });
     };
@@ -204,10 +236,8 @@ define([
     };
 
     // special UI elements
-    var $title = $('#title').attr('placeholder', Messages.poll_titleHint || 'title');
+    //var $title = $('#title').attr('placeholder', Messages.poll_titleHint || 'title'); TODO
     var $description = $('#description').attr('placeholder', Messages.poll_descriptionHint || 'description');
-
-    var items = [$title, $description];
 
     var ready = function (info, userid) {
         console.log("READY");
@@ -226,7 +256,6 @@ define([
 
         var colsOrder = sortColumns(displayedObj.table.colsOrder, userid);
 
-
         var $table = APP.$table = $(Render.asHTML(displayedObj, null, colsOrder));
         var $createRow = APP.$createRow = $('#create-option').click(function () {
             // 
@@ -242,7 +271,7 @@ define([
             });
         });
 
-        //TODO
+        // Commit button
         var $commit = APP.$commit = $('#commit').click(function () {
             var uncommittedCopy = JSON.parse(JSON.stringify(APP.uncommitted));
             APP.uncommitted = {};
@@ -251,20 +280,26 @@ define([
             change();
         });
 
-        items.forEach(function ($item) {
-            var id = $item.attr('id');
+        // Title
+        if (APP.proxy.info.defaultTitle) {
+            updateDefaultTitle(APP.proxy.info.defaultTitle);
+        } else {
+            APP.proxy.info.defaultTitle = defaultName
+        }
+        updateTitle(APP.proxy.info.title || defaultName);
 
-            $item.on('change keyup', function () {
-                var val = $item.val();
-                proxy.info[id] = val;
-            });
-
-            if (typeof(proxy.info[id]) !== 'undefined') {
-                $item.val(proxy.info[id]);
-            }
+        // Description
+        $description.on('change keyup', function () {
+            var val = $item.val();
+            proxy.info.description = val;
         });
+        if (typeof(proxy.info.description) !== 'undefined') {
+            $description.val(proxy.info.descrption);
+        }
 
-        $('.realtime').append($table);
+        $('#tableContainer').prepend($table);
+        updateTableButtons();
+        styleUncommittedColumn();
 
         $table
             .click(handleClick)
@@ -272,20 +307,18 @@ define([
 
         proxy
             .on('change', ['info'], function (o, n, p) {
-                var $target = $('#' + p[1]);
-                var el = $target[0];
-                var selects;
-                var op;
+                if (p[1] === 'title') {
+                    updateTitle(n);
+                } else if (p[1] === 'description') {
+                    var op = TextPatcher.diff(o, n);
+                    var el = $description[0];
 
-                if (el && ['textarea', 'text'].indexOf(el.type) !== -1) {
-                    op = TextPatcher.diff(o, n);
-                    selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
+                    var selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
                         var before = el[attr];
                         var after = TextPatcher.transformCursor(el[attr], op);
                         return after;
                     });
                     $target.val(n);
-
                     if (op) {
                         el.selectionStart = selects[0];
                         el.selectionEnd = selects[1];
@@ -310,6 +343,39 @@ define([
 
     var secret = Cryptpad.getSecrets();
 
+    
+            var updateTitle = function (newTitle) {
+                if (newTitle === document.title) { return; }
+                // Change the title now, and set it back to the old value if there is an error
+                var oldTitle = document.title;
+                document.title = newTitle;
+                Cryptpad.renamePad(newTitle, function (err, data) {
+                    if (err) {
+                        console.log("Couldn't set pad title");
+                        console.error(err);
+                        document.title = oldTitle;
+                        return;
+                    }
+                    document.title = data;
+                    APP.$bar.find('.' + Toolbar.constants.title).find('span.title').text(data);
+                    APP.$bar.find('.' + Toolbar.constants.title).find('input').val(data);
+                });
+            };
+
+            var updateDefaultTitle = function (defaultTitle) {
+                defaultName = defaultTitle;
+                APP.$bar.find('.' + Toolbar.constants.title).find('input').attr("placeholder", defaultName);
+            };
+            var renameCb = function (err, title) {
+                if (err) { return; }
+                document.title = title;
+                APP.proxy.info.title = title;
+            };
+
+            var suggestName = function (fallback) {
+                return document.title || defaultName || "";
+            };
+
     var create = function (info) {
         var realtime = APP.realtime = info.realtime;
 
@@ -324,11 +390,35 @@ define([
         var config = {
             userData: {},
             readOnly: false,
+            title: {
+                onRename: renameCb,
+                defaultName: defaultName,
+                suggestName: suggestName
+            },
             common: Cryptpad
         };
         toolbar = info.realtime.toolbar = Toolbar.create(APP.$bar, info.myID, info.realtime, info.getLag, userList, config);
 
+        var $rightside = APP.$bar.find('.' + Toolbar.constants.rightside);
+
+        /* add a forget button */
+        var forgetCb = function (err, title) {
+            if (err) { return; }
+            document.title = title;
+        };
+        var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
+        $rightside.append($forgetPad);
+
         Cryptpad.replaceHash(editHash);
+
+        Cryptpad.getPadTitle(function (err, title) {
+            if (err) {
+                console.error(err);
+                console.log("Couldn't get pad title");
+                return;
+            }
+            updateTitle(title || defaultName);
+        });
     };
 
     var disconnect = function () {
@@ -348,6 +438,8 @@ define([
 
     // don't initialize until the store is ready.
     Cryptpad.ready(function () {
+        var parsedHash = Cryptpad.parsePadUrl(window.location.href);
+        defaultName = Cryptpad.getDefaultName(parsedHash);
         var rt = window.rt = APP.rt = Listmap.create(config);
         APP.proxy = rt.proxy;
         rt.proxy
@@ -363,6 +455,17 @@ define([
             });
         })
         .on('disconnect', disconnect);
+
+        Cryptpad.getPadAttribute(HIDE_INTRODUCTION_TEXT, function (e, value) {
+            if (e) { console.error(e); }
+            if (value === null) {
+                Cryptpad.setPadAttribute(HIDE_INTRODUCTION_TEXT, "1", function (e) {
+                    if (e) { console.error(e) }
+                });
+            } else if (value === "1") {
+                $('#howItWorks').hide();
+            }
+        });
     });
 });
 
