@@ -203,7 +203,8 @@ by maintaining indexes in rowsOrder and colsOrder
                         'data-rt-id': col,
                         type: 'text',
                         value: getColumnValue(obj, col) || "",
-                        placeholder: 'User' //TODO translate
+                        placeholder: 'User', //TODO translate
+                        disabled: 'disabled'
                     };
                     return result;
                 }));
@@ -213,14 +214,15 @@ by maintaining indexes in rowsOrder and colsOrder
                 'data-rt-id': row,
                 value: getRowValue(obj, row),
                 type: 'text',
-                placeholder: 'Option' //TODO translate
+                placeholder: 'Option', //TODO translate
+                disabled: 'disabled'
             }].concat(cols.map(function (col) {
                 var id = [col, rows[i-1]].join('_');
                 var val = cells[id] || false;
                 var result = {
                     'data-rt-id': id,
                     type: 'checkbox',
-                    autocomplete: 'nope'
+                    autocomplete: 'nope',
                 };
                 if (val) { result.checked = true; }
                 return result;
@@ -235,13 +237,22 @@ by maintaining indexes in rowsOrder and colsOrder
         }, ['✖']];
     };
 
+    var makeEditElement = Render.makeEditElement = function (id) {
+        return ['SPAN', {
+            'data-rt-id': id,
+            class: 'edit',
+        }, ['']];
+    };
+
     var makeHeadingCell = Render.makeHeadingCell = function (cell) {
         if (!cell) { return ['TD', {}, []]; }
         if (cell.type === 'text') {
-            var removeElement = cell['class'] !== "uncommitted" ? makeRemoveElement(cell['data-rt-id']) : '';
+            var removeElement = makeRemoveElement(cell['data-rt-id']);
+            var editElement = makeEditElement(cell['data-rt-id']);
             return ['TD', {}, [
                 ['INPUT', cell, []],
-                removeElement
+                removeElement,
+                editElement
             ]];
         }
         return ['TD', cell, []];
@@ -279,7 +290,8 @@ by maintaining indexes in rowsOrder and colsOrder
             return ['TD', {}, [
                     ['DIV', {class: 'text-cell'}, [
                         ['INPUT', cell, []],
-                        makeRemoveElement(cell['data-rt-id'])
+                        makeRemoveElement(cell['data-rt-id']),
+                        makeEditElement(cell['data-rt-id'])
                     ]]
             ]];
         }

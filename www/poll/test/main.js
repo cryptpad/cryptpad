@@ -24,6 +24,10 @@ define([
         Hyperjson: Hyperjson,
         Render: Render,
         $bar: $('#toolbar').css({ border: '1px solid white', background: 'grey', 'margin-bottom': '1vh', }),
+        editable: {
+            row: [],
+            col: []
+        }
     };
 
     var sortColumns = function (order, firstcol) {
@@ -69,16 +73,42 @@ define([
         return newObj;
     };
 
+    var setColumnDisabled = function (id, state) {
+        if (!state) {
+            $('input[data-rt-id^="' + id + '"]').removeAttr('disabled');
+            return;
+        }
+        $('input[data-rt-id^="' + id + '"]').attr('disabled', 'disabled');
+    };
+
     var styleUncommittedColumn = function () {
         var id = APP.userid;
+
+        // Enable the checkboxes for the user's column (committed or not)
+        $('input[disabled="disabled"][data-rt-id^="' + id + '"]').removeAttr('disabled');
+        $('input[type="checkbox"][data-rt-id^="' + id + '"]').addClass('enabled');
+
         if (isOwnColumnCommitted()) { return; }
         $('[data-rt-id^="' + id + '"]').closest('td').addClass("uncommitted");
-        $('td.uncommitted .remove').remove();
+        $('td.uncommitted .remove, td.uncommitted .edit').css('visibility', 'hidden');
         $('td.uncommitted .cover').addClass("uncommitted");
         $('.uncommitted input[type="text"]').attr("placeholder", "New column here"); //TODO
     };
 
+    var unlockElements = function () {
+        APP.editable.row.forEach(function (id) {
+            $('input[type="text"][disabled="disabled"][data-rt-id="' + id + '"]').removeAttr('disabled');
+            $('span.edit[data-rt-id="' + id + '"]').css('visibility', 'hidden');
+        });
+        APP.editable.col.forEach(function (id) {
+            $('input[disabled="disabled"][data-rt-id^="' + id + '"]').removeAttr('disabled');
+            $('input[type="checkbox"][data-rt-id^="' + id + '"]').addClass('enabled');
+            $('span.edit[data-rt-id="' + id + '"]').css('visibility', 'hidden');
+        });
+    };
+
     var updateTableButtons = function () {
+        unlockElements();
         if ($('.checkbox-cell').length && !isOwnColumnCommitted()) {
             $('#commit').show();
             $('#commit').css('width', $($('.checkbox-cell')[0]).width());
@@ -88,6 +118,23 @@ define([
         var width = $('#table').outerWidth();
         if (width) {
             $('#create-user').css('left', width + 30 + 'px');
+        }
+    };
+
+    var unlockColumn = function (id, cb) {
+        if (APP.editable.col.indexOf(id) === -1) {
+            APP.editable.col.push(id);
+        }
+        if (typeof(cb) === "function") {
+            cb();
+        }
+    };
+    var unlockRow = function (id, cb) {
+        if (APP.editable.row.indexOf(id) === -1) {
+            APP.editable.row.push(id);
+        }
+        if (typeof(cb) === "function") {
+            cb();
         }
     };
 
@@ -146,10 +193,16 @@ define([
                 console.log("text[rt-id='%s'] [%s]", id, input.value);
                 if (!input.value) { return void console.log("Hit enter?"); }
                 Render.setValue(object, id, input.value);
+                change();
                 break;
             case 'checkbox':
                 console.log("checkbox[tr-id='%s'] %s", id, input.checked);
-                Render.setValue(object, id, input.checked);
+                if ($(input).hasClass('enabled')) {
+                    Render.setValue(object, id, input.checked);
+                    change();
+                } else {
+                    console.log('checkbox locked');
+                }
                 break;
             default:
                 console.log("Input[type='%s']", type);
@@ -162,13 +215,29 @@ define([
         var id = span.getAttribute('data-rt-id');
         var type = Render.typeofId(id);
         if (type === 'row') {
-            Render.removeRow(APP.proxy, id, function () {
-                change();
-            });
+            var isRemove = span.className && span.className.split(' ').indexOf('remove') !== -1;
+            var isEdit = span.className && span.className.split(' ').indexOf('edit') !== -1;
+            if (isRemove) {
+                Render.removeRow(APP.proxy, id, function () {
+                    change();
+                });
+            } else if (isEdit) {
+                unlockRow(id, function () {
+                    change();
+                });
+            }
         } else if (type === 'col') {
-            Render.removeColumn(APP.proxy, id, function () {
-                change();
-            });
+            var isRemove = span.className && span.className.split(' ').indexOf('remove') !== -1;
+            var isEdit = span.className && span.className.split(' ').indexOf('edit') !== -1;
+            if (isRemove) {
+                Render.removeColumn(APP.proxy, id, function () {
+                    change();
+                });
+            } else if (isEdit) {
+                unlockColumn(id, function () {
+                    change();
+                });
+            }
         } else if (type === 'cell') {
             change();
         } else {
@@ -193,7 +262,7 @@ define([
                 handleInput(target);
                 break;
             case 'SPAN':
-            case 'LABEL':
+            //case 'LABEL':
                 handleSpan(target);
                 break;
             case undefined:
