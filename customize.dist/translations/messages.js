@@ -29,8 +29,8 @@ define(function () {
     out.readonly = 'Read only';
     out.anonymous = "Anonymous";
     out.yourself = "Yourself";
-    out.anonymousUsers = "anonymous users";
-    out.anonymousUser = "anonymous user";
+    out.anonymousUsers = "anonymous editors";
+    out.anonymousUser = "anonymous editor";
     out.shareView = "Read-only URL";
     out.shareEdit = "Edit URL";
     out.users = "Users";

@@ -16,6 +16,11 @@
             padding: 0px;
             border: 0px;
         }
+        .cryptpad-toolbar h2 {
+            font: normal normal normal 12px Arial, Helvetica, Tahoma, Verdana, Sans-Serif;
+            color: #000;
+            line-height: auto;
+        }
         .realtime {
             display: block;
             overflow: auto;
@@ -54,6 +59,10 @@
         }
         #tableContainer button {
             height: 2rem;
+            display: none;
+        }
+        #publish {
+            display: none;
         }
         #commit {
             position: absolute;
@@ -93,7 +102,7 @@
 
 <form class="realtime">
     <br />
-    <textarea rows=5 cols=50 id="description"></textarea><br />
+    <textarea rows=5 cols=50 disabled="disabled" id="description"></textarea><br />
     <p id="tableContainer">
         <button id="create-option"><span class="fa fa-plus"></span></button>
         <button id="create-user"><span class="fa fa-plus"></span></button>

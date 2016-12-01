@@ -19,6 +19,9 @@ define([
     var HIDE_INTRODUCTION_TEXT = "hide_poll_text";
     var defaultName;
 
+    var secret = Cryptpad.getSecrets();
+    var readOnly = secret.keys && !secret.keys.editKeyStr;
+
     var APP = window.APP = {
         Toolbar: Toolbar,
         Hyperjson: Hyperjson,
@@ -108,17 +111,21 @@ define([
     };
 
     var updateTableButtons = function () {
-        unlockElements();
         if ($('.checkbox-cell').length && !isOwnColumnCommitted()) {
             $('#commit').show();
             $('#commit').css('width', $($('.checkbox-cell')[0]).width());
-        } else {
-            $('#commit').hide();
         }
+        $('#create-user, #create-option').show();
         var width = $('#table').outerWidth();
         if (width) {
             $('#create-user').css('left', width + 30 + 'px');
         }
+    };
+
+    var updateDisplayedTable = function () {
+        styleUncommittedColumn();
+        unlockElements();
+        updateTableButtons();
     };
 
     var unlockColumn = function (id, cb) {
@@ -151,10 +158,11 @@ define([
 
         var colsOrder = sortColumns(displayedObj.table.colsOrder, APP.userid);
         var conf = {
-            cols: colsOrder
+            cols: colsOrder,
+            readOnly: readOnly
         };
 
-        Render.updateTable(table, displayedObj, conf);
+        //Render.updateTable(table, displayedObj, conf);
 
         /*  FIXME browser autocomplete fills in new fields sometimes
             calling updateTable twice removes the autofilled in values
@@ -165,8 +173,7 @@ define([
         window.setTimeout(function () {
             var displayedObj2 = mergeUncommitted(APP.proxy, APP.uncommitted);
             Render.updateTable(table, displayedObj2, conf);
-            updateTableButtons();
-            styleUncommittedColumn();
+            updateDisplayedTable();
         });
     };
 
@@ -286,18 +293,112 @@ define([
         proxy.version = 1;
     };
 
+
     /*
 
     */
     var publish = APP.publish = function (bool) {
-        if (!APP.ready || APP.proxy.published) { return; }
-        APP.proxy.published = true;
-        APP.$publish.hide();
+        if (!APP.ready) { return; }
+        if (APP.proxy.published !== bool) {
+            APP.proxy.published = bool;
+        }
+        console.log(bool);
+        if (bool) {
+            APP.$publish.hide();
+            $('#create-option').hide();
+            $('.remove[data-rt-id^="y"], .edit[data-rt-id^="y"]').hide();
+        } else {
+            APP.$publish.show();
+            $('#create-option').show();
+            $('.remove[data-rt-id^="y"], .edit[data-rt-id^="y"]').show();
+        }
 
         ['textarea'].forEach(function (sel) {
             $(sel).attr('disabled', bool);
         });
     };
+
+            var userData = APP.userData = {}; // List of pretty names for all users (mapped with their ID)
+            var userList; // List of users still connected to the channel (server IDs)
+            var addToUserData = function(data) {
+                var users = userList ? userList.users : undefined;
+                //var userData = APP.proxy.info.userData;
+                for (var attrname in data) { userData[attrname] = data[attrname]; }
+
+                if (users && users.length) {
+                    for (var userKey in userData) {
+                        if (users.indexOf(userKey) === -1) { delete userData[userKey]; }
+                    }
+                }
+
+                if(userList && typeof userList.onChange === "function") {
+                    userList.onChange(userData);
+                }
+
+                APP.proxy.info.userData = userData;
+            };
+
+            //var myData = {};
+            var getLastName = function (cb) {
+                Cryptpad.getAttribute('username', function (err, userName) {
+                    cb(err, userName || '');
+                });
+            };
+
+            var setName = APP.setName = function (newName) {
+                if (typeof(newName) !== 'string') { return; }
+                var myUserNameTemp = Cryptpad.fixHTML(newName.trim());
+                if(myUserNameTemp.length > 32) {
+                    myUserNameTemp = myUserNameTemp.substr(0, 32);
+                }
+                myUserName = myUserNameTemp;
+                var myID = APP.myID;
+                var myData = {}
+                myData[myID] = {
+                    name: myUserName
+                };
+                addToUserData(myData);
+                Cryptpad.setAttribute('username', newName, function (err, data) {
+                    if (err) {
+                        console.error("Couldn't set username");
+                        return;
+                    }
+                    APP.userName.lastName = myUserName;
+                    //change();
+                });
+            };
+
+            var updateTitle = function (newTitle) {
+                if (newTitle === document.title) { return; }
+                // Change the title now, and set it back to the old value if there is an error
+                var oldTitle = document.title;
+                document.title = newTitle;
+                Cryptpad.renamePad(newTitle, function (err, data) {
+                    if (err) {
+                        console.log("Couldn't set pad title");
+                        console.error(err);
+                        document.title = oldTitle;
+                        return;
+                    }
+                    document.title = data;
+                    APP.$bar.find('.' + Toolbar.constants.title).find('span.title').text(data);
+                    APP.$bar.find('.' + Toolbar.constants.title).find('input').val(data);
+                });
+            };
+
+            var updateDefaultTitle = function (defaultTitle) {
+                defaultName = defaultTitle;
+                APP.$bar.find('.' + Toolbar.constants.title).find('input').attr("placeholder", defaultName);
+            };
+            var renameCb = function (err, title) {
+                if (err) { return; }
+                document.title = title;
+                APP.proxy.info.title = title;
+            };
+
+            var suggestName = function (fallback) {
+                return document.title || defaultName || "";
+            };
 
 
     var copyObject = function (obj) {
@@ -308,7 +409,7 @@ define([
     //var $title = $('#title').attr('placeholder', Messages.poll_titleHint || 'title'); TODO
     var $description = $('#description').attr('placeholder', Messages.poll_descriptionHint || 'description');
 
-    var ready = function (info, userid) {
+    var ready = function (info, userid, readOnly) {
         console.log("READY");
         console.log('userid: %s', userid);
 
@@ -316,8 +417,8 @@ define([
         var uncommitted = APP.uncommitted = {};
         prepareProxy(proxy, copyObject(Render.Example));
         prepareProxy(uncommitted, copyObject(Render.Example));
-        if (proxy.table.colsOrder.indexOf(userid) === -1 &&
-                uncommitted.table.colsOrder.indexOf(userid) === -1) {
+        if (!readOnly && proxy.table.colsOrder.indexOf(userid) === -1 &&
+            uncommitted.table.colsOrder.indexOf(userid) === -1) {
             uncommitted.table.colsOrder.unshift(userid);
         }
 
@@ -325,7 +426,7 @@ define([
 
         var colsOrder = sortColumns(displayedObj.table.colsOrder, userid);
 
-        var $table = APP.$table = $(Render.asHTML(displayedObj, null, colsOrder));
+        var $table = APP.$table = $(Render.asHTML(displayedObj, null, colsOrder, readOnly));
         var $createRow = APP.$createRow = $('#create-option').click(function () {
             // 
             console.error("BUTTON CLICKED! LOL");
@@ -359,16 +460,15 @@ define([
 
         // Description
         $description.on('change keyup', function () {
-            var val = $item.val();
+            var val = $description.val();
             proxy.info.description = val;
         });
         if (typeof(proxy.info.description) !== 'undefined') {
-            $description.val(proxy.info.descrption);
+            $description.val(proxy.info.description);
         }
 
         $('#tableContainer').prepend($table);
-        updateTableButtons();
-        styleUncommittedColumn();
+        updateDisplayedTable();
 
         $table
             .click(handleClick)
@@ -378,6 +478,8 @@ define([
             .on('change', ['info'], function (o, n, p) {
                 if (p[1] === 'title') {
                     updateTitle(n);
+                } else if (p[1] === "userData") {
+                    addToUserData(APP.proxy.info.userData);
                 } else if (p[1] === 'description') {
                     var op = TextPatcher.diff(o, n);
                     var el = $description[0];
@@ -387,7 +489,7 @@ define([
                         var after = TextPatcher.transformCursor(el[attr], op);
                         return after;
                     });
-                    $target.val(n);
+                    $description.val(n);
                     if (op) {
                         el.selectionStart = selects[0];
                         el.selectionEnd = selects[1];
@@ -399,76 +501,84 @@ define([
             .on('change', ['table'], change)
             .on('remove', [], change);
 
-        if (!proxy.published) {
-            var $publish = APP.$publish = $('#publish')
-                .show()
-                .click(function () {
-                    publish(true);
-                });
-        }
+        // #publish button is removed in readonly
+        var $publish = APP.$publish = $('#publish')
+            .click(function () {
+                publish(true);
+            });
 
-        APP.ready = true;
+        addToUserData(APP.proxy.info.userData);
+
+        getLastName(function (err, lastName) {
+            APP.ready = true;
+
+            if (!proxy.published) {
+                $('#publish').show(); // Show the publish button
+                publish(false);
+            } else {
+                publish(true);
+            }
+
+            // Update the toolbar list:
+            // Add the current user in the metadata if he has edit rights
+            if (readOnly) { return; }
+            if (typeof(lastName) === 'string' && lastName.length) {
+                setName(lastName);
+            } else {
+                var myData = {};
+                myData[info.myId] = {
+                    name: ""
+                };
+                addToUserData(myData);
+                APP.$userNameButton.click();
+            }
+        });
     };
-
-    var secret = Cryptpad.getSecrets();
-
-    
-            var updateTitle = function (newTitle) {
-                if (newTitle === document.title) { return; }
-                // Change the title now, and set it back to the old value if there is an error
-                var oldTitle = document.title;
-                document.title = newTitle;
-                Cryptpad.renamePad(newTitle, function (err, data) {
-                    if (err) {
-                        console.log("Couldn't set pad title");
-                        console.error(err);
-                        document.title = oldTitle;
-                        return;
-                    }
-                    document.title = data;
-                    APP.$bar.find('.' + Toolbar.constants.title).find('span.title').text(data);
-                    APP.$bar.find('.' + Toolbar.constants.title).find('input').val(data);
-                });
-            };
-
-            var updateDefaultTitle = function (defaultTitle) {
-                defaultName = defaultTitle;
-                APP.$bar.find('.' + Toolbar.constants.title).find('input').attr("placeholder", defaultName);
-            };
-            var renameCb = function (err, title) {
-                if (err) { return; }
-                document.title = title;
-                APP.proxy.info.title = title;
-            };
-
-            var suggestName = function (fallback) {
-                return document.title || defaultName || "";
-            };
 
     var create = function (info) {
         var realtime = APP.realtime = info.realtime;
+        var myID = APP.myID = info.myID;
 
-        var editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+        var editHash;
+        var viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
+
+        if (!readOnly) {
+            editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+        }
 
         APP.patchText = TextPatcher.create({
             realtime: realtime,
             logging: true,
         });
 
-        var userList = info.userList;
+        userList = APP.userList = info.userList;
         var config = {
-            userData: {},
-            readOnly: false,
+            userData: userData,
+            readOnly: readOnly,
             title: {
                 onRename: renameCb,
                 defaultName: defaultName,
                 suggestName: suggestName
             },
+            ifrw: window,
             common: Cryptpad
         };
         toolbar = info.realtime.toolbar = Toolbar.create(APP.$bar, info.myID, info.realtime, info.getLag, userList, config);
 
-        var $rightside = APP.$bar.find('.' + Toolbar.constants.rightside);
+        var $bar = APP.$bar;
+        var $rightside = $bar.find('.' + Toolbar.constants.rightside);
+        var $userBlock = $bar.find('.' + Toolbar.constants.username);
+        var $editShare = $bar.find('.' + Toolbar.constants.editShare);
+        var $viewShare = $bar.find('.' + Toolbar.constants.viewShare);
+
+        // Store the object sent for the "change username" button so that we can update the field value correctly
+        var userNameButtonObject = APP.userName = {};
+        /* add a "change username" button */
+        getLastName(function (err, lastName) {
+            userNameButtonObject.lastName = lastName;
+            var $username = APP.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName).hide();
+            $userBlock.append($username);
+        });
 
         /* add a forget button */
         var forgetCb = function (err, title) {
@@ -478,7 +588,19 @@ define([
         var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
         $rightside.append($forgetPad);
 
-        Cryptpad.replaceHash(editHash);
+        if (!readOnly) {
+            $editShare.append(Cryptpad.createButton('editshare', false, {editHash: editHash}));
+        }
+        if (viewHash) {
+            /* add a 'links' button */
+            $viewShare.append(Cryptpad.createButton('viewshare', false, {viewHash: viewHash}));
+            if (!readOnly) {
+                $viewShare.append(Cryptpad.createButton('viewopen', false, {viewHash: viewHash}));
+            }
+        }
+
+        // set the hash
+        if (!readOnly) { Cryptpad.replaceHash(editHash); }
 
         Cryptpad.getPadTitle(function (err, title) {
             if (err) {
@@ -498,6 +620,7 @@ define([
     var config = {
         websocketURL: Cryptpad.getWebsocketURL(),
         channel: secret.channel,
+        readOnly: readOnly,
         data: {},
         // our public key
         validateKey: secret.keys.validateKey || undefined,
@@ -507,6 +630,10 @@ define([
 
     // don't initialize until the store is ready.
     Cryptpad.ready(function () {
+        if (readOnly) {
+            $('#commit, #create-user, #create-option, #publish').remove();
+        }
+
         var parsedHash = Cryptpad.parsePadUrl(window.location.href);
         defaultName = Cryptpad.getDefaultName(parsedHash);
         var rt = window.rt = APP.rt = Listmap.create(config);
@@ -519,7 +646,7 @@ define([
                 if (userid === null) { userid = Render.coluid(); }
                 APP.userid = userid;
                 Cryptpad.setPadAttribute('userid', userid, function (e) {
-                    ready(info, userid);
+                    ready(info, userid, readOnly);
                 });
             });
         })

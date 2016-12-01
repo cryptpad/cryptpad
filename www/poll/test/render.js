@@ -10,6 +10,7 @@ define([
         info: {
             title: '',
             description: '',
+            userData: {}
         },
         table: {
 /*  TODO
@@ -187,7 +188,7 @@ by maintaining indexes in rowsOrder and colsOrder
         it returns an array of arrays containing the relevant data for each
         cell in table we wish to construct.
     */
-    var cellMatrix = Render.cellMatrix = function (obj, rows, cols) {
+    var cellMatrix = Render.cellMatrix = function (obj, rows, cols, readOnly) {
         if (typeof(obj) !== 'object') {
             throw new Error('expected realtime-proxy object');
         }
@@ -224,6 +225,9 @@ by maintaining indexes in rowsOrder and colsOrder
                     type: 'checkbox',
                     autocomplete: 'nope',
                 };
+                if (readOnly) {
+                    result.disabled = "disabled";
+                }
                 if (val) { result.checked = true; }
                 return result;
             }));
@@ -244,16 +248,17 @@ by maintaining indexes in rowsOrder and colsOrder
         }, ['']];
     };
 
-    var makeHeadingCell = Render.makeHeadingCell = function (cell) {
+    var makeHeadingCell = Render.makeHeadingCell = function (cell, readOnly) {
         if (!cell) { return ['TD', {}, []]; }
         if (cell.type === 'text') {
             var removeElement = makeRemoveElement(cell['data-rt-id']);
             var editElement = makeEditElement(cell['data-rt-id']);
-            return ['TD', {}, [
-                ['INPUT', cell, []],
-                removeElement,
-                editElement
-            ]];
+            var elements = [['INPUT', cell, []]];
+            if (!readOnly) {
+                elements.push(removeElement);
+                elements.push(editElement);
+            }
+            return ['TD', {}, elements];
         }
         return ['TD', cell, []];
     };
@@ -285,14 +290,17 @@ by maintaining indexes in rowsOrder and colsOrder
         ]];
     };
 
-    var makeBodyCell = Render.makeBodyCell = function (cell) {
+    var makeBodyCell = Render.makeBodyCell = function (cell, readOnly) {
         if (cell.type === 'text') {
+            var removeElement = makeRemoveElement(cell['data-rt-id']);
+            var editElement = makeEditElement(cell['data-rt-id']);
+            var elements = [['INPUT', cell, []]];
+            if (!readOnly) {
+                elements.push(removeElement);
+                elements.push(editElement);
+            }
             return ['TD', {}, [
-                    ['DIV', {class: 'text-cell'}, [
-                        ['INPUT', cell, []],
-                        makeRemoveElement(cell['data-rt-id']),
-                        makeEditElement(cell['data-rt-id'])
-                    ]]
+                    ['DIV', {class: 'text-cell'}, elements]
             ]];
         }
 
@@ -302,19 +310,25 @@ by maintaining indexes in rowsOrder and colsOrder
         return ['TD', cell, []];
     };
 
-    var makeBodyRow = Render.makeBodyRow = function (row) {
-        return ['TR', {}, row.map(makeBodyCell)];
+    var makeBodyRow = Render.makeBodyRow = function (row, readOnly) {
+        return ['TR', {}, row.map(function (cell) {
+            return makeBodyCell(cell, readOnly);
+        })];
     };
 
-    var toHyperjson = Render.toHyperjson = function (matrix) {
+    var toHyperjson = Render.toHyperjson = function (matrix, readOnly) {
         if (!matrix || !matrix.length) { return; }
-        var head = ['THEAD', {}, [ ['TR', {}, matrix[0].map(makeHeadingCell)] ]];
-        var body = ['TBODY', {}, matrix.slice(1).map(makeBodyRow)];
+        var head = ['THEAD', {}, [ ['TR', {}, matrix[0].map(function (cell) {
+            return makeHeadingCell(cell, readOnly);
+        })] ]];
+        var body = ['TBODY', {}, matrix.slice(1).map(function (row) {
+            return makeBodyRow(row, readOnly);
+        })];
         return ['TABLE', {id:'table'}, [head, body]];
     };
 
-    var asHTML = Render.asHTML = function (obj, rows, cols) {
-        return Hyperjson.toDOM(toHyperjson(cellMatrix(obj, rows, cols)));
+    var asHTML = Render.asHTML = function (obj, rows, cols, readOnly) {
+        return Hyperjson.toDOM(toHyperjson(cellMatrix(obj, rows, cols, readOnly), readOnly));
     };
 
     var diffIsInput = Render.diffIsInput = function (info) {
@@ -390,9 +404,10 @@ by maintaining indexes in rowsOrder and colsOrder
 
         var rows = conf ? conf.rows : null;
         var cols = conf ? conf.cols : null;
-        var matrix = cellMatrix(obj, rows, cols);
+        var readOnly = conf ? conf.readOnly : false;
+        var matrix = cellMatrix(obj, rows, cols, readOnly);
 
-        var hj = toHyperjson(matrix);
+        var hj = toHyperjson(matrix, readOnly);
 
         if (!hj) { throw new Error("Expected Hyperjson!"); }
 
