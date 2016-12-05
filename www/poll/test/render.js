@@ -195,6 +195,7 @@ by maintaining indexes in rowsOrder and colsOrder
 
         var cells = getCells(obj);
         rows = rows || getRowIds(obj);
+        rows.push('');
         cols = cols || getColIds(obj);
 
         return [null].concat(rows).map(function (row, i) {
@@ -208,6 +209,13 @@ by maintaining indexes in rowsOrder and colsOrder
                         disabled: 'disabled'
                     };
                     return result;
+                }));
+            }
+            if (i === rows.length) {
+                return [null].concat(cols.map(function (col) {
+                    return {
+                        'class': 'lastRow',
+                    };
                 }));
             }
 
@@ -291,7 +299,7 @@ by maintaining indexes in rowsOrder and colsOrder
     };
 
     var makeBodyCell = Render.makeBodyCell = function (cell, readOnly) {
-        if (cell.type === 'text') {
+        if (cell && cell.type === 'text') {
             var removeElement = makeRemoveElement(cell['data-rt-id']);
             var editElement = makeEditElement(cell['data-rt-id']);
             var elements = [['INPUT', cell, []]];
@@ -304,7 +312,7 @@ by maintaining indexes in rowsOrder and colsOrder
             ]];
         }
 
-        if (cell.type === 'checkbox') {
+        if (cell && cell.type === 'checkbox') {
             return makeCheckbox(cell);
         }
         return ['TD', cell, []];
@@ -321,10 +329,13 @@ by maintaining indexes in rowsOrder and colsOrder
         var head = ['THEAD', {}, [ ['TR', {}, matrix[0].map(function (cell) {
             return makeHeadingCell(cell, readOnly);
         })] ]];
-        var body = ['TBODY', {}, matrix.slice(1).map(function (row) {
+        var foot = ['TFOOT', {}, matrix.slice(-1).map(function (row) {
             return makeBodyRow(row, readOnly);
         })];
-        return ['TABLE', {id:'table'}, [head, body]];
+        var body = ['TBODY', {}, matrix.slice(1, -1).map(function (row) {
+            return makeBodyRow(row, readOnly);
+        })];
+        return ['TABLE', {id:'table'}, [head, foot, body]];
     };
 
     var asHTML = Render.asHTML = function (obj, rows, cols, readOnly) {

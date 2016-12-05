@@ -328,6 +328,13 @@ form.realtime > textarea {
 }
 form.realtime table {
   border-collapse: collapse;
+  width: calc(99%);
+}
+form.realtime table tr td:first-child {
+  position: absolute;
+  left: 29px;
+  top: auto;
+  width: 400px;
 }
 form.realtime table tr td {
   padding: 0px;
@@ -337,7 +344,7 @@ form.realtime table tr td div.text-cell {
   padding: 0px;
   margin: 0px;
   height: 100%;
-  width: 500px;
+  width: 400px;
 }
 form.realtime table tr td div.text-cell input {
   width: 80%;
@@ -354,6 +361,7 @@ form.realtime table tr td.checkbox-cell {
   margin: 0px;
   padding: 0px;
   height: 100%;
+  min-width: 150px;
 }
 form.realtime table tr td.checkbox-cell div.checkbox-contain {
   display: inline-block;
@@ -423,7 +431,11 @@ form.realtime table thead tr th .remove {
   cursor: pointer;
   font-size: 20px;
 }
+form.realtime table tfoot tr {
+  border: none;
+}
 form.realtime table tfoot tr td {
+  border: none;
   text-align: center;
 }
 form.realtime table tfoot tr td .save {

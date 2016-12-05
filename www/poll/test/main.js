@@ -90,6 +90,7 @@ define([
         // Enable the checkboxes for the user's column (committed or not)
         $('input[disabled="disabled"][data-rt-id^="' + id + '"]').removeAttr('disabled');
         $('input[type="checkbox"][data-rt-id^="' + id + '"]').addClass('enabled');
+        $('[data-rt-id="' + id + '"] ~ .edit').css('visibility', 'hidden');
 
         if (isOwnColumnCommitted()) { return; }
         $('[data-rt-id^="' + id + '"]').closest('td').addClass("uncommitted");
@@ -115,10 +116,16 @@ define([
             $('#commit').show();
             $('#commit').css('width', $($('.checkbox-cell')[0]).width());
         }
-        $('#create-user, #create-option').show();
+
+        var $createOption = APP.$table.find('tfoot tr td:first-child');
+        var $commitCell = APP.$table.find('tfoot tr td:nth-child(2)');
+        $createOption.append(APP.$createRow);
+        $commitCell.append(APP.$commit);
+        $('#create-user, #create-option').css('display', 'inline-block');
+        if (!APP.proxy || !APP.proxy.table.rowsOrder || APP.proxy.table.rowsOrder.length === 0) { $('#create-user').hide(); }
         var width = $('#table').outerWidth();
         if (width) {
-            $('#create-user').css('left', width + 30 + 'px');
+            //$('#create-user').css('left', width + 30 + 'px');
         }
     };
 
@@ -252,17 +259,37 @@ define([
         }
     };
 
+    var hideInputs = function (e) {
+        if ($(e.target).is('[type="text"]')) {
+            return;
+        }
+        var $cells = APP.$table.find('thead td:not(.uncommitted), tbody td');
+        $cells.find('[type="text"][data-rt-id!="' + APP.userid + '"]').attr('disabled', true);
+        $cells.find('[data-rt-id!="' + APP.userid + '"] ~ .edit').css('visibility', 'visible');
+        APP.editable.col = [APP.userid];
+        APP.editable.row = [];
+    };
+
+    $(window).click(hideInputs);
+
     var handleClick = function (e, isKeyup) {
+        e.stopPropagation();
+
         if (!APP.ready) { return; }
         var target = e && e.target;
 
         if (isKeyup) {
             console.log("Keyup!");
+            return;
         }
 
         if (!target) { return void console.log("NO TARGET"); }
 
         var nodeName = target && target.nodeName;
+
+        if (!$(target).parents('#table tbody').length) {
+            hideInputs(e);
+        }
 
         switch (nodeName) {
             case 'INPUT':
@@ -302,13 +329,14 @@ define([
         if (APP.proxy.published !== bool) {
             APP.proxy.published = bool;
         }
-        console.log(bool);
         if (bool) {
             APP.$publish.hide();
+            APP.$admin.show();
             $('#create-option').hide();
             $('.remove[data-rt-id^="y"], .edit[data-rt-id^="y"]').hide();
         } else {
             APP.$publish.show();
+            APP.$admin.hide();
             $('#create-option').show();
             $('.remove[data-rt-id^="y"], .edit[data-rt-id^="y"]').show();
         }
@@ -428,7 +456,7 @@ define([
 
         var $table = APP.$table = $(Render.asHTML(displayedObj, null, colsOrder, readOnly));
         var $createRow = APP.$createRow = $('#create-option').click(function () {
-            // 
+            //
             console.error("BUTTON CLICKED! LOL");
             Render.createRow(proxy, function () {
                 change();
@@ -447,6 +475,7 @@ define([
             APP.uncommitted = {};
             prepareProxy(APP.uncommitted, copyObject(Render.Example));
             mergeUncommitted(proxy, uncommittedCopy, true);
+            APP.$commit.hide();
             change();
         });
 
@@ -467,7 +496,7 @@ define([
             $description.val(proxy.info.description);
         }
 
-        $('#tableContainer').prepend($table);
+        $('#tableScroll').prepend($table);
         updateDisplayedTable();
 
         $table
@@ -507,13 +536,18 @@ define([
                 publish(true);
             });
 
+        // #publish button is removed in readonly
+        var $admin = APP.$admin = $('#admin')
+            .click(function () {
+                publish(false);
+            });
+
         addToUserData(APP.proxy.info.userData);
 
         getLastName(function (err, lastName) {
             APP.ready = true;
 
             if (!proxy.published) {
-                $('#publish').show(); // Show the publish button
                 publish(false);
             } else {
                 publish(true);

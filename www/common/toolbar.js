@@ -202,14 +202,14 @@ define([
     var updateUserList = function (myUserName, userlistElement, userList, userData, readOnly, $stateElement, $userAdminElement) {
         var meIdx = userList.indexOf(myUserName);
         if (meIdx === -1) {
+            console.log('nok');
             $stateElement.text(Messages.synchronizing);
             return;
         }
         $stateElement.text('');
-
         // Make sure the elements are displayed
         var $userButtons = $(userlistElement).find("#userButtons");
-        $userButtons.show();
+        $userButtons.attr('display', 'inline');
 
         var numberOfUsers = userList.length;
 

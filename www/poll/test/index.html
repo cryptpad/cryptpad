@@ -64,25 +64,24 @@
         #publish {
             display: none;
         }
-        #commit {
-            position: absolute;
-            left: 532px;
-            bottom: 0px;
-        }
         #create-user {
             position: absolute;
-            left: 0px;
-            top: 31px;
+            display: inline-block;
+            /*left: 0px;
+            top: 31px;*/
             width: 50px;
             overflow: hidden;
         }
         #create-option {
-            position: absolute;
-            bottom: 0px;
-            left: 249px;
             width: 50px;
         }
-
+        #tableScroll {
+            overflow-x: auto;
+            margin-left: 400px;
+            max-width: 70%;
+            width: auto;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
@@ -98,14 +97,16 @@
 </div>
 
 <button id="publish" style="display: none;">publish poll</button>
+<button id="admin" style="display: none;">admin</button>
 
 
 <form class="realtime">
     <br />
     <textarea rows=5 cols=50 disabled="disabled" id="description"></textarea><br />
-    <p id="tableContainer">
-        <button id="create-option"><span class="fa fa-plus"></span></button>
+    <div id="tableContainer">
+        <div id="tableScroll"></div>
         <button id="create-user"><span class="fa fa-plus"></span></button>
+        <button id="create-option"><span class="fa fa-plus"></span></button>
         <button id="commit"><span class="fa fa-check"></span></button>
-    </p>
+    </div>
 </form>

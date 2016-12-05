@@ -375,7 +375,14 @@ form.realtime {
 
     table {
         border-collapse: collapse;
+        width: calc(100% - 1px);
         tr {
+            td:first-child {
+                position:absolute;
+                left: 29px;
+                top: auto;
+                width: 400px;
+            }
             td {
                 padding: 0px;
                 margin: 0px;
@@ -385,7 +392,7 @@ form.realtime {
                     margin: 0px;
                         height: 100%;
 
-                    width: 500px;
+                    width: 400px;
 
                     input {
                         width: 80%;
@@ -404,6 +411,7 @@ form.realtime {
                     margin: 0px;
                     padding: 0px;
                     height: 100%;
+                    min-width: 150px;
 
                     div.checkbox-contain {
                         display: inline-block;
@@ -502,7 +510,9 @@ form.realtime {
         }
         tfoot {
             tr {
+                border: none;
                 td {
+                    border: none;
                     text-align: center;
                     .save {
                         padding: 15px;
