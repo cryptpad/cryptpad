@@ -131,6 +131,12 @@ define(function () {
     out.wizardTitle = "Use the wizard to create your poll";
     out.wizardConfirm = "Are you really ready to add these options to your poll?";
 
+    out.poll_publish_button = "Publish";
+    out.poll_admin_button = "Admin";
+    out.poll_create_user = "Add a new user";
+    out.poll_create_option = "Add a new option";
+    out.poll_commit = "Commit";
+
     out.poll_closeWizardButton = "Close wizard";
     out.poll_closeWizardButtonTitle = "Close wizard";
     out.poll_wizardComputeButton = "Compute Options";

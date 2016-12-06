@@ -129,6 +129,12 @@ define(function () {
     out.wizardTitle = "Utiliser l'assistant pour créer votre sondage";
     out.wizardConfirm = "Êtes-vous vraiment prêt à ajouter ces options au sondage ?";
 
+    out.poll_publish_button = "Publier";
+    out.poll_admin_button = "Administrer";
+    out.poll_create_user = "Ajouter un utilisateur";
+    out.poll_create_option = "Ajouter une option";
+    out.poll_commit = "Valider";
+
     out.poll_closeWizardButton = "Fermer l'assistant";
     out.poll_closeWizardButtonTitle = "Fermer l'assistant";
     out.poll_wizardComputeButton = "Générer les options";

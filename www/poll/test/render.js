@@ -205,7 +205,7 @@ by maintaining indexes in rowsOrder and colsOrder
                         'data-rt-id': col,
                         type: 'text',
                         value: getColumnValue(obj, col) || "",
-                        placeholder: 'User', //TODO translate
+                        placeholder: Cryptpad.Messages.poll_userPlaceholder,
                         disabled: 'disabled'
                     };
                     return result;
@@ -223,7 +223,7 @@ by maintaining indexes in rowsOrder and colsOrder
                 'data-rt-id': row,
                 value: getRowValue(obj, row),
                 type: 'text',
-                placeholder: 'Option', //TODO translate
+                placeholder: Cryptpad.Messages.poll_optionPlaceholder,
                 disabled: 'disabled'
             }].concat(cols.map(function (col) {
                 var id = [col, rows[i-1]].join('_');
@@ -253,7 +253,7 @@ by maintaining indexes in rowsOrder and colsOrder
         return ['SPAN', {
             'data-rt-id': id,
             class: 'edit',
-        }, ['']];
+        }, ['✐']];
     };
 
     var makeHeadingCell = Render.makeHeadingCell = function (cell, readOnly) {
@@ -263,8 +263,8 @@ by maintaining indexes in rowsOrder and colsOrder
             var editElement = makeEditElement(cell['data-rt-id']);
             var elements = [['INPUT', cell, []]];
             if (!readOnly) {
-                elements.push(removeElement);
-                elements.push(editElement);
+                elements.unshift(removeElement);
+                elements.unshift(editElement);
             }
             return ['TD', {}, elements];
         }

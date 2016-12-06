@@ -96,7 +96,7 @@ define([
         $('[data-rt-id^="' + id + '"]').closest('td').addClass("uncommitted");
         $('td.uncommitted .remove, td.uncommitted .edit').css('visibility', 'hidden');
         $('td.uncommitted .cover').addClass("uncommitted");
-        $('.uncommitted input[type="text"]').attr("placeholder", "New column here"); //TODO
+        $('.uncommitted input[type="text"]').attr("placeholder", Messages.poll_userPlaceholder);
     };
 
     var unlockElements = function () {
@@ -114,7 +114,6 @@ define([
     var updateTableButtons = function () {
         if ($('.checkbox-cell').length && !isOwnColumnCommitted()) {
             $('#commit').show();
-            $('#commit').css('width', $($('.checkbox-cell')[0]).width());
         }
 
         var $createOption = APP.$table.find('tfoot tr td:first-child');
@@ -129,10 +128,25 @@ define([
         }
     };
 
+    var setTablePublished = function (bool) {
+        if (bool) {
+            if (APP.$publish) { APP.$publish.hide(); }
+            if (APP.$admin) { APP.$admin.show(); }
+            $('#create-option').hide();
+            $('.remove[data-rt-id^="y"], .edit[data-rt-id^="y"]').hide();
+        } else {
+            if (APP.$publish) { APP.$publish.show(); }
+            if (APP.$admin) { APP.$admin.hide(); }
+            $('#create-option').show();
+            $('.remove[data-rt-id^="y"], .edit[data-rt-id^="y"]').show();
+        }
+    };
+
     var updateDisplayedTable = function () {
         styleUncommittedColumn();
         unlockElements();
         updateTableButtons();
+        setTablePublished(APP.proxy.published);
     };
 
     var unlockColumn = function (id, cb) {
@@ -211,7 +225,7 @@ define([
                 break;
             case 'checkbox':
                 console.log("checkbox[tr-id='%s'] %s", id, input.checked);
-                if ($(input).hasClass('enabled')) {
+                if (APP.editable.col.indexOf(x) >= 0 || x === APP.userid) {
                     Render.setValue(object, id, input.checked);
                     change();
                 } else {
@@ -329,18 +343,7 @@ define([
         if (APP.proxy.published !== bool) {
             APP.proxy.published = bool;
         }
-        if (bool) {
-            APP.$publish.hide();
-            APP.$admin.show();
-            $('#create-option').hide();
-            $('.remove[data-rt-id^="y"], .edit[data-rt-id^="y"]').hide();
-        } else {
-            APP.$publish.show();
-            APP.$admin.hide();
-            $('#create-option').show();
-            $('.remove[data-rt-id^="y"], .edit[data-rt-id^="y"]').show();
-        }
-
+        setTablePublished(bool);
         ['textarea'].forEach(function (sel) {
             $(sel).attr('disabled', bool);
         });
@@ -456,7 +459,6 @@ define([
 
         var $table = APP.$table = $(Render.asHTML(displayedObj, null, colsOrder, readOnly));
         var $createRow = APP.$createRow = $('#create-option').click(function () {
-            //
             console.error("BUTTON CLICKED! LOL");
             Render.createRow(proxy, function () {
                 change();
@@ -479,6 +481,18 @@ define([
             change();
         });
 
+        // #publish button is removed in readonly
+        var $publish = APP.$publish = $('#publish')
+            .click(function () {
+                publish(true);
+            });
+
+        // #publish button is removed in readonly
+        var $admin = APP.$admin = $('#admin')
+            .click(function () {
+                publish(false);
+            });
+
         // Title
         if (APP.proxy.info.defaultTitle) {
             updateDefaultTitle(APP.proxy.info.defaultTitle);
@@ -488,10 +502,16 @@ define([
         updateTitle(APP.proxy.info.title || defaultName);
 
         // Description
+        var resize = function () {
+            var lineCount = $description.val().split('\n').length;
+            $description.css('height', lineCount + 'rem');
+        };
         $description.on('change keyup', function () {
             var val = $description.val();
             proxy.info.description = val;
+            resize();
         });
+        resize();
         if (typeof(proxy.info.description) !== 'undefined') {
             $description.val(proxy.info.description);
         }
@@ -529,18 +549,6 @@ define([
             })
             .on('change', ['table'], change)
             .on('remove', [], change);
-
-        // #publish button is removed in readonly
-        var $publish = APP.$publish = $('#publish')
-            .click(function () {
-                publish(true);
-            });
-
-        // #publish button is removed in readonly
-        var $admin = APP.$admin = $('#admin')
-            .click(function () {
-                publish(false);
-            });
 
         addToUserData(APP.proxy.info.userData);
 
@@ -686,10 +694,10 @@ define([
         })
         .on('disconnect', disconnect);
 
-        Cryptpad.getPadAttribute(HIDE_INTRODUCTION_TEXT, function (e, value) {
+        Cryptpad.getAttribute(HIDE_INTRODUCTION_TEXT, function (e, value) {
             if (e) { console.error(e); }
             if (value === null) {
-                Cryptpad.setPadAttribute(HIDE_INTRODUCTION_TEXT, "1", function (e) {
+                Cryptpad.setAttribute(HIDE_INTRODUCTION_TEXT, "1", function (e) {
                     if (e) { console.error(e) }
                 });
             } else if (value === "1") {
