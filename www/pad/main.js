@@ -35,8 +35,23 @@ define([
     window.Toolbar = Toolbar;
     window.Hyperjson = Hyperjson;
 
+    var slice = function (coll) {
+        return Array.prototype.slice.call(coll);
+    };
+
+    var removeListeners = function (root) {
+        slice(root.attributes).map(function (attr) {
+            if (/^on/.test(attr.name)) {
+                root.attributes.removeNamedItem(attr.name);
+            }
+        });
+        slice(root.children).forEach(removeListeners);
+    };
+
     var hjsonToDom = function (H) {
-        return Hyperjson.toDOM(H); //callOn(H, Hyperscript);
+        var dom = Hyperjson.toDOM(H);
+        removeListeners(dom);
+        return dom;
     };
 
     var module = window.REALTIME_MODULE = window.APP = {
