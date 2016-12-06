@@ -153,7 +153,7 @@ define([
                 readOnly: readOnly,
                 crypto: Crypto.createEncryptor(secret.keys),
                 setMyID: setMyID,
-                transformFunction: JsonOT.validate
+                transformFunction: JsonOT.transform || JsonOT.validate,
             };
 
             var canonicalize = function (t) { return t.replace(/\r\n/g, '\n'); };
