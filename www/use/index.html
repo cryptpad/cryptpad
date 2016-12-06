@@ -1,0 +1,62 @@
+<ch!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script data-main="main" src="/bower_components/requirejs/require.js"></script>
+
+    <title>Cryptpad/user/</title>
+    <link rel="icon" type="image/png"
+        href="/customize/main-favicon.png"
+        data-main-favicon="/customize/main-favicon.png"
+        data-alt-favicon="/customize/alt-favicon.png"
+        id="favicon" />
+    <link rel="stylesheet" href="/customize/main.css" />
+
+    <style>
+        #bar {
+            float: right;
+        }
+        li {
+            font-size: 20px;
+
+        }
+    </style>
+
+</head>
+<body>
+<div id="bar">
+    <input id="uname" type="text" placeholder="your username">
+    <input id="password" type="password" placeholder="your password">
+    <button id="login" class="action login">---</button>
+</div>
+<div id="main"></div>
+
+    <table id="userstore" class="recent scroll" style="display:none">
+        <tbody>
+
+        <tr>
+            <th>Type</th>
+            <th>Link</th>
+            <th>Created</th>
+            <th>Last Accessed</th>
+            <th></th> <!-- remove column -->
+        </tr>
+
+        </tbody>
+    </table>
+
+    <table id="localstore" class="recent scroll" style="display:none">
+        <tbody>
+
+        <tr>
+            <th>Type</th>
+            <th>Link</th>
+            <th>Created</th>
+            <th>Last Accessed</th>
+            <th></th> <!-- remove column -->
+        </tr>
+
+        </tbody>
+    </table>
+
