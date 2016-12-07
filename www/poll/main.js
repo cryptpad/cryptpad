@@ -435,7 +435,7 @@ define([
 
         var msg = Messages.poll_addUser;
         Cryptpad.prompt(msg, "", function (name) {
-            if (name === null) { return; }
+            if (!(name && name.trim())) { return; }
             makeUser(module.rt.proxy, id, name).val(name);
             makeUserEditable(id, true).focus();
         });
@@ -782,14 +782,16 @@ define([
             }));
         }
 
+/*
         if (!readOnly && module.viewHash) {
-            /* add a 'links' button */
+            /* add a 'links' button
             var $links = Cryptpad.createButton('readonly', true, {viewHash: module.viewHash})
                 .text(Messages.getViewButton)
                 .removeAttr('style')
                 .attr('class', 'action button readonly');
             $toolbar.append($links);
         }
+*/
 
         /* Import/Export buttons */
         /*
