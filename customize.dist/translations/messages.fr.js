@@ -27,8 +27,8 @@ define(function () {
     out.readonly = 'Lecture seule';
     out.anonymous = "Anonyme";
     out.yourself = "Vous-même";
-    out.anonymousUsers = "utilisateurs anonymes";
-    out.anonymousUser = "utilisateur anonyme";
+    out.anonymousUsers = "éditeurs anonymes";
+    out.anonymousUser = "éditeur anonyme";
     out.shareView = "URL de lecture seule";
     out.shareEdit = "URL d'édition";
     out.users = "Utilisateurs";
@@ -128,6 +128,12 @@ define(function () {
     out.wizardLog = "Cliquez sur le bouton dans le coin supérieur gauche pour retourner au sondage";
     out.wizardTitle = "Utiliser l'assistant pour créer votre sondage";
     out.wizardConfirm = "Êtes-vous vraiment prêt à ajouter ces options au sondage ?";
+
+    out.poll_publish_button = "Publier";
+    out.poll_admin_button = "Administrer";
+    out.poll_create_user = "Ajouter un utilisateur";
+    out.poll_create_option = "Ajouter une option";
+    out.poll_commit = "Valider";
 
     out.poll_closeWizardButton = "Fermer l'assistant";
     out.poll_closeWizardButtonTitle = "Fermer l'assistant";

@@ -29,8 +29,8 @@ define(function () {
     out.readonly = 'Read only';
     out.anonymous = "Anonymous";
     out.yourself = "Yourself";
-    out.anonymousUsers = "anonymous users";
-    out.anonymousUser = "anonymous user";
+    out.anonymousUsers = "anonymous editors";
+    out.anonymousUser = "anonymous editor";
     out.shareView = "Read-only URL";
     out.shareEdit = "Edit URL";
     out.users = "Users";
@@ -130,6 +130,12 @@ define(function () {
     out.wizardLog = "Click the button in the top left to return to your poll";
     out.wizardTitle = "Use the wizard to create your poll";
     out.wizardConfirm = "Are you really ready to add these options to your poll?";
+
+    out.poll_publish_button = "Publish";
+    out.poll_admin_button = "Admin";
+    out.poll_create_user = "Add a new user";
+    out.poll_create_option = "Add a new option";
+    out.poll_commit = "Commit";
 
     out.poll_closeWizardButton = "Close wizard";
     out.poll_closeWizardButtonTitle = "Close wizard";

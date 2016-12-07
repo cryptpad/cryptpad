@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title data-localization="poll_title">Zero Knowledge Date Picker</title>
+    <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/customize/main.css" />
+    <script data-main="main" src="/bower_components/requirejs/require.js"></script>
+    <script> require.config({ waitSeconds: 60, }); </script>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+            padding: 0px;
+            border: 0px;
+        }
+        .cryptpad-toolbar h2 {
+            font: normal normal normal 12px Arial, Helvetica, Tahoma, Verdana, Sans-Serif;
+            color: #000;
+            line-height: auto;
+        }
+        .realtime {
+            display: block;
+            overflow: auto;
+
+            max-height: 100%;
+            max-width: 100%;
+        }
+
+        .realtime input[type="text"] {
+            height: 1em;
+            margin: 0px;
+        }
+        .text-cell input[type="text"] {
+            width: 400px;
+        }
+
+        /*input#title, textarea { wiidth: 50px; }*/
+
+        input[type="text"][disabled], textarea[disabled] {
+            background-color: transparent;
+            font: white;
+            border: 0px;
+        }
+
+        td label {
+            border: .5px solid black;
+        }
+
+        table#table {
+            margin: 0px;
+        }
+        #tableContainer {
+            position: relative;
+            padding: 29px;
+            padding-right: 79px;
+        }
+        #tableContainer button {
+            height: 2rem;
+            display: none;
+        }
+        #publish {
+            display: none;
+        }
+        #create-user {
+            position: absolute;
+            display: inline-block;
+            /*left: 0px;*/
+            top: 55px;
+            width: 50px;
+            overflow: hidden;
+        }
+        #create-option {
+            width: 50px;
+        }
+        #tableScroll {
+            overflow-x: auto;
+            margin-left: calc(30% - 50px + 29px);
+            max-width: 70%;
+            width: auto;
+            display: inline-block;
+        }
+        #description[disabled] {
+            resize: none;
+        }
+        #description {
+            padding: 5px;
+        }
+        #commit {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div id="toolbar"></div>
+
+<div id="howItWorks">
+    <h1 id="mainTitle">CryptPoll</h1>
+    <h2 data-localization="poll_subtitle"></h2>
+
+    <p data-localization="poll_p_save"></p>
+    <p data-localization="poll_p_encryption"></p>
+</div>
+
+<button id="publish" data-localization-title="poll_publish_button" data-localization="poll_publish_button" style="display: none;">publish poll</button>
+<button id="admin" data-localization-title="poll_admin_button" data-localization="poll_admin_button" style="display: none;">admin</button>
+
+
+<div class="realtime">
+    <br />
+    <textarea rows=5 cols=50 disabled="disabled" id="description"></textarea><br />
+    <div id="tableContainer">
+        <div id="tableScroll"></div>
+        <button data-localization-title="poll_create_user" id="create-user"><span class="fa fa-plus"></span></button>
+        <button data-localization-title="poll_create_option" id="create-option"><span class="fa fa-plus"></span></button>
+        <button data-localization-title="poll_commit" id="commit"><span class="fa fa-check"></span></button>
+    </div>
+</div>
