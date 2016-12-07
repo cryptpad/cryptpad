@@ -175,10 +175,10 @@ define(function () {
     out.table_created = 'Stworzone';
     out.table_last = 'Ostatnio otwarte';
 
-    out.button_newpad = 'STWÓRZ NOWY PAD WYSIWYG';
-    out.button_newcode = 'STWÓRZ NOWY PAD DO KODU';
-    out.button_newpoll = 'STWÓRZ NOWE GŁOSOWANIE';
-    out.button_newslide = 'STWÓRZ NOWĄ PREZENTACJĘ';
+    out.button_newpad = 'STWÓRZ PAD WYSIWYG';
+    out.button_newcode = 'STWÓRZ PAD DO KODU';
+    out.button_newpoll = 'STWÓRZ GŁOSOWANIE';
+    out.button_newslide = 'STWÓRZ PREZENTACJĘ';
 
     // privacy.html
 
