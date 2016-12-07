@@ -111,6 +111,12 @@ by maintaining indexes in rowsOrder and colsOrder
                 .error(new Error("Attempted to remove id which does not exist"));
         }
 
+        Object.keys(obj.table.cells).forEach(function (key) {
+            if (key.indexOf(id) === 0) {
+                delete obj.table.cells[key];
+            }
+        });
+
         order.splice(idx, 1);
         if (parent[id]) { delete parent[id]; }
         if (typeof(cb) === 'function') {
@@ -256,14 +262,23 @@ by maintaining indexes in rowsOrder and colsOrder
         }, ['✐']];
     };
 
+    var makeLockElement = Render.makeLockElement = function (id) {
+        return ['SPAN', {
+            'data-rt-id': id,
+            class: 'lock',
+        }, ['🔒']];
+    };
+
     var makeHeadingCell = Render.makeHeadingCell = function (cell, readOnly) {
         if (!cell) { return ['TD', {}, []]; }
         if (cell.type === 'text') {
             var removeElement = makeRemoveElement(cell['data-rt-id']);
             var editElement = makeEditElement(cell['data-rt-id']);
+            var lockElement = makeLockElement(cell['data-rt-id']);
             var elements = [['INPUT', cell, []]];
             if (!readOnly) {
                 elements.unshift(removeElement);
+                elements.unshift(lockElement);
                 elements.unshift(editElement);
             }
             return ['TD', {}, elements];

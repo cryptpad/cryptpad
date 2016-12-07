@@ -434,6 +434,7 @@ div.realtime table thead td {
   padding: 0px 5px;
   background: #4c443f;
   border-radius: 20px 20px 0 0;
+  text-align: center;
 }
 form.realtime table thead td input[type="text"],
 div.realtime table thead td input[type="text"] {

@@ -91,6 +91,7 @@ define([
         $('input[disabled="disabled"][data-rt-id^="' + id + '"]').removeAttr('disabled');
         $('input[type="checkbox"][data-rt-id^="' + id + '"]').addClass('enabled');
         $('[data-rt-id="' + id + '"] ~ .edit').css('visibility', 'hidden');
+        $('.lock[data-rt-id="' + id + '"]').html('🔓');
 
         if (isOwnColumnCommitted()) { return; }
         $('[data-rt-id^="' + id + '"]').closest('td').addClass("uncommitted");
@@ -108,11 +109,12 @@ define([
             $('input[disabled="disabled"][data-rt-id^="' + id + '"]').removeAttr('disabled');
             $('input[type="checkbox"][data-rt-id^="' + id + '"]').addClass('enabled');
             $('span.edit[data-rt-id="' + id + '"]').css('visibility', 'hidden');
+            $('.lock[data-rt-id="' + id + '"]').html('🔓');
         });
     };
 
     var updateTableButtons = function () {
-        if ($('.checkbox-cell').length && !isOwnColumnCommitted()) {
+        if (!isOwnColumnCommitted()) {
             $('#commit').show();
         }
 
@@ -246,8 +248,11 @@ define([
             var isRemove = span.className && span.className.split(' ').indexOf('remove') !== -1;
             var isEdit = span.className && span.className.split(' ').indexOf('edit') !== -1;
             if (isRemove) {
-                Render.removeRow(APP.proxy, id, function () {
-                    change();
+                Cryptpad.confirm(Messages.poll_removeOption, function (res) {
+                    if (!res) { return; }
+                    Render.removeRow(APP.proxy, id, function () {
+                        change();
+                    });
                 });
             } else if (isEdit) {
                 unlockRow(id, function () {
@@ -258,8 +263,11 @@ define([
             var isRemove = span.className && span.className.split(' ').indexOf('remove') !== -1;
             var isEdit = span.className && span.className.split(' ').indexOf('edit') !== -1;
             if (isRemove) {
-                Render.removeColumn(APP.proxy, id, function () {
-                    change();
+                Cryptpad.confirm(Messages.poll_removeUser, function (res) {
+                    if (!res) { return; }
+                    Render.removeColumn(APP.proxy, id, function () {
+                        change();
+                    });
                 });
             } else if (isEdit) {
                 unlockColumn(id, function () {
@@ -277,9 +285,10 @@ define([
         if ($(e.target).is('[type="text"]')) {
             return;
         }
+        $('.lock[data-rt-id!="' + APP.userid + '"]').html('🔒 ');
         var $cells = APP.$table.find('thead td:not(.uncommitted), tbody td');
         $cells.find('[type="text"][data-rt-id!="' + APP.userid + '"]').attr('disabled', true);
-        $cells.find('[data-rt-id!="' + APP.userid + '"] ~ .edit').css('visibility', 'visible');
+        $('.edit[data-rt-id!="' + APP.userid + '"]').css('visibility', 'visible');
         APP.editable.col = [APP.userid];
         APP.editable.row = [];
     };
@@ -294,14 +303,13 @@ define([
 
         if (isKeyup) {
             console.log("Keyup!");
-            return;
         }
 
         if (!target) { return void console.log("NO TARGET"); }
 
         var nodeName = target && target.nodeName;
 
-        if (!$(target).parents('#table tbody').length) {
+        if (!$(target).parents('#table tbody').length || $(target).hasClass('edit')) {
             hideInputs(e);
         }
 
