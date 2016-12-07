@@ -445,6 +445,7 @@ form.realtime table thead td input[type="text"][disabled],
 div.realtime table thead td input[type="text"][disabled] {
   color: white;
   padding: 1px 5px;
+  border: none;
 }
 form.realtime table tbody .text-cell,
 div.realtime table tbody .text-cell {

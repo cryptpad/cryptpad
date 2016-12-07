@@ -68,9 +68,9 @@ define([
                 newObj.table.cols[k] = uncommitted.table.cols[k];
             }
         }
-        for (var k in uncommitted.table.cells) {
-            if (!newObj.table.cells[k]) {
-                newObj.table.cells[k] = uncommitted.table.cells[k];
+        for (var l in uncommitted.table.cells) {
+            if (!newObj.table.cells[l]) {
+                newObj.table.cells[l] = uncommitted.table.cells[l];
             }
         }
         return newObj;
@@ -244,9 +244,9 @@ define([
     var handleSpan = function (span) {
         var id = span.getAttribute('data-rt-id');
         var type = Render.typeofId(id);
+        var isRemove = span.className && span.className.split(' ').indexOf('remove') !== -1;
+        var isEdit = span.className && span.className.split(' ').indexOf('edit') !== -1;
         if (type === 'row') {
-            var isRemove = span.className && span.className.split(' ').indexOf('remove') !== -1;
-            var isEdit = span.className && span.className.split(' ').indexOf('edit') !== -1;
             if (isRemove) {
                 Cryptpad.confirm(Messages.poll_removeOption, function (res) {
                     if (!res) { return; }
@@ -260,8 +260,6 @@ define([
                 });
             }
         } else if (type === 'col') {
-            var isRemove = span.className && span.className.split(' ').indexOf('remove') !== -1;
-            var isEdit = span.className && span.className.split(' ').indexOf('edit') !== -1;
             if (isRemove) {
                 Cryptpad.confirm(Messages.poll_removeUser, function (res) {
                     if (!res) { return; }
@@ -390,9 +388,9 @@ define([
                 if(myUserNameTemp.length > 32) {
                     myUserNameTemp = myUserNameTemp.substr(0, 32);
                 }
-                myUserName = myUserNameTemp;
+                var myUserName = myUserNameTemp;
                 var myID = APP.myID;
-                var myData = {}
+                var myData = {};
                 myData[myID] = {
                     name: myUserName
                 };
@@ -505,7 +503,7 @@ define([
         if (APP.proxy.info.defaultTitle) {
             updateDefaultTitle(APP.proxy.info.defaultTitle);
         } else {
-            APP.proxy.info.defaultTitle = defaultName
+            APP.proxy.info.defaultTitle = defaultName;
         }
         updateTitle(APP.proxy.info.title || defaultName);
 
@@ -613,7 +611,7 @@ define([
             ifrw: window,
             common: Cryptpad
         };
-        toolbar = info.realtime.toolbar = Toolbar.create(APP.$bar, info.myID, info.realtime, info.getLag, userList, config);
+        var toolbar = info.realtime.toolbar = Toolbar.create(APP.$bar, info.myID, info.realtime, info.getLag, userList, config);
 
         var $bar = APP.$bar;
         var $rightside = $bar.find('.' + Toolbar.constants.rightside);
@@ -681,7 +679,7 @@ define([
     // don't initialize until the store is ready.
     Cryptpad.ready(function () {
         if (readOnly) {
-            $('#commit, #create-user, #create-option, #publish').remove();
+            $('#commit, #create-user, #create-option, #publish, #admin').remove();
         }
 
         var parsedHash = Cryptpad.parsePadUrl(window.location.href);
@@ -706,7 +704,7 @@ define([
             if (e) { console.error(e); }
             if (value === null) {
                 Cryptpad.setAttribute(HIDE_INTRODUCTION_TEXT, "1", function (e) {
-                    if (e) { console.error(e) }
+                    if (e) { console.error(e); }
                 });
             } else if (value === "1") {
                 $('#howItWorks').hide();
