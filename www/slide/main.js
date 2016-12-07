@@ -585,7 +585,7 @@ define([
 
                 // set the hash
                 if (!window.location.hash || window.location.hash === '#') {
-                    window.location.hash = editHash;
+                    Cryptpad.replaceHash(editHash);
                 }
 
                 Cryptpad.getPadTitle(function (err, title) {

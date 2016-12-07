@@ -101,6 +101,21 @@ the battery out of your computer before it spawns Agent Smith.
 
 Still there are other low-lives in the world so using CryptPad over HTTPS is probably a good idea.
 
+## Translations
+
+We'd like to make it easy for more people to use encryption in their routine activities.
+As such, we've tried to make language-specific parts of Cryptpad translatable. If you're
+able to translate Cryptpad's interface, and would like to help, please contact us!
+
+You can also see [our translation guide](/customize.dist/translations/README.md).
+
+## Contacting Us
+
+You can reach members of the Cryptpad development team on [twitter](https://twitter.com/cryptpad),
+via our [github issue tracker](https://github.com/xwiki-labs/cryptpad/issues/), on the
+[freenode](http://webchat.freenode.net/?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7)
+irc network, or by [email](mailto:research@xwiki.com).
+
 ## Contributing
 
 We love Open Source and we love contribution. It is our intent to keep this project available

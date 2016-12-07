@@ -45,7 +45,7 @@ define([
     var unsafeTag = function (info) {
         if (['addAttribute', 'modifyAttribute'].indexOf(info.diff.action) !== -1) {
             if (/^on/.test(info.diff.name)) {
-                console.log("Rejecting forbidden element attribute with name", info.diff.element.nodeName);
+                console.log("Rejecting forbidden element attribute with name", info.diff.name);
                 return true;
             }
         }
@@ -91,12 +91,28 @@ define([
         return patch;
     };
 
+    var slice = function (coll) {
+        return Array.prototype.slice.call(coll);
+    };
+
+    /*  remove listeners from the DOM */
+    var removeListeners = function (root) {
+        slice(root.attributes).map(function (attr) {
+            if (/^on/.test(attr.name)) {
+                root.attributes.removeNamedItem(attr.name);
+            }
+        });
+        // all the way down
+        slice(root.children).forEach(removeListeners);
+    };
+
     var draw = Slide.draw =  function (i) {
         console.log("Trying to draw slide #%s", i);
         if (typeof(Slide.content[i]) !== 'string') { return; }
 
         var c = Slide.content[i];
         var Dom = domFromHTML('<div id="content">' + Marked(c) + '</div>');
+        removeListeners(Dom.body);
         var patch = makeDiff(domFromHTML($content[0].outerHTML), Dom);
 
         if (typeof(patch) === 'string') {

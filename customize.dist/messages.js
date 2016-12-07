@@ -1,11 +1,20 @@
 define(['/customize/languageSelector.js',
         '/customize/translations/messages.js',
+        '/customize/translations/messages.es.js',
         '/customize/translations/messages.fr.js',
-        '/bower_components/jquery/dist/jquery.min.js'], function(LS, Default, French) {
+
+    // 1) additional translation files can be added here...
+
+        '/bower_components/jquery/dist/jquery.min.js'],
+
+    // 2) name your language module here...
+        function(LS, Default, Spanish, French) {
     var $ = window.jQuery;
 
+    // 3) add your module to this map so it gets used
     var map = {
-        'fr': French
+        'fr': French,
+        'es': Spanish,
     };
 
     var defaultLanguage = 'en';
@@ -32,6 +41,24 @@ define(['/customize/languageSelector.js',
     }
 
     messages._initSelector = LS.main;
+    messages._checkTranslationState = function () {
+        var missing = [];
+        Object.keys(map).forEach(function (code) {
+            var translation = map[code];
+            Object.keys(Default).forEach(function (k) {
+                if (/^_/.test(k) || /nitialState$/.test(k)) { return; }
+                if (!translation[k]) {
+                    var warning = "key [" + k + "] is missing from translation [" + code + "]";
+                    missing.push(warning);
+                }
+            });
+            if (typeof(translation._languageName) !== 'string') {
+                var warning = 'key [_languageName] is missing from translation [' + code + ']';
+                missing.push(warning);
+            }
+        });
+        return missing;
+    };
 
     // Get keys with parameters
     messages._getKey = function (key, argArray) {

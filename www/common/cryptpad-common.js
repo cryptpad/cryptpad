@@ -28,6 +28,7 @@ define([
 
     var common = {
         User: User,
+        Messages: Messages,
     };
     var store;
     var fsStore;
@@ -236,6 +237,14 @@ define([
             }
         }
         return secret;
+    };
+
+    var replaceHash = common.replaceHash = function (hash) {
+        if (window.history && window.history.replaceState) {
+            if (!/^#/.test(hash)) { hash = '#' + hash; }
+            return void window.history.replaceState({}, window.document.title, hash);
+        }
+        window.location.hash = hash;
     };
 
     var storageKey = common.storageKey = 'CryptPad_RECENTPADS';

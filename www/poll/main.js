@@ -72,6 +72,23 @@ define([
         });
     };
 
+    var getLastName = module.getLastName = function (cb) {
+        Cryptpad.getAttribute('username', function (err, userName) {
+            cb(err, userName || '');
+        });
+    };
+
+    var setName = module.setName = function (uname, cb) {
+        if (typeof(uname) !== 'string') {
+            return void cb(new Error('expected string'));
+        }
+        uname = Cryptpad.fixHTML(uname.trim()).slice(0, 32);
+        Cryptpad.setAttribute('username', uname, function (err, data) {
+            if (err) { return void cb(err); }
+            cb(void 0, uname);
+        });
+    };
+
     module.Wizard = Wizard;
 
     // special UI elements
@@ -320,12 +337,19 @@ define([
     };
 
     var scrollDown = module.scrollDown = function (px) {
+        if (module.scrolling) { return; }
+
+        module.scrolling = true;
+
         var top = $(window).scrollTop() + px + 'px';
         $('html, body').animate({
             scrollTop: top,
         }, {
             duration: 200,
             easing: 'swing',
+            complete: function () {
+                module.scrolling = false;
+            }
         });
     };
 
@@ -397,7 +421,10 @@ define([
         addIfAbsent(proxy.table.rowsOrder, id);
 
         var $row = table.addRow($wrapper, Checkbox, id);
-        scrollDown($row.height());
+
+        if (module.ready) {
+            scrollDown($row.height());
+        }
 
         return $option;
     };
@@ -408,7 +435,7 @@ define([
 
         var msg = Messages.poll_addUser;
         Cryptpad.prompt(msg, "", function (name) {
-            if (name === null) { return; }
+            if (!(name && name.trim())) { return; }
             makeUser(module.rt.proxy, id, name).val(name);
             makeUserEditable(id, true).focus();
         });
@@ -439,7 +466,7 @@ define([
                 var id = rowuid();
                 makeOption(proxy, id, text).val(text);
             });
-            //console.log(options);
+            Wizard.hide();
         });
     });
 
@@ -755,14 +782,16 @@ define([
             }));
         }
 
+/*
         if (!readOnly && module.viewHash) {
-            /* add a 'links' button */
+            /* add a 'links' button
             var $links = Cryptpad.createButton('readonly', true, {viewHash: module.viewHash})
                 .text(Messages.getViewButton)
                 .removeAttr('style')
                 .attr('class', 'action button readonly');
             $toolbar.append($links);
         }
+*/
 
         /* Import/Export buttons */
         /*
@@ -815,7 +844,11 @@ define([
 
 
         setEditable(true);
+        return;
 
+        // shortcircuiting before all of this code since it's not quite the
+        // behaviour we want, and it's a bit of work to make it Do The Right Thing
+/*
         if (First) {
             // assume the first user to the poll wants to be the administrator...
             // TODO prompt them with questions to set up their poll...
@@ -830,40 +863,34 @@ define([
 
             module.activeColumn = '';
             var promptForName = function () {
-                // HERE
-                Cryptpad.prompt(Messages.promptName, "", function (name, ev) {
-                    if (name === null) {
-                        name = '';
-                    }
 
-                    if (!module.isEditable) { return; }
+                var followUp = function (name) {
+                    if (!name) { return; }
                     var id = module.activeColumn = coluid();
 
                     Cryptpad.setPadAttribute('column', id, function (err) {
-                        if (err) {
-                            console.error("Couldn't remember your column id");
-                            return;
-                        }
-
-                        console.log(id);
+                        if (err) { return void console.error("Couldn't remember your column id"); }
                         makeUser(module.rt.proxy, id, name).focus().val(name);
                         makeUserEditable(id, true);
                     });
+                };
+
+                getLastName(function (err, uname) {
+                    if (!uname) {
+                        return void Cryptpad.prompt(Messages.promptName, "", function (name, ev) {
+                            if (!(name || module.isEditable)) { return; }
+                            followUp(name);
+                        });
+                    }
+                    followUp(uname);
                 });
             };
 
-            if (column === null) {
-                //console.log("Looks like you're new to this poll, why don't you make a column");
-                promptForName();
-                return;
-            }
+            if (column === null) { return void promptForName(); }
 
             // column might be defined, but that column might have been deleted...
-            if (proxy.table.colsOrder.indexOf(column) === -1) {
-                promptForName();
-                return;
-            }
-        });
+            if (proxy.table.colsOrder.indexOf(column) === -1) { return void promptForName(); }
+        });*/
     };
 
     var config = {
@@ -889,9 +916,7 @@ define([
                 editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
             }
             // set the hash
-            if (!readOnly) {
-                window.location.hash = editHash;
-            }
+            if (!readOnly) { Cryptpad.replaceHash(editHash); }
 
             module.patchText = TextPatcher.create({
                 realtime: realtime,
