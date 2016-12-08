@@ -28,6 +28,7 @@ define([
 
     var common = {
         User: User,
+        Messages: Messages,
     };
     var store;
     var fsStore;
@@ -236,6 +237,14 @@ define([
             }
         }
         return secret;
+    };
+
+    var replaceHash = common.replaceHash = function (hash) {
+        if (window.history && window.history.replaceState) {
+            if (!/^#/.test(hash)) { hash = '#' + hash; }
+            return void window.history.replaceState({}, window.document.title, hash);
+        }
+        window.location.hash = hash;
     };
 
     var storageKey = common.storageKey = 'CryptPad_RECENTPADS';
@@ -580,6 +589,7 @@ define([
             $(function() {
                 // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
                 // won't work. We have to reset it now to make sure it uses a correct "body"
+
                 Alertify.reset();
                 if($('#pad-iframe').length) {
                     var $iframe = $('#pad-iframe');
@@ -869,6 +879,7 @@ define([
     var styleAlerts = common.styleAlerts = function (href) {
         var $link = $('link[href="/customize/alertify.css"]');
         if ($link.length) {
+            return;
             $link.attr('href', '');
             $link.attr('href', '/customize/alertify.css');
             return;

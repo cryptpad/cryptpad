@@ -28,8 +28,9 @@ define([
     var forgetPad = Cryptpad.forgetPad;
 
     var displayCreateButtons = function () {
+        var $parent = $('#buttons');
         Config.availablePadTypes.forEach(function (el) {
-            $('#create-' + el).show();
+            $('#create-' + el).detach().appendTo($parent).show();
         });
     };
 

@@ -585,7 +585,7 @@ define([
 
                 // set the hash
                 if (!window.location.hash || window.location.hash === '#') {
-                    window.location.hash = editHash;
+                    Cryptpad.replaceHash(editHash);
                 }
 
                 Cryptpad.getPadTitle(function (err, title) {
@@ -784,6 +784,11 @@ define([
                 } else {
                     Cryptpad.alert(Messages.disconnectAlert);
                 }
+            };
+
+            var onError = config.onError = function (info) {
+                module.spinner.hide();
+                Cryptpad.alert(Messages.websocketError);
             };
 
             var realtime = module.realtime = Realtime.start(config);

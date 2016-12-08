@@ -313,12 +313,11 @@ define([
             }
         }
         else if (!firstConnection) {
-            lagErrors++;
             // Display the red light at the 2nd failed attemp to get the lag
-            if (lagErrors > 1) {
+            //if (lagErrors > 1) {
                 lagLight.addClass('lag-red');
                 title = Messages.redLight;
-            }
+            //}
         }
         if (title) {
             lagLight.attr('title', title);

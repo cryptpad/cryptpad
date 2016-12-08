@@ -35,8 +35,23 @@ define([
     window.Toolbar = Toolbar;
     window.Hyperjson = Hyperjson;
 
+    var slice = function (coll) {
+        return Array.prototype.slice.call(coll);
+    };
+
+    var removeListeners = function (root) {
+        slice(root.attributes).map(function (attr) {
+            if (/^on/.test(attr.name)) {
+                root.attributes.removeNamedItem(attr.name);
+            }
+        });
+        slice(root.children).forEach(removeListeners);
+    };
+
     var hjsonToDom = function (H) {
-        return Hyperjson.toDOM(H); //callOn(H, Hyperscript);
+        var dom = Hyperjson.toDOM(H);
+        removeListeners(dom);
+        return dom;
     };
 
     var module = window.REALTIME_MODULE = window.APP = {
@@ -321,9 +336,9 @@ define([
                 })) { return text; }
             };
 
-            var suggestName = function () {
+            var suggestName = function (fallback) {
                 if (document.title === defaultName) {
-                    return getHeadingText() || "";
+                    return getHeadingText() || fallback || "";
                 } else {
                     return document.title || getHeadingText() || defaultName;
                 }
@@ -510,7 +525,7 @@ define([
 
             var exportFile = function () {
                 var html = getHTML();
-                var suggestion = suggestName();
+                var suggestion = suggestName('cryptpad-document');
                 Cryptpad.prompt(Messages.exportPrompt,
                     Cryptpad.fixFileName(suggestion) + '.html', function (filename) {
                     if (!(typeof(filename) === 'string' && filename)) { return; }
@@ -601,9 +616,7 @@ define([
                 }
 
                 // set the hash
-                if (!readOnly) {
-                    window.location.hash = editHash;
-                }
+                if (!readOnly) { Cryptpad.replaceHash(editHash); }
 
                 Cryptpad.getPadTitle(function (err, title) {
                     if (err) {
@@ -676,6 +689,11 @@ define([
                 } else {
                     Cryptpad.alert(Messages.disconnectAlert);
                 }
+            };
+
+            var onError = realtimeOptions.onError = function (info) {
+                module.spinner.hide();
+                Cryptpad.alert(Messages.websocketError);
             };
 
             var onLocal = realtimeOptions.onLocal = function () {

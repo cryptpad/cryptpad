@@ -18,8 +18,17 @@ define([
         $.ajax({
             url: isHtml ? '/customize/BottomBar.html' : '/customize/Header.html',
             success: function (ret) {
-                //:$('iframe').height('96%');
-                $('body').append(ret);
+                var $bar = $(ret);
+                $('body').append($bar);
+
+                var $sel = $bar.find('#language-selector');
+
+                Object.keys(Messages._languages).forEach(function (code) {
+                    $sel.append($('<option>', {
+                        value: code,
+                    }).text(Messages._languages[code]));
+                });
+
                 LS.main();
                 Messages._applyTranslation();
             }
