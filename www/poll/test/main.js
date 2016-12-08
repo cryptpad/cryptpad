@@ -691,7 +691,7 @@ define([
         .on('ready', function (info) {
             Cryptpad.getPadAttribute('userid', function (e, userid) {
                 if (e) { console.error(e); }
-                if (userid === null) { userid = Render.coluid(); }
+                if (!userid) { userid = Render.coluid(); }
                 APP.userid = userid;
                 Cryptpad.setPadAttribute('userid', userid, function (e) {
                     ready(info, userid, readOnly);
