@@ -691,6 +691,11 @@ define([
                 }
             };
 
+            var onError = realtimeOptions.onError = function (info) {
+                module.spinner.hide();
+                Cryptpad.alert(Messages.websocketError);
+            };
+
             var onLocal = realtimeOptions.onLocal = function () {
                 if (initializing) { return; }
                 if (readOnly) { return; }

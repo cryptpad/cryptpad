@@ -786,6 +786,11 @@ define([
                 }
             };
 
+            var onError = config.onError = function (info) {
+                module.spinner.hide();
+                Cryptpad.alert(Messages.websocketError);
+            };
+
             var realtime = module.realtime = Realtime.start(config);
 
             editor.on('change', onLocal);

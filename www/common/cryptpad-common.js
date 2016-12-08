@@ -550,6 +550,7 @@ define([
             $(function() {
                 // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
                 // won't work. We have to reset it now to make sure it uses a correct "body"
+
                 Alertify.reset();
                 if($('#pad-iframe').length) {
                     var $iframe = $('#pad-iframe');
@@ -839,6 +840,7 @@ define([
     var styleAlerts = common.styleAlerts = function (href) {
         var $link = $('link[href="/customize/alertify.css"]');
         if ($link.length) {
+            return;
             $link.attr('href', '');
             $link.attr('href', '/customize/alertify.css');
             return;
