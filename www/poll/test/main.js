@@ -662,6 +662,10 @@ define([
 
     var disconnect = function () {
         //setEditable(false); // TODO
+        if (info.error) {
+            Cryptpad.alert(Messages.websocketError);
+            return;
+        }
         //Cryptpad.alert(Messages.common_connectionLost); // TODO
     };
 

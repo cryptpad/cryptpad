@@ -21,6 +21,7 @@ define(function () {
     ].join('');
 
     out.common_connectionLost = 'Server Connection Lost';
+    out.websocketError = 'Unable to connect to the websocket server...';
 
     out.disconnected = 'Disconnected';
     out.synchronizing = 'Synchronizing';

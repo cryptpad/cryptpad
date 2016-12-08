@@ -649,6 +649,19 @@ define([
         }, common);
     };
 
+    var errorHandlers = [];
+    common.onError = function (h) {
+        if (typeof h !== "function") { return; }
+        errorHandlers.push(h);
+    };
+    common.storeError = function () {
+        errorHandlers.forEach(function (h) {
+            if (typeof h === "function") {
+                h({type: "store"});
+            }
+        });
+    };
+
     /*
      *  Saving files
      */
@@ -877,9 +890,9 @@ define([
         var $link = $('link[href="/customize/alertify.css"]');
         if ($link.length) {
             return;
-            $link.attr('href', '');
+            /*$link.attr('href', '');
             $link.attr('href', '/customize/alertify.css');
-            return;
+            return;*/
         }
 
         href = href || '/customize/alertify.css';
