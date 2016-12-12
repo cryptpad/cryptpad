@@ -272,8 +272,14 @@ li {
 #content .list .element span.name {
     width: 478px;
 }
+.iframe #content .list .element span.name {
+    width: 278px;
+}
 #content .list .header span.name {
     width: 500px;
+}
+.iframe #content .list .header span.name {
+    width: 300px;
 }
 #content .list .element span.type, #content .list .element span.atime, #content .list .element span.ctime {
     width: 175px;

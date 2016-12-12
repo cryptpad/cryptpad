@@ -18,9 +18,7 @@ define([
     var saveAs = window.saveAs;
     var $iframe = $('#pad-iframe').contents();
     var ifrw = $('#pad-iframe')[0].contentWindow;
-
-    var hash = window.location.hash || localStorage.FS_hash;
-    var secret = Cryptpad.getSecrets(hash);
+    var homePageIframe = false;
 
     var ROOT = "root";
     var ROOT_NAME = Messages.fm_rootName;
@@ -1356,17 +1354,31 @@ define([
 
 
 
-    var listmapConfig = module.config = {
-        data: {},
-        websocketURL: Cryptpad.getWebsocketURL(),
-        channel: secret.channel,
-        readOnly: false,
-        validateKey: secret.keys.validateKey || undefined,
-        crypto: Crypto.createEncryptor(secret.keys),
-    };
-
     // don't initialize until the store is ready.
     Cryptpad.ready(function () {
+        if (window.location.hash && window.location.hash === "#iframe") {
+            $('.top-bar').hide();
+            $('#pad-iframe').css({
+                top: "0px",
+                height: "100%"
+            });
+            $iframe.find('body').addClass('iframe');
+            window.location.hash = "";
+            homePageIframe = true;
+        }
+
+        var hash = window.location.hash || localStorage.FS_hash;
+        var secret = Cryptpad.getSecrets(hash);
+
+        var listmapConfig = module.config = {
+            data: {},
+            websocketURL: Cryptpad.getWebsocketURL(),
+            channel: secret.channel,
+            readOnly: false,
+            validateKey: secret.keys.validateKey || undefined,
+            crypto: Crypto.createEncryptor(secret.keys),
+        };
+
         var rt = window.rt = module.rt = Listmap.create(listmapConfig);
         rt.proxy.on('create', function (info) {
             var realtime = module.realtime = info.realtime;
@@ -1394,8 +1406,9 @@ define([
             initLocalStorage();
             init(rt.proxy);
         })
-        .on('disconnect', function () {
+        .on('disconnect', function (info) {
             //setEditable(false);
+            console.error('err');
             Cryptpad.alert(Messages.common_connectionLost);
         });
     });
