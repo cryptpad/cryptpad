@@ -649,6 +649,19 @@ define([
         }, common);
     };
 
+    var errorHandlers = [];
+    common.onError = function (h) {
+        if (typeof h !== "function") { return; }
+        errorHandlers.push(h);
+    };
+    common.storeError = function () {
+        errorHandlers.forEach(function (h) {
+            if (typeof h === "function") {
+                h({type: "store"});
+            }
+        });
+    };
+
     /*
      *  Saving files
      */
@@ -799,7 +812,6 @@ define([
             case 'editshare':
                 button = $('<button>', {
                     title: Messages.editShareTitle,
-                    'class': "button action"
                 }).text(Messages.editShare);
                 if (data && data.editHash) {
                     var editHash = data.editHash;
@@ -818,7 +830,6 @@ define([
             case 'viewshare':
                 button = $('<button>', {
                     title: Messages.viewShareTitle,
-                    'class': "button action"
                 }).text(Messages.viewShare);
                 if (data && data.viewHash) {
                     button.click(function () {
@@ -836,7 +847,6 @@ define([
             case 'viewopen':
                 button = $('<button>', {
                     title: Messages.viewOpenTitle,
-                    'class': "button action"
                 }).text(Messages.viewOpen);
                 if (data && data.viewHash) {
                     button.click(function () {
@@ -880,9 +890,9 @@ define([
         var $link = $('link[href="/customize/alertify.css"]');
         if ($link.length) {
             return;
-            $link.attr('href', '');
+            /*$link.attr('href', '');
             $link.attr('href', '/customize/alertify.css');
-            return;
+            return;*/
         }
 
         href = href || '/customize/alertify.css';

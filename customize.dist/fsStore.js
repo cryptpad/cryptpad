@@ -153,8 +153,15 @@ define([
             }
             onReady(f, rt.proxy, Cryptpad.storageKey);
         })
-        .on('disconnect', function () {
+        .on('disconnect', function (info) {
             //setEditable(false);
+            if (info.error) {
+                //Cryptpad.alert(Messages.websocketError);
+                if (typeof Cryptpad.storeError === "function") {
+                    Cryptpad.storeError();
+                }
+                return;
+            }
             Cryptpad.alert(Messages.common_connectionLost);
         });
 

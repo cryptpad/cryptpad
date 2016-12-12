@@ -27,8 +27,8 @@ define(function () {
     out.readonly = 'Lecture seule';
     out.anonymous = "Anonyme";
     out.yourself = "Vous-même";
-    out.anonymousUsers = "utilisateurs anonymes";
-    out.anonymousUser = "utilisateur anonyme";
+    out.anonymousUsers = "éditeurs anonymes";
+    out.anonymousUser = "éditeur anonyme";
     out.shareView = "URL de lecture seule";
     out.shareEdit = "URL d'édition";
     out.users = "Utilisateurs";
@@ -129,6 +129,12 @@ define(function () {
     out.wizardTitle = "Utiliser l'assistant pour créer votre sondage";
     out.wizardConfirm = "Êtes-vous vraiment prêt à ajouter ces options au sondage ?";
 
+    out.poll_publish_button = "Publier";
+    out.poll_admin_button = "Administrer";
+    out.poll_create_user = "Ajouter un utilisateur";
+    out.poll_create_option = "Ajouter une option";
+    out.poll_commit = "Valider";
+
     out.poll_closeWizardButton = "Fermer l'assistant";
     out.poll_closeWizardButtonTitle = "Fermer l'assistant";
     out.poll_wizardComputeButton = "Générer les options";
@@ -176,7 +182,7 @@ define(function () {
     out.fm_originalPath = "Chemin d'origine";
     out.fm_emptyTrashDialog = "Êtes-vous sûr de vouloir vider la corbeille ?";
     out.fm_removeSeveralPermanentlyDialog = "Êtes-vous sûr de vouloir supprimer ces {0} éléments de manière permanente ?";
-    out.fm_removePermanentlyDialog = "Êtes-vous sûr de vouloir supprimer {0} de la corbeille de manière permanente ?";
+    out.fm_removePermanentlyDialog = "Êtes-vous sûr de vouloir supprimer {0} de manière permanente ?";
     out.fm_restoreDialog = "Êtes-vous sûr de vouloir restaurer {0} à son emplacement précédent ?";
     out.fm_removeSeveralDialog = "Êtes-vous sûr de vouloir déplacer ces {0} éléments vers la corbeille ?";
     out.fm_removeDialog = "Êtes-vous sûr de vouloir déplacer {0} vers la corbeille ?";

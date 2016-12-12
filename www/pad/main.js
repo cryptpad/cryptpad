@@ -77,6 +77,11 @@ define([
         return hj;
     };
 
+    var onConnectError = function (info) {
+        module.spinner.hide();
+        Cryptpad.alert(Messages.websocketError);
+    };
+
     var andThen = function (Ckeditor) {
         var secret = Cryptpad.getSecrets();
         var readOnly = secret.keys && !secret.keys.editKeyStr;
@@ -691,10 +696,7 @@ define([
                 }
             };
 
-            var onError = realtimeOptions.onError = function (info) {
-                module.spinner.hide();
-                Cryptpad.alert(Messages.websocketError);
-            };
+            var onError = realtimeOptions.onError = onConnectError;
 
             var onLocal = realtimeOptions.onLocal = function () {
                 if (initializing) { return; }
@@ -740,6 +742,11 @@ define([
         Cryptpad.ready(function (err, env) {
             // TODO handle error
             andThen(Ckeditor);
+        });
+        Cryptpad.onError(function (info) {
+            if (info && info.type === "store") {
+                onConnectError();
+            }
         });
     };
 

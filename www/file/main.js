@@ -254,7 +254,8 @@ define([
                     removeInput();
                 }
             });
-            $element.parent().append($input);
+            //$element.parent().append($input);
+            $element.after($input);
             $input.focus();
             $input.select();
             // We don't want to open the file/folder when clicking on the input
@@ -1304,7 +1305,8 @@ define([
                     var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [paths.length]);
                     if (paths.length === 1) {
                         var path = paths[0];
-                        var name = filesOp.isInTrashRoot(path) ? path[1] : path[path.length - 1];
+                        var element = filesOp.findElement(files, path);
+                        var name = filesOp.isInTrashRoot(path) ? path[1] : (filesOp.isPathInUnsorted(path) ? filesOp.getTitle(element) : path[path.length - 1]);
                         msg = Messages._getKey("fm_removePermanentlyDialog", [name]);
                     }
                     Cryptpad.confirm(msg, function(res) {
