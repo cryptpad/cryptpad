@@ -19,7 +19,7 @@ define([
     var $iframe = $('#pad-iframe').contents();
     var ifrw = $('#pad-iframe')[0].contentWindow;
 
-    var hash = window.location.hash || localStorage.FS_hash;
+    var hash = window.location.hash.slice(1) || localStorage.FS_hash;
     var secret = Cryptpad.getSecrets(hash);
 
     var ROOT = "root";
