@@ -359,7 +359,7 @@ tbody {
     cursor: pointer !important;
 }
 
-form.realtime {
+form.realtime, div.realtime {
     > input {
         &[type="text"] {
 
@@ -375,7 +375,14 @@ form.realtime {
 
     table {
         border-collapse: collapse;
+        width: ~"calc(100% - 1px)";
         tr {
+            td:first-child {
+                position:absolute;
+                left: 29px;
+                top: auto;
+                width: ~"calc(30% - 50px)";
+            }
             td {
                 padding: 0px;
                 margin: 0px;
@@ -383,9 +390,11 @@ form.realtime {
                 div.text-cell {
                     padding: 0px;
                     margin: 0px;
-                        height: 100%;
+                    height: 100%;
+
                     input {
                         width: 80%;
+                        width: 90%;
                         height: 100%;
                         border: 0px;
                         &[disabled] {
@@ -399,9 +408,11 @@ form.realtime {
                 &.checkbox-cell {
                     margin: 0px;
                     padding: 0px;
+                    height: 100%;
+                    min-width: 150px;
 
                     div.checkbox-contain {
-                        display: block;
+                        display: inline-block;
                         height: 100%;
                         width: 100%;
                         position: relative;
@@ -427,6 +438,11 @@ form.realtime {
 
                                         background-color: @cp-red;
                                         color: @base;
+
+                                        &:after {
+                                            height: 100%;
+                                        }
+
                                         &:after { content: "✖"; }
 
                                         display: block;
@@ -434,6 +450,12 @@ form.realtime {
                                             background-color: @cp-green;
                                             &:after { content: "✔"; }
                                         }
+
+                                        &.uncommitted {
+                                            background: #ddd;
+                                        }
+
+
                                         &.mine {
                                             display: none;
                                         }
@@ -449,17 +471,59 @@ form.realtime {
         input {
             &[type="text"] {
                 height: 100%;
+                border: 1px solid @base;
                 width: 80%;
-                border: 3px solid @base;
+            }
+        }
+        thead {
+            td {
+                padding: 0px 5px;
+                background: @less-light-base;
+                border-radius: 20px 20px 0 0;
+                text-align: center;
+                input {
+                    &[type="text"] {
+                        width: 100%;
+                        box-sizing: border-box;
+                        &[disabled] {
+                            color: white;
+                            padding: 1px 5px;
+                            border: none;
+                        }
+                    }
+                }
+            }
+        }
+
+        tbody {
+            .text-cell {
+                background: @less-light-base;
+                //border-radius: 20px 0 0 20px;
+                input[type="text"] {
+                    width: ~"calc(100% - 50px)";
+                }
+                .edit {
+                    float:right;
+                    margin: 0 10px 0 0;
+                }
+                .remove {
+                    float: left;
+                    margin: 0 0 0 10px;
+                }
             }
         }
         .edit {
             color: @cp-green;
             cursor: pointer;
-            width: 10%;
-            font-size: 20px;
-            &:after { content: '✐'; }
-            &.editable { display: none; }
+            float: left;
+            margin-left: 10px;
+            /*&:after { content: '✐'; }*/
+            /*&.editable { display: none; }*/
+        }
+
+        .remove {
+            float: right;
+            margin-right: 10px
         }
 
         thead {
@@ -486,7 +550,9 @@ form.realtime {
         }
         tfoot {
             tr {
+                border: none;
                 td {
+                    border: none;
                     text-align: center;
                     .save {
                         padding: 15px;

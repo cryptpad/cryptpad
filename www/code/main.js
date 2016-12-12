@@ -42,6 +42,11 @@ define([
             secret.keys = secret.key;
         }
 
+        var onConnectError = function (info) {
+            module.spinner.hide();
+            Cryptpad.alert(Messages.websocketError);
+        };
+
         var andThen = function (CMeditor) {
             var CodeMirror = module.CodeMirror = CMeditor;
             CodeMirror.modeURL = "/bower_components/codemirror/mode/%N/%N.js";
@@ -687,6 +692,8 @@ define([
                 }
             };
 
+            var onError = config.onError = onConnectError;
+
             var realtime = module.realtime = Realtime.start(config);
 
             editor.on('change', onLocal);
@@ -698,6 +705,11 @@ define([
             Cryptpad.ready(function (err, env) {
                 // TODO handle error
                 andThen(CM);
+            });
+            Cryptpad.onError(function (info) {
+                if (info && info.type === "store") {
+                    onConnectError();
+                }
             });
         };
 

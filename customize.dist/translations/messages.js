@@ -21,6 +21,7 @@ define(function () {
     ].join('');
 
     out.common_connectionLost = 'Server Connection Lost';
+    out.websocketError = 'Unable to connect to the websocket server...';
 
     out.disconnected = 'Disconnected';
     out.synchronizing = 'Synchronizing';
@@ -29,8 +30,8 @@ define(function () {
     out.readonly = 'Read only';
     out.anonymous = "Anonymous";
     out.yourself = "Yourself";
-    out.anonymousUsers = "anonymous users";
-    out.anonymousUser = "anonymous user";
+    out.anonymousUsers = "anonymous editors";
+    out.anonymousUser = "anonymous editor";
     out.shareView = "Read-only URL";
     out.shareEdit = "Edit URL";
     out.users = "Users";
@@ -131,6 +132,12 @@ define(function () {
     out.wizardTitle = "Use the wizard to create your poll";
     out.wizardConfirm = "Are you really ready to add these options to your poll?";
 
+    out.poll_publish_button = "Publish";
+    out.poll_admin_button = "Admin";
+    out.poll_create_user = "Add a new user";
+    out.poll_create_option = "Add a new option";
+    out.poll_commit = "Commit";
+
     out.poll_closeWizardButton = "Close wizard";
     out.poll_closeWizardButtonTitle = "Close wizard";
     out.poll_wizardComputeButton = "Compute Options";
@@ -158,6 +165,51 @@ define(function () {
 
     out.poll_titleHint = "Title";
     out.poll_descriptionHint = "Description";
+
+    // File manager
+
+    out.fm_rootName = "My documents";
+    out.fm_trashName = "Trash";
+    out.fm_unsortedName = "Unsorted files";
+    out.fm_filesDataName = "All files";
+    out.fm_newFolder = "New folder";
+    out.fm_newFolderButton = "NEW FOLDER";
+    out.fm_folderName = "Folder name";
+    out.fm_numberOfFolders = "# of folders";
+    out.fm_numberOfFiles = "# of files";
+    out.fm_fileName = "File name";
+    out.fm_title = "Title";
+    out.fm_lastAccess = "Last access";
+    out.fm_creation = "Creation";
+    out.fm_forbidden = "Forbidden action";
+    out.fm_originalPath = "Original path";
+    out.fm_emptyTrashDialog = "Are you sure you want to empty the trash?";
+    out.fm_removeSeveralPermanentlyDialog = "Are you sure you want to remove these {0} elements from the trash permanently?";
+    out.fm_removePermanentlyDialog = "Are you sure you want to remove {0} permanently?";
+    out.fm_removeSeveralDialog = "Are you sure you want to move these {0} elements to the trash?";
+    out.fm_removeDialog = "Are you sure you want to move {0} to the trash?";
+    out.fm_restoreDialog = "Are you sure you want to restore {0} to its previous location?";
+    out.fm_unknownFolderError = "The selected or last visited directory no longer exist. Opening the parent folder...";
+    out.fm_contextMenuError = "Unable to open the context menu for that element. If the problem persist, try to reload the page.";
+    out.fm_selectError = "Unable to select the targetted element. If the problem persist, try to reload the page.";
+    // File - Context menu
+    out.fc_newfolder = "New folder";
+    out.fc_rename = "Rename";
+    out.fc_open = "Open";
+    out.fc_delete = "Delete";
+    out.fc_restore = "Restore";
+    out.fc_remove = "Delete permanently";
+    out.fc_empty = "Empty the trash";
+    out.fc_newpad = "New text pad";
+    out.fc_newcode = "New code pad";
+    out.fc_newslide = "New presentation";
+    out.fc_newpoll = "New poll";
+    out.fc_prop = "Properties";
+    // fileObject.js (logs)
+    out.fo_moveUnsortedError = "You can't move a folder to the list of unsorted pads";
+    out.fo_existingNameError = "Name already used in that directory. Please choose another one.";
+    out.fo_moveFolderToChildError = "You can't move a folder into one of its descendants";
+    out.fo_unableToRestore = "Unable to restore that file to its original location. You can try to move it to a new location.";
 
     // index.html
 

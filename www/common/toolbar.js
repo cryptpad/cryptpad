@@ -202,14 +202,14 @@ define([
     var updateUserList = function (myUserName, userlistElement, userList, userData, readOnly, $stateElement, $userAdminElement) {
         var meIdx = userList.indexOf(myUserName);
         if (meIdx === -1) {
+            console.log('nok');
             $stateElement.text(Messages.synchronizing);
             return;
         }
         $stateElement.text('');
-
         // Make sure the elements are displayed
         var $userButtons = $(userlistElement).find("#userButtons");
-        $userButtons.show();
+        $userButtons.attr('display', 'inline');
 
         var numberOfUsers = userList.length;
 
@@ -271,7 +271,7 @@ define([
         if (readOnly === 1) {
             $userElement.html('<span class="' + READONLY_CLS + '">' + Messages.readonly + '</span>');
         }
-        else  {
+        else {
             var name = userData[myUserName] && userData[myUserName].name;
             var icon = '<span class="fa fa-user" style="font-family:FontAwesome;"></span>';
             if (!name) {
@@ -313,12 +313,11 @@ define([
             }
         }
         else if (!firstConnection) {
-            lagErrors++;
             // Display the red light at the 2nd failed attemp to get the lag
-            if (lagErrors > 1) {
+            //if (lagErrors > 1) {
                 lagLight.addClass('lag-red');
                 title = Messages.redLight;
-            }
+            //}
         }
         if (title) {
             lagLight.attr('title', title);

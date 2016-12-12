@@ -69,17 +69,21 @@ define(['/customize/languageSelector.js',
         });
     };
 
+    var translateText = function (i, e) {
+        var $el = $(e);
+        var key = $el.data('localization');
+        $el.html(messages[key]);
+    };
+    var translateTitle = function (i, e) {
+        var $el = $(this);
+        var key = $el.data('localization-title');
+        $el.attr('title', messages[key]);
+    };
     messages._applyTranslation = function () {
-        $('[data-localization]').each(function (i, e) {
-            var $el = $(this);
-            var key = $el.data('localization');
-            $el.html(messages[key]);
-        });
-        $('[data-localization-title]').each(function (i, e) {
-            var $el = $(this);
-            var key = $el.data('localization-title');
-            $el.attr('title', messages[key]);
-        });
+        $('[data-localization]').each(translateText);
+        $('#pad-iframe').contents().find('[data-localization]').each(translateText);
+        $('[data-localization-title]').each(translateTitle);
+        $('#pad-iframe').contents().find('[data-localization-title]').each(translateTitle);
     };
 
     // Non translatable keys

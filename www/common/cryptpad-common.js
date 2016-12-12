@@ -7,10 +7,11 @@ define([
     '/bower_components/spin.js/spin.min.js',
     '/common/clipboard.js',
 
+    '/customize/fsStore.js',
     '/customize/user.js',
 
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Messages, Store, Crypto, Alertify, Spinner, Clipboard, User) {
+], function (Config, Messages, Store, Crypto, Alertify, Spinner, Clipboard, FS, User) {
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
@@ -19,11 +20,18 @@ define([
 */
     var $ = window.jQuery;
 
+    // When set to true, USE_FS_STORE becomes the default store, but the localStorage store is
+    // still loaded for migration purpose. When false, the localStorage is used.
+    var USE_FS_STORE = true;
+
+    var storeToUse = USE_FS_STORE ? FS : Store;
+
     var common = {
         User: User,
         Messages: Messages,
     };
     var store;
+    var fsStore;
     var userProxy;
     var userStore;
 
@@ -35,7 +43,8 @@ define([
 
     var getStore = common.getStore = function (legacy) {
         if (!legacy && userStore) { return userStore; }
-        if (store) { return store; }
+        if ((!USE_FS_STORE || legacy) && store) { return store; }
+        if (USE_FS_STORE && !legacy && fsStore) { return fsStore; }
         throw new Error("Store is not ready!");
     };
 
@@ -95,8 +104,8 @@ define([
         store = Store;
     });
 
-
-    var isArray = function (o) { return Object.prototype.toString.call(o) === '[object Array]'; };
+    // var isArray = function (o) { return Object.prototype.toString.call(o) === '[object Array]'; };
+    var isArray = $.isArray;
 
     var fixHTML = common.fixHTML = function (html) {
         return html.replace(/</g, '&lt;');
@@ -164,13 +173,18 @@ define([
     };
     var getHashFromKeys = common.getHashFromKeys = getEditHashFromKeys;
 
-    var getSecrets = common.getSecrets = function () {
+    var getSecrets = common.getSecrets = function (secretHash) {
         var secret = {};
-        if (!/#/.test(window.location.href)) {
+        if (/#\?path=/.test(window.location.href)) {
+            var arr = window.location.hash.match(/\?path=(.+)/);
+            common.initialPath = arr[1] || undefined;
+            window.location.hash = '';
+        }
+        if (!secretHash && !/#/.test(window.location.href)) {
             secret.keys = Crypto.createEditCryptor();
             secret.key = Crypto.createEditCryptor().editKeyStr;
         } else {
-            var hash = window.location.hash.slice(1);
+            var hash = secretHash || window.location.hash.slice(1);
             if (hash.length === 0) {
                 secret.keys = Crypto.createEditCryptor();
                 secret.key = Crypto.createEditCryptor().editKeyStr;
@@ -386,8 +400,42 @@ define([
     };
 
     // STORAGE
+    var forgetFSPad = function (href, cb) {
+        getStore().forgetPad(href, cb);
+    };
     var forgetPad = common.forgetPad = function (href, cb, legacy) {
         var parsed = parsePadUrl(href);
+
+        var callback = function (err, data) {
+            if (err) {
+                cb(err);
+                return;
+            }
+
+            getStore(legacy).keys(function (err, keys) {
+                if (err) {
+                    cb(err);
+                    return;
+                }
+                var toRemove = keys.filter(function (k) {
+                    return k.indexOf(parsed.hash) === 0;
+                });
+
+                if (!toRemove.length) {
+                    cb();
+                    return;
+                }
+                getStore(legacy).removeBatch(toRemove, function (err, data) {
+                    cb(err, data);
+                });
+            });
+        };
+
+        if (USE_FS_STORE && !legacy) {
+            // TODO implement forgetPad in store.js
+            forgetFSPad(href, callback);
+            return;
+        }
 
         getRecentPads(function (err, recentPads) {
             setRecentPads(recentPads.filter(function (pad) {
@@ -398,31 +446,15 @@ define([
                     return;
                 }
                 return true;
-            }), function (err, data) {
-                if (err) {
-                    cb(err);
-                    return;
-                }
-
-                getStore(legacy).keys(function (err, keys) {
-                    if (err) {
-                        cb(err);
-                        return;
-                    }
-                    var toRemove = keys.filter(function (k) {
-                        return k.indexOf(parsed.hash) === 0;
-                    });
-
-                    if (!toRemove.length) {
-                        cb();
-                        return;
-                    }
-                    getStore(legacy).removeBatch(toRemove, function (err, data) {
-                        cb(err, data);
-                    });
-                });
-            }, legacy);
+            }), callback, legacy);
         }, legacy);
+
+
+
+        if (typeof(getStore(legacy).forgetPad) === "function") {
+            // TODO implement forgetPad in store.js
+            getStore(legacy).forgetPad(href, callback);
+        }
     };
 
     // STORAGE
@@ -471,7 +503,11 @@ define([
             });
 
             if (!contains) {
-                renamed.push(makePad(href, name));
+                var data = makePad(href, name);
+                renamed.push(data);
+                if (USE_FS_STORE && typeof(getStore().addPad) === "function") {
+                    getStore().addPad(href, common.initialPath, name);
+                }
             }
 
             setRecentPads(renamed, function (err, data) {
@@ -544,12 +580,16 @@ define([
             f(void 0, env);
         };
 
-        Store.ready(function (err, store) {
+        storeToUse.ready(function (err, store) {
             common.store = env.store = store;
+            if (USE_FS_STORE) {
+                fsStore = store;
+            }
 
             $(function() {
                 // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
                 // won't work. We have to reset it now to make sure it uses a correct "body"
+
                 Alertify.reset();
                 if($('#pad-iframe').length) {
                     var $iframe = $('#pad-iframe');
@@ -606,6 +646,19 @@ define([
                 cb();
 
             }); */
+        }, common);
+    };
+
+    var errorHandlers = [];
+    common.onError = function (h) {
+        if (typeof h !== "function") { return; }
+        errorHandlers.push(h);
+    };
+    common.storeError = function () {
+        errorHandlers.forEach(function (h) {
+            if (typeof h === "function") {
+                h({type: "store"});
+            }
         });
     };
 
@@ -759,7 +812,6 @@ define([
             case 'editshare':
                 button = $('<button>', {
                     title: Messages.editShareTitle,
-                    'class': "button action"
                 }).text(Messages.editShare);
                 if (data && data.editHash) {
                     var editHash = data.editHash;
@@ -778,7 +830,6 @@ define([
             case 'viewshare':
                 button = $('<button>', {
                     title: Messages.viewShareTitle,
-                    'class': "button action"
                 }).text(Messages.viewShare);
                 if (data && data.viewHash) {
                     button.click(function () {
@@ -796,7 +847,6 @@ define([
             case 'viewopen':
                 button = $('<button>', {
                     title: Messages.viewOpenTitle,
-                    'class': "button action"
                 }).text(Messages.viewOpen);
                 if (data && data.viewHash) {
                     button.click(function () {
@@ -839,9 +889,10 @@ define([
     var styleAlerts = common.styleAlerts = function (href) {
         var $link = $('link[href="/customize/alertify.css"]');
         if ($link.length) {
-            $link.attr('href', '');
-            $link.attr('href', '/customize/alertify.css');
             return;
+            /*$link.attr('href', '');
+            $link.attr('href', '/customize/alertify.css');
+            return;*/
         }
 
         href = href || '/customize/alertify.css';

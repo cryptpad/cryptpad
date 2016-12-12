@@ -27,8 +27,8 @@ define(function () {
     out.readonly = 'Lecture seule';
     out.anonymous = "Anonyme";
     out.yourself = "Vous-même";
-    out.anonymousUsers = "utilisateurs anonymes";
-    out.anonymousUser = "utilisateur anonyme";
+    out.anonymousUsers = "éditeurs anonymes";
+    out.anonymousUser = "éditeur anonyme";
     out.shareView = "URL de lecture seule";
     out.shareEdit = "URL d'édition";
     out.users = "Utilisateurs";
@@ -129,6 +129,12 @@ define(function () {
     out.wizardTitle = "Utiliser l'assistant pour créer votre sondage";
     out.wizardConfirm = "Êtes-vous vraiment prêt à ajouter ces options au sondage ?";
 
+    out.poll_publish_button = "Publier";
+    out.poll_admin_button = "Administrer";
+    out.poll_create_user = "Ajouter un utilisateur";
+    out.poll_create_option = "Ajouter une option";
+    out.poll_commit = "Valider";
+
     out.poll_closeWizardButton = "Fermer l'assistant";
     out.poll_closeWizardButtonTitle = "Fermer l'assistant";
     out.poll_wizardComputeButton = "Générer les options";
@@ -156,6 +162,51 @@ define(function () {
 
     out.poll_titleHint = "Titre";
     out.poll_descriptionHint = "Description";
+
+    // File manager
+
+    out.fm_rootName = "Mes documents";
+    out.fm_trashName = "Corbeille";
+    out.fm_unsortedName = "Fichiers non triés";
+    out.fm_filesDataName = "Tous les fichiers";
+    out.fm_newFolder = "Nouveau dossier";
+    out.fm_newFolderButton = "NOUVEAU DOSSIER";
+    out.fm_folderName = "Nom du dossier";
+    out.fm_numberOfFolders = "# de dossiers";
+    out.fm_numberOfFiles = "# de fichiers";
+    out.fm_fileName = "Nom du fichier";
+    out.fm_title = "Titre";
+    out.fm_lastAccess = "Dernier accès";
+    out.fm_creation = "Création";
+    out.fm_forbidden = "Action interdite";
+    out.fm_originalPath = "Chemin d'origine";
+    out.fm_emptyTrashDialog = "Êtes-vous sûr de vouloir vider la corbeille ?";
+    out.fm_removeSeveralPermanentlyDialog = "Êtes-vous sûr de vouloir supprimer ces {0} éléments de manière permanente ?";
+    out.fm_removePermanentlyDialog = "Êtes-vous sûr de vouloir supprimer {0} de manière permanente ?";
+    out.fm_restoreDialog = "Êtes-vous sûr de vouloir restaurer {0} à son emplacement précédent ?";
+    out.fm_removeSeveralDialog = "Êtes-vous sûr de vouloir déplacer ces {0} éléments vers la corbeille ?";
+    out.fm_removeDialog = "Êtes-vous sûr de vouloir déplacer {0} vers la corbeille ?";
+    out.fm_unknownFolderError = "Le dossier sélectionné ou le dernier dossier visité n'existe plus. Ouverture du dossier parent...";
+    out.fm_contextMenuError = "Impossible d'ouvrir le menu contextuel pour cet élément. Si le problème persiste, essayez de rechercher la page.";
+    out.fm_selectError = "Impossible de sélectionner l'élément ciblé. Si le problème persiste, essayez de recharger la page.";
+    // File - Context menu
+    out.fc_newfolder = "Nouveau dossier";
+    out.fc_rename = "Renommer";
+    out.fc_open = "Ouvrir";
+    out.fc_delete = "Supprimer";
+    out.fc_restore = "Restaurer";
+    out.fc_remove = "Supprimer définitivement";
+    out.fc_empty = "Vider la corbeille";
+    out.fc_newpad = "Nouveau pad de texte";
+    out.fc_newcode = "Nouveau pad de code";
+    out.fc_newslide = "Nouvelle présentation";
+    out.fc_newpoll = "Nouveau sondage";
+    out.fc_prop = "Propriétés";
+    // fileObject.js (logs)
+    out.fo_moveUnsortedError = "La liste des éléments non triés ne peut pas contenir de dossiers.";
+    out.fo_existingNameError = "Ce nom est déjà utilisé dans ce répertoire. Veuillez en choisir un autre.";
+    out.fo_moveFolderToChildError = "Vous ne pouvez pas déplacer un dossier dans un de ses descendants";
+    out.fo_unableToRestore = "Impossible de restaurer ce fichier à son emplacement d'origine. Vous pouvez essayer de le déplacer à un nouvel emplacement.";
 
     // index.html
 

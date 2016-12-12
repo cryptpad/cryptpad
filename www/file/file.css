@@ -1,0 +1,302 @@
+/* PAGE */
+
+html, body {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    font-size: 20px;
+    overflow: auto;
+}
+
+body {
+    display: flex;
+    flex-flow: row;
+}
+
+.fa {
+    /*min-width: 17px;*/
+    margin-right: 3px;
+    font-family: FontAwesome;
+}
+
+ul {
+    list-style: none;
+    padding-left: 10px;
+}
+
+li {
+    padding: 0px 5px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.folder, .file {
+    margin-right: 5px;
+}
+
+.contextMenu {
+    display: none;
+    position: absolute;
+}
+
+.droppable {
+    background-color: #FE9A2E;
+    color: #222;
+}
+
+.selected {
+    border: 1px dotted #bbb;
+    background: #666;
+    color: #eee;
+    margin: -1px;
+}
+
+/* TREE */
+
+
+#tree {
+    border-right: 1px solid #ccc;
+    box-sizing: border-box;
+    background: white;
+    overflow: auto;
+    resize: horizontal;
+    width: 350px;
+    white-space: nowrap;
+    max-width: 500px;
+    min-width: 200px;
+    padding: 10px 0px;
+}
+
+#tree li {
+    cursor: auto;
+}
+
+#tree span.element {
+    cursor: pointer;
+}
+
+#tree li > span.element:hover {
+    text-decoration: underline;
+}
+
+#tree .active {
+    text-decoration: underline;
+}
+
+#tree #trashTree, #tree #unsortedTree, #tree #allfilesTree {
+    margin-top: 2em;
+}
+
+#tree .fa.expcol {
+    margin-left: -10px;
+    font-size: 14px;
+    position: absolute;
+    left: -20px;
+    top: 9px;
+    width: auto;
+    height: 11px;
+    padding: 0;
+    margin: 0;
+    background: white;
+    z-index: 10;
+    cursor: default;
+}
+#tree .fa.expcol:before {
+    position:relative;
+    top: -1px;
+}
+
+#tree li.collapsed ul {
+    display: none;
+}
+
+#tree li input {
+    width: calc(100% - 30px);
+}
+
+/* Tree lines */
+
+#tree ul {
+    margin: 0px 0px 0px 10px;
+    list-style: none;
+}
+#tree ul li {
+    position: relative;
+}
+#tree ul li:before {
+    position: absolute;
+    left: -15px;
+    top: -0.25em;
+    content: '';
+    display: block;
+    border-left: 1px solid #888;
+    height: 1em;
+    border-bottom: 1px solid #888;
+    width: 17.5px;
+}
+#tree ul li:after {
+    position: absolute;
+    left: -15px;
+    bottom: -7px;
+    content: '';
+    display: block;
+    border-left: 1px solid #888;
+    height: 100%;
+}
+#tree ul li.root {
+    margin: 0px 0px 0px -10px;
+}
+#tree ul li.root:before {
+    display: none;
+}
+#tree ul li.root:after {
+    display: none;
+}
+#tree ul li:last-child:after {
+    display: none;
+}
+
+
+/* CONTENT */
+
+#content {
+    box-sizing: border-box;
+    background: #eee;
+    overflow: auto;
+    flex: 1;
+    display: flex;
+    flex-flow: column;
+}
+
+#content h1 {
+    padding-left: 10px;
+}
+
+.topButtonContainer {
+    border: 1px solid #ccc;
+    float: right;
+    border-radius: 4px;
+}
+
+.parentFolder {
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.parentFolder:hover {
+    text-decoration: underline;
+}
+
+#folderContent {
+    padding-right: 10px;
+    flex: 1;
+}
+
+#content li:not(.header) * {
+    pointer-events: none;
+}
+
+#content li:hover:not(.header) .name {
+    text-decoration: underline;
+}
+
+#content .grid li {
+    display: inline-block;
+    margin: 10px 10px;
+    width: 140px;
+    text-align: center;
+    vertical-align: top;
+}
+
+#content .grid li .name {
+    width: 100%;
+}
+
+#content .grid li input {
+    width: 100%;
+}
+
+#content .grid li .fa {
+    display: block;
+    margin: auto;
+    font-size: 40px;
+    width: auto;
+    text-align: center;
+}
+
+#content .list li {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    padding-right: 0px;
+}
+#content .list li .element {
+    display: inline-flex;
+    flex: 1;
+}
+
+#content .list li.file-header {
+    margin-top: 20px;
+}
+
+#content .list li.header {
+    cursor: default;
+    color: #008;
+}
+#content .list li.header .element span:not(.fa) {
+    border-right: 1px solid #CCC;
+    text-align: left;
+}
+#content .list li.header .element span.fa {
+    float: right;
+}
+#content .list li.header span.name {
+    padding-left: 0;
+}
+
+#content .list .element span {
+    padding: 0px 10px;
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
+    padding-right: 0px;
+    border-right: 10px solid rgba(0, 0, 0, 0);
+}
+#content .list .element span.name {
+    width: 478px;
+}
+#content .list .header span.name {
+    width: 500px;
+}
+#content .list .element span.type, #content .list .element span.atime, #content .list .element span.ctime {
+    width: 175px;
+}
+#content .list .element span.title {
+    width: 250px;
+}
+#content .list .element span.folders {
+    width: 150px;
+}
+#content .list .element span.files {
+    width: 150px;
+}
+#content div.grid .listElement {
+    display: none;
+}
+@media screen and (max-width: 1200px) {
+    #content .list .element span.title {
+        display: none;
+    }
+}
+@media screen and (min-width: 1201px) {
+    #content .list .element span.title {
+        display: inline;
+    }
+}
