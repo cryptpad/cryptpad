@@ -185,7 +185,7 @@ define(function () {
     out.fm_originalPath = "Original path";
     out.fm_emptyTrashDialog = "Are you sure you want to empty the trash?";
     out.fm_removeSeveralPermanentlyDialog = "Are you sure you want to remove these {0} elements from the trash permanently?";
-    out.fm_removePermanentlyDialog = "Are you sure you want to remove {0} from the trash permanently?";
+    out.fm_removePermanentlyDialog = "Are you sure you want to remove {0} permanently?";
     out.fm_removeSeveralDialog = "Are you sure you want to move these {0} elements to the trash?";
     out.fm_removeDialog = "Are you sure you want to move {0} to the trash?";
     out.fm_restoreDialog = "Are you sure you want to restore {0} to its previous location?";

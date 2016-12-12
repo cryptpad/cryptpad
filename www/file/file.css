@@ -214,6 +214,10 @@ li {
     vertical-align: top;
 }
 
+#content .grid li .name {
+    width: 100%;
+}
+
 #content .grid li input {
     width: 100%;
 }
