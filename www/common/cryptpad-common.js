@@ -185,6 +185,7 @@ define([
             secret.key = Crypto.createEditCryptor().editKeyStr;
         } else {
             var hash = secretHash || window.location.hash.slice(1);
+            console.log(hash);
             if (hash.length === 0) {
                 secret.keys = Crypto.createEditCryptor();
                 secret.key = Crypto.createEditCryptor().editKeyStr;
