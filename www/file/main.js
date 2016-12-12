@@ -18,7 +18,6 @@ define([
     var saveAs = window.saveAs;
     var $iframe = $('#pad-iframe').contents();
     var ifrw = $('#pad-iframe')[0].contentWindow;
-    var homePageIframe = false;
 
     var ROOT = "root";
     var ROOT_NAME = Messages.fm_rootName;
@@ -1367,7 +1366,7 @@ define([
             homePageIframe = true;
         }
 
-        var hash = window.location.hash || localStorage.FS_hash;
+        var hash = window.location.hash.slice(1) || localStorage.FS_hash;
         var secret = Cryptpad.getSecrets(hash);
 
         var listmapConfig = module.config = {
