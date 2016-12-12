@@ -1333,6 +1333,7 @@ define([
                 refreshFilesData();
             }
             module.resetTree();
+            return false;
         }).on('remove', [], function () {
             var path = arguments[1];
             if ((filesOp.isPathInUnsorted(currentPath) && filesOp.isPathInUnsorted(path)) ||
@@ -1342,6 +1343,7 @@ define([
                 window.setTimeout(refresh, 200);
             }
             module.resetTree();
+            return false;
         });
 
         refresh();
