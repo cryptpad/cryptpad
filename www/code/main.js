@@ -692,7 +692,7 @@ define([
                 }
             };
 
-            var onError = config.onError = onConnectError();
+            var onError = config.onError = onConnectError;
 
             var realtime = module.realtime = Realtime.start(config);
 
