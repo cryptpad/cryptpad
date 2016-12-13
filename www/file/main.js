@@ -169,7 +169,7 @@ define([
             isReady: true,
             _onReady: [],
             onReady: function (handler) {
-                if (isReady) {
+                if (appStatus.isReady) {
                     handler();
                     return;
                 }
@@ -185,9 +185,6 @@ define([
                 }
             }
         };
-
-        var isReady = false;
-
 
         var removeSelected =  function () {
             $iframe.find('.selected').removeClass("selected");
@@ -1376,6 +1373,7 @@ define([
             readOnly: false,
             validateKey: secret.keys.validateKey || undefined,
             crypto: Crypto.createEncryptor(secret.keys),
+            //logging: true
         };
 
         var rt = window.rt = module.rt = Listmap.create(listmapConfig);
@@ -1383,7 +1381,7 @@ define([
             var realtime = module.realtime = info.realtime;
 
             var editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
-            if (!window.location.hash) {
+            if (!window.location.hash || !localStorage.FS_hash) {
                 localStorage.FS_hash = editHash;
             }
 
