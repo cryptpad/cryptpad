@@ -240,6 +240,12 @@ define([
         return secret;
     };
 
+    var uint8ArrayToHex = common.uint8ArrayToHex = function (a) {
+        return a.map(function (e) {
+            return Number(e & 0xff).toString(16);
+        }).join('');
+    };
+
     var replaceHash = common.replaceHash = function (hash) {
         if (window.history && window.history.replaceState) {
             if (!/^#/.test(hash)) { hash = '#' + hash; }
