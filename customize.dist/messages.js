@@ -5,10 +5,11 @@ define(['/customize/languageSelector.js',
 
     // 1) additional translation files can be added here...
         '/customize/translations/messages.pl.js',
+        '/customize/translations/messages.de.js',
         '/bower_components/jquery/dist/jquery.min.js'],
 
     // 2) name your language module here...
-        function(LS, Default, Spanish, French, Polish) {
+        function(LS, Default, Spanish, French, Polish, German) {
     var $ = window.jQuery;
 
     // 3) add your module to this map so it gets used
@@ -16,6 +17,7 @@ define(['/customize/languageSelector.js',
         'fr': French,
         'es': Spanish,
         'pl': Polish,
+        'de': German,
     };
 
     var defaultLanguage = 'en';
