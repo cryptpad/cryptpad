@@ -15,91 +15,24 @@ define([
 
     var secret = {};
 
-    var module = window.APP = {
+    var APP = window.APP = {
         Cryptpad: Cryptpad,
+        Crypto: Crypto,
     };
 
     var print = function (S, t) {
         $('body').append($('<' + (t || 'p') + '>').text(S));
     };
 
-    var getInputs = function (cb) {
-        Cryptpad.prompt("What is your username?", "", function (name) {
-            if (!name || typeof(name) !== 'string') { return cb('no name'); }
-            setTimeout(function () {
-                Cryptpad.prompt("What is your password?", "", function (pw) {
-                    if (!pw || typeof(pw) !== 'string') { return cb('no password'); }
-                    cb(void 0, {
-                        password: pw,
-                        salt: name,
-                    });
-                }, {
-                    sensitive: true,
-                });
-            }, 1000);
-        });
-    };
-
-    var login = function (cb) {
-        getInputs(function (err, input) {
-            if (err) {
-                Cryptpad.alert(err);
-                return;
-            }
-
-            var time = +new Date();
-            Scrypt(input.password,
-                input.salt,
-                8, // memoryCost (n)
-                1024, // block size parameter (r)
-                128, // dkLen
-                undefined && 200, // interruptStep
-                function (S) {
-                    print("Login took " + ((+new Date()) -time )+ "ms");
-                    cb(S);
-                },
-                'base64');
-        });
-    };
-
-    var read = function (proxy) {
-        console.log("Proxy ready!");
-
-        var otime = +new Date(proxy.atime);
-
-        var atime = proxy.atime = ('' + new Date());
-
-        if (otime) {
-            print("Last visit was " +
-                (((+new Date(atime)) - otime) / 1000) +
-                " seconds ago");
-        }
-
-        proxy.ctime = proxy.ctime || atime;
-        proxy.schema = proxy.schema || 'login_data';
-        print(JSON.stringify(proxy, null, 2), 'pre');
-    };
-
-    var change = function (o, n, p) {
-        console.log("change at [%s] %s => %s", p.join(","), o, n);
-    };
-
-    var remove = function (o, p, root) {
-        console.log("removal at [%s]", p.join(','));
-    };
-
-    var ready = function (proxy, next) {
-        //console.log("umm");
-        proxy.on('ready', function (info) {
-            read(proxy);
-
-            proxy.on('change', [], change)
-            .on('remove', [], remove);
-            next();
-        })
-        .on('disconnect', function (info) {
-
-        });
+    var hashFromCreds = function (username, password, len, cb) {
+        Scrypt(password,
+            username,
+            8, // memoryCost (n)
+            1024, // block size parameter (r)
+            len || 128, // dkLen
+            200, // interruptStep
+            cb,
+            undefined); // format, could be 'base64'
     };
 
     var authenticated = function (password, next) {
@@ -130,11 +63,105 @@ define([
         });
     };
 
+    var useBytes = function (bytes) {
+        var firstSeed = bytes.slice(0, 18);
+        var secondSeed = bytes.slice(18, 35);
+
+        var remainder = bytes.slice(34);
+
+        var seed = {};
+        seed.keys = Crypto.createEditCryptor(null, firstSeed);
+
+        seed.keys.editKeyStr = seed.keys.editKeyStr.replace(/\//g, '-');
+
+        seed.channel = Cryptpad.uint8ArrayToHex(secondSeed);
+
+        console.log(seed);
+
+        var channelHex = seed.channel;
+        var channel64 = Cryptpad.hexToBase64(channelHex);
+
+        console.log(seed.keys.editKeyStr);
+
+        seed.editHash = Cryptpad.getEditHashFromKeys(channelHex, seed.keys.editKeyStr);
+
+        var secret = Cryptpad.getSecrets(seed.editHash);
+        console.log(secret);
+
+        console.log(seed.editHash);
+
+        //return;
+
+        var config = {
+            websocketURL: Cryptpad.getWebsocketURL(),
+            channel: channelHex,
+            data: {},
+            validateKey: seed.keys.validateKey || undefined,
+            readOnly: seed.keys && !seed.keys.editKeyStr,
+            crypto: Crypto.createEncryptor(seed.keys),
+        };
+
+        var rt = APP.rt = Listmap.create(config);
+
+        rt.proxy.on('create', function (info) {
+            console.log('created');
+            //console.log(info);
+        })
+        .on('ready', function (info) {
+            console.log('ready');
+            //console.log(info);
+
+            var proxy = rt.proxy;
+
+            var now = +(new Date());
+            if (!proxy.atime) {
+                console.log("first time visiting!");
+                proxy.atime = now;
+            } else {
+                console.log("last visit was %ss ago", (now - proxy.atime) / 1000);
+                proxy.atime = now;
+            }
+
+            console.log(proxy);
+        })
+        .on('disconnect', function (info) {
+            console.log('disconnected');
+            console.log(info);
+        });
+    };
+
+    var isValidUsername = function (name) {
+        return !!name;
+    };
+
+    var isValidPassword = function (passwd) {
+        return !!passwd;
+    };
+
+    var $username = $('#username');
+    var $password = $('#password');
+
+    0 && hashFromCreds('ansuz', 'pewpewpew', 128, useBytes);
+
     $('#login').click(function () {
-        login(function (hash) {
-            print('Your Key', 'h1');
-            print(hash, 'pre');
-            authenticated(hash, ready);
+        var uname = $username.val();
+        var passwd = $password.val();
+
+        if (!isValidUsername(uname)) {
+            return void Cryptpad.alert('invalid username');
+        }
+
+        if (!isValidPassword(passwd)) {
+            return void Cryptpad.alert('invalid password');
+        }
+
+        $username.val("");
+        $password.val("");
+
+        // we need 18 bytes for the regular crypto
+        hashFromCreds(uname, passwd, 128, function (bytes) {
+            //console.log(bytes);
+            useBytes(bytes);
         });
     });
 });
