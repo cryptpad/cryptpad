@@ -1,3 +1,11 @@
+// Tradução para protuguês brasileiro efetuada por Gustavo Henrique Machado da Silva (www.linkedin.com/in/gustavohmsilva)
+// Embora o software original possa não possuir as mesmas licenças, a tradução produzida por mim is protected under 
+// Creative Commons, Attribution-ShareAlike 4.0 International
+// Contate-me via email no endereço gustavohmsilva@member.fsf.org
+// Translation to brazilian portuguese done by Gustavo Henrique Machado da Silva (www.linkedin.com/in/gustavohmsilva)
+// Even though this software may not share the same licenses, the translation produced by me is protected under
+// Creative commons, Attribution-ShareAlike 4.0 International
+// You can contact me over email on gustavohmsilva@member.fsf.orgs
 define(function () {
     var out = {};
 
@@ -183,47 +191,47 @@ define(function () {
     // privacy.html
 
     out.policy_title = 'Política de privacidade do Cryptpad';
-    out.policy_whatweknow = 'O que nó sabemos sobre você';
-    out.policy_whatweknow_p1 = 'As an application that is hosted on the web, Cryptpad has access to metadata exposed by the HTTP protocol. This includes your IP address, and various other HTTP headers that can be used to identify your particular browser. You can see what information your browser is sharing by visiting <a target="_blank" rel="noopener noreferrer" href="https://www.whatismybrowser.com/detect/what-http-headers-is-my-browser-sending" title="what http headers is my browser sending">WhatIsMyBrowser.com</a>.';
-    out.policy_whatweknow_p2 = 'We use <a href="https://piwik.org/" target="_blank" rel="noopener noreferrer" title="open source analytics platform">Piwik</a>, an open source analytics platform, to learn more about our users. Piwik tells us about how you found Cryptpad, via direct entry, through a search engine, or via a referral from another web service like Reddit or Twitter. We also learn when you visit, what links you click while on our informational pages, and how long you stay on a particular page.';
-    out.policy_whatweknow_p3 = 'These analytics tools are only used on informational pages. We do not collect any information about your usage of our zero-knowledge applications.';
-    out.policy_howweuse = 'How we use what we learn';
-    out.policy_howweuse_p1 = 'We use this information to make better decisions about promoting Cryptpad, by evaluating which of our past efforts were successful. Information about your location lets us know whether we should consider providing better support for languages other than English.';
-    out.policy_howweuse_p2 = "Information about your browser (whether it's a desktop or mobile operating system) helps us make decisions when prioritizing feature improvements. Our development team is small, and we try to make choices that will improve as many users' experience as possible.";
-    out.policy_whatwetell = 'What we tell others about you';
-    out.policy_whatwetell_p1 = 'We do not furnish to third parties the information that we gather or that you provide to us unless we are legally required to do so.';
-    out.policy_links = 'Links to other sites';
-    out.policy_links_p1 = 'This site contains links to other sites, including those produced by other organizations. We are not responsible for the privacy practices or the contents of any outside sites. As a general rule, links to outside sites are launched in a new browser window, to make clear that you are leaving Cryptpad.fr.';
-    out.policy_ads = 'Advertisement';
-    out.policy_ads_p1 = 'We do not display any online advertising, though we may link to the bodies which are financing our research.';
-    out.policy_choices = 'Choices you have';
-    out.policy_choices_open = 'Our code is open source, so you always have the option of hosting your own instance of Cryptpad.';
-    out.policy_choices_vpn = 'If you want to use our hosted instance, but don\'t want to expose your IP address, you can protect your IP using the <a href="https://www.torproject.org/projects/torbrowser.html.en" title="downloads from the Tor project" target="_blank" rel="noopener noreferrer">Tor browser bundle</a>, or a <a href="https://riseup.net/en/vpn" title="VPNs provided by Riseup" target="_blank" rel="noopener noreferrer">VPN</a>.';
-    out.policy_choices_ads = 'If you just want to block our analytics platform, you can use adblocking tools like <a href="https://www.eff.org/privacybadger" title="download privacy badger" target="_blank" rel="noopener noreferrer">Privacy Badger</a>.';
+    out.policy_whatweknow = 'O que nós sabemos sobre você';
+    out.policy_whatweknow_p1 = 'Por der uma aplicação hospedada na web, O Cryptpad tem acesso ao metadados expostos pelo protocolo HTTP. Isso inclui seu endereço IP, e vários cabeçalhos  do HTTP que podem ser usados para identificar seu browser particular. Você pode ver que informações seu navegador está compartilhando ao visitar <a target="_blank" rel="noopener noreferrer" href="https://www.whatismybrowser.com/detect/what-http-headers-is-my-browser-sending" title="Que cabeçalhos meu navegador está disponibilizando">WhatIsMyBrowser.com</a>.';
+    out.policy_whatweknow_p2 = 'Nós usamos a plataforma de análise <a href="https://piwik.org/" target="_blank" rel="noopener noreferrer" title="plataforma analítica open source">Piwik</a>, uma plataforma analítica open source, para aprender mais sobre nossos usos. Piwik nos informa como você encontrou o Cryptpad, via digitação direta, através de mecanismos de busca, ou via link de outro serviço web como o Reddit ou o Twitter. Nós também aprendemos com suas visitas, que links você clica enquanto está em nossas páginas de informações, e quanto tempo você fica nestas páginas.';
+    out.policy_whatweknow_p3 = 'Estas ferramentas de análise são utilizadas apenas com fins de informação. Nós não coletamos nenhuma informação sobre sua utilização em nossas aplicações de zero-knowledge.';
+    out.policy_howweuse = 'Como utilizamos o que nós aprendemos';
+    out.policy_howweuse_p1 = 'Nos utilizamos estas informações para tomar melhores decisões sobre como promover o Cryptpad, ao avaliar quais dos nosso esforços passados foram mais bem sucedidos. Informações sobre sua localização nos ajudam a decidir se nós devemos considerar prover melhor suporte para idiomas além do inglês.';
+    out.policy_howweuse_p2 = "As informações sobre o seu navegador de internet (não importando se é um desktop ou um equipamento móvel) nos ajudam a tomar melhores decisões ao priorizar melhorias futuras. Nossa equipe de desenvolvimento é pequena, e nós tentamos fazer as melhores escolhas em pró de auxiliar a experiência de utilização do máximo de nossos usuários possíveis.";
+    out.policy_whatwetell = 'O que contamos a terceiros sobre você';
+    out.policy_whatwetell_p1 = 'Nós não informamos terceiros a informação que armazenamos ou que provemos a você, salvo caso sejamos legalmente requisitados a faze-lo.';
+    out.policy_links = 'Links para outros sites';
+    out.policy_links_p1 = 'Este site contém ligações para outros sites, incluindo aqueles produzidos por terceiros. Nós não nos responsabilizamos pelas práticas de privacidade ou o conteúdo destes sites. Como regra geral, links para páginas fora de nosso domínio são lançadas em novas janelas ou abas, para deixar claro a todos os visitantes que eles estão deixando o site Cryptpad.fr.';
+    out.policy_ads = 'Publicidade';
+    out.policy_ads_p1 = 'Nós não disponibilizamos publicidade online, porém podemos prover links de acesso para obtenção de financiamento para auxiliar em nossa pesquisa.';
+    out.policy_choices = 'As escolhas que você tem';
+    out.policy_choices_open = 'Nosso código fonte é open source, portanto você sempre tem a opção de hospedar sua própria instância do Cryptpad.';
+    out.policy_choices_vpn = 'Se você deseja usar nosso site principal, porém não deseja expor seu endereço IP, Você pode se proteger utilizando o <a href="https://www.torproject.org/projects/torbrowser.html.en" title="Baixe o tor" target="_blank" rel="noopener noreferrer">Nvegador seguro Tor</a>, ou uma <a href="https://riseup.net/en/vpn" title="VPNs providas pelo Riseup" target="_blank" rel="noopener noreferrer">VPN</a>.';
+    out.policy_choices_ads = 'Se você deseja apenas bloquear nossa plataforma analítica, você pode utilizar ferramentas de bloqueio de propagandas como o <a href="https://www.eff.org/privacybadger" title="baixe o privacy badger" target="_blank" rel="noopener noreferrer">Privacy Badger</a>.';
 
     // terms.html
 
-    out.tos_title = "Cryptpad Terms of Service";
-    out.tos_legal = "Please don't be malicious, abusive, or do anything illegal.";
-    out.tos_availability = "We hope you find this service useful, but availability or performance cannot be guaranteed. Please export your data regularly.";
-    out.tos_e2ee = "Cryptpad documents can be read or modified by anyone who can guess or otherwise obtain the document's fragment identifier. We recommend that you use end-to-end-encrypted (e2ee) messaging technology to share URLs, and assume no liability in the event that such a URL is leaked.";
-    out.tos_logs = "Metadata provided by your browser to the server may be logged for the purpose of maintaining the service.";
-    out.tos_3rdparties = "We do not provide individualized data to third parties unless required to by law.";
+    out.tos_title = "Termos de serviço doCryptpad";
+    out.tos_legal = "Por favor, reserve-se de praticar atos ilegais por meio desta plataforma, agir de forma maliciosa ou de forma abusiva.";
+    out.tos_availability = "Nós esperamos que você ache este serviço útil, porém nśo não podemos garantir disponibilidade constante ou alta performance. Por favor, mantenha um backup dos seus dados por garantia.";
+    out.tos_e2ee = "Documentos do Cryptpad podem ser modificados por qualquer um que conseguir adivinhar ou obter de qualquer outra forma o seu identificador único. Nós recomendamos que você utilize criptografia ponto a ponto de mensagens (e2ee) sempre que possível para compartilhar suas URL's. Nós não assumimos qualquer responsabilidade sobre chaves/URL vazadas e o conteúdo das mesmas.";
+    out.tos_logs = "Os Metadados providos pelo seu navegador para nosso servidor podem ser armazenados com o propósito de manter o serviço em funcionamento";
+    out.tos_3rdparties = "Nós não disponibilizamos dados individuais para terceiros, salvo quando requisitado legalmente.";
 
     // BottomBar.html
 
-    out.bottom_france = '<a href="http://www.xwiki.com/" target="_blank" rel="noopener noreferrer">Made with <img class="bottom-bar-heart" src="/customize/heart.png" /> in <img class="bottom-bar-fr" src="/customize/fr.png" /></a>';
-    out.bottom_support = '<a href="http://labs.xwiki.com/" title="XWiki Labs" target="_blank" rel="noopener noreferrer">An <img src="/customize/logo-xwiki2.png" alt="XWiki SAS" class="bottom-bar-xwiki"/> Labs Project </a> with the support of <a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
+    out.bottom_france = '<a href="http://www.xwiki.com/" target="_blank" rel="noopener noreferrer">Feito com <img class="bottom-bar-heart" src="/customize/heart.png" /> na <img class="bottom-bar-fr" src="/customize/fr.png" /></a>';
+    out.bottom_support = '<a href="http://labs.xwiki.com/" title="XWiki Labs" target="_blank" rel="noopener noreferrer">Um <img src="/customize/logo-xwiki2.png" alt="XWiki SAS" class="bottom-bar-xwiki"/> projeto do laboratório </a> com o suporte da <a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
 
     // Header.html
 
-    out.header_france = '<a href="http://www.xwiki.com/" target="_blank" rel="noopener noreferrer">With <img class="bottom-bar-heart" src="/customize/heart.png" /> from <img class="bottom-bar-fr" src="/customize/fr.png" title="France" alt="France"/> by <img src="/customize/logo-xwiki.png" alt="XWiki SAS" class="bottom-bar-xwiki"/></a>';
+    out.header_france = '<a href="http://www.xwiki.com/" target="_blank" rel="noopener noreferrer">Com <img class="bottom-bar-heart" src="/customize/heart.png" /> da <img class="bottom-bar-fr" src="/customize/fr.png" title="France" alt="France"/> por <img src="/customize/logo-xwiki.png" alt="XWiki SAS" class="bottom-bar-xwiki"/></a>';
 
 
     // TODO Hardcode cause YOLO
     //out.header_xwiki = '<a href="http://www.xwiki.com/" target="_blank" rel="noopener noreferrer"><img src="/customize/logo-xwiki.png" alt="XWiki SAS" class="bottom-bar-xwiki"/></a>';
     out.header_support = '<a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
-    out.header_logoTitle = 'Go to the main page';
+    out.header_logoTitle = 'Ir para página principal';
 
     return out;
 });
