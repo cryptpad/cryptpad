@@ -8,8 +8,6 @@ define([
     'json.sortify',
     '/common/cryptpad-common.js',
     '/file/fileObject.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-    '/bower_components/bootstrap/dist/js/bootstrap.min.js',
     '/customize/pad.js'
 ], function (Config, Listmap, Crypto, TextPatcher, Messages, JSONSortify, Cryptpad, FO) {
     var module = window.MODULE = {};
@@ -1316,25 +1314,33 @@ define([
             }
         });
 
-        files.on('change', [], function () {
+        var onRefresh = {
+            refresh: function() {
+                if (onRefresh.to) {
+                    window.clearTimeout(onRefresh.to);
+                }
+                onRefresh.to = window.setTimeout(refresh, 500);
+            }
+        };
+        files.on('change', [], function (o, n, p) {
             var path = arguments[2];
             if ((filesOp.isPathInUnsorted(currentPath) && filesOp.isPathInUnsorted(path)) ||
                     (path.length >= currentPath.length && filesOp.isSubpath(path, currentPath)) ||
                     (filesOp.isPathInTrash(currentPath) && filesOp.isPathInTrash(path))) {
-                // Reload after 50ms to make sure all the change events have been received
-                window.setTimeout(refresh, 200);
+                // Reload after a few ms to make sure all the change events have been received
+                onRefresh.refresh();
             } else if (path.length && path[0] === FILES_DATA) {
                 refreshFilesData();
             }
             module.resetTree();
             return false;
-        }).on('remove', [], function () {
+        }).on('remove', [], function (o, p) {
             var path = arguments[1];
             if ((filesOp.isPathInUnsorted(currentPath) && filesOp.isPathInUnsorted(path)) ||
                     (path.length >= currentPath.length && filesOp.isSubpath(path, currentPath)) ||
                     (filesOp.isPathInTrash(currentPath) && filesOp.isPathInTrash(path))) {
-                // Reload after 50ms to make sure all the change events have been received
-                window.setTimeout(refresh, 200);
+                // Reload after a few to make sure all the change events have been received
+                onRefresh.to = window.setTimeout(refresh, 500);
             }
             module.resetTree();
             return false;
@@ -1373,7 +1379,7 @@ define([
             readOnly: false,
             validateKey: secret.keys.validateKey || undefined,
             crypto: Crypto.createEncryptor(secret.keys),
-            //logging: true
+            logging: false
         };
 
         var rt = window.rt = module.rt = Listmap.create(listmapConfig);

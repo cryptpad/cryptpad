@@ -213,6 +213,7 @@ define([
             for (var e in root) {
                 if (isFile(root[e])) {
                     if (compareFiles(href, root[e])) {
+                        root[e] = undefined;
                         delete root[e];
                     }
                 } else {
@@ -256,6 +257,7 @@ define([
             } else if (path[0] === UNSORTED) {
                 parentEl.splice(key, 1);
             } else {
+                parentEl[key] = undefined;
                 delete parentEl[key];
             }
             checkDeletedFiles();
@@ -387,7 +389,6 @@ define([
                 log("A file with the same name already exist at the new location. Rename the file and try again.");
                 return;
             }
-
             newParent[newName] = element;
             if (!keepOld) { deleteFromObject(elementPath); }
             if(cb) { cb(); }
@@ -454,8 +455,9 @@ define([
             if (index > -1) {
                 array.splice(index, 1);
             }
-            // Remove the array is empty to have a cleaner object in chainpad
+            // Remove the array if empty to have a cleaner object in chainpad
             if (array.length === 0) {
+                files[TRASH][name] = undefined;
                 delete files[TRASH][name];
             }
         };
@@ -512,6 +514,7 @@ define([
                     logError("Unable to locate the element to remove from trash: ", path);
                     return;
                 }
+                parentEl[name] = undefined;
                 delete parentEl[name];
             }
             checkDeletedFiles();
@@ -543,6 +546,7 @@ define([
                 return;
             }
             parentEl[newName] = element;
+            parentEl[oldName] = undefined;
             delete parentEl[oldName];
             cb();
         };
@@ -612,6 +616,7 @@ define([
                 for (var el in element) {
                     if (!isFile(element[el]) && !isFolder(element[el])) {
                         debug("An element in ROOT was not a folder nor a file. ", element[el]);
+                        element[el] = undefined;
                         delete element[el];
                     } else if (isFolder(element[el])) {
                         fixRoot(element[el]);
@@ -630,6 +635,7 @@ define([
                 for (var el in tr) {
                     if (!$.isArray(tr[el])) {
                         debug("An element in TRASH root is not an array. ", tr[el]);
+                        tr[el] = undefined;
                         delete tr[el];
                     } else {
                         toClean = [];
