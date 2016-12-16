@@ -129,8 +129,7 @@ define([
 
             // hide all content until the realtime doc is ready
             $(inner).css({
-                color: 'white',
-                'background-color': 'white',
+                color: '#fff',
             });
             documentBody.innerHTML = Messages.initialState;
 
@@ -139,8 +138,7 @@ define([
             var setEditable = module.setEditable = function (bool) {
                 if (bool) {
                     $(inner).css({
-                        color: 'unset',
-                        'background-color': 'unset',
+                        color: '#333',
                     });
                     $(module.spinner.get().el).fadeOut(750);
                 } else {
