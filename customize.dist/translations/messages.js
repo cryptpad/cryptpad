@@ -110,10 +110,6 @@ define(function () {
 
     out.okButton = 'OK (enter)';
     out.cancelButton = 'Cancel (esc)';
-
-    out.loginText = '<p>Your username and password are used to generate a unique key which is never known by our server.</p>\n' +
-                    '<p>Be careful not to forget your credentials, as they are impossible to recover</p>';
-
     out.forget = "Forget";
 
     // Polls
@@ -210,6 +206,22 @@ define(function () {
     out.fo_existingNameError = "Name already used in that directory. Please choose another one.";
     out.fo_moveFolderToChildError = "You can't move a folder into one of its descendants";
     out.fo_unableToRestore = "Unable to restore that file to its original location. You can try to move it to a new location.";
+
+    // login
+    out.login_username = "your username";
+    out.login_password = "your password";
+    out.login_remember = "remember me";
+
+    out.login_warning = [
+        '<h1 id="warning">WARNING</h1>',
+        '<p>Cryptpad stores your personal information in an encrypted realtime document, as it does with all other types of realtime documents.</p>',
+        '<p>Your username and password are never sent to the server in an unencrypted form.</p>',
+        '<p>As such, if you forget your username or password, there is absolutely nothing that we can do to recover your lost information.</p>',
+        '<p><strong>Make sure you do not forget your username and password</strong></p>',
+    ].join('\n');
+
+    out.loginText = '<p>Your username and password are used to generate a unique key which is never known by our server.</p>\n' +
+                    '<p>Be careful not to forget your credentials, as they are impossible to recover</p>';
 
     // index.html
 
