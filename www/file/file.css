@@ -13,6 +13,14 @@ html, body {
 
 body {
     display: flex;
+    flex-flow: column;
+}
+
+.app-container {
+    flex: 1;
+    overflow: auto;
+    width: 100%;
+    display: flex;
     flex-flow: row;
 }
 

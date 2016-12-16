@@ -105,7 +105,7 @@ define([
     });
 
     // var isArray = function (o) { return Object.prototype.toString.call(o) === '[object Array]'; };
-    var isArray = $.isArray;
+    var isArray = common.isArray = $.isArray;
 
     var fixHTML = common.fixHTML = function (html) {
         return html.replace(/</g, '&lt;');
@@ -886,22 +886,9 @@ define([
     /*
      *  Alertifyjs
      */
-    var styleAlerts = common.styleAlerts = function (href) {
-        var $link = $('link[href="/customize/alertify.css"]');
-        if ($link.length) {
-            return;
-            /*$link.attr('href', '');
-            $link.attr('href', '/customize/alertify.css');
-            return;*/
-        }
 
-        href = href || '/customize/alertify.css';
-        $('head').append($('<link>', {
-            rel: 'stylesheet',
-            id: 'alertifyCSS',
-            href: href,
-        }));
-    };
+    // TODO: remove styleAlerts in all the apps
+    var styleAlerts = common.styleAlerts = function () {};
 
     var findCancelButton = common.findCancelButton = function () {
         return $('button.cancel');
@@ -933,7 +920,6 @@ define([
     };
 
     common.alert = function (msg, cb) {
-        common.styleAlerts();
         cb = cb || function () {};
         var keyHandler = listenForKeys(function (e) { // yes
             findOKButton().click();
@@ -945,7 +931,6 @@ define([
     };
 
     common.prompt = function (msg, def, cb, opt) {
-        common.styleAlerts();
         opt = opt || {};
         cb = cb || function () {};
 
@@ -969,7 +954,6 @@ define([
     };
 
     common.confirm = function (msg, cb, opt) {
-        common.styleAlerts();
         opt = opt || {};
         cb = cb || function () {};
         var keyHandler = listenForKeys(function (e) {

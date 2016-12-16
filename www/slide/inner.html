@@ -118,19 +118,6 @@
       .CodeMirror {
         height: 100%;
       }
-      .cryptpad-toolbar {
-        padding: 0px 6px;
-      }
-      #cme_toolbox div.cryptpad-lag {
-        line-height: 24px;
-      }
-      #cme_toolbox {
-        font: 12px Arial,Helvetica,Tahoma,Verdana,sans-serif;
-        background: -webkit-linear-gradient(#EEEEEE, #DADADA); /* For Safari 5.1 to 6.0 */
-        background: -o-linear-gradient(white, #DDDDDD); /* For Opera 11.1 to 12.0 */
-        background: -moz-linear-gradient(white, #DDDDDD); /* For Firefox 3.6 to 15 */
-        background: linear-gradient(white, #DDDDDD); /* Standard syntax */
-      }
       .CodeMirror-focused .cm-matchhighlight {
         background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQI12NgYGBgkKzc8x9CMDAwAAAmhwSbidEoSQAAAABJRU5ErkJggg==);
         background-position: bottom;
@@ -144,7 +131,7 @@
 <body>
     <div id="bar"></div>
 <!--    <textarea></textarea>-->
-    <div id="cme_toolbox"></div>
+    <div id="cme_toolbox" class="toolbar-container"></div>
     <textarea id="editor1" name="editor1"></textarea>
     <div id="modal">
         <div id="content"></div>

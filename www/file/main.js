@@ -8,14 +8,19 @@ define([
     'json.sortify',
     '/common/cryptpad-common.js',
     '/file/fileObject.js',
+    '/common/toolbar.js',
     '/customize/pad.js'
-], function (Config, Listmap, Crypto, TextPatcher, Messages, JSONSortify, Cryptpad, FO) {
+], function (Config, Listmap, Crypto, TextPatcher, Messages, JSONSortify, Cryptpad, FO, Toolbar) {
     var module = window.MODULE = {};
 
     var $ = window.jQuery;
     var saveAs = window.saveAs;
     var $iframe = $('#pad-iframe').contents();
     var ifrw = $('#pad-iframe')[0].contentWindow;
+
+    var APP = window.APP = {
+        $bar: $iframe.find('#toolbar')
+    };
 
     var ROOT = "root";
     var ROOT_NAME = Messages.fm_rootName;
@@ -42,7 +47,7 @@ define([
         console.error.apply(console, arguments);
     };
     var log = config.log = Cryptpad.log;
-    var DEBUG_LS = module.DEBUG_LS = {
+    var DEBUG_LS = APP.DEBUG_LS = {
         resetLocalStorage : function () {
             delete localStorage[LOCALSTORAGE_OPENED];
             delete localStorage[LOCALSTORAGE_LAST];
@@ -132,6 +137,40 @@ define([
 
         var error = filesOp.error;
 
+        // TOOLBAR
+
+        var getLastName = function (cb) {
+            cb(null, files['cryptpad.username'] || '');
+        };
+
+        var setName = APP.setName = function (newName) {
+            if (typeof(newName) !== 'string') { return; }
+            var myUserNameTemp = Cryptpad.fixHTML(newName.trim());
+            if(myUserNameTemp.length > 32) {
+                myUserNameTemp = myUserNameTemp.substr(0, 32);
+            }
+            var myUserName = myUserNameTemp;
+            files['cryptpad.username'] = myUserName;
+            APP.userName.lastName = myUserName;
+            var $button = APP.$userNameButton;
+            var $span = $('<div>').append($button.find('span').clone()).html();
+            $button.html($span + myUserName);
+        };
+
+        var $userBlock = APP.$bar.find('.' + Toolbar.constants.username);
+
+        // Store the object sent for the "change username" button so that we can update the field value correctly
+        var userNameButtonObject = APP.userName = {};
+        /* add a "change username" button */
+        getLastName(function (err, lastName) {
+            userNameButtonObject.lastName = lastName;
+            var $username = APP.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName).hide();
+            $userBlock.append($username);
+            $username.append(lastName);
+            $username.show();
+        });
+
+        // FILE MANAGER
         var currentPath = module.currentPath = getLastOpenedFolder();
         var lastSelectTime;
         var selectedElement;
@@ -578,7 +617,6 @@ define([
             else if (name === UNSORTED && path.length === 1) { name = UNSORTED_NAME; }
             else if (name === FILES_DATA && path.length === 1) { name = FILES_DATA_NAME; }
             else if (filesOp.isPathInTrash(path)) { name = getTrashTitle(path); }
-            document.title = name;
             var $title = $('<h1>').text(name);
             if (path.length > 1) {
                 var $parentFolder = $upIcon.clone().addClass("parentFolder")
@@ -1349,15 +1387,12 @@ define([
         refresh();
     };
 
-    /*
-    initLSOpened();
-    init(filesObject);
-    */
-
 
 
     // don't initialize until the store is ready.
     Cryptpad.ready(function () {
+        Cryptpad.styleAlerts();
+
         if (window.location.hash && window.location.hash === "#iframe") {
             $('.top-bar').hide();
             $('#pad-iframe').css({
@@ -1395,6 +1430,23 @@ define([
                 realtime: realtime,
                 logging: true,
             });
+
+            var readOnly = false;
+            userList = APP.userList = info.userList;
+            var config = {
+                readOnly: readOnly,
+                ifrw: window,
+                common: Cryptpad,
+                hideShare: true
+            };
+            var toolbar = info.realtime.toolbar = Toolbar.create(APP.$bar, info.myID, info.realtime, info.getLag, userList, config);
+
+            var $bar = APP.$bar;
+            var $rightside = $bar.find('.' + Toolbar.constants.rightside);
+            var $userBlock = $bar.find('.' + Toolbar.constants.username);
+            var $editShare = $bar.find('.' + Toolbar.constants.editShare);
+            var $viewShare = $bar.find('.' + Toolbar.constants.viewShare);
+
         }).on('ready', function () {
             module.files = rt.proxy;
             if (JSON.stringify(rt.proxy) === '{}') {

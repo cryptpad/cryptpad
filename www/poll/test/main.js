@@ -12,7 +12,7 @@ define([
     '/common/notify.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
-    //'/customize/pad.js'
+    '/customize/pad.js'
 ], function (Config, Messages, TextPatcher, Listmap, Crypto, Cryptpad, Hyperjson, Render, Toolbar) {
     var $ = window.jQuery;
 
@@ -26,7 +26,7 @@ define([
         Toolbar: Toolbar,
         Hyperjson: Hyperjson,
         Render: Render,
-        $bar: $('#toolbar').css({ border: '1px solid white', background: 'grey', 'margin-bottom': '1vh', }),
+        $bar: $('#toolbar'),
         editable: {
             row: [],
             col: []

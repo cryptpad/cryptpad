@@ -56,7 +56,6 @@ define([
 
     var styleToolbar = function ($container, href) {
         href = href || '/customize/toolbar.css';
-
         $.ajax({
             url: href,
             dataType: 'text',
@@ -163,11 +162,10 @@ define([
     };
 
     var createUserList = function ($container, readOnly) {
-        var $state = $('<span>', {'class': STATE_CLS}).text(Messages.synchronizing);
         var $userlist = $('<div>', {
             'class': USER_LIST_CLS,
             id: uid(),
-        }).append($state);
+        });
         createUserButtons($userlist, readOnly);
         $container.append($userlist);
         return $userlist[0];
@@ -199,14 +197,17 @@ define([
         if (n === 1) { return '; + ' + Messages.oneViewer; }
         return '; + ' + Messages._getKey('viewers', [n]);
     };
-    var updateUserList = function (myUserName, userlistElement, userList, userData, readOnly, $stateElement, $userAdminElement) {
+
+    var checkSynchronizing = function (userList, myUserName, $stateElement) {
         var meIdx = userList.indexOf(myUserName);
         if (meIdx === -1) {
-            console.log('nok');
             $stateElement.text(Messages.synchronizing);
             return;
         }
         $stateElement.text('');
+    };
+
+    var updateUserList = function (myUserName, userlistElement, userList, userData, readOnly, $userAdminElement) {
         // Make sure the elements are displayed
         var $userButtons = $(userlistElement).find("#userButtons");
         $userButtons.attr('display', 'inline');
@@ -283,11 +284,11 @@ define([
     };
 
     var createLagElement = function ($container) {
-        var $lag = $('<div>', {
+        var $lag = $('<span>', {
             'class': LAG_ELEM_CLS,
             id: uid(),
         });
-        $container.before($lag);
+        $container.prepend($lag);
         return $lag[0];
     };
 
@@ -332,8 +333,7 @@ define([
         }).appendTo($topContainer);
         var $imgTag = $('<img>', {
             src: "/customize/cryptofist_mini.png",
-            alt: "Cryptpad",
-            'class': "cryptofist"
+            alt: "Cryptpad"
         });
 
         // We need to override the "a" tag action here because it is inside the iframe!
@@ -360,6 +360,10 @@ define([
         var $userContainer = $('<span>', {
             'class': USER_CLS
         }).appendTo($topContainer);
+
+        var $state = $('<span>', {
+            'class': STATE_CLS
+        }).text(Messages.synchronizing).appendTo($userContainer);
 
         var $span = $('<span>' , {
             'class': 'cryptpad-language'
@@ -388,21 +392,24 @@ define([
     };
 
     var createTitle = function ($container, readOnly, config, Cryptpad) {
-        config = config || {};
+        var $titleContainer = $('<span>', {
+            id: 'toolbarTitle',
+            'class': TITLE_CLS
+        }).appendTo($container);
+
+        if (!config || typeof config !== "object") { return; }
+
         var callback = config.onRename;
         var placeholder = config.defaultName;
         var suggestName = config.suggestName;
 
         // Buttons
-        var $titleContainer = $('<span>', {
-            id: 'toolbarTitle',
-            'class': TITLE_CLS
-        }).appendTo($container);
         var $text = $('<span>', {
             'class': 'title'
         }).appendTo($titleContainer);
         var $pencilIcon = $('<span>', {
-            'class': 'pencilIcon'
+            'class': 'pencilIcon',
+            'title': Messages.clickToEdit
         });
         if (readOnly === 1 || typeof(Cryptpad) === "undefined") { return $titleContainer; }
         var $input = $('<input>', {
@@ -439,19 +446,19 @@ define([
                     callback(null, newtitle);
                     $input.hide();
                     $text.show();
-                    $pencilIcon.css('display', '');
+                    //$pencilIcon.css('display', '');
                 });
             }
             else if (e.which === 27) {
                 $input.hide();
                 $text.show();
-                $pencilIcon.css('display', '');
+                //$pencilIcon.css('display', '');
             }
         });
 
         var displayInput = function () {
             $text.hide();
-            $pencilIcon.css('display', 'none');
+            //$pencilIcon.css('display', 'none');
             var inputVal = suggestName() || "";
             $input.val(inputVal);
             $input.show();
@@ -468,17 +475,17 @@ define([
         var Cryptpad = config.common;
 
         var toolbar = createRealtimeToolbar($container);
-        var userListElement = createUserList(toolbar.find('.' + LEFTSIDE_CLS), readOnly);
-        var spinner = createSpinner(toolbar.find('.' + RIGHTSIDE_CLS));
-        var lagElement = createLagElement($(userListElement));
+        var userListElement = config.userData ? createUserList(toolbar.find('.' + LEFTSIDE_CLS), readOnly) : undefined;
         var $titleElement = createTitle(toolbar.find('.' + TOP_CLS), readOnly, config.title, Cryptpad);
         var $linkElement = createLinkToMain(toolbar.find('.' + TOP_CLS));
         var $userAdminElement = createUserAdmin(toolbar.find('.' + TOP_CLS));
+        var lagElement = createLagElement($userAdminElement);
+        var spinner = createSpinner($userAdminElement);
         var userData = config.userData;
         // readOnly = 1 (readOnly enabled), 0 (disabled), -1 (old pad without readOnly mode)
         var saveElement;
         var loadElement;
-        var $stateElement = $(userListElement).find('.' + STATE_CLS);
+        var $stateElement = $userAdminElement.find('.' + STATE_CLS);
 
         var connected = false;
 
@@ -490,7 +497,7 @@ define([
                 $container.find('.cryptpad-dropdown').hide();
             };
             var cancelEditTitle = function (e) {
-                if ($(e.target).parents('.' + TITLE_CLS).length) {
+                if ($(e.target).parents('.' + TITLE_CLS).length || !$titleElement) {
                     return;
                 }
                 $titleElement.find('input').hide();
@@ -508,15 +515,25 @@ define([
         }
 
         // Update user list
-        userList.change.push(function (newUserData) {
-            var users = userList.users;
-            if (users.indexOf(myUserName) !== -1) { connected = true; }
-            if (!connected) { return; }
-            /*if (newUserData) { // Someone has changed his name/color
-                userData = newUserData;
-            }*/
-            updateUserList(myUserName, userListElement, users, userData, readOnly, $stateElement, $userAdminElement);
-        });
+        if (config.userData) {
+            userList.change.push(function (newUserData) {
+                var users = userList.users;
+                if (users.indexOf(myUserName) !== -1) { connected = true; }
+                if (!connected) { return; }
+                /*if (newUserData) { // Someone has changed his name/color
+                    userData = newUserData;
+                }*/
+                checkSynchronizing(users, myUserName, $stateElement);
+                updateUserList(myUserName, userListElement, users, userData, readOnly, $userAdminElement);
+            });
+        } else {
+            userList.change.push(function () {
+                var users = userList.users;
+                if (users.indexOf(myUserName) !== -1) { connected = true; }
+                if (!connected) { return; }
+                checkSynchronizing(users, myUserName, $stateElement);
+            });
+        }
         // Display notifications when users are joining/leaving the session
         var oldUserData;
         if (typeof Cryptpad !== "undefined") {
