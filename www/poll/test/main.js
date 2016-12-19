@@ -660,7 +660,7 @@ define([
         });
     };
 
-    var disconnect = function () {
+    var disconnect = function (info) {
         //setEditable(false); // TODO
         if (info.error) {
             Cryptpad.alert(Messages.websocketError);

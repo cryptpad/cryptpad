@@ -25,9 +25,9 @@
             <strong>OUPS</strong> Afin de pouvoir réaliser le cryptage depuis votre navigateur, Javascript est <strong>vraiment</strong> requis.
           </p>
         </noscript>
-        <h5 id="tryit" data-localization="tryIt"></h5>
+        <h5 id="tryit" data-localization="tryIt"></h5> (<a href="/file" target="_blank" data-localization="main_openFileManager">Open in a new tab</a>)
 
-        <table class="recent scroll" style="display:none">
+        <!--<table class="recent scroll" style="display:none">
             <tbody>
 
             <tr>
@@ -39,7 +39,8 @@
             </tr>
 
             </tbody>
-        </table>
+        </table>-->
+        <iframe src="/file/#iframe" id="fileManagerIframe" style="display: none;"></iframe>
 
         <div id="buttons" class="buttons">
           <a id="create-pad" class="button create" href="/pad/" data-localization="button_newpad"></a>

@@ -40,7 +40,7 @@
     <div id="main">
       <center>
           <img class="imgcenter cryptofist" src="/customize/cryptofist_small.png" />
-          <h1 data-localization="main_slogan">Unity is Strength - Collaboration is Key</h1>
+          <h1>Unity is Strength - Collaboration is Key</h1>
 
       </center>
       <p data-localization="main_p1"><!-- Zero Knowledge collaborative realtime editor. Protected from the NSA. --></p>
@@ -65,9 +65,9 @@
             <strong>OUPS</strong> Afin de pouvoir réaliser le cryptage depuis votre navigateur, Javascript est <strong>vraiment</strong> requis.
           </p>
         </noscript>
-        <h5 id="tryit" data-localization="tryIt"></h5>
+        <h5 id="tryit" data-localization="tryIt"></h5> (<a href="/file" target="_blank" data-localization="main_openFileManager">Open in a new tab</a>)
 
-<!--        <table class="recent scroll" style="display:none">
+        <!--<table class="recent scroll" style="display:none">
             <tbody>
 
             <tr>
@@ -79,9 +79,8 @@
             </tr>
 
             </tbody>
-        </table>
--->
-        <iframe src="/file#iframe" style="width: 100%; height: 500px;"></iframe>
+        </table>-->
+        <iframe src="/file/#iframe" id="fileManagerIframe" style="display: none;"></iframe>
 
         <div id="buttons" class="buttons">
           <a id="create-pad" class="button create" href="/pad/" data-localization="button_newpad"></a>

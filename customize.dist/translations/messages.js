@@ -107,6 +107,7 @@ define(function () {
 
     out.tryIt = 'Try it out!';
     out.recentPads = 'Your recent pads (stored only in your browser)';
+    out.recentPadsIframe = 'Your recent pads';
 
     out.okButton = 'OK (enter)';
     out.cancelButton = 'Cancel (esc)';
@@ -219,8 +220,8 @@ define(function () {
     out.main_howitworks_p1 = 'CryptPad uses a variant of the <a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> algorithm which is able to find distributed consensus using a <a href="https://bitcoin.org/bitcoin.pdf">Nakamoto Blockchain</a>, a construct popularized by <a href="https://en.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. This way the algorithm can avoid the need for a central server to resolve Operational Transform Edit Conflicts and without the need for resolving conflicts, the server can be kept unaware of the content which is being edited on the pad.';
     out.main_about = 'About';
     out.main_about_p1 = 'You can read more about our <a href="/privacy.html" title="">privacy policy</a> and <a href="/terms.html">terms of service</a>.';
-
     out.main_about_p2 = 'If you have any questions or comments, you can <a href="https://twitter.com/cryptpad">tweet us</a>, open an issue <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">on github</a>, come say hi on irc (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), or <a href="mailto:research@xwiki.com">send us an email</a>.';
+    out.main_openFileManager = 'Open in a new tab';
 
     out.table_type = 'Type';
     out.table_link = 'Link';
