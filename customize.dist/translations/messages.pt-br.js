@@ -212,9 +212,9 @@ define(function () {
     // terms.html
 
     out.tos_title = "Termos de serviço doCryptpad";
-    out.tos_legal = "Por favor, reserve-se de praticar atos ilegais por meio desta plataforma, agir de forma maliciosa ou de forma abusiva.";
-    out.tos_availability = "Nós esperamos que você ache este serviço útil, porém nśo não podemos garantir disponibilidade constante ou alta performance. Por favor, mantenha um backup dos seus dados por garantia.";
-    out.tos_e2ee = "Documentos do Cryptpad podem ser modificados por qualquer um que conseguir adivinhar ou obter de qualquer outra forma o seu identificador único. Nós recomendamos que você utilize criptografia ponto a ponto de mensagens (e2ee) sempre que possível para compartilhar suas URL's. Nós não assumimos qualquer responsabilidade sobre chaves/URL vazadas e o conteúdo das mesmas.";
+    out.tos_legal = "Pedimos encarecidamente que, como usuário desta plataforma, você evite a prática de quaisquer atos ilegais e que evite a utilização maliciosa e/ou abusiva desta plataforma.";
+    out.tos_availability = "Nós esperamos que você ache este serviço útil, porém não não podemos garantir a disponibilidade constante ou a alta performance do mesmo. Por favor, mantenha um backup dos seus dados como forma de segurança adicional.";
+    out.tos_e2ee = "Os documentos do CryptPad podem ser modificados por qualquer um que conseguir adivinhar ou obter de qualquer forma o seu identificador único. Nós recomendamos que você utilize criptografia ponto a ponto de mensagens (e2ee) sempre que possível para compartilhar suas URL's. Nós não assumimos qualquer responsabilidade sobre chaves e/ou URL’s e seus respectivos conteúdos vazadas para o público.";
     out.tos_logs = "Os Metadados providos pelo seu navegador para nosso servidor podem ser armazenados com o propósito de manter o serviço em funcionamento";
     out.tos_3rdparties = "Nós não disponibilizamos dados individuais para terceiros, salvo quando requisitado legalmente.";
 
