@@ -240,9 +240,28 @@ define([
     };
 
     var uint8ArrayToHex = common.uint8ArrayToHex = function (a) {
-        return a.map(function (e) {
-            return Number(e & 0xff).toString(16);
+        // call slice so Uint8Arrays work as expected
+        return Array.prototype.slice.call(a).map(function (e, i) {
+            var n = Number(e & 0xff).toString(16);
+            if (n === 'NaN') {
+                throw new Error('invalid input resulted in NaN');
+            }
+
+            switch (n.length) {
+                case 0: return '00'; // just being careful, shouldn't happen
+                case 1: return '0' + n;
+                case 2: return n;
+                default: throw new Error('unexpected value');
+            }
         }).join('');
+    };
+
+    var createChannelId = common.createChannelId = function () {
+        var id = uint8ArrayToHex(Crypto.Nacl.randomBytes(16));
+        if (id.length !== 32 || /[^a-f0-9]/.test(id)) {
+            throw new Error('channel ids must consist of 32 hex characters');
+        }
+        return id;
     };
 
     var replaceHash = common.replaceHash = function (hash) {
