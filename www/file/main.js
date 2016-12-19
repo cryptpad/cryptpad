@@ -8,10 +8,9 @@ define([
     'json.sortify',
     '/common/cryptpad-common.js',
     '/file/fileObject.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-    '/bower_components/bootstrap/dist/js/bootstrap.min.js',
+    '/common/toolbar.js',
     '/customize/pad.js'
-], function (Config, Listmap, Crypto, TextPatcher, Messages, JSONSortify, Cryptpad, FO) {
+], function (Config, Listmap, Crypto, TextPatcher, Messages, JSONSortify, Cryptpad, FO, Toolbar) {
     var module = window.MODULE = {};
 
     var $ = window.jQuery;
@@ -19,8 +18,10 @@ define([
     var $iframe = $('#pad-iframe').contents();
     var ifrw = $('#pad-iframe')[0].contentWindow;
 
-    var hash = window.location.hash.slice(1) || localStorage.FS_hash;
-    var secret = Cryptpad.getSecrets(hash);
+    var APP = window.APP = {
+        $bar: $iframe.find('#toolbar'),
+        editable: false
+    };
 
     var ROOT = "root";
     var ROOT_NAME = Messages.fm_rootName;
@@ -47,7 +48,7 @@ define([
         console.error.apply(console, arguments);
     };
     var log = config.log = Cryptpad.log;
-    var DEBUG_LS = module.DEBUG_LS = {
+    var DEBUG_LS = APP.DEBUG_LS = {
         resetLocalStorage : function () {
             delete localStorage[LOCALSTORAGE_OPENED];
             delete localStorage[LOCALSTORAGE_LAST];
@@ -117,6 +118,12 @@ define([
         return new Date().getTime();
     };
 
+    var setEditable = function (state) {
+        APP.editable = state;
+        if (state) { $iframe.find('[draggable="true"]').attr('draggable', false); }
+        else { $iframe.find('[draggable="false"]').attr('draggable', true); }
+    };
+
     var keyPressed = [];
     var pressKey = function (key, state) {
         if (state) {
@@ -137,6 +144,40 @@ define([
 
         var error = filesOp.error;
 
+        // TOOLBAR
+
+        var getLastName = function (cb) {
+            cb(null, files['cryptpad.username'] || '');
+        };
+
+        var setName = APP.setName = function (newName) {
+            if (typeof(newName) !== 'string') { return; }
+            var myUserNameTemp = Cryptpad.fixHTML(newName.trim());
+            if(myUserNameTemp.length > 32) {
+                myUserNameTemp = myUserNameTemp.substr(0, 32);
+            }
+            var myUserName = myUserNameTemp;
+            files['cryptpad.username'] = myUserName;
+            APP.userName.lastName = myUserName;
+            var $button = APP.$userNameButton;
+            var $span = $('<div>').append($button.find('span').clone()).html();
+            $button.html($span + myUserName);
+        };
+
+        var $userBlock = APP.$bar.find('.' + Toolbar.constants.username);
+
+        // Store the object sent for the "change username" button so that we can update the field value correctly
+        var userNameButtonObject = APP.userName = {};
+        /* add a "change username" button */
+        getLastName(function (err, lastName) {
+            userNameButtonObject.lastName = lastName;
+            var $username = APP.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName).hide();
+            $userBlock.append($username);
+            $username.append(lastName);
+            $username.show();
+        });
+
+        // FILE MANAGER
         var currentPath = module.currentPath = getLastOpenedFolder();
         var lastSelectTime;
         var selectedElement;
@@ -166,13 +207,15 @@ define([
         var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up"});
         var $sortDescIcon = $('<span>', {"class": "fa fa-angle-down"});
 
-
+        if (!APP.readOnly) {
+            setEditable(true);
+        }
 
         var appStatus = {
             isReady: true,
             _onReady: [],
             onReady: function (handler) {
-                if (isReady) {
+                if (appStatus.isReady) {
                     handler();
                     return;
                 }
@@ -189,8 +232,9 @@ define([
             }
         };
 
-        var isReady = false;
-
+        var ownFileManager = function () {
+            return localStorage.FS_hash === APP.hash;
+        };
 
         var removeSelected =  function () {
             $iframe.find('.selected').removeClass("selected");
@@ -234,6 +278,7 @@ define([
 
         // Replace a file/folder name by an input to change its value
         var displayRenameInput = function ($element, path) {
+            if (!APP.editable) { debug("Read-only mode"); return; }
             if (!path || path.length < 2) {
                 logError("Renaming a top level element (root, trash or filesData) is forbidden.");
                 return;
@@ -303,14 +348,29 @@ define([
         // Open the selected context menu on the closest "li" element
         var openContextMenu = function (e, $menu) {
             module.hideMenu();
-            e.stopPropagation();
+
             var path = $(e.target).closest('li').data('path');
             if (!path) { return; }
+
+            if (!APP.editable) {
+                $menu.find('a.editable').parent('li').hide();
+            }
+            if (!ownFileManager()) {
+                $menu.find('a.own').parent('li').hide();
+            }
+
             $menu.css({
                 display: "block",
                 left: e.pageX,
                 top: e.pageY
             });
+
+            if ($menu.find('li:visible').length === 0) {
+                debug("No visible element in the context menu. Abort.");
+                $menu.hide();
+                return true;
+            }
+
             // $element should be the <span class="element">, find it if it's not the case
             var $element = $(e.target).closest('li').children('span.element');
             onElementClick($element);
@@ -359,11 +419,26 @@ define([
             if (!path) { return; }
             var $menu = $contentContextMenu;
             removeSelected();
+
+            if (!APP.editable) {
+                $menu.find('a.editable').parent('li').hide();
+            }
+            if (!ownFileManager()) {
+                $menu.find('a.own').parent('li').hide();
+            }
+
             $menu.css({
                 display: "block",
                 left: e.pageX,
                 top: e.pageY
             });
+
+            if ($menu.find('li:visible').length === 0) {
+                debug("No visible element in the context menu. Abort.");
+                $menu.hide();
+                return true;
+            }
+
             $menu.find('a').data('path', path);
             return false;
         };
@@ -371,6 +446,7 @@ define([
         // filesOp.moveElements is able to move several paths to a new location, including
         // the Trash or the "Unsorted files" folder
         var moveElements = function (paths, newPath, force, cb) {
+            if (!APP.editable) { debug("Read-only mode"); return; }
             var andThen = function () {
                 filesOp.moveElements(paths, newPath, cb);
             };
@@ -423,6 +499,7 @@ define([
         };
 
         var addDragAndDropHandlers = function ($element, path, isFolder, droppable) {
+            if (!APP.editable) { debug("Read-only mode"); return; }
             // "dragenter" is fired for an element and all its children
             // "dragleave" may be fired when entering a child
             // --> we use pointer-events: none in CSS, but we still need a counter to avoid some issues
@@ -586,7 +663,6 @@ define([
             else if (name === UNSORTED && path.length === 1) { name = UNSORTED_NAME; }
             else if (name === FILES_DATA && path.length === 1) { name = FILES_DATA_NAME; }
             else if (filesOp.isPathInTrash(path)) { name = getTrashTitle(path); }
-            document.title = name;
             var $title = $('<h1>').text(name);
             if (path.length > 1) {
                 var $parentFolder = $upIcon.clone().addClass("parentFolder")
@@ -855,9 +931,7 @@ define([
                 var $icon = $fileIcon.clone();
                 var $name = $('<span>', { 'class': 'file-element element' });
                 addFileData(file.href, file.title, $name, false);
-                var $element = $('<li>', {
-                    draggable: false
-                }).append($icon).append($name).dblclick(function () {
+                var $element = $('<li>').append($icon).append($name).dblclick(function () {
                     openFile(file.href);
                 });
                 $element.click(function(e) {
@@ -1011,9 +1085,8 @@ define([
             if (collapsable) {
                 $collapse = $expandIcon.clone();
             }
-            var $element = $('<li>', {
-                draggable: draggable
-            }).append($collapse).append($icon).append($name);
+            var $element = $('<li>').append($collapse).append($icon).append($name);
+            if (draggable) { $element.attr('draggable', true); }
             if (collapsable) {
                 $element.addClass('collapsed');
                 $collapse.click(function() {
@@ -1322,25 +1395,33 @@ define([
             }
         });
 
-        files.on('change', [], function () {
+        var onRefresh = {
+            refresh: function() {
+                if (onRefresh.to) {
+                    window.clearTimeout(onRefresh.to);
+                }
+                onRefresh.to = window.setTimeout(refresh, 500);
+            }
+        };
+        files.on('change', [], function (o, n, p) {
             var path = arguments[2];
             if ((filesOp.isPathInUnsorted(currentPath) && filesOp.isPathInUnsorted(path)) ||
                     (path.length >= currentPath.length && filesOp.isSubpath(path, currentPath)) ||
                     (filesOp.isPathInTrash(currentPath) && filesOp.isPathInTrash(path))) {
-                // Reload after 50ms to make sure all the change events have been received
-                window.setTimeout(refresh, 200);
+                // Reload after a few ms to make sure all the change events have been received
+                onRefresh.refresh();
             } else if (path.length && path[0] === FILES_DATA) {
                 refreshFilesData();
             }
             module.resetTree();
             return false;
-        }).on('remove', [], function () {
+        }).on('remove', [], function (o, p) {
             var path = arguments[1];
             if ((filesOp.isPathInUnsorted(currentPath) && filesOp.isPathInUnsorted(path)) ||
                     (path.length >= currentPath.length && filesOp.isSubpath(path, currentPath)) ||
                     (filesOp.isPathInTrash(currentPath) && filesOp.isPathInTrash(path))) {
-                // Reload after 50ms to make sure all the change events have been received
-                window.setTimeout(refresh, 200);
+                // Reload after a few to make sure all the change events have been received
+                onRefresh.to = window.setTimeout(refresh, 500);
             }
             module.resetTree();
             return false;
@@ -1349,30 +1430,46 @@ define([
         refresh();
     };
 
-    /*
-    initLSOpened();
-    init(filesObject);
-    */
 
-
-
-    var listmapConfig = module.config = {
-        data: {},
-        websocketURL: Cryptpad.getWebsocketURL(),
-        channel: secret.channel,
-        readOnly: false,
-        validateKey: secret.keys.validateKey || undefined,
-        crypto: Crypto.createEncryptor(secret.keys),
-    };
 
     // don't initialize until the store is ready.
     Cryptpad.ready(function () {
+        Cryptpad.styleAlerts();
+
+        if (window.location.hash && window.location.hash === "#iframe") {
+            $('.top-bar').hide();
+            $('#pad-iframe').css({
+                top: "0px",
+                height: "100%"
+            });
+            $iframe.find('body').addClass('iframe');
+            window.location.hash = "";
+            homePageIframe = true;
+        }
+
+        var hash = window.location.hash.slice(1) || localStorage.FS_hash;
+        var secret = Cryptpad.getSecrets(hash);
+        var readOnly = APP.readOnly = secret.keys && !secret.keys.editKeyStr;
+
+        var listmapConfig = module.config = {
+            data: {},
+            websocketURL: Cryptpad.getWebsocketURL(),
+            channel: secret.channel,
+            readOnly: readOnly,
+            validateKey: secret.keys.validateKey || undefined,
+            crypto: Crypto.createEncryptor(secret.keys),
+            logging: false
+        };
+
         var rt = window.rt = module.rt = Listmap.create(listmapConfig);
         rt.proxy.on('create', function (info) {
             var realtime = module.realtime = info.realtime;
 
-            var editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
-            if (!window.location.hash) {
+            var editHash = !readOnly ? Cryptpad.getEditHashFromKeys(info.channel, secret.keys) : undefined;
+            var viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
+
+            APP.hash = readOnly ? viewHash : editHash;
+            if (!readOnly && (!window.location.hash || !localStorage.FS_hash)) {
                 localStorage.FS_hash = editHash;
             }
 
@@ -1380,6 +1477,22 @@ define([
                 realtime: realtime,
                 logging: true,
             });
+
+            userList = APP.userList = info.userList;
+            var config = {
+                readOnly: readOnly,
+                ifrw: window,
+                common: Cryptpad,
+                hideShare: true
+            };
+            var toolbar = info.realtime.toolbar = Toolbar.create(APP.$bar, info.myID, info.realtime, info.getLag, userList, config);
+
+            var $bar = APP.$bar;
+            var $rightside = $bar.find('.' + Toolbar.constants.rightside);
+            var $userBlock = $bar.find('.' + Toolbar.constants.username);
+            var $editShare = $bar.find('.' + Toolbar.constants.editShare);
+            var $viewShare = $bar.find('.' + Toolbar.constants.viewShare);
+
         }).on('ready', function () {
             module.files = rt.proxy;
             if (JSON.stringify(rt.proxy) === '{}') {
@@ -1394,8 +1507,9 @@ define([
             initLocalStorage();
             init(rt.proxy);
         })
-        .on('disconnect', function () {
-            //setEditable(false);
+        .on('disconnect', function (info) {
+            setEditable(false);
+            console.error('err');
             Cryptpad.alert(Messages.common_connectionLost);
         });
     });
