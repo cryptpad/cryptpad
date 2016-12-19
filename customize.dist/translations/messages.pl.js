@@ -36,9 +36,9 @@ define(function () {
     out.users = "Użytkownicy";
     out.and = "i";
     out.viewer = "czytający";
-    out.viewers = "osoby czytające";
+    out.viewers = "czytających";
     out.editor = "edytujący";
-    out.editors = "osoby edytujące";
+    out.editors = "edytujących";
 
     out.greenLight = "Wszystkie systemy działają poprawnie";
     out.orangeLight = "Słabe łącze może wpłynąć na działanie aplikacji";
@@ -117,18 +117,18 @@ define(function () {
 
     // Polls
 
-    out.poll_title = "Prosty koordynator planu dnia"; // Choice of "Koordynator" can be discussed
-    out.poll_subtitle = "Proste planowanie tygodnia, <em>w czasie rzeczywistym</em>";
+    out.poll_title = "Prosty koordynator spotkań"; // Choice of "Koordynator" can be discussed
+    out.poll_subtitle = "Proste planowanie spotkań, <em>w czasie rzeczywistym</em>";
 
-    out.poll_p_save = "Twoje ustawienia aktualizowane są na bierząco. Nie martw się o zapisywanie.";
+    out.poll_p_save = "Twoje ustawienia aktualizowane są na bieżąco. Nie martw się zapisywaniem.";
     out.poll_p_encryption = "Wszystko co robisz jest szyfrowane, więc tylko osoby z linkiem mają tu dostęp. Nawet serwer nie widzi co kombinujesz.";
     out.poll_p_howtouse = "Wpisz swoje imię w polu poniżej i zaznacz kiedy będziesz dostępny.";
 
-    out.promptName = "Jak się nazywasz ?";
+    out.promptName = "Jak się nazywasz?";
 
     out.wizardButton = 'KREATOR';
     out.wizardLog = "Naciśnij przycisk w lewym-górnym rogu by wrócić do planu";
-    out.wizardTitle = "Uzyj kreatora by stworzyć opcje do głosowanie";
+    out.wizardTitle = "Uzyj kreatora by stworzyć opcje do głosowania";
     out.wizardConfirm = "Jesteś pewny, że chcesz dodać te opcje do głosowania?";
 
     out.poll_closeWizardButton = "Zamknij kreator";
@@ -161,7 +161,7 @@ define(function () {
 
     // index.html
 
-    out.main_p1 = 'CryptPad to edytor czasu rzeczywistego stawiający na wspólpracę i <strong>prostotę użytkowania</strong>. Szyfrowanie w twojej przeglądarce, chroni twoje dane przed serwerem, chmurą i ABW. Tajny klucz jest przechowywany w adresie strony <a href="https://pl.wikipedia.org/wiki/Uniform_Resource_Identifier#Pe.C5.82ny_wz.C3.B3r_URI_hierarchicznych.5B2.5D">identyfikator fragmentu w URI</a> którego nigdy nie przekazujemy serwerowi, a dostępny jest dla javascript. Udostępniając URL(link), przekazujesz innym upoważnienie do uczestnictwa.';
+    out.main_p1 = 'CryptPad to edytor czasu rzeczywistego stawiający na współpracę i <strong>prostotę użytkowania</strong>. Szyfrowanie w twojej przeglądarce chroni twoje dane przed serwerem, chmurą i ABW. Tajny klucz szyfrujący jest przechowywany we <a href="https://pl.wikipedia.org/wiki/Uniform_Resource_Identifier#Pe.C5.82ny_wz.C3.B3r_URI_hierarchicznych.5B2.5D">fragmencie URI</a> adresu strony, który nigdy nie jest przekazany serwerowi, a dostępny jest dla javascript. Udostępniając URL (link), przekazujesz innym upoważnienie do uczestnictwa.';
     out.main_p2 = 'Ten projekt wykorzystuje wizualny edytor <a href="http://ckeditor.com/">CKEditor</a> , <a href="https://codemirror.net/">CodeMirror</a>, oraz silnik czasu rzeczywistego <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a>.';
     out.main_howitworks = 'Jak to działa';
     out.main_howitworks_p1 = 'CryptPad wykorzystuje wariant algorytmu <a href="https://en.wikipedia.org/wiki/Operational_transformation">Transformacji operacyjnej</a> który jest wstanie odnaleźć rozdzielony konsensus wprowadzanych danych. Używa do tego <a href="https://bitcoin.org/bitcoin.pdf">Łańcuch blokowy Nakamoto</a>, twór zpopularyzowany przez <a href="https://en.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. W ten sposób algorytm może pominąć potrzebę centralnego serwera do rozwiązywania Konfliktów Operacji Przekształcania poprzez Edycję. Bez potrzeby rozwiązywania konfliktów, serwer może pozostać w niewiedzy o zawartości która jest edytowana w dokumencie.';
@@ -204,9 +204,9 @@ define(function () {
     // terms.html
 
     out.tos_title = "Warunki korzystania z usług Cryptpad";
-    out.tos_legal = "Prosimy nie bądź złośliwy, obelżywy i nie wykorzystuj tego oprogramowania do cełow niezgodnych z prawem.";
-    out.tos_availability = "Mamy nadzieję iż uznasz tą usługę za przydatną, lecz dostępność i wydajność nie mogą być przez nas gwarantwane. Prosimy, eksportuj swoje dane regularnie.";
-    out.tos_e2ee = "Dokumenty Cryptpad mogą być odczytywane i modyfikowane przez każdego kto może zgadnąć lub w inny sposób uzyskać identyfikator dokumentu. Zalecamy abyś korzystał z oprogramowania do szyfrowania końcowego (e2ee) wiadomości sieciowych i nie będziesz rościł sobie żadnych wierzytelności w wypadku gdy taki URL dostanie się w niepowołane ręce.";
+    out.tos_legal = "Prosimy abyś nie był złośliwy, obelżywy i nie wykorzystywał tego oprogramowania do celow niezgodnych z prawem.";
+    out.tos_availability = "Mamy nadzieję iż uznasz tę usługę za przydatną, lecz dostępność i wydajność nie mogą być przez nas gwarantowane. Prosimy, abyś eksportował swoje dane regularnie.";
+    out.tos_e2ee = "Dokumenty Cryptpad mogą być odczytywane i modyfikowane przez każdego kto może zgadnąć lub w inny sposób uzyskać identyfikator dokumentu. Polecamy korzystania z oprogramowania szyfrującego end-to-end (e2ee) do udostępniania linków URL. Nie będziesz rościł sobie żadnych wierzytelności w wypadku gdy taki URL dostanie się w niepowołane ręce.";
     out.tos_logs = "Metadane dostarczane przez twoją przeglądarkę do serwera mogą być zapisywane i przechowywane w celu utrzymywania serwisu.";
     out.tos_3rdparties = "Nie dostarczamy indywidualizowanych danych do osób trzecich, poza sytuacjami dyktowanymi prawnie.";
 
