@@ -19,7 +19,8 @@ define([
     var ifrw = $('#pad-iframe')[0].contentWindow;
 
     var APP = window.APP = {
-        $bar: $iframe.find('#toolbar')
+        $bar: $iframe.find('#toolbar'),
+        editable: false
     };
 
     var ROOT = "root";
@@ -117,6 +118,12 @@ define([
         return new Date().getTime();
     };
 
+    var setEditable = function (state) {
+        APP.editable = state;
+        if (state) { $iframe.find('[draggable="true"]').attr('draggable', false); }
+        else { $iframe.find('[draggable="false"]').attr('draggable', true); }
+    };
+
     var keyPressed = [];
     var pressKey = function (key, state) {
         if (state) {
@@ -200,7 +207,9 @@ define([
         var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up"});
         var $sortDescIcon = $('<span>', {"class": "fa fa-angle-down"});
 
-
+        if (!APP.readOnly) {
+            setEditable(true);
+        }
 
         var appStatus = {
             isReady: true,
@@ -221,6 +230,10 @@ define([
                     _onReady = [];
                 }
             }
+        };
+
+        var ownFileManager = function () {
+            return localStorage.FS_hash === APP.hash;
         };
 
         var removeSelected =  function () {
@@ -265,6 +278,7 @@ define([
 
         // Replace a file/folder name by an input to change its value
         var displayRenameInput = function ($element, path) {
+            if (!APP.editable) { debug("Read-only mode"); return; }
             if (!path || path.length < 2) {
                 logError("Renaming a top level element (root, trash or filesData) is forbidden.");
                 return;
@@ -334,14 +348,29 @@ define([
         // Open the selected context menu on the closest "li" element
         var openContextMenu = function (e, $menu) {
             module.hideMenu();
-            e.stopPropagation();
+
             var path = $(e.target).closest('li').data('path');
             if (!path) { return; }
+
+            if (!APP.editable) {
+                $menu.find('a.editable').parent('li').hide();
+            }
+            if (!ownFileManager()) {
+                $menu.find('a.own').parent('li').hide();
+            }
+
             $menu.css({
                 display: "block",
                 left: e.pageX,
                 top: e.pageY
             });
+
+            if ($menu.find('li:visible').length === 0) {
+                debug("No visible element in the context menu. Abort.");
+                $menu.hide();
+                return true;
+            }
+
             // $element should be the <span class="element">, find it if it's not the case
             var $element = $(e.target).closest('li').children('span.element');
             onElementClick($element);
@@ -390,11 +419,26 @@ define([
             if (!path) { return; }
             var $menu = $contentContextMenu;
             removeSelected();
+
+            if (!APP.editable) {
+                $menu.find('a.editable').parent('li').hide();
+            }
+            if (!ownFileManager()) {
+                $menu.find('a.own').parent('li').hide();
+            }
+
             $menu.css({
                 display: "block",
                 left: e.pageX,
                 top: e.pageY
             });
+
+            if ($menu.find('li:visible').length === 0) {
+                debug("No visible element in the context menu. Abort.");
+                $menu.hide();
+                return true;
+            }
+
             $menu.find('a').data('path', path);
             return false;
         };
@@ -402,6 +446,7 @@ define([
         // filesOp.moveElements is able to move several paths to a new location, including
         // the Trash or the "Unsorted files" folder
         var moveElements = function (paths, newPath, force, cb) {
+            if (!APP.editable) { debug("Read-only mode"); return; }
             var andThen = function () {
                 filesOp.moveElements(paths, newPath, cb);
             };
@@ -454,6 +499,7 @@ define([
         };
 
         var addDragAndDropHandlers = function ($element, path, isFolder, droppable) {
+            if (!APP.editable) { debug("Read-only mode"); return; }
             // "dragenter" is fired for an element and all its children
             // "dragleave" may be fired when entering a child
             // --> we use pointer-events: none in CSS, but we still need a counter to avoid some issues
@@ -885,9 +931,7 @@ define([
                 var $icon = $fileIcon.clone();
                 var $name = $('<span>', { 'class': 'file-element element' });
                 addFileData(file.href, file.title, $name, false);
-                var $element = $('<li>', {
-                    draggable: false
-                }).append($icon).append($name).dblclick(function () {
+                var $element = $('<li>').append($icon).append($name).dblclick(function () {
                     openFile(file.href);
                 });
                 $element.click(function(e) {
@@ -1041,9 +1085,8 @@ define([
             if (collapsable) {
                 $collapse = $expandIcon.clone();
             }
-            var $element = $('<li>', {
-                draggable: draggable
-            }).append($collapse).append($icon).append($name);
+            var $element = $('<li>').append($collapse).append($icon).append($name);
+            if (draggable) { $element.attr('draggable', true); }
             if (collapsable) {
                 $element.addClass('collapsed');
                 $collapse.click(function() {
@@ -1406,12 +1449,13 @@ define([
 
         var hash = window.location.hash.slice(1) || localStorage.FS_hash;
         var secret = Cryptpad.getSecrets(hash);
+        var readOnly = APP.readOnly = secret.keys && !secret.keys.editKeyStr;
 
         var listmapConfig = module.config = {
             data: {},
             websocketURL: Cryptpad.getWebsocketURL(),
             channel: secret.channel,
-            readOnly: false,
+            readOnly: readOnly,
             validateKey: secret.keys.validateKey || undefined,
             crypto: Crypto.createEncryptor(secret.keys),
             logging: false
@@ -1421,8 +1465,11 @@ define([
         rt.proxy.on('create', function (info) {
             var realtime = module.realtime = info.realtime;
 
-            var editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
-            if (!window.location.hash || !localStorage.FS_hash) {
+            var editHash = !readOnly ? Cryptpad.getEditHashFromKeys(info.channel, secret.keys) : undefined;
+            var viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
+
+            APP.hash = readOnly ? viewHash : editHash;
+            if (!readOnly && (!window.location.hash || !localStorage.FS_hash)) {
                 localStorage.FS_hash = editHash;
             }
 
@@ -1431,7 +1478,6 @@ define([
                 logging: true,
             });
 
-            var readOnly = false;
             userList = APP.userList = info.userList;
             var config = {
                 readOnly: readOnly,
@@ -1462,7 +1508,7 @@ define([
             init(rt.proxy);
         })
         .on('disconnect', function (info) {
-            //setEditable(false);
+            setEditable(false);
             console.error('err');
             Cryptpad.alert(Messages.common_connectionLost);
         });
