@@ -14,7 +14,7 @@ define(function () {
     out._languageName = 'Brazilian Portuguese';
 
     out.main_title = "Cryptpad: Zero Knowledge, Edição Colaborativa em Tempo Real";
-    out.main_slogan = "União é Força - Colaboração é a Cave";
+    out.main_slogan = "União é Força - Colaboração é a Chave";
 
     out.type = {};
     out.type.pad = 'Notas';
@@ -112,7 +112,7 @@ define(function () {
 
     out.disconnectAlert = 'Conexão de rede perdida!';
 
-    out.tryIt = 'Tentar!';
+    out.tryIt = 'Experimente!';
     out.recentPads = 'Seu bloco de nota recente (armazenado em seu navegador)';
 
     out.okButton = 'OK (enter)';
@@ -169,24 +169,24 @@ define(function () {
 
     // index.html
 
-    out.main_p1 = 'CryptPad é um editor colaborativo baseado na metodologia <strong>zero knowledge</strong> . A encriptação do servidor impede qualquer tipo de acesso não autorizado seja de indivíduos ou da NSA.  A chave secreta de entriptação é armazenada no endereó <a href="https://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a> que em momento algum é enviada para o servidor, porém é disponibilizada para o javascript ao compartilhar o link com outros com quem você deseja compartilhar acesso.';
-    out.main_p2 = 'Este projeto utiliza o Editor visual <a href="http://ckeditor.com/">CKEditor</a>, <a href="https://codemirror.net/">CodeMirror</a>, e a engine de tempo real <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a>.';
+    out.main_p1 = 'CryptPad é um editor colaborativo baseado na metodologia <strong>zero knowledge</strong>. A encriptação do servidor impede qualquer tipo de acesso não autorizado seja de indivíduos ou da NSA.  A chave secreta de entriptação é armazenada no <a href="https://en.wikipedia.org/wiki/Fragment_identifier">fragmento identificador</a> do endereço, que em momento algum é enviado para o servidor, porém é disponibilizada para o javascript ao compartilhar o link com outros com quem você deseja compartilhar acesso.';
+    out.main_p2 = 'Este projeto utiliza os Editores visuais <a href="http://ckeditor.com/">CKEditor</a> e <a href="https://codemirror.net/">CodeMirror</a>, e a engine de tempo real <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a>.';
     out.main_howitworks = 'Como funciona';
-    out.main_howitworks_p1 = 'CryptPad usa uma variante do algorítmo de <a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a>, que é capaz de encontrar consenso distribuido usando o <a href="https://bitcoin.org/bitcoin.pdf">Blockchain de Nakamoto</a>, um constructo popularizado pelo <a href="https://en.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. Desta forma o algorítmo pode evitar a necessidade de um servidor central para resolverconflitos de edição operacional sem a necessidade do servidor armazenar o conteúdo que está sendo editado pelos colaboradores.';
+    out.main_howitworks_p1 = 'CryptPad usa uma variante do algorítmo de <a href="https://en.wikipedia.org/wiki/Operational_transformation">Transformação Operacional</a>, que é capaz de encontrar consenso distribuido usando o <a href="https://bitcoin.org/bitcoin.pdf">Blockchain de Nakamoto</a>, um constructo popularizado pela <a href="https://en.wikipedia.org/wiki/Bitcoin">Criptomoeda Bitcoin</a>. Desta forma o algorítmo pode evitar a necessidade de um servidor central para resolver conflitos de edição operacional sem a necessidade do servidor armazenar o conteúdo que está sendo editado pelos colaboradores.';
     out.main_about = 'Sobre';
-    out.main_about_p1 = 'Você pode ler mais sobre em nossa <a href="/privacy.html" title="">política de privadicade</a> e nos nossos <a href="/terms.html">termos de serviço</a>.';
+    out.main_about_p1 = 'Você pode ler mais sobre em nossa <a href="/privacy.html" title="">política de privacidade</a> e nos nossos <a href="/terms.html">termos de serviço</a>.';
 
-    out.main_about_p2 = 'Se você tem alguma questão ou comentário, você pode <a href="https://twitter.com/cryptpad">nos mandar um tweet</a>, abrir uma requisição <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="no nosso tracker">no github</a>, venha nos dar ola no IRC (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), ou <a href="mailto:research@xwiki.com">nos envie um e-mail</a>.';
+    out.main_about_p2 = 'Se você tem alguma questão ou comentário, você pode <a href="https://twitter.com/cryptpad">nos mandar um tweet</a> ou abrir uma requisição <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="no nosso tracker">no github</a>. Venha também nos dar um Oi no IRC (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), ou até mesmo via <a href="mailto:research@xwiki.com">e-mail</a>.';
 
     out.table_type = 'Tipo';
     out.table_link = 'Link';
     out.table_created = 'Criado';
     out.table_last = 'Último acessado';
 
-    out.button_newpad = 'CRIAR NOVO BLOCO DE NOTAS WYSIWYG';
-    out.button_newcode = 'CRIAR UM NOVO BLOCO DE NOTAS';
-    out.button_newpoll = 'CRIAR UMA ENQUETE';
-    out.button_newslide = 'CREIAR UMA APRESENTAÇÃO';
+    out.button_newpad = 'NOVO BLOCO WYSIWYG';
+    out.button_newcode = 'NOVO BLOCO DE NOTAS';
+    out.button_newpoll = 'NOVA ENQUETE';
+    out.button_newslide = 'NOVA APRESENTAÇÃO';
 
     // privacy.html
 
@@ -221,7 +221,7 @@ define(function () {
     // BottomBar.html
 
     out.bottom_france = '<a href="http://www.xwiki.com/" target="_blank" rel="noopener noreferrer">Feito com <img class="bottom-bar-heart" src="/customize/heart.png" /> na <img class="bottom-bar-fr" src="/customize/fr.png" /></a>';
-    out.bottom_support = '<a href="http://labs.xwiki.com/" title="XWiki Labs" target="_blank" rel="noopener noreferrer">Um <img src="/customize/logo-xwiki2.png" alt="XWiki SAS" class="bottom-bar-xwiki"/> projeto do laboratório </a> com o suporte da <a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
+    out.bottom_support = '<a href="http://labs.xwiki.com/" title="XWiki Labs" target="_blank" rel="noopener noreferrer">Um projeto do laboratório <img src="/customize/logo-xwiki2.png" alt="XWiki SAS" class="bottom-bar-xwiki"/></a> com o suporte da <a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
 
     // Header.html
 
