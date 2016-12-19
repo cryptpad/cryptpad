@@ -9,8 +9,21 @@
     user-select: none;
 }
 
+.toolbar-container {
+    .cryptpad-lag {
+        position: relative;
+        top: -2px;
+    }
+    font: 12px Arial,Helvetica,Tahoma,Verdana,sans-serif;
+    background: -webkit-linear-gradient(#EEEEEE, #DADADA); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#f5f5f5, #DDDDDD); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#f5f5f5, #DDDDDD); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#f5f5f5, #DDDDDD); /* Standard syntax */
+}
+
 .cryptpad-toolbar {
     box-sizing: border-box;
+    padding: 0px 6px;
 
     .unselectable;
 
@@ -75,6 +88,7 @@
 
     .cryptpad-state {
         line-height: 30px; /* equivalent to 26px + 2*2px margin used for buttons */
+        float: left;
     }
 
     .rightside-button {
@@ -120,9 +134,11 @@
             line-height: 32px;
         }
         .pencilIcon {
-            display: none;
+            //display: none;
+            margin-left: 11px;
             &:hover {
                 color: #999;
+                margin-left: 0px;
             }
             span {
                 cursor: pointer;

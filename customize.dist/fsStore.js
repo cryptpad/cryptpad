@@ -143,7 +143,7 @@ define([
             });
 
         }).on('ready', function () {
-            if (JSON.stringify(rt.proxy) === '{}') {
+            if (!rt.proxy[Cryptpad.storageKey] || !Cryptpad.isArray(rt.proxy[Cryptpad.storageKey])) {
                 var oldStore = Cryptpad.getStore(true);
                 oldStore.get(Cryptpad.storageKey, function (err, s) {
                     rt.proxy.filesData = s;
