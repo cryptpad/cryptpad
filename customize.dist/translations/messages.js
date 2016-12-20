@@ -208,8 +208,12 @@ define(function () {
     out.fo_unableToRestore = "Unable to restore that file to its original location. You can try to move it to a new location.";
 
     // login
+    out.login_login = "log in";
+    out.login_register = "register";
+
     out.login_username = "your username";
     out.login_password = "your password";
+    out.login_confirm = "confirm your password";
     out.login_remember = "remember me";
 
     out.login_warning = [
@@ -217,7 +221,12 @@ define(function () {
         '<p>Cryptpad stores your personal information in an encrypted realtime document, as it does with all other types of realtime documents.</p>',
         '<p>Your username and password are never sent to the server in an unencrypted form.</p>',
         '<p>As such, if you forget your username or password, there is absolutely nothing that we can do to recover your lost information.</p>',
-        '<p><strong>Make sure you do not forget your username and password</strong></p>',
+        '<p><strong>Make sure you do not forget your username and password!</strong></p>',
+    ].join('\n');
+
+    out.login_logout = [
+        '<p>It seems you are already logged in</p>',
+        '<p>Would you like to log out and authenticate as another user?</p>',
     ].join('\n');
 
     out.loginText = '<p>Your username and password are used to generate a unique key which is never known by our server.</p>\n' +
