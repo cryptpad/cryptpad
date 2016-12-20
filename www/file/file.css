@@ -186,6 +186,14 @@ li {
     padding-left: 10px;
 }
 
+#content .info-box {
+    margin: 0px auto;
+    padding: 5px;
+    background: #ddddff;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+}
+
 .topButtonContainer {
     border: 1px solid #ccc;
     float: right;

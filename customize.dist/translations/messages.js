@@ -189,6 +189,10 @@ define(function () {
     out.fm_unknownFolderError = "The selected or last visited directory no longer exist. Opening the parent folder...";
     out.fm_contextMenuError = "Unable to open the context menu for that element. If the problem persist, try to reload the page.";
     out.fm_selectError = "Unable to select the targetted element. If the problem persist, try to reload the page.";
+    out.fm_info_root = "Create as many folders/subfolders here as you want to sort your files.";
+    out.fm_info_unsorted = 'Contains all the files you\'ve visited that are not yet sorted in "My Documents" or moved to the "Trash".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
+    out.fm_info_trash = 'Files deleted from the trash are also removed from "All files" and it is impossible to recover them from the file manager.'; // Same here for "All files" and "out.fm_filesDataName"
+    out.fm_info_allFiles = 'Contains all the files from "My Documents", "Unsorted" and "Trash". You can\'t move or remove files from here.'; // Same here
     // File - Context menu
     out.fc_newfolder = "New folder";
     out.fc_rename = "Rename";

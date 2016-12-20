@@ -58,9 +58,9 @@ define([
     var getLastOpenedFolder = function () {
         var path;
         try {
-            path = localStorage[LOCALSTORAGE_LAST] ? JSON.parse(localStorage[LOCALSTORAGE_LAST]) : [ROOT];
+            path = localStorage[LOCALSTORAGE_LAST] ? JSON.parse(localStorage[LOCALSTORAGE_LAST]) : [UNSORTED];
         } catch (e) {
-            path = [ROOT];
+            path = [UNSORTED];
         }
         return path;
     };
@@ -147,7 +147,9 @@ define([
         // TOOLBAR
 
         var getLastName = function (cb) {
-            cb(null, files['cryptpad.username'] || '');
+            Cryptpad.getAttribute('username', function (err, userName) {
+                cb(err, userName || '');
+            });
         };
 
         var setName = APP.setName = function (newName) {
@@ -157,11 +159,16 @@ define([
                 myUserNameTemp = myUserNameTemp.substr(0, 32);
             }
             var myUserName = myUserNameTemp;
-            files['cryptpad.username'] = myUserName;
-            APP.userName.lastName = myUserName;
-            var $button = APP.$userNameButton;
-            var $span = $('<div>').append($button.find('span').clone()).html();
-            $button.html($span + myUserName);
+            Cryptpad.setAttribute('username', myUserName, function (err, data) {
+                if (err) {
+                    logError("Couldn't set username", err);
+                    return;
+                }
+                APP.userName.lastName = myUserName;
+                var $button = APP.$userNameButton;
+                var $span = $('<div>').append($button.find('span').clone()).html();
+                $button.html($span + myUserName);
+            });
         };
 
         var $userBlock = APP.$bar.find('.' + Toolbar.constants.username);
@@ -682,6 +689,33 @@ define([
             return $title;
         };
 
+        var createInfoBox = function (path) {
+            var $box = $('<div>', {'class': 'info-box'});
+            var msg;
+            switch (path[0]) {
+                case 'root':
+                    msg = Messages.fm_info_root;
+                    break;
+                case 'unsorted':
+                    msg = Messages.fm_info_unsorted;
+                    break;
+                case 'trash':
+                    msg = Messages.fm_info_trash;
+                    break;
+                case Cryptpad.storageKey:
+                    msg = Messages.fm_info_allFiles;
+                    break;
+                default:
+                    msg = undefined;
+            }
+            if (!msg} {
+                $box.hide();
+            } else {
+                $box.text(msg);
+            }
+            return $box;
+        };
+
         // Create the button allowing the user to switch from list to icons modes
         var createViewModeButton = function () {
             var $block = $('<div>', {
@@ -1012,6 +1046,7 @@ define([
             setLastOpenedFolder(path);
 
             var $title = createTitle(path);
+            var $info = createInfoBox(path);
 
             var $dirContent = $('<div>', {id: FOLDER_CONTENT_ID});
             $dirContent.data('path', path);
@@ -1059,7 +1094,7 @@ define([
                     $element.appendTo($list);
                 });
             }
-            $content.append($title).append($dirContent);
+            $content.append($title).append($info).append($dirContent);
             appStatus.ready(true);
         };
 
