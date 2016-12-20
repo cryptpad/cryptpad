@@ -299,6 +299,14 @@ define([
         return id;
     };
 
+    var createRandomHash = common.createRandomHash = function () {
+        // 16 byte channel Id
+        var channelId = hexToBase64(createChannelId());
+        // 18 byte encryption key
+        var key = Crypto.b64RemoveSlashes(Crypto.rand64(18));
+        return '/1/edit/' + [channelId, key].join('/');
+    };
+
     var replaceHash = common.replaceHash = function (hash) {
         if (window.history && window.history.replaceState) {
             if (!/^#/.test(hash)) { hash = '#' + hash; }
