@@ -39,6 +39,7 @@
   float: right;
 }
 .cryptpad-toolbar .cryptpad-lag {
+  box-sizing: content-box;
   vertical-align: top;
   height: 16px;
   width: 16px;

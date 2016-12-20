@@ -432,7 +432,9 @@ define([
             cb(err, data);
         });
     };
-
+    var setLSAttribute = common.setLSAttribute = function (attr, value) {
+        localStorage[attr] = value;
+    };
 
     // STORAGE
     var getPadAttribute = common.getPadAttribute = function (attr, cb, legacy) {
@@ -444,6 +446,9 @@ define([
         getStore(legacy).get(["cryptpad", attr].join('.'), function (err, data) {
             cb(err, data);
         });
+    };
+    var getLSAttribute = common.getLSAttribute = function (attr) {
+        return localStorage[attr];
     };
 
 

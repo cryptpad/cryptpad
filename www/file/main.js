@@ -747,13 +747,13 @@ define([
             var $span = $(this);
             var value;
             if ($span.hasClass('foldername')) {
-                value = files[SORT_FOLDER_DESC];
-                files[SORT_FOLDER_DESC] = value ? false : true;
+                value = Cryptpad.getLSAttribute(SORT_FOLDER_DESC);
+                Cryptpad.setLSAttribute(SORT_FOLDER_DESC, value ? false : true);
                 refresh();
                 return;
             }
-            value = files[SORT_FILE_BY];
-            var descValue = files[SORT_FILE_DESC];
+            value = Cryptpad.getLSAttribute(SORT_FILE_BY);
+            var descValue = Cryptpad.getLSAttribute(SORT_FILE_DESC);
             if ($span.hasClass('filename')) {
                 if (value === '') {
                     descValue = descValue ? false : true;
@@ -775,17 +775,17 @@ define([
                     }
                 });
             }
-            files[SORT_FILE_BY] = value;
-            files[SORT_FILE_DESC] = descValue;
+            Cryptpad.setLSAttribute(SORT_FILE_BY, value);
+            Cryptpad.setLSAttribute(SORT_FILE_DESC, descValue);
             refresh();
         };
 
         var addFolderSortIcon = function ($list) {
             var $icon = $sortAscIcon.clone();
-            if (files[SORT_FOLDER_DESC]) {
+            if (Cryptpad.getLSAttribute(SORT_FOLDER_DESC)) {
                 $icon = $sortDescIcon.clone();
             }
-            if (typeof(files[SORT_FOLDER_DESC]) !== "undefined") {
+            if (typeof(Cryptpad.getLSAttribute(SORT_FOLDER_DESC)) !== "undefined") {
                 $list.find('.foldername').prepend($icon);
             }
         };
@@ -801,12 +801,12 @@ define([
         };
         var addFileSortIcon = function ($list) {
             var $icon = $sortAscIcon.clone();
-            if (files[SORT_FILE_DESC]) {
+            if (Cryptpad.getLSAttribute(SORT_FILE_DESC)) {
                 $icon = $sortDescIcon.clone();
             }
             var classSorted;
-            if (files[SORT_FILE_BY] === '') { classSorted = 'filename'; }
-            else if (files[SORT_FILE_BY]) { classSorted = files[SORT_FILE_BY]; }
+            if (Cryptpad.getLSAttribute(SORT_FILE_BY) === '') { classSorted = 'filename'; }
+            else if (Cryptpad.getLSAttribute(SORT_FILE_BY)) { classSorted = Cryptpad.getLSAttribute(SORT_FILE_BY); }
             if (classSorted) {
                 $list.find('.' + classSorted).prepend($icon);
             }
@@ -895,7 +895,7 @@ define([
             var $fileHeader = getFileListHeader(false);
             $container.append($fileHeader);
             var keys = unsorted;
-            var sortedFiles = sortElements(false, [UNSORTED], keys, files[SORT_FILE_BY], !files[SORT_FILE_DESC], true);
+            var sortedFiles = sortElements(false, [UNSORTED], keys, Cryptpad.getLSAttribute(SORT_FILE_BY), !Cryptpad.getLSAttribute(SORT_FILE_DESC), true);
             sortedFiles.forEach(function (href) {
                 var file = filesOp.getFileData(href);
                 if (!file) {
@@ -928,7 +928,7 @@ define([
             var $fileHeader = getFileListHeader(false);
             $container.append($fileHeader);
             var keys = allfiles;
-            var sortedFiles = sortElements(false, [FILES_DATA], keys, files[SORT_FILE_BY], !files[SORT_FILE_DESC], false, true);
+            var sortedFiles = sortElements(false, [FILES_DATA], keys, Cryptpad.getLSAttribute(SORT_FILE_BY), !Cryptpad.getLSAttribute(SORT_FILE_DESC), false, true);
             sortedFiles.forEach(function (file) {
                 var $icon = $fileIcon.clone();
                 var $name = $('<span>', { 'class': 'file-element element' });
@@ -969,8 +969,8 @@ define([
                     });
                 });
             });
-            var sortedFolders = sortTrashElements(true, filesList, null, !files[SORT_FOLDER_DESC]);
-            var sortedFiles = sortTrashElements(false, filesList, files[SORT_FILE_BY], !files[SORT_FILE_DESC]);
+            var sortedFolders = sortTrashElements(true, filesList, null, !Cryptpad.getLSAttribute(SORT_FOLDER_DESC));
+            var sortedFiles = sortTrashElements(false, filesList, Cryptpad.getLSAttribute(SORT_FILE_BY), !Cryptpad.getLSAttribute(SORT_FILE_DESC));
             if (filesOp.hasSubfolder(root, true)) { $list.append($folderHeader); }
             sortedFolders.forEach(function (f) {
                 var $element = createElement([TRASH], f.spath, root, true);
@@ -1044,8 +1044,8 @@ define([
                 if (filesOp.hasSubfolder(root)) { $list.append($folderHeader); }
                 // display sub directories
                 var keys = Object.keys(root);
-                var sortedFolders = sortElements(true, path, keys, null, !files[SORT_FOLDER_DESC]);
-                var sortedFiles = sortElements(false, path, keys, files[SORT_FILE_BY], !files[SORT_FILE_DESC]);
+                var sortedFolders = sortElements(true, path, keys, null, !Cryptpad.getLSAttribute(SORT_FOLDER_DESC));
+                var sortedFiles = sortElements(false, path, keys, Cryptpad.getLSAttribute(SORT_FILE_BY), !Cryptpad.getLSAttribute(SORT_FILE_DESC));
                 sortedFolders.forEach(function (key) {
                     if (filesOp.isFile(root[key])) { return; }
                     var $element = createElement(path, key, root, true);
@@ -1436,6 +1436,8 @@ define([
 
     // don't initialize until the store is ready.
     Cryptpad.ready(function () {
+        var storeObj = Cryptpad.getStore().getProxy  && Cryptpad.getStore().getProxy().proxy ? Cryptpad.getStore().getProxy() : undefined;
+
         Cryptpad.styleAlerts();
 
         if (window.location.hash && window.location.hash === "#iframe") {
@@ -1458,8 +1460,13 @@ define([
             logging: false
         };
 
-        var rt = window.rt = module.rt = Listmap.create(listmapConfig);
-        rt.proxy.on('create', function (info) {
+        var proxy;
+        if (storeObj) { proxy = storeObj.proxy; }
+        else {
+            var rt = window.rt = module.rt = Listmap.create(listmapConfig);
+            proxy = rt.proxy;
+        }
+        var onCreate = function (info) {
             var realtime = module.realtime = info.realtime;
 
             var editHash = APP.editHash = !readOnly ? Cryptpad.getEditHashFromKeys(info.channel, secret.keys) : undefined;
@@ -1505,25 +1512,40 @@ define([
                 $userBlock.append($backupButton);
             }
 
-        }).on('ready', function () {
-            module.files = rt.proxy;
-            if (JSON.stringify(rt.proxy) === '{}') {
+        };
+        var onReady = function () {
+            module.files = proxy;
+            if (JSON.stringify(proxy) === '{}') {
                 var store = Cryptpad.getStore(true);
                 store.get(Cryptpad.storageKey, function (err, s) {
-                    rt.proxy[FILES_DATA] = s;
+                    proxy[FILES_DATA] = s;
                     initLocalStorage();
-                    init(rt.proxy);
+                    init(proxy);
                 });
                 return;
             }
             initLocalStorage();
-            init(rt.proxy);
+            init(proxy);
             APP.userList.onChange();
-        })
-        .on('disconnect', function (info) {
+        };
+        var onDisconnect = function (info) {
             setEditable(false);
             console.error('err');
             Cryptpad.alert(Messages.common_connectionLost);
+        };
+
+        if (storeObj) {
+            onCreate(storeObj.info);
+            onReady();
+        } else {
+            proxy.on('create', function (info) {
+                onCreate(info);
+            }).on('ready', function () {
+                onReady();
+            });
+        }
+        proxy.on('disconnect', function () {
+            onDisconnect();
         });
     });
 

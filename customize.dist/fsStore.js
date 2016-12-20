@@ -19,6 +19,7 @@ define([
     var storeObj;
     var ready = false;
     var filesOp;
+    var exp = {};
 
     var safeSet = function (key, val) {
         storeObj[key] = val;
@@ -85,6 +86,10 @@ define([
         cb();
     };
 
+    Store.getProxy = function () {
+        return exp;
+    };
+
     var changeHandlers = Store.changeHandlers = [];
 
     Store.change = function (f) {
@@ -134,7 +139,9 @@ define([
         };
 
         var rt = window.rt = Listmap.create(listmapConfig);
+        exp.proxy = rt.proxy;
         rt.proxy.on('create', function (info) {
+            exp.info = info;
             var realtime = info.realtime;
             if (!Cryptpad.getUserHash()) {
                 localStorage.FS_hash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
@@ -170,12 +177,12 @@ define([
     };
 
     Store.ready = function (f, Cryptpad) {
-        if (Cryptpad.parsePadUrl(window.location.href).type === "file") {
+        /*if (Cryptpad.parsePadUrl(window.location.href).type === "file") {
             if (typeof(f) === 'function') {
                 f(void 0, Cryptpad.getStore(true));
             }
             return;
-        }
+        }*/
         if (ready) {
             if (typeof(f) === 'function') {
                 f(void 0, Store);
