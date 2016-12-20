@@ -10,15 +10,16 @@
 }
 
 .toolbar-container {
-    .cryptpad-lag {
-        position: relative;
-        top: -2px;
-    }
     font: 12px Arial,Helvetica,Tahoma,Verdana,sans-serif;
     background: -webkit-linear-gradient(#EEEEEE, #DADADA); /* For Safari 5.1 to 6.0 */
     background: -o-linear-gradient(#f5f5f5, #DDDDDD); /* For Opera 11.1 to 12.0 */
     background: -moz-linear-gradient(#f5f5f5, #DDDDDD); /* For Firefox 3.6 to 15 */
     background: linear-gradient(#f5f5f5, #DDDDDD); /* Standard syntax */
+    .cryptpad-toolbar {
+        select {
+            box-sizing: border-box;
+        }
+    }
 }
 
 .cryptpad-toolbar {
@@ -37,6 +38,17 @@
         float: right;
     }
 
+    .cryptpad-lag {
+        vertical-align: top;
+        height: 16px;
+        width: 16px;
+        display: inline-block;
+        margin: 2px 0px;
+        padding: 5px;
+        div {
+            margin: auto;
+        }
+    }
     div {
         white-space: normal;
         &.cryptpad-back {
@@ -44,11 +56,6 @@
             font-weight: bold;
             cursor: pointer;
             color: #000;
-        }
-        &.cryptpad-lag {
-            float: left;
-            line-height: 26px;
-            margin: 2px 0px;
         }
     }
 
@@ -116,6 +123,11 @@
         padding-left: 5px;
         border: 1px solid #A6A6A6;
         border-bottom-color: #979797;
+        vertical-align: top;
+        box-sizing: content-box;
+        option {
+            height: 24px;
+        }
     }
 }
 
@@ -229,6 +241,9 @@
     .cryptpad-user {
         position: absolute;
         right: 0;
+        span:not(.cryptpad-lag) {
+            vertical-align: top;
+        }
         @media screen and (max-width: 400px) {
             top: 3em;
         }
@@ -276,9 +291,11 @@
                     padding: 5px 0px;
                     margin: 5px 0px;
                     font-size: 16px;
+                    white-space: normal;
                 }
             }
             button {
+                white-space: normal;
                 margin: 2px 0px;
             }
         }
@@ -295,7 +312,7 @@
     //float: right;
 }
 .cryptpad-spinner {
-    float: left;
+    //float: left;
     display: inline-block;
     height: 26px;
     margin: 2px;
@@ -310,10 +327,6 @@
 .cryptpad-toolbar-username {
 }
 .lag {
-    display: inline-block;
-    vertical-align: middle;
-    padding: 0 !important;
-    margin: 0 5px !important;
     height: 15px !important;
     width: 15px !important;
     border-radius: 50%;
