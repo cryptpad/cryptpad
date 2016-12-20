@@ -104,6 +104,7 @@ define(function () {
 
     out.tryIt = 'Essayez-le !';
     out.recentPads = 'Vos documents récents (stockés uniquement dans votre navigateur)';
+    out.recentPadsIframe = 'Vos documents récents';
 
     out.okButton = 'OK (Entrée)';
     out.cancelButton = 'Annuler (Echap)';
@@ -217,6 +218,7 @@ define(function () {
     out.main_about = 'À propos';
     out.main_about_p1 = 'Vous pouvez en apprendre davantage sur notre <a href="/privacy.html" title="">politique de confidentialité</a> et nos <a href="/terms.html">conditions d\'utilisation</a>.';
     out.main_about_p2 = 'Si vous avez des questions ou commentaires, vous pouvez <a href="https://twitter.com/cryptpad">nous tweeter</a>, ouvrir une issue sur <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">Github</a>, venir dire bonjour sur IRC (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), ou <a href="mailto:research@xwiki.com">nous envoyer un email</a>.';
+    out.main_openFileManager = 'Ouvrir dans un nouvel onglet';
 
     out.table_type = 'Type';
     out.table_link = 'Lien';

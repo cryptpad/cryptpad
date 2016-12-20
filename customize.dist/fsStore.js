@@ -33,7 +33,7 @@ define([
     // implement in alternative store
     Store.setBatch = function (map, cb) {
         Object.keys(map).forEach(function (key) {
-            safeSet(key, val);
+            safeSet(key, map[key]);
         });
         cb(void 0, map);
     };

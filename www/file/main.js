@@ -227,7 +227,7 @@ define([
                     appStatus._onReady.forEach(function (h) {
                         h();
                     });
-                    _onReady = [];
+                    appStatus._onReady = [];
                 }
             }
         };
@@ -348,6 +348,7 @@ define([
         // Open the selected context menu on the closest "li" element
         var openContextMenu = function (e, $menu) {
             module.hideMenu();
+            e.stopPropagation();
 
             var path = $(e.target).closest('li').data('path');
             if (!path) { return; }
@@ -744,13 +745,14 @@ define([
         var SORT_FILE_DESC = 'sortFilesDesc';
         var onSortByClick = function (e) {
             var $span = $(this);
+            var value;
             if ($span.hasClass('foldername')) {
-                var value = files[SORT_FOLDER_DESC];
+                value = files[SORT_FOLDER_DESC];
                 files[SORT_FOLDER_DESC] = value ? false : true;
                 refresh();
                 return;
             }
-            var value = files[SORT_FILE_BY];
+            value = files[SORT_FILE_BY];
             var descValue = files[SORT_FILE_DESC];
             if ($span.hasClass('filename')) {
                 if (value === '') {
@@ -1234,7 +1236,7 @@ define([
             var i = 0;
             var space = 10;
             path.forEach(function (s) {
-                if (i === 0) { s = rootName(s) }
+                if (i === 0) { s = rootName(s); }
                 $div.append($('<span>', {'style': 'margin: 0 0 0 ' + i * space + 'px;'}).text(s));
                 $div.append($('<br>'));
                 i++;
@@ -1263,7 +1265,7 @@ define([
             else if ($(this).hasClass('newfolder')) {
                 var onCreated = function (info) {
                     module.newFolder = info.newPath;
-                    module.displayDirectory(path);;
+                    module.displayDirectory(path);
                 };
                 filesOp.createNewFolder(path, null, onCreated);
             }
@@ -1437,14 +1439,9 @@ define([
         Cryptpad.styleAlerts();
 
         if (window.location.hash && window.location.hash === "#iframe") {
-            $('.top-bar').hide();
-            $('#pad-iframe').css({
-                top: "0px",
-                height: "100%"
-            });
             $iframe.find('body').addClass('iframe');
             window.location.hash = "";
-            homePageIframe = true;
+            APP.homePageIframe = true;
         }
 
         var hash = window.location.hash.slice(1) || localStorage.FS_hash;
@@ -1465,8 +1462,8 @@ define([
         rt.proxy.on('create', function (info) {
             var realtime = module.realtime = info.realtime;
 
-            var editHash = !readOnly ? Cryptpad.getEditHashFromKeys(info.channel, secret.keys) : undefined;
-            var viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
+            var editHash = APP.editHash = !readOnly ? Cryptpad.getEditHashFromKeys(info.channel, secret.keys) : undefined;
+            var viewHash = APP.viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
 
             APP.hash = readOnly ? viewHash : editHash;
             if (!readOnly && (!window.location.hash || !localStorage.FS_hash)) {
@@ -1478,7 +1475,7 @@ define([
                 logging: true,
             });
 
-            userList = APP.userList = info.userList;
+            var userList = APP.userList = info.userList;
             var config = {
                 readOnly: readOnly,
                 ifrw: window,
@@ -1490,8 +1487,23 @@ define([
             var $bar = APP.$bar;
             var $rightside = $bar.find('.' + Toolbar.constants.rightside);
             var $userBlock = $bar.find('.' + Toolbar.constants.username);
-            var $editShare = $bar.find('.' + Toolbar.constants.editShare);
-            var $viewShare = $bar.find('.' + Toolbar.constants.viewShare);
+
+            if (APP.homePageIframe) {
+                var $linkToMain = $bar.find('.cryptpad-link a');
+                $linkToMain.attr('href', '#');
+                $linkToMain.attr('title', '');
+                $linkToMain.css('cursor', 'default');
+                $linkToMain.off('click');
+            }
+
+            if (!readOnly) {
+                var $backupButton = Cryptpad.createButton('', true);
+                $backupButton.on('click', function() {
+                    var url = window.location.origin + window.location.pathname + '#' + editHash;
+                    Cryptpad.alert("Backup URL for this pad. It is highly recommended that you do not share it with other people.<br>Anybody with that URL can remove all the files in your file manager.<br>" + url);
+                });
+                $userBlock.append($backupButton);
+            }
 
         }).on('ready', function () {
             module.files = rt.proxy;
@@ -1506,6 +1518,7 @@ define([
             }
             initLocalStorage();
             init(rt.proxy);
+            APP.userList.onChange();
         })
         .on('disconnect', function (info) {
             setEditable(false);

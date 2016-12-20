@@ -123,16 +123,19 @@ define([
 
             if (recentPads.length) {
                 recentPads.sort(Cryptpad.mostRecent);
-                makeRecentPadsTable(recentPads);
+                $('iframe').attr('style', '');
+                $tryit.removeAttr('data-localization');
+                $tryit.text(Messages.recentPadsIframe);
+                //makeRecentPadsTable(recentPads);
             }
 
-            if (hasRecent) {
+            /*if (hasRecent) {
                 $('table').attr('style', '');
                 // Race condition here, this is triggered before the localization in HTML
                 // so we have to remove the data-localization attr
                 $tryit.removeAttr('data-localization');
                 $tryit.text(Messages.recentPads);
-            }
+            }*/
         });
     };
 

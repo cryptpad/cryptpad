@@ -321,6 +321,11 @@ tr {
   font-size: medium;
   padding-bottom: 1em;
 }
+#fileManagerIframe {
+  width: 100%;
+  height: 500px;
+  margin-top: 15px;
+}
 /* buttons */
 .create,
 .action {
