@@ -688,9 +688,6 @@ define([
             fixFilesData(files[FILES_DATA]);
 
             if (JSON.stringify(files) !== before) {
-                var backup = JSON.parse(localStorage.oldFileSystem);
-                backup.push(files);
-                localStorage.oldFileSystem = JSON.stringify(backup);
                 debug("Your file system was corrupted. It has been cleaned so that the pads you visit can be stored safely");
                 return;
             }

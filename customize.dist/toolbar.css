@@ -17,9 +17,8 @@
   background: linear-gradient(#f5f5f5, #DDDDDD);
   /* Standard syntax */
 }
-.toolbar-container .cryptpad-lag {
-  position: relative;
-  top: -2px;
+.toolbar-container .cryptpad-toolbar select {
+  box-sizing: border-box;
 }
 .cryptpad-toolbar {
   box-sizing: border-box;
@@ -39,6 +38,18 @@
 .cryptpad-toolbar a {
   float: right;
 }
+.cryptpad-toolbar .cryptpad-lag {
+  box-sizing: content-box;
+  vertical-align: top;
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+  margin: 2px 0px;
+  padding: 5px;
+}
+.cryptpad-toolbar .cryptpad-lag div {
+  margin: auto;
+}
 .cryptpad-toolbar div {
   white-space: normal;
 }
@@ -47,11 +58,6 @@
   font-weight: bold;
   cursor: pointer;
   color: #000;
-}
-.cryptpad-toolbar div.cryptpad-lag {
-  float: left;
-  line-height: 26px;
-  margin: 2px 0px;
 }
 .cryptpad-toolbar button,
 .cryptpad-toolbar select,
@@ -118,6 +124,11 @@
   padding-left: 5px;
   border: 1px solid #A6A6A6;
   border-bottom-color: #979797;
+  vertical-align: top;
+  box-sizing: content-box;
+}
+.cryptpad-toolbar select option {
+  height: 24px;
 }
 .cryptpad-toolbar-top {
   display: block;
@@ -234,6 +245,9 @@
   position: absolute;
   right: 0;
 }
+.cryptpad-toolbar-top .cryptpad-user span:not(.cryptpad-lag) {
+  vertical-align: top;
+}
 @media screen and (max-width: 400px) {
   .cryptpad-toolbar-top .cryptpad-user {
     top: 3em;
@@ -289,8 +303,10 @@
   padding: 5px 0px;
   margin: 5px 0px;
   font-size: 16px;
+  white-space: normal;
 }
 .cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown button {
+  white-space: normal;
   margin: 2px 0px;
 }
 .cryptpad-toolbar-leftside button {
@@ -303,7 +319,6 @@
   text-align: right;
 }
 .cryptpad-spinner {
-  float: left;
   display: inline-block;
   height: 26px;
   margin: 2px;
@@ -316,10 +331,6 @@
   text-transform: uppercase;
 }
 .lag {
-  display: inline-block;
-  vertical-align: middle;
-  padding: 0 !important;
-  margin: 0 5px !important;
   height: 15px !important;
   width: 15px !important;
   border-radius: 50%;

@@ -84,7 +84,7 @@ define([
             id: uid(),
             'class': SPINNER_CLS,
         });
-        $container.append($spinner);
+        $container.prepend($spinner);
         return $spinner[0];
     };
 
