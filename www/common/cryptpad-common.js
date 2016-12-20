@@ -96,6 +96,41 @@ define([
         });
     };
 
+    var userHashKey = common.userHashKey = 'User_hash';
+    var fileHashKey = common.fileHashKey = 'FS_hash';
+
+    var login = common.login = function (hash, remember, cb) {
+        if (!hash) { throw new Error('expected a user hash'); }
+        if (!remember) {
+            sessionStorage.setItem(userHashKey, hash);
+        }
+        else {
+            localStorage.setItem(userHashKey, hash);
+        }
+        if (cb) { cb(); }
+    };
+
+    var logout = common.logout = function (cb) {
+        [
+            fileHashKey,
+            userHashKey,
+        ].forEach(function (k) {
+            sessionStorage.removeItem(k);
+            localStorage.removeItem(k);
+        });
+        if (cb) { cb(); }
+    };
+
+    var getUserHash = common.getUserHash = function () {
+        var hash;
+        [sessionStorage, localStorage].some(function (s) {
+            var h = s[userHashKey];
+            if (h) { return (hash = h); }
+        });
+
+        return hash;
+    };
+
     Store.ready(function (err, Store) {
         if (err) {
             console.error(err);
