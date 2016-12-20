@@ -122,7 +122,7 @@ define([
 
     var init = function (f, Cryptpad) {
         if (!Cryptpad) { return; }
-        var hash = localStorage.FS_hash;
+        var hash = Cryptpad.getUserHash() || localStorage.FS_hash;
         var secret = Cryptpad.getSecrets(hash);
         var listmapConfig = {
             data: {},
@@ -136,7 +136,9 @@ define([
         var rt = window.rt = Listmap.create(listmapConfig);
         rt.proxy.on('create', function (info) {
             var realtime = info.realtime;
-            localStorage.FS_hash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+            if (!Cryptpad.getUserHash()) {
+                localStorage.FS_hash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+            }
             window.patchText = TextPatcher.create({
                 realtime: realtime,
                 logging: true,

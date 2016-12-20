@@ -1444,7 +1444,7 @@ define([
             APP.homePageIframe = true;
         }
 
-        var hash = window.location.hash.slice(1) || localStorage.FS_hash;
+        var hash = Cryptpad.getUserHash() || window.location.hash.slice(1) || localStorage.FS_hash;
         var secret = Cryptpad.getSecrets(hash);
         var readOnly = APP.readOnly = secret.keys && !secret.keys.editKeyStr;
 
