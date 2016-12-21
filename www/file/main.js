@@ -708,7 +708,7 @@ define([
                 default:
                     msg = undefined;
             }
-            if (!msg} {
+            if (!msg) {
                 $box.hide();
             } else {
                 $box.text(msg);
