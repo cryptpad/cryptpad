@@ -124,9 +124,24 @@ define([
 
 /*  if the user is registering, we expect that the userDoc will be empty
 */
+
+            var proxykeys = Object.keys(proxy);
+
             if (opt.register) {
-                if (Object.keys(proxy).length) {
+                if (proxyKeys.length) {
+                    // user is trying to register, but the userDoc is not empty
+                    // tell them they are already registered.
+
+
                     alreadyExists();
+                } else {
+                    // trying to register, and the object is empty, as expected
+                }
+            } else {
+                if (proxyKeys.length) {
+
+                } else {
+
                 }
             }
 
@@ -196,39 +211,41 @@ define([
         $register[0].checked = false;
     };
 
-    if (Cryptpad.getUserHash()) {
-        //Cryptpad.alert("You are already logged in!");
-        $logoutBox.slideDown();
-    } else {
-        revealLogin();
-    }
-
-    $login.click(function () {
-        var uname = $username.val();
-        var passwd = $password.val();
-        var confirm = $confirm.val();
-        var remember = $remember[0].checked;
-        var register = $register[0].checked;
-
-        if (!Cred.isValidUsername(uname)) {
-            return void Cryptpad.alert('invalid username');
-        }
-        if (!Cred.isValidPassword(passwd)) {
-            return void Cryptpad.alert('invalid password');
-        }
-        if (register && !Cred.passwordsMatch(passwd, confirm)) {
-            return mismatchedPasswords();
+    Cryptpad.ready(function () {
+        if (Cryptpad.getUserHash()) {
+            //Cryptpad.alert("You are already logged in!");
+            $logoutBox.slideDown();
+        } else {
+            revealLogin();
         }
 
-        resetUI();
+        $login.click(function () {
+            var uname = $username.val();
+            var passwd = $password.val();
+            var confirm = $confirm.val();
+            var remember = $remember[0].checked;
+            var register = $register[0].checked;
 
-        // consume 128 bytes, to be divided later
-        // we can safely increase this size, but we don't need much right now
-        hashFromCreds(uname, passwd, 128, function (bytes) {
-            useBytes(bytes, {
-                remember: remember,
-                register: register,
-                name: uname,
+            if (!Cred.isValidUsername(uname)) {
+                return void Cryptpad.alert('invalid username');
+            }
+            if (!Cred.isValidPassword(passwd)) {
+                return void Cryptpad.alert('invalid password');
+            }
+            if (register && !Cred.passwordsMatch(passwd, confirm)) {
+                return mismatchedPasswords();
+            }
+
+            resetUI();
+
+            // consume 128 bytes, to be divided later
+            // we can safely increase this size, but we don't need much right now
+            hashFromCreds(uname, passwd, 128, function (bytes) {
+                useBytes(bytes, {
+                    remember: remember,
+                    register: register,
+                    name: uname,
+                });
             });
         });
     });
