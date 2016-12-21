@@ -6,12 +6,10 @@ define([
     '/bower_components/alertifyjs/dist/js/alertify.js',
     '/bower_components/spin.js/spin.min.js',
     '/common/clipboard.js',
-
     '/customize/fsStore.js',
-    '/customize/user.js',
 
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Messages, Store, Crypto, Alertify, Spinner, Clipboard, FS, User) {
+], function (Config, Messages, Store, Crypto, Alertify, Spinner, Clipboard, FS) {
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
@@ -26,14 +24,11 @@ define([
 
     var storeToUse = USE_FS_STORE ? FS : Store;
 
-    var common = {
-        User: User,
+    var common = window.Cryptpad = {
         Messages: Messages,
     };
     var store;
     var fsStore;
-    var userProxy;
-    var userStore;
 
     var find = common.find = function (map, path) {
         return (map && path.reduce(function (p, n) {
@@ -42,7 +37,6 @@ define([
     };
 
     var getStore = common.getStore = function (legacy) {
-        if (!legacy && userStore) { return userStore; }
         if ((!USE_FS_STORE || legacy) && store) { return store; }
         if (USE_FS_STORE && !legacy && fsStore) { return fsStore; }
         throw new Error("Store is not ready!");
@@ -58,42 +52,6 @@ define([
         var url = protocol + '//' + host + path;
 
         return url;
-    };
-
-    /*
-     *  cb(err, proxy);
-     */
-    var authorize = common.authorize = function (cb) {
-        console.log("Authorizing");
-
-        User.session(void 0, function (err, secret) {
-            if (!secret) {
-                // user is not authenticated
-                cb('user is not authenticated', void 0);
-            }
-
-            // for now we assume that things always work
-            User.connect(secret, function (err, proxy) {
-                cb(void 0, proxy);
-            });
-        });
-    };
-
-    // HERE
-    var deauthorize = common.deauthorize = function (cb) {
-        console.log("Deauthorizing");
-
-        // erase session data from storage
-        User.session(null, function (err) {
-            if (err) {
-                console.error(err);
-            }
-            /*
-                TODO better abort for this stuff...
-            */
-            userStore = undefined;
-            userProxy = undefined;
-        });
     };
 
     var userHashKey = common.userHashKey = 'User_hash';
@@ -677,48 +635,6 @@ define([
                 }
                 cb();
             });
-            return;
-/*
-            authorize(function (err, proxy) {
-            /*
-                TODO
-                listen for log(in|out) events
-                update information accordingly
-            * /
-
-                store.change(function (data) {
-                    if (data.key === User.localKey) {
-                        // HERE
-                        if (!data.newValue) {
-                            deauthorize(function (err) {
-                                console.log("Deauthorized!!");
-                            });
-                        } else {
-                            authorize(function (err, proxy) {
-                                if (err) {
-                                    // not logged in
-                                }
-                                if (!proxy) {
-                                    userProxy = proxy;
-                                    userStore =  User.prepareStore(proxy);
-                                }
-                            });
-                        }
-                    }
-                });
-
-                if (err) {
-                    // not logged in
-                }
-                if (!proxy) {
-                    cb();
-                    return;
-                }
-                userProxy = env.proxy = proxy;
-                userStore = env.userStore = User.prepareStore(proxy);
-                cb();
-
-            }); */
         }, common);
     };
 
