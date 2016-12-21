@@ -190,10 +190,10 @@ define(function () {
     out.fm_unknownFolderError = "Le dossier sélectionné ou le dernier dossier visité n'existe plus. Ouverture du dossier parent...";
     out.fm_contextMenuError = "Impossible d'ouvrir le menu contextuel pour cet élément. Si le problème persiste, essayez de rechercher la page.";
     out.fm_selectError = "Impossible de sélectionner l'élément ciblé. Si le problème persiste, essayez de recharger la page.";
-    out.fm_info_root = "Créez ici autant de dossiers/sous-dossiers que vous le souhaitez pour trier vos fichiers.";
-    out.fm_info_unsorted = 'Contains all the files you\'ve visited that are not yet sorted in "My Documents" or moved to the "Trash".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
-    out.fm_info_trash = 'Files deleted from the trash are also removed from "All files" and it is impossible to recover them from the file manager.'; // Same here for "All files" and "out.fm_filesDataName"
-    out.fm_info_allFiles = 'Contains all the files from "My Documents", "Unsorted" and "Trash". You can\'t move or remove files from here.'; // Same here
+    out.fm_info_root = "Créez ici autant de dossiers que vous le souhaitez pour trier vos fichiers.";
+    out.fm_info_unsorted = 'Contient tous les documents que vous avez ouvert et qui ne sont pas triés dans "Mes documents" ou déplacés vers la "Corbeille".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
+    out.fm_info_trash = 'Les fichiers supprimés dans la corbeille sont également enlevés de "Tous les fichiers" et il est impossible de les récupérer depuis l\'explorateur de fichiers.'; // Same here for "All files" and "out.fm_filesDataName"
+    out.fm_info_allFiles = 'Contient tous les fichiers de "Mes documents", "Fichiers non triés" et "Corbeille". Vous ne pouvez pas supprimer ou déplacer des fichiers d\'ici.'; // Same here
     // File - Context menu
     out.fc_newfolder = "Nouveau dossier";
     out.fc_rename = "Renommer";

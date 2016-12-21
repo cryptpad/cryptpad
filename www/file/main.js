@@ -213,6 +213,7 @@ define([
         var $gridIcon = $('<span>', {"class": "fa fa-th"});
         var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up"});
         var $sortDescIcon = $('<span>', {"class": "fa fa-angle-down"});
+        var $closeIcon = $('<span>', {"class": "fa fa-window-close"});
 
         if (!APP.readOnly) {
             setEditable(true);
@@ -708,10 +709,19 @@ define([
                 default:
                     msg = undefined;
             }
-            if (!msg) {
+            if (!msg || Cryptpad.getLSAttribute('hide-info-' + path[0]) === '1') {
                 $box.hide();
             } else {
                 $box.text(msg);
+                var $close = $closeIcon.clone().css({
+                    'cursor': 'pointer',
+                    'margin-left': '10px',
+                    title: Messages.fm_closeInfoBox
+                }).on('click', function () {
+                    $box.hide();
+                    Cryptpad.setLSAttribute('hide-info-' + path[0], '1');
+                });
+                $box.prepend($close);
             }
             return $box;
         };

@@ -192,6 +192,12 @@ li {
     background: #ddddff;
     border: 1px solid #bbb;
     border-radius: 5px;
+    margin-bottom: 10px;
+}
+#content .info-box span {
+    cursor: pointer;
+    margin-left: 10px;
+    float: right;
 }
 
 .topButtonContainer {
@@ -257,13 +263,10 @@ li {
     flex: 1;
 }
 
-#content .list li.file-header {
-    margin-top: 20px;
-}
-
 #content .list li.header {
     cursor: default;
     color: #008;
+    margin-top: 10px;
 }
 #content .list li.header .element span:not(.fa) {
     border-right: 1px solid #CCC;
