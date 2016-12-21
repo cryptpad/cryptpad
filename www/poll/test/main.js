@@ -22,6 +22,11 @@ define([
     var secret = Cryptpad.getSecrets();
     var readOnly = secret.keys && !secret.keys.editKeyStr;
 
+    Cryptpad.addLoadingScreen();
+    var onConnectError = function (info) {
+        Cryptpad.errorLoadingScreen(Messages.websocketError);
+    };
+
     var APP = window.APP = {
         Toolbar: Toolbar,
         Hyperjson: Hyperjson,
@@ -566,6 +571,7 @@ define([
             } else {
                 publish(true);
             }
+            Cryptpad.removeLoadingScreen();
 
             // Update the toolbar list:
             // Add the current user in the metadata if he has edit rights
@@ -662,11 +668,7 @@ define([
 
     var disconnect = function (info) {
         //setEditable(false); // TODO
-        if (info.error) {
-            Cryptpad.alert(Messages.websocketError);
-            return;
-        }
-        //Cryptpad.alert(Messages.common_connectionLost); // TODO
+        Cryptpad.alert(Messages.common_connectionLost);
     };
 
     var config = {
@@ -714,6 +716,11 @@ define([
                 $('#howItWorks').hide();
             }
         });
+    });
+    Cryptpad.onError(function (info) {
+        if (info) {
+            onConnectError();
+        }
     });
 });
 

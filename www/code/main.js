@@ -21,12 +21,10 @@ define([
 
     var module = window.APP = {
         Cryptpad: Cryptpad,
-        spinner: Cryptpad.spinner(document.body),
     };
 
     Cryptpad.styleAlerts();
-
-    module.spinner.show();
+    Cryptpad.addLoadingScreen();
 
     var ifrw = module.ifrw = $('#pad-iframe')[0].contentWindow;
     var stringify = function (obj) {
@@ -43,8 +41,7 @@ define([
         }
 
         var onConnectError = function (info) {
-            module.spinner.hide();
-            Cryptpad.alert(Messages.websocketError);
+            Cryptpad.errorLoadingScreen(Messages.websocketError);
         };
 
         var andThen = function (CMeditor) {
@@ -565,7 +562,7 @@ define([
                     });
                 }
 
-                $(module.spinner.get().el).fadeOut(750);
+                Cryptpad.removeLoadingScreen();
                 setEditable(true);
                 initializing = false;
                 //Cryptpad.log("Your document is ready");

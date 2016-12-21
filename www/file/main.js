@@ -18,6 +18,11 @@ define([
     var $iframe = $('#pad-iframe').contents();
     var ifrw = $('#pad-iframe')[0].contentWindow;
 
+    Cryptpad.addLoadingScreen();
+    var onConnectError = function (info) {
+        Cryptpad.errorLoadingScreen(Messages.websocketError);
+    };
+
     var APP = window.APP = {
         $bar: $iframe.find('#toolbar'),
         editable: false
@@ -48,12 +53,6 @@ define([
         console.error.apply(console, arguments);
     };
     var log = config.log = Cryptpad.log;
-    var DEBUG_LS = APP.DEBUG_LS = {
-        resetLocalStorage : function () {
-            delete localStorage[LOCALSTORAGE_OPENED];
-            delete localStorage[LOCALSTORAGE_LAST];
-        }
-    };
 
     var getLastOpenedFolder = function () {
         var path;
@@ -459,6 +458,7 @@ define([
             var andThen = function () {
                 filesOp.moveElements(paths, newPath, cb);
             };
+            // "force" is currently unused but may be configurable by user
             if (newPath[0] !== TRASH || force) {
                 andThen();
                 return;
@@ -1405,6 +1405,7 @@ define([
             pressKey(e.which, false);
         });
         $(ifrw).on('keydown', function (e) {
+            // "Del"
             if (e.which === 46) {
                 var $selected = $iframe.find('.selected');
                 if (!$selected.length) { return; }
@@ -1552,6 +1553,7 @@ define([
                 var $backupButton = Cryptpad.createButton('', true);
                 $backupButton.on('click', function() {
                     var url = window.location.origin + window.location.pathname + '#' + editHash;
+                    //TODO change text & transalte
                     Cryptpad.alert("Backup URL for this pad. It is highly recommended that you do not share it with other people.<br>Anybody with that URL can remove all the files in your file manager.<br>" + url);
                 });
                 $userBlock.append($backupButton);
@@ -1566,12 +1568,15 @@ define([
                     proxy[FILES_DATA] = s;
                     initLocalStorage();
                     init(proxy);
+                    APP.userList.onChange();
+                    Cryptpad.removeLoadingScreen();
                 });
                 return;
             }
             initLocalStorage();
             init(proxy);
             APP.userList.onChange();
+            Cryptpad.removeLoadingScreen();
         };
         var onDisconnect = function (info) {
             setEditable(false);
@@ -1592,6 +1597,11 @@ define([
         proxy.on('disconnect', function () {
             onDisconnect();
         });
+    });
+    Cryptpad.onError(function (info) {
+        if (info) {
+            onConnectError();
+        }
     });
 
 

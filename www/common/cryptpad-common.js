@@ -735,6 +735,26 @@ define([
         });
     };
 
+    var LOADING = 'loading';
+    common.addLoadingScreen = function () {
+        var $loading = $('<div>', {id: LOADING});
+        var $container = $('<div>', {'class': 'loadingContainer'});
+        $container.append('<img class="cryptofist" src="/customize/cryptofist_small.png" />');
+        var $spinner = $('<div>', {'class': 'spinnerContainer'});
+        loadingSpinner = common.spinner($spinner).show();
+        var $text = $('<p>').text(Messages.loading);
+        $container.append($spinner).append($text);
+        $loading.append($container);
+        $('body').append($loading);
+    };
+    common.removeLoadingScreen = function () {
+        $('#' + LOADING).fadeOut(750);
+    };
+    common.errorLoadingScreen = function (error) {
+        $('.spinnerContainer').hide();
+        $('#' + LOADING).find('p').text(error || Messages.error);
+    };
+
     /*
      *  Saving files
      */
@@ -1066,17 +1086,17 @@ define([
         $(parent).append($target);
 
         var opts = {
-            lines: 9, // The number of lines to draw
-            length: 12, // The length of each line
-            width: 11, // The line thickness
-            radius: 20, // The radius of the inner circle
+            lines: 20, // The number of lines to draw
+            length: 5, // The length of each line
+            width: 2, // The line thickness
+            radius: 15, // The radius of the inner circle
             scale: 2, // Scales overall size of the spinner
             corners: 1, // Corner roundness (0..1)
-            color: '#777', // #rgb or #rrggbb or array of colors
+            color: '#ddd', // #rgb or #rrggbb or array of colors
             opacity: 0.3, // Opacity of the lines
             rotate: 31, // The rotation offset
             direction: 1, // 1: clockwise, -1: counterclockwise
-            speed: 0.9, // Rounds per second
+            speed: 1, // Rounds per second
             trail: 49, // Afterglow percentage
             fps: 20, // Frames per second when using setTimeout() as a fallback for CSS
             zIndex: 2e9, // The z-index (defaults to 2000000000)
@@ -1085,7 +1105,8 @@ define([
             left: '50%', // Left position relative to parent
             shadow: false, // Whether to render a shadow
             hwaccel: false, // Whether to use hardware acceleration
-            position: 'absolute', // Element positioning
+            position: 'relative', // Element positioning
+            height: '100px'
         };
         var spinner = new Spinner(opts).spin($target[0]);
 

@@ -27,6 +27,7 @@ define([
     var DiffDom = window.diffDOM;
 
     Cryptpad.styleAlerts();
+    Cryptpad.addLoadingScreen();
 
     var stringify = function (obj) {
         return JSONSortify(obj);
@@ -60,7 +61,6 @@ define([
         logFights: true,
         fights: [],
         Cryptpad: Cryptpad,
-        spinner: Cryptpad.spinner(document.body),
     };
 
     var toolbar;
@@ -78,8 +78,7 @@ define([
     };
 
     var onConnectError = function (info) {
-        module.spinner.hide();
-        Cryptpad.alert(Messages.websocketError);
+        Cryptpad.errorLoadingScreen(Messages.websocketError);
     };
 
     var andThen = function (Ckeditor) {
@@ -140,9 +139,6 @@ define([
                     $(inner).css({
                         color: '#333',
                     });
-                    $(module.spinner.get().el).fadeOut(750);
-                } else {
-                    module.spinner.show();
                 }
                 if (!readOnly || !bool) {
                     inner.setAttribute('contenteditable', bool);
@@ -657,6 +653,7 @@ define([
                     console.log("Unlocking editor");
                     setEditable(true);
                     initializing = false;
+                    Cryptpad.removeLoadingScreen();
                     // Update the toolbar list:
                     // Add the current user in the metadata if he has edit rights
                     if (readOnly) { return; }

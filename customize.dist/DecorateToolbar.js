@@ -10,8 +10,7 @@ define([
     var main = function () {
         var url = window.location.pathname;
         var isHtml = /\.html/.test(url) || url === '/' || url === '';
-        var isPoll = /\/poll\//.test(url);
-        if (!isHtml && !isPoll) {
+        if (!isHtml) {
             Messages._applyTranslation();
             return;
         }

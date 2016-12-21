@@ -254,7 +254,7 @@ define([
             var parentEl = exp.findElement(files, parentPath);
             if (path.length === 4 && path[0] === TRASH) {
                 files[TRASH][path[1]].splice(path[2], 1);
-            } else if (path[0] === UNSORTED) {
+            } else if (path[0] === UNSORTED) { //TODO || === TEMPLATE
                 parentEl.splice(key, 1);
             } else {
                 parentEl[key] = undefined;
@@ -264,6 +264,7 @@ define([
         };
 
         // Find an element in a object following a path, resursively
+        // NOTE: it is always used with an absolute path and root === files in our code
         var findElement = exp.findElement = function (root, pathInput) {
             if (!pathInput) {
                 error("Invalid path:\n", pathInput, "\nin root\n", root);
@@ -279,6 +280,7 @@ define([
             return findElement(root[key], path);
         };
 
+        // Get the object {element: element, path: [path]} from a trash root path
         var getTrashElementData = exp.getTrashElementData = function (trashPath) {
             if (!isInTrashRoot) {
                 debug("Called getTrashElementData on a element not in trash root: ", trashPath);
@@ -289,6 +291,7 @@ define([
             return findElement(files, parentPath);
         };
 
+        // Get data from AllFiles (Cryptpad_RECENTPADS)
         var getFileData = exp.getFileData = function (file) {
             if (!file) { return; }
             var res;
@@ -328,6 +331,7 @@ define([
         };
 
         // Move to trash
+        // TODO: rename the function
         var removeElement = exp.removeElement = function (path, cb, keepOld) {
             if (!path || path.length < 2 || path[0] === TRASH) {
                 debug("Calling removeElement from a wrong path: ", path);
@@ -343,6 +347,7 @@ define([
             if (cb) { cb(); }
         };
 
+        //TODO add suport for TEMPLATE here
         var moveElement = exp.moveElement = function (elementPath, newParentPath, cb, keepOld) {
             if (comparePath(elementPath, newParentPath)) { return; } // Nothing to do...
             if (isPathInTrash(newParentPath)) {
@@ -353,12 +358,13 @@ define([
 
             var newParent = findElement(files, newParentPath);
 
+            // Never move a folder in one of its children
             if (isFolder(element) && isSubpath(newParentPath, elementPath)) {
                 log(Messages.fo_moveFolderToChildError);
                 return;
             }
 
-            if (isPathInUnsorted(newParentPath)) {
+            if (isPathInUnsorted(newParentPath)) { //TODO || TEMPLATE
                 if (isFolder(element)) {
                     log(Messages.fo_moveUnsortedError);
                     return;
@@ -386,7 +392,7 @@ define([
             var newName = !isPathInRoot(elementPath) ? getAvailableName(newParent, name) : name;
 
             if (typeof(newParent[newName]) !== "undefined") {
-                log("A file with the same name already exist at the new location. Rename the file and try again.");
+                log(Messages.fo_unavailableName);
                 return;
             }
             newParent[newName] = element;
@@ -523,6 +529,7 @@ define([
 
         var emptyTrash = exp.emptyTrash = function (cb) {
             files[TRASH] = {};
+            checkDeletedFiles();
             if(cb) { cb(); }
         };
 
@@ -592,7 +599,7 @@ define([
 
         var fixFiles = exp.fixFiles = function () {
             // Explore the tree and check that everything is correct:
-            //  * 'root', 'trash' and 'filesData' exist and are objects
+            //  * 'root', 'trash', 'unsorted' and 'filesData' exist and are objects
             //  * ROOT: Folders are objects, files are href
             //  * TRASH: Trash root contains only arrays, each element of the array is an object {element:.., path:..}
             //  * FILES_DATA: - Data (title, cdate, adte) are stored in filesData. filesData contains only href keys linking to object with title, cdate, adate.
@@ -601,10 +608,6 @@ define([
             //  * UNSORTED: Contains only files (href), and does not contains files that are in ROOT
             debug("Cleaning file system...");
 
-            // Create a backup
-            if (typeof(localStorage.oldFileSystem) === "undefined") {
-                localStorage.oldFileSystem = '[]';
-            }
             var before = JSON.stringify(files);
 
             if (typeof(files[ROOT]) !== "object") { debug("ROOT was not an object"); files[ROOT] = {}; }

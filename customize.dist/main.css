@@ -315,6 +315,37 @@ tr {
   font-family: lato, Helvetica, sans-serif;
   font-size: 1.02em;
 }
+#loading {
+  position: fixed;
+  z-index: 9999;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  background: #302B28;
+  text-align: center;
+  font-size: 1.5em;
+}
+#loading .loadingContainer {
+  margin-top: 50vh;
+  transform: translateY(-50%);
+}
+#loading .cryptofist {
+  margin-left: auto;
+  margin-right: auto;
+}
+@media screen and (max-height: 450px) {
+  #loading .cryptofist {
+    display: none;
+  }
+}
+#loading .spinnerContainer {
+  position: relative;
+  height: 100px;
+}
+#loading .spinnerContainer > div {
+  height: 100px;
+}
 #main {
   width: 70vw;
   margin: auto;

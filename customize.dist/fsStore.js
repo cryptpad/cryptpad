@@ -146,11 +146,6 @@ define([
             if (!Cryptpad.getUserHash()) {
                 localStorage.FS_hash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
             }
-            window.patchText = TextPatcher.create({
-                realtime: realtime,
-                logging: true,
-            });
-
         }).on('ready', function () {
             if (!rt.proxy[Cryptpad.storageKey] || !Cryptpad.isArray(rt.proxy[Cryptpad.storageKey])) {
                 var oldStore = Cryptpad.getStore(true);
@@ -171,7 +166,7 @@ define([
                 }
                 return;
             }
-            Cryptpad.alert(Messages.common_connectionLost);
+            //Cryptpad.alert(Messages.common_connectionLost);
         });
 
     };

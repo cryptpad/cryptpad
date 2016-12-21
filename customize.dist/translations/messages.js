@@ -23,6 +23,9 @@ define(function () {
     out.common_connectionLost = 'Server Connection Lost';
     out.websocketError = 'Unable to connect to the websocket server...';
 
+    out.loading = "Loading...";
+    out.error = "Error";
+
     out.disconnected = 'Disconnected';
     out.synchronizing = 'Synchronizing';
     out.reconnecting = 'Reconnecting...';
@@ -211,6 +214,7 @@ define(function () {
     out.fo_existingNameError = "Name already used in that directory. Please choose another one.";
     out.fo_moveFolderToChildError = "You can't move a folder into one of its descendants";
     out.fo_unableToRestore = "Unable to restore that file to its original location. You can try to move it to a new location.";
+    out.fo_unavailableName = "A file or a folder with the same name already exist at the new location. Rename the element and try again.";
 
     // login
     out.login_login = "log in";

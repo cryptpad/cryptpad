@@ -19,6 +19,10 @@ define(function () {
     ].join('');
 
     out.common_connectionLost = 'Connexion au serveur perdue';
+    out.websocketError = 'Impossible de se connecter au serveur WebSocket...';
+
+    out.loading = "Chargement...";
+    out.error = "Erreur";
 
     out.disconnected = 'Déconnecté';
     out.synchronizing = 'Synchronisation';
@@ -212,6 +216,7 @@ define(function () {
     out.fo_existingNameError = "Ce nom est déjà utilisé dans ce répertoire. Veuillez en choisir un autre.";
     out.fo_moveFolderToChildError = "Vous ne pouvez pas déplacer un dossier dans un de ses descendants";
     out.fo_unableToRestore = "Impossible de restaurer ce fichier à son emplacement d'origine. Vous pouvez essayer de le déplacer à un nouvel emplacement.";
+    out.fo_unavailableName = "Un fichier ou dossier avec le même nom existe déjà au nouvel emplacement. Renommez cet élément avant d'essayer à nouveau.";
 
     // index.html
 
