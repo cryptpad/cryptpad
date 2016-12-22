@@ -75,6 +75,8 @@ define([
         ].forEach(function (k) {
             sessionStorage.removeItem(k);
             localStorage.removeItem(k);
+            delete localStorage[k];
+            delete sessionStorage[k];
         });
         if (cb) { cb(); }
     };
