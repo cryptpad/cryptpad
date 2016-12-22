@@ -139,6 +139,8 @@ define([
         });
     };
 
+
+    displayCreateButtons();
     Cryptpad.ready(function () {
         console.log("ready");
 
@@ -149,7 +151,6 @@ define([
         DecorateToolbar.main($('#bottom-bar'));
         Cryptpad.styleAlerts();
 
-        displayCreateButtons();
         refreshTable();
         if (Cryptpad.store && Cryptpad.store.change) {
             Cryptpad.store.change(function (data) {

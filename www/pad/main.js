@@ -121,7 +121,6 @@ define([
                 el.setAttribute('class', 'non-realtime');
             });
 
-            editor.execCommand('maximize');
             var documentBody = ifrw.$('iframe')[0].contentDocument.body;
 
             var inner = window.inner = documentBody;
@@ -629,6 +628,8 @@ define([
 
             // this should only ever get called once, when the chain syncs
             var onReady = realtimeOptions.onReady = function (info) {
+                editor.execCommand('maximize');
+
                 module.patchText = TextPatcher.create({
                     realtime: info.realtime,
                     //logging: true,
