@@ -249,10 +249,10 @@ define(function () {
     out.table_created = 'Created';
     out.table_last = 'Last Accessed';
 
-    out.button_newpad = 'CREATE NEW WYSIWYG PAD';
-    out.button_newcode = 'CREATE NEW CODE PAD';
-    out.button_newpoll = 'CREATE NEW POLL';
-    out.button_newslide = 'CREATE NEW PRESENTATION';
+    out.button_newpad = 'NEW RICH TEXT PAD';
+    out.button_newcode = 'NEW CODE PAD';
+    out.button_newpoll = 'NEW POLL';
+    out.button_newslide = 'NEW PRESENTATION';
 
     // privacy.html
 
