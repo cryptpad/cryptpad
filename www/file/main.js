@@ -1488,7 +1488,11 @@ define([
                 // Reload after a few ms to make sure all the change events have been received
                 onRefresh.refresh();
             } else if (path.length && path[0] === FILES_DATA) {
-                refreshFilesData();
+                if (filesOp.isPathInHrefArray(currentPath)) {
+                    onRefresh.refresh();
+                } else {
+                    refreshFilesData();
+                }
             }
             module.resetTree();
             return false;
@@ -1547,7 +1551,7 @@ define([
             var viewHash = APP.viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
 
             APP.hash = readOnly ? viewHash : editHash;
-            if (!readOnly && (!window.location.hash || !localStorage.FS_hash)) {
+            if (!readOnly && !localStorage.FS_hash && !Cryptpad.getUserHash() && !window.location.hash) {
                 localStorage.FS_hash = editHash;
             }
 
