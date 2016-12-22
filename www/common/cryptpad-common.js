@@ -674,7 +674,7 @@ define([
         var $container = $('<div>', {'class': 'loadingContainer'});
         $container.append('<img class="cryptofist" src="/customize/cryptofist_small.png" />');
         var $spinner = $('<div>', {'class': 'spinnerContainer'});
-        loadingSpinner = common.spinner($spinner).show();
+        var loadingSpinner = common.spinner($spinner).show();
         var $text = $('<p>').text(Messages.loading);
         $container.append($spinner).append($text);
         $loading.append($container);

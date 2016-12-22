@@ -33,7 +33,7 @@ define([
         $loginBox.slideDown();
     };
 
-    var $logout = $logout.click(function () {
+    $logout.click(function () {
         Cryptpad.logout(function () {
             $logoutBox.slideUp();
             revealLogin();
