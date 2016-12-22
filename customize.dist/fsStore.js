@@ -86,6 +86,14 @@ define([
         cb();
     };
 
+    Store.addTemplate = function (href) {
+        filesOp.addTemplate(href);
+    };
+
+    Store.listTemplates = function () {
+        return filesOp.listTemplates();
+    };
+
     Store.getProxy = function () {
         return exp;
     };
@@ -146,11 +154,6 @@ define([
             if (!Cryptpad.getUserHash()) {
                 localStorage.FS_hash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
             }
-            window.patchText = TextPatcher.create({
-                realtime: realtime,
-                logging: true,
-            });
-
         }).on('ready', function () {
             if (!rt.proxy[Cryptpad.storageKey] || !Cryptpad.isArray(rt.proxy[Cryptpad.storageKey])) {
                 var oldStore = Cryptpad.getStore(true);
@@ -171,7 +174,7 @@ define([
                 }
                 return;
             }
-            Cryptpad.alert(Messages.common_connectionLost);
+            //Cryptpad.alert(Messages.common_connectionLost);
         });
 
     };

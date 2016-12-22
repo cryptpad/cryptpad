@@ -22,7 +22,6 @@ define([
 
     var module = window.APP = {
         Cryptpad: Cryptpad,
-        spinner: Cryptpad.spinner(document.body),
         TextPatcher: TextPatcher,
         Slide: Slide,
     };
@@ -32,7 +31,7 @@ define([
     var SLIDE_COLOR_ID = "cryptpad-color";
     Cryptpad.styleAlerts();
 
-    module.spinner.show();
+    Cryptpad.addLoadingScreen();
 
     var stringify = function (obj) {
         return JSONSortify(obj);
@@ -60,8 +59,7 @@ define([
         var presentMode = Slide.isPresentURL();
 
         var onConnectError = function (info) {
-            module.spinner.hide();
-            Cryptpad.alert(Messages.websocketError);
+            Cryptpad.errorLoadingScreen(Messages.websocketError);
         };
 
         var andThen = function (CMeditor) {
@@ -663,7 +661,7 @@ define([
                     document.title = APP.title;
                 });
 
-                $(module.spinner.get().el).fadeOut(750);
+                Cryptpad.removeLoadingScreen();
                 setEditable(true);
                 initializing = false;
                 //Cryptpad.log("Your document is ready");
