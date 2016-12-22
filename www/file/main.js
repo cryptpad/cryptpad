@@ -18,7 +18,7 @@ define([
     var $iframe = $('#pad-iframe').contents();
     var ifrw = $('#pad-iframe')[0].contentWindow;
 
-    //Cryptpad.addLoadingScreen();
+    Cryptpad.addLoadingScreen();
     var onConnectError = function (info) {
         Cryptpad.errorLoadingScreen(Messages.websocketError);
     };
@@ -956,7 +956,9 @@ define([
             var $fileHeader = getFileListHeader(false);
             $container.append($fileHeader);
             var keys = unsorted;
-            var sortedFiles = sortElements(false, [rootName], keys, Cryptpad.getLSAttribute(SORT_FILE_BY), !getSortFileDesc(), true);
+            var sortBy = Cryptpad.getLSAttribute(SORT_FILE_BY);
+            sortBy = sortBy === "" ? sortBy = 'title' : sortBy;
+            var sortedFiles = sortElements(false, [rootName], keys, sortBy, !getSortFileDesc(), true);
             sortedFiles.forEach(function (href) {
                 var file = filesOp.getFileData(href);
                 if (!file) {

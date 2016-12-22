@@ -596,13 +596,16 @@ define([
             var rootFiles = getRootFiles();
             var trashFiles = getTrashFiles();
             var templateFiles = getTemplateFiles();
+            var newPath, parentEl;
             if (path && isPathInHrefArray(path)) {
-                var parentEl = findElement(files, newPath);
+                newPath = decodeURIComponent(path).split(',');
+                parentEl = findElement(files, newPath);
                 parentEl.push(href);
+                return;
             }
-            else if (path && name) {
-                var newPath = decodeURIComponent(path).split(',');
-                var parentEl = findElement(files, newPath);
+            if (path && name) {
+                newPath = decodeURIComponent(path).split(',');
+                parentEl = findElement(files, newPath);
                 if (parentEl) {
                     var newName = getAvailableName(parentEl, name);
                     parentEl[newName] = href;
@@ -621,7 +624,7 @@ define([
 
             var href = fileData.href;
             var test = files[FILES_DATA].some(function (o) {
-                o.href === href;
+                return o.href === href;
             });
             if (!test) {
                 files[FILES_DATA].push(fileData);
