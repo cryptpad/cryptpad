@@ -18,14 +18,15 @@ define([
     var $iframe = $('#pad-iframe').contents();
     var ifrw = $('#pad-iframe')[0].contentWindow;
 
-    Cryptpad.addLoadingScreen();
+    //Cryptpad.addLoadingScreen();
     var onConnectError = function (info) {
         Cryptpad.errorLoadingScreen(Messages.websocketError);
     };
 
     var APP = window.APP = {
         $bar: $iframe.find('#toolbar'),
-        editable: false
+        editable: false,
+        Cryptpad: Cryptpad
     };
 
     var ROOT = "root";
@@ -34,6 +35,8 @@ define([
     var UNSORTED_NAME = Messages.fm_unsortedName;
     var FILES_DATA = Cryptpad.storageKey;
     var FILES_DATA_NAME = Messages.fm_filesDataName;
+    var TEMPLATE = "template";
+    var TEMPLATE_NAME = Messages.fm_templateName;
     var TRASH = "trash";
     var TRASH_NAME = Messages.fm_trashName;
     var LOCALSTORAGE_LAST = "cryptpad-file-lastOpened";
@@ -204,6 +207,7 @@ define([
         var $fileIcon = $('<span>', {"class": "fa fa-file-text-o file"});
         var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
         var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
+        var $templateIcon = $('<span>', {"class": "fa fa-cubes"});
         var $trashIcon = $('<span>', {"class": "fa fa-trash"});
         var $trashEmptyIcon = $('<span>', {"class": "fa fa-trash-o"});
         var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o expcol"});
@@ -396,7 +400,7 @@ define([
         var openDirectoryContextMenu = function (e) {
             var $element = $(e.target).closest('li');
             $contextMenu.find('li').show();
-            if ($element.hasClass('file-element')) {
+            if ($element.find('.file-element').length) {
                 $contextMenu.find('a.newfolder').parent('li').hide();
             }
             openContextMenu(e, $contextMenu);
@@ -670,6 +674,7 @@ define([
             if (name === ROOT && path.length === 1) { name = ROOT_NAME; }
             else if (name === TRASH && path.length === 1) { name = TRASH_NAME; }
             else if (name === UNSORTED && path.length === 1) { name = UNSORTED_NAME; }
+            else if (name === TEMPLATE && path.length === 1) { name = TEMPLATE_NAME; }
             else if (name === FILES_DATA && path.length === 1) { name = FILES_DATA_NAME; }
             else if (filesOp.isPathInTrash(path)) { name = getTrashTitle(path); }
             var $title = $('<h1>').text(name);
@@ -787,17 +792,25 @@ define([
         var SORT_FOLDER_DESC = 'sortFoldersDesc';
         var SORT_FILE_BY = 'sortFilesBy';
         var SORT_FILE_DESC = 'sortFilesDesc';
+
+        var getSortFileDesc = function () {
+            return Cryptpad.getLSAttribute(SORT_FILE_DESC) === "true";
+        };
+        var getSortFolderDesc = function () {
+            return Cryptpad.getLSAttribute(SORT_FOLDER_DESC) === "true";
+        };
+
         var onSortByClick = function (e) {
             var $span = $(this);
             var value;
             if ($span.hasClass('foldername')) {
-                value = Cryptpad.getLSAttribute(SORT_FOLDER_DESC);
+                value = getSortFolderDesc();
                 Cryptpad.setLSAttribute(SORT_FOLDER_DESC, value ? false : true);
                 refresh();
                 return;
             }
             value = Cryptpad.getLSAttribute(SORT_FILE_BY);
-            var descValue = Cryptpad.getLSAttribute(SORT_FILE_DESC);
+            var descValue = getSortFileDesc();
             if ($span.hasClass('filename')) {
                 if (value === '') {
                     descValue = descValue ? false : true;
@@ -807,7 +820,7 @@ define([
                 }
             } else {
                 var found = false;
-                ['title', 'atime', 'ctime'].forEach(function (c) {
+                ['title', 'type', 'atime', 'ctime'].forEach(function (c) {
                     if (!found && $span.hasClass(c)) {
                         found = true;
                         if (value === c) { descValue = descValue ? false : true; }
@@ -826,7 +839,7 @@ define([
 
         var addFolderSortIcon = function ($list) {
             var $icon = $sortAscIcon.clone();
-            if (Cryptpad.getLSAttribute(SORT_FOLDER_DESC)) {
+            if (getSortFolderDesc()) {
                 $icon = $sortDescIcon.clone();
             }
             if (typeof(Cryptpad.getLSAttribute(SORT_FOLDER_DESC)) !== "undefined") {
@@ -845,7 +858,7 @@ define([
         };
         var addFileSortIcon = function ($list) {
             var $icon = $sortAscIcon.clone();
-            if (Cryptpad.getLSAttribute(SORT_FILE_DESC)) {
+            if (getSortFileDesc()) {
                 $icon = $sortDescIcon.clone();
             }
             var classSorted;
@@ -860,7 +873,7 @@ define([
             var $fihElement = $('<span>', {'class': 'element'}).appendTo($fileHeader);
             var $fhName = $('<span>', {'class': 'name filename'}).text(Messages.fm_fileName).click(onSortByClick);
             var $fhTitle = $('<span>', {'class': 'title '}).text(Messages.fm_title).click(onSortByClick);
-            var $fhType = $('<span>', {'class': 'type'}).text(Messages.table_type);
+            var $fhType = $('<span>', {'class': 'type'}).text(Messages.table_type).click(onSortByClick);
             var $fhAdate = $('<span>', {'class': 'atime'}).text(Messages.fm_lastAccess).click(onSortByClick);
             var $fhCdate = $('<span>', {'class': 'ctime'}).text(Messages.fm_creation).click(onSortByClick);
             $fihElement.append($fhName);
@@ -891,6 +904,10 @@ define([
                 if (prop) {
                     var element = useHref || useData ? el : root[el];
                     var e = useData ? element : filesOp.getFileData(element);
+                    if (prop === 'type') {
+                        var hrefData = Cryptpad.parsePadUrl(e.href);
+                        return hrefData.type;
+                    }
                     if (prop === 'atime' || prop === 'ctime') {
                         return new Date(e[prop]);
                     }
@@ -933,20 +950,20 @@ define([
         };
         // Unsorted element are represented by "href" in an array: they don't have a filename
         // and they don't hav a hierarchical structure (folder/subfolders)
-        var displayUnsorted = function ($container) {
-            var unsorted = files[UNSORTED];
-            if (allFilesSorted()) { return; }
+        var displayHrefArray = function ($container, rootName) {
+            var unsorted = files[rootName];
+            if (rootName === UNSORTED && allFilesSorted()) { return; }
             var $fileHeader = getFileListHeader(false);
             $container.append($fileHeader);
             var keys = unsorted;
-            var sortedFiles = sortElements(false, [UNSORTED], keys, Cryptpad.getLSAttribute(SORT_FILE_BY), !Cryptpad.getLSAttribute(SORT_FILE_DESC), true);
+            var sortedFiles = sortElements(false, [rootName], keys, Cryptpad.getLSAttribute(SORT_FILE_BY), !getSortFileDesc(), true);
             sortedFiles.forEach(function (href) {
                 var file = filesOp.getFileData(href);
                 if (!file) {
-                    debug("getUnsortedFiles returns an element not present in filesData: ", href);
+                    debug("Unsorted or template returns an element not present in filesData: ", href);
                     return;
                 }
-                var idx = files[UNSORTED].indexOf(href);
+                var idx = files[rootName].indexOf(href);
                 var $icon = $fileIcon.clone();
                 var $name = $('<span>', { 'class': 'file-element element' });
                 addFileData(href, file.title, $name, false);
@@ -955,7 +972,7 @@ define([
                 }).append($icon).append($name).dblclick(function () {
                     openFile(href);
                 });
-                var path = [UNSORTED, idx];
+                var path = [rootName, idx];
                 $element.data('path', path);
                 $element.click(function(e) {
                     e.stopPropagation();
@@ -972,7 +989,7 @@ define([
             var $fileHeader = getFileListHeader(false);
             $container.append($fileHeader);
             var keys = allfiles;
-            var sortedFiles = sortElements(false, [FILES_DATA], keys, Cryptpad.getLSAttribute(SORT_FILE_BY), !Cryptpad.getLSAttribute(SORT_FILE_DESC), false, true);
+            var sortedFiles = sortElements(false, [FILES_DATA], keys, Cryptpad.getLSAttribute(SORT_FILE_BY), !getSortFileDesc(), false, true);
             sortedFiles.forEach(function (file) {
                 var $icon = $fileIcon.clone();
                 var $name = $('<span>', { 'class': 'file-element element' });
@@ -1013,8 +1030,8 @@ define([
                     });
                 });
             });
-            var sortedFolders = sortTrashElements(true, filesList, null, !Cryptpad.getLSAttribute(SORT_FOLDER_DESC));
-            var sortedFiles = sortTrashElements(false, filesList, Cryptpad.getLSAttribute(SORT_FILE_BY), !Cryptpad.getLSAttribute(SORT_FILE_DESC));
+            var sortedFolders = sortTrashElements(true, filesList, null, !getSortFolderDesc());
+            var sortedFiles = sortTrashElements(false, filesList, Cryptpad.getLSAttribute(SORT_FILE_BY), !getSortFileDesc());
             if (filesOp.hasSubfolder(root, true)) { $list.append($folderHeader); }
             sortedFolders.forEach(function (f) {
                 var $element = createElement([TRASH], f.spath, root, true);
@@ -1039,6 +1056,7 @@ define([
             }
             var isTrashRoot = filesOp.comparePath(path, [TRASH]);
             var isUnsorted = filesOp.comparePath(path, [UNSORTED]);
+            var isTemplate = filesOp.comparePath(path, [TEMPLATE]);
             var isAllFiles = filesOp.comparePath(path, [FILES_DATA]);
 
             var root = filesOp.findElement(files, path);
@@ -1077,8 +1095,8 @@ define([
             var $folderHeader = getFolderListHeader();
             var $fileHeader = getFileListHeader(true);
 
-            if (isUnsorted) {
-                displayUnsorted($list);
+            if (isUnsorted || isTemplate) {
+                displayHrefArray($list, path[0]);
             } else if (isAllFiles) {
                 displayAllFiles($list);
             } else if (isTrashRoot) {
@@ -1089,8 +1107,8 @@ define([
                 if (filesOp.hasSubfolder(root)) { $list.append($folderHeader); }
                 // display sub directories
                 var keys = Object.keys(root);
-                var sortedFolders = sortElements(true, path, keys, null, !Cryptpad.getLSAttribute(SORT_FOLDER_DESC));
-                var sortedFiles = sortElements(false, path, keys, Cryptpad.getLSAttribute(SORT_FILE_BY), !Cryptpad.getLSAttribute(SORT_FILE_DESC));
+                var sortedFolders = sortElements(true, path, keys, null, !getSortFolderDesc());
+                var sortedFiles = sortElements(false, path, keys, Cryptpad.getLSAttribute(SORT_FILE_BY), !getSortFileDesc());
                 sortedFolders.forEach(function (key) {
                     if (filesOp.isFile(root[key])) { return; }
                     var $element = createElement(path, key, root, true);
@@ -1211,6 +1229,15 @@ define([
             $container.append($unsortedList);
         };
 
+        var createTemplate = function ($container, path) {
+            var $icon = $templateIcon.clone();
+            var isOpened = filesOp.comparePath(path, currentPath);
+            var $element = createTreeElement(TEMPLATE_NAME, $icon, [TEMPLATE], false, true, false, isOpened);
+            $element.addClass('root');
+            var $list = $('<ul>', { id: 'templateTree' }).append($element);
+            $container.append($list);
+        };
+
         var createAllFiles = function ($container, path) {
             var $icon = $unsortedIcon.clone();
             var isOpened = filesOp.comparePath(path, currentPath);
@@ -1244,6 +1271,7 @@ define([
             $tree.html('');
             createTree($tree, [ROOT]);
             createUnsorted($tree, [UNSORTED]);
+            createTemplate($tree, [TEMPLATE]);
             createAllFiles($tree, [FILES_DATA]);
             createTrash($tree, [TRASH]);
         };
@@ -1427,7 +1455,7 @@ define([
                     if (paths.length === 1) {
                         var path = paths[0];
                         var element = filesOp.findElement(files, path);
-                        var name = filesOp.isInTrashRoot(path) ? path[1] : (filesOp.isPathInUnsorted(path) ? filesOp.getTitle(element) : path[path.length - 1]);
+                        var name = filesOp.isInTrashRoot(path) ? path[1] : (filesOp.isPathInHrefArray(path) ? filesOp.getTitle(element) : path[path.length - 1]);
                         msg = Messages._getKey("fm_removePermanentlyDialog", [name]);
                     }
                     Cryptpad.confirm(msg, function(res) {
@@ -1454,6 +1482,7 @@ define([
         files.on('change', [], function (o, n, p) {
             var path = arguments[2];
             if ((filesOp.isPathInUnsorted(currentPath) && filesOp.isPathInUnsorted(path)) ||
+                    (filesOp.isPathInTemplate(currentPath) && filesOp.isPathInTemplate(path)) ||
                     (path.length >= currentPath.length && filesOp.isSubpath(path, currentPath)) ||
                     (filesOp.isPathInTrash(currentPath) && filesOp.isPathInTrash(path))) {
                 // Reload after a few ms to make sure all the change events have been received
@@ -1466,6 +1495,7 @@ define([
         }).on('remove', [], function (o, p) {
             var path = arguments[1];
             if ((filesOp.isPathInUnsorted(currentPath) && filesOp.isPathInUnsorted(path)) ||
+                    (filesOp.isPathInTemplate(currentPath) && filesOp.isPathInTemplate(path)) ||
                     (path.length >= currentPath.length && filesOp.isSubpath(path, currentPath)) ||
                     (filesOp.isPathInTrash(currentPath) && filesOp.isPathInTrash(path))) {
                 // Reload after a few to make sure all the change events have been received
@@ -1477,8 +1507,6 @@ define([
 
         refresh();
     };
-
-
 
     // don't initialize until the store is ready.
     Cryptpad.ready(function () {

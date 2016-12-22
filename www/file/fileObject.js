@@ -9,6 +9,7 @@ define([
     var UNSORTED = "unsorted";
     var FILES_DATA = "filesData";
     var TRASH = "trash";
+    var TEMPLATE = "template";
     var NEW_FOLDER_NAME = Messages.fm_newFolder;
 
     var init = module.init = function (files, config) {
@@ -45,6 +46,12 @@ define([
         };
         var isPathInUnsorted = exp.isPathInUnsorted = function (path) {
             return path[0] && path[0] === UNSORTED;
+        };
+        var isPathInTemplate = exp.isPathInTemplate = function (path) {
+            return path[0] && path[0] === TEMPLATE;
+        };
+        var isPathInHrefArray = exp.isPathInHrefArray = function (path) {
+            return isPathInUnsorted(path) || isPathInTemplate(path);
         };
         var isPathInTrash = exp.isPathInTrash = function (path) {
             return path[0] && path[0] === TRASH;
@@ -162,6 +169,13 @@ define([
             return files[UNSORTED].slice();
         };
 
+        var getTemplateFiles = exp.getTemplateFiles = function () {
+            if (!files[TEMPLATE]) {
+                files[TEMPLATE] = [];
+            }
+            return files[TEMPLATE].slice();
+        };
+
         var getFilesRecursively = function (root, arr) {
             for (var e in root) {
                 if (isFile(root[e])) {
@@ -229,13 +243,15 @@ define([
         var checkDeletedFiles = function () {
             var rootFiles = getRootFiles();
             var unsortedFiles = getUnsortedFiles();
+            var templateFiles = getTemplateFiles();
             var trashFiles = getTrashFiles();
             var toRemove = [];
             files[FILES_DATA].forEach(function (arr) {
                 var f = arr.href;
                 if (rootFiles.indexOf(f) === -1
                     && unsortedFiles.indexOf(f) === -1
-                    && trashFiles.indexOf(f) === -1) {
+                    && trashFiles.indexOf(f) === -1
+                    && templateFiles.indexOf(f) === -1) {
                     toRemove.push(arr);
                 }
             });
@@ -339,7 +355,7 @@ define([
             }
             var element = findElement(files, path);
             var key = path[path.length - 1];
-            var name = isPathInUnsorted(path) ? getTitle(element) : key;
+            var name = isPathInHrefArray(path) ? getTitle(element) : key;
             var parentPath = path.slice();
             parentPath.pop();
             pushToTrash(name, element, parentPath);
@@ -347,7 +363,6 @@ define([
             if (cb) { cb(); }
         };
 
-        //TODO add suport for TEMPLATE here
         var moveElement = exp.moveElement = function (elementPath, newParentPath, cb, keepOld) {
             if (comparePath(elementPath, newParentPath)) { return; } // Nothing to do...
             if (isPathInTrash(newParentPath)) {
@@ -364,14 +379,15 @@ define([
                 return;
             }
 
-            if (isPathInUnsorted(newParentPath)) { //TODO || TEMPLATE
+            if (isPathInHrefArray(newParentPath)) {
                 if (isFolder(element)) {
-                    log(Messages.fo_moveUnsortedError);
+                    log(Messages.fo_moveUnsortedError); //TODO or template
                     return;
                 } else {
-                    if (isPathInUnsorted(elementPath)) { return; }
-                    if (files[UNSORTED].indexOf(element) === -1) {
-                        files[UNSORTED].push(element);
+                    if (elementPath[0] === newParentPath[0]) { return; }
+                    var fileRoot = newParentPath[0];
+                    if (files[fileRoot].indexOf(element) === -1) {
+                        files[fileRoot].push(element);
                     }
                     if (!keepOld) { deleteFromObject(elementPath); }
                     if(cb) { cb(); }
@@ -381,7 +397,7 @@ define([
 
             var name;
 
-            if (isPathInUnsorted(elementPath)) {
+            if (isPathInHrefArray(elementPath)) {
                 name = getTitle(element);
             } else if (isInTrashRoot(elementPath)) {
                 // Element from the trash root: elementPath = [TRASH, "{dirName}", 0, 'element']
@@ -403,13 +419,16 @@ define([
         // "Unsorted" is an array of href: we can't move several of them using "moveElement" in a
         // loop because moveElement removes the href from the array and it changes the path for all
         // the other elements. We have to move them all and then remove them from unsorted
-        var moveUnsortedElements = exp.moveUnsortedElements = function (paths, newParentPath, cb) {
+        var moveHrefArrayElements = exp.moveHrefArrayElements = function (paths, newParentPath, cb) {
             if (!paths || paths.length === 0) { return; }
-            if (isPathInUnsorted(newParentPath)) { return; }
+            //if (isPathInHrefArray(newParentPath)) { return; }
             var elements = {};
             // Get the elements
             paths.forEach(function (p) {
-                if (!isPathInUnsorted(p)) { return; }
+                // Here we move only files from array categories (unsorted, template...)
+                if (!isPathInHrefArray(p)) { return; }
+                // And we check that we don't want to move to the same location
+                if (p[0] === newParentPath[0]) { return; }
                 var el = findElement(files, p);
                 if (el) { elements[el] = p; }
             });
@@ -419,22 +438,21 @@ define([
             });
             // Remove the elements from their old location
             Object.keys(elements).forEach(function (el) {
-                var idx = files[UNSORTED].indexOf(el);
+                var fileRoot = elements[el][0];
+                var idx = files[fileRoot].indexOf(el);
                 if (idx !== -1) {
-                    files[UNSORTED].splice(idx, 1);
+                    files[fileRoot].splice(idx, 1);
                 }
             });
             if (cb) { cb(); }
         };
 
         var moveElements = exp.moveElements = function (paths, newParentPath, cb) {
-            var unsortedPaths = paths.filter(function (p) {
-                return p[0] === UNSORTED;
-            });
-            moveUnsortedElements(unsortedPaths, newParentPath);
+            var unsortedPaths = paths.filter(isPathInHrefArray);
+            moveHrefArrayElements(unsortedPaths, newParentPath);
             // Copy the elements to their new location
             paths.forEach(function (p) {
-                if (isPathInUnsorted(p)) { return; }
+                if (isPathInHrefArray(p)) { return; }
                 moveElement(p, newParentPath, null);
             });
             if(cb) { cb(); }
@@ -477,12 +495,13 @@ define([
             var element = findElement(files, path);
             var parentEl = getTrashElementData(path);
             var newPath = parentEl.path;
-            if (isPathInUnsorted(newPath)) {
-                if (files[UNSORTED].indexOf(element) === -1) {
-                    files[UNSORTED].push(element);
-                    removeFromTrashArray(parentEl, path[1]);
-                    cb();
+            if (isPathInHrefArray(newPath)) {
+                var fileRoot = newPath[0];
+                if (files[fileRoot].indexOf(element) === -1) {
+                    files[fileRoot].push(element);
                 }
+                removeFromTrashArray(parentEl, path[1]);
+                cb();
                 return;
             }
             // Find the new parent element
@@ -576,7 +595,12 @@ define([
             var unsortedFiles = getUnsortedFiles();
             var rootFiles = getRootFiles();
             var trashFiles = getTrashFiles();
-            if (path && name) {
+            var templateFiles = getTemplateFiles();
+            if (path && isPathInHrefArray(path)) {
+                var parentEl = findElement(files, newPath);
+                parentEl.push(href);
+            }
+            else if (path && name) {
                 var newPath = decodeURIComponent(path).split(',');
                 var parentEl = findElement(files, newPath);
                 if (parentEl) {
@@ -585,9 +609,36 @@ define([
                     return;
                 }
             }
-            if (unsortedFiles.indexOf(href) === -1 && rootFiles.indexOf(href) === -1 && trashFiles.indexOf(href) === -1) {
+            if (unsortedFiles.indexOf(href) === -1 && rootFiles.indexOf(href) === -1&& templateFiles.indexOf(href) === -1 && trashFiles.indexOf(href) === -1) {
                 files[UNSORTED].push(href);
             }
+        };
+
+        // addTemplate is called when we want to add a new pad, never visited, to the templates list
+        // first, we must add it to FILES_DATA, so the input has to be an fileDAta object
+        var addTemplate = exp.addTemplate = function (fileData) {
+            if (typeof fileData !== "object" || !fileData.href || !fileData.title) { return; }
+
+            var href = fileData.href;
+            var test = files[FILES_DATA].some(function (o) {
+                o.href === href;
+            });
+            if (!test) {
+                files[FILES_DATA].push(fileData);
+            }
+            if (files[TEMPLATE].indexOf(href) === -1) {
+                files[TEMPLATE].push(href);
+            }
+        };
+
+        var listTemplates = exp.listTemplates = function (type) {
+            var templateFiles = getTemplateFiles();
+            var res = [];
+            templateFiles.forEach(function (f) {
+                var data = getFileData(f);
+                res.push(JSON.parse(JSON.stringify(data)));
+            });
+            return res;
         };
 
         var uniq = function (a) {
@@ -614,6 +665,7 @@ define([
             if (typeof(files[TRASH]) !== "object") { debug("TRASH was not an object"); files[TRASH] = {}; }
             if (!$.isArray(files[FILES_DATA])) { debug("FILES_DATA was not an array"); files[FILES_DATA] = []; }
             if (!$.isArray(files[UNSORTED])) { debug("UNSORTED was not an array"); files[UNSORTED] = []; }
+            if (!$.isArray(files[TEMPLATE])) { debug("TEMPLATE was not an array"); files[TEMPLATE] = []; }
 
             var fixRoot = function (element) {
                 for (var el in element) {
@@ -653,15 +705,41 @@ define([
 
             var fixUnsorted = function (us) {
                 var rootFiles = getRootFiles().slice();
+                var templateFiles = getTemplateFiles();
                 var toClean = [];
                 us.forEach(function (el, idx) {
-                    if (!isFile(el) || rootFiles.indexOf(el) !== -1) {
+                    if (!isFile(el) || rootFiles.indexOf(el) !== -1 || templateFiles.indexOf(el) !== -1) {
                         toClean.push(idx);
+                    }
+                });
+                toClean.forEach(function (el) {
+                    var idx = us.indexOf(el);
+                    if (idx !== -1) {
+                        us.splice(idx, 1);
                     }
                 });
             };
             files[UNSORTED] = uniq(files[UNSORTED]);
             fixUnsorted(files[UNSORTED]);
+
+            var fixTemplate = function (us) {
+                var rootFiles = getRootFiles().slice();
+                var unsortedFiles = getUnsortedFiles();
+                var toClean = [];
+                us.forEach(function (el, idx) {
+                    if (!isFile(el) || rootFiles.indexOf(el) !== -1 || unsortedFiles.indexOf(el) !== -1) {
+                        toClean.push(idx);
+                    }
+                });
+                toClean.forEach(function (el) {
+                    var idx = us.indexOf(el);
+                    if (idx !== -1) {
+                        us.splice(idx, 1);
+                    }
+                });
+            };
+            files[TEMPLATE] = uniq(files[TEMPLATE]);
+            fixUnsorted(files[TEMPLATE]);
 
             var fixFilesData = function (fd) {
                 var rootFiles = getRootFiles();

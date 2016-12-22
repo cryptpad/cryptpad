@@ -172,6 +172,7 @@ define(function () {
     out.fm_trashName = "Trash";
     out.fm_unsortedName = "Unsorted files";
     out.fm_filesDataName = "All files";
+    out.fm_templateName = "Templates";
     out.fm_newFolder = "New folder";
     out.fm_newFolderButton = "NEW FOLDER";
     out.fm_folderName = "Folder name";

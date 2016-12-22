@@ -97,7 +97,7 @@ li {
     text-decoration: underline;
 }
 
-#tree #trashTree, #tree #unsortedTree, #tree #allfilesTree {
+#tree #trashTree, #tree #unsortedTree, #tree #templateTree, #tree #allfilesTree {
     margin-top: 2em;
 }
 

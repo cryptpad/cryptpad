@@ -451,6 +451,21 @@ define([
         return localStorage[attr];
     };
 
+    // STORAGE - TEMPLATES
+    var listTemplates = common.listTemplates = function (type) {
+        var allTemplates = getStore().listTemplates();
+        if (!type) { return allTemplates; }
+
+        var templates = allTemplates.filter(function (f) {
+            var parsed = parsePadUrl(f.href);
+            return parsed.type === type;
+        });
+        return templates;
+    };
+    var addTemplate = common.addTemplate = function (href) {
+        getStore().addTemplate(href);
+    };
+
 
     // STORAGE
     /* fetch and migrate your pad history from localStorage */

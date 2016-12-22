@@ -86,6 +86,14 @@ define([
         cb();
     };
 
+    Store.addTemplate = function (href) {
+        filesOp.addTemplate(href);
+    };
+
+    Store.listTemplates = function () {
+        return filesOp.listTemplates();
+    };
+
     Store.getProxy = function () {
         return exp;
     };
