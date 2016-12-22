@@ -220,7 +220,6 @@ define([
             $logoutBox.slideDown();
         } else {
             revealLogin();
-            //$logoutBox.hide();
         }
 
         $login.click(function () {
