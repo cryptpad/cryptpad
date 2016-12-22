@@ -24,7 +24,7 @@ define(function () {
     out.synchronizing = "Sincronización";
     out.reconnecting = "Reconectando...";
     out.lag = "Retraso";
-    out.readOnly = 'Solo lectura';
+    out.readonly = 'Solo lectura';
     out.anonymous = 'Anónimo';
     out.yourself = "tú mismo";
     out.anonymousUsers = "usuarios anónimos";
