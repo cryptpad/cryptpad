@@ -294,10 +294,6 @@ img {
   height: auto;
   max-width: 100%;
 }
-img.cryptofist {
-  filter: invert(100%);
-  -webkit-filter: invert(100%);
-}
 p {
   padding-top: .66001rem;
   margin-top: 0;
