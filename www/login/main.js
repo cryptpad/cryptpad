@@ -12,14 +12,33 @@ define([
     var Scrypt = window.scrypt;
     var Nacl = window.nacl;
 
-    Cryptpad.styleAlerts();
-
     var secret = {};
 
     var APP = window.APP = {
         Cryptpad: Cryptpad,
         Crypto: Crypto,
     };
+
+    var $warning = $('#warning');
+    var $login = $('#login');
+    var $logout = $('#logout');
+    var $username = $('#username');
+    var $password = $('#password');
+    var $confirm = $('#confirm');
+    var $remember = $('#remember');
+    var $loginBox = $('#login-box');
+    var $logoutBox = $('#logout-box');
+
+    var revealLogin = function () {
+        $loginBox.slideDown();
+    };
+
+    var $logout = $logout.click(function () {
+        Cryptpad.logout(function () {
+            $logoutBox.slideUp();
+            revealLogin();
+        });
+    });
 
     var hashFromCreds = function (username, password, len, cb) {
         Scrypt(password,
@@ -82,6 +101,7 @@ define([
         // 32 more for a signing key
         var edSeed = consume(32);
 
+
         var seed = {};
         var keys = seed.keys = Crypto.createEditCryptor(null, encryptionSeed);
 
@@ -124,9 +144,26 @@ define([
 
 /*  if the user is registering, we expect that the userDoc will be empty
 */
+
+            var proxyKeys = Object.keys(proxy);
+
             if (opt.register) {
-                if (Object.keys(proxy).length) {
+                if (proxyKeys.length) {
+                    // user is trying to register, but the userDoc is not empty
+                    // tell them they are already registered.
+
+
                     alreadyExists();
+                } else {
+                    // trying to register, and the object is empty, as expected
+                }
+            } else {
+                if (proxyKeys.length) {
+                    // user has already initialized the object, as expected
+                } else {
+                    // user has logged in, but there is no object here
+                    // they should confirm their password
+                    // basically this means registering
                 }
             }
 
@@ -146,7 +183,9 @@ define([
 
             console.log("remembering your userhash");
             Cryptpad.login(userHash, opt.remember);
-            //console.log(userHash);
+            console.log(userHash);
+            $('div#login-box').slideUp();
+            $('div#logout-box').slideDown();
             //console.log(proxy);
         })
         .on('disconnect', function (info) {
@@ -154,27 +193,6 @@ define([
             console.log(info);
         });
     };
-
-    var $warning = $('#warning');
-    var $login = $('#login');
-    var $username = $('#username');
-    var $password = $('#password');
-    var $confirm = $('#confirm');
-    var $remember = $('#remember');
-
-    var revealLogin = function () {
-        $('.box').slideDown();
-    };
-
-    var $logoutBox = $('div.logout');
-    var $logout = $('#logout').click(function () {
-        Cryptpad.logout(function () {
-            // noop?
-            $logout.slideUp();
-            revealLogin();
-        });
-    });
-
     var $register = $('#register').click(function () {
         if (!$register.length) { return; }
         var e = $register[0];
@@ -196,39 +214,42 @@ define([
         $register[0].checked = false;
     };
 
-    if (Cryptpad.getUserHash()) {
-        //Cryptpad.alert("You are already logged in!");
-        $logoutBox.slideDown();
-    } else {
-        revealLogin();
-    }
-
-    $login.click(function () {
-        var uname = $username.val();
-        var passwd = $password.val();
-        var confirm = $confirm.val();
-        var remember = $remember[0].checked;
-        var register = $register[0].checked;
-
-        if (!Cred.isValidUsername(uname)) {
-            return void Cryptpad.alert('invalid username');
-        }
-        if (!Cred.isValidPassword(passwd)) {
-            return void Cryptpad.alert('invalid password');
-        }
-        if (register && !Cred.passwordsMatch(passwd, confirm)) {
-            return mismatchedPasswords();
+    Cryptpad.ready(function () {
+        if (Cryptpad.getUserHash()) {
+            //Cryptpad.alert("You are already logged in!");
+            $logoutBox.slideDown();
+        } else {
+            revealLogin();
+            //$logoutBox.hide();
         }
 
-        resetUI();
+        $login.click(function () {
+            var uname = $username.val();
+            var passwd = $password.val();
+            var confirm = $confirm.val();
+            var remember = $remember[0].checked;
+            var register = $register[0].checked;
 
-        // consume 128 bytes, to be divided later
-        // we can safely increase this size, but we don't need much right now
-        hashFromCreds(uname, passwd, 128, function (bytes) {
-            useBytes(bytes, {
-                remember: remember,
-                register: register,
-                name: uname,
+            if (!Cred.isValidUsername(uname)) {
+                return void Cryptpad.alert('invalid username');
+            }
+            if (!Cred.isValidPassword(passwd)) {
+                return void Cryptpad.alert('invalid password');
+            }
+            if (register && !Cred.passwordsMatch(passwd, confirm)) {
+                return mismatchedPasswords();
+            }
+
+            resetUI();
+
+            // consume 128 bytes, to be divided later
+            // we can safely increase this size, but we don't need much right now
+            hashFromCreds(uname, passwd, 128, function (bytes) {
+                useBytes(bytes, {
+                    remember: remember,
+                    register: register,
+                    name: uname,
+                });
             });
         });
     });

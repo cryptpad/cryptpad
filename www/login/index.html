@@ -4,6 +4,7 @@
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <script data-main="main" src="/bower_components/requirejs/require.js"></script>
+    <link rel="stylesheet" href="/customize/main.css" />
     <style>
         html, body{
             padding: 0px;
@@ -16,12 +17,16 @@
             width: 80vw;
             min-width: 1000px;
             margin: auto;
+            padding-top: 50px;
         }
-        div.box, div.logout {
+        div#login-box, div#logout-box {
             width: 50%;
+            margin: auto;
             border: 1px solid black;
             padding: 15px;
             display: none;
+            background-color: #333;
+            border-radius: 5px;
         }
         input[type="text"], input[type="password"] {
             width: 80%;
@@ -32,12 +37,10 @@
 </head>
 <body>
 
-
-<div class="box">
+<div id="login-box">
     <div id="warning" data-localization="login_warning"></div>
     <input type="text" name="username" id="username" data-localization-placeholder="login_username" autofocus><br />
     <input type="password" name="password" id="password" data-localization-placeholder="login_password"><br />
-
 
     <label for="register" data-localization="login_register"></label>
     <input type="checkbox" name="register" id="register"><br />
@@ -47,8 +50,10 @@
     <button id="login" data-localization="login_login"></button>
     <input type="checkbox" name="remember" id="remember"><label for="remember" data-localization="login_remember"></label>
 </div>
-<div class="logout">
+
+<div id="logout-box">
     <div data-localization="login_logout"></div>
     <button id="logout">logout</button>
 </div>
+
 
