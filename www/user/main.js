@@ -3,13 +3,12 @@ define([
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/cryptpad-common.js',
-    '/login/credential.js',
+    'credential.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
-    '/bower_components/scrypt-async/scrypt-async.min.js',
+    '/bower_components/scrypt-async/scrypt-async.min.js', // better load speed
     '/bower_components/jquery/dist/jquery.min.js',
 ], function (Config, Listmap, Crypto, Cryptpad, Cred) {
     var $ = window.jQuery;
-    var Scrypt = window.scrypt;
     var Nacl = window.nacl;
 
     var secret = {};
@@ -20,36 +19,58 @@ define([
     };
 
     var $warning = $('#warning');
+
+    // login elements
+    var $loginBox = $('#login-box');
     var $login = $('#login');
-    var $logout = $('#logout');
     var $username = $('#username');
     var $password = $('#password');
     var $confirm = $('#confirm');
     var $remember = $('#remember');
-    var $loginBox = $('#login-box');
-    var $logoutBox = $('#logout-box');
 
-    var revealLogin = function () {
-        $loginBox.slideDown();
+    // log out elements
+    var $logoutBox = $('#logout-box');
+    var $logout = $('#logout');
+
+    var revealer = function ($el) {
+        return function (bool) { $el[bool?'slideDown': 'slideUp'](); };
+    };
+
+    var revealLogin = APP.revealLogin = revealer($loginBox);
+    var revealLogout = APP.revealLogout= revealer($logoutBox);
+    var revealConfirm = APP.revealConfirm = revealer($confirm);
+
+    var $register = $('#register').click(function () {
+        if (!$register.length) { return; }
+        var e = $register[0];
+        if (e.checked) {
+            revealConfirm(true);
+            $login.text(Cryptpad.Messages._getKey('login_register'));
+        }
+        else {
+            revealConfirm(false);
+            $login.text(Cryptpad.Messages._getKey('login_login'));
+        }
+    });
+
+    var resetUI = APP.resetUI = function () {
+        $username.val("");
+        $password.val("");
+        $confirm.val("");
+        $remember[0].checked = false;
+        $register[0].checked = false;
+    };
+
+    APP.logout = function () {
+        Cryptpad.logout(function () {
+            revealLogout(false);
+            revealLogin(true);
+        });
     };
 
     $logout.click(function () {
-        Cryptpad.logout(function () {
-            $logoutBox.slideUp();
-            revealLogin();
-        });
+        APP.logout();
     });
-
-    var hashFromCreds = function (username, password, len, cb) {
-        Scrypt(password,
-            username,
-            8, // memoryCost (n)
-            1024, // block size parameter (r)
-            len || 128, // dkLen
-            200, // interruptStep
-            cb,
-            undefined); // format, could be 'base64'
-    };
 
     var Events = APP.Events = {};
     var alreadyExists = Events.alreadyExists = function () {
@@ -67,40 +88,16 @@ define([
             console.log("user would like to be forgotten");
         }
 
-        var entropy = {
-            used: 0,
-        };
+        var dispense = Cred.dispenser(bytes);
 
-        // crypto hygeine
-        var consume = function (n) {
-            // explode if you run out of bytes
-            if (entropy.used + n > bytes.length) {
-                throw new Error('exceeded available entropy');
-            }
-            if (typeof(n) !== 'number') { throw new Error('expected a number'); }
-            if (n <= 0) {
-                throw new Error('expected to consume a positive number of bytes');
-            }
-
-            // grab an unused slice of the entropy
-            var A = bytes.slice(entropy.used, entropy.used + n);
-
-            // account for the bytes you used so you don't reuse bytes
-            entropy.used += n;
-
-            //console.info("%s bytes of entropy remaining", bytes.length - entropy.used);
-            return A;
-        };
-
-        // consume 18 bytes of entropy for your encryption key
-        var encryptionSeed = consume(18);
+        // dispense 18 bytes of entropy for your encryption key
+        var encryptionSeed = dispense(18);
         // 16 bytes for a deterministic channel key
-        var channelSeed = consume(16);
+        var channelSeed = dispense(16);
         // 32 bytes for a curve key
-        var curveSeed = consume(32);
+        var curveSeed = dispense(32);
         // 32 more for a signing key
-        var edSeed = consume(32);
-
+        var edSeed = dispense(32);
 
         var seed = {};
         var keys = seed.keys = Crypto.createEditCryptor(null, encryptionSeed);
@@ -144,7 +141,6 @@ define([
 
 /*  if the user is registering, we expect that the userDoc will be empty
 */
-
             var proxyKeys = Object.keys(proxy);
 
             if (opt.register) {
@@ -184,7 +180,7 @@ define([
             console.log("remembering your userhash");
             Cryptpad.login(userHash, opt.remember);
             console.log(userHash);
-            $('div#login-box').slideUp();
+            APP.revealLogin(false);
             $('div#logout-box').slideDown();
             //console.log(proxy);
         })
@@ -193,33 +189,12 @@ define([
             console.log(info);
         });
     };
-    var $register = $('#register').click(function () {
-        if (!$register.length) { return; }
-        var e = $register[0];
-        if (e.checked) {
-            $confirm.slideDown();
-            $login.text(Cryptpad.Messages._getKey('login_register'));
-        }
-        else {
-            $confirm.slideUp();
-            $login.text(Cryptpad.Messages._getKey('login_login'));
-        }
-    });
-
-    var resetUI = function () {
-        $username.val("");
-        $password.val("");
-        $confirm.val("");
-        $remember[0].checked = false;
-        $register[0].checked = false;
-    };
-
     Cryptpad.ready(function () {
         if (Cryptpad.getUserHash()) {
             //Cryptpad.alert("You are already logged in!");
             $logoutBox.slideDown();
         } else {
-            revealLogin();
+            revealLogin(true);
         }
 
         $login.click(function () {
@@ -241,9 +216,9 @@ define([
 
             resetUI();
 
-            // consume 128 bytes, to be divided later
+            // dispense 128 bytes, to be divided later
             // we can safely increase this size, but we don't need much right now
-            hashFromCreds(uname, passwd, 128, function (bytes) {
+            Cred.deriveFromPassphrase(uname, passwd, 128, function (bytes) {
                 useBytes(bytes, {
                     remember: remember,
                     register: register,
