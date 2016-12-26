@@ -168,21 +168,25 @@ define([
     };
     var getHashFromKeys = common.getHashFromKeys = getEditHashFromKeys;
 
+    var specialHashes = common.specialHashes = ['iframe'];
     var getSecrets = common.getSecrets = function (secretHash) {
         var secret = {};
+        var generate = function () {
+            secret.keys = Crypto.createEditCryptor();
+            secret.key = Crypto.createEditCryptor().editKeyStr;
+        };
         if (/#\?path=/.test(window.location.href)) {
             var arr = window.location.hash.match(/\?path=(.+)/);
             common.initialPath = arr[1] || undefined;
             window.location.hash = '';
         }
         if (!secretHash && !/#/.test(window.location.href)) {
-            secret.keys = Crypto.createEditCryptor();
-            secret.key = Crypto.createEditCryptor().editKeyStr;
+            generate();
+            return secret;
         } else {
             var hash = secretHash || window.location.hash.slice(1);
-            if (hash.length === 0) {
-                secret.keys = Crypto.createEditCryptor();
-                secret.key = Crypto.createEditCryptor().editKeyStr;
+            if (hash.length === 0 || specialHashes.indexOf(hash) !== -1) {
+                generate();
                 return secret;
             }
             // old hash system : #{hexChanKey}{cryptKey}
