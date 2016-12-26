@@ -386,7 +386,8 @@ tr {
   border-radius: 5px;
   margin-top: 12px;
   margin-bottom: 12px;
-  white-space: nowrap;
+  display: inline-block;
+  line-height: 1.5em;
 }
 .alertify button {
   margin: 3px 0px;
