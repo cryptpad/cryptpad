@@ -1,6 +1,13 @@
 @import "./variables.less";
 @import "./alertify.less";
 
+html.cp {
+    font-size: .875em;
+    background-color: @base;
+    color: @fore;
+}
+
+.cp {
 .fontface(@family, @src, @style: normal, @weight: 400, @fmt: 'truetype'){
     @font-face{
         font-family: @family;
@@ -37,12 +44,6 @@ a.github-corner > svg {
 .lato {
     font-family: lato, Helvetica, sans-serif;
     font-size: 1.02em;
-}
-
-html {
-    font-size: .875em;
-    background-color: @base;
-    color: @fore;
 }
 
 html,body {
@@ -744,3 +745,5 @@ div.modal, div#modal {
     #adddate { .top-left; }
     #addtime { .bottom-left; }
 }
+}
+

@@ -199,11 +199,21 @@
   padding: 12px;
   pointer-events: auto;
 }
-a.github-corner > svg {
+html.cp {
+  font-size: .875em;
+  background-color: #302B28;
+  color: #fafafa;
+}
+.cp {
+  /* buttons */
+  /* Tables */
+  /* Bottom Bar */
+}
+.cp a.github-corner > svg {
   fill: #46E981;
   color: #302B28;
 }
-.table-refresh > svg {
+.cp .table-refresh > svg {
   width: .9em;
   height: .9em;
   fill: #46E981;
@@ -213,31 +223,26 @@ a.github-corner > svg {
   -ms-transform: translate(0, 15%);
   transform: translate(0, 15%);
 }
-.lato {
+.cp .lato {
   font-family: lato, Helvetica, sans-serif;
   font-size: 1.02em;
 }
-html {
-  font-size: .875em;
-  background-color: #302B28;
-  color: #fafafa;
-}
-html,
-body {
+.cp html,
+.cp body {
   font-family: Georgia,Cambria,serif;
   height: 100%;
 }
-body {
+.cp body {
   font-size: 1rem;
   font-weight: 400;
   line-height: 2rem;
 }
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+.cp h1,
+.cp h2,
+.cp h3,
+.cp h4,
+.cp h5,
+.cp h6 {
   color: #fafafa;
   font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   -webkit-font-feature-settings: 'dlig' 1, 'liga' 1, 'lnum' 1, 'kern' 1;
@@ -247,71 +252,71 @@ h6 {
   font-weight: 600;
   margin-top: 0;
 }
-h1 {
+.cp h1 {
   line-height: 3rem;
   font-size: 2.05714rem;
   margin-bottom: .21999rem;
   padding-top: .78001rem;
 }
-h2 {
+.cp h2 {
   font-size: 1.95312rem;
   margin-bottom: .18358rem;
   padding-top: .81642rem;
 }
-h2,
-h3 {
+.cp h2,
+.cp h3 {
   line-height: 3rem;
 }
-h3 {
+.cp h3 {
   font-size: 1.64571rem;
   margin-bottom: .07599rem;
   padding-top: .92401rem;
 }
-h4 {
+.cp h4 {
   font-size: 1.5625rem;
   margin-bottom: .54686rem;
   padding-top: .45314rem;
 }
-h5 {
+.cp h5 {
   font-size: 1.25rem;
   margin-bottom: -0.56251rem;
   padding-top: .56251rem;
 }
-h6 {
+.cp h6 {
   font-size: 1rem;
   margin-bottom: -0.65001rem;
   padding-top: .65001rem;
 }
-a {
+.cp a {
   cursor: pointer;
   color: #46E981;
   text-decoration: none;
 }
-a:hover {
+.cp a:hover {
   color: #a1f4bf;
 }
-img {
+.cp img {
   height: auto;
   max-width: 100%;
 }
-p {
+.cp p {
   padding-top: .66001rem;
   margin-top: 0;
 }
-p,
-pre {
+.cp p,
+.cp pre {
   margin-bottom: 1.33999rem;
 }
-p,
-pre,
-td,
-a,
-table,
-tr {
+.cp p,
+.cp pre,
+.cp td,
+.cp a,
+.cp table,
+.cp tr {
   font-family: lato, Helvetica, sans-serif;
   font-size: 1.02em;
 }
-#loading {
+.cp #loading {
   position: fixed;
   z-index: 9999;
   top: 0px;
@@ -322,40 +327,39 @@ tr {
   text-align: center;
   font-size: 1.5em;
 }
-#loading .loadingContainer {
+.cp #loading .loadingContainer {
   margin-top: 50vh;
   transform: translateY(-50%);
 }
-#loading .cryptofist {
+.cp #loading .cryptofist {
   margin-left: auto;
   margin-right: auto;
 }
 @media screen and (max-height: 450px) {
-  #loading .cryptofist {
+  .cp #loading .cryptofist {
     display: none;
   }
 }
-#loading .spinnerContainer {
+.cp #loading .spinnerContainer {
   position: relative;
   height: 100px;
 }
-#loading .spinnerContainer > div {
+.cp #loading .spinnerContainer > div {
   height: 100px;
 }
-#main {
+.cp #main {
   width: 70vw;
   margin: auto;
   font-size: medium;
   padding-bottom: 1em;
 }
-#fileManagerIframe {
+.cp #fileManagerIframe {
   width: 100%;
   height: 500px;
   margin-top: 15px;
 }
-/* buttons */
-.create,
-.action {
+.cp .create,
+.cp .action {
   border: 2px solid #46E981;
   border-radius: 10px;
   background-color: #302B28;
@@ -365,23 +369,23 @@ tr {
   margin-right: 5px;
   margin-left: 5px;
 }
-.create:hover,
-.action:hover {
+.cp .create:hover,
+.cp .action:hover {
   border: 2px solid #a1f4bf;
   color: #46E981;
 }
-.create {
+.cp .create {
   display: none;
 }
-.action {
+.cp .action {
   display: inline-block;
 }
-.buttons {
+.cp .buttons {
   margin-bottom: 50px;
   margin-top: 20px;
   line-height: 2.5em;
 }
-.button {
+.cp .button {
   padding: 4px 12px 4px 12px;
   border-radius: 5px;
   margin-top: 12px;
@@ -389,66 +393,64 @@ tr {
   display: inline-block;
   line-height: 1.5em;
 }
-.alertify button {
+.cp .alertify button {
   margin: 3px 0px;
 }
-/* Tables */
-table {
+.cp table {
   border-collapse: collapse;
   border-spacing: 0;
   margin: 20px;
 }
-tbody {
+.cp tbody {
   border: 2px solid black;
 }
-tbody tr {
+.cp tbody tr {
   text-align: center;
 }
-tbody tr:first-of-type th {
+.cp tbody tr:first-of-type th {
   font-size: 20px;
   border-top: 0px;
   font-weight: bold;
   padding: 10px;
   text-decoration: underline;
 }
-tbody tr:first-of-type th.table-refresh {
+.cp tbody tr:first-of-type th.table-refresh {
   color: #46E981;
   text-decoration: none;
   cursor: pointer;
 }
-tbody tr:nth-child(odd) {
+.cp tbody tr:nth-child(odd) {
   background-color: #685d56;
 }
-tbody tr th:first-of-type {
+.cp tbody tr th:first-of-type {
   border-left: 0px;
 }
-tbody tr th {
+.cp tbody tr th {
   box-sizing: border-box;
   border: 1px solid black;
 }
-tbody tr th,
-tbody tr td {
+.cp tbody tr th,
+.cp tbody tr td {
   color: #fafafa;
 }
-tbody tr th.remove,
-tbody tr td.remove {
+.cp tbody tr th.remove,
+.cp tbody tr td.remove {
   cursor: pointer;
 }
-tbody tr th:last-child {
+.cp tbody tr th:last-child {
   border-right: 0px;
 }
-tbody td {
+.cp tbody td {
   border-right: 1px solid black;
   padding: 12px;
   padding-top: 0px;
   padding-bottom: 0px;
 }
-tbody td:last-child {
+.cp tbody td:last-child {
   border-right: none;
 }
-/* Bottom Bar */
-.top-bar,
-.bottom-bar {
+.cp .top-bar,
+.cp .bottom-bar {
   position: fixed;
   height: 4%;
   height: 2.5em;
@@ -457,13 +459,13 @@ tbody td:last-child {
   background: #302B28;
   border-top: 1px solid #444;
 }
-.top-bar a,
-.bottom-bar a {
+.cp .top-bar a,
+.cp .bottom-bar a {
   color: #46E981;
   text-decoration: none;
 }
-.top-bar p,
-.bottom-bar p {
+.cp .top-bar p,
+.cp .bottom-bar p {
   margin: -1px;
   font-family: Arial, Helvetica, Tahoma, Verdana, sans-serif;
   font-size: 20px;
@@ -472,148 +474,148 @@ tbody td:last-child {
   padding-top: 3px;
   color: #fafafa;
 }
-.top-bar img,
-.bottom-bar img {
+.cp .top-bar img,
+.cp .bottom-bar img {
   margin-right: 4px;
   position: relative;
 }
 @media screen and (max-width: 800px) {
-  .top-bar .big,
-  .bottom-bar .big {
+  .cp .top-bar .big,
+  .cp .bottom-bar .big {
     display: none;
   }
 }
 @media screen and (min-width: 801px) {
-  .top-bar .big,
-  .bottom-bar .big {
+  .cp .top-bar .big,
+  .cp .bottom-bar .big {
     display: inline-block;
   }
 }
 @media screen and (max-width: 800px) {
-  .top-bar .small,
-  .bottom-bar .small {
+  .cp .top-bar .small,
+  .cp .bottom-bar .small {
     display: inline-block;
   }
 }
 @media screen and (min-width: 801px) {
-  .top-bar .small,
-  .bottom-bar .small {
+  .cp .top-bar .small,
+  .cp .bottom-bar .small {
     display: none;
   }
 }
-.top-bar .small img,
-.bottom-bar .small img {
+.cp .top-bar .small img,
+.cp .bottom-bar .small img {
   height: 1.25em;
 }
-.bottom-bar {
+.cp .bottom-bar {
   bottom: 0px;
   right: 0px;
 }
-.top-bar {
+.cp .top-bar {
   top: 0px;
   right: 0px;
 }
-.bottom-bar-left {
+.cp .bottom-bar-left {
   display: block;
   float: left;
   padding-left: 10px;
 }
-.bottom-bar-left p {
+.cp .bottom-bar-left p {
   float: right;
 }
-.bottom-bar-right {
+.cp .bottom-bar-right {
   display: block;
   float: right;
   padding-right: 20px;
 }
-.bottom-bar-center {
+.cp .bottom-bar-center {
   width: 20%;
   position: absolute;
   left: 40%;
   text-align: center;
 }
-.bottom-bar-heart {
+.cp .bottom-bar-heart {
   top: 2px;
 }
-.bottom-bar-xwiki {
+.cp .bottom-bar-xwiki {
   top: 3px;
 }
-.bottom-bar-openpaas {
+.cp .bottom-bar-openpaas {
   top: 3px;
   max-width: 100px;
 }
-.bottom-left {
+.cp .bottom-left {
   border-bottom-left-radius: 5px;
 }
-.top-left {
+.cp .top-left {
   border-top-left-radius: 5px;
 }
-.remove {
+.cp .remove {
   color: #FF0073;
   cursor: pointer !important;
 }
-form.realtime,
-div.realtime {
+.cp form.realtime,
+.cp div.realtime {
   padding: 0px;
   margin: 0px;
 }
-form.realtime > textarea,
-div.realtime > textarea {
+.cp form.realtime > textarea,
+.cp div.realtime > textarea {
   width: 50%;
   height: 15vh;
 }
-form.realtime table,
-div.realtime table {
+.cp form.realtime table,
+.cp div.realtime table {
   border-collapse: collapse;
   width: calc(100% - 1px);
 }
-form.realtime table tr td:first-child,
-div.realtime table tr td:first-child {
+.cp form.realtime table tr td:first-child,
+.cp div.realtime table tr td:first-child {
   position: absolute;
   left: 29px;
   top: auto;
   width: calc(30% - 50px);
 }
-form.realtime table tr td,
-div.realtime table tr td {
+.cp form.realtime table tr td,
+.cp div.realtime table tr td {
   padding: 0px;
   margin: 0px;
 }
-form.realtime table tr td div.text-cell,
-div.realtime table tr td div.text-cell {
+.cp form.realtime table tr td div.text-cell,
+.cp div.realtime table tr td div.text-cell {
   padding: 0px;
   margin: 0px;
   height: 100%;
 }
-form.realtime table tr td div.text-cell input,
-div.realtime table tr td div.text-cell input {
+.cp form.realtime table tr td div.text-cell input,
+.cp div.realtime table tr td div.text-cell input {
   width: 80%;
   width: 90%;
   height: 100%;
   border: 0px;
 }
-form.realtime table tr td div.text-cell input[disabled],
-div.realtime table tr td div.text-cell input[disabled] {
+.cp form.realtime table tr td div.text-cell input[disabled],
+.cp div.realtime table tr td div.text-cell input[disabled] {
   background-color: transparent;
   color: #fafafa;
   font-weight: bold;
 }
-form.realtime table tr td.checkbox-cell,
-div.realtime table tr td.checkbox-cell {
+.cp form.realtime table tr td.checkbox-cell,
+.cp div.realtime table tr td.checkbox-cell {
   margin: 0px;
   padding: 0px;
   height: 100%;
   min-width: 150px;
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain,
-div.realtime table tr td.checkbox-cell div.checkbox-contain {
+.cp form.realtime table tr td.checkbox-cell div.checkbox-contain,
+.cp div.realtime table tr td.checkbox-cell div.checkbox-contain {
   display: inline-block;
   height: 100%;
   width: 100%;
   position: relative;
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain label,
-div.realtime table tr td.checkbox-cell div.checkbox-contain label {
+.cp form.realtime table tr td.checkbox-cell div.checkbox-contain label,
+.cp div.realtime table tr td.checkbox-cell div.checkbox-contain label {
   background-color: transparent;
   display: block;
   position: absolute;
@@ -622,85 +624,85 @@ div.realtime table tr td.checkbox-cell div.checkbox-contain label {
   height: 100%;
   width: 100%;
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable),
-div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) {
+.cp form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable),
+.cp div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) {
   display: none;
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover,
-div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover {
+.cp form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover,
+.cp div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover {
   font-weight: bold;
   background-color: #FF0073;
   color: #302B28;
   display: block;
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover:after,
-div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover:after {
+.cp form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover:after,
+.cp div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover:after {
   height: 100%;
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover:after,
-div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover:after {
+.cp form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover:after,
+.cp div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover:after {
   content: "✖";
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.yes,
-div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.yes {
+.cp form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.yes,
+.cp div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.yes {
   background-color: #46E981;
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.yes:after,
-div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.yes:after {
+.cp form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.yes:after,
+.cp div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.yes:after {
   content: "✔";
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.uncommitted,
-div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.uncommitted {
+.cp form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.uncommitted,
+.cp div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.uncommitted {
   background: #ddd;
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.mine,
-div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.mine {
+.cp form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.mine,
+.cp div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.mine {
   display: none;
 }
-form.realtime table input[type="text"],
-div.realtime table input[type="text"] {
+.cp form.realtime table input[type="text"],
+.cp div.realtime table input[type="text"] {
   height: 100%;
   border: 1px solid #302B28;
   width: 80%;
 }
-form.realtime table thead td,
-div.realtime table thead td {
+.cp form.realtime table thead td,
+.cp div.realtime table thead td {
   padding: 0px 5px;
   background: #4c443f;
   border-radius: 20px 20px 0 0;
   text-align: center;
 }
-form.realtime table thead td input[type="text"],
-div.realtime table thead td input[type="text"] {
+.cp form.realtime table thead td input[type="text"],
+.cp div.realtime table thead td input[type="text"] {
   width: 100%;
   box-sizing: border-box;
 }
-form.realtime table thead td input[type="text"][disabled],
-div.realtime table thead td input[type="text"][disabled] {
+.cp form.realtime table thead td input[type="text"][disabled],
+.cp div.realtime table thead td input[type="text"][disabled] {
   color: white;
   padding: 1px 5px;
   border: none;
 }
-form.realtime table tbody .text-cell,
-div.realtime table tbody .text-cell {
+.cp form.realtime table tbody .text-cell,
+.cp div.realtime table tbody .text-cell {
   background: #4c443f;
 }
-form.realtime table tbody .text-cell input[type="text"],
-div.realtime table tbody .text-cell input[type="text"] {
+.cp form.realtime table tbody .text-cell input[type="text"],
+.cp div.realtime table tbody .text-cell input[type="text"] {
   width: calc(100% - 50px);
 }
-form.realtime table tbody .text-cell .edit,
-div.realtime table tbody .text-cell .edit {
+.cp form.realtime table tbody .text-cell .edit,
+.cp div.realtime table tbody .text-cell .edit {
   float: right;
   margin: 0 10px 0 0;
 }
-form.realtime table tbody .text-cell .remove,
-div.realtime table tbody .text-cell .remove {
+.cp form.realtime table tbody .text-cell .remove,
+.cp div.realtime table tbody .text-cell .remove {
   float: left;
   margin: 0 0 0 10px;
 }
-form.realtime table .edit,
-div.realtime table .edit {
+.cp form.realtime table .edit,
+.cp div.realtime table .edit {
   color: #46E981;
   cursor: pointer;
   float: left;
@@ -708,56 +710,56 @@ div.realtime table .edit {
   /*&:after { content: '✐'; }*/
   /*&.editable { display: none; }*/
 }
-form.realtime table .remove,
-div.realtime table .remove {
+.cp form.realtime table .remove,
+.cp div.realtime table .remove {
   float: right;
   margin-right: 10px;
 }
-form.realtime table thead tr th input[type="text"][disabled],
-div.realtime table thead tr th input[type="text"][disabled] {
+.cp form.realtime table thead tr th input[type="text"][disabled],
+.cp div.realtime table thead tr th input[type="text"][disabled] {
   background-color: transparent;
   color: #fafafa;
   font-weight: bold;
 }
-form.realtime table thead tr th .remove,
-div.realtime table thead tr th .remove {
+.cp form.realtime table thead tr th .remove,
+.cp div.realtime table thead tr th .remove {
   cursor: pointer;
   font-size: 20px;
 }
-form.realtime table tfoot tr,
-div.realtime table tfoot tr {
+.cp form.realtime table tfoot tr,
+.cp div.realtime table tfoot tr {
   border: none;
 }
-form.realtime table tfoot tr td,
-div.realtime table tfoot tr td {
+.cp form.realtime table tfoot tr td,
+.cp div.realtime table tfoot tr td {
   border: none;
   text-align: center;
 }
-form.realtime table tfoot tr td .save,
-div.realtime table tfoot tr td .save {
+.cp form.realtime table tfoot tr td .save,
+.cp div.realtime table tfoot tr td .save {
   padding: 15px;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
 }
-form.realtime #adduser,
-div.realtime #adduser,
-form.realtime #addoption,
-div.realtime #addoption {
+.cp form.realtime #adduser,
+.cp div.realtime #adduser,
+.cp form.realtime #addoption,
+.cp div.realtime #addoption {
   color: #46E981;
   border: 1px solid #46E981;
   padding: 15px;
   cursor: pointer;
 }
-form.realtime #adduser,
-div.realtime #adduser {
+.cp form.realtime #adduser,
+.cp div.realtime #adduser {
   border-top-left-radius: 5px;
 }
-form.realtime #addoption,
-div.realtime #addoption {
+.cp form.realtime #addoption,
+.cp div.realtime #addoption {
   border-bottom-left-radius: 5px;
 }
-div.modal,
-div#modal {
+.cp div.modal,
+.cp div#modal {
   box-sizing: border-box;
   z-index: 9001;
   position: fixed;
@@ -768,8 +770,8 @@ div#modal {
   display: none;
   background-color: #302B28;
 }
-div.modal #content,
-div#modal #content {
+.cp div.modal #content,
+.cp div#modal #content {
   box-sizing: border-box;
   border: 1px solid white;
   vertical-align: middle;
@@ -785,49 +787,49 @@ div#modal #content {
   left: 0;
   right: 0;
 }
-div.modal #content p,
-div#modal #content p,
-div.modal #content li,
-div#modal #content li,
-div.modal #content pre,
-div#modal #content pre,
-div.modal #content code,
-div#modal #content code {
+.cp div.modal #content p,
+.cp div#modal #content p,
+.cp div.modal #content li,
+.cp div#modal #content li,
+.cp div.modal #content pre,
+.cp div#modal #content pre,
+.cp div.modal #content code,
+.cp div#modal #content code {
   font-size: 2.75vw;
   line-height: 3.025vw;
 }
-div.modal #content h1,
-div#modal #content h1 {
+.cp div.modal #content h1,
+.cp div#modal #content h1 {
   font-size: 5vw;
   line-height: 5.5vw;
 }
-div.modal #content h2,
-div#modal #content h2 {
+.cp div.modal #content h2,
+.cp div#modal #content h2 {
   font-size: 4.2vw;
   line-height: 4.62vw;
 }
-div.modal #content h3,
-div#modal #content h3 {
+.cp div.modal #content h3,
+.cp div#modal #content h3 {
   font-size: 3.6vw;
   line-height: 3.96vw;
 }
-div.modal #content h4,
-div#modal #content h4 {
+.cp div.modal #content h4,
+.cp div#modal #content h4 {
   font-size: 3vw;
   line-height: 3.3vw;
 }
-div.modal #content h5,
-div#modal #content h5 {
+.cp div.modal #content h5,
+.cp div#modal #content h5 {
   font-size: 2.2vw;
   line-height: 2.42vw;
 }
-div.modal #content h6,
-div#modal #content h6 {
+.cp div.modal #content h6,
+.cp div#modal #content h6 {
   font-size: 1.6vw;
   line-height: 1.76vw;
 }
-div.modal #content pre > code,
-div#modal #content pre > code {
+.cp div.modal #content pre > code,
+.cp div#modal #content pre > code {
   display: block;
   position: relative;
   border: 1px solid #333;
@@ -835,8 +837,8 @@ div#modal #content pre > code {
   margin: auto;
   padding-left: .25vw;
 }
-div.modal .center,
-div#modal .center {
+.cp div.modal .center,
+.cp div#modal .center {
   position: relative;
   width: 80%;
   height: 80%;
@@ -844,39 +846,39 @@ div#modal .center {
   border: 1px solid #685d56;
   text-align: center;
 }
-div.modal.shown,
-div#modal.shown {
+.cp div.modal.shown,
+.cp div#modal.shown {
   display: block;
 }
-div.modal table,
-div#modal table {
+.cp div.modal table,
+.cp div#modal table {
   margin: 30px;
   border-collapse: collapse;
 }
-div.modal table input,
-div#modal table input {
+.cp div.modal table input,
+.cp div#modal table input {
   height: 100%;
   width: 90%;
   border: 3px solid #302B28;
 }
-div.modal table tfoot tr td,
-div#modal table tfoot tr td {
+.cp div.modal table tfoot tr td,
+.cp div#modal table tfoot tr td {
   z-index: 4000;
   cursor: pointer;
 }
-div.modal #addtime,
-div#modal #addtime,
-div.modal #adddate,
-div#modal #adddate {
+.cp div.modal #addtime,
+.cp div#modal #addtime,
+.cp div.modal #adddate,
+.cp div#modal #adddate {
   color: #46E981;
   border: 1px solid #46E981;
   padding: 15px;
 }
-div.modal #adddate,
-div#modal #adddate {
+.cp div.modal #adddate,
+.cp div#modal #adddate {
   border-top-left-radius: 5px;
 }
-div.modal #addtime,
-div#modal #addtime {
+.cp div.modal #addtime,
+.cp div#modal #addtime {
   border-bottom-left-radius: 5px;
 }
