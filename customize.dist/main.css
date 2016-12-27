@@ -54,7 +54,7 @@
 }
 .alertify .dialog > div,
 .alertify .alert > div {
-  background-color: #685d56;
+  background-color: #333;
   border-radius: 5px;
 }
 .alertify .dialog > *,
@@ -91,7 +91,7 @@
 }
 .alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button),
 .alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button) {
-  background-color: transparent;
+  background-color: rgba(200, 200, 200, 0.05);
   box-sizing: border-box;
   position: relative;
   outline: 0;
@@ -117,7 +117,7 @@
 .alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):hover,
 .alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):active,
 .alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):active {
-  background-color: rgba(0, 0, 0, 0.15);
+  background-color: rgba(200, 200, 200, 0.15);
 }
 .alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):focus,
 .alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):focus {
