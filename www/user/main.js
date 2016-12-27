@@ -11,7 +11,7 @@ define([
     var $ = window.jQuery;
     var Nacl = window.nacl;
 
-    var secret = {};
+    var USERNAME_KEY = 'cryptpad.username';
 
     var APP = window.APP = {
         Cryptpad: Cryptpad,
@@ -25,46 +25,71 @@ define([
     var $login = $('#login');
     var $username = $('#username');
     var $password = $('#password');
-    var $confirm = $('#confirm');
     var $remember = $('#remember');
+
+    // hashing elements
+    var $noticeBox = $('#notice-box');
+    var $notice = $('#notice');
+
+    APP.setNotice = function (s) {
+        $notice.text(s);
+    };
+
+    // confirm elements
+    var $confirmBox = $('#confirm-box');
+    var $confirm = $('#confirm');
+    var $cancelRegister = $('#cancel-register');
+    var $register = $('#register');
 
     // log out elements
     var $logoutBox = $('#logout-box');
     var $logout = $('#logout');
 
+    // user elements
+    var $userBox = $('#user-box');
+    var $displayName = $('#display-name');
+
     var revealer = function ($el) {
-        return function (bool) { $el[bool?'slideDown': 'slideUp'](); };
+        return function (bool, cb) {
+            $el[bool?'slideDown': 'slideUp'](400, cb);
+        };
     };
 
     var revealLogin = APP.revealLogin = revealer($loginBox);
-    var revealLogout = APP.revealLogout= revealer($logoutBox);
-    var revealConfirm = APP.revealConfirm = revealer($confirm);
+    var revealNotice = APP.revealNotice = revealer($noticeBox);
+    var revealConfirm = APP.revealConfirm = revealer($confirmBox);
 
-    var $register = $('#register').click(function () {
-        if (!$register.length) { return; }
-        var e = $register[0];
-        if (e.checked) {
-            revealConfirm(true);
-            $login.text(Cryptpad.Messages._getKey('login_register'));
-        }
-        else {
-            revealConfirm(false);
-            $login.text(Cryptpad.Messages._getKey('login_login'));
-        }
-    });
+    var revealLogout = APP.revealLogout= revealer($logoutBox);
+    var revealUser = APP.revealUser = revealer($userBox);
+
+    // TODO set registered name AND display name
+    APP.setName = function (name) {
+        $displayName.text(name);
+    };
 
     var resetUI = APP.resetUI = function () {
         $username.val("");
         $password.val("");
         $confirm.val("");
-        $remember[0].checked = false;
-        $register[0].checked = false;
+        APP.setName('');
+    };
+
+    APP.abort = function () {
+        if (!(APP.realtime && APP.realtime.abort)) { return; }
+        console.log('aborting realtime session');
+        APP.realtime.abort();
     };
 
     APP.logout = function () {
-        Cryptpad.logout(function () {
-            revealLogout(false);
-            revealLogin(true);
+        Cryptpad.confirm("Are you sure?", function (yes) {
+            if (!yes) { return; }
+            Cryptpad.logout(function () {
+                revealLogout(false);
+                revealLogin(true);
+                revealUser(false);
+                APP.abort();
+                $username.focus();
+            });
         });
     };
 
@@ -72,12 +97,125 @@ define([
         APP.logout();
     });
 
-    var Events = APP.Events = {};
-    var alreadyExists = Events.alreadyExists = function () {
-        Cryptpad.alert("user account already exists.");
+    var handleRegisteredUser = function (proxy, opt) {
+        if (!proxy.atime) {
+            console.log("first time visiting!");
+        }
+        else {
+            console.log("last visit was %ss ago", (opt.now - proxy.atime) / 1000);
+        }
+
+        // welcome back
+        proxy.atime = opt.now;
+
+        var userHash = '/1/edit/' + [opt.channel64, opt.keys.editKeyStr].join('/');
+
+        APP.setName(opt.name);
+        Cryptpad.login(userHash, opt.remember);
+        APP.revealLogin(false);
+        APP.revealUser(true);
+        APP.revealLogout(true);
     };
-    var mismatchedPasswords = Events.mismatchedPasswords = function () {
-        Cryptpad.alert("passwords don't match!");
+
+    var abortRegistration = function () {
+        if (!APP.confirming) { return; }
+        APP.abort();
+        APP.revealConfirm(false);
+        APP.revealLogin(true);
+    };
+
+    $cancelRegister.click(function () {
+        abortRegistration();
+    });
+
+    $register.click(function () {
+        if (!APP.confirming) { return; }
+
+        if (typeof(APP.register) === 'function') {
+            APP.register();
+        }
+    });
+
+    var addEnterListener = function ($el, f) {
+        $el.on('keyup', function (e) {
+            if (e.which !== 13) { return; } // enter
+            window.clearTimeout(APP.to);
+            APP.to = window.setTimeout(function () {
+                f();
+                window.clearTimeout(APP.to);
+            });
+        });
+    };
+
+    addEnterListener($confirm, function () {
+        $register.click();
+    });
+    addEnterListener($password, function () {
+        $login.click();
+    });
+
+    var confirmPassword = function (proxy, passwd, cb) {
+        APP.confirming = true;
+
+        revealLogin(false);
+        // reveal confirm box
+        revealConfirm(true);
+
+        $confirm.focus();
+
+        // TODO translate
+        APP.register = function () {
+            if ($confirm.val() === passwd) {
+                return void Cryptpad.alert("registered successfully. Make sure you don't forget your password!", cb);
+            }
+            Cryptpad.alert("The two passwords you entered do not match. Try again");
+        };
+    };
+
+    var handleNewUser = function (proxy, opt) {
+        // could not find a profile for that username/password
+        confirmPassword(proxy, opt.password, function () {
+            APP.confirming = false;
+
+            APP.setName(opt.name);
+            proxy.login_name = opt.name;
+
+            var next = function () {
+                revealConfirm(false);
+                handleRegisteredUser(proxy, opt);
+            };
+
+            Cryptpad.confirm(Cryptpad.Messages.login_migrate, function (yes) {
+                if (!yes) { return next(); }
+
+                Cryptpad.store.keys(function (e, keys) {
+                    if (e) { return void console.error(e); }
+                    Cryptpad.store.getBatch(keys, function (e, map) {
+                        if (e) { return void console.error(e); }
+                        keys.forEach(function (k) {
+                            console.log("migrating %s from existing store", k);
+                            proxy[k] = map[k];
+                        });
+
+                        delete localStorage.FS_hash;
+
+                        // TODO if name has changed, prompt user
+                        //proxy[USERNAME_KEY] = 
+                        next();
+                    });
+                });
+            });
+        });
+    };
+
+    var handleUser = function (proxy, opt) {
+        var proxyKeys = Object.keys(proxy);
+        var now = opt.now = +(new Date());
+
+        if (!proxyKeys.length) {
+            return handleNewUser(proxy, opt);
+        }
+        handleRegisteredUser(proxy, opt);
     };
 
     var useBytes = function (bytes, opt) {
@@ -99,90 +237,38 @@ define([
         // 32 more for a signing key
         var edSeed = dispense(32);
 
-        var seed = {};
-        var keys = seed.keys = Crypto.createEditCryptor(null, encryptionSeed);
+        var keys = opt.keys = Crypto.createEditCryptor(null, encryptionSeed);
 
         // 24 bytes of base64
         keys.editKeyStr = keys.editKeyStr.replace(/\//g, '-');
 
         // 32 bytes of hex
-        seed.channel = Cryptpad.uint8ArrayToHex(channelSeed);
+        opt.channel = Cryptpad.uint8ArrayToHex(channelSeed);
 
-        var channelHex = seed.channel;
+        var channelHex = opt.channel;
 
-        if (channelHex.length !== 32) {
-            throw new Error('invalid channel id');
-        }
+        if (channelHex.length !== 32) { throw new Error('invalid channel id'); }
 
-        var channel64 = Cryptpad.hexToBase64(channelHex);
+        var channel64 = opt.channel64 = Cryptpad.hexToBase64(channelHex);
 
-        seed.editHash = Cryptpad.getEditHashFromKeys(channelHex, keys.editKeyStr);
-        //console.log("edithash: %s", seed.editHash);
-
-        var secret = Cryptpad.getSecrets(seed.editHash);
+        opt.editHash = Cryptpad.getEditHashFromKeys(channelHex, keys.editKeyStr);
 
         var config = {
             websocketURL: Cryptpad.getWebsocketURL(),
             channel: channelHex,
             data: {},
             validateKey: keys.validateKey, // derived validation key
-            crypto: Crypto.createEncryptor(seed.keys),
+            crypto: Crypto.createEncryptor(opt.keys),
         };
 
         var rt = APP.rt = Listmap.create(config);
 
         rt.proxy.on('create', function (info) {
-            console.log("loading user profile");
+            APP.realtime = info.realtime;
         })
         .on('ready', function (info) {
-            console.log(info);
             console.log('ready');
-            var proxy = rt.proxy;
-
-/*  if the user is registering, we expect that the userDoc will be empty
-*/
-            var proxyKeys = Object.keys(proxy);
-
-            if (opt.register) {
-                if (proxyKeys.length) {
-                    // user is trying to register, but the userDoc is not empty
-                    // tell them they are already registered.
-
-
-                    alreadyExists();
-                } else {
-                    // trying to register, and the object is empty, as expected
-                }
-            } else {
-                if (proxyKeys.length) {
-                    // user has already initialized the object, as expected
-                } else {
-                    // user has logged in, but there is no object here
-                    // they should confirm their password
-                    // basically this means registering
-                }
-            }
-
-            var now = +(new Date());
-            if (!proxy.atime) {
-                console.log("first time visiting!");
-                proxy.atime = now;
-
-                var name = proxy['cryptpad.username'] = opt.name;
-                console.log("setting name to %s", name);
-            } else {
-                console.log("last visit was %ss ago", (now - proxy.atime) / 1000);
-                proxy.atime = now;
-            }
-
-            var userHash = '/1/edit/' + [channel64, keys.editKeyStr].join('/');
-
-            console.log("remembering your userhash");
-            Cryptpad.login(userHash, opt.remember);
-            console.log(userHash);
-            APP.revealLogin(false);
-            $('div#logout-box').slideDown();
-            //console.log(proxy);
+            handleUser(rt.proxy, opt);
         })
         .on('disconnect', function (info) {
             console.log('disconnected');
@@ -191,18 +277,26 @@ define([
     };
     Cryptpad.ready(function () {
         if (Cryptpad.getUserHash()) {
-            //Cryptpad.alert("You are already logged in!");
-            $logoutBox.slideDown();
+            Cryptpad.getAttribute('username', function (err, uname) {
+                revealLogout(true);
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+                APP.setName(uname);
+                revealUser(true);
+            });
         } else {
             revealLogin(true);
         }
+
+        $username.focus();
 
         $login.click(function () {
             var uname = $username.val();
             var passwd = $password.val();
             var confirm = $confirm.val();
             var remember = $remember[0].checked;
-            var register = $register[0].checked;
 
             if (!Cred.isValidUsername(uname)) {
                 return void Cryptpad.alert('invalid username');
@@ -210,20 +304,27 @@ define([
             if (!Cred.isValidPassword(passwd)) {
                 return void Cryptpad.alert('invalid password');
             }
-            if (register && !Cred.passwordsMatch(passwd, confirm)) {
-                return mismatchedPasswords();
-            }
 
-            resetUI();
+            APP.setNotice(Cryptpad.Messages.login_hashing);
 
-            // dispense 128 bytes, to be divided later
-            // we can safely increase this size, but we don't need much right now
-            Cred.deriveFromPassphrase(uname, passwd, 128, function (bytes) {
-                useBytes(bytes, {
-                    remember: remember,
-                    register: register,
-                    name: uname,
+            revealNotice(true);
+            revealLogin(false, function () {
+            window.setTimeout(function () {
+                resetUI();
+                // dispense 128 bytes, to be divided later
+                // we can safely increase this size, but we don't need much right now
+                Cred.deriveFromPassphrase(uname, passwd, 128, function (bytes) {
+                    revealNotice(false);
+                    window.setTimeout(function () {
+                        useBytes(bytes, {
+                            remember: remember,
+                            //register: register,
+                            name: uname,
+                            password: passwd,
+                        });
+                    }, 75);
                 });
+            }, 75);
             });
         });
     });
