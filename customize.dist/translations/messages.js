@@ -113,7 +113,10 @@ define(function () {
     out.recentPadsIframe = 'Your recent pads';
 
     out.okButton = 'OK (enter)';
+
+    out.cancel = "cancel";
     out.cancelButton = 'Cancel (esc)';
+
     out.forget = "Forget";
 
     // Polls
@@ -220,11 +223,18 @@ define(function () {
     // login
     out.login_login = "log in";
     out.login_register = "register";
+    out.logoutButton = "log out";
+
+    out.login_migrate = "Would you like to migrate existing data from your anonymous session?";
+
+    out.username_label = "Username: ";
 
     out.login_username = "your username";
     out.login_password = "your password";
     out.login_confirm = "confirm your password";
     out.login_remember = "remember me";
+
+    out.login_cancel_prompt = "...or if you may have entered the wrong username or password, cancel to try again.";
 
     out.login_warning = [
         '<h1 id="warning">WARNING</h1>',
@@ -235,9 +245,14 @@ define(function () {
     ].join('\n');
 
     out.login_logout = [
-        '<p>It seems you are already logged in</p>',
-        '<p>Would you like to log out and authenticate as another user?</p>',
+        //'<p>It seems you are already logged in</p>',
+        //'<p>Would you like to log out and authenticate as another user?</p>',
     ].join('\n');
+
+    out.login_hashing = "Hashing your password, this might take some time.";
+
+    out.login_no_user = "There is no user associated with the username and password that you entered.";
+    out.login_confirm_password = "Re-enter your password to register...";
 
     out.loginText = '<p>Your username and password are used to generate a unique key which is never known by our server.</p>\n' +
                     '<p>Be careful not to forget your credentials, as they are impossible to recover</p>';

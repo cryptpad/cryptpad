@@ -3,6 +3,7 @@
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Cryptpad: login</title>
     <script data-main="main" src="/bower_components/requirejs/require.js"></script>
     <link rel="stylesheet" href="/customize/main.css" />
     <style>
@@ -14,13 +15,10 @@
             box-sizing: border-box;
         }
         body {
-            width: 80vw;
-            min-width: 1000px;
-            margin: auto;
             padding-top: 50px;
         }
         div.box {
-            width: 80%;
+            width: 70%;
             margin: auto;
             border: 1px solid black;
             padding: 15px;
@@ -28,11 +26,22 @@
             background-color: #333;
             border-radius: 5px;
         }
+        @media (max-width: 1000px) {
+            div.box { width: 90%; }
+        }
         input[type="text"], input[type="password"] {
             width: 80%;
         }
 
-        #confirm { display: none; }
+        hr.choice {
+            margin-top: 45px;
+            margin-bottom: 45px;
+        }
+
+        #notice-box {
+            text-align: center;
+            font-size: 25px;
+        }
     </style>
 </head>
 <body>
@@ -42,20 +51,35 @@
     <input type="text" name="username" id="username" data-localization-placeholder="login_username" autofocus><br />
     <input type="password" name="password" id="password" data-localization-placeholder="login_password"><br />
 
-    <label for="register" data-localization="login_register"></label>
-    <input type="checkbox" name="register" id="register"><br />
-    <input type="password" name="confirm" id="confirm" data-localization-placeholder="login_confirm">
-    <br />
-    <hr />
     <button id="login" data-localization="login_login"></button>
     <input type="checkbox" name="remember" id="remember" checked="true"><label for="remember" data-localization="login_remember"></label>
 </div>
 
+<div id="notice-box" class="box">
+    <p id="notice"></p>
+</div>
+
+<div id="confirm-box" class="box">
+    <p data-localization="login_no_user"></p>
+    <p data-localization="login_confirm_password"></p>
+
+    <input type="password" name="confirm" id="confirm" data-localization-placeholder="login_confirm">
+    <button id="register" data-localization="login_register"></button>
+
+    <hr class="choice"/>
+    <p data-localization="login_cancel_prompt"></p>
+
+    <button id="cancel-register" data-localization="cancel"></button>
+</div>
+
 <div id="logout-box" class="box">
     <div data-localization="login_logout"></div>
-    <button id="logout">logout</button>
+    <button id="logout" data-localization="logoutButton"></button>
 </div>
 
 <div id="user-box" class="box">
-
+    <div>
+        <span data-localization="username_label"></span>
+        <strong id="display-name" class="display"></strong>
+    </div>
 </div>
