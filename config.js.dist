@@ -66,6 +66,16 @@ module.exports = {
      */
      verbose: false,
 
+    /*  Main pages
+     *  add exceptions to the router so that we can access /privacy.html
+     *  and other odd pages
+     */
+    mainPages: [
+        'index',
+        'privacy',
+        'terms',
+        'about',
+    ],
 
     /*
         You have the option of specifying an alternative storage adaptor.

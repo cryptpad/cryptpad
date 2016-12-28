@@ -45,7 +45,10 @@ Fs.exists(__dirname + "/customize", function (e) {
 
 // FIXME I think this is a regression caused by a recent PR
 // correct this hack without breaking the contributor's intended behaviour.
-app.get(/\/(privacy|index|terms)\.html/, Express.static(__dirname + '/customize.dist'));
+
+var mainPages = config.mainPages || ['index', 'privacy', 'terms', 'about'];
+var mainPagePattern = new RegExp('^\/(' + mainPages.join('|') + ').html$');
+app.get(mainPagePattern, Express.static(__dirname + '/customize.dist'));
 
 app.use("/customize", Express.static(__dirname + '/customize'));
 app.use("/customize", Express.static(__dirname + '/customize.dist'));
