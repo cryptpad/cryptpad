@@ -26,17 +26,20 @@ var fragments = {};
     'fork',
     'terms',
     'privacy',
+    'about',
     'logo',
+    'noscript',
 ].forEach(function (name) {
     fragments[name] = read('./fragments/' + name + '.html');
 });
 
 // build static pages
-['index', 'privacy', 'terms'].forEach(function (page) {
+['index', 'privacy', 'terms', 'about',].forEach(function (page) {
     var source = swap(template, {
        fork: fragments.fork,
        main: fragments[page],
        logo: fragments.logo,
+       noscript: fragments.noscript,
     });
     write('../' + page + '.html', source);
 });
