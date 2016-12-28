@@ -16,7 +16,6 @@ define([
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/jquery/dist/jquery.min.js',
-    '/customize/pad.js'
 ], function (Messages, Crypto, realtimeInput, Hyperjson,
     Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad,
     Visible, Notify) {

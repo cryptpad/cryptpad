@@ -14,7 +14,6 @@ define([
     '/common/notify.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
-    '/customize/pad.js'
 ], function (Messages, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad, Modes, Themes, Visible, Notify) {
     var $ = window.jQuery;
     var saveAs = window.saveAs;
