@@ -293,7 +293,7 @@ define([
         $username.focus();
 
         $login.click(function () {
-            var uname = $username.val();
+            var uname = $username.val().trim();
             var passwd = $password.val();
             var confirm = $confirm.val();
             var remember = $remember[0].checked;
