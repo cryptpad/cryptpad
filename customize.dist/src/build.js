@@ -22,11 +22,11 @@ var template = read('./template.html');
 
 // read page fragments
 var fragments = {};
-[   'analytics',
-    'index',
+[   'index',
     'fork',
     'terms',
     'privacy',
+    'logo',
 ].forEach(function (name) {
     fragments[name] = read('./fragments/' + name + '.html');
 });
@@ -35,8 +35,8 @@ var fragments = {};
 ['index', 'privacy', 'terms'].forEach(function (page) {
     var source = swap(template, {
        fork: fragments.fork,
-       analytics: fragments.analytics,
        main: fragments[page],
+       logo: fragments.logo,
     });
     write('../' + page + '.html', source);
 });
