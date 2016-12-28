@@ -9,7 +9,6 @@ define([
     '/common/cryptpad-common.js',
     '/file/fileObject.js',
     '/common/toolbar.js',
-    '/customize/pad.js'
 ], function (Config, Listmap, Crypto, TextPatcher, Messages, JSONSortify, Cryptpad, FO, Toolbar) {
     var module = window.MODULE = {};
 
