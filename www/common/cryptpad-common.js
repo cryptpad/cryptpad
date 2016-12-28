@@ -7,9 +7,10 @@ define([
     '/bower_components/spin.js/spin.min.js',
     '/common/clipboard.js',
     '/customize/fsStore.js',
+    '/customize/application_config.js',
 
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Messages, Store, Crypto, Alertify, Spinner, Clipboard, FS) {
+], function (Config, Messages, Store, Crypto, Alertify, Spinner, Clipboard, FS, AppConfig) {
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
@@ -26,6 +27,7 @@ define([
 
     var common = window.Cryptpad = {
         Messages: Messages,
+        Alertify: Alertify,
     };
     var store;
     var fsStore;
@@ -90,14 +92,6 @@ define([
 
         return hash;
     };
-
-    Store.ready(function (err, Store) {
-        if (err) {
-            console.error(err);
-            return;
-        }
-        store = Store;
-    });
 
     // var isArray = function (o) { return Object.prototype.toString.call(o) === '[object Array]'; };
     var isArray = common.isArray = $.isArray;
@@ -1062,7 +1056,18 @@ define([
         };
     };
 
+    // All code which is called implicitly is found below
+    Store.ready(function (err, Store) {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        store = Store;
+    });
+
     Messages._applyTranslation();
+
+    Alertify._$$alertify.delay = AppConfig.notificationTimeout || 5000;
 
     return common;
 });
