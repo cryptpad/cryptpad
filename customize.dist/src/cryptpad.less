@@ -617,7 +617,25 @@ form.realtime, div.realtime {
     max-height: (@p * 100vh);
 }
 
+
+&.slide {
+    #modal #content {
+        p, ul, ol { font-size: 26px; }
+
+        img {
+            position: relative;
+            min-width: 1%;
+            max-width: 90%;
+            max-height: 90%;
+            margin: auto;
+
+            border: 5px solid red;
+        }
+    }
+}
+
 div.modal, div#modal {
+    display: none;
 
     #content {
         box-sizing: border-box;
@@ -631,6 +649,13 @@ div.modal, div#modal {
         vertical-align: middle;
         padding: 2.5vw;
 
+        /* center things as much as possible
+
+            margin-top: 50vh;
+            margin-bottom: 50vh;
+            transform: translateY(-50%);
+
+        */
 
         width: 100vw;
         height: 56.25vw; // height:width ratio = 9/16 = .5625
@@ -665,6 +690,12 @@ div.modal, div#modal {
 
         }
 
+        ul, ol {
+            min-width: 50%;
+            max-width: 100%;
+            display: table;
+            margin: 0 auto;
+        }
     }
 
     box-sizing: border-box;

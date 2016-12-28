@@ -1,3 +1,6 @@
+/*  Logs are shown to inform the user that something has happened
+    They are only displayed briefly
+*/
 .alertify-logs > * {
   padding: 12px 48px;
   color: #fafafa;
@@ -758,6 +761,19 @@ html.cp {
 .cp div.realtime #addoption {
   border-bottom-left-radius: 5px;
 }
+.cp.slide #modal #content p,
+.cp.slide #modal #content ul,
+.cp.slide #modal #content ol {
+  font-size: 26px;
+}
+.cp.slide #modal #content img {
+  position: relative;
+  min-width: 1%;
+  max-width: 90%;
+  max-height: 90%;
+  margin: auto;
+  border: 5px solid red;
+}
 .cp div.modal,
 .cp div#modal {
   box-sizing: border-box;
@@ -776,6 +792,13 @@ html.cp {
   border: 1px solid white;
   vertical-align: middle;
   padding: 2.5vw;
+  /* center things as much as possible
+
+            margin-top: 50vh;
+            margin-bottom: 50vh;
+            transform: translateY(-50%);
+
+        */
   width: 100vw;
   height: 56.25vw;
   max-height: 100vh;
@@ -836,6 +859,15 @@ html.cp {
   width: 90%;
   margin: auto;
   padding-left: .25vw;
+}
+.cp div.modal #content ul,
+.cp div#modal #content ul,
+.cp div.modal #content ol,
+.cp div#modal #content ol {
+  min-width: 50%;
+  max-width: 100%;
+  display: table;
+  margin: 0 auto;
 }
 .cp div.modal .center,
 .cp div#modal .center {
