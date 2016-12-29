@@ -228,6 +228,7 @@ define(function () {
     out.login_migrate = "Would you like to migrate existing data from your anonymous session?";
 
     out.username_label = "Username: ";
+    out.displayname_label = "Display name: ";
 
     out.login_username = "your username";
     out.login_password = "your password";
@@ -235,6 +236,9 @@ define(function () {
     out.login_remember = "remember me";
 
     out.login_cancel_prompt = "...or if you may have entered the wrong username or password, cancel to try again.";
+
+    out.login_registerSuccess = "registered successfully. Make sure you don't forget your password!"
+    out.login_passwordMismatch = "The two passwords you entered do not match. Try again";
 
     out.login_warning = [
         '<h1 id="warning">WARNING</h1>',
