@@ -47,7 +47,8 @@ define([
 
     // user elements
     var $userBox = $('#user-box');
-    var $displayName = $('#display-name');
+    var $displayNameLabel = $('#display-name');
+    var $userNameLabel = $('#user-name');
 
     var revealer = function ($el) {
         return function (bool, cb) {
@@ -62,16 +63,27 @@ define([
     var revealLogout = APP.revealLogout= revealer($logoutBox);
     var revealUser = APP.revealUser = revealer($userBox);
 
-    // TODO set registered name AND display name
-    APP.setName = function (name) {
-        $displayName.text(name);
+    var getDisplayName = APP.getDisplayName = function (proxy) {
+        return proxy['cryptpad.username'];
+    };
+
+    var getAccountName = APP.getAccountName = function (proxy) {
+        return proxy.login_name;
+    };
+
+    APP.setAccountName = function (user) {
+        $userNameLabel.text(user || 'unknown');
+    };
+    APP.setDisplayName = function (display) {
+        $displayNameLabel.text(display || 'anonymous');
     };
 
     var resetUI = APP.resetUI = function () {
         $username.val("");
         $password.val("");
         $confirm.val("");
-        APP.setName('');
+        APP.setAccountName('');
+        APP.setDisplayName('');
     };
 
     APP.abort = function () {
@@ -108,10 +120,10 @@ define([
         // welcome back
         proxy.atime = opt.now;
 
-        var userHash = '/1/edit/' + [opt.channel64, opt.keys.editKeyStr].join('/');
+        APP.setAccountName(getAccountName(proxy));
+        APP.setDisplayName(getDisplayName(proxy));
 
-        APP.setName(opt.name);
-        Cryptpad.login(userHash, opt.remember);
+        Cryptpad.login(opt.editHash, opt.remember);
         APP.revealLogin(false);
         APP.revealUser(true);
         APP.revealLogout(true);
@@ -176,9 +188,14 @@ define([
         // could not find a profile for that username/password
         confirmPassword(proxy, opt.password, function () {
             APP.confirming = false;
+            APP.setAccountName((proxy.login_name = opt.name));
+            APP.setDisplayName(APP.getDisplayName(proxy));
 
-            APP.setName(opt.name);
-            proxy.login_name = opt.name;
+            // remember your curve key
+            proxy.curve = Cryptpad.uint8ArrayToHex(opt.curveSeed);
+
+            // remember your ed seed
+            proxy.ed = Cryptpad.uint8ArrayToHex(opt.edSeed);
 
             var next = function () {
                 revealConfirm(false);
@@ -199,8 +216,10 @@ define([
 
                         delete localStorage.FS_hash;
 
-                        // TODO if name has changed, prompt user
-                        //proxy[USERNAME_KEY] = 
+                        if (!proxy[USERNAME_KEY]) {
+                            proxy[USERNAME_KEY] = opt.name;
+                        }
+
                         next();
                     });
                 });
@@ -277,15 +296,13 @@ define([
     };
     Cryptpad.ready(function () {
         if (Cryptpad.getUserHash()) {
-            Cryptpad.getAttribute('username', function (err, uname) {
-                revealLogout(true);
-                if (err) {
-                    console.error(err);
-                    return;
-                }
-                APP.setName(uname);
-                revealUser(true);
-            });
+            revealLogout(true);
+            var proxy = Cryptpad.getStore().getProxy().proxy;
+
+            APP.setAccountName(proxy.login_name);
+            APP.setDisplayName(getDisplayName(proxy));
+
+            revealUser(true);
         } else {
             revealLogin(true);
         }
