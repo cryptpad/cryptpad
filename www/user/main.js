@@ -254,25 +254,32 @@ define([
         // 16 bytes for a deterministic channel key
         var channelSeed = dispense(16);
         // 32 bytes for a curve key
-        var curveSeed = opt.curveSeed = dispense(32);
+        var curveSeed = dispense(32);
         // 32 more for a signing key
-        var edSeed = opt.edSeed = dispense(32);
+        var edSeed = dispense(32);
 
-        // 32 bytes of hex
-        var channelKey = opt.channel = Cryptpad.uint8ArrayToHex(channelSeed);
-
-        // a bit of a dirty hack to get the same output as we are used to
         var keys = opt.keys = Crypto.createEditCryptor(null, encryptionSeed);
 
-        var editHash = opt.editHash = Cryptpad.getEditHashFromKeys(channelKey, keys);
-        var secret = Cryptpad.getSecrets(editHash);
+        // 24 bytes of base64
+        keys.editKeyStr = keys.editKeyStr.replace(/\//g, '-');
+
+        // 32 bytes of hex
+        opt.channel = Cryptpad.uint8ArrayToHex(channelSeed);
+
+        var channelHex = opt.channel;
+
+        if (channelHex.length !== 32) { throw new Error('invalid channel id'); }
+
+        var channel64 = opt.channel64 = Cryptpad.hexToBase64(channelHex);
+
+        opt.editHash = Cryptpad.getEditHashFromKeys(channelHex, keys.editKeyStr);
 
         var config = {
             websocketURL: Cryptpad.getWebsocketURL(),
-            channel: channelKey,
+            channel: channelHex,
             data: {},
-            validateKey: secret.keys.validateKeys, // derived validation key
-            crypto: Crypto.createEncryptor(secret.keys),
+            validateKey: keys.validateKey, // derived validation key
+            crypto: Crypto.createEncryptor(opt.keys),
         };
 
         var rt = APP.rt = Listmap.create(config);
