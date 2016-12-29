@@ -82,6 +82,10 @@ To test CryptPad, go to http://your.server:3000/assert/
 You can use WebDriver to run this test automatically by running TestSelenium.js but you will need chromedriver installed.
 If you use Mac, you can `brew install chromedriver`.
 
+# Setup using Docker
+
+See [Cryptpad-Docker](cryptpad-docker.md)
+
 ## Security
 
 CryptPad is *private*, not *anonymous*. Privacy protects your data, anonymity protects you.
