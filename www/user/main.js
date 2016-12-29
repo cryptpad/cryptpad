@@ -175,12 +175,14 @@ define([
 
         $confirm.focus();
 
-        // TODO translate
         APP.register = function () {
             if ($confirm.val() === passwd) {
-                return void Cryptpad.alert("registered successfully. Make sure you don't forget your password!", cb);
+                return void Cryptpad.alert(Cryptpad.Messages.login_registerSuccess, cb);
             }
-            Cryptpad.alert("The two passwords you entered do not match. Try again");
+            Cryptpad.alert(Cryptpad.Messages.login_passwordMismatch, function (e) {
+                e.preventDefault();
+                window.setTimeout(function () { $confirm.focus(); }, 75);
+            });
         };
     };
 
