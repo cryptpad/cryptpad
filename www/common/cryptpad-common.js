@@ -952,6 +952,9 @@ define([
             cb(ev);
             stopListening(keyHandler);
         });
+        window.setTimeout(function () {
+            findOKButton().focus();
+        });
     };
 
     common.prompt = function (msg, def, cb, opt) {
