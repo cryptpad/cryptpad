@@ -1188,6 +1188,9 @@ define([
         var createTree = function ($container, path) {
             var root = filesOp.findElement(files, path);
 
+            // don't try to display what doesn't exist
+            if (!root) { return; }
+
             // Display the root element in the tree
             var displayingRoot = filesOp.comparePath([ROOT], path);
             if (displayingRoot) {
