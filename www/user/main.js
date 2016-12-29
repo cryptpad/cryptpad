@@ -114,7 +114,7 @@ define([
             console.log("first time visiting!");
         }
         else {
-            console.log("last visit was %ss ago", (opt.now - proxy.atime) / 1000);
+            console.log("last login was %ss ago", (opt.now - proxy.atime) / 1000);
         }
 
         // welcome back
@@ -123,7 +123,7 @@ define([
         APP.setAccountName(getAccountName(proxy));
         APP.setDisplayName(getDisplayName(proxy));
 
-        Cryptpad.login(opt.editHash, opt.remember);
+        Cryptpad.login(opt.userHash, opt.remember);
         APP.revealLogin(false);
         APP.revealUser(true);
         APP.revealLogout(true);
@@ -254,9 +254,9 @@ define([
         // 16 bytes for a deterministic channel key
         var channelSeed = dispense(16);
         // 32 bytes for a curve key
-        var curveSeed = dispense(32);
+        var curveSeed = opt.curveSeed = dispense(32);
         // 32 more for a signing key
-        var edSeed = dispense(32);
+        var edSeed = opt.edSeed = dispense(32);
 
         var keys = opt.keys = Crypto.createEditCryptor(null, encryptionSeed);
 
@@ -272,7 +272,7 @@ define([
 
         var channel64 = opt.channel64 = Cryptpad.hexToBase64(channelHex);
 
-        opt.editHash = Cryptpad.getEditHashFromKeys(channelHex, keys.editKeyStr);
+        var userHash = opt.userHash = '/1/edit/' + [opt.channel64, opt.keys.editKeyStr].join('/');
 
         var config = {
             websocketURL: Cryptpad.getWebsocketURL(),
