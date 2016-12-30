@@ -21,14 +21,14 @@ define([
     var $warning = $('#warning');
 
     // login elements
-    var $loginBox = $('#login-box');
+    var $loginBox = $('#login-panel');
     var $login = $('#login');
     var $username = $('#username');
     var $password = $('#password');
     var $remember = $('#remember');
 
     // hashing elements
-    var $noticeBox = $('#notice-box');
+    var $noticeBox = $('#notice-panel');
     var $notice = $('#notice');
 
     APP.setNotice = function (s) {
@@ -36,17 +36,17 @@ define([
     };
 
     // confirm elements
-    var $confirmBox = $('#confirm-box');
+    var $confirmBox = $('#confirm-panel');
     var $confirm = $('#confirm');
     var $cancelRegister = $('#cancel-register');
     var $register = $('#register');
 
     // log out elements
-    var $logoutBox = $('#logout-box');
+    var $logoutBox = $('#logout-panel');
     var $logout = $('#logout');
 
     // user elements
-    var $userBox = $('#user-box');
+    var $userBox = $('#user-panel');
     var $displayNameLabel = $('#display-name');
     var $userNameLabel = $('#user-name');
 

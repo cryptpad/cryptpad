@@ -15,19 +15,18 @@
             box-sizing: border-box;
         }
         body {
-            padding-top: 50px;
+            padding: 45px;
         }
-        div.box {
+        div.panel{
             width: 70%;
             margin: auto;
             border: 1px solid black;
             padding: 15px;
             display: none;
-            background-color: #333;
             border-radius: 5px;
         }
         @media (max-width: 1000px) {
-            div.box { width: 90%; }
+            div.panel { width: 90%; }
         }
         input[type="text"], input[type="password"] {
             width: 80%;
@@ -38,7 +37,7 @@
             margin-bottom: 45px;
         }
 
-        #notice-box {
+        #notice-panel {
             text-align: center;
             font-size: 25px;
         }
@@ -46,7 +45,7 @@
 </head>
 <body>
 
-<div id="login-box" class="box">
+<div id="login-panel" class="panel">
     <div id="warning" data-localization="login_warning"></div>
     <input type="text" name="username" id="username" data-localization-placeholder="login_username" autofocus><br />
     <input type="password" name="password" id="password" data-localization-placeholder="login_password"><br />
@@ -55,11 +54,11 @@
     <input type="checkbox" name="remember" id="remember" checked="true"><label for="remember" data-localization="login_remember"></label>
 </div>
 
-<div id="notice-box" class="box">
+<div id="notice-panel" class="panel">
     <p id="notice"></p>
 </div>
 
-<div id="confirm-box" class="box">
+<div id="confirm-panel" class="panel">
     <p data-localization="login_no_user"></p>
     <p data-localization="login_confirm_password"></p>
 
@@ -72,12 +71,12 @@
     <button id="cancel-register" data-localization="cancel"></button>
 </div>
 
-<div id="logout-box" class="box">
+<div id="logout-panel" class="panel">
     <div data-localization="login_logout"></div>
     <button id="logout" data-localization="logoutButton"></button>
 </div>
 
-<div id="user-box" class="box">
+<div id="user-panel" class="panel">
     <div>
         <p><span data-localization="displayname_label"></span>
             <strong id="display-name" class="display"></strong></p>
