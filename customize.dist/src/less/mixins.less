@@ -1,0 +1,29 @@
+.fontface(@family, @src, @style: normal, @weight: 400, @fmt: 'truetype'){
+    @font-face{
+        font-family: @family;
+        src: url(@src) format(@fmt);
+        font-weight: @weight;
+        font-style: @style;
+    }
+}
+
+.transform(...) {
+    -webkit-transform: @arguments;
+    -moz-transform: @arguments;
+    -o-transform: @arguments;
+    -ms-transform: @arguments;
+    transform: @arguments;
+}
+
+.translate(@x:0, @y:0) {
+    .transform(translate(@x, @y));
+}
+
+.bottom-left(@s: 5px) { border-bottom-left-radius: @s; }
+.top-left(@s: 5px) { border-top-left-radius: @s; }
+
+.size (@n) {
+    font-size: @n * 1vw;
+    line-height: @n * 1.1vw;
+}
+

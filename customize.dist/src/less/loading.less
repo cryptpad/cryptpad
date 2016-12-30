@@ -1,0 +1,30 @@
+.cp #loading {
+    position: fixed;
+    z-index: 9999;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background: @bg-loading;
+    text-align: center;
+    font-size: 1.5em;
+    .loadingContainer {
+        margin-top: 50vh;
+        transform: translateY(-50%);
+    }
+    .cryptofist {
+        margin-left: auto;
+        margin-right: auto;
+        @media screen and (max-height: 450px) {
+            display: none;
+        }
+    }
+    .spinnerContainer {
+        position: relative;
+        height: 100px;
+        > div {
+            height: 100px;
+        }
+    }
+}
+
