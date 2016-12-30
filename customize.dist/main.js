@@ -1,11 +1,12 @@
 define([
     '/customize/messages.js',
-    '/customize/DecorateToolbar.js',
+    //'/customize/DecorateToolbar.js',
     '/customize/application_config.js',
     '/common/cryptpad-common.js',
     '/bower_components/lil-uri/uri.min.js',
+    '/customize/languageSelector.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages, DecorateToolbar, Config, Cryptpad, LilUri) {
+], function (Messages, Config, Cryptpad, LilUri, LS) {
     var $ = window.$;
 
     var APP = window.APP = {
@@ -33,6 +34,18 @@ define([
             $('#create-' + el).detach().appendTo($parent).show();
         });
     };
+
+    var $sel = $('#language-selector');
+
+    Object.keys(Messages._languages).forEach(function (code) {
+        $sel.append($('<option>', {
+            value: code,
+        }).text(Messages._languages[code]));
+    });
+
+    LS.main();
+    Messages._applyTranslation();
+    $sel.show();
 
     var makeRecentPadsTable = function (recentPads) {
         if (!recentPads.length) { return; }
