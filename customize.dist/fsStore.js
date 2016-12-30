@@ -144,6 +144,8 @@ define([
             readOnly: false,
             validateKey: secret.keys.validateKey || undefined,
             crypto: Crypto.createEncryptor(secret.keys),
+            userName: 'fs',
+            logLevel: 1,
         };
 
         var rt = window.rt = Listmap.create(listmapConfig);

@@ -1539,7 +1539,8 @@ define([
             readOnly: readOnly,
             validateKey: secret.keys.validateKey || undefined,
             crypto: Crypto.createEncryptor(secret.keys),
-            logging: false
+            logging: false,
+            logLevel: 1,
         };
 
         var proxy;
