@@ -199,6 +199,9 @@ define([
             // remember your ed seed
             proxy.ed = Cryptpad.uint8ArrayToHex(opt.edSeed);
 
+            // remember the first time you visited
+            proxy.ctime = opt.now;
+
             var next = function () {
                 revealConfirm(false);
                 handleRegisteredUser(proxy, opt);
@@ -280,6 +283,7 @@ define([
             data: {},
             validateKey: keys.validateKey, // derived validation key
             crypto: Crypto.createEncryptor(opt.keys),
+            logLevel: 1,
         };
 
         var rt = APP.rt = Listmap.create(config);
