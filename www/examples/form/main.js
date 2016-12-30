@@ -5,11 +5,10 @@ define([
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
-    '/form/ula.js',
+    'ula.js',
     '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/cryptpad-common.js',
     '/bower_components/jquery/dist/jquery.min.js',
-    '/customize/pad.js'
 ], function (Config, Realtime, Crypto, TextPatcher, Sortify, Formula, JsonOT, Cryptpad) {
     var $ = window.jQuery;
 

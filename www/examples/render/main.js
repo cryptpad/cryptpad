@@ -7,7 +7,6 @@ define([
     '/common/cryptpad-common.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/bower_components/diff-dom/diffDOM.js',
-    //'/customize/pad.js'
 ], function (Config, Realtime, Crypto, Marked, Hyperjson, Cryptpad) {
     var $ = window.jQuery;
     var DiffDom = window.diffDOM;

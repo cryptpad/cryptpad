@@ -4,7 +4,6 @@ define([
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/cryptpad-common.js',
     '/bower_components/jquery/dist/jquery.min.js',
-    //'/customize/pad.js'
 ], function (Config, RtListMap, Crypto, Common) {
     var $ = window.jQuery;
 

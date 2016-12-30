@@ -5,7 +5,6 @@ define([
     '/bower_components/textpatcher/TextPatcher.amd.js',
     '/common/cryptpad-common.js',
     '/bower_components/jquery/dist/jquery.min.js',
-    '/customize/pad.js'
 ], function (Config, Realtime, Crypto, TextPatcher, Cryptpad) {
     // TODO consider adding support for less.js
     var $ = window.jQuery;
@@ -73,7 +72,7 @@ define([
     };
 
 
-    $edit.attr('href', '/text/'+ window.location.hash);
+    $edit.attr('href', '/examples/text/'+ window.location.hash);
 
     var rt = Realtime.start(config);
 });

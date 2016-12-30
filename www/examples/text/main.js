@@ -5,7 +5,6 @@ define([
     '/bower_components/textpatcher/TextPatcher.amd.js',
     '/common/cryptpad-common.js',
     '/bower_components/jquery/dist/jquery.min.js',
-    '/customize/pad.js'
 ], function (Config, Realtime, Crypto, TextPatcher, Cryptpad) { 
     var $ = window.jQuery;
 
