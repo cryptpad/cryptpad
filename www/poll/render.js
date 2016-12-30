@@ -1,9 +1,9 @@
 define([
-    '/common/cryptpad-common.js',
+    //'/common/cryptpad-common.js',
     '/bower_components/hyperjson/hyperjson.js',
     '/bower_components/textpatcher/TextPatcher.js',
     '/bower_components/diff-dom/diffDOM.js',
-], function (Cryptpad, Hyperjson, TextPatcher) {
+], function (Hyperjson, TextPatcher) {
     var DiffDOM = window.diffDOM;
 
     var Example = {
@@ -28,6 +28,8 @@ by maintaining indexes in rowsOrder and colsOrder
             rowsOrder: []
         }
     };
+
+var Renderer = function (Cryptpad) {
 
     var Render = {
         Example: Example
@@ -443,4 +445,7 @@ by maintaining indexes in rowsOrder and colsOrder
     };
 
     return Render;
+};
+
+    return Renderer;
 });
