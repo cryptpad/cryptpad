@@ -243,7 +243,7 @@ define([
         };
 
         var ownFileManager = function () {
-            return localStorage.FS_hash === APP.hash;
+            return Cryptpad.getUserHash() === APP.hash || localStorage.FS_hash === APP.hash;
         };
 
         var removeSelected =  function () {
