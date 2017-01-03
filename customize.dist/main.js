@@ -1,6 +1,5 @@
 define([
     '/customize/messages.js',
-    //'/customize/DecorateToolbar.js',
     '/customize/application_config.js',
     '/common/cryptpad-common.js',
     '/bower_components/lil-uri/uri.min.js',
@@ -8,6 +7,9 @@ define([
     '/bower_components/jquery/dist/jquery.min.js',
 ], function (Messages, Config, Cryptpad, LilUri, LS) {
     var $ = window.$;
+
+    var USE_TABLE = Config.USE_HOMEPAGE_TABLE;
+    var USE_FS_STORE = Config.USE_FS_STORE;
 
     var APP = window.APP = {
         Cryptpad: Cryptpad,
@@ -139,19 +141,21 @@ define([
                 $('iframe').attr('style', '');
                 $tryit.removeAttr('data-localization');
                 $tryit.text(Messages.recentPadsIframe);
-                //makeRecentPadsTable(recentPads);
+
+                if (USE_TABLE) {
+                    makeRecentPadsTable(recentPads);
+                }
             }
 
-            /*if (hasRecent) {
+            if (USE_TABLE && hasRecent) {
                 $('table').attr('style', '');
                 // Race condition here, this is triggered before the localization in HTML
                 // so we have to remove the data-localization attr
                 $tryit.removeAttr('data-localization');
                 $tryit.text(Messages.recentPads);
-            }*/
+            }
         });
     };
-
 
     displayCreateButtons();
     Cryptpad.ready(function () {
@@ -161,7 +165,6 @@ define([
         $tbody = $table.find('tbody');
         $tryit = $('#tryit');
 
-        DecorateToolbar.main($('#bottom-bar'));
         Cryptpad.styleAlerts();
 
         refreshTable();
