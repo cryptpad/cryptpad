@@ -21,7 +21,7 @@ define([
 
     // When set to true, USE_FS_STORE becomes the default store, but the localStorage store is
     // still loaded for migration purpose. When false, the localStorage is used.
-    var USE_FS_STORE = true;
+    var USE_FS_STORE = AppConfig.USE_FS_STORE;
 
     var storeToUse = USE_FS_STORE ? FS : Store;
 
