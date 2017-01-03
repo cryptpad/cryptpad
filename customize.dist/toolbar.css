@@ -8,7 +8,7 @@
 }
 .toolbar-container {
   font: 12px Arial, Helvetica, Tahoma, Verdana, sans-serif;
-  background: -webkit-linear-gradient(#EEEEEE, #DADADA);
+  background: -webkit-linear-gradient(#f5f5f5, #DDDDDD);
   /* For Safari 5.1 to 6.0 */
   background: -o-linear-gradient(#f5f5f5, #DDDDDD);
   /* For Opera 11.1 to 12.0 */
@@ -190,12 +190,12 @@
   left: 0px;
   height: 32px;
 }
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 449px) {
   .cryptpad-toolbar-top .cryptpad-link {
     top: 35px;
   }
 }
-@media screen and (min-width: 401px) {
+@media screen and (min-width: 450px) {
   .cryptpad-toolbar-top .cryptpad-link {
     top: 0px;
   }

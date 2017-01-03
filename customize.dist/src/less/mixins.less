@@ -27,3 +27,10 @@
     line-height: @n * 1.1vw;
 }
 
+.two-part-gradient (@start, @end) {
+    background: -webkit-linear-gradient(@start, @end); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(@start, @end); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(@start, @end); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(@start, @end); /* Standard syntax */
+}
+

@@ -30,18 +30,18 @@
     }
 
     .big {
-        @media screen and (max-width: 800px) {
+        @media screen and (max-width: @media-not-big) {
             display: none;
         }
-        @media screen and (min-width: 801px) {
+        @media screen and (min-width: @media-not-small) {
             display: inline-block;
         }
     }
     .small {
-        @media screen and (max-width: 800px) {
+        @media screen and (max-width: @media-not-big) {
             display: inline-block;
         }
-        @media screen and (min-width: 801px) {
+        @media screen and (min-width: @media-not-small) {
             display: none;
         }
         img {

@@ -1,4 +1,5 @@
 @import "./variables.less";
+@import "./mixins.less";
 
 .unselectable {
     -webkit-touch-callout: none;
@@ -11,10 +12,7 @@
 
 .toolbar-container {
     font: 12px Arial,Helvetica,Tahoma,Verdana,sans-serif;
-    background: -webkit-linear-gradient(#EEEEEE, #DADADA); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(#f5f5f5, #DDDDDD); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(#f5f5f5, #DDDDDD); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(#f5f5f5, #DDDDDD); /* Standard syntax */
+    .two-part-gradient(@toolbar-gradient-start, @toolbar-gradient-end);
     .cryptpad-toolbar {
         select {
             box-sizing: border-box;
@@ -137,7 +135,7 @@
     text-align: center;
     height: 32px;
     position: relative;
-    @media screen and (max-width: 400px) {
+    @media screen and (max-width: @media-narrow-screen) {
         height: 67px;
     }
     .cryptpad-title {
@@ -192,10 +190,10 @@
         position: absolute;
         left: 0px;
         height: 32px;
-        @media screen and (max-width: 400px) {
+        @media screen and (max-width: (@media-short-screen - 1px)) {
             top: 35px;
         }
-        @media screen and (min-width: 401px) {
+        @media screen and (min-width: @media-short-screen) {
             top: 0px;
         }
 
@@ -223,18 +221,18 @@
             }
         }
         .big {
-            @media screen and (max-width: 400px) {
+            @media screen and (max-width: @media-narrow-screen) {
                 display: none;
             }
-            @media screen and (min-width: 401px) {
+            @media screen and (min-width: (@media-narrow-screen + 1px)) {
                 display: inline-block;
             }
         }
         .small {
-            @media screen and (max-width: 400px) {
+            @media screen and (max-width: @media-narrow-screen) {
                 display: inline-block;
             }
-            @media screen and (min-width: 401px) {
+            @media screen and (min-width: (@media-narrow-screen + 1px)) {
                 display: none;
             }
         }
@@ -245,10 +243,10 @@
         span:not(.cryptpad-lag) {
             vertical-align: top;
         }
-        @media screen and (max-width: 400px) {
+        @media screen and (max-width: @media-narrow-screen) {
             top: 3em;
         }
-        @media screen and (min-width: 401px) {
+        @media screen and (min-width: (@media-narrow-screen + 1px)) {
             top: 0px;
         }
     }
@@ -310,10 +308,8 @@
 }
 .cryptpad-toolbar-rightside {
     text-align: right;
-    //float: right;
 }
 .cryptpad-spinner {
-    //float: left;
     display: inline-block;
     height: 26px;
     margin: 2px;
