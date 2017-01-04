@@ -33,7 +33,7 @@ define([
     var displayCreateButtons = function () {
         var $parent = $('#buttons');
         Config.availablePadTypes.forEach(function (el) {
-            $('#create-' + el).detach().appendTo($parent).show();
+            $('#create-' + el).detach().appendTo($parent).attr('target', '_blank').show();
         });
     };
 
