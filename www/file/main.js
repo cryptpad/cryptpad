@@ -28,6 +28,10 @@ define([
         Cryptpad: Cryptpad
     };
 
+    var stringify = APP.stringify = function (obj) {
+        return JSONSortify(obj);
+    };
+
     var ROOT = "root";
     var ROOT_NAME = Messages.fm_rootName;
     var UNSORTED = "unsorted";
@@ -140,6 +144,11 @@ define([
     };
 
     var init = function (files) {
+        var ownFileManager = function () {
+            return Cryptpad.getUserHash() === APP.hash || localStorage.FS_hash === APP.hash;
+        };
+        config.workgroup = !ownFileManager();
+
         var filesOp = FO.init(files, config);
         filesOp.fixFiles();
 
@@ -240,10 +249,6 @@ define([
                     appStatus._onReady = [];
                 }
             }
-        };
-
-        var ownFileManager = function () {
-            return Cryptpad.getUserHash() === APP.hash || localStorage.FS_hash === APP.hash;
         };
 
         var removeSelected =  function () {
@@ -454,6 +459,25 @@ define([
             return false;
         };
 
+        var getElementName = function (path) {
+            // Trash root
+            if (filesOp.isInTrashRoot(path)) {
+                return path[0];
+            }
+            // Root or trash
+            if (filesOp.isPathInRoot(path) || filesOp.isPathInTrash(path)) {
+                return path[path.length - 1];
+            }
+            // Unsorted or template
+            if (filesOp.isPathInUnsorted(path) || filesOp.isPathInTemplate(path)) {
+                var file = filesOp.findElement(files, path);
+                if (filesOp.isFile(file) && filesOp.getTitle(file)) {
+                    return filesOp.getTitle(file);
+                }
+            }
+            // default
+            return "???";
+        };
         // filesOp.moveElements is able to move several paths to a new location, including
         // the Trash or the "Unsorted files" folder
         var moveElements = function (paths, newPath, force, cb) {
@@ -485,19 +509,36 @@ define([
             if ($element.hasClass('selected')) {
                 var $selected = $iframe.find('.selected');
                 $selected.each(function (idx, elmt) {
-                    if ($(elmt).data('path')) {
-                        paths.push($(elmt).data('path'));
+                    var ePath = $(elmt).data('path');
+                    if (ePath) {
+                        var val = filesOp.findElement(files, ePath);
+                        if (!val) { return; } // Error? A ".selected" element in not in the object
+                        paths.push({
+                            path: ePath,
+                            value: {
+                                name: getElementName(ePath),
+                                el: val
+                            }
+                        });
                     }
                 });
             } else {
                 removeSelected();
                 $element.addClass('selected');
-                paths = [path];
+                var val = filesOp.findElement(files, path);
+                if (!val) { return; } // The element in not in the object
+                paths = [{
+                    path: path,
+                    value: {
+                        name: getElementName(path),
+                        el: val
+                    }
+                }];
             }
             var data = {
                 'path': paths
             };
-            ev.dataTransfer.setData("text", JSON.stringify(data));
+            ev.dataTransfer.setData("text", stringify(data));
         };
 
         var onDrop = function (ev) {
@@ -505,9 +546,30 @@ define([
             $iframe.find('.droppable').removeClass('droppable');
             var data = ev.dataTransfer.getData("text");
             var oldPaths = JSON.parse(data).path;
+            if (!oldPaths) { return; }
+
+            // Dropped elements can be moved from the same file manager or imported from another one.
+            // A moved element should be removed from its previous location
+            var movedPaths = [];
+            var importedElements = [];
+            oldPaths.forEach(function (p) {
+                var el = filesOp.findElement(files, p.path);
+                if (el && (stringify(el) === stringify(p.value.el) || !p.value || !p.value.el)) {
+                    movedPaths.push(p.path);
+                } else {
+                    importedElements.push(p.value);
+                }
+            });
+
             var newPath = $(ev.target).data('path') || $(ev.target).parent('li').data('path');
-            if (!oldPaths || !oldPaths.length || !newPath) { return; }
-            moveElements(oldPaths, newPath, null, refresh);
+            console.log(newPath);
+            if (!newPath) { return; }
+            if (movedPaths && movedPaths.length) {
+                moveElements(movedPaths, newPath, null, refresh);
+            }
+            if (importedElements && importedElements.length) {
+                filesOp.importElements(importedElements, newPath, refresh);
+            }
         };
 
         var addDragAndDropHandlers = function ($element, path, isFolder, droppable) {
@@ -569,10 +631,13 @@ define([
             var $type = $('<span>', {'class': 'type listElement', title: type}).text(type);
             var $adate = $('<span>', {'class': 'atime listElement', title: getDate(data.atime)}).text(getDate(data.atime));
             var $cdate = $('<span>', {'class': 'ctime listElement', title: getDate(data.ctime)}).text(getDate(data.ctime));
-            if (displayTitle) {
+            if (displayTitle && ownFileManager()) {
                 $span.append($title);
             }
-            $span.append($type).append($adate).append($cdate);
+            $span.append($type);
+            if (ownFileManager()) {
+                $span.append($adate).append($cdate);
+            }
         };
 
         var addFolderData = function (element, key, $span) {
@@ -876,10 +941,13 @@ define([
             var $fhAdate = $('<span>', {'class': 'atime'}).text(Messages.fm_lastAccess).click(onSortByClick);
             var $fhCdate = $('<span>', {'class': 'ctime'}).text(Messages.fm_creation).click(onSortByClick);
             $fihElement.append($fhName);
-            if (displayTitle) {
+            if (displayTitle && ownFileManager()) {
                 $fihElement.append($fhTitle);
             }
-            $fihElement.append($fhType).append($fhAdate).append($fhCdate);
+            $fihElement.append($fhType);
+            if (ownFileManager()) {
+                $fihElement.append($fhAdate).append($fhCdate);
+            }
             addFileSortIcon($fihElement);
             return $fileHeader;
         };
@@ -1049,6 +1117,13 @@ define([
         // NOTE: Elements in the trash are not using the same storage structure as the others
         var displayDirectory = module.displayDirectory = function (path, force) {
             if (!appStatus.isReady && !force) { return; }
+            // Only Trash and Root are available in not-owned files manager
+            if (!ownFileManager() && !filesOp.isPathInTrash(path) && !filesOp.isPathInRoot(path)) {
+                log("TRANSLATE or REMOVE: Unable to open the selected category, displaying root"); //TODO translate
+                currentPath = [ROOT];
+                displayDirectory(currentPath);
+                return;
+            }
             appStatus.ready(false);
             currentPath = path;
             $content.html("");
@@ -1274,9 +1349,11 @@ define([
         var resetTree = module.resetTree = function () {
             $tree.html('');
             createTree($tree, [ROOT]);
-            createUnsorted($tree, [UNSORTED]);
-            createTemplate($tree, [TEMPLATE]);
-            createAllFiles($tree, [FILES_DATA]);
+            if (ownFileManager()) {
+                createUnsorted($tree, [UNSORTED]);
+                createTemplate($tree, [TEMPLATE]);
+                createAllFiles($tree, [FILES_DATA]);
+            }
             createTrash($tree, [TRASH]);
         };
 
@@ -1518,7 +1595,7 @@ define([
 
     // don't initialize until the store is ready.
     Cryptpad.ready(function () {
-        var storeObj = Cryptpad.getStore().getProxy  && Cryptpad.getStore().getProxy().proxy ? Cryptpad.getStore().getProxy() : undefined;
+        var storeObj = Cryptpad.getStore().getProxy && Cryptpad.getStore().getProxy().proxy ? Cryptpad.getStore().getProxy() : undefined;
 
         Cryptpad.styleAlerts();
 
@@ -1528,7 +1605,7 @@ define([
             APP.homePageIframe = true;
         }
 
-        var hash = Cryptpad.getUserHash() || window.location.hash.slice(1) || localStorage.FS_hash;
+        var hash = window.location.hash.slice(1) || Cryptpad.getUserHash() || localStorage.FS_hash;
         var secret = Cryptpad.getSecrets(hash);
         var readOnly = APP.readOnly = secret.keys && !secret.keys.editKeyStr;
 
@@ -1539,12 +1616,11 @@ define([
             readOnly: readOnly,
             validateKey: secret.keys.validateKey || undefined,
             crypto: Crypto.createEncryptor(secret.keys),
-            logging: false,
-            logLevel: 1,
+            logging: false
         };
 
         var proxy;
-        if (storeObj) { proxy = storeObj.proxy; }
+        if (storeObj && !window.location.hash.slice(1)) { proxy = storeObj.proxy; }
         else {
             var rt = window.rt = module.rt = Listmap.create(listmapConfig);
             proxy = rt.proxy;
@@ -1621,7 +1697,7 @@ define([
             Cryptpad.alert(Messages.common_connectionLost);
         };
 
-        if (storeObj) {
+        if (storeObj && !window.location.hash) {
             onCreate(storeObj.info);
             onReady();
         } else {
