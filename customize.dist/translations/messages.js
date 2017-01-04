@@ -167,7 +167,7 @@ define(function () {
     out.poll_editUserTitle = "Edit the column";
 
     out.poll_titleHint = "Title";
-    out.poll_descriptionHint = "Description";
+    out.poll_descriptionHint = "Describe your poll, and use the 'publish' button when you're done. Anyone with the link can change the description, but this is discouraged.";
 
     // File manager
 

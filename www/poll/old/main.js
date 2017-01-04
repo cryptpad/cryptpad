@@ -11,7 +11,6 @@ define([
     '/common/notify.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
-    '/customize/pad.js'
 ], function (Config, Messages, Table, Wizard, TextPatcher, Listmap, Crypto, Cryptpad, Visible, Notify) {
     var $ = window.jQuery;
     var saveAs = window.saveAs;
@@ -169,7 +168,7 @@ define([
 
         items.forEach(function ($item) {
             $item.attr('disabled', !bool);
-        });
+       });
 
         if (!bool) {
             $('input[id^="y"]').each(function (i, e) {

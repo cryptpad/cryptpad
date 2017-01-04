@@ -268,7 +268,11 @@ var Renderer = function (Cryptpad) {
         return ['SPAN', {
             'data-rt-id': id,
             class: 'lock',
-        }, ['🔒']];
+        }, [['i', {
+                class: 'fa fa-lock',
+                'aria-hidden': true,
+            }, []]
+        ]];
     };
 
     var makeHeadingCell = Render.makeHeadingCell = function (cell, readOnly) {

@@ -12,9 +12,11 @@ define([
     '/common/notify.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Messages, TextPatcher, Listmap, Crypto, Cryptpad, Hyperjson, Render, Toolbar) {
+], function (Config, Messages, TextPatcher, Listmap, Crypto, Cryptpad, Hyperjson, Renderer, Toolbar) {
     var $ = window.jQuery;
 
+    var unlockHTML = '<i class="fa fa-unlock" aria-hidden="true"></i>';
+    var lockHTML = '<i class="fa fa-lock" aria-hidden="true"></i>';
     var HIDE_INTRODUCTION_TEXT = "hide_poll_text";
     var defaultName;
 
@@ -25,6 +27,8 @@ define([
     var onConnectError = function (info) {
         Cryptpad.errorLoadingScreen(Messages.websocketError);
     };
+
+    var Render = Renderer(Cryptpad);
 
     var APP = window.APP = {
         Toolbar: Toolbar,
@@ -88,6 +92,7 @@ define([
         $('input[data-rt-id^="' + id + '"]').attr('disabled', 'disabled');
     };
 
+
     var styleUncommittedColumn = function () {
         var id = APP.userid;
 
@@ -95,7 +100,7 @@ define([
         $('input[disabled="disabled"][data-rt-id^="' + id + '"]').removeAttr('disabled');
         $('input[type="checkbox"][data-rt-id^="' + id + '"]').addClass('enabled');
         $('[data-rt-id="' + id + '"] ~ .edit').css('visibility', 'hidden');
-        $('.lock[data-rt-id="' + id + '"]').html('🔓');
+        $('.lock[data-rt-id="' + id + '"]').html(unlockHTML);
 
         if (isOwnColumnCommitted()) { return; }
         $('[data-rt-id^="' + id + '"]').closest('td').addClass("uncommitted");
@@ -113,7 +118,7 @@ define([
             $('input[disabled="disabled"][data-rt-id^="' + id + '"]').removeAttr('disabled');
             $('input[type="checkbox"][data-rt-id^="' + id + '"]').addClass('enabled');
             $('span.edit[data-rt-id="' + id + '"]').css('visibility', 'hidden');
-            $('.lock[data-rt-id="' + id + '"]').html('🔓');
+            $('.lock[data-rt-id="' + id + '"]').html(unlockHTML);
         });
     };
 
@@ -153,6 +158,11 @@ define([
         unlockElements();
         updateTableButtons();
         setTablePublished(APP.proxy.published);
+
+        /*
+        APP.proxy.table.rowsOrder.forEach(function (rowId) {
+            $('[data-rt-id="' + rowId +'"]').val(APP.proxy.table.rows[rowId] || '');
+        });*/
     };
 
     var unlockColumn = function (id, cb) {
@@ -173,7 +183,7 @@ define([
     };
 
     /*  Any time the realtime object changes, call this function */
-    var change = function (o, n, path) {
+    var change = function (o, n, path, throttle) {
         if (path && path.join) {
             console.log("Change from [%s] to [%s] at [%s]",
                 o, n, path.join(', '));
@@ -197,6 +207,18 @@ define([
 
             https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion
         */
+
+        if (throttle) {
+            if (APP.throttled) { window.clearTimeout(APP.throttled); }
+            var displayedObj2 = mergeUncommitted(APP.proxy, APP.uncommitted);
+            Render.updateTable(table, displayedObj2, conf);
+            updateDisplayedTable();
+            APP.throttled = window.setTimeout(function () {
+                updateDisplayedTable();
+            }, throttle);
+            return;
+        }
+
         window.setTimeout(function () {
             var displayedObj2 = mergeUncommitted(APP.proxy, APP.uncommitted);
             Render.updateTable(table, displayedObj2, conf);
@@ -227,7 +249,7 @@ define([
                 console.log("text[rt-id='%s'] [%s]", id, input.value);
                 if (!input.value) { return void console.log("Hit enter?"); }
                 Render.setValue(object, id, input.value);
-                change();
+                change(null, null, null, 50);
                 break;
             case 'checkbox':
                 console.log("checkbox[tr-id='%s'] %s", id, input.checked);
@@ -287,7 +309,7 @@ define([
         if ($(e.target).is('[type="text"]')) {
             return;
         }
-        $('.lock[data-rt-id!="' + APP.userid + '"]').html('🔒 ');
+        $('.lock[data-rt-id!="' + APP.userid + '"]').html(lockHTML);
         var $cells = APP.$table.find('thead td:not(.uncommitted), tbody td');
         $cells.find('[type="text"][data-rt-id!="' + APP.userid + '"]').attr('disabled', true);
         $('.edit[data-rt-id!="' + APP.userid + '"]').css('visibility', 'visible');
@@ -469,9 +491,15 @@ define([
 
         var $table = APP.$table = $(Render.asHTML(displayedObj, null, colsOrder, readOnly));
         var $createRow = APP.$createRow = $('#create-option').click(function () {
-            console.error("BUTTON CLICKED! LOL");
+            //console.error("BUTTON CLICKED! LOL");
             Render.createRow(proxy, function () {
                 change();
+                var order = APP.proxy.table.rowsOrder;
+
+                var last = order[order.length - 1];
+                var $newest = $('[data-rt-id="' + last + '"]');
+                $newest.val('');
+                window.setTimeout(change);
             });
         });
 
@@ -679,6 +707,7 @@ define([
         validateKey: secret.keys.validateKey || undefined,
         //readOnly: readOnly,
         crypto: Crypto.createEncryptor(secret.keys),
+        userName: 'poll',
     };
 
     // don't initialize until the store is ready.

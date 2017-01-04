@@ -16,6 +16,7 @@
             padding: 0px;
             border: 0px;
         }
+
         .cryptpad-toolbar h2 {
             font: normal normal normal 12px Arial, Helvetica, Tahoma, Verdana, Sans-Serif;
             color: #000;
@@ -36,8 +37,6 @@
         .text-cell input[type="text"] {
             width: 400px;
         }
-
-        /*input#title, textarea { wiidth: 50px; }*/
 
         input[type="text"][disabled], textarea[disabled] {
             background-color: transparent;
@@ -64,6 +63,11 @@
         #publish {
             display: none;
         }
+
+        #publish, #admin {
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
         #create-user {
             position: absolute;
             display: inline-block;
@@ -78,15 +82,34 @@
         #tableScroll {
             overflow-x: auto; margin-left: calc(30% - 50px + 29px); max-width: 70%; width: auto; display: inline-block;
         }
+        #description {
+            padding: 15px;
+            margin: auto;
+
+            min-width: 80%;
+            min-height: 5em;
+            font-size: 20px;
+            font-weight: bold;
+
+        }
         #description[disabled] {
             resize: none;
+            color: #bbb;
+            border: 1px solid #444;
         }
-        #description {
-            padding: 5px;
-        }
+
         #commit {
             width: 100%;
         }
+        #howItWorks {
+            width: 80%;
+            margin: auto;
+        }
+        div.upper {
+            width: 80%;
+            margin: auto;
+        }
+
     </style>
 </head>
 <body>
@@ -101,13 +124,16 @@
     <p data-localization="poll_p_encryption"></p>
 </div>
 
-<button id="publish" data-localization-title="poll_publish_button" data-localization="poll_publish_button" style="display: none;">publish poll</button>
-<button id="admin" data-localization-title="poll_admin_button" data-localization="poll_admin_button" style="display: none;">admin</button>
-
+<div class="upper">
+    <button id="publish" data-localization-title="poll_publish_button" data-localization="poll_publish_button" style="display: none;">publish poll</button>
+    <button id="admin" data-localization-title="poll_admin_button" data-localization="poll_admin_button" style="display: none;">admin</button>
+</div>
 
 <div class="realtime">
     <br />
+    <center>
     <textarea rows=5 cols=50 disabled="disabled" id="description"></textarea><br />
+    </center>
     <div id="tableContainer">
         <div id="tableScroll"></div>
         <button data-localization-title="poll_create_user" id="create-user"><span class="fa fa-plus"></span></button>
