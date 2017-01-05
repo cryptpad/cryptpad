@@ -348,7 +348,7 @@ html.cp,
   font-weight: 400;
   line-height: 2rem;
 }
-.cp #language-selector {
+.cp #language-selector:not(.poll) {
   position: absolute;
   top: 0px;
   right: 0px;
@@ -652,7 +652,7 @@ html.cp,
 }
 .cp form.realtime table input[type="text"],
 .cp div.realtime table input[type="text"] {
-  height: 100%;
+  height: auto;
   border: 1px solid #302B28;
   width: 80%;
 }
@@ -901,4 +901,7 @@ html.cp,
 .cp div.modal #addtime,
 .cp div#modal #addtime {
   border-bottom-left-radius: 5px;
+}
+#cors-store {
+  display: none;
 }

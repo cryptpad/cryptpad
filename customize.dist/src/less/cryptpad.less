@@ -22,7 +22,7 @@ body {
     line-height: 2rem;
 }
 
-#language-selector {
+#language-selector:not(.poll) {
     position: absolute;
     top: 0px;
     right: 0px;
@@ -359,7 +359,7 @@ form.realtime, div.realtime {
 
         input {
             &[type="text"] {
-                height: 100%;
+                height: auto;
                 border: 1px solid @base;
                 width: 80%;
             }
@@ -625,3 +625,7 @@ div.modal, div#modal {
 }
 }
 
+// hack for our cross-origin iframe
+#cors-store {
+    display: none;
+}
