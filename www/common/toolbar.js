@@ -506,12 +506,17 @@ define([
             };
             $(config.ifrw).on('click', removeDropdowns);
             $(config.ifrw).on('click', cancelEditTitle);
+
+        try {
             if (config.ifrw.$('iframe').length) {
                 var innerIfrw = config.ifrw.$('iframe').each(function (i, el) {
                     $(el.contentWindow).on('click', removeDropdowns);
                     $(el.contentWindow).on('click', cancelEditTitle);
                 });
             }
+        } catch (e) {
+            // empty try catch in case this iframe is problematic
+        }
         }
 
         // Update user list
