@@ -691,8 +691,9 @@ define([
 
 
 
-            var fixRoot = function (element) {
+            var fixRoot = function (elem) {
                 if (typeof(files[ROOT]) !== "object") { debug("ROOT was not an object"); files[ROOT] = {}; }
+                var element = elem || files[ROOT];
                 for (var el in element) {
                     if (!isFile(element[el]) && !isFolder(element[el])) {
                         debug("An element in ROOT was not a folder nor a file. ", element[el]);
@@ -703,8 +704,9 @@ define([
                     }
                 }
             };
-            var fixTrashRoot = function (tr) {
+            var fixTrashRoot = function () {
                 if (typeof(files[TRASH]) !== "object") { debug("TRASH was not an object"); files[TRASH] = {}; }
+                var tr = files[TRASH];
                 var toClean;
                 var addToClean = function (obj, idx) {
                     if (typeof(obj) !== "object") { toClean.push(idx); return; }
@@ -725,8 +727,10 @@ define([
                     }
                 }
             };
-            var fixUnsorted = function (us) {
+            var fixUnsorted = function () {
                 if (!$.isArray(files[UNSORTED])) { debug("UNSORTED was not an array"); files[UNSORTED] = []; }
+                files[UNSORTED] = uniq(files[UNSORTED]);
+                var us = files[UNSORTED];
                 var rootFiles = getRootFiles().slice();
                 var templateFiles = getTemplateFiles();
                 var toClean = [];
@@ -742,8 +746,10 @@ define([
                     }
                 });
             };
-            var fixTemplate = function (us) {
+            var fixTemplate = function () {
                 if (!$.isArray(files[TEMPLATE])) { debug("TEMPLATE was not an array"); files[TEMPLATE] = []; }
+                files[TEMPLATE] = uniq(files[TEMPLATE]);
+                var us = files[TEMPLATE];
                 var rootFiles = getRootFiles().slice();
                 var unsortedFiles = getUnsortedFiles();
                 var toClean = [];
@@ -761,6 +767,7 @@ define([
             };
             var fixFilesData = function (fd) {
                 if (!$.isArray(files[FILES_DATA])) { debug("FILES_DATA was not an array"); files[FILES_DATA] = []; }
+                var fd = files[FILES_DATA];
                 var rootFiles = getRootFiles();
                 var unsortedFiles = getUnsortedFiles();
                 var trashFiles = getTrashFiles();
@@ -786,14 +793,12 @@ define([
                 });
             };
 
-            fixRoot(files[ROOT]);
-            fixTrashRoot(files[TRASH]);
+            fixRoot();
+            fixTrashRoot();
             if (!workgroup) {
-                files[UNSORTED] = uniq(files[UNSORTED]);
-                fixUnsorted(files[UNSORTED]);
-                files[TEMPLATE] = uniq(files[TEMPLATE]);
-                fixTemplate(files[TEMPLATE]);
-                fixFilesData(files[FILES_DATA]);
+                fixUnsorted();
+                fixTemplate();
+                fixFilesData();
             }
 
             if (JSON.stringify(files) !== before) {
