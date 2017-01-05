@@ -1,5 +1,5 @@
 define([
-    '/poll/table.js',
+    'table.js',
     '/bower_components/jquery/dist/jquery.min.js',
 ], function (Table) {
     var $ = window.jQuery;
