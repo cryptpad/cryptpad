@@ -18,12 +18,13 @@
             onload('[timeoutError] could not load iframe at ' + src);
         }, timeout);
 
+        iframe.setAttribute('id', 'cors-store');
+
         iframe.onload = function (e) {
             onload(void 0, iframe, e);
             window.clearTimeout(to);
         };
         iframe.setAttribute('src', src);
-        iframe.style.display = 'none';
 
         parent.appendChild(iframe);
     };
