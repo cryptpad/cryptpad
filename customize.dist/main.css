@@ -337,6 +337,12 @@ html.cp,
   font-family: Georgia,Cambria,serif;
   height: 100;
 }
+.cp:not(.poll) #language-selector {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  display: inline-block;
+}
 .cp {
   /* buttons */
   /*  Tables
@@ -347,11 +353,6 @@ html.cp,
   font-size: 1rem;
   font-weight: 400;
   line-height: 2rem;
-}
-.cp #language-selector:not(.poll) {
-  position: absolute;
-  top: 0px;
-  right: 0px;
 }
 .cp a.github-corner > svg {
   fill: #00ADEE;

@@ -14,18 +14,21 @@ html.cp, .cp body {
     height: 100;
 }
 
+.cp:not(.poll) {
+    #language-selector {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        display: inline-block;
+    }
+}
+
 .cp {
 
 body {
     font-size: 1rem;
     font-weight: 400;
     line-height: 2rem;
-}
-
-#language-selector:not(.poll) {
-    position: absolute;
-    top: 0px;
-    right: 0px;
 }
 
 a.github-corner > svg {
