@@ -125,7 +125,7 @@ define([
 
     var setEditable = function (state) {
         APP.editable = state;
-        if (state) { $iframe.find('[draggable="true"]').attr('draggable', false); }
+        if (!state) { $iframe.find('[draggable="true"]').attr('draggable', false); }
         else { $iframe.find('[draggable="false"]').attr('draggable', true); }
     };
 
@@ -1696,6 +1696,11 @@ define([
             console.error('err');
             Cryptpad.alert(Messages.common_connectionLost);
         };
+        var onReconnect = function (info) {
+            setEditable(true);
+            Cryptpad.findOKButton().click();
+            //Cryptpad.alert("Reconnected");
+        };
 
         if (storeObj && !window.location.hash) {
             onCreate(storeObj.info);
@@ -1709,6 +1714,9 @@ define([
         }
         proxy.on('disconnect', function () {
             onDisconnect();
+        });
+        proxy.on('reconnect', function () {
+            onReconnect();
         });
     });
     Cryptpad.onError(function (info) {
