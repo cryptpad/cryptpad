@@ -264,6 +264,14 @@ define([
                 if (idx !== -1) {
                     debug("Removing", f, "from filesData");
                     files[FILES_DATA].splice(idx, 1);
+                    Object.keys(files).forEach(function (key) {
+                        var hash = f.href.indexOf('#') !== -1 ? f.href.slice(f.href.indexOf('#') + 1) : null;
+                        if (hash && key.indexOf(hash) === 0) {
+                            debug("Deleting pad attribute in the realtime object");
+                            files[key] = undefined;
+                            delete files[key];
+                        }
+                    });
                 }
             });
         };

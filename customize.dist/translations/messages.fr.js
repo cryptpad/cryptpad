@@ -170,7 +170,7 @@ define(function () {
 
     // File manager
 
-    out.fm_rootName = "Mes documents";
+    out.fm_rootName = "Documents";
     out.fm_trashName = "Corbeille";
     out.fm_unsortedName = "Fichiers non triés";
     out.fm_filesDataName = "Tous les fichiers";
@@ -185,6 +185,7 @@ define(function () {
     out.fm_creation = "Création";
     out.fm_forbidden = "Action interdite";
     out.fm_originalPath = "Chemin d'origine";
+    out.fm_noname = "Document sans titre";
     out.fm_emptyTrashDialog = "Êtes-vous sûr de vouloir vider la corbeille ?";
     out.fm_removeSeveralPermanentlyDialog = "Êtes-vous sûr de vouloir supprimer ces {0} éléments de manière permanente ?";
     out.fm_removePermanentlyDialog = "Êtes-vous sûr de vouloir supprimer {0} de manière permanente ?";
@@ -195,9 +196,9 @@ define(function () {
     out.fm_contextMenuError = "Impossible d'ouvrir le menu contextuel pour cet élément. Si le problème persiste, essayez de rechercher la page.";
     out.fm_selectError = "Impossible de sélectionner l'élément ciblé. Si le problème persiste, essayez de recharger la page.";
     out.fm_info_root = "Créez ici autant de dossiers que vous le souhaitez pour trier vos fichiers.";
-    out.fm_info_unsorted = 'Contient tous les documents que vous avez ouvert et qui ne sont pas triés dans "Mes documents" ou déplacés vers la "Corbeille".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
+    out.fm_info_unsorted = 'Contient tous les documents que vous avez ouvert et qui ne sont pas triés dans "Documents" ou déplacés vers la "Corbeille".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
     out.fm_info_trash = 'Les fichiers supprimés dans la corbeille sont également enlevés de "Tous les fichiers" et il est impossible de les récupérer depuis l\'explorateur de fichiers.'; // Same here for "All files" and "out.fm_filesDataName"
-    out.fm_info_allFiles = 'Contient tous les fichiers de "Mes documents", "Fichiers non triés" et "Corbeille". Vous ne pouvez pas supprimer ou déplacer des fichiers d\'ici.'; // Same here
+    out.fm_info_allFiles = 'Contient tous les fichiers de "Documents", "Fichiers non triés" et "Corbeille". Vous ne pouvez pas supprimer ou déplacer des fichiers d\'ici.'; // Same here
     // File - Context menu
     out.fc_newfolder = "Nouveau dossier";
     out.fc_rename = "Renommer";
@@ -234,10 +235,10 @@ define(function () {
     out.table_created = 'Créé le';
     out.table_last = 'Dernier accès';
 
-    out.button_newpad = 'CRÉER UN PAD WYSIWYG';
-    out.button_newcode = 'CRÉER UN PAD DE CODE';
-    out.button_newpoll = 'CRÉER UN SONDAGE';
-    out.button_newslide = 'CRÉER UNE PRÉSENTATION';
+    out.button_newpad = 'NOUVEAU DOCUMENT TEXTE';
+    out.button_newcode = 'NOUVELLE PAGE DE CODE';
+    out.button_newpoll = 'NOUVEAU SONDAGE';
+    out.button_newslide = 'NOUVELLE PRÉSENTATION';
 
     // privacy.html
 

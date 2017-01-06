@@ -9,7 +9,7 @@ define(function () {
     out.main_slogan = "Unity is Strength - Collaboration is Key";
 
     out.type = {};
-    out.type.pad = 'Pad';
+    out.type.pad = 'Rich text';
     out.type.code = 'Code';
     out.type.poll = 'Poll';
     out.type.slide = 'Presentation';
@@ -171,7 +171,7 @@ define(function () {
 
     // File manager
 
-    out.fm_rootName = "My documents";
+    out.fm_rootName = "Documents";
     out.fm_trashName = "Trash";
     out.fm_unsortedName = "Unsorted files";
     out.fm_filesDataName = "All files";
@@ -187,6 +187,7 @@ define(function () {
     out.fm_creation = "Creation";
     out.fm_forbidden = "Forbidden action";
     out.fm_originalPath = "Original path";
+    out.fm_noname = "Untitled Document";
     out.fm_emptyTrashDialog = "Are you sure you want to empty the trash?";
     out.fm_removeSeveralPermanentlyDialog = "Are you sure you want to remove these {0} elements from the trash permanently?";
     out.fm_removePermanentlyDialog = "Are you sure you want to remove {0} permanently?";
@@ -197,9 +198,9 @@ define(function () {
     out.fm_contextMenuError = "Unable to open the context menu for that element. If the problem persist, try to reload the page.";
     out.fm_selectError = "Unable to select the targetted element. If the problem persist, try to reload the page.";
     out.fm_info_root = "Create as many nested folders here as you want to sort your files.";
-    out.fm_info_unsorted = 'Contains all the files you\'ve visited that are not yet sorted in "My Documents" or moved to the "Trash".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
+    out.fm_info_unsorted = 'Contains all the files you\'ve visited that are not yet sorted in "Documents" or moved to the "Trash".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
     out.fm_info_trash = 'Files deleted from the trash are also removed from "All files" and it is impossible to recover them from the file manager.'; // Same here for "All files" and "out.fm_filesDataName"
-    out.fm_info_allFiles = 'Contains all the files from "My Documents", "Unsorted" and "Trash". You can\'t move or remove files from here.'; // Same here
+    out.fm_info_allFiles = 'Contains all the files from "Documents", "Unsorted" and "Trash". You can\'t move or remove files from here.'; // Same here
     // File - Context menu
     out.fc_newfolder = "New folder";
     out.fc_rename = "Rename";

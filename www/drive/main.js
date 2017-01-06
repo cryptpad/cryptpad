@@ -7,9 +7,10 @@ define([
     '/customize/messages.js?app=file',
     'json.sortify',
     '/common/cryptpad-common.js',
-    '/file/fileObject.js',
+    '/common/fileObject.js',
     '/common/toolbar.js',
-], function (Config, Listmap, Crypto, TextPatcher, Messages, JSONSortify, Cryptpad, FO, Toolbar) {
+    '/customize/application_config.js'
+], function (Config, Listmap, Crypto, TextPatcher, Messages, JSONSortify, Cryptpad, FO, Toolbar, AppConfig) {
     var module = window.MODULE = {};
 
     var $ = window.jQuery;
@@ -144,10 +145,13 @@ define([
     };
 
     var init = function (files) {
-        var ownFileManager = function () {
+        var isOwnDrive = function () {
             return Cryptpad.getUserHash() === APP.hash || localStorage.FS_hash === APP.hash;
         };
-        config.workgroup = !ownFileManager();
+        var isWorkgroup = function () {
+            return files.workgroup == 1;
+        };
+        config.workgroup = isWorkgroup();
 
         var filesOp = FO.init(files, config);
         filesOp.fixFiles();
@@ -195,7 +199,8 @@ define([
         });
 
         // FILE MANAGER
-        var currentPath = module.currentPath = getLastOpenedFolder();
+        // _WORKGROUP_ and other people drive : display Documents as main page
+        var currentPath = module.currentPath = isOwnDrive() ? getLastOpenedFolder() : [ROOT];
         var lastSelectTime;
         var selectedElement;
 
@@ -371,7 +376,7 @@ define([
             if (!APP.editable) {
                 $menu.find('a.editable').parent('li').hide();
             }
-            if (!ownFileManager()) {
+            if (!isOwnDrive()) {
                 $menu.find('a.own').parent('li').hide();
             }
 
@@ -439,7 +444,7 @@ define([
             if (!APP.editable) {
                 $menu.find('a.editable').parent('li').hide();
             }
-            if (!ownFileManager()) {
+            if (!isOwnDrive()) {
                 $menu.find('a.own').parent('li').hide();
             }
 
@@ -613,6 +618,7 @@ define([
         };
 
         // In list mode, display metadata from the filesData object
+        // _WORKGROUP_ : Do not display title, atime and ctime columns since we don't have files data
         var addFileData = function (element, key, $span, displayTitle) {
             if (!filesOp.isFile(element)) { return; }
 
@@ -631,11 +637,11 @@ define([
             var $type = $('<span>', {'class': 'type listElement', title: type}).text(type);
             var $adate = $('<span>', {'class': 'atime listElement', title: getDate(data.atime)}).text(getDate(data.atime));
             var $cdate = $('<span>', {'class': 'ctime listElement', title: getDate(data.ctime)}).text(getDate(data.ctime));
-            if (displayTitle && ownFileManager()) {
+            if (displayTitle && !isWorkgroup()) {
                 $span.append($title);
             }
             $span.append($type);
-            if (ownFileManager()) {
+            if (!isWorkgroup()) {
                 $span.append($adate).append($cdate);
             }
         };
@@ -833,12 +839,8 @@ define([
         };
 
         var createNewFolderButton = function () {
-            var $block = $('<div>', {
-                'class': 'btn-group topButtonContainer newFolderButtonContainer'
-            });
-
             var $listButton = $('<button>', {
-                'class': 'btn'
+                'class': 'newElement'
             }).text(Messages.fm_newFolderButton);
 
             $listButton.click(function () {
@@ -849,7 +851,23 @@ define([
                 filesOp.createNewFolder(currentPath, null, onCreated);
             });
 
-            $block.append($listButton);
+
+            return $listButton;
+        };
+
+        var createNewPadButtons = function () {
+            var $block = $('<div>', { 'class': 'newPadContainer'});
+            AppConfig.availablePadTypes.forEach(function (type) {
+                var $button = $('<button>', {
+                    'class': 'newElement'
+                }).text(Messages['button_new' + type]);
+
+                $button.click(function () {
+                    //TODO
+                });
+
+                $block.append($button);
+            });
             return $block;
         };
 
@@ -932,6 +950,7 @@ define([
                 $list.find('.' + classSorted).prepend($icon);
             }
         };
+        // _WORKGROUP_ : do not display title, atime and ctime in workgroups since we don't have files data
         var getFileListHeader = function (displayTitle) {
             var $fileHeader = $('<li>', {'class': 'file-header header listElement'});
             var $fihElement = $('<span>', {'class': 'element'}).appendTo($fileHeader);
@@ -941,11 +960,11 @@ define([
             var $fhAdate = $('<span>', {'class': 'atime'}).text(Messages.fm_lastAccess).click(onSortByClick);
             var $fhCdate = $('<span>', {'class': 'ctime'}).text(Messages.fm_creation).click(onSortByClick);
             $fihElement.append($fhName);
-            if (displayTitle && ownFileManager()) {
+            if (displayTitle && !isWorkgroup()) {
                 $fihElement.append($fhTitle);
             }
             $fihElement.append($fhType);
-            if (ownFileManager()) {
+            if (!isWorkgroup()) {
                 $fihElement.append($fhAdate).append($fhCdate);
             }
             addFileSortIcon($fihElement);
@@ -971,14 +990,21 @@ define([
                 if (prop) {
                     var element = useHref || useData ? el : root[el];
                     var e = useData ? element : filesOp.getFileData(element);
+                    if (!e) {
+                        e = {
+                            title : Messages.fm_noname,
+                            atime : 0,
+                            ctime : 0
+                        }
+                    }
                     if (prop === 'type') {
-                        var hrefData = Cryptpad.parsePadUrl(e.href);
+                        var hrefData = Cryptpad.parsePadUrl(el);
                         return hrefData.type;
                     }
                     if (prop === 'atime' || prop === 'ctime') {
                         return new Date(e[prop]);
                     }
-                    return e.title.toLowerCase();
+                    return e && e.title ? e.title.toLowerCase() : '';
                 }
                 return useData ? el.title.toLowerCase() : el.toLowerCase();
             };
@@ -1015,6 +1041,15 @@ define([
             });
             return keys;
         };
+
+        // Drive content toolbar
+        var createToolbar = function (path) {
+            var $toolbar = $('<div>', {
+                id: 'driveToolbar'
+            });
+            return $toolbar;
+        };
+
         // Unsorted element are represented by "href" in an array: they don't have a filename
         // and they don't hav a hierarchical structure (folder/subfolders)
         var displayHrefArray = function ($container, rootName) {
@@ -1029,8 +1064,9 @@ define([
             sortedFiles.forEach(function (href) {
                 var file = filesOp.getFileData(href);
                 if (!file) {
-                    debug("Unsorted or template returns an element not present in filesData: ", href);
-                    return;
+                    //debug("Unsorted or template returns an element not present in filesData: ", href);
+                    file = { title: Messages.fm_noname };
+                    //return;
                 }
                 var idx = files[rootName].indexOf(href);
                 var $icon = $fileIcon.clone();
@@ -1118,7 +1154,7 @@ define([
         var displayDirectory = module.displayDirectory = function (path, force) {
             if (!appStatus.isReady && !force) { return; }
             // Only Trash and Root are available in not-owned files manager
-            if (!ownFileManager() && !filesOp.isPathInTrash(path) && !filesOp.isPathInRoot(path)) {
+            if (isWorkgroup() && !filesOp.isPathInTrash(path) && !filesOp.isPathInRoot(path)) {
                 log("TRANSLATE or REMOVE: Unable to open the selected category, displaying root"); //TODO translate
                 currentPath = [ROOT];
                 displayDirectory(currentPath);
@@ -1149,6 +1185,7 @@ define([
 
             setLastOpenedFolder(path);
 
+            var $toolbar = createToolbar(path);
             var $title = createTitle(path);
             var $info = createInfoBox(path);
 
@@ -1166,7 +1203,8 @@ define([
                 return;
             }*/
 
-            var $modeButton = createViewModeButton().appendTo($title);
+            var $modeButton = createViewModeButton().appendTo($toolbar);
+//            createNewPadButtons().appendTo($toolbar);
 
             var $folderHeader = getFolderListHeader();
             var $fileHeader = getFileListHeader(true);
@@ -1179,7 +1217,7 @@ define([
                 displayTrashRoot($list, $folderHeader, $fileHeader);
             } else {
                 $dirContent.contextmenu(openContentContextMenu);
-                var $newFolderButton = createNewFolderButton().appendTo($title);
+                var $newFolderButton = createNewFolderButton().appendTo($toolbar);
                 if (filesOp.hasSubfolder(root)) { $list.append($folderHeader); }
                 // display sub directories
                 var keys = Object.keys(root);
@@ -1198,7 +1236,7 @@ define([
                     $element.appendTo($list);
                 });
             }
-            $content.append($title).append($info).append($dirContent);
+            $content.append($toolbar).append($title).append($info).append($dirContent);
             appStatus.ready(true);
         };
 
@@ -1349,7 +1387,7 @@ define([
         var resetTree = module.resetTree = function () {
             $tree.html('');
             createTree($tree, [ROOT]);
-            if (ownFileManager()) {
+            if (!isWorkgroup()) {
                 createUnsorted($tree, [UNSORTED]);
                 createTemplate($tree, [TEMPLATE]);
                 createAllFiles($tree, [FILES_DATA]);
@@ -1533,7 +1571,7 @@ define([
                     }
                     // If we are already in the trash, delete the elements permanently
                     var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [paths.length]);
-                    if (paths.length === 1) {
+                    if (paths.length === 1) { // If we delete only one element, display its name in the popup
                         var path = paths[0];
                         var element = filesOp.findElement(files, path);
                         var name = filesOp.isInTrashRoot(path) ? path[1] : (filesOp.isPathInHrefArray(path) ? filesOp.getTitle(element) : path[path.length - 1]);

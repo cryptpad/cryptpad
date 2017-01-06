@@ -4,7 +4,7 @@ define([
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
-    '/file/fileObject.js'
+    '/common/fileObject.js'
 ], function (Config, Messages, Listmap, Crypto, TextPatcher, FO) {
     /*
         This module uses localStorage, which is synchronous, but exposes an

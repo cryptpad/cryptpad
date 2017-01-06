@@ -184,6 +184,7 @@ li {
 
 #content h1 {
     padding-left: 10px;
+    margin-top: 10px;
 }
 
 #content .info-box {
@@ -325,3 +326,31 @@ li {
         display: inline;
     }
 }
+
+/* Toolbar */
+
+#driveToolbar {
+    background: #ccc;
+    height: 40px;
+}
+
+.newPadContainer {
+    display: inline-block;
+    height: 100%;
+}
+
+button.newElement {
+    border-radius: 0px;
+    height: 30px;
+    margin: 5px 5px;
+    background: #888;
+    color: #eee;
+    font-size: 15px;
+    border: none;
+    font-weight: bold;
+}
+
+button.newElement:hover {
+    box-shadow: 0px 0px 2px #000;
+}
+
