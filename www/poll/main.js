@@ -698,20 +698,21 @@ define([
         Cryptpad.alert(Messages.common_connectionLost);
     };
 
-    var config = {
-        websocketURL: Cryptpad.getWebsocketURL(),
-        channel: secret.channel,
-        readOnly: readOnly,
-        data: {},
-        // our public key
-        validateKey: secret.keys.validateKey || undefined,
-        //readOnly: readOnly,
-        crypto: Crypto.createEncryptor(secret.keys),
-        userName: 'poll',
-    };
-
     // don't initialize until the store is ready.
     Cryptpad.ready(function () {
+        var config = {
+            websocketURL: Cryptpad.getWebsocketURL(),
+            channel: secret.channel,
+            readOnly: readOnly,
+            data: {},
+            // our public key
+            validateKey: secret.keys.validateKey || undefined,
+            //readOnly: readOnly,
+            crypto: Crypto.createEncryptor(secret.keys),
+            userName: 'poll',
+            network: Cryptpad.getNetwork()
+        };
+
         if (readOnly) {
             $('#commit, #create-user, #create-option, #publish, #admin').remove();
         }

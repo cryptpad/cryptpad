@@ -688,9 +688,6 @@ define([
 
             var before = JSON.stringify(files);
 
-
-
-
             var fixRoot = function (elem) {
                 if (typeof(files[ROOT]) !== "object") { debug("ROOT was not an object"); files[ROOT] = {}; }
                 var element = elem || files[ROOT];

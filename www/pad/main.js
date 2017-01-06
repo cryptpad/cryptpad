@@ -376,6 +376,9 @@ define([
                 // the channel we will communicate over
                 channel: secret.channel,
 
+                // the nework used for the file store if it exists
+                network: Cryptpad.getNetwork(),
+
                 // our public key
                 validateKey: secret.keys.validateKey || undefined,
                 readOnly: readOnly,
@@ -629,6 +632,11 @@ define([
             var onReady = realtimeOptions.onReady = function (info) {
                 if (!APP.isMaximized) {
                     editor.execCommand('maximize');
+                    // We have to call it 3 times in Safari in order to have the editor fully maximized -_-
+                    if ((''+window.navigator.vendor).indexOf('Apple') !== -1) {
+                        editor.execCommand('maximize');
+                        editor.execCommand('maximize');
+                    }
                     APP.isMaximized = true;
                 }
 

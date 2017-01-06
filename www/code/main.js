@@ -155,6 +155,7 @@ define([
                 crypto: Crypto.createEncryptor(secret.keys),
                 setMyID: setMyID,
                 transformFunction: JsonOT.transform || JsonOT.validate,
+                network: Cryptpad.getNetwork()
             };
 
             var canonicalize = function (t) { return t.replace(/\r\n/g, '\n'); };
