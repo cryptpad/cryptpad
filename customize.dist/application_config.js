@@ -12,8 +12,8 @@ define(function() {
      */
     config.notificationTimeout = 5000;
 
-    config.USE_FS_STORE = false;
-    config.USE_HOMEPAGE_TABLE = true;
+    config.USE_FS_STORE = true;
+    config.USE_HOMEPAGE_TABLE = false;
 
     return config;
 });

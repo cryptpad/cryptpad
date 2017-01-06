@@ -1699,7 +1699,6 @@ define([
         var onReconnect = function (info) {
             setEditable(true);
             Cryptpad.findOKButton().click();
-            //Cryptpad.alert("Reconnected");
         };
 
         if (storeObj && !window.location.hash) {
