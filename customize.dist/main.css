@@ -337,6 +337,12 @@ html.cp,
   font-family: Georgia,Cambria,serif;
   height: 100;
 }
+.cp:not(.poll) #language-selector {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  display: inline-block;
+}
 .cp {
   /* buttons */
   /*  Tables
@@ -347,11 +353,6 @@ html.cp,
   font-size: 1rem;
   font-weight: 400;
   line-height: 2rem;
-}
-.cp #language-selector {
-  position: absolute;
-  top: 0px;
-  right: 0px;
 }
 .cp a.github-corner > svg {
   fill: #00ADEE;
@@ -652,7 +653,7 @@ html.cp,
 }
 .cp form.realtime table input[type="text"],
 .cp div.realtime table input[type="text"] {
-  height: 100%;
+  height: auto;
   border: 1px solid #302B28;
   width: 80%;
 }
@@ -901,4 +902,7 @@ html.cp,
 .cp div.modal #addtime,
 .cp div#modal #addtime {
   border-bottom-left-radius: 5px;
+}
+#cors-store {
+  display: none;
 }

@@ -627,7 +627,10 @@ define([
 
             // this should only ever get called once, when the chain syncs
             var onReady = realtimeOptions.onReady = function (info) {
-                editor.execCommand('maximize');
+                if (!APP.isMaximized) {
+                    editor.execCommand('maximize');
+                    APP.isMaximized = true;
+                }
 
                 module.patchText = TextPatcher.create({
                     realtime: info.realtime,

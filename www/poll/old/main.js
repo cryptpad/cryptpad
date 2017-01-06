@@ -1,8 +1,8 @@
 define([
     '/api/config?cb=' + Math.random().toString(16).substring(2),
     '/customize/messages.js?app=poll',
-    '/poll/table.js',
-    '/poll/wizard.js',
+    'table.js',
+    'wizard.js',
     '/bower_components/textpatcher/TextPatcher.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
