@@ -630,6 +630,11 @@ define([
                 if (!APP.isMaximized) {
                     editor.execCommand('maximize');
                     APP.isMaximized = true;
+                    // We have to call it 3 times in Safari in order to have the editor fully maximized -_-
+                    if ((''+window.navigator.vendor).indexOf('Apple') !== -1) {
+                        editor.execCommand('maximize');
+                        editor.execCommand('maximize');
+                    }
                 }
 
                 module.patchText = TextPatcher.create({
