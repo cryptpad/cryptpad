@@ -43,6 +43,7 @@
   width: 16px;
   display: inline-block;
   padding: 5px;
+  margin: 3px 0;
 }
 .cryptpad-toolbar .cryptpad-lag div {
   margin: auto;
@@ -245,6 +246,9 @@
 .cryptpad-toolbar-top .cryptpad-user span:not(.cryptpad-lag) {
   vertical-align: top;
   display: inline-block;
+}
+.cryptpad-toolbar-top .cryptpad-user span.fa {
+  vertical-align: baseline;
 }
 @media screen and (max-width: 400px) {
   .cryptpad-toolbar-top .cryptpad-user {
