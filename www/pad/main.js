@@ -62,7 +62,7 @@ define([
         Cryptpad: Cryptpad,
     };
 
-    var emitResize = APP.emitResize = function () {
+    var emitResize = module.emitResize = function () {
         var cw = $('#pad-iframe')[0].contentWindow;
 
         var evt = cw.document.createEvent('UIEvents');
@@ -635,9 +635,9 @@ define([
 
             // this should only ever get called once, when the chain syncs
             var onReady = realtimeOptions.onReady = function (info) {
-                if (!APP.isMaximized) {
+                if (!module.isMaximized) {
                     editor.execCommand('maximize');
-                    APP.isMaximized = true;
+                    module.isMaximized = true;
                 }
 
                 module.patchText = TextPatcher.create({

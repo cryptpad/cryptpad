@@ -237,7 +237,7 @@ define(function () {
 
     out.login_cancel_prompt = "...or if you may have entered the wrong username or password, cancel to try again.";
 
-    out.login_registerSuccess = "registered successfully. Make sure you don't forget your password!"
+    out.login_registerSuccess = "registered successfully. Make sure you don't forget your password!";
     out.login_passwordMismatch = "The two passwords you entered do not match. Try again";
 
     out.login_warning = [

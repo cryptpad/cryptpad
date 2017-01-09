@@ -12,16 +12,17 @@ define([
         //console.log("plaintext");
         //console.log(body);
 
+/*
         0 && Crypt.put(body, function (e, out) {
             if (e) { return void console.error(e); }
             if (out) {
                 console.log(out);
             }
-        });
+        }); */
 
         var data = {};
 
-(_ => {
+(function () {
         var cyphertext = data.payload = Crypto.encrypt(body, key);
         console.log("encrypted");
         console.log(cyphertext);
