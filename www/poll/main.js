@@ -22,6 +22,9 @@ define([
 
     var secret = Cryptpad.getSecrets();
     var readOnly = secret.keys && !secret.keys.editKeyStr;
+    if (!secret.keys) {
+        secret.keys = secret.key;
+    }
 
     Cryptpad.addLoadingScreen();
     var onConnectError = function (info) {
