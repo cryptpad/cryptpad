@@ -627,14 +627,15 @@ define([
             var trashFiles = getTrashFiles();
             var templateFiles = getTemplateFiles();
             var newPath, parentEl;
-            if (path && isPathInHrefArray(path)) {
+            if (path) {
                 newPath = decodeURIComponent(path).split(',');
+            }
+            if (path && isPathInHrefArray(newPath)) {
                 parentEl = findElement(files, newPath);
                 parentEl.push(href);
                 return;
             }
-            if (path && name) {
-                newPath = decodeURIComponent(path).split(',');
+            if (path && isPathInRoot(newPath) && name) {
                 parentEl = findElement(files, newPath);
                 if (parentEl) {
                     var newName = getAvailableName(parentEl, name);
@@ -642,7 +643,7 @@ define([
                     return;
                 }
             }
-            if (unsortedFiles.indexOf(href) === -1 && rootFiles.indexOf(href) === -1&& templateFiles.indexOf(href) === -1 && trashFiles.indexOf(href) === -1) {
+            if (unsortedFiles.indexOf(href) === -1 && rootFiles.indexOf(href) === -1 && templateFiles.indexOf(href) === -1 && trashFiles.indexOf(href) === -1) {
                 files[UNSORTED].push(href);
             }
         };

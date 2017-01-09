@@ -174,8 +174,9 @@ define(function () {
     out.fm_trashName = "Corbeille";
     out.fm_unsortedName = "Fichiers non triés";
     out.fm_filesDataName = "Tous les fichiers";
+    out.fm_newButton = "Nouveau";
     out.fm_newFolder = "Nouveau dossier";
-    out.fm_newFolderButton = "NOUVEAU DOSSIER";
+    out.fm_folder = "Dossier";
     out.fm_folderName = "Nom du dossier";
     out.fm_numberOfFolders = "# de dossiers";
     out.fm_numberOfFiles = "# de fichiers";
@@ -199,7 +200,12 @@ define(function () {
     out.fm_info_unsorted = 'Contient tous les documents que vous avez ouvert et qui ne sont pas triés dans "Documents" ou déplacés vers la "Corbeille".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
     out.fm_info_trash = 'Les fichiers supprimés dans la corbeille sont également enlevés de "Tous les fichiers" et il est impossible de les récupérer depuis l\'explorateur de fichiers.'; // Same here for "All files" and "out.fm_filesDataName"
     out.fm_info_allFiles = 'Contient tous les fichiers de "Documents", "Fichiers non triés" et "Corbeille". Vous ne pouvez pas supprimer ou déplacer des fichiers d\'ici.'; // Same here
-    // File - Context menu
+    out.fm_alert_backupUrl = "URL de secours pour ce contenu.<br>" +
+                             "Il est <strong>fortement recommandé</strong> de garder cette URL pour vous-même.<br>" +
+                             "Elle vous servira en cas de perte des données de votre navigateur afin de retrouver vos fichiers.<br>" +
+                             "Quiconque se trouve en possession de celle-ci peut modifier ou supprimer tous les fichiers de ce gestionnaire.<br>" +
+                             '<input type="text" id="fm_backupUrl" value="{0}"/>';
+     // File - Context menu
     out.fc_newfolder = "Nouveau dossier";
     out.fc_rename = "Renommer";
     out.fc_open = "Ouvrir";

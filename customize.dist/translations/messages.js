@@ -176,8 +176,9 @@ define(function () {
     out.fm_unsortedName = "Unsorted files";
     out.fm_filesDataName = "All files";
     out.fm_templateName = "Templates";
+    out.fm_newButton = "New";
     out.fm_newFolder = "New folder";
-    out.fm_newFolderButton = "NEW FOLDER";
+    out.fm_folder = "Folder";
     out.fm_folderName = "Folder name";
     out.fm_numberOfFolders = "# of folders";
     out.fm_numberOfFiles = "# of files";
@@ -201,6 +202,11 @@ define(function () {
     out.fm_info_unsorted = 'Contains all the files you\'ve visited that are not yet sorted in "Documents" or moved to the "Trash".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
     out.fm_info_trash = 'Files deleted from the trash are also removed from "All files" and it is impossible to recover them from the file manager.'; // Same here for "All files" and "out.fm_filesDataName"
     out.fm_info_allFiles = 'Contains all the files from "Documents", "Unsorted" and "Trash". You can\'t move or remove files from here.'; // Same here
+    out.fm_alert_backupUrl = "Backup URL for this drive.<br>" +
+                             "It is <strong>highly recommended</strong> that you keep ip for yourself only.<br>" +
+                             "You can use it to retrieve all your files in case your browser memory got erased.<br>" +
+                             "Anybody with that URL can edit or remove all the files in your file manager.<br>" +
+                             '<input type="text" id="fm_backupUrl" value="{0}"/>';
     // File - Context menu
     out.fc_newfolder = "New folder";
     out.fc_rename = "Rename";

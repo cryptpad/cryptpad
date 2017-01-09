@@ -567,7 +567,6 @@ define([
             });
 
             var newPath = $(ev.target).data('path') || $(ev.target).parent('li').data('path');
-            console.log(newPath);
             if (!newPath) { return; }
             if (movedPaths && movedPaths.length) {
                 moveElements(movedPaths, newPath, null, refresh);
@@ -839,9 +838,9 @@ define([
         };
 
         var createNewFolderButton = function () {
-            var $listButton = $('<button>', {
+            var $listButton = $('<a>', {
                 'class': 'newElement'
-            }).text(Messages.fm_newFolderButton);
+            }).text(Messages.fm_folder);
 
             $listButton.click(function () {
                 var onCreated = function (info) {
@@ -855,20 +854,43 @@ define([
             return $listButton;
         };
 
-        var createNewPadButtons = function () {
-            var $block = $('<div>', { 'class': 'newPadContainer'});
+        var createNewButton = function (isInRoot) {
+            var $block = $('<div>', {'class': 'dropdown-bar'});
+
+            var $button = $('<button>', {
+                'class': 'newElement'
+            }).text(Messages.fm_newButton);
+
+            var $innerblock = $('<div>', {'class': 'dropdown-bar-content'});
+
             AppConfig.availablePadTypes.forEach(function (type) {
-                var $button = $('<button>', {
-                    'class': 'newElement'
-                }).text(Messages['button_new' + type]);
+                var $button = $('<a>', {
+                    'class': 'newElement newdoc',
+                    'data-type': type,
+                    'href': '/' + type + '/#?path=' + encodeURIComponent(currentPath),
+                    'target': '_blank'
+                }).text(Messages.type[type]);
 
-                $button.click(function () {
-                    //TODO
-                });
-
-                $block.append($button);
+                $innerblock.append($button);
             });
+
+            if (isInRoot) {
+                $innerblock.append('<hr>');
+                $innerblock.append(createNewFolderButton());
+            }
+
+            $block.append($button).append($innerblock);
+
+            $button.click(function (e) {
+                e.stopPropagation();
+                $innerblock.toggle();
+            });
+
             return $block;
+        };
+
+        var hideNewButton = function () {
+            $iframe.find('.dropdown-bar-content').hide();
         };
 
         var SORT_FOLDER_DESC = 'sortFoldersDesc';
@@ -1166,6 +1188,7 @@ define([
             if (!path || path.length === 0) {
                 path = [ROOT];
             }
+            var isInRoot = filesOp.isPathInRoot(path);
             var isTrashRoot = filesOp.comparePath(path, [TRASH]);
             var isUnsorted = filesOp.comparePath(path, [UNSORTED]);
             var isTemplate = filesOp.comparePath(path, [TEMPLATE]);
@@ -1197,14 +1220,10 @@ define([
             }
             var $list = $('<ul>').appendTo($dirContent);
 
-            /*if (isUnsorted) {
-                displayUnsorted($list);
-                $content.append($title).append($dirContent);
-                return;
-            }*/
-
             var $modeButton = createViewModeButton().appendTo($toolbar);
-//            createNewPadButtons().appendTo($toolbar);
+            if (!filesOp.isPathInTrash(path)) {
+                createNewButton(isInRoot).appendTo($toolbar);
+            }
 
             var $folderHeader = getFolderListHeader();
             var $fileHeader = getFileListHeader(true);
@@ -1217,7 +1236,6 @@ define([
                 displayTrashRoot($list, $folderHeader, $fileHeader);
             } else {
                 $dirContent.contextmenu(openContentContextMenu);
-                var $newFolderButton = createNewFolderButton().appendTo($toolbar);
                 if (filesOp.hasSubfolder(root)) { $list.append($folderHeader); }
                 // display sub directories
                 var keys = Object.keys(root);
@@ -1537,6 +1555,7 @@ define([
             removeSelected(e);
             removeInput(e);
             module.hideMenu(e);
+            hideNewButton();
         });
         $(ifrw).on('drag drop', function (e) {
             removeInput(e);
@@ -1564,10 +1583,10 @@ define([
                 // If we are in the trash or if we are holding the "shift" key, delete permanently,
                 // else move to trash
                 if (filesOp.isPathInTrash(currentPath) || e.shiftKey) {
-                    var todo = filesOp.removeFromTrash;
+                    var cb = filesOp.removeFromTrash;
                     if (!filesOp.isPathInTrash(currentPath)) {
                         // If we are not in the trash, we just have to remove the key from root/unsorted
-                        todo = filesOp.deletePathPermanently;
+                        cb = filesOp.deletePathPermanently;
                     }
                     // If we are already in the trash, delete the elements permanently
                     var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [paths.length]);
@@ -1580,7 +1599,7 @@ define([
                     Cryptpad.confirm(msg, function(res) {
                         if (!res) { return; }
                         paths.forEach(function(p) {
-                            todo(p);
+                            cb(p);
                         });
                         refresh();
                     });
@@ -1686,7 +1705,7 @@ define([
                 common: Cryptpad,
                 hideShare: true
             };
-            var toolbar = info.realtime.toolbar = Toolbar.create(APP.$bar, info.myID, info.realtime, info.getLag, userList, config);
+            var toolbar = APP.toolbar = info.realtime.toolbar = Toolbar.create(APP.$bar, info.myID, info.realtime, info.getLag, userList, config);
 
             var $bar = APP.$bar;
             var $rightside = $bar.find('.' + Toolbar.constants.rightside);
@@ -1705,7 +1724,11 @@ define([
                 $backupButton.on('click', function() {
                     var url = window.location.origin + window.location.pathname + '#' + editHash;
                     //TODO change text & transalte
-                    Cryptpad.alert("Backup URL for this pad. It is highly recommended that you do not share it with other people.<br>Anybody with that URL can remove all the files in your file manager.<br>" + url);
+                    Cryptpad.alert(Messages._getKey('fm_alert_backupUrl', [url]));
+                    $('#fm_backupUrl').val(url);
+                    $('#fm_backupUrl').click(function () {
+                        $(this).select();
+                    });
                 });
                 $userBlock.append($backupButton);
             }
@@ -1731,11 +1754,11 @@ define([
         };
         var onDisconnect = function (info) {
             setEditable(false);
-            console.error('err');
             Cryptpad.alert(Messages.common_connectionLost);
         };
         var onReconnect = function (info) {
             setEditable(true);
+            APP.toolbar.reconnecting(info.myId);
             Cryptpad.findOKButton().click();
         };
 
@@ -1752,8 +1775,8 @@ define([
         proxy.on('disconnect', function () {
             onDisconnect();
         });
-        proxy.on('reconnect', function () {
-            onReconnect();
+        proxy.on('reconnect', function (info) {
+            onReconnect(info);
         });
     });
     Cryptpad.onError(function (info) {

@@ -155,11 +155,11 @@ define([
         exp.proxy = rt.proxy;
         rt.proxy.on('create', function (info) {
             exp.info = info;
-            var realtime = info.realtime;
             if (!Cryptpad.getUserHash()) {
                 localStorage.FS_hash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
             }
         }).on('ready', function () {
+        if (ready) { return; }
             if (!rt.proxy[Cryptpad.storageKey] || !Cryptpad.isArray(rt.proxy[Cryptpad.storageKey])) {
                 var oldStore = Cryptpad.getStore(true);
                 oldStore.get(Cryptpad.storageKey, function (err, s) {
