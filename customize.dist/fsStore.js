@@ -133,8 +133,11 @@ define([
         }
     };
 
+    var initialized = false;
+
     var init = function (f, Cryptpad) {
-        if (!Cryptpad) { return; }
+        if (!Cryptpad || initialized) { return; }
+        initialized = true;
         var hash = Cryptpad.getUserHash() || localStorage.FS_hash;
         var secret = Cryptpad.getSecrets(hash);
         var listmapConfig = {

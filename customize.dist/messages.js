@@ -95,7 +95,7 @@ define(['/customize/languageSelector.js',
         $('[data-localization]').each(translateText);
         $('#pad-iframe').contents().find('[data-localization]').each(translateText);
         $('[data-localization-title]').each(translateTitle);
-        $('[data-localization-placeholder').each(translatePlaceholder);
+        $('[data-localization-placeholder]').each(translatePlaceholder);
         $('#pad-iframe').contents().find('[data-localization-title]').each(translateTitle);
     };
 

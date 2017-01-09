@@ -43,6 +43,14 @@ define([
         if (USE_FS_STORE && !legacy && fsStore) { return fsStore; }
         throw new Error("Store is not ready!");
     };
+    var getNetwork = common.getNetwork = function () {
+        if (USE_FS_STORE && fsStore) {
+            if (fsStore.getProxy() && fsStore.getProxy().info) {
+                return fsStore.getProxy().info.network;
+            }
+        }
+        return;
+    };
 
     var getWebsocketURL = common.getWebsocketURL = function () {
         if (!Config.websocketPath) { return Config.websocketURL; }

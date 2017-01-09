@@ -21,6 +21,7 @@ define([
         var log = config.log || logging;
         var logError = config.logError || logging;
         var debug = config.debug || logging;
+        var workgroup = config.workgroup;
 
         var exp = {};
 
@@ -241,6 +242,9 @@ define([
         };
 
         var checkDeletedFiles = function () {
+            // Nothing in FILES_DATA for workgroups
+            if (workgroup) { return; }
+
             var rootFiles = getRootFiles();
             var unsortedFiles = getUnsortedFiles();
             var templateFiles = getTemplateFiles();
@@ -324,6 +328,7 @@ define([
 
         // Data from filesData
         var getTitle = exp.getTitle = function (href) {
+            if (workgroup) { debug("No titles in workgroups"); return; }
             var data = getFileData(href);
             if (!href || !data) {
                 error("getTitle called with a non-existing href: ", href);
@@ -458,6 +463,21 @@ define([
             if(cb) { cb(); }
         };
 
+        // Import elements in the file manager
+        var importElements = exp.importElements = function (elements, path, cb) {
+            if (!elements || elements.length === 0) { return; }
+            console.log(elements);
+            var newParent = findElement(files, path);
+            if (!newParent) { debug("Trying to import elements into a non-existing folder"); return; }
+            elements.forEach(function (e) {
+                var el = e.el;
+                var key = e.name;
+                if (!key) { key = "???"; } // Should not happen...
+                newParent[key] = el;
+            });
+            if(cb) { cb(); }
+        };
+
         var createNewFolder = exp.createNewFolder = function (folderPath, name, cb) {
             var parentEl = findElement(files, folderPath);
             var folderName = getAvailableName(parentEl, name || NEW_FOLDER_NAME);
@@ -579,6 +599,7 @@ define([
 
 
         var forgetPad = exp.forgetPad = function (href) {
+            if (workgroup) { return; }
             var rootFiles = getRootFiles().slice();
             if (rootFiles.indexOf(href) !== -1) {
                 removeFileFromRoot(files[ROOT], href);
@@ -592,6 +613,7 @@ define([
         };
 
         var addUnsortedPad = exp.addPad = function (href, path, name) {
+            if (workgroup) { return; }
             var unsortedFiles = getUnsortedFiles();
             var rootFiles = getRootFiles();
             var trashFiles = getTrashFiles();
@@ -620,6 +642,7 @@ define([
         // addTemplate is called when we want to add a new pad, never visited, to the templates list
         // first, we must add it to FILES_DATA, so the input has to be an fileDAta object
         var addTemplate = exp.addTemplate = function (fileData) {
+            if (workgroup) { return; }
             if (typeof fileData !== "object" || !fileData.href || !fileData.title) { return; }
 
             var href = fileData.href;
@@ -635,6 +658,7 @@ define([
         };
 
         var listTemplates = exp.listTemplates = function (type) {
+            if (workgroup) { return; }
             var templateFiles = getTemplateFiles();
             var res = [];
             templateFiles.forEach(function (f) {
@@ -664,13 +688,9 @@ define([
 
             var before = JSON.stringify(files);
 
-            if (typeof(files[ROOT]) !== "object") { debug("ROOT was not an object"); files[ROOT] = {}; }
-            if (typeof(files[TRASH]) !== "object") { debug("TRASH was not an object"); files[TRASH] = {}; }
-            if (!$.isArray(files[FILES_DATA])) { debug("FILES_DATA was not an array"); files[FILES_DATA] = []; }
-            if (!$.isArray(files[UNSORTED])) { debug("UNSORTED was not an array"); files[UNSORTED] = []; }
-            if (!$.isArray(files[TEMPLATE])) { debug("TEMPLATE was not an array"); files[TEMPLATE] = []; }
-
-            var fixRoot = function (element) {
+            var fixRoot = function (elem) {
+                if (typeof(files[ROOT]) !== "object") { debug("ROOT was not an object"); files[ROOT] = {}; }
+                var element = elem || files[ROOT];
                 for (var el in element) {
                     if (!isFile(element[el]) && !isFolder(element[el])) {
                         debug("An element in ROOT was not a folder nor a file. ", element[el]);
@@ -681,9 +701,9 @@ define([
                     }
                 }
             };
-            fixRoot(files[ROOT]);
-
-            var fixTrashRoot = function (tr) {
+            var fixTrashRoot = function () {
+                if (typeof(files[TRASH]) !== "object") { debug("TRASH was not an object"); files[TRASH] = {}; }
+                var tr = files[TRASH];
                 var toClean;
                 var addToClean = function (obj, idx) {
                     if (typeof(obj) !== "object") { toClean.push(idx); return; }
@@ -704,9 +724,10 @@ define([
                     }
                 }
             };
-            fixTrashRoot(files[TRASH]);
-
-            var fixUnsorted = function (us) {
+            var fixUnsorted = function () {
+                if (!$.isArray(files[UNSORTED])) { debug("UNSORTED was not an array"); files[UNSORTED] = []; }
+                files[UNSORTED] = uniq(files[UNSORTED]);
+                var us = files[UNSORTED];
                 var rootFiles = getRootFiles().slice();
                 var templateFiles = getTemplateFiles();
                 var toClean = [];
@@ -722,10 +743,10 @@ define([
                     }
                 });
             };
-            files[UNSORTED] = uniq(files[UNSORTED]);
-            fixUnsorted(files[UNSORTED]);
-
-            var fixTemplate = function (us) {
+            var fixTemplate = function () {
+                if (!$.isArray(files[TEMPLATE])) { debug("TEMPLATE was not an array"); files[TEMPLATE] = []; }
+                files[TEMPLATE] = uniq(files[TEMPLATE]);
+                var us = files[TEMPLATE];
                 var rootFiles = getRootFiles().slice();
                 var unsortedFiles = getUnsortedFiles();
                 var toClean = [];
@@ -741,10 +762,9 @@ define([
                     }
                 });
             };
-            files[TEMPLATE] = uniq(files[TEMPLATE]);
-            fixUnsorted(files[TEMPLATE]);
-
             var fixFilesData = function (fd) {
+                if (!$.isArray(files[FILES_DATA])) { debug("FILES_DATA was not an array"); files[FILES_DATA] = []; }
+                var fd = files[FILES_DATA];
                 var rootFiles = getRootFiles();
                 var unsortedFiles = getUnsortedFiles();
                 var trashFiles = getTrashFiles();
@@ -769,7 +789,14 @@ define([
                     }
                 });
             };
-            fixFilesData(files[FILES_DATA]);
+
+            fixRoot();
+            fixTrashRoot();
+            if (!workgroup) {
+                fixUnsorted();
+                fixTemplate();
+                fixFilesData();
+            }
 
             if (JSON.stringify(files) !== before) {
                 debug("Your file system was corrupted. It has been cleaned so that the pads you visit can be stored safely");
