@@ -58,6 +58,10 @@ define([
             return path[0] && path[0] === TRASH;
         };
 
+        var isPathInFilesData = exp.isPathInFilesData = function (path) {
+            return path[0] && path[0] === FILES_DATA;
+        };
+
         var isFile =  exp.isFile = function (element) {
             return typeof(element) === "string";
         };

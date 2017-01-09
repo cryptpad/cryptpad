@@ -201,12 +201,6 @@ li {
     float: right;
 }
 
-.topButtonContainer {
-    border: 1px solid #ccc;
-    float: right;
-    border-radius: 4px;
-}
-
 .parentFolder {
     cursor: pointer;
     margin-left: 10px;
@@ -366,9 +360,23 @@ button.newElement:hover {
 
 /* The container <div> - needed to position the dropdown content */
 .dropdown-bar {
-    margin: 5px 5px;
+    margin: 4px 5px;
     position: relative;
     display: inline-block;
+}
+.dropdown-bar.right {
+    float: right;
+}
+
+/* Right-side buttons */
+.dropdown-bar.right button {
+    display: inline-block;
+}
+.dropdown-bar.right button.active {
+    display: none;
+}
+.dropdown-bar.right button .fa {
+    margin-right: 0px;
 }
 
 /* Dropdown Content (Hidden by Default) */

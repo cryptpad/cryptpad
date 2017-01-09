@@ -774,6 +774,9 @@ define([
                 case 'unsorted':
                     msg = Messages.fm_info_unsorted;
                     break;
+                case 'template':
+                    msg = Messages.fm_info_template;
+                    break;
                 case 'trash':
                     msg = Messages.fm_info_trash;
                     break;
@@ -803,14 +806,14 @@ define([
         // Create the button allowing the user to switch from list to icons modes
         var createViewModeButton = function () {
             var $block = $('<div>', {
-                'class': 'btn-group topButtonContainer changeViewModeContainer'
+                'class': 'dropdown-bar right changeViewModeContainer'
             });
 
             var $listButton = $('<button>', {
-                'class': 'btn'
+                'class': 'newElement'
             }).append($listIcon.clone());
             var $gridButton = $('<button>', {
-                'class': 'btn'
+                'class': 'newElement'
             }).append($gridIcon.clone());
 
             $listButton.click(function () {
@@ -1173,6 +1176,7 @@ define([
 
         // Display the selected directory into the content part (rightside)
         // NOTE: Elements in the trash are not using the same storage structure as the others
+        // _WORKGROUP_ : do not change the lastOpenedFolder value in localStorage
         var displayDirectory = module.displayDirectory = function (path, force) {
             if (!appStatus.isReady && !force) { return; }
             // Only Trash and Root are available in not-owned files manager
@@ -1206,7 +1210,9 @@ define([
 
             module.resetTree();
 
-            setLastOpenedFolder(path);
+            if (!isWorkgroup()) {
+                setLastOpenedFolder(path);
+            }
 
             var $toolbar = createToolbar(path);
             var $title = createTitle(path);
@@ -1573,6 +1579,7 @@ define([
         $(ifrw).on('keydown', function (e) {
             // "Del"
             if (e.which === 46) {
+                if (filesOp.isPathInFilesData(currentPath)) { return; } // We can't remove elements directly from filesData
                 var $selected = $iframe.find('.selected');
                 if (!$selected.length) { return; }
                 var paths = [];
