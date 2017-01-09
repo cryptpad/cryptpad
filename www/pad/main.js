@@ -62,6 +62,14 @@ define([
         Cryptpad: Cryptpad,
     };
 
+    var emitResize = APP.emitResize = function () {
+        var cw = $('#pad-iframe')[0].contentWindow;
+
+        var evt = cw.document.createEvent('UIEvents');
+        evt.initUIEvent('resize', true, false, cw, 0);
+        cw.dispatchEvent(evt);
+    };
+
     var toolbar;
 
     var isNotMagicLine = function (el) {
@@ -630,11 +638,6 @@ define([
                 if (!APP.isMaximized) {
                     editor.execCommand('maximize');
                     APP.isMaximized = true;
-                    // We have to call it 3 times in Safari in order to have the editor fully maximized -_-
-                    if ((''+window.navigator.vendor).indexOf('Apple') !== -1) {
-                        editor.execCommand('maximize');
-                        editor.execCommand('maximize');
-                    }
                 }
 
                 module.patchText = TextPatcher.create({
@@ -661,7 +664,8 @@ define([
                     console.log("Unlocking editor");
                     setEditable(true);
                     initializing = false;
-                    Cryptpad.removeLoadingScreen();
+                    Cryptpad.removeLoadingScreen(emitResize);
+
                     // Update the toolbar list:
                     // Add the current user in the metadata if he has edit rights
                     if (readOnly) { return; }

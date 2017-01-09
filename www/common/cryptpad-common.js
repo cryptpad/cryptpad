@@ -678,8 +678,8 @@ define([
         $loading.append($container);
         $('body').append($loading);
     };
-    common.removeLoadingScreen = function () {
-        $('#' + LOADING).fadeOut(750);
+    common.removeLoadingScreen = function (cb) {
+        $('#' + LOADING).fadeOut(750, cb);
     };
     common.errorLoadingScreen = function (error) {
         $('.spinnerContainer').hide();
