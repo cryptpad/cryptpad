@@ -1,0 +1,23 @@
+version: '2'
+services:
+
+  cryptpad:
+    build:
+      context: .
+      args:
+        - VERSION=${VERSION}
+    image: "xwiki/cryptpad:${VERSION}"
+    hostname: cryptpad
+
+    labels:
+      - traefik.port=3000
+      - traefik.frontend.passHostHeader=true
+    environment:
+      - USE_SSL=${USE_SSL}
+      - STORAGE=${STORAGE}
+      - LOG_TO_STDOUT=${LOG_TO_STDOUT}
+
+    restart: always
+    volumes:
+      - ./data/files:/cryptpad/datastore:rw
+      - ./data/customize:/cryptpad/customize:rw

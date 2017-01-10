@@ -11,6 +11,7 @@ var WebRTCSrv = require('./WebRTCSrv');
 
 var config = require('./config');
 var websocketPort = config.websocketPort || config.httpPort;
+var useSecureWebsockets = config.useSecureWebsockets || false;
 
 // support multiple storage back ends
 var Storage = require(config.storage||'./storage/file');
@@ -83,7 +84,7 @@ app.get('/api/config', function(req, res){
     res.setHeader('Content-Type', 'text/javascript');
     res.send('define(' + JSON.stringify({
         websocketPath: config.websocketPath,
-        websocketURL:'ws' + ((httpsOpts) ? 's' : '') + '://' + host + ':' +
+        websocketURL:'ws' + ((useSecureWebsockets) ? 's' : '') + '://' + host + ':' +
             websocketPort + '/cryptpad_websocket',
     }) + ');');
 });
