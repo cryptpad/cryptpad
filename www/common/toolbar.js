@@ -283,13 +283,11 @@ define([
         }
     };
 
-    var createLagElement = function ($container) {
+    var createLagElement = function () {
         var $lag = $('<span>', {
             'class': LAG_ELEM_CLS,
             id: uid(),
         });
-        // Now added in createUserAdmin
-        //$container.prepend($lag);
         return $lag[0];
     };
 
@@ -483,7 +481,7 @@ define([
         var userListElement = config.userData ? createUserList(toolbar.find('.' + LEFTSIDE_CLS), readOnly) : undefined;
         var $titleElement = createTitle(toolbar.find('.' + TOP_CLS), readOnly, config.title, Cryptpad);
         var $linkElement = createLinkToMain(toolbar.find('.' + TOP_CLS));
-        var lagElement = createLagElement($userAdminElement);
+        var lagElement = createLagElement();
         var $userAdminElement = createUserAdmin(toolbar.find('.' + TOP_CLS), lagElement);
         var spinner = createSpinner($userAdminElement);
         var userData = config.userData;

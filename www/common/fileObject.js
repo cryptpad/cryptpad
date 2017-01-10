@@ -775,7 +775,7 @@ define([
                     }
                 });
             };
-            var fixFilesData = function (fd) {
+            var fixFilesData = function () {
                 if (!$.isArray(files[FILES_DATA])) { debug("FILES_DATA was not an array"); files[FILES_DATA] = []; }
                 var fd = files[FILES_DATA];
                 var rootFiles = getRootFiles();

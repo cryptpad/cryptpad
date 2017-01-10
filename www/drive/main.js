@@ -135,7 +135,7 @@ define([
             return Cryptpad.getUserHash() === APP.hash || localStorage.FS_hash === APP.hash;
         };
         var isWorkgroup = function () {
-            return files.workgroup == 1;
+            return files.workgroup === 1;
         };
         config.workgroup = isWorkgroup();
 
@@ -1026,7 +1026,7 @@ define([
                             title : Messages.fm_noname,
                             atime : 0,
                             ctime : 0
-                        }
+                        };
                     }
                     if (prop === 'type') {
                         var hrefData = Cryptpad.parsePadUrl(el);
@@ -1063,7 +1063,7 @@ define([
                             title : Messages.fm_noname,
                             atime : 0,
                             ctime : 0
-                        }
+                        };
                     }
                     if (prop === 'atime' || prop === 'ctime') {
                         return new Date(e[prop]);
