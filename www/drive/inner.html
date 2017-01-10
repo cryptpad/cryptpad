@@ -15,9 +15,10 @@
         </div>
         <div id="content">
         </div>
-        <div id="contextMenu" class="contextMenu dropdown clearfix" oncontextmenu="return false;">
+        <div id="treeContextMenu" class="contextMenu dropdown clearfix" oncontextmenu="return false;">
             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
                 <li><a tabindex="-1" href="#" class="open" data-localization="fc_open">Open</a></li>
+                <li><a tabindex="-1" href="#" class="open_ro" data-localization="fc_open_ro">Open (read-only)</a></li>
                 <li><a tabindex="-1" href="#" class="rename editable" data-localization="fc_rename">Rename</a></li>
                 <li><a tabindex="-1" href="#" class="delete editable" data-localization="fc_delete">Delete</a></li>
                 <li><a tabindex="-1" href="#" class="newfolder editable" data-localization="fc_newfolder">New folder</a></li>
@@ -30,6 +31,12 @@
                 <li><a tabindex="-1" href="#" class="newdoc own editable" data-type="code" data-localization="fc_newcode" target="_blank">New code</a></li>
                 <li><a tabindex="-1" href="#" class="newdoc own editable" data-type="slide" data-localization="fc_newslide" target="_blank">New slide</a></li>
                 <li><a tabindex="-1" href="#" class="newdoc own editable" data-type="poll" data-localization="fc_newpoll" target="_blank">New poll</a></li>
+            </ul>
+        </div>
+        <div id="defaultContextMenu" class="contextMenu dropdown clearfix" oncontextmenu="return false;">
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
+                <li><a tabindex="-1" href="#" class="open" data-localization="fc_open">Open</a></li>
+                <li><a tabindex="-1" href="#" class="open_ro" data-localization="fc_open_ro">Open (read-only)</a></li>
             </ul>
         </div>
         <div id="trashTreeContextMenu" class="contextMenu dropdown clearfix" oncontextmenu="return false;">

@@ -212,6 +212,7 @@ define(function () {
     out.fc_newfolder = "New folder";
     out.fc_rename = "Rename";
     out.fc_open = "Open";
+    out.fc_open_ro = "Open (read-only)";
     out.fc_delete = "Delete";
     out.fc_restore = "Restore";
     out.fc_remove = "Delete permanently";

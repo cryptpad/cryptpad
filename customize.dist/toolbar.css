@@ -96,9 +96,8 @@
   }
 }
 .cryptpad-toolbar .cryptpad-state {
-  line-height: 30px;
+  line-height: 32px;
   /* equivalent to 26px + 2*2px margin used for buttons */
-  float: left;
 }
 .cryptpad-toolbar .rightside-button {
   float: right;
@@ -331,6 +330,12 @@
   margin-right: 5px;
   font-weight: bold;
   text-transform: uppercase;
+}
+.cryptpad-toolbar-username {
+  line-height: 32px;
+}
+.cryptpad-toolbar-username button {
+  line-height: initial;
 }
 .lag {
   height: 15px !important;

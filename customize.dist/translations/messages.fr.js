@@ -210,6 +210,7 @@ define(function () {
     out.fc_newfolder = "Nouveau dossier";
     out.fc_rename = "Renommer";
     out.fc_open = "Ouvrir";
+    out.fc_open_ro = "Ouvrir (lecture seule)";
     out.fc_delete = "Supprimer";
     out.fc_restore = "Restaurer";
     out.fc_remove = "Supprimer définitivement";

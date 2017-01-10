@@ -288,7 +288,8 @@ define([
             'class': LAG_ELEM_CLS,
             id: uid(),
         });
-        $container.prepend($lag);
+        // Now added in createUserAdmin
+        //$container.prepend($lag);
         return $lag[0];
     };
 
@@ -356,7 +357,9 @@ define([
         $linkContainer.append($aTagSmall).append($aTagBig);
     };
 
-    var createUserAdmin = function ($topContainer) {
+    var createUserAdmin = function ($topContainer, lagElement) {
+        var $lag = $(lagElement);
+
         var $userContainer = $('<span>', {
             'class': USER_CLS
         }).appendTo($topContainer);
@@ -364,6 +367,8 @@ define([
         var $state = $('<span>', {
             'class': STATE_CLS
         }).text(Messages.synchronizing).appendTo($userContainer);
+
+        $userContainer.append($lag);
 
         var $span = $('<span>' , {
             'class': 'cryptpad-language'
@@ -478,8 +483,8 @@ define([
         var userListElement = config.userData ? createUserList(toolbar.find('.' + LEFTSIDE_CLS), readOnly) : undefined;
         var $titleElement = createTitle(toolbar.find('.' + TOP_CLS), readOnly, config.title, Cryptpad);
         var $linkElement = createLinkToMain(toolbar.find('.' + TOP_CLS));
-        var $userAdminElement = createUserAdmin(toolbar.find('.' + TOP_CLS));
         var lagElement = createLagElement($userAdminElement);
+        var $userAdminElement = createUserAdmin(toolbar.find('.' + TOP_CLS), lagElement);
         var spinner = createSpinner($userAdminElement);
         var userData = config.userData;
         // readOnly = 1 (readOnly enabled), 0 (disabled), -1 (old pad without readOnly mode)

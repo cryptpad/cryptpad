@@ -130,20 +130,6 @@ define([
         else { $iframe.find('[draggable="false"]').attr('draggable', true); }
     };
 
-    var keyPressed = [];
-    var pressKey = function (key, state) {
-        if (state) {
-            if (keyPressed.indexOf(key) === -1) {
-                keyPressed.push(key);
-            }
-            return;
-        }
-        var idx = keyPressed.indexOf(key);
-        if (idx !== -1) {
-            keyPressed.splice(idx, 1);
-        }
-    };
-
     var init = function (files) {
         var isOwnDrive = function () {
             return Cryptpad.getUserHash() === APP.hash || localStorage.FS_hash === APP.hash;
@@ -190,13 +176,17 @@ define([
         // Store the object sent for the "change username" button so that we can update the field value correctly
         var userNameButtonObject = APP.userName = {};
         /* add a "change username" button */
-        getLastName(function (err, lastName) {
-            userNameButtonObject.lastName = lastName;
-            var $username = APP.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName).hide();
-            $userBlock.append($username);
-            $username.append(lastName);
-            $username.show();
-        });
+        if (!APP.readOnly) {
+            getLastName(function (err, lastName) {
+                userNameButtonObject.lastName = lastName;
+                var $username = APP.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName).hide();
+                $userBlock.append($username);
+                $username.append(lastName);
+                $username.show();
+            });
+        } else {
+            $userBlock.html('<span class="' + Toolbar.constants.readonly + '">' + Messages.readonly + '</span>');
+        }
 
         // FILE MANAGER
         // _WORKGROUP_ and other people drive : display Documents as main page
@@ -206,8 +196,9 @@ define([
 
         var $tree = $iframe.find("#tree");
         var $content = $iframe.find("#content");
-        var $contextMenu = $iframe.find("#contextMenu");
+        var $contextMenu = $iframe.find("#treeContextMenu");
         var $contentContextMenu = $iframe.find("#contentContextMenu");
+        var $defaultContextMenu = $iframe.find("#defaultContextMenu");
         var $trashTreeContextMenu = $iframe.find("#trashTreeContextMenu");
         var $trashContextMenu = $iframe.find("#trashContextMenu");
 
@@ -292,13 +283,13 @@ define([
             window.open(fileEl);
         };
 
-        var refresh = function () {
+        var refresh = APP.refresh = function () {
             module.displayDirectory(currentPath);
         };
 
         // Replace a file/folder name by an input to change its value
         var displayRenameInput = function ($element, path) {
-            if (!APP.editable) { debug("Read-only mode"); return; }
+            if (!APP.editable) { return; }
             if (!path || path.length < 2) {
                 logError("Renaming a top level element (root, trash or filesData) is forbidden.");
                 return;
@@ -345,9 +336,9 @@ define([
         };
 
         // Add the "selected" class to the "li" corresponding to the clicked element
-        var onElementClick = function ($element, path) {
+        var onElementClick = function (e, $element, path) {
             // If "Ctrl" is pressed, do not remove the current selection
-            if (keyPressed.indexOf(17) === -1) {
+            if (!e || !e.ctrlKey) {
                 removeSelected();
             }
             if (!$element.is('li')) {
@@ -371,7 +362,7 @@ define([
             e.stopPropagation();
 
             var path = $(e.target).closest('li').data('path');
-            if (!path) { return; }
+            if (!path) { return false; }
 
             if (!APP.editable) {
                 $menu.find('a.editable').parent('li').hide();
@@ -394,12 +385,12 @@ define([
 
             // $element should be the <span class="element">, find it if it's not the case
             var $element = $(e.target).closest('li').children('span.element');
-            onElementClick($element);
+            onElementClick(undefined, $element);
             if (!$element.length) {
                 logError("Unable to locate the .element tag", e.target);
                 $menu.hide();
                 log(Messages.fm_contextMenuError);
-                return;
+                return false;
             }
             $menu.find('a').data('path', path);
             $menu.find('a').data('element', $element);
@@ -411,8 +402,22 @@ define([
             $contextMenu.find('li').show();
             if ($element.find('.file-element').length) {
                 $contextMenu.find('a.newfolder').parent('li').hide();
+            } else {
+                $contextMenu.find('a.open_ro').parent('li').hide();
             }
             openContextMenu(e, $contextMenu);
+            return false;
+        };
+
+        var openDefaultContextMenu = function (e) {
+            var $element = $(e.target).closest('li');
+            $defaultContextMenu.find('li').show();
+            if ($element.find('.file-element').length) {
+                $defaultContextMenu.find('a.newfolder').parent('li').hide();
+            } else {
+                $defaultContextMenu.find('a.open_ro').parent('li').hide();
+            }
+            openContextMenu(e, $defaultContextMenu);
             return false;
         };
 
@@ -486,7 +491,7 @@ define([
         // filesOp.moveElements is able to move several paths to a new location, including
         // the Trash or the "Unsorted files" folder
         var moveElements = function (paths, newPath, force, cb) {
-            if (!APP.editable) { debug("Read-only mode"); return; }
+            if (!APP.editable) { return; }
             var andThen = function () {
                 filesOp.moveElements(paths, newPath, cb);
             };
@@ -577,7 +582,7 @@ define([
         };
 
         var addDragAndDropHandlers = function ($element, path, isFolder, droppable) {
-            if (!APP.editable) { debug("Read-only mode"); return; }
+            if (!APP.editable) { return; }
             // "dragenter" is fired for an element and all its children
             // "dragleave" may be fired when entering a child
             // --> we use pointer-events: none in CSS, but we still need a counter to avoid some issues
@@ -701,7 +706,7 @@ define([
             addDragAndDropHandlers($element, newPath, isFolder, !isTrash);
             $element.click(function(e) {
                 e.stopPropagation();
-                onElementClick($element, newPath);
+                onElementClick(e, $element, newPath);
             });
             if (!isTrash) {
                 $element.contextmenu(openDirectoryContextMenu);
@@ -859,12 +864,18 @@ define([
 
         var createNewButton = function (isInRoot) {
             var $block = $('<div>', {'class': 'dropdown-bar'});
+            if (!APP.editable) { return $block; }
 
             var $button = $('<button>', {
                 'class': 'newElement'
             }).text(Messages.fm_newButton);
 
             var $innerblock = $('<div>', {'class': 'dropdown-bar-content'});
+
+            if (isInRoot) {
+                $innerblock.append(createNewFolderButton());
+                $innerblock.append('<hr>');
+            }
 
             AppConfig.availablePadTypes.forEach(function (type) {
                 var $button = $('<a>', {
@@ -876,11 +887,6 @@ define([
 
                 $innerblock.append($button);
             });
-
-            if (isInRoot) {
-                $innerblock.append('<hr>');
-                $innerblock.append(createNewFolderButton());
-            }
 
             $block.append($button).append($innerblock);
 
@@ -1052,6 +1058,13 @@ define([
                 if (prop && !folder) {
                     var element = el.element;
                     var e = filesOp.getFileData(element);
+                    if (!e) {
+                        e = {
+                            title : Messages.fm_noname,
+                            atime : 0,
+                            ctime : 0
+                        }
+                    }
                     if (prop === 'atime' || prop === 'ctime') {
                         return new Date(e[prop]);
                     }
@@ -1106,8 +1119,9 @@ define([
                 $element.data('path', path);
                 $element.click(function(e) {
                     e.stopPropagation();
-                    onElementClick($element, path);
+                    onElementClick(e, $element, path);
                 });
+                $element.contextmenu(openDefaultContextMenu);
                 addDragAndDropHandlers($element, path, false, false);
                 $container.append($element);
             });
@@ -1129,8 +1143,9 @@ define([
                 });
                 $element.click(function(e) {
                     e.stopPropagation();
-                    onElementClick($element);
+                    onElementClick(e, $element);
                 });
+                $element.contextmenu(openDefaultContextMenu);
                 $container.append($element);
             });
         };
@@ -1178,6 +1193,7 @@ define([
         // NOTE: Elements in the trash are not using the same storage structure as the others
         // _WORKGROUP_ : do not change the lastOpenedFolder value in localStorage
         var displayDirectory = module.displayDirectory = function (path, force) {
+            if (!APP.editable) { debug("Read-only mode"); }
             if (!appStatus.isReady && !force) { return; }
             // Only Trash and Root are available in not-owned files manager
             if (isWorkgroup() && !filesOp.isPathInTrash(path) && !filesOp.isPathInRoot(path)) {
@@ -1424,6 +1440,7 @@ define([
             $trashTreeContextMenu.hide();
             $trashContextMenu.hide();
             $contentContextMenu.hide();
+            $defaultContextMenu.hide();
         };
 
         var stringifyPath = function (path) {
@@ -1460,6 +1477,16 @@ define([
             return $div.html();
         };
 
+        var getReadOnlyUrl = APP.getRO = function (href) {
+            if (!filesOp.isFile(href)) { return; }
+            var i = href.indexOf('#') + 1;
+            var hash = href.slice(i);
+            var base = href.slice(0, i);
+            var hrefsecret = Cryptpad.getSecrets(hash);
+            var viewHash = Cryptpad.getViewHashFromKeys(hrefsecret.channel, hrefsecret.keys);
+            return base + viewHash;
+        };
+
         $contextMenu.on("click", "a", function(e) {
             e.stopPropagation();
             var path = $(this).data('path');
@@ -1478,12 +1505,39 @@ define([
             else if ($(this).hasClass('open')) {
                 $element.dblclick();
             }
+            else if ($(this).hasClass('open_ro')) {
+                var el = filesOp.findElement(files, path);
+                if (filesOp.isFolder(el)) { return; }
+                var roUrl = getReadOnlyUrl(el);
+                openFile(roUrl);
+            }
             else if ($(this).hasClass('newfolder')) {
                 var onCreated = function (info) {
                     module.newFolder = info.newPath;
                     module.displayDirectory(path);
                 };
                 filesOp.createNewFolder(path, null, onCreated);
+            }
+            module.hideMenu();
+        });
+
+        $defaultContextMenu.on("click", "a", function(e) {
+            e.stopPropagation();
+            var path = $(this).data('path');
+            var $element = $(this).data('element');
+            if (!$element || !path || path.length < 2) {
+                log(Messages.fm_forbidden);
+                debug("Directory context menu on a forbidden or unexisting element. ", $element, path);
+                return;
+            }
+            if ($(this).hasClass('open')) {
+                $element.dblclick();
+            }
+            else if ($(this).hasClass('open_ro')) {
+                var el = filesOp.findElement(files, path);
+                if (filesOp.isFolder(el)) { return; }
+                var roUrl = getReadOnlyUrl(el);
+                openFile(roUrl);
             }
             module.hideMenu();
         });
@@ -1569,12 +1623,6 @@ define([
         });
         $(ifrw).on('mouseup drop', function (e) {
             $iframe.find('.droppable').removeClass('droppable');
-        });
-        $(ifrw).on('keydown', function (e) {
-            pressKey(e.which, true);
-        });
-        $(ifrw).on('keyup', function (e) {
-            pressKey(e.which, false);
         });
         $(ifrw).on('keydown', function (e) {
             // "Del"
@@ -1761,10 +1809,13 @@ define([
         };
         var onDisconnect = function (info) {
             setEditable(false);
+            if (APP.refresh) { APP.refresh(); }
+            APP.toolbar.failed();
             Cryptpad.alert(Messages.common_connectionLost);
         };
         var onReconnect = function (info) {
             setEditable(true);
+            if (APP.refresh) { APP.refresh(); }
             APP.toolbar.reconnecting(info.myId);
             Cryptpad.findOKButton().click();
         };

@@ -402,6 +402,8 @@ button.newElement:hover {
 }
 .dropdown-bar-content hr {
     margin: 5px 0px;
+    height: 1px;
+    background: #bbb;
 }
 
 /* Change color of dropdown links on hover */
