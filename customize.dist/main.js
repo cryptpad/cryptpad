@@ -120,6 +120,7 @@ define([
                 .append($('<td>').append(readOnlyText).append($('<a>', {
                     href: pad.href,
                     title: pad.title,
+                    target: '_blank',
                 }).text(shortTitle)))
                 .append($('<td>').text(created))
                 .append($('<td>').text(date))

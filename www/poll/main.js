@@ -22,6 +22,9 @@ define([
 
     var secret = Cryptpad.getSecrets();
     var readOnly = secret.keys && !secret.keys.editKeyStr;
+    if (!secret.keys) {
+        secret.keys = secret.key;
+    }
 
     Cryptpad.addLoadingScreen();
     var onConnectError = function (info) {
@@ -361,11 +364,18 @@ define([
         if (proxy && proxy.version === 1) { return; }
         console.log("Configuring proxy schema...");
 
-        proxy.info = schema.info;
-        proxy.table = schema.table;
+        proxy.info = proxy.info || schema.info;
+        Object.keys(schema.info).forEach(function (k) {
+            if (!proxy.info[k]) { proxy.info[k] = schema.info[k]; }
+        });
+
+        proxy.table = proxy.table || schema.table;
+        Object.keys(schema.table).forEach(function (k) {
+            if (!proxy.table[k]) { proxy.table[k] = schema.table[k]; }
+        });
+
         proxy.version = 1;
     };
-
 
     /*
 
@@ -642,7 +652,7 @@ define([
                 suggestName: suggestName
             },
             ifrw: window,
-            common: Cryptpad
+            common: Cryptpad,
         };
         var toolbar = info.realtime.toolbar = Toolbar.create(APP.$bar, info.myID, info.realtime, info.getLag, userList, config);
 
