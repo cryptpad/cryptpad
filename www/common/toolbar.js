@@ -368,26 +368,43 @@ define([
 
         $userContainer.append($lag);
 
-        var $span = $('<span>' , {
-            'class': 'cryptpad-language'
+        // Dropdown language selector
+        var $fa_caretdown = $('<span>', {
+            'class': 'fa fa-caret-down',
         });
-        var $select = $('<select>', {
-            'id': 'language-selector'
-        }).appendTo($userContainer);
+
+        var $block = $('<span>', {
+            'class': 'dropdown-bar',
+            id: 'language-selector'
+        });
+        var $button = $('<button>', {
+            'class': ''
+        }).append($('<span>', {'class': 'buttonTitle'}).text(Messages.language)).append($fa_caretdown);
+
+        var $innerblock = $('<div>', {'class': 'left cryptpad-dropdown dropdown-bar-content'});
 
         var languages = Messages._languages;
         for (var l in languages) {
-            $('<option>', {
-                value: l
-            }).text(languages[l]).appendTo($select);
+            $('<a>', {
+                'class': 'languageValue',
+                'data-value': l,
+                'href': '#',
+            }).text(languages[l]).appendTo($innerblock);
         }
+        $block.append($button).append($innerblock);
+        $button.click(function (e) {
+            e.stopPropagation();
+            $innerblock.toggle();
+        });
+        $block.appendTo($userContainer);
 
-        Messages._initSelector($select);
+        Messages._initSelector($block);
+        // End language selector
 
-        $select.on('mousedown', function (e) {
+        /*$select.on('mousedown', function (e) {
             e.stopPropagation();
             return true;
-        });
+        });*/
 
         var $usernameElement = $('<span>', {'class': USERNAME_CLS}).appendTo($userContainer);
 

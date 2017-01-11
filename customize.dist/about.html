@@ -4,6 +4,7 @@
     <title data-localization="main_title">Cryptpad: Zero Knowledge, Collaborative Real Time Editing</title>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
     <link rel="stylesheet" type="text/css" href="/customize/main.css" />
+    <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
     <link rel="icon" type="image/png" href="/customize/main-favicon.png" id="favicon"/>
     <script data-main="/customize/main" src="/bower_components/requirejs/require.js"></script>
     <script src="/bower_components/requirejs/require.js"></script>
@@ -19,7 +20,13 @@
 
 
 
-    <select id="language-selector" style="display: none;"></select>
+    <span id="language-selector" class="dropdown-bar">
+        <button>
+            <span class="buttonTitle" data-localozation="language"></span>
+            <span class="fa fa-caret-down"></span>
+        </button>
+        <div class="left cryptpad-dropdown dropdown-bar-content"></div>
+    </span>
 
     <div id="main">
       <center>

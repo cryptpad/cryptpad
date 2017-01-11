@@ -37,17 +37,28 @@ define([
         });
     };
 
+    // Language selector
     var $sel = $('#language-selector');
-
-    Object.keys(Messages._languages).forEach(function (code) {
-        $sel.append($('<option>', {
-            value: code,
-        }).text(Messages._languages[code]));
+    var $innerblock = $sel.find(".dropdown-bar-content");
+    var $button = $sel.find('button');
+    var languages = Messages._languages;
+    for (var l in languages) {
+        $('<a>', {
+            'class': 'languageValue',
+            'data-value': l,
+            'href': '#',
+        }).text(languages[l]).appendTo($innerblock);
+    }
+    $button.click(function (e) {
+        e.stopPropagation();
+        $innerblock.toggle();
     });
-
-    LS.main();
+    LS.main($sel);
     Messages._applyTranslation();
     $sel.show();
+    $(window).click(function () {
+        $innerblock.hide();
+    });
 
     var makeRecentPadsTable = function (recentPads) {
         if (!recentPads.length) { return; }

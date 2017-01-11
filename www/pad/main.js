@@ -106,8 +106,12 @@ define([
             // document itself and causes problems when it's sent across the wire and reflected back
             removePlugins: 'resize',
             extraPlugins: 'autolink,colorbutton,colordialog,font',
-            //skin: 'moono',
-            toolbarGroups: [{"name":"clipboard","groups":["clipboard","undo"]},{"name":"editing","groups":["find","selection"]},{"name":"links"},{"name":"insert"},{"name":"forms"},{"name":"tools"},{"name":"document","groups":["mode","document","doctools"]},{"name":"others"},{"name":"basicstyles","groups":["basicstyles","cleanup"]},{"name":"paragraph","groups":["list","indent","blocks","align","bidi"]},{"name":"styles"},{"name":"colors"}]
+            toolbarGroups: [{"name":"clipboard","groups":["clipboard","undo"]},{"name":"editing","groups":["find","selection"]},{"name":"links"},{"name":"insert"},{"name":"forms"},{"name":"tools"},{"name":"document","groups":["mode","document","doctools"]},{"name":"others"},{"name":"basicstyles","groups":["basicstyles","cleanup"]},{"name":"paragraph","groups":["list","indent","blocks","align","bidi"]},{"name":"styles"},{"name":"colors"}],
+            //skin: 'moono-cryptpad,/pad/themes/moono-cryptpad/'
+            //skin: 'flat,/pad/themes/flat/'
+            //skin: 'moono-lisa,/pad/themes/moono-lisa/'
+            //skin: 'moono-dark,/pad/themes/moono-dark/'
+            //skin: 'office2013,/pad/themes/office2013/'
         });
 
         editor.on('instanceReady', function (Ckeditor) {

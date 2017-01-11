@@ -1,3 +1,46 @@
+/* The container <div> - needed to position the dropdown content */
+.dropdown-bar {
+  position: relative;
+  display: inline-block;
+}
+.dropdown-bar button .fa {
+  margin-left: 5px;
+}
+.dropdown-bar .dropdown-bar-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+.dropdown-bar .dropdown-bar-content.left {
+  right: 0;
+}
+.dropdown-bar .dropdown-bar-content:hover {
+  display: block;
+}
+.dropdown-bar .dropdown-bar-content a {
+  color: black;
+  padding: 5px 16px;
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  float: none;
+  text-align: left;
+}
+.dropdown-bar .dropdown-bar-content a:hover {
+  background-color: #f1f1f1;
+}
+.dropdown-bar .dropdown-bar-content hr {
+  margin: 5px 0px;
+  height: 1px;
+  background: #bbb;
+}
 .unselectable {
   -webkit-touch-callout: none;
   -webkit-user-select: none;

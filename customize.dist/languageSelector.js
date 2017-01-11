@@ -22,27 +22,28 @@ define(['/bower_components/jquery/dist/jquery.min.js'], function() {
 
     var main = out.main = function ($select) {
         var selector = $select || $('#language-selector');
+
         if (!selector.length) { return; }
 
+        var $button = $(selector).find('button .buttonTitle');
         // Select the current language in the list
         var language = getLanguage();
-        var option = $(selector).find('option[value="' + language + '"]');
+        var option = $(selector).find('[data-value="' + language + '"]');
         if ($(option).length) {
-            $(selector).val(language);
+            $button.text($(option).text());
         }
         else {
-            $(selector).val('en');
+            $button.text('English');
         }
 
         // Listen for language change
-        $(selector).on('change', function () {
-            var newLanguage = $(selector).val();
+        $(selector).find('a.languageValue').on('click', function () {
+            var newLanguage = $(this).attr('data-value');
             storeLanguage(newLanguage);
             if (newLanguage !== language) {
                 window.location.reload();
             }
         });
-
     };
 
     return out;

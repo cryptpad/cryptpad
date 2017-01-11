@@ -42,6 +42,8 @@ define(function () {
     out.editor = "éditeur";
     out.editors = "éditeurs";
 
+    out.language = "Langue";
+
     out.greenLight = "Tout fonctionne bien";
     out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur";
     out.redLight = "Vous êtes déconnectés de la session";
