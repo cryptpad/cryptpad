@@ -215,7 +215,9 @@ define([
                         defaultTitle: defaultName
                     }
                 };
-                obj.metadata.title = APP.title;
+                if (!initializing) {
+                    obj.metadata.title = APP.title;
+                }
                 if (textColor) {
                     obj.metadata.color = textColor;
                 }
@@ -383,6 +385,7 @@ define([
             var updateMetadata = function(shjson) {
                 // Extract the user list (metadata) from the hyperjson
                 var json = (shjson === "") ? "" : JSON.parse(shjson);
+                var titleUpdated = false;
                 if (json && json.metadata) {
                     if (json.metadata.users) {
                         var userData = json.metadata.users;
@@ -393,9 +396,13 @@ define([
                         updateDefaultTitle(json.metadata.defaultTitle);
                     }
                     if (typeof json.metadata.title !== "undefined") {
-                        updateTitle(json.metadata.title);
+                        updateTitle(json.metadata.title || defaultName);
+                        titleUpdated = true;
                     }
                     updateColors(json.metadata.color, json.metadata.backColor);
+                }
+                if (!titleUpdated) {
+                    updateTitle(defaultName);
                 }
             };
 
@@ -589,15 +596,6 @@ define([
                 if (!window.location.hash || window.location.hash === '#') {
                     Cryptpad.replaceHash(editHash);
                 }
-
-                Cryptpad.getPadTitle(function (err, title) {
-                    if (err) {
-                        console.log("Unable to get pad title");
-                        console.error(err);
-                        return;
-                    }
-                    updateTitle(title || defaultName);
-                });
             };
 
             var unnotify = module.unnotify = function () {
