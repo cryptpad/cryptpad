@@ -448,7 +448,7 @@ define([
                         updateDefaultTitle(peerMetadata.metadata.defaultTitle);
                     }
                     if (typeof peerMetadata.metadata.title !== "undefined") {
-                        updateTitle(peerMetadata.metadata.title);
+                        updateTitle(peerMetadata.metadata.title || defaultName);
                     }
                 }
             };
@@ -622,15 +622,6 @@ define([
 
                 // set the hash
                 if (!readOnly) { Cryptpad.replaceHash(editHash); }
-
-                Cryptpad.getPadTitle(function (err, title) {
-                    if (err) {
-                        console.error(err);
-                        console.log("Couldn't get pad title");
-                        return;
-                    }
-                    updateTitle(title || defaultName);
-                });
             };
 
             // this should only ever get called once, when the chain syncs

@@ -393,7 +393,7 @@ define([
                         updateDefaultTitle(json.metadata.defaultTitle);
                     }
                     if (typeof json.metadata.title !== "undefined") {
-                        updateTitle(json.metadata.title);
+                        updateTitle(json.metadata.title || defaultName);
                     }
                     updateColors(json.metadata.color, json.metadata.backColor);
                 }
@@ -589,15 +589,6 @@ define([
                 if (!window.location.hash || window.location.hash === '#') {
                     Cryptpad.replaceHash(editHash);
                 }
-
-                Cryptpad.getPadTitle(function (err, title) {
-                    if (err) {
-                        console.log("Unable to get pad title");
-                        console.error(err);
-                        return;
-                    }
-                    updateTitle(title || defaultName);
-                });
             };
 
             var unnotify = module.unnotify = function () {
