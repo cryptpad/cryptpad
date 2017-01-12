@@ -845,54 +845,48 @@ define([
             return $block;
         };
 
-        var createNewFolderButton = function () {
-            var $listButton = $('<a>', {
-                'class': 'newElement'
-            }).text(Messages.fm_folder);
+        var createNewButton = function (isInRoot) {
+            if (!APP.editable) { return; }
 
-            $listButton.click(function () {
+
+            // Create dropdown
+            var options = [];
+            if (isInRoot) {
+                options.push({
+                    tag: 'a',
+                    attributes: {'class': 'newFolder'},
+                    content: Messages.fm_folder
+                });
+                options.push({tag: 'hr'});
+            }
+            AppConfig.availablePadTypes.forEach(function (type) {
+                options.push({
+                    tag: 'a',
+                    attributes: {
+                        'class': 'newdoc',
+                        'data-type': type,
+                        'href': '/' + type + '/#?path=' + encodeURIComponent(currentPath),
+                        'target': '_blank'
+                    },
+                    content: Messages.type[type]
+                });
+            });
+            var dropdownConfig = {
+                text: Messages.fm_newButton,
+                options: options
+            };
+            var $block = Cryptpad.createDropdown(dropdownConfig);
+
+            // Custom style:
+            $block.find('button').addClass('newElement');
+
+            // Handlers
+            $block.find('a.newFolder').click(function () {
                 var onCreated = function (info) {
                     module.newFolder = info.newPath;
                     refresh();
                 };
                 filesOp.createNewFolder(currentPath, null, onCreated);
-            });
-
-
-            return $listButton;
-        };
-
-        var createNewButton = function (isInRoot) {
-            var $block = $('<div>', {'class': 'dropdown-bar'});
-            if (!APP.editable) { return $block; }
-
-            var $button = $('<button>', {
-                'class': 'newElement'
-            }).text(Messages.fm_newButton);
-
-            var $innerblock = $('<div>', {'class': 'dropdown-bar-content'});
-
-            if (isInRoot) {
-                $innerblock.append(createNewFolderButton());
-                $innerblock.append('<hr>');
-            }
-
-            AppConfig.availablePadTypes.forEach(function (type) {
-                var $button = $('<a>', {
-                    'class': 'newElement newdoc',
-                    'data-type': type,
-                    'href': '/' + type + '/#?path=' + encodeURIComponent(currentPath),
-                    'target': '_blank'
-                }).text(Messages.type[type]);
-
-                $innerblock.append($button);
-            });
-
-            $block.append($button).append($innerblock);
-
-            $button.click(function (e) {
-                e.stopPropagation();
-                $innerblock.toggle();
             });
 
             return $block;

@@ -352,7 +352,7 @@ define([
         $linkContainer.append($aTagSmall).append($aTagBig);
     };
 
-    var createUserAdmin = function ($topContainer, lagElement) {
+    var createUserAdmin = function ($topContainer, lagElement, Cryptpad) {
         var $lag = $(lagElement);
 
         var $userContainer = $('<span>', {
@@ -366,37 +366,7 @@ define([
         $userContainer.append($lag);
 
         // Dropdown language selector
-        var $fa_caretdown = $('<span>', {
-            'class': 'fa fa-caret-down',
-        });
-
-        var $block = $('<span>', {
-            'class': 'dropdown-bar',
-            id: 'language-selector'
-        });
-        var $button = $('<button>', {
-            'class': ''
-        }).append($('<span>', {'class': 'buttonTitle'}).text(Messages.language)).append($fa_caretdown);
-
-        var $innerblock = $('<div>', {'class': 'left cryptpad-dropdown dropdown-bar-content'});
-
-        var languages = Messages._languages;
-        for (var l in languages) {
-            $('<a>', {
-                'class': 'languageValue',
-                'data-value': l,
-                'href': '#',
-            }).text(languages[l]).appendTo($innerblock);
-        }
-        $block.append($button).append($innerblock);
-        $button.click(function (e) {
-            e.stopPropagation();
-            $innerblock.toggle();
-        });
-        $block.appendTo($userContainer);
-
-        Messages._initSelector($block);
-        // End language selector
+        Cryptpad.createLanguageSelector($userContainer);
 
         /*$select.on('mousedown', function (e) {
             e.stopPropagation();
@@ -496,7 +466,7 @@ define([
         var $titleElement = createTitle(toolbar.find('.' + TOP_CLS), readOnly, config.title, Cryptpad);
         var $linkElement = createLinkToMain(toolbar.find('.' + TOP_CLS));
         var lagElement = createLagElement();
-        var $userAdminElement = createUserAdmin(toolbar.find('.' + TOP_CLS), lagElement);
+        var $userAdminElement = createUserAdmin(toolbar.find('.' + TOP_CLS), lagElement, Cryptpad);
         var spinner = createSpinner($userAdminElement);
         var userData = config.userData;
         // readOnly = 1 (readOnly enabled), 0 (disabled), -1 (old pad without readOnly mode)

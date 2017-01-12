@@ -923,6 +923,88 @@ define([
         return button;
     };
 
+    // Create a button with a dropdown menu
+    // input is a config object with parameters:
+    //  - container (optional): the dropdown container (span)
+    //  - text (optional): the button text value
+    //  - options: array of {tag: "", attributes: {}, content: "string"}
+    //
+    // allowed options tags: ['a', 'hr', 'p']
+    var createDropdown = common.createDropdown = function (config) {
+        if (typeof config !== "object" || !isArray(config.options)) { return; }
+
+        var allowedTags = ['a', 'p', 'hr'];
+        var isValidOption = function (o) {
+            if (typeof o !== "object") { return false; }
+            if (!o.tag || allowedTags.indexOf(o.tag) === -1) { return false; }
+            return true;
+        };
+
+        // Container
+        var $container = $(config.container);
+        if (!config.container) {
+            $container = $('<span>', {
+                'class': 'dropdown-bar'
+            });
+        }
+
+        // Button
+        var $button = $('<button>', {
+            'class': ''
+        }).append($('<span>', {'class': 'buttonTitle'}).text(config.text || ""));
+        $('<span>', {
+            'class': 'fa fa-caret-down',
+        }).appendTo($button);
+
+        // Menu
+        var $innerblock = $('<div>', {'class': 'cryptpad-dropdown dropdown-bar-content'});
+        if (config.left) { $innerblock.addClass('left'); }
+
+        config.options.forEach(function (o) {
+            if (!isValidOption(o)) { return; }
+            $('<' + o.tag + '>', o.attributes || {}).html(o.content || '').appendTo($innerblock);
+        });
+
+        $container.append($button).append($innerblock);
+
+        $button.click(function (e) {
+            e.stopPropagation();
+            $innerblock.toggle();
+        });
+
+        return $container;
+    };
+
+    var createLanguageSelector = common.createLanguageSelector = function ($container, $block) {
+        var options = [];
+        var languages = Messages._languages;
+        for (var l in languages) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'class': 'languageValue',
+                    'data-value': l,
+                    'href': '#',
+                },
+                content: languages[l] // Pretty name of the language value
+            });
+        }
+        var dropdownConfig = {
+            text: Messages.language, // Button initial text
+            options: options, // Entries displayed in the menu
+            left: true, // Open to the left of the button
+            container: $block // optional
+        };
+        var $block = createDropdown(dropdownConfig);
+        $block.attr('id', 'language-selector');
+
+        if ($container) {
+            $block.appendTo($container);
+        }
+
+        Messages._initSelector($block);
+    };
+
     /*
      *  Alertifyjs
      */

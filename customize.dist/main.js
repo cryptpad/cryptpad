@@ -39,25 +39,11 @@ define([
 
     // Language selector
     var $sel = $('#language-selector');
-    var $innerblock = $sel.find(".dropdown-bar-content");
-    var $button = $sel.find('button');
-    var languages = Messages._languages;
-    for (var l in languages) {
-        $('<a>', {
-            'class': 'languageValue',
-            'data-value': l,
-            'href': '#',
-        }).text(languages[l]).appendTo($innerblock);
-    }
-    $button.click(function (e) {
-        e.stopPropagation();
-        $innerblock.toggle();
-    });
-    LS.main($sel);
-    Messages._applyTranslation();
+    Cryptpad.createLanguageSelector(undefined, $sel);
     $sel.show();
+
     $(window).click(function () {
-        $innerblock.hide();
+        $sel.find('.cryptpad-dropdown').hide();
     });
 
     var makeRecentPadsTable = function (recentPads) {
