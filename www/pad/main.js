@@ -770,6 +770,9 @@ define([
             Ckeditor.config.height = '72vh';
             if (screen.height < 800) {
               Ckeditor.config.toolbarStartupExpanded = false;
+              $('meta[name=viewport]').attr('content', 'width=device-width, initial-scale=1.0, user-scalable=no');
+            } else {
+              $('meta[name=viewport]').attr('content', 'width=device-width, initial-scale=1.0, user-scalable=yes');
             }
             second(Ckeditor);
         } else {
