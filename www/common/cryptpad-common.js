@@ -171,12 +171,20 @@ define([
     var getHashFromKeys = common.getHashFromKeys = getEditHashFromKeys;
 
     var specialHashes = common.specialHashes = ['iframe'];
+
+    /*
+     * Returns all needed keys for a realtime channel
+     * - no argument: use the URL hash or create one if it doesn't exist
+     * - secretHash provided: use secretHash to find the keys
+     */
     var getSecrets = common.getSecrets = function (secretHash) {
         var secret = {};
         var generate = function () {
             secret.keys = Crypto.createEditCryptor();
             secret.key = Crypto.createEditCryptor().editKeyStr;
         };
+        // If we have a hash in the URL specifying a path, it means the document was created from
+        // the drive and should be stored at the selected path.
         if (/#\?path=/.test(window.location.href)) {
             var arr = window.location.hash.match(/\?path=(.+)/);
             common.initialPath = arr[1] || undefined;

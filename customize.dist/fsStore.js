@@ -138,7 +138,10 @@ define([
     var init = function (f, Cryptpad) {
         if (!Cryptpad || initialized) { return; }
         initialized = true;
-        var hash = Cryptpad.getUserHash() || localStorage.FS_hash;
+        var hash = Cryptpad.getUserHash() || localStorage.FS_hash || Cryptpad.createRandomHash();
+        if (!hash) {
+            throw new Error('[Store.init] Unable to find or create a drive hash. Aborting...');
+        }
         var secret = Cryptpad.getSecrets(hash);
         var listmapConfig = {
             data: {},
