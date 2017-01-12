@@ -1,6 +1,11 @@
 /* global process */
 var WebDriver = require("selenium-webdriver");
 
+if (process.env.TRAVIS_PULL_REQUEST && process.env.TRAVIS_PULL_REQUEST !== 'false') {
+    // We can't do saucelabs on pull requests so don't fail.
+    return;
+}
+
 var driver;
 if (process.env.SAUCE_USERNAME !== undefined) {
     var browserArray = process.env.BROWSER.split(':');
