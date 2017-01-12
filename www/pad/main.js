@@ -763,9 +763,13 @@ define([
 
     var first = function () {
         Ckeditor = ifrw.CKEDITOR;
-
         if (Ckeditor) {
             //andThen(Ckeditor);
+            // mobile configuration
+            Ckeditor.config.toolbarCanCollapse = true;
+            if (screen.height < 800) {
+              Ckeditor.config.toolbarStartupExpanded = false;
+            }
             second(Ckeditor);
         } else {
             console.log("Ckeditor was not defined. Trying again in %sms",interval);
