@@ -290,7 +290,7 @@
   vertical-align: top;
   display: inline-block;
 }
-.cryptpad-toolbar-top .cryptpad-user span.fa {
+.cryptpad-toolbar-top .cryptpad-user button span.fa {
   vertical-align: baseline;
 }
 @media screen and (max-width: 400px) {
@@ -364,11 +364,11 @@
   text-align: right;
 }
 .cryptpad-spinner {
-  display: inline-block;
-  height: 26px;
-  margin: 2px;
-  line-height: 26px;
-  font-size: 20px;
+  height: 16px;
+  width: 16px;
+  margin: 8px;
+  line-height: 16px;
+  font-size: 16px;
 }
 .cryptpad-readonly {
   margin-right: 5px;

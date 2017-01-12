@@ -43,7 +43,6 @@ define([
     var LOCALSTORAGE_DISALLOW = Bar.constants.localstorageDisallow = 'cryptpad-disallow';
 
     var SPINNER_DISAPPEAR_TIME = 3000;
-    var SPINNER = [ '-', '\\', '|', '/' ];
 
     var uid = function () {
         return 'cryptpad-uid-' + String(Math.random()).substring(2);
@@ -80,21 +79,19 @@ define([
     };
 
     var createSpinner = function ($container) {
-        var $spinner = $('<div>', {
+        var $spinner = $('<span>', {
             id: uid(),
-            'class': SPINNER_CLS,
-        });
+            'class': SPINNER_CLS + ' fa fa fa-spinner fa-pulse',
+        }).hide();
         $container.prepend($spinner);
         return $spinner[0];
     };
 
-    var kickSpinner = function (spinnerElement, reversed) {
-        var txt = spinnerElement.textContent || '-';
-        var inc = (reversed) ? -1 : 1;
-        spinnerElement.textContent = SPINNER[(SPINNER.indexOf(txt) + inc) % SPINNER.length];
+    var kickSpinner = function (spinnerElement) {
+        $(spinnerElement).show();
         if (spinnerElement.timeout) { clearTimeout(spinnerElement.timeout); }
         spinnerElement.timeout = setTimeout(function () {
-            spinnerElement.textContent = '';
+            $(spinnerElement).hide();
         }, SPINNER_DISAPPEAR_TIME);
     };
 
@@ -616,7 +613,7 @@ define([
         }
 
         var ks = function () {
-            if (connected) { kickSpinner(spinner, false); }
+            if (connected) { kickSpinner(spinner); }
         };
 
         realtime.onPatch(ks);
