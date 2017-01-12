@@ -370,7 +370,9 @@ define([
                         defaultTitle: defaultName
                     }
                 };
-                hjson[3].metadata.title = document.title;
+                if (!initializing) {
+                    hjson[3].metadata.title = document.title;
+                }
                 return stringify(hjson);
             };
 
@@ -438,6 +440,7 @@ define([
                 // Extract the user list (metadata) from the hyperjson
                 var hjson = JSON.parse(shjson);
                 var peerMetadata = hjson[3];
+                var titleUpdated = false;
                 if (peerMetadata && peerMetadata.metadata) {
                     if (peerMetadata.metadata.users) {
                         var userData = peerMetadata.metadata.users;
@@ -449,7 +452,11 @@ define([
                     }
                     if (typeof peerMetadata.metadata.title !== "undefined") {
                         updateTitle(peerMetadata.metadata.title || defaultName);
+                        titleUpdated = true;
                     }
+                }
+                if (!titleUpdated) {
+                    updateTitle(defaultName);
                 }
             };
 
