@@ -370,7 +370,9 @@ define([
                         defaultTitle: defaultName
                     }
                 };
-                hjson[3].metadata.title = document.title;
+                if (!initializing) {
+                    hjson[3].metadata.title = document.title;
+                }
                 return stringify(hjson);
             };
 
@@ -438,6 +440,7 @@ define([
                 // Extract the user list (metadata) from the hyperjson
                 var hjson = JSON.parse(shjson);
                 var peerMetadata = hjson[3];
+                var titleUpdated = false;
                 if (peerMetadata && peerMetadata.metadata) {
                     if (peerMetadata.metadata.users) {
                         var userData = peerMetadata.metadata.users;
@@ -448,8 +451,12 @@ define([
                         updateDefaultTitle(peerMetadata.metadata.defaultTitle);
                     }
                     if (typeof peerMetadata.metadata.title !== "undefined") {
-                        updateTitle(peerMetadata.metadata.title);
+                        updateTitle(peerMetadata.metadata.title || defaultName);
+                        titleUpdated = true;
                     }
+                }
+                if (!titleUpdated) {
+                    updateTitle(defaultName);
                 }
             };
 
@@ -622,15 +629,6 @@ define([
 
                 // set the hash
                 if (!readOnly) { Cryptpad.replaceHash(editHash); }
-
-                Cryptpad.getPadTitle(function (err, title) {
-                    if (err) {
-                        console.error(err);
-                        console.log("Couldn't get pad title");
-                        return;
-                    }
-                    updateTitle(title || defaultName);
-                });
             };
 
             // this should only ever get called once, when the chain syncs

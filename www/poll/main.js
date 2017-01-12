@@ -466,10 +466,13 @@ define([
             var renameCb = function (err, title) {
                 if (err) { return; }
                 document.title = title;
-                APP.proxy.info.title = title;
+                APP.proxy.info.title = title === defaultName ? "" : title;
             };
 
             var suggestName = function (fallback) {
+                if (document.title === defaultName) {
+                    return fallback || "";
+                }
                 return document.title || defaultName || "";
             };
 
@@ -692,15 +695,6 @@ define([
 
         // set the hash
         if (!readOnly) { Cryptpad.replaceHash(editHash); }
-
-        Cryptpad.getPadTitle(function (err, title) {
-            if (err) {
-                console.error(err);
-                console.log("Couldn't get pad title");
-                return;
-            }
-            updateTitle(title || defaultName);
-        });
     };
 
     var disconnect = function (info) {
