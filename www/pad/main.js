@@ -767,6 +767,7 @@ define([
             //andThen(Ckeditor);
             // mobile configuration
             Ckeditor.config.toolbarCanCollapse = true;
+            Ckeditor.config.height = '72vh';
             if (screen.height < 800) {
               Ckeditor.config.toolbarStartupExpanded = false;
             }
