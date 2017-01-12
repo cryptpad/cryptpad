@@ -5,6 +5,7 @@
 }
 .dropdown-bar button .fa {
   margin-left: 5px;
+  font-family: FontAwesome;
 }
 .dropdown-bar .dropdown-bar-content {
   display: none;
