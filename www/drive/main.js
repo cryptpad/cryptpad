@@ -1663,6 +1663,10 @@ define([
                 moveElements(paths, [TRASH], false, refresh);
             }
         });
+        $(ifrw).contextmenu(function () {
+            module.hideMenu();
+            return false;
+        });
 
         var onRefresh = {
             refresh: function() {
