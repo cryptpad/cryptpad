@@ -3,9 +3,11 @@
   position: relative;
   display: inline-block;
 }
-.dropdown-bar button .fa {
-  margin-left: 5px;
+.dropdown-bar .fa {
   font-family: FontAwesome;
+}
+.dropdown-bar button .fa-caret-down {
+  margin-left: 5px;
 }
 .dropdown-bar .dropdown-bar-content {
   display: none;
@@ -41,6 +43,29 @@
   margin: 5px 0px;
   height: 1px;
   background: #bbb;
+}
+.dropdown-bar .dropdown-bar-content p {
+  width: 210px;
+  padding: 5px;
+  margin: 0;
+  white-space: normal;
+}
+.dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users {
+  text-align: baseline;
+}
+.dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users .yourself,
+.dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users .anonymous,
+.dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users .viewer {
+  font-style: italic;
+}
+.dropdown-bar .dropdown-bar-content p h2 {
+  font-weight: bold;
+  text-align: center;
+  background-color: #EEEEEE;
+  padding: 5px 0px;
+  margin: 5px 0px;
+  font-size: 16px;
+  white-space: normal;
 }
 .unselectable {
   -webkit-touch-callout: none;
@@ -109,6 +134,10 @@
   padding-left: 5px;
   margin: 3px 2px;
 }
+.cryptpad-toolbar .dropdown-bar-content {
+  margin-top: -3px;
+  margin-right: 2px;
+}
 .cryptpad-toolbar button {
   background-color: inherit;
   background-image: linear-gradient(to bottom, #fff, #e4e4e4);
@@ -120,22 +149,22 @@
   background-image: linear-gradient(to bottom, #f2f2f2, #ccc);
 }
 @media screen and (max-width: 800px) {
-  .cryptpad-toolbar button.userlist {
+  .cryptpad-toolbar .large {
     display: none;
   }
 }
 @media screen and (min-width: 801px) {
-  .cryptpad-toolbar button.userlist {
+  .cryptpad-toolbar .large {
     display: inline-block;
   }
 }
 @media screen and (max-width: 800px) {
-  .cryptpad-toolbar button.userlist.small {
+  .cryptpad-toolbar .small {
     display: inline-block;
   }
 }
 @media screen and (min-width: 801px) {
-  .cryptpad-toolbar button.userlist.small {
+  .cryptpad-toolbar .small {
     display: none;
   }
 }
@@ -310,55 +339,8 @@
 .cryptpad-toolbar-leftside .cryptpad-user-list {
   float: right;
 }
-.cryptpad-toolbar-leftside .cryptpad-dropdown-container {
-  position: relative;
-  display: inline-block;
-  padding: 0px;
-}
-.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown {
-  z-index: 1000;
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 160px;
-  overflow: auto;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  height: auto;
-  padding: 5px;
-  white-space: normal;
-}
-.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p {
-  width: 210px;
-  padding: 0;
-  margin: 0;
-  white-space: normal;
-}
-.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p.cryptpad-dropdown-users {
-  text-align: baseline;
-}
-.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p.cryptpad-dropdown-users .yourself,
-.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p.cryptpad-dropdown-users .anonymous,
-.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p.cryptpad-dropdown-users .viewer {
-  font-style: italic;
-}
-.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p h2 {
-  font-weight: bold;
-  text-align: center;
-  background-color: #EEEEEE;
-  padding: 5px 0px;
-  margin: 5px 0px;
-  font-size: 16px;
-  white-space: normal;
-}
-.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown button {
-  white-space: normal;
-  margin: 2px 0px;
-}
 .cryptpad-toolbar-leftside button {
   margin: 2px 4px 2px 0px;
-}
-.cryptpad-toolbar-leftside .cryptpad-userbuttons-container {
-  /*display: none;*/
 }
 .cryptpad-toolbar-rightside {
   text-align: right;

@@ -33,6 +33,7 @@ define([
     var USERLIST_CLS = Bar.constants.userlist = "cryptpad-dropdown-users";
     var EDITSHARE_CLS = Bar.constants.editShare = "cryptpad-dropdown-editShare";
     var VIEWSHARE_CLS = Bar.constants.viewShare = "cryptpad-dropdown-viewShare";
+    var SHARE_CLS = Bar.constants.viewShare = "cryptpad-dropdown-share";
     var DROPDOWN_CONTAINER_CLS = Bar.constants.dropdownContainer = "cryptpad-dropdown-container";
     var DROPDOWN_CLS = Bar.constants.dropdown = "cryptpad-dropdown";
     var TITLE_CLS = Bar.constants.title = "cryptpad-title";
@@ -95,75 +96,37 @@ define([
         }, SPINNER_DISAPPEAR_TIME);
     };
 
-    var createUserButtons = function ($userlistElement, readOnly) {
-        var $listElement = $('<span>', {
-            id: 'userButtons',
-            'class': USERBUTTONS_CONTAINER_CLS
-        }).appendTo($userlistElement);
-
-        var createHandler = function ($elmt) {
-            return function () {
-                if ($elmt.is(':visible')) {
-                    $elmt.hide();
-                    return;
-                }
-                $userlistElement.find('.' + DROPDOWN_CLS).hide();
-                $elmt.show();
-            };
-        };
-
-        var fa_caretdown = '<span class="fa fa-caret-down" style="font-family:FontAwesome;"></span>';
-
+    var createUserButtons = function ($userlistElement, readOnly, Cryptpad) {
         // User list button
-        var $editIcon = $('<button>', {
-            'class': 'userlist dropbtn edit',
-        });
-        var $editIconSmall = $editIcon.clone().addClass('small');
-        var $dropdownEditUsers = $('<p>', {'class': USERLIST_CLS});
-        var $dropdownEditContainer = $('<div>', {'class': DROPDOWN_CONTAINER_CLS});
-        var $dropdownEdit = $('<div>', {
-            id: "cryptpad-dropdown-edit",
-            'class': DROPDOWN_CLS
-        }).append($dropdownEditUsers); //.append($dropdownEditShare);
-        $editIcon.click(createHandler($dropdownEdit));
-        $editIconSmall.click(createHandler($dropdownEdit));
-        $dropdownEditContainer.append($editIcon).append($editIconSmall).append($dropdownEdit);
-        $listElement.append($dropdownEditContainer);
+        var dropdownConfig = {
+            options: [{
+                tag: 'p',
+                attributes: {'class': USERLIST_CLS},
+            }] // Entries displayed in the menu
+        };
+        var $block = Cryptpad.createDropdown(dropdownConfig);
+        $block.attr('id', 'userButtons');
+        $userlistElement.append($block);
 
         // Share button
-        var fa_share = '<span class="fa fa-share-alt" style="font-family:FontAwesome;"></span>';
-        var fa_editusers = '<span class="fa fa-users" style="font-family:FontAwesome;"></span>';
-        var fa_viewusers = '<span class="fa fa-eye" style="font-family:FontAwesome;"></span>';
-        var $shareIcon = $('<button>', {
-            'class': 'userlist dropbtn share',
-        }).html(fa_share + ' ' + Messages.shareButton + ' ' + fa_caretdown);
-        var $shareIconSmall = $shareIcon.clone().addClass('small').html(fa_share + ' ' + fa_caretdown);
-        var $shareTitle = $('<h2>').html(fa_editusers + ' ' + Messages.shareEdit);
-        var $shareTitleView = $('<h2>').html(fa_viewusers + ' ' + Messages.shareView);
-        var $dropdownShareP = $('<p>', {'class': EDITSHARE_CLS}).append($shareTitle);
-        var $dropdownSharePView = $('<p>', {'class': VIEWSHARE_CLS}).append($shareTitleView);
-        var $dropdownShareContainer = $('<div>', {'class': DROPDOWN_CONTAINER_CLS});
-        var $dropdownShare = $('<div>', {
-            id: "cryptpad-dropdown-share",
-            'class': DROPDOWN_CLS
-        });
-        if (readOnly !== 1) {
-            // Hide the "Share edit URL" section when in read-only mode
-            $dropdownShare.append($dropdownShareP);
-        }
-        $dropdownShare.append($dropdownSharePView);
-        $shareIcon.click(createHandler($dropdownShare));
-        $shareIconSmall.click(createHandler($dropdownShare));
-        $dropdownShareContainer.append($shareIcon).append($shareIconSmall).append($dropdownShare);
-        $listElement.append($dropdownShareContainer);
+        var $shareIcon = $('<span>', {'class': 'fa fa-share-alt'});
+        var $span = $('<span>', {'class': 'large'}).append($shareIcon.clone()).append(' ' +Messages.shareButton);
+        var $spanSmall = $('<span>', {'class': 'small'}).append($shareIcon.clone());
+        var dropdownConfigShare = {
+            text: $('<div>').append($span).append($spanSmall).html(),
+            options: []
+        };
+        var $shareBlock = Cryptpad.createDropdown(dropdownConfigShare);
+        $shareBlock.find('.dropdown-bar-content').addClass(SHARE_CLS).addClass(EDITSHARE_CLS).addClass(VIEWSHARE_CLS);
+        $userlistElement.append($shareBlock);
     };
 
-    var createUserList = function ($container, readOnly) {
+    var createUserList = function ($container, readOnly, Cryptpad) {
         var $userlist = $('<div>', {
             'class': USER_LIST_CLS,
             id: uid(),
         });
-        createUserButtons($userlist, readOnly);
+        createUserButtons($userlist, readOnly, Cryptpad);
         $container.append($userlist);
         return $userlist[0];
     };
@@ -260,8 +223,11 @@ define([
         var fa_viewusers = '<span class="fa fa-eye" style="font-family:FontAwesome;"></span>';
         var viewersText = numberOfViewUsers > 1 ? Messages.viewers : Messages.viewer;
         var editorsText = numberOfEditUsers > 1 ? Messages.editors : Messages.editor;
-        $userButtons.find('.userlist.edit').html(fa_editusers + ' ' + numberOfEditUsers + ' ' + editorsText + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers + ' ' + viewersText + ' ' + fa_caretdown);
-        $userButtons.find('.userlist.edit.small').html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers + ' ' + fa_caretdown);
+        // $userButtons.find('.userlist.edit').html(fa_editusers + ' ' + numberOfEditUsers + ' ' + editorsText + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers + ' ' + viewersText + ' ' + fa_caretdown);
+        var $span = $('<span>', {'class': 'large'}).html(fa_editusers + ' ' + numberOfEditUsers + ' ' + editorsText + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers + ' ' + viewersText);
+        // $userButtons.find('.userlist.edit.small').html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers + ' ' + fa_caretdown);
+        var $spansmall = $('<span>', {'class': 'small'}).html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
+        $userButtons.find('.buttonTitle').html('').append($span).append($spansmall);
 
         // Change username button
         var $userElement = $userAdminElement.find('.' + USERNAME_CLS);
@@ -368,11 +334,6 @@ define([
         // Dropdown language selector
         Cryptpad.createLanguageSelector($userContainer);
 
-        /*$select.on('mousedown', function (e) {
-            e.stopPropagation();
-            return true;
-        });*/
-
         var $usernameElement = $('<span>', {'class': USERNAME_CLS}).appendTo($userContainer);
 
         return $userContainer;
@@ -462,7 +423,7 @@ define([
         var Cryptpad = config.common;
 
         var toolbar = createRealtimeToolbar($container);
-        var userListElement = config.userData ? createUserList(toolbar.find('.' + LEFTSIDE_CLS), readOnly) : undefined;
+        var userListElement = config.userData ? createUserList(toolbar.find('.' + LEFTSIDE_CLS), readOnly, Cryptpad) : undefined;
         var $titleElement = createTitle(toolbar.find('.' + TOP_CLS), readOnly, config.title, Cryptpad);
         var $linkElement = createLinkToMain(toolbar.find('.' + TOP_CLS));
         var lagElement = createLagElement();
@@ -478,9 +439,6 @@ define([
 
         if (config.ifrw) {
             var removeDropdowns =  function (e) {
-                if ($(e.target).parents('.cryptpad-dropdown-container').length) {
-                    return;
-                }
                 $container.find('.cryptpad-dropdown').hide();
             };
             var cancelEditTitle = function (e) {

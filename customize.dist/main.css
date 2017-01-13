@@ -334,9 +334,11 @@
   position: relative;
   display: inline-block;
 }
-.dropdown-bar button .fa {
-  margin-left: 5px;
+.dropdown-bar .fa {
   font-family: FontAwesome;
+}
+.dropdown-bar button .fa-caret-down {
+  margin-left: 5px;
 }
 .dropdown-bar .dropdown-bar-content {
   display: none;
@@ -372,6 +374,29 @@
   margin: 5px 0px;
   height: 1px;
   background: #bbb;
+}
+.dropdown-bar .dropdown-bar-content p {
+  width: 210px;
+  padding: 5px;
+  margin: 0;
+  white-space: normal;
+}
+.dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users {
+  text-align: baseline;
+}
+.dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users .yourself,
+.dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users .anonymous,
+.dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users .viewer {
+  font-style: italic;
+}
+.dropdown-bar .dropdown-bar-content p h2 {
+  font-weight: bold;
+  text-align: center;
+  background-color: #EEEEEE;
+  padding: 5px 0px;
+  margin: 5px 0px;
+  font-size: 16px;
+  white-space: normal;
 }
 html.cp,
 .cp body {

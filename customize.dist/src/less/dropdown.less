@@ -12,10 +12,13 @@
         }
     }
 
+    .fa {
+        font-family: FontAwesome;
+    }
+
     button {
-        .fa{
+        .fa-caret-down{
             margin-left: 5px;
-            font-family: FontAwesome;
         }
     }
 
@@ -57,6 +60,28 @@
             margin: 5px 0px;
             height: 1px;
             background: #bbb;
+        }
+
+        p {
+            width: 210px;
+            padding: 5px;
+            margin: 0;
+            white-space: normal;
+            &.cryptpad-dropdown-users {
+                text-align:baseline;
+                .yourself, .anonymous, .viewer {
+                    font-style: italic;
+                }
+            }
+            h2 {
+                font-weight: bold;
+                text-align: center;
+                background-color: #EEEEEE;
+                padding: 5px 0px;
+                margin: 5px 0px;
+                font-size: 16px;
+                white-space: normal;
+            }
         }
     }
 }

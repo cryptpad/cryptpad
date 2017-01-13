@@ -618,6 +618,9 @@ define([
 
                 if (!readOnly) {
                     $editShare.append(Cryptpad.createButton('editshare', false, {editHash: editHash}));
+                    if (viewHash) {
+                        $editShare.append($('<hr>'));
+                    }
                 }
                 if (viewHash) {
                     /* add a 'links' button */

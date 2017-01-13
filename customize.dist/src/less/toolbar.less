@@ -65,6 +65,11 @@
         margin: 3px 2px;
     }
 
+    .dropdown-bar-content {
+        margin-top: -3px;
+        margin-right: 2px;
+    }
+
     button {
         background-color: inherit;
         background-image: linear-gradient(to bottom,#fff,#e4e4e4);
@@ -74,21 +79,22 @@
         &:hover {
             background-image:linear-gradient(to bottom,#f2f2f2,#ccc);
         }
-        &.userlist {
-            @media screen and (max-width: 800px) {
-                display: none;
-            }
-            @media screen and (min-width: 801px) {
-                display: inline-block;
-            }
-            &.small {
-                @media screen and (max-width: 800px) {
-                    display: inline-block;
-                }
-                @media screen and (min-width: 801px) {
-                    display: none;
-                }
-            }
+    }
+
+    .large {
+        @media screen and (max-width: 800px) {
+            display: none;
+        }
+        @media screen and (min-width: 801px) {
+            display: inline-block;
+        }
+    }
+    .small {
+        @media screen and (max-width: 800px) {
+            display: inline-block;
+        }
+        @media screen and (min-width: 801px) {
+            display: none;
         }
     }
 
@@ -262,53 +268,8 @@
     .cryptpad-user-list {
         float: right;
     }
-    .cryptpad-dropdown-container {
-        position: relative;
-        display: inline-block;
-        padding: 0px;
-        .cryptpad-dropdown {
-            z-index:1000;
-            display:none;
-            position: absolute;
-            background-color: #f9f9f9;
-            min-width: 160px;
-            overflow: auto;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            height: auto;
-            padding: 5px;
-            white-space: normal;
-            p {
-                width: 210px;
-                padding: 0;
-                margin: 0;
-                white-space: normal;
-                &.cryptpad-dropdown-users {
-                    text-align:baseline;
-                    .yourself, .anonymous, .viewer {
-                        font-style: italic;
-                    }
-                }
-                h2 {
-                    font-weight: bold;
-                    text-align: center;
-                    background-color: #EEEEEE;
-                    padding: 5px 0px;
-                    margin: 5px 0px;
-                    font-size: 16px;
-                    white-space: normal;
-                }
-            }
-            button {
-                white-space: normal;
-                margin: 2px 0px;
-            }
-        }
-    }
     button {
         margin: 2px 4px 2px 0px;
-    }
-    .cryptpad-userbuttons-container {
-        /*display: none;*/
     }
 }
 .cryptpad-toolbar-rightside {

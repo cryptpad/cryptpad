@@ -850,9 +850,9 @@ define([
                 }
                 break;
             case 'editshare':
-                button = $('<button>', {
+                button = $('<a>', {
                     title: Messages.editShareTitle,
-                }).text(Messages.editShare);
+                }).html('<span class="fa fa-users" style="font-family:FontAwesome;"></span>').append(' ' + Messages.editShare);
                 if (data && data.editHash) {
                     var editHash = data.editHash;
                     button.click(function () {
@@ -868,9 +868,9 @@ define([
                 }
                 break;
             case 'viewshare':
-                button = $('<button>', {
+                button = $('<a>', {
                     title: Messages.viewShareTitle,
-                }).text(Messages.viewShare);
+                }).html('<span class="fa fa-eye" style="font-family:FontAwesome;"></span>').append(' ' + Messages.viewShare);
                 if (data && data.viewHash) {
                     button.click(function () {
                         var baseUrl = window.location.origin + window.location.pathname + '#';
@@ -885,9 +885,9 @@ define([
                 }
                 break;
             case 'viewopen':
-                button = $('<button>', {
+                button = $('<a>', {
                     title: Messages.viewOpenTitle,
-                }).text(Messages.viewOpen);
+                }).html('<span class="fa fa-eye" style="font-family:FontAwesome;"></span>').append(' ' + Messages.viewOpen);
                 if (data && data.viewHash) {
                     button.click(function () {
                         var baseUrl = window.location.origin + window.location.pathname + '#';
@@ -951,7 +951,7 @@ define([
         // Button
         var $button = $('<button>', {
             'class': ''
-        }).append($('<span>', {'class': 'buttonTitle'}).text(config.text || ""));
+        }).append($('<span>', {'class': 'buttonTitle'}).html(config.text || ""));
         $('<span>', {
             'class': 'fa fa-caret-down',
         }).appendTo($button);
@@ -969,7 +969,16 @@ define([
 
         $button.click(function (e) {
             e.stopPropagation();
-            $innerblock.toggle();
+            var state = $innerblock.is(':visible');
+            $('.dropdown-bar-content').hide();
+            $('iframe').each(function (idx, ifrw) {
+                $(ifrw).contents().find('.dropdown-bar-content').hide();
+            });
+            if (state) {
+                $innerblock.hide();
+                return;
+            }
+            $innerblock.show();
         });
 
         return $container;
