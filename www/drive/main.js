@@ -1747,6 +1747,7 @@ define([
             var userList = APP.userList = info.userList;
             APP.userName = {};
             var config = {
+                displayed: ['useradmin', 'language', 'spinner', 'lag', 'state'],
                 readOnly: readOnly,
                 ifrw: window,
                 common: Cryptpad,

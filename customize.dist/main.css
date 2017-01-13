@@ -380,6 +380,7 @@
   padding: 5px;
   margin: 0;
   white-space: normal;
+  text-align: left;
 }
 .dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users {
   text-align: baseline;

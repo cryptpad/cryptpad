@@ -652,6 +652,7 @@ define([
         });
 
         var config = {
+            displayed: ['useradmin', 'language', 'spinner', 'lag', 'state', 'share', 'userlist'],
             userData: userData,
             readOnly: readOnly,
             title: {
