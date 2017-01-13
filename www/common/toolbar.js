@@ -38,6 +38,7 @@ define([
     var DROPDOWN_CLS = Bar.constants.dropdown = "cryptpad-dropdown";
     var TITLE_CLS = Bar.constants.title = "cryptpad-title";
     var USER_CLS = Bar.constants.userAdmin = "cryptpad-user";
+    var USERBUTTON_CLS = Bar.constants.changeUsername = "cryptpad-change-username";
 
     var SPINNER_DISAPPEAR_TIME = 3000;
 
@@ -356,32 +357,37 @@ define([
                                 "and `lastName` (object) if you want to display the user admin menu.")
             }
             var $displayedName = $('<span>', {'class': USERNAME_CLS});
-            var accountName = null; //TODO Cryptpad.getStore().getAccountName()
+            var accountName = Cryptpad.getStore().getLoginName ? Cryptpad.getStore().getLoginName() : null;
             var account = typeof accountName === "string";
             var $userAdminContent = $('<p>');
             if (account) {
-                var $userAccount = $('<span>', {'class': 'userAccount'}).append('Account: ' + accountName);
+                var $userAccount = $('<span>', {'class': 'userAccount'}).append(Messages.user_accountName + ': ' + accountName);
                 $userAdminContent.append($userAccount);
                 $userAdminContent.append($('<br>'));
             }
-            var $userName = $('<span>', {'class': 'userDisplayName'}).append('Display name: ').append($displayedName.clone());
+            var $userName = $('<span>', {'class': 'userDisplayName'}).append(Messages.user_displayName + ': ').append($displayedName.clone());
             $userAdminContent.append($userName);
             var options = [{
                 tag: 'p',
                 content: $userAdminContent.html()
             }, {
                 tag: 'a',
-                attributes: {'class': 'changeUserName'},
-                content: 'Change username'
-            }, {
-                tag: 'a',
-                attributes: {'class': 'login'}, //TODO
-                content: 'Login'
-            }, {
-                tag: 'a',
-                attributes: {'class': 'logout'}, //TODO
-                content: 'Logout'
+                attributes: {'class': USERBUTTON_CLS},
+                content: Messages.user_rename
             }];
+            if (account) {
+                options.push({
+                    tag: 'a',
+                    attributes: {'class': 'logout'},
+                    content: Messages.user_logout
+                });
+            } else {
+                options.push({
+                    tag: 'a',
+                    attributes: {'class': 'login'},
+                    content: Messages.user_login
+                });
+            }
             var $icon = $('<span>', {'class': 'fa fa-user'});
             var $button = $('<div>').append($icon).append($displayedName.clone());
             if (account) {
@@ -397,9 +403,14 @@ define([
 
             $userAdmin.find('a.logout').click(function (e) {
                 Cryptpad.logout();
+                window.location.reload();
             });
+            $userAdmin.find('a.login').click(function (e) {
+                window.open = '/user';
+            });
+
             if (config.userName && config.userName.setName && config.userName.lastName) {
-                $userAdmin.find('a.changeUserName').click(function (e) {
+                $userAdmin.find('a.' + USERBUTTON_CLS).click(function (e) {
                     Cryptpad.prompt(Messages.changeNamePrompt, config.userName.lastName.lastName || '', function (newName) {
                         config.userName.setName(newName);
                     });

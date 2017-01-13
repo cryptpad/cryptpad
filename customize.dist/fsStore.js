@@ -98,6 +98,10 @@ define([
         return exp;
     };
 
+    Store.getLoginName = function () {
+        return storeObj.login_name;
+    };
+
     var changeHandlers = Store.changeHandlers = [];
 
     Store.change = function (f) {

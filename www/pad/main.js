@@ -590,6 +590,7 @@ define([
                 var $userBlock = $bar.find('.' + Toolbar.constants.username);
                 var $editShare = $bar.find('.' + Toolbar.constants.editShare);
                 var $viewShare = $bar.find('.' + Toolbar.constants.viewShare);
+                var $usernameButton = module.$userNameButton = $bar.find('.' + Toolbar.constants.changeUsername);
 
                 var editHash;
                 var viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);

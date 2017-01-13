@@ -63,6 +63,11 @@ define(function () {
     out.userButton = 'USER';
     out.userButtonTitle = 'Change your username';
     out.changeNamePrompt = 'Change your name (leave empty to be anonymous): ';
+    out.user_login = "Log in";
+    out.user_logout = "Log out";
+    out.user_rename = "Change display name";
+    out.user_displayName = "Display name";
+    out.user_accountName = "Account name";
 
     out.renameButton = 'RENAME';
     out.renameButtonTitle = 'Change the title under which this document is listed on your home page';
