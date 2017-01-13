@@ -233,16 +233,18 @@ define([
         var $userElement = $userAdminElement.find('.' + USERNAME_CLS);
         $userElement.show();
         if (readOnly === 1) {
-            $userElement.html('<span class="' + READONLY_CLS + '">' + Messages.readonly + '</span>');
+            //$userElement.html('<span class="' + READONLY_CLS + '">' + Messages.readonly + '</span>');
+            $userElement.addClass('ro').text(Messages.readonly);
         }
         else {
             var name = userData[myUserName] && userData[myUserName].name;
-            var icon = '<span class="fa fa-user" style="font-family:FontAwesome;"></span>';
+            //var icon = '<span class="fa fa-user" style="font-family:FontAwesome;"></span>';
             if (!name) {
                 name = Messages.anonymous;
             }
-            $userElement.find("button").show();
-            $userElement.find("button").html(icon + ' ' + name);
+            // $userElement.find("button").show();
+            // $userElement.find("button").html(icon + ' ' + name);
+            $userElement.removeClass('ro').text(name);
         }
     };
 
@@ -318,8 +320,9 @@ define([
         $linkContainer.append($aTagSmall).append($aTagBig);
     };
 
-    var createUserAdmin = function ($topContainer, lagElement, Cryptpad) {
+    var createUserAdmin = function ($topContainer, config, lagElement, Cryptpad) {
         var $lag = $(lagElement);
+        //TODO check if we should displayed that button and if we can (userName.setName, userName.lastName and userdata required)
 
         var $userContainer = $('<span>', {
             'class': USER_CLS
@@ -334,7 +337,57 @@ define([
         // Dropdown language selector
         Cryptpad.createLanguageSelector($userContainer);
 
-        var $usernameElement = $('<span>', {'class': USERNAME_CLS}).appendTo($userContainer);
+        // User dropdown
+        var $displayedName = $('<span>', {'class': USERNAME_CLS});
+        var accountName = null; //TODO Cryptpad.getStore().getAccountName()
+        var account = typeof accountName === "string";
+        var $userAdminContent = $('<p>');
+        if (account) {
+            var $userAccount = $('<span>', {'class': 'userAccount'}).append('Account: ' + accountName);
+            $userAdminContent.append($userAccount);
+            $userAdminContent.append($('<br>'));
+        }
+        var $userName = $('<span>', {'class': 'userDisplayName'}).append('Display name: ').append($displayedName.clone());
+        $userAdminContent.append($userName);
+        var options = [{
+            tag: 'p',
+            content: $userAdminContent.html()
+        }, {
+            tag: 'a',
+            attributes: {'class': 'changeUserName'},
+            content: 'Change username'
+        }, {
+            tag: 'a',
+            attributes: {'class': 'login'}, //TODO
+            content: 'Login'
+        }, {
+            tag: 'a',
+            attributes: {'class': 'logout'}, //TODO
+            content: 'Logout'
+        }];
+        var $icon = $('<span>', {'class': 'fa fa-user'});
+        var $button = $('<div>').append($icon).append($displayedName.clone());
+        if (account) {
+            $button.append('(' + accountName + ')');
+        }
+        var dropdownConfig = {
+            text: $button.html(), // Button initial text
+            options: options, // Entries displayed in the menu
+            left: true, // Open to the left of the button
+        };
+        var $userAdmin = Cryptpad.createDropdown(dropdownConfig);
+        $userContainer.append($userAdmin);
+
+        $userAdmin.find('a.logout').click(function (e) {
+            Cryptpad.logout();
+        });
+        if (config.userName && config.userName.setName && config.userName.lastName) {
+            $userAdmin.find('a.changeUserName').click(function (e) {
+                Cryptpad.prompt(Messages.changeNamePrompt, config.userName.lastName.lastName || '', function (newName) {
+                    config.userName.setName(newName);
+                });
+            });
+        }
 
         return $userContainer;
     };
@@ -427,7 +480,7 @@ define([
         var $titleElement = createTitle(toolbar.find('.' + TOP_CLS), readOnly, config.title, Cryptpad);
         var $linkElement = createLinkToMain(toolbar.find('.' + TOP_CLS));
         var lagElement = createLagElement();
-        var $userAdminElement = createUserAdmin(toolbar.find('.' + TOP_CLS), lagElement, Cryptpad);
+        var $userAdminElement = createUserAdmin(toolbar.find('.' + TOP_CLS), config, lagElement, Cryptpad);
         var spinner = createSpinner($userAdminElement);
         var userData = config.userData;
         // readOnly = 1 (readOnly enabled), 0 (disabled), -1 (old pad without readOnly mode)
@@ -465,14 +518,11 @@ define([
         }
 
         // Update user list
-        if (config.userData) {
+        if (userData) {
             userList.change.push(function (newUserData) {
                 var users = userList.users;
                 if (users.indexOf(myUserName) !== -1) { connected = true; }
                 if (!connected) { return; }
-                /*if (newUserData) { // Someone has changed his name/color
-                    userData = newUserData;
-                }*/
                 checkSynchronizing(users, myUserName, $stateElement);
                 updateUserList(myUserName, userListElement, users, userData, readOnly, $userAdminElement);
             });

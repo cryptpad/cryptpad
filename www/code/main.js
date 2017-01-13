@@ -366,6 +366,14 @@ define([
 
              var onInit = config.onInit = function (info) {
                 userList = info.userList;
+
+                module.userName = {};
+                // The lastName is stored in an object passed to the toolbar so that when the user clicks on
+                // the "change display name" button, the prompt already knows his current name
+                getLastName(function (err, lastName) {
+                    module.userName.lastName = lastName;
+                });
+
                 var config = {
                     userData: userData,
                     readOnly: readOnly,
@@ -374,6 +382,10 @@ define([
                         onRename: renameCb,
                         defaultName: defaultName,
                         suggestName: suggestName
+                    },
+                    userName: {
+                        setName: setName,
+                        lastName: module.userName
                     },
                     common: Cryptpad
                 };
@@ -391,15 +403,6 @@ define([
                 if (!readOnly) {
                     editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
                 }
-
-                // Store the object sent for the "change username" button so that we can update the field value correctly
-                var userNameButtonObject = module.userName = {};
-                /* add a "change username" button */
-                getLastName(function (err, lastName) {
-                    userNameButtonObject.lastName = lastName;
-                    var $username = module.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName).hide();
-                    $userBlock.append($username);
-                });
 
                 /* add an export button */
                 var $export = Cryptpad.createButton('export', true, {}, exportText);

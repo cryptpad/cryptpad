@@ -643,6 +643,14 @@ define([
         });
 
         userList = APP.userList = info.userList;
+
+        APP.userName = {};
+        // The lastName is stored in an object passed to the toolbar so that when the user clicks on
+        // the "change display name" button, the prompt already knows his current name
+        getLastName(function (err, lastName) {
+            APP.userName.lastName = lastName;
+        });
+
         var config = {
             userData: userData,
             readOnly: readOnly,
@@ -650,6 +658,10 @@ define([
                 onRename: renameCb,
                 defaultName: defaultName,
                 suggestName: suggestName
+            },
+            userName: {
+                setName: setName,
+                lastName: APP.userName
             },
             ifrw: window,
             common: Cryptpad,
@@ -661,15 +673,6 @@ define([
         var $userBlock = $bar.find('.' + Toolbar.constants.username);
         var $editShare = $bar.find('.' + Toolbar.constants.editShare);
         var $viewShare = $bar.find('.' + Toolbar.constants.viewShare);
-
-        // Store the object sent for the "change username" button so that we can update the field value correctly
-        var userNameButtonObject = APP.userName = {};
-        /* add a "change username" button */
-        getLastName(function (err, lastName) {
-            userNameButtonObject.lastName = lastName;
-            var $username = APP.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName).hide();
-            $userBlock.append($username);
-        });
 
         /* add a forget button */
         var forgetCb = function (err, title) {

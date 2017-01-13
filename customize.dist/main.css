@@ -376,7 +376,7 @@
   background: #bbb;
 }
 .dropdown-bar .dropdown-bar-content p {
-  width: 210px;
+  min-width: 160px;
   padding: 5px;
   margin: 0;
   white-space: normal;

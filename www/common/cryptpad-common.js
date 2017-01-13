@@ -984,7 +984,9 @@ define([
         return $container;
     };
 
-    var createLanguageSelector = common.createLanguageSelector = function ($container, $block) {
+    // Provide $container if you want to put the generated block in another element
+    // Provide $initBlock if you already have the menu block and you want the content inserted in it
+    var createLanguageSelector = common.createLanguageSelector = function ($container, $initBlock) {
         var options = [];
         var languages = Messages._languages;
         for (var l in languages) {
@@ -1002,7 +1004,7 @@ define([
             text: Messages.language, // Button initial text
             options: options, // Entries displayed in the menu
             left: true, // Open to the left of the button
-            container: $block // optional
+            container: $initBlock // optional
         };
         var $block = createDropdown(dropdownConfig);
         $block.attr('id', 'language-selector');

@@ -152,40 +152,16 @@ define([
             });
         };
 
-        var setName = APP.setName = function (newName) {
-            if (typeof(newName) !== 'string') { return; }
-            var myUserNameTemp = Cryptpad.fixHTML(newName.trim());
-            if(myUserNameTemp.length > 32) {
-                myUserNameTemp = myUserNameTemp.substr(0, 32);
-            }
-            var myUserName = myUserNameTemp;
-            Cryptpad.setAttribute('username', myUserName, function (err, data) {
-                if (err) {
-                    logError("Couldn't set username", err);
-                    return;
-                }
-                APP.userName.lastName = myUserName;
-                var $button = APP.$userNameButton;
-                var $span = $('<div>').append($button.find('span').clone()).html();
-                $button.html($span + myUserName);
-            });
-        };
-
-        var $userBlock = APP.$bar.find('.' + Toolbar.constants.username);
-
         // Store the object sent for the "change username" button so that we can update the field value correctly
         var userNameButtonObject = APP.userName = {};
         /* add a "change username" button */
         if (!APP.readOnly) {
             getLastName(function (err, lastName) {
-                userNameButtonObject.lastName = lastName;
-                var $username = APP.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName).hide();
-                $userBlock.append($username);
-                $username.append(lastName);
-                $username.show();
+                APP.userName.lastName = lastName;
+                APP.$displayName.text(lastName);
             });
         } else {
-            $userBlock.html('<span class="' + Toolbar.constants.readonly + '">' + Messages.readonly + '</span>');
+            APP.$displayName.html('<span class="' + Toolbar.constants.readonly + '">' + Messages.readonly + '</span>');
         }
 
         // FILE MANAGER
@@ -1703,6 +1679,23 @@ define([
         refresh();
     };
 
+    var setName = APP.setName = function (newName) {
+        if (typeof(newName) !== 'string') { return; }
+        var myUserNameTemp = Cryptpad.fixHTML(newName.trim());
+        if(myUserNameTemp.length > 32) {
+            myUserNameTemp = myUserNameTemp.substr(0, 32);
+        }
+        var myUserName = myUserNameTemp;
+        Cryptpad.setAttribute('username', myUserName, function (err, data) {
+            if (err) {
+                logError("Couldn't set username", err);
+                return;
+            }
+            APP.userName.lastName = myUserName;
+            APP.$displayName.text(myUserName);
+        });
+    };
+
     // don't initialize until the store is ready.
     Cryptpad.ready(function () {
         var storeObj = Cryptpad.getStore().getProxy && Cryptpad.getStore().getProxy().proxy ? Cryptpad.getStore().getProxy() : undefined;
@@ -1752,17 +1745,23 @@ define([
             });
 
             var userList = APP.userList = info.userList;
+            APP.userName = {};
             var config = {
                 readOnly: readOnly,
                 ifrw: window,
                 common: Cryptpad,
+                userName: {
+                    setName: setName,
+                    lastName: APP.userName
+                },
                 hideShare: true
             };
             var toolbar = APP.toolbar = info.realtime.toolbar = Toolbar.create(APP.$bar, info.myID, info.realtime, info.getLag, userList, config);
 
             var $bar = APP.$bar;
             var $rightside = $bar.find('.' + Toolbar.constants.rightside);
-            var $userBlock = $bar.find('.' + Toolbar.constants.username);
+            var $userBlock = $bar.find('.' + Toolbar.constants.userAdmin);
+            APP.$displayName = $bar.find('.' + Toolbar.constants.username);
 
             if (APP.homePageIframe) {
                 var $linkToMain = $bar.find('.cryptpad-link a');
