@@ -158,6 +158,18 @@ define([
             logLevel: 1,
         };
 
+        window.addEventListener('storage', function (e) {
+            var key = e.key;
+            if (e.key !== Cryptpad.userHashKey) { return; }
+            var o = e.oldValue;
+            var n = e.newValue;
+            if (!o && n) {
+                window.location.reload();
+            } else if (o && !n) {
+                window.location.reload();
+            }
+        });
+
         var rt = window.rt = Listmap.create(listmapConfig);
         exp.proxy = rt.proxy;
         rt.proxy.on('create', function (info) {

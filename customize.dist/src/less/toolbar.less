@@ -289,19 +289,33 @@
     font-weight: bold;
     text-transform: uppercase;
 }
-        .fa-user {
-            margin-right: 5px;
-        }
 .cryptpad-user {
+    p.accountData {
+        background: #f0f0f0;
+        &> span {
+            font-weight: bold;
+            span {
+                font-weight: normal;
+            }
+        }
+    }
     .buttonTitle {
         .fa-user {
             margin-right: 5px;
         }
-        .cryptpad-toolbar-username {
+        .account-name {
+            margin-left: 5px;
+        }
+    }
+}
+.cryptpad-dropdown-share {
+    a {
+        .fa {
             margin-right: 5px;
         }
     }
 }
+
 .lag {
     height: 15px !important;
     width: 15px !important;

@@ -674,6 +674,7 @@ define([
         var $userBlock = $bar.find('.' + Toolbar.constants.username);
         var $editShare = $bar.find('.' + Toolbar.constants.editShare);
         var $viewShare = $bar.find('.' + Toolbar.constants.viewShare);
+        var $usernameButton = APP.$userNameButton = $($bar.find('.' + Toolbar.constants.changeUsername));
 
         /* add a forget button */
         var forgetCb = function (err, title) {

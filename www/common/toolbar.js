@@ -227,9 +227,8 @@ define([
             $editUsers.html('').append($usersTitle).append(editUsersList);
 
             // Update the buttons
-            var fa_caretdown = '<span class="fa fa-caret-down" style="font-family:FontAwesome;"></span>';
-            var fa_editusers = '<span class="fa fa-users" style="font-family:FontAwesome;"></span>';
-            var fa_viewusers = '<span class="fa fa-eye" style="font-family:FontAwesome;"></span>';
+            var fa_editusers = '<span class="fa fa-users"></span>';
+            var fa_viewusers = '<span class="fa fa-eye"></span>';
             var viewersText = numberOfViewUsers > 1 ? Messages.viewers : Messages.viewer;
             var editorsText = numberOfEditUsers > 1 ? Messages.editors : Messages.editor;
             var $span = $('<span>', {'class': 'large'}).html(fa_editusers + ' ' + numberOfEditUsers + ' ' + editorsText + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers + ' ' + viewersText);
@@ -326,7 +325,7 @@ define([
         $linkContainer.append($aTagSmall).append($aTagBig);
     };
 
-    var createUserAdmin = function ($topContainer, config, lagElement, Cryptpad) {
+    var createUserAdmin = function ($topContainer, config, readOnly, lagElement, Cryptpad) {
         if (config.displayed.indexOf('useradmin') === -1 && config.displayed.indexOf('share') === -1) { return; }
         var $lag = $(lagElement);
         //TODO check if we should displayed that button and if we can (userName.setName, userName.lastName and userdata required)
@@ -365,16 +364,27 @@ define([
                 $userAdminContent.append($userAccount);
                 $userAdminContent.append($('<br>'));
             }
-            var $userName = $('<span>', {'class': 'userDisplayName'}).append(Messages.user_displayName + ': ').append($displayedName.clone());
+            var $userName = $('<span>', {'class': 'userDisplayName'});
+            if (readOnly !== 1) {
+                // Hide "Display name:" in read only mode
+                $userName.append(Messages.user_displayName + ': ')
+            }
+            $userName.append($displayedName.clone());
             $userAdminContent.append($userName);
             var options = [{
                 tag: 'p',
+                attributes: {'class': 'accountData'},
                 content: $userAdminContent.html()
-            }, {
-                tag: 'a',
-                attributes: {'class': USERBUTTON_CLS},
-                content: Messages.user_rename
             }];
+            // Add the change display name button if not in read only mode
+            if (readOnly !== 1) {
+                options.push({
+                    tag: 'a',
+                    attributes: {'class': USERBUTTON_CLS},
+                    content: Messages.user_rename
+                });
+            }
+            // Add login or logout button depending on the current status
             if (account) {
                 options.push({
                     tag: 'a',
@@ -391,7 +401,7 @@ define([
             var $icon = $('<span>', {'class': 'fa fa-user'});
             var $button = $('<div>').append($icon).append($displayedName.clone());
             if (account) {
-                $button.append('(' + accountName + ')');
+                $button.append($('<span>', {'class': 'account-name'}).text('(' + accountName + ')'));
             }
             var dropdownConfig = {
                 text: $button.html(), // Button initial text
@@ -406,7 +416,7 @@ define([
                 window.location.reload();
             });
             $userAdmin.find('a.login').click(function (e) {
-                window.open = '/user';
+                window.open('/user');
             });
 
             if (config.userName && config.userName.setName && config.userName.lastName) {
@@ -510,7 +520,7 @@ define([
         var $titleElement = createTitle(toolbar.find('.' + TOP_CLS), readOnly, config.title, Cryptpad);
         var $linkElement = createLinkToMain(toolbar.find('.' + TOP_CLS));
         var lagElement = createLagElement();
-        var $userAdminElement = createUserAdmin(toolbar.find('.' + TOP_CLS), config, lagElement, Cryptpad);
+        var $userAdminElement = createUserAdmin(toolbar.find('.' + TOP_CLS), config, readOnly, lagElement, Cryptpad);
         var spinner = createSpinner($userAdminElement, config);
         var userData = config.userData;
         // readOnly = 1 (readOnly enabled), 0 (disabled), -1 (old pad without readOnly mode)

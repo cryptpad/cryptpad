@@ -158,7 +158,7 @@ define([
         if (!APP.readOnly) {
             getLastName(function (err, lastName) {
                 APP.userName.lastName = lastName;
-                APP.$displayName.text(lastName);
+                APP.$displayName.text(lastName || Messages.anonymous);
             });
         } else {
             APP.$displayName.html('<span class="' + Toolbar.constants.readonly + '">' + Messages.readonly + '</span>');
