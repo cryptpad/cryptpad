@@ -33,7 +33,8 @@ define([
     var displayCreateButtons = function () {
         var $parent = $('#buttons');
         Config.availablePadTypes.forEach(function (el) {
-            $('#create-' + el).detach().appendTo($parent).attr('target', '_blank').show();
+            $('#create-' + el)//.detach().appendTo($parent)
+                .attr('target', '_blank').show();
         });
     };
 
@@ -165,7 +166,7 @@ define([
 
         Cryptpad.styleAlerts();
 
-        refreshTable();
+        //refreshTable();
         if (Cryptpad.store && Cryptpad.store.change) {
             Cryptpad.store.change(function (data) {
                 if (data.key === 'CryptPad_RECENTPADS') {

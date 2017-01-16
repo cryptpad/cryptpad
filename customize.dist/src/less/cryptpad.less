@@ -5,6 +5,7 @@
 @import "./bar.less";
 @import "./loading.less";
 @import "./dropdown.less";
+@import "./topbar.less";
 
 html.cp, .cp body {
     font-size: .875em;
@@ -12,13 +13,13 @@ html.cp, .cp body {
     color: @fore;
 
     font-family: Georgia,Cambria,serif;
-    height: 100;
+    height: 100%;
 }
 
 .cp:not(.poll) {
     #language-selector {
         position: absolute;
-        top: 0px;
+        top: 80px;
         right: 0px;
         display: inline-block;
     }
@@ -30,6 +31,7 @@ body {
     font-size: 1rem;
     font-weight: 400;
     line-height: 2rem;
+    margin: 0;
 }
 
 a.github-corner > svg {
@@ -97,11 +99,11 @@ h6 {
 
 a {
     cursor: pointer;
-    color: @cp-green;
+    color: @cp-darkblue;
     text-decoration: none;
 
     &:hover {
-        color: @cp-accent;
+        color: @cp-accent2;
     }
 }
 
@@ -123,12 +125,111 @@ p, pre, td, a, table, tr {
     .lato;
 }
 
+body.html {
+}
+    .page {
+        width: 70vw;
+        height: 90vh;
+        margin-left: 15vw;
+        background: blue;
+        &.first {
+            margin-top: ~"calc(100vh - 80px)";
+        }
+    }
+
+    .page2 {
+        width: 70vw;
+        height: 100vh;
+        background: red;
+    }
+
 #main {
-    width: 70vw;
+    background-image: url('/customize/bg.jpg');
+    background-size: cover;
+}
+#main, #main_other {
+    position: absolute;
+    left: 0;
+    right: 0;
+    padding: 0 @main-border-width;
+    height: ~"calc(100vh - 80px)";
     margin: auto;
+    //margin-top: 100px;
 
     font-size: medium;
-    padding-bottom: 1em;
+    //padding-bottom: 1em;
+
+    // Vertical positioning (middle)
+    //margin-top: 50vh;
+    //transform: translateY( ~"calc(40px - 50%)" ); //"
+
+
+    #data {
+        p {
+            margin: 0;
+            padding: 0;
+        }
+        h5 {
+            color: @topbar-color;
+        }
+        color: @topbar-color;
+        padding: 15px;
+        box-sizing: border-box;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: ~"calc(100% - 450px - 30vw)";
+        background-color: rgba(34, 177, 221, 0.8);
+    }
+
+    #userForm {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        right: @main-border-width;
+        margin-left: 50px;
+        display: inline-block;
+        width: 400px;
+        height: 350px;
+        background-color: rgba(34, 177, 221, 0.8);
+        padding: 10px;
+        box-sizing: border-box;
+        font-family: lato, Helvetica, sans-serif;
+        color: @topbar-color;
+
+        h1 {
+            color: black;
+        }
+
+        [type="text"], [type="password"] {
+            width: ~"calc(100% - 10px)";
+            height: 1.5em;
+            border-radius: 0;
+        }
+
+        [type="checkbox"] {
+            vertical-align: sub;
+            margin: 0;
+            margin-top: 10px;
+            margin-right: 5px;
+        }
+
+        button {
+            width: 100%;
+            margin: 2px 0px;
+            text-transform: uppercase;
+            cursor: pointer;
+            &.half {
+                width: ~"calc(50% - 2px)";
+                &.first {
+                }
+            }
+        }
+    }
+
+    .buttons {
+        margin-top: 20px;
+    }
 }
 
 #fileManagerIframe {
@@ -139,27 +240,22 @@ p, pre, td, a, table, tr {
 
 /* buttons */
 
-// home page button container
-.buttons {
-    margin-bottom: 50px;
-    margin-top: 20px;
-    line-height: 2.5em;
-}
-
 .create, .action {
     display: inline-block;
     @thick: 2px;
-    border: @thick solid @cp-green;
-    background-color: @base;
-    color: @cp-green;
+    //border: @thick solid @cp-darkblue;
+    border: 0;
+    background-color: @cp-darkblue;
+    color: @topbar-button-color;
 
     font-weight: bold;
     font-size: large;
     margin-right: 5px;
     margin-left: 5px;
     &:hover {
-        border: @thick solid @cp-accent;
-        color: @cp-green;
+        color: darken(@topbar-button-color, 20%);
+        //border: @thick solid @cp-accent2;
+        //color: @cp-darkblue;
     }
 }
 
@@ -168,8 +264,9 @@ p, pre, td, a, table, tr {
     @vpad: 2 * 2px;
     padding: @vpad @hpad @vpad @hpad;
 
-    margin-top: 2 * 6px;
-    margin-bottom: 2 * 6px;
+    //margin-top: 2 * 6px;
+    //margin-bottom: 2 * 6px;
+    margin: 2px 0;
     display: inline-block;
     line-height: 1.5em;
 }

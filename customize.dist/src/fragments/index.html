@@ -1,42 +1,34 @@
-    <center>
-        <h1 data-localization="main_slogan"></h1>
-    </center>
+<div id="main">
+    <div id="data">
+      <p class="left" data-localization="main_p1"><!-- Zero Knowledge collaborative realtime editor. Protected from the NSA. --></p>
 
-      <p data-localization="main_p1"><!-- Zero Knowledge collaborative realtime editor. Protected from the NSA. --></p>
-
-      <center>
         <h5 id="tryit" data-localization="tryIt"></h5>
 
-
-
-        <!--
-        (<a href="/file" target="_blank" data-localization="main_openFileManager">Open in a new tab</a>)
-
-        <iframe src="/file/#iframe" id="fileManagerIframe"></iframe>
-        <br />
-        -->
-        <table class="recent scroll" style="display:none">
-            <tbody>
-
-            <tr>
-                <th data-localization="table_type"></th>
-                <th data-localization="table_link"></th>
-                <th data-localization="table_created"></th>
-                <th data-localization="table_last"></th>
-                <th></th>
-            </tr>
-
-            </tbody>
-        </table>
-
         <div id="buttons" class="buttons">
-          <a id="create-pad" class="button create" href="/pad/" data-localization="button_newpad"></a>
-          <a id="create-code" class="button create" href="/code/" data-localization="button_newcode"></a>
-          <a id="create-poll" class="button create" href="/poll/" data-localization="button_newpoll"></a>
+          <a id="create-pad" class="button create" href="/pad/" data-localization="button_newpad"></a><br/>
+          <a id="create-code" class="button create" href="/code/" data-localization="button_newcode"></a><br/>
+          <a id="create-poll" class="button create" href="/poll/" data-localization="button_newpoll"></a><br/>
           <a id="create-slide" class="button create" href="/slide/" data-localization="button_newslide"></a>
         </div>
 
-      </center>
+    </div>
 
-      <p data-localization="main_about_p1"><!-- Privacy policy, terms of service --></p>
-      <p data-localization="main_about_p2"><!-- Contact us--></p>
+    <div id="userForm">
+        <center>
+            <h1>Join Us!</h1>
+        </center>
+        <label for="name" data-localization="form_username"></label><br>
+        <input type="text" id="name" data-localization-placeholder="login_username" autofocus><br>
+
+        <label for="password" data-localization="form_password"></label><br>
+        <input type="password" id="password" data-localization-placeholder="login_password"><br>
+
+        <input type="checkbox" checked="checked"><label for="rememberme" data-localization="login_remember"></label><br>
+        <br>
+        <button class="create button half first">Log in</button> <button class="create button half">Register</button><br>
+        <button class="create button">Continue without logging in</button>
+
+    </div>
+</div>
+
+

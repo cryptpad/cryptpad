@@ -24,9 +24,11 @@ var template = read('./template.html');
 var fragments = {};
 [   'index',
     'fork',
+    'topbar',
     'terms',
     'privacy',
     'about',
+    'contact',
     'logo',
     'noscript',
 ].forEach(function (name) {
@@ -34,8 +36,9 @@ var fragments = {};
 });
 
 // build static pages
-['index', 'privacy', 'terms', 'about',].forEach(function (page) {
+['index', 'privacy', 'terms', 'about', 'contact',].forEach(function (page) {
     var source = swap(template, {
+       topbar: fragments.topbar,
        fork: fragments.fork,
        main: fragments[page],
        logo: fragments.logo,

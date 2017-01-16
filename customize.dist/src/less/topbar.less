@@ -1,0 +1,55 @@
+@import "./variables.less";
+
+#cryptpadTopBar {
+    background: @topbar-back;
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    color: @topbar-color;
+    font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding: 5px;
+    box-sizing: border-box;
+    font-size: 40px;
+
+    &> span {
+        vertical-align: middle;
+        display: inline-block;
+        height: 100%;
+    }
+    .cryptpad-logo {
+        height: 70px;
+        vertical-align: middle;
+    }
+
+    .slogan {
+        font-size: 20px;
+        color: @topbar-color;
+        line-height: 70px;
+    }
+
+    .gotoMain {
+        color: @topbar-color;
+        height: 70px;
+        line-height: 70px;
+    }
+
+    .right {
+        float: right;
+        font-size: 20px;
+        margin: 0px 5px;
+        background: @topbar-button-bg;
+
+        a {
+            text-align: center;
+            min-width: 100px;
+            font-weight: bold;
+            height: 70px;
+            padding: 0 10px;
+            line-height: 70px;
+            display: inline-block;
+            color: @topbar-button-color;
+        }
+    }
+}

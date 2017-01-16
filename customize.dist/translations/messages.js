@@ -298,6 +298,9 @@ define(function () {
     out.button_newpoll = 'NEW POLL';
     out.button_newslide = 'NEW PRESENTATION';
 
+    out.form_username = "Username";
+    out.form_password = "Password";
+
     // privacy.html
 
     out.policy_title = 'Cryptpad Privacy Policy';
