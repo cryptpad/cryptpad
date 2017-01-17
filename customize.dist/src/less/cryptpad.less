@@ -17,13 +17,13 @@ html.cp, .cp body {
 }
 
 .cp:not(.poll) {
-    #language-selector {
+    /*#language-selector {
         position: absolute;
-        top: 80px;
+        top: @topbar-height;
         right: 0px;
         display: inline-block;
         z-index: 2;
-    }
+    }*/
 }
 
 .cp {
@@ -144,16 +144,31 @@ body.html {
         background: red;
     }
 
+.btn-default {
+    &:hover {
+        background-color: #d8d8d8;
+    }
+}
 #main {
-    background-image: url('/customize/bg.jpg');
+    background-image: url('/customize/bg2.jpg');
     background-size: cover;
+    background-position: center center;
 }
 #main, #main_other {
+    #overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #000;
+        opacity: 0.2;
+    }
     position: absolute;
     left: 0;
     right: 0;
     padding: 0 @main-border-width;
-    height: ~"calc(100vh - 80px)";
+    height: ~"calc(100vh - 50px)";
     margin: auto;
     //margin-top: 100px;
 
@@ -165,16 +180,20 @@ body.html {
             padding: 0;
         }
         h5 {
-            color: @topbar-color;
+            color: @main-color;
         }
-        color: @topbar-color;
+        color: @main-color;
         padding: 15px;
         box-sizing: border-box;
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
         width: ~"calc(100% - 450px - 30vw)";
-        background-color: rgba(34, 177, 221, 0.8);
+//        background-color: @main-block-bg;
+
+        #tryit {
+            margin-top: 20px;
+        }
     }
 
     #userForm {
@@ -185,21 +204,19 @@ body.html {
         margin-left: 50px;
         display: inline-block;
         width: 400px;
-        background-color: rgba(34, 177, 221, 0.8);
+//        background-color: @main-block-bg;
         padding: 10px;
         box-sizing: border-box;
         font-family: lato, Helvetica, sans-serif;
-        color: @topbar-color;
+        color: @main-color;
 
         h1 {
-            color: black;
+            color: @main-color;
             padding: 0;
         }
 
         [type="text"], [type="password"] {
-            width: ~"calc(100% - 10px)";
-            height: 1.5em;
-            border-radius: 0;
+            width: 100%;
         }
 
         [type="checkbox"] {
@@ -209,21 +226,32 @@ body.html {
             margin-right: 5px;
         }
 
+        label {
+            margin-bottom: 0;
+            margin-top: 0.5em;
+        }
+
         button {
             width: 100%;
             margin: 2px 0px;
             text-transform: uppercase;
             cursor: pointer;
             &.half {
-                width: ~"calc(50% - 2px)";
-                &.first {
+                width: ~"calc(50% - 4px)";
+                &:not(.first) {
+                    float: right;
                 }
             }
         }
     }
 
     .buttons {
-        margin-top: 20px;
+        text-align: center;
+        button {
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 10px;
+        }
     }
 }
 

@@ -41,6 +41,7 @@ define([
     // Language selector
     var $sel = $('#language-selector');
     Cryptpad.createLanguageSelector(undefined, $sel);
+    $sel.find('button').addClass('btn').addClass('btn-secondary');
     $sel.show();
 
     $(window).click(function () {

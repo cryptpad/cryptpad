@@ -6,12 +6,12 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 80px;
+    height: @topbar-height;
     color: @topbar-color;
     font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
     padding: 5px;
     box-sizing: border-box;
-    font-size: 40px;
+    font-size: 30px;
 
     &> span {
         vertical-align: middle;
@@ -19,37 +19,49 @@
         height: 100%;
     }
     .cryptpad-logo {
-        height: 70px;
+        height: 40px;
         vertical-align: middle;
     }
 
     .slogan {
         font-size: 20px;
         color: @topbar-color;
-        line-height: 70px;
+        line-height: 40px;
     }
 
     .gotoMain {
         color: @topbar-color;
-        height: 70px;
-        line-height: 70px;
+        height: 40px;
+        line-height: 40px;
+        &:hover {
+            text-decoration: none;
+            color: #558;
+        }
     }
 
     .right {
         float: right;
         font-size: 20px;
-        margin: 0px 5px;
-        background: @topbar-button-bg;
+        margin: 0px 10px;
+        line-height: 40px;
 
         a {
-            text-align: center;
+            font-weight: 500;
+            font-size: 0.75em;
+            color: #558;
+
+            &:hover {
+                text-decoration: none;
+                color: #000;
+            }
+/*            text-align: center;
             min-width: 100px;
             font-weight: bold;
             height: 70px;
             padding: 0 10px;
             line-height: 70px;
             display: inline-block;
-            color: @topbar-button-color;
+            color: @topbar-button-color;*/
         }
     }
 }

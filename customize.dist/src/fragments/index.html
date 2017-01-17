@@ -1,14 +1,19 @@
 <div id="main">
+    <div id="overlay"></div>
     <div id="data">
       <p class="left" data-localization="main_p1"><!-- Zero Knowledge collaborative realtime editor. Protected from the NSA. --></p>
 
-        <h5 id="tryit" data-localization="tryIt"></h5>
+        <center>
+          <h5 id="tryit" data-localization="tryIt"></h5>
+        </center>
 
         <div id="buttons" class="buttons">
-          <a id="create-pad" class="button create" href="/pad/" data-localization="button_newpad"></a><br/>
-          <a id="create-code" class="button create" href="/code/" data-localization="button_newcode"></a><br/>
-          <a id="create-poll" class="button create" href="/poll/" data-localization="button_newpoll"></a><br/>
-          <a id="create-slide" class="button create" href="/slide/" data-localization="button_newslide"></a>
+            <a id="create-pad" href="/pad/"><button class="btn btn-secondary" data-localization="button_newpad"></button></a>
+            <a id="create-code" href="/code/"><button class="btn btn-secondary" data-localization="button_newcode"></button></a>
+            <a id="create-poll" href="/poll/"><button class="btn btn-secondary" data-localization="button_newpoll"></button></a>
+            <a id="create-slide" href="/slide/"><button class="btn btn-secondary" data-localization="button_newslide"></button></a>
+            <br>
+            <button class="btn btn-default nologin" data-localization="login_nologin"></button>
         </div>
 
     </div>
@@ -25,9 +30,7 @@
 
         <input type="checkbox" id="rememberme" checked="checked"><label for="rememberme" data-localization="login_remember"></label><br>
         <br>
-        <button class="create button login half first" data-localization="login_login"></button> <button class="create button register half" data-localization="login_register"></button><br>
-        <button class="create button nologin" data-localization="login_nologin"></button>
-
+        <button class="btn btn-secondary login half first" data-localization="login_login"></button> <button class="btn btn-primary register half" data-localization="login_register"></button><br>
     </div>
 </div>
 

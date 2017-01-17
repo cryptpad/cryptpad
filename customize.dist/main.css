@@ -344,7 +344,7 @@
   display: none;
   position: absolute;
   background-color: #f9f9f9;
-  min-width: 160px;
+  min-width: 200px;
   box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
   z-index: 1000;
 }
@@ -405,12 +405,12 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 80px;
+  height: 50px;
   color: #000;
   font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding: 5px;
   box-sizing: border-box;
-  font-size: 40px;
+  font-size: 30px;
 }
 #cryptpadTopBar > span {
   vertical-align: middle;
@@ -418,34 +418,45 @@
   height: 100%;
 }
 #cryptpadTopBar .cryptpad-logo {
-  height: 70px;
+  height: 40px;
   vertical-align: middle;
 }
 #cryptpadTopBar .slogan {
   font-size: 20px;
   color: #000;
-  line-height: 70px;
+  line-height: 40px;
 }
 #cryptpadTopBar .gotoMain {
   color: #000;
-  height: 70px;
-  line-height: 70px;
+  height: 40px;
+  line-height: 40px;
+}
+#cryptpadTopBar .gotoMain:hover {
+  text-decoration: none;
+  color: #558;
 }
 #cryptpadTopBar .right {
   float: right;
   font-size: 20px;
-  margin: 0px 5px;
-  background: #2E9AFE;
+  margin: 0px 10px;
+  line-height: 40px;
 }
 #cryptpadTopBar .right a {
-  text-align: center;
-  min-width: 100px;
-  font-weight: bold;
-  height: 70px;
-  padding: 0 10px;
-  line-height: 70px;
-  display: inline-block;
-  color: #fff;
+  font-weight: 500;
+  font-size: 0.75em;
+  color: #558;
+  /*            text-align: center;
+            min-width: 100px;
+            font-weight: bold;
+            height: 70px;
+            padding: 0 10px;
+            line-height: 70px;
+            display: inline-block;
+            color: @topbar-button-color;*/
+}
+#cryptpadTopBar .right a:hover {
+  text-decoration: none;
+  color: #000;
 }
 html.cp,
 .cp body {
@@ -455,12 +466,14 @@ html.cp,
   font-family: Georgia,Cambria,serif;
   height: 100%;
 }
-.cp:not(.poll) #language-selector {
-  position: absolute;
-  top: 80px;
-  right: 0px;
-  display: inline-block;
-  z-index: 2;
+.cp:not(.poll) {
+  /*#language-selector {
+        position: absolute;
+        top: @topbar-height;
+        right: 0px;
+        display: inline-block;
+        z-index: 2;
+    }*/
 }
 .cp {
   /* buttons */
@@ -575,9 +588,13 @@ html.cp,
   height: 100vh;
   background: red;
 }
+.cp .btn-default:hover {
+  background-color: #d8d8d8;
+}
 .cp #main {
-  background-image: url('/customize/bg.jpg');
+  background-image: url('/customize/bg2.jpg');
   background-size: cover;
+  background-position: center center;
 }
 .cp #main,
 .cp #main_other {
@@ -585,20 +602,29 @@ html.cp,
   left: 0;
   right: 0;
   padding: 0 15vw;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 50px);
   margin: auto;
   font-size: medium;
 }
+.cp #main #overlay,
+.cp #main_other #overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #000;
+  opacity: 0.2;
+}
 .cp #main #data,
 .cp #main_other #data {
-  color: #000;
+  color: #fff;
   padding: 15px;
   box-sizing: border-box;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   width: calc(100% - 450px - 30vw);
-  background-color: rgba(34, 177, 221, 0.8);
 }
 .cp #main #data p,
 .cp #main_other #data p {
@@ -607,7 +633,11 @@ html.cp,
 }
 .cp #main #data h5,
 .cp #main_other #data h5 {
-  color: #000;
+  color: #fff;
+}
+.cp #main #data #tryit,
+.cp #main_other #data #tryit {
+  margin-top: 20px;
 }
 .cp #main #userForm,
 .cp #main_other #userForm {
@@ -618,24 +648,21 @@ html.cp,
   margin-left: 50px;
   display: inline-block;
   width: 400px;
-  background-color: rgba(34, 177, 221, 0.8);
   padding: 10px;
   box-sizing: border-box;
   font-family: lato, Helvetica, sans-serif;
-  color: #000;
+  color: #fff;
 }
 .cp #main #userForm h1,
 .cp #main_other #userForm h1 {
-  color: black;
+  color: #fff;
   padding: 0;
 }
 .cp #main #userForm [type="text"],
 .cp #main_other #userForm [type="text"],
 .cp #main #userForm [type="password"],
 .cp #main_other #userForm [type="password"] {
-  width: calc(100% - 10px);
-  height: 1.5em;
-  border-radius: 0;
+  width: 100%;
 }
 .cp #main #userForm [type="checkbox"],
 .cp #main_other #userForm [type="checkbox"] {
@@ -643,6 +670,11 @@ html.cp,
   margin: 0;
   margin-top: 10px;
   margin-right: 5px;
+}
+.cp #main #userForm label,
+.cp #main_other #userForm label {
+  margin-bottom: 0;
+  margin-top: 0.5em;
 }
 .cp #main #userForm button,
 .cp #main_other #userForm button {
@@ -653,11 +685,21 @@ html.cp,
 }
 .cp #main #userForm button.half,
 .cp #main_other #userForm button.half {
-  width: calc(50% - 2px);
+  width: calc(50% - 4px);
+}
+.cp #main #userForm button.half:not(.first),
+.cp #main_other #userForm button.half:not(.first) {
+  float: right;
 }
 .cp #main .buttons,
 .cp #main_other .buttons {
-  margin-top: 20px;
+  text-align: center;
+}
+.cp #main .buttons button,
+.cp #main_other .buttons button {
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: 10px;
 }
 .cp #fileManagerIframe {
   width: 100%;
