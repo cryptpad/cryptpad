@@ -389,13 +389,18 @@ define([
                 options.push({
                     tag: 'a',
                     attributes: {'class': 'logout'},
-                    content: Messages.user_logout
+                    content: Messages.logoutButton
                 });
             } else {
                 options.push({
                     tag: 'a',
                     attributes: {'class': 'login'},
-                    content: Messages.user_login
+                    content: Messages.login_login
+                });
+                options.push({
+                    tag: 'a',
+                    attributes: {'class': 'register'},
+                    content: Messages.login_register
                 });
             }
             var $icon = $('<span>', {'class': 'fa fa-user'});
@@ -417,6 +422,9 @@ define([
             });
             $userAdmin.find('a.login').click(function (e) {
                 window.open('/user');
+            });
+            $userAdmin.find('a.register').click(function (e) {
+                window.open('/user#register');
             });
 
             if (config.userName && config.userName.setName && config.userName.lastName) {

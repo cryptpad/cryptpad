@@ -63,8 +63,6 @@ define(function () {
     out.userButton = 'USER';
     out.userButtonTitle = 'Change your username';
     out.changeNamePrompt = 'Change your name (leave empty to be anonymous): ';
-    out.user_login = "Log in";
-    out.user_logout = "Log out";
     out.user_rename = "Change display name";
     out.user_displayName = "Display name";
     out.user_accountName = "Account name";
@@ -121,7 +119,7 @@ define(function () {
 
     out.okButton = 'OK (enter)';
 
-    out.cancel = "cancel";
+    out.cancel = "Cancel";
     out.cancelButton = 'Cancel (esc)';
 
     out.forget = "Forget";
@@ -237,10 +235,10 @@ define(function () {
     out.fo_unavailableName = "A file or a folder with the same name already exist at the new location. Rename the element and try again.";
 
     // login
-    out.login_login = "log in";
-    out.login_nologin = "use cryptpad without account";
-    out.login_register = "register";
-    out.logoutButton = "log out";
+    out.login_login = "Log in";
+    out.login_nologin = "Use an anonymous session";
+    out.login_register = "Sign up";
+    out.logoutButton = "Log out";
 
     out.login_migrate = "Would you like to migrate existing data from your anonymous session?";
 
@@ -250,7 +248,7 @@ define(function () {
     out.login_username = "your username";
     out.login_password = "your password";
     out.login_confirm = "confirm your password";
-    out.login_remember = "remember me";
+    out.login_remember = "Remember me";
 
     out.login_cancel_prompt = "...or if you may have entered the wrong username or password, cancel to try again.";
 
@@ -263,11 +261,6 @@ define(function () {
         '<p>Your username and password are never sent to the server in an unencrypted form.</p>',
         '<p>As such, if you forget your username or password, there is absolutely nothing that we can do to recover your lost information.</p>',
         '<p><strong>Make sure you do not forget your username and password!</strong></p>',
-    ].join('\n');
-
-    out.login_logout = [
-        //'<p>It seems you are already logged in</p>',
-        //'<p>Would you like to log out and authenticate as another user?</p>',
     ].join('\n');
 
     out.login_hashing = "Hashing your password, this might take some time.";
@@ -299,6 +292,7 @@ define(function () {
     out.button_newpoll = 'NEW POLL';
     out.button_newslide = 'NEW PRESENTATION';
 
+    out.form_title = "All your pads, everywhere!";
     out.form_username = "Username";
     out.form_password = "Password";
 

@@ -618,7 +618,6 @@ html.cp,
   margin-left: 50px;
   display: inline-block;
   width: 400px;
-  height: 350px;
   background-color: rgba(34, 177, 221, 0.8);
   padding: 10px;
   box-sizing: border-box;
@@ -628,6 +627,7 @@ html.cp,
 .cp #main #userForm h1,
 .cp #main_other #userForm h1 {
   color: black;
+  padding: 0;
 }
 .cp #main #userForm [type="text"],
 .cp #main_other #userForm [type="text"],
