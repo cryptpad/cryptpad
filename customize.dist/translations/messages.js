@@ -238,6 +238,7 @@ define(function () {
 
     // login
     out.login_login = "log in";
+    out.login_nologin = "use cryptpad without account";
     out.login_register = "register";
     out.logoutButton = "log out";
 
@@ -300,6 +301,11 @@ define(function () {
 
     out.form_username = "Username";
     out.form_password = "Password";
+
+    out.about = "About";
+    out.privacy = "Privacy";
+    out.contact = "Contact";
+    out.terms = "ToS";
 
     // privacy.html
 

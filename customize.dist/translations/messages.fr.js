@@ -255,6 +255,14 @@ define(function () {
     out.button_newpoll = 'NOUVEAU SONDAGE';
     out.button_newslide = 'NOUVELLE PRÉSENTATION';
 
+    out.form_username = "Nom d'utilisateur";
+    out.form_password = "Mot de passe";
+
+    out.about = "À propos";
+    out.privacy = "Vie privée";
+    out.contact = "Contact";
+    out.terms = "Conditions";
+
     // privacy.html
 
     out.policy_title = 'Politique de confidentialité de Cryptpad';

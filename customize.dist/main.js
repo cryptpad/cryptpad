@@ -156,9 +156,41 @@ define([
         });
     };
 
+    var addButtonHandlers = function () {
+        $('button.login').click(function (e) {
+            var username = $('#name').val();
+            var passwd = $('#password').val();
+            var remember = $('#rememberme').is(':checked');
+            sessionStorage.login_user = username;
+            sessionStorage.login_pass = passwd;
+            sessionStorage.login_rmb = remember;
+            sessionStorage.login = 1;
+            document.location.href = '/user';
+        });
+        $('button.register').click(function (e) {
+            var username = $('#name').val();
+            var passwd = $('#password').val();
+            var remember = $('#rememberme').is(':checked');
+            sessionStorage.login_user = username;
+            sessionStorage.login_pass = passwd;
+            sessionStorage.login_rmb = remember;
+            sessionStorage.register = 1;
+            document.location.href = '/user';
+        });
+        $('button.nologin').click(function (e) {
+            document.location.href = '/drive';
+        });
+    };
+
     displayCreateButtons();
-    Cryptpad.ready(function () {
+    //Cryptpad.ready(function () {
         console.log("ready");
+
+        if (Cryptpad.isLoggedIn()) {
+            document.location.href = '/drive';
+        }
+
+        addButtonHandlers();
 
         $table = $('table.scroll');
         $tbody = $table.find('tbody');
@@ -167,6 +199,7 @@ define([
         Cryptpad.styleAlerts();
 
         //refreshTable();
+        /*
         if (Cryptpad.store && Cryptpad.store.change) {
             Cryptpad.store.change(function (data) {
                 if (data.key === 'CryptPad_RECENTPADS') {
@@ -174,6 +207,7 @@ define([
                 }
             });
         }
-    });
+        */
+    //});
 });
 

@@ -287,7 +287,6 @@ define([
         };
 
         var rt = APP.rt = Listmap.create(config);
-
         rt.proxy.on('create', function (info) {
             APP.realtime = info.realtime;
         })
@@ -350,5 +349,21 @@ define([
             }, 75);
             });
         });
+
+        if (sessionStorage.login) {
+            $username.val(sessionStorage.login_user);
+            $password.val(sessionStorage.login_pass);
+            $remember.attr('checked', sessionStorage.login_rmb === "true");
+            $login.click();
+        }
+        if (sessionStorage.register) {
+            $username.val(sessionStorage.login_user);
+            $password.val(sessionStorage.login_pass);
+            $remember.attr('checked', sessionStorage.login_rmb === "true");
+        }
+        ['login', 'register', 'login_user', 'login_pass', 'login_rmb'].forEach(function (k) {
+            delete sessionStorage[k];
+        });
+
     });
 });

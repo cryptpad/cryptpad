@@ -18,15 +18,15 @@
             <h1>Join Us!</h1>
         </center>
         <label for="name" data-localization="form_username"></label><br>
-        <input type="text" id="name" data-localization-placeholder="login_username" autofocus><br>
+        <input type="text" id="name" name="name" data-localization-placeholder="login_username" autofocus><br>
 
         <label for="password" data-localization="form_password"></label><br>
-        <input type="password" id="password" data-localization-placeholder="login_password"><br>
+        <input type="password" id="password" name="password" data-localization-placeholder="login_password"><br>
 
-        <input type="checkbox" checked="checked"><label for="rememberme" data-localization="login_remember"></label><br>
+        <input type="checkbox" id="rememberme" checked="checked"><label for="rememberme" data-localization="login_remember"></label><br>
         <br>
-        <button class="create button half first">Log in</button> <button class="create button half">Register</button><br>
-        <button class="create button">Continue without logging in</button>
+        <button class="create button login half first" data-localization="login_login"></button> <button class="create button register half" data-localization="login_register"></button><br>
+        <button class="create button nologin" data-localization="login_nologin"></button>
 
     </div>
 </div>

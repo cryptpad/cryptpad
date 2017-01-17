@@ -3,7 +3,7 @@
 */
 .alertify-logs > * {
   padding: 12px 48px;
-  color: #111;
+  color: #fafafa;
   font-weight: bold;
   font-size: large;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
@@ -18,7 +18,7 @@
 }
 .alertify-logs > *.success {
   background: #46E981;
-  color: #ddd;
+  color: #302B28;
 }
 .alertify {
   position: fixed;
@@ -79,8 +79,8 @@
 }
 .alertify .dialog input:not(.form-control),
 .alertify .alert input:not(.form-control) {
-  background-color: #ddd;
-  color: #111;
+  background-color: #302B28;
+  color: #fafafa;
   border: 0px;
   border-radius: 5px;
   margin-bottom: 15px;
@@ -112,8 +112,8 @@
   font-size: 14px;
   text-decoration: none;
   cursor: pointer;
-  color: #111;
-  border: 1px solid #ddd;
+  color: #fafafa;
+  border: 1px solid #302B28;
   border-radius: 5px;
 }
 .alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):hover,
@@ -124,7 +124,7 @@
 }
 .alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):focus,
 .alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):focus {
-  border: 1px dotted #ddd;
+  border: 1px dotted #302B28;
 }
 .alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button)::-moz-focus-inner,
 .alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button)::-moz-focus-inner {
@@ -210,7 +210,7 @@
   height: 2.5em;
   display: inline-block;
   width: 100%;
-  background: #ddd;
+  background: #302B28;
   border-top: 1px solid #444;
 }
 .top-bar a,
@@ -226,7 +226,7 @@
   display: block;
   margin-left: 10px;
   padding-top: 3px;
-  color: #111;
+  color: #fafafa;
 }
 .top-bar img,
 .bottom-bar img {
@@ -305,7 +305,7 @@
   bottom: 0px;
   left: 0px;
   right: 0px;
-  background: #ddd;
+  background: #302B28;
   text-align: center;
   font-size: 1.5em;
 }
@@ -450,8 +450,8 @@
 html.cp,
 .cp body {
   font-size: .875em;
-  background-color: #ddd;
-  color: #111;
+  background-color: #302B28;
+  color: #fafafa;
   font-family: Georgia,Cambria,serif;
   height: 100%;
 }
@@ -460,6 +460,7 @@ html.cp,
   top: 80px;
   right: 0px;
   display: inline-block;
+  z-index: 2;
 }
 .cp {
   /* buttons */
@@ -475,7 +476,7 @@ html.cp,
 }
 .cp a.github-corner > svg {
   fill: #00ADEE;
-  color: #ddd;
+  color: #302B28;
 }
 .cp .lato {
   font-family: lato, Helvetica, sans-serif;
@@ -487,7 +488,7 @@ html.cp,
 .cp h4,
 .cp h5,
 .cp h6 {
-  color: #111;
+  color: #fafafa;
   font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   -webkit-font-feature-settings: 'dlig' 1, 'liga' 1, 'lnum' 1, 'kern' 1;
   -moz-font-feature-settings: 'dlig' 1, 'liga' 1, 'lnum' 1, 'kern' 1;
@@ -711,7 +712,7 @@ html.cp,
   cursor: pointer;
 }
 .cp tbody tr:nth-child(odd) {
-  background-color: #ffffff;
+  background-color: #685d56;
 }
 .cp tbody tr th:first-of-type {
   border-left: 0px;
@@ -722,7 +723,7 @@ html.cp,
 }
 .cp tbody tr th,
 .cp tbody tr td {
-  color: #111;
+  color: #fafafa;
 }
 .cp tbody tr th.remove,
 .cp tbody tr td.remove {
@@ -793,7 +794,7 @@ html.cp,
 .cp form.realtime table tr td div.text-cell input[disabled],
 .cp div.realtime table tr td div.text-cell input[disabled] {
   background-color: transparent;
-  color: #111;
+  color: #fafafa;
   font-weight: bold;
 }
 .cp form.realtime table tr td.checkbox-cell,
@@ -828,7 +829,7 @@ html.cp,
 .cp div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover {
   font-weight: bold;
   background-color: #FF0073;
-  color: #ddd;
+  color: #302B28;
   display: block;
 }
 .cp form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover:after,
@@ -858,13 +859,13 @@ html.cp,
 .cp form.realtime table input[type="text"],
 .cp div.realtime table input[type="text"] {
   height: auto;
-  border: 1px solid #ddd;
+  border: 1px solid #302B28;
   width: 80%;
 }
 .cp form.realtime table thead td,
 .cp div.realtime table thead td {
   padding: 0px 5px;
-  background: #f7f7f7;
+  background: #4c443f;
   border-radius: 20px 20px 0 0;
   text-align: center;
 }
@@ -881,7 +882,7 @@ html.cp,
 }
 .cp form.realtime table tbody .text-cell,
 .cp div.realtime table tbody .text-cell {
-  background: #f7f7f7;
+  background: #4c443f;
 }
 .cp form.realtime table tbody .text-cell input[type="text"],
 .cp div.realtime table tbody .text-cell input[type="text"] {
@@ -914,7 +915,7 @@ html.cp,
 .cp form.realtime table thead tr th input[type="text"][disabled],
 .cp div.realtime table thead tr th input[type="text"][disabled] {
   background-color: transparent;
-  color: #111;
+  color: #fafafa;
   font-weight: bold;
 }
 .cp form.realtime table thead tr th .remove,
@@ -977,7 +978,7 @@ html.cp,
   width: 100%;
   height: 100vh;
   display: none;
-  background-color: #ddd;
+  background-color: #302B28;
 }
 .cp div.modal #content,
 .cp div#modal #content {
@@ -1068,7 +1069,7 @@ html.cp,
   width: 80%;
   height: 80%;
   margin: auto;
-  border: 1px solid #ffffff;
+  border: 1px solid #685d56;
   text-align: center;
 }
 .cp div.modal.shown,
@@ -1084,7 +1085,7 @@ html.cp,
 .cp div#modal table input {
   height: 100%;
   width: 90%;
-  border: 3px solid #ddd;
+  border: 3px solid #302B28;
 }
 .cp div.modal table tfoot tr td,
 .cp div#modal table tfoot tr td {

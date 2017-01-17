@@ -101,6 +101,11 @@ define([
         return hash;
     };
 
+    var isLoggedIn = common.isLoggedIn = function () {
+        //return typeof getStore().getLoginName() === "string";
+        return typeof getUserHash() === "string";
+    };
+
     // var isArray = function (o) { return Object.prototype.toString.call(o) === '[object Array]'; };
     var isArray = common.isArray = $.isArray;
 
