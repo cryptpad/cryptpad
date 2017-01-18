@@ -3,7 +3,7 @@
 */
 .alertify-logs > * {
   padding: 12px 48px;
-  color: #111;
+  color: #fafafa;
   font-weight: bold;
   font-size: large;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
@@ -14,7 +14,7 @@
   background: rgba(0, 0, 0, 0.8);
 }
 .alertify-logs > *.error {
-  background: #FF0073;
+  background: #FA5858;
 }
 .alertify-logs > *.success {
   background: #46E981;
@@ -23,6 +23,7 @@
 .alertify {
   position: fixed;
   background-color: rgba(0, 0, 0, 0.3);
+  color: #fafafa;
   left: 0;
   right: 0;
   top: 0;
@@ -112,8 +113,8 @@
   font-size: 14px;
   text-decoration: none;
   cursor: pointer;
-  color: #111;
-  border: 1px solid #f5f5f5;
+  color: #fafafa;
+  border: 1px solid #302B28;
   border-radius: 5px;
 }
 .alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):hover,
@@ -124,7 +125,7 @@
 }
 .alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):focus,
 .alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):focus {
-  border: 1px dotted #f5f5f5;
+  border: 1px dotted #302B28;
 }
 .alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button)::-moz-focus-inner,
 .alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button)::-moz-focus-inner {
@@ -305,7 +306,8 @@
   bottom: 0px;
   left: 0px;
   right: 0px;
-  background: #f5f5f5;
+  background: #302B28;
+  color: #fafafa;
   text-align: center;
   font-size: 1.5em;
 }
@@ -575,18 +577,43 @@ html.cp,
   font-size: 1.02em;
 }
 .cp .page {
-  width: 70vw;
-  height: 90vh;
-  margin-left: 15vw;
-  background: blue;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  background: #f5f5f5;
+  padding: 10px 15vw;
+  position: relative;
 }
 .cp .page.first {
-  margin-top: calc(100vh - 80px);
+  margin-top: calc(100vh - 50px);
 }
-.cp .page2 {
-  width: 70vw;
-  height: 100vh;
-  background: red;
+.cp .page.even {
+  background: #dcdcdc;
+}
+.cp .page.category {
+  background: #c2c2c2;
+}
+.cp .page .left {
+  padding: 10px;
+  width: 45%;
+  position: relative;
+  left: 0;
+  display: inline-block;
+  vertical-align: middle;
+}
+.cp .page .right {
+  padding: 10px;
+  width: 45%;
+  position: relative;
+  left: 10%;
+  display: inline-block;
+  vertical-align: middle;
+}
+.cp .page .image {
+  text-align: center;
+}
+.cp .page p {
+  text-align: justify;
 }
 .cp .btn-default:hover {
   background-color: #d8d8d8;
@@ -728,10 +755,14 @@ html.cp,
 }
 .cp #main .buttons,
 .cp #main_other .buttons {
+  margin-top: 15px;
+}
+.cp p.buttons,
+.cp div.buttons {
   text-align: center;
 }
-.cp #main .buttons button,
-.cp #main_other .buttons button {
+.cp p.buttons button,
+.cp div.buttons button {
   font-weight: bold;
   cursor: pointer;
   margin-top: 10px;
@@ -763,7 +794,7 @@ html.cp,
   line-height: 1.5em;
 }
 .cp .panel {
-  background-color: #333;
+  background-color: #c2c2c2;
 }
 .cp table {
   border-collapse: collapse;
@@ -771,7 +802,7 @@ html.cp,
   margin: 20px;
 }
 .cp tbody {
-  border: 2px solid black;
+  border: 1px solid #555;
 }
 .cp tbody tr {
   text-align: center;
@@ -796,7 +827,7 @@ html.cp,
 }
 .cp tbody tr th {
   box-sizing: border-box;
-  border: 1px solid black;
+  border: 1px solid #555;
 }
 .cp tbody tr th,
 .cp tbody tr td {
@@ -810,7 +841,7 @@ html.cp,
   border-right: 0px;
 }
 .cp tbody td {
-  border-right: 1px solid black;
+  border-right: 1px solid #555;
   padding: 12px;
   padding-top: 0px;
   padding-bottom: 0px;
@@ -825,7 +856,7 @@ html.cp,
   border-top-left-radius: 5px;
 }
 .cp .remove {
-  color: #FF0073;
+  color: #FA5858;
   cursor: pointer !important;
 }
 .cp form.realtime,
@@ -871,7 +902,7 @@ html.cp,
 .cp form.realtime table tr td div.text-cell input[disabled],
 .cp div.realtime table tr td div.text-cell input[disabled] {
   background-color: transparent;
-  color: #111;
+  color: #000;
   font-weight: bold;
 }
 .cp form.realtime table tr td.checkbox-cell,
@@ -905,8 +936,8 @@ html.cp,
 .cp form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover,
 .cp div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover {
   font-weight: bold;
-  background-color: #FF0073;
-  color: #f5f5f5;
+  background-color: #FA5858;
+  color: #000;
   display: block;
 }
 .cp form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover:after,
@@ -942,7 +973,7 @@ html.cp,
 .cp form.realtime table thead td,
 .cp div.realtime table thead td {
   padding: 0px 5px;
-  background: #ffffff;
+  background: #aaa;
   border-radius: 20px 20px 0 0;
   text-align: center;
 }
@@ -953,13 +984,13 @@ html.cp,
 }
 .cp form.realtime table thead td input[type="text"][disabled],
 .cp div.realtime table thead td input[type="text"][disabled] {
-  color: white;
+  color: #000;
   padding: 1px 5px;
   border: none;
 }
 .cp form.realtime table tbody .text-cell,
 .cp div.realtime table tbody .text-cell {
-  background: #ffffff;
+  background: #aaa;
 }
 .cp form.realtime table tbody .text-cell input[type="text"],
 .cp div.realtime table tbody .text-cell input[type="text"] {
@@ -974,6 +1005,10 @@ html.cp,
 .cp div.realtime table tbody .text-cell .remove {
   float: left;
   margin: 0 0 0 10px;
+}
+.cp form.realtime table tbody td label,
+.cp div.realtime table tbody td label {
+  border: 0.5px solid #555;
 }
 .cp form.realtime table .edit,
 .cp div.realtime table .edit {
@@ -1055,7 +1090,7 @@ html.cp,
   width: 100%;
   height: 100vh;
   display: none;
-  background-color: #f5f5f5;
+  background-color: #000;
 }
 .cp div.modal #content,
 .cp div#modal #content {
@@ -1121,6 +1156,20 @@ html.cp,
 .cp div#modal #content h6 {
   font-size: 1.6vw;
   line-height: 1.76vw;
+}
+.cp div.modal #content h1,
+.cp div#modal #content h1,
+.cp div.modal #content h2,
+.cp div#modal #content h2,
+.cp div.modal #content h3,
+.cp div#modal #content h3,
+.cp div.modal #content h4,
+.cp div#modal #content h4,
+.cp div.modal #content h5,
+.cp div#modal #content h5,
+.cp div.modal #content h6,
+.cp div#modal #content h6 {
+  color: inherit;
 }
 .cp div.modal #content pre > code,
 .cp div#modal #content pre > code {

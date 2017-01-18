@@ -751,8 +751,9 @@ define([
         .on('disconnect', disconnect);
 
         Cryptpad.getAttribute(HIDE_INTRODUCTION_TEXT, function (e, value) {
+            console.log(value);
             if (e) { console.error(e); }
-            if (value === null) {
+            if (!value) {
                 Cryptpad.setAttribute(HIDE_INTRODUCTION_TEXT, "1", function (e) {
                     if (e) { console.error(e); }
                 });
