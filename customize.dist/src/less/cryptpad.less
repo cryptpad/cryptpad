@@ -37,7 +37,7 @@ body {
 
 a.github-corner > svg {
     fill: @cp-blue;
-    color: @base;
+    color: @old-base;
 }
 
 .lato {
@@ -150,9 +150,12 @@ body.html {
     }
 }
 #main {
-    background-image: url('/customize/bg2.jpg');
+    background-image: url('/customize/bg3.jpg');
     background-size: cover;
     background-position: center center;
+}
+#main_other {
+    padding: 0 @main-border-width;
 }
 #main, #main_other {
     #overlay {
@@ -162,48 +165,75 @@ body.html {
         right: 0;
         bottom: 0;
         background-color: #000;
-        opacity: 0.2;
+        opacity: 0.3;
     }
     position: absolute;
     left: 0;
     right: 0;
-    padding: 0 @main-border-width;
+    //padding: 0;
     height: ~"calc(100vh - 50px)";
     margin: auto;
     //margin-top: 100px;
 
     font-size: medium;
 
+    #main-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%);
+        margin-left: auto;
+        margin-right: auto;
+        display: inline-block;
+        width: 1000px;
+        max-width: 90%;
+    }
+
     #data {
         p {
             margin: 0;
             padding: 0;
+            font-size: 20px;
+            line-height: 1.5em;
         }
-        h5 {
+        h2 {
+            font-weight: normal;
+            font-size: 48px;
+            line-height: 1.2em;
             color: @main-color;
         }
+        h5 {
+            font-size: 1em;
+            color: @main-color;
+        }
+        width: 600px;
+        max-width: 60%;
         color: @main-color;
         padding: 15px;
         box-sizing: border-box;
         position: absolute;
+        display: inline-block;
         top: 50%;
+        left: 0;
         transform: translateY(-50%);
-        width: ~"calc(100% - 450px - 30vw)";
+       // width: ~"calc(100% - 450px - 30vw)";
 //        background-color: @main-block-bg;
 
         #tryit {
             margin-top: 20px;
+            margin-bottom: 5px;
         }
     }
 
     #userForm {
         position: absolute;
+        right: 0;
         top: 50%;
         transform: translateY(-50%);
-        right: @main-border-width;
         margin-left: 50px;
         display: inline-block;
-        width: 400px;
+        width: 350px;
+        max-width: 35%;
 //        background-color: @main-block-bg;
         padding: 10px;
         box-sizing: border-box;
@@ -219,22 +249,31 @@ body.html {
             width: 100%;
         }
 
+        .remember {
+            vertical-align: middle;
+            line-height: 28px;
+            height: 28px;
+            display: inline-block;
+            margin: 10px 0 20px 0;
+        }
+
+
         [type="checkbox"] {
-            vertical-align: sub;
+            vertical-align: text-top;
             margin: 0;
-            margin-top: 10px;
+            //margin-top: 10px;
             margin-right: 5px;
         }
 
         label {
             margin-bottom: 0;
-            margin-top: 0.5em;
+            //margin-top: 0.5em;
         }
 
         button {
+            font-weight: bold;
             width: 100%;
             margin: 2px 0px;
-            text-transform: uppercase;
             cursor: pointer;
             &.half {
                 width: ~"calc(50% - 4px)";
@@ -248,7 +287,7 @@ body.html {
     .buttons {
         text-align: center;
         button {
-            text-transform: uppercase;
+            font-weight: bold;
             cursor: pointer;
             margin-top: 10px;
         }

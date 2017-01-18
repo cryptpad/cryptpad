@@ -40,7 +40,12 @@ var fragments = {};
     var source = swap(template, {
        topbar: fragments.topbar,
        fork: fragments.fork,
-       main: fragments[page],
+       main: swap(fragments[page], {
+           topbar: fragments.topbar,
+           fork: fragments.fork,
+           logo: fragments.logo,
+           noscript: fragments.noscript,
+       }),
        logo: fragments.logo,
        noscript: fragments.noscript,
     });

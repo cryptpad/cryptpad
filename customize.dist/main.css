@@ -3,7 +3,7 @@
 */
 .alertify-logs > * {
   padding: 12px 48px;
-  color: #fafafa;
+  color: #111;
   font-weight: bold;
   font-size: large;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
@@ -18,7 +18,7 @@
 }
 .alertify-logs > *.success {
   background: #46E981;
-  color: #302B28;
+  color: #f5f5f5;
 }
 .alertify {
   position: fixed;
@@ -79,8 +79,8 @@
 }
 .alertify .dialog input:not(.form-control),
 .alertify .alert input:not(.form-control) {
-  background-color: #302B28;
-  color: #fafafa;
+  background-color: #f5f5f5;
+  color: #111;
   border: 0px;
   border-radius: 5px;
   margin-bottom: 15px;
@@ -112,8 +112,8 @@
   font-size: 14px;
   text-decoration: none;
   cursor: pointer;
-  color: #fafafa;
-  border: 1px solid #302B28;
+  color: #111;
+  border: 1px solid #f5f5f5;
   border-radius: 5px;
 }
 .alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):hover,
@@ -124,7 +124,7 @@
 }
 .alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):focus,
 .alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):focus {
-  border: 1px dotted #302B28;
+  border: 1px dotted #f5f5f5;
 }
 .alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button)::-moz-focus-inner,
 .alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button)::-moz-focus-inner {
@@ -210,7 +210,7 @@
   height: 2.5em;
   display: inline-block;
   width: 100%;
-  background: #302B28;
+  background: #f5f5f5;
   border-top: 1px solid #444;
 }
 .top-bar a,
@@ -226,7 +226,7 @@
   display: block;
   margin-left: 10px;
   padding-top: 3px;
-  color: #fafafa;
+  color: #111;
 }
 .top-bar img,
 .bottom-bar img {
@@ -305,7 +305,7 @@
   bottom: 0px;
   left: 0px;
   right: 0px;
-  background: #302B28;
+  background: #f5f5f5;
   text-align: center;
   font-size: 1.5em;
 }
@@ -461,8 +461,8 @@
 html.cp,
 .cp body {
   font-size: .875em;
-  background-color: #302B28;
-  color: #fafafa;
+  background-color: #f5f5f5;
+  color: #111;
   font-family: Georgia,Cambria,serif;
   height: 100%;
 }
@@ -501,7 +501,7 @@ html.cp,
 .cp h4,
 .cp h5,
 .cp h6 {
-  color: #fafafa;
+  color: #111;
   font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   -webkit-font-feature-settings: 'dlig' 1, 'liga' 1, 'lnum' 1, 'kern' 1;
   -moz-font-feature-settings: 'dlig' 1, 'liga' 1, 'lnum' 1, 'kern' 1;
@@ -592,16 +592,18 @@ html.cp,
   background-color: #d8d8d8;
 }
 .cp #main {
-  background-image: url('/customize/bg2.jpg');
+  background-image: url('/customize/bg3.jpg');
   background-size: cover;
   background-position: center center;
+}
+.cp #main_other {
+  padding: 0 15vw;
 }
 .cp #main,
 .cp #main_other {
   position: absolute;
   left: 0;
   right: 0;
-  padding: 0 15vw;
   height: calc(100vh - 50px);
   margin: auto;
   font-size: medium;
@@ -614,40 +616,67 @@ html.cp,
   right: 0;
   bottom: 0;
   background-color: #000;
-  opacity: 0.2;
+  opacity: 0.3;
+}
+.cp #main #main-container,
+.cp #main_other #main-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%);
+  margin-left: auto;
+  margin-right: auto;
+  display: inline-block;
+  width: 1000px;
+  max-width: 90%;
 }
 .cp #main #data,
 .cp #main_other #data {
+  width: 600px;
+  max-width: 60%;
   color: #fff;
   padding: 15px;
   box-sizing: border-box;
   position: absolute;
+  display: inline-block;
   top: 50%;
+  left: 0;
   transform: translateY(-50%);
-  width: calc(100% - 450px - 30vw);
 }
 .cp #main #data p,
 .cp #main_other #data p {
   margin: 0;
   padding: 0;
+  font-size: 20px;
+  line-height: 1.5em;
+}
+.cp #main #data h2,
+.cp #main_other #data h2 {
+  font-weight: normal;
+  font-size: 48px;
+  line-height: 1.2em;
+  color: #fff;
 }
 .cp #main #data h5,
 .cp #main_other #data h5 {
+  font-size: 1em;
   color: #fff;
 }
 .cp #main #data #tryit,
 .cp #main_other #data #tryit {
   margin-top: 20px;
+  margin-bottom: 5px;
 }
 .cp #main #userForm,
 .cp #main_other #userForm {
   position: absolute;
+  right: 0;
   top: 50%;
   transform: translateY(-50%);
-  right: 15vw;
   margin-left: 50px;
   display: inline-block;
-  width: 400px;
+  width: 350px;
+  max-width: 35%;
   padding: 10px;
   box-sizing: border-box;
   font-family: lato, Helvetica, sans-serif;
@@ -664,23 +693,29 @@ html.cp,
 .cp #main_other #userForm [type="password"] {
   width: 100%;
 }
+.cp #main #userForm .remember,
+.cp #main_other #userForm .remember {
+  vertical-align: middle;
+  line-height: 28px;
+  height: 28px;
+  display: inline-block;
+  margin: 10px 0 20px 0;
+}
 .cp #main #userForm [type="checkbox"],
 .cp #main_other #userForm [type="checkbox"] {
-  vertical-align: sub;
+  vertical-align: text-top;
   margin: 0;
-  margin-top: 10px;
   margin-right: 5px;
 }
 .cp #main #userForm label,
 .cp #main_other #userForm label {
   margin-bottom: 0;
-  margin-top: 0.5em;
 }
 .cp #main #userForm button,
 .cp #main_other #userForm button {
+  font-weight: bold;
   width: 100%;
   margin: 2px 0px;
-  text-transform: uppercase;
   cursor: pointer;
 }
 .cp #main #userForm button.half,
@@ -697,7 +732,7 @@ html.cp,
 }
 .cp #main .buttons button,
 .cp #main_other .buttons button {
-  text-transform: uppercase;
+  font-weight: bold;
   cursor: pointer;
   margin-top: 10px;
 }
@@ -754,7 +789,7 @@ html.cp,
   cursor: pointer;
 }
 .cp tbody tr:nth-child(odd) {
-  background-color: #685d56;
+  background-color: #ffffff;
 }
 .cp tbody tr th:first-of-type {
   border-left: 0px;
@@ -765,7 +800,7 @@ html.cp,
 }
 .cp tbody tr th,
 .cp tbody tr td {
-  color: #fafafa;
+  color: #111;
 }
 .cp tbody tr th.remove,
 .cp tbody tr td.remove {
@@ -836,7 +871,7 @@ html.cp,
 .cp form.realtime table tr td div.text-cell input[disabled],
 .cp div.realtime table tr td div.text-cell input[disabled] {
   background-color: transparent;
-  color: #fafafa;
+  color: #111;
   font-weight: bold;
 }
 .cp form.realtime table tr td.checkbox-cell,
@@ -871,7 +906,7 @@ html.cp,
 .cp div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover {
   font-weight: bold;
   background-color: #FF0073;
-  color: #302B28;
+  color: #f5f5f5;
   display: block;
 }
 .cp form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover:after,
@@ -901,13 +936,13 @@ html.cp,
 .cp form.realtime table input[type="text"],
 .cp div.realtime table input[type="text"] {
   height: auto;
-  border: 1px solid #302B28;
+  border: 1px solid #f5f5f5;
   width: 80%;
 }
 .cp form.realtime table thead td,
 .cp div.realtime table thead td {
   padding: 0px 5px;
-  background: #4c443f;
+  background: #ffffff;
   border-radius: 20px 20px 0 0;
   text-align: center;
 }
@@ -924,7 +959,7 @@ html.cp,
 }
 .cp form.realtime table tbody .text-cell,
 .cp div.realtime table tbody .text-cell {
-  background: #4c443f;
+  background: #ffffff;
 }
 .cp form.realtime table tbody .text-cell input[type="text"],
 .cp div.realtime table tbody .text-cell input[type="text"] {
@@ -957,7 +992,7 @@ html.cp,
 .cp form.realtime table thead tr th input[type="text"][disabled],
 .cp div.realtime table thead tr th input[type="text"][disabled] {
   background-color: transparent;
-  color: #fafafa;
+  color: #111;
   font-weight: bold;
 }
 .cp form.realtime table thead tr th .remove,
@@ -1020,7 +1055,7 @@ html.cp,
   width: 100%;
   height: 100vh;
   display: none;
-  background-color: #302B28;
+  background-color: #f5f5f5;
 }
 .cp div.modal #content,
 .cp div#modal #content {
@@ -1111,7 +1146,7 @@ html.cp,
   width: 80%;
   height: 80%;
   margin: auto;
-  border: 1px solid #685d56;
+  border: 1px solid #ffffff;
   text-align: center;
 }
 .cp div.modal.shown,
@@ -1127,7 +1162,7 @@ html.cp,
 .cp div#modal table input {
   height: 100%;
   width: 90%;
-  border: 3px solid #302B28;
+  border: 3px solid #f5f5f5;
 }
 .cp div.modal table tfoot tr td,
 .cp div#modal table tfoot tr td {
