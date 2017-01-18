@@ -326,9 +326,7 @@ define([
     };
 
     var createUserAdmin = function ($topContainer, config, readOnly, lagElement, Cryptpad) {
-        if (config.displayed.indexOf('useradmin') === -1 && config.displayed.indexOf('share') === -1) { return; }
         var $lag = $(lagElement);
-        //TODO check if we should displayed that button and if we can (userName.setName, userName.lastName and userdata required)
 
         var $userContainer = $('<span>', {
             'class': USER_CLS
@@ -347,6 +345,29 @@ define([
         if (config.displayed.indexOf('language') !== -1) {
             // Dropdown language selector
             Cryptpad.createLanguageSelector($userContainer);
+        }
+
+        if (config.displayed.indexOf('newpad') !== -1) {
+            var pads_options = [];
+            ['pad', 'code', 'slide', 'poll'].forEach(function (p) {
+                pads_options.push({
+                    tag: 'a',
+                    attributes: {
+                        'target': '_blank', // TODO: open in the same window?
+                        'href': '/' + p,
+                    },
+                    content: Messages.type[p] // Pretty name of the language value
+                });
+            });
+            var $newButton = $('<div>').append($('<span>', {'class': 'fa fa-plus'})).append(Messages.newPadButton);
+            var dropdownConfig = {
+                text: $newButton.html(), // Button initial text
+                options: pads_options, // Entries displayed in the menu
+                left: true, // Open to the left of the button
+            };
+            var $newPadBlock = Cryptpad.createDropdown(dropdownConfig);
+            $newPadBlock.find('button').attr('title', Messages.newPadButtonTitle);
+            $newPadBlock.appendTo($userContainer);
         }
 
         // User dropdown

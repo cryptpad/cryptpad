@@ -84,6 +84,9 @@ define(function () {
     out.shareSuccess = 'Copied URL to clipboard';
     out.shareFailed = "Failed to copy URL to clipboard";
 
+    out.newPadButton = 'New';
+    out.newPadButtonTitle = 'Create a new document';
+
     out.presentButton = 'PRESENT';
     out.presentButtonTitle = "Enter presentation mode";
     out.presentSuccess = 'Hit ESC to exit presentation mode';
