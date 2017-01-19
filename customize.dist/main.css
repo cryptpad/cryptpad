@@ -347,6 +347,8 @@
   min-width: 160px;
   box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
   z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
 }
 .dropdown-bar .dropdown-bar-content.left {
   right: 0;
