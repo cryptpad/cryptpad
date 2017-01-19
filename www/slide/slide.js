@@ -202,6 +202,31 @@ define([
     };
 
     var addEvent = function () {
+        var icon_to;
+        $modal.mousemove(function (e) {
+            var $buttons = $modal.find('.button');
+            $buttons.show();
+            if (icon_to) { window.clearTimeout(icon_to); }
+            icon_to = window.setTimeout(function() {
+                $buttons.fadeOut();
+            }, 1000);
+        });
+        $modal.find('#button_exit').click(function (e) {
+            var e = jQuery.Event("keyup");
+            e.which = 27;
+            $modal.trigger(e);
+        });
+        $modal.find('#button_left').click(function (e) {
+            var e = jQuery.Event("keyup");
+            e.which = 37;
+            $modal.trigger(e);
+        });
+        $modal.find('#button_right').click(function (e) {
+            var e = jQuery.Event("keyup");
+            e.which = 39;
+            $modal.trigger(e);
+        });
+
         $(ifrw).on('keyup', function (e) {
             if (!Slide.shown) { return; }
             switch(e.which) {
