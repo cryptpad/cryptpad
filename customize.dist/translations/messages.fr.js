@@ -82,6 +82,9 @@ define(function () {
     out.shareSuccess = 'URL copiée dans le presse-papiers';
     out.shareFailed = "Échec de la copie de l'URL dans le presse-papiers";
 
+    out.newPadButton = 'Nouveau';
+    out.newPadButtonTitle = 'Créer un nouveau document';
+
     out.presentButton = 'PRÉSENTER';
     out.presentButtonTitle = "Entrer en mode présentation";
     out.presentSuccess = 'Appuyer sur Échap pour quitter le mode présentation';

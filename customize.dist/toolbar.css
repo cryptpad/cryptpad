@@ -370,7 +370,7 @@
 .cryptpad-user p.accountData > span span {
   font-weight: normal;
 }
-.cryptpad-user .buttonTitle .fa-user {
+.cryptpad-user .buttonTitle .fa:not(.fa-caret-down) {
   margin-right: 5px;
 }
 .cryptpad-user .buttonTitle .account-name {

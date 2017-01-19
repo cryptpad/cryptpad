@@ -568,7 +568,7 @@ define([
                 });
 
                 var config = {
-                    displayed: ['useradmin', 'language', 'spinner', 'lag', 'state', 'share', 'userlist'],
+                    displayed: ['useradmin', 'language', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad'],
                     userData: userData,
                     readOnly: readOnly,
                     ifrw: ifrw,
