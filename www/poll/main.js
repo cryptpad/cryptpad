@@ -488,7 +488,7 @@ define([
     };
 
     var suggestName = function (fallback) {
-        return document.title || defaultName || "";
+        return (document.title === defaultName) ? "" : document.title;
     };
 
 
