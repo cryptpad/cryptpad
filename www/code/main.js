@@ -684,8 +684,9 @@ define([
                         module.patchText(shjson2);
                     }
                 }
-
-                notify();
+                if (oldDoc !== remoteDoc) {
+                    notify();
+                }
             };
 
             var onAbort = config.onAbort = function (info) {

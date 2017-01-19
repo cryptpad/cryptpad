@@ -477,6 +477,8 @@ define([
             var onRemote = realtimeOptions.onRemote = function (info) {
                 if (initializing) { return; }
 
+                var oldShjson = stringifyDOM(inner);
+
                 var shjson = info.realtime.getUserDoc();
 
                 // remember where the cursor is
@@ -484,6 +486,11 @@ define([
 
                 // Update the user list (metadata) from the hyperjson
                 updateMetadata(shjson);
+
+                var newInner = JSON.parse(shjson);
+                if (newInner.length > 2) {
+                    var newSInner = stringify(newInner[2]);
+                }
 
                 // build a dom from HJSON, diff, and patch the editor
                 applyHjson(shjson);
@@ -518,7 +525,12 @@ define([
                         }
                     }
                 }
-                notify();
+
+                // Notify only when the content has changed, not when someone has joined/left
+                var oldSInner = stringify(JSON.parse(oldShjson)[2]);
+                if (newSInner !== oldSInner) {
+                    notify();
+                }
             };
 
             var getHTML = function (Dom) {

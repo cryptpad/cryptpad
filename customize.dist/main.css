@@ -1127,6 +1127,29 @@ html.cp,
 .cp div.realtime #addoption {
   border-bottom-left-radius: 5px;
 }
+.cp.slide #modal .button {
+  position: absolute;
+  cursor: pointer;
+  font-size: 30px;
+  opacity: 0.6;
+  display: none;
+}
+.cp.slide #modal .button:hover {
+  opacity: 1;
+  display: block !important;
+}
+.cp.slide #modal #button_exit {
+  left: 20px;
+  top: 20px;
+}
+.cp.slide #modal #button_left {
+  left: 6vw;
+  bottom: 10vh;
+}
+.cp.slide #modal #button_right {
+  right: 6vw;
+  bottom: 10vh;
+}
 .cp.slide #modal #content p,
 .cp.slide #modal #content ul,
 .cp.slide #modal #content ol {

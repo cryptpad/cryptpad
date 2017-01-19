@@ -722,6 +722,31 @@ form.realtime, div.realtime {
 }
 
 &.slide {
+    #modal {
+        .button {
+            position: absolute;
+            cursor: pointer;
+            font-size: 30px;
+            opacity: 0.6;
+            display: none;
+        }
+        .button:hover {
+            opacity: 1;
+            display: block !important;
+        }
+        #button_exit {
+            left: 20px;
+            top: 20px;
+        }
+        #button_left {
+            left: 6vw;
+            bottom: 10vh;
+        }
+        #button_right {
+            right: 6vw;
+            bottom: 10vh;
+        }
+    }
     #modal #content {
         p, ul, ol { font-size: 26px; }
 
