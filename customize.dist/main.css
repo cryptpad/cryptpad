@@ -587,6 +587,11 @@ html.cp,
 .cp .page.first {
   margin-top: calc(100vh - 50px);
 }
+@media screen and (max-width: 800px) {
+  .cp .page.first {
+    margin-top: 0;
+  }
+}
 .cp .page.even {
   background: #dcdcdc;
 }
@@ -594,25 +599,39 @@ html.cp,
   background: #c2c2c2;
 }
 .cp .page .left {
+  left: 0;
+}
+.cp .page .right {
+  left: 10%;
+}
+@media screen and (max-width: 800px) {
+  .cp .page {
+    padding: 10px 5vh;
+  }
+}
+.cp .page > div {
   padding: 10px;
   width: 45%;
   position: relative;
-  left: 0;
   display: inline-block;
   vertical-align: middle;
 }
-.cp .page .right {
-  padding: 10px;
-  width: 45%;
-  position: relative;
-  left: 10%;
-  display: inline-block;
-  vertical-align: middle;
+@media screen and (max-width: 800px) {
+  .cp .page > div:not(.image) {
+    width: 100%;
+    left: 0;
+  }
 }
 .cp .page .image {
   text-align: center;
 }
+@media screen and (max-width: 800px) {
+  .cp .page .image {
+    display: none;
+  }
+}
 .cp .page p {
+  font-size: 18px;
   text-align: justify;
 }
 .cp .btn-default:hover {
@@ -752,6 +771,45 @@ html.cp,
 .cp #main #userForm button.half:not(.first),
 .cp #main_other #userForm button.half:not(.first) {
   float: right;
+}
+@media screen and (max-width: 800px) {
+  .cp #main #main-container,
+  .cp #main_other #main-container {
+    transform: initial;
+    position: relative;
+    display: block;
+    width: 90%;
+    left: 0;
+  }
+}
+@media screen and (max-width: 800px) {
+  .cp #main #userForm,
+  .cp #main_other #userForm,
+  .cp #main #data,
+  .cp #main_other #data {
+    transform: initial;
+    position: relative;
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    margin: 10px 0;
+    box-sizing: border-box;
+  }
+}
+@media screen and (max-width: 800px) {
+  .cp #main #userForm,
+  .cp #main_other #userForm {
+    border: 1px solid #888;
+  }
+}
+@media screen and (max-width: 800px) {
+  .cp #main,
+  .cp #main_other {
+    position: relative;
+    height: auto;
+    background: #aaa;
+    top: -10px;
+  }
 }
 .cp #main .buttons,
 .cp #main_other .buttons {

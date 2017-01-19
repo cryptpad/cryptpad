@@ -128,48 +128,67 @@ p, pre, td, a, table, tr {
 
 body.html {
 }
-    .page {
-        width: 100%;
-        margin-left: auto;
-        margin-right: auto;
-        background: @base;
-        padding: 10px @main-border-width;
-        position: relative;
 
-        &.first {
-            margin-top: ~"calc(100vh - 50px)";
-        }
-        &.even {
-            background: darken(@base, 10%);
-        }
-        &.category {
-            background: darken(@base, 20%);
-        }
+// Main page
+.page {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    background: @base;
+    padding: 10px @main-border-width;
+    position: relative;
 
-        .left {
-            padding: 10px;
-            width: 45%;
-            position: relative;
-            left: 0; //@main-border-width;
-            display: inline-block;
-            vertical-align: middle;
-        }
-        .right {
-            padding: 10px;
-            width: 45%;
-            position: relative;
-            left: 10%; //@main-border-width;
-            display: inline-block;
-            vertical-align: middle;
-        }
-        .image {
-            text-align: center;
-        }
-
-        p {
-            text-align: justify;
+    &.first {
+        margin-top: ~"calc(100vh - 50px)";
+        @media screen and (max-width: @media-not-big) {
+            margin-top: 0;;
         }
     }
+    &.even {
+        background: darken(@base, 10%);
+    }
+    &.category {
+        background: darken(@base, 20%);
+    }
+
+    .left {
+        left: 0; //@main-border-width;
+    }
+    .right {
+        left: 10%; //@main-border-width;
+    }
+
+    @media screen and (max-width: @media-not-big) {
+        padding: 10px 5vh;
+    }
+
+
+    &>div{
+        padding: 10px;
+        width: 45%;
+        position: relative;
+        display: inline-block;
+        vertical-align: middle;
+        &:not(.image) {
+            @media screen and (max-width: @media-not-big) {
+                width: 100%;
+                left: 0;
+            }
+        }
+    }
+
+    .image {
+        text-align: center;
+        @media screen and (max-width: @media-not-big) {
+            display: none;
+        }
+    }
+
+    p {
+        font-size: 18px;
+        text-align: justify;
+    }
+}
 
 .btn-default {
     &:hover {
@@ -243,8 +262,8 @@ body.html {
         top: 50%;
         left: 0;
         transform: translateY(-50%);
-       // width: ~"calc(100% - 450px - 30vw)";
-//        background-color: @main-block-bg;
+        //width: ~"calc(100% - 450px - 30vw)";
+        //background-color: @main-block-bg;
 
         #tryit {
             margin-top: 20px;
@@ -261,7 +280,7 @@ body.html {
         display: inline-block;
         width: 350px;
         max-width: 35%;
-//        background-color: @main-block-bg;
+        //background-color: @main-block-bg;
         padding: 10px;
         box-sizing: border-box;
         font-family: lato, Helvetica, sans-serif;
@@ -310,6 +329,38 @@ body.html {
             }
         }
     }
+    #main-container {
+        @media screen and (max-width: @media-not-big) {
+            transform: initial;
+            position: relative;
+            display: block;
+            width: 90%;
+            left: 0;
+        }
+    }
+    #userForm, #data {
+        @media screen and (max-width: @media-not-big) {
+            transform: initial;
+            position: relative;
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+    }
+    #userForm {
+        @media screen and (max-width: @media-not-big) {
+            border: 1px solid #888;
+        }
+    }
+    @media screen and (max-width: @media-not-big) {
+        position: relative;
+        height: auto;
+        background: #aaa;
+        top: -10px;
+    }
+
     .buttons {
         margin-top: 15px;
     }
