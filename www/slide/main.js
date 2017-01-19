@@ -768,7 +768,9 @@ define([
                 }
                 Slide.update(remoteDoc);
 
-                notify();
+                if (oldDoc !== newDoc) {
+                    notify();
+                }
             };
 
             var onAbort = config.onAbort = function (info) {
