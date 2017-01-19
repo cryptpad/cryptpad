@@ -556,26 +556,34 @@ define([
                 $container.find('.cryptpad-dropdown').hide();
             };
             var cancelEditTitle = function (e) {
+                // Now we want to apply the title even if we click somewhere else
                 if ($(e.target).parents('.' + TITLE_CLS).length || !$titleElement) {
                     return;
                 }
+
+                var e = jQuery.Event("keyup");
+                e.which = 13;
+                $titleElement.find('input').trigger(e);
+
+                /*
                 $titleElement.find('input').hide();
                 $titleElement.find('span.title').show();
                 $titleElement.find('span.pencilIcon').css('display', '');
+                */
             };
             $(config.ifrw).on('click', removeDropdowns);
             $(config.ifrw).on('click', cancelEditTitle);
 
-        try {
-            if (config.ifrw.$('iframe').length) {
-                var innerIfrw = config.ifrw.$('iframe').each(function (i, el) {
-                    $(el.contentWindow).on('click', removeDropdowns);
-                    $(el.contentWindow).on('click', cancelEditTitle);
-                });
+            try {
+                if (config.ifrw.$('iframe').length) {
+                    var innerIfrw = config.ifrw.$('iframe').each(function (i, el) {
+                        $(el.contentWindow).on('click', removeDropdowns);
+                        $(el.contentWindow).on('click', cancelEditTitle);
+                    });
+                }
+            } catch (e) {
+                // empty try catch in case this iframe is problematic
             }
-        } catch (e) {
-            // empty try catch in case this iframe is problematic
-        }
         }
 
         // Update user list
