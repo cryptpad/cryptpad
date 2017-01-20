@@ -134,54 +134,96 @@ body.html {
     width: 100%;
     margin-left: auto;
     margin-right: auto;
-    background: @base;
-    padding: 10px @main-border-width;
+    background: #fff; //@base;
+    padding: 10px 0;//@main-border-width;
     position: relative;
 
-    &.first {
-        margin-top: ~"calc(100vh - 50px)";
-        @media screen and (max-width: @media-not-big) {
-            margin-top: 0;;
-        }
-    }
-    &.even {
-        background: darken(@base, 10%);
-    }
-    &.category {
-        background: darken(@base, 20%);
-    }
-
-    .left {
-        left: 0; //@main-border-width;
-    }
-    .right {
-        left: 10%; //@main-border-width;
-    }
-
-    @media screen and (max-width: @media-not-big) {
-        padding: 10px 5vh;
-    }
-
-
-    &>div{
-        padding: 10px;
-        width: 45%;
-        position: relative;
-        display: inline-block;
-        vertical-align: middle;
-        &:not(.image) {
-            @media screen and (max-width: @media-not-big) {
-                width: 100%;
-                left: 0;
+    .info-container {
+        width: 900px;
+        max-width: 100%;
+        margin: 0 auto;
+        &>div{
+            padding: 10px;
+            width: 400px;
+            max-width: 100%;
+            position: relative;
+            display: inline-block;
+            vertical-align: middle;
+            &:not(.image) {
+                @media screen and (max-width: @media-not-big) {
+                    width: 100%;
+                    left: 0;
+                }
+            }
+            &.image {
+                text-align: center;
+                @media screen and (max-width: @media-not-big) {
+                    display: none;
+                }
             }
         }
     }
 
-    .image {
-        text-align: center;
+    &.first {
+        //margin-top: ~"min(calc(100vh - 150px), 650px)";
         @media screen and (max-width: @media-not-big) {
-            display: none;
+            //margin-top: 0;
         }
+    }
+    &.even {
+        //background: darken(@base, 1%);
+    }
+    &.category {
+        background: darken(@base, 3%);
+    }
+
+    .app {
+        display: inline-block;
+        width: 300px;
+        vertical-align: middle;
+        margin: 0px 25px;
+        white-space: normal;
+        max-width: ~"calc(50% - 50px)";
+        @media screen and (max-width: 500px) {
+            display: block;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+    }
+    .app-container {
+        width: 1400px;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+    .app-row {
+        display: inline-block;
+        white-space: nowrap;
+        width: 700px;
+        max-width: 100%;
+        margin: 0 auto;
+        @media screen and (max-width: 1399px) {
+            display: block;
+        }
+        img {
+            @media screen and (max-width: @media-not-big) {
+                display: none;
+            }
+        }
+    }
+
+    .left {
+        //left: 10%; //@main-border-width;
+    }
+    .right {
+        left: 100px; //@main-border-width;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        padding: 0;
+    }
+
+    @media screen and (max-width: @media-not-big) {
+        padding: 10px 5vh;
     }
 
     p {
@@ -213,11 +255,12 @@ body.html {
         background-color: #000;
         opacity: 0.3;
     }
-    position: absolute;
+    position: relative;
     left: 0;
     right: 0;
     //padding: 0;
-    height: ~"calc(100vh - 50px)";
+    height: ~"calc(100vh - 150px)";
+    min-height: 450px;
     margin: auto;
     //margin-top: 100px;
 
@@ -295,7 +338,11 @@ body.html {
             width: 100%;
         }
 
-        .remember {
+        label {
+            margin-bottom: 0;
+            //margin-top: 0.5em;
+        }
+        /*.remember {
             vertical-align: middle;
             line-height: 28px;
             height: 28px;
@@ -310,10 +357,9 @@ body.html {
             //margin-top: 10px;
             margin-right: 5px;
         }
-
-        label {
-            margin-bottom: 0;
-            //margin-top: 0.5em;
+        */
+        [type="checkbox"] {
+            margin-right: 5px;
         }
 
         button {
@@ -357,7 +403,7 @@ body.html {
     @media screen and (max-width: @media-not-big) {
         position: relative;
         height: auto;
-        background: #aaa;
+        //background: #aaa;
         top: -10px;
     }
 

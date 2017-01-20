@@ -81,6 +81,11 @@ define(['/customize/languageSelector.js',
         var key = $el.data('localization');
         $el.html(messages[key]);
     };
+    var translateAppend = function (i, e) {
+        var $el = $(e);
+        var key = $el.data('localization-append');
+        $el.append(messages[key]);
+    };
     var translateTitle = function (i, e) {
         var $el = $(this);
         var key = $el.data('localization-title');
@@ -93,6 +98,7 @@ define(['/customize/languageSelector.js',
     };
     messages._applyTranslation = function () {
         $('[data-localization]').each(translateText);
+        $('[data-localization-append]').each(translateAppend);
         $('#pad-iframe').contents().find('[data-localization]').each(translateText);
         $('[data-localization-title]').each(translateTitle);
         $('[data-localization-placeholder]').each(translatePlaceholder);

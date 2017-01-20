@@ -296,7 +296,7 @@ define(function () {
 
     out.button_newpad = 'Nouveau document texte';
     out.button_newcode = 'Nouvelle page de code';
-    out.button_newpoll = 'Nouveay sondage';
+    out.button_newpoll = 'Nouveau sondage';
     out.button_newslide = 'Nouvelle présentation';
 
     out.form_title = "Tous vos pads, partout où vous allez !";

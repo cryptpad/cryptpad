@@ -15,16 +15,16 @@
 
         </div>
 
-        <div id="userForm">
+        <div id="userForm" class="form-group">
             <!--<center>
                 <h1 data-localization="form_title"></h1>
             </center>-->
             <!--<label for="name" data-localization="form_username"></label>-->
-            <input type="text" id="name" name="name" data-localization-placeholder="login_username" autofocus><br>
+            <input type="text" id="name" name="name" class="form-control" data-localization-placeholder="login_username" autofocus><br>
 
-            <!--<label for="password" data-localization="form_password"></label>--><br>
-            <input type="password" id="password" name="password" data-localization-placeholder="login_password"><br>
-            <span class="remember"><input type="checkbox" id="rememberme" checked="checked"><label for="rememberme" data-localization="login_remember"></label></span><br>
+            <!--<label for="password" data-localization="form_password"></label>-->
+            <input type="password" id="password" name="password" class="form-control" data-localization-placeholder="login_password"><br>
+            <span class="remember form-check"><label for="rememberme" class="form-check-label" data-localization-append="login_remember"><input type="checkbox" id="rememberme" class="form-check-input" checked="checked"></label></span><br>
             <button class="btn btn-secondary login half first" data-localization="login_login"></button> <button class="btn btn-primary register half" data-localization="login_register"></button><br>
         </div>
     </div>
@@ -35,55 +35,55 @@
     </center>
 </div>
 <div class="page">
-    <div class="left image">
-        <img src="customize/images/zk.png" alt="Zero Knowledge" />
-    </div>
-    <div class="right">
-        <center>
+    <div class="info-container">
+        <div class="left image">
+            <img src="customize/images/zk.png" alt="Zero Knowledge" />
+        </div>
+        <div class="right">
             <h2>Zero Knowledge</h2>
-        </center>
-        <p>
-            Every tool provided by Cryptpad are based on a Zero Knowledge technology. It means that our server stored only encrypted data, and we have no way to decrypt it. Even data about your account, including your username, are encrypted. Only people with whom you have shared the URL are allowed to decrypt the data and join the collaborative session. The encryption is carried out by your browser, which means that our server has no knowledge of the encryption key.
-        </p>
+            <p>
+                Every tool provided by Cryptpad are based on a Zero Knowledge technology. It means that our server stored only encrypted data, and we have no way to decrypt it. Even data about your account, including your username, are encrypted.<!-- Only people with whom you have shared the URL are allowed to decrypt the data and join the collaborative session. The encryption is carried out by your browser, which means that our server has no knowledge of the encryption key.-->
+            </p>
+        </div>
     </div>
 </div>
 <div class="page even">
-    <div class="left">
-        <center>
+    <div class="info-container">
+        <div class="left">
             <h2>Realtime</h2>
-        </center>
-        <p>
-            Our tools also use a Realtime technology, which means that you can edit the documents, slides or polls collaboratively with other people. Our unique technology has the advantage of combining both realtime and zero-knowledge at the same time. Other realtime solutions work with a main server containing the document and managing conflicts (when two users want to realize contradictory operations). Our Zero Knowledge principle exclude that solution since the server doesn't know the content of the document, so the conflicts are managed by your browser in a way that all users in the session resolve the conflict with the same result.
-        </p>
-    </div>
-    <div class="right image">
-        <img src="customize/images/realtime.png" alt="User account" />
+            <p>
+                Our tools also use a Realtime technology, which means that you can edit the documents, slides or polls collaboratively with other people. Our unique technology has the advantage of combining both realtime and zero-knowledge at the same time.<!-- Other realtime solutions work with a main server containing the document and managing conflicts (when two users want to realize contradictory operations). Our Zero Knowledge principle exclude that solution since the server doesn't know the content of the document, so the conflicts are managed by your browser in a way that all users in the session resolve the conflict with the same result.-->
+            </p>
+        </div>
+        <div class="right image">
+            <img src="customize/images/realtime.png" alt="User account" />
+        </div>
     </div>
 </div>
 <div class="page">
-    <div class="left image">
-        <img src="customize/images/hash.png" alt="User account" />
-    </div>
-    <div class="right">
-        <center>
+    <div class="info-container">
+        <div class="left image">
+            <img src="customize/images/hash.png" alt="User account" />
+        </div>
+        <div class="right">
             <h2>Share documents</h2>
-        </center>
-        <p>
-            When you want to edit a document with other users or invite them to answer to a poll, you just have to share the URL of that document with them. All the information needed to access and edit it are contained in the "hash" of the URL. A first part of that hash represents the location of the data in our server, the second part allows your browser to decrypt the content of that document and encrypt new modifications you may want to make.
-        </p>
+            <p>
+                When you want to edit a document with other users or invite them to answer to a poll, you just have to share the URL of that document with them. All the information needed to access and edit it are contained in the "hash" of the URL.<!-- A first part of that hash represents the location of the data in our server, the second part allows your browser to decrypt the content of that document and encrypt new modifications you may want to make.-->
+            </p>
+        </div>
     </div>
 </div>
 <div class="page even">
-    <div class="left">
-        <center>
+    <div class="info-container">
+        <div class="left">
             <h2>User Account</h2>
-        </center>
-        <p>
-            In order to have Zero Knowledge user accounts, we needed a way to store your settings without knowing your username and password. To do so, our tools generate a unique key from your username and password, directly in your browser. The entire key is never sent to our server and there is no way to determine either your username or your password from it. A small part of that key is used to locate your account data in our server, and the other part is used to encrypt and decrypt it (in your browser). That way, the server never has access to your decrypted data or to your decryption key.
-        </p>
-    </div>
-    <div class="right image">
-        <img src="customize/images/useraccount.png" alt="User account" />
+            <p>
+                In order to have Zero Knowledge user accounts, we needed a way to store your settings without knowing your username and password. To do so, our tools generate a unique key from your username and password, directly in your browser.<!-- The entire key is never sent to our server and there is no way to determine either your username or your password from it. A small part of that key is used to locate your account data in our server, and the other part is used to encrypt and decrypt it (in your browser). That way, the server never has access to your decrypted data or to your decryption key.-->
+            </p>
+        </div>
+        <div class="right image">
+            <img src="customize/images/useraccount.png" alt="User account" />
+        </div>
     </div>
 </div>
 <div class="page category" id="tryit">
@@ -92,68 +92,57 @@
     </center>
 </div>
 <div class="page">
-    <div class="left image">
-        <img src="customize/images/pad.png" alt="Rich Text application" />
-    </div>
-    <div class="right">
-        <center>
-            <h2>Rich Text editor</h2>
-        </center>
-        <p>
-            Edit rich text documents collaboratively with our realtime Zero Knowledge <a href="http://ckeditor.com" target="_blank">CkEditor</a> application.
-        </p>
-        <p class="buttons">
-            <a id="create-pad" href="/pad/"><button class="btn btn-secondary" data-localization="button_newpad"></button></a>
-        </p>
-    </div>
-</div>
-<div class="page even">
-    <div class="left">
-        <center>
-            <h2>Code editor</h2>
-        </center>
-        <p>
-            Create or debug code from your software (using any programming language) collaboratively with your colleagues with our realtime Zero Knowledge <a href="https://www.codemirror.net" target="_blank">CodeMirror</a> application.
-        </p>
-        <p class="buttons">
-            <a id="create-code" href="/code/"><button class="btn btn-secondary" data-localization="button_newcode"></button></a>
-        </p>
-    </div>
-    <div class="right image">
-        <img src="customize/images/code.png" alt="Code application" />
-    </div>
-</div>
-
-<div class="page">
-    <div class="left image">
-        <img src="customize/images/slide.png" alt="Slide applcation" />
-    </div>
-    <div class="right">
-        <center>
-            <h2>Slide editor</h2>
-        </center>
-        <p>
-            Create your presentation collaboratively with our CryptSlide application. Slides are written use Markdown syntax and you can choose the background and text colors when presenting it.
-        </p>
-        <p class="buttons">
-            <a id="create-slide" href="/slide/"><button class="btn btn-secondary" data-localization="button_newslide"></button></a>
-        </p>
-    </div>
-</div>
-<div class="page even">
-    <div class="left">
-        <center>
-            <h2>Polls</h2>
-        </center>
-        <p>
-            Plan your meeting or your event, or determine what is the best solution for your problem using our poll application. Don't worry about sensible data, everything here is also Zero Knowledge and only people with the poll link can access the data.
-        </p>
-        <p class="buttons">
-            <a id="create-poll" href="/poll/"><button class="btn btn-secondary" data-localization="button_newpoll"></button></a>
-        </p>
-    </div>
-    <div class="right image">
-        <img src="customize/images/poll.png" alt="Poll application" />
+    <div class="app-container">
+        <div class="app-row">
+            <div class="app">
+                <center>
+                    <h2>Rich Text editor</h2>
+                    <img src="customize/images/pad.png" alt="Rich Text application" />
+                </center>
+                <p>
+                    Edit rich text documents collaboratively with our realtime Zero Knowledge <a href="http://ckeditor.com" target="_blank">CkEditor</a> application.
+                </p>
+                <p class="buttons">
+                    <a id="create-pad" href="/pad/"><button class="btn btn-secondary" data-localization="button_newpad"></button></a>
+                </p>
+            </div><div class="app">
+                <center>
+                    <h2>Code editor</h2>
+                    <img src="customize/images/code.png" alt="Code application" />
+                </center>
+                <p>
+                    Edit code from your software collaboratively with our realtime Zero Knowledge <a href="https://www.codemirror.net" target="_blank">CodeMirror</a> application.
+                </p>
+                <p class="buttons">
+                    <a id="create-code" href="/code/"><button class="btn btn-secondary" data-localization="button_newcode"></button></a>
+                </p>
+            </div><!--
+        --></div><!--
+        --><div class="app-row"><!--
+            --><div class="app">
+                <center>
+                    <h2>Slide editor</h2>
+                    <img src="customize/images/slide.png" alt="Slide applcation" />
+                </center>
+                <p>
+                    Create your presentations using the Markdown syntax with our CryptSlide application, and display them in your browser.
+                </p>
+                <p class="buttons">
+                    <a id="create-slide" href="/slide/"><button class="btn btn-secondary" data-localization="button_newslide"></button></a>
+                </p>
+            </div><div class="app">
+                <center>
+                    <h2>Polls</h2>
+                    <img src="customize/images/poll.png" alt="Poll application" />
+                </center>
+                <p>
+                    Plan your meeting or your event, or vote for the best solution regarding your problem using our poll application.
+                </p>
+                <p class="buttons">
+                    <a id="create-poll" href="/poll/"><button class="btn btn-secondary" data-localization="button_newpoll"></button></a>
+                </p>
+            </div>
+        </div>
     </div>
 </div>
 

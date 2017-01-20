@@ -18,7 +18,7 @@
 }
 .alertify-logs > *.success {
   background: #46E981;
-  color: #f5f5f5;
+  color: #fff;
 }
 .alertify {
   position: fixed;
@@ -80,8 +80,8 @@
 }
 .alertify .dialog input:not(.form-control),
 .alertify .alert input:not(.form-control) {
-  background-color: #f5f5f5;
-  color: #111;
+  background-color: #fff;
+  color: #555;
   border: 0px;
   border-radius: 5px;
   margin-bottom: 15px;
@@ -211,7 +211,7 @@
   height: 2.5em;
   display: inline-block;
   width: 100%;
-  background: #f5f5f5;
+  background: #fff;
   border-top: 1px solid #444;
 }
 .top-bar a,
@@ -227,7 +227,7 @@
   display: block;
   margin-left: 10px;
   padding-top: 3px;
-  color: #111;
+  color: #555;
 }
 .top-bar img,
 .bottom-bar img {
@@ -465,8 +465,8 @@
 html.cp,
 .cp body {
   font-size: .875em;
-  background-color: #f5f5f5;
-  color: #111;
+  background-color: #fff;
+  color: #555;
   font-family: Georgia,Cambria,serif;
   height: 100%;
 }
@@ -505,7 +505,7 @@ html.cp,
 .cp h4,
 .cp h5,
 .cp h6 {
-  color: #111;
+  color: #555;
   font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   -webkit-font-feature-settings: 'dlig' 1, 'liga' 1, 'lnum' 1, 'kern' 1;
   -moz-font-feature-settings: 'dlig' 1, 'liga' 1, 'lnum' 1, 'kern' 1;
@@ -582,54 +582,93 @@ html.cp,
   width: 100%;
   margin-left: auto;
   margin-right: auto;
-  background: #f5f5f5;
-  padding: 10px 15vw;
+  background: #fff;
+  padding: 10px 0;
   position: relative;
 }
-.cp .page.first {
-  margin-top: calc(100vh - 50px);
+.cp .page .info-container {
+  width: 900px;
+  max-width: 100%;
+  margin: 0 auto;
 }
-@media screen and (max-width: 800px) {
-  .cp .page.first {
-    margin-top: 0;
-  }
-}
-.cp .page.even {
-  background: #dcdcdc;
-}
-.cp .page.category {
-  background: #c2c2c2;
-}
-.cp .page .left {
-  left: 0;
-}
-.cp .page .right {
-  left: 10%;
-}
-@media screen and (max-width: 800px) {
-  .cp .page {
-    padding: 10px 5vh;
-  }
-}
-.cp .page > div {
+.cp .page .info-container > div {
   padding: 10px;
-  width: 45%;
+  width: 400px;
+  max-width: 100%;
   position: relative;
   display: inline-block;
   vertical-align: middle;
 }
 @media screen and (max-width: 800px) {
-  .cp .page > div:not(.image) {
+  .cp .page .info-container > div:not(.image) {
     width: 100%;
     left: 0;
   }
 }
-.cp .page .image {
+.cp .page .info-container > div.image {
   text-align: center;
 }
 @media screen and (max-width: 800px) {
-  .cp .page .image {
+  .cp .page .info-container > div.image {
     display: none;
+  }
+}
+@media screen and (max-width: 800px) {
+}
+.cp .page.category {
+  background: #f7f7f7;
+}
+.cp .page .app {
+  display: inline-block;
+  width: 300px;
+  vertical-align: middle;
+  margin: 0px 25px;
+  white-space: normal;
+  max-width: calc(50% - 50px);
+}
+@media screen and (max-width: 500px) {
+  .cp .page .app {
+    display: block;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+}
+.cp .page .app-container {
+  width: 1400px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+.cp .page .app-row {
+  display: inline-block;
+  white-space: nowrap;
+  width: 700px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+@media screen and (max-width: 1399px) {
+  .cp .page .app-row {
+    display: block;
+  }
+}
+@media screen and (max-width: 800px) {
+  .cp .page .app-row img {
+    display: none;
+  }
+}
+.cp .page .right {
+  left: 100px;
+}
+.cp .page h1,
+.cp .page h2,
+.cp .page h3,
+.cp .page h4,
+.cp .page h5,
+.cp .page h6 {
+  padding: 0;
+}
+@media screen and (max-width: 800px) {
+  .cp .page {
+    padding: 10px 5vh;
   }
 }
 .cp .page p {
@@ -649,10 +688,11 @@ html.cp,
 }
 .cp #main,
 .cp #main_other {
-  position: absolute;
+  position: relative;
   left: 0;
   right: 0;
-  height: calc(100vh - 50px);
+  height: calc(100vh - 150px);
+  min-height: 450px;
   margin: auto;
   font-size: medium;
 }
@@ -729,6 +769,22 @@ html.cp,
   box-sizing: border-box;
   font-family: lato, Helvetica, sans-serif;
   color: #fff;
+  /*.remember {
+            vertical-align: middle;
+            line-height: 28px;
+            height: 28px;
+            display: inline-block;
+            margin: 10px 0 20px 0;
+        }
+
+
+        [type="checkbox"] {
+            vertical-align: text-top;
+            margin: 0;
+            //margin-top: 10px;
+            margin-right: 5px;
+        }
+        */
 }
 .cp #main #userForm h1,
 .cp #main_other #userForm h1 {
@@ -741,23 +797,13 @@ html.cp,
 .cp #main_other #userForm [type="password"] {
   width: 100%;
 }
-.cp #main #userForm .remember,
-.cp #main_other #userForm .remember {
-  vertical-align: middle;
-  line-height: 28px;
-  height: 28px;
-  display: inline-block;
-  margin: 10px 0 20px 0;
-}
-.cp #main #userForm [type="checkbox"],
-.cp #main_other #userForm [type="checkbox"] {
-  vertical-align: text-top;
-  margin: 0;
-  margin-right: 5px;
-}
 .cp #main #userForm label,
 .cp #main_other #userForm label {
   margin-bottom: 0;
+}
+.cp #main #userForm [type="checkbox"],
+.cp #main_other #userForm [type="checkbox"] {
+  margin-right: 5px;
 }
 .cp #main #userForm button,
 .cp #main_other #userForm button {
@@ -809,7 +855,6 @@ html.cp,
   .cp #main_other {
     position: relative;
     height: auto;
-    background: #aaa;
     top: -10px;
   }
 }
@@ -854,7 +899,7 @@ html.cp,
   line-height: 1.5em;
 }
 .cp .panel {
-  background-color: #c2c2c2;
+  background-color: #cccccc;
 }
 .cp table {
   border-collapse: collapse;
@@ -891,7 +936,7 @@ html.cp,
 }
 .cp tbody tr th,
 .cp tbody tr td {
-  color: #111;
+  color: #555;
 }
 .cp tbody tr th.remove,
 .cp tbody tr td.remove {
@@ -1027,7 +1072,7 @@ html.cp,
 .cp form.realtime table input[type="text"],
 .cp div.realtime table input[type="text"] {
   height: auto;
-  border: 1px solid #f5f5f5;
+  border: 1px solid #fff;
   width: 80%;
 }
 .cp form.realtime table thead td,
@@ -1087,7 +1132,7 @@ html.cp,
 .cp form.realtime table thead tr th input[type="text"][disabled],
 .cp div.realtime table thead tr th input[type="text"][disabled] {
   background-color: transparent;
-  color: #111;
+  color: #555;
   font-weight: bold;
 }
 .cp form.realtime table thead tr th .remove,
@@ -1294,7 +1339,7 @@ html.cp,
 .cp div#modal table input {
   height: 100%;
   width: 90%;
-  border: 3px solid #f5f5f5;
+  border: 3px solid #fff;
 }
 .cp div.modal table tfoot tr td,
 .cp div#modal table tfoot tr td {
