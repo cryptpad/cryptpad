@@ -26,6 +26,13 @@ define([
         secret.keys = secret.key;
     }
 
+    var DEBUG = false;
+    var debug = console.log;
+    if (!DEBUG) {
+        debug = function() {};
+    }
+    var error = console.error;
+
     Cryptpad.addLoadingScreen();
     var onConnectError = function (info) {
         Cryptpad.errorLoadingScreen(Messages.websocketError);
@@ -187,11 +194,11 @@ define([
 
     /*  Any time the realtime object changes, call this function */
     var change = function (o, n, path, throttle) {
-        if (!Cryptpad.isArray(path)) {
+        if (path && !Cryptpad.isArray(path)) {
             return;
         }
         if (path && path.join) {
-            console.log("Change from [%s] to [%s] at [%s]",
+            debug("Change from [%s] to [%s] at [%s]",
                 o, n, path.join(', '));
         }
 
@@ -242,7 +249,7 @@ define([
         var type = input.type.toLowerCase();
         var id = getRealtimeId(input);
 
-        console.log(input);
+        debug(input);
 
         var object = APP.proxy;
 
@@ -253,22 +260,22 @@ define([
 
         switch (type) {
             case 'text':
-                console.log("text[rt-id='%s'] [%s]", id, input.value);
-                if (!input.value) { return void console.log("Hit enter?"); }
+                debug("text[rt-id='%s'] [%s]", id, input.value);
+                if (!input.value) { return void debug("Hit enter?"); }
                 Render.setValue(object, id, input.value);
                 change(null, null, null, 50);
                 break;
             case 'checkbox':
-                console.log("checkbox[tr-id='%s'] %s", id, input.checked);
+                debug("checkbox[tr-id='%s'] %s", id, input.checked);
                 if (APP.editable.col.indexOf(x) >= 0 || x === APP.userid) {
                     Render.setValue(object, id, input.checked);
                     change();
                 } else {
-                    console.log('checkbox locked');
+                    debug('checkbox locked');
                 }
                 break;
             default:
-                console.log("Input[type='%s']", type);
+                debug("Input[type='%s']", type);
                 break;
         }
     };
@@ -308,7 +315,7 @@ define([
         } else if (type === 'cell') {
             change();
         } else {
-            console.log("UNHANDLED");
+            debug("UNHANDLED");
         }
     };
 
@@ -333,10 +340,10 @@ define([
         var target = e && e.target;
 
         if (isKeyup) {
-            console.log("Keyup!");
+            debug("Keyup!");
         }
 
-        if (!target) { return void console.log("NO TARGET"); }
+        if (!target) { return void debug("NO TARGET"); }
 
         var nodeName = target && target.nodeName;
 
@@ -356,7 +363,7 @@ define([
                 //console.error(new Error("C'est pas possible!"));
                 break;
             default:
-                console.log(target, nodeName);
+                debug(target, nodeName);
                 break;
         }
     };
@@ -366,7 +373,7 @@ define([
     */
     var prepareProxy = function (proxy, schema) {
         if (proxy && proxy.version === 1) { return; }
-        console.log("Configuring proxy schema...");
+        debug("Configuring proxy schema...");
 
         proxy.info = proxy.info || schema.info;
         Object.keys(schema.info).forEach(function (k) {
@@ -466,8 +473,8 @@ define([
         document.title = newTitle;
         Cryptpad.renamePad(newTitle, function (err, data) {
             if (err) {
-                console.log("Couldn't set pad title");
-                console.error(err);
+                debug("Couldn't set pad title");
+                error(err);
                 document.title = oldTitle;
                 return;
             }
@@ -501,8 +508,8 @@ define([
     var $description = $('#description').attr('placeholder', Messages.poll_descriptionHint || 'description');
 
     var ready = function (info, userid, readOnly) {
-        console.log("READY");
-        console.log('userid: %s', userid);
+        debug("READY");
+        debug('userid: %s', userid);
 
         var proxy = APP.proxy;
         var uncommitted = APP.uncommitted = {};
@@ -613,7 +620,7 @@ define([
                     notify();
                 }
 
-                console.log("change: (%s, %s, [%s])", o, n, p.join(', '));
+                debug("change: (%s, %s, [%s])", o, n, p.join(', '));
             })
             .on('change', ['table'], change)
             .on('remove', [], change);
@@ -727,8 +734,8 @@ define([
 
         Cryptpad.getPadTitle(function (err, title) {
             if (err) {
-                console.error(err);
-                console.log("Couldn't get pad title");
+                error(err);
+                debug("Couldn't get pad title");
                 return;
             }
             updateTitle(title || defaultName);
@@ -778,7 +785,6 @@ define([
         .on('disconnect', disconnect);
 
         Cryptpad.getAttribute(HIDE_INTRODUCTION_TEXT, function (e, value) {
-            console.log(value);
             if (e) { console.error(e); }
             if (!value) {
                 Cryptpad.setAttribute(HIDE_INTRODUCTION_TEXT, "1", function (e) {
