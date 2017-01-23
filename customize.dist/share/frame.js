@@ -24,7 +24,10 @@
             onload(void 0, iframe, e);
             window.clearTimeout(to);
         };
-        iframe.setAttribute('src', src);
+        // We must pass a unique parameter here to avoid cache problems in Firefox with
+        // the NoScript plugin: if the iframe's content is taken from the cache, the JS
+        // is not executed with NoScript....
+        iframe.setAttribute('src', src + '?t=' + new Date().getTime());
 
         parent.appendChild(iframe);
     };
