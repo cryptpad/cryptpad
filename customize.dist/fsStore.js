@@ -39,6 +39,11 @@ define([
         cb(void 0, map);
     };
 
+    Store.setDrive = function (key, val, cb) {
+        storeObj.drive[key] = val;
+        cb();
+    };
+
     var safeGet = window.safeGet = function (key) {
         return storeObj[key];
     };
@@ -54,6 +59,10 @@ define([
             res[key] = safeGet(key);
         });
         cb(void 0, res);
+    };
+
+    Store.getDrive = function (key, cb) {
+        cb(void 0, storeObj.drive[key]);
     };
 
     var safeRemove = function (key) {
@@ -127,7 +136,7 @@ define([
     };
 
     var onReady = function (f, proxy, storageKey) {
-        filesOp = FO.init(proxy, {
+        filesOp = FO.init(proxy.drive, {
             storageKey: storageKey
         });
         storeObj = proxy;
@@ -179,10 +188,13 @@ define([
             }
         }).on('ready', function () {
         if (ready) { return; }
-            if (!rt.proxy[Cryptpad.storageKey] || !Cryptpad.isArray(rt.proxy[Cryptpad.storageKey])) {
+            if (!rt.proxy.drive || typeof(rt.proxy.drive) !== 'object') { rt.proxy.drive = {}; }
+            var drive = rt.proxy.drive;
+            // Creating a new anon drive: import anon pads from localStorage
+            if (!drive[Cryptpad.storageKey] || !Cryptpad.isArray(drive[Cryptpad.storageKey])) {
                 var oldStore = Cryptpad.getStore(true);
                 oldStore.get(Cryptpad.storageKey, function (err, s) {
-                    rt.proxy[Cryptpad.storageKey] = s;
+                    drive[Cryptpad.storageKey] = s;
                     onReady(f, rt.proxy, Cryptpad.storageKey);
                 });
                 return;

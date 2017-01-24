@@ -26,7 +26,8 @@ define([
     var APP = window.APP = {
         $bar: $iframe.find('#toolbar'),
         editable: false,
-        Cryptpad: Cryptpad
+        Cryptpad: Cryptpad,
+        loggedIn: Cryptpad.isLoggedIn()
     };
 
     var stringify = APP.stringify = function (obj) {
@@ -43,6 +44,11 @@ define([
     var TEMPLATE_NAME = Messages.fm_templateName;
     var TRASH = "trash";
     var TRASH_NAME = Messages.fm_trashName;
+
+    // anon: Virtual path, not stored in the object but extracted from FILES_DATA
+    var ANON = "anon";
+    var ANON_NAME = Messages.fm_anonName || 'Anon pads......';
+
     var LOCALSTORAGE_LAST = "cryptpad-file-lastOpened";
     var LOCALSTORAGE_OPENED = "cryptpad-file-openedFolders";
     var LOCALSTORAGE_VIEWMODE = "cryptpad-file-viewMode";
@@ -130,7 +136,8 @@ define([
         else { $iframe.find('[draggable="false"]').attr('draggable', true); }
     };
 
-    var init = function (files) {
+    var init = function (proxy) {
+        var files = proxy.drive;
         var isOwnDrive = function () {
             return Cryptpad.getUserHash() === APP.hash || localStorage.FS_hash === APP.hash;
         };
@@ -166,7 +173,7 @@ define([
 
         // FILE MANAGER
         // _WORKGROUP_ and other people drive : display Documents as main page
-        var currentPath = module.currentPath = isOwnDrive() ? getLastOpenedFolder() : [ROOT];
+        var currentPath = module.currentPath = APP.loggedIn ? isOwnDrive() ? getLastOpenedFolder() : [ROOT] : [ANON];
         var lastSelectTime;
         var selectedElement;
 
@@ -725,6 +732,7 @@ define([
             else if (name === TRASH && path.length === 1) { name = TRASH_NAME; }
             else if (name === UNSORTED && path.length === 1) { name = UNSORTED_NAME; }
             else if (name === TEMPLATE && path.length === 1) { name = TEMPLATE_NAME; }
+            else if (name === ANON && path.length === 1) { name = ANON_NAME; }
             else if (name === FILES_DATA && path.length === 1) { name = FILES_DATA_NAME; }
             else if (filesOp.isPathInTrash(path)) { name = getTrashTitle(path); }
             var $title = $('<h1>').text(name);
@@ -749,19 +757,19 @@ define([
             var $box = $('<div>', {'class': 'info-box'});
             var msg;
             switch (path[0]) {
-                case 'root':
+                case ROOT:
                     msg = Messages.fm_info_root;
                     break;
-                case 'unsorted':
+                case UNSORTED:
                     msg = Messages.fm_info_unsorted;
                     break;
-                case 'template':
+                case TEMPLATE:
                     msg = Messages.fm_info_template;
                     break;
-                case 'trash':
+                case TRASH:
                     msg = Messages.fm_info_trash;
                     break;
-                case Cryptpad.storageKey:
+                case FILES_DATA:
                     msg = Messages.fm_info_allFiles;
                     break;
                 default:
@@ -836,12 +844,13 @@ define([
                 options.push({tag: 'hr'});
             }
             AppConfig.availablePadTypes.forEach(function (type) {
+                var path = filesOp.comparePath(currentPath, [ANON]) ? '' : '/#?path=' + encodeURIComponent(currentPath);
                 options.push({
                     tag: 'a',
                     attributes: {
                         'class': 'newdoc',
                         'data-type': type,
-                        'href': '/' + type + '/#?path=' + encodeURIComponent(currentPath),
+                        'href': '/' + type + path,
                         'target': '_blank'
                     },
                     content: Messages.type[type]
@@ -1060,7 +1069,7 @@ define([
 
         // Unsorted element are represented by "href" in an array: they don't have a filename
         // and they don't hav a hierarchical structure (folder/subfolders)
-        var displayHrefArray = function ($container, rootName) {
+        var displayHrefArray = function ($container, rootName, draggable) {
             var unsorted = files[rootName];
             if (rootName === UNSORTED && allFilesSorted()) { return; }
             var $fileHeader = getFileListHeader(false);
@@ -1081,7 +1090,7 @@ define([
                 var $name = $('<span>', { 'class': 'file-element element' });
                 addFileData(href, file.title, $name, false);
                 var $element = $('<li>', {
-                    draggable: true
+                    draggable: draggable
                 }).append($icon).append($name).dblclick(function () {
                     openFile(href);
                 });
@@ -1092,17 +1101,22 @@ define([
                     onElementClick(e, $element, path);
                 });
                 $element.contextmenu(openDefaultContextMenu);
-                addDragAndDropHandlers($element, path, false, false);
+                if (draggable) {
+                    addDragAndDropHandlers($element, path, false, false);
+                }
                 $container.append($element);
             });
         };
 
-        var displayAllFiles = function ($container) {
+        var displayAllFiles = function ($container, anon) {
             var allfiles = files[FILES_DATA];
             if (allfiles.length === 0) { return; }
             var $fileHeader = getFileListHeader(false);
             $container.append($fileHeader);
-            var keys = allfiles;
+            var keys = allfiles.filter(function (el) {
+                return anon && !el.owner || !anon && el.owner;
+            });
+
             var sortedFiles = sortElements(false, [FILES_DATA], keys, Cryptpad.getLSAttribute(SORT_FILE_BY), !getSortFileDesc(), false, true);
             sortedFiles.forEach(function (file) {
                 var $icon = $fileIcon.clone();
@@ -1183,9 +1197,10 @@ define([
             var isUnsorted = filesOp.comparePath(path, [UNSORTED]);
             var isTemplate = filesOp.comparePath(path, [TEMPLATE]);
             var isAllFiles = filesOp.comparePath(path, [FILES_DATA]);
+            var isAnon = filesOp.comparePath(path, [ANON]);
 
             var root = filesOp.findElement(files, path);
-            if (typeof(root) === "undefined") {
+            if (typeof(root) === "undefined" && !isAnon) {
                 log(Messages.fm_unknownFolderError);
                 debug("Unable to locate the selected directory: ", path);
                 var parentPath = path.slice();
@@ -1221,9 +1236,12 @@ define([
             var $fileHeader = getFileListHeader(true);
 
             if (isUnsorted || isTemplate) {
-                displayHrefArray($list, path[0]);
+                // 3rd parameter is "draggable": anon pads shouldn't be draggable
+                displayHrefArray($list, path[0], !isAnon);
             } else if (isAllFiles) {
-                displayAllFiles($list);
+                displayAllFiles($list, false);
+            } else if (isAnon) {
+                displayAllFiles($list, true);
             } else if (isTrashRoot) {
                 displayTrashRoot($list, $folderHeader, $fileHeader);
             } else {
@@ -1352,7 +1370,7 @@ define([
             var isOpened = filesOp.comparePath(path, currentPath);
             var $unsortedElement = createTreeElement(UNSORTED_NAME, $icon, [UNSORTED], false, true, false, isOpened);
             $unsortedElement.addClass('root');
-            var $unsortedList = $('<ul>', { id: 'unsortedTree' }).append($unsortedElement);
+            var $unsortedList = $('<ul>', { id: 'unsortedTree', 'class': 'category2' }).append($unsortedElement);
             $container.append($unsortedList);
         };
 
@@ -1361,7 +1379,7 @@ define([
             var isOpened = filesOp.comparePath(path, currentPath);
             var $element = createTreeElement(TEMPLATE_NAME, $icon, [TEMPLATE], false, true, false, isOpened);
             $element.addClass('root');
-            var $list = $('<ul>', { id: 'templateTree' }).append($element);
+            var $list = $('<ul>', { id: 'templateTree', 'class': 'category2' }).append($element);
             $container.append($list);
         };
 
@@ -1370,7 +1388,19 @@ define([
             var isOpened = filesOp.comparePath(path, currentPath);
             var $allfilesElement = createTreeElement(FILES_DATA_NAME, $icon, [FILES_DATA], false, false, false, isOpened);
             $allfilesElement.addClass('root');
-            var $allfilesList = $('<ul>', { id: 'allfilesTree' }).append($allfilesElement);
+            var $allfilesList = $('<ul>', { id: 'allfilesTree', 'class': 'category2' }).append($allfilesElement);
+            $container.append($allfilesList);
+        };
+
+        var createAnonFiles = function ($container, path, anonUser) {
+            var $icon = $unsortedIcon.clone();
+            var isOpened = filesOp.comparePath(path, currentPath);
+            var $allfilesElement = createTreeElement(ANON_NAME, $icon, [ANON], false, false, false, isOpened);
+            $allfilesElement.addClass('root');
+            var $allfilesList = $('<ul>', { id: 'anonTree', 'class': 'category2' }).append($allfilesElement);
+            if (anonUser) {
+                $allfilesList.removeClass('category2');
+            }
             $container.append($allfilesList);
         };
 
@@ -1390,16 +1420,21 @@ define([
             $trashElement.contextmenu(openTrashTreeContextMenu);
             if (isOpened) { $trash.addClass('active'); }
 
-            var $trashList = $('<ul>', { id: 'trashTree' }).append($trashElement);
+            var $trashList = $('<ul>', { id: 'trashTree', 'class': 'category2' }).append($trashElement);
             $container.append($trashList);
         };
 
         var resetTree = module.resetTree = function () {
             $tree.html('');
+            if (!APP.loggedIn) {
+                createAnonFiles($tree, [ANON], true);
+                return;
+            }
             createTree($tree, [ROOT]);
             if (!isWorkgroup()) {
                 createUnsorted($tree, [UNSORTED]);
                 createTemplate($tree, [TEMPLATE]);
+                createAnonFiles($tree, [ANON]);
                 createAllFiles($tree, [FILES_DATA]);
             }
             createTrash($tree, [TRASH]);
@@ -1646,16 +1681,19 @@ define([
                 onRefresh.to = window.setTimeout(refresh, 500);
             }
         };
-        files.on('change', [], function (o, n, p) {
+        proxy.on('change', [], function (o, n, p) {
             var path = arguments[2];
-            if ((filesOp.isPathInUnsorted(currentPath) && filesOp.isPathInUnsorted(path)) ||
-                    (filesOp.isPathInTemplate(currentPath) && filesOp.isPathInTemplate(path)) ||
-                    (path.length >= currentPath.length && filesOp.isSubpath(path, currentPath)) ||
-                    (filesOp.isPathInTrash(currentPath) && filesOp.isPathInTrash(path))) {
+            if (path[0] !== 'drive') { return false; }
+            path = path.slice(1);
+            var cPath = filesOp.isPathInAnon(currentPath) ? [FILES_DATA] : currentPath.slice();
+            if ((filesOp.isPathInUnsorted(cPath) && filesOp.isPathInUnsorted(path)) ||
+                    (filesOp.isPathInTemplate(cPath) && filesOp.isPathInTemplate(path)) ||
+                    (path.length >= cPath.length && filesOp.isSubpath(path, cPath)) ||
+                    (filesOp.isPathInTrash(cPath) && filesOp.isPathInTrash(path))) {
                 // Reload after a few ms to make sure all the change events have been received
                 onRefresh.refresh();
             } else if (path.length && path[0] === FILES_DATA) {
-                if (filesOp.isPathInHrefArray(currentPath)) {
+                if (filesOp.isPathInHrefArray(cPath) || filesOp.isPathInAnon(path)) {
                     onRefresh.refresh();
                 } else {
                     refreshFilesData();
@@ -1791,8 +1829,9 @@ define([
             module.files = proxy;
             if (JSON.stringify(proxy) === '{}') {
                 var store = Cryptpad.getStore(true);
+                var drive = proxy.drive = {};
                 store.get(Cryptpad.storageKey, function (err, s) {
-                    proxy[FILES_DATA] = s;
+                    drive[FILES_DATA] = s;
                     initLocalStorage();
                     init(proxy);
                     APP.userList.onChange();
@@ -1800,6 +1839,7 @@ define([
                 });
                 return;
             }
+            if (!proxy.drive || typeof(proxy.drive) !== 'object') { proxy.drive = {}; }
             initLocalStorage();
             init(proxy);
             APP.userList.onChange();

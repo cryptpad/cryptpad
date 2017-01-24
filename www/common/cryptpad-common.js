@@ -80,7 +80,7 @@ define([
 
     var logout = common.logout = function (cb) {
         [
-            fileHashKey,
+//            fileHashKey,
             userHashKey,
         ].forEach(function (k) {
             sessionStorage.removeItem(k);
@@ -88,6 +88,9 @@ define([
             delete localStorage[k];
             delete sessionStorage[k];
         });
+        if (!localStorage[fileHashKey]) {
+            localStorage[fileHashKey] = common.createRandomHash();
+        }
         if (cb) { cb(); }
     };
 
@@ -99,6 +102,11 @@ define([
         });
 
         return hash;
+    };
+
+    var isLoggedIn = common.isLoggedIn = function () {
+        //return typeof getStore().getLoginName() === "string";
+        return typeof getUserHash() === "string";
     };
 
     // var isArray = function (o) { return Object.prototype.toString.call(o) === '[object Array]'; };
@@ -444,7 +452,7 @@ define([
     // STORAGE
     /* fetch and migrate your pad history from localStorage */
     var getRecentPads = common.getRecentPads = function (cb, legacy) {
-        getStore(legacy).get(storageKey, function (err, recentPads) {
+        getStore(legacy).getDrive(storageKey, function (err, recentPads) {
             if (isArray(recentPads)) {
                 cb(void 0, migrateRecentPads(recentPads));
                 return;
@@ -456,7 +464,7 @@ define([
     // STORAGE
     /* commit a list of pads to localStorage */
     var setRecentPads = common.setRecentPads = function (pads, cb, legacy) {
-        getStore(legacy).set(storageKey, pads, function (err, data) {
+        getStore(legacy).setDrive(storageKey, pads, function (err, data) {
             cb(err, data);
         });
     };
@@ -566,8 +574,11 @@ define([
 
             if (!contains) {
                 var data = makePad(href, name);
+                if (common.initialPath) {
+                    data.owner = 1; // TODO use owner id here?
+                }
                 renamed.push(data);
-                if (USE_FS_STORE && typeof(getStore().addPad) === "function") {
+                if (USE_FS_STORE && common.initialPath && typeof(getStore().addPad) === "function") {
                     getStore().addPad(href, common.initialPath, name);
                 }
             }

@@ -8,6 +8,7 @@ define([
     var ROOT = "root";
     var UNSORTED = "unsorted";
     var FILES_DATA = "filesData";
+    var ANON = "anon"; // virtual path
     var TRASH = "trash";
     var TEMPLATE = "template";
     var NEW_FOLDER_NAME = Messages.fm_newFolder;
@@ -56,6 +57,9 @@ define([
         };
         var isPathInTrash = exp.isPathInTrash = function (path) {
             return path[0] && path[0] === TRASH;
+        };
+        var isPathInAnon = exp.isPathInAnon = function (path) {
+            return path[0] && path[0] === ANON;
         };
 
         var isPathInFilesData = exp.isPathInFilesData = function (path) {
@@ -226,6 +230,13 @@ define([
             }
             return ret;
         };
+
+        /*var getAnonFiles = exp.getAnonFiles = function () {
+            if (!files[ANON]) {
+                files[ANON] = [];
+            }
+            return files[ANON].slice();
+        };*///TODO
 
         var removeFileFromRoot = function (root, href) {
             if (isFile(root)) { return; }
@@ -688,6 +699,11 @@ define([
             });
         };
 
+        var isAnonFile = exp.isAnonFile = function (file) {
+            var data = getFileData(file);
+            return !data.owner;
+        };
+
         var fixFiles = exp.fixFiles = function () {
             // Explore the tree and check that everything is correct:
             //  * 'root', 'trash', 'unsorted' and 'filesData' exist and are objects
@@ -709,6 +725,11 @@ define([
                         debug("An element in ROOT was not a folder nor a file. ", element[el]);
                         element[el] = undefined;
                         delete element[el];
+                    } else if (isFile(element[el])) {
+                        if (isAnonFile(element[el])) {
+                            debug("An element in ROOT was an anonymous file. ", element[el]);
+                            delete element[el];
+                        }
                     } else if (isFolder(element[el])) {
                         fixRoot(element[el]);
                     }
@@ -721,6 +742,7 @@ define([
                 var addToClean = function (obj, idx) {
                     if (typeof(obj) !== "object") { toClean.push(idx); return; }
                     if (!isFile(obj.element) && !isFolder(obj.element)) { toClean.push(idx); return; }
+                    if (isFile(obj.element) && isAnonFile(obj.element)) { toClean.push(idx); return; }
                     if (!$.isArray(obj.path)) { toClean.push(idx); return; }
                 };
                 for (var el in tr) {
@@ -745,15 +767,12 @@ define([
                 var templateFiles = getTemplateFiles();
                 var toClean = [];
                 us.forEach(function (el, idx) {
-                    if (!isFile(el) || rootFiles.indexOf(el) !== -1 || templateFiles.indexOf(el) !== -1) {
+                    if (!isFile(el) || rootFiles.indexOf(el) !== -1 || templateFiles.indexOf(el) !== -1 || isAnonFile(el)) {
                         toClean.push(idx);
                     }
                 });
-                toClean.forEach(function (el) {
-                    var idx = us.indexOf(el);
-                    if (idx !== -1) {
-                        us.splice(idx, 1);
-                    }
+                toClean.forEach(function (idx) {
+                    us.splice(idx, 1);
                 });
             };
             var fixTemplate = function () {
@@ -764,36 +783,44 @@ define([
                 var unsortedFiles = getUnsortedFiles();
                 var toClean = [];
                 us.forEach(function (el, idx) {
-                    if (!isFile(el) || rootFiles.indexOf(el) !== -1 || unsortedFiles.indexOf(el) !== -1) {
+                    if (!isFile(el) || rootFiles.indexOf(el) !== -1 || unsortedFiles.indexOf(el) !== -1 || isAnonFile(el)) {
                         toClean.push(idx);
                     }
                 });
-                toClean.forEach(function (el) {
-                    var idx = us.indexOf(el);
-                    if (idx !== -1) {
-                        us.splice(idx, 1);
-                    }
+                toClean.forEach(function (idx) {
+                    us.splice(idx, 1);
                 });
             };
+            /*var fixAnon = function () {
+                if (!$.isArray(files[ANON])) { debug("ANON was not an array"); files[FILES_DATA] = []; }
+            };*/// TODO
             var fixFilesData = function () {
                 if (!$.isArray(files[FILES_DATA])) { debug("FILES_DATA was not an array"); files[FILES_DATA] = []; }
                 var fd = files[FILES_DATA];
                 var rootFiles = getRootFiles();
                 var unsortedFiles = getUnsortedFiles();
+                var templateFiles = getTemplateFiles();
                 var trashFiles = getTrashFiles();
+                //var anonFiles = getAnonFiles();
                 var toClean = [];
                 fd.forEach(function (el, idx) {
                     if (typeof(el) !== "object") {
                         debug("An element in filesData was not an object.", el);
                         toClean.push(el);
-                    } else {
-                        if (rootFiles.indexOf(el.href) === -1
-                            && unsortedFiles.indexOf(el.href) === -1
-                            && trashFiles.indexOf(el.href) === -1) {
-                            debug("An element in filesData was not in ROOT, UNSORTED or TRASH.", el);
-                            files[UNSORTED].push(el.href);
-                        }
+                        return;
                     }
+                    if (el.owner
+                        && rootFiles.indexOf(el.href) === -1
+                        && unsortedFiles.indexOf(el.href) === -1
+                        && templateFiles.indexOf(el.href) === -1
+                        && trashFiles.indexOf(el.href) === -1) {
+                        debug("An element in filesData was not in ROOT, UNSORTED or TRASH.", el);
+                        files[UNSORTED].push(el.href);
+                        return;
+                    }
+                    /*if (!el.owner && anonFiles.indexOf(el.href) === -1) {
+                        files[ANON].push(el.href);
+                    }*/// TODO
                 });
                 toClean.forEach(function (el) {
                     var idx = fd.indexOf(el);
