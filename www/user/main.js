@@ -227,13 +227,26 @@ define([
                             proxy[k] = map[k];
                         });
 
-                        delete localStorage.FS_hash;
+                        var whenSynced = function () {
+                            delete localStorage.FS_hash;
 
-                        if (!proxy[USERNAME_KEY]) {
-                            proxy[USERNAME_KEY] = opt.name;
-                        }
+                            if (!proxy[USERNAME_KEY]) {
+                                proxy[USERNAME_KEY] = opt.name;
+                            }
+                            next();
+                        };
 
-                        next();
+                        // Make sure the migration is synced in chainpad before continuing otherwise
+                        // we may leave that page too early or trigger a reload in another tab before
+                        // the migration is complete
+                        var check = function () {
+                            if (APP.realtime.getUserDoc() === APP.realtime.getAuthDoc()) {
+                                whenSynced();
+                                return;
+                            }
+                            window.setTimeout(check, 300);
+                        };
+                        check();
                     });
                 });
             });
