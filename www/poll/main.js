@@ -491,13 +491,15 @@ define([
     var renameCb = function (err, title) {
         if (err) { return; }
         document.title = title;
-        APP.proxy.info.title = title;
+        APP.proxy.info.title = title === defaultName ? "" : title;
     };
 
     var suggestName = function (fallback) {
-        return (document.title === defaultName) ? "" : document.title;
+        if (document.title === defaultName) {
+            return fallback || "";
+        }
+        return document.title || defaultName || "";
     };
-
 
     var copyObject = function (obj) {
         return JSON.parse(JSON.stringify(obj));

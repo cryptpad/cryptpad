@@ -7,7 +7,6 @@ var Https = require('https');
 var Fs = require('fs');
 var WebSocketServer = require('ws').Server;
 var NetfluxSrv = require('./NetfluxWebsocketSrv');
-var WebRTCSrv = require('./WebRTCSrv');
 
 var config = require('./config');
 var websocketPort = config.websocketPort || config.httpPort;
@@ -103,5 +102,4 @@ if (websocketPort !== config.httpPort) {
 var wsSrv = new WebSocketServer(wsConfig);
 Storage.create(config, function (store) {
     NetfluxSrv.run(store, wsSrv, config);
-    WebRTCSrv.run(wsSrv);
 });
