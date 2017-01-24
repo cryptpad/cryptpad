@@ -63,7 +63,7 @@ define(function () {
     out.userButton = 'UTILISATEUR';
     out.userButtonTitle = "Changer votre nom d'utilisateur";
     out.changeNamePrompt = 'Changer votre nom (laisser vide pour rester anonyme) : ';
-    out.user_rename = "Changer le nmm affiché";
+    out.user_rename = "Changer le nom affiché";
     out.user_displayName = "Nom affiché";
     out.user_accountName = "Nom d'utilisateur";
 
