@@ -1,6 +1,11 @@
 /* global process */
 var WebDriver = require("selenium-webdriver");
 
+if (process.env.TRAVIS_PULL_REQUEST && process.env.TRAVIS_PULL_REQUEST !== 'false') {
+    // We can't do saucelabs on pull requests so don't fail.
+    return;
+}
+
 var driver;
 if (process.env.SAUCE_USERNAME !== undefined) {
     var browserArray = process.env.BROWSER.split(':');
@@ -19,12 +24,15 @@ if (process.env.SAUCE_USERNAME !== undefined) {
 driver.get('http://localhost:3000/assert/');
 var report = driver.wait(WebDriver.until.elementLocated(WebDriver.By.className("report")), 5000);
 report.getAttribute("class").then(function (cls) {
-    driver.quit();
-    if (!cls) {
-        throw new Error("cls is null");
-    } else if (cls.indexOf("failure") !== -1) {
-        throw new Error("cls contains the word failure");
-    } else if (cls.indexOf("success") === -1) {
-        throw new Error("cls does not contain the word success");
-    }
+    report.getText().then(function (text) {
+        console.log("\n-----\n" + text + "\n-----");
+        driver.quit();
+        if (!cls) {
+            throw new Error("cls is null");
+        } else if (cls.indexOf("failure") !== -1) {
+            throw new Error("cls contains the word failure");
+        } else if (cls.indexOf("success") === -1) {
+            throw new Error("cls does not contain the word success");
+        }
+    });
 });
