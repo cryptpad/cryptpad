@@ -56,6 +56,13 @@ li {
   color: #eee;
   margin: -1px;
 }
+span.fa-folder {
+  color: #FEDE8B;
+  text-shadow: -1px 0 #000000, 0 1px #000000, 1px 0 #000000, 0 -1px #000000;
+}
+span.fa {
+  min-width: 20px;
+}
 /* TREE */
 #tree {
   border-right: 1px solid #ccc;

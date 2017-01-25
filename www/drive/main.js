@@ -183,9 +183,9 @@ define([
 
 
         // Icons
-        var $folderIcon = $('<span>', {"class": "fa fa-folder folder", style:"color:#FEDE8B;text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;"});
+        var $folderIcon = $('<span>', {"class": "fa fa-folder folder"});
         var $folderEmptyIcon = $folderIcon.clone();
-        var $folderOpenedIcon = $('<span>', {"class": "fa fa-folder-open folder", style:"color:#FEDE8B;text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;"});
+        var $folderOpenedIcon = $('<span>', {"class": "fa fa-folder-open folder");
         var $folderOpenedEmptyIcon = $folderOpenedIcon.clone();
         var $fileIcon = $('<span>', {"class": "fa fa-file-text-o file"});
         var $padIcon = $('<span>', {"class": "fa fa-file-word-o file"});
