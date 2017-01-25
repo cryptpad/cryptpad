@@ -25,6 +25,11 @@
             display: none;
             border-radius: 5px;
         }
+
+        .register {
+            display: none;
+        }
+
         @media (max-width: 1000px) {
             div.panel { width: 90%; }
         }
@@ -49,6 +54,7 @@
     <div id="warning" data-localization="login_warning"></div>
     <input type="text" name="username" id="username" data-localization-placeholder="login_username" autofocus><br />
     <input type="password" name="password" id="password" data-localization-placeholder="login_password"><br />
+    <input type="password" class="register" name="confirm" id="confirm_register" data-localization-placeholder="login_confirm"><br />
 
     <button id="login" data-localization="login_login"></button>
     <input type="checkbox" name="remember" id="remember" checked="true"><label for="remember" data-localization="login_remember"></label>
@@ -83,6 +89,6 @@
         <p><span data-localization="username_label"></span>
             <strong id="user-name" class="display"></strong></p>
 
-        <p>View your <a href="/file" target="_blank">file manager</a>.</p>
+        <p>View your <a href="/drive" target="_blank">CryptDrive</a>.</p>
     </div>
 </div>

@@ -374,7 +374,9 @@ define([
                         defaultTitle: defaultName
                     }
                 };
-                hjson[3].metadata.title = document.title;
+                if (!initializing) {
+                    hjson[3].metadata.title = document.title;
+                }
                 return stringify(hjson);
             };
 
@@ -445,6 +447,7 @@ define([
                 // Extract the user list (metadata) from the hyperjson
                 var hjson = JSON.parse(shjson);
                 var peerMetadata = hjson[3];
+                var titleUpdated = false;
                 if (peerMetadata && peerMetadata.metadata) {
                     if (peerMetadata.metadata.users) {
                         var userData = peerMetadata.metadata.users;
@@ -455,8 +458,12 @@ define([
                         updateDefaultTitle(peerMetadata.metadata.defaultTitle);
                     }
                     if (typeof peerMetadata.metadata.title !== "undefined") {
-                        updateTitle(peerMetadata.metadata.title);
+                        updateTitle(peerMetadata.metadata.title || defaultName);
+                        titleUpdated = true;
                     }
+                }
+                if (!titleUpdated) {
+                    updateTitle(defaultName);
                 }
             };
 
@@ -651,15 +658,6 @@ define([
 
                 // set the hash
                 if (!readOnly) { Cryptpad.replaceHash(editHash); }
-
-                Cryptpad.getPadTitle(function (err, title) {
-                    if (err) {
-                        console.error(err);
-                        console.log("Couldn't get pad title");
-                        return;
-                    }
-                    updateTitle(title || defaultName);
-                });
             };
 
             // this should only ever get called once, when the chain syncs
@@ -667,6 +665,12 @@ define([
                 if (!module.isMaximized) {
                     editor.execCommand('maximize');
                     module.isMaximized = true;
+                    // We have to call it 3 times in Safari
+                    // in order to have the editor fully maximized -_-
+                    if ((''+window.navigator.vendor).indexOf('Apple') !== -1) {
+                        editor.execCommand('maximize');
+                        editor.execCommand('maximize');
+                    }
                 }
 
                 module.patchText = TextPatcher.create({
@@ -788,9 +792,17 @@ define([
 
     var first = function () {
         Ckeditor = ifrw.CKEDITOR;
-
         if (Ckeditor) {
             //andThen(Ckeditor);
+            // mobile configuration
+            Ckeditor.config.toolbarCanCollapse = true;
+            Ckeditor.config.height = '72vh';
+            if (screen.height < 800) {
+              Ckeditor.config.toolbarStartupExpanded = false;
+              $('meta[name=viewport]').attr('content', 'width=device-width, initial-scale=1.0, user-scalable=no');
+            } else {
+              $('meta[name=viewport]').attr('content', 'width=device-width, initial-scale=1.0, user-scalable=yes');
+            }
             second(Ckeditor);
         } else {
             console.log("Ckeditor was not defined. Trying again in %sms",interval);

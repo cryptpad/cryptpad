@@ -1,6 +1,8 @@
 define(function () {
     var out = {};
 
+    // translations must set this key for their language to be available in
+    // the language dropdowns that are shown throughout Cryptpad's interface
     out._languageName = "Français";
 
     out.main_title = "Cryptpad: Éditeur collaboratif en temps réel, zero knowledge";
@@ -61,8 +63,6 @@ define(function () {
     out.userButton = 'UTILISATEUR';
     out.userButtonTitle = "Changer votre nom d'utilisateur";
     out.changeNamePrompt = 'Changer votre nom (laisser vide pour rester anonyme) : ';
-    out.user_login = "Connexion";
-    out.user_logout = "Déconnexion";
     out.user_rename = "Changer le nom affiché";
     out.user_displayName = "Nom affiché";
     out.user_accountName = "Nom d'utilisateur";
@@ -121,10 +121,12 @@ define(function () {
     out.recentPadsIframe = 'Vos documents récents';
 
     out.okButton = 'OK (Entrée)';
+
+    out.cancel = "Annuler";
     out.cancelButton = 'Annuler (Echap)';
 
     out.loginText = '<p>Votre nom d\'utilisateur et votre mot de passe sont utilisés pour générer une clé unique qui reste inconnue de notre serveur.</p>\n' +
-                    '<p>Faites attention de ne pas oublier vos identifiants puisqu\'ils seront impossible à récupérer.</p>';
+                    '<p>Faites attention de ne pas oublier vos identifiants puisqu\'ils seront impossible à récupérer.</p>'; //TODO
 
     out.forget = "Oublier";
 
@@ -184,6 +186,7 @@ define(function () {
     out.fm_trashName = "Corbeille";
     out.fm_unsortedName = "Fichiers non triés";
     out.fm_filesDataName = "Tous les fichiers";
+    out.fm_templateName = "Modèles";
     out.fm_newButton = "Nouveau";
     out.fm_newFolder = "Nouveau dossier";
     out.fm_folder = "Dossier";
@@ -237,6 +240,43 @@ define(function () {
     out.fo_unableToRestore = "Impossible de restaurer ce fichier à son emplacement d'origine. Vous pouvez essayer de le déplacer à un nouvel emplacement.";
     out.fo_unavailableName = "Un fichier ou dossier avec le même nom existe déjà au nouvel emplacement. Renommez cet élément avant d'essayer à nouveau.";
 
+    // login
+    out.login_login = "Connexion";
+    out.login_nologin = "Documents récents de ce navigateur";
+    out.login_register = "Inscription";
+    out.logoutButton = "Déconnexion";
+
+    out.login_migrate = "Souhaitez-vous importer les données existantes de votre session anonyme ?";
+
+    out.username_label = "Nom d'utilisateur : ";
+    out.displayname_label = "Nom affiché : ";
+
+    out.login_username = "votre nom d'utilisateur";
+    out.login_password = "votre mot de passe";
+    out.login_confirm = "confirmer votre mot de passe";
+    out.login_remember = "Se souvenir de moi";
+
+    out.login_cancel_prompt = "...ou si vous avez entré le mauvais nom d'utilisateur ou mot de passe, annulez pour essayer à nouveau.";
+
+    out.login_registerSuccess = "Inscription réalisée avec succès. Prenez soin de ne pas oublier votre mot de passe !";
+    out.login_passwordMismatch = "Les deux mots de passe entrés sont différents. Essayez à nouveau.";
+
+    out.login_warning = [
+        '<h1 id="warning">ATTENTION</h1>',
+        '<p>Cryptpad sauve vos données personnelles dans un document temps-réel chiffré, comme pour tous les autres types de documents temps-réel.</p>',
+        '<p>Votre nom d\'utilisateur et votre mot de passe ne sont jamais envoyés au serveur de manière non-chiffré.</p>',
+        '<p>Ainsi, si vous oubliez votre nom d\'utilisateur ou votre mot de passe, il n\'y a absolument rien que nous puissions faire pour retrouver vos informations perdues.</p>',
+        '<p><strong>Prenez soin de ne surtout pas oublier votre nom d\'utilisateur OU votre mot de passe !</strong></p>',
+    ].join('\n');
+
+    out.login_hashing = "Traitement de vos identifiants, cela peut nécessiter quelques instants.";
+
+    out.login_no_user = "Il n'y a aucun utilisateur associé au nom et au mot de passe que vous avez entré.";
+    out.login_confirm_password = "Veuillez taper de nouveau votre mot de passe pour vous inscrire...";
+
+    out.loginText = '<p>Votre nom d\'utilisateur et votre mot d epasse sont utilisés pour générer une clé unique qui reste inconnue de notre serveur.</p>\n' +
+                    '<p>Faîtes attention de ne pas perdre vos identifiants, puisqu\'il est impossible de les récupérer</p>';
+
     // index.html
 
     out.main_p1 = 'CryptPad est l\'éditeur collaboratif en temps réel <strong>zero knowledge</strong>. Le chiffrement est effectué depuis votre navigateur, ce qui protège les données contre le serveur, le cloud, et la NSA. La clé de chiffrement est stockée dans l\'<a href="https://fr.wikipedia.org/wiki/Identificateur_de_fragment">identifieur de fragment</a> de l\'URL qui n\'est jamais envoyée au serveur mais est accessible depuis javascript, de sorte qu\'en partageant l\'URL, vous donnez l\'accès au pad à ceux qui souhaitent participer.';
@@ -253,10 +293,19 @@ define(function () {
     out.table_created = 'Créé le';
     out.table_last = 'Dernier accès';
 
-    out.button_newpad = 'NOUVEAU DOCUMENT TEXTE';
-    out.button_newcode = 'NOUVELLE PAGE DE CODE';
-    out.button_newpoll = 'NOUVEAU SONDAGE';
-    out.button_newslide = 'NOUVELLE PRÉSENTATION';
+    out.button_newpad = 'Nouveau document texte';
+    out.button_newcode = 'Nouvelle page de code';
+    out.button_newpoll = 'Nouveau sondage';
+    out.button_newslide = 'Nouvelle présentation';
+
+    out.form_title = "Tous vos pads, partout où vous allez !";
+    out.form_username = "Nom d'utilisateur";
+    out.form_password = "Mot de passe";
+
+    out.about = "À propos";
+    out.privacy = "Vie privée";
+    out.contact = "Contact";
+    out.terms = "Conditions";
 
     // privacy.html
 

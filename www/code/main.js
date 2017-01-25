@@ -178,7 +178,9 @@ define([
                         defaultTitle: defaultName
                     }
                 };
-                obj.metadata.title = document.title;
+                if (!initializing) {
+                    obj.metadata.title = document.title;
+                }
                 // set mode too...
                 obj.highlightMode = module.highlightMode;
 
@@ -352,6 +354,7 @@ define([
             var updateMetadata = function(shjson) {
                 // Extract the user list (metadata) from the hyperjson
                 var json = (shjson === "") ? "" : JSON.parse(shjson);
+                var titleUpdated = false;
                 if (json && json.metadata) {
                     if (json.metadata.users) {
                         var userData = json.metadata.users;
@@ -362,8 +365,12 @@ define([
                         updateDefaultTitle(json.metadata.defaultTitle);
                     }
                     if (typeof json.metadata.title !== "undefined") {
-                        updateTitle(json.metadata.title);
+                        updateTitle(json.metadata.title || defaultName);
+                        titleUpdated = true;
                     }
+                }
+                if (!titleUpdated) {
+                    updateTitle(defaultName);
                 }
             };
 
@@ -519,15 +526,6 @@ define([
 
                 // set the hash
                 if (!readOnly) { Cryptpad.replaceHash(editHash); }
-
-                Cryptpad.getPadTitle(function (err, title) {
-                    if (err) {
-                        console.log("Unable to get pad title");
-                        console.error(err);
-                        return;
-                    }
-                    updateTitle(title || defaultName);
-                });
             };
 
             var unnotify = module.unnotify = function () {
