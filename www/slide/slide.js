@@ -212,19 +212,19 @@ define([
             }, 1000);
         });
         $modal.find('#button_exit').click(function (e) {
-            var e = jQuery.Event("keyup");
-            e.which = 27;
-            $modal.trigger(e);
+            var ev = $.Event("keyup");
+            ev.which = 27;
+            $modal.trigger(ev);
         });
         $modal.find('#button_left').click(function (e) {
-            var e = jQuery.Event("keyup");
-            e.which = 37;
-            $modal.trigger(e);
+            var ev = $.Event("keyup");
+            ev.which = 37;
+            $modal.trigger(ev);
         });
         $modal.find('#button_right').click(function (e) {
-            var e = jQuery.Event("keyup");
-            e.which = 39;
-            $modal.trigger(e);
+            var ev = $.Event("keyup");
+            ev.which = 39;
+            $modal.trigger(ev);
         });
 
         $(ifrw).on('keyup', function (e) {
