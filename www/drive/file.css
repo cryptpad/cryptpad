@@ -56,12 +56,10 @@ li {
   color: #eee;
   margin: -1px;
 }
-span.fa-folder {
+span.fa-folder,
+span.fa-folder-open {
   color: #FEDE8B;
   text-shadow: -1px 0 #000000, 0 1px #000000, 1px 0 #000000, 0 -1px #000000;
-}
-span.fa {
-  min-width: 20px;
 }
 /* TREE */
 #tree {
@@ -211,42 +209,44 @@ span.fa {
 #content div.grid .listElement {
   display: none;
 }
-#content .list li {
-  display: flex;
-  flex-flow: row;
-  align-items: center;
-  padding-right: 0px;
+#content .list ul {
+  display: table;
+  width: 100%;
 }
-#content .list li .element {
-  display: inline-flex;
-  flex: 1;
+#content .list li {
+  display: table-row;
+}
+#content .list li > span {
+  padding: 0 5px;
+  display: table-cell;
 }
 #content .list li.header {
   cursor: default;
-  color: #008;
-  margin-top: 10px;
+  color: #888;
 }
-#content .list li.header .element span:not(.fa) {
-  border-right: 1px solid #CCC;
+#content .list li.header span:not(.fa) {
   text-align: left;
 }
-#content .list li.header .element span.fa {
+#content .list li.header span.sortasc,
+#content .list li.header span.sortdesc {
   float: right;
 }
-#content .list li.header span.name {
-  padding-left: 0;
+#content .list li.header > span.active {
+  font-weight: bold;
+}
+#content .list li.header > span.clickable {
+  cursor: pointer;
+}
+#content .list li.header > span.clickable:hover {
+  background: #d8d8d8;
 }
 #content .list .element span {
-  padding: 0px 10px;
-  display: inline-block;
   overflow: hidden;
   white-space: nowrap;
   box-sizing: border-box;
-  padding-right: 0px;
-  border-right: 10px solid rgba(0, 0, 0, 0);
 }
-#content .list .element span.name {
-  width: 478px;
+#content .list .element span.icon {
+  width: 30px;
 }
 #content .list .element span.type,
 #content .list .element span.atime,
@@ -255,7 +255,6 @@ span.fa {
 }
 #content .list .element span.title {
   width: 250px;
-  display: inline;
 }
 @media screen and (max-width: 1200px) {
   #content .list .element span.title {
@@ -265,9 +264,6 @@ span.fa {
 #content .list .element span.folders,
 #content .list .element span.files {
   width: 150px;
-}
-#content .list .header span.name {
-  width: 500px;
 }
 .parentFolder {
   cursor: pointer;

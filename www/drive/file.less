@@ -66,12 +66,9 @@ li {
 }
 
 span {
-    &.fa-folder {
+    &.fa-folder, &.fa-folder-open {
         color: #FEDE8B;
         text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-    }
-    &.fa {
-        min-width: 20px;
     }
 }
 
@@ -240,68 +237,62 @@ span {
     }
 
     .list {
+        // Make it act as a table!
+        ul {
+            display: table;
+            width: 100%;
+        }
         li {
-            display: flex;
-            flex-flow: row;
-            align-items: center;
-            padding-right: 0px;
-            .element {
-                display: inline-flex;
-                flex: 1;
+            display: table-row;
+            &> span {
+                padding: 0 5px;
+                display: table-cell;
             }
+        }
+        li {
             &.header {
                 cursor: default;
-                color: #008;
-                margin-top: 10px;
-                .element {
-                    span {
-                        &:not(.fa) {
-                            border-right: 1px solid #CCC;
-                            text-align: left;
-                        }
-                        &.fa {
-                            float: right;
-                        }
+                color: #888;
+                span {
+                    &:not(.fa) {
+                        text-align: left;
+                    }
+                    &.sortasc, &.sortdesc {
+                        float: right;
                     }
                 }
-                span {
-                    &.name {
-                        padding-left: 0;
+                &> span {
+                    &.active {
+                        font-weight: bold;
+                    }
+                    &.clickable {
+                        cursor: pointer;
+                        &:hover {
+                            background: #d8d8d8;
+                        }
                     }
                 }
             }
         }
         .element {
             span {
-                padding: 0px 10px;
-                display: inline-block;
                 overflow: hidden;
                 white-space: nowrap;
                 box-sizing: border-box;
-                padding-right: 0px;
-                border-right: 10px solid rgba(0, 0, 0, 0);
-                &.name {
-                    width: 478px;
+                &.icon {
+                    width: 30px;
                 }
                 &.type, &.atime, &.ctime {
                     width: 175px;
                 }
                 &.title {
                     width: 250px;
-                    display: inline;
                     @media screen and (max-width: 1200px) {
                         display: none;
                     }
                 }
                 &.folders, &.files {
                     width: 150px;
-                }
-            }
-        }
-        .header {
-            span {
-                &.name {
-                    width: 500px;
                 }
             }
         }
