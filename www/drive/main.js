@@ -183,16 +183,15 @@ define([
 
 
         // Icons
-        var $folderIcon = $('<span>', {"class": "fa fa-folder folder"});
+        var $folderIcon = $('<span>', {"class": "fa fa-folder folder icon"});
         var $folderEmptyIcon = $folderIcon.clone();
-        var $folderOpenedIcon = $('<span>', {"class": "fa fa-folder-open folder");
+        var $folderOpenedIcon = $('<span>', {"class": "fa fa-folder-open folder"});
         var $folderOpenedEmptyIcon = $folderOpenedIcon.clone();
-        var $fileIcon = $('<span>', {"class": "fa fa-file-text-o file"});
-        var $padIcon = $('<span>', {"class": "fa fa-file-word-o file"});
-        var $codeIcon = $('<span>', {"class": "fa fa-file-code-o file"});
-        var $slideIcon = $('<span>', {"class": "fa fa-file-powerpoint-o file"});
-        var $pollIcon = $('<span>', {"class": "fa fa-calendar file"});
-        var $anonIcon = $('<span>', {"class": "fa fa-user-secret file listonly"});
+        var $fileIcon = $('<span>', {"class": "fa fa-file-text-o file icon"});
+        var $padIcon = $('<span>', {"class": "fa fa-file-word-o file icon"});
+        var $codeIcon = $('<span>', {"class": "fa fa-file-code-o file icon"});
+        var $slideIcon = $('<span>', {"class": "fa fa-file-powerpoint-o file icon"});
+        var $pollIcon = $('<span>', {"class": "fa fa-calendar file icon"});
         var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
         var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
         var $templateIcon = $('<span>', {"class": "fa fa-cubes"});
@@ -202,8 +201,8 @@ define([
         var $expandIcon = $('<span>', {"class": "fa fa-plus-square-o expcol"});
         var $listIcon = $('<span>', {"class": "fa fa-list"});
         var $gridIcon = $('<span>', {"class": "fa fa-th"});
-        var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up"});
-        var $sortDescIcon = $('<span>', {"class": "fa fa-angle-down"});
+        var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up sortasc"});
+        var $sortDescIcon = $('<span>', {"class": "fa fa-angle-down sortdesc"});
         var $closeIcon = $('<span>', {"class": "fa fa-window-close"});
 
         if (!APP.readOnly) {
@@ -235,7 +234,7 @@ define([
             $iframe.find('.selected').removeClass("selected");
         };
         var removeInput =  function () {
-            $iframe.find('li > span:hidden').show();
+            $iframe.find('li > span:hidden').attr('style', undefined);
             $iframe.find('li > input').remove();
         };
 
@@ -367,8 +366,8 @@ define([
                 return true;
             }
 
-            // $element should be the <span class="element">, find it if it's not the case
-            var $element = $(e.target).closest('li').children('span.element');
+            // $element should be the <li class="element">
+            var $element = $(e.target).closest('li');
             onElementClick(undefined, $element);
             if (!$element.length) {
                 logError("Unable to locate the .element tag", e.target);
@@ -673,22 +672,20 @@ define([
 
             var element = filesOp.findElement(files, newPath);
             var $icon = !isFolder ? getFileIcon(element) : undefined;
-            var spanClass = 'file-element element';
-            var liClass = 'file-item';
+            var liClass = 'file-item file-element element';
             if (isFolder) {
-                spanClass = 'folder-element element';
-                liClass = 'folder-item';
+                liClass = 'folder-item folder-element element';
                 $icon = filesOp.isFolderEmpty(root[key]) ? $folderEmptyIcon.clone() : $folderIcon.clone();
-            }
-            var $name = $('<span>', { 'class': spanClass }).text(key);
-            if (isFolder) {
-                addFolderData(element, key, $name);
-            } else {
-                addFileData(element, key, $name, true);
             }
             var $element = $('<li>', {
                 draggable: true
-            }).append($icon).append($name).dblclick(function () {
+            });
+            if (isFolder) {
+                addFolderData(element, key, $element);
+            } else {
+                addFileData(element, key, $element, true);
+            }
+            $element.prepend($icon).dblclick(function () {
                 if (isFolder) {
                     module.displayDirectory(newPath);
                     return;
@@ -946,18 +943,19 @@ define([
                 $icon = $sortDescIcon.clone();
             }
             if (typeof(Cryptpad.getLSAttribute(SORT_FOLDER_DESC)) !== "undefined") {
-                $list.find('.foldername').prepend($icon);
+                $list.find('.foldername').addClass('active').prepend($icon);
             }
         };
         var getFolderListHeader = function () {
-            var $folderHeader = $('<li>', {'class': 'header listElement'});
-            var $fohElement = $('<span>', {'class': 'element'}).appendTo($folderHeader);
-            var $name = $('<span>', {'class': 'name foldername'}).text(Messages.fm_folderName).click(onSortByClick);
+            var $fohElement = $('<li>', {'class': 'header listElement'});
+            //var $fohElement = $('<span>', {'class': 'element'}).appendTo($folderHeader);
+            var $fhIcon = $('<span>', {'class': 'icon'});
+            var $name = $('<span>', {'class': 'name foldername clickable'}).text(Messages.fm_folderName).click(onSortByClick);
             var $subfolders = $('<span>', {'class': 'folders listElement'}).text(Messages.fm_numberOfFolders);
             var $files = $('<span>', {'class': 'files listElement'}).text(Messages.fm_numberOfFiles);
-            $fohElement.append($name).append($subfolders).append($files);
+            $fohElement.append($fhIcon).append($name).append($subfolders).append($files);
             addFolderSortIcon($fohElement);
-            return $folderHeader;
+            return $fohElement;
         };
         var addFileSortIcon = function ($list) {
             var $icon = $sortAscIcon.clone();
@@ -968,19 +966,20 @@ define([
             if (Cryptpad.getLSAttribute(SORT_FILE_BY) === '') { classSorted = 'filename'; }
             else if (Cryptpad.getLSAttribute(SORT_FILE_BY)) { classSorted = Cryptpad.getLSAttribute(SORT_FILE_BY); }
             if (classSorted) {
-                $list.find('.' + classSorted).prepend($icon);
+                $list.find('.' + classSorted).addClass('active').prepend($icon);
             }
         };
         // _WORKGROUP_ : do not display title, atime and ctime in workgroups since we don't have files data
         var getFileListHeader = function (displayTitle) {
-            var $fileHeader = $('<li>', {'class': 'file-header header listElement'});
-            var $fihElement = $('<span>', {'class': 'element'}).appendTo($fileHeader);
-            var $fhName = $('<span>', {'class': 'name filename'}).text(Messages.fm_fileName).click(onSortByClick);
-            var $fhTitle = $('<span>', {'class': 'title '}).text(Messages.fm_title).click(onSortByClick);
-            var $fhType = $('<span>', {'class': 'type'}).text(Messages.table_type).click(onSortByClick);
-            var $fhAdate = $('<span>', {'class': 'atime'}).text(Messages.fm_lastAccess).click(onSortByClick);
-            var $fhCdate = $('<span>', {'class': 'ctime'}).text(Messages.fm_creation).click(onSortByClick);
-            $fihElement.append($fhName);
+            var $fihElement = $('<li>', {'class': 'file-header header listElement element'});
+            //var $fihElement = $('<span>', {'class': 'element'}).appendTo($fileHeader);
+            var $fhIcon = $('<span>', {'class': 'icon'});
+            var $fhName = $('<span>', {'class': 'name filename clickable'}).text(Messages.fm_fileName).click(onSortByClick);
+            var $fhTitle = $('<span>', {'class': 'title clickable'}).text(Messages.fm_title).click(onSortByClick);
+            var $fhType = $('<span>', {'class': 'type clickable'}).text(Messages.table_type).click(onSortByClick);
+            var $fhAdate = $('<span>', {'class': 'atime clickable'}).text(Messages.fm_lastAccess).click(onSortByClick);
+            var $fhCdate = $('<span>', {'class': 'ctime clickable'}).text(Messages.fm_creation).click(onSortByClick);
+            $fihElement.append($fhIcon).append($fhName);
             if (displayTitle && !isWorkgroup()) {
                 $fihElement.append($fhTitle);
             }
@@ -989,7 +988,8 @@ define([
                 $fihElement.append($fhAdate).append($fhCdate);
             }
             addFileSortIcon($fihElement);
-            return $fileHeader;
+            return $fihElement;
+            //return $fileHeader;
         };
 
         var allFilesSorted = function () {
@@ -1098,11 +1098,12 @@ define([
                 }
                 var idx = files[rootName].indexOf(href);
                 var $icon = getFileIcon(href);
-                var $name = $('<span>', { 'class': 'file-element element' });
-                addFileData(href, file.title, $name, false);
                 var $element = $('<li>', {
+                    'class': 'file-element element',
                     draggable: draggable
-                }).append($icon).append($name).dblclick(function () {
+                });
+                addFileData(href, file.title, $element, false);
+                $element.prepend($icon).dblclick(function () {
                     openFile(href);
                 });
                 var path = [rootName, idx];
@@ -1129,9 +1130,9 @@ define([
             var sortedFiles = sortElements(false, [FILES_DATA], keys, Cryptpad.getLSAttribute(SORT_FILE_BY), !getSortFileDesc(), false, true);
             sortedFiles.forEach(function (file) {
                 var $icon = getFileIcon(file.href);
-                var $name = $('<span>', { 'class': 'file-element element' });
-                addFileData(file.href, file.title, $name, false);
-                var $element = $('<li>').append($icon).append($name).dblclick(function () {
+                var $element = $('<li>', { 'class': 'file-element element' })
+                addFileData(file.href, file.title, $element, false);
+                $element.prepend($icon).dblclick(function () {
                     openFile(file.href);
                 });
                 $element.click(function(e) {
