@@ -374,7 +374,7 @@ define([
         if (config.displayed.indexOf('useradmin') !== -1) {
             if (!config.userName || !config.userName.setName || !config.userName.lastName) {
                 throw new Error("You must provide a `userName` object containing `setName` (function) " +
-                                "and `lastName` (object) if you want to display the user admin menu.")
+                                "and `lastName` (object) if you want to display the user admin menu.");
             }
             var $displayedName = $('<span>', {'class': USERNAME_CLS});
             var accountName = Cryptpad.getStore().getLoginName ? Cryptpad.getStore().getLoginName() : null;
@@ -388,7 +388,7 @@ define([
             var $userName = $('<span>', {'class': 'userDisplayName'});
             if (readOnly !== 1) {
                 // Hide "Display name:" in read only mode
-                $userName.append(Messages.user_displayName + ': ')
+                $userName.append(Messages.user_displayName + ': ');
             }
             $userName.append($displayedName.clone());
             $userAdminContent.append($userName);
@@ -429,12 +429,12 @@ define([
             if (account) {
                 $button.append($('<span>', {'class': 'account-name'}).text('(' + accountName + ')'));
             }
-            var dropdownConfig = {
+            var dropdownConfigUser = {
                 text: $button.html(), // Button initial text
                 options: options, // Entries displayed in the menu
                 left: true, // Open to the left of the button
             };
-            var $userAdmin = Cryptpad.createDropdown(dropdownConfig);
+            var $userAdmin = Cryptpad.createDropdown(dropdownConfigUser);
             $userContainer.append($userAdmin);
 
             $userAdmin.find('a.logout').click(function (e) {
@@ -569,9 +569,9 @@ define([
                     return;
                 }
 
-                var e = jQuery.Event("keyup");
-                e.which = 13;
-                $titleElement.find('input').trigger(e);
+                var ev = $.Event("keyup");
+                ev.which = 13;
+                $titleElement.find('input').trigger(ev);
 
                 /*
                 $titleElement.find('input').hide();

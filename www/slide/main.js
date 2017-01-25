@@ -766,7 +766,7 @@ define([
                 }
                 Slide.update(remoteDoc);
 
-                if (oldDoc !== newDoc) {
+                if (oldDoc !== remoteDoc) {
                     notify();
                 }
             };
