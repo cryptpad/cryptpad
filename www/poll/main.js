@@ -192,6 +192,20 @@ define([
         }
     };
 
+    var unnotify = function () {
+        if (APP.tabNotification &&
+            typeof(APP.tabNotification.cancel) === 'function') {
+            APP.tabNotification.cancel();
+        }
+    };
+
+    var notify = function () {
+        if (Visible.isSupported() && !Visible.currently()) {
+            unnotify();
+            APP.tabNotification = Notify.tab(1000, 10);
+        }
+    };
+
     /*  Any time the realtime object changes, call this function */
     var change = function (o, n, path, throttle) {
         if (path && !Cryptpad.isArray(path)) {
@@ -400,20 +414,6 @@ define([
         ['textarea'].forEach(function (sel) {
             $(sel).attr('disabled', bool);
         });
-    };
-
-    var unnotify = function () {
-        if (APP.tabNotification &&
-            typeof(APP.tabNotification.cancel) === 'function') {
-            APP.tabNotification.cancel();
-        }
-    };
-
-    var notify = function () {
-        if (Visible.isSupported() && !Visible.currently()) {
-            unnotify();
-            APP.tabNotification = Notify.tab(1000, 10);
-        }
     };
 
     var userData = APP.userData = {}; // List of pretty names for all users (mapped with their ID)

@@ -495,8 +495,9 @@ define([
                 updateMetadata(shjson);
 
                 var newInner = JSON.parse(shjson);
+                var newSInner;
                 if (newInner.length > 2) {
-                    var newSInner = stringify(newInner[2]);
+                    newSInner = stringify(newInner[2]);
                 }
 
                 // build a dom from HJSON, diff, and patch the editor
@@ -535,7 +536,7 @@ define([
 
                 // Notify only when the content has changed, not when someone has joined/left
                 var oldSInner = stringify(JSON.parse(oldShjson)[2]);
-                if (newSInner !== oldSInner) {
+                if (newSInner && newSInner !== oldSInner) {
                     notify();
                 }
             };
