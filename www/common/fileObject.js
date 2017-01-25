@@ -713,11 +713,6 @@ define([
             });
         };
 
-        var isAnonFile = exp.isAnonFile = function (file) {
-            var data = getFileData(file);
-            return !data.owner;
-        };
-
         var fixFiles = exp.fixFiles = function () {
             // Explore the tree and check that everything is correct:
             //  * 'root', 'trash', 'unsorted' and 'filesData' exist and are objects
@@ -739,11 +734,6 @@ define([
                         debug("An element in ROOT was not a folder nor a file. ", element[el]);
                         element[el] = undefined;
                         delete element[el];
-                    } else if (isFile(element[el])) {
-                        if (isAnonFile(element[el])) {
-                            debug("An element in ROOT was an anonymous file. ", element[el]);
-                            delete element[el];
-                        }
                     } else if (isFolder(element[el])) {
                         fixRoot(element[el]);
                     }
@@ -756,7 +746,6 @@ define([
                 var addToClean = function (obj, idx) {
                     if (typeof(obj) !== "object") { toClean.push(idx); return; }
                     if (!isFile(obj.element) && !isFolder(obj.element)) { toClean.push(idx); return; }
-                    if (isFile(obj.element) && isAnonFile(obj.element)) { toClean.push(idx); return; }
                     if (!$.isArray(obj.path)) { toClean.push(idx); return; }
                 };
                 for (var el in tr) {
@@ -781,7 +770,7 @@ define([
                 var templateFiles = getTemplateFiles();
                 var toClean = [];
                 us.forEach(function (el, idx) {
-                    if (!isFile(el) || rootFiles.indexOf(el) !== -1 || templateFiles.indexOf(el) !== -1 || isAnonFile(el)) {
+                    if (!isFile(el) || rootFiles.indexOf(el) !== -1 || templateFiles.indexOf(el) !== -1) {
                         toClean.push(idx);
                     }
                 });
@@ -797,7 +786,7 @@ define([
                 var unsortedFiles = getUnsortedFiles();
                 var toClean = [];
                 us.forEach(function (el, idx) {
-                    if (!isFile(el) || rootFiles.indexOf(el) !== -1 || unsortedFiles.indexOf(el) !== -1 || isAnonFile(el)) {
+                    if (!isFile(el) || rootFiles.indexOf(el) !== -1 || unsortedFiles.indexOf(el) !== -1) {
                         toClean.push(idx);
                     }
                 });
@@ -812,7 +801,6 @@ define([
                 var unsortedFiles = getUnsortedFiles();
                 var templateFiles = getTemplateFiles();
                 var trashFiles = getTrashFiles();
-                //var anonFiles = getAnonFiles();
                 var toClean = [];
                 fd.forEach(function (el, idx) {
                     if (typeof(el) !== "object") {

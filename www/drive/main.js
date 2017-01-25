@@ -648,17 +648,12 @@ define([
 
         var getFileIcon = function (href) {
             var $icon = $fileIcon.clone();
-            var data = filesOp.getFileData(href);
-            if (!data) { return $icon; }
 
             if (href.indexOf('/pad/') !== -1) { $icon = $padIcon.clone() }
             else if (href.indexOf('/code/') !== -1) { $icon = $codeIcon.clone() }
             else if (href.indexOf('/slide/') !== -1) { $icon = $slideIcon.clone() }
             else if (href.indexOf('/poll/') !== -1) { $icon = $pollIcon.clone() }
 
-            if (!data.owner) {
-                $icon = $('<span>').append($anonIcon.clone()).append($icon);
-            }
             return $icon;
         };
 
@@ -1249,7 +1244,7 @@ define([
             var $fileHeader = getFileListHeader(true);
 
             if (isUnsorted || isTemplate) {
-                displayHrefArray($list, path[0]);
+                displayHrefArray($list, path[0], true);
             } else if (isAllFiles) {
                 displayAllFiles($list);
             } else if (isTrashRoot) {
@@ -1676,7 +1671,7 @@ define([
             var path = arguments[2];
             if (path[0] !== 'drive') { return false; }
             path = path.slice(1);
-            var cPath = filesOp.isPathInAnon(currentPath) ? [FILES_DATA] : currentPath.slice();
+            var cPath = currentPath.slice();
             if ((filesOp.isPathInUnsorted(cPath) && filesOp.isPathInUnsorted(path)) ||
                     (filesOp.isPathInTemplate(cPath) && filesOp.isPathInTemplate(path)) ||
                     (path.length >= cPath.length && filesOp.isSubpath(path, cPath)) ||
@@ -1684,7 +1679,7 @@ define([
                 // Reload after a few ms to make sure all the change events have been received
                 onRefresh.refresh();
             } else if (path.length && path[0] === FILES_DATA) {
-                if (filesOp.isPathInHrefArray(cPath) || filesOp.isPathInAnon(path)) {
+                if (filesOp.isPathInHrefArray(cPath)) {
                     onRefresh.refresh();
                 } else {
                     refreshFilesData();

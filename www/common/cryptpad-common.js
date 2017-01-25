@@ -576,9 +576,6 @@ define([
 
             if (!contains) {
                 var data = makePad(href, name);
-                if (common.initialPath) {
-                    data.owner = getStore().getLoginName(); // TODO use owner id here?
-                }
                 renamed.push(data);
                 if (USE_FS_STORE && common.initialPath && typeof(getStore().addPad) === "function") {
                     getStore().addPad(href, common.initialPath, name);
