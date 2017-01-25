@@ -8,7 +8,6 @@ define([
     var ROOT = "root";
     var UNSORTED = "unsorted";
     var FILES_DATA = "filesData";
-    var ANON = "anon"; // virtual path
     var TRASH = "trash";
     var TEMPLATE = "template";
     var NEW_FOLDER_NAME = Messages.fm_newFolder;
@@ -57,9 +56,6 @@ define([
         };
         var isPathInTrash = exp.isPathInTrash = function (path) {
             return path[0] && path[0] === TRASH;
-        };
-        var isPathInAnon = exp.isPathInAnon = function (path) {
-            return path[0] && path[0] === ANON;
         };
 
         var isPathInFilesData = exp.isPathInFilesData = function (path) {
@@ -231,13 +227,6 @@ define([
             return ret;
         };
 
-        /*var getAnonFiles = exp.getAnonFiles = function () {
-            if (!files[ANON]) {
-                files[ANON] = [];
-            }
-            return files[ANON].slice();
-        };*///TODO
-
         var removeFileFromRoot = function (root, href) {
             if (isFile(root)) { return; }
             for (var e in root) {
@@ -254,6 +243,17 @@ define([
 
         var isInTrashRoot = exp.isInTrashRoot = function (path) {
             return path[0] === TRASH && path.length === 4;
+        };
+
+        var removePadAttribute = function (f) {
+            Object.keys(files).forEach(function (key) {
+                var hash = f.indexOf('#') !== -1 ? f.slice(f.indexOf('#') + 1) : null;
+                if (hash && key.indexOf(hash) === 0) {
+                    debug("Deleting pad attribute in the realtime object");
+                    files[key] = undefined;
+                    delete files[key];
+                }
+            });
         };
 
         var checkDeletedFiles = function () {
@@ -279,14 +279,7 @@ define([
                 if (idx !== -1) {
                     debug("Removing", f, "from filesData");
                     files[FILES_DATA].splice(idx, 1);
-                    Object.keys(files).forEach(function (key) {
-                        var hash = f.href.indexOf('#') !== -1 ? f.href.slice(f.href.indexOf('#') + 1) : null;
-                        if (hash && key.indexOf(hash) === 0) {
-                            debug("Deleting pad attribute in the realtime object");
-                            files[key] = undefined;
-                            delete files[key];
-                        }
-                    });
+                    removePadAttribute(f.href);
                 }
             });
         };
@@ -297,7 +290,7 @@ define([
             var parentEl = exp.findElement(files, parentPath);
             if (path.length === 4 && path[0] === TRASH) {
                 files[TRASH][path[1]].splice(path[2], 1);
-            } else if (path[0] === UNSORTED) { //TODO || === TEMPLATE
+            } else if (path[0] === UNSORTED || path[0] === TEMPLATE) {
                 parentEl.splice(key, 1);
             } else {
                 parentEl[key] = undefined;
@@ -375,7 +368,6 @@ define([
         };
 
         // Move to trash
-        // TODO: rename the function
         var removeElement = exp.removeElement = function (path, cb, keepOld) {
             if (!path || path.length < 2 || path[0] === TRASH) {
                 debug("Calling removeElement from a wrong path: ", path);
@@ -409,7 +401,7 @@ define([
 
             if (isPathInHrefArray(newParentPath)) {
                 if (isFolder(element)) {
-                    log(Messages.fo_moveUnsortedError); //TODO or template
+                    log(Messages.fo_moveUnsortedError);
                     return;
                 } else {
                     if (elementPath[0] === newParentPath[0]) { return; }
@@ -595,6 +587,28 @@ define([
             if(cb) { cb(); }
         };
 
+        var deleteFileData = exp.deleteFileData = function (href, cb) {
+            if (workgroup) { return; }
+
+            var toRemove = [];
+            files[FILES_DATA].forEach(function (arr) {
+                var f = arr.href;
+                if (f === href) {
+                    toRemove.push(arr);
+                }
+            });
+            toRemove.forEach(function (f) {
+                var idx = files[FILES_DATA].indexOf(f);
+                if (idx !== -1) {
+                    debug("Removing", f, "from filesData");
+                    files[FILES_DATA].splice(idx, 1);
+                    // Remove the "padAttributes" stored in the realtime object for that pad
+                    removePadAttribute(f.href);
+                }
+            });
+
+            if(cb) { cb(); }
+        };
 
         var renameElement = exp.renameElement = function (path, newName, cb) {
             if (path.length <= 1) {
@@ -791,9 +805,6 @@ define([
                     us.splice(idx, 1);
                 });
             };
-            /*var fixAnon = function () {
-                if (!$.isArray(files[ANON])) { debug("ANON was not an array"); files[FILES_DATA] = []; }
-            };*/// TODO
             var fixFilesData = function () {
                 if (!$.isArray(files[FILES_DATA])) { debug("FILES_DATA was not an array"); files[FILES_DATA] = []; }
                 var fd = files[FILES_DATA];
@@ -809,8 +820,7 @@ define([
                         toClean.push(el);
                         return;
                     }
-                    if (el.owner
-                        && rootFiles.indexOf(el.href) === -1
+                    if (rootFiles.indexOf(el.href) === -1
                         && unsortedFiles.indexOf(el.href) === -1
                         && templateFiles.indexOf(el.href) === -1
                         && trashFiles.indexOf(el.href) === -1) {
@@ -818,9 +828,6 @@ define([
                         files[UNSORTED].push(el.href);
                         return;
                     }
-                    /*if (!el.owner && anonFiles.indexOf(el.href) === -1) {
-                        files[ANON].push(el.href);
-                    }*/// TODO
                 });
                 toClean.forEach(function (el) {
                     var idx = fd.indexOf(el);

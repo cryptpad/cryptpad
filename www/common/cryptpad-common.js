@@ -407,7 +407,7 @@ define([
 
     // STORAGE
     var setPadAttribute = common.setPadAttribute = function (attr, value, cb, legacy) {
-        getStore(legacy).set([getHash(), attr].join('.'), value, function (err, data) {
+        getStore(legacy).setDrive([getHash(), attr].join('.'), value, function (err, data) {
             cb(err, data);
         });
     };
@@ -422,7 +422,7 @@ define([
 
     // STORAGE
     var getPadAttribute = common.getPadAttribute = function (attr, cb, legacy) {
-        getStore(legacy).get([getHash(), attr].join('.'), function (err, data) {
+        getStore(legacy).getDrive([getHash(), attr].join('.'), function (err, data) {
             cb(err, data);
         });
     };
@@ -577,7 +577,7 @@ define([
             if (!contains) {
                 var data = makePad(href, name);
                 if (common.initialPath) {
-                    data.owner = 1; // TODO use owner id here?
+                    data.owner = getStore().getLoginName(); // TODO use owner id here?
                 }
                 renamed.push(data);
                 if (USE_FS_STORE && common.initialPath && typeof(getStore().addPad) === "function") {

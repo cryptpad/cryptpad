@@ -45,10 +45,6 @@ define([
     var TRASH = "trash";
     var TRASH_NAME = Messages.fm_trashName;
 
-    // anon: Virtual path, not stored in the object but extracted from FILES_DATA
-    var ANON = "anon";
-    var ANON_NAME = Messages.fm_anonName || 'Anon pads......';
-
     var LOCALSTORAGE_LAST = "cryptpad-file-lastOpened";
     var LOCALSTORAGE_OPENED = "cryptpad-file-openedFolders";
     var LOCALSTORAGE_VIEWMODE = "cryptpad-file-viewMode";
@@ -173,7 +169,7 @@ define([
 
         // FILE MANAGER
         // _WORKGROUP_ and other people drive : display Documents as main page
-        var currentPath = module.currentPath = APP.loggedIn ? isOwnDrive() ? getLastOpenedFolder() : [ROOT] : [ANON];
+        var currentPath = module.currentPath = isOwnDrive() ? getLastOpenedFolder() : [ROOT];
         var lastSelectTime;
         var selectedElement;
 
@@ -192,6 +188,11 @@ define([
         var $folderOpenedIcon = $('<span>', {"class": "fa fa-folder-open folder", style:"color:#FEDE8B;text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;"});
         var $folderOpenedEmptyIcon = $folderOpenedIcon.clone();
         var $fileIcon = $('<span>', {"class": "fa fa-file-text-o file"});
+        var $padIcon = $('<span>', {"class": "fa fa-file-word-o file"});
+        var $codeIcon = $('<span>', {"class": "fa fa-file-code-o file"});
+        var $slideIcon = $('<span>', {"class": "fa fa-file-powerpoint-o file"});
+        var $pollIcon = $('<span>', {"class": "fa fa-calendar file"});
+        var $anonIcon = $('<span>', {"class": "fa fa-user-secret file listonly"});
         var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
         var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
         var $templateIcon = $('<span>', {"class": "fa fa-cubes"});
@@ -645,6 +646,22 @@ define([
             $span.append($name).append($subfolders).append($files);
         };
 
+        var getFileIcon = function (href) {
+            var $icon = $fileIcon.clone();
+            var data = filesOp.getFileData(href);
+            if (!data) { return $icon; }
+
+            if (href.indexOf('/pad/') !== -1) { $icon = $padIcon.clone() }
+            else if (href.indexOf('/code/') !== -1) { $icon = $codeIcon.clone() }
+            else if (href.indexOf('/slide/') !== -1) { $icon = $slideIcon.clone() }
+            else if (href.indexOf('/poll/') !== -1) { $icon = $pollIcon.clone() }
+
+            if (!data.owner) {
+                $icon = $('<span>').append($anonIcon.clone()).append($icon);
+            }
+            return $icon;
+        };
+
         // Create the "li" element corresponding to the file/folder located in "path"
         var createElement = function (path, elPath, root, isFolder) {
             // Forbid drag&drop inside the trash
@@ -660,7 +677,7 @@ define([
             }
 
             var element = filesOp.findElement(files, newPath);
-            var $icon = $fileIcon.clone();
+            var $icon = !isFolder ? getFileIcon(element) : undefined;
             var spanClass = 'file-element element';
             var liClass = 'file-item';
             if (isFolder) {
@@ -732,7 +749,6 @@ define([
             else if (name === TRASH && path.length === 1) { name = TRASH_NAME; }
             else if (name === UNSORTED && path.length === 1) { name = UNSORTED_NAME; }
             else if (name === TEMPLATE && path.length === 1) { name = TEMPLATE_NAME; }
-            else if (name === ANON && path.length === 1) { name = ANON_NAME; }
             else if (name === FILES_DATA && path.length === 1) { name = FILES_DATA_NAME; }
             else if (filesOp.isPathInTrash(path)) { name = getTrashTitle(path); }
             var $title = $('<h1>').text(name);
@@ -844,7 +860,7 @@ define([
                 options.push({tag: 'hr'});
             }
             AppConfig.availablePadTypes.forEach(function (type) {
-                var path = filesOp.comparePath(currentPath, [ANON]) ? '' : '/#?path=' + encodeURIComponent(currentPath);
+                var path = '/#?path=' + encodeURIComponent(currentPath);
                 options.push({
                     tag: 'a',
                     attributes: {
@@ -1086,7 +1102,7 @@ define([
                     //return;
                 }
                 var idx = files[rootName].indexOf(href);
-                var $icon = $fileIcon.clone();
+                var $icon = getFileIcon(href);
                 var $name = $('<span>', { 'class': 'file-element element' });
                 addFileData(href, file.title, $name, false);
                 var $element = $('<li>', {
@@ -1108,18 +1124,16 @@ define([
             });
         };
 
-        var displayAllFiles = function ($container, anon) {
+        var displayAllFiles = function ($container) {
             var allfiles = files[FILES_DATA];
             if (allfiles.length === 0) { return; }
             var $fileHeader = getFileListHeader(false);
             $container.append($fileHeader);
-            var keys = allfiles.filter(function (el) {
-                return anon && !el.owner || !anon && el.owner;
-            });
+            var keys = allfiles;
 
             var sortedFiles = sortElements(false, [FILES_DATA], keys, Cryptpad.getLSAttribute(SORT_FILE_BY), !getSortFileDesc(), false, true);
             sortedFiles.forEach(function (file) {
-                var $icon = $fileIcon.clone();
+                var $icon = getFileIcon(file.href);
                 var $name = $('<span>', { 'class': 'file-element element' });
                 addFileData(file.href, file.title, $name, false);
                 var $element = $('<li>').append($icon).append($name).dblclick(function () {
@@ -1181,7 +1195,7 @@ define([
             if (!appStatus.isReady && !force) { return; }
             // Only Trash and Root are available in not-owned files manager
             if (isWorkgroup() && !filesOp.isPathInTrash(path) && !filesOp.isPathInRoot(path)) {
-                log("TRANSLATE or REMOVE: Unable to open the selected category, displaying root"); //TODO translate
+                log("Unable to open the selected category, displaying root"); //TODO translate
                 currentPath = [ROOT];
                 displayDirectory(currentPath);
                 return;
@@ -1197,10 +1211,9 @@ define([
             var isUnsorted = filesOp.comparePath(path, [UNSORTED]);
             var isTemplate = filesOp.comparePath(path, [TEMPLATE]);
             var isAllFiles = filesOp.comparePath(path, [FILES_DATA]);
-            var isAnon = filesOp.comparePath(path, [ANON]);
 
             var root = filesOp.findElement(files, path);
-            if (typeof(root) === "undefined" && !isAnon) {
+            if (typeof(root) === "undefined") {
                 log(Messages.fm_unknownFolderError);
                 debug("Unable to locate the selected directory: ", path);
                 var parentPath = path.slice();
@@ -1236,12 +1249,9 @@ define([
             var $fileHeader = getFileListHeader(true);
 
             if (isUnsorted || isTemplate) {
-                // 3rd parameter is "draggable": anon pads shouldn't be draggable
-                displayHrefArray($list, path[0], !isAnon);
+                displayHrefArray($list, path[0]);
             } else if (isAllFiles) {
-                displayAllFiles($list, false);
-            } else if (isAnon) {
-                displayAllFiles($list, true);
+                displayAllFiles($list);
             } else if (isTrashRoot) {
                 displayTrashRoot($list, $folderHeader, $fileHeader);
             } else {
@@ -1392,18 +1402,6 @@ define([
             $container.append($allfilesList);
         };
 
-        var createAnonFiles = function ($container, path, anonUser) {
-            var $icon = $unsortedIcon.clone();
-            var isOpened = filesOp.comparePath(path, currentPath);
-            var $allfilesElement = createTreeElement(ANON_NAME, $icon, [ANON], false, false, false, isOpened);
-            $allfilesElement.addClass('root');
-            var $allfilesList = $('<ul>', { id: 'anonTree', 'class': 'category2' }).append($allfilesElement);
-            if (anonUser) {
-                $allfilesList.removeClass('category2');
-            }
-            $container.append($allfilesList);
-        };
-
         var createTrash = function ($container, path) {
             var $icon = filesOp.isFolderEmpty(files[TRASH]) ? $trashEmptyIcon.clone() : $trashIcon.clone();
             var isOpened = filesOp.comparePath(path, currentPath);
@@ -1426,15 +1424,10 @@ define([
 
         var resetTree = module.resetTree = function () {
             $tree.html('');
-            if (!APP.loggedIn) {
-                createAnonFiles($tree, [ANON], true);
-                return;
-            }
             createTree($tree, [ROOT]);
             if (!isWorkgroup()) {
                 createUnsorted($tree, [UNSORTED]);
                 createTemplate($tree, [TEMPLATE]);
-                createAnonFiles($tree, [ANON]);
                 createAllFiles($tree, [FILES_DATA]);
             }
             createTrash($tree, [TRASH]);
@@ -1636,26 +1629,23 @@ define([
                 var $selected = $iframe.find('.selected');
                 if (!$selected.length) { return; }
                 var paths = [];
+                var isTrash = filesOp.isPathInTrash(currentPath);
                 $selected.each(function (idx, elmt) {
                     if (!$(elmt).data('path')) { return; }
                     paths.push($(elmt).data('path'));
                 });
-                // If we are in the trash or if we are holding the "shift" key, delete permanently,
-                // else move to trash
-                if (filesOp.isPathInTrash(currentPath) || e.shiftKey) {
-                    var cb = filesOp.removeFromTrash;
-                    if (!filesOp.isPathInTrash(currentPath)) {
-                        // If we are not in the trash, we just have to remove the key from root/unsorted
-                        cb = filesOp.deletePathPermanently;
+                // If we are in the trash or anon pad or if we are holding the "shift" key, delete permanently,
+                if (isTrash || e.shiftKey) {
+                    var cb = filesOp.removeFromTrash; // We're in the trash
+                    if (!isTrash) {
+                        cb = filesOp.deletePathPermanently; // We're in root/unsorted/template
                     }
-                    // If we are already in the trash, delete the elements permanently
+
                     var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [paths.length]);
-                    if (paths.length === 1) { // If we delete only one element, display its name in the popup
-                        var path = paths[0];
-                        var element = filesOp.findElement(files, path);
-                        var name = filesOp.isInTrashRoot(path) ? path[1] : (filesOp.isPathInHrefArray(path) ? filesOp.getTitle(element) : path[path.length - 1]);
-                        msg = Messages._getKey("fm_removePermanentlyDialog", [name]);
+                    if (paths.length === 1) {
+                        msg = Messages.fm_removePermanentlyDialog;
                     }
+
                     Cryptpad.confirm(msg, function(res) {
                         if (!res) { return; }
                         paths.forEach(function(p) {
@@ -1665,6 +1655,7 @@ define([
                     });
                     return;
                 }
+                // else move to trash
                 moveElements(paths, [TRASH], false, refresh);
             }
         });

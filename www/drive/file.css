@@ -247,6 +247,10 @@ li {
     text-align: center;
 }
 
+#content .grid li .fa.listonly {
+    display: none;
+}
+
 #content .list li {
     display: flex;
     flex-flow: row;
