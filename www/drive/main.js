@@ -235,7 +235,7 @@ define([
             $iframe.find('.selected').removeClass("selected");
         };
         var removeInput =  function () {
-            $iframe.find('li > span:hidden').attr('style', undefined);
+            $iframe.find('li > span:hidden').removeAttr('style');
             $iframe.find('li > input').remove();
         };
 
@@ -280,7 +280,8 @@ define([
             }
             removeInput();
             removeSelected();
-            $element.hide();
+            var $name = $element.find('.name');
+            $name.hide();
             var name = path[path.length - 1];
             var $input = $('<input>', {
                 placeholder: name,
@@ -295,7 +296,7 @@ define([
                 }
             });
             //$element.parent().append($input);
-            $element.after($input);
+            $name.after($input);
             $input.focus();
             $input.select();
             // We don't want to open the file/folder when clicking on the input
@@ -311,10 +312,12 @@ define([
             });
             // Make the parent element non-draggable when selecting text in the field
             // since it would remove the input
-            $input.on('mousedown', function () {
+            $input.on('mousedown', function (e) {
+                e.stopPropagation();
                 $input.parents('li').attr("draggable", false);
             });
-            $input.on('mouseup', function () {
+            $input.on('mouseup', function (e) {
+                e.stopPropagation();
                 $input.parents('li').attr("draggable", true);
             });
         };
@@ -322,6 +325,7 @@ define([
         // Add the "selected" class to the "li" corresponding to the clicked element
         var onElementClick = function (e, $element, path) {
             // If "Ctrl" is pressed, do not remove the current selection
+            removeInput();
             if (!e || !e.ctrlKey) {
                 removeSelected();
             }
@@ -713,7 +717,7 @@ define([
             var isNewFolder = module.newFolder && filesOp.comparePath(newPath, module.newFolder);
             if (isNewFolder) {
                 appStatus.onReady(function () {
-                    window.setTimeout(function () { displayRenameInput($name, newPath); }, 0);
+                    window.setTimeout(function () { displayRenameInput($element, newPath); }, 0);
                 });
                 delete module.newFolder;
             }

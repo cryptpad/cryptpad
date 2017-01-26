@@ -194,7 +194,7 @@ span.fa-folder-open {
   margin-left: 10px;
   float: right;
 }
-#content li:not(.header) * {
+#content li:not(.header) *:not(input) {
   pointer-events: none;
 }
 #content li:not(.header):hover .name {
