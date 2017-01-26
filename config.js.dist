@@ -17,7 +17,7 @@ module.exports = {
 /*
     httpHeaders: {
         "Content-Security-Policy": [
-            "default-serc 'none'",
+            "default-src 'none'",
             "style-src 'unsafe-inline' 'self'",
             "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
             "child-src 'self' cryptpad.fr *.cryptpad.fr",
