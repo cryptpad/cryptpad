@@ -13,7 +13,7 @@ define([
     var NEW_FOLDER_NAME = Messages.fm_newFolder;
 
     var init = module.init = function (files, config) {
-        FILES_DATA = config.storageKey;
+        FILES_DATA = config.storageKey || FILES_DATA;
         var DEBUG = config.DEBUG || false;
         var logging = function () {
             console.log.apply(console, arguments);
