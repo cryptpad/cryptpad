@@ -1,3 +1,22 @@
+@tree-bg: #eee;
+@tree-fg: #000;
+@tree-lines-col: #888;
+
+@content-bg: @tree-bg;
+@content-fg: @tree-fg;
+@info-box-bg: #ddddff;
+@info-box-border: #bbb;
+@table-header-fg: #888;
+@table-header-bg: #d8d8d8;
+
+@toolbar-bg: #ddd;
+@toolbar-fg: #555;
+@toolbar-border-col: #ccc;
+@toolbar-button-bg: #888;
+@toolbar-button-fg: #eee;
+@toolbar-path-bg: #fff;
+@toolbar-path-border: #888;
+
 /* PAGE */
 
 html, body {
@@ -16,6 +35,15 @@ body {
     flex-flow: column;
 }
 
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 .app-container {
     flex: 1;
     overflow: auto;
@@ -32,7 +60,7 @@ body {
 
 ul {
     list-style: none;
-    padding-left: 10px;
+    padding-left: 0px; // Remove the default padding
 }
 
 li {
@@ -78,7 +106,7 @@ span {
 #tree {
     border-right: 1px solid #ccc;
     box-sizing: border-box;
-    background: #eee;
+    background: @tree-bg;
     overflow: auto;
     resize: horizontal;
     width: 250px;
@@ -86,9 +114,10 @@ span {
     max-width: 500px;
     min-width: 200px;
     padding: 10px 0px;
+    color: @tree-fg;
     li {
         cursor: auto;
-        &> span.element:hover {
+        &:hover > span.element {
             text-decoration: underline;
         }
         &.collapsed ul {
@@ -106,6 +135,12 @@ span {
     }
     .category2 {
         margin-top: 2em;
+        .root {
+            &> .fa {
+                min-width: 30px;
+                cursor: pointer;
+            }
+        }
     }
     .fa.expcol {
         margin-left: -10px;
@@ -130,6 +165,7 @@ span {
     ul {
         margin: 0px 0px 0px 10px;
         list-style: none;
+        padding-left: 10px;
         li {
             position: relative;
             &:before {
@@ -138,9 +174,9 @@ span {
                 top: -0.25em;
                 content: '';
                 display: block;
-                border-left: 1px solid #888;
+                border-left: 1px solid @tree-lines-col;
                 height: 1em;
-                border-bottom: 1px solid #888;
+                border-bottom: 1px solid @tree-lines-col;
                 width: 17.5px;
             }
             &:after {
@@ -149,7 +185,7 @@ span {
                 bottom: -7px;
                 content: '';
                 display: block;
-                border-left: 1px solid #888;
+                border-left: 1px solid @tree-lines-col;
                 height: 100%;
             }
             &.root {
@@ -173,7 +209,8 @@ span {
 
 #content {
     box-sizing: border-box;
-    background: #eee;
+    background: @content-bg;
+    color: @content-fg;
     overflow: auto;
     flex: 1;
     display: flex;
@@ -183,12 +220,13 @@ span {
         margin-top: 10px;
     }
     .info-box {
-        margin: 0px auto;
-        padding: 5px;
-        background: #ddddff;
-        border: 1px solid #bbb;
+        height: 40px;
+        line-height: 40px;
+        padding-left: 10px;
+        margin: 10px auto;
+        background: @info-box-bg;
+        border: 1px solid @info-box-border;
         border-radius: 5px;
-        margin-bottom: 10px;
         span {
             cursor: pointer;
             margin-left: 10px;
@@ -208,6 +246,7 @@ span {
         }
     }
     div.grid {
+        padding: 20px;
         li {
             display: inline-block;
             margin: 10px 10px;
@@ -241,6 +280,7 @@ span {
         ul {
             display: table;
             width: 100%;
+            padding: 0px 10px;
         }
         li {
             display: table-row;
@@ -252,7 +292,7 @@ span {
         li {
             &.header {
                 cursor: default;
-                color: #888;
+                color: @table-header-fg;
                 span {
                     &:not(.fa) {
                         text-align: left;
@@ -262,13 +302,14 @@ span {
                     }
                 }
                 &> span {
+                    padding: 15px 5px;
                     &.active {
                         font-weight: bold;
                     }
                     &.clickable {
                         cursor: pointer;
                         &:hover {
-                            background: #d8d8d8;
+                            background: @table-header-bg;
                         }
                     }
                 }
@@ -316,28 +357,43 @@ span {
 /* Toolbar */
 
 #driveToolbar {
-    background: #ddd;
+    background: @toolbar-bg;
+    color: @toolbar-fg;
     height: 40px;
+    display: flex;
+    flex-flow: row;
+    border-top: 1px solid @toolbar-border-col;
+    border-bottom: ;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    z-index: 100;
+    box-sizing: content-box;
+
     .newPadContainer {
         display: inline-block;
         height: 100%;
     }
 
-    button.newElement {
-        border-radius: 2px;
-        height: 30px;
-        background: #888;
-        color: #eee;
-        font-size: 16px;
-        border: none;
-        font-weight: bold;
-        &:hover {
-            box-shadow: 0px 0px 2px #000;
+    button {
+        &.element {
+            border-radius: 2px;
+            height: 30px;
+            background: @toolbar-button-bg;
+            color: @toolbar-button-fg;
+            font-size: 16px;
+            border: none;
+            font-weight: bold;
+            &:hover {
+                box-shadow: 0px 0px 2px #000;
+            }
+        }
+        &.new {
+            padding: 0 20px;
         }
     }
     /* The container <div> - needed to position the dropdown content */
     .dropdown-bar {
-        margin: 4px 5px;
+        margin: 5px 5px;
+        line-height: 1em;
         position: relative;
         display: inline-block;
         &.right {
@@ -357,6 +413,36 @@ span {
     .dropdown-bar-content {
         margin-top: -3px;
         margin-right: 2px;
+    }
+
+    .leftside {
+        width: 250px;
+        margin: 0;
+        padding: 0;
+    }
+    .rightside {
+        margin: 0;
+        padding: 0;
+        flex: 1;
+    }
+    .path {
+        display: inline-block;
+        height: 100%;
+        line-height: 40px;
+        cursor: default;
+        .element {
+            padding: 5px;
+            border: 1px solid @toolbar-bg;
+            border-radius: 2px;
+            box-sizing: border-box;
+            &.clickable {
+                cursor: pointer;
+                &:hover {
+                    background: @toolbar-path-bg;
+                    border: 1px solid @toolbar-path-border;
+                }
+            }
+        }
     }
 }
 

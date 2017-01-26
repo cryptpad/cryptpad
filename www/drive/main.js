@@ -175,6 +175,7 @@ define([
 
         var $tree = $iframe.find("#tree");
         var $content = $iframe.find("#content");
+        var $driveToolbar = $iframe.find("#driveToolbar");
         var $contextMenu = $iframe.find("#treeContextMenu");
         var $contentContextMenu = $iframe.find("#contentContextMenu");
         var $defaultContextMenu = $iframe.find("#defaultContextMenu");
@@ -578,6 +579,10 @@ define([
                 onDrag(e.originalEvent, path);
             });
 
+            $element.on('mousedown', function (e) {
+                e.stopPropagation();
+            });
+
             // Add drop handlers if we are not in the trash and if the element is a folder
             if (!droppable || !isFolder) { return; }
 
@@ -648,10 +653,10 @@ define([
         var getFileIcon = function (href) {
             var $icon = $fileIcon.clone();
 
-            if (href.indexOf('/pad/') !== -1) { $icon = $padIcon.clone() }
-            else if (href.indexOf('/code/') !== -1) { $icon = $codeIcon.clone() }
-            else if (href.indexOf('/slide/') !== -1) { $icon = $slideIcon.clone() }
-            else if (href.indexOf('/poll/') !== -1) { $icon = $pollIcon.clone() }
+            if (href.indexOf('/pad/') !== -1) { $icon = $padIcon.clone(); }
+            else if (href.indexOf('/code/') !== -1) { $icon = $codeIcon.clone(); }
+            else if (href.indexOf('/slide/') !== -1) { $icon = $slideIcon.clone(); }
+            else if (href.indexOf('/poll/') !== -1) { $icon = $pollIcon.clone(); }
 
             return $icon;
         };
@@ -732,32 +737,41 @@ define([
             return title;
         };
 
+        var getPrettyName = function (name) {
+            var pName;
+            switch (name) {
+                case ROOT: pName = ROOT_NAME; break;
+                case TRASH: pName = TRASH_NAME; break;
+                case UNSORTED: pName = UNSORTED_NAME; break;
+                case TEMPLATE: pName = TEMPLATE_NAME; break;
+                case FILES_DATA: pName = FILES_DATA_NAME; break;
+                default: pName = name;
+            }
+            return pName;
+        };
+
         // Create the title block with the "parent folder" button
         var createTitle = function (path) {
-            var isTrash = path[0] === TRASH;
-            // Create title and "Up" icon
-            var name = path[path.length - 1];
-            if (name === ROOT && path.length === 1) { name = ROOT_NAME; }
-            else if (name === TRASH && path.length === 1) { name = TRASH_NAME; }
-            else if (name === UNSORTED && path.length === 1) { name = UNSORTED_NAME; }
-            else if (name === TEMPLATE && path.length === 1) { name = TEMPLATE_NAME; }
-            else if (name === FILES_DATA && path.length === 1) { name = FILES_DATA_NAME; }
-            else if (filesOp.isPathInTrash(path)) { name = getTrashTitle(path); }
-            var $title = $('<h1>').text(name);
-            if (path.length > 1) {
-                var $parentFolder = $upIcon.clone().addClass("parentFolder")
-                    .click(function() {
-                        var newPath = path.slice();
-                        newPath.pop();
-                        if (isTrash && path.length === 4) {
-                            // path = [TRASH, "{DirName}", 0, 'element']
-                            // --> parent is TRASH
-                            newPath = [TRASH];
-                        }
-                        module.displayDirectory(newPath);
+            if (!path || path.length === 0) { return; }
+            var isTrash = filesOp.isPathInTrash(path);
+            var $title = $('<span>', {'class': 'path unselectable'});
+            path.forEach(function (p, idx) {
+                if (isTrash && [1,2].indexOf(idx) !== -1) { return; }
+
+                var $span = $('<span>', {'class': 'element'});
+                if (idx < path.length - 1) {
+                    $span.addClass('clickable');
+                    $span.click(function (e) {
+                        module.displayDirectory(path.slice(0, idx + 1));
                     });
-                $title.append($parentFolder);
-            }
+                }
+
+                var name = p;
+                if (idx === 0) { name = getPrettyName(p); }
+                else { $title.append(' > '); }
+
+                $span.text(name).appendTo($title);
+            });
             return $title;
         };
 
@@ -807,10 +821,10 @@ define([
             });
 
             var $listButton = $('<button>', {
-                'class': 'newElement'
+                'class': 'element'
             }).append($listIcon.clone());
             var $gridButton = $('<button>', {
-                'class': 'newElement'
+                'class': 'element'
             }).append($gridIcon.clone());
 
             $listButton.click(function () {
@@ -871,7 +885,7 @@ define([
             var $block = Cryptpad.createDropdown(dropdownConfig);
 
             // Custom style:
-            $block.find('button').addClass('newElement');
+            $block.find('button').addClass('new').addClass('element');
 
             // Handlers
             $block.find('a.newFolder').click(function () {
@@ -1072,9 +1086,11 @@ define([
 
         // Drive content toolbar
         var createToolbar = function (path) {
-            var $toolbar = $('<div>', {
-                id: 'driveToolbar'
-            });
+            var $toolbar = $driveToolbar;
+            $toolbar.html('');
+            var $leftside = $('<div>', {'class': 'leftside'}).appendTo($toolbar);
+            $leftside.width($tree.width());
+            var $rightside = $('<div>', {'class': 'rightside'}).appendTo($toolbar);
             return $toolbar;
         };
 
@@ -1130,7 +1146,7 @@ define([
             var sortedFiles = sortElements(false, [FILES_DATA], keys, Cryptpad.getLSAttribute(SORT_FILE_BY), !getSortFileDesc(), false, true);
             sortedFiles.forEach(function (file) {
                 var $icon = getFileIcon(file.href);
-                var $element = $('<li>', { 'class': 'file-element element' })
+                var $element = $('<li>', { 'class': 'file-element element' });
                 addFileData(file.href, file.title, $element, false);
                 $element.prepend($icon).dblclick(function () {
                     openFile(file.href);
@@ -1225,7 +1241,6 @@ define([
             }
 
             var $toolbar = createToolbar(path);
-            var $title = createTitle(path);
             var $info = createInfoBox(path);
 
             var $dirContent = $('<div>', {id: FOLDER_CONTENT_ID});
@@ -1236,9 +1251,10 @@ define([
             }
             var $list = $('<ul>').appendTo($dirContent);
 
-            var $modeButton = createViewModeButton().appendTo($toolbar);
+            var $modeButton = createViewModeButton().appendTo($toolbar.find('.rightside'));
+            var $title = createTitle(path).appendTo($toolbar.find('.rightside'));
             if (!filesOp.isPathInTrash(path)) {
-                createNewButton(isInRoot).appendTo($toolbar);
+                createNewButton(isInRoot).appendTo($toolbar.find('.leftside'));
             }
 
             var $folderHeader = getFolderListHeader();
@@ -1270,7 +1286,8 @@ define([
                     $element.appendTo($list);
                 });
             }
-            $content.append($toolbar).append($title).append($info).append($dirContent);
+            //$content.append($toolbar).append($title).append($info).append($dirContent);
+            $content.append($info).append($dirContent);
             appStatus.ready(true);
         };
 
@@ -1290,15 +1307,15 @@ define([
         };
 
         var createTreeElement = function (name, $icon, path, draggable, droppable, collapsable, active) {
-            var $name = $('<span>', { 'class': 'folder-element element' }).text(name)
-                .click(function () {
-                    module.displayDirectory(path);
-                });
+            var $name = $('<span>', { 'class': 'folder-element element' }).text(name);
             var $collapse;
             if (collapsable) {
                 $collapse = $expandIcon.clone();
             }
-            var $element = $('<li>').append($collapse).append($icon).append($name);
+            var $element = $('<li>').append($collapse).append($icon).append($name)
+                .click(function () {
+                    module.displayDirectory(path);
+                });
             if (draggable) { $element.attr('draggable', true); }
             if (collapsable) {
                 $element.addClass('collapsed');
@@ -1401,19 +1418,9 @@ define([
         var createTrash = function ($container, path) {
             var $icon = filesOp.isFolderEmpty(files[TRASH]) ? $trashEmptyIcon.clone() : $trashIcon.clone();
             var isOpened = filesOp.comparePath(path, currentPath);
-            var $trash = $('<span>', {
-                    'class': 'tree-trash element'
-                }).text(TRASH_NAME).prepend($icon)
-                .click(function () {
-                    module.displayDirectory(path);
-                });
-            var $trashElement = $('<li>').append($trash);
+            var $trashElement = createTreeElement(TRASH_NAME, $icon, [TRASH], false, true, false, isOpened);
             $trashElement.addClass('root');
-            $trashElement.data('path', [TRASH]);
-            addDragAndDropHandlers($trashElement, path, true, true);
             $trashElement.contextmenu(openTrashTreeContextMenu);
-            if (isOpened) { $trash.addClass('active'); }
-
             var $trashList = $('<ul>', { id: 'trashTree', 'class': 'category2' }).append($trashElement);
             $container.append($trashList);
         };
@@ -1700,6 +1707,18 @@ define([
             module.resetTree();
             return false;
         });
+
+        $iframe.find('#tree').mousedown(function (e) {
+            if (APP.resizeTree) { return; }
+            APP.resizeTree = window.setInterval(function () {
+                $driveToolbar.find('.leftside').width($tree.width());
+            }, 100);
+        });
+        $(ifrw).mouseup(function (e) {
+            window.clearInterval(APP.resizeTree);
+            APP.resizeTree = undefined;
+        });
+
 
         refresh();
     };

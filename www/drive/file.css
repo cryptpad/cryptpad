@@ -14,6 +14,14 @@ body {
   display: flex;
   flex-flow: column;
 }
+.unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 .app-container {
   flex: 1;
   overflow: auto;
@@ -28,7 +36,7 @@ body {
 }
 ul {
   list-style: none;
-  padding-left: 10px;
+  padding-left: 0px;
 }
 li {
   padding: 0px 5px;
@@ -65,7 +73,7 @@ span.fa-folder-open {
 #tree {
   border-right: 1px solid #ccc;
   box-sizing: border-box;
-  background: #eee;
+  background: #eeeeee;
   overflow: auto;
   resize: horizontal;
   width: 250px;
@@ -73,11 +81,12 @@ span.fa-folder-open {
   max-width: 500px;
   min-width: 200px;
   padding: 10px 0px;
+  color: #000000;
 }
 #tree li {
   cursor: auto;
 }
-#tree li > span.element:hover {
+#tree li:hover > span.element {
   text-decoration: underline;
 }
 #tree li.collapsed ul {
@@ -94,6 +103,10 @@ span.fa-folder-open {
 }
 #tree .category2 {
   margin-top: 2em;
+}
+#tree .category2 .root > .fa {
+  min-width: 30px;
+  cursor: pointer;
 }
 #tree .fa.expcol {
   margin-left: -10px;
@@ -116,6 +129,7 @@ span.fa-folder-open {
 #tree ul {
   margin: 0px 0px 0px 10px;
   list-style: none;
+  padding-left: 10px;
 }
 #tree ul li {
   position: relative;
@@ -126,9 +140,9 @@ span.fa-folder-open {
   top: -0.25em;
   content: '';
   display: block;
-  border-left: 1px solid #888;
+  border-left: 1px solid #888888;
   height: 1em;
-  border-bottom: 1px solid #888;
+  border-bottom: 1px solid #888888;
   width: 17.5px;
 }
 #tree ul li:after {
@@ -137,7 +151,7 @@ span.fa-folder-open {
   bottom: -7px;
   content: '';
   display: block;
-  border-left: 1px solid #888;
+  border-left: 1px solid #888888;
   height: 100%;
 }
 #tree ul li.root {
@@ -155,7 +169,8 @@ span.fa-folder-open {
 /* CONTENT */
 #content {
   box-sizing: border-box;
-  background: #eee;
+  background: #eeeeee;
+  color: #000000;
   overflow: auto;
   flex: 1;
   display: flex;
@@ -166,12 +181,13 @@ span.fa-folder-open {
   margin-top: 10px;
 }
 #content .info-box {
-  margin: 0px auto;
-  padding: 5px;
+  height: 40px;
+  line-height: 40px;
+  padding-left: 10px;
+  margin: 10px auto;
   background: #ddddff;
-  border: 1px solid #bbb;
+  border: 1px solid #bbbbbb;
   border-radius: 5px;
-  margin-bottom: 10px;
 }
 #content .info-box span {
   cursor: pointer;
@@ -183,6 +199,9 @@ span.fa-folder-open {
 }
 #content li:not(.header):hover .name {
   text-decoration: underline;
+}
+#content div.grid {
+  padding: 20px;
 }
 #content div.grid li {
   display: inline-block;
@@ -212,6 +231,7 @@ span.fa-folder-open {
 #content .list ul {
   display: table;
   width: 100%;
+  padding: 0px 10px;
 }
 #content .list li {
   display: table-row;
@@ -222,7 +242,7 @@ span.fa-folder-open {
 }
 #content .list li.header {
   cursor: default;
-  color: #888;
+  color: #888888;
 }
 #content .list li.header span:not(.fa) {
   text-align: left;
@@ -230,6 +250,9 @@ span.fa-folder-open {
 #content .list li.header span.sortasc,
 #content .list li.header span.sortdesc {
   float: right;
+}
+#content .list li.header > span {
+  padding: 15px 5px;
 }
 #content .list li.header > span.active {
   font-weight: bold;
@@ -278,28 +301,40 @@ span.fa-folder-open {
 }
 /* Toolbar */
 #driveToolbar {
-  background: #ddd;
+  background: #dddddd;
+  color: #555555;
   height: 40px;
+  display: flex;
+  flex-flow: row;
+  border-top: 1px solid #cccccc;
+  border-bottom: ;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  box-sizing: content-box;
   /* The container <div> - needed to position the dropdown content */
 }
 #driveToolbar .newPadContainer {
   display: inline-block;
   height: 100%;
 }
-#driveToolbar button.newElement {
+#driveToolbar button.element {
   border-radius: 2px;
   height: 30px;
-  background: #888;
-  color: #eee;
+  background: #888888;
+  color: #eeeeee;
   font-size: 16px;
   border: none;
   font-weight: bold;
 }
-#driveToolbar button.newElement:hover {
+#driveToolbar button.element:hover {
   box-shadow: 0px 0px 2px #000;
 }
+#driveToolbar button.new {
+  padding: 0 20px;
+}
 #driveToolbar .dropdown-bar {
-  margin: 4px 5px;
+  margin: 5px 5px;
+  line-height: 1em;
   position: relative;
   display: inline-block;
 }
@@ -319,4 +354,33 @@ span.fa-folder-open {
 #driveToolbar .dropdown-bar-content {
   margin-top: -3px;
   margin-right: 2px;
+}
+#driveToolbar .leftside {
+  width: 250px;
+  margin: 0;
+  padding: 0;
+}
+#driveToolbar .rightside {
+  margin: 0;
+  padding: 0;
+  flex: 1;
+}
+#driveToolbar .path {
+  display: inline-block;
+  height: 100%;
+  line-height: 40px;
+  cursor: default;
+}
+#driveToolbar .path .element {
+  padding: 5px;
+  border: 1px solid #dddddd;
+  border-radius: 2px;
+  box-sizing: border-box;
+}
+#driveToolbar .path .element.clickable {
+  cursor: pointer;
+}
+#driveToolbar .path .element.clickable:hover {
+  background: #ffffff;
+  border: 1px solid #888888;
 }
