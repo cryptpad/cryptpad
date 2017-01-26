@@ -299,6 +299,67 @@ define([
             checkDeletedFiles();
         };
 
+        // Permanently delete multiple files at once using a list of paths
+        // NOTE: We have to be careful when removing elements from arrays (trash root, unsorted or template)
+        var deleteHrefs = function (hrefs) {
+            hrefs.forEach(function (obj) {
+                var idx = files[obj.root].indexOf(obj.href);
+                files[obj.root].splice(idx, 1);
+            });
+        };
+        var deleteMultipleTrashRoot = function (roots) {
+            roots.forEach(function (obj) {
+                var idx = files[TRASH][obj.name].indexOf(obj.el);
+                files[TRASH][obj.name].splice(idx, 1);
+            });
+        };
+        var deleteMultiplePermanently = exp.deletePathsPermanently = function (paths) {
+            var hrefPaths = paths.filter(isPathInHrefArray);
+            var rootPaths = paths.filter(isPathInRoot);
+            var trashPaths = paths.filter(isPathInTrash);
+
+            var hrefs = [];
+            hrefPaths.forEach(function (path) {
+                var href = exp.findElement(files, path);
+                hrefs.push({
+                    root: path[0],
+                    href: href
+                });
+            });
+            deleteHrefs(hrefs);
+
+            rootPaths.forEach(function (path) {
+                var parentPath = path.slice();
+                var key = parentPath.pop();
+                var parentEl = exp.findElement(files, parentPath);
+                parentEl[key] = undefined;
+                delete parentEl[key];
+            });
+
+            var trashRoot = [];
+            trashPaths.forEach(function (path) {
+                var parentPath = path.slice();
+                var key = parentPath.pop();
+                var parentEl = exp.findElement(files, parentPath);
+                // Trash root: we have array here, we can't just splice with the path otherwise we might break the path
+                // of another element in the loop
+                console.log(path);
+                if (path.length === 4) {
+                    trashRoot.push({
+                        name: path[1],
+                        el: parentEl
+                    });
+                    return;
+                }
+                // Trash but not root: it's just a tree so remove the key
+                parentEl[key] = undefined;
+                delete parentEl[key];
+            });
+            deleteMultipleTrashRoot(trashRoot);
+
+            checkDeletedFiles();
+        };
+
         // Find an element in a object following a path, resursively
         // NOTE: it is always used with an absolute path and root === files in our code
         var findElement = exp.findElement = function (root, pathInput) {

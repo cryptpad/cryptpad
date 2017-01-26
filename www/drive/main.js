@@ -1641,10 +1641,8 @@ define([
                 });
                 // If we are in the trash or anon pad or if we are holding the "shift" key, delete permanently,
                 if (isTrash || e.shiftKey) {
-                    var cb = filesOp.removeFromTrash; // We're in the trash
-                    if (!isTrash) {
-                        cb = filesOp.deletePathPermanently; // We're in root/unsorted/template
-                    }
+                    //var cb = filesOp.removeFromTrash; // We're in the trash
+                    //if (!isTrash) { cb = filesOp.deletePathPermanently; } // We're in root
 
                     var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [paths.length]);
                     if (paths.length === 1) {
@@ -1653,9 +1651,7 @@ define([
 
                     Cryptpad.confirm(msg, function(res) {
                         if (!res) { return; }
-                        paths.forEach(function(p) {
-                            cb(p);
-                        });
+                        filesOp.deletePathsPermanently(paths);
                         refresh();
                     });
                     return;
