@@ -577,7 +577,7 @@ define([
             if (!contains) {
                 var data = makePad(href, name);
                 renamed.push(data);
-                if (USE_FS_STORE && common.initialPath && typeof(getStore().addPad) === "function") {
+                if (USE_FS_STORE && typeof(getStore().addPad) === "function") {
                     getStore().addPad(href, common.initialPath, name);
                 }
             }

@@ -866,7 +866,7 @@ define([
                 options.push({tag: 'hr'});
             }
             AppConfig.availablePadTypes.forEach(function (type) {
-                var path = '/#?path=' + encodeURIComponent(currentPath);
+                var path = filesOp.isPathInTrash(currentPath) ? '' : '/#?path=' + encodeURIComponent(currentPath);
                 options.push({
                     tag: 'a',
                     attributes: {
@@ -1253,9 +1253,7 @@ define([
 
             var $modeButton = createViewModeButton().appendTo($toolbar.find('.rightside'));
             var $title = createTitle(path).appendTo($toolbar.find('.rightside'));
-            if (!filesOp.isPathInTrash(path)) {
-                createNewButton(isInRoot).appendTo($toolbar.find('.leftside'));
-            }
+            createNewButton(isInRoot).appendTo($toolbar.find('.leftside'));
 
             var $folderHeader = getFolderListHeader();
             var $fileHeader = getFileListHeader(true);
@@ -1312,14 +1310,14 @@ define([
             if (collapsable) {
                 $collapse = $expandIcon.clone();
             }
-            var $element = $('<li>').append($collapse).append($icon).append($name)
-                .click(function () {
-                    module.displayDirectory(path);
-                });
+            var $element = $('<li>').append($collapse).append($icon).append($name).click(function (e) {
+                module.displayDirectory(path);
+            });
             if (draggable) { $element.attr('draggable', true); }
             if (collapsable) {
                 $element.addClass('collapsed');
-                $collapse.click(function() {
+                $collapse.click(function(e) {
+                    e.stopPropagation();
                     if ($element.hasClass('collapsed')) {
                         // It is closed, open it
                         $element.removeClass('collapsed');
@@ -1697,10 +1695,11 @@ define([
             return false;
         }).on('remove', [], function (o, p) {
             var path = arguments[1];
-            if ((filesOp.isPathInUnsorted(currentPath) && filesOp.isPathInUnsorted(path)) ||
-                    (filesOp.isPathInTemplate(currentPath) && filesOp.isPathInTemplate(path)) ||
-                    (path.length >= currentPath.length && filesOp.isSubpath(path, currentPath)) ||
-                    (filesOp.isPathInTrash(currentPath) && filesOp.isPathInTrash(path))) {
+            var cPath = currentPath.slice();
+            if ((filesOp.isPathInUnsorted(cPath) && filesOp.isPathInUnsorted(path)) ||
+                    (filesOp.isPathInTemplate(cPath) && filesOp.isPathInTemplate(path)) ||
+                    (path.length >= cPath.length && filesOp.isSubpath(path, cPath)) ||
+                    (filesOp.isPathInTrash(cPath) && filesOp.isPathInTrash(path))) {
                 // Reload after a few to make sure all the change events have been received
                 onRefresh.to = window.setTimeout(refresh, 500);
             }
