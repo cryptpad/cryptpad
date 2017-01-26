@@ -997,8 +997,14 @@ define([
             var $fhType = $('<span>', {'class': 'type clickable'}).text(Messages.table_type).click(onSortByClick);
             var $fhAdate = $('<span>', {'class': 'atime clickable'}).text(Messages.fm_lastAccess).click(onSortByClick);
             var $fhCdate = $('<span>', {'class': 'ctime clickable'}).text(Messages.fm_creation).click(onSortByClick);
-            $fihElement.append($fhIcon).append($fhName);
-            if (displayTitle && !isWorkgroup()) {
+            // If displayTitle is false, it means the "name" is the title, so do not display the "name" header
+            $fihElement.append($fhIcon);
+            if (displayTitle || isWorkgroup()) {
+                $fihElement.append($fhName);
+            } else {
+                $fhTitle.width('auto');
+            }
+            if (!isWorkgroup()) {
                 $fihElement.append($fhTitle);
             }
             $fihElement.append($fhType);
