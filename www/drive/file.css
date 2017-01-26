@@ -73,7 +73,7 @@ span.fa-folder-open {
 #tree {
   border-right: 1px solid #ccc;
   box-sizing: border-box;
-  background: #eeeeee;
+  background: #ffffff;
   overflow: auto;
   resize: horizontal;
   width: 250px;
@@ -169,7 +169,7 @@ span.fa-folder-open {
 /* CONTENT */
 #content {
   box-sizing: border-box;
-  background: #eeeeee;
+  background: #ffffff;
   color: #000000;
   overflow: auto;
   flex: 1;
@@ -242,7 +242,7 @@ span.fa-folder-open {
 }
 #content .list li.header {
   cursor: default;
-  color: #888888;
+  color: #555555;
 }
 #content .list li.header span:not(.fa) {
   text-align: left;
@@ -261,7 +261,7 @@ span.fa-folder-open {
   cursor: pointer;
 }
 #content .list li.header > span.clickable:hover {
-  background: #d8d8d8;
+  background: #e8e8e8;
 }
 #content .list .element span {
   overflow: hidden;
