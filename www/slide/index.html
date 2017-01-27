@@ -51,7 +51,10 @@
 </head>
 <body>
     <div id="iframe-container">
-        <iframe id="pad-iframe" src="inner.html"></iframe>
+        <iframe id="pad-iframe"></iframe>
+        <script>
+            document.getElementById('pad-iframe').setAttribute('src', 'inner.html?' + new Date().getTime());
+        </script>
     </div>
 </body>
 </html>
