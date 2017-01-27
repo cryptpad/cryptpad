@@ -9,7 +9,7 @@ define(function () {
     out.main_slogan = "L'unité est la force, la collaboration est la clé";
 
     out.type = {};
-    out.type.pad = 'Pad';
+    out.type.pad = 'Texte';
     out.type.code = 'Code';
     out.type.poll = 'Sondage';
     out.type.slide = 'Présentation';

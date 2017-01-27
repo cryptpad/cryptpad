@@ -871,14 +871,18 @@ define([
             }
             AppConfig.availablePadTypes.forEach(function (type) {
                 var path = filesOp.isPathInTrash(currentPath) ? '' : '/#?path=' + encodeURIComponent(currentPath);
+                var attributes = {
+                    'class': 'newdoc',
+                    'data-type': type
+                };
+                // In root, do not redirect instantly, but ask for a name first. Cf handlers below
+                if (!isInRoot) {
+                    attributes.href = '/' + type + path;
+                    attributes.target = '_blank';
+                }
                 options.push({
                     tag: 'a',
-                    attributes: {
-                        'class': 'newdoc',
-                        'data-type': type,
-                        'href': '/' + type + path,
-                        'target': '_blank'
-                    },
+                    attributes: attributes,
                     content: Messages.type[type]
                 });
             });
@@ -892,13 +896,27 @@ define([
             $block.find('button').addClass('new').addClass('element');
 
             // Handlers
-            $block.find('a.newFolder').click(function () {
-                var onCreated = function (info) {
-                    module.newFolder = info.newPath;
-                    refresh();
-                };
-                filesOp.createNewFolder(currentPath, null, onCreated);
-            });
+            if (isInRoot) {
+                $block.find('a.newFolder').click(function () {
+                    var onCreated = function (info) {
+                        module.newFolder = info.newPath;
+                        refresh();
+                    };
+                    filesOp.createNewFolder(currentPath, null, onCreated);
+                });
+                $block.find('a.newdoc').click(function () {
+                    var type = $(this).data('type');
+                    if (!type) {
+                        throw new Error("Unable to get the pad type...");
+                    }
+                    var onNamed = function (name) {
+                        var path = '/#?name=' + encodeURIComponent(name) + '&path=' + encodeURIComponent(currentPath);
+                        console.log(path);
+                        window.open('/' + type + path);
+                    };
+                    Cryptpad.prompt("How would you like to name your file?", Cryptpad.getDefaultName({type: type}), onNamed);
+                });
+            }
 
             return $block;
         };

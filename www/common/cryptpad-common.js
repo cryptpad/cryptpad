@@ -195,9 +195,11 @@ define([
         };
         // If we have a hash in the URL specifying a path, it means the document was created from
         // the drive and should be stored at the selected path.
-        if (/#\?path=/.test(window.location.href)) {
-            var arr = window.location.hash.match(/\?path=(.+)/);
-            common.initialPath = arr[1] || undefined;
+        if (/[?&]path=/.test(window.location.hash)) {
+            var patharr = window.location.hash.match(/[?&]path=([^&]+)/);
+            var namearr = window.location.hash.match(/[?&]name=([^&]+)/);
+            common.initialPath = patharr[1] || undefined;
+            common.initialName = namearr[1] ? decodeURIComponent(namearr[1]) : undefined;
             window.location.hash = '';
         }
         if (!secretHash && !/#/.test(window.location.href)) {
@@ -578,7 +580,7 @@ define([
                 var data = makePad(href, name);
                 renamed.push(data);
                 if (USE_FS_STORE && typeof(getStore().addPad) === "function") {
-                    getStore().addPad(href, common.initialPath, name);
+                    getStore().addPad(href, common.initialPath, common.initialName || name);
                 }
             }
 
