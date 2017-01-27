@@ -75,6 +75,7 @@ module.exports = {
         'privacy',
         'terms',
         'about',
+        'contact',
     ],
 
     /*
