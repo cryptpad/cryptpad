@@ -661,8 +661,27 @@ define([
             $(function() {
                 // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
                 // won't work. We have to reset it now to make sure it uses a correct "body"
-
                 Alertify.reset();
+
+                // Load the new pad when the hash has changed
+                var oldHash  = document.location.hash.slice(1);
+                window.onhashchange = function () {
+                    var newHash = document.location.hash.slice(1);
+                    var parsedOld = parseHash(oldHash);
+                    var parsedNew = parseHash(newHash);
+                    if (parsedOld && parsedNew && (
+                          parsedOld.channel !== parsedNew.channel
+                          || parsedOld.mode !== parsedNew.mode
+                          || parsedOld.key !== parsedNew.key)) {
+                        document.location.reload();
+                        return;
+                    }
+                    if (parsedNew) {
+                        oldHash = newHash;
+                    }
+                };
+
+                // Everything's ready, continue...
                 if($('#pad-iframe').length) {
                     var $iframe = $('#pad-iframe');
                     var iframe = $iframe[0];
