@@ -82,7 +82,7 @@ app.get('/api/config', function(req, res){
     var host = req.headers.host.replace(/\:[0-9]+/, '');
     res.setHeader('Content-Type', 'text/javascript');
     res.send('define(' + JSON.stringify({
-        websocketPath: config.websocketPath,
+        websocketPath: config.useExternalWebsocket ? undefined : config.websocketPath,
         websocketURL:'ws' + ((useSecureWebsockets) ? 's' : '') + '://' + host + ':' +
             websocketPort + '/cryptpad_websocket',
     }) + ');');
@@ -95,11 +95,14 @@ httpServer.listen(config.httpPort,config.httpAddress,function(){
 });
 
 var wsConfig = { server: httpServer };
-if (websocketPort !== config.httpPort) {
-    console.log("setting up a new websocket server");
-    wsConfig = { port: websocketPort};
+
+if(!config.useExternalWebsocket) {
+    if (websocketPort !== config.httpPort) {
+        console.log("setting up a new websocket server");
+        wsConfig = { port: websocketPort};
+    }
+    var wsSrv = new WebSocketServer(wsConfig);
+    Storage.create(config, function (store) {
+        NetfluxSrv.run(store, wsSrv, config);
+    });
 }
-var wsSrv = new WebSocketServer(wsConfig);
-Storage.create(config, function (store) {
-    NetfluxSrv.run(store, wsSrv, config);
-});
