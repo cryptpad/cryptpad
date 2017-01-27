@@ -60,7 +60,10 @@
     </style>
 </head>
 <body>
-    <iframe id="pad-iframe" src="inner.html"></iframe>
+    <iframe id="pad-iframe"></iframe>
+    <script>
+        document.getElementById('pad-iframe').setAttribute('src', 'inner.html?' + new Date().getTime());
+    </script>
 </body>
 </html>
 
