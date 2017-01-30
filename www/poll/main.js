@@ -12,7 +12,7 @@ define([
     '/common/notify.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Messages, TextPatcher, Listmap, Crypto, Cryptpad, Hyperjson, Renderer, Toolbar) {
+], function (Config, Messages, TextPatcher, Listmap, Crypto, Cryptpad, Hyperjson, Renderer, Toolbar, Visible, Notify) {
     var $ = window.jQuery;
 
     var unlockHTML = '<i class="fa fa-unlock" aria-hidden="true"></i>';
@@ -22,6 +22,16 @@ define([
 
     var secret = Cryptpad.getSecrets();
     var readOnly = secret.keys && !secret.keys.editKeyStr;
+    if (!secret.keys) {
+        secret.keys = secret.key;
+    }
+
+    var DEBUG = false;
+    var debug = console.log;
+    if (!DEBUG) {
+        debug = function() {};
+    }
+    var error = console.error;
 
     Cryptpad.addLoadingScreen();
     var onConnectError = function (info) {
@@ -182,10 +192,27 @@ define([
         }
     };
 
+    var unnotify = function () {
+        if (APP.tabNotification &&
+            typeof(APP.tabNotification.cancel) === 'function') {
+            APP.tabNotification.cancel();
+        }
+    };
+
+    var notify = function () {
+        if (Visible.isSupported() && !Visible.currently()) {
+            unnotify();
+            APP.tabNotification = Notify.tab(1000, 10);
+        }
+    };
+
     /*  Any time the realtime object changes, call this function */
     var change = function (o, n, path, throttle) {
+        if (path && !Cryptpad.isArray(path)) {
+            return;
+        }
         if (path && path.join) {
-            console.log("Change from [%s] to [%s] at [%s]",
+            debug("Change from [%s] to [%s] at [%s]",
                 o, n, path.join(', '));
         }
 
@@ -207,6 +234,7 @@ define([
 
             https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion
         */
+        notify();
 
         if (throttle) {
             if (APP.throttled) { window.clearTimeout(APP.throttled); }
@@ -235,7 +263,7 @@ define([
         var type = input.type.toLowerCase();
         var id = getRealtimeId(input);
 
-        console.log(input);
+        debug(input);
 
         var object = APP.proxy;
 
@@ -246,22 +274,22 @@ define([
 
         switch (type) {
             case 'text':
-                console.log("text[rt-id='%s'] [%s]", id, input.value);
-                if (!input.value) { return void console.log("Hit enter?"); }
+                debug("text[rt-id='%s'] [%s]", id, input.value);
+                if (!input.value) { return void debug("Hit enter?"); }
                 Render.setValue(object, id, input.value);
                 change(null, null, null, 50);
                 break;
             case 'checkbox':
-                console.log("checkbox[tr-id='%s'] %s", id, input.checked);
+                debug("checkbox[tr-id='%s'] %s", id, input.checked);
                 if (APP.editable.col.indexOf(x) >= 0 || x === APP.userid) {
                     Render.setValue(object, id, input.checked);
                     change();
                 } else {
-                    console.log('checkbox locked');
+                    debug('checkbox locked');
                 }
                 break;
             default:
-                console.log("Input[type='%s']", type);
+                debug("Input[type='%s']", type);
                 break;
         }
     };
@@ -301,7 +329,7 @@ define([
         } else if (type === 'cell') {
             change();
         } else {
-            console.log("UNHANDLED");
+            debug("UNHANDLED");
         }
     };
 
@@ -326,10 +354,10 @@ define([
         var target = e && e.target;
 
         if (isKeyup) {
-            console.log("Keyup!");
+            debug("Keyup!");
         }
 
-        if (!target) { return void console.log("NO TARGET"); }
+        if (!target) { return void debug("NO TARGET"); }
 
         var nodeName = target && target.nodeName;
 
@@ -349,7 +377,7 @@ define([
                 //console.error(new Error("C'est pas possible!"));
                 break;
             default:
-                console.log(target, nodeName);
+                debug(target, nodeName);
                 break;
         }
     };
@@ -359,13 +387,20 @@ define([
     */
     var prepareProxy = function (proxy, schema) {
         if (proxy && proxy.version === 1) { return; }
-        console.log("Configuring proxy schema...");
+        debug("Configuring proxy schema...");
 
-        proxy.info = schema.info;
-        proxy.table = schema.table;
+        proxy.info = proxy.info || schema.info;
+        Object.keys(schema.info).forEach(function (k) {
+            if (!proxy.info[k]) { proxy.info[k] = schema.info[k]; }
+        });
+
+        proxy.table = proxy.table || schema.table;
+        Object.keys(schema.table).forEach(function (k) {
+            if (!proxy.table[k]) { proxy.table[k] = schema.table[k]; }
+        });
+
         proxy.version = 1;
     };
-
 
     /*
 
@@ -381,88 +416,90 @@ define([
         });
     };
 
-            var userData = APP.userData = {}; // List of pretty names for all users (mapped with their ID)
-            var userList; // List of users still connected to the channel (server IDs)
-            var addToUserData = function(data) {
-                var users = userList ? userList.users : undefined;
-                //var userData = APP.proxy.info.userData;
-                for (var attrname in data) { userData[attrname] = data[attrname]; }
+    var userData = APP.userData = {}; // List of pretty names for all users (mapped with their ID)
+    var userList; // List of users still connected to the channel (server IDs)
+    var addToUserData = function(data) {
+        var users = userList ? userList.users : undefined;
+        //var userData = APP.proxy.info.userData;
+        for (var attrname in data) { userData[attrname] = data[attrname]; }
 
-                if (users && users.length) {
-                    for (var userKey in userData) {
-                        if (users.indexOf(userKey) === -1) { delete userData[userKey]; }
-                    }
-                }
+        if (users && users.length) {
+            for (var userKey in userData) {
+                if (users.indexOf(userKey) === -1) { delete userData[userKey]; }
+            }
+        }
 
-                if(userList && typeof userList.onChange === "function") {
-                    userList.onChange(userData);
-                }
+        if(userList && typeof userList.onChange === "function") {
+            userList.onChange(userData);
+        }
 
-                APP.proxy.info.userData = userData;
-            };
+        APP.proxy.info.userData = userData;
+    };
 
-            //var myData = {};
-            var getLastName = function (cb) {
-                Cryptpad.getAttribute('username', function (err, userName) {
-                    cb(err, userName || '');
-                });
-            };
+    //var myData = {};
+    var getLastName = function (cb) {
+        Cryptpad.getAttribute('username', function (err, userName) {
+            cb(err, userName || '');
+        });
+    };
 
-            var setName = APP.setName = function (newName) {
-                if (typeof(newName) !== 'string') { return; }
-                var myUserNameTemp = Cryptpad.fixHTML(newName.trim());
-                if(myUserNameTemp.length > 32) {
-                    myUserNameTemp = myUserNameTemp.substr(0, 32);
-                }
-                var myUserName = myUserNameTemp;
-                var myID = APP.myID;
-                var myData = {};
-                myData[myID] = {
-                    name: myUserName
-                };
-                addToUserData(myData);
-                Cryptpad.setAttribute('username', newName, function (err, data) {
-                    if (err) {
-                        console.error("Couldn't set username");
-                        return;
-                    }
-                    APP.userName.lastName = myUserName;
-                    //change();
-                });
-            };
+    var setName = APP.setName = function (newName) {
+        if (typeof(newName) !== 'string') { return; }
+        var myUserNameTemp = Cryptpad.fixHTML(newName.trim());
+        if(myUserNameTemp.length > 32) {
+            myUserNameTemp = myUserNameTemp.substr(0, 32);
+        }
+        var myUserName = myUserNameTemp;
+        var myID = APP.myID;
+        var myData = {};
+        myData[myID] = {
+            name: myUserName
+        };
+        addToUserData(myData);
+        Cryptpad.setAttribute('username', newName, function (err, data) {
+            if (err) {
+                console.error("Couldn't set username");
+                return;
+            }
+            APP.userName.lastName = myUserName;
+            //change();
+        });
+    };
 
-            var updateTitle = function (newTitle) {
-                if (newTitle === document.title) { return; }
-                // Change the title now, and set it back to the old value if there is an error
-                var oldTitle = document.title;
-                document.title = newTitle;
-                Cryptpad.renamePad(newTitle, function (err, data) {
-                    if (err) {
-                        console.log("Couldn't set pad title");
-                        console.error(err);
-                        document.title = oldTitle;
-                        return;
-                    }
-                    document.title = data;
-                    APP.$bar.find('.' + Toolbar.constants.title).find('span.title').text(data);
-                    APP.$bar.find('.' + Toolbar.constants.title).find('input').val(data);
-                });
-            };
+    var updateTitle = function (newTitle) {
+        if (newTitle === document.title) { return; }
+        // Change the title now, and set it back to the old value if there is an error
+        var oldTitle = document.title;
+        document.title = newTitle;
+        Cryptpad.renamePad(newTitle, function (err, data) {
+            if (err) {
+                debug("Couldn't set pad title");
+                error(err);
+                document.title = oldTitle;
+                return;
+            }
+            document.title = data;
+            APP.$bar.find('.' + Toolbar.constants.title).find('span.title').text(data);
+            APP.$bar.find('.' + Toolbar.constants.title).find('input').val(data);
+        });
+    };
 
-            var updateDefaultTitle = function (defaultTitle) {
-                defaultName = defaultTitle;
-                APP.$bar.find('.' + Toolbar.constants.title).find('input').attr("placeholder", defaultName);
-            };
-            var renameCb = function (err, title) {
-                if (err) { return; }
-                document.title = title;
-                APP.proxy.info.title = title;
-            };
+    var updateDefaultTitle = function (defaultTitle) {
+        defaultName = defaultTitle;
+        APP.$bar.find('.' + Toolbar.constants.title).find('input').attr("placeholder", defaultName);
+    };
+    var renameCb = function (err, title) {
+        if (err) { return; }
+        document.title = title;
+        APP.proxy.info.title = title === defaultName ? "" : title;
+    };
 
-            var suggestName = function (fallback) {
-                return document.title || defaultName || "";
-            };
-
+    var suggestName = function (fallback) {
+        if (document.title === defaultName) {
+            return fallback || "";
+        }
+        return document.title || defaultName || "";
+    };
 
     var copyObject = function (obj) {
         return JSON.parse(JSON.stringify(obj));
@@ -473,8 +510,8 @@ define([
     var $description = $('#description').attr('placeholder', Messages.poll_descriptionHint || 'description');
 
     var ready = function (info, userid, readOnly) {
-        console.log("READY");
-        console.log('userid: %s', userid);
+        debug("READY");
+        debug('userid: %s', userid);
 
         var proxy = APP.proxy;
         var uncommitted = APP.uncommitted = {};
@@ -565,6 +602,7 @@ define([
             .on('change', ['info'], function (o, n, p) {
                 if (p[1] === 'title') {
                     updateTitle(n);
+                    notify();
                 } else if (p[1] === "userData") {
                     addToUserData(APP.proxy.info.userData);
                 } else if (p[1] === 'description') {
@@ -581,14 +619,22 @@ define([
                         el.selectionStart = selects[0];
                         el.selectionEnd = selects[1];
                     }
+                    notify();
                 }
 
-                console.log("change: (%s, %s, [%s])", o, n, p.join(', '));
+                debug("change: (%s, %s, [%s])", o, n, p.join(', '));
             })
             .on('change', ['table'], change)
             .on('remove', [], change);
 
         addToUserData(APP.proxy.info.userData);
+
+        if (Visible.isSupported()) {
+            Visible.onChange(function (yes) {
+                if (yes) { unnotify(); }
+            });
+        }
+
 
         getLastName(function (err, lastName) {
             APP.ready = true;
@@ -633,7 +679,16 @@ define([
         });
 
         userList = APP.userList = info.userList;
+
+        APP.userName = {};
+        // The lastName is stored in an object passed to the toolbar so that when the user clicks on
+        // the "change display name" button, the prompt already knows his current name
+        getLastName(function (err, lastName) {
+            APP.userName.lastName = lastName;
+        });
+
         var config = {
+            displayed: ['useradmin', 'language', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad'],
             userData: userData,
             readOnly: readOnly,
             title: {
@@ -641,8 +696,12 @@ define([
                 defaultName: defaultName,
                 suggestName: suggestName
             },
+            userName: {
+                setName: setName,
+                lastName: APP.userName
+            },
             ifrw: window,
-            common: Cryptpad
+            common: Cryptpad,
         };
         var toolbar = info.realtime.toolbar = Toolbar.create(APP.$bar, info.myID, info.realtime, info.getLag, userList, config);
 
@@ -651,15 +710,7 @@ define([
         var $userBlock = $bar.find('.' + Toolbar.constants.username);
         var $editShare = $bar.find('.' + Toolbar.constants.editShare);
         var $viewShare = $bar.find('.' + Toolbar.constants.viewShare);
-
-        // Store the object sent for the "change username" button so that we can update the field value correctly
-        var userNameButtonObject = APP.userName = {};
-        /* add a "change username" button */
-        getLastName(function (err, lastName) {
-            userNameButtonObject.lastName = lastName;
-            var $username = APP.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName).hide();
-            $userBlock.append($username);
-        });
+        var $usernameButton = APP.$userNameButton = $($bar.find('.' + Toolbar.constants.changeUsername));
 
         /* add a forget button */
         var forgetCb = function (err, title) {
@@ -685,8 +736,8 @@ define([
 
         Cryptpad.getPadTitle(function (err, title) {
             if (err) {
-                console.error(err);
-                console.log("Couldn't get pad title");
+                error(err);
+                debug("Couldn't get pad title");
                 return;
             }
             updateTitle(title || defaultName);
@@ -737,7 +788,7 @@ define([
 
         Cryptpad.getAttribute(HIDE_INTRODUCTION_TEXT, function (e, value) {
             if (e) { console.error(e); }
-            if (value === null) {
+            if (!value) {
                 Cryptpad.setAttribute(HIDE_INTRODUCTION_TEXT, "1", function (e) {
                     if (e) { console.error(e); }
                 });

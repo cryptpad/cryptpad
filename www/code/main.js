@@ -77,7 +77,10 @@ define([
                 }
                 CodeMirror.autoLoadMode(editor, mode);
                 editor.setOption('mode', mode);
-                if ($select && $select.val) { $select.val(mode); }
+                if ($select) {
+                    var name = $select.find('a[data-value="' + mode + '"]').text() || 'Mode';
+                    $select.find('.buttonTitle').text(name);
+                }
             };
 
             editor.setValue(Messages.codeInitialState); // HERE
@@ -107,7 +110,7 @@ define([
                         }
                         editor.setOption('theme', theme);
                     }
-                    if ($select && $select.val) { $select.val(theme || 'default'); }
+                    if ($select) { $select.find('.buttonTitle').text(theme || 'Theme'); }
                 };
             }());
 
@@ -175,7 +178,9 @@ define([
                         defaultTitle: defaultName
                     }
                 };
-                obj.metadata.title = document.title;
+                if (!initializing) {
+                    obj.metadata.title = document.title;
+                }
                 // set mode too...
                 obj.highlightMode = module.highlightMode;
 
@@ -349,6 +354,7 @@ define([
             var updateMetadata = function(shjson) {
                 // Extract the user list (metadata) from the hyperjson
                 var json = (shjson === "") ? "" : JSON.parse(shjson);
+                var titleUpdated = false;
                 if (json && json.metadata) {
                     if (json.metadata.users) {
                         var userData = json.metadata.users;
@@ -359,14 +365,27 @@ define([
                         updateDefaultTitle(json.metadata.defaultTitle);
                     }
                     if (typeof json.metadata.title !== "undefined") {
-                        updateTitle(json.metadata.title);
+                        updateTitle(json.metadata.title || defaultName);
+                        titleUpdated = true;
                     }
+                }
+                if (!titleUpdated) {
+                    updateTitle(defaultName);
                 }
             };
 
              var onInit = config.onInit = function (info) {
                 userList = info.userList;
+
+                module.userName = {};
+                // The lastName is stored in an object passed to the toolbar so that when the user clicks on
+                // the "change display name" button, the prompt already knows his current name
+                getLastName(function (err, lastName) {
+                    module.userName.lastName = lastName;
+                });
+
                 var config = {
+                    displayed: ['useradmin', 'language', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad'],
                     userData: userData,
                     readOnly: readOnly,
                     ifrw: ifrw,
@@ -374,6 +393,10 @@ define([
                         onRename: renameCb,
                         defaultName: defaultName,
                         suggestName: suggestName
+                    },
+                    userName: {
+                        setName: setName,
+                        lastName: module.userName
                     },
                     common: Cryptpad
                 };
@@ -384,6 +407,7 @@ define([
                 var $userBlock = $bar.find('.' + Toolbar.constants.username);
                 var $editShare = $bar.find('.' + Toolbar.constants.editShare);
                 var $viewShare = $bar.find('.' + Toolbar.constants.viewShare);
+                var $usernameButton = module.$userNameButton = $($bar.find('.' + Toolbar.constants.changeUsername));
 
                 var editHash;
                 var viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
@@ -391,15 +415,6 @@ define([
                 if (!readOnly) {
                     editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
                 }
-
-                // Store the object sent for the "change username" button so that we can update the field value correctly
-                var userNameButtonObject = module.userName = {};
-                /* add a "change username" button */
-                getLastName(function (err, lastName) {
-                    userNameButtonObject.lastName = lastName;
-                    var $username = module.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName).hide();
-                    $userBlock.append($username);
-                });
 
                 /* add an export button */
                 var $export = Cryptpad.createButton('export', true, {}, exportText);
@@ -436,58 +451,68 @@ define([
 
                 var configureLanguage = function (cb) {
                     // FIXME this is async so make it happen as early as possible
+                    var options = [];
+                    Modes.list.forEach(function (l) {
+                        options.push({
+                            tag: 'a',
+                            attributes: {
+                                'data-value': l.mode,
+                                'href': '#',
+                            },
+                            content: l.language // Pretty name of the language value
+                        });
+                    });
+                    var dropdownConfig = {
+                        text: 'Mode', // Button initial text
+                        options: options, // Entries displayed in the menu
+                        left: true, // Open to the left of the button
+                    };
+                    var $block = module.$language = Cryptpad.createDropdown(dropdownConfig);
+                    var $button = $block.find('.buttonTitle');
 
-                    /*  Let the user select different syntax highlighting modes */
-                    var $language = module.$language = $('<select>', {
-                        title: 'syntax highlighting',
-                        id: 'language-mode',
-                        'class': 'rightside-element'
-                    }).on('change', function () {
-                        setMode($language.val());
-                        onLocal();
+                    $block.find('a').click(function (e) {
+                        setMode($(this).attr('data-value'));
+                        $button.text($(this).text());
                     });
 
-                    Modes.list.map(function (o) {
-                        $language.append($('<option>', {
-                            value: o.mode,
-                        }).text(o.language));
-                    });
-                    $rightside.append($language);
+                    $rightside.append($block);
                     cb();
                 };
-
 
                 var configureTheme = function () {
                     /*  Remember the user's last choice of theme using localStorage */
                     var themeKey = 'CRYPTPAD_CODE_THEME';
                     var lastTheme = localStorage.getItem(themeKey) || 'default';
 
-                    /*  Let the user select different themes */
-                    var $themeDropdown = $('<select>', {
-                        title: 'color theme',
-                        id: 'display-theme',
-                        'class': 'rightside-element'
+                    var options = [];
+                    Themes.forEach(function (l) {
+                        options.push({
+                            tag: 'a',
+                            attributes: {
+                                'data-value': l.name,
+                                'href': '#',
+                            },
+                            content: l.name // Pretty name of the language value
+                        });
                     });
-                    Themes.forEach(function (o) {
-                        $themeDropdown.append($('<option>', {
-                            selected: o.name === lastTheme,
-                        }).val(o.name).text(o.name));
-                    });
+                    var dropdownConfig = {
+                        text: 'Theme', // Button initial text
+                        options: options, // Entries displayed in the menu
+                        left: true, // Open to the left of the button
+                    };
+                    var $block = module.$theme = Cryptpad.createDropdown(dropdownConfig);
+                    var $button = $block.find('.buttonTitle');
 
+                    setTheme(lastTheme, $block);
 
-                    $rightside.append($themeDropdown);
-
-                    var $theme = $bar.find('select#display-theme');
-
-                    setTheme(lastTheme, $theme);
-
-                    $theme.on('change', function () {
-                        var theme = $theme.val();
-                        console.log("Setting theme to %s", theme);
-                        setTheme(theme, $theme);
-                        // remember user choices
+                    $block.find('a').click(function (e) {
+                        var theme = $(this).attr('data-value');
+                        setTheme(theme, $block);
+                        $button.text($(this).text());
                         localStorage.setItem(themeKey, theme);
                     });
+
+                    $rightside.append($block);
                 };
 
                 if (!readOnly) {
@@ -501,15 +526,6 @@ define([
 
                 // set the hash
                 if (!readOnly) { Cryptpad.replaceHash(editHash); }
-
-                Cryptpad.getPadTitle(function (err, title) {
-                    if (err) {
-                        console.log("Unable to get pad title");
-                        console.error(err);
-                        return;
-                    }
-                    updateTitle(title || defaultName);
-                });
             };
 
             var unnotify = module.unnotify = function () {
@@ -666,8 +682,9 @@ define([
                         module.patchText(shjson2);
                     }
                 }
-
-                notify();
+                if (oldDoc !== remoteDoc) {
+                    notify();
+                }
             };
 
             var onAbort = config.onAbort = function (info) {

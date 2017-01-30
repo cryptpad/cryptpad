@@ -7,10 +7,10 @@ var Https = require('https');
 var Fs = require('fs');
 var WebSocketServer = require('ws').Server;
 var NetfluxSrv = require('./NetfluxWebsocketSrv');
-var WebRTCSrv = require('./WebRTCSrv');
 
 var config = require('./config');
 var websocketPort = config.websocketPort || config.httpPort;
+var useSecureWebsockets = config.useSecureWebsockets || false;
 
 // support multiple storage back ends
 var Storage = require(config.storage||'./storage/file');
@@ -46,7 +46,7 @@ Fs.exists(__dirname + "/customize", function (e) {
 // FIXME I think this is a regression caused by a recent PR
 // correct this hack without breaking the contributor's intended behaviour.
 
-var mainPages = config.mainPages || ['index', 'privacy', 'terms', 'about'];
+var mainPages = config.mainPages || ['index', 'privacy', 'terms', 'about', 'contact'];
 var mainPagePattern = new RegExp('^\/(' + mainPages.join('|') + ').html$');
 app.get(mainPagePattern, Express.static(__dirname + '/customize.dist'));
 
@@ -82,8 +82,8 @@ app.get('/api/config', function(req, res){
     var host = req.headers.host.replace(/\:[0-9]+/, '');
     res.setHeader('Content-Type', 'text/javascript');
     res.send('define(' + JSON.stringify({
-        websocketPath: config.websocketPath,
-        websocketURL:'ws' + ((httpsOpts) ? 's' : '') + '://' + host + ':' +
+        websocketPath: config.useExternalWebsocket ? undefined : config.websocketPath,
+        websocketURL:'ws' + ((useSecureWebsockets) ? 's' : '') + '://' + host + ':' +
             websocketPort + '/cryptpad_websocket',
     }) + ');');
 });
@@ -95,12 +95,14 @@ httpServer.listen(config.httpPort,config.httpAddress,function(){
 });
 
 var wsConfig = { server: httpServer };
-if (websocketPort !== config.httpPort) {
-    console.log("setting up a new websocket server");
-    wsConfig = { port: websocketPort};
+
+if(!config.useExternalWebsocket) {
+    if (websocketPort !== config.httpPort) {
+        console.log("setting up a new websocket server");
+        wsConfig = { port: websocketPort};
+    }
+    var wsSrv = new WebSocketServer(wsConfig);
+    Storage.create(config, function (store) {
+        NetfluxSrv.run(store, wsSrv, config);
+    });
 }
-var wsSrv = new WebSocketServer(wsConfig);
-Storage.create(config, function (store) {
-    NetfluxSrv.run(store, wsSrv, config);
-    WebRTCSrv.run(wsSrv);
-});

@@ -62,6 +62,14 @@ define([
         Cryptpad: Cryptpad,
     };
 
+    var emitResize = module.emitResize = function () {
+        var cw = $('#pad-iframe')[0].contentWindow;
+
+        var evt = cw.document.createEvent('UIEvents');
+        evt.initUIEvent('resize', true, false, cw, 0);
+        cw.dispatchEvent(evt);
+    };
+
     var toolbar;
 
     var isNotMagicLine = function (el) {
@@ -98,8 +106,12 @@ define([
             // document itself and causes problems when it's sent across the wire and reflected back
             removePlugins: 'resize',
             extraPlugins: 'autolink,colorbutton,colordialog,font',
-            //skin: 'moono',
-            toolbarGroups: [{"name":"clipboard","groups":["clipboard","undo"]},{"name":"editing","groups":["find","selection"]},{"name":"links"},{"name":"insert"},{"name":"forms"},{"name":"tools"},{"name":"document","groups":["mode","document","doctools"]},{"name":"others"},{"name":"basicstyles","groups":["basicstyles","cleanup"]},{"name":"paragraph","groups":["list","indent","blocks","align","bidi"]},{"name":"styles"},{"name":"colors"}]
+            toolbarGroups: [{"name":"clipboard","groups":["clipboard","undo"]},{"name":"editing","groups":["find","selection"]},{"name":"links"},{"name":"insert"},{"name":"forms"},{"name":"tools"},{"name":"document","groups":["mode","document","doctools"]},{"name":"others"},{"name":"basicstyles","groups":["basicstyles","cleanup"]},{"name":"paragraph","groups":["list","indent","blocks","align","bidi"]},{"name":"styles"},{"name":"colors"}],
+            //skin: 'moono-cryptpad,/pad/themes/moono-cryptpad/'
+            //skin: 'flat,/pad/themes/flat/'
+            //skin: 'moono-lisa,/pad/themes/moono-lisa/'
+            //skin: 'moono-dark,/pad/themes/moono-dark/'
+            //skin: 'office2013,/pad/themes/office2013/'
         });
 
         editor.on('instanceReady', function (Ckeditor) {
@@ -362,7 +374,9 @@ define([
                         defaultTitle: defaultName
                     }
                 };
-                hjson[3].metadata.title = document.title;
+                if (!initializing) {
+                    hjson[3].metadata.title = document.title;
+                }
                 return stringify(hjson);
             };
 
@@ -433,6 +447,7 @@ define([
                 // Extract the user list (metadata) from the hyperjson
                 var hjson = JSON.parse(shjson);
                 var peerMetadata = hjson[3];
+                var titleUpdated = false;
                 if (peerMetadata && peerMetadata.metadata) {
                     if (peerMetadata.metadata.users) {
                         var userData = peerMetadata.metadata.users;
@@ -443,8 +458,12 @@ define([
                         updateDefaultTitle(peerMetadata.metadata.defaultTitle);
                     }
                     if (typeof peerMetadata.metadata.title !== "undefined") {
-                        updateTitle(peerMetadata.metadata.title);
+                        updateTitle(peerMetadata.metadata.title || defaultName);
+                        titleUpdated = true;
                     }
+                }
+                if (!titleUpdated) {
+                    updateTitle(defaultName);
                 }
             };
 
@@ -465,6 +484,8 @@ define([
             var onRemote = realtimeOptions.onRemote = function (info) {
                 if (initializing) { return; }
 
+                var oldShjson = stringifyDOM(inner);
+
                 var shjson = info.realtime.getUserDoc();
 
                 // remember where the cursor is
@@ -472,6 +493,12 @@ define([
 
                 // Update the user list (metadata) from the hyperjson
                 updateMetadata(shjson);
+
+                var newInner = JSON.parse(shjson);
+                var newSInner;
+                if (newInner.length > 2) {
+                    newSInner = stringify(newInner[2]);
+                }
 
                 // build a dom from HJSON, diff, and patch the editor
                 applyHjson(shjson);
@@ -506,7 +533,12 @@ define([
                         }
                     }
                 }
-                notify();
+
+                // Notify only when the content has changed, not when someone has joined/left
+                var oldSInner = stringify(JSON.parse(oldShjson)[2]);
+                if (newSInner && newSInner !== oldSInner) {
+                    notify();
+                }
             };
 
             var getHTML = function (Dom) {
@@ -547,7 +579,16 @@ define([
 
             var onInit = realtimeOptions.onInit = function (info) {
                 userList = info.userList;
+
+                module.userName = {};
+                // The lastName is stored in an object passed to the toolbar so that when the user clicks on
+                // the "change display name" button, the prompt already knows his current name
+                getLastName(function (err, lastName) {
+                    module.userName.lastName = lastName;
+                });
+
                 var config = {
+                    displayed: ['useradmin', 'language', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad'],
                     userData: userData,
                     readOnly: readOnly,
                     ifrw: ifrw,
@@ -555,6 +596,10 @@ define([
                         onRename: renameCb,
                         defaultName: defaultName,
                         suggestName: suggestName
+                    },
+                    userName: {
+                        setName: setName,
+                        lastName: module.userName
                     },
                     common: Cryptpad
                 };
@@ -565,6 +610,7 @@ define([
                 var $userBlock = $bar.find('.' + Toolbar.constants.username);
                 var $editShare = $bar.find('.' + Toolbar.constants.editShare);
                 var $viewShare = $bar.find('.' + Toolbar.constants.viewShare);
+                var $usernameButton = module.$userNameButton = $($bar.find('.' + Toolbar.constants.changeUsername));
 
                 var editHash;
                 var viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
@@ -573,14 +619,7 @@ define([
                     editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
                 }
 
-                // Store the object sent for the "change username" button so that we can update the field value correctly
-                var userNameButtonObject = module.userName = {};
-                /* add a "change username" button */
-                getLastName(function (err, lastName) {
-                    userNameButtonObject.lastName = lastName;
-                    var $username = module.$userNameButton = Cryptpad.createButton('username', false, userNameButtonObject, setName).hide();
-                    $userBlock.append($username);
-                });
+
 
                 /* add an export button */
                 var $export = Cryptpad.createButton('export', true, {}, exportFile);
@@ -606,6 +645,9 @@ define([
 
                 if (!readOnly) {
                     $editShare.append(Cryptpad.createButton('editshare', false, {editHash: editHash}));
+                    if (viewHash) {
+                        $editShare.append($('<hr>'));
+                    }
                 }
                 if (viewHash) {
                     /* add a 'links' button */
@@ -617,27 +659,19 @@ define([
 
                 // set the hash
                 if (!readOnly) { Cryptpad.replaceHash(editHash); }
-
-                Cryptpad.getPadTitle(function (err, title) {
-                    if (err) {
-                        console.error(err);
-                        console.log("Couldn't get pad title");
-                        return;
-                    }
-                    updateTitle(title || defaultName);
-                });
             };
 
             // this should only ever get called once, when the chain syncs
             var onReady = realtimeOptions.onReady = function (info) {
-                if (!APP.isMaximized) {
+                if (!module.isMaximized) {
                     editor.execCommand('maximize');
-                    // We have to call it 3 times in Safari in order to have the editor fully maximized -_-
+                    module.isMaximized = true;
+                    // We have to call it 3 times in Safari
+                    // in order to have the editor fully maximized -_-
                     if ((''+window.navigator.vendor).indexOf('Apple') !== -1) {
                         editor.execCommand('maximize');
                         editor.execCommand('maximize');
                     }
-                    APP.isMaximized = true;
                 }
 
                 module.patchText = TextPatcher.create({
@@ -664,7 +698,8 @@ define([
                     console.log("Unlocking editor");
                     setEditable(true);
                     initializing = false;
-                    Cryptpad.removeLoadingScreen();
+                    Cryptpad.removeLoadingScreen(emitResize);
+
                     // Update the toolbar list:
                     // Add the current user in the metadata if he has edit rights
                     if (readOnly) { return; }
@@ -758,9 +793,17 @@ define([
 
     var first = function () {
         Ckeditor = ifrw.CKEDITOR;
-
         if (Ckeditor) {
             //andThen(Ckeditor);
+            // mobile configuration
+            Ckeditor.config.toolbarCanCollapse = true;
+            Ckeditor.config.height = '72vh';
+            if (screen.height < 800) {
+              Ckeditor.config.toolbarStartupExpanded = false;
+              $('meta[name=viewport]').attr('content', 'width=device-width, initial-scale=1.0, user-scalable=no');
+            } else {
+              $('meta[name=viewport]').attr('content', 'width=device-width, initial-scale=1.0, user-scalable=yes');
+            }
             second(Ckeditor);
         } else {
             console.log("Ckeditor was not defined. Trying again in %sms",interval);

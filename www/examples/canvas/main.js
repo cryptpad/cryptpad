@@ -13,7 +13,7 @@ define([
     '/bower_components/fabric.js/dist/fabric.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
-    '/customize/pad.js'
+    //'/customize/pad.js'
 ], function (Config, Realtime, Crypto, TextPatcher, JSONSortify, JsonOT, Cryptpad) {
     var saveAs = window.saveAs;
 

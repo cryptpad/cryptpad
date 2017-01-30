@@ -9,7 +9,7 @@ define(function () {
     out.main_slogan = "Unity is Strength - Collaboration is Key";
 
     out.type = {};
-    out.type.pad = 'Pad';
+    out.type.pad = 'Rich text';
     out.type.code = 'Code';
     out.type.poll = 'Poll';
     out.type.slide = 'Presentation';
@@ -44,6 +44,8 @@ define(function () {
     out.editor = "editor";
     out.editors = "editors";
 
+    out.language = "Language";
+
     out.greenLight = "Everything is working fine";
     out.orangeLight = "Your slow connection may impact your experience";
     out.redLight = "You are disconnected from the session";
@@ -61,6 +63,9 @@ define(function () {
     out.userButton = 'USER';
     out.userButtonTitle = 'Change your username';
     out.changeNamePrompt = 'Change your name (leave empty to be anonymous): ';
+    out.user_rename = "Change display name";
+    out.user_displayName = "Display name";
+    out.user_accountName = "Account name";
 
     out.renameButton = 'RENAME';
     out.renameButtonTitle = 'Change the title under which this document is listed on your home page';
@@ -76,6 +81,9 @@ define(function () {
     out.shareButtonTitle = "Copy URL to clipboard";
     out.shareSuccess = 'Copied URL to clipboard';
     out.shareFailed = "Failed to copy URL to clipboard";
+
+    out.newPadButton = 'New';
+    out.newPadButtonTitle = 'Create a new document';
 
     out.presentButton = 'PRESENT';
     out.presentButtonTitle = "Enter presentation mode";
@@ -114,7 +122,7 @@ define(function () {
 
     out.okButton = 'OK (enter)';
 
-    out.cancel = "cancel";
+    out.cancel = "Cancel";
     out.cancelButton = 'Cancel (esc)';
 
     out.forget = "Forget";
@@ -171,13 +179,14 @@ define(function () {
 
     // File manager
 
-    out.fm_rootName = "My documents";
+    out.fm_rootName = "Documents";
     out.fm_trashName = "Trash";
     out.fm_unsortedName = "Unsorted files";
     out.fm_filesDataName = "All files";
     out.fm_templateName = "Templates";
+    out.fm_newButton = "New";
     out.fm_newFolder = "New folder";
-    out.fm_newFolderButton = "NEW FOLDER";
+    out.fm_folder = "Folder";
     out.fm_folderName = "Folder name";
     out.fm_numberOfFolders = "# of folders";
     out.fm_numberOfFiles = "# of files";
@@ -187,9 +196,10 @@ define(function () {
     out.fm_creation = "Creation";
     out.fm_forbidden = "Forbidden action";
     out.fm_originalPath = "Original path";
+    out.fm_noname = "Untitled Document";
     out.fm_emptyTrashDialog = "Are you sure you want to empty the trash?";
     out.fm_removeSeveralPermanentlyDialog = "Are you sure you want to remove these {0} elements from the trash permanently?";
-    out.fm_removePermanentlyDialog = "Are you sure you want to remove {0} permanently?";
+    out.fm_removePermanentlyDialog = "Are you sure you want to remove that element permanently?";
     out.fm_removeSeveralDialog = "Are you sure you want to move these {0} elements to the trash?";
     out.fm_removeDialog = "Are you sure you want to move {0} to the trash?";
     out.fm_restoreDialog = "Are you sure you want to restore {0} to its previous location?";
@@ -197,13 +207,20 @@ define(function () {
     out.fm_contextMenuError = "Unable to open the context menu for that element. If the problem persist, try to reload the page.";
     out.fm_selectError = "Unable to select the targetted element. If the problem persist, try to reload the page.";
     out.fm_info_root = "Create as many nested folders here as you want to sort your files.";
-    out.fm_info_unsorted = 'Contains all the files you\'ve visited that are not yet sorted in "My Documents" or moved to the "Trash".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
+    out.fm_info_unsorted = 'Contains all the files you\'ve visited that are not yet sorted in "Documents" or moved to the "Trash".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
+    out.fm_info_template = 'Contains all the pads stored as templates and that you can re-use when you create a new document.';
     out.fm_info_trash = 'Files deleted from the trash are also removed from "All files" and it is impossible to recover them from the file manager.'; // Same here for "All files" and "out.fm_filesDataName"
-    out.fm_info_allFiles = 'Contains all the files from "My Documents", "Unsorted" and "Trash". You can\'t move or remove files from here.'; // Same here
+    out.fm_info_allFiles = 'Contains all the files from "Documents", "Unsorted" and "Trash". You can\'t move or remove files from here.'; // Same here
+    out.fm_alert_backupUrl = "Backup URL for this drive.<br>" +
+                             "It is <strong>highly recommended</strong> that you keep ip for yourself only.<br>" +
+                             "You can use it to retrieve all your files in case your browser memory got erased.<br>" +
+                             "Anybody with that URL can edit or remove all the files in your file manager.<br>" +
+                             '<input type="text" id="fm_backupUrl" value="{0}"/>';
     // File - Context menu
     out.fc_newfolder = "New folder";
     out.fc_rename = "Rename";
     out.fc_open = "Open";
+    out.fc_open_ro = "Open (read-only)";
     out.fc_delete = "Delete";
     out.fc_restore = "Restore";
     out.fc_remove = "Delete permanently";
@@ -221,9 +238,10 @@ define(function () {
     out.fo_unavailableName = "A file or a folder with the same name already exist at the new location. Rename the element and try again.";
 
     // login
-    out.login_login = "log in";
-    out.login_register = "register";
-    out.logoutButton = "log out";
+    out.login_login = "Log in";
+    out.login_nologin = "Your browser's recent pads";
+    out.login_register = "Sign up";
+    out.logoutButton = "Log out";
 
     out.login_migrate = "Would you like to migrate existing data from your anonymous session?";
 
@@ -233,11 +251,11 @@ define(function () {
     out.login_username = "your username";
     out.login_password = "your password";
     out.login_confirm = "confirm your password";
-    out.login_remember = "remember me";
+    out.login_remember = "Remember me";
 
     out.login_cancel_prompt = "...or if you may have entered the wrong username or password, cancel to try again.";
 
-    out.login_registerSuccess = "registered successfully. Make sure you don't forget your password!"
+    out.login_registerSuccess = "registered successfully. Make sure you don't forget your password!";
     out.login_passwordMismatch = "The two passwords you entered do not match. Try again";
 
     out.login_warning = [
@@ -246,11 +264,6 @@ define(function () {
         '<p>Your username and password are never sent to the server in an unencrypted form.</p>',
         '<p>As such, if you forget your username or password, there is absolutely nothing that we can do to recover your lost information.</p>',
         '<p><strong>Make sure you do not forget your username and password!</strong></p>',
-    ].join('\n');
-
-    out.login_logout = [
-        //'<p>It seems you are already logged in</p>',
-        //'<p>Would you like to log out and authenticate as another user?</p>',
     ].join('\n');
 
     out.login_hashing = "Hashing your password, this might take some time.";
@@ -263,7 +276,10 @@ define(function () {
 
     // index.html
 
-    out.main_p1 = 'CryptPad is the <strong>zero knowledge</strong> realtime collaborative editor.  Encryption carried out in your web browser protects the data from the server, the cloud, and the NSA.  The secret encryption key is stored in the URL <a href="https://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a> which is never sent to the server but is available to javascript so by sharing the URL, you give authorization to others who want to participate.';
+    //out.main_p1 = 'CryptPad is the <strong>zero knowledge</strong> realtime collaborative editor.  Encryption carried out in your web browser protects the data from the server, the cloud, and the NSA.  The secret encryption key is stored in the URL <a href="https://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a> which is never sent to the server but is available to javascript so by sharing the URL, you give authorization to others who want to participate.';
+    //out.main_p1 = "Type quick documents with friends and colleagues.<br>With <strong>Zero Knowledge</strong> technology, the server doesn't know what you're doing.";
+    out.main_p1 = "<h2>Collaborate in Confidence</h2><br> Grow your ideas together with shared documents while <strong>Zero Knowledge</strong> technology secures your privacy; even from us.";
+
     out.main_p2 = 'This project uses the <a href="http://ckeditor.com/">CKEditor</a> Visual Editor, <a href="https://codemirror.net/">CodeMirror</a>, and the <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a> realtime engine.';
     out.main_howitworks = 'How It Works';
     out.main_howitworks_p1 = 'CryptPad uses a variant of the <a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> algorithm which is able to find distributed consensus using a <a href="https://bitcoin.org/bitcoin.pdf">Nakamoto Blockchain</a>, a construct popularized by <a href="https://en.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. This way the algorithm can avoid the need for a central server to resolve Operational Transform Edit Conflicts and without the need for resolving conflicts, the server can be kept unaware of the content which is being edited on the pad.';
@@ -277,10 +293,19 @@ define(function () {
     out.table_created = 'Created';
     out.table_last = 'Last Accessed';
 
-    out.button_newpad = 'NEW RICH TEXT PAD';
-    out.button_newcode = 'NEW CODE PAD';
-    out.button_newpoll = 'NEW POLL';
-    out.button_newslide = 'NEW PRESENTATION';
+    out.button_newpad = 'New Rich Text pad';
+    out.button_newcode = 'New Code pad';
+    out.button_newpoll = 'New Poll';
+    out.button_newslide = 'New Presentation';
+
+    out.form_title = "All your pads, everywhere!";
+    out.form_username = "Username";
+    out.form_password = "Password";
+
+    out.about = "About";
+    out.privacy = "Privacy";
+    out.contact = "Contact";
+    out.terms = "ToS";
 
     // privacy.html
 

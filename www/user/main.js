@@ -23,8 +23,10 @@ define([
     // login elements
     var $loginBox = $('#login-panel');
     var $login = $('#login');
+    var $login_register = $('#login_register');
     var $username = $('#username');
     var $password = $('#password');
+    var $password_register = $('#confirm_register');
     var $remember = $('#remember');
 
     // hashing elements
@@ -61,7 +63,13 @@ define([
     var revealConfirm = APP.revealConfirm = revealer($confirmBox);
 
     var revealLogout = APP.revealLogout= revealer($logoutBox);
-    var revealUser = APP.revealUser = revealer($userBox);
+    var revealUser_false = APP.revealUser_false = revealer($userBox);
+    var revealUser = APP.revealUser = function (state) {
+        if (!state) {
+            revealUser_false(state);
+        }
+        document.location.href = '/drive';
+    };
 
     var getDisplayName = APP.getDisplayName = function (proxy) {
         return proxy['cryptpad.username'];
@@ -186,9 +194,9 @@ define([
         };
     };
 
-    var handleNewUser = function (proxy, opt) {
+    var handleNewUser = function (proxy, opt, force) {
         // could not find a profile for that username/password
-        confirmPassword(proxy, opt.password, function () {
+        var todo = function () {
             APP.confirming = false;
             APP.setAccountName((proxy.login_name = opt.name));
             APP.setDisplayName(APP.getDisplayName(proxy));
@@ -219,17 +227,35 @@ define([
                             proxy[k] = map[k];
                         });
 
-                        delete localStorage.FS_hash;
+                        var whenSynced = function () {
+                            delete localStorage.FS_hash;
 
-                        if (!proxy[USERNAME_KEY]) {
-                            proxy[USERNAME_KEY] = opt.name;
-                        }
+                            if (!proxy[USERNAME_KEY]) {
+                                proxy[USERNAME_KEY] = opt.name;
+                            }
+                            next();
+                        };
 
-                        next();
+                        // Make sure the migration is synced in chainpad before continuing otherwise
+                        // we may leave that page too early or trigger a reload in another tab before
+                        // the migration is complete
+                        var check = function () {
+                            if (APP.realtime.getUserDoc() === APP.realtime.getAuthDoc()) {
+                                whenSynced();
+                                return;
+                            }
+                            window.setTimeout(check, 300);
+                        };
+                        check();
                     });
                 });
             });
-        });
+        };
+        if (force) {
+            todo();
+            return;
+        }
+        confirmPassword(proxy, opt.password, todo);
     };
 
     var handleUser = function (proxy, opt) {
@@ -237,6 +263,9 @@ define([
         var now = opt.now = +(new Date());
 
         if (!proxyKeys.length) {
+            if (opt.register) {
+                return handleNewUser(proxy, opt, true);
+            }
             return handleNewUser(proxy, opt);
         }
         handleRegisteredUser(proxy, opt);
@@ -287,7 +316,6 @@ define([
         };
 
         var rt = APP.rt = Listmap.create(config);
-
         rt.proxy.on('create', function (info) {
             APP.realtime = info.realtime;
         })
@@ -310,6 +338,11 @@ define([
 
             revealUser(true);
         } else {
+            if (sessionStorage.register || document.location.hash.slice(1) === 'register') {
+                document.location.hash = 'register';
+                $login.text(Cryptpad.Messages.login_register);
+                $('#login-panel .register').show();
+            }
             revealLogin(true);
         }
 
@@ -318,9 +351,15 @@ define([
         $login.click(function () {
             var uname = $username.val().trim();
             var passwd = $password.val();
+            var passwd_confirm = $password_register.val();
             var confirm = $confirm.val();
             var remember = $remember[0].checked;
 
+            var register = document.location.hash.slice(1) === 'register';
+
+            if (passwd !== passwd_confirm && register) {
+                return void Cryptpad.alert("Passwords are not the same");
+            }
             if (!Cred.isValidUsername(uname)) {
                 return void Cryptpad.alert('invalid username');
             }
@@ -341,7 +380,7 @@ define([
                     window.setTimeout(function () {
                         useBytes(bytes, {
                             remember: remember,
-                            //register: register,
+                            register: register,
                             name: uname,
                             password: passwd,
                         });
@@ -350,5 +389,21 @@ define([
             }, 75);
             });
         });
+
+        if (sessionStorage.login) {
+            $username.val(sessionStorage.login_user);
+            $password.val(sessionStorage.login_pass);
+            $remember.attr('checked', sessionStorage.login_rmb === "true");
+            $login.click();
+        }
+        if (sessionStorage.register) {
+            $username.val(sessionStorage.login_user);
+            $password.val(sessionStorage.login_pass);
+            $remember.attr('checked', sessionStorage.login_rmb === "true");
+        }
+        ['login', 'register', 'login_user', 'login_pass', 'login_rmb'].forEach(function (k) {
+            delete sessionStorage[k];
+        });
+
     });
 });

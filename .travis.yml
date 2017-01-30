@@ -6,9 +6,8 @@ env:
 branches:
   only:
     - master
-    - diffdom
-    - beta
-    - netflux
+    - soon
+    - staging
 node_js:
   - "4.2.1"
 before_script:

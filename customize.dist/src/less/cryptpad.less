@@ -4,6 +4,8 @@
 @import "./alertify.less";
 @import "./bar.less";
 @import "./loading.less";
+@import "./dropdown.less";
+@import "./topbar.less";
 
 html.cp, .cp body {
     font-size: .875em;
@@ -11,16 +13,17 @@ html.cp, .cp body {
     color: @fore;
 
     font-family: Georgia,Cambria,serif;
-    height: 100;
+    height: 100%;
 }
 
 .cp:not(.poll) {
-    #language-selector {
+    /*#language-selector {
         position: absolute;
-        top: 0px;
+        top: @topbar-height;
         right: 0px;
         display: inline-block;
-    }
+        z-index: 2;
+    }*/
 }
 
 .cp {
@@ -29,11 +32,12 @@ body {
     font-size: 1rem;
     font-weight: 400;
     line-height: 2rem;
+    margin: 0;
 }
 
 a.github-corner > svg {
     fill: @cp-blue;
-    color: @base;
+    color: @old-base;
 }
 
 .lato {
@@ -96,11 +100,11 @@ h6 {
 
 a {
     cursor: pointer;
-    color: @cp-green;
+    color: @cp-darkblue;
     text-decoration: none;
 
     &:hover {
-        color: @cp-accent;
+        color: @cp-accent2;
     }
 }
 
@@ -122,12 +126,298 @@ p, pre, td, a, table, tr {
     .lato;
 }
 
+body.html {
+}
+
+// Main page
+.page {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    background: #fff; //@base;
+    padding: 10px 0;//@main-border-width;
+    position: relative;
+
+    .info-container {
+        width: 900px;
+        max-width: 100%;
+        margin: 0 auto;
+        &>div{
+            padding: 10px;
+            width: 400px;
+            max-width: 100%;
+            position: relative;
+            display: inline-block;
+            vertical-align: middle;
+            &:not(.image) {
+                @media screen and (max-width: @media-not-big) {
+                    width: 100%;
+                    left: 0;
+                }
+            }
+            &.image {
+                text-align: center;
+                @media screen and (max-width: @media-not-big) {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    &.first {
+        //margin-top: ~"min(calc(100vh - 150px), 650px)";
+        @media screen and (max-width: @media-not-big) {
+            //margin-top: 0;
+        }
+    }
+    &.even {
+        //background: darken(@base, 1%);
+    }
+    &.category {
+        background: darken(@base, 3%);
+    }
+
+    .app {
+        display: inline-block;
+        width: 300px;
+        vertical-align: middle;
+        margin: 0px 25px;
+        white-space: normal;
+        max-width: ~"calc(50% - 50px)";
+        @media screen and (max-width: 500px) {
+            display: block;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+    }
+    .app-container {
+        width: 1400px;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+    .app-row {
+        display: inline-block;
+        white-space: nowrap;
+        width: 700px;
+        max-width: 100%;
+        margin: 0 auto;
+        @media screen and (max-width: 1399px) {
+            display: block;
+        }
+        img {
+            @media screen and (max-width: @media-not-big) {
+                display: none;
+            }
+        }
+    }
+
+    .left {
+        //left: 10%; //@main-border-width;
+    }
+    .right {
+        left: 100px; //@main-border-width;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        padding: 0;
+    }
+
+    @media screen and (max-width: @media-not-big) {
+        padding: 10px 5vh;
+    }
+
+    p {
+        font-size: 18px;
+        text-align: justify;
+    }
+}
+
+.btn-default {
+    &:hover {
+        background-color: #d8d8d8;
+    }
+}
 #main {
-    width: 70vw;
+    background-image: url('/customize/bg3.jpg');
+    background-size: cover;
+    background-position: center center;
+}
+#main_other {
+    padding: 0 @main-border-width;
+}
+#main, #main_other {
+    #overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #000;
+        opacity: 0.3;
+    }
+    position: relative;
+    left: 0;
+    right: 0;
+    //padding: 0;
+    height: ~"calc(100vh - 150px)";
+    min-height: 450px;
     margin: auto;
+    //margin-top: 100px;
 
     font-size: medium;
-    padding-bottom: 1em;
+
+    #main-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%);
+        margin-left: auto;
+        margin-right: auto;
+        display: inline-block;
+        width: 1000px;
+        max-width: 90%;
+    }
+
+    #data {
+        p {
+            margin: 0;
+            padding: 0;
+            font-size: 20px;
+            line-height: 1.5em;
+        }
+        h2 {
+            font-weight: normal;
+            font-size: 48px;
+            line-height: 1.2em;
+            color: @main-color;
+        }
+        h5 {
+            font-size: 1em;
+            color: @main-color;
+        }
+        width: 600px;
+        max-width: 60%;
+        color: @main-color;
+        padding: 15px;
+        box-sizing: border-box;
+        position: absolute;
+        display: inline-block;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+        //width: ~"calc(100% - 450px - 30vw)";
+        //background-color: @main-block-bg;
+
+        #tryit {
+            margin-top: 20px;
+            margin-bottom: 5px;
+        }
+    }
+
+    #userForm {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        margin-left: 50px;
+        display: inline-block;
+        width: 350px;
+        max-width: 35%;
+        //background-color: @main-block-bg;
+        padding: 10px;
+        box-sizing: border-box;
+        font-family: lato, Helvetica, sans-serif;
+        color: @main-color;
+
+        h1 {
+            color: @main-color;
+            padding: 0;
+        }
+
+        [type="text"], [type="password"] {
+            width: 100%;
+        }
+
+        label {
+            margin-bottom: 0;
+            //margin-top: 0.5em;
+        }
+        /*.remember {
+            vertical-align: middle;
+            line-height: 28px;
+            height: 28px;
+            display: inline-block;
+            margin: 10px 0 20px 0;
+        }
+
+
+        [type="checkbox"] {
+            vertical-align: text-top;
+            margin: 0;
+            //margin-top: 10px;
+            margin-right: 5px;
+        }
+        */
+        [type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        button {
+            font-weight: bold;
+            width: 100%;
+            margin: 2px 0px;
+            cursor: pointer;
+            &.half {
+                width: ~"calc(50% - 4px)";
+                &:not(.first) {
+                    float: right;
+                }
+            }
+        }
+    }
+    #main-container {
+        @media screen and (max-width: @media-not-big) {
+            transform: initial;
+            position: relative;
+            display: block;
+            width: 90%;
+            left: 0;
+        }
+    }
+    #userForm, #data {
+        @media screen and (max-width: @media-not-big) {
+            transform: initial;
+            position: relative;
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+    }
+    #userForm {
+        @media screen and (max-width: @media-not-big) {
+            border: 1px solid #888;
+        }
+    }
+    @media screen and (max-width: @media-not-big) {
+        position: relative;
+        height: auto;
+        //background: #aaa;
+        top: -10px;
+    }
+
+    .buttons {
+        margin-top: 15px;
+    }
+}
+p.buttons, div.buttons {
+    text-align: center;
+    button {
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 10px;
+    }
 }
 
 #fileManagerIframe {
@@ -138,27 +428,22 @@ p, pre, td, a, table, tr {
 
 /* buttons */
 
-// home page button container
-.buttons {
-    margin-bottom: 50px;
-    margin-top: 20px;
-    line-height: 2.5em;
-}
-
 .create, .action {
     display: inline-block;
     @thick: 2px;
-    border: @thick solid @cp-green;
-    background-color: @base;
-    color: @cp-green;
+    //border: @thick solid @cp-darkblue;
+    border: 0;
+    background-color: @cp-darkblue;
+    color: @topbar-button-color;
 
     font-weight: bold;
     font-size: large;
     margin-right: 5px;
     margin-left: 5px;
     &:hover {
-        border: @thick solid @cp-accent;
-        color: @cp-green;
+        color: darken(@topbar-button-color, 20%);
+        //border: @thick solid @cp-accent2;
+        //color: @cp-darkblue;
     }
 }
 
@@ -167,15 +452,16 @@ p, pre, td, a, table, tr {
     @vpad: 2 * 2px;
     padding: @vpad @hpad @vpad @hpad;
 
-    margin-top: 2 * 6px;
-    margin-bottom: 2 * 6px;
+    //margin-top: 2 * 6px;
+    //margin-bottom: 2 * 6px;
+    margin: 2px 0;
     display: inline-block;
     line-height: 1.5em;
 }
 
 // currently only used in /user/
 .panel {
-    background-color: #333;
+    background-color: @dark-base;
 }
 
 /*  Tables
@@ -187,7 +473,7 @@ table {
     margin: 20px;
 }
 tbody {
-    border: 2px solid black;
+    border: 1px solid @poll-border-color;
     tr {
         text-align: center;
         &:first-of-type th{
@@ -211,7 +497,7 @@ tbody {
         }
         th {
             box-sizing: border-box;
-            border: 1px solid black;
+            border: 1px solid @poll-border-color;
         }
         th, td {
             color: @fore;
@@ -226,7 +512,7 @@ tbody {
     }
 
     td {
-        border-right: 1px solid black;
+        border-right: 1px solid @poll-border-color;
         padding: 12px;
         padding-top: 0px;
         padding-bottom: 0px;
@@ -291,7 +577,7 @@ form.realtime, div.realtime {
                         border: 0px;
                         &[disabled] {
                             background-color: transparent;
-                            color: @fore;
+                            color: @poll-fg;
                             font-weight: bold;
                         }
                     }
@@ -329,7 +615,7 @@ form.realtime, div.realtime {
                                         font-weight: bold;
 
                                         background-color: @cp-red;
-                                        color: @base;
+                                        color: @poll-cover-color;
 
                                         &:after {
                                             height: 100%;
@@ -370,7 +656,7 @@ form.realtime, div.realtime {
         thead {
             td {
                 padding: 0px 5px;
-                background: @less-light-base;
+                background: @poll-th-bg;
                 border-radius: 20px 20px 0 0;
                 text-align: center;
                 input {
@@ -378,7 +664,7 @@ form.realtime, div.realtime {
                         width: 100%;
                         box-sizing: border-box;
                         &[disabled] {
-                            color: white;
+                            color: @poll-fg;
                             padding: 1px 5px;
                             border: none;
                         }
@@ -389,7 +675,7 @@ form.realtime, div.realtime {
 
         tbody {
             .text-cell {
-                background: @less-light-base;
+                background: @poll-td-bg;
                 //border-radius: 20px 0 0 20px;
                 input[type="text"] {
                     width: ~"calc(100% - 50px)";
@@ -401,6 +687,11 @@ form.realtime, div.realtime {
                 .remove {
                     float: left;
                     margin: 0 0 0 10px;
+                }
+            }
+            td {
+                label {
+                    border: .5px solid @poll-border-color;
                 }
             }
         }
@@ -477,6 +768,31 @@ form.realtime, div.realtime {
 }
 
 &.slide {
+    #modal {
+        .button {
+            position: absolute;
+            cursor: pointer;
+            font-size: 30px;
+            opacity: 0.6;
+            display: none;
+        }
+        .button:hover {
+            opacity: 1;
+            display: block !important;
+        }
+        #button_exit {
+            left: 20px;
+            top: 20px;
+        }
+        #button_left {
+            left: 6vw;
+            bottom: 10vh;
+        }
+        #button_right {
+            right: 6vw;
+            bottom: 10vh;
+        }
+    }
     #modal #content {
         p, ul, ol { font-size: 26px; }
 
@@ -531,6 +847,10 @@ div.modal, div#modal {
         h5 { .size(2.2); }
         h6 { .size(1.6); }
 
+        h1, h2, h3, h4, h5, h6 {
+            color: inherit;
+        }
+
         pre > code {
             display: block;
             position: relative;
@@ -559,7 +879,7 @@ div.modal, div#modal {
     height: 100vh;
     display: none;
 
-    background-color: @base;
+    background-color: @slide-default-bg;
 
     .center {
         position: relative;

@@ -71,7 +71,7 @@ li {
 #tree {
     border-right: 1px solid #ccc;
     box-sizing: border-box;
-    background: white;
+    background: #eee;
     overflow: auto;
     resize: horizontal;
     width: 350px;
@@ -97,7 +97,7 @@ li {
     text-decoration: underline;
 }
 
-#tree #trashTree, #tree #unsortedTree, #tree #templateTree, #tree #allfilesTree {
+#tree .category2 {
     margin-top: 2em;
 }
 
@@ -184,6 +184,7 @@ li {
 
 #content h1 {
     padding-left: 10px;
+    margin-top: 10px;
 }
 
 #content .info-box {
@@ -198,12 +199,6 @@ li {
     cursor: pointer;
     margin-left: 10px;
     float: right;
-}
-
-.topButtonContainer {
-    border: 1px solid #ccc;
-    float: right;
-    border-radius: 4px;
 }
 
 .parentFolder {
@@ -248,8 +243,11 @@ li {
     display: block;
     margin: auto;
     font-size: 40px;
-    width: auto;
     text-align: center;
+}
+
+#content .grid li .fa.listonly {
+    display: none;
 }
 
 #content .list li {
@@ -258,6 +256,7 @@ li {
     align-items: center;
     padding-right: 0px;
 }
+
 #content .list li .element {
     display: inline-flex;
     flex: 1;
@@ -324,4 +323,56 @@ li {
     #content .list .element span.title {
         display: inline;
     }
+}
+
+/* Toolbar */
+
+#driveToolbar {
+    background: #ddd;
+    height: 40px;
+}
+
+.newPadContainer {
+    display: inline-block;
+    height: 100%;
+}
+
+button.newElement {
+    border-radius: 2px;
+    height: 30px;
+    background: #888;
+    color: #eee;
+    font-size: 16px;
+    border: none;
+    font-weight: bold;
+}
+
+button.newElement:hover {
+    box-shadow: 0px 0px 2px #000;
+}
+
+
+/* The container <div> - needed to position the dropdown content */
+#driveToolbar .dropdown-bar {
+    margin: 4px 5px;
+    position: relative;
+    display: inline-block;
+}
+#driveToolbar .dropdown-bar.right {
+    float: right;
+}
+
+/* Right-side buttons */
+#driveToolbar .dropdown-bar.right button {
+    display: inline-block;
+}
+#driveToolbar .dropdown-bar.right button.active {
+    display: none;
+}
+#driveToolbar .dropdown-bar.right button .fa {
+    margin-right: 0px;
+}
+.dropdown-bar-content {
+    margin-top: -3px;
+    margin-right: 2px;
 }

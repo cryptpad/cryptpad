@@ -6,7 +6,7 @@
 .alertify-logs {
     > * {
         padding: @padding-base @padding-base * 4;
-        color: @fore;
+        color: @alertify-fore;
 
         font-weight: bold;
         font-size: large;
@@ -30,6 +30,7 @@
 .alertify {
     position: fixed;
     background-color: @alertify-bg;
+    color: @alertify-fg;
     left: 0;
     right: 0;
     top: 0;
@@ -128,7 +129,7 @@
                 cursor: pointer;
 
                 color: @alertify-btn-fg;
-                border: 1px solid @base;
+                border: 1px solid @alertify-base;
                 border-radius: 5px;
 
                 &:hover, &:active {
@@ -136,7 +137,7 @@
                 }
 
                 &:focus {
-                    border: 1px dotted @base;
+                    border: 1px dotted @alertify-base;
                 }
                 &::-moz-focus-inner {
                     border:0;

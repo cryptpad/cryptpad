@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="cp">
 <head>
-    <title>CryptFiles</title>
+    <title>CryptDrive</title>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
     <link rel="icon" type="image/png"
         href="/customize/main-favicon.png"
@@ -36,7 +36,10 @@
     </style>
 </head>
 <body>
-    <iframe id="pad-iframe" src="inner.html"></iframe>
+    <iframe id="pad-iframe"></iframe>
+    <script>
+        document.getElementById('pad-iframe').setAttribute('src', 'inner.html?' + new Date().getTime());
+    </script>
 </body>
 </html>
 

@@ -42,6 +42,6 @@
     "alertifyjs": "^1.0.11",
     "spin.js": "^2.3.2",
     "scrypt-async": "^1.2.0",
-    "bootstrap": "^3.3.7"
+    "bootstrap": "#v4.0.0-alpha.6"
   }
 }

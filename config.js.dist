@@ -17,7 +17,7 @@ module.exports = {
 /*
     httpHeaders: {
         "Content-Security-Policy": [
-            "default-serc 'none'",
+            "default-src 'none'",
             "style-src 'unsafe-inline' 'self'",
             "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
             "child-src 'self' cryptpad.fr *.cryptpad.fr",
@@ -50,6 +50,12 @@ module.exports = {
      */
     //websocketPort: 3000,
 
+    /*  if you want to run a different version of cryptpad but using the same websocket
+     *  server, you should use the other server port as websocketPort and disable 
+     *  the websockets on that server
+     */
+    //useExternalWebsocket: false,
+
     /*  If Cryptpad is proxied without using https, the server needs to know.
      *  Specify 'useSecureWebsockets: true' so that it can send
      *  Content Security Policy Headers that prevent http and https from mixing
@@ -75,6 +81,7 @@ module.exports = {
         'privacy',
         'terms',
         'about',
+        'contact',
     ],
 
     /*

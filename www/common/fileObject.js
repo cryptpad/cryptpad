@@ -13,7 +13,7 @@ define([
     var NEW_FOLDER_NAME = Messages.fm_newFolder;
 
     var init = module.init = function (files, config) {
-        FILES_DATA = config.storageKey;
+        FILES_DATA = config.storageKey || FILES_DATA;
         var DEBUG = config.DEBUG || false;
         var logging = function () {
             console.log.apply(console, arguments);
@@ -56,6 +56,10 @@ define([
         };
         var isPathInTrash = exp.isPathInTrash = function (path) {
             return path[0] && path[0] === TRASH;
+        };
+
+        var isPathInFilesData = exp.isPathInFilesData = function (path) {
+            return path[0] && path[0] === FILES_DATA;
         };
 
         var isFile =  exp.isFile = function (element) {
@@ -241,6 +245,17 @@ define([
             return path[0] === TRASH && path.length === 4;
         };
 
+        var removePadAttribute = function (f) {
+            Object.keys(files).forEach(function (key) {
+                var hash = f.indexOf('#') !== -1 ? f.slice(f.indexOf('#') + 1) : null;
+                if (hash && key.indexOf(hash) === 0) {
+                    debug("Deleting pad attribute in the realtime object");
+                    files[key] = undefined;
+                    delete files[key];
+                }
+            });
+        };
+
         var checkDeletedFiles = function () {
             // Nothing in FILES_DATA for workgroups
             if (workgroup) { return; }
@@ -264,6 +279,7 @@ define([
                 if (idx !== -1) {
                     debug("Removing", f, "from filesData");
                     files[FILES_DATA].splice(idx, 1);
+                    removePadAttribute(f.href);
                 }
             });
         };
@@ -274,12 +290,73 @@ define([
             var parentEl = exp.findElement(files, parentPath);
             if (path.length === 4 && path[0] === TRASH) {
                 files[TRASH][path[1]].splice(path[2], 1);
-            } else if (path[0] === UNSORTED) { //TODO || === TEMPLATE
+            } else if (path[0] === UNSORTED || path[0] === TEMPLATE) {
                 parentEl.splice(key, 1);
             } else {
                 parentEl[key] = undefined;
                 delete parentEl[key];
             }
+            checkDeletedFiles();
+        };
+
+        // Permanently delete multiple files at once using a list of paths
+        // NOTE: We have to be careful when removing elements from arrays (trash root, unsorted or template)
+        var deleteHrefs = function (hrefs) {
+            hrefs.forEach(function (obj) {
+                var idx = files[obj.root].indexOf(obj.href);
+                files[obj.root].splice(idx, 1);
+            });
+        };
+        var deleteMultipleTrashRoot = function (roots) {
+            roots.forEach(function (obj) {
+                var idx = files[TRASH][obj.name].indexOf(obj.el);
+                files[TRASH][obj.name].splice(idx, 1);
+            });
+        };
+        var deleteMultiplePermanently = exp.deletePathsPermanently = function (paths) {
+            var hrefPaths = paths.filter(isPathInHrefArray);
+            var rootPaths = paths.filter(isPathInRoot);
+            var trashPaths = paths.filter(isPathInTrash);
+
+            var hrefs = [];
+            hrefPaths.forEach(function (path) {
+                var href = exp.findElement(files, path);
+                hrefs.push({
+                    root: path[0],
+                    href: href
+                });
+            });
+            deleteHrefs(hrefs);
+
+            rootPaths.forEach(function (path) {
+                var parentPath = path.slice();
+                var key = parentPath.pop();
+                var parentEl = exp.findElement(files, parentPath);
+                parentEl[key] = undefined;
+                delete parentEl[key];
+            });
+
+            var trashRoot = [];
+            trashPaths.forEach(function (path) {
+                var parentPath = path.slice();
+                var key = parentPath.pop();
+                var parentEl = exp.findElement(files, parentPath);
+                // Trash root: we have array here, we can't just splice with the path otherwise we might break the path
+                // of another element in the loop
+                console.log(path);
+                if (path.length === 4) {
+                    trashRoot.push({
+                        name: path[1],
+                        el: parentEl
+                    });
+                    return;
+                }
+                // Trash but not root: it's just a tree so remove the key
+                parentEl[key] = undefined;
+                delete parentEl[key];
+            });
+            deleteMultipleTrashRoot(trashRoot);
+
             checkDeletedFiles();
         };
 
@@ -352,7 +429,6 @@ define([
         };
 
         // Move to trash
-        // TODO: rename the function
         var removeElement = exp.removeElement = function (path, cb, keepOld) {
             if (!path || path.length < 2 || path[0] === TRASH) {
                 debug("Calling removeElement from a wrong path: ", path);
@@ -386,7 +462,7 @@ define([
 
             if (isPathInHrefArray(newParentPath)) {
                 if (isFolder(element)) {
-                    log(Messages.fo_moveUnsortedError); //TODO or template
+                    log(Messages.fo_moveUnsortedError);
                     return;
                 } else {
                     if (elementPath[0] === newParentPath[0]) { return; }
@@ -572,6 +648,28 @@ define([
             if(cb) { cb(); }
         };
 
+        var deleteFileData = exp.deleteFileData = function (href, cb) {
+            if (workgroup) { return; }
+
+            var toRemove = [];
+            files[FILES_DATA].forEach(function (arr) {
+                var f = arr.href;
+                if (f === href) {
+                    toRemove.push(arr);
+                }
+            });
+            toRemove.forEach(function (f) {
+                var idx = files[FILES_DATA].indexOf(f);
+                if (idx !== -1) {
+                    debug("Removing", f, "from filesData");
+                    files[FILES_DATA].splice(idx, 1);
+                    // Remove the "padAttributes" stored in the realtime object for that pad
+                    removePadAttribute(f.href);
+                }
+            });
+
+            if(cb) { cb(); }
+        };
 
         var renameElement = exp.renameElement = function (path, newName, cb) {
             if (path.length <= 1) {
@@ -619,14 +717,15 @@ define([
             var trashFiles = getTrashFiles();
             var templateFiles = getTemplateFiles();
             var newPath, parentEl;
-            if (path && isPathInHrefArray(path)) {
+            if (path) {
                 newPath = decodeURIComponent(path).split(',');
+            }
+            if (path && isPathInHrefArray(newPath)) {
                 parentEl = findElement(files, newPath);
                 parentEl.push(href);
                 return;
             }
-            if (path && name) {
-                newPath = decodeURIComponent(path).split(',');
+            if (path && isPathInRoot(newPath) && name) {
                 parentEl = findElement(files, newPath);
                 if (parentEl) {
                     var newName = getAvailableName(parentEl, name);
@@ -634,7 +733,7 @@ define([
                     return;
                 }
             }
-            if (unsortedFiles.indexOf(href) === -1 && rootFiles.indexOf(href) === -1&& templateFiles.indexOf(href) === -1 && trashFiles.indexOf(href) === -1) {
+            if (unsortedFiles.indexOf(href) === -1 && rootFiles.indexOf(href) === -1 && templateFiles.indexOf(href) === -1 && trashFiles.indexOf(href) === -1) {
                 files[UNSORTED].push(href);
             }
         };
@@ -736,11 +835,8 @@ define([
                         toClean.push(idx);
                     }
                 });
-                toClean.forEach(function (el) {
-                    var idx = us.indexOf(el);
-                    if (idx !== -1) {
-                        us.splice(idx, 1);
-                    }
+                toClean.forEach(function (idx) {
+                    us.splice(idx, 1);
                 });
             };
             var fixTemplate = function () {
@@ -755,31 +851,31 @@ define([
                         toClean.push(idx);
                     }
                 });
-                toClean.forEach(function (el) {
-                    var idx = us.indexOf(el);
-                    if (idx !== -1) {
-                        us.splice(idx, 1);
-                    }
+                toClean.forEach(function (idx) {
+                    us.splice(idx, 1);
                 });
             };
-            var fixFilesData = function (fd) {
+            var fixFilesData = function () {
                 if (!$.isArray(files[FILES_DATA])) { debug("FILES_DATA was not an array"); files[FILES_DATA] = []; }
                 var fd = files[FILES_DATA];
                 var rootFiles = getRootFiles();
                 var unsortedFiles = getUnsortedFiles();
+                var templateFiles = getTemplateFiles();
                 var trashFiles = getTrashFiles();
                 var toClean = [];
                 fd.forEach(function (el, idx) {
                     if (typeof(el) !== "object") {
                         debug("An element in filesData was not an object.", el);
                         toClean.push(el);
-                    } else {
-                        if (rootFiles.indexOf(el.href) === -1
-                            && unsortedFiles.indexOf(el.href) === -1
-                            && trashFiles.indexOf(el.href) === -1) {
-                            debug("An element in filesData was not in ROOT, UNSORTED or TRASH.", el);
-                            files[UNSORTED].push(el.href);
-                        }
+                        return;
+                    }
+                    if (rootFiles.indexOf(el.href) === -1
+                        && unsortedFiles.indexOf(el.href) === -1
+                        && templateFiles.indexOf(el.href) === -1
+                        && trashFiles.indexOf(el.href) === -1) {
+                        debug("An element in filesData was not in ROOT, UNSORTED or TRASH.", el);
+                        files[UNSORTED].push(el.href);
+                        return;
                     }
                 });
                 toClean.forEach(function (el) {

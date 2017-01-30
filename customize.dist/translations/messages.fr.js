@@ -1,13 +1,15 @@
 define(function () {
     var out = {};
 
+    // translations must set this key for their language to be available in
+    // the language dropdowns that are shown throughout Cryptpad's interface
     out._languageName = "Français";
 
     out.main_title = "Cryptpad: Éditeur collaboratif en temps réel, zero knowledge";
     out.main_slogan = "L'unité est la force, la collaboration est la clé";
 
     out.type = {};
-    out.type.pad = 'Pad';
+    out.type.pad = 'Texte';
     out.type.code = 'Code';
     out.type.poll = 'Sondage';
     out.type.slide = 'Présentation';
@@ -42,6 +44,8 @@ define(function () {
     out.editor = "éditeur";
     out.editors = "éditeurs";
 
+    out.language = "Langue";
+
     out.greenLight = "Tout fonctionne bien";
     out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur";
     out.redLight = "Vous êtes déconnectés de la session";
@@ -59,6 +63,9 @@ define(function () {
     out.userButton = 'UTILISATEUR';
     out.userButtonTitle = "Changer votre nom d'utilisateur";
     out.changeNamePrompt = 'Changer votre nom (laisser vide pour rester anonyme) : ';
+    out.user_rename = "Changer le nom affiché";
+    out.user_displayName = "Nom affiché";
+    out.user_accountName = "Nom d'utilisateur";
 
     out.renameButton = 'RENOMMER';
     out.renameButtonTitle = 'Changer le titre utilisé par ce document dans la page d\'accueil de Cryptpad';
@@ -74,6 +81,9 @@ define(function () {
     out.shareButtonTitle = "Copier l'URL dans le presse-papiers";
     out.shareSuccess = 'URL copiée dans le presse-papiers';
     out.shareFailed = "Échec de la copie de l'URL dans le presse-papiers";
+
+    out.newPadButton = 'Nouveau';
+    out.newPadButtonTitle = 'Créer un nouveau document';
 
     out.presentButton = 'PRÉSENTER';
     out.presentButtonTitle = "Entrer en mode présentation";
@@ -111,10 +121,12 @@ define(function () {
     out.recentPadsIframe = 'Vos documents récents';
 
     out.okButton = 'OK (Entrée)';
+
+    out.cancel = "Annuler";
     out.cancelButton = 'Annuler (Echap)';
 
     out.loginText = '<p>Votre nom d\'utilisateur et votre mot de passe sont utilisés pour générer une clé unique qui reste inconnue de notre serveur.</p>\n' +
-                    '<p>Faites attention de ne pas oublier vos identifiants puisqu\'ils seront impossible à récupérer.</p>';
+                    '<p>Faites attention de ne pas oublier vos identifiants puisqu\'ils seront impossible à récupérer.</p>'; //TODO
 
     out.forget = "Oublier";
 
@@ -170,12 +182,14 @@ define(function () {
 
     // File manager
 
-    out.fm_rootName = "Mes documents";
+    out.fm_rootName = "Documents";
     out.fm_trashName = "Corbeille";
     out.fm_unsortedName = "Fichiers non triés";
     out.fm_filesDataName = "Tous les fichiers";
+    out.fm_templateName = "Modèles";
+    out.fm_newButton = "Nouveau";
     out.fm_newFolder = "Nouveau dossier";
-    out.fm_newFolderButton = "NOUVEAU DOSSIER";
+    out.fm_folder = "Dossier";
     out.fm_folderName = "Nom du dossier";
     out.fm_numberOfFolders = "# de dossiers";
     out.fm_numberOfFiles = "# de fichiers";
@@ -185,9 +199,10 @@ define(function () {
     out.fm_creation = "Création";
     out.fm_forbidden = "Action interdite";
     out.fm_originalPath = "Chemin d'origine";
+    out.fm_noname = "Document sans titre";
     out.fm_emptyTrashDialog = "Êtes-vous sûr de vouloir vider la corbeille ?";
     out.fm_removeSeveralPermanentlyDialog = "Êtes-vous sûr de vouloir supprimer ces {0} éléments de manière permanente ?";
-    out.fm_removePermanentlyDialog = "Êtes-vous sûr de vouloir supprimer {0} de manière permanente ?";
+    out.fm_removePermanentlyDialog = "Êtes-vous sûr de vouloir supprimer cet élément de manière permanente ?";
     out.fm_restoreDialog = "Êtes-vous sûr de vouloir restaurer {0} à son emplacement précédent ?";
     out.fm_removeSeveralDialog = "Êtes-vous sûr de vouloir déplacer ces {0} éléments vers la corbeille ?";
     out.fm_removeDialog = "Êtes-vous sûr de vouloir déplacer {0} vers la corbeille ?";
@@ -195,13 +210,20 @@ define(function () {
     out.fm_contextMenuError = "Impossible d'ouvrir le menu contextuel pour cet élément. Si le problème persiste, essayez de rechercher la page.";
     out.fm_selectError = "Impossible de sélectionner l'élément ciblé. Si le problème persiste, essayez de recharger la page.";
     out.fm_info_root = "Créez ici autant de dossiers que vous le souhaitez pour trier vos fichiers.";
-    out.fm_info_unsorted = 'Contient tous les documents que vous avez ouvert et qui ne sont pas triés dans "Mes documents" ou déplacés vers la "Corbeille".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
+    out.fm_info_unsorted = 'Contient tous les documents que vous avez ouvert et qui ne sont pas triés dans "Documents" ou déplacés vers la "Corbeille".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
+    out.fm_info_template = "Contient tous les fichiers que vous avez sauvés en tant que modèle afin de les réutiliser lors de la création d'un nouveau document.";
     out.fm_info_trash = 'Les fichiers supprimés dans la corbeille sont également enlevés de "Tous les fichiers" et il est impossible de les récupérer depuis l\'explorateur de fichiers.'; // Same here for "All files" and "out.fm_filesDataName"
-    out.fm_info_allFiles = 'Contient tous les fichiers de "Mes documents", "Fichiers non triés" et "Corbeille". Vous ne pouvez pas supprimer ou déplacer des fichiers d\'ici.'; // Same here
-    // File - Context menu
+    out.fm_info_allFiles = 'Contient tous les fichiers de "Documents", "Fichiers non triés" et "Corbeille". Vous ne pouvez pas supprimer ou déplacer des fichiers depuis cet endroit.'; // Same here
+    out.fm_alert_backupUrl = "URL de secours pour ce contenu.<br>" +
+                             "Il est <strong>fortement recommandé</strong> de garder cette URL pour vous-même.<br>" +
+                             "Elle vous servira en cas de perte des données de votre navigateur afin de retrouver vos fichiers.<br>" +
+                             "Quiconque se trouve en possession de celle-ci peut modifier ou supprimer tous les fichiers de ce gestionnaire.<br>" +
+                             '<input type="text" id="fm_backupUrl" value="{0}"/>';
+     // File - Context menu
     out.fc_newfolder = "Nouveau dossier";
     out.fc_rename = "Renommer";
     out.fc_open = "Ouvrir";
+    out.fc_open_ro = "Ouvrir (lecture seule)";
     out.fc_delete = "Supprimer";
     out.fc_restore = "Restaurer";
     out.fc_remove = "Supprimer définitivement";
@@ -218,9 +240,47 @@ define(function () {
     out.fo_unableToRestore = "Impossible de restaurer ce fichier à son emplacement d'origine. Vous pouvez essayer de le déplacer à un nouvel emplacement.";
     out.fo_unavailableName = "Un fichier ou dossier avec le même nom existe déjà au nouvel emplacement. Renommez cet élément avant d'essayer à nouveau.";
 
+    // login
+    out.login_login = "Connexion";
+    out.login_nologin = "Documents récents de ce navigateur";
+    out.login_register = "Inscription";
+    out.logoutButton = "Déconnexion";
+
+    out.login_migrate = "Souhaitez-vous importer les données existantes de votre session anonyme ?";
+
+    out.username_label = "Nom d'utilisateur : ";
+    out.displayname_label = "Nom affiché : ";
+
+    out.login_username = "votre nom d'utilisateur";
+    out.login_password = "votre mot de passe";
+    out.login_confirm = "confirmer votre mot de passe";
+    out.login_remember = "Se souvenir de moi";
+
+    out.login_cancel_prompt = "...ou si vous avez entré le mauvais nom d'utilisateur ou mot de passe, annulez pour essayer à nouveau.";
+
+    out.login_registerSuccess = "Inscription réalisée avec succès. Prenez soin de ne pas oublier votre mot de passe !";
+    out.login_passwordMismatch = "Les deux mots de passe entrés sont différents. Essayez à nouveau.";
+
+    out.login_warning = [
+        '<h1 id="warning">ATTENTION</h1>',
+        '<p>Cryptpad sauve vos données personnelles dans un document temps-réel chiffré, comme pour tous les autres types de documents temps-réel.</p>',
+        '<p>Votre nom d\'utilisateur et votre mot de passe ne sont jamais envoyés au serveur de manière non-chiffré.</p>',
+        '<p>Ainsi, si vous oubliez votre nom d\'utilisateur ou votre mot de passe, il n\'y a absolument rien que nous puissions faire pour retrouver vos informations perdues.</p>',
+        '<p><strong>Prenez soin de ne surtout pas oublier votre nom d\'utilisateur OU votre mot de passe !</strong></p>',
+    ].join('\n');
+
+    out.login_hashing = "Traitement de vos identifiants, cela peut nécessiter quelques instants.";
+
+    out.login_no_user = "Il n'y a aucun utilisateur associé au nom et au mot de passe que vous avez entré.";
+    out.login_confirm_password = "Veuillez taper de nouveau votre mot de passe pour vous inscrire...";
+
+    out.loginText = '<p>Votre nom d\'utilisateur et votre mot d epasse sont utilisés pour générer une clé unique qui reste inconnue de notre serveur.</p>\n' +
+                    '<p>Faîtes attention de ne pas perdre vos identifiants, puisqu\'il est impossible de les récupérer</p>';
+
     // index.html
 
-    out.main_p1 = 'CryptPad est l\'éditeur collaboratif en temps réel <strong>zero knowledge</strong>. Le chiffrement est effectué depuis votre navigateur, ce qui protège les données contre le serveur, le cloud, et la NSA. La clé de chiffrement est stockée dans l\'<a href="https://fr.wikipedia.org/wiki/Identificateur_de_fragment">identifieur de fragment</a> de l\'URL qui n\'est jamais envoyée au serveur mais est accessible depuis javascript, de sorte qu\'en partageant l\'URL, vous donnez l\'accès au pad à ceux qui souhaitent participer.';
+    //out.main_p1 = 'CryptPad est l\'éditeur collaboratif en temps réel <strong>zero knowledge</strong>. Le chiffrement est effectué depuis votre navigateur, ce qui protège les données contre le serveur, le cloud, et la NSA. La clé de chiffrement est stockée dans l\'<a href="https://fr.wikipedia.org/wiki/Identificateur_de_fragment">identifieur de fragment</a> de l\'URL qui n\'est jamais envoyée au serveur mais est accessible depuis javascript, de sorte qu\'en partageant l\'URL, vous donnez l\'accès au pad à ceux qui souhaitent participer.';
+    out.main_p1 = "<h2>Collaborez en tout confiance</h2><br>Développez vos idées collaborativement grâce à des documents partagés en temps-réel, tout en gardant vos données personnelles invisibles, même pour nous, avec la technologie <strong>Zero Knowledge</strong>.";
     out.main_p2 = 'Ce projet utilise l\'éditeur visuel (WYSIWYG) <a href="http://ckeditor.com/">CKEditor</a>, l\'éditeur de code source <a href="https://codemirror.net/">CodeMirror</a>, et le moteur temps-réel <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a>.';
     out.main_howitworks = 'Comment ça fonctionne';
     out.main_howitworks_p1 = 'CryptPad utilise une variante de l\'algorithme d\'<a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> qui est capable de trouver un consensus distribué en utilisant <a href="https://bitcoin.org/bitcoin.pdf">une chaîne de bloc Nakamoto</a>, un outil popularisé par le <a href="https://fr.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. De cette manière, l\'algorithme évite la nécessité d\'utiliser un serveur central pour résoudre les conflits d\'édition de l\'Operational Transformation, et sans ce besoin de résolution des conflits le serveur peut rester ignorant du contenu qui est édité dans le pad.';
@@ -234,10 +294,19 @@ define(function () {
     out.table_created = 'Créé le';
     out.table_last = 'Dernier accès';
 
-    out.button_newpad = 'CRÉER UN PAD WYSIWYG';
-    out.button_newcode = 'CRÉER UN PAD DE CODE';
-    out.button_newpoll = 'CRÉER UN SONDAGE';
-    out.button_newslide = 'CRÉER UNE PRÉSENTATION';
+    out.button_newpad = 'Nouveau document texte';
+    out.button_newcode = 'Nouvelle page de code';
+    out.button_newpoll = 'Nouveau sondage';
+    out.button_newslide = 'Nouvelle présentation';
+
+    out.form_title = "Tous vos pads, partout où vous allez !";
+    out.form_username = "Nom d'utilisateur";
+    out.form_password = "Mot de passe";
+
+    out.about = "À propos";
+    out.privacy = "Vie privée";
+    out.contact = "Contact";
+    out.terms = "Conditions";
 
     // privacy.html
 

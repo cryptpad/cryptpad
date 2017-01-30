@@ -80,7 +80,7 @@ define([
 
     var logout = common.logout = function (cb) {
         [
-            fileHashKey,
+//            fileHashKey,
             userHashKey,
         ].forEach(function (k) {
             sessionStorage.removeItem(k);
@@ -88,6 +88,11 @@ define([
             delete localStorage[k];
             delete sessionStorage[k];
         });
+        // Make sure we have an FS_hash in localStorage before reloading all the tabs
+        // so that we don't end up with tabs using different anon hashes
+        if (!localStorage[fileHashKey]) {
+            localStorage[fileHashKey] = common.createRandomHash();
+        }
         if (cb) { cb(); }
     };
 
@@ -99,6 +104,11 @@ define([
         });
 
         return hash;
+    };
+
+    var isLoggedIn = common.isLoggedIn = function () {
+        //return typeof getStore().getLoginName() === "string";
+        return typeof getUserHash() === "string";
     };
 
     // var isArray = function (o) { return Object.prototype.toString.call(o) === '[object Array]'; };
@@ -171,15 +181,25 @@ define([
     var getHashFromKeys = common.getHashFromKeys = getEditHashFromKeys;
 
     var specialHashes = common.specialHashes = ['iframe'];
+
+    /*
+     * Returns all needed keys for a realtime channel
+     * - no argument: use the URL hash or create one if it doesn't exist
+     * - secretHash provided: use secretHash to find the keys
+     */
     var getSecrets = common.getSecrets = function (secretHash) {
         var secret = {};
         var generate = function () {
             secret.keys = Crypto.createEditCryptor();
             secret.key = Crypto.createEditCryptor().editKeyStr;
         };
-        if (/#\?path=/.test(window.location.href)) {
-            var arr = window.location.hash.match(/\?path=(.+)/);
-            common.initialPath = arr[1] || undefined;
+        // If we have a hash in the URL specifying a path, it means the document was created from
+        // the drive and should be stored at the selected path.
+        if (/[?&]path=/.test(window.location.hash)) {
+            var patharr = window.location.hash.match(/[?&]path=([^&]+)/);
+            var namearr = window.location.hash.match(/[?&]name=([^&]+)/);
+            common.initialPath = patharr[1] || undefined;
+            common.initialName = namearr[1] ? decodeURIComponent(namearr[1]) : undefined;
             window.location.hash = '';
         }
         if (!secretHash && !/#/.test(window.location.href)) {
@@ -389,7 +409,7 @@ define([
 
     // STORAGE
     var setPadAttribute = common.setPadAttribute = function (attr, value, cb, legacy) {
-        getStore(legacy).set([getHash(), attr].join('.'), value, function (err, data) {
+        getStore(legacy).setDrive([getHash(), attr].join('.'), value, function (err, data) {
             cb(err, data);
         });
     };
@@ -404,7 +424,7 @@ define([
 
     // STORAGE
     var getPadAttribute = common.getPadAttribute = function (attr, cb, legacy) {
-        getStore(legacy).get([getHash(), attr].join('.'), function (err, data) {
+        getStore(legacy).getDrive([getHash(), attr].join('.'), function (err, data) {
             cb(err, data);
         });
     };
@@ -436,7 +456,7 @@ define([
     // STORAGE
     /* fetch and migrate your pad history from localStorage */
     var getRecentPads = common.getRecentPads = function (cb, legacy) {
-        getStore(legacy).get(storageKey, function (err, recentPads) {
+        getStore(legacy).getDrive(storageKey, function (err, recentPads) {
             if (isArray(recentPads)) {
                 cb(void 0, migrateRecentPads(recentPads));
                 return;
@@ -448,7 +468,7 @@ define([
     // STORAGE
     /* commit a list of pads to localStorage */
     var setRecentPads = common.setRecentPads = function (pads, cb, legacy) {
-        getStore(legacy).set(storageKey, pads, function (err, data) {
+        getStore(legacy).setDrive(storageKey, pads, function (err, data) {
             cb(err, data);
         });
     };
@@ -560,7 +580,7 @@ define([
                 var data = makePad(href, name);
                 renamed.push(data);
                 if (USE_FS_STORE && typeof(getStore().addPad) === "function") {
-                    getStore().addPad(href, common.initialPath, name);
+                    getStore().addPad(href, common.initialPath, common.initialName || name);
                 }
             }
 
@@ -643,8 +663,27 @@ define([
             $(function() {
                 // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
                 // won't work. We have to reset it now to make sure it uses a correct "body"
-
                 Alertify.reset();
+
+                // Load the new pad when the hash has changed
+                var oldHash  = document.location.hash.slice(1);
+                window.onhashchange = function () {
+                    var newHash = document.location.hash.slice(1);
+                    var parsedOld = parseHash(oldHash);
+                    var parsedNew = parseHash(newHash);
+                    if (parsedOld && parsedNew && (
+                          parsedOld.channel !== parsedNew.channel
+                          || parsedOld.mode !== parsedNew.mode
+                          || parsedOld.key !== parsedNew.key)) {
+                        document.location.reload();
+                        return;
+                    }
+                    if (parsedNew) {
+                        oldHash = newHash;
+                    }
+                };
+
+                // Everything's ready, continue...
                 if($('#pad-iframe').length) {
                     var $iframe = $('#pad-iframe');
                     var iframe = $iframe[0];
@@ -686,8 +725,8 @@ define([
         $loading.append($container);
         $('body').append($loading);
     };
-    common.removeLoadingScreen = function () {
-        $('#' + LOADING).fadeOut(750);
+    common.removeLoadingScreen = function (cb) {
+        $('#' + LOADING).fadeOut(750, cb);
     };
     common.errorLoadingScreen = function (error) {
         $('.spinnerContainer').hide();
@@ -842,9 +881,9 @@ define([
                 }
                 break;
             case 'editshare':
-                button = $('<button>', {
+                button = $('<a>', {
                     title: Messages.editShareTitle,
-                }).text(Messages.editShare);
+                }).html('<span class="fa fa-users" style="font-family:FontAwesome;"></span>').append(' ' + Messages.editShare);
                 if (data && data.editHash) {
                     var editHash = data.editHash;
                     button.click(function () {
@@ -860,9 +899,9 @@ define([
                 }
                 break;
             case 'viewshare':
-                button = $('<button>', {
+                button = $('<a>', {
                     title: Messages.viewShareTitle,
-                }).text(Messages.viewShare);
+                }).html('<span class="fa fa-eye" style="font-family:FontAwesome;"></span>').append(' ' + Messages.viewShare);
                 if (data && data.viewHash) {
                     button.click(function () {
                         var baseUrl = window.location.origin + window.location.pathname + '#';
@@ -877,9 +916,9 @@ define([
                 }
                 break;
             case 'viewopen':
-                button = $('<button>', {
+                button = $('<a>', {
                     title: Messages.viewOpenTitle,
-                }).text(Messages.viewOpen);
+                }).html('<span class="fa fa-eye" style="font-family:FontAwesome;"></span>').append(' ' + Messages.viewOpen);
                 if (data && data.viewHash) {
                     button.click(function () {
                         var baseUrl = window.location.origin + window.location.pathname + '#';
@@ -913,6 +952,99 @@ define([
             button.addClass('rightside-button');
         }
         return button;
+    };
+
+    // Create a button with a dropdown menu
+    // input is a config object with parameters:
+    //  - container (optional): the dropdown container (span)
+    //  - text (optional): the button text value
+    //  - options: array of {tag: "", attributes: {}, content: "string"}
+    //
+    // allowed options tags: ['a', 'hr', 'p']
+    var createDropdown = common.createDropdown = function (config) {
+        if (typeof config !== "object" || !isArray(config.options)) { return; }
+
+        var allowedTags = ['a', 'p', 'hr'];
+        var isValidOption = function (o) {
+            if (typeof o !== "object") { return false; }
+            if (!o.tag || allowedTags.indexOf(o.tag) === -1) { return false; }
+            return true;
+        };
+
+        // Container
+        var $container = $(config.container);
+        if (!config.container) {
+            $container = $('<span>', {
+                'class': 'dropdown-bar'
+            });
+        }
+
+        // Button
+        var $button = $('<button>', {
+            'class': ''
+        }).append($('<span>', {'class': 'buttonTitle'}).html(config.text || ""));
+        $('<span>', {
+            'class': 'fa fa-caret-down',
+        }).appendTo($button);
+
+        // Menu
+        var $innerblock = $('<div>', {'class': 'cryptpad-dropdown dropdown-bar-content'});
+        if (config.left) { $innerblock.addClass('left'); }
+
+        config.options.forEach(function (o) {
+            if (!isValidOption(o)) { return; }
+            $('<' + o.tag + '>', o.attributes || {}).html(o.content || '').appendTo($innerblock);
+        });
+
+        $container.append($button).append($innerblock);
+
+        $button.click(function (e) {
+            e.stopPropagation();
+            var state = $innerblock.is(':visible');
+            $('.dropdown-bar-content').hide();
+            $('iframe').each(function (idx, ifrw) {
+                $(ifrw).contents().find('.dropdown-bar-content').hide();
+            });
+            if (state) {
+                $innerblock.hide();
+                return;
+            }
+            $innerblock.show();
+        });
+
+        return $container;
+    };
+
+    // Provide $container if you want to put the generated block in another element
+    // Provide $initBlock if you already have the menu block and you want the content inserted in it
+    var createLanguageSelector = common.createLanguageSelector = function ($container, $initBlock) {
+        var options = [];
+        var languages = Messages._languages;
+        for (var l in languages) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'class': 'languageValue',
+                    'data-value': l,
+                    'href': '#',
+                },
+                content: languages[l] // Pretty name of the language value
+            });
+        }
+        var dropdownConfig = {
+            text: Messages.language, // Button initial text
+            options: options, // Entries displayed in the menu
+            left: true, // Open to the left of the button
+            container: $initBlock // optional
+        };
+        var $block = createDropdown(dropdownConfig);
+        $block.attr('id', 'language-selector');
+
+        if ($container) {
+            $block.appendTo($container);
+        }
+
+        Messages._initSelector($block);
     };
 
     /*

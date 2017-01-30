@@ -127,7 +127,6 @@ var Renderer = function (Cryptpad) {
     };
 
     var createRow = Render.createRow = function (obj, cb, id, value) {
-        console.error('new row!');
         var order = Cryptpad.find(obj, ['table', 'rowsOrder']);
         if (!order) { throw new Error("Uninitialized realtime object!"); }
         id = id || rowuid();

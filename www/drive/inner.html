@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+    <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="file.css" />
+    <link rel="stylesheet" href="/customize/main.css" />
+</head>
+<body>
+    <div id="toolbar" class="toolbar-container"></div>
+    <div id="driveToolbar"></div>
+    <div class="app-container">
+        <div id="tree">
+        </div>
+        <div id="content">
+        </div>
+        <div id="treeContextMenu" class="contextMenu dropdown clearfix" oncontextmenu="return false;">
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
+                <li><a tabindex="-1" href="#" class="open dropdown-item" data-localization="fc_open">Open</a></li>
+                <li><a tabindex="-1" href="#" class="open_ro dropdown-item" data-localization="fc_open_ro">Open (read-only)</a></li>
+                <li><a tabindex="-1" href="#" class="rename editable dropdown-item" data-localization="fc_rename">Rename</a></li>
+                <li><a tabindex="-1" href="#" class="delete editable dropdown-item" data-localization="fc_delete">Delete</a></li>
+                <li><a tabindex="-1" href="#" class="newfolder editable dropdown-item" data-localization="fc_newfolder">New folder</a></li>
+            </ul>
+        </div>
+        <div id="contentContextMenu" class="contextMenu dropdown clearfix" oncontextmenu="return false;">
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
+                <li><a tabindex="-1" href="#" class="newfolder editable dropdown-item" data-localization="fc_newfolder">New folder</a></li>
+                <li><a tabindex="-1" href="#" class="newdoc own editable dropdown-item" data-type="pad" data-localization="fc_newpad" target="_blank">New pad</a></li>
+                <li><a tabindex="-1" href="#" class="newdoc own editable dropdown-item" data-type="code" data-localization="fc_newcode" target="_blank">New code</a></li>
+                <li><a tabindex="-1" href="#" class="newdoc own editable dropdown-item" data-type="slide" data-localization="fc_newslide" target="_blank">New slide</a></li>
+                <li><a tabindex="-1" href="#" class="newdoc own editable dropdown-item" data-type="poll" data-localization="fc_newpoll" target="_blank">New poll</a></li>
+            </ul>
+        </div>
+        <div id="defaultContextMenu" class="contextMenu dropdown clearfix" oncontextmenu="return false;">
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
+                <li><a tabindex="-1" href="#" class="open dropdown-item" data-localization="fc_open">Open</a></li>
+                <li><a tabindex="-1" href="#" class="open_ro dropdown-item" data-localization="fc_open_ro">Open (read-only)</a></li>
+            </ul>
+        </div>
+        <div id="trashTreeContextMenu" class="contextMenu dropdown clearfix" oncontextmenu="return false;">
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
+                <li><a tabindex="-1" href="#" class="empty editable dropdown-item" data-localization="fc_empty">Empty the trash</a></li>
+            </ul>
+        </div>
+        <div id="trashContextMenu" class="contextMenu dropdown clearfix" oncontextmenu="return false;">
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
+                <li><a tabindex="-1" href="#" class="remove editable dropdown-item" data-localization="fc_remove">Delete permanently</a></li>
+                <li><a tabindex="-1" href="#" class="restore editable dropdown-item" data-localization="fc_restore">Restore</a></li>
+                <li><a tabindex="-1" href="#" class="properties dropdown-item" data-localization="fc_prop">Properties</a></li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
+

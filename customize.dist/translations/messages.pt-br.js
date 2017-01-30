@@ -74,7 +74,7 @@ define(function () {
 
     out.forgetButton = 'ESQUECER';
     out.forgetButtonTitle = 'Remova este documento da listagem da sua página';
-    out.forgetPrompt = 'Cliando OK você irá remover o endereço deste bloco de notas do armazenamento local, você tem certeza?';
+    out.forgetPrompt = 'Clicando OK você irá remover o endereço deste bloco de notas do armazenamento local, você tem certeza?';
 
     out.shareButton = 'Compartilhar';
     out.shareButtonTitle = "Copiar endereço do clipboard";
@@ -181,7 +181,7 @@ define(function () {
     out.table_type = 'Tipo';
     out.table_link = 'Link';
     out.table_created = 'Criado';
-    out.table_last = 'Último acessado';
+    out.table_last = 'Último acesso';
 
     out.button_newpad = 'NOVO BLOCO WYSIWYG';
     out.button_newcode = 'NOVO BLOCO DE NOTAS';
@@ -192,7 +192,7 @@ define(function () {
 
     out.policy_title = 'Política de privacidade do Cryptpad';
     out.policy_whatweknow = 'O que nós sabemos sobre você';
-    out.policy_whatweknow_p1 = 'Por der uma aplicação hospedada na web, O Cryptpad tem acesso ao metadados expostos pelo protocolo HTTP. Isso inclui seu endereço IP, e vários cabeçalhos  do HTTP que podem ser usados para identificar seu browser particular. Você pode ver que informações seu navegador está compartilhando ao visitar <a target="_blank" rel="noopener noreferrer" href="https://www.whatismybrowser.com/detect/what-http-headers-is-my-browser-sending" title="Que cabeçalhos meu navegador está disponibilizando">WhatIsMyBrowser.com</a>.';
+    out.policy_whatweknow_p1 = 'Por ser uma aplicação hospedada na web, O Cryptpad tem acesso aos metadados expostos pelo protocolo HTTP. Isso inclui seu endereço IP, e vários cabeçalhos  do HTTP que podem ser usados para identificar seu browser particular. Você pode ver que informações seu navegador está compartilhando ao visitar <a target="_blank" rel="noopener noreferrer" href="https://www.whatismybrowser.com/detect/what-http-headers-is-my-browser-sending" title="Que cabeçalhos meu navegador está disponibilizando">WhatIsMyBrowser.com</a>.';
     out.policy_whatweknow_p2 = 'Nós usamos a plataforma de análise <a href="https://piwik.org/" target="_blank" rel="noopener noreferrer" title="plataforma analítica open source">Piwik</a>, uma plataforma analítica open source, para aprender mais sobre nossos usos. Piwik nos informa como você encontrou o Cryptpad, via digitação direta, através de mecanismos de busca, ou via link de outro serviço web como o Reddit ou o Twitter. Nós também aprendemos com suas visitas, que links você clica enquanto está em nossas páginas de informações, e quanto tempo você fica nestas páginas.';
     out.policy_whatweknow_p3 = 'Estas ferramentas de análise são utilizadas apenas com fins de informação. Nós não coletamos nenhuma informação sobre sua utilização em nossas aplicações de zero-knowledge.';
     out.policy_howweuse = 'Como utilizamos o que nós aprendemos';
@@ -203,17 +203,17 @@ define(function () {
     out.policy_links = 'Links para outros sites';
     out.policy_links_p1 = 'Este site contém ligações para outros sites, incluindo aqueles produzidos por terceiros. Nós não nos responsabilizamos pelas práticas de privacidade ou o conteúdo destes sites. Como regra geral, links para páginas fora de nosso domínio são lançadas em novas janelas ou abas, para deixar claro a todos os visitantes que eles estão deixando o site Cryptpad.fr.';
     out.policy_ads = 'Publicidade';
-    out.policy_ads_p1 = 'Nós não disponibilizamos publicidade online, porém podemos prover links de acesso para obtenção de financiamento para auxiliar em nossa pesquisa.';
+    out.policy_ads_p1 = 'Nós não disponibilizamos publicidade online, porém podemos prover links de acesso para obtenção de financiamento para auxiliar em nossa pesquisa e desenvolvimento.';
     out.policy_choices = 'As escolhas que você tem';
     out.policy_choices_open = 'Nosso código fonte é open source, portanto você sempre tem a opção de hospedar sua própria instância do Cryptpad.';
-    out.policy_choices_vpn = 'Se você deseja usar nosso site principal, porém não deseja expor seu endereço IP, Você pode se proteger utilizando o <a href="https://www.torproject.org/projects/torbrowser.html.en" title="Baixe o tor" target="_blank" rel="noopener noreferrer">Nvegador seguro Tor</a>, ou uma <a href="https://riseup.net/en/vpn" title="VPNs providas pelo Riseup" target="_blank" rel="noopener noreferrer">VPN</a>.';
+    out.policy_choices_vpn = 'Se você deseja usar nosso site principal, porém não deseja expor seu endereço IP, Você pode se proteger utilizando o <a href="https://www.torproject.org/projects/torbrowser.html.en" title="Baixe o tor" target="_blank" rel="noopener noreferrer">Navegador seguro Tor</a>, ou uma <a href="https://riseup.net/en/vpn" title="VPNs providas pelo Riseup" target="_blank" rel="noopener noreferrer">VPN</a>.';
     out.policy_choices_ads = 'Se você deseja apenas bloquear nossa plataforma analítica, você pode utilizar ferramentas de bloqueio de propagandas como o <a href="https://www.eff.org/privacybadger" title="baixe o privacy badger" target="_blank" rel="noopener noreferrer">Privacy Badger</a>.';
 
     // terms.html
 
     out.tos_title = "Termos de serviço doCryptpad";
     out.tos_legal = "Pedimos encarecidamente que, como usuário desta plataforma, você evite a prática de quaisquer atos ilegais e que evite a utilização maliciosa e/ou abusiva desta plataforma.";
-    out.tos_availability = "Nós esperamos que você ache este serviço útil, porém não não podemos garantir a disponibilidade constante ou a alta performance do mesmo. Por favor, mantenha um backup dos seus dados como forma de segurança adicional.";
+    out.tos_availability = "Nós esperamos que você ache este serviço útil, porém nós não podemos garantir a disponibilidade constante ou a alta performance do mesmo. Por favor, mantenha um backup dos seus dados como forma de segurança adicional.";
     out.tos_e2ee = "Os documentos do CryptPad podem ser modificados por qualquer um que conseguir adivinhar ou obter de qualquer forma o seu identificador único. Nós recomendamos que você utilize criptografia ponto a ponto de mensagens (e2ee) sempre que possível para compartilhar suas URL's. Nós não assumimos qualquer responsabilidade sobre chaves e/ou URL’s e seus respectivos conteúdos vazadas para o público.";
     out.tos_logs = "Os Metadados providos pelo seu navegador para nosso servidor podem ser armazenados com o propósito de manter o serviço em funcionamento";
     out.tos_3rdparties = "Nós não disponibilizamos dados individuais para terceiros, salvo quando requisitado legalmente.";

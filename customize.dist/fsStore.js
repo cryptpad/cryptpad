@@ -4,7 +4,7 @@ define([
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
-    '/file/fileObject.js'
+    '/common/fileObject.js'
 ], function (Config, Messages, Listmap, Crypto, TextPatcher, FO) {
     /*
         This module uses localStorage, which is synchronous, but exposes an
@@ -39,6 +39,11 @@ define([
         cb(void 0, map);
     };
 
+    Store.setDrive = function (key, val, cb) {
+        storeObj.drive[key] = val;
+        cb();
+    };
+
     var safeGet = window.safeGet = function (key) {
         return storeObj[key];
     };
@@ -54,6 +59,10 @@ define([
             res[key] = safeGet(key);
         });
         cb(void 0, res);
+    };
+
+    Store.getDrive = function (key, cb) {
+        cb(void 0, storeObj.drive[key]);
     };
 
     var safeRemove = function (key) {
@@ -98,6 +107,10 @@ define([
         return exp;
     };
 
+    Store.getLoginName = function () {
+        return storeObj.login_name;
+    };
+
     var changeHandlers = Store.changeHandlers = [];
 
     Store.change = function (f) {
@@ -123,7 +136,7 @@ define([
     };
 
     var onReady = function (f, proxy, storageKey) {
-        filesOp = FO.init(proxy, {
+        filesOp = FO.init(proxy.drive, {
             storageKey: storageKey
         });
         storeObj = proxy;
@@ -138,7 +151,10 @@ define([
     var init = function (f, Cryptpad) {
         if (!Cryptpad || initialized) { return; }
         initialized = true;
-        var hash = Cryptpad.getUserHash() || localStorage.FS_hash;
+        var hash = Cryptpad.getUserHash() || localStorage.FS_hash || Cryptpad.createRandomHash();
+        if (!hash) {
+            throw new Error('[Store.init] Unable to find or create a drive hash. Aborting...');
+        }
         var secret = Cryptpad.getSecrets(hash);
         var listmapConfig = {
             data: {},
@@ -151,19 +167,34 @@ define([
             logLevel: 1,
         };
 
+        window.addEventListener('storage', function (e) {
+            var key = e.key;
+            if (e.key !== Cryptpad.userHashKey) { return; }
+            var o = e.oldValue;
+            var n = e.newValue;
+            if (!o && n) {
+                window.location.reload();
+            } else if (o && !n) {
+                window.location.reload();
+            }
+        });
+
         var rt = window.rt = Listmap.create(listmapConfig);
         exp.proxy = rt.proxy;
         rt.proxy.on('create', function (info) {
             exp.info = info;
-            var realtime = info.realtime;
             if (!Cryptpad.getUserHash()) {
                 localStorage.FS_hash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
             }
         }).on('ready', function () {
-            if (!rt.proxy[Cryptpad.storageKey] || !Cryptpad.isArray(rt.proxy[Cryptpad.storageKey])) {
+        if (ready) { return; }
+            if (!rt.proxy.drive || typeof(rt.proxy.drive) !== 'object') { rt.proxy.drive = {}; }
+            var drive = rt.proxy.drive;
+            // Creating a new anon drive: import anon pads from localStorage
+            if (!drive[Cryptpad.storageKey] || !Cryptpad.isArray(drive[Cryptpad.storageKey])) {
                 var oldStore = Cryptpad.getStore(true);
                 oldStore.get(Cryptpad.storageKey, function (err, s) {
-                    rt.proxy[Cryptpad.storageKey] = s;
+                    drive[Cryptpad.storageKey] = s;
                     onReady(f, rt.proxy, Cryptpad.storageKey);
                 });
                 return;

@@ -1,3 +1,75 @@
+/* The container <div> - needed to position the dropdown content */
+.dropdown-bar {
+  position: relative;
+  display: inline-block;
+}
+.dropdown-bar .fa {
+  font-family: FontAwesome;
+}
+.dropdown-bar button .fa-caret-down {
+  margin-left: 5px;
+}
+.dropdown-bar .dropdown-bar-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 200px;
+  box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
+}
+.dropdown-bar .dropdown-bar-content.left {
+  right: 0;
+}
+.dropdown-bar .dropdown-bar-content:hover {
+  display: block;
+}
+.dropdown-bar .dropdown-bar-content a {
+  color: black;
+  padding: 5px 16px;
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  float: none;
+  text-align: left;
+}
+.dropdown-bar .dropdown-bar-content a:hover {
+  background-color: #f1f1f1;
+}
+.dropdown-bar .dropdown-bar-content hr {
+  margin: 5px 0px;
+  height: 1px;
+  background: #bbb;
+}
+.dropdown-bar .dropdown-bar-content p {
+  min-width: 160px;
+  padding: 5px;
+  margin: 0;
+  white-space: normal;
+  text-align: left;
+}
+.dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users {
+  text-align: baseline;
+}
+.dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users .yourself,
+.dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users .anonymous,
+.dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users .viewer {
+  font-style: italic;
+}
+.dropdown-bar .dropdown-bar-content p h2 {
+  font-weight: bold;
+  text-align: center;
+  background-color: #EEEEEE;
+  padding: 5px 0px;
+  margin: 5px 0px;
+  font-size: 16px;
+  white-space: normal;
+}
 .unselectable {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -31,21 +103,22 @@
   user-select: none;
   font: normal normal normal 12px Arial, Helvetica, Tahoma, Verdana, Sans-Serif;
   color: #000;
-  display: inline-block;
   width: 100%;
   z-index: 9001;
+}
+.cryptpad-toolbar .fa {
+  font-family: FontAwesome;
 }
 .cryptpad-toolbar a {
   float: right;
 }
 .cryptpad-toolbar .cryptpad-lag {
   box-sizing: content-box;
-  vertical-align: top;
   height: 16px;
   width: 16px;
   display: inline-block;
-  margin: 2px 0px;
   padding: 5px;
+  margin: 3px 0;
 }
 .cryptpad-toolbar .cryptpad-lag div {
   margin: auto;
@@ -65,7 +138,11 @@
   height: 26px;
   padding-right: 5px;
   padding-left: 5px;
-  margin: 2px;
+  margin: 3px 2px;
+}
+.cryptpad-toolbar .dropdown-bar-content {
+  margin-top: -3px;
+  margin-right: 2px;
 }
 .cryptpad-toolbar button {
   background-color: inherit;
@@ -78,29 +155,28 @@
   background-image: linear-gradient(to bottom, #f2f2f2, #ccc);
 }
 @media screen and (max-width: 800px) {
-  .cryptpad-toolbar button.userlist {
+  .cryptpad-toolbar .large {
     display: none;
   }
 }
 @media screen and (min-width: 801px) {
-  .cryptpad-toolbar button.userlist {
+  .cryptpad-toolbar .large {
     display: inline-block;
   }
 }
 @media screen and (max-width: 800px) {
-  .cryptpad-toolbar button.userlist.small {
+  .cryptpad-toolbar .small {
     display: inline-block;
   }
 }
 @media screen and (min-width: 801px) {
-  .cryptpad-toolbar button.userlist.small {
+  .cryptpad-toolbar .small {
     display: none;
   }
 }
 .cryptpad-toolbar .cryptpad-state {
-  line-height: 30px;
+  line-height: 32px;
   /* equivalent to 26px + 2*2px margin used for buttons */
-  float: left;
 }
 .cryptpad-toolbar .rightside-button {
   float: right;
@@ -249,6 +325,9 @@
   vertical-align: top;
   display: inline-block;
 }
+.cryptpad-toolbar-top .cryptpad-user button span.fa {
+  vertical-align: baseline;
+}
 @media screen and (max-width: 400px) {
   .cryptpad-toolbar-top .cryptpad-user {
     top: 3em;
@@ -266,70 +345,41 @@
 .cryptpad-toolbar-leftside .cryptpad-user-list {
   float: right;
 }
-.cryptpad-toolbar-leftside .cryptpad-dropdown-container {
-  position: relative;
-  display: inline-block;
-  padding: 0px;
-}
-.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown {
-  z-index: 1000;
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 160px;
-  overflow: auto;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  height: auto;
-  padding: 5px;
-  white-space: normal;
-}
-.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p {
-  width: 210px;
-  padding: 0;
-  margin: 0;
-  white-space: normal;
-}
-.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p.cryptpad-dropdown-users {
-  text-align: baseline;
-}
-.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p.cryptpad-dropdown-users .yourself,
-.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p.cryptpad-dropdown-users .anonymous,
-.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p.cryptpad-dropdown-users .viewer {
-  font-style: italic;
-}
-.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown p h2 {
-  font-weight: bold;
-  text-align: center;
-  background-color: #EEEEEE;
-  padding: 5px 0px;
-  margin: 5px 0px;
-  font-size: 16px;
-  white-space: normal;
-}
-.cryptpad-toolbar-leftside .cryptpad-dropdown-container .cryptpad-dropdown button {
-  white-space: normal;
-  margin: 2px 0px;
-}
 .cryptpad-toolbar-leftside button {
   margin: 2px 4px 2px 0px;
-}
-.cryptpad-toolbar-leftside .cryptpad-userbuttons-container {
-  /*display: none;*/
 }
 .cryptpad-toolbar-rightside {
   text-align: right;
 }
 .cryptpad-spinner {
-  display: inline-block;
-  height: 26px;
-  margin: 2px;
-  line-height: 26px;
-  font-size: 20px;
+  height: 16px;
+  width: 16px;
+  margin: 8px;
+  line-height: 16px;
+  font-size: 16px;
 }
 .cryptpad-readonly {
   margin-right: 5px;
   font-weight: bold;
   text-transform: uppercase;
+}
+.cryptpad-user p.accountData {
+  background: #f0f0f0;
+}
+.cryptpad-user p.accountData > span {
+  font-weight: bold;
+}
+.cryptpad-user p.accountData > span span {
+  font-weight: normal;
+}
+.cryptpad-user .buttonTitle .fa:not(.fa-caret-down) {
+  margin-right: 5px;
+}
+.cryptpad-user .buttonTitle .account-name {
+  margin-left: 5px;
+}
+.cryptpad-dropdown-share a .fa {
+  margin-right: 5px;
 }
 .lag {
   height: 15px !important;
@@ -341,7 +391,7 @@
   background-color: #46E981;
 }
 .lag-red {
-  background-color: #FF0073;
+  background-color: #FA5858;
 }
 .lag-orange {
   background-color: #FE9A2E;
