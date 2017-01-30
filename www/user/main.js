@@ -354,6 +354,7 @@ define([
             var passwd_confirm = $password_register.val();
             var confirm = $confirm.val();
             var remember = $remember[0].checked;
+            remember = true; // TODO : find a way to use a sessionStorage shared with all tabs
 
             var register = document.location.hash.slice(1) === 'register';
 
