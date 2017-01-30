@@ -1456,7 +1456,7 @@ define([
             createTree($tree, [ROOT]);
             if (!isWorkgroup()) {
                 createUnsorted($tree, [UNSORTED]);
-                createTemplate($tree, [TEMPLATE]);
+                //createTemplate($tree, [TEMPLATE]);
                 createAllFiles($tree, [FILES_DATA]);
             }
             createTrash($tree, [TRASH]);
