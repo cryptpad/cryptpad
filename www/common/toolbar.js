@@ -439,7 +439,7 @@ define([
 
             $userAdmin.find('a.logout').click(function (e) {
                 Cryptpad.logout();
-                window.location.reload();
+                window.location.href = '/';
             });
             $userAdmin.find('a.login').click(function (e) {
                 window.open('/user');

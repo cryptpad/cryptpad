@@ -175,7 +175,8 @@ define([
             if (!o && n) {
                 window.location.reload();
             } else if (o && !n) {
-                window.location.reload();
+                //window.location.reload();
+                window.location.href = '/';
             }
         });
 
