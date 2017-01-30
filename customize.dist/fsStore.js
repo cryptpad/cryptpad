@@ -194,10 +194,10 @@ define([
             // Creating a new anon drive: import anon pads from localStorage
             if (!drive[Cryptpad.storageKey] || !Cryptpad.isArray(drive[Cryptpad.storageKey])) {
                 var oldStore = Cryptpad.getStore(true);
-                oldStore.get(Cryptpad.storageKey, function (err, s) {
+                Cryptpad.getRecentPads(function (err, s) {
                     drive[Cryptpad.storageKey] = s;
                     onReady(f, rt.proxy, Cryptpad.storageKey);
-                });
+                }, true);
                 return;
             }
             onReady(f, rt.proxy, Cryptpad.storageKey);

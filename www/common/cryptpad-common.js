@@ -337,8 +337,9 @@ define([
                         pad.title = hash.slice(0,8);
                     });
                 }
-                pad.href = pad.href.replace(/^https:\/\/beta\.cryptpad\.fr/,
-                    'https://cryptpad.fr');
+                if (/^https*:\/\//.test(pad.href)) {
+                    pad.href = common.getRelativeHref(pad.href);
+                }
                 return pad;
             } else {
                 console.error("[Cryptpad.migrateRecentPads] pad had unexpected value");
@@ -352,10 +353,23 @@ define([
         return window.location.hash.slice(1);
     };
 
+    var getRelativeHref = common.getRelativeHref = function (href) {
+        var parsed = common.parsePadUrl(href);
+        return '/' + parsed.type + '/#' + parsed.hash;
+    };
+
     var parsePadUrl = common.parsePadUrl = function (href) {
         var patt = /^https*:\/\/([^\/]*)\/(.*?)\//i;
 
         var ret = {};
+
+        if (!/^https*:\/\//.test(href)) {
+            var idx = href.indexOf('/#');
+            ret.type = href.slice(1, idx);
+            ret.hash = href.slice(idx + 2);
+            return ret;
+        }
+
         var hash = href.replace(patt, function (a, domain, type, hash) {
             ret.domain = domain;
             ret.type = type;
@@ -456,7 +470,11 @@ define([
     // STORAGE
     /* fetch and migrate your pad history from localStorage */
     var getRecentPads = common.getRecentPads = function (cb, legacy) {
-        getStore(legacy).getDrive(storageKey, function (err, recentPads) {
+        var sstore = getStore(legacy);
+        if (legacy) {
+            sstore.getDrive = sstore.get;
+        }
+        sstore.getDrive(storageKey, function (err, recentPads) {
             if (isArray(recentPads)) {
                 cb(void 0, migrateRecentPads(recentPads));
                 return;
@@ -468,7 +486,11 @@ define([
     // STORAGE
     /* commit a list of pads to localStorage */
     var setRecentPads = common.setRecentPads = function (pads, cb, legacy) {
-        getStore(legacy).setDrive(storageKey, pads, function (err, data) {
+        var sstore = getStore(legacy);
+        if (legacy) {
+            sstore.setDrive = sstore.set;
+        }
+        sstore.setDrive(storageKey, pads, function (err, data) {
             cb(err, data);
         });
     };
@@ -535,6 +557,7 @@ define([
     var setPadTitle = common.setPadTitle = function (name, cb) {
         var href = window.location.href;
         var parsed = parsePadUrl(href);
+        href = getRelativeHref(href);
         getRecentPads(function (err, recent) {
             if (err) {
                 cb(err);
