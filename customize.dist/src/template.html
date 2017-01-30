@@ -3,9 +3,12 @@
 <head>
     <title data-localization="main_title">Cryptpad: Zero Knowledge, Collaborative Real Time Editing</title>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link rel="stylesheet" type="text/css" href="/customize/main.css" />
     <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
     <link rel="icon" type="image/png" href="/customize/main-favicon.png" id="favicon"/>
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
     <script data-main="/customize/main" src="/bower_components/requirejs/require.js"></script>
     <script src="/bower_components/requirejs/require.js"></script>
     <script>
@@ -14,18 +17,12 @@
         });
     </script>
 </head>
-<body>
-    {{fork}}
-
-    <span id="language-selector" class="dropdown-bar"></span>
-
-    <div id="main">
-{{logo}}
+<body class="html">
+    {{topbar}}
 
 {{noscript}}
 
 {{main}}
-    </div>
 </body>
 </html>
 

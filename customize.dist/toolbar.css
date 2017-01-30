@@ -13,7 +13,7 @@
   display: none;
   position: absolute;
   background-color: #f9f9f9;
-  min-width: 160px;
+  min-width: 200px;
   box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   max-height: 300px;
@@ -391,7 +391,7 @@
   background-color: #46E981;
 }
 .lag-red {
-  background-color: #FF0073;
+  background-color: #FA5858;
 }
 .lag-orange {
   background-color: #FE9A2E;

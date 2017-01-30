@@ -54,6 +54,10 @@ li {
   display: none;
   position: absolute;
 }
+.contextMenu li {
+  padding: 0;
+  font-size: 16px;
+}
 .droppable {
   background-color: #FE9A2E;
   color: #222;

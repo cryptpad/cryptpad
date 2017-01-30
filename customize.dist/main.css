@@ -14,15 +14,16 @@
   background: rgba(0, 0, 0, 0.8);
 }
 .alertify-logs > *.error {
-  background: #FF0073;
+  background: #FA5858;
 }
 .alertify-logs > *.success {
   background: #46E981;
-  color: #302B28;
+  color: #fff;
 }
 .alertify {
   position: fixed;
   background-color: rgba(0, 0, 0, 0.3);
+  color: #fafafa;
   left: 0;
   right: 0;
   top: 0;
@@ -79,8 +80,8 @@
 }
 .alertify .dialog input:not(.form-control),
 .alertify .alert input:not(.form-control) {
-  background-color: #302B28;
-  color: #fafafa;
+  background-color: #fff;
+  color: #555;
   border: 0px;
   border-radius: 5px;
   margin-bottom: 15px;
@@ -210,7 +211,7 @@
   height: 2.5em;
   display: inline-block;
   width: 100%;
-  background: #302B28;
+  background: #fff;
   border-top: 1px solid #444;
 }
 .top-bar a,
@@ -226,7 +227,7 @@
   display: block;
   margin-left: 10px;
   padding-top: 3px;
-  color: #fafafa;
+  color: #555;
 }
 .top-bar img,
 .bottom-bar img {
@@ -306,6 +307,7 @@
   left: 0px;
   right: 0px;
   background: #302B28;
+  color: #fafafa;
   text-align: center;
   font-size: 1.5em;
 }
@@ -344,7 +346,7 @@
   display: none;
   position: absolute;
   background-color: #f9f9f9;
-  min-width: 160px;
+  min-width: 200px;
   box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   max-height: 300px;
@@ -401,19 +403,81 @@
   font-size: 16px;
   white-space: normal;
 }
+#cryptpadTopBar {
+  background: #fff;
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  color: #000;
+  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  padding: 5px;
+  box-sizing: border-box;
+  font-size: 30px;
+}
+#cryptpadTopBar > span {
+  vertical-align: middle;
+  display: inline-block;
+  height: 100%;
+}
+#cryptpadTopBar .cryptpad-logo {
+  height: 40px;
+  vertical-align: middle;
+}
+#cryptpadTopBar .slogan {
+  font-size: 20px;
+  color: #000;
+  line-height: 40px;
+}
+#cryptpadTopBar .gotoMain {
+  color: #000;
+  height: 40px;
+  line-height: 40px;
+}
+#cryptpadTopBar .gotoMain:hover {
+  text-decoration: none;
+  color: #558;
+}
+#cryptpadTopBar .right {
+  float: right;
+  font-size: 20px;
+  margin: 0px 10px;
+  line-height: 40px;
+}
+#cryptpadTopBar .right a {
+  font-weight: 500;
+  font-size: 0.75em;
+  color: #558;
+  /*            text-align: center;
+            min-width: 100px;
+            font-weight: bold;
+            height: 70px;
+            padding: 0 10px;
+            line-height: 70px;
+            display: inline-block;
+            color: @topbar-button-color;*/
+}
+#cryptpadTopBar .right a:hover {
+  text-decoration: none;
+  color: #000;
+}
 html.cp,
 .cp body {
   font-size: .875em;
-  background-color: #302B28;
-  color: #fafafa;
+  background-color: #fff;
+  color: #555;
   font-family: Georgia,Cambria,serif;
-  height: 100;
+  height: 100%;
 }
-.cp:not(.poll) #language-selector {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  display: inline-block;
+.cp:not(.poll) {
+  /*#language-selector {
+        position: absolute;
+        top: @topbar-height;
+        right: 0px;
+        display: inline-block;
+        z-index: 2;
+    }*/
 }
 .cp {
   /* buttons */
@@ -425,6 +489,7 @@ html.cp,
   font-size: 1rem;
   font-weight: 400;
   line-height: 2rem;
+  margin: 0;
 }
 .cp a.github-corner > svg {
   fill: #00ADEE;
@@ -440,7 +505,7 @@ html.cp,
 .cp h4,
 .cp h5,
 .cp h6 {
-  color: #fafafa;
+  color: #555;
   font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   -webkit-font-feature-settings: 'dlig' 1, 'liga' 1, 'lnum' 1, 'kern' 1;
   -moz-font-feature-settings: 'dlig' 1, 'liga' 1, 'lnum' 1, 'kern' 1;
@@ -486,11 +551,11 @@ html.cp,
 }
 .cp a {
   cursor: pointer;
-  color: #46E981;
+  color: #3333ff;
   text-decoration: none;
 }
 .cp a:hover {
-  color: #a1f4bf;
+  color: #0000cc;
 }
 .cp img {
   height: auto;
@@ -513,28 +578,311 @@ html.cp,
   font-family: lato, Helvetica, sans-serif;
   font-size: 1.02em;
 }
+.cp .page {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  background: #fff;
+  padding: 10px 0;
+  position: relative;
+}
+.cp .page .info-container {
+  width: 900px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+.cp .page .info-container > div {
+  padding: 10px;
+  width: 400px;
+  max-width: 100%;
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+}
+@media screen and (max-width: 800px) {
+  .cp .page .info-container > div:not(.image) {
+    width: 100%;
+    left: 0;
+  }
+}
+.cp .page .info-container > div.image {
+  text-align: center;
+}
+@media screen and (max-width: 800px) {
+  .cp .page .info-container > div.image {
+    display: none;
+  }
+}
+@media screen and (max-width: 800px) {
+}
+.cp .page.category {
+  background: #f7f7f7;
+}
+.cp .page .app {
+  display: inline-block;
+  width: 300px;
+  vertical-align: middle;
+  margin: 0px 25px;
+  white-space: normal;
+  max-width: calc(50% - 50px);
+}
+@media screen and (max-width: 500px) {
+  .cp .page .app {
+    display: block;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+}
+.cp .page .app-container {
+  width: 1400px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+.cp .page .app-row {
+  display: inline-block;
+  white-space: nowrap;
+  width: 700px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+@media screen and (max-width: 1399px) {
+  .cp .page .app-row {
+    display: block;
+  }
+}
+@media screen and (max-width: 800px) {
+  .cp .page .app-row img {
+    display: none;
+  }
+}
+.cp .page .right {
+  left: 100px;
+}
+.cp .page h1,
+.cp .page h2,
+.cp .page h3,
+.cp .page h4,
+.cp .page h5,
+.cp .page h6 {
+  padding: 0;
+}
+@media screen and (max-width: 800px) {
+  .cp .page {
+    padding: 10px 5vh;
+  }
+}
+.cp .page p {
+  font-size: 18px;
+  text-align: justify;
+}
+.cp .btn-default:hover {
+  background-color: #d8d8d8;
+}
 .cp #main {
-  width: 70vw;
+  background-image: url('/customize/bg3.jpg');
+  background-size: cover;
+  background-position: center center;
+}
+.cp #main_other {
+  padding: 0 15vw;
+}
+.cp #main,
+.cp #main_other {
+  position: relative;
+  left: 0;
+  right: 0;
+  height: calc(100vh - 150px);
+  min-height: 450px;
   margin: auto;
   font-size: medium;
-  padding-bottom: 1em;
+}
+.cp #main #overlay,
+.cp #main_other #overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #000;
+  opacity: 0.3;
+}
+.cp #main #main-container,
+.cp #main_other #main-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%);
+  margin-left: auto;
+  margin-right: auto;
+  display: inline-block;
+  width: 1000px;
+  max-width: 90%;
+}
+.cp #main #data,
+.cp #main_other #data {
+  width: 600px;
+  max-width: 60%;
+  color: #fff;
+  padding: 15px;
+  box-sizing: border-box;
+  position: absolute;
+  display: inline-block;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+.cp #main #data p,
+.cp #main_other #data p {
+  margin: 0;
+  padding: 0;
+  font-size: 20px;
+  line-height: 1.5em;
+}
+.cp #main #data h2,
+.cp #main_other #data h2 {
+  font-weight: normal;
+  font-size: 48px;
+  line-height: 1.2em;
+  color: #fff;
+}
+.cp #main #data h5,
+.cp #main_other #data h5 {
+  font-size: 1em;
+  color: #fff;
+}
+.cp #main #data #tryit,
+.cp #main_other #data #tryit {
+  margin-top: 20px;
+  margin-bottom: 5px;
+}
+.cp #main #userForm,
+.cp #main_other #userForm {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 50px;
+  display: inline-block;
+  width: 350px;
+  max-width: 35%;
+  padding: 10px;
+  box-sizing: border-box;
+  font-family: lato, Helvetica, sans-serif;
+  color: #fff;
+  /*.remember {
+            vertical-align: middle;
+            line-height: 28px;
+            height: 28px;
+            display: inline-block;
+            margin: 10px 0 20px 0;
+        }
+
+
+        [type="checkbox"] {
+            vertical-align: text-top;
+            margin: 0;
+            //margin-top: 10px;
+            margin-right: 5px;
+        }
+        */
+}
+.cp #main #userForm h1,
+.cp #main_other #userForm h1 {
+  color: #fff;
+  padding: 0;
+}
+.cp #main #userForm [type="text"],
+.cp #main_other #userForm [type="text"],
+.cp #main #userForm [type="password"],
+.cp #main_other #userForm [type="password"] {
+  width: 100%;
+}
+.cp #main #userForm label,
+.cp #main_other #userForm label {
+  margin-bottom: 0;
+}
+.cp #main #userForm [type="checkbox"],
+.cp #main_other #userForm [type="checkbox"] {
+  margin-right: 5px;
+}
+.cp #main #userForm button,
+.cp #main_other #userForm button {
+  font-weight: bold;
+  width: 100%;
+  margin: 2px 0px;
+  cursor: pointer;
+}
+.cp #main #userForm button.half,
+.cp #main_other #userForm button.half {
+  width: calc(50% - 4px);
+}
+.cp #main #userForm button.half:not(.first),
+.cp #main_other #userForm button.half:not(.first) {
+  float: right;
+}
+@media screen and (max-width: 800px) {
+  .cp #main #main-container,
+  .cp #main_other #main-container {
+    transform: initial;
+    position: relative;
+    display: block;
+    width: 90%;
+    left: 0;
+  }
+}
+@media screen and (max-width: 800px) {
+  .cp #main #userForm,
+  .cp #main_other #userForm,
+  .cp #main #data,
+  .cp #main_other #data {
+    transform: initial;
+    position: relative;
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    margin: 10px 0;
+    box-sizing: border-box;
+  }
+}
+@media screen and (max-width: 800px) {
+  .cp #main #userForm,
+  .cp #main_other #userForm {
+    border: 1px solid #888;
+  }
+}
+@media screen and (max-width: 800px) {
+  .cp #main,
+  .cp #main_other {
+    position: relative;
+    height: auto;
+    top: -10px;
+  }
+}
+.cp #main .buttons,
+.cp #main_other .buttons {
+  margin-top: 15px;
+}
+.cp p.buttons,
+.cp div.buttons {
+  text-align: center;
+}
+.cp p.buttons button,
+.cp div.buttons button {
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
 }
 .cp #fileManagerIframe {
   width: 100%;
   height: 500px;
   margin-top: 15px;
 }
-.cp .buttons {
-  margin-bottom: 50px;
-  margin-top: 20px;
-  line-height: 2.5em;
-}
 .cp .create,
 .cp .action {
   display: inline-block;
-  border: 2px solid #46E981;
-  background-color: #302B28;
-  color: #46E981;
+  border: 0;
+  background-color: #3333ff;
+  color: #fff;
   font-weight: bold;
   font-size: large;
   margin-right: 5px;
@@ -542,18 +890,16 @@ html.cp,
 }
 .cp .create:hover,
 .cp .action:hover {
-  border: 2px solid #a1f4bf;
-  color: #46E981;
+  color: #cccccc;
 }
 .cp .button {
   padding: 4px 12px 4px 12px;
-  margin-top: 12px;
-  margin-bottom: 12px;
+  margin: 2px 0;
   display: inline-block;
   line-height: 1.5em;
 }
 .cp .panel {
-  background-color: #333;
+  background-color: #cccccc;
 }
 .cp table {
   border-collapse: collapse;
@@ -561,7 +907,7 @@ html.cp,
   margin: 20px;
 }
 .cp tbody {
-  border: 2px solid black;
+  border: 1px solid #555;
 }
 .cp tbody tr {
   text-align: center;
@@ -579,18 +925,18 @@ html.cp,
   cursor: pointer;
 }
 .cp tbody tr:nth-child(odd) {
-  background-color: #685d56;
+  background-color: #ffffff;
 }
 .cp tbody tr th:first-of-type {
   border-left: 0px;
 }
 .cp tbody tr th {
   box-sizing: border-box;
-  border: 1px solid black;
+  border: 1px solid #555;
 }
 .cp tbody tr th,
 .cp tbody tr td {
-  color: #fafafa;
+  color: #555;
 }
 .cp tbody tr th.remove,
 .cp tbody tr td.remove {
@@ -600,7 +946,7 @@ html.cp,
   border-right: 0px;
 }
 .cp tbody td {
-  border-right: 1px solid black;
+  border-right: 1px solid #555;
   padding: 12px;
   padding-top: 0px;
   padding-bottom: 0px;
@@ -615,7 +961,7 @@ html.cp,
   border-top-left-radius: 5px;
 }
 .cp .remove {
-  color: #FF0073;
+  color: #FA5858;
   cursor: pointer !important;
 }
 .cp form.realtime,
@@ -661,7 +1007,7 @@ html.cp,
 .cp form.realtime table tr td div.text-cell input[disabled],
 .cp div.realtime table tr td div.text-cell input[disabled] {
   background-color: transparent;
-  color: #fafafa;
+  color: #000;
   font-weight: bold;
 }
 .cp form.realtime table tr td.checkbox-cell,
@@ -695,8 +1041,8 @@ html.cp,
 .cp form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover,
 .cp div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover {
   font-weight: bold;
-  background-color: #FF0073;
-  color: #302B28;
+  background-color: #FA5858;
+  color: #000;
   display: block;
 }
 .cp form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover:after,
@@ -726,13 +1072,13 @@ html.cp,
 .cp form.realtime table input[type="text"],
 .cp div.realtime table input[type="text"] {
   height: auto;
-  border: 1px solid #302B28;
+  border: 1px solid #fff;
   width: 80%;
 }
 .cp form.realtime table thead td,
 .cp div.realtime table thead td {
   padding: 0px 5px;
-  background: #4c443f;
+  background: #aaa;
   border-radius: 20px 20px 0 0;
   text-align: center;
 }
@@ -743,13 +1089,13 @@ html.cp,
 }
 .cp form.realtime table thead td input[type="text"][disabled],
 .cp div.realtime table thead td input[type="text"][disabled] {
-  color: white;
+  color: #000;
   padding: 1px 5px;
   border: none;
 }
 .cp form.realtime table tbody .text-cell,
 .cp div.realtime table tbody .text-cell {
-  background: #4c443f;
+  background: #aaa;
 }
 .cp form.realtime table tbody .text-cell input[type="text"],
 .cp div.realtime table tbody .text-cell input[type="text"] {
@@ -764,6 +1110,10 @@ html.cp,
 .cp div.realtime table tbody .text-cell .remove {
   float: left;
   margin: 0 0 0 10px;
+}
+.cp form.realtime table tbody td label,
+.cp div.realtime table tbody td label {
+  border: 0.5px solid #555;
 }
 .cp form.realtime table .edit,
 .cp div.realtime table .edit {
@@ -782,7 +1132,7 @@ html.cp,
 .cp form.realtime table thead tr th input[type="text"][disabled],
 .cp div.realtime table thead tr th input[type="text"][disabled] {
   background-color: transparent;
-  color: #fafafa;
+  color: #555;
   font-weight: bold;
 }
 .cp form.realtime table thead tr th .remove,
@@ -868,7 +1218,7 @@ html.cp,
   width: 100%;
   height: 100vh;
   display: none;
-  background-color: #302B28;
+  background-color: #000;
 }
 .cp div.modal #content,
 .cp div#modal #content {
@@ -935,6 +1285,20 @@ html.cp,
   font-size: 1.6vw;
   line-height: 1.76vw;
 }
+.cp div.modal #content h1,
+.cp div#modal #content h1,
+.cp div.modal #content h2,
+.cp div#modal #content h2,
+.cp div.modal #content h3,
+.cp div#modal #content h3,
+.cp div.modal #content h4,
+.cp div#modal #content h4,
+.cp div.modal #content h5,
+.cp div#modal #content h5,
+.cp div.modal #content h6,
+.cp div#modal #content h6 {
+  color: inherit;
+}
 .cp div.modal #content pre > code,
 .cp div#modal #content pre > code {
   display: block;
@@ -959,7 +1323,7 @@ html.cp,
   width: 80%;
   height: 80%;
   margin: auto;
-  border: 1px solid #685d56;
+  border: 1px solid #ffffff;
   text-align: center;
 }
 .cp div.modal.shown,
@@ -975,7 +1339,7 @@ html.cp,
 .cp div#modal table input {
   height: 100%;
   width: 90%;
-  border: 3px solid #302B28;
+  border: 3px solid #fff;
 }
 .cp div.modal table tfoot tr td,
 .cp div#modal table tfoot tr td {

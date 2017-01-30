@@ -1,12 +1,17 @@
-@base: #302B28;
+@base: #fff; //#f5f5f5;
+@dark-base: darken(@base, 20%);
+@less-dark-base: darken(@base, 10%);
 @light-base: lighten(@base, 20%);
 @less-light-base: lighten(@base, 10%);
-@fore: #fafafa;
+@fore: #555;
+@old-base: #302B28;
+@old-fore: #fafafa;
 
 @cp-green: #46E981;
 @cp-accent: lighten(@cp-green, 20%);
 
-@cp-red: #FF0073; // remove red
+//@cp-red: #FF0073; // remove red
+@cp-red: #FA5858; // remove red
 @cp-outline: #444;
 
 @cp-orange: #FE9A2E;
@@ -27,20 +32,33 @@
 @text-color: rgba(0, 0, 0, .8);
 @border-radius: 1px;
 
-@alertify-dialog-bg: #444;
-@alertify-dialog-fg: @fore;
+@alertify-fore: @old-fore;
+@alertify-base: @old-base;
 
-@alertify-btn-fg: @fore;
+@alertify-dialog-bg: #444;
+@alertify-dialog-fg: @old-fore;
+
+@alertify-btn-fg: @old-fore;
 
 @alertify-btn-bg: rgba(200, 200, 200, 0.05);
 @alertify-btn-bg-hover: rgba(200, 200, 200, .15);
 
 @alertify-bg: rgba(0, 0, 0, .3);
+@alertify-fg: @old-fore;
 
 @alertify-input-bg: @base;
 @alertify-input-fg: @fore;
 
-@bg-loading: @base;
+@slide-default-bg: #000;
+
+@poll-th-bg: #aaa;
+@poll-td-bg: #aaa;
+@poll-border-color: #555;
+@poll-cover-color: #000;
+@poll-fg: #000;
+
+@bg-loading: @old-base;
+@color-loading: @old-fore;
 
 @media-not-big: 800px;
 @media-not-small: 801px;
@@ -51,3 +69,15 @@
 @toolbar-gradient-start: #f5f5f5;
 @toolbar-gradient-end: #DDDDDD;
 
+@topbar-back: #fff;
+@topbar-color: #000;
+@topbar-button-bg: #2E9AFE;
+@topbar-button-color: #fff;
+@topbar-height: 50px;
+
+@main-border-width: 15vw;
+@cp-darkblue: #3333ff;
+@cp-accent2: darken(@cp-darkblue, 20%);
+
+@main-block-bg: rgba(200, 200, 200, 0.3);
+@main-color: #fff;
