@@ -1055,13 +1055,14 @@ define([
                     var e = useData ? element : filesOp.getFileData(element);
                     if (!e) {
                         e = {
+                            href : el,
                             title : Messages.fm_noname,
                             atime : 0,
                             ctime : 0
                         };
                     }
                     if (prop === 'type') {
-                        var hrefData = Cryptpad.parsePadUrl(el);
+                        var hrefData = Cryptpad.parsePadUrl(e.href);
                         return hrefData.type;
                     }
                     if (prop === 'atime' || prop === 'ctime') {
@@ -1092,10 +1093,15 @@ define([
                     var e = filesOp.getFileData(element);
                     if (!e) {
                         e = {
+                            href : el,
                             title : Messages.fm_noname,
                             atime : 0,
                             ctime : 0
                         };
+                    }
+                    if (prop === 'type') {
+                        var hrefData = Cryptpad.parsePadUrl(e.href);
+                        return hrefData.type;
                     }
                     if (prop === 'atime' || prop === 'ctime') {
                         return new Date(e[prop]);
