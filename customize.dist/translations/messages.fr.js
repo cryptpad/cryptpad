@@ -296,6 +296,7 @@ define(function () {
     out.table_created = 'Créé le';
     out.table_last = 'Dernier accès';
 
+    out.makeAPad = 'Créer un document';
     out.button_newpad = 'Nouveau document texte';
     out.button_newcode = 'Nouvelle page de code';
     out.button_newpoll = 'Nouveau sondage';

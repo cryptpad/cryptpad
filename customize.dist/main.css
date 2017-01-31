@@ -347,7 +347,7 @@
   display: none;
   position: absolute;
   background-color: #f9f9f9;
-  min-width: 200px;
+  min-width: 250px;
   box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   max-height: 300px;
@@ -450,14 +450,6 @@
   font-weight: 500;
   font-size: 0.75em;
   color: #558;
-  /*            text-align: center;
-            min-width: 100px;
-            font-weight: bold;
-            height: 70px;
-            padding: 0 10px;
-            line-height: 70px;
-            display: inline-block;
-            color: @topbar-button-color;*/
 }
 #cryptpadTopBar .right a:hover {
   text-decoration: none;
@@ -735,6 +727,7 @@ html.cp,
   height: calc(100vh - 150px);
   min-height: 450px;
   margin: auto;
+  z-index: 1;
   font-size: medium;
 }
 .cp #main #main-container,

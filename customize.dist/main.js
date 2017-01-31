@@ -35,9 +35,25 @@ define([
 
     var displayCreateButtons = function () {
         var $parent = $('#buttons');
+        var options = [];
         Config.availablePadTypes.forEach(function (el) {
-            $('#create-' + el).attr('target', '_blank').show();
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'class': 'newdoc',
+                    'href': '/' + el,
+                    'target': '_blank'
+                },
+                content: Messages['button_new' + el] // Pretty name of the language value
+            });
         });
+        var dropdownConfig = {
+            text: Messages.makeAPad, // Button initial text
+            options: options, // Entries displayed in the menu
+        };
+        var $block = Cryptpad.createDropdown(dropdownConfig);
+        $block.find('button').addClass('btn').addClass('btn-success');
+        $block.appendTo($parent);
     };
 
     // Language selector
