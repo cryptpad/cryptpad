@@ -24,7 +24,6 @@ define([
     };
 
     var APP = window.APP = {
-        $bar: $iframe.find('#toolbar'),
         editable: false,
         Cryptpad: Cryptpad,
         loggedIn: Cryptpad.isLoggedIn()
@@ -1766,6 +1765,8 @@ define([
 
     // don't initialize until the store is ready.
     Cryptpad.ready(function () {
+        APP.$bar = $iframe.find('#toolbar');
+
         var storeObj = Cryptpad.getStore().getProxy && Cryptpad.getStore().getProxy().proxy ? Cryptpad.getStore().getProxy() : undefined;
 
         Cryptpad.styleAlerts();
