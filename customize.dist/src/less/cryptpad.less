@@ -237,24 +237,57 @@ body.html {
         background-color: #d8d8d8;
     }
 }
-#main {
-    background-image: url('/customize/bg3.jpg');
+
+.mainOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #000;
+    opacity: 0.3;
+}
+#mainBlock {
+    &.hidden {
+        display: none;
+    }
+}
+#noscriptContainer {
+    color: black;
+    position: absolute;
+    top: @topbar-height;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    #noscript {
+        width: 1000px;
+        display: inline-block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%);
+        noscript {
+            font-size: 25px;
+            width: 1000px;
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            color: @main-color;
+            transform: translateY(-50%);
+        }
+    }
+    background: @main-bg;
     background-size: cover;
-    background-position: center center;
+}
+#main {
+    background: @main-bg;
+    background-size: cover;
 }
 #main_other {
     padding: 0 @main-border-width;
 }
 #main, #main_other {
-    #overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #000;
-        opacity: 0.3;
-    }
     position: relative;
     left: 0;
     right: 0;

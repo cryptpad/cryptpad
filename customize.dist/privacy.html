@@ -43,8 +43,10 @@
 </div>
 
 
-    <center>
-        <noscript>
+        <div id="noscriptContainer">
+        <div class="mainOverlay"></div>
+        <div id="noscript">
+          <noscript>
           <p>
             <strong>OOPS</strong> In order to do encryption in your browser, Javascript is really <strong>really</strong> required.
           </p>
@@ -52,12 +54,14 @@
           <p>
             <strong>OUPS</strong> Afin de pouvoir réaliser le chiffrement dans votre navigateur, Javascript est <strong>vraiment</strong> nécessaire.
           </p>
-        </noscript>
-    </center>
+          </noscript>
+        </div>
+    </div>
 
 
 
-<div id="main_other">
+    <div id="mainBlock" class="hidden">
+    <div id="main_other">
     <center>
         <h1 data-localization="policy_title"></h1>
     </center>
@@ -88,6 +92,7 @@
 
 
 
+    </div>
 </body>
 </html>
 

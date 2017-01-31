@@ -15,6 +15,9 @@ define([
         Cryptpad: Cryptpad,
     };
 
+    // main block is hidden in case javascript is disabled
+    $('#mainBlock').removeClass('hidden');
+
     var padTypes = {
         '/pad/': Messages.type.pad,
         '/code/': Messages.type.code,

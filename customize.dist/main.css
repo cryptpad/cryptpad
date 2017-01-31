@@ -678,10 +678,49 @@ html.cp,
 .cp .btn-default:hover {
   background-color: #d8d8d8;
 }
-.cp #main {
-  background-image: url('/customize/bg3.jpg');
+.cp .mainOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #000;
+  opacity: 0.3;
+}
+.cp #mainBlock.hidden {
+  display: none;
+}
+.cp #noscriptContainer {
+  color: black;
+  position: absolute;
+  top: 50px;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: url('/customize/bg3.jpg') no-repeat center center;
   background-size: cover;
-  background-position: center center;
+}
+.cp #noscriptContainer #noscript {
+  width: 1000px;
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%);
+}
+.cp #noscriptContainer #noscript noscript {
+  font-size: 25px;
+  width: 1000px;
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  color: #fff;
+  transform: translateY(-50%);
+}
+.cp #main {
+  background: url('/customize/bg3.jpg') no-repeat center center;
+  background-size: cover;
 }
 .cp #main_other {
   padding: 0 15vw;
@@ -695,16 +734,6 @@ html.cp,
   min-height: 450px;
   margin: auto;
   font-size: medium;
-}
-.cp #main #overlay,
-.cp #main_other #overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #000;
-  opacity: 0.3;
 }
 .cp #main #main-container,
 .cp #main_other #main-container {
