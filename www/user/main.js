@@ -228,8 +228,6 @@ define([
                         });
 
                         var whenSynced = function () {
-                            delete localStorage.FS_hash;
-
                             if (!proxy[USERNAME_KEY]) {
                                 proxy[USERNAME_KEY] = opt.name;
                             }
