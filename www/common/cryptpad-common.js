@@ -1231,7 +1231,9 @@ define([
         store = Store;
     });
 
-    Messages._applyTranslation();
+    $(function () {
+        Messages._applyTranslation();
+    });
 
     Alertify._$$alertify.delay = AppConfig.notificationTimeout || 5000;
 
