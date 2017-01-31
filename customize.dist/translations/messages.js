@@ -294,6 +294,7 @@ define(function () {
     out.table_created = 'Created';
     out.table_last = 'Last Accessed';
 
+    out.makeAPad = 'Make a pad right now';
     out.button_newpad = 'New Rich Text pad';
     out.button_newcode = 'New Code pad';
     out.button_newpoll = 'New Poll';

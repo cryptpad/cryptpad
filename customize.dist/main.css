@@ -347,7 +347,7 @@
   display: none;
   position: absolute;
   background-color: #f9f9f9;
-  min-width: 200px;
+  min-width: 250px;
   box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   max-height: 300px;
@@ -735,6 +735,7 @@ html.cp,
   height: calc(100vh - 150px);
   min-height: 450px;
   margin: auto;
+  z-index: 1;
   font-size: medium;
 }
 .cp #main #main-container,
