@@ -214,12 +214,14 @@ define(function () {
     out.fm_info_template = "Contient tous les fichiers que vous avez sauvés en tant que modèle afin de les réutiliser lors de la création d'un nouveau document.";
     out.fm_info_trash = 'Les fichiers supprimés dans la corbeille sont également enlevés de "Tous les fichiers" et il est impossible de les récupérer depuis l\'explorateur de fichiers.'; // Same here for "All files" and "out.fm_filesDataName"
     out.fm_info_allFiles = 'Contient tous les fichiers de "Documents", "Fichiers non triés" et "Corbeille". Vous ne pouvez pas supprimer ou déplacer des fichiers depuis cet endroit.'; // Same here
-    out.fm_alert_backupUrl = "URL de secours pour ce contenu.<br>" +
+    out.fm_alert_backupUrl = "URL de secours pour ce disque.<br>" +
                              "Il est <strong>fortement recommandé</strong> de garder cette URL pour vous-même.<br>" +
                              "Elle vous servira en cas de perte des données de votre navigateur afin de retrouver vos fichiers.<br>" +
                              "Quiconque se trouve en possession de celle-ci peut modifier ou supprimer tous les fichiers de ce gestionnaire.<br>" +
                              '<input type="text" id="fm_backupUrl" value="{0}"/>';
-     // File - Context menu
+    out.fm_backup_title = 'URL de secours';
+
+    // File - Context menu
     out.fc_newfolder = "Nouveau dossier";
     out.fc_rename = "Renommer";
     out.fc_open = "Ouvrir";

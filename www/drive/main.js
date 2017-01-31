@@ -132,6 +132,30 @@ define([
         else { $iframe.find('[draggable="false"]').attr('draggable', true); }
     };
 
+    // Icons
+    var $folderIcon = $('<span>', {"class": "fa fa-folder folder icon"});
+    var $folderEmptyIcon = $folderIcon.clone();
+    var $folderOpenedIcon = $('<span>', {"class": "fa fa-folder-open folder"});
+    var $folderOpenedEmptyIcon = $folderOpenedIcon.clone();
+    var $fileIcon = $('<span>', {"class": "fa fa-file-text-o file icon"});
+    var $padIcon = $('<span>', {"class": "fa fa-file-word-o file icon"});
+    var $codeIcon = $('<span>', {"class": "fa fa-file-code-o file icon"});
+    var $slideIcon = $('<span>', {"class": "fa fa-file-powerpoint-o file icon"});
+    var $pollIcon = $('<span>', {"class": "fa fa-calendar file icon"});
+    var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
+    var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
+    var $templateIcon = $('<span>', {"class": "fa fa-cubes"});
+    var $trashIcon = $('<span>', {"class": "fa fa-trash"});
+    var $trashEmptyIcon = $('<span>', {"class": "fa fa-trash-o"});
+    var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o expcol"});
+    var $expandIcon = $('<span>', {"class": "fa fa-plus-square-o expcol"});
+    var $listIcon = $('<span>', {"class": "fa fa-list"});
+    var $gridIcon = $('<span>', {"class": "fa fa-th"});
+    var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up sortasc"});
+    var $sortDescIcon = $('<span>', {"class": "fa fa-angle-down sortdesc"});
+    var $closeIcon = $('<span>', {"class": "fa fa-window-close"});
+    var $backupIcon = $('<span>', {"class": "fa fa-life-ring"});
+
     var init = function (proxy) {
         var files = proxy.drive;
         var isOwnDrive = function () {
@@ -182,29 +206,6 @@ define([
         var $trashTreeContextMenu = $iframe.find("#trashTreeContextMenu");
         var $trashContextMenu = $iframe.find("#trashContextMenu");
 
-
-        // Icons
-        var $folderIcon = $('<span>', {"class": "fa fa-folder folder icon"});
-        var $folderEmptyIcon = $folderIcon.clone();
-        var $folderOpenedIcon = $('<span>', {"class": "fa fa-folder-open folder"});
-        var $folderOpenedEmptyIcon = $folderOpenedIcon.clone();
-        var $fileIcon = $('<span>', {"class": "fa fa-file-text-o file icon"});
-        var $padIcon = $('<span>', {"class": "fa fa-file-word-o file icon"});
-        var $codeIcon = $('<span>', {"class": "fa fa-file-code-o file icon"});
-        var $slideIcon = $('<span>', {"class": "fa fa-file-powerpoint-o file icon"});
-        var $pollIcon = $('<span>', {"class": "fa fa-calendar file icon"});
-        var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
-        var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
-        var $templateIcon = $('<span>', {"class": "fa fa-cubes"});
-        var $trashIcon = $('<span>', {"class": "fa fa-trash"});
-        var $trashEmptyIcon = $('<span>', {"class": "fa fa-trash-o"});
-        var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o expcol"});
-        var $expandIcon = $('<span>', {"class": "fa fa-plus-square-o expcol"});
-        var $listIcon = $('<span>', {"class": "fa fa-list"});
-        var $gridIcon = $('<span>', {"class": "fa fa-th"});
-        var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up sortasc"});
-        var $sortDescIcon = $('<span>', {"class": "fa fa-angle-down sortdesc"});
-        var $closeIcon = $('<span>', {"class": "fa fa-window-close"});
 
         if (!APP.readOnly) {
             setEditable(true);
@@ -1839,8 +1840,10 @@ define([
                 $linkToMain.off('click');
             }
 
-            if (!readOnly) {
-                var $backupButton = Cryptpad.createButton('', true);
+            if (!readOnly && !APP.loggedIn) {
+                var $backupButton = Cryptpad.createButton('', true).removeClass('fa').removeClass('fa-question');
+                $backupButton.append($backupIcon.clone().css('marginRight', '0px'));
+                $backupButton.attr('title', Messages.fm_backup_title);
                 $backupButton.on('click', function() {
                     var url = window.location.origin + window.location.pathname + '#' + editHash;
                     //TODO change text & transalte

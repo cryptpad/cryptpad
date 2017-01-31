@@ -216,6 +216,7 @@ define(function () {
                              "You can use it to retrieve all your files in case your browser memory got erased.<br>" +
                              "Anybody with that URL can edit or remove all the files in your file manager.<br>" +
                              '<input type="text" id="fm_backupUrl" value="{0}"/>';
+    out.fm_backup_title = 'Backup URL';
     // File - Context menu
     out.fc_newfolder = "New folder";
     out.fc_rename = "Rename";
