@@ -450,14 +450,6 @@
   font-weight: 500;
   font-size: 0.75em;
   color: #558;
-  /*            text-align: center;
-            min-width: 100px;
-            font-weight: bold;
-            height: 70px;
-            padding: 0 10px;
-            line-height: 70px;
-            display: inline-block;
-            color: @topbar-button-color;*/
 }
 #cryptpadTopBar .right a:hover {
   text-decoration: none;
