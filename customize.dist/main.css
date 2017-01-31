@@ -63,7 +63,8 @@
 }
 .alertify .dialog > *,
 .alertify .alert > * {
-  width: 400px;
+  width: 30%;
+  min-width: 500px;
   max-width: 95%;
   margin: 0 auto;
   text-align: center;
@@ -80,8 +81,8 @@
 }
 .alertify .dialog input:not(.form-control),
 .alertify .alert input:not(.form-control) {
-  background-color: #fff;
-  color: #555;
+  background-color: #302B28;
+  color: #fafafa;
   border: 0px;
   border-radius: 5px;
   margin-bottom: 15px;
