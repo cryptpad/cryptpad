@@ -7,10 +7,12 @@
           <p class="left" data-localization="main_p1"><!-- Zero Knowledge collaborative realtime editor. Protected from the NSA. --></p>
 
             <div id="buttons" class="buttons">
-                <button class="btn btn-secondary knowmore">Know more</button>
-                <button class="btn btn-secondary tryit">Discover our tools</button>
-                <br>
-                <button class="btn btn-success nologin" data-localization="login_nologin"></button>
+                <!--<button class="btn btn-secondary knowmore">Know more</button>-->
+                <!--<button class="btn btn-secondary tryit">Discover our tools</button>-->
+                <!--<br>-->
+                <!--<button class="btn btn-success nologin" data-localization="login_nologin"></button>-->
+                <!--<button class="btn btn-success nologin">Make a pad right now</button>-->
+                <p class="buttons"><a id="create-pad" href="/pad/"><button class="btn btn-success nologin">Make a pad right now</button></a></p>
             </div>
 
         </div>
@@ -31,7 +33,7 @@
 </div>
 <div class="page category first" id="knowmore">
     <center>
-        <h1>Know more</h1>
+        <h1>How it works</h1>
     </center>
 </div>
 <div class="page">
@@ -42,7 +44,7 @@
         <div class="right">
             <h2>Zero Knowledge</h2>
             <p>
-                Every tool provided by Cryptpad are based on a Zero Knowledge technology. It means that our server stored only encrypted data, and we have no way to decrypt it. Even data about your account, including your username, are encrypted.<!-- Only people with whom you have shared the URL are allowed to decrypt the data and join the collaborative session. The encryption is carried out by your browser, which means that our server has no knowledge of the encryption key.-->
+                You don't have to trust that we <em>won't</em> look at your pads, with CryptPad's revolutionary Zero Knowledge Technology we <em>can't</em>. Learn more about how we protect your Privacy and Security.
             </p>
         </div>
     </div>
@@ -50,9 +52,9 @@
 <div class="page even">
     <div class="info-container">
         <div class="left">
-            <h2>Realtime</h2>
+            <h2>Jot it down</h2>
             <p>
-                Our tools also use a Realtime technology, which means that you can edit the documents, slides or polls collaboratively with other people. Our unique technology has the advantage of combining both realtime and zero-knowledge at the same time.<!-- Other realtime solutions work with a main server containing the document and managing conflicts (when two users want to realize contradictory operations). Our Zero Knowledge principle exclude that solution since the server doesn't know the content of the document, so the conflicts are managed by your browser in a way that all users in the session resolve the conflict with the same result.-->
+                The greatest projects come from the smallest ideas. Take down the moments of inspiration and unexpected ideas because you never know which one might be a breakthrough.
             </p>
         </div>
         <div class="right image">
@@ -66,9 +68,9 @@
             <img src="customize/images/hash.png" alt="User account" />
         </div>
         <div class="right">
-            <h2>Share documents</h2>
+            <h2>Share the link, share the pad</h2>
             <p>
-                When you want to edit a document with other users or invite them to answer to a poll, you just have to share the URL of that document with them. All the information needed to access and edit it are contained in the "hash" of the URL.<!-- A first part of that hash represents the location of the data in our server, the second part allows your browser to decrypt the content of that document and encrypt new modifications you may want to make.-->
+                Grow your ideas together: conduct efficient meetings, collaborate on TODO lists and make quick presentations with all your friends and all your devices.
             </p>
         </div>
     </div>
@@ -76,9 +78,9 @@
 <div class="page even">
     <div class="info-container">
         <div class="left">
-            <h2>User Account</h2>
+            <h2>Get organized</h2>
             <p>
-                In order to have Zero Knowledge user accounts, we needed a way to store your settings without knowing your username and password. To do so, our tools generate a unique key from your username and password, directly in your browser.<!-- The entire key is never sent to our server and there is no way to determine either your username or your password from it. A small part of that key is used to locate your account data in our server, and the other part is used to encrypt and decrypt it (in your browser). That way, the server never has access to your decrypted data or to your decryption key.-->
+                With CryptPad Drive, you can keep your sites on what's important. Folders allow you to keep track of your projects and have a global vision of where things are going.
             </p>
         </div>
         <div class="right image">
@@ -145,4 +147,3 @@
         </div>
     </div>
 </div>
-

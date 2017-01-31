@@ -607,6 +607,7 @@ html.cp,
   }
 }
 .cp .page .info-container > div.image {
+  width: 300px;
   text-align: center;
 }
 @media screen and (max-width: 800px) {
