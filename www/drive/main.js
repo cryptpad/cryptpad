@@ -855,6 +855,18 @@ define([
             return $block;
         };
 
+        var createPadFromRootHandler = function (e) {
+            var type = $(this).data('type');
+            if (!type) {
+                throw new Error("Unable to get the pad type...");
+            }
+            var onNamed = function (name) {
+                if (!name) { return; }
+                var path = '/#?name=' + encodeURIComponent(name) + '&path=' + encodeURIComponent(currentPath);
+                window.open('/' + type + path);
+            };
+            Cryptpad.prompt(Messages.fm_nameFile, Cryptpad.getDefaultName({type: type}), onNamed);
+        };
         var createNewButton = function (isInRoot) {
             if (!APP.editable) { return; }
 
@@ -904,18 +916,7 @@ define([
                     };
                     filesOp.createNewFolder(currentPath, null, onCreated);
                 });
-                $block.find('a.newdoc').click(function () {
-                    var type = $(this).data('type');
-                    if (!type) {
-                        throw new Error("Unable to get the pad type...");
-                    }
-                    var onNamed = function (name) {
-                        var path = '/#?name=' + encodeURIComponent(name) + '&path=' + encodeURIComponent(currentPath);
-                        console.log(path);
-                        window.open('/' + type + path);
-                    };
-                    Cryptpad.prompt("How would you like to name your file?", Cryptpad.getDefaultName({type: type}), onNamed);
-                });
+                $block.find('a.newdoc').click(createPadFromRootHandler);
             }
 
             return $block;
@@ -1587,7 +1588,8 @@ define([
             }
             else if ($(this).hasClass("newdoc")) {
                 var type = $(this).data('type') || 'pad';
-                $(this).attr('href','/' + type + '/#?path=' + encodeURIComponent(path));
+                createPadFromRootHandler.apply(this);
+                e.preventDefault();
             }
             module.hideMenu();
         });
@@ -1853,7 +1855,6 @@ define([
                 $backupButton.attr('title', Messages.fm_backup_title);
                 $backupButton.on('click', function() {
                     var url = window.location.origin + window.location.pathname + '#' + editHash;
-                    //TODO change text & transalte
                     Cryptpad.alert(Messages._getKey('fm_alert_backupUrl', [url]));
                     $('#fm_backupUrl').val(url);
                     $('#fm_backupUrl').click(function () {
