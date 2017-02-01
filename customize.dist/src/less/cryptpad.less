@@ -129,6 +129,7 @@ body.html {
     position: relative;
 
     .info-container {
+        color: #121212;
         width: 900px;
         max-width: 100%;
         margin: 0 auto;
@@ -274,19 +275,24 @@ body.html {
 #main {
     background: @main-bg;
     background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
 }
 #main_other {
     padding: 0 @main-border-width;
 }
+
+.category {
+    margin-top: 5px;
+}
+
 #main, #main_other {
     position: relative;
     left: 0;
     right: 0;
-    //padding: 0;
-    height: ~"calc(100vh - 150px)";
+    height: ~"calc(100vh - 115px)";
     min-height: 450px;
     margin: auto;
-    //margin-top: 100px;
     z-index: 1;
 
     font-size: medium;
@@ -310,12 +316,13 @@ body.html {
             font-size: 20px;
             line-height: 1.5em;
         }
-        h2 {
+        h1, h2 {
             font-weight: normal;
             font-size: 48px;
             line-height: 1.2em;
             color: @main-color;
         }
+
         h5 {
             font-size: 1em;
             color: @main-color;

@@ -452,8 +452,7 @@
   color: #558;
 }
 #cryptpadTopBar .right a:hover {
-  text-decoration: none;
-  color: #000;
+  text-decoration: underline;
 }
 html.cp,
 .cp body {
@@ -462,15 +461,6 @@ html.cp,
   color: #555;
   font-family: Georgia,Cambria,serif;
   height: 100%;
-}
-.cp:not(.poll) {
-  /*#language-selector {
-        position: absolute;
-        top: @topbar-height;
-        right: 0px;
-        display: inline-block;
-        z-index: 2;
-    }*/
 }
 .cp {
   /* buttons */
@@ -580,6 +570,7 @@ html.cp,
   position: relative;
 }
 .cp .page .info-container {
+  color: #121212;
   width: 900px;
   max-width: 100%;
   margin: 0 auto;
@@ -715,16 +706,21 @@ html.cp,
 .cp #main {
   background: url('/customize/bg3.jpg') no-repeat center center;
   background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
 }
 .cp #main_other {
   padding: 0 15vw;
+}
+.cp .category {
+  margin-top: 5px;
 }
 .cp #main,
 .cp #main_other {
   position: relative;
   left: 0;
   right: 0;
-  height: calc(100vh - 150px);
+  height: calc(100vh - 115px);
   min-height: 450px;
   margin: auto;
   z-index: 1;
@@ -762,6 +758,8 @@ html.cp,
   font-size: 20px;
   line-height: 1.5em;
 }
+.cp #main #data h1,
+.cp #main_other #data h1,
 .cp #main #data h2,
 .cp #main_other #data h2 {
   font-weight: normal;
@@ -915,12 +913,6 @@ html.cp,
 .cp .create:hover,
 .cp .action:hover {
   color: #cccccc;
-}
-.cp .button {
-  padding: 4px 12px 4px 12px;
-  margin: 2px 0;
-  display: inline-block;
-  line-height: 1.5em;
 }
 .cp .panel {
   background-color: #cccccc;
