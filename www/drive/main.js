@@ -18,14 +18,8 @@ define([
     var $iframe = $('#pad-iframe').contents();
     var ifrw = $('#pad-iframe')[0].contentWindow;
 
-    var $tree = $iframe.find("#tree");
-    var $content = $iframe.find("#content");
-    var $driveToolbar = $iframe.find("#driveToolbar");
-    var $contextMenu = $iframe.find("#treeContextMenu");
-    var $contentContextMenu = $iframe.find("#contentContextMenu");
-    var $defaultContextMenu = $iframe.find("#defaultContextMenu");
-    var $trashTreeContextMenu = $iframe.find("#trashTreeContextMenu");
-    var $trashContextMenu = $iframe.find("#trashContextMenu");
+
+
 
     Cryptpad.addLoadingScreen();
     var onConnectError = function (info) {
@@ -137,11 +131,11 @@ define([
     var setEditable = function (state) {
         APP.editable = state;
         if (!state) {
-            $content.addClass('readonly');
+            $iframe.find('#content').addClass('readonly');
             $iframe.find('[draggable="true"]').attr('draggable', false);
         }
         else {
-            $content.removeClass('readonly');
+            $iframe.find('#content').removeClass('readonly');
             $iframe.find('[draggable="false"]').attr('draggable', true);
         }
     };
@@ -184,6 +178,15 @@ define([
         filesOp.fixFiles();
 
         var error = filesOp.error;
+
+        var $tree = $iframe.find("#tree");
+        var $content = $iframe.find("#content");
+        var $driveToolbar = $iframe.find("#driveToolbar");
+        var $contextMenu = $iframe.find("#treeContextMenu");
+        var $contentContextMenu = $iframe.find("#contentContextMenu");
+        var $defaultContextMenu = $iframe.find("#defaultContextMenu");
+        var $trashTreeContextMenu = $iframe.find("#trashTreeContextMenu");
+        var $trashContextMenu = $iframe.find("#trashContextMenu");
 
         // TOOLBAR
 
