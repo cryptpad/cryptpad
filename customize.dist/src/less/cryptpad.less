@@ -16,16 +16,6 @@ html.cp, .cp body {
     height: 100%;
 }
 
-.cp:not(.poll) {
-    /*#language-selector {
-        position: absolute;
-        top: @topbar-height;
-        right: 0px;
-        display: inline-block;
-        z-index: 2;
-    }*/
-}
-
 .cp {
 
 body {
@@ -340,8 +330,6 @@ body.html {
         top: 50%;
         left: 0;
         transform: translateY(-50%);
-        //width: ~"calc(100% - 450px - 30vw)";
-        //background-color: @main-block-bg;
 
         #tryit {
             margin-top: 20px;
@@ -358,7 +346,6 @@ body.html {
         display: inline-block;
         width: 350px;
         max-width: 35%;
-        //background-color: @main-block-bg;
         padding: 10px;
         box-sizing: border-box;
         font-family: lato, Helvetica, sans-serif;
@@ -375,7 +362,6 @@ body.html {
 
         label {
             margin-bottom: 0;
-            //margin-top: 0.5em;
         }
         /*.remember {
             vertical-align: middle;
@@ -438,7 +424,6 @@ body.html {
     @media screen and (max-width: @media-not-big) {
         position: relative;
         height: auto;
-        //background: #aaa;
         top: -10px;
     }
 
@@ -466,7 +451,6 @@ p.buttons, div.buttons {
 .create, .action {
     display: inline-block;
     @thick: 2px;
-    //border: @thick solid @cp-darkblue;
     border: 0;
     background-color: @cp-darkblue;
     color: @topbar-button-color;
@@ -477,21 +461,7 @@ p.buttons, div.buttons {
     margin-left: 5px;
     &:hover {
         color: darken(@topbar-button-color, 20%);
-        //border: @thick solid @cp-accent2;
-        //color: @cp-darkblue;
     }
-}
-
-.button {
-    @hpad: 2 * 6px;
-    @vpad: 2 * 2px;
-    padding: @vpad @hpad @vpad @hpad;
-
-    //margin-top: 2 * 6px;
-    //margin-bottom: 2 * 6px;
-    margin: 2px 0;
-    display: inline-block;
-    line-height: 1.5em;
 }
 
 // currently only used in /user/
@@ -558,7 +528,6 @@ tbody {
 }
 
 // form things
-
 .bottom-left {
     .bottom-left;
 }
@@ -863,7 +832,6 @@ div.modal, div#modal {
 
         width: 100vw;
         height: 56.25vw; // height:width ratio = 9/16 = .5625
-        //background: pink;
         max-height: 100vh;
         max-width: 177.78vh; // 16/9 = 1.778
         margin: auto;
