@@ -1025,9 +1025,13 @@ define([
             e.stopPropagation();
             var state = $innerblock.is(':visible');
             $('.dropdown-bar-content').hide();
-            $('iframe').each(function (idx, ifrw) {
-                $(ifrw).contents().find('.dropdown-bar-content').hide();
-            });
+            try {
+                $('iframe').each(function (idx, ifrw) {
+                    $(ifrw).contents().find('.dropdown-bar-content').hide();
+                });
+            } catch (e) {
+                // empty try catch in case this iframe is problematic (cross-origin)
+            }
             if (state) {
                 $innerblock.hide();
                 return;
