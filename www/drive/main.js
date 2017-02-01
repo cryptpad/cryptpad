@@ -18,6 +18,15 @@ define([
     var $iframe = $('#pad-iframe').contents();
     var ifrw = $('#pad-iframe')[0].contentWindow;
 
+    var $tree = $iframe.find("#tree");
+    var $content = $iframe.find("#content");
+    var $driveToolbar = $iframe.find("#driveToolbar");
+    var $contextMenu = $iframe.find("#treeContextMenu");
+    var $contentContextMenu = $iframe.find("#contentContextMenu");
+    var $defaultContextMenu = $iframe.find("#defaultContextMenu");
+    var $trashTreeContextMenu = $iframe.find("#trashTreeContextMenu");
+    var $trashContextMenu = $iframe.find("#trashContextMenu");
+
     Cryptpad.addLoadingScreen();
     var onConnectError = function (info) {
         Cryptpad.errorLoadingScreen(Messages.websocketError);
@@ -127,8 +136,14 @@ define([
 
     var setEditable = function (state) {
         APP.editable = state;
-        if (!state) { $iframe.find('[draggable="true"]').attr('draggable', false); }
-        else { $iframe.find('[draggable="false"]').attr('draggable', true); }
+        if (!state) {
+            $content.addClass('readonly');
+            $iframe.find('[draggable="true"]').attr('draggable', false);
+        }
+        else {
+            $content.removeClass('readonly');
+            $iframe.find('[draggable="false"]').attr('draggable', true);
+        }
     };
 
     // Icons
@@ -195,16 +210,6 @@ define([
         var currentPath = module.currentPath = isOwnDrive() ? getLastOpenedFolder() : [ROOT];
         var lastSelectTime;
         var selectedElement;
-
-        var $tree = $iframe.find("#tree");
-        var $content = $iframe.find("#content");
-        var $driveToolbar = $iframe.find("#driveToolbar");
-        var $contextMenu = $iframe.find("#treeContextMenu");
-        var $contentContextMenu = $iframe.find("#contentContextMenu");
-        var $defaultContextMenu = $iframe.find("#defaultContextMenu");
-        var $trashTreeContextMenu = $iframe.find("#trashTreeContextMenu");
-        var $trashContextMenu = $iframe.find("#trashContextMenu");
-
 
         if (!APP.readOnly) {
             setEditable(true);
@@ -1288,7 +1293,10 @@ define([
 
             var $modeButton = createViewModeButton().appendTo($toolbar.find('.rightside'));
             var $title = createTitle(path).appendTo($toolbar.find('.rightside'));
-            createNewButton(isInRoot).appendTo($toolbar.find('.leftside'));
+
+            // NewButton can be undefined if we're in read only mode
+            $toolbar.find('.leftside').append(createNewButton(isInRoot));
+
 
             var $folderHeader = getFolderListHeader();
             var $fileHeader = getFileListHeader(true);
