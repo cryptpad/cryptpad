@@ -13,6 +13,7 @@ define(function () {
     out.type.code = 'Code';
     out.type.poll = 'Sondage';
     out.type.slide = 'Présentation';
+    out.type.drive = 'Drive';
 
     out.errorBox_errorType_disconnected = 'Connexion perdue';
     out.errorBox_errorExplanation_disconnected = [
@@ -82,8 +83,8 @@ define(function () {
     out.shareSuccess = 'URL copiée dans le presse-papiers';
     out.shareFailed = "Échec de la copie de l'URL dans le presse-papiers";
 
-    out.newPadButton = 'Nouveau';
-    out.newPadButtonTitle = 'Créer un nouveau document';
+    out.appsButton = 'Apps';
+    out.appsButtonTitle = 'Accéder aux autres applications';
 
     out.presentButton = 'PRÉSENTER';
     out.presentButtonTitle = "Entrer en mode présentation";

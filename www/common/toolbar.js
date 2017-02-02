@@ -349,24 +349,24 @@ define([
 
         if (config.displayed.indexOf('newpad') !== -1) {
             var pads_options = [];
-            ['pad', 'code', 'slide', 'poll'].forEach(function (p) {
+            ['drive', 'pad', 'code', 'slide', 'poll'].forEach(function (p) {
                 pads_options.push({
                     tag: 'a',
                     attributes: {
-                        'target': '_blank', // TODO: open in the same window?
+                        'target': '_blank',
                         'href': '/' + p,
                     },
-                    content: Messages.type[p] // Pretty name of the language value
+                    content: Messages.type[p]
                 });
             });
-            var $newButton = $('<div>').append($('<span>', {'class': 'fa fa-plus'})).append(Messages.newPadButton);
+            var $newButton = $('<div>').append($('<span>', {'class': 'fa fa-th-large'})).append(Messages.appsButton);
             var dropdownConfig = {
                 text: $newButton.html(), // Button initial text
                 options: pads_options, // Entries displayed in the menu
                 left: true, // Open to the left of the button
             };
             var $newPadBlock = Cryptpad.createDropdown(dropdownConfig);
-            $newPadBlock.find('button').attr('title', Messages.newPadButtonTitle);
+            $newPadBlock.find('button').attr('title', Messages.appsButtonTitle);
             $newPadBlock.appendTo($userContainer);
         }
 
