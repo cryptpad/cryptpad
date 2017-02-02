@@ -20,7 +20,7 @@ define(function () {
         'ou vous pouvez revoir votre travail en fermant cette boîte de dialogue.',
     ].join('');
 
-    out.common_connectionLost = 'Connexion au serveur perdue';
+    out.common_connectionLost = "<b>Connexion au serveur perdue</b><br>Vous êtes désormais en mode lecture seule jusqu'au retour de la connexion.";
     out.websocketError = 'Impossible de se connecter au serveur WebSocket...';
 
     out.loading = "Chargement...";

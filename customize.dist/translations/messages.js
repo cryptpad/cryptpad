@@ -3,6 +3,7 @@ define(function () {
 
     // translations must set this key for their language to be available in
     // the language dropdowns that are shown throughout Cryptpad's interface
+    // NOTE: translate that name in your language ("Français" and not "French")
     out._languageName = 'English';
 
     out.main_title = "Cryptpad: Zero Knowledge, Collaborative Real Time Editing";
@@ -20,7 +21,11 @@ define(function () {
         'by clicking outside of this box.'
     ].join('');
 
-    out.common_connectionLost = 'Server Connection Lost';
+    // NOTE: We want to update the 'common_connectionLost' key.
+    // Please do not add a new 'updated_common_connectionLostAndInfo' but change directly the value of 'common_connectionLost'
+    out.updated_common_connectionLostAndInfo = "<b>Server Connection Lost</b><br>You're now in read-only mode until the connection is back.";
+    out.common_connectionLost = out.updated_common_connectionLostAndInfo;
+
     out.websocketError = 'Unable to connect to the websocket server...';
 
     out.loading = "Loading...";
