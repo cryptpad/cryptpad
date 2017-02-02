@@ -679,9 +679,6 @@ html.cp,
   background-color: #000;
   opacity: 0.35;
 }
-.cp #mainBlock.hidden {
-  display: none;
-}
 .cp #noscriptContainer {
   color: black;
   position: absolute;
@@ -713,6 +710,9 @@ html.cp,
   background-size: cover;
   background-attachment: fixed;
   background-position: center;
+}
+.cp #main .hidden {
+  display: none !important;
 }
 .cp #main_other {
   padding: 0 15vw;
@@ -782,6 +782,32 @@ html.cp,
 .cp #main_other #data #tryit {
   margin-top: 20px;
   margin-bottom: 5px;
+}
+.cp #main #loggedIn,
+.cp #main_other #loggedIn {
+  color: #fff;
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  margin-left: 50px;
+  width: 350px;
+  max-width: 35%;
+  transform: translateY(-50%);
+  text-align: center;
+  font-weight: bold;
+}
+.cp #main #loggedIn button,
+.cp #main_other #loggedIn button {
+  font-weight: bold;
+  cursor: pointer;
+}
+.cp #main #loggedIn p,
+.cp #main_other #loggedIn p {
+  margin: 20px;
+  padding: 0;
+  font-size: 20px;
+  line-height: 1.5em;
 }
 .cp #main #userForm,
 .cp #main_other #userForm {

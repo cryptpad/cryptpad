@@ -452,6 +452,12 @@ define([
                 $menu.find('a.own').parent('li').hide();
             }
 
+            $menu.find('[data-type]').each(function (idx, el) {
+                if (AppConfig.availablePadTypes.indexOf($(el).attr('data-type')) === -1) {
+                    $(el).hide();
+                }
+            });
+
             $menu.css({
                 display: "block",
                 left: e.pageX,
@@ -893,6 +899,7 @@ define([
                 options.push({tag: 'hr'});
             }
             AppConfig.availablePadTypes.forEach(function (type) {
+                if (type === 'drive') { return; }
                 var path = filesOp.isPathInTrash(currentPath) ? '' : '/#?path=' + encodeURIComponent(currentPath);
                 var attributes = {
                     'class': 'newdoc',

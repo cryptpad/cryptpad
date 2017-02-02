@@ -70,14 +70,14 @@
 <div id="main">
     <div class="mainOverlay"></div>
     <div id="main-container">
-        <div id="data">
+        <div id="data" class="hidden">
           <p class="left" data-localization="main_p1"><!-- Zero Knowledge collaborative realtime editor. Protected from the NSA. --></p>
 
             <div id="buttons" class="buttons"><button class="btn btn-secondary nologin" data-localization="login_nologin"></button></div>
 
         </div>
 
-        <div id="userForm" class="form-group">
+        <div id="userForm" class="form-group hidden">
             <!--<center>
                 <h1 data-localization="form_title"></h1>
             </center>-->
@@ -88,6 +88,11 @@
             <input type="password" id="password" name="password" class="form-control" data-localization-placeholder="login_password"><br>
             <div style="display: none;"><span class="remember form-check"><label for="rememberme" class="form-check-label" data-localization-append="login_remember"><input type="checkbox" id="rememberme" class="form-check-input" checked="checked"></label></span><br></div>
             <button class="btn btn-secondary login half first" data-localization="login_login"></button> <button class="btn btn-primary register half" data-localization="login_register"></button><br>
+        </div>
+        <div id="loggedIn" class="hidden">
+            <p id="loggedInHello"></p>
+            <p><button class="btn btn-primary nologin" data-localization="login_accessDrive"></button></p>
+            <p><button id="loggedInLogOut" class="btn btn-secondary" data-localization="logoutButton"></button></p>
         </div>
     </div>
 </div>

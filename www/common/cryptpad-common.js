@@ -65,22 +65,26 @@ define([
     };
 
     var userHashKey = common.userHashKey = 'User_hash';
+    var userNameKey = common.userNameKey = 'User_name';
     var fileHashKey = common.fileHashKey = 'FS_hash';
 
-    var login = common.login = function (hash, remember, cb) {
+    var login = common.login = function (hash, name, remember, cb) {
         if (!hash) { throw new Error('expected a user hash'); }
+        if (!name) { throw new Error('expected a user name'); }
         if (!remember) {
             sessionStorage.setItem(userHashKey, hash);
+            sessionStorage.setItem(userNameKey, name);
         }
         else {
             localStorage.setItem(userHashKey, hash);
+            localStorage.setItem(userNameKey, name);
         }
         if (cb) { cb(); }
     };
 
     var logout = common.logout = function (cb) {
         [
-//            fileHashKey,
+            userNameKey,
             userHashKey,
         ].forEach(function (k) {
             sessionStorage.removeItem(k);

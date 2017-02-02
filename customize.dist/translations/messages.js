@@ -14,6 +14,7 @@ define(function () {
     out.type.code = 'Code';
     out.type.poll = 'Poll';
     out.type.slide = 'Presentation';
+    out.type.drive = 'Drive';
 
     out.errorBox_errorType_disconnected = 'Connection Lost';
     out.errorBox_errorExplanation_disconnected = [
@@ -87,8 +88,8 @@ define(function () {
     out.shareSuccess = 'Copied URL to clipboard';
     out.shareFailed = "Failed to copy URL to clipboard";
 
-    out.newPadButton = 'New';
-    out.newPadButtonTitle = 'Create a new document';
+    out.appsButton = 'Apps';
+    out.appsButtonTitle = 'Access other applications';
 
     out.presentButton = 'PRESENT';
     out.presentButtonTitle = "Enter presentation mode";
@@ -280,6 +281,8 @@ define(function () {
 
     out.loginText = '<p>Your username and password are used to generate a unique key which is never known by our server.</p>\n' +
                     '<p>Be careful not to forget your credentials, as they are impossible to recover</p>';
+    out.login_hello = 'Hello {0},'; // {0} is the username
+    out.login_accessDrive = 'Access your drive';
 
     // index.html
 
