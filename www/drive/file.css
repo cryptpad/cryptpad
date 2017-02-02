@@ -202,7 +202,7 @@ span.fa-folder-open {
   float: right;
 }
 #content li:not(.header) *:not(input) {
-  pointer-events: none;
+  /*pointer-events: none;*/
 }
 #content li:not(.header):hover .name {
   text-decoration: underline;

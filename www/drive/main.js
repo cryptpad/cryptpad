@@ -300,10 +300,10 @@ define([
             });
             $input.on('keyup', function (e) {
                 if (e.which === 13) {
+                    removeInput();
                     filesOp.renameElement(path, $input.val(), function () {
                         refresh();
                     });
-                    removeInput();
                 }
             });
             //$element.parent().append($input);
