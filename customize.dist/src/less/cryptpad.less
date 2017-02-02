@@ -9,7 +9,7 @@
 
 html.cp, .cp body {
     font-size: .875em;
-    background-color: @base;
+    background-color: @page-white; //@base;
     color: @fore;
 
     font-family: Georgia,Cambria,serif;
@@ -90,11 +90,16 @@ h6 {
 
 a {
     cursor: pointer;
-    color: @cp-darkblue;
+    color: @cp-light-blue;
+    //#41b7d8; //@cp-darkblue;
+
     text-decoration: none;
 
     &:hover {
-        color: @cp-accent2;
+        color: darken(@cp-light-blue, 10%); //@cp-accent2;
+    }
+    &:visited {
+        color: @cp-purple;
     }
 }
 
@@ -124,7 +129,7 @@ body.html {
     width: 100%;
     margin-left: auto;
     margin-right: auto;
-    background: #fff; //@base;
+    background: @page-white;
     padding: 10px 0;//@main-border-width;
     position: relative;
 
@@ -230,14 +235,16 @@ body.html {
     }
 }
 
-.mainOverlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #000;
-    opacity: 0.3;
+#main {
+    .mainOverlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #000;
+        opacity: 0.35;
+    }
 }
 #noscriptContainer {
     color: black;
@@ -264,8 +271,6 @@ body.html {
             transform: translateY(-50%);
         }
     }
-    background: @main-bg;
-    background-size: cover;
 }
 #main {
     background: @main-bg;
@@ -278,6 +283,7 @@ body.html {
 }
 #main_other {
     padding: 0 @main-border-width;
+    background-color: @page-white;
 }
 
 .category {

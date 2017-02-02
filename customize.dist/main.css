@@ -416,6 +416,7 @@
   padding: 5px;
   box-sizing: border-box;
   font-size: 30px;
+  border-bottom: 1px solid #d9d9d9;
 }
 #cryptpadTopBar > span {
   vertical-align: middle;
@@ -457,7 +458,7 @@
 html.cp,
 .cp body {
   font-size: .875em;
-  background-color: #fff;
+  background-color: #fafafa;
   color: #555;
   font-family: Georgia,Cambria,serif;
   height: 100%;
@@ -534,11 +535,14 @@ html.cp,
 }
 .cp a {
   cursor: pointer;
-  color: #3333ff;
+  color: #41b7d8;
   text-decoration: none;
 }
 .cp a:hover {
-  color: #0000cc;
+  color: #279ebf;
+}
+.cp a:visited {
+  color: #558;
 }
 .cp img {
   height: auto;
@@ -565,7 +569,7 @@ html.cp,
   width: 100%;
   margin-left: auto;
   margin-right: auto;
-  background: #fff;
+  background: #fafafa;
   padding: 10px 0;
   position: relative;
 }
@@ -663,14 +667,14 @@ html.cp,
 .cp .btn-default:hover {
   background-color: #d8d8d8;
 }
-.cp .mainOverlay {
+.cp #main .mainOverlay {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background-color: #000;
-  opacity: 0.3;
+  opacity: 0.35;
 }
 .cp #noscriptContainer {
   color: black;
@@ -679,8 +683,6 @@ html.cp,
   left: 0;
   bottom: 0;
   right: 0;
-  background: url('/customize/bg3.jpg') no-repeat center center;
-  background-size: cover;
 }
 .cp #noscriptContainer #noscript {
   width: 1000px;
@@ -711,6 +713,7 @@ html.cp,
 }
 .cp #main_other {
   padding: 0 15vw;
+  background-color: #fafafa;
 }
 .cp .category {
   margin-top: 5px;
