@@ -54,6 +54,7 @@ define([
         var $parent = $('#buttons');
         var options = [];
         Config.availablePadTypes.forEach(function (el) {
+            if (el === 'drive') { return; }
             options.push({
                 tag: 'a',
                 attributes: {

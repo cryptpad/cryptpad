@@ -1,7 +1,8 @@
 define([
     '/customize/messages.js',
+    '/customize/application_config.js',
     '/bower_components/jquery/dist/jquery.min.js'
-], function (Messages) {
+], function (Messages, Config) {
     var $ = window.jQuery;
 
     var Bar = {
@@ -349,7 +350,7 @@ define([
 
         if (config.displayed.indexOf('newpad') !== -1) {
             var pads_options = [];
-            ['drive', 'pad', 'code', 'slide', 'poll'].forEach(function (p) {
+            Config.availablePadTypes.forEach(function (p) {
                 pads_options.push({
                     tag: 'a',
                     attributes: {
