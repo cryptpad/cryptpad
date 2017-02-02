@@ -131,7 +131,7 @@ define([
         APP.setAccountName(getAccountName(proxy));
         APP.setDisplayName(getDisplayName(proxy));
 
-        Cryptpad.login(opt.userHash, opt.remember);
+        Cryptpad.login(opt.userHash, getAccountName(proxy), opt.remember);
         APP.revealLogin(false);
         APP.revealUser(true);
         APP.revealLogout(true);

@@ -239,11 +239,6 @@ body.html {
     background-color: #000;
     opacity: 0.3;
 }
-#mainBlock {
-    &.hidden {
-        display: none;
-    }
-}
 #noscriptContainer {
     color: black;
     position: absolute;
@@ -277,6 +272,9 @@ body.html {
     background-size: cover;
     background-attachment: fixed;
     background-position: center;
+    .hidden {
+        display: none !important;
+    }
 }
 #main_other {
     padding: 0 @main-border-width;
@@ -342,6 +340,31 @@ body.html {
             margin-top: 20px;
             margin-bottom: 5px;
         }
+    }
+
+    #loggedIn {
+        color: @main-color;
+        display: inline-block;
+        position: absolute;
+        top: 50%;
+        right: 0;
+        margin-left: 50px;
+        width: 350px;
+        max-width: 35%;
+        transform: translateY(-50%);
+        text-align: center;
+        font-weight: bold;
+        button {
+            font-weight: bold;
+            cursor: pointer;
+        }
+        p {
+            margin: 20px;
+            padding: 0;
+            font-size: 20px;
+            line-height: 1.5em;
+        }
+
     }
 
     #userForm {

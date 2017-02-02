@@ -6,32 +6,49 @@ define([
     '/customize/languageSelector.js',
     '/bower_components/jquery/dist/jquery.min.js',
 ], function (Messages, Config, Cryptpad, LilUri, LS) {
-    if (Cryptpad.isLoggedIn()) {
-        document.location.href = '/drive';
-        return;
-    }
-
     var $ = window.$;
-
-    var USE_TABLE = Config.USE_HOMEPAGE_TABLE;
-    var USE_FS_STORE = Config.USE_FS_STORE;
+    var $main = $('#mainBlock');
 
     var APP = window.APP = {
         Cryptpad: Cryptpad,
     };
 
+    // Language selector
+    var $sel = $('#language-selector');
+    Cryptpad.createLanguageSelector(undefined, $sel);
+    $sel.find('button').addClass('btn').addClass('btn-secondary');
+    $sel.show();
+
+    $(window).click(function () {
+        $('.cryptpad-dropdown').hide();
+    });
+
     // main block is hidden in case javascript is disabled
-    $('#mainBlock').removeClass('hidden');
+    $main.removeClass('hidden');
 
-    var padTypes = {
-        '/pad/': Messages.type.pad,
-        '/code/': Messages.type.code,
-        '/poll/': Messages.type.poll,
-        '/slide/': Messages.type.slide,
-    };
+    // Make sure we don't display non-translated content (empty button)
+    $main.find('#data').removeClass('hidden');
 
-    var now = new Date();
-    var hasRecent = false;
+    if (Cryptpad.isLoggedIn()) {
+        var name = localStorage[Cryptpad.userNameKey] || sessionStorage[Cryptpad.userNameKey];
+        var $loggedInBlock = $main.find('#loggedIn');
+        var $hello = $loggedInBlock.find('#loggedInHello');
+        var $logout = $loggedInBlock.find('#loggedInLogOut');
+
+        $hello.text(Messages._getKey('login_hello', [name]));
+        $('#buttons').find('.nologin').hide();
+
+        $logout.click(function () {
+            Cryptpad.logout(function () {
+                window.location.reload();
+            });
+        });
+
+        $loggedInBlock.removeClass('hidden');
+        //return;
+    } else {
+        $main.find('#userForm').removeClass('hidden');
+    }
 
     var displayCreateButtons = function () {
         var $parent = $('#buttons');
@@ -55,17 +72,6 @@ define([
         $block.find('button').addClass('btn').addClass('btn-success');
         $block.appendTo($parent);
     };
-
-    // Language selector
-    var $sel = $('#language-selector');
-    Cryptpad.createLanguageSelector(undefined, $sel);
-    $sel.find('button').addClass('btn').addClass('btn-secondary');
-    $sel.show();
-
-    $(window).click(function () {
-        $sel.find('.cryptpad-dropdown').hide();
-    });
-
     var addButtonHandlers = function () {
         $('button.login').click(function (e) {
             var username = $('#name').val();
