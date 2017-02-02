@@ -469,6 +469,9 @@ html.cp,
  *  Currently only used by /poll/
  */
 }
+.cp .btn-primary {
+  background-color: #00ADEE;
+}
 .cp body {
   font-size: 1rem;
   font-weight: 400;
