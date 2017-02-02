@@ -836,7 +836,7 @@ html.cp,
 }
 .cp #main #userForm button.half,
 .cp #main_other #userForm button.half {
-  width: calc(50% - 4px);
+  width: calc(50% - 2px);
 }
 .cp #main #userForm button.half:not(.first),
 .cp #main_other #userForm button.half:not(.first) {
@@ -893,6 +893,10 @@ html.cp,
   font-weight: bold;
   cursor: pointer;
   margin-top: 10px;
+}
+.cp p.buttons .dropdown-bar,
+.cp div.buttons .dropdown-bar {
+  margin-left: 4px;
 }
 .cp #fileManagerIframe {
   width: 100%;
