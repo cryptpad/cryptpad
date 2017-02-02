@@ -220,7 +220,7 @@ define(function () {
                              "Quiconque se trouve en possession de celle-ci peut modifier ou supprimer tous les fichiers de ce gestionnaire.<br>" +
                              '<input type="text" id="fm_backupUrl" value="{0}"/>';
     out.fm_backup_title = 'URL de secours';
-
+    out.fm_nameFile = 'Comment souhaitez-vous nommer ce fichier ?';
     // File - Context menu
     out.fc_newfolder = "Nouveau dossier";
     out.fc_rename = "Renommer";

@@ -270,11 +270,11 @@ define([
             'class': 'lag'
         });
         var title;
-        if (typeof lag !== "undefined") {
+        if (lag) {
             lagErrors = 0;
             firstConnection = false;
             title = Messages.lag + ' : ' + lag + ' ms\n';
-            if (lag.waiting || lag > 1000) {
+            if (lag && lag.waiting || lag > 1000) {
                 lagLight.addClass('lag-orange');
                 title += Messages.orangeLight;
             } else {

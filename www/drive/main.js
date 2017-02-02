@@ -18,6 +18,9 @@ define([
     var $iframe = $('#pad-iframe').contents();
     var ifrw = $('#pad-iframe')[0].contentWindow;
 
+
+
+
     Cryptpad.addLoadingScreen();
     var onConnectError = function (info) {
         Cryptpad.errorLoadingScreen(Messages.websocketError);
@@ -127,8 +130,14 @@ define([
 
     var setEditable = function (state) {
         APP.editable = state;
-        if (!state) { $iframe.find('[draggable="true"]').attr('draggable', false); }
-        else { $iframe.find('[draggable="false"]').attr('draggable', true); }
+        if (!state) {
+            $iframe.find('#content').addClass('readonly');
+            $iframe.find('[draggable="true"]').attr('draggable', false);
+        }
+        else {
+            $iframe.find('#content').removeClass('readonly');
+            $iframe.find('[draggable="false"]').attr('draggable', true);
+        }
     };
 
     // Icons
@@ -170,6 +179,15 @@ define([
 
         var error = filesOp.error;
 
+        var $tree = $iframe.find("#tree");
+        var $content = $iframe.find("#content");
+        var $driveToolbar = $iframe.find("#driveToolbar");
+        var $contextMenu = $iframe.find("#treeContextMenu");
+        var $contentContextMenu = $iframe.find("#contentContextMenu");
+        var $defaultContextMenu = $iframe.find("#defaultContextMenu");
+        var $trashTreeContextMenu = $iframe.find("#trashTreeContextMenu");
+        var $trashContextMenu = $iframe.find("#trashContextMenu");
+
         // TOOLBAR
 
         var getLastName = function (cb) {
@@ -195,16 +213,6 @@ define([
         var currentPath = module.currentPath = isOwnDrive() ? getLastOpenedFolder() : [ROOT];
         var lastSelectTime;
         var selectedElement;
-
-        var $tree = $iframe.find("#tree");
-        var $content = $iframe.find("#content");
-        var $driveToolbar = $iframe.find("#driveToolbar");
-        var $contextMenu = $iframe.find("#treeContextMenu");
-        var $contentContextMenu = $iframe.find("#contentContextMenu");
-        var $defaultContextMenu = $iframe.find("#defaultContextMenu");
-        var $trashTreeContextMenu = $iframe.find("#trashTreeContextMenu");
-        var $trashContextMenu = $iframe.find("#trashContextMenu");
-
 
         if (!APP.readOnly) {
             setEditable(true);
@@ -281,6 +289,9 @@ define([
             removeInput();
             removeSelected();
             var $name = $element.find('.name');
+            if (!$name.length) {
+                $name = $element.find('.element');
+            }
             $name.hide();
             var name = path[path.length - 1];
             var $input = $('<input>', {
@@ -855,6 +866,18 @@ define([
             return $block;
         };
 
+        var createPadFromRootHandler = function (e) {
+            var type = $(this).data('type');
+            if (!type) {
+                throw new Error("Unable to get the pad type...");
+            }
+            var onNamed = function (name) {
+                if (!name) { return; }
+                var path = '/#?name=' + encodeURIComponent(name) + '&path=' + encodeURIComponent(currentPath);
+                window.open('/' + type + path);
+            };
+            Cryptpad.prompt(Messages.fm_nameFile, Cryptpad.getDefaultName({type: type}), onNamed);
+        };
         var createNewButton = function (isInRoot) {
             if (!APP.editable) { return; }
 
@@ -904,18 +927,7 @@ define([
                     };
                     filesOp.createNewFolder(currentPath, null, onCreated);
                 });
-                $block.find('a.newdoc').click(function () {
-                    var type = $(this).data('type');
-                    if (!type) {
-                        throw new Error("Unable to get the pad type...");
-                    }
-                    var onNamed = function (name) {
-                        var path = '/#?name=' + encodeURIComponent(name) + '&path=' + encodeURIComponent(currentPath);
-                        console.log(path);
-                        window.open('/' + type + path);
-                    };
-                    Cryptpad.prompt("How would you like to name your file?", Cryptpad.getDefaultName({type: type}), onNamed);
-                });
+                $block.find('a.newdoc').click(createPadFromRootHandler);
             }
 
             return $block;
@@ -1287,7 +1299,10 @@ define([
 
             var $modeButton = createViewModeButton().appendTo($toolbar.find('.rightside'));
             var $title = createTitle(path).appendTo($toolbar.find('.rightside'));
-            createNewButton(isInRoot).appendTo($toolbar.find('.leftside'));
+
+            // NewButton can be undefined if we're in read only mode
+            $toolbar.find('.leftside').append(createNewButton(isInRoot));
+
 
             var $folderHeader = getFolderListHeader();
             var $fileHeader = getFileListHeader(true);
@@ -1587,7 +1602,8 @@ define([
             }
             else if ($(this).hasClass("newdoc")) {
                 var type = $(this).data('type') || 'pad';
-                $(this).attr('href','/' + type + '/#?path=' + encodeURIComponent(path));
+                createPadFromRootHandler.apply(this);
+                e.preventDefault();
             }
             module.hideMenu();
         });
@@ -1853,7 +1869,6 @@ define([
                 $backupButton.attr('title', Messages.fm_backup_title);
                 $backupButton.on('click', function() {
                     var url = window.location.origin + window.location.pathname + '#' + editHash;
-                    //TODO change text & transalte
                     Cryptpad.alert(Messages._getKey('fm_alert_backupUrl', [url]));
                     $('#fm_backupUrl').val(url);
                     $('#fm_backupUrl').click(function () {

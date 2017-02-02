@@ -3,6 +3,7 @@
 @tree-lines-col: #888;
 
 @content-bg: @tree-bg;
+@content-bg-ro: darken(@content-bg, 10%);
 @content-fg: @tree-fg;
 @info-box-bg: #ddddff;
 @info-box-border: #bbb;
@@ -219,6 +220,9 @@ span {
     flex: 1;
     display: flex;
     flex-flow: column;
+    &.readonly {
+        background: @content-bg-ro;
+    }
     h1 {
         padding-left: 10px;
         margin-top: 10px;

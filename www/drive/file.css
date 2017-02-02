@@ -180,6 +180,9 @@ span.fa-folder-open {
   display: flex;
   flex-flow: column;
 }
+#content.readonly {
+  background: #e6e6e6;
+}
 #content h1 {
   padding-left: 10px;
   margin-top: 10px;
