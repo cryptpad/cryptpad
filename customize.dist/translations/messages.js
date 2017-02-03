@@ -313,9 +313,11 @@ define(function () {
     out.main_poll = 'Polls';
     out.main_poll_p = 'Plan your meeting or your event, or vote for the best solution regarding your problem.';
     out.main_drive = 'CryptDrive';
-    out.footer_applications = "Applications";
+
+    out.footer_applications = "Applications";
     out.footer_contact = "Contact";
-    out.footer_aboutUs = "About us";
+    out.footer_aboutUs = "About us";
+
     out.table_type = 'Type';
     out.table_link = 'Link';
     out.table_created = 'Created';
@@ -380,6 +382,34 @@ define(function () {
     //out.header_xwiki = '<a href="http://www.xwiki.com/" target="_blank" rel="noopener noreferrer"><img src="/customize/logo-xwiki.png" alt="XWiki SAS" class="bottom-bar-xwiki"/></a>';
     out.header_support = '<a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
     out.header_logoTitle = 'Go to the main page';
+
+    // Initial states
+
+    out.codeInitialState = [
+        '/*\n',
+        '   This is CryptPad, the zero knowledge realtime collaborative editor.\n',
+        '   What you type here is encrypted so only people who have the link can access it.\n',
+        '   Even the server cannot see what you type.\n',
+        '   What you see here, what you hear here, when you leave here, let it stay here.\n',
+        '*/'
+    ].join('');
+
+    out.slideInitialState = [
+        '# CryptSlide\n',
+        '* This is a zero knowledge realtime collaborative editor.\n',
+        '* What you type here is encrypted so only people who have the link can access it.\n',
+        '* Even the server cannot see what you type.\n',
+        '* What you see here, what you hear here, when you leave here, let it stay here.\n',
+        '\n',
+        '---',
+        '\n',
+        '# How to use\n',
+        '1. Write your slides content using markdown syntax\n',
+        '  - Learn more about markdown syntax [here](http://www.markdowntutorial.com/)\n',
+        '2. Separate your slides with ---\n',
+        '3. Click on the "Play" button to see the result',
+        '  - Your slides are updated in realtime'
+    ].join('');
 
     return out;
 });

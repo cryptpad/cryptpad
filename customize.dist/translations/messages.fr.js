@@ -309,9 +309,11 @@ define(function () {
     out.main_poll = 'Sondages';
     out.main_poll_p = 'Plannifiez vos réunions ou évènements, ou votez pour la meilleure solution concernant votre problème.';
     out.main_drive = 'CryptDrive';
-    out.footer_applications = "Applications";
+
+    out.footer_applications = "Applications";
     out.footer_contact = "Contact";
-    out.footer_aboutUs = "À propos de nous";
+    out.footer_aboutUs = "À propos de nous";
+
     out.table_type = 'Type';
     out.table_link = 'Lien';
     out.table_created = 'Créé le';
@@ -372,6 +374,34 @@ define(function () {
     out.header_france = '<a href="http://www.xwiki.com/fr" target="_blank" rel="noopener noreferrer">Fait avec <img class="bottom-bar-heart" src="/customize/heart.png" alt="amour" /> en <img class="bottom-bar-fr" title="France" alt="France" src="/customize/fr.png" /> par <img src="/customize/logo-xwiki.png" alt="XWiki SAS" class="bottom-bar-xwiki"/></a>';
     out.header_support = '<a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
     out.header_logoTitle = "Aller vers la page d'accueil";
+
+    // Initial states
+
+    out.codeInitialState = [
+        '/*\n',
+        '   Voici CryptPad, l\'éditeur collaboratif en temps-réel Zero Knowledge.\n',
+        '   Ce que vous tapez ici est chiffré de manière que seules les personnes avec le lien peuvent y accéder.\n',
+        '   Même le serveur est incapable de voir ce que vous tapez.\n',
+        '   Ce que vous voyez ici, ce que vous entendez, quand vous partez, ça reste ici.\n',
+        '*/'
+    ].join('');
+
+    out.slideInitialState = [
+        '# CryptSlide\n',
+        '* Voici CryptPad, l\'éditeur collaboratif en temps-réel Zero Knowledge.\n',
+        '* Ce que vous tapez ici est chiffré de manière que seules les personnes avec le lien peuvent y accéder.\n',
+        '* Même le serveur est incapable de voir ce que vous tapez.\n',
+        '* Ce que vous voyez ici, ce que vous entendez, quand vous partez, ça reste ici.\n',
+        '\n',
+        '---',
+        '\n',
+        '# Comment l\'utiliser\n',
+        '1. Écrivez le contenu de votre présentation avec la syntaxe Markdown\n',
+        '  - Apprenez à utiliser markdown en cliquant [ici](http://www.markdowntutorial.com/)\n',
+        '2. Séparez vos slides avec ---\n',
+        '3. Cliquez sur la bouton "lecture" pour afficher le résultat en mode présentation',
+        '  - La présentation est mise à jour en temps-réel'
+    ].join('');
 
     return out;
 });

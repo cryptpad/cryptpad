@@ -68,6 +68,7 @@ define([
                 mode: "javascript",
                 readOnly: true
             });
+            editor.setOption('placeholder', Messages.codeInitialState);
 
             var setMode = module.setMode = function (mode, $select) {
                 module.highlightMode = mode;
@@ -83,7 +84,7 @@ define([
                 }
             };
 
-            editor.setValue(Messages.codeInitialState); // HERE
+            editor.setValue('');
 
             var setTheme = module.setTheme = (function () {
                 var path = '/common/theme/';
@@ -148,7 +149,6 @@ define([
             };
 
             var config = {
-                //initialState: Messages.codeInitialState,
                 initialState: '{}',
                 websocketURL: Cryptpad.getWebsocketURL(),
                 channel: secret.channel,
@@ -570,7 +570,7 @@ define([
                 // Update the user list (metadata) from the hyperjson
                 updateMetadata(userDoc);
 
-                editor.setValue(newDoc || Messages.codeInitialState);
+                editor.setValue(newDoc || '');
 
                 if (Visible.isSupported()) {
                     Visible.onChange(function (yes) {

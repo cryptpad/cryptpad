@@ -86,6 +86,7 @@ define([
                 mode: "javascript",
                 readOnly: true
             });
+            editor.setOption('placeholder', Messages.slideInitialState);
 
             var setMode = module.setMode = function (mode, $select) {
                 module.highlightMode = mode;
@@ -99,7 +100,7 @@ define([
             };
             setMode('markdown');
 
-            editor.setValue(Messages.slideInitialState); // HERE
+            editor.setValue('');
 
             var setTheme = module.setTheme = (function () {
                 var path = '/common/theme/';
@@ -239,7 +240,7 @@ define([
                 var shjson = stringifyInner(textValue);
 
                 module.patchText(shjson);
-                Slide.update(textValue);
+                Slide.update(textValue || Messages.slideInitialState);
 
                 if (module.realtime.getUserDoc() !== shjson) {
                     console.error("realtime.getUserDoc() !== shjson");
@@ -642,8 +643,8 @@ define([
                 // Update the user list (metadata) from the hyperjson
                 updateMetadata(userDoc);
 
-                editor.setValue(newDoc || Messages.slideInitialState);
-                Slide.update(newDoc);
+                editor.setValue(newDoc || '');
+                Slide.update(newDoc || Messages.slideInitialState);
 
                 if (Visible.isSupported()) {
                     Visible.onChange(function (yes) {

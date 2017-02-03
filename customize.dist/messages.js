@@ -121,30 +121,5 @@ define(['/customize/languageSelector.js',
         '</p>',
     ].join('');
 
-    messages.codeInitialState = [
-        '/*\n',
-        '   This is CryptPad, the zero knowledge realtime collaborative editor.\n',
-        '   What you type here is encrypted so only people who have the link can access it.\n',
-        '   Even the server cannot see what you type.\n',
-        '   What you see here, what you hear here, when you leave here, let it stay here.\n',
-        '*/'
-    ].join('');
-
-    messages.slideInitialState = [
-        '# CryptSlide\n',
-        '* This is a zero knowledge realtime collaborative editor.\n',
-        '* What you type here is encrypted so only people who have the link can access it.\n',
-        '* Even the server cannot see what you type.\n',
-        '* What you see here, what you hear here, when you leave here, let it stay here.\n',
-        '\n',
-        '---',
-        '\n',
-        '# How to use\n',
-        '1. Write your slides content using markdown syntax\n',
-        '  - Learn more about markdown syntax [here](http://www.markdowntutorial.com/)\n',
-        '2. Separate your slides with ---\n',
-        '3. Click on the "Play" button to see the result'
-    ].join('');
-
     return messages;
 });
