@@ -280,6 +280,7 @@ define(function () {
     out.loginText = '<p>Votre nom d\'utilisateur et votre mot d epasse sont utilisés pour générer une clé unique qui reste inconnue de notre serveur.</p>\n' +
                     '<p>Faîtes attention de ne pas perdre vos identifiants, puisqu\'il est impossible de les récupérer</p>';
     out.login_hello = 'Bonjour {0},'; // {0} is the username
+    out.login_helloNoName = 'Bonjour,';
     out.login_accessDrive = 'Accédez à votre drive';
 
     // index.html

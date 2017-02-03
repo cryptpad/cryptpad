@@ -282,6 +282,7 @@ define(function () {
     out.loginText = '<p>Your username and password are used to generate a unique key which is never known by our server.</p>\n' +
                     '<p>Be careful not to forget your credentials, as they are impossible to recover</p>';
     out.login_hello = 'Hello {0},'; // {0} is the username
+    out.login_helloNoName = 'Hello,';
     out.login_accessDrive = 'Access your drive';
 
     // index.html

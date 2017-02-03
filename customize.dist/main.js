@@ -35,7 +35,11 @@ define([
         var $hello = $loggedInBlock.find('#loggedInHello');
         var $logout = $loggedInBlock.find('#loggedInLogOut');
 
-        $hello.text(Messages._getKey('login_hello', [name]));
+        if (name) {
+            $hello.text(Messages._getKey('login_hello', [name]));
+        } else {
+            $hello.text(Messages.login_helloNoName);
+        }
         $('#buttons').find('.nologin').hide();
 
         $logout.click(function () {
