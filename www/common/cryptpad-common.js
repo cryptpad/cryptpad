@@ -1033,7 +1033,7 @@ define([
                 $('iframe').each(function (idx, ifrw) {
                     $(ifrw).contents().find('.dropdown-bar-content').hide();
                 });
-            } catch (e) {
+            } catch (er) {
                 // empty try catch in case this iframe is problematic (cross-origin)
             }
             if (state) {
