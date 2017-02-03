@@ -887,6 +887,8 @@ html.cp,
 @media screen and (max-width: 800px) {
   .cp #main #userForm,
   .cp #main_other #userForm,
+  .cp #main #loggedIn,
+  .cp #main_other #loggedIn,
   .cp #main #data,
   .cp #main_other #data {
     transform: initial;
@@ -900,7 +902,9 @@ html.cp,
 }
 @media screen and (max-width: 800px) {
   .cp #main #userForm,
-  .cp #main_other #userForm {
+  .cp #main_other #userForm,
+  .cp #main #loggedIn,
+  .cp #main_other #loggedIn {
     border: 1px solid #888;
   }
 }

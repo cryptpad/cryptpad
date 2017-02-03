@@ -923,7 +923,7 @@ define([
             var $block = Cryptpad.createDropdown(dropdownConfig);
 
             // Custom style:
-            $block.find('button').addClass('new').addClass('element');
+            $block.find('button').addClass('btn').addClass('btn-primary').addClass('new');
 
             // Handlers
             if (isInRoot) {

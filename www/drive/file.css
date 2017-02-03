@@ -71,13 +71,13 @@ li {
 span.fa-folder,
 span.fa-folder-open {
   color: #FEDE8B;
-  text-shadow: -1px 0 #000000, 0 1px #000000, 1px 0 #000000, 0 -1px #000000;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
 /* TREE */
 #tree {
   border-right: 1px solid #ccc;
   box-sizing: border-box;
-  background: #ffffff;
+  background: #fff;
   overflow: auto;
   resize: horizontal;
   width: 250px;
@@ -85,7 +85,7 @@ span.fa-folder-open {
   max-width: 500px;
   min-width: 200px;
   padding: 10px 0px;
-  color: #000000;
+  color: #000;
 }
 #tree li {
   cursor: auto;
@@ -144,9 +144,9 @@ span.fa-folder-open {
   top: -0.25em;
   content: '';
   display: block;
-  border-left: 1px solid #888888;
+  border-left: 1px solid #888;
   height: 1em;
-  border-bottom: 1px solid #888888;
+  border-bottom: 1px solid #888;
   width: 17.5px;
 }
 #tree ul li:after {
@@ -155,7 +155,7 @@ span.fa-folder-open {
   bottom: -7px;
   content: '';
   display: block;
-  border-left: 1px solid #888888;
+  border-left: 1px solid #888;
   height: 100%;
 }
 #tree ul li.root {
@@ -173,8 +173,8 @@ span.fa-folder-open {
 /* CONTENT */
 #content {
   box-sizing: border-box;
-  background: #ffffff;
-  color: #000000;
+  background: #fff;
+  color: #000;
   overflow: auto;
   flex: 1;
   display: flex;
@@ -193,7 +193,7 @@ span.fa-folder-open {
   padding-left: 10px;
   margin: 10px auto;
   background: #ddddff;
-  border: 1px solid #bbbbbb;
+  border: 1px solid #bbb;
   border-radius: 5px;
 }
 #content .info-box span {
@@ -249,7 +249,7 @@ span.fa-folder-open {
 }
 #content .list li.header {
   cursor: default;
-  color: #555555;
+  color: #555;
 }
 #content .list li.header span:not(.fa) {
   text-align: left;
@@ -308,12 +308,12 @@ span.fa-folder-open {
 }
 /* Toolbar */
 #driveToolbar {
-  background: #dddddd;
-  color: #555555;
+  background: #ddd;
+  color: #555;
   height: 40px;
   display: flex;
   flex-flow: row;
-  border-top: 1px solid #cccccc;
+  border-top: 1px solid #ccc;
   border-bottom: ;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   z-index: 100;
@@ -324,11 +324,13 @@ span.fa-folder-open {
   display: inline-block;
   height: 100%;
 }
+#driveToolbar button {
+  height: 30px;
+}
 #driveToolbar button.element {
   border-radius: 2px;
-  height: 30px;
-  background: #888888;
-  color: #eeeeee;
+  background: #888;
+  color: #eee;
   font-size: 16px;
   border: none;
   font-weight: bold;
@@ -359,7 +361,6 @@ span.fa-folder-open {
   margin-right: 0px;
 }
 #driveToolbar .dropdown-bar-content {
-  margin-top: -3px;
   margin-right: 2px;
 }
 #driveToolbar .leftside {
@@ -380,7 +381,7 @@ span.fa-folder-open {
 }
 #driveToolbar .path .element {
   padding: 5px;
-  border: 1px solid #dddddd;
+  border: 1px solid #ddd;
   border-radius: 2px;
   box-sizing: border-box;
 }
@@ -388,6 +389,6 @@ span.fa-folder-open {
   cursor: pointer;
 }
 #driveToolbar .path .element.clickable:hover {
-  background: #ffffff;
-  border: 1px solid #888888;
+  background: #fff;
+  border: 1px solid #888;
 }

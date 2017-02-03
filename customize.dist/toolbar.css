@@ -112,6 +112,18 @@
 .cryptpad-toolbar a {
   float: right;
 }
+.cryptpad-toolbar button#shareButton {
+  color: #fff;
+  background: #5cb85c;
+  border-color: #5cb85c;
+}
+.cryptpad-toolbar button#shareButton:hover {
+  background: #449d44;
+  border: 1px solid #419641;
+}
+.cryptpad-toolbar button#shareButton span {
+  color: #fff;
+}
 .cryptpad-toolbar .cryptpad-lag {
   box-sizing: content-box;
   height: 16px;
@@ -347,6 +359,9 @@
 }
 .cryptpad-toolbar-leftside button {
   margin: 2px 4px 2px 0px;
+}
+.cryptpad-toolbar-leftside .dropdown-bar-content {
+  margin-top: -1px;
 }
 .cryptpad-toolbar-rightside {
   text-align: right;

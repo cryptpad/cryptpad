@@ -39,6 +39,21 @@
         float: right;
     }
 
+    button {
+        &#shareButton {
+            color: #fff;
+            background: #5cb85c;
+            border-color: #5cb85c;
+            &:hover {
+                background: #449d44;
+                border: 1px solid #419641;
+            }
+            span {
+                color: #fff;
+            }
+        }
+    }
+
     .cryptpad-lag {
         box-sizing: content-box;
         height: 16px;
@@ -272,6 +287,9 @@
     }
     button {
         margin: 2px 4px 2px 0px;
+    }
+    .dropdown-bar-content {
+        margin-top: -1px;
     }
 }
 .cryptpad-toolbar-rightside {

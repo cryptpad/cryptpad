@@ -122,10 +122,6 @@ define(function () {
 
     out.disconnectAlert = 'Network connection lost!';
 
-    out.tryIt = 'Try it out!';
-    out.recentPads = 'Your recent pads (stored only in your browser)';
-    out.recentPadsIframe = 'Your recent pads';
-
     out.okButton = 'OK (enter)';
 
     out.cancel = "Cancel";
@@ -292,12 +288,30 @@ define(function () {
     out.main_p1 = "<h1>Collaborate in Confidence</h1><br> Grow your ideas together with shared documents while <strong>Zero Knowledge</strong> technology secures your privacy; even from us.";
 
     out.main_p2 = 'This project uses the <a href="http://ckeditor.com/">CKEditor</a> Visual Editor, <a href="https://codemirror.net/">CodeMirror</a>, and the <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a> realtime engine.';
-    out.main_howitworks = 'How It Works';
     out.main_howitworks_p1 = 'CryptPad uses a variant of the <a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> algorithm which is able to find distributed consensus using a <a href="https://bitcoin.org/bitcoin.pdf">Nakamoto Blockchain</a>, a construct popularized by <a href="https://en.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. This way the algorithm can avoid the need for a central server to resolve Operational Transform Edit Conflicts and without the need for resolving conflicts, the server can be kept unaware of the content which is being edited on the pad.';
     out.main_about = 'About';
     out.main_about_p1 = 'You can read more about <a href="/about.html">how CryptPad works</a>, our <a href="/privacy.html" title="">privacy policy</a> and <a href="/terms.html">terms of service</a>.';
     out.main_about_p2 = 'If you have any questions or comments, you can <a href="https://twitter.com/cryptpad">tweet us</a>, open an issue <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">on github</a>, come say hi on irc (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), or <a href="mailto:research@xwiki.com">send us an email</a>.';
     out.main_openFileManager = 'Open in a new tab';
+
+    out.main_howitworks = 'How It Works';
+    out.main_zeroKnowledge = 'Zero Knowledge';
+    out.main_zeroKnowledge_p = "You don't have to trust that we <em>won't</em> look at your pads, with CryptPad's revolutionary Zero Knowledge Technology we <em>can't</em>. Learn more about how we protect your Privacy and Security.";
+    out.main_jotItDown = 'Jot it down';
+    out.main_jotItDown_p = "The greatest projects come from the smallest ideas. Take down the moments of inspiration and unexpected ideas because you never know which one might be a breakthrough.";
+    out.main_share = 'Share the link, share the pad';
+    out.main_share_p = "Grow your ideas together: conduct efficient meetings, collaborate on TODO lists and make quick presentations with all your friends and all your devices.";
+    out.main_organize = 'Get organized';
+    out.main_organize_p = "With CryptPad Drive, you can keep your sights on what's important. Folders allow you to keep track of your projects and have a global vision of where things are going.";
+    out.tryIt = 'Try it out!';
+    out.main_richText = 'Rich Text editor';
+    out.main_richText_p = 'Edit rich text documents collaboratively with our realtime Zero Knowledge <a href="http://ckeditor.com" target="_blank">CkEditor</a> application.';
+    out.main_code = 'Code editor';
+    out.main_code_p = 'Edit code from your software collaboratively with our realtime Zero Knowledge <a href="https://www.codemirror.net" target="_blank">CodeMirror</a> application.';
+    out.main_slide = 'Slide editor';
+    out.main_slide_p = 'Create your presentations using the Markdown syntax, and display them in your browser.';
+    out.main_poll = 'Polls';
+    out.main_poll_p = 'Plan your meeting or your event, or vote for the best solution regarding your problem.';
 
     out.table_type = 'Type';
     out.table_link = 'Link';

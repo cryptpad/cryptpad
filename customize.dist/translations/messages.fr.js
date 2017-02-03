@@ -117,10 +117,6 @@ define(function () {
 
     out.disconnectAlert = 'Perte de la connexion au réseau !';
 
-    out.tryIt = 'Essayez-le !';
-    out.recentPads = 'Vos documents récents (stockés uniquement dans votre navigateur)';
-    out.recentPadsIframe = 'Vos documents récents';
-
     out.okButton = 'OK (Entrée)';
 
     out.cancel = "Annuler";
@@ -288,12 +284,30 @@ define(function () {
     //out.main_p1 = 'CryptPad est l\'éditeur collaboratif en temps réel <strong>zero knowledge</strong>. Le chiffrement est effectué depuis votre navigateur, ce qui protège les données contre le serveur, le cloud, et la NSA. La clé de chiffrement est stockée dans l\'<a href="https://fr.wikipedia.org/wiki/Identificateur_de_fragment">identifieur de fragment</a> de l\'URL qui n\'est jamais envoyée au serveur mais est accessible depuis javascript, de sorte qu\'en partageant l\'URL, vous donnez l\'accès au pad à ceux qui souhaitent participer.';
     out.main_p1 = "<h2>Collaborez en tout confiance</h2><br>Développez vos idées collaborativement grâce à des documents partagés en temps-réel, tout en gardant vos données personnelles invisibles, même pour nous, avec la technologie <strong>Zero Knowledge</strong>.";
     out.main_p2 = 'Ce projet utilise l\'éditeur visuel (WYSIWYG) <a href="http://ckeditor.com/">CKEditor</a>, l\'éditeur de code source <a href="https://codemirror.net/">CodeMirror</a>, et le moteur temps-réel <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a>.';
-    out.main_howitworks = 'Comment ça fonctionne';
     out.main_howitworks_p1 = 'CryptPad utilise une variante de l\'algorithme d\'<a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> qui est capable de trouver un consensus distribué en utilisant <a href="https://bitcoin.org/bitcoin.pdf">une chaîne de bloc Nakamoto</a>, un outil popularisé par le <a href="https://fr.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. De cette manière, l\'algorithme évite la nécessité d\'utiliser un serveur central pour résoudre les conflits d\'édition de l\'Operational Transformation, et sans ce besoin de résolution des conflits le serveur peut rester ignorant du contenu qui est édité dans le pad.';
     out.main_about = 'À propos';
     out.main_about_p1 = 'Vous pouvez en apprendre davantage sur notre <a href="/privacy.html" title="">politique de confidentialité</a> et nos <a href="/terms.html">conditions d\'utilisation</a>.';
     out.main_about_p2 = 'Si vous avez des questions ou commentaires, vous pouvez <a href="https://twitter.com/cryptpad">nous tweeter</a>, ouvrir une issue sur <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">Github</a>, venir dire bonjour sur IRC (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), ou <a href="mailto:research@xwiki.com">nous envoyer un email</a>.';
     out.main_openFileManager = 'Ouvrir dans un nouvel onglet';
+
+    out.main_howitworks = 'Comment ça fonctionne';
+    out.main_zeroKnowledge = 'Zero Knowledge';
+    out.main_zeroKnowledge_p = "Vous n'avez pas besoin de croire que nous n'<em>allons</em> pas regarder vos documents. Avec la technologie Zero Knowledge de Cryptpad, nous ne <em>pouvons</em> pas le faire. Apprenez-en plus sur notre manière de protéger vos données.";
+    out.main_jotItDown = 'Prenez-en note';
+    out.main_jotItDown_p = "Les plus grands projets naissent des plus petites idées. Prenez note de vos moments d'inspiration et de vos idées inattendues car vous ne savez pas lesquels seront des découvertes capitales.";
+    out.main_share = 'Partager le lien, partager le document';
+    out.main_share_p = "Faites croître vos idées à plusieurs : réalisez des réunions efficaes, collaborez sur vos listes de tâches et réalisez des présentations rapide avec tous vos amis sur tous vos appareils.";
+    out.main_organize = 'Soyez organisés';
+    out.main_organize_p = "Avec le CryptPad Drive, vous pouvez garder vos vues sur ce qui est important. Les dossiers vous permettent de garder la trace de vos projets et d'avoir une vision globale du travail effectué.";
+    out.tryIt = 'Essayez-le !';
+    out.main_richText = 'Éditeur de texte';
+    out.main_richText_p = 'Éditez des documents texte collaborativement avec notre application <a href="http://ckeditor.com" target="_blank">CkEditor</a> temps-réel et Zero Knowledge.';
+    out.main_code = 'Éditeur de code';
+    out.main_code_p = 'Modifier le code de vos logiciel collaborativement grace à notre application <a href="https://www.codemirror.net" target="_blank">CodeMirror</a> temps-réel et Zero Knowledge.';
+    out.main_slide = 'Présentations';
+    out.main_slide_p = 'Créez vos présentations en syntaxe Markdown collaborativement de manière sécurisée et affichez les dans votre navigateur.';
+    out.main_poll = 'Sondages';
+    out.main_poll_p = 'Plannifiez vos réunions ou évènements, ou votez pour la meilleure solution concernant votre problème.';
 
     out.table_type = 'Type';
     out.table_link = 'Lien';

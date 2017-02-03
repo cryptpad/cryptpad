@@ -124,6 +124,7 @@ define([
                 options: []
             };
             var $shareBlock = Cryptpad.createDropdown(dropdownConfigShare);
+            $shareBlock.find('button').attr('id', 'shareButton');
             $shareBlock.find('.dropdown-bar-content').addClass(SHARE_CLS).addClass(EDITSHARE_CLS).addClass(VIEWSHARE_CLS);
             $userlistElement.append($shareBlock);
         }
