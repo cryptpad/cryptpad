@@ -31,12 +31,13 @@ var fragments = {};
     'contact',
     'logo',
     'noscript',
+    'footer'
 ].forEach(function (name) {
     fragments[name] = read('./fragments/' + name + '.html');
 });
 
 // build static pages
-['index', 'privacy', 'terms', 'about', 'contact',].forEach(function (page) {
+['index', 'privacy', 'terms', 'about', 'contact'].forEach(function (page) {
     var source = swap(template, {
        topbar: fragments.topbar,
        fork: fragments.fork,
@@ -45,9 +46,11 @@ var fragments = {};
            fork: fragments.fork,
            logo: fragments.logo,
            noscript: fragments.noscript,
+           footer: fragments.footer,
        }),
        logo: fragments.logo,
        noscript: fragments.noscript,
+       footer: fragments.footer,
     });
     write('../' + page + '.html', source);
 });

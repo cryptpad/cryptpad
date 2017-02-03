@@ -6,6 +6,7 @@
 @import "./loading.less";
 @import "./dropdown.less";
 @import "./topbar.less";
+@import "./footer.less";
 
 html.cp, .cp body {
     font-size: .875em;
@@ -127,6 +128,8 @@ p, pre, td, a, table, tr {
 }
 
 body.html {
+    display:flex;
+    flex-flow: column;
 }
 
 // Main page
@@ -282,6 +285,8 @@ body.html {
     background-size: cover;
     background-attachment: fixed;
     background-position: center;
+    height: ~"calc(100vh - 115px)";
+    min-height: 450px;
     .hidden {
         display: none !important;
     }
@@ -295,12 +300,14 @@ body.html {
     margin-top: 5px;
 }
 
+#mainBlock {
+    flex: 1;
+}
+
 #main, #main_other {
     position: relative;
     left: 0;
     right: 0;
-    height: ~"calc(100vh - 115px)";
-    min-height: 450px;
     margin: auto;
     z-index: 1;
 

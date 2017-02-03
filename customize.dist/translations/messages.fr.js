@@ -308,7 +308,10 @@ define(function () {
     out.main_slide_p = 'Créez vos présentations en syntaxe Markdown collaborativement de manière sécurisée et affichez les dans votre navigateur.';
     out.main_poll = 'Sondages';
     out.main_poll_p = 'Plannifiez vos réunions ou évènements, ou votez pour la meilleure solution concernant votre problème.';
-
+    out.main_drive = 'CryptDrive';
+    out.footer_applications = "Applications";
+    out.footer_contact = "Contact";
+    out.footer_aboutUs = "À propos de nous";
     out.table_type = 'Type';
     out.table_link = 'Lien';
     out.table_created = 'Créé le';

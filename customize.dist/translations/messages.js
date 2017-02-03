@@ -312,7 +312,10 @@ define(function () {
     out.main_slide_p = 'Create your presentations using the Markdown syntax, and display them in your browser.';
     out.main_poll = 'Polls';
     out.main_poll_p = 'Plan your meeting or your event, or vote for the best solution regarding your problem.';
-
+    out.main_drive = 'CryptDrive';
+    out.footer_applications = "Applications";
+    out.footer_contact = "Contact";
+    out.footer_aboutUs = "About us";
     out.table_type = 'Type';
     out.table_link = 'Link';
     out.table_created = 'Created';

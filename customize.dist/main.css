@@ -455,6 +455,11 @@
 #cryptpadTopBar .right a:hover {
   text-decoration: underline;
 }
+footer {
+  background: #cccccc;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  padding-top: 1em;
+}
 html.cp,
 .cp body {
   font-size: .875em;
@@ -567,6 +572,10 @@ html.cp,
 .cp tr {
   font-family: lato, Helvetica, sans-serif;
   font-size: 1.02em;
+}
+.cp body.html {
+  display: flex;
+  flex-flow: column;
 }
 .cp .page {
   width: 100%;
@@ -710,6 +719,8 @@ html.cp,
   background-size: cover;
   background-attachment: fixed;
   background-position: center;
+  height: calc(100vh - 115px);
+  min-height: 450px;
 }
 .cp #main .hidden {
   display: none !important;
@@ -721,13 +732,14 @@ html.cp,
 .cp .category {
   margin-top: 5px;
 }
+.cp #mainBlock {
+  flex: 1;
+}
 .cp #main,
 .cp #main_other {
   position: relative;
   left: 0;
   right: 0;
-  height: calc(100vh - 115px);
-  min-height: 450px;
   margin: auto;
   z-index: 1;
   font-size: medium;
