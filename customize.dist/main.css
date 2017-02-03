@@ -750,12 +750,12 @@ html.cp,
 .cp div.realtime #addoption {
   border-bottom-left-radius: 5px;
 }
-.cp.slide #modal #content p,
-.cp.slide #modal #content ul,
-.cp.slide #modal #content ol {
+#modal #content p,
+#modal #content ul,
+#modal #content ol {
   font-size: 26px;
 }
-.cp.slide #modal #content img {
+#modal #content img {
   position: relative;
   min-width: 1%;
   max-width: 90%;
@@ -763,8 +763,7 @@ html.cp,
   margin: auto;
   border: 5px solid red;
 }
-.cp div.modal,
-.cp div#modal {
+div#modal {
   box-sizing: border-box;
   z-index: 9001;
   position: fixed;
@@ -775,8 +774,7 @@ html.cp,
   display: none;
   background-color: #302B28;
 }
-.cp div.modal #content,
-.cp div#modal #content {
+div#modal #content {
   box-sizing: border-box;
   border: 1px solid white;
   vertical-align: middle;
@@ -799,49 +797,38 @@ html.cp,
   left: 0;
   right: 0;
 }
-.cp div.modal #content p,
-.cp div#modal #content p,
-.cp div.modal #content li,
-.cp div#modal #content li,
-.cp div.modal #content pre,
-.cp div#modal #content pre,
-.cp div.modal #content code,
-.cp div#modal #content code {
+div#modal #content p,
+div#modal #content li,
+div#modal #content pre,
+div#modal #content code {
   font-size: 2.75vw;
   line-height: 3.025vw;
 }
-.cp div.modal #content h1,
-.cp div#modal #content h1 {
+div#modal #content h1 {
   font-size: 5vw;
   line-height: 5.5vw;
 }
-.cp div.modal #content h2,
-.cp div#modal #content h2 {
+div#modal #content h2 {
   font-size: 4.2vw;
   line-height: 4.62vw;
 }
-.cp div.modal #content h3,
-.cp div#modal #content h3 {
+div#modal #content h3 {
   font-size: 3.6vw;
   line-height: 3.96vw;
 }
-.cp div.modal #content h4,
-.cp div#modal #content h4 {
+div#modal #content h4 {
   font-size: 3vw;
   line-height: 3.3vw;
 }
-.cp div.modal #content h5,
-.cp div#modal #content h5 {
+div#modal #content h5 {
   font-size: 2.2vw;
   line-height: 2.42vw;
 }
-.cp div.modal #content h6,
-.cp div#modal #content h6 {
+div#modal #content h6 {
   font-size: 1.6vw;
   line-height: 1.76vw;
 }
-.cp div.modal #content pre > code,
-.cp div#modal #content pre > code {
+div#modal #content pre > code {
   display: block;
   position: relative;
   border: 1px solid #333;
@@ -849,17 +836,14 @@ html.cp,
   margin: auto;
   padding-left: .25vw;
 }
-.cp div.modal #content ul,
-.cp div#modal #content ul,
-.cp div.modal #content ol,
-.cp div#modal #content ol {
+div#modal #content ul,
+div#modal #content ol {
   min-width: 50%;
   max-width: 100%;
   display: table;
   margin: 0 auto;
 }
-.cp div.modal .center,
-.cp div#modal .center {
+div#modal .center {
   position: relative;
   width: 80%;
   height: 80%;
@@ -867,40 +851,32 @@ html.cp,
   border: 1px solid #685d56;
   text-align: center;
 }
-.cp div.modal.shown,
-.cp div#modal.shown {
+div#modal.shown {
   display: block;
 }
-.cp div.modal table,
-.cp div#modal table {
+div#modal table {
   margin: 30px;
   border-collapse: collapse;
 }
-.cp div.modal table input,
-.cp div#modal table input {
+div#modal table input {
   height: 100%;
   width: 90%;
   border: 3px solid #302B28;
 }
-.cp div.modal table tfoot tr td,
-.cp div#modal table tfoot tr td {
+div#modal table tfoot tr td {
   z-index: 4000;
   cursor: pointer;
 }
-.cp div.modal #addtime,
-.cp div#modal #addtime,
-.cp div.modal #adddate,
-.cp div#modal #adddate {
+div#modal #addtime,
+div#modal #adddate {
   color: #46E981;
   border: 1px solid #46E981;
   padding: 15px;
 }
-.cp div.modal #adddate,
-.cp div#modal #adddate {
+div#modal #adddate {
   border-top-left-radius: 5px;
 }
-.cp div.modal #addtime,
-.cp div#modal #addtime {
+div#modal #addtime {
   border-bottom-left-radius: 5px;
 }
 #cors-store {

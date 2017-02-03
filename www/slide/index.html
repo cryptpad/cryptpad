@@ -18,10 +18,9 @@
     <link rel="stylesheet" href="/customize/main.css" />
     <style>
         html, body {
-            overflow-y: hidden;
+            overflow-y: auto;
         }
         #iframe-container {
-            position: fixed;
             top: 0px;
             bottom: 0px;
             right: 0px;
@@ -42,6 +41,8 @@
         #pad-iframe.fullscreen {
             top: 0px;
             height: 100% !important;
+            min-height: 740px;
+            position: absolute;
         }
         #iframe-container.fullscreen {
             top: 0px;
