@@ -352,6 +352,7 @@ define([
         if (config.displayed.indexOf('newpad') !== -1) {
             var pads_options = [];
             Config.availablePadTypes.forEach(function (p) {
+                if (p === 'drive') { return; }
                 pads_options.push({
                     tag: 'a',
                     attributes: {
@@ -361,14 +362,14 @@ define([
                     content: Messages.type[p]
                 });
             });
-            var $newButton = $('<div>').append($('<span>', {'class': 'fa fa-th-large'})).append(Messages.appsButton);
+            var $newButton = $('<div>').append($('<span>', {'class': 'fa fa-plus'})).append(Messages.newButton);
             var dropdownConfig = {
                 text: $newButton.html(), // Button initial text
                 options: pads_options, // Entries displayed in the menu
                 left: true, // Open to the left of the button
             };
             var $newPadBlock = Cryptpad.createDropdown(dropdownConfig);
-            $newPadBlock.find('button').attr('title', Messages.appsButtonTitle);
+            $newPadBlock.find('button').attr('title', Messages.newButtonTitle);
             $newPadBlock.appendTo($userContainer);
         }
 
@@ -407,6 +408,14 @@ define([
                     content: Messages.user_rename
                 });
             }
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'target': '_blank',
+                    'href': '/drive/'
+                },
+                content: Messages.login_accessDrive
+            });
             // Add login or logout button depending on the current status
             if (account) {
                 options.push({

@@ -83,8 +83,8 @@ define(function () {
     out.shareSuccess = 'URL copiée dans le presse-papiers';
     out.shareFailed = "Échec de la copie de l'URL dans le presse-papiers";
 
-    out.appsButton = 'Apps';
-    out.appsButtonTitle = 'Accéder aux autres applications';
+    out.newButton = 'Nouveau';
+    out.newButtonTitle = 'Créer un nouveau document';
 
     out.presentButton = 'PRÉSENTER';
     out.presentButtonTitle = "Entrer en mode présentation";

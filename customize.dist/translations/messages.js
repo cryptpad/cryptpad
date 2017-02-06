@@ -88,8 +88,8 @@ define(function () {
     out.shareSuccess = 'Copied URL to clipboard';
     out.shareFailed = "Failed to copy URL to clipboard";
 
-    out.appsButton = 'Apps';
-    out.appsButtonTitle = 'Access other applications';
+    out.newButton = 'New';
+    out.newButtonTitle = 'Create a new document';
 
     out.presentButton = 'PRESENT';
     out.presentButtonTitle = "Enter presentation mode";
