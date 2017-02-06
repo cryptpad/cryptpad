@@ -571,6 +571,8 @@ define([
                     return;
                 }
 
+                if (!$titleElement.find('input').is(':visible')) { return; }
+
                 var ev = $.Event("keyup");
                 ev.which = 13;
                 $titleElement.find('input').trigger(ev);
