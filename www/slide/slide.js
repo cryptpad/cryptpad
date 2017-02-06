@@ -18,6 +18,7 @@ define([
     var $modal;
     var $content;
     var $pad;
+    var placeholder;
 
     Slide.onChange = function (f) {
         if (typeof(f) === 'function') {
@@ -160,6 +161,7 @@ define([
 
     var update = Slide.update = function (content) {
         if (!Slide.shown) { return; }
+        if (!content) { content = placeholder; }
         var old = Slide.content[Slide.index];
         Slide.content = content.split(/\n\s*\-\-\-\s*\n/).filter(truthy);
         if (old !== Slide.content[Slide.index]) {
@@ -256,11 +258,12 @@ define([
         });
     };
 
-    Slide.setModal = function ($m, $c, $p, iframe) {
+    Slide.setModal = function ($m, $c, $p, iframe, ph) {
         $modal = Slide.$modal = $m;
         $content = Slide.$content = $c;
         $pad = Slide.$pad = $p;
         ifrw = Slide.ifrw = iframe;
+        placeholder = Slide.placeholder = ph;
         addEvent();
     };
 

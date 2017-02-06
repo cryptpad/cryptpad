@@ -134,7 +134,7 @@ define([
             var $modal = $pad.contents().find('#modal');
             var $content = $pad.contents().find('#content');
 
-            Slide.setModal($modal, $content, $pad, ifrw);
+            Slide.setModal($modal, $content, $pad, ifrw, Messages.slideInitialState);
 
             var enterPresentationMode = function (shouldLog) {
                 Slide.show(true, $textarea.val());
@@ -240,7 +240,7 @@ define([
                 var shjson = stringifyInner(textValue);
 
                 module.patchText(shjson);
-                Slide.update(textValue || Messages.slideInitialState);
+                Slide.update(textValue);
 
                 if (module.realtime.getUserDoc() !== shjson) {
                     console.error("realtime.getUserDoc() !== shjson");
@@ -648,7 +648,7 @@ define([
                 updateMetadata(userDoc);
 
                 editor.setValue(newDoc || '');
-                Slide.update(newDoc || Messages.slideInitialState);
+                Slide.update(newDoc);
 
                 if (Visible.isSupported()) {
                     Visible.onChange(function (yes) {
