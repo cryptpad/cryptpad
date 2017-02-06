@@ -64,7 +64,7 @@
 .alertify .dialog > *,
 .alertify .alert > * {
   width: 30%;
-  min-width: 500px;
+  width: 500px;
   max-width: 95%;
   margin: 0 auto;
   text-align: center;

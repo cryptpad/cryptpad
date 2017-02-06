@@ -29,7 +29,8 @@ define([
     var APP = window.APP = {
         editable: false,
         Cryptpad: Cryptpad,
-        loggedIn: Cryptpad.isLoggedIn()
+        loggedIn: Cryptpad.isLoggedIn(),
+        mobile: $('body').width() <= 600 // Menu and content area are not inline-block anymore for mobiles
     };
 
     var stringify = APP.stringify = function (obj) {
@@ -353,6 +354,14 @@ define([
             } else {
                 $element.removeClass("selected");
             }
+            $driveToolbar.find('#contextButton').css({
+                background: '#000'
+            });
+            window.setTimeout(function () {
+                $driveToolbar.find('#contextButton').css({
+                    background: ''
+                });
+            }, 500);
         };
 
         // Open the selected context menu on the closest "li" element
@@ -776,6 +785,9 @@ define([
             if (!path || path.length === 0) { return; }
             var isTrash = filesOp.isPathInTrash(path);
             var $title = $('<span>', {'class': 'path unselectable'});
+            if (APP.mobile) {
+                return $title;
+            }
             path.forEach(function (p, idx) {
                 if (isTrash && [1,2].indexOf(idx) !== -1) { return; }
 
@@ -1142,7 +1154,9 @@ define([
             var $toolbar = $driveToolbar;
             $toolbar.html('');
             var $leftside = $('<div>', {'class': 'leftside'}).appendTo($toolbar);
-            $leftside.width($tree.width());
+            if (!APP.mobile) {
+                $leftside.width($tree.width());
+            }
             var $rightside = $('<div>', {'class': 'rightside'}).appendTo($toolbar);
             return $toolbar;
         };
@@ -1306,6 +1320,25 @@ define([
 
             var $modeButton = createViewModeButton().appendTo($toolbar.find('.rightside'));
             var $title = createTitle(path).appendTo($toolbar.find('.rightside'));
+
+            if (APP.mobile) {
+                var $context = $('<button>', {'class': 'element right dropdown-bar', id: 'contextButton'});
+                $context.append($('<span>', {'class': 'fa fa-caret-down'}));
+                $context.click(function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var $li = $content.find('.selected');
+                    if ($li.length !== 1) {
+                        $li = $tree.find('.element.active').closest('li');
+                    }
+                    $iframe.find('.contextMenu').css({
+                        top: ($li.offset().top + 10) + 'px',
+                        left: ($li.offset().left + 50) + 'px'
+                    });
+                    $li.contextmenu();
+                });
+                $context.appendTo($toolbar.find('.rightside'));
+            }
 
             // NewButton can be undefined if we're in read only mode
             $toolbar.find('.leftside').append(createNewButton(isInRoot));
@@ -1761,6 +1794,7 @@ define([
         });
 
         $iframe.find('#tree').mousedown(function (e) {
+            if (APP.mobile) { return; }
             if (APP.resizeTree) { return; }
             APP.resizeTree = window.setInterval(function () {
                 $driveToolbar.find('.leftside').width($tree.width());

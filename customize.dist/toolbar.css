@@ -124,6 +124,9 @@
 .cryptpad-toolbar button#shareButton span {
   color: #fff;
 }
+.cryptpad-toolbar button#shareButton .large {
+  margin-left: 5px;
+}
 .cryptpad-toolbar .cryptpad-lag {
   box-sizing: content-box;
   height: 16px;
@@ -166,26 +169,6 @@
 .cryptpad-toolbar button:hover {
   background-image: linear-gradient(to bottom, #f2f2f2, #ccc);
 }
-@media screen and (max-width: 800px) {
-  .cryptpad-toolbar .large {
-    display: none;
-  }
-}
-@media screen and (min-width: 801px) {
-  .cryptpad-toolbar .large {
-    display: inline-block;
-  }
-}
-@media screen and (max-width: 800px) {
-  .cryptpad-toolbar .small {
-    display: inline-block;
-  }
-}
-@media screen and (min-width: 801px) {
-  .cryptpad-toolbar .small {
-    display: none;
-  }
-}
 .cryptpad-toolbar .cryptpad-state {
   line-height: 32px;
   /* equivalent to 26px + 2*2px margin used for buttons */
@@ -218,16 +201,88 @@
 .cryptpad-toolbar select option {
   height: 24px;
 }
+@media screen and (max-width: 800px) {
+  .cryptpad-toolbar .big {
+    display: none;
+  }
+}
+@media screen and (min-width: 801px) {
+  .cryptpad-toolbar .big {
+    display: inline-block;
+  }
+}
+@media screen and (max-width: 800px) {
+  .cryptpad-toolbar .small {
+    display: inline-block;
+  }
+}
+@media screen and (min-width: 801px) {
+  .cryptpad-toolbar .small {
+    display: none;
+  }
+}
+@media screen and (max-width: 600px) {
+  .cryptpad-toolbar .med-big {
+    display: none;
+  }
+}
+@media screen and (min-width: 601px) {
+  .cryptpad-toolbar .med-big {
+    display: inline-block;
+  }
+}
+@media screen and (max-width: 600px) {
+  .cryptpad-toolbar .med-small {
+    display: inline-block;
+  }
+}
+@media screen and (min-width: 601px) {
+  .cryptpad-toolbar .med-small {
+    display: none;
+  }
+}
+@media screen and (max-width: 400px) {
+  .cryptpad-toolbar .large {
+    display: none;
+  }
+}
+@media screen and (min-width: 401px) {
+  .cryptpad-toolbar .large {
+    display: inline-block;
+  }
+}
+@media screen and (max-width: 400px) {
+  .cryptpad-toolbar .narrow {
+    display: inline-block;
+  }
+}
+@media screen and (min-width: 401px) {
+  .cryptpad-toolbar .narrow {
+    display: none;
+  }
+}
+@media screen and (max-width: 600px) {
+  .cryptpad-toolbar:not(.notitle) .cryptpad-toolbar-top {
+    height: 67px;
+  }
+}
+@media screen and (max-width: 600px) {
+  .cryptpad-toolbar:not(.notitle) .cryptpad-toolbar-top .cryptpad-link,
+  .cryptpad-toolbar:not(.notitle) .cryptpad-toolbar-top .cryptpad-user {
+    top: 35px;
+  }
+}
+@media screen and (min-width: 601px) {
+  .cryptpad-toolbar:not(.notitle) .cryptpad-toolbar-top .cryptpad-link,
+  .cryptpad-toolbar:not(.notitle) .cryptpad-toolbar-top .cryptpad-user {
+    top: 0px;
+  }
+}
 .cryptpad-toolbar-top {
   display: block;
   text-align: center;
   height: 32px;
   position: relative;
-}
-@media screen and (max-width: 400px) {
-  .cryptpad-toolbar-top {
-    height: 67px;
-  }
 }
 .cryptpad-toolbar-top .cryptpad-title .title,
 .cryptpad-toolbar-top .cryptpad-title .pencilIcon {
@@ -278,16 +333,6 @@
   left: 0px;
   height: 32px;
 }
-@media screen and (max-width: 449px) {
-  .cryptpad-toolbar-top .cryptpad-link {
-    top: 35px;
-  }
-}
-@media screen and (min-width: 450px) {
-  .cryptpad-toolbar-top .cryptpad-link {
-    top: 0px;
-  }
-}
 .cryptpad-toolbar-top .cryptpad-link a.cryptpad-logo {
   cursor: pointer;
   height: 32px;
@@ -309,46 +354,15 @@
   vertical-align: middle;
   cursor: pointer;
 }
-@media screen and (max-width: 400px) {
-  .cryptpad-toolbar-top .cryptpad-link .big {
-    display: none;
-  }
-}
-@media screen and (min-width: 401px) {
-  .cryptpad-toolbar-top .cryptpad-link .big {
-    display: inline-block;
-  }
-}
-@media screen and (max-width: 400px) {
-  .cryptpad-toolbar-top .cryptpad-link .small {
-    display: inline-block;
-  }
-}
-@media screen and (min-width: 401px) {
-  .cryptpad-toolbar-top .cryptpad-link .small {
-    display: none;
-  }
-}
 .cryptpad-toolbar-top .cryptpad-user {
   position: absolute;
   right: 0;
 }
 .cryptpad-toolbar-top .cryptpad-user span:not(.cryptpad-lag) {
   vertical-align: top;
-  display: inline-block;
 }
 .cryptpad-toolbar-top .cryptpad-user button span.fa {
   vertical-align: baseline;
-}
-@media screen and (max-width: 400px) {
-  .cryptpad-toolbar-top .cryptpad-user {
-    top: 3em;
-  }
-}
-@media screen and (min-width: 401px) {
-  .cryptpad-toolbar-top .cryptpad-user {
-    top: 0px;
-  }
 }
 .cryptpad-toolbar-leftside {
   float: left;

@@ -29,6 +29,20 @@ body {
   display: flex;
   flex-flow: row;
 }
+@media screen and (max-width: 600px) {
+  .app-container {
+    display: block;
+  }
+  .app-container #tree {
+    resize: none;
+    width: 100%;
+    max-width: unset;
+    border-bottom: 1px solid #ccc;
+  }
+  .app-container #tree .category2 {
+    margin-top: 0.5em;
+  }
+}
 .fa {
   /*min-width: 17px;*/
   margin-right: 3px;
@@ -188,7 +202,6 @@ span.fa-folder-open {
   margin-top: 10px;
 }
 #content .info-box {
-  height: 40px;
   line-height: 40px;
   padding-left: 10px;
   margin: 10px auto;
@@ -347,17 +360,17 @@ span.fa-folder-open {
   position: relative;
   display: inline-block;
 }
-#driveToolbar .dropdown-bar.right {
+#driveToolbar .right {
   float: right;
   /* Right-side buttons */
 }
-#driveToolbar .dropdown-bar.right button {
+#driveToolbar .right button {
   display: inline-block;
 }
-#driveToolbar .dropdown-bar.right button.active {
+#driveToolbar .right button.active {
   display: none;
 }
-#driveToolbar .dropdown-bar.right button .fa {
+#driveToolbar .right button .fa {
   margin-right: 0px;
 }
 #driveToolbar .dropdown-bar-content {
