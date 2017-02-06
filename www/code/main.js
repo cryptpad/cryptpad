@@ -558,7 +558,9 @@ define([
                     var hjson = JSON.parse(userDoc);
 
                     if (typeof (hjson) !== 'object' || Array.isArray(hjson)) {
-                        throw new Error("That realtime document is not compatible with the Code app");
+                        var errorText = Messages.typeError;
+                        Cryptpad.errorLoadingScreen(errorText);
+                        throw new Error(errorText);
                     }
 
                     newDoc = hjson.content;

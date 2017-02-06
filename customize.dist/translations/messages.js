@@ -28,6 +28,7 @@ define(function () {
     out.common_connectionLost = out.updated_common_connectionLostAndInfo;
 
     out.websocketError = 'Unable to connect to the websocket server...';
+    out.typeError = "That realtime document is not compatible with the selected application";
 
     out.loading = "Loading...";
     out.error = "Error";

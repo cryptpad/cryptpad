@@ -631,7 +631,9 @@ define([
                     newDoc = hjson.content;
 
                     if (typeof (hjson) !== 'object' || Array.isArray(hjson)) {
-                        throw new Error("That realtime document is not compatible with the Slide app");
+                        var errorText = Messages.typeError;
+                        Cryptpad.errorLoadingScreen(errorText);
+                        throw new Error(errorText);
                     }
 
                     if (hjson.highlightMode) {

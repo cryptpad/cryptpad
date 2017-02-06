@@ -22,7 +22,9 @@ define(function () {
     ].join('');
 
     out.common_connectionLost = "<b>Connexion au serveur perdue</b><br>Vous êtes désormais en mode lecture seule jusqu'au retour de la connexion.";
+
     out.websocketError = 'Impossible de se connecter au serveur WebSocket...';
+    out.typeError = "Ce document temps-réel n'est pas compatible avec l'application sélectionnée";
 
     out.loading = "Chargement...";
     out.error = "Erreur";
