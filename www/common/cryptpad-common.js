@@ -203,7 +203,7 @@ define([
             var patharr = window.location.hash.match(/[?&]path=([^&]+)/);
             var namearr = window.location.hash.match(/[?&]name=([^&]+)/);
             common.initialPath = patharr[1] || undefined;
-            common.initialName = namearr[1] ? decodeURIComponent(namearr[1]) : undefined;
+            common.initialName = namearr && namearr[1] ? decodeURIComponent(namearr[1]) : undefined;
             window.location.hash = '';
         }
         if (!secretHash && !/#/.test(window.location.href)) {
