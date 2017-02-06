@@ -630,6 +630,10 @@ define([
                     var hjson = JSON.parse(userDoc);
                     newDoc = hjson.content;
 
+                    if (typeof (hjson) !== 'object' || Array.isArray(hjson)) {
+                        throw new Error("That realtime document is not compatible with the Slide app");
+                    }
+
                     if (hjson.highlightMode) {
                         setMode(hjson.highlightMode, module.$language);
                     }

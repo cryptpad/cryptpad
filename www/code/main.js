@@ -552,9 +552,15 @@ define([
 
                 var userDoc = module.realtime.getUserDoc();
 
+
                 var newDoc = "";
                 if(userDoc !== "") {
                     var hjson = JSON.parse(userDoc);
+
+                    if (typeof (hjson) !== 'object' || Array.isArray(hjson)) {
+                        throw new Error("That realtime document is not compatible with the Code app");
+                    }
+
                     newDoc = hjson.content;
 
                     if (hjson.highlightMode) {
