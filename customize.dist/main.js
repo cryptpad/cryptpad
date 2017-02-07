@@ -101,20 +101,6 @@ define([
         $('button.nologin').click(function (e) {
             document.location.href = '/drive/';
         });
-        $('button.knowmore').click(function (e) {
-            e.preventDefault();
-
-            $('html, body').animate({
-                scrollTop: $('#knowmore').offset().top
-            }, 500);
-        });
-        $('button.tryit').click(function (e) {
-            e.preventDefault();
-
-            $('html, body').animate({
-                scrollTop: $('#tryit').offset().top
-            }, 500);
-        });
 
         var $passwd = $('#password');
         $passwd.on('keyup', function (e) {
