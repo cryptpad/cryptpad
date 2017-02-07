@@ -63,7 +63,7 @@ define([
                 tag: 'a',
                 attributes: {
                     'class': 'newdoc',
-                    'href': '/' + el,
+                    'href': '/' + el + '/',
                     'target': '_blank'
                 },
                 content: Messages['button_new' + el] // Pretty name of the language value
@@ -86,7 +86,7 @@ define([
             sessionStorage.login_pass = passwd;
             sessionStorage.login_rmb = remember;
             sessionStorage.login = 1;
-            document.location.href = '/user';
+            document.location.href = '/user/';
         });
         $('button.register').click(function (e) {
             var username = $('#name').val();
@@ -96,10 +96,10 @@ define([
             sessionStorage.login_pass = passwd;
             sessionStorage.login_rmb = remember;
             sessionStorage.register = 1;
-            document.location.href = '/user';
+            document.location.href = '/user/';
         });
         $('button.nologin').click(function (e) {
-            document.location.href = '/drive';
+            document.location.href = '/drive/';
         });
         $('button.knowmore').click(function (e) {
             e.preventDefault();

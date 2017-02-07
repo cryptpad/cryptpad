@@ -82,6 +82,19 @@ define([
         if (cb) { cb(); }
     };
 
+    var eraseTempSessionValues = common.eraseTempSessionValues = function () {
+        // delete sessionStorage values that might have been left over
+        // from the main page's /user redirect
+        [
+            'login_user',
+            'login_pass',
+            'login_remember',
+            'register'
+        ].forEach(function (k) {
+            delete sessionStorage[k];
+        });
+    };
+
     var logout = common.logout = function (cb) {
         [
             userNameKey,
@@ -97,6 +110,8 @@ define([
         if (!localStorage[fileHashKey]) {
             localStorage[fileHashKey] = common.createRandomHash();
         }
+        eraseTempSessionValues();
+
         if (cb) { cb(); }
     };
 
