@@ -18,8 +18,6 @@ define([
         Crypto: Crypto,
     };
 
-    var $warning = $('#warning');
-
     // login elements
     var $loginBox = $('#login-panel');
     var $login = $('#login');
@@ -27,7 +25,6 @@ define([
     var $username = $('#username');
     var $password = $('#password');
     var $password_register = $('#confirm_register');
-    var $remember = $('#remember');
 
     // hashing elements
     var $noticeBox = $('#notice-panel');
@@ -271,11 +268,6 @@ define([
 
     var useBytes = function (bytes, opt) {
         opt = opt || {};
-        if (opt.remember) {
-            console.log("user would like to stay logged in");
-        } else {
-            console.log("user would like to be forgotten");
-        }
 
         var dispense = Cred.dispenser(bytes);
 
