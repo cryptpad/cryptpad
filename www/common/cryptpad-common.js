@@ -696,50 +696,58 @@ define([
             f(void 0, env);
         };
 
-        storeToUse.ready(function (err, store) {
-            common.store = env.store = store;
-            if (USE_FS_STORE) {
-                fsStore = store;
-            }
-
-            $(function() {
-                // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
-                // won't work. We have to reset it now to make sure it uses a correct "body"
-                Alertify.reset();
-
-                // Load the new pad when the hash has changed
-                var oldHash  = document.location.hash.slice(1);
-                window.onhashchange = function () {
-                    var newHash = document.location.hash.slice(1);
-                    var parsedOld = parseHash(oldHash);
-                    var parsedNew = parseHash(newHash);
-                    if (parsedOld && parsedNew && (
-                          parsedOld.channel !== parsedNew.channel
-                          || parsedOld.mode !== parsedNew.mode
-                          || parsedOld.key !== parsedNew.key)) {
-                        document.location.reload();
-                        return;
-                    }
-                    if (parsedNew) {
-                        oldHash = newHash;
-                    }
-                };
-
-                // Everything's ready, continue...
-                if($('#pad-iframe').length) {
-                    var $iframe = $('#pad-iframe');
-                    var iframe = $iframe[0];
-                    var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                    if (iframeDoc.readyState === 'complete') {
-                        cb();
-                        return;
-                    }
-                    $iframe.load(cb);
-                    return;
+        var todo = function () {
+            storeToUse.ready(function (err, store) {
+                common.store = env.store = store;
+                if (USE_FS_STORE) {
+                    fsStore = store;
                 }
-                cb();
-            });
-        }, common);
+
+                $(function() {
+                    // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
+                    // won't work. We have to reset it now to make sure it uses a correct "body"
+                    Alertify.reset();
+
+                    // Load the new pad when the hash has changed
+                    var oldHash  = document.location.hash.slice(1);
+                    window.onhashchange = function () {
+                        var newHash = document.location.hash.slice(1);
+                        var parsedOld = parseHash(oldHash);
+                        var parsedNew = parseHash(newHash);
+                        if (parsedOld && parsedNew && (
+                              parsedOld.channel !== parsedNew.channel
+                              || parsedOld.mode !== parsedNew.mode
+                              || parsedOld.key !== parsedNew.key)) {
+                            document.location.reload();
+                            return;
+                        }
+                        if (parsedNew) {
+                            oldHash = newHash;
+                        }
+                    };
+
+                    // Everything's ready, continue...
+                    if($('#pad-iframe').length) {
+                        var $iframe = $('#pad-iframe');
+                        var iframe = $iframe[0];
+                        var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                        if (iframeDoc.readyState === 'complete') {
+                            cb();
+                            return;
+                        }
+                        $iframe.load(cb);
+                        return;
+                    }
+                    cb();
+                });
+            }, common);
+        };
+        // If we use the fs store, make sure the localStorage or iframe store is ready
+        if (USE_FS_STORE) {
+            Store.ready(todo);
+            return;
+        }
+        todo();
     };
 
     var errorHandlers = [];
