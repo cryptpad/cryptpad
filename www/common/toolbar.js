@@ -63,7 +63,7 @@ define([
         });
     };
 
-    var createRealtimeToolbar = function ($container) {
+    var createRealtimeToolbar = function ($container, config) {
         var $toolbar = $('<div>', {
             'class': TOOLBAR_CLS,
             id: uid(),
@@ -71,6 +71,11 @@ define([
         .append($('<div>', {'class': TOP_CLS}))
         .append($('<div>', {'class': LEFTSIDE_CLS}))
         .append($('<div>', {'class': RIGHTSIDE_CLS}));
+
+        // The 'notitle' class removes the line added for the title with a small screen
+        if (!config || typeof config !== "object") {
+            $toolbar.addClass('notitle');
+        }
 
         $container.prepend($toolbar);
         styleToolbar($container);
@@ -81,7 +86,7 @@ define([
         if (config.displayed.indexOf('spinner') !== -1) {
             var $spinner = $('<span>', {
                 id: uid(),
-                'class': SPINNER_CLS + ' fa fa fa-spinner fa-pulse',
+                'class': SPINNER_CLS + ' fa fa-spinner fa-pulse',
             }).hide();
             $container.prepend($spinner);
             return $spinner[0];
@@ -117,10 +122,9 @@ define([
         // Share button
         if (config.displayed.indexOf('share') !== -1) {
             var $shareIcon = $('<span>', {'class': 'fa fa-share-alt'});
-            var $span = $('<span>', {'class': 'large'}).append($shareIcon.clone()).append(' ' +Messages.shareButton);
-            var $spanSmall = $('<span>', {'class': 'small'}).append($shareIcon.clone());
+            var $span = $('<span>', {'class': 'large'}).append(' ' +Messages.shareButton);
             var dropdownConfigShare = {
-                text: $('<div>').append($span).append($spanSmall).html(),
+                text: $('<div>').append($shareIcon).append($span).html(),
                 options: []
             };
             var $shareBlock = Cryptpad.createDropdown(dropdownConfigShare);
@@ -234,7 +238,7 @@ define([
             var viewersText = numberOfViewUsers > 1 ? Messages.viewers : Messages.viewer;
             var editorsText = numberOfEditUsers > 1 ? Messages.editors : Messages.editor;
             var $span = $('<span>', {'class': 'large'}).html(fa_editusers + ' ' + numberOfEditUsers + ' ' + editorsText + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers + ' ' + viewersText);
-            var $spansmall = $('<span>', {'class': 'small'}).html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
+            var $spansmall = $('<span>', {'class': 'narrow'}).html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
             $userButtons.find('.buttonTitle').html('').append($span).append($spansmall);
         }
 
@@ -314,8 +318,8 @@ define([
             'class': "cryptpad-logo"
         }).append($imgTag);
         var $span = $('<span>').text('CryptPad');
-        var $aTagBig = $aTagSmall.clone().addClass('big').append($span);
-        $aTagSmall.addClass('small');
+        var $aTagBig = $aTagSmall.clone().addClass('large').append($span);
+        $aTagSmall.addClass('narrow');
         var onClick = function (e) {
             e.preventDefault();
             window.location = "/";
@@ -362,7 +366,9 @@ define([
                     content: Messages.type[p]
                 });
             });
-            var $newButton = $('<div>').append($('<span>', {'class': 'fa fa-plus'})).append(Messages.newButton);
+            var $plusIcon = $('<span>', {'class': 'fa fa-plus'});
+            var $newbig = $('<span>', {'class': 'big'}).append(' ' +Messages.newButton);
+            var $newButton = $('<div>').append($plusIcon).append($newbig);
             var dropdownConfig = {
                 text: $newButton.html(), // Button initial text
                 options: pads_options, // Entries displayed in the menu
@@ -436,12 +442,13 @@ define([
                 });
             }
             var $icon = $('<span>', {'class': 'fa fa-user'});
-            var $button = $('<div>').append($icon).append($displayedName.clone());
+            var $userbig = $('<span>', {'class': 'big'}).append($displayedName.clone());
+            var $userButton = $('<div>').append($icon).append($userbig);
             if (account) {
-                $button.append($('<span>', {'class': 'account-name'}).text('(' + accountName + ')'));
+                $userbig.append($('<span>', {'class': 'account-name'}).text('(' + accountName + ')'));
             }
             var dropdownConfigUser = {
-                text: $button.html(), // Button initial text
+                text: $userButton.html(), // Button initial text
                 options: options, // Entries displayed in the menu
                 left: true, // Open to the left of the button
             };
@@ -555,7 +562,7 @@ define([
         var Cryptpad = config.common;
         config.displayed = config.displayed || [];
 
-        var toolbar = createRealtimeToolbar($container);
+        var toolbar = createRealtimeToolbar($container, config.title);
         var userListElement = createUserList(toolbar.find('.' + LEFTSIDE_CLS), config, readOnly, Cryptpad);
         var $titleElement = createTitle(toolbar.find('.' + TOP_CLS), readOnly, config.title, Cryptpad);
         var $linkElement = createLinkToMain(toolbar.find('.' + TOP_CLS));

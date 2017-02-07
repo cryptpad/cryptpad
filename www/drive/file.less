@@ -18,6 +18,8 @@
 @toolbar-path-bg: #fff;
 @toolbar-path-border: #888;
 
+@size-mobile: 600px;
+
 /* PAGE */
 
 html, body {
@@ -51,6 +53,18 @@ body {
     width: 100%;
     display: flex;
     flex-flow: row;
+    @media screen and (max-width: @size-mobile) {
+        display: block;
+        #tree {
+            resize: none;
+            width: 100%;
+            max-width: unset;
+            border-bottom: 1px solid @toolbar-border-col;
+            .category2 {
+                margin-top: 0.5em;
+            }
+        }
+    }
 }
 
 .fa {
@@ -228,7 +242,6 @@ span {
         margin-top: 10px;
     }
     .info-box {
-        height: 40px;
         line-height: 40px;
         padding-left: 10px;
         margin: 10px auto;
@@ -404,17 +417,17 @@ span {
         line-height: 1em;
         position: relative;
         display: inline-block;
-        &.right {
-            float: right;
-            /* Right-side buttons */
-            button {
-                display: inline-block;
-                &.active {
-                    display: none;
-                }
-                .fa {
-                    margin-right: 0px;
-                }
+    }
+    .right {
+        float: right;
+        /* Right-side buttons */
+        button {
+            display: inline-block;
+            &.active {
+                display: none;
+            }
+            .fa {
+                margin-right: 0px;
             }
         }
     }
