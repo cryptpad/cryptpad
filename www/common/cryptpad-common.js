@@ -68,17 +68,11 @@ define([
     var userNameKey = common.userNameKey = 'User_name';
     var fileHashKey = common.fileHashKey = 'FS_hash';
 
-    var login = common.login = function (hash, name, remember, cb) {
+    var login = common.login = function (hash, name, cb) {
         if (!hash) { throw new Error('expected a user hash'); }
         if (!name) { throw new Error('expected a user name'); }
-        if (!remember) {
-            sessionStorage.setItem(userHashKey, hash);
-            sessionStorage.setItem(userNameKey, name);
-        }
-        else {
-            localStorage.setItem(userHashKey, hash);
-            localStorage.setItem(userNameKey, name);
-        }
+        localStorage.setItem(userHashKey, hash);
+        localStorage.setItem(userNameKey, name);
         if (cb) { cb(); }
     };
 
@@ -86,9 +80,10 @@ define([
         // delete sessionStorage values that might have been left over
         // from the main page's /user redirect
         [
+            'login',
             'login_user',
             'login_pass',
-            'login_remember',
+            'login_rmb',
             'register'
         ].forEach(function (k) {
             delete sessionStorage[k];
