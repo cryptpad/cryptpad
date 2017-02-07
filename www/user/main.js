@@ -18,8 +18,6 @@ define([
         Crypto: Crypto,
     };
 
-    var $warning = $('#warning');
-
     // login elements
     var $loginBox = $('#login-panel');
     var $login = $('#login');
@@ -27,7 +25,6 @@ define([
     var $username = $('#username');
     var $password = $('#password');
     var $password_register = $('#confirm_register');
-    var $remember = $('#remember');
 
     // hashing elements
     var $noticeBox = $('#notice-panel');
@@ -35,6 +32,10 @@ define([
 
     APP.setNotice = function (s) {
         $notice.text(s);
+    };
+
+    APP.redirectToDrive = function () {
+        document.location.href = '/drive/';
     };
 
     // confirm elements
@@ -63,13 +64,7 @@ define([
     var revealConfirm = APP.revealConfirm = revealer($confirmBox);
 
     var revealLogout = APP.revealLogout= revealer($logoutBox);
-    var revealUser_false = APP.revealUser_false = revealer($userBox);
-    var revealUser = APP.revealUser = function (state) {
-        if (!state) {
-            revealUser_false(state);
-        }
-        document.location.href = '/drive';
-    };
+    var revealUser = APP.revealUser = revealer($userBox);
 
     var getDisplayName = APP.getDisplayName = function (proxy) {
         return proxy['cryptpad.username'];
@@ -108,7 +103,7 @@ define([
                 revealLogin(true);
                 revealUser(false);
                 APP.abort();
-                $username.focus();
+                //$username.focus();
             });
         });
     };
@@ -131,10 +126,9 @@ define([
         APP.setAccountName(getAccountName(proxy));
         APP.setDisplayName(getDisplayName(proxy));
 
-        Cryptpad.login(opt.userHash, getAccountName(proxy), opt.remember);
+        Cryptpad.login(opt.userHash, getAccountName(proxy));
         APP.revealLogin(false);
-        APP.revealUser(true);
-        APP.revealLogout(true);
+        APP.redirectToDrive();
     };
 
     var abortRegistration = function () {
@@ -167,8 +161,8 @@ define([
         });
     };
 
-    addEnterListener($confirm, function () {
-        $register.click();
+    addEnterListener($password_register, function () {
+        $login.click();
     });
     addEnterListener($password, function () {
         $login.click();
@@ -271,11 +265,6 @@ define([
 
     var useBytes = function (bytes, opt) {
         opt = opt || {};
-        if (opt.remember) {
-            console.log("user would like to stay logged in");
-        } else {
-            console.log("user would like to be forgotten");
-        }
 
         var dispense = Cred.dispenser(bytes);
 
@@ -326,33 +315,30 @@ define([
             console.log(info);
         });
     };
-    Cryptpad.ready(function () {
-        if (Cryptpad.getUserHash()) {
+
+    var showUserInfo = function () {
+        /*  TODO use something like this for a user preferences page
+
             revealLogout(true);
             var proxy = Cryptpad.getStore().getProxy().proxy;
 
             APP.setAccountName(proxy.login_name);
             APP.setDisplayName(getDisplayName(proxy));
-
+            return;
             revealUser(true);
-        } else {
-            if (sessionStorage.register || document.location.hash.slice(1) === 'register') {
-                document.location.hash = 'register';
-                $login.text(Cryptpad.Messages.login_register);
-                $('#login-panel .register').show();
-            }
-            revealLogin(true);
-        }
+        */
+    };
 
-        $username.focus();
+    Cryptpad.ready(function () {
+        // If the user is already logged in...
+        // TODO show user preferences
+        if (Cryptpad.getUserHash()) { return APP.redirectToDrive(); }
 
         $login.click(function () {
             var uname = $username.val().trim();
             var passwd = $password.val();
             var passwd_confirm = $password_register.val();
             var confirm = $confirm.val();
-            var remember = $remember[0].checked;
-            remember = true; // TODO : find a way to use a sessionStorage shared with all tabs
 
             var register = document.location.hash.slice(1) === 'register';
 
@@ -370,39 +356,50 @@ define([
 
             revealNotice(true);
             revealLogin(false, function () {
-            window.setTimeout(function () {
-                resetUI();
-                // dispense 128 bytes, to be divided later
-                // we can safely increase this size, but we don't need much right now
-                Cred.deriveFromPassphrase(uname, passwd, 128, function (bytes) {
-                    revealNotice(false);
-                    window.setTimeout(function () {
-                        useBytes(bytes, {
-                            remember: remember,
-                            register: register,
-                            name: uname,
-                            password: passwd,
-                        });
-                    }, 75);
-                });
-            }, 75);
+                window.setTimeout(function () {
+                    resetUI();
+                    // dispense 128 bytes, to be divided later
+                    // we can safely increase this size, but we don't need much right now
+                    Cred.deriveFromPassphrase(uname, passwd, 128, function (bytes) {
+                        revealNotice(false);
+                        window.setTimeout(function () {
+                            useBytes(bytes, {
+                                register: register,
+                                name: uname,
+                                password: passwd,
+                            });
+                        }, 75);
+                    });
+                }, 75);
             });
         });
 
-        if (sessionStorage.login) {
-            $username.val(sessionStorage.login_user);
-            $password.val(sessionStorage.login_pass);
-            $remember.attr('checked', sessionStorage.login_rmb === "true");
-            $login.click();
+        // if the user is not logged in...
+        if (sessionStorage.register || document.location.hash.slice(1) === 'register') {
+            Cryptpad.replaceHash('register');
+            $login.text(Cryptpad.Messages.login_register);
+            $('#login-panel .register').show();
         }
-        if (sessionStorage.register) {
-            $username.val(sessionStorage.login_user);
-            $password.val(sessionStorage.login_pass);
-            $remember.attr('checked', sessionStorage.login_rmb === "true");
-        }
-        ['login', 'register', 'login_user', 'login_pass', 'login_rmb'].forEach(function (k) {
-            delete sessionStorage[k];
-        });
 
+        $username.focus();
+
+        if (sessionStorage.login || sessionStorage.register) {
+            $username.val(sessionStorage.login_user);
+            $password.val(sessionStorage.login_pass);
+        }
+
+        if (sessionStorage.login) {
+            APP.setNotice(Cryptpad.Messages.login_hashing);
+            APP.revealNotice(true, function () {
+                $login.click();
+                Cryptpad.eraseTempSessionValues();
+            });
+            return;
+        }
+        revealLogin(true, function () {
+            if (sessionStorage.register) { $password_register.focus(); }
+            Cryptpad.eraseTempSessionValues();
+        });
     });
 });
+
