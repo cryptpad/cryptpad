@@ -334,6 +334,29 @@ define([
             });
         };
 
+        var updateContextButton = function () {
+            var $li = $content.find('.selected');
+            if ($li.length !== 1) {
+                $li = $tree.find('.element.active').closest('li');
+            }
+            var $button = $driveToolbar.find('#contextButton');
+            if ($li.length !== 1
+                || !$._data($li[0], 'events').contextmenu
+                || $._data($li[0], 'events').contextmenu.length === 0) {
+                $button.hide();
+                return;
+            }
+            $button.show();
+            $button.css({
+                background: '#000'
+            });
+            window.setTimeout(function () {
+                $button.css({
+                    background: ''
+                });
+            }, 500);
+        };
+
         // Add the "selected" class to the "li" corresponding to the clicked element
         var onElementClick = function (e, $element, path) {
             // If "Ctrl" is pressed, do not remove the current selection
@@ -354,14 +377,7 @@ define([
             } else {
                 $element.removeClass("selected");
             }
-            $driveToolbar.find('#contextButton').css({
-                background: '#000'
-            });
-            window.setTimeout(function () {
-                $driveToolbar.find('#contextButton').css({
-                    background: ''
-                });
-            }, 500);
+            updateContextButton();
         };
 
         // Open the selected context menu on the closest "li" element
@@ -408,7 +424,7 @@ define([
         var openDirectoryContextMenu = function (e) {
             var $element = $(e.target).closest('li');
             $contextMenu.find('li').show();
-            if ($element.find('.file-element').length) {
+            if ($element.is('.file-element')) {
                 $contextMenu.find('a.newfolder').parent('li').hide();
             } else {
                 $contextMenu.find('a.open_ro').parent('li').hide();
@@ -420,7 +436,7 @@ define([
         var openDefaultContextMenu = function (e) {
             var $element = $(e.target).closest('li');
             $defaultContextMenu.find('li').show();
-            if ($element.find('.file-element').length) {
+            if ($element.is('.file-element')) {
                 $defaultContextMenu.find('a.newfolder').parent('li').hide();
             } else {
                 $defaultContextMenu.find('a.open_ro').parent('li').hide();
@@ -1215,6 +1231,8 @@ define([
                 var $icon = getFileIcon(file.href);
                 var $element = $('<li>', { 'class': 'file-element element' });
                 addFileData(file.href, file.title, $element, false);
+                $element.data('path', [FILES_DATA, allfiles.indexOf(file)]);
+                $element.data('element', file.href);
                 $element.prepend($icon).dblclick(function () {
                     openFile(file.href);
                 });
@@ -1324,6 +1342,7 @@ define([
             if (APP.mobile) {
                 var $context = $('<button>', {'class': 'element right dropdown-bar', id: 'contextButton'});
                 $context.append($('<span>', {'class': 'fa fa-caret-down'}));
+                $context.appendTo($toolbar.find('.rightside'));
                 $context.click(function (e) {
                     e.preventDefault();
                     e.stopPropagation();
@@ -1331,14 +1350,20 @@ define([
                     if ($li.length !== 1) {
                         $li = $tree.find('.element.active').closest('li');
                     }
+                    // Close if already opened
+                    if ($iframe.find('.contextMenu:visible').length) {
+                        module.hideMenu();
+                        return;
+                    }
+                    // Open the menu
                     $iframe.find('.contextMenu').css({
-                        top: ($li.offset().top + 10) + 'px',
-                        left: ($li.offset().left + 50) + 'px'
+                        top: ($context.offset().top + 32) + 'px',
+                        right: '0px'
                     });
                     $li.contextmenu();
                 });
-                $context.appendTo($toolbar.find('.rightside'));
             }
+            updateContextButton();
 
             // NewButton can be undefined if we're in read only mode
             $toolbar.find('.leftside').append(createNewButton(isInRoot));
@@ -1623,7 +1648,10 @@ define([
             }
             else if ($(this).hasClass('open_ro')) {
                 var el = filesOp.findElement(files, path);
-                if (filesOp.isFolder(el)) { return; }
+                if (filesOp.isPathInFilesData(path)) {
+                    el = el.href;
+                }
+                if (!el || filesOp.isFolder(el)) { return; }
                 var roUrl = getReadOnlyUrl(el);
                 openFile(roUrl);
             }
