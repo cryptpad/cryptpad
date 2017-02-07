@@ -1,7 +1,20 @@
 @import "./variables.less";
 
-footer {
+.cp footer {
     background: @dark-base;
     font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     padding-top: 1em;
+    a {
+        color: #555;
+        &:visited {
+            color: #777;
+        }
+        &:hover {
+            color: #333;
+        }
+    }
+    li:first-child {
+        font-weight: bold;
+        text-decoration: underline;
+    }
 }

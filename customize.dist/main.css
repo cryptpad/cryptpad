@@ -455,10 +455,23 @@
 #cryptpadTopBar .right a:hover {
   text-decoration: underline;
 }
-footer {
+.cp footer {
   background: #cccccc;
   font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   padding-top: 1em;
+}
+.cp footer a {
+  color: #555;
+}
+.cp footer a:visited {
+  color: #777;
+}
+.cp footer a:hover {
+  color: #333;
+}
+.cp footer li:first-child {
+  font-weight: bold;
+  text-decoration: underline;
 }
 html.cp,
 .cp body {
