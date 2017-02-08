@@ -415,14 +415,17 @@ define([
                     content: Messages.user_rename
                 });
             }
-            options.push({
-                tag: 'a',
-                attributes: {
-                    'target': '_blank',
-                    'href': '/drive/'
-                },
-                content: Messages.login_accessDrive
-            });
+            var parsed = Cryptpad.parsePadUrl(window.location.href);
+            if (parsed && parsed.type && parsed.type !== 'drive') {
+                options.push({
+                    tag: 'a',
+                    attributes: {
+                        'target': '_blank',
+                        'href': '/drive/'
+                    },
+                    content: Messages.login_accessDrive
+                });
+            }
             // Add login or logout button depending on the current status
             if (account) {
                 options.push({
