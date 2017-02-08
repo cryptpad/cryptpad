@@ -107,7 +107,17 @@ define([
         }
         eraseTempSessionValues();
 
+        logoutHandlers.forEach(function (h) {
+            if (typeof (h) === "function") { h(); }
+        });
+
         if (cb) { cb(); }
+    };
+    var logoutHandlers=  [];
+    var onLogout = common.onLogout = function (h) {
+        if (typeof (h) !== "function") { return; }
+        if (logoutHandlers.indexOf(h) !== -1) { return; }
+        logoutHandlers.push(h);
     };
 
     var getUserHash = common.getUserHash = function () {
@@ -760,6 +770,10 @@ define([
 
     var LOADING = 'loading';
     common.addLoadingScreen = function () {
+        if ($('#' + LOADING).length) {
+            $('#' + LOADING).show();
+            return;
+        }
         var $loading = $('<div>', {id: LOADING});
         var $container = $('<div>', {'class': 'loadingContainer'});
         $container.append('<img class="cryptofist" src="/customize/cryptofist_small.png" />');
@@ -773,9 +787,10 @@ define([
     common.removeLoadingScreen = function (cb) {
         $('#' + LOADING).fadeOut(750, cb);
     };
-    common.errorLoadingScreen = function (error) {
+    common.errorLoadingScreen = function (error, transparent) {
         $('.spinnerContainer').hide();
-        $('#' + LOADING).find('p').text(error || Messages.error);
+        if (transparent) { $('#' + LOADING).css('opacity', 0.8); }
+        $('#' + LOADING).find('p').html(error || Messages.error);
     };
 
     /*

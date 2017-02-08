@@ -754,6 +754,8 @@ define([
 
             var rti = module.realtimeInput = realtimeInput.start(realtimeOptions);
 
+            Cryptpad.onLogout(function () { setEditable(false); });
+
             /* hitting enter makes a new line, but places the cursor inside
                 of the <br> instead of the <p>. This makes it such that you
                 cannot type until you click, which is rather unnacceptable.

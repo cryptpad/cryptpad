@@ -49,6 +49,7 @@ define([
 
     var $style;
 
+    var connected = false;
     var firstConnection = true;
     var lagErrors = 0;
 
@@ -453,6 +454,7 @@ define([
                 left: true, // Open to the left of the button
             };
             var $userAdmin = Cryptpad.createDropdown(dropdownConfigUser);
+            $userAdmin.attr('id', 'userDropdown');
             $userContainer.append($userAdmin);
 
             $userAdmin.find('a.logout').click(function (e) {
@@ -522,7 +524,7 @@ define([
             return true;
         });
         $input.on('keyup', function (e) {
-            if (e.which === 13) {
+            if (e.which === 13 && connected === true) {
                 var name = $input.val().trim();
                 if (name === "") {
                     name = $input.attr('placeholder');
@@ -544,6 +546,7 @@ define([
         });
 
         var displayInput = function () {
+            if (connected === false) { return; }
             $text.hide();
             //$pencilIcon.css('display', 'none');
             var inputVal = suggestName() || "";
@@ -574,8 +577,6 @@ define([
         var saveElement;
         var loadElement;
         var $stateElement = toolbar.find('.' + STATE_CLS);
-
-        var connected = false;
 
         if (config.ifrw) {
             var removeDropdowns =  function (e) {
@@ -701,12 +702,21 @@ define([
             checkLag(getLag, lagElement);
         }, 3000);
 
+        var failed = function () {
+            connected = false;
+            $stateElement.text(Messages.disconnected);
+            checkLag(undefined, lagElement);
+        };
+
+        // On log out, remove permanently the realtime elements of the toolbar
+        Cryptpad.onLogout(function () {
+            failed();
+            $userAdminElement.find('#userDropdown').hide();
+            $(userListElement).hide();
+        });
+
         return {
-            failed: function () {
-                connected = false;
-                $stateElement.text(Messages.disconnected);
-                checkLag(undefined, lagElement);
-            },
+            failed: failed,
             reconnecting: function (userId) {
                 myUserName = userId;
                 connected = false;

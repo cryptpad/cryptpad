@@ -1997,6 +1997,8 @@ define([
         proxy.on('reconnect', function (info) {
             onReconnect(info);
         });
+
+        Cryptpad.onLogout(function () { setEditable(false); });
     });
     Cryptpad.onError(function (info) {
         if (info) {

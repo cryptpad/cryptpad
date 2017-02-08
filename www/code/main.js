@@ -719,6 +719,8 @@ define([
             var realtime = module.realtime = Realtime.start(config);
 
             editor.on('change', onLocal);
+
+            Cryptpad.onLogout(function () { setEditable(false); });
         };
 
         var interval = 100;
