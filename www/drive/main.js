@@ -9,8 +9,9 @@ define([
     '/common/cryptpad-common.js',
     '/common/fileObject.js',
     '/common/toolbar.js',
-    '/customize/application_config.js'
-], function (Config, Listmap, Crypto, TextPatcher, Messages, JSONSortify, Cryptpad, FO, Toolbar, AppConfig) {
+    '/customize/application_config.js',
+    '/common/cryptget.js'
+], function (Config, Listmap, Crypto, TextPatcher, Messages, JSONSortify, Cryptpad, FO, Toolbar, AppConfig, Get) {
     var module = window.MODULE = {};
 
     var $ = window.jQuery;
@@ -1854,6 +1855,31 @@ define([
         });
     };
 
+    // TODO: move that function and use a more generic API
+    var migrateAnonDrive = function (proxy, cb) {
+        if (sessionStorage.migrateAnonDrive) {
+            // Make sure we have an FS_hash and we don't use it, otherwise just stop the migration and cb
+            if (!localStorage.FS_hash || !APP.loggedIn) {
+                delete sessionStorage.migrateAnonDrive;
+                if (typeof(cb) === "function") { cb(); }
+            }
+            // Get the content of FS_hash and then merge the objects, remove the migration key and cb
+            var todo = function (err, doc) {
+                if (err) { logError("Cannot migrate recent pads", err); return; }
+                var parsed;
+                try { parsed = JSON.parse(doc); } catch (e) { logError("Cannot parsed recent pads", e); }
+                if (parsed) {
+                    $.extend(true, proxy, parsed);
+                }
+                delete sessionStorage.migrateAnonDrive;
+                if (typeof(cb) === "function") { cb(); }
+            };
+            Get.get(localStorage.FS_hash, todo);
+        } else {
+            if (typeof(cb) === "function") { cb(); }
+        }
+    };
+
     // don't initialize until the store is ready.
     Cryptpad.ready(function () {
         APP.$bar = $iframe.find('#toolbar');
@@ -1950,23 +1976,13 @@ define([
         };
         var onReady = function () {
             module.files = proxy;
-            if (JSON.stringify(proxy) === '{}') {
-                var store = Cryptpad.getStore(true);
-                var drive = proxy.drive = {};
-                store.get(Cryptpad.storageKey, function (err, s) {
-                    drive[FILES_DATA] = s;
-                    initLocalStorage();
-                    init(proxy);
-                    APP.userList.onChange();
-                    Cryptpad.removeLoadingScreen();
-                });
-                return;
-            }
             if (!proxy.drive || typeof(proxy.drive) !== 'object') { proxy.drive = {}; }
-            initLocalStorage();
-            init(proxy);
-            APP.userList.onChange();
-            Cryptpad.removeLoadingScreen();
+            migrateAnonDrive(proxy, function () {
+                initLocalStorage();
+                init(proxy);
+                APP.userList.onChange();
+                Cryptpad.removeLoadingScreen();
+            });
         };
         var onDisconnect = function (info) {
             setEditable(false);
