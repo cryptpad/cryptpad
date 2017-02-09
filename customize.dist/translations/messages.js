@@ -243,7 +243,8 @@ define(function () {
 
     // login
     out.login_login = "Log in";
-    out.login_nologin = "Your browser's recent pads";
+    out.login_makeAPad = 'Create a pad anonymously';
+    out.login_nologin = "Browse local pads";
     out.login_register = "Sign up";
     out.logoutButton = "Log out";
 
@@ -252,9 +253,9 @@ define(function () {
     out.username_label = "Username: ";
     out.displayname_label = "Display name: ";
 
-    out.login_username = "your username";
-    out.login_password = "your password";
-    out.login_confirm = "confirm your password";
+    out.login_username = "Username";
+    out.login_password = "Password";
+    out.login_confirm = "Confirm your password";
     out.login_remember = "Remember me";
 
     out.login_cancel_prompt = "...or if you may have entered the wrong username or password, cancel to try again.";
@@ -280,6 +281,7 @@ define(function () {
     out.login_hello = 'Hello {0},'; // {0} is the username
     out.login_helloNoName = 'Hello,';
     out.login_accessDrive = 'Access your drive';
+    out.login_orNoLogin = 'or';
 
     // index.html
 
@@ -296,7 +298,7 @@ define(function () {
 
     out.main_howitworks = 'How It Works';
     out.main_zeroKnowledge = 'Zero Knowledge';
-    out.main_zeroKnowledge_p = "You don't have to trust that we <em>won't</em> look at your pads, with CryptPad's revolutionary Zero Knowledge Technology we <em>can't</em>. Learn more about how we protect your Privacy and Security.";
+    out.main_zeroKnowledge_p = "You don't have to trust that we <em>won't</em> look at your pads, with CryptPad's revolutionary Zero Knowledge Technology we <em>can't</em>. Learn more about how we protect your <a href=\"/privacy.html\" title='Privacy'>Privacy and Security</a>.";
     out.main_writeItDown = 'Write it down';
     out.main_writeItDown_p = "The greatest projects come from the smallest ideas. Take down the moments of inspiration and unexpected ideas because you never know which one might be a breakthrough.";
     out.main_share = 'Share the link, share the pad';
@@ -323,7 +325,6 @@ define(function () {
     out.table_created = 'Created';
     out.table_last = 'Last Accessed';
 
-    out.makeAPad = 'Make a pad right now';
     out.button_newpad = 'New Rich Text pad';
     out.button_newcode = 'New Code pad';
     out.button_newpoll = 'New Poll';

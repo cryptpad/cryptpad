@@ -96,16 +96,15 @@ h6 {
 
 a {
     cursor: pointer;
-    color: @cp-light-blue;
-    //#41b7d8; //@cp-darkblue;
+    color: @cp-link;
 
     text-decoration: none;
 
     &:hover {
-        color: darken(@cp-light-blue, 10%); //@cp-accent2;
+        color: @cp-link-hover;
     }
     &:visited {
-        color: @cp-purple;
+        color: @cp-link-visited;
     }
 }
 
@@ -179,7 +178,7 @@ body.html {
         //background: darken(@base, 1%);
     }
     &.category {
-        background: darken(@base, 3%);
+        background: @category-bg;
     }
 
     .app {
@@ -233,7 +232,7 @@ body.html {
 
     p {
         font-size: 18px;
-        text-align: justify;
+        //text-align: justify;
     }
 }
 
@@ -313,7 +312,7 @@ body.html {
 
     font-size: medium;
 
-    #main-container {
+    #align-container {
         position: absolute;
         top: 50%;
         left: 50%;
@@ -325,11 +324,20 @@ body.html {
         max-width: 90%;
     }
 
+    #main-container {
+        position: absolute;
+        display: inline-block;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+        width: 100%;
+    }
+
     #data {
         p {
             margin: 0;
             padding: 0;
-            font-size: 20px;
+            font-size: 28px;
             line-height: 1.5em;
         }
         h1, h2 {
@@ -337,6 +345,7 @@ body.html {
             font-size: 48px;
             line-height: 1.2em;
             color: @main-color;
+            padding: 0;
         }
 
         h5 {
@@ -346,13 +355,9 @@ body.html {
         width: 600px;
         max-width: 60%;
         color: @main-color;
-        padding: 15px;
+        padding: 0 15px;
         box-sizing: border-box;
-        position: absolute;
         display: inline-block;
-        top: 50%;
-        left: 0;
-        transform: translateY(-50%);
 
         #tryit {
             margin-top: 20px;
@@ -361,15 +366,11 @@ body.html {
     }
 
     #loggedIn {
+        float: right;
         color: @main-color;
         display: inline-block;
-        position: absolute;
-        top: 50%;
-        right: 0;
-        margin-left: 50px;
         width: 350px;
         max-width: 35%;
-        transform: translateY(-50%);
         text-align: center;
         font-weight: bold;
         button {
@@ -386,11 +387,7 @@ body.html {
     }
 
     #userForm {
-        position: absolute;
-        right: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        margin-left: 50px;
+        float: right;
         display: inline-block;
         width: 350px;
         max-width: 35%;
@@ -399,42 +396,13 @@ body.html {
         font-family: lato, Helvetica, sans-serif;
         color: @main-color;
 
-        h1 {
-            color: @main-color;
-            padding: 0;
-        }
-
-        [type="text"], [type="password"] {
-            width: 100%;
-        }
-
         label {
             margin-bottom: 0;
-        }
-        /*.remember {
-            vertical-align: middle;
-            line-height: 28px;
-            height: 28px;
-            display: inline-block;
-            margin: 10px 0 20px 0;
-        }
-
-
-        [type="checkbox"] {
-            vertical-align: text-top;
-            margin: 0;
-            //margin-top: 10px;
-            margin-right: 5px;
-        }
-        */
-        [type="checkbox"] {
-            margin-right: 5px;
         }
 
         button {
             font-weight: bold;
             width: 100%;
-            margin: 2px 0px;
             cursor: pointer;
             &.half {
                 width: ~"calc(50% - 2px)";
@@ -443,18 +411,65 @@ body.html {
                 }
             }
         }
+
+        p {
+            margin: 0;
+            padding: 0;
+            &.buttons {
+                margin-bottom: 10px;
+                .dropdown-bar {
+                    button {
+                        white-space: normal;
+                        text-align: left;
+                        .fa {
+                            float: right;
+                        }
+                    }
+                    display: block;
+                }
+            }
+            &.separator {
+                margin: 5px 0 15px 0;
+                text-align: center;
+                font-weight: bold;
+                font-size: 1.1em;
+            }
+            a {
+                color: @main-color;
+                font-weight:bold;
+                &:hover, :visited {
+                    color: @main-color !important;
+                }
+            }
+        }
+
+        .driveLink {
+            padding-left: 1rem; //Bootstrap padding in buttons
+            font-size: 1em;
+        }
+
+        &> * {
+            margin-bottom: 10px;
+        }
     }
-    #main-container {
-        @media screen and (max-width: @media-not-big) {
+    @media screen and (max-width: @media-not-big) {
+        #align-container {
             transform: initial;
             position: relative;
             display: block;
             width: 90%;
             left: 0;
         }
-    }
-    #userForm, #loggedIn, #data {
-        @media screen and (max-width: @media-not-big) {
+        #main-container {
+            position: relative;
+            transform: unset;
+            top:0;
+
+        }
+        #data {
+            text-align: center;
+        }
+        #userForm, #loggedIn, #data {
             transform: initial;
             position: relative;
             display: block;
@@ -462,32 +477,17 @@ body.html {
             max-width: 100%;
             margin: 10px 0;
             box-sizing: border-box;
+            float: none;
         }
-    }
-    #userForm, #loggedIn {
-        @media screen and (max-width: @media-not-big) {
-            border: 1px solid #888;
+        #userForm, #loggedIn {
+            //border: 1px solid #888;
         }
-    }
-    @media screen and (max-width: @media-not-big) {
         position: relative;
         height: auto;
-        top: -10px;
     }
 
     .buttons {
         margin-top: 15px;
-    }
-}
-p.buttons, div.buttons {
-    text-align: center;
-    button {
-        font-weight: bold;
-        cursor: pointer;
-        margin-top: 10px;
-    }
-    .dropdown-bar {
-        margin-left: 4px;
     }
 }
 

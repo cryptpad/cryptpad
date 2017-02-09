@@ -7,111 +7,114 @@ define([
     '/bower_components/jquery/dist/jquery.min.js',
 ], function (Messages, Config, Cryptpad, LilUri, LS) {
     var $ = window.$;
-    var $main = $('#mainBlock');
 
     var APP = window.APP = {
         Cryptpad: Cryptpad,
     };
 
-    // Language selector
-    var $sel = $('#language-selector');
-    Cryptpad.createLanguageSelector(undefined, $sel);
-    $sel.find('button').addClass('btn').addClass('btn-secondary');
-    $sel.show();
+    $(function () {
+        var $main = $('#mainBlock');
 
-    $(window).click(function () {
-        $('.cryptpad-dropdown').hide();
-    });
+        // Language selector
+        var $sel = $('#language-selector');
+        Cryptpad.createLanguageSelector(undefined, $sel);
+        $sel.find('button').addClass('btn').addClass('btn-secondary');
+        $sel.show();
 
-    // main block is hidden in case javascript is disabled
-    $main.removeClass('hidden');
+        $(window).click(function () {
+            $('.cryptpad-dropdown').hide();
+        });
 
-    // Make sure we don't display non-translated content (empty button)
-    $main.find('#data').removeClass('hidden');
 
-    if (Cryptpad.isLoggedIn()) {
-        var name = localStorage[Cryptpad.userNameKey] || sessionStorage[Cryptpad.userNameKey];
-        var $loggedInBlock = $main.find('#loggedIn');
-        var $hello = $loggedInBlock.find('#loggedInHello');
-        var $logout = $loggedInBlock.find('#loggedInLogOut');
+        // main block is hidden in case javascript is disabled
+        $main.removeClass('hidden');
 
-        if (name) {
-            $hello.text(Messages._getKey('login_hello', [name]));
+        // Make sure we don't display non-translated content (empty button)
+        $main.find('#data').removeClass('hidden');
+
+        if (Cryptpad.isLoggedIn()) {
+            var name = localStorage[Cryptpad.userNameKey] || sessionStorage[Cryptpad.userNameKey];
+            var $loggedInBlock = $main.find('#loggedIn');
+            var $hello = $loggedInBlock.find('#loggedInHello');
+            var $logout = $loggedInBlock.find('#loggedInLogOut');
+
+            if (name) {
+                $hello.text(Messages._getKey('login_hello', [name]));
+            } else {
+                $hello.text(Messages.login_helloNoName);
+            }
+            $('#buttons').find('.nologin').hide();
+
+            $logout.click(function () {
+                Cryptpad.logout(function () {
+                    window.location.reload();
+                });
+            });
+
+            $loggedInBlock.removeClass('hidden');
+            //return;
         } else {
-            $hello.text(Messages.login_helloNoName);
+            $main.find('#userForm').removeClass('hidden');
         }
-        $('#buttons').find('.nologin').hide();
 
-        $logout.click(function () {
-            Cryptpad.logout(function () {
-                window.location.reload();
+        var displayCreateButtons = function () {
+            var $parent = $('#buttons');
+            var options = [];
+            var $container = $('<div>', {'class': 'dropdown-bar'}).appendTo($parent);
+            Config.availablePadTypes.forEach(function (el) {
+                if (el === 'drive') { return; }
+                options.push({
+                    tag: 'a',
+                    attributes: {
+                        'class': 'newdoc',
+                        'href': '/' + el + '/',
+                        'target': '_blank'
+                    },
+                    content: Messages['button_new' + el] // Pretty name of the language value
+                });
             });
-        });
-
-        $loggedInBlock.removeClass('hidden');
-        //return;
-    } else {
-        $main.find('#userForm').removeClass('hidden');
-    }
-
-    var displayCreateButtons = function () {
-        var $parent = $('#buttons');
-        var options = [];
-        Config.availablePadTypes.forEach(function (el) {
-            if (el === 'drive') { return; }
-            options.push({
-                tag: 'a',
-                attributes: {
-                    'class': 'newdoc',
-                    'href': '/' + el + '/',
-                    'target': '_blank'
-                },
-                content: Messages['button_new' + el] // Pretty name of the language value
-            });
-        });
-        var dropdownConfig = {
-            text: Messages.makeAPad, // Button initial text
-            options: options, // Entries displayed in the menu
+            var dropdownConfig = {
+                text: Messages.login_makeAPad, // Button initial text
+                options: options, // Entries displayed in the menu
+                container: $container
+            };
+            var $block = Cryptpad.createDropdown(dropdownConfig);
+            $block.find('button').addClass('btn').addClass('btn-primary');
+            $block.appendTo($parent);
         };
-        var $block = Cryptpad.createDropdown(dropdownConfig);
-        $block.find('button').addClass('btn').addClass('btn-success');
-        $block.appendTo($parent);
-    };
-    var addButtonHandlers = function () {
-        $('button.login').click(function (e) {
-            var username = $('#name').val();
-            var passwd = $('#password').val();
-            var remember = $('#rememberme').is(':checked');
-            sessionStorage.login_user = username;
-            sessionStorage.login_pass = passwd;
-            sessionStorage.login_rmb = remember;
-            sessionStorage.login = 1;
-            document.location.href = '/user/';
-        });
-        $('button.register').click(function (e) {
-            var username = $('#name').val();
-            var passwd = $('#password').val();
-            var remember = $('#rememberme').is(':checked');
-            sessionStorage.login_user = username;
-            sessionStorage.login_pass = passwd;
-            sessionStorage.login_rmb = remember;
-            sessionStorage.register = 1;
-            document.location.href = '/user/';
-        });
-        $('button.nologin').click(function (e) {
-            document.location.href = '/drive/';
-        });
+        var addButtonHandlers = function () {
+            $('button.login').click(function (e) {
+                var username = $('#name').val();
+                var passwd = $('#password').val();
+                var remember = $('#rememberme').is(':checked');
+                sessionStorage.login_user = username;
+                sessionStorage.login_pass = passwd;
+                sessionStorage.login_rmb = remember;
+                sessionStorage.login = 1;
+                document.location.href = '/user/';
+            });
+            $('button.register').click(function (e) {
+                var username = $('#name').val();
+                var passwd = $('#password').val();
+                var remember = $('#rememberme').is(':checked');
+                sessionStorage.login_user = username;
+                sessionStorage.login_pass = passwd;
+                sessionStorage.login_rmb = remember;
+                sessionStorage.register = 1;
+                document.location.href = '/user/';
+            });
 
-        var $passwd = $('#password');
-        $passwd.on('keyup', function (e) {
-            if (e.which !== 13) { return; } // enter
-            $('button.login').click();
-        });
-    };
+            var $passwd = $('#password');
+            $passwd.on('keyup', function (e) {
+                if (e.which !== 13) { return; } // enter
+                $('button.login').click();
+            });
+        };
 
-    displayCreateButtons();
+        displayCreateButtons();
 
-    addButtonHandlers();
-    console.log("ready");
+        addButtonHandlers();
+        console.log("ready");
+    });
 });
 

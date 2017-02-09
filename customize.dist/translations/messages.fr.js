@@ -242,7 +242,8 @@ define(function () {
 
     // login
     out.login_login = "Connexion";
-    out.login_nologin = "Documents récents de ce navigateur";
+    out.login_makeAPad = 'Créer un document anonymement';
+    out.login_nologin = "Voir les documents récents";
     out.login_register = "Inscription";
     out.logoutButton = "Déconnexion";
 
@@ -251,9 +252,9 @@ define(function () {
     out.username_label = "Nom d'utilisateur : ";
     out.displayname_label = "Nom affiché : ";
 
-    out.login_username = "votre nom d'utilisateur";
-    out.login_password = "votre mot de passe";
-    out.login_confirm = "confirmer votre mot de passe";
+    out.login_username = "Nom d'utilisateur";
+    out.login_password = "Mot de passe";
+    out.login_confirm = "Confirmer votre mot de passe";
     out.login_remember = "Se souvenir de moi";
 
     out.login_cancel_prompt = "...ou si vous avez entré le mauvais nom d'utilisateur ou mot de passe, annulez pour essayer à nouveau.";
@@ -279,11 +280,12 @@ define(function () {
     out.login_hello = 'Bonjour {0},'; // {0} is the username
     out.login_helloNoName = 'Bonjour,';
     out.login_accessDrive = 'Accédez à votre drive';
+    out.login_orNoLogin = 'ou';
 
     // index.html
 
     //out.main_p1 = 'CryptPad est l\'éditeur collaboratif en temps réel <strong>zero knowledge</strong>. Le chiffrement est effectué depuis votre navigateur, ce qui protège les données contre le serveur, le cloud, et la NSA. La clé de chiffrement est stockée dans l\'<a href="https://fr.wikipedia.org/wiki/Identificateur_de_fragment">identifieur de fragment</a> de l\'URL qui n\'est jamais envoyée au serveur mais est accessible depuis javascript, de sorte qu\'en partageant l\'URL, vous donnez l\'accès au pad à ceux qui souhaitent participer.';
-    out.main_p1 = "<h2>Collaborez en tout confiance</h2><br>Développez vos idées collaborativement grâce à des documents partagés en temps-réel, tout en gardant vos données personnelles invisibles, même pour nous, avec la technologie <strong>Zero Knowledge</strong>.";
+    out.main_p1 = "<h2>Collaborez avec confiance</h2><br>Développez vos idées en groupe avec des documents partagés; la technologie <strong>Zero Knowledge</strong> sécurise vos données.";
     out.main_p2 = 'Ce projet utilise l\'éditeur visuel (WYSIWYG) <a href="http://ckeditor.com/">CKEditor</a>, l\'éditeur de code source <a href="https://codemirror.net/">CodeMirror</a>, et le moteur temps-réel <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a>.';
     out.main_howitworks_p1 = 'CryptPad utilise une variante de l\'algorithme d\'<a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> qui est capable de trouver un consensus distribué en utilisant <a href="https://bitcoin.org/bitcoin.pdf">une chaîne de bloc Nakamoto</a>, un outil popularisé par le <a href="https://fr.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. De cette manière, l\'algorithme évite la nécessité d\'utiliser un serveur central pour résoudre les conflits d\'édition de l\'Operational Transformation, et sans ce besoin de résolution des conflits le serveur peut rester ignorant du contenu qui est édité dans le pad.';
     out.main_about = 'À propos';
@@ -293,9 +295,9 @@ define(function () {
 
     out.main_howitworks = 'Comment ça fonctionne';
     out.main_zeroKnowledge = 'Zero Knowledge';
-    out.main_zeroKnowledge_p = "Vous n'avez pas besoin de croire que nous n'<em>allons</em> pas regarder vos documents. Avec la technologie Zero Knowledge de Cryptpad, nous ne <em>pouvons</em> pas le faire. Apprenez-en plus sur notre manière de protéger vos données.";
-    out.main_jotItDown = 'Prenez-en note';
-    out.main_jotItDown_p = "Les plus grands projets naissent des plus petites idées. Prenez note de vos moments d'inspiration et de vos idées inattendues car vous ne savez pas lesquels seront des découvertes capitales.";
+    out.main_zeroKnowledge_p = "Vous n'avez pas besoin de croire que nous n'<em>allons</em> pas regarder vos documents. Avec la technologie Zero Knowledge de Cryptpad, nous ne <em>pouvons</em> pas le faire. Apprenez-en plus sur notre manière de <a href=\"privacy.html\" title='Protection des données'>protéger vos données</a>.";
+    out.main_writeItDown = 'Prenez-en note';
+    out.main_writeItDown_p = "Les plus grands projets naissent des plus petites idées. Prenez note de vos moments d'inspiration et de vos idées inattendues car vous ne savez pas lesquels seront des découvertes capitales.";
     out.main_share = 'Partager le lien, partager le document';
     out.main_share_p = "Faites croître vos idées à plusieurs : réalisez des réunions efficaes, collaborez sur vos listes de tâches et réalisez des présentations rapide avec tous vos amis sur tous vos appareils.";
     out.main_organize = 'Soyez organisés';
@@ -320,7 +322,6 @@ define(function () {
     out.table_created = 'Créé le';
     out.table_last = 'Dernier accès';
 
-    out.makeAPad = 'Créer un document';
     out.button_newpad = 'Nouveau document texte';
     out.button_newcode = 'Nouvelle page de code';
     out.button_newpoll = 'Nouveau sondage';
