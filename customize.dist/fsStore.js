@@ -188,18 +188,17 @@ define([
             var drive = rt.proxy.drive;
             // Creating a new anon drive: import anon pads from localStorage
             if (!drive[Cryptpad.storageKey] || !Cryptpad.isArray(drive[Cryptpad.storageKey])) {
-                var oldStore = Cryptpad.getStore(true);
-                Cryptpad.getRecentPads(function (err, s) {
-                    drive[Cryptpad.storageKey] = s;
+                Cryptpad.getLegacyPads(function (err, data) {
+                    drive[Cryptpad.storageKey] = data;
                     onReady(f, rt.proxy, Cryptpad.storageKey, exp);
-                }, true);
+                });
                 return;
             }
-            // Return the existing drive
+            // Drive already exist: return the existing drive, don't load data from legacy store
             onReady(f, rt.proxy, Cryptpad.storageKey, exp);
         })
         .on('disconnect', function (info) {
-            // We only manage errors during the loadin screen here. Other websocket errors are handled by the apps
+            // We only manage errors during the loading screen here. Other websocket errors are handled by the apps
             if (info.error) {
                 if (typeof Cryptpad.storeError === "function") {
                     Cryptpad.storeError();
