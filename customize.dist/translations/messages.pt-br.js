@@ -110,8 +110,6 @@ define(function () {
     out.notifyRenamed = "{0} agora é conhecido como {1}";
     out.notifyLeft = "{0} deixou essa sessão colaborativa";
 
-    out.disconnectAlert = 'Conexão de rede perdida!';
-
     out.tryIt = 'Experimente!';
     out.recentPads = 'Seu bloco de nota recente (armazenado em seu navegador)';
 

@@ -102,8 +102,6 @@ define(function () {
     out.notifyRenamed = "{0} jest teraz znany jako {1}";
     out.notifyLeft = "{0} opuścił sesję współpracy";
 
-    out.disconnectAlert = 'Utracono połączenie sieciowe!';
-
     out.tryIt = 'Wypróbuj!';
     out.recentPads = 'Ostatnio otwarte dokumenty (przechowywane jedynie w twojej przeglądarce)';
 

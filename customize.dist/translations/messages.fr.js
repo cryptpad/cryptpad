@@ -118,8 +118,6 @@ define(function () {
     out.notifyRenamed = "{0} a changé son nom en {1}";
     out.notifyLeft = "{0} a quitté la session collaborative";
 
-    out.disconnectAlert = 'Perte de la connexion au réseau !';
-
     out.okButton = 'OK (Entrée)';
 
     out.cancel = "Annuler";

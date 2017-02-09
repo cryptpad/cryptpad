@@ -100,8 +100,6 @@ define(function () {
     out.notifyRenamed = "{0} ahora se conoce como {1}";
     out.notifyLeft = "{0} ha dejado la sesión de colaboración";
 
-    out.disconnectAlert = '¡Conexión a la red perdida!';
-
     out.tryIt = '¡PROBARLO!';
     out.recentPads = 'Tus documentos recientes (almacenadas solo en el navegador)';
 
