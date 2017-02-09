@@ -298,8 +298,8 @@ define(function () {
     out.main_howitworks = 'How It Works';
     out.main_zeroKnowledge = 'Zero Knowledge';
     out.main_zeroKnowledge_p = "You don't have to trust that we <em>won't</em> look at your pads, with CryptPad's revolutionary Zero Knowledge Technology we <em>can't</em>. Learn more about how we protect your Privacy and Security.";
-    out.main_jotItDown = 'Jot it down';
-    out.main_jotItDown_p = "The greatest projects come from the smallest ideas. Take down the moments of inspiration and unexpected ideas because you never know which one might be a breakthrough.";
+    out.main_writeItDown = 'Write it down';
+    out.main_writeItDown_p = "The greatest projects come from the smallest ideas. Take down the moments of inspiration and unexpected ideas because you never know which one might be a breakthrough.";
     out.main_share = 'Share the link, share the pad';
     out.main_share_p = "Grow your ideas together: conduct efficient meetings, collaborate on TODO lists and make quick presentations with all your friends and all your devices.";
     out.main_organize = 'Get organized';
