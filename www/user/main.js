@@ -161,6 +161,9 @@ define([
         });
     };
 
+    addEnterListener($confirm, function () {
+        $register.click();
+    });
     addEnterListener($password_register, function () {
         $login.click();
     });
@@ -354,7 +357,9 @@ define([
 
             APP.setNotice(Cryptpad.Messages.login_hashing);
 
+            // inform the user that we're hashing their password
             revealNotice(true);
+
             revealLogin(false, function () {
                 window.setTimeout(function () {
                     resetUI();
