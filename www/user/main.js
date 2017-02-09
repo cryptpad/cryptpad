@@ -1,13 +1,13 @@
 define([
-    '/api/config?cb=' + Math.random().toString(16).substring(2),
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/cryptpad-common.js',
-    'credential.js',
+    '/common/credential.js',
+    '/common/login.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     '/bower_components/scrypt-async/scrypt-async.min.js', // better load speed
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Listmap, Crypto, Cryptpad, Cred) {
+], function (Listmap, Crypto, Cryptpad, Cred, Login) {
     var $ = window.jQuery;
     var Nacl = window.nacl;
 
@@ -16,6 +16,7 @@ define([
     var APP = window.APP = {
         Cryptpad: Cryptpad,
         Crypto: Crypto,
+        Login: Login,
     };
 
     // login elements
