@@ -397,7 +397,7 @@ define([
                 crypto: Crypto.createEncryptor(secret.keys),
 
                 // really basic operational transform
-                transformFunction : JsonOT.transform || JsonOT.validate,
+                transformFunction : JsonOT.validate,
 
                 // cryptpad debug logging (default is 1)
                 // logLevel: 0,
