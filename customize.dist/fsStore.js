@@ -176,7 +176,18 @@ define([
                 window.location.reload();
             } else if (o && !n) {
                 //window.location.reload();
-                window.location.href = '/';
+                //window.location.href = '/';
+                $(window).on('keyup', function (e) {
+                    if (e.keyCode === 27) {
+                        Cryptpad.removeLoadingScreen();
+                    }
+                });
+                Cryptpad.logout();
+                Cryptpad.addLoadingScreen();
+                Cryptpad.errorLoadingScreen(Messages.onLogout, true);
+                if (exp.info) {
+                    exp.info.network.disconnect();
+                }
             }
         });
 

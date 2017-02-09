@@ -796,6 +796,8 @@ define([
                 $('#howItWorks').hide();
             }
         });
+
+        //Cryptpad.onLogout(function () { setEditable(false); }); TODO
     });
     Cryptpad.onError(function (info) {
         if (info) {

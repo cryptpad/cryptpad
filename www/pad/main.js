@@ -620,6 +620,23 @@ define([
                 }
 
 
+                // Expand / collapse the toolbar
+                var $existingButton = $bar.find('#cke_1_toolbar_collapser');
+                var $collapse = Cryptpad.createButton(null, true);
+                $existingButton.hide();
+                $collapse.removeClass('fa-question');
+                var updateIcon = function () {
+                    $collapse.removeClass('fa-caret-down').removeClass('fa-caret-up');
+                    var isCollapsed = !$bar.find('.cke_toolbox_main').is(':visible');
+                    if (isCollapsed) { $collapse.addClass('fa-caret-down') }
+                    else { $collapse.addClass('fa-caret-up') }
+                };
+                updateIcon();
+                $collapse.click(function () {
+                    $existingButton.click();
+                    updateIcon();
+                });
+                $rightside.append($collapse);
 
                 /* add an export button */
                 var $export = Cryptpad.createButton('export', true, {}, exportFile);
@@ -753,6 +770,8 @@ define([
             };
 
             var rti = module.realtimeInput = realtimeInput.start(realtimeOptions);
+
+            Cryptpad.onLogout(function () { setEditable(false); });
 
             /* hitting enter makes a new line, but places the cursor inside
                 of the <br> instead of the <p>. This makes it such that you

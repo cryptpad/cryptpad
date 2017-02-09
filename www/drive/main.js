@@ -30,7 +30,7 @@ define([
         editable: false,
         Cryptpad: Cryptpad,
         loggedIn: Cryptpad.isLoggedIn(),
-        mobile: $('body').width() <= 600 // Menu and content area are not inline-block anymore for mobiles
+        mobile: function () { return $('body').width() <= 600; } // Menu and content area are not inline-block anymore for mobiles
     };
 
     var stringify = APP.stringify = function (obj) {
@@ -801,7 +801,7 @@ define([
             if (!path || path.length === 0) { return; }
             var isTrash = filesOp.isPathInTrash(path);
             var $title = $('<span>', {'class': 'path unselectable'});
-            if (APP.mobile) {
+            if (APP.mobile()) {
                 return $title;
             }
             path.forEach(function (p, idx) {
@@ -1170,7 +1170,7 @@ define([
             var $toolbar = $driveToolbar;
             $toolbar.html('');
             var $leftside = $('<div>', {'class': 'leftside'}).appendTo($toolbar);
-            if (!APP.mobile) {
+            if (!APP.mobile()) {
                 $leftside.width($tree.width());
             }
             var $rightside = $('<div>', {'class': 'rightside'}).appendTo($toolbar);
@@ -1339,7 +1339,7 @@ define([
             var $modeButton = createViewModeButton().appendTo($toolbar.find('.rightside'));
             var $title = createTitle(path).appendTo($toolbar.find('.rightside'));
 
-            if (APP.mobile) {
+            if (APP.mobile()) {
                 var $context = $('<button>', {'class': 'element right dropdown-bar', id: 'contextButton'});
                 $context.append($('<span>', {'class': 'fa fa-caret-down'}));
                 $context.appendTo($toolbar.find('.rightside'));
@@ -1822,7 +1822,7 @@ define([
         });
 
         $iframe.find('#tree').mousedown(function (e) {
-            if (APP.mobile) { return; }
+            if (APP.mobile()) { return; }
             if (APP.resizeTree) { return; }
             APP.resizeTree = window.setInterval(function () {
                 $driveToolbar.find('.leftside').width($tree.width());
@@ -1997,6 +1997,8 @@ define([
         proxy.on('reconnect', function (info) {
             onReconnect(info);
         });
+
+        Cryptpad.onLogout(function () { setEditable(false); });
     });
     Cryptpad.onError(function (info) {
         if (info) {
