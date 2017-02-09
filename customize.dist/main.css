@@ -605,7 +605,7 @@ html.cp,
 }
 .cp .page .info-container {
   color: #121212;
-  width: 900px;
+  width: 800px;
   max-width: 100%;
   margin: 0 auto;
 }
@@ -902,6 +902,7 @@ html.cp,
 .cp #main_other #userForm p a {
   color: #fff;
   font-weight: bold;
+  font-size: 14px;
 }
 .cp #main #userForm p a:hover,
 .cp #main_other #userForm p a:hover,
