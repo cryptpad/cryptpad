@@ -103,8 +103,6 @@
       out.notifyRenamed = "{0} heißt nun {1}";
       out.notifyLeft = "{0} hat die gemeinsame Sitzung verlassen";
 
-      out.disconnectAlert = 'Netzwerkverbindung verloren!';
-
       out.tryIt = 'Probier\'s aus!';
       out.recentPads = 'Deine letzten Pads (diese Liste ist nur in deinem Browser gespeichert))';
 

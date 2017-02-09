@@ -1,7 +1,7 @@
 define([
     '/api/config?cb=' + Math.random().toString(16).slice(2),
     '/customize/messages.js',
-    '/customize/store.js',
+    '/customize/fsStore.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/alertifyjs/dist/js/alertify.js',
     '/bower_components/spin.js/spin.min.js',
@@ -10,7 +10,7 @@ define([
     '/customize/application_config.js',
 
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Messages, Store, Crypto, Alertify, Spinner, Clipboard, FS, AppConfig) {
+], function (Config, Messages, Store, Crypto, Alertify, Spinner, Clipboard, AppConfig) {
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
@@ -19,18 +19,11 @@ define([
 */
     var $ = window.jQuery;
 
-    // When set to true, USE_FS_STORE becomes the default store, but the localStorage store is
-    // still loaded for migration purpose. When false, the localStorage is used.
-    var USE_FS_STORE = AppConfig.USE_FS_STORE;
-
-    var storeToUse = USE_FS_STORE ? FS : Store;
-
     var common = window.Cryptpad = {
         Messages: Messages,
         Alertify: Alertify,
     };
     var store;
-    var fsStore;
 
     var find = common.find = function (map, path) {
         return (map && path.reduce(function (p, n) {
@@ -38,15 +31,14 @@ define([
         }, map));
     };
 
-    var getStore = common.getStore = function (legacy) {
-        if ((!USE_FS_STORE || legacy) && store) { return store; }
-        if (USE_FS_STORE && !legacy && fsStore) { return fsStore; }
+    var getStore = common.getStore = function () {
+        if (store) { return store; }
         throw new Error("Store is not ready!");
     };
     var getNetwork = common.getNetwork = function () {
-        if (USE_FS_STORE && fsStore) {
-            if (fsStore.getProxy() && fsStore.getProxy().info) {
-                return fsStore.getProxy().info.network;
+        if (store) {
+            if (store.getProxy() && store.getProxy().info) {
+                return store.getProxy().info.network;
             }
         }
         return;
@@ -131,7 +123,6 @@ define([
     };
 
     var isLoggedIn = common.isLoggedIn = function () {
-        //return typeof getStore().getLoginName() === "string";
         return typeof getUserHash() === "string";
     };
 
@@ -373,6 +364,23 @@ define([
         });
     };
 
+    // Get the pads from localStorage to migrate them to the object store
+    var getLegacyPads = common.getLegacyPads = function (cb) {
+        require(['/customize/store.js'], function(Legacy) {
+            Legacy.ready(function (err, legacy) {
+                if (err) { cb(err, null); return; }
+                Legacy.get(storageKey, function (err2, recentPads) {
+                    if (err2) { cb(err2, null); return; }
+                    if (isArray(recentPads)) {
+                        cb(void 0, migrateRecentPads(recentPads));
+                        return;
+                    }
+                    cb(void 0, []);
+                });
+            });
+        });
+    };
+
     var getHash = common.getHash = function () {
         return window.location.hash.slice(1);
     };
@@ -446,13 +454,13 @@ define([
     };
 
     // STORAGE
-    var setPadAttribute = common.setPadAttribute = function (attr, value, cb, legacy) {
-        getStore(legacy).setDrive([getHash(), attr].join('.'), value, function (err, data) {
+    var setPadAttribute = common.setPadAttribute = function (attr, value, cb) {
+        getStore().setDrive([getHash(), attr].join('.'), value, function (err, data) {
             cb(err, data);
         });
     };
-    var setAttribute = common.setAttribute = function (attr, value, cb, legacy) {
-        getStore(legacy).set(["cryptpad", attr].join('.'), value, function (err, data) {
+    var setAttribute = common.setAttribute = function (attr, value, cb) {
+        getStore().set(["cryptpad", attr].join('.'), value, function (err, data) {
             cb(err, data);
         });
     };
@@ -461,13 +469,13 @@ define([
     };
 
     // STORAGE
-    var getPadAttribute = common.getPadAttribute = function (attr, cb, legacy) {
-        getStore(legacy).getDrive([getHash(), attr].join('.'), function (err, data) {
+    var getPadAttribute = common.getPadAttribute = function (attr, cb) {
+        getStore().getDrive([getHash(), attr].join('.'), function (err, data) {
             cb(err, data);
         });
     };
-    var getAttribute = common.getAttribute = function (attr, cb, legacy) {
-        getStore(legacy).get(["cryptpad", attr].join('.'), function (err, data) {
+    var getAttribute = common.getAttribute = function (attr, cb) {
+        getStore().get(["cryptpad", attr].join('.'), function (err, data) {
             cb(err, data);
         });
     };
@@ -493,12 +501,8 @@ define([
 
     // STORAGE
     /* fetch and migrate your pad history from localStorage */
-    var getRecentPads = common.getRecentPads = function (cb, legacy) {
-        var sstore = getStore(legacy);
-        if (legacy) {
-            sstore.getDrive = sstore.get;
-        }
-        sstore.getDrive(storageKey, function (err, recentPads) {
+    var getRecentPads = common.getRecentPads = function (cb) {
+        getStore().getDrive(storageKey, function (err, recentPads) {
             if (isArray(recentPads)) {
                 cb(void 0, migrateRecentPads(recentPads));
                 return;
@@ -509,21 +513,14 @@ define([
 
     // STORAGE
     /* commit a list of pads to localStorage */
-    var setRecentPads = common.setRecentPads = function (pads, cb, legacy) {
-        var sstore = getStore(legacy);
-        if (legacy) {
-            sstore.setDrive = sstore.set;
-        }
-        sstore.setDrive(storageKey, pads, function (err, data) {
+    var setRecentPads = common.setRecentPads = function (pads, cb) {
+        getStore().setDrive(storageKey, pads, function (err, data) {
             cb(err, data);
         });
     };
 
     // STORAGE
-    var forgetFSPad = function (href, cb) {
-        getStore().forgetPad(href, cb);
-    };
-    var forgetPad = common.forgetPad = function (href, cb, legacy) {
+    var forgetPad = common.forgetPad = function (href, cb) {
         var parsed = parsePadUrl(href);
 
         var callback = function (err, data) {
@@ -532,7 +529,7 @@ define([
                 return;
             }
 
-            getStore(legacy).keys(function (err, keys) {
+            getStore().keys(function (err, keys) {
                 if (err) {
                     cb(err);
                     return;
@@ -545,35 +542,14 @@ define([
                     cb();
                     return;
                 }
-                getStore(legacy).removeBatch(toRemove, function (err, data) {
+                getStore().removeBatch(toRemove, function (err, data) {
                     cb(err, data);
                 });
             });
         };
 
-        if (USE_FS_STORE && !legacy) {
-            // TODO implement forgetPad in store.js
-            forgetFSPad(href, callback);
-            return;
-        }
-
-        getRecentPads(function (err, recentPads) {
-            setRecentPads(recentPads.filter(function (pad) {
-                var p = parsePadUrl(pad.href);
-                // find duplicates
-                if (parsed.hash === p.hash && parsed.type === p.type) {
-                    console.log("Found a duplicate");
-                    return;
-                }
-                return true;
-            }), callback, legacy);
-        }, legacy);
-
-
-
-        if (typeof(getStore(legacy).forgetPad) === "function") {
-            // TODO implement forgetPad in store.js
-            getStore(legacy).forgetPad(href, callback);
+        if (typeof(getStore().forgetPad) === "function") {
+            getStore().forgetPad(href, callback);
         }
     };
 
@@ -626,7 +602,7 @@ define([
             if (!contains) {
                 var data = makePad(href, name);
                 renamed.push(data);
-                if (USE_FS_STORE && typeof(getStore().addPad) === "function") {
+                if (typeof(getStore().addPad) === "function") {
                     getStore().addPad(href, common.initialPath, common.initialName || name);
                 }
             }
@@ -701,58 +677,47 @@ define([
             f(void 0, env);
         };
 
-        var todo = function () {
-            storeToUse.ready(function (err, store) {
-                common.store = env.store = store;
-                if (USE_FS_STORE) {
-                    fsStore = store;
-                }
+        Store.ready(function (err, storeObj) {
+            store = common.store = env.store = storeObj;
 
-                $(function() {
-                    // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
-                    // won't work. We have to reset it now to make sure it uses a correct "body"
-                    Alertify.reset();
+            $(function() {
+                // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
+                // won't work. We have to reset it now to make sure it uses a correct "body"
+                Alertify.reset();
 
-                    // Load the new pad when the hash has changed
-                    var oldHash  = document.location.hash.slice(1);
-                    window.onhashchange = function () {
-                        var newHash = document.location.hash.slice(1);
-                        var parsedOld = parseHash(oldHash);
-                        var parsedNew = parseHash(newHash);
-                        if (parsedOld && parsedNew && (
-                              parsedOld.channel !== parsedNew.channel
-                              || parsedOld.mode !== parsedNew.mode
-                              || parsedOld.key !== parsedNew.key)) {
-                            document.location.reload();
-                            return;
-                        }
-                        if (parsedNew) {
-                            oldHash = newHash;
-                        }
-                    };
-
-                    // Everything's ready, continue...
-                    if($('#pad-iframe').length) {
-                        var $iframe = $('#pad-iframe');
-                        var iframe = $iframe[0];
-                        var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                        if (iframeDoc.readyState === 'complete') {
-                            cb();
-                            return;
-                        }
-                        $iframe.load(cb);
+                // Load the new pad when the hash has changed
+                var oldHash  = document.location.hash.slice(1);
+                window.onhashchange = function () {
+                    var newHash = document.location.hash.slice(1);
+                    var parsedOld = parseHash(oldHash);
+                    var parsedNew = parseHash(newHash);
+                    if (parsedOld && parsedNew && (
+                          parsedOld.channel !== parsedNew.channel
+                          || parsedOld.mode !== parsedNew.mode
+                          || parsedOld.key !== parsedNew.key)) {
+                        document.location.reload();
                         return;
                     }
-                    cb();
-                });
-            }, common);
-        };
-        // If we use the fs store, make sure the localStorage or iframe store is ready
-        if (USE_FS_STORE) {
-            Store.ready(todo);
-            return;
-        }
-        todo();
+                    if (parsedNew) {
+                        oldHash = newHash;
+                    }
+                };
+
+                // Everything's ready, continue...
+                if($('#pad-iframe').length) {
+                    var $iframe = $('#pad-iframe');
+                    var iframe = $iframe[0];
+                    var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    if (iframeDoc.readyState === 'complete') {
+                        cb();
+                        return;
+                    }
+                    $iframe.load(cb);
+                    return;
+                }
+                cb();
+            });
+        }, common);
     };
 
     var errorHandlers = [];
@@ -1262,15 +1227,6 @@ define([
             },
         };
     };
-
-    // All code which is called implicitly is found below
-    Store.ready(function (err, Store) {
-        if (err) {
-            console.error(err);
-            return;
-        }
-        store = Store;
-    });
 
     $(function () {
         Messages._applyTranslation();
