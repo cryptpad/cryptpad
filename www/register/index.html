@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html class="cp">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Cryptpad: login</title>
+    <script data-main="main" src="/bower_components/requirejs/require.js"></script>
+    <link rel="stylesheet" href="/customize/main.css" />
+    <style>
+        html, body{
+            padding: 0px;
+            margin: 0px;
+            height: 100% !important;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        body {
+            padding: 45px;
+        }
+        div.panel{
+            width: 70%;
+            margin: auto;
+            border: 1px solid black;
+            padding: 15px;
+            display: none;
+            border-radius: 5px;
+        }
+
+        .register {
+            display: none;
+        }
+
+        @media (max-width: 1000px) {
+            div.panel { width: 90%; }
+        }
+        input[type="text"], input[type="password"] {
+            width: 80%;
+        }
+
+        hr.choice {
+            margin-top: 45px;
+            margin-bottom: 45px;
+        }
+
+        #notice-panel {
+            text-align: center;
+            font-size: 25px;
+        }
+    </style>
+</head>
+<body id="main">
+
+<div id="login-panel" class="panel" style="display:block;">
+    <input id="username" type="text" autocomplete="off" autocorrect="off"
+        autocapitalize="off" spellcheck="false" data-localization-placeholder="login_username" autofocus/><br />
+
+    <input id="password" type="password" data-localization-placeholder="login_password"/><br />
+    <input id="password-confirm" type="password" data-localization-placeholder="login_confirm"/><br />
+
+<!-- TODO translate labels -->
+    <input id="import-recent" type="checkbox" /><label for="import-recent">Import recent pads from your browser (Optional)</label><br />
+    <input id="accept-terms" type="checkbox" /><label for="accept-terms">Accept the terms and conditions</label><br />
+    <input id="promise" type="checkbox" /><label for="promise">I promise to remember my username and password</label><br />
+
+    <button id="register" class="btn btn-primary" data-localization="login_login">Sign up</button>
+</div>
+

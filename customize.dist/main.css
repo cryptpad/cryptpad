@@ -450,28 +450,33 @@
 #cryptpadTopBar .right a {
   font-weight: 500;
   font-size: 0.75em;
-  color: #558;
+  color: #41b7d8;
 }
 #cryptpadTopBar .right a:hover {
+  color: #279ebf !important;
   text-decoration: underline;
+}
+#cryptpadTopBar .right a:visited {
+  color: #41b7d8;
 }
 .cp footer {
-  background: #cccccc;
+  background: #f4f4f4;
   font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   padding-top: 1em;
+  font-size: 1.2em;
 }
 .cp footer a {
-  color: #555;
+  color: #41b7d8;
 }
 .cp footer a:visited {
-  color: #777;
+  color: #41b7d8;
 }
 .cp footer a:hover {
-  color: #333;
+  color: #279ebf !important;
 }
 .cp footer li:first-child {
+  font-size: 1.2em;
   font-weight: bold;
-  text-decoration: underline;
 }
 html.cp,
 .cp body {
@@ -560,10 +565,10 @@ html.cp,
   text-decoration: none;
 }
 .cp a:hover {
-  color: #279ebf;
+  color: #279ebf !important;
 }
 .cp a:visited {
-  color: #558;
+  color: #41b7d8;
 }
 .cp img {
   height: auto;
@@ -600,7 +605,7 @@ html.cp,
 }
 .cp .page .info-container {
   color: #121212;
-  width: 900px;
+  width: 800px;
   max-width: 100%;
   margin: 0 auto;
 }
@@ -630,7 +635,7 @@ html.cp,
 @media screen and (max-width: 800px) {
 }
 .cp .page.category {
-  background: #f7f7f7;
+  background: #f4f4f4;
 }
 .cp .page .app {
   display: inline-block;
@@ -687,7 +692,6 @@ html.cp,
 }
 .cp .page p {
   font-size: 18px;
-  text-align: justify;
 }
 .cp .btn-default:hover {
   background-color: #d8d8d8;
@@ -757,8 +761,8 @@ html.cp,
   z-index: 1;
   font-size: medium;
 }
-.cp #main #main-container,
-.cp #main_other #main-container {
+.cp #main #align-container,
+.cp #main_other #align-container {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -769,24 +773,29 @@ html.cp,
   width: 1000px;
   max-width: 90%;
 }
-.cp #main #data,
-.cp #main_other #data {
-  width: 600px;
-  max-width: 60%;
-  color: #fff;
-  padding: 15px;
-  box-sizing: border-box;
+.cp #main #main-container,
+.cp #main_other #main-container {
   position: absolute;
   display: inline-block;
   top: 50%;
   left: 0;
   transform: translateY(-50%);
+  width: 100%;
+}
+.cp #main #data,
+.cp #main_other #data {
+  width: 600px;
+  max-width: 60%;
+  color: #fff;
+  padding: 0 15px;
+  box-sizing: border-box;
+  display: inline-block;
 }
 .cp #main #data p,
 .cp #main_other #data p {
   margin: 0;
   padding: 0;
-  font-size: 20px;
+  font-size: 28px;
   line-height: 1.5em;
 }
 .cp #main #data h1,
@@ -797,6 +806,7 @@ html.cp,
   font-size: 48px;
   line-height: 1.2em;
   color: #fff;
+  padding: 0;
 }
 .cp #main #data h5,
 .cp #main_other #data h5 {
@@ -810,15 +820,11 @@ html.cp,
 }
 .cp #main #loggedIn,
 .cp #main_other #loggedIn {
+  float: right;
   color: #fff;
   display: inline-block;
-  position: absolute;
-  top: 50%;
-  right: 0;
-  margin-left: 50px;
   width: 350px;
   max-width: 35%;
-  transform: translateY(-50%);
   text-align: center;
   font-weight: bold;
 }
@@ -836,11 +842,7 @@ html.cp,
 }
 .cp #main #userForm,
 .cp #main_other #userForm {
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  margin-left: 50px;
+  float: right;
   display: inline-block;
   width: 350px;
   max-width: 35%;
@@ -848,47 +850,15 @@ html.cp,
   box-sizing: border-box;
   font-family: lato, Helvetica, sans-serif;
   color: #fff;
-  /*.remember {
-            vertical-align: middle;
-            line-height: 28px;
-            height: 28px;
-            display: inline-block;
-            margin: 10px 0 20px 0;
-        }
-
-
-        [type="checkbox"] {
-            vertical-align: text-top;
-            margin: 0;
-            //margin-top: 10px;
-            margin-right: 5px;
-        }
-        */
-}
-.cp #main #userForm h1,
-.cp #main_other #userForm h1 {
-  color: #fff;
-  padding: 0;
-}
-.cp #main #userForm [type="text"],
-.cp #main_other #userForm [type="text"],
-.cp #main #userForm [type="password"],
-.cp #main_other #userForm [type="password"] {
-  width: 100%;
 }
 .cp #main #userForm label,
 .cp #main_other #userForm label {
   margin-bottom: 0;
 }
-.cp #main #userForm [type="checkbox"],
-.cp #main_other #userForm [type="checkbox"] {
-  margin-right: 5px;
-}
 .cp #main #userForm button,
 .cp #main_other #userForm button {
   font-weight: bold;
   width: 100%;
-  margin: 2px 0px;
   cursor: pointer;
 }
 .cp #main #userForm button.half,
@@ -899,17 +869,80 @@ html.cp,
 .cp #main_other #userForm button.half:not(.first) {
   float: right;
 }
+.cp #main #userForm p,
+.cp #main_other #userForm p {
+  margin: 0;
+  padding: 0;
+}
+.cp #main #userForm p.buttons,
+.cp #main_other #userForm p.buttons {
+  margin-bottom: 10px;
+}
+.cp #main #userForm p.buttons .dropdown-bar,
+.cp #main_other #userForm p.buttons .dropdown-bar {
+  display: block;
+}
+.cp #main #userForm p.buttons .dropdown-bar button,
+.cp #main_other #userForm p.buttons .dropdown-bar button {
+  white-space: normal;
+  text-align: left;
+}
+.cp #main #userForm p.buttons .dropdown-bar button .fa,
+.cp #main_other #userForm p.buttons .dropdown-bar button .fa {
+  float: right;
+}
+.cp #main #userForm p.separator,
+.cp #main_other #userForm p.separator {
+  margin: 5px 0 15px 0;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+.cp #main #userForm p a,
+.cp #main_other #userForm p a {
+  color: #fff;
+  font-weight: bold;
+  font-size: 14px;
+}
+.cp #main #userForm p a:hover,
+.cp #main_other #userForm p a:hover,
+.cp #main #userForm p a :visited,
+.cp #main_other #userForm p a :visited {
+  color: #fff !important;
+}
+.cp #main #userForm .driveLink,
+.cp #main_other #userForm .driveLink {
+  padding-left: 1rem;
+  font-size: 1em;
+}
+.cp #main #userForm > *,
+.cp #main_other #userForm > * {
+  margin-bottom: 10px;
+}
 @media screen and (max-width: 800px) {
-  .cp #main #main-container,
-  .cp #main_other #main-container {
+  .cp #main,
+  .cp #main_other {
+    position: relative;
+    height: auto;
+  }
+  .cp #main #align-container,
+  .cp #main_other #align-container {
     transform: initial;
     position: relative;
     display: block;
     width: 90%;
     left: 0;
   }
-}
-@media screen and (max-width: 800px) {
+  .cp #main #main-container,
+  .cp #main_other #main-container {
+    position: relative;
+    transform: unset;
+    top: 0;
+  }
+  .cp #main #data,
+  .cp #main_other #data {
+    text-align: center;
+  }
   .cp #main #userForm,
   .cp #main_other #userForm,
   .cp #main #loggedIn,
@@ -923,41 +956,12 @@ html.cp,
     max-width: 100%;
     margin: 10px 0;
     box-sizing: border-box;
-  }
-}
-@media screen and (max-width: 800px) {
-  .cp #main #userForm,
-  .cp #main_other #userForm,
-  .cp #main #loggedIn,
-  .cp #main_other #loggedIn {
-    border: 1px solid #888;
-  }
-}
-@media screen and (max-width: 800px) {
-  .cp #main,
-  .cp #main_other {
-    position: relative;
-    height: auto;
-    top: -10px;
+    float: none;
   }
 }
 .cp #main .buttons,
 .cp #main_other .buttons {
   margin-top: 15px;
-}
-.cp p.buttons,
-.cp div.buttons {
-  text-align: center;
-}
-.cp p.buttons button,
-.cp div.buttons button {
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 10px;
-}
-.cp p.buttons .dropdown-bar,
-.cp div.buttons .dropdown-bar {
-  margin-left: 4px;
 }
 .cp #fileManagerIframe {
   width: 100%;

@@ -16,133 +16,116 @@ define([
     */
 
     var Store = {};
-    var storeObj;
-    var ready = false;
-    var filesOp;
-    var exp = {};
+    var store;
 
-    var safeSet = function (key, val) {
-        storeObj[key] = val;
-    };
+    var initStore = function (filesOp, storeObj, exp) {
+        var ret = {};
 
-    // Store uses nodebacks...
-    Store.set = function (key, val, cb) {
-        safeSet(key, val);
-        cb();
-    };
+        var safeSet = function (key, val) {
+            storeObj[key] = val;
+        };
 
-    // implement in alternative store
-    Store.setBatch = function (map, cb) {
-        Object.keys(map).forEach(function (key) {
-            safeSet(key, map[key]);
-        });
-        cb(void 0, map);
-    };
+        // Store uses nodebacks...
+        ret.set = function (key, val, cb) {
+            safeSet(key, val);
+            cb();
+        };
 
-    Store.setDrive = function (key, val, cb) {
-        storeObj.drive[key] = val;
-        cb();
-    };
-
-    var safeGet = window.safeGet = function (key) {
-        return storeObj[key];
-    };
-
-    Store.get = function (key, cb) {
-        cb(void 0, safeGet(key));
-    };
-
-    // implement in alternative store
-    Store.getBatch = function (keys, cb) {
-        var res = {};
-        keys.forEach(function (key) {
-            res[key] = safeGet(key);
-        });
-        cb(void 0, res);
-    };
-
-    Store.getDrive = function (key, cb) {
-        cb(void 0, storeObj.drive[key]);
-    };
-
-    var safeRemove = function (key) {
-        delete storeObj[key];
-    };
-
-    Store.remove = function (key, cb) {
-        safeRemove(key);
-        cb();
-    };
-
-    // implement in alternative store
-    Store.removeBatch = function (keys, cb) {
-        keys.forEach(function (key) {
-            safeRemove(key);
-        });
-        cb();
-    };
-
-    Store.keys = function (cb) {
-        cb(void 0, Object.keys(storeObj));
-    };
-
-    Store.addPad = function (href, path, name) {
-        filesOp.addPad(href, path, name);
-    };
-
-    Store.forgetPad = function (href, cb) {
-        filesOp.forgetPad(href);
-        cb();
-    };
-
-    Store.addTemplate = function (href) {
-        filesOp.addTemplate(href);
-    };
-
-    Store.listTemplates = function () {
-        return filesOp.listTemplates();
-    };
-
-    Store.getProxy = function () {
-        return exp;
-    };
-
-    Store.getLoginName = function () {
-        return storeObj.login_name;
-    };
-
-    var changeHandlers = Store.changeHandlers = [];
-
-    Store.change = function (f) {
-        if (typeof(f) !== 'function') {
-            throw new Error('[Store.change] callback must be a function');
-        }
-        changeHandlers.push(f);
-
-        if (changeHandlers.length === 1) {
-            // start listening for changes
-/* TODO: listen for changes in the proxy
-            window.addEventListener('storage', function (e) {
-                changeHandlers.forEach(function (f) {
-                    f({
-                        key: e.key,
-                        oldValue: e.oldValue,
-                        newValue: e.newValue,
-                    });
-                });
+        // implement in alternative store
+        ret.setBatch = function (map, cb) {
+            Object.keys(map).forEach(function (key) {
+                safeSet(key, map[key]);
             });
-*/
-        }
+            cb(void 0, map);
+        };
+
+        ret.setDrive = function (key, val, cb) {
+            storeObj.drive[key] = val;
+            cb();
+        };
+
+        var safeGet = function (key) {
+            return storeObj[key];
+        };
+
+        ret.get = function (key, cb) {
+            cb(void 0, safeGet(key));
+        };
+
+        // implement in alternative store
+        ret.getBatch = function (keys, cb) {
+            var res = {};
+            keys.forEach(function (key) {
+                res[key] = safeGet(key);
+            });
+            cb(void 0, res);
+        };
+
+        ret.getDrive = function (key, cb) {
+            cb(void 0, storeObj.drive[key]);
+        };
+
+        var safeRemove = function (key) {
+            delete storeObj[key];
+        };
+
+        ret.remove = function (key, cb) {
+            safeRemove(key);
+            cb();
+        };
+
+        // implement in alternative store
+        ret.removeBatch = function (keys, cb) {
+            keys.forEach(function (key) {
+                safeRemove(key);
+            });
+            cb();
+        };
+
+        ret.keys = function (cb) {
+            cb(void 0, Object.keys(storeObj));
+        };
+
+        ret.addPad = function (href, path, name) {
+            filesOp.addPad(href, path, name);
+        };
+
+        ret.forgetPad = function (href, cb) {
+            filesOp.forgetPad(href);
+            cb();
+        };
+
+        ret.addTemplate = function (href) {
+            filesOp.addTemplate(href);
+        };
+
+        ret.listTemplates = function () {
+            return filesOp.listTemplates();
+        };
+
+        ret.getProxy = function () {
+            return exp;
+        };
+
+        ret.getLoginName = function () {
+            return storeObj.login_name;
+        };
+
+        var changeHandlers = ret.changeHandlers = [];
+
+        ret.change = function (f) {};
+
+        return ret;
     };
 
-    var onReady = function (f, proxy, storageKey) {
-        filesOp = FO.init(proxy.drive, {
+    var onReady = function (f, proxy, storageKey, exp) {
+        var fo = FO.init(proxy.drive, {
             storageKey: storageKey
         });
-        storeObj = proxy;
-        ready = true;
+        //storeObj = proxy;
+        store = initStore(fo, proxy, exp);
         if (typeof(f) === 'function') {
-            f(void 0, Store);
+            f(void 0, store);
         }
     };
 
@@ -167,6 +150,8 @@ define([
             logLevel: 1,
         };
 
+        var exp = {};
+
         window.addEventListener('storage', function (e) {
             var key = e.key;
             if (e.key !== Cryptpad.userHashKey) { return; }
@@ -175,8 +160,6 @@ define([
             if (!o && n) {
                 window.location.reload();
             } else if (o && !n) {
-                //window.location.reload();
-                //window.location.href = '/';
                 $(window).on('keyup', function (e) {
                     if (e.keyCode === 27) {
                         Cryptpad.removeLoadingScreen();
@@ -192,6 +175,7 @@ define([
         });
 
         var rt = window.rt = Listmap.create(listmapConfig);
+
         exp.proxy = rt.proxy;
         rt.proxy.on('create', function (info) {
             exp.info = info;
@@ -199,44 +183,36 @@ define([
                 localStorage.FS_hash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
             }
         }).on('ready', function () {
-        if (ready) { return; }
+            if (store) { return; } // the store is already ready, it is a reconnection
             if (!rt.proxy.drive || typeof(rt.proxy.drive) !== 'object') { rt.proxy.drive = {}; }
             var drive = rt.proxy.drive;
             // Creating a new anon drive: import anon pads from localStorage
             if (!drive[Cryptpad.storageKey] || !Cryptpad.isArray(drive[Cryptpad.storageKey])) {
-                var oldStore = Cryptpad.getStore(true);
-                Cryptpad.getRecentPads(function (err, s) {
-                    drive[Cryptpad.storageKey] = s;
-                    onReady(f, rt.proxy, Cryptpad.storageKey);
-                }, true);
+                Cryptpad.getLegacyPads(function (err, data) {
+                    drive[Cryptpad.storageKey] = data;
+                    onReady(f, rt.proxy, Cryptpad.storageKey, exp);
+                });
                 return;
             }
-            onReady(f, rt.proxy, Cryptpad.storageKey);
+            // Drive already exist: return the existing drive, don't load data from legacy store
+            onReady(f, rt.proxy, Cryptpad.storageKey, exp);
         })
         .on('disconnect', function (info) {
-            //setEditable(false);
+            // We only manage errors during the loading screen here. Other websocket errors are handled by the apps
             if (info.error) {
-                //Cryptpad.alert(Messages.websocketError);
                 if (typeof Cryptpad.storeError === "function") {
                     Cryptpad.storeError();
                 }
                 return;
             }
-            //Cryptpad.alert(Messages.common_connectionLost);
         });
 
     };
 
     Store.ready = function (f, Cryptpad) {
-        /*if (Cryptpad.parsePadUrl(window.location.href).type === "file") {
+        if (store) { // Store.ready probably called twice, store already ready
             if (typeof(f) === 'function') {
-                f(void 0, Cryptpad.getStore(true));
-            }
-            return;
-        }*/
-        if (ready) {
-            if (typeof(f) === 'function') {
-                f(void 0, Store);
+                f(void 0, store);
             }
         } else {
             init(f, Cryptpad);
