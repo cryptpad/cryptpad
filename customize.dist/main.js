@@ -103,6 +103,9 @@ define([
                 sessionStorage.register = 1;
                 document.location.href = '/user/';
             });
+            $('button.gotodrive').click(function (e) {
+                document.location.href = '/drive/';
+            });
 
             var $passwd = $('#password');
             $passwd.on('keyup', function (e) {
