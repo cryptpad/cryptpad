@@ -468,7 +468,7 @@ define([
                 window.open('/user');
             });
             $userAdmin.find('a.register').click(function (e) {
-                window.open('/user#register');
+                window.open('/register/');
             });
 
             if (config.userName && config.userName.setName && config.userName.lastName) {
