@@ -27,6 +27,9 @@
             right: 0px;
             left: 0px;
             padding: 0px;
+            height: 100%;
+            min-height: 740px;
+            position: absolute;
         }
         #pad-iframe {
             width:100%;
@@ -36,6 +39,8 @@
             padding:0;
             overflow:hidden;
             box-sizing: border-box;
+            min-height: 740px;
+            position: absolute;
         }
         /* We use !important here to override the 96% set to the element in DecorateToolbar.js
            when we enter fullscreen mode. It allows us to avoid changing the iframe's size in JS */

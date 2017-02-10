@@ -56,6 +56,7 @@ define([
         }
 
         var presentMode = Slide.isPresentURL();
+        var printMode = Slide.isPrintURL();
 
         var onConnectError = function (info) {
             Cryptpad.errorLoadingScreen(Messages.websocketError);
@@ -136,7 +137,7 @@ define([
             Slide.setModal($modal, $content, $pad, ifrw);
 
             var enterPresentationMode = function (shouldLog) {
-                Slide.show(true, $textarea.val());
+                Slide.show(true, $textarea.val(), false);
                 if (shouldLog) {
                     Cryptpad.log(Messages.presentSuccess);
                 }
@@ -147,6 +148,20 @@ define([
 
             if (presentMode) {
                 enterPresentationMode(true);
+            }
+            
+            var enterPrintMode = function (shouldLog) {
+                Slide.show(true, $textarea.val(), true);
+                if (shouldLog) {
+                    Cryptpad.log(Messages.presentSuccess);
+                }
+            };
+            var leavePrintMode = function () {
+                Slide.show(false);
+            };
+
+            if (printMode) {
+                enterPrintMode(true);
             }
 
             var setEditable = module.setEditable = function (bool) {
@@ -500,6 +515,21 @@ define([
                 }
                 $rightside.append($leavePresent);
 
+                var $print = Cryptpad.createButton('print', true)
+                    .click(function () {
+                    enterPrintMode(true);
+                });
+                if (printMode) {
+                    $print.hide();
+                }
+                $rightside.append($print);
+
+                var $leavePrint = Cryptpad.createButton('source', true)
+                    .click(leavePrintMode);
+                if (!printMode) {
+                    $leavePrint.hide();
+                }
+
 
                 var configureTheme = function () {
                     /*var $language = $('<span>', {
@@ -588,7 +618,7 @@ define([
                 configureColors();
                 configureTheme();
 
-                if (presentMode) {
+                if (presentMode || printMode) {
                     $('#top-bar').hide();
                 }
 

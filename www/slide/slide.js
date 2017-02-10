@@ -107,11 +107,13 @@ define([
     };
 
     var draw = Slide.draw =  function (i) {
+        if (isPrintURL()) 
+         return;
         console.log("Trying to draw slide #%s", i);
         if (typeof(Slide.content[i]) !== 'string') { return; }
 
         var c = Slide.content[i];
-        var Dom = domFromHTML('<div id="content">' + Marked(c) + '</div>');
+        var Dom = domFromHTML('<div id="content" class="slide2">' + Marked(c) + '</div>');
         removeListeners(Dom.body);
         var patch = makeDiff(domFromHTML($content[0].outerHTML), Dom);
 
@@ -123,6 +125,28 @@ define([
         change(Slide.lastIndex, Slide.index);
     };
 
+    var print = Slide.print =  function () {
+        console.log("Trying to print slides begin");
+        console.log("Trying to print slides 2");
+
+        var c = '<div id="content" class="print">';
+        for (var i=0;i<Slide.content.length;i++) {
+          c += '<div class="slide2">' + Marked(Slide.content[i]) + '</div>'; 
+        }
+        c += '</div>';
+        console.log("Trying to print slides 3");
+        var Dom = domFromHTML(c);
+        removeListeners(Dom.body);
+        var patch = makeDiff(domFromHTML($content[0].outerHTML), Dom);
+
+        if (typeof(patch) === 'string') {
+            $content.html(Marked(c));
+        } else {
+            DD.apply($content[0], patch);
+        }
+        console.log("Trying to print slides end");
+    };
+
     var isPresentURL = Slide.isPresentURL = function () {
         var hash = window.location.hash;
         // Present mode has /present at the end of the hash
@@ -130,16 +154,33 @@ define([
         return urlLastFragment === "present";
     };
 
-    var show = Slide.show = function (bool, content) {
+    var isPrintURL = Slide.isPrintURL = function () {
+        var hash = window.location.hash;
+        // Present mode has /present at the end of the hash
+        var urlLastFragment = hash.slice(hash.lastIndexOf('/')+1);
+        return urlLastFragment === "print";
+    };
+
+    var show = Slide.show = function (bool, content, printMode) {
         Slide.shown = bool;
         if (bool) {
             Slide.update(content);
-            Slide.draw(Slide.index);
+            if (printMode) {
+              Slide.print();
+            } else {
+              Slide.draw(Slide.index);
+            }
             $modal.addClass('shown');
             $(ifrw).focus();
             change(null, Slide.index);
-            if (!isPresentURL()) {
+            if (printMode) {
+             if (!isPrintURL()) {
+                window.location.hash += '/print';
+             } 
+            } else {
+             if (!isPresentURL()) {
                 window.location.hash += '/present';
+             } 
             }
             $pad.contents().find('.cryptpad-present-button').hide();
             $pad.contents().find('.cryptpad-source-button').show();
@@ -148,8 +189,13 @@ define([
             $('.top-bar').hide();
             return;
         }
-        window.location.hash = window.location.hash.replace(/\/present$/, '');
-        change(Slide.index, null);
+        if (printMode) {
+         window.location.hash = window.location.hash.replace(/\/print$/, '');
+         change(Slide.index, null);
+        } else {
+         window.location.hash = window.location.hash.replace(/\/present$/, '');
+         change(Slide.index, null);
+        }
         $pad.contents().find('.cryptpad-present-button').show();
         $pad.contents().find('.cryptpad-source-button').hide();
         $pad.removeClass('fullscreen');
@@ -162,9 +208,15 @@ define([
         if (!Slide.shown) { return; }
         var old = Slide.content[Slide.index];
         Slide.content = content.split(/\n\s*\-\-\-\s*\n/).filter(truthy);
-        if (old !== Slide.content[Slide.index]) {
+
+        if (isPrintURL()) {
+          print();
+          return;
+        } else {
+         if (old !== Slide.content[Slide.index]) {
             draw(Slide.index);
             return;
+         }
         }
         change(Slide.lastIndex, Slide.index);
     };
