@@ -82,35 +82,77 @@ define([
             $block.find('button').addClass('btn').addClass('btn-primary');
             $block.appendTo($parent);
         };
-        var addButtonHandlers = function () {
-            $('button.login').click(function (e) {
-                var username = $('#name').val();
-                var passwd = $('#password').val();
-                var remember = $('#rememberme').is(':checked');
-                sessionStorage.login_user = username;
-                sessionStorage.login_pass = passwd;
-                sessionStorage.login_rmb = remember;
-                sessionStorage.login = 1;
-                document.location.href = '/user/';
+
+
+        /* Log in UI */
+        var Login;
+        // deferred execution to avoid unnecessary asset loading
+        var loginReady = function (cb) {
+            if (Login) {
+                if (typeof(cb) === 'function') { cb(); }
+                return;
+            }
+            require([
+                '/common/login.js',
+            ], function (_Login) {
+                Login = Login || _Login;
+                if (typeof(cb) === 'function') { cb(); }
             });
+        };
+
+        var $uname = $('#name').on('focus', loginReady);
+
+        var $passwd = $('#password')
+        // background loading of login assets
+        .on('focus', loginReady)
+        // enter key while on password field clicks signup
+        .on('keyup', function (e) {
+            if (e.which !== 13) { return; } // enter
+            $('button.login').click();
+        });
+
+        $('button.login').click(function (e) {
+            loginReady(function () {
+                var uname = $uname.val();
+                var passwd = $passwd.val();
+
+                Login.loginOrRegister(uname, passwd, false, function (err, result) {
+                    if (!err) {
+                        // successful validation and user already exists
+                        // set user hash in localStorage and redirect to drive
+                        localStorage.User_hash = result.userHash;
+                        document.location.href = '/drive/';
+
+                        return;
+                    }
+                    switch (err) {
+                        case 'NO_SUCH_USER':
+                            Cryptpad.alert('Invalid username or password. Try again, or sign up'); // XXX
+                            break;
+                        case 'INVAL_USER':
+                            Cryptpad.alert('Username required'); // XXX
+                            break;
+                        case 'INVAL_PASS':
+                            Cryptpad.alert('Password required'); // XXX
+                            break;
+                        default: // UNHANDLED ERROR
+                    }
+                });
+            });
+        });
+        /* End Log in UI */
+
+        var addButtonHandlers = function () {
             $('button.register').click(function (e) {
                 var username = $('#name').val();
                 var passwd = $('#password').val();
                 var remember = $('#rememberme').is(':checked');
                 sessionStorage.login_user = username;
                 sessionStorage.login_pass = passwd;
-                sessionStorage.login_rmb = remember;
-                sessionStorage.register = 1;
-                document.location.href = '/user/';
+                document.location.href = '/register/';
             });
             $('button.gotodrive').click(function (e) {
                 document.location.href = '/drive/';
-            });
-
-            var $passwd = $('#password');
-            $passwd.on('keyup', function (e) {
-                if (e.which !== 13) { return; } // enter
-                $('button.login').click();
             });
         };
 
