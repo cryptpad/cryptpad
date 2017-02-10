@@ -1,12 +1,22 @@
 <!DOCTYPE html>
 <html class="cp">
 <head>
+    <title data-localization="main_title">Cryptpad: Log in</title>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Cryptpad: login</title>
-    <script data-main="main" src="/bower_components/requirejs/require.js"></script>
-    <link rel="stylesheet" href="/customize/main.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="/customize/main.css" />
+    <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
+    <link rel="icon" type="image/png" href="/customize/main-favicon.png" id="favicon"/>
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <script data-main="main" src="/bower_components/requirejs/require.js"></script>
+    <script src="/bower_components/requirejs/require.js"></script>
+    <script>
+        require.config({
+            waitSeconds: 60,
+        });
+    </script>
 </head>
 <body class="html">
     <div id="cryptpadTopBar">
@@ -57,23 +67,9 @@
         </div>
 
         <div id="userForm" class="form-group hidden">
-            <input class="form-control" id="username" type="text" autocomplete="off" autocorrect="off"
-                autocapitalize="off" spellcheck="false" data-localization-placeholder="login_username" autofocus/>
-            <input class="form-control" id="password" type="password" data-localization-placeholder="login_password"/>
-            <input class="form-control" id="password-confirm" type="password" data-localization-placeholder="login_confirm"/>
-
-
-            <!-- TODO translate labels -->
-                <input id="import-recent" type="checkbox" checked />
-                <label for="import-recent">Import pad history (Recommended)</label><br />
-
-                <input id="accept-terms" type="checkbox" />
-                <label for="accept-terms">I accept <a href="/terms.html">the terms</a></label><br />
-
-                <input id="promise" type="checkbox" />
-                <label for="promise">I will remember my username and password</label><br />
-
-                <button id="register" class="btn btn-primary" data-localization="login_login">Sign up</button>
+            <input type="text" id="name" name="name" class="form-control" data-localization-placeholder="login_username" autofocus>
+            <input type="password" id="password" name="password" class="form-control" data-localization-placeholder="login_password">
+            <button class="btn btn-primary login first" data-localization="login_login"></button>
         </div>
     </div>
     </div>
