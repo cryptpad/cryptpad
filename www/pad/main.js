@@ -628,8 +628,8 @@ define([
                 var updateIcon = function () {
                     $collapse.removeClass('fa-caret-down').removeClass('fa-caret-up');
                     var isCollapsed = !$bar.find('.cke_toolbox_main').is(':visible');
-                    if (isCollapsed) { $collapse.addClass('fa-caret-down') }
-                    else { $collapse.addClass('fa-caret-up') }
+                    if (isCollapsed) { $collapse.addClass('fa-caret-down'); }
+                    else { $collapse.addClass('fa-caret-up'); }
                 };
                 updateIcon();
                 $collapse.click(function () {

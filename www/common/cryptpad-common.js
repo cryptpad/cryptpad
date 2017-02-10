@@ -82,6 +82,7 @@ define([
         });
     };
 
+    var logoutHandlers = [];
     var logout = common.logout = function (cb) {
         [
             userNameKey,
@@ -105,7 +106,6 @@ define([
 
         if (cb) { cb(); }
     };
-    var logoutHandlers=  [];
     var onLogout = common.onLogout = function (h) {
         if (typeof (h) !== "function") { return; }
         if (logoutHandlers.indexOf(h) !== -1) { return; }
