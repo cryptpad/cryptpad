@@ -369,7 +369,7 @@ define([
         require(['/customize/store.js'], function(Legacy) {
             Legacy.ready(function (err, legacy) {
                 if (err) { cb(err, null); return; }
-                Legacy.get(storageKey, function (err2, recentPads) {
+                legacy.get(storageKey, function (err2, recentPads) {
                     if (err2) { cb(err2, null); return; }
                     if (isArray(recentPads)) {
                         cb(void 0, migrateRecentPads(recentPads));
