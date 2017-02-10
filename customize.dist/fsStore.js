@@ -4,7 +4,8 @@ define([
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
-    '/common/fileObject.js'
+    '/common/fileObject.js',
+    '/bower_components/jquery/dist/jquery.min.js',
 ], function (Config, Messages, Listmap, Crypto, TextPatcher, FO) {
     /*
         This module uses localStorage, which is synchronous, but exposes an
@@ -14,6 +15,7 @@ define([
         To override these methods, create another file at:
         /customize/storage.js
     */
+    var $ = window.jQuery;
 
     var Store = {};
     var store;
