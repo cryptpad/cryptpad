@@ -333,17 +333,17 @@
   height: 100px;
 }
 /* The container <div> - needed to position the dropdown content */
-.cp .dropdown-bar {
+.dropdown-bar {
   position: relative;
   display: inline-block;
 }
-.cp .dropdown-bar .fa {
+.dropdown-bar .fa {
   font-family: FontAwesome;
 }
-.cp .dropdown-bar button .fa-caret-down {
+.dropdown-bar button .fa-caret-down {
   margin-left: 5px;
 }
-.cp .dropdown-bar .dropdown-bar-content {
+.dropdown-bar .dropdown-bar-content {
   display: none;
   position: absolute;
   background-color: #f9f9f9;
@@ -353,13 +353,13 @@
   max-height: 300px;
   overflow-y: auto;
 }
-.cp .dropdown-bar .dropdown-bar-content.left {
+.dropdown-bar .dropdown-bar-content.left {
   right: 0;
 }
-.cp .dropdown-bar .dropdown-bar-content:hover {
+.dropdown-bar .dropdown-bar-content:hover {
   display: block;
 }
-.cp .dropdown-bar .dropdown-bar-content a {
+.dropdown-bar .dropdown-bar-content a {
   color: black !important;
   padding: 5px 16px;
   text-decoration: none;
@@ -372,31 +372,31 @@
   float: none;
   text-align: left;
 }
-.cp .dropdown-bar .dropdown-bar-content a:hover {
+.dropdown-bar .dropdown-bar-content a:hover {
   background-color: #f1f1f1;
   color: black !important;
 }
-.cp .dropdown-bar .dropdown-bar-content hr {
+.dropdown-bar .dropdown-bar-content hr {
   margin: 5px 0px;
   height: 1px;
   background: #bbb;
 }
-.cp .dropdown-bar .dropdown-bar-content p {
+.dropdown-bar .dropdown-bar-content p {
   min-width: 160px;
   padding: 5px;
   margin: 0;
   white-space: normal;
   text-align: left;
 }
-.cp .dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users {
+.dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users {
   text-align: baseline;
 }
-.cp .dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users .yourself,
-.cp .dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users .anonymous,
-.cp .dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users .viewer {
+.dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users .yourself,
+.dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users .anonymous,
+.dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users .viewer {
   font-style: italic;
 }
-.cp .dropdown-bar .dropdown-bar-content p h2 {
+.dropdown-bar .dropdown-bar-content p h2 {
   font-weight: bold;
   text-align: center;
   background-color: #EEEEEE;
