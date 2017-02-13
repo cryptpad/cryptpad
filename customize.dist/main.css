@@ -799,6 +799,10 @@ html.cp,
   font-size: 28px;
   line-height: 1.5em;
 }
+.cp #main #data p.register-explanation,
+.cp #main_other #data p.register-explanation {
+  font-size: 18px;
+}
 .cp #main #data h1,
 .cp #main_other #data h1,
 .cp #main #data h2,
