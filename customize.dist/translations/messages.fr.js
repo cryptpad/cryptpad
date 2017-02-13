@@ -294,6 +294,16 @@ define(function () {
     out.register_mustAcceptTerms = "Vous devez accepter les conditions d'utilisation.";
     out.register_mustRememberPass = "Nous ne pouvons pas réinitialiser votre mot de passe si vous l'oubliez. C'est important que vous vous en souveniez!";
 
+    out.register_header = "Bienvenue dans Cryptpad";
+    out.register_explanation = [
+        "<p>Faisons d'abord le point sur certaines choses</p>",
+        "<ul>",
+            "<li>Votre mot de passe est la clé secrète de tous vos documents. Si vous le perdez, il n'y a aucun moyen de récupérer vos données.</li>",
+            "<li>Vous pouvez importer les documents récents de ce navigateur pour les avoir dans votre compte utilisateur.</li>",
+            "<li>Si vous utilisez un ordinateur partagé, vous devez vous déconnecter avant de partir, fermer l'onglet n'est pas suffisant.</li>",
+        "</ul>"
+    ];
+
     // index.html
 
     //out.main_p1 = 'CryptPad est l\'éditeur collaboratif en temps réel <strong>zero knowledge</strong>. Le chiffrement est effectué depuis votre navigateur, ce qui protège les données contre le serveur, le cloud, et la NSA. La clé de chiffrement est stockée dans l\'<a href="https://fr.wikipedia.org/wiki/Identificateur_de_fragment">identifieur de fragment</a> de l\'URL qui n\'est jamais envoyée au serveur mais est accessible depuis javascript, de sorte qu\'en partageant l\'URL, vous donnez l\'accès au pad à ceux qui souhaitent participer.';
