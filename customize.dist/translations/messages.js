@@ -292,6 +292,16 @@ define(function () {
     out.register_acceptTerms = "I accept <a href='/terms.html'>the terms of use</a>";
     out.register_rememberPassword = "I will remember my login name and password";
 
+    out.register_header = "Welcome to Cryptpad";
+    out.register_explanation = [
+        "<p>Lets go over a couple things first</p>",
+        "<ul>",
+            "<li>Your password is your secret key which encrypts all of your pads. If you lose it there is no way we can recover your data.</li>",
+            "<li>You can import pads which were recently viewed in your browser so you have them in your account.</li>",
+            "<li>If you are using a shared computer, you need to log out when you are done, closing the tab is not enough.</li>",
+        "</ul>"
+    ];
+
     // index.html
 
     //out.main_p1 = 'CryptPad is the <strong>zero knowledge</strong> realtime collaborative editor.  Encryption carried out in your web browser protects the data from the server, the cloud, and the NSA.  The secret encryption key is stored in the URL <a href="https://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a> which is never sent to the server but is available to javascript so by sharing the URL, you give authorization to others who want to participate.';
