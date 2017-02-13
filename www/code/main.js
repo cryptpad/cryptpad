@@ -157,8 +157,8 @@ define([
                 readOnly: readOnly,
                 crypto: Crypto.createEncryptor(secret.keys),
                 setMyID: setMyID,
-                transformFunction: JsonOT.transform || JsonOT.validate,
-                network: Cryptpad.getNetwork()
+                network: Cryptpad.getNetwork(),
+                transformFunction: JsonOT.validate,
             };
 
             var canonicalize = function (t) { return t.replace(/\r\n/g, '\n'); };

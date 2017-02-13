@@ -290,6 +290,9 @@ define(function () {
     out.register_importRecent = "Importer l'historique (Recommendé)";
     out.register_acceptTerms = "J'accepte <a href='/terms.html'>les conditions d'utilisation</a>";
     out.register_rememberPassword = "Je vais me souvenir de mes identifiants";
+    out.register_passwordsDontMatch = "Les mots de passe doivent être identiques!";
+    out.register_mustAcceptTerms = "Vous devez accepter les conditions d'utilisation.";
+    out.register_mustRememberPass = "Nous ne pouvons pas réinitialiser votre mot de passe si vous l'oubliez. C'est important que vous vous en souveniez!";
 
     // index.html
 

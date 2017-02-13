@@ -10,6 +10,8 @@ define([
         Login: Login,
     };
 
+    var Messages = Cryptpad.Messages;
+
     $(function () {
         var $main = $('#mainBlock');
 
@@ -71,20 +73,40 @@ define([
 
         /* basic validation */
         if (passwd !== confirmPassword) { // do their passwords match?
-            return void Cryptpad.alert('passwords do not match!'); // XXX
+            return void Cryptpad.alert(Messages.register_passwordsDontMatch);
         }
 
         if (!doesAccept) { // do they accept the terms of service?
-            return void Cryptpad.alert('you must accept the terms of service'); // XXX
+            return void Cryptpad.alert(Messages.register_mustAcceptTerms);
         }
 
         if (!doesPromise) { // do they promise to remember their password?
-            return void Cryptpad.alert("We cannot reset your password if you forget it. It's very important that you remember it!"); // XXX
+            return void Cryptpad.alert(Messages.register_mustRememberPass);
         }
 
+        Cryptpad.addLoadingScreen(Messages.login_hashing);
         Login.loginOrRegister(uname, passwd, true, function (err, result) {
-            if (err) { return void Cryptpad.alert(err); }
-            console.log(result);
+            if (err) {
+                switch (err) {
+                    case 'NO_SUCH_USER':
+                        Cryptpad.removeLoadingScreen(function () {
+                            Cryptpad.alert(Messages.login_noSuchUser);
+                        });
+                        break;
+                    case 'INVAL_USER':
+                        Cryptpad.removeLoadingScreen(function () {
+                            Cryptpad.alert(Messages.login_invalUser);
+                        });
+                        break;
+                    case 'INVAL_PASS':
+                        Cryptpad.removeLoadingScreen(function () {
+                            Cryptpad.alert(Messages.login_invalPass);
+                        });
+                        break;
+                    default: // UNHANDLED ERROR
+                        Cryptpad.errorLoadingScreen(Messages.login_unhandledError);
+                }
+            }
             var proxy = result.proxy;
 
             localStorage.User_hash = result.userHash;
@@ -97,7 +119,9 @@ define([
             proxy.login_name = uname;
 
             Cryptpad.whenRealtimeSyncs(result.realtime, function () {
-                document.location.href = '/drive/';
+                Cryptpad.login(result.userHash, result.userName, function () {
+                    document.location.href = '/drive/';
+                });
             });
         });
     });
