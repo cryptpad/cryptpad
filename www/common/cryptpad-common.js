@@ -367,13 +367,15 @@ define([
                 if (/^https*:\/\//.test(pad.href)) {
                     pad.href = common.getRelativeHref(pad.href);
                 }
+                var hash = pad.href.slice(pad.href.indexOf('#')+1);
+                if (!hash || !common.parseHash(hash)) { return; }
                 return pad;
             } else {
                 console.error("[Cryptpad.migrateRecentPads] pad had unexpected value");
                 console.log(pad);
                 return {};
             }
-        });
+        }).filter(function (x) { return x; });
     };
 
     // Get the pads from localStorage to migrate them to the object store
@@ -588,6 +590,9 @@ define([
                 // Edit > Edit (present) > View > View (present)
                 var pHash = parseHash(p.hash);
                 var parsedHash = parseHash(parsed.hash);
+
+                if (!pHash) { return; } // We may have a corrupted pad in our storage, abort here in that case
+
                 if (!shouldUpdate && pHash.version === 1 && parsedHash.version === 1 && pHash.channel === parsedHash.channel) {
                     if (pHash.mode === 'view' && parsedHash.mode === 'edit') { shouldUpdate = true; }
                     else if (pHash.mode === parsedHash.mode && pHash.present) { shouldUpdate = true; }
