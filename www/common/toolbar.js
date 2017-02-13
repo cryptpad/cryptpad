@@ -465,10 +465,10 @@ define([
                 window.location.href = '/';
             });
             $userAdmin.find('a.login').click(function (e) {
-                window.open('/user');
+                window.location.href = '/login/';
             });
             $userAdmin.find('a.register').click(function (e) {
-                window.open('/register/');
+                window.location.href = '/register/';
             });
 
             if (config.userName && config.userName.setName && config.userName.lastName) {
