@@ -328,7 +328,7 @@ define(function () {
     out.main_richText = 'Éditeur de texte';
     out.main_richText_p = 'Éditez des documents texte collaborativement avec notre application <a href="http://ckeditor.com" target="_blank">CkEditor</a> temps-réel et Zero Knowledge.';
     out.main_code = 'Éditeur de code';
-    out.main_code_p = 'Modifier le code de vos logiciel collaborativement grace à notre application <a href="https://www.codemirror.net" target="_blank">CodeMirror</a> temps-réel et Zero Knowledge.';
+    out.main_code_p = 'Modifier votre code collaborativement grâce à notre application <a href="https://www.codemirror.net" target="_blank">CodeMirror</a> temps-réel et Zero Knowledge.';
     out.main_slide = 'Présentations';
     out.main_slide_p = 'Créez vos présentations en syntaxe Markdown collaborativement de manière sécurisée et affichez les dans votre navigateur.';
     out.main_poll = 'Sondages';
