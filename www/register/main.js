@@ -51,7 +51,7 @@ define([
     }
 
     [ $uname, $passwd, $confirm]
-    .some(function ($el) { if (!$el.val()) { return ($el.focus(), true); } });
+    .some(function ($el) { if (!$el.val()) { $el.focus(); return true; } });
 
     // checkboxes
     var $checkImport = $('#import-recent');
@@ -59,18 +59,6 @@ define([
     var $checkPromise = $('#promise');
 
     var $register = $('button#register');
-
-    var proxyIsSynced = function (realtime, cb) {
-        realtime.sync();
-        var interval = 300;
-        var check = function () {
-            if (realtime.getAuthDoc() !== realtime.getUserDoc()) {
-                return window.setTimeout(check, interval);
-            }
-            cb();
-        };
-        window.setTimeout(check, interval);
-    };
 
     $register.click(function () {
         var uname = $uname.val();
@@ -108,7 +96,7 @@ define([
 
             proxy.login_name = uname;
 
-            proxyIsSynced(result.realtime, function () {
+            Cryptpad.whenRealtimeSyncs(result.realtime, function () {
                 document.location.href = '/drive/';
             });
         });
