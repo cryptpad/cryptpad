@@ -70,6 +70,9 @@ define([
     Exports.loginOrRegister = function (uname, passwd, isRegister, cb) {
         if (typeof(cb) !== 'function') { return; }
 
+        // Usernames are all lowercase. No going back on this one
+        uname = uname.toLowerCase();
+
         // validate inputs
         if (!Cred.isValidUsername(uname)) { return void cb('INVAL_USER'); }
         if (!Cred.isValidPassword(passwd)) { return void cb('INVAL_PASS'); }
