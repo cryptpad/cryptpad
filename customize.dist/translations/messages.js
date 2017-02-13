@@ -283,8 +283,13 @@ define(function () {
     out.login_accessDrive = 'Access your drive';
     out.login_orNoLogin = 'or';
 
+    out.login_noSuchUser = 'Invalid username or password. Try again, or sign up';
+    out.login_invalUser = 'Username required';
+    out.login_invalPass = 'Password required';
+    out.login_unhandledError = 'An unexpected error occured :(';
+
     out.register_importRecent = "Import pad history (Recommended)";
-    out.register_acceptTerms = "I accept <a href='/terms.html'>the terms</a>";
+    out.register_acceptTerms = "I accept <a href='/terms.html'>the terms of use</a>";
     out.register_rememberPassword = "I will remember my login name and password";
 
     // index.html

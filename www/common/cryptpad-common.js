@@ -746,7 +746,7 @@ define([
     };
 
     var LOADING = 'loading';
-    common.addLoadingScreen = function () {
+    common.addLoadingScreen = function (loadingText) {
         if ($('#' + LOADING).length) {
             $('#' + LOADING).show();
             return;
@@ -756,7 +756,7 @@ define([
         $container.append('<img class="cryptofist" src="/customize/cryptofist_small.png" />');
         var $spinner = $('<div>', {'class': 'spinnerContainer'});
         var loadingSpinner = common.spinner($spinner).show();
-        var $text = $('<p>').text(Messages.loading);
+        var $text = $('<p>').text(loadingText || Messages.loading);
         $container.append($spinner).append($text);
         $loading.append($container);
         $('body').append($loading);

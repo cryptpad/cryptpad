@@ -12,6 +12,7 @@ define([
 
     $(function () {
         var $main = $('#mainBlock');
+        var Messages = Cryptpad.Messages;
 
         // Language selector
         var $sel = $('#language-selector');
@@ -63,33 +64,46 @@ define([
         });
 
         $('button.login').click(function (e) {
-            loginReady(function () {
-                var uname = $uname.val();
-                var passwd = $passwd.val();
-
-                Login.loginOrRegister(uname, passwd, false, function (err, result) {
-                    if (!err) {
-                        // successful validation and user already exists
-                        // set user hash in localStorage and redirect to drive
-                        localStorage.User_hash = result.userHash;
-                        document.location.href = '/drive/';
-
-                        return;
-                    }
-                    switch (err) {
-                        case 'NO_SUCH_USER':
-                            Cryptpad.alert('Invalid username or password. Try again, or sign up'); // XXX
-                            break;
-                        case 'INVAL_USER':
-                            Cryptpad.alert('Username required'); // XXX
-                            break;
-                        case 'INVAL_PASS':
-                            Cryptpad.alert('Password required'); // XXX
-                            break;
-                        default: // UNHANDLED ERROR
-                    }
+            Cryptpad.addLoadingScreen(Messages.login_hashing);
+            // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed after hashing the password
+            window.setTimeout(function () {
+                loginReady(function () {
+                    var uname = $uname.val();
+                    var passwd = $passwd.val();
+                    Login.loginOrRegister(uname, passwd, false, function (err, result) {
+                        if (!err) {
+                            // successful validation and user already exists
+                            // set user hash in localStorage and redirect to drive
+                            if (result.proxy && !result.proxy.login_name) {
+                                result.proxy.login_name = result.userName;
+                            }
+                            Cryptpad.login(result.userHash, result.userName, function () {
+                                document.location.href = '/drive/';
+                            });
+                            return;
+                        }
+                        switch (err) {
+                            case 'NO_SUCH_USER':
+                                Cryptpad.removeLoadingScreen(function () {
+                                    Cryptpad.alert(Messages.login_noSuchUser);
+                                });
+                                break;
+                            case 'INVAL_USER':
+                                Cryptpad.removeLoadingScreen(function () {
+                                    Cryptpad.alert(Messages.login_invalUser);
+                                });
+                                break;
+                            case 'INVAL_PASS':
+                                Cryptpad.removeLoadingScreen(function () {
+                                    Cryptpad.alert(Messages.login_invalPass);
+                                });
+                                break;
+                            default: // UNHANDLED ERROR
+                                Cryptpad.errorLoadingScreen(Messages.login_unhandledError);
+                        }
+                    });
                 });
-            });
+            }, 0);
         });
     });
 });

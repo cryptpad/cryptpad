@@ -282,6 +282,15 @@ define(function () {
     out.login_accessDrive = 'Accédez à votre drive';
     out.login_orNoLogin = 'ou';
 
+    out.login_noSuchUser = "Nom d'utilisateur ou mot de passe invalide. Veuillez vous inscrire ou réessayer.";
+    out.login_invalUser = "Nom d'utilisateur requis";
+    out.login_invalPass = 'Mot de passe requis';
+    out.login_unhandledError = "Une erreur inattendue s'est produite :(";
+
+    out.register_importRecent = "Importer l'historique (Recommendé)";
+    out.register_acceptTerms = "J'accepte <a href='/terms.html'>les conditions d'utilisation</a>";
+    out.register_rememberPassword = "Je vais me souvenir de mes identifiants";
+
     // index.html
 
     //out.main_p1 = 'CryptPad est l\'éditeur collaboratif en temps réel <strong>zero knowledge</strong>. Le chiffrement est effectué depuis votre navigateur, ce qui protège les données contre le serveur, le cloud, et la NSA. La clé de chiffrement est stockée dans l\'<a href="https://fr.wikipedia.org/wiki/Identificateur_de_fragment">identifieur de fragment</a> de l\'URL qui n\'est jamais envoyée au serveur mais est accessible depuis javascript, de sorte qu\'en partageant l\'URL, vous donnez l\'accès au pad à ceux qui souhaitent participer.';
