@@ -74,6 +74,9 @@ define([
                         if (!err) {
                             // successful validation and user already exists
                             // set user hash in localStorage and redirect to drive
+                            if (result.proxy && !result.proxy.login_name) {
+                                result.proxy.login_name = result.userName;
+                            }
                             Cryptpad.login(result.userHash, result.userName, function () {
                                 document.location.href = '/drive/';
                             });
