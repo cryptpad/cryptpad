@@ -293,7 +293,7 @@ define(function () {
     out.register_rememberPassword = "I will remember my login name and password";
     out.register_passwordsDontMatch = "Passwords do not match!";
     out.register_mustAcceptTerms = "You must accept the terms of service.";
-    out.register_mustRememberPass = "We cannot reset your password if you forget it. It's very important that you remember it!";
+    out.register_mustRememberPass = "We cannot reset your password if you forget it. It's very important that you remember it! Please check the checkbox to confirm.";
 
     out.register_header = "Welcome to Cryptpad";
     out.register_explanation = [
