@@ -283,6 +283,10 @@ define(function () {
     out.login_accessDrive = 'Access your drive';
     out.login_orNoLogin = 'or';
 
+    out.register_importRecent = "Import pad history (Recommended)";
+    out.register_acceptTerms = "I accept <a href='/terms.html'>the terms</a>";
+    out.register_rememberPassword = "I will remember my login name and password";
+
     // index.html
 
     //out.main_p1 = 'CryptPad is the <strong>zero knowledge</strong> realtime collaborative editor.  Encryption carried out in your web browser protects the data from the server, the cloud, and the NSA.  The secret encryption key is stored in the URL <a href="https://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a> which is never sent to the server but is available to javascript so by sharing the URL, you give authorization to others who want to participate.';
