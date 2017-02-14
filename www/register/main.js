@@ -120,7 +120,17 @@ define([
 
             Cryptpad.whenRealtimeSyncs(result.realtime, function () {
                 Cryptpad.login(result.userHash, result.userName, function () {
-                    document.location.href = '/drive/';
+                    if (sessionStorage.redirectTo) {
+                        var h = sessionStorage.redirectTo;
+                        var parser = document.createElement('a');
+                        parser.href = h;
+                        if (parser.origin === window.location.origin) {
+                            delete sessionStorage.redirectTo;
+                            window.location.href = h;
+                            return;
+                        }
+                    }
+                    window.location.href = '/drive/';
                 });
             });
         });

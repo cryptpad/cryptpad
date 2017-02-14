@@ -465,9 +465,11 @@ define([
                 window.location.href = '/';
             });
             $userAdmin.find('a.login').click(function (e) {
+                sessionStorage.redirectTo = window.location.href;
                 window.location.href = '/login/';
             });
             $userAdmin.find('a.register').click(function (e) {
+                sessionStorage.redirectTo = window.location.href;
                 window.location.href = '/register/';
             });
 
