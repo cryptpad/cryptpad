@@ -1,0 +1,23 @@
+.cp #mainBlock {
+  z-index: 1;
+  width: 1000px;
+  max-width: 90%;
+  margin: auto;
+}
+.cp #mainBlock #container .infoBlock {
+  padding: 15px;
+  border: 1px solid #555;
+  background: #cccccc;
+}
+.cp #mainBlock #container .infoBlock .label {
+  font-weight: bold;
+  text-decoration: underline;
+  margin-right: 5px;
+}
+.cp #mainBlock #container .displayName input,
+.cp #mainBlock #container .displayName button {
+  vertical-align: middle;
+}
+.cp #mainBlock #container > div {
+  margin: 10px 0;
+}

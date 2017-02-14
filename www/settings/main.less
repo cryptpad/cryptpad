@@ -1,0 +1,36 @@
+@import '../../customize.dist/src/less/variables.less';
+
+@border: 1px solid #555;
+
+.cp {
+    #mainBlock {
+        z-index: 1;
+        width: 1000px;
+        max-width: 90%;
+        margin: auto;
+
+        #container {
+            .infoBlock {
+                padding: 15px;
+                border: @border;
+                background: @dark-base;
+                .label {
+                    font-weight: bold;
+                    text-decoration: underline;
+                    margin-right: 5px;
+                }
+            }
+            .displayName {
+                input, button {
+                    vertical-align: middle;
+                }
+            }
+            .resetDrive {
+                
+            }
+            &>div {
+                margin: 10px 0;
+            }
+        }
+    }
+}
