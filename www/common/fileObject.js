@@ -30,6 +30,16 @@ define([
             console.error.apply(console, arguments);
         };
 
+        var getStructure = exp.getStructure = function () {
+            var a = {};
+            a[ROOT] = {};
+            a[UNSORTED] = [];
+            a[TRASH] = {};
+            a[FILES_DATA] = [];
+            a[TEMPLATE] = [];
+            return a;
+        };
+
         var comparePath  = exp.comparePath = function (a, b) {
             if (!a || !b || !$.isArray(a) || !$.isArray(b)) { return false; }
             if (a.length !== b.length) { return false; }

@@ -31,7 +31,10 @@ var fragments = {};
     'contact',
     'logo',
     'noscript',
-    'footer'
+    'footer',
+    'empty',
+    'script',
+    'appscript'
 ].forEach(function (name) {
     fragments[name] = read('./fragments/' + name + '.html');
 });
@@ -41,7 +44,7 @@ var fragments = {};
     var source = swap(template, {
        topbar: fragments.topbar,
        fork: fragments.fork,
-       main: swap(fragments[page], {
+       main: swap(fragments[page] || fragments.empty, {
            topbar: fragments.topbar,
            fork: fragments.fork,
            logo: fragments.logo,
@@ -51,6 +54,29 @@ var fragments = {};
        logo: fragments.logo,
        noscript: fragments.noscript,
        footer: fragments.footer,
+       script: fragments.script
     });
     write('../' + page + '.html', source);
 });
+
+// build static pages
+['../www/settings/index'].forEach(function (page) {
+    var source = swap(template, {
+       topbar: fragments.topbar,
+       fork: fragments.fork,
+       main: swap(fragments[page] || fragments.empty, {
+           topbar: fragments.topbar,
+           fork: fragments.fork,
+           logo: fragments.logo,
+           noscript: fragments.noscript,
+           footer: fragments.footer,
+       }),
+       logo: fragments.logo,
+       noscript: fragments.noscript,
+       footer: fragments.footer,
+       script: fragments.appscript
+    });
+    write('../' + page + '.html', source);
+});
+
+

@@ -10,7 +10,9 @@
     <script src="/bower_components/jquery/dist/jquery.min.js"></script>
     <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <script data-main="/customize/main" src="/bower_components/requirejs/require.js"></script>
+        <script data-main="/customize/main" src="/bower_components/requirejs/require.js"></script>
+
+
     <script src="/bower_components/requirejs/require.js"></script>
     <script>
         require.config({
@@ -22,7 +24,7 @@
     <div id="cryptpadTopBar">
     <span>
         <a class="gotoMain" href="/">
-            <img src="customize/cryptofist_mini.png" class="cryptpad-logo" alt="" /> CryptPad
+            <img src="/customize/cryptofist_mini.png" class="cryptpad-logo" alt="" /> CryptPad
         </a>
     </span>
 
@@ -76,14 +78,8 @@
         </div>
 
         <div id="userForm" class="form-group hidden">
-
-
-            <input type="text" id="name" name="name" class="form-control"
-                autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-                data-localization-placeholder="login_username" autofocus>
-            <input type="password" id="password" name="password" class="form-control"
-                autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-                data-localization-placeholder="login_password">
+            <input type="text" id="name" name="name" class="form-control" data-localization-placeholder="login_username" autofocus>
+            <input type="password" id="password" name="password" class="form-control" data-localization-placeholder="login_password">
             <div style="display: none;"><span class="remember form-check"><label for="rememberme" class="form-check-label" data-localization-append="login_remember"><input type="checkbox" id="rememberme" class="form-check-input" checked="checked"></label></span><br></div>
             <button class="btn btn-secondary login half first" data-localization="login_login"></button> <button class="btn btn-success register half" data-localization="login_register"></button>
             <p class="separator" data-localization="login_orNoLogin"></p>

@@ -113,6 +113,14 @@ define([
             return storeObj.login_name;
         };
 
+        ret.repairDrive = function () {
+            filesOp.fixFiles();
+        };
+
+        ret.getEmptyObject = function () {
+            return filesOp.getStructure();
+        };
+
         var changeHandlers = ret.changeHandlers = [];
 
         ret.change = function (f) {};

@@ -16,7 +16,7 @@
   "scripts": {
       "lint": "jshint --config .jshintrc --exclude-path .jshintignore .",
       "test": "node TestSelenium.js",
-      "style": "lessc ./customize.dist/src/less/cryptpad.less > ./customize.dist/main.css && lessc ./customize.dist/src/less/toolbar.less > ./customize.dist/toolbar.css && lessc ./www/drive/file.less > ./www/drive/file.css",
+      "style": "lessc ./customize.dist/src/less/cryptpad.less > ./customize.dist/main.css && lessc ./customize.dist/src/less/toolbar.less > ./customize.dist/toolbar.css && lessc ./www/drive/file.less > ./www/drive/file.css && lessc ./www/settings/main.less > ./www/settings/main.css",
       "template": "cd customize.dist/src && node build.js"
   }
 }
