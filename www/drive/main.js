@@ -1810,6 +1810,8 @@ define([
             return false;
         }).on('remove', [], function (o, p) {
             var path = arguments[1];
+            if (path[0] !== 'drive') { return false; }
+            path = path.slice(1);
             var cPath = currentPath.slice();
             if ((filesOp.isPathInUnsorted(cPath) && filesOp.isPathInUnsorted(path)) ||
                     (filesOp.isPathInTemplate(cPath) && filesOp.isPathInTemplate(path)) ||

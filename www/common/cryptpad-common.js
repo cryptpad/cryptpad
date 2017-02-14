@@ -400,6 +400,7 @@ define([
     };
 
     var getRelativeHref = common.getRelativeHref = function (href) {
+        if (!href) { return; }
         var parsed = common.parsePadUrl(href);
         return '/' + parsed.type + '/#' + parsed.hash;
     };
@@ -563,7 +564,7 @@ define([
         };
 
         if (typeof(getStore().forgetPad) === "function") {
-            getStore().forgetPad(href, callback);
+            getStore().forgetPad(common.getRelativeHref(href), callback);
         }
     };
 

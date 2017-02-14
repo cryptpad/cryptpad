@@ -698,6 +698,7 @@ define([
 
         var forgetPad = exp.forgetPad = function (href) {
             if (workgroup) { return; }
+            if (!href) { return; }
             var rootFiles = getRootFiles().slice();
             if (rootFiles.indexOf(href) !== -1) {
                 removeFileFromRoot(files[ROOT], href);
@@ -712,6 +713,7 @@ define([
 
         var addUnsortedPad = exp.addPad = function (href, path, name) {
             if (workgroup) { return; }
+            if (!href) { return; }
             var unsortedFiles = getUnsortedFiles();
             var rootFiles = getRootFiles();
             var trashFiles = getTrashFiles();
