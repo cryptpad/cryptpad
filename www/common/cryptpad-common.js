@@ -847,9 +847,7 @@ define([
             case 'export':
                 button = $('<button>', {
                     title: Messages.exportButton + '\n' + Messages.exportButtonTitle,
-                    'class': "fa fa-download",
-                    style: 'font:'+size+' FontAwesome'
-                });
+                }).append($('<span>', {'class':'fa fa-download', style: 'font:'+size+' FontAwesome'}));
                 if (callback) {
                     button.click(callback);
                 }
@@ -857,9 +855,7 @@ define([
             case 'import':
                 button = $('<button>', {
                     title: Messages.importButton + '\n' + Messages.importButtonTitle,
-                    'class': "fa fa-upload",
-                    style: 'font:'+size+' FontAwesome'
-                });
+                }).append($('<span>', {'class':'fa fa-upload', style: 'font:'+size+' FontAwesome'}));
                 if (callback) {
                     button.click(common.importContent('text/plain', function (content, file) {
                         callback(content, file);

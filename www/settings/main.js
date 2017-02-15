@@ -1,8 +1,11 @@
 define([
     '/common/cryptpad-common.js',
+    '/common/cryptget.js',
+    '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Cryptpad) {
+], function (Cryptpad, Crypt) {
     var $ = window.jQuery;
+    var saveAs = window.saveAs;
 
     var USERNAME_KEY = 'cryptpad.username';
 
@@ -92,6 +95,43 @@ define([
         return $div;
     };
 
+    var createBackupDrive = function (store) {
+        var obj = store.proxy;
+        var $div = $('<div>', {'class': 'backupDrive'});
+
+        var exportFile = function () {
+            var sjson = JSON.stringify(obj);
+            var suggestion = obj.login_name + '-' + new Date().toDateString();
+            Cryptpad.prompt(Cryptpad.Messages.exportPrompt,
+                Cryptpad.fixFileName(suggestion) + '.json', function (filename) {
+                if (!(typeof(filename) === 'string' && filename)) { return; }
+                var blob = new Blob([sjson], {type: "application/json;charset=utf-8"});
+                saveAs(blob, filename);
+            });
+        };
+        var importFile = function (content, file) {
+            var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).appendTo($div);
+            Crypt.put(Cryptpad.getUserHash(), content, function (e) {
+                if (e) { console.error(e); }
+                $spinner.remove();
+            });
+        };
+
+        var $label = $('<label>', {'for' : 'exportDrive'}).text('BACKUP/RESTORE MY DATA').appendTo($div); // XXX
+        $('<br>').appendTo($div);
+        /* add an export button */
+        var $export = Cryptpad.createButton('export', true, {}, exportFile);
+        $export.addClass('btn').addClass('btn-success').append('BACKUP'); // XXX
+        $div.append($export);
+
+        /* add an import button */
+        var $import = Cryptpad.createButton('import', true, {}, importFile);
+        $import.addClass('btn').addClass('btn-warning').append('RESTORE'); // XXX
+        $div.append($import);
+
+        return $div;
+    };
+
     var createResetDrive = function (obj) {
         var $div = $('<div>', {'class': 'resetDrive'});
         var $label = $('<label>', {'for' : 'resetDrive'}).text('CLEAN MY DRIVE').appendTo($div); // XXX
@@ -113,6 +153,7 @@ define([
         APP.$container.append(createTitle());
         APP.$container.append(createInfoBlock(obj));
         APP.$container.append(createDisplayNameInput(obj));
+        APP.$container.append(createBackupDrive(obj));
         APP.$container.append(createResetDrive(obj));
         obj.proxy.on('change', [], refresh);
         obj.proxy.on('remove', [], refresh);
