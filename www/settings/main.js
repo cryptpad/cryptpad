@@ -27,7 +27,6 @@ define([
         APP._onRefresh.push(h);
     };
     var refresh = APP.refresh = function () {
-        console.log('chnge');
         APP._onRefresh.forEach(function (h) {
             h();
         });
