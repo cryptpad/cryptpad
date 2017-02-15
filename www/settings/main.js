@@ -14,6 +14,8 @@ define([
         _onRefresh: []
     };
 
+    var Messages = Cryptpad.Messages;
+
     var redirectToMain = function () {
         window.location.href = '/';
     };
@@ -33,7 +35,7 @@ define([
 
     // Title block
     var createTitle = function () {
-        return $('<h1>').text('Settings'); //XXX
+        return $('<h1>').text(Messages.settings_title);
     };
 
     var createInfoBlock = function (store) {
@@ -42,7 +44,7 @@ define([
 
         var accountName = obj.login_name;
         if (!accountName) { return; }
-        var $label = $('<span>', {'class': 'label'}).text('Account name:'); // XXX
+        var $label = $('<span>', {'class': 'label'}).text(Messages.login_username_label);
         var $name = $('<span>').text(accountName);
         $div.append($label).append($name);
 
@@ -53,13 +55,13 @@ define([
     var createDisplayNameInput = function (store) {
         var obj = store.proxy;
         var $div = $('<div>', {'class': 'displayName'});
-        var $label = $('<label>', {'for' : 'displayName'}).text('DISPLAY NAME').appendTo($div); // XXX
+        var $label = $('<label>', {'for' : 'displayName'}).text(Messages.login_displayname_label).appendTo($div);
         $('<br>').appendTo($div);
         var $input = $('<input>', {
             'type': 'text',
             'id': 'displayName',
-            'placeholder': 'ANONYMOUS'}).appendTo($div); // XXX
-        var $save = $('<button>', {'class': 'btn btn-primary'}).text('SAVE').appendTo($div); // XXX
+            'placeholder': Messages.anonymous}).appendTo($div);
+        var $save = $('<button>', {'class': 'btn btn-primary'}).text(Messages.settings_save).appendTo($div);
         var $ok = $('<span>', {'class': 'fa fa-check'}).appendTo($div);
         var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).appendTo($div);
 
@@ -117,16 +119,16 @@ define([
             });
         };
 
-        var $label = $('<label>', {'for' : 'exportDrive'}).text('BACKUP/RESTORE MY DATA').appendTo($div); // XXX
+        var $label = $('<label>', {'for' : 'exportDrive'}).text(Messages.settings_backupTitle).appendTo($div);
         $('<br>').appendTo($div);
         /* add an export button */
         var $export = Cryptpad.createButton('export', true, {}, exportFile);
-        $export.addClass('btn').addClass('btn-success').append('BACKUP'); // XXX
+        $export.addClass('btn').addClass('btn-success').append(Messages.settings_backup);
         $div.append($export);
 
         /* add an import button */
         var $import = Cryptpad.createButton('import', true, {}, importFile);
-        $import.addClass('btn').addClass('btn-warning').append('RESTORE'); // XXX
+        $import.addClass('btn').addClass('btn-warning').append(Messages.settings_restore);
         $div.append($import);
 
         return $div;
@@ -134,15 +136,16 @@ define([
 
     var createResetDrive = function (obj) {
         var $div = $('<div>', {'class': 'resetDrive'});
-        var $label = $('<label>', {'for' : 'resetDrive'}).text('CLEAN MY DRIVE').appendTo($div); // XXX
+        var $label = $('<label>', {'for' : 'resetDrive'}).text(Messages.settings_resetTitle).appendTo($div);
         $('<br>').appendTo($div);
-        var $button = $('<button>', {'id': 'resetDrive', 'class': 'btn btn-danger'}).text('REMOVE ALL MY FILES AND FOLDERS').appendTo($div); // XXX
+        var $button = $('<button>', {'id': 'resetDrive', 'class': 'btn btn-danger'})
+            .text(Messages.settings_reset).appendTo($div);
 
         $button.click(function () {
-            Cryptpad.prompt("Are you <b>really really</b> sure? That action is irreversible! Type `<em>I love CryptPad</em>` to confirm.", "", function (val) { // XXX
+            Cryptpad.prompt(Messages.settings_resetPrompt, "", function (val) {
                 if (val !== "I love CryptPad") { return; }
                 obj.proxy.drive = Cryptpad.getStore().getEmptyObject();
-                Cryptpad.alert("Your drive is now empty!"); // XXX
+                Cryptpad.alert(Messages.settings_resetDone);
             });
         });
 
@@ -166,9 +169,19 @@ define([
         Cryptpad.createLanguageSelector(undefined, $sel);
         $sel.find('button').addClass('btn').addClass('btn-secondary');
         $sel.show();
+
+        // User admin menu
+        var $userMenu = $('#user-menu');
+        var userMenuCfg = {
+            $initBlock: $userMenu
+        };
+        var $userAdmin = Cryptpad.createUserAdminMenu(userMenuCfg);
+        $userAdmin.find('button').addClass('btn').addClass('btn-secondary');
+
         $(window).click(function () {
             $('.cryptpad-dropdown').hide();
         });
+
         // main block is hidden in case javascript is disabled
         $main.removeClass('hidden');
 

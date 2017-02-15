@@ -1090,6 +1090,117 @@ define([
         Messages._initSelector($block);
     };
 
+    var createUserAdminMenu = common.createUserAdminMenu = function (config) {
+        var $displayedName = $('<span>', {'class': config.displayNameCls || 'displayName'});
+        var accountName = localStorage[common.userNameKey];
+        var account = isLoggedIn();
+        var $userAdminContent = $('<p>');
+        if (account) {
+            var $userAccount = $('<span>', {'class': 'userAccount'}).append(Messages.user_accountName + ': ' + accountName);
+            $userAdminContent.append($userAccount);
+            $userAdminContent.append($('<br>'));
+        }
+        var $userName = $('<span>', {'class': 'userDisplayName'});
+        if (config.displayName) {
+            // Hide "Display name:" in read only mode
+            $userName.append(Messages.user_displayName + ': ');
+            $userName.append($displayedName.clone());
+        }
+        //$userName.append($displayedName.clone()); TODO remove ?
+        $userAdminContent.append($userName);
+        var options = [];
+        if (config.displayNameCls) {
+            options.push({
+                tag: 'p',
+                attributes: {'class': 'accountData'},
+                content: $userAdminContent.html()
+            });
+        }
+        // Add the change display name button if not in read only mode
+        if (config.changeNameButtonCls && config.displayChangeName) { //readOnly !== 1) { TODO
+            options.push({
+                tag: 'a',
+                attributes: {'class': config.changeNameButtonCls},
+                content: Messages.user_rename
+            });
+        }
+        var parsed = parsePadUrl(window.location.href);
+        if (parsed && (!parsed.type || parsed.type && parsed.type !== 'drive')) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'target': '_blank',
+                    'href': '/drive/'
+                },
+                content: Messages.login_accessDrive
+            });
+        }
+        // Add login or logout button depending on the current status
+        if (account) {
+            if (parsed && parsed.type && parsed.type !== 'settings') {
+                options.push({
+                    tag: 'a',
+                    attributes: {'class': 'settings'},
+                    content: Messages.settingsButton
+                });
+            }
+            options.push({
+                tag: 'a',
+                attributes: {'class': 'logout'},
+                content: Messages.logoutButton
+            });
+        } else {
+            options.push({
+                tag: 'a',
+                attributes: {'class': 'login'},
+                content: Messages.login_login
+            });
+            options.push({
+                tag: 'a',
+                attributes: {'class': 'register'},
+                content: Messages.login_register
+            });
+        }
+        var $icon = $('<span>', {'class': 'fa fa-user'});
+        var $userbig = $('<span>', {'class': 'big'}).append($displayedName.clone());
+        var $userButton = $('<div>').append($icon).append($userbig);
+        if (account && config.displayNameCls) {
+            $userbig.append($('<span>', {'class': 'account-name'}).text('(' + accountName + ')'));
+        } else if (account) {
+            // If no display name, do not display the parentheses
+            $userbig.append($('<span>', {'class': 'account-name'}).text(accountName));
+        }
+        var dropdownConfigUser = {
+            text: $userButton.html(), // Button initial text
+            options: options, // Entries displayed in the menu
+            left: true, // Open to the left of the button
+            container: config.$initBlock // optional
+        };
+        var $userAdmin = createDropdown(dropdownConfigUser);
+
+        $userAdmin.find('a.logout').click(function (e) {
+            Cryptpad.logout();
+            window.location.href = '/';
+        });
+        $userAdmin.find('a.settings').click(function (e) {
+            if (parsed && parsed.type) {
+                window.open('/settings/');
+            } else {
+                window.location.href = '/settings/';
+            }
+        });
+        $userAdmin.find('a.login').click(function (e) {
+            sessionStorage.redirectTo = window.location.href;
+            window.location.href = '/login/';
+        });
+        $userAdmin.find('a.register').click(function (e) {
+            sessionStorage.redirectTo = window.location.href;
+            window.location.href = '/register/';
+        });
+
+        return $userAdmin;
+    };
+
     /*
      *  Alertifyjs
      */

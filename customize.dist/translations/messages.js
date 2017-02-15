@@ -247,6 +247,7 @@ define(function () {
     out.login_nologin = "Browse local pads";
     out.login_register = "Sign up";
     out.logoutButton = "Log out";
+    out.settingsButton = "Settings";
 
     out.login_migrate = "Would you like to migrate existing data from your anonymous session?";
 
@@ -304,6 +305,19 @@ define(function () {
             "<li>If you are using a shared computer, you need to log out when you are done, closing the tab is not enough.</li>",
         "</ul>"
     ];
+
+    // Settings
+    out.settings_title = "Settings";
+    out.settings_save = "Save";
+    out.settings_backupTitle = "Backup or restore all your data";
+    out.settings_backup = "Backup";
+    out.settings_restore = "Restore";
+    out.settings_resetTitle = "Clean your drive";
+    out.settings_reset = "Remove all the files and folders from your CryptDrive";
+    out.settings_resetPrompt = "This action will remove all the pads from your drive.<br>"+
+                               "Are you sure you want to continue?<br>" +
+                               "Type “<em>I love CryptPad</em>” to confirm.";
+    out.settings_resetDone = "Your drive is now empty!";
 
     // index.html
 

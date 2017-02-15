@@ -246,6 +246,7 @@ define(function () {
     out.login_nologin = "Voir les documents récents";
     out.login_register = "Inscription";
     out.logoutButton = "Déconnexion";
+    out.settingsButton = "Préférences";
 
     out.login_migrate = "Souhaitez-vous importer les données existantes de votre session anonyme ?";
 
@@ -303,6 +304,20 @@ define(function () {
             "<li>Si vous utilisez un ordinateur partagé, vous devez vous déconnecter avant de partir, fermer l'onglet n'est pas suffisant.</li>",
         "</ul>"
     ];
+
+    // Settings
+    out.settings_title = "Préférences";
+    out.settings_save = "Sauver";
+    out.settings_backupTitle = "Créer ou restaurer une sauvegarde de vos données";
+    out.settings_backup = "Créer une sauvegarde";
+    out.settings_restore = "Restaurer une sauvegarde";
+    out.settings_resetTitle = "Vider votre drive";
+    out.settings_reset = "Supprimer tous les fichiers et dossiers de votre CryptDrive";
+    out.settings_resetPrompt = "Cette action va supprimer tous les documents de votre drive.<br>"+
+                               "Êtes-vous sûr de vouloir continuer ?<br>" +
+                               "Tapez “<em>I love CryptPad</em>” pour confirmer.";
+    out.settings_resetDone = "Votre drive est désormais vide!";
+
 
     // index.html
 

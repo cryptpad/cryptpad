@@ -448,6 +448,9 @@
   margin: 0px 10px;
   line-height: 40px;
 }
+#cryptpadTopBar .right button .buttonTitle .fa-user {
+  margin-right: 5px;
+}
 #cryptpadTopBar .right a {
   font-weight: 500;
   font-size: 0.75em;
