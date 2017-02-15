@@ -460,6 +460,11 @@
 #cryptpadTopBar .right a:visited {
   color: #41b7d8;
 }
+@media screen and (max-width: 800px) {
+  #cryptpadTopBar .right.link {
+    display: none;
+  }
+}
 .cp footer {
   background: #f4f4f4;
   font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
