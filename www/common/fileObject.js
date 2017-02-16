@@ -866,7 +866,7 @@ define([
                 var trashFiles = getTrashFiles();
                 var toClean = [];
                 fd.forEach(function (el, idx) {
-                    if (typeof(el) !== "object") {
+                    if (!el || typeof(el) !== "object") {
                         debug("An element in filesData was not an object.", el);
                         toClean.push(el);
                         return;
