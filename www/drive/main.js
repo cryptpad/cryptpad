@@ -192,18 +192,9 @@ define([
 
         // TOOLBAR
 
-        var getLastName = function (cb) {
-            Cryptpad.getAttribute('username', function (err, userName) {
-                cb(err, userName || '');
-            });
-        };
-
-        // Store the object sent for the "change username" button so that we can update the field value correctly
-        var userNameButtonObject = APP.userName = {};
         /* add a "change username" button */
         if (!APP.readOnly) {
-            getLastName(function (err, lastName) {
-                APP.userName.lastName = lastName;
+            Cryptpad.getLastName(function (err, lastName) {
                 APP.$displayName.text(lastName || Messages.anonymous);
             });
         } else {
@@ -1852,12 +1843,11 @@ define([
                 logError("Couldn't set username", err);
                 return;
             }
-            APP.userName.lastName = myUserName;
             APP.$displayName.text(myUserName);
         });
     };
 
-    // TODO: move that function and use a more generic API
+    // TODO: move that function and use a more generic API?
     var migrateAnonDrive = function (proxy, cb) {
         if (sessionStorage.migrateAnonDrive) {
             // Make sure we have an FS_hash and we don't use it, otherwise just stop the migration and cb
@@ -1933,16 +1923,11 @@ define([
             });
 
             var userList = APP.userList = info.userList;
-            APP.userName = {};
             var config = {
                 displayed: ['useradmin', 'language', 'spinner', 'lag', 'state'],
                 readOnly: readOnly,
                 ifrw: window,
                 common: Cryptpad,
-                userName: {
-                    setName: setName,
-                    lastName: APP.userName
-                },
                 hideShare: true
             };
             var toolbar = APP.toolbar = info.realtime.toolbar = Toolbar.create(APP.$bar, info.myID, info.realtime, info.getLag, userList, config);
@@ -1975,6 +1960,7 @@ define([
                 $userBlock.append($backupButton);
             }
 
+            Cryptpad.onDisplayNameChanged(setName);
         };
         var onReady = function () {
             module.files = proxy;

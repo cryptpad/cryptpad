@@ -302,12 +302,6 @@ define([
                 myID = info.myID || null;
             };
 
-            var getLastName = function (cb) {
-                Cryptpad.getAttribute('username', function (err, userName) {
-                    cb(err, userName || '');
-                });
-            };
-
             var setName = module.setName = function (newName) {
                 if (typeof(newName) !== 'string') { return; }
                 var myUserNameTemp = Cryptpad.fixHTML(newName.trim());
@@ -324,7 +318,6 @@ define([
                         console.error("Couldn't set username");
                         return;
                     }
-                    module.userName.lastName = myUserName;
                     editor.fire('change');
                 });
             };
@@ -580,13 +573,6 @@ define([
             var onInit = realtimeOptions.onInit = function (info) {
                 userList = info.userList;
 
-                module.userName = {};
-                // The lastName is stored in an object passed to the toolbar so that when the user clicks on
-                // the "change display name" button, the prompt already knows his current name
-                getLastName(function (err, lastName) {
-                    module.userName.lastName = lastName;
-                });
-
                 var config = {
                     displayed: ['useradmin', 'language', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad'],
                     userData: userData,
@@ -596,10 +582,6 @@ define([
                         onRename: renameCb,
                         defaultName: defaultName,
                         suggestName: suggestName
-                    },
-                    userName: {
-                        setName: setName,
-                        lastName: module.userName
                     },
                     common: Cryptpad
                 };
@@ -618,7 +600,6 @@ define([
                 if (!readOnly) {
                     editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
                 }
-
 
                 // Expand / collapse the toolbar
                 var $existingButton = $bar.find('#cke_1_toolbar_collapser');
@@ -676,6 +657,8 @@ define([
 
                 // set the hash
                 if (!readOnly) { Cryptpad.replaceHash(editHash); }
+
+                Cryptpad.onDisplayNameChanged(setName);
             };
 
             // this should only ever get called once, when the chain syncs
@@ -711,7 +694,7 @@ define([
                     });
                 }
 
-                getLastName(function (err, lastName) {
+                Cryptpad.getLastName(function (err, lastName) {
                     console.log("Unlocking editor");
                     setEditable(true);
                     initializing = false;
@@ -720,7 +703,7 @@ define([
                     // Update the toolbar list:
                     // Add the current user in the metadata if he has edit rights
                     if (readOnly) { return; }
-                    if (typeof(lastName) === 'string' && lastName.length) {
+                    if (typeof(lastName) === 'string') {
                         setName(lastName);
                     } else {
                         myData[myID] = {

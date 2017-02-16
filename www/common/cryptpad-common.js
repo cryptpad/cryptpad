@@ -71,6 +71,7 @@ define([
     var userHashKey = common.userHashKey = 'User_hash';
     var userNameKey = common.userNameKey = 'User_name';
     var fileHashKey = common.fileHashKey = 'FS_hash';
+    var displayNameKey = common.displayNameKey = 'cryptpad.username';
 
     var login = common.login = function (hash, name, cb) {
         if (!hash) { throw new Error('expected a user hash'); }
@@ -533,6 +534,25 @@ define([
             cb(err, data);
         });
     };
+
+    // STORAGE: Display Name
+    var getLastName = common.getLastName = function (cb) {
+        common.getAttribute('username', function (err, userName) {
+            cb(err, userName);
+        });
+    };
+    var _onDisplayNameChanged = [];
+    var onDisplayNameChanged = common.onDisplayNameChanged = function (h) {
+        if (typeof(h) !== "function") { return; }
+        if (_onDisplayNameChanged.indexOf(h) !== -1) { return; }
+        _onDisplayNameChanged.push(h);
+    };
+    var changeDisplayName = common.changeDisplayName = function (newName) {
+        _onDisplayNameChanged.forEach(function (h) {
+            h(newName);
+        });
+    };
+
 
     // STORAGE
     var forgetPad = common.forgetPad = function (href, cb) {

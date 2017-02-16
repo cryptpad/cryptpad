@@ -128,15 +128,19 @@ define([
         return ret;
     };
 
-    var onReady = function (f, proxy, storageKey, exp) {
+    var onReady = function (f, proxy, Cryptpad, exp) {
         var fo = FO.init(proxy.drive, {
-            storageKey: storageKey
+            storageKey: Cryptpad.storageKey
         });
         //storeObj = proxy;
         store = initStore(fo, proxy, exp);
         if (typeof(f) === 'function') {
             f(void 0, store);
         }
+        proxy.on('change', [Cryptpad.displayNameKey], function (o, n, p) {
+            if (typeof(n) !== "string") { return; }
+            Cryptpad.changeDisplayName(n);
+        });
     };
 
     var initialized = false;
@@ -200,12 +204,12 @@ define([
             if (!drive[Cryptpad.storageKey] || !Cryptpad.isArray(drive[Cryptpad.storageKey])) {
                 Cryptpad.getLegacyPads(function (err, data) {
                     drive[Cryptpad.storageKey] = data;
-                    onReady(f, rt.proxy, Cryptpad.storageKey, exp);
+                    onReady(f, rt.proxy, Cryptpad, exp);
                 });
                 return;
             }
             // Drive already exist: return the existing drive, don't load data from legacy store
-            onReady(f, rt.proxy, Cryptpad.storageKey, exp);
+            onReady(f, rt.proxy, Cryptpad, exp);
         })
         .on('disconnect', function (info) {
             // We only manage errors during the loading screen here. Other websocket errors are handled by the apps

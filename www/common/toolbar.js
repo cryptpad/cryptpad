@@ -375,11 +375,6 @@ define([
 
         // User dropdown
         if (config.displayed.indexOf('useradmin') !== -1) {
-            if (!config.userName || !config.userName.setName || !config.userName.lastName) {
-                throw new Error("You must provide a `userName` object containing `setName` (function) " +
-                                "and `lastName` (object) if you want to display the user admin menu.");
-            }
-
             var userMenuCfg = {
                 displayNameCls: USERNAME_CLS,
                 changeNameButtonCls: USERBUTTON_CLS,
@@ -393,10 +388,22 @@ define([
             $userAdmin.attr('id', 'userDropdown');
             $userContainer.append($userAdmin);
 
-            $userAdmin.find('a.' + USERBUTTON_CLS).click(function (e) {
-                Cryptpad.prompt(Messages.changeNamePrompt, config.userName.lastName.lastName || '', function (newName) {
-                    config.userName.setName(newName);
+            var $userButton = $userAdmin.find('a.' + USERBUTTON_CLS);
+            var renameAlertOpened;
+            $userButton.click(function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                Cryptpad.getLastName(function (lastName) {
+                    Cryptpad.prompt(Messages.changeNamePrompt, lastName || '', function (newName) {
+                        if (newName === null && typeof(lastName) === "string") { return; }
+                        if (newName === null) { newName = ''; }
+                        Cryptpad.changeDisplayName(newName);
+                        //config.userName.setName(newName); TODO
+                    });
                 });
+            });
+            Cryptpad.onDisplayNameChanged(function (newName) {
+                Cryptpad.findCancelButton().click();
             });
         }
 

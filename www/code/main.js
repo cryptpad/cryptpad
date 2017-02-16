@@ -221,14 +221,7 @@ define([
                         console.error(err);
                         return;
                     }
-                    module.userName.lastName = myUserName;
                     onLocal();
-                });
-            };
-
-            var getLastName = function (cb) {
-                Cryptpad.getAttribute('username', function (err, userName) {
-                    cb(err, userName || '');
                 });
             };
 
@@ -377,13 +370,6 @@ define([
              var onInit = config.onInit = function (info) {
                 userList = info.userList;
 
-                module.userName = {};
-                // The lastName is stored in an object passed to the toolbar so that when the user clicks on
-                // the "change display name" button, the prompt already knows his current name
-                getLastName(function (err, lastName) {
-                    module.userName.lastName = lastName;
-                });
-
                 var config = {
                     displayed: ['useradmin', 'language', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad'],
                     userData: userData,
@@ -393,10 +379,6 @@ define([
                         onRename: renameCb,
                         defaultName: defaultName,
                         suggestName: suggestName
-                    },
-                    userName: {
-                        setName: setName,
-                        lastName: module.userName
                     },
                     common: Cryptpad
                 };
@@ -526,6 +508,8 @@ define([
 
                 // set the hash
                 if (!readOnly) { Cryptpad.replaceHash(editHash); }
+
+                Cryptpad.onDisplayNameChanged(setName);
             };
 
             var unnotify = module.unnotify = function () {
@@ -592,7 +576,7 @@ define([
                 //Cryptpad.log("Your document is ready");
 
                 onLocal(); // push local state to avoid parse errors later.
-                getLastName(function (err, lastName) {
+                Cryptpad.getLastName(function (err, lastName) {
                     if (err) {
                         console.log("Could not get previous name");
                         console.error(err);
@@ -601,7 +585,7 @@ define([
                     // Update the toolbar list:
                     // Add the current user in the metadata if he has edit rights
                     if (readOnly) { return; }
-                    if (typeof(lastName) === 'string' && lastName.length) {
+                    if (typeof(lastName) === 'string') {
                         setName(lastName);
                     } else {
                         myData[myID] = {
