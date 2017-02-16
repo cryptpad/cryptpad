@@ -121,5 +121,9 @@ define(['/customize/languageSelector.js',
         '</p>',
     ].join('');
 
+    messages.driveReadme = '["BODY",{"class":"cke_editable cke_editable_themed cke_contents_ltr cke_show_borders","contenteditable":"true","spellcheck":"false","style":"color: rgb(51, 51, 51);"},' +
+        '[["H1",{},["' + messages.driveReadme_h1 + '",["BR",{},[]]]],["UL",{},[["LI",{},["' + messages.driveReadme_li1 + '",["BR",{},[]],["UL",{},[["LI",{},["' + messages.driveReadme_li1_1 + '",["BR",{},[]]]]]]]]]]],' +
+        '{"metadata":{"defaultTitle":"' + messages.driveReadmeTitle + '","title":"' + messages.driveReadmeTitle + '"}}]';
+
     return messages;
 });

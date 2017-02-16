@@ -1871,6 +1871,27 @@ define([
             if (typeof(cb) === "function") { cb(); }
         }
     };
+    var createReadme = function (proxy, cb) {
+        if (proxy.initializing) {
+            console.log('test');
+            var hash = Cryptpad.createRandomHash();
+            Get.put(hash, Messages.driveReadme, function (e) {
+                if (e) { console.error(e); }
+                var href = '/pad/#' + hash;
+                proxy.drive[UNSORTED].push(href);
+                proxy.drive[FILES_DATA].push({
+                    href: href,
+                    title: Messages.driveReadmeTitle,
+                    atime: new Date().toISOString(),
+                    ctime: new Date().toISOString()
+                });
+                if (typeof(cb) === "function") { cb(); }
+            });
+            delete proxy.initializing;
+            return;
+        }
+        if (typeof(cb) === "function") { cb(); }
+    };
 
     // don't initialize until the store is ready.
     Cryptpad.ready(function () {
@@ -1966,10 +1987,12 @@ define([
             module.files = proxy;
             if (!proxy.drive || typeof(proxy.drive) !== 'object') { proxy.drive = {}; }
             migrateAnonDrive(proxy, function () {
-                initLocalStorage();
-                init(proxy);
-                APP.userList.onChange();
-                Cryptpad.removeLoadingScreen();
+                createReadme(proxy, function () {
+                    initLocalStorage();
+                    init(proxy);
+                    APP.userList.onChange();
+                    Cryptpad.removeLoadingScreen();
+                });
             });
         };
         var onDisconnect = function (info) {

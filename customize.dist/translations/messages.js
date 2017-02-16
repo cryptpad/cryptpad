@@ -448,5 +448,10 @@ define(function () {
         '  - Your slides are updated in realtime'
     ].join('');
 
+    out.driveReadmeTitle = "What is CryptDrive?";
+    out.driveReadme_h1 = "Welcome to CryptPad";
+    out.driveReadme_li1 = "CryptDrive : all your pads sorted in one place";
+    out.driveReadme_li1_1 = "Tree, trash, unsorted files, etc.";
+
     return out;
 });

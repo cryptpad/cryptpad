@@ -1,9 +1,10 @@
 define([
     '/common/login.js',
     '/common/cryptpad-common.js',
+    '/common/cryptget.js',
     '/common/credential.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Login, Cryptpad) {
+], function (Login, Cryptpad, Crypt) {
     var $ = window.jQuery;
 
     var APP = window.APP = {
@@ -118,6 +119,7 @@ define([
 
             proxy.login_name = uname;
             proxy[Cryptpad.displayNameKey] = uname;
+            proxy.initializing = true;
 
             Cryptpad.whenRealtimeSyncs(result.realtime, function () {
                 Cryptpad.login(result.userHash, result.userName, function () {
