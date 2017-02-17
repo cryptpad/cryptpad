@@ -16,11 +16,12 @@ define([
 
     var $ = window.jQuery;
     var saveAs = window.saveAs;
+
+    // Use `$(function () {});` to make sure the html is loaded before doing anything else
+    $(function () {
+
     var $iframe = $('#pad-iframe').contents();
     var ifrw = $('#pad-iframe')[0].contentWindow;
-
-
-
 
     Cryptpad.addLoadingScreen();
     var onConnectError = function (info) {
@@ -2032,5 +2033,5 @@ define([
         }
     });
 
-
+    });
 });
