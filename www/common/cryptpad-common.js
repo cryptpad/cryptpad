@@ -338,9 +338,9 @@ define([
     */
     var migrateRecentPads = common.migrateRecentPads = function (pads) {
         return pads.map(function (pad) {
+            var hash;
             if (isArray(pad)) {
                 var href = pad[0];
-                var hash;
                 href.replace(/\#(.*)$/, function (a, h) {
                     hash = h;
                 });
@@ -361,7 +361,7 @@ define([
                 if (/^https*:\/\//.test(pad.href)) {
                     pad.href = common.getRelativeHref(pad.href);
                 }
-                var hash = pad.href.slice(pad.href.indexOf('#')+1);
+                hash = pad.href.slice(pad.href.indexOf('#')+1);
                 if (!hash || !common.parseHash(hash)) { return; }
                 return pad;
             } else {
@@ -1192,7 +1192,7 @@ define([
         var $userAdmin = createDropdown(dropdownConfigUser);
 
         $userAdmin.find('a.logout').click(function (e) {
-            Cryptpad.logout();
+            common.logout();
             window.location.href = '/';
         });
         $userAdmin.find('a.settings').click(function (e) {
