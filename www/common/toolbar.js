@@ -321,7 +321,17 @@ define([
         var $span = $('<span>').text('CryptPad');
         var $aTagBig = $aTagSmall.clone().addClass('large').append($span);
         $aTagSmall.addClass('narrow');
+        var onClick = function (e) {
+            e.preventDefault();
+            if (e.ctrlKey) {
+                window.open('/');
+                return;
+            }
+            window.location = "/";
+        };
 
+        $aTagBig.click(onClick);
+        $aTagSmall.click(onClick);
         $linkContainer.append($aTagSmall).append($aTagBig);
     };
 
