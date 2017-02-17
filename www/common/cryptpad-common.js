@@ -2,7 +2,7 @@ define([
     '/api/config?cb=' + Math.random().toString(16).slice(2),
     '/customize/messages.js',
     '/customize/fsStore.js',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/alertifyjs/dist/js/alertify.js',
     '/bower_components/spin.js/spin.min.js',
     '/common/clipboard.js',

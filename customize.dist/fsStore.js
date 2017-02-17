@@ -2,7 +2,7 @@ define([
     '/api/config?cb=' + Math.random().toString().slice(2),
     '/customize/messages.js?app=fs',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     '/common/fileObject.js',
     '/bower_components/jquery/dist/jquery.min.js',
