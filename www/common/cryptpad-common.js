@@ -875,24 +875,6 @@ define([
                     }));
                 }
                 break;
-            case 'rename':
-                button = $('<button>', {
-                    id: 'name-pad',
-                    title: Messages.renameButton + '\n' + Messages.renameButtonTitle,
-                    'class': "fa fa-bookmark cryptpad-rename",
-                    style: 'font:'+size+' FontAwesome'
-                });
-                if (data && data.suggestName && callback) {
-                    var suggestName = data.suggestName;
-                    button.click(function() {
-                        var suggestion = suggestName();
-
-                        common.prompt(Messages.renamePrompt, suggestion, function (title, ev) {
-                            renamePad(title, callback);
-                        });
-                    });
-                }
-                break;
             case 'forget':
                 button = $('<button>', {
                     id: 'cryptpad-forget',
@@ -917,18 +899,6 @@ define([
                             });
                         });
 
-                    });
-                }
-                break;
-            case 'username':
-                button = $('<button>', {
-                    title: Messages.userButton + '\n' + Messages.userButtonTitle
-                }).html('<span class="fa fa-user" style="font-family:FontAwesome;"></span>');
-                if (data && typeof data.lastName !== "undefined" && callback) {
-                    button.click(function() {
-                        common.prompt(Messages.changeNamePrompt, data.lastName, function (newName) {
-                            callback(newName);
-                        });
                     });
                 }
                 break;

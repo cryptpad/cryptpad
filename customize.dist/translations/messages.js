@@ -7,7 +7,7 @@ define(function () {
     out._languageName = 'English';
 
     out.main_title = "Cryptpad: Zero Knowledge, Collaborative Real Time Editing";
-    out.main_slogan = "Unity is Strength - Collaboration is Key";
+    out.main_slogan = "Unity is Strength - Collaboration is Key"; // TODO remove?
 
     out.type = {};
     out.type.pad = 'Rich text';
@@ -15,12 +15,6 @@ define(function () {
     out.type.poll = 'Poll';
     out.type.slide = 'Presentation';
     out.type.drive = 'Drive';
-
-    out.errorBox_errorType_disconnected = 'Connection Lost';
-    out.errorBox_errorExplanation_disconnected = [
-        'Lost connection to server, you may reconnect by reloading the page or review your work ',
-        'by clicking outside of this box.'
-    ].join('');
 
     // NOTE: We want to update the 'common_connectionLost' key.
     // Please do not add a new 'updated_common_connectionLostAndInfo' but change directly the value of 'common_connectionLost'
@@ -43,8 +37,6 @@ define(function () {
     out.yourself = "Yourself";
     out.anonymousUsers = "anonymous editors";
     out.anonymousUser = "anonymous editor";
-    out.shareView = "Read-only URL";
-    out.shareEdit = "Edit URL";
     out.users = "Users";
     out.and = "And";
     out.viewer = "viewer";
@@ -65,20 +57,11 @@ define(function () {
     out.exportButtonTitle = 'Export this document to a local file';
     out.exportPrompt = 'What would you like to name your file?';
 
-    out.back = '&#8656; Back';
-    out.backToCryptpad = '⇐ Back to Cryptpad';
-
-    out.userButton = 'USER';
-    out.userButtonTitle = 'Change your username';
     out.changeNamePrompt = 'Change your name (leave empty to be anonymous): ';
     out.user_rename = "Change display name";
     out.user_displayName = "Display name";
     out.user_accountName = "Account name";
 
-    out.renameButton = 'RENAME';
-    out.renameButtonTitle = 'Change the title under which this document is listed on your home page';
-    out.renamePrompt = 'How would you like to title this pad?';
-    out.renameConflict = 'Another pad already has that title';
     out.clickToEdit = "Click to edit";
 
     out.forgetButton = 'FORGET';
@@ -86,9 +69,7 @@ define(function () {
     out.forgetPrompt = 'Clicking OK will remove the URL for this pad from localStorage, are you sure?';
 
     out.shareButton = 'Share';
-    out.shareButtonTitle = "Copy URL to clipboard";
     out.shareSuccess = 'Copied URL to clipboard';
-    out.shareFailed = "Failed to copy URL to clipboard";
 
     out.newButton = 'New';
     out.newButtonTitle = 'Create a new document';
@@ -96,7 +77,7 @@ define(function () {
     out.presentButton = 'PRESENT';
     out.presentButtonTitle = "Enter presentation mode";
     out.presentSuccess = 'Hit ESC to exit presentation mode';
-    out.sourceButton = 'VIEW SOURCE';
+    out.sourceButton = 'VIEW SOURCE'; //TODO remove? hidden behind the present mode
     out.sourceButtonTitle = "Leave presentation mode";
 
     out.backgroundButton = 'BACKGROUND COLOR';
@@ -104,13 +85,6 @@ define(function () {
     out.colorButton = 'TEXT COLOR';
     out.colorButtonTitle = 'Change the text color in presentation mode';
 
-    out.commitButton = 'COMMIT';
-
-    out.getViewButton = 'READ-ONLY URL';
-    out.getViewButtonTitle = 'Get the read-only URL for this document';
-    out.readonlyUrl = 'Read only document';
-    out.copyReadOnly = "Copy URL to clipboard";
-    out.openReadOnly = "Open in a new tab";
     out.editShare = "Share edit URL";
     out.editShareTitle = "Copy the edit URL to clipboard";
     out.viewShare = "Share view URL";
@@ -124,10 +98,8 @@ define(function () {
 
     out.okButton = 'OK (enter)';
 
-    out.cancel = "Cancel";
+    out.cancel = "Cancel"; // Not used?
     out.cancelButton = 'Cancel (esc)';
-
-    out.forget = "Forget";
 
     // Polls
 
@@ -251,8 +223,8 @@ define(function () {
 
     out.login_migrate = "Would you like to migrate existing data from your anonymous session?";
 
-    out.username_label = "Username: ";
-    out.displayname_label = "Display name: ";
+    out.username_label = "Username:";
+    out.displayname_label = "Display name:";
 
     out.login_username = "Username";
     out.login_password = "Password";
