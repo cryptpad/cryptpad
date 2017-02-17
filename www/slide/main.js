@@ -28,9 +28,7 @@ define([
 
     var SLIDE_BACKCOLOR_ID = "cryptpad-backcolor";
     var SLIDE_COLOR_ID = "cryptpad-color";
-    Cryptpad.styleAlerts();
 
-    Cryptpad.addLoadingScreen();
 
     var stringify = function (obj) {
         return JSONSortify(obj);
@@ -45,6 +43,9 @@ define([
     };
 
     $(function () {
+        Cryptpad.styleAlerts();
+        Cryptpad.addLoadingScreen();
+
         var ifrw = module.ifrw = $('#pad-iframe')[0].contentWindow;
         var toolbar;
 

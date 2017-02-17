@@ -21,6 +21,9 @@ define([
     Visible, Notify) {
     var $ = window.jQuery;
     var saveAs = window.saveAs;
+
+    $(function () {
+
     var ifrw = $('#pad-iframe')[0].contentWindow;
     var Ckeditor; // to be initialized later...
     var DiffDom = window.diffDOM;
@@ -814,4 +817,6 @@ define([
     };
 
     $(first);
+
+    });
 });

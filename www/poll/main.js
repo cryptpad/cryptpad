@@ -15,6 +15,8 @@ define([
 ], function (Config, Messages, TextPatcher, Listmap, Crypto, Cryptpad, Hyperjson, Renderer, Toolbar, Visible, Notify) {
     var $ = window.jQuery;
 
+    $(function () {
+
     var unlockHTML = '<i class="fa fa-unlock" aria-hidden="true"></i>';
     var lockHTML = '<i class="fa fa-lock" aria-hidden="true"></i>';
     var HIDE_INTRODUCTION_TEXT = "hide_poll_text";
@@ -785,6 +787,8 @@ define([
         if (info) {
             onConnectError();
         }
+    });
+
     });
 });
 
