@@ -317,7 +317,9 @@ define(function () {
                                "Êtes-vous sûr de vouloir continuer ?<br>" +
                                "Tapez “<em>I love CryptPad</em>” pour confirmer.";
     out.settings_resetDone = "Votre drive est désormais vide!";
-
+    out.settings_resetTips = "Astuces et informations dans CryptDrive";
+    out.settings_resetTipsButton = "Réinitialiser les astuces visibles dans CryptDrive";
+    out.settings_resetTipsDone = "Toutes les astuces sont de nouveau visibles.";
 
     // index.html
 

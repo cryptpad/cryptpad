@@ -95,7 +95,24 @@ define([
 
         return $div;
     };
+    var createResetTips = function () {
+        var $div = $('<div>', {'class': 'resetTips'});
+        var $label = $('<label>', {'for' : 'resetTips'}).text(Messages.settings_resetTips).appendTo($div);
+        $('<br>').appendTo($div);
+        var $button = $('<button>', {'id': 'resetTips', 'class': 'btn btn-primary'})
+            .text(Messages.settings_resetTipsButton).appendTo($div);
 
+        $button.click(function () {
+            Object.keys(localStorage).forEach(function (k) {
+                if(k.slice(0, 9) === "hide-info") {
+                    delete localStorage[k];
+                }
+            });
+            Cryptpad.alert(Messages.settings_resetTipsDone);
+        });
+
+        return $div;
+    };
     var createBackupDrive = function (store) {
         var obj = store.proxy;
         var $div = $('<div>', {'class': 'backupDrive'});
@@ -155,6 +172,7 @@ define([
         APP.$container.append(createTitle());
         APP.$container.append(createInfoBlock(obj));
         APP.$container.append(createDisplayNameInput(obj));
+        APP.$container.append(createResetTips());
         APP.$container.append(createBackupDrive(obj));
         APP.$container.append(createResetDrive(obj));
         obj.proxy.on('change', [], refresh);
