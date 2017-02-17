@@ -43,7 +43,7 @@ define([
 
         var accountName = obj.login_name;
         if (!accountName) { return; }
-        var $label = $('<span>', {'class': 'label'}).text(Messages.login_username_label);
+        var $label = $('<span>', {'class': 'label'}).text(Messages.user_accountName + ':');
         var $name = $('<span>').text(accountName);
         $div.append($label).append($name);
 
@@ -54,7 +54,7 @@ define([
     var createDisplayNameInput = function (store) {
         var obj = store.proxy;
         var $div = $('<div>', {'class': 'displayName'});
-        var $label = $('<label>', {'for' : 'displayName'}).text(Messages.login_displayname_label).appendTo($div);
+        var $label = $('<label>', {'for' : 'displayName'}).text(Messages.user_displayName).appendTo($div);
         $('<br>').appendTo($div);
         var $input = $('<input>', {
             'type': 'text',
