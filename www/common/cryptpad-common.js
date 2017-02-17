@@ -46,14 +46,7 @@ define([
 
     var whenRealtimeSyncs = common.whenRealtimeSyncs = function (realtime, cb) {
         realtime.sync();
-        var interval = 300;
-        var check = function () {
-            if (realtime.getAuthDoc() !== realtime.getUserDoc()) {
-                return window.setTimeout(check, interval);
-            }
-            cb();
-        };
-        window.setTimeout(check, interval);
+        realtime.onSettle(cb);
     };
 
     var getWebsocketURL = common.getWebsocketURL = function () {

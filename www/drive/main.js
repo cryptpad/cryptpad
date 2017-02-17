@@ -1873,7 +1873,6 @@ define([
     };
     var createReadme = function (proxy, cb) {
         if (proxy.initializing) {
-            console.log('test');
             var hash = Cryptpad.createRandomHash();
             Get.put(hash, Messages.driveReadme, function (e) {
                 if (e) { console.error(e); }
