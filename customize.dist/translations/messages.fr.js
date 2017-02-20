@@ -15,11 +15,10 @@ define(function () {
     out.type.slide = 'Présentation';
     out.type.drive = 'Drive';
 
-    out.errorBox_errorType_disconnected = 'Connexion perdue';
-    out.errorBox_errorExplanation_disconnected = [
-        'La connexion au serveur a été perdue. Vous pouvez essayer de vous reconnecter en rechargeant la page',
-        'ou vous pouvez revoir votre travail en fermant cette boîte de dialogue.',
-    ].join('');
+    out.button_newpad = 'Nouveau document texte';
+    out.button_newcode = 'Nouvelle page de code';
+    out.button_newpoll = 'Nouveau sondage';
+    out.button_newslide = 'Nouvelle présentation';
 
     out.common_connectionLost = "<b>Connexion au serveur perdue</b><br>Vous êtes désormais en mode lecture seule jusqu'au retour de la connexion.";
 
@@ -39,8 +38,6 @@ define(function () {
     out.yourself = "Vous-même";
     out.anonymousUsers = "éditeurs anonymes";
     out.anonymousUser = "éditeur anonyme";
-    out.shareView = "URL de lecture seule";
-    out.shareEdit = "URL d'édition";
     out.users = "Utilisateurs";
     out.and = "Et";
     out.viewer = "lecteur";
@@ -61,20 +58,11 @@ define(function () {
     out.exportButtonTitle = 'Exporter ce document vers un fichier local';
     out.exportPrompt = 'Comment souhaitez-vous nommer ce fichier ?';
 
-    out.back = '&#8656; Retour';
-    out.backToCryptpad = '⇐ Retour vers Cryptpad';
-
-    out.userButton = 'UTILISATEUR';
-    out.userButtonTitle = "Changer votre nom d'utilisateur";
     out.changeNamePrompt = 'Changer votre nom (laisser vide pour rester anonyme) : ';
     out.user_rename = "Changer le nom affiché";
     out.user_displayName = "Nom affiché";
     out.user_accountName = "Nom d'utilisateur";
 
-    out.renameButton = 'RENOMMER';
-    out.renameButtonTitle = 'Changer le titre utilisé par ce document dans la page d\'accueil de Cryptpad';
-    out.renamePrompt = 'Quel titre souhaitez-vous utiliser pour ce document ?';
-    out.renameConflict = 'Un autre document existe déjà avec le même titre';
     out.clickToEdit = 'Cliquer pour modifier';
 
     out.forgetButton = 'OUBLIER';
@@ -82,9 +70,7 @@ define(function () {
     out.forgetPrompt = 'Cliquer sur OK supprimera l\'URL de ce document de la mémoire de votre navigateur (localStorage), êtes-vous sûr ?';
 
     out.shareButton = 'Partager';
-    out.shareButtonTitle = "Copier l'URL dans le presse-papiers";
     out.shareSuccess = 'URL copiée dans le presse-papiers';
-    out.shareFailed = "Échec de la copie de l'URL dans le presse-papiers";
 
     out.newButton = 'Nouveau';
     out.newButtonTitle = 'Créer un nouveau document';
@@ -100,13 +86,6 @@ define(function () {
     out.colorButton = 'COULEUR DU TEXTE';
     out.colorButtonTitle = 'Changer la couleur du texte en mode présentation';
 
-    out.commitButton = 'VALIDER';
-
-    out.getViewButton = 'LECTURE SEULE';
-    out.getViewButtonTitle = "Obtenir l'adresse d'accès à ce document en lecture seule";
-    out.readonlyUrl = 'Document en lecture seule';
-    out.copyReadOnly = "Copier l'URL dans le presse-papiers";
-    out.openReadOnly = "Ouvrir dans un nouvel onglet";
     out.editShare = "Partager l'URL d'édition";
     out.editShareTitle = "Copier l'URL d'édition dans le presse-papiers";
     out.viewShare = "Partager l'URL de lecture";
@@ -126,8 +105,6 @@ define(function () {
     out.loginText = '<p>Votre nom d\'utilisateur et votre mot de passe sont utilisés pour générer une clé unique qui reste inconnue de notre serveur.</p>\n' +
                     '<p>Faites attention de ne pas oublier vos identifiants puisqu\'ils seront impossible à récupérer.</p>'; //TODO
 
-    out.forget = "Oublier";
-
     // Polls
 
     out.poll_title = "Sélecteur de date Zero Knowledge";
@@ -135,9 +112,6 @@ define(function () {
 
     out.poll_p_save = "Vos modifications sont mises à jour instantanément, donc vous n'avez jamais besoin de sauver le contenu.";
     out.poll_p_encryption = "Tout ce que vous entrez est chiffré donc seules les personnes possédant le lien du sondage y ont accès. Même le serveur ne peut pas voir le contenu.";
-    out.poll_p_howtouse = "Entrez votre nom dans le champ ci-dessous et cochez les cases lorsque les options vous conviennent.";
-
-    out.promptName = "Quel est votre nom ?";
 
     out.wizardButton = 'ASSISTANT';
     out.wizardLog = "Cliquez sur le bouton dans le coin supérieur gauche pour retourner au sondage";
@@ -158,22 +132,10 @@ define(function () {
     out.poll_wizardAddDateButton = "+ Dates";
     out.poll_wizardAddTimeButton = "+ Horaires";
 
-    out.poll_addUserButton = "+ Utilisateurs";
-    out.poll_addUserButtonTitle = "Cliquer pour ajouter un utilisateur";
-    out.poll_addOptionButton = "+ Options";
-    out.poll_addOptionButtonTitle = "Cliquer pour ajouter une option";
-    out.poll_addOption = "Indiquer la nouvelle option";
     out.poll_optionPlaceholder = "Option";
-    out.poll_addUser = "Entrer un nom";
     out.poll_userPlaceholder = "Votre nom";
     out.poll_removeOption = "Êtes-vous sûr de vouloir supprimer cette option ?";
-    out.poll_removeOptionTitle = "Supprimer la ligne";
     out.poll_removeUser = "Êtes-vous sûr de vouloir supprimer cet utilisateur ?";
-    out.poll_removeUserTitle = "Supprimer la colonne";
-    out.poll_editOption = "Êtes-vous sûr de vouloir éditer cette option ?";
-    out.poll_editOptionTitle = "Éditer la ligne";
-    out.poll_editUser = "Êtes-vous sûr de vouloir éditer les choix de cet utilisateur ?";
-    out.poll_editUserTitle = "Éditer la colonne";
 
     out.poll_titleHint = "Titre";
     out.poll_descriptionHint = "Description";
@@ -228,10 +190,6 @@ define(function () {
     out.fc_restore = "Restaurer";
     out.fc_remove = "Supprimer définitivement";
     out.fc_empty = "Vider la corbeille";
-    out.fc_newpad = "Nouveau pad de texte";
-    out.fc_newcode = "Nouveau pad de code";
-    out.fc_newslide = "Nouvelle présentation";
-    out.fc_newpoll = "Nouveau sondage";
     out.fc_prop = "Propriétés";
     // fileObject.js (logs)
     out.fo_moveUnsortedError = "La liste des éléments non triés ne peut pas contenir de dossiers.";
@@ -248,8 +206,6 @@ define(function () {
     out.logoutButton = "Déconnexion";
     out.settingsButton = "Préférences";
 
-    out.login_migrate = "Souhaitez-vous importer les données existantes de votre session anonyme ?";
-
     out.username_label = "Nom d'utilisateur : ";
     out.displayname_label = "Nom affiché : ";
 
@@ -258,26 +214,8 @@ define(function () {
     out.login_confirm = "Confirmer votre mot de passe";
     out.login_remember = "Se souvenir de moi";
 
-    out.login_cancel_prompt = "...ou si vous avez entré le mauvais nom d'utilisateur ou mot de passe, annulez pour essayer à nouveau.";
-
-    out.login_registerSuccess = "Inscription réalisée avec succès. Prenez soin de ne pas oublier votre mot de passe !";
-    out.login_passwordMismatch = "Les deux mots de passe entrés sont différents. Essayez à nouveau.";
-
-    out.login_warning = [
-        '<h1 id="warning">ATTENTION</h1>',
-        '<p>Cryptpad sauve vos données personnelles dans un document temps-réel chiffré, comme pour tous les autres types de documents temps-réel.</p>',
-        '<p>Votre nom d\'utilisateur et votre mot de passe ne sont jamais envoyés au serveur de manière non-chiffré.</p>',
-        '<p>Ainsi, si vous oubliez votre nom d\'utilisateur ou votre mot de passe, il n\'y a absolument rien que nous puissions faire pour retrouver vos informations perdues.</p>',
-        '<p><strong>Prenez soin de ne surtout pas oublier votre nom d\'utilisateur OU votre mot de passe !</strong></p>',
-    ].join('\n');
-
     out.login_hashing = "Traitement de vos identifiants, cela peut nécessiter quelques instants.";
 
-    out.login_no_user = "Il n'y a aucun utilisateur associé au nom et au mot de passe que vous avez entré.";
-    out.login_confirm_password = "Veuillez taper de nouveau votre mot de passe pour vous inscrire...";
-
-    out.loginText = '<p>Votre nom d\'utilisateur et votre mot d epasse sont utilisés pour générer une clé unique qui reste inconnue de notre serveur.</p>\n' +
-                    '<p>Faîtes attention de ne pas perdre vos identifiants, puisqu\'il est impossible de les récupérer</p>';
     out.login_hello = 'Bonjour {0},'; // {0} is the username
     out.login_helloNoName = 'Bonjour,';
     out.login_accessDrive = 'Accédez à votre drive';
@@ -323,14 +261,7 @@ define(function () {
 
     // index.html
 
-    //out.main_p1 = 'CryptPad est l\'éditeur collaboratif en temps réel <strong>zero knowledge</strong>. Le chiffrement est effectué depuis votre navigateur, ce qui protège les données contre le serveur, le cloud, et la NSA. La clé de chiffrement est stockée dans l\'<a href="https://fr.wikipedia.org/wiki/Identificateur_de_fragment">identifieur de fragment</a> de l\'URL qui n\'est jamais envoyée au serveur mais est accessible depuis javascript, de sorte qu\'en partageant l\'URL, vous donnez l\'accès au pad à ceux qui souhaitent participer.';
     out.main_p1 = "<h2>Collaborez avec confiance</h2><br>Développez vos idées en groupe avec des documents partagés; la technologie <strong>Zero Knowledge</strong> sécurise vos données.";
-    out.main_p2 = 'Ce projet utilise l\'éditeur visuel (WYSIWYG) <a href="http://ckeditor.com/">CKEditor</a>, l\'éditeur de code source <a href="https://codemirror.net/">CodeMirror</a>, et le moteur temps-réel <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a>.';
-    out.main_howitworks_p1 = 'CryptPad utilise une variante de l\'algorithme d\'<a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> qui est capable de trouver un consensus distribué en utilisant <a href="https://bitcoin.org/bitcoin.pdf">une chaîne de bloc Nakamoto</a>, un outil popularisé par le <a href="https://fr.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. De cette manière, l\'algorithme évite la nécessité d\'utiliser un serveur central pour résoudre les conflits d\'édition de l\'Operational Transformation, et sans ce besoin de résolution des conflits le serveur peut rester ignorant du contenu qui est édité dans le pad.';
-    out.main_about = 'À propos';
-    out.main_about_p1 = 'Vous pouvez en apprendre davantage sur notre <a href="/privacy.html" title="">politique de confidentialité</a> et nos <a href="/terms.html">conditions d\'utilisation</a>.';
-    out.main_about_p2 = 'Si vous avez des questions ou commentaires, vous pouvez <a href="https://twitter.com/cryptpad">nous tweeter</a>, ouvrir une issue sur <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">Github</a>, venir dire bonjour sur IRC (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), ou <a href="mailto:research@xwiki.com">nous envoyer un email</a>.';
-    out.main_openFileManager = 'Ouvrir dans un nouvel onglet';
 
     out.main_howitworks = 'Comment ça fonctionne';
     out.main_zeroKnowledge = 'Zero Knowledge';
@@ -356,19 +287,7 @@ define(function () {
     out.footer_contact = "Contact";
     out.footer_aboutUs = "À propos de nous";
 
-    out.table_type = 'Type';
-    out.table_link = 'Lien';
-    out.table_created = 'Créé le';
-    out.table_last = 'Dernier accès';
-
-    out.button_newpad = 'Nouveau document texte';
-    out.button_newcode = 'Nouvelle page de code';
-    out.button_newpoll = 'Nouveau sondage';
-    out.button_newslide = 'Nouvelle présentation';
-
     out.form_title = "Tous vos pads, partout où vous allez !";
-    out.form_username = "Nom d'utilisateur";
-    out.form_password = "Mot de passe";
 
     out.about = "À propos";
     out.privacy = "Vie privée";

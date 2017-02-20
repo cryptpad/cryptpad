@@ -16,6 +16,11 @@ define(function () {
     out.type.slide = 'Presentation';
     out.type.drive = 'Drive';
 
+    out.button_newpad = 'New Rich Text pad';
+    out.button_newcode = 'New Code pad';
+    out.button_newpoll = 'New Poll';
+    out.button_newslide = 'New Presentation';
+
     // NOTE: We want to update the 'common_connectionLost' key.
     // Please do not add a new 'updated_common_connectionLostAndInfo' but change directly the value of 'common_connectionLost'
     out.updated_common_connectionLostAndInfo = "<b>Server Connection Lost</b><br>You're now in read-only mode until the connection is back.";
@@ -108,9 +113,6 @@ define(function () {
 
     out.poll_p_save = "Your settings are updated instantly, so you never need to save.";
     out.poll_p_encryption = "All your input is encrypted so only people who have the link can access it. Even the server cannot see what you change.";
-    out.poll_p_howtouse = "Enter your name in the input field below and check the box for times when you are available";
-
-    out.promptName = "What is you name ?";
 
     out.wizardButton = 'WIZARD';
     out.wizardLog = "Click the button in the top left to return to your poll";
@@ -131,22 +133,10 @@ define(function () {
     out.poll_wizardAddDateButton = "+ Dates";
     out.poll_wizardAddTimeButton = "+ Times";
 
-    out.poll_addUserButton = "+ Users";
-    out.poll_addUserButtonTitle = "Click to add a user";
-    out.poll_addOptionButton = "+ Options";
-    out.poll_addOptionButtonTitle = "Click to add an option";
-    out.poll_addOption = "Propose an option";
     out.poll_optionPlaceholder = "Option";
-    out.poll_addUser = "Enter a name";
     out.poll_userPlaceholder = "Your name";
     out.poll_removeOption = "Are you sure you'd like to remove this option?";
-    out.poll_removeOptionTitle = "Remove the row";
     out.poll_removeUser = "Are you sure you'd like to remove this user?";
-    out.poll_removeUserTitle = "Remove the column";
-    out.poll_editOption = "Are you sure you'd like to edit this option?";
-    out.poll_editOptionTitle = "Edit the row";
-    out.poll_editUser = "Are you sure you'd like to edit this user?";
-    out.poll_editUserTitle = "Edit the column";
 
     out.poll_titleHint = "Title";
     out.poll_descriptionHint = "Describe your poll, and use the 'publish' button when you're done. Anyone with the link can change the description, but this is discouraged.";
@@ -201,10 +191,6 @@ define(function () {
     out.fc_restore = "Restore";
     out.fc_remove = "Delete permanently";
     out.fc_empty = "Empty the trash";
-    out.fc_newpad = "New text pad";
-    out.fc_newcode = "New code pad";
-    out.fc_newslide = "New presentation";
-    out.fc_newpoll = "New poll";
     out.fc_prop = "Properties";
     // fileObject.js (logs)
     out.fo_moveUnsortedError = "You can't move a folder to the list of unsorted pads";
@@ -221,36 +207,13 @@ define(function () {
     out.logoutButton = "Log out";
     out.settingsButton = "Settings";
 
-    out.login_migrate = "Would you like to migrate existing data from your anonymous session?";
-
-    out.username_label = "Username:";
-    out.displayname_label = "Display name:";
-
     out.login_username = "Username";
     out.login_password = "Password";
     out.login_confirm = "Confirm your password";
     out.login_remember = "Remember me";
 
-    out.login_cancel_prompt = "...or if you may have entered the wrong username or password, cancel to try again.";
-
-    out.login_registerSuccess = "registered successfully. Make sure you don't forget your password!";
-    out.login_passwordMismatch = "The two passwords you entered do not match. Try again";
-
-    out.login_warning = [
-        '<h1 id="warning">WARNING</h1>',
-        '<p>Cryptpad stores your personal information in an encrypted realtime document, as it does with all other types of realtime documents.</p>',
-        '<p>Your username and password are never sent to the server in an unencrypted form.</p>',
-        '<p>As such, if you forget your username or password, there is absolutely nothing that we can do to recover your lost information.</p>',
-        '<p><strong>Make sure you do not forget your username and password!</strong></p>',
-    ].join('\n');
-
     out.login_hashing = "Hashing your password, this might take some time.";
 
-    out.login_no_user = "There is no user associated with the username and password that you entered.";
-    out.login_confirm_password = "Re-enter your password to register...";
-
-    out.loginText = '<p>Your username and password are used to generate a unique key which is never known by our server.</p>\n' +
-                    '<p>Be careful not to forget your credentials, as they are impossible to recover</p>';
     out.login_hello = 'Hello {0},'; // {0} is the username
     out.login_helloNoName = 'Hello,';
     out.login_accessDrive = 'Access your drive';
@@ -296,16 +259,7 @@ define(function () {
 
     // index.html
 
-    //out.main_p1 = 'CryptPad is the <strong>zero knowledge</strong> realtime collaborative editor.  Encryption carried out in your web browser protects the data from the server, the cloud, and the NSA.  The secret encryption key is stored in the URL <a href="https://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a> which is never sent to the server but is available to javascript so by sharing the URL, you give authorization to others who want to participate.';
-    //out.main_p1 = "Type quick documents with friends and colleagues.<br>With <strong>Zero Knowledge</strong> technology, the server doesn't know what you're doing.";
     out.main_p1 = "<h1>Collaborate in Confidence</h1><br> Grow your ideas together with shared documents while <strong>Zero Knowledge</strong> technology secures your privacy; even from us.";
-
-    out.main_p2 = 'This project uses the <a href="http://ckeditor.com/">CKEditor</a> Visual Editor, <a href="https://codemirror.net/">CodeMirror</a>, and the <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a> realtime engine.';
-    out.main_howitworks_p1 = 'CryptPad uses a variant of the <a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> algorithm which is able to find distributed consensus using a <a href="https://bitcoin.org/bitcoin.pdf">Nakamoto Blockchain</a>, a construct popularized by <a href="https://en.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. This way the algorithm can avoid the need for a central server to resolve Operational Transform Edit Conflicts and without the need for resolving conflicts, the server can be kept unaware of the content which is being edited on the pad.';
-    out.main_about = 'About';
-    out.main_about_p1 = 'You can read more about <a href="/about.html">how CryptPad works</a>, our <a href="/privacy.html" title="">privacy policy</a> and <a href="/terms.html">terms of service</a>.';
-    out.main_about_p2 = 'If you have any questions or comments, you can <a href="https://twitter.com/cryptpad">tweet us</a>, open an issue <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">on github</a>, come say hi on irc (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), or <a href="mailto:research@xwiki.com">send us an email</a>.';
-    out.main_openFileManager = 'Open in a new tab';
 
     out.main_howitworks = 'How It Works';
     out.main_zeroKnowledge = 'Zero Knowledge';
@@ -330,20 +284,6 @@ define(function () {
     out.footer_applications = "Applications";
     out.footer_contact = "Contact";
     out.footer_aboutUs = "About us";
-
-    out.table_type = 'Type';
-    out.table_link = 'Link';
-    out.table_created = 'Created';
-    out.table_last = 'Last Accessed';
-
-    out.button_newpad = 'New Rich Text pad';
-    out.button_newcode = 'New Code pad';
-    out.button_newpoll = 'New Poll';
-    out.button_newslide = 'New Presentation';
-
-    out.form_title = "All your pads, everywhere!";
-    out.form_username = "Username";
-    out.form_password = "Password";
 
     out.about = "About";
     out.privacy = "Privacy";
