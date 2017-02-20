@@ -1,9 +1,8 @@
 define([
     '/common/cryptpad-common.js',
-    '/customize/languageSelector.js',
     '/common/login.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Cryptpad, LS, Login) {
+], function (Cryptpad, Login) {
     var $ = window.$;
 
     var APP = window.APP = {

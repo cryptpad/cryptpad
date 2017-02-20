@@ -1,11 +1,6 @@
 define(function () {
     var out = {};
 
-    // translations must set this key for their language to be available in
-    // the language dropdowns that are shown throughout Cryptpad's interface
-    // NOTE: translate that name in your language ("Français" and not "French")
-    out._languageName = 'English';
-
     out.main_title = "Cryptpad: Zero Knowledge, Collaborative Real Time Editing";
     out.main_slogan = "Unity is Strength - Collaboration is Key"; // TODO remove?
 
@@ -259,7 +254,7 @@ define(function () {
 
     // index.html
 
-    out.main_p1 = "<h1>Collaborate in Confidence</h1><br> Grow your ideas together with shared documents while <strong>Zero Knowledge</strong> technology secures your privacy; even from us.";
+    out.main_info = "<h1>Collaborate in Confidence</h1><br> Grow your ideas together with shared documents while <strong>Zero Knowledge</strong> technology secures your privacy; even from us.";
 
     out.main_howitworks = 'How It Works';
     out.main_zeroKnowledge = 'Zero Knowledge';

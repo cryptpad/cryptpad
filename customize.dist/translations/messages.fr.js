@@ -1,10 +1,6 @@
 define(function () {
     var out = {};
 
-    // translations must set this key for their language to be available in
-    // the language dropdowns that are shown throughout Cryptpad's interface
-    out._languageName = "Français";
-
     out.main_title = "Cryptpad: Éditeur collaboratif en temps réel, zero knowledge";
     out.main_slogan = "L'unité est la force, la collaboration est la clé";
 
@@ -101,9 +97,6 @@ define(function () {
 
     out.cancel = "Annuler";
     out.cancelButton = 'Annuler (Echap)';
-
-    out.loginText = '<p>Votre nom d\'utilisateur et votre mot de passe sont utilisés pour générer une clé unique qui reste inconnue de notre serveur.</p>\n' +
-                    '<p>Faites attention de ne pas oublier vos identifiants puisqu\'ils seront impossible à récupérer.</p>'; //TODO
 
     // Polls
 
@@ -206,9 +199,6 @@ define(function () {
     out.logoutButton = "Déconnexion";
     out.settingsButton = "Préférences";
 
-    out.username_label = "Nom d'utilisateur : ";
-    out.displayname_label = "Nom affiché : ";
-
     out.login_username = "Nom d'utilisateur";
     out.login_password = "Mot de passe";
     out.login_confirm = "Confirmer votre mot de passe";
@@ -261,7 +251,7 @@ define(function () {
 
     // index.html
 
-    out.main_p1 = "<h2>Collaborez avec confiance</h2><br>Développez vos idées en groupe avec des documents partagés; la technologie <strong>Zero Knowledge</strong> sécurise vos données.";
+    out.main_info = "<h2>Collaborez avec confiance</h2><br>Développez vos idées en groupe avec des documents partagés; la technologie <strong>Zero Knowledge</strong> sécurise vos données.";
 
     out.main_howitworks = 'Comment ça fonctionne';
     out.main_zeroKnowledge = 'Zero Knowledge';
@@ -286,8 +276,6 @@ define(function () {
     out.footer_applications = "Applications";
     out.footer_contact = "Contact";
     out.footer_aboutUs = "À propos de nous";
-
-    out.form_title = "Tous vos pads, partout où vous allez !";
 
     out.about = "À propos";
     out.privacy = "Vie privée";
