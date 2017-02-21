@@ -1,19 +1,18 @@
 require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
-    '/api/config?cb=' + Math.random().toString(16).substring(2),
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
-    '/customize/messages.js?app=file',
     'json.sortify',
     '/common/cryptpad-common.js',
     '/common/fileObject.js',
     '/common/toolbar.js',
     '/customize/application_config.js',
     '/common/cryptget.js'
-], function (Config, Listmap, Crypto, TextPatcher, Messages, JSONSortify, Cryptpad, FO, Toolbar, AppConfig, Get) {
+], function (Listmap, Crypto, TextPatcher, JSONSortify, Cryptpad, FO, Toolbar, AppConfig, Get) {
     var module = window.MODULE = {};
 
+    var Messages = Cryptpad.Messages;
     var $ = window.jQuery;
     var saveAs = window.saveAs;
 
@@ -55,10 +54,7 @@ define([
     var LOCALSTORAGE_VIEWMODE = "cryptpad-file-viewMode";
     var FOLDER_CONTENT_ID = "folderContent";
 
-    var NEW_FOLDER_NAME = Messages.fm_newFolder;
-
     var config = {};
-    config.storageKey = FILES_DATA;
     var DEBUG = config.DEBUG = true;
     var debug = config.debug = DEBUG ? function () {
         console.log.apply(console, arguments);
@@ -176,6 +172,7 @@ define([
             return files.workgroup === 1;
         };
         config.workgroup = isWorkgroup();
+        config.Cryptpad = Cryptpad;
 
         var filesOp = FO.init(files, config);
         filesOp.fixFiles();

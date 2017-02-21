@@ -1,6 +1,4 @@
 define([
-    '/api/config?cb=' + Math.random().toString(16).substring(2),
-    '/customize/messages.js?app=poll',
     '/bower_components/textpatcher/TextPatcher.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
@@ -12,8 +10,10 @@ define([
     '/common/notify.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Messages, TextPatcher, Listmap, Crypto, Cryptpad, Hyperjson, Renderer, Toolbar, Visible, Notify) {
+], function (TextPatcher, Listmap, Crypto, Cryptpad, Hyperjson, Renderer, Toolbar, Visible, Notify) {
     var $ = window.jQuery;
+
+    var Messages = Cryptpad.Messages;
 
     $(function () {
 

@@ -1,15 +1,16 @@
 define([
-    '/customize/messages.js',
     '/customize/application_config.js',
     '/common/cryptpad-common.js',
     '/bower_components/lil-uri/uri.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages, Config, Cryptpad, LilUri) {
+], function (Config, Cryptpad, LilUri) {
     var $ = window.$;
 
     var APP = window.APP = {
         Cryptpad: Cryptpad,
     };
+
+    var Messages = Cryptpad.Messages;
 
     $(function () {
         var $main = $('#mainBlock');

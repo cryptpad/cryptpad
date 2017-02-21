@@ -1,12 +1,10 @@
 define([
-    '/api/config?cb=' + Math.random().toString().slice(2),
-    '/customize/messages.js?app=fs',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     '/common/fileObject.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Messages, Listmap, Crypto, TextPatcher, FO) {
+], function (Listmap, Crypto, TextPatcher, FO) {
     /*
         This module uses localStorage, which is synchronous, but exposes an
         asyncronous API. This is so that we can substitute other storage
@@ -130,7 +128,7 @@ define([
 
     var onReady = function (f, proxy, Cryptpad, exp) {
         var fo = FO.init(proxy.drive, {
-            storageKey: Cryptpad.storageKey
+            Cryptpad: Cryptpad
         });
         //storeObj = proxy;
         store = initStore(fo, proxy, exp);
@@ -181,7 +179,7 @@ define([
                 });
                 Cryptpad.logout();
                 Cryptpad.addLoadingScreen();
-                Cryptpad.errorLoadingScreen(Messages.onLogout, true);
+                Cryptpad.errorLoadingScreen(Cryptpad.Messages.onLogout, true);
                 if (exp.info) {
                     exp.info.network.disconnect();
                 }

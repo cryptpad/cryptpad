@@ -1,19 +1,23 @@
 define([
-    '/customize/messages.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages) {
+], function () {
     var $ = window.jQuery;
     var module = {};
 
+    var Messages = {};
+
     var ROOT = "root";
     var UNSORTED = "unsorted";
-    var FILES_DATA = "filesData";
     var TRASH = "trash";
     var TEMPLATE = "template";
-    var NEW_FOLDER_NAME = Messages.fm_newFolder;
 
     var init = module.init = function (files, config) {
-        FILES_DATA = config.storageKey || FILES_DATA;
+        var Cryptpad = config.Cryptpad;
+        Messages = Cryptpad.Messages;
+
+        var FILES_DATA = Cryptpad.storageKey;
+        var NEW_FOLDER_NAME = Messages.fm_newFolder;
+
         var DEBUG = config.DEBUG || false;
         var logging = function () {
             console.log.apply(console, arguments);

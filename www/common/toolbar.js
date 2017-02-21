@@ -1,9 +1,10 @@
 define([
-    '/customize/messages.js',
     '/customize/application_config.js',
     '/bower_components/jquery/dist/jquery.min.js'
-], function (Messages, Config) {
+], function (Config) {
     var $ = window.jQuery;
+
+    var Messages = {};
 
     var Bar = {
         constants: {},
@@ -503,6 +504,7 @@ define([
         config = config || {};
         var readOnly = (typeof config.readOnly !== "undefined") ? (config.readOnly ? 1 : 0) : -1;
         var Cryptpad = config.common;
+        Messages = Cryptpad.Messages;
         config.displayed = config.displayed || [];
 
         var toolbar = createRealtimeToolbar($container, config.title);
