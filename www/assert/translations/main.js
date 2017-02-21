@@ -10,12 +10,8 @@ define([
         return $('<pre>', opt).text(text);
     };
 
-    var addSlashes = function (text) {
-        return (text + '').replace(/[\\']/g, '\\\'');
-    }
-
     var todo = function (missing) {
-        var str = "";;
+        var str = "";
         var need = 1;
 
         if (missing.length) {
@@ -27,19 +23,25 @@ define([
 
                 if (str !== code) {
                     if (str !== "")
+                    {
                         res += '\n';
+                    }
                     str = code;
                     res += '/*\n *\n * ' + code + '\n *\n */\n\n';
                 }
                 if (need !== needed) {
                     need = needed;
                     if (need === 0)
+                    {
                         res += '\n// TODO: These keys are not needed anymore and should be removed ('+ code + ')\n\n';
+                    }
                 }
 
-                res += (need ? '' : '// ') + 'out.' + key + ' = \'\';';
+                res += (need ? '' : '// ') + 'out.' + key + ' = "";';
                 if (need)
-                    res += ' // \'' + addSlashes(Cryptpad.Messages._getKey(key, [])) + '\'';
+                {
+                    res += ' // ' + JSON.stringify(Cryptpad.Messages._getKey(key, []));
+                }
                 return res;
             }).join('\n')));
         } else {
