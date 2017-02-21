@@ -53,15 +53,17 @@ define(req, function(Default, Language) {
                 Object.keys(Default).forEach(function (k) {
                     if (/^_/.test(k) || /nitialState$/.test(k)) { return; }
                     if (!translation[k]) {
-                        var warning = "key [" + k + "] is missing from translation [" + code + "]";
-                        missing.push(warning);
+                        //var warning = "key [" + k + "] is missing from translation [" + code + "]";
+                        //missing.push(warning);
+                        missing.push([code, k, 1]);
                     }
                 });
                 Object.keys(translation).forEach(function (k) {
                     if (/^_/.test(k) || /nitialState$/.test(k)) { return; }
                     if (!Default[k]) {
-                        var warning = "key [" + k + "] from [" + code + "] is not needed anymore and should be removed";
-                        missing.push(warning);
+                        //var warning = "key [" + k + "] from [" + code + "] is not needed anymore and should be removed";
+                        //missing.push(warning);
+                        missing.push([code, k, 0]);
                     }
                 });
                 /*if (typeof(translation._languageName) !== 'string') {
