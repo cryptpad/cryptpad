@@ -1,7 +1,8 @@
 define([
     '/bower_components/jquery/dist/jquery.min.js',
     '/common/cryptpad-common.js',
-], function (jQuery, Cryptpad) {
+    '/customize/translations/messages.js',
+], function (jQuery, Cryptpad, English) {
     var $ = window.jQuery;
 
     var $body = $('body');
@@ -40,7 +41,7 @@ define([
                 res += (need ? '' : '// ') + 'out.' + key + ' = "";';
                 if (need)
                 {
-                    res += ' // ' + JSON.stringify(Cryptpad.Messages._getKey(key, []));
+                    res += ' // ' + JSON.stringify(English[key]);
                 }
                 return res;
             }).join('\n')));
