@@ -3,9 +3,8 @@ define([
     '/customize/application_config.js',
     '/common/cryptpad-common.js',
     '/bower_components/lil-uri/uri.min.js',
-    '/customize/languageSelector.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages, Config, Cryptpad, LilUri, LS) {
+], function (Messages, Config, Cryptpad, LilUri) {
     var $ = window.$;
 
     var APP = window.APP = {

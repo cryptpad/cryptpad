@@ -22,15 +22,15 @@ define([
         Cryptpad: Cryptpad,
     };
 
-    Cryptpad.styleAlerts();
-    Cryptpad.addLoadingScreen();
-
-    var ifrw = module.ifrw = $('#pad-iframe')[0].contentWindow;
-    var stringify = function (obj) {
-        return JSONSortify(obj);
-    };
-
     $(function () {
+        Cryptpad.styleAlerts();
+        Cryptpad.addLoadingScreen();
+
+        var ifrw = module.ifrw = $('#pad-iframe')[0].contentWindow;
+        var stringify = function (obj) {
+            return JSONSortify(obj);
+        };
+
         var toolbar;
 
         var secret = Cryptpad.getSecrets();

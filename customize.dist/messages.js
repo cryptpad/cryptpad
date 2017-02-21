@@ -1,70 +1,78 @@
-define(['/customize/languageSelector.js',
-        '/customize/translations/messages.js',
-        '/customize/translations/messages.es.js',
-        '/customize/translations/messages.fr.js',
+(function () {
+var LS_LANG = "CRYPTPAD_LANG";
 
-    // 1) additional translation files can be added here...
-        '/customize/translations/messages.pl.js',
-        '/customize/translations/messages.de.js',
-        '/customize/translations/messages.pt-br.js',
+var getStoredLanguage = function () { return localStorage.getItem(LS_LANG); };
+var getBrowserLanguage = function () { return navigator.language || navigator.userLanguage; };
+var getLanguage = function () { return getStoredLanguage() || getBrowserLanguage(); };
+var language = getLanguage();
 
+// add your module to this map so it gets used
+var map = {
+    'fr': 'Français',
+    'es': 'Español',
+    'pl': 'Polski',
+    'de': 'Deutsch',
+    'pt-br': 'Português do Brasil'
+};
 
-        '/bower_components/jquery/dist/jquery.min.js'],
+var req = ['/customize/translations/messages.js'];
+if (language && map[language]) { req.push('/customize/translations/messages.' + language + '.js'); }
+req.push('/bower_components/jquery/dist/jquery.min.js');
 
-    // 2) name your language module here...
-        function(LS, Default, Spanish, French, Polish, German, BrPortuguese) {
+define(req, function(Default, Language) {
     var $ = window.jQuery;
 
-    // 3) add your module to this map so it gets used
-    var map = {
-        'fr': French,
-        'es': Spanish,
-        'pl': Polish,
-        'de': German,
-        'pt-br': BrPortuguese,
-    };
+    var externalMap = JSON.parse(JSON.stringify(map));
 
+    map.en = 'English';
     var defaultLanguage = 'en';
-
-    var language = LS.getLanguage();
 
     var messages;
 
-    if (!language || language === defaultLanguage || language === 'default' || !map[language]) {
+    if (!Language || !language || language === defaultLanguage || language === 'default' || !map[language]) {
         messages = Default;
     }
     else {
         // Add the translated keys to the returned object
-        messages = $.extend(true, {}, Default, map[language]);
+        messages = $.extend(true, {}, Default, Language);
     }
 
-    // messages_languages return the available translations and their name in an object :
-    // { "en": "English", "fr": "French", ... }
-    messages._languages = {
-        'en': Default._languageName
-    };
-    for (var l in map) {
-        messages._languages[l] = map[l]._languageName || l;
-    }
+    messages._languages = map;
 
-    messages._initSelector = LS.main;
-    messages._checkTranslationState = function () {
+    messages._checkTranslationState = function (cb) {
+        if (typeof(cb) !== "function") { return; }
         var missing = [];
-        Object.keys(map).forEach(function (code) {
-            var translation = map[code];
-            Object.keys(Default).forEach(function (k) {
-                if (/^_/.test(k) || /nitialState$/.test(k)) { return; }
-                if (!translation[k]) {
-                    var warning = "key [" + k + "] is missing from translation [" + code + "]";
-                    missing.push(warning);
-                }
-            });
-            if (typeof(translation._languageName) !== 'string') {
-                var warning = 'key [_languageName] is missing from translation [' + code + ']';
-                missing.push(warning);
-            }
+        var reqs = [];
+        Object.keys(externalMap).forEach(function (code) {
+            reqs.push('/customize/translations/messages.' + code + '.js');
         });
-        return missing;
+        require(reqs, function () {
+            var langs = arguments;
+            Object.keys(externalMap).forEach(function (code, i) {
+                var translation = langs[i];
+                Object.keys(Default).forEach(function (k) {
+                    if (/^_/.test(k) || /nitialState$/.test(k)) { return; }
+                    if (!translation[k]) {
+                        //var warning = "key [" + k + "] is missing from translation [" + code + "]";
+                        //missing.push(warning);
+                        missing.push([code, k, 1]);
+                    }
+                });
+                Object.keys(translation).forEach(function (k) {
+                    if (/^_/.test(k) || /nitialState$/.test(k)) { return; }
+                    if (!Default[k]) {
+                        //var warning = "key [" + k + "] from [" + code + "] is not needed anymore and should be removed";
+                        //missing.push(warning);
+                        missing.push([code, k, 0]);
+                    }
+                });
+                /*if (typeof(translation._languageName) !== 'string') {
+                    var warning = 'key [_languageName] is missing from translation [' + code + ']';
+                    missing.push(warning);
+                }*/
+            });
+            cb(missing);
+        });
     };
 
     // Get keys with parameters
@@ -73,6 +81,35 @@ define(['/customize/languageSelector.js',
         var text = messages[key];
         return text.replace(/\{(\d+)\}/g, function (str, p1) {
             return argArray[p1] || null;
+        });
+    };
+
+    // Add handler to the language selector
+    var storeLanguage = function (l) {
+        localStorage.setItem(LS_LANG, l);
+    };
+    messages._initSelector = function ($select) {
+        var selector = $select || $('#language-selector');
+
+        if (!selector.length) { return; }
+
+        var $button = $(selector).find('button .buttonTitle');
+        // Select the current language in the list
+        var option = $(selector).find('[data-value="' + language + '"]');
+        if ($(option).length) {
+            $button.text($(option).text());
+        }
+        else {
+            $button.text('English');
+        }
+
+        // Listen for language change
+        $(selector).find('a.languageValue').on('click', function () {
+            var newLanguage = $(this).attr('data-value');
+            storeLanguage(newLanguage);
+            if (newLanguage !== language) {
+                window.location.reload();
+            }
         });
     };
 
@@ -126,4 +163,6 @@ define(['/customize/languageSelector.js',
         '{"metadata":{"defaultTitle":"' + messages.driveReadmeTitle + '","title":"' + messages.driveReadmeTitle + '"}}]';
 
     return messages;
+
 });
+}());
