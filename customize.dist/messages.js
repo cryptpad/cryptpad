@@ -79,9 +79,13 @@ define(req, function(Default, Language) {
     messages._getKey = function (key, argArray) {
         if (!messages[key]) { return '?'; }
         var text = messages[key];
-        return text.replace(/\{(\d+)\}/g, function (str, p1) {
-            return argArray[p1] || null;
-        });
+        if (typeof(text) === 'string') {
+            return text.replace(/\{(\d+)\}/g, function (str, p1) {
+                return argArray[p1] || null;
+            });
+        } else {
+            return text;
+        }
     };
 
     // Add handler to the language selector
