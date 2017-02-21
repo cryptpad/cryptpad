@@ -12,12 +12,6 @@ define(function () {
     out.type.poll = 'Encuesta';
     out.type.slide = 'Presentación';
 
-    out.errorBox_errorType_disconnected = 'Conexión perdida';
-    out.errorBox_errorExplanation_disconnected = [
-        'Se perdió la conexión con el servidor, puedes reconectarte actualizando la página o revisar tu trabajo ',
-        'haciendo clic por fuera de este cuadro.'
-    ].join('');
-
     out.common_connectionLost = 'Conexión perdida con el servidor';
 
     out.disconnected = "Desconectado";
@@ -26,11 +20,9 @@ define(function () {
     out.lag = "Retraso";
     out.readonly = 'Solo lectura';
     out.anonymous = 'Anónimo';
-    out.yourself = "tú mismo";
+    out.yourself = "Tú mismo";
     out.anonymousUsers = "usuarios anónimos";
     out.anonymousUser = "usuario anónimo";
-    out.shareView = "URL de solo lectura";
-    out.shareEdit = "Editar URL";
     out.users = "Usuarios";
     out.and = "y";
     out.viewer = "espectador";
@@ -42,53 +34,35 @@ define(function () {
     out.orangeLight = "La conexión es lenta y podria impactar la experiencia";
     out.redLight = "Has sido desconectado de la sesión";
 
-    out.importButton = 'IMPORTAR';
+    out.importButton = 'Importar';
     out.importButtonTitle = 'Importar un documento de tus archivos locales';
 
-    out.exportButton = 'EXPORTAR';
+    out.exportButton = 'Exportar';
     out.exportButtonTitle = 'Exportar este documento a un archivo local';
     out.exportPrompt = '¿Cómo te gustaría llamar a este archivo?';
 
-    out.back = '&#8656; Atrás';
-    out.backToCryptpad = '⇐ Volver a Cryptpad';
-
-    out.userButton = 'USUARIO';
-    out.userButtonTitle = 'Cambiar tu nombre de usuario';
     out.changeNamePrompt = 'Cambiar tu nombre (dejar vacío para ser anónimo): ';
 
-    out.renameButton = 'RENOMBRAR';
-    out.renameButtonTitle = 'Cambiar el título del documento listado en la pagina de inicio';
-    out.renamePrompt = '¿Cómo titulariás este documento?';
-    out.renameConflict = 'Otro documenta ya tiene ese título';
     out.clickToEdit = "Haz clic para cambiar";
 
-    out.forgetButton = 'OLVIDAR';
+    out.forgetButton = 'Olvidar';
     out.forgetButtonTitle = 'Eliminar este documento de la lista en la pagina de inicio';
     out.forgetPrompt = 'Pulser OK eliminará este documento del almacenamiento local (localStorage), ¿estás seguro?';
 
     out.shareButton = 'Compartir';
-    out.shareButtonTitle = "Copiar URL al portapapeles";
     out.shareSuccess = 'URL copiada al portapapeles';
-    out.shareFailed = "Falló la copia del URL al portapapeles";
 
-    out.presentButton = 'PRESENTAR';
+    out.presentButton = 'Presentar';
     out.presentButtonTitle = "Entrar en el modo presentación";
     out.presentSuccess = 'ESC para salir del modo presentación';
-    out.sourceButton = 'VER CÓDIGO FUENTE';
+    out.sourceButton = 'Ver código fuente';
     out.sourceButtonTitle = "Abandonar modo presentación";
 
-    out.backgroundButton = 'COLOR DE FONDO';
+    out.backgroundButton = 'Color de fondo';
     out.backgroundButtonTitle = 'Cambiar el color de fondo en el modo presentación';
-    out.colorButton = 'COLOR DE TEXTO';
+    out.colorButton = 'Color de texto';
     out.colorButtonTitle = 'Cambiar el color de texto en el modo presentación';
 
-    out.commitButton = 'VALIDAR';
-
-    out.getViewButton = 'URL SOLO LECTURA';
-    out.getViewButtonTitle = 'Obtener URL de solo lectura para este documento';
-    out.readonlyUrl = 'Documento de solo lectura';
-    out.copyReadOnly = "Copiar URL al portapapeles";
-    out.openReadOnly = "Abrir en nueva pestaña";
     out.editShare = "URL de edición compartida";
     out.editShareTitle = "Copiar la URL de edición al portapapeles";
     out.viewShare = "Compartir URL de solo lectura";
@@ -100,16 +74,10 @@ define(function () {
     out.notifyRenamed = "{0} ahora se conoce como {1}";
     out.notifyLeft = "{0} ha dejado la sesión de colaboración";
 
-    out.tryIt = '¡PROBARLO!';
-    out.recentPads = 'Tus documentos recientes (almacenadas solo en el navegador)';
+    out.tryIt = '¡Pruébalo!';
 
-    out.okButton = 'OK (enter)';
-    out.cancelButton = 'Cancelar (esc)';
-
-    out.loginText = '<p>Tu nombre de usuario y contraseña son utilizados para generar una llave única que es desconocida por nuestro servidor.</p>\n' +
-                    '<p>Ten cuidado a no olvidar tus credenciales, ya que son imposibles de recuperar.</p>';
-
-    out.forget = "Olvidar";
+    out.okButton = 'OK (Enter)';
+    out.cancelButton = 'Cancelar (Esc)';
 
     // Polls
 
@@ -118,11 +86,8 @@ define(function () {
 
     out.poll_p_save = "Tus configuraciones se actualizan instantaneamente, no es necesario guardar cambios.";
     out.poll_p_encryption = "Todos los datos entrados son cifrados, solo las personas que poseen el enlace tienen acceso. Incluso el servidor no puede ver el contenido.";
-    out.poll_p_howtouse = "Ingresa tu nombre y marca tus disponibilidades";
 
-    out.promptName = "¿Cuál es tu nombre?";
-
-    out.wizardButton = 'ASISTENTE';
+    out.wizardButton = 'Asistente';
     out.wizardLog = "Presiona el boton en la parte superior izquierda para volver a la encuesta";
     out.wizardTitle = "Utiliza el asistente para crear tu encuesta";
     out.wizardConfirm = "¿Estás realmente seguro de agregar estas opciones a tu encuesta?";
@@ -135,22 +100,10 @@ define(function () {
     out.poll_wizardAddDateButton = "+ Fechas";
     out.poll_wizardAddTimeButton = "+ Horas";
 
-    out.poll_addUserButton = "+ Usuarios";
-    out.poll_addUserButtonTitle = "Haz clic para agregar un usuario";
-    out.poll_addOptionButton = "+ Opciones";
-    out.poll_addOptionButtonTitle = "Haz clic para añadir una opción";
-    out.poll_addOption = "Añadir una opción";
     out.poll_optionPlaceholder = "Opción";
-    out.poll_addUser = "Ingresar un nombre";
     out.poll_userPlaceholder = "Tu nombre";
     out.poll_removeOption = "¿Estás seguro que quieres eliminar esta opción?";
-    out.poll_removeOptionTitle = "Eliminar la fila";
     out.poll_removeUser = "¿Estás seguro que quieres eliminar este usuario?";
-    out.poll_removeUserTitle = "Eliminar la columna";
-    out.poll_editOption = "¿Estás seguro que quieres editar esta opción?";
-    out.poll_editOptionTitle = "Editar la fila";
-    out.poll_editUser = "¿Estás seguro que quieres editar este usuario?";
-    out.poll_editUserTitle = "Editar la columna";
 
     out.poll_titleHint = "Título";
     out.poll_descriptionHint = "Descripción";
@@ -163,18 +116,12 @@ define(function () {
     out.main_howitworks_p1 = "CryptPad utiliza una variante del algoritmo de <a href='https://en.wikipedia.org/wiki/Operational_transformation'>transformación operacional</a> (página en inglés) que es capaz de encontrar un consenso distribuido usando un <a href='https://bitcoin.org/bitcoin.pdf'>Blockchain Nakamoto</a> (página en inglés), popularizado por <a href='https://es.wikipedia.org/wiki/Bitcoin'>Bitcoin</a>. De esta manera el algoritmo puede evitar la necesidad de un servidor central para resolver conflictos de edición de la transformación operacional y sin necesidad de resolver conflictos, el servidor puede mantenerse inconsciente del contenido que se está editando en el pad.";
     out.main_about = 'Acerca de';
     out.main_about_p1 = 'Puedes leer más acerca de nuestra <a href="/privacy.html" title="">política de privacidad</a> y <a href="/terms.html">condiciones de servicio</a>.';
-
     out.main_about_p2 = 'Si tienes preguntas o comentarios, puedes <a href="https://twitter.com/cryptpad">enviarnos un tweet</a>, abrir un issue <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="nuestro issue tracker">en GitHub</a>, saludarnos en nuestro canal IRC (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), o <a href="mailto:research@xwiki.com">envianos un email</a>.';
 
-    out.table_type = 'Tipo';
-    out.table_link = 'Enlace';
-    out.table_created = 'Creado';
-    out.table_last = 'Último acceso';
-
-    out.button_newpad = 'CREAR NUEVO PAD DE TEXTO ENRIQUECIDO';
-    out.button_newcode = 'CREAR NUEVO PAD DE CÓDIGO';
-    out.button_newpoll = 'CREAR NUEVA ENCUESTA';
-    out.button_newslide = 'CREAR NUEVA PRESENTACIÓN';
+    out.button_newpad = 'Crear nuevo pad de texto enriquezido';
+    out.button_newcode = 'Crear nuevo pad de código';
+    out.button_newpoll = 'Crear nueva encuesta';
+    out.button_newslide = 'Crear nueva presentación';
 
     // privacy.html
 
@@ -216,6 +163,138 @@ define(function () {
     out.header_france = '<a href="http://www.xwiki.com/" target="_blank" rel="noopener noreferrer">Con <img class="bottom-bar-heart" src="/customize/heart.png" alt="amor" /> de <img class="bottom-bar-fr" src="/customize/fr.png" title="France" alt="Francia"/> por <img src="/customize/logo-xwiki.png" alt="XWiki SAS" class="bottom-bar-xwiki"/></a>';
     out.header_support = '<a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferre-r"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
     out.header_logoTitle = 'Ir a la página principal';
+
+    out.updated_common_connectionLostAndInfo = "<b>Connexión perdida</b><br>El documento está ahora en modo solo lectura hasta que la conexión vuelva.";
+    out.websocketError = "Error al conectarse al servidor WebSocket";
+    out.typeError = "Este documento no es compatible con la applicación seleccionada";
+    out.onLogout = "Tu sesión está cerrada, <a href=\"/\" target=\"_blank\">haz clic aquí</a> para iniciar sesión<br>o apreta sobre <em>Escape</em> para acceder al documento en modo solo lectura.";
+    out.loading = "Cargando...";
+    out.error = "Error";
+    out.language = "Idioma";
+    out.user_rename = "Cambiar nombre";
+    out.user_displayName = "Nombre visible";
+    out.user_accountName = "Nombre de cuenta";
+    out.newButton = "Nuevo";
+    out.newButtonTitle = "Nuevo documento";
+    out.cancel = "Cancelar";
+    out.poll_publish_button = "Publicar";
+    out.poll_admin_button = "Administrar";
+    out.poll_create_user = "Añadir usuario";
+    out.poll_create_option = "Añadir opción";
+    out.poll_commit = "Validar";
+    out.fm_rootName = "Documentos";
+    out.fm_trashName = "Papelera";
+    out.fm_unsortedName = "Sin organizar";
+    out.fm_filesDataName = "Todos los archivos";
+    out.fm_templateName = "Plantilla";
+    out.fm_newButton = "Nuevo";
+    out.fm_newFolder = "Nueva carpeta";
+    out.fm_folder = "Carpeta";
+    out.fm_folderName = "Nombre de carpeta";
+    out.fm_numberOfFolders = "# de carpetas";
+    out.fm_numberOfFiles = "# de archivos";
+    out.fm_fileName = "Nombre";
+    out.fm_title = "Título";
+    out.fm_lastAccess = "Último acceso";
+    out.fm_creation = "Creación";
+    out.fm_forbidden = "Acción prohibida";
+    out.fm_originalPath = "Enlace original";
+    out.fm_noname = "Documento sín título";
+    out.fm_emptyTrashDialog = "¿Seguro qué quieres vaciar la papelera?";
+    out.fm_removeSeveralPermanentlyDialog = "¿Seguro qué quieres eliminar estos {0} elementos de la papelera para siempre?";
+    out.fm_removePermanentlyDialog = "¿Seguro qué quieres eliminar este elemento para siempre?";
+    out.fm_removeSeveralDialog = "¿Seguro qué quieres mover estos {0} elementos a la papelera?";
+    out.fm_removeDialog = "¿Seguro qué quieres mover {0} a la papelera?";
+    out.fm_restoreDialog = "¿Seguro que quieres recuperar {0}?";
+    out.fm_unknownFolderError = "La carpeta seleccionada ya no existe. Abriendo la carpeta anterior...";
+    out.fm_contextMenuError = "No se puedo abrir el menú para este elemento. Si persiste el problema, recarga la página.";
+    out.fm_selectError = "No se puedo abrir el elemento. Si persiste el problema, recarga la página.";
+    out.fm_info_root = "Crea carpetas aquí para organizar tus documentos.";
+    out.fm_info_unsorted = "Contiene todos los documentos que has visitado que no estan organizados en \"Documentos\" o movidos a la \"Papelera\".";
+    out.fm_info_template = "Contiene todas las plantillas que puedes volver a usar para crear nuevos documentos.";
+    out.fm_info_trash = "Archivos eliminados de la papelera también se eliminan de \"Todos los archivos\" y es imposible recuparlos desde el explorador.";
+    out.fm_info_allFiles = "Contiene todos los archivos de \"Documentos\", \"Sin organizar\" y \"Papelera\". No puedes mover o eliminar archivos aquí.";
+    out.fm_alert_backupUrl = "Enlace de copia de seguridad para este drive. Te recomendamos <strong>muy fuertemente</strong> que lo guardes secreto.<br>Lo puedes usar para recuparar todos tus archivos en el caso que la memoria de tu navegador se borre.<br>Cualquiera con este enlace puede editar o eliminar todos los archivos en el explorador.<br><input type=\"text\" id=\"fm_backupUrl\" value=\"{0}\"/>";
+    out.fm_backup_title = "Enlace de copia de seguridad";
+    out.fm_nameFile = "¿Cómo quieres nombrar este archivo?";
+    out.fc_newfolder = "Nueva carpeta";
+    out.fc_rename = "Cambiar nombre";
+    out.fc_open = "Abrir";
+    out.fc_open_ro = "Abrir (solo lectura)";
+    out.fc_delete = "Eliminar";
+    out.fc_restore = "Recuperar";
+    out.fc_remove = "Eliminar para siempre";
+    out.fc_empty = "Vaciar la papelera";
+    out.fc_prop = "Propriedades";
+    out.fo_moveUnsortedError = "No puedes mover una carpeta en la lista de documentos no organizados";
+    out.fo_existingNameError = "Nombre ya utilizado en esta carpeta. Por favor elige otro.";
+    out.fo_moveFolderToChildError = "No puedes mover una carpeta en una de sus subcarpetas";
+    out.fo_unableToRestore = "No se pudo restaurar este archivo a la localización de orígen. Puedes intentar moverlo a otra localización.";
+    out.fo_unavailableName = "Un archivo o carpeta ya tiene este nombre. Cambiálo y vuelve a intentarlo.";
+    out.login_login = "Iniciar sesión";
+    out.login_makeAPad = "Crear documento anónimo";
+    out.login_nologin = "Ver documentos locales";
+    out.login_register = "Registrarse";
+    out.logoutButton = "Cerrar sesión";
+    out.settingsButton = "Preferencias";
+    out.login_username = "Nombre de usuario";
+    out.login_password = "Contraseña";
+    out.login_confirm = "Confirmar contraseña";
+    out.login_remember = "Recuérdame";
+    out.login_hashing = "Tratamiento de datos, esto puede tardar un poco.";
+    out.login_hello = "Hola {0},";
+    out.login_helloNoName = "Hola,";
+    out.login_accessDrive = "Acceder a tu drive";
+    out.login_orNoLogin = "o";
+    out.login_noSuchUser = "Credenciales invalidos. Inténtalo de nuevo, o registrate";
+    out.login_invalUser = "Nombre de usuario requirido";
+    out.login_invalPass = "Contraseña requirida";
+    out.login_unhandledError = "Un error inesperado se produjo :(";
+    out.register_importRecent = "Importar historial (recomendado)";
+    out.register_acceptTerms = "Accepto los <a href='/terms.html'>términos de servicio</a>";
+    out.register_rememberPassword = "Me acordaré de mi cuenta y contraseña";
+    out.register_passwordsDontMatch = "Las contraseñas no corresponden";
+    out.register_mustAcceptTerms = "Tienes que acceptar los términos de servicio";
+    out.register_mustRememberPass = "No podemos reiniciar tu contraseña si la olvidas. ¡Es muy importante que la recuerdes! Marca la casilla para confirmarlo.";
+    out.register_header = "Bienvenido a CryptPad";
+    out.register_explanation = ["<p>Vamos a ver algunas cosas antes</p>", "<ul>", "<li>Tu contraseña es tu clave secreta que cifra todos tus documentos. Si la pierdes no podremos recuparar tus datos.</li>", "<li>Puedes importar documentos que has visto recientemente en tu navegador para tenerlos en tu cuenta.</li>", "<li>Si estás usando un ordenador compartido, tienes que cerrar sesión cuando terminas, cerrar la pestaña no es suficiente.</li>", "</ul>"].join('');
+    out.settings_title = "Preferencias";
+    out.settings_save = "Guardar";
+    out.settings_backupTitle = "Copia de seguridad";
+    out.settings_backup = "Copia de seguridad";
+    out.settings_restore = "Recuparar datos";
+    out.settings_resetTitle = "Limpiar tu drive";
+    out.settings_reset = "Quita todos los documentos de tu CryptDrive";
+    out.settings_resetPrompt = "Esta acción eliminará todos tus documentos.<br>¿Seguro que quieres continuar?<br>Introduce “<em>I love CryptPad</em>” para confirmar.";
+    out.settings_resetDone = "¡Tu drive ahora está vacio!";
+    out.settings_resetTips = "Consejos en CryptDrive";
+    out.settings_resetTipsButton = "Restaurar consejos";
+    out.settings_resetTipsDone = "Todos los consejos ahora están visibles";
+    out.main_info = "<h1>Collabora en Confidencia</h1><br>Cultiva ideas juntos con documentos compartidos con tecnología <strong>Zero Knowledge</strong> que protege tu privacidad.";
+    out.main_zeroKnowledge = "Zero Knowledge";
+    out.main_zeroKnowledge_p = "No tienes que confiar que <em>no</em> veremos tus documentos, con la tecnología Zero Knowledge de CryptPad <em>no podemos</em>. Aprende más sobre como protegemos tu <a href=\"/privacy.html\" title='Privacidad'>Privacidad y Seguridad</a>.";
+    out.main_writeItDown = "Escríbelo";
+    out.main_writeItDown_p = "Los mejores proyectos vienen de las más pequeñas ideas. Escribe tus momentos de inspiración y ideas inesperadas porque nunca sabrás cual será tu próximo descubrimiento.";
+    out.main_share = "Comparte el enlace, comparte el pad";
+    out.main_share_p = "Cultiva ideas juntos: ten reuniones eficaces, collabora en listas y haz presentaciones rápidas en todos tus dispositivos.";
+    out.main_organize = "Organizate";
+    out.main_organize_p = "Con CryptPad Drive, porta tu atención en lo más importante. Carpetas te permiten organizar tus proyectos y tener una visión global de donde van las cosas.";
+    out.main_richText = "Editor de Texto Enriquezido";
+    out.main_richText_p = "Collabora en texto enriquezido con nuestro editor Zero Knowledge en tiempo real <a href=\"http://ckeditor.com\" target=\"_blank\">CkEditor</a>.";
+    out.main_code = "Editor de código";
+    out.main_code_p = "Edita código fuente para tus programas con nuestro editor Zero Knowledge en tiempo real <a href=\"https://www.codemirror.net\" target=\"_blank\">CodeMirror</a>.";
+    out.main_slide = "Editor de presentación";
+    out.main_slide_p = "Crea presentaciones utilizando Markdown, y visualizalos en tu navegador";
+    out.main_poll = "Encuestas";
+    out.main_poll_p = "Planifica tus reuniones y eventos, o vota para la mejor solución a un problema.";
+    out.main_drive = "CryptDrive";
+    out.footer_applications = "Applicaciones";
+    out.footer_contact = "Contacto";
+    out.footer_aboutUs = "Acerca de nosotros";
+    out.about = "Acerca de nosotros";
+    out.privacy = "Privacidad";
+    out.contact = "Contacto";
+    out.terms = "Términos de Servicio";
 
     return out;
 });
