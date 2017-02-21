@@ -63,7 +63,8 @@ define(function () {
     out.colorButton = 'COLOR DE TEXTO';
     out.colorButtonTitle = 'Cambiar el color de texto en el modo presentación';
 
-    out.editShare = "URL de edición compartida"; out.editShareTitle = "Copiar la URL de edición al portapapeles";
+    out.editShare = "URL de edición compartida";
+    out.editShareTitle = "Copiar la URL de edición al portapapeles";
     out.viewShare = "Compartir URL de solo lectura";
     out.viewShareTitle = "Copiar la URL de solo lectura al portapapeles";
     out.viewOpen = "Ver en pestaña nueva";
