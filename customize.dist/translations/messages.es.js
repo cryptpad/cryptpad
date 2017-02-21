@@ -20,7 +20,7 @@ define(function () {
     out.lag = "Retraso";
     out.readonly = 'Solo lectura';
     out.anonymous = 'Anónimo';
-    out.yourself = "tú mismo";
+    out.yourself = "Tú mismo";
     out.anonymousUsers = "usuarios anónimos";
     out.anonymousUser = "usuario anónimo";
     out.users = "Usuarios";
@@ -34,10 +34,10 @@ define(function () {
     out.orangeLight = "La conexión es lenta y podria impactar la experiencia";
     out.redLight = "Has sido desconectado de la sesión";
 
-    out.importButton = 'IMPORTAR';
+    out.importButton = 'Importar';
     out.importButtonTitle = 'Importar un documento de tus archivos locales';
 
-    out.exportButton = 'EXPORTAR';
+    out.exportButton = 'Exportar';
     out.exportButtonTitle = 'Exportar este documento a un archivo local';
     out.exportPrompt = '¿Cómo te gustaría llamar a este archivo?';
 
@@ -45,22 +45,22 @@ define(function () {
 
     out.clickToEdit = "Haz clic para cambiar";
 
-    out.forgetButton = 'OLVIDAR';
+    out.forgetButton = 'Olvidar';
     out.forgetButtonTitle = 'Eliminar este documento de la lista en la pagina de inicio';
     out.forgetPrompt = 'Pulser OK eliminará este documento del almacenamiento local (localStorage), ¿estás seguro?';
 
     out.shareButton = 'Compartir';
     out.shareSuccess = 'URL copiada al portapapeles';
 
-    out.presentButton = 'PRESENTAR';
+    out.presentButton = 'Presentar';
     out.presentButtonTitle = "Entrar en el modo presentación";
     out.presentSuccess = 'ESC para salir del modo presentación';
-    out.sourceButton = 'VER CÓDIGO FUENTE';
+    out.sourceButton = 'Ver código fuente';
     out.sourceButtonTitle = "Abandonar modo presentación";
 
-    out.backgroundButton = 'COLOR DE FONDO';
+    out.backgroundButton = 'Color de fondo';
     out.backgroundButtonTitle = 'Cambiar el color de fondo en el modo presentación';
-    out.colorButton = 'COLOR DE TEXTO';
+    out.colorButton = 'Color de texto';
     out.colorButtonTitle = 'Cambiar el color de texto en el modo presentación';
 
     out.editShare = "URL de edición compartida";
@@ -74,10 +74,10 @@ define(function () {
     out.notifyRenamed = "{0} ahora se conoce como {1}";
     out.notifyLeft = "{0} ha dejado la sesión de colaboración";
 
-    out.tryIt = '¡PROBARLO!';
+    out.tryIt = '¡Pruébalo!';
 
-    out.okButton = 'OK (enter)';
-    out.cancelButton = 'Cancelar (esc)';
+    out.okButton = 'OK (Enter)';
+    out.cancelButton = 'Cancelar (Esc)';
 
     // Polls
 
@@ -87,7 +87,7 @@ define(function () {
     out.poll_p_save = "Tus configuraciones se actualizan instantaneamente, no es necesario guardar cambios.";
     out.poll_p_encryption = "Todos los datos entrados son cifrados, solo las personas que poseen el enlace tienen acceso. Incluso el servidor no puede ver el contenido.";
 
-    out.wizardButton = 'ASISTENTE';
+    out.wizardButton = 'Asistente';
     out.wizardLog = "Presiona el boton en la parte superior izquierda para volver a la encuesta";
     out.wizardTitle = "Utiliza el asistente para crear tu encuesta";
     out.wizardConfirm = "¿Estás realmente seguro de agregar estas opciones a tu encuesta?";
@@ -110,13 +110,18 @@ define(function () {
 
     // index.html
 
+    out.main_p1 = 'CryptPad es un editor en tiempo real <strong>zero knowledge</strong>. El cifrado se hace en el navegador protegiendo los datos del servidor, la nube, y la NSA. La clave de cifrado es almacenada en el <a href="https://en.wikipedia.org/wiki/Fragment_identifier">identificador de fragmento</a> (página en inglés) del URL y no es enviado al servidor pero está disponible por javascript, por lo cual compartiendo la URL, tú autorizas a quienes pueden participar.';
+    out.main_p2 = 'Este proyecto utiliza el editor de texto visual <a href="http://ckeditor.com/">CKEditor</a>, <a href="https://codemirror.net/">CodeMirror</a>, y el motor en tiempo real <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a>.';
     out.main_howitworks = '¿Cómo funciona?';
+    out.main_howitworks_p1 = "CryptPad utiliza una variante del algoritmo de <a href='https://en.wikipedia.org/wiki/Operational_transformation'>transformación operacional</a> (página en inglés) que es capaz de encontrar un consenso distribuido usando un <a href='https://bitcoin.org/bitcoin.pdf'>Blockchain Nakamoto</a> (página en inglés), popularizado por <a href='https://es.wikipedia.org/wiki/Bitcoin'>Bitcoin</a>. De esta manera el algoritmo puede evitar la necesidad de un servidor central para resolver conflictos de edición de la transformación operacional y sin necesidad de resolver conflictos, el servidor puede mantenerse inconsciente del contenido que se está editando en el pad.";
+    out.main_about = 'Acerca de';
+    out.main_about_p1 = 'Puedes leer más acerca de nuestra <a href="/privacy.html" title="">política de privacidad</a> y <a href="/terms.html">condiciones de servicio</a>.';
+    out.main_about_p2 = 'Si tienes preguntas o comentarios, puedes <a href="https://twitter.com/cryptpad">enviarnos un tweet</a>, abrir un issue <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="nuestro issue tracker">en GitHub</a>, saludarnos en nuestro canal IRC (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), o <a href="mailto:research@xwiki.com">envianos un email</a>.';
 
-
-    out.button_newpad = 'CREAR NUEVO PAD DE TEXTO ENRIQUECIDO';
-    out.button_newcode = 'CREAR NUEVO PAD DE CÓDIGO';
-    out.button_newpoll = 'CREAR NUEVA ENCUESTA';
-    out.button_newslide = 'CREAR NUEVA PRESENTACIÓN';
+    out.button_newpad = 'Crear nuevo pad de texto enriquezido';
+    out.button_newcode = 'Crear nuevo pad de código';
+    out.button_newpoll = 'Crear nueva encuesta';
+    out.button_newslide = 'Crear nueva presentación';
 
     // privacy.html
 
@@ -204,7 +209,7 @@ define(function () {
     out.fm_unknownFolderError = "La carpeta seleccionada ya no existe. Abriendo la carpeta anterior...";
     out.fm_contextMenuError = "No se puedo abrir el menú para este elemento. Si persiste el problema, recarga la página.";
     out.fm_selectError = "No se puedo abrir el elemento. Si persiste el problema, recarga la página.";
-    out.fm_info_root = "Crea carpetas aquí para organizar tus documentos";
+    out.fm_info_root = "Crea carpetas aquí para organizar tus documentos.";
     out.fm_info_unsorted = "Contiene todos los documentos que has visitado que no estan organizados en \"Documentos\" o movidos a la \"Papelera\".";
     out.fm_info_template = "Contiene todas las plantillas que puedes volver a usar para crear nuevos documentos.";
     out.fm_info_trash = "Archivos eliminados de la papelera también se eliminan de \"Todos los archivos\" y es imposible recuparlos desde el explorador.";
@@ -247,7 +252,7 @@ define(function () {
     out.login_unhandledError = "Un error inesperado se produjo :(";
     out.register_importRecent = "Importar historial (recomendado)";
     out.register_acceptTerms = "Accepto los <a href='/terms.html'>términos de servicio</a>";
-    out.register_rememberPassword = "Me acordaré de mi nombre de cuenta y contraseña";
+    out.register_rememberPassword = "Me acordaré de mi cuenta y contraseña";
     out.register_passwordsDontMatch = "Las contraseñas no corresponden";
     out.register_mustAcceptTerms = "Tienes que acceptar los términos de servicio";
     out.register_mustRememberPass = "No podemos reiniciar tu contraseña si la olvidas. ¡Es muy importante que la recuerdes! Marca la casilla para confirmarlo.";
@@ -274,8 +279,8 @@ define(function () {
     out.main_share_p = "Cultiva ideas juntos: ten reuniones eficaces, collabora en listas y haz presentaciones rápidas en todos tus dispositivos.";
     out.main_organize = "Organizate";
     out.main_organize_p = "Con CryptPad Drive, porta tu atención en lo más importante. Carpetas te permiten organizar tus proyectos y tener una visión global de donde van las cosas.";
-    out.main_richText = "Editor de Texto Enrequezido";
-    out.main_richText_p = "Collabora en texto enrequezido con nuestro editor Zero Knowledge en tiempo real <a href=\"http://ckeditor.com\" target=\"_blank\">CkEditor</a>.";
+    out.main_richText = "Editor de Texto Enriquezido";
+    out.main_richText_p = "Collabora en texto enriquezido con nuestro editor Zero Knowledge en tiempo real <a href=\"http://ckeditor.com\" target=\"_blank\">CkEditor</a>.";
     out.main_code = "Editor de código";
     out.main_code_p = "Edita código fuente para tus programas con nuestro editor Zero Knowledge en tiempo real <a href=\"https://www.codemirror.net\" target=\"_blank\">CodeMirror</a>.";
     out.main_slide = "Editor de presentación";
