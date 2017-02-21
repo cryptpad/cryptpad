@@ -362,7 +362,7 @@ define([
                     tag: 'a',
                     attributes: {
                         'target': '_blank',
-                        'href': '/' + p,
+                        'href': '/' + p + '/',
                     },
                     content: Messages.type[p]
                 });
