@@ -234,7 +234,7 @@ define(function () {
             "<li>You can import pads which were recently viewed in your browser so you have them in your account.</li>",
             "<li>If you are using a shared computer, you need to log out when you are done, closing the tab is not enough.</li>",
         "</ul>"
-    ];
+    ].join('');
 
     // Settings
     out.settings_title = "Settings";
