@@ -2,7 +2,7 @@ define([
     '/api/config?cb=' + Math.random().toString(16).slice(2),
     '/customize/messages.js',
     '/customize/fsStore.js',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/alertifyjs/dist/js/alertify.js',
     '/bower_components/spin.js/spin.min.js',
     '/common/clipboard.js',
@@ -357,7 +357,7 @@ define([
                     title: pad[2] || hash && hash.slice(0,8),
                     ctime: pad[1],
                 };
-            } else if (typeof(pad) === 'object') {
+            } else if (pad && typeof(pad) === 'object') {
                 if (!pad.ctime) { pad.ctime = pad.atime; }
                 if (!pad.title) {
                     pad.href.replace(/#(.*)$/, function (x, hash) {
@@ -373,7 +373,7 @@ define([
             } else {
                 console.error("[Cryptpad.migrateRecentPads] pad had unexpected value");
                 console.log(pad);
-                return {};
+                return;
             }
         }).filter(function (x) { return x; });
     };
