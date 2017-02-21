@@ -564,6 +564,11 @@ define([
 
                 editor.setValue(newDoc || '');
 
+                if (Cryptpad.initialName && document.title === defaultName) {
+                    updateTitle(Cryptpad.initialName);
+                    onLocal();
+                }
+
                 if (Visible.isSupported()) {
                     Visible.onChange(function (yes) {
                         if (yes) { unnotify(); }
