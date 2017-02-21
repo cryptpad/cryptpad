@@ -331,6 +331,21 @@ define(function () {
 
     // Initial states
 
+    out.initialState = [
+        '<p>',
+        'Voici <strong>CryptPad</strong>, l\'éditeur collaboratif en temps-réel Zero Knowledge.',
+        '<br>',
+        'Ce que vous tapez ici est chiffré de manière que seules les personnes avec le lien peuvent y accéder.',
+        '<br>',
+        'Même le serveur est incapable de voir ce que vous tapez.',
+        '</p>',
+        '<p>',
+        '<small>',
+        '<i>Ce que vous voyez ici, ce que vous entendez, quand vous partez, ça reste ici</i>',
+        '</small>',
+        '</p>',
+    ].join('');
+
     out.codeInitialState = [
         '/*\n',
         '   Voici CryptPad, l\'éditeur collaboratif en temps-réel Zero Knowledge.\n',
