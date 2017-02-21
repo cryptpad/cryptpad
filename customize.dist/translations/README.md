@@ -89,7 +89,7 @@ define(function () {
 ```
 
 It's important that you modify just the string, and not the variable name which is used to access its content.
-For instance, changing `_languageName` to `_language_name` would make the string `'Pirate'` inaccessible to the rest of the codebase.
+For instance, changing `main_title` to `mainTitle` would make the translated string inaccessible to the rest of the codebase.
 
 If a key is not found in your translation, the default English version of that key will be used.
 This is to make sure that buttons and other interface elements are not empty, but it's obviously not ideal.
