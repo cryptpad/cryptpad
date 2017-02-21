@@ -222,7 +222,7 @@ define([
                     editUsersNames.push('');
                     viewText += Messages.and + ' ';
                 }
-                var viewerText = numberOfViewUsers > 1 ? Messages.viewers : Messages.viewer;
+                var viewerText = numberOfViewUsers !== 1 ? Messages.viewers : Messages.viewer;
                 viewText += numberOfViewUsers + ' ' + viewerText + '</span>';
                 editUsersNames.push(viewText);
             }
@@ -237,8 +237,8 @@ define([
             // Update the buttons
             var fa_editusers = '<span class="fa fa-users"></span>';
             var fa_viewusers = '<span class="fa fa-eye"></span>';
-            var viewersText = numberOfViewUsers > 1 ? Messages.viewers : Messages.viewer;
-            var editorsText = numberOfEditUsers > 1 ? Messages.editors : Messages.editor;
+            var viewersText = numberOfViewUsers !== 1 ? Messages.viewers : Messages.viewer;
+            var editorsText = numberOfEditUsers !== 1 ? Messages.editors : Messages.editor;
             var $span = $('<span>', {'class': 'large'}).html(fa_editusers + ' ' + numberOfEditUsers + ' ' + editorsText + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers + ' ' + viewersText);
             var $spansmall = $('<span>', {'class': 'narrow'}).html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
             $userButtons.find('.buttonTitle').html('').append($span).append($spansmall);
