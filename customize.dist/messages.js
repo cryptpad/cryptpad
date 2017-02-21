@@ -51,18 +51,14 @@ define(req, function(Default, Language) {
             Object.keys(externalMap).forEach(function (code, i) {
                 var translation = langs[i];
                 Object.keys(Default).forEach(function (k) {
-                    if (/^_/.test(k) || /nitialState$/.test(k)) { return; }
+                    if (/^_/.test(k)) { return; }
                     if (!translation[k]) {
-                        //var warning = "key [" + k + "] is missing from translation [" + code + "]";
-                        //missing.push(warning);
                         missing.push([code, k, 1]);
                     }
                 });
                 Object.keys(translation).forEach(function (k) {
-                    if (/^_/.test(k) || /nitialState$/.test(k)) { return; }
+                    if (/^_/.test(k)) { return; }
                     if (!Default[k]) {
-                        //var warning = "key [" + k + "] from [" + code + "] is not needed anymore and should be removed";
-                        //missing.push(warning);
                         missing.push([code, k, 0]);
                     }
                 });
@@ -145,22 +141,6 @@ define(req, function(Default, Language) {
         $('[data-localization-placeholder]').each(translatePlaceholder);
         $('#pad-iframe').contents().find('[data-localization-title]').each(translateTitle);
     };
-
-    // Non translatable keys
-    messages.initialState = [
-        '<p>',
-        'This is <strong>CryptPad</strong>, the zero knowledge realtime collaborative editor.',
-        '<br>',
-        'What you type here is encrypted so only people who have the link can access it.',
-        '<br>',
-        'Even the server cannot see what you type.',
-        '</p>',
-        '<p>',
-        '<small>',
-        '<i>What you see here, what you hear here, when you leave here, let it stay here</i>',
-        '</small>',
-        '</p>',
-    ].join('');
 
     messages.driveReadme = '["BODY",{"class":"cke_editable cke_editable_themed cke_contents_ltr cke_show_borders","contenteditable":"true","spellcheck":"false","style":"color: rgb(51, 51, 51);"},' +
         '[["H1",{},["' + messages.driveReadme_h1 + '",["BR",{},[]]]],["UL",{},[["LI",{},["' + messages.driveReadme_li1 + '",["BR",{},[]],["UL",{},[["LI",{},["' + messages.driveReadme_li1_1 + '",["BR",{},[]]]]]]]]]]],' +
