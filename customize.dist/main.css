@@ -483,7 +483,7 @@
 .cp footer a:hover {
   color: #279ebf;
 }
-.cp footer li:first-child {
+.cp footer li.title {
   font-size: 1.2em;
   font-weight: bold;
 }
