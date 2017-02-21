@@ -214,15 +214,6 @@ define([
             secret.keys = Crypto.createEditCryptor();
             secret.key = Crypto.createEditCryptor().editKeyStr;
         };
-        // If we have a hash in the URL specifying a path, it means the document was created from
-        // the drive and should be stored at the selected path.
-        if (/[?&]path=/.test(window.location.hash)) {
-            var patharr = window.location.hash.match(/[?&]path=([^&]+)/);
-            var namearr = window.location.hash.match(/[?&]name=([^&]+)/);
-            common.initialPath = patharr[1] || undefined;
-            common.initialName = namearr && namearr[1] ? decodeURIComponent(namearr[1]) : undefined;
-            window.location.hash = '';
-        }
         if (!secretHash && !/#/.test(window.location.href)) {
             generate();
             return secret;
@@ -698,6 +689,9 @@ define([
         });
     };
 
+    var newPadNameKey = common.newPadNameKey = "newPadName";
+    var newPadPathKey = common.newPadPathKey = "newPadPath";
+
     // local name?
     common.ready = function (f) {
         var state = 0;
@@ -707,6 +701,15 @@ define([
         var cb = function () {
             f(void 0, env);
         };
+
+        if (sessionStorage[newPadNameKey]) {
+            common.initialName = sessionStorage[newPadNameKey];
+            delete sessionStorage[newPadNameKey];
+        }
+        if (sessionStorage[newPadPathKey]) {
+            common.initialPath = sessionStorage[newPadPathKey];
+            delete sessionStorage[newPadPathKey];
+        }
 
         Store.ready(function (err, storeObj) {
             store = common.store = env.store = storeObj;

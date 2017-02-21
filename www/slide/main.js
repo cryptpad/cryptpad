@@ -638,6 +638,11 @@ define([
                 editor.setValue(newDoc || '');
                 Slide.update(newDoc);
 
+                if (Cryptpad.initialName && APP.title === defaultName) {
+                    updateTitle(Cryptpad.initialName);
+                    onLocal();
+                }
+
                 if (Visible.isSupported()) {
                     Visible.onChange(function (yes) {
                         if (yes) { unnotify(); }

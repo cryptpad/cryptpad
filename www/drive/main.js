@@ -897,8 +897,11 @@ define([
             }
             var onNamed = function (name) {
                 if (!name) { return; }
+                // TODO
                 var path = '/#?name=' + encodeURIComponent(name) + '&path=' + encodeURIComponent(currentPath);
-                window.open('/' + type + path);
+                sessionStorage[Cryptpad.newPadNameKey] = name;
+                sessionStorage[Cryptpad.newPadPathKey] = currentPath;
+                window.open('/' + type + '/');
             };
             Cryptpad.prompt(Messages.fm_nameFile, Cryptpad.getDefaultName({type: type}), onNamed);
         };

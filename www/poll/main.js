@@ -567,7 +567,11 @@ define([
         } else {
             APP.proxy.info.defaultTitle = defaultName;
         }
-        updateTitle(APP.proxy.info.title || defaultName);
+        if (Cryptpad.initialName && !APP.proxy.info.title) {
+            updateTitle(Cryptpad.initialName);
+        } else {
+            updateTitle(APP.proxy.info.title || defaultName);
+        }
 
         // Description
         var resize = function () {
