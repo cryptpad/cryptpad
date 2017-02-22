@@ -206,7 +206,7 @@ define([
         // Categories dislayed in the menu
         // _WORKGROUP_ : do not display unsorted
         var displayedCategories = [ROOT, UNSORTED, TRASH];
-        if (isWorkgroup()) { displayedCategory = [ROOT, TRASH]; }
+        if (isWorkgroup()) { displayedCategories = [ROOT, TRASH]; }
 
         var lastSelectTime;
         var selectedElement;
