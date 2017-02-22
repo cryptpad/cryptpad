@@ -145,12 +145,14 @@ define(function () {
     out.fm_templateName = "Templates";
     out.fm_newButton = "New";
     out.fm_newFolder = "New folder";
+    out.fm_newFile = "New document";
     out.fm_folder = "Folder";
     out.fm_folderName = "Folder name";
     out.fm_numberOfFolders = "# of folders";
     out.fm_numberOfFiles = "# of files";
     out.fm_fileName = "File name";
     out.fm_title = "Title";
+    out.fm_type = "Type";
     out.fm_lastAccess = "Last access";
     out.fm_creation = "Creation";
     out.fm_forbidden = "Forbidden action";
@@ -165,6 +167,7 @@ define(function () {
     out.fm_unknownFolderError = "The selected or last visited directory no longer exist. Opening the parent folder...";
     out.fm_contextMenuError = "Unable to open the context menu for that element. If the problem persist, try to reload the page.";
     out.fm_selectError = "Unable to select the targetted element. If the problem persist, try to reload the page.";
+    out.fm_categoryError = "Unable to open the selected category, displaying root.";
     out.fm_info_root = "Create as many nested folders here as you want to sort your files.";
     out.fm_info_unsorted = 'Contains all the files you\'ve visited that are not yet sorted in "Documents" or moved to the "Trash".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
     out.fm_info_template = 'Contains all the pads stored as templates and that you can re-use when you create a new document.';

@@ -142,12 +142,14 @@ define(function () {
     out.fm_templateName = "Modèles";
     out.fm_newButton = "Nouveau";
     out.fm_newFolder = "Nouveau dossier";
+    out.fm_newFile = "Nouveau document";
     out.fm_folder = "Dossier";
     out.fm_folderName = "Nom du dossier";
     out.fm_numberOfFolders = "# de dossiers";
     out.fm_numberOfFiles = "# de fichiers";
     out.fm_fileName = "Nom du fichier";
     out.fm_title = "Titre";
+    out.fm_type = "Type";
     out.fm_lastAccess = "Dernier accès";
     out.fm_creation = "Création";
     out.fm_forbidden = "Action interdite";
@@ -162,6 +164,7 @@ define(function () {
     out.fm_unknownFolderError = "Le dossier sélectionné ou le dernier dossier visité n'existe plus. Ouverture du dossier parent...";
     out.fm_contextMenuError = "Impossible d'ouvrir le menu contextuel pour cet élément. Si le problème persiste, essayez de rechercher la page.";
     out.fm_selectError = "Impossible de sélectionner l'élément ciblé. Si le problème persiste, essayez de recharger la page.";
+    out.fm_categoryError = "Impossible d'afficher la catégorie sélectionnée, affichage de Documents";
     out.fm_info_root = "Créez ici autant de dossiers que vous le souhaitez pour trier vos fichiers.";
     out.fm_info_unsorted = 'Contient tous les documents que vous avez ouvert et qui ne sont pas triés dans "Documents" ou déplacés vers la "Corbeille".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
     out.fm_info_template = "Contient tous les fichiers que vous avez sauvés en tant que modèle afin de les réutiliser lors de la création d'un nouveau document.";
