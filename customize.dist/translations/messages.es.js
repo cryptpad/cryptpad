@@ -12,7 +12,7 @@ define(function () {
     out.type.poll = 'Encuesta';
     out.type.slide = 'Presentación';
 
-    out.common_connectionLost = 'Conexión perdida con el servidor';
+    out.common_connectionLost = "<b>Connexión perdida</b><br>El documento está ahora en modo solo lectura hasta que la conexión vuelva.";
 
     out.disconnected = "Desconectado";
     out.synchronizing = "Sincronización";
@@ -164,7 +164,6 @@ define(function () {
     out.header_support = '<a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferre-r"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
     out.header_logoTitle = 'Ir a la página principal';
 
-    out.updated_common_connectionLostAndInfo = "<b>Connexión perdida</b><br>El documento está ahora en modo solo lectura hasta que la conexión vuelva.";
     out.websocketError = "Error al conectarse al servidor WebSocket";
     out.typeError = "Este documento no es compatible con la applicación seleccionada";
     out.onLogout = "Tu sesión está cerrada, <a href=\"/\" target=\"_blank\">haz clic aquí</a> para iniciar sesión<br>o apreta sobre <em>Escape</em> para acceder al documento en modo solo lectura.";
