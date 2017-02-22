@@ -357,7 +357,7 @@ define([
                 };
                 if (!initializing) {
                     hjson[3].metadata.title = document.title;
-                } else if (Cryptpad.initialName) {
+                } else if (Cryptpad.initialName && !hjson[3].metadata.title) {
                     hjson[3].metadata.title = Cryptpad.initialName;
                 }
                 return stringify(hjson);

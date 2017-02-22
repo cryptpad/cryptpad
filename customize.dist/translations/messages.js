@@ -145,12 +145,14 @@ define(function () {
     out.fm_templateName = "Templates";
     out.fm_newButton = "New";
     out.fm_newFolder = "New folder";
+    out.fm_newFile = "New document";
     out.fm_folder = "Folder";
     out.fm_folderName = "Folder name";
     out.fm_numberOfFolders = "# of folders";
     out.fm_numberOfFiles = "# of files";
     out.fm_fileName = "File name";
     out.fm_title = "Title";
+    out.fm_type = "Type";
     out.fm_lastAccess = "Last access";
     out.fm_creation = "Creation";
     out.fm_forbidden = "Forbidden action";

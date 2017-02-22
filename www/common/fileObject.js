@@ -17,6 +17,7 @@ define([
 
         var FILES_DATA = Cryptpad.storageKey;
         var NEW_FOLDER_NAME = Messages.fm_newFolder;
+        var NEW_FILE_NAME = Messages.fm_newFile;
 
         var DEBUG = config.DEBUG || false;
         var logging = function () {
@@ -579,6 +580,28 @@ define([
             });
         };
 
+        var pushNewFileData = function (href, title) {
+            files[FILES_DATA].push({
+                href: href,
+                title: title,
+                atime: new Date().toISOString(),
+                ctime: new Date().toISOString()
+            });
+        };
+        var createNewFile = exp.createNewFile = function (filePath, name, type, cb) {
+            var parentEl = findElement(files, filePath);
+            var fileName = getAvailableName(parentEl, name || NEW_FILE_NAME);
+            var href = '/' + type + '/#' + Cryptpad.createRandomHash();
+            parentEl[fileName] = href;
+
+            pushNewFileData(href, fileName);
+
+            var newPath = filePath.slice();
+            newPath.push(fileName);
+            cb({
+                newPath: newPath
+            });
+        };
 
         // Remove an element from the trash root
         var removeFromTrashArray = function (element, name) {

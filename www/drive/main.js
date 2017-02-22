@@ -268,7 +268,10 @@ define([
             return ret;
         };
 
-        var openFile = function (fileEl) {
+        var openFile = function (fileEl, name) {
+            if (name) {
+                sessionStorage[Cryptpad.newPadNameKey] = name;
+            }
             window.open(fileEl);
         };
 
@@ -738,7 +741,7 @@ define([
                     return;
                 }
                 if (isTrash) { return; }
-                openFile(root[key]);
+                openFile(root[key], key);
             });
             $element.addClass(liClass);
             $element.data('path', newPath);
@@ -896,24 +899,8 @@ define([
             return $block;
         };
 
-        var createPadFromRootHandler = function (e) {
-            var type = $(this).data('type');
-            if (!type) {
-                throw new Error("Unable to get the pad type...");
-            }
-            var onNamed = function (name) {
-                if (!name) { return; }
-                // TODO
-                var path = '/#?name=' + encodeURIComponent(name) + '&path=' + encodeURIComponent(currentPath);
-                sessionStorage[Cryptpad.newPadNameKey] = name;
-                sessionStorage[Cryptpad.newPadPathKey] = currentPath;
-                window.open('/' + type + '/');
-            };
-            Cryptpad.prompt(Messages.fm_nameFile, Cryptpad.getDefaultName({type: type}), onNamed);
-        };
         var createNewButton = function (isInRoot) {
             if (!APP.editable) { return; }
-
 
             // Create dropdown
             var options = [];
@@ -954,14 +941,18 @@ define([
 
             // Handlers
             if (isInRoot) {
+                var onCreated = function (info) {
+                    module.newFolder = info.newPath;
+                    refresh();
+                };
                 $block.find('a.newFolder').click(function () {
-                    var onCreated = function (info) {
-                        module.newFolder = info.newPath;
-                        refresh();
-                    };
                     filesOp.createNewFolder(currentPath, null, onCreated);
                 });
-                $block.find('a.newdoc').click(createPadFromRootHandler);
+                $block.find('a.newdoc').click(function (e) {
+                    var type = $(this).attr('data-type') || 'pad';
+                    var name = Cryptpad.getDefaultName({type: type});
+                    filesOp.createNewFile(currentPath, name, type, onCreated);
+                });
             }
 
             return $block;
@@ -1058,7 +1049,7 @@ define([
             var $fhIcon = $('<span>', {'class': 'icon'});
             var $fhName = $('<span>', {'class': 'name filename clickable'}).text(Messages.fm_fileName).click(onSortByClick);
             var $fhTitle = $('<span>', {'class': 'title clickable'}).text(Messages.fm_title).click(onSortByClick);
-            var $fhType = $('<span>', {'class': 'type clickable'}).text(Messages.table_type).click(onSortByClick);
+            var $fhType = $('<span>', {'class': 'type clickable'}).text(Messages.fm_type).click(onSortByClick);
             var $fhAdate = $('<span>', {'class': 'atime clickable'}).text(Messages.fm_lastAccess).click(onSortByClick);
             var $fhCdate = $('<span>', {'class': 'ctime clickable'}).text(Messages.fm_creation).click(onSortByClick);
             // If displayTitle is false, it means the "name" is the title, so do not display the "name" header
@@ -1410,6 +1401,7 @@ define([
                     var element = filesOp.findElement(files, path);
                     if (!filesOp.isFile(element)) { return; }
                     var data = filesOp.getFileData(element);
+                    if (!data) { return; }
                     $el.find('.title').attr('title', data.title).text(data.title);
                     $el.find('.atime').attr('title', getDate(data.atime)).text(getDate(data.atime));
                     $el.find('.ctime').attr('title', getDate(data.ctime)).text(getDate(data.ctime));
@@ -1652,23 +1644,26 @@ define([
                 var roUrl = getReadOnlyUrl(el);
                 openFile(roUrl);
             }
+            else if ($(this).hasClass('delete')) {
+                moveElements([path], [TRASH], false, refresh);
+            }
             module.hideMenu();
         });
 
         $contentContextMenu.on('click', 'a', function (e) {
             e.stopPropagation();
             var path = $(this).data('path');
+            var onCreated = function (info) {
+                module.newFolder = info.newPath;
+                refresh();
+            };
             if ($(this).hasClass("newfolder")) {
-                var onCreated = function (info) {
-                    module.newFolder = info.newPath;
-                    refresh();
-                };
                 filesOp.createNewFolder(path, null, onCreated);
             }
             else if ($(this).hasClass("newdoc")) {
                 var type = $(this).data('type') || 'pad';
-                createPadFromRootHandler.apply(this);
-                e.preventDefault();
+                var name = Cryptpad.getDefaultName({type: type});
+                filesOp.createNewFile(path, name, type, onCreated);
             }
             module.hideMenu();
         });

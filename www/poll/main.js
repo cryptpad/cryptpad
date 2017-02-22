@@ -568,6 +568,7 @@ define([
             APP.proxy.info.defaultTitle = defaultName;
         }
         if (Cryptpad.initialName && !APP.proxy.info.title) {
+            APP.proxy.info.title = Cryptpad.initialName;
             updateTitle(Cryptpad.initialName);
         } else {
             updateTitle(APP.proxy.info.title || defaultName);

@@ -142,12 +142,14 @@ define(function () {
     out.fm_templateName = "Modèles";
     out.fm_newButton = "Nouveau";
     out.fm_newFolder = "Nouveau dossier";
+    out.fm_newFile = "Nouveau document";
     out.fm_folder = "Dossier";
     out.fm_folderName = "Nom du dossier";
     out.fm_numberOfFolders = "# de dossiers";
     out.fm_numberOfFiles = "# de fichiers";
     out.fm_fileName = "Nom du fichier";
     out.fm_title = "Titre";
+    out.fm_type = "Type";
     out.fm_lastAccess = "Dernier accès";
     out.fm_creation = "Création";
     out.fm_forbidden = "Action interdite";

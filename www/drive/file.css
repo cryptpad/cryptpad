@@ -229,6 +229,7 @@ span.fa-folder-open {
   width: 140px;
   text-align: center;
   vertical-align: top;
+  overflow: hidden;
 }
 #content div.grid li .name {
   width: 100%;
