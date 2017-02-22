@@ -1294,6 +1294,7 @@ html.cp,
 .cp.slide #modal #button_exit {
   left: 20px;
   top: 20px;
+  z-index: 9001;
 }
 .cp.slide #modal #button_left {
   left: 6vw;
