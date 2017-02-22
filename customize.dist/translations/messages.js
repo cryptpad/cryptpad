@@ -165,6 +165,7 @@ define(function () {
     out.fm_unknownFolderError = "The selected or last visited directory no longer exist. Opening the parent folder...";
     out.fm_contextMenuError = "Unable to open the context menu for that element. If the problem persist, try to reload the page.";
     out.fm_selectError = "Unable to select the targetted element. If the problem persist, try to reload the page.";
+    out.fm_categoryError = "Unable to open the selected category, displaying root.";
     out.fm_info_root = "Create as many nested folders here as you want to sort your files.";
     out.fm_info_unsorted = 'Contains all the files you\'ve visited that are not yet sorted in "Documents" or moved to the "Trash".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
     out.fm_info_template = 'Contains all the pads stored as templates and that you can re-use when you create a new document.';

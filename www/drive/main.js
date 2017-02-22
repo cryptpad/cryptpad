@@ -202,6 +202,12 @@ define([
         // FILE MANAGER
         // _WORKGROUP_ and other people drive : display Documents as main page
         var currentPath = module.currentPath = isOwnDrive() ? getLastOpenedFolder() : [ROOT];
+
+        // Categories dislayed in the menu
+        // _WORKGROUP_ : do not display unsorted
+        var displayedCategories = [ROOT, UNSORTED, TRASH];
+        if (isWorkgroup()) { displayedCategory = [ROOT, TRASH]; }
+
         var lastSelectTime;
         var selectedElement;
 
@@ -1284,8 +1290,8 @@ define([
             if (!APP.editable) { debug("Read-only mode"); }
             if (!appStatus.isReady && !force) { return; }
             // Only Trash and Root are available in not-owned files manager
-            if (isWorkgroup() && !filesOp.isPathInTrash(path) && !filesOp.isPathInRoot(path)) {
-                log("Unable to open the selected category, displaying root"); //TODO translate
+            if (displayedCategories.indexOf(path[0]) === -1) {
+                log(Messages.categoryError);
                 currentPath = [ROOT];
                 displayDirectory(currentPath);
                 return;
@@ -1532,13 +1538,11 @@ define([
 
         var resetTree = module.resetTree = function () {
             $tree.html('');
-            createTree($tree, [ROOT]);
-            if (!isWorkgroup()) {
-                createUnsorted($tree, [UNSORTED]);
-                //createTemplate($tree, [TEMPLATE]);
-                createAllFiles($tree, [FILES_DATA]);
-            }
-            createTrash($tree, [TRASH]);
+            if (displayedCategories.indexOf(ROOT) !== -1) { createTree($tree, [ROOT]); }
+            if (displayedCategories.indexOf(UNSORTED) !== -1) { createUnsorted($tree, [UNSORTED]); }
+            if (displayedCategories.indexOf(TEMPLATE) !== -1) { createTemplate($tree, [TEMPLATE]); }
+            if (displayedCategories.indexOf(FILES_DATA) !== -1) { createAllFiles($tree, [FILES_DATA]); }
+            if (displayedCategories.indexOf(TRASH) !== -1) { createTrash($tree, [TRASH]); }
         };
 
         var hideMenu = module.hideMenu = function () {

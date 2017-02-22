@@ -94,7 +94,7 @@ span.fa-folder-open {
   background: #fff;
   overflow: auto;
   resize: horizontal;
-  width: 250px;
+  width: auto;
   white-space: nowrap;
   max-width: 500px;
   min-width: 200px;
