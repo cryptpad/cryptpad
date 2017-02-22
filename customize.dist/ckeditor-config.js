@@ -1,4 +1,4 @@
-CKEDITOR.editorConfig = function( config ) {
+CKEDITOR.editorConfig = function( config ) { // jshint ignore:line
     var fixThings = false;
     // https://dev.ckeditor.com/ticket/10907
     config.needsBrFiller= fixThings;
