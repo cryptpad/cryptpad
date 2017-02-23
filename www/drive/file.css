@@ -406,3 +406,10 @@ span.fa-folder-open {
   background: #fff;
   border: 1px solid #888;
 }
+#driveToolbar #contextButtonsContainer {
+  float: right;
+  margin: 5px;
+}
+#driveToolbar #contextButtonsContainer button {
+  vertical-align: top;
+}

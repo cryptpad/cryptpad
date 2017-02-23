@@ -281,56 +281,81 @@ define([
 
         // Replace a file/folder name by an input to change its value
         var displayRenameInput = function ($element, path) {
-            if (!APP.editable) { return; }
-            if (!path || path.length < 2) {
-                logError("Renaming a top level element (root, trash or filesData) is forbidden.");
-                return;
-            }
-            removeInput();
-            removeSelected();
-            var $name = $element.find('.name');
-            if (!$name.length) {
-                $name = $element.find('.element');
-            }
-            $name.hide();
-            var name = path[path.length - 1];
-            var $input = $('<input>', {
-                placeholder: name,
-                value: name
-            });
-            $input.on('keyup', function (e) {
-                if (e.which === 13) {
-                    removeInput();
-                    filesOp.renameElement(path, $input.val(), function () {
-                        refresh();
-                    });
+            // NOTE: setTimeout(f, 0) otherwise the "rename" button in the toolbar is not working
+            window.setTimeout(function () {
+                if (!APP.editable) { return; }
+                if (!path || path.length < 2) {
+                    logError("Renaming a top level element (root, trash or filesData) is forbidden.");
+                    return;
                 }
-            });
-            //$element.parent().append($input);
-            $name.after($input);
-            $input.focus();
-            $input.select();
-            // We don't want to open the file/folder when clicking on the input
-            $input.on('click dblclick', function (e) {
+                removeInput();
                 removeSelected();
-                e.stopPropagation();
-            });
-            // Remove the browser ability to drag text from the input to avoid
-            // triggering our drag/drop event handlers
-            $input.on('dragstart dragleave drag drop', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-            });
-            // Make the parent element non-draggable when selecting text in the field
-            // since it would remove the input
-            $input.on('mousedown', function (e) {
-                e.stopPropagation();
-                $input.parents('li').attr("draggable", false);
-            });
-            $input.on('mouseup', function (e) {
-                e.stopPropagation();
-                $input.parents('li').attr("draggable", true);
-            });
+                var $name = $element.find('.name');
+                if (!$name.length) {
+                    $name = $element.find('.element');
+                }
+                $name.hide();
+                var name = path[path.length - 1];
+                var $input = $('<input>', {
+                    placeholder: name,
+                    value: name
+                });
+                $input.on('keyup', function (e) {
+                    if (e.which === 13) {
+                        removeInput();
+                        filesOp.renameElement(path, $input.val(), function () {
+                            refresh();
+                        });
+                    }
+                });
+                //$element.parent().append($input);
+                $name.after($input);
+                $input.focus();
+                $input.select();
+                // We don't want to open the file/folder when clicking on the input
+                $input.on('click dblclick', function (e) {
+                    removeSelected();
+                    e.stopPropagation();
+                });
+                // Remove the browser ability to drag text from the input to avoid
+                // triggering our drag/drop event handlers
+                $input.on('dragstart dragleave drag drop', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+                // Make the parent element non-draggable when selecting text in the field
+                // since it would remove the input
+                $input.on('mousedown', function (e) {
+                    e.stopPropagation();
+                    $input.parents('li').attr("draggable", false);
+                });
+                $input.on('mouseup', function (e) {
+                    e.stopPropagation();
+                    $input.parents('li').attr("draggable", true);
+                });
+            },0);
+        };
+
+        var filterContextMenu = function ($menu, $element) {
+            var path = $element.data('path');
+
+            var hide = [];
+            if (!APP.editable) {
+                hide.push($menu.find('a.editable'));
+            }
+            if (!isOwnDrive()) {
+                hide.push($menu.find('a.own'));
+            }
+            if ($element.is('.file-element')) {
+                hide.push($menu.find('a.newfolder'));
+            } else {
+                hide.push($menu.find('a.open_ro'));
+            }
+            if (path && path.length > 4) {
+                hide.push($menu.find('a.restore'));
+                hide.push($menu.find('a.properties'));
+            }
+            return hide;
         };
 
         var updateContextButton = function () {
@@ -339,21 +364,54 @@ define([
                 $li = $tree.find('.element.active').closest('li');
             }
             var $button = $driveToolbar.find('#contextButton');
-            if ($li.length !== 1
-                || !$._data($li[0], 'events').contextmenu
-                || $._data($li[0], 'events').contextmenu.length === 0) {
-                $button.hide();
+            if ($button.length) { // mobile
+                if ($li.length !== 1
+                    || !$._data($li[0], 'events').contextmenu
+                    || $._data($li[0], 'events').contextmenu.length === 0) {
+                    $button.hide();
+                    return;
+                }
+                $button.show();
+                $button.css({
+                    background: '#000'
+                });
+                window.setTimeout(function () {
+                    $button.css({
+                        background: ''
+                    });
+                }, 500);
                 return;
             }
-            $button.show();
-            $button.css({
-                background: '#000'
+            // Non mobile
+            var $container = $driveToolbar.find('#contextButtonsContainer');
+            if (!$container.length) { return; }
+            $container.html('');
+            var $element = $li;
+            var $menu = $element.data('context');
+            var path = $element.data('path');
+            if (!$menu || !path) { return; }
+            var actions = [];
+            var $actions = $menu.find('a');
+            var toHide = filterContextMenu($menu, $element);
+            $actions = $actions.filter(function (i, el) {
+                for (var j = 0; j < toHide.length; j++) {
+                    if ($(el).is(toHide[j])) { return false; };
+                }
+                return true;
             });
-            window.setTimeout(function () {
-                $button.css({
-                    background: ''
-                });
-            }, 500);
+            $actions.each(function (i, el) {
+                var $a = $('<button>', {'class': 'element'});
+                if ($(el).attr('data-icon')) {
+                    $a.addClass('fa').addClass($(el).attr('data-icon'));
+                    $a.attr('title', $(el).text());
+                } else {
+                    $a.text($(el).text());
+                }
+                $(el).data('path', path);
+                $(el).data('element', $element);
+                $container.append($a);
+                $a.click(function() { $(el).click(); });
+            });
         };
 
         // Add the "selected" class to the "li" corresponding to the clicked element
@@ -384,15 +442,21 @@ define([
             module.hideMenu();
             e.stopPropagation();
 
-            var path = $(e.target).closest('li').data('path');
+            var $element = $(e.target).closest('li');
+            if (!$element.length) {
+                logError("Unable to locate the .element tag", e.target);
+                $menu.hide();
+                log(Messages.fm_contextMenuError);
+                return false;
+            }
+
+            var path = $element.data('path');
             if (!path) { return false; }
 
-            if (!APP.editable) {
-                $menu.find('a.editable').parent('li').hide();
-            }
-            if (!isOwnDrive()) {
-                $menu.find('a.own').parent('li').hide();
-            }
+            var toHide = filterContextMenu($menu, $element);
+            toHide.forEach(function ($a) {
+                $a.parent('li').hide();
+            });
 
             $menu.css({
                 display: "block",
@@ -406,45 +470,27 @@ define([
                 return true;
             }
 
-            // $element should be the <li class="element">
-            var $element = $(e.target).closest('li');
             onElementClick(undefined, $element);
-            if (!$element.length) {
-                logError("Unable to locate the .element tag", e.target);
-                $menu.hide();
-                log(Messages.fm_contextMenuError);
-                return false;
-            }
+
             $menu.find('a').data('path', path);
             $menu.find('a').data('element', $element);
             return false;
         };
 
         var openDirectoryContextMenu = function (e) {
-            var $element = $(e.target).closest('li');
             $contextMenu.find('li').show();
-            if ($element.is('.file-element')) {
-                $contextMenu.find('a.newfolder').parent('li').hide();
-            } else {
-                $contextMenu.find('a.open_ro').parent('li').hide();
-            }
             openContextMenu(e, $contextMenu);
             return false;
         };
 
         var openDefaultContextMenu = function (e) {
-            var $element = $(e.target).closest('li');
             $defaultContextMenu.find('li').show();
-            if ($element.is('.file-element')) {
-                $defaultContextMenu.find('a.newfolder').parent('li').hide();
-            } else {
-                $defaultContextMenu.find('a.open_ro').parent('li').hide();
-            }
             openContextMenu(e, $defaultContextMenu);
             return false;
         };
 
         var openTrashTreeContextMenu = function (e) {
+            $trashTreeContextMenu.find('li').show();
             openContextMenu(e, $trashTreeContextMenu);
             return false;
         };
@@ -453,10 +499,6 @@ define([
             var path = $(e.target).closest('li').data('path');
             if (!path) { return; }
             $trashContextMenu.find('li').show();
-            if (path.length > 4) {
-                $trashContextMenu.find('a.restore').parent('li').hide();
-                $trashContextMenu.find('a.properties').parent('li').hide();
-            }
             openContextMenu(e, $trashContextMenu);
             return false;
         };
@@ -752,8 +794,10 @@ define([
             });
             if (!isTrash) {
                 $element.contextmenu(openDirectoryContextMenu);
+                $element.data('context', $contextMenu);
             } else {
                 $element.contextmenu(openTrashContextMenu);
+                $element.data('context', $trashContextMenu);
             }
             var isNewFolder = module.newFolder && filesOp.comparePath(newPath, module.newFolder);
             if (isNewFolder) {
@@ -1202,6 +1246,7 @@ define([
                     onElementClick(e, $element, path);
                 });
                 $element.contextmenu(openDefaultContextMenu);
+                $element.data('context', $defaultContextMenu);
                 if (draggable) {
                     addDragAndDropHandlers($element, path, false, false);
                 }
@@ -1231,6 +1276,7 @@ define([
                     onElementClick(e, $element);
                 });
                 $element.contextmenu(openDefaultContextMenu);
+                $element.data('context', $defaultContextMenu); // TODO: hide the "delete" link in that context menu
                 $container.append($element);
             });
         };
@@ -1352,6 +1398,9 @@ define([
                     });
                     $li.contextmenu();
                 });
+            } else {
+                var $contextButtons = $('<span>', {'id' : 'contextButtonsContainer'});
+                $contextButtons.appendTo($toolbar.find('.rightside'));
             }
             updateContextButton();
 
