@@ -66,10 +66,10 @@ define(function () {
 
     out.forgetButton = 'FORGET';
     out.forgetButtonTitle = 'Remove this document from your home page listings';
-    out.forgetPrompt = 'Clicking OK will remove the URL for this pad from localStorage, are you sure?';
+    out.forgetPrompt = 'Clicking OK will remove the link for this pad from localStorage, are you sure?';
 
     out.shareButton = 'Share';
-    out.shareSuccess = 'Copied URL to clipboard';
+    out.shareSuccess = 'Copied link to clipboard';
 
     out.newButton = 'New';
     out.newButtonTitle = 'Create a new document';
@@ -85,11 +85,11 @@ define(function () {
     out.colorButton = 'TEXT COLOR';
     out.colorButtonTitle = 'Change the text color in presentation mode';
 
-    out.editShare = "Share edit URL";
-    out.editShareTitle = "Copy the edit URL to clipboard";
-    out.viewShare = "Share view URL";
-    out.viewShareTitle = "Copy the read-only URL to clipboard";
-    out.viewOpen = "View in new tab";
+    out.editShare = "editing link";
+    out.editShareTitle = "Copy the edit link to clipboard";
+    out.viewShare = "read-only link";
+    out.viewShareTitle = "Copy the read-only link to clipboard";
+    out.viewOpen = "open read-only link in new tab";
     out.viewOpenTitle = "Open the document in read-only mode in a new tab";
 
     out.notifyJoined = "{0} has joined the collaborative session";
@@ -173,12 +173,12 @@ define(function () {
     out.fm_info_template = 'Contains all the pads stored as templates and that you can re-use when you create a new document.';
     out.fm_info_trash = 'Files deleted from the trash are also removed from "All files" and it is impossible to recover them from the file manager.'; // Same here for "All files" and "out.fm_filesDataName"
     out.fm_info_allFiles = 'Contains all the files from "Documents", "Unsorted" and "Trash". You can\'t move or remove files from here.'; // Same here
-    out.fm_alert_backupUrl = "Backup URL for this drive.<br>" +
+    out.fm_alert_backupUrl = "Backup link for this drive.<br>" +
                              "It is <strong>highly recommended</strong> that you keep ip for yourself only.<br>" +
                              "You can use it to retrieve all your files in case your browser memory got erased.<br>" +
-                             "Anybody with that URL can edit or remove all the files in your file manager.<br>" +
+                             "Anybody with that link can edit or remove all the files in your file manager.<br>" +
                              '<input type="text" id="fm_backupUrl" value="{0}"/>';
-    out.fm_backup_title = 'Backup URL';
+    out.fm_backup_title = 'Backup link';
     out.fm_nameFile = 'How would you like to name that file?';
     // File - Context menu
     out.fc_newfolder = "New folder";
@@ -322,7 +322,7 @@ define(function () {
     out.tos_title = "Cryptpad Terms of Service";
     out.tos_legal = "Please don't be malicious, abusive, or do anything illegal.";
     out.tos_availability = "We hope you find this service useful, but availability or performance cannot be guaranteed. Please export your data regularly.";
-    out.tos_e2ee = "Cryptpad documents can be read or modified by anyone who can guess or otherwise obtain the document's fragment identifier. We recommend that you use end-to-end-encrypted (e2ee) messaging technology to share URLs, and assume no liability in the event that such a URL is leaked.";
+    out.tos_e2ee = "Cryptpad documents can be read or modified by anyone who can guess or otherwise obtain the document's fragment identifier. We recommend that you use end-to-end-encrypted (e2ee) messaging technology to share links, and assume no liability in the event that such a link is leaked.";
     out.tos_logs = "Metadata provided by your browser to the server may be logged for the purpose of maintaining the service.";
     out.tos_3rdparties = "We do not provide individualized data to third parties unless required to by law.";
 
