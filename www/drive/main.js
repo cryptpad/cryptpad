@@ -958,16 +958,11 @@ define([
             }
             AppConfig.availablePadTypes.forEach(function (type) {
                 if (type === 'drive') { return; }
-                var path = filesOp.isPathInTrash(currentPath) ? '' : '/#?path=' + encodeURIComponent(currentPath);
                 var attributes = {
                     'class': 'newdoc',
-                    'data-type': type
+                    'data-type': type,
+                    'href': '#'
                 };
-                // In root, do not redirect instantly, but ask for a name first. Cf handlers below
-                if (!isInRoot) {
-                    attributes.href = '/' + type + path;
-                    attributes.target = '_blank';
-                }
                 options.push({
                     tag: 'a',
                     attributes: attributes,
@@ -996,6 +991,12 @@ define([
                     var type = $(this).attr('data-type') || 'pad';
                     var name = Cryptpad.getDefaultName({type: type});
                     filesOp.createNewFile(currentPath, name, type, onCreated);
+                });
+            } else {
+                $block.find('a.newdoc').click(function (e) {
+                    var type = $(this).attr('data-type') || 'pad';
+                    sessionStorage[Cryptpad.newPadPathKey] = filesOp.isPathInTrash(currentPath) ? '' : currentPath;
+                    window.open('/' + type + '/');
                 });
             }
 
