@@ -12,7 +12,8 @@ define(function () {
     out.type.poll = 'Encuesta';
     out.type.slide = 'Presentación';
 
-    out.common_connectionLost = "<b>Connexión perdida</b><br>El documento está ahora en modo solo lectura hasta que la conexión vuelva.";
+    out.updated_0_common_connectionLost = "<b>Connexión perdida</b><br>El documento está ahora en modo solo lectura hasta que la conexión vuelva.";
+    out.common_connectionLost = out.updated_0_common_connectionLost;
 
     out.disconnected = "Desconectado";
     out.synchronizing = "Sincronización";

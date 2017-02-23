@@ -21,6 +21,7 @@ define([
                 var code = msg[0];
                 var key = msg[1];
                 var needed = msg[2];
+                var value = msg[3] || '""';
 
                 if (str !== code) {
                     if (str !== "")
@@ -38,10 +39,11 @@ define([
                     }
                 }
 
-                res += (need ? '' : '// ') + 'out.' + key + ' = "";';
-                if (need)
-                {
+                res += (need ? '' : '// ') + 'out.' + key + ' = ' + value + ';';
+                if (need === 1) {
                     res += ' // ' + JSON.stringify(English[key]);
+                } else if (need === 2) {
+                    res += ' // TODO: Key updated --> make sure the updated key "'+ value +'" exists and is translated before that one.';
                 }
                 return res;
             }).join('\n')));
