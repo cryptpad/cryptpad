@@ -1176,11 +1176,15 @@ define([
             }
         });
         $userAdmin.find('a.login').click(function (e) {
-            sessionStorage.redirectTo = window.location.href;
+            if (window.location.pathname !== "/") {
+                sessionStorage.redirectTo = window.location.href;
+            }
             window.location.href = '/login/';
         });
         $userAdmin.find('a.register').click(function (e) {
-            sessionStorage.redirectTo = window.location.href;
+            if (window.location.pathname !== "/") {
+                sessionStorage.redirectTo = window.location.href;
+            }
             window.location.href = '/register/';
         });
 
