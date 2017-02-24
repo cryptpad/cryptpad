@@ -65,6 +65,7 @@ define(function () {
     out.forgetButton = 'OUBLIER';
     out.forgetButtonTitle = 'Enlever ce document de la liste en page d\'accueil';
     out.forgetPrompt = 'Cliquer sur OK supprimera l\'URL de ce document de la mémoire de votre navigateur (localStorage), êtes-vous sûr ?';
+    out.movedToTrash = 'Ce document a été déplacé vers la corbeille.<br><a href="/drive/">Accéder à mon Drive</a>';
 
     out.shareButton = 'Partager';
     out.shareSuccess = 'URL copiée dans le presse-papiers';

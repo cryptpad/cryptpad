@@ -660,6 +660,11 @@ define([
         });
     };
 
+    var disconnect = function (info) {
+        //setEditable(false); // TODO
+        Cryptpad.alert(Messages.common_connectionLost);
+    };
+
     var create = function (info) {
         var realtime = APP.realtime = info.realtime;
         var myID = APP.myID = info.myID;
@@ -702,7 +707,7 @@ define([
         /* add a forget button */
         var forgetCb = function (err, title) {
             if (err) { return; }
-            document.title = title;
+            disconnect();
         };
         var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
         $rightside.append($forgetPad);
@@ -731,11 +736,6 @@ define([
             }
             updateTitle(title || defaultName);
         });
-    };
-
-    var disconnect = function (info) {
-        //setEditable(false); // TODO
-        Cryptpad.alert(Messages.common_connectionLost);
     };
 
     // don't initialize until the store is ready.

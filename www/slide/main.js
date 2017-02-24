@@ -458,8 +458,7 @@ define([
                 /* add a forget button */
                 var forgetCb = function (err, title) {
                     if (err) { return; }
-                    APP.title = title;
-                    setTabTitle();
+                    setEditable(false);
                 };
                 var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
                 $rightside.append($forgetPad);

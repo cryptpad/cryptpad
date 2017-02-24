@@ -67,6 +67,7 @@ define(function () {
     out.forgetButton = 'FORGET';
     out.forgetButtonTitle = 'Remove this document from your home page listings';
     out.forgetPrompt = 'Clicking OK will remove the URL for this pad from localStorage, are you sure?';
+    out.movedToTrash = 'That pad has been moved to the trash.<br><a href="/drive/">Access my Drive</a>';
 
     out.shareButton = 'Share';
     out.shareSuccess = 'Copied URL to clipboard';

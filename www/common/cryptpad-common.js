@@ -43,6 +43,14 @@ define([
         }
         return;
     };
+    var getRealtime = common.getRealtime = function () {
+        if (store) {
+            if (store.getProxy() && store.getProxy().info) {
+                return store.getProxy().info.realtime;
+            }
+        }
+        return;
+    };
 
     var whenRealtimeSyncs = common.whenRealtimeSyncs = function (realtime, cb) {
         realtime.sync();
@@ -897,8 +905,18 @@ define([
                                     callback(err, null);
                                     return;
                                 }
-                                var parsed = common.parsePadUrl(href);
-                                callback(null, common.getDefaultName(parsed, []));
+                                var n = getNetwork();
+                                var r = getRealtime();
+                                if (n && r) {
+                                    whenRealtimeSyncs(r, function () {
+                                        n.disconnect();
+                                        callback();
+                                    });
+                                } else {
+                                    callback();
+                                }
+                                common.alert(Messages.movedToTrash);
+                                return;
                             });
                         });
 

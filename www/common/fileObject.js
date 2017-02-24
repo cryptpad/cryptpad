@@ -242,18 +242,31 @@ define([
             return ret;
         };
 
-        var removeFileFromRoot = function (root, href) {
+        // Remove the selected 'href' from the tree located at 'path', and push its locations to the 'paths' array
+        var removeFileFromRoot = function (path, href) {
+            var paths = [];
+            var root = findElement(files, path);
             if (isFile(root)) { return; }
             for (var e in root) {
                 if (isFile(root[e])) {
                     if (compareFiles(href, root[e])) {
                         root[e] = undefined;
                         delete root[e];
+                        if (paths.indexOf(path) === -1) {
+                            paths.push(path);
+                        }
                     }
                 } else {
-                    removeFileFromRoot(root[e], href);
+                    var nPath = path.slice();
+                    nPath.push(e);
+                    removeFileFromRoot(nPath, href).forEach(function (p) {
+                        if (paths.indexOf(p) === -1) {
+                            paths.push(p);
+                        }
+                    });
                 }
             }
+            return paths;
         };
 
         var isInTrashRoot = exp.isInTrashRoot = function (path) {
@@ -735,17 +748,26 @@ define([
 
         var forgetPad = exp.forgetPad = function (href) {
             if (workgroup) { return; }
-            if (!href) { return; }
+            if (!href || !isFile(href)) { return; }
+            var path;
             var rootFiles = getRootFiles().slice();
             if (rootFiles.indexOf(href) !== -1) {
-                removeFileFromRoot(files[ROOT], href);
+                var paths = removeFileFromRoot([ROOT], href);
+                path = paths[0];
             }
             var unsortedIdx = getUnsortedFiles().indexOf(href);
             if (unsortedIdx !== -1) {
                 files[UNSORTED].splice(unsortedIdx, 1);
+                path = [UNSORTED];
             }
+            var templateIdx = getTemplateFiles().indexOf(href);
+            if (templateIdx !== -1) {
+                files[TEMPLATE].splice(templateIdx, 1);
+                path = [TEMPLATE];
+            }
+            if (!path) { return; }
             var key = getTitle(href);
-            pushToTrash(key, href, [UNSORTED]);
+            pushToTrash(key, href, path);
         };
 
         var addUnsortedPad = exp.addPad = function (href, path, name) {
