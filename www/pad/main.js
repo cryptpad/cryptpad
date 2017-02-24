@@ -12,12 +12,13 @@ define([
     '/common/cryptpad-common.js',
     '/common/visible.js',
     '/common/notify.js',
+    '/pad/links.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/jquery/dist/jquery.min.js',
 ], function (Crypto, realtimeInput, Hyperjson,
     Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad,
-    Visible, Notify) {
+    Visible, Notify, Links) {
     var $ = window.jQuery;
     var saveAs = window.saveAs;
     var Messages = Cryptpad.Messages;
@@ -102,6 +103,7 @@ define([
             customConfig: '/customize/ckeditor-config.js',
         });
 
+        editor.on('instanceReady', Links.addSupportForOpeningLinksInNewTab(Ckeditor));
         editor.on('instanceReady', function (Ckeditor) {
             var $bar = $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox');
             var parsedHash = Cryptpad.parsePadUrl(window.location.href);

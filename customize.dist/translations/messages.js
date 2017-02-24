@@ -18,8 +18,8 @@ define(function () {
 
     // NOTE: We want to update the 'common_connectionLost' key.
     // Please do not add a new 'updated_common_connectionLostAndInfo' but change directly the value of 'common_connectionLost'
-    out.updated_common_connectionLostAndInfo = "<b>Server Connection Lost</b><br>You're now in read-only mode until the connection is back.";
-    out.common_connectionLost = out.updated_common_connectionLostAndInfo;
+    out.updated_0_common_connectionLost = "<b>Server Connection Lost</b><br>You're now in read-only mode until the connection is back.";
+    out.common_connectionLost = out.updated_0_common_connectionLost;
 
     out.websocketError = 'Unable to connect to the websocket server...';
     out.typeError = "That realtime document is not compatible with the selected application";

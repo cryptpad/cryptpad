@@ -16,7 +16,8 @@ define(function () {
     out.button_newpoll = 'Nouveau sondage';
     out.button_newslide = 'Nouvelle présentation';
 
-    out.common_connectionLost = "<b>Connexion au serveur perdue</b><br>Vous êtes désormais en mode lecture seule jusqu'au retour de la connexion.";
+    out.updated_0_common_connectionLost = "<b>Connexion au serveur perdue</b><br>Vous êtes désormais en mode lecture seule jusqu'au retour de la connexion.";
+    out.common_connectionLost = out.updated_0_common_connectionLost;
 
     out.websocketError = 'Impossible de se connecter au serveur WebSocket...';
     out.typeError = "Ce document temps-réel n'est pas compatible avec l'application sélectionnée";

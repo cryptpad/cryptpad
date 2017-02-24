@@ -50,9 +50,26 @@ define(req, function(Default, Language) {
             var langs = arguments;
             Object.keys(externalMap).forEach(function (code, i) {
                 var translation = langs[i];
+                var updated = {};
+                Object.keys(Default).forEach(function (k) {
+                    if (/^updated_[0-9]+_/.test(k) && !translation[k]) {
+                        var key = k.split('_').slice(2).join('_');
+                        // Make sure we don't already have an update for that key. It should not happen
+                        // but if it does, keep the latest version
+                        if (updated[key]) {
+                            var ek = updated[key];
+                            if (parseInt(ek.split('_')[1]) > parseInt(k.split('_')[1])) { return; }
+                        }
+                        updated[key] = k;
+                    }
+                });
                 Object.keys(Default).forEach(function (k) {
                     if (/^_/.test(k)) { return; }
-                    if (!translation[k]) {
+                    if (!translation[k] || updated[k]) {
+                        if (updated[k]) {
+                            missing.push([code, k, 2, 'out.' + updated[k]]);
+                            return;
+                        }
                         missing.push([code, k, 1]);
                     }
                 });
@@ -62,10 +79,6 @@ define(req, function(Default, Language) {
                         missing.push([code, k, 0]);
                     }
                 });
-                /*if (typeof(translation._languageName) !== 'string') {
-                    var warning = 'key [_languageName] is missing from translation [' + code + ']';
-                    missing.push(warning);
-                }*/
             });
             cb(missing);
         });
