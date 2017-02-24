@@ -583,12 +583,14 @@ define([
     // STORAGE
     var isNotStrongestStored = common.isNotStrongestStored = function (href, recents) {
         var parsed = parsePadUrl(href);
+        if (!parsed.hash) { return false; }
         return recents.some(function (pad) {
             var p = parsePadUrl(pad.href);
             if (p.type !== parsed.type) { return false; } // Not the same type
             if (p.hash === parsed.hash) { return false; } // Same hash, not stronger
             var pHash = parseHash(p.hash);
             var parsedHash = parseHash(parsed.hash);
+            if (!parsedHash || !pHash) { return; }
             if (pHash.version !== parsedHash.version) { return false; }
             if (pHash.channel !== parsedHash.channel) { return false; }
             if (pHash.mode === 'edit' && parsedHash.mode === 'view') { return true; }
