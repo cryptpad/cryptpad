@@ -3,6 +3,20 @@ define(function () {
     // See https://github.com/xwiki-contrib/application-ckeditor/commit/755d193497bf23ed874d874b4ae92fbee887fc10
     return {
         addSupportForOpeningLinksInNewTab : function (Ckeditor) {
+                // Returns the DOM element of the active (currently focused) link. It has also support for linked image widgets.
+            // @return {CKEDITOR.dom.element}
+            var getActiveLink = function(editor) {
+                var anchor = Ckeditor.plugins.link.getSelectedLink(editor),
+                    // We need to do some special checking against widgets availability.
+                    activeWidget = editor.widgets && editor.widgets.focused;
+                // If default way of getting links didn't return anything useful..
+                if (!anchor && activeWidget && activeWidget.name === 'image' && activeWidget.parts.link) {
+                    // Since CKEditor 4.4.0 image widgets may be linked.
+                    anchor = activeWidget.parts.link;
+                }
+                return anchor;
+            };
+
             return function(event) {
                 var editor = event.editor;
                 if (!Ckeditor.plugins.link) {
@@ -39,19 +53,6 @@ define(function () {
                     editor.contextMenu._.panelDefinition.css.push('.cke_button__openLink_icon {' +
                         Ckeditor.skin.getIconStyle('link') + '}');
                 }
-                // Returns the DOM element of the active (currently focused) link. It has also support for linked image widgets.
-                // @return {CKEDITOR.dom.element}
-                var getActiveLink = function(editor) {
-                    var anchor = Ckeditor.plugins.link.getSelectedLink(editor),
-                        // We need to do some special checking against widgets availability.
-                        activeWidget = editor.widgets && editor.widgets.focused;
-                    // If default way of getting links didn't return anything useful..
-                    if (!anchor && activeWidget && activeWidget.name == 'image' && activeWidget.parts.link) {
-                        // Since CKEditor 4.4.0 image widgets may be linked.
-                        anchor = activeWidget.parts.link;
-                    }
-                    return anchor;
-                };
             };
         }
     };

@@ -404,7 +404,7 @@ define([
             var toHide = filterContextMenu($menu, $element);
             $actions = $actions.filter(function (i, el) {
                 for (var j = 0; j < toHide.length; j++) {
-                    if ($(el).is(toHide[j])) { return false; };
+                    if ($(el).is(toHide[j])) { return false; }
                 }
                 return true;
             });
