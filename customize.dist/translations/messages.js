@@ -85,11 +85,11 @@ define(function () {
     out.colorButton = 'TEXT COLOR';
     out.colorButtonTitle = 'Change the text color in presentation mode';
 
-    out.editShare = "editing link";
+    out.editShare = "Editing link";
     out.editShareTitle = "Copy the edit link to clipboard";
-    out.viewShare = "read-only link";
+    out.viewShare = "Read-only link";
     out.viewShareTitle = "Copy the read-only link to clipboard";
-    out.viewOpen = "open read-only link in new tab";
+    out.viewOpen = "Open read-only link in new tab";
     out.viewOpenTitle = "Open the document in read-only mode in a new tab";
 
     out.notifyJoined = "{0} has joined the collaborative session";
