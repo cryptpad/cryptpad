@@ -392,6 +392,10 @@ span.fa-folder-open {
   height: 100%;
   line-height: 40px;
   cursor: default;
+  width: auto;
+  overflow: hidden;
+  white-space: nowrap;
+  direction: rtl;
 }
 #driveToolbar .path .element {
   padding: 5px;
@@ -405,4 +409,11 @@ span.fa-folder-open {
 #driveToolbar .path .element.clickable:hover {
   background: #fff;
   border: 1px solid #888;
+}
+#driveToolbar #contextButtonsContainer {
+  float: right;
+  margin: 5px;
+}
+#driveToolbar #contextButtonsContainer button {
+  vertical-align: top;
 }

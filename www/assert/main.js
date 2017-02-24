@@ -141,22 +141,6 @@ define([
         strungJSON(orig);
     });
 
-    assert(function () {
-        var todo = function (missing) {
-            if (missing.length !== 0) {
-                missing.forEach(function (msg) {
-                    console.log('* ' + msg);
-                });
-
-                // No, this is crappy, it's going to cause tests to fail basically all of the time.
-                //return false;
-            }
-        };
-        Cryptpad.Messages._checkTranslationState(todo);
-
-        return true;
-    }, "expected all translation keys in default language to be present in all translations. See console for details.");
-
     var swap = function (str, dict) {
         return str.replace(/\{\{(.*?)\}\}/g, function (all, key) {
             return typeof dict[key] !== 'undefined'? dict[key] : all;

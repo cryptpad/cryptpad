@@ -706,7 +706,6 @@ define([
             common.initialName = sessionStorage[newPadNameKey];
             delete sessionStorage[newPadNameKey];
         }
-        // Deprecated
         if (sessionStorage[newPadPathKey]) {
             common.initialPath = sessionStorage[newPadPathKey];
             delete sessionStorage[newPadPathKey];
