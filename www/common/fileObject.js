@@ -245,7 +245,14 @@ define([
         // Remove the selected 'href' from the tree located at 'path', and push its locations to the 'paths' array
         var removeFileFromRoot = function (path, href) {
             var paths = [];
-            var root = findElement(files, path);
+            var root = exp.findElement(files, path);
+
+            var rememberUnknownPath = function (p) {
+                if (paths.indexOf(p) === -1) {
+                    paths.push(p);
+                }
+            };
+
             if (isFile(root)) { return; }
             for (var e in root) {
                 if (isFile(root[e])) {
@@ -259,11 +266,7 @@ define([
                 } else {
                     var nPath = path.slice();
                     nPath.push(e);
-                    removeFileFromRoot(nPath, href).forEach(function (p) {
-                        if (paths.indexOf(p) === -1) {
-                            paths.push(p);
-                        }
-                    });
+                    removeFileFromRoot(nPath, href).forEach(rememberUnknownPath);
                 }
             }
             return paths;
