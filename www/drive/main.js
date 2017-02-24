@@ -724,6 +724,9 @@ define([
             var type = Messages.type[hrefData.type] || hrefData.type;
             var $title = $('<span>', {'class': 'title listElement', title: data.title}).text(data.title);
             var $type = $('<span>', {'class': 'type listElement', title: type}).text(type);
+            if (hrefData.hash && Cryptpad.parseHash(hrefData.hash) && Cryptpad.parseHash(hrefData.hash).mode === 'view') {
+                $type.append(' (' + Messages.readonly+ ')');
+            }
             var $adate = $('<span>', {'class': 'atime listElement', title: getDate(data.atime)}).text(getDate(data.atime));
             var $cdate = $('<span>', {'class': 'ctime listElement', title: getDate(data.ctime)}).text(getDate(data.ctime));
             if (displayTitle && !isWorkgroup()) {
@@ -1897,8 +1900,32 @@ define([
             APP.resizeTree = undefined;
         });
 
+        var createReadme = function (proxy, cb) {
+            if (proxy.initializing) {
+                var hash = Cryptpad.createRandomHash();
+                Get.put(hash, Messages.driveReadme, function (e) {
+                    if (e) { console.error(e); }
+                    var href = '/pad/#' + hash;
+                    proxy.drive[UNSORTED].push(href);
+                    proxy.drive[FILES_DATA].push({
+                        href: href,
+                        title: Messages.driveReadmeTitle,
+                        atime: new Date().toISOString(),
+                        ctime: new Date().toISOString()
+                    });
+                    if (typeof(cb) === "function") { cb(); }
+                });
+                delete proxy.initializing;
+                return;
+            }
+            if (typeof(cb) === "function") { cb(); }
+        };
 
-        refresh();
+        createReadme(proxy, function () {
+            refresh();
+            APP.userList.onChange();
+            Cryptpad.removeLoadingScreen();
+        });
     };
 
     var setName = APP.setName = function (newName) {
@@ -1940,26 +1967,6 @@ define([
         } else {
             if (typeof(cb) === "function") { cb(); }
         }
-    };
-    var createReadme = function (proxy, cb) {
-        if (proxy.initializing) {
-            var hash = Cryptpad.createRandomHash();
-            Get.put(hash, Messages.driveReadme, function (e) {
-                if (e) { console.error(e); }
-                var href = '/pad/#' + hash;
-                proxy.drive[UNSORTED].push(href);
-                proxy.drive[FILES_DATA].push({
-                    href: href,
-                    title: Messages.driveReadmeTitle,
-                    atime: new Date().toISOString(),
-                    ctime: new Date().toISOString()
-                });
-                if (typeof(cb) === "function") { cb(); }
-            });
-            delete proxy.initializing;
-            return;
-        }
-        if (typeof(cb) === "function") { cb(); }
     };
 
     // don't initialize until the store is ready.
@@ -2056,12 +2063,10 @@ define([
             module.files = proxy;
             if (!proxy.drive || typeof(proxy.drive) !== 'object') { proxy.drive = {}; }
             migrateAnonDrive(proxy, function () {
-                createReadme(proxy, function () {
-                    initLocalStorage();
-                    init(proxy);
-                    APP.userList.onChange();
-                    Cryptpad.removeLoadingScreen();
-                });
+                initLocalStorage();
+                init(proxy);
+                APP.userList.onChange();
+                Cryptpad.removeLoadingScreen();
             });
         };
         var onDisconnect = function (info) {
