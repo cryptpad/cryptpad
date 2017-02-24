@@ -392,6 +392,10 @@ span.fa-folder-open {
   height: 100%;
   line-height: 40px;
   cursor: default;
+  width: auto;
+  overflow: hidden;
+  white-space: nowrap;
+  direction: rtl;
 }
 #driveToolbar .path .element {
   padding: 5px;

@@ -358,6 +358,15 @@ define([
             return hide;
         };
 
+        var updatePathSize = function () {
+            var $context = $iframe.find('#contextButtonsContainer');
+            var l = 50;
+            if ($context.length) {
+                l += $context.width() || 0;
+            }
+            $driveToolbar.find('.path').css('max-width', 'calc(100vw - '+$tree.width()+'px - '+l+'px)');
+        };
+
         var updateContextButton = function () {
             var $li = $content.find('.selected');
             if ($li.length !== 1) {
@@ -412,6 +421,7 @@ define([
                 $container.append($a);
                 $a.click(function() { $(el).click(); });
             });
+            updatePathSize();
         };
 
         // Add the "selected" class to the "li" corresponding to the clicked element
@@ -1375,6 +1385,7 @@ define([
 
             var $modeButton = createViewModeButton().appendTo($toolbar.find('.rightside'));
             var $title = createTitle(path).appendTo($toolbar.find('.rightside'));
+            updatePathSize();
 
             if (APP.mobile()) {
                 var $context = $('<button>', {'class': 'element right dropdown-bar', id: 'contextButton'});
@@ -1639,6 +1650,14 @@ define([
             return base + viewHash;
         };
 
+        // Disable middle click in the context menu to avoid opening /drive/inner.html# in new tabs
+        $(ifrw).click(function (e) {
+            if (e.which !== 3) {
+                e.stopPropagation();
+                return false;
+            }
+        });
+
         $contextMenu.on("click", "a", function(e) {
             e.stopPropagation();
             var path = $(this).data('path');
@@ -1870,6 +1889,7 @@ define([
             if (APP.resizeTree) { return; }
             APP.resizeTree = window.setInterval(function () {
                 $driveToolbar.find('.leftside').width($tree.width());
+                updatePathSize();
             }, 100);
         });
         $(ifrw).mouseup(function (e) {
