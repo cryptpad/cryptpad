@@ -342,7 +342,7 @@ define([
             var applyHjson = function (shjson) {
                 var userDocStateDom = hjsonToDom(JSON.parse(shjson));
 
-                if (!readOnly) {
+                if (!readOnly && !initializing) {
                     userDocStateDom.setAttribute("contenteditable", "true"); // lol wtf
                 }
                 var patch = (DD).diff(inner, userDocStateDom);
@@ -684,6 +684,18 @@ define([
                     Visible.onChange(function (yes) {
                         if (yes) { unnotify(); }
                     });
+                }
+
+                if (!readOnly) {
+                    var shjson2 = stringifyDOM(inner);
+                    var hjson2 = JSON.parse(shjson2).slice(0,-1);
+                    var hjson = JSON.parse(shjson).slice(0,-1);
+                    if (stringify(hjson2) !== stringify(hjson)) {
+                        console.log('err');
+                        console.error("shjson2 !== shjson");
+                        Cryptpad.errorLoadingScreen("Unable to display the content of that realtime session in your browser. Please try to reload that page."); // TODO translate
+                        throw new Error();
+                    }
                 }
 
                 Cryptpad.getLastName(function (err, lastName) {

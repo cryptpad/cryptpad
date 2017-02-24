@@ -812,6 +812,7 @@ define([
         $('#' + LOADING).fadeOut(750, cb);
     };
     common.errorLoadingScreen = function (error, transparent) {
+        if (!$('#' + LOADING).is(':visible')) { common.addLoadingScreen(); }
         $('.spinnerContainer').hide();
         if (transparent) { $('#' + LOADING).css('opacity', 0.8); }
         $('#' + LOADING).find('p').html(error || Messages.error);
