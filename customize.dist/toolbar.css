@@ -128,6 +128,9 @@
 .cryptpad-toolbar button#shareButton .large {
   margin-left: 5px;
 }
+.cryptpad-toolbar button.hidden {
+  display: none;
+}
 .cryptpad-toolbar .cryptpad-lag {
   box-sizing: content-box;
   height: 16px;

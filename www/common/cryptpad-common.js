@@ -581,6 +581,21 @@ define([
     };
 
     // STORAGE
+    var isNotStrongestStored = common.isNotStrongestStored = function (href, recents) {
+        var parsed = parsePadUrl(href);
+        return recents.some(function (pad) {
+            var p = parsePadUrl(pad.href);
+            if (p.type !== parsed.type) { return false; } // Not the same type
+            if (p.hash === parsed.hash) { return false; } // Same hash, not stronger
+            var pHash = parseHash(p.hash);
+            var parsedHash = parseHash(parsed.hash);
+            if (pHash.version !== parsedHash.version) { return false; }
+            if (pHash.channel !== parsedHash.channel) { return false; }
+            if (pHash.mode === 'edit' && parsedHash.mode === 'view') { return true; }
+            if (pHash.mode === parsedHash.mode && parsedHash.present) { return true; }
+            return false;
+        });
+    };
     var setPadTitle = common.setPadTitle = function (name, cb) {
         var href = window.location.href;
         var parsed = parsePadUrl(href);
@@ -893,6 +908,11 @@ define([
                     'class': "fa fa-trash cryptpad-forget",
                     style: 'font:'+size+' FontAwesome'
                 });
+                getRecentPads(function (err, recent) {
+                    if (isNotStrongestStored(window.location.href, recent)) {
+                        button.addClass('hidden');
+                    }
+                });
                 if (callback) {
                     button.click(function() {
                         var href = window.location.href;
@@ -1067,7 +1087,8 @@ define([
     var createLanguageSelector = common.createLanguageSelector = function ($container, $initBlock) {
         var options = [];
         var languages = Messages._languages;
-        for (var l in languages) {
+        var keys = Object.keys(languages).sort();
+        keys.forEach(function (l) {
             options.push({
                 tag: 'a',
                 attributes: {
@@ -1077,7 +1098,7 @@ define([
                 },
                 content: languages[l] // Pretty name of the language value
             });
-        }
+        });
         var dropdownConfig = {
             text: Messages.language, // Button initial text
             options: options, // Entries displayed in the menu
