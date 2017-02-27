@@ -426,6 +426,7 @@ define([
 
             var updateMetadata = function(shjson) {
                 // Extract the user list (metadata) from the hyperjson
+                if (!shjson || typeof (shjson) !== "string") { updateTitle(defaultName); return; }
                 var hjson = JSON.parse(shjson);
                 var peerMetadata = hjson[3];
                 var titleUpdated = false;
