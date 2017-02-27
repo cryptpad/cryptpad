@@ -72,6 +72,7 @@ define([
             var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
             var parsedHash = Cryptpad.parsePadUrl(window.location.href);
             var defaultName = Cryptpad.getDefaultName(parsedHash);
+            var initialState = Messages.slideInitialState;
 
             var editor = module.editor = CMeditor.fromTextArea($textarea[0], {
                 lineNumbers: true,
@@ -88,7 +89,7 @@ define([
                 mode: "javascript",
                 readOnly: true
             });
-            editor.setOption('placeholder', Messages.slideInitialState);
+            editor.setValue(initialState);
 
             var setMode = module.setMode = function (mode, $select) {
                 module.highlightMode = mode;
@@ -101,8 +102,6 @@ define([
                 if ($select && $select.val) { $select.val(mode); }
             };
             setMode('markdown');
-
-            editor.setValue('');
 
             var setTheme = module.setTheme = (function () {
                 var path = '/common/theme/';
@@ -136,7 +135,7 @@ define([
             var $modal = $pad.contents().find('#modal');
             var $content = $pad.contents().find('#content');
 
-            Slide.setModal($modal, $content, $pad, ifrw, Messages.slideInitialState);
+            Slide.setModal($modal, $content, $pad, ifrw, initialState);
 
             var enterPresentationMode = function (shouldLog) {
                 Slide.show(true, $textarea.val());
@@ -634,7 +633,7 @@ define([
                 // Update the user list (metadata) from the hyperjson
                 updateMetadata(userDoc);
 
-                editor.setValue(newDoc || '');
+                editor.setValue(newDoc || initialState);
                 Slide.update(newDoc);
 
                 if (Cryptpad.initialName && APP.title === defaultName) {

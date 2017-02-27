@@ -52,6 +52,7 @@ define([
             var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
             var parsedHash = Cryptpad.parsePadUrl(window.location.href);
             var defaultName = Cryptpad.getDefaultName(parsedHash);
+            var initialState = Messages.codeInitialState;
 
             var editor = module.editor = CMeditor.fromTextArea($textarea[0], {
                 lineNumbers: true,
@@ -68,7 +69,7 @@ define([
                 mode: "javascript",
                 readOnly: true
             });
-            editor.setOption('placeholder', Messages.codeInitialState);
+            editor.setValue(Messages.codeInitialState);
 
             var setMode = module.setMode = function (mode, $select) {
                 module.highlightMode = mode;
@@ -83,8 +84,6 @@ define([
                     $select.find('.buttonTitle').text(name);
                 }
             };
-
-            editor.setValue('');
 
             var setTheme = module.setTheme = (function () {
                 var path = '/common/theme/';
@@ -562,7 +561,9 @@ define([
                 // Update the user list (metadata) from the hyperjson
                 updateMetadata(userDoc);
 
-                editor.setValue(newDoc || '');
+                if (newDoc) {
+                    editor.setValue(newDoc);
+                }
 
                 if (Cryptpad.initialName && document.title === defaultName) {
                     updateTitle(Cryptpad.initialName);
