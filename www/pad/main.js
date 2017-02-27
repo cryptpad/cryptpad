@@ -130,7 +130,6 @@ define([
             $(inner).css({
                 color: '#fff',
             });
-            //documentBody.innerHTML = Messages.initialState;
 
             var cursor = window.cursor = Cursor(inner);
 
@@ -366,10 +365,6 @@ define([
             };
 
             var realtimeOptions = {
-                // provide initialstate...
-                //initialState: stringifyDOM(inner) || '{}',
-                initialState: '[]',
-
                 // the websocket URL
                 websocketURL: Cryptpad.getWebsocketURL(),
 
@@ -431,6 +426,7 @@ define([
 
             var updateMetadata = function(shjson) {
                 // Extract the user list (metadata) from the hyperjson
+                if (!shjson || typeof (shjson) !== "string") { updateTitle(defaultName); return; }
                 var hjson = JSON.parse(shjson);
                 var peerMetadata = hjson[3];
                 var titleUpdated = false;
@@ -678,7 +674,7 @@ define([
                 var shjson = info.realtime.getUserDoc();
 
                 var newPad = false;
-                if (shjson === '[]') { newPad = true; }
+                if (shjson === '') { newPad = true; }
 
                 if (!newPad) {
                     applyHjson(shjson);
@@ -704,7 +700,7 @@ define([
                         }
                     }
                 } else {
-                    updateMetadata(shjson);
+                    updateTitle(Cryptpad.initialName || defaultName);
                     documentBody.innerHTML = Messages.initialState;
                 }
 

@@ -292,7 +292,7 @@ define([
                 removeSelected();
                 var $name = $element.find('.name');
                 if (!$name.length) {
-                    $name = $element.find('.element');
+                    $name = $element.find('> .element');
                 }
                 $name.hide();
                 var name = path[path.length - 1];
@@ -576,6 +576,10 @@ define([
             var andThen = function () {
                 filesOp.moveElements(paths, newPath, cb);
             };
+            // Cancel drag&drop from TRASH to TRASH
+            if (filesOp.comparePath(newPath, [TRASH]) && paths.length >= 1 && paths[0][0] === TRASH) {
+                return;
+            }
             // "force" is currently unused but may be configurable by user
             if (newPath[0] !== TRASH || force) {
                 andThen();
@@ -861,13 +865,15 @@ define([
                 return $title;
             }
             path.forEach(function (p, idx) {
-                if (isTrash && [1,2].indexOf(idx) !== -1) { return; }
+                if (isTrash && [2,3].indexOf(idx) !== -1) { return; }
 
                 var $span = $('<span>', {'class': 'element'});
                 if (idx < path.length - 1) {
                     $span.addClass('clickable');
                     $span.click(function (e) {
-                        module.displayDirectory(path.slice(0, idx + 1));
+                        var sliceEnd = idx + 1;
+                        if (isTrash && idx === 1) { sliceEnd = 4; } // Make sure we don't show the index or 'element' and 'path'
+                        module.displayDirectory(path.slice(0, sliceEnd));
                     });
                 }
 
@@ -1903,11 +1909,9 @@ define([
         var createReadme = function (proxy, cb) {
             if (proxy.initializing) {
                 var hash = Cryptpad.createRandomHash();
-                console.log(Messages.driveReadme);
                 Get.put(hash, Messages.driveReadme, function (e) {
-                    if (e) { console.error(e); }
+                    if (e) { logError(e); }
                     var href = '/pad/#' + hash;
-                    console.log(href);
                     proxy.drive[UNSORTED].push(href);
                     proxy.drive[FILES_DATA].push({
                         href: href,
