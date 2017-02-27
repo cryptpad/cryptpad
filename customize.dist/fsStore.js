@@ -135,6 +135,11 @@ define([
         if (typeof(f) === 'function') {
             f(void 0, store);
         }
+
+        if (typeof(proxy.allowUserFeedback) !== 'boolean') {
+            proxy.allowUserFeedback = true;
+        }
+
         proxy.on('change', [Cryptpad.displayNameKey], function (o, n, p) {
             if (typeof(n) !== "string") { return; }
             Cryptpad.changeDisplayName(n);

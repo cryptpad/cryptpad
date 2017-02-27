@@ -95,7 +95,7 @@ define([
 
         return $div;
     };
-    var createResetTips = function () {
+    var createResetTips = function () {
         var $div = $('<div>', {'class': 'resetTips'});
         var $label = $('<label>', {'for' : 'resetTips'}).text(Messages.settings_resetTips).appendTo($div);
         $('<br>').appendTo($div);
@@ -112,7 +112,7 @@ define([
         });
 
         return $div;
-    };
+    };
     var createBackupDrive = function (store) {
         var obj = store.proxy;
         var $div = $('<div>', {'class': 'backupDrive'});
@@ -168,6 +168,30 @@ define([
         return $div;
     };
 
+    var createUserFeedbackToggle = function (obj) {
+        var $div = $('<div>', { 'class': 'userFeedback', });
+        var $label = $('<label>', { 'for': 'userFeedback'})
+            .text(Messages.settings_userFeedback);
+
+        $('<br>').appendTo($div);
+
+        var $checkbox = $('<input>', {
+            'type': 'checkbox',
+        }).on('change', function () {
+            obj.proxy.allowUserFeedback = $checkbox.is(':checked') || false;
+            console.log("wut");
+            console.log($box.is(':checked'));
+        });
+
+        $checkbox.appendTo($div);
+        $label.appendTo($div);
+
+        if (obj.proxy.allowUserFeedback) {
+            $checkbox[0].checked = true;
+        }
+        return $div;
+    };
+
     var andThen = function (obj) {
         APP.$container.append(createTitle());
         APP.$container.append(createInfoBlock(obj));
@@ -175,6 +199,7 @@ define([
         APP.$container.append(createResetTips());
         APP.$container.append(createBackupDrive(obj));
         APP.$container.append(createResetDrive(obj));
+        APP.$container.append(createUserFeedbackToggle(obj));
         obj.proxy.on('change', [], refresh);
         obj.proxy.on('remove', [], refresh);
     };
