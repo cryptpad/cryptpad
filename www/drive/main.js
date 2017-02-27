@@ -292,7 +292,7 @@ define([
                 removeSelected();
                 var $name = $element.find('.name');
                 if (!$name.length) {
-                    $name = $element.find('.element');
+                    $name = $element.find('> .element');
                 }
                 $name.hide();
                 var name = path[path.length - 1];
