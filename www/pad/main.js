@@ -130,7 +130,7 @@ define([
             $(inner).css({
                 color: '#fff',
             });
-            documentBody.innerHTML = Messages.initialState;
+            //documentBody.innerHTML = Messages.initialState;
 
             var cursor = window.cursor = Cursor(inner);
 
@@ -367,7 +367,8 @@ define([
 
             var realtimeOptions = {
                 // provide initialstate...
-                initialState: stringifyDOM(inner) || '{}',
+                //initialState: stringifyDOM(inner) || '{}',
+                initialState: '[]',
 
                 // the websocket URL
                 websocketURL: Cryptpad.getWebsocketURL(),
@@ -675,27 +676,36 @@ define([
                 module.realtime = info.realtime;
 
                 var shjson = info.realtime.getUserDoc();
-                applyHjson(shjson);
 
-                // Update the user list (metadata) from the hyperjson
-                updateMetadata(shjson);
+                var newPad = false;
+                if (shjson === '[]') { newPad = true; }
 
-                if (Visible.isSupported()) {
-                    Visible.onChange(function (yes) {
-                        if (yes) { unnotify(); }
-                    });
-                }
+                if (!newPad) {
+                    applyHjson(shjson);
 
-                if (!readOnly) {
-                    var shjson2 = stringifyDOM(inner);
-                    var hjson2 = JSON.parse(shjson2).slice(0,-1);
-                    var hjson = JSON.parse(shjson).slice(0,-1);
-                    if (stringify(hjson2) !== stringify(hjson)) {
-                        console.log('err');
-                        console.error("shjson2 !== shjson");
-                        Cryptpad.errorLoadingScreen("Unable to display the content of that realtime session in your browser. Please try to reload that page."); // TODO translate
-                        throw new Error();
+                    // Update the user list (metadata) from the hyperjson
+                    updateMetadata(shjson);
+
+                    if (Visible.isSupported()) {
+                        Visible.onChange(function (yes) {
+                            if (yes) { unnotify(); }
+                        });
                     }
+
+                    if (!readOnly) {
+                        var shjson2 = stringifyDOM(inner);
+                        var hjson2 = JSON.parse(shjson2).slice(0,-1);
+                        var hjson = JSON.parse(shjson).slice(0,-1);
+                        if (stringify(hjson2) !== stringify(hjson)) {
+                            console.log('err');
+                            console.error("shjson2 !== shjson");
+                            Cryptpad.errorLoadingScreen("Unable to display the content of that realtime session in your browser. Please try to reload that page."); // TODO translate
+                            throw new Error();
+                        }
+                    }
+                } else {
+                    updateMetadata(shjson);
+                    documentBody.innerHTML = Messages.initialState;
                 }
 
                 Cryptpad.getLastName(function (err, lastName) {
