@@ -700,7 +700,7 @@ define([
                         }
                     }
                 } else {
-                    updateMetadata(shjson);
+                    updateTitle(Cryptpad.initialName || defaultName);
                     documentBody.innerHTML = Messages.initialState;
                 }
 
