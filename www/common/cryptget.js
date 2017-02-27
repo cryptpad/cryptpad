@@ -70,10 +70,16 @@ define([
             TextPatcher.create({
                 realtime: realtime,
             })(doc);
-            realtime.sync();
-            realtime.abort();
 
-            finish(Session, void 0);
+            var to = window.setTimeout(function () {
+                cb(new Error("Timeout"));
+            }, 5000);
+
+            Cryptpad.whenRealtimeSyncs(realtime, function () {
+                window.clearTimeout(to);
+                realtime.abort();
+                finish(Session, void 0);
+            });
         };
         overwrite(config, opt);
 

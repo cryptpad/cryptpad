@@ -1903,9 +1903,11 @@ define([
         var createReadme = function (proxy, cb) {
             if (proxy.initializing) {
                 var hash = Cryptpad.createRandomHash();
+                console.log(Messages.driveReadme);
                 Get.put(hash, Messages.driveReadme, function (e) {
                     if (e) { console.error(e); }
                     var href = '/pad/#' + hash;
+                    console.log(href);
                     proxy.drive[UNSORTED].push(href);
                     proxy.drive[FILES_DATA].push({
                         href: href,

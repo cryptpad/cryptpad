@@ -391,5 +391,13 @@ define(function () {
     out.driveReadme_li1 = "CryptDrive : all your pads sorted in one place";
     out.driveReadme_li1_1 = "Tree, trash, unsorted files, etc.";
 
+    out.readme_welcome = "Welcome to CryptPad !";
+    out.readme_p1 = "Welcome to CryptPad, this is where you can take note of things alone and with friends.";
+    out.readme_p2 = "This pad will give you a quick walk through of how you can use CryptPad to take notes, keep them organized and work together on them.";
+    out.readme_cat1 = "Get to know your CryptDrive";
+    out.readme_cat1_l1 = "Make a pad: In your CryptDrive, click {0} then {1} and you can make a pad.";
+    out.readme_cat1_l2 = "Open Pads from your CryptDrive: double-click on a pad icon to open it.";
+    out.readme_cat1_l3 = "Organize your pads: When you are logged in, every pad you access will be shown as in the {0} section of your drive.";
+
     return out;
 });
