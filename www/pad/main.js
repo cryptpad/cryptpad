@@ -700,7 +700,7 @@ define([
 
                 Cryptpad.getLastName(function (err, lastName) {
                     console.log("Unlocking editor");
-                    setEditable(true);
+                    setEditable(!readOnly);
                     initializing = false;
                     Cryptpad.removeLoadingScreen(emitResize);
 
