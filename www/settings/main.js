@@ -9,7 +9,7 @@ define([
 
     var USERNAME_KEY = 'cryptpad.username';
 
-    var APP = {
+    var APP = window.APP = {
         Cryptpad: Cryptpad,
         _onRefresh: []
     };
@@ -173,14 +173,18 @@ define([
         var $label = $('<label>', { 'for': 'userFeedback'})
             .text(Messages.settings_userFeedback);
 
+        $div.html('<hr />' + Messages.settings_userFeedbackHint1 + '<br />' +
+            Messages.settings_userFeedbackHint2).appendTo($div);
+
         $('<br>').appendTo($div);
 
         var $checkbox = $('<input>', {
             'type': 'checkbox',
         }).on('change', function () {
             obj.proxy.allowUserFeedback = $checkbox.is(':checked') || false;
-            console.log("wut");
-            console.log($box.is(':checked'));
+
+            // TODO provide feedback to show if this is synced
+            settle(function () {});
         });
 
         $checkbox.appendTo($div);

@@ -255,7 +255,10 @@ define(function () {
     out.settings_resetTips = "Tips in CryptDrive";
     out.settings_resetTipsButton = "Reset the available tips in CryptDrive";
     out.settings_resetTipsDone = "All the tips are now visible again.";
-    out.settings_userFeedback = "disable user feedback";
+
+    out.settings_userFeedbackHint1 = "CryptPad provides some very basic feedback to the server, to let us know how to improve your experience.";
+    out.settings_userFeedbackHint2 = "Your pad's content will never be shared with the server.";
+    out.settings_userFeedback = "Disable user feedback";
 
     // index.html
 
