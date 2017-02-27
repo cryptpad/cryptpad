@@ -865,13 +865,15 @@ define([
                 return $title;
             }
             path.forEach(function (p, idx) {
-                if (isTrash && [1,2].indexOf(idx) !== -1) { return; }
+                if (isTrash && [2,3].indexOf(idx) !== -1) { return; }
 
                 var $span = $('<span>', {'class': 'element'});
                 if (idx < path.length - 1) {
                     $span.addClass('clickable');
                     $span.click(function (e) {
-                        module.displayDirectory(path.slice(0, idx + 1));
+                        var sliceEnd = idx + 1;
+                        if (isTrash && idx === 1) { sliceEnd = 4; } // Make sure we don't show the index or 'element' and 'path'
+                        module.displayDirectory(path.slice(0, sliceEnd));
                     });
                 }
 
