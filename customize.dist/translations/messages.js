@@ -255,6 +255,7 @@ define(function () {
     out.settings_resetTips = "Tips in CryptDrive";
     out.settings_resetTipsButton = "Reset the available tips in CryptDrive";
     out.settings_resetTipsDone = "All the tips are now visible again.";
+    out.settings_userFeedback = "disable user feedback";
 
     // index.html
 
