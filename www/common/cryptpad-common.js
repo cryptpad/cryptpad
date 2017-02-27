@@ -24,15 +24,8 @@ define([
         Alertify: Alertify,
     };
 
-    common.feedback = function (action) {
-        if (!action) { return; }
-        $.ajax({
-            type: "HEAD",
-            url: '/common/feedback.html?' + action + '=' + (+new Date()),
-        });
-    };
-
     var store;
+
 
     var find = common.find = function (map, path) {
         return (map && path.reduce(function (p, n) {
@@ -59,6 +52,17 @@ define([
             }
         }
         return;
+    };
+
+    common.feedback = function (action) {
+        if (!action) { return; }
+        try {
+            if (!getStore().getProxy().proxy.allowUserFeedback) { return; }
+        } catch (e) { return void console.error(e); }
+        $.ajax({
+            type: "HEAD",
+            url: '/common/feedback.html?' + action + '=' + (+new Date()),
+        });
     };
 
     var whenRealtimeSyncs = common.whenRealtimeSyncs = function (realtime, cb) {
