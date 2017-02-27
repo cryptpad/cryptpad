@@ -386,17 +386,25 @@ define(function () {
     ].join('');
 
     out.driveReadmeTitle = "What is CryptDrive?";
-    out.driveReadme_h1 = "Welcome to CryptPad";
-    out.driveReadme_li1 = "CryptDrive : all your pads sorted in one place";
-    out.driveReadme_li1_1 = "Tree, trash, unsorted files, etc.";
-
     out.readme_welcome = "Welcome to CryptPad !";
     out.readme_p1 = "Welcome to CryptPad, this is where you can take note of things alone and with friends.";
     out.readme_p2 = "This pad will give you a quick walk through of how you can use CryptPad to take notes, keep them organized and work together on them.";
     out.readme_cat1 = "Get to know your CryptDrive";
-    out.readme_cat1_l1 = "Make a pad: In your CryptDrive, click {0} then {1} and you can make a pad.";
+    out.readme_cat1_l1 = "Make a pad: In your CryptDrive, click {0} then {1} and you can make a pad."; // 0: New, 1: Rich Text
     out.readme_cat1_l2 = "Open Pads from your CryptDrive: double-click on a pad icon to open it.";
-    out.readme_cat1_l3 = "Organize your pads: When you are logged in, every pad you access will be shown as in the {0} section of your drive.";
+    out.readme_cat1_l3 = "Organize your pads: When you are logged in, every pad you access will be shown as in the {0} section of your drive."; // 0: Unsorted files
+    out.readme_cat1_l3_l1 = "You can click and drag files into folders in the {0} section of your drive and make new folders."; // 0: Documents
+    out.readme_cat1_l3_l2 = "Remember to try right clicking on icons because there are often additional menus.";
+    out.readme_cat1_l4 = "Put old pads in the trash: You can click and drag your pads into the {0} the same way you drag them into folders."; // 0: Trash
+    out.readme_cat2 = "Make pads like a pro";
+    out.edit = "edit";
+    out.view = "view";
+    out.readme_cat2_l1 = "The {0} button in your pad allows you to give access to collaborators to either {1} or to {2} the pad."; // 0: Share, 1: edit, 2: view
+    out.readme_cat2_l2 = "Change the title of the pad by clicking on the pencil";
+    out.readme_cat3 = "Discover CryptPad apps";
+    out.readme_cat3_l1 = "With CryptPad code editor, you can collaborate on code like Javascript and markdown like HTML and Markdown";
+    out.readme_cat3_l2 = "With CryptPad slide editor, you can make quick presentations using Markdown";
+    out.readme_cat3_l3 = "With CryptPoll you can take quick votes, especially for scheduling meetings which fit with everybody's calendar";
 
     return out;
 });

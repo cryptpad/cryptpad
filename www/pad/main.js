@@ -130,7 +130,6 @@ define([
             $(inner).css({
                 color: '#fff',
             });
-            //documentBody.innerHTML = Messages.initialState;
 
             var cursor = window.cursor = Cursor(inner);
 
@@ -366,10 +365,6 @@ define([
             };
 
             var realtimeOptions = {
-                // provide initialstate...
-                //initialState: stringifyDOM(inner) || '{}',
-                initialState: '[]',
-
                 // the websocket URL
                 websocketURL: Cryptpad.getWebsocketURL(),
 
@@ -678,7 +673,7 @@ define([
                 var shjson = info.realtime.getUserDoc();
 
                 var newPad = false;
-                if (shjson === '[]') { newPad = true; }
+                if (shjson === '') { newPad = true; }
 
                 if (!newPad) {
                     applyHjson(shjson);

@@ -576,6 +576,10 @@ define([
             var andThen = function () {
                 filesOp.moveElements(paths, newPath, cb);
             };
+            // Cancel drag&drop from TRASH to TRASH
+            if (filesOp.comparePath(newPath, [TRASH]) && paths.length >= 1 && paths[0][0] === TRASH) {
+                return;
+            }
             // "force" is currently unused but may be configurable by user
             if (newPath[0] !== TRASH || force) {
                 andThen();
@@ -1903,11 +1907,9 @@ define([
         var createReadme = function (proxy, cb) {
             if (proxy.initializing) {
                 var hash = Cryptpad.createRandomHash();
-                console.log(Messages.driveReadme);
                 Get.put(hash, Messages.driveReadme, function (e) {
-                    if (e) { console.error(e); }
+                    if (e) { logError(e); }
                     var href = '/pad/#' + hash;
-                    console.log(href);
                     proxy.drive[UNSORTED].push(href);
                     proxy.drive[FILES_DATA].push({
                         href: href,
