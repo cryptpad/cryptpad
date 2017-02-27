@@ -23,6 +23,15 @@ define([
         Messages: Messages,
         Alertify: Alertify,
     };
+
+    common.feedback = function (action) {
+        if (!action) { return; }
+        $.ajax({
+            type: "HEAD",
+            url: '/common/feedback.html?' + action + '=' + (+new Date()),
+        });
+    };
+
     var store;
 
     var find = common.find = function (map, path) {
