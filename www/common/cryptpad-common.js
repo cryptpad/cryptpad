@@ -66,7 +66,10 @@ define([
     };
 
     var whenRealtimeSyncs = common.whenRealtimeSyncs = function (realtime, cb) {
-        realtime.sync();
+        // FIXME realtime.onSettle should handle this but it doesn't seem to
+        if (realtime.getAuthDoc() === realtime.getUserDoc()) {
+            return void cb();
+        }
         realtime.onSettle(cb);
     };
 
