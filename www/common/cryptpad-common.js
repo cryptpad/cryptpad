@@ -66,11 +66,15 @@ define([
     };
 
     var whenRealtimeSyncs = common.whenRealtimeSyncs = function (realtime, cb) {
-        // FIXME realtime.onSettle should handle this but it doesn't seem to
-        if (realtime.getAuthDoc() === realtime.getUserDoc()) {
-            return void cb();
-        }
-        realtime.onSettle(cb);
+        realtime.sync();
+        window.setTimeout(function () {
+            if (realtime.getAuthDoc() === realtime.getUserDoc()) {
+                return void cb();
+            }
+            realtime.onSettle(function () {
+                cb();
+            });
+        }, 0);
     };
 
     var getWebsocketURL = common.getWebsocketURL = function () {
