@@ -1908,7 +1908,7 @@ define([
         });
 
         var createReadme = function (proxy, cb) {
-            if (proxy.initializing) {
+            if (sessionStorage.createReadme) {
                 var hash = Cryptpad.createRandomHash();
                 Get.put(hash, Messages.driveReadme, function (e) {
                     if (e) { logError(e); }
@@ -1922,7 +1922,7 @@ define([
                     });
                     if (typeof(cb) === "function") { cb(); }
                 });
-                delete proxy.initializing;
+                delete sessionStorage.createReadme;
                 return;
             }
             if (typeof(cb) === "function") { cb(); }

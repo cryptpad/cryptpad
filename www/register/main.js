@@ -118,7 +118,7 @@ define([
 
                 proxy.login_name = uname;
                 proxy[Cryptpad.displayNameKey] = uname;
-                proxy.initializing = true;
+                sessionStorage.createReadme = 1;
 
                 Cryptpad.whenRealtimeSyncs(result.realtime, function () {
                     Cryptpad.login(result.userHash, result.userName, function () {
