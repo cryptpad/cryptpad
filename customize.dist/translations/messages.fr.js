@@ -1,7 +1,7 @@
 define(function () {
     var out = {};
 
-    out.main_title = "Cryptpad: Éditeur collaboratif en temps réel, zero knowledge";
+    out.main_title = "CryptPad: Éditeur collaboratif en temps réel, zero knowledge";
     out.main_slogan = "L'unité est la force, la collaboration est la clé";
 
     out.type = {};
@@ -20,8 +20,8 @@ define(function () {
     out.common_connectionLost = out.updated_0_common_connectionLost;
 
     out.websocketError = 'Impossible de se connecter au serveur WebSocket...';
-    out.typeError = "Ce document temps-réel n'est pas compatible avec l'application sélectionnée";
-    out.onLogout = 'Vous êtes déconnecté de votre compte utilisateur, <a href="/" target="_blank">cliquez ici</a> pour vous authentifier<br>ou appuyez sur <em>Échap</em> pour accéder au document en mode lecture seule.';
+    out.typeError = "Ce pad n'est pas compatible avec l'application sélectionnée";
+    out.onLogout = 'Vous êtes déconnecté de votre compte utilisateur, <a href="/" target="_blank">cliquez ici</a> pour vous authentifier<br>ou appuyez sur <em>Échap</em> pour accéder au pad en mode lecture seule.';
 
     out.loading = "Chargement...";
     out.error = "Erreur";
@@ -48,11 +48,11 @@ define(function () {
     out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur";
     out.redLight = "Vous êtes déconnectés de la session";
 
-    out.importButton = 'IMPORTER';
-    out.importButtonTitle = 'Importer un document depuis un fichier local';
+    out.importButton = 'Import';
+    out.importButtonTitle = 'Importer un pad depuis un fichier local';
 
-    out.exportButton = 'EXPORTER';
-    out.exportButtonTitle = 'Exporter ce document vers un fichier local';
+    out.exportButton = 'Exporter';
+    out.exportButtonTitle = 'Exporter ce pad vers un fichier local';
     out.exportPrompt = 'Comment souhaitez-vous nommer ce fichier ?';
 
     out.changeNamePrompt = 'Changer votre nom (laisser vide pour rester anonyme) : ';
@@ -62,34 +62,34 @@ define(function () {
 
     out.clickToEdit = 'Cliquer pour modifier';
 
-    out.forgetButton = 'SUPPRIMER';
+    out.forgetButton = 'Supprimer';
     out.forgetButtonTitle = 'Déplacer ce pad vers la corbeille';
     out.forgetPrompt = 'Cliquer sur OK déplacera ce pad vers la corbeille de votre CryptDrive, êtes-vous sûr ?';
-    out.movedToTrash = 'Ce document a été déplacé vers la corbeille.<br><a href="/drive/">Accéder à mon Drive</a>';
+    out.movedToTrash = 'Ce pad a été déplacé vers la corbeille.<br><a href="/drive/">Accéder à mon Drive</a>';
 
     out.shareButton = 'Partager';
-    out.shareSuccess = 'URL copiée dans le presse-papiers';
+    out.shareSuccess = 'Lien copié dans le presse-papiers';
 
     out.newButton = 'Nouveau';
-    out.newButtonTitle = 'Créer un nouveau document';
+    out.newButtonTitle = 'Créer un nouveau pad';
 
-    out.presentButton = 'PRÉSENTER';
+    out.presentButton = 'Present';
     out.presentButtonTitle = "Entrer en mode présentation";
     out.presentSuccess = 'Appuyer sur Échap pour quitter le mode présentation';
-    out.sourceButton = 'VOIR LA SOURCE';
+    out.sourceButton = 'Voir la source';
     out.sourceButtonTitle = "Quitter le mode présentation";
 
-    out.backgroundButton = 'COULEUR DE FOND';
+    out.backgroundButton = 'Couleur de fond';
     out.backgroundButtonTitle = 'Changer la couleur de fond de la présentation';
-    out.colorButton = 'COULEUR DU TEXTE';
+    out.colorButton = 'Couleur du texte';
     out.colorButtonTitle = 'Changer la couleur du texte en mode présentation';
 
-    out.editShare = "Partager l'URL d'édition";
-    out.editShareTitle = "Copier l'URL d'édition dans le presse-papiers";
-    out.viewShare = "Partager l'URL de lecture";
-    out.viewShareTitle = "Copier l'URL d'accès en lecture seule dans le presse-papiers";
+    out.editShare = "Partager le lien d'édition";
+    out.editShareTitle = "Copier le lien d'édition dans le presse-papiers";
+    out.viewShare = "Partager lien de lecture-seule";
+    out.viewShareTitle = "Copier lien d'accès en lecture seule dans le presse-papiers";
     out.viewOpen = "Voir dans un nouvel onglet";
-    out.viewOpenTitle = "Ouvrir le document en lecture seule dans un nouvel onglet";
+    out.viewOpenTitle = "Ouvrir le lien en lecture seule dans un nouvel onglet";
 
     out.notifyJoined = "{0} a rejoint la session collaborative";
     out.notifyRenamed = "{0} a changé son nom en {1}";
@@ -108,7 +108,7 @@ define(function () {
     out.poll_p_save = "Vos modifications sont mises à jour instantanément, donc vous n'avez jamais besoin de sauver le contenu.";
     out.poll_p_encryption = "Tout ce que vous entrez est chiffré donc seules les personnes possédant le lien du sondage y ont accès. Même le serveur ne peut pas voir le contenu.";
 
-    out.wizardButton = 'ASSISTANT';
+    out.wizardButton = 'Assistant';
     out.wizardLog = "Cliquez sur le bouton dans le coin supérieur gauche pour retourner au sondage";
     out.wizardTitle = "Utiliser l'assistant pour créer votre sondage";
     out.wizardConfirm = "Êtes-vous vraiment prêt à ajouter ces options au sondage ?";
@@ -144,7 +144,7 @@ define(function () {
     out.fm_templateName = "Modèles";
     out.fm_newButton = "Nouveau";
     out.fm_newFolder = "Nouveau dossier";
-    out.fm_newFile = "Nouveau document";
+    out.fm_newFile = "Nouveau pad";
     out.fm_folder = "Dossier";
     out.fm_folderName = "Nom du dossier";
     out.fm_numberOfFolders = "# de dossiers";
@@ -168,16 +168,16 @@ define(function () {
     out.fm_selectError = "Impossible de sélectionner l'élément ciblé. Si le problème persiste, essayez de recharger la page.";
     out.fm_categoryError = "Impossible d'afficher la catégorie sélectionnée, affichage de Documents";
     out.fm_info_root = "Créez ici autant de dossiers que vous le souhaitez pour trier vos fichiers.";
-    out.fm_info_unsorted = 'Contient tous les documents que vous avez ouvert et qui ne sont pas triés dans "Documents" ou déplacés vers la "Corbeille".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
-    out.fm_info_template = "Contient tous les fichiers que vous avez sauvés en tant que modèle afin de les réutiliser lors de la création d'un nouveau document.";
+    out.fm_info_unsorted = 'Contient tous les pads que vous avez ouvert et qui ne sont pas triés dans "Documents" ou déplacés vers la "Corbeille".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
+    out.fm_info_template = "Contient tous les fichiers que vous avez sauvés en tant que modèle afin de les réutiliser lors de la création d'un nouveau pad.";
     out.fm_info_trash = 'Les fichiers supprimés dans la corbeille sont également enlevés de "Tous les fichiers" et il est impossible de les récupérer depuis l\'explorateur de fichiers.'; // Same here for "All files" and "out.fm_filesDataName"
     out.fm_info_allFiles = 'Contient tous les fichiers de "Documents", "Fichiers non triés" et "Corbeille". Vous ne pouvez pas supprimer ou déplacer des fichiers depuis cet endroit.'; // Same here
-    out.fm_alert_backupUrl = "URL de secours pour ce disque.<br>" +
-                             "Il est <strong>fortement recommandé</strong> de garder cette URL pour vous-même.<br>" +
+    out.fm_alert_backupUrl = "Lien de secours pour ce disque.<br>" +
+                             "Il est <strong>fortement recommandé</strong> de garder ce lien pour vous-même.<br>" +
                              "Elle vous servira en cas de perte des données de votre navigateur afin de retrouver vos fichiers.<br>" +
                              "Quiconque se trouve en possession de celle-ci peut modifier ou supprimer tous les fichiers de ce gestionnaire.<br>" +
                              '<input type="text" id="fm_backupUrl" value="{0}"/>';
-    out.fm_backup_title = 'URL de secours';
+    out.fm_backup_title = 'Lien de secours';
     out.fm_nameFile = 'Comment souhaitez-vous nommer ce fichier ?';
     // File - Context menu
     out.fc_newfolder = "Nouveau dossier";
@@ -198,8 +198,8 @@ define(function () {
 
     // login
     out.login_login = "Connexion";
-    out.login_makeAPad = 'Créer un document anonymement';
-    out.login_nologin = "Voir les documents récents";
+    out.login_makeAPad = 'Créer un pad anonymement';
+    out.login_nologin = "Voir les pads récents";
     out.login_register = "Inscription";
     out.logoutButton = "Déconnexion";
     out.settingsButton = "Préférences";
@@ -228,12 +228,12 @@ define(function () {
     out.register_mustAcceptTerms = "Vous devez accepter les conditions d'utilisation.";
     out.register_mustRememberPass = "Nous ne pouvons pas réinitialiser votre mot de passe si vous l'oubliez. C'est important que vous vous en souveniez! Veuillez cocher la case pour confirmer.";
 
-    out.register_header = "Bienvenue dans Cryptpad";
+    out.register_header = "Bienvenue dans CryptPad";
     out.register_explanation = [
         "<p>Faisons d'abord le point sur certaines choses</p>",
         "<ul>",
-            "<li>Votre mot de passe est la clé secrète de tous vos documents. Si vous le perdez, il n'y a aucun moyen de récupérer vos données.</li>",
-            "<li>Vous pouvez importer les documents récents de ce navigateur pour les avoir dans votre compte utilisateur.</li>",
+            "<li>Votre mot de passe est la clé secrète de tous vos pads. Si vous le perdez, il n'y a aucun moyen de récupérer vos données.</li>",
+            "<li>Vous pouvez importer les pads récents de ce navigateur pour les avoir dans votre compte utilisateur.</li>",
             "<li>Si vous utilisez un ordinateur partagé, vous devez vous déconnecter avant de partir, fermer l'onglet n'est pas suffisant.</li>",
         "</ul>"
     ];
@@ -246,7 +246,7 @@ define(function () {
     out.settings_restore = "Restaurer une sauvegarde";
     out.settings_resetTitle = "Vider votre drive";
     out.settings_reset = "Supprimer tous les fichiers et dossiers de votre CryptDrive";
-    out.settings_resetPrompt = "Cette action va supprimer tous les documents de votre drive.<br>"+
+    out.settings_resetPrompt = "Cette action va supprimer tous les pads de votre drive.<br>"+
                                "Êtes-vous sûr de vouloir continuer ?<br>" +
                                "Tapez “<em>I love CryptPad</em>” pour confirmer.";
     out.settings_resetDone = "Votre drive est désormais vide!";
@@ -268,14 +268,14 @@ define(function () {
     //contact.html
     out.main_about_p2 = 'Si vous avez des questions ou commentaires, vous pouvez <a href="https://twitter.com/cryptpad">nous tweeter</a>, ouvrir une issue sur <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">Github</a>, venir dire bonjour sur IRC (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), ou <a href="mailto:research@xwiki.com">nous envoyer un email</a>.';
 
-    out.main_info = "<h2>Collaborez avec confiance</h2><br>Développez vos idées en groupe avec des documents partagés; la technologie <strong>Zero Knowledge</strong> sécurise vos données.";
+    out.main_info = "<h2>Collaborez avec confiance</h2><br>Développez vos idées en groupe avec des document partagés; la technologie <strong>Zero Knowledge</strong> sécurise vos données.";
 
     out.main_howitworks = 'Comment ça fonctionne';
     out.main_zeroKnowledge = 'Zero Knowledge';
-    out.main_zeroKnowledge_p = "Vous n'avez pas besoin de croire que nous n'<em>allons</em> pas regarder vos documents. Avec la technologie Zero Knowledge de Cryptpad, nous ne <em>pouvons</em> pas le faire. Apprenez-en plus sur notre manière de <a href=\"privacy.html\" title='Protection des données'>protéger vos données</a>.";
+    out.main_zeroKnowledge_p = "Vous n'avez pas besoin de croire que nous n'<em>allons</em> pas regarder vos pads. Avec la technologie Zero Knowledge de CryptPad, nous ne <em>pouvons</em> pas le faire. Apprenez-en plus sur notre manière de <a href=\"privacy.html\" title='Protection des données'>protéger vos données</a>.";
     out.main_writeItDown = 'Prenez-en note';
     out.main_writeItDown_p = "Les plus grands projets naissent des plus petites idées. Prenez note de vos moments d'inspiration et de vos idées inattendues car vous ne savez pas lesquels seront des découvertes capitales.";
-    out.main_share = 'Partager le lien, partager le document';
+    out.main_share = 'Partager le lien, partager le pad';
     out.main_share_p = "Faites croître vos idées à plusieurs : réalisez des réunions efficaes, collaborez sur vos listes de tâches et réalisez des présentations rapide avec tous vos amis sur tous vos appareils.";
     out.main_organize = 'Soyez organisés';
     out.main_organize_p = "Avec le CryptPad Drive, vous pouvez garder vos vues sur ce qui est important. Les dossiers vous permettent de garder la trace de vos projets et d'avoir une vision globale du travail effectué.";
@@ -302,31 +302,31 @@ define(function () {
 
     // privacy.html
 
-    out.policy_title = 'Politique de confidentialité de Cryptpad';
+    out.policy_title = 'Politique de confidentialité de CryptPad';
     out.policy_whatweknow = 'Ce que nous savons de vous';
-    out.policy_whatweknow_p1 = 'En tant qu\'application hébergée sur le web, Cryptpad a accès aux meta-données exposées par le protocole HTTP. Ceci inclus votre adresse IP et d\'autres en-têtes HTTP qui peuvent être utilisées pour identifier votre propre navigateur. Vous pouvez voir quelles informations votre navigateur partage en visitant <a target="_blank" rel="noopener noreferrer" href="https://www.whatismybrowser.com/detect/what-http-headers-is-my-browser-sending" title="what http headers is my browser sending">WhatIsMyBrowser.com</a>.';
-    out.policy_whatweknow_p2 = 'Nous utilisons <a href="https://piwik.org/" target="_blank" rel="noopener noreferrer" title="open source analytics platform">Piwik</a>, une plateforme open source d\'analytique, afin d\'en apprendre plus sur nos utilisateurs. Piwik nous indique comment vous avez trouvé Cryptpad, que ce soit par une entrée directe, par un moteur de recherche ou depuis un lien provenant d\'un autre site web tel que Reddit ou Twitter. Nous savons également quand vous visitez le site, sur quels liens vous cliquez dans les pages informatives et combien de temps vous restez sur une page donnée.';
+    out.policy_whatweknow_p1 = 'En tant qu\'application hébergée sur le web, CryptPad a accès aux meta-données exposées par le protocole HTTP. Ceci inclus votre adresse IP et d\'autres en-têtes HTTP qui peuvent être utilisées pour identifier votre propre navigateur. Vous pouvez voir quelles informations votre navigateur partage en visitant <a target="_blank" rel="noopener noreferrer" href="https://www.whatismybrowser.com/detect/what-http-headers-is-my-browser-sending" title="what http headers is my browser sending">WhatIsMyBrowser.com</a>.';
+    out.policy_whatweknow_p2 = 'Nous utilisons <a href="https://piwik.org/" target="_blank" rel="noopener noreferrer" title="open source analytics platform">Piwik</a>, une plateforme open source d\'analytique, afin d\'en apprendre plus sur nos utilisateurs. Piwik nous indique comment vous avez trouvé CryptPad, que ce soit par une entrée directe, par un moteur de recherche ou depuis un lien provenant d\'un autre site web tel que Reddit ou Twitter. Nous savons également quand vous visitez le site, sur quels liens vous cliquez dans les pages informatives et combien de temps vous restez sur une page donnée.';
     out.policy_whatweknow_p3 = 'Ces outils d\'analytique sont utilisés uniquement sur les pages informatives. Nous ne collectons aucune information concernant votre utilisation de nos applications "zero knowledge".';
     out.policy_howweuse = 'Comment nous utilisons ce que nous apprenons';
-    out.policy_howweuse_p1 = 'Nous utilisons ces informations pour prendre de meilleures décisions concernant la communication autour de Cryptpad, en évaluant le succès de ce qui a été realisé par le passé. Les informations concernant votre localisation nous permettent de savoir si nous devons considérer l\'ajout de traductions de Cryptpad dans d\'autres langues que l\'anglais.';
+    out.policy_howweuse_p1 = 'Nous utilisons ces informations pour prendre de meilleures décisions concernant la communication autour de CryptPad, en évaluant le succès de ce qui a été realisé par le passé. Les informations concernant votre localisation nous permettent de savoir si nous devons considérer l\'ajout de traductions de CryptPad dans d\'autres langues que l\'anglais.';
     out.policy_howweuse_p2 = "Les informations concernant votre navigateur (que ce soit un système d\'exploitation de bureau ou d\'appareil portable) nous aident à prendre des décisions lors de la priorisation des ajouts et améliorations de fonctionnalités. Notre équipe de développement est petite, et nous essayons de prendre des décisions qui amélioreront l\'expérience du plus grand nombre d\'utilisateurs possible.";
     out.policy_whatwetell = 'Ce que nous dévoilons à d\'autres à propos de vous';
     out.policy_whatwetell_p1 = 'Nous ne fournissons aucune information que nous récoltons ou que vous nous fournissez à des tierces parties à moins d\'y être contraints par la loi.';
     out.policy_links = 'Liens vers d\'autres sites';
-    out.policy_links_p1 = 'Ce site contient des liens vers d\'autres sites, certains étant produits par d\'autres organisations. Nous ne sommes responsables des pratiques de confidentialité ou du contenu d\'aucun site externe. De manière générale, les liens vers des sites externes sont lancés dans une nouvelle fenêtre (ou onglet) du navigateur, pour rendre clair le fait que vous quittez Cryptpad.fr.';
+    out.policy_links_p1 = 'Ce site contient des liens vers d\'autres sites, certains étant produits par d\'autres organisations. Nous ne sommes responsables des pratiques de confidentialité ou du contenu d\'aucun site externe. De manière générale, les liens vers des sites externes sont lancés dans une nouvelle fenêtre (ou onglet) du navigateur, pour rendre clair le fait que vous quittez CryptpPad.fr.';
     out.policy_ads = 'Publicité';
     out.policy_ads_p1 = 'Nous n\'affichons pas de publicité en ligne, bien que nous puissions afficher des liens vers les sites des organisations qui financent nos recherches.';
     out.policy_choices = 'Vos choix';
-    out.policy_choices_open = 'Notre code est open source, ce qui signifie que vous avez toujours la possibilité d\'héberger votre propre instance de Cryptpad.';
+    out.policy_choices_open = 'Notre code est open source, ce qui signifie que vous avez toujours la possibilité d\'héberger votre propre instance de CryptPad.';
     out.policy_choices_vpn = 'Si vous souhaitez utiliser notre instance hébergée (cryptpad.fr) mais que vous ne souhaitez pas exposer votre adresse IP, vous pouvez la protéger en utilisant le <a href="https://www.torproject.org/projects/torbrowser.html.en" title="téléchargements du projet Tor" target="_blank" rel="noopener noreferrer">navigateur Tor</a>, ou un <a href="https://riseup.net/fr/vpn" title="VPNs fournis par Riseup" target="_blank" rel="noopener noreferrer">VPN</a>.';
     out.policy_choices_ads = 'Si vous souhaitez uniquement bloquer notre plateforme d\'analytique, vous pouvez utiliser un bloqueur de publicités tel que <a href="https://www.eff.org/fr/privacybadger" title="télécharger privacy badger" target="_blank" rel="noopener noreferrer">Privacy Badger</a>.';
 
     // terms.html
 
-    out.tos_title = "Conditions d'utilisation de Cryptpad";
+    out.tos_title = "Conditions d'utilisation de CryptPad";
     out.tos_legal = "Veuillez ne pas être malveillant, abusif, ou faire quoi que ce soit d'illégal.";
     out.tos_availability = "Nous espérons que vous trouvez ce service utile, mais nous ne pouvons garantir ses performances et disponibilités. Nous vous recommandons d'exporter vos données régurlièrement.";
-    out.tos_e2ee = "Les documents sur Cryptpad peuvent être lus et modifiés par quiconque est en mesure de deviner ou d'obtenir de quelque manière que ce soit l'identificateur de fragment du document. Nous vous recommandons d'utiliser des technologies de messagerie chiffrées de bout à bout (end-to-end encryption ou e2ee) pour partager les URLs, et déclinons toute responsabilité dans le cas ou une telle URL serait divulguée.";
+    out.tos_e2ee = "Le contenu sur CryptPad peuvent être lus et modifiés par quiconque est en mesure de deviner ou d'obtenir de quelque manière que ce soit l'identificateur de fragment du pad. Nous vous recommandons d'utiliser des technologies de messagerie chiffrées de bout à bout (end-to-end encryption ou e2ee) pour partager les liens, et déclinons toute responsabilité dans le cas ou un tel lien serait divulgué.";
     out.tos_logs = "Les meta-données fournies par votre navigateur au serveur peuvent être enregistrées dans le but de maintenir le service.";
     out.tos_3rdparties = "Nous ne fournissons aucune donnée individuelle à des tierces parties à moins d'y être contraints par la loi.";
 
