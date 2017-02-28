@@ -16,6 +16,8 @@ define([
     $(function () {
         var $main = $('#mainBlock');
 
+        $('#noscriptContainer').hide();
+
         // Language selector
         var $sel = $('#language-selector');
         Cryptpad.createLanguageSelector(undefined, $sel);

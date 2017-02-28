@@ -13,6 +13,8 @@ define([
         var $main = $('#mainBlock');
         var Messages = Cryptpad.Messages;
 
+        $('#noscriptContainer').hide();
+
         // Language selector
         var $sel = $('#language-selector');
         Cryptpad.createLanguageSelector(undefined, $sel);
