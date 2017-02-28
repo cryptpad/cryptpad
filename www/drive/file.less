@@ -80,7 +80,6 @@ ul {
 
 li {
     padding: 0px 5px;
-    cursor: pointer;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -135,6 +134,7 @@ span {
     padding: 10px 0px;
     color: @tree-fg;
     li {
+        /*cursor: pointer;*/
         cursor: auto;
         &:hover > span.element {
             text-decoration: underline;
@@ -255,13 +255,14 @@ span {
         }
     }
     li {
+        cursor: default;
         &:not(.header) {
             *:not(input) {
                 /*pointer-events: none;*/
             }
             &:hover {
                 .name {
-                    text-decoration: underline;
+                    /*text-decoration: underline;*/
                 }
             }
         }

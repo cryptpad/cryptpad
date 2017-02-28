@@ -54,7 +54,6 @@ ul {
 }
 li {
   padding: 0px 5px;
-  cursor: pointer;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -102,6 +101,7 @@ span.fa-folder-open {
   color: #000;
 }
 #tree li {
+  /*cursor: pointer;*/
   cursor: auto;
 }
 #tree li:hover > span.element {
@@ -214,11 +214,14 @@ span.fa-folder-open {
   margin-left: 10px;
   float: right;
 }
+#content li {
+  cursor: default;
+}
 #content li:not(.header) *:not(input) {
   /*pointer-events: none;*/
 }
 #content li:not(.header):hover .name {
-  text-decoration: underline;
+  /*text-decoration: underline;*/
 }
 #content div.grid {
   padding: 20px;
