@@ -1160,14 +1160,6 @@ define([
                 content: $userAdminContent.html()
             });
         }
-        // Add the change display name button if not in read only mode
-        if (config.changeNameButtonCls && config.displayChangeName) { //readOnly !== 1) { TODO
-            options.push({
-                tag: 'a',
-                attributes: {'class': config.changeNameButtonCls},
-                content: Messages.user_rename
-            });
-        }
         var parsed = parsePadUrl(window.location.href);
         if (parsed && (!parsed.type || parsed.type && parsed.type !== 'drive')) {
             options.push({
@@ -1179,15 +1171,23 @@ define([
                 content: Messages.login_accessDrive
             });
         }
+        // Add the change display name button if not in read only mode
+        if (config.changeNameButtonCls && config.displayChangeName) { //readOnly !== 1) { TODO
+            options.push({
+                tag: 'a',
+                attributes: {'class': config.changeNameButtonCls},
+                content: Messages.user_rename
+            });
+        }
+        if (parsed && parsed.type && parsed.type !== 'settings') {
+            options.push({
+                tag: 'a',
+                attributes: {'class': 'settings'},
+                content: Messages.settingsButton
+            });
+        }
         // Add login or logout button depending on the current status
         if (account) {
-            if (parsed && parsed.type && parsed.type !== 'settings') {
-                options.push({
-                    tag: 'a',
-                    attributes: {'class': 'settings'},
-                    content: Messages.settingsButton
-                });
-            }
             options.push({
                 tag: 'a',
                 attributes: {'class': 'logout'},

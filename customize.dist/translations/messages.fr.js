@@ -62,9 +62,9 @@ define(function () {
 
     out.clickToEdit = 'Cliquer pour modifier';
 
-    out.forgetButton = 'OUBLIER';
-    out.forgetButtonTitle = 'Enlever ce document de la liste en page d\'accueil';
-    out.forgetPrompt = 'Cliquer sur OK supprimera l\'URL de ce document de la mémoire de votre navigateur (localStorage), êtes-vous sûr ?';
+    out.forgetButton = 'SUPPRIMER';
+    out.forgetButtonTitle = 'Déplacer ce pad vers la corbeille';
+    out.forgetPrompt = 'Cliquer sur OK déplacera ce pad vers la corbeille de votre CryptDrive, êtes-vous sûr ?';
     out.movedToTrash = 'Ce document a été déplacé vers la corbeille.<br><a href="/drive/">Accéder à mon Drive</a>';
 
     out.shareButton = 'Partager';
@@ -257,6 +257,8 @@ define(function () {
     out.settings_userFeedbackHint1 = "CryptPad peut envoyer des retours d'expérience très limités vers le serveur, de manière à nous permettre d'améliorer l'expérience des utilisateurs.";
     out.settings_userFeedbackHint2 = "Le contenu de vos pads et les clés de déchiffrement ne seront jamais partagés avec le serveur.";
     out.settings_userFeedback = "Désactiver l'envoi de retours d'expérience";
+
+    out.settings_anonymous = "Vous n'êtes pas connectés. Ces préférences seront utilisées pour ce navigateur.";
 
     // index.html
 

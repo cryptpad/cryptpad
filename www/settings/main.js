@@ -42,9 +42,13 @@ define([
         var $div = $('<div>', {'class': 'infoBlock'});
 
         var accountName = obj.login_name;
-        if (!accountName) { return; }
         var $label = $('<span>', {'class': 'label'}).text(Messages.user_accountName + ':');
-        var $name = $('<span>').text(accountName);
+        var $name = $('<span>').text(accountName || '');
+        if (!accountName) {
+            $label.text('');
+            $name.text(Messages.settings_anonymous);
+        }
+
         $div.append($label).append($name);
 
         return $div;
@@ -71,6 +75,7 @@ define([
         // When the display name is changed (enter or button clicked)
         var todo = function () {
             displayName = $input.val();
+            if (displayName === obj[USERNAME_KEY]) { return; }
             obj[USERNAME_KEY] = displayName;
             $spinner.show();
             Cryptpad.whenRealtimeSyncs(store.info.realtime, function () {
@@ -233,7 +238,7 @@ define([
         APP.$container = $('#container');
 
         Cryptpad.ready(function () {
-            if (!Cryptpad.getUserHash()) { return redirectToMain(); }
+            //if (!Cryptpad.getUserHash()) { return redirectToMain(); }
 
             var storeObj = Cryptpad.getStore().getProxy && Cryptpad.getStore().getProxy().proxy
                            ? Cryptpad.getStore().getProxy() : undefined;
@@ -247,8 +252,9 @@ define([
         if (e.key !== Cryptpad.userHashKey) { return; }
         var o = e.oldValue;
         var n = e.newValue;
+        window.location.reload();
         if (o && !n) { // disconnect
-            redirectToMain();
+            //redirectToMain();
         }
     });
 });
