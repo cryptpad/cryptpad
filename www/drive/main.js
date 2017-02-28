@@ -273,6 +273,7 @@ define([
                 sessionStorage[Cryptpad.newPadNameKey] = name;
             }
             window.open(fileEl);
+            delete sessionStorage[Cryptpad.newPadNameKey];
         };
 
         var refresh = APP.refresh = function () {
