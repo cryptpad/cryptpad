@@ -262,20 +262,18 @@ body.html {
     right: 0;
     #noscript {
         width: 1000px;
-        display: inline-block;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+        z-index: 2;
         noscript {
             font-size: 25px;
-            width: 1000px;
             text-align: center;
-            position: absolute;
-            top: 50%;
-            left: 0;
             color: @main-color;
-            transform: translateY(-50%);
         }
     }
 }
@@ -313,24 +311,19 @@ body.html {
     font-size: medium;
 
     #align-container {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
         margin-left: auto;
         margin-right: auto;
-        display: inline-block;
         width: 1000px;
         max-width: 90%;
+        position: relative;
     }
 
     #main-container {
-        position: absolute;
         display: inline-block;
-        top: 50%;
-        left: 0;
-        transform: translateY(-50%);
-        width: 100%;
     }
 
     #data {
