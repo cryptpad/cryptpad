@@ -182,9 +182,8 @@ define([
             'type': 'checkbox',
         }).on('change', function () {
             obj.proxy.allowUserFeedback = $checkbox.is(':checked') || false;
-
             // TODO provide feedback to show if this is synced
-            settle(function () {});
+            // Cryptpad.whenRealtimeSyncs...
         });
 
         $checkbox.appendTo($div);
