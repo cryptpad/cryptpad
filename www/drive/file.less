@@ -261,6 +261,9 @@ span {
                 /*pointer-events: none;*/
             }
             &:hover {
+                &:not(.selected) {
+                    background-color: #eee;
+                }
                 .name {
                     /*text-decoration: underline;*/
                 }
@@ -276,6 +279,8 @@ span {
             text-align: center;
             vertical-align: top;
             overflow: hidden;
+            padding-top: 10px;
+            padding-bottom: 5px;
 
             .name {
                 width: 100%;

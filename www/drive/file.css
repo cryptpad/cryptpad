@@ -220,6 +220,9 @@ span.fa-folder-open {
 #content li:not(.header) *:not(input) {
   /*pointer-events: none;*/
 }
+#content li:not(.header):hover:not(.selected) {
+  background-color: #eee;
+}
 #content li:not(.header):hover .name {
   /*text-decoration: underline;*/
 }
@@ -233,6 +236,8 @@ span.fa-folder-open {
   text-align: center;
   vertical-align: top;
   overflow: hidden;
+  padding-top: 10px;
+  padding-bottom: 5px;
 }
 #content div.grid li .name {
   width: 100%;
