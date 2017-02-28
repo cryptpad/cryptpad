@@ -721,6 +721,7 @@ html.cp,
   left: 0;
   bottom: 0;
   right: 0;
+  z-index: 2;
 }
 .cp #noscriptContainer #noscript {
   width: 1000px;
@@ -731,7 +732,6 @@ html.cp,
   margin-left: auto;
   margin-right: auto;
   position: relative;
-  z-index: 2;
 }
 .cp #noscriptContainer #noscript noscript {
   font-size: 25px;
