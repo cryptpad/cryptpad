@@ -398,7 +398,7 @@ define(function () {
     out.readme_cat2 = "Créer des pads comme un pro";
     out.edit = "éditer";
     out.view = "voir";
-    out.readme_cat2_l1 = "Le bouton {0} dans votre pad vous permet de donner l'accès à vos collaborateurs que ce soit pour l'{0} ou pour le {1}."; // 0: Share, 1: edit, 2: view
+    out.readme_cat2_l1 = "Le bouton {0} dans votre pad vous permet de donner l'accès à vos collaborateurs que ce soit pour l'{1} ou pour le {2}."; // 0: Share, 1: edit, 2: view
     out.readme_cat2_l2 = "Vous pouvez changer le titre d'un pad en cliquant sur le crayon";
     out.readme_cat3 = "Découvrez les autres applications CryptPad";
     out.readme_cat3_l1 = "Avec l'éditeur de code de CryptPad, vous pouvez collaborer sur du code comme Javascript ou des langages comme HTML ou Markdown.";
