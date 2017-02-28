@@ -254,6 +254,10 @@ define(function () {
     out.settings_resetTipsButton = "Réinitialiser les astuces visibles dans CryptDrive";
     out.settings_resetTipsDone = "Toutes les astuces sont de nouveau visibles.";
 
+    out.settings_userFeedbackHint1 = "CryptPad peut envoyer des retours d'expérience très limités vers le serveur, de manière à nous permettre d'améliorer l'expérience des utilisateurs.";
+    out.settings_userFeedbackHint2 = "Le contenu de vos pads et les clés de déchiffrement ne seront jamais partagés avec le serveur.";
+    out.settings_userFeedback = "Désactiver l'envoi de retours d'expérience";
+
     // index.html
 
     //about.html

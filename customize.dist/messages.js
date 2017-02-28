@@ -64,7 +64,7 @@ define(req, function(Default, Language) {
                     }
                 });
                 Object.keys(Default).forEach(function (k) {
-                    if (/^_/.test(k)) { return; }
+                    if (/^_/.test(k) || k === 'driveReadme') { return; }
                     if (!translation[k] || updated[k]) {
                         if (updated[k]) {
                             missing.push([code, k, 2, 'out.' + updated[k]]);
@@ -74,7 +74,7 @@ define(req, function(Default, Language) {
                     }
                 });
                 Object.keys(translation).forEach(function (k) {
-                    if (/^_/.test(k)) { return; }
+                    if (/^_/.test(k) || k === 'driveReadme') { return; }
                     if (!Default[k]) {
                         missing.push([code, k, 0]);
                     }
