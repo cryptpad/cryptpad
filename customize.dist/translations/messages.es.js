@@ -299,7 +299,7 @@ define(function () {
     out.fm_categoryError = "No se pudo abrir la categoría seleccionada, mostrando la raíz.";
     out.settings_userFeedbackHint1 = "CryptPad suministra informaciones muy básicas al servidor, para ayudarnos a mejorar vuestra experiencia.";
     out.settings_userFeedbackHint2 = "El contenido de tu pad nunca será compartido con el servidor.";
-    out.settings_userFeedback = "Desactivar feedback"; // "Disable user feedback"
+    out.settings_userFeedback = "Activar feedback"; // "Disable user feedback"
     out.settings_anonymous = "No has iniciado sesión. Tus ajustes se aplicarán solo a este navegador.";
     out.blog = "Blog";
     out.initialState = "<p>Esto es <strong>CryptPad</strong>, el editor collaborativo en tiempo real zero knowledge.<br>Lo que escribes aquí es cifrado, con lo cual solo las personas con el enlace pueden accederlo.<br>Incluso el servido no puede ver lo que escribes.</p><p><small><i>Lo que ves aquí, lo que escuchas aquí, cuando sales, se queda aquí</i></small></p>";

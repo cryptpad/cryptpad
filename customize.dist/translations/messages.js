@@ -258,7 +258,7 @@ define(function () {
 
     out.settings_userFeedbackHint1 = "CryptPad provides some very basic feedback to the server, to let us know how to improve your experience.";
     out.settings_userFeedbackHint2 = "Your pad's content will never be shared with the server.";
-    out.settings_userFeedback = "Disable user feedback";
+    out.settings_userFeedback = "Enable user feedback";
 
     out.settings_anonymous = "You are not logged in. Settings here are specific to this browser.";
 
