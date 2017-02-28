@@ -238,6 +238,9 @@ define([
 
         var removeSelected =  function () {
             $iframe.find('.selected').removeClass("selected");
+            var $container = $driveToolbar.find('#contextButtonsContainer');
+            if (!$container.length) { return; }
+            $container.html('');
         };
         var removeInput =  function () {
             $iframe.find('li > span:hidden').removeAttr('style');
