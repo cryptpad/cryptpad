@@ -65,8 +65,8 @@ define(function () {
     out.clickToEdit = "Click to edit";
 
     out.forgetButton = 'FORGET';
-    out.forgetButtonTitle = 'Remove this document from your home page listings';
-    out.forgetPrompt = 'Clicking OK will remove the URL for this pad from localStorage, are you sure?';
+    out.forgetButtonTitle = 'Move this pad to the trash';
+    out.forgetPrompt = 'Clicking OK will move this pad to your trash. Are you sure?';
     out.movedToTrash = 'That pad has been moved to the trash.<br><a href="/drive/">Access my Drive</a>';
 
     out.shareButton = 'Share';
@@ -259,6 +259,8 @@ define(function () {
     out.settings_userFeedbackHint1 = "CryptPad provides some very basic feedback to the server, to let us know how to improve your experience.";
     out.settings_userFeedbackHint2 = "Your pad's content will never be shared with the server.";
     out.settings_userFeedback = "Disable user feedback";
+
+    out.settings_anonymous = "You are not logged in. Settings here are specific to this browser.";
 
     // index.html
 
