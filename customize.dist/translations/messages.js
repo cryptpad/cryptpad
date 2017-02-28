@@ -300,6 +300,7 @@ define(function () {
     out.privacy = "Privacy";
     out.contact = "Contact";
     out.terms = "ToS";
+    out.blog = "Blog";
 
     // privacy.html
 
