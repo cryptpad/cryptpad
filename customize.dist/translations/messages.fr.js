@@ -290,12 +290,13 @@ define(function () {
 
     out.footer_applications = "Applications";
     out.footer_contact = "Contact";
-    out.footer_aboutUs = "À propos de nous";
+    out.footer_aboutUs = "À propos";
 
     out.about = "À propos";
     out.privacy = "Vie privée";
     out.contact = "Contact";
     out.terms = "Conditions";
+    out.blog = "Blog";
 
     // privacy.html
 
