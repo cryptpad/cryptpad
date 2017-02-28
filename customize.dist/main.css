@@ -714,7 +714,7 @@ html.cp,
   background-color: #000;
   opacity: 0.35;
 }
-.cp #noscriptContainer {
+.cp noscript #noscriptContainer {
   color: black;
   position: absolute;
   top: 50px;
@@ -723,7 +723,7 @@ html.cp,
   right: 0;
   z-index: 2;
 }
-.cp #noscriptContainer #noscript {
+.cp noscript #noscriptContainer #noscript {
   width: 1000px;
   display: flex;
   align-items: center;
@@ -732,8 +732,6 @@ html.cp,
   margin-left: auto;
   margin-right: auto;
   position: relative;
-}
-.cp #noscriptContainer #noscript noscript {
   font-size: 25px;
   text-align: center;
   color: #fff;
