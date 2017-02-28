@@ -1,7 +1,7 @@
 define(function () {
     var out = {};
 
-    out.main_title = "Cryptpad: Zero Knowledge, Collaborative Real Time Editing";
+    out.main_title = "CryptPad: Zero Knowledge, Collaborative Real Time Editing";
     out.main_slogan = "Unity is Strength - Collaboration is Key"; // TODO remove?
 
     out.type = {};
@@ -22,7 +22,7 @@ define(function () {
     out.common_connectionLost = out.updated_0_common_connectionLost;
 
     out.websocketError = 'Unable to connect to the websocket server...';
-    out.typeError = "That realtime document is not compatible with the selected application";
+    out.typeError = "This pad is not compatible with the selected application";
     out.onLogout = 'You are logged out, <a href="/" target="_blank">click here</a> to log in<br>or press <em>Escape</em> to access your pad in read-only mode.';
 
     out.loading = "Loading...";
@@ -51,10 +51,10 @@ define(function () {
     out.redLight = "You are disconnected from the session";
 
     out.importButton = 'IMPORT';
-    out.importButtonTitle = 'Import a document from a local file';
+    out.importButtonTitle = 'Import a pad from a local file';
 
     out.exportButton = 'EXPORT';
-    out.exportButtonTitle = 'Export this document to a local file';
+    out.exportButtonTitle = 'Export this pad to a local file';
     out.exportPrompt = 'What would you like to name your file?';
 
     out.changeNamePrompt = 'Change your name (leave empty to be anonymous): ';
@@ -73,7 +73,7 @@ define(function () {
     out.shareSuccess = 'Copied link to clipboard';
 
     out.newButton = 'New';
-    out.newButtonTitle = 'Create a new document';
+    out.newButtonTitle = 'Create a new pad';
 
     out.presentButton = 'PRESENT';
     out.presentButtonTitle = "Enter presentation mode";
@@ -91,7 +91,7 @@ define(function () {
     out.viewShare = "Read-only link";
     out.viewShareTitle = "Copy the read-only link to clipboard";
     out.viewOpen = "Open read-only link in new tab";
-    out.viewOpenTitle = "Open the document in read-only mode in a new tab";
+    out.viewOpenTitle = "Open this pad in read-only mode in a new tab";
 
     out.notifyJoined = "{0} has joined the collaborative session";
     out.notifyRenamed = "{0} is now known as {1}";
@@ -146,7 +146,7 @@ define(function () {
     out.fm_templateName = "Templates";
     out.fm_newButton = "New";
     out.fm_newFolder = "New folder";
-    out.fm_newFile = "New document";
+    out.fm_newFile = "New pad";
     out.fm_folder = "Folder";
     out.fm_folderName = "Folder name";
     out.fm_numberOfFolders = "# of folders";
@@ -171,7 +171,7 @@ define(function () {
     out.fm_categoryError = "Unable to open the selected category, displaying root.";
     out.fm_info_root = "Create as many nested folders here as you want to sort your files.";
     out.fm_info_unsorted = 'Contains all the files you\'ve visited that are not yet sorted in "Documents" or moved to the "Trash".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
-    out.fm_info_template = 'Contains all the pads stored as templates and that you can re-use when you create a new document.';
+    out.fm_info_template = 'Contains all the pads stored as templates and that you can re-use when you create a new pad.';
     out.fm_info_trash = 'Files deleted from the trash are also removed from "All files" and it is impossible to recover them from the file manager.'; // Same here for "All files" and "out.fm_filesDataName"
     out.fm_info_allFiles = 'Contains all the files from "Documents", "Unsorted" and "Trash". You can\'t move or remove files from here.'; // Same here
     out.fm_alert_backupUrl = "Backup link for this drive.<br>" +
@@ -230,7 +230,7 @@ define(function () {
     out.register_mustAcceptTerms = "You must accept the terms of service.";
     out.register_mustRememberPass = "We cannot reset your password if you forget it. It's very important that you remember it! Please check the checkbox to confirm.";
 
-    out.register_header = "Welcome to Cryptpad";
+    out.register_header = "Welcome to CryptPad";
     out.register_explanation = [
         "<p>Lets go over a couple things first</p>",
         "<ul>",
@@ -285,7 +285,7 @@ define(function () {
     out.main_organize_p = "With CryptPad Drive, you can keep your sights on what's important. Folders allow you to keep track of your projects and have a global vision of where things are going.";
     out.tryIt = 'Try it out!';
     out.main_richText = 'Rich Text editor';
-    out.main_richText_p = 'Edit rich text documents collaboratively with our realtime Zero Knowledge <a href="http://ckeditor.com" target="_blank">CkEditor</a> application.';
+    out.main_richText_p = 'Edit rich text pads collaboratively with our realtime Zero Knowledge <a href="http://ckeditor.com" target="_blank">CkEditor</a> application.';
     out.main_code = 'Code editor';
     out.main_code_p = 'Edit code from your software collaboratively with our realtime Zero Knowledge <a href="https://www.codemirror.net" target="_blank">CodeMirror</a> application.';
     out.main_slide = 'Slide editor';
@@ -306,31 +306,31 @@ define(function () {
 
     // privacy.html
 
-    out.policy_title = 'Cryptpad Privacy Policy';
+    out.policy_title = 'CryptPad Privacy Policy';
     out.policy_whatweknow = 'What we know about you';
-    out.policy_whatweknow_p1 = 'As an application that is hosted on the web, Cryptpad has access to metadata exposed by the HTTP protocol. This includes your IP address, and various other HTTP headers that can be used to identify your particular browser. You can see what information your browser is sharing by visiting <a target="_blank" rel="noopener noreferrer" href="https://www.whatismybrowser.com/detect/what-http-headers-is-my-browser-sending" title="what http headers is my browser sending">WhatIsMyBrowser.com</a>.';
-    out.policy_whatweknow_p2 = 'We use <a href="https://piwik.org/" target="_blank" rel="noopener noreferrer" title="open source analytics platform">Piwik</a>, an open source analytics platform, to learn more about our users. Piwik tells us about how you found Cryptpad, via direct entry, through a search engine, or via a referral from another web service like Reddit or Twitter. We also learn when you visit, what links you click while on our informational pages, and how long you stay on a particular page.';
+    out.policy_whatweknow_p1 = 'As an application that is hosted on the web, CryptPad has access to metadata exposed by the HTTP protocol. This includes your IP address, and various other HTTP headers that can be used to identify your particular browser. You can see what information your browser is sharing by visiting <a target="_blank" rel="noopener noreferrer" href="https://www.whatismybrowser.com/detect/what-http-headers-is-my-browser-sending" title="what http headers is my browser sending">WhatIsMyBrowser.com</a>.';
+    out.policy_whatweknow_p2 = 'We use <a href="https://piwik.org/" target="_blank" rel="noopener noreferrer" title="open source analytics platform">Piwik</a>, an open source analytics platform, to learn more about our users. Piwik tells us about how you found CryptPad, via direct entry, through a search engine, or via a referral from another web service like Reddit or Twitter. We also learn when you visit, what links you click while on our informational pages, and how long you stay on a particular page.';
     out.policy_whatweknow_p3 = 'These analytics tools are only used on informational pages. We do not collect any information about your usage of our zero-knowledge applications.';
     out.policy_howweuse = 'How we use what we learn';
-    out.policy_howweuse_p1 = 'We use this information to make better decisions about promoting Cryptpad, by evaluating which of our past efforts were successful. Information about your location lets us know whether we should consider providing better support for languages other than English.';
+    out.policy_howweuse_p1 = 'We use this information to make better decisions about promoting CryptPad, by evaluating which of our past efforts were successful. Information about your location lets us know whether we should consider providing better support for languages other than English.';
     out.policy_howweuse_p2 = "Information about your browser (whether it's a desktop or mobile operating system) helps us make decisions when prioritizing feature improvements. Our development team is small, and we try to make choices that will improve as many users' experience as possible.";
     out.policy_whatwetell = 'What we tell others about you';
     out.policy_whatwetell_p1 = 'We do not furnish to third parties the information that we gather or that you provide to us unless we are legally required to do so.';
     out.policy_links = 'Links to other sites';
-    out.policy_links_p1 = 'This site contains links to other sites, including those produced by other organizations. We are not responsible for the privacy practices or the contents of any outside sites. As a general rule, links to outside sites are launched in a new browser window, to make clear that you are leaving Cryptpad.fr.';
+    out.policy_links_p1 = 'This site contains links to other sites, including those produced by other organizations. We are not responsible for the privacy practices or the contents of any outside sites. As a general rule, links to outside sites are launched in a new browser window, to make clear that you are leaving CryptPad.fr.';
     out.policy_ads = 'Advertisement';
     out.policy_ads_p1 = 'We do not display any online advertising, though we may link to the bodies which are financing our research.';
     out.policy_choices = 'Choices you have';
-    out.policy_choices_open = 'Our code is open source, so you always have the option of hosting your own instance of Cryptpad.';
+    out.policy_choices_open = 'Our code is open source, so you always have the option of hosting your own instance of CryptPad.';
     out.policy_choices_vpn = 'If you want to use our hosted instance, but don\'t want to expose your IP address, you can protect your IP using the <a href="https://www.torproject.org/projects/torbrowser.html.en" title="downloads from the Tor project" target="_blank" rel="noopener noreferrer">Tor browser bundle</a>, or a <a href="https://riseup.net/en/vpn" title="VPNs provided by Riseup" target="_blank" rel="noopener noreferrer">VPN</a>.';
     out.policy_choices_ads = 'If you just want to block our analytics platform, you can use adblocking tools like <a href="https://www.eff.org/privacybadger" title="download privacy badger" target="_blank" rel="noopener noreferrer">Privacy Badger</a>.';
 
     // terms.html
 
-    out.tos_title = "Cryptpad Terms of Service";
+    out.tos_title = "CryptPad Terms of Service";
     out.tos_legal = "Please don't be malicious, abusive, or do anything illegal.";
     out.tos_availability = "We hope you find this service useful, but availability or performance cannot be guaranteed. Please export your data regularly.";
-    out.tos_e2ee = "Cryptpad documents can be read or modified by anyone who can guess or otherwise obtain the document's fragment identifier. We recommend that you use end-to-end-encrypted (e2ee) messaging technology to share links, and assume no liability in the event that such a link is leaked.";
+    out.tos_e2ee = "CryptPad contents can be read or modified by anyone who can guess or otherwise obtain the pad's fragment identifier. We recommend that you use end-to-end-encrypted (e2ee) messaging technology to share links, and assume no liability in the event that such a link is leaked.";
     out.tos_logs = "Metadata provided by your browser to the server may be logged for the purpose of maintaining the service.";
     out.tos_3rdparties = "We do not provide individualized data to third parties unless required to by law.";
 
