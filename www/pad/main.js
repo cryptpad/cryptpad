@@ -726,7 +726,7 @@ define([
                 setEditable(false);
                 // TODO inform them that the session was torn down
                 toolbar.failed();
-                Cryptpad.alert(Messages.common_connectionLost);
+                Cryptpad.alert(Messages.common_connectionLost, undefined, true);
             };
 
             var onConnectionChange = realtimeOptions.onConnectionChange = function (info) {
@@ -737,7 +737,7 @@ define([
                     toolbar.reconnecting(info.myId);
                     Cryptpad.findOKButton().click();
                 } else {
-                    Cryptpad.alert(Messages.common_connectionLost);
+                    Cryptpad.alert(Messages.common_connectionLost, undefined, true);
                 }
             };
 
