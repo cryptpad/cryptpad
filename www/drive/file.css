@@ -101,17 +101,20 @@ span.fa-folder-open {
   color: #000;
 }
 #tree li {
-  /*cursor: pointer;*/
   cursor: auto;
-}
-#tree li:hover > span.element {
-  text-decoration: underline;
 }
 #tree li.collapsed ul {
   display: none;
 }
 #tree li input {
   width: calc(70%);
+}
+#tree li > span.element-row {
+  width: 100%;
+  display: inline-block;
+}
+#tree li > span.element-row:not(.selected):hover {
+  background-color: #eee;
 }
 #tree span.element {
   cursor: pointer;
