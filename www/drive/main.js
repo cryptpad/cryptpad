@@ -1489,9 +1489,11 @@ define([
             if (collapsable) {
                 $collapse = $expandIcon.clone();
             }
-            var $element = $('<li>').append($collapse).append($icon).append($name).click(function (e) {
+            var $elementRow = $('<span>', {'class': 'element-row'}).append($collapse).append($icon).append($name).click(function (e) {
+                e.stopPropagation();
                 module.displayDirectory(path);
             });
+            var $element = $('<li>').append($elementRow);
             if (draggable) { $element.attr('draggable', true); }
             if (collapsable) {
                 $element.addClass('collapsed');
