@@ -236,6 +236,10 @@ define([
             }
         };
 
+        var findDataHolder = function ($el) {
+            return $el.is('.element-row') ? $el : $el.closest('.element-row');
+        };
+
         var removeSelected =  function () {
             $iframe.find('.selected').removeClass("selected");
             var $container = $driveToolbar.find('#contextButtonsContainer');
@@ -243,8 +247,6 @@ define([
             $container.html('');
         };
         var removeInput =  function () {
-            $iframe.find('li > span:hidden').removeAttr('style');
-            $iframe.find('li > input').remove();
             $iframe.find('.element-row > input').remove();
             $iframe.find('.element-row > span:hidden').removeAttr('style');
         };
@@ -376,7 +378,7 @@ define([
         var updateContextButton = function () {
             var $li = $content.find('.selected');
             if ($li.length !== 1) {
-                $li = $tree.find('.element.active').closest('li');
+                $li = findDataHolder($tree.find('.element.active'));
             }
             var $button = $driveToolbar.find('#contextButton');
             if ($button.length) { // mobile
@@ -437,10 +439,7 @@ define([
             if (!e || !e.ctrlKey) {
                 removeSelected();
             }
-            if (!$element.is('li')) {
-                $element = $element.closest('li');
-            }
-            if ($element.find('>.element-row').length) { $element = $element.find('>.element-row'); }
+            $element = findDataHolder($element);
             if (!$element.length) {
                 log(Messages.fm_selectError);
                 return;
@@ -459,8 +458,7 @@ define([
             module.hideMenu();
             e.stopPropagation();
 
-            var $element = $(e.target).closest('li');
-            if ($element.find('>.element-row').length) { $element = $element.find('>.element-row'); }
+            var $element = findDataHolder($(e.target));
             if (!$element.length) {
                 logError("Unable to locate the .element tag", e.target);
                 $menu.hide();
@@ -514,7 +512,7 @@ define([
         };
 
         var openTrashContextMenu = function (e) {
-            var path = $(e.target).closest('li').data('path');
+            var path = findDataHolder($(e.target)).data('path');
             if (!path) { return; }
             $trashContextMenu.find('li').show();
             openContextMenu(e, $trashContextMenu);
@@ -608,8 +606,7 @@ define([
         // The data transferred is a stringified JSON containing the path of the dragged element
         var onDrag = function (ev, path) {
             var paths = [];
-            var $element = $(ev.target).closest('li');
-            if ($element.find('>.element-row').length) { $element = $element.find('>.element-row'); }
+            var $element = findDataHolder($(ev.target));
             if ($element.hasClass('selected')) {
                 var $selected = $iframe.find('.selected');
                 $selected.each(function (idx, elmt) {
@@ -665,7 +662,8 @@ define([
                 }
             });
 
-            var newPath = $(ev.target).data('path') || $(ev.target).parent('.element-row').data('path') || $(ev.target).parent('li').data('path');
+            var $el = findDataHolder($(ev.target));
+            var newPath = $el.data('path');
             if (!newPath) { return; }
             if (movedPaths && movedPaths.length) {
                 moveElements(movedPaths, newPath, null, refresh);
@@ -796,7 +794,8 @@ define([
                 $icon = filesOp.isFolderEmpty(root[key]) ? $folderEmptyIcon.clone() : $folderIcon.clone();
             }
             var $element = $('<li>', {
-                draggable: true
+                draggable: true,
+                'class': 'element-row'
             });
             if (isFolder) {
                 addFolderData(element, key, $element);
@@ -1261,7 +1260,7 @@ define([
                 var idx = files[rootName].indexOf(href);
                 var $icon = getFileIcon(href);
                 var $element = $('<li>', {
-                    'class': 'file-element element',
+                    'class': 'file-element element element-row',
                     draggable: draggable
                 });
                 addFileData(href, file.title, $element, false);
@@ -1293,7 +1292,7 @@ define([
             var sortedFiles = sortElements(false, [FILES_DATA], keys, Cryptpad.getLSAttribute(SORT_FILE_BY), !getSortFileDesc(), false, true);
             sortedFiles.forEach(function (file) {
                 var $icon = getFileIcon(file.href);
-                var $element = $('<li>', { 'class': 'file-element element' });
+                var $element = $('<li>', { 'class': 'file-element element element-row' });
                 addFileData(file.href, file.title, $element, false);
                 $element.data('path', [FILES_DATA, allfiles.indexOf(file)]);
                 $element.data('element', file.href);
@@ -1415,7 +1414,7 @@ define([
                     e.stopPropagation();
                     var $li = $content.find('.selected');
                     if ($li.length !== 1) {
-                        $li = $tree.find('.element.active').closest('li');
+                        $li = findDataHolder($tree.find('.element.active'));
                     }
                     // Close if already opened
                     if ($iframe.find('.contextMenu:visible').length) {
@@ -1474,7 +1473,7 @@ define([
         };
 
         var refreshFilesData = function () {
-            $content.find('li').each(function (i, e) {
+            $content.find('.element-row').each(function (i, e) {
                 var $el = $(e);
                 if ($el.data('path')) {
                     var path = $el.data('path');
