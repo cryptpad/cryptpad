@@ -524,13 +524,7 @@ define([
             };
 
             var getHTML = function (Dom) {
-                var data = inner.innerHTML;
-                Dom = Dom || (new DOMParser()).parseFromString(data,"text/html");
-                return ('<!DOCTYPE html>\n' +
-                    '<html>\n' +
-                    (typeof(Hyperjson.toString) === 'function'?
-                        Hyperjson.toString(Hyperjson.fromDOM(Dom.body)):
-                        Dom.head.outerHTML) + '\n');
+                return ('<!DOCTYPE html>\n' + '<html>\n' + inner.innerHTML);
             };
 
             var domFromHTML = function (html) {
