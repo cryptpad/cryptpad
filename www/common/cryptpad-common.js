@@ -163,9 +163,12 @@ define([
     // var isArray = function (o) { return Object.prototype.toString.call(o) === '[object Array]'; };
     var isArray = common.isArray = $.isArray;
 
-    var fixHTML = common.fixHTML = function (html) {
-        return html.replace(/</g, '&lt;');
+    var fixHTML = common.fixHTML = function (str) {
+        return str.replace(/[<>&"']/g, function (x) {
+            return ({ "<": "&lt;", ">": "&gt", "&": "&amp;", '"': "&#34;", "'": "&#39;" })[x];
+        });
     };
+
 
     var truncate = common.truncate = function (text, len) {
         if (typeof(text) === 'string' && text.length > len) {
@@ -1142,22 +1145,22 @@ define([
         var $displayedName = $('<span>', {'class': config.displayNameCls || 'displayName'});
         var accountName = localStorage[common.userNameKey];
         var account = isLoggedIn();
-        var $userAdminContent = $('<p>');
-        if (account) {
-            var $userAccount = $('<span>', {'class': 'userAccount'}).append(Messages.user_accountName + ': ' + accountName);
-            $userAdminContent.append($userAccount);
-            $userAdminContent.append($('<br>'));
-        }
         var $userName = $('<span>', {'class': 'userDisplayName'});
-        if (config.displayName) {
-            // Hide "Display name:" in read only mode
-            $userName.append(Messages.user_displayName + ': ');
-            $userName.append($displayedName.clone());
-        }
-        //$userName.append($displayedName.clone()); TODO remove ?
-        $userAdminContent.append($userName);
         var options = [];
         if (config.displayNameCls) {
+            var $userAdminContent = $('<p>');
+            if (account) {
+                var $userAccount = $('<span>', {'class': 'userAccount'}).append(Messages.user_accountName + ': ' + fixHTML(accountName));
+                $userAdminContent.append($userAccount);
+                $userAdminContent.append($('<br>'));
+            }
+            if (config.displayName) {
+                // Hide "Display name:" in read only mode
+                $userName.append(Messages.user_displayName + ': ');
+                $userName.append($displayedName.clone());
+            }
+            //$userName.append($displayedName.clone()); TODO remove ?
+            $userAdminContent.append($userName);
             options.push({
                 tag: 'p',
                 attributes: {'class': 'accountData'},
