@@ -14,24 +14,35 @@ module.exports = {
      *  Examples are provided below
      */
 
-/*
     httpHeaders: {
-        "Content-Security-Policy": [
-            "default-src 'none'",
-            "style-src 'unsafe-inline' 'self'",
-            "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
-            "child-src 'self' cryptpad.fr *.cryptpad.fr",
-            "font-src 'self'",
-            "connect-src 'self' wss://cryptpad.fr",
-    // data: is used by codemirror, (insecure remote) images are included by
-    // users of the wysiwyg who embed photos in their pads
-            "img-src data: *",
-        ].join('; '),
-
         "X-XSS-Protection": "1; mode=block",
         "X-Content-Type-Options": "nosniff",
         // 'X-Frame-Options': 'SAMEORIGIN',
-    },*/
+    },
+
+    contentSecurity: [
+        "default-src 'none'",
+        "style-src 'unsafe-inline' 'self'",
+        "script-src 'self'",
+        "child-src 'self' cryptpad.fr *.cryptpad.fr",
+        "font-src 'self'",
+        "connect-src 'self' wss://cryptpad.fr",
+        // data: is used by codemirror
+        "img-src 'self' data:",
+    ].join('; '),
+
+    // CKEditor requires significantly more lax content security policy in order to function.
+    padContentSecurity: [
+        "default-src 'none'",
+        "style-src 'unsafe-inline' 'self'",
+        // Unsafe inline, unsafe-eval are needed for ckeditor :(
+        "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+        "child-src 'self' cryptpad.fr *.cryptpad.fr",
+        "font-src 'self'",
+        "connect-src 'self' wss://cryptpad.fr",
+        // (insecure remote) images are included by users of the wysiwyg who embed photos in their pads
+        "img-src *",
+    ].join('; '),
 
     httpPort: 3000,
 
@@ -51,7 +62,7 @@ module.exports = {
     //websocketPort: 3000,
 
     /*  if you want to run a different version of cryptpad but using the same websocket
-     *  server, you should use the other server port as websocketPort and disable 
+     *  server, you should use the other server port as websocketPort and disable
      *  the websockets on that server
      */
     //useExternalWebsocket: false,

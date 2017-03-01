@@ -18,7 +18,6 @@ define([
 
     // Use `$(function () {});` to make sure the html is loaded before doing anything else
     $(function () {
-
     var $iframe = $('#pad-iframe').contents();
     var ifrw = $('#pad-iframe')[0].contentWindow;
 
@@ -2116,6 +2115,5 @@ define([
             onConnectError();
         }
     });
-
     });
 });

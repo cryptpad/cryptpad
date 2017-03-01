@@ -10,12 +10,7 @@
         data-alt-favicon="/customize/alt-favicon.png"
         id="favicon" />
     <link rel="stylesheet" href="/customize/main.css" />
-    <script data-main="main" src="/bower_components/requirejs/require.js"></script>
-    <script>
-        require.config({
-            waitSeconds: 60,
-        });
-    </script>
+    <script data-bootload="main.js" data-main="/common/boot.js" src="/bower_components/requirejs/require.js"></script>
     <style>
         html, body {
             width: 100;
@@ -100,4 +95,3 @@
     <div id="lists"></div>
     <span id="create-list">Add List</span>
 </div>
-
