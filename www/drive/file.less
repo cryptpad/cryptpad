@@ -2,6 +2,8 @@
 @tree-fg: #000;
 @tree-lines-col: #888;
 
+@drive-hover: #eee;
+
 @content-bg: @tree-bg;
 @content-bg-ro: darken(@content-bg, 10%);
 @content-fg: @tree-fg;
@@ -134,16 +136,19 @@ span {
     padding: 10px 0px;
     color: @tree-fg;
     li {
-        /*cursor: pointer;*/
         cursor: auto;
-        &:hover > span.element {
-            text-decoration: underline;
-        }
         &.collapsed ul {
             display: none;
         }
         input {
             width: calc(100% - 30px);
+        }
+        & > span.element-row {
+            width: 100%;
+            display: inline-block;
+        }
+        & > span.element-row:not(.selected):hover {
+            background-color: @drive-hover;
         }
     }
     span.element {
@@ -261,6 +266,9 @@ span {
                 /*pointer-events: none;*/
             }
             &:hover {
+                &:not(.selected) {
+                    background-color: @drive-hover;
+                }
                 .name {
                     /*text-decoration: underline;*/
                 }
@@ -276,6 +284,8 @@ span {
             text-align: center;
             vertical-align: top;
             overflow: hidden;
+            padding-top: 10px;
+            padding-bottom: 5px;
 
             .name {
                 width: 100%;

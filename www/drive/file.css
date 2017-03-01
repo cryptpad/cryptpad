@@ -101,17 +101,20 @@ span.fa-folder-open {
   color: #000;
 }
 #tree li {
-  /*cursor: pointer;*/
   cursor: auto;
-}
-#tree li:hover > span.element {
-  text-decoration: underline;
 }
 #tree li.collapsed ul {
   display: none;
 }
 #tree li input {
   width: calc(70%);
+}
+#tree li > span.element-row {
+  width: 100%;
+  display: inline-block;
+}
+#tree li > span.element-row:not(.selected):hover {
+  background-color: #eee;
 }
 #tree span.element {
   cursor: pointer;
@@ -220,6 +223,9 @@ span.fa-folder-open {
 #content li:not(.header) *:not(input) {
   /*pointer-events: none;*/
 }
+#content li:not(.header):hover:not(.selected) {
+  background-color: #eee;
+}
 #content li:not(.header):hover .name {
   /*text-decoration: underline;*/
 }
@@ -233,6 +239,8 @@ span.fa-folder-open {
   text-align: center;
   vertical-align: top;
   overflow: hidden;
+  padding-top: 10px;
+  padding-bottom: 5px;
 }
 #content div.grid li .name {
   width: 100%;
