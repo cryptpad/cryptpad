@@ -256,7 +256,7 @@ define(function () {
 
     out.settings_userFeedbackHint1 = "CryptPad peut envoyer des retours d'expérience très limités vers le serveur, de manière à nous permettre d'améliorer l'expérience des utilisateurs.";
     out.settings_userFeedbackHint2 = "Le contenu de vos pads et les clés de déchiffrement ne seront jamais partagés avec le serveur.";
-    out.settings_userFeedback = "Désactiver l'envoi de retours d'expérience";
+    out.settings_userFeedback = "Activer l'envoi de retours d'expérience";
 
     out.settings_anonymous = "Vous n'êtes pas connectés. Ces préférences seront utilisées pour ce navigateur.";
 
