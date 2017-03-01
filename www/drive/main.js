@@ -609,6 +609,7 @@ define([
         var onDrag = function (ev, path) {
             var paths = [];
             var $element = $(ev.target).closest('li');
+            if ($element.find('>.element-row').length) { $element = $element.find('>.element-row'); }
             if ($element.hasClass('selected')) {
                 var $selected = $iframe.find('.selected');
                 $selected.each(function (idx, elmt) {
