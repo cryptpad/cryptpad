@@ -111,12 +111,9 @@ define(function () {
 
     // index.html
 
-    out.main_p1 = 'CryptPad es un editor en tiempo real <strong>zero knowledge</strong>. El cifrado se hace en el navegador protegiendo los datos del servidor, la nube, y la NSA. La clave de cifrado es almacenada en el <a href="https://en.wikipedia.org/wiki/Fragment_identifier">identificador de fragmento</a> (página en inglés) del URL y no es enviado al servidor pero está disponible por javascript, por lo cual compartiendo la URL, tú autorizas a quienes pueden participar.';
     out.main_p2 = 'Este proyecto utiliza el editor de texto visual <a href="http://ckeditor.com/">CKEditor</a>, <a href="https://codemirror.net/">CodeMirror</a>, y el motor en tiempo real <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a>.';
     out.main_howitworks = '¿Cómo funciona?';
     out.main_howitworks_p1 = "CryptPad utiliza una variante del algoritmo de <a href='https://en.wikipedia.org/wiki/Operational_transformation'>transformación operacional</a> (página en inglés) que es capaz de encontrar un consenso distribuido usando un <a href='https://bitcoin.org/bitcoin.pdf'>Blockchain Nakamoto</a> (página en inglés), popularizado por <a href='https://es.wikipedia.org/wiki/Bitcoin'>Bitcoin</a>. De esta manera el algoritmo puede evitar la necesidad de un servidor central para resolver conflictos de edición de la transformación operacional y sin necesidad de resolver conflictos, el servidor puede mantenerse inconsciente del contenido que se está editando en el pad.";
-    out.main_about = 'Acerca de';
-    out.main_about_p1 = 'Puedes leer más acerca de nuestra <a href="/privacy.html" title="">política de privacidad</a> y <a href="/terms.html">condiciones de servicio</a>.';
     out.main_about_p2 = 'Si tienes preguntas o comentarios, puedes <a href="https://twitter.com/cryptpad">enviarnos un tweet</a>, abrir un issue <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="nuestro issue tracker">en GitHub</a>, saludarnos en nuestro canal IRC (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), o <a href="mailto:research@xwiki.com">envianos un email</a>.';
 
     out.button_newpad = 'Crear nuevo pad de texto enriquezido';
@@ -130,7 +127,6 @@ define(function () {
     out.policy_whatweknow = 'Qué sabemos sobre tí';
     out.policy_whatweknow_p1 = 'Como cualquier aplicación que está en la red, Cryptpad tiene acceso a los metadatos expuestos por el protócolo HTTP. Esto incluye tu dirección IP, y otros headers HTTP que pueden ser utilizados para identificar a tu navegador propio. Puedes ver la información que comparte tu navegador visitando <a target="_blank" rel="noopener noreferrer" href="https://www.whatismybrowser.com/detect/what-http-headers-is-my-browser-sending" title="Que headers HTTP esta compartiendo mi navegador">WhatIsMyBrowser.com</a> (página en inglés).';
     out.policy_whatweknow_p2 = 'Nosotros usamos <a href="https://piwik.org/" target="_blank" rel="noopener noreferrer" title="open source analytics platform">Piwik</a>, una plataforma de analítica de datos abierta, para mejor conocer a nuestros usuarios. Piwik nos dice como encontráste Cryptpad, en entrada manual, por un motor de busquéda, or por referal de otra página como Reddit o Twitter. También aprendemos cuándo visitas, que páginas vees en nuestra web, y cuánto tiempo te quedas en cada una.';
-    out.policy_whatweknow_p3 = 'Estas herramientas de estadísticas son utilizadas solamente en las páginas de información. No recolectamos cualquier información sobre el uso de nuestra applicación zero-knowledge.';
     out.policy_howweuse = 'Cómo usamos lo que aprendemos';
     out.policy_howweuse_p1 = 'Usamos esta información para tomar mejores decisiones para promocionar Cryptpad, para evaluar cuáles de nuestros esfuerzos han sido exitosos. La información sobre tu ubicación nos permite saber si deberíamos considerar mejor soporte para idiomas diferentes al inglés.';
     out.policy_howweuse_p2 = "La información sobre tu navegador (en escritorio u movil) nos ayuda a saber qué caracteristicas que debemos mejorar. Nuestro equipo de desarrollo es pequeño, e intentamos tomar decisiones que beneficien a la experiencia de la mayoria de nuestros usuarios.";
@@ -295,6 +291,40 @@ define(function () {
     out.privacy = "Privacidad";
     out.contact = "Contacto";
     out.terms = "Términos de Servicio";
+
+    // 1.1.0 - Bunyip
+    out.movedToTrash = "Este pad fue movido a la papelera.<br><a href\"/drive/\">Acceder a mi Drive</a>";
+    out.fm_newFile = "Nuevo pad";
+    out.fm_type = "Típo";
+    out.fm_categoryError = "No se pudo abrir la categoría seleccionada, mostrando la raíz.";
+    out.settings_userFeedbackHint1 = "CryptPad suministra informaciones muy básicas al servidor, para ayudarnos a mejorar vuestra experiencia.";
+    out.settings_userFeedbackHint2 = "El contenido de tu pad nunca será compartido con el servidor.";
+    out.settings_userFeedback = "Activar feedback"; // "Disable user feedback"
+    out.settings_anonymous = "No has iniciado sesión. Tus ajustes se aplicarán solo a este navegador.";
+    out.blog = "Blog";
+    out.initialState = "<p>Esto es <strong>CryptPad</strong>, el editor collaborativo en tiempo real zero knowledge.<br>Lo que escribes aquí es cifrado, con lo cual solo las personas con el enlace pueden accederlo.<br>Incluso el servido no puede ver lo que escribes.</p><p><small><i>Lo que ves aquí, lo que escuchas aquí, cuando sales, se queda aquí</i></small></p>";
+    out.codeInitialState = "/*\n   Esto es CryptPad, el editor collaborativo en tiempo real zero knowledge.\n   Lo que escribes aquí es cifrado, con lo cual solo las personas con el enlace pueden accederlo.\n   Incluso el servidor no puede ver lo que escribes.\n   Lo que ves aquí, lo que escuchas aquí, cuando sales, se queda aquí\n*/";
+    out.slideInitialState = "# CryptSlide\n* Esto es CryptPad, el editor collaborativo en tiempo real zero knowledge.\n* Lo que escribes aquí es cifrado, con lo cual solo las personas con el enlace pueden accederlo.\n* Incluso el servidor no puede ver lo que escribes.\n* Lo que ves aquí, lo que escuchas aquí, cuando sales, se queda aquí\n\n---\n# Como utilizarlo\n1. Escribe tu contenido en Markdown\n  - Puedes aprender más sobre Markdown [aquí](http://www.markdowntutorial.com/)\n2. Separa tus slides con ---\n3. Haz clic en \"Presentar\" para ver el resultado  - Tus slides se actualizan en tiempo real";
+    out.driveReadmeTitle = "¿Qué es CryptDrive?";
+    out.readme_welcome = "¡Bienvenido a CryptPad!";
+    out.readme_p1 = "Bienvenido a CryptPad, aquí podrás tomar nota de cosas sólo u con otra gente.";
+    out.readme_p2 = "Este pad es un guía rapida para aprender a usar a CryptPad para tomar notas, organizarlas y trabajar con más personas.";
+    out.readme_cat1 = "Aprende a conocer a tu CryptDrive";
+    out.readme_cat1_l1 = "Crea un pad: En CryptDrive, haz clic en {0} y luego en {1} para crear un pad.";
+    out.readme_cat1_l2 = "Abrir pads desde CryptDrive: haz doble clic en un icono para abrirlo.";
+    out.readme_cat1_l3 = "Organiza tus pads: Cuando has iniciado sesión, cada pad que accedes se quedaran en tu drive en {0}.";
+    out.readme_cat1_l3_l1 = "Puedes hacer clic y arrastrar archivos en carpetas desde {0}, y crear nuevas carpetas.";
+    out.readme_cat1_l3_l2 = "Recuerda hacer clic derecho en varios iconos, ya que hay menús addicionales.";
+    out.readme_cat1_l4 = "Elimina tus viejos pads: Haz clic y arrastra tus pads en la {0} de la misma manera que lo harías con carpetas.";
+    out.readme_cat2 = "Haz pads como un pro";
+    out.edit = "editar";
+    out.view = "ver";
+    out.readme_cat2_l1 = "El botón {0} en tu pad te permite dar acceso a collaboradores para {1} o {2} el pad.";
+    out.readme_cat2_l2 = "Cambia el título del pad haciendo clic en el lápiz";
+    out.readme_cat3 = "Descubre las apps CryptPad";
+    out.readme_cat3_l1 = "Con el editor de código CryptPad, puedes collaborar en código fuente, como por ejemplo JavaScript y Markdown";
+    out.readme_cat3_l2 = "Con los slides CryptPad, puedes hacer presentaciones rápidas con Markdown";
+    out.readme_cat3_l3 = "Con CryptPoll puedes tomar votos rápidos, especialmente utíl para programar un horario que conviene a todo el mundo";
 
     return out;
 });
