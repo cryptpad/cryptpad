@@ -245,6 +245,8 @@ define([
         var removeInput =  function () {
             $iframe.find('li > span:hidden').removeAttr('style');
             $iframe.find('li > input').remove();
+            $iframe.find('.element-row > input').remove();
+            $iframe.find('.element-row > span:hidden').removeAttr('style');
         };
 
         var compareDays = function (date1, date2) {
@@ -438,6 +440,7 @@ define([
             if (!$element.is('li')) {
                 $element = $element.closest('li');
             }
+            if ($element.find('>.element-row').length) { $element = $element.find('>.element-row'); }
             if (!$element.length) {
                 log(Messages.fm_selectError);
                 return;
@@ -457,6 +460,7 @@ define([
             e.stopPropagation();
 
             var $element = $(e.target).closest('li');
+            if ($element.find('>.element-row').length) { $element = $element.find('>.element-row'); }
             if (!$element.length) {
                 logError("Unable to locate the .element tag", e.target);
                 $menu.hide();
@@ -660,7 +664,7 @@ define([
                 }
             });
 
-            var newPath = $(ev.target).data('path') || $(ev.target).parent('li').data('path');
+            var newPath = $(ev.target).data('path') || $(ev.target).parent('.element-row').data('path') || $(ev.target).parent('li').data('path');
             if (!newPath) { return; }
             if (movedPaths && movedPaths.length) {
                 moveElements(movedPaths, newPath, null, refresh);
@@ -1348,6 +1352,7 @@ define([
         // NOTE: Elements in the trash are not using the same storage structure as the others
         // _WORKGROUP_ : do not change the lastOpenedFolder value in localStorage
         var displayDirectory = module.displayDirectory = function (path, force) {
+            module.hideMenu();
             if (!APP.editable) { debug("Read-only mode"); }
             if (!appStatus.isReady && !force) { return; }
             // Only Trash and Root are available in not-owned files manager
@@ -1494,7 +1499,7 @@ define([
                 module.displayDirectory(path);
             });
             var $element = $('<li>').append($elementRow);
-            if (draggable) { $element.attr('draggable', true); }
+            if (draggable) { $elementRow.attr('draggable', true); }
             if (collapsable) {
                 $element.addClass('collapsed');
                 $collapse.click(function(e) {
@@ -1522,8 +1527,8 @@ define([
                     $collapse.click();
                 }
             }
-            $element.data('path', path);
-            addDragAndDropHandlers($element, path, true, droppable);
+            $elementRow.data('path', path);
+            addDragAndDropHandlers($elementRow, path, true, droppable);
             if (active) { $name.addClass('active'); }
             return $element;
         };
@@ -1562,7 +1567,7 @@ define([
                     (isCurrentFolder ? $folderOpenedIcon : $folderIcon);
                 var $element = createTreeElement(key, $icon.clone(), newPath, true, true, subfolder, isCurrentFolder);
                 $element.appendTo($list);
-                $element.contextmenu(openDirectoryContextMenu);
+                $element.find('>.element-row').contextmenu(openDirectoryContextMenu);
                 createTree($element, newPath);
             });
         };
