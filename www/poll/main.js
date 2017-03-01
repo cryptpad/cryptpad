@@ -440,7 +440,7 @@ define([
 
     var setName = APP.setName = function (newName) {
         if (typeof(newName) !== 'string') { return; }
-        var myUserNameTemp = Cryptpad.fixHTML(newName.trim());
+        var myUserNameTemp = newName.trim();
         if(myUserNameTemp.length > 32) {
             myUserNameTemp = myUserNameTemp.substr(0, 32);
         }

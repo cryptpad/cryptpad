@@ -293,7 +293,7 @@ define([
 
             var setName = module.setName = function (newName) {
                 if (typeof(newName) !== 'string') { return; }
-                var myUserNameTemp = Cryptpad.fixHTML(newName.trim());
+                var myUserNameTemp = newName.trim();
                 if(myUserNameTemp.length > 32) {
                     myUserNameTemp = myUserNameTemp.substr(0, 32);
                 }
@@ -528,7 +528,7 @@ define([
                 Dom = Dom || (new DOMParser()).parseFromString(data,"text/html");
                 return ('<!DOCTYPE html>\n' +
                     '<html>\n' +
-                    (typeof(Hyperjson.toString) === 'function'?
+                    (typeof(Hyperjson.toString) === 'function' ?
                         Hyperjson.toString(Hyperjson.fromDOM(Dom.body)):
                         Dom.head.outerHTML) + '\n');
             };
