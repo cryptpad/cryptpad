@@ -1351,11 +1351,11 @@ define([
     };
 
     common.log = function (msg) {
-        Alertify.success(msg);
+        Alertify.success(fixHTML(msg));
     };
 
     common.warn = function (msg) {
-        Alertify.error(msg);
+        Alertify.error(fixHTML(msg));
     };
 
     /*
