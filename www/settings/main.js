@@ -124,7 +124,8 @@ define([
 
         var exportFile = function () {
             var sjson = JSON.stringify(obj);
-            var suggestion = obj.login_name + '-' + new Date().toDateString();
+            var name = obj.login_name || obj[USERNAME_KEY] || Messages.anonymous;
+            var suggestion = name + '-' + new Date().toDateString();
             Cryptpad.prompt(Cryptpad.Messages.exportPrompt,
                 Cryptpad.fixFileName(suggestion) + '.json', function (filename) {
                 if (!(typeof(filename) === 'string' && filename)) { return; }
