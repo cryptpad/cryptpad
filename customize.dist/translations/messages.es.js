@@ -35,10 +35,8 @@ define(function () {
     out.orangeLight = "La conexión es lenta y podria impactar la experiencia";
     out.redLight = "Has sido desconectado de la sesión";
 
-    out.importButton = 'Importar';
     out.importButtonTitle = 'Importar un documento de tus archivos locales';
 
-    out.exportButton = 'Exportar';
     out.exportButtonTitle = 'Exportar este documento a un archivo local';
     out.exportPrompt = '¿Cómo te gustaría llamar a este archivo?';
 
@@ -46,22 +44,16 @@ define(function () {
 
     out.clickToEdit = "Haz clic para cambiar";
 
-    out.forgetButton = 'Olvidar';
     out.forgetButtonTitle = 'Eliminar este documento de la lista en la pagina de inicio';
     out.forgetPrompt = 'Pulser OK eliminará este documento del almacenamiento local (localStorage), ¿estás seguro?';
 
     out.shareButton = 'Compartir';
     out.shareSuccess = 'URL copiada al portapapeles';
 
-    out.presentButton = 'Presentar';
     out.presentButtonTitle = "Entrar en el modo presentación";
     out.presentSuccess = 'ESC para salir del modo presentación';
-    out.sourceButton = 'Ver código fuente';
-    out.sourceButtonTitle = "Abandonar modo presentación";
 
-    out.backgroundButton = 'Color de fondo';
     out.backgroundButtonTitle = 'Cambiar el color de fondo en el modo presentación';
-    out.colorButton = 'Color de texto';
     out.colorButtonTitle = 'Cambiar el color de texto en el modo presentación';
 
     out.editShare = "URL de edición compartida";
@@ -88,7 +80,6 @@ define(function () {
     out.poll_p_save = "Tus configuraciones se actualizan instantaneamente, no es necesario guardar cambios.";
     out.poll_p_encryption = "Todos los datos entrados son cifrados, solo las personas que poseen el enlace tienen acceso. Incluso el servidor no puede ver el contenido.";
 
-    out.wizardButton = 'Asistente';
     out.wizardLog = "Presiona el boton en la parte superior izquierda para volver a la encuesta";
     out.wizardTitle = "Utiliza el asistente para crear tu encuesta";
     out.wizardConfirm = "¿Estás realmente seguro de agregar estas opciones a tu encuesta?";
@@ -325,6 +316,10 @@ define(function () {
     out.readme_cat3_l1 = "Con el editor de código CryptPad, puedes collaborar en código fuente, como por ejemplo JavaScript y Markdown";
     out.readme_cat3_l2 = "Con los slides CryptPad, puedes hacer presentaciones rápidas con Markdown";
     out.readme_cat3_l3 = "Con CryptPoll puedes tomar votos rápidos, especialmente utíl para programar un horario que conviene a todo el mundo";
+
+    // 1.2.0 - Chupacabra
+
+    out.settings_resetError = "Verificación no válida. Tu CryptDrive no fue cambiado.";
 
     return out;
 });
