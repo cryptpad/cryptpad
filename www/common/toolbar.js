@@ -207,32 +207,35 @@ define([
             var anonymous = numberOfEditUsers - editUsersNames.length;
 
             // Update the userlist
+            var $usersTitle = $('<h2>').text(Messages.users);
+            var $editUsers = $userButtons.find('.' + USERLIST_CLS);
+            $editUsers.html('').append($usersTitle);
+
             var editUsersList = '';
+            var $editUsersList = $('<pre>');
             if (readOnly !== 1) {
-                editUsersNames.unshift('<span class="yourself">' + Messages.yourself + '</span>');
+                $editUsers.append('<span class="yourself">' + Messages.yourself + '</span>');
                 anonymous--;
+            }
+            if (editUsersNames.length > 0) {
+                $editUsersList.text(editUsersNames.join('\n')); // .text() to avoid XSS
+                $editUsers.append($editUsersList);
             }
             if (anonymous > 0) {
                 var text = anonymous === 1 ? Messages.anonymousUser : Messages.anonymousUsers;
-                editUsersNames.push('<span class="anonymous">' + anonymous + ' ' + text + '</span>');
+                $editUsers.push('<span class="anonymous">' + anonymous + ' ' + text + '</span>');
             }
             if (numberOfViewUsers > 0) {
                 var viewText = '<span class="viewer">';
                 if (numberOfEditUsers > 0) {
-                    editUsersNames.push('');
+                    $editUsers.append('<br>');
                     viewText += Messages.and + ' ';
                 }
                 var viewerText = numberOfViewUsers !== 1 ? Messages.viewers : Messages.viewer;
                 viewText += numberOfViewUsers + ' ' + viewerText + '</span>';
-                editUsersNames.push(viewText);
-            }
-            if (editUsersNames.length > 0) {
-                editUsersList += editUsersNames.join('<br>');
+                $editUsers.append(viewText);
             }
 
-            var $usersTitle = $('<h2>').text(Messages.users);
-            var $editUsers = $userButtons.find('.' + USERLIST_CLS);
-            $editUsers.html('').append($usersTitle).append(editUsersList);
 
             // Update the buttons
             var fa_editusers = '<span class="fa fa-users"></span>';

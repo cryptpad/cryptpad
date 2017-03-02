@@ -138,7 +138,7 @@ define([
             Slide.setModal($modal, $content, $pad, ifrw, initialState);
 
             var enterPresentationMode = function (shouldLog) {
-                Slide.show(true, $textarea.val());
+                Slide.show(true, editor.getValue());
                 if (shouldLog) {
                     Cryptpad.log(Messages.presentSuccess);
                 }
@@ -530,13 +530,13 @@ define([
                         id: SLIDE_BACKCOLOR_ID,
                         'class': 'fa fa-square rightside-button',
                         'style': 'font-family: FontAwesome; color: #000;',
-                        title: Messages.backgroundButton + '\n' + Messages.backgroundButtonTitle
+                        title: Messages.backgroundButtonTitle
                     });
                     var $text = $('<button>', {
                         id: SLIDE_COLOR_ID,
                         'class': 'fa fa-i-cursor rightside-button',
                         'style': 'font-family: FontAwesome; font-weight: bold; color: #fff; background: #000;',
-                        title: Messages.colorButton + '\n' + Messages.colorButtonTitle
+                        title: Messages.colorButtonTitle
                     });
                     var $testColor = $('<input>', { type: 'color', value: '!' });
                     var $check = $pad.contents().find("#colorPicker_check");
@@ -771,7 +771,7 @@ define([
                 // inform of network disconnect
                 setEditable(false);
                 toolbar.failed();
-                Cryptpad.alert(Messages.common_connectionLost);
+                Cryptpad.alert(Messages.common_connectionLost, undefined, true);
             };
 
             var onConnectionChange = config.onConnectionChange = function (info) {
@@ -782,7 +782,7 @@ define([
                     toolbar.reconnecting(info.myId);
                     Cryptpad.findOKButton().click();
                 } else {
-                    Cryptpad.alert(Messages.common_connectionLost);
+                    Cryptpad.alert(Messages.common_connectionLost, undefined, true);
                 }
             };
 

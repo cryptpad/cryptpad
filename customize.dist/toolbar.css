@@ -372,8 +372,8 @@
   float: left;
   margin-bottom: -1px;
 }
-.cryptpad-toolbar-leftside .cryptpad-user-list {
-  float: right;
+.cryptpad-toolbar-leftside .cryptpad-user-list pre {
+  white-space: pre;
 }
 .cryptpad-toolbar-leftside button {
   margin: 2px 4px 2px 0px;
