@@ -1079,10 +1079,15 @@ define([
 
         // Container
         var $container = $(config.container);
+        var containerConfig = {
+            'class': 'dropdown-bar'
+        };
+        if (config.buttonTitle) {
+            containerConfig.title = config.buttonTitle;
+        }
+
         if (!config.container) {
-            $container = $('<span>', {
-                'class': 'dropdown-bar'
-            });
+            $container = $('<span>', containerConfig);
         }
 
         // Button
