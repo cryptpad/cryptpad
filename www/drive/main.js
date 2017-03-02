@@ -1423,7 +1423,8 @@ define([
                     // Open the menu
                     $iframe.find('.contextMenu').css({
                         top: ($context.offset().top + 32) + 'px',
-                        right: '0px'
+                        right: '0px',
+                        left: ''
                     });
                     $li.contextmenu();
                 });
