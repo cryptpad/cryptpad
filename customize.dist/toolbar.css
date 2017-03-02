@@ -324,13 +324,12 @@
 .cryptpad-toolbar-top .cryptpad-title input {
   font-size: 1.5em;
   vertical-align: middle;
-  height: 100%;
   box-sizing: border-box;
   border: 1px solid black;
   background: #fff;
   cursor: auto;
   width: 300px;
-  padding: 0px 5px;
+  padding: 5px 5px;
 }
 .cryptpad-toolbar-top .cryptpad-link {
   position: absolute;
