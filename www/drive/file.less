@@ -112,6 +112,9 @@ li {
     background: #666;
     color: #eee;
     margin: -1px;
+    .fa-minus-square-o, .fa-plus-square-o {
+        color: @tree-fg;
+    }
 }
 
 span {
@@ -137,17 +140,20 @@ span {
     padding: 10px 0px;
     color: @tree-fg;
     li {
+        padding: 0 0 0 5px;
         cursor: auto;
         &.collapsed ul {
             display: none;
         }
         input {
-            width: calc(100% - 30px);
+            width: ~"calc(100% - 30px)";
         }
         & > span.element-row {
-            width: 100%;
+            width: ~"calc(100% + 5px)";
             display: inline-block;
             cursor: pointer;
+            margin-left: -5px;
+            padding-left: 5px;
         }
         & > span.element-row:not(.selected):hover {
             background-color: @drive-hover;
