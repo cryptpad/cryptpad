@@ -164,6 +164,7 @@
   margin-right: 2px;
 }
 .cryptpad-toolbar button {
+  color: #000;
   background-color: inherit;
   background-image: linear-gradient(to bottom, #fff, #e4e4e4);
   border: 1px solid #A6A6A6;
