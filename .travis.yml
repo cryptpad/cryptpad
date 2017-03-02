@@ -9,7 +9,7 @@ branches:
     - soon
     - staging
 node_js:
-  - "4.2.1"
+  - "6.6.0"
 before_script:
   - npm run-script lint
   - cp config.js.dist config.js
