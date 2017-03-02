@@ -1693,6 +1693,7 @@ define([
                 moveElements([path], [TRASH], false, refresh);
             }
             else if ($(this).hasClass('open')) {
+                $element.click();
                 $element.dblclick();
             }
             else if ($(this).hasClass('open_ro')) {
