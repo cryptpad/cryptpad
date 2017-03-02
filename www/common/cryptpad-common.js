@@ -1199,7 +1199,7 @@ define([
                 content: Messages.user_rename
             });
         }
-        if (parsed && parsed.type && parsed.type !== 'settings') {
+        if (parsed && (!parsed.type || parsed.type !== 'settings')) {
             options.push({
                 tag: 'a',
                 attributes: {'class': 'settings'},
