@@ -48,10 +48,8 @@ define(function () {
     out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur";
     out.redLight = "Vous êtes déconnectés de la session";
 
-    out.importButton = 'Import';
     out.importButtonTitle = 'Importer un pad depuis un fichier local';
 
-    out.exportButton = 'Exporter';
     out.exportButtonTitle = 'Exporter ce pad vers un fichier local';
     out.exportPrompt = 'Comment souhaitez-vous nommer ce fichier ?';
 
@@ -62,7 +60,6 @@ define(function () {
 
     out.clickToEdit = 'Cliquer pour modifier';
 
-    out.forgetButton = 'Supprimer';
     out.forgetButtonTitle = 'Déplacer ce pad vers la corbeille';
     out.forgetPrompt = 'Cliquer sur OK déplacera ce pad vers la corbeille de votre CryptDrive, êtes-vous sûr ?';
     out.movedToTrash = 'Ce pad a été déplacé vers la corbeille.<br><a href="/drive/">Accéder à mon Drive</a>';
@@ -73,15 +70,10 @@ define(function () {
     out.newButton = 'Nouveau';
     out.newButtonTitle = 'Créer un nouveau pad';
 
-    out.presentButton = 'Present';
     out.presentButtonTitle = "Entrer en mode présentation";
     out.presentSuccess = 'Appuyer sur Échap pour quitter le mode présentation';
-    out.sourceButton = 'Voir la source';
-    out.sourceButtonTitle = "Quitter le mode présentation";
 
-    out.backgroundButton = 'Couleur de fond';
     out.backgroundButtonTitle = 'Changer la couleur de fond de la présentation';
-    out.colorButton = 'Couleur du texte';
     out.colorButtonTitle = 'Changer la couleur du texte en mode présentation';
 
     out.editShare = "Partager le lien d'édition";
@@ -108,7 +100,6 @@ define(function () {
     out.poll_p_save = "Vos modifications sont mises à jour instantanément, donc vous n'avez jamais besoin de sauver le contenu.";
     out.poll_p_encryption = "Tout ce que vous entrez est chiffré donc seules les personnes possédant le lien du sondage y ont accès. Même le serveur ne peut pas voir le contenu.";
 
-    out.wizardButton = 'Assistant';
     out.wizardLog = "Cliquez sur le bouton dans le coin supérieur gauche pour retourner au sondage";
     out.wizardTitle = "Utiliser l'assistant pour créer votre sondage";
     out.wizardConfirm = "Êtes-vous vraiment prêt à ajouter ces options au sondage ?";
@@ -307,7 +298,6 @@ define(function () {
     out.policy_whatweknow = 'Ce que nous savons de vous';
     out.policy_whatweknow_p1 = 'En tant qu\'application hébergée sur le web, CryptPad a accès aux meta-données exposées par le protocole HTTP. Ceci inclus votre adresse IP et d\'autres en-têtes HTTP qui peuvent être utilisées pour identifier votre propre navigateur. Vous pouvez voir quelles informations votre navigateur partage en visitant <a target="_blank" rel="noopener noreferrer" href="https://www.whatismybrowser.com/detect/what-http-headers-is-my-browser-sending" title="what http headers is my browser sending">WhatIsMyBrowser.com</a>.';
     out.policy_whatweknow_p2 = 'Nous utilisons <a href="https://piwik.org/" target="_blank" rel="noopener noreferrer" title="open source analytics platform">Piwik</a>, une plateforme open source d\'analytique, afin d\'en apprendre plus sur nos utilisateurs. Piwik nous indique comment vous avez trouvé CryptPad, que ce soit par une entrée directe, par un moteur de recherche ou depuis un lien provenant d\'un autre site web tel que Reddit ou Twitter. Nous savons également quand vous visitez le site, sur quels liens vous cliquez dans les pages informatives et combien de temps vous restez sur une page donnée.';
-    out.policy_whatweknow_p3 = 'Ces outils d\'analytique sont utilisés uniquement sur les pages informatives. Nous ne collectons aucune information concernant votre utilisation de nos applications "zero knowledge".';
     out.policy_howweuse = 'Comment nous utilisons ce que nous apprenons';
     out.policy_howweuse_p1 = 'Nous utilisons ces informations pour prendre de meilleures décisions concernant la communication autour de CryptPad, en évaluant le succès de ce qui a été realisé par le passé. Les informations concernant votre localisation nous permettent de savoir si nous devons considérer l\'ajout de traductions de CryptPad dans d\'autres langues que l\'anglais.';
     out.policy_howweuse_p2 = "Les informations concernant votre navigateur (que ce soit un système d\'exploitation de bureau ou d\'appareil portable) nous aident à prendre des décisions lors de la priorisation des ajouts et améliorations de fonctionnalités. Notre équipe de développement est petite, et nous essayons de prendre des décisions qui amélioreront l\'expérience du plus grand nombre d\'utilisateurs possible.";
