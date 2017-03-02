@@ -66,6 +66,7 @@ li {
 .contextMenu {
   display: none;
   position: absolute;
+  z-index: 50;
 }
 .contextMenu li {
   padding: 0;
@@ -247,6 +248,7 @@ span.fa-folder-open {
 }
 #content div.grid li input {
   width: 100%;
+  margin-top: 5px;
 }
 #content div.grid li .fa {
   display: block;
