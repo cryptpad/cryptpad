@@ -82,6 +82,10 @@ li {
   color: #eee;
   margin: -1px;
 }
+.selected .fa-minus-square-o,
+.selected .fa-plus-square-o {
+  color: #000;
+}
 span.fa-folder,
 span.fa-folder-open {
   color: #FEDE8B;
@@ -102,18 +106,21 @@ span.fa-folder-open {
   color: #000;
 }
 #tree li {
+  padding: 0 0 0 5px;
   cursor: auto;
 }
 #tree li.collapsed ul {
   display: none;
 }
 #tree li input {
-  width: calc(70%);
+  width: calc(100% - 30px);
 }
 #tree li > span.element-row {
-  width: 100%;
+  width: calc(100% + 5px);
   display: inline-block;
   cursor: pointer;
+  margin-left: -5px;
+  padding-left: 5px;
 }
 #tree li > span.element-row:not(.selected):hover {
   background-color: #eee;
