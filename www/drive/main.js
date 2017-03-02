@@ -1164,7 +1164,7 @@ define([
                     var e = useData ? element : filesOp.getFileData(element);
                     if (!e) {
                         e = {
-                            href : el,
+                            href : element,
                             title : Messages.fm_noname,
                             atime : 0,
                             ctime : 0

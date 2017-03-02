@@ -252,6 +252,7 @@ define(function () {
                                "Are you sure you want to continue?<br>" +
                                "Type “<em>I love CryptPad</em>” to confirm.";
     out.settings_resetDone = "Your drive is now empty!";
+    out.settings_resetError = "Incorrect verification text. Your CryptDrive has not been changed.";
     out.settings_resetTips = "Tips in CryptDrive";
     out.settings_resetTipsButton = "Reset the available tips in CryptDrive";
     out.settings_resetTipsDone = "All the tips are now visible again.";

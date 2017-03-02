@@ -119,6 +119,10 @@ define([
             return filesOp.getStructure();
         };
 
+        ret.replaceHref = function (o, n) {
+            return filesOp.replaceHref(o, n);
+        };
+
         var changeHandlers = ret.changeHandlers = [];
 
         ret.change = function (f) {};

@@ -423,6 +423,8 @@ define([
 
         var ret = {};
 
+        if (!href) { return ret; }
+
         if (!/^https*:\/\//.test(href)) {
             var idx = href.indexOf('/#');
             ret.type = href.slice(1, idx);
@@ -628,6 +630,7 @@ define([
                 return;
             }
 
+            var updateWeaker = [];
             var contains;
             var renamed = recent.map(function (pad) {
                 var p = parsePadUrl(pad.href);
@@ -661,6 +664,14 @@ define([
 
                     // set the name
                     pad.title = name;
+
+                    // If we now have a stronger version of a stored href, replace the weaker one by the strong one
+                    if (pad && pad.href && href !== pad.href) {
+                        updateWeaker.push({
+                            o: pad.href,
+                            n: href
+                        });
+                    }
                     pad.href = href;
                 }
                 return pad;
@@ -675,6 +686,11 @@ define([
             }
 
             setRecentPads(renamed, function (err, data) {
+                if (updateWeaker.length > 0) {
+                    updateWeaker.forEach(function (obj) {
+                        getStore().replaceHref(obj.o, obj.n);
+                    });
+                }
                 cb(err, data);
             });
         });
@@ -1183,7 +1199,7 @@ define([
                 content: Messages.user_rename
             });
         }
-        if (parsed && parsed.type && parsed.type !== 'settings') {
+        if (parsed && (!parsed.type || parsed.type !== 'settings')) {
             options.push({
                 tag: 'a',
                 attributes: {'class': 'settings'},

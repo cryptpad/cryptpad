@@ -113,6 +113,7 @@ span.fa-folder-open {
 #tree li > span.element-row {
   width: 100%;
   display: inline-block;
+  cursor: pointer;
 }
 #tree li > span.element-row:not(.selected):hover {
   background-color: #eee;
