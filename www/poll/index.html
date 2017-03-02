@@ -11,11 +11,7 @@
         id="favicon" />
     <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="/customize/main.css" />
-    <script data-main="main" src="/bower_components/requirejs/require.js"></script>
-    <script> require.config({
-        waitSeconds: 60,
-        urlArgs: "bust=1.1.0",
-    }); </script>
+    <script data-bootload="main.js" data-main="/common/boot.js" src="/bower_components/requirejs/require.js"></script>
     <style>
         html, body {
             width: 100%;

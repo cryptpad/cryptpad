@@ -18,7 +18,6 @@ define([
 
     // Use `$(function () {});` to make sure the html is loaded before doing anything else
     $(function () {
-
     var $iframe = $('#pad-iframe').contents();
     var ifrw = $('#pad-iframe')[0].contentWindow;
 
@@ -1804,7 +1803,7 @@ define([
                 if (path.length !== 4) { return; }
                 var element = filesOp.getTrashElementData(path);
                 var sPath = stringifyPath(element.path);
-                Cryptpad.alert('<strong>' + Messages.fm_originalPath + "</strong>:<br>" + sPath);
+                Cryptpad.alert('<strong>' + Messages.fm_originalPath + "</strong>:<br>" + sPath, undefined, true);
             }
             module.hideMenu();
         });
@@ -1948,7 +1947,7 @@ define([
 
     var setName = APP.setName = function (newName) {
         if (typeof(newName) !== 'string') { return; }
-        var myUserNameTemp = Cryptpad.fixHTML(newName.trim());
+        var myUserNameTemp = newName.trim();
         if(myUserNameTemp.length > 32) {
             myUserNameTemp = myUserNameTemp.substr(0, 32);
         }
@@ -2066,7 +2065,7 @@ define([
                 $backupButton.attr('title', Messages.fm_backup_title);
                 $backupButton.on('click', function() {
                     var url = window.location.origin + window.location.pathname + '#' + editHash;
-                    Cryptpad.alert(Messages._getKey('fm_alert_backupUrl', [url]));
+                    Cryptpad.alert(Messages._getKey('fm_alert_backupUrl', [url]), undefined, true);
                     $('#fm_backupUrl').val(url);
                     $('#fm_backupUrl').click(function () {
                         $(this).select();
@@ -2091,7 +2090,7 @@ define([
             setEditable(false);
             if (APP.refresh) { APP.refresh(); }
             APP.toolbar.failed();
-            Cryptpad.alert(Messages.common_connectionLost);
+            Cryptpad.alert(Messages.common_connectionLost, undefined, true);
         };
         var onReconnect = function (info) {
             setEditable(true);
@@ -2124,6 +2123,5 @@ define([
             onConnectError();
         }
     });
-
     });
 });

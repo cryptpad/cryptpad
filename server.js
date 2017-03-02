@@ -7,6 +7,7 @@ var Https = require('https');
 var Fs = require('fs');
 var WebSocketServer = require('ws').Server;
 var NetfluxSrv = require('./NetfluxWebsocketSrv');
+var Package = require('./package.json');
 
 var config = require('./config');
 var websocketPort = config.websocketPort || config.httpPort;
@@ -19,20 +20,31 @@ var app = Express();
 
 var httpsOpts;
 
+const clone = (x) => (JSON.parse(JSON.stringify(x)));
+
 var setHeaders = (function () {
     if (typeof(config.httpHeaders) !== 'object') { return function () {}; }
 
-    var headers = JSON.parse(JSON.stringify(config.httpHeaders));
+    const headers = clone(config.httpHeaders);
+    if (config.contentSecurity) {
+        headers['Content-Security-Policy'] = clone(config.contentSecurity);
+    }
+    const padHeaders = clone(headers);
+    if (config.padContentSecurity) {
+        padHeaders['Content-Security-Policy'] = clone(config.padContentSecurity);
+    }
     if (Object.keys(headers).length) {
-        return function (res) {
-            for (var header in headers) { res.setHeader(header, headers[header]); }
+        return function (req, res) {
+            const h = /^\/pad\/inner\.html.*/.test(req.url) ? padHeaders : headers;
+            for (let header in h) { res.setHeader(header, h[header]); }
         };
     }
     return function () {};
 }());
 
 app.use(function (req, res, next) {
-    setHeaders(res);
+    setHeaders(req, res);
+    if (/[\?\&]ver=[^\/]+$/.test(req.url)) { res.setHeader("Cache-Control", "max-age=31536000"); }
     next();
 });
 
@@ -82,6 +94,10 @@ app.get('/api/config', function(req, res){
     var host = req.headers.host.replace(/\:[0-9]+/, '');
     res.setHeader('Content-Type', 'text/javascript');
     res.send('define(' + JSON.stringify({
+        requireConf: {
+            waitSeconds: 60,
+            urlArgs: 'ver=' + Package.version
+        },
         websocketPath: config.useExternalWebsocket ? undefined : config.websocketPath,
         websocketURL:'ws' + ((useSecureWebsockets) ? 's' : '') + '://' + host + ':' +
             websocketPort + '/cryptpad_websocket',

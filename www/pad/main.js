@@ -293,7 +293,7 @@ define([
 
             var setName = module.setName = function (newName) {
                 if (typeof(newName) !== 'string') { return; }
-                var myUserNameTemp = Cryptpad.fixHTML(newName.trim());
+                var myUserNameTemp = newName.trim();
                 if(myUserNameTemp.length > 32) {
                     myUserNameTemp = myUserNameTemp.substr(0, 32);
                 }
@@ -524,13 +524,7 @@ define([
             };
 
             var getHTML = function (Dom) {
-                var data = inner.innerHTML;
-                Dom = Dom || (new DOMParser()).parseFromString(data,"text/html");
-                return ('<!DOCTYPE html>\n' +
-                    '<html>\n' +
-                    (typeof(Hyperjson.toString) === 'function'?
-                        Hyperjson.toString(Hyperjson.fromDOM(Dom.body)):
-                        Dom.head.outerHTML) + '\n');
+                return ('<!DOCTYPE html>\n' + '<html>\n' + inner.innerHTML);
             };
 
             var domFromHTML = function (html) {
@@ -732,7 +726,7 @@ define([
                 setEditable(false);
                 // TODO inform them that the session was torn down
                 toolbar.failed();
-                Cryptpad.alert(Messages.common_connectionLost);
+                Cryptpad.alert(Messages.common_connectionLost, undefined, true);
             };
 
             var onConnectionChange = realtimeOptions.onConnectionChange = function (info) {
@@ -743,7 +737,7 @@ define([
                     toolbar.reconnecting(info.myId);
                     Cryptpad.findOKButton().click();
                 } else {
-                    Cryptpad.alert(Messages.common_connectionLost);
+                    Cryptpad.alert(Messages.common_connectionLost, undefined, true);
                 }
             };
 
