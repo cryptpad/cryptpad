@@ -912,7 +912,7 @@ define([
         switch (type) {
             case 'export':
                 button = $('<button>', {
-                    title: Messages.exportButton + '\n' + Messages.exportButtonTitle,
+                    title: Messages.exportButtonTitle,
                 }).append($('<span>', {'class':'fa fa-download', style: 'font:'+size+' FontAwesome'}));
                 if (callback) {
                     button.click(callback);
@@ -920,7 +920,7 @@ define([
                 break;
             case 'import':
                 button = $('<button>', {
-                    title: Messages.importButton + '\n' + Messages.importButtonTitle,
+                    title: Messages.importButtonTitle,
                 }).append($('<span>', {'class':'fa fa-upload', style: 'font:'+size+' FontAwesome'}));
                 if (callback) {
                     button.click(common.importContent('text/plain', function (content, file) {
@@ -931,7 +931,7 @@ define([
             case 'forget':
                 button = $('<button>', {
                     id: 'cryptpad-forget',
-                    title: Messages.forgetButton + '\n' + Messages.forgetButtonTitle,
+                    title: Messages.forgetButtonTitle,
                     'class': "fa fa-trash cryptpad-forget",
                     style: 'font:'+size+' FontAwesome'
                 });
@@ -1020,14 +1020,14 @@ define([
                 break;
             case 'present':
                 button = $('<button>', {
-                    title: Messages.presentButton + '\n' + Messages.presentButtonTitle,
+                    title: Messages.presentButtonTitle,
                     'class': "fa fa-play-circle cryptpad-present-button", // class used in slide.js
                     style: 'font:'+size+' FontAwesome'
                 });
                 break;
             case 'source':
                 button = $('<button>', {
-                    title: Messages.sourceButton + '\n' + Messages.sourceButtonTitle,
+                    title: Messages.sourceButtonTitle,
                     'class': "fa fa-stop-circle cryptpad-source-button", // class used in slide.js
                     style: 'font:'+size+' FontAwesome'
                 });

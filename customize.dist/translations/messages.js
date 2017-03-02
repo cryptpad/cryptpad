@@ -50,10 +50,8 @@ define(function () {
     out.orangeLight = "Your slow connection may impact your experience";
     out.redLight = "You are disconnected from the session";
 
-    out.importButton = 'IMPORT';
     out.importButtonTitle = 'Import a pad from a local file';
 
-    out.exportButton = 'EXPORT';
     out.exportButtonTitle = 'Export this pad to a local file';
     out.exportPrompt = 'What would you like to name your file?';
 
@@ -64,7 +62,6 @@ define(function () {
 
     out.clickToEdit = "Click to edit";
 
-    out.forgetButton = 'FORGET';
     out.forgetButtonTitle = 'Move this pad to the trash';
     out.forgetPrompt = 'Clicking OK will move this pad to your trash. Are you sure?';
     out.movedToTrash = 'That pad has been moved to the trash.<br><a href="/drive/">Access my Drive</a>';
@@ -75,19 +72,14 @@ define(function () {
     out.newButton = 'New';
     out.newButtonTitle = 'Create a new pad';
 
-    out.presentButton = 'PRESENT';
     out.presentButtonTitle = "Enter presentation mode";
     out.presentSuccess = 'Hit ESC to exit presentation mode';
-    out.sourceButton = 'VIEW SOURCE'; //TODO remove? hidden behind the present mode
-    out.sourceButtonTitle = "Leave presentation mode";
 
-    out.backgroundButton = 'BACKGROUND COLOR';
     out.backgroundButtonTitle = 'Change the background color in the presentation';
-    out.colorButton = 'TEXT COLOR';
     out.colorButtonTitle = 'Change the text color in presentation mode';
 
     out.editShare = "Editing link";
-    out.editShareTitle = "Copy the edit link to clipboard";
+    out.editShareTitle = "Copy the editing link to clipboard";
     out.viewShare = "Read-only link";
     out.viewShareTitle = "Copy the read-only link to clipboard";
     out.viewOpen = "Open read-only link in new tab";
@@ -110,7 +102,6 @@ define(function () {
     out.poll_p_save = "Your settings are updated instantly, so you never need to save.";
     out.poll_p_encryption = "All your input is encrypted so only people who have the link can access it. Even the server cannot see what you change.";
 
-    out.wizardButton = 'WIZARD';
     out.wizardLog = "Click the button in the top left to return to your poll";
     out.wizardTitle = "Use the wizard to create your poll";
     out.wizardConfirm = "Are you really ready to add these options to your poll?";
