@@ -689,7 +689,7 @@ define([
                 // inform of network disconnect
                 setEditable(false);
                 toolbar.failed();
-                Cryptpad.alert(Messages.common_connectionLost, undefined, force);
+                Cryptpad.alert(Messages.common_connectionLost, undefined, true);
             };
 
             var onConnectionChange = config.onConnectionChange = function (info) {
@@ -700,7 +700,7 @@ define([
                     toolbar.reconnecting(info.myId);
                     Cryptpad.findOKButton().click();
                 } else {
-                    Cryptpad.alert(Messages.common_connectionLost, undefined, force);
+                    Cryptpad.alert(Messages.common_connectionLost, undefined, true);
                 }
             };
 
