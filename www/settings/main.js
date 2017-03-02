@@ -165,7 +165,10 @@ define([
 
         $button.click(function () {
             Cryptpad.prompt(Messages.settings_resetPrompt, "", function (val) {
-                if (val !== "I love CryptPad") { return; }
+                if (val !== "I love CryptPad") {
+                    Cryptpad.alert(Messages.settings_resetError);
+                    return;
+                }
                 obj.proxy.drive = Cryptpad.getStore().getEmptyObject();
                 Cryptpad.alert(Messages.settings_resetDone);
             });
