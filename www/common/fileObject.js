@@ -272,7 +272,7 @@ define([
             var unsorted = files[rootName].slice();
             var ret = [];
             var i = -1;
-            while ((i = unsorted.indexOf(href, i+1)) != -1){
+            while ((i = unsorted.indexOf(href, i+1)) !== -1){
                 ret.push([rootName, i]);
             }
             return ret;

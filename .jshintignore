@@ -5,6 +5,7 @@ www/common/chainpad.js
 storage/kad.js
 www/common/otaml.js
 
+server.js
 NetFluxWebsocketSrv.js
 NetFluxWebsocketServer.js
 WebRTCSrv.js
