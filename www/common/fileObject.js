@@ -243,10 +243,9 @@ define([
         };
 
         var _findFileInRoot = function (path, href) {
-            if (path[0] !== ROOT) { return []; }
+            if (path[0] !== ROOT && path[0] !== TRASH) { return []; }
             var paths = [];
             var root = exp.findElement(files, path);
-
             var addPaths = function (p) {
                 if (paths.indexOf(p) === -1) {
                     paths.push(p);
@@ -254,7 +253,7 @@ define([
             };
 
             if (isFile(root)) {
-                if (compareFiles(href, root[e])) {
+                if (compareFiles(href, root)) {
                     if (paths.indexOf(path) === -1) {
                         paths.push(path);
                     }
@@ -262,16 +261,14 @@ define([
                 return paths;
             }
             for (var e in root) {
-                if (!isFile(root[e])) {
-                    var nPath = path.slice();
-                    nPath.push(e);
-                    _findFileInRoot(nPath, href).forEach(addPaths);
-                }
+                var nPath = path.slice();
+                nPath.push(e);
+                _findFileInRoot(nPath, href).forEach(addPaths);
             }
 
             return paths;
         };
-        var _findFileInArray = function (rootName, href) {
+        var _findFileInHrefArray = function (rootName, href) {
             var unsorted = files[rootName].slice();
             var ret = [];
             var i = -1;
@@ -322,9 +319,8 @@ define([
             var unsortedpaths = _findFileInHrefArray(UNSORTED, href);
             var templatepaths = _findFileInHrefArray(TEMPLATE, href);
             var trashpaths = _findFileInTrash([TRASH], href);
-            // TODO return concat all
+            return rootpaths.concat(unsortedpaths, templatepaths, trashpaths);
         };
-
 
         // Remove the selected 'href' from the tree located at 'path', and push its locations to the 'paths' array
         var removeFileFromRoot = function (path, href) {
@@ -458,7 +454,6 @@ define([
                 var parentEl = exp.findElement(files, parentPath);
                 // Trash root: we have array here, we can't just splice with the path otherwise we might break the path
                 // of another element in the loop
-                console.log(path);
                 if (path.length === 4) {
                     trashRoot.push({
                         name: path[1],
@@ -657,7 +652,6 @@ define([
         // Import elements in the file manager
         var importElements = exp.importElements = function (elements, path, cb) {
             if (!elements || elements.length === 0) { return; }
-            console.log(elements);
             var newParent = findElement(files, path);
             if (!newParent) { debug("Trying to import elements into a non-existing folder"); return; }
             elements.forEach(function (e) {
@@ -754,7 +748,7 @@ define([
         };
 
         // Delete permanently (remove from the trash root and from filesData)
-        var removeFromTrash = exp.removeFromTrash = function (path, cb) {
+        var removeFromTrash = exp.removeFromTrash = function (path, cb, nocheck) {
             if (!path || path.length < 4 || path[0] !== TRASH) { return; }
             // Remove the last element from the path to get the parent path and the element name
             var parentPath = path.slice();
@@ -775,7 +769,9 @@ define([
                 parentEl[name] = undefined;
                 delete parentEl[name];
             }
-            checkDeletedFiles();
+            if (!nocheck) {
+                checkDeletedFiles();
+            }
             if(cb) { cb(); }
         };
 
@@ -857,7 +853,7 @@ define([
             pushToTrash(key, href, path);
         };
 
-        var addUnsortedPad = exp.addPad = function (href, path, name) {
+        var addPad = exp.addPad = function (href, path, name) {
             if (workgroup) { return; }
             if (!href) { return; }
             var unsortedFiles = getUnsortedFiles();
@@ -882,6 +878,7 @@ define([
                 }
             }
             if (unsortedFiles.indexOf(href) === -1 && rootFiles.indexOf(href) === -1 && templateFiles.indexOf(href) === -1 && trashFiles.indexOf(href) === -1) {
+                console.log('push', href);
                 files[UNSORTED].push(href);
             }
         };
@@ -905,20 +902,27 @@ define([
 
         // Replace a href by a stronger one everywhere in the drive (except FILES_DATA)
         var replaceHref = exp.replaceHref = function (o, n) {
-            replaceFile([ROOT], o, n);
-            var i = files[UNSORTED].indexOf(o);
-            if (i !== -1) {
-                files[UNSORTED].splice(i, 1);
-                files[UNSORTED].push(n);
-            }
-            var j = files[TEMPLATE].indexOf(o);
-            if (j !== -1) {
-                files[TEMPLATE].splice(j, 1);
-                files[TEMPLATE].push(n);
-            }
-            var k = getTrashFiles().indexOf(o);
-            if (k !== -1) {
-                // TODO?
+            if (!isFile(o) || !isFile(n)) { return; }
+            var paths = findFile(o);
+
+            // Remove all the occurences in the trash
+            // Replace all the occurences not in the trash
+            // If all the occurences are in the trash or no occurence, add the pad to unsorted
+            var allInTrash = true;
+            paths.forEach(function (p) {
+                if (p[0] === TRASH) {
+                    removeFromTrash(p, null, true); // 3rd parameter means skip "checkDeletedFiles"
+                    return;
+                } else {
+                    allInTrash = false;
+                    var parentPath = p.slice();
+                    var key = parentPath.pop();
+                    var parentEl = findElement(files, parentPath);
+                    parentEl[key] = n;
+                }
+            });
+            if (allInTrash) {
+                addPad(n);
             }
         };
 

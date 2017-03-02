@@ -630,6 +630,7 @@ define([
                 return;
             }
 
+            var updateWeaker = [];
             var contains;
             var renamed = recent.map(function (pad) {
                 var p = parsePadUrl(pad.href);
@@ -663,6 +664,14 @@ define([
 
                     // set the name
                     pad.title = name;
+
+                    // If we now have a stronger version of a stored href, replace the weaker one by the strong one
+                    if (pad && pad.href && href !== pad.href) {
+                        updateWeaker.push({
+                            o: pad.href,
+                            n: href
+                        });
+                    }
                     pad.href = href;
                 }
                 return pad;
@@ -677,6 +686,11 @@ define([
             }
 
             setRecentPads(renamed, function (err, data) {
+                if (updateWeaker.length > 0) {
+                    updateWeaker.forEach(function (obj) {
+                        getStore().replaceHref(obj.o, obj.n);
+                    });
+                }
                 cb(err, data);
             });
         });
