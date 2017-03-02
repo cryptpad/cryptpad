@@ -138,7 +138,7 @@ define([
             Slide.setModal($modal, $content, $pad, ifrw, initialState);
 
             var enterPresentationMode = function (shouldLog) {
-                Slide.show(true, $textarea.val());
+                Slide.show(true, editor.getValue());
                 if (shouldLog) {
                     Cryptpad.log(Messages.presentSuccess);
                 }
