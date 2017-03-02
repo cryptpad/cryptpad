@@ -221,7 +221,7 @@ define(function () {
     out.login_noSuchUser = 'Invalid username or password. Try again, or sign up';
     out.login_invalUser = 'Username required';
     out.login_invalPass = 'Password required';
-    out.login_unhandledError = 'An unexpected error occured :(';
+    out.login_unhandledError = 'An unexpected error occurred :(';
 
     out.register_importRecent = "Import pad history (Recommended)";
     out.register_acceptTerms = "I accept <a href='/terms.html'>the terms of service</a>";

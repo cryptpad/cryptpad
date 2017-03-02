@@ -138,7 +138,7 @@ define([
             Slide.setModal($modal, $content, $pad, ifrw, initialState);
 
             var enterPresentationMode = function (shouldLog) {
-                Slide.show(true, $textarea.val());
+                Slide.show(true, editor.getValue());
                 if (shouldLog) {
                     Cryptpad.log(Messages.presentSuccess);
                 }
@@ -771,7 +771,7 @@ define([
                 // inform of network disconnect
                 setEditable(false);
                 toolbar.failed();
-                Cryptpad.alert(Messages.common_connectionLost);
+                Cryptpad.alert(Messages.common_connectionLost, undefined, true);
             };
 
             var onConnectionChange = config.onConnectionChange = function (info) {
@@ -782,7 +782,7 @@ define([
                     toolbar.reconnecting(info.myId);
                     Cryptpad.findOKButton().click();
                 } else {
-                    Cryptpad.alert(Messages.common_connectionLost);
+                    Cryptpad.alert(Messages.common_connectionLost, undefined, true);
                 }
             };
 
