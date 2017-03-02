@@ -423,6 +423,8 @@ define([
 
         var ret = {};
 
+        if (!href) { return ret; }
+
         if (!/^https*:\/\//.test(href)) {
             var idx = href.indexOf('/#');
             ret.type = href.slice(1, idx);
