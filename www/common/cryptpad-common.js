@@ -1,5 +1,5 @@
 define([
-    '/api/config?cb=' + Math.random().toString(16).slice(2),
+    '/api/config',
     '/customize/messages.js?app=' + window.location.pathname.split('/').filter(function (x) { return x; }).join('.'),
     '/customize/fsStore.js',
     '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
@@ -838,7 +838,7 @@ define([
         if (!$('#' + LOADING).is(':visible')) { common.addLoadingScreen(); }
         $('.spinnerContainer').hide();
         if (transparent) { $('#' + LOADING).css('opacity', 0.8); }
-        $('#' + LOADING).find('p').html(error || Messages.error);
+        $('#' + LOADING).find('p').text(error || Messages.error);
     };
 
     /*
@@ -961,7 +961,7 @@ define([
                                 } else {
                                     callback();
                                 }
-                                common.alert(Messages.movedToTrash);
+                                common.alert(Messages.movedToTrash, undefined, true);
                                 return;
                             });
                         });
@@ -1292,8 +1292,9 @@ define([
         $(window).off('keyup', handler);
     };
 
-    common.alert = function (msg, cb) {
+    common.alert = function (msg, cb, force) {
         cb = cb || function () {};
+        if (force !== true) { msg = fixHTML(msg); }
         var keyHandler = listenForKeys(function (e) { // yes
             findOKButton().click();
         });
@@ -1306,9 +1307,10 @@ define([
         });
     };
 
-    common.prompt = function (msg, def, cb, opt) {
+    common.prompt = function (msg, def, cb, opt, force) {
         opt = opt || {};
         cb = cb || function () {};
+        if (force !== true) { msg = fixHTML(msg); }
 
         var keyHandler = listenForKeys(function (e) { // yes
             findOKButton().click();
@@ -1329,9 +1331,11 @@ define([
             });
     };
 
-    common.confirm = function (msg, cb, opt) {
+    common.confirm = function (msg, cb, opt, force) {
         opt = opt || {};
         cb = cb || function () {};
+        if (force !== true) { msg = fixHTML(msg); }
+
         var keyHandler = listenForKeys(function (e) {
             findOKButton().click();
         }, function (e) {

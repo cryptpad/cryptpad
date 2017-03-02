@@ -167,7 +167,7 @@ define([
                 if (val !== "I love CryptPad") { return; }
                 obj.proxy.drive = Cryptpad.getStore().getEmptyObject();
                 Cryptpad.alert(Messages.settings_resetDone);
-            });
+            }, undefined, true);
         });
 
         return $div;

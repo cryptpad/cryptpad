@@ -662,7 +662,7 @@ define([
 
     var disconnect = function (info) {
         //setEditable(false); // TODO
-        Cryptpad.alert(Messages.common_connectionLost);
+        Cryptpad.alert(Messages.common_connectionLost, undefined, true);
     };
 
     var create = function (info) {
