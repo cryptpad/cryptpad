@@ -39,7 +39,32 @@ cp config.js.dist config.js
 ## for example aon the default mongodb port `mongodb://localhost:27017/demo_database`
 $EDITOR config.js
 
+```
+
+## Running
+
+Run server.js using node:
 node ./server.js
+
+To run the server using systemd daemon you can:
+-Create file in /etc/systemd/system/name_of_the_daemon.service (cryptpad.service recommended)
+-Place this code inside:
+```
+[Unit]
+Description=cryptpad
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/node /where/is/your/cryptpad/server.js
+Restart=always
+User=root (user that has access to all cryptpad related files, root recommended ONLY for testing)
+Group=root (group that has access to all cryptpad related files, root recommended ONLY for testing)
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+WorkingDirectory=/where/is/your/cryptpad
+
+[Install]
+WantedBy=multi-user.target
 ```
 
 ## Maintenance
