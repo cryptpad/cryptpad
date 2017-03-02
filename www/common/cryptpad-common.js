@@ -164,6 +164,7 @@ define([
     var isArray = common.isArray = $.isArray;
 
     var fixHTML = common.fixHTML = function (str) {
+        if (!str) { return ''; }
         return str.replace(/[<>&"']/g, function (x) {
             return ({ "<": "&lt;", ">": "&gt", "&": "&amp;", '"': "&#34;", "'": "&#39;" })[x];
         });
