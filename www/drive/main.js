@@ -1958,6 +1958,9 @@ define([
                 logError("Couldn't set username", err);
                 return;
             }
+            if (myUserName === "") {
+                myUserName = Messages.anonymous;
+            }
             APP.$displayName.text(myUserName);
         });
     };
