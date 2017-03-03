@@ -110,7 +110,7 @@ define([
             var defaultName = Cryptpad.getDefaultName(parsedHash);
 
             if (readOnly) {
-                $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox > .cke_toolbar').hide();
+                $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox > .cke_toolbox_main').hide();
             }
 
             /* add a class to the magicline plugin so we can pick it out more easily */
@@ -584,23 +584,24 @@ define([
                     editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
                 }
 
-                // Expand / collapse the toolbar
-                var $existingButton = $bar.find('#cke_1_toolbar_collapser');
-                var $collapse = Cryptpad.createButton(null, true);
-                $existingButton.hide();
-                $collapse.removeClass('fa-question');
-                var updateIcon = function () {
-                    $collapse.removeClass('fa-caret-down').removeClass('fa-caret-up');
-                    var isCollapsed = !$bar.find('.cke_toolbox_main').is(':visible');
-                    if (isCollapsed) { $collapse.addClass('fa-caret-down'); }
-                    else { $collapse.addClass('fa-caret-up'); }
-                };
-                updateIcon();
-                $collapse.click(function () {
-                    $existingButton.click();
+                var $existingButton = $bar.find('#cke_1_toolbar_collapser').hide();
+                if (!readOnly) {
+                    // Expand / collapse the toolbar
+                    var $collapse = Cryptpad.createButton(null, true);
+                    $collapse.removeClass('fa-question');
+                    var updateIcon = function () {
+                        $collapse.removeClass('fa-caret-down').removeClass('fa-caret-up');
+                        var isCollapsed = !$bar.find('.cke_toolbox_main').is(':visible');
+                        if (isCollapsed) { $collapse.addClass('fa-caret-down'); }
+                        else { $collapse.addClass('fa-caret-up'); }
+                    };
                     updateIcon();
-                });
-                $rightside.append($collapse);
+                    $collapse.click(function () {
+                        $existingButton.click();
+                        updateIcon();
+                    });
+                    $rightside.append($collapse);
+                }
 
                 /* add an export button */
                 var $export = Cryptpad.createButton('export', true, {}, exportFile);
