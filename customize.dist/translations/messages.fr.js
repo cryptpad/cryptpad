@@ -76,9 +76,11 @@ define(function () {
     out.backgroundButtonTitle = 'Changer la couleur de fond de la présentation';
     out.colorButtonTitle = 'Changer la couleur du texte en mode présentation';
 
-    out.editShare = "Partager le lien d'édition";
+    out.editShare = "Lien d'édition";
     out.editShareTitle = "Copier le lien d'édition dans le presse-papiers";
-    out.viewShare = "Partager lien de lecture-seule";
+    out.editOpen = "Éditer dans un nouvel onglet";
+    out.editOpenTitle = "Ouvrir le lien d'édition dans un nouvel onglet";
+    out.viewShare = "Lien de lecture-seule";
     out.viewShareTitle = "Copier lien d'accès en lecture seule dans le presse-papiers";
     out.viewOpen = "Voir dans un nouvel onglet";
     out.viewOpenTitle = "Ouvrir le lien en lecture seule dans un nouvel onglet";

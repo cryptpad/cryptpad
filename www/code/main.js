@@ -374,6 +374,10 @@ define([
                     userData: userData,
                     readOnly: readOnly,
                     ifrw: ifrw,
+                    share: {
+                        secret: secret,
+                        channel: info.channel
+                    },
                     title: {
                         onRename: renameCb,
                         defaultName: defaultName,
@@ -386,8 +390,6 @@ define([
 
                 var $rightside = $bar.find('.' + Toolbar.constants.rightside);
                 var $userBlock = $bar.find('.' + Toolbar.constants.username);
-                var $editShare = $bar.find('.' + Toolbar.constants.editShare);
-                var $viewShare = $bar.find('.' + Toolbar.constants.viewShare);
                 var $usernameButton = module.$userNameButton = $($bar.find('.' + Toolbar.constants.changeUsername));
 
                 var editHash;
@@ -418,17 +420,6 @@ define([
                 };
                 var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
                 $rightside.append($forgetPad);
-
-                if (!readOnly) {
-                    $editShare.append(Cryptpad.createButton('editshare', false, {editHash: editHash}));
-                }
-                if (viewHash) {
-                    /* add a 'links' button */
-                    $viewShare.append(Cryptpad.createButton('viewshare', false, {viewHash: viewHash}));
-                    if (!readOnly) {
-                        $viewShare.append(Cryptpad.createButton('viewopen', false, {viewHash: viewHash}));
-                    }
-                }
 
                 var configureLanguage = function (cb) {
                     // FIXME this is async so make it happen as early as possible
