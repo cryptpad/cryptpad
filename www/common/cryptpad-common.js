@@ -22,6 +22,7 @@ define([
     var common = window.Cryptpad = {
         Messages: Messages,
         Alertify: Alertify,
+        Clipboard: Clipboard
     };
 
     var store;
@@ -223,6 +224,7 @@ define([
         if (typeof keys === 'string') {
             return chanKey + keys;
         }
+        if (!keys.editKeyStr) { return; }
         return '/1/edit/' + hexToBase64(chanKey) + '/' + Crypto.b64RemoveSlashes(keys.editKeyStr);
     };
     var getViewHashFromKeys = common.getViewHashFromKeys = function (chanKey, keys) {
@@ -303,6 +305,18 @@ define([
         }
         return secret;
     };
+
+    var getHashes = common.getHashes = function (channel, secret) {
+        var hashes = {};
+        if (secret.keys.editKeyStr) {
+            hashes.editHash = getEditHashFromKeys(channel, secret.keys);
+        }
+        if (secret.keys.viewKeyStr) {
+            hashes.viewHash = getViewHashFromKeys(channel, secret.keys);
+        }
+        return hashes;
+    };
+
 
     var uint8ArrayToHex = common.uint8ArrayToHex = function (a) {
         // call slice so Uint8Arrays work as expected
@@ -607,22 +621,30 @@ define([
     };
 
     // STORAGE
-    var isNotStrongestStored = common.isNotStrongestStored = function (href, recents) {
-        var parsed = parsePadUrl(href);
+    var findStronger = common.findStronger = function (href, recents) {
+        var rHref = href || getRelativeHref(window.location.href);
+        var parsed = parsePadUrl(rHref);
         if (!parsed.hash) { return false; }
-        return recents.some(function (pad) {
+        var stronger;
+        recents.some(function (pad) {
             var p = parsePadUrl(pad.href);
-            if (p.type !== parsed.type) { return false; } // Not the same type
-            if (p.hash === parsed.hash) { return false; } // Same hash, not stronger
+            if (p.type !== parsed.type) { return; } // Not the same type
+            if (p.hash === parsed.hash) { return; } // Same hash, not stronger
             var pHash = parseHash(p.hash);
             var parsedHash = parseHash(parsed.hash);
             if (!parsedHash || !pHash) { return; }
-            if (pHash.version !== parsedHash.version) { return false; }
-            if (pHash.channel !== parsedHash.channel) { return false; }
-            if (pHash.mode === 'edit' && parsedHash.mode === 'view') { return true; }
-            if (pHash.mode === parsedHash.mode && parsedHash.present) { return true; }
-            return false;
+            if (pHash.version !== parsedHash.version) { return; }
+            if (pHash.channel !== parsedHash.channel) { return; }
+            if (pHash.mode === 'edit' && parsedHash.mode === 'view') {
+                stronger = pad.href;
+                return true;
+            }
+            return;
         });
+        return stronger;
+    };
+    var isNotStrongestStored = common.isNotStrongestStored = function (href, recents) {
+        return findStronger(href, recents);
     };
     var setPadTitle = common.setPadTitle = function (name, cb) {
         var href = window.location.href;
@@ -986,6 +1008,7 @@ define([
                     });
                 }
                 break;
+            // TODO remove editshare, viewshare, and viewopen
             case 'editshare':
                 button = $('<a>', {
                     title: Messages.editShareTitle,

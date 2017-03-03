@@ -80,9 +80,11 @@ define(function () {
 
     out.editShare = "Editing link";
     out.editShareTitle = "Copy the editing link to clipboard";
+    out.editOpen = "Open editing link in a new tab";
+    out.editOpenTitle = "Open this pad in editing mode in a new tab";
     out.viewShare = "Read-only link";
     out.viewShareTitle = "Copy the read-only link to clipboard";
-    out.viewOpen = "Open read-only link in new tab";
+    out.viewOpen = "Open read-only link in a new tab";
     out.viewOpenTitle = "Open this pad in read-only mode in a new tab";
 
     out.notifyJoined = "{0} has joined the collaborative session";
