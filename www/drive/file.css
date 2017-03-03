@@ -248,8 +248,13 @@ span.fa-folder-open {
   text-align: center;
   vertical-align: top;
   overflow: hidden;
+  text-overflow: ellipsis;
   padding-top: 10px;
   padding-bottom: 5px;
+  max-height: 145px;
+}
+#content div.grid li:not(.selected) {
+  border: transparent 1px;
 }
 #content div.grid li .name {
   width: 100%;
