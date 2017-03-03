@@ -292,9 +292,14 @@ span {
             text-align: center;
             vertical-align: top;
             overflow: hidden;
+            text-overflow: ellipsis;
             padding-top: 10px;
             padding-bottom: 5px;
+            max-height: 145px;
 
+            &:not(.selected) {
+                border: transparent 1px;
+            }
             .name {
                 width: 100%;
             }
