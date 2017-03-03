@@ -647,7 +647,7 @@ define([
             // Update the toolbar list:
             // Add the current user in the metadata if he has edit rights
             if (readOnly) { return; }
-            if (typeof(lastName) === 'string' && lastName.length) {
+            if (typeof(lastName) === 'string') {
                 setName(lastName);
             } else {
                 var myData = {};
