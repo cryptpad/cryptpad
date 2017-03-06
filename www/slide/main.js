@@ -128,7 +128,9 @@ define([
                         }
                         editor.setOption('theme', theme);
                     }
-                    if ($select) { $select.find('.buttonTitle').text(theme || 'Theme'); }
+                    if ($select) {
+                        $select.setValue(theme || 'Theme');
+                    }
                 };
             }());
 
@@ -500,6 +502,8 @@ define([
                         text: 'Theme', // Button initial text
                         options: options, // Entries displayed in the menu
                         left: true, // Open to the left of the button
+                        isSelect: true,
+                        initialValue: lastTheme
                     };
                     var $block = module.$theme = Cryptpad.createDropdown(dropdownConfig);
                     var $button = $block.find('.buttonTitle');
@@ -509,7 +513,6 @@ define([
                     $block.find('a').click(function (e) {
                         var theme = $(this).attr('data-value');
                         setTheme(theme, $block);
-                        $button.text($(this).text());
                         localStorage.setItem(themeKey, theme);
                     });
 

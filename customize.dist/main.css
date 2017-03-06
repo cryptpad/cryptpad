@@ -376,6 +376,10 @@
   background-color: #f1f1f1;
   color: black !important;
 }
+.dropdown-bar .dropdown-bar-content a.active {
+  background-color: #e8e8e8;
+  color: black !important;
+}
 .dropdown-bar .dropdown-bar-content hr {
   margin: 5px 0px;
   height: 1px;

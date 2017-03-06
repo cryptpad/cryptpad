@@ -1132,6 +1132,34 @@ define([
 
         $container.append($button).append($innerblock);
 
+        var value = config.initialValue || '';
+
+        var setActive = function ($el) {
+            if ($el.length !== 1) { return; }
+            $innerblock.find('.active').removeClass('active');
+            $el.addClass('active');
+            var scroll = $el.position().top + $innerblock.scrollTop();
+            if (scroll < $innerblock.scrollTop()) {
+                $innerblock.scrollTop(scroll);
+            } else if (scroll > ($innerblock.scrollTop() + 280)) {
+                $innerblock.scrollTop(scroll-270);
+            }
+        };
+
+        var hide = function () {
+            window.setTimeout(function () { $innerblock.hide(); }, 0);
+        };
+
+        var show = function () {
+            $innerblock.show();
+            $innerblock.find('.active').removeClass('active');
+            if (config.isSelect && value) {
+                var $val = $innerblock.find('[data-value="'+value+'"]');
+                setActive($val);
+                $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
+            }
+        };
+
         $button.click(function (e) {
             e.stopPropagation();
             var state = $innerblock.is(':visible');
@@ -1144,11 +1172,63 @@ define([
                 // empty try catch in case this iframe is problematic (cross-origin)
             }
             if (state) {
-                $innerblock.hide();
+                hide();
                 return;
             }
-            $innerblock.show();
+            show();
         });
+
+        if (config.isSelect) {
+            var pressed = '';
+            var to;
+            $container.keydown(function (e) {
+                var $value = $innerblock.find('[data-value].active');
+                if (e.which === 38) { // Up
+                    if ($value.length) {
+                        var $prev = $value.prev();
+                        setActive($prev);
+                    }
+                }
+                if (e.which === 40) { // Down
+                    if ($value.length) {
+                        var $next = $value.next();
+                        setActive($next);
+                    }
+                }
+                if (e.which === 13) { //Enter
+                    if ($value.length) {
+                        $value.click();
+                        hide();
+                    }
+                }
+                if (e.which === 27) { // Esc
+                    hide();
+                }
+            });
+            $container.keypress(function (e) {
+                window.clearTimeout(to);
+                var c = String.fromCharCode(e.which);
+                pressed += c;
+                var $value = $innerblock.find('[data-value^="'+pressed+'"]:first');
+                if ($value.length) {
+                    setActive($value);
+                    $innerblock.scrollTop($value.position().top + $innerblock.scrollTop());
+                }
+                to = window.setTimeout(function () {
+                    pressed = '';
+                }, 1000);
+            });
+
+            $container.setValue = function (val) {
+                value = val;
+                var $val = $innerblock.find('[data-value="'+val+'"]');
+                var textValue = $val.html() || val;
+                $button.find('.buttonTitle').html(textValue);
+            };
+            $container.getValue = function () {
+                return value || '';
+            };
+        }
 
         return $container;
     };
@@ -1174,7 +1254,8 @@ define([
             text: Messages.language, // Button initial text
             options: options, // Entries displayed in the menu
             left: true, // Open to the left of the button
-            container: $initBlock // optional
+            container: $initBlock, // optional
+            isSelect: true
         };
         var $block = createDropdown(dropdownConfig);
         $block.attr('id', 'language-selector');

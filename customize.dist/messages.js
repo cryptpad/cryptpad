@@ -109,12 +109,7 @@ define(req, function(Default, Language) {
         var $button = $(selector).find('button .buttonTitle');
         // Select the current language in the list
         var option = $(selector).find('[data-value="' + language + '"]');
-        if ($(option).length) {
-            $button.text($(option).text());
-        }
-        else {
-            $button.text('English');
-        }
+        selector.setValue(language || 'English');
 
         // Listen for language change
         $(selector).find('a.languageValue').on('click', function () {
