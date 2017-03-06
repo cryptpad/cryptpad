@@ -296,7 +296,7 @@ define([
             }
             if (anonymous > 0) {
                 var text = anonymous === 1 ? Messages.anonymousUser : Messages.anonymousUsers;
-                $editUsers.push('<span class="anonymous">' + anonymous + ' ' + text + '</span>');
+                $editUsers.append('<span class="anonymous">' + anonymous + ' ' + text + '</span>');
             }
             if (numberOfViewUsers > 0) {
                 var viewText = '<span class="viewer">';

@@ -378,6 +378,7 @@
 }
 .cryptpad-toolbar-leftside .cryptpad-user-list pre {
   white-space: pre;
+  margin: 0;
 }
 .cryptpad-toolbar-leftside button {
   margin: 2px 4px 2px 0px;

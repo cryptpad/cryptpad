@@ -385,6 +385,8 @@ define(function () {
         '  - Your slides are updated in realtime'
     ].join('');
 
+    // Readme
+
     out.driveReadmeTitle = "What is CryptDrive?";
     out.readme_welcome = "Welcome to CryptPad !";
     out.readme_p1 = "Welcome to CryptPad, this is where you can take note of things alone and with friends.";
@@ -405,6 +407,16 @@ define(function () {
     out.readme_cat3_l1 = "With CryptPad code editor, you can collaborate on code like Javascript and markdown like HTML and Markdown";
     out.readme_cat3_l2 = "With CryptPad slide editor, you can make quick presentations using Markdown";
     out.readme_cat3_l3 = "With CryptPoll you can take quick votes, especially for scheduling meetings which fit with everybody's calendar";
+
+    // Tips
+    // TODO
+    /*out.tips = {};
+    out.tips.multiselect = "Ctrl+click to select multiple elements in CryptDrive";
+    out.tips.dragdrop = "Drag and drop files and folders in your drive. You can't drop folder into the 'unsorted files' category.";
+    out.tips.register = "Sign up to access your pads everywhere. Don't worry, everything is encrypted so we don't know anything about your account.";
+    out.tips.other = "Pew pew pew pew pew";*/
+
+
 
     return out;
 });

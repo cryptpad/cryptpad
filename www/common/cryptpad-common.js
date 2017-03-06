@@ -855,6 +855,12 @@ define([
     };
 
     var LOADING = 'loading';
+    var getRandomTip = function () {
+        if (!Messages.tips || !Object.keys(Messages.tips).length) { return ''; }
+        var keys = Object.keys(Messages.tips);
+        var rdm = Math.floor(Math.random() * keys.length);
+        return Messages.tips[keys[rdm]];
+    };
     common.addLoadingScreen = function (loadingText) {
         if ($('#' + LOADING).length) {
             $('#' + LOADING).show();
@@ -869,9 +875,24 @@ define([
         $container.append($spinner).append($text);
         $loading.append($container);
         $('body').append($loading);
+        if (Messages.tips) {
+            var $loadingTip = $('<div>', {'id': 'loadingTip'});
+            var $tip = $('<span>', {'class': 'tips'}).text(getRandomTip()).appendTo($loadingTip);
+            console.log($('body').height());
+            console.log($container.height());
+            console.log($('body'));
+            console.log($container);
+            $loadingTip.css({
+                'top': $('body').height()/2 + $container.height()/2 + 20 + 'px'
+            });
+            $('body').append($loadingTip);
+        }
     };
     common.removeLoadingScreen = function (cb) {
         $('#' + LOADING).fadeOut(750, cb);
+        window.setTimeout(function () {
+            $('#loadingTip').fadeOut(750);
+        }, 2000);
     };
     common.errorLoadingScreen = function (error, transparent) {
         if (!$('#' + LOADING).is(':visible')) { common.addLoadingScreen(); }
