@@ -319,6 +319,7 @@
 .cp #loading .cryptofist {
   margin-left: auto;
   margin-right: auto;
+  height: 300px;
 }
 @media screen and (max-height: 450px) {
   .cp #loading .cryptofist {
@@ -331,6 +332,24 @@
 }
 .cp #loading .spinnerContainer > div {
   height: 100px;
+}
+.cp #loadingTip {
+  position: fixed;
+  z-index: 99999;
+  top: 80%;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+.cp #loadingTip span {
+  background-color: #302B28;
+  color: #fafafa;
+  text-align: center;
+  font-size: 1.5em;
+  opacity: 0.7;
+  font-family: lato, Helvetica, sans-serif;
+  padding: 15px;
+  max-width: 60%;
 }
 /* The container <div> - needed to position the dropdown content */
 .dropdown-bar {
