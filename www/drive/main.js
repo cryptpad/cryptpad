@@ -245,7 +245,13 @@ define([
             if (!$container.length) { return; }
             $container.html('');
         };
-        var removeInput =  function () {
+        var removeInput =  function (cancel) {
+            if (!cancel && $iframe.find('.element-row > input').length === 1) {
+                var $input = $iframe.find('.element-row > input');
+                filesOp.renameElement($input.data('path'), $input.val(), function () {
+                    refresh();
+                });
+            }
             $iframe.find('.element-row > input').remove();
             $iframe.find('.element-row > span:hidden').removeAttr('style');
         };
@@ -306,13 +312,17 @@ define([
                 var $input = $('<input>', {
                     placeholder: name,
                     value: name
-                });
+                }).data('path', path);
                 $input.on('keyup', function (e) {
                     if (e.which === 13) {
-                        removeInput();
+                        removeInput(true);
                         filesOp.renameElement(path, $input.val(), function () {
                             refresh();
                         });
+                        return;
+                    }
+                    if (e.which === 27) {
+                        removeInput(true);
                     }
                 });
                 //$element.parent().append($input);
@@ -1812,12 +1822,12 @@ define([
         $(ifrw).on('click', function (e) {
             if (e.which !== 1) { return ; }
             removeSelected(e);
-            removeInput(e);
+            removeInput();
             module.hideMenu(e);
             hideNewButton();
         });
         $(ifrw).on('drag drop', function (e) {
-            removeInput(e);
+            removeInput();
             module.hideMenu(e);
         });
         $(ifrw).on('mouseup drop', function (e) {
