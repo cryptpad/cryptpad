@@ -249,7 +249,7 @@ define([
             if (!cancel && $iframe.find('.element-row > input').length === 1) {
                 var $input = $iframe.find('.element-row > input');
                 filesOp.renameElement($input.data('path'), $input.val(), function () {
-                    refresh();
+                    APP.refresh();
                 });
             }
             $iframe.find('.element-row > input').remove();
@@ -1780,7 +1780,7 @@ define([
                 if (paths.length !== 1) { return; }
                 var onCreated = function (info) {
                     module.newFolder = info.newPath;
-                    module.displayDirectory(path);
+                    module.displayDirectory(paths[0].path);
                 };
                 filesOp.createNewFolder(paths[0].path, null, onCreated);
             }
