@@ -1,9 +1,10 @@
 define([
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
+    '/common/mergeDrive.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Cryptpad, Crypt) {
+], function (Cryptpad, Crypt, Merge) {
     var $ = window.jQuery;
     var saveAs = window.saveAs;
 
@@ -201,6 +202,25 @@ define([
         if (obj.proxy.allowUserFeedback) {
             $checkbox[0].checked = true;
         }
+        return $div;
+    };
+
+    var createImportLocalPads = function (obj) {
+        var $div = $('<div>', {'class': 'importLocalPads'});
+        var $label = $('<label>', {'for' : 'importLocalPads'}).text("TODO: IMPORT LOCAL PADS LABEL").appendTo($div);
+        $('<br>').appendTo($div);
+        var $button = $('<button>', {'id': 'importLocalPads', 'class': 'btn btn-default'})
+            .text("TODO: IMPORT LOCAL PADS").appendTo($div);
+
+        $button.click(function () {
+            Cryptpad.confirm("ARE YOU SURE?", function (err) {
+                if (err) { return; }
+                Merge.anonDriveIntoUser(obj.proxy, function () {
+                    Cryptpad.alert("DONE");
+                });
+            }, undefined, true);
+        });
+
         return $div;
     };
 
