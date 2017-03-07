@@ -232,13 +232,13 @@ define([
             return ret;
         };
 
-        var getFilesDataFiles = function () {
+        var getFilesDataFiles = exp.getFilesDataFiles = function () {
             var ret = [];
-            for (var el in files[FILES_DATA]) {
+            files[FILES_DATA].forEach(function (el) {
                 if (el.href && ret.indexOf(el.href) === -1) {
                     ret.push(el.href);
                 }
-            }
+            });
             return ret;
         };
 
