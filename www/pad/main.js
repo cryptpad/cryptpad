@@ -164,6 +164,16 @@ define([
                         send scripts over the wire.
                     */
                     if (['addAttribute', 'modifyAttribute'].indexOf(info.diff.action) !== -1) {
+                        if (info.diff.name === 'href') {
+                            // console.log(info.diff);
+                            var href = info.diff.newValue;
+
+                            // TODO normalize HTML entities
+                            if (/javascript *: */.test(info.diff.newValue)) {
+                                // TODO remove javascript: links
+                            }
+                        }
+
                         if (/^on/.test(info.diff.name)) {
                             console.log("Rejecting forbidden element attribute with name (%s)", info.diff.name);
                             return true;
