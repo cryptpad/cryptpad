@@ -660,6 +660,7 @@ define([
                 msg = Messages._getKey('fm_removeDialog', [name]);
             }
             Cryptpad.confirm(msg, function (res) {
+                $(ifrw).focus();
                 if (!res) { return; }
                 andThen();
             });
@@ -1935,6 +1936,7 @@ define([
                     }
 
                     Cryptpad.confirm(msg, function(res) {
+                        $(ifrw).focus();
                         if (!res) { return; }
                         filesOp.deletePathsPermanently(paths);
                         refresh();
