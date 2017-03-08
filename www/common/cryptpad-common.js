@@ -621,6 +621,28 @@ define([
     };
 
     // STORAGE
+    var findWeaker = common.findWeaker = function (href, recents) {
+        var rHref = href || getRelativeHref(window.location.href);
+        var parsed = parsePadUrl(rHref);
+        if (!parsed.hash) { return false; }
+        var weaker;
+        recents.some(function (pad) {
+            var p = parsePadUrl(pad.href);
+            if (p.type !== parsed.type) { return; } // Not the same type
+            if (p.hash === parsed.hash) { return; } // Same hash, not stronger
+            var pHash = parseHash(p.hash);
+            var parsedHash = parseHash(parsed.hash);
+            if (!parsedHash || !pHash) { return; }
+            if (pHash.version !== parsedHash.version) { return; }
+            if (pHash.channel !== parsedHash.channel) { return; }
+            if (pHash.mode === 'view' && parsedHash.mode === 'edit') {
+                weaker = pad.href;
+                return true;
+            }
+            return;
+        });
+        return weaker;
+    };
     var findStronger = common.findStronger = function (href, recents) {
         var rHref = href || getRelativeHref(window.location.href);
         var parsed = parsePadUrl(rHref);

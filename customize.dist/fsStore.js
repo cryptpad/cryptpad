@@ -131,9 +131,10 @@ define([
     };
 
     var onReady = function (f, proxy, Cryptpad, exp) {
-        var fo = FO.init(proxy.drive, {
+        var fo = exp.fo = FO.init(proxy.drive, {
             Cryptpad: Cryptpad
         });
+
         //storeObj = proxy;
         store = initStore(fo, proxy, exp);
         if (typeof(f) === 'function') {
