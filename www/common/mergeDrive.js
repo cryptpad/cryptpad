@@ -158,6 +158,15 @@ define([
                     // NOTE: if that weaker version is in the trash, the strong one will be put in unsorted
                     var weaker = Cryptpad.findWeaker(href, newRecentPads);
                     if (weaker) {
+                        // Update RECENTPADS
+                        newRecentPads.some(function (pad) {
+                            if (pad.href === weaker) {
+                                pad.href = href;
+                                return true;
+                            }
+                            return;
+                        });
+                        // Update the file in the drive
                         newFo.replaceHref(weaker, href);
                         return;
                     }
