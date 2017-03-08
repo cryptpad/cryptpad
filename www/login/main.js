@@ -76,18 +76,21 @@ define([
                             if (result.proxy && !result.proxy.login_name) {
                                 result.proxy.login_name = result.userName;
                             }
-                            Cryptpad.login(result.userHash, result.userName, function () {
-                                if (sessionStorage.redirectTo) {
-                                    var h = sessionStorage.redirectTo;
-                                    var parser = document.createElement('a');
-                                    parser.href = h;
-                                    if (parser.origin === window.location.origin) {
-                                        delete sessionStorage.redirectTo;
-                                        window.location.href = h;
-                                        return;
+
+                            Cryptpad.whenRealtimeSyncs(result.realtime, function() {
+                                Cryptpad.login(result.userHash, result.userName, function () {
+                                    if (sessionStorage.redirectTo) {
+                                        var h = sessionStorage.redirectTo;
+                                        var parser = document.createElement('a');
+                                        parser.href = h;
+                                        if (parser.origin === window.location.origin) {
+                                            delete sessionStorage.redirectTo;
+                                            window.location.href = h;
+                                            return;
+                                        }
                                     }
-                                }
-                                window.location.href = '/drive/';
+                                    window.location.href = '/drive/';
+                                });
                             });
                             return;
                         }

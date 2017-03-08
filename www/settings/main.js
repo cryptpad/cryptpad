@@ -42,7 +42,7 @@ define([
         var obj = store.proxy;
         var $div = $('<div>', {'class': 'infoBlock'});
 
-        var accountName = obj.login_name;
+        var accountName = obj.login_name || localStorage[Cryptpad.userNameKey];
         var $label = $('<span>', {'class': 'label'}).text(Messages.user_accountName + ':');
         var $name = $('<span>').text(accountName || '');
         if (!accountName) {
