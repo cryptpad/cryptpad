@@ -883,26 +883,27 @@ define([
         return Messages.tips[keys[rdm]];
     };
     common.addLoadingScreen = function (loadingText) {
+        var $loading, $container;
         if ($('#' + LOADING).length) {
-            $('#' + LOADING).show();
-            return;
+            $loading = $('#' + LOADING).show();
+            if (loadingText) {
+                $('#' + LOADING).find('p').text(loadingText);
+            }
+            $container = $loading.find('.loadingContainer');
+        } else {
+            var $loading = $('<div>', {id: LOADING});
+            $container = $('<div>', {'class': 'loadingContainer'});
+            $container.append('<img class="cryptofist" src="/customize/cryptofist_small.png" />');
+            var $spinner = $('<div>', {'class': 'spinnerContainer'});
+            var loadingSpinner = common.spinner($spinner).show();
+            var $text = $('<p>').text(loadingText || Messages.loading);
+            $container.append($spinner).append($text);
+            $loading.append($container);
+            $('body').append($loading);
         }
-        var $loading = $('<div>', {id: LOADING});
-        var $container = $('<div>', {'class': 'loadingContainer'});
-        $container.append('<img class="cryptofist" src="/customize/cryptofist_small.png" />');
-        var $spinner = $('<div>', {'class': 'spinnerContainer'});
-        var loadingSpinner = common.spinner($spinner).show();
-        var $text = $('<p>').text(loadingText || Messages.loading);
-        $container.append($spinner).append($text);
-        $loading.append($container);
-        $('body').append($loading);
         if (Messages.tips) {
             var $loadingTip = $('<div>', {'id': 'loadingTip'});
             var $tip = $('<span>', {'class': 'tips'}).text(getRandomTip()).appendTo($loadingTip);
-            console.log($('body').height());
-            console.log($container.height());
-            console.log($('body'));
-            console.log($container);
             $loadingTip.css({
                 'top': $('body').height()/2 + $container.height()/2 + 20 + 'px'
             });
