@@ -33,8 +33,9 @@ define([
         for(var i=0; i<a.length; i++) {
             for(var j=i+1; j<a.length; j++) {
                 if(a[i] === a[j] || (
-                    typeof(a[i]) === "object" && Sortify(a[i]) === Sortify(a[j])))
+                    typeof(a[i]) === "object" && Sortify(a[i]) === Sortify(a[j]))) {
                     a.splice(j--, 1);
+                }
             }
         }
         return a;
@@ -44,7 +45,7 @@ define([
     // If keepOld is true, obj1 values are kept in case of conflicti
     // Not used ATM
     var merge = function (obj1, obj2, keepOld) {
-        if (typeof (obj1) !== "object" || typeof (obj2) !== "object") { return; };
+        if (typeof (obj1) !== "object" || typeof (obj2) !== "object") { return; }
         Object.keys(obj2).forEach(function (k) {
             var v = obj2[k];
             // If one of them is not an object or if we have a map and a array, don't override, create a new key
@@ -137,7 +138,7 @@ define([
         var todo = function (err, doc) {
             if (err) { console.error("Cannot migrate recent pads", err); return; }
             var parsed;
-            try { parsed = JSON.parse(doc); } catch (e) { logError("Cannot parsed recent pads", e); }
+            try { parsed = JSON.parse(doc); } catch (e) { console.error("Cannot parsed recent pads", e); return; }
             if (parsed) {
                 //merge(proxy, parsed, true);
                 var oldFo = FO.init(parsed.drive, {
