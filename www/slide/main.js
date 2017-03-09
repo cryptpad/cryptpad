@@ -136,6 +136,7 @@ define([
 
             var $modal = $pad.contents().find('#modal');
             var $content = $pad.contents().find('#content');
+            var $print = $pad.contents().find('#print');
 
             Slide.setModal($modal, $content, $pad, ifrw, initialState);
 
@@ -465,6 +466,18 @@ define([
                 };
                 var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
                 $rightside.append($forgetPad);
+
+                var $printButton = $('<button>').text('PRINT').click(function () {
+                    console.log($print.html());
+                    console.log($content.html());
+                    console.log($content.html());
+                    $print.html($content.html());
+
+                    ifrw.focus();
+                    ifrw.print();
+                    console.log($print.html());
+                });
+                $rightside.append($printButton);
 
                 var $present = Cryptpad.createButton('present', true)
                     .click(function () {
