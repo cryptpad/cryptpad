@@ -132,8 +132,10 @@ define([
                             if (result.proxy && !result.proxy.login_name) {
                                 result.proxy.login_name = result.userName;
                             }
-                            Cryptpad.login(result.userHash, result.userName, function () {
-                                document.location.href = '/drive/';
+                            Cryptpad.whenRealtimeSyncs(result.realtime, function () {
+                                Cryptpad.login(result.userHash, result.userName, function () {
+                                    document.location.href = '/drive/';
+                                });
                             });
                             return;
                         }

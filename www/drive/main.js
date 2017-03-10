@@ -8,8 +8,9 @@ define([
     '/common/fileObject.js',
     '/common/toolbar.js',
     '/customize/application_config.js',
-    '/common/cryptget.js'
-], function (Listmap, Crypto, TextPatcher, JSONSortify, Cryptpad, FO, Toolbar, AppConfig, Get) {
+    '/common/cryptget.js',
+    '/common/mergeDrive.js'
+], function (Listmap, Crypto, TextPatcher, JSONSortify, Cryptpad, FO, Toolbar, AppConfig, Get, Merge) {
     var module = window.MODULE = {};
 
     var Messages = Cryptpad.Messages;
@@ -2056,26 +2057,12 @@ define([
         });
     };
 
-    // TODO: move that function and use a more generic API?
     var migrateAnonDrive = function (proxy, cb) {
         if (sessionStorage.migrateAnonDrive) {
-            // Make sure we have an FS_hash and we don't use it, otherwise just stop the migration and cb
-            if (!localStorage.FS_hash || !APP.loggedIn) {
+            Merge.anonDriveIntoUser(proxy, function () {
                 delete sessionStorage.migrateAnonDrive;
                 if (typeof(cb) === "function") { cb(); }
-            }
-            // Get the content of FS_hash and then merge the objects, remove the migration key and cb
-            var todo = function (err, doc) {
-                if (err) { logError("Cannot migrate recent pads", err); return; }
-                var parsed;
-                try { parsed = JSON.parse(doc); } catch (e) { logError("Cannot parsed recent pads", e); }
-                if (parsed) {
-                    $.extend(true, proxy, parsed);
-                }
-                delete sessionStorage.migrateAnonDrive;
-                if (typeof(cb) === "function") { cb(); }
-            };
-            Get.get(localStorage.FS_hash, todo);
+            });
         } else {
             if (typeof(cb) === "function") { cb(); }
         }

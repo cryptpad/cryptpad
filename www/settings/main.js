@@ -1,9 +1,10 @@
 define([
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
+    '/common/mergeDrive.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Cryptpad, Crypt) {
+], function (Cryptpad, Crypt, Merge) {
     var $ = window.jQuery;
     var saveAs = window.saveAs;
 
@@ -41,7 +42,7 @@ define([
         var obj = store.proxy;
         var $div = $('<div>', {'class': 'infoBlock'});
 
-        var accountName = obj.login_name;
+        var accountName = obj.login_name || localStorage[Cryptpad.userNameKey];
         var $label = $('<span>', {'class': 'label'}).text(Messages.user_accountName + ':');
         var $name = $('<span>').text(accountName || '');
         if (!accountName) {
@@ -65,10 +66,9 @@ define([
             'id': 'displayName',
             'placeholder': Messages.anonymous}).appendTo($div);
         var $save = $('<button>', {'class': 'btn btn-primary'}).text(Messages.settings_save).appendTo($div);
-        var $ok = $('<span>', {'class': 'fa fa-check'}).appendTo($div);
-        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).appendTo($div);
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide().appendTo($div);
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide().appendTo($div);
 
-        $spinner.hide();
         var displayName = obj[USERNAME_KEY] || '';
         $input.val(displayName);
 
@@ -135,7 +135,7 @@ define([
         };
         var importFile = function (content, file) {
             var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).appendTo($div);
-            Crypt.put(Cryptpad.getUserHash(), content, function (e) {
+            Crypt.put(Cryptpad.getUserHash() || localStorage[Cryptpad.fileHashKey], content, function (e) {
                 if (e) { console.error(e); }
                 $spinner.remove();
             });
@@ -187,20 +187,57 @@ define([
 
         $('<br>').appendTo($div);
 
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
+
         var $checkbox = $('<input>', {
             'type': 'checkbox',
         }).on('change', function () {
+            $spinner.show();
+            $ok.hide();
             obj.proxy.allowUserFeedback = $checkbox.is(':checked') || false;
-            // TODO provide feedback to show if this is synced
-            // Cryptpad.whenRealtimeSyncs...
+            Cryptpad.whenRealtimeSyncs(obj.info.realtime, function () {
+                $spinner.hide();
+                $ok.show();
+            });
         });
 
         $checkbox.appendTo($div);
         $label.appendTo($div);
 
+        $ok.hide().appendTo($div);
+        $spinner.hide().appendTo($div);
+
         if (obj.proxy.allowUserFeedback) {
             $checkbox[0].checked = true;
         }
+        return $div;
+    };
+
+    var createImportLocalPads = function (obj) {
+        if (!Cryptpad.isLoggedIn()) { return; }
+        var $div = $('<div>', {'class': 'importLocalPads'});
+        var $label = $('<label>', {'for' : 'importLocalPads'}).text(Messages.settings_importTitle).appendTo($div);
+        $('<br>').appendTo($div);
+        var $button = $('<button>', {'id': 'importLocalPads', 'class': 'btn btn-primary'})
+            .text(Messages.settings_import).appendTo($div);
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide().appendTo($div);
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide().appendTo($div);
+
+
+        $button.click(function () {
+            Cryptpad.confirm(Messages.settings_importConfirm, function (yes) {
+                if (!yes) { return; }
+                $spinner.show();
+                $ok.hide();
+                Merge.anonDriveIntoUser(obj.proxy, function () {
+                    $spinner.hide();
+                    $ok.show();
+                    Cryptpad.alert(Messages.settings_importDone);
+                });
+            }, undefined, true);
+        });
+
         return $div;
     };
 
@@ -210,6 +247,7 @@ define([
         APP.$container.append(createDisplayNameInput(obj));
         APP.$container.append(createResetTips());
         APP.$container.append(createBackupDrive(obj));
+        APP.$container.append(createImportLocalPads(obj));
         APP.$container.append(createResetDrive(obj));
         APP.$container.append(createUserFeedbackToggle(obj));
         obj.proxy.on('change', [], refresh);

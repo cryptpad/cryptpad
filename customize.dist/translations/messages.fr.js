@@ -25,6 +25,7 @@ define(function () {
 
     out.loading = "Chargement...";
     out.error = "Erreur";
+    out.saved = "Enregistré";
 
     out.disconnected = 'Déconnecté';
     out.synchronizing = 'Synchronisation';
@@ -247,6 +248,11 @@ define(function () {
     out.settings_resetTips = "Astuces et informations dans CryptDrive";
     out.settings_resetTipsButton = "Réinitialiser les astuces visibles dans CryptDrive";
     out.settings_resetTipsDone = "Toutes les astuces sont de nouveau visibles.";
+
+    out.settings_importTitle = "Importer les pads récents de ce navigateur dans mon CryptDrive";
+    out.settings_import = "Importer";
+    out.settings_importConfirm = "Êtes-vous sûr de vouloir importer les pads récents de ce navigateur dans le CryptDrive de votre compte utilisateur ?";
+    out.settings_importDone = "Importation terminée";
 
     out.settings_userFeedbackHint1 = "CryptPad peut envoyer des retours d'expérience très limités vers le serveur, de manière à nous permettre d'améliorer l'expérience des utilisateurs.";
     out.settings_userFeedbackHint2 = "Le contenu de vos pads et les clés de déchiffrement ne seront jamais partagés avec le serveur.";
