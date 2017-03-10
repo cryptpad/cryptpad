@@ -35,19 +35,21 @@
         }
         /* We use !important here to override the 96% set to the element in DecorateToolbar.js
            when we enter fullscreen mode. It allows us to avoid changing the iframe's size in JS */
-        #pad-iframe.fullscreen {
+        body #pad-iframe.fullscreen {
             top: 0px;
-            height: 100% !important;
+            height: 100%;
         }
-        #iframe-container.fullscreen {
+        body #iframe-container.fullscreen {
             top: 0px;
-            height: 100% !important;
+            height: 100%;
         }
+
+
      </style>
 </head>
 <body>
     <div id="iframe-container">
-        <iframe id="pad-iframe"></iframe><script src="/common/noscriptfix.js"></script>
+        <iframe id="pad-iframe", name="pad-iframe"></iframe><script src="/common/noscriptfix.js"></script>
     </div>
     <div id="loading">
         <div class="loadingContainer">

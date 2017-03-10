@@ -29,7 +29,7 @@ define([
         }
     };
 
-    var getNumberOfSlides = function () {
+    var getNumberOfSlides = Slide.getNumberOfSlides = function () {
         return $content.find('.' + slideClass).length;
     };
 
@@ -170,8 +170,8 @@ define([
         $modal.removeClass('shown');
     };
 
-    var update = Slide.update = function (content) {
-        if (!Slide.shown) { return; }
+    var update = Slide.update = function (content, init) {
+        if (!Slide.shown && !init) { return; }
         if (!content) { content = ''; }
         var old = Slide.content;
         Slide.content = content.replace(/\n\s*\-\-\-\s*\n/g, '\n\n'+separator+'\n\n');

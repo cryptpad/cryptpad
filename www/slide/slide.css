@@ -41,37 +41,74 @@ body .CodeMirror-focused .cm-matchhighlight {
 #colorPicker_check {
   display: block;
 }
-#print {
-  display: none;
-}
 @media print {
+  @page {
+    margin: 0;
+    size: auto;
+  }
+  body {
+    display: block;
+  }
   body .CodeMirror,
   body #cme_toolbox {
-    display: none !important;
+    display: none;
   }
   body * {
-    visibility: hidden !important;
+    visibility: hidden;
+    height: auto;
+    max-height: none;
   }
   html,
   body {
-    height: auto !important;
-    max-height: none !important;
-    overflow: visible !important;
+    max-height: none;
+    overflow: visible;
   }
-  #print {
-    position: relative;
+  html #print {
     display: block;
-    visibility: visible !important;
+    visibility: visible;
   }
-  #print .slide-frame {
-    display: block !important;
-    page-break-before: always !important;
-    page-break-inside: avoid !important;
-    position: relative;
+  html #print * {
+    visibility: visible;
   }
-  #print * {
-    visibility: visible !important;
-  }
+}
+#print {
+  position: relative;
+  display: none;
+}
+#print .slide-frame {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column;
+  padding: 5vh 0;
+  height: 100vh;
+  width: 100%;
+  page-break-after: always;
+  position: relative;
+  box-sizing: border-box;
+}
+#print .slide-frame li {
+  min-width: 50vw;
+}
+#print .slide-frame h1 {
+  padding-top: 0;
+}
+#print .slide-frame .slideNumber {
+  position: absolute;
+  right: 5vh;
+  bottom: 5vh;
+}
+#print .slide-frame .slideDate {
+  position: absolute;
+  left: 5vh;
+  bottom: 5vh;
+}
+#print .slide-frame .slideTitle {
+  position: absolute;
+  top: 5vh;
+  left: 0px;
+  right: 0px;
+  text-align: center;
 }
 .cp.slide #modal .button {
   position: absolute;

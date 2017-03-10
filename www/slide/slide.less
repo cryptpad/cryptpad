@@ -45,39 +45,75 @@ body {
     display: block;
 }
 
-#print {
-    display: none;
-}
-
 @media print {
+    @page {
+        margin: 0;
+        size: auto;
+    }
     body {
         .CodeMirror, #cme_toolbox {
-            display: none !important;
-        }
-    }
-    body * {
-        visibility: hidden !important;
-    }
-    html, body {
-        height: auto !important;
-        max-height: none !important;
-        overflow: visible !important;
-    }
-    #print {
-        position: relative;
-        display: block;
-        visibility: visible !important;
-        .slide-frame {
-                display: block !important;
-                page-break-before: always !important;
-                page-break-inside: avoid !important;
-                position: relative;
+            display: none;
         }
         * {
-            visibility: visible !important;
+            visibility: hidden;
+            height: auto;
+            max-height: none;
+        }
+        display:block;
+    }
+    html, body {
+        max-height: none;
+        overflow: visible;
+    }
+    html {
+        #print {
+            display: block;
+            visibility: visible;
+            * {
+                visibility: visible;
+            }
         }
     }
 }
+#print {
+    position: relative;
+    display: none;
+    .slide-frame {
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+        flex-flow: column;
+        padding: 5vh 0;
+        height: 100vh;
+        width: 100%;
+        page-break-after: always;
+        position: relative;
+        box-sizing: border-box;
+        li {
+            min-width: 50vw;
+        }
+        h1 {
+            padding-top: 0;
+        }
+        .slideNumber {
+            position: absolute;
+            right: 5vh;
+            bottom: 5vh;
+        }
+        .slideDate {
+            position: absolute;
+            left: 5vh;
+            bottom: 5vh;
+        }
+        .slideTitle {
+            position: absolute;
+            top: 5vh;
+            left: 0px; right: 0px;
+            text-align: center;
+        }
+    }
+}
+
 .cp {
 
 &.slide {
