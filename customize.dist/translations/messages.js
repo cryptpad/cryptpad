@@ -79,6 +79,14 @@ define(function () {
     out.backgroundButtonTitle = 'Change the background color in the presentation';
     out.colorButtonTitle = 'Change the text color in presentation mode';
 
+    out.printButton = "Print";
+    out.printButtonTitle = "Print your slides or export them as a PDF file";
+    out.printOptions = "Print options";
+    out.printSlideNumber = "Display the slide number";
+    out.printDate = "Display the date";
+    out.printTitle = "Display the pad title";
+    out.printCSS = "Custom style rules (CSS):";
+
     out.editShare = "Editing link";
     out.editShareTitle = "Copy the editing link to clipboard";
     out.editOpen = "Open editing link in a new tab";
@@ -94,7 +102,7 @@ define(function () {
 
     out.okButton = 'OK (enter)';
 
-    out.cancel = "Cancel"; // Not used?
+    out.cancel = "Cancel";
     out.cancelButton = 'Cancel (esc)';
 
     // Polls

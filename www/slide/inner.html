@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
     <link rel="stylesheet" href="/customize/main.css">
+    <link rel="stylesheet" href="./slide.css">
     <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
     <script src="/bower_components/jquery/dist/jquery.min.js"></script>
     <script src="/bower_components/codemirror/lib/codemirror.js"></script>
@@ -34,55 +35,6 @@
     <script src="/bower_components/codemirror/addon/fold/markdown-fold.js"></script>
     <script src="/bower_components/codemirror/addon/fold/comment-fold.js"></script>
     <script src="/bower_components/codemirror/addon/display/placeholder.js"></script>
-    <style>
-        html, body{
-            height: 100%;
-            width: 100%;
-            padding: 0px;
-            margin: 0px;
-            overflow: hidden;
-            box-sizing: border-box;
-            position: relative;
-        }
-        body {
-            display: flex;
-            flex-flow: column;
-        }
-        #modal.shown {
-            display: block;
-            position: fixed;
-            top: 0px;
-            left: 0px;
-            z-index: 100;
-            background-color: black;
-            color: white;
-            height: 100vh;
-            width: 100%;
-        }
-
-        #content h1, h2, h3, h4, h5, h6 {
-            text-align: center;
-        }
-
-        h1 { font-size: 40px; }
-        h2 { font-size: 37px; }
-        h3 { font-size: 34px; }
-        h4 { font-size: 31px; }
-        h5 { font-size: 27px; }
-        h6 { font-size: 24px; }
-
-      .CodeMirror {
-        height: 100%;
-      }
-      .CodeMirror-focused .cm-matchhighlight {
-        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQI12NgYGBgkKzc8x9CMDAwAAAmhwSbidEoSQAAAABJRU5ErkJggg==);
-        background-position: bottom;
-        background-repeat: repeat-x;
-      }
-      #colorPicker_check {
-        display: block;
-      }
-    </style>
 </head>
 <body>
     <div id="bar"></div>
@@ -98,6 +50,7 @@
         <div id="button_right" class="button"><span class="fa fa-chevron-right"></span></div>
         <div id="content"></div>
     </div>
+    <div id="print"></div>
     </span>
     <div id="nope"></div>
     <div id="colorPicker_check"></div>

@@ -4,6 +4,9 @@
     They are only displayed briefly
 */
 .alertify-logs {
+    @media print {
+        visibility: hidden;
+    }
     > * {
         padding: @padding-base @padding-base * 4;
         color: @alertify-fore;

@@ -77,6 +77,14 @@ define(function () {
     out.backgroundButtonTitle = 'Changer la couleur de fond de la présentation';
     out.colorButtonTitle = 'Changer la couleur du texte en mode présentation';
 
+    out.printButton = "Imprimer";
+    out.printButtonTitle = "Imprimer votre présentation ou l'enregistrer au format PDF";
+    out.printOptions = "Options d'impression";
+    out.printSlideNumber = "Afficher le numéro des slides";
+    out.printDate = "Afficher la date";
+    out.printTitle = "Afficher le titre du pad";
+    out.printCSS = "Personnaliser l'apparence (CSS):";
+
     out.editShare = "Lien d'édition";
     out.editShareTitle = "Copier le lien d'édition dans le presse-papiers";
     out.editOpen = "Éditer dans un nouvel onglet";
