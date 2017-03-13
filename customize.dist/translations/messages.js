@@ -359,18 +359,15 @@ define(function () {
     // Initial states
 
     out.initialState = [
-        '<p>',
-        'This is <strong>CryptPad</strong>, the zero knowledge realtime collaborative editor.',
+        '<span style="font-size:18px;"><p>',
+        'This is&nbsp;<strong>CryptPad</strong>, the Zero Knowledge realtime collaborative editor. Everything is saved as you type.',
         '<br>',
-        'What you type here is encrypted so only people who have the link can access it.',
-        '<br>',
-        'Even the server cannot see what you type.',
+        'Share the link to this pad to edit with friends or use the <span style="background-color:#449d44;color:#ffffff;">&nbsp;Share&nbsp;</span> button to share a <em>read-only link</em>&nbsp;which allows viewing but not editing.',
         '</p>',
-        '<p>',
-        '<small>',
-        '<i>What you see here, what you hear here, when you leave here, let it stay here</i>',
-        '</small>',
-        '</p>',
+
+        '<p><span style="color:#808080;"><em>',
+        'Go ahead, just start typing...',
+        '</em></span></p></span>'
     ].join('');
 
     out.codeInitialState = [
