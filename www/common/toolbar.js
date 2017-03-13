@@ -407,8 +407,11 @@ define([
             window.location = "/";
         };
 
-        $aTagBig.click(onClick);
-        $aTagSmall.click(onClick);
+        var onContext = function (e) { e.stopPropagation(); };
+
+        $aTagBig.click(onClick).contextmenu(onContext);
+        $aTagSmall.click(onClick).contextmenu(onContext);
+
         $linkContainer.append($aTagSmall).append($aTagBig);
     };
 
