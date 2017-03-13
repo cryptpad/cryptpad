@@ -89,6 +89,16 @@ To test CryptPad, go to http://your.server:3000/assert/
 You can use WebDriver to run this test automatically by running TestSelenium.js but you will need chromedriver installed.
 If you use Mac, you can `brew install chromedriver`.
 
+## Developing with CryptPad
+
+CryptPad is built with a lot of small javascript libraries.
+To make js files load faster, we apply an aggressive caching policy.
+
+If you want to add new features to CryptPad, you'll want to turn off caching.
+You can do so by launching your server in _dev mode_, like so:
+
+`DEV=1 node server.js`
+
 # Setup using Docker
 
 See [Cryptpad-Docker](cryptpad-docker.md)
