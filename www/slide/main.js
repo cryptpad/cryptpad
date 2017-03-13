@@ -454,8 +454,7 @@ define([
 
                 var fixCSS = function (css) {
                     var append = '.cp #print ';
-                css = css.replace(/(\n*)([^\n]+)\s*\{/g, '$1' + append + '$2 {')
-                    return css;
+                    return css.replace(/(\n*)([^\n]+)\s*\{/g, '$1' + append + '$2 {');
                 };
 
                 var todo = function () {

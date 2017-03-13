@@ -261,8 +261,8 @@ define(function () {
 
     out.settings_importTitle = "Import this browser's recent pads in my CryptDrive";
     out.settings_import = "Import";
-    out.settings_confirm = "Are you sure you want to import recent pads from this browser to your user account's CryptDrive?";
-    out.settings_done = "Import completed";
+    out.settings_importConfirm = "Are you sure you want to import recent pads from this browser to your user account's CryptDrive?";
+    out.settings_importDone = "Import completed";
 
     out.settings_userFeedbackHint1 = "CryptPad provides some very basic feedback to the server, to let us know how to improve your experience.";
     out.settings_userFeedbackHint2 = "Your pad's content will never be shared with the server.";

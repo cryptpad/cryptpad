@@ -224,7 +224,6 @@ define([
         var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide().appendTo($div);
         var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide().appendTo($div);
 
-
         $button.click(function () {
             Cryptpad.confirm(Messages.settings_importConfirm, function (yes) {
                 if (!yes) { return; }
