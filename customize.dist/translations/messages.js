@@ -427,5 +427,9 @@ define(function () {
     out.tips.store = "Every time you visit a pad, if you're logged in it will be saved to your CryptDrive.";
     out.tips.marker = "You can highlight text in a pad using the \"marker\" item in the styles dropdown menu.";
 
+    out.feedback_about = "If you're reading this, you were probably curious why CryptPad is requesting web pages when you perform certain actions";
+    out.feedback_privacy = "We care about your privacy, and at the same time we want CryptPad to be very easy to use.  We use this file to figure out which UI features matter to our users, by requesting it along with a parameter specifying which action was taken.";
+    out.feedback_optout = "If you would like to opt out, visit <a href='/settings/'>your user settings page</a>, where you'll find a checkbox to enable or disable user feedback";
+
     return out;
 });
