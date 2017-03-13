@@ -375,10 +375,9 @@ define(function () {
 
     out.codeInitialState = [
         '/*\n',
-        '   This is CryptPad, the zero knowledge realtime collaborative editor.\n',
+        '   This is the CryptPad Zero Knowledge collaborative code editor.\n',
         '   What you type here is encrypted so only people who have the link can access it.\n',
-        '   Even the server cannot see what you type.\n',
-        '   What you see here, what you hear here, when you leave here, let it stay here.\n',
+        '   You can choose the programming language to highlight and the UI color scheme in the upper right.\n',
         '*/'
     ].join('');
 
