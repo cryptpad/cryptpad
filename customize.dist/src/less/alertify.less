@@ -136,6 +136,18 @@
                 border: 1px solid @alertify-base;
                 border-radius: 5px;
 
+                &.safe, &.danger {
+                    color: @old-base;
+                }
+                &.danger {
+                    background-color: @cp-red;
+                }
+
+                &.safe {
+                    background-color: @cp-green;
+                }
+
+
                 &:hover, &:active {
                     background-color: @alertify-btn-bg-hover;
                 }
