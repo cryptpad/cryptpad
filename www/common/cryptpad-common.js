@@ -1521,6 +1521,11 @@ define([
                 cb(false);
                 stopListening(keyHandler);
             });
+
+        window.setTimeout(function () {
+            if (opt.okClass) { findOKButton().addClass(opt.okClass); }
+            if (opt.cancelClass) { findCancelButton().addClass(opt.cancelClass); }
+        }, 0);
     };
 
     common.log = function (msg) {
