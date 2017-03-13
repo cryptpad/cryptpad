@@ -320,6 +320,32 @@ define(function () {
     // 1.2.0 - Chupacabra
 
     out.settings_resetError = "Verificación no válida. Tu CryptDrive no fue cambiado.";
+    out.saved = "Guardado";
+    out.printButton = "Imprimir";
+    out.printButtonTitle = "Imprimir tu presentación o exportar a PDF";
+    out.printOptions = "Opciones de impresión";
+    out.printSlideNumber = "Mostrar el número de diapositiva";
+    out.printDate = "Mostrar la fecha";
+    out.printTitle = "Mostrar el título";
+    out.printCSS = "CSS personalizado:";
+    out.editOpen = "Abrir enlances de edición en pestaña nueva";
+    out.editOpenTitle = "Abrir en modo edición en pestaña nueva";
+    out.settings_importTitle = "Importar pads recientes locales en CryptDrive";
+    out.settings_import = "Importar";
+    out.settings_importConfirm = "¿Seguro qué quieres importar tus pads recientes a tu cuenta CryptDrive?";
+    out.settings_importDone = "Importación terminada";
 
-    return out;
+    out.tips = {};
+    out.tips.lag = "El icono verde en la parte superior derecha muestra la calidad de tu connexión a CryptPad.";
+    out.tips.shortcuts = "`ctrl+b`, `ctrl+i`, y `ctrl+u` son accesos rápidos para negrita, itálica y subrayado.";
+    out.tips.indent = "Cuando editas listas, puedes usar tab o shift+tab para icrementar o decrementar indentación.";
+    out.tips.title = "Puedes cambiar el título de tus pads en la parte superior de la pantalla.";
+    out.tips.store = "Cada vez que visitas un pad con una sesión iniciada se guardará a tu CryptDrive.";
+    out.tips.marker = "Puedes resaltar texto en un pad utilizando el \"marcador\" en el menú de estílo.";
+
+    out.feedback_about = "Si estas leyendo esto, quizas estés curioso de saber porqué CryptPad solicita esta página cuando haces algunas acciones";
+    out.feedback_privacy = "Nos importa tu privacidad, y al mismo tiempo queremos que CryptPad sea muy fácil de usar. Utilizamos esta página para conocer las funcionalidades que importan a nuestros usuarios, pidiendolo con un parametro que nos dice que accion fue realizada.";
+    out.feedback_optout = "Si quieres darte de baja, visita <a href='/settings/'>tus preferencias</a>, donde podrás activar o desactivar feedback";
+
+return out;
 });
