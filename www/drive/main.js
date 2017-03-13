@@ -345,11 +345,11 @@ define([
                 // since it would remove the input
                 $input.on('mousedown', function (e) {
                     e.stopPropagation();
-                    $input.parents('li').attr("draggable", false);
+                    $input.parents('.element-row').attr("draggable", false);
                 });
                 $input.on('mouseup', function (e) {
                     e.stopPropagation();
-                    $input.parents('li').attr("draggable", true);
+                    $input.parents('.element-row').attr("draggable", true);
                 });
             },0);
         };
