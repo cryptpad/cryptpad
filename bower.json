@@ -37,7 +37,6 @@
     "file-saver": "^1.3.1",
     "diff-dom": "^2.1.1",
     "alertifyjs": "^1.0.11",
-    "spin.js": "^2.3.2",
     "scrypt-async": "^1.2.0",
     "bootstrap": "#v4.0.0-alpha.6"
   }
