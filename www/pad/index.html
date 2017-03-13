@@ -4,6 +4,7 @@
     <title>CryptPad</title>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
     <link rel="icon" type="image/png"
         href="/customize/main-favicon.png"
         data-main-favicon="/customize/main-favicon.png"
@@ -56,5 +57,14 @@
 </head>
 <body>
     <iframe id="pad-iframe"></iframe><script src="/common/noscriptfix.js"></script>
+    <div id="loading">
+        <div class="loadingContainer">
+            <img class="cryptofist" src="/customize/cryptofist_small.png" />
+            <div class="spinnerContainer">
+                <span class="fa fa-spinner fa-pulse fa-4x fa-fw"></span>
+            </div>
+            <p data-localization="loading"></p>
+        </div>
+    </div>
 </body>
 </html>

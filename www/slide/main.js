@@ -136,6 +136,7 @@ define([
 
             var $modal = $pad.contents().find('#modal');
             var $content = $pad.contents().find('#content');
+            var $print = $pad.contents().find('#print');
 
             Slide.setModal($modal, $content, $pad, ifrw, initialState);
 
@@ -411,6 +412,80 @@ define([
                 onLocal();
             };
 
+            var createPrintDialog = function () {
+                var printOptions = {
+                    title: true,
+                    slide: true,
+                    date: true
+                };
+
+                var $container = $('<div class="alertify">');
+                var $container2 = $('<div class="dialog">').appendTo($container);
+                var $div = $('<div id="printOptions">').appendTo($container2);
+                var $p = $('<p>', {'class': 'msg'}).appendTo($div);
+                $('<b>').text(Messages.printOptions).appendTo($p);
+                $p.append($('<br>'));
+                // Slide number
+                $('<input>', {type: 'checkbox', id: 'checkNumber', checked: 'checked'}).on('change', function () {
+                    var c = this.checked;
+                    console.log(c);
+                    printOptions.slide = c;
+                }).appendTo($p).css('width', 'auto');
+                $('<label>', {'for': 'checkNumber'}).text(Messages.printSlideNumber).appendTo($p);
+                $p.append($('<br>'));
+                // Date
+                $('<input>', {type: 'checkbox', id: 'checkDate', checked: 'checked'}).on('change', function () {
+                    var c = this.checked;
+                    printOptions.date = c;
+                }).appendTo($p).css('width', 'auto');
+                $('<label>', {'for': 'checkDate'}).text(Messages.printDate).appendTo($p);
+                $p.append($('<br>'));
+                // Title
+                $('<input>', {type: 'checkbox', id: 'checkTitle', checked: 'checked'}).on('change', function () {
+                    var c = this.checked;
+                    printOptions.title = c;
+                }).appendTo($p).css('width', 'auto');
+                $('<label>', {'for': 'checkTitle'}).text(Messages.printTitle).appendTo($p);
+                $p.append($('<br>'));
+                // CSS
+                $('<label>', {'for': 'cssPrint'}).text(Messages.printCSS).appendTo($p);
+                $p.append($('<br>'));
+                var $textarea = $('<textarea>', {'id':'cssPrint'}).css({'width':'100%', 'height':'100px'}).appendTo($p);
+
+                var fixCSS = function (css) {
+                    var append = '.cp #print ';
+                css = css.replace(/(\n*)([^\n]+)\s*\{/g, '$1' + append + '$2 {')
+                    return css;
+                };
+
+                var todo = function () {
+                    var $style = $('<style>').text(fixCSS($textarea.val()));
+                    $print.prepend($style);
+                    var length = $print.find('.slide-frame').length;
+                    $print.find('.slide-frame').each(function (i, el) {
+                        if (printOptions.slide) {
+                            $('<div>', {'class': 'slideNumber'}).text((i+1)+'/'+length).appendTo($(el));
+                        }
+                        if (printOptions.date) {
+                            $('<div>', {'class': 'slideDate'}).text(new Date().toLocaleDateString()).appendTo($(el));
+                        }
+                        if (printOptions.title) {
+                            $('<div>', {'class': 'slideTitle'}).text(APP.title).appendTo($(el));
+                        }
+                    });
+                    window.frames["pad-iframe"].focus();
+                    window.frames["pad-iframe"].print();
+                    $container.remove();
+                };
+
+                var $nav = $('<nav>').appendTo($div);
+                var $ok = $('<button>', {'class': 'ok'}).text(Messages.printButton).appendTo($nav).click(todo);
+                var $cancel = $('<button>', {'class': 'cancel'}).text(Messages.cancel).appendTo($nav).click(function () {
+                    $container.remove();
+                });
+                return $container;
+            };
+
             var onInit = config.onInit = function (info) {
                 userList = info.userList;
 
@@ -465,6 +540,16 @@ define([
                 };
                 var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
                 $rightside.append($forgetPad);
+
+                var $printButton = $('<button>', {
+                    title: Messages.printButtonTitle,
+                    'class': 'rightside-button fa fa-print',
+                    style: 'font-size: 17px'
+                }).click(function () {
+                    $print.html($content.html());
+                    $('body').append(createPrintDialog());
+                });
+                $rightside.append($printButton);
 
                 var $present = Cryptpad.createButton('present', true)
                     .click(function () {
@@ -628,7 +713,8 @@ define([
                 updateMetadata(userDoc);
 
                 editor.setValue(newDoc || initialState);
-                Slide.update(newDoc);
+                Slide.update(newDoc, true);
+                Slide.draw();
 
                 if (Cryptpad.initialName && APP.title === defaultName) {
                     updateTitle(Cryptpad.initialName);

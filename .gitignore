@@ -10,3 +10,4 @@ messages.log
 .DS_Store
 www/scratch
 data
+npm-debug.log

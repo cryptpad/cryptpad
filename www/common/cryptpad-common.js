@@ -1,12 +1,11 @@
 define([
     '/api/config',
     '/customize/messages.js?app=' + window.location.pathname.split('/').filter(function (x) { return x; }).join('.'),
-    '/customize/fsStore.js',
+    '/common/fsStore.js',
     '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/alertifyjs/dist/js/alertify.js',
     '/bower_components/spin.js/spin.min.js',
     '/common/clipboard.js',
-    '/customize/fsStore.js',
     '/customize/application_config.js',
 
     '/bower_components/jquery/dist/jquery.min.js',
@@ -621,6 +620,28 @@ define([
     };
 
     // STORAGE
+    var findWeaker = common.findWeaker = function (href, recents) {
+        var rHref = href || getRelativeHref(window.location.href);
+        var parsed = parsePadUrl(rHref);
+        if (!parsed.hash) { return false; }
+        var weaker;
+        recents.some(function (pad) {
+            var p = parsePadUrl(pad.href);
+            if (p.type !== parsed.type) { return; } // Not the same type
+            if (p.hash === parsed.hash) { return; } // Same hash, not stronger
+            var pHash = parseHash(p.hash);
+            var parsedHash = parseHash(parsed.hash);
+            if (!parsedHash || !pHash) { return; }
+            if (pHash.version !== parsedHash.version) { return; }
+            if (pHash.channel !== parsedHash.channel) { return; }
+            if (pHash.mode === 'view' && parsedHash.mode === 'edit') {
+                weaker = pad.href;
+                return true;
+            }
+            return;
+        });
+        return weaker;
+    };
     var findStronger = common.findStronger = function (href, recents) {
         var rHref = href || getRelativeHref(window.location.href);
         var parsed = parsePadUrl(rHref);
@@ -862,26 +883,27 @@ define([
         return Messages.tips[keys[rdm]];
     };
     common.addLoadingScreen = function (loadingText) {
+        var $loading, $container;
         if ($('#' + LOADING).length) {
-            $('#' + LOADING).show();
-            return;
+            $loading = $('#' + LOADING).show();
+            if (loadingText) {
+                $('#' + LOADING).find('p').text(loadingText);
+            }
+            $container = $loading.find('.loadingContainer');
+        } else {
+            var $loading = $('<div>', {id: LOADING});
+            $container = $('<div>', {'class': 'loadingContainer'});
+            $container.append('<img class="cryptofist" src="/customize/cryptofist_small.png" />');
+            var $spinner = $('<div>', {'class': 'spinnerContainer'});
+            var loadingSpinner = common.spinner($spinner).show();
+            var $text = $('<p>').text(loadingText || Messages.loading);
+            $container.append($spinner).append($text);
+            $loading.append($container);
+            $('body').append($loading);
         }
-        var $loading = $('<div>', {id: LOADING});
-        var $container = $('<div>', {'class': 'loadingContainer'});
-        $container.append('<img class="cryptofist" src="/customize/cryptofist_small.png" />');
-        var $spinner = $('<div>', {'class': 'spinnerContainer'});
-        var loadingSpinner = common.spinner($spinner).show();
-        var $text = $('<p>').text(loadingText || Messages.loading);
-        $container.append($spinner).append($text);
-        $loading.append($container);
-        $('body').append($loading);
         if (Messages.tips) {
             var $loadingTip = $('<div>', {'id': 'loadingTip'});
             var $tip = $('<span>', {'class': 'tips'}).text(getRandomTip()).appendTo($loadingTip);
-            console.log($('body').height());
-            console.log($container.height());
-            console.log($('body'));
-            console.log($container);
             $loadingTip.css({
                 'top': $('body').height()/2 + $container.height()/2 + 20 + 'px'
             });

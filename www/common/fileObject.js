@@ -6,10 +6,10 @@ define([
 
     var Messages = {};
 
-    var ROOT = "root";
-    var UNSORTED = "unsorted";
-    var TRASH = "trash";
-    var TEMPLATE = "template";
+    var ROOT = module.ROOT = "root";
+    var UNSORTED = module.UNSORTED = "unsorted";
+    var TRASH = module.TRASH = "trash";
+    var TEMPLATE = module.TEMPLATE = "template";
 
     var init = module.init = function (files, config) {
         var Cryptpad = config.Cryptpad;
