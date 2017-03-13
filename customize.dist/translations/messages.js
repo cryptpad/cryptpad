@@ -419,14 +419,13 @@ define(function () {
     out.readme_cat3_l3 = "With CryptPoll you can take quick votes, especially for scheduling meetings which fit with everybody's calendar";
 
     // Tips
-    // TODO
-    /*out.tips = {};
-    out.tips.multiselect = "Ctrl+click to select multiple elements in CryptDrive";
-    out.tips.dragdrop = "Drag and drop files and folders in your drive. You can't drop folder into the 'unsorted files' category.";
-    out.tips.register = "Sign up to access your pads everywhere. Don't worry, everything is encrypted so we don't know anything about your account.";
-    out.tips.other = "Pew pew pew pew pew";*/
-
-
+    out.tips = {};
+    out.tips.lag = "The green icon in the upper right shows the quality of your internet connection to the CryptPad server.";
+    out.tips.shortcuts = "`ctrl+b`, `ctrl+i` and `ctrl+u` are quick shortcuts for bold, italic and underline.";
+    out.tips.indent = "In numbered and bulleted lists, you can use tab or shift+tab to quickly increase or decrease indentation.";
+    out.tips.title = "You can set the title of your pad by clicking the top center.";
+    out.tips.store = "Every time you visit a pad, if you're logged in it will be saved to your CryptDrive.";
+    out.tips.marker = "You can highlight text in a pad using the \"marker\" item in the styles dropdown menu.";
 
     return out;
 });
