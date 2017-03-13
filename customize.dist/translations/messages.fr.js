@@ -364,13 +364,23 @@ define(function () {
         '</small>',
         '</p>',
     ].join('');
+    out.initialState = [
+        '<span style="font-size:18px;"><p>',
+        'Voici <strong>CryptPad</strong>, l\'éditeur collaboratif en temps-réel Zero Knowledge. Tout est sauvegardé dés que vous le tapez.',
+        '<br>',
+        'Partagez le lien vers ce pad avec des amis ou utilisez le bouton <span style="background-color:#449d44;color:#ffffff;">&nbsp;Partager&nbsp;</span> pour obtenir le <em>lien de lecture-seule</em>, qui permet la lecture mais non la modification.',
+        '</p>',
+        '<p><span style="color:#808080; font-size: 18px;">',
+        '<em>',
+        'Lancez-vous, commencez à taper...',
+        '</em></span></p></span>'
+    ].join('');
 
     out.codeInitialState = [
         '/*\n',
-        '   Voici CryptPad, l\'éditeur collaboratif en temps-réel Zero Knowledge.\n',
+        '   Voici l\'éditeur de code collaboratif et Zero Knowledge de CryptPad.\n',
         '   Ce que vous tapez ici est chiffré de manière que seules les personnes avec le lien peuvent y accéder.\n',
-        '   Même le serveur est incapable de voir ce que vous tapez.\n',
-        '   Ce que vous voyez ici, ce que vous entendez, quand vous partez, ça reste ici.\n',
+        '   Vous pouvez choisir le langage de programmation pour la coloration syntaxique, ainsi que le thème de couleurs, dans le coin supérieur droit.\n',
         '*/'
     ].join('');
 

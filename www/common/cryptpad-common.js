@@ -4,12 +4,11 @@ define([
     '/common/fsStore.js',
     '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/alertifyjs/dist/js/alertify.js',
-    '/bower_components/spin.js/spin.min.js',
     '/common/clipboard.js',
     '/customize/application_config.js',
 
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Messages, Store, Crypto, Alertify, Spinner, Clipboard, AppConfig) {
+], function (Config, Messages, Store, Crypto, Alertify, Clipboard, AppConfig) {
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
@@ -891,11 +890,11 @@ define([
             }
             $container = $loading.find('.loadingContainer');
         } else {
-            var $loading = $('<div>', {id: LOADING});
+            $loading = $('<div>', {id: LOADING});
             $container = $('<div>', {'class': 'loadingContainer'});
             $container.append('<img class="cryptofist" src="/customize/cryptofist_small.png" />');
             var $spinner = $('<div>', {'class': 'spinnerContainer'});
-            var loadingSpinner = common.spinner($spinner).show();
+            common.spinner($spinner).show();
             var $text = $('<p>').text(loadingText || Messages.loading);
             $container.append($spinner).append($text);
             $loading.append($container);
@@ -1535,36 +1534,11 @@ define([
      *  spinner
      */
     common.spinner = function (parent) {
-        var $target = $('<div>', {
-            //
+        var $target = $('<span>', {
+            'class': 'fa fa-spinner fa-pulse fa-4x fa-fw'
         }).hide();
 
         $(parent).append($target);
-
-        var opts = {
-            lines: 20, // The number of lines to draw
-            length: 5, // The length of each line
-            width: 2, // The line thickness
-            radius: 15, // The radius of the inner circle
-            scale: 2, // Scales overall size of the spinner
-            corners: 1, // Corner roundness (0..1)
-            color: '#ddd', // #rgb or #rrggbb or array of colors
-            opacity: 0.3, // Opacity of the lines
-            rotate: 31, // The rotation offset
-            direction: 1, // 1: clockwise, -1: counterclockwise
-            speed: 1, // Rounds per second
-            trail: 49, // Afterglow percentage
-            fps: 20, // Frames per second when using setTimeout() as a fallback for CSS
-            zIndex: 2e9, // The z-index (defaults to 2000000000)
-            className: 'spinner', // The CSS class to assign to the spinner
-            top: '50%', // Top position relative to parent
-            left: '50%', // Left position relative to parent
-            shadow: false, // Whether to render a shadow
-            hwaccel: false, // Whether to use hardware acceleration
-            position: 'relative', // Element positioning
-            height: '100px'
-        };
-        var spinner = new Spinner(opts).spin($target[0]);
 
         return {
             show: function () {
@@ -1576,7 +1550,7 @@ define([
                 return this;
             },
             get: function () {
-                return spinner;
+                return $target;
             },
         };
     };
