@@ -1522,8 +1522,13 @@ define([
             });
 
         window.setTimeout(function () {
-            if (opt.okClass) { findOKButton().addClass(opt.okClass); }
-            if (opt.cancelClass) { findCancelButton().addClass(opt.cancelClass); }
+            var $ok = findOKButton();
+            var $cancel = findCancelButton();
+            if (opt.okClass) { $ok.addClass(opt.okClass); }
+            if (opt.cancelClass) { $cancel.addClass(opt.cancelClass); }
+            if (opt.reverseOrder) {
+                $ok.insertBefore($ok.prev());
+            }
         }, 0);
     };
 
