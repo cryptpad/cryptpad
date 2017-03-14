@@ -176,7 +176,7 @@ define([
         var old = Slide.content;
         Slide.content = content.replace(/\n\s*\-\-\-\s*\n/g, '\n\n'+separator+'\n\n');
         if (old !== Slide.content) {
-            draw();
+            draw(Slide.index);
             return;
         }
         change(Slide.lastIndex, Slide.index);
