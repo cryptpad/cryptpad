@@ -61,10 +61,24 @@
   top: 50%;
   transform: translateY(-50%);
 }
+.alertify .dialog .bright,
+.alertify .alert .bright {
+  color: #ffffff;
+}
 .alertify .dialog > div,
 .alertify .alert > div {
   background-color: #444;
   border-radius: 5px;
+}
+.alertify .dialog > div.half,
+.alertify .alert > div.half {
+  width: 50%;
+}
+@media (max-width: 600px) {
+  .alertify .dialog > div.half,
+  .alertify .alert > div.half {
+    width: 100%;
+  }
 }
 .alertify .dialog > *,
 .alertify .alert > * {
@@ -122,6 +136,34 @@
   color: #fafafa;
   border: 1px solid #302B28;
   border-radius: 5px;
+}
+.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button).safe,
+.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button).safe,
+.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button).danger,
+.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button).danger {
+  color: #302B28;
+  white-space: normal;
+  font-weight: bold;
+}
+.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button).danger,
+.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button).danger {
+  background-color: #FA5858;
+}
+.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button).danger:hover,
+.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button).danger:hover,
+.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button).danger:active,
+.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button).danger:active {
+  background-color: #fb7171;
+}
+.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button).safe,
+.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button).safe {
+  background-color: #46E981;
+}
+.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button).safe:hover,
+.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button).safe:hover,
+.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button).safe:active,
+.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button).safe:active {
+  background-color: #74eea0;
 }
 .alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):hover,
 .alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):hover,
