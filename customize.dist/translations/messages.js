@@ -247,6 +247,8 @@ define(function () {
 
     out.register_warning = "Zero Knowledge means that we can't recover your data if you lose your password.";
 
+    out.register_alreadyRegistered = "This user already exists, do you want to log in?";
+
     // Settings
     out.settings_title = "Settings";
     out.settings_save = "Save";
