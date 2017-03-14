@@ -130,6 +130,13 @@ module.exports = {
      */
     openFileLimit: 2048,
 
+    /*  Cryptpad's socket server can be extended to respond to RPC calls
+     *  you can configure it to respond to custom RPC calls if you like.
+     *  provide the path to your RPC module here, or `false` if you would
+     *  like to disable the RPC interface completely
+     */
+    rpc: './rpc.js',
+
     /* it is recommended that you serve cryptpad over https
      * the filepaths below are used to configure your certificates
      */

@@ -117,13 +117,32 @@ httpServer.listen(config.httpPort,config.httpAddress,function(){
 
 var wsConfig = { server: httpServer };
 
-if(!config.useExternalWebsocket) {
-    if (websocketPort !== config.httpPort) {
-        console.log("setting up a new websocket server");
-        wsConfig = { port: websocketPort};
+var createSocketServer = function (err, rpc) {
+    if(!config.useExternalWebsocket) {
+        if (websocketPort !== config.httpPort) {
+            console.log("setting up a new websocket server");
+            wsConfig = { port: websocketPort};
+        }
+        var wsSrv = new WebSocketServer(wsConfig);
+        Storage.create(config, function (store) {
+            NetfluxSrv.run(store, wsSrv, config, rpc);
+        });
     }
-    var wsSrv = new WebSocketServer(wsConfig);
-    Storage.create(config, function (store) {
-        NetfluxSrv.run(store, wsSrv, config);
-    });
-}
+};
+
+var loadRPC = function (cb) {
+    config.rpc = typeof(config.rpc) === 'undefined'? './rpc.js' : config.rpc;
+
+    if (typeof(config.rpc) === 'string') {
+        // load pin store...
+        var Rpc = require(config.rpc);
+        Rpc.create(config, function (e, rpc) {
+            if (e) { throw e; }
+            cb(void 0, rpc);
+        });
+    } else {
+        cb();
+    }
+};
+
+loadRPC(createSocketServer);

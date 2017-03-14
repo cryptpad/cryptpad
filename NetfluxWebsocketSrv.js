@@ -209,6 +209,21 @@ const handleMessage = function (ctx, user, msg) {
                     let parsedMsg = {state: 1, channel: parsed[1]};
                     sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(parsedMsg)]);
                 });
+            } else if (ctx.rpc) {
+                /* RPC Calls...  */
+                var rpc_call = parsed.slice(1);
+
+                // slice off the sequence number and pass in the rest of the message
+                ctx.rpc(rpc_call, function (err, output) {
+                    if (err) {
+                        console.error('[' + err + ']', output); // TODO make this disableable
+                        sendMsg(ctx, user, [seq, 'ACK']);
+                        sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify([parsed[0], 'ERROR', err])]);
+                        return
+                    }
+                    sendMsg(ctx, user, [seq, 'ACK']);
+                    sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify([parsed[0]].concat(output))]);
+                });
             }
             return;
         }
@@ -251,7 +266,7 @@ const handleMessage = function (ctx, user, msg) {
     }
 };
 
-let run = module.exports.run = function (storage, socketServer, config) {
+let run = module.exports.run = function (storage, socketServer, config, rpc) {
     /*  Channel removal timeout defaults to 60000ms (one minute) */
     config.channelRemovalTimeout =
         typeof(config.channelRemovalTimeout) === 'number'?
@@ -263,7 +278,8 @@ let run = module.exports.run = function (storage, socketServer, config) {
         channels: {},
         timeouts: {},
         store: storage,
-        config: config
+        config: config,
+        rpc: rpc,
     };
     setInterval(function () {
         Object.keys(ctx.users).forEach(function (userId) {
