@@ -558,6 +558,14 @@
   font-size: 1.2em;
   font-weight: bold;
 }
+.cp footer div.version-footer {
+  background-color: #302B28;
+  color: #fafafa;
+  text-align: center;
+  width: 100%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
 html.cp,
 .cp body {
   font-size: .875em;
