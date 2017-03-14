@@ -242,6 +242,11 @@ define(function () {
         "</ul>"
     ].join('');
 
+    out.register_writtenPassword = "I have written down my username and password, proceed";
+    out.register_cancel = "Go back";
+
+    out.register_warning = "Zero Knowledge means that we can't recover your data if you lose your password.";
+
     // Settings
     out.settings_title = "Settings";
     out.settings_save = "Save";
