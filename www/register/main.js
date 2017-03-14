@@ -58,7 +58,6 @@ define([
         // checkboxes
         var $checkImport = $('#import-recent');
         var $checkAcceptTerms = $('#accept-terms');
-        var $checkPromise = $('#promise');
 
         var $register = $('button#register');
 
@@ -69,7 +68,6 @@ define([
 
             var shouldImport = $checkImport[0].checked;
             var doesAccept = $checkAcceptTerms[0].checked;
-            var doesPromise = $checkPromise[0].checked;
 
             /* basic validation */
             if (passwd !== confirmPassword) { // do their passwords match?
@@ -80,61 +78,70 @@ define([
                 return void Cryptpad.alert(Messages.register_mustAcceptTerms);
             }
 
-            if (!doesPromise) { // do they promise to remember their password?
-                return void Cryptpad.alert(Messages.register_mustRememberPass);
-            }
+            Cryptpad.confirm("<h2 class='bright'>" + Messages.register_warning + "</h2>",
+            function (yes) {
+                if (!yes) { return; }
 
-            Cryptpad.addLoadingScreen(Messages.login_hashing);
-            Login.loginOrRegister(uname, passwd, true, function (err, result) {
-                if (err) {
-                    switch (err) {
-                        case 'NO_SUCH_USER':
-                            Cryptpad.removeLoadingScreen(function () {
-                                Cryptpad.alert(Messages.login_noSuchUser);
-                            });
-                            break;
-                        case 'INVAL_USER':
-                            Cryptpad.removeLoadingScreen(function () {
-                                Cryptpad.alert(Messages.login_invalUser);
-                            });
-                            break;
-                        case 'INVAL_PASS':
-                            Cryptpad.removeLoadingScreen(function () {
-                                Cryptpad.alert(Messages.login_invalPass);
-                            });
-                            break;
-                        default: // UNHANDLED ERROR
-                            Cryptpad.errorLoadingScreen(Messages.login_unhandledError);
-                    }
-                }
-                var proxy = result.proxy;
-
-                localStorage.User_hash = result.userHash;
-
-                Cryptpad.eraseTempSessionValues();
-                if (shouldImport) {
-                    sessionStorage.migrateAnonDrive = 1;
-                }
-
-                proxy.login_name = uname;
-                proxy[Cryptpad.displayNameKey] = uname;
-                sessionStorage.createReadme = 1;
-
-                Cryptpad.whenRealtimeSyncs(result.realtime, function () {
-                    Cryptpad.login(result.userHash, result.userName, function () {
-                        if (sessionStorage.redirectTo) {
-                            var h = sessionStorage.redirectTo;
-                            var parser = document.createElement('a');
-                            parser.href = h;
-                            if (parser.origin === window.location.origin) {
-                                delete sessionStorage.redirectTo;
-                                window.location.href = h;
-                                return;
-                            }
+                Cryptpad.addLoadingScreen(Messages.login_hashing);
+                Login.loginOrRegister(uname, passwd, true, function (err, result) {
+                    if (err) {
+                        switch (err) {
+                            case 'NO_SUCH_USER':
+                                Cryptpad.removeLoadingScreen(function () {
+                                    Cryptpad.alert(Messages.login_noSuchUser);
+                                });
+                                break;
+                            case 'INVAL_USER':
+                                Cryptpad.removeLoadingScreen(function () {
+                                    Cryptpad.alert(Messages.login_invalUser);
+                                });
+                                break;
+                            case 'INVAL_PASS':
+                                Cryptpad.removeLoadingScreen(function () {
+                                    Cryptpad.alert(Messages.login_invalPass);
+                                });
+                                break;
+                            default: // UNHANDLED ERROR
+                                Cryptpad.errorLoadingScreen(Messages.login_unhandledError);
                         }
-                        window.location.href = '/drive/';
+                    }
+                    var proxy = result.proxy;
+
+                    localStorage.User_hash = result.userHash;
+
+                    Cryptpad.eraseTempSessionValues();
+                    if (shouldImport) {
+                        sessionStorage.migrateAnonDrive = 1;
+                    }
+
+                    proxy.login_name = uname;
+                    proxy[Cryptpad.displayNameKey] = uname;
+                    sessionStorage.createReadme = 1;
+
+                    Cryptpad.whenRealtimeSyncs(result.realtime, function () {
+                        Cryptpad.login(result.userHash, result.userName, function () {
+                            if (sessionStorage.redirectTo) {
+                                var h = sessionStorage.redirectTo;
+                                var parser = document.createElement('a');
+                                parser.href = h;
+                                if (parser.origin === window.location.origin) {
+                                    delete sessionStorage.redirectTo;
+                                    window.location.href = h;
+                                    return;
+                                }
+                            }
+                            window.location.href = '/drive/';
+                        });
                     });
                 });
+            }, {
+                ok: Messages.register_writtenPassword, //'I have written down my password, proceed',
+                cancel: Messages.register_cancel, // 'Go back',
+                cancelClass: 'safe',
+                okClass: 'danger',
+                reverseOrder: true,
+            }, true, function ($dialog) {
+                $dialog.find('> div').addClass('half');
             });
         });
     });
