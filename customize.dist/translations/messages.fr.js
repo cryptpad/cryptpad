@@ -225,10 +225,12 @@ define(function () {
 
     out.register_importRecent = "Importer l'historique (Recommendé)";
     out.register_acceptTerms = "J'accepte <a href='/terms.html'>les conditions d'utilisation</a>";
-    out.register_rememberPassword = "Je vais me souvenir de mes identifiants";
     out.register_passwordsDontMatch = "Les mots de passe doivent être identiques!";
     out.register_mustAcceptTerms = "Vous devez accepter les conditions d'utilisation.";
     out.register_mustRememberPass = "Nous ne pouvons pas réinitialiser votre mot de passe si vous l'oubliez. C'est important que vous vous en souveniez! Veuillez cocher la case pour confirmer.";
+    out.register_writtenPassword = "J'ai bien noté mon nom d'utilisateur et mon mot de passe, continuer";
+    out.register_cancel = "Retour";
+    out.register_warning = "Zero Knowledge signifie que nous ne pouvons pas récupérer vos données si vous perdez vos identifiants.";
 
     out.register_header = "Bienvenue dans CryptPad";
     out.register_explanation = [

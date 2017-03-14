@@ -138,7 +138,15 @@ define([
         var todo = function (err, doc) {
             if (err) { console.error("Cannot migrate recent pads", err); return; }
             var parsed;
-            try { parsed = JSON.parse(doc); } catch (e) { console.error("Cannot parsed recent pads", e); return; }
+            if (!doc) {
+                if (typeof(cb) === "function") { cb(); }
+                return;
+            }
+            try { parsed = JSON.parse(doc); } catch (e) {
+                if (typeof(cb) === "function") { cb(); }
+                console.error("Cannot parsed recent pads", e);
+                return;
+            }
             if (parsed) {
                 //merge(proxy, parsed, true);
                 var oldFo = FO.init(parsed.drive, {
