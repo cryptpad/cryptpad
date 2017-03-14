@@ -1499,7 +1499,7 @@ define([
             });
     };
 
-    common.confirm = function (msg, cb, opt, force) {
+    common.confirm = function (msg, cb, opt, force, styleCB) {
         opt = opt || {};
         cb = cb || function () {};
         if (force !== true) { msg = fixHTML(msg); }
@@ -1528,6 +1528,9 @@ define([
             if (opt.cancelClass) { $cancel.addClass(opt.cancelClass); }
             if (opt.reverseOrder) {
                 $ok.insertBefore($ok.prev());
+            }
+            if (typeof(styleCB) === 'function') {
+                styleCB($ok.closest('.dialog'));
             }
         }, 0);
     };
