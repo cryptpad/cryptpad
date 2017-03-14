@@ -911,9 +911,10 @@ define([
     };
     common.removeLoadingScreen = function (cb) {
         $('#' + LOADING).fadeOut(750, cb);
+        $('#loadingTip').css('top', '');
         window.setTimeout(function () {
             $('#loadingTip').fadeOut(750);
-        }, 2000);
+        }, 3000);
     };
     common.errorLoadingScreen = function (error, transparent) {
         if (!$('#' + LOADING).is(':visible')) { common.addLoadingScreen(); }
