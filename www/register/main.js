@@ -61,6 +61,25 @@ define([
 
         var $register = $('button#register');
 
+        var logMeIn = function (result) {
+            localStorage.User_hash = result.userHash;
+            Cryptpad.whenRealtimeSyncs(result.realtime, function () {
+                Cryptpad.login(result.userHash, result.userName, function () {
+                    if (sessionStorage.redirectTo) {
+                        var h = sessionStorage.redirectTo;
+                        var parser = document.createElement('a');
+                        parser.href = h;
+                        if (parser.origin === window.location.origin) {
+                            delete sessionStorage.redirectTo;
+                            window.location.href = h;
+                            return;
+                        }
+                    }
+                    window.location.href = '/drive/';
+                });
+            });
+        };
+
         $register.click(function () {
             var uname = $uname.val();
             var passwd = $passwd.val();
@@ -101,13 +120,26 @@ define([
                                     Cryptpad.alert(Messages.login_invalPass);
                                 });
                                 break;
+                            case 'ALREADY_REGISTERED':
+                                Cryptpad.removeLoadingScreen(function () {
+                                    Cryptpad.confirm(Messages.register_alreadyRegistered, function (yes) {
+                                        if (!yes) { return; }
+                                        result.proxy.login_name = uname;
+
+                                        if (!result.proxy[Cryptpad.displayNameKey]) {
+                                            result.proxy[Cryptpad.displayNameKey] = uname;
+                                        }
+                                        Cryptpad.eraseTempSessionValues();
+                                        logMeIn(result);
+                                    });
+                                });
+                                break;
                             default: // UNHANDLED ERROR
                                 Cryptpad.errorLoadingScreen(Messages.login_unhandledError);
                         }
+                        return;
                     }
                     var proxy = result.proxy;
-
-                    localStorage.User_hash = result.userHash;
 
                     Cryptpad.eraseTempSessionValues();
                     if (shouldImport) {
@@ -118,21 +150,7 @@ define([
                     proxy[Cryptpad.displayNameKey] = uname;
                     sessionStorage.createReadme = 1;
 
-                    Cryptpad.whenRealtimeSyncs(result.realtime, function () {
-                        Cryptpad.login(result.userHash, result.userName, function () {
-                            if (sessionStorage.redirectTo) {
-                                var h = sessionStorage.redirectTo;
-                                var parser = document.createElement('a');
-                                parser.href = h;
-                                if (parser.origin === window.location.origin) {
-                                    delete sessionStorage.redirectTo;
-                                    window.location.href = h;
-                                    return;
-                                }
-                            }
-                            window.location.href = '/drive/';
-                        });
-                    });
+                    logMeIn(result);
                 });
             }, {
                 ok: Messages.register_writtenPassword, //'I have written down my password, proceed',

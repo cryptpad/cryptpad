@@ -94,17 +94,21 @@ define([
                 res.realtime = rt.realtime;
                 res.network = rt.network;
 
+                // they're registering...
+                res.userHash = opt.userHash;
+                res.userName = uname;
+
                 // they tried to just log in but there's no such user
                 if (!isRegister && isProxyEmpty(rt.proxy)) {
                     rt.network.disconnect(); // clean up after yourself
                     return void cb('NO_SUCH_USER', res);
                 }
 
-                // they're registering...
-
-                res.userHash = opt.userHash;
-                res.userName = uname;
-                //res.displayName // TODO
+                // they tried to register, but those exact credentials exist
+                if (isRegister && !isProxyEmpty(rt.proxy)) {
+                    rt.network.disconnect();
+                    return void cb('ALREADY_REGISTERED', res);
+                }
 
                 cb(void 0, res);
             });
