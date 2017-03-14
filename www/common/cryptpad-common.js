@@ -1,16 +1,14 @@
 define([
     '/api/config',
     '/customize/messages.js?app=' + window.location.pathname.split('/').filter(function (x) { return x; }).join('.'),
-    '/customize/fsStore.js',
+    '/common/fsStore.js',
     '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/alertifyjs/dist/js/alertify.js',
-    '/bower_components/spin.js/spin.min.js',
     '/common/clipboard.js',
-    '/customize/fsStore.js',
     '/customize/application_config.js',
 
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Messages, Store, Crypto, Alertify, Spinner, Clipboard, AppConfig) {
+], function (Config, Messages, Store, Crypto, Alertify, Clipboard, AppConfig) {
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
@@ -22,6 +20,7 @@ define([
     var common = window.Cryptpad = {
         Messages: Messages,
         Alertify: Alertify,
+        Clipboard: Clipboard
     };
 
     var store;
@@ -223,6 +222,7 @@ define([
         if (typeof keys === 'string') {
             return chanKey + keys;
         }
+        if (!keys.editKeyStr) { return; }
         return '/1/edit/' + hexToBase64(chanKey) + '/' + Crypto.b64RemoveSlashes(keys.editKeyStr);
     };
     var getViewHashFromKeys = common.getViewHashFromKeys = function (chanKey, keys) {
@@ -303,6 +303,18 @@ define([
         }
         return secret;
     };
+
+    var getHashes = common.getHashes = function (channel, secret) {
+        var hashes = {};
+        if (secret.keys.editKeyStr) {
+            hashes.editHash = getEditHashFromKeys(channel, secret.keys);
+        }
+        if (secret.keys.viewKeyStr) {
+            hashes.viewHash = getViewHashFromKeys(channel, secret.keys);
+        }
+        return hashes;
+    };
+
 
     var uint8ArrayToHex = common.uint8ArrayToHex = function (a) {
         // call slice so Uint8Arrays work as expected
@@ -426,6 +438,8 @@ define([
         var patt = /^https*:\/\/([^\/]*)\/(.*?)\//i;
 
         var ret = {};
+
+        if (!href) { return ret; }
 
         if (!/^https*:\/\//.test(href)) {
             var idx = href.indexOf('/#');
@@ -605,22 +619,52 @@ define([
     };
 
     // STORAGE
-    var isNotStrongestStored = common.isNotStrongestStored = function (href, recents) {
-        var parsed = parsePadUrl(href);
+    var findWeaker = common.findWeaker = function (href, recents) {
+        var rHref = href || getRelativeHref(window.location.href);
+        var parsed = parsePadUrl(rHref);
         if (!parsed.hash) { return false; }
-        return recents.some(function (pad) {
+        var weaker;
+        recents.some(function (pad) {
             var p = parsePadUrl(pad.href);
-            if (p.type !== parsed.type) { return false; } // Not the same type
-            if (p.hash === parsed.hash) { return false; } // Same hash, not stronger
+            if (p.type !== parsed.type) { return; } // Not the same type
+            if (p.hash === parsed.hash) { return; } // Same hash, not stronger
             var pHash = parseHash(p.hash);
             var parsedHash = parseHash(parsed.hash);
             if (!parsedHash || !pHash) { return; }
-            if (pHash.version !== parsedHash.version) { return false; }
-            if (pHash.channel !== parsedHash.channel) { return false; }
-            if (pHash.mode === 'edit' && parsedHash.mode === 'view') { return true; }
-            if (pHash.mode === parsedHash.mode && parsedHash.present) { return true; }
-            return false;
+            if (pHash.version !== parsedHash.version) { return; }
+            if (pHash.channel !== parsedHash.channel) { return; }
+            if (pHash.mode === 'view' && parsedHash.mode === 'edit') {
+                weaker = pad.href;
+                return true;
+            }
+            return;
         });
+        return weaker;
+    };
+    var findStronger = common.findStronger = function (href, recents) {
+        var rHref = href || getRelativeHref(window.location.href);
+        var parsed = parsePadUrl(rHref);
+        if (!parsed.hash) { return false; }
+        var stronger;
+        recents.some(function (pad) {
+            var p = parsePadUrl(pad.href);
+            if (p.type !== parsed.type) { return; } // Not the same type
+            if (p.hash === parsed.hash) { return; } // Same hash, not stronger
+            var pHash = parseHash(p.hash);
+            var parsedHash = parseHash(parsed.hash);
+            if (!parsedHash || !pHash) { return; }
+            if (pHash.version !== parsedHash.version) { return; }
+            if (pHash.channel !== parsedHash.channel) { return; }
+            if (pHash.mode === 'edit' && parsedHash.mode === 'view') {
+                stronger = pad.href;
+                return true;
+            }
+            return;
+        });
+        return stronger;
+    };
+    var isNotStrongestStored = common.isNotStrongestStored = function (href, recents) {
+        return findStronger(href, recents);
     };
     var setPadTitle = common.setPadTitle = function (name, cb) {
         var href = window.location.href;
@@ -632,6 +676,7 @@ define([
                 return;
             }
 
+            var updateWeaker = [];
             var contains;
             var renamed = recent.map(function (pad) {
                 var p = parsePadUrl(pad.href);
@@ -665,6 +710,14 @@ define([
 
                     // set the name
                     pad.title = name;
+
+                    // If we now have a stronger version of a stored href, replace the weaker one by the strong one
+                    if (pad && pad.href && href !== pad.href) {
+                        updateWeaker.push({
+                            o: pad.href,
+                            n: href
+                        });
+                    }
                     pad.href = href;
                 }
                 return pad;
@@ -679,6 +732,11 @@ define([
             }
 
             setRecentPads(renamed, function (err, data) {
+                if (updateWeaker.length > 0) {
+                    updateWeaker.forEach(function (obj) {
+                        getStore().replaceHref(obj.o, obj.n);
+                    });
+                }
                 cb(err, data);
             });
         });
@@ -817,23 +875,46 @@ define([
     };
 
     var LOADING = 'loading';
+    var getRandomTip = function () {
+        if (!Messages.tips || !Object.keys(Messages.tips).length) { return ''; }
+        var keys = Object.keys(Messages.tips);
+        var rdm = Math.floor(Math.random() * keys.length);
+        return Messages.tips[keys[rdm]];
+    };
     common.addLoadingScreen = function (loadingText) {
+        var $loading, $container;
         if ($('#' + LOADING).length) {
-            $('#' + LOADING).show();
-            return;
+            $loading = $('#' + LOADING).show();
+            if (loadingText) {
+                $('#' + LOADING).find('p').text(loadingText);
+            }
+            $container = $loading.find('.loadingContainer');
+        } else {
+            $loading = $('<div>', {id: LOADING});
+            $container = $('<div>', {'class': 'loadingContainer'});
+            $container.append('<img class="cryptofist" src="/customize/cryptofist_small.png" />');
+            var $spinner = $('<div>', {'class': 'spinnerContainer'});
+            common.spinner($spinner).show();
+            var $text = $('<p>').text(loadingText || Messages.loading);
+            $container.append($spinner).append($text);
+            $loading.append($container);
+            $('body').append($loading);
         }
-        var $loading = $('<div>', {id: LOADING});
-        var $container = $('<div>', {'class': 'loadingContainer'});
-        $container.append('<img class="cryptofist" src="/customize/cryptofist_small.png" />');
-        var $spinner = $('<div>', {'class': 'spinnerContainer'});
-        var loadingSpinner = common.spinner($spinner).show();
-        var $text = $('<p>').text(loadingText || Messages.loading);
-        $container.append($spinner).append($text);
-        $loading.append($container);
-        $('body').append($loading);
+        if (Messages.tips) {
+            var $loadingTip = $('<div>', {'id': 'loadingTip'});
+            var $tip = $('<span>', {'class': 'tips'}).text(getRandomTip()).appendTo($loadingTip);
+            $loadingTip.css({
+                'top': $('body').height()/2 + $container.height()/2 + 20 + 'px'
+            });
+            $('body').append($loadingTip);
+        }
     };
     common.removeLoadingScreen = function (cb) {
         $('#' + LOADING).fadeOut(750, cb);
+        $('#loadingTip').css('top', '');
+        window.setTimeout(function () {
+            $('#loadingTip').fadeOut(750);
+        }, 3000);
     };
     common.errorLoadingScreen = function (error, transparent) {
         if (!$('#' + LOADING).is(':visible')) { common.addLoadingScreen(); }
@@ -912,7 +993,7 @@ define([
         switch (type) {
             case 'export':
                 button = $('<button>', {
-                    title: Messages.exportButton + '\n' + Messages.exportButtonTitle,
+                    title: Messages.exportButtonTitle,
                 }).append($('<span>', {'class':'fa fa-download', style: 'font:'+size+' FontAwesome'}));
                 if (callback) {
                     button.click(callback);
@@ -920,7 +1001,7 @@ define([
                 break;
             case 'import':
                 button = $('<button>', {
-                    title: Messages.importButton + '\n' + Messages.importButtonTitle,
+                    title: Messages.importButtonTitle,
                 }).append($('<span>', {'class':'fa fa-upload', style: 'font:'+size+' FontAwesome'}));
                 if (callback) {
                     button.click(common.importContent('text/plain', function (content, file) {
@@ -931,7 +1012,7 @@ define([
             case 'forget':
                 button = $('<button>', {
                     id: 'cryptpad-forget',
-                    title: Messages.forgetButton + '\n' + Messages.forgetButtonTitle,
+                    title: Messages.forgetButtonTitle,
                     'class': "fa fa-trash cryptpad-forget",
                     style: 'font:'+size+' FontAwesome'
                 });
@@ -970,6 +1051,7 @@ define([
                     });
                 }
                 break;
+            // TODO remove editshare, viewshare, and viewopen
             case 'editshare':
                 button = $('<a>', {
                     title: Messages.editShareTitle,
@@ -1020,14 +1102,14 @@ define([
                 break;
             case 'present':
                 button = $('<button>', {
-                    title: Messages.presentButton + '\n' + Messages.presentButtonTitle,
+                    title: Messages.presentButtonTitle,
                     'class': "fa fa-play-circle cryptpad-present-button", // class used in slide.js
                     style: 'font:'+size+' FontAwesome'
                 });
                 break;
             case 'source':
                 button = $('<button>', {
-                    title: Messages.sourceButton + '\n' + Messages.sourceButtonTitle,
+                    title: Messages.sourceButtonTitle,
                     'class': "fa fa-stop-circle cryptpad-source-button", // class used in slide.js
                     style: 'font:'+size+' FontAwesome'
                 });
@@ -1063,10 +1145,15 @@ define([
 
         // Container
         var $container = $(config.container);
+        var containerConfig = {
+            'class': 'dropdown-bar'
+        };
+        if (config.buttonTitle) {
+            containerConfig.title = config.buttonTitle;
+        }
+
         if (!config.container) {
-            $container = $('<span>', {
-                'class': 'dropdown-bar'
-            });
+            $container = $('<span>', containerConfig);
         }
 
         // Button
@@ -1088,6 +1175,34 @@ define([
 
         $container.append($button).append($innerblock);
 
+        var value = config.initialValue || '';
+
+        var setActive = function ($el) {
+            if ($el.length !== 1) { return; }
+            $innerblock.find('.active').removeClass('active');
+            $el.addClass('active');
+            var scroll = $el.position().top + $innerblock.scrollTop();
+            if (scroll < $innerblock.scrollTop()) {
+                $innerblock.scrollTop(scroll);
+            } else if (scroll > ($innerblock.scrollTop() + 280)) {
+                $innerblock.scrollTop(scroll-270);
+            }
+        };
+
+        var hide = function () {
+            window.setTimeout(function () { $innerblock.hide(); }, 0);
+        };
+
+        var show = function () {
+            $innerblock.show();
+            $innerblock.find('.active').removeClass('active');
+            if (config.isSelect && value) {
+                var $val = $innerblock.find('[data-value="'+value+'"]');
+                setActive($val);
+                $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
+            }
+        };
+
         $button.click(function (e) {
             e.stopPropagation();
             var state = $innerblock.is(':visible');
@@ -1100,11 +1215,63 @@ define([
                 // empty try catch in case this iframe is problematic (cross-origin)
             }
             if (state) {
-                $innerblock.hide();
+                hide();
                 return;
             }
-            $innerblock.show();
+            show();
         });
+
+        if (config.isSelect) {
+            var pressed = '';
+            var to;
+            $container.keydown(function (e) {
+                var $value = $innerblock.find('[data-value].active');
+                if (e.which === 38) { // Up
+                    if ($value.length) {
+                        var $prev = $value.prev();
+                        setActive($prev);
+                    }
+                }
+                if (e.which === 40) { // Down
+                    if ($value.length) {
+                        var $next = $value.next();
+                        setActive($next);
+                    }
+                }
+                if (e.which === 13) { //Enter
+                    if ($value.length) {
+                        $value.click();
+                        hide();
+                    }
+                }
+                if (e.which === 27) { // Esc
+                    hide();
+                }
+            });
+            $container.keypress(function (e) {
+                window.clearTimeout(to);
+                var c = String.fromCharCode(e.which);
+                pressed += c;
+                var $value = $innerblock.find('[data-value^="'+pressed+'"]:first');
+                if ($value.length) {
+                    setActive($value);
+                    $innerblock.scrollTop($value.position().top + $innerblock.scrollTop());
+                }
+                to = window.setTimeout(function () {
+                    pressed = '';
+                }, 1000);
+            });
+
+            $container.setValue = function (val) {
+                value = val;
+                var $val = $innerblock.find('[data-value="'+val+'"]');
+                var textValue = $val.html() || val;
+                $button.find('.buttonTitle').html(textValue);
+            };
+            $container.getValue = function () {
+                return value || '';
+            };
+        }
 
         return $container;
     };
@@ -1130,7 +1297,8 @@ define([
             text: Messages.language, // Button initial text
             options: options, // Entries displayed in the menu
             left: true, // Open to the left of the button
-            container: $initBlock // optional
+            container: $initBlock, // optional
+            isSelect: true
         };
         var $block = createDropdown(dropdownConfig);
         $block.attr('id', 'language-selector');
@@ -1187,7 +1355,7 @@ define([
                 content: Messages.user_rename
             });
         }
-        if (parsed && parsed.type && parsed.type !== 'settings') {
+        if (parsed && (!parsed.type || parsed.type !== 'settings')) {
             options.push({
                 tag: 'a',
                 attributes: {'class': 'settings'},
@@ -1332,7 +1500,7 @@ define([
             });
     };
 
-    common.confirm = function (msg, cb, opt, force) {
+    common.confirm = function (msg, cb, opt, force, styleCB) {
         opt = opt || {};
         cb = cb || function () {};
         if (force !== true) { msg = fixHTML(msg); }
@@ -1353,6 +1521,19 @@ define([
                 cb(false);
                 stopListening(keyHandler);
             });
+
+        window.setTimeout(function () {
+            var $ok = findOKButton();
+            var $cancel = findCancelButton();
+            if (opt.okClass) { $ok.addClass(opt.okClass); }
+            if (opt.cancelClass) { $cancel.addClass(opt.cancelClass); }
+            if (opt.reverseOrder) {
+                $ok.insertBefore($ok.prev());
+            }
+            if (typeof(styleCB) === 'function') {
+                styleCB($ok.closest('.dialog'));
+            }
+        }, 0);
     };
 
     common.log = function (msg) {
@@ -1367,36 +1548,11 @@ define([
      *  spinner
      */
     common.spinner = function (parent) {
-        var $target = $('<div>', {
-            //
+        var $target = $('<span>', {
+            'class': 'fa fa-spinner fa-pulse fa-4x fa-fw'
         }).hide();
 
         $(parent).append($target);
-
-        var opts = {
-            lines: 20, // The number of lines to draw
-            length: 5, // The length of each line
-            width: 2, // The line thickness
-            radius: 15, // The radius of the inner circle
-            scale: 2, // Scales overall size of the spinner
-            corners: 1, // Corner roundness (0..1)
-            color: '#ddd', // #rgb or #rrggbb or array of colors
-            opacity: 0.3, // Opacity of the lines
-            rotate: 31, // The rotation offset
-            direction: 1, // 1: clockwise, -1: counterclockwise
-            speed: 1, // Rounds per second
-            trail: 49, // Afterglow percentage
-            fps: 20, // Frames per second when using setTimeout() as a fallback for CSS
-            zIndex: 2e9, // The z-index (defaults to 2000000000)
-            className: 'spinner', // The CSS class to assign to the spinner
-            top: '50%', // Top position relative to parent
-            left: '50%', // Left position relative to parent
-            shadow: false, // Whether to render a shadow
-            hwaccel: false, // Whether to use hardware acceleration
-            position: 'relative', // Element positioning
-            height: '100px'
-        };
-        var spinner = new Spinner(opts).spin($target[0]);
 
         return {
             show: function () {
@@ -1408,7 +1564,7 @@ define([
                 return this;
             },
             get: function () {
-                return spinner;
+                return $target;
             },
         };
     };

@@ -12,6 +12,8 @@ define([
         S.cb(err, doc);
         S.done = true;
 
+        var disconnect = Cryptpad.find(S, ['network', 'disconnect']);
+        if (typeof(disconnect) === 'function') { disconnect(); }
         var abort = Cryptpad.find(S, ['realtime', 'realtime', 'abort']);
         if (typeof(abort) === 'function') {
             S.realtime.realtime.sync();
@@ -50,6 +52,7 @@ define([
 
         var onReady = config.onReady = function (info) {
             var rt = Session.session = info.realtime;
+            Session.network = info.network;
             finish(Session, void 0, rt.getUserDoc());
         };
         overwrite(config, opt);
@@ -66,6 +69,7 @@ define([
         var Session = { cb: cb, };
         config.onReady = function (info) {
             var realtime = Session.session = info.realtime;
+            Session.network = info.network;
 
             TextPatcher.create({
                 realtime: realtime,

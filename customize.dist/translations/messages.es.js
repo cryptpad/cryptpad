@@ -35,10 +35,8 @@ define(function () {
     out.orangeLight = "La conexión es lenta y podria impactar la experiencia";
     out.redLight = "Has sido desconectado de la sesión";
 
-    out.importButton = 'Importar';
     out.importButtonTitle = 'Importar un documento de tus archivos locales';
 
-    out.exportButton = 'Exportar';
     out.exportButtonTitle = 'Exportar este documento a un archivo local';
     out.exportPrompt = '¿Cómo te gustaría llamar a este archivo?';
 
@@ -46,22 +44,16 @@ define(function () {
 
     out.clickToEdit = "Haz clic para cambiar";
 
-    out.forgetButton = 'Olvidar';
     out.forgetButtonTitle = 'Eliminar este documento de la lista en la pagina de inicio';
     out.forgetPrompt = 'Pulser OK eliminará este documento del almacenamiento local (localStorage), ¿estás seguro?';
 
     out.shareButton = 'Compartir';
     out.shareSuccess = 'URL copiada al portapapeles';
 
-    out.presentButton = 'Presentar';
     out.presentButtonTitle = "Entrar en el modo presentación";
     out.presentSuccess = 'ESC para salir del modo presentación';
-    out.sourceButton = 'Ver código fuente';
-    out.sourceButtonTitle = "Abandonar modo presentación";
 
-    out.backgroundButton = 'Color de fondo';
     out.backgroundButtonTitle = 'Cambiar el color de fondo en el modo presentación';
-    out.colorButton = 'Color de texto';
     out.colorButtonTitle = 'Cambiar el color de texto en el modo presentación';
 
     out.editShare = "URL de edición compartida";
@@ -88,7 +80,6 @@ define(function () {
     out.poll_p_save = "Tus configuraciones se actualizan instantaneamente, no es necesario guardar cambios.";
     out.poll_p_encryption = "Todos los datos entrados son cifrados, solo las personas que poseen el enlace tienen acceso. Incluso el servidor no puede ver el contenido.";
 
-    out.wizardButton = 'Asistente';
     out.wizardLog = "Presiona el boton en la parte superior izquierda para volver a la encuesta";
     out.wizardTitle = "Utiliza el asistente para crear tu encuesta";
     out.wizardConfirm = "¿Estás realmente seguro de agregar estas opciones a tu encuesta?";
@@ -326,5 +317,35 @@ define(function () {
     out.readme_cat3_l2 = "Con los slides CryptPad, puedes hacer presentaciones rápidas con Markdown";
     out.readme_cat3_l3 = "Con CryptPoll puedes tomar votos rápidos, especialmente utíl para programar un horario que conviene a todo el mundo";
 
-    return out;
+    // 1.2.0 - Chupacabra
+
+    out.settings_resetError = "Verificación no válida. Tu CryptDrive no fue cambiado.";
+    out.saved = "Guardado";
+    out.printButton = "Imprimir";
+    out.printButtonTitle = "Imprimir tu presentación o exportar a PDF";
+    out.printOptions = "Opciones de impresión";
+    out.printSlideNumber = "Mostrar el número de diapositiva";
+    out.printDate = "Mostrar la fecha";
+    out.printTitle = "Mostrar el título";
+    out.printCSS = "CSS personalizado:";
+    out.editOpen = "Abrir enlances de edición en pestaña nueva";
+    out.editOpenTitle = "Abrir en modo edición en pestaña nueva";
+    out.settings_importTitle = "Importar pads recientes locales en CryptDrive";
+    out.settings_import = "Importar";
+    out.settings_importConfirm = "¿Seguro qué quieres importar tus pads recientes a tu cuenta CryptDrive?";
+    out.settings_importDone = "Importación terminada";
+
+    out.tips = {};
+    out.tips.lag = "El icono verde en la parte superior derecha muestra la calidad de tu connexión a CryptPad.";
+    out.tips.shortcuts = "`ctrl+b`, `ctrl+i`, y `ctrl+u` son accesos rápidos para negrita, itálica y subrayado.";
+    out.tips.indent = "Cuando editas listas, puedes usar tab o shift+tab para icrementar o decrementar indentación.";
+    out.tips.title = "Puedes cambiar el título de tus pads en la parte superior de la pantalla.";
+    out.tips.store = "Cada vez que visitas un pad con una sesión iniciada se guardará a tu CryptDrive.";
+    out.tips.marker = "Puedes resaltar texto en un pad utilizando el \"marcador\" en el menú de estílo.";
+
+    out.feedback_about = "Si estas leyendo esto, quizas estés curioso de saber porqué CryptPad solicita esta página cuando haces algunas acciones";
+    out.feedback_privacy = "Nos importa tu privacidad, y al mismo tiempo queremos que CryptPad sea muy fácil de usar. Utilizamos esta página para conocer las funcionalidades que importan a nuestros usuarios, pidiendolo con un parametro que nos dice que accion fue realizada.";
+    out.feedback_optout = "Si quieres darte de baja, visita <a href='/settings/'>tus preferencias</a>, donde podrás activar o desactivar feedback";
+
+return out;
 });

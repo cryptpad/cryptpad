@@ -1,9 +1,8 @@
 define([
     '/customize/application_config.js',
     '/common/cryptpad-common.js',
-    '/bower_components/lil-uri/uri.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Cryptpad, LilUri) {
+], function (Config, Cryptpad) {
     var $ = window.$;
 
     var APP = window.APP = {
@@ -133,8 +132,10 @@ define([
                             if (result.proxy && !result.proxy.login_name) {
                                 result.proxy.login_name = result.userName;
                             }
-                            Cryptpad.login(result.userHash, result.userName, function () {
-                                document.location.href = '/drive/';
+                            Cryptpad.whenRealtimeSyncs(result.realtime, function () {
+                                Cryptpad.login(result.userHash, result.userName, function () {
+                                    document.location.href = '/drive/';
+                                });
                             });
                             return;
                         }

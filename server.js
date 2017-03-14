@@ -20,6 +20,11 @@ var app = Express();
 
 var httpsOpts;
 
+var DEV_MODE = !!process.env.DEV
+if (DEV_MODE) {
+    console.log("DEV MODE ENABLED");
+}
+
 const clone = (x) => (JSON.parse(JSON.stringify(x)));
 
 var setHeaders = (function () {
@@ -96,7 +101,7 @@ app.get('/api/config', function(req, res){
     res.send('define(' + JSON.stringify({
         requireConf: {
             waitSeconds: 60,
-            urlArgs: 'ver=' + Package.version
+            urlArgs: 'ver=' + Package.version + (DEV_MODE? '-' + (+new Date()): ''),
         },
         websocketPath: config.useExternalWebsocket ? undefined : config.websocketPath,
         websocketURL:'ws' + ((useSecureWebsockets) ? 's' : '') + '://' + host + ':' +

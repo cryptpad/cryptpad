@@ -123,16 +123,89 @@ define([
 
         // Share button
         if (config.displayed.indexOf('share') !== -1) {
-            var $shareIcon = $('<span>', {'class': 'fa fa-share-alt'});
-            var $span = $('<span>', {'class': 'large'}).append(' ' +Messages.shareButton);
-            var dropdownConfigShare = {
-                text: $('<div>').append($shareIcon).append($span).html(),
-                options: []
-            };
-            var $shareBlock = Cryptpad.createDropdown(dropdownConfigShare);
-            $shareBlock.find('button').attr('id', 'shareButton');
-            $shareBlock.find('.dropdown-bar-content').addClass(SHARE_CLS).addClass(EDITSHARE_CLS).addClass(VIEWSHARE_CLS);
-            $userlistElement.append($shareBlock);
+            var secret = Cryptpad.find(config, ['share', 'secret']);
+            var channel = Cryptpad.find(config, ['share', 'channel']);
+            if (!secret || !channel) {
+                throw new Error("Unable to display the share button: share.secret and share.channel required");
+            }
+            Cryptpad.getRecentPads(function (err, recent) {
+                var $shareIcon = $('<span>', {'class': 'fa fa-share-alt'});
+                var $span = $('<span>', {'class': 'large'}).append(' ' +Messages.shareButton);
+                var hashes = Cryptpad.getHashes(channel, secret);
+                var options = [];
+
+                // If we have a stronger version in drive, add it and add a redirect button
+                var stronger = recent && Cryptpad.findStronger(null, recent);
+                if (stronger) {
+                    var parsed = Cryptpad.parsePadUrl(stronger);
+                    hashes.editHash = parsed.hash;
+                }
+
+                if (hashes.editHash) {
+                    options.push({
+                        tag: 'a',
+                        attributes: {title: Messages.editShareTitle, 'class': 'editShare'},
+                        content: '<span class="fa fa-users"></span> ' + Messages.editShare
+                    });
+                    if (stronger) {
+                        // We're in view mode, display the "open editing link" button
+                        options.push({
+                            tag: 'a',
+                            attributes: {
+                                title: Messages.editOpenTitle,
+                                'class': 'editOpen',
+                                href: window.location.pathname + '#' + hashes.editHash,
+                                target: '_blank'
+                            },
+                            content: '<span class="fa fa-users"></span> ' + Messages.editOpen
+                        });
+                    }
+                    options.push({tag: 'hr'});
+                }
+                if (hashes.viewHash) {
+                    options.push({
+                        tag: 'a',
+                        attributes: {title: Messages.viewShareTitle, 'class': 'viewShare'},
+                        content: '<span class="fa fa-eye"></span> ' + Messages.viewShare
+                    });
+                    if (hashes.editHash && !stronger) {
+                        // We're in edit mode, display the "open readonly" button
+                        options.push({
+                            tag: 'a',
+                            attributes: {
+                                title: Messages.viewOpenTitle,
+                                'class': 'viewOpen',
+                                href: window.location.pathname + '#' + hashes.viewHash,
+                                target: '_blank'
+                            },
+                            content: '<span class="fa fa-eye"></span> ' + Messages.viewOpen
+                        });
+                    }
+                }
+                var dropdownConfigShare = {
+                    text: $('<div>').append($shareIcon).append($span).html(),
+                    options: options
+                };
+                var $shareBlock = Cryptpad.createDropdown(dropdownConfigShare);
+                $shareBlock.find('button').attr('id', 'shareButton');
+                $shareBlock.find('.dropdown-bar-content').addClass(SHARE_CLS).addClass(EDITSHARE_CLS).addClass(VIEWSHARE_CLS);
+                $userlistElement.append($shareBlock);
+
+                if (hashes.editHash) {
+                    $shareBlock.find('a.editShare').click(function () {
+                        var url = window.location.origin + window.location.pathname + '#' + hashes.editHash;
+                        var success = Cryptpad.Clipboard.copy(url);
+                        if (success) { Cryptpad.log(Messages.shareSuccess); }
+                    });
+                }
+                if (hashes.viewHash) {
+                    $shareBlock.find('a.viewShare').click(function () {
+                        var url = window.location.origin + window.location.pathname + '#' + hashes.viewHash;
+                        var success = Cryptpad.Clipboard.copy(url);
+                        if (success) { Cryptpad.log(Messages.shareSuccess); }
+                    });
+                }
+            });
         }
     };
 
@@ -223,7 +296,7 @@ define([
             }
             if (anonymous > 0) {
                 var text = anonymous === 1 ? Messages.anonymousUser : Messages.anonymousUsers;
-                $editUsers.push('<span class="anonymous">' + anonymous + ' ' + text + '</span>');
+                $editUsers.append('<span class="anonymous">' + anonymous + ' ' + text + '</span>');
             }
             if (numberOfViewUsers > 0) {
                 var viewText = '<span class="viewer">';

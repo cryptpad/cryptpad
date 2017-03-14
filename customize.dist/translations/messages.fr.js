@@ -25,6 +25,7 @@ define(function () {
 
     out.loading = "Chargement...";
     out.error = "Erreur";
+    out.saved = "Enregistré";
 
     out.disconnected = 'Déconnecté';
     out.synchronizing = 'Synchronisation';
@@ -48,10 +49,8 @@ define(function () {
     out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur";
     out.redLight = "Vous êtes déconnectés de la session";
 
-    out.importButton = 'Import';
     out.importButtonTitle = 'Importer un pad depuis un fichier local';
 
-    out.exportButton = 'Exporter';
     out.exportButtonTitle = 'Exporter ce pad vers un fichier local';
     out.exportPrompt = 'Comment souhaitez-vous nommer ce fichier ?';
 
@@ -62,7 +61,6 @@ define(function () {
 
     out.clickToEdit = 'Cliquer pour modifier';
 
-    out.forgetButton = 'Supprimer';
     out.forgetButtonTitle = 'Déplacer ce pad vers la corbeille';
     out.forgetPrompt = 'Cliquer sur OK déplacera ce pad vers la corbeille de votre CryptDrive, êtes-vous sûr ?';
     out.movedToTrash = 'Ce pad a été déplacé vers la corbeille.<br><a href="/drive/">Accéder à mon Drive</a>';
@@ -73,20 +71,25 @@ define(function () {
     out.newButton = 'Nouveau';
     out.newButtonTitle = 'Créer un nouveau pad';
 
-    out.presentButton = 'Present';
     out.presentButtonTitle = "Entrer en mode présentation";
     out.presentSuccess = 'Appuyer sur Échap pour quitter le mode présentation';
-    out.sourceButton = 'Voir la source';
-    out.sourceButtonTitle = "Quitter le mode présentation";
 
-    out.backgroundButton = 'Couleur de fond';
     out.backgroundButtonTitle = 'Changer la couleur de fond de la présentation';
-    out.colorButton = 'Couleur du texte';
     out.colorButtonTitle = 'Changer la couleur du texte en mode présentation';
 
-    out.editShare = "Partager le lien d'édition";
+    out.printButton = "Imprimer";
+    out.printButtonTitle = "Imprimer votre présentation ou l'enregistrer au format PDF";
+    out.printOptions = "Options d'impression";
+    out.printSlideNumber = "Afficher le numéro des slides";
+    out.printDate = "Afficher la date";
+    out.printTitle = "Afficher le titre du pad";
+    out.printCSS = "Personnaliser l'apparence (CSS):";
+
+    out.editShare = "Lien d'édition";
     out.editShareTitle = "Copier le lien d'édition dans le presse-papiers";
-    out.viewShare = "Partager lien de lecture-seule";
+    out.editOpen = "Éditer dans un nouvel onglet";
+    out.editOpenTitle = "Ouvrir le lien d'édition dans un nouvel onglet";
+    out.viewShare = "Lien de lecture-seule";
     out.viewShareTitle = "Copier lien d'accès en lecture seule dans le presse-papiers";
     out.viewOpen = "Voir dans un nouvel onglet";
     out.viewOpenTitle = "Ouvrir le lien en lecture seule dans un nouvel onglet";
@@ -108,7 +111,6 @@ define(function () {
     out.poll_p_save = "Vos modifications sont mises à jour instantanément, donc vous n'avez jamais besoin de sauver le contenu.";
     out.poll_p_encryption = "Tout ce que vous entrez est chiffré donc seules les personnes possédant le lien du sondage y ont accès. Même le serveur ne peut pas voir le contenu.";
 
-    out.wizardButton = 'Assistant';
     out.wizardLog = "Cliquez sur le bouton dans le coin supérieur gauche pour retourner au sondage";
     out.wizardTitle = "Utiliser l'assistant pour créer votre sondage";
     out.wizardConfirm = "Êtes-vous vraiment prêt à ajouter ces options au sondage ?";
@@ -223,10 +225,13 @@ define(function () {
 
     out.register_importRecent = "Importer l'historique (Recommendé)";
     out.register_acceptTerms = "J'accepte <a href='/terms.html'>les conditions d'utilisation</a>";
-    out.register_rememberPassword = "Je vais me souvenir de mes identifiants";
     out.register_passwordsDontMatch = "Les mots de passe doivent être identiques!";
     out.register_mustAcceptTerms = "Vous devez accepter les conditions d'utilisation.";
     out.register_mustRememberPass = "Nous ne pouvons pas réinitialiser votre mot de passe si vous l'oubliez. C'est important que vous vous en souveniez! Veuillez cocher la case pour confirmer.";
+    out.register_writtenPassword = "J'ai bien noté mon nom d'utilisateur et mon mot de passe, continuer";
+    out.register_cancel = "Retour";
+    out.register_warning = "Zero Knowledge signifie que nous ne pouvons pas récupérer vos données si vous perdez vos identifiants.";
+    out.register_alreadyRegistered = "Cet utilisateur existe déjà, souhaitez-vous vous connecter ?";
 
     out.register_header = "Bienvenue dans CryptPad";
     out.register_explanation = [
@@ -250,9 +255,15 @@ define(function () {
                                "Êtes-vous sûr de vouloir continuer ?<br>" +
                                "Tapez “<em>I love CryptPad</em>” pour confirmer.";
     out.settings_resetDone = "Votre drive est désormais vide!";
+    out.settings_resetError = "Texte de vérification incorrect. Votre CryptDrive n'a pas été modifié.";
     out.settings_resetTips = "Astuces et informations dans CryptDrive";
     out.settings_resetTipsButton = "Réinitialiser les astuces visibles dans CryptDrive";
     out.settings_resetTipsDone = "Toutes les astuces sont de nouveau visibles.";
+
+    out.settings_importTitle = "Importer les pads récents de ce navigateur dans mon CryptDrive";
+    out.settings_import = "Importer";
+    out.settings_importConfirm = "Êtes-vous sûr de vouloir importer les pads récents de ce navigateur dans le CryptDrive de votre compte utilisateur ?";
+    out.settings_importDone = "Importation terminée";
 
     out.settings_userFeedbackHint1 = "CryptPad peut envoyer des retours d'expérience très limités vers le serveur, de manière à nous permettre d'améliorer l'expérience des utilisateurs.";
     out.settings_userFeedbackHint2 = "Le contenu de vos pads et les clés de déchiffrement ne seront jamais partagés avec le serveur.";
@@ -306,7 +317,6 @@ define(function () {
     out.policy_whatweknow = 'Ce que nous savons de vous';
     out.policy_whatweknow_p1 = 'En tant qu\'application hébergée sur le web, CryptPad a accès aux meta-données exposées par le protocole HTTP. Ceci inclus votre adresse IP et d\'autres en-têtes HTTP qui peuvent être utilisées pour identifier votre propre navigateur. Vous pouvez voir quelles informations votre navigateur partage en visitant <a target="_blank" rel="noopener noreferrer" href="https://www.whatismybrowser.com/detect/what-http-headers-is-my-browser-sending" title="what http headers is my browser sending">WhatIsMyBrowser.com</a>.';
     out.policy_whatweknow_p2 = 'Nous utilisons <a href="https://piwik.org/" target="_blank" rel="noopener noreferrer" title="open source analytics platform">Piwik</a>, une plateforme open source d\'analytique, afin d\'en apprendre plus sur nos utilisateurs. Piwik nous indique comment vous avez trouvé CryptPad, que ce soit par une entrée directe, par un moteur de recherche ou depuis un lien provenant d\'un autre site web tel que Reddit ou Twitter. Nous savons également quand vous visitez le site, sur quels liens vous cliquez dans les pages informatives et combien de temps vous restez sur une page donnée.';
-    out.policy_whatweknow_p3 = 'Ces outils d\'analytique sont utilisés uniquement sur les pages informatives. Nous ne collectons aucune information concernant votre utilisation de nos applications "zero knowledge".';
     out.policy_howweuse = 'Comment nous utilisons ce que nous apprenons';
     out.policy_howweuse_p1 = 'Nous utilisons ces informations pour prendre de meilleures décisions concernant la communication autour de CryptPad, en évaluant le succès de ce qui a été realisé par le passé. Les informations concernant votre localisation nous permettent de savoir si nous devons considérer l\'ajout de traductions de CryptPad dans d\'autres langues que l\'anglais.';
     out.policy_howweuse_p2 = "Les informations concernant votre navigateur (que ce soit un système d\'exploitation de bureau ou d\'appareil portable) nous aident à prendre des décisions lors de la priorisation des ajouts et améliorations de fonctionnalités. Notre équipe de développement est petite, et nous essayons de prendre des décisions qui amélioreront l\'expérience du plus grand nombre d\'utilisateurs possible.";
@@ -357,13 +367,23 @@ define(function () {
         '</small>',
         '</p>',
     ].join('');
+    out.initialState = [
+        '<span style="font-size:18px;"><p>',
+        'Voici <strong>CryptPad</strong>, l\'éditeur collaboratif en temps-réel Zero Knowledge. Tout est sauvegardé dés que vous le tapez.',
+        '<br>',
+        'Partagez le lien vers ce pad avec des amis ou utilisez le bouton <span style="background-color:#449d44;color:#ffffff;">&nbsp;Partager&nbsp;</span> pour obtenir le <em>lien de lecture-seule</em>, qui permet la lecture mais non la modification.',
+        '</p>',
+        '<p><span style="color:#808080; font-size: 18px;">',
+        '<em>',
+        'Lancez-vous, commencez à taper...',
+        '</em></span></p></span>'
+    ].join('');
 
     out.codeInitialState = [
         '/*\n',
-        '   Voici CryptPad, l\'éditeur collaboratif en temps-réel Zero Knowledge.\n',
+        '   Voici l\'éditeur de code collaboratif et Zero Knowledge de CryptPad.\n',
         '   Ce que vous tapez ici est chiffré de manière que seules les personnes avec le lien peuvent y accéder.\n',
-        '   Même le serveur est incapable de voir ce que vous tapez.\n',
-        '   Ce que vous voyez ici, ce que vous entendez, quand vous partez, ça reste ici.\n',
+        '   Vous pouvez choisir le langage de programmation pour la coloration syntaxique, ainsi que le thème de couleurs, dans le coin supérieur droit.\n',
         '*/'
     ].join('');
 
@@ -404,6 +424,19 @@ define(function () {
     out.readme_cat3_l1 = "Avec l'éditeur de code de CryptPad, vous pouvez collaborer sur du code comme Javascript ou des langages comme HTML ou Markdown.";
     out.readme_cat3_l2 = "Avec l'éditeur de présentations de CryptPad, vous pouvez réaliser des présentations rapides en utilisant Markdown";
     out.readme_cat3_l3 = "Avec CryptPoll vous pouvez créer rapidement des sondages, et en particulier plannifier des meetings qui rentrent dans l'agenda de tout ceux qui souhaitent participer.";
+
+    // Tips
+    out.tips = {};
+    out.tips.lag = "L'icône verte dans le coin supérieur droit montre la qualité de votre connexion Internet vers le serveur CryptPad.";
+    out.tips.shortcuts = "`ctrl+b`, `ctrl+i` et `ctrl+u` sont des raccourcis rapides pour mettre en gras, en italique ou souligner.";
+    out.tips.indent = "Dans les listes à puces ou numérotées, vous pouvez utiliser `Tab` ou `Maj+Tab` pour augmenter ou réduire rapidement l'indentation.";
+    out.tips.title = "Vous pouvez changer le titre de votre pad en cliquant au centre en haut de la page.";
+    out.tips.store = "Dés que vous ouvrez un nouveau pad, il est automatiquement stocké dans votre CryptDrive si vous êtes connectés.";
+    out.tips.marker = "Vous pouvez surligner du texte dans un pad en utilisant l'option \"marker\" dans le menu déroulant des styles.";
+
+    out.feedback_about = "Si vous lisez ceci, vous vous demandez probablement pourquoi CryptPad envoie des requêtes vers des pages web quand vous realisez certaines actions.";
+    out.feedback_privacy = "Nous prenons au sérieux le respect de votre vie privée, et en même temps nous souhaitons rendre CryptPad très simple à utiliser. Nous utilisons cette page pour comprendre quelles foncitonnalités dans l'interface comptent le plus pour les utilisateurs, en l'appelant avec un paramètre spécifiant quelle action a été réalisée.";
+    out.feedback_optout = "Si vous le souhaitez, vous pouvez désactiver ces requêtes en vous rendant dans <a href='/settings/'>votre page de préférences</a>, où vous trouverez une case à cocher pour désactiver le retour d'expérience.";
 
     return out;
 });

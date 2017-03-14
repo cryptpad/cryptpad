@@ -1,0 +1,322 @@
+html,
+body {
+  height: 100%;
+  width: 100%;
+  padding: 0px;
+  margin: 0px;
+  overflow: hidden;
+  box-sizing: border-box;
+  position: relative;
+}
+body {
+  display: flex;
+  flex-flow: column;
+}
+h1 {
+  font-size: 40px;
+}
+h2 {
+  font-size: 37px;
+}
+h3 {
+  font-size: 34px;
+}
+h4 {
+  font-size: 31px;
+}
+h5 {
+  font-size: 27px;
+}
+h6 {
+  font-size: 24px;
+}
+body .CodeMirror {
+  height: 100%;
+}
+body .CodeMirror-focused .cm-matchhighlight {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQI12NgYGBgkKzc8x9CMDAwAAAmhwSbidEoSQAAAABJRU5ErkJggg==);
+  background-position: bottom;
+  background-repeat: repeat-x;
+}
+#colorPicker_check {
+  display: block;
+}
+@media print {
+  @page {
+    margin: 0;
+    size: auto;
+  }
+  body {
+    display: block;
+  }
+  body .CodeMirror,
+  body #cme_toolbox {
+    display: none;
+  }
+  body * {
+    visibility: hidden;
+    height: auto;
+    max-height: none;
+  }
+  html,
+  body {
+    max-height: none;
+    overflow: visible;
+  }
+  html #print {
+    display: block;
+    visibility: visible;
+  }
+  html #print * {
+    visibility: visible;
+  }
+}
+#print {
+  position: relative;
+  display: none;
+}
+#print .slide-frame {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column;
+  padding: 5vh 0;
+  height: 100vh;
+  width: 100%;
+  page-break-after: always;
+  position: relative;
+  box-sizing: border-box;
+}
+#print .slide-frame li {
+  min-width: 50vw;
+}
+#print .slide-frame h1 {
+  padding-top: 0;
+}
+#print .slide-frame .slideNumber {
+  position: absolute;
+  right: 5vh;
+  bottom: 5vh;
+}
+#print .slide-frame .slideDate {
+  position: absolute;
+  left: 5vh;
+  bottom: 5vh;
+}
+#print .slide-frame .slideTitle {
+  position: absolute;
+  top: 5vh;
+  left: 0px;
+  right: 0px;
+  text-align: center;
+}
+.cp.slide #modal .button {
+  position: absolute;
+  cursor: pointer;
+  font-size: 30px;
+  opacity: 0.6;
+  display: none;
+}
+.cp.slide #modal .button:hover {
+  opacity: 1;
+  display: block !important;
+}
+.cp.slide #modal #button_exit {
+  left: 20px;
+  top: 20px;
+  z-index: 9001;
+}
+.cp.slide #modal #button_left {
+  left: 6vw;
+  bottom: 10vh;
+}
+.cp.slide #modal #button_right {
+  right: 6vw;
+  bottom: 10vh;
+}
+.cp.slide #modal #content h1,
+.cp.slide #modal #content h2,
+.cp.slide #modal #content h3,
+.cp.slide #modal #content h4,
+.cp.slide #modal #content h5,
+.cp.slide #modal #content h6 {
+  text-align: center;
+}
+.cp.slide #modal.shown {
+  display: block;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  z-index: 100;
+  background-color: black;
+  color: white;
+  height: 100vh;
+  width: 100%;
+}
+.cp.slide #modal #content p,
+.cp.slide #modal #content ul,
+.cp.slide #modal #content ol {
+  font-size: 26px;
+}
+.cp.slide #modal #content img {
+  position: relative;
+  min-width: 1%;
+  max-width: 90%;
+  max-height: 90%;
+  margin: auto;
+}
+.cp div.modal,
+.cp div#modal {
+  box-sizing: border-box;
+  z-index: 9001;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100vh;
+  display: none;
+  background-color: #000;
+}
+.cp div.modal #content,
+.cp div#modal #content {
+  box-sizing: border-box;
+  border: 1px solid white;
+  vertical-align: middle;
+  padding: 2.5vw;
+  /* center things as much as possible
+
+            margin-top: 50vh;
+            margin-bottom: 50vh;
+            transform: translateY(-50%);
+
+        */
+  width: 100vw;
+  height: 56.25vw;
+  max-height: 100vh;
+  max-width: 177.78vh;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.cp div.modal #content p,
+.cp div#modal #content p,
+.cp div.modal #content li,
+.cp div#modal #content li,
+.cp div.modal #content pre,
+.cp div#modal #content pre,
+.cp div.modal #content code,
+.cp div#modal #content code {
+  font-size: 2.75vw;
+  line-height: 3.025vw;
+}
+.cp div.modal #content h1,
+.cp div#modal #content h1 {
+  font-size: 5vw;
+  line-height: 5.5vw;
+}
+.cp div.modal #content h2,
+.cp div#modal #content h2 {
+  font-size: 4.2vw;
+  line-height: 4.62vw;
+}
+.cp div.modal #content h3,
+.cp div#modal #content h3 {
+  font-size: 3.6vw;
+  line-height: 3.96vw;
+}
+.cp div.modal #content h4,
+.cp div#modal #content h4 {
+  font-size: 3vw;
+  line-height: 3.3vw;
+}
+.cp div.modal #content h5,
+.cp div#modal #content h5 {
+  font-size: 2.2vw;
+  line-height: 2.42vw;
+}
+.cp div.modal #content h6,
+.cp div#modal #content h6 {
+  font-size: 1.6vw;
+  line-height: 1.76vw;
+}
+.cp div.modal #content h1,
+.cp div#modal #content h1,
+.cp div.modal #content h2,
+.cp div#modal #content h2,
+.cp div.modal #content h3,
+.cp div#modal #content h3,
+.cp div.modal #content h4,
+.cp div#modal #content h4,
+.cp div.modal #content h5,
+.cp div#modal #content h5,
+.cp div.modal #content h6,
+.cp div#modal #content h6 {
+  color: inherit;
+  text-align: center;
+}
+.cp div.modal #content pre > code,
+.cp div#modal #content pre > code {
+  display: block;
+  position: relative;
+  border: 1px solid #333;
+  width: 90%;
+  margin: auto;
+  padding-left: .25vw;
+}
+.cp div.modal #content ul,
+.cp div#modal #content ul,
+.cp div.modal #content ol,
+.cp div#modal #content ol {
+  min-width: 50%;
+  max-width: 100%;
+  display: table;
+  margin: 0 auto;
+}
+.cp div.modal .center,
+.cp div#modal .center {
+  position: relative;
+  width: 80%;
+  height: 80%;
+  margin: auto;
+  border: 1px solid #ffffff;
+  text-align: center;
+}
+.cp div.modal.shown,
+.cp div#modal.shown {
+  display: block;
+}
+.cp div.modal table,
+.cp div#modal table {
+  margin: 30px;
+  border-collapse: collapse;
+}
+.cp div.modal table input,
+.cp div#modal table input {
+  height: 100%;
+  width: 90%;
+  border: 3px solid #fff;
+}
+.cp div.modal table tfoot tr td,
+.cp div#modal table tfoot tr td {
+  z-index: 4000;
+  cursor: pointer;
+}
+.cp div.modal #addtime,
+.cp div#modal #addtime,
+.cp div.modal #adddate,
+.cp div#modal #adddate {
+  color: #46E981;
+  border: 1px solid #46E981;
+  padding: 15px;
+}
+.cp div.modal #adddate,
+.cp div#modal #adddate {
+  border-top-left-radius: 5px;
+}
+.cp div.modal #addtime,
+.cp div#modal #addtime {
+  border-bottom-left-radius: 5px;
+}

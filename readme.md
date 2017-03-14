@@ -35,11 +35,16 @@ bower install
 ## copy config.js.dist to config.js
 cp config.js.dist config.js
 
-## modify configuration to use your own mongodb instance
-## for example aon the default mongodb port `mongodb://localhost:27017/demo_database`
-$EDITOR config.js
-
 node ./server.js
+```
+
+## Configuration
+
+CryptPad _should_ work with an unmodified configuration file, though there are many things which you may want to customize.
+Attributes in the config should have comments indicating how they are used.
+
+```
+$EDITOR config.js
 ```
 
 ## Maintenance
@@ -63,17 +68,19 @@ npm update;
 
 To reset your instance of Cryptpad and remove all the data that is being stored:
 
-If you are using the leveldb adaptor, this is as simple as deleting the folder which contains your leveldb datastore:
+
 
 ```
-# change into your cryptpade directory
+# change into your cryptpad directory
 cd /your/cryptpad/instance/location;
 
 # delete the datastore
-rm -rf ./cryptpad.db
+rm -rf ./datastore
 ```
 
 If you are using the mongodb adaptor, [drop the relevant collection](https://docs.mongodb.org/manual/reference/method/db.collection.drop/#db.collection.drop).
+
+If you are using the [leveldb adaptor](https://github.com/xwiki-labs/cryptpad-level-store), delete the datastore directory you have configured.
 
 ## Testing
 
@@ -81,6 +88,16 @@ To test CryptPad, go to http://your.server:3000/assert/
 
 You can use WebDriver to run this test automatically by running TestSelenium.js but you will need chromedriver installed.
 If you use Mac, you can `brew install chromedriver`.
+
+## Developing CryptPad
+
+CryptPad is built with a lot of small javascript libraries.
+To make js files load faster, we apply an aggressive caching policy.
+
+If you want to add new features to CryptPad, you'll want to turn off caching.
+You can do so by launching your server in _dev mode_, like so:
+
+`DEV=1 node server.js`
 
 # Setup using Docker
 
@@ -108,14 +125,14 @@ Still there are other low-lives in the world so using CryptPad over HTTPS is pro
 ## Translations
 
 We'd like to make it easy for more people to use encryption in their routine activities.
-As such, we've tried to make language-specific parts of Cryptpad translatable. If you're
-able to translate Cryptpad's interface, and would like to help, please contact us!
+As such, we've tried to make language-specific parts of CryptPad translatable. If you're
+able to translate CryptPad's interface, and would like to help, please contact us!
 
 You can also see [our translation guide](/customize.dist/translations/README.md).
 
 ## Contacting Us
 
-You can reach members of the Cryptpad development team on [twitter](https://twitter.com/cryptpad),
+You can reach members of the CryptPad development team on [twitter](https://twitter.com/cryptpad),
 via our [github issue tracker](https://github.com/xwiki-labs/cryptpad/issues/), on the
 [freenode](http://webchat.freenode.net/?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7)
 irc network, or by [email](mailto:research@xwiki.com).
@@ -137,11 +154,9 @@ published by the Free Software Foundation, either version 3 of the License, or (
 any later version. If you wish to use this technology in a proprietary product, please contact
 sales@xwiki.com
 
-* Icons thanks to http://www.famfamfam.com/ licensed [Creative Commons Attribution 2.5 License]
-
-
 [ChainPad]: https://github.com/xwiki-contrib/chainpad
 [CKEditor]: http://ckeditor.com/
 [fragment identifier]: https://en.wikipedia.org/wiki/Fragment_identifier
 [active attack]: https://en.wikipedia.org/wiki/Attack_(computing)#Types_of_attacks
 [Creative Commons Attribution 2.5 License]: http://creativecommons.org/licenses/by/2.5/
+

@@ -66,6 +66,7 @@ li {
 .contextMenu {
   display: none;
   position: absolute;
+  z-index: 50;
 }
 .contextMenu li {
   padding: 0;
@@ -80,6 +81,10 @@ li {
   background: #666;
   color: #eee;
   margin: -1px;
+}
+.selected .fa-minus-square-o,
+.selected .fa-plus-square-o {
+  color: #000;
 }
 span.fa-folder,
 span.fa-folder-open {
@@ -101,17 +106,24 @@ span.fa-folder-open {
   color: #000;
 }
 #tree li {
-  /*cursor: pointer;*/
+  padding: 0 0 0 5px;
   cursor: auto;
-}
-#tree li:hover > span.element {
-  text-decoration: underline;
 }
 #tree li.collapsed ul {
   display: none;
 }
 #tree li input {
-  width: calc(70%);
+  width: calc(100% - 30px);
+}
+#tree li > span.element-row {
+  width: calc(100% + 5px);
+  display: inline-block;
+  cursor: pointer;
+  margin-left: -5px;
+  padding-left: 5px;
+}
+#tree li > span.element-row:not(.selected):hover {
+  background-color: #eee;
 }
 #tree span.element {
   cursor: pointer;
@@ -220,6 +232,9 @@ span.fa-folder-open {
 #content li:not(.header) *:not(input) {
   /*pointer-events: none;*/
 }
+#content li:not(.header):hover:not(.selected) {
+  background-color: #eee;
+}
 #content li:not(.header):hover .name {
   /*text-decoration: underline;*/
 }
@@ -233,12 +248,20 @@ span.fa-folder-open {
   text-align: center;
   vertical-align: top;
   overflow: hidden;
+  text-overflow: ellipsis;
+  padding-top: 10px;
+  padding-bottom: 5px;
+  max-height: 145px;
+}
+#content div.grid li:not(.selected) {
+  border: transparent 1px;
 }
 #content div.grid li .name {
   width: 100%;
 }
 #content div.grid li input {
   width: 100%;
+  margin-top: 5px;
 }
 #content div.grid li .fa {
   display: block;

@@ -110,7 +110,7 @@ define([
             var defaultName = Cryptpad.getDefaultName(parsedHash);
 
             if (readOnly) {
-                $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox > .cke_toolbar').hide();
+                $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox > .cke_toolbox_main').hide();
             }
 
             /* add a class to the magicline plugin so we can pick it out more easily */
@@ -164,6 +164,16 @@ define([
                         send scripts over the wire.
                     */
                     if (['addAttribute', 'modifyAttribute'].indexOf(info.diff.action) !== -1) {
+                        if (info.diff.name === 'href') {
+                            // console.log(info.diff);
+                            var href = info.diff.newValue;
+
+                            // TODO normalize HTML entities
+                            if (/javascript *: */.test(info.diff.newValue)) {
+                                // TODO remove javascript: links
+                            }
+                        }
+
                         if (/^on/.test(info.diff.name)) {
                             console.log("Rejecting forbidden element attribute with name (%s)", info.diff.name);
                             return true;
@@ -561,6 +571,10 @@ define([
                     userData: userData,
                     readOnly: readOnly,
                     ifrw: ifrw,
+                    share: {
+                        secret: secret,
+                        channel: info.channel
+                    },
                     title: {
                         onRename: renameCb,
                         defaultName: defaultName,
@@ -573,8 +587,6 @@ define([
 
                 var $rightside = $bar.find('.' + Toolbar.constants.rightside);
                 var $userBlock = $bar.find('.' + Toolbar.constants.username);
-                var $editShare = $bar.find('.' + Toolbar.constants.editShare);
-                var $viewShare = $bar.find('.' + Toolbar.constants.viewShare);
                 var $usernameButton = module.$userNameButton = $($bar.find('.' + Toolbar.constants.changeUsername));
 
                 var editHash;
@@ -584,23 +596,24 @@ define([
                     editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
                 }
 
-                // Expand / collapse the toolbar
-                var $existingButton = $bar.find('#cke_1_toolbar_collapser');
-                var $collapse = Cryptpad.createButton(null, true);
-                $existingButton.hide();
-                $collapse.removeClass('fa-question');
-                var updateIcon = function () {
-                    $collapse.removeClass('fa-caret-down').removeClass('fa-caret-up');
-                    var isCollapsed = !$bar.find('.cke_toolbox_main').is(':visible');
-                    if (isCollapsed) { $collapse.addClass('fa-caret-down'); }
-                    else { $collapse.addClass('fa-caret-up'); }
-                };
-                updateIcon();
-                $collapse.click(function () {
-                    $existingButton.click();
+                var $existingButton = $bar.find('#cke_1_toolbar_collapser').hide();
+                if (!readOnly) {
+                    // Expand / collapse the toolbar
+                    var $collapse = Cryptpad.createButton(null, true);
+                    $collapse.removeClass('fa-question');
+                    var updateIcon = function () {
+                        $collapse.removeClass('fa-caret-down').removeClass('fa-caret-up');
+                        var isCollapsed = !$bar.find('.cke_toolbox_main').is(':visible');
+                        if (isCollapsed) { $collapse.addClass('fa-caret-down'); }
+                        else { $collapse.addClass('fa-caret-up'); }
+                    };
                     updateIcon();
-                });
-                $rightside.append($collapse);
+                    $collapse.click(function () {
+                        $existingButton.click();
+                        updateIcon();
+                    });
+                    $rightside.append($collapse);
+                }
 
                 /* add an export button */
                 var $export = Cryptpad.createButton('export', true, {}, exportFile);
@@ -623,20 +636,6 @@ define([
                 };
                 var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
                 $rightside.append($forgetPad);
-
-                if (!readOnly) {
-                    $editShare.append(Cryptpad.createButton('editshare', false, {editHash: editHash}));
-                    if (viewHash) {
-                        $editShare.append($('<hr>'));
-                    }
-                }
-                if (viewHash) {
-                    /* add a 'links' button */
-                    $viewShare.append(Cryptpad.createButton('viewshare', false, {viewHash: viewHash}));
-                    if (!readOnly) {
-                        $viewShare.append(Cryptpad.createButton('viewopen', false, {viewHash: viewHash}));
-                    }
-                }
 
                 // set the hash
                 if (!readOnly) { Cryptpad.replaceHash(editHash); }

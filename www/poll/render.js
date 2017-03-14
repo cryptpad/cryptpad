@@ -306,6 +306,7 @@ var Renderer = function (Cryptpad) {
             labelClass += ' yes';
         }
 
+        // TODO implement Yes/No/Maybe/Undecided
         return ['TD', {class:"checkbox-cell"}, [
             ['DIV', {class: 'checkbox-contain'}, [
                 ['INPUT', attrs, []],
@@ -397,6 +398,7 @@ var Renderer = function (Cryptpad) {
                 info.node.selectionEnd = info.selection[1];
             }
         } catch (err) {
+            // FIXME LOL empty try-catch?
             //console.log(info.node);
             //console.error(err);
         }

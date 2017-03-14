@@ -81,7 +81,7 @@ define([
                 editor.setOption('mode', mode);
                 if ($select) {
                     var name = $select.find('a[data-value="' + mode + '"]').text() || 'Mode';
-                    $select.find('.buttonTitle').text(name);
+                    $select.setValue(name);
                 }
             };
 
@@ -110,7 +110,9 @@ define([
                         }
                         editor.setOption('theme', theme);
                     }
-                    if ($select) { $select.find('.buttonTitle').text(theme || 'Theme'); }
+                    if ($select) {
+                        $select.setValue(theme || 'Theme');
+                    }
                 };
             }());
 
@@ -374,6 +376,10 @@ define([
                     userData: userData,
                     readOnly: readOnly,
                     ifrw: ifrw,
+                    share: {
+                        secret: secret,
+                        channel: info.channel
+                    },
                     title: {
                         onRename: renameCb,
                         defaultName: defaultName,
@@ -386,8 +392,6 @@ define([
 
                 var $rightside = $bar.find('.' + Toolbar.constants.rightside);
                 var $userBlock = $bar.find('.' + Toolbar.constants.username);
-                var $editShare = $bar.find('.' + Toolbar.constants.editShare);
-                var $viewShare = $bar.find('.' + Toolbar.constants.viewShare);
                 var $usernameButton = module.$userNameButton = $($bar.find('.' + Toolbar.constants.changeUsername));
 
                 var editHash;
@@ -419,17 +423,6 @@ define([
                 var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
                 $rightside.append($forgetPad);
 
-                if (!readOnly) {
-                    $editShare.append(Cryptpad.createButton('editshare', false, {editHash: editHash}));
-                }
-                if (viewHash) {
-                    /* add a 'links' button */
-                    $viewShare.append(Cryptpad.createButton('viewshare', false, {viewHash: viewHash}));
-                    if (!readOnly) {
-                        $viewShare.append(Cryptpad.createButton('viewopen', false, {viewHash: viewHash}));
-                    }
-                }
-
                 var configureLanguage = function (cb) {
                     // FIXME this is async so make it happen as early as possible
                     var options = [];
@@ -447,13 +440,14 @@ define([
                         text: 'Mode', // Button initial text
                         options: options, // Entries displayed in the menu
                         left: true, // Open to the left of the button
+                        isSelect: true,
                     };
                     var $block = module.$language = Cryptpad.createDropdown(dropdownConfig);
                     var $button = $block.find('.buttonTitle');
 
                     $block.find('a').click(function (e) {
-                        setMode($(this).attr('data-value'));
-                        $button.text($(this).text());
+                        setMode($(this).attr('data-value'), $block);
+                        onLocal();
                     });
 
                     $rightside.append($block);
@@ -480,6 +474,8 @@ define([
                         text: 'Theme', // Button initial text
                         options: options, // Entries displayed in the menu
                         left: true, // Open to the left of the button
+                        isSelect: true,
+                        initialValue: lastTheme
                     };
                     var $block = module.$theme = Cryptpad.createDropdown(dropdownConfig);
                     var $button = $block.find('.buttonTitle');
@@ -489,7 +485,6 @@ define([
                     $block.find('a').click(function (e) {
                         var theme = $(this).attr('data-value');
                         setTheme(theme, $block);
-                        $button.text($(this).text());
                         localStorage.setItem(themeKey, theme);
                     });
 

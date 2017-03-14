@@ -647,7 +647,7 @@ define([
             // Update the toolbar list:
             // Add the current user in the metadata if he has edit rights
             if (readOnly) { return; }
-            if (typeof(lastName) === 'string' && lastName.length) {
+            if (typeof(lastName) === 'string') {
                 setName(lastName);
             } else {
                 var myData = {};
@@ -687,6 +687,10 @@ define([
             displayed: ['useradmin', 'language', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad'],
             userData: userData,
             readOnly: readOnly,
+            share: {
+                secret: secret,
+                channel: info.channel
+            },
             title: {
                 onRename: renameCb,
                 defaultName: defaultName,
@@ -711,17 +715,6 @@ define([
         };
         var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
         $rightside.append($forgetPad);
-
-        if (!readOnly) {
-            $editShare.append(Cryptpad.createButton('editshare', false, {editHash: editHash}));
-        }
-        if (viewHash) {
-            /* add a 'links' button */
-            $viewShare.append(Cryptpad.createButton('viewshare', false, {viewHash: viewHash}));
-            if (!readOnly) {
-                $viewShare.append(Cryptpad.createButton('viewopen', false, {viewHash: viewHash}));
-            }
-        }
 
         // set the hash
         if (!readOnly) { Cryptpad.replaceHash(editHash); }

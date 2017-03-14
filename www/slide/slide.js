@@ -19,6 +19,9 @@ define([
     var $content;
     var $pad;
     var placeholder;
+    var separator = '<hr data-pewpew="pezpez">';
+    var separatorReg = /<hr data\-pewpew="pezpez">/g;
+    var slideClass = 'slide-frame';
 
     Slide.onChange = function (f) {
         if (typeof(f) === 'function') {
@@ -26,11 +29,15 @@ define([
         }
     };
 
+    var getNumberOfSlides = Slide.getNumberOfSlides = function () {
+        return $content.find('.' + slideClass).length;
+    };
+
     var change = function (oldIndex, newIndex) {
         if (Slide.changeHandlers.length) {
             Slide.changeHandlers.some(function (f, i) {
                 // HERE
-                f(oldIndex, newIndex, Slide.content.length);
+                f(oldIndex, newIndex, getNumberOfSlides());
             });
         }
     };
@@ -76,7 +83,7 @@ define([
         var Err;
         var Els = [A, B].map(function (frag) {
             if (typeof(frag) === 'object') {
-                if (!frag && frag.body) {
+                if (!frag || (frag && !frag.body)) {
                     Err = "No body";
                     return;
                 }
@@ -108,19 +115,23 @@ define([
     };
 
     var draw = Slide.draw =  function (i) {
-        console.log("Trying to draw slide #%s", i);
-        if (typeof(Slide.content[i]) !== 'string') { return; }
+        i = i || 0;
+        if (typeof(Slide.content) !== 'string') { return; }
 
-        var c = Slide.content[i];
-        var Dom = domFromHTML('<div id="content">' + Marked(c) + '</div>');
+        var c = Slide.content;
+        var m = '<span class="'+slideClass+'">'+Marked(c).replace(separatorReg, '</span><span class="'+slideClass+'">')+'</span>';
+
+        var Dom = domFromHTML('<div id="content">' + m + '</div>');
         removeListeners(Dom.body);
         var patch = makeDiff(domFromHTML($content[0].outerHTML), Dom);
 
         if (typeof(patch) === 'string') {
-            $content.html(Marked(c));
+            $content.html(m);
         } else {
             DD.apply($content[0], patch);
         }
+        $content.find('.' + slideClass).hide();
+        $content.find('.' + slideClass + ':eq( ' + i + ' )').show();
         change(Slide.lastIndex, Slide.index);
     };
 
@@ -159,13 +170,13 @@ define([
         $modal.removeClass('shown');
     };
 
-    var update = Slide.update = function (content) {
-        if (!Slide.shown) { return; }
-        if (!content) { content = placeholder; }
-        var old = Slide.content[Slide.index];
-        Slide.content = content.split(/\n\s*\-\-\-\s*\n/).filter(truthy);
-        if (old !== Slide.content[Slide.index]) {
-            draw(Slide.index);
+    var update = Slide.update = function (content, init) {
+        if (!Slide.shown && !init) { return; }
+        if (!content) { content = ''; }
+        var old = Slide.content;
+        Slide.content = content.replace(/\n\s*\-\-\-\s*\n/g, '\n\n'+separator+'\n\n');
+        if (old !== Slide.content) {
+            draw();
             return;
         }
         change(Slide.lastIndex, Slide.index);
@@ -183,7 +194,7 @@ define([
         console.log('right');
         Slide.lastIndex = Slide.index;
 
-        var i = Slide.index = Math.min(Slide.content.length -1, Slide.index + 1);
+        var i = Slide.index = Math.min(getNumberOfSlides() -1, Slide.index + 1);
         Slide.draw(i);
     };
 
@@ -199,7 +210,7 @@ define([
         console.log('end');
         Slide.lastIndex = Slide.index;
 
-        var i = Slide.index = Slide.content.length - 1;
+        var i = Slide.index = getNumberOfSlides() - 1;
         Slide.draw(i);
     };
 

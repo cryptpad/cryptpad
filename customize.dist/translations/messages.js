@@ -27,6 +27,7 @@ define(function () {
 
     out.loading = "Loading...";
     out.error = "Error";
+    out.saved = "Saved";
 
     out.disconnected = 'Disconnected';
     out.synchronizing = 'Synchronizing';
@@ -50,10 +51,8 @@ define(function () {
     out.orangeLight = "Your slow connection may impact your experience";
     out.redLight = "You are disconnected from the session";
 
-    out.importButton = 'IMPORT';
     out.importButtonTitle = 'Import a pad from a local file';
 
-    out.exportButton = 'EXPORT';
     out.exportButtonTitle = 'Export this pad to a local file';
     out.exportPrompt = 'What would you like to name your file?';
 
@@ -64,7 +63,6 @@ define(function () {
 
     out.clickToEdit = "Click to edit";
 
-    out.forgetButton = 'FORGET';
     out.forgetButtonTitle = 'Move this pad to the trash';
     out.forgetPrompt = 'Clicking OK will move this pad to your trash. Are you sure?';
     out.movedToTrash = 'That pad has been moved to the trash.<br><a href="/drive/">Access my Drive</a>';
@@ -75,22 +73,27 @@ define(function () {
     out.newButton = 'New';
     out.newButtonTitle = 'Create a new pad';
 
-    out.presentButton = 'PRESENT';
     out.presentButtonTitle = "Enter presentation mode";
     out.presentSuccess = 'Hit ESC to exit presentation mode';
-    out.sourceButton = 'VIEW SOURCE'; //TODO remove? hidden behind the present mode
-    out.sourceButtonTitle = "Leave presentation mode";
 
-    out.backgroundButton = 'BACKGROUND COLOR';
     out.backgroundButtonTitle = 'Change the background color in the presentation';
-    out.colorButton = 'TEXT COLOR';
     out.colorButtonTitle = 'Change the text color in presentation mode';
 
+    out.printButton = "Print";
+    out.printButtonTitle = "Print your slides or export them as a PDF file";
+    out.printOptions = "Print options";
+    out.printSlideNumber = "Display the slide number";
+    out.printDate = "Display the date";
+    out.printTitle = "Display the pad title";
+    out.printCSS = "Custom style rules (CSS):";
+
     out.editShare = "Editing link";
-    out.editShareTitle = "Copy the edit link to clipboard";
+    out.editShareTitle = "Copy the editing link to clipboard";
+    out.editOpen = "Open editing link in a new tab";
+    out.editOpenTitle = "Open this pad in editing mode in a new tab";
     out.viewShare = "Read-only link";
     out.viewShareTitle = "Copy the read-only link to clipboard";
-    out.viewOpen = "Open read-only link in new tab";
+    out.viewOpen = "Open read-only link in a new tab";
     out.viewOpenTitle = "Open this pad in read-only mode in a new tab";
 
     out.notifyJoined = "{0} has joined the collaborative session";
@@ -99,7 +102,7 @@ define(function () {
 
     out.okButton = 'OK (enter)';
 
-    out.cancel = "Cancel"; // Not used?
+    out.cancel = "Cancel";
     out.cancelButton = 'Cancel (esc)';
 
     // Polls
@@ -110,7 +113,6 @@ define(function () {
     out.poll_p_save = "Your settings are updated instantly, so you never need to save.";
     out.poll_p_encryption = "All your input is encrypted so only people who have the link can access it. Even the server cannot see what you change.";
 
-    out.wizardButton = 'WIZARD';
     out.wizardLog = "Click the button in the top left to return to your poll";
     out.wizardTitle = "Use the wizard to create your poll";
     out.wizardConfirm = "Are you really ready to add these options to your poll?";
@@ -225,7 +227,6 @@ define(function () {
 
     out.register_importRecent = "Import pad history (Recommended)";
     out.register_acceptTerms = "I accept <a href='/terms.html'>the terms of service</a>";
-    out.register_rememberPassword = "I will remember my login name and password";
     out.register_passwordsDontMatch = "Passwords do not match!";
     out.register_mustAcceptTerms = "You must accept the terms of service.";
     out.register_mustRememberPass = "We cannot reset your password if you forget it. It's very important that you remember it! Please check the checkbox to confirm.";
@@ -240,6 +241,13 @@ define(function () {
         "</ul>"
     ].join('');
 
+    out.register_writtenPassword = "I have written down my username and password, proceed";
+    out.register_cancel = "Go back";
+
+    out.register_warning = "Zero Knowledge means that we can't recover your data if you lose your password.";
+
+    out.register_alreadyRegistered = "This user already exists, do you want to log in?";
+
     // Settings
     out.settings_title = "Settings";
     out.settings_save = "Save";
@@ -252,9 +260,15 @@ define(function () {
                                "Are you sure you want to continue?<br>" +
                                "Type “<em>I love CryptPad</em>” to confirm.";
     out.settings_resetDone = "Your drive is now empty!";
+    out.settings_resetError = "Incorrect verification text. Your CryptDrive has not been changed.";
     out.settings_resetTips = "Tips in CryptDrive";
     out.settings_resetTipsButton = "Reset the available tips in CryptDrive";
     out.settings_resetTipsDone = "All the tips are now visible again.";
+
+    out.settings_importTitle = "Import this browser's recent pads in my CryptDrive";
+    out.settings_import = "Import";
+    out.settings_importConfirm = "Are you sure you want to import recent pads from this browser to your user account's CryptDrive?";
+    out.settings_importDone = "Import completed";
 
     out.settings_userFeedbackHint1 = "CryptPad provides some very basic feedback to the server, to let us know how to improve your experience.";
     out.settings_userFeedbackHint2 = "Your pad's content will never be shared with the server.";
@@ -351,26 +365,22 @@ define(function () {
     // Initial states
 
     out.initialState = [
-        '<p>',
-        'This is <strong>CryptPad</strong>, the zero knowledge realtime collaborative editor.',
+        '<span style="font-size:18px;"><p>',
+        'This is&nbsp;<strong>CryptPad</strong>, the Zero Knowledge realtime collaborative editor. Everything is saved as you type.',
         '<br>',
-        'What you type here is encrypted so only people who have the link can access it.',
-        '<br>',
-        'Even the server cannot see what you type.',
+        'Share the link to this pad to edit with friends or use the <span style="background-color:#449d44;color:#ffffff;">&nbsp;Share&nbsp;</span> button to share a <em>read-only link</em>&nbsp;which allows viewing but not editing.',
         '</p>',
-        '<p>',
-        '<small>',
-        '<i>What you see here, what you hear here, when you leave here, let it stay here</i>',
-        '</small>',
-        '</p>',
+
+        '<p><span style="color:#808080;"><em>',
+        'Go ahead, just start typing...',
+        '</em></span></p></span>'
     ].join('');
 
     out.codeInitialState = [
         '/*\n',
-        '   This is CryptPad, the zero knowledge realtime collaborative editor.\n',
+        '   This is the CryptPad Zero Knowledge collaborative code editor.\n',
         '   What you type here is encrypted so only people who have the link can access it.\n',
-        '   Even the server cannot see what you type.\n',
-        '   What you see here, what you hear here, when you leave here, let it stay here.\n',
+        '   You can choose the programming language to highlight and the UI color scheme in the upper right.\n',
         '*/'
     ].join('');
 
@@ -390,6 +400,8 @@ define(function () {
         '3. Click on the "Play" button to see the result',
         '  - Your slides are updated in realtime'
     ].join('');
+
+    // Readme
 
     out.driveReadmeTitle = "What is CryptDrive?";
     out.readme_welcome = "Welcome to CryptPad !";
@@ -411,6 +423,19 @@ define(function () {
     out.readme_cat3_l1 = "With CryptPad code editor, you can collaborate on code like Javascript and markdown like HTML and Markdown";
     out.readme_cat3_l2 = "With CryptPad slide editor, you can make quick presentations using Markdown";
     out.readme_cat3_l3 = "With CryptPoll you can take quick votes, especially for scheduling meetings which fit with everybody's calendar";
+
+    // Tips
+    out.tips = {};
+    out.tips.lag = "The green icon in the upper right shows the quality of your internet connection to the CryptPad server.";
+    out.tips.shortcuts = "`ctrl+b`, `ctrl+i` and `ctrl+u` are quick shortcuts for bold, italic and underline.";
+    out.tips.indent = "In numbered and bulleted lists, you can use tab or shift+tab to quickly increase or decrease indentation.";
+    out.tips.title = "You can set the title of your pad by clicking the top center.";
+    out.tips.store = "Every time you visit a pad, if you're logged in it will be saved to your CryptDrive.";
+    out.tips.marker = "You can highlight text in a pad using the \"marker\" item in the styles dropdown menu.";
+
+    out.feedback_about = "If you're reading this, you were probably curious why CryptPad is requesting web pages when you perform certain actions";
+    out.feedback_privacy = "We care about your privacy, and at the same time we want CryptPad to be very easy to use.  We use this file to figure out which UI features matter to our users, by requesting it along with a parameter specifying which action was taken.";
+    out.feedback_optout = "If you would like to opt out, visit <a href='/settings/'>your user settings page</a>, where you'll find a checkbox to enable or disable user feedback";
 
     return out;
 });

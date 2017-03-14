@@ -4,6 +4,9 @@
     They are only displayed briefly
 */
 .alertify-logs {
+    @media print {
+        visibility: hidden;
+    }
     > * {
         padding: @padding-base @padding-base * 4;
         color: @alertify-fore;
@@ -58,10 +61,19 @@
     }
 
     .dialog, .alert {
+        .bright {
+            color: @light-base;
+        }
 
         & > div {
             background-color: @alertify-dialog-bg;
             border-radius: 5px;
+            &.half {
+                width: 50%;
+                @media (max-width: @media-medium-screen) {
+                    width: 100%;
+                }
+            }
         }
 
         width: 100%;
@@ -132,6 +144,25 @@
                 color: @alertify-btn-fg;
                 border: 1px solid @alertify-base;
                 border-radius: 5px;
+
+                &.safe, &.danger {
+                    color: @old-base;
+                    white-space: normal;
+                    font-weight: bold;
+                }
+                &.danger {
+                    background-color: @cp-red;
+                    &:hover, &:active {
+                        background-color: lighten(@cp-red, 5%);
+                    }
+                }
+
+                &.safe {
+                    background-color: @cp-green;
+                    &:hover, &:active {
+                        background-color: lighten(@cp-green, 10%);
+                    }
+                }
 
                 &:hover, &:active {
                     background-color: @alertify-btn-bg-hover;

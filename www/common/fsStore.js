@@ -119,6 +119,10 @@ define([
             return filesOp.getStructure();
         };
 
+        ret.replaceHref = function (o, n) {
+            return filesOp.replaceHref(o, n);
+        };
+
         var changeHandlers = ret.changeHandlers = [];
 
         ret.change = function (f) {};
@@ -127,9 +131,10 @@ define([
     };
 
     var onReady = function (f, proxy, Cryptpad, exp) {
-        var fo = FO.init(proxy.drive, {
+        var fo = exp.fo = FO.init(proxy.drive, {
             Cryptpad: Cryptpad
         });
+
         //storeObj = proxy;
         store = initStore(fo, proxy, exp);
         if (typeof(f) === 'function') {

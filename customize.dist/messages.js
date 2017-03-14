@@ -1,11 +1,6 @@
 (function () {
 var LS_LANG = "CRYPTPAD_LANG";
 
-var getStoredLanguage = function () { return localStorage.getItem(LS_LANG); };
-var getBrowserLanguage = function () { return navigator.language || navigator.userLanguage; };
-var getLanguage = function () { return getStoredLanguage() || getBrowserLanguage(); };
-var language = getLanguage();
-
 // add your module to this map so it gets used
 var map = {
     'fr': 'Français',
@@ -14,6 +9,19 @@ var map = {
     'de': 'Deutsch',
     'pt-br': 'Português do Brasil'
 };
+
+var getStoredLanguage = function () { return localStorage.getItem(LS_LANG); };
+var getBrowserLanguage = function () { return navigator.language || navigator.userLanguage; };
+var getLanguage = function () {
+    if (getStoredLanguage()) { return getStoredLanguage(); }
+    var l = getBrowserLanguage() || '';
+    if (Object.keys(map).indexOf(l) !== -1) {
+        return l;
+    }
+    // Edge returns 'fr-FR' --> transform it to 'fr' and check again
+    return Object.keys(map).indexOf(l.split('-')[0]) !== -1 ? l.split('-')[0] : 'en';
+};
+var language = getLanguage();
 
 var req = ['/customize/translations/messages.js'];
 if (language && map[language]) { req.push('/customize/translations/messages.' + language + '.js'); }
@@ -109,12 +117,7 @@ define(req, function(Default, Language) {
         var $button = $(selector).find('button .buttonTitle');
         // Select the current language in the list
         var option = $(selector).find('[data-value="' + language + '"]');
-        if ($(option).length) {
-            $button.text($(option).text());
-        }
-        else {
-            $button.text('English');
-        }
+        selector.setValue(language || 'English');
 
         // Listen for language change
         $(selector).find('a.languageValue').on('click', function () {

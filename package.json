@@ -1,7 +1,7 @@
 {
   "name": "cryptpad",
   "description": "realtime collaborative visual editor with zero knowlege server",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "dependencies": {
     "express": "~4.10.1",
     "ws": "^1.0.1",
@@ -16,7 +16,7 @@
   "scripts": {
       "lint": "jshint --config .jshintrc --exclude-path .jshintignore .",
       "test": "node TestSelenium.js",
-      "style": "lessc ./customize.dist/src/less/cryptpad.less > ./customize.dist/main.css && lessc ./customize.dist/src/less/toolbar.less > ./customize.dist/toolbar.css && lessc ./www/drive/file.less > ./www/drive/file.css && lessc ./www/settings/main.less > ./www/settings/main.css",
+      "style": "lessc ./customize.dist/src/less/cryptpad.less > ./customize.dist/main.css && lessc ./customize.dist/src/less/toolbar.less > ./customize.dist/toolbar.css && lessc ./www/drive/file.less > ./www/drive/file.css && lessc ./www/settings/main.less > ./www/settings/main.css && lessc ./www/slide/slide.less > ./www/slide/slide.css",
       "template": "cd customize.dist/src && node build.js"
   }
 }
