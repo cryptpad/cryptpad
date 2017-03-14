@@ -118,7 +118,7 @@ dropUser = function (ctx, user) {
     });
 };
 
-const getHistory = function (ctx, channelName, handler, cb) {
+const getHistory = function (ctx, channelName, lastKnownHash, handler, cb) {
     var messageBuf = [];
     var messageKey;
     ctx.store.getMessages(channelName, function (msgStr) {
@@ -137,21 +137,33 @@ const getHistory = function (ctx, channelName, handler, cb) {
         var startPoint;
         var cpCount = 0;
         var msgBuff2 = [];
+        var sendBuff2 = function () {
+            for (var x = msgBuff2.pop(); x; x = msgBuff2.pop()) { handler(x); }
+        };
+        var hash = function (msg) {
+            return Crypto.createHash('md5').update(msg).digest('hex');
+        };
+        var isSent = false;
         for (startPoint = messageBuf.length - 1; startPoint >= 0; startPoint--) {
             var msg = messageBuf[startPoint];
             msgBuff2.push(msg);
-            if (msg[2] === 'MSG' && msg[4].indexOf('cp|') === 0) {
+            if (msg[2] === 'MSG' && hash(msg[4]) === lastKnownHash) {
+                msgBuff2.pop();
+                sendBuff2();
+                isSent = true;
+                break;
+            } else if (msg[2] === 'MSG' && msg[4].indexOf('cp|') === 0) {
                 cpCount++;
                 if (cpCount >= 2) {
-                    for (var x = msgBuff2.pop(); x; x = msgBuff2.pop()) { handler(x); }
+                    sendBuff2();
+                    isSent = true;
                     break;
                 }
             }
-            //console.log(messageBuf[startPoint]);
         }
-        if (cpCount < 2) {
+        if (!isSent) {
             // no checkpoints.
-            for (var x = msgBuff2.pop(); x; x = msgBuff2.pop()) { handler(x); }
+            sendBuff2();
         }
         cb(messageBuf);
     });
@@ -196,11 +208,13 @@ const handleMessage = function (ctx, user, msg) {
             let parsed;
             try { parsed = JSON.parse(json[2]); } catch (err) { console.error(err); return; }
             if (parsed[0] === 'GET_HISTORY') {
+                // parsed[1] is the channel id
+                // parsed[2] is a validation key (optionnal)
+                // parsed[3] is the last known hash (optionnal)
                 sendMsg(ctx, user, [seq, 'ACK']);
-                getHistory(ctx, parsed[1], function (msg) {
+                getHistory(ctx, parsed[1], parsed[3], function (msg) {
                     sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(msg)]);
                 }, function (messages) {
-                    // parsed[2] is a validation key if it exists
                     if (messages.length === 0 && parsed[2] && !historyKeeperKeys[parsed[1]]) {
                         var key = {channel: parsed[1], validateKey: parsed[2]};
                         storeMessage(ctx, ctx.channels[parsed[1]], JSON.stringify(key));
