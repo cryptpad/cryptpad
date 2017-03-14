@@ -231,6 +231,7 @@ define(function () {
     out.register_writtenPassword = "J'ai bien noté mon nom d'utilisateur et mon mot de passe, continuer";
     out.register_cancel = "Retour";
     out.register_warning = "Zero Knowledge signifie que nous ne pouvons pas récupérer vos données si vous perdez vos identifiants.";
+    out.register_alreadyRegistered = "Cet utilisateur existe déjà, souhaitez-vous vous connecter ?";
 
     out.register_header = "Bienvenue dans CryptPad";
     out.register_explanation = [
