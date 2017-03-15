@@ -1433,6 +1433,7 @@ define([
             }
             appStatus.ready(false);
             currentPath = path;
+            var s = $content.scrollTop() || 0;
             $content.html("");
             if (!path || path.length === 0) {
                 path = [ROOT];
@@ -1539,6 +1540,7 @@ define([
             }
             //$content.append($toolbar).append($title).append($info).append($dirContent);
             $content.append($info).append($dirContent);
+            $content.scrollTop(s);
             appStatus.ready(true);
         };
 
