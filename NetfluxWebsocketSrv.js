@@ -214,7 +214,7 @@ const handleMessage = function (ctx, user, msg) {
                 var rpc_call = parsed.slice(1);
 
                 // slice off the sequence number and pass in the rest of the message
-                ctx.rpc(rpc_call, function (err, output) {
+                ctx.rpc(ctx, rpc_call, function (err, output) {
                     if (err) {
                         console.error('[' + err + ']', output); // TODO make this disableable
                         sendMsg(ctx, user, [seq, 'ACK']);
