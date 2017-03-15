@@ -181,6 +181,7 @@ define([
 
         var $tree = $iframe.find("#tree");
         var $content = $iframe.find("#content");
+        var $appContainer = $iframe.find(".app-container");
         var $driveToolbar = $iframe.find("#driveToolbar");
         var $contextMenu = $iframe.find("#treeContextMenu");
         var $contentContextMenu = $iframe.find("#contentContextMenu");
@@ -1737,7 +1738,8 @@ define([
 
         // Disable middle click in the context menu to avoid opening /drive/inner.html# in new tabs
         $(ifrw).click(function (e) {
-            if (e.which !== 3) {
+            if (!e.target || !$(e.target).parents('.cryptpad-dropdown').length) { return; }
+            if (e.which !== 1) {
                 e.stopPropagation();
                 return false;
             }
@@ -1900,21 +1902,21 @@ define([
             module.hideMenu();
         });
 
-        $(ifrw).on('click', function (e) {
+        $appContainer.on('click', function (e) {
             if (e.which !== 1) { return ; }
             removeSelected(e);
             removeInput();
             module.hideMenu(e);
             hideNewButton();
         });
-        $(ifrw).on('drag drop', function (e) {
+        $appContainer.on('drag drop', function (e) {
             removeInput();
             module.hideMenu(e);
         });
-        $(ifrw).on('mouseup drop', function (e) {
+        $appContainer.on('mouseup drop', function (e) {
             $iframe.find('.droppable').removeClass('droppable');
         });
-        $(ifrw).on('keydown', function (e) {
+        $appContainer.on('keydown', function (e) {
             // "Del"
             if (e.which === 46) {
                 if (filesOp.isPathInFilesData(currentPath)) { return; } // We can't remove elements directly from filesData
@@ -1948,7 +1950,7 @@ define([
                 moveElements(paths, [TRASH], false, refresh);
             }
         });
-        $(ifrw).contextmenu(function () {
+        $appContainer.contextmenu(function () {
             module.hideMenu();
             return false;
         });
@@ -2005,7 +2007,7 @@ define([
                 updatePathSize();
             }, 100);
         });
-        $(ifrw).mouseup(function (e) {
+        $appContainer.mouseup(function (e) {
             window.clearInterval(APP.resizeTree);
             APP.resizeTree = undefined;
         });
