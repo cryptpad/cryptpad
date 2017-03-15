@@ -216,6 +216,14 @@ var getMessages = function (env, chanName, handler, cb) {
     });
 };
 
+var channelBytes = function (env, chanName, cb) {
+    var path = mkPath(env, chanName);
+    Fs.stat(path, function (err, stats) {
+        if (err) { return void cb(err); }
+        cb(void 0, stats.size);
+    });
+};
+
 module.exports.create = function (conf, cb) {
     var env = {
         root: conf.filePath || './datastore',
@@ -247,6 +255,9 @@ module.exports.create = function (conf, cb) {
             },
             flushUnusedChannels: function (cb) {
                 flushUnusedChannels(env, cb);
+            },
+            getChannelSize: function (chanName, cb) {
+                channelBytes(env, chanName, cb);
             },
         });
     });
