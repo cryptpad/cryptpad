@@ -1308,6 +1308,8 @@ define([
         }
 
         Messages._initSelector($block);
+
+        return $block;
     };
 
     var createUserAdminMenu = common.createUserAdminMenu = function (config) {

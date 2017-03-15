@@ -693,7 +693,7 @@ define([
         userList = APP.userList = info.userList;
 
         var config = {
-            displayed: ['useradmin', 'language', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad'],
+            displayed: ['useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad'],
             userData: userData,
             readOnly: readOnly,
             share: {
