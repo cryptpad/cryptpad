@@ -994,15 +994,15 @@ define([
         var fo = proxy.fo;
 
         var list = fo.getFilesDataFiles().map(function (href) {
-            var parsed = Cryptpad.parsePadUrl(href);
+            var parsed = common.parsePadUrl(href);
             if (!parsed || !parsed.hash) { return; }
 
-            parsed = Cryptpad.parseHash(parsed.hash);
+            parsed = common.parseHash(parsed.hash);
 
             var channel = parsed.channel;
             if (!channel) { return; }
 
-            var hex = Cryptpad.base64ToHex(channel);
+            var hex = common.base64ToHex(channel);
             return hex;
         }).filter(function (x) { return x; }).sort();
 

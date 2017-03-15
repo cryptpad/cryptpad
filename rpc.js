@@ -19,7 +19,7 @@ RPC.create = function (config, cb) {
     // load pin-store...
 
     console.log('loading rpc module...');
-    rpc = function (ctx, msg, respond) {
+    var rpc = function (ctx, msg, respond) {
         switch (msg[0]) {
             case 'ECHO':
                 respond(void 0, msg);
