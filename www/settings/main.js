@@ -240,10 +240,20 @@ define([
         return $div;
     };
 
+    var createLanguageSelector = function () {
+        var $div = $('<div>', {'class': 'importLocalPads'});
+        var $label = $('<label>').text(Messages.language).appendTo($div);
+        $('<br>').appendTo($div);
+        var $b = Cryptpad.createLanguageSelector().appendTo($div);
+        $b.find('button').addClass('btn btn-secondary');
+        return $div;
+    };
+
     var andThen = function (obj) {
         APP.$container.append(createTitle());
         APP.$container.append(createInfoBlock(obj));
         APP.$container.append(createDisplayNameInput(obj));
+        APP.$container.append(createLanguageSelector());
         APP.$container.append(createResetTips());
         APP.$container.append(createBackupDrive(obj));
         APP.$container.append(createImportLocalPads(obj));

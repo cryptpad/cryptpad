@@ -432,11 +432,6 @@ define([
             $userContainer.append($lag);
         }
 
-        if (config.displayed.indexOf('language') !== -1) {
-            // Dropdown language selector
-            Cryptpad.createLanguageSelector($userContainer);
-        }
-
         if (config.displayed.indexOf('newpad') !== -1) {
             var pads_options = [];
             Config.availablePadTypes.forEach(function (p) {
@@ -460,6 +455,7 @@ define([
             };
             var $newPadBlock = Cryptpad.createDropdown(dropdownConfig);
             $newPadBlock.find('button').attr('title', Messages.newButtonTitle);
+            $newPadBlock.find('button').attr('id', 'newdoc');
             $newPadBlock.appendTo($userContainer);
         }
 

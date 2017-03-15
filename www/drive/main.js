@@ -1061,14 +1061,18 @@ define([
                     content: Messages.type[type]
                 });
             });
+            var $plusIcon = $('<div>').append($('<span>', {'class': 'fa fa-plus'}));
+
+
             var dropdownConfig = {
-                text: Messages.fm_newButton,
+                text: $plusIcon.html() + Messages.fm_newButton,
                 options: options
             };
             var $block = Cryptpad.createDropdown(dropdownConfig);
 
             // Custom style:
             $block.find('button').addClass('btn').addClass('btn-primary').addClass('new');
+            $block.find('button').attr('title', Messages.fm_newButtonTitle);
 
             // Handlers
             if (isInRoot) {
@@ -2122,7 +2126,7 @@ define([
 
             var userList = APP.userList = info.userList;
             var config = {
-                displayed: ['useradmin', 'language', 'spinner', 'lag', 'state'],
+                displayed: ['useradmin', 'spinner', 'lag', 'state'],
                 readOnly: readOnly,
                 ifrw: window,
                 common: Cryptpad,

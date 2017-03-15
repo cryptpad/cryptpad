@@ -145,6 +145,7 @@ define(function () {
     out.fm_filesDataName = "Tous les fichiers";
     out.fm_templateName = "Modèles";
     out.fm_newButton = "Nouveau";
+    out.fm_newButtonTitle = "Créer un nouveau pad ou un dossier";
     out.fm_newFolder = "Nouveau dossier";
     out.fm_newFile = "Nouveau pad";
     out.fm_folder = "Dossier";

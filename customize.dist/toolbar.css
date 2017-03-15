@@ -132,6 +132,21 @@
 .cryptpad-toolbar button#shareButton .large {
   margin-left: 5px;
 }
+.cryptpad-toolbar button#newdoc {
+  color: #fff;
+  background: #0275d8;
+  border-color: #0275d8;
+}
+.cryptpad-toolbar button#newdoc:hover {
+  background: #025aa5;
+  border: 1px solid #01549b;
+}
+.cryptpad-toolbar button#newdoc span {
+  color: #fff;
+}
+.cryptpad-toolbar button#newdoc .large {
+  margin-left: 5px;
+}
 .cryptpad-toolbar button.hidden {
   display: none;
 }
