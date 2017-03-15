@@ -1626,7 +1626,8 @@ define([
 
             // Display root content
             var $list = $('<ul>').appendTo($container);
-            Object.keys(root).forEach(function (key) {
+            var keys = Object.keys(root).sort();
+            keys.forEach(function (key) {
                 // Do not display files in the menu
                 if (filesOp.isFile(root[key])) { return; }
                 var newPath = path.slice();
