@@ -987,6 +987,28 @@ define([
         });
         */
     };
+
+    var getUserChannelList = common.getUserChannelList = function () {
+        var store = common.getStore();
+        var proxy = store.getProxy();
+        var fo = proxy.fo;
+
+        var list = fo.getFilesDataFiles().map(function (href) {
+            var parsed = Cryptpad.parsePadUrl(href);
+            if (!parsed || !parsed.hash) { return; }
+
+            parsed = Cryptpad.parseHash(parsed.hash);
+
+            var channel = parsed.channel;
+            if (!channel) { return; }
+
+            var hex = Cryptpad.base64ToHex(channel);
+            return hex;
+        }).filter(function (x) { return x; }).sort();
+
+        return list;
+    };
+
     var createButton = common.createButton = function (type, rightside, data, callback) {
         var button;
         var size = "17px";
