@@ -1072,6 +1072,7 @@ define([
 
             // Custom style:
             $block.find('button').addClass('btn').addClass('btn-primary').addClass('new');
+            $block.find('button').attr('title', Messages.fm_newButtonTitle);
 
             // Handlers
             if (isInRoot) {
