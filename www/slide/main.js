@@ -2,7 +2,7 @@ require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/J
 define([
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
-    '/bower_components/textpatcher/TextPatcher.amd.js',
+    '/bower_components/textpatcher/TextPatcher.js',
     '/common/toolbar.js',
     'json.sortify',
     '/bower_components/chainpad-json-validator/json-ot.js',
@@ -678,12 +678,15 @@ define([
             };
 
             var onReady = config.onReady = function (info) {
-                var realtime = module.realtime = info.realtime;
                 module.users = info.userList.users;
-                module.patchText = TextPatcher.create({
-                    realtime: realtime,
-                    //logging: true
-                });
+
+                if (module.realtime !== info.realtime) {
+                    var realtime = module.realtime = info.realtime;
+                    module.patchText = TextPatcher.create({
+                        realtime: realtime,
+                        //logging: true
+                    });
+                }
 
                 var userDoc = module.realtime.getUserDoc();
 

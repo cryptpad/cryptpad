@@ -141,17 +141,19 @@ const getHistory = function (ctx, channelName, lastKnownHash, handler, cb) {
             for (var x = msgBuff2.pop(); x; x = msgBuff2.pop()) { handler(x); }
         };
         var hash = function (msg) {
-            return Crypto.createHash('md5').update(msg).digest('hex');
+            return msg.slice(0,64); //Crypto.createHash('md5').update(msg).digest('hex');
         };
         var isSent = false;
         for (startPoint = messageBuf.length - 1; startPoint >= 0; startPoint--) {
             var msg = messageBuf[startPoint];
             msgBuff2.push(msg);
-            if (msg[2] === 'MSG' && hash(msg[4]) === lastKnownHash) {
-                msgBuff2.pop();
-                sendBuff2();
-                isSent = true;
-                break;
+            if (lastKnownHash) {
+                if (msg[2] === 'MSG' && hash(msg[4]) === lastKnownHash) {
+                    msgBuff2.pop();
+                    sendBuff2();
+                    isSent = true;
+                    break;
+                }
             } else if (msg[2] === 'MSG' && msg[4].indexOf('cp|') === 0) {
                 cpCount++;
                 if (cpCount >= 2) {
