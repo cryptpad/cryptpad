@@ -322,6 +322,66 @@ define([
             return rootpaths.concat(unsortedpaths, templatepaths, trashpaths);
         };
 
+        var search = exp.search = function (value) {
+            if (typeof(value) !== "string") { return []; }
+            var res = [];
+            // Search in ROOT
+            var findIn = function (root) {
+                Object.keys(root).forEach(function (k) {
+                    if (isFile(root[k])) {
+                        if (k.toLowerCase().indexOf(value.toLowerCase()) !== -1) {
+                            res.push(root[k]);
+                        }
+                        return;
+                    }
+                    findIn(root[k]);
+                });
+            };
+            findIn(files[ROOT]);
+            // Search in TRASH
+            var trash = files[TRASH];
+            Object.keys(trash).forEach(function (k) {
+                if (k.toLowerCase().indexOf(value.toLowerCase()) !== -1) {
+                    trash[k].forEach(function (el) {
+                        if (isFile(el.element)) {
+                            res.push(el.element);
+                        }
+                    });
+                }
+                trash[k].forEach(function (el) {
+                    if (isFolder(el.element)) {
+                        findIn(el.element);
+                    }
+                });
+            });
+
+            // Search title
+            var allFilesList = files[FILES_DATA].slice();
+            allFilesList.forEach(function (t) {
+                if (t.title && t.title.toLowerCase().indexOf(value.toLowerCase()) !== -1) {
+                    res.push(t.href);
+                }
+            });
+
+            // Search Href
+            var href = Cryptpad.getRelativeHref(value);
+            if (href) {
+                res.push(href);
+            }
+
+            res = Cryptpad.deduplicateString(res);
+
+            var ret = [];
+            res.forEach(function (l) {
+                var paths = findFile(l);
+                ret.push({
+                    paths: findFile(l),
+                    data: getFileData(l)
+                });
+            });
+            return ret;
+        };
+
         // Remove the selected 'href' from the tree located at 'path', and push its locations to the 'paths' array
         var removeFileFromRoot = function (path, href) {
             var paths = [];

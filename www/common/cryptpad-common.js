@@ -197,6 +197,16 @@ define([
         return hexArray.join("");
     };
 
+    var deduplicate = common.deduplicateString = function (array) {
+        var a = array.slice();
+        for(var i=0; i<a.length; i++) {
+            for(var j=i+1; j<a.length; j++) {
+                if(a[i] === a[j]) { a.splice(j--, 1); }
+            }
+        }
+        return a;
+    };
+
 
     var parseHash = common.parseHash = function (hash) {
         var parsed = {};
@@ -430,6 +440,7 @@ define([
 
     var getRelativeHref = common.getRelativeHref = function (href) {
         if (!href) { return; }
+        if (href.indexOf('#') === -1) { return; }
         var parsed = common.parsePadUrl(href);
         return '/' + parsed.type + '/#' + parsed.hash;
     };
