@@ -8,7 +8,7 @@ define([
     '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/TypingTests.js',
     'json.sortify',
-    '/bower_components/textpatcher/TextPatcher.amd.js',
+    '/bower_components/textpatcher/TextPatcher.js',
     '/common/cryptpad-common.js',
     '/common/visible.js',
     '/common/notify.js',
@@ -656,10 +656,12 @@ define([
                     }
                 }
 
-                module.patchText = TextPatcher.create({
-                    realtime: info.realtime,
-                    //logging: true,
-                });
+                if (module.realtime !== info.realtime) {
+                    module.patchText = TextPatcher.create({
+                        realtime: info.realtime,
+                        //logging: true,
+                    });
+                }
 
                 module.users = info.userList.users;
                 module.realtime = info.realtime;

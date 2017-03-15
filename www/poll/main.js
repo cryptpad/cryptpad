@@ -589,7 +589,7 @@ define([
             $description.val(proxy.info.description);
         }
 
-        $('#tableScroll').prepend($table);
+        $('#tableScroll').html('').prepend($table);
         updateDisplayedTable();
 
         $table
@@ -662,11 +662,17 @@ define([
 
     var disconnect = function (info) {
         //setEditable(false); // TODO
+        APP.realtime.toolbar.failed();
         Cryptpad.alert(Messages.common_connectionLost, undefined, true);
     };
 
+    var reconnect = function (info) {
+        //setEditable(true); // TODO
+        APP.realtime.toolbar.reconnecting(info.myId);
+        Cryptpad.findOKButton().click();
+    };
+
     var create = function (info) {
-        var realtime = APP.realtime = info.realtime;
         var myID = APP.myID = info.myID;
 
         var editHash;
@@ -676,10 +682,13 @@ define([
             editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
         }
 
-        APP.patchText = TextPatcher.create({
-            realtime: realtime,
-            logging: true,
-        });
+        if (APP.realtime !== info.realtime) {
+            APP.realtime = info.realtime;
+            APP.patchText = TextPatcher.create({
+                realtime: info.realtime,
+                logging: true,
+            });
+        }
 
         userList = APP.userList = info.userList;
 
@@ -766,7 +775,8 @@ define([
                 });
             });
         })
-        .on('disconnect', disconnect);
+        .on('disconnect', disconnect)
+        .on('reconnect', reconnect);
 
         Cryptpad.getAttribute(HIDE_INTRODUCTION_TEXT, function (e, value) {
             if (e) { console.error(e); }
