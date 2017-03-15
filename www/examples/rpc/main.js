@@ -30,6 +30,20 @@ define([
                 if (e) { return void console.error(e); }
                 console.log(msg);
             });
+
+            var list = Cryptpad.getUserChannelList();
+            if (list.length) {
+                rpc.send('GET_FILE_SIZE', list[0], function (e, msg) {
+                    if (e) {
+                        return void console.error(e);
+                    }
+                    console.log(msg);
+                });
+            }
+            rpc.send('GET_FILE_SIZE', 'pewpew', function (e, msg) {
+                if (e) { return void console.error(e); }
+                console.log(msg);
+            });
         });
     });
 });
