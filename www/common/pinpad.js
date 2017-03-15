@@ -7,16 +7,6 @@ define([
 
     var Nacl = window.nacl;
 
-    var deduplicate = function (array) {
-        var a = array.slice();
-        for(var i=0; i<a.length; i++) {
-            for(var j=i+1; j<a.length; j++) {
-                if(a[i] === a[j]) { a.splice(j--, 1); }
-            }
-        }
-        return a;
-    };
-
     var create = function (network, ed) {
         var exp = {};
         var rpc = Rpc.create(network, ed);
@@ -31,7 +21,7 @@ define([
                 if (!parsedHash || !parsedHash.channel) { return; }
                 channelIdList.push(Cryptpad.base64ToHex(parsedHash.channel));
             });
-            var uniqueList = deduplicate(channelIdList).sort();
+            var uniqueList = Cryptpad.deduplicateString(channelIdList).sort();
 
             /*
 1. every time you want to pin or unpid a pad you send a message to the server

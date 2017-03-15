@@ -38,6 +38,7 @@ define([
         return JSONSortify(obj);
     };
 
+    var SEARCH = "search";
     var ROOT = "root";
     var ROOT_NAME = Messages.fm_rootName;
     var UNSORTED = "unsorted";
@@ -1417,6 +1418,13 @@ define([
             });
         };
 
+        var displaySearch = function ($list, value) {
+            var filesList = filesOp.search(value);
+            filesList.forEach(function (r) {
+                $('<li>').text(JSON.stringify(r)).appendTo($list);
+            });
+        };
+
         // Display the selected directory into the content part (rightside)
         // NOTE: Elements in the trash are not using the same storage structure as the others
         // _WORKGROUP_ : do not change the lastOpenedFolder value in localStorage
@@ -1443,9 +1451,10 @@ define([
             var isUnsorted = filesOp.comparePath(path, [UNSORTED]);
             var isTemplate = filesOp.comparePath(path, [TEMPLATE]);
             var isAllFiles = filesOp.comparePath(path, [FILES_DATA]);
+            var isSearch = path[0] === SEARCH;
 
-            var root = filesOp.findElement(files, path);
-            if (typeof(root) === "undefined") {
+            var root = isSearch ? undefined : filesOp.findElement(files, path);
+            if (!isSearch && typeof(root) === "undefined") {
                 log(Messages.fm_unknownFolderError);
                 debug("Unable to locate the selected directory: ", path);
                 var parentPath = path.slice();
@@ -1518,6 +1527,8 @@ define([
                 displayAllFiles($list);
             } else if (isTrashRoot) {
                 displayTrashRoot($list, $folderHeader, $fileHeader);
+            } else if (isSearch) {
+                displaySearch($list, path[1]);
             } else {
                 $dirContent.contextmenu(openContentContextMenu);
                 if (filesOp.hasSubfolder(root)) { $list.append($folderHeader); }
@@ -1682,8 +1693,22 @@ define([
             $container.append($trashList);
         };
 
+        var createSearch = function ($container) {
+            var $input = $('<input>', {
+                type: 'text',
+                placeholder: 'Search...'
+            }).keyup(function (e) {
+                if (e.which === 13) {
+                    var val = $(this).val();
+                    displayDirectory([SEARCH, val]);
+                }
+            });
+            $container.append($input);
+        };
+
         var resetTree = module.resetTree = function () {
             $tree.html('');
+            if (displayedCategories.indexOf(SEARCH) !== -1) { createSearch($tree); }
             if (displayedCategories.indexOf(ROOT) !== -1) { createTree($tree, [ROOT]); }
             if (displayedCategories.indexOf(UNSORTED) !== -1) { createUnsorted($tree, [UNSORTED]); }
             if (displayedCategories.indexOf(TEMPLATE) !== -1) { createTemplate($tree, [TEMPLATE]); }
