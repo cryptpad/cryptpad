@@ -63,6 +63,11 @@ define([
 
         var logMeIn = function (result) {
             localStorage.User_hash = result.userHash;
+
+            var proxy = result.proxy;
+            proxy.edPublic = result.edPublic;
+            proxy.edPrivate = result.edPrivate;
+
             Cryptpad.whenRealtimeSyncs(result.realtime, function () {
                 Cryptpad.login(result.userHash, result.userName, function () {
                     if (sessionStorage.redirectTo) {

@@ -11,6 +11,7 @@ define([
         Cred: Cred,
     };
 
+    var Nacl = window.nacl;
     var allocateBytes = function (bytes) {
         var dispense = Cred.dispenser(bytes);
 
@@ -24,6 +25,12 @@ define([
         var curveSeed = opt.curveSeed = dispense(32);
         // 32 more for a signing key
         var edSeed = opt.edSeed = dispense(32);
+
+        // derive a private key from the ed seed
+        var signingKeypair = Nacl.sign.keyPair.fromSeed(new Uint8Array(edSeed));
+
+        opt.edPrivate = Nacl.util.encodeBase64(signingKeypair.secretKey);
+        opt.edPublic = Nacl.util.encodeBase64(signingKeypair.publicKey);
 
         var keys = opt.keys = Crypto.createEditCryptor(null, encryptionSeed);
 
@@ -97,6 +104,10 @@ define([
                 // they're registering...
                 res.userHash = opt.userHash;
                 res.userName = uname;
+
+                // export their signing key
+                res.edPrivate = opt.edPrivate;
+                res.edPublic = opt.edPublic;
 
                 // they tried to just log in but there's no such user
                 if (!isRegister && isProxyEmpty(rt.proxy)) {

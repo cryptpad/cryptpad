@@ -127,11 +127,17 @@ define([
                     var passwd = $passwd.val();
                     Login.loginOrRegister(uname, passwd, false, function (err, result) {
                         if (!err) {
+                            var proxy = result.proxy;
+
                             // successful validation and user already exists
                             // set user hash in localStorage and redirect to drive
-                            if (result.proxy && !result.proxy.login_name) {
-                                result.proxy.login_name = result.userName;
+                            if (proxy && !proxy.login_name) {
+                                proxy.login_name = result.userName;
                             }
+
+                            proxy.edPrivate = result.edPrivate;
+                            proxy.edPublic = result.edPublic;
+
                             Cryptpad.whenRealtimeSyncs(result.realtime, function () {
                                 Cryptpad.login(result.userHash, result.userName, function () {
                                     document.location.href = '/drive/';
