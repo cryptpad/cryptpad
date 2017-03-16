@@ -24,9 +24,17 @@ module.exports = {
         "default-src 'none'",
         "style-src 'unsafe-inline' 'self'",
         "script-src 'self'",
-        "child-src 'self' cryptpad.fr *.cryptpad.fr",
         "font-src 'self'",
-        "connect-src 'self' wss://cryptpad.fr",
+
+        /*  child-src is used to restrict iframes to a set of allowed domains.
+         *  connect-src is used to restrict what domains can connect to the websocket.
+         *
+         *  it is recommended that you configure these fields to match the
+         *  domain which will serve your cryptpad instance.
+         */
+        "connect-src 'self' ws://*",
+        "child-src 'self' *",
+
         // data: is used by codemirror
         "img-src 'self' data:",
     ].join('; '),
@@ -39,14 +47,11 @@ module.exports = {
         "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
         "font-src 'self'",
 
-        /*  child-src is used to restrict iframes to a set of allowed domains.
-         *  connect-src is used to restrict what domains can connect to the websocket.
-         *
-         *  it is recommended that you configure these fields to match the
-         *  domain which will serve your cryptpad instance.
+        /*  See above under 'contentSecurity' as to how these values should be
+         *  configured for best effect.
          */
-        // "child-src 'self' cryptpad.fr *.cryptpad.fr",
-        // "connect-src 'self' wss://cryptpad.fr",
+         "child-src 'self' *",
+        "connect-src 'self' ws://*",
 
         // (insecure remote) images are included by users of the wysiwyg who embed photos in their pads
         "img-src *",
