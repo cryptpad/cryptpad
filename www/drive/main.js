@@ -39,6 +39,7 @@ define([
     };
 
     var SEARCH = "search";
+    var SEARCH_NAME = Messages.fm_searchName;
     var ROOT = "root";
     var ROOT_NAME = Messages.fm_rootName;
     var UNSORTED = "unsorted";
@@ -75,6 +76,7 @@ define([
         return path;
     };
     var setLastOpenedFolder = function (path) {
+        if (path[0] === SEARCH) { return; }
         localStorage[LOCALSTORAGE_LAST] = JSON.stringify(path);
     };
 
@@ -207,8 +209,8 @@ define([
 
         // Categories dislayed in the menu
         // _WORKGROUP_ : do not display unsorted
-        var displayedCategories = [ROOT, UNSORTED, TRASH];
-        if (isWorkgroup()) { displayedCategories = [ROOT, TRASH]; }
+        var displayedCategories = [ROOT, UNSORTED, TRASH, SEARCH];
+        if (isWorkgroup()) { displayedCategories = [ROOT, TRASH, SEARCH]; }
 
         var lastSelectTime;
         var selectedElement;
@@ -925,30 +927,34 @@ define([
                 case UNSORTED: pName = UNSORTED_NAME; break;
                 case TEMPLATE: pName = TEMPLATE_NAME; break;
                 case FILES_DATA: pName = FILES_DATA_NAME; break;
+                case SEARCH: pName = SEARCH_NAME; break;
                 default: pName = name;
             }
             return pName;
         };
 
         // Create the title block with the "parent folder" button
-        var createTitle = function (path) {
+        var createTitle = function (path, noStyle) {
             if (!path || path.length === 0) { return; }
             var isTrash = filesOp.isPathInTrash(path);
             var $title = $('<span>', {'class': 'path unselectable'});
             if (APP.mobile()) {
                 return $title;
             }
+            path = path[0] === SEARCH ? path.slice(0,1) : path;
             path.forEach(function (p, idx) {
                 if (isTrash && [2,3].indexOf(idx) !== -1) { return; }
 
                 var $span = $('<span>', {'class': 'element'});
                 if (idx < path.length - 1) {
-                    $span.addClass('clickable');
-                    $span.click(function (e) {
-                        var sliceEnd = idx + 1;
-                        if (isTrash && idx === 1) { sliceEnd = 4; } // Make sure we don't show the index or 'element' and 'path'
-                        module.displayDirectory(path.slice(0, sliceEnd));
-                    });
+                    if (!noStyle) {
+                        $span.addClass('clickable');
+                        $span.click(function (e) {
+                            var sliceEnd = idx + 1;
+                            if (isTrash && idx === 1) { sliceEnd = 4; } // Make sure we don't show the index or 'element' and 'path'
+                            module.displayDirectory(path.slice(0, sliceEnd));
+                        });
+                    }
                 }
 
                 var name = p;
@@ -1421,7 +1427,40 @@ define([
         var displaySearch = function ($list, value) {
             var filesList = filesOp.search(value);
             filesList.forEach(function (r) {
-                $('<li>').text(JSON.stringify(r)).appendTo($list);
+                r.paths.forEach(function (path) {
+                    var href = r.data.href;
+                    var parsed = Cryptpad.parsePadUrl(href);
+                    var $table = $('<table>');
+                    var $icon = $('<td>', {'rowspan': '3', 'class': 'icon'}).append(getFileIcon(href));
+                    var $title = $('<td>', {'class': 'col1 title'}).text(r.data.title).click(function (e) {
+                        openFile(r.data.href);
+                    });
+                    var $typeName = $('<td>', {'class': 'label2'}).text(Messages.fm_type);
+                    var $type = $('<td>', {'class': 'col2'}).text(Messages.type[parsed.type] || parsed.type);
+                    var $atimeName = $('<td>', {'class': 'label2'}).text(Messages.fm_lastAccess);
+                    var $atime = $('<td>', {'class': 'col2'}).text(new Date(r.data.atime).toLocaleString());
+                    var $ctimeName = $('<td>', {'class': 'label2'}).text(Messages.fm_creation);
+                    var $ctime = $('<td>', {'class': 'col2'}).text(new Date(r.data.ctime).toLocaleString());
+                    if (filesOp.isPathInHrefArray(path)) {
+                        path.pop();
+                        path.push(r.data.title);
+                    }
+                    var $path = $('<td>', {'class': 'col1 path'}).html(createTitle(path, true).html());
+                    var parentPath = path.slice();
+                    var $a;
+                    if (parentPath) {
+                        $a = $('<a>').text(Messages.fm_openParent).click(function (e) {
+                            e.preventDefault();
+                            parentPath.pop();
+                            module.displayDirectory(parentPath);
+                        });
+                    }
+                    var $openDir = $('<td>', {'class': 'openDir'}).append($a);
+                    var $row1 = $('<tr>').append($icon).append($title).append($typeName).append($type).appendTo($table);
+                    var $row2 = $('<tr>').append($path).append($atimeName).append($atime).appendTo($table);
+                    var $row3 = $('<tr>').append($openDir).append($ctimeName).append($ctime).appendTo($table);
+                    $('<li>', {'class':'searchResult'}).append($table).appendTo($list);
+                });
             });
         };
 
@@ -1465,6 +1504,10 @@ define([
 
             module.resetTree();
 
+            if (isSearch) {
+                $tree.find('#searchInput').focus();
+            }
+
             if (!isWorkgroup()) {
                 setLastOpenedFolder(path);
             }
@@ -1474,13 +1517,15 @@ define([
 
             var $dirContent = $('<div>', {id: FOLDER_CONTENT_ID});
             $dirContent.data('path', path);
-            var mode = getViewMode();
-            if (mode) {
-                $dirContent.addClass(getViewModeClass());
+            if (!isSearch) {
+                var mode = getViewMode();
+                if (mode) {
+                    $dirContent.addClass(getViewModeClass());
+                }
+                var $modeButton = createViewModeButton().appendTo($toolbar.find('.rightside'));
             }
             var $list = $('<ul>').appendTo($dirContent);
 
-            var $modeButton = createViewModeButton().appendTo($toolbar.find('.rightside'));
             var $title = createTitle(path).appendTo($toolbar.find('.rightside'));
             updatePathSize();
 
@@ -1693,17 +1738,33 @@ define([
             $container.append($trashList);
         };
 
+        var search = APP.Search = {};
         var createSearch = function ($container) {
+            var isInSearch = currentPath[0] === SEARCH;
+            var $div = $('<div>', {'id': 'searchContainer'});
             var $input = $('<input>', {
+                id: 'searchInput',
                 type: 'text',
-                placeholder: 'Search...'
+                placeholder: Messages.fm_searchPlaceholder
             }).keyup(function (e) {
-                if (e.which === 13) {
-                    var val = $(this).val();
-                    displayDirectory([SEARCH, val]);
+                if (search.to) { window.clearTimeout(search.to); }
+                var isInSearchTmp = currentPath[0] === SEARCH;
+                if ($input.val().trim() === "") {
+                    if (search.oldLocation.length) { displayDirectory(search.oldLocation); }
+                    return;
                 }
-            });
-            $container.append($input);
+                if (e.which === 13) {
+                    if (!isInSearchTmp) { search.oldLocation = currentPath.slice(); }
+                    displayDirectory([SEARCH, $input.val()]);
+                    return;
+                }
+                search.to = window.setTimeout(function () {
+                    if (!isInSearchTmp) { search.oldLocation = currentPath.slice(); }
+                    displayDirectory([SEARCH, $input.val()]);
+                }, 500);
+            }).appendTo($div);
+            if (isInSearch) { $input.val(currentPath[1] || ''); }
+            $container.append($div);
         };
 
         var resetTree = module.resetTree = function () {

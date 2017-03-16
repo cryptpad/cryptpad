@@ -144,6 +144,8 @@ define(function () {
     out.fm_unsortedName = "Fichiers non triés";
     out.fm_filesDataName = "Tous les fichiers";
     out.fm_templateName = "Modèles";
+    out.fm_searchName = "Recherche";
+    out.fm_searchPlaceholder = "Rechercher...";
     out.fm_newButton = "Nouveau";
     out.fm_newButtonTitle = "Créer un nouveau pad ou un dossier";
     out.fm_newFolder = "Nouveau dossier";
@@ -159,6 +161,7 @@ define(function () {
     out.fm_creation = "Création";
     out.fm_forbidden = "Action interdite";
     out.fm_originalPath = "Chemin d'origine";
+    out.fm_openParent = "Montrer dans le dossier";
     out.fm_noname = "Document sans titre";
     out.fm_emptyTrashDialog = "Êtes-vous sûr de vouloir vider la corbeille ?";
     out.fm_removeSeveralPermanentlyDialog = "Êtes-vous sûr de vouloir supprimer ces {0} éléments de manière permanente ?";
