@@ -6,7 +6,8 @@
     "express": "~4.10.1",
     "ws": "^1.0.1",
     "nthen": "~0.1.0",
-    "tweetnacl": "~0.12.2"
+    "tweetnacl": "~0.12.2",
+    "chainpad-server": "^1.0.1"
   },
   "devDependencies": {
     "jshint": "~2.9.1",
