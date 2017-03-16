@@ -12,7 +12,8 @@ define([
         var rpc = Rpc.create(network, ed);
 
         var checkHash = exp.checkHash = function (fileList) {
-            //var fileList = fo.getFilesDataFiles();
+            fileList = fileList || Cryptpad.getUserChannelList();
+
             var channelIdList = [];
             fileList.forEach(function (href) {
                 var parsedHref = Cryptpad.parsePadUrl(href);
@@ -31,12 +32,10 @@ define([
     AWESOME
   if they are not
     UNPIN all, send all
-
             */
 
             var hash = Nacl.util.encodeBase64(Nacl.hash(Nacl.util.decodeUTF8( JSON.stringify(uniqueList) )));
 
-            console.log(hash);
             return hash;
         };
 
