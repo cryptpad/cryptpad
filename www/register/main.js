@@ -108,6 +108,8 @@ define([
 
                 Cryptpad.addLoadingScreen(Messages.login_hashing);
                 Login.loginOrRegister(uname, passwd, true, function (err, result) {
+                    var proxy = result.proxy;
+
                     if (err) {
                         switch (err) {
                             case 'NO_SUCH_USER':
@@ -129,10 +131,10 @@ define([
                                 Cryptpad.removeLoadingScreen(function () {
                                     Cryptpad.confirm(Messages.register_alreadyRegistered, function (yes) {
                                         if (!yes) { return; }
-                                        result.proxy.login_name = uname;
+                                        proxy.login_name = uname;
 
-                                        if (!result.proxy[Cryptpad.displayNameKey]) {
-                                            result.proxy[Cryptpad.displayNameKey] = uname;
+                                        if (!proxy[Cryptpad.displayNameKey]) {
+                                            proxy[Cryptpad.displayNameKey] = uname;
                                         }
                                         Cryptpad.eraseTempSessionValues();
                                         logMeIn(result);
@@ -144,8 +146,6 @@ define([
                         }
                         return;
                     }
-                    var proxy = result.proxy;
-
                     Cryptpad.eraseTempSessionValues();
                     if (shouldImport) {
                         sessionStorage.migrateAnonDrive = 1;
@@ -158,8 +158,8 @@ define([
                     logMeIn(result);
                 });
             }, {
-                ok: Messages.register_writtenPassword, //'I have written down my password, proceed',
-                cancel: Messages.register_cancel, // 'Go back',
+                ok: Messages.register_writtenPassword,
+                cancel: Messages.register_cancel,
                 cancelClass: 'safe',
                 okClass: 'danger',
                 reverseOrder: true,
