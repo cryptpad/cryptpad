@@ -18,8 +18,12 @@ var isValidChannel = function (chan) {
 var checkSignature = function (signedMsg, publicKey) {
     if (!(signedMsg && publicKey)) { return null; }
 
-    var signedBuffer = Nacl.util.decodeBase64(signedMsg);
-    var pubBuffer = Nacl.util.decodeBase64(publicKey);
+    try {
+        var signedBuffer = Nacl.util.decodeBase64(signedMsg);
+        var pubBuffer = Nacl.util.decodeBase64(publicKey);
+    } catch (e) {
+        return null;
+    }
 
     var opened = Nacl.sign.open(signedBuffer, pubBuffer);
 
@@ -46,7 +50,7 @@ RPC.create = function (config, cb) {
 
         var msg = checkSignature(signed, publicKey);
         if (!msg) {
-            return void respond("INVALID_SIGNATURE");
+            return void respond("INVALID_SIGNATURE_OR_PUBLIC_KEY");
         }
 
         if (typeof(msg) !== 'object') {
