@@ -1004,6 +1004,13 @@ define([
         var proxy = store.getProxy();
         var fo = proxy.fo;
 
+        // start with your userHash...
+        var userHash = localStorage && localStorage.User_hash;
+        if (!userHash) { return null; }
+
+        var userChannel = common.parseHash(userHash).channel;
+        if (!userChannel) { return null; }
+
         var list = fo.getFilesDataFiles().map(function (href) {
             var parsed = common.parsePadUrl(href);
             if (!parsed || !parsed.hash) { return; }
@@ -1015,7 +1022,10 @@ define([
 
             var hex = common.base64ToHex(channel);
             return hex;
-        }).filter(function (x) { return x; }).sort();
+        }).filter(function (x) { return x; });
+
+        list.push(userChannel);
+        list.sort();
 
         return list;
     };
