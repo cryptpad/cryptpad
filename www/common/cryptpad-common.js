@@ -1017,6 +1017,14 @@ define([
 
             parsed = common.parseHash(parsed.hash);
 
+            if (parsed.version === 0) {
+                return channel;
+            } else if (parsed.version !== 1) {
+                console.error("parsed href had no version");
+                console.error(parsed);
+                return;
+            }
+
             var channel = parsed.channel;
             if (!channel) { return; }
 
@@ -1024,7 +1032,7 @@ define([
             return hex;
         }).filter(function (x) { return x; });
 
-        list.push(userChannel);
+        list.push(common.base64ToHex(userChannel));
         list.sort();
 
         return list;
