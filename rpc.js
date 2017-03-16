@@ -55,12 +55,17 @@ RPC.create = function (config, cb) {
 
         switch (msg[0]) {
             case 'ECHO':
-                respond(void 0, msg);
-                break;
+                return void respond(void 0, msg);
+            case 'RESET':
+                return void respond('NOT_IMPLEMENTED', msg);
             case 'PIN':
+                return void respond('NOT_IMPLEMENTED', msg);
             case 'UNPIN':
+                return void respond('NOT_IMPLEMENTED', msg);
             case 'GET_HASH':
+                return void respond('NOT_IMPLEMENTED', msg);
             case 'GET_TOTAL_SIZE':
+                return void respond('NOT_IMPLEMENTED', msg);
             case 'GET_FILE_SIZE':
                 if (!isValidChannel(msg[1])) {
                     return void respond('INVALID_CHAN');
@@ -71,8 +76,7 @@ RPC.create = function (config, cb) {
                     respond(void 0, size);
                 });
             default:
-                respond('UNSUPPORTED_RPC_CALL', msg);
-                break;
+                return void respond('UNSUPPORTED_RPC_CALL', msg);
         }
     };
 
