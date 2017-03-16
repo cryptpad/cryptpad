@@ -37,9 +37,17 @@ module.exports = {
         "style-src 'unsafe-inline' 'self'",
         // Unsafe inline, unsafe-eval are needed for ckeditor :(
         "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
-        "child-src 'self' cryptpad.fr *.cryptpad.fr",
         "font-src 'self'",
-        "connect-src 'self' wss://cryptpad.fr",
+
+        /*  child-src is used to restrict iframes to a set of allowed domains.
+         *  connect-src is used to restrict what domains can connect to the websocket.
+         *
+         *  it is recommended that you configure these fields to match the
+         *  domain which will serve your cryptpad instance.
+         */
+        // "child-src 'self' cryptpad.fr *.cryptpad.fr",
+        // "connect-src 'self' wss://cryptpad.fr",
+
         // (insecure remote) images are included by users of the wysiwyg who embed photos in their pads
         "img-src *",
     ].join('; '),
