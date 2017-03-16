@@ -137,6 +137,11 @@ module.exports = {
      */
     rpc: './rpc.js',
 
+    /*  RPC errors are shown by default, but if you really don't care,
+     *  you can suppress them
+     */
+    suppressRPCErrors: false,
+
     /* it is recommended that you serve cryptpad over https
      * the filepaths below are used to configure your certificates
      */
