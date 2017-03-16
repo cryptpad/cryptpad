@@ -12,7 +12,12 @@ define([
     $(function () {
         Cryptpad.ready(function (err, env) {
             var network = Cryptpad.getNetwork();
-            var rpc = RPC.create(network); // TODO signing key
+            var proxy = Cryptpad.getStore().getProxy().proxy;
+
+            var edPrivate = proxy.edPrivate;
+            var edPublic = proxy.edPublic;
+
+            var rpc = RPC.create(network, edPrivate, edPublic);
 
             var payload = {
                 a: Math.floor(Math.random() * 1000),
