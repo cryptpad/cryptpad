@@ -146,6 +146,8 @@ define(function () {
     out.fm_unsortedName = "Unsorted files";
     out.fm_filesDataName = "All files";
     out.fm_templateName = "Templates";
+    out.fm_searchName = "Search";
+    out.fm_searchPlaceholder = "Search...";
     out.fm_newButton = "New";
     out.fm_newButtonTitle = "Create a new pad or folder";
     out.fm_newFolder = "New folder";
@@ -161,6 +163,7 @@ define(function () {
     out.fm_creation = "Creation";
     out.fm_forbidden = "Forbidden action";
     out.fm_originalPath = "Original path";
+    out.fm_openParent = "Show in folder";
     out.fm_noname = "Untitled Document";
     out.fm_emptyTrashDialog = "Are you sure you want to empty the trash?";
     out.fm_removeSeveralPermanentlyDialog = "Are you sure you want to remove these {0} elements from the trash permanently?";

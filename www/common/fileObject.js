@@ -376,7 +376,7 @@ define([
                 var paths = findFile(l);
                 ret.push({
                     paths: findFile(l),
-                    data: getFileData(l)
+                    data: exp.getFileData(l)
                 });
             });
             return ret;

@@ -138,6 +138,13 @@ span.fa-folder-open {
   min-width: 30px;
   cursor: pointer;
 }
+#tree #searchContainer {
+  text-align: center;
+  padding: 5px 0;
+}
+#tree #searchContainer input {
+  width: 80%;
+}
 #tree .fa.expcol {
   margin-left: -10px;
   font-size: 14px;
@@ -237,6 +244,47 @@ span.fa-folder-open {
 }
 #content li:not(.header):hover .name {
   /*text-decoration: underline;*/
+}
+#content #folderContent li.searchResult {
+  border-bottom: 1px solid #bbb;
+  display: block;
+}
+#content #folderContent li.searchResult:hover {
+  background-color: initial;
+}
+#content #folderContent li.searchResult table {
+  width: 100%;
+}
+#content #folderContent li.searchResult table .label2 {
+  width: 150px;
+  font-size: 15px;
+  text-align: right;
+  padding-right: 15px;
+}
+#content #folderContent li.searchResult table .openDir a {
+  cursor: pointer;
+  color: #41b7d8;
+}
+#content #folderContent li.searchResult table .openDir a:hover {
+  color: #014c8c;
+  text-decoration: underline;
+}
+#content #folderContent li.searchResult table .path {
+  font-style: italic;
+}
+#content #folderContent li.searchResult table .title {
+  font-weight: bold;
+  cursor: pointer;
+}
+#content #folderContent li.searchResult table .title:hover {
+  background-color: #eee;
+}
+#content #folderContent li.searchResult table .col2 {
+  width: 250px;
+}
+#content #folderContent li.searchResult table .icon {
+  width: 50px;
+  font-size: 40px;
 }
 #content div.grid {
   padding: 20px;
