@@ -6,7 +6,7 @@ var Http = require('http');
 var Https = require('https');
 var Fs = require('fs');
 var WebSocketServer = require('ws').Server;
-var NetfluxSrv = require('./NetfluxWebsocketSrv');
+var NetfluxSrv = require('./node_modules/chainpad-server/NetfluxWebsocketSrv');
 var Package = require('./package.json');
 
 var config = require('./config');
