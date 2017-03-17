@@ -349,7 +349,7 @@ define(function () {
     out.fm_searchName = "Buscar";
     out.fm_searchPlaceholder = "Buscar...";
     out.fm_newButtonTitle = "Crear un nuevo pad o carpeta";
-    out.fm_openParent = "Mostrar en carpeta"
+    out.fm_openParent = "Mostrar en carpeta";
     out.register_writtenPassword = "He escrito mi usuario y contraseña, continuar";
     out.register_cancel = "Volver";
     out.register_warning = "Zero Knowledge significa que no podemos recuperar tus datos si pierdes tu contraseña.";
