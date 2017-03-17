@@ -137,6 +137,17 @@ define([
             var $modal = $pad.contents().find('#modal');
             var $content = $pad.contents().find('#content');
             var $print = $pad.contents().find('#print');
+            $( window ).resize(function() {
+                // 20vh
+                // 20 * 16 / 9vw
+                if ($(window).width() > 16/9*$(window).height()) {
+                    $content.css('font-size', '20vh');
+                    // $print.css('font-size', '20vh');
+                    return;
+                }
+                $content.css('font-size', (20*9/16)+'vw');
+                // $print.css('font-size', (20*9/16)+'vw');
+            });
 
             Slide.setModal($modal, $content, $pad, ifrw, initialState);
 
