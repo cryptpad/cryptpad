@@ -81,11 +81,13 @@ define(function () {
 
     out.printButton = "Print";
     out.printButtonTitle = "Print your slides or export them as a PDF file";
-    out.printOptions = "Print options";
+    out.printOptions = "Layout options";
     out.printSlideNumber = "Display the slide number";
     out.printDate = "Display the date";
     out.printTitle = "Display the pad title";
     out.printCSS = "Custom style rules (CSS):";
+
+    out.slideOptionsTitle = "Customize your slides";
 
     out.editShare = "Editing link";
     out.editShareTitle = "Copy the editing link to clipboard";

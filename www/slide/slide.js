@@ -14,11 +14,13 @@ define([
         content: [],
         changeHandlers: [],
     };
+    var APP;
     var ifrw;
     var $modal;
     var $content;
     var $pad;
     var placeholder;
+    var options;
     var separator = '<hr data-pewpew="pezpez">';
     var separatorReg = /<hr data\-pewpew="pezpez">/g;
     var slideClass = 'slide-frame';
@@ -114,6 +116,11 @@ define([
         slice(root.children).forEach(removeListeners);
     };
 
+    var fixCSS = function (css) {
+        var append = '.cp #print .slide-frame ';
+        var append2 = '.cp div#modal #content .slide-frame ';
+        return css.replace(/(\n*)([^\n]+)\s*\{/g, '$1' + append + '$2,' + append2 + '$2 {');
+    };
     var draw = Slide.draw =  function (i) {
         i = i || 0;
         if (typeof(Slide.content) !== 'string') { return; }
@@ -130,9 +137,29 @@ define([
         } else {
             DD.apply($content[0], patch);
         }
+        var length = getNumberOfSlides();
+        $modal.find('style.slideStyle').remove();
+        if (options.style && Slide.shown) {
+            $modal.prepend($('<style>', {'class': 'slideStyle'}).text(fixCSS(options.style)));
+        }
+        $content.find('.slide-frame').each(function (i, el) {
+            if (options.slide) {
+                $('<div>', {'class': 'slideNumber'}).text((i+1)+'/'+length).appendTo($(el));
+            }
+            if (options.date) {
+                $('<div>', {'class': 'slideDate'}).text(new Date().toLocaleDateString()).appendTo($(el));
+            }
+            if (options.title) {
+                $('<div>', {'class': 'slideTitle'}).text(APP.title).appendTo($(el));
+            }
+        });
         $content.find('.' + slideClass).hide();
         $content.find('.' + slideClass + ':eq( ' + i + ' )').show();
         change(Slide.lastIndex, Slide.index);
+    };
+
+    var updateOptions = Slide.updateOptions = function () {
+        draw(Slide.index);
     };
 
     var isPresentURL = Slide.isPresentURL = function () {
@@ -269,12 +296,15 @@ define([
         });
     };
 
-    Slide.setModal = function ($m, $c, $p, iframe, ph) {
+    Slide.setModal = function (appObj, $m, $c, $p, iframe, opt, ph) {
         $modal = Slide.$modal = $m;
         $content = Slide.$content = $c;
         $pad = Slide.$pad = $p;
         ifrw = Slide.ifrw = iframe;
         placeholder = Slide.placeholder = ph;
+        options = Slide.options = opt;
+        APP = appObj;
+        console.log(APP);
         addEvent();
     };
 
