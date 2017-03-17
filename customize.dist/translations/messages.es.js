@@ -239,7 +239,6 @@ define(function () {
     out.login_unhandledError = "Un error inesperado se produjo :(";
     out.register_importRecent = "Importar historial (recomendado)";
     out.register_acceptTerms = "Accepto los <a href='/terms.html'>términos de servicio</a>";
-    out.register_rememberPassword = "Me acordaré de mi cuenta y contraseña";
     out.register_passwordsDontMatch = "Las contraseñas no corresponden";
     out.register_mustAcceptTerms = "Tienes que acceptar los términos de servicio";
     out.register_mustRememberPass = "No podemos reiniciar tu contraseña si la olvidas. ¡Es muy importante que la recuerdes! Marca la casilla para confirmarlo.";
@@ -347,5 +346,14 @@ define(function () {
     out.feedback_privacy = "Nos importa tu privacidad, y al mismo tiempo queremos que CryptPad sea muy fácil de usar. Utilizamos esta página para conocer las funcionalidades que importan a nuestros usuarios, pidiendolo con un parametro que nos dice que accion fue realizada.";
     out.feedback_optout = "Si quieres darte de baja, visita <a href='/settings/'>tus preferencias</a>, donde podrás activar o desactivar feedback";
 
-return out;
+    out.fm_searchName = "Buscar";
+    out.fm_searchPlaceholder = "Buscar...";
+    out.fm_newButtonTitle = "Crear un nuevo pad o carpeta";
+    out.fm_openParent = "Mostrar en carpeta"
+    out.register_writtenPassword = "He escrito mi usuario y contraseña, continuar";
+    out.register_cancel = "Volver";
+    out.register_warning = "Zero Knowledge significa que no podemos recuperar tus datos si pierdes tu contraseña.";
+    out.register_alreadyRegistered = "Este usuario ya existe, ¿iniciar sesión?";
+
+    return out;
 });
