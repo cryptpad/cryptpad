@@ -126,7 +126,7 @@ define([
         if (typeof(Slide.content) !== 'string') { return; }
 
         var c = Slide.content;
-        var m = '<span class="'+slideClass+'">'+Marked(c).replace(separatorReg, '</span><span class="'+slideClass+'">')+'</span>';
+        var m = '<span class="slide-container"><span class="'+slideClass+'">'+Marked(c).replace(separatorReg, '</span></span><span class="slide-container"><span class="'+slideClass+'">')+'</span></span>';
 
         var Dom = domFromHTML('<div id="content">' + m + '</div>');
         removeListeners(Dom.body);
@@ -153,8 +153,9 @@ define([
                 $('<div>', {'class': 'slideTitle'}).text(APP.title).appendTo($(el));
             }
         });
-        $content.find('.' + slideClass).hide();
-        $content.find('.' + slideClass + ':eq( ' + i + ' )').show();
+        //$content.find('.' + slideClass).hide();
+        //$content.find('.' + slideClass + ':eq( ' + i + ' )').show();
+        $content.css('margin-left', -(i*100)+'vw');
         change(Slide.lastIndex, Slide.index);
     };
 

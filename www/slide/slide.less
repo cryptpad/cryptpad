@@ -92,7 +92,7 @@ body {
         padding: 2.5%;
         // margin-top: ~"calc(((100vh - 56.25vw)/2))";
         margin-top: 7.228vw;
-        margin-bottom: 7.228vw;
+        //margin-bottom: 7.228vw;
         // margin-bottom: ~"calc(((100vh - 56.25vw)/2) - 1px)";
         border-top: 1px solid black;
         border-bottom: 1px solid black;
@@ -126,6 +126,7 @@ div.modal, div#modal {
         font-size: 30px;
         opacity: 0.6;
         display: none;
+        z-index: 9001;
     }
     .button:hover {
         opacity: 1;
@@ -134,7 +135,6 @@ div.modal, div#modal {
     #button_exit {
         left: 20px;
         top: 20px;
-        z-index: 9001;
     }
     #button_left {
         left: 6vw;
@@ -156,8 +156,14 @@ div.modal, div#modal {
         width: 100%;
     }
     #content {
-        font-size: 20vh;
+        transition: margin-left 1s;
+        font-size: 20vh;        // position: absolute;
+        // top:0;bottom:0; // vertical center
+        // left:0;right:0; // horizontal center
+        position: relative;
+        height: 100%;
         .slide-frame {
+            display: inline-block;
             box-sizing: border-box;
             border: 1px solid white;
 
@@ -178,9 +184,15 @@ div.modal, div#modal {
             max-height: 100vh;
             max-width: 177.78vh; // 16/9 = 1.778
             margin: auto;
-            position: absolute;
-            top:0;bottom:0; // vertical center
-            left:0;right:0; // horizontal center
+        }
+        .slide-container {
+            // position: absolute;
+            // top:0;
+            // bottom:0; // vertical center
+            // left:0;right:0; // horizontal center
+            display: inline-block;
+            height: 100%; width: 100vw;
+            text-align: center;
         }
     }
 
@@ -283,6 +295,8 @@ div#modal #content, #print {
             text-align: center;
             .size(1);
         }
+        text-align: left;
+        position: relative;
     }
 }
 }
