@@ -382,6 +382,8 @@ define([
                     }
                     hasFolder = true;
                     hide.push($menu.find('a.open_ro'));
+                    // TODO: folder properties in the future?
+                    hide.push($menu.find('a.properties'));
                 }
                 if (path && path.length > 4) {
                     hide.push($menu.find('a.restore'));
@@ -1838,6 +1840,23 @@ define([
             }
         });
 
+        var getProperties = function (el) {
+            if (!filesOp.isFile(el)) { return; }
+            var base = window.location.origin;
+            var $d = $('<div>');
+            $('<strong>').text('PROPERTIES').appendTo($d);
+            $('<br>').appendTo($d);
+            $('<br>').appendTo($d);
+            $('<label>', {'for': 'propLink'}).text("LINK").appendTo($d);
+            $('<br>').appendTo($d);
+            $('<input>', {'id': 'propLink', 'disabled': 'disabled', 'value': base + el}).appendTo($d);
+            $('<br>').appendTo($d);
+            $('<label>', {'for': 'propROLink'}).text("RO LINK").appendTo($d);
+            $('<br>').appendTo($d);
+            $('<input>', {'id': 'propROLink', 'disabled': 'disabled'}).val(getReadOnlyUrl(base + el)).appendTo($d);
+            return $d.html();
+        };
+
         $contextMenu.on("click", "a", function(e) {
             e.stopPropagation();
             var paths = $(this).data('paths');
@@ -1879,6 +1898,13 @@ define([
                     module.displayDirectory(paths[0].path);
                 };
                 filesOp.createNewFolder(paths[0].path, null, onCreated);
+            }
+            else if ($(this).hasClass("properties")) {
+                if (paths.length !== 1) { return; }
+                console.log(paths[0].path);
+                var el = filesOp.findElement(files, paths[0].path);
+                var prop = getProperties(el);
+                Cryptpad.alert(prop, undefined, true);
             }
             module.hideMenu();
         });
