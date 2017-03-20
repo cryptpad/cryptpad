@@ -88,6 +88,73 @@
             margin: auto;
         }
     }
+
+.clag () {
+    background: transparent;
+}
+
+
+    #newLag {
+        height: 20px;
+        width: 23px;
+        background: transparent;
+        display: inline-block;
+        padding: 3px;
+        margin: 3px;
+        vertical-align: top;
+        box-sizing: content-box;
+        span {
+            display: inline-block;
+            width: 4px;
+            margin: 0;
+            margin-right: 1px;
+            background: black;
+            vertical-align: bottom;
+            box-sizing: border-box;
+            border: 1px solid black;
+            transition: background 1s, border 1s;
+            &:last-child {
+                margin-right: 0;
+            }
+            &.bar1 { height: 5px; }
+            &.bar2 { height: 10px; }
+            &.bar3 { height: 15px; }
+            &.bar4 { height: 20px; }
+        }
+        &.lag0 {
+            span {
+                .clag();
+                border-color: red;
+            }
+        }
+        &.lag1 {
+            .bar2, .bar3, .bar4 { .clag(); }
+            span {
+                background-color: orange;
+                border-color: orange;
+            }
+        }
+        &.lag2 {
+            .bar3, .bar4 { .clag(); }
+            span {
+                background-color: orange;
+                border-color: orange;
+            }
+        }
+        &.lag3 {
+            .bar4 { .clag(); }
+            span {
+                background-color: green;
+                border-color: green;
+            }
+        }
+        &.lag4 {
+            span {
+                background-color: green;
+                border-color: green;
+            }
+        }
+    }
     div {
         white-space: normal;
         &.cryptpad-back {

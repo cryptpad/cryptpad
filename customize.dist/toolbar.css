@@ -161,6 +161,74 @@
 .cryptpad-toolbar .cryptpad-lag div {
   margin: auto;
 }
+.cryptpad-toolbar #newLag {
+  height: 20px;
+  width: 23px;
+  background: transparent;
+  display: inline-block;
+  padding: 3px;
+  margin: 3px;
+  vertical-align: top;
+  box-sizing: content-box;
+}
+.cryptpad-toolbar #newLag span {
+  display: inline-block;
+  width: 4px;
+  margin: 0;
+  margin-right: 1px;
+  background: black;
+  vertical-align: bottom;
+  box-sizing: border-box;
+  border: 1px solid black;
+  transition: background 1s, border 1s;
+}
+.cryptpad-toolbar #newLag span:last-child {
+  margin-right: 0;
+}
+.cryptpad-toolbar #newLag span.bar1 {
+  height: 5px;
+}
+.cryptpad-toolbar #newLag span.bar2 {
+  height: 10px;
+}
+.cryptpad-toolbar #newLag span.bar3 {
+  height: 15px;
+}
+.cryptpad-toolbar #newLag span.bar4 {
+  height: 20px;
+}
+.cryptpad-toolbar #newLag.lag0 span {
+  background: transparent;
+  border-color: red;
+}
+.cryptpad-toolbar #newLag.lag1 .bar2,
+.cryptpad-toolbar #newLag.lag1 .bar3,
+.cryptpad-toolbar #newLag.lag1 .bar4 {
+  background: transparent;
+}
+.cryptpad-toolbar #newLag.lag1 span {
+  background-color: orange;
+  border-color: orange;
+}
+.cryptpad-toolbar #newLag.lag2 .bar3,
+.cryptpad-toolbar #newLag.lag2 .bar4 {
+  background: transparent;
+}
+.cryptpad-toolbar #newLag.lag2 span {
+  background-color: orange;
+  border-color: orange;
+}
+.cryptpad-toolbar #newLag.lag3 .bar4 {
+  background: transparent;
+}
+.cryptpad-toolbar #newLag.lag3 span {
+  background-color: green;
+  border-color: green;
+}
+.cryptpad-toolbar #newLag.lag4 span {
+  background-color: green;
+  border-color: green;
+}
 .cryptpad-toolbar div {
   white-space: normal;
 }

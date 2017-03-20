@@ -342,7 +342,12 @@ define([
             'class': LAG_ELEM_CLS,
             id: uid(),
         });
-        return $lag[0];
+        var $a = $('<span>', {id: 'newLag'});
+        $s1 = $('<span>', {'class': 'bar1'}).appendTo($a);
+        $s2 = $('<span>', {'class': 'bar2'}).appendTo($a);
+        $s3 = $('<span>', {'class': 'bar3'}).appendTo($a);
+        $s4 = $('<span>', {'class': 'bar4'}).appendTo($a);
+        return $a[0];
     };
 
     var checkLag = function (getLag, lagElement) {
@@ -354,29 +359,35 @@ define([
             'class': 'lag'
         });
         var title;
+        var $lag = $(lagElement);
+        $lag.attr('class', '');
         if (lag) {
-            lagErrors = 0;
             firstConnection = false;
             title = Messages.lag + ' : ' + lag + ' ms\n';
-            if (lag && lag.waiting || lag > 1000) {
-                lagLight.addClass('lag-orange');
+            if (lag > 30000) {
+                $lag.addClass('lag0');
+                title = Messages.redLight;
+            } else if (lag > 5000) {
+                $lag.addClass('lag1');
                 title += Messages.orangeLight;
+            } else if (lag > 1000) {
+                $lag.addClass('lag2');
+                title += Messages.orangeLight;
+            } else if (lag > 300) {
+                $lag.addClass('lag3');
+                title += Messages.greenLight;
             } else {
-                lagLight.addClass('lag-green');
+                $lag.addClass('lag4');
                 title += Messages.greenLight;
             }
         }
         else if (!firstConnection) {
             // Display the red light at the 2nd failed attemp to get the lag
-            //if (lagErrors > 1) {
-                lagLight.addClass('lag-red');
-                title = Messages.redLight;
-            //}
+            lagLight.addClass('lag-red');
+            title = Messages.redLight;
         }
         if (title) {
-            lagLight.attr('title', title);
-            $(lagElement).html('');
-            $(lagElement).append(lagLight);
+            $lag.attr('title', title);
         }
     };
 
