@@ -377,7 +377,8 @@ define(function () {
 
         '<p><span style="color:#808080;"><em>',
         'Go ahead, just start typing...',
-        '</em></span></p></span>'
+        '</em></span></p></span>',
+        '<p>&nbsp;<br></p>'
     ].join('');
 
     out.codeInitialState = [
