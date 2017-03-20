@@ -139,18 +139,6 @@ define([
             var $print = $pad.contents().find('#print');
             var slideOptions = {};
 
-            $( window ).resize(function() {
-                // 20vh
-                // 20 * 16 / 9vw
-                if ($(window).width() > 16/9*$(window).height()) {
-                    $content.css('font-size', '20vh');
-                    // $print.css('font-size', '20vh');
-                    return;
-                }
-                $content.css('font-size', (20*9/16)+'vw');
-                // $print.css('font-size', (20*9/16)+'vw');
-            });
-
             Slide.setModal(APP, $modal, $content, $pad, ifrw, slideOptions, initialState);
 
             var setStyleState = function (state) {
@@ -388,6 +376,7 @@ define([
                 if (text) {
                     textColor = text;
                     $modal.css('color', text);
+                    $modal.css('border-color', text);
                     $pad.contents().find('#' + SLIDE_COLOR_ID).css('color', text);
                 }
                 if (back) {

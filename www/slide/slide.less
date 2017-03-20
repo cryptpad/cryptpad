@@ -80,34 +80,39 @@ body {
 .cp {
 
 /* Slide position (print mode) */
+@ratio:0.9;
 #print {
     position: relative;
     display: none;
-    font-size: 11.25vw;
+    font-size: @ratio*11.25vw;
     .slide-frame {
         display: block !important;
-        // justify-content: center;
-        //align-items: center;
-        // flex-flow: column;
-        padding: 2.5%;
-        // margin-top: ~"calc(((100vh - 56.25vw)/2))";
-        margin-top: 7.228vw;
-        //margin-bottom: 7.228vw;
-        // margin-bottom: ~"calc(((100vh - 56.25vw)/2) - 1px)";
-        border-top: 1px solid black;
-        border-bottom: 1px solid black;
-        height: 56.25vw;
-        width: 100vw;
+        padding: 0.5em;
+        margin: auto;
+        border: 1px solid black;
+        height: @ratio*56.25vw;
+        width: @ratio*100vw;
         page-break-after: always;
         position: relative;
         box-sizing: border-box;
         li {
-            min-width: 50vw;
+            min-width: @ratio*50vw;
         }
         h1 {
             padding-top: 0;
         }
+        align-items: center;
+        justify-content: center;
 
+    }
+    .slide-container {
+        width: 90vw;
+        height: 100vh;
+        margin: 0vh 5vw;
+        display: flex;
+        &:last-child {
+            height: ~"calc(100vh - 2px)";
+        }
     }
     /*.slide-frame:first-child {
         margin-top: ~"calc(((100vh - 56.25vw)/2))";
@@ -157,18 +162,18 @@ div.modal, div#modal {
     }
     #content {
         transition: margin-left 1s;
-        font-size: 20vh;        // position: absolute;
-        // top:0;bottom:0; // vertical center
-        // left:0;right:0; // horizontal center
+        font-size: 20vh;
         position: relative;
         height: 100%;
+        overflow: visible;
+        white-space: nowrap;
         .slide-frame {
             display: inline-block;
             box-sizing: border-box;
-            border: 1px solid white;
+            border: 1px solid;
+            white-space: normal;
 
             vertical-align: middle;
-            // padding: 2.5vw;
 
             /* center things as much as possible
 
@@ -178,7 +183,7 @@ div.modal, div#modal {
 
             */
 
-            padding: 2.5%;
+            padding: 0.5em;
             width: 100vw;
             height: 56.25vw; // height:width ratio = 9/16 = .5625
             max-height: 100vh;
@@ -186,10 +191,6 @@ div.modal, div#modal {
             margin: auto;
         }
         .slide-container {
-            // position: absolute;
-            // top:0;
-            // bottom:0; // vertical center
-            // left:0;right:0; // horizontal center
             display: inline-block;
             height: 100%; width: 100vw;
             text-align: center;
@@ -228,9 +229,9 @@ div.modal, div#modal {
 /* Slide content */
 div#modal #content, #print {
     .slide-frame {
-        p, li, pre, code {
+        * {
             .size(2.75);
-            p, li, pre, code {
+            * {
                 font-size: 100%;
                 line-height: 1em;
             }
@@ -251,6 +252,8 @@ div#modal #content, #print {
         h1, h2, h3, h4, h5, h6 {
             color: inherit;
             text-align: center;
+            padding-top: 0;
+            margin-bottom: 0.5em;
         }
 
         pre > code {
@@ -267,6 +270,7 @@ div#modal #content, #print {
             max-width: 100%;
             display: table;
             margin: 0 auto;
+            padding-left: 0.3em;
         }
         // p, ul, ol { padding-left: 10%; }
 

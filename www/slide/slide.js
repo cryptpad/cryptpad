@@ -116,6 +116,18 @@ define([
         slice(root.children).forEach(removeListeners);
     };
 
+    var updateFontSize = Slide.updateFontSize = function() {
+        // 20vh
+        // 20 * 16 / 9vw
+        if ($(window).width() > 16/9*$(window).height()) {
+            $content.css('font-size', '20vh');
+            // $print.css('font-size', '20vh');
+            return;
+        }
+        $content.css('font-size', (20*9/16)+'vw');
+        // $print.css('font-size', (20*9/16)+'vw');
+    };
+
     var fixCSS = function (css) {
         var append = '.cp #print .slide-frame ';
         var append2 = '.cp div#modal #content .slide-frame ';
@@ -156,6 +168,7 @@ define([
         //$content.find('.' + slideClass).hide();
         //$content.find('.' + slideClass + ':eq( ' + i + ' )').show();
         $content.css('margin-left', -(i*100)+'vw');
+        updateFontSize();
         change(Slide.lastIndex, Slide.index);
     };
 
@@ -297,6 +310,52 @@ define([
         });
     };
 
+    $(window).resize(Slide.updateFontSize);
+
+    // Swipe
+    var addSwipeEvents = function () {
+        var touch = {
+            maxTime: 2000,
+            minXDist: 150,
+            maxYDist: 100
+        };
+
+        var resetSwipe = function () {
+            touch.x = 0;
+            touch.y = 0;
+            touch.time = 0;
+        };
+
+        $content.on('touchstart', function (e) {
+            e.preventDefault();
+            resetSwipe();
+            var t = e.originalEvent.changedTouches[0];
+            touch.x = t.pageX;
+            touch.y = t.pageY;
+            touch.time = new Date().getTime();
+        });
+
+        $content.on('touchend', function (e) {
+            e.preventDefault();
+            var t = e.originalEvent.changedTouches[0];
+            var xDist = t.pageX - touch.x;
+            var yDist = t.pageY - touch.y;
+            var time = new Date().getTime() - touch.time;
+            if (time <= touch.maxTime && Math.abs(xDist) >= touch.minXDist && Math.abs(yDist) <= touch.maxYDist) {
+                if (xDist < 0) {
+                    Slide.right();
+                    return;
+                }
+                Slide.left();
+            }
+        });
+
+        $content.on('touchmove', function (e){
+            e.preventDefault();
+        });
+    };
+
+
     Slide.setModal = function (appObj, $m, $c, $p, iframe, opt, ph) {
         $modal = Slide.$modal = $m;
         $content = Slide.$content = $c;
@@ -305,8 +364,8 @@ define([
         placeholder = Slide.placeholder = ph;
         options = Slide.options = opt;
         APP = appObj;
-        console.log(APP);
         addEvent();
+        addSwipeEvents();
     };
 
     return Slide;

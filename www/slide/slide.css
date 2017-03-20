@@ -79,28 +79,38 @@ body .CodeMirror-focused .cm-matchhighlight {
 .cp #print {
   position: relative;
   display: none;
-  font-size: 11.25vw;
+  font-size: 10.125vw;
   /*.slide-frame:first-child {
         margin-top: ~"calc(((100vh - 56.25vw)/2))";
     }*/
 }
 .cp #print .slide-frame {
   display: block !important;
-  padding: 2.5%;
-  margin-top: 7.228vw;
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
-  height: 56.25vw;
-  width: 100vw;
+  padding: 0.5em;
+  margin: auto;
+  border: 1px solid black;
+  height: 50.625vw;
+  width: 90vw;
   page-break-after: always;
   position: relative;
   box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
 }
 .cp #print .slide-frame li {
-  min-width: 50vw;
+  min-width: 45vw;
 }
 .cp #print .slide-frame h1 {
   padding-top: 0;
+}
+.cp #print .slide-container {
+  width: 90vw;
+  height: 100vh;
+  margin: 0vh 5vw;
+  display: flex;
+}
+.cp #print .slide-container:last-child {
+  height: calc(100vh - 2px);
 }
 .cp div.modal,
 .cp div#modal {
@@ -162,12 +172,15 @@ body .CodeMirror-focused .cm-matchhighlight {
   font-size: 20vh;
   position: relative;
   height: 100%;
+  overflow: visible;
+  white-space: nowrap;
 }
 .cp div.modal #content .slide-frame,
 .cp div#modal #content .slide-frame {
   display: inline-block;
   box-sizing: border-box;
-  border: 1px solid white;
+  border: 1px solid;
+  white-space: normal;
   vertical-align: middle;
   /* center things as much as possible
 
@@ -176,7 +189,7 @@ body .CodeMirror-focused .cm-matchhighlight {
                 transform: translateY(-50%);
 
             */
-  padding: 2.5%;
+  padding: 0.5em;
   width: 100vw;
   height: 56.25vw;
   max-height: 100vh;
@@ -208,49 +221,13 @@ body .CodeMirror-focused .cm-matchhighlight {
   text-align: left;
   position: relative;
 }
-.cp div#modal #content .slide-frame p,
-.cp #print .slide-frame p,
-.cp div#modal #content .slide-frame li,
-.cp #print .slide-frame li,
-.cp div#modal #content .slide-frame pre,
-.cp #print .slide-frame pre,
-.cp div#modal #content .slide-frame code,
-.cp #print .slide-frame code {
+.cp div#modal #content .slide-frame *,
+.cp #print .slide-frame * {
   font-size: 27.5%;
   line-height: 110%;
 }
-.cp div#modal #content .slide-frame p p,
-.cp #print .slide-frame p p,
-.cp div#modal #content .slide-frame li p,
-.cp #print .slide-frame li p,
-.cp div#modal #content .slide-frame pre p,
-.cp #print .slide-frame pre p,
-.cp div#modal #content .slide-frame code p,
-.cp #print .slide-frame code p,
-.cp div#modal #content .slide-frame p li,
-.cp #print .slide-frame p li,
-.cp div#modal #content .slide-frame li li,
-.cp #print .slide-frame li li,
-.cp div#modal #content .slide-frame pre li,
-.cp #print .slide-frame pre li,
-.cp div#modal #content .slide-frame code li,
-.cp #print .slide-frame code li,
-.cp div#modal #content .slide-frame p pre,
-.cp #print .slide-frame p pre,
-.cp div#modal #content .slide-frame li pre,
-.cp #print .slide-frame li pre,
-.cp div#modal #content .slide-frame pre pre,
-.cp #print .slide-frame pre pre,
-.cp div#modal #content .slide-frame code pre,
-.cp #print .slide-frame code pre,
-.cp div#modal #content .slide-frame p code,
-.cp #print .slide-frame p code,
-.cp div#modal #content .slide-frame li code,
-.cp #print .slide-frame li code,
-.cp div#modal #content .slide-frame pre code,
-.cp #print .slide-frame pre code,
-.cp div#modal #content .slide-frame code code,
-.cp #print .slide-frame code code {
+.cp div#modal #content .slide-frame * *,
+.cp #print .slide-frame * * {
   font-size: 100%;
   line-height: 1em;
 }
@@ -308,6 +285,8 @@ body .CodeMirror-focused .cm-matchhighlight {
 .cp #print .slide-frame h6 {
   color: inherit;
   text-align: center;
+  padding-top: 0;
+  margin-bottom: 0.5em;
 }
 .cp div#modal #content .slide-frame pre > code,
 .cp #print .slide-frame pre > code {
@@ -326,6 +305,7 @@ body .CodeMirror-focused .cm-matchhighlight {
   max-width: 100%;
   display: table;
   margin: 0 auto;
+  padding-left: 0.3em;
 }
 .cp div#modal #content .slide-frame img,
 .cp #print .slide-frame img {
