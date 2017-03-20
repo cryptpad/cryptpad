@@ -434,9 +434,9 @@ define([
 
             var createPrintDialog = function () {
                 var slideOptionsTmp = {
-                    title: true,
-                    slide: true,
-                    date: true,
+                    title: false,
+                    slide: false,
+                    date: false,
                     style: ''
                 };
 
@@ -474,21 +474,28 @@ define([
                 $p.append($('<br>'));
                 var $textarea = $('<textarea>', {'id':'cssPrint'}).css({'width':'100%', 'height':'100px'}).appendTo($p);
                 $textarea.val(slideOptionsTmp.style);
+                window.setTimeout(function () { $textarea.focus(); }, 0);
 
-
+                var h;
 
                 var todo = function () {
                     $.extend(slideOptions, slideOptionsTmp);
                     slideOptions.style = $textarea.val();
                     onLocal();
                     $container.remove();
+                    Cryptpad.stopListening(h);
+                };
+                var todoCancel = function () {
+                    $container.remove();
+                    Cryptpad.stopListening(h);
                 };
 
+                h = Cryptpad.listenForKeys(todo, todoCancel);
+
                 var $nav = $('<nav>').appendTo($div);
-                var $ok = $('<button>', {'class': 'ok'}).text(Messages.settings_save).appendTo($nav).click(todo);
-                var $cancel = $('<button>', {'class': 'cancel'}).text(Messages.cancel).appendTo($nav).click(function () {
-                    $container.remove();
-                });
+                var $cancel = $('<button>', {'class': 'cancel'}).text(Messages.cancelButton).appendTo($nav).click(todoCancel);
+                var $ok = $('<button>', {'class': 'ok'}).text(Messages.slideOptionsButton).appendTo($nav).click(todo);
+
                 return $container;
             };
 

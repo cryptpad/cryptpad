@@ -79,7 +79,7 @@ define(function () {
     out.backgroundButtonTitle = 'Change the background color in the presentation';
     out.colorButtonTitle = 'Change the text color in presentation mode';
 
-    out.printButton = "Print";
+    out.printButton = "Print (enter)";
     out.printButtonTitle = "Print your slides or export them as a PDF file";
     out.printOptions = "Layout options";
     out.printSlideNumber = "Display the slide number";
@@ -88,6 +88,7 @@ define(function () {
     out.printCSS = "Custom style rules (CSS):";
 
     out.slideOptionsTitle = "Customize your slides";
+    out.slideOptionsButton = "Save (enter)";
 
     out.editShare = "Editing link";
     out.editShareTitle = "Copy the editing link to clipboard";

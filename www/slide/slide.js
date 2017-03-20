@@ -131,7 +131,7 @@ define([
     var fixCSS = function (css) {
         var append = '.cp #print .slide-frame ';
         var append2 = '.cp div#modal #content .slide-frame ';
-        return css.replace(/(\n*)([^\n]+)\s*\{/g, '$1' + append + '$2,' + append2 + '$2 {');
+        return css.replace(/(\n*)([^\n}]+)\s*\{/g, '$1' + append + '$2,' + append2 + '$2 {');
     };
     var draw = Slide.draw =  function (i) {
         i = i || 0;
