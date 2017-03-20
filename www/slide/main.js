@@ -137,8 +137,15 @@ define([
             var $modal = $pad.contents().find('#modal');
             var $content = $pad.contents().find('#content');
             var $print = $pad.contents().find('#print');
+            var slideOptions = {};
 
-            Slide.setModal($modal, $content, $pad, ifrw, initialState);
+            Slide.setModal(APP, $modal, $content, $pad, ifrw, slideOptions, initialState);
+
+            var setStyleState = function (state) {
+                $pad.contents().find('#print, #content').find('style').each(function (i, el) {
+                    el.disabled = !state;
+                });
+            };
 
             var enterPresentationMode = function (shouldLog) {
                 Slide.show(true, editor.getValue());
@@ -147,6 +154,7 @@ define([
                 }
             };
             var leavePresentationMode = function () {
+                setStyleState(false);
                 Slide.show(false);
             };
 
@@ -218,7 +226,8 @@ define([
                     content: textValue,
                     metadata: {
                         users: userData,
-                        defaultTitle: defaultName
+                        defaultTitle: defaultName,
+                        slideOptions: slideOptions
                     }
                 };
                 if (!initializing) {
@@ -359,6 +368,7 @@ define([
                     setTabTitle();
                     $bar.find('.' + Toolbar.constants.title).find('span.title').text(data);
                     $bar.find('.' + Toolbar.constants.title).find('input').val(data);
+                    if (slideOptions.title) { Slide.updateOptions(); }
                 });
             };
 
@@ -366,6 +376,7 @@ define([
                 if (text) {
                     textColor = text;
                     $modal.css('color', text);
+                    $modal.css('border-color', text);
                     $pad.contents().find('#' + SLIDE_COLOR_ID).css('color', text);
                 }
                 if (back) {
@@ -373,6 +384,14 @@ define([
                     $modal.css('background-color', back);
                     $pad.contents().find('#' + SLIDE_COLOR_ID).css('background', back);
                     $pad.contents().find('#' + SLIDE_BACKCOLOR_ID).css('color', back);
+                }
+            };
+
+            var updateOptions = function (newOpt) {
+                if (stringify(newOpt) !== stringify(slideOptions)) {
+                    $.extend(slideOptions, newOpt);
+                    // TODO: manage realtime + cursor in the "options" modal ??
+                    Slide.updateOptions();
                 }
             };
 
@@ -398,6 +417,7 @@ define([
                         updateTitle(json.metadata.title || defaultName);
                         titleUpdated = true;
                     }
+                    updateOptions(json.metadata.slideOptions);
                     updateColors(json.metadata.color, json.metadata.backColor);
                 }
                 if (!titleUpdated) {
@@ -413,12 +433,14 @@ define([
             };
 
             var createPrintDialog = function () {
-                var printOptions = {
-                    title: true,
-                    slide: true,
-                    date: true
+                var slideOptionsTmp = {
+                    title: false,
+                    slide: false,
+                    date: false,
+                    style: ''
                 };
 
+                $.extend(slideOptionsTmp, slideOptions);
                 var $container = $('<div class="alertify">');
                 var $container2 = $('<div class="dialog">').appendTo($container);
                 var $div = $('<div id="printOptions">').appendTo($container2);
@@ -429,21 +451,21 @@ define([
                 $('<input>', {type: 'checkbox', id: 'checkNumber', checked: 'checked'}).on('change', function () {
                     var c = this.checked;
                     console.log(c);
-                    printOptions.slide = c;
+                    slideOptionsTmp.slide = c;
                 }).appendTo($p).css('width', 'auto');
                 $('<label>', {'for': 'checkNumber'}).text(Messages.printSlideNumber).appendTo($p);
                 $p.append($('<br>'));
                 // Date
                 $('<input>', {type: 'checkbox', id: 'checkDate', checked: 'checked'}).on('change', function () {
                     var c = this.checked;
-                    printOptions.date = c;
+                    slideOptionsTmp.date = c;
                 }).appendTo($p).css('width', 'auto');
                 $('<label>', {'for': 'checkDate'}).text(Messages.printDate).appendTo($p);
                 $p.append($('<br>'));
                 // Title
                 $('<input>', {type: 'checkbox', id: 'checkTitle', checked: 'checked'}).on('change', function () {
                     var c = this.checked;
-                    printOptions.title = c;
+                    slideOptionsTmp.title = c;
                 }).appendTo($p).css('width', 'auto');
                 $('<label>', {'for': 'checkTitle'}).text(Messages.printTitle).appendTo($p);
                 $p.append($('<br>'));
@@ -451,37 +473,29 @@ define([
                 $('<label>', {'for': 'cssPrint'}).text(Messages.printCSS).appendTo($p);
                 $p.append($('<br>'));
                 var $textarea = $('<textarea>', {'id':'cssPrint'}).css({'width':'100%', 'height':'100px'}).appendTo($p);
+                $textarea.val(slideOptionsTmp.style);
+                window.setTimeout(function () { $textarea.focus(); }, 0);
 
-                var fixCSS = function (css) {
-                    var append = '.cp #print ';
-                    return css.replace(/(\n*)([^\n]+)\s*\{/g, '$1' + append + '$2 {');
-                };
+                var h;
 
                 var todo = function () {
-                    var $style = $('<style>').text(fixCSS($textarea.val()));
-                    $print.prepend($style);
-                    var length = $print.find('.slide-frame').length;
-                    $print.find('.slide-frame').each(function (i, el) {
-                        if (printOptions.slide) {
-                            $('<div>', {'class': 'slideNumber'}).text((i+1)+'/'+length).appendTo($(el));
-                        }
-                        if (printOptions.date) {
-                            $('<div>', {'class': 'slideDate'}).text(new Date().toLocaleDateString()).appendTo($(el));
-                        }
-                        if (printOptions.title) {
-                            $('<div>', {'class': 'slideTitle'}).text(APP.title).appendTo($(el));
-                        }
-                    });
-                    window.frames["pad-iframe"].focus();
-                    window.frames["pad-iframe"].print();
+                    $.extend(slideOptions, slideOptionsTmp);
+                    slideOptions.style = $textarea.val();
+                    onLocal();
                     $container.remove();
+                    Cryptpad.stopListening(h);
+                };
+                var todoCancel = function () {
+                    $container.remove();
+                    Cryptpad.stopListening(h);
                 };
 
+                h = Cryptpad.listenForKeys(todo, todoCancel);
+
                 var $nav = $('<nav>').appendTo($div);
-                var $ok = $('<button>', {'class': 'ok'}).text(Messages.printButton).appendTo($nav).click(todo);
-                var $cancel = $('<button>', {'class': 'cancel'}).text(Messages.cancel).appendTo($nav).click(function () {
-                    $container.remove();
-                });
+                var $cancel = $('<button>', {'class': 'cancel'}).text(Messages.cancelButton).appendTo($nav).click(todoCancel);
+                var $ok = $('<button>', {'class': 'ok'}).text(Messages.slideOptionsButton).appendTo($nav).click(todo);
+
                 return $container;
             };
 
@@ -545,10 +559,24 @@ define([
                     'class': 'rightside-button fa fa-print',
                     style: 'font-size: 17px'
                 }).click(function () {
+                    Slide.update(editor.getValue(), true);
                     $print.html($content.html());
+                    Cryptpad.confirm("Are you sure you want to print?", function (yes) {
+                        if (yes) {
+                            window.frames["pad-iframe"].focus();
+                            window.frames["pad-iframe"].print();
+                        }
+                    }, {ok: Messages.printButton});
+                    //$('body').append(createPrintDialog());
+                });
+                $rightside.append($printButton);                var $slideOptions = $('<button>', {
+                    title: Messages.slideOptionsTitle,
+                    'class': 'rightside-button fa fa-cog',
+                    style: 'font-size: 17px'
+                }).click(function () {
                     $('body').append(createPrintDialog());
                 });
-                $rightside.append($printButton);
+                $rightside.append($slideOptions);
 
                 var $present = Cryptpad.createButton('present', true)
                     .click(function () {
@@ -715,8 +743,6 @@ define([
                 updateMetadata(userDoc);
 
                 editor.setValue(newDoc || initialState);
-                Slide.update(newDoc, true);
-                Slide.draw();
 
                 if (Cryptpad.initialName && APP.title === defaultName) {
                     updateTitle(Cryptpad.initialName);

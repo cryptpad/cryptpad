@@ -14,11 +14,13 @@ define([
         content: [],
         changeHandlers: [],
     };
+    var APP;
     var ifrw;
     var $modal;
     var $content;
     var $pad;
     var placeholder;
+    var options;
     var separator = '<hr data-pewpew="pezpez">';
     var separatorReg = /<hr data\-pewpew="pezpez">/g;
     var slideClass = 'slide-frame';
@@ -114,12 +116,29 @@ define([
         slice(root.children).forEach(removeListeners);
     };
 
+    var updateFontSize = Slide.updateFontSize = function() {
+        // 20vh
+        // 20 * 16 / 9vw
+        if ($(window).width() > 16/9*$(window).height()) {
+            $content.css('font-size', '20vh');
+            // $print.css('font-size', '20vh');
+            return;
+        }
+        $content.css('font-size', (20*9/16)+'vw');
+        // $print.css('font-size', (20*9/16)+'vw');
+    };
+
+    var fixCSS = function (css) {
+        var append = '.cp #print .slide-frame ';
+        var append2 = '.cp div#modal #content .slide-frame ';
+        return css.replace(/(\n*)([^\n}]+)\s*\{/g, '$1' + append + '$2,' + append2 + '$2 {');
+    };
     var draw = Slide.draw =  function (i) {
         i = i || 0;
         if (typeof(Slide.content) !== 'string') { return; }
 
         var c = Slide.content;
-        var m = '<span class="'+slideClass+'">'+Marked(c).replace(separatorReg, '</span><span class="'+slideClass+'">')+'</span>';
+        var m = '<span class="slide-container"><span class="'+slideClass+'">'+Marked(c).replace(separatorReg, '</span></span><span class="slide-container"><span class="'+slideClass+'">')+'</span></span>';
 
         var Dom = domFromHTML('<div id="content">' + m + '</div>');
         removeListeners(Dom.body);
@@ -130,9 +149,31 @@ define([
         } else {
             DD.apply($content[0], patch);
         }
-        $content.find('.' + slideClass).hide();
-        $content.find('.' + slideClass + ':eq( ' + i + ' )').show();
+        var length = getNumberOfSlides();
+        $modal.find('style.slideStyle').remove();
+        if (options.style && Slide.shown) {
+            $modal.prepend($('<style>', {'class': 'slideStyle'}).text(fixCSS(options.style)));
+        }
+        $content.find('.slide-frame').each(function (i, el) {
+            if (options.slide) {
+                $('<div>', {'class': 'slideNumber'}).text((i+1)+'/'+length).appendTo($(el));
+            }
+            if (options.date) {
+                $('<div>', {'class': 'slideDate'}).text(new Date().toLocaleDateString()).appendTo($(el));
+            }
+            if (options.title) {
+                $('<div>', {'class': 'slideTitle'}).text(APP.title).appendTo($(el));
+            }
+        });
+        //$content.find('.' + slideClass).hide();
+        //$content.find('.' + slideClass + ':eq( ' + i + ' )').show();
+        $content.css('margin-left', -(i*100)+'vw');
+        updateFontSize();
         change(Slide.lastIndex, Slide.index);
+    };
+
+    var updateOptions = Slide.updateOptions = function () {
+        draw(Slide.index);
     };
 
     var isPresentURL = Slide.isPresentURL = function () {
@@ -269,13 +310,62 @@ define([
         });
     };
 
-    Slide.setModal = function ($m, $c, $p, iframe, ph) {
+    $(window).resize(Slide.updateFontSize);
+
+    // Swipe
+    var addSwipeEvents = function () {
+        var touch = {
+            maxTime: 2000,
+            minXDist: 150,
+            maxYDist: 100
+        };
+
+        var resetSwipe = function () {
+            touch.x = 0;
+            touch.y = 0;
+            touch.time = 0;
+        };
+
+        $content.on('touchstart', function (e) {
+            e.preventDefault();
+            resetSwipe();
+            var t = e.originalEvent.changedTouches[0];
+            touch.x = t.pageX;
+            touch.y = t.pageY;
+            touch.time = new Date().getTime();
+        });
+
+        $content.on('touchend', function (e) {
+            e.preventDefault();
+            var t = e.originalEvent.changedTouches[0];
+            var xDist = t.pageX - touch.x;
+            var yDist = t.pageY - touch.y;
+            var time = new Date().getTime() - touch.time;
+            if (time <= touch.maxTime && Math.abs(xDist) >= touch.minXDist && Math.abs(yDist) <= touch.maxYDist) {
+                if (xDist < 0) {
+                    Slide.right();
+                    return;
+                }
+                Slide.left();
+            }
+        });
+
+        $content.on('touchmove', function (e){
+            e.preventDefault();
+        });
+    };
+
+
+    Slide.setModal = function (appObj, $m, $c, $p, iframe, opt, ph) {
         $modal = Slide.$modal = $m;
         $content = Slide.$content = $c;
         $pad = Slide.$pad = $p;
         ifrw = Slide.ifrw = iframe;
         placeholder = Slide.placeholder = ph;
+        options = Slide.options = opt;
+        APP = appObj;
         addEvent();
+        addSwipeEvents();
     };
 
     return Slide;

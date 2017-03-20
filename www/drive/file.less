@@ -156,7 +156,7 @@ span {
             margin-left: -5px;
             padding-left: 5px;
         }
-        & > span.element-row:not(.selected):hover {
+        & > span.element-row:not(.selected):not(.active):hover {
             background-color: @drive-hover;
         }
     }
@@ -164,7 +164,9 @@ span {
         cursor: pointer;
     }
     .active {
-        text-decoration: underline;
+        &:not(.selected) {
+            background-color: darken(@drive-hover, 15%);
+        }
     }
     .category2 {
         margin-top: 2em;

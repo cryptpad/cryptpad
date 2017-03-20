@@ -1493,7 +1493,7 @@ define([
         return $('button.ok');
     };
 
-    var listenForKeys = function (yes, no) {
+    var listenForKeys = common.listenForKeys = function (yes, no) {
         var handler = function (e) {
             switch (e.which) {
                 case 27: // cancel
@@ -1510,7 +1510,7 @@ define([
         return handler;
     };
 
-    var stopListening = function (handler) {
+    var stopListening = common.stopListening = function (handler) {
         $(window).off('keyup', handler);
     };
 

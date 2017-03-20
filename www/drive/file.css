@@ -122,14 +122,14 @@ span.fa-folder-open {
   margin-left: -5px;
   padding-left: 5px;
 }
-#tree li > span.element-row:not(.selected):hover {
+#tree li > span.element-row:not(.selected):not(.active):hover {
   background-color: #eee;
 }
 #tree span.element {
   cursor: pointer;
 }
-#tree .active {
-  text-decoration: underline;
+#tree .active:not(.selected) {
+  background-color: #c8c8c8;
 }
 #tree .category2 {
   margin-top: 2em;

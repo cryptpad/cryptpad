@@ -438,7 +438,7 @@ define([
         var updateContextButton = function () {
             var $li = $content.find('.selected');
             if ($li.length === 0) {
-                $li = findDataHolder($tree.find('.element.active'));
+                $li = findDataHolder($tree.find('.active'));
             }
             var $button = $driveToolbar.find('#contextButton');
             if ($button.length) { // mobile
@@ -1538,7 +1538,7 @@ define([
                     e.stopPropagation();
                     var $li = $content.find('.selected');
                     if ($li.length !== 1) {
-                        $li = findDataHolder($tree.find('.element.active'));
+                        $li = findDataHolder($tree.find('.active'));
                     }
                     // Close if already opened
                     if ($iframe.find('.contextMenu:visible').length) {
@@ -1657,7 +1657,7 @@ define([
             }
             $elementRow.data('path', path);
             addDragAndDropHandlers($elementRow, path, true, droppable);
-            if (active) { $name.addClass('active'); }
+            if (active) { $elementRow.addClass('active'); }
             return $element;
         };
 
