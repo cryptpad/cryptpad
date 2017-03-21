@@ -131,7 +131,7 @@ span.fa-folder-open {
 #tree span.element {
   cursor: pointer;
 }
-#tree .active:not(.selected) {
+#tree .active:not(.selected):not(.droppable) {
   background-color: #c8c8c8;
 }
 #tree .category2 {

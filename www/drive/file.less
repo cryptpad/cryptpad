@@ -167,7 +167,7 @@ span {
         cursor: pointer;
     }
     .active {
-        &:not(.selected) {
+        &:not(.selected):not(.droppable) {
             background-color: darken(@drive-hover, 15%);
         }
     }
