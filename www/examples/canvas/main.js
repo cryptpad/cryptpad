@@ -67,6 +67,7 @@ define([
     var saveImage = module.saveImage = function () {
         $canvas[0].toBlob(function (blob) {
             var defaultName = "pretty-picture.png";
+            // TODO make this translatable
             saveAs(blob, window.prompt("What would you like to name your image?",
                     defaultName) || "pretty-picture.png");
         });
@@ -78,22 +79,19 @@ define([
         initialState: '{}',
         websocketURL: Cryptpad.getWebsocketURL(),
         validateKey: secret.keys.validateKey,
-        readOnly: false, // TODO
+        readOnly: false, // TODO, support read-only
         channel: secret.channel,
         crypto: Crypto.createEncryptor(secret.keys),
-        transformFunction: JsonOT.validate,
+        transformFunction: JsonOT.transform,
     };
 
     var editHash;
     var onInit = config.onInit = function (info) {
         editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
-
         Cryptpad.replaceHash(editHash);
-
-        //window.location.hash = info.channel + secret.key;
-        //$(window).on('hashchange', function() { window.location.reload(); });
     };
 
+    // used for debugging, feel free to remove
     var Catch = function (f) {
         return function () {
             try {
