@@ -382,6 +382,8 @@ define([
                     }
                     hasFolder = true;
                     hide.push($menu.find('a.open_ro'));
+                    // TODO: folder properties in the future?
+                    hide.push($menu.find('a.properties'));
                 }
                 if (path && path.length > 4) {
                     hide.push($menu.find('a.restore'));
@@ -1838,6 +1840,19 @@ define([
             }
         });
 
+        var getProperties = function (el) {
+            if (!filesOp.isFile(el)) { return; }
+            var base = window.location.origin;
+            var $d = $('<div>');
+            $('<strong>').text(Messages.fc_prop).appendTo($d);
+            $('<br>').appendTo($d);
+            $('<label>', {'for': 'propLink'}).text(Messages.editShare).appendTo($d);
+            $('<input>', {'id': 'propLink', 'value': base + el}).appendTo($d);
+            $('<label>', {'for': 'propROLink'}).text(Messages.viewShare).appendTo($d);
+            $('<input>', {'id': 'propROLink', 'value': getReadOnlyUrl(base + el)}).appendTo($d);
+            return $d.html();
+        };
+
         $contextMenu.on("click", "a", function(e) {
             e.stopPropagation();
             var paths = $(this).data('paths');
@@ -1880,6 +1895,15 @@ define([
                 };
                 filesOp.createNewFolder(paths[0].path, null, onCreated);
             }
+            else if ($(this).hasClass("properties")) {
+                if (paths.length !== 1) { return; }
+                var el = filesOp.findElement(files, paths[0].path);
+                var prop = getProperties(el);
+                Cryptpad.alert('', undefined, true);
+                $('.alertify .msg').html(prop);
+                $('#propLink').click(function () { $(this).select(); });
+                $('#propROLink').click(function () { $(this).select(); });
+            }
             module.hideMenu();
         });
 
@@ -1910,6 +1934,15 @@ define([
                 var pathsList = [];
                 paths.forEach(function (p) { pathsList.push(p.path); });
                 moveElements(pathsList, [TRASH], false, refresh);
+            }
+            else if ($(this).hasClass("properties")) {
+                if (paths.length !== 1) { return; }
+                var el = filesOp.findElement(files, paths[0].path);
+                var prop = getProperties(el);
+                Cryptpad.alert('', undefined, true);
+                $('.alertify .msg').html(prop);
+                $('#propLink').click(function () { $(this).select(); });
+                $('#propROLink').click(function () { $(this).select(); });
             }
             module.hideMenu();
         });
