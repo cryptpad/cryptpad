@@ -360,8 +360,8 @@ define([
         });
         var title;
         var $lag = $(lagElement);
-        $lag.attr('class', '');
         if (lag) {
+            $lag.attr('class', '');
             firstConnection = false;
             title = Messages.lag + ' : ' + lag + ' ms\n';
             if (lag > 30000) {
@@ -382,6 +382,7 @@ define([
             }
         }
         else if (!firstConnection) {
+            $lag.attr('class', '');
             // Display the red light at the 2nd failed attemp to get the lag
             lagLight.addClass('lag-red');
             title = Messages.redLight;
