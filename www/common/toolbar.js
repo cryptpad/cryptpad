@@ -343,10 +343,10 @@ define([
             id: uid(),
         });
         var $a = $('<span>', {id: 'newLag'});
-        $s1 = $('<span>', {'class': 'bar1'}).appendTo($a);
-        $s2 = $('<span>', {'class': 'bar2'}).appendTo($a);
-        $s3 = $('<span>', {'class': 'bar3'}).appendTo($a);
-        $s4 = $('<span>', {'class': 'bar4'}).appendTo($a);
+        $('<span>', {'class': 'bar1'}).appendTo($a);
+        $('<span>', {'class': 'bar2'}).appendTo($a);
+        $('<span>', {'class': 'bar3'}).appendTo($a);
+        $('<span>', {'class': 'bar4'}).appendTo($a);
         return $a[0];
     };
 

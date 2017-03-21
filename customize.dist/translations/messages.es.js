@@ -239,7 +239,6 @@ define(function () {
     out.login_unhandledError = "Un error inesperado se produjo :(";
     out.register_importRecent = "Importar historial (recomendado)";
     out.register_acceptTerms = "Accepto los <a href='/terms.html'>términos de servicio</a>";
-    out.register_rememberPassword = "Me acordaré de mi cuenta y contraseña";
     out.register_passwordsDontMatch = "Las contraseñas no corresponden";
     out.register_mustAcceptTerms = "Tienes que acceptar los términos de servicio";
     out.register_mustRememberPass = "No podemos reiniciar tu contraseña si la olvidas. ¡Es muy importante que la recuerdes! Marca la casilla para confirmarlo.";
@@ -293,7 +292,7 @@ define(function () {
     out.settings_userFeedback = "Activar feedback"; // "Disable user feedback"
     out.settings_anonymous = "No has iniciado sesión. Tus ajustes se aplicarán solo a este navegador.";
     out.blog = "Blog";
-    out.initialState = "<p>Esto es <strong>CryptPad</strong>, el editor collaborativo en tiempo real zero knowledge.<br>Lo que escribes aquí es cifrado, con lo cual solo las personas con el enlace pueden accederlo.<br>Incluso el servido no puede ver lo que escribes.</p><p><small><i>Lo que ves aquí, lo que escuchas aquí, cuando sales, se queda aquí</i></small></p>";
+    out.initialState = "<p>Esto es <strong>CryptPad</strong>, el editor collaborativo en tiempo real zero knowledge.<br>Lo que escribes aquí es cifrado, con lo cual solo las personas con el enlace pueden accederlo.<br>Incluso el servido no puede ver lo que escribes.</p><p><small><i>Lo que ves aquí, lo que escuchas aquí, cuando sales, se queda aquí</i></small></p><p>&nbsp;<br></p>";
     out.codeInitialState = "/*\n   Esto es CryptPad, el editor collaborativo en tiempo real zero knowledge.\n   Lo que escribes aquí es cifrado, con lo cual solo las personas con el enlace pueden accederlo.\n   Incluso el servidor no puede ver lo que escribes.\n   Lo que ves aquí, lo que escuchas aquí, cuando sales, se queda aquí\n*/";
     out.slideInitialState = "# CryptSlide\n* Esto es CryptPad, el editor collaborativo en tiempo real zero knowledge.\n* Lo que escribes aquí es cifrado, con lo cual solo las personas con el enlace pueden accederlo.\n* Incluso el servidor no puede ver lo que escribes.\n* Lo que ves aquí, lo que escuchas aquí, cuando sales, se queda aquí\n\n---\n# Como utilizarlo\n1. Escribe tu contenido en Markdown\n  - Puedes aprender más sobre Markdown [aquí](http://www.markdowntutorial.com/)\n2. Separa tus slides con ---\n3. Haz clic en \"Presentar\" para ver el resultado  - Tus slides se actualizan en tiempo real";
     out.driveReadmeTitle = "¿Qué es CryptDrive?";
@@ -347,5 +346,14 @@ define(function () {
     out.feedback_privacy = "Nos importa tu privacidad, y al mismo tiempo queremos que CryptPad sea muy fácil de usar. Utilizamos esta página para conocer las funcionalidades que importan a nuestros usuarios, pidiendolo con un parametro que nos dice que accion fue realizada.";
     out.feedback_optout = "Si quieres darte de baja, visita <a href='/settings/'>tus preferencias</a>, donde podrás activar o desactivar feedback";
 
-return out;
+    out.fm_searchName = "Buscar";
+    out.fm_searchPlaceholder = "Buscar...";
+    out.fm_newButtonTitle = "Crear un nuevo pad o carpeta";
+    out.fm_openParent = "Mostrar en carpeta";
+    out.register_writtenPassword = "He escrito mi usuario y contraseña, continuar";
+    out.register_cancel = "Volver";
+    out.register_warning = "Zero Knowledge significa que no podemos recuperar tus datos si pierdes tu contraseña.";
+    out.register_alreadyRegistered = "Este usuario ya existe, ¿iniciar sesión?";
+
+    return out;
 });

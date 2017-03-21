@@ -1018,7 +1018,7 @@ define([
             parsed = common.parseHash(parsed.hash);
 
             if (parsed.version === 0) {
-                return channel;
+                return parsed.channel;
             } else if (parsed.version !== 1) {
                 console.error("parsed href had no version");
                 console.error(parsed);

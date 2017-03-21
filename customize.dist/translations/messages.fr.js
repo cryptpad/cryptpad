@@ -383,7 +383,8 @@ define(function () {
         '<p><span style="color:#808080; font-size: 18px;">',
         '<em>',
         'Lancez-vous, commencez à taper...',
-        '</em></span></p></span>'
+        '</em></span></p></span>',
+        '<p>&nbsp;<br></p>'
     ].join('');
 
     out.codeInitialState = [

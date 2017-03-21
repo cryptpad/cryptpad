@@ -11,7 +11,7 @@ define([
     var verbose = function (x) { if (window.verboseMode) { console.log(x); } };
 
     /* accepts the document used by the editor */
-    return function (inner) {
+    var Cursor = function (inner) {
         var cursor = {};
 
         // there ought to only be one cursor at a time, so let's just
@@ -387,6 +387,58 @@ define([
             }
         };
 
+        cursor.lastTextNode = function () {
+            var lastEl = Tree.rightmostNode(inner);
+            if (lastEl && lastEl.nodeType === 3) { return lastEl; }
+
+            var firstEl = Tree.leftmostNode(inner);
+
+            while (lastEl !== firstEl) {
+                lastEl = Tree.previousNode(lastEl, inner);
+                if (lastEl && lastEl.nodeType === 3) { return lastEl; }
+            }
+
+            return lastEl;
+        };
+
+        cursor.firstTextNode = function () {
+            var firstEl = Tree.leftmostNode(inner);
+            if (firstEl && firstEl.nodeType === 3) { return firstEl; }
+
+            var lastEl = Tree.rightmostNode(inner);
+
+            while (firstEl !== lastEl) {
+                firstEl = Tree.nextNode(firstEl, inner);
+                if (firstEl && firstEl.nodeType === 3) { return firstEl; }
+            }
+            return firstEl;
+        };
+
+        cursor.setToStart = function () {
+            var el = cursor.firstTextNode();
+            if (!el) { return; }
+            fixStart(el, 0);
+            fixEnd(el, 0);
+            fixSelection(makeSelection(), makeRange());
+            return el;
+        };
+
+        cursor.setToEnd = function () {
+            var el = cursor.lastTextNode();
+            if (!el) { return; }
+
+            var offset = el.textContent.length;
+
+            fixStart(el, offset);
+            fixEnd(el, offset);
+            fixSelection(makeSelection(), makeRange());
+            return el;
+        };
+
         return cursor;
     };
+
+    Cursor.Tree = Tree;
+
+    return Cursor;
 });

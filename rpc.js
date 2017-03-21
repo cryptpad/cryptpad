@@ -18,9 +18,11 @@ var isValidChannel = function (chan) {
 var checkSignature = function (signedMsg, publicKey) {
     if (!(signedMsg && publicKey)) { return null; }
 
+    var signedBuffer;
+    var pubBuffer;
     try {
-        var signedBuffer = Nacl.util.decodeBase64(signedMsg);
-        var pubBuffer = Nacl.util.decodeBase64(publicKey);
+        signedBuffer = Nacl.util.decodeBase64(signedMsg);
+        pubBuffer = Nacl.util.decodeBase64(publicKey);
     } catch (e) {
         return null;
     }

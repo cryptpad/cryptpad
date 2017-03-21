@@ -64,6 +64,7 @@ define([
         logFights: true,
         fights: [],
         Cryptpad: Cryptpad,
+        Cursor: Cursor,
     };
 
     var emitResize = module.emitResize = function () {
@@ -131,7 +132,7 @@ define([
                 color: '#fff',
             });
 
-            var cursor = window.cursor = Cursor(inner);
+            var cursor = module.cursor = Cursor(inner);
 
             var setEditable = module.setEditable = function (bool) {
                 if (bool) {
@@ -717,6 +718,13 @@ define([
                         addToUserData(myData);
                         realtimeOptions.onLocal();
                         module.$userNameButton.click();
+                    }
+
+                    editor.focus();
+                    if (newPad) {
+                        cursor.setToEnd();
+                    } else {
+                        cursor.setToFix();
                     }
                 });
             };

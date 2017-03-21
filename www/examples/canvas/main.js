@@ -10,7 +10,7 @@ define([
     'json.sortify',
     '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/cryptpad-common.js',
-    '/bower_components/fabric.js/dist/fabric.min.js',
+    'fabric.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
     //'/customize/pad.js'
@@ -76,34 +76,47 @@ define([
 
     var config = module.config = {
         initialState: '{}',
-        // TODO initialState ?
-        websocketURL: Config.websocketURL,
-        //userName: Crypto.rand64(8),
+        websocketURL: Cryptpad.getWebsocketURL(),
+        validateKey: secret.keys.validateKey,
+        readOnly: false, // TODO
         channel: secret.channel,
-        //cryptKey: key,
-        crypto: Crypto.createEncryptor(secret.key),
+        crypto: Crypto.createEncryptor(secret.keys),
         transformFunction: JsonOT.validate,
     };
 
+    var editHash;
     var onInit = config.onInit = function (info) {
-        window.location.hash = info.channel + secret.key;
-        $(window).on('hashchange', function() {
-            window.location.reload();
-        });
+        editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+
+        Cryptpad.replaceHash(editHash);
+
+        //window.location.hash = info.channel + secret.key;
+        //$(window).on('hashchange', function() { window.location.reload(); });
     };
 
-    var onRemote = config.onRemote = function () {
+    var Catch = function (f) {
+        return function () {
+            try {
+                f();
+            } catch (e) {
+                console.error(e);
+            }
+        };
+    };
+
+    var onRemote = config.onRemote = Catch(function () {
         if (initializing) { return; }
         var userDoc = module.realtime.getUserDoc();
+
         canvas.loadFromJSON(userDoc);
         canvas.renderAll();
-    };
+    });
 
-    var onLocal = config.onLocal = function () {
+    var onLocal = config.onLocal = Catch(function () {
         if (initializing) { return; }
         var content = JSONSortify(canvas.toDatalessJSON());
         module.patchText(content);
-    };
+    });
 
     var onReady = config.onReady = function (info) {
         var realtime = module.realtime = info.realtime;
