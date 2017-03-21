@@ -1517,9 +1517,10 @@ define([
     common.alert = function (msg, cb, force) {
         cb = cb || function () {};
         if (force !== true) { msg = fixHTML(msg); }
-        var keyHandler = listenForKeys(function (e) { // yes
+        var close = function (e) {
             findOKButton().click();
-        });
+        };
+        var keyHandler = listenForKeys(close, close);
         Alertify.alert(msg, function (ev) {
             cb(ev);
             stopListening(keyHandler);

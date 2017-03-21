@@ -1844,16 +1844,12 @@ define([
             if (!filesOp.isFile(el)) { return; }
             var base = window.location.origin;
             var $d = $('<div>');
-            $('<strong>').text('PROPERTIES').appendTo($d);
+            $('<strong>').text(Messages.fc_prop).appendTo($d);
             $('<br>').appendTo($d);
-            $('<br>').appendTo($d);
-            $('<label>', {'for': 'propLink'}).text("LINK").appendTo($d);
-            $('<br>').appendTo($d);
-            $('<input>', {'id': 'propLink', 'disabled': 'disabled', 'value': base + el}).appendTo($d);
-            $('<br>').appendTo($d);
-            $('<label>', {'for': 'propROLink'}).text("RO LINK").appendTo($d);
-            $('<br>').appendTo($d);
-            $('<input>', {'id': 'propROLink', 'disabled': 'disabled'}).val(getReadOnlyUrl(base + el)).appendTo($d);
+            $('<label>', {'for': 'propLink'}).text(Messages.editShare).appendTo($d);
+            $('<input>', {'id': 'propLink', 'value': base + el}).appendTo($d);
+            $('<label>', {'for': 'propROLink'}).text(Messages.viewShare).appendTo($d);
+            $('<input>', {'id': 'propROLink', 'value': getReadOnlyUrl(base + el)}).appendTo($d);
             return $d.html();
         };
 
@@ -1901,10 +1897,12 @@ define([
             }
             else if ($(this).hasClass("properties")) {
                 if (paths.length !== 1) { return; }
-                console.log(paths[0].path);
                 var el = filesOp.findElement(files, paths[0].path);
                 var prop = getProperties(el);
-                Cryptpad.alert(prop, undefined, true);
+                Cryptpad.alert('', undefined, true);
+                $('.alertify .msg').html(prop);
+                $('#propLink').click(function () { $(this).select(); });
+                $('#propROLink').click(function () { $(this).select(); });
             }
             module.hideMenu();
         });
@@ -1936,6 +1934,15 @@ define([
                 var pathsList = [];
                 paths.forEach(function (p) { pathsList.push(p.path); });
                 moveElements(pathsList, [TRASH], false, refresh);
+            }
+            else if ($(this).hasClass("properties")) {
+                if (paths.length !== 1) { return; }
+                var el = filesOp.findElement(files, paths[0].path);
+                var prop = getProperties(el);
+                Cryptpad.alert('', undefined, true);
+                $('.alertify .msg').html(prop);
+                $('#propLink').click(function () { $(this).select(); });
+                $('#propROLink').click(function () { $(this).select(); });
             }
             module.hideMenu();
         });
