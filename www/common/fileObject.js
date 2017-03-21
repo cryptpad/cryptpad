@@ -81,6 +81,16 @@ define([
             return typeof(element) === "string";
         };
 
+        var isReadOnlyFile = exp.isReadOnlyFile = function (element) {
+            if (!isFile(element)) { return false; }
+            var parsed = Cryptpad.parsePadUrl(element);
+            if (!parsed) { return false; }
+            var hash = parsed.hash;
+            var pHash = Cryptpad.parseHash(hash);
+            if (pHash && !pHash.mode) { return; }
+            return pHash && pHash.mode === 'view';
+        };
+
         var isFolder = exp.isFolder = function (element) {
             return typeof(element) !== "string";
         };

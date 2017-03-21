@@ -375,6 +375,13 @@ define([
                 if ($element.is('.file-element')) {
                     // No folder in files
                     hide.push($menu.find('a.newfolder'));
+                    if ($element.is('.readonly')) {
+                        // Keep only open readonly
+                        hide.push($menu.find('a.open'));
+                    } else if ($element.is('.noreadonly')) {
+                        // Keep only open readonly
+                        hide.push($menu.find('a.open_ro'));
+                    }
                 } else {
                     if (hasFolder) {
                         // More than 1 folder selected: cannot create a new subfolder
@@ -858,7 +865,10 @@ define([
 
             var element = filesOp.findElement(files, newPath);
             var $icon = !isFolder ? getFileIcon(element) : undefined;
-            var liClass = 'file-item file-element element';
+            var ro = filesOp.isReadOnlyFile(element);
+            // ro undefined mens it's an old hash which doesn't support read-only
+            var roClass = typeof(ro) === 'undefined' ? ' noreadonly' : ro ? ' readonly' : '';
+            var liClass = 'file-item file-element element' + roClass;
             if (isFolder) {
                 liClass = 'folder-item folder-element element';
                 $icon = filesOp.isFolderEmpty(root[key]) ? $folderEmptyIcon.clone() : $folderIcon.clone();
@@ -1337,8 +1347,12 @@ define([
                 }
                 var idx = files[rootName].indexOf(href);
                 var $icon = getFileIcon(href);
+                var ro = filesOp.isReadOnlyFile(href);
+                console.log(ro);
+                // ro undefined mens it's an old hash which doesn't support read-only
+                var roClass = typeof(ro) === 'undefined' ? ' noreadonly' : ro ? ' readonly' : '';
                 var $element = $('<li>', {
-                    'class': 'file-element element element-row',
+                    'class': 'file-element element element-row' + roClass,
                     draggable: draggable
                 });
                 addFileData(href, file.title, $element, false);
@@ -1370,7 +1384,10 @@ define([
             var sortedFiles = sortElements(false, [FILES_DATA], keys, Cryptpad.getLSAttribute(SORT_FILE_BY), !getSortFileDesc(), false, true);
             sortedFiles.forEach(function (file) {
                 var $icon = getFileIcon(file.href);
-                var $element = $('<li>', { 'class': 'file-element element element-row' });
+                var ro = filesOp.isReadOnlyFile(file.href);
+                // ro undefined mens it's an old hash which doesn't support read-only
+                var roClass = typeof(ro) === 'undefined' ? ' noreadonly' : ro ? ' readonly' : '';
+                var $element = $('<li>', { 'class': 'file-element element element-row' + roClass });
                 addFileData(file.href, file.title, $element, false);
                 $element.data('path', [FILES_DATA, allfiles.indexOf(file)]);
                 $element.data('element', file.href);
@@ -1827,6 +1844,7 @@ define([
             var hash = href.slice(i);
             var base = href.slice(0, i);
             var hrefsecret = Cryptpad.getSecrets(hash);
+            if (!hrefsecret.keys) { return; }
             var viewHash = Cryptpad.getViewHashFromKeys(hrefsecret.channel, hrefsecret.keys);
             return base + viewHash;
         };
@@ -1842,14 +1860,20 @@ define([
 
         var getProperties = function (el) {
             if (!filesOp.isFile(el)) { return; }
+            var ro = filesOp.isReadOnlyFile(el);
             var base = window.location.origin;
             var $d = $('<div>');
             $('<strong>').text(Messages.fc_prop).appendTo($d);
             $('<br>').appendTo($d);
-            $('<label>', {'for': 'propLink'}).text(Messages.editShare).appendTo($d);
-            $('<input>', {'id': 'propLink', 'value': base + el}).appendTo($d);
-            $('<label>', {'for': 'propROLink'}).text(Messages.viewShare).appendTo($d);
-            $('<input>', {'id': 'propROLink', 'value': getReadOnlyUrl(base + el)}).appendTo($d);
+            if (!ro) {
+                $('<label>', {'for': 'propLink'}).text(Messages.editShare).appendTo($d);
+                $('<input>', {'id': 'propLink', 'value': base + el}).appendTo($d);
+            }
+            var roLink = ro ? base + el : getReadOnlyUrl(base + el);
+            if (roLink) {
+                $('<label>', {'for': 'propROLink'}).text(Messages.viewShare).appendTo($d);
+                $('<input>', {'id': 'propROLink', 'value': roLink}).appendTo($d);
+            }
             return $d.html();
         };
 
