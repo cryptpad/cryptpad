@@ -506,14 +506,19 @@ define([
         var onElementClick = function (e, $element, path) {
             // If "Ctrl" is pressed, do not remove the current selection
             removeInput();
+            $element = findDataHolder($element);
+            // If we're selecting a new element with the left click, hide the menu
+            if (e) { module.hideMenu(); }
+            // Remove the selection if we don't hold ctrl key or if we are right-clicking
             if (!e || !e.ctrlKey) {
                 removeSelected();
             }
-            $element = findDataHolder($element);
             if (!$element.length) {
                 log(Messages.fm_selectError);
                 return;
             }
+            // Add the selected class to the clicked / right-clicked element
+            // Remove the class if it already has it (cannot happen if the user is not holding ctrl key)
             if (!$element.hasClass("selected")) {
                 $element.addClass("selected");
                 lastSelectTime = now();
@@ -521,9 +526,6 @@ define([
                 $element.removeClass("selected");
             }
             updateContextButton();
-            if ($iframe.find('.selected').length > 1) {
-                module.hideMenu();
-            }
         };
 
         // Open the selected context menu on the closest "li" element
@@ -537,6 +539,10 @@ define([
                 $menu.hide();
                 log(Messages.fm_contextMenuError);
                 return false;
+            }
+
+            if (!$element.hasClass('selected')) { //paths.length === 1) {
+                onElementClick(undefined, $element);
             }
 
             var paths = getSelectedPaths($element);
@@ -556,10 +562,6 @@ define([
                 debug("No visible element in the context menu. Abort.");
                 $menu.hide();
                 return true;
-            }
-
-            if (paths.length === 1) {
-                onElementClick(undefined, $element);
             }
 
             $menu.find('a').data('paths', paths);
@@ -1348,7 +1350,6 @@ define([
                 var idx = files[rootName].indexOf(href);
                 var $icon = getFileIcon(href);
                 var ro = filesOp.isReadOnlyFile(href);
-                console.log(ro);
                 // ro undefined mens it's an old hash which doesn't support read-only
                 var roClass = typeof(ro) === 'undefined' ? ' noreadonly' : ro ? ' readonly' : '';
                 var $element = $('<li>', {
