@@ -748,8 +748,8 @@ define([
             files[FILES_DATA].push({
                 href: href,
                 title: title,
-                atime: new Date().toISOString(),
-                ctime: new Date().toISOString()
+                atime: +new Date(),
+                ctime: +new Date()
             });
         };
         var createNewFile = exp.createNewFile = function (filePath, name, type, cb) {

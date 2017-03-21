@@ -708,7 +708,7 @@ define([
                     else if (pHash.mode === parsedHash.mode && pHash.present) { shouldUpdate = true; }
                     else {
                         // Editing a "weaker" version of a stored hash : update the date and do not push the current hash
-                        pad.atime = new Date().toISOString();
+                        pad.atime = +new Date();
                         contains = true;
                         return pad;
                     }
@@ -717,7 +717,7 @@ define([
                 if (shouldUpdate) {
                     contains = true;
                     // update the atime
-                    pad.atime = new Date().toISOString();
+                    pad.atime = +new Date();
 
                     // set the name
                     pad.title = name;
