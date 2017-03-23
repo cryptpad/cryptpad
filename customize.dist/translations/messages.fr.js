@@ -10,6 +10,7 @@ define(function () {
     out.type.poll = 'Sondage';
     out.type.slide = 'Présentation';
     out.type.drive = 'Drive';
+    out.type.whiteboard = "Tableau Blanc";
 
     out.button_newpad = 'Nouveau document texte';
     out.button_newcode = 'Nouvelle page de code';

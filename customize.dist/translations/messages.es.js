@@ -11,6 +11,7 @@ define(function () {
     out.type.code = 'Código';
     out.type.poll = 'Encuesta';
     out.type.slide = 'Presentación';
+    out.type.whiteboard = 'Pizarra';
 
     out.updated_0_common_connectionLost = "<b>Connexión perdida</b><br>El documento está ahora en modo solo lectura hasta que la conexión vuelva.";
     out.common_connectionLost = out.updated_0_common_connectionLost;
