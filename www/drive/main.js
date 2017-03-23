@@ -152,6 +152,7 @@ define([
     var $codeIcon = $('<span>', {"class": "fa fa-file-code-o file icon"});
     var $slideIcon = $('<span>', {"class": "fa fa-file-powerpoint-o file icon"});
     var $pollIcon = $('<span>', {"class": "fa fa-calendar file icon"});
+    var $whiteboardIcon = $('<span>', {"class": "fa fa-paint-brush"});
     var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
     var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
     var $templateIcon = $('<span>', {"class": "fa fa-cubes"});
@@ -847,6 +848,7 @@ define([
             else if (href.indexOf('/code/') !== -1) { $icon = $codeIcon.clone(); }
             else if (href.indexOf('/slide/') !== -1) { $icon = $slideIcon.clone(); }
             else if (href.indexOf('/poll/') !== -1) { $icon = $pollIcon.clone(); }
+            else if (href.indexOf('/whiteboard/') !== -1) { $icon = $whiteboardIcon.clone(); }
 
             return $icon;
         };
