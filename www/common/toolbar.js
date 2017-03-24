@@ -220,6 +220,7 @@ define([
         return $userlist[0];
     };
 
+    // TODO deduplicate users by uid
     var getOtherUsers = function(myUserName, userList, userData) {
       var i = 0;
       var list = [];
@@ -684,13 +685,35 @@ define([
                         break;
                 }
             };
+
+            var userPresent = function (id, user, data) {
+                if (!(user && user.uid)) {
+                    console.log('no uid');
+                    return 0;
+                }
+                if (!data) {
+                    console.log('no data');
+                    return 0;
+                }
+
+                var count = 0;
+                Object.keys(data).forEach(function (k) {
+                    if (data[k] && data[k].uid === user.uid) { count++; }
+                });
+                return count;
+            };
+
             userList.change.push(function (newdata) {
                 // Notify for disconnected users
                 if (typeof oldUserData !== "undefined") {
                     for (var u in oldUserData) {
+        // if a user's uid is still present after having left, don't notify
                         if (userList.users.indexOf(u) === -1) {
-                            notify(-1, oldUserData[u].name);
+                            var temp = JSON.parse(JSON.stringify(oldUserData[u]));
                             delete oldUserData[u];
+                            if (userPresent(u, temp, newdata || oldUserData) < 1) {
+                                notify(-1, temp.name);
+                            }
                         }
                     }
                 }
@@ -707,7 +730,10 @@ define([
                 for (var k in newdata) {
                     if (k !== myUserName && userList.users.indexOf(k) !== -1) {
                         if (typeof oldUserData[k] === "undefined") {
-                            notify(1, newdata[k].name);
+        // if the same uid is already present in the userdata, don't notify
+                            if (!userPresent(k, newdata[k], oldUserData)) {
+                                notify(1, newdata[k].name);
+                            }
                         } else if (oldUserData[k].name !== newdata[k].name) {
                             notify(0, newdata[k].name, oldUserData[k].name);
                         }
