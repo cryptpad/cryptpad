@@ -11,6 +11,10 @@ CKEDITOR.editorConfig = function( config ) { // jshint ignore:line
     config.extraPlugins= 'autolink,colorbutton,colordialog,font';
     config.toolbarGroups= [{"name":"clipboard","groups":["clipboard","undo"]},{"name":"editing","groups":["find","selection"]},{"name":"links"},{"name":"insert"},{"name":"forms"},{"name":"tools"},{"name":"document","groups":["mode","document","doctools"]},{"name":"others"},{"name":"basicstyles","groups":["basicstyles","cleanup"]},{"name":"paragraph","groups":["list","indent","blocks","align","bidi"]},{"name":"styles"},{"name":"colors"}];
 
+    config.font_defaultLabel = 'Arial';
+    config.fontSize_defaultLabel = '16px';
+    config.contentsCss = '/customize/ckeditor-contents.css';
+
     //skin: 'moono-cryptpad,/pad/themes/moono-cryptpad/'
     //skin: 'flat,/pad/themes/flat/'
     //skin: 'moono-lisa,/pad/themes/moono-lisa/'
