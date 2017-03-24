@@ -44,6 +44,15 @@ define([
         }
         return;
     };
+
+    var getUid = common.getUid = function () {
+        if (store) {
+            if (store.getProxy() && store.getProxy().proxy) {
+                return store.getProxy().proxy.uid;
+            }
+        }
+    };
+
     var getRealtime = common.getRealtime = function () {
         if (store) {
             if (store.getProxy() && store.getProxy().info) {

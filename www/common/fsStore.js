@@ -145,6 +145,12 @@ define([
             proxy.allowUserFeedback = true;
         }
 
+        if (typeof(proxy.uid) !== 'string' || proxy.uid.length !== 32) {
+            // even anonymous users should have a persistent, unique-ish id
+            console.log('generating a persistent identifier');
+            proxy.uid = Cryptpad.createChannelId();
+        }
+
         proxy.on('change', [Cryptpad.displayNameKey], function (o, n, p) {
             if (typeof(n) !== "string") { return; }
             Cryptpad.changeDisplayName(n);
@@ -156,6 +162,7 @@ define([
     var init = function (f, Cryptpad) {
         if (!Cryptpad || initialized) { return; }
         initialized = true;
+
         var hash = Cryptpad.getUserHash() || localStorage.FS_hash || Cryptpad.createRandomHash();
         if (!hash) {
             throw new Error('[Store.init] Unable to find or create a drive hash. Aborting...');
