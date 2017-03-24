@@ -47,6 +47,11 @@ Attributes in the config should have comments indicating how they are used.
 $EDITOR config.js
 ```
 
+If you are deploying CryptPad in a production environment, we recommend that you take the time to understand and correctly customize your server's [Content Security Policy headers](https://content-security-policy.com/).
+Modern browsers use these headers to allow or deny actions from malicious clients which could compromise the confidentiality of your user's data.
+
+These settings can be found in your configuration file in the  `contentSecurity` and `padContentSecurity` sections.
+
 ## Maintenance
 
 To get access to the most recent codebase:
