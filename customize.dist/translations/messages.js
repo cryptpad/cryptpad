@@ -283,6 +283,7 @@ define(function () {
     out.settings_userFeedback = "Enable user feedback";
 
     out.settings_anonymous = "You are not logged in. Settings here are specific to this browser.";
+    out.settings_publicSigningKey = "Public Signing Key";
 
     // index.html
 

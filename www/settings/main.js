@@ -52,6 +52,19 @@ define([
 
         $div.append($label).append($name);
 
+        var publicKey = obj.edPublic;
+        if (publicKey) {
+            var $pubLabel = $('<span>', {'class': 'label'})
+                .text(Messages.settings_publicSigningKey + ':');
+            var $pubKey = $('<input>', {type: 'text', readonly: true})
+                .css({
+                    width: '28em'
+                })
+                .val(publicKey);
+            $div.append('<br>').append($pubLabel).append($pubKey);
+        }
+
+
         return $div;
     };
 
