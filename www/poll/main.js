@@ -448,7 +448,8 @@ define([
         var myID = APP.myID;
         var myData = {};
         myData[myID] = {
-            name: myUserName
+            name: myUserName,
+            uid: Cryptpad.getUid(),
         };
         addToUserData(myData);
         Cryptpad.setAttribute('username', newName, function (err, data) {
@@ -652,7 +653,8 @@ define([
             } else {
                 var myData = {};
                 myData[info.myId] = {
-                    name: ""
+                    name: "",
+                    uid: Cryptpad.getUid(),
                 };
                 addToUserData(myData);
                 APP.$userNameButton.click();

@@ -268,7 +268,8 @@ define([
                 }
                 myUserName = myUserNameTemp;
                 myData[myID] = {
-                   name: myUserName
+                   name: myUserName,
+                   uid: Cryptpad.getUid(),
                 };
                 addToUserData(myData);
                 Cryptpad.setAttribute('username', myUserName, function (err, data) {
@@ -783,7 +784,8 @@ define([
                         setName(lastName);
                     } else {
                         myData[myID] = {
-                            name: ""
+                            name: "",
+                            uid: Cryptpad.getUid(),
                         };
                         addToUserData(myData);
                         onLocal();
