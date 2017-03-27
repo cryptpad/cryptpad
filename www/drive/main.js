@@ -1871,12 +1871,12 @@ define([
             $('<br>').appendTo($d);
             if (!ro) {
                 $('<label>', {'for': 'propLink'}).text(Messages.editShare).appendTo($d);
-                $('<input>', {'id': 'propLink', 'value': base + el}).appendTo($d);
+                $('<input>', {'id': 'propLink', 'readonly': 'readonly', 'value': base + el}).appendTo($d);
             }
             var roLink = ro ? base + el : getReadOnlyUrl(base + el);
             if (roLink) {
                 $('<label>', {'for': 'propROLink'}).text(Messages.viewShare).appendTo($d);
-                $('<input>', {'id': 'propROLink', 'value': roLink}).appendTo($d);
+                $('<input>', {'id': 'propROLink', 'readonly': 'readonly', 'value': roLink}).appendTo($d);
             }
             return $d.html();
         };
@@ -2303,7 +2303,8 @@ define([
                 $backupButton.attr('title', Messages.fm_backup_title);
                 $backupButton.on('click', function() {
                     var url = window.location.origin + window.location.pathname + '#' + editHash;
-                    Cryptpad.alert(Messages._getKey('fm_alert_backupUrl', [url]), undefined, true);
+                    var msg = Messages.fm_alert_backupUrl + '<input type="text" readonly="readonly" id="fm_backupUrl" value="'+url+'">';
+                    Cryptpad.alert(msg, undefined, true);
                     $('#fm_backupUrl').val(url);
                     $('#fm_backupUrl').click(function () {
                         $(this).select();

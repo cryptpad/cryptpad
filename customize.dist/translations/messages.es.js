@@ -202,7 +202,7 @@ define(function () {
     out.fm_info_template = "Contiene todas las plantillas que puedes volver a usar para crear nuevos documentos.";
     out.fm_info_trash = "Archivos eliminados de la papelera también se eliminan de \"Todos los archivos\" y es imposible recuparlos desde el explorador.";
     out.fm_info_allFiles = "Contiene todos los archivos de \"Documentos\", \"Sin organizar\" y \"Papelera\". No puedes mover o eliminar archivos aquí.";
-    out.fm_alert_backupUrl = "Enlace de copia de seguridad para este drive. Te recomendamos <strong>muy fuertemente</strong> que lo guardes secreto.<br>Lo puedes usar para recuparar todos tus archivos en el caso que la memoria de tu navegador se borre.<br>Cualquiera con este enlace puede editar o eliminar todos los archivos en el explorador.<br><input type=\"text\" id=\"fm_backupUrl\" value=\"{0}\"/>";
+    out.fm_alert_backupUrl = "Enlace de copia de seguridad para este drive. Te recomendamos <strong>muy fuertemente</strong> que lo guardes secreto.<br>Lo puedes usar para recuparar todos tus archivos en el caso que la memoria de tu navegador se borre.<br>Cualquiera con este enlace puede editar o eliminar todos los archivos en el explorador.<br>";
     out.fm_backup_title = "Enlace de copia de seguridad";
     out.fm_nameFile = "¿Cómo quieres nombrar este archivo?";
     out.fc_newfolder = "Nueva carpeta";

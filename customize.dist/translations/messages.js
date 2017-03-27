@@ -187,8 +187,7 @@ define(function () {
     out.fm_alert_backupUrl = "Backup link for this drive.<br>" +
                              "It is <strong>highly recommended</strong> that you keep ip for yourself only.<br>" +
                              "You can use it to retrieve all your files in case your browser memory got erased.<br>" +
-                             "Anybody with that link can edit or remove all the files in your file manager.<br>" +
-                             '<input type="text" id="fm_backupUrl" value="{0}"/>';
+                             "Anybody with that link can edit or remove all the files in your file manager.<br>";
     out.fm_backup_title = 'Backup link';
     out.fm_nameFile = 'How would you like to name that file?';
     // File - Context menu

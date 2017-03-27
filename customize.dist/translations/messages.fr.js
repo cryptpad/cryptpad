@@ -185,8 +185,7 @@ define(function () {
     out.fm_alert_backupUrl = "Lien de secours pour ce disque.<br>" +
                              "Il est <strong>fortement recommandé</strong> de garder ce lien pour vous-même.<br>" +
                              "Elle vous servira en cas de perte des données de votre navigateur afin de retrouver vos fichiers.<br>" +
-                             "Quiconque se trouve en possession de celle-ci peut modifier ou supprimer tous les fichiers de ce gestionnaire.<br>" +
-                             '<input type="text" id="fm_backupUrl" value="{0}"/>';
+                             "Quiconque se trouve en possession de celle-ci peut modifier ou supprimer tous les fichiers de ce gestionnaire.<br>";
     out.fm_backup_title = 'Lien de secours';
     out.fm_nameFile = 'Comment souhaitez-vous nommer ce fichier ?';
     // File - Context menu
