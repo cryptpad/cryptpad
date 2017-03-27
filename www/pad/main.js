@@ -29,7 +29,6 @@ define([
     var Ckeditor; // to be initialized later...
     var DiffDom = window.diffDOM;
 
-    Cryptpad.styleAlerts();
     Cryptpad.addLoadingScreen();
 
     var stringify = function (obj) {

@@ -2230,8 +2230,6 @@ define([
 
         var storeObj = Cryptpad.getStore().getProxy && Cryptpad.getStore().getProxy().proxy ? Cryptpad.getStore().getProxy() : undefined;
 
-        Cryptpad.styleAlerts();
-
         if (window.location.hash && window.location.hash === "#iframe") {
             $iframe.find('body').addClass('iframe');
             window.location.hash = "";

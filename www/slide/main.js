@@ -44,7 +44,6 @@ define([
     };
 
     $(function () {
-        Cryptpad.styleAlerts();
         Cryptpad.addLoadingScreen();
 
         var ifrw = module.ifrw = $('#pad-iframe')[0].contentWindow;

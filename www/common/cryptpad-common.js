@@ -1111,55 +1111,6 @@ define([
                     });
                 }
                 break;
-            // TODO remove editshare, viewshare, and viewopen
-            case 'editshare':
-                button = $('<a>', {
-                    title: Messages.editShareTitle,
-                }).html('<span class="fa fa-users" style="font-family:FontAwesome;"></span>').append(' ' + Messages.editShare);
-                if (data && data.editHash) {
-                    var editHash = data.editHash;
-                    button.click(function () {
-                        var baseUrl = window.location.origin + window.location.pathname + '#';
-                        var url = baseUrl + editHash;
-                        var success = Clipboard.copy(url);
-                        if (success) {
-                            common.log(Messages.shareSuccess);
-                            common.findOKButton().click();
-                            return;
-                        }
-                    });
-                }
-                break;
-            case 'viewshare':
-                button = $('<a>', {
-                    title: Messages.viewShareTitle,
-                }).html('<span class="fa fa-eye" style="font-family:FontAwesome;"></span>').append(' ' + Messages.viewShare);
-                if (data && data.viewHash) {
-                    button.click(function () {
-                        var baseUrl = window.location.origin + window.location.pathname + '#';
-                        var url = baseUrl + data.viewHash;
-                        var success = Clipboard.copy(url);
-                        if (success) {
-                            common.log(Messages.shareSuccess);
-                            common.findOKButton().click();
-                            return;
-                        }
-                    });
-                }
-                break;
-            case 'viewopen':
-                button = $('<a>', {
-                    title: Messages.viewOpenTitle,
-                }).html('<span class="fa fa-eye" style="font-family:FontAwesome;"></span>').append(' ' + Messages.viewOpen);
-                if (data && data.viewHash) {
-                    button.click(function () {
-                        var baseUrl = window.location.origin + window.location.pathname + '#';
-                        var url = baseUrl + data.viewHash;
-                        common.findOKButton().click();
-                        window.open(url);
-                    });
-                }
-                break;
             case 'present':
                 button = $('<button>', {
                     title: Messages.presentButtonTitle,
@@ -1174,7 +1125,7 @@ define([
                     style: 'font:'+size+' FontAwesome'
                 });
                 break;
-             default:
+            default:
                 button = $('<button>', {
                     'class': "fa fa-question",
                     style: 'font:'+size+' FontAwesome'
@@ -1390,7 +1341,6 @@ define([
                 $userName.append(Messages.user_displayName + ': ');
                 $userName.append($displayedName.clone());
             }
-            //$userName.append($displayedName.clone()); TODO remove ?
             $userAdminContent.append($userName);
             options.push({
                 tag: 'p',
@@ -1410,7 +1360,7 @@ define([
             });
         }
         // Add the change display name button if not in read only mode
-        if (config.changeNameButtonCls && config.displayChangeName) { //readOnly !== 1) { TODO
+        if (config.changeNameButtonCls && config.displayChangeName) {
             options.push({
                 tag: 'a',
                 attributes: {'class': config.changeNameButtonCls},
@@ -1491,7 +1441,6 @@ define([
      *  Alertifyjs
      */
 
-    // TODO: remove styleAlerts in all the apps
     var styleAlerts = common.styleAlerts = function () {};
 
     var findCancelButton = common.findCancelButton = function () {
