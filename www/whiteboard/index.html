@@ -1,16 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html class="cp">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <script data-bootload="main.js" data-main="/common/boot.js" src="/bower_components/requirejs/require.js"></script>
+    <link rel="icon" type="image/png"
+        href="/customize/main-favicon.png"
+        data-main-favicon="/customize/main-favicon.png"
+        data-alt-favicon="/customize/alt-favicon.png"
+        id="favicon" />
     <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="/customize/main.css" />
     <style>
         html, body{
             padding: 0px;
             margin: 0px;
-            overflow: hidden;
             box-sizing: border-box;
         }
         body {
@@ -32,8 +36,9 @@
             /* disallow textarea resizes */
             resize: none;
         }
-        canvas {
+        .canvas-container {
             border: 5px solid black;
+            margin: auto;
         }
         #clear {
             display: inline;
@@ -66,20 +71,25 @@
 <body>
     <div id="toolbar" class="toolbar-container"></div>
 
+    <div id="canvas-area">
     <canvas id="canvas" width="600" height="600" ></canvas>
-
-    <div id="copy">
-        <h2>Welcome to CryptCanvas!</h2>
-        <h3>Zero Knowledge Realtime Collaborative Canvas Editing</h3>
     </div>
 
     <div id="controls">
         <button id="clear">Clear</button>
-        <button id="save">Save</button>
         <input id="width" type="number" value="5"></input>
         <div id="colors">&nbsp;</div>
     </div>
 
+    <div id="loading">
+        <div class="loadingContainer">
+            <img class="cryptofist" src="/customize/cryptofist_small.png" />
+            <div class="spinnerContainer">
+                <span class="fa fa-spinner fa-pulse fa-4x fa-fw"></span>
+            </div>
+            <p data-localization="loading"></p>
+        </div>
+    </div>
 
 </body>
 </html>

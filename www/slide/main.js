@@ -569,7 +569,9 @@ define([
                     }, {ok: Messages.printButton});
                     //$('body').append(createPrintDialog());
                 });
-                $rightside.append($printButton);                var $slideOptions = $('<button>', {
+                $rightside.append($printButton);
+
+                var $slideOptions = $('<button>', {
                     title: Messages.slideOptionsTitle,
                     'class': 'rightside-button fa fa-cog',
                     style: 'font-size: 17px'

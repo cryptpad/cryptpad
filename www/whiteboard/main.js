@@ -24,6 +24,9 @@ define([
 
     $(function () {
     Cryptpad.addLoadingScreen();
+    var onConnectError = function (info) {
+        Cryptpad.errorLoadingScreen(Messages.websocketError);
+    };
     var toolbar;
 
     var secret = Cryptpad.getSecrets();
@@ -36,6 +39,8 @@ define([
         /* Initialize Fabric */
         var canvas = module.canvas = new Fabric.Canvas('canvas');
         var $canvas = $('canvas');
+        var $controls = $('#controls');
+        var $canvasContainer = $('canvas').parents('.canvas-container');
 
         var $width = $('#width');
         var updateBrushWidth = function () {
@@ -61,6 +66,9 @@ define([
 
         var setEditable = function (bool) {
             if (readOnly && bool) { return; }
+            if (bool) { $controls.show(); }
+            else { $controls.hide(); }
+
             canvas.isDrawingMode = bool;
             if (!bool) {
                 canvas.deactivateAll();
@@ -69,7 +77,7 @@ define([
             canvas.forEachObject(function (object) {
                 object.selectable = bool;
             });
-            $canvas.css('border-color', bool? 'black': 'red');
+            $canvasContainer.css('border-color', bool? 'black': 'red');
         };
 
         var saveImage = module.saveImage = function () {
@@ -115,6 +123,20 @@ define([
           myUserName = myID;
         };
 
+        var suggestName = function (fallback) {
+            if (document.title === defaultName) {
+                return fallback || "";
+            } else {
+                return document.title || defaultName;
+            }
+        };
+
+        var renameCb = function (err, title) {
+            if (err) { return; }
+            document.title = title;
+            module.onLocal();
+        };
+
         var config = module.config = {
             initialState: '{}',
             websocketURL: Cryptpad.getWebsocketURL(),
@@ -148,6 +170,11 @@ define([
             if (readOnly) {delete config.changeNameID; }
             toolbar = module.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, userList, config);
 
+            var $rightside = $bar.find('.' + Toolbar.constants.rightside);
+
+            var $export = Cryptpad.createButton('export', true, {}, saveImage);
+            $rightside.append($export);
+
             var editHash;
             var viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
 
@@ -166,20 +193,6 @@ define([
                     console.error(e);
                 }
             };
-        };
-
-        var suggestName = function (fallback) {
-            if (document.title === defaultName) {
-                return fallback || "";
-            } else {
-                return document.title || defaultName;
-            }
-        };
-
-        var renameCb = function (err, title) {
-            if (err) { return; }
-            document.title = title;
-            onLocal();
         };
 
         var updateTitle = function (newTitle) {
@@ -242,6 +255,7 @@ define([
 
             if (readOnly) { setEditable(false); }
         });
+        setEditable(false);
 
         var stringifyInner = function (textValue) {
             var obj = {
@@ -296,6 +310,7 @@ define([
                 realtime: realtime
             });
 
+            Cryptpad.removeLoadingScreen();
             setEditable(true);
             initializing = false;
             onRemote();
@@ -346,6 +361,11 @@ define([
 
     Cryptpad.ready(function (err, env) {
         andThen();
+    });
+    Cryptpad.onError(function (info) {
+        if (info) {
+            onConnectError();
+        }
     });
 
     });
