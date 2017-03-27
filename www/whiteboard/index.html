@@ -4,6 +4,7 @@
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <script data-bootload="main.js" data-main="/common/boot.js" src="/bower_components/requirejs/require.js"></script>
+    <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="/customize/main.css" />
     <style>
         html, body{
@@ -11,6 +12,10 @@
             margin: 0px;
             overflow: hidden;
             box-sizing: border-box;
+        }
+        body {
+            display: flex;
+            flex-flow: column;
         }
         textarea{
             width: 100%;
@@ -59,6 +64,7 @@
     </style>
 </head>
 <body>
+    <div id="toolbar" class="toolbar-container"></div>
 
     <canvas id="canvas" width="600" height="600" ></canvas>
 
