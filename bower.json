@@ -27,7 +27,7 @@
     "marked": "~0.3.5",
     "rangy": "rangy-release#~1.3.0",
     "json.sortify": "~2.1.0",
-    "fabric.js": "fabric#~1.6.0",
+    "secure-fabric.js": "secure-v1.7.9",
     "hyperjson": "~1.4.0",
     "textpatcher": "^1.3.0",
     "chainpad": "^0.3.0",

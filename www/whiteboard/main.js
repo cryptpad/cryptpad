@@ -10,10 +10,9 @@ define([
     'json.sortify',
     '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/cryptpad-common.js',
-    'fabric.js',
+    '/bower_components/secure-fabric.js/dist/fabric.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
-    //'/customize/pad.js'
 ], function (Config, Realtime, Crypto, TextPatcher, JSONSortify, JsonOT, Cryptpad) {
     var saveAs = window.saveAs;
     var Messages = Cryptpad.Messages;
