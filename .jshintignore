@@ -4,7 +4,6 @@ www/code/codemirror*
 www/common/chainpad.js
 storage/kad.js
 www/common/otaml.js
-www/whiteboard/fabric.js
 
 server.js
 NetFluxWebsocketSrv.js
