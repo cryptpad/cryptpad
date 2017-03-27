@@ -239,6 +239,8 @@ define([
 
             canvas.loadFromJSON(remoteDoc);
             canvas.renderAll();
+
+            if (readOnly) { setEditable(false); }
         });
 
         var stringifyInner = function (textValue) {
