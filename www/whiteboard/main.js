@@ -16,22 +16,13 @@ define([
     //'/customize/pad.js'
 ], function (Config, Realtime, Crypto, TextPatcher, JSONSortify, JsonOT, Cryptpad) {
     var saveAs = window.saveAs;
+    var Messages = Cryptpad.Messages;
 
     var module = window.APP = { };
     var $ = module.$ = window.jQuery;
     var Fabric = module.Fabric = window.fabric;
 
     var secret = Cryptpad.getSecrets();
-    /*
-    var key;
-    var channel = '';
-    if (!/#/.test(window.location.href)) {
-        key = Crypto.genKey();
-    } else {
-        var hash = window.location.hash.slice(1);
-        channel = hash.slice(0, 32);
-        key = hash.slice(32);
-    }*/
 
     /* Initialize Fabric */
     var canvas = module.canvas = new Fabric.Canvas('canvas');
@@ -65,11 +56,12 @@ define([
     };
 
     var saveImage = module.saveImage = function () {
-        $canvas[0].toBlob(function (blob) {
-            var defaultName = "pretty-picture.png";
-            // TODO make this translatable
-            saveAs(blob, window.prompt("What would you like to name your image?",
-                    defaultName) || "pretty-picture.png");
+        var defaultName = "pretty-picture.png";
+        Cryptpad.prompt(Messages.exportPrompt, defaultName, function (filename) {
+            if (!(typeof(filename) === 'string' && filename)) { return; }
+            $canvas[0].toBlob(function (blob) {
+                saveAs(blob, filename);
+            });
         });
     };
 
