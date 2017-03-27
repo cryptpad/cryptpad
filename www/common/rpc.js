@@ -1,8 +1,6 @@
 define([
-    '/common/encode.js',
-
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function (Encode) {
+], function () {
     var MAX_LAG_BEFORE_TIMEOUT = 30000;
     var Nacl = window.nacl;
 
@@ -11,34 +9,27 @@ define([
             .toString(32).replace(/\./g, '');
     };
 
-    var signMsg = function (type, msg, signKey) {
-        var toSign = JSON.stringify([type, msg]);
-        var buffer = Nacl.util.decodeUTF8(toSign);
-        return Nacl.util.encodeBase64(Nacl.sign(buffer, signKey));
+    var signMsg = function (data, signKey) {
+        var buffer = Nacl.util.decodeUTF8(JSON.stringify(data));
+        return Nacl.util.encodeBase64(Nacl.sign.detached(buffer, signKey));
     };
 
-    /*
+/*
 types of messages:
     pin -> hash
     unpin -> hash
     getHash -> hash
     getTotalSize -> bytes
     getFileSize -> bytes
-
-    */
-
-/*  RPC communicates only with the history keeper
-    messages have the format:
-        [TYPE, txid, msg]
 */
-    var sendMsg = function (ctx, type, signed, id, cb) {
+
+    var sendMsg = function (ctx, data, cb) {
         var network = ctx.network;
         var hkn = network.historyKeeper;
         var txid = uid();
 
         ctx.pending[txid] = cb;
-
-        return network.sendto(hkn, JSON.stringify([txid, signed, id]));
+        return network.sendto(hkn, JSON.stringify([txid, data]));
     };
 
     var parse = function (msg) {
@@ -49,20 +40,20 @@ types of messages:
         }
     };
 
-/*  Returning messages have the format:
-    [txid, {}]
-*/
     var onMsg = function (ctx, msg) {
         var parsed = parse(msg);
 
         if (!parsed) {
-            // TODO handle error
-            console.log(msg);
-            return;
+            return void console.error(new Error('could not parse message: %s', msg));
         }
 
         var txid = parsed[0];
         var pending = ctx.pending[txid];
+
+        if (!(parsed && parsed.slice)) {
+            return void console.error('MALFORMED_RPC_RESPONSE');
+        }
+
         var response = parsed.slice(1);
 
         if (typeof(pending) === 'function') {
@@ -76,39 +67,57 @@ types of messages:
     };
 
     var create = function (network, edPrivateKey, edPublicKey) {
-        var signKey = Nacl.util.decodeBase64(edPrivateKey);
+        var signKey;
 
         try {
+            signKey = Nacl.util.decodeBase64(edPrivateKey);
             if (signKey.length !== 64) {
                 throw new Error('private key did not match expected length of 64');
             }
-        } catch (err) {
-            throw new Error("private signing key is not valid");
-        }
+        } catch (err) { throw err; }
 
-        // TODO validate public key as well
+        var pubBuffer;
+        try {
+            pubBuffer = Nacl.util.decodeBase64(edPublicKey);
+            if (pubBuffer.length !== 32) {
+                throw new Error('expected public key to be 32 uint');
+            }
+        } catch (err) { throw err; }
 
         var ctx = {
-            //privateKey: Encode.hexToUint8Array(edPrivateKey),
             seq: new Date().getTime(),
             network: network,
             timeouts: {}, // timeouts
             pending: {}, // callbacks
+            cookie: null,
         };
-
-        var pin = function (channel, cb) { };
 
         var send = function (type, msg, cb) {
             // construct a signed message...
-            var signed = signMsg(type, msg, signKey);
+            var data = [type, msg];
+            var sig = signMsg(data, signKey);
 
-            return sendMsg(ctx, type, signed, edPublicKey, cb);
+            data.unshift(ctx.cookie); //
+            data.unshift(edPublicKey);
+            data.unshift(sig);
+
+            // [sig, edPublicKey, cookie, type, msg]
+            return sendMsg(ctx, data, cb);
         };
+
+        var getCookie = function (cb) {
+            send('COOKIE', "", function (e, msg) {
+                console.log('cookie message', e, msg);
+                cb(e, msg);
+            });
+        };
+
         network.on('message', function (msg, sender) {
             onMsg(ctx, msg);
         });
         return {
             send: send,
+            ready: getCookie,
         };
     };
 
