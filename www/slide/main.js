@@ -449,7 +449,7 @@ define([
                 $('<b>').text(Messages.printOptions).appendTo($p);
                 $p.append($('<br>'));
                 // Slide number
-                $('<input>', {type: 'checkbox', id: 'checkNumber', checked: 'checked'}).on('change', function () {
+                $('<input>', {type: 'checkbox', id: 'checkNumber', checked: slideOptionsTmp.slide}).on('change', function () {
                     var c = this.checked;
                     console.log(c);
                     slideOptionsTmp.slide = c;
@@ -457,14 +457,14 @@ define([
                 $('<label>', {'for': 'checkNumber'}).text(Messages.printSlideNumber).appendTo($p);
                 $p.append($('<br>'));
                 // Date
-                $('<input>', {type: 'checkbox', id: 'checkDate', checked: 'checked'}).on('change', function () {
+                $('<input>', {type: 'checkbox', id: 'checkDate', checked: slideOptionsTmp.date}).on('change', function () {
                     var c = this.checked;
                     slideOptionsTmp.date = c;
                 }).appendTo($p).css('width', 'auto');
                 $('<label>', {'for': 'checkDate'}).text(Messages.printDate).appendTo($p);
                 $p.append($('<br>'));
                 // Title
-                $('<input>', {type: 'checkbox', id: 'checkTitle', checked: 'checked'}).on('change', function () {
+                $('<input>', {type: 'checkbox', id: 'checkTitle', checked: slideOptionsTmp.title}).on('change', function () {
                     var c = this.checked;
                     slideOptionsTmp.title = c;
                 }).appendTo($p).css('width', 'auto');
