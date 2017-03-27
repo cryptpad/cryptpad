@@ -123,6 +123,17 @@ define([
           myUserName = myID;
         };
 
+        var config = module.config = {
+            initialState: '{}',
+            websocketURL: Cryptpad.getWebsocketURL(),
+            validateKey: secret.keys.validateKey,
+            readOnly: readOnly,
+            channel: secret.channel,
+            crypto: Crypto.createEncryptor(secret.keys),
+            setMyID: setMyID,
+            transformFunction: JsonOT.transform,
+        };
+
         var suggestName = function (fallback) {
             if (document.title === defaultName) {
                 return fallback || "";
@@ -134,18 +145,7 @@ define([
         var renameCb = function (err, title) {
             if (err) { return; }
             document.title = title;
-            module.onLocal();
-        };
-
-        var config = module.config = {
-            initialState: '{}',
-            websocketURL: Cryptpad.getWebsocketURL(),
-            validateKey: secret.keys.validateKey,
-            readOnly: readOnly,
-            channel: secret.channel,
-            crypto: Crypto.createEncryptor(secret.keys),
-            setMyID: setMyID,
-            transformFunction: JsonOT.transform,
+            config.onLocal();
         };
 
         var editHash;
