@@ -23,6 +23,7 @@ define(function () {
     out.websocketError = 'Impossible de se connecter au serveur WebSocket...';
     out.typeError = "Ce pad n'est pas compatible avec l'application sélectionnée";
     out.onLogout = 'Vous êtes déconnecté de votre compte utilisateur, <a href="/" target="_blank">cliquez ici</a> pour vous authentifier<br>ou appuyez sur <em>Échap</em> pour accéder au pad en mode lecture seule.';
+    out.wrongApp = "Impossible d'afficher le contenu de ce document temps-réel dans votre navigateur. Vous pouvez essayer de recharger la page.";
 
     out.loading = "Chargement...";
     out.error = "Erreur";

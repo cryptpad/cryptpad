@@ -691,7 +691,7 @@ define([
                         if (stringify(hjson2) !== stringify(hjson)) {
                             console.log('err');
                             console.error("shjson2 !== shjson");
-                            Cryptpad.errorLoadingScreen("Unable to display the content of that realtime session in your browser. Please try to reload that page."); // TODO translate
+                            Cryptpad.errorLoadingScreen(Messages.wrongApp);
                             throw new Error();
                         }
                     }

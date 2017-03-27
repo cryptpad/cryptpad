@@ -25,6 +25,7 @@ define(function () {
     out.websocketError = 'Unable to connect to the websocket server...';
     out.typeError = "This pad is not compatible with the selected application";
     out.onLogout = 'You are logged out, <a href="/" target="_blank">click here</a> to log in<br>or press <em>Escape</em> to access your pad in read-only mode.';
+    out.wrongApp = "Unable to display the content of that realtime session in your browser. Please try to reload that page.";
 
     out.loading = "Loading...";
     out.error = "Error";
