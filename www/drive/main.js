@@ -393,7 +393,8 @@ define([
                     // TODO: folder properties in the future?
                     hide.push($menu.find('a.properties'));
                 }
-                if (path && path.length > 4) {
+                // If we're in the trash, hide restore and properties for non-root elements
+                if ($menu.find('a.restore').length && path && path.length > 4) {
                     hide.push($menu.find('a.restore'));
                     hide.push($menu.find('a.properties'));
                 }
