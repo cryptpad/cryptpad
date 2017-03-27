@@ -734,7 +734,6 @@ define([
                 console.log("Aborting the session!");
                 // stop the user from continuing to edit
                 setEditable(false);
-                // TODO inform them that the session was torn down
                 toolbar.failed();
                 Cryptpad.alert(Messages.common_connectionLost, undefined, true);
             };
@@ -797,7 +796,6 @@ define([
     var interval = 100;
     var second = function (Ckeditor) {
         Cryptpad.ready(function (err, env) {
-            // TODO handle error
             andThen(Ckeditor);
         });
         Cryptpad.onError(function (info) {
@@ -810,7 +808,6 @@ define([
     var first = function () {
         Ckeditor = ifrw.CKEDITOR;
         if (Ckeditor) {
-            //andThen(Ckeditor);
             // mobile configuration
             Ckeditor.config.toolbarCanCollapse = true;
             Ckeditor.config.height = '72vh';

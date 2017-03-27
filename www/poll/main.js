@@ -500,7 +500,6 @@ define([
     };
 
     // special UI elements
-    //var $title = $('#title').attr('placeholder', Messages.poll_titleHint || 'title'); TODO
     var $description = $('#description').attr('placeholder', Messages.poll_descriptionHint || 'description');
 
     var ready = function (info, userid, readOnly) {

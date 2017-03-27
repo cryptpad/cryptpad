@@ -646,7 +646,7 @@ define([
                     });
                     var $testColor = $('<input>', { type: 'color', value: '!' });
                     var $check = $pad.contents().find("#colorPicker_check");
-                    if ($testColor.attr('type') !== "color" || $testColor.val() === '!') { return; } // TODO
+                    if ($testColor.attr('type') !== "color" || $testColor.val() === '!') { return; }
                     $back.on('click', function() {
                         var $picker = $('<input>', { type: 'color', value: backColor })
                             .css({ display: 'none', })
@@ -908,7 +908,6 @@ define([
 
         var second = function (CM) {
             Cryptpad.ready(function (err, env) {
-                // TODO handle error
                 andThen(CM);
             });
             Cryptpad.onError(function (info) {
@@ -921,7 +920,6 @@ define([
         var first = function () {
             if (ifrw.CodeMirror) {
                 // it exists, call your continuation
-                //andThen(ifrw.CodeMirror);
                 second(ifrw.CodeMirror);
             } else {
                 console.log("CodeMirror was not defined. Trying again in %sms", interval);

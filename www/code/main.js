@@ -715,7 +715,6 @@ define([
 
         var second = function (CM) {
             Cryptpad.ready(function (err, env) {
-                // TODO handle error
                 andThen(CM);
             });
             Cryptpad.onError(function (info) {
@@ -728,7 +727,6 @@ define([
         var first = function () {
             if (ifrw.CodeMirror) {
                 // it exists, call your continuation
-                //andThen(ifrw.CodeMirror);
                 second(ifrw.CodeMirror);
             } else {
                 console.log("CodeMirror was not defined. Trying again in %sms", interval);

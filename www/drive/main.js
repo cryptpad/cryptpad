@@ -1403,7 +1403,7 @@ define([
                     onElementClick(e, $element);
                 });
                 $element.contextmenu(openDefaultContextMenu);
-                $element.data('context', $defaultContextMenu); // TODO: hide the "delete" link in that context menu
+                $element.data('context', $defaultContextMenu);
                 $container.append($element);
             });
         };
