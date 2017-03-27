@@ -497,7 +497,6 @@ define([
                         if (newName === null && typeof(lastName) === "string") { return; }
                         if (newName === null) { newName = ''; }
                         Cryptpad.changeDisplayName(newName);
-                        //config.userName.setName(newName); TODO
                     });
                 });
             });
