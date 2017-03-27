@@ -278,6 +278,7 @@ define(function () {
     out.settings_userFeedback = "Activer l'envoi de retours d'expérience";
 
     out.settings_anonymous = "Vous n'êtes pas connectés. Ces préférences seront utilisées pour ce navigateur.";
+    out.settings_publicSigningKey = "Clé publique de signature";
 
     // index.html
 
