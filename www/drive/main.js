@@ -1536,11 +1536,9 @@ define([
 
             module.resetTree();
 
-            if (isSearch) {
-                $tree.find('#searchInput').focus();
-                $tree.find('#searchInput')[0].selectionStart = getSearchCursor();
-                $tree.find('#searchInput')[0].selectionEnd = getSearchCursor();
-            }
+            $tree.find('#searchInput').focus();
+            $tree.find('#searchInput')[0].selectionStart = getSearchCursor();
+            $tree.find('#searchInput')[0].selectionEnd = getSearchCursor();
 
             if (!isWorkgroup()) {
                 setLastOpenedFolder(path);
