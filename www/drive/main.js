@@ -126,6 +126,15 @@ define([
         localStorage[LOCALSTORAGE_VIEWMODE] = mode;
     };
 
+    var setSearchCursor = function () {
+        $input = $iframe.find('#searchInput');
+        localStorage.searchCursor = $input[0].selectionStart;
+    };
+    var getSearchCursor = function () {
+        return localStorage.searchCursor || 0;
+    }
+
+
     var now = function () {
         return new Date().getTime();
     };
@@ -1529,6 +1538,8 @@ define([
 
             if (isSearch) {
                 $tree.find('#searchInput').focus();
+                $tree.find('#searchInput')[0].selectionStart = getSearchCursor();
+                $tree.find('#searchInput')[0].selectionEnd = getSearchCursor();
             }
 
             if (!isWorkgroup()) {
@@ -1773,17 +1784,22 @@ define([
                 if (search.to) { window.clearTimeout(search.to); }
                 var isInSearchTmp = currentPath[0] === SEARCH;
                 if ($input.val().trim() === "") {
+                    setSearchCursor(0);
                     if (search.oldLocation.length) { displayDirectory(search.oldLocation); }
                     return;
                 }
                 if (e.which === 13) {
                     if (!isInSearchTmp) { search.oldLocation = currentPath.slice(); }
-                    displayDirectory([SEARCH, $input.val()]);
+                    var newLocation = [SEARCH, $input.val()];
+                    setSearchCursor();
+                    if (!filesOp.comparePath(newLocation, currentPath.slice())) { displayDirectory(newLocation); }
                     return;
                 }
                 search.to = window.setTimeout(function () {
                     if (!isInSearchTmp) { search.oldLocation = currentPath.slice(); }
-                    displayDirectory([SEARCH, $input.val()]);
+                    var newLocation = [SEARCH, $input.val()];
+                    setSearchCursor();
+                    if (!filesOp.comparePath(newLocation, currentPath.slice())) { displayDirectory(newLocation); }
                 }, 500);
             }).appendTo($div);
             if (isInSearch) { $input.val(currentPath[1] || ''); }
