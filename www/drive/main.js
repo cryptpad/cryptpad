@@ -127,12 +127,12 @@ define([
     };
 
     var setSearchCursor = function () {
-        $input = $iframe.find('#searchInput');
+        var $input = $iframe.find('#searchInput');
         localStorage.searchCursor = $input[0].selectionStart;
     };
     var getSearchCursor = function () {
         return localStorage.searchCursor || 0;
-    }
+    };
 
 
     var now = function () {
