@@ -1,7 +1,8 @@
 define([
     '/customize/application_config.js',
+    '/api/config',
     '/bower_components/jquery/dist/jquery.min.js'
-], function (Config) {
+], function (Config, ApiConfig) {
     var $ = window.jQuery;
 
     var Messages = {};
@@ -54,8 +55,9 @@ define([
     var firstConnection = true;
     var lagErrors = 0;
 
-    var styleToolbar = function ($container, href) {
-        href = href || '/customize/toolbar.css';
+    var styleToolbar = function ($container, href, version) {
+        href = href || '/customize/toolbar.css' + (version?('?' + version): '');
+
         $.ajax({
             url: href,
             dataType: 'text',
@@ -80,7 +82,12 @@ define([
         }
 
         $container.prepend($toolbar);
-        styleToolbar($container);
+
+        if (ApiConfig && ApiConfig.requireConf && ApiConfig.requireConf.urlArgs) {
+            styleToolbar($container, undefined, ApiConfig.requireConf.urlArgs);
+        } else {
+            styleToolbar($container);
+        }
         return $toolbar;
     };
 
