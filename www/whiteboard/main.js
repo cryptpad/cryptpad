@@ -50,6 +50,7 @@ define([
 
         $width.on('change', updateBrushWidth);
 
+        // TODO add a better color palette
         var palette = ['red', 'blue', 'green', 'white', 'black', 'purple',
             'gray', 'beige', 'brown', 'cyan', 'darkcyan', 'gold', 'yellow', 'pink'];
         var $colors = $('#colors');
@@ -174,6 +175,13 @@ define([
 
             var $export = Cryptpad.createButton('export', true, {}, saveImage);
             $rightside.append($export);
+
+            var $forget = Cryptpad.createButton('forget', true, {}, function (err, title) {
+                if (err) { return; }
+                setEditable(false);
+                toolbar.failed();
+            });
+            $rightside.append($forget);
 
             var editHash;
             var viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
@@ -339,12 +347,11 @@ define([
 
         var onAbort = config.onAbort = function (info) {
             setEditable(false);
-            window.alert("Server Connection Lost");
-
-            if (window.confirm("Would you like to save your image?")) {
-                saveImage();
-            }
+            toolbar.failed();
+            Cryptpad.alert(Messages.common_connectionLost, undefined, true);
         };
+
+        // TODO onConnectionStateChange
 
         var rt = Realtime.start(config);
 
