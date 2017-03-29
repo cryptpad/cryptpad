@@ -1783,7 +1783,7 @@ define([
                 var isInSearchTmp = currentPath[0] === SEARCH;
                 if ($input.val().trim() === "") {
                     setSearchCursor(0);
-                    if (search.oldLocation.length) { displayDirectory(search.oldLocation); }
+                    if (search.oldLocation && search.oldLocation.length) { displayDirectory(search.oldLocation); }
                     return;
                 }
                 if (e.which === 13) {
