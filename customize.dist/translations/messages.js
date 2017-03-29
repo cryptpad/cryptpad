@@ -16,6 +16,7 @@ define(function () {
     out.button_newcode = 'New Code pad';
     out.button_newpoll = 'New Poll';
     out.button_newslide = 'New Presentation';
+    out.button_newwhiteboard = 'New Whiteboard';
 
     // NOTE: We want to update the 'common_connectionLost' key.
     // Please do not add a new 'updated_common_connectionLostAndInfo' but change directly the value of 'common_connectionLost'

@@ -16,6 +16,7 @@ define(function () {
     out.button_newcode = 'Nouvelle page de code';
     out.button_newpoll = 'Nouveau sondage';
     out.button_newslide = 'Nouvelle présentation';
+    out.button_newwhiteboard = 'Nouveau tableau blanc';
 
     out.updated_0_common_connectionLost = "<b>Connexion au serveur perdue</b><br>Vous êtes désormais en mode lecture seule jusqu'au retour de la connexion.";
     out.common_connectionLost = out.updated_0_common_connectionLost;
