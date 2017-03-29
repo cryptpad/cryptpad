@@ -62,6 +62,7 @@ define([
             //return;
         } else {
             $main.find('#userForm').removeClass('hidden');
+            $('#name').focus();
         }
 
         var displayCreateButtons = function () {

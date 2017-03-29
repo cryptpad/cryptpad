@@ -5,7 +5,7 @@
     <title data-localization="main_title">Cryptpad: Zero Knowledge, Collaborative Real Time Editing</title>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <link rel="stylesheet" type="text/css" href="/customize/main.css" />
+    <link rel="stylesheet" type="text/css" data-rewrite-href="/customize/main.css" />
     <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
     <link rel="icon" type="image/png" href="/customize/main-favicon.png" id="favicon"/>
     <script src="/bower_components/jquery/dist/jquery.min.js"></script>
@@ -74,7 +74,7 @@
         </div>
 
         <div id="userForm" class="form-group hidden">
-            <input type="text" id="name" name="name" class="form-control" data-localization-placeholder="login_username" autofocus>
+            <input type="text" id="name" name="name" class="form-control" data-localization-placeholder="login_username">
             <input type="password" id="password" name="password" class="form-control" data-localization-placeholder="login_password">
             <div style="display: none;"><span class="remember form-check"><label for="rememberme" class="form-check-label" data-localization-append="login_remember"><input type="checkbox" id="rememberme" class="form-check-input" checked="checked"></label></span><br></div>
             <button class="btn btn-secondary login half first" data-localization="login_login"></button> <button class="btn btn-success register half" data-localization="login_register"></button>
