@@ -11,10 +11,12 @@ define([
     'json.sortify',
     '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/cryptpad-common.js',
+    '/common/visible.js',
+    '/common/notify.js',
     '/bower_components/secure-fabric.js/dist/fabric.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
-], function (Config, Realtime, Crypto, Toolbar, TextPatcher, JSONSortify, JsonOT, Cryptpad) {
+], function (Config, Realtime, Crypto, Toolbar, TextPatcher, JSONSortify, JsonOT, Cryptpad, Visible, Notify) {
     var saveAs = window.saveAs;
     var Messages = Cryptpad.Messages;
 
@@ -250,6 +252,20 @@ define([
             }
         };
 
+        var unnotify = function () {
+            if (module.tabNotification &&
+                typeof(module.tabNotification.cancel) === 'function') {
+                module.tabNotification.cancel();
+            }
+        };
+
+        var notify = function () {
+            if (Visible.isSupported() && !Visible.currently()) {
+                unnotify();
+                module.tabNotification = Notify.tab(1000, 10);
+            }
+        };
+
         var onRemote = config.onRemote = Catch(function () {
             if (initializing) { return; }
             var userDoc = module.realtime.getUserDoc();
@@ -261,6 +277,8 @@ define([
             canvas.loadFromJSON(remoteDoc);
             canvas.renderAll();
 
+            var content = canvas.toDatalessJSON();
+            if (content !== remoteDoc) { notify(); }
             if (readOnly) { setEditable(false); }
         });
         setEditable(false);
@@ -322,6 +340,11 @@ define([
             setEditable(true);
             initializing = false;
             onRemote();
+
+            if (Visible.isSupported()) {
+                Visible.onChange(function (yes) { if (yes) { unnotify(); } });
+            }
+
             Cryptpad.getLastName(function (err, lastName) {
                 if (err) {
                     console.log("Could not get previous name");
