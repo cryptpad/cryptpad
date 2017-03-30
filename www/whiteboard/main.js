@@ -379,6 +379,17 @@ define([
         };
 
         // TODO onConnectionStateChange
+        var onConnectionChange = config.onConnectionChange = function (info) {
+            setEditable(info.state);
+            toolbar.failed();
+            if (info.state) {
+                initializing = true;
+                toolbar.reconnecting(info.myId);
+                Cryptpad.findOKButton().click();
+            } else {
+                Cryptpad.alert(Messages.common_connectionLost, undefined, true);
+            }
+        };
 
         var rt = Realtime.start(config);
 
