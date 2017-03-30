@@ -171,9 +171,11 @@ define([
                 common: Cryptpad
             };
             if (readOnly) {delete config.changeNameID; }
+
             toolbar = module.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, userList, config);
 
             var $rightside = $bar.find('.' + Toolbar.constants.rightside);
+            module.$userNameButton = $($bar.find('.' + Toolbar.constants.changeUsername));
 
             var $export = Cryptpad.createButton('export', true, {}, saveImage);
             $rightside.append($export);
@@ -192,6 +194,8 @@ define([
                 editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
             }
             if (!readOnly) { Cryptpad.replaceHash(editHash); }
+
+            Cryptpad.onDisplayNameChanged(setName);
         };
 
         // used for debugging, feel free to remove
