@@ -6,6 +6,29 @@ define([
     var $ = window.jQuery;
     var DiffDOM = window.diffDOM;
 
+    var renderer = new Marked.Renderer();
+
+    var checkedTaskItemPtn = /^\s*\[x\]\s*/;
+    var uncheckedTaskItemPtn = /^\s*\[ \]\s*/;
+    renderer.listitem = function (text, level) {
+        var isCheckedTaskItem = checkedTaskItemPtn.test(text);
+        var isUncheckedTaskItem = uncheckedTaskItemPtn.test(text);
+        if (isCheckedTaskItem) {
+            text = text.replace(checkedTaskItemPtn,
+                '<i class="fa fa-check-square" aria-hidden="true"></i>&nbsp;') + '\n';
+        }
+        if (isUncheckedTaskItem) {
+            text = text.replace(uncheckedTaskItemPtn,
+                '<i class="fa fa-square-o" aria-hidden="true"></i>&nbsp;') + '\n';
+        }
+        var cls = (isCheckedTaskItem || isUncheckedTaskItem) ? ' class="todo-list-item"' : '';
+        return '<li'+ cls + '>' + text + '</li>\n';
+    };
+
+    Marked.setOptions({
+        renderer: renderer
+    });
+
     var truthy = function (x) { return x; };
 
     var Slide = {
