@@ -295,7 +295,7 @@ define([
                     paths.push(p);
                 }
             };
-            if (path.length === 1) {
+            if (path.length === 1 && typeof(root) === 'object') {
                 Object.keys(root).forEach(function (key) {
                     var arr = root[key];
                     if (!Array.isArray(arr)) { return; }

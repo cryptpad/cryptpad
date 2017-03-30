@@ -152,6 +152,7 @@ define([
                 var oldFo = FO.init(parsed.drive, {
                     Cryptpad: Cryptpad
                 });
+                oldFo.fixFiles();
                 var newData = Cryptpad.getStore().getProxy();
                 var newFo = newData.fo;
                 var newRecentPads = proxy.drive[Cryptpad.storageKey];
