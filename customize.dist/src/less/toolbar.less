@@ -23,6 +23,8 @@
 }
 
 .cryptpad-toolbar {
+    @toolbar-green: #5cb85c;
+
     box-sizing: border-box;
     padding: 0px 6px;
 
@@ -43,8 +45,8 @@
         &#shareButton {
             // Bootstrap 4 colors
             color: #fff;
-            background: #5cb85c;
-            border-color: #5cb85c;
+            background: @toolbar-green;
+            border-color: @toolbar-green;
             &:hover {
                 background: #449d44;
                 border: 1px solid #419641;
@@ -144,14 +146,14 @@
         &.lag3 {
             .bar4 { .clag(); }
             span {
-                background-color: green;
-                border-color: green;
+                background-color: @toolbar-green;
+                border-color: @toolbar-green;
             }
         }
         &.lag4 {
             span {
-                background-color: green;
-                border-color: green;
+                background-color: @toolbar-green;
+                border-color: @toolbar-green;
             }
         }
     }

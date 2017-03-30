@@ -222,12 +222,12 @@
   background: transparent;
 }
 .cryptpad-toolbar #newLag.lag3 span {
-  background-color: green;
-  border-color: green;
+  background-color: #5cb85c;
+  border-color: #5cb85c;
 }
 .cryptpad-toolbar #newLag.lag4 span {
-  background-color: green;
-  border-color: green;
+  background-color: #5cb85c;
+  border-color: #5cb85c;
 }
 .cryptpad-toolbar div {
   white-space: normal;
