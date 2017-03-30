@@ -1290,12 +1290,10 @@ html.cp,
 }
 .cp form.realtime table .edit,
 .cp div.realtime table .edit {
-  color: #46E981;
+  color: #000;
   cursor: pointer;
   float: left;
   margin-left: 10px;
-  /*&:after { content: '✐'; }*/
-  /*&.editable { display: none; }*/
 }
 .cp form.realtime table .remove,
 .cp div.realtime table .remove {
