@@ -213,7 +213,7 @@ define([
             .on('click', function () {
                 pickColor($color.css('background-color'), function (color) {
                     setColor(color);
-                })
+                });
             });
 
             setColor('#000');
