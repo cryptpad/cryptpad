@@ -477,6 +477,7 @@ define([
 
         $('#clear').on('click', function () {
             canvas.clear();
+            onLocal();
         });
 
         $('#save').on('click', function () {
