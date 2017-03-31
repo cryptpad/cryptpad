@@ -195,7 +195,7 @@ define([
             }
             if (!readOnly) { Cryptpad.replaceHash(editHash); }
 
-            Cryptpad.onDisplayNameChanged(setName);
+            Cryptpad.onDisplayNameChanged(module.setName);
         };
 
         // used for debugging, feel free to remove
