@@ -18,8 +18,10 @@
 @property-fg: #66d9ef;
 
 .cm-s-lol {
-    font-family: Comic Sans MS, cursive;
-    font-size: 24px;
+    &.CodeMirror {
+        font-family: Comic Sans MS, cursive;
+        font-size: 16px;
+    }
 
     &.CodeMirror, .CodeMirror-gutters {
       background-color: @gutter-bg !important;

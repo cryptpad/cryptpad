@@ -1,6 +1,6 @@
-.cm-s-lol {
+.cm-s-lol.CodeMirror {
   font-family: Comic Sans MS, cursive;
-  font-size: 24px;
+  font-size: 16px;
 }
 .cm-s-lol.CodeMirror,
 .cm-s-lol .CodeMirror-gutters {
