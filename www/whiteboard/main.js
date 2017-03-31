@@ -52,10 +52,12 @@ define([
 
         $width.on('change', updateBrushWidth);
 
-        var pickColor = function (cb) {
+        var pickColor = function (current, cb) {
+            // TODO find out why initial color is not being set
+            // http://jsfiddle.net/j3hZB/
             var $picker = $('<input>', {
                 type: 'color',
-                value: module.color || '#000'
+                value: '#FFFFFF',
             })
             .css({
                 display: 'none',
@@ -65,6 +67,7 @@ define([
                 cb(color);
             });
             setTimeout(function () {
+                $picker.val(current);
                 $picker.click();
             });
         };
@@ -87,11 +90,13 @@ define([
             .css({
                 'background-color': color,
             })
+            // FIXME double click doesn't seem to work in chromium currently
             .dblclick(function () {
-                pickColor(function (c) {
+                pickColor($color.css('background-color'), function (c) {
                     $color.css({
                         'background-color': c,
                     });
+                    setColor(c);
                 });
                 // TODO commit chosen color to pad metadata:
                 // json.metadata.palette[i]
@@ -205,9 +210,8 @@ define([
                 title: "choose a color",
                 'class': "fa fa-square rightside-button",
             })
-            .text('  ')
             .on('click', function () {
-                pickColor(function (color) {
+                pickColor($color.css('background-color'), function (color) {
                     setColor(color);
                 })
             });
