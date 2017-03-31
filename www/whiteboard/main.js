@@ -52,19 +52,57 @@ define([
 
         $width.on('change', updateBrushWidth);
 
+        var pickColor = function (cb) {
+            var $picker = $('<input>', {
+                type: 'color',
+                value: module.color || '#000'
+            })
+            .css({
+                display: 'none',
+            })
+            .on('change', function () {
+                var color = this.value;
+                cb(color);
+            });
+            setTimeout(function () {
+                $picker.click();
+            });
+        };
+
+        var setColor = function (c) {
+            canvas.freeDrawingBrush.color = c;
+            module.$color.css({
+                'color': c,
+            });
+        };
+
         // TODO add a better color palette
         var palette = ['red', 'blue', 'green', 'white', 'black', 'purple',
             'gray', 'beige', 'brown', 'cyan', 'darkcyan', 'gold', 'yellow', 'pink'];
         var $colors = $('#colors');
-        $colors.html(function (i, val) {
-            return palette.map(function (c) {
-                    return "<span class='palette' style='background-color:"+c+"'></span>";
-                }).join("");
+        palette.forEach(function (color, i) {
+            var $color = $('<span>', {
+                'class': 'palette-color',
+            })
+            .css({
+                'background-color': color,
+            })
+            .dblclick(function () {
+                pickColor(function (c) {
+                    $color.css({
+                        'background-color': c,
+                    });
+                });
+                // TODO commit chosen color to pad metadata:
+                // json.metadata.palette[i]
+            });
+
+            $colors.append($color);
         });
 
-        $('.palette').on('click', function () {
+        $('.palette-color').on('click', function () {
             var color = $(this).css('background-color');
-            canvas.freeDrawingBrush.color = color;
+            setColor(color);
         });
 
         var setEditable = function (bool) {
@@ -151,6 +189,36 @@ define([
             config.onLocal();
         };
 
+
+        var makeColorButton = function ($container) {
+            var $testColor = $('<input>', { type: 'color', value: '!' });
+
+            // if colors aren't supported, bail out
+            if ($testColor.attr('type') !== 'color' ||
+                $testColor.val() === '!') {
+                console.log("Colors aren't supported. Aborting");
+                return;
+            }
+
+            var $color = module.$color = $('<button>', {
+                id: "color-picker",
+                title: "choose a color",
+                'class': "fa fa-square rightside-button",
+            })
+            .text('  ')
+            .on('click', function () {
+                pickColor(function (color) {
+                    setColor(color);
+                })
+            });
+
+            setColor('#000');
+
+            $container.append($color);
+
+            return $color;
+        };
+
         var editHash;
         var onInit = config.onInit = function (info) {
             userList = info.userList;
@@ -186,6 +254,8 @@ define([
                 toolbar.failed();
             });
             $rightside.append($forget);
+
+            makeColorButton($rightside);
 
             var editHash;
             var viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
@@ -250,6 +320,9 @@ define([
                     updateTitle(json.metadata.title || defaultName);
                     titleUpdated = true;
                 }
+                if (typeof(json.metadata.palette) !== 'object') {
+                    json.metadata.palette = {};
+                }
             }
             if (!titleUpdated) {
                 updateTitle(defaultName);
@@ -277,6 +350,8 @@ define([
             updateMetadata(userDoc);
             var json = JSON.parse(userDoc);
             var remoteDoc = json.content;
+
+            // TODO update palette if it has changed
 
             canvas.loadFromJSON(remoteDoc);
             canvas.renderAll();
@@ -349,6 +424,7 @@ define([
                 Visible.onChange(function (yes) { if (yes) { unnotify(); } });
             }
 
+            /*  TODO: restore palette from metadata.palette */
             Cryptpad.getLastName(function (err, lastName) {
                 if (err) {
                     console.log("Could not get previous name");
