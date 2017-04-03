@@ -45,8 +45,11 @@ define([
         var $canvasContainer = $('canvas').parents('.canvas-container');
 
         var $width = $('#width');
+        var $widthLabel = $('label[for="width"]');
         var updateBrushWidth = function () {
-            canvas.freeDrawingBrush.width = Number($width.val());
+            var val = $width.val();
+            canvas.freeDrawingBrush.width = Number(val);
+            $widthLabel.text(val);
         };
         updateBrushWidth();
 
