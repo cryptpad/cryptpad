@@ -66,7 +66,7 @@ types of messages:
         }
     };
 
-    var create = function (network, edPrivateKey, edPublicKey) {
+    var create = function (network, edPrivateKey, edPublicKey, cb) {
         var signKey;
 
         try {
@@ -74,15 +74,19 @@ types of messages:
             if (signKey.length !== 64) {
                 throw new Error('private key did not match expected length of 64');
             }
-        } catch (err) { throw err; }
+        } catch (err) {
+            return void cb(err);
+        }
 
         var pubBuffer;
         try {
             pubBuffer = Nacl.util.decodeBase64(edPublicKey);
             if (pubBuffer.length !== 32) {
-                throw new Error('expected public key to be 32 uint');
+                return void cb('expected public key to be 32 uint');
             }
-        } catch (err) { throw err; }
+        } catch (err) {
+            return void cb(err);
+        }
 
         var ctx = {
             seq: new Date().getTime(),
@@ -97,7 +101,12 @@ types of messages:
             var data = [type, msg];
             var sig = signMsg(data, signKey);
 
-            data.unshift(ctx.cookie); //
+            if (ctx.cookie && ctx.cookie.join) {
+                data.unshift(ctx.cookie.join('|')); //
+            } else {
+                data.unshift(ctx.cookie);
+            }
+
             data.unshift(edPublicKey);
             data.unshift(sig);
 
@@ -105,20 +114,21 @@ types of messages:
             return sendMsg(ctx, data, cb);
         };
 
-        var getCookie = function (cb) {
-            send('COOKIE', "", function (e, msg) {
-                console.log('cookie message', e, msg);
-                cb(e, msg);
-            });
-        };
-
         network.on('message', function (msg, sender) {
             onMsg(ctx, msg);
         });
-        return {
-            send: send,
-            ready: getCookie,
-        };
+
+        send('COOKIE', "", function (e, msg) {
+            if (e) { return void cb(e); }
+
+            console.log(msg); // DO something with the returned cookie
+            ctx.cookie = msg;
+
+            cb(void 0, {
+                send: send,
+            });
+        });
+
     };
 
     return { create: create };

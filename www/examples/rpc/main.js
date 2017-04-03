@@ -17,15 +17,12 @@ define([
             var edPrivate = proxy.edPrivate;
             var edPublic = proxy.edPublic;
 
-            var rpc = RPC.create(network, edPrivate, edPublic);
-
             var payload = {
                 a: Math.floor(Math.random() * 1000),
                 b: 7,
             };
 
-            rpc.ready(function () {
-
+            RPC.create(network, edPrivate, edPublic, function (e, rpc) {
                 // console.log(payload);
                 rpc.send('ECHO', payload, function (e, msg) {
                     if (e) { return void console.error(e); }
@@ -67,6 +64,25 @@ define([
                     console.error("EXPECTED ENOENT");
                     console.log(msg);
                 });
+
+                (function () {
+                    // compute what you think the hash should be
+
+                    // then ask the server if what it has matches your records
+                    rpc.send('GET_HASH', edPublic, function (e, hash) {
+                        if (e) { return void console.error(e); }
+
+
+                        console.log("user pins hash is [%s]", hash);
+                        // if it does, awesome!
+                        // you should be able to pin and unpin things easily
+
+                        // if it doesn't, send a reset, and start re-pinning
+
+
+
+                    });
+                }());
 
                 if (false) {
                 (function () {
