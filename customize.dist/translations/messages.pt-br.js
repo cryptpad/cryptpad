@@ -5,7 +5,7 @@
 // Translation to brazilian portuguese done by Gustavo Henrique Machado da Silva (www.linkedin.com/in/gustavohmsilva)
 // Even though this software may not share the same licenses, the translation produced by me is protected under
 // Creative commons, Attribution-ShareAlike 4.0 International
-// You can contact me over email on gustavohmsilva@member.fsf.orgs
+// You can contact me over email on gustavohmsilva@member.fsf.org
 define(function () {
     var out = {};
 
