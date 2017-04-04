@@ -4,25 +4,80 @@ define([
 
     '/bower_components/tweetnacl/nacl-fast.min.js'
 ], function (Cryptpad, Rpc) {
-
     var Nacl = window.nacl;
 
-    var create = function (network, ed) {
-        var exp = {};
-        var rpc = Rpc.create(network, ed);
+    var localChannelsHash = function (fileList) {
+        fileList = fileList || Cryptpad.getUserChannelList();
 
-        var checkHash = exp.checkHash = function (fileList) {
-            fileList = fileList || Cryptpad.getUserChannelList();
+        var channelIdList = [];
+        fileList.forEach(function (href) {
+            var parsedHref = Cryptpad.parsePadUrl(href);
+            if (!parsedHref || !parsedHref.hash) { return; }
+            var parsedHash = Cryptpad.parseHash(parsedHref.hash);
+            if (!parsedHash || !parsedHash.channel) { return; }
+            channelIdList.push(Cryptpad.base64ToHex(parsedHash.channel));
+        });
+        var uniqueList = Cryptpad.deduplicateString(channelIdList).sort();
 
-            var channelIdList = [];
-            fileList.forEach(function (href) {
-                var parsedHref = Cryptpad.parsePadUrl(href);
-                if (!parsedHref || !parsedHref.hash) { return; }
-                var parsedHash = Cryptpad.parseHash(parsedHref.hash);
-                if (!parsedHash || !parsedHash.channel) { return; }
-                channelIdList.push(Cryptpad.base64ToHex(parsedHash.channel));
+        var hash = Nacl.util.encodeBase64(Nacl
+            .hash(Nacl.util.decodeUTF8( JSON.stringify(uniqueList) )));
+
+        return hash;
+    };
+
+    // TODO move this into pinpad
+    false && (function () {
+        // compute what you think the hash should be
+
+        // then ask the server if what it has matches your records
+        rpc.send('GET_HASH', edPublic, function (e, hash) {
+            if (e) { return void console.error(e); }
+
+            console.log("user pins hash is [%s]", hash);
+            // if it does, awesome!
+            // you should be able to pin and unpin things easily
+
+            // if it doesn't, send a reset, and start re-pinning
+        });
+    }());
+
+    getServerHash = function (rpc, edPublic, cb) {
+        rpc.send('GET_HASH', edPublic, cb);
+    };
+
+    var getFileSize = function (rpc, file, cb) {
+        rpc.send('GET_FILE_SIZE', file, cb);
+    };
+
+    var getFileListSize = function (rpc, list, cb) {
+        var bytes = 0;
+
+        var left = list.length;
+
+        list.forEach(function (chan) {
+            getFileSize(rpc, chan, function (e, msg) {
+                if (e) {
+                    if (e === 'ENOENT') {
+
+                        // these channels no longer exists on the server
+                        console.log(e, chan);
+                    } else {
+                        console.error(e);
+                    }
+                } else if (msg && msg[0] && typeof(msg[0]) === 'number') {
+                    bytes += msg[0];
+                    //console.log(bytes);
+                } else {
+                    console.log("returned message was not a number: ", msg);
+                }
+
+                --left;
+                if (left === 0) {
+                    cb(void 0, bytes);
+                }
             });
-            var uniqueList = Cryptpad.deduplicateString(channelIdList).sort();
+        });
+    };
 
             /*
 1. every time you want to pin or unpid a pad you send a message to the server
@@ -34,12 +89,41 @@ define([
     UNPIN all, send all
             */
 
-            var hash = Nacl.util.encodeBase64(Nacl.hash(Nacl.util.decodeUTF8( JSON.stringify(uniqueList) )));
 
-            return hash;
-        };
+    // Don't use create until Cryptpad is ready
+    // (use Cryptpad.ready)
+    var create = function (cb) {
+        // you will need to communicate with the server
+        // use an already established
+        var network = Cryptpad.getNetwork();
 
-        return exp;
+        // your user proxy contains credentials you will need to make RPC calls
+        var proxy = Cryptpad.getStore().getProxy().proxy;
+
+        var edPrivate = proxy.edPrivate;
+        var edPublic = proxy.edPublic;
+
+        if (!(edPrivate && edPublic)) { return void cb('INVALID_KEYS'); }
+
+        Rpc.create(network, edPrivate, edPublic, function (e, rpc) {
+            if (e) { return void cb(e); }
+
+            var exp = {};
+            exp.publicKey = edPublic;
+            exp.send = rpc.send;
+
+            exp.getFileSize = function (file, cb) {
+                getFileSize(rpc, file, cb);
+            };
+            exp.getFileListSize = function (list, cb) {
+                getFileListSize(rpc, list, cb);
+            };
+            exp.getServerHash = function (cb) {
+                getServerHash(rpc, edPublic, cb);
+            };
+
+            cb(e, exp);
+        });
     };
 
     return { create: create };
