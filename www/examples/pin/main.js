@@ -47,11 +47,45 @@ define([
         });
     };
 
+    var synchronize = function (call) {
+        var localHash = call.localChannelsHash();
+        var serverHash;
+
+        call.getServerHash(function (e, hash) {
+            if (e) { return void console.error(e); }
+            serverHash = hash;
+
+            if (serverHash === localHash) {
+                return console.log("all your pads are pinned. There is nothing to do");
+            }
+
+            call.reset(function (e, response) {
+                if (e) { return console.error(e); }
+
+                var list = call.uniqueChannelList();
+
+                // now start pinning...
+                list.forEach(function (channel) {
+                    call.pin(channel, function (e, out) {
+                        if (e) { return console.error(e); }
+                    });
+                });
+            });
+
+/*
+            console.log(JSON.stringify({
+                local: localHash,
+                remote: serverHash,
+            }, null, 2));*/
+        });
+    };
+
     $(function () {
         Cryptpad.ready(function (err, env) {
             Pinpad.create(function (e, call) {
                 if (e) { return void console.error(e); }
-                then(call);
+                // then(call);
+                synchronize(call);
             });
         });
     });

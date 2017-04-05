@@ -6,27 +6,22 @@ define([
 ], function (Cryptpad, Rpc) {
     var Nacl = window.nacl;
 
+    var uniqueChannelList = function (list) {
+        list = list || Cryptpad.getUserChannelList();
+        return Cryptpad.deduplicateString(list).sort();
+    };
+
     var localChannelsHash = function (fileList) {
-        fileList = fileList || Cryptpad.getUserChannelList();
-
-        var channelIdList = [];
-        fileList.forEach(function (href) {
-            var parsedHref = Cryptpad.parsePadUrl(href);
-            if (!parsedHref || !parsedHref.hash) { return; }
-            var parsedHash = Cryptpad.parseHash(parsedHref.hash);
-            if (!parsedHash || !parsedHash.channel) { return; }
-            channelIdList.push(Cryptpad.base64ToHex(parsedHash.channel));
-        });
-        var uniqueList = Cryptpad.deduplicateString(channelIdList).sort();
-
+        var uniqueList = uniqueChannelList(fileList);
         var hash = Nacl.util.encodeBase64(Nacl
             .hash(Nacl.util.decodeUTF8( JSON.stringify(uniqueList) )));
-
         return hash;
     };
 
     var getServerHash = function (rpc, edPublic, cb) {
-        rpc.send('GET_HASH', edPublic, cb);
+        rpc.send('GET_HASH', edPublic, function (e, hash) {
+            cb(e, hash[0]);
+        });
     };
 
     var getFileSize = function (rpc, file, cb) {
@@ -63,6 +58,18 @@ define([
         });
     };
 
+    var pinChannel = function (rpc, channel, cb) {
+        rpc.send('PIN', channel, cb);
+    };
+
+    var unpinChannel = function (rpc, channel, cb) {
+        rpc.send('UNPIN', channel, cb);
+    };
+
+    var reset = function (rpc, cb) {
+        rpc.send('RESET', undefined, cb);
+    };
+
             /*
 1. every time you want to pin or unpid a pad you send a message to the server
 2. the server sends back a hash of the sorted list of your pinned pads
@@ -96,6 +103,8 @@ define([
             exp.publicKey = edPublic;
             exp.send = rpc.send;
 
+            exp.uniqueChannelList = uniqueChannelList;
+
             exp.getFileSize = function (file, cb) {
                 getFileSize(rpc, file, cb);
             };
@@ -105,6 +114,18 @@ define([
             exp.getServerHash = function (cb) {
                 getServerHash(rpc, edPublic, cb);
             };
+
+            exp.pin = function (channel, cb) {
+                pinChannel(rpc, channel, cb);
+            };
+            exp.unpin = function (channel, cb) {
+                unpinChannel(rpc, channel, cb);
+            };
+            exp.reset = function (cb) {
+                reset(rpc, cb);
+            };
+
+            exp.localChannelsHash = localChannelsHash;
 
             cb(e, exp);
         });
