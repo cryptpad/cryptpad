@@ -43,13 +43,42 @@ define([
         var $canvas = $('canvas');
         var $controls = $('#controls');
         var $canvasContainer = $('canvas').parents('.canvas-container');
+        var $pickers = $('#pickers');
+        var $colors = $('#colors');
+        var $cursors = $('#cursors');
 
         var $width = $('#width');
         var $widthLabel = $('label[for="width"]');
+
+        var createCursor = function () {
+            var w = canvas.freeDrawingBrush.width;
+            var c = canvas.freeDrawingBrush.color;
+            $cursors.html('<canvas width="'+w+'" height="'+w+'"></canvas>');
+            var $ccanvas = $cursors.find('canvas');
+            var ccanvas = $ccanvas[0];
+
+            var context = ccanvas.getContext('2d');
+            var centerX = w / 2;
+            var centerY = w / 2;
+            var radius = w/2;
+
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+            context.fillStyle = c;
+            context.fill();
+            //context.lineWidth = w/2;
+            //context.strokeStyle = '#000000';
+            //context.stroke();
+
+            var img = ccanvas.toDataURL("image/png");
+            canvas.freeDrawingCursor = 'url('+img+') '+w/2+' '+w/2+', crosshair';
+        };
+
         var updateBrushWidth = function () {
             var val = $width.val();
             canvas.freeDrawingBrush.width = Number(val);
             $widthLabel.text(val);
+            createCursor();
         };
         updateBrushWidth();
 
@@ -58,6 +87,7 @@ define([
         var pickColor = function (current, cb) {
             // TODO find out why initial color is not being set
             // http://jsfiddle.net/j3hZB/
+            console.log(current);
             var $picker = $('<input>', {
                 type: 'color',
                 value: '#FFFFFF',
@@ -68,7 +98,7 @@ define([
             .on('change', function () {
                 var color = this.value;
                 cb(color);
-            });
+            }).appendTo($pickers);
             setTimeout(function () {
                 $picker.val(current);
                 $picker.click();
@@ -80,33 +110,21 @@ define([
             module.$color.css({
                 'color': c,
             });
+            createCursor();
+        };
+
+        var rgb2hex = function (rgb) {
+            if (rgb.indexOf('#') === 0) { return rgb; }
+            rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+            var hex = function (x) {
+                return ("0" + parseInt(x).toString(16)).slice(-2);
+            };
+            return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
         };
 
         // TODO add a better color palette
         var palette = ['red', 'blue', 'green', 'white', 'black', 'purple',
             'gray', 'beige', 'brown', 'cyan', 'darkcyan', 'gold', 'yellow', 'pink'];
-        var $colors = $('#colors');
-        palette.forEach(function (color, i) {
-            var $color = $('<span>', {
-                'class': 'palette-color',
-            })
-            .css({
-                'background-color': color,
-            })
-            // FIXME double click doesn't seem to work in chromium currently
-            .dblclick(function () {
-                pickColor($color.css('background-color'), function (c) {
-                    $color.css({
-                        'background-color': c,
-                    });
-                    setColor(c);
-                });
-                // TODO commit chosen color to pad metadata:
-                // json.metadata.palette[i]
-            });
-
-            $colors.append($color);
-        });
 
         $('.palette-color').on('click', function () {
             var color = $(this).css('background-color');
@@ -181,6 +199,42 @@ define([
             crypto: Crypto.createEncryptor(secret.keys),
             setMyID: setMyID,
             transformFunction: JsonOT.transform,
+        };
+
+        var addColorToPalette = function (color, i) {
+            var $color = $('<span>', {
+                'class': 'palette-color',
+            })
+            .css({
+                'background-color': color,
+            })
+            .click(function () {
+                var c = rgb2hex($color.css('background-color'));
+                setColor(c);
+            })
+            // FIXME double click doesn't seem to work in chromium currently
+            .dblclick(function (e) {
+                e.preventDefault();
+                pickColor(rgb2hex($color.css('background-color')), function (c) {
+                    $color.css({
+                        'background-color': c,
+                    });
+                    palette.splice(i, 1, c);
+                    config.onLocal();
+                    setColor(c);
+                });
+                // TODO commit chosen color to pad metadata:
+                // json.metadata.palette[i]
+            });
+
+            $colors.append($color);
+        };
+        palette.forEach(addColorToPalette);
+
+        var updatePalette = function (newPalette) {
+            palette = newPalette;
+            $colors.html('&nbsp;');
+            palette.forEach(addColorToPalette);
         };
 
         var suggestName = function (fallback) {
@@ -327,8 +381,8 @@ define([
                     updateTitle(json.metadata.title || defaultName);
                     titleUpdated = true;
                 }
-                if (typeof(json.metadata.palette) !== 'object') {
-                    json.metadata.palette = {};
+                if (typeof(json.metadata.palette) !== 'undefined') {
+                    updatePalette(json.metadata.palette);
                 }
             }
             if (!titleUpdated) {
@@ -374,6 +428,7 @@ define([
                 content: textValue,
                 metadata: {
                     users: userData,
+                    palette: palette,
                     defaultTitle: defaultName
                 }
             };
