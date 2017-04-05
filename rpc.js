@@ -9,44 +9,75 @@ var isValidChannel = function (chan) {
     return /^[a-fA-F0-9]/.test(chan);
 };
 
-var makeCookie = function (seq) {
+var makeToken = function () {
+    return Number(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER))
+        .toString(16);
+};
+
+var makeCookie = function (token) {
+    var time = (+new Date());
+    time -= time % 5000;
+
     return [
-        Math.floor((+new Date()) / (1000*60*60*24)),
+        time,
         process.pid, // jshint ignore:line
-        //seq
+        token
     ];
-   // .join('|');
 };
 
 var parseCookie = function (cookie) {
     if (!(cookie && cookie.split)) { return null; }
 
     var parts = cookie.split('|');
-    if (parts.length !== 2) { return null; }
+    if (parts.length !== 3) { return null; }
 
     var c = {};
     c.time = new Date(parts[0]);
     c.pid = Number(parts[1]);
-    //c.seq = parts[2];
+    c.seq = parts[2];
     return c;
 };
 
-var isValidCookie = function (ctx, cookie) {
+var addTokenForKey = function (Cookies, publicKey, token) {
+    if (!Cookies[publicKey]) { throw new Error('undefined user'); }
+
+    var user = Cookies[publicKey];
+    user.tokens.push(token);
+    user.atime = +new Date();
+    if (user.tokens.length > 2) { user.tokens.shift(); }
+};
+
+var isTooOld = function (time, now) {
+    return (now - time) > 300000;
+};
+
+var isValidCookie = function (Cookies, publicKey, cookie) {
+    var parsed = parseCookie(cookie);
+    if (!parsed) { return false; }
+
     var now = +new Date();
 
-    if (!(cookie && cookie.time)) { return false; }
-
-    if (now - cookie.time > 300000) { // 5 minutes
+    if (!parsed.time) { return false; }
+    if (isTooOld(parsed.time, now)) {
         return false;
     }
 
     // different process. try harder
-    if (process.pid !== cookie.pid) { // jshint ignore:line
-        console.log('pid does not match');
+    if (process.pid !== parsed.pid) { // jshint ignore:line
         return false;
     }
 
-    //if (cookie.seq !==
+    var user = Cookies[publicKey];
+    if (!user) { return false; }
+
+    var idx = user.tokens.indexOf(parsed.seq);
+    if (idx === -1) { return false; }
+
+    var next;
+    if (idx > 0) {
+        // make a new token
+        addTokenForKey(Cookies, publicKey, makeToken());
+    }
 
     return true;
 };
@@ -157,7 +188,6 @@ var hashChannelList = function (A) {
     return hash;
 };
 
-
 var getHash = function (store, publicKey, cb) {
     getChannelList(store, publicKey, function (channels) {
         cb(hashChannelList(channels));
@@ -169,6 +199,15 @@ var resetUserPins = function (store, publicKey, channelList, cb) {
     cb('NOT_IMPLEMENTED');
 };
 
+var expireSessions = function (Cookies) {
+    var now = +new Date();
+    Object.keys(Cookies).forEach(function (key) {
+        if (isTooOld(Cookies[key].atime, now)) {
+            delete Cookies[key];
+        }
+    });
+};
+
 RPC.create = function (config, cb) {
     // load pin-store...
 
@@ -177,6 +216,15 @@ RPC.create = function (config, cb) {
     var Cookies = {};
 
     var store;
+
+    var addUser = function (key) {
+        if (Cookies[key]) { return; }
+        var user = Cookies[key] = {};
+        user.atime = +new Date();
+        user.tokens = [
+            makeToken()
+        ];
+    };
 
     var rpc = function (ctx, data, respond) {
         if (!data.length) {
@@ -189,15 +237,17 @@ RPC.create = function (config, cb) {
 
         var signature = msg.shift();
         var publicKey = msg.shift();
-        var cookie = parseCookie(msg.shift());
 
-        if (!cookie) {
+        // make sure a user object is initialized in the cookie jar
+        addUser(publicKey);
+
+        var cookie = msg[0];
+
+        if (!isValidCookie(Cookies, publicKey, cookie)) {
             // no cookie is fine if the RPC is to get a cookie
-            if (msg[0] !== 'COOKIE') {
+            if (msg[1] !== 'COOKIE') {
                 return void respond('NO_COOKIE');
             }
-        } else if (!isValidCookie(Cookies, cookie)) { // is it a valid cookie?
-            return void respond('INVALID_COOKIE');
         }
 
         var serialized = JSON.stringify(msg);
@@ -210,48 +260,59 @@ RPC.create = function (config, cb) {
             return void respond("INVALID_SIGNATURE_OR_PUBLIC_KEY");
         }
 
-        if (!msg.length) {
-            return void respond("INVALID_SIGNATURE_OR_PUBLIC_KEY");
-        }
+        /*  If you have gotten this far, you have signed the message with the
+            public key which you provided.
 
-        if (typeof(msg) !== 'object') {
-            return void respond('INVALID_MSG');
+            We can safely modify the state for that key
+        */
+
+        // discard validated cookie from message
+        msg.shift();
+
+        var Respond = function (e, msg) {
+            var token = Cookies[publicKey].tokens.slice(-1)[0];
+            var cookie = makeCookie(token).join('|');
+            respond(e, [cookie].concat(msg||[]));
+        };
+
+        if (typeof(msg) !== 'object' || !msg.length) {
+            return void Respond('INVALID_MSG');
         }
 
         switch (msg[0]) {
             case 'COOKIE':
-                return void respond(void 0, makeCookie());
+                return void Respond(void 0);
             case 'ECHO':
-                return void respond(void 0, msg);
+                return void Respond(void 0, msg);
             case 'RESET':
                 return resetUserPins(store, publicKey, [], function (e) {
-                    return void respond('NOT_IMPLEMENTED', msg);
+                    return void Respond('NOT_IMPLEMENTED', msg);
                 });
             case 'PIN':
                 return pinChannel(store, publicKey, msg[1], function (e) {
-                    respond(e);
+                    Respond(e);
                 });
             case 'UNPIN':
                 return unpinChannel(store, publicKey, msg[1], function (e) {
-                    respond(e);
+                    Respond(e);
                 });
             case 'GET_HASH':
                 return void getHash(store, publicKey, function (hash) {
-                    respond(void 0, hash);
+                    Respond(void 0, hash);
                 });
             case 'GET_TOTAL_SIZE':
-                return void respond('NOT_IMPLEMENTED', msg);
+                return void Respond('NOT_IMPLEMENTED', msg);
             case 'GET_FILE_SIZE':
                 if (!isValidChannel(msg[1])) {
-                    return void respond('INVALID_CHAN');
+                    return void Respond('INVALID_CHAN');
                 }
 
                 return void ctx.store.getChannelSize(msg[1], function (e, size) {
-                    if (e) { return void respond(e.code); }
-                    respond(void 0, size);
+                    if (e) { return void Respond(e.code); }
+                    Respond(void 0, size);
                 });
             default:
-                return void respond('UNSUPPORTED_RPC_CALL', msg);
+                return void Respond('UNSUPPORTED_RPC_CALL', msg);
         }
     };
 
@@ -260,6 +321,11 @@ RPC.create = function (config, cb) {
     }, function (s) {
         store = s;
         cb(void 0, rpc);
+
+        // expire old sessions once per minute
+        setInterval(function () {
+            expireSessions(Cookies);
+        }, 60000);
     });
 };
 
