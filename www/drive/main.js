@@ -1641,6 +1641,7 @@ define([
                     if (!filesOp.isFile(element)) { return; }
                     var data = filesOp.getFileData(element);
                     if (!data) { return; }
+                    if (filesOp.isPathInHrefArray(path)) { $el.find('.name').attr('title', data.title).text(data.title); }
                     $el.find('.title').attr('title', data.title).text(data.title);
                     $el.find('.atime').attr('title', getDate(data.atime)).text(getDate(data.atime));
                     $el.find('.ctime').attr('title', getDate(data.ctime)).text(getDate(data.ctime));
@@ -2143,11 +2144,7 @@ define([
                 // Reload after a few ms to make sure all the change events have been received
                 onRefresh.refresh();
             } else if (path.length && path[0] === FILES_DATA) {
-                if (filesOp.isPathInHrefArray(cPath)) {
-                    onRefresh.refresh();
-                } else {
-                    refreshFilesData();
-                }
+                onRefresh.refresh();
             }
             module.resetTree();
             return false;
