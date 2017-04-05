@@ -93,22 +93,37 @@ define([
 
     var createSpinner = function ($container, config) {
         if (config.displayed.indexOf('spinner') !== -1) {
+            var $spin = $('<span>');
             var $spinner = $('<span>', {
                 id: uid(),
-                'class': SPINNER_CLS + ' fa fa-spinner fa-pulse',
-            }).hide();
-            $container.prepend($spinner);
-            return $spinner[0];
+                'class': SPINNER_CLS + ' spin fa fa-spinner fa-pulse',
+            }).appendTo($spin).hide();
+            var $spinner = $('<span>', {
+                id: uid(),
+                'class': SPINNER_CLS + ' synced fa fa-check',
+                title: Messages.synced
+            }).appendTo($spin);
+            $container.prepend($spin);
+            return $spin[0];
         }
     };
 
-    var kickSpinner = function (spinnerElement) {
+    var kickSpinner = function (Cryptpad, realtime, local, spinnerElement) {
         if (!spinnerElement) { return; }
-        $(spinnerElement).show();
-        if (spinnerElement.timeout) { clearTimeout(spinnerElement.timeout); }
-        spinnerElement.timeout = setTimeout(function () {
-            $(spinnerElement).hide();
-        }, SPINNER_DISAPPEAR_TIME);
+        $(spinnerElement).find('.spin').show();
+        $(spinnerElement).find('.synced').hide();
+        var onSynced = function () {
+            if (spinnerElement.timeout) { clearTimeout(spinnerElement.timeout); }
+            spinnerElement.timeout = setTimeout(function () {
+                $(spinnerElement).find('.spin').hide();
+                $(spinnerElement).find('.synced').show();
+            }, local ? 0 : SPINNER_DISAPPEAR_TIME);
+        };
+        if (Cryptpad) {
+            Cryptpad.whenRealtimeSyncs(realtime, onSynced);
+            return;
+        }
+        onSynced();
     };
 
     var createUserButtons = function ($userlistElement, config, readOnly, Cryptpad) {
@@ -749,13 +764,14 @@ define([
             });
         }
 
-        var ks = function () {
-            if (connected) { kickSpinner(spinner); }
+        var ks = function (local) {
+            return function () {
+                if (connected) { kickSpinner(Cryptpad, realtime, local, spinner); }
+            };
         };
 
-        realtime.onPatch(ks);
-        // Try to filter out non-patch messages, doesn't have to be perfect this is just the spinner
-        realtime.onMessage(function (msg) { if (msg.indexOf(':[2,') > -1) { ks(); } });
+        realtime.onPatch(ks());
+        realtime.onMessage(ks(true));
 
         checkLag(getLag, lagElement);
         setInterval(function () {

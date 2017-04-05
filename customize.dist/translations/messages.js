@@ -31,6 +31,7 @@ define(function () {
     out.loading = "Loading...";
     out.error = "Error";
     out.saved = "Saved";
+    out.synced = "Everything is saved";
 
     out.disconnected = 'Disconnected';
     out.synchronizing = 'Synchronizing';

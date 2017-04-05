@@ -29,6 +29,7 @@ define(function () {
     out.loading = "Chargement...";
     out.error = "Erreur";
     out.saved = "Enregistré";
+    out.synced = "Tout est enregistré";
 
     out.disconnected = 'Déconnecté';
     out.synchronizing = 'Synchronisation';
