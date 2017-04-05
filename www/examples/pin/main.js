@@ -26,7 +26,7 @@ define([
             }
             console.log(msg);
         });
-/*
+
         var list = Cryptpad.getUserChannelList();
         if (list.length) {
             call.getFileSize(list[0], function (e, msg) {
@@ -40,7 +40,7 @@ define([
             if (e) { return void console.error(e); }
             console.log("%s total bytes used", bytes);
         });
-*/
+
         call.getServerHash(function (e, hash) {
             if (e) { return void console.error(e); }
             console.log("the server believes your user hash is [%s]", hash);

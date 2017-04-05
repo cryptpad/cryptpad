@@ -48,17 +48,26 @@ types of messages:
         }
 
         var txid = parsed[0];
+        var cookie = parsed[1];
+
         var pending = ctx.pending[txid];
 
         if (!(parsed && parsed.slice)) {
             return void console.error('MALFORMED_RPC_RESPONSE');
         }
 
-        var response = parsed.slice(1);
+        var response = parsed.slice(2);
 
         if (typeof(pending) === 'function') {
-            if (response[0] === 'ERROR') {
-                return void pending(response[1]);
+            if (parsed[1] === 'ERROR') {
+                return void pending(parsed[2]);
+            } else {
+                // update the cookie
+                if (/\|/.test(cookie)) {
+                    if (ctx.cookie !== cookie) {
+                        ctx.cookie = cookie;
+                    }
+                }
             }
             pending(void 0, response);
         } else {
@@ -89,7 +98,6 @@ types of messages:
         }
 
         var ctx = {
-            seq: new Date().getTime(),
             network: network,
             timeouts: {}, // timeouts
             pending: {}, // callbacks
@@ -98,14 +106,15 @@ types of messages:
 
         var send = function (type, msg, cb) {
             // construct a signed message...
-            var data = [type, msg];
-            var sig = signMsg(data, signKey);
 
+            var data = [type, msg];
             if (ctx.cookie && ctx.cookie.join) {
-                data.unshift(ctx.cookie.join('|')); //
+                data.unshift(ctx.cookie.join('|'));
             } else {
                 data.unshift(ctx.cookie);
             }
+
+            var sig = signMsg(data, signKey);
 
             data.unshift(edPublicKey);
             data.unshift(sig);
@@ -120,15 +129,9 @@ types of messages:
 
         send('COOKIE', "", function (e, msg) {
             if (e) { return void cb(e); }
-
-            console.log(msg); // DO something with the returned cookie
-            ctx.cookie = msg;
-
-            cb(void 0, {
-                send: send,
-            });
+            // callback to provide 'send' method to whatever needs it
+            cb(void 0, { send: send, });
         });
-
     };
 
     return { create: create };

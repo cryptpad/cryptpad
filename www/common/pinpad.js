@@ -25,23 +25,7 @@ define([
         return hash;
     };
 
-    // TODO move this into pinpad
-    false && (function () {
-        // compute what you think the hash should be
-
-        // then ask the server if what it has matches your records
-        rpc.send('GET_HASH', edPublic, function (e, hash) {
-            if (e) { return void console.error(e); }
-
-            console.log("user pins hash is [%s]", hash);
-            // if it does, awesome!
-            // you should be able to pin and unpin things easily
-
-            // if it doesn't, send a reset, and start re-pinning
-        });
-    }());
-
-    getServerHash = function (rpc, edPublic, cb) {
+    var getServerHash = function (rpc, edPublic, cb) {
         rpc.send('GET_HASH', edPublic, cb);
     };
 
