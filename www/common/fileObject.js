@@ -948,7 +948,6 @@ define([
                 }
             }
             if (unsortedFiles.indexOf(href) === -1 && rootFiles.indexOf(href) === -1 && templateFiles.indexOf(href) === -1 && trashFiles.indexOf(href) === -1) {
-                console.log('push', href);
                 files[UNSORTED].push(href);
             }
         };

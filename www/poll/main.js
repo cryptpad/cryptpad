@@ -238,22 +238,40 @@ define([
         */
         notify();
 
-        if (throttle) {
-            if (APP.throttled) { window.clearTimeout(APP.throttled); }
+        var getFocus = function () {
+            var active = document.activeElement;
+            if (!active) { return; }
+            return {
+                el: active,
+                start: active.selectionStart,
+                end: active.selectionEnd
+            };
+        };
+        var setFocus = function (obj) {
+            if (obj.el) { obj.el.focus(); }
+            else { return; }
+            if (obj.start) { obj.el.selectionStart = obj.start; }
+            if (obj.end) { obj.el.selectionEnd = obj.end; }
+        };
+
+        var updateTable = function () {
             var displayedObj2 = mergeUncommitted(APP.proxy, APP.uncommitted);
+            var f = getFocus();
             Render.updateTable(table, displayedObj2, conf);
             updateDisplayedTable();
+            setFocus(f);
+        };
+
+        if (throttle) {
+            if (APP.throttled) { window.clearTimeout(APP.throttled); }
+            updateTable();
             APP.throttled = window.setTimeout(function () {
                 updateDisplayedTable();
             }, throttle);
             return;
         }
 
-        window.setTimeout(function () {
-            var displayedObj2 = mergeUncommitted(APP.proxy, APP.uncommitted);
-            Render.updateTable(table, displayedObj2, conf);
-            updateDisplayedTable();
-        });
+        window.setTimeout(updateTable);
     };
 
     var getRealtimeId = function (input) {
