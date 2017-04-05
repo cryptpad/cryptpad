@@ -127,11 +127,16 @@ var storeMessage = function (store, publicKey, msg, cb) {
 };
 
 var pinChannel = function (store, publicKey, channel, cb) {
-    store.message(store, publicKey, ['PIN', channel], cb);
+    store.message(publicKey, JSON.stringify(['PIN', channel]), cb);
 };
 
 var unpinChannel = function (store, publicKey, channel, cb) {
-    store.message(store, publicKey, ['UNPIN', channel], cb);
+    store.message(publicKey, JSON.stringify(['UNPIN', channel]), cb);
+};
+
+var resetUserPins = function (store, publicKey, channelList, cb) {
+    // TODO make this atomic
+    store.message(publicKey, JSON.stringify(['RESET']), cb);
 };
 
 var getChannelList = function (store, publicKey, cb) {
@@ -171,7 +176,6 @@ var getChannelList = function (store, publicKey, cb) {
 
         cb(pinned);
     });
-
 };
 
 var hashChannelList = function (A) {
@@ -192,11 +196,6 @@ var getHash = function (store, publicKey, cb) {
     getChannelList(store, publicKey, function (channels) {
         cb(hashChannelList(channels));
     });
-};
-
-var resetUserPins = function (store, publicKey, channelList, cb) {
-    // TODO
-    cb('NOT_IMPLEMENTED');
 };
 
 var expireSessions = function (Cookies) {
@@ -238,6 +237,7 @@ RPC.create = function (config, cb) {
         var signature = msg.shift();
         var publicKey = msg.shift();
 
+
         // make sure a user object is initialized in the cookie jar
         addUser(publicKey);
 
@@ -252,14 +252,16 @@ RPC.create = function (config, cb) {
 
         var serialized = JSON.stringify(msg);
 
-        if (!(serialized && publicKey)) {
+        if (!(serialized && typeof(publicKey) === 'string')) {
             return void respond('INVALID_MESSAGE_OR_PUBLIC_KEY');
         }
+
 
         if (checkSignature(serialized, signature, publicKey) !== true) {
             return void respond("INVALID_SIGNATURE_OR_PUBLIC_KEY");
         }
 
+        var safeKey = publicKey.replace(/\//g, '-');
         /*  If you have gotten this far, you have signed the message with the
             public key which you provided.
 
@@ -284,20 +286,28 @@ RPC.create = function (config, cb) {
                 return void Respond(void 0);
             case 'ECHO':
                 return void Respond(void 0, msg);
+
+            /*  TODO
+                reset should be atomic in case the operation is aborted */
             case 'RESET':
-                return resetUserPins(store, publicKey, [], function (e) {
-                    return void Respond('NOT_IMPLEMENTED', msg);
+                return resetUserPins(store, safeKey, [], function (e) {
+                    return void Respond(e);
                 });
+
+
+            /*  TODO
+                pin and unpin operations should respond with the new hash */
             case 'PIN':
-                return pinChannel(store, publicKey, msg[1], function (e) {
+                return pinChannel(store, safeKey, msg[1], function (e) {
                     Respond(e);
                 });
             case 'UNPIN':
-                return unpinChannel(store, publicKey, msg[1], function (e) {
+                return unpinChannel(store, safeKey, msg[1], function (e) {
                     Respond(e);
                 });
+
             case 'GET_HASH':
-                return void getHash(store, publicKey, function (hash) {
+                return void getHash(store, safeKey, function (hash) {
                     Respond(void 0, hash);
                 });
             case 'GET_TOTAL_SIZE':
