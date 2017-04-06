@@ -16,6 +16,7 @@ define(function() {
         '#000000', // black
         '#FFFFFF', // white
         '#848484', // grey
+        '#8B4513', // saddlebrown
         '#FF0000', // red
         '#FF8080', // peach?
         '#FF8000', // orange
@@ -26,6 +27,7 @@ define(function() {
         '#008B8B', // dark cyan
         '#0000FF', // blue
         '#FF00FF', // fuschia
+        '#FF00C0', // hot pink
         '#800080', // purple
     ];
 
