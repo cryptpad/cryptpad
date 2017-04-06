@@ -98,7 +98,7 @@ define([
                 id: uid(),
                 'class': SPINNER_CLS + ' spin fa fa-spinner fa-pulse',
             }).appendTo($spin).hide();
-            var $spinner = $('<span>', {
+            $('<span>', {
                 id: uid(),
                 'class': SPINNER_CLS + ' synced fa fa-check',
                 title: Messages.synced
