@@ -69,6 +69,13 @@
         #color-picker {
             display: block;
         }
+        #pickers {
+            visibility: hidden;
+            position: absolute;
+            width: 0;
+            height: 0;
+            z-index: -5;
+        }
     </style>
 </head>
 <body>
@@ -94,6 +101,6 @@
         </div>
     </div>
     <div id="cursors" style="display: none; background: white; text-align: center;"></div>
-    <div id="pickers" style="display: none;"></div>
+    <div id="pickers"></div>
 </body>
 </html>

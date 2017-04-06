@@ -53,25 +53,36 @@ define([
         var createCursor = function () {
             var w = canvas.freeDrawingBrush.width;
             var c = canvas.freeDrawingBrush.color;
-            $cursors.html('<canvas width="'+w+'" height="'+w+'"></canvas>');
+            var size = w > 30 ? w : w+30;
+            $cursors.html('<canvas width="'+size+'" height="'+size+'"></canvas>');
             var $ccanvas = $cursors.find('canvas');
             var ccanvas = $ccanvas[0];
 
-            var context = ccanvas.getContext('2d');
-            var centerX = w / 2;
-            var centerY = w / 2;
+            var ctx = ccanvas.getContext('2d');
+            var centerX = size / 2;
+            var centerY = size / 2;
             var radius = w/2;
 
-            context.beginPath();
-            context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-            context.fillStyle = c;
-            context.fill();
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+            ctx.fillStyle = c;
+            ctx.fill();
+            ctx.lineWidth = 0;
+
+            ctx.beginPath();
+            ctx.moveTo(size/2, 0); ctx.lineTo(size/2, 10);
+            ctx.moveTo(size/2, size); ctx.lineTo(size/2, size-10);
+            ctx.moveTo(0, size/2); ctx.lineTo(10, size/2);
+            ctx.moveTo(size, size/2); ctx.lineTo(size-10, size/2);
+            ctx.strokeStyle = '#000000';
+            ctx.stroke();
+
             //context.lineWidth = w/2;
             //context.strokeStyle = '#000000';
             //context.stroke();
 
             var img = ccanvas.toDataURL("image/png");
-            canvas.freeDrawingCursor = 'url('+img+') '+w/2+' '+w/2+', crosshair';
+            canvas.freeDrawingCursor = 'url('+img+') '+size/2+' '+size/2+', crosshair';
         };
 
         var updateBrushWidth = function () {
@@ -93,7 +104,8 @@ define([
                 value: '#FFFFFF',
             })
             .css({
-                display: 'none',
+                visibility: 'hidden'
+                //display: 'none',
             })
             .on('change', function () {
                 var color = this.value;
@@ -213,7 +225,7 @@ define([
                 setColor(c);
             })
             // FIXME double click doesn't seem to work in chromium currently
-            .dblclick(function (e) {
+            .on('dblclick', function (e) {
                 e.preventDefault();
                 pickColor(rgb2hex($color.css('background-color')), function (c) {
                     $color.css({
