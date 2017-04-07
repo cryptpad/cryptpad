@@ -168,7 +168,6 @@ define([
         return typeof getUserHash() === "string";
     };
 
-    // var isArray = function (o) { return Object.prototype.toString.call(o) === '[object Array]'; };
     var isArray = common.isArray = $.isArray;
 
     var fixHTML = common.fixHTML = function (str) {
@@ -289,14 +288,6 @@ define([
                     throw new Error("Unable to parse the key");
                 }
                 var version = hashArray[1];
-                /*if (version === "1") {
-                    secret.channel = base64ToHex(hashArray[2]);
-                    secret.key = hashArray[3].replace(/-/g, '/');
-                    if (secret.channel.length !== 32 || secret.key.length !== 24) {
-                        common.alert("The channel key and/or the encryption key is invalid");
-                        throw new Error("The channel key and/or the encryption key is invalid");
-                    }
-                }*/
                 if (version === "1") {
                     var mode = hashArray[2];
                     if (mode === 'edit') {
@@ -492,12 +483,6 @@ define([
         var untitledIndex = 1;
         var name = (Messages.type)[type] + ' - ' + new Date().toString().split(' ').slice(0,4).join(' ');
         return name;
-        /*
-         * Pad titles are shared in the document so it does not make sense anymore to avoid duplicates
-          if (isNameAvailable(name, parsed, recentPads)) { return name; }
-          while (!isNameAvailable(name + ' - ' + untitledIndex, parsed, recentPads)) { untitledIndex++; }
-          return name + ' - ' + untitledIndex;
-        */
     };
     var isDefaultName = common.isDefaultName = function (parsed, title) {
         var name = getDefaultName(parsed, []);
@@ -982,30 +967,6 @@ define([
             }
             callback(null, title);
         });
-        /* Pad titles are shared in the document. We don't check for duplicates anymore.
-         common.causesNamingConflict(title, function (err, conflicts) {
-            if (err) {
-                console.log("Unable to determine if name caused a conflict");
-                console.error(err);
-                callback(err, title);
-                return;
-            }
-
-            if (conflicts) {
-                common.alert(Messages.renameConflict);
-                return;
-            }
-
-            common.setPadTitle(title, function (err, data) {
-                if (err) {
-                    console.log("unable to set pad title");
-                    console.log(err);
-                    return;
-                }
-                callback(null, title);
-            });
-        });
-        */
     };
 
     var getUserChannelList = common.getUserChannelList = function () {
