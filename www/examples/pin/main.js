@@ -61,26 +61,9 @@ define([
 
             call.reset(function (e, response) {
                 if (e) { return console.error(e); }
-
-                var list = call.uniqueChannelList();
-
-                var left = list.length;
-
-                // now start pinning...
-                list.forEach(function (channel) {
-                    call.pin(channel, function (e, hash) {
-                        left--;
-
-                        if (!e) {
-                            console.log('pinned channel [%s]. new hash is [%s]', channel, hash);
-                        } else {
-                            console.error(e);
-                        }
-                        if (left === 0) {
-                            console.log('done pinning');
-                        }
-                    });
-                });
+                else {
+                    return console.log('reset pin list. new hash is [%s]', response);
+                }
             });
 
 /*

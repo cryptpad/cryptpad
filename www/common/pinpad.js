@@ -41,7 +41,8 @@ define([
     };
 
     var reset = function (rpc, cb) {
-        rpc.send('RESET', undefined, cb);
+        var list = uniqueChannelList();
+        rpc.send('RESET', list, cb);
     };
 
             /*
@@ -53,7 +54,6 @@ define([
   if they are not
     UNPIN all, send all
             */
-
 
     // Don't use create until Cryptpad is ready
     // (use Cryptpad.ready)

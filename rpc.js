@@ -143,6 +143,17 @@ var getChannelList = function (store, publicKey, cb) {
                     Object.keys(pins).forEach(function (pin) {
                         pins[pin] = false;
                     });
+
+                    if (!parsed[1] || parsed[1].length) {
+                        break;
+                    }
+                    else {
+                        parsed[1].forEach(function (channel) {
+                            pins[channel] = true;
+                        });
+                        break;
+                    }
+
                     break;
                 default:
                     console.error('invalid message read from store');
@@ -236,8 +247,14 @@ var unpinChannel = function (store, publicKey, channel, cb) {
 };
 
 var resetUserPins = function (store, publicKey, channelList, cb) {
-    // TODO make this atomic
-    store.message(publicKey, JSON.stringify(['RESET']), cb);
+    store.message(publicKey, JSON.stringify(['RESET', channelList]),
+        function (e) {
+        if (e) { return void cb(e); }
+
+        getHash(store, publicKey, function (e, hash) {
+            cb(e, hash);
+        });
+    });
 };
 
 var expireSessions = function (Cookies) {
@@ -324,18 +341,11 @@ RPC.create = function (config, cb) {
         }
 
         switch (msg[0]) {
-            case 'COOKIE':
-                return void Respond(void 0);
-            case 'ECHO':
-                return void Respond(void 0, msg);
-
-            /*  TODO
-                reset should be atomic in case the operation is aborted */
+            case 'COOKIE': return void Respond(void 0);
             case 'RESET':
-                return resetUserPins(store, safeKey, [], function (e) {
-                    return void Respond(e);
+                return resetUserPins(store, safeKey, msg[1], function (e, hash) {
+                    return void Respond(e, hash);
                 });
-
             case 'PIN':
                 return pinChannel(store, safeKey, msg[1], function (e, hash) {
                     Respond(e, hash);
