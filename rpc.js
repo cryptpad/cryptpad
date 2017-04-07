@@ -162,11 +162,7 @@ var getChannelList = function (store, publicKey, cb) {
 };
 
 var getFileSize = function (store, channel, cb) {
-    if (!isValidChannel(channel)) {
-        console.log(channel);
-        Trace('INVALID_CHAN');
-        return void cb('INVALID_CHAN');
-    }
+    if (!isValidChannel(channel)) { return void cb('INVALID_CHAN'); }
 
     return void store.getChannelSize(channel, function (e, size) {
         if (e) { return void cb(e.code); }
