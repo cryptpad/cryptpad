@@ -144,6 +144,11 @@ define(function () {
     out.poll_titleHint = "Titre";
     out.poll_descriptionHint = "Description";
 
+    // Canvas
+    out.canvas_clear = "Nettoyer";
+    out.canvas_disable = "Désactiver le dessin";
+    out.canvas_enable = "Activer le dessin";
+
     // File manager
 
     out.fm_rootName = "Documents";
