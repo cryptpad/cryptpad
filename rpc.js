@@ -122,23 +122,6 @@ var checkSignature = function (signedMsg, signature, publicKey) {
     return Nacl.sign.detached.verify(signedBuffer, signatureBuffer, pubBuffer);
 };
 
-var storeMessage = function (store, publicKey, msg, cb) {
-    store.message(publicKey, JSON.stringify(msg), cb);
-};
-
-var pinChannel = function (store, publicKey, channel, cb) {
-    store.message(publicKey, JSON.stringify(['PIN', channel]), cb);
-};
-
-var unpinChannel = function (store, publicKey, channel, cb) {
-    store.message(publicKey, JSON.stringify(['UNPIN', channel]), cb);
-};
-
-var resetUserPins = function (store, publicKey, channelList, cb) {
-    // TODO make this atomic
-    store.message(publicKey, JSON.stringify(['RESET']), cb);
-};
-
 var getChannelList = function (store, publicKey, cb) {
     // to accumulate pinned channels
     var pins = {};
@@ -160,6 +143,17 @@ var getChannelList = function (store, publicKey, cb) {
                     Object.keys(pins).forEach(function (pin) {
                         pins[pin] = false;
                     });
+
+                    if (!parsed[1] || parsed[1].length) {
+                        break;
+                    }
+                    else {
+                        parsed[1].forEach(function (channel) {
+                            pins[channel] = true;
+                        });
+                        break;
+                    }
+
                     break;
                 default:
                     console.error('invalid message read from store');
@@ -175,6 +169,34 @@ var getChannelList = function (store, publicKey, cb) {
         });
 
         cb(pinned);
+    });
+};
+
+var getFileSize = function (store, channel, cb) {
+    if (!isValidChannel(channel)) { return void cb('INVALID_CHAN'); }
+
+    return void store.getChannelSize(channel, function (e, size) {
+        if (e) { return void cb(e.code); }
+        cb(void 0, size);
+    });
+};
+
+var getTotalSize = function (pinStore, messageStore, publicKey, cb) {
+    var bytes = 0;
+
+    return void getChannelList(pinStore, publicKey, function (channels) {
+        if (!channels) { cb('NO_ARRAY'); } // unexpected
+
+        var count = channels.length;
+        if (!count) { cb(void 0, 0); }
+
+        channels.forEach(function (channel) {
+            return messageStore.getChannelSize(channel, function (e, size) {
+                count--;
+                if (!e) { bytes += size; }
+                if (count === 0) { return cb(void 0, bytes); }
+            });
+        });
     });
 };
 
@@ -194,7 +216,44 @@ var hashChannelList = function (A) {
 
 var getHash = function (store, publicKey, cb) {
     getChannelList(store, publicKey, function (channels) {
-        cb(hashChannelList(channels));
+        cb(void 0, hashChannelList(channels));
+    });
+};
+
+var storeMessage = function (store, publicKey, msg, cb) {
+    store.message(publicKey, JSON.stringify(msg), cb);
+};
+
+var pinChannel = function (store, publicKey, channel, cb) {
+    store.message(publicKey, JSON.stringify(['PIN', channel]),
+        function (e) {
+        if (e) { return void cb(e); }
+
+        getHash(store, publicKey, function (e, hash) {
+            cb(e, hash);
+        });
+    });
+};
+
+var unpinChannel = function (store, publicKey, channel, cb) {
+    store.message(publicKey, JSON.stringify(['UNPIN', channel]),
+        function (e) {
+        if (e) { return void cb(e); }
+
+        getHash(store, publicKey, function (e, hash) {
+            cb(e, hash);
+        });
+    });
+};
+
+var resetUserPins = function (store, publicKey, channelList, cb) {
+    store.message(publicKey, JSON.stringify(['RESET', channelList]),
+        function (e) {
+        if (e) { return void cb(e); }
+
+        getHash(store, publicKey, function (e, hash) {
+            cb(e, hash);
+        });
     });
 };
 
@@ -282,45 +341,30 @@ RPC.create = function (config, cb) {
         }
 
         switch (msg[0]) {
-            case 'COOKIE':
-                return void Respond(void 0);
-            case 'ECHO':
-                return void Respond(void 0, msg);
-
-            /*  TODO
-                reset should be atomic in case the operation is aborted */
+            case 'COOKIE': return void Respond(void 0);
             case 'RESET':
-                return resetUserPins(store, safeKey, [], function (e) {
-                    return void Respond(e);
+                return resetUserPins(store, safeKey, msg[1], function (e, hash) {
+                    return void Respond(e, hash);
                 });
-
-
-            /*  TODO
-                pin and unpin operations should respond with the new hash */
             case 'PIN':
-                return pinChannel(store, safeKey, msg[1], function (e) {
-                    Respond(e);
+                return pinChannel(store, safeKey, msg[1], function (e, hash) {
+                    Respond(e, hash);
                 });
             case 'UNPIN':
-                return unpinChannel(store, safeKey, msg[1], function (e) {
-                    Respond(e);
+                return unpinChannel(store, safeKey, msg[1], function (e, hash) {
+                    Respond(e, hash);
                 });
-
             case 'GET_HASH':
-                return void getHash(store, safeKey, function (hash) {
-                    Respond(void 0, hash);
+                return void getHash(store, safeKey, function (e, hash) {
+                    Respond(e, hash);
                 });
             case 'GET_TOTAL_SIZE':
-                return void Respond('NOT_IMPLEMENTED', msg);
-            case 'GET_FILE_SIZE':
-                if (!isValidChannel(msg[1])) {
-                    return void Respond('INVALID_CHAN');
-                }
-
-                return void ctx.store.getChannelSize(msg[1], function (e, size) {
-                    if (e) { return void Respond(e.code); }
-                    Respond(void 0, size);
+                return getTotalSize(store, ctx.store, safeKey, function (e, size) {
+                    if (e) { return void Respond(e); }
+                    Respond(e, size);
                 });
+            case 'GET_FILE_SIZE':
+                return void getFileSize(ctx.store, msg[1], Respond);
             default:
                 return void Respond('UNSUPPORTED_RPC_CALL', msg);
         }

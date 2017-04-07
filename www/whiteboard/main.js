@@ -13,10 +13,11 @@ define([
     '/common/cryptpad-common.js',
     '/common/visible.js',
     '/common/notify.js',
+    '/customize/application_config.js',
     '/bower_components/secure-fabric.js/dist/fabric.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
-], function (Config, Realtime, Crypto, Toolbar, TextPatcher, JSONSortify, JsonOT, Cryptpad, Visible, Notify) {
+], function (Config, Realtime, Crypto, Toolbar, TextPatcher, JSONSortify, JsonOT, Cryptpad, Visible, Notify, AppConfig) {
     var saveAs = window.saveAs;
     var Messages = Cryptpad.Messages;
 
@@ -102,16 +103,12 @@ define([
         $width.on('change', updateBrushWidth);
 
         var pickColor = function (current, cb) {
-            // TODO find out why initial color is not being set
-            // http://jsfiddle.net/j3hZB/
-            console.log(current);
             var $picker = $('<input>', {
                 type: 'color',
                 value: '#FFFFFF',
             })
             .css({
                 visibility: 'hidden'
-                //display: 'none',
             })
             .on('change', function () {
                 var color = this.value;
@@ -140,9 +137,10 @@ define([
             return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
         };
 
-        // TODO add a better color palette
-        var palette = ['red', 'blue', 'green', 'white', 'black', 'purple',
-            'gray', 'beige', 'brown', 'cyan', 'darkcyan', 'gold', 'yellow', 'pink'];
+        var palette = AppConfig.whiteboardPalette || [
+            'red', 'blue', 'green', 'white', 'black', 'purple',
+            'gray', 'beige', 'brown', 'cyan', 'darkcyan', 'gold', 'yellow', 'pink'
+        ];
 
         $('.palette-color').on('click', function () {
             var color = $(this).css('background-color');
