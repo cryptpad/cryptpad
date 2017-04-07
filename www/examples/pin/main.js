@@ -36,11 +36,6 @@ define([
                 console.log(msg);
             });
         }
-        call.getFileListSize(list, function (e, bytes) {
-            if (e) { return void console.error(e); }
-            console.log("%s total bytes used", bytes);
-        });
-
         call.getServerHash(function (e, hash) {
             if (e) { return void console.error(e); }
             console.log("the server believes your user hash is [%s]", hash);
@@ -50,6 +45,11 @@ define([
     var synchronize = function (call) {
         var localHash = call.localChannelsHash();
         var serverHash;
+
+        call.getFileListSize(function (e, bytes) {
+            if (e) { return void console.error(e); }
+            console.log("%s total bytes used", bytes);
+        });
 
         call.getServerHash(function (e, hash) {
             if (e) { return void console.error(e); }
@@ -64,10 +64,21 @@ define([
 
                 var list = call.uniqueChannelList();
 
+                var left = list.length;
+
                 // now start pinning...
                 list.forEach(function (channel) {
-                    call.pin(channel, function (e, out) {
-                        if (e) { return console.error(e); }
+                    call.pin(channel, function (e, hash) {
+                        left--;
+
+                        if (!e) {
+                            console.log('pinned channel [%s]. new hash is [%s]', channel, hash);
+                        } else {
+                            console.error(e);
+                        }
+                        if (left === 0) {
+                            console.log('done pinning');
+                        }
                     });
                 });
             });
