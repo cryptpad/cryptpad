@@ -205,7 +205,7 @@ define([
         return hexArray.join("");
     };
 
-    var deduplicate = common.deduplicateString = function (array) {
+    var deduplicateString = common.deduplicateString = function (array) {
         var a = array.slice();
         for(var i=0; i<a.length; i++) {
             for(var j=i+1; j<a.length; j++) {
@@ -215,6 +215,9 @@ define([
         return a;
     };
 
+    var getCanonicalChannelList = common.getCanonicalChannelList = function () {
+        return deduplicateString(getUserChannelList()).sort();
+    };
 
     var parseHash = common.parseHash = function (hash) {
         var parsed = {};

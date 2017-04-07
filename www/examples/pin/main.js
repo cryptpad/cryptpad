@@ -11,8 +11,7 @@ define([
 
     var synchronize = function (call) {
         // provide a sorted list of unique channels
-        var list = Cryptpad.deduplicateString(Cryptpad.getUserChannelList())
-            .sort();
+        var list = Cryptpad.getCanonicalChannelList();
 
         var localHash = call.hashChannelList(list);
         var serverHash;
