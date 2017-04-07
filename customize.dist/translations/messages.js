@@ -146,6 +146,11 @@ define(function () {
     out.poll_titleHint = "Title";
     out.poll_descriptionHint = "Describe your poll, and use the 'publish' button when you're done. Anyone with the link can change the description, but this is discouraged.";
 
+    // Canvas
+    out.canvas_clear = "Clear";
+    out.canvas_disable = "Disable draw";
+    out.canvas_enable = "Enable draw";
+
     // File manager
 
     out.fm_rootName = "Documents";

@@ -48,6 +48,7 @@ define([
         var $colors = $('#colors');
         var $cursors = $('#cursors');
 
+        var $toggle = $('#toggleDraw');
         var $width = $('#width');
         var $widthLabel = $('label[for="width"]');
 
@@ -83,6 +84,11 @@ define([
             //context.stroke();
 
             var img = ccanvas.toDataURL("image/png");
+            var $img = $('<img>', {
+                src: img,
+                title: 'Current brush'
+            });
+            $controls.find('.selected').html('').append($img);
             canvas.freeDrawingCursor = 'url('+img+') '+size/2+' '+size/2+', crosshair';
         };
 
@@ -141,12 +147,20 @@ define([
             setColor(color);
         });
 
+        module.draw = true;
+        var toggleDrawMode = function () {
+            module.draw = !module.draw;
+            canvas.isDrawingMode = module.draw;
+            $toggle.text(module.draw ? Messages.canvas_disable : Messages.canvas_enable);
+        };
+        $toggle.click(toggleDrawMode);
+
         var setEditable = function (bool) {
             if (readOnly && bool) { return; }
             if (bool) { $controls.show(); }
             else { $controls.hide(); }
 
-            canvas.isDrawingMode = bool;
+            canvas.isDrawingMode = bool ? module.draw : false;
             if (!bool) {
                 canvas.deactivateAll();
                 canvas.renderAll();
