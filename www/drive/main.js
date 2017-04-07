@@ -219,7 +219,7 @@ define([
 
         // Categories dislayed in the menu
         // _WORKGROUP_ : do not display unsorted
-        var displayedCategories = [ROOT, UNSORTED, TRASH, SEARCH];
+        var displayedCategories = [ROOT, UNSORTED, TRASH, SEARCH, TEMPLATE];
         if (isWorkgroup()) { displayedCategories = [ROOT, TRASH, SEARCH]; }
 
         var lastSelectTime;

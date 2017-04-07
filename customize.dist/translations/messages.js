@@ -77,6 +77,11 @@ define(function () {
     out.newButton = 'New';
     out.newButtonTitle = 'Create a new pad';
 
+    out.saveTemplateButton = "Save as template";
+    out.saveTemplatePrompt = "Choose a title for the template";
+    out.templateSaved = "Template saved!";
+    out.selectTemplate = "Select a template or press escape";
+
     out.presentButtonTitle = "Enter presentation mode";
     out.presentSuccess = 'Hit ESC to exit presentation mode';
 

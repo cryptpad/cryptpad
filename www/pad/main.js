@@ -10,6 +10,7 @@ define([
     'json.sortify',
     '/bower_components/textpatcher/TextPatcher.js',
     '/common/cryptpad-common.js',
+    '/common/cryptget.js',
     '/common/visible.js',
     '/common/notify.js',
     '/pad/links.js',
@@ -17,7 +18,7 @@ define([
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/jquery/dist/jquery.min.js',
 ], function (Crypto, realtimeInput, Hyperjson,
-    Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad,
+    Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad, Cryptget,
     Visible, Notify, Links) {
     var $ = window.jQuery;
     var saveAs = window.saveAs;
@@ -616,6 +617,17 @@ define([
                     $rightside.append($collapse);
                 }
 
+                /* save as template */
+                if (!Cryptpad.isTemplate(window.location.href)) {
+                    var templateObj = {
+                        rt: info.realtime,
+                        Crypt: Cryptget,
+                        getTitle: function () { return document.title; }
+                    };
+                    var $templateButton = Cryptpad.createButton('template', true, templateObj);
+                    $rightside.append($templateButton);
+                }
+
                 /* add an export button */
                 var $export = Cryptpad.createButton('export', true, {}, exportFile);
                 $rightside.append($export);
@@ -723,6 +735,7 @@ define([
 
                     editor.focus();
                     if (newPad) {
+                        Cryptpad.selectTemplate('pad', info.realtime, Cryptget);
                         cursor.setToEnd();
                     } else {
                         cursor.setToStart();
