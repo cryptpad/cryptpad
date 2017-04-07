@@ -144,16 +144,11 @@ var getChannelList = function (store, publicKey, cb) {
                         pins[pin] = false;
                     });
 
-                    if (!parsed[1] || parsed[1].length) {
-                        break;
-                    }
-                    else {
+                    if (parsed[1] && parsed[1].length) {
                         parsed[1].forEach(function (channel) {
                             pins[channel] = true;
                         });
-                        break;
                     }
-
                     break;
                 default:
                     console.error('invalid message read from store');
