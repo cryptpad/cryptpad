@@ -215,10 +215,6 @@ define([
         return a;
     };
 
-    var getCanonicalChannelList = common.getCanonicalChannelList = function () {
-        return deduplicateString(getUserChannelList()).sort();
-    };
-
     var parseHash = common.parseHash = function (hash) {
         var parsed = {};
         if (hash.slice(0,1) !== '/' && hash.length >= 56) {
@@ -1009,6 +1005,10 @@ define([
         list.sort();
 
         return list;
+    };
+
+    var getCanonicalChannelList = common.getCanonicalChannelList = function () {
+        return deduplicateString(getUserChannelList()).sort();
     };
 
     var createButton = common.createButton = function (type, rightside, data, callback) {
