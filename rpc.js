@@ -178,6 +178,38 @@ var getChannelList = function (store, publicKey, cb) {
     });
 };
 
+var getFileSize = function (store, channel, cb) {
+    if (!isValidChannel(channel)) {
+        console.log(channel);
+        Trace('INVALID_CHAN');
+        return void cb('INVALID_CHAN');
+    }
+
+    return void store.getChannelSize(channel, function (e, size) {
+        if (e) { return void cb(e.code); }
+        cb(void 0, size);
+    });
+};
+
+var getTotalSize = function (pinStore, messageStore, publicKey, cb) {
+    var bytes = 0;
+
+    return void getChannelList(pinStore, publicKey, function (channels) {
+        if (!channels) { cb('NO_ARRAY'); } // unexpected
+
+        var count = channels.length;
+        if (!count) { cb(void 0, 0); }
+
+        channels.forEach(function (channel) {
+            return messageStore.getChannelSize(channel, function (e, size) {
+                count--;
+                if (!e) { bytes += size; }
+                if (count === 0) { return cb(void 0, bytes); }
+            });
+        });
+    });
+};
+
 var hashChannelList = function (A) {
     var uniques = [];
 
@@ -305,22 +337,17 @@ RPC.create = function (config, cb) {
                 return unpinChannel(store, safeKey, msg[1], function (e) {
                     Respond(e);
                 });
-
             case 'GET_HASH':
                 return void getHash(store, safeKey, function (hash) {
                     Respond(void 0, hash);
                 });
             case 'GET_TOTAL_SIZE':
-                return void Respond('NOT_IMPLEMENTED', msg);
-            case 'GET_FILE_SIZE':
-                if (!isValidChannel(msg[1])) {
-                    return void Respond('INVALID_CHAN');
-                }
-
-                return void ctx.store.getChannelSize(msg[1], function (e, size) {
-                    if (e) { return void Respond(e.code); }
-                    Respond(void 0, size);
+                return getTotalSize(store, ctx.store, safeKey, function (e, size) {
+                    if (e) { return void Respond(e); }
+                    Respond(e, size);
                 });
+            case 'GET_FILE_SIZE':
+                return void getFileSize(ctx.store, msg[1], Respond);
             default:
                 return void Respond('UNSUPPORTED_RPC_CALL', msg);
         }

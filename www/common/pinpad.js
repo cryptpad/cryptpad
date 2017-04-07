@@ -28,34 +28,8 @@ define([
         rpc.send('GET_FILE_SIZE', file, cb);
     };
 
-    var getFileListSize = function (rpc, list, cb) {
-        var bytes = 0;
-
-        var left = list.length;
-
-        list.forEach(function (chan) {
-            getFileSize(rpc, chan, function (e, msg) {
-                if (e) {
-                    if (e === 'ENOENT') {
-
-                        // these channels no longer exists on the server
-                        console.log(e, chan);
-                    } else {
-                        console.error(e);
-                    }
-                } else if (msg && msg[0] && typeof(msg[0]) === 'number') {
-                    bytes += msg[0];
-                    //console.log(bytes);
-                } else {
-                    console.log("returned message was not a number: ", msg);
-                }
-
-                --left;
-                if (left === 0) {
-                    cb(void 0, bytes);
-                }
-            });
-        });
+    var getFileListSize = function (rpc, cb) {
+        return rpc.send('GET_TOTAL_SIZE', undefined, cb);
     };
 
     var pinChannel = function (rpc, channel, cb) {
@@ -108,8 +82,8 @@ define([
             exp.getFileSize = function (file, cb) {
                 getFileSize(rpc, file, cb);
             };
-            exp.getFileListSize = function (list, cb) {
-                getFileListSize(rpc, list, cb);
+            exp.getFileListSize = function (cb) {
+                getFileListSize(rpc, cb);
             };
             exp.getServerHash = function (cb) {
                 getServerHash(rpc, edPublic, cb);
