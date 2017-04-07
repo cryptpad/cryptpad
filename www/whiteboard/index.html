@@ -30,7 +30,7 @@
             display: flex;
         }
         .canvas-container {
-            border: 5px solid black;
+            border: 1px solid black;
             margin: auto;
             background: white;
         }
@@ -40,10 +40,9 @@
         }
         #colors {
             z-index: 100;
-            border: 3px solid black;
-            padding: 5px;
-            vertical-align: top;
             background: white;
+            display: flex;
+            justify-content: space-between;
         }
         .selected {
             margin-left: 20px;
@@ -61,13 +60,13 @@
             width: 4vw;
             display: inline-block;
             margin: 5px;
-            border: 2px solid black;
+            border: 1px solid black;
             vertical-align: top;
         }
         #controls {
             display: block;
             position: relative;
-            border: 3px solid black;
+            border-top: 1px solid black;
             background: white;
             height: 100px;
             line-height: 100px;
@@ -85,6 +84,9 @@
             width: 0;
             height: 0;
             z-index: -5;
+        }
+        .hidden {
+            display: none;
         }
     </style>
 </head>

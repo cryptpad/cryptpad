@@ -226,6 +226,7 @@ define([
         };
 
         var addColorToPalette = function (color, i) {
+            if (readOnly) { return; }
             var $color = $('<span>', {
                 'class': 'palette-color',
             })
@@ -236,7 +237,6 @@ define([
                 var c = rgb2hex($color.css('background-color'));
                 setColor(c);
             })
-            // FIXME double click doesn't seem to work in chromium currently
             .on('dblclick', function (e) {
                 e.preventDefault();
                 pickColor(rgb2hex($color.css('background-color')), function (c) {
@@ -247,17 +247,14 @@ define([
                     config.onLocal();
                     setColor(c);
                 });
-                // TODO commit chosen color to pad metadata:
-                // json.metadata.palette[i]
             });
 
             $colors.append($color);
         };
-        palette.forEach(addColorToPalette);
 
         var updatePalette = function (newPalette) {
             palette = newPalette;
-            $colors.html('&nbsp;');
+            $colors.html('<div class="hidden">&nbsp;</div>');
             palette.forEach(addColorToPalette);
         };
 
