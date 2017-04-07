@@ -122,23 +122,6 @@ var checkSignature = function (signedMsg, signature, publicKey) {
     return Nacl.sign.detached.verify(signedBuffer, signatureBuffer, pubBuffer);
 };
 
-var storeMessage = function (store, publicKey, msg, cb) {
-    store.message(publicKey, JSON.stringify(msg), cb);
-};
-
-var pinChannel = function (store, publicKey, channel, cb) {
-    store.message(publicKey, JSON.stringify(['PIN', channel]), cb);
-};
-
-var unpinChannel = function (store, publicKey, channel, cb) {
-    store.message(publicKey, JSON.stringify(['UNPIN', channel]), cb);
-};
-
-var resetUserPins = function (store, publicKey, channelList, cb) {
-    // TODO make this atomic
-    store.message(publicKey, JSON.stringify(['RESET']), cb);
-};
-
 var getChannelList = function (store, publicKey, cb) {
     // to accumulate pinned channels
     var pins = {};
@@ -226,8 +209,39 @@ var hashChannelList = function (A) {
 
 var getHash = function (store, publicKey, cb) {
     getChannelList(store, publicKey, function (channels) {
-        cb(hashChannelList(channels));
+        cb(void 0, hashChannelList(channels));
     });
+};
+
+var storeMessage = function (store, publicKey, msg, cb) {
+    store.message(publicKey, JSON.stringify(msg), cb);
+};
+
+var pinChannel = function (store, publicKey, channel, cb) {
+    store.message(publicKey, JSON.stringify(['PIN', channel]),
+        function (e) {
+        if (e) { return void cb(e); }
+
+        getHash(store, publicKey, function (e, hash) {
+            cb(e, hash);
+        });
+    });
+};
+
+var unpinChannel = function (store, publicKey, channel, cb) {
+    store.message(publicKey, JSON.stringify(['UNPIN', channel]),
+        function (e) {
+        if (e) { return void cb(e); }
+
+        getHash(store, publicKey, function (e, hash) {
+            cb(e, hash);
+        });
+    });
+};
+
+var resetUserPins = function (store, publicKey, channelList, cb) {
+    // TODO make this atomic
+    store.message(publicKey, JSON.stringify(['RESET']), cb);
 };
 
 var expireSessions = function (Cookies) {
@@ -326,20 +340,17 @@ RPC.create = function (config, cb) {
                     return void Respond(e);
                 });
 
-
-            /*  TODO
-                pin and unpin operations should respond with the new hash */
             case 'PIN':
-                return pinChannel(store, safeKey, msg[1], function (e) {
-                    Respond(e);
+                return pinChannel(store, safeKey, msg[1], function (e, hash) {
+                    Respond(e, hash);
                 });
             case 'UNPIN':
-                return unpinChannel(store, safeKey, msg[1], function (e) {
-                    Respond(e);
+                return unpinChannel(store, safeKey, msg[1], function (e, hash) {
+                    Respond(e, hash);
                 });
             case 'GET_HASH':
-                return void getHash(store, safeKey, function (hash) {
-                    Respond(void 0, hash);
+                return void getHash(store, safeKey, function (e, hash) {
+                    Respond(e, hash);
                 });
             case 'GET_TOTAL_SIZE':
                 return getTotalSize(store, ctx.store, safeKey, function (e, size) {
