@@ -1,12 +1,4 @@
-FROM ubuntu:16.04
-
-RUN apt-get update && apt-get install -y \
-  vim \
-  wget \
-  git \
-  curl \
-  npm \
-  nodejs-legacy
+FROM node:6
 
 ARG VERSION=0.3.0
 
