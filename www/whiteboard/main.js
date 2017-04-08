@@ -257,6 +257,7 @@ define([
             $colors.html('<div class="hidden">&nbsp;</div>');
             palette.forEach(addColorToPalette);
         };
+        updatePalette(palette);
 
         var suggestName = function (fallback) {
             if (document.title === defaultName) {
