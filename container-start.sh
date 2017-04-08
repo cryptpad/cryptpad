@@ -13,7 +13,7 @@ mkdir -p customize
 [[ -n "$USE_SSL" ]] && echo "Using secure websockets: $USE_SSL" \
   && sed -i "s/useSecureWebsockets: .*/useSecureWebsockets: ${USE_SSL},/g" customize/config.js
 
-[[ -n "$USE_SSL" ]] && echo "Using storage adapter: $STORAGE" \
+[[ -n "$STORAGE" ]] && echo "Using storage adapter: $STORAGE" \
   && sed -i "s/storage: .*/storage: ${STORAGE},/g" customize/config.js
 
 [[ -n "$LOG_TO_STDOUT" ]] && echo "Logging to stdout: $LOG_TO_STDOUT" \
