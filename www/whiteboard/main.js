@@ -106,10 +106,9 @@ define([
             var $picker = $('<input>', {
                 type: 'color',
                 value: '#FFFFFF',
-            })
-            .css({
-                visibility: 'hidden'
-            })
+                })
+            // TODO confirm that this is safe to remove
+            //.css({ visibility: 'hidden' })
             .on('change', function () {
                 var color = this.value;
                 cb(color);
