@@ -7,6 +7,21 @@
 - Adding config.js to customize folder
 - Persistance for datastore and customize folder
 
+## Run
+
+Run from the cryptpad source directory:
+
+```
+docker build -t xwiki/cryptpad .
+docker run --restart=always -d --name cryptpad -p 3000:3000 -v /var/cryptpad:/cryptpad/datastore xwiki/cryptpad
+```
+
+Or, using docker-compose
+
+```
+docker-compose up -d
+```
+
 ## TODO
 
 ```
@@ -27,21 +42,6 @@ Set configurations Dockerfile or in .env (using docker-compose) file.
 
 The .env variables are read by docker-compose and forwarded to docker container.
 On runtime, in `bin/container-start.sh` the settings are written to the `config.js` file.
-
-## Run
-
-With docker
-
-```
-docker build -t xwiki/cryptpad .
-docker -d --name cryptpad -p 3000:3000 -v ${PWD}/data:/cryptpad/datastore xwiki/cryptpad
-```
-
-With docker-compose
-
-```
-docker-compose up -d
-```
 
 
 ## Persistance
