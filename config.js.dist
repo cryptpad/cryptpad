@@ -32,8 +32,13 @@ module.exports = {
          *  it is recommended that you configure these fields to match the
          *  domain which will serve your cryptpad instance.
          */
-        "connect-src 'self' ws://*",
         "child-src 'self' *",
+
+        /*  this allows connections over secure or insecure websockets
+            if you are deploying to production, you'll probably want to remove
+            the ws://* directive, and change '*' to your domain
+         */
+        "connect-src 'self' ws://* wss://*",
 
         // data: is used by codemirror
         "img-src 'self' data:",
@@ -51,7 +56,9 @@ module.exports = {
          *  configured for best effect.
          */
          "child-src 'self' *",
-         "connect-src 'self' ws://*",
+
+        // see the comment above in the 'contentSecurity' section
+         "connect-src 'self' ws://* wss://*",
 
         // (insecure remote) images are included by users of the wysiwyg who embed photos in their pads
         "img-src *",
