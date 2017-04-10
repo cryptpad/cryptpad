@@ -25,13 +25,13 @@ define([
             exp.send = rpc.send;
 
             // you can ask the server to pin a particular channel for you
-            exp.pin = function (channel, cb) {
-                rpc.send('PIN', channel, cb);
+            exp.pin = function (channels, cb) {
+                rpc.send('PIN', channels, cb);
             };
 
             // you can also ask to unpin a particular channel
-            exp.unpin = function (channel, cb) {
-                rpc.send('UNPIN', channel, cb);
+            exp.unpin = function (channels, cb) {
+                rpc.send('UNPIN', channels, cb);
             };
 
             // This implementation must match that on the server
@@ -44,6 +44,9 @@ define([
             // ask the server what it thinks your hash is
             exp.getServerHash = function (cb) {
                 rpc.send('GET_HASH', edPublic, function (e, hash) {
+                    if (!(hash && hash[0])) {
+                        return void cb('NO_HASH_RETURNED');
+                    }
                     cb(e, hash[0]);
                 });
             };
