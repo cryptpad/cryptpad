@@ -50,7 +50,9 @@ define([
 
             // if local and remote hashes don't match, send a reset
             exp.reset = function (list, cb) {
-                rpc.send('RESET', list, cb);
+                rpc.send('RESET', list, function (e, response) {
+                    cb(e, response[0]);
+                });
             };
 
             // get the total stored size of a channel's patches (in bytes)
