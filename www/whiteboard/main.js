@@ -181,7 +181,7 @@ window.canvas = canvas;
                 canvas.discardActiveGroup();
             }
             canvas.renderAll();
-            config.onLocal();
+            module.onLocal();
         };
         $deleteButton.click(deleteSelection);
         $(window).on('keyup', function (e) {
@@ -506,7 +506,7 @@ window.canvas = canvas;
         };
 
 
-        var onLocal = config.onLocal = Catch(function () {
+        var onLocal = module.onLocal = config.onLocal = Catch(function () {
             if (initializing) { return; }
             if (readOnly) { return; }
 
