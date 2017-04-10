@@ -155,6 +155,22 @@ define([
         };
         $toggle.click(toggleDrawMode);
 
+        $(window).on('keyup', function (e) {
+            if (e.which === 46) {
+                if (canvas.getActiveObject()) {
+                    canvas.getActiveObject().remove();
+                }
+                if (canvas.getActiveGroup()) {
+                    canvas.getActiveGroup()._objects.forEach(function (el) {
+                        el.remove();
+                    });
+                    canvas.discardActiveGroup();
+                }
+                canvas.renderAll();
+                onLocal();
+            }
+        });
+
         var setEditable = function (bool) {
             if (readOnly && bool) { return; }
             if (bool) { $controls.show(); }
