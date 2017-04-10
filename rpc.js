@@ -38,20 +38,42 @@ var parseCookie = function (cookie) {
     return c;
 };
 
-var addTokenForKey = function (Cookies, publicKey, token) {
-    if (!Cookies[publicKey]) { throw new Error('undefined user'); }
-
-    var user = Cookies[publicKey];
-    user.tokens.push(token);
+var beginSession = function (Sessions, key) {
+    if (Sessions[key]) {
+        Sessions[key].atime = +new Date();
+        return Sessions[key];
+    }
+    var user = Sessions[key] = {};
     user.atime = +new Date();
-    if (user.tokens.length > 2) { user.tokens.shift(); }
+    user.tokens = [
+        makeToken()
+    ];
+    return user;
 };
 
 var isTooOld = function (time, now) {
     return (now - time) > 300000;
 };
 
-var isValidCookie = function (Cookies, publicKey, cookie) {
+var expireSessions = function (Sessions) {
+    var now = +new Date();
+    Object.keys(Sessions).forEach(function (key) {
+        if (isTooOld(Sessions[key].atime, now)) {
+            delete Sessions[key];
+        }
+    });
+};
+
+var addTokenForKey = function (Sessions, publicKey, token) {
+    if (!Sessions[publicKey]) { throw new Error('undefined user'); }
+
+    var user = Sessions[publicKey];
+    user.tokens.push(token);
+    user.atime = +new Date();
+    if (user.tokens.length > 2) { user.tokens.shift(); }
+};
+
+var isValidCookie = function (Sessions, publicKey, cookie) {
     var parsed = parseCookie(cookie);
     if (!parsed) { return false; }
 
@@ -67,7 +89,7 @@ var isValidCookie = function (Cookies, publicKey, cookie) {
         return false;
     }
 
-    var user = Cookies[publicKey];
+    var user = Sessions[publicKey];
     if (!user) { return false; }
 
     var idx = user.tokens.indexOf(parsed.seq);
@@ -76,7 +98,7 @@ var isValidCookie = function (Cookies, publicKey, cookie) {
     var next;
     if (idx > 0) {
         // make a new token
-        addTokenForKey(Cookies, publicKey, makeToken());
+        addTokenForKey(Sessions, publicKey, makeToken());
     }
 
     return true;
@@ -122,9 +144,23 @@ var checkSignature = function (signedMsg, signature, publicKey) {
     return Nacl.sign.detached.verify(signedBuffer, signatureBuffer, pubBuffer);
 };
 
-var getChannelList = function (store, publicKey, cb) {
-    // to accumulate pinned channels
+var loadUserPins = function (store, Sessions, publicKey, cb) {
+    var session = beginSession(Sessions, publicKey);
+
+    if (session.channels) {
+        return cb(session.channels);
+    }
+
+    // if channels aren't in memory. load them from disk
     var pins = {};
+
+    var pin = function (channel) {
+        pins[channel] = true;
+    };
+
+    var unpin = function (channel) {
+        pins[channel] = false;
+    };
 
     store.getMessages(publicKey, function (msg) {
         // handle messages...
@@ -134,20 +170,16 @@ var getChannelList = function (store, publicKey, cb) {
 
             switch (parsed[0]) {
                 case 'PIN':
-                    pins[parsed[1]] = true;
+                    parsed[1].forEach(pin);
                     break;
                 case 'UNPIN':
-                    pins[parsed[1]] = false;
+                    parsed[1].forEach(unpin);
                     break;
                 case 'RESET':
-                    Object.keys(pins).forEach(function (pin) {
-                        pins[pin] = false;
-                    });
+                    Object.keys(pins).forEach(unpin);
 
                     if (parsed[1] && parsed[1].length) {
-                        parsed[1].forEach(function (channel) {
-                            pins[channel] = true;
-                        });
+                        parsed[1].forEach(pin);
                     }
                     break;
                 default:
@@ -159,27 +191,39 @@ var getChannelList = function (store, publicKey, cb) {
         }
     }, function () {
         // no more messages
-        var pinned = Object.keys(pins).filter(function (pin) {
-            return pins[pin];
-        });
 
-        cb(pinned);
+        // only put this into the cache if it completes
+        session.channels = pins;
+        cb(pins);
+    });
+};
+
+var truthyKeys = function (O) {
+    return Object.keys(O).filter(function (k) {
+        return O[k];
+    });
+};
+
+var getChannelList = function (store, Sessions, publicKey, cb) {
+    loadUserPins(store, Sessions, publicKey, function (pins) {
+        cb(truthyKeys(pins));
     });
 };
 
 var getFileSize = function (store, channel, cb) {
     if (!isValidChannel(channel)) { return void cb('INVALID_CHAN'); }
 
+    // TODO don't blow up if their store doesn't have this API
     return void store.getChannelSize(channel, function (e, size) {
         if (e) { return void cb(e.code); }
         cb(void 0, size);
     });
 };
 
-var getTotalSize = function (pinStore, messageStore, publicKey, cb) {
+var getTotalSize = function (pinStore, messageStore, Sessions, publicKey, cb) {
     var bytes = 0;
 
-    return void getChannelList(pinStore, publicKey, function (channels) {
+    return void getChannelList(pinStore, Sessions, publicKey, function (channels) {
         if (!channels) { cb('NO_ARRAY'); } // unexpected
 
         var count = channels.length;
@@ -209,8 +253,8 @@ var hashChannelList = function (A) {
     return hash;
 };
 
-var getHash = function (store, publicKey, cb) {
-    getChannelList(store, publicKey, function (channels) {
+var getHash = function (store, Sessions, publicKey, cb) {
+    getChannelList(store, Sessions, publicKey, function (channels) {
         cb(void 0, hashChannelList(channels));
     });
 };
@@ -219,45 +263,81 @@ var storeMessage = function (store, publicKey, msg, cb) {
     store.message(publicKey, JSON.stringify(msg), cb);
 };
 
-var pinChannel = function (store, publicKey, channel, cb) {
-    store.message(publicKey, JSON.stringify(['PIN', channel]),
-        function (e) {
-        if (e) { return void cb(e); }
+var pinChannel = function (store, Sessions, publicKey, channels, cb) {
+    if (!channels && channels.filter) {
+        // expected array
+        return void cb('[TYPE_ERROR] pin expects channel list argument');
+    }
 
-        getHash(store, publicKey, function (e, hash) {
-            cb(e, hash);
+    getChannelList(store, Sessions, publicKey, function (pinned) {
+        var session = beginSession(Sessions, publicKey);
+
+        // only pin channels which are not already pinned
+        var toStore = channels.filter(function (channel) {
+            return pinned.indexOf(channel) === -1;
+        });
+
+        if (toStore.length === 0) {
+            return void getHash(store, Sessions, publicKey, cb);
+        }
+
+        store.message(publicKey, JSON.stringify(['PIN', toStore]),
+            function (e) {
+            if (e) { return void cb(e); }
+            toStore.forEach(function (channel) {
+                session.channels[channel] = true;
+            });
+            getHash(store, Sessions, publicKey, cb);
         });
     });
 };
 
-var unpinChannel = function (store, publicKey, channel, cb) {
-    store.message(publicKey, JSON.stringify(['UNPIN', channel]),
-        function (e) {
-        if (e) { return void cb(e); }
+var unpinChannel = function (store, Sessions, publicKey, channels, cb) {
+    if (!channels && channels.filter) {
+        // expected array
+        return void cb('[TYPE_ERROR] unpin expects channel list argument');
+    }
 
-        getHash(store, publicKey, function (e, hash) {
-            cb(e, hash);
+    getChannelList(store, Sessions, publicKey, function (pinned) {
+        var session = beginSession(Sessions, publicKey);
+
+        // only unpin channels which are pinned
+        var toStore = channels.filter(function (channel) {
+            return pinned.indexOf(channel) !== -1;
+        });
+
+        if (toStore.length === 0) {
+            return void getHash(store, Sessions, publicKey, cb);
+        }
+
+        store.message(publicKey, JSON.stringify(['UNPIN', toStore]),
+            function (e) {
+            if (e) { return void cb(e); }
+            toStore.forEach(function (channel) {
+                // TODO actually delete
+                session.channels[channel] = false;
+            });
+
+            getHash(store, Sessions, publicKey, cb);
         });
     });
 };
 
-var resetUserPins = function (store, publicKey, channelList, cb) {
+var resetUserPins = function (store, Sessions, publicKey, channelList, cb) {
+    var session = beginSession(Sessions, publicKey);
+
+    var pins = session.channels = {};
+
     store.message(publicKey, JSON.stringify(['RESET', channelList]),
         function (e) {
         if (e) { return void cb(e); }
+        channelList.forEach(function (channel) {
+            pins[channel] = true;
+        });
 
-        getHash(store, publicKey, function (e, hash) {
+        getHash(store, Sessions, publicKey, function (e, hash) {
             cb(e, hash);
         });
-    });
-};
-
-var expireSessions = function (Cookies) {
-    var now = +new Date();
-    Object.keys(Cookies).forEach(function (key) {
-        if (isTooOld(Cookies[key].atime, now)) {
-            delete Cookies[key];
-        }
     });
 };
 
@@ -266,18 +346,9 @@ RPC.create = function (config, cb) {
 
     console.log('loading rpc module...');
 
-    var Cookies = {};
+    var Sessions = {};
 
     var store;
-
-    var addUser = function (key) {
-        if (Cookies[key]) { return; }
-        var user = Cookies[key] = {};
-        user.atime = +new Date();
-        user.tokens = [
-            makeToken()
-        ];
-    };
 
     var rpc = function (ctx, data, respond) {
         if (!data.length) {
@@ -291,13 +362,12 @@ RPC.create = function (config, cb) {
         var signature = msg.shift();
         var publicKey = msg.shift();
 
-
         // make sure a user object is initialized in the cookie jar
-        addUser(publicKey);
+        beginSession(Sessions, publicKey);
 
         var cookie = msg[0];
 
-        if (!isValidCookie(Cookies, publicKey, cookie)) {
+        if (!isValidCookie(Sessions, publicKey, cookie)) {
             // no cookie is fine if the RPC is to get a cookie
             if (msg[1] !== 'COOKIE') {
                 return void respond('NO_COOKIE');
@@ -326,7 +396,7 @@ RPC.create = function (config, cb) {
         msg.shift();
 
         var Respond = function (e, msg) {
-            var token = Cookies[publicKey].tokens.slice(-1)[0];
+            var token = Sessions[publicKey].tokens.slice(-1)[0];
             var cookie = makeCookie(token).join('|');
             respond(e, [cookie].concat(msg||[]));
         };
@@ -338,23 +408,23 @@ RPC.create = function (config, cb) {
         switch (msg[0]) {
             case 'COOKIE': return void Respond(void 0);
             case 'RESET':
-                return resetUserPins(store, safeKey, msg[1], function (e, hash) {
+                return resetUserPins(store, Sessions, safeKey, msg[1], function (e, hash) {
                     return void Respond(e, hash);
                 });
             case 'PIN':
-                return pinChannel(store, safeKey, msg[1], function (e, hash) {
+                return pinChannel(store, Sessions, safeKey, msg[1], function (e, hash) {
                     Respond(e, hash);
                 });
             case 'UNPIN':
-                return unpinChannel(store, safeKey, msg[1], function (e, hash) {
+                return unpinChannel(store, Sessions, safeKey, msg[1], function (e, hash) {
                     Respond(e, hash);
                 });
             case 'GET_HASH':
-                return void getHash(store, safeKey, function (e, hash) {
+                return void getHash(store, Sessions, safeKey, function (e, hash) {
                     Respond(e, hash);
                 });
             case 'GET_TOTAL_SIZE':
-                return getTotalSize(store, ctx.store, safeKey, function (e, size) {
+                return getTotalSize(store, ctx.store, Sessions, safeKey, function (e, size) {
                     if (e) { return void Respond(e); }
                     Respond(e, size);
                 });
@@ -373,7 +443,7 @@ RPC.create = function (config, cb) {
 
         // expire old sessions once per minute
         setInterval(function () {
-            expireSessions(Cookies);
+            expireSessions(Sessions);
         }, 60000);
     });
 };

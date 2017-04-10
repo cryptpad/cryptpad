@@ -5,9 +5,9 @@ define([
     '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/alertifyjs/dist/js/alertify.js',
     '/common/clipboard.js',
-    '/customize/application_config.js',
     '/common/pinpad.js', /* TODO
 load pinpad dynamically only after you know that it will be needed */
+    '/customize/application_config.js',
 
     '/bower_components/jquery/dist/jquery.min.js',
 ], function (Config, Messages, Store, Crypto, Alertify, Clipboard, Pinpad, AppConfig) {
@@ -575,6 +575,9 @@ load pinpad dynamically only after you know that it will be needed */
     // TODO integrate pinning if enabled
     var setRecentPads = common.setRecentPads = function (pads, cb) {
         getStore().setDrive(storageKey, pads, function (err, data) {
+            if (PINNING_ENABLED && isLoggedIn()) {
+                console.log("TODO check pin hash");
+            }
             cb(err, data);
         });
     };
@@ -596,7 +599,6 @@ load pinpad dynamically only after you know that it will be needed */
             h(newName);
         });
     };
-
 
     // STORAGE
     // TODO integrate pinning if enabled
@@ -879,7 +881,7 @@ load pinpad dynamically only after you know that it will be needed */
                         }
 
                         console.log('RPC handshake complete');
-                        rpc = env.rpc = call;
+                        rpc = common.rpc = env.rpc = call;
 
                         // TODO check if pin list is up to date
                         // if not, reset
@@ -996,7 +998,6 @@ load pinpad dynamically only after you know that it will be needed */
     /*
      * Buttons
      */
-    // TODO integrate pinning if enabled
     var renamePad = common.renamePad = function (title, callback) {
         if (title === null) { return; }
 
@@ -1015,6 +1016,27 @@ load pinpad dynamically only after you know that it will be needed */
         });
     };
 
+    var hrefToHexChannelId = common.hrefToHexChannelId = function (href) {
+        var parsed = common.parsePadUrl(href);
+        if (!parsed || !parsed.hash) { return; }
+
+        parsed = common.parseHash(parsed.hash);
+
+        if (parsed.version === 0) {
+            return parsed.channel;
+        } else if (parsed.version !== 1) {
+            console.error("parsed href had no version");
+            console.error(parsed);
+            return;
+        }
+
+        var channel = parsed.channel;
+        if (!channel) { return; }
+
+        var hex = common.base64ToHex(channel);
+        return hex;
+    };
+
     var getUserChannelList = common.getUserChannelList = function () {
         var store = common.getStore();
         var proxy = store.getProxy();
@@ -1027,26 +1049,8 @@ load pinpad dynamically only after you know that it will be needed */
         var userChannel = common.parseHash(userHash).channel;
         if (!userChannel) { return null; }
 
-        var list = fo.getFilesDataFiles().map(function (href) {
-            var parsed = common.parsePadUrl(href);
-            if (!parsed || !parsed.hash) { return; }
-
-            parsed = common.parseHash(parsed.hash);
-
-            if (parsed.version === 0) {
-                return parsed.channel;
-            } else if (parsed.version !== 1) {
-                console.error("parsed href had no version");
-                console.error(parsed);
-                return;
-            }
-
-            var channel = parsed.channel;
-            if (!channel) { return; }
-
-            var hex = common.base64ToHex(channel);
-            return hex;
-        }).filter(function (x) { return x; });
+        var list = fo.getFilesDataFiles().map(hrefToHexChannelId)
+            .filter(function (x) { return x; });
 
         list.push(common.base64ToHex(userChannel));
         list.sort();
@@ -1056,6 +1060,40 @@ load pinpad dynamically only after you know that it will be needed */
 
     var getCanonicalChannelList = common.getCanonicalChannelList = function () {
         return deduplicateString(getUserChannelList()).sort();
+    };
+
+    var pinsReady = common.pinsReady = function () {
+        if (!PINNING_ENABLED) {
+            console.error('[PINNING_DISABLED]');
+            return false;
+        }
+        if (!rpc) {
+            console.error('[RPC_NOT_READY]');
+            return false;
+        }
+        return true;
+    };
+
+    var arePinsSynced = common.arePinsSynced = function (cb) {
+        if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
+
+        var list = getCanonicalChannelList();
+        var local = rpc.hashChannelList(list);
+        rpc.getServerHash(function (e, hash) {
+            if (e) { return void cb(e); }
+            cb(void 0, hash === local);
+        });
+    };
+
+    var resetPins = common.resetPins = function (cb) {
+        if (!PINNING_ENABLED) { return void console.error('[PINNING_DISABLED]'); }
+        if (!rpc) { return void console.error('[RPC_NOT_READY]'); }
+
+        var list = getCanonicalChannelList();
+        rpc.reset(list, function (e, hash) {
+            if (e) { return void cb(e); }
+            cb(void 0, hash);
+        });
     };
 
     var createButton = common.createButton = function (type, rightside, data, callback) {
