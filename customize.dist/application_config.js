@@ -30,6 +30,7 @@ define(function() {
         '#FF00C0', // hot pink
         '#800080', // purple
     ];
+    config.enableTemplates = true;
 
     return config;
 });

@@ -572,12 +572,15 @@ define([
         });
     };
     var selectTemplate = common.selectTemplate = function (type, rt, Crypt) {
+        if (!AppConfig.enableTemplates) { return; }
+        var temps = listTemplates(type);
+        if (temps.length === 0) { return; }
         var $content = $('<div>');
         $('<b>').text(Messages.selectTemplate).appendTo($content);
         $('<p>', {id:"selectTemplate"}).appendTo($content);
         Cryptpad.alert($content.html(), null, true);
         var $p = $('#selectTemplate');
-        listTemplates(type).forEach(function (t) {
+        temps.forEach(function (t, i) {
             $('<a>', {href: t.href, title: t.title}).text(t.title).click(function (e) {
                 e.preventDefault();
                 var parsed = parsePadUrl(t.href);
@@ -592,6 +595,7 @@ define([
                     });
                 });
             }).appendTo($p);
+            if (i !== temps.length) { $('<br>').appendTo($p); }
         });
         common.findOKButton().text(Messages.cancelButton);
     };
@@ -1101,6 +1105,7 @@ define([
                 }
                 break;
             case 'template':
+                if (!AppConfig.enableTemplates) { return; }
                 button = $('<button>', {
                     title: Messages.saveTemplateButton,
                 }).append($('<span>', {'class':'fa fa-bookmark', style: 'font:'+size+' FontAwesome'}));
@@ -1117,8 +1122,10 @@ define([
                                     var parsed = JSON.parse(toSave);
                                     var meta;
                                     if (Array.isArray(parsed) && typeof(parsed[3]) === "object") {
-                                        meta = parsed[3].metadata;
-                                    } else {
+                                        meta = parsed[3].metadata; // pad
+                                    } else if (parsed.info) {
+                                        meta = parsed.info; // poll
+                                    } else {
                                         meta = parsed.metadata;
                                     }
                                     if (typeof(meta) === "object") {

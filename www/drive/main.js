@@ -219,7 +219,8 @@ define([
 
         // Categories dislayed in the menu
         // _WORKGROUP_ : do not display unsorted
-        var displayedCategories = [ROOT, UNSORTED, TRASH, SEARCH, TEMPLATE];
+        var displayedCategories = [ROOT, UNSORTED, TRASH, SEARCH];
+        if (AppConfig.enableTemplates) { displayedCategories.push(TEMPLATE); }
         if (isWorkgroup()) { displayedCategories = [ROOT, TRASH, SEARCH]; }
 
         var lastSelectTime;
