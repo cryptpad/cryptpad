@@ -1,0 +1,82 @@
+.hidden {
+  display: none;
+}
+html,
+body {
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+}
+body {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+  background: url('/customize/bg3.jpg') no-repeat center center;
+  background-size: cover;
+  background-position: center;
+}
+#canvas-area {
+  flex: 1;
+  display: flex;
+}
+.canvas-container {
+  border: 1px solid black;
+  margin: auto;
+  background: white;
+}
+#controls {
+  display: block;
+  position: relative;
+  border-top: 1px solid black;
+  background: white;
+  height: 100px;
+  line-height: 100px;
+  padding-bottom: 5px;
+}
+#controls #width {
+  position: relative;
+  vertical-align: middle;
+}
+#controls #clear,
+#controls #toggleDraw {
+  display: inline;
+  vertical-align: middle;
+}
+#controls .selected {
+  margin-left: 20px;
+  display: inline-block;
+  height: 135px;
+  width: 135px;
+  z-index: 9001;
+  text-align: center;
+}
+#controls .selected img {
+  vertical-align: middle;
+}
+/* Colors */
+#colors {
+  position: relative;
+  vertical-align: middle;
+  z-index: 100;
+  background: white;
+  display: flex;
+  justify-content: space-between;
+}
+#colors span.palette-color {
+  height: 4vw;
+  width: 4vw;
+  display: inline-block;
+  margin: 5px;
+  border: 1px solid black;
+  vertical-align: top;
+}
+#color-picker {
+  display: block;
+}
+#pickers {
+  visibility: hidden;
+  position: absolute;
+  width: 0;
+  height: 0;
+  z-index: -5;
+}

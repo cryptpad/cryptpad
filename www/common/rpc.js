@@ -53,7 +53,8 @@ types of messages:
         var pending = ctx.pending[txid];
 
         if (!(parsed && parsed.slice)) {
-            return void console.error('MALFORMED_RPC_RESPONSE');
+            // RPC responses are arrays. this message isn't meant for us.
+            return;
         }
 
         var response = parsed.slice(2);
@@ -70,9 +71,8 @@ types of messages:
                 }
             }
             pending(void 0, response);
-        } else {
-            console.log("No callback provided");
         }
+        //else { console.log("No callback provided"); }
     };
 
     var create = function (network, edPrivateKey, edPublicKey, cb) {

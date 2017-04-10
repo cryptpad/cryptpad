@@ -9,46 +9,16 @@ define([
         Cryptpad: Cryptpad,
     };
 
-    var then = function (call) {
-        call.getFileSize('26f014b2ab959418605ea37a6785f317', function (e, msg) {
-            if (e) {
-                if (e === 'ENOENT') { return; }
-                return void console.error(e);
-            }
-            console.error("EXPECTED ENOENT");
-            console.log(msg);
-        });
-
-        call.getFileSize('pewpew', function (e, msg) {
-            if (e) {
-                if (e === 'INVALID_CHAN') { return; }
-                return void console.error(e);
-            }
-            console.log(msg);
-        });
-
-        var list = Cryptpad.getUserChannelList();
-        if (list.length) {
-            call.getFileSize(list[0], function (e, msg) {
-                if (e) {
-                    return void console.error(e);
-                }
-                console.log(msg);
-            });
-        }
-        call.getServerHash(function (e, hash) {
-            if (e) { return void console.error(e); }
-            console.log("the server believes your user hash is [%s]", hash);
-        });
-    };
-
     var synchronize = function (call) {
-        var localHash = call.localChannelsHash();
+        // provide a sorted list of unique channels
+        var list = Cryptpad.getCanonicalChannelList();
+
+        var localHash = call.hashChannelList(list);
         var serverHash;
 
         call.getFileListSize(function (e, bytes) {
             if (e) { return void console.error(e); }
-            console.log("%s total bytes used", bytes);
+            console.log("total %sK bytes used", bytes / 1000);
         });
 
         call.getServerHash(function (e, hash) {
@@ -59,26 +29,22 @@ define([
                 return console.log("all your pads are pinned. There is nothing to do");
             }
 
-            call.reset(function (e, response) {
+            call.reset(list, function (e, response) {
                 if (e) { return console.error(e); }
                 else {
                     return console.log('reset pin list. new hash is [%s]', response);
                 }
             });
-
-/*
-            console.log(JSON.stringify({
-                local: localHash,
-                remote: serverHash,
-            }, null, 2));*/
         });
     };
 
     $(function () {
         Cryptpad.ready(function (err, env) {
-            Pinpad.create(function (e, call) {
+            var network = Cryptpad.getNetwork();
+            var proxy = Cryptpad.getStore().getProxy().proxy;
+
+            Pinpad.create(network, proxy, function (e, call) {
                 if (e) { return void console.error(e); }
-                // then(call);
                 synchronize(call);
             });
         });

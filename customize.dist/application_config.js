@@ -12,6 +12,8 @@ define(function() {
      */
     config.notificationTimeout = 5000;
 
+    config.enablePinning = true;
+
     config.whiteboardPalette = [
         '#000000', // black
         '#FFFFFF', // white

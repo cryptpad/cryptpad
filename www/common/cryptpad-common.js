@@ -6,9 +6,11 @@ define([
     '/bower_components/alertifyjs/dist/js/alertify.js',
     '/common/clipboard.js',
     '/customize/application_config.js',
+    '/common/pinpad.js', /* TODO
+load pinpad dynamically only after you know that it will be needed */
 
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Messages, Store, Crypto, Alertify, Clipboard, AppConfig) {
+], function (Config, Messages, Store, Crypto, Alertify, Clipboard, Pinpad, AppConfig) {
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
@@ -25,6 +27,8 @@ define([
 
     var store;
 
+    var PINNING_ENABLED = AppConfig.enablePinning;
+    var rpc;
 
     var find = common.find = function (map, path) {
         return (map && path.reduce(function (p, n) {
@@ -35,6 +39,11 @@ define([
     var getStore = common.getStore = function () {
         if (store) { return store; }
         throw new Error("Store is not ready!");
+    };
+    var getProxy = common.getProxy = function () {
+        if (store && store.getProxy()) {
+            return store.getProxy().proxy;
+        }
     };
     var getNetwork = common.getNetwork = function () {
         if (store) {
@@ -168,7 +177,6 @@ define([
         return typeof getUserHash() === "string";
     };
 
-    // var isArray = function (o) { return Object.prototype.toString.call(o) === '[object Array]'; };
     var isArray = common.isArray = $.isArray;
 
     var fixHTML = common.fixHTML = function (str) {
@@ -206,7 +214,7 @@ define([
         return hexArray.join("");
     };
 
-    var deduplicate = common.deduplicateString = function (array) {
+    var deduplicateString = common.deduplicateString = function (array) {
         var a = array.slice();
         for(var i=0; i<a.length; i++) {
             for(var j=i+1; j<a.length; j++) {
@@ -215,7 +223,6 @@ define([
         }
         return a;
     };
-
 
     var parseHash = common.parseHash = function (hash) {
         var parsed = {};
@@ -289,14 +296,6 @@ define([
                     throw new Error("Unable to parse the key");
                 }
                 var version = hashArray[1];
-                /*if (version === "1") {
-                    secret.channel = base64ToHex(hashArray[2]);
-                    secret.key = hashArray[3].replace(/-/g, '/');
-                    if (secret.channel.length !== 32 || secret.key.length !== 24) {
-                        common.alert("The channel key and/or the encryption key is invalid");
-                        throw new Error("The channel key and/or the encryption key is invalid");
-                    }
-                }*/
                 if (version === "1") {
                     var mode = hashArray[2];
                     if (mode === 'edit') {
@@ -492,12 +491,6 @@ define([
         var untitledIndex = 1;
         var name = (Messages.type)[type] + ' - ' + new Date().toString().split(' ').slice(0,4).join(' ');
         return name;
-        /*
-         * Pad titles are shared in the document so it does not make sense anymore to avoid duplicates
-          if (isNameAvailable(name, parsed, recentPads)) { return name; }
-          while (!isNameAvailable(name + ' - ' + untitledIndex, parsed, recentPads)) { untitledIndex++; }
-          return name + ' - ' + untitledIndex;
-        */
     };
     var isDefaultName = common.isDefaultName = function (parsed, title) {
         var name = getDefaultName(parsed, []);
@@ -579,6 +572,7 @@ define([
 
     // STORAGE
     /* commit a list of pads to localStorage */
+    // TODO integrate pinning if enabled
     var setRecentPads = common.setRecentPads = function (pads, cb) {
         getStore().setDrive(storageKey, pads, function (err, data) {
             cb(err, data);
@@ -605,6 +599,7 @@ define([
 
 
     // STORAGE
+    // TODO integrate pinning if enabled
     var forgetPad = common.forgetPad = function (href, cb) {
         var parsed = parsePadUrl(href);
 
@@ -686,6 +681,8 @@ define([
     var isNotStrongestStored = common.isNotStrongestStored = function (href, recents) {
         return findStronger(href, recents);
     };
+
+    // TODO integrate pinning
     var setPadTitle = common.setPadTitle = function (name, cb) {
         var href = window.location.href;
         var parsed = parsePadUrl(href);
@@ -821,12 +818,14 @@ define([
 
     // local name?
     common.ready = function (f) {
-        var state = 0;
-
+        var block = 0;
         var env = {};
 
         var cb = function () {
-            f(void 0, env);
+            block--;
+            if (!block) {
+                f(void 0, env);
+            }
         };
 
         if (sessionStorage[newPadNameKey]) {
@@ -840,6 +839,9 @@ define([
 
         Store.ready(function (err, storeObj) {
             store = common.store = env.store = storeObj;
+
+            var proxy = getProxy();
+            var network = getNetwork();
 
             $(function() {
                 // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
@@ -864,8 +866,34 @@ define([
                     }
                 };
 
+                if (PINNING_ENABLED && isLoggedIn()) {
+                    console.log("logged in. pads will be pinned");
+                    block++;
+
+                    // TODO setTimeout in case rpc doesn't
+                    // activate in reasonable time?
+                    Pinpad.create(network, proxy, function (e, call) {
+                        if (e) {
+                            console.error(e);
+                            return cb();
+                        }
+
+                        console.log('RPC handshake complete');
+                        rpc = env.rpc = call;
+
+                        // TODO check if pin list is up to date
+                        // if not, reset
+                        cb();
+                    });
+                } else if (PINNING_ENABLED) {
+                    console.log('not logged in. pads will not be pinned');
+                } else {
+                    console.log('pinning disabled');
+                }
+
                 // Everything's ready, continue...
                 if($('#pad-iframe').length) {
+                    block++;
                     var $iframe = $('#pad-iframe');
                     var iframe = $iframe[0];
                     var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
@@ -876,6 +904,8 @@ define([
                     $iframe.load(cb);
                     return;
                 }
+
+                block++;
                 cb();
             });
         }, common);
@@ -966,6 +996,7 @@ define([
     /*
      * Buttons
      */
+    // TODO integrate pinning if enabled
     var renamePad = common.renamePad = function (title, callback) {
         if (title === null) { return; }
 
@@ -982,30 +1013,6 @@ define([
             }
             callback(null, title);
         });
-        /* Pad titles are shared in the document. We don't check for duplicates anymore.
-         common.causesNamingConflict(title, function (err, conflicts) {
-            if (err) {
-                console.log("Unable to determine if name caused a conflict");
-                console.error(err);
-                callback(err, title);
-                return;
-            }
-
-            if (conflicts) {
-                common.alert(Messages.renameConflict);
-                return;
-            }
-
-            common.setPadTitle(title, function (err, data) {
-                if (err) {
-                    console.log("unable to set pad title");
-                    console.log(err);
-                    return;
-                }
-                callback(null, title);
-            });
-        });
-        */
     };
 
     var getUserChannelList = common.getUserChannelList = function () {
@@ -1045,6 +1052,10 @@ define([
         list.sort();
 
         return list;
+    };
+
+    var getCanonicalChannelList = common.getCanonicalChannelList = function () {
+        return deduplicateString(getUserChannelList()).sort();
     };
 
     var createButton = common.createButton = function (type, rightside, data, callback) {
