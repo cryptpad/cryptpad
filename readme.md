@@ -73,8 +73,6 @@ npm update;
 
 To reset your instance of Cryptpad and remove all the data that is being stored:
 
-
-
 ```
 # change into your cryptpad directory
 cd /your/cryptpad/instance/location;
@@ -104,10 +102,6 @@ You can do so by launching your server in _dev mode_, like so:
 
 `DEV=1 node server.js`
 
-# Setup using Docker
-
-See [Cryptpad-Docker](cryptpad-docker.md)
-
 ## Security
 
 CryptPad is *private*, not *anonymous*. Privacy protects your data, anonymity protects you.
@@ -126,6 +120,10 @@ the NSA mad enough for them to use an active attack against you, Great Success H
 the battery out of your computer before it spawns Agent Smith.
 
 Still there are other low-lives in the world so using CryptPad over HTTPS is probably a good idea.
+
+## Setup using Docker
+
+See [Cryptpad-Docker](cryptpad-docker.md)
 
 ## Translations
 
