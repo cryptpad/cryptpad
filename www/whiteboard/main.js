@@ -181,7 +181,7 @@ window.canvas = canvas;
                 canvas.discardActiveGroup();
             }
             canvas.renderAll();
-            onLocal();
+            config.onLocal();
         };
         $deleteButton.click(deleteSelection);
         $(window).on('keyup', function (e) {
