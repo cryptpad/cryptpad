@@ -571,7 +571,7 @@ load pinpad dynamically only after you know that it will be needed */
         var $content = $('<div>');
         $('<b>').text(Messages.selectTemplate).appendTo($content);
         $('<p>', {id:"selectTemplate"}).appendTo($content);
-        Cryptpad.alert($content.html(), null, true);
+        common.alert($content.html(), null, true);
         var $p = $('#selectTemplate');
         temps.forEach(function (t, i) {
             $('<a>', {href: t.href, title: t.title}).text(t.title).click(function (e) {
