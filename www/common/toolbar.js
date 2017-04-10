@@ -242,20 +242,26 @@ define([
         return $userlist[0];
     };
 
-    // TODO deduplicate users by uid
     var getOtherUsers = function(myUserName, userList, userData) {
-      var i = 0;
-      var list = [];
-      userList.forEach(function(user) {
-        if(user !== myUserName) {
-          var data = (userData) ? (userData[user] || null) : null;
-          var userName = (data) ? data.name : null;
-          if(userName) {
-            list.push(userName);
-          }
-        }
-      });
-      return list;
+        var i = 0; // duplicates counter
+        var list = [];
+        var myUid = userData[myUserName] ? userData[myUserName].uid : undefined;
+        var uids = [];
+        userList.forEach(function(user) {
+            if(user !== myUserName) {
+                var data = (userData) ? (userData[user] || null) : null;
+                var userName = (data) ? data.name : null;
+                var userId = (data) ? data.uid : null;
+                if (userName && uids.indexOf(userId) === -1 && (!myUid || userId !== myUid)) {
+                    uids.push(userId);
+                    list.push(userName);
+                } else { i++; }
+            }
+        });
+        return {
+            list: list,
+            duplicates: i
+        };
     };
 
     var arrayIntersect = function(a, b) {
@@ -293,11 +299,13 @@ define([
             // may contain data about users that have already left the channel.
             userList = readOnly === -1 ? userList : arrayIntersect(userList, Object.keys(userData));
 
-            var numberOfEditUsers = userList.length;
-            var numberOfViewUsers = numberOfUsers - numberOfEditUsers;
-
             // Names of editing users
-            var editUsersNames = getOtherUsers(myUserName, userList, userData);
+            var others = getOtherUsers(myUserName, userList, userData);
+            var editUsersNames = others.list;
+            var duplicates = others.duplicates;
+
+            var numberOfEditUsers = userList.length - duplicates;
+            var numberOfViewUsers = numberOfUsers - numberOfEditUsers - duplicates;
 
             // Number of anonymous editing users
             var anonymous = numberOfEditUsers - editUsersNames.length;
@@ -307,21 +315,19 @@ define([
             var $editUsers = $userButtons.find('.' + USERLIST_CLS);
             $editUsers.html('').append($usersTitle);
 
-            var editUsersList = '';
             var $editUsersList = $('<pre>');
-            if (readOnly !== 1) {
+            if (readOnly !== 1) { // Yourself - edit
                 $editUsers.append('<span class="yourself">' + Messages.yourself + '</span>');
                 anonymous--;
             }
-            if (editUsersNames.length > 0) {
-                $editUsersList.text(editUsersNames.join('\n')); // .text() to avoid XSS
-                $editUsers.append($editUsersList);
-            }
-            if (anonymous > 0) {
+            // Editors
+            $editUsersList.text(editUsersNames.join('\n')); // .text() to avoid XSS
+            $editUsers.append($editUsersList);
+            if (anonymous > 0) { // Anonymous editors
                 var text = anonymous === 1 ? Messages.anonymousUser : Messages.anonymousUsers;
                 $editUsers.append('<span class="anonymous">' + anonymous + ' ' + text + '</span>');
             }
-            if (numberOfViewUsers > 0) {
+            if (numberOfViewUsers > 0) { // Viewers
                 var viewText = '<span class="viewer">';
                 if (numberOfEditUsers > 0) {
                     $editUsers.append('<br>');

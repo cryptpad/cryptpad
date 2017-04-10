@@ -23,7 +23,9 @@
     <div id="controls">
         <button id="clear" data-localization="canvas_clear">Clear</button>
         <button id="toggleDraw" data-localization="canvas_disable"></button>
-        <input id="width" type="range" value="5" min="1" max="100"></input><label for="width">5</label>
+        <button id="delete" style="display: none;" data-localization="canvas_delete"></button>
+        <input id="width" data-localization-title="canvas_width" type="range" value="5" min="1" max="100"></input><label for="width">5</label>
+        <input id="opacity" data-localization-title="canvas_opacity" type="range" value="1" min="0" max="1" step="0.1"></input><label for="opacity">1</label>
         <span class="selected"></span>
     </div>
     <div id="colors">&nbsp;</div>

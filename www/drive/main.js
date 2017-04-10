@@ -220,6 +220,7 @@ define([
         // Categories dislayed in the menu
         // _WORKGROUP_ : do not display unsorted
         var displayedCategories = [ROOT, UNSORTED, TRASH, SEARCH];
+        if (AppConfig.enableTemplates) { displayedCategories.push(TEMPLATE); }
         if (isWorkgroup()) { displayedCategories = [ROOT, TRASH, SEARCH]; }
 
         var lastSelectTime;
@@ -376,6 +377,10 @@ define([
             paths.forEach(function (p, i) {
                 var path = p.path;
                 var $element = p.element;
+                if (path.length === 1) {
+                    hide.push($menu.find('a.rename'));
+                    hide.push($menu.find('a.delete'));
+                }
                 if (!APP.editable) {
                     hide.push($menu.find('a.editable'));
                 }
@@ -1709,6 +1714,7 @@ define([
                     (isRootOpened ? $folderOpenedIcon : $folderIcon);
                 var $rootElement = createTreeElement(ROOT_NAME, $rootIcon.clone(), [ROOT], false, true, false, isRootOpened);
                 $rootElement.addClass('root');
+                $rootElement.find('>.element-row').contextmenu(openDirectoryContextMenu);
                 var $root = $('<ul>').append($rootElement).appendTo($container);
                 $container = $rootElement;
             } else if (filesOp.isFolderEmpty(root)) { return; }

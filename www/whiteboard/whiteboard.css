@@ -33,11 +33,13 @@ body {
   line-height: 100px;
   padding-bottom: 5px;
 }
-#controls #width {
+#controls #width,
+#controls #opacity {
   position: relative;
   vertical-align: middle;
 }
 #controls #clear,
+#controls #delete,
 #controls #toggleDraw {
   display: inline;
   vertical-align: middle;

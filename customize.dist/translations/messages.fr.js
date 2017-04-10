@@ -75,6 +75,11 @@ define(function () {
     out.newButton = 'Nouveau';
     out.newButtonTitle = 'Créer un nouveau pad';
 
+    out.saveTemplateButton = "Sauver en tant que modèle";
+    out.saveTemplatePrompt = "Choisir un titre pour ce modèle";
+    out.templateSaved = "Modèle enregistré !";
+    out.selectTemplate = "Sélectionner un modèle ou appuyer sur Échap";
+
     out.presentButtonTitle = "Entrer en mode présentation";
     out.presentSuccess = 'Appuyer sur Échap pour quitter le mode présentation';
 
@@ -146,8 +151,11 @@ define(function () {
 
     // Canvas
     out.canvas_clear = "Nettoyer";
+    out.canvas_delete = "Supprimer la sélection";
     out.canvas_disable = "Désactiver le dessin";
     out.canvas_enable = "Activer le dessin";
+    out.canvas_width = "Épaisseur";
+    out.canvas_opacity = "Opacité";
 
     // File manager
 
