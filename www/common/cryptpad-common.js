@@ -498,7 +498,7 @@ load pinpad dynamically only after you know that it will be needed */
     };
 
     var makePad = function (href, title) {
-        var now = ''+new Date();
+        var now = +new Date();
         return {
             href: href,
             atime: now,
@@ -557,6 +557,41 @@ load pinpad dynamically only after you know that it will be needed */
         getStore().addTemplate(href);
     };
 
+    var isTemplate = common.isTemplate = function (href) {
+        var rhref = getRelativeHref(href);
+        var templates = listTemplates();
+        return templates.some(function (t) {
+            return t.href === rhref;
+        });
+    };
+    var selectTemplate = common.selectTemplate = function (type, rt, Crypt) {
+        if (!AppConfig.enableTemplates) { return; }
+        var temps = listTemplates(type);
+        if (temps.length === 0) { return; }
+        var $content = $('<div>');
+        $('<b>').text(Messages.selectTemplate).appendTo($content);
+        $('<p>', {id:"selectTemplate"}).appendTo($content);
+        Cryptpad.alert($content.html(), null, true);
+        var $p = $('#selectTemplate');
+        temps.forEach(function (t, i) {
+            $('<a>', {href: t.href, title: t.title}).text(t.title).click(function (e) {
+                e.preventDefault();
+                var parsed = parsePadUrl(t.href);
+                if(!parsed) { throw new Error("Cannot get template hash"); }
+                common.addLoadingScreen(null, true);
+                Crypt.get(parsed.hash, function (err, val) {
+                    if (err) { throw new Error(err); }
+                    var p = parsePadUrl(window.location.href);
+                    Crypt.put(p.hash, val, function (e) {
+                        common.findOKButton().click();
+                        common.removeLoadingScreen();
+                    });
+                });
+            }).appendTo($p);
+            if (i !== temps.length) { $('<br>').appendTo($p); }
+        });
+        common.findOKButton().text(Messages.cancelButton);
+    };
 
     // STORAGE
     /* fetch and migrate your pad history from localStorage */
@@ -1078,6 +1113,56 @@ load pinpad dynamically only after you know that it will be needed */
                     button.click(common.importContent('text/plain', function (content, file) {
                         callback(content, file);
                     }));
+                }
+                break;
+            case 'template':
+                if (!AppConfig.enableTemplates) { return; }
+                button = $('<button>', {
+                    title: Messages.saveTemplateButton,
+                }).append($('<span>', {'class':'fa fa-bookmark', style: 'font:'+size+' FontAwesome'}));
+                if (data.rt && data.Crypt) {
+                    button.click(function () {
+                        var title = data.getTitle() || document.title;
+                        var todo = function (val) {
+                            if (typeof(val) !== "string") { return; }
+                            var toSave = data.rt.getUserDoc();
+                            if (val.trim()) {
+                                val = val.trim();
+                                title = val;
+                                try {
+                                    var parsed = JSON.parse(toSave);
+                                    var meta;
+                                    if (Array.isArray(parsed) && typeof(parsed[3]) === "object") {
+                                        meta = parsed[3].metadata; // pad
+                                    } else if (parsed.info) {
+                                        meta = parsed.info; // poll
+                                    } else {
+                                        meta = parsed.metadata;
+                                    }
+                                    if (typeof(meta) === "object") {
+                                        meta.title = val;
+                                        meta.defaultTitle = val;
+                                        delete meta.users;
+                                    }
+                                    toSave = JSON.stringify(parsed);
+                                } catch(e) {
+                                    console.error("Parse error while setting the title", e);
+                                }
+                            }
+                            var p = parsePadUrl(window.location.href);
+                            if (!p.type) { return; }
+                            var hash = createRandomHash();
+                            var href = '/' + p.type + '/#' + hash;
+                            data.Crypt.put(hash, toSave, function (e) {
+                                if (e) { throw new Error(e); }
+                                common.addTemplate(makePad(href, title));
+                                whenRealtimeSyncs(getStore().getProxy().info.realtime, function () {
+                                    common.alert(Messages.templateSaved);
+                                });
+                            });
+                        };
+                        common.prompt(Messages.saveTemplatePrompt, title || document.title, todo);
+                    });
                 }
                 break;
             case 'forget':

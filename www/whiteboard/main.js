@@ -11,13 +11,14 @@ define([
     'json.sortify',
     '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/cryptpad-common.js',
+    '/common/cryptget.js',
     '/common/visible.js',
     '/common/notify.js',
     '/customize/application_config.js',
     '/bower_components/secure-fabric.js/dist/fabric.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
-], function (Config, Realtime, Crypto, Toolbar, TextPatcher, JSONSortify, JsonOT, Cryptpad, Visible, Notify, AppConfig) {
+], function (Config, Realtime, Crypto, Toolbar, TextPatcher, JSONSortify, JsonOT, Cryptpad, Cryptget, Visible, Notify, AppConfig) {
     var saveAs = window.saveAs;
     var Messages = Cryptpad.Messages;
 
@@ -348,6 +349,17 @@ define([
             var $rightside = $bar.find('.' + Toolbar.constants.rightside);
             module.$userNameButton = $($bar.find('.' + Toolbar.constants.changeUsername));
 
+            /* save as template */
+            if (!Cryptpad.isTemplate(window.location.href)) {
+                var templateObj = {
+                    rt: info.realtime,
+                    Crypt: Cryptget,
+                    getTitle: function () { return document.title; }
+                };
+                var $templateButton = Cryptpad.createButton('template', true, templateObj);
+                $rightside.append($templateButton);
+            }
+
             var $export = Cryptpad.createButton('export', true, {}, saveImage);
             $rightside.append($export);
 
@@ -519,6 +531,10 @@ define([
                 realtime: realtime
             });
 
+            var isNew = false;
+            var userDoc = module.realtime.getUserDoc();
+            if (userDoc === "" || userDoc === "{}") { isNew = true; }
+
             Cryptpad.removeLoadingScreen();
             setEditable(true);
             initializing = false;
@@ -548,6 +564,9 @@ define([
                     addToUserData(myData);
                     onLocal();
                     module.$userNameButton.click();
+                }
+                if (isNew) {
+                    Cryptpad.selectTemplate('whiteboard', info.realtime, Cryptget);
                 }
             });
         };

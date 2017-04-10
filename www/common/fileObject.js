@@ -999,7 +999,10 @@ define([
         // first, we must add it to FILES_DATA, so the input has to be an fileDAta object
         var addTemplate = exp.addTemplate = function (fileData) {
             if (workgroup) { return; }
-            if (typeof fileData !== "object" || !fileData.href || !fileData.title) { return; }
+            if (typeof fileData !== "object" || !fileData.href || !fileData.title) {
+                console.error("filedata object expected to add a new template");
+                return;
+            }
 
             var href = fileData.href;
             var test = files[FILES_DATA].some(function (o) {

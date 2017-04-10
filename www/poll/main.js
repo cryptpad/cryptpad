@@ -3,6 +3,7 @@ define([
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/cryptpad-common.js',
+    '/common/cryptget.js',
     '/bower_components/hyperjson/hyperjson.js',
     'render.js',
     '/common/toolbar.js',
@@ -10,7 +11,7 @@ define([
     '/common/notify.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (TextPatcher, Listmap, Crypto, Cryptpad, Hyperjson, Renderer, Toolbar, Visible, Notify) {
+], function (TextPatcher, Listmap, Crypto, Cryptpad, Cryptget, Hyperjson, Renderer, Toolbar, Visible, Notify) {
     var $ = window.jQuery;
 
     var Messages = Cryptpad.Messages;
@@ -525,6 +526,11 @@ define([
         debug('userid: %s', userid);
 
         var proxy = APP.proxy;
+
+        var isNew = false;
+        var userDoc = JSON.stringify(proxy);
+        if (userDoc === "" || userDoc === "{}") { isNew = true; }
+
         var uncommitted = APP.uncommitted = {};
         prepareProxy(proxy, copyObject(Render.Example));
         prepareProxy(uncommitted, copyObject(Render.Example));
@@ -676,6 +682,9 @@ define([
                 addToUserData(myData);
                 APP.$userNameButton.click();
             }
+            if (isNew) {
+                Cryptpad.selectTemplate('poll', info.realtime, Cryptget);
+            }
         });
     };
 
@@ -746,6 +755,17 @@ define([
 
         // set the hash
         if (!readOnly) { Cryptpad.replaceHash(editHash); }
+
+        /* save as template */
+        if (!Cryptpad.isTemplate(window.location.href)) {
+            var templateObj = {
+                rt: info.realtime,
+                Crypt: Cryptget,
+                getTitle: function () { return document.title; }
+            };
+            var $templateButton = Cryptpad.createButton('template', true, templateObj);
+            $rightside.append($templateButton);
+        }
 
         Cryptpad.onDisplayNameChanged(setName);
 
