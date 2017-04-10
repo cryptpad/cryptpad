@@ -1,35 +1,12 @@
-FROM ubuntu:16.04
+FROM node:6-alpine
 
-RUN apt-get update && apt-get install -y \
-  vim \
-  wget \
-  git \
-  curl \
-  npm \
-  nodejs-legacy
-
-ARG VERSION=0.3.0
-
-# Download stable version
-# RUN wget https://github.com/xwiki-labs/cryptpad/archive /${VERSION}.tar.gz -O /cryptpad.tar.gz \
-#   && mkdir -p /cryptpad \
-#   && tar -xzf /cryptpad.tar.gz -C /cryptpad --strip-components=1 \
-#   && rm /cryptpad.tar.gz
-
-# Download from github
-# RUN git clone https://github.com/xwiki-labs/cryptpad.git
-
-# Add code directly
-ADD . /cryptpad
-
+COPY . /cryptpad
 WORKDIR /cryptpad
 
-RUN npm install \
+RUN apk add --no-cache git tini \
+   && npm install \
    && npm install -g bower \
    && bower install --allow-root
-
-ADD container-start.sh /container-start.sh
-RUN chmod u+x /container-start.sh
 
 EXPOSE 3000
 
@@ -40,4 +17,4 @@ ENV USE_SSL=false
 ENV STORAGE='./storage/file'
 ENV LOG_TO_STDOUT=true
 
-CMD /container-start.sh
+CMD ["/sbin/tini", "--", "/cryptpad/container-start.sh"]
