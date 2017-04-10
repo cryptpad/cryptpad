@@ -12,13 +12,14 @@ define([
     '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
+    '/whiteboard/colors.js',
     '/common/visible.js',
     '/common/notify.js',
     '/customize/application_config.js',
     '/bower_components/secure-fabric.js/dist/fabric.min.js',
     '/bower_components/jquery/dist/jquery.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
-], function (Config, Realtime, Crypto, Toolbar, TextPatcher, JSONSortify, JsonOT, Cryptpad, Cryptget, Visible, Notify, AppConfig) {
+], function (Config, Realtime, Crypto, Toolbar, TextPatcher, JSONSortify, JsonOT, Cryptpad, Cryptget, Colors, Visible, Notify, AppConfig) {
     var saveAs = window.saveAs;
     var Messages = Cryptpad.Messages;
 
@@ -50,14 +51,21 @@ define([
         var $cursors = $('#cursors');
         var $deleteButton = $('#delete');
 
+        var brush = {
+            color: '#000000',
+            opacity: 1
+        };
+
         var $toggle = $('#toggleDraw');
         var $width = $('#width');
         var $widthLabel = $('label[for="width"]');
-
+        var $opacity = $('#opacity');
+        var $opacityLabel = $('label[for="opacity"]');
+window.canvas = canvas;
         var createCursor = function () {
             var w = canvas.freeDrawingBrush.width;
             var c = canvas.freeDrawingBrush.color;
-            var size = w > 30 ? w : w+30;
+            var size = w > 30 ? w+2 : w+32;
             $cursors.html('<canvas width="'+size+'" height="'+size+'"></canvas>');
             var $ccanvas = $cursors.find('canvas');
             var ccanvas = $ccanvas[0];
@@ -71,7 +79,9 @@ define([
             ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
             ctx.fillStyle = c;
             ctx.fill();
-            ctx.lineWidth = 0;
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = brush.color;
+            ctx.stroke();
 
             ctx.beginPath();
             ctx.moveTo(size/2, 0); ctx.lineTo(size/2, 10);
@@ -81,9 +91,6 @@ define([
             ctx.strokeStyle = '#000000';
             ctx.stroke();
 
-            //context.lineWidth = w/2;
-            //context.strokeStyle = '#000000';
-            //context.stroke();
 
             var img = ccanvas.toDataURL("image/png");
             var $img = $('<img>', {
@@ -104,6 +111,17 @@ define([
 
         $width.on('change', updateBrushWidth);
 
+        var updateBrushOpacity = function () {
+            var val = $opacity.val();
+            brush.opacity = Number(val);
+            canvas.freeDrawingBrush.color = Colors.hex2rgba(brush.color, brush.opacity);
+            $opacityLabel.text(val);
+            createCursor();
+        };
+        updateBrushOpacity();
+
+        $opacity.on('change', updateBrushOpacity);
+
         var pickColor = function (current, cb) {
             var $picker = $('<input>', {
                 type: 'color',
@@ -122,21 +140,15 @@ define([
         };
 
         var setColor = function (c) {
-            canvas.freeDrawingBrush.color = c;
+            c = Colors.rgb2hex(c);
+            brush.color = c;
+            canvas.freeDrawingBrush.color = Colors.hex2rgba(brush.color, brush.opacity);
             module.$color.css({
                 'color': c,
             });
             createCursor();
         };
 
-        var rgb2hex = function (rgb) {
-            if (rgb.indexOf('#') === 0) { return rgb; }
-            rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-            var hex = function (x) {
-                return ("0" + parseInt(x).toString(16)).slice(-2);
-            };
-            return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
-        };
 
         var palette = AppConfig.whiteboardPalette || [
             'red', 'blue', 'green', 'white', 'black', 'purple',
@@ -255,12 +267,12 @@ define([
                 'background-color': color,
             })
             .click(function () {
-                var c = rgb2hex($color.css('background-color'));
+                var c = Colors.rgb2hex($color.css('background-color'));
                 setColor(c);
             })
             .on('dblclick', function (e) {
                 e.preventDefault();
-                pickColor(rgb2hex($color.css('background-color')), function (c) {
+                pickColor(Colors.rgb2hex($color.css('background-color')), function (c) {
                     $color.css({
                         'background-color': c,
                     });

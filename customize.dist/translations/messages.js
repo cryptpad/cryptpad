@@ -156,6 +156,8 @@ define(function () {
     out.canvas_delete = "Delete selection";
     out.canvas_disable = "Disable draw";
     out.canvas_enable = "Enable draw";
+    out.canvas_width = "Width";
+    out.canvas_opacity = "Opacity";
 
     // File manager
 
