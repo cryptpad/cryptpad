@@ -146,6 +146,7 @@ define(function () {
 
     // Canvas
     out.canvas_clear = "Nettoyer";
+    out.canvas_delete = "Supprimer la sélection";
     out.canvas_disable = "Désactiver le dessin";
     out.canvas_enable = "Activer le dessin";
 

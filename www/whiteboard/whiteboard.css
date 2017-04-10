@@ -38,6 +38,7 @@ body {
   vertical-align: middle;
 }
 #controls #clear,
+#controls #delete,
 #controls #toggleDraw {
   display: inline;
   vertical-align: middle;

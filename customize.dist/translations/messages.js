@@ -148,6 +148,7 @@ define(function () {
 
     // Canvas
     out.canvas_clear = "Clear";
+    out.canvas_delete = "Delete selection";
     out.canvas_disable = "Disable draw";
     out.canvas_enable = "Enable draw";
 

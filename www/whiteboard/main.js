@@ -47,6 +47,7 @@ define([
         var $pickers = $('#pickers');
         var $colors = $('#colors');
         var $cursors = $('#cursors');
+        var $deleteButton = $('#delete');
 
         var $toggle = $('#toggleDraw');
         var $width = $('#width');
@@ -151,23 +152,27 @@ define([
             module.draw = !module.draw;
             canvas.isDrawingMode = module.draw;
             $toggle.text(module.draw ? Messages.canvas_disable : Messages.canvas_enable);
+            if (module.draw) { $deleteButton.hide(); }
+            else { $deleteButton.show(); }
         };
         $toggle.click(toggleDrawMode);
 
-        $(window).on('keyup', function (e) {
-            if (e.which === 46) {
-                if (canvas.getActiveObject()) {
-                    canvas.getActiveObject().remove();
-                }
-                if (canvas.getActiveGroup()) {
-                    canvas.getActiveGroup()._objects.forEach(function (el) {
-                        el.remove();
-                    });
-                    canvas.discardActiveGroup();
-                }
-                canvas.renderAll();
-                onLocal();
+        var deleteSelection = function () {
+            if (canvas.getActiveObject()) {
+                canvas.getActiveObject().remove();
             }
+            if (canvas.getActiveGroup()) {
+                canvas.getActiveGroup()._objects.forEach(function (el) {
+                    el.remove();
+                });
+                canvas.discardActiveGroup();
+            }
+            canvas.renderAll();
+            onLocal();
+        };
+        $deleteButton.click(deleteSelection);
+        $(window).on('keyup', function (e) {
+            if (e.which === 46) { deleteSelection (); }
         });
 
         var setEditable = function (bool) {
