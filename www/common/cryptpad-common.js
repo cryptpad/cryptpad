@@ -389,6 +389,19 @@ load pinpad dynamically only after you know that it will be needed */
         * title
         * ??? // what else can we put in here?
     */
+    var checkObjectData = function (pad) {
+        if (!pad.ctime) { pad.ctime = pad.atime; }
+        if (/^https*:\/\//.test(pad.href)) {
+            pad.href = common.getRelativeHref(pad.href);
+        }
+        var parsed = common.parsePadUrl(pad.href);
+        if (!parsed || !parsed.hash) { return; }
+        if (!pad.title) {
+            pad.title = common.getDefaultname(parsed);
+        }
+        return parsed.hash;
+    };
+    // Migrate from legacy store (localStorage)
     var migrateRecentPads = common.migrateRecentPads = function (pads) {
         return pads.map(function (pad) {
             var hash;
@@ -405,16 +418,7 @@ load pinpad dynamically only after you know that it will be needed */
                     ctime: pad[1],
                 };
             } else if (pad && typeof(pad) === 'object') {
-                if (!pad.ctime) { pad.ctime = pad.atime; }
-                if (!pad.title) {
-                    pad.href.replace(/#(.*)$/, function (x, hash) {
-                        pad.title = hash.slice(0,8);
-                    });
-                }
-                if (/^https*:\/\//.test(pad.href)) {
-                    pad.href = common.getRelativeHref(pad.href);
-                }
-                hash = pad.href.slice(pad.href.indexOf('#')+1);
+                hash = checkObjectData(pad);
                 if (!hash || !common.parseHash(hash)) { return; }
                 return pad;
             } else {
@@ -423,6 +427,18 @@ load pinpad dynamically only after you know that it will be needed */
                 return;
             }
         }).filter(function (x) { return x; });
+    };
+    // Remove everything from RecentPads that is not an object and check the objects
+    var checkRecentPads = common.checkRecentPads = function (pads) {
+        pads.forEach(function (pad, i) {
+            if (pad && typeof(pad) === 'object') {
+                var hash = checkObjectData(pad);
+                if (!hash || !common.parseHash(hash)) { return; }
+                return pad;
+            }
+            console.error("[Cryptpad.migrateRecentPads] pad had unexpected value");
+            getStore().removeData(i);
+        });
     };
 
     // Get the pads from localStorage to migrate them to the object store
@@ -486,14 +502,14 @@ load pinpad dynamically only after you know that it will be needed */
     };
 
     // Create untitled documents when no name is given
-    var getDefaultName = common.getDefaultName = function (parsed, recentPads) {
+    var getDefaultName = common.getDefaultName = function (parsed) {
         var type = parsed.type;
         var untitledIndex = 1;
         var name = (Messages.type)[type] + ' - ' + new Date().toString().split(' ').slice(0,4).join(' ');
         return name;
     };
     var isDefaultName = common.isDefaultName = function (parsed, title) {
-        var name = getDefaultName(parsed, []);
+        var name = getDefaultName(parsed);
         return title === name;
     };
 
@@ -594,26 +610,15 @@ load pinpad dynamically only after you know that it will be needed */
     };
 
     // STORAGE
-    /* fetch and migrate your pad history from localStorage */
+    /* fetch and migrate your pad history from the store */
     var getRecentPads = common.getRecentPads = function (cb) {
         getStore().getDrive(storageKey, function (err, recentPads) {
             if (isArray(recentPads)) {
-                cb(void 0, migrateRecentPads(recentPads));
+                checkRecentPads(recentPads);
+                cb(void 0, recentPads);
                 return;
             }
             cb(void 0, []);
-        });
-    };
-
-    // STORAGE
-    /* commit a list of pads to localStorage */
-    // TODO integrate pinning if enabled
-    var setRecentPads = common.setRecentPads = function (pads, cb) {
-        getStore().setDrive(storageKey, pads, function (err, data) {
-            if (PINNING_ENABLED && isLoggedIn()) {
-                console.log("TODO check pin hash");
-            }
-            cb(err, data);
         });
     };
 
@@ -636,7 +641,6 @@ load pinpad dynamically only after you know that it will be needed */
     };
 
     // STORAGE
-    // TODO integrate pinning if enabled
     var forgetPad = common.forgetPad = function (href, cb) {
         var parsed = parsePadUrl(href);
 
@@ -724,6 +728,8 @@ load pinpad dynamically only after you know that it will be needed */
         var href = window.location.href;
         var parsed = parsePadUrl(href);
         href = getRelativeHref(href);
+        // getRecentPads return the array from the drive, not a copy
+        // We don't have to call "set..." at the end, everything is stored with listmap
         getRecentPads(function (err, recent) {
             if (err) {
                 cb(err);
@@ -779,20 +785,15 @@ load pinpad dynamically only after you know that it will be needed */
 
             if (!contains) {
                 var data = makePad(href, name);
-                renamed.push(data);
-                if (typeof(getStore().addPad) === "function") {
-                    getStore().addPad(href, common.initialPath, common.initialName || name);
-                }
+                getStore().pushData(data);
+                getStore().addPad(href, common.initialPath, common.initialName || name);
             }
-
-            setRecentPads(renamed, function (err, data) {
-                if (updateWeaker.length > 0) {
-                    updateWeaker.forEach(function (obj) {
-                        getStore().replaceHref(obj.o, obj.n);
-                    });
-                }
-                cb(err, data);
-            });
+            if (updateWeaker.length > 0) {
+                updateWeaker.forEach(function (obj) {
+                    getStore().replaceHref(obj.o, obj.n);
+                });
+            }
+            cb(err, recent);
         });
     };
 
@@ -920,6 +921,13 @@ load pinpad dynamically only after you know that it will be needed */
 
                         // TODO check if pin list is up to date
                         // if not, reset
+                        common.arePinsSynced(function (err, yes) {
+                            if (!yes) {
+                                common.resetPins(function (err, hash) {
+                                    console.log('RESET DONE');
+                                });
+                            }
+                        });
                         cb();
                     });
                 } else if (PINNING_ENABLED) {
@@ -1098,6 +1106,9 @@ load pinpad dynamically only after you know that it will be needed */
     };
 
     var pinsReady = common.pinsReady = function () {
+        if (!isLoggedIn()) {
+            return false;
+        }
         if (!PINNING_ENABLED) {
             console.error('[PINNING_DISABLED]');
             return false;
@@ -1121,11 +1132,28 @@ load pinpad dynamically only after you know that it will be needed */
     };
 
     var resetPins = common.resetPins = function (cb) {
-        if (!PINNING_ENABLED) { return void console.error('[PINNING_DISABLED]'); }
-        if (!rpc) { return void console.error('[RPC_NOT_READY]'); }
+        if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
 
         var list = getCanonicalChannelList();
         rpc.reset(list, function (e, hash) {
+            if (e) { return void cb(e); }
+            cb(void 0, hash);
+        });
+    };
+
+    var pinPads = common.pinPads = function (pads, cb) {
+        if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
+
+        rpc.pin(pads, function (e, hash) {
+            if (e) { return void cb(e); }
+            cb(void 0, hash);
+        });
+    };
+
+    var unpinPads = common.unpinPads = function (pads, cb) {
+        if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
+
+        rpc.unpin(pads, function (e, hash) {
             if (e) { return void cb(e); }
             cb(void 0, hash);
         });

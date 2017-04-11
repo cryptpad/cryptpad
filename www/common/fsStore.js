@@ -86,6 +86,9 @@ define([
             cb(void 0, Object.keys(storeObj));
         };
 
+        ret.removeData = filesOp.removeData;
+        ret.pushData = filesOp.pushData;
+
         ret.addPad = function (href, path, name) {
             filesOp.addPad(href, path, name);
         };

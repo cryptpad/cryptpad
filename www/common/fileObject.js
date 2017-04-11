@@ -45,6 +45,23 @@ define([
             return a;
         };
 
+        var pushFileData = exp.pushData = function (data) {
+            Cryptpad.pinPads([Cryptpad.hrefToHexChannelId(data.href)], function (e, hash) {
+                console.log(hash);
+            });
+            files[FILES_DATA].push(data);
+        };
+        var spliceFileData = exp.removeData = function (idx) {
+            var data = files[FILES_DATA][idx];
+            if (typeof data === "object") {
+                Cryptpad.unpinPads([Cryptpad.hrefToHexChannelId(data.href)], function (e, hash) {
+                    console.log(hash);
+                });
+            }
+            files[FILES_DATA].splice(idx, 1);
+        };
+
+
         var comparePath  = exp.comparePath = function (a, b) {
             if (!a || !b || !$.isArray(a) || !$.isArray(b)) { return false; }
             if (a.length !== b.length) { return false; }
@@ -459,7 +476,7 @@ define([
                 var idx = files[FILES_DATA].indexOf(f);
                 if (idx !== -1) {
                     debug("Removing", f, "from filesData");
-                    files[FILES_DATA].splice(idx, 1);
+                    spliceFileData(idx);
                     removePadAttribute(f.href);
                 }
             });
@@ -745,7 +762,7 @@ define([
         };
 
         var pushNewFileData = function (href, title) {
-            files[FILES_DATA].push({
+            pushFileData({
                 href: href,
                 title: title,
                 atime: +new Date(),
@@ -865,7 +882,7 @@ define([
                 var idx = files[FILES_DATA].indexOf(f);
                 if (idx !== -1) {
                     debug("Removing", f, "from filesData");
-                    files[FILES_DATA].splice(idx, 1);
+                    spliceFileData(idx);
                     // Remove the "padAttributes" stored in the realtime object for that pad
                     removePadAttribute(f.href);
                 }
@@ -1009,7 +1026,7 @@ define([
                 return o.href === href;
             });
             if (!test) {
-                files[FILES_DATA].push(fileData);
+                pushFileData(fileData);
             }
             if (files[TEMPLATE].indexOf(href) === -1) {
                 files[TEMPLATE].push(href);
@@ -1141,7 +1158,7 @@ define([
                 toClean.forEach(function (el) {
                     var idx = fd.indexOf(el);
                     if (idx !== -1) {
-                        fd.splice(idx, 1);
+                        spliceFileData(idx);
                     }
                 });
             };
