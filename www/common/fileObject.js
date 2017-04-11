@@ -89,12 +89,15 @@ define([
         var isPathInTrash = exp.isPathInTrash = function (path) {
             return path[0] && path[0] === TRASH;
         };
+        var isInTrashRoot = exp.isInTrashRoot = function (path) {
+            return path[0] === TRASH && path.length === 4;
+        };
 
         var isPathInFilesData = exp.isPathInFilesData = function (path) {
             return path[0] && path[0] === FILES_DATA;
         };
 
-        var isFile =  exp.isFile = function (element) {
+        var isFile = exp.isFile = function (element) {
             return typeof(element) === "string";
         };
 
@@ -439,10 +442,6 @@ define([
             return paths;
         };
 
-        var isInTrashRoot = exp.isInTrashRoot = function (path) {
-            return path[0] === TRASH && path.length === 4;
-        };
-
         var removePadAttribute = function (f) {
             Object.keys(files).forEach(function (key) {
                 var hash = f.indexOf('#') !== -1 ? f.slice(f.indexOf('#') + 1) : null;
@@ -486,9 +485,9 @@ define([
             var parentPath = path.slice();
             var key = parentPath.pop();
             var parentEl = exp.findElement(files, parentPath);
-            if (path.length === 4 && path[0] === TRASH) {
+            if (isInTrashRoot(path)) {
                 files[TRASH][path[1]].splice(path[2], 1);
-            } else if (path[0] === UNSORTED || path[0] === TEMPLATE) {
+            } else if (isPathInHrefArray(path)) {
                 parentEl.splice(key, 1);
             } else {
                 parentEl[key] = undefined;
