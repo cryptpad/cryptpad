@@ -506,8 +506,9 @@ load pinpad dynamically only after you know that it will be needed */
         });
         return templates;
     };
-    var addTemplate = common.addTemplate = function (href) {
-        getStore().addTemplate(href);
+    var addTemplate = common.addTemplate = function (data) {
+        getStore().pushData(data);
+        getStore().addPad(data.href, ['template']);
     };
 
     var isTemplate = common.isTemplate = function (href) {

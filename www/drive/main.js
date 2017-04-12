@@ -661,7 +661,7 @@ define([
             }
             // Unsorted or template
             if (filesOp.isPathInUnsorted(path) || filesOp.isPathInTemplate(path)) {
-                var file = filesOp.findElement(files, path);
+                var file = filesOp.find(path);
                 if (filesOp.isFile(file) && filesOp.getTitle(file)) {
                     return filesOp.getTitle(file);
                 }
@@ -688,7 +688,7 @@ define([
             var msg = Messages._getKey('fm_removeSeveralDialog', [paths.length]);
             if (paths.length === 1) {
                 var path = paths[0];
-                var name = path[0] === UNSORTED ? filesOp.getTitle(filesOp.findElement(files, path)) : path[path.length - 1];
+                var name = path[0] === UNSORTED ? filesOp.getTitle(filesOp.find(path)) : path[path.length - 1];
                 msg = Messages._getKey('fm_removeDialog', [name]);
             }
             Cryptpad.confirm(msg, function (res) {
@@ -707,7 +707,7 @@ define([
                 $selected.each(function (idx, elmt) {
                     var ePath = $(elmt).data('path');
                     if (ePath) {
-                        var val = filesOp.findElement(files, ePath);
+                        var val = filesOp.find(ePath);
                         if (!val) { return; } // Error? A ".selected" element in not in the object
                         paths.push({
                             path: ePath,
@@ -721,7 +721,7 @@ define([
             } else {
                 removeSelected();
                 $element.addClass('selected');
-                var val = filesOp.findElement(files, path);
+                var val = filesOp.find(path);
                 if (!val) { return; } // The element in not in the object
                 paths = [{
                     path: path,
@@ -749,7 +749,7 @@ define([
             var movedPaths = [];
             var importedElements = [];
             oldPaths.forEach(function (p) {
-                var el = filesOp.findElement(files, p.path);
+                var el = filesOp.find(p.path);
                 if (el && (stringify(el) === stringify(p.value.el) || !p.value || !p.value.el)) {
                     movedPaths.push(p.path);
                 } else {
@@ -882,7 +882,7 @@ define([
                 newPath.push(key);
             }
 
-            var element = filesOp.findElement(files, newPath);
+            var element = filesOp.find(newPath);
             var $icon = !isFolder ? getFileIcon(element) : undefined;
             var ro = filesOp.isReadOnlyFile(element);
             // ro undefined mens it's an old hash which doesn't support read-only
@@ -1119,17 +1119,17 @@ define([
                     refresh();
                 };
                 $block.find('a.newFolder').click(function () {
-                    filesOp.createNewFolder(currentPath, null, onCreated);
+                    filesOp.addFolder(currentPath, null, onCreated); // TODO START HERE
                 });
                 $block.find('a.newdoc').click(function (e) {
                     var type = $(this).attr('data-type') || 'pad';
                     var name = Cryptpad.getDefaultName({type: type});
-                    filesOp.createNewFile(currentPath, name, type, onCreated);
+                    filesOp.addFile(currentPath, name, type, onCreated);
                 });
             } else {
                 $block.find('a.newdoc').click(function (e) {
                     var type = $(this).attr('data-type') || 'pad';
-                    sessionStorage[Cryptpad.newPadPathKey] = filesOp.isPathInTrash(currentPath) ? '' : currentPath;
+                    sessionStorage[Cryptpad.newPadPathKey] = filesOp.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
                     window.open('/' + type + '/');
                 });
             }
@@ -1251,11 +1251,11 @@ define([
         };
 
         var allFilesSorted = function () {
-            return filesOp.getUnsortedFiles().length === 0;
+            return filesOp.getFiles([UNSORTED]).length === 0;
         };
 
         var sortElements = function (folder, path, oldkeys, prop, asc, useHref, useData) {
-            var root = filesOp.findElement(files, path);
+            var root = filesOp.find(path);
             var test = folder ? filesOp.isFolder : filesOp.isFile;
             var keys;
             if (!useData) {
@@ -1478,7 +1478,7 @@ define([
                     var $atime = $('<td>', {'class': 'col2'}).text(new Date(r.data.atime).toLocaleString());
                     var $ctimeName = $('<td>', {'class': 'label2'}).text(Messages.fm_creation);
                     var $ctime = $('<td>', {'class': 'col2'}).text(new Date(r.data.ctime).toLocaleString());
-                    if (filesOp.isPathInHrefArray(path)) {
+                    if (filesOp.isPathIn(path, ['hrefArray'])) {
                         path.pop();
                         path.push(r.data.title);
                     }
@@ -1522,14 +1522,14 @@ define([
             if (!path || path.length === 0) {
                 path = [ROOT];
             }
-            var isInRoot = filesOp.isPathInRoot(path);
+            var isInRoot = filesOp.isPathIn(path, [ROOT]);
             var isTrashRoot = filesOp.comparePath(path, [TRASH]);
             var isUnsorted = filesOp.comparePath(path, [UNSORTED]);
             var isTemplate = filesOp.comparePath(path, [TEMPLATE]);
             var isAllFiles = filesOp.comparePath(path, [FILES_DATA]);
             var isSearch = path[0] === SEARCH;
 
-            var root = isSearch ? undefined : filesOp.findElement(files, path);
+            var root = isSearch ? undefined : filesOp.find(path);
             if (!isSearch && typeof(root) === "undefined") {
                 log(Messages.fm_unknownFolderError);
                 debug("Unable to locate the selected directory: ", path);
@@ -1642,11 +1642,11 @@ define([
                 var $el = $(e);
                 if ($el.data('path')) {
                     var path = $el.data('path');
-                    var element = filesOp.findElement(files, path);
+                    var element = filesOp.find(path);
                     if (!filesOp.isFile(element)) { return; }
                     var data = filesOp.getFileData(element);
                     if (!data) { return; }
-                    if (filesOp.isPathInHrefArray(path)) { $el.find('.name').attr('title', data.title).text(data.title); }
+                    if (filesOp.isPathIn(path, ['hrefArray'])) { $el.find('.name').attr('title', data.title).text(data.title); }
                     $el.find('.title').attr('title', data.title).text(data.title);
                     $el.find('.atime').attr('title', getDate(data.atime)).text(getDate(data.atime));
                     $el.find('.ctime').attr('title', getDate(data.ctime)).text(getDate(data.ctime));
@@ -1700,7 +1700,7 @@ define([
         };
 
         var createTree = function ($container, path) {
-            var root = filesOp.findElement(files, path);
+            var root = filesOp.find(path);
 
             // don't try to display what doesn't exist
             if (!root) { return; }
@@ -1930,7 +1930,7 @@ define([
             }
             else if ($(this).hasClass('open_ro')) {
                 paths.forEach(function (p) {
-                    var el = filesOp.findElement(files, p.path);
+                    var el = filesOp.find(p.path);
                     if (filesOp.isFolder(el)) { return; }
                     var roUrl = getReadOnlyUrl(el);
                     openFile(roUrl, false);
@@ -1942,11 +1942,11 @@ define([
                     module.newFolder = info.newPath;
                     module.displayDirectory(paths[0].path);
                 };
-                filesOp.createNewFolder(paths[0].path, null, onCreated);
+                filesOp.addFolder(paths[0].path, null, onCreated);
             }
             else if ($(this).hasClass("properties")) {
                 if (paths.length !== 1) { return; }
-                var el = filesOp.findElement(files, paths[0].path);
+                var el = filesOp.find(paths[0].path);
                 var prop = getProperties(el);
                 Cryptpad.alert('', undefined, true);
                 $('.alertify .msg').html(prop);
@@ -1972,8 +1972,8 @@ define([
             }
             else if ($(this).hasClass('open_ro')) {
                 paths.forEach(function (p) {
-                    var el = filesOp.findElement(files, p.path);
-                    if (filesOp.isPathInFilesData(p.path)) { el = el.href; }
+                    var el = filesOp.find(p.path);
+                    if (filesOp.isPathIn(p.path, [FILES_DATA])) { el = el.href; }
                     if (!el || filesOp.isFolder(el)) { return; }
                     var roUrl = getReadOnlyUrl(el);
                     openFile(roUrl, false);
@@ -1986,7 +1986,7 @@ define([
             }
             else if ($(this).hasClass("properties")) {
                 if (paths.length !== 1) { return; }
-                var el = filesOp.findElement(files, paths[0].path);
+                var el = filesOp.find(paths[0].path);
                 var prop = getProperties(el);
                 Cryptpad.alert('', undefined, true);
                 $('.alertify .msg').html(prop);
@@ -2004,12 +2004,12 @@ define([
                 refresh();
             };
             if ($(this).hasClass("newfolder")) {
-                filesOp.createNewFolder(path, null, onCreated);
+                filesOp.addFolder(path, null, onCreated);
             }
             else if ($(this).hasClass("newdoc")) {
                 var type = $(this).data('type') || 'pad';
                 var name = Cryptpad.getDefaultName({type: type});
-                filesOp.createNewFile(path, name, type, onCreated);
+                filesOp.addFile(path, name, type, onCreated);
             }
             module.hideMenu();
         });
@@ -2046,7 +2046,7 @@ define([
                     if (path.length === 4) { name = path[1]; }
                     Cryptpad.confirm(Messages._getKey("fm_removePermanentlyDialog", [name]), function(res) {
                         if (!res) { return; }
-                        filesOp.removeFromTrash(path, refresh);
+                        filesOp.removeFromTrash(path, refresh); // TODO END HERE
                     });
                     return;
                 }

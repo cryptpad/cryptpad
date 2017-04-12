@@ -90,20 +90,22 @@ define([
         ret.pushData = filesOp.pushData;
 
         ret.addPad = function (href, path, name) {
-            filesOp.addPad(href, path, name);
+            filesOp.add(href, path, name);
         };
 
         ret.forgetPad = function (href, cb) {
-            filesOp.forgetPad(href);
+            filesOp.forget(href);
             cb();
         };
 
-        ret.addTemplate = function (href) {
-            filesOp.addTemplate(href);
-        };
-
         ret.listTemplates = function () {
-            return filesOp.listTemplates();
+            var templateFiles = filesOp.getFiles(['template']);
+            var res = [];
+            templateFiles.forEach(function (f) {
+                var data = filesOp.getFileData(f);
+                res.push(JSON.parse(JSON.stringify(data)));
+            });
+            return res;
         };
 
         ret.getProxy = function () {
