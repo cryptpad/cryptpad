@@ -5,13 +5,28 @@ define([
     var Nacl = window.nacl;
 
     var create = function (network, proxy, cb) {
-        if (!network) { return void cb('INVALID_NETWORK'); }
-        if (!proxy) { return void cb('INVALID_PROXY'); }
+        if (!network) {
+            window.setTimeout(function () {
+                cb('INVALID_NETWORK');
+            });
+            return;
+        }
+        if (!proxy) {
+            window.setTimeout(function () {
+                cb('INVALID_PROXY');
+            });
+            return;
+        }
 
         var edPrivate = proxy.edPrivate;
         var edPublic = proxy.edPublic;
 
-        if (!(edPrivate && edPublic)) { return void cb('INVALID_KEYS'); }
+        if (!(edPrivate && edPublic)) {
+            window.setTimeout(function () {
+                cb('INVALID_KEYS');
+            });
+            return;
+        }
 
         Rpc.create(network, edPrivate, edPublic, function (e, rpc) {
             if (e) { return void cb(e); }
