@@ -2,6 +2,8 @@ define([
     '/api/config',
     '/customize/messages.js?app=' + window.location.pathname.split('/').filter(function (x) { return x; }).join('.'),
     '/common/fsStore.js',
+    '/common/common-util.js',
+
     '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/alertifyjs/dist/js/alertify.js',
     '/common/clipboard.js',
@@ -10,7 +12,7 @@ load pinpad dynamically only after you know that it will be needed */
     '/customize/application_config.js',
 
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Messages, Store, Crypto, Alertify, Clipboard, Pinpad, AppConfig) {
+], function (Config, Messages, Store, Util, Crypto, Alertify, Clipboard, Pinpad, AppConfig) {
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
@@ -30,11 +32,15 @@ load pinpad dynamically only after you know that it will be needed */
     var PINNING_ENABLED = AppConfig.enablePinning;
     var rpc;
 
-    var find = common.find = function (map, path) {
-        return (map && path.reduce(function (p, n) {
-            return typeof(p[n]) !== 'undefined' && p[n];
-        }, map));
-    };
+    var find = common.find = Util.find;
+    var fixHTML = common.fixHTML = Util.fixHTML;
+    var hexToBase64 = common.hexToBase64 = Util.hexToBase64;
+    var base64ToHex = common.base64ToHex = Util.base64ToHex;
+    var deduplicateString = common.deduplicateString = Util.deduplicateString;
+    var uint8ArrayToHex = common.uint8ArrayToHex = Util.uint8ArrayToHex;
+    var replaceHash = common.replaceHash = Util.replaceHash;
+    var getHash = common.getHash = Util.getHash;
+    var fixFileName = common.fixFileName = Util.fixFileName;
 
     var getStore = common.getStore = function () {
         if (store) { return store; }
@@ -179,49 +185,11 @@ load pinpad dynamically only after you know that it will be needed */
 
     var isArray = common.isArray = $.isArray;
 
-    var fixHTML = common.fixHTML = function (str) {
-        if (!str) { return ''; }
-        return str.replace(/[<>&"']/g, function (x) {
-            return ({ "<": "&lt;", ">": "&gt", "&": "&amp;", '"': "&#34;", "'": "&#39;" })[x];
-        });
-    };
-
-
     var truncate = common.truncate = function (text, len) {
         if (typeof(text) === 'string' && text.length > len) {
             return text.slice(0, len) + '…';
         }
         return text;
-    };
-
-    var hexToBase64 = common.hexToBase64 = function (hex) {
-        var hexArray = hex
-            .replace(/\r|\n/g, "")
-            .replace(/([\da-fA-F]{2}) ?/g, "0x$1 ")
-            .replace(/ +$/, "")
-            .split(" ");
-        var byteString = String.fromCharCode.apply(null, hexArray);
-        return window.btoa(byteString).replace(/\//g, '-').slice(0,-2);
-    };
-
-    var base64ToHex = common.base64ToHex = function (b64String) {
-        var hexArray = [];
-        atob(b64String.replace(/-/g, '/')).split("").forEach(function(e){
-            var h = e.charCodeAt(0).toString(16);
-            if (h.length === 1) { h = "0"+h; }
-            hexArray.push(h);
-        });
-        return hexArray.join("");
-    };
-
-    var deduplicateString = common.deduplicateString = function (array) {
-        var a = array.slice();
-        for(var i=0; i<a.length; i++) {
-            for(var j=i+1; j<a.length; j++) {
-                if(a[i] === a[j]) { a.splice(j--, 1); }
-            }
-        }
-        return a;
     };
 
     var parseHash = common.parseHash = function (hash) {
@@ -257,7 +225,6 @@ load pinpad dynamically only after you know that it will be needed */
         }
         return '/1/view/' + hexToBase64(chanKey) + '/' + Crypto.b64RemoveSlashes(keys.viewKeyStr);
     };
-    var getHashFromKeys = common.getHashFromKeys = getEditHashFromKeys;
 
     var specialHashes = common.specialHashes = ['iframe'];
 
@@ -333,24 +300,6 @@ load pinpad dynamically only after you know that it will be needed */
         return hashes;
     };
 
-
-    var uint8ArrayToHex = common.uint8ArrayToHex = function (a) {
-        // call slice so Uint8Arrays work as expected
-        return Array.prototype.slice.call(a).map(function (e, i) {
-            var n = Number(e & 0xff).toString(16);
-            if (n === 'NaN') {
-                throw new Error('invalid input resulted in NaN');
-            }
-
-            switch (n.length) {
-                case 0: return '00'; // just being careful, shouldn't happen
-                case 1: return '0' + n;
-                case 2: return n;
-                default: throw new Error('unexpected value');
-            }
-        }).join('');
-    };
-
     var createChannelId = common.createChannelId = function () {
         var id = uint8ArrayToHex(Crypto.Nacl.randomBytes(16));
         if (id.length !== 32 || /[^a-f0-9]/.test(id)) {
@@ -365,14 +314,6 @@ load pinpad dynamically only after you know that it will be needed */
         // 18 byte encryption key
         var key = Crypto.b64RemoveSlashes(Crypto.rand64(18));
         return '/1/edit/' + [channelId, key].join('/');
-    };
-
-    var replaceHash = common.replaceHash = function (hash) {
-        if (window.history && window.history.replaceState) {
-            if (!/^#/.test(hash)) { hash = '#' + hash; }
-            return void window.history.replaceState({}, window.document.title, hash);
-        }
-        window.location.hash = hash;
     };
 
     var storageKey = common.storageKey = 'CryptPad_RECENTPADS';
@@ -456,10 +397,6 @@ load pinpad dynamically only after you know that it will be needed */
                 });
             });
         });
-    };
-
-    var getHash = common.getHash = function () {
-        return window.location.hash.slice(1);
     };
 
     var getRelativeHref = common.getRelativeHref = function (href) {
@@ -823,34 +760,6 @@ load pinpad dynamically only after you know that it will be needed */
         });
     };
 
-    // STORAGE
-    var causesNamingConflict = common.causesNamingConflict = function (title, cb) {
-        var href = window.location.href;
-
-        var parsed = parsePadUrl(href);
-        getRecentPads(function (err, pads) {
-            if (err) {
-                cb(err);
-                return;
-            }
-            var conflicts = pads.some(function (pad) {
-                // another pad is already using that title
-                if (pad.title === title) {
-                    var p = parsePadUrl(pad.href);
-
-                    if (p.type === parsed.type && p.hash === parsed.hash) {
-                        // the duplicate pad has the same type and hash
-                        // allow renames
-                    } else {
-                        // it's an entirely different pad... it conflicts
-                        return true;
-                    }
-                }
-            });
-            cb(void 0, conflicts);
-        });
-    };
-
     var newPadNameKey = common.newPadNameKey = "newPadName";
     var newPadPathKey = common.newPadPathKey = "newPadPath";
 
@@ -1016,14 +925,6 @@ load pinpad dynamically only after you know that it will be needed */
         $('.spinnerContainer').hide();
         if (transparent) { $('#' + LOADING).css('opacity', 0.8); }
         $('#' + LOADING).find('p').html(error || Messages.error);
-    };
-
-    /*
-     *  Saving files
-     */
-    var fixFileName = common.fixFileName = function (filename) {
-        return filename.replace(/ /g, '-').replace(/[\/\?]/g, '_')
-            .replace(/_+/g, '_');
     };
 
     var importContent = common.importContent = function (type, f) {
