@@ -25,6 +25,7 @@ define([
 
     var secret = Cryptpad.getSecrets();
     var readOnly = secret.keys && !secret.keys.editKeyStr;
+    // DEPRECATE_F
     if (!secret.keys) {
         secret.keys = secret.key;
     }
