@@ -1602,9 +1602,6 @@ load pinpad dynamically only after you know that it will be needed */
     /*
      *  Alertifyjs
      */
-
-    var styleAlerts = common.styleAlerts = function () {};
-
     var findCancelButton = common.findCancelButton = function () {
         return $('button.cancel');
     };
