@@ -260,6 +260,9 @@ define([
             var displayedObj2 = mergeUncommitted(APP.proxy, APP.uncommitted);
             var f = getFocus();
             Render.updateTable(table, displayedObj2, conf);
+            APP.proxy.table.rowsOrder.forEach(function (rowId) {
+                $('input[data-rt-id="' + rowId +'"]').val(APP.proxy.table.rows[rowId] || '');
+            });
             updateDisplayedTable();
             setFocus(f);
             if (typeof(cb) === "function") {
