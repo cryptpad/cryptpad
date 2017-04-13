@@ -1407,8 +1407,6 @@ load pinpad dynamically only after you know that it will be needed */
                         console.log('RPC handshake complete');
                         rpc = common.rpc = env.rpc = call;
 
-                        // TODO check if pin list is up to date
-                        // if not, reset
                         common.arePinsSynced(function (err, yes) {
                             if (!yes) {
                                 common.resetPins(function (err, hash) {
