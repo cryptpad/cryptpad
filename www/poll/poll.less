@@ -1,0 +1,387 @@
+@import "../../customize.dist/src/less/variables.less";
+@import "../../customize.dist/src/less/mixins.less";
+
+@poll-th-bg: #aaa;
+@poll-td-bg: #aaa;
+@poll-border-color: #555;
+@poll-cover-color: #000;
+@poll-fg: #000;
+
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+}
+
+.cryptpad-toolbar h2 {
+    font: normal normal normal 12px Arial, Helvetica, Tahoma, Verdana, Sans-Serif;
+    color: #000;
+    line-height: auto;
+}
+.cryptpad-toolbar {
+    display: inline-block;
+}
+.realtime {
+    display: block;
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.realtime input[type="text"] {
+    height: 1em;
+    margin: 0px;
+}
+.text-cell input[type="text"] {
+    width: 400px;
+}
+
+input[type="text"][disabled], textarea[disabled] {
+    background-color: transparent;
+    font: white;
+    border: 0px;
+}
+table#table {
+    margin: 0px;
+}
+#tableContainer {
+    position: relative;
+    padding: 29px;
+    padding-right: 79px;
+}
+#tableContainer button {
+    height: 2rem;
+    display: none;
+}
+#publish {
+    display: none;
+}
+#publish, #admin {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+#create-user {
+    position: absolute;
+    display: inline-block;
+    /*left: 0px;*/
+    top: 55px;
+    width: 50px;
+    overflow: hidden;
+}
+#create-option {
+    width: 50px;
+}
+#tableScroll {
+    overflow-y: hidden;
+    overflow-x: auto;
+    margin-left: calc(~"30% - 50px + 29px");
+    max-width: 70%;
+    width: auto;
+    display: inline-block;
+}
+#description {
+    padding: 15px;
+    margin: auto;
+
+    min-width: 80%;
+    width: 80%;
+    min-height: 5em;
+    font-size: 20px;
+    font-weight: bold;
+
+}
+#description[disabled] {
+    resize: none;
+    color: #000;
+    border: 1px solid #444;
+}
+
+#commit {
+    width: 100%;
+}
+#howItWorks {
+    width: 80%;
+    margin: auto;
+}
+div.upper {
+    width: 80%;
+    margin: auto;
+}
+
+// from cryptpad.less
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin: 20px;
+}
+tbody {
+    border: 1px solid @poll-border-color;
+    tr {
+        text-align: center;
+        &:first-of-type th{
+            font-size: 20px;
+            border-top: 0px;
+            font-weight: bold;
+            padding: 10px;
+            text-decoration: underline;
+            &.table-refresh {
+                color: @cp-green;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+        }
+        &:nth-child(odd) {
+            background-color: @light-base;
+        }
+        th:first-of-type {
+            border-left: 0px;
+        }
+        th {
+            box-sizing: border-box;
+            border: 1px solid @poll-border-color;
+        }
+        th, td {
+            color: @fore;
+
+            &.remove {
+                cursor: pointer;
+            }
+        }
+        th:last-child {
+            border-right: 0px;
+        }
+    }
+
+    td {
+        border-right: 1px solid @poll-border-color;
+        padding: 12px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+        &:last-child {
+            border-right: none;
+        }
+    }
+}
+
+form.realtime, div.realtime {
+    > input {
+        &[type="text"] {
+
+        }
+    }
+    > textarea {
+        width: 50%;
+        height: 15vh;
+    }
+
+    padding: 0px;
+    margin: 0px;
+
+    table {
+        border-collapse: collapse;
+        width: ~"calc(100% - 1px)";
+        tr {
+            td:first-child {
+                position:absolute;
+                left: 29px;
+                top: auto;
+                width: ~"calc(30% - 50px)";
+            }
+            td {
+                padding: 0px;
+                margin: 0px;
+
+                div.text-cell {
+                    padding: 0px;
+                    margin: 0px;
+                    height: 100%;
+
+                    input {
+                        width: 80%;
+                        width: 90%;
+                        height: 100%;
+                        border: 0px;
+                        &[disabled] {
+                            background-color: transparent;
+                            color: @poll-fg;
+                            font-weight: bold;
+                        }
+                    }
+                }
+
+                &.checkbox-cell {
+                    margin: 0px;
+                    padding: 0px;
+                    height: 100%;
+                    min-width: 150px;
+
+                    div.checkbox-contain {
+                        display: inline-block;
+                        height: 100%;
+                        width: 100%;
+                        position: relative;
+
+                        label {
+                            background-color: transparent;
+                            display: block;
+                            position: absolute;
+                            top: 0px;
+                            left: 0px;
+                            height: 100%;
+                            width: 100%;
+                        }
+
+                        input {
+                            &[type="checkbox"] {
+                                &:not(.editable) {
+                                    display: none;
+
+                                    ~ .cover {
+                                        display: block;
+                                        font-weight: bold;
+
+                                        background-color: @cp-red;
+                                        color: @poll-cover-color;
+
+                                        &:after {
+                                            height: 100%;
+                                        }
+
+                                        &:after { content: "✖"; }
+
+                                        display: block;
+                                        &.yes {
+                                            background-color: @cp-green;
+                                            &:after { content: "✔"; }
+                                        }
+
+                                        &.uncommitted {
+                                            background: #ddd;
+                                        }
+
+
+                                        &.mine {
+                                            display: none;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        input {
+            &[type="text"] {
+                height: auto;
+                border: 1px solid @base;
+                width: 80%;
+            }
+        }
+        thead {
+            td {
+                padding: 0px 5px;
+                background: @poll-th-bg;
+                border-radius: 20px 20px 0 0;
+                text-align: center;
+                input {
+                    &[type="text"] {
+                        width: 100%;
+                        box-sizing: border-box;
+                        &[disabled] {
+                            color: @poll-fg;
+                            padding: 1px 5px;
+                            border: none;
+                        }
+                    }
+                }
+            }
+        }
+
+        tbody {
+            .text-cell {
+                background: @poll-td-bg;
+                //border-radius: 20px 0 0 20px;
+                input[type="text"] {
+                    width: ~"calc(100% - 50px)";
+                }
+                .edit {
+                    float:right;
+                    margin: 0 10px 0 0;
+                }
+                .remove {
+                    float: left;
+                    margin: 0 0 0 10px;
+                }
+            }
+            td {
+                label {
+                    border: .5px solid @poll-border-color;
+                }
+            }
+        }
+        .edit {
+            color: @poll-cover-color;
+            cursor: pointer;
+            float: left;
+            margin-left: 10px;
+        }
+
+        .remove {
+            float: right;
+            margin-right: 10px;
+        }
+
+        thead {
+            tr {
+                th {
+                    input[type="text"][disabled] {
+                        background-color: transparent;
+                        color: @fore;
+                        font-weight: bold;
+                    }
+                    .remove {
+                        cursor: pointer;
+                        font-size: 20px;
+                    }
+                }
+            }
+        }
+        tbody {
+            tr {
+                td {
+
+                }
+            }
+        }
+        tfoot {
+            tr {
+                border: none;
+                td {
+                    border: none;
+                    text-align: center;
+                    .save {
+                        padding: 15px;
+                        border-top-left-radius: 5px;
+                        border-top-right-radius: 5px;
+                    }
+                }
+            }
+        }
+    }
+
+    #adduser,
+    #addoption {
+        color: @cp-green;
+        border: 1px solid @cp-green;
+        padding: 15px;
+        cursor: pointer;
+    }
+
+    #adduser { .top-left; }
+    #addoption { .bottom-left; }
+}

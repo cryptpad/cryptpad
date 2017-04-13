@@ -211,7 +211,7 @@ define([
     };
 
     /*  Any time the realtime object changes, call this function */
-    var change = function (o, n, path, throttle) {
+    var change = function (o, n, path, throttle, cb) {
         if (path && !Cryptpad.isArray(path)) {
             return;
         }
@@ -260,8 +260,14 @@ define([
             var displayedObj2 = mergeUncommitted(APP.proxy, APP.uncommitted);
             var f = getFocus();
             Render.updateTable(table, displayedObj2, conf);
+            APP.proxy.table.rowsOrder.forEach(function (rowId) {
+                $('input[data-rt-id="' + rowId +'"]').val(APP.proxy.table.rows[rowId] || '');
+            });
             updateDisplayedTable();
             setFocus(f);
+            if (typeof(cb) === "function") {
+                cb();
+            }
         };
 
         if (throttle) {
@@ -281,7 +287,7 @@ define([
     };
 
     /*  Called whenever an event is fired on an input element */
-    var handleInput = function (input) {
+    var handleInput = function (input, isKeyup) {
         var type = input.type.toLowerCase();
         var id = getRealtimeId(input);
 
@@ -332,7 +338,9 @@ define([
                 });
             } else if (isEdit) {
                 unlockRow(id, function () {
-                    change();
+                    change(null, null, null, null, function() {
+                        $('input[data-rt-id="' + id + '"]').focus();
+                    });
                 });
             }
         } else if (type === 'col') {
@@ -345,7 +353,9 @@ define([
                 });
             } else if (isEdit) {
                 unlockColumn(id, function () {
-                    change();
+                    change(null, null, null, null, function() {
+                        $('input[data-rt-id="' + id + '"]').focus();
+                    });
                 });
             }
         } else if (type === 'cell') {
@@ -355,8 +365,8 @@ define([
         }
     };
 
-    var hideInputs = function (e) {
-        if ($(e.target).is('[type="text"]')) {
+    var hideInputs = function (e, isKeyup) {
+        if (!isKeyup && $(e.target).is('[type="text"]')) {
             return;
         }
         $('.lock[data-rt-id!="' + APP.userid + '"]').html(lockHTML);
@@ -389,6 +399,10 @@ define([
 
         switch (nodeName) {
             case 'INPUT':
+                if (isKeyup && (e.keyCode === 13 || e.keyCode === 27)) {
+                    hideInputs(e, isKeyup);
+                    return;
+                }
                 handleInput(target);
                 break;
             case 'SPAN':
@@ -547,20 +561,18 @@ define([
         var $table = APP.$table = $(Render.asHTML(displayedObj, null, colsOrder, readOnly));
         var $createRow = APP.$createRow = $('#create-option').click(function () {
             //console.error("BUTTON CLICKED! LOL");
-            Render.createRow(proxy, function () {
-                change();
-                var order = APP.proxy.table.rowsOrder;
-
-                var last = order[order.length - 1];
-                var $newest = $('[data-rt-id="' + last + '"]');
-                $newest.val('');
-                window.setTimeout(change);
+            Render.createRow(proxy, function (empty, id) {
+                change(null, null, null, null, function() {
+                    $('.edit[data-rt-id="' + id + '"]').click();
+                });
             });
         });
 
         var $createCol = APP.$createCol = $('#create-user').click(function () {
-            Render.createColumn(proxy, function () {
-                change();
+            Render.createColumn(proxy, function (empty, id) {
+                change(null, null, null, null, function() {
+                    $('.edit[data-rt-id="' + id + '"]').click();
+                });
             });
         });
 
