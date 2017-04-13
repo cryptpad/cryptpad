@@ -994,7 +994,7 @@ load pinpad dynamically only after you know that it will be needed */
         var userChannel = common.parseHash(userHash).channel;
         if (!userChannel) { return null; }
 
-        var list = fo.getFilesDataFiles().map(hrefToHexChannelId)
+        var list = fo.getFiles([fo.FILES_DATA]).map(hrefToHexChannelId)
             .filter(function (x) { return x; });
 
         list.push(common.base64ToHex(userChannel));

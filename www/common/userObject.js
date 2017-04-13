@@ -10,10 +10,11 @@ define([
     var TEMPLATE = module.TEMPLATE = "template";
 
     var init = module.init = function (files, config) {
+        var exp = {};
         var Cryptpad = config.Cryptpad;
         var Messages = Cryptpad.Messages;
 
-        var FILES_DATA = Cryptpad.storageKey;
+        var FILES_DATA = module.FILES_DATA = exp.FILES_DATA = Cryptpad.storageKey;
         var NEW_FOLDER_NAME = Messages.fm_newFolder;
         var NEW_FILE_NAME = Messages.fm_newFile;
 
@@ -33,8 +34,6 @@ define([
         // TODO: workgroup
         var workgroup = config.workgroup;
 
-        var exp = {};
-
 
         /*
          * UTILS
@@ -49,6 +48,10 @@ define([
             a[TEMPLATE] = [];
             return a;
         };
+        var getHrefArray = function () {
+            return [UNSORTED, TEMPLATE];
+        };
+
 
         var compareFiles = function (fileA, fileB) { return fileA === fileB; };
 
@@ -151,13 +154,19 @@ define([
             return result;
         };
 
-        var isSubpath = exp.isSubpath = function (path, parentPaths) {
+        var isSubpath = exp.isSubpath = function (path, parentPath) {
             var pathA = parentPath.slice();
             var pathB = path.slice(0, pathA.length);
             return comparePath(pathA, pathB);
         };
 
-        var isPathIn = function (path, categories) {
+        var isPathIn = exp.isPathIn = function (path, categories) {
+            if (!categories) { return; }
+            var idx = categories.indexOf('hrefArray');
+            if (idx !== -1) {
+                categories.splice(idx, 1);
+                categories = categories.concat(getHrefArray());
+            }
             return categories.some(function (c) {
                 return Array.isArray(path) && path[0] === c;
             });
@@ -205,21 +214,17 @@ define([
         };
         var _getFiles = {};
         _getFiles['array'] = function (cat) {
-            if (!files[cat]) {
-                files[cat] = [];
-            }
+            if (!files[cat]) { files[cat] = []; }
             return files[cat].slice();
         };
-        _getFiles[UNSORTED] = function () {
-            return _getFiles['array'](UNSORTED);
-        };
-        _getFiles[TEMPLATE] = function () {
-            return _getFiles['array'](TEMPLATE);
-        };
+        getHrefArray().forEach(function (c) {
+            _getFiles[c] = function () { return _getFiles['array'](c); };
+        });
         _getFiles['hrefArray'] = function () {
             var ret = [];
-            ret = ret.concat(_getFiles[UNSORTED]);
-            ret = ret.concat(_getFiles[TEMPLATE]);
+            getHrefArray().forEach(function (c) {
+                ret = ret.concat(_getFiles[c]());
+            });
             return Cryptpad.deduplicateString(ret);
         };
         _getFiles[ROOT] = function () {
@@ -255,11 +260,14 @@ define([
             });
             return ret;
         };
-        var getFiles = function (categories) {
+        var getFiles = exp.getFiles = function (categories) {
             var ret = [];
+            if (!categories || !categories.length) {
+                categories = [ROOT, 'hrefArray', TRASH, FILES_DATA];
+            }
             categories.forEach(function (c) {
                 if (typeof _getFiles[c] === "function") {
-                    ret = ret.concat(_getFiles[c]);
+                    ret = ret.concat(_getFiles[c]());
                 }
             });
             return Cryptpad.deduplicateString(ret);
@@ -267,7 +275,7 @@ define([
 
         // SEARCH
         var _findFileInRoot = function (path, href) {
-            if (!isPathIn([ROOT, TRASH])) { return []; }
+            if (!isPathIn(path, [ROOT, TRASH])) { return []; }
             var paths = [];
             var root = find(path);
             var addPaths = function (p) {
@@ -338,7 +346,7 @@ define([
             }
             return paths;
         };
-        var findFile = function (href) {
+        var findFile = exp.findFile = function (href) {
             var rootpaths = _findFileInRoot([ROOT], href);
             var unsortedpaths = _findFileInHrefArray(UNSORTED, href);
             var templatepaths = _findFileInHrefArray(TEMPLATE, href);
@@ -423,6 +431,7 @@ define([
         // FILES DATA
         var pushFileData = exp.pushData = function (data) {
             Cryptpad.pinPads([Cryptpad.hrefToHexChannelId(data.href)], function (e, hash) {
+                if (e) { console.log(e); return; }
                 console.log(hash);
             });
             files[FILES_DATA].push(data);
@@ -431,6 +440,7 @@ define([
             var data = files[FILES_DATA][idx];
             if (typeof data === "object") {
                 Cryptpad.unpinPads([Cryptpad.hrefToHexChannelId(data.href)], function (e, hash) {
+                    if (e) { console.log(e); return; }
                     console.log(hash);
                 });
             }
@@ -496,7 +506,7 @@ define([
             } else {
                 name = elementPath[elementPath.length-1];
             }
-            var newName = !isPathInRoot(elementPath) ? getAvailableName(newParent, name) : name;
+            var newName = !isPathIn(elementPath, [ROOT]) ? getAvailableName(newParent, name) : name;
 
             if (typeof(newParent[newName]) !== "undefined") {
                 log(Messages.fo_unavailableName);
@@ -517,6 +527,14 @@ define([
             });
             exp.delete(toRemove, cb);
         };
+        var restore = exp.restore = function (path, cb) {
+            if (!isInTrashRoot(path)) { return; }
+            var parentPath = path.slice();
+            parentPath.pop();
+            var oldPath = find(parentPath).path;
+            move([path], oldPath, cb);
+        };
+
 
         // ADD
         var add = exp.add = function (href, path, name, cb) {
@@ -599,7 +617,7 @@ define([
             // Nothing in FILES_DATA for workgroups
             if (workgroup) { return; }
 
-            var filesList = getFiles[ROOT, 'hrefArray', TRASH];
+            var filesList = getFiles([ROOT, 'hrefArray', TRASH]);
             var toRemove = [];
             files[FILES_DATA].forEach(function (arr) {
                 var f = arr.href;
@@ -629,9 +647,9 @@ define([
             });
         };
         var deleteMultiplePermanently = function (paths) {
-            var hrefPaths = paths.filter(isPathInHrefArray);
-            var rootPaths = paths.filter(isPathInRoot);
-            var trashPaths = paths.filter(isPathInTrash);
+            var hrefPaths = paths.filter(function(x) { return isPathIn(x, ['hrefArray']); });
+            var rootPaths = paths.filter(function(x) { return isPathIn(x, [ROOT]); });
+            var trashPaths = paths.filter(function(x) { return isPathIn(x, [TRASH]); });
 
             var hrefs = [];
             hrefPaths.forEach(function (path) {
@@ -674,7 +692,7 @@ define([
             checkDeletedFiles();
         };
         var deletePath = exp.delete = function (paths, cb) {
-            deletePathsPermanently(paths);
+            deleteMultiplePermanently(paths);
             if (typeof cb === "function") { cb(); }
         };
         var emptyTrash = exp.emptyTrash = function (cb) {
@@ -706,6 +724,49 @@ define([
             parentEl[oldName] = undefined;
             delete parentEl[oldName];
             cb();
+        };
+
+        // REPLACE
+        var replaceFile = function (path, o, n) {
+            var root = find(path);
+
+            if (isFile(root)) { return; }
+            for (var e in root) {
+                if (isFile(root[e])) {
+                    if (compareFiles(o, root[e])) {
+                        root[e] = n;
+                    }
+                } else {
+                    var nPath = path.slice();
+                    nPath.push(e);
+                    replaceFile(nPath, o, n);
+                }
+            }
+        };
+        // Replace a href by a stronger one everywhere in the drive (except FILES_DATA)
+        var replaceHref = exp.replace = function (o, n) {
+            if (!isFile(o) || !isFile(n)) { return; }
+            var paths = findFile(o);
+
+            // Remove all the occurences in the trash
+            // Replace all the occurences not in the trash
+            // If all the occurences are in the trash or no occurence, add the pad to unsorted
+            var allInTrash = true;
+            paths.forEach(function (p) {
+                if (p[0] === TRASH) {
+                    removeFromTrash(p, null, true); // 3rd parameter means skip "checkDeletedFiles"
+                    return;
+                } else {
+                    allInTrash = false;
+                    var parentPath = p.slice();
+                    var key = parentPath.pop();
+                    var parentEl = find(parentPath);
+                    parentEl[key] = n;
+                }
+            });
+            if (allInTrash) {
+                add(n);
+            }
         };
 
         /**

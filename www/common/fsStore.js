@@ -2,7 +2,7 @@ define([
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/textpatcher/TextPatcher.amd.js',
-    '/common/fileObject.js',
+    '/common/userObject.js',
     '/bower_components/jquery/dist/jquery.min.js',
 ], function (Listmap, Crypto, TextPatcher, FO) {
     /*
@@ -125,7 +125,7 @@ define([
         };
 
         ret.replaceHref = function (o, n) {
-            return filesOp.replaceHref(o, n);
+            return filesOp.replace(o, n);
         };
 
         var changeHandlers = ret.changeHandlers = [];

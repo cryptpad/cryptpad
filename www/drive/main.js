@@ -5,7 +5,7 @@ define([
     '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
     '/common/cryptpad-common.js',
-    '/common/fileObject.js',
+    '/common/userObject.js',
     '/common/toolbar.js',
     '/customize/application_config.js',
     '/common/cryptget.js',
@@ -264,9 +264,7 @@ define([
         var removeInput =  function (cancel) {
             if (!cancel && $iframe.find('.element-row > input').length === 1) {
                 var $input = $iframe.find('.element-row > input');
-                filesOp.renameElement($input.data('path'), $input.val(), function () {
-                    APP.refresh();
-                });
+                filesOp.rename($input.data('path'), $input.val(), APP.refresh);
             }
             $iframe.find('.element-row > input').remove();
             $iframe.find('.element-row > span:hidden').removeAttr('style');
@@ -332,9 +330,7 @@ define([
                 $input.on('keyup', function (e) {
                     if (e.which === 13) {
                         removeInput(true);
-                        filesOp.renameElement(path, $input.val(), function () {
-                            refresh();
-                        });
+                        filesOp.rename(path, $input.val(), refresh);
                         return;
                     }
                     if (e.which === 27) {
@@ -371,6 +367,7 @@ define([
 
         var filterContextMenu = function ($menu, paths) {
             //var path = $element.data('path');
+            if (!paths || paths.length === 0) { console.error('no paths'); }
 
             var hide = [];
             var hasFolder = false;
@@ -652,15 +649,11 @@ define([
 
         var getElementName = function (path) {
             // Trash root
-            if (filesOp.isInTrashRoot(path)) {
-                return path[0];
-            }
+            if (filesOp.isInTrashRoot(path)) { return path[0]; }
             // Root or trash
-            if (filesOp.isPathInRoot(path) || filesOp.isPathInTrash(path)) {
-                return path[path.length - 1];
-            }
+            if (filesOp.isPathIn(path, [ROOT, TRASH])) { return path[path.length - 1]; }
             // Unsorted or template
-            if (filesOp.isPathInUnsorted(path) || filesOp.isPathInTemplate(path)) {
+            if (filesOp.isPathIn(path, ['hrefArray'])) {
                 var file = filesOp.find(path);
                 if (filesOp.isFile(file) && filesOp.getTitle(file)) {
                     return filesOp.getTitle(file);
@@ -674,10 +667,10 @@ define([
         var moveElements = function (paths, newPath, force, cb) {
             if (!APP.editable) { return; }
             var andThen = function () {
-                filesOp.moveElements(paths, newPath, cb);
+                filesOp.move(paths, newPath, cb);
             };
             // Cancel drag&drop from TRASH to TRASH
-            if (filesOp.comparePath(newPath, [TRASH]) && paths.length >= 1 && paths[0][0] === TRASH) {
+            if (filesOp.isPathIn(newPath, [TRASH]) && paths.length && paths[0][0] === TRASH) {
                 return;
             }
             // "force" is currently unused but may be configurable by user
@@ -764,7 +757,8 @@ define([
                 moveElements(movedPaths, newPath, null, refresh);
             }
             if (importedElements && importedElements.length) {
-                filesOp.importElements(importedElements, newPath, refresh);
+                // TODO workgroup
+                //filesOp.importElements(importedElements, newPath, refresh);
             }
         };
 
@@ -967,7 +961,7 @@ define([
         // Create the title block with the "parent folder" button
         var createTitle = function (path, noStyle) {
             if (!path || path.length === 0) { return; }
-            var isTrash = filesOp.isPathInTrash(path);
+            var isTrash = filesOp.isPathIn(path, [TRASH]);
             var $title = $('<span>', {'class': 'path unselectable'});
             if (APP.mobile()) {
                 return $title;
@@ -1119,7 +1113,7 @@ define([
                     refresh();
                 };
                 $block.find('a.newFolder').click(function () {
-                    filesOp.addFolder(currentPath, null, onCreated); // TODO START HERE
+                    filesOp.addFolder(currentPath, null, onCreated);
                 });
                 $block.find('a.newdoc').click(function (e) {
                     var type = $(this).attr('data-type') || 'pad';
@@ -2046,7 +2040,7 @@ define([
                     if (path.length === 4) { name = path[1]; }
                     Cryptpad.confirm(Messages._getKey("fm_removePermanentlyDialog", [name]), function(res) {
                         if (!res) { return; }
-                        filesOp.removeFromTrash(path, refresh); // TODO END HERE
+                        filesOp.delete([path], refresh);
                     });
                     return;
                 }
@@ -2055,8 +2049,7 @@ define([
                 var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [paths.length]);
                 Cryptpad.confirm(msg, function(res) {
                     if (!res) { return; }
-                    filesOp.deletePathsPermanently(pathsList);
-                    refresh();
+                    filesOp.delete(pathsList, refresh);
                 });
             }
             else if ($(this).hasClass("restore")) {
@@ -2064,13 +2057,12 @@ define([
                 if (path.length === 4) { name = path[1]; }
                 Cryptpad.confirm(Messages._getKey("fm_restoreDialog", [name]), function(res) {
                     if (!res) { return; }
-                    filesOp.restoreTrash(path, refresh);
+                    filesOp.restore(path, refresh);
                 });
             }
             else if ($(this).hasClass("properties")) {
-                if (paths.length !== 1) { return; }
-                if (path.length !== 4) { return; }
-                var element = filesOp.getTrashElementData(path);
+                if (paths.length !== 1 || path.length !== 4) { return; }
+                var element = filesOp.find(path.slice(0,3)); // element containing the oldpath
                 var sPath = stringifyPath(element.path);
                 Cryptpad.alert('<strong>' + Messages.fm_originalPath + "</strong>:<br>" + sPath, undefined, true);
             }
@@ -2094,20 +2086,17 @@ define([
         $appContainer.on('keydown', function (e) {
             // "Del"
             if (e.which === 46) {
-                if (filesOp.isPathInFilesData(currentPath)) { return; } // We can't remove elements directly from filesData
+                if (filesOp.isPathIn(currentPath, [FILES_DATA])) { return; } // We can't remove elements directly from filesData
                 var $selected = $iframe.find('.selected');
                 if (!$selected.length) { return; }
                 var paths = [];
-                var isTrash = filesOp.isPathInTrash(currentPath);
+                var isTrash = filesOp.isPathIn(currentPath, [TRASH]);
                 $selected.each(function (idx, elmt) {
                     if (!$(elmt).data('path')) { return; }
                     paths.push($(elmt).data('path'));
                 });
                 // If we are in the trash or anon pad or if we are holding the "shift" key, delete permanently,
                 if (isTrash || e.shiftKey) {
-                    //var cb = filesOp.removeFromTrash; // We're in the trash
-                    //if (!isTrash) { cb = filesOp.deletePathPermanently; } // We're in root
-
                     var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [paths.length]);
                     if (paths.length === 1) {
                         msg = Messages.fm_removePermanentlyDialog;
@@ -2116,8 +2105,7 @@ define([
                     Cryptpad.confirm(msg, function(res) {
                         $(ifrw).focus();
                         if (!res) { return; }
-                        filesOp.deletePathsPermanently(paths);
-                        refresh();
+                        filesOp.delete(paths, refresh);
                     });
                     return;
                 }
@@ -2143,10 +2131,8 @@ define([
             if (path[0] !== 'drive') { return false; }
             path = path.slice(1);
             var cPath = currentPath.slice();
-            if ((filesOp.isPathInUnsorted(cPath) && filesOp.isPathInUnsorted(path)) ||
-                    (filesOp.isPathInTemplate(cPath) && filesOp.isPathInTemplate(path)) ||
-                    (path.length >= cPath.length && filesOp.isSubpath(path, cPath)) ||
-                    (filesOp.isPathInTrash(cPath) && filesOp.isPathInTrash(path))) {
+            if ((filesOp.isPathIn(cPath, ['hrefArray', TRASH]) && cPath[0] === path[0]) ||
+                    (path.length >= cPath.length && filesOp.isSubpath(path, cPath))) {
                 // Reload after a few ms to make sure all the change events have been received
                 onRefresh.refresh();
             } else if (path.length && path[0] === FILES_DATA) {
@@ -2159,10 +2145,8 @@ define([
             if (path[0] !== 'drive') { return false; }
             path = path.slice(1);
             var cPath = currentPath.slice();
-            if ((filesOp.isPathInUnsorted(cPath) && filesOp.isPathInUnsorted(path)) ||
-                    (filesOp.isPathInTemplate(cPath) && filesOp.isPathInTemplate(path)) ||
-                    (path.length >= cPath.length && filesOp.isSubpath(path, cPath)) ||
-                    (filesOp.isPathInTrash(cPath) && filesOp.isPathInTrash(path))) {
+            if ((filesOp.isPathIn(cPath, ['hrefArray', TRASH]) && cPath[0] === path[0]) ||
+                    (path.length >= cPath.length && filesOp.isSubpath(path, cPath))) {
                 // Reload after a few to make sure all the change events have been received
                 onRefresh.to = window.setTimeout(refresh, 500);
             }
