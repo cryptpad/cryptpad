@@ -618,6 +618,7 @@ window.canvas = canvas;
 
     Cryptpad.ready(function (err, env) {
         andThen();
+        Cryptpad.reportAppUsage();
     });
     Cryptpad.onError(function (info) {
         if (info) {

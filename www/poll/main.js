@@ -782,6 +782,7 @@ define([
 
     // don't initialize until the store is ready.
     Cryptpad.ready(function () {
+        Cryptpad.reportAppUsage();
         var config = {
             websocketURL: Cryptpad.getWebsocketURL(),
             channel: secret.channel,

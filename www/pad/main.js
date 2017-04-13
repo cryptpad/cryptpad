@@ -810,6 +810,7 @@ define([
     var second = function (Ckeditor) {
         Cryptpad.ready(function (err, env) {
             andThen(Ckeditor);
+            Cryptpad.reportAppUsage();
         });
         Cryptpad.onError(function (info) {
             if (info && info.type === "store") {

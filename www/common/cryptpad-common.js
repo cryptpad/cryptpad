@@ -1,11 +1,10 @@
 define([
     '/api/config',
-    '/customize/messages.js?app=' + window.location.pathname.split('/').filter(function (x) { return x; }).join('.'),
+    '/customize/messages.js',
     '/common/fsStore.js',
     '/common/common-util.js',
     '/common/hash.js',
 
-    '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/alertifyjs/dist/js/alertify.js',
     '/common/clipboard.js',
     '/common/pinpad.js', /* TODO
@@ -13,7 +12,7 @@ load pinpad dynamically only after you know that it will be needed */
     '/customize/application_config.js',
 
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Messages, Store, Util, Hash, Crypto, Alertify, Clipboard, Pinpad, AppConfig) {
+], function (Config, Messages, Store, Util, Hash, Alertify, Clipboard, Pinpad, AppConfig) {
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
@@ -26,6 +25,25 @@ load pinpad dynamically only after you know that it will be needed */
         Messages: Messages,
         Alertify: Alertify,
         Clipboard: Clipboard
+    };
+
+    var feedback = common.feedback = function (action) {
+        if (!action) { return; }
+        try {
+            if (!getStore().getProxy().proxy.allowUserFeedback) { return; }
+        } catch (e) { return void console.error(e); }
+
+        var href = '/common/feedback.html?' + action + '=' + (+new Date());
+        $.ajax({
+            type: "HEAD",
+            url: href,
+        });
+    };
+
+    var reportAppUsage = common.reportAppUsage = function () {
+        var pattern = window.location.pathname.split('/')
+            .filter(function (x) { return x; }).join('.');
+        feedback(pattern);
     };
 
     // constants
@@ -102,17 +120,6 @@ load pinpad dynamically only after you know that it will be needed */
             }
         }
         return;
-    };
-
-    common.feedback = function (action) {
-        if (!action) { return; }
-        try {
-            if (!getStore().getProxy().proxy.allowUserFeedback) { return; }
-        } catch (e) { return void console.error(e); }
-        $.ajax({
-            type: "HEAD",
-            url: '/common/feedback.html?' + action + '=' + (+new Date()),
-        });
     };
 
     var whenRealtimeSyncs = common.whenRealtimeSyncs = function (realtime, cb) {

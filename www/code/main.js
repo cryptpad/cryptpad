@@ -733,6 +733,7 @@ define([
         var second = function (CM) {
             Cryptpad.ready(function (err, env) {
                 andThen(CM);
+                Cryptpad.reportAppUsage();
             });
             Cryptpad.onError(function (info) {
                 if (info && info.type === "store") {
