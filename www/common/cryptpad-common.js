@@ -27,24 +27,6 @@ load pinpad dynamically only after you know that it will be needed */
         Clipboard: Clipboard
     };
 
-    var feedback = common.feedback = function (action) {
-        if (!action) { return; }
-        try {
-            if (!getStore().getProxy().proxy.allowUserFeedback) { return; }
-        } catch (e) { return void console.error(e); }
-
-        var href = '/common/feedback.html?' + action + '=' + (+new Date());
-        $.ajax({
-            type: "HEAD",
-            url: href,
-        });
-    };
-
-    var reportAppUsage = common.reportAppUsage = function () {
-        var pattern = window.location.pathname.split('/')
-            .filter(function (x) { return x; }).join('.');
-        feedback(pattern);
-    };
 
     // constants
     var userHashKey = common.userHashKey = 'User_hash';
@@ -103,6 +85,25 @@ load pinpad dynamically only after you know that it will be needed */
             }
         }
         return;
+    };
+
+    var feedback = common.feedback = function (action) {
+        if (!action) { return; }
+        try {
+            if (!getStore().getProxy().proxy.allowUserFeedback) { return; }
+        } catch (e) { return void console.error(e); }
+
+        var href = '/common/feedback.html?' + action + '=' + (+new Date());
+        $.ajax({
+            type: "HEAD",
+            url: href,
+        });
+    };
+
+    var reportAppUsage = common.reportAppUsage = function () {
+        var pattern = window.location.pathname.split('/')
+            .filter(function (x) { return x; }).join('.');
+        feedback(pattern);
     };
 
     var getUid = common.getUid = function () {
