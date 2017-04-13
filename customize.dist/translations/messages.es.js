@@ -363,7 +363,7 @@ define(function () {
     out.synced = "Todo está guardado.";
     out.saveTemplateButton = "Guardar como plantilla";
     out.saveTemplatePrompt = "Élige un título para la plantilla";
-    out.templateSaved = "¡Plantilla guardada!"
+    out.templateSaved = "¡Plantilla guardada!";
     out.selectTemplate = "Élige una plantilla o pulsa ESC";
     out.slideOptionsTitle = "Personaliza tus diapositivas";
     out.slideOptionsButton = "Guardar (enter)";
