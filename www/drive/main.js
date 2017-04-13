@@ -5,7 +5,7 @@ define([
     '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
     '/common/cryptpad-common.js',
-    '/common/fileObject.js',
+    '/common/userObject.js',
     '/common/toolbar.js',
     '/customize/application_config.js',
     '/common/cryptget.js',
@@ -264,9 +264,7 @@ define([
         var removeInput =  function (cancel) {
             if (!cancel && $iframe.find('.element-row > input').length === 1) {
                 var $input = $iframe.find('.element-row > input');
-                filesOp.renameElement($input.data('path'), $input.val(), function () {
-                    APP.refresh();
-                });
+                filesOp.rename($input.data('path'), $input.val(), APP.refresh);
             }
             $iframe.find('.element-row > input').remove();
             $iframe.find('.element-row > span:hidden').removeAttr('style');
@@ -332,9 +330,7 @@ define([
                 $input.on('keyup', function (e) {
                     if (e.which === 13) {
                         removeInput(true);
-                        filesOp.renameElement(path, $input.val(), function () {
-                            refresh();
-                        });
+                        filesOp.rename(path, $input.val(), refresh);
                         return;
                     }
                     if (e.which === 27) {
@@ -371,6 +367,7 @@ define([
 
         var filterContextMenu = function ($menu, paths) {
             //var path = $element.data('path');
+            if (!paths || paths.length === 0) { console.error('no paths'); }
 
             var hide = [];
             var hasFolder = false;
@@ -652,16 +649,12 @@ define([
 
         var getElementName = function (path) {
             // Trash root
-            if (filesOp.isInTrashRoot(path)) {
-                return path[0];
-            }
+            if (filesOp.isInTrashRoot(path)) { return path[0]; }
             // Root or trash
-            if (filesOp.isPathInRoot(path) || filesOp.isPathInTrash(path)) {
-                return path[path.length - 1];
-            }
+            if (filesOp.isPathIn(path, [ROOT, TRASH])) { return path[path.length - 1]; }
             // Unsorted or template
-            if (filesOp.isPathInUnsorted(path) || filesOp.isPathInTemplate(path)) {
-                var file = filesOp.findElement(files, path);
+            if (filesOp.isPathIn(path, ['hrefArray'])) {
+                var file = filesOp.find(path);
                 if (filesOp.isFile(file) && filesOp.getTitle(file)) {
                     return filesOp.getTitle(file);
                 }
@@ -674,10 +667,10 @@ define([
         var moveElements = function (paths, newPath, force, cb) {
             if (!APP.editable) { return; }
             var andThen = function () {
-                filesOp.moveElements(paths, newPath, cb);
+                filesOp.move(paths, newPath, cb);
             };
             // Cancel drag&drop from TRASH to TRASH
-            if (filesOp.comparePath(newPath, [TRASH]) && paths.length >= 1 && paths[0][0] === TRASH) {
+            if (filesOp.isPathIn(newPath, [TRASH]) && paths.length && paths[0][0] === TRASH) {
                 return;
             }
             // "force" is currently unused but may be configurable by user
@@ -688,7 +681,7 @@ define([
             var msg = Messages._getKey('fm_removeSeveralDialog', [paths.length]);
             if (paths.length === 1) {
                 var path = paths[0];
-                var name = path[0] === UNSORTED ? filesOp.getTitle(filesOp.findElement(files, path)) : path[path.length - 1];
+                var name = path[0] === UNSORTED ? filesOp.getTitle(filesOp.find(path)) : path[path.length - 1];
                 msg = Messages._getKey('fm_removeDialog', [name]);
             }
             Cryptpad.confirm(msg, function (res) {
@@ -707,7 +700,7 @@ define([
                 $selected.each(function (idx, elmt) {
                     var ePath = $(elmt).data('path');
                     if (ePath) {
-                        var val = filesOp.findElement(files, ePath);
+                        var val = filesOp.find(ePath);
                         if (!val) { return; } // Error? A ".selected" element in not in the object
                         paths.push({
                             path: ePath,
@@ -721,7 +714,7 @@ define([
             } else {
                 removeSelected();
                 $element.addClass('selected');
-                var val = filesOp.findElement(files, path);
+                var val = filesOp.find(path);
                 if (!val) { return; } // The element in not in the object
                 paths = [{
                     path: path,
@@ -749,7 +742,7 @@ define([
             var movedPaths = [];
             var importedElements = [];
             oldPaths.forEach(function (p) {
-                var el = filesOp.findElement(files, p.path);
+                var el = filesOp.find(p.path);
                 if (el && (stringify(el) === stringify(p.value.el) || !p.value || !p.value.el)) {
                     movedPaths.push(p.path);
                 } else {
@@ -764,7 +757,8 @@ define([
                 moveElements(movedPaths, newPath, null, refresh);
             }
             if (importedElements && importedElements.length) {
-                filesOp.importElements(importedElements, newPath, refresh);
+                // TODO workgroup
+                //filesOp.importElements(importedElements, newPath, refresh);
             }
         };
 
@@ -882,7 +876,7 @@ define([
                 newPath.push(key);
             }
 
-            var element = filesOp.findElement(files, newPath);
+            var element = filesOp.find(newPath);
             var $icon = !isFolder ? getFileIcon(element) : undefined;
             var ro = filesOp.isReadOnlyFile(element);
             // ro undefined mens it's an old hash which doesn't support read-only
@@ -967,7 +961,7 @@ define([
         // Create the title block with the "parent folder" button
         var createTitle = function (path, noStyle) {
             if (!path || path.length === 0) { return; }
-            var isTrash = filesOp.isPathInTrash(path);
+            var isTrash = filesOp.isPathIn(path, [TRASH]);
             var $title = $('<span>', {'class': 'path unselectable'});
             if (APP.mobile()) {
                 return $title;
@@ -1119,17 +1113,17 @@ define([
                     refresh();
                 };
                 $block.find('a.newFolder').click(function () {
-                    filesOp.createNewFolder(currentPath, null, onCreated);
+                    filesOp.addFolder(currentPath, null, onCreated);
                 });
                 $block.find('a.newdoc').click(function (e) {
                     var type = $(this).attr('data-type') || 'pad';
                     var name = Cryptpad.getDefaultName({type: type});
-                    filesOp.createNewFile(currentPath, name, type, onCreated);
+                    filesOp.addFile(currentPath, name, type, onCreated);
                 });
             } else {
                 $block.find('a.newdoc').click(function (e) {
                     var type = $(this).attr('data-type') || 'pad';
-                    sessionStorage[Cryptpad.newPadPathKey] = filesOp.isPathInTrash(currentPath) ? '' : currentPath;
+                    sessionStorage[Cryptpad.newPadPathKey] = filesOp.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
                     window.open('/' + type + '/');
                 });
             }
@@ -1251,11 +1245,11 @@ define([
         };
 
         var allFilesSorted = function () {
-            return filesOp.getUnsortedFiles().length === 0;
+            return filesOp.getFiles([UNSORTED]).length === 0;
         };
 
         var sortElements = function (folder, path, oldkeys, prop, asc, useHref, useData) {
-            var root = filesOp.findElement(files, path);
+            var root = filesOp.find(path);
             var test = folder ? filesOp.isFolder : filesOp.isFile;
             var keys;
             if (!useData) {
@@ -1478,7 +1472,7 @@ define([
                     var $atime = $('<td>', {'class': 'col2'}).text(new Date(r.data.atime).toLocaleString());
                     var $ctimeName = $('<td>', {'class': 'label2'}).text(Messages.fm_creation);
                     var $ctime = $('<td>', {'class': 'col2'}).text(new Date(r.data.ctime).toLocaleString());
-                    if (filesOp.isPathInHrefArray(path)) {
+                    if (filesOp.isPathIn(path, ['hrefArray'])) {
                         path.pop();
                         path.push(r.data.title);
                     }
@@ -1522,14 +1516,14 @@ define([
             if (!path || path.length === 0) {
                 path = [ROOT];
             }
-            var isInRoot = filesOp.isPathInRoot(path);
+            var isInRoot = filesOp.isPathIn(path, [ROOT]);
             var isTrashRoot = filesOp.comparePath(path, [TRASH]);
             var isUnsorted = filesOp.comparePath(path, [UNSORTED]);
             var isTemplate = filesOp.comparePath(path, [TEMPLATE]);
             var isAllFiles = filesOp.comparePath(path, [FILES_DATA]);
             var isSearch = path[0] === SEARCH;
 
-            var root = isSearch ? undefined : filesOp.findElement(files, path);
+            var root = isSearch ? undefined : filesOp.find(path);
             if (!isSearch && typeof(root) === "undefined") {
                 log(Messages.fm_unknownFolderError);
                 debug("Unable to locate the selected directory: ", path);
@@ -1642,11 +1636,11 @@ define([
                 var $el = $(e);
                 if ($el.data('path')) {
                     var path = $el.data('path');
-                    var element = filesOp.findElement(files, path);
+                    var element = filesOp.find(path);
                     if (!filesOp.isFile(element)) { return; }
                     var data = filesOp.getFileData(element);
                     if (!data) { return; }
-                    if (filesOp.isPathInHrefArray(path)) { $el.find('.name').attr('title', data.title).text(data.title); }
+                    if (filesOp.isPathIn(path, ['hrefArray'])) { $el.find('.name').attr('title', data.title).text(data.title); }
                     $el.find('.title').attr('title', data.title).text(data.title);
                     $el.find('.atime').attr('title', getDate(data.atime)).text(getDate(data.atime));
                     $el.find('.ctime').attr('title', getDate(data.ctime)).text(getDate(data.ctime));
@@ -1700,7 +1694,7 @@ define([
         };
 
         var createTree = function ($container, path) {
-            var root = filesOp.findElement(files, path);
+            var root = filesOp.find(path);
 
             // don't try to display what doesn't exist
             if (!root) { return; }
@@ -1930,7 +1924,7 @@ define([
             }
             else if ($(this).hasClass('open_ro')) {
                 paths.forEach(function (p) {
-                    var el = filesOp.findElement(files, p.path);
+                    var el = filesOp.find(p.path);
                     if (filesOp.isFolder(el)) { return; }
                     var roUrl = getReadOnlyUrl(el);
                     openFile(roUrl, false);
@@ -1942,11 +1936,11 @@ define([
                     module.newFolder = info.newPath;
                     module.displayDirectory(paths[0].path);
                 };
-                filesOp.createNewFolder(paths[0].path, null, onCreated);
+                filesOp.addFolder(paths[0].path, null, onCreated);
             }
             else if ($(this).hasClass("properties")) {
                 if (paths.length !== 1) { return; }
-                var el = filesOp.findElement(files, paths[0].path);
+                var el = filesOp.find(paths[0].path);
                 var prop = getProperties(el);
                 Cryptpad.alert('', undefined, true);
                 $('.alertify .msg').html(prop);
@@ -1972,8 +1966,8 @@ define([
             }
             else if ($(this).hasClass('open_ro')) {
                 paths.forEach(function (p) {
-                    var el = filesOp.findElement(files, p.path);
-                    if (filesOp.isPathInFilesData(p.path)) { el = el.href; }
+                    var el = filesOp.find(p.path);
+                    if (filesOp.isPathIn(p.path, [FILES_DATA])) { el = el.href; }
                     if (!el || filesOp.isFolder(el)) { return; }
                     var roUrl = getReadOnlyUrl(el);
                     openFile(roUrl, false);
@@ -1986,7 +1980,7 @@ define([
             }
             else if ($(this).hasClass("properties")) {
                 if (paths.length !== 1) { return; }
-                var el = filesOp.findElement(files, paths[0].path);
+                var el = filesOp.find(paths[0].path);
                 var prop = getProperties(el);
                 Cryptpad.alert('', undefined, true);
                 $('.alertify .msg').html(prop);
@@ -2004,12 +1998,12 @@ define([
                 refresh();
             };
             if ($(this).hasClass("newfolder")) {
-                filesOp.createNewFolder(path, null, onCreated);
+                filesOp.addFolder(path, null, onCreated);
             }
             else if ($(this).hasClass("newdoc")) {
                 var type = $(this).data('type') || 'pad';
                 var name = Cryptpad.getDefaultName({type: type});
-                filesOp.createNewFile(path, name, type, onCreated);
+                filesOp.addFile(path, name, type, onCreated);
             }
             module.hideMenu();
         });
@@ -2046,7 +2040,7 @@ define([
                     if (path.length === 4) { name = path[1]; }
                     Cryptpad.confirm(Messages._getKey("fm_removePermanentlyDialog", [name]), function(res) {
                         if (!res) { return; }
-                        filesOp.removeFromTrash(path, refresh);
+                        filesOp.delete([path], refresh);
                     });
                     return;
                 }
@@ -2055,8 +2049,7 @@ define([
                 var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [paths.length]);
                 Cryptpad.confirm(msg, function(res) {
                     if (!res) { return; }
-                    filesOp.deletePathsPermanently(pathsList);
-                    refresh();
+                    filesOp.delete(pathsList, refresh);
                 });
             }
             else if ($(this).hasClass("restore")) {
@@ -2064,13 +2057,12 @@ define([
                 if (path.length === 4) { name = path[1]; }
                 Cryptpad.confirm(Messages._getKey("fm_restoreDialog", [name]), function(res) {
                     if (!res) { return; }
-                    filesOp.restoreTrash(path, refresh);
+                    filesOp.restore(path, refresh);
                 });
             }
             else if ($(this).hasClass("properties")) {
-                if (paths.length !== 1) { return; }
-                if (path.length !== 4) { return; }
-                var element = filesOp.getTrashElementData(path);
+                if (paths.length !== 1 || path.length !== 4) { return; }
+                var element = filesOp.find(path.slice(0,3)); // element containing the oldpath
                 var sPath = stringifyPath(element.path);
                 Cryptpad.alert('<strong>' + Messages.fm_originalPath + "</strong>:<br>" + sPath, undefined, true);
             }
@@ -2094,20 +2086,17 @@ define([
         $appContainer.on('keydown', function (e) {
             // "Del"
             if (e.which === 46) {
-                if (filesOp.isPathInFilesData(currentPath)) { return; } // We can't remove elements directly from filesData
+                if (filesOp.isPathIn(currentPath, [FILES_DATA])) { return; } // We can't remove elements directly from filesData
                 var $selected = $iframe.find('.selected');
                 if (!$selected.length) { return; }
                 var paths = [];
-                var isTrash = filesOp.isPathInTrash(currentPath);
+                var isTrash = filesOp.isPathIn(currentPath, [TRASH]);
                 $selected.each(function (idx, elmt) {
                     if (!$(elmt).data('path')) { return; }
                     paths.push($(elmt).data('path'));
                 });
                 // If we are in the trash or anon pad or if we are holding the "shift" key, delete permanently,
                 if (isTrash || e.shiftKey) {
-                    //var cb = filesOp.removeFromTrash; // We're in the trash
-                    //if (!isTrash) { cb = filesOp.deletePathPermanently; } // We're in root
-
                     var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [paths.length]);
                     if (paths.length === 1) {
                         msg = Messages.fm_removePermanentlyDialog;
@@ -2116,8 +2105,7 @@ define([
                     Cryptpad.confirm(msg, function(res) {
                         $(ifrw).focus();
                         if (!res) { return; }
-                        filesOp.deletePathsPermanently(paths);
-                        refresh();
+                        filesOp.delete(paths, refresh);
                     });
                     return;
                 }
@@ -2143,10 +2131,8 @@ define([
             if (path[0] !== 'drive') { return false; }
             path = path.slice(1);
             var cPath = currentPath.slice();
-            if ((filesOp.isPathInUnsorted(cPath) && filesOp.isPathInUnsorted(path)) ||
-                    (filesOp.isPathInTemplate(cPath) && filesOp.isPathInTemplate(path)) ||
-                    (path.length >= cPath.length && filesOp.isSubpath(path, cPath)) ||
-                    (filesOp.isPathInTrash(cPath) && filesOp.isPathInTrash(path))) {
+            if ((filesOp.isPathIn(cPath, ['hrefArray', TRASH]) && cPath[0] === path[0]) ||
+                    (path.length >= cPath.length && filesOp.isSubpath(path, cPath))) {
                 // Reload after a few ms to make sure all the change events have been received
                 onRefresh.refresh();
             } else if (path.length && path[0] === FILES_DATA) {
@@ -2159,10 +2145,8 @@ define([
             if (path[0] !== 'drive') { return false; }
             path = path.slice(1);
             var cPath = currentPath.slice();
-            if ((filesOp.isPathInUnsorted(cPath) && filesOp.isPathInUnsorted(path)) ||
-                    (filesOp.isPathInTemplate(cPath) && filesOp.isPathInTemplate(path)) ||
-                    (path.length >= cPath.length && filesOp.isSubpath(path, cPath)) ||
-                    (filesOp.isPathInTrash(cPath) && filesOp.isPathInTrash(path))) {
+            if ((filesOp.isPathIn(cPath, ['hrefArray', TRASH]) && cPath[0] === path[0]) ||
+                    (path.length >= cPath.length && filesOp.isSubpath(path, cPath))) {
                 // Reload after a few to make sure all the change events have been received
                 onRefresh.to = window.setTimeout(refresh, 500);
             }
