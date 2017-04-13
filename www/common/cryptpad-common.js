@@ -54,7 +54,7 @@ load pinpad dynamically only after you know that it will be needed */
     var fixFileName = common.fixFileName = Util.fixFileName;
 
     // import hash utilities for export
-    var createRandomHash = Hash.createRandomHash;
+    var createRandomHash = common.createRandomHash = Hash.createRandomHash;
     var parsePadUrl = common.parsePadUrl = Hash.parsePadUrl;
     var isNotStrongestStored = common.isNotStrongestStored = Hash.isNotStrongestStored;
     var hrefToHexChannelId = common.hrefToHexChannelId = Hash.hrefToHexChannelId;
