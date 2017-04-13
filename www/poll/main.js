@@ -285,7 +285,7 @@ define([
     };
 
     /*  Called whenever an event is fired on an input element */
-    var handleInput = function (input) {
+    var handleInput = function (input, isKeyup) {
         var type = input.type.toLowerCase();
         var id = getRealtimeId(input);
 
@@ -363,8 +363,8 @@ define([
         }
     };
 
-    var hideInputs = function (e) {
-        if ($(e.target).is('[type="text"]')) {
+    var hideInputs = function (e, isKeyup) {
+        if (!isKeyup && $(e.target).is('[type="text"]')) {
             return;
         }
         $('.lock[data-rt-id!="' + APP.userid + '"]').html(lockHTML);
@@ -397,10 +397,11 @@ define([
 
         switch (nodeName) {
             case 'INPUT':
+                if (isKeyup && (e.keyCode === 13 || e.keyCode === 27)) {
+                    hideInputs(e, isKeyup);
+                    return;
+                }
                 handleInput(target);
-                //if (isKeyup && (e.keyCode === 13 || e.keyCode === 27)) {
-                    //hideInputs(e, isKeyup);
-                //}
                 break;
             case 'SPAN':
             //case 'LABEL':
