@@ -264,7 +264,6 @@ define([
             setFocus(f);
             if (typeof(cb) === "function")
             {
-                console.log("change cb");
                 cb();
             }
         };
@@ -278,9 +277,7 @@ define([
             return;
         }
 
-        window.setTimeout(function() {
-            updateTable();
-        });
+        window.setTimeout(updateTable);
     };
 
     var getRealtimeId = function (input) {
@@ -366,8 +363,8 @@ define([
         }
     };
 
-    var hideInputs = function (e, isKeyup) {
-        if (!isKeyup && $(e.target).is('[type="text"]')) {
+    var hideInputs = function (e) {
+        if ($(e.target).is('[type="text"]')) {
             return;
         }
         $('.lock[data-rt-id!="' + APP.userid + '"]').html(lockHTML);
@@ -401,9 +398,9 @@ define([
         switch (nodeName) {
             case 'INPUT':
                 handleInput(target);
-                if (isKeyup && (e.keyCode === 13 || e.keyCode === 27)) {
-                    hideInputs(e, isKeyup);
-                }
+                //if (isKeyup && (e.keyCode === 13 || e.keyCode === 27)) {
+                    //hideInputs(e, isKeyup);
+                //}
                 break;
             case 'SPAN':
             //case 'LABEL':
