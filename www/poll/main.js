@@ -262,8 +262,7 @@ define([
             Render.updateTable(table, displayedObj2, conf);
             updateDisplayedTable();
             setFocus(f);
-            if (typeof(cb) === "function")
-            {
+            if (typeof(cb) === "function") {
                 cb();
             }
         };
