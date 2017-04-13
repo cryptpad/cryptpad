@@ -179,8 +179,6 @@ define([
 
         // FIND
 
-        var compareFiles = function (fileA, fileB) { return fileA === fileB; };
-
         var findElement = function (root, pathInput) {
             if (!pathInput) {
                 error("Invalid path:\n", pathInput, "\nin root\n", root);
@@ -472,14 +470,14 @@ define([
             // Move to Trash
             if (isPathIn(newParentPath, [TRASH])) {
                 if (!elementPath || elementPath.length < 2 || elementPath[0] === TRASH) {
-                    debug("Can't move an element from the trash to the trash: ", path);
+                    debug("Can't move an element from the trash to the trash: ", elementPath);
                     return;
                 }
                 var key = elementPath[elementPath.length - 1];
-                var name = isPathIn(elementPath, ['hrefArray']) ? getTitle(element) : key;
+                var elName = isPathIn(elementPath, ['hrefArray']) ? getTitle(element) : key;
                 var parentPath = elementPath.slice();
                 parentPath.pop();
-                pushToTrash(name, element, parentPath);
+                pushToTrash(elName, element, parentPath);
                 return true;
             }
             // Move to hrefArray
@@ -646,7 +644,7 @@ define([
                 files[TRASH][obj.name].splice(idx, 1);
             });
         };
-        var deleteMultiplePermanently = function (paths) {
+        var deleteMultiplePermanently = function (paths, nocheck) {
             var hrefPaths = paths.filter(function(x) { return isPathIn(x, ['hrefArray']); });
             var rootPaths = paths.filter(function(x) { return isPathIn(x, [ROOT]); });
             var trashPaths = paths.filter(function(x) { return isPathIn(x, [TRASH]); });
@@ -689,10 +687,12 @@ define([
             });
             deleteMultipleTrashRoot(trashRoot);
 
-            checkDeletedFiles();
+            // In some cases, we want to remove pads from a location without removing them from
+            // FILES_DATA (replaceHref)
+            if (!nocheck) { checkDeletedFiles(); }
         };
-        var deletePath = exp.delete = function (paths, cb) {
-            deleteMultiplePermanently(paths);
+        var deletePath = exp.delete = function (paths, cb, nocheck) {
+            deleteMultiplePermanently(paths, nocheck);
             if (typeof cb === "function") { cb(); }
         };
         var emptyTrash = exp.emptyTrash = function (cb) {
@@ -754,7 +754,7 @@ define([
             var allInTrash = true;
             paths.forEach(function (p) {
                 if (p[0] === TRASH) {
-                    removeFromTrash(p, null, true); // 3rd parameter means skip "checkDeletedFiles"
+                    exp.delete(p, null, true); // 3rd parameter means skip "checkDeletedFiles"
                     return;
                 } else {
                     allInTrash = false;
