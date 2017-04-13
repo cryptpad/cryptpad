@@ -333,6 +333,11 @@ define([
             } else if (isEdit) {
                 unlockRow(id, function () {
                     change();
+
+                    setTimeout(function() {
+                        var $newest = $('input[data-rt-id="' + id + '"]');
+                        $newest.focus();
+                    });
                 });
             }
         } else if (type === 'col') {
@@ -346,6 +351,11 @@ define([
             } else if (isEdit) {
                 unlockColumn(id, function () {
                     change();
+
+                    setTimeout(function() {
+                        var $newest = $('[data-rt-id="' + id + '"]');
+                        $newest.focus();
+                    });
                 });
             }
         } else if (type === 'cell') {
@@ -547,14 +557,14 @@ define([
         var $table = APP.$table = $(Render.asHTML(displayedObj, null, colsOrder, readOnly));
         var $createRow = APP.$createRow = $('#create-option').click(function () {
             //console.error("BUTTON CLICKED! LOL");
-            Render.createRow(proxy, function () {
-                change();
-                var order = APP.proxy.table.rowsOrder;
+            Render.createRow(proxy, function (empty, id) {
+                unlockRow(id, function () {
+                    change();
 
-                var last = order[order.length - 1];
-                var $newest = $('[data-rt-id="' + last + '"]');
-                $newest.val('');
-                window.setTimeout(change);
+                    setTimeout(function() {
+                        $('.edit[data-rt-id="' + id + '"]').click();
+                    });
+                });
             });
         });
 
