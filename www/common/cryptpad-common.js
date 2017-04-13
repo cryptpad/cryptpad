@@ -27,9 +27,18 @@ load pinpad dynamically only after you know that it will be needed */
         Clipboard: Clipboard
     };
 
-    var store;
-
+    // constants
+    var userHashKey = common.userHashKey = 'User_hash';
+    var userNameKey = common.userNameKey = 'User_name';
+    var fileHashKey = common.fileHashKey = 'FS_hash';
+    var displayNameKey = common.displayNameKey = 'cryptpad.username';
+    var LOADING = 'loading';
+    var newPadNameKey = common.newPadNameKey = "newPadName";
+    var newPadPathKey = common.newPadPathKey = "newPadPath";
+    var storageKey = common.storageKey = 'CryptPad_RECENTPADS';
     var PINNING_ENABLED = AppConfig.enablePinning;
+
+    var store;
     var rpc;
 
     var find = common.find = Util.find;
@@ -112,10 +121,6 @@ load pinpad dynamically only after you know that it will be needed */
         return url;
     };
 
-    var userHashKey = common.userHashKey = 'User_hash';
-    var userNameKey = common.userNameKey = 'User_name';
-    var fileHashKey = common.fileHashKey = 'FS_hash';
-    var displayNameKey = common.displayNameKey = 'cryptpad.username';
 
     var login = common.login = function (hash, name, cb) {
         if (!hash) { throw new Error('expected a user hash'); }
@@ -212,6 +217,8 @@ load pinpad dynamically only after you know that it will be needed */
         }
         return;
     };
+
+    // CRYPTO
     var getEditHashFromKeys = common.getEditHashFromKeys = function (chanKey, keys) {
         if (typeof keys === 'string') {
             return chanKey + keys;
@@ -219,6 +226,7 @@ load pinpad dynamically only after you know that it will be needed */
         if (!keys.editKeyStr) { return; }
         return '/1/edit/' + hexToBase64(chanKey) + '/' + Crypto.b64RemoveSlashes(keys.editKeyStr);
     };
+    // CRYPTO
     var getViewHashFromKeys = common.getViewHashFromKeys = function (chanKey, keys) {
         if (typeof keys === 'string') {
             return;
@@ -226,13 +234,12 @@ load pinpad dynamically only after you know that it will be needed */
         return '/1/view/' + hexToBase64(chanKey) + '/' + Crypto.b64RemoveSlashes(keys.viewKeyStr);
     };
 
-    var specialHashes = common.specialHashes = ['iframe'];
-
     /*
      * Returns all needed keys for a realtime channel
      * - no argument: use the URL hash or create one if it doesn't exist
      * - secretHash provided: use secretHash to find the keys
      */
+    // CRYPTO
     var getSecrets = common.getSecrets = function (secretHash) {
         var secret = {};
         var generate = function () {
@@ -244,7 +251,7 @@ load pinpad dynamically only after you know that it will be needed */
             return secret;
         } else {
             var hash = secretHash || window.location.hash.slice(1);
-            if (hash.length === 0 || specialHashes.indexOf(hash) !== -1) {
+            if (hash.length === 0) {
                 generate();
                 return secret;
             }
@@ -289,6 +296,7 @@ load pinpad dynamically only after you know that it will be needed */
         return secret;
     };
 
+    // CRYPTO
     var getHashes = common.getHashes = function (channel, secret) {
         var hashes = {};
         if (secret.keys.editKeyStr) {
@@ -300,6 +308,7 @@ load pinpad dynamically only after you know that it will be needed */
         return hashes;
     };
 
+    // CRYPTO
     var createChannelId = common.createChannelId = function () {
         var id = uint8ArrayToHex(Crypto.Nacl.randomBytes(16));
         if (id.length !== 32 || /[^a-f0-9]/.test(id)) {
@@ -308,6 +317,7 @@ load pinpad dynamically only after you know that it will be needed */
         return id;
     };
 
+    // CRYPTO
     var createRandomHash = common.createRandomHash = function () {
         // 16 byte channel Id
         var channelId = hexToBase64(createChannelId());
@@ -315,8 +325,6 @@ load pinpad dynamically only after you know that it will be needed */
         var key = Crypto.b64RemoveSlashes(Crypto.rand64(18));
         return '/1/edit/' + [channelId, key].join('/');
     };
-
-    var storageKey = common.storageKey = 'CryptPad_RECENTPADS';
 
     /*
      *  localStorage formatting
@@ -760,111 +768,6 @@ load pinpad dynamically only after you know that it will be needed */
         });
     };
 
-    var newPadNameKey = common.newPadNameKey = "newPadName";
-    var newPadPathKey = common.newPadPathKey = "newPadPath";
-
-    // local name?
-    common.ready = function (f) {
-        var block = 0;
-        var env = {};
-
-        var cb = function () {
-            block--;
-            if (!block) {
-                f(void 0, env);
-            }
-        };
-
-        if (sessionStorage[newPadNameKey]) {
-            common.initialName = sessionStorage[newPadNameKey];
-            delete sessionStorage[newPadNameKey];
-        }
-        if (sessionStorage[newPadPathKey]) {
-            common.initialPath = sessionStorage[newPadPathKey];
-            delete sessionStorage[newPadPathKey];
-        }
-
-        Store.ready(function (err, storeObj) {
-            store = common.store = env.store = storeObj;
-
-            var proxy = getProxy();
-            var network = getNetwork();
-
-            $(function() {
-                // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
-                // won't work. We have to reset it now to make sure it uses a correct "body"
-                Alertify.reset();
-
-                // Load the new pad when the hash has changed
-                var oldHash  = document.location.hash.slice(1);
-                window.onhashchange = function () {
-                    var newHash = document.location.hash.slice(1);
-                    var parsedOld = parseHash(oldHash);
-                    var parsedNew = parseHash(newHash);
-                    if (parsedOld && parsedNew && (
-                          parsedOld.channel !== parsedNew.channel
-                          || parsedOld.mode !== parsedNew.mode
-                          || parsedOld.key !== parsedNew.key)) {
-                        document.location.reload();
-                        return;
-                    }
-                    if (parsedNew) {
-                        oldHash = newHash;
-                    }
-                };
-
-                if (PINNING_ENABLED && isLoggedIn()) {
-                    console.log("logged in. pads will be pinned");
-                    block++;
-
-                    // TODO setTimeout in case rpc doesn't
-                    // activate in reasonable time?
-                    Pinpad.create(network, proxy, function (e, call) {
-                        if (e) {
-                            console.error(e);
-                            return cb();
-                        }
-
-                        console.log('RPC handshake complete');
-                        rpc = common.rpc = env.rpc = call;
-
-                        // TODO check if pin list is up to date
-                        // if not, reset
-                        common.arePinsSynced(function (err, yes) {
-                            if (!yes) {
-                                common.resetPins(function (err, hash) {
-                                    console.log('RESET DONE');
-                                });
-                            }
-                        });
-                        cb();
-                    });
-                } else if (PINNING_ENABLED) {
-                    console.log('not logged in. pads will not be pinned');
-                } else {
-                    console.log('pinning disabled');
-                }
-
-                // Everything's ready, continue...
-                if($('#pad-iframe').length) {
-                    block++;
-                    var $iframe = $('#pad-iframe');
-                    var iframe = $iframe[0];
-                    var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                    if (iframeDoc.readyState === 'complete') {
-                        cb();
-                        return;
-                    }
-                    $iframe.load(cb);
-                    return;
-                }
-
-                block++;
-                cb();
-            });
-        }, common);
-    };
-
     var errorHandlers = [];
     common.onError = function (h) {
         if (typeof h !== "function") { return; }
@@ -878,7 +781,6 @@ load pinpad dynamically only after you know that it will be needed */
         });
     };
 
-    var LOADING = 'loading';
     var getRandomTip = function () {
         if (!Messages.tips || !Object.keys(Messages.tips).length) { return ''; }
         var keys = Object.keys(Messages.tips);
@@ -1639,6 +1541,108 @@ load pinpad dynamically only after you know that it will be needed */
                 return $target;
             },
         };
+    };
+
+    // local name?
+    common.ready = function (f) {
+        var block = 0;
+        var env = {};
+
+        var cb = function () {
+            block--;
+            if (!block) {
+                f(void 0, env);
+            }
+        };
+
+        if (sessionStorage[newPadNameKey]) {
+            common.initialName = sessionStorage[newPadNameKey];
+            delete sessionStorage[newPadNameKey];
+        }
+        if (sessionStorage[newPadPathKey]) {
+            common.initialPath = sessionStorage[newPadPathKey];
+            delete sessionStorage[newPadPathKey];
+        }
+
+        Store.ready(function (err, storeObj) {
+            store = common.store = env.store = storeObj;
+
+            var proxy = getProxy();
+            var network = getNetwork();
+
+            $(function() {
+                // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
+                // won't work. We have to reset it now to make sure it uses a correct "body"
+                Alertify.reset();
+
+                // Load the new pad when the hash has changed
+                var oldHash  = document.location.hash.slice(1);
+                window.onhashchange = function () {
+                    var newHash = document.location.hash.slice(1);
+                    var parsedOld = parseHash(oldHash);
+                    var parsedNew = parseHash(newHash);
+                    if (parsedOld && parsedNew && (
+                          parsedOld.channel !== parsedNew.channel
+                          || parsedOld.mode !== parsedNew.mode
+                          || parsedOld.key !== parsedNew.key)) {
+                        document.location.reload();
+                        return;
+                    }
+                    if (parsedNew) {
+                        oldHash = newHash;
+                    }
+                };
+
+                if (PINNING_ENABLED && isLoggedIn()) {
+                    console.log("logged in. pads will be pinned");
+                    block++;
+
+                    // TODO setTimeout in case rpc doesn't
+                    // activate in reasonable time?
+                    Pinpad.create(network, proxy, function (e, call) {
+                        if (e) {
+                            console.error(e);
+                            return cb();
+                        }
+
+                        console.log('RPC handshake complete');
+                        rpc = common.rpc = env.rpc = call;
+
+                        // TODO check if pin list is up to date
+                        // if not, reset
+                        common.arePinsSynced(function (err, yes) {
+                            if (!yes) {
+                                common.resetPins(function (err, hash) {
+                                    console.log('RESET DONE');
+                                });
+                            }
+                        });
+                        cb();
+                    });
+                } else if (PINNING_ENABLED) {
+                    console.log('not logged in. pads will not be pinned');
+                } else {
+                    console.log('pinning disabled');
+                }
+
+                // Everything's ready, continue...
+                if($('#pad-iframe').length) {
+                    block++;
+                    var $iframe = $('#pad-iframe');
+                    var iframe = $iframe[0];
+                    var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    if (iframeDoc.readyState === 'complete') {
+                        cb();
+                        return;
+                    }
+                    $iframe.load(cb);
+                    return;
+                }
+
+                block++;
+                cb();
+            });
+        }, common);
     };
 
     $(function () {
