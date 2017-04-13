@@ -3,7 +3,7 @@ define([
     '/customize/messages.js',
     '/common/fsStore.js',
     '/common/common-util.js',
-    '/common/hash.js',
+    '/common/common-hash.js',
 
     '/bower_components/alertifyjs/dist/js/alertify.js',
     '/common/clipboard.js',
