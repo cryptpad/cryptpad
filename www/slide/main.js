@@ -83,7 +83,7 @@ define([
                 styleActiveLine : true,
                 search: true,
                 highlightSelectionMatches: {showToken: /\w+/},
-                extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }},
+                extraKeys: {"Shift-Ctrl-R": undefined},
                 foldGutter: true,
                 gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
                 mode: "javascript",

@@ -15,6 +15,26 @@ CKEDITOR.editorConfig = function( config ) { // jshint ignore:line
     config.fontSize_defaultLabel = '16px';
     config.contentsCss = '/customize/ckeditor-contents.css';
 
+    config.keystrokes = [
+        [ CKEDITOR.ALT + 121 /*F10*/, 'toolbarFocus' ],
+        [ CKEDITOR.ALT + 122 /*F11*/, 'elementsPathFocus' ],
+
+        [ CKEDITOR.SHIFT + 121 /*F10*/, 'contextMenu' ],
+
+        [ CKEDITOR.CTRL + 90 /*Z*/, 'undo' ],
+        [ CKEDITOR.CTRL + 89 /*Y*/, 'redo' ],
+        [ CKEDITOR.CTRL + CKEDITOR.SHIFT + 90 /*Z*/, 'redo' ],
+
+        [ CKEDITOR.CTRL + CKEDITOR.SHIFT + 76 /*L*/, 'link' ],
+        [ CKEDITOR.CTRL + 76 /*L*/, undefined ],
+
+        [ CKEDITOR.CTRL + 66 /*B*/, 'bold' ],
+        [ CKEDITOR.CTRL + 73 /*I*/, 'italic' ],
+        [ CKEDITOR.CTRL + 85 /*U*/, 'underline' ],
+
+        [ CKEDITOR.ALT + 109 /*-*/, 'toolbarCollapse' ]
+    ];
+
     //skin: 'moono-cryptpad,/pad/themes/moono-cryptpad/'
     //skin: 'flat,/pad/themes/flat/'
     //skin: 'moono-lisa,/pad/themes/moono-lisa/'
