@@ -290,7 +290,7 @@ define(function () {
     out.fm_categoryError = "No se pudo abrir la categoría seleccionada, mostrando la raíz.";
     out.settings_userFeedbackHint1 = "CryptPad suministra informaciones muy básicas al servidor, para ayudarnos a mejorar vuestra experiencia.";
     out.settings_userFeedbackHint2 = "El contenido de tu pad nunca será compartido con el servidor.";
-    out.settings_userFeedback = "Activar feedback"; // "Disable user feedback"
+    out.settings_userFeedback = "Activar feedback";
     out.settings_anonymous = "No has iniciado sesión. Tus ajustes se aplicarán solo a este navegador.";
     out.blog = "Blog";
     out.initialState = "<p>Esto es <strong>CryptPad</strong>, el editor collaborativo en tiempo real zero knowledge.<br>Lo que escribes aquí es cifrado, con lo cual solo las personas con el enlace pueden accederlo.<br>Incluso el servido no puede ver lo que escribes.</p><p><small><i>Lo que ves aquí, lo que escuchas aquí, cuando sales, se queda aquí</i></small></p><p>&nbsp;<br></p>";
@@ -355,6 +355,25 @@ define(function () {
     out.register_cancel = "Volver";
     out.register_warning = "Zero Knowledge significa que no podemos recuperar tus datos si pierdes tu contraseña.";
     out.register_alreadyRegistered = "Este usuario ya existe, ¿iniciar sesión?";
+
+    // 1.4.0 - Easter Bunny
+
+    out.button_newwhiteboard = "Nueva Pizarra";
+    out.wrongApp = "No se pudo mostrar el contenido de la sessión en tiempo real en tu navigador. Por favor, actualiza la página.";
+    out.synced = "Todo está guardado.";
+    out.saveTemplateButton = "Guardar como plantilla";
+    out.saveTemplatePrompt = "Élige un título para la plantilla";
+    out.templateSaved = "¡Plantilla guardada!";
+    out.selectTemplate = "Élige una plantilla o pulsa ESC";
+    out.slideOptionsTitle = "Personaliza tus diapositivas";
+    out.slideOptionsButton = "Guardar (enter)";
+    out.canvas_clear = "Limpiar";
+    out.canvas_delete = "Borrar selección";
+    out.canvas_disable = "No permitir dibujos";
+    out.canvas_enable = "Permitir dibujos";
+    out.canvas_width = "Talla";
+    out.canvas_opacity = "Opacidad";
+    out.settings_publicSigningKey = "Clave de Firma Pública";
 
     return out;
 });
