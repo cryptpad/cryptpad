@@ -1,5 +1,5 @@
 define([
-    '/Hash/Hash-util.js',
+    '/common/common-util.js',
     '/bower_components/chainpad-crypto/crypto.js',
 ], function (Util, Crypto) {
     var Hash = {};
@@ -227,7 +227,7 @@ define([
         var channel = parsed.channel;
         if (!channel) { return; }
 
-        var hex = Hash.base64ToHex(channel);
+        var hex = base64ToHex(channel);
         return hex;
     };
 
