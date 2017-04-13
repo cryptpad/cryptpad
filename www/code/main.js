@@ -646,7 +646,7 @@ define([
                 return cursor;
             };
 
-            var onRemote = config.onRemote = function (info) {
+            var onRemote = config.onRemote = function () {
                 if (initializing) { return; }
                 var scroll = editor.getScrollInfo();
 

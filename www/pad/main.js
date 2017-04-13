@@ -475,12 +475,12 @@ define([
                 }
             };
 
-            var onRemote = realtimeOptions.onRemote = function (info) {
+            var onRemote = realtimeOptions.onRemote = function () {
                 if (initializing) { return; }
 
                 var oldShjson = stringifyDOM(inner);
 
-                var shjson = info.realtime.getUserDoc();
+                var shjson = module.realtime.getUserDoc();
 
                 // remember where the cursor is
                 cursor.update();
@@ -679,7 +679,7 @@ define([
                 module.users = info.userList.users;
                 module.realtime = info.realtime;
 
-                var shjson = info.realtime.getUserDoc();
+                var shjson = module.realtime.getUserDoc();
 
                 var newPad = false;
                 if (shjson === '') { newPad = true; }
