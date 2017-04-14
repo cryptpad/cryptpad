@@ -3,6 +3,7 @@
 
 @poll-th-bg: #aaa;
 @poll-td-bg: #aaa;
+@poll-placeholder: #333;
 @poll-border-color: #555;
 @poll-cover-color: #000;
 @poll-fg: #000;
@@ -42,6 +43,14 @@ input[type="text"][disabled], textarea[disabled] {
     font: white;
     border: 0px;
 }
+
+// The placeholder color only seems to effect Safari when not set, but
+// setting others just in case.
+
+input[type="text"]::placeholder {
+    color: @poll-placeholder;
+}
+
 table#table {
     margin: 0px;
 }

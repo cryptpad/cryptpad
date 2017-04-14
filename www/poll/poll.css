@@ -32,6 +32,9 @@ textarea[disabled] {
   font: white;
   border: 0px;
 }
+input[type="text"]::placeholder {
+  color: #333;
+}
 table#table {
   margin: 0px;
 }
