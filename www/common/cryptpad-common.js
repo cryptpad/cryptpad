@@ -251,7 +251,7 @@ define([
     var migrateRecentPads = common.migrateRecentPads = function (pads) {
         return pads.map(function (pad) {
             var hash;
-            if (Array.isArray(pad)) {
+            if (Array.isArray(pad)) { // TODO DEPRECATE_F
                 var href = pad[0];
                 href.replace(/\#(.*)$/, function (a, h) {
                     hash = h;
@@ -289,7 +289,7 @@ define([
 
     // Get the pads from localStorage to migrate them to the object store
     var getLegacyPads = common.getLegacyPads = function (cb) {
-        require(['/customize/store.js'], function(Legacy) {
+        require(['/customize/store.js'], function(Legacy) { // TODO DEPRECATE_F
             Legacy.ready(function (err, legacy) {
                 if (err) { cb(err, null); return; }
                 legacy.get(storageKey, function (err2, recentPads) {
@@ -478,7 +478,6 @@ define([
         }
     };
 
-    // TODO integrate pinning
     var setPadTitle = common.setPadTitle = function (name, cb) {
         var href = window.location.href;
         var parsed = parsePadUrl(href);
@@ -1110,8 +1109,6 @@ define([
         return $userAdmin;
     };
 
-
-    // local name?
     common.ready = function (f) {
         var block = 0;
         var env = {};
@@ -1136,6 +1133,11 @@ define([
             store = common.store = env.store = storeObj;
 
             var proxy = getProxy();
+
+            /*  TODO log users out if they are logged in, but don't have
+                signing keys stored in their object.
+            */
+
             var network = getNetwork();
 
             $(function() {
@@ -1165,8 +1167,6 @@ define([
                     console.log("logged in. pads will be pinned");
                     block++;
 
-                    // TODO setTimeout in case rpc doesn't
-                    // activate in reasonable time?
                     Pinpad.create(network, proxy, function (e, call) {
                         if (e) {
                             console.error(e);
