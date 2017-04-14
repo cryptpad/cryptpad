@@ -4,15 +4,14 @@ define([
     '/common/fsStore.js',
     '/common/common-util.js',
     '/common/common-hash.js',
+    '/common/common-interface.js',
 
-    '/bower_components/alertifyjs/dist/js/alertify.js',
     '/common/clipboard.js',
-    '/common/pinpad.js', /* TODO
-load pinpad dynamically only after you know that it will be needed */
+    '/common/pinpad.js',
     '/customize/application_config.js',
 
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Messages, Store, Util, Hash, Alertify, Clipboard, Pinpad, AppConfig) {
+], function (Config, Messages, Store, Util, Hash, UI, Clipboard, Pinpad, AppConfig) {
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
@@ -23,7 +22,6 @@ load pinpad dynamically only after you know that it will be needed */
 
     var common = window.Cryptpad = {
         Messages: Messages,
-        Alertify: Alertify,
         Clipboard: Clipboard
     };
 
@@ -41,6 +39,16 @@ load pinpad dynamically only after you know that it will be needed */
 
     var store;
     var rpc;
+
+    // import UI elements
+    var findCancelButton = common.findCancelButton = UI.findCancelButton;
+    var findOKButton = common.findOKButton = UI.findOKButton;
+    var listenForKeys = common.listenForKeys = UI.listenForKeys;
+    var stopListening = common.stopListening = UI.stopListening;
+    common.prompt = UI.prompt;
+    common.confirm = UI.confirm;
+    common.log = UI.log;
+    common.warn = UI.warn;
 
     // import common utilities for export
     var find = common.find = Util.find;
@@ -1180,121 +1188,6 @@ load pinpad dynamically only after you know that it will be needed */
         return $userAdmin;
     };
 
-    /*
-     *  Alertifyjs
-     */
-    var findCancelButton = common.findCancelButton = function () {
-        return $('button.cancel');
-    };
-
-    var findOKButton = common.findOKButton = function () {
-        return $('button.ok');
-    };
-
-    var listenForKeys = common.listenForKeys = function (yes, no) {
-        var handler = function (e) {
-            switch (e.which) {
-                case 27: // cancel
-                    if (typeof(no) === 'function') { no(e); }
-                    no();
-                    break;
-                case 13: // enter
-                    if (typeof(yes) === 'function') { yes(e); }
-                    break;
-            }
-        };
-
-        $(window).keyup(handler);
-        return handler;
-    };
-
-    var stopListening = common.stopListening = function (handler) {
-        $(window).off('keyup', handler);
-    };
-
-    common.alert = function (msg, cb, force) {
-        cb = cb || function () {};
-        if (force !== true) { msg = fixHTML(msg); }
-        var close = function (e) {
-            findOKButton().click();
-        };
-        var keyHandler = listenForKeys(close, close);
-        Alertify.alert(msg, function (ev) {
-            cb(ev);
-            stopListening(keyHandler);
-        });
-        window.setTimeout(function () {
-            findOKButton().focus();
-        });
-    };
-
-    common.prompt = function (msg, def, cb, opt, force) {
-        opt = opt || {};
-        cb = cb || function () {};
-        if (force !== true) { msg = fixHTML(msg); }
-
-        var keyHandler = listenForKeys(function (e) { // yes
-            findOKButton().click();
-        }, function (e) { // no
-            findCancelButton().click();
-        });
-
-        Alertify
-            .defaultValue(def || '')
-            .okBtn(opt.ok || Messages.okButton || 'OK')
-            .cancelBtn(opt.cancel || Messages.cancelButton || 'Cancel')
-            .prompt(msg, function (val, ev) {
-                cb(val, ev);
-                stopListening(keyHandler);
-            }, function (ev) {
-                cb(null, ev);
-                stopListening(keyHandler);
-            });
-    };
-
-    common.confirm = function (msg, cb, opt, force, styleCB) {
-        opt = opt || {};
-        cb = cb || function () {};
-        if (force !== true) { msg = fixHTML(msg); }
-
-        var keyHandler = listenForKeys(function (e) {
-            findOKButton().click();
-        }, function (e) {
-            findCancelButton().click();
-        });
-
-        Alertify
-            .okBtn(opt.ok || Messages.okButton || 'OK')
-            .cancelBtn(opt.cancel || Messages.cancelButton || 'Cancel')
-            .confirm(msg, function () {
-                cb(true);
-                stopListening(keyHandler);
-            }, function () {
-                cb(false);
-                stopListening(keyHandler);
-            });
-
-        window.setTimeout(function () {
-            var $ok = findOKButton();
-            var $cancel = findCancelButton();
-            if (opt.okClass) { $ok.addClass(opt.okClass); }
-            if (opt.cancelClass) { $cancel.addClass(opt.cancelClass); }
-            if (opt.reverseOrder) {
-                $ok.insertBefore($ok.prev());
-            }
-            if (typeof(styleCB) === 'function') {
-                styleCB($ok.closest('.dialog'));
-            }
-        }, 0);
-    };
-
-    common.log = function (msg) {
-        Alertify.success(fixHTML(msg));
-    };
-
-    common.warn = function (msg) {
-        Alertify.error(fixHTML(msg));
-    };
 
     /*
      *  spinner
@@ -1351,7 +1244,7 @@ load pinpad dynamically only after you know that it will be needed */
             $(function() {
                 // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
                 // won't work. We have to reset it now to make sure it uses a correct "body"
-                Alertify.reset();
+                UI.Alertify.reset();
 
                 // Load the new pad when the hash has changed
                 var oldHash  = document.location.hash.slice(1);
@@ -1424,8 +1317,6 @@ load pinpad dynamically only after you know that it will be needed */
     $(function () {
         Messages._applyTranslation();
     });
-
-    Alertify._$$alertify.delay = AppConfig.notificationTimeout || 5000;
 
     return common;
 });
