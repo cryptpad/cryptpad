@@ -31,7 +31,6 @@ define([
     var userNameKey = common.userNameKey = 'User_name';
     var fileHashKey = common.fileHashKey = 'FS_hash';
     var displayNameKey = common.displayNameKey = 'cryptpad.username';
-    var LOADING = 'loading';
     var newPadNameKey = common.newPadNameKey = "newPadName";
     var newPadPathKey = common.newPadPathKey = "newPadPath";
     var storageKey = common.storageKey = 'CryptPad_RECENTPADS';
@@ -49,6 +48,10 @@ define([
     common.confirm = UI.confirm;
     common.log = UI.log;
     common.warn = UI.warn;
+    common.spinner = UI.spinner;
+    common.addLoadingScreen = UI.addLoadingScreen;
+    common.removeLoadingScreen = UI.removeLoadingScreen;
+    common.errorLoadingScreen = UI.errorLoadingScreen;
 
     // import common utilities for export
     var find = common.find = Util.find;
@@ -154,7 +157,6 @@ define([
 
         return url;
     };
-
 
     var login = common.login = function (hash, name, cb) {
         if (!hash) { throw new Error('expected a user hash'); }
@@ -566,66 +568,6 @@ define([
         });
     };
 
-    var getRandomTip = function () {
-        if (!Messages.tips || !Object.keys(Messages.tips).length) { return ''; }
-        var keys = Object.keys(Messages.tips);
-        var rdm = Math.floor(Math.random() * keys.length);
-        return Messages.tips[keys[rdm]];
-    };
-    common.addLoadingScreen = function (loadingText, hideTips) {
-        var $loading, $container;
-        if ($('#' + LOADING).length) {
-            $loading = $('#' + LOADING).show();
-            if (loadingText) {
-                $('#' + LOADING).find('p').text(loadingText);
-            }
-            $container = $loading.find('.loadingContainer');
-        } else {
-            $loading = $('<div>', {id: LOADING});
-            $container = $('<div>', {'class': 'loadingContainer'});
-            $container.append('<img class="cryptofist" src="/customize/cryptofist_small.png" />');
-            var $spinner = $('<div>', {'class': 'spinnerContainer'});
-            common.spinner($spinner).show();
-            var $text = $('<p>').text(loadingText || Messages.loading);
-            $container.append($spinner).append($text);
-            $loading.append($container);
-            $('body').append($loading);
-        }
-        if (Messages.tips && !hideTips) {
-            var $loadingTip = $('<div>', {'id': 'loadingTip'});
-            var $tip = $('<span>', {'class': 'tips'}).text(getRandomTip()).appendTo($loadingTip);
-            $loadingTip.css({
-                'top': $('body').height()/2 + $container.height()/2 + 20 + 'px'
-            });
-            $('body').append($loadingTip);
-        }
-    };
-    common.removeLoadingScreen = function (cb) {
-        $('#' + LOADING).fadeOut(750, cb);
-        $('#loadingTip').css('top', '');
-        window.setTimeout(function () {
-            $('#loadingTip').fadeOut(750);
-        }, 3000);
-    };
-    common.errorLoadingScreen = function (error, transparent) {
-        if (!$('#' + LOADING).is(':visible')) { common.addLoadingScreen(undefined, true); }
-        $('.spinnerContainer').hide();
-        if (transparent) { $('#' + LOADING).css('opacity', 0.8); }
-        $('#' + LOADING).find('p').html(error || Messages.error);
-    };
-
-    var importContent = common.importContent = function (type, f) {
-        return function () {
-            var $files = $('<input type="file">').click();
-            $files.on('change', function (e) {
-                var file = e.target.files[0];
-                var reader = new FileReader();
-                reader.onload = function (e) { f(e.target.result, file); };
-                reader.readAsText(file, type);
-            });
-        };
-    };
-
     /*
      * Buttons
      */
@@ -748,7 +690,7 @@ define([
                     title: Messages.importButtonTitle,
                 }).append($('<span>', {'class':'fa fa-upload', style: 'font:'+size+' FontAwesome'}));
                 if (callback) {
-                    button.click(common.importContent('text/plain', function (content, file) {
+                    button.click(UI.importContent('text/plain', function (content, file) {
                         callback(content, file);
                     }));
                 }
@@ -1171,31 +1113,6 @@ define([
         return $userAdmin;
     };
 
-
-    /*
-     *  spinner
-     */
-    common.spinner = function (parent) {
-        var $target = $('<span>', {
-            'class': 'fa fa-spinner fa-pulse fa-4x fa-fw'
-        }).hide();
-
-        $(parent).append($target);
-
-        return {
-            show: function () {
-                $target.show();
-                return this;
-            },
-            hide: function () {
-                $target.hide();
-                return this;
-            },
-            get: function () {
-                return $target;
-            },
-        };
-    };
 
     // local name?
     common.ready = function (f) {
