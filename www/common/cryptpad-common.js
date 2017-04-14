@@ -221,7 +221,7 @@ define([
         return typeof getUserHash() === "string";
     };
 
-    var isArray = common.isArray = $.isArray;
+    common.isArray = $.isArray;
 
     /*
      *  localStorage formatting
