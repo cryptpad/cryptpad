@@ -562,32 +562,6 @@ load pinpad dynamically only after you know that it will be needed */
         });
     };
 
-    // STORAGE
-    var getPadTitle = common.getPadTitle = function (cb) {
-        var href = window.location.href;
-        var parsed = parsePadUrl(window.location.href);
-        var hashSlice = window.location.hash.slice(1,9); // TODO remove
-        var title = '';
-
-        getRecentPads(function (err, pads) {
-            if (err) {
-                cb(err);
-                return;
-            }
-            pads.some(function (pad) {
-                var p = parsePadUrl(pad.href);
-                if (p.hash === parsed.hash && p.type === parsed.type) {
-                    title = pad.title || hashSlice;
-                    return true;
-                }
-            });
-
-            if (title === '') { title = getDefaultName(parsed, pads); }
-
-            cb(void 0, title);
-        });
-    };
-
     var errorHandlers = [];
     common.onError = function (h) {
         if (typeof h !== "function") { return; }

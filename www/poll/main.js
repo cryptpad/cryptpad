@@ -781,15 +781,6 @@ define([
         }
 
         Cryptpad.onDisplayNameChanged(setName);
-
-        Cryptpad.getPadTitle(function (err, title) {
-            if (err) {
-                error(err);
-                debug("Couldn't get pad title");
-                return;
-            }
-            updateTitle(title || defaultName);
-        });
     };
 
     // don't initialize until the store is ready.
