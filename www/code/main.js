@@ -402,6 +402,21 @@ define([
                     editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
                 }
 
+                /* add an export button */
+                var $hist = Cryptpad.createButton();
+                var historyRender = function () {};
+                var historyClose = function () {
+                    // TODO: enable onlocal, onremote... (or at least the display part)
+                };
+                var historyTodo = function (hist) {
+                    hist.display($bar, historyRender, historyClose);
+                };
+                $hist.removeClass('fa-question').addClass('fa-history').click(function () {
+                    // TODO: disable onlocal, onremote...
+                    Cryptpad.getHistory(historyTodo);
+                });
+                $rightside.append($hist);
+
                 /* save as template */
                 if (!Cryptpad.isTemplate(window.location.href)) {
                     var templateObj = {

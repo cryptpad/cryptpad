@@ -5,13 +5,14 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
+    '/common/common-history.js',
 
     '/common/clipboard.js',
     '/common/pinpad.js',
     '/customize/application_config.js',
 
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Messages, Store, Util, Hash, UI, Clipboard, Pinpad, AppConfig) {
+], function (Config, Messages, Store, Util, Hash, UI, History, Clipboard, Pinpad, AppConfig) {
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
@@ -80,6 +81,11 @@ define([
     common.createChannelId = Hash.createChannelId;
     common.findWeaker = Hash.findWeaker;
     common.findStronger = Hash.findStronger;
+
+    // History
+    common.getHistory = function (cb) {
+        return History.create(common, cb);
+    };
 
     var getStore = common.getStore = function () {
         if (store) { return store; }
