@@ -224,14 +224,6 @@ define([
 
     var isArray = common.isArray = $.isArray;
 
-    var truncate = common.truncate = function (text, len) {
-        if (typeof(text) === 'string' && text.length > len) {
-            return text.slice(0, len) + '…';
-        }
-        return text;
-    };
-
-
     /*
      *  localStorage formatting
      */
@@ -310,15 +302,6 @@ define([
                     cb(void 0, []);
                 });
             });
-        });
-    };
-
-    var isNameAvailable = function (title, parsed, pads) {
-        return !pads.some(function (pad) {
-            // another pad is already using that title
-            if (pad.title === title) {
-                return true;
-            }
         });
     };
 
