@@ -119,18 +119,14 @@ define([
     };
 
     var getUid = common.getUid = function () {
-        if (store) {
-            if (store.getProxy() && store.getProxy().proxy) {
-                return store.getProxy().proxy.uid;
-            }
+        if (store && store.getProxy() && store.getProxy().proxy) {
+            return store.getProxy().proxy.uid;
         }
     };
 
     var getRealtime = common.getRealtime = function () {
-        if (store) {
-            if (store.getProxy() && store.getProxy().info) {
+        if (store && store.getProxy() && store.getProxy().info) {
                 return store.getProxy().info.realtime;
-            }
         }
         return;
     };
@@ -255,7 +251,7 @@ define([
     var migrateRecentPads = common.migrateRecentPads = function (pads) {
         return pads.map(function (pad) {
             var hash;
-            if (isArray(pad)) {
+            if (Array.isArray(pad)) {
                 var href = pad[0];
                 href.replace(/\#(.*)$/, function (a, h) {
                     hash = h;
@@ -298,7 +294,7 @@ define([
                 if (err) { cb(err, null); return; }
                 legacy.get(storageKey, function (err2, recentPads) {
                     if (err2) { cb(err2, null); return; }
-                    if (isArray(recentPads)) {
+                    if (Array.isArray(recentPads)) {
                         cb(void 0, migrateRecentPads(recentPads));
                         return;
                     }
@@ -421,7 +417,7 @@ define([
     /* fetch and migrate your pad history from the store */
     var getRecentPads = common.getRecentPads = function (cb) {
         getStore().getDrive(storageKey, function (err, recentPads) {
-            if (isArray(recentPads)) {
+            if (Array.isArray(recentPads)) {
                 checkRecentPads(recentPads);
                 cb(void 0, recentPads);
                 return;
@@ -822,7 +818,7 @@ define([
     //
     // allowed options tags: ['a', 'hr', 'p']
     var createDropdown = common.createDropdown = function (config) {
-        if (typeof config !== "object" || !isArray(config.options)) { return; }
+        if (typeof config !== "object" || !Array.isArray(config.options)) { return; }
 
         var allowedTags = ['a', 'p', 'hr'];
         var isValidOption = function (o) {
