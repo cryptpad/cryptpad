@@ -252,6 +252,7 @@ var Renderer = function (Cryptpad) {
     var makeRemoveElement = Render.makeRemoveElement = function (id) {
         return ['SPAN', {
             'data-rt-id': id,
+            'title': Cryptpad.Messages.poll_remove,
             class: 'remove',
         }, ['✖']];
     };
@@ -259,6 +260,7 @@ var Renderer = function (Cryptpad) {
     var makeEditElement = Render.makeEditElement = function (id) {
         return ['SPAN', {
             'data-rt-id': id,
+            'title': Cryptpad.Messages.poll_edit,
             class: 'edit',
         }, ['✐']];
     };
@@ -266,6 +268,7 @@ var Renderer = function (Cryptpad) {
     var makeLockElement = Render.makeLockElement = function (id) {
         return ['SPAN', {
             'data-rt-id': id,
+            'title': Cryptpad.Messages.poll_locked,
             class: 'lock',
         }, [['i', {
                 class: 'fa fa-lock',
@@ -277,14 +280,11 @@ var Renderer = function (Cryptpad) {
     var makeHeadingCell = Render.makeHeadingCell = function (cell, readOnly) {
         if (!cell) { return ['TD', {}, []]; }
         if (cell.type === 'text') {
-            var removeElement = makeRemoveElement(cell['data-rt-id']);
-            var editElement = makeEditElement(cell['data-rt-id']);
-            var lockElement = makeLockElement(cell['data-rt-id']);
             var elements = [['INPUT', cell, []]];
             if (!readOnly) {
-                elements.unshift(removeElement);
-                elements.unshift(lockElement);
-                elements.unshift(editElement);
+                elements.unshift(makeRemoveElement(cell['data-rt-id']));
+                elements.unshift(makeLockElement(cell['data-rt-id']));
+                elements.unshift(makeEditElement(cell['data-rt-id']));
             }
             return ['TD', {}, elements];
         }
@@ -321,12 +321,10 @@ var Renderer = function (Cryptpad) {
 
     var makeBodyCell = Render.makeBodyCell = function (cell, readOnly) {
         if (cell && cell.type === 'text') {
-            var removeElement = makeRemoveElement(cell['data-rt-id']);
-            var editElement = makeEditElement(cell['data-rt-id']);
             var elements = [['INPUT', cell, []]];
             if (!readOnly) {
-                elements.push(removeElement);
-                elements.push(editElement);
+                elements.push(makeRemoveElement(cell['data-rt-id']));
+                elements.push(makeEditElement(cell['data-rt-id']));
             }
             return ['TD', {}, [
                     ['DIV', {class: 'text-cell'}, elements]

@@ -356,5 +356,10 @@ define(function () {
     out.register_warning = "Zero Knowledge significa que no podemos recuperar tus datos si pierdes tu contraseña.";
     out.register_alreadyRegistered = "Este usuario ya existe, ¿iniciar sesión?";
 
+    out.poll_remove = "Quitar";
+    out.poll_edit = "Editar";
+    out.poll_locked = "Cerrado";
+    out.poll_unlocked = "Abierto";
+
     return out;
 });

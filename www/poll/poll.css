@@ -33,7 +33,7 @@ textarea[disabled] {
   border: 0px;
 }
 input[type="text"]::placeholder {
-  color: #333;
+  color: #666;
 }
 table#table {
   margin: 0px;
@@ -69,7 +69,7 @@ table#table {
 #tableScroll {
   overflow-y: hidden;
   overflow-x: auto;
-  margin-left: calc(30% - 50px + 29px);
+  margin-left: calc(30% - 50px + 31px);
   max-width: 70%;
   width: auto;
   display: inline-block;
@@ -106,6 +106,9 @@ table {
 }
 tbody {
   border: 1px solid #555;
+}
+tbody * {
+  box-sizing: border-box;
 }
 tbody tr {
   text-align: center;
@@ -299,9 +302,13 @@ div.realtime table tbody .text-cell .remove {
   float: left;
   margin: 0 0 0 10px;
 }
-form.realtime table tbody td label,
-div.realtime table tbody td label {
-  border: 0.5px solid #555;
+form.realtime table tbody tr td:nth-child(2),
+div.realtime table tbody tr td:nth-child(2) {
+  border-left: 1px solid #555;
+}
+form.realtime table tbody tr:not(:first-child) td:not(:first-child) label,
+div.realtime table tbody tr:not(:first-child) td:not(:first-child) label {
+  border-top: 1px solid #555;
 }
 form.realtime table .edit,
 div.realtime table .edit {

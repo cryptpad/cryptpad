@@ -83,7 +83,7 @@ table#table {
 #tableScroll {
     overflow-y: hidden;
     overflow-x: auto;
-    margin-left: calc(~"30% - 50px + 29px");
+    margin-left: calc(~"30% - 50px + 31px");
     max-width: 70%;
     width: auto;
     display: inline-block;
@@ -126,6 +126,9 @@ table {
 }
 tbody {
     border: 1px solid @poll-border-color;
+    * {
+        box-sizing: border-box;
+    }
     tr {
         text-align: center;
         &:first-of-type th{
@@ -326,9 +329,11 @@ form.realtime, div.realtime {
                     margin: 0 0 0 10px;
                 }
             }
-            td {
-                label {
-                    border: .5px solid @poll-border-color;
+            tr:not(:first-child) {
+                td:not(:first-child) {
+                    label {
+                        border-top: 1px solid @poll-border-color;
+                    }
                 }
             }
         }

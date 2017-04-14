@@ -151,6 +151,11 @@ define(function () {
     out.poll_titleHint = "Title";
     out.poll_descriptionHint = "Describe your poll, and use the 'publish' button when you're done. Anyone with the link can change the description, but this is discouraged.";
 
+    out.poll_remove = "Remove";
+    out.poll_edit = "Edit";
+    out.poll_locked = "Locked";
+    out.poll_unlocked = "Unlocked";
+
     // Canvas
     out.canvas_clear = "Clear";
     out.canvas_delete = "Delete selection";

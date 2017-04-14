@@ -114,7 +114,7 @@ define([
         $('input[disabled="disabled"][data-rt-id^="' + id + '"]').removeAttr('disabled');
         $('input[type="checkbox"][data-rt-id^="' + id + '"]').addClass('enabled');
         $('[data-rt-id="' + id + '"] ~ .edit').css('visibility', 'hidden');
-        $('.lock[data-rt-id="' + id + '"]').html(unlockHTML);
+        $('.lock[data-rt-id="' + id + '"]').html(unlockHTML).attr('title', Messages.poll_unlocked);
 
         if (isOwnColumnCommitted()) { return; }
         $('[data-rt-id^="' + id + '"]').closest('td').addClass("uncommitted");
@@ -132,7 +132,7 @@ define([
             $('input[disabled="disabled"][data-rt-id^="' + id + '"]').removeAttr('disabled');
             $('input[type="checkbox"][data-rt-id^="' + id + '"]').addClass('enabled');
             $('span.edit[data-rt-id="' + id + '"]').css('visibility', 'hidden');
-            $('.lock[data-rt-id="' + id + '"]').html(unlockHTML);
+            $('.lock[data-rt-id="' + id + '"]').html(unlockHTML).attr('title', Messages.poll_unlocked);
         });
     };
 
@@ -369,7 +369,7 @@ define([
         if (!isKeyup && $(e.target).is('[type="text"]')) {
             return;
         }
-        $('.lock[data-rt-id!="' + APP.userid + '"]').html(lockHTML);
+        $('.lock[data-rt-id!="' + APP.userid + '"]').html(lockHTML).attr('title', Messages.poll_lock);
         var $cells = APP.$table.find('thead td:not(.uncommitted), tbody td');
         $cells.find('[type="text"][data-rt-id!="' + APP.userid + '"]').attr('disabled', true);
         $('.edit[data-rt-id!="' + APP.userid + '"]').css('visibility', 'visible');
