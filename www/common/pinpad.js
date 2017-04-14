@@ -38,8 +38,7 @@ define([
 
             // you can ask the server to pin a particular channel for you
             exp.pin = function (channels, cb) {
-                // TODO use isArray if it's safe
-                if (!channels && channels.length) {
+                if (!Array.isArray(channels)) {
                     window.setTimeout(function () {
                         cb('[TypeError] pin expects an array');
                     });
@@ -50,8 +49,7 @@ define([
 
             // you can also ask to unpin a particular channel
             exp.unpin = function (channels, cb) {
-                // TODO use isArray if it's safe
-                if (!channels && channels.length) {
+                if (!Array.isArray(channels)) {
                     window.setTimeout(function () {
                         cb('[TypeError] pin expects an array');
                     });
@@ -72,8 +70,7 @@ define([
 
             // if local and remote hashes don't match, send a reset
             exp.reset = function (channels, cb) {
-                // TODO use isArray if it's safe
-                if (!channels && channels.length) {
+                if (!Array.isArray(channels)) {
                     window.setTimeout(function () {
                         cb('[TypeError] pin expects an array');
                     });
