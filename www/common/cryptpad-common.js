@@ -726,7 +726,7 @@ load pinpad dynamically only after you know that it will be needed */
         if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
 
         var list = getCanonicalChannelList();
-        var local = rpc.hashChannelList(list);
+        var local = Hash.hashChannelList(list);
         rpc.getServerHash(function (e, hash) {
             if (e) { return void cb(e); }
             cb(void 0, hash === local);

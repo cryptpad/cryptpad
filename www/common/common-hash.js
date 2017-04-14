@@ -1,12 +1,22 @@
 define([
     '/common/common-util.js',
     '/bower_components/chainpad-crypto/crypto.js',
+    '/bower_components/tweetnacl/nacl-fast.min.js'
 ], function (Util, Crypto) {
+    var Nacl = window.nacl;
+
     var Hash = {};
 
     var uint8ArrayToHex = Util.uint8ArrayToHex;
     var hexToBase64 = Util.hexToBase64;
     var base64ToHex = Util.base64ToHex;
+
+    // This implementation must match that on the server
+    // it's used for a checksum
+    Hash.hashChannelList = function (list) {
+        return Nacl.util.encodeBase64(Nacl.hash(Nacl.util
+            .decodeUTF8(JSON.stringify(list))));
+    };
 
     var getEditHashFromKeys = Hash.getEditHashFromKeys = function (chanKey, keys) {
         if (typeof keys === 'string') {
@@ -230,7 +240,6 @@ define([
         var hex = base64ToHex(channel);
         return hex;
     };
-
 
     return Hash;
 });
