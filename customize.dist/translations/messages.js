@@ -300,6 +300,12 @@ define(function () {
     out.settings_anonymous = "You are not logged in. Settings here are specific to this browser.";
     out.settings_publicSigningKey = "Public Signing Key";
 
+    out.settings_usage = "Usage";
+    out.settings_usageTitle = "See the total size of your pinned pads in MB";
+    out.settings_pinningNotAvailable = "Pinned pads are only available to registered users.";
+    out.settings_pinningError = "Something went wrong";
+    out.settings_usageAmount = "Your pinned pads occupy {0}MB";
+
     // index.html
 
 
