@@ -343,6 +343,7 @@ define([
                            ? Cryptpad.getStore().getProxy() : undefined;
 
             andThen(storeObj);
+            Cryptpad.reportAppUsage();
         });
     });
 
