@@ -46,6 +46,7 @@ define([
     var stopListening = common.stopListening = UI.stopListening;
     common.prompt = UI.prompt;
     common.confirm = UI.confirm;
+    common.alert = UI.alert;
     common.log = UI.log;
     common.warn = UI.warn;
     common.spinner = UI.spinner;
