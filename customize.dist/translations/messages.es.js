@@ -293,7 +293,20 @@ define(function () {
     out.settings_userFeedback = "Activar feedback";
     out.settings_anonymous = "No has iniciado sesión. Tus ajustes se aplicarán solo a este navegador.";
     out.blog = "Blog";
-    out.initialState = "<p>Esto es <strong>CryptPad</strong>, el editor collaborativo en tiempo real zero knowledge.<br>Lo que escribes aquí es cifrado, con lo cual solo las personas con el enlace pueden accederlo.<br>Incluso el servido no puede ver lo que escribes.</p><p><small><i>Lo que ves aquí, lo que escuchas aquí, cuando sales, se queda aquí</i></small></p><p>&nbsp;<br></p>";
+
+    out.initialState = [
+        '<span style="font-size:18px;"><p>',
+        'Esto es&nbsp;<strong>CryptPad</strong>, el editor collaborativo en tiempo real Zero Knowledge. Todo está guardado cuando escribes.',
+        '<br>',
+        'Comparte el enlace a este pad para editar con amigos o utiliza el botón <span style="background-color:#5cb85c;color:#ffffff;">&nbsp;Compartir&nbsp;</span> para obtener un <em>enlace solo lectura</em>&nbsp;que permite leer pero no escribir.',
+        '</p>',
+
+        '<p><span style="color:#808080;"><em>',
+        'Vamos, solo empezia a escribir...',
+        '</em></span></p></span>',
+        '<p>&nbsp;<br></p>'
+    ].join('');
+
     out.codeInitialState = "/*\n   Esto es CryptPad, el editor collaborativo en tiempo real zero knowledge.\n   Lo que escribes aquí es cifrado, con lo cual solo las personas con el enlace pueden accederlo.\n   Incluso el servidor no puede ver lo que escribes.\n   Lo que ves aquí, lo que escuchas aquí, cuando sales, se queda aquí\n*/";
     out.slideInitialState = "# CryptSlide\n* Esto es CryptPad, el editor collaborativo en tiempo real zero knowledge.\n* Lo que escribes aquí es cifrado, con lo cual solo las personas con el enlace pueden accederlo.\n* Incluso el servidor no puede ver lo que escribes.\n* Lo que ves aquí, lo que escuchas aquí, cuando sales, se queda aquí\n\n---\n# Como utilizarlo\n1. Escribe tu contenido en Markdown\n  - Puedes aprender más sobre Markdown [aquí](http://www.markdowntutorial.com/)\n2. Separa tus slides con ---\n3. Haz clic en \"Presentar\" para ver el resultado  - Tus slides se actualizan en tiempo real";
     out.driveReadmeTitle = "¿Qué es CryptDrive?";
@@ -374,6 +387,11 @@ define(function () {
     out.canvas_width = "Talla";
     out.canvas_opacity = "Opacidad";
     out.settings_publicSigningKey = "Clave de Firma Pública";
+    out.settings_usage = "Utilización";
+    out.settings_usageTitle = "Vee el uso total de tus pads en MB";
+    out.settings_pinningNotAvailable = "Los pads pegados solo están disponibles para usuarios registrados.";
+    out.settings_pinningError = "Algo salió mal";
+    out.settings_usageAmount = "Tus pads pegados utilizan {0}MB";
 
     return out;
 });
