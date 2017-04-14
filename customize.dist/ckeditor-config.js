@@ -13,7 +13,7 @@ CKEDITOR.editorConfig = function( config ) {
     config.toolbarGroups= [{"name":"clipboard","groups":["clipboard","undo"]},{"name":"editing","groups":["find","selection"]},{"name":"links"},{"name":"insert"},{"name":"forms"},{"name":"tools"},{"name":"document","groups":["mode","document","doctools"]},{"name":"others"},{"name":"basicstyles","groups":["basicstyles","cleanup"]},{"name":"paragraph","groups":["list","indent","blocks","align","bidi"]},{"name":"styles"},{"name":"colors"}];
 
     config.font_defaultLabel = 'Arial';
-    config.fontSize_defaultLabel = '16px';
+    config.fontSize_defaultLabel = '16';
     config.contentsCss = '/customize/ckeditor-contents.css';
 
     config.keystrokes = [
