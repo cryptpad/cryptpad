@@ -735,6 +735,11 @@ load pinpad dynamically only after you know that it will be needed */
         });
     };
 
+    var getPinnedUsage = common.getPinnedUsage = function (cb) {
+        if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
+        rpc.getFileListSize(cb);
+    };
+
     var createButton = common.createButton = function (type, rightside, data, callback) {
         var button;
         var size = "17px";
