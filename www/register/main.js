@@ -71,7 +71,7 @@ define([
             // feedback API won't work because proxy wasn't loaded
             $.ajax({
                 type: 'HEAD',
-                url: '/common/feedback.html?REGISTRATION=' + (+new Date());
+                url: '/common/feedback.html?REGISTRATION=' + (+new Date()),
             });
 
             Cryptpad.whenRealtimeSyncs(result.realtime, function () {
