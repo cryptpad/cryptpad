@@ -1878,6 +1878,10 @@ define([
         });
 
         var getProperties = function (el) {
+/*  TODO...
+if we make this async, we can include an RPC call to the server which tells us
+the size of the pinned file (if it is pinned) */
+
             if (!filesOp.isFile(el)) { return; }
             var ro = filesOp.isReadOnlyFile(el);
             var base = window.location.origin;
