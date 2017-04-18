@@ -1,7 +1,4 @@
-define([
-    '/bower_components/jquery/dist/jquery.min.js',
-], function () {
-    var $ = window.jQuery;
+define(['jquery'], function ($) {
     var Clipboard = {};
 
     // copy arbitrary text to the clipboard
@@ -13,7 +10,7 @@ define([
 
         $('body').append($ta);
 
-        if (!($ta.length && $ta[0].select)) { 
+        if (!($ta.length && $ta[0].select)) {
             // console.log("oops");
             return;
         }

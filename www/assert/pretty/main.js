@@ -1,8 +1,7 @@
 define([
-    '/bower_components/hyperjson/hyperjson.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Hyperjson) {
-    var $ = window.jQuery;
+    'jquery',
+    '/bower_components/hyperjson/hyperjson.js'
+], function ($, Hyperjson) {
     var shjson = '["BODY",{"class":"cke_editable cke_editable_themed cke_contents_ltr cke_show_borders","spellcheck":"false"},[["P",{},["This is ",["STRONG",{},["CryptPad"]],", the zero knowledge realtime collaborative editor.",["BR",{},[]],"What you type here is encrypted so only people who have the link can access it.",["BR",{},[]],"Even the server cannot see what you type."]],["P",{},[["SMALL",{},[["I",{},["What you see here, what you hear here, when you leave here, let it stay here"]]]],["BR",{"type":"_moz"},[]]]]]]';
 
     var hjson = JSON.parse(shjson);

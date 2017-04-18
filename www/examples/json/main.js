@@ -1,11 +1,10 @@
 define([
-    '/api/config?cb=' + Math.random().toString(16).substring(2),
+    'jquery',
+    '/api/config',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
-    '/common/cryptpad-common.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, RtListMap, Crypto, Common) {
-    var $ = window.jQuery;
+    '/common/cryptpad-common.js'
+], function ($, Config, RtListMap, Crypto, Common) {
 
     var secret = Common.getSecrets();
 

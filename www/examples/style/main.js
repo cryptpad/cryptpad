@@ -1,13 +1,12 @@
 define([
-    '/api/config?cb=' + Math.random().toString(16).substring(2),
+    'jquery',
+    '/api/config',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
-    '/common/cryptpad-common.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Realtime, Crypto, TextPatcher, Cryptpad) {
+    '/common/cryptpad-common.js'
+], function ($, Config, Realtime, Crypto, TextPatcher, Cryptpad) {
     // TODO consider adding support for less.js
-    var $ = window.jQuery;
 
     var $style = $('style').first(),
         $edit = $('#edit');

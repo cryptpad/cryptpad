@@ -1,4 +1,3 @@
-require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
     '/common/cryptpad-common.js',
     '/common/cryptget.js',

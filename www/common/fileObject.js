@@ -1,7 +1,6 @@
 define([
-    '/bower_components/jquery/dist/jquery.min.js',
-], function () {
-    var $ = window.jQuery;
+    'jquery',
+], function ($) {
     var module = {};
 
     var Messages = {};

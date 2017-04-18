@@ -1,8 +1,7 @@
 define([
-    '/customize/share/frame.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Frame) {
-    var $ = window.jQuery;
+    'jquery',
+    '/customize/share/frame.js'
+], function ($, Frame) {
 
     var domain = 'https://beta.cryptpad.fr';
 
@@ -123,4 +122,3 @@ define([
         }].forEach(runTest);
     });
 });
-

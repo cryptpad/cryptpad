@@ -1,4 +1,5 @@
 define([
+    'jquery',
     '/api/config',
     '/customize/messages.js',
     '/common/fsStore.js',
@@ -8,17 +9,15 @@ define([
 
     '/common/clipboard.js',
     '/common/pinpad.js',
-    '/customize/application_config.js',
+    '/customize/application_config.js'
+], function ($, Config, Messages, Store, Util, Hash, UI, Clipboard, Pinpad, AppConfig) {
 
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Messages, Store, Util, Hash, UI, Clipboard, Pinpad, AppConfig) {
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
 
     Additionally, there is some basic functionality for import/export.
 */
-    var $ = window.jQuery;
 
     var common = window.Cryptpad = {
         Messages: Messages,

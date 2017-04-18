@@ -1,4 +1,5 @@
 define([
+    'jquery',
     '/bower_components/textpatcher/TextPatcher.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
@@ -9,10 +10,8 @@ define([
     '/common/toolbar.js',
     '/common/visible.js',
     '/common/notify.js',
-    '/bower_components/file-saver/FileSaver.min.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (TextPatcher, Listmap, Crypto, Cryptpad, Cryptget, Hyperjson, Renderer, Toolbar, Visible, Notify) {
-    var $ = window.jQuery;
+    '/bower_components/file-saver/FileSaver.min.js'
+], function ($, TextPatcher, Listmap, Crypto, Cryptpad, Cryptget, Hyperjson, Renderer, Toolbar, Visible, Notify) {
 
     var Messages = Cryptpad.Messages;
 
@@ -843,4 +842,3 @@ define([
 
     });
 });
-
