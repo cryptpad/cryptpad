@@ -63,6 +63,8 @@ define([
     var replaceHash = common.replaceHash = Util.replaceHash;
     var getHash = common.getHash = Util.getHash;
     var fixFileName = common.fixFileName = Util.fixFileName;
+    common.bytesToMegabytes = Util.bytesToMegabytes;
+    common.bytesToKilobytes = Util.bytesToKilobytes;
 
     // import hash utilities for export
     var createRandomHash = common.createRandomHash = Hash.createRandomHash;

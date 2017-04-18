@@ -81,5 +81,13 @@ define([], function () {
             .replace(/_+/g, '_');
     };
 
+    var bytesToMegabytes = Util.bytesToMegabytes = function (bytes) {
+        return Math.floor((bytes / (1024 * 1024) * 100)) / 100;
+    };
+
+    var bytesToKilobytes = Util.bytesToKilobytes = function (bytes) {
+        return Math.floor(bytes / 1024 * 100) / 100;
+    };
+
     return Util;
 });

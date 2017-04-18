@@ -226,10 +226,6 @@ define([
         return $div;
     };
 
-    var bytesToMegabytes = function (bytes) {
-        return Math.floor((bytes / (1024 * 1024) * 100)) / 100;
-    };
-
     var createUsageButton = function (obj) {
         var proxy = obj.proxy;
 
@@ -252,7 +248,7 @@ define([
                     Cryptpad.alert(Messages.settings_pinningError);
                     return;
                 }
-                Cryptpad.alert(Messages._getKey('settings_usageAmount', [bytesToMegabytes(bytes)]));
+                Cryptpad.alert(Messages._getKey('settings_usageAmount', [Cryptpad.bytesToMegabytes(bytes)]));
             });
         })
         .appendTo($div);
