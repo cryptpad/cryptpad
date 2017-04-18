@@ -1,40 +1,84 @@
 define([
+    'jquery',
     '/api/config',
-    '/customize/messages.js?app=' + window.location.pathname.split('/').filter(function (x) { return x; }).join('.'),
+    '/customize/messages.js',
     '/common/fsStore.js',
-    '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
-    '/bower_components/alertifyjs/dist/js/alertify.js',
-    '/common/clipboard.js',
-    '/common/pinpad.js', /* TODO
-load pinpad dynamically only after you know that it will be needed */
-    '/customize/application_config.js',
+    '/common/common-util.js',
+    '/common/common-hash.js',
+    '/common/common-interface.js',
 
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Messages, Store, Crypto, Alertify, Clipboard, Pinpad, AppConfig) {
+    '/common/clipboard.js',
+    '/common/pinpad.js',
+    '/customize/application_config.js'
+], function ($, Config, Messages, Store, Util, Hash, UI, Clipboard, Pinpad, AppConfig) {
+
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
 
     Additionally, there is some basic functionality for import/export.
 */
-    var $ = window.jQuery;
 
     var common = window.Cryptpad = {
         Messages: Messages,
-        Alertify: Alertify,
         Clipboard: Clipboard
     };
 
-    var store;
 
+    // constants
+    var userHashKey = common.userHashKey = 'User_hash';
+    var userNameKey = common.userNameKey = 'User_name';
+    var fileHashKey = common.fileHashKey = 'FS_hash';
+    var displayNameKey = common.displayNameKey = 'cryptpad.username';
+    var newPadNameKey = common.newPadNameKey = "newPadName";
+    var newPadPathKey = common.newPadPathKey = "newPadPath";
+    var storageKey = common.storageKey = 'CryptPad_RECENTPADS';
     var PINNING_ENABLED = AppConfig.enablePinning;
+
+    var store;
     var rpc;
 
-    var find = common.find = function (map, path) {
-        return (map && path.reduce(function (p, n) {
-            return typeof(p[n]) !== 'undefined' && p[n];
-        }, map));
-    };
+    // import UI elements
+    var findCancelButton = common.findCancelButton = UI.findCancelButton;
+    var findOKButton = common.findOKButton = UI.findOKButton;
+    var listenForKeys = common.listenForKeys = UI.listenForKeys;
+    var stopListening = common.stopListening = UI.stopListening;
+    common.prompt = UI.prompt;
+    common.confirm = UI.confirm;
+    common.alert = UI.alert;
+    common.log = UI.log;
+    common.warn = UI.warn;
+    common.spinner = UI.spinner;
+    common.addLoadingScreen = UI.addLoadingScreen;
+    common.removeLoadingScreen = UI.removeLoadingScreen;
+    common.errorLoadingScreen = UI.errorLoadingScreen;
+
+    // import common utilities for export
+    var find = common.find = Util.find;
+    var fixHTML = common.fixHTML = Util.fixHTML;
+    var hexToBase64 = common.hexToBase64 = Util.hexToBase64;
+    var base64ToHex = common.base64ToHex = Util.base64ToHex;
+    var deduplicateString = common.deduplicateString = Util.deduplicateString;
+    var uint8ArrayToHex = common.uint8ArrayToHex = Util.uint8ArrayToHex;
+    var replaceHash = common.replaceHash = Util.replaceHash;
+    var getHash = common.getHash = Util.getHash;
+    var fixFileName = common.fixFileName = Util.fixFileName;
+
+    // import hash utilities for export
+    var createRandomHash = common.createRandomHash = Hash.createRandomHash;
+    var parsePadUrl = common.parsePadUrl = Hash.parsePadUrl;
+    var isNotStrongestStored = common.isNotStrongestStored = Hash.isNotStrongestStored;
+    var hrefToHexChannelId = common.hrefToHexChannelId = Hash.hrefToHexChannelId;
+    var parseHash = common.parseHash = Hash.parseHash;
+    var getRelativeHref = common.getRelativeHref = Hash.getRelativeHref;
+
+    common.getEditHashFromKeys = Hash.getEditHashFromKeys;
+    common.getViewHashFromKeys = Hash.getViewHashFromKeys;
+    common.getSecrets = Hash.getSecrets;
+    common.getHashes = Hash.getHashes;
+    common.createChannelId = Hash.createChannelId;
+    common.findWeaker = Hash.findWeaker;
+    common.findStronger = Hash.findStronger;
 
     var getStore = common.getStore = function () {
         if (store) { return store; }
@@ -54,32 +98,36 @@ load pinpad dynamically only after you know that it will be needed */
         return;
     };
 
-    var getUid = common.getUid = function () {
-        if (store) {
-            if (store.getProxy() && store.getProxy().proxy) {
-                return store.getProxy().proxy.uid;
-            }
-        }
-    };
-
-    var getRealtime = common.getRealtime = function () {
-        if (store) {
-            if (store.getProxy() && store.getProxy().info) {
-                return store.getProxy().info.realtime;
-            }
-        }
-        return;
-    };
-
-    common.feedback = function (action) {
+    var feedback = common.feedback = function (action) {
         if (!action) { return; }
         try {
             if (!getStore().getProxy().proxy.allowUserFeedback) { return; }
         } catch (e) { return void console.error(e); }
+
+        var href = '/common/feedback.html?' + action + '=' + (+new Date());
         $.ajax({
             type: "HEAD",
-            url: '/common/feedback.html?' + action + '=' + (+new Date()),
+            url: href,
         });
+    };
+
+    var reportAppUsage = common.reportAppUsage = function () {
+        var pattern = window.location.pathname.split('/')
+            .filter(function (x) { return x; }).join('.');
+        feedback(pattern);
+    };
+
+    var getUid = common.getUid = function () {
+        if (store && store.getProxy() && store.getProxy().proxy) {
+            return store.getProxy().proxy.uid;
+        }
+    };
+
+    var getRealtime = common.getRealtime = function () {
+        if (store && store.getProxy() && store.getProxy().info) {
+                return store.getProxy().info.realtime;
+        }
+        return;
     };
 
     var whenRealtimeSyncs = common.whenRealtimeSyncs = function (realtime, cb) {
@@ -105,11 +153,6 @@ load pinpad dynamically only after you know that it will be needed */
 
         return url;
     };
-
-    var userHashKey = common.userHashKey = 'User_hash';
-    var userNameKey = common.userNameKey = 'User_name';
-    var fileHashKey = common.fileHashKey = 'FS_hash';
-    var displayNameKey = common.displayNameKey = 'cryptpad.username';
 
     var login = common.login = function (hash, name, cb) {
         if (!hash) { throw new Error('expected a user hash'); }
@@ -177,205 +220,7 @@ load pinpad dynamically only after you know that it will be needed */
         return typeof getUserHash() === "string";
     };
 
-    var isArray = common.isArray = $.isArray;
-
-    var fixHTML = common.fixHTML = function (str) {
-        if (!str) { return ''; }
-        return str.replace(/[<>&"']/g, function (x) {
-            return ({ "<": "&lt;", ">": "&gt", "&": "&amp;", '"': "&#34;", "'": "&#39;" })[x];
-        });
-    };
-
-
-    var truncate = common.truncate = function (text, len) {
-        if (typeof(text) === 'string' && text.length > len) {
-            return text.slice(0, len) + '…';
-        }
-        return text;
-    };
-
-    var hexToBase64 = common.hexToBase64 = function (hex) {
-        var hexArray = hex
-            .replace(/\r|\n/g, "")
-            .replace(/([\da-fA-F]{2}) ?/g, "0x$1 ")
-            .replace(/ +$/, "")
-            .split(" ");
-        var byteString = String.fromCharCode.apply(null, hexArray);
-        return window.btoa(byteString).replace(/\//g, '-').slice(0,-2);
-    };
-
-    var base64ToHex = common.base64ToHex = function (b64String) {
-        var hexArray = [];
-        atob(b64String.replace(/-/g, '/')).split("").forEach(function(e){
-            var h = e.charCodeAt(0).toString(16);
-            if (h.length === 1) { h = "0"+h; }
-            hexArray.push(h);
-        });
-        return hexArray.join("");
-    };
-
-    var deduplicateString = common.deduplicateString = function (array) {
-        var a = array.slice();
-        for(var i=0; i<a.length; i++) {
-            for(var j=i+1; j<a.length; j++) {
-                if(a[i] === a[j]) { a.splice(j--, 1); }
-            }
-        }
-        return a;
-    };
-
-    var parseHash = common.parseHash = function (hash) {
-        var parsed = {};
-        if (hash.slice(0,1) !== '/' && hash.length >= 56) {
-            // Old hash
-            parsed.channel = hash.slice(0, 32);
-            parsed.key = hash.slice(32);
-            parsed.version = 0;
-            return parsed;
-        }
-        var hashArr = hash.split('/');
-        if (hashArr[1] && hashArr[1] === '1') {
-            parsed.version = 1;
-            parsed.mode = hashArr[2];
-            parsed.channel = hashArr[3];
-            parsed.key = hashArr[4];
-            parsed.present = hashArr[5] && hashArr[5] === 'present';
-            return parsed;
-        }
-        return;
-    };
-    var getEditHashFromKeys = common.getEditHashFromKeys = function (chanKey, keys) {
-        if (typeof keys === 'string') {
-            return chanKey + keys;
-        }
-        if (!keys.editKeyStr) { return; }
-        return '/1/edit/' + hexToBase64(chanKey) + '/' + Crypto.b64RemoveSlashes(keys.editKeyStr);
-    };
-    var getViewHashFromKeys = common.getViewHashFromKeys = function (chanKey, keys) {
-        if (typeof keys === 'string') {
-            return;
-        }
-        return '/1/view/' + hexToBase64(chanKey) + '/' + Crypto.b64RemoveSlashes(keys.viewKeyStr);
-    };
-    var getHashFromKeys = common.getHashFromKeys = getEditHashFromKeys;
-
-    var specialHashes = common.specialHashes = ['iframe'];
-
-    /*
-     * Returns all needed keys for a realtime channel
-     * - no argument: use the URL hash or create one if it doesn't exist
-     * - secretHash provided: use secretHash to find the keys
-     */
-    var getSecrets = common.getSecrets = function (secretHash) {
-        var secret = {};
-        var generate = function () {
-            secret.keys = Crypto.createEditCryptor();
-            secret.key = Crypto.createEditCryptor().editKeyStr;
-        };
-        if (!secretHash && !/#/.test(window.location.href)) {
-            generate();
-            return secret;
-        } else {
-            var hash = secretHash || window.location.hash.slice(1);
-            if (hash.length === 0 || specialHashes.indexOf(hash) !== -1) {
-                generate();
-                return secret;
-            }
-            // old hash system : #{hexChanKey}{cryptKey}
-            // new hash system : #/{hashVersion}/{b64ChanKey}/{cryptKey}
-            if (hash.slice(0,1) !== '/' && hash.length >= 56) {
-                // Old hash
-                secret.channel = hash.slice(0, 32);
-                secret.key = hash.slice(32);
-            }
-            else {
-                // New hash
-                var hashArray = hash.split('/');
-                if (hashArray.length < 4) {
-                    common.alert("Unable to parse the key");
-                    throw new Error("Unable to parse the key");
-                }
-                var version = hashArray[1];
-                if (version === "1") {
-                    var mode = hashArray[2];
-                    if (mode === 'edit') {
-                        secret.channel = base64ToHex(hashArray[3]);
-                        var keys = Crypto.createEditCryptor(hashArray[4].replace(/-/g, '/'));
-                        secret.keys = keys;
-                        secret.key = keys.editKeyStr;
-                        if (secret.channel.length !== 32 || secret.key.length !== 24) {
-                            common.alert("The channel key and/or the encryption key is invalid");
-                            throw new Error("The channel key and/or the encryption key is invalid");
-                        }
-                    }
-                    else if (mode === 'view') {
-                        secret.channel = base64ToHex(hashArray[3]);
-                        secret.keys = Crypto.createViewCryptor(hashArray[4].replace(/-/g, '/'));
-                        if (secret.channel.length !== 32) {
-                            common.alert("The channel key is invalid");
-                            throw new Error("The channel key is invalid");
-                        }
-                    }
-                }
-            }
-        }
-        return secret;
-    };
-
-    var getHashes = common.getHashes = function (channel, secret) {
-        var hashes = {};
-        if (secret.keys.editKeyStr) {
-            hashes.editHash = getEditHashFromKeys(channel, secret.keys);
-        }
-        if (secret.keys.viewKeyStr) {
-            hashes.viewHash = getViewHashFromKeys(channel, secret.keys);
-        }
-        return hashes;
-    };
-
-
-    var uint8ArrayToHex = common.uint8ArrayToHex = function (a) {
-        // call slice so Uint8Arrays work as expected
-        return Array.prototype.slice.call(a).map(function (e, i) {
-            var n = Number(e & 0xff).toString(16);
-            if (n === 'NaN') {
-                throw new Error('invalid input resulted in NaN');
-            }
-
-            switch (n.length) {
-                case 0: return '00'; // just being careful, shouldn't happen
-                case 1: return '0' + n;
-                case 2: return n;
-                default: throw new Error('unexpected value');
-            }
-        }).join('');
-    };
-
-    var createChannelId = common.createChannelId = function () {
-        var id = uint8ArrayToHex(Crypto.Nacl.randomBytes(16));
-        if (id.length !== 32 || /[^a-f0-9]/.test(id)) {
-            throw new Error('channel ids must consist of 32 hex characters');
-        }
-        return id;
-    };
-
-    var createRandomHash = common.createRandomHash = function () {
-        // 16 byte channel Id
-        var channelId = hexToBase64(createChannelId());
-        // 18 byte encryption key
-        var key = Crypto.b64RemoveSlashes(Crypto.rand64(18));
-        return '/1/edit/' + [channelId, key].join('/');
-    };
-
-    var replaceHash = common.replaceHash = function (hash) {
-        if (window.history && window.history.replaceState) {
-            if (!/^#/.test(hash)) { hash = '#' + hash; }
-            return void window.history.replaceState({}, window.document.title, hash);
-        }
-        window.location.hash = hash;
-    };
-
-    var storageKey = common.storageKey = 'CryptPad_RECENTPADS';
+    common.isArray = $.isArray;
 
     /*
      *  localStorage formatting
@@ -389,10 +234,23 @@ load pinpad dynamically only after you know that it will be needed */
         * title
         * ??? // what else can we put in here?
     */
+    var checkObjectData = function (pad) {
+        if (!pad.ctime) { pad.ctime = pad.atime; }
+        if (/^https*:\/\//.test(pad.href)) {
+            pad.href = common.getRelativeHref(pad.href);
+        }
+        var parsed = common.parsePadUrl(pad.href);
+        if (!parsed || !parsed.hash) { return; }
+        if (!pad.title) {
+            pad.title = common.getDefaultname(parsed);
+        }
+        return parsed.hash;
+    };
+    // Migrate from legacy store (localStorage)
     var migrateRecentPads = common.migrateRecentPads = function (pads) {
         return pads.map(function (pad) {
             var hash;
-            if (isArray(pad)) {
+            if (Array.isArray(pad)) { // TODO DEPRECATE_F
                 var href = pad[0];
                 href.replace(/\#(.*)$/, function (a, h) {
                     hash = h;
@@ -405,16 +263,7 @@ load pinpad dynamically only after you know that it will be needed */
                     ctime: pad[1],
                 };
             } else if (pad && typeof(pad) === 'object') {
-                if (!pad.ctime) { pad.ctime = pad.atime; }
-                if (!pad.title) {
-                    pad.href.replace(/#(.*)$/, function (x, hash) {
-                        pad.title = hash.slice(0,8);
-                    });
-                }
-                if (/^https*:\/\//.test(pad.href)) {
-                    pad.href = common.getRelativeHref(pad.href);
-                }
-                hash = pad.href.slice(pad.href.indexOf('#')+1);
+                hash = checkObjectData(pad);
                 if (!hash || !common.parseHash(hash)) { return; }
                 return pad;
             } else {
@@ -424,15 +273,27 @@ load pinpad dynamically only after you know that it will be needed */
             }
         }).filter(function (x) { return x; });
     };
+    // Remove everything from RecentPads that is not an object and check the objects
+    var checkRecentPads = common.checkRecentPads = function (pads) {
+        pads.forEach(function (pad, i) {
+            if (pad && typeof(pad) === 'object') {
+                var hash = checkObjectData(pad);
+                if (!hash || !common.parseHash(hash)) { return; }
+                return pad;
+            }
+            console.error("[Cryptpad.migrateRecentPads] pad had unexpected value");
+            getStore().removeData(i);
+        });
+    };
 
     // Get the pads from localStorage to migrate them to the object store
     var getLegacyPads = common.getLegacyPads = function (cb) {
-        require(['/customize/store.js'], function(Legacy) {
+        require(['/customize/store.js'], function(Legacy) { // TODO DEPRECATE_F
             Legacy.ready(function (err, legacy) {
                 if (err) { cb(err, null); return; }
                 legacy.get(storageKey, function (err2, recentPads) {
                     if (err2) { cb(err2, null); return; }
-                    if (isArray(recentPads)) {
+                    if (Array.isArray(recentPads)) {
                         cb(void 0, migrateRecentPads(recentPads));
                         return;
                     }
@@ -442,58 +303,15 @@ load pinpad dynamically only after you know that it will be needed */
         });
     };
 
-    var getHash = common.getHash = function () {
-        return window.location.hash.slice(1);
-    };
-
-    var getRelativeHref = common.getRelativeHref = function (href) {
-        if (!href) { return; }
-        if (href.indexOf('#') === -1) { return; }
-        var parsed = common.parsePadUrl(href);
-        return '/' + parsed.type + '/#' + parsed.hash;
-    };
-
-    var parsePadUrl = common.parsePadUrl = function (href) {
-        var patt = /^https*:\/\/([^\/]*)\/(.*?)\//i;
-
-        var ret = {};
-
-        if (!href) { return ret; }
-
-        if (!/^https*:\/\//.test(href)) {
-            var idx = href.indexOf('/#');
-            ret.type = href.slice(1, idx);
-            ret.hash = href.slice(idx + 2);
-            return ret;
-        }
-
-        var hash = href.replace(patt, function (a, domain, type, hash) {
-            ret.domain = domain;
-            ret.type = type;
-            return '';
-        });
-        ret.hash = hash.replace(/#/g, '');
-        return ret;
-    };
-
-    var isNameAvailable = function (title, parsed, pads) {
-        return !pads.some(function (pad) {
-            // another pad is already using that title
-            if (pad.title === title) {
-                return true;
-            }
-        });
-    };
-
     // Create untitled documents when no name is given
-    var getDefaultName = common.getDefaultName = function (parsed, recentPads) {
+    var getDefaultName = common.getDefaultName = function (parsed) {
         var type = parsed.type;
         var untitledIndex = 1;
         var name = (Messages.type)[type] + ' - ' + new Date().toString().split(' ').slice(0,4).join(' ');
         return name;
     };
     var isDefaultName = common.isDefaultName = function (parsed, title) {
-        var name = getDefaultName(parsed, []);
+        var name = getDefaultName(parsed);
         return title === name;
     };
 
@@ -553,8 +371,9 @@ load pinpad dynamically only after you know that it will be needed */
         });
         return templates;
     };
-    var addTemplate = common.addTemplate = function (href) {
-        getStore().addTemplate(href);
+    var addTemplate = common.addTemplate = function (data) {
+        getStore().pushData(data);
+        getStore().addPad(data.href, ['template']);
     };
 
     var isTemplate = common.isTemplate = function (href) {
@@ -594,26 +413,15 @@ load pinpad dynamically only after you know that it will be needed */
     };
 
     // STORAGE
-    /* fetch and migrate your pad history from localStorage */
+    /* fetch and migrate your pad history from the store */
     var getRecentPads = common.getRecentPads = function (cb) {
         getStore().getDrive(storageKey, function (err, recentPads) {
-            if (isArray(recentPads)) {
-                cb(void 0, migrateRecentPads(recentPads));
+            if (Array.isArray(recentPads)) {
+                checkRecentPads(recentPads);
+                cb(void 0, recentPads);
                 return;
             }
             cb(void 0, []);
-        });
-    };
-
-    // STORAGE
-    /* commit a list of pads to localStorage */
-    // TODO integrate pinning if enabled
-    var setRecentPads = common.setRecentPads = function (pads, cb) {
-        getStore().setDrive(storageKey, pads, function (err, data) {
-            if (PINNING_ENABLED && isLoggedIn()) {
-                console.log("TODO check pin hash");
-            }
-            cb(err, data);
         });
     };
 
@@ -636,7 +444,6 @@ load pinpad dynamically only after you know that it will be needed */
     };
 
     // STORAGE
-    // TODO integrate pinning if enabled
     var forgetPad = common.forgetPad = function (href, cb) {
         var parsed = parsePadUrl(href);
 
@@ -670,60 +477,12 @@ load pinpad dynamically only after you know that it will be needed */
         }
     };
 
-    // STORAGE
-    var findWeaker = common.findWeaker = function (href, recents) {
-        var rHref = href || getRelativeHref(window.location.href);
-        var parsed = parsePadUrl(rHref);
-        if (!parsed.hash) { return false; }
-        var weaker;
-        recents.some(function (pad) {
-            var p = parsePadUrl(pad.href);
-            if (p.type !== parsed.type) { return; } // Not the same type
-            if (p.hash === parsed.hash) { return; } // Same hash, not stronger
-            var pHash = parseHash(p.hash);
-            var parsedHash = parseHash(parsed.hash);
-            if (!parsedHash || !pHash) { return; }
-            if (pHash.version !== parsedHash.version) { return; }
-            if (pHash.channel !== parsedHash.channel) { return; }
-            if (pHash.mode === 'view' && parsedHash.mode === 'edit') {
-                weaker = pad.href;
-                return true;
-            }
-            return;
-        });
-        return weaker;
-    };
-    var findStronger = common.findStronger = function (href, recents) {
-        var rHref = href || getRelativeHref(window.location.href);
-        var parsed = parsePadUrl(rHref);
-        if (!parsed.hash) { return false; }
-        var stronger;
-        recents.some(function (pad) {
-            var p = parsePadUrl(pad.href);
-            if (p.type !== parsed.type) { return; } // Not the same type
-            if (p.hash === parsed.hash) { return; } // Same hash, not stronger
-            var pHash = parseHash(p.hash);
-            var parsedHash = parseHash(parsed.hash);
-            if (!parsedHash || !pHash) { return; }
-            if (pHash.version !== parsedHash.version) { return; }
-            if (pHash.channel !== parsedHash.channel) { return; }
-            if (pHash.mode === 'edit' && parsedHash.mode === 'view') {
-                stronger = pad.href;
-                return true;
-            }
-            return;
-        });
-        return stronger;
-    };
-    var isNotStrongestStored = common.isNotStrongestStored = function (href, recents) {
-        return findStronger(href, recents);
-    };
-
-    // TODO integrate pinning
     var setPadTitle = common.setPadTitle = function (name, cb) {
         var href = window.location.href;
         var parsed = parsePadUrl(href);
         href = getRelativeHref(href);
+        // getRecentPads return the array from the drive, not a copy
+        // We don't have to call "set..." at the end, everything is stored with listmap
         getRecentPads(function (err, recent) {
             if (err) {
                 cb(err);
@@ -779,173 +538,16 @@ load pinpad dynamically only after you know that it will be needed */
 
             if (!contains) {
                 var data = makePad(href, name);
-                renamed.push(data);
-                if (typeof(getStore().addPad) === "function") {
-                    getStore().addPad(href, common.initialPath, common.initialName || name);
-                }
+                getStore().pushData(data);
+                getStore().addPad(href, common.initialPath, common.initialName || name);
             }
-
-            setRecentPads(renamed, function (err, data) {
-                if (updateWeaker.length > 0) {
-                    updateWeaker.forEach(function (obj) {
-                        getStore().replaceHref(obj.o, obj.n);
-                    });
-                }
-                cb(err, data);
-            });
+            if (updateWeaker.length > 0) {
+                updateWeaker.forEach(function (obj) {
+                    getStore().replaceHref(obj.o, obj.n);
+                });
+            }
+            cb(err, recent);
         });
-    };
-
-    // STORAGE
-    var getPadTitle = common.getPadTitle = function (cb) {
-        var href = window.location.href;
-        var parsed = parsePadUrl(window.location.href);
-        var hashSlice = window.location.hash.slice(1,9);
-        var title = '';
-
-        getRecentPads(function (err, pads) {
-            if (err) {
-                cb(err);
-                return;
-            }
-            pads.some(function (pad) {
-                var p = parsePadUrl(pad.href);
-                if (p.hash === parsed.hash && p.type === parsed.type) {
-                    title = pad.title || hashSlice;
-                    return true;
-                }
-            });
-
-            if (title === '') { title = getDefaultName(parsed, pads); }
-
-            cb(void 0, title);
-        });
-    };
-
-    // STORAGE
-    var causesNamingConflict = common.causesNamingConflict = function (title, cb) {
-        var href = window.location.href;
-
-        var parsed = parsePadUrl(href);
-        getRecentPads(function (err, pads) {
-            if (err) {
-                cb(err);
-                return;
-            }
-            var conflicts = pads.some(function (pad) {
-                // another pad is already using that title
-                if (pad.title === title) {
-                    var p = parsePadUrl(pad.href);
-
-                    if (p.type === parsed.type && p.hash === parsed.hash) {
-                        // the duplicate pad has the same type and hash
-                        // allow renames
-                    } else {
-                        // it's an entirely different pad... it conflicts
-                        return true;
-                    }
-                }
-            });
-            cb(void 0, conflicts);
-        });
-    };
-
-    var newPadNameKey = common.newPadNameKey = "newPadName";
-    var newPadPathKey = common.newPadPathKey = "newPadPath";
-
-    // local name?
-    common.ready = function (f) {
-        var block = 0;
-        var env = {};
-
-        var cb = function () {
-            block--;
-            if (!block) {
-                f(void 0, env);
-            }
-        };
-
-        if (sessionStorage[newPadNameKey]) {
-            common.initialName = sessionStorage[newPadNameKey];
-            delete sessionStorage[newPadNameKey];
-        }
-        if (sessionStorage[newPadPathKey]) {
-            common.initialPath = sessionStorage[newPadPathKey];
-            delete sessionStorage[newPadPathKey];
-        }
-
-        Store.ready(function (err, storeObj) {
-            store = common.store = env.store = storeObj;
-
-            var proxy = getProxy();
-            var network = getNetwork();
-
-            $(function() {
-                // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
-                // won't work. We have to reset it now to make sure it uses a correct "body"
-                Alertify.reset();
-
-                // Load the new pad when the hash has changed
-                var oldHash  = document.location.hash.slice(1);
-                window.onhashchange = function () {
-                    var newHash = document.location.hash.slice(1);
-                    var parsedOld = parseHash(oldHash);
-                    var parsedNew = parseHash(newHash);
-                    if (parsedOld && parsedNew && (
-                          parsedOld.channel !== parsedNew.channel
-                          || parsedOld.mode !== parsedNew.mode
-                          || parsedOld.key !== parsedNew.key)) {
-                        document.location.reload();
-                        return;
-                    }
-                    if (parsedNew) {
-                        oldHash = newHash;
-                    }
-                };
-
-                if (PINNING_ENABLED && isLoggedIn()) {
-                    console.log("logged in. pads will be pinned");
-                    block++;
-
-                    // TODO setTimeout in case rpc doesn't
-                    // activate in reasonable time?
-                    Pinpad.create(network, proxy, function (e, call) {
-                        if (e) {
-                            console.error(e);
-                            return cb();
-                        }
-
-                        console.log('RPC handshake complete');
-                        rpc = common.rpc = env.rpc = call;
-
-                        // TODO check if pin list is up to date
-                        // if not, reset
-                        cb();
-                    });
-                } else if (PINNING_ENABLED) {
-                    console.log('not logged in. pads will not be pinned');
-                } else {
-                    console.log('pinning disabled');
-                }
-
-                // Everything's ready, continue...
-                if($('#pad-iframe').length) {
-                    block++;
-                    var $iframe = $('#pad-iframe');
-                    var iframe = $iframe[0];
-                    var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                    if (iframeDoc.readyState === 'complete') {
-                        cb();
-                        return;
-                    }
-                    $iframe.load(cb);
-                    return;
-                }
-
-                block++;
-                cb();
-            });
-        }, common);
     };
 
     var errorHandlers = [];
@@ -959,75 +561,6 @@ load pinpad dynamically only after you know that it will be needed */
                 h({type: "store"});
             }
         });
-    };
-
-    var LOADING = 'loading';
-    var getRandomTip = function () {
-        if (!Messages.tips || !Object.keys(Messages.tips).length) { return ''; }
-        var keys = Object.keys(Messages.tips);
-        var rdm = Math.floor(Math.random() * keys.length);
-        return Messages.tips[keys[rdm]];
-    };
-    common.addLoadingScreen = function (loadingText, hideTips) {
-        var $loading, $container;
-        if ($('#' + LOADING).length) {
-            $loading = $('#' + LOADING).show();
-            if (loadingText) {
-                $('#' + LOADING).find('p').text(loadingText);
-            }
-            $container = $loading.find('.loadingContainer');
-        } else {
-            $loading = $('<div>', {id: LOADING});
-            $container = $('<div>', {'class': 'loadingContainer'});
-            $container.append('<img class="cryptofist" src="/customize/cryptofist_small.png" />');
-            var $spinner = $('<div>', {'class': 'spinnerContainer'});
-            common.spinner($spinner).show();
-            var $text = $('<p>').text(loadingText || Messages.loading);
-            $container.append($spinner).append($text);
-            $loading.append($container);
-            $('body').append($loading);
-        }
-        if (Messages.tips && !hideTips) {
-            var $loadingTip = $('<div>', {'id': 'loadingTip'});
-            var $tip = $('<span>', {'class': 'tips'}).text(getRandomTip()).appendTo($loadingTip);
-            $loadingTip.css({
-                'top': $('body').height()/2 + $container.height()/2 + 20 + 'px'
-            });
-            $('body').append($loadingTip);
-        }
-    };
-    common.removeLoadingScreen = function (cb) {
-        $('#' + LOADING).fadeOut(750, cb);
-        $('#loadingTip').css('top', '');
-        window.setTimeout(function () {
-            $('#loadingTip').fadeOut(750);
-        }, 3000);
-    };
-    common.errorLoadingScreen = function (error, transparent) {
-        if (!$('#' + LOADING).is(':visible')) { common.addLoadingScreen(undefined, true); }
-        $('.spinnerContainer').hide();
-        if (transparent) { $('#' + LOADING).css('opacity', 0.8); }
-        $('#' + LOADING).find('p').html(error || Messages.error);
-    };
-
-    /*
-     *  Saving files
-     */
-    var fixFileName = common.fixFileName = function (filename) {
-        return filename.replace(/ /g, '-').replace(/[\/\?]/g, '_')
-            .replace(/_+/g, '_');
-    };
-
-    var importContent = common.importContent = function (type, f) {
-        return function () {
-            var $files = $('<input type="file">').click();
-            $files.on('change', function (e) {
-                var file = e.target.files[0];
-                var reader = new FileReader();
-                reader.onload = function (e) { f(e.target.result, file); };
-                reader.readAsText(file, type);
-            });
-        };
     };
 
     /*
@@ -1051,27 +584,6 @@ load pinpad dynamically only after you know that it will be needed */
         });
     };
 
-    var hrefToHexChannelId = common.hrefToHexChannelId = function (href) {
-        var parsed = common.parsePadUrl(href);
-        if (!parsed || !parsed.hash) { return; }
-
-        parsed = common.parseHash(parsed.hash);
-
-        if (parsed.version === 0) {
-            return parsed.channel;
-        } else if (parsed.version !== 1) {
-            console.error("parsed href had no version");
-            console.error(parsed);
-            return;
-        }
-
-        var channel = parsed.channel;
-        if (!channel) { return; }
-
-        var hex = common.base64ToHex(channel);
-        return hex;
-    };
-
     var getUserChannelList = common.getUserChannelList = function () {
         var store = common.getStore();
         var proxy = store.getProxy();
@@ -1084,7 +596,7 @@ load pinpad dynamically only after you know that it will be needed */
         var userChannel = common.parseHash(userHash).channel;
         if (!userChannel) { return null; }
 
-        var list = fo.getFilesDataFiles().map(hrefToHexChannelId)
+        var list = fo.getFiles([fo.FILES_DATA]).map(hrefToHexChannelId)
             .filter(function (x) { return x; });
 
         list.push(common.base64ToHex(userChannel));
@@ -1098,6 +610,9 @@ load pinpad dynamically only after you know that it will be needed */
     };
 
     var pinsReady = common.pinsReady = function () {
+        if (!isLoggedIn()) {
+            return false;
+        }
         if (!PINNING_ENABLED) {
             console.error('[PINNING_DISABLED]');
             return false;
@@ -1113,7 +628,7 @@ load pinpad dynamically only after you know that it will be needed */
         if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
 
         var list = getCanonicalChannelList();
-        var local = rpc.hashChannelList(list);
+        var local = Hash.hashChannelList(list);
         rpc.getServerHash(function (e, hash) {
             if (e) { return void cb(e); }
             cb(void 0, hash === local);
@@ -1121,14 +636,36 @@ load pinpad dynamically only after you know that it will be needed */
     };
 
     var resetPins = common.resetPins = function (cb) {
-        if (!PINNING_ENABLED) { return void console.error('[PINNING_DISABLED]'); }
-        if (!rpc) { return void console.error('[RPC_NOT_READY]'); }
+        if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
 
         var list = getCanonicalChannelList();
         rpc.reset(list, function (e, hash) {
             if (e) { return void cb(e); }
             cb(void 0, hash);
         });
+    };
+
+    var pinPads = common.pinPads = function (pads, cb) {
+        if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
+
+        rpc.pin(pads, function (e, hash) {
+            if (e) { return void cb(e); }
+            cb(void 0, hash);
+        });
+    };
+
+    var unpinPads = common.unpinPads = function (pads, cb) {
+        if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
+
+        rpc.unpin(pads, function (e, hash) {
+            if (e) { return void cb(e); }
+            cb(void 0, hash);
+        });
+    };
+
+    var getPinnedUsage = common.getPinnedUsage = function (cb) {
+        if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
+        rpc.getFileListSize(cb);
     };
 
     var createButton = common.createButton = function (type, rightside, data, callback) {
@@ -1148,7 +685,7 @@ load pinpad dynamically only after you know that it will be needed */
                     title: Messages.importButtonTitle,
                 }).append($('<span>', {'class':'fa fa-upload', style: 'font:'+size+' FontAwesome'}));
                 if (callback) {
-                    button.click(common.importContent('text/plain', function (content, file) {
+                    button.click(UI.importContent('text/plain', function (content, file) {
                         callback(content, file);
                     }));
                 }
@@ -1279,7 +816,7 @@ load pinpad dynamically only after you know that it will be needed */
     //
     // allowed options tags: ['a', 'hr', 'p']
     var createDropdown = common.createDropdown = function (config) {
-        if (typeof config !== "object" || !isArray(config.options)) { return; }
+        if (typeof config !== "object" || !Array.isArray(config.options)) { return; }
 
         var allowedTags = ['a', 'p', 'hr'];
         var isValidOption = function (o) {
@@ -1571,155 +1108,111 @@ load pinpad dynamically only after you know that it will be needed */
         return $userAdmin;
     };
 
-    /*
-     *  Alertifyjs
-     */
+    common.ready = function (f) {
+        var block = 0;
+        var env = {};
 
-    var styleAlerts = common.styleAlerts = function () {};
-
-    var findCancelButton = common.findCancelButton = function () {
-        return $('button.cancel');
-    };
-
-    var findOKButton = common.findOKButton = function () {
-        return $('button.ok');
-    };
-
-    var listenForKeys = common.listenForKeys = function (yes, no) {
-        var handler = function (e) {
-            switch (e.which) {
-                case 27: // cancel
-                    if (typeof(no) === 'function') { no(e); }
-                    no();
-                    break;
-                case 13: // enter
-                    if (typeof(yes) === 'function') { yes(e); }
-                    break;
+        var cb = function () {
+            block--;
+            if (!block) {
+                f(void 0, env);
             }
         };
 
-        $(window).keyup(handler);
-        return handler;
-    };
+        if (sessionStorage[newPadNameKey]) {
+            common.initialName = sessionStorage[newPadNameKey];
+            delete sessionStorage[newPadNameKey];
+        }
+        if (sessionStorage[newPadPathKey]) {
+            common.initialPath = sessionStorage[newPadPathKey];
+            delete sessionStorage[newPadPathKey];
+        }
 
-    var stopListening = common.stopListening = function (handler) {
-        $(window).off('keyup', handler);
-    };
+        Store.ready(function (err, storeObj) {
+            store = common.store = env.store = storeObj;
 
-    common.alert = function (msg, cb, force) {
-        cb = cb || function () {};
-        if (force !== true) { msg = fixHTML(msg); }
-        var close = function (e) {
-            findOKButton().click();
-        };
-        var keyHandler = listenForKeys(close, close);
-        Alertify.alert(msg, function (ev) {
-            cb(ev);
-            stopListening(keyHandler);
-        });
-        window.setTimeout(function () {
-            findOKButton().focus();
-        });
-    };
+            var proxy = getProxy();
 
-    common.prompt = function (msg, def, cb, opt, force) {
-        opt = opt || {};
-        cb = cb || function () {};
-        if (force !== true) { msg = fixHTML(msg); }
+            /*  TODO log users out if they are logged in, but don't have
+                signing keys stored in their object.
+            */
 
-        var keyHandler = listenForKeys(function (e) { // yes
-            findOKButton().click();
-        }, function (e) { // no
-            findCancelButton().click();
-        });
+            var network = getNetwork();
 
-        Alertify
-            .defaultValue(def || '')
-            .okBtn(opt.ok || Messages.okButton || 'OK')
-            .cancelBtn(opt.cancel || Messages.cancelButton || 'Cancel')
-            .prompt(msg, function (val, ev) {
-                cb(val, ev);
-                stopListening(keyHandler);
-            }, function (ev) {
-                cb(null, ev);
-                stopListening(keyHandler);
+            $(function() {
+                // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
+                // won't work. We have to reset it now to make sure it uses a correct "body"
+                UI.Alertify.reset();
+
+                // Load the new pad when the hash has changed
+                var oldHash  = document.location.hash.slice(1);
+                window.onhashchange = function () {
+                    var newHash = document.location.hash.slice(1);
+                    var parsedOld = parseHash(oldHash);
+                    var parsedNew = parseHash(newHash);
+                    if (parsedOld && parsedNew && (
+                          parsedOld.channel !== parsedNew.channel
+                          || parsedOld.mode !== parsedNew.mode
+                          || parsedOld.key !== parsedNew.key)) {
+                        document.location.reload();
+                        return;
+                    }
+                    if (parsedNew) {
+                        oldHash = newHash;
+                    }
+                };
+
+                if (PINNING_ENABLED && isLoggedIn()) {
+                    console.log("logged in. pads will be pinned");
+                    block++;
+
+                    Pinpad.create(network, proxy, function (e, call) {
+                        if (e) {
+                            console.error(e);
+                            return cb();
+                        }
+
+                        console.log('RPC handshake complete');
+                        rpc = common.rpc = env.rpc = call;
+
+                        common.arePinsSynced(function (err, yes) {
+                            if (!yes) {
+                                common.resetPins(function (err, hash) {
+                                    console.log('RESET DONE');
+                                });
+                            }
+                        });
+                        cb();
+                    });
+                } else if (PINNING_ENABLED) {
+                    console.log('not logged in. pads will not be pinned');
+                } else {
+                    console.log('pinning disabled');
+                }
+
+                // Everything's ready, continue...
+                if($('#pad-iframe').length) {
+                    block++;
+                    var $iframe = $('#pad-iframe');
+                    var iframe = $iframe[0];
+                    var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    if (iframeDoc.readyState === 'complete') {
+                        cb();
+                        return;
+                    }
+                    $iframe.load(cb);
+                    return;
+                }
+
+                block++;
+                cb();
             });
-    };
-
-    common.confirm = function (msg, cb, opt, force, styleCB) {
-        opt = opt || {};
-        cb = cb || function () {};
-        if (force !== true) { msg = fixHTML(msg); }
-
-        var keyHandler = listenForKeys(function (e) {
-            findOKButton().click();
-        }, function (e) {
-            findCancelButton().click();
-        });
-
-        Alertify
-            .okBtn(opt.ok || Messages.okButton || 'OK')
-            .cancelBtn(opt.cancel || Messages.cancelButton || 'Cancel')
-            .confirm(msg, function () {
-                cb(true);
-                stopListening(keyHandler);
-            }, function () {
-                cb(false);
-                stopListening(keyHandler);
-            });
-
-        window.setTimeout(function () {
-            var $ok = findOKButton();
-            var $cancel = findCancelButton();
-            if (opt.okClass) { $ok.addClass(opt.okClass); }
-            if (opt.cancelClass) { $cancel.addClass(opt.cancelClass); }
-            if (opt.reverseOrder) {
-                $ok.insertBefore($ok.prev());
-            }
-            if (typeof(styleCB) === 'function') {
-                styleCB($ok.closest('.dialog'));
-            }
-        }, 0);
-    };
-
-    common.log = function (msg) {
-        Alertify.success(fixHTML(msg));
-    };
-
-    common.warn = function (msg) {
-        Alertify.error(fixHTML(msg));
-    };
-
-    /*
-     *  spinner
-     */
-    common.spinner = function (parent) {
-        var $target = $('<span>', {
-            'class': 'fa fa-spinner fa-pulse fa-4x fa-fw'
-        }).hide();
-
-        $(parent).append($target);
-
-        return {
-            show: function () {
-                $target.show();
-                return this;
-            },
-            hide: function () {
-                $target.hide();
-                return this;
-            },
-            get: function () {
-                return $target;
-            },
-        };
+        }, common);
     };
 
     $(function () {
         Messages._applyTranslation();
     });
-
-    Alertify._$$alertify.delay = AppConfig.notificationTimeout || 5000;
 
     return common;
 });

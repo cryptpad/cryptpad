@@ -1,8 +1,7 @@
 define([
-    '/common/cryptget.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Crypt) {
-    var $ = window.jQuery;
+    'jquery',
+    '/common/cryptget.js'
+], function ($, Crypt) {
 
     var $target = $('#target');
     var $dest = $('#dest');

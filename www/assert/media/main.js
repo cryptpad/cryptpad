@@ -1,8 +1,4 @@
-define([
-    '/bower_components/jquery/dist/jquery.min.js',
-], function () {
-    var $ = window.jQuery;
-
+define(['jquery'], function ($) {
     $('media').each(function () {
         window.alert("media tag selection works!");
     });

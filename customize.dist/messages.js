@@ -23,12 +23,10 @@ var getLanguage = function () {
 };
 var language = getLanguage();
 
-var req = ['/customize/translations/messages.js'];
+var req = ['jquery', '/customize/translations/messages.js'];
 if (language && map[language]) { req.push('/customize/translations/messages.' + language + '.js'); }
-req.push('/bower_components/jquery/dist/jquery.min.js');
 
-define(req, function(Default, Language) {
-    var $ = window.jQuery;
+define(req, function($, Default, Language) {
 
     var externalMap = JSON.parse(JSON.stringify(map));
 

@@ -1,9 +1,6 @@
-require.config({ paths: {
-    'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify'
-}});
-
 define([
-    '/api/config?cb=' + Math.random().toString(16).substring(2),
+    'jquery',
+    '/api/config',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/toolbar.js',
@@ -17,14 +14,12 @@ define([
     '/common/notify.js',
     '/customize/application_config.js',
     '/bower_components/secure-fabric.js/dist/fabric.min.js',
-    '/bower_components/jquery/dist/jquery.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
-], function (Config, Realtime, Crypto, Toolbar, TextPatcher, JSONSortify, JsonOT, Cryptpad, Cryptget, Colors, Visible, Notify, AppConfig) {
+], function ($, Config, Realtime, Crypto, Toolbar, TextPatcher, JSONSortify, JsonOT, Cryptpad, Cryptget, Colors, Visible, Notify, AppConfig) {
     var saveAs = window.saveAs;
     var Messages = Cryptpad.Messages;
 
-    var module = window.APP = { };
-    var $ = module.$ = window.jQuery;
+    var module = window.APP = { $:$ };
     var Fabric = module.Fabric = window.fabric;
 
     $(function () {
@@ -618,6 +613,7 @@ window.canvas = canvas;
 
     Cryptpad.ready(function (err, env) {
         andThen();
+        Cryptpad.reportAppUsage();
     });
     Cryptpad.onError(function (info) {
         if (info) {

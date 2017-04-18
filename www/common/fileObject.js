@@ -1,7 +1,6 @@
 define([
-    '/bower_components/jquery/dist/jquery.min.js',
-], function () {
-    var $ = window.jQuery;
+    'jquery',
+], function ($) {
     var module = {};
 
     var Messages = {};
@@ -45,6 +44,23 @@ define([
             return a;
         };
 
+        var pushFileData = exp.pushData = function (data) {
+            Cryptpad.pinPads([Cryptpad.hrefToHexChannelId(data.href)], function (e, hash) {
+                console.log(hash);
+            });
+            files[FILES_DATA].push(data);
+        };
+        var spliceFileData = exp.removeData = function (idx) {
+            var data = files[FILES_DATA][idx];
+            if (typeof data === "object") {
+                Cryptpad.unpinPads([Cryptpad.hrefToHexChannelId(data.href)], function (e, hash) {
+                    console.log(hash);
+                });
+            }
+            files[FILES_DATA].splice(idx, 1);
+        };
+
+
         var comparePath  = exp.comparePath = function (a, b) {
             if (!a || !b || !$.isArray(a) || !$.isArray(b)) { return false; }
             if (a.length !== b.length) { return false; }
@@ -72,12 +88,15 @@ define([
         var isPathInTrash = exp.isPathInTrash = function (path) {
             return path[0] && path[0] === TRASH;
         };
+        var isInTrashRoot = exp.isInTrashRoot = function (path) {
+            return path[0] === TRASH && path.length === 4;
+        };
 
         var isPathInFilesData = exp.isPathInFilesData = function (path) {
             return path[0] && path[0] === FILES_DATA;
         };
 
-        var isFile =  exp.isFile = function (element) {
+        var isFile = exp.isFile = function (element) {
             return typeof(element) === "string";
         };
 
@@ -422,10 +441,6 @@ define([
             return paths;
         };
 
-        var isInTrashRoot = exp.isInTrashRoot = function (path) {
-            return path[0] === TRASH && path.length === 4;
-        };
-
         var removePadAttribute = function (f) {
             Object.keys(files).forEach(function (key) {
                 var hash = f.indexOf('#') !== -1 ? f.slice(f.indexOf('#') + 1) : null;
@@ -459,7 +474,7 @@ define([
                 var idx = files[FILES_DATA].indexOf(f);
                 if (idx !== -1) {
                     debug("Removing", f, "from filesData");
-                    files[FILES_DATA].splice(idx, 1);
+                    spliceFileData(idx);
                     removePadAttribute(f.href);
                 }
             });
@@ -469,9 +484,9 @@ define([
             var parentPath = path.slice();
             var key = parentPath.pop();
             var parentEl = exp.findElement(files, parentPath);
-            if (path.length === 4 && path[0] === TRASH) {
+            if (isInTrashRoot(path)) {
                 files[TRASH][path[1]].splice(path[2], 1);
-            } else if (path[0] === UNSORTED || path[0] === TEMPLATE) {
+            } else if (isPathInHrefArray(path)) {
                 parentEl.splice(key, 1);
             } else {
                 parentEl[key] = undefined;
@@ -745,7 +760,7 @@ define([
         };
 
         var pushNewFileData = function (href, title) {
-            files[FILES_DATA].push({
+            pushFileData({
                 href: href,
                 title: title,
                 atime: +new Date(),
@@ -865,7 +880,7 @@ define([
                 var idx = files[FILES_DATA].indexOf(f);
                 if (idx !== -1) {
                     debug("Removing", f, "from filesData");
-                    files[FILES_DATA].splice(idx, 1);
+                    spliceFileData(idx);
                     // Remove the "padAttributes" stored in the realtime object for that pad
                     removePadAttribute(f.href);
                 }
@@ -1009,7 +1024,7 @@ define([
                 return o.href === href;
             });
             if (!test) {
-                files[FILES_DATA].push(fileData);
+                pushFileData(fileData);
             }
             if (files[TEMPLATE].indexOf(href) === -1) {
                 files[TEMPLATE].push(href);
@@ -1141,7 +1156,7 @@ define([
                 toClean.forEach(function (el) {
                     var idx = fd.indexOf(el);
                     if (idx !== -1) {
-                        fd.splice(idx, 1);
+                        spliceFileData(idx);
                     }
                 });
             };

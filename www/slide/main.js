@@ -1,5 +1,5 @@
-require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
+    'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/textpatcher/TextPatcher.js',
@@ -13,10 +13,8 @@ define([
     '/common/visible.js',
     '/common/notify.js',
     '/slide/slide.js',
-    '/bower_components/file-saver/FileSaver.min.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad, Cryptget, Modes, Themes, Visible, Notify, Slide) {
-    var $ = window.jQuery;
+    '/bower_components/file-saver/FileSaver.min.js'
+], function ($, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad, Cryptget, Modes, Themes, Visible, Notify, Slide) {
     var saveAs = window.saveAs;
 
     var Messages = Cryptpad.Messages;
@@ -83,7 +81,7 @@ define([
                 styleActiveLine : true,
                 search: true,
                 highlightSelectionMatches: {showToken: /\w+/},
-                extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }},
+                extraKeys: {"Shift-Ctrl-R": undefined},
                 foldGutter: true,
                 gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
                 mode: "javascript",
@@ -840,7 +838,7 @@ define([
                 return cursor;
             };
 
-            var onRemote = config.onRemote = function (info) {
+            var onRemote = config.onRemote = function () {
                 if (initializing) { return; }
                 var scroll = editor.getScrollInfo();
 
@@ -929,6 +927,7 @@ define([
         var second = function (CM) {
             Cryptpad.ready(function (err, env) {
                 andThen(CM);
+                Cryptpad.reportAppUsage();
             });
             Cryptpad.onError(function (info) {
                 if (info && info.type === "store") {

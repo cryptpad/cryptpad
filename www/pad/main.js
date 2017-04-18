@@ -1,5 +1,5 @@
-require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
+    'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/hyperjson/hyperjson.js',
@@ -15,12 +15,10 @@ define([
     '/common/notify.js',
     '/pad/links.js',
     '/bower_components/file-saver/FileSaver.min.js',
-    '/bower_components/diff-dom/diffDOM.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Crypto, realtimeInput, Hyperjson,
+    '/bower_components/diff-dom/diffDOM.js'
+], function ($, Crypto, realtimeInput, Hyperjson,
     Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad, Cryptget,
     Visible, Notify, Links) {
-    var $ = window.jQuery;
     var saveAs = window.saveAs;
     var Messages = Cryptpad.Messages;
 
@@ -475,12 +473,12 @@ define([
                 }
             };
 
-            var onRemote = realtimeOptions.onRemote = function (info) {
+            var onRemote = realtimeOptions.onRemote = function () {
                 if (initializing) { return; }
 
                 var oldShjson = stringifyDOM(inner);
 
-                var shjson = info.realtime.getUserDoc();
+                var shjson = module.realtime.getUserDoc();
 
                 // remember where the cursor is
                 cursor.update();
@@ -679,7 +677,7 @@ define([
                 module.users = info.userList.users;
                 module.realtime = info.realtime;
 
-                var shjson = info.realtime.getUserDoc();
+                var shjson = module.realtime.getUserDoc();
 
                 var newPad = false;
                 if (shjson === '') { newPad = true; }
@@ -810,6 +808,7 @@ define([
     var second = function (Ckeditor) {
         Cryptpad.ready(function (err, env) {
             andThen(Ckeditor);
+            Cryptpad.reportAppUsage();
         });
         Cryptpad.onError(function (info) {
             if (info && info.type === "store") {

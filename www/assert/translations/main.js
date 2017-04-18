@@ -1,9 +1,8 @@
 define([
-    '/bower_components/jquery/dist/jquery.min.js',
+    'jquery',
     '/common/cryptpad-common.js',
     '/customize/translations/messages.js',
-], function (jQuery, Cryptpad, English) {
-    var $ = window.jQuery;
+], function ($, Cryptpad, English) {
 
     var $body = $('body');
 

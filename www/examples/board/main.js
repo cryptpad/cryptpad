@@ -1,5 +1,6 @@
 define([
-    '/api/config?cb=' + Math.random().toString(16).substring(2),
+    'jquery',
+    '/api/config',
     '/customize/messages.js',
     'board.js',
     '/bower_components/textpatcher/TextPatcher.js',
@@ -8,10 +9,9 @@ define([
     '/common/cryptpad-common.js',
     '/common/visible.js',
     '/common/notify.js',
-    '/bower_components/file-saver/FileSaver.min.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Messages, Board, TextPatcher, Listmap, Crypto, Cryptpad, Visible, Notify) {
-    var $ = window.jQuery;
+    '/bower_components/file-saver/FileSaver.min.js'
+], function ($, Config, Messages, Board, TextPatcher, Listmap, Crypto, Cryptpad, Visible, Notify) {
+
     var saveAs = window.saveAs;
 
     Cryptpad.styleAlerts();

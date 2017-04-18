@@ -1,4 +1,5 @@
 define([
+    'jquery',
     '/bower_components/textpatcher/TextPatcher.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
@@ -9,10 +10,8 @@ define([
     '/common/toolbar.js',
     '/common/visible.js',
     '/common/notify.js',
-    '/bower_components/file-saver/FileSaver.min.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (TextPatcher, Listmap, Crypto, Cryptpad, Cryptget, Hyperjson, Renderer, Toolbar, Visible, Notify) {
-    var $ = window.jQuery;
+    '/bower_components/file-saver/FileSaver.min.js'
+], function ($, TextPatcher, Listmap, Crypto, Cryptpad, Cryptget, Hyperjson, Renderer, Toolbar, Visible, Notify) {
 
     var Messages = Cryptpad.Messages;
 
@@ -25,6 +24,7 @@ define([
 
     var secret = Cryptpad.getSecrets();
     var readOnly = secret.keys && !secret.keys.editKeyStr;
+    // DEPRECATE_F
     if (!secret.keys) {
         secret.keys = secret.key;
     }
@@ -210,7 +210,7 @@ define([
     };
 
     /*  Any time the realtime object changes, call this function */
-    var change = function (o, n, path, throttle) {
+    var change = function (o, n, path, throttle, cb) {
         if (path && !Cryptpad.isArray(path)) {
             return;
         }
@@ -259,8 +259,14 @@ define([
             var displayedObj2 = mergeUncommitted(APP.proxy, APP.uncommitted);
             var f = getFocus();
             Render.updateTable(table, displayedObj2, conf);
+            APP.proxy.table.rowsOrder.forEach(function (rowId) {
+                $('input[data-rt-id="' + rowId +'"]').val(APP.proxy.table.rows[rowId] || '');
+            });
             updateDisplayedTable();
             setFocus(f);
+            if (typeof(cb) === "function") {
+                cb();
+            }
         };
 
         if (throttle) {
@@ -280,7 +286,7 @@ define([
     };
 
     /*  Called whenever an event is fired on an input element */
-    var handleInput = function (input) {
+    var handleInput = function (input, isKeyup) {
         var type = input.type.toLowerCase();
         var id = getRealtimeId(input);
 
@@ -331,7 +337,9 @@ define([
                 });
             } else if (isEdit) {
                 unlockRow(id, function () {
-                    change();
+                    change(null, null, null, null, function() {
+                        $('input[data-rt-id="' + id + '"]').focus();
+                    });
                 });
             }
         } else if (type === 'col') {
@@ -344,7 +352,9 @@ define([
                 });
             } else if (isEdit) {
                 unlockColumn(id, function () {
-                    change();
+                    change(null, null, null, null, function() {
+                        $('input[data-rt-id="' + id + '"]').focus();
+                    });
                 });
             }
         } else if (type === 'cell') {
@@ -354,8 +364,8 @@ define([
         }
     };
 
-    var hideInputs = function (e) {
-        if ($(e.target).is('[type="text"]')) {
+    var hideInputs = function (e, isKeyup) {
+        if (!isKeyup && $(e.target).is('[type="text"]')) {
             return;
         }
         $('.lock[data-rt-id!="' + APP.userid + '"]').html(lockHTML);
@@ -388,6 +398,10 @@ define([
 
         switch (nodeName) {
             case 'INPUT':
+                if (isKeyup && (e.keyCode === 13 || e.keyCode === 27)) {
+                    hideInputs(e, isKeyup);
+                    return;
+                }
                 handleInput(target);
                 break;
             case 'SPAN':
@@ -546,20 +560,18 @@ define([
         var $table = APP.$table = $(Render.asHTML(displayedObj, null, colsOrder, readOnly));
         var $createRow = APP.$createRow = $('#create-option').click(function () {
             //console.error("BUTTON CLICKED! LOL");
-            Render.createRow(proxy, function () {
-                change();
-                var order = APP.proxy.table.rowsOrder;
-
-                var last = order[order.length - 1];
-                var $newest = $('[data-rt-id="' + last + '"]');
-                $newest.val('');
-                window.setTimeout(change);
+            Render.createRow(proxy, function (empty, id) {
+                change(null, null, null, null, function() {
+                    $('.edit[data-rt-id="' + id + '"]').click();
+                });
             });
         });
 
         var $createCol = APP.$createCol = $('#create-user').click(function () {
-            Render.createColumn(proxy, function () {
-                change();
+            Render.createColumn(proxy, function (empty, id) {
+                change(null, null, null, null, function() {
+                    $('.edit[data-rt-id="' + id + '"]').click();
+                });
             });
         });
 
@@ -768,19 +780,11 @@ define([
         }
 
         Cryptpad.onDisplayNameChanged(setName);
-
-        Cryptpad.getPadTitle(function (err, title) {
-            if (err) {
-                error(err);
-                debug("Couldn't get pad title");
-                return;
-            }
-            updateTitle(title || defaultName);
-        });
     };
 
     // don't initialize until the store is ready.
     Cryptpad.ready(function () {
+        Cryptpad.reportAppUsage();
         var config = {
             websocketURL: Cryptpad.getWebsocketURL(),
             channel: secret.channel,
@@ -838,4 +842,3 @@ define([
 
     });
 });
-

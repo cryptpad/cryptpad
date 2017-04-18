@@ -1,8 +1,7 @@
-require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
-    '/common/fileObject.js',
+    '/common/userObject.js',
     'json.sortify'
 ], function (Cryptpad, Crypt, FO, Sortify) {
     var exp = {};
@@ -76,8 +75,8 @@ define([
             console.error(msg || "Unable to find that path", path);
         };
 
-        if (path[0] === FO.TRASH && path.length === 4) {
-            href = oldFo.getTrashElementData(path);
+        if (oldFo.isInTrashRoot(path)) {
+            href = oldFo.find(path.slice(0,3));
             path.pop();
         }
 
@@ -156,13 +155,13 @@ define([
                 var newData = Cryptpad.getStore().getProxy();
                 var newFo = newData.fo;
                 var newRecentPads = proxy.drive[Cryptpad.storageKey];
-                var newFiles = newFo.getFilesDataFiles();
-                var oldFiles = oldFo.getFilesDataFiles();
+                var newFiles = newFo.getFiles([newFo.FILES_DATA]);
+                var oldFiles = oldFo.getFiles([newFo.FILES_DATA]);
                 oldFiles.forEach(function (href) {
                     // Do not migrate a pad if we already have it, it would create a duplicate in the drive
                     if (newFiles.indexOf(href) !== -1) { return; }
                     // If we have a stronger version, do not add the current href
-                    if (Cryptpad.findStronger(href, newRecentPads)) { return; }
+                    if (Cryptpad.findStronger(href, newRecentPads)) { console.log(href); return; }
                     // If we have a weaker version, replace the href by the new one
                     // NOTE: if that weaker version is in the trash, the strong one will be put in unsorted
                     var weaker = Cryptpad.findWeaker(href, newRecentPads);
@@ -176,7 +175,7 @@ define([
                             return;
                         });
                         // Update the file in the drive
-                        newFo.replaceHref(weaker, href);
+                        newFo.replace(weaker, href);
                         return;
                     }
                     // Here it means we have a new href, so we should add it to the drive at its old location

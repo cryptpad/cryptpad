@@ -300,6 +300,12 @@ define(function () {
     out.settings_anonymous = "You are not logged in. Settings here are specific to this browser.";
     out.settings_publicSigningKey = "Public Signing Key";
 
+    out.settings_usage = "Usage";
+    out.settings_usageTitle = "See the total size of your pinned pads in MB";
+    out.settings_pinningNotAvailable = "Pinned pads are only available to registered users.";
+    out.settings_pinningError = "Something went wrong";
+    out.settings_usageAmount = "Your pinned pads occupy {0}MB";
+
     // index.html
 
 
@@ -386,7 +392,7 @@ define(function () {
     // Initial states
 
     out.initialState = [
-        '<span style="font-size:18px;"><p>',
+        '<span style="font-size:16px;"><p>',
         'This is&nbsp;<strong>CryptPad</strong>, the Zero Knowledge realtime collaborative editor. Everything is saved as you type.',
         '<br>',
         'Share the link to this pad to edit with friends or use the <span style="background-color:#5cb85c;color:#ffffff;">&nbsp;Share&nbsp;</span> button to share a <em>read-only link</em>&nbsp;which allows viewing but not editing.',

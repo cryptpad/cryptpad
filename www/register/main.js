@@ -1,11 +1,10 @@
 define([
+    'jquery',
     '/common/login.js',
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
-    '/common/credential.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Login, Cryptpad, Crypt) {
-    var $ = window.jQuery;
+    '/common/credential.js'
+], function ($, Login, Cryptpad, Crypt) {
 
     var APP = window.APP = {
         Login: Login,
@@ -67,6 +66,12 @@ define([
             var proxy = result.proxy;
             proxy.edPublic = result.edPublic;
             proxy.edPrivate = result.edPrivate;
+
+            // feedback API won't work because proxy wasn't loaded
+            $.ajax({
+                type: 'HEAD',
+                url: '/common/feedback.html?REGISTRATION=' + (+new Date()),
+            });
 
             Cryptpad.whenRealtimeSyncs(result.realtime, function () {
                 Cryptpad.login(result.userHash, result.userName, function () {

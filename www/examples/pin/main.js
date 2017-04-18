@@ -1,10 +1,8 @@
-require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
+    'jquery',
     '/common/cryptpad-common.js',
-    '/common/pinpad.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Cryptpad, Pinpad) {
-    var $ = window.jQuery;
+    '/common/pinpad.js'
+], function ($, Cryptpad, Pinpad) {
     var APP = window.APP = {
         Cryptpad: Cryptpad,
     };

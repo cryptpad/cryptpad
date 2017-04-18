@@ -1,17 +1,29 @@
 define([
     '/common/rpc.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js'
 ], function (Rpc) {
-    var Nacl = window.nacl;
-
     var create = function (network, proxy, cb) {
-        if (!network) { return void cb('INVALID_NETWORK'); }
-        if (!proxy) { return void cb('INVALID_PROXY'); }
+        if (!network) {
+            window.setTimeout(function () {
+                cb('INVALID_NETWORK');
+            });
+            return;
+        }
+        if (!proxy) {
+            window.setTimeout(function () {
+                cb('INVALID_PROXY');
+            });
+            return;
+        }
 
         var edPrivate = proxy.edPrivate;
         var edPublic = proxy.edPublic;
 
-        if (!(edPrivate && edPublic)) { return void cb('INVALID_KEYS'); }
+        if (!(edPrivate && edPublic)) {
+            window.setTimeout(function () {
+                cb('INVALID_KEYS');
+            });
+            return;
+        }
 
         Rpc.create(network, edPrivate, edPublic, function (e, rpc) {
             if (e) { return void cb(e); }
@@ -26,19 +38,24 @@ define([
 
             // you can ask the server to pin a particular channel for you
             exp.pin = function (channels, cb) {
+                if (!Array.isArray(channels)) {
+                    window.setTimeout(function () {
+                        cb('[TypeError] pin expects an array');
+                    });
+                    return;
+                }
                 rpc.send('PIN', channels, cb);
             };
 
             // you can also ask to unpin a particular channel
             exp.unpin = function (channels, cb) {
+                if (!Array.isArray(channels)) {
+                    window.setTimeout(function () {
+                        cb('[TypeError] pin expects an array');
+                    });
+                    return;
+                }
                 rpc.send('UNPIN', channels, cb);
-            };
-
-            // This implementation must match that on the server
-            // it's used for a checksum
-            exp.hashChannelList = function (list) {
-                return Nacl.util.encodeBase64(Nacl.hash(Nacl.util
-                    .decodeUTF8(JSON.stringify(list))));
             };
 
             // ask the server what it thinks your hash is
@@ -52,8 +69,14 @@ define([
             };
 
             // if local and remote hashes don't match, send a reset
-            exp.reset = function (list, cb) {
-                rpc.send('RESET', list, function (e, response) {
+            exp.reset = function (channels, cb) {
+                if (!Array.isArray(channels)) {
+                    window.setTimeout(function () {
+                        cb('[TypeError] pin expects an array');
+                    });
+                    return;
+                }
+                rpc.send('RESET', channels, function (e, response) {
                     cb(e, response[0]);
                 });
             };
@@ -66,7 +89,12 @@ define([
             // get the combined size of all channels (in bytes) for all the
             // channels which the server has pinned for your publicKey
             exp.getFileListSize = function (cb) {
-                rpc.send('GET_TOTAL_SIZE', undefined, cb);
+                rpc.send('GET_TOTAL_SIZE', undefined, function (e, response) {
+                    if (e) { return void cb(e); }
+                    if (response && response.length) {
+                        cb(void 0, response[0]);
+                    }
+                });
             };
 
             cb(e, exp);

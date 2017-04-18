@@ -1,11 +1,10 @@
 define([
+    'jquery',
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
     '/common/mergeDrive.js',
-    '/bower_components/file-saver/FileSaver.min.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Cryptpad, Crypt, Merge) {
-    var $ = window.jQuery;
+    '/bower_components/file-saver/FileSaver.min.js'
+], function ($, Cryptpad, Crypt, Merge) {
     var saveAs = window.saveAs;
 
     var USERNAME_KEY = 'cryptpad.username';
@@ -227,6 +226,40 @@ define([
         return $div;
     };
 
+    var bytesToMegabytes = function (bytes) {
+        return Math.floor((bytes / (1024 * 1024) * 100)) / 100;
+    };
+
+    var createUsageButton = function (obj) {
+        var proxy = obj.proxy;
+
+        var $div = $('<div>', { 'class': 'pinned-usage' })
+            .text(Messages.settings_usageTitle)
+            .append('<br>');
+
+        $('<button>', {
+            'class': 'btn btn-primary', // fa fa-hdd-o ?
+        })
+        .text(Messages.settings_usage)
+        .click(function () {
+            if (!(proxy.edPublic && proxy.edPrivate)) {
+                // suggest that they login/register
+                Cryptpad.alert(Messages.settings_pinningNotAvailable);
+                return;
+            }
+            Cryptpad.getPinnedUsage(function (e, bytes) {
+                if (e) {
+                    Cryptpad.alert(Messages.settings_pinningError);
+                    return;
+                }
+                Cryptpad.alert(Messages._getKey('settings_usageAmount', [bytesToMegabytes(bytes)]));
+            });
+        })
+        .appendTo($div);
+
+        return $div;
+    };
+
     var createImportLocalPads = function (obj) {
         if (!Cryptpad.isLoggedIn()) { return; }
         var $div = $('<div>', {'class': 'importLocalPads'});
@@ -271,6 +304,7 @@ define([
         APP.$container.append(createBackupDrive(obj));
         APP.$container.append(createImportLocalPads(obj));
         APP.$container.append(createResetDrive(obj));
+        APP.$container.append(createUsageButton(obj));
         APP.$container.append(createUserFeedbackToggle(obj));
         obj.proxy.on('change', [], refresh);
         obj.proxy.on('remove', [], refresh);
@@ -308,6 +342,7 @@ define([
                            ? Cryptpad.getStore().getProxy() : undefined;
 
             andThen(storeObj);
+            Cryptpad.reportAppUsage();
         });
     });
 
@@ -322,4 +357,3 @@ define([
         }
     });
 });
-

@@ -1,12 +1,10 @@
-require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
-    '/bower_components/jquery/dist/jquery.min.js',
+    'jquery',
     '/bower_components/hyperjson/hyperjson.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
     '/common/cryptpad-common.js',
-], function (jQuery, Hyperjson, TextPatcher, Sortify, Cryptpad) {
-    var $ = window.jQuery;
+], function ($, Hyperjson, TextPatcher, Sortify, Cryptpad) {
     window.Hyperjson = Hyperjson;
     window.TextPatcher = TextPatcher;
     window.Sortify = Sortify;
