@@ -1,5 +1,5 @@
-require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
+    'jquery',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
@@ -10,11 +10,10 @@ define([
     '/customize/application_config.js',
     '/common/cryptget.js',
     '/common/mergeDrive.js'
-], function (Listmap, Crypto, TextPatcher, JSONSortify, Cryptpad, FO, Toolbar, AppConfig, Get, Merge) {
+], function ($, Listmap, Crypto, TextPatcher, JSONSortify, Cryptpad, FO, Toolbar, AppConfig, Get, Merge) {
     var module = window.MODULE = {};
 
     var Messages = Cryptpad.Messages;
-    var $ = window.jQuery;
     var saveAs = window.saveAs;
 
     // Use `$(function () {});` to make sure the html is loaded before doing anything else

@@ -1,11 +1,10 @@
 define([
+    'jquery',
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
     '/common/mergeDrive.js',
-    '/bower_components/file-saver/FileSaver.min.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Cryptpad, Crypt, Merge) {
-    var $ = window.jQuery;
+    '/bower_components/file-saver/FileSaver.min.js'
+], function ($, Cryptpad, Crypt, Merge) {
     var saveAs = window.saveAs;
 
     var USERNAME_KEY = 'cryptpad.username';
@@ -358,4 +357,3 @@ define([
         }
     });
 });
-

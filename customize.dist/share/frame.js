@@ -163,12 +163,8 @@
 
     if (typeof(module) !== 'undefined' && module.exports) {
         module.exports = Frame;
-    }
-    else if ((typeof(define) !== 'undefined' && define !== null) &&
-            (define.amd !== null)) {
-        define([
-            '/bower_components/jquery/dist/jquery.min.js',
-        ], function () {
+    } else if (typeof(define) === 'function' && define.amd) {
+        define(['jquery'], function ($) {
             return Frame;
         });
     } else {

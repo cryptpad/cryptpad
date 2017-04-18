@@ -1,14 +1,13 @@
 define([
-    '/api/config?cb=' + Math.random().toString(16).substring(2),
+    'jquery',
+    '/api/config',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/marked/marked.min.js',
     '/bower_components/hyperjson/hyperjson.js',
     '/common/cryptpad-common.js',
-    '/bower_components/jquery/dist/jquery.min.js',
     '/bower_components/diff-dom/diffDOM.js',
-], function (Config, Realtime, Crypto, Marked, Hyperjson, Cryptpad) {
-    var $ = window.jQuery;
+], function ($, Config, Realtime, Crypto, Marked, Hyperjson, Cryptpad) {
     var DiffDom = window.diffDOM;
 
     var secret = Cryptpad.getSecrets();

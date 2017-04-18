@@ -1,5 +1,5 @@
-require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
+    'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/hyperjson/hyperjson.js',
@@ -15,12 +15,10 @@ define([
     '/common/notify.js',
     '/pad/links.js',
     '/bower_components/file-saver/FileSaver.min.js',
-    '/bower_components/diff-dom/diffDOM.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Crypto, realtimeInput, Hyperjson,
+    '/bower_components/diff-dom/diffDOM.js'
+], function ($, Crypto, realtimeInput, Hyperjson,
     Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad, Cryptget,
     Visible, Notify, Links) {
-    var $ = window.jQuery;
     var saveAs = window.saveAs;
     var Messages = Cryptpad.Messages;
 

@@ -1,11 +1,10 @@
 define([
+    'jquery',
     '/customize/messages.js',
     '/common/common-util.js',
     '/customize/application_config.js',
-    '/bower_components/alertifyjs/dist/js/alertify.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages, Util, AppConfig, Alertify) {
-    var $ = window.jQuery;
+    '/bower_components/alertifyjs/dist/js/alertify.js'
+], function ($, Messages, Util, AppConfig, Alertify) {
 
     var UI = {};
 

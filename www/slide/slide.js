@@ -1,9 +1,8 @@
 define([
+    'jquery',
     '/bower_components/marked/marked.min.js',
-    '/bower_components/diff-dom/diffDOM.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-],function (Marked) {
-    var $ = window.jQuery;
+    '/bower_components/diff-dom/diffDOM.js'
+],function ($, Marked) {
     var DiffDOM = window.diffDOM;
 
     var renderer = new Marked.Renderer();

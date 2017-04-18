@@ -1,9 +1,8 @@
 define([
+    'jquery',
     '/common/cryptget.js',
-    '/bower_components/chainpad-crypto/crypto.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Crypt, Crypto) {
-    var $ = window.jQuery;
+    '/bower_components/chainpad-crypto/crypto.js'
+], function ($, Crypt, Crypto) {
     var Nacl = window.nacl;
 
     var key = Nacl.randomBytes(32);
@@ -49,14 +48,14 @@ define([
 
 http://stackoverflow.com/questions/19959072/sending-binary-data-in-javascript-over-http
 
-        // Since we deal with Firefox and Chrome only 
+        // Since we deal with Firefox and Chrome only
         var bytesToSend = [253, 0, 128, 1];
         var bytesArray = new Uint8Array(bytesToSend);
 
         $.ajax({
            url: '%your_service_url%',
            type: 'POST',
-           contentType: 'application/octet-stream',  
+           contentType: 'application/octet-stream',
            data: bytesArray,
            processData: false
         });
@@ -65,7 +64,7 @@ http://stackoverflow.com/questions/19959072/sending-binary-data-in-javascript-ov
     };
 
     var $file = $('input[type="file"]');
-    $file.on('change', function (e) { 
+    $file.on('change', function (e) {
         var file = e.target.files[0];
         var reader = new FileReader();
         reader.onload = function (e) {

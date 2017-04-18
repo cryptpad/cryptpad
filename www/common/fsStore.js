@@ -1,10 +1,10 @@
 define([
+    'jquery',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     '/common/userObject.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Listmap, Crypto, TextPatcher, FO) {
+], function ($, Listmap, Crypto, TextPatcher, FO) {
     /*
         This module uses localStorage, which is synchronous, but exposes an
         asyncronous API. This is so that we can substitute other storage
@@ -13,7 +13,6 @@ define([
         To override these methods, create another file at:
         /customize/storage.js
     */
-    var $ = window.jQuery;
 
     var Store = {};
     var store;

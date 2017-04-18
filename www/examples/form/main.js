@@ -1,16 +1,14 @@
-require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
-    '/api/config?cb=' + Math.random().toString(16).substring(2),
+    'jquery',
+    '/api/config',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
     'ula.js',
     '/bower_components/chainpad-json-validator/json-ot.js',
-    '/common/cryptpad-common.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Realtime, Crypto, TextPatcher, Sortify, Formula, JsonOT, Cryptpad) {
-    var $ = window.jQuery;
+    '/common/cryptpad-common.js'
+], function ($, Config, Realtime, Crypto, TextPatcher, Sortify, Formula, JsonOT, Cryptpad) {
 
     var secret = Cryptpad.getSecrets();
 

@@ -1,9 +1,8 @@
 define([
+    'jquery',
     '/customize/application_config.js',
-    '/api/config',
-    '/bower_components/jquery/dist/jquery.min.js'
-], function (Config, ApiConfig) {
-    var $ = window.jQuery;
+    '/api/config'
+], function ($, Config, ApiConfig) {
 
     var Messages = {};
 

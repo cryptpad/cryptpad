@@ -1,9 +1,8 @@
 define([
+    'jquery',
     '/customize/application_config.js',
-    '/common/cryptpad-common.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Cryptpad) {
-    var $ = window.$;
+    '/common/cryptpad-common.js'
+], function ($, Config, Cryptpad) {
 
     var APP = window.APP = {
         Cryptpad: Cryptpad,
@@ -191,4 +190,3 @@ define([
         console.log("ready");
     });
 });
-
