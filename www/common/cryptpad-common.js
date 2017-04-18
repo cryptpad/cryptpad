@@ -221,6 +221,12 @@ define([
         return typeof getUserHash() === "string";
     };
 
+    var hasSigningKeys = common.hasSigningKeys = function (proxy) {
+        return typeof(proxy) === 'object' &&
+            typeof(proxy.edPrivate) === 'string' &&
+            typeof(proxy.edPublic) === 'string';
+    };
+
     common.isArray = $.isArray;
 
     /*

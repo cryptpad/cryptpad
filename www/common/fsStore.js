@@ -156,6 +156,17 @@ define([
             proxy.uid = Cryptpad.createChannelId();
         }
 
+        // if the user is logged in, but does not have signing keys...
+        if (Cryptpad.isLoggedIn() && !Cryptpad.hasSigningKeys(proxy)) {
+            // log out so that you don't go into an endless loop...
+            Cryptpad.logout();
+
+            // redirect them to log in, and come back when they're done.
+            sessionStorage.redirectTo = window.location.href;
+            window.location.href = '/login/';
+            return;
+        }
+
         proxy.on('change', [Cryptpad.displayNameKey], function (o, n, p) {
             if (typeof(n) !== "string") { return; }
             Cryptpad.changeDisplayName(n);
