@@ -1876,12 +1876,10 @@ define([
             }
         });
 
-        var getProperties = function (el) {
-/*  TODO...
-if we make this async, we can include an RPC call to the server which tells us
-the size of the pinned file (if it is pinned) */
-
-            if (!filesOp.isFile(el)) { return; }
+        var getProperties = function (el, cb) {
+            if (!filesOp.isFile(el)) {
+                return void cb('NOT_FILE');
+            }
             var ro = filesOp.isReadOnlyFile(el);
             var base = window.location.origin;
             var $d = $('<div>');
@@ -1889,14 +1887,50 @@ the size of the pinned file (if it is pinned) */
             $('<br>').appendTo($d);
             if (!ro) {
                 $('<label>', {'for': 'propLink'}).text(Messages.editShare).appendTo($d);
-                $('<input>', {'id': 'propLink', 'readonly': 'readonly', 'value': base + el}).appendTo($d);
+                $('<input>', {'id': 'propLink', 'readonly': 'readonly', 'value': base + el})
+                .click(function () { $(this).select(); })
+                .appendTo($d);
             }
             var roLink = ro ? base + el : getReadOnlyUrl(base + el);
             if (roLink) {
                 $('<label>', {'for': 'propROLink'}).text(Messages.viewShare).appendTo($d);
-                $('<input>', {'id': 'propROLink', 'readonly': 'readonly', 'value': roLink}).appendTo($d);
+                $('<input>', {'id': 'propROLink', 'readonly': 'readonly', 'value': roLink})
+                .click(function () { $(this).select(); })
+                .appendTo($d);
             }
-            return $d.html();
+
+            if (Cryptpad.isLoggedIn() && AppConfig.enablePinning) {
+                // check the size of this file...
+                Cryptpad.getFileSize(el, function (e, bytes) {
+                    if (e) {
+                        // there was a problem with the RPC
+                        console.error(e);
+
+                        // but we don't want to break the interface.
+                        // continue as if there was no RPC
+
+                        return void cb(void 0, $d);
+                    }
+                    var KB = Cryptpad.bytesToKilobytes(bytes);
+                    $('<br>').appendTo($d);
+
+                    $('<label>', {
+                        'for': 'size'
+                    }).text('Size in Kilobytes').appendTo($d);
+
+                    $('<input>', {
+                        id: 'size',
+                        readonly: 'readonly',
+                        value: KB + 'KB',
+                    })
+                    .click(function () { $(this).select(); })
+                    .appendTo($d);
+
+                    cb(void 0, $d);
+                });
+            } else {
+                cb(void 0, $d);
+            }
         };
 
         $contextMenu.on("click", "a", function(e) {
@@ -1944,11 +1978,11 @@ the size of the pinned file (if it is pinned) */
             else if ($(this).hasClass("properties")) {
                 if (paths.length !== 1) { return; }
                 var el = filesOp.find(paths[0].path);
-                var prop = getProperties(el);
-                Cryptpad.alert('', undefined, true);
-                $('.alertify .msg').html(prop);
-                $('#propLink').click(function () { $(this).select(); });
-                $('#propROLink').click(function () { $(this).select(); });
+                getProperties(el, function (e, $prop) {
+                    if (e) { return void console.error(e); }
+                    Cryptpad.alert('', undefined, true);
+                    $('.alertify .msg').html("").append($prop);
+                });
             }
             module.hideMenu();
         });
@@ -1984,11 +2018,11 @@ the size of the pinned file (if it is pinned) */
             else if ($(this).hasClass("properties")) {
                 if (paths.length !== 1) { return; }
                 var el = filesOp.find(paths[0].path);
-                var prop = getProperties(el);
-                Cryptpad.alert('', undefined, true);
-                $('.alertify .msg').html(prop);
-                $('#propLink').click(function () { $(this).select(); });
-                $('#propROLink').click(function () { $(this).select(); });
+                getProperties(el, function (e, $prop) {
+                    if (e) { return void console.error(e); }
+                    Cryptpad.alert('', undefined, true);
+                    $('.alertify .msg').html("").append($prop);
+                });
             }
             module.hideMenu();
         });

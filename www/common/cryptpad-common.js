@@ -676,6 +676,14 @@ define([
         rpc.getFileListSize(cb);
     };
 
+    var getFileSize = common.getFileSize = function (href, cb) {
+        var channelId = Hash.hrefToHexChannelId(href);
+        rpc.getFileSize(channelId, function (e, bytes) {
+            if (e) { return void cb(e); }
+            cb(void 0, bytes);
+        });
+    };
+
     var createButton = common.createButton = function (type, rightside, data, callback) {
         var button;
         var size = "17px";

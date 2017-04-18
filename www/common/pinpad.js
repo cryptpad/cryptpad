@@ -83,7 +83,14 @@ define([
 
             // get the total stored size of a channel's patches (in bytes)
             exp.getFileSize = function (file, cb) {
-                rpc.send('GET_FILE_SIZE', file, cb);
+                rpc.send('GET_FILE_SIZE', file, function (e, response) {
+                    if (e) { return void cb(e); }
+                    if (response && response.length) {
+                        cb(void 0, response[0]);
+                    } else {
+                        cb('INVALID_RESPONSE');
+                    }
+                });
             };
 
             // get the combined size of all channels (in bytes) for all the
@@ -93,6 +100,8 @@ define([
                     if (e) { return void cb(e); }
                     if (response && response.length) {
                         cb(void 0, response[0]);
+                    } else {
+                        cb('INVALID_RESPONSE');
                     }
                 });
             };
