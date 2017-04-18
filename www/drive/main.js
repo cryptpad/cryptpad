@@ -1916,7 +1916,7 @@ define([
 
                     $('<label>', {
                         'for': 'size'
-                    }).text('Size in Kilobytes').appendTo($d);
+                    }).text(Messages.fc_sizeInKilobytes).appendTo($d);
 
                     $('<input>', {
                         id: 'size',

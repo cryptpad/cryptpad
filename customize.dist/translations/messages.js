@@ -216,6 +216,7 @@ define(function () {
     out.fc_remove = "Delete permanently";
     out.fc_empty = "Empty the trash";
     out.fc_prop = "Properties";
+    out.fc_sizeInKilobytes = "Size in Kilobytes";
     // fileObject.js (logs)
     out.fo_moveUnsortedError = "You can't move a folder to the list of unsorted pads";
     out.fo_existingNameError = "Name already used in that directory. Please choose another one.";
