@@ -47,6 +47,21 @@ var setHeaders = (function () {
     return function () {};
 }());
 
+(function () {
+if (!config.logFeedback) { return; }
+
+const logFeedback = function (url) {
+    url.replace(/\?(.*?)=/, function (all, fb) {
+        console.log('[FEEDBACK] %s', fb);
+    });
+};
+
+app.head(/^\/common\/feedback\.html/, function (req, res, next) {
+    logFeedback(req.url);
+    next();
+});
+}());
+
 app.use(function (req, res, next) {
     setHeaders(req, res);
     if (/[\?\&]ver=[^\/]+$/.test(req.url)) { res.setHeader("Cache-Control", "max-age=31536000"); }
