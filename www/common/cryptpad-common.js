@@ -242,13 +242,16 @@ define([
         * title
         * ??? // what else can we put in here?
     */
-    var checkObjectData = function (pad) {
+    var checkObjectData = function (pad, cb) {
         if (!pad.ctime) { pad.ctime = pad.atime; }
         if (/^https*:\/\//.test(pad.href)) {
             pad.href = common.getRelativeHref(pad.href);
         }
         var parsed = common.parsePadUrl(pad.href);
         if (!parsed || !parsed.hash) { return; }
+        if (typeof(cb) === 'function') {
+            cb(parsed);
+        }
         if (!pad.title) {
             pad.title = common.getDefaultname(parsed);
         }
@@ -297,6 +300,7 @@ define([
     // Get the pads from localStorage to migrate them to the object store
     var getLegacyPads = common.getLegacyPads = function (cb) {
         require(['/customize/store.js'], function(Legacy) { // TODO DEPRECATE_F
+            feedback('MIGRATE_LEGACY_STORE');
             Legacy.ready(function (err, legacy) {
                 if (err) { cb(err, null); return; }
                 legacy.get(storageKey, function (err2, recentPads) {
@@ -1124,6 +1128,7 @@ define([
         return $userAdmin;
     };
 
+
     common.ready = function (f) {
         var block = 0;
         var env = {};
@@ -1148,11 +1153,6 @@ define([
             store = common.store = env.store = storeObj;
 
             var proxy = getProxy();
-
-            /*  TODO log users out if they are logged in, but don't have
-                signing keys stored in their object.
-            */
-
             var network = getNetwork();
 
             $(function() {
