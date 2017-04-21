@@ -115,6 +115,17 @@ define(function () {
     out.cancel = "Annuler";
     out.cancelButton = 'Annuler (Echap)';
 
+    out.historyButton = "Afficher l'historique du document";
+    out.history_next = "Voir la version suivante";
+    out.history_prev = "Voir la version précédente";
+    out.history_goTo = "Voir la version sélectionnée";
+    out.history_close = "Retour";
+    out.history_closeTitle = "Fermer l'historique";
+    out.history_restore = "Restaurer";
+    out.history_restoreTitle = "Restaurer la version du document sélectionnée";
+    out.history_restorePrompt = "Êtes-vous sûr de vouloir remplacer la version actuelle du document par la version affichée ?";
+    out.history_restoreDone = "Document restauré";
+
     // Polls
 
     out.poll_title = "Sélecteur de date Zero Knowledge";

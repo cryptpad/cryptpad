@@ -9,6 +9,17 @@ define([
     var History = {};
 
 
+    var getStates = function (rt) {
+        var states = [];
+        var b = rt.getAuthBlock();
+        if (b) { states.unshift(b.getContent().doc); }
+        while (b.getParent()) {
+            b = b.getParent();
+            states.unshift(b.getContent().doc);
+        }
+        return states;
+    };
+
     /* TODO
      * Implement GET_FULL_HISTORY serverside
      * All the history messages should be ['FULL_HISTORY', wc.id, msg]
@@ -23,22 +34,22 @@ define([
         var wcId = common.hrefToHexChannelId(window.location.href);
 
         var createRealtime = function(chan) {
-            console.log(ChainPad);
             return ChainPad.create({
                 userName: 'history',
                 initialState: '',
                 transformFunction: JsonOT.validate,
-                logLevel: 0
+                logLevel: 1,
+                noPrune: true
             });
         };
         var realtime = createRealtime();
 
-        var secret = Cryptpad.getSecrets();
+        var secret = common.getSecrets();
         var crypto = Crypto.createEncryptor(secret.keys);
 
         var to = window.setTimeout(function () {
             cb('[GET_FULL_HISTORY_TIMEOUT]');
-        }, 3000);
+        }, 30000);
 
         var parse = function (msg) {
             try {
@@ -50,104 +61,169 @@ define([
         var onMsg = function (msg) {
             var parsed = parse(msg);
             if (parsed[0] === 'FULL_HISTORY_END') {
+                console.log('END');
                 window.clearTimeout(to);
                 cb(null, realtime);
                 return;
             }
             if (parsed[0] !== 'FULL_HISTORY') { return; }
-            var msg = parsed[1];
-            var decryptedMsg = crypto.decrypt(msg, secret.keys.validateKey);
-            realtime.message(decryptedMsg);
+            msg = parsed[1][4];
+            if (msg) {
+                msg = msg.replace(/^cp\|/, '');
+                var decryptedMsg = crypto.decrypt(msg, secret.keys.validateKey);
+                realtime.message(decryptedMsg);
+            }
         };
 
         network.on('message', function (msg, sender) {
             onMsg(msg);
         });
 
-        network.sendto(hkn, JSON.stringify(['GET_FULL_HISTORY', wcId]));
+        network.sendto(hkn, JSON.stringify(['GET_FULL_HISTORY', wcId, secret.keys.validateKey]));
     };
 
-    var create = History.create = function (common, cb) {
-        var exp = {};
+    var create = History.create = function (common, config) {
+        if (!config.$toolbar) { return void console.error("config.$toolbar is undefined");}
+        var $toolbar = config.$toolbar;
+        var noFunc = function () {};
+        var render = config.onRender || noFunc;
+        var onClose = config.onClose || noFunc;
+        var onRevert = config.onRevert || noFunc;
+        var onReady = config.onReady || noFunc;
 
-        var states = exp.states = ['a', 'b', 'c'];
-        var c = exp.current = states.length - 1;
-        console.log(c);
+        var Messages = common.Messages;
+
+        var realtime;
+
+        var states = []; //getStates(rt); //['a', 'b', 'c'];
+        var c = states.length - 1;
+
+        var $hist = $toolbar.find('.cryptpad-toolbar-history');
+        var $left = $toolbar.find('.cryptpad-toolbar-leftside');
+        var $right = $toolbar.find('.cryptpad-toolbar-rightside');
 
         var onUpdate;
 
-        var update = exp.update = function () {
-            states = [];
+        var update = function () {
+            if (!realtime) { return []; }
+            states = getStates(realtime);
             if (typeof onUpdate === "function") { onUpdate(); }
             return states;
         };
 
-        var get = exp.get = function (i) {
+        // Get the content of the selected version, and change the version number
+        var get = function (i) {
             i = parseInt(i);
-            console.log('getting', i);
-            if (typeof(i) !== "number" || i < 0 || i > states.length - 1) { return; }
-            var hash = states[i];
+            if (isNaN(i)) { return; }
+            if (i < 0) { i = 0; }
+            if (i > states.length - 1) { i = states.length - 1; }
+            var val = states[i];
             c = i;
             if (typeof onUpdate === "function") { onUpdate(); }
-            return '';
+            $hist.find('.next, .previous').show();
+            if (c === states.length - 1) { $hist.find('.next').hide(); }
+            if (c === 0) { $hist.find('.previous').hide(); }
+            return val || '';
         };
 
-        var getNext = exp.getNext = function () {
-            if (c < states.length - 1) { return get(++c); }
+        var getNext = function (step) {
+            return typeof step === "number" ? get(c + step) : get(c + 1);
         };
-        var getPrevious = exp.getPrevious = function () {
-            if (c > 0) { return get(--c); }
+        var getPrevious = function (step) {
+            return typeof step === "number" ? get(c - step) : get(c - 1);
         };
 
-        var display = exp.display = function ($toolbar, render, onClose) {
-            var $hist = $toolbar.find('.cryptpad-toolbar-history').html('').show();
-            var $left = $toolbar.find('.cryptpad-toolbar-leftside').hide();
-            var $right = $toolbar.find('.cryptpad-toolbar-rightside').hide();
-
-            var $prev =$('<button>', {'class': 'previous'}).text('<<').appendTo($hist);
-            var $next = $('<button>', {'class': 'next'}).text('>>').appendTo($hist);
+        // Create the history toolbar
+        var display = function () {
+            $hist.html('').show();
+            $left.hide();
+            $right.hide();
+            var $prev =$('<button>', {
+                'class': 'previous fa fa-step-backward',
+                title: Messages.history_prev
+            }).appendTo($hist);
+            var $next = $('<button>', {
+                'class': 'next fa fa-step-forward',
+                title: Messages.history_next
+            }).appendTo($hist);
 
             var $nav = $('<div>', {'class': 'goto'}).appendTo($hist);
             var $cur = $('<input>', {
+                'class' : 'gotoInput',
                 'type' : 'number',
                 'min' : '1',
                 'max' : states.length
             }).val(c + 1).appendTo($nav);
             var $label = $('<label>').text(' / '+ states.length).appendTo($nav);
-            var $goTo = $('<button>').text('V').appendTo($nav);
+            var $goTo = $('<button>', {
+                'class': 'fa fa-check',
+                'title': Messages.history_goTo
+            }).appendTo($nav);
             $('<br>').appendTo($nav);
-            var $rev = $('<button>', {'class':'revertHistory'}).text('TODO: revert').appendTo($nav);
-            var $close = $('<button>', {'class':'closeHistory'}).text('TODO: close').appendTo($nav);
+            var $rev = $('<button>', {
+                'class':'revertHistory',
+                title: Messages.history_restoreTitle
+            }).text(Messages.history_restore).appendTo($nav);
+            var $close = $('<button>', {
+                'class':'closeHistory',
+                title: Messages.history_closeTitle
+            }).text(Messages.history_close).appendTo($nav);
 
             onUpdate = function () {
-                $cur.attr('max', exp.states.length);
+                $cur.attr('max', states.length);
                 $cur.val(c+1);
+                $label.text(' / ' + states.length);
             };
 
-            var toRender = function (getter) {
-                return function () { render(getter()) };
-            };
-
-            $prev.click(toRender(getPrevious));
-            $next.click(toRender(getNext));
-            $goTo.click(function () {
-                render( get($cur.val() - 1) )
-            });
-
-            $close.click(function () {
+            var close = function () {
                 $hist.hide();
                 $left.show();
                 $right.show();
+            };
+
+            // Buttons actions
+            $prev.click(function () { render(getPrevious()); });
+            $next.click(function () { render(getNext()); });
+            $goTo.click(function () { render( get($cur.val() - 1) ); });
+            $cur.keydown(function (e) {
+                var p = function () { e.preventDefault(); };
+                if (e.which === 13) { p(); return render( get($cur.val() - 1) ); } // Enter
+                if ([37, 40].indexOf(e.which) >= 0) { p(); return render(getPrevious()); } // Left
+                if ([38, 39].indexOf(e.which) >= 0) { p(); return render(getNext()); } // Right
+                if (e.which === 33) { p(); return render(getNext(10)); } // PageUp
+                if (e.which === 34) { p(); return render(getPrevious(10)); } // PageUp
+                if (e.which === 27) { p(); $close.click(); }
+            }).focus();
+            $cur.on('change', function () {
+                $goTo.click();
+            });
+            $close.click(function () {
+                states = [];
+                close();
                 onClose();
             });
+            $rev.click(function () {
+                common.confirm(Messages.history_restorePrompt, function (yes) {
+                    if (!yes) { return; }
+                    close();
+                    onRevert();
+                    common.log(Messages.history_restoreDone);
+                });
+            });
 
+
+            // Display the latest content
             render(get(c));
         };
 
+        // Load all the history messages into a new chainpad object
         loadHistory(common, function (err, newRt) {
             if (err) { throw new Error(err); }
-            realtime = exp.realtime = newRt;
-            cb(exp);
+            realtime = newRt;
+            update();
+            c = states.length - 1;
+            display();
+            onReady();
         });
     };
 

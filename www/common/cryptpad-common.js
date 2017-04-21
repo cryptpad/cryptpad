@@ -83,9 +83,7 @@ define([
     common.findStronger = Hash.findStronger;
 
     // History
-    common.getHistory = function (cb) {
-        return History.create(common, cb);
-    };
+    common.getHistory = function (config) { return History.create(common, config); };
 
     var getStore = common.getStore = function () {
         if (store) { return store; }
@@ -807,6 +805,18 @@ define([
                     'class': "fa fa-stop-circle cryptpad-source-button", // class used in slide.js
                     style: 'font:'+size+' FontAwesome'
                 });
+                break;
+            case 'history':
+                button = $('<button>', {
+                    title: Messages.historyButton,
+                    'class': "fa fa-history",
+                    style: 'font:'+size+' FontAwesome'
+                });
+                if (data.histConfig) {
+                    button.click(function () {
+                        common.getHistory(data.histConfig);
+                    });
+                };
                 break;
             default:
                 button = $('<button>', {
