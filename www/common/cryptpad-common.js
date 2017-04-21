@@ -1129,13 +1129,22 @@ define([
     };
 
 
-    common.ready = function (f) {
-        var block = 0;
+    common.ready = (function () {
         var env = {};
+        var initialized = false;
+
+    return function (f) {
+        if (initialized) {
+            return void window.setTimeout(function () {
+                f(void 0, env);
+            });
+        }
+        var block = 0;
 
         var cb = function () {
             block--;
             if (!block) {
+                initialized = true;
                 f(void 0, env);
             }
         };
@@ -1228,6 +1237,8 @@ define([
             });
         }, common);
     };
+
+    }());
 
     $(function () {
         Messages._applyTranslation();
