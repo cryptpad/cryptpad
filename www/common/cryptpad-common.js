@@ -24,7 +24,6 @@ define([
         Clipboard: Clipboard
     };
 
-
     // constants
     var userHashKey = common.userHashKey = 'User_hash';
     var userNameKey = common.userNameKey = 'User_name';
@@ -107,6 +106,7 @@ define([
         } catch (e) { return void console.error(e); }
 
         var href = '/common/feedback.html?' + action + '=' + (+new Date());
+        console.log('[feedback] %s', href);
         $.ajax({
             type: "HEAD",
             url: href,
@@ -1155,6 +1155,9 @@ define([
             var proxy = getProxy();
             var network = getNetwork();
 
+            if (typeof(window.Proxy) === 'undefined') {
+                feedback("NO_PROXIES");
+            }
             $(function() {
                 // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
                 // won't work. We have to reset it now to make sure it uses a correct "body"
