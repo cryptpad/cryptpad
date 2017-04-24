@@ -385,13 +385,21 @@ RPC.create = function (config, cb) {
     var store;
 
     var rpc = function (ctx, data, respond) {
+        if (!Array.isArray(data)) {
+            return void respond('INVALID_ARG_FORMAT');
+        }
+
         if (!data.length) {
             return void respond("INSUFFICIENT_ARGS");
         } else if (data.length !== 1) {
-            console.log(data.length);
+            console.log('[UNEXPECTED_ARGUMENTS_LENGTH] %s', data.length);
         }
 
         var msg = data[0].slice(0);
+
+        if (!Array.isArray(msg)) {
+            return void respond('INVALID_ARG_FORMAT');
+        }
 
         var signature = msg.shift();
         var publicKey = msg.shift();
