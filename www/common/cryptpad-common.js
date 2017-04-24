@@ -103,11 +103,13 @@ define([
         return;
     };
 
-    var feedback = common.feedback = function (action) {
-        if (!action) { return; }
-        try {
-            if (!getStore().getProxy().proxy.allowUserFeedback) { return; }
-        } catch (e) { return void console.error(e); }
+    var feedback = common.feedback = function (action, force) {
+        if (force !== true) {
+            if (!action) { return; }
+            try {
+                if (!getStore().getProxy().proxy.allowUserFeedback) { return; }
+            } catch (e) { return void console.error(e); }
+        }
 
         var href = '/common/feedback.html?' + action + '=' + (+new Date());
         console.log('[feedback] %s', href);

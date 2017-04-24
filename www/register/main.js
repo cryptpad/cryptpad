@@ -67,11 +67,7 @@ define([
             proxy.edPublic = result.edPublic;
             proxy.edPrivate = result.edPrivate;
 
-            // feedback API won't work because proxy wasn't loaded
-            $.ajax({
-                type: 'HEAD',
-                url: '/common/feedback.html?REGISTRATION=' + (+new Date()),
-            });
+            Cryptpad.feedback('REGISTRATION', true);
 
             Cryptpad.whenRealtimeSyncs(result.realtime, function () {
                 Cryptpad.login(result.userHash, result.userName, function () {
