@@ -807,6 +807,10 @@ define([
                 });
                 break;
             case 'history':
+                if (!AppConfig.enableHistory) {
+                    button = $('<span>');
+                    break;
+                }
                 button = $('<button>', {
                     title: Messages.historyButton,
                     'class': "fa fa-history",
@@ -816,7 +820,7 @@ define([
                     button.click(function () {
                         common.getHistory(data.histConfig);
                     });
-                };
+                }
                 break;
             default:
                 button = $('<button>', {

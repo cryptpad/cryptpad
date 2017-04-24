@@ -12,21 +12,14 @@ define([
     var getStates = function (rt) {
         var states = [];
         var b = rt.getAuthBlock();
-        if (b) { states.unshift(b.getContent().doc); }
+        if (b) { states.unshift(b); }
         while (b.getParent()) {
             b = b.getParent();
-            states.unshift(b.getContent().doc);
+            states.unshift(b);
         }
         return states;
     };
 
-    /* TODO
-     * Implement GET_FULL_HISTORY serverside
-     * All the history messages should be ['FULL_HISTORY', wc.id, msg]
-     * Send [FULL_HISTORY_END, wc.id]
-     *
-     * We also need a chainpad without pruning and with the ability to get old messages
-     */
     var loadHistory = function (common, cb) {
         var network = common.getNetwork();
         var hkn = network.historyKeeper;
@@ -38,7 +31,7 @@ define([
                 userName: 'history',
                 initialState: '',
                 transformFunction: JsonOT.validate,
-                logLevel: 1,
+                logLevel: 0,
                 noPrune: true
             });
         };
@@ -95,12 +88,13 @@ define([
 
         var realtime;
 
-        var states = []; //getStates(rt); //['a', 'b', 'c'];
+        var states = [];
         var c = states.length - 1;
 
         var $hist = $toolbar.find('.cryptpad-toolbar-history');
         var $left = $toolbar.find('.cryptpad-toolbar-leftside');
         var $right = $toolbar.find('.cryptpad-toolbar-rightside');
+        var $cke = $toolbar.find('.cke_toolbox_main');
 
         var onUpdate;
 
@@ -117,7 +111,7 @@ define([
             if (isNaN(i)) { return; }
             if (i < 0) { i = 0; }
             if (i > states.length - 1) { i = states.length - 1; }
-            var val = states[i];
+            var val = states[i].getContent().doc;
             c = i;
             if (typeof onUpdate === "function") { onUpdate(); }
             $hist.find('.next, .previous').show();
@@ -138,6 +132,7 @@ define([
             $hist.html('').show();
             $left.hide();
             $right.hide();
+            $cke.hide();
             var $prev =$('<button>', {
                 'class': 'previous fa fa-step-backward',
                 title: Messages.history_prev
@@ -179,6 +174,7 @@ define([
                 $hist.hide();
                 $left.show();
                 $right.show();
+                $cke.show();
             };
 
             // Buttons actions
@@ -210,7 +206,6 @@ define([
                     common.log(Messages.history_restoreDone);
                 });
             });
-
 
             // Display the latest content
             render(get(c));

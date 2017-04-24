@@ -632,11 +632,7 @@ define([
                 histConfig.onRender = function (val) {
                     if (typeof val === "undefined") { return; }
                     try {
-                        applyHjson(val || '');
-                        /*var hjson = JSON.parse(val || '{}'); // TODO
-                        var remoteDoc = hjson.content;
-                        editor.setValue(remoteDoc || ''); // TODO
-                        editor.save(); // TODO*/
+                        applyHjson(val || '["BODY",{},[]]');
                     } catch (e) {
                         // Probably a parse error
                         console.error(e);
