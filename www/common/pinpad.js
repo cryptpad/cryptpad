@@ -105,7 +105,7 @@ define([
                     if (typeof(res) !== 'object') {
                         return void cb('INVALID_RESPONSE');
                     }
-                })
+                });
             };
 
             // get the combined size of all channels (in bytes) for all the
