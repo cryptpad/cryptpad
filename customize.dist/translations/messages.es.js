@@ -392,6 +392,17 @@ define(function () {
     out.settings_pinningNotAvailable = "Los pads pegados solo están disponibles para usuarios registrados.";
     out.settings_pinningError = "Algo salió mal";
     out.settings_usageAmount = "Tus pads pegados utilizan {0}MB";
+    out.historyButton = "Mostrar el historial del documento";
+    out.history_next = "Ir a la versión anterior";
+    out.history_prev = "Ir a la versión posterior";
+    out.history_goTo = "Ir a la versión seleccionada";
+    out.history_close = "Volver";
+    out.history_closeTitle = "Cerrar el historial";
+    out.history_restore = "Restaurar";
+    out.history_restoreTitle = "Restaurar la versión seleccionada del documento";
+    out.history_restorePrompt = "¿Estás seguro que quieres cambiar la versión actual del documento por esta?";
+    out.history_restoreDone = "Documento restaurado";
+    out.fc_sizeInKilobytes = "Talla en Kilobytes";
 
     return out;
 });
