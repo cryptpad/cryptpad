@@ -6,11 +6,12 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
+    '/common/common-history.js',
 
     '/common/clipboard.js',
     '/common/pinpad.js',
     '/customize/application_config.js'
-], function ($, Config, Messages, Store, Util, Hash, UI, Clipboard, Pinpad, AppConfig) {
+], function ($, Config, Messages, Store, Util, Hash, UI, History, Clipboard, Pinpad, AppConfig) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -80,6 +81,9 @@ define([
     common.createChannelId = Hash.createChannelId;
     common.findWeaker = Hash.findWeaker;
     common.findStronger = Hash.findStronger;
+
+    // History
+    common.getHistory = function (config) { return History.create(common, config); };
 
     var getStore = common.getStore = function () {
         if (store) { return store; }
@@ -815,6 +819,22 @@ define([
                     'class': "fa fa-stop-circle cryptpad-source-button", // class used in slide.js
                     style: 'font:'+size+' FontAwesome'
                 });
+                break;
+            case 'history':
+                if (!AppConfig.enableHistory) {
+                    button = $('<span>');
+                    break;
+                }
+                button = $('<button>', {
+                    title: Messages.historyButton,
+                    'class': "fa fa-history",
+                    style: 'font:'+size+' FontAwesome'
+                });
+                if (data.histConfig) {
+                    button.click(function () {
+                        common.getHistory(data.histConfig);
+                    });
+                }
                 break;
             default:
                 button = $('<button>', {

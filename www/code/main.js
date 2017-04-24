@@ -52,6 +52,8 @@ define([
             var defaultName = Cryptpad.getDefaultName(parsedHash);
             var initialState = Messages.codeInitialState;
 
+            var isHistoryMode = false;
+
             var editor = module.editor = CMeditor.fromTextArea($textarea[0], {
                 lineNumbers: true,
                 lineWrapping: true,
@@ -162,6 +164,14 @@ define([
 
             var canonicalize = function (t) { return t.replace(/\r\n/g, '\n'); };
 
+            var setHistory = function (bool, update) {
+                isHistoryMode = bool;
+                setEditable(!bool);
+                if (!bool && update) {
+                    config.onRemote();
+                }
+            };
+
             var isDefaultTitle = function () {
                 var parsed = Cryptpad.parsePadUrl(window.location.href);
                 return Cryptpad.isDefaultName(parsed, document.title);
@@ -189,6 +199,7 @@ define([
 
             var onLocal = config.onLocal = function () {
                 if (initializing) { return; }
+                if (isHistoryMode) { return; }
                 if (readOnly) { return; }
 
                 editor.save();
@@ -370,7 +381,7 @@ define([
              var onInit = config.onInit = function (info) {
                 userList = info.userList;
 
-                var config = {
+                var configTb = {
                     displayed: ['useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad'],
                     userData: userData,
                     readOnly: readOnly,
@@ -386,8 +397,7 @@ define([
                     },
                     common: Cryptpad
                 };
-                if (readOnly) {delete config.changeNameID; }
-                toolbar = module.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, userList, config);
+                toolbar = module.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, userList, configTb);
 
                 var $rightside = $bar.find('.' + Toolbar.constants.rightside);
                 var $userBlock = $bar.find('.' + Toolbar.constants.username);
@@ -399,6 +409,38 @@ define([
                 if (!readOnly) {
                     editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
                 }
+
+                /* add a history button */
+                var histConfig = {};
+                histConfig.onRender = function (val) {
+                    if (typeof val === "undefined") { return; }
+                    try {
+                        var hjson = JSON.parse(val || '{}');
+                        var remoteDoc = hjson.content;
+                        editor.setValue(remoteDoc || '');
+                        editor.save();
+                    } catch (e) {
+                        // Probably a parse error
+                        console.error(e);
+                    }
+                };
+                histConfig.onClose = function () {
+                    // Close button clicked
+                    setHistory(false, true);
+                };
+                histConfig.onRevert = function () {
+                    // Revert button clicked
+                    setHistory(false, false);
+                    config.onLocal();
+                    config.onRemote();
+                };
+                histConfig.onReady = function () {
+                    // Called when the history is loaded and the UI displayed
+                    setHistory(true);
+                };
+                histConfig.$toolbar = $bar;
+                var $hist = Cryptpad.createButton('history', true, {histConfig: histConfig});
+                $rightside.append($hist);
 
                 /* save as template */
                 if (!Cryptpad.isTemplate(window.location.href)) {
@@ -646,6 +688,7 @@ define([
 
             var onRemote = config.onRemote = function () {
                 if (initializing) { return; }
+                if (isHistoryMode) { return; }
                 var scroll = editor.getScrollInfo();
 
                 var oldDoc = canonicalize($textarea.val());

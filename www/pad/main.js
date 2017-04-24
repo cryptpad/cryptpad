@@ -108,6 +108,8 @@ define([
             var parsedHash = Cryptpad.parsePadUrl(window.location.href);
             var defaultName = Cryptpad.getDefaultName(parsedHash);
 
+            var isHistoryMode = false;
+
             if (readOnly) {
                 $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox > .cke_toolbox_main').hide();
             }
@@ -411,6 +413,14 @@ define([
                 }
             };
 
+            var setHistory = function (bool, update) {
+                isHistoryMode = bool;
+                setEditable(!bool);
+                if (!bool && update) {
+                    realtimeOptions.onRemote();
+                }
+            };
+
             var updateTitle = function (newTitle) {
                 if (newTitle === document.title) { return; }
                 // Change the title now, and set it back to the old value if there is an error
@@ -475,6 +485,7 @@ define([
 
             var onRemote = realtimeOptions.onRemote = function () {
                 if (initializing) { return; }
+                if (isHistoryMode) { return; }
 
                 var oldShjson = stringifyDOM(inner);
 
@@ -566,7 +577,7 @@ define([
             var onInit = realtimeOptions.onInit = function (info) {
                 userList = info.userList;
 
-                var config = {
+                var configTb = {
                     displayed: ['useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad'],
                     userData: userData,
                     readOnly: readOnly,
@@ -582,8 +593,7 @@ define([
                     },
                     common: Cryptpad
                 };
-                if (readOnly) {delete config.changeNameID; }
-                toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, userList, config);
+                toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, userList, configTb);
 
                 var $rightside = $bar.find('.' + Toolbar.constants.rightside);
                 var $userBlock = $bar.find('.' + Toolbar.constants.username);
@@ -614,6 +624,35 @@ define([
                     });
                     $rightside.append($collapse);
                 }
+
+                /* add a history button */
+                var histConfig = {};
+                histConfig.onRender = function (val) {
+                    if (typeof val === "undefined") { return; }
+                    try {
+                        applyHjson(val || '["BODY",{},[]]');
+                    } catch (e) {
+                        // Probably a parse error
+                        console.error(e);
+                    }
+                };
+                histConfig.onClose = function () {
+                    // Close button clicked
+                    setHistory(false, true);
+                };
+                histConfig.onRevert = function () {
+                    // Revert button clicked
+                    setHistory(false, false);
+                    realtimeOptions.onLocal();
+                    realtimeOptions.onRemote();
+                };
+                histConfig.onReady = function () {
+                    // Called when the history is loaded and the UI displayed
+                    setHistory(true);
+                };
+                histConfig.$toolbar = $bar;
+                var $hist = Cryptpad.createButton('history', true, {histConfig: histConfig});
+                $rightside.append($hist);
 
                 /* save as template */
                 if (!Cryptpad.isTemplate(window.location.href)) {
@@ -765,6 +804,7 @@ define([
 
             var onLocal = realtimeOptions.onLocal = function () {
                 if (initializing) { return; }
+                if (isHistoryMode) { return; }
                 if (readOnly) { return; }
 
                 // stringify the json and send it into chainpad

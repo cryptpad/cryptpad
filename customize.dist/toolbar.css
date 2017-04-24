@@ -472,6 +472,31 @@
 .cryptpad-toolbar-rightside {
   text-align: right;
 }
+.cryptpad-toolbar-history {
+  display: none;
+  text-align: center;
+}
+.cryptpad-toolbar-history .next {
+  float: right;
+}
+.cryptpad-toolbar-history .previous {
+  float: left;
+}
+.cryptpad-toolbar-history .goto {
+  display: inline-block;
+}
+.cryptpad-toolbar-history .goto input {
+  width: 50px;
+}
+.cryptpad-toolbar-history .gotoInput {
+  vertical-align: middle;
+}
+.cke_toolbox .cryptpad-toolbar-history input.gotoInput {
+  background: white;
+  height: 20px;
+  padding: 3px 3px;
+  border-radius: 5px;
+}
 .cryptpad-spinner {
   height: 16px;
   width: 16px;
