@@ -225,6 +225,7 @@ define(function () {
     out.fc_remove = "Supprimer définitivement";
     out.fc_empty = "Vider la corbeille";
     out.fc_prop = "Propriétés";
+    out.fc_sizeInKilobytes = "Taille en kilo-octets";
     // fileObject.js (logs)
     out.fo_moveUnsortedError = "La liste des éléments non triés ne peut pas contenir de dossiers.";
     out.fo_existingNameError = "Ce nom est déjà utilisé dans ce répertoire. Veuillez en choisir un autre.";
