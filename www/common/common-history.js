@@ -146,7 +146,10 @@ define([
                 'type' : 'number',
                 'min' : '1',
                 'max' : states.length
-            }).val(c + 1).appendTo($nav);
+            }).val(c + 1).appendTo($nav).mousedown(function (e) {
+                // stopPropagation because the event would be cancelled by the dropdown menus
+                e.stopPropagation();
+            });
             var $label = $('<label>').text(' / '+ states.length).appendTo($nav);
             var $goTo = $('<button>', {
                 'class': 'fa fa-check',
