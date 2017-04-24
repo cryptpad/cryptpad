@@ -306,12 +306,12 @@ define([
     // Get the pads from localStorage to migrate them to the object store
     var getLegacyPads = common.getLegacyPads = function (cb) {
         require(['/customize/store.js'], function(Legacy) { // TODO DEPRECATE_F
-            feedback('MIGRATE_LEGACY_STORE');
             Legacy.ready(function (err, legacy) {
                 if (err) { cb(err, null); return; }
                 legacy.get(storageKey, function (err2, recentPads) {
                     if (err2) { cb(err2, null); return; }
                     if (Array.isArray(recentPads)) {
+                        feedback('MIGRATE_LEGACY_STORE');
                         cb(void 0, migrateRecentPads(recentPads));
                         return;
                     }
