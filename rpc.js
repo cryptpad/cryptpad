@@ -223,7 +223,6 @@ var getFileSize = function (store, channel, cb) {
 };
 
 var getMultipleFileSize = function (store, channels, cb) {
-    if (!isValidChannel(channel)) { }
 
     if (!Array.isArray(channels)) { return cb('INVALID_LIST'); }
     if (typeof(store.getChannelSize) !== 'function') {
@@ -239,6 +238,10 @@ var getMultipleFileSize = function (store, channels, cb) {
     };
 
     channels.forEach(function (channel) {
+        if (!isValidChannel(channel)) {
+            counts[channel] = -1;
+            return done();
+        }
         store.getChannelSize(channel, function (e, size) {
             if (e) {
                 counts[channel] = -1;
@@ -466,8 +469,6 @@ RPC.create = function (config, cb) {
                     if (e) { return void Respond(e); }
                     Respond(void 0, dict);
                 });
-                return void Respond('NOT_IMPLEMENTED');
-                break;
             default:
                 return void Respond('UNSUPPORTED_RPC_CALL', msg);
         }
