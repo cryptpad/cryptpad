@@ -460,12 +460,6 @@ define([
             var element = find(elementPath);
             var newParent = find(newParentPath);
 
-            // Never move a folder in one of its children
-            if (isSubpath(newParentPath, elementPath)) {
-                log(Messages.fo_moveFolderToChildError);
-                return;
-            }
-
             // Move to Trash
             if (isPathIn(newParentPath, [TRASH])) {
                 if (!elementPath || elementPath.length < 2 || elementPath[0] === TRASH) {
@@ -518,9 +512,15 @@ define([
             paths.forEach(function (p) {
                 var parentPath = p.slice();
                 parentPath.pop();
-                if (comparePath(parentPath, newPath)) { return; }
-                copyElement(p, newPath);
-                toRemove.push(p);
+                if (comparePath(parentPath, newPath)) { return; }
+                if (isSubpath(newPath, p)) {
+                    log(Messages.fo_moveFolderToChildError);
+                    return;
+                }
+                // Try to copy, and if success, remove the element from the old location
+                if (copyElement(p, newPath)) {
+                    toRemove.push(p);
+                }
             });
             exp.delete(toRemove, cb);
         };
