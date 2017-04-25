@@ -23,13 +23,16 @@ define([
             return chanKey + keys;
         }
         if (!keys.editKeyStr) { return; }
-        return '/1/edit/' + hexToBase64(chanKey) + '/' + Crypto.b64RemoveSlashes(keys.editKeyStr);
+        return '/1/edit/' + hexToBase64(chanKey) + '/'+Crypto.b64RemoveSlashes(keys.editKeyStr)+'/';
     };
     var getViewHashFromKeys = Hash.getViewHashFromKeys = function (chanKey, keys) {
         if (typeof keys === 'string') {
             return;
         }
-        return '/1/view/' + hexToBase64(chanKey) + '/' + Crypto.b64RemoveSlashes(keys.viewKeyStr);
+        return '/1/view/' + hexToBase64(chanKey) + '/'+Crypto.b64RemoveSlashes(keys.viewKeyStr)+'/';
+    };
+    var getFileHashFromKey = Hash.getFileHashFromKey = function (fileKey, cryptKey, type) {
+        return '/2/' + hexToBase64(fileKey) + '/' + Crypto.b64RemoveSlashes(cryptKey) + '/' + Crypto.base64RemoveSlashes(type);
     };
 
     var parsePadUrl = Hash.parsePadUrl = function (href) {
@@ -119,7 +122,9 @@ define([
                     }
                 } else if (version === "2") {
                     // version 2 hashes are to be used for encrypted blobs
-                    // TODO
+                    var fileId = secret.file = hashArray[2].replace(/-/g, '/');
+                    var key = secret.key = hashArray[3].replace(/-/g, '/');
+                    var type = secret.type = hashArray[4].replace(/-/g, '/');
                 }
             }
         }
@@ -150,7 +155,7 @@ define([
         var channelId = Util.hexToBase64(createChannelId());
         // 18 byte encryption key
         var key = Crypto.b64RemoveSlashes(Crypto.rand64(18));
-        return '/1/edit/' + [channelId, key].join('/');
+        return '/1/edit/' + [channelId, key].join('/') + '/';
     };
 
 /*
@@ -159,8 +164,8 @@ Version 0
 Version 1
     /code/#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI
 Version 2
-    /file/<fileId>/#/2/<cryptKey>/<contentType>
-    /file/<fileId>/#/2/ajExFODrFH4lVBwxxsrOKw/pdf
+    /file/#/2/<fileId>/<cryptKey>/<contentType>
+    /file/#/2/K6xWU-LT9BJHCQcDCT-DcQ/ajExFODrFH4lVBwxxsrOKw/image-png
 */
     var parseHash = Hash.parseHash = function (hash) {
         var parsed = {};
@@ -177,7 +182,14 @@ Version 2
             parsed.mode = hashArr[2];
             parsed.channel = hashArr[3];
             parsed.key = hashArr[4];
-            parsed.present = hashArr[5] && hashArr[5] === 'present';
+            parsed.present = typeof(hashArr[5]) === "string" && hashArr[5] === 'present';
+            return parsed;
+        }
+        if (hashArr[1] && hashArr[1] === '2') {
+            parsed.version = 2;
+            parsed.file = hashArr[2].replace(/-/g, '/');
+            parsed.key = hashArr[3].replace(/-/g, '/');
+            parsed.type = hashArr[4].replace(/-/g, '/');
             return parsed;
         }
         return;

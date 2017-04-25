@@ -514,7 +514,7 @@ define([
 
                 if (p.type !== parsed.type) { return pad; }
 
-                var shouldUpdate = p.hash === parsed.hash;
+                var shouldUpdate = p.hash.replace(/\/$/, '') === parsed.hash.replace(/\/$/, '');
 
                 // Version 1 : we have up to 4 differents hash for 1 pad, keep the strongest :
                 // Edit > Edit (present) > View > View (present)

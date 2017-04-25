@@ -16,29 +16,34 @@ define([
     var $iframe = $('#pad-iframe').contents();
 
     Cryptpad.addLoadingScreen();
-    var toolbar;
 
     var andThen = function () {
         var $bar = $iframe.find('.toolbar-container');
         var secret = Cryptpad.getSecrets();
-        var readOnly = secret.keys && !secret.keys.editKeyStr;
-        if (!secret.keys) {
-            secret.keys = secret.key;
-        }
+
+        if (secret.keys) { throw new Error("You need a hash"); } // TODO
+
+        var cryptKey = secret.key;
+        var fileId = secret.file;
+        var hexFileName = Cryptpad.base64ToHex(fileId);
+        var type = secret.type;
+
+// Test hash:
+// #/2/K6xWU-LT9BJHCQcDCT-DcQ/TBo77200c0e-FdldQFcnQx4Y/image-png
 
         var $mt = $iframe.find('#encryptedFile');
-        $mt.attr('src', './assets/image.png-encrypted');
-        $mt.attr('data-crypto-key', 'TBo77200c0e/FdldQFcnQx4Y');
-        $mt.attr('data-type', 'image/png');
+        $mt.attr('src', '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName);
+        $mt.attr('data-crypto-key', cryptKey);
+        $mt.attr('data-type', type);
         require(['/common/media-tag.js'], function (MediaTag) {
             MediaTag($mt[0]);
             Cryptpad.removeLoadingScreen();
-                var configTb = {
-                    displayed: ['useradmin', 'newpad'],
-                    ifrw: ifrw,
-                    common: Cryptpad
-                };
-                toolbar = Toolbar.create($bar, null, null, null, null, configTb);
+            var configTb = {
+                displayed: ['useradmin', 'newpad'],
+                ifrw: ifrw,
+                common: Cryptpad
+            };
+            Toolbar.create($bar, null, null, null, null, configTb);
         });
     };
 
