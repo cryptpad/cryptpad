@@ -16,6 +16,7 @@ define([
     var $iframe = $('#pad-iframe').contents();
 
     Cryptpad.addLoadingScreen();
+    var toolbar;
 
     var andThen = function () {
         var $bar = $iframe.find('.toolbar-container');
@@ -38,9 +39,7 @@ define([
                     common: Cryptpad
                 };
                 toolbar = Toolbar.create($bar, null, null, null, null, configTb);
-
         });
-
     };
 
     Cryptpad.ready(function (err, anv) {
