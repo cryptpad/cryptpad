@@ -503,10 +503,13 @@ define([
 
         // User dropdown
         if (config.displayed.indexOf('useradmin') !== -1) {
-            var userMenuCfg = {
-                displayNameCls: USERNAME_CLS,
-                changeNameButtonCls: USERBUTTON_CLS,
-            };
+            var userMenuCfg = {};
+            if (config.userData) {
+                userMenuCfg = {
+                    displayNameCls: USERNAME_CLS,
+                    changeNameButtonCls: USERBUTTON_CLS,
+                };
+            }
             if (readOnly !== 1) {
                 userMenuCfg.displayName = 1;
                 userMenuCfg.displayChangeName = 1;
@@ -674,25 +677,27 @@ define([
         }
 
         // Update user list
-        if (userData) {
-            userList.change.push(function (newUserData) {
-                var users = userList.users;
-                if (users.indexOf(myUserName) !== -1) { connected = true; }
-                if (!connected) { return; }
-                checkSynchronizing(users, myUserName, $stateElement);
-                updateUserList(config, myUserName, userListElement, users, userData, readOnly, $userAdminElement);
-            });
-        } else {
-            userList.change.push(function () {
-                var users = userList.users;
-                if (users.indexOf(myUserName) !== -1) { connected = true; }
-                if (!connected) { return; }
-                checkSynchronizing(users, myUserName, $stateElement);
-            });
+        if (userList) {
+            if (userData) {
+                userList.change.push(function (newUserData) {
+                    var users = userList.users;
+                    if (users.indexOf(myUserName) !== -1) { connected = true; }
+                    if (!connected) { return; }
+                    checkSynchronizing(users, myUserName, $stateElement);
+                    updateUserList(config, myUserName, userListElement, users, userData, readOnly, $userAdminElement);
+                });
+            } else {
+                userList.change.push(function () {
+                    var users = userList.users;
+                    if (users.indexOf(myUserName) !== -1) { connected = true; }
+                    if (!connected) { return; }
+                    checkSynchronizing(users, myUserName, $stateElement);
+                });
+            }
         }
         // Display notifications when users are joining/leaving the session
         var oldUserData;
-        if (typeof Cryptpad !== "undefined") {
+        if (typeof Cryptpad !== "undefined" && userList) {
             var notify = function(type, name, oldname) {
                 // type : 1 (+1 user), 0 (rename existing user), -1 (-1 user)
                 if (typeof name === "undefined") { return; }
@@ -758,7 +763,7 @@ define([
                 for (var k in newdata) {
                     if (k !== myUserName && userList.users.indexOf(k) !== -1) {
                         if (typeof oldUserData[k] === "undefined") {
-        // if the same uid is already present in the userdata, don't notify
+                            // if the same uid is already present in the userdata, don't notify
                             if (!userPresent(k, newdata[k], oldUserData)) {
                                 notify(1, newdata[k].name);
                             }
@@ -777,14 +782,16 @@ define([
             };
         };
 
-        realtime.onPatch(ks());
-        realtime.onMessage(ks(true));
+        if (realtime) {
+            realtime.onPatch(ks());
+            realtime.onMessage(ks(true));
 
-        checkLag(getLag, lagElement);
-        setInterval(function () {
-            if (!connected) { return; }
             checkLag(getLag, lagElement);
-        }, 3000);
+            setInterval(function () {
+                if (!connected) { return; }
+                checkLag(getLag, lagElement);
+            }, 3000);
+        }
 
         var failed = function () {
             connected = false;
