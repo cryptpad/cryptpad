@@ -45,7 +45,6 @@ define([
             };
             Toolbar.create($bar, null, null, null, null, configTb);
         });
-
     };
 
     Cryptpad.ready(function (err, anv) {

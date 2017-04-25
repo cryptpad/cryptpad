@@ -32,8 +32,8 @@ npm install
 npm install -g bower ## if necessary
 bower install
 
-## copy config.js.dist to config.js
-cp config.js.dist config.js
+## copy config.example.js to config.js
+cp config.example.js config.js
 
 node ./server.js
 ```
@@ -162,4 +162,3 @@ sales@xwiki.com
 [fragment identifier]: https://en.wikipedia.org/wiki/Fragment_identifier
 [active attack]: https://en.wikipedia.org/wiki/Attack_(computing)#Types_of_attacks
 [Creative Commons Attribution 2.5 License]: http://creativecommons.org/licenses/by/2.5/
-

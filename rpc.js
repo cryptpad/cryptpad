@@ -1,3 +1,4 @@
+/*@flow*/
 /*  Use Nacl for checking signatures of messages */
 var Nacl = require("tweetnacl");
 
@@ -375,7 +376,8 @@ var resetUserPins = function (store, Sessions, publicKey, channelList, cb) {
     });
 };
 
-RPC.create = function (config, cb) {
+/*::const ConfigType = require('./config.example.js');*/
+RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)=>void*/) {
     // load pin-store...
 
     console.log('loading rpc module...');
@@ -384,7 +386,11 @@ RPC.create = function (config, cb) {
 
     var store;
 
-    var rpc = function (ctx, data, respond) {
+    var rpc = function (
+        ctx /*:{ store: Object }*/,
+        data /*:Array<Array<any>>*/,
+        respond /*:(?string, ?Array<any>)=>void*/)
+    {
         if (!Array.isArray(data)) {
             return void respond('INVALID_ARG_FORMAT');
         }
@@ -494,4 +500,3 @@ RPC.create = function (config, cb) {
         }, 60000);
     });
 };
-

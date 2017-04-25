@@ -76,7 +76,7 @@ Chainpad can handle out of order messages, but it performs best when its message
 By architecting your system such that all clients send to a server which then relays to other clients, you guarantee that a particular chain of patches is consistent between the participants of your session.
 
 Cryptpad is capable of using a variety of data stores.
-Which data store your instance employs can be [easily configured](https://github.com/xwiki-labs/cryptpad/blob/master/config.js.dist).
+Which data store your instance employs can be [easily configured](https://github.com/xwiki-labs/cryptpad/blob/master/config.example.js).
 
 You simply need to write an adaptor which conforms to a simple API.
 The documentation for writing such an adaptor, and the complete list of implemented adaptors, is available [here](https://github.com/xwiki-labs/cryptpad/tree/master/storage).
@@ -243,5 +243,3 @@ A session could still have difficulty with very large chains, however, in practi
 
 
 ## Conclusion
-
-

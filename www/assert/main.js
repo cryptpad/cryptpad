@@ -139,6 +139,49 @@ define([
         strungJSON(orig);
     });
 
+    // check that old hashes parse correctly
+    assert(function () {
+        var secret = Cryptpad.parseHash('67b8385b07352be53e40746d2be6ccd7XAYSuJYYqa9NfmInyHci7LNy');
+        return secret.channel === "67b8385b07352be53e40746d2be6ccd7" &&
+            secret.key === "XAYSuJYYqa9NfmInyHci7LNy" &&
+            secret.version === 0;
+    }, "Old hash failed to parse");
+
+    // make sure version 1 hashes parse correctly
+    assert(function () {
+        var secret = Cryptpad.parseHash('/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI');
+        return secret.version === 1 &&
+            secret.mode === "edit" &&
+            secret.channel === "3Ujt4F2Sjnjbis6CoYWpoQ" &&
+            secret.key === "usn4+9CqVja8Q7RZOGTfRgqI" &&
+            !secret.present;
+    }, "version 1 hash failed to parse");
+
+    // test support for present mode in hashes
+    assert(function () {
+        var secret = Cryptpad.parseHash('/1/edit/CmN5+YJkrHFS3NSBg-P7Sg/DNZ2wcG683GscU4fyOyqA87G/present');
+        return secret.version === 1
+            && secret.mode === "edit"
+            && secret.channel === "CmN5+YJkrHFS3NSBg-P7Sg"
+            && secret.key === "DNZ2wcG683GscU4fyOyqA87G"
+            && secret.present;
+    }, "version 1 hash failed to parse");
+
+    // test support for trailing slash
+    assert(function () {
+        var secret = Cryptpad.parseHash('/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI/');
+        return secret.version === 1 &&
+            secret.mode === "edit" &&
+            secret.channel === "3Ujt4F2Sjnjbis6CoYWpoQ" &&
+            secret.key === "usn4+9CqVja8Q7RZOGTfRgqI" &&
+            !secret.present;
+    }, "test support for trailing slashes in version 1 hash failed to parse");
+
+    assert(function () {
+        // TODO
+        return true;
+    }, "version 2 hash failed to parse correctly");
+
     var swap = function (str, dict) {
         return str.replace(/\{\{(.*?)\}\}/g, function (all, key) {
             return typeof dict[key] !== 'undefined'? dict[key] : all;
