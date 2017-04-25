@@ -31,6 +31,37 @@ define([
 // Test hash:
 // #/2/K6xWU-LT9BJHCQcDCT-DcQ/TBo77200c0e-FdldQFcnQx4Y/image-png
 
+        var parsed = Cryptpad.parsePadUrl(window.location.href);
+        var defaultName = Cryptpad.getDefaultName(parsed);
+
+        var getTitle = function () {
+            var pad = Cryptpad.getRelativeHref(window.location.href);
+            var fo = Cryptpad.getStore().getProxy().fo;
+            var data = fo.getFileData(pad);
+            return data ? data.title : undefined;
+        };
+
+        var updateTitle = function (newTitle) {
+            Cryptpad.renamePad(newTitle, function (err, data) {
+                if (err) {
+                    console.log("Couldn't set pad title");
+                    console.error(err);
+                    return;
+                }
+                document.title = newTitle;
+                $bar.find('.' + Toolbar.constants.title).find('span.title').text(data);
+                $bar.find('.' + Toolbar.constants.title).find('input').val(data);
+            });
+        };
+
+        var suggestName = function () {
+            return document.title || getTitle() || '';
+        };
+
+        var renameCb = function (err, title) {
+            document.title = title;
+        };
+
         var $mt = $iframe.find('#encryptedFile');
         $mt.attr('src', '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName);
         $mt.attr('data-crypto-key', cryptKey);
@@ -41,9 +72,16 @@ define([
             var configTb = {
                 displayed: ['useradmin', 'newpad'],
                 ifrw: ifrw,
-                common: Cryptpad
+                common: Cryptpad,
+                title: {
+                    onRename: renameCb,
+                    defaultName: defaultName,
+                    suggestName: suggestName
+                }
             };
             Toolbar.create($bar, null, null, null, null, configTb);
+
+            updateTitle(Cryptpad.initialName || getTitle() || defaultName);
         });
     };
 

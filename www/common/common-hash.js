@@ -252,7 +252,7 @@ Version 2
 
         if (parsed.version === 0) {
             return parsed.channel;
-        } else if (parsed.version !== 1) {
+        } else if (parsed.version !== 1 && parsed.version !== 2) {
             console.error("parsed href had no version");
             console.error(parsed);
             return;

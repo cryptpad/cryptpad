@@ -791,7 +791,7 @@ define([
                 if (!connected) { return; }
                 checkLag(getLag, lagElement);
             }, 3000);
-        }
+        } else { connected = true; }
 
         var failed = function () {
             connected = false;

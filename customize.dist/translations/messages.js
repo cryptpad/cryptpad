@@ -11,6 +11,7 @@ define(function () {
     out.type.slide = 'Presentation';
     out.type.drive = 'Drive';
     out.type.whiteboard = 'Whiteboard';
+    out.type.file = 'File';
 
     out.button_newpad = 'New Rich Text pad';
     out.button_newcode = 'New Code pad';
