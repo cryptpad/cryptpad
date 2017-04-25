@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html class="cp pad">
+<head>
+    <title>CryptPad</title>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
+    <script data-bootload="main.js" data-main="/common/boot.js" src="/bower_components/requirejs/require.js"></script>
+    <link rel="icon" type="image/png"
+        href="/customize/main-favicon.png"
+        data-main-favicon="/customize/main-favicon.png"
+        data-alt-favicon="/customize/alt-favicon.png"
+        id="favicon" />
+    <link rel="stylesheet" href="/customize/main.css" />
+    <style>
+        html, body {
+            margin: 0px;
+            padding: 0px;
+        }
+        #pad-iframe {
+            position:fixed;
+            top:0px;
+            left:0px;
+            bottom:0px;
+            right:0px;
+            width:100%;
+            height:100%;
+            border:none;
+            margin:0;
+            padding:0;
+            overflow:hidden;
+        }
+    </style>
+</head>
+<body>
+    <iframe id="pad-iframe"></iframe><script src="/common/noscriptfix.js"></script>
+    <div id="loading">
+        <div class="loadingContainer">
+            <img class="cryptofist" src="/customize/cryptofist_small.png" />
+            <div class="spinnerContainer">
+                <span class="fa fa-spinner fa-pulse fa-4x fa-fw"></span>
+            </div>
+            <p data-localization="loading"></p>
+        </div>
+    </div>
+</body>
+</html>
