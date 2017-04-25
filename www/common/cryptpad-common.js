@@ -1190,7 +1190,7 @@ define([
                 feedback("NO_PROXIES");
             }
 
-            if (typeof(Array.isArray) === 'function') {
+            if (typeof(Array.isArray) !== 'function') {
                 feedback("NO_ISARRAY");
             }
 
