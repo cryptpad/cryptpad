@@ -117,6 +117,9 @@ define([
                             throw new Error("The channel key is invalid");
                         }
                     }
+                } else if (version === "2") {
+                    // version 2 hashes are to be used for encrypted blobs
+                    // TODO
                 }
             }
         }
@@ -150,6 +153,15 @@ define([
         return '/1/edit/' + [channelId, key].join('/');
     };
 
+/*
+Version 0
+    /pad/#67b8385b07352be53e40746d2be6ccd7XAYSuJYYqa9NfmInyHci7LNy
+Version 1
+    /code/#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI
+Version 2
+    /file/<fileId>/#/2/<cryptKey>/<contentType>
+    /file/<fileId>/#/2/ajExFODrFH4lVBwxxsrOKw/pdf
+*/
     var parseHash = Hash.parseHash = function (hash) {
         var parsed = {};
         if (hash.slice(0,1) !== '/' && hash.length >= 56) {
