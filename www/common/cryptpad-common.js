@@ -495,6 +495,18 @@ define([
         }
     };
 
+    var updateFileName = function (href, oldName, newName) {
+        var fo = getStore().getProxy().fo;
+        var paths = fo.findFileInRoot(href);
+        paths.forEach(function (path) {
+            if (path.length !== 2) { return; }
+            var name = path[1].split('_')[0];
+            var parsed = parsePadUrl(href);
+            if (path.length === 2 && name === oldName && isDefaultName(parsed, name)) {
+                fo.rename(path, newName);
+            }
+        });
+    };
     var setPadTitle = common.setPadTitle = function (name, cb) {
         var href = window.location.href;
         var parsed = parsePadUrl(href);
@@ -540,6 +552,7 @@ define([
                     pad.atime = +new Date();
 
                     // set the name
+                    var old = pad.title;
                     pad.title = name;
 
                     // If we now have a stronger version of a stored href, replace the weaker one by the strong one
@@ -550,6 +563,7 @@ define([
                         });
                     }
                     pad.href = href;
+                    updateFileName(href, old, name);
                 }
                 return pad;
             });
@@ -557,7 +571,7 @@ define([
             if (!contains) {
                 var data = makePad(href, name);
                 getStore().pushData(data);
-                getStore().addPad(href, common.initialPath, common.initialName || name);
+                getStore().addPad(data, common.initialPath);
             }
             if (updateWeaker.length > 0) {
                 updateWeaker.forEach(function (obj) {

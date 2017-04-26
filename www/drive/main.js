@@ -41,8 +41,6 @@ define([
     var SEARCH_NAME = Messages.fm_searchName;
     var ROOT = "root";
     var ROOT_NAME = Messages.fm_rootName;
-    var UNSORTED = "unsorted";
-    var UNSORTED_NAME = Messages.fm_unsortedName;
     var FILES_DATA = Cryptpad.storageKey;
     var FILES_DATA_NAME = Messages.fm_filesDataName;
     var TEMPLATE = "template";
@@ -68,9 +66,9 @@ define([
     var getLastOpenedFolder = function () {
         var path;
         try {
-            path = localStorage[LOCALSTORAGE_LAST] ? JSON.parse(localStorage[LOCALSTORAGE_LAST]) : [UNSORTED];
+            path = localStorage[LOCALSTORAGE_LAST] ? JSON.parse(localStorage[LOCALSTORAGE_LAST]) : [ROOT];
         } catch (e) {
-            path = [UNSORTED];
+            path = [ROOT];
         }
         return path;
     };
@@ -218,7 +216,7 @@ define([
 
         // Categories dislayed in the menu
         // _WORKGROUP_ : do not display unsorted
-        var displayedCategories = [ROOT, UNSORTED, TRASH, SEARCH];
+        var displayedCategories = [ROOT, TRASH, SEARCH];
         if (AppConfig.enableTemplates) { displayedCategories.push(TEMPLATE); }
         if (isWorkgroup()) { displayedCategories = [ROOT, TRASH, SEARCH]; }
 
@@ -680,7 +678,7 @@ define([
             var msg = Messages._getKey('fm_removeSeveralDialog', [paths.length]);
             if (paths.length === 1) {
                 var path = paths[0];
-                var name = path[0] === UNSORTED ? filesOp.getTitle(filesOp.find(path)) : path[path.length - 1];
+                var name = path[0] === TEMPLATE ? filesOp.getTitle(filesOp.find(path)) : path[path.length - 1];
                 msg = Messages._getKey('fm_removeDialog', [name]);
             }
             Cryptpad.confirm(msg, function (res) {
@@ -948,7 +946,6 @@ define([
             switch (name) {
                 case ROOT: pName = ROOT_NAME; break;
                 case TRASH: pName = TRASH_NAME; break;
-                case UNSORTED: pName = UNSORTED_NAME; break;
                 case TEMPLATE: pName = TEMPLATE_NAME; break;
                 case FILES_DATA: pName = FILES_DATA_NAME; break;
                 case SEARCH: pName = SEARCH_NAME; break;
@@ -996,9 +993,6 @@ define([
             switch (path[0]) {
                 case ROOT:
                     msg = Messages.fm_info_root;
-                    break;
-                case UNSORTED:
-                    msg = Messages.fm_info_unsorted;
                     break;
                 case TEMPLATE:
                     msg = Messages.fm_info_template;
@@ -1243,10 +1237,6 @@ define([
             //return $fileHeader;
         };
 
-        var allFilesSorted = function () {
-            return filesOp.getFiles([UNSORTED]).length === 0;
-        };
-
         var sortElements = function (folder, path, oldkeys, prop, asc, useHref, useData) {
             var root = filesOp.find(path);
             var test = folder ? filesOp.isFolder : filesOp.isFile;
@@ -1343,7 +1333,6 @@ define([
         // and they don't hav a hierarchical structure (folder/subfolders)
         var displayHrefArray = function ($container, rootName, draggable) {
             var unsorted = files[rootName];
-            if (rootName === UNSORTED && allFilesSorted()) { return; }
             var $fileHeader = getFileListHeader(false);
             $container.append($fileHeader);
             var keys = unsorted;
@@ -1517,7 +1506,6 @@ define([
             }
             var isInRoot = filesOp.isPathIn(path, [ROOT]);
             var isTrashRoot = filesOp.comparePath(path, [TRASH]);
-            var isUnsorted = filesOp.comparePath(path, [UNSORTED]);
             var isTemplate = filesOp.comparePath(path, [TEMPLATE]);
             var isAllFiles = filesOp.comparePath(path, [FILES_DATA]);
             var isSearch = path[0] === SEARCH;
@@ -1596,7 +1584,7 @@ define([
             var $folderHeader = getFolderListHeader();
             var $fileHeader = getFileListHeader(true);
 
-            if (isUnsorted || isTemplate) {
+            if (isTemplate) {
                 displayHrefArray($list, path[0], true);
             } else if (isAllFiles) {
                 displayAllFiles($list);
@@ -1733,15 +1721,6 @@ define([
             });
         };
 
-        var createUnsorted = function ($container, path) {
-            var $icon = $unsortedIcon.clone();
-            var isOpened = filesOp.comparePath(path, currentPath);
-            var $unsortedElement = createTreeElement(UNSORTED_NAME, $icon, [UNSORTED], false, true, false, isOpened);
-            $unsortedElement.addClass('root');
-            var $unsortedList = $('<ul>', { id: 'unsortedTree', 'class': 'category2' }).append($unsortedElement);
-            $container.append($unsortedList);
-        };
-
         var createTemplate = function ($container, path) {
             var $icon = $templateIcon.clone();
             var isOpened = filesOp.comparePath(path, currentPath);
@@ -1808,7 +1787,6 @@ define([
             $tree.html('');
             if (displayedCategories.indexOf(SEARCH) !== -1) { createSearch($tree); }
             if (displayedCategories.indexOf(ROOT) !== -1) { createTree($tree, [ROOT]); }
-            if (displayedCategories.indexOf(UNSORTED) !== -1) { createUnsorted($tree, [UNSORTED]); }
             if (displayedCategories.indexOf(TEMPLATE) !== -1) { createTemplate($tree, [TEMPLATE]); }
             if (displayedCategories.indexOf(FILES_DATA) !== -1) { createAllFiles($tree, [FILES_DATA]); }
             if (displayedCategories.indexOf(TRASH) !== -1) { createTrash($tree, [TRASH]); }
@@ -1829,9 +1807,6 @@ define([
                 switch (s) {
                     case ROOT:
                         prettyName = ROOT_NAME;
-                        break;
-                    case UNSORTED:
-                        prettyName = UNSORTED_NAME;
                         break;
                     case FILES_DATA:
                         prettyName = FILES_DATA_NAME;
@@ -2210,13 +2185,14 @@ define([
                 Get.put(hash, Messages.driveReadme, function (e) {
                     if (e) { logError(e); }
                     var href = '/pad/#' + hash;
-                    proxy.drive[UNSORTED].push(href);
-                    proxy.drive[FILES_DATA].push({
+                    var data = {
                         href: href,
                         title: Messages.driveReadmeTitle,
                         atime: new Date().toISOString(),
                         ctime: new Date().toISOString()
-                    });
+                    };
+                    filesOp.pushData(data);
+                    filesOp.add(data);
                     if (typeof(cb) === "function") { cb(); }
                 });
                 delete sessionStorage.createReadme;
