@@ -12,6 +12,7 @@ define(function () {
     out.type.drive = 'Drive';
     out.type.whiteboard = "Tableau Blanc";
     out.type.file = "Fichier";
+    out.type.media = "Média";
 
     out.button_newpad = 'Nouveau document texte';
     out.button_newcode = 'Nouvelle page de code';

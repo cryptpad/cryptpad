@@ -63,17 +63,6 @@ define([
             document.title = title;
         };
 
-        var blob;
-        var exportFile = function () {
-            var suggestion = document.title;
-            Cryptpad.prompt(Messages.exportPrompt,
-                Cryptpad.fixFileName(suggestion) + '.html', function (filename) {
-                if (!(typeof(filename) === 'string' && filename)) { return; }
-                //var blob = new Blob([html], {type: "text/html;charset=utf-8"});
-                saveAs(blob, filename);
-            });
-        };
-
         var $mt = $iframe.find('#encryptedFile');
         $mt.attr('src', '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName);
         $mt.attr('data-crypto-key', cryptKey);
@@ -96,9 +85,6 @@ define([
             };
             Toolbar.create($bar, null, null, null, null, configTb);
             var $rightside = $bar.find('.' + Toolbar.constants.rightside);
-
-            var $export = Cryptpad.createButton('export', true, {}, exportFile);
-            $rightside.append($export);
 
             updateTitle(Cryptpad.initialName || getTitle() || defaultName);
 

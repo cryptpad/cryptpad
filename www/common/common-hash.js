@@ -31,8 +31,8 @@ define([
         }
         return '/1/view/' + hexToBase64(chanKey) + '/'+Crypto.b64RemoveSlashes(keys.viewKeyStr)+'/';
     };
-    var getFileHashFromKey = Hash.getFileHashFromKey = function (fileKey, cryptKey, type) {
-        return '/2/' + hexToBase64(fileKey) + '/' + Crypto.b64RemoveSlashes(cryptKey) + '/' + Crypto.base64RemoveSlashes(type);
+    var getFileHashFromKeys = Hash.getFileHashFromKeys = function (fileKey, cryptKey) {
+        return '/2/' + hexToBase64(fileKey) + '/' + Crypto.b64RemoveSlashes(cryptKey) + '/';
     };
 
     var parsePadUrl = Hash.parsePadUrl = function (href) {
@@ -122,9 +122,8 @@ define([
                     }
                 } else if (version === "2") {
                     // version 2 hashes are to be used for encrypted blobs
-                    var fileId = secret.file = hashArray[2].replace(/-/g, '/');
-                    var key = secret.key = hashArray[3].replace(/-/g, '/');
-                    var type = secret.type = hashArray[4].replace(/-/g, '/');
+                    secret.channel = hashArray[2].replace(/-/g, '/');
+                    secret.keys = { fileKeyStr: hashArray[3].replace(/-/g, '/') };
                 }
             }
         }
@@ -138,6 +137,9 @@ define([
         }
         if (secret.keys.viewKeyStr) {
             hashes.viewHash = getViewHashFromKeys(channel, secret.keys);
+        }
+        if (secret.keys.fileKeyStr) {
+            hashes.fileHash = getFileHashFromKeys(channel, secret.keys.fileKeyStr);
         }
         return hashes;
     };
@@ -187,9 +189,8 @@ Version 2
         }
         if (hashArr[1] && hashArr[1] === '2') {
             parsed.version = 2;
-            parsed.file = hashArr[2].replace(/-/g, '/');
+            parsed.channel = hashArr[2].replace(/-/g, '/');
             parsed.key = hashArr[3].replace(/-/g, '/');
-            parsed.type = hashArr[4].replace(/-/g, '/');
             return parsed;
         }
         return;

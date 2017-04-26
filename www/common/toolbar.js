@@ -205,6 +205,13 @@ define([
                         });
                     }
                 }
+                if (hashes.fileHash) {
+                    options.push({
+                        tag: 'a',
+                        attributes: {title: Messages.viewShareTitle, 'class': 'fileShare'},
+                        content: '<span class="fa fa-eye"></span> ' + Messages.viewShare
+                    });
+                }
                 var dropdownConfigShare = {
                     text: $('<div>').append($shareIcon).append($span).html(),
                     options: options
@@ -223,7 +230,14 @@ define([
                 }
                 if (hashes.viewHash) {
                     $shareBlock.find('a.viewShare').click(function () {
-                        var url = window.location.origin + window.location.pathname + '#' + hashes.viewHash;
+                        var url = window.location.origin + window.location.pathname + '#' + hashes.viewHash ;
+                        var success = Cryptpad.Clipboard.copy(url);
+                        if (success) { Cryptpad.log(Messages.shareSuccess); }
+                    });
+                }
+                if (hashes.fileHash) {
+                    $shareBlock.find('a.fileShare').click(function () {
+                        var url = window.location.origin + window.location.pathname + '#' + hashes.fileHash ;
                         var success = Cryptpad.Clipboard.copy(url);
                         if (success) { Cryptpad.log(Messages.shareSuccess); }
                     });
