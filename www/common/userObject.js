@@ -41,14 +41,13 @@ define([
         var getStructure = exp.getStructure = function () {
             var a = {};
             a[ROOT] = {};
-            a[UNSORTED] = [];
             a[TRASH] = {};
             a[FILES_DATA] = [];
             a[TEMPLATE] = [];
             return a;
         };
         var getHrefArray = function () {
-            return [UNSORTED, TEMPLATE];
+            return [TEMPLATE];
         };
 
 
@@ -297,6 +296,9 @@ define([
 
             return paths;
         };
+        var findFileInRoot = exp.findFileInRoot = function (href) {
+            return _findFileInRoot([ROOT], href);
+        };
         var _findFileInHrefArray = function (rootName, href) {
             var unsorted = files[rootName].slice();
             var ret = [];
@@ -345,10 +347,9 @@ define([
         };
         var findFile = exp.findFile = function (href) {
             var rootpaths = _findFileInRoot([ROOT], href);
-            var unsortedpaths = _findFileInHrefArray(UNSORTED, href);
             var templatepaths = _findFileInHrefArray(TEMPLATE, href);
             var trashpaths = _findFileInTrash([TRASH], href);
-            return rootpaths.concat(unsortedpaths, templatepaths, trashpaths);
+            return rootpaths.concat(templatepaths, trashpaths);
         };
         var search = exp.search = function (value) {
             if (typeof(value) !== "string") { return []; }
@@ -534,8 +535,10 @@ define([
 
 
         // ADD
-        var add = exp.add = function (href, path, name, cb) {
-            if (!href) { return; }
+        var add = exp.add = function (data, path) {
+            if (!data || typeof(data) !== "object") { return; }
+            var href = data.href;
+            var name = data.title;
             var newPath = path, parentEl;
             if (path && !Array.isArray(path)) {
                 newPath = decodeURIComponent(path).split(',');
@@ -546,20 +549,16 @@ define([
                 parentEl.push(href);
                 return;
             }
-            // Add to root
-            if (path && isPathIn(newPath, [ROOT]) && name) {
-                parentEl = find(newPath);
+            // Add to root if path is ROOT or if no path
+            var filesList = getFiles([ROOT, TRASH, 'hrefArray']);
+            if ((path && isPathIn(newPath, [ROOT]) || filesList.indexOf(href) === -1) && name) {
+                parentEl = find(newPath || [ROOT]);
                 if (parentEl) {
                     var newName = getAvailableName(parentEl, name);
                     parentEl[newName] = href;
                     return;
                 }
             }
-            // No path: push to unsorted
-            var filesList = getFiles([ROOT, TRASH, 'hrefArray']);
-            if (filesList.indexOf(href) === -1) { files[UNSORTED].push(href); }
-
-            if (typeof cb === "function") { cb(); }
         };
         var addFile = exp.addFile = function (filePath, name, type, cb) {
             var parentEl = findElement(files, filePath);
@@ -780,7 +779,7 @@ define([
             //  * FILES_DATA: - Data (title, cdate, adte) are stored in filesData. filesData contains only href keys linking to object with title, cdate, adate.
             //                - Dates (adate, cdate) can be parsed/formatted
             //                - All files in filesData should be either in 'root', 'trash' or 'unsorted'. If that's not the case, copy the fily to 'unsorted'
-            //  * UNSORTED: Contains only files (href), and does not contains files that are in ROOT
+            //  * TEMPLATE: Contains only files (href), and does not contains files that are in ROOT
             debug("Cleaning file system...");
 
             var before = JSON.stringify(files);
@@ -821,26 +820,37 @@ define([
                     }
                 }
             };
+            // Make sure unsorted doesn't exist anymore
             var fixUnsorted = function () {
-                if (!Array.isArray(files[UNSORTED])) { debug("UNSORTED was not an array"); files[UNSORTED] = []; }
-                files[UNSORTED] = Cryptpad.deduplicateString(files[UNSORTED].slice());
+                if (!files[UNSORTED]) { return; }
+                debug("UNSORTED still exists in the object, removing it...");
                 var us = files[UNSORTED];
+                if (us.length === 0) {
+                    delete files[UNSORTED];
+                    return;
+                }
                 var rootFiles = getFiles([ROOT, TEMPLATE]).slice();
                 var toClean = [];
+                var root = find([ROOT]);
                 us.forEach(function (el, idx) {
                     if (!isFile(el) || rootFiles.indexOf(el) !== -1) {
-                        toClean.push(idx);
+                        return;
+                        //toClean.push(idx);
                     }
+                    var name = getFileData(el).title || NEW_FILE_NAME;
+                    var newName = getAvailableName(root, name);
+                    root[newName] = el;
                 });
-                toClean.forEach(function (idx) {
+                delete files[UNSORTED];
+                /*toClean.forEach(function (idx) {
                     us.splice(idx, 1);
-                });
+                });*/
             };
             var fixTemplate = function () {
                 if (!Array.isArray(files[TEMPLATE])) { debug("TEMPLATE was not an array"); files[TEMPLATE] = []; }
                 files[TEMPLATE] = Cryptpad.deduplicateString(files[TEMPLATE].slice());
                 var us = files[TEMPLATE];
-                var rootFiles = getFiles([ROOT, UNSORTED]).slice();
+                var rootFiles = getFiles([ROOT]).slice();
                 var toClean = [];
                 us.forEach(function (el, idx) {
                     if (!isFile(el) || rootFiles.indexOf(el) !== -1) {
@@ -855,6 +865,7 @@ define([
                 if (!$.isArray(files[FILES_DATA])) { debug("FILES_DATA was not an array"); files[FILES_DATA] = []; }
                 var fd = files[FILES_DATA];
                 var rootFiles = getFiles([ROOT, TRASH, 'hrefArray']);
+                var root = find([ROOT]);
                 var toClean = [];
                 fd.forEach(function (el, idx) {
                     if (!el || typeof(el) !== "object") {
@@ -863,8 +874,10 @@ define([
                         return;
                     }
                     if (rootFiles.indexOf(el.href) === -1) {
-                        debug("An element in filesData was not in ROOT, UNSORTED or TRASH.", el);
-                        files[UNSORTED].push(el.href);
+                        debug("An element in filesData was not in ROOT, TEMPLATE or TRASH.", el);
+                        var name = el.title || NEW_FILE_NAME;
+                        var newName = getAvailableName(root, name);
+                        root[newName] = el.href;
                         return;
                     }
                 });

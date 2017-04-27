@@ -88,8 +88,8 @@ define([
         ret.removeData = filesOp.removeData;
         ret.pushData = filesOp.pushData;
 
-        ret.addPad = function (href, path, name) {
-            filesOp.add(href, path, name);
+        ret.addPad = function (data, path) {
+            filesOp.add(data, path);
         };
 
         ret.forgetPad = function (href, cb) {
