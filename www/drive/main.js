@@ -199,6 +199,7 @@ define([
         var $trashTreeContextMenu = $iframe.find("#trashTreeContextMenu");
         var $trashContextMenu = $iframe.find("#trashContextMenu");
 
+
         // TOOLBAR
 
         /* add a "change username" button */
@@ -252,12 +253,113 @@ define([
             return $el.is('.element-row') ? $el : $el.closest('.element-row');
         };
 
+
+        // Selection
         var removeSelected =  function () {
             $iframe.find('.selected').removeClass("selected");
             var $container = $driveToolbar.find('#contextButtonsContainer');
             if (!$container.length) { return; }
             $container.html('');
         };
+
+        var sel = {};
+        sel.refresh = 200;
+        sel.$selectBox = $('<div>', {'class': 'selectBox'}).appendTo($content);
+        var checkSelected = function () {
+            if (!sel.down) { return; }
+            var pos = sel.pos;
+            var l = $content[0].querySelectorAll('.element:not(.selected):not(.header)');
+            var p, el;
+            for (var i = 0; i < l.length; i++) {
+                el = l[i];
+                p = $(el).position();
+                p.top += 10 + $content.scrollTop();
+                p.left += 10;
+                p.bottom = p.top + $(el).outerHeight();
+                p.right = p.left + $(el).outerWidth();
+                if (p.right < pos.left || p.left > pos.right
+                    || p.top > pos.bottom || p.bottom < pos.top) {
+                    $(el).removeClass('selectedTmp');
+                } else {
+                    $(el).addClass('selectedTmp');
+                }
+            }
+        };
+        $content.on('mousedown', function (e) {
+            console.log('down');
+            sel.down = true;
+            if (!e.ctrlKey) { removeSelected(); }
+            var rect = e.currentTarget.getBoundingClientRect();
+            sel.startX = e.clientX - rect.left,
+            sel.startY = e.clientY - rect.top + $content.scrollTop();
+            sel.$selectBox.show().css({
+                left: sel.startX + 'px',
+                top: sel.startY + 'px',
+                width: '0px',
+                height: '0px'
+            });
+            if (sel.move) { console.log('ret'); return; }
+            sel.move = function (ev) {
+                var rectMove = ev.currentTarget.getBoundingClientRect(),
+                    offX = ev.clientX - rectMove.left,
+                    offY = ev.clientY - rectMove.top + $content.scrollTop();
+
+
+                var left = sel.startX,
+                    top = sel.startY;
+                var width = offX - sel.startX;
+                if (width < 0) {
+                    left = Math.max(0, offX);
+                    var diffX = left-offX;
+                    width = Math.abs(width) - diffX;
+                }
+                var height = offY - sel.startY;
+                if (height < 0) {
+                    top = Math.max(0, offY);
+                    var diffY = top-offY;
+                    height = Math.abs(height) - diffY;
+                }
+                sel.$selectBox.css({
+                    width: width + 'px',
+                    left: left + 'px',
+                    height: height + 'px',
+                    top: top + 'px'
+                });
+
+
+                sel.pos = {
+                    top: top,
+                    left: left,
+                    bottom: top + height,
+                    right: left + width
+                };
+                var diffT = sel.update ? +new Date() - sel.update : sel.refresh;
+                if (diffT < sel.refresh) {
+                    if (!sel.to) {
+                        sel.to = window.setTimeout(function () {
+                            sel.update = +new Date();
+                            checkSelected();
+                            sel.to = undefined;
+                        }, (sel.refresh - diffT));
+                    }
+                    console.log('cancelled');
+                    return;
+                }
+                sel.update = +new Date();
+                checkSelected();
+            };
+            $content.mousemove(sel.move);
+        });
+        $content.on('mouseup', function (e) {
+            console.log(sel.pos);
+            sel.down = false;
+            sel.$selectBox.hide();
+            $content.off('mousemove', sel.move);
+            delete sel.move;
+            $content.find('.selectedTmp').removeClass('selectedTmp').addClass('selected');
+        });
+
+
         var removeInput =  function (cancel) {
             if (!cancel && $iframe.find('.element-row > input').length === 1) {
                 var $input = $iframe.find('.element-row > input');
@@ -1501,6 +1603,7 @@ define([
             currentPath = path;
             var s = $content.scrollTop() || 0;
             $content.html("");
+            sel.$selectBox = $('<div>', {'class': 'selectBox'}).appendTo($content);
             if (!path || path.length === 0) {
                 path = [ROOT];
             }

@@ -89,6 +89,16 @@ li {
 .selected .fa-plus-square-o {
   color: #000;
 }
+.selectedTmp {
+  border: 1px dotted #bbb;
+  background: #AAA;
+  color: #ddd;
+  margin: -1px;
+}
+.selectedTmp .fa-minus-square-o,
+.selectedTmp .fa-plus-square-o {
+  color: #000;
+}
 span.fa-folder,
 span.fa-folder-open {
   color: #FEDE8B;
@@ -215,6 +225,12 @@ span.fa-folder-open {
   flex: 1;
   display: flex;
   flex-flow: column;
+  position: relative;
+}
+#content .selectBox {
+  display: none;
+  background-color: rgba(100, 100, 100, 0.7);
+  position: absolute;
 }
 #content.readonly {
   background: #e6e6e6;
@@ -242,7 +258,7 @@ span.fa-folder-open {
 #content li:not(.header) *:not(input) {
   /*pointer-events: none;*/
 }
-#content li:not(.header):hover:not(.selected) {
+#content li:not(.header):hover:not(.selected, .selectedTmp) {
   background-color: #eee;
 }
 #content li:not(.header):hover .name {
@@ -304,8 +320,8 @@ span.fa-folder-open {
   padding-bottom: 5px;
   max-height: 145px;
 }
-#content div.grid li:not(.selected) {
-  border: transparent 1px;
+#content div.grid li:not(.selected):not(.selectedTmp) {
+  border: 1px solid transparent;
 }
 #content div.grid li .name {
   width: 100%;
@@ -325,6 +341,9 @@ span.fa-folder-open {
 }
 #content div.grid .listElement {
   display: none;
+}
+#content .list {
+  padding-left: 20px;
 }
 #content .list ul {
   display: table;
