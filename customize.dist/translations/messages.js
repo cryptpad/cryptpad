@@ -57,6 +57,10 @@ define(function () {
     out.orangeLight = "Your slow connection may impact your experience";
     out.redLight = "You are disconnected from the session";
 
+    out.pinLimitReached = "You've reached your storage limit";
+    out.pinLimitReachedAlert = "You've reached your storage limit. This pad won't be stored in your CryptDrive.<br>" +
+        "To fix this problem, you can either remove pads from your CryptDrive (including the trash) or subscribe to a premium offer to increase your limit.";
+
     out.importButtonTitle = 'Import a pad from a local file';
 
     out.exportButtonTitle = 'Export this pad to a local file';

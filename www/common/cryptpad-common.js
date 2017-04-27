@@ -708,6 +708,10 @@ define([
         });
     };
 
+    var getPinLimit = common.getPinLimit = function (cb) {
+        cb(void 0, 10);
+    };
+
     var createButton = common.createButton = function (type, rightside, data, callback) {
         var button;
         var size = "17px";
