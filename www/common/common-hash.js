@@ -266,5 +266,9 @@ Version 2
         return hex;
     };
 
+    var getBlobPath = Hash.getBlobPathFromHex = function (id) {
+        return '/blob/' + id.slice(0,2) + '/' + id;
+    };
+
     return Hash;
 });

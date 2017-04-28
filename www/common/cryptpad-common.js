@@ -73,6 +73,7 @@ define([
     var hrefToHexChannelId = common.hrefToHexChannelId = Hash.hrefToHexChannelId;
     var parseHash = common.parseHash = Hash.parseHash;
     var getRelativeHref = common.getRelativeHref = Hash.getRelativeHref;
+    common.getBlobPathFromHex = Hash.getBlobPathFromHex;
 
     common.getEditHashFromKeys = Hash.getEditHashFromKeys;
     common.getViewHashFromKeys = Hash.getViewHashFromKeys;

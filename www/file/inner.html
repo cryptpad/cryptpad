@@ -14,14 +14,44 @@
         padding: 0px;
         display: inline-block;
     }
-    media-tag * {
-        max-width: 100%;
+    #file {
+        display: block;
+        height: 300px;
+        width: 300px;
+        border: 2px solid black;
+        margin: 50px;
     }
+
+    .inputfile {
+        width: 0.1px;
+        height: 0.1px;
+        opacity: 0;
+        overflow: hidden;
+        position: absolute;
+        z-index: -1;
+    }
+    .inputfile + label {
+        border: 2px solid black;
+        display: block;
+        height: 500px;
+        width: 500px;
+        background-color: rgba(50, 50, 50, .10);
+        margin: 50px;
+    }
+
+    .inputfile:focus + label,
+    .inputfile + label:hover {
+        background-color: rgba(50, 50, 50, 0.30);
+    }
+
     </style>
 </head>
 <body>
     <div id="toolbar" class="toolbar-container"></div>
-    <media-tag id="encryptedFile" data-attr-width="4000" data-attr-height="1500"></media-tag>
+    <div id="upload-form" style="display: none;">
+        <input type="file" name="file" id="file" class="inputfile" />
+        <label for="file">Choose a file</label>
+    </div>
 </body>
 </html>
 

@@ -6,12 +6,14 @@ define([
     '/common/cryptpad-common.js',
     '/common/visible.js',
     '/common/notify.js',
+    '/file/file-crypto.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
-], function ($, Crypto, realtimeInput, Toolbar, Cryptpad, Visible, Notify) {
+], function ($, Crypto, realtimeInput, Toolbar, Cryptpad, Visible, Notify, FileCrypto) {
     var Messages = Cryptpad.Messages;
     var saveAs = window.saveAs;
-    //window.Nacl = window.nacl;
+    var Nacl = window.nacl;
+
     $(function () {
 
     var ifrw = $('#pad-iframe')[0].contentWindow;
@@ -19,18 +21,40 @@ define([
 
     Cryptpad.addLoadingScreen();
 
+    var fetch = function (src, cb) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", src, true);
+        xhr.responseType = "arraybuffer";
+        xhr.onload = function (e) {
+            return void cb(void 0, new Uint8Array(xhr.response));
+        };
+        xhr.send(null);
+    };
+
+    var upload = function (blob, id, key) {
+        Cryptpad.alert("UPLOAD IS NOT IMPLEMENTED YET");
+    };
+
+    var myFile;
+    var myDataType;
+    var uploadMode = false;
+
     var andThen = function () {
         var $bar = $iframe.find('.toolbar-container');
-        var secret = Cryptpad.getSecrets();
 
-        if (!secret.keys) { throw new Error("You need a hash"); } // TODO
-
-        var cryptKey = secret.keys && secret.keys.fileKeyStr;
-        var fileId = secret.channel;
-        var hexFileName = Cryptpad.base64ToHex(fileId);
-        var type = "image/png";
 // Test hash:
 // #/2/K6xWU-LT9BJHCQcDCT-DcQ/TBo77200c0e-FdldQFcnQx4Y/
+        var secret;
+        var hexFileName;
+        if (window.location.hash) {
+            secret = Cryptpad.getSecrets();
+            if (!secret.keys) { throw new Error("You need a hash"); } // TODO
+            hexFileName = Cryptpad.base64ToHex(secret.channel);
+        } else {
+            uploadMode = true;
+        }
+
+        //window.location.hash = '/2/K6xWU-LT9BJHCQcDCT-DcQ/VLIgpQOgmSaW3AQcUCCoJnYvCbMSO0MKBqaICSly9fo=';
 
         var parsed = Cryptpad.parsePadUrl(window.location.href);
         var defaultName = Cryptpad.getDefaultName(parsed);
@@ -67,45 +91,76 @@ define([
         var exportFile = function () {
             var suggestion = document.title;
             Cryptpad.prompt(Messages.exportPrompt,
-                Cryptpad.fixFileName(suggestion) + '.html', function (filename) {
+                Cryptpad.fixFileName(suggestion), function (filename) {
                 if (!(typeof(filename) === 'string' && filename)) { return; }
-                //var blob = new Blob([html], {type: "text/html;charset=utf-8"});
+                var blob = new Blob([myFile], {type: myDataType});
                 saveAs(blob, filename);
             });
         };
 
-        var $mt = $iframe.find('#encryptedFile');
-        $mt.attr('src', '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName);
-        $mt.attr('data-crypto-key', cryptKey);
-        $mt.attr('data-type', type);
+        var displayed = ['useradmin', 'newpad', 'limit'];
+        if (secret && hexFileName) {
+            displayed.push('share');
+        }
 
-        require(['/common/media-tag.js'], function (MediaTag) {
-            var configTb = {
-                displayed: ['useradmin', 'share', 'newpad'],
-                ifrw: ifrw,
-                common: Cryptpad,
-                title: {
-                    onRename: renameCb,
-                    defaultName: defaultName,
-                    suggestName: suggestName
-                },
-                share: {
-                    secret: secret,
-                    channel: hexFileName
-                }
-            };
-            Toolbar.create($bar, null, null, null, null, configTb);
-            var $rightside = $bar.find('.' + Toolbar.constants.rightside);
+        var configTb = {
+            displayed: displayed,
+            ifrw: ifrw,
+            common: Cryptpad,
+            title: {
+                onRename: renameCb,
+                defaultName: defaultName,
+                suggestName: suggestName
+            },
+            share: {
+                secret: secret,
+                channel: hexFileName
+            }
+        };
+        Toolbar.create($bar, null, null, null, null, configTb);
+        var $rightside = $bar.find('.' + Toolbar.constants.rightside);
 
-            var $export = Cryptpad.createButton('export', true, {}, exportFile);
-            $rightside.append($export);
+        var $export = Cryptpad.createButton('export', true, {}, exportFile);
+        $rightside.append($export);
 
-            updateTitle(Cryptpad.initialName || getTitle() || defaultName);
+        updateTitle(Cryptpad.initialName || getTitle() || defaultName);
 
-            var mt = MediaTag($mt[0]);
+        if (!uploadMode) {
+            var src = Cryptpad.getBlobPathFromHex(hexFileName);
+            return fetch(src, function (e, u8) {
+                // now decrypt the u8
+                if (e) { return window.alert('error'); }
+                var cryptKey = secret.keys && secret.keys.fileKeyStr;
+                var key = Nacl.util.decodeBase64(cryptKey);
 
-            Cryptpad.removeLoadingScreen();
+                FileCrypto.decrypt(u8, key, function (e, data) {
+                    console.log(data);
+                    var title = document.title = data.metadata.filename;
+                    myFile = data.content;
+                    myDataType = data.metadata.type;
+                    updateTitle(title || defaultName);
+
+                    Cryptpad.removeLoadingScreen();
+                });
+            });
+        }
+
+        var $form = $iframe.find('#upload-form');
+        $form.css({
+            display: 'block',
         });
+
+        var $file = $form.find("#file").on('change', function (e) {
+            var file = e.target.files[0];
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                upload(e.target.result);
+            };
+            reader.readAsText(file);
+        });
+
+        // we're in upload mode
+        Cryptpad.removeLoadingScreen();
     };
 
     Cryptpad.ready(function (err, anv) {

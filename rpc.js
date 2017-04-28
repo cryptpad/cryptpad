@@ -376,6 +376,23 @@ var resetUserPins = function (store, Sessions, publicKey, channelList, cb) {
     });
 };
 
+var getLimit = function (cb) {
+
+};
+
+var createBlobStaging = function (cb) {
+
+};
+
+var createBlobStore = function (cb) {
+};
+
+var upload = function (store, Sessions, publicKey, cb) {
+
+};
+
+
+
 /*::const ConfigType = require('./config.example.js');*/
 RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)=>void*/) {
     // load pin-store...
@@ -428,7 +445,6 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
             return void respond('INVALID_MESSAGE_OR_PUBLIC_KEY');
         }
 
-
         if (checkSignature(serialized, signature, publicKey) !== true) {
             return void respond("INVALID_SIGNATURE_OR_PUBLIC_KEY");
         }
@@ -459,7 +475,8 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                 return resetUserPins(store, Sessions, safeKey, msg[1], function (e, hash) {
                     return void Respond(e, hash);
                 });
-            case 'PIN':
+            case 'PIN': // TODO don't pin if over the limit
+                // if over, send error E_OVER_LIMIT
                 return pinChannel(store, Sessions, safeKey, msg[1], function (e, hash) {
                     Respond(e, hash);
                 });
@@ -471,13 +488,17 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                 return void getHash(store, Sessions, safeKey, function (e, hash) {
                     Respond(e, hash);
                 });
-            case 'GET_TOTAL_SIZE':
+            case 'GET_TOTAL_SIZE': // TODO cache this, since it will get called quite a bit
                 return getTotalSize(store, ctx.store, Sessions, safeKey, function (e, size) {
                     if (e) { return void Respond(e); }
                     Respond(e, size);
                 });
             case 'GET_FILE_SIZE':
                 return void getFileSize(ctx.store, msg[1], Respond);
+            case 'GET_LIMIT': // TODO implement this and cache it per-user
+                return void getLimit(function (e, limit) {
+                    Respond('NOT_IMPLEMENTED');
+                });
             case 'GET_MULTIPLE_FILE_SIZE':
                 return void getMultipleFileSize(ctx.store, msg[1], function (e, dict) {
                     if (e) { return void Respond(e); }
