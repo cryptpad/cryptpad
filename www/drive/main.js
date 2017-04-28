@@ -173,6 +173,10 @@ define([
     var $closeIcon = $('<span>', {"class": "fa fa-window-close"});
     var $backupIcon = $('<span>', {"class": "fa fa-life-ring"});
 
+    var history = {
+        isHistoryMode: false,
+    };
+
     var init = function (proxy) {
         var files = proxy.drive;
         var isOwnDrive = function () {
@@ -1646,7 +1650,8 @@ define([
 
             module.resetTree();
 
-            $tree.find('#searchInput').focus();
+            // in history mode we want to focus the version number input
+            if (!history.isHistoryMode) { $tree.find('#searchInput').focus(); }
             $tree.find('#searchInput')[0].selectionStart = getSearchCursor();
             $tree.find('#searchInput')[0].selectionEnd = getSearchCursor();
 
@@ -1829,7 +1834,7 @@ define([
             var keys = Object.keys(root).sort();
             keys.forEach(function (key) {
                 // Do not display files in the menu
-                if (filesOp.isFile(root[key])) { return; }
+                if (!filesOp.isFolder(root[key])) { return; }
                 var newPath = path.slice();
                 newPath.push(key);
                 var isCurrentFolder = filesOp.comparePath(newPath, currentPath);
@@ -2263,6 +2268,7 @@ define([
             }
         };
         proxy.on('change', [], function (o, n, p) {
+            if (history.isHistoryMode) { return; }
             var path = arguments[2];
             if (path[0] !== 'drive') { return false; }
             path = path.slice(1);
@@ -2277,6 +2283,7 @@ define([
             module.resetTree();
             return false;
         }).on('remove', [], function (o, p) {
+            if (history.isHistoryMode) { return; }
             var path = arguments[1];
             if (path[0] !== 'drive') { return false; }
             path = path.slice(1);
@@ -2302,6 +2309,17 @@ define([
             window.clearInterval(APP.resizeTree);
             APP.resizeTree = undefined;
         });
+console.log(files);
+        history.onEnterHistory = function (obj) {
+            var files = obj.drive;
+            filesOp = FO.init(files, config);
+            refresh();
+        };
+        history.onLeaveHistory = function () {
+            var files = proxy.drive;
+            filesOp = FO.init(files, config);
+            refresh();
+        };
 
         var createReadme = function (proxy, cb) {
             if (sessionStorage.createReadme) {
@@ -2330,6 +2348,15 @@ define([
             APP.userList.onChange();
             Cryptpad.removeLoadingScreen();
         });
+    };
+
+    var setHistory = function (bool, update) {
+        history.isHistoryMode = bool;
+        setEditable(!bool);
+        if (!bool && update) {
+            history.onLeaveHistory();
+            //init(); //TODO real proxy here
+        }
     };
 
     var setName = APP.setName = function (newName) {
@@ -2433,6 +2460,37 @@ define([
                 $linkToMain.css('cursor', 'default');
                 $linkToMain.off('click');
             }
+
+            /* add a history button */
+            var histConfig = {};
+            histConfig.onRender = function (val) {
+                if (typeof val === "undefined") { return; }
+                try {
+                    var obj = JSON.parse(val || '{}');
+                    history.currentObj = obj;
+                    history.onEnterHistory(obj);
+                } catch (e) {
+                    // Probably a parse error
+                    console.error(e);
+                }
+            };
+            histConfig.onClose = function () {
+                // Close button clicked
+                setHistory(false, true);
+            };
+            histConfig.onRevert = function (val) {
+                // Revert button clicked
+                setHistory(false, false);
+                proxy.drive = history.currentObj.drive;
+            };
+            histConfig.onReady = function () {
+                // Called when the history is loaded and the UI displayed
+                setHistory(true);
+            };
+            histConfig.$toolbar = $bar;
+            histConfig.href = window.location.origin + window.location.pathname + APP.hash;
+            var $hist = Cryptpad.createButton('history', true, {histConfig: histConfig});
+            $rightside.append($hist);
 
             if (!readOnly && !APP.loggedIn) {
                 var $backupButton = Cryptpad.createButton('', true).removeClass('fa').removeClass('fa-question');

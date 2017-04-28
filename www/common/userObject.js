@@ -69,7 +69,7 @@ define([
         };
 
         var isFolder = exp.isFolder = function (element) {
-            return typeof(element) !== "string";
+            return typeof(element) === "object";
         };
         var isFolderEmpty = exp.isFolderEmpty = function (element) {
             if (typeof(element) !== "object") { return false; }

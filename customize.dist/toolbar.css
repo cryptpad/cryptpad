@@ -125,41 +125,41 @@
   border-color: #ccc;
 }
 .cryptpad-toolbar button#shareButton,
-.cryptpad-toolbar button.btn.btn-success {
+.cryptpad-toolbar button.buttonSuccess {
   color: #fff;
   background: #5cb85c;
   border-color: #5cb85c;
 }
 .cryptpad-toolbar button#shareButton:hover,
-.cryptpad-toolbar button.btn.btn-success:hover {
+.cryptpad-toolbar button.buttonSuccess:hover {
   background: #449d44;
   border: 1px solid #419641;
 }
 .cryptpad-toolbar button#shareButton span,
-.cryptpad-toolbar button.btn.btn-success span {
+.cryptpad-toolbar button.buttonSuccess span {
   color: #fff;
 }
 .cryptpad-toolbar button#shareButton .large,
-.cryptpad-toolbar button.btn.btn-success .large {
+.cryptpad-toolbar button.buttonSuccess .large {
   margin-left: 5px;
 }
 .cryptpad-toolbar button#newdoc,
-.cryptpad-toolbar button.btn.btn-primary {
+.cryptpad-toolbar button.buttonPrimary {
   color: #fff;
   background: #0275d8;
   border-color: #0275d8;
 }
 .cryptpad-toolbar button#newdoc:hover,
-.cryptpad-toolbar button.btn.btn-primary:hover {
+.cryptpad-toolbar button.buttonPrimary:hover {
   background: #025aa5;
   border: 1px solid #01549b;
 }
 .cryptpad-toolbar button#newdoc span,
-.cryptpad-toolbar button.btn.btn-primary span {
+.cryptpad-toolbar button.buttonPrimary span {
   color: #fff;
 }
 .cryptpad-toolbar button#newdoc .large,
-.cryptpad-toolbar button.btn.btn-primary .large {
+.cryptpad-toolbar button.buttonPrimary .large {
   margin-left: 5px;
 }
 .cryptpad-toolbar button.hidden {
@@ -516,7 +516,7 @@
   text-align: center;
 }
 .cryptpad-toolbar-history .goto input {
-  width: 50px;
+  width: 75px;
 }
 .cryptpad-toolbar-history .gotoInput {
   vertical-align: middle;

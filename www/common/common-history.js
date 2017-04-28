@@ -18,12 +18,13 @@ define([
         return states;
     };
 
-    var loadHistory = function (common, cb) {
+    var loadHistory = function (config, common, cb) {
         var network = common.getNetwork();
         var hkn = network.historyKeeper;
 
-        var wcId = common.hrefToHexChannelId(window.location.href);
+        var wcId = common.hrefToHexChannelId(config.href || window.location.href);
 
+        console.log(wcId);
         var createRealtime = function(chan) {
             return ChainPad.create({
                 userName: 'history',
@@ -35,7 +36,8 @@ define([
         };
         var realtime = createRealtime();
 
-        var secret = common.getSecrets();
+        var hash = config.href ? common.parsePadUrl(config.href).hash : undefined;
+        var secret = common.getSecrets(hash);
         var crypto = Crypto.createEncryptor(secret.keys);
 
         var to = window.setTimeout(function () {
@@ -134,12 +136,12 @@ define([
             $right.hide();
             $cke.hide();
             var $prev =$('<button>', {
-                'class': 'previous fa fa-step-backward btn btn-primary',
+                'class': 'previous fa fa-step-backward buttonPrimary',
                 title: Messages.history_prev
             }).appendTo($hist);
             var $nav = $('<div>', {'class': 'goto'}).appendTo($hist);
             var $next = $('<button>', {
-                'class': 'next fa fa-step-forward btn btn-primary',
+                'class': 'next fa fa-step-forward buttonPrimary',
                 title: Messages.history_next
             }).appendTo($hist);
 
@@ -160,7 +162,7 @@ define([
                 title: Messages.history_closeTitle
             }).text(Messages.history_close).appendTo($nav);
             var $rev = $('<button>', {
-                'class':'revertHistory btn btn-success',
+                'class':'revertHistory buttonSuccess',
                 title: Messages.history_restoreTitle
             }).text(Messages.history_restore).appendTo($nav);
 
@@ -211,7 +213,7 @@ define([
         };
 
         // Load all the history messages into a new chainpad object
-        loadHistory(common, function (err, newRt) {
+        loadHistory(config, common, function (err, newRt) {
             History.loading = false;
             if (err) { throw new Error(err); }
             realtime = newRt;
