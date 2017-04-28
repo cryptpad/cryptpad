@@ -141,6 +141,23 @@ module.exports = {
     */
     filePath: './datastore/',
 
+    /*  CryptPad allows logged in users to request that particular documents be
+     *  stored by the server indefinitely. This is called 'pinning'.
+     *  Pin requests are stored in a pin-store. The location of this store is
+     *  defined here.
+     */
+    pinPath: './pins',
+
+    /*  CryptPad allows logged in users to upload encrypted files. Files/blobs
+     *  are stored in a 'blob-store'. Set its location here.
+     */
+    blobPath: './blob',
+
+    /*  CryptPad stores incomplete blobs in a 'staging' area until they are
+     *  fully uploaded. Set its location here.
+     */
+    blobStagingPath: './blobstage',
+
     /*  Cryptpad's file storage adaptor closes unused files after a configurale
      *  number of milliseconds (default 30000 (30 seconds))
      */
