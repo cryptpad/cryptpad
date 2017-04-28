@@ -434,7 +434,7 @@ define([
                 files[FILES_DATA].push(data);
                 cb();
             };
-            if (!Cryptpad.isLoggedIn() || !AppConfig.enablePinning) { todo(); }
+            if (!Cryptpad.isLoggedIn() || !AppConfig.enablePinning) { return void todo(); }
             Cryptpad.pinPads([Cryptpad.hrefToHexChannelId(data.href)], function (e, hash) {
                 if (e) { return void cb(e); }
                 todo();

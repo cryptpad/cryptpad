@@ -115,7 +115,8 @@ define([
             share: {
                 secret: secret,
                 channel: hexFileName
-            }
+            },
+            hideDisplayName: true
         };
         Toolbar.create($bar, null, null, null, null, configTb);
         var $rightside = $bar.find('.' + Toolbar.constants.rightside);
