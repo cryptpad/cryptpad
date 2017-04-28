@@ -42,7 +42,7 @@
     }
 
     button {
-        &#shareButton {
+        &#shareButton, &.btn.btn-success {
             // Bootstrap 4 colors
             color: #fff;
             background: @toolbar-green;
@@ -58,7 +58,7 @@
                 margin-left: 5px;
             }
         }
-        &#newdoc {
+        &#newdoc, &.btn.btn-primary {
             // Bootstrap 4 colors
             color: #fff;
             background: #0275d8;
@@ -76,6 +76,18 @@
         }
         &.hidden {
             display: none;
+        }
+
+        // Bootstrap 4 colors (btn-secondary)
+        border: 1px solid transparent;
+        border-radius: .25rem;
+        color: #292b2c;
+        background-color: #fff;
+        border-color: #ccc;
+        &:hover {
+            color: #292b2c;
+            background-color: #e6e6e6;
+            border-color: #adadad;
         }
     }
 
@@ -195,17 +207,6 @@
         margin-right: 2px;
     }
 
-    button {
-        color: #000;
-        background-color: inherit;
-        background-image: linear-gradient(to bottom,#fff,#e4e4e4);
-        border: 1px solid #A6A6A6;
-        border-bottom-color: #979797;
-        border-radius: 3px;
-        &:hover {
-            background-image:linear-gradient(to bottom,#f2f2f2,#ccc);
-        }
-    }
     .cryptpad-state {
         line-height: 32px; /* equivalent to 26px + 2*2px margin used for buttons */
     }
@@ -429,13 +430,19 @@
     display: none;
     text-align: center;
     .next {
-        float: right;
+        display: inline-block;
+        vertical-align: middle;
+        margin: 20px;
     }
     .previous {
-        float: left;
+        display: inline-block;
+        vertical-align: middle;
+        margin: 20px;
     }
     .goto {
         display: inline-block;
+        vertical-align: middle;
+        text-align: center;
         input { width: 50px; }
     }
     .gotoInput {

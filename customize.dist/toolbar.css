@@ -117,38 +117,58 @@
 .cryptpad-toolbar a {
   float: right;
 }
-.cryptpad-toolbar button#shareButton {
+.cryptpad-toolbar button {
+  border: 1px solid transparent;
+  border-radius: .25rem;
+  color: #292b2c;
+  background-color: #fff;
+  border-color: #ccc;
+}
+.cryptpad-toolbar button#shareButton,
+.cryptpad-toolbar button.btn.btn-success {
   color: #fff;
   background: #5cb85c;
   border-color: #5cb85c;
 }
-.cryptpad-toolbar button#shareButton:hover {
+.cryptpad-toolbar button#shareButton:hover,
+.cryptpad-toolbar button.btn.btn-success:hover {
   background: #449d44;
   border: 1px solid #419641;
 }
-.cryptpad-toolbar button#shareButton span {
+.cryptpad-toolbar button#shareButton span,
+.cryptpad-toolbar button.btn.btn-success span {
   color: #fff;
 }
-.cryptpad-toolbar button#shareButton .large {
+.cryptpad-toolbar button#shareButton .large,
+.cryptpad-toolbar button.btn.btn-success .large {
   margin-left: 5px;
 }
-.cryptpad-toolbar button#newdoc {
+.cryptpad-toolbar button#newdoc,
+.cryptpad-toolbar button.btn.btn-primary {
   color: #fff;
   background: #0275d8;
   border-color: #0275d8;
 }
-.cryptpad-toolbar button#newdoc:hover {
+.cryptpad-toolbar button#newdoc:hover,
+.cryptpad-toolbar button.btn.btn-primary:hover {
   background: #025aa5;
   border: 1px solid #01549b;
 }
-.cryptpad-toolbar button#newdoc span {
+.cryptpad-toolbar button#newdoc span,
+.cryptpad-toolbar button.btn.btn-primary span {
   color: #fff;
 }
-.cryptpad-toolbar button#newdoc .large {
+.cryptpad-toolbar button#newdoc .large,
+.cryptpad-toolbar button.btn.btn-primary .large {
   margin-left: 5px;
 }
 .cryptpad-toolbar button.hidden {
   display: none;
+}
+.cryptpad-toolbar button:hover {
+  color: #292b2c;
+  background-color: #e6e6e6;
+  border-color: #adadad;
 }
 .cryptpad-toolbar .cryptpad-limit {
   box-sizing: content-box;
@@ -264,17 +284,6 @@
 .cryptpad-toolbar .dropdown-bar-content {
   margin-top: -3px;
   margin-right: 2px;
-}
-.cryptpad-toolbar button {
-  color: #000;
-  background-color: inherit;
-  background-image: linear-gradient(to bottom, #fff, #e4e4e4);
-  border: 1px solid #A6A6A6;
-  border-bottom-color: #979797;
-  border-radius: 3px;
-}
-.cryptpad-toolbar button:hover {
-  background-image: linear-gradient(to bottom, #f2f2f2, #ccc);
 }
 .cryptpad-toolbar .cryptpad-state {
   line-height: 32px;
@@ -492,13 +501,19 @@
   text-align: center;
 }
 .cryptpad-toolbar-history .next {
-  float: right;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 20px;
 }
 .cryptpad-toolbar-history .previous {
-  float: left;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 20px;
 }
 .cryptpad-toolbar-history .goto {
   display: inline-block;
+  vertical-align: middle;
+  text-align: center;
 }
 .cryptpad-toolbar-history .goto input {
   width: 50px;
