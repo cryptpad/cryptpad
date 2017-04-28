@@ -437,7 +437,6 @@ define([
             if (!Cryptpad.isLoggedIn() || !AppConfig.enablePinning) { todo(); }
             Cryptpad.pinPads([Cryptpad.hrefToHexChannelId(data.href)], function (e, hash) {
                 if (e) { return void cb(e); }
-                cb('E_OVER_LIMIT'); return; //TODO
                 todo();
             });
         };

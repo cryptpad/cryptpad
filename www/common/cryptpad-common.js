@@ -574,7 +574,7 @@ define([
                 getStore().pushData(data, function (e, state) {
                     if (e) {
                         if (e === 'E_OVER_LIMIT') {
-                            Cryptpad.alert(Messages.pinLimitNotPinned, null, true);
+                            common.alert(Messages.pinLimitNotPinned, null, true);
                             return;
                         }
                         else { throw new Error("Cannot push this pad to CryptDrive", e); }
@@ -722,6 +722,7 @@ define([
     };
 
     var isOverPinLimit = common.isOverPinLimit = function (cb) {
+        var usage;
         var andThen = function (e, limit) {
             if (e) { return void cb(e); }
             if (usage > limit) {
