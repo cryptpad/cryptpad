@@ -570,8 +570,16 @@ define([
 
             if (!contains) {
                 var data = makePad(href, name);
-                getStore().pushData(data);
-                getStore().addPad(data, common.initialPath);
+                getStore().pushData(data, function (e, state) {
+                    if (e) {
+                        if (e === 'E_OVER_LIMIT') {
+                            Cryptpad.alert(Messages.pinLimitNotPinned, null, true);
+                            return;
+                        }
+                        else { throw new Error("Cannot push this pad to CryptDrive", e); }
+                    }
+                    getStore().addPad(data, common.initialPath);
+                });
             }
             if (updateWeaker.length > 0) {
                 updateWeaker.forEach(function (obj) {
@@ -709,7 +717,23 @@ define([
     };
 
     var getPinLimit = common.getPinLimit = function (cb) {
-        cb(void 0, 10);
+        cb(void 0, 1000);
+    };
+
+    var isOverPinLimit = common.isOverPinLimit = function (cb) {
+        var andThen = function (e, limit) {
+            if (e) { return void cb(e); }
+            if (usage > limit) {
+                return void cb (null, true);
+            }
+            return void cb (null, false);
+        };
+        var todo = function (e, used) {
+            usage = common.bytesToMegabytes(used);
+            if (e) { return void cb(e); }
+            common.getPinLimit(andThen);
+        };
+        common.getPinnedUsage(todo);
     };
 
     var createButton = common.createButton = function (type, rightside, data, callback) {

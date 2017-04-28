@@ -1,6 +1,7 @@
 define([
     'jquery',
-], function ($) {
+    '/customize/application_config.js'
+], function ($, AppConfig) {
     var module = {};
 
     var ROOT = module.ROOT = "root";
@@ -427,19 +428,25 @@ define([
         };
 
         // FILES DATA
-        var pushFileData = exp.pushData = function (data) {
+        var pushFileData = exp.pushData = function (data, cb) {
+            if (typeof cb !== "function") { cb = function () {}; }
+            var todo = function () {
+                files[FILES_DATA].push(data);
+                cb();
+            };
+            if (!Cryptpad.isLoggedIn() || !AppConfig.enablePinning) { todo(); }
             Cryptpad.pinPads([Cryptpad.hrefToHexChannelId(data.href)], function (e, hash) {
-                if (e) { console.log(e); return; }
-                console.log(hash);
+                if (e) { return void cb(e); }
+                cb('E_OVER_LIMIT'); return; //TODO
+                todo();
             });
-            files[FILES_DATA].push(data);
         };
         var spliceFileData = exp.removeData = function (idx) {
             var data = files[FILES_DATA][idx];
-            if (typeof data === "object") {
+            if (typeof data === "object" && Cryptpad.isLoggedIn() && AppConfig.enablePinning) {
                 Cryptpad.unpinPads([Cryptpad.hrefToHexChannelId(data.href)], function (e, hash) {
-                    if (e) { console.log(e); return; }
-                    console.log(hash);
+                    if (e) { return void logError(e); }
+                    debug('UNPIN', hash);
                 });
             }
             files[FILES_DATA].splice(idx, 1);

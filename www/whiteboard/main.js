@@ -334,7 +334,7 @@ window.canvas = canvas;
         var onInit = config.onInit = function (info) {
             userList = info.userList;
             var config = {
-                displayed: ['useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad'],
+                displayed: ['useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit'],
                 userData: userData,
                 readOnly: readOnly,
                 share: {

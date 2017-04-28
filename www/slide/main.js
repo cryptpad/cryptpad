@@ -513,7 +513,7 @@ define([
                 userList = info.userList;
 
                 var configTb = {
-                    displayed: ['useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad'],
+                    displayed: ['useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit'],
                     userData: userData,
                     readOnly: readOnly,
                     ifrw: ifrw,

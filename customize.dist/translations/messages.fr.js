@@ -56,8 +56,10 @@ define(function () {
     out.redLight = "Vous êtes déconnectés de la session";
 
     out.pinLimitReached = "Vous avez atteint votre limite de stockage";
-    out.pinLimitReachedAlert = "Vous avez atteint votre limite de stockage. Ce pad ne sera pas enregistré dans votre CrypDrive.<br>" +
+    out.pinLimitReachedAlert = "Vous avez atteint votre limite de stockage. Les nouveaux pads ne seront pas enregistrés dans votre CrypDrive.<br>" +
         "Pour résoudre ce problème, vous pouvez soit supprimer des pads de votre CryptDrive (y compris la corbeille), soit vous abonner à une offre premium pour augmenter la limite maximale.";
+    out.pinLimitNotPinned = "Vous avez atteint votre limite de stockage.<br>"+
+                            "Ce pad n'est pas enregistré dans votre CryptDrive.";
 
     out.importButtonTitle = 'Importer un pad depuis un fichier local';
 

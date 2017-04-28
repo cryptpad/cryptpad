@@ -58,8 +58,10 @@ define(function () {
     out.redLight = "You are disconnected from the session";
 
     out.pinLimitReached = "You've reached your storage limit";
-    out.pinLimitReachedAlert = "You've reached your storage limit. This pad won't be stored in your CryptDrive.<br>" +
+    out.pinLimitReachedAlert = "You've reached your storage limit. New pads won't be stored in your CryptDrive.<br>" +
         "To fix this problem, you can either remove pads from your CryptDrive (including the trash) or subscribe to a premium offer to increase your limit.";
+    out.pinLimitNotPinned = "You've reached your storage limit.<br>"+
+                            "This pad is not stored in your CryptDrive.";
 
     out.importButtonTitle = 'Import a pad from a local file';
 

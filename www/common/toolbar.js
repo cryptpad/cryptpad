@@ -497,19 +497,15 @@ define([
                 'class': LIMIT_ELEM_CLS,
                 'title': Messages.pinLimitReached
             }).append($limitIcon).hide().appendTo($userContainer);
-            var andThen = function (e, limit) {
-                if (usage > limit) {
+            var todo = function (e, overLimit) {
+                if (e) { return void console.error("Unable tog et the pinned usage"); }
+                if (overLimit) {
                     $limit.show().click(function () {
                         Cryptpad.alert(Messages.pinLimitReachedAlert, null, true);
                     });
                 }
             };
-            var todo = function (e, used) {
-                usage = Cryptpad.bytesToMegabytes(used);
-                if (e) { console.error("Unable tog et the pinned usage"); return; }
-                Cryptpad.getPinLimit(andThen);
-            };
-            Cryptpad.getPinnedUsage(todo);
+            Cryptpad.isOverPinLimit(todo);
         }
 
         if (config.displayed.indexOf('newpad') !== -1) {
