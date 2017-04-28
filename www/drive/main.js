@@ -290,7 +290,7 @@ define([
             sel.down = true;
             if (!e.ctrlKey) { removeSelected(); }
             var rect = e.currentTarget.getBoundingClientRect();
-            sel.startX = e.clientX - rect.left,
+            sel.startX = e.clientX - rect.left;
             sel.startY = e.clientY - rect.top + $content.scrollTop();
             sel.$selectBox.show().css({
                 left: sel.startX + 'px',
