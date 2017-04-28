@@ -538,7 +538,7 @@ define([
         // User dropdown
         if (config.displayed.indexOf('useradmin') !== -1) {
             var userMenuCfg = {};
-            if (config.userData) {
+            if (!config.hideDisplayName) {
                 userMenuCfg = {
                     displayNameCls: USERNAME_CLS,
                     changeNameButtonCls: USERBUTTON_CLS,
