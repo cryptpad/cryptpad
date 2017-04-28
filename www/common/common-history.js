@@ -75,6 +75,8 @@ define([
 
     var create = History.create = function (common, config) {
         if (!config.$toolbar) { return void console.error("config.$toolbar is undefined");}
+        if (History.loading) { return void console.error("History is already being loaded..."); }
+        History.loading = true;
         var $toolbar = config.$toolbar;
         var noFunc = function () {};
         var render = config.onRender || noFunc;
@@ -210,6 +212,7 @@ define([
 
         // Load all the history messages into a new chainpad object
         loadHistory(common, function (err, newRt) {
+            History.loading = false;
             if (err) { throw new Error(err); }
             realtime = newRt;
             update();
