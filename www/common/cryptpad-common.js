@@ -574,7 +574,7 @@ define([
 
             if (!contains) {
                 var data = makePad(href, name);
-                getStore().pushData(data, function (e, state) {
+                getStore().pushData(data, function (e) {
                     if (e) {
                         if (e === 'E_OVER_LIMIT') {
                             common.alert(Messages.pinLimitNotPinned, null, true);
@@ -725,6 +725,7 @@ define([
     };
 
     var isOverPinLimit = common.isOverPinLimit = function (cb) {
+        if (!common.isLoggedIn()) { return void cb(null, false); }
         var usage;
         var andThen = function (e, limit) {
             if (e) { return void cb(e); }
