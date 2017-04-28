@@ -482,7 +482,10 @@ define([
                 // CSS
                 $('<label>', {'for': 'cssPrint'}).text(Messages.printCSS).appendTo($p);
                 $p.append($('<br>'));
-                var $textarea = $('<textarea>', {'id':'cssPrint'}).css({'width':'100%', 'height':'100px'}).appendTo($p);
+                var $textarea = $('<textarea>', {'id':'cssPrint'}).css({'width':'100%', 'height':'100px'}).appendTo($p)
+                    .on('keydown keyup', function (e) {
+                        e.stopPropagation();
+                    });
                 $textarea.val(slideOptionsTmp.style);
                 window.setTimeout(function () { $textarea.focus(); }, 0);
 
@@ -504,7 +507,7 @@ define([
 
                 var $nav = $('<nav>').appendTo($div);
                 var $cancel = $('<button>', {'class': 'cancel'}).text(Messages.cancelButton).appendTo($nav).click(todoCancel);
-                var $ok = $('<button>', {'class': 'ok'}).text(Messages.slideOptionsButton).appendTo($nav).click(todo);
+                var $ok = $('<button>', {'class': 'ok'}).text(Messages.settings_save).appendTo($nav).click(todo);
 
                 return $container;
             };
