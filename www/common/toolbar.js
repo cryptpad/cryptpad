@@ -16,6 +16,8 @@ define([
     /** Id of the div containing the lag info. */
     var LAG_ELEM_CLS = Bar.constants.lag = 'cryptpad-lag';
 
+    var LIMIT_ELEM_CLS = Bar.constants.lag = 'cryptpad-limit';
+
     /** The toolbar class which contains the user list, debug link and lag. */
     var TOOLBAR_CLS = Bar.constants.toolbar = 'cryptpad-toolbar';
 
@@ -486,6 +488,28 @@ define([
 
         if (config.displayed.indexOf('lag') !== -1) {
             $userContainer.append($lag);
+        }
+
+        if (config.displayed.indexOf('limit') !== -1 && Config.enablePinning) {
+            var usage;
+            var $limitIcon = $('<span>', {'class': 'fa fa-exclamation-triangle'});
+            var $limit = $('<span>', {
+                'class': LIMIT_ELEM_CLS,
+                'title': Messages.pinLimitReached
+            }).append($limitIcon).hide().appendTo($userContainer);
+            var andThen = function (e, limit) {
+                if (usage > limit) {
+                    $limit.show().click(function () {
+                        Cryptpad.alert(Messages.pinLimitReachedAlert, null, true);
+                    });
+                }
+            };
+            var todo = function (e, used) {
+                usage = Cryptpad.bytesToMegabytes(used);
+                if (e) { console.error("Unable tog et the pinned usage"); return; }
+                Cryptpad.getPinLimit(andThen);
+            };
+            Cryptpad.getPinnedUsage(todo);
         }
 
         if (config.displayed.indexOf('newpad') !== -1) {

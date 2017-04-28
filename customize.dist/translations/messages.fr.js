@@ -55,6 +55,10 @@ define(function () {
     out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur";
     out.redLight = "Vous êtes déconnectés de la session";
 
+    out.pinLimitReached = "Vous avez atteint votre limite de stockage";
+    out.pinLimitReachedAlert = "Vous avez atteint votre limite de stockage. Ce pad ne sera pas enregistré dans votre CrypDrive.<br>" +
+        "Pour résoudre ce problème, vous pouvez soit supprimer des pads de votre CryptDrive (y compris la corbeille), soit vous abonner à une offre premium pour augmenter la limite maximale.";
+
     out.importButtonTitle = 'Importer un pad depuis un fichier local';
 
     out.exportButtonTitle = 'Exporter ce pad vers un fichier local';
