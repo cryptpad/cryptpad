@@ -2344,6 +2344,7 @@ define([
     // don't initialize until the store is ready.
     Cryptpad.ready(function () {
         Cryptpad.reportAppUsage();
+        if (!Cryptpad.isLoggedIn()) { Cryptpad.feedback('ANONYMOUS_DRIVE'); }
         APP.$bar = $iframe.find('#toolbar');
 
         var storeObj = Cryptpad.getStore().getProxy && Cryptpad.getStore().getProxy().proxy ? Cryptpad.getStore().getProxy() : undefined;
