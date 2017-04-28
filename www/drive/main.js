@@ -286,7 +286,7 @@ define([
             }
         };
         $content.on('mousedown', function (e) {
-            console.log('down');
+            if (e.which !== 1) { return; }
             sel.down = true;
             if (!e.ctrlKey) { removeSelected(); }
             var rect = e.currentTarget.getBoundingClientRect();
@@ -298,7 +298,7 @@ define([
                 width: '0px',
                 height: '0px'
             });
-            if (sel.move) { console.log('ret'); return; }
+            if (sel.move) { return; }
             sel.move = function (ev) {
                 var rectMove = ev.currentTarget.getBoundingClientRect(),
                     offX = ev.clientX - rectMove.left,
@@ -342,7 +342,6 @@ define([
                             sel.to = undefined;
                         }, (sel.refresh - diffT));
                     }
-                    console.log('cancelled');
                     return;
                 }
                 sel.update = +new Date();
@@ -351,7 +350,7 @@ define([
             $content.mousemove(sel.move);
         });
         $content.on('mouseup', function (e) {
-            console.log(sel.pos);
+            if (e.which !== 1) { return; }
             sel.down = false;
             sel.$selectBox.hide();
             $content.off('mousemove', sel.move);
