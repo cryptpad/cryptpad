@@ -82,6 +82,7 @@ define([
     common.createChannelId = Hash.createChannelId;
     common.findWeaker = Hash.findWeaker;
     common.findStronger = Hash.findStronger;
+    common.serializeHash = Hash.serializeHash;
 
     // History
     common.getHistory = function (config) { return History.create(common, config); };
@@ -166,6 +167,7 @@ define([
     var login = common.login = function (hash, name, cb) {
         if (!hash) { throw new Error('expected a user hash'); }
         if (!name) { throw new Error('expected a user name'); }
+        hash = common.serializeHash(hash);
         localStorage.setItem(userHashKey, hash);
         localStorage.setItem(userNameKey, name);
         if (cb) { cb(); }
@@ -216,11 +218,12 @@ define([
     };
 
     var getUserHash = common.getUserHash = function () {
-        var hash;
-        [sessionStorage, localStorage].some(function (s) {
-            var h = s[userHashKey];
-            if (h) { return (hash = h); }
-        });
+        var hash = localStorage[userHashKey];
+
+        if (hash) {
+            var sHash = common.serializeHash(hash);
+            if (sHash !== hash) { localStorage[userHashKey] = sHash; }
+        }
 
         return hash;
     };

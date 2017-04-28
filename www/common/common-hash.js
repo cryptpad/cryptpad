@@ -270,5 +270,10 @@ Version 2
         return '/blob/' + id.slice(0,2) + '/' + id;
     };
 
+    var serializeHash = Hash.serializeHash = function (hash) {
+        if (hash && hash.slice(-1) !== "/") { hash += "/"; }
+        return hash;
+    };
+
     return Hash;
 });
