@@ -639,6 +639,36 @@ define([
             updateContextButton();
         };
 
+        var displayMenu = function (e, $menu) {
+            $menu.css({ display: "block" });
+            var h = $menu.outerHeight();
+            var w = $menu.outerWidth();
+            var wH = window.innerHeight;
+            var wW = window.innerWidth;
+            if (e.pageY + h <= wH) {
+                $menu.css({
+                    top: e.pageY+'px',
+                    bottom: ''
+                });
+            } else {
+                $menu.css({
+                    bottom: '0px',
+                    top: ''
+                });
+            }
+            if (e.pageX + w <= wW) {
+                $menu.css({
+                    left: e.pageX+'px',
+                    right: ''
+                });
+            } else {
+                $menu.css({
+                    left: '',
+                    right: '0px',
+                });
+            }
+        };
+
         // Open the selected context menu on the closest "li" element
         var openContextMenu = function (e, $menu) {
             module.hideMenu();
@@ -663,11 +693,7 @@ define([
                 $a.parent('li').hide();
             });
 
-            $menu.css({
-                display: "block",
-                left: e.pageX,
-                top: e.pageY
-            });
+            displayMenu(e, $menu);
 
             if ($menu.find('li:visible').length === 0) {
                 debug("No visible element in the context menu. Abort.");
@@ -729,11 +755,7 @@ define([
                 }
             });
 
-            $menu.css({
-                display: "block",
-                left: e.pageX,
-                top: e.pageY
-            });
+            displayMenu(e, $menu);
 
             if ($menu.find('li:visible').length === 0) {
                 debug("No visible element in the context menu. Abort.");
