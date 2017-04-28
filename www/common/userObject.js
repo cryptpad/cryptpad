@@ -606,6 +606,10 @@ define([
         // Permanently delete multiple files at once using a list of paths
         // NOTE: We have to be careful when removing elements from arrays (trash root, unsorted or template)
         var removePadAttribute = function (f) {
+            if (typeof(f) !== 'string') {
+                console.error("Can't find pad attribute for an undefined pad");
+                return;
+            }
             Object.keys(files).forEach(function (key) {
                 var hash = f.indexOf('#') !== -1 ? f.slice(f.indexOf('#') + 1) : null;
                 if (hash && key.indexOf(hash) === 0) {
