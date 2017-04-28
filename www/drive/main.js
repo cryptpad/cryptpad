@@ -286,7 +286,7 @@ define([
             }
         };
         $content.on('mousedown', function (e) {
-            console.log('down');
+            if (e.which !== 1) { return; }
             sel.down = true;
             if (!e.ctrlKey) { removeSelected(); }
             var rect = e.currentTarget.getBoundingClientRect();
@@ -298,7 +298,7 @@ define([
                 width: '0px',
                 height: '0px'
             });
-            if (sel.move) { console.log('ret'); return; }
+            if (sel.move) { return; }
             sel.move = function (ev) {
                 var rectMove = ev.currentTarget.getBoundingClientRect(),
                     offX = ev.clientX - rectMove.left,
@@ -342,7 +342,6 @@ define([
                             sel.to = undefined;
                         }, (sel.refresh - diffT));
                     }
-                    console.log('cancelled');
                     return;
                 }
                 sel.update = +new Date();
@@ -351,7 +350,7 @@ define([
             $content.mousemove(sel.move);
         });
         $content.on('mouseup', function (e) {
-            console.log(sel.pos);
+            if (e.which !== 1) { return; }
             sel.down = false;
             sel.$selectBox.hide();
             $content.off('mousemove', sel.move);
@@ -640,6 +639,36 @@ define([
             updateContextButton();
         };
 
+        var displayMenu = function (e, $menu) {
+            $menu.css({ display: "block" });
+            var h = $menu.outerHeight();
+            var w = $menu.outerWidth();
+            var wH = window.innerHeight;
+            var wW = window.innerWidth;
+            if (e.pageY + h <= wH) {
+                $menu.css({
+                    top: e.pageY+'px',
+                    bottom: ''
+                });
+            } else {
+                $menu.css({
+                    bottom: '0px',
+                    top: ''
+                });
+            }
+            if (e.pageX + w <= wW) {
+                $menu.css({
+                    left: e.pageX+'px',
+                    right: ''
+                });
+            } else {
+                $menu.css({
+                    left: '',
+                    right: '0px',
+                });
+            }
+        };
+
         // Open the selected context menu on the closest "li" element
         var openContextMenu = function (e, $menu) {
             module.hideMenu();
@@ -664,11 +693,7 @@ define([
                 $a.parent('li').hide();
             });
 
-            $menu.css({
-                display: "block",
-                left: e.pageX,
-                top: e.pageY
-            });
+            displayMenu(e, $menu);
 
             if ($menu.find('li:visible').length === 0) {
                 debug("No visible element in the context menu. Abort.");
@@ -730,11 +755,7 @@ define([
                 }
             });
 
-            $menu.css({
-                display: "block",
-                left: e.pageX,
-                top: e.pageY
-            });
+            displayMenu(e, $menu);
 
             if ($menu.find('li:visible').length === 0) {
                 debug("No visible element in the context menu. Abort.");

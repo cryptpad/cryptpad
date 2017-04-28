@@ -390,7 +390,20 @@ var safeMkdir = function (path, cb) {
 };
 
 var upload = function (store, Sessions, publicKey, cb) {
+/*
+    1. check if there is an upload in progress
+      * if yes, return error
+    2. 
 
+*/
+
+    console.log('UPLOAD_NOT_IMPLEMENTED');
+    cb('NOT_IMPLEMENTED');
+};
+
+var cancelUpload = function (store, Sessions, publicKey, cb) {
+    console.log('CANCEL_UPLOAD_NOT_IMPLEMENTED');
+    cb('NOT_IMPLEMENTED');
 };
 
 /*::const ConfigType = require('./config.example.js');*/
@@ -504,6 +517,15 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                     if (e) { return void Respond(e); }
                     Respond(void 0, dict);
                 });
+
+            case 'UPLOAD':
+                return void upload(null, null, null, function (e) {
+                    Respond(e);
+                });
+            case 'CANCEL_UPLOAD':
+                return void cancelUpload(null, null, null, function (e) {
+                    Respond(e);
+                });
             default:
                 return void Respond('UNSUPPORTED_RPC_CALL', msg);
         }
@@ -531,7 +553,7 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                 setInterval(function () {
                     expireSessions(Sessions);
                 }, 60000);
-            })
+            });
         });
     });
 };

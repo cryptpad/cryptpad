@@ -75,6 +75,8 @@ define([
 
     var create = History.create = function (common, config) {
         if (!config.$toolbar) { return void console.error("config.$toolbar is undefined");}
+        if (History.loading) { return void console.error("History is already being loaded..."); }
+        History.loading = true;
         var $toolbar = config.$toolbar;
         var noFunc = function () {};
         var render = config.onRender || noFunc;
@@ -112,9 +114,9 @@ define([
             var val = states[i].getContent().doc;
             c = i;
             if (typeof onUpdate === "function") { onUpdate(); }
-            $hist.find('.next, .previous').show();
-            if (c === states.length - 1) { $hist.find('.next').hide(); }
-            if (c === 0) { $hist.find('.previous').hide(); }
+            $hist.find('.next, .previous').css('visibility', '');
+            if (c === states.length - 1) { $hist.find('.next').css('visibility', 'hidden'); }
+            if (c === 0) { $hist.find('.previous').css('visibility', 'hidden'); }
             return val || '';
         };
 
@@ -132,15 +134,16 @@ define([
             $right.hide();
             $cke.hide();
             var $prev =$('<button>', {
-                'class': 'previous fa fa-step-backward',
+                'class': 'previous fa fa-step-backward btn btn-primary',
                 title: Messages.history_prev
             }).appendTo($hist);
+            var $nav = $('<div>', {'class': 'goto'}).appendTo($hist);
             var $next = $('<button>', {
-                'class': 'next fa fa-step-forward',
+                'class': 'next fa fa-step-forward btn btn-primary',
                 title: Messages.history_next
             }).appendTo($hist);
 
-            var $nav = $('<div>', {'class': 'goto'}).appendTo($hist);
+            var $label = $('<label>').text(Messages.history_version).appendTo($nav);
             var $cur = $('<input>', {
                 'class' : 'gotoInput',
                 'type' : 'number',
@@ -151,19 +154,15 @@ define([
                 e.stopPropagation();
             });
             var $label = $('<label>').text(' / '+ states.length).appendTo($nav);
-            var $goTo = $('<button>', {
-                'class': 'fa fa-check',
-                'title': Messages.history_goTo
-            }).appendTo($nav);
             $('<br>').appendTo($nav);
-            var $rev = $('<button>', {
-                'class':'revertHistory',
-                title: Messages.history_restoreTitle
-            }).text(Messages.history_restore).appendTo($nav);
             var $close = $('<button>', {
                 'class':'closeHistory',
                 title: Messages.history_closeTitle
             }).text(Messages.history_close).appendTo($nav);
+            var $rev = $('<button>', {
+                'class':'revertHistory btn btn-success',
+                title: Messages.history_restoreTitle
+            }).text(Messages.history_restore).appendTo($nav);
 
             onUpdate = function () {
                 $cur.attr('max', states.length);
@@ -181,7 +180,6 @@ define([
             // Buttons actions
             $prev.click(function () { render(getPrevious()); });
             $next.click(function () { render(getNext()); });
-            $goTo.click(function () { render( get($cur.val() - 1) ); });
             $cur.keydown(function (e) {
                 var p = function () { e.preventDefault(); };
                 if (e.which === 13) { p(); return render( get($cur.val() - 1) ); } // Enter
@@ -192,7 +190,7 @@ define([
                 if (e.which === 27) { p(); $close.click(); }
             }).focus();
             $cur.on('change', function () {
-                $goTo.click();
+                render( get($cur.val() - 1) );
             });
             $close.click(function () {
                 states = [];
@@ -214,6 +212,7 @@ define([
 
         // Load all the history messages into a new chainpad object
         loadHistory(common, function (err, newRt) {
+            History.loading = false;
             if (err) { throw new Error(err); }
             realtime = newRt;
             update();

@@ -135,6 +135,7 @@ define(function () {
     out.history_restoreTitle = "Restore the selected version of the document";
     out.history_restorePrompt = "Are you sure you want to replace the current version of the document by the displayed one?";
     out.history_restoreDone = "Document restored";
+    out.history_version = "Version:";
 
     // Polls
 

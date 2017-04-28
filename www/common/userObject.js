@@ -731,7 +731,7 @@ define([
             parentEl[newName] = element;
             parentEl[oldName] = undefined;
             delete parentEl[oldName];
-            cb();
+            if (typeof cb === "function") { cb(); }
         };
 
         // REPLACE
