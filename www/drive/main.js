@@ -274,11 +274,12 @@ define([
             var pos = sel.pos;
             var l = $content[0].querySelectorAll('.element:not(.selected):not(.header)');
             var p, el;
+            var offset = getViewMode() === "grid" ? 10 : 0;
             for (var i = 0; i < l.length; i++) {
                 el = l[i];
                 p = $(el).position();
-                p.top += 10 + $content.scrollTop();
-                p.left += 10;
+                p.top += offset + $content.scrollTop();
+                p.left += offset;
                 p.bottom = p.top + $(el).outerHeight();
                 p.right = p.left + $(el).outerWidth();
                 if (p.right < pos.left || p.left > pos.right
