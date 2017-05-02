@@ -576,7 +576,7 @@ define([
                 var data = makePad(href, name);
                 getStore().pushData(data, function (e) {
                     if (e) {
-                        if (e === 'E_OVER_LIMIT') {
+                        if (e === 'E_OVER_LIMIT' && AppConfig.enablePinLimit) {
                             common.alert(Messages.pinLimitNotPinned, null, true);
                             return;
                         }
@@ -725,14 +725,15 @@ define([
     };
 
     var isOverPinLimit = common.isOverPinLimit = function (cb) {
-        if (!common.isLoggedIn()) { return void cb(null, false); }
+        if (!common.isLoggedIn() || !AppConfig.enablePinLimit) { return void cb(null, false); }
         var usage;
         var andThen = function (e, limit) {
             if (e) { return void cb(e); }
+            var data = {usage: usage, limit: limit};
             if (usage > limit) {
-                return void cb (null, true);
+                return void cb (null, true, data);
             }
-            return void cb (null, false);
+            return void cb (null, false, data);
         };
         var todo = function (e, used) {
             usage = common.bytesToMegabytes(used);

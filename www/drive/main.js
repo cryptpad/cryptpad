@@ -37,6 +37,9 @@ define([
         return JSONSortify(obj);
     };
 
+    var LIMIT_REFRESH_RATE = 30000; // milliseconds
+    var E_OVER_LIMIT = 'E_OVER_LIMIT';
+
     var SEARCH = "search";
     var SEARCH_NAME = Messages.fm_searchName;
     var ROOT = "root";
@@ -650,7 +653,12 @@ define([
             var w = $menu.outerWidth();
             var wH = window.innerHeight;
             var wW = window.innerWidth;
-            if (e.pageY + h <= wH) {
+            if (h > wH) {
+                $menu.css({
+                    top: '0px',
+                    bottom: ''
+                });
+            } else if (e.pageY + h <= wH) {
                 $menu.css({
                     top: e.pageY+'px',
                     bottom: ''
@@ -661,7 +669,12 @@ define([
                     top: ''
                 });
             }
-            if (e.pageX + w <= wW) {
+            if(w > wW) {
+                $menu.css({
+                    left: '0px',
+                    right: ''
+                });
+            } else if (e.pageX + w <= wW) {
                 $menu.css({
                     left: e.pageX+'px',
                     right: ''
@@ -1229,7 +1242,10 @@ define([
 
             // Handlers
             if (isInRoot) {
-                var onCreated = function (info) {
+                var onCreated = function (err, info) {
+                    if (err && err === E_OVER_LIMIT) {
+                        return void Cryptpad.alert(Messages.pinLimitDrive, null, true);
+                    }
                     module.newFolder = info.newPath;
                     refresh();
                 };
@@ -2074,7 +2090,8 @@ define([
             }
             else if ($(this).hasClass('newfolder')) {
                 if (paths.length !== 1) { return; }
-                var onCreated = function (info) {
+                var onCreated = function (err, info) {
+                    if (err) { return void logError(err); }
                     module.newFolder = info.newPath;
                     module.displayDirectory(paths[0].path);
                 };
@@ -2135,7 +2152,10 @@ define([
         $contentContextMenu.on('click', 'a', function (e) {
             e.stopPropagation();
             var path = $(this).data('path');
-            var onCreated = function (info) {
+            var onCreated = function (err, info) {
+                if (err && err === E_OVER_LIMIT) {
+                    return void Cryptpad.alert(Messages.pinLimitDrive, null, true);
+                }
                 module.newFolder = info.newPath;
                 refresh();
             };
@@ -2310,7 +2330,6 @@ define([
             window.clearInterval(APP.resizeTree);
             APP.resizeTree = undefined;
         });
-console.log(files);
         history.onEnterHistory = function (obj) {
             var files = obj.drive;
             filesOp = FO.init(files, config);
@@ -2452,6 +2471,7 @@ console.log(files);
 
             var $bar = APP.$bar;
             var $rightside = $bar.find('.' + Toolbar.constants.rightside);
+            var $leftside = $bar.find('.' + Toolbar.constants.leftside);
             var $userBlock = $bar.find('.' + Toolbar.constants.userAdmin);
             APP.$displayName = $bar.find('.' + Toolbar.constants.username);
 
@@ -2461,6 +2481,45 @@ console.log(files);
                 $linkToMain.attr('title', '');
                 $linkToMain.css('cursor', 'default');
                 $linkToMain.off('click');
+            }
+
+            /* add the usage */
+            if (AppConfig.enablePinLimit) {
+                var todo = function (err, state, data) {
+                    $leftside.html('');
+                    if (!data) {
+                        return void window.setTimeout(function () {
+                            Cryptpad.isOverPinLimit(todo);
+                        }, LIMIT_REFRESH_RATE);
+                    }
+                    var usage = data.usage;
+                    var limit = data.limit;
+                    var unit = Messages.MB;
+                    var $limit = $('<span>', {'class': 'cryptpad-drive-limit'}).appendTo($leftside);
+                    var quota = usage/limit;
+                    var width = Math.floor(Math.min(quota, 1)*$limit.width());
+                    var $usage = $('<span>', {'class': 'usage'}).css('width', width+'px');
+
+                    if (quota >= 0.8) {
+                        var $upgrade = $('<button>', {
+                            'class': 'upgrade buttonSuccess',
+                            title: Messages.upgradeTitle
+                        }).text(Messages.upgrade).click(function (e) {
+                            // TODO
+                        }).appendTo($leftside);
+                    }
+
+                    if (quota < 0.8) { $usage.addClass('normal'); }
+                    else if (quota < 1) { $usage.addClass('warning'); }
+                    else { $usage.addClass('above'); }
+                    var $text = $('<span>', {'class': 'usageText'});
+                    $text.text(usage + ' / ' + limit + ' ' + unit);
+                    $limit.append($usage).append($text);
+                    window.setTimeout(function () {
+                        Cryptpad.isOverPinLimit(todo);
+                    }, LIMIT_REFRESH_RATE);
+                };
+                Cryptpad.isOverPinLimit(todo);
             }
 
             /* add a history button */

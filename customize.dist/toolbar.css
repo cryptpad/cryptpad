@@ -132,6 +132,7 @@
 }
 .cryptpad-toolbar button#shareButton:hover,
 .cryptpad-toolbar button.buttonSuccess:hover {
+  color: #fff;
   background: #449d44;
   border: 1px solid #419641;
 }
@@ -151,6 +152,7 @@
 }
 .cryptpad-toolbar button#newdoc:hover,
 .cryptpad-toolbar button.buttonPrimary:hover {
+  color: #fff;
   background: #025aa5;
   border: 1px solid #01549b;
 }
@@ -169,6 +171,48 @@
   color: #292b2c;
   background-color: #e6e6e6;
   border-color: #adadad;
+}
+.cryptpad-toolbar button.upgrade {
+  font-size: 14px;
+  vertical-align: top;
+  margin-left: 10px;
+}
+.cryptpad-toolbar .cryptpad-drive-limit {
+  display: inline-block;
+  height: 26px;
+  width: 200px;
+  margin: 2px;
+  box-sizing: border-box;
+  border: 1px solid #999;
+  background: white;
+  position: relative;
+  text-align: center;
+  line-height: 24px;
+}
+.cryptpad-toolbar .cryptpad-drive-limit .usage {
+  height: 24px;
+  display: inline-block;
+  background: blue;
+  position: absolute;
+  left: 0;
+  z-index: 1;
+}
+.cryptpad-toolbar .cryptpad-drive-limit .usage.normal {
+  background: #5cb85c;
+}
+.cryptpad-toolbar .cryptpad-drive-limit .usage.warning {
+  background: orange;
+}
+.cryptpad-toolbar .cryptpad-drive-limit .usage.above {
+  background: red;
+}
+.cryptpad-toolbar .cryptpad-drive-limit .usageText {
+  position: relative;
+  color: black;
+  text-shadow: 1px 0 2px white, 0 1px 2px white, -1px 0 2px white, 0 -1px 2px white;
+  z-index: 2;
+  font-size: 16px;
+  font-weight: bold;
 }
 .cryptpad-toolbar .cryptpad-limit {
   box-sizing: content-box;

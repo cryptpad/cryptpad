@@ -570,19 +570,20 @@ define([
             var parentEl = findElement(files, filePath);
             var fileName = getAvailableName(parentEl, name || NEW_FILE_NAME);
             var href = '/' + type + '/#' + Cryptpad.createRandomHash();
-            parentEl[fileName] = href;
 
             pushFileData({
                 href: href,
                 title: fileName,
                 atime: +new Date(),
                 ctime: +new Date()
-            });
-
-            var newPath = filePath.slice();
-            newPath.push(fileName);
-            cb({
-                newPath: newPath
+            }, function (err) {
+                if (err) { return void cb(err); }
+                parentEl[fileName] = href;
+                var newPath = filePath.slice();
+                newPath.push(fileName);
+                cb(void 0, {
+                    newPath: newPath
+                });
             });
         };
         var addFolder = exp.addFolder = function (folderPath, name, cb) {
@@ -591,7 +592,7 @@ define([
             parentEl[folderName] = {};
             var newPath = folderPath.slice();
             newPath.push(folderName);
-            cb({
+            cb(void 0, {
                 newPath: newPath
             });
         };

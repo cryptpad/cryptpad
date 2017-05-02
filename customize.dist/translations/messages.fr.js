@@ -51,6 +51,10 @@ define(function () {
 
     out.language = "Langue";
 
+    out.upgrade = "Améliorer";
+    out.upgradeTitle = "Améliorer votre compte pour augmenter la limite de stockage";
+    out.MB = "Mo";
+
     out.greenLight = "Tout fonctionne bien";
     out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur";
     out.redLight = "Vous êtes déconnectés de la session";

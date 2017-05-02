@@ -53,6 +53,10 @@ define(function () {
 
     out.language = "Language";
 
+    out.upgrade = "Upgrade";
+    out.upgradeTitle = "Upgrade your account to increase the storage limit";
+    out.MB = "MB";
+
     out.greenLight = "Everything is working fine";
     out.orangeLight = "Your slow connection may impact your experience";
     out.redLight = "You are disconnected from the session";
@@ -62,6 +66,8 @@ define(function () {
         "To fix this problem, you can either remove pads from your CryptDrive (including the trash) or subscribe to a premium offer to increase your limit.";
     out.pinLimitNotPinned = "You've reached your storage limit.<br>"+
                             "This pad is not stored in your CryptDrive.";
+    out.pinLimitDrive = "You've reached your storage limit.<br>" +
+                        "You can't create new pads.";
 
     out.importButtonTitle = 'Import a pad from a local file';
 
