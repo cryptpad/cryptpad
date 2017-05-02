@@ -155,7 +155,7 @@ define([
                 // stopPropagation because the event would be cancelled by the dropdown menus
                 e.stopPropagation();
             });
-            var $label = $('<label>').text(' / '+ states.length).appendTo($nav);
+            var $label2 = $('<label>').text(' / '+ states.length).appendTo($nav);
             $('<br>').appendTo($nav);
             var $close = $('<button>', {
                 'class':'closeHistory',
@@ -169,7 +169,7 @@ define([
             onUpdate = function () {
                 $cur.attr('max', states.length);
                 $cur.val(c+1);
-                $label.text(' / ' + states.length);
+                $label2.text(' / ' + states.length);
             };
 
             var close = function () {

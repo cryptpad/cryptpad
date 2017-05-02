@@ -2,6 +2,8 @@
 /*  Use Nacl for checking signatures of messages */
 var Nacl = require("tweetnacl");
 
+var Fs = require("fs");
+
 var RPC = module.exports;
 
 var Store = require("./storage/file");
@@ -380,18 +382,29 @@ var getLimit = function (cb) {
 
 };
 
-var createBlobStaging = function (cb) {
-
-};
-
-var createBlobStore = function (cb) {
+var safeMkdir = function (path, cb) {
+    Fs.mkdir(path, function (e) {
+        if (!e || e.code === 'EEXIST') { return void cb(); }
+        cb(e);
+    });
 };
 
 var upload = function (store, Sessions, publicKey, cb) {
+/*
+    1. check if there is an upload in progress
+      * if yes, return error
+    2. 
 
+*/
+
+    console.log('UPLOAD_NOT_IMPLEMENTED');
+    cb('NOT_IMPLEMENTED');
 };
 
-
+var cancelUpload = function (store, Sessions, publicKey, cb) {
+    console.log('CANCEL_UPLOAD_NOT_IMPLEMENTED');
+    cb('NOT_IMPLEMENTED');
+};
 
 /*::const ConfigType = require('./config.example.js');*/
 RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)=>void*/) {
@@ -504,20 +517,43 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                     if (e) { return void Respond(e); }
                     Respond(void 0, dict);
                 });
+
+            case 'UPLOAD':
+                return void upload(null, null, null, function (e) {
+                    Respond(e);
+                });
+            case 'CANCEL_UPLOAD':
+                return void cancelUpload(null, null, null, function (e) {
+                    Respond(e);
+                });
             default:
                 return void Respond('UNSUPPORTED_RPC_CALL', msg);
         }
     };
 
+    var keyOrDefaultString = function (key, def) {
+        return typeof(config[key]) === 'string'? config[key]: def;
+    };
+
+    var pinPath = keyOrDefaultString('pinPath', './pins');
+    var blobPath = keyOrDefaultString('blobPath', './blob');
+    var blobStagingPath = keyOrDefaultString('blobStagingPath', './blobstage');
+
     Store.create({
-        filePath: './pins'
+        filePath: pinPath,
     }, function (s) {
         store = s;
-        cb(void 0, rpc);
 
-        // expire old sessions once per minute
-        setInterval(function () {
-            expireSessions(Sessions);
-        }, 60000);
+        safeMkdir(blobPath, function (e) {
+            if (e) { throw e; }
+            safeMkdir(blobStagingPath, function (e) {
+                if (e) { throw e; }
+                cb(void 0, rpc);
+                // expire old sessions once per minute
+                setInterval(function () {
+                    expireSessions(Sessions);
+                }, 60000);
+            });
+        });
     });
 };

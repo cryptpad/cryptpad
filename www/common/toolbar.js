@@ -498,7 +498,7 @@ define([
                 'title': Messages.pinLimitReached
             }).append($limitIcon).hide().appendTo($userContainer);
             var todo = function (e, overLimit) {
-                if (e) { return void console.error("Unable tog et the pinned usage"); }
+                if (e) { return void console.error("Unable to get the pinned usage"); }
                 if (overLimit) {
                     $limit.show().click(function () {
                         Cryptpad.alert(Messages.pinLimitReachedAlert, null, true);
