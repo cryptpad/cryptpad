@@ -1760,6 +1760,17 @@ define([
             }
             //$content.append($toolbar).append($title).append($info).append($dirContent);
             $content.append($info).append($dirContent);
+
+            var $truncated = $('<span>', {'class': 'truncated'}).text('...');
+            $content.find('.element').each(function (idx, el) {
+                var $name = $(el).find('.name');
+                if ($name[0].scrollHeight > $name[0].clientHeight) {
+                    var $tr = $truncated.clone();
+                    $tr.attr('title', $name.attr('title'));
+                    $(el).append($tr);
+                }
+            });
+
             $content.scrollTop(s);
             appStatus.ready(true);
         };
