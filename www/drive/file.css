@@ -231,6 +231,7 @@ span.fa-folder-open {
   display: none;
   background-color: rgba(100, 100, 100, 0.7);
   position: absolute;
+  z-index: 50;
 }
 #content.readonly {
   background: #e6e6e6;
