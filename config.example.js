@@ -39,10 +39,10 @@ module.exports = {
             if you are deploying to production, you'll probably want to remove
             the ws://* directive, and change '*' to your domain
          */
-        "connect-src 'self' ws://* wss://*",
+        "connect-src 'self' ws: wss:",
 
         // data: is used by codemirror
-        "img-src 'self' data:",
+        "img-src 'self' data: blob:",
     ].join('; '),
 
     // CKEditor requires significantly more lax content security policy in order to function.
@@ -59,7 +59,7 @@ module.exports = {
          "child-src 'self' *",
 
         // see the comment above in the 'contentSecurity' section
-         "connect-src 'self' ws://* wss://*",
+         "connect-src 'self' ws: wss:",
 
         // (insecure remote) images are included by users of the wysiwyg who embed photos in their pads
         "img-src *",
