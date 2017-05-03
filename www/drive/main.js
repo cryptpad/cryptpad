@@ -228,7 +228,6 @@ define([
         if (AppConfig.enableTemplates) { displayedCategories.push(TEMPLATE); }
         if (isWorkgroup()) { displayedCategories = [ROOT, TRASH, SEARCH]; }
 
-        var lastSelectTime;
         var selectedElement;
 
         if (!APP.readOnly) {
@@ -262,14 +261,20 @@ define([
 
 
         // Selection
-        var removeSelected =  function () {
+        var sel = {};
+
+        var removeSelected =  function (keepObj) {
             $iframe.find('.selected').removeClass("selected");
             var $container = $driveToolbar.find('#contextButtonsContainer');
             if (!$container.length) { return; }
             $container.html('');
+            if (!keepObj) {
+                delete sel.startSelected;
+                delete sel.endSelected;
+                delete sel.oldSelection;
+            }
         };
 
-        var sel = {};
         sel.refresh = 200;
         sel.$selectBox = $('<div>', {'class': 'selectBox'}).appendTo($content);
         var checkSelected = function () {
@@ -364,6 +369,81 @@ define([
             $content.off('mousemove', sel.move);
             delete sel.move;
             $content.find('.selectedTmp').removeClass('selectedTmp').addClass('selected');
+        });
+
+        $(ifrw).keydown(function (e) {
+            var $elements = $content.find('.element:not(.header)');
+
+            var ev = {};
+            if (e.ctrlKey) { ev.ctrlKey = true; }
+            if (e.shiftKey) { ev.shiftKey = true; }
+            var click = function (el) {
+                onElementClick(ev, $(el));
+            };
+
+            // Enter
+            if (e.which === 13) {
+                var $selection = $content.find('.file-element.selected');
+                $selection.each(function (idx, el) {
+                    $(el).dblclick();
+                });
+                return;
+            }
+
+            // [Left, Up, Right, Down]
+            if ([37, 38, 39, 40].indexOf(e.which) === -1) { return; }
+
+            var $selection = $content.find('.element.selected');
+            if ($selection.length === 0) { return void click($elements.first()[0]); }
+
+            var lastIndex = typeof sel.endSelected === "number" ? sel.endSelected :
+                            typeof sel.startSelected === "number" ? sel.startSelected :
+                            $elements.index($selection.last()[0]);
+            var length = $elements.length;
+            if (length === 0) { return; }
+            // List mode
+            if (getViewMode() === "list") {
+                if (e.which === 40) { click($elements.get(Math.min(lastIndex+1, length))); }
+                if (e.which === 38) { click($elements.get(Math.max(lastIndex-1, 0))); }
+                return;
+            }
+
+            // Icon mode
+            // Get the vertical and horizontal position of lastIndex
+            // Filter all the elements to get those in the same line/column
+            var pos = $($elements.get(0)).position();
+            var $line = $elements.filter(function (idx, el) {
+                return $(el).position().top === pos.top;
+            });
+            var cols = $line.length
+            var lines = Math.ceil(length/cols);
+
+            var lastPos = {
+                l : Math.floor(lastIndex/cols),
+                c : lastIndex - Math.floor(lastIndex/cols)*cols
+            };
+
+            if (e.which === 37) {
+                if (lastPos.c === 0) { return; }
+                click($elements.get(Math.max(lastIndex-1, 0)));
+                return;
+            }
+            if (e.which === 38) {
+                if (lastPos.l === 0) { return; }
+                click($elements.get(Math.max(lastIndex-cols, 0)));
+                return;
+            }
+            if (e.which === 39) {
+                if (lastPos.c === cols-1) { return; }
+                click($elements.get(Math.min(lastIndex+1, length-1)));
+                return;
+            }
+            if (e.which === 40) {
+                if (lastPos.l === lines-1) { return; }
+                click($elements.get(Math.min(lastIndex+cols, length-1)));
+                return;
+            }
+
         });
 
 
@@ -622,7 +702,7 @@ define([
         };
 
         // Add the "selected" class to the "li" corresponding to the clicked element
-        var onElementClick = function (e, $element, path) {
+        var onElementClick = function (e, $element) {
             // If "Ctrl" is pressed, do not remove the current selection
             removeInput();
             $element = findDataHolder($element);
@@ -630,19 +710,46 @@ define([
             if (e) { module.hideMenu(); }
             // Remove the selection if we don't hold ctrl key or if we are right-clicking
             if (!e || !e.ctrlKey) {
-                removeSelected();
+                removeSelected(e.shiftKey);
             }
             if (!$element.length) {
                 log(Messages.fm_selectError);
                 return;
             }
             // Add the selected class to the clicked / right-clicked element
-            // Remove the class if it already has it (cannot happen if the user is not holding ctrl key)
-            if (!$element.hasClass("selected")) {
-                $element.addClass("selected");
-                lastSelectTime = now();
+            // Remove the class if it already has it
+            // If ctrlKey, add to the selection
+            // If shiftKey, select a range of elements
+            var $elements = $content.find('.element:not(.header)');
+            var $selection = $elements.filter('.selected');
+            if (typeof sel.startSelected !== "number" || !e || (e.ctrlKey && !e.shiftKey)) {
+                sel.startSelected = $elements.index($element[0]);
+                sel.oldSelection = [];
+                $selection.each(function (idx, el) {
+                    sel.oldSelection.push(el);
+                });
+                delete sel.endSelected;
+            }
+            if (e.shiftKey) {
+                var end = $elements.index($element[0]);
+                sel.endSelected = end;
+                var $el;
+                removeSelected(true);
+                sel.oldSelection.forEach(function (el) {
+                    if (!$(el).hasClass("selected")) { $(el).addClass("selected"); }
+                });
+                for (var i = Math.min(sel.startSelected, sel.endSelected);
+                     i <= Math.max(sel.startSelected, sel.endSelected);
+                     i++) {
+                    $el = $($elements.get(i));
+                    if (!$el.hasClass("selected")) { $el.addClass("selected"); }
+                }
             } else {
-                $element.removeClass("selected");
+                if (!$element.hasClass("selected")) {
+                    $element.addClass("selected");
+                } else {
+                    $element.removeClass("selected");
+                }
             }
             updateContextButton();
         };
@@ -2340,71 +2447,6 @@ define([
         $appContainer.mouseup(function (e) {
             window.clearInterval(APP.resizeTree);
             APP.resizeTree = undefined;
-        });
-
-        $(ifrw).keydown(function (e) {
-            // Enter
-            if (e.which === 13) {
-                var $selection = $content.find('.file-element.selected');
-                $selection.each(function (idx, el) {
-                    $(el).dblclick();
-                });
-                return;
-            }
-            // [Left, Up, Right, Down]
-            if ([37, 38, 39, 40].indexOf(e.which) === -1) { return; }
-            var $selection = $content.find('.element.selected');
-
-            if ($selection.length === 0) { return void $content.find('.element').first().click(); }
-
-            var $elements = $content.find('.element:not(.header)');
-            var $last = $selection.last();
-            var lastIndex = $elements.index($last[0]);
-            var length = $elements.length;
-            if (length === 0) { return; }
-            // List mode
-            if (getViewMode() === "list") {
-                if (e.which === 40) { $elements.get(Math.min(lastIndex+1, length)).click(); }
-                if (e.which === 38) { $elements.get(Math.max(lastIndex-1, 0)).click(); }
-                return;
-            }
-
-            // Icon mode
-            // Get the vertical and horizontal position of $last
-            // Filter all the elements to get those in the same line/column
-            var pos = $($elements.get(0)).position();
-            var $line = $elements.filter(function (idx, el) {
-                return $(el).position().top === pos.top;
-            });
-            var cols = $line.length
-            var lines = Math.ceil(length/cols);
-
-            var lastPos = {
-                l : Math.floor(lastIndex/cols),
-                c : lastIndex - Math.floor(lastIndex/cols)*cols
-            };
-
-            if (e.which === 37) {
-                if (lastPos.c === 0) { return; }
-                $elements.get(Math.max(lastIndex-1, 0)).click();
-                return;
-            }
-            if (e.which === 38) {
-                if (lastPos.l === 0) { return; }
-                $elements.get(Math.max(lastIndex-cols, 0)).click();
-                return;
-            }
-            if (e.which === 39) {
-                if (lastPos.c === cols-1) { return; }
-                $elements.get(Math.min(lastIndex+1, length-1)).click();
-                return;
-            }
-            if (e.which === 40) {
-                if (lastPos.l === lines-1) { return; }
-                $elements.get(Math.min(lastIndex+cols, length-1)).click();
-                return;
-            }
-
         });
 
         history.onEnterHistory = function (obj) {
