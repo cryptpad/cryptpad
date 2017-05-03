@@ -378,13 +378,13 @@ define([
             if (e.ctrlKey) { ev.ctrlKey = true; }
             if (e.shiftKey) { ev.shiftKey = true; }
             var click = function (el) {
-                onElementClick(ev, $(el));
+                module.onElementClick(ev, $(el));
             };
 
             // Enter
             if (e.which === 13) {
-                var $selection = $content.find('.file-element.selected');
-                $selection.each(function (idx, el) {
+                var $select = $content.find('.file-element.selected');
+                $select.each(function (idx, el) {
                     $(el).dblclick();
                 });
                 return;
@@ -415,7 +415,7 @@ define([
             var $line = $elements.filter(function (idx, el) {
                 return $(el).position().top === pos.top;
             });
-            var cols = $line.length
+            var cols = $line.length;
             var lines = Math.ceil(length/cols);
 
             var lastPos = {
@@ -702,7 +702,7 @@ define([
         };
 
         // Add the "selected" class to the "li" corresponding to the clicked element
-        var onElementClick = function (e, $element) {
+        var onElementClick = module.onElementClick = function (e, $element) {
             // If "Ctrl" is pressed, do not remove the current selection
             removeInput();
             $element = findDataHolder($element);
