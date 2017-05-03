@@ -2330,6 +2330,72 @@ define([
             window.clearInterval(APP.resizeTree);
             APP.resizeTree = undefined;
         });
+
+        $(ifrw).keydown(function (e) {
+            // Enter
+            if (e.which === 13) {
+                var $selection = $content.find('.file-element.selected');
+                $selection.each(function (idx, el) {
+                    $(el).dblclick();
+                });
+                return;
+            }
+            // [Left, Up, Right, Down]
+            if ([37, 38, 39, 40].indexOf(e.which) === -1) { return; }
+            var $selection = $content.find('.element.selected');
+
+            if ($selection.length === 0) { return void $content.find('.element').first().click(); }
+
+            var $elements = $content.find('.element:not(.header)');
+            var $last = $selection.last();
+            var lastIndex = $elements.index($last[0]);
+            var length = $elements.length;
+            if (length === 0) { return; }
+            // List mode
+            if (getViewMode() === "list") {
+                if (e.which === 40) { $elements.get(Math.min(lastIndex+1, length)).click(); }
+                if (e.which === 38) { $elements.get(Math.max(lastIndex-1, 0)).click(); }
+                return;
+            }
+
+            // Icon mode
+            // Get the vertical and horizontal position of $last
+            // Filter all the elements to get those in the same line/column
+            var pos = $($elements.get(0)).position();
+            var $line = $elements.filter(function (idx, el) {
+                return $(el).position().top === pos.top;
+            });
+            var cols = $line.length
+            var lines = Math.ceil(length/cols);
+
+            var lastPos = {
+                l : Math.floor(lastIndex/cols),
+                c : lastIndex - Math.floor(lastIndex/cols)*cols
+            };
+
+            if (e.which === 37) {
+                if (lastPos.c === 0) { return; }
+                $elements.get(Math.max(lastIndex-1, 0)).click();
+                return;
+            }
+            if (e.which === 38) {
+                if (lastPos.l === 0) { return; }
+                $elements.get(Math.max(lastIndex-cols, 0)).click();
+                return;
+            }
+            if (e.which === 39) {
+                if (lastPos.c === cols-1) { return; }
+                $elements.get(Math.min(lastIndex+1, length-1)).click();
+                return;
+            }
+            if (e.which === 40) {
+                if (lastPos.l === lines-1) { return; }
+                $elements.get(Math.min(lastIndex+cols, length-1)).click();
+                return;
+            }
+
+        });
+
         history.onEnterHistory = function (obj) {
             var files = obj.drive;
             filesOp = FO.init(files, config);
