@@ -1871,6 +1871,7 @@ define([
             var $truncated = $('<span>', {'class': 'truncated'}).text('...');
             $content.find('.element').each(function (idx, el) {
                 var $name = $(el).find('.name');
+                if ($name.length === 0) { return; }
                 if ($name[0].scrollHeight > $name[0].clientHeight) {
                     var $tr = $truncated.clone();
                     $tr.attr('title', $name.attr('title'));
