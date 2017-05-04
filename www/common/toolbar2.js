@@ -370,7 +370,7 @@ define([
         return "Loading share button";
     };
 
-    var createFileShare = function (toolbar, config) {
+    var createFileShare = function () {
         if (!window.location.hash) {
             throw new Error("Unable to display the share button: hash required in the URL");
         }
@@ -467,7 +467,7 @@ define([
         return $titleContainer;
     };
 
-    var createLinkToMain = function (toolbar, config) {
+    var createLinkToMain = function (toolbar) {
         var $linkContainer = $('<span>', {
             'class': "cryptpad-link"
         }).appendTo(toolbar.$top);
@@ -605,13 +605,12 @@ define([
         return $spin;
     };
 
-    var createState = function (toolbar, config) {
+    var createState = function (toolbar) {
         return toolbar.$userAdmin.find('.'+STATE_CLS).text(Messages.synchronizing).show();
     };
 
-    var createLimit = function (toolbar, config) {
+    var createLimit = function (toolbar) {
         if (!Config.enablePinning) { return; }
-        var usage;
         var $limitIcon = $('<span>', {'class': 'fa fa-exclamation-triangle'});
         var $limit = toolbar.$userAdmin.find('.'+LIMIT_CLS).attr({
             'title': Messages.pinLimitReached
@@ -628,7 +627,7 @@ define([
         return $limit;
     };
 
-    var createNewPad = function (toolbar, config) {
+    var createNewPad = function (toolbar) {
         var $newPad = toolbar.$userAdmin.find('.'+NEWPAD_CLS).show();
 
         var pads_options = [];
@@ -676,7 +675,6 @@ define([
         Cryptpad.createUserAdminMenu(userMenuCfg);
 
         var $userButton = $userAdmin.find('a.' + USERBUTTON_CLS);
-        var renameAlertOpened;
         $userButton.click(function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -688,7 +686,7 @@ define([
                 });
             });
         });
-        Cryptpad.onDisplayNameChanged(function (newName) {
+        Cryptpad.onDisplayNameChanged(function () {
             Cryptpad.findCancelButton().click();
         });
 
@@ -697,7 +695,7 @@ define([
 
     // Events
     var initClickEvents = function (toolbar, config) {
-        var removeDropdowns =  function (e) {
+        var removeDropdowns =  function () {
             toolbar.$toolbar.find('.cryptpad-dropdown').hide();
         };
         var cancelEditTitle = function (e) {
@@ -720,7 +718,7 @@ define([
         // Click in iframes
         try {
             if (w.$ && w.$('iframe').length) {
-                var innerIfrw = config.ifrw.$('iframe').each(function (i, el) {
+                config.ifrw.$('iframe').each(function (i, el) {
                     $(el.contentWindow).on('click', removeDropdowns);
                     $(el.contentWindow).on('click', cancelEditTitle);
                 });
@@ -821,7 +819,7 @@ define([
 
     // Main
 
-    var create = Bar.create = function (cfg) {
+    Bar.create = function (cfg) {
         var config = cfg || {};
         Cryptpad = config.common;
         Messages = Cryptpad.Messages;
