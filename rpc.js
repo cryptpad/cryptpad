@@ -2,6 +2,9 @@
 /*  Use Nacl for checking signatures of messages */
 var Nacl = require("tweetnacl");
 
+/* globals Buffer*/
+/* globals process */
+
 var Fs = require("fs");
 var Path = require("path");
 
@@ -49,7 +52,7 @@ var makeCookie = function (token) {
 
     return [
         time,
-        process.pid, // jshint ignore:line
+        process.pid,
         token
     ];
 };
@@ -114,7 +117,7 @@ var isValidCookie = function (Sessions, publicKey, cookie) {
     }
 
     // different process. try harder
-    if (process.pid !== parsed.pid) { // jshint ignore:line
+    if (process.pid !== parsed.pid) {
         return false;
     }
 
@@ -440,7 +443,7 @@ var makeFileStream = function (root, id, cb) {
 };
 
 var upload = function (stagingPath, Sessions, publicKey, content, cb) {
-    var dec = new Buffer(Nacl.util.decodeBase64(content));
+    var dec = new Buffer(Nacl.util.decodeBase64(content)); // jshint ignore:line
 
     var session = Sessions[publicKey];
     if (!session.blobstage) {
@@ -495,7 +498,6 @@ var upload_complete = function (stagingPath, storePath, Sessions, publicKey, cb)
         var id = createChannelId();
         var prefix = id.slice(0, 2);
         var newPath = makeFilePath(storePath, id);
-        //publicKey);
 
         safeMkdir(Path.join(storePath, prefix), function (e) {
             if (e) {
@@ -517,7 +519,6 @@ var upload_complete = function (stagingPath, storePath, Sessions, publicKey, cb)
     };
 
     tryRandomLocation(function (e, newPath, id) {
-        console.log(newPath, id);
         Fs.rename(oldPath, newPath, function (e) {
             if (e) {
                 console.error(e);
