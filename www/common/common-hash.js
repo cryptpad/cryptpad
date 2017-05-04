@@ -49,7 +49,7 @@ define([
             return ret;
         }
 
-        var hash = href.replace(patt, function (a, domain, type, hash) {
+        var hash = href.replace(patt, function (a, domain, type) {
             ret.domain = domain;
             ret.type = type;
             return '';
@@ -70,7 +70,7 @@ define([
      * - no argument: use the URL hash or create one if it doesn't exist
      * - secretHash provided: use secretHash to find the keys
      */
-    var getSecrets = Hash.getSecrets = function (secretHash) {
+    Hash.getSecrets = function (secretHash) {
         var secret = {};
         var generate = function () {
             secret.keys = Crypto.createEditCryptor();
@@ -130,7 +130,7 @@ define([
         return secret;
     };
 
-    var getHashes = Hash.getHashes = function (channel, secret) {
+    Hash.getHashes = function (channel, secret) {
         var hashes = {};
         if (secret.keys.editKeyStr) {
             hashes.editHash = getEditHashFromKeys(channel, secret.keys);
@@ -152,7 +152,7 @@ define([
         return id;
     };
 
-    var createRandomHash = Hash.createRandomHash = function () {
+    Hash.createRandomHash = function () {
         // 16 byte channel Id
         var channelId = Util.hexToBase64(createChannelId());
         // 18 byte encryption key
@@ -197,7 +197,7 @@ Version 2
     };
 
     // STORAGE
-    var findWeaker = Hash.findWeaker = function (href, recents) {
+    Hash.findWeaker = function (href, recents) {
         var rHref = href || getRelativeHref(window.location.href);
         var parsed = parsePadUrl(rHref);
         if (!parsed.hash) { return false; }
@@ -241,11 +241,11 @@ Version 2
         });
         return stronger;
     };
-    var isNotStrongestStored = Hash.isNotStrongestStored = function (href, recents) {
+    Hash.isNotStrongestStored = function (href, recents) {
         return findStronger(href, recents);
     };
 
-    var hrefToHexChannelId = Hash.hrefToHexChannelId = function (href) {
+    Hash.hrefToHexChannelId = function (href) {
         var parsed = Hash.parsePadUrl(href);
         if (!parsed || !parsed.hash) { return; }
 
@@ -266,11 +266,11 @@ Version 2
         return hex;
     };
 
-    var getBlobPath = Hash.getBlobPathFromHex = function (id) {
+    Hash.getBlobPathFromHex = function (id) {
         return '/blob/' + id.slice(0,2) + '/' + id;
     };
 
-    var serializeHash = Hash.serializeHash = function (hash) {
+    Hash.serializeHash = function (hash) {
         if (hash && hash.slice(-1) !== "/") { hash += "/"; }
         return hash;
     };

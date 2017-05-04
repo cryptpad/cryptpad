@@ -37,7 +37,7 @@ define([
     var error = console.error;
 
     Cryptpad.addLoadingScreen();
-    var onConnectError = function (info) {
+    var onConnectError = function () {
         Cryptpad.errorLoadingScreen(Messages.websocketError);
     };
 
@@ -96,15 +96,6 @@ define([
         }
         return newObj;
     };
-
-    var setColumnDisabled = function (id, state) {
-        if (!state) {
-            $('input[data-rt-id^="' + id + '"]').removeAttr('disabled');
-            return;
-        }
-        $('input[data-rt-id^="' + id + '"]').attr('disabled', 'disabled');
-    };
-
 
     var styleUncommittedColumn = function () {
         var id = APP.userid;
@@ -286,7 +277,7 @@ define([
     };
 
     /*  Called whenever an event is fired on an input element */
-    var handleInput = function (input, isKeyup) {
+    var handleInput = function (input) {
         var type = input.type.toLowerCase();
         var id = getRealtimeId(input);
 
@@ -485,7 +476,7 @@ define([
             uid: Cryptpad.getUid(),
         };
         addToUserData(myData);
-        Cryptpad.setAttribute('username', newName, function (err, data) {
+        Cryptpad.setAttribute('username', newName, function (err) {
             if (err) {
                 console.error("Couldn't set username");
                 return;
@@ -558,7 +549,7 @@ define([
         var colsOrder = sortColumns(displayedObj.table.colsOrder, userid);
 
         var $table = APP.$table = $(Render.asHTML(displayedObj, null, colsOrder, readOnly));
-        var $createRow = APP.$createRow = $('#create-option').click(function () {
+        APP.$createRow = $('#create-option').click(function () {
             //console.error("BUTTON CLICKED! LOL");
             Render.createRow(proxy, function (empty, id) {
                 change(null, null, null, null, function() {
@@ -567,7 +558,7 @@ define([
             });
         });
 
-        var $createCol = APP.$createCol = $('#create-user').click(function () {
+        APP.$createCol = $('#create-user').click(function () {
             Render.createColumn(proxy, function (empty, id) {
                 change(null, null, null, null, function() {
                     $('.edit[data-rt-id="' + id + '"]').click();
@@ -576,7 +567,7 @@ define([
         });
 
         // Commit button
-        var $commit = APP.$commit = $('#commit').click(function () {
+        APP.$commit = $('#commit').click(function () {
             var uncommittedCopy = JSON.parse(JSON.stringify(APP.uncommitted));
             APP.uncommitted = {};
             prepareProxy(APP.uncommitted, copyObject(Render.Example));
@@ -586,13 +577,13 @@ define([
         });
 
         // #publish button is removed in readonly
-        var $publish = APP.$publish = $('#publish')
+        APP.$publish = $('#publish')
             .click(function () {
                 publish(true);
             });
 
         // #publish button is removed in readonly
-        var $admin = APP.$admin = $('#admin')
+        APP.$admin = $('#admin')
             .click(function () {
                 publish(false);
             });
@@ -644,9 +635,7 @@ define([
                     var el = $description[0];
 
                     var selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
-                        var before = el[attr];
-                        var after = TextPatcher.transformCursor(el[attr], op);
-                        return after;
+                        return TextPatcher.transformCursor(el[attr], op);
                     });
                     $description.val(n);
                     if (op) {
@@ -700,7 +689,7 @@ define([
         });
     };
 
-    var disconnect = function (info) {
+    var disconnect = function () {
         //setEditable(false); // TODO
         APP.realtime.toolbar.failed();
         Cryptpad.alert(Messages.common_connectionLost, undefined, true);
@@ -713,11 +702,9 @@ define([
     };
 
     var create = function (info) {
-        var myID = APP.myID = info.myID;
+        APP.myID = info.myID;
 
         var editHash;
-        var viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
-
         if (!readOnly) {
             editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
         }
@@ -748,17 +735,17 @@ define([
             ifrw: window,
             common: Cryptpad,
         };
-        var toolbar = info.realtime.toolbar = Toolbar.create(APP.$bar, info.myID, info.realtime, info.getLag, userList, config);
+        info.realtime.toolbar = Toolbar.create(APP.$bar, info.myID, info.realtime, info.getLag, userList, config);
 
         var $bar = APP.$bar;
         var $rightside = $bar.find('.' + Toolbar.constants.rightside);
-        var $userBlock = $bar.find('.' + Toolbar.constants.username);
-        var $editShare = $bar.find('.' + Toolbar.constants.editShare);
-        var $viewShare = $bar.find('.' + Toolbar.constants.viewShare);
-        var $usernameButton = APP.$userNameButton = $($bar.find('.' + Toolbar.constants.changeUsername));
+        $bar.find('.' + Toolbar.constants.username);
+        $bar.find('.' + Toolbar.constants.editShare);
+        $bar.find('.' + Toolbar.constants.viewShare);
+        APP.$userNameButton = $($bar.find('.' + Toolbar.constants.changeUsername));
 
         /* add a forget button */
-        var forgetCb = function (err, title) {
+        var forgetCb = function (err) {
             if (err) { return; }
             disconnect();
         };
@@ -814,6 +801,7 @@ define([
                 if (!userid) { userid = Render.coluid(); }
                 APP.userid = userid;
                 Cryptpad.setPadAttribute('userid', userid, function (e) {
+                    if (e) { console.error(e); }
                     ready(info, userid, readOnly);
                 });
             });

@@ -22,7 +22,7 @@ define([
         // 16 bytes for a deterministic channel key
         var channelSeed = dispense(16);
         // 32 bytes for a curve key
-        var curveSeed = opt.curveSeed = dispense(32);
+        opt.curveSeed = dispense(32);
         // 32 more for a signing key
         var edSeed = opt.edSeed = dispense(32);
 
@@ -43,9 +43,9 @@ define([
         // should never happen
         if (channelHex.length !== 32) { throw new Error('invalid channel id'); }
 
-        var channel64 = opt.channel64 = Cryptpad.hexToBase64(channelHex);
+        opt.channel64 = Cryptpad.hexToBase64(channelHex);
 
-        var userHash = opt.userHash = '/1/edit/' + [opt.channel64, opt.keys.editKeyStr].join('/');
+        opt.userHash = '/1/edit/' + [opt.channel64, opt.keys.editKeyStr].join('/');
 
         return opt;
     };
@@ -62,7 +62,7 @@ define([
 
         var rt = opt.rt = Listmap.create(config);
         rt.proxy
-        .on('ready', function (info) {
+        .on('ready', function () {
             cb(void 0, rt);
         })
         .on('disconnect', function (info) {

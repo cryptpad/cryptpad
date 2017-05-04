@@ -25,7 +25,7 @@ define([
         var wcId = common.hrefToHexChannelId(config.href || window.location.href);
 
         console.log(wcId);
-        var createRealtime = function(chan) {
+        var createRealtime = function () {
             return ChainPad.create({
                 userName: 'history',
                 initialState: '',
@@ -68,14 +68,14 @@ define([
             }
         };
 
-        network.on('message', function (msg, sender) {
+        network.on('message', function (msg) {
             onMsg(msg);
         });
 
         network.sendto(hkn, JSON.stringify(['GET_FULL_HISTORY', wcId, secret.keys.validateKey]));
     };
 
-    var create = History.create = function (common, config) {
+    History.create = function (common, config) {
         if (!config.$toolbar) { return void console.error("config.$toolbar is undefined");}
         if (History.loading) { return void console.error("History is already being loaded..."); }
         History.loading = true;
@@ -145,7 +145,7 @@ define([
                 title: Messages.history_next
             }).appendTo($hist);
 
-            var $label = $('<label>').text(Messages.history_version).appendTo($nav);
+            $('<label>').text(Messages.history_version).appendTo($nav);
             var $cur = $('<input>', {
                 'class' : 'gotoInput',
                 'type' : 'number',

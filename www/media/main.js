@@ -4,13 +4,13 @@ define([
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/common/toolbar.js',
     '/common/cryptpad-common.js',
-    '/common/visible.js',
-    '/common/notify.js',
+    //'/common/visible.js',
+    //'/common/notify.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
-], function ($, Crypto, realtimeInput, Toolbar, Cryptpad, Visible, Notify) {
-    var Messages = Cryptpad.Messages;
-    var saveAs = window.saveAs;
+], function ($, Crypto, realtimeInput, Toolbar, Cryptpad /*, Visible, Notify*/) {
+    //var Messages = Cryptpad.Messages;
+    //var saveAs = window.saveAs;
     //window.Nacl = window.nacl;
     $(function () {
 
@@ -84,17 +84,17 @@ define([
                 }
             };
             Toolbar.create($bar, null, null, null, null, configTb);
-            var $rightside = $bar.find('.' + Toolbar.constants.rightside);
+            //var $rightside = $bar.find('.' + Toolbar.constants.rightside);
 
             updateTitle(Cryptpad.initialName || getTitle() || defaultName);
 
-            var mt = MediaTag($mt[0]);
+            MediaTag($mt[0]);
 
             Cryptpad.removeLoadingScreen();
         });
     };
 
-    Cryptpad.ready(function (err, anv) {
+    Cryptpad.ready(function () {
         andThen();
         Cryptpad.reportAppUsage();
     });

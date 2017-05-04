@@ -18,7 +18,7 @@ var isValidChannel = function (chan) {
 
 var uint8ArrayToHex = function (a) {
     // call slice so Uint8Arrays work as expected
-    return Array.prototype.slice.call(a).map(function (e, i) {
+    return Array.prototype.slice.call(a).map(function (e) {
         var n = Number(e & 0xff).toString(16);
         if (n === 'NaN') {
             throw new Error('invalid input resulted in NaN');
@@ -127,7 +127,6 @@ var isValidCookie = function (Sessions, publicKey, cookie) {
     var idx = user.tokens.indexOf(parsed.seq);
     if (idx === -1) { return false; }
 
-    var next;
     if (idx > 0) {
         // make a new token
         addTokenForKey(Sessions, publicKey, makeToken());
@@ -325,9 +324,9 @@ var getHash = function (store, Sessions, publicKey, cb) {
     });
 };
 
-var storeMessage = function (store, publicKey, msg, cb) {
+/* var storeMessage = function (store, publicKey, msg, cb) {
     store.message(publicKey, JSON.stringify(msg), cb);
-};
+}; */
 
 var pinChannel = function (store, Sessions, publicKey, channels, cb) {
     if (!channels && channels.filter) {
@@ -407,7 +406,7 @@ var resetUserPins = function (store, Sessions, publicKey, channelList, cb) {
 };
 
 var getLimit = function (cb) {
-
+    cb = cb; // TODO
 };
 
 var safeMkdir = function (path, cb) {
@@ -649,6 +648,7 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                 return void getFileSize(ctx.store, msg[1], Respond);
             case 'GET_LIMIT': // TODO implement this and cache it per-user
                 return void getLimit(function (e, limit) {
+                    limit = limit;
                     Respond('NOT_IMPLEMENTED');
                 });
             case 'GET_MULTIPLE_FILE_SIZE':

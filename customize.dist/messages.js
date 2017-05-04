@@ -112,9 +112,7 @@ define(req, function($, Default, Language) {
 
         if (!selector.length) { return; }
 
-        var $button = $(selector).find('button .buttonTitle');
         // Select the current language in the list
-        var option = $(selector).find('[data-value="' + language + '"]');
         selector.setValue(language || 'English');
 
         // Listen for language change
@@ -137,12 +135,12 @@ define(req, function($, Default, Language) {
         var key = $el.data('localization-append');
         $el.append(messages[key]);
     };
-    var translateTitle = function (i, e) {
+    var translateTitle = function () {
         var $el = $(this);
         var key = $el.data('localization-title');
         $el.attr('title', messages[key]);
     };
-    var translatePlaceholder = function (i, e) {
+    var translatePlaceholder = function () {
         var $el = $(this);
         var key = $el.data('localization-placeholder');
         $el.attr('placeholder', messages[key]);

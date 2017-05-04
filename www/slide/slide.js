@@ -9,7 +9,7 @@ define([
 
     var checkedTaskItemPtn = /^\s*\[x\]\s*/;
     var uncheckedTaskItemPtn = /^\s*\[ \]\s*/;
-    renderer.listitem = function (text, level) {
+    renderer.listitem = function (text) {
         var isCheckedTaskItem = checkedTaskItemPtn.test(text);
         var isUncheckedTaskItem = uncheckedTaskItemPtn.test(text);
         if (isCheckedTaskItem) {
@@ -27,8 +27,6 @@ define([
     Marked.setOptions({
         renderer: renderer
     });
-
-    var truthy = function (x) { return x; };
 
     var Slide = {
         index: 0,
@@ -59,8 +57,7 @@ define([
 
     var change = function (oldIndex, newIndex) {
         if (Slide.changeHandlers.length) {
-            Slide.changeHandlers.some(function (f, i) {
-                // HERE
+            Slide.changeHandlers.some(function (f) {
                 f(oldIndex, newIndex, getNumberOfSlides());
             });
         }
@@ -194,7 +191,7 @@ define([
         change(Slide.lastIndex, Slide.index);
     };
 
-    var updateOptions = Slide.updateOptions = function () {
+    Slide.updateOptions = function () {
         draw(Slide.index);
     };
 
@@ -233,7 +230,7 @@ define([
         $modal.removeClass('shown');
     };
 
-    var update = Slide.update = function (content, init) {
+    Slide.update = function (content, init) {
         if (!Slide.shown && !init) { return; }
         if (!content) { content = ''; }
         var old = Slide.content;
@@ -245,7 +242,7 @@ define([
         change(Slide.lastIndex, Slide.index);
     };
 
-    var left = Slide.left = function () {
+    Slide.left = function () {
         console.log('left');
         Slide.lastIndex = Slide.index;
 
@@ -253,7 +250,7 @@ define([
         Slide.draw(i);
     };
 
-    var right = Slide.right = function () {
+    Slide.right = function () {
         console.log('right');
         Slide.lastIndex = Slide.index;
 
@@ -261,7 +258,7 @@ define([
         Slide.draw(i);
     };
 
-    var first = Slide.first = function () {
+    Slide.first = function () {
         console.log('first');
         Slide.lastIndex = Slide.index;
 
@@ -269,7 +266,7 @@ define([
         Slide.draw(i);
     };
 
-    var last = Slide.last = function () {
+    Slide.last = function () {
         console.log('end');
         Slide.lastIndex = Slide.index;
 
@@ -279,7 +276,7 @@ define([
 
     var addEvent = function () {
         var icon_to;
-        $modal.mousemove(function (e) {
+        $modal.mousemove(function () {
             var $buttons = $modal.find('.button');
             $buttons.show();
             if (icon_to) { window.clearTimeout(icon_to); }
@@ -287,17 +284,17 @@ define([
                 $buttons.fadeOut();
             }, 1000);
         });
-        $modal.find('#button_exit').click(function (e) {
+        $modal.find('#button_exit').click(function () {
             var ev = $.Event("keyup");
             ev.which = 27;
             $modal.trigger(ev);
         });
-        $modal.find('#button_left').click(function (e) {
+        $modal.find('#button_left').click(function () {
             var ev = $.Event("keyup");
             ev.which = 37;
             $modal.trigger(ev);
         });
-        $modal.find('#button_right').click(function (e) {
+        $modal.find('#button_right').click(function () {
             var ev = $.Event("keyup");
             ev.which = 39;
             $modal.trigger(ev);

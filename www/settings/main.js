@@ -16,10 +16,6 @@ define([
 
     var Messages = Cryptpad.Messages;
 
-    var redirectToMain = function () {
-        window.location.href = '/';
-    };
-
     // Manage changes in the realtime object made from another page
     var onRefresh = function (h) {
         if (typeof(h) !== "function") { return; }
@@ -71,7 +67,7 @@ define([
     var createDisplayNameInput = function (store) {
         var obj = store.proxy;
         var $div = $('<div>', {'class': 'displayName'});
-        var $label = $('<label>', {'for' : 'displayName'}).text(Messages.user_displayName).appendTo($div);
+        $('<label>', {'for' : 'displayName'}).text(Messages.user_displayName).appendTo($div);
         $('<br>').appendTo($div);
         var $input = $('<input>', {
             'type': 'text',
@@ -114,7 +110,7 @@ define([
     };
     var createResetTips = function () {
         var $div = $('<div>', {'class': 'resetTips'});
-        var $label = $('<label>', {'for' : 'resetTips'}).text(Messages.settings_resetTips).appendTo($div);
+        $('<label>', {'for' : 'resetTips'}).text(Messages.settings_resetTips).appendTo($div);
         $('<br>').appendTo($div);
         var $button = $('<button>', {'id': 'resetTips', 'class': 'btn btn-primary'})
             .text(Messages.settings_resetTipsButton).appendTo($div);
@@ -145,7 +141,7 @@ define([
                 saveAs(blob, filename);
             });
         };
-        var importFile = function (content, file) {
+        var importFile = function (content) {
             var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).appendTo($div);
             Crypt.put(Cryptpad.getUserHash() || localStorage[Cryptpad.fileHashKey], content, function (e) {
                 if (e) { console.error(e); }
@@ -153,7 +149,7 @@ define([
             });
         };
 
-        var $label = $('<label>', {'for' : 'exportDrive'}).text(Messages.settings_backupTitle).appendTo($div);
+        $('<label>', {'for' : 'exportDrive'}).text(Messages.settings_backupTitle).appendTo($div);
         $('<br>').appendTo($div);
         /* add an export button */
         var $export = Cryptpad.createButton('export', true, {}, exportFile);
@@ -170,7 +166,7 @@ define([
 
     var createResetDrive = function (obj) {
         var $div = $('<div>', {'class': 'resetDrive'});
-        var $label = $('<label>', {'for' : 'resetDrive'}).text(Messages.settings_resetTitle).appendTo($div);
+        $('<label>', {'for' : 'resetDrive'}).text(Messages.settings_resetTitle).appendTo($div);
         $('<br>').appendTo($div);
         var $button = $('<button>', {'id': 'resetDrive', 'class': 'btn btn-danger'})
             .text(Messages.settings_reset).appendTo($div);
@@ -259,7 +255,7 @@ define([
     var createImportLocalPads = function (obj) {
         if (!Cryptpad.isLoggedIn()) { return; }
         var $div = $('<div>', {'class': 'importLocalPads'});
-        var $label = $('<label>', {'for' : 'importLocalPads'}).text(Messages.settings_importTitle).appendTo($div);
+        $('<label>', {'for' : 'importLocalPads'}).text(Messages.settings_importTitle).appendTo($div);
         $('<br>').appendTo($div);
         var $button = $('<button>', {'id': 'importLocalPads', 'class': 'btn btn-primary'})
             .text(Messages.settings_import).appendTo($div);
@@ -284,7 +280,7 @@ define([
 
     var createLanguageSelector = function () {
         var $div = $('<div>', {'class': 'importLocalPads'});
-        var $label = $('<label>').text(Messages.language).appendTo($div);
+        $('<label>').text(Messages.language).appendTo($div);
         $('<br>').appendTo($div);
         var $b = Cryptpad.createLanguageSelector().appendTo($div);
         $b.find('button').addClass('btn btn-secondary');
@@ -343,7 +339,6 @@ define([
     });
 
     window.addEventListener('storage', function (e) {
-        var key = e.key;
         if (e.key !== Cryptpad.userHashKey) { return; }
         var o = e.oldValue;
         var n = e.newValue;

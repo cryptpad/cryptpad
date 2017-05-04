@@ -46,7 +46,7 @@ define([
     var merge = function (obj1, obj2, keepOld) {
         if (typeof (obj1) !== "object" || typeof (obj2) !== "object") { return; }
         Object.keys(obj2).forEach(function (k) {
-            var v = obj2[k];
+            //var v = obj2[k];
             // If one of them is not an object or if we have a map and a array, don't override, create a new key
             if (!obj1[k] || typeof(obj1[k]) !== "object" || typeof(obj2[k]) !== "object" ||
                     (getType(obj1[k]) !== getType(obj2[k]))) {
@@ -80,7 +80,7 @@ define([
             path.pop();
         }
 
-        var p, next, nextRoot;
+        var next, nextRoot;
         path.forEach(function (p, i) {
             if (!root) { return; }
             if (typeof(p) === "string") {
@@ -128,7 +128,7 @@ define([
         });
     };
 
-    var mergeAnonDrive = exp.anonDriveIntoUser = function (proxy, cb) {
+    exp.anonDriveIntoUser = function (proxy, cb) {
         // Make sure we have an FS_hash and we don't use it, otherwise just stop the migration and cb
         if (!localStorage.FS_hash || !Cryptpad.isLoggedIn()) {
             if (typeof(cb) === "function") { cb(); }

@@ -3,7 +3,7 @@ define([
     '/common/cryptpad-common.js',
     '/common/pinpad.js'
 ], function ($, Cryptpad, Pinpad) {
-    var APP = window.APP = {
+    window.APP = {
         Cryptpad: Cryptpad,
     };
 
@@ -37,7 +37,7 @@ define([
     };
 
     $(function () {
-        Cryptpad.ready(function (err, env) {
+        Cryptpad.ready(function () {
             var network = Cryptpad.getNetwork();
             var proxy = Cryptpad.getStore().getProxy().proxy;
 

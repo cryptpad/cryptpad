@@ -4,7 +4,7 @@ define([
     '/common/cryptpad-common.js'
 ], function ($, Config, Cryptpad) {
 
-    var APP = window.APP = {
+    window.APP = {
         Cryptpad: Cryptpad,
     };
 
@@ -118,7 +118,7 @@ define([
             $('button.login').click();
         });
 
-        $('button.login').click(function (e) {
+        $('button.login').click(function () {
             Cryptpad.addLoadingScreen(Messages.login_hashing);
             // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed after hashing the password
             window.setTimeout(function () {
@@ -171,15 +171,14 @@ define([
         /* End Log in UI */
 
         var addButtonHandlers = function () {
-            $('button.register').click(function (e) {
+            $('button.register').click(function () {
                 var username = $('#name').val();
                 var passwd = $('#password').val();
-                var remember = $('#rememberme').is(':checked');
                 sessionStorage.login_user = username;
                 sessionStorage.login_pass = passwd;
                 document.location.href = '/register/';
             });
-            $('button.gotodrive').click(function (e) {
+            $('button.gotodrive').click(function () {
                 document.location.href = '/drive/';
             });
         };

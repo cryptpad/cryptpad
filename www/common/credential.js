@@ -8,20 +8,19 @@ define([
         return typeof(x) === 'string';
     };
 
-    var isValidUsername = Cred.isValidUsername = function (name) {
+    Cred.isValidUsername = function (name) {
         return !!(name && isString(name));
     };
 
-    var isValidPassword = Cred.isValidPassword = function (passwd) {
+    Cred.isValidPassword = function (passwd) {
         return !!(passwd && isString(passwd));
     };
 
-    var passwordsMatch = Cred.passwordsMatch = function (a, b) {
+    Cred.passwordsMatch = function (a, b) {
         return isString(a) && isString(b) && a === b;
     };
 
-    var deriveFromPassphrase = Cred.deriveFromPassphrase = function 
-    (username, password, len, cb) {
+    Cred.deriveFromPassphrase = function (username, password, len, cb) {
         Scrypt(password,
             username,
             8, // memoryCost (n)
@@ -32,7 +31,7 @@ define([
             undefined); // format, could be 'base64'
     };
 
-    var dispenser = Cred.dispenser = function (bytes) {
+    Cred.dispenser = function (bytes) {
         var entropy = {
             used: 0,
         };

@@ -10,7 +10,7 @@
     "notypeof": true,
     "shadow": false,
     "undef": true,
-    "unused": false,
+    "unused": true,
     "futurehostile":true,
     "browser": true,
     "predef": [

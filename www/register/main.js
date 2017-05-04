@@ -2,14 +2,8 @@ define([
     'jquery',
     '/common/login.js',
     '/common/cryptpad-common.js',
-    '/common/cryptget.js',
-    '/common/credential.js'
-], function ($, Login, Cryptpad, Crypt) {
-
-    var APP = window.APP = {
-        Login: Login,
-    };
-
+    '/common/credential.js' // preloaded for login.js
+], function ($, Login, Cryptpad) {
     var Messages = Cryptpad.Messages;
 
     $(function () {

@@ -29,7 +29,7 @@ define([
     var userHashKey = common.userHashKey = 'User_hash';
     var userNameKey = common.userNameKey = 'User_name';
     var fileHashKey = common.fileHashKey = 'FS_hash';
-    var displayNameKey = common.displayNameKey = 'cryptpad.username';
+    common.displayNameKey = 'cryptpad.username';
     var newPadNameKey = common.newPadNameKey = "newPadName";
     var newPadPathKey = common.newPadPathKey = "newPadPath";
     var storageKey = common.storageKey = 'CryptPad_RECENTPADS';
@@ -39,10 +39,10 @@ define([
     var rpc;
 
     // import UI elements
-    var findCancelButton = common.findCancelButton = UI.findCancelButton;
-    var findOKButton = common.findOKButton = UI.findOKButton;
-    var listenForKeys = common.listenForKeys = UI.listenForKeys;
-    var stopListening = common.stopListening = UI.stopListening;
+    common.findCancelButton = UI.findCancelButton;
+    common.findOKButton = UI.findOKButton;
+    common.listenForKeys = UI.listenForKeys;
+    common.stopListening = UI.stopListening;
     common.prompt = UI.prompt;
     common.confirm = UI.confirm;
     common.alert = UI.alert;
@@ -54,15 +54,15 @@ define([
     common.errorLoadingScreen = UI.errorLoadingScreen;
 
     // import common utilities for export
-    var find = common.find = Util.find;
+    common.find = Util.find;
     var fixHTML = common.fixHTML = Util.fixHTML;
-    var hexToBase64 = common.hexToBase64 = Util.hexToBase64;
-    var base64ToHex = common.base64ToHex = Util.base64ToHex;
+    common.hexToBase64 = Util.hexToBase64;
+    common.base64ToHex = Util.base64ToHex;
     var deduplicateString = common.deduplicateString = Util.deduplicateString;
-    var uint8ArrayToHex = common.uint8ArrayToHex = Util.uint8ArrayToHex;
-    var replaceHash = common.replaceHash = Util.replaceHash;
+    common.uint8ArrayToHex = Util.uint8ArrayToHex;
+    common.replaceHash = Util.replaceHash;
     var getHash = common.getHash = Util.getHash;
-    var fixFileName = common.fixFileName = Util.fixFileName;
+    common.fixFileName = Util.fixFileName;
     common.bytesToMegabytes = Util.bytesToMegabytes;
     common.bytesToKilobytes = Util.bytesToKilobytes;
 
@@ -121,13 +121,13 @@ define([
         });
     };
 
-    var reportAppUsage = common.reportAppUsage = function () {
+    common.reportAppUsage = function () {
         var pattern = window.location.pathname.split('/')
             .filter(function (x) { return x; }).join('.');
         feedback(pattern);
     };
 
-    var getUid = common.getUid = function () {
+    common.getUid = function () {
         if (store && store.getProxy() && store.getProxy().proxy) {
             return store.getProxy().proxy.uid;
         }
@@ -152,7 +152,7 @@ define([
         }, 0);
     };
 
-    var getWebsocketURL = common.getWebsocketURL = function () {
+    common.getWebsocketURL = function () {
         if (!Config.websocketPath) { return Config.websocketURL; }
         var path = Config.websocketPath;
         if (/^ws{1,2}:\/\//.test(path)) { return path; }
@@ -164,7 +164,7 @@ define([
         return url;
     };
 
-    var login = common.login = function (hash, name, cb) {
+    common.login = function (hash, name, cb) {
         if (!hash) { throw new Error('expected a user hash'); }
         if (!name) { throw new Error('expected a user name'); }
         hash = common.serializeHash(hash);
@@ -188,7 +188,7 @@ define([
     };
 
     var logoutHandlers = [];
-    var logout = common.logout = function (cb) {
+    common.logout = function (cb) {
         [
             userNameKey,
             userHashKey,
@@ -211,7 +211,7 @@ define([
 
         if (cb) { cb(); }
     };
-    var onLogout = common.onLogout = function (h) {
+    common.onLogout = function (h) {
         if (typeof (h) !== "function") { return; }
         if (logoutHandlers.indexOf(h) !== -1) { return; }
         logoutHandlers.push(h);
@@ -232,7 +232,7 @@ define([
         return typeof getUserHash() === "string";
     };
 
-    var hasSigningKeys = common.hasSigningKeys = function (proxy) {
+    common.hasSigningKeys = function (proxy) {
         return typeof(proxy) === 'object' &&
             typeof(proxy.edPrivate) === 'string' &&
             typeof(proxy.edPublic) === 'string';
@@ -308,7 +308,7 @@ define([
     };
 
     // Get the pads from localStorage to migrate them to the object store
-    var getLegacyPads = common.getLegacyPads = function (cb) {
+    common.getLegacyPads = function (cb) {
         require(['/customize/store.js'], function(Legacy) { // TODO DEPRECATE_F
             Legacy.ready(function (err, legacy) {
                 if (err) { cb(err, null); return; }
@@ -328,7 +328,6 @@ define([
     // Create untitled documents when no name is given
     var getDefaultName = common.getDefaultName = function (parsed) {
         var type = parsed.type;
-        var untitledIndex = 1;
         var name = (Messages.type)[type] + ' - ' + new Date().toString().split(' ').slice(0,4).join(' ');
         return name;
     };
@@ -348,37 +347,37 @@ define([
     };
 
     /* Sort pads according to how recently they were accessed */
-    var mostRecent = common.mostRecent = function (a, b) {
+    common.mostRecent = function (a, b) {
         return new Date(b.atime).getTime() - new Date(a.atime).getTime();
     };
 
     // STORAGE
-    var setPadAttribute = common.setPadAttribute = function (attr, value, cb) {
+    common.setPadAttribute = function (attr, value, cb) {
         getStore().setDrive([getHash(), attr].join('.'), value, function (err, data) {
             cb(err, data);
         });
     };
-    var setAttribute = common.setAttribute = function (attr, value, cb) {
+    common.setAttribute = function (attr, value, cb) {
         getStore().set(["cryptpad", attr].join('.'), value, function (err, data) {
             cb(err, data);
         });
     };
-    var setLSAttribute = common.setLSAttribute = function (attr, value) {
+    common.setLSAttribute = function (attr, value) {
         localStorage[attr] = value;
     };
 
     // STORAGE
-    var getPadAttribute = common.getPadAttribute = function (attr, cb) {
+    common.getPadAttribute = function (attr, cb) {
         getStore().getDrive([getHash(), attr].join('.'), function (err, data) {
             cb(err, data);
         });
     };
-    var getAttribute = common.getAttribute = function (attr, cb) {
+    common.getAttribute = function (attr, cb) {
         getStore().get(["cryptpad", attr].join('.'), function (err, data) {
             cb(err, data);
         });
     };
-    var getLSAttribute = common.getLSAttribute = function (attr) {
+    common.getLSAttribute = function (attr) {
         return localStorage[attr];
     };
 
@@ -393,19 +392,19 @@ define([
         });
         return templates;
     };
-    var addTemplate = common.addTemplate = function (data) {
+    common.addTemplate = function (data) {
         getStore().pushData(data);
         getStore().addPad(data.href, ['template']);
     };
 
-    var isTemplate = common.isTemplate = function (href) {
+    common.isTemplate = function (href) {
         var rhref = getRelativeHref(href);
         var templates = listTemplates();
         return templates.some(function (t) {
             return t.href === rhref;
         });
     };
-    var selectTemplate = common.selectTemplate = function (type, rt, Crypt) {
+    common.selectTemplate = function (type, rt, Crypt) {
         if (!AppConfig.enableTemplates) { return; }
         var temps = listTemplates(type);
         if (temps.length === 0) { return; }
@@ -423,7 +422,7 @@ define([
                 Crypt.get(parsed.hash, function (err, val) {
                     if (err) { throw new Error(err); }
                     var p = parsePadUrl(window.location.href);
-                    Crypt.put(p.hash, val, function (e) {
+                    Crypt.put(p.hash, val, function () {
                         common.findOKButton().click();
                         common.removeLoadingScreen();
                     });
@@ -448,28 +447,28 @@ define([
     };
 
     // STORAGE: Display Name
-    var getLastName = common.getLastName = function (cb) {
+    common.getLastName = function (cb) {
         common.getAttribute('username', function (err, userName) {
             cb(err, userName);
         });
     };
     var _onDisplayNameChanged = [];
-    var onDisplayNameChanged = common.onDisplayNameChanged = function (h) {
+    common.onDisplayNameChanged = function (h) {
         if (typeof(h) !== "function") { return; }
         if (_onDisplayNameChanged.indexOf(h) !== -1) { return; }
         _onDisplayNameChanged.push(h);
     };
-    var changeDisplayName = common.changeDisplayName = function (newName) {
+    common.changeDisplayName = function (newName) {
         _onDisplayNameChanged.forEach(function (h) {
             h(newName);
         });
     };
 
     // STORAGE
-    var forgetPad = common.forgetPad = function (href, cb) {
+    common.forgetPad = function (href, cb) {
         var parsed = parsePadUrl(href);
 
-        var callback = function (err, data) {
+        var callback = function (err) {
             if (err) {
                 cb(err);
                 return;
@@ -511,7 +510,7 @@ define([
             }
         });
     };
-    var setPadTitle = common.setPadTitle = function (name, cb) {
+    common.setPadTitle = function (name, cb) {
         var href = window.location.href;
         var parsed = parsePadUrl(href);
         href = getRelativeHref(href);
@@ -525,7 +524,7 @@ define([
 
             var updateWeaker = [];
             var contains;
-            var renamed = recent.map(function (pad) {
+            recent.forEach(function (pad) {
                 var p = parsePadUrl(pad.href);
 
                 if (p.type !== parsed.type) { return pad; }
@@ -610,7 +609,7 @@ define([
     /*
      * Buttons
      */
-    var renamePad = common.renamePad = function (title, callback) {
+    common.renamePad = function (title, callback) {
         if (title === null) { return; }
 
         if (title.trim() === "") {
@@ -618,7 +617,7 @@ define([
             title = getDefaultName(parsed);
         }
 
-        common.setPadTitle(title, function (err, data) {
+        common.setPadTitle(title, function (err) {
             if (err) {
                 console.log("unable to set pad title");
                 console.log(err);
@@ -668,7 +667,7 @@ define([
         return true;
     };
 
-    var arePinsSynced = common.arePinsSynced = function (cb) {
+    common.arePinsSynced = function (cb) {
         if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
 
         var list = getCanonicalChannelList();
@@ -679,7 +678,7 @@ define([
         });
     };
 
-    var resetPins = common.resetPins = function (cb) {
+    common.resetPins = function (cb) {
         if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
 
         var list = getCanonicalChannelList();
@@ -689,7 +688,7 @@ define([
         });
     };
 
-    var pinPads = common.pinPads = function (pads, cb) {
+    common.pinPads = function (pads, cb) {
         if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
 
         rpc.pin(pads, function (e, hash) {
@@ -698,7 +697,7 @@ define([
         });
     };
 
-    var unpinPads = common.unpinPads = function (pads, cb) {
+    common.unpinPads = function (pads, cb) {
         if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
 
         rpc.unpin(pads, function (e, hash) {
@@ -707,12 +706,12 @@ define([
         });
     };
 
-    var getPinnedUsage = common.getPinnedUsage = function (cb) {
+    common.getPinnedUsage = function (cb) {
         if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
         rpc.getFileListSize(cb);
     };
 
-    var getFileSize = common.getFileSize = function (href, cb) {
+    common.getFileSize = function (href, cb) {
         var channelId = Hash.hrefToHexChannelId(href);
         rpc.getFileSize(channelId, function (e, bytes) {
             if (e) { return void cb(e); }
@@ -720,11 +719,11 @@ define([
         });
     };
 
-    var getPinLimit = common.getPinLimit = function (cb) {
+    common.getPinLimit = function (cb) {
         cb(void 0, typeof(AppConfig.pinLimit) === 'number'? AppConfig.pinLimit: 1000);
     };
 
-    var isOverPinLimit = common.isOverPinLimit = function (cb) {
+    common.isOverPinLimit = function (cb) {
         if (!common.isLoggedIn() || !AppConfig.enablePinLimit) { return void cb(null, false); }
         var usage;
         var andThen = function (e, limit) {
@@ -743,7 +742,7 @@ define([
         common.getPinnedUsage(todo);
     };
 
-    var createButton = common.createButton = function (type, rightside, data, callback) {
+    common.createButton = function (type, rightside, data, callback) {
         var button;
         var size = "17px";
         switch (type) {
@@ -832,7 +831,7 @@ define([
                         var href = window.location.href;
                         common.confirm(Messages.forgetPrompt, function (yes) {
                             if (!yes) { return; }
-                            common.forgetPad(href, function (err, data) {
+                            common.forgetPad(href, function (err) {
                                 if (err) {
                                     console.log("unable to forget pad");
                                     console.error(err);
@@ -1051,7 +1050,7 @@ define([
 
     // Provide $container if you want to put the generated block in another element
     // Provide $initBlock if you already have the menu block and you want the content inserted in it
-    var createLanguageSelector = common.createLanguageSelector = function ($container, $initBlock) {
+    common.createLanguageSelector = function ($container, $initBlock) {
         var options = [];
         var languages = Messages._languages;
         var keys = Object.keys(languages).sort();
@@ -1085,7 +1084,7 @@ define([
         return $block;
     };
 
-    var createUserAdminMenu = common.createUserAdminMenu = function (config) {
+    common.createUserAdminMenu = function (config) {
         var $displayedName = $('<span>', {'class': config.displayNameCls || 'displayName'});
         var accountName = localStorage[common.userNameKey];
         var account = isLoggedIn();
@@ -1172,24 +1171,24 @@ define([
         };
         var $userAdmin = createDropdown(dropdownConfigUser);
 
-        $userAdmin.find('a.logout').click(function (e) {
+        $userAdmin.find('a.logout').click(function () {
             common.logout();
             window.location.href = '/';
         });
-        $userAdmin.find('a.settings').click(function (e) {
+        $userAdmin.find('a.settings').click(function () {
             if (parsed && parsed.type) {
                 window.open('/settings/');
             } else {
                 window.location.href = '/settings/';
             }
         });
-        $userAdmin.find('a.login').click(function (e) {
+        $userAdmin.find('a.login').click(function () {
             if (window.location.pathname !== "/") {
                 sessionStorage.redirectTo = window.location.href;
             }
             window.location.href = '/login/';
         });
-        $userAdmin.find('a.register').click(function (e) {
+        $userAdmin.find('a.register').click(function () {
             if (window.location.pathname !== "/") {
                 sessionStorage.redirectTo = window.location.href;
             }
@@ -1281,7 +1280,8 @@ define([
 
                         common.arePinsSynced(function (err, yes) {
                             if (!yes) {
-                                common.resetPins(function (err, hash) {
+                                common.resetPins(function (err) {
+                                    if (err) { console.error(err); }
                                     console.log('RESET DONE');
                                 });
                             }

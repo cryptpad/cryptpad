@@ -3,7 +3,7 @@ define(['jquery'], function ($) {
 
     // copy arbitrary text to the clipboard
     // return boolean indicating success
-    var copy = Clipboard.copy = function (text) {
+    Clipboard.copy = function (text) {
         var $ta = $('<input>', {
             type: 'text',
         }).val(text);

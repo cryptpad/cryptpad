@@ -9,7 +9,7 @@ define([
     var TRASH = module.TRASH = "trash";
     var TEMPLATE = module.TEMPLATE = "template";
 
-    var init = module.init = function (files, config) {
+    module.init = function (files, config) {
         var exp = {};
         var Cryptpad = config.Cryptpad;
         var Messages = Cryptpad.Messages;
@@ -19,7 +19,6 @@ define([
         var NEW_FILE_NAME = Messages.fm_newFile;
 
         // Logging
-        var DEBUG = config.DEBUG || false;
         var logging = function () {
             console.log.apply(console, arguments);
         };
@@ -39,7 +38,7 @@ define([
          * UTILS
          */
 
-        var getStructure = exp.getStructure = function () {
+        exp.getStructure = function () {
             var a = {};
             a[ROOT] = {};
             a[TRASH] = {};
@@ -58,7 +57,7 @@ define([
             return typeof(element) === "string";
         };
 
-        var isReadOnlyFile = exp.isReadOnlyFile = function (element) {
+        exp.isReadOnlyFile = function (element) {
             if (!isFile(element)) { return false; }
             var parsed = Cryptpad.parsePadUrl(element);
             if (!parsed) { return false; }
@@ -71,15 +70,15 @@ define([
         var isFolder = exp.isFolder = function (element) {
             return typeof(element) === "object";
         };
-        var isFolderEmpty = exp.isFolderEmpty = function (element) {
+        exp.isFolderEmpty = function (element) {
             if (typeof(element) !== "object") { return false; }
             return Object.keys(element).length === 0;
         };
 
-        var hasSubfolder = exp.hasSubfolder = function (element, trashRoot) {
+        exp.hasSubfolder = function (element, trashRoot) {
             if (typeof(element) !== "object") { return false; }
             var subfolder = 0;
-            var addSubfolder = function (el, idx) {
+            var addSubfolder = function (el) {
                 subfolder += isFolder(el.element) ? 1 : 0;
             };
             for (var f in element) {
@@ -94,10 +93,10 @@ define([
             return subfolder;
         };
 
-        var hasFile = exp.hasFile = function (element, trashRoot) {
+        exp.hasFile = function (element, trashRoot) {
             if (typeof(element) !== "object") { return false; }
             var file = 0;
-            var addFile = function (el, idx) {
+            var addFile = function (el) {
                 file += isFile(el.element) ? 1 : 0;
             };
             for (var f in element) {
@@ -232,7 +231,7 @@ define([
         _getFiles[TRASH] = function () {
             var root = files[TRASH];
             var ret = [];
-            var addFiles = function (el, idx) {
+            var addFiles = function (el) {
                 if (isFile(el.element)) {
                     if(ret.indexOf(el.element) === -1) { ret.push(el.element); }
                 } else {
@@ -297,7 +296,7 @@ define([
 
             return paths;
         };
-        var findFileInRoot = exp.findFileInRoot = function (href) {
+        exp.findFileInRoot = function (href) {
             return _findFileInRoot([ROOT], href);
         };
         var _findFileInHrefArray = function (rootName, href) {
@@ -352,7 +351,7 @@ define([
             var trashpaths = _findFileInTrash([TRASH], href);
             return rootpaths.concat(templatepaths, trashpaths);
         };
-        var search = exp.search = function (value) {
+        exp.search = function (value) {
             if (typeof(value) !== "string") { return []; }
             var res = [];
             // Search in ROOT
@@ -403,7 +402,7 @@ define([
 
             var ret = [];
             res.forEach(function (l) {
-                var paths = findFile(l);
+                //var paths = findFile(l);
                 ret.push({
                     paths: findFile(l),
                     data: exp.getFileData(l)
@@ -435,7 +434,7 @@ define([
                 cb();
             };
             if (!Cryptpad.isLoggedIn() || !AppConfig.enablePinning) { return void todo(); }
-            Cryptpad.pinPads([Cryptpad.hrefToHexChannelId(data.href)], function (e, hash) {
+            Cryptpad.pinPads([Cryptpad.hrefToHexChannelId(data.href)], function (e) {
                 if (e) { return void cb(e); }
                 todo();
             });
@@ -531,7 +530,7 @@ define([
             });
             exp.delete(toRemove, cb);
         };
-        var restore = exp.restore = function (path, cb) {
+        exp.restore = function (path, cb) {
             if (!isInTrashRoot(path)) { return; }
             var parentPath = path.slice();
             parentPath.pop();
@@ -566,7 +565,7 @@ define([
                 }
             }
         };
-        var addFile = exp.addFile = function (filePath, name, type, cb) {
+        exp.addFile = function (filePath, name, type, cb) {
             var parentEl = findElement(files, filePath);
             var fileName = getAvailableName(parentEl, name || NEW_FILE_NAME);
             var href = '/' + type + '/#' + Cryptpad.createRandomHash();
@@ -586,7 +585,7 @@ define([
                 });
             });
         };
-        var addFolder = exp.addFolder = function (folderPath, name, cb) {
+        exp.addFolder = function (folderPath, name, cb) {
             var parentEl = find(folderPath);
             var folderName = getAvailableName(parentEl, name || NEW_FOLDER_NAME);
             parentEl[folderName] = {};
@@ -598,7 +597,7 @@ define([
         };
 
         // FORGET (move with href not path)
-        var forget = exp.forget = function (href) {
+        exp.forget = function (href) {
             var paths = findFile(href);
             move(paths, [TRASH]);
         };
@@ -700,18 +699,18 @@ define([
             // FILES_DATA (replaceHref)
             if (!nocheck) { checkDeletedFiles(); }
         };
-        var deletePath = exp.delete = function (paths, cb, nocheck) {
+        exp.delete = function (paths, cb, nocheck) {
             deleteMultiplePermanently(paths, nocheck);
             if (typeof cb === "function") { cb(); }
         };
-        var emptyTrash = exp.emptyTrash = function (cb) {
+        exp.emptyTrash = function (cb) {
             files[TRASH] = {};
             checkDeletedFiles();
             if(cb) { cb(); }
         };
 
         // RENAME
-        var rename = exp.rename = function (path, newName, cb) {
+        exp.rename = function (path, newName, cb) {
             if (path.length <= 1) {
                 logError('Renaming `root` is forbidden');
                 return;
@@ -753,7 +752,7 @@ define([
             }
         };
         // Replace a href by a stronger one everywhere in the drive (except FILES_DATA)
-        var replaceHref = exp.replace = function (o, n) {
+        exp.replace = function (o, n) {
             if (!isFile(o) || !isFile(n)) { return; }
             var paths = findFile(o);
 
@@ -782,7 +781,7 @@ define([
          * INTEGRITY CHECK
          */
 
-        var fixFiles = exp.fixFiles = function () {
+        exp.fixFiles = function () {
             // Explore the tree and check that everything is correct:
             //  * 'root', 'trash', 'unsorted' and 'filesData' exist and are objects
             //  * ROOT: Folders are objects, files are href
@@ -841,9 +840,9 @@ define([
                     return;
                 }
                 var rootFiles = getFiles([ROOT, TEMPLATE]).slice();
-                var toClean = [];
+                //var toClean = [];
                 var root = find([ROOT]);
-                us.forEach(function (el, idx) {
+                us.forEach(function (el) {
                     if (!isFile(el) || rootFiles.indexOf(el) !== -1) {
                         return;
                         //toClean.push(idx);
@@ -878,7 +877,7 @@ define([
                 var rootFiles = getFiles([ROOT, TRASH, 'hrefArray']);
                 var root = find([ROOT]);
                 var toClean = [];
-                fd.forEach(function (el, idx) {
+                fd.forEach(function (el) {
                     if (!el || typeof(el) !== "object") {
                         debug("An element in filesData was not an object.", el);
                         toClean.push(el);

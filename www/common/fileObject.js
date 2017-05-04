@@ -10,7 +10,7 @@ define([
     var TRASH = module.TRASH = "trash";
     var TEMPLATE = module.TEMPLATE = "template";
 
-    var init = module.init = function (files, config) {
+    module.init = function (files, config) {
         var Cryptpad = config.Cryptpad;
         Messages = Cryptpad.Messages;
 
@@ -18,7 +18,7 @@ define([
         var NEW_FOLDER_NAME = Messages.fm_newFolder;
         var NEW_FILE_NAME = Messages.fm_newFile;
 
-        var DEBUG = config.DEBUG || false;
+        //var DEBUG = config.DEBUG || false;
         var logging = function () {
             console.log.apply(console, arguments);
         };
@@ -34,7 +34,7 @@ define([
             console.error.apply(console, arguments);
         };
 
-        var getStructure = exp.getStructure = function () {
+        exp.getStructure = function () {
             var a = {};
             a[ROOT] = {};
             a[UNSORTED] = [];
@@ -92,7 +92,7 @@ define([
             return path[0] === TRASH && path.length === 4;
         };
 
-        var isPathInFilesData = exp.isPathInFilesData = function (path) {
+        exp.isPathInFilesData = function (path) {
             return path[0] && path[0] === FILES_DATA;
         };
 
@@ -100,7 +100,7 @@ define([
             return typeof(element) === "string";
         };
 
-        var isReadOnlyFile = exp.isReadOnlyFile = function (element) {
+        exp.isReadOnlyFile = function (element) {
             if (!isFile(element)) { return false; }
             var parsed = Cryptpad.parsePadUrl(element);
             if (!parsed) { return false; }
@@ -114,15 +114,15 @@ define([
             return typeof(element) !== "string";
         };
 
-        var isFolderEmpty = exp.isFolderEmpty = function (element) {
+        exp.isFolderEmpty = function (element) {
             if (typeof(element) !== "object") { return false; }
             return Object.keys(element).length === 0;
         };
 
-        var hasSubfolder = exp.hasSubfolder = function (element, trashRoot) {
+        exp.hasSubfolder = function (element, trashRoot) {
             if (typeof(element) !== "object") { return false; }
             var subfolder = 0;
-            var addSubfolder = function (el, idx) {
+            var addSubfolder = function (el) {
                 subfolder += isFolder(el.element) ? 1 : 0;
             };
             for (var f in element) {
@@ -137,10 +137,10 @@ define([
             return subfolder;
         };
 
-        var hasFile = exp.hasFile = function (element, trashRoot) {
+        exp.hasFile = function (element, trashRoot) {
             if (typeof(element) !== "object") { return false; }
             var file = 0;
-            var addFile = function (el, idx) {
+            var addFile = function (el) {
                 file += isFile(el.element) ? 1 : 0;
             };
             for (var f in element) {
@@ -189,10 +189,10 @@ define([
             return inTree;
         };
 
-        var isFileInTrash = function (file) {
+/*      var isFileInTrash = function (file) {
             var inTrash = false;
             var root = files[TRASH];
-            var filter = function (trashEl, idx) {
+            var filter = function (trashEl) {
                 inTrash = isFileInTree(file, trashEl.element);
                 return inTrash;
             };
@@ -205,11 +205,7 @@ define([
                 if (inTrash) { break; }
             }
             return inTrash;
-        };
-
-        var isFileInUnsorted = function (file) {
-            return files[UNSORTED].indexOf(file) !== -1;
-        };
+        };*/
 
         var getUnsortedFiles = exp.getUnsortedFiles = function () {
             if (!files[UNSORTED]) {
@@ -244,7 +240,7 @@ define([
         var getTrashFiles = exp.getTrashFiles = function () {
             var root = files[TRASH];
             var ret = [];
-            var addFiles = function (el, idx) {
+            var addFiles = function (el) {
                 if (isFile(el.element)) {
                     if(ret.indexOf(el.element) === -1) { ret.push(el.element); }
                 } else {
@@ -261,7 +257,7 @@ define([
             return ret;
         };
 
-        var getFilesDataFiles = exp.getFilesDataFiles = function () {
+        exp.getFilesDataFiles = function () {
             var ret = [];
             files[FILES_DATA].forEach(function (el) {
                 if (el.href && ret.indexOf(el.href) === -1) {
@@ -351,7 +347,7 @@ define([
             return rootpaths.concat(unsortedpaths, templatepaths, trashpaths);
         };
 
-        var search = exp.search = function (value) {
+        exp.search = function (value) {
             if (typeof(value) !== "string") { return []; }
             var res = [];
             // Search in ROOT
@@ -402,7 +398,7 @@ define([
 
             var ret = [];
             res.forEach(function (l) {
-                var paths = findFile(l);
+                //var paths = findFile(l);
                 ret.push({
                     paths: findFile(l),
                     data: exp.getFileData(l)
@@ -509,7 +505,7 @@ define([
                 files[TRASH][obj.name].splice(idx, 1);
             });
         };
-        var deleteMultiplePermanently = exp.deletePathsPermanently = function (paths) {
+        exp.deletePathsPermanently = function (paths) {
             var hrefPaths = paths.filter(isPathInHrefArray);
             var rootPaths = paths.filter(isPathInRoot);
             var trashPaths = paths.filter(isPathInTrash);
@@ -723,7 +719,7 @@ define([
             if (cb) { cb(); }
         };
 
-        var moveElements = exp.moveElements = function (paths, newParentPath, cb) {
+        exp.moveElements = function (paths, newParentPath, cb) {
             var unsortedPaths = paths.filter(isPathInHrefArray);
             moveHrefArrayElements(unsortedPaths, newParentPath);
             // Copy the elements to their new location
@@ -735,7 +731,7 @@ define([
         };
 
         // Import elements in the file manager
-        var importElements = exp.importElements = function (elements, path, cb) {
+        exp.importElements = function (elements, path, cb) {
             if (!elements || elements.length === 0) { return; }
             var newParent = findElement(files, path);
             if (!newParent) { debug("Trying to import elements into a non-existing folder"); return; }
@@ -748,7 +744,7 @@ define([
             if(cb) { cb(); }
         };
 
-        var createNewFolder = exp.createNewFolder = function (folderPath, name, cb) {
+        exp.createNewFolder = function (folderPath, name, cb) {
             var parentEl = findElement(files, folderPath);
             var folderName = getAvailableName(parentEl, name || NEW_FOLDER_NAME);
             parentEl[folderName] = {};
@@ -767,7 +763,7 @@ define([
                 ctime: +new Date()
             });
         };
-        var createNewFile = exp.createNewFile = function (filePath, name, type, cb) {
+        exp.createNewFile = function (filePath, name, type, cb) {
             var parentEl = findElement(files, filePath);
             var fileName = getAvailableName(parentEl, name || NEW_FILE_NAME);
             var href = '/' + type + '/#' + Cryptpad.createRandomHash();
@@ -799,7 +795,7 @@ define([
         };
 
         // Restore an element (copy it elsewhere and remove from the trash root)
-        var restoreTrash = exp.restoreTrash = function (path, cb) {
+        exp.restoreTrash = function (path, cb) {
             if (!path || path.length !== 4 || path[0] !== TRASH) {
                 debug("restoreTrash was called from an element not in the trash root: ", path);
                 return;
@@ -838,7 +834,7 @@ define([
             // Remove the last element from the path to get the parent path and the element name
             var parentPath = path.slice();
             var name;
-            var element = findElement(files, path);
+            //var element = findElement(files, path);
             if (path.length === 4) { // Trash root
                 name = path[1];
                 parentPath.pop();
@@ -860,13 +856,13 @@ define([
             if(cb) { cb(); }
         };
 
-        var emptyTrash = exp.emptyTrash = function (cb) {
+        exp.emptyTrash = function (cb) {
             files[TRASH] = {};
             checkDeletedFiles();
             if(cb) { cb(); }
         };
 
-        var deleteFileData = exp.deleteFileData = function (href, cb) {
+        exp.deleteFileData = function (href, cb) {
             if (workgroup) { return; }
 
             var toRemove = [];
@@ -889,7 +885,7 @@ define([
             if(cb) { cb(); }
         };
 
-        var renameElement = exp.renameElement = function (path, newName, cb) {
+        exp.renameElement = function (path, newName, cb) {
             if (path.length <= 1) {
                 logError('Renaming `root` is forbidden');
                 return;
@@ -914,7 +910,7 @@ define([
         };
 
 
-        var forgetPad = exp.forgetPad = function (href) {
+        exp.forgetPad = function (href) {
             if (workgroup) { return; }
             if (!href || !isFile(href)) { return; }
             var path;
@@ -985,7 +981,7 @@ define([
         };
 
         // Replace a href by a stronger one everywhere in the drive (except FILES_DATA)
-        var replaceHref = exp.replaceHref = function (o, n) {
+        exp.replaceHref = function (o, n) {
             if (!isFile(o) || !isFile(n)) { return; }
             var paths = findFile(o);
 
@@ -1012,7 +1008,7 @@ define([
 
         // addTemplate is called when we want to add a new pad, never visited, to the templates list
         // first, we must add it to FILES_DATA, so the input has to be an fileDAta object
-        var addTemplate = exp.addTemplate = function (fileData) {
+        exp.addTemplate = function (fileData) {
             if (workgroup) { return; }
             if (typeof fileData !== "object" || !fileData.href || !fileData.title) {
                 console.error("filedata object expected to add a new template");
@@ -1031,7 +1027,7 @@ define([
             }
         };
 
-        var listTemplates = exp.listTemplates = function (type) {
+        exp.listTemplates = function () {
             if (workgroup) { return; }
             var templateFiles = getTemplateFiles();
             var res = [];
@@ -1049,7 +1045,7 @@ define([
             });
         };
 
-        var fixFiles = exp.fixFiles = function () {
+        exp.fixFiles = function () {
             // Explore the tree and check that everything is correct:
             //  * 'root', 'trash', 'unsorted' and 'filesData' exist and are objects
             //  * ROOT: Folders are objects, files are href
@@ -1138,7 +1134,7 @@ define([
                 var templateFiles = getTemplateFiles();
                 var trashFiles = getTrashFiles();
                 var toClean = [];
-                fd.forEach(function (el, idx) {
+                fd.forEach(function (el) {
                     if (!el || typeof(el) !== "object") {
                         debug("An element in filesData was not an object.", el);
                         toClean.push(el);

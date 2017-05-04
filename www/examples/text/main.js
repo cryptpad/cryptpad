@@ -13,8 +13,6 @@ define([
         TextPatcher: TextPatcher
     };
 
-    var userName = module.userName = Crypto.rand64(8);
-
     var initializing = true;
     var $textarea = $('textarea');
 
@@ -30,14 +28,14 @@ define([
 
     setEditable(false);
 
-    var onInit = config.onInit = function (info) {
+    config.onInit = function (info) {
         window.location.hash = info.channel + secret.key;
         $(window).on('hashchange', function() {
             window.location.reload();
         });
     };
 
-    var onRemote = config.onRemote = function (info) {
+    config.onRemote = function () {
         if (initializing) { return; }
         var userDoc = module.realtime.getUserDoc();
         var content = canonicalize($textarea.val());
@@ -59,7 +57,7 @@ define([
         module.patchText(canonicalize($textarea.val()));
     };
 
-    var onReady = config.onReady = function (info) {
+    config.onReady = function (info) {
         var realtime = module.realtime = info.realtime;
         module.patchText = TextPatcher.create({
             realtime: realtime
@@ -71,12 +69,12 @@ define([
         initializing = false;
     };
 
-    var onAbort = config.onAbort = function (info) {
+    config.onAbort = function () {
         setEditable(false);
         window.alert("Server Connection Lost");
     };
 
-    var onConnectionChange = config.onConnectionChange = function (info) {
+    config.onConnectionChange = function (info) {
         if (info.state) {
             initializing = true;
         } else {
@@ -85,7 +83,7 @@ define([
         }
     };
 
-    var rt = Realtime.start(config);
+    Realtime.start(config);
 
     ['cut', 'paste', 'change', 'keyup', 'keydown', 'select', 'textInput']
         .forEach(function (evt) {

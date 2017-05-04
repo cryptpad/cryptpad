@@ -169,6 +169,7 @@ define([
 
         var $input = Input({
             placeholder: 'card description',
+            id: id,
         })
         .addClass('card-title');
 
@@ -206,7 +207,7 @@ define([
 
     /*
      */
-    Card.move = function (uid, A, B) {
+    Card.move = function (/*uid, A, B*/) {
 
     };
 
@@ -228,11 +229,10 @@ define([
         }
 
         var card = proxy.cards[cid];
-
-
+        card = card; // TODO actually draw
     };
 
-    var Draw = Board.Draw = function ($lists) {
+    Board.Draw = function ($lists) {
         proxy.listOrder.forEach(function (luid) {
             List.draw($lists, luid);
         });

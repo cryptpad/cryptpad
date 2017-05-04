@@ -16,14 +16,14 @@
         });
     };
 
-    var create = Module.create = function (msg, title, icon) {
+    var create = Module.create = function (msg, title) {
         return new Notification(title,{
             // icon: icon,
             body: msg,
         });
     };
 
-    var system = Module.system = function (msg, title, icon) {
+    Module.system = function (msg, title, icon) {
         // Let's check if the browser supports notifications
         if (!isSupported()) { console.log("Notifications are not supported"); }
 
@@ -41,7 +41,7 @@
         }
     };
 
-    var tab = Module.tab = function (frequency, count) {
+    Module.tab = function (frequency, count) {
         var key = '_pendingTabNotification';
 
         var favicon = document.getElementById('favicon');

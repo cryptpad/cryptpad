@@ -24,7 +24,7 @@ define([
 
     $(function () {
     Cryptpad.addLoadingScreen();
-    var onConnectError = function (info) {
+    var onConnectError = function () {
         Cryptpad.errorLoadingScreen(Messages.websocketError);
     };
     var toolbar;
@@ -330,8 +330,7 @@ window.canvas = canvas;
             return $color;
         };
 
-        var editHash;
-        var onInit = config.onInit = function (info) {
+        config.onInit = function (info) {
             userList = info.userList;
             var config = {
                 displayed: ['useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit'],
@@ -370,7 +369,7 @@ window.canvas = canvas;
             var $export = Cryptpad.createButton('export', true, {}, saveImage);
             $rightside.append($export);
 
-            var $forget = Cryptpad.createButton('forget', true, {}, function (err, title) {
+            var $forget = Cryptpad.createButton('forget', true, {}, function (err) {
                 if (err) { return; }
                 setEditable(false);
                 toolbar.failed();
@@ -380,7 +379,6 @@ window.canvas = canvas;
             makeColorButton($rightside);
 
             var editHash;
-            var viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
 
             if (!readOnly) {
                 editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
@@ -522,7 +520,7 @@ window.canvas = canvas;
                uid: Cryptpad.getUid(),
             };
             addToUserData(myData);
-            Cryptpad.setAttribute('username', myUserName, function (err, data) {
+            Cryptpad.setAttribute('username', myUserName, function (err) {
                 if (err) {
                     console.log("Couldn't set username");
                     console.error(err);
@@ -532,7 +530,7 @@ window.canvas = canvas;
             });
         };
 
-        var onReady = config.onReady = function (info) {
+        config.onReady = function (info) {
             var realtime = module.realtime = info.realtime;
             module.patchText = TextPatcher.create({
                 realtime: realtime
@@ -578,14 +576,14 @@ window.canvas = canvas;
             });
         };
 
-        var onAbort = config.onAbort = function (info) {
+        config.onAbort = function () {
             setEditable(false);
             toolbar.failed();
             Cryptpad.alert(Messages.common_connectionLost, undefined, true);
         };
 
         // TODO onConnectionStateChange
-        var onConnectionChange = config.onConnectionChange = function (info) {
+        config.onConnectionChange = function (info) {
             setEditable(info.state);
             toolbar.failed();
             if (info.state) {
@@ -597,7 +595,7 @@ window.canvas = canvas;
             }
         };
 
-        var rt = Realtime.start(config);
+        module.rt = Realtime.start(config);
 
         canvas.on('mouse:up', onLocal);
 
@@ -611,7 +609,7 @@ window.canvas = canvas;
         });
     };
 
-    Cryptpad.ready(function (err, env) {
+    Cryptpad.ready(function () {
         andThen();
         Cryptpad.reportAppUsage();
     });

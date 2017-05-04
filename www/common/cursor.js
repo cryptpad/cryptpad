@@ -1,9 +1,7 @@
 define([
     '/common/treesome.js',
     '/bower_components/rangy/rangy-core.min.js'
-], function (Tree, Rangy, saveRestore) {
-    var log = function (x) { console.log(x); };
-    var error = function (x) { console.log(x); };
+], function (Tree, Rangy) {
     var verbose = function (x) { if (window.verboseMode) { console.log(x); } };
 
     /* accepts the document used by the editor */
@@ -45,7 +43,7 @@ define([
             });
         };
 
-        var exists = cursor.exists = function () {
+        cursor.exists = function () {
             return (Range.start.el?1:0) | (Range.end.el?2:0);
         };
 
@@ -55,7 +53,7 @@ define([
             2 if end
             3 if start and end
         */
-        var inNode = cursor.inNode = function (el) {
+        cursor.inNode = function (el) {
             var state = ['start', 'end'].map(function (pos, i) {
                 return Tree.contains(el, Range[pos].el)? i +1: 0;
             });
@@ -122,7 +120,7 @@ define([
             }
         };
 
-        var pushDelta = cursor.pushDelta = function (oldVal, newVal, offset) {
+        cursor.pushDelta = function (oldVal, newVal) {
             if (oldVal === newVal) { return; }
             var commonStart = 0;
             while (oldVal.charAt(commonStart) === newVal.charAt(commonStart)) {

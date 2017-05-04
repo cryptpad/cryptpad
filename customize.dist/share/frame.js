@@ -10,7 +10,7 @@
     // create an invisible iframe with a given source
     // append it to a parent element
     // execute a callback when it has loaded
-    var create = Frame.create = function (parent, src, onload, timeout) {
+    Frame.create = function (parent, src, onload, timeout) {
         var iframe = document.createElement('iframe');
 
         timeout = timeout || 10000;
@@ -34,7 +34,7 @@
 
     /*  given an iframe with an rpc script loaded, create a frame object
         with an asynchronous 'send' method */
-    var open = Frame.open = function (e, A, timeout) {
+    Frame.open = function (e, A, timeout) {
         var win = e.contentWindow;
 
         var frame = {};
@@ -44,7 +44,7 @@
 
         timeout = timeout || 5000;
 
-        var accepts = frame.accepts = function (o) {
+        frame.accepts = function (o) {
             return A.some(function (e) {
                  switch (typeof(e)) {
                     case 'string': return e === o;
@@ -55,7 +55,7 @@
 
         var changeHandlers = frame.changeHandlers = [];
 
-        var change = frame.change = function (f) {
+        frame.change = function (f) {
             if (typeof(f) !== 'function') {
                 throw new Error('[Frame.change] expected callback');
             }
@@ -94,7 +94,7 @@
         };
         window.addEventListener('message', _listener);
 
-        var close = frame.close = function () {
+        frame.close = function () {
             window.removeEventListener('message', _listener);
         };
 
@@ -130,31 +130,31 @@
             win.postMessage(JSON.stringify(req), '*');
         };
 
-        var set = frame.set = function (key, val, cb) {
+        frame.set = function (key, val, cb) {
             send('set', key, val, cb);
         };
 
-        var batchset = frame.setBatch = function (map, cb) {
+        frame.setBatch = function (map, cb) {
             send('batchset', void 0, map, cb);
         };
 
-        var get = frame.get = function (key, cb) {
+        frame.get = function (key, cb) {
             send('get', key, void 0, cb);
         };
 
-        var batchget = frame.getBatch = function (keys, cb) {
+        frame.getBatch = function (keys, cb) {
             send('batchget', void 0, keys, cb);
         };
 
-        var remove = frame.remove = function (key, cb) {
+        frame.remove = function (key, cb) {
             send('remove', key, void 0, cb);
         };
 
-        var batchremove = frame.removeBatch = function (keys, cb) {
+        frame.removeBatch = function (keys, cb) {
             send('batchremove', void 0, keys, cb);
         };
 
-        var keys = frame.keys = function (cb) {
+        frame.keys = function (cb) {
             send('keys', void 0, void 0, cb);
         };
 
@@ -164,7 +164,7 @@
     if (typeof(module) !== 'undefined' && module.exports) {
         module.exports = Frame;
     } else if (typeof(define) === 'function' && define.amd) {
-        define(['jquery'], function ($) {
+        define(['jquery'], function () {
             return Frame;
         });
     } else {

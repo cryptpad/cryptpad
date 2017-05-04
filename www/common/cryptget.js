@@ -5,8 +5,8 @@ define([
     '/common/cryptpad-common.js',
     '/bower_components/textpatcher/TextPatcher.js'
 ], function ($, Crypto, Realtime, Cryptpad, TextPatcher) {
-    var Messages = Cryptpad.Messages;
-    var noop = function () {};
+    //var Messages = Cryptpad.Messages;
+    //var noop = function () {};
     var finish = function (S, err, doc) {
         if (S.done) { return; }
         S.cb(err, doc);
@@ -50,14 +50,14 @@ define([
         var Session = { cb: cb, };
         var config = makeConfig(hash);
 
-        var onReady = config.onReady = function (info) {
+        config.onReady = function (info) {
             var rt = Session.session = info.realtime;
             Session.network = info.network;
             finish(Session, void 0, rt.getUserDoc());
         };
         overwrite(config, opt);
 
-        var realtime = Session.realtime = Realtime.start(config);
+        Session.realtime = Realtime.start(config);
     };
 
     var put = function (hash, doc, cb, opt) {
@@ -87,7 +87,7 @@ define([
         };
         overwrite(config, opt);
 
-        var realtime = Session.session = Realtime.start(config);
+        Session.session = Realtime.start(config);
     };
 
     return {

@@ -57,7 +57,7 @@ define([
 
         var presentMode = Slide.isPresentURL();
 
-        var onConnectError = function (info) {
+        var onConnectError = function () {
             Cryptpad.errorLoadingScreen(Messages.websocketError);
         };
 
@@ -222,11 +222,6 @@ define([
                 }
             };
 
-            var isDefaultTitle = function () {
-                var parsed = Cryptpad.parsePadUrl(window.location.href);
-                return Cryptpad.isDefaultName(parsed, APP.title);
-            };
-
             var initializing = true;
 
             var stringifyInner = function (textValue) {
@@ -281,7 +276,7 @@ define([
                    uid: Cryptpad.getUid(),
                 };
                 addToUserData(myData);
-                Cryptpad.setAttribute('username', myUserName, function (err, data) {
+                Cryptpad.setAttribute('username', myUserName, function (err) {
                     if (err) {
                         console.log("Couldn't set username");
                         console.error(err);
@@ -506,13 +501,13 @@ define([
                 h = Cryptpad.listenForKeys(todo, todoCancel);
 
                 var $nav = $('<nav>').appendTo($div);
-                var $cancel = $('<button>', {'class': 'cancel'}).text(Messages.cancelButton).appendTo($nav).click(todoCancel);
-                var $ok = $('<button>', {'class': 'ok'}).text(Messages.settings_save).appendTo($nav).click(todo);
+                $('<button>', {'class': 'cancel'}).text(Messages.cancelButton).appendTo($nav).click(todoCancel);
+                $('<button>', {'class': 'ok'}).text(Messages.settings_save).appendTo($nav).click(todo);
 
                 return $container;
             };
 
-            var onInit = config.onInit = function (info) {
+            config.onInit = function (info) {
                 userList = info.userList;
 
                 var configTb = {
@@ -534,11 +529,10 @@ define([
                 toolbar = module.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, info.userList, configTb);
 
                 var $rightside = $bar.find('.' + Toolbar.constants.rightside);
-                var $userBlock = $bar.find('.' + Toolbar.constants.username);
-                var $usernameButton = module.$userNameButton = $($bar.find('.' + Toolbar.constants.changeUsername));
+                $bar.find('.' + Toolbar.constants.username);
+                module.$userNameButton = $($bar.find('.' + Toolbar.constants.changeUsername));
 
                 var editHash;
-                var viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
 
                 if (!readOnly) {
                     editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
@@ -595,14 +589,10 @@ define([
                     /* add an import button */
                     var $import = Cryptpad.createButton('import', true, {}, importText);
                     $rightside.append($import);
-
-                    /* add a rename button */
-                    //var $setTitle = Cryptpad.createButton('rename', true, {suggestName: suggestName}, renameCb);
-                    //$rightside.append($setTitle);
                 }
 
                 /* add a forget button */
-                var forgetCb = function (err, title) {
+                var forgetCb = function (err) {
                     if (err) { return; }
                     setEditable(false);
                 };
@@ -675,11 +665,10 @@ define([
                         initialValue: lastTheme
                     };
                     var $block = module.$theme = Cryptpad.createDropdown(dropdownConfig);
-                    var $button = $block.find('.buttonTitle');
 
                     setTheme(lastTheme, $block);
 
-                    $block.find('a').click(function (e) {
+                    $block.find('a').click(function () {
                         var theme = $(this).attr('data-value');
                         setTheme(theme, $block);
                         localStorage.setItem(themeKey, theme);
@@ -762,7 +751,7 @@ define([
                 }
             };
 
-            var onReady = config.onReady = function (info) {
+            config.onReady = function (info) {
                 module.users = info.userList.users;
 
                 if (module.realtime !== info.realtime) {
@@ -883,7 +872,7 @@ define([
                 return cursor;
             };
 
-            var onRemote = config.onRemote = function () {
+            config.onRemote = function () {
                 if (initializing) { return; }
                 if (isHistoryMode) { return; }
                 var scroll = editor.getScrollInfo();
@@ -940,14 +929,14 @@ define([
                 }
             };
 
-            var onAbort = config.onAbort = function (info) {
+            config.onAbort = function () {
                 // inform of network disconnect
                 setEditable(false);
                 toolbar.failed();
                 Cryptpad.alert(Messages.common_connectionLost, undefined, true);
             };
 
-            var onConnectionChange = config.onConnectionChange = function (info) {
+            config.onConnectionChange = function (info) {
                 setEditable(info.state);
                 toolbar.failed();
                 if (info.state) {
@@ -959,9 +948,9 @@ define([
                 }
             };
 
-            var onError = config.onError = onConnectError;
+            config.onError = onConnectError;
 
-            var realtime = module.realtime = Realtime.start(config);
+            module.realtime = Realtime.start(config);
 
             editor.on('change', onLocal);
 
@@ -971,7 +960,7 @@ define([
         var interval = 100;
 
         var second = function (CM) {
-            Cryptpad.ready(function (err, env) {
+            Cryptpad.ready(function () {
                 andThen(CM);
                 Cryptpad.reportAppUsage();
             });
