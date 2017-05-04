@@ -96,14 +96,14 @@ define([
 
     var createSpinner = function ($container, config) {
         if (config.displayed.indexOf('spinner') !== -1) {
-            var $spin = $('<span>');
+            var $spin = $('<span>', {'class':SPINNER_CLS});
             var $spinner = $('<span>', {
                 id: uid(),
-                'class': SPINNER_CLS + ' spin fa fa-spinner fa-pulse',
+                'class': 'spin fa fa-spinner fa-pulse',
             }).appendTo($spin).hide();
             $('<span>', {
                 id: uid(),
-                'class': SPINNER_CLS + ' synced fa fa-check',
+                'class': 'synced fa fa-check',
                 title: Messages.synced
             }).appendTo($spin);
             $container.prepend($spin);
@@ -388,7 +388,7 @@ define([
             'class': LAG_ELEM_CLS,
             id: uid(),
         });
-        var $a = $('<span>', {id: 'newLag'});
+        var $a = $('<span>', {'class': 'cryptpad-lag', id: 'newLag'});
         $('<span>', {'class': 'bar1'}).appendTo($a);
         $('<span>', {'class': 'bar2'}).appendTo($a);
         $('<span>', {'class': 'bar3'}).appendTo($a);
@@ -407,7 +407,7 @@ define([
         var title;
         var $lag = $(lagElement);
         if (lag) {
-            $lag.attr('class', '');
+            $lag.attr('class', 'cryptpad-lag');
             firstConnection = false;
             title = Messages.lag + ' : ' + lag + ' ms\n';
             if (lag > 30000) {
@@ -428,7 +428,7 @@ define([
             }
         }
         else if (!firstConnection) {
-            $lag.attr('class', '');
+            $lag.attr('class', 'cryptpad-lag');
             // Display the red light at the 2nd failed attemp to get the lag
             lagLight.addClass('lag-red');
             title = Messages.redLight;
