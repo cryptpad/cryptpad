@@ -721,7 +721,7 @@ define([
     };
 
     var getPinLimit = common.getPinLimit = function (cb) {
-        cb(void 0, 1000);
+        cb(void 0, typeof(AppConfig.pinLimit) === 'number'? AppConfig.pinLimit: 1000);
     };
 
     var isOverPinLimit = common.isOverPinLimit = function (cb) {

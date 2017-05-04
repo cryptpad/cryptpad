@@ -37,5 +37,8 @@ define(function() {
 
     config.enableHistory = true;
 
+    //config.enablePinLimit = true;
+    //config.pinLimit = 1000;
+
     return config;
 });
