@@ -122,15 +122,7 @@ define([
 
     // metadata
     /* { filename: 'raccoon.jpg', type: 'image/jpeg' } */
-
-
-    /*  TODO
-        in your callback, return an object which you can iterate...
-
-
-    */
-
-    var encrypt = function (u8, metadata, key, cb) {
+    var encrypt = function (u8, metadata, key) {
         var nonce = createNonce();
 
         // encode metadata
@@ -139,44 +131,62 @@ define([
 
         var plaintext = new Uint8Array(padChunk(metaBuffer));
 
-        var chunks = [];
         var j = 0;
-
-        var start;
-        var end;
-
-        var part;
-        var box;
-
-        // prepend some metadata
-        for (;j * plainChunkLength < plaintext.length; j++) {
-            start = j * plainChunkLength;
-            end = start + plainChunkLength;
-
-            part = plaintext.subarray(start, end);
-            box = Nacl.secretbox(part, nonce, key);
-            chunks.push(box);
-            increment(nonce);
-        }
-
-        // append the encrypted file chunks
         var i = 0;
-        for (;i * plainChunkLength < u8.length; i++) {
+
+        /*
+            0: metadata
+            1: u8
+            2: done
+        */
+
+        var state = 0;
+
+        var next = function (cb) {
+            var start;
+            var end;
+            var part;
+            var box;
+
+            if (state === 0) { // metadata...
+                start = j * plainChunkLength;
+                end = start + plainChunkLength;
+
+                part = plaintext.subarray(start, end);
+                box = Nacl.secretbox(part, nonce, key);
+                increment(nonce);
+
+                j++;
+
+                // metadata is done
+                if (j * plainChunkLength >= plaintext.length) {
+                    return void cb(state++, box);
+                }
+
+                return void cb(state, box);
+            }
+
+            // encrypt the rest of the file...
             start = i * plainChunkLength;
             end = start + plainChunkLength;
 
-            part = new Uint8Array(u8.subarray(start, end));
+            part = u8.subarray(start, end);
             box = Nacl.secretbox(part, nonce, key);
-            chunks.push(box);
             increment(nonce);
-        }
+            i++;
 
+            // regular data is done
+            if (i * plainChunkLength >= u8.length) { state = 2; }
 
-        // TODO do something with the chunks...
+            return void cb(state, box);
+        };
+
+        return next;
     };
 
     return {
         decrypt: decrypt,
         encrypt: encrypt,
+        joinChunks: joinChunks,
     };
 });
