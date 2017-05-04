@@ -102,9 +102,16 @@ types of messages:
             timeouts: {}, // timeouts
             pending: {}, // callbacks
             cookie: null,
+            connected: true,
         };
 
         var send = function (type, msg, cb) {
+            if (!ctx.connected && type !== 'COOKIE') {
+                return void window.setTimeout(function () {
+                    cb('DISCONNECTED');
+                });
+            }
+
             // construct a signed message...
 
             var data = [type, msg];
@@ -125,6 +132,17 @@ types of messages:
 
         network.on('message', function (msg, sender) {
             onMsg(ctx, msg);
+        });
+
+        network.on('disconnect', function (reason) {
+            ctx.connected = false;
+        });
+
+        network.on('reconnect', function (uid) {
+            send('COOKIE', "", function (e, msg) {
+                if (e) { return void cb(e); }
+                ctx.connected = true;
+            });
         });
 
         send('COOKIE', "", function (e, msg) {
