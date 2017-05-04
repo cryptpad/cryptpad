@@ -67,7 +67,7 @@ define([
         $mt.attr('data-type', type);
 
         window.onMediaMetadata = function (metadata) {
-            if (title !== defaultTitle) { return; }
+            if (!metadata || metadata.name !== defaultName) { return; }
             var title = document.title = metadata.name;
             updateTitle(title || defaultName);
         };
