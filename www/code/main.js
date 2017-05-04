@@ -3,7 +3,7 @@ define([
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/textpatcher/TextPatcher.js',
-    '/common/toolbar.js',
+    '/common/toolbar2.js',
     'json.sortify',
     '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/cryptpad-common.js',
@@ -382,8 +382,12 @@ define([
                 userList = info.userList;
 
                 var configTb = {
-                    displayed: ['useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit'],
-                    userData: userData,
+                    displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit'],
+                    userList: {
+                        data: userData,
+                        list: userList,
+                        userNetfluxId: info.myID
+                    },
                     readOnly: readOnly,
                     ifrw: ifrw,
                     share: {
@@ -395,9 +399,12 @@ define([
                         defaultName: defaultName,
                         suggestName: suggestName
                     },
-                    common: Cryptpad
+                    common: Cryptpad,
+                    realtime: info.realtime,
+                    network: info.network,
+                    $container: $bar
                 };
-                toolbar = module.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, userList, configTb);
+                toolbar = module.toolbar = Toolbar.create(configTb);
 
                 var $rightside = $bar.find('.' + Toolbar.constants.rightside);
                 var $userBlock = $bar.find('.' + Toolbar.constants.username);

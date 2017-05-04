@@ -136,13 +136,14 @@
         }
     }
     .cryptpad-limit {
-        box-sizing: content-box;
-        height: 16px;
-        width: 16px;
+        box-sizing: border-box;
+        height: 26px;
+        width: 26px;
         display: inline-block;
         padding: 3px;
-        margin: 3px;
-        margin-right: 6px;
+        margin: 0px;
+        margin-right: 3px;
+        vertical-align: middle;
         span {
             color: red;
             cursor: pointer;
@@ -151,24 +152,11 @@
         }
     }
 
-    .cryptpad-lag {
-        box-sizing: content-box;
-        height: 16px;
-        width: 16px;
-        display: inline-block;
-        padding: 5px;
-        margin: 3px 0;
-        div {
-            margin: auto;
-        }
+    .clag () {
+        background: transparent;
     }
 
-.clag () {
-    background: transparent;
-}
-
-
-    #newLag {
+    .cryptpad-lag {
         height: 20px;
         width: 23px;
         background: transparent;
@@ -439,9 +427,8 @@
     .cryptpad-user {
         position: absolute;
         right: 0;
-        span:not(.cryptpad-lag) {
+        :not(.cryptpad-lag) span {
             vertical-align: top;
-            //display: inline-block;
         }
         button {
             span.fa {
@@ -501,7 +488,7 @@
         border-radius: 5px;
     }
 }
-.cryptpad-spinner {
+.cryptpad-spinner > span {
     height: 16px;
     width: 16px;
     margin: 8px;
