@@ -29,8 +29,6 @@ define([
         var fileId = secret.channel;
         var hexFileName = Cryptpad.base64ToHex(fileId);
         var type = "image/png";
-// Test hash:
-// #/2/K6xWU-LT9BJHCQcDCT-DcQ/TBo77200c0e-FdldQFcnQx4Y/
 
         var parsed = Cryptpad.parsePadUrl(window.location.href);
         var defaultName = Cryptpad.getDefaultName(parsed);
@@ -65,11 +63,16 @@ define([
 
         var $mt = $iframe.find('#encryptedFile');
         $mt.attr('src', '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName);
-        $mt.attr('data-crypto-key', 'salsa20poly1305:'+cryptKey);
+        $mt.attr('data-crypto-key', 'cryptpad:'+cryptKey);
         $mt.attr('data-type', type);
 
+        window.onMediaMetadata = function (metadata) {
+            if (title !== defaultTitle) { return; }
+            var title = document.title = metadata.name;
+            updateTitle(title || defaultName);
+        };
+
         require(['/common/media-tag.js'], function (MediaTag) {
-            console.log(MediaTag);
             var configTb = {
                 displayed: ['useradmin', 'share', 'newpad'],
                 ifrw: ifrw,
@@ -85,7 +88,6 @@ define([
                 }
             };
             Toolbar.create($bar, null, null, null, null, configTb);
-            //var $rightside = $bar.find('.' + Toolbar.constants.rightside);
 
             updateTitle(Cryptpad.initialName || getTitle() || defaultName);
 
