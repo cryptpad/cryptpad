@@ -3,6 +3,7 @@
 var Nacl = require("tweetnacl");
 
 var Fs = require("fs");
+var Path = require("path");
 
 var RPC = module.exports;
 
@@ -10,6 +11,31 @@ var Store = require("./storage/file");
 
 var isValidChannel = function (chan) {
     return /^[a-fA-F0-9]/.test(chan);
+};
+
+var uint8ArrayToHex = function (a) {
+    // call slice so Uint8Arrays work as expected
+    return Array.prototype.slice.call(a).map(function (e, i) {
+        var n = Number(e & 0xff).toString(16);
+        if (n === 'NaN') {
+            throw new Error('invalid input resulted in NaN');
+        }
+
+        switch (n.length) {
+            case 0: return '00'; // just being careful, shouldn't happen
+            case 1: return '0' + n;
+            case 2: return n;
+            default: throw new Error('unexpected value');
+        }
+    }).join('');
+};
+
+var createChannelId = function () {
+    var id = uint8ArrayToHex(Nacl.randomBytes(16));
+    if (id.length !== 32 || /[^a-f0-9]/.test(id)) {
+        throw new Error('channel ids must consist of 32 hex characters');
+    }
+    return id;
 };
 
 var makeToken = function () {
@@ -351,8 +377,7 @@ var unpinChannel = function (store, Sessions, publicKey, channels, cb) {
             function (e) {
             if (e) { return void cb(e); }
             toStore.forEach(function (channel) {
-                // TODO actually delete
-                session.channels[channel] = false;
+                delete session.channels[channel]; // = false;
             });
 
             getHash(store, Sessions, publicKey, cb);
@@ -389,30 +414,143 @@ var safeMkdir = function (path, cb) {
     });
 };
 
-var upload = function (store, Sessions, publicKey, cb) {
-/*
-    1. check if there is an upload in progress
-      * if yes, return error
-    2. 
-
-*/
-
-    console.log('UPLOAD_NOT_IMPLEMENTED');
-    cb('NOT_IMPLEMENTED');
+var makeFilePath = function (root, id) {
+    if (typeof(id) !== 'string' || id.length <= 2) { return null; }
+    return Path.join(root, id.slice(0, 2), id);
 };
 
-var cancelUpload = function (store, Sessions, publicKey, cb) {
-    console.log('CANCEL_UPLOAD_NOT_IMPLEMENTED');
-    cb('NOT_IMPLEMENTED');
+var makeFileStream = function (root, id, cb) {
+    var stub = id.slice(0, 2);
+    var full = makeFilePath(root, id);
+    safeMkdir(Path.join(root, stub), function (e) {
+        if (e) { return void cb(e); }
+
+        try {
+            var stream = Fs.createWriteStream(full, {
+                flags: 'a',
+                encoding: 'binary',
+            });
+            stream.on('open', function () {
+                cb(void 0, stream);
+            });
+        } catch (err) {
+            cb('BAD_STREAM');
+        }
+    });
+};
+
+var upload = function (stagingPath, Sessions, publicKey, content, cb) {
+    var dec = new Buffer(Nacl.util.decodeBase64(content));
+
+    var session = Sessions[publicKey];
+    if (!session.blobstage) {
+        makeFileStream(stagingPath, publicKey, function (e, stream) {
+            if (e) { return void cb(e); }
+
+            var blobstage = session.blobstage = stream;
+            blobstage.write(dec);
+            cb(void 0, dec.length);
+        });
+    } else {
+        session.blobstage.write(dec);
+        cb(void 0, dec.length);
+    }
+};
+
+var upload_cancel = function (stagingPath, Sessions, publicKey, cb) {
+    var path = makeFilePath(stagingPath, publicKey);
+    if (!path) {
+        console.log(stagingPath, publicKey);
+        console.log(path);
+        return void cb('NO_FILE');
+    }
+
+    Fs.unlink(path, function (e) {
+        if (e) { return void cb('E_UNLINK'); }
+        cb(void 0);
+    });
+};
+
+var isFile = function (filePath, cb) {
+    Fs.stat(filePath, function (e, stats) {
+        if (e) {
+            if (e.code === 'ENOENT') { return void cb(void 0, false); }
+            return void cb(e.message);
+        }
+        return void cb(void 0, stats.isFile());
+    });
+};
+
+var upload_complete = function (stagingPath, storePath, Sessions, publicKey, cb) {
+    var session = Sessions[publicKey];
+
+    if (session.blobstage && session.blobstage.close) {
+        session.blobstage.close();
+        delete session.blobstage;
+    }
+
+    var oldPath = makeFilePath(stagingPath, publicKey);
+
+    var tryRandomLocation = function (cb) {
+        var id = createChannelId();
+        var prefix = id.slice(0, 2);
+        var newPath = makeFilePath(storePath, id);
+        //publicKey);
+
+        safeMkdir(Path.join(storePath, prefix), function (e) {
+            if (e) {
+                console.error(e);
+                return void cb('RENAME_ERR');
+            }
+            isFile(newPath, function (e, yes) {
+                if (e) {
+                    console.error(e);
+                    return void cb(e);
+                }
+                if (yes) {
+                    return void tryRandomLocation(cb);
+                }
+
+                cb(void 0, newPath, id);
+            });
+        });
+    };
+
+    tryRandomLocation(function (e, newPath, id) {
+        console.log(newPath, id);
+        Fs.rename(oldPath, newPath, function (e) {
+            if (e) {
+                console.error(e);
+                return cb(e);
+            }
+
+            cb(void 0, id);
+        });
+    });
+};
+
+var upload_status = function (stagingPath, Sessions, publicKey, cb) {
+    var filePath = makeFilePath(stagingPath, publicKey);
+    if (!filePath) { return void cb('E_INVALID_PATH'); }
+    isFile(filePath, function (e, yes) {
+        cb(e, yes);
+    });
 };
 
 /*::const ConfigType = require('./config.example.js');*/
 RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)=>void*/) {
     // load pin-store...
-
     console.log('loading rpc module...');
 
     var Sessions = {};
+
+    var keyOrDefaultString = function (key, def) {
+        return typeof(config[key]) === 'string'? config[key]: def;
+    };
+
+    var pinPath = keyOrDefaultString('pinPath', './pins');
+    var blobPath = keyOrDefaultString('blobPath', './blob');
+    var blobStagingPath = keyOrDefaultString('blobStagingPath', './blobstage');
 
     var store;
 
@@ -475,7 +613,7 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
         var Respond = function (e, msg) {
             var token = Sessions[publicKey].tokens.slice(-1)[0];
             var cookie = makeCookie(token).join('|');
-            respond(e, [cookie].concat(msg||[]));
+            respond(e, [cookie].concat(typeof(msg) !== 'undefined' ?msg: []));
         };
 
         if (typeof(msg) !== 'object' || !msg.length) {
@@ -519,25 +657,25 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                 });
 
             case 'UPLOAD':
-                return void upload(null, null, null, function (e) {
-                    Respond(e);
+                return void upload(blobStagingPath, Sessions, safeKey, msg[1], function (e, len) {
+                    Respond(e, len);
                 });
-            case 'CANCEL_UPLOAD':
-                return void cancelUpload(null, null, null, function (e) {
+            case 'UPLOAD_STATUS':
+                return void upload_status(blobStagingPath, Sessions, safeKey, function (e, stat) {
+                    Respond(e, stat);
+                });
+            case 'UPLOAD_COMPLETE':
+                return void upload_complete(blobStagingPath, blobPath, Sessions, safeKey, function (e, hash) {
+                    Respond(e, hash);
+                });
+            case 'UPLOAD_CANCEL':
+                return void upload_cancel(blobStagingPath, Sessions, safeKey, function (e) {
                     Respond(e);
                 });
             default:
                 return void Respond('UNSUPPORTED_RPC_CALL', msg);
         }
     };
-
-    var keyOrDefaultString = function (key, def) {
-        return typeof(config[key]) === 'string'? config[key]: def;
-    };
-
-    var pinPath = keyOrDefaultString('pinPath', './pins');
-    var blobPath = keyOrDefaultString('blobPath', './blob');
-    var blobStagingPath = keyOrDefaultString('blobStagingPath', './blobstage');
 
     Store.create({
         filePath: pinPath,
