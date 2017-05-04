@@ -92,6 +92,9 @@ define([
                                 var title = document.title = res.metadata.filename;
                                 myFile = res.content;
                                 myDataType = res.metadata.type;
+
+                                var defaultName = Cryptpad.getDefaultName(Cryptpad.parsePadUrl(window.location.href));
+                                APP.updateTitle(title || defaultName);
                             });
                         });
                     });
@@ -147,7 +150,7 @@ define([
             return data ? data.title : undefined;
         };
 
-        var updateTitle = function (newTitle) {
+        var updateTitle = APP.updateTitle = function (newTitle) {
             Cryptpad.renamePad(newTitle, function (err, data) {
                 if (err) {
                     console.log("Couldn't set pad title");
