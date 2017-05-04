@@ -33,7 +33,9 @@ define([
 
             // you don't need to worry about this running out.
             // you'd need a REAAAALLY big file
-            if (l === 0) { return true; }
+            if (l === 0) {
+                throw new Error('E_NONCE_TOO_LARGE');
+            }
         }
     };
 
@@ -70,7 +72,6 @@ define([
 
             // decrypt the chunk
             var plaintext = Nacl.secretbox.open(box, nonce, key);
-            // TODO handle nonce-too-large-error
             increment(nonce);
             return plaintext;
         };

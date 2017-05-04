@@ -127,9 +127,9 @@ define([
             return filesOp.replace(o, n);
         };
 
-        var changeHandlers = ret.changeHandlers = [];
+        ret.changeHandlers = [];
 
-        ret.change = function (f) {};
+        ret.change = function () {};
 
         return ret;
     };
@@ -166,7 +166,7 @@ define([
             return;
         }
 
-        proxy.on('change', [Cryptpad.displayNameKey], function (o, n, p) {
+        proxy.on('change', [Cryptpad.displayNameKey], function (o, n) {
             if (typeof(n) !== "string") { return; }
             Cryptpad.changeDisplayName(n);
         });
@@ -197,7 +197,6 @@ define([
         var exp = {};
 
         window.addEventListener('storage', function (e) {
-            var key = e.key;
             if (e.key !== Cryptpad.userHashKey) { return; }
             var o = e.oldValue;
             var n = e.newValue;

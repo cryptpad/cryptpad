@@ -14,7 +14,7 @@ define([
     var module = window.MODULE = {};
 
     var Messages = Cryptpad.Messages;
-    var saveAs = window.saveAs;
+    //var saveAs = window.saveAs;
 
     // Use `$(function () {});` to make sure the html is loaded before doing anything else
     $(function () {
@@ -22,7 +22,7 @@ define([
     var ifrw = $('#pad-iframe')[0].contentWindow;
 
     Cryptpad.addLoadingScreen();
-    var onConnectError = function (info) {
+    var onConnectError = function () {
         Cryptpad.errorLoadingScreen(Messages.websocketError);
     };
 
@@ -134,10 +134,9 @@ define([
         return localStorage.searchCursor || 0;
     };
 
-
-    var now = function () {
+/*  var now = function () {
         return new Date().getTime();
-    };
+    }; */
 
     var setEditable = function (state) {
         APP.editable = state;
@@ -162,12 +161,12 @@ define([
     var $slideIcon = $('<span>', {"class": "fa fa-file-powerpoint-o file icon"});
     var $pollIcon = $('<span>', {"class": "fa fa-calendar file icon"});
     var $whiteboardIcon = $('<span>', {"class": "fa fa-paint-brush"});
-    var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
+    //var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
     var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
     var $templateIcon = $('<span>', {"class": "fa fa-cubes"});
     var $trashIcon = $('<span>', {"class": "fa fa-trash"});
     var $trashEmptyIcon = $('<span>', {"class": "fa fa-trash-o"});
-    var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o expcol"});
+    //var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o expcol"});
     var $expandIcon = $('<span>', {"class": "fa fa-plus-square-o expcol"});
     var $listIcon = $('<span>', {"class": "fa fa-list"});
     var $gridIcon = $('<span>', {"class": "fa fa-th"});
@@ -227,8 +226,6 @@ define([
         var displayedCategories = [ROOT, TRASH, SEARCH];
         if (AppConfig.enableTemplates) { displayedCategories.push(TEMPLATE); }
         if (isWorkgroup()) { displayedCategories = [ROOT, TRASH, SEARCH]; }
-
-        var selectedElement;
 
         if (!APP.readOnly) {
             setEditable(true);
@@ -557,7 +554,7 @@ define([
 
             var hide = [];
             var hasFolder = false;
-            paths.forEach(function (p, i) {
+            paths.forEach(function (p) {
                 var path = p.path;
                 var $element = p.element;
                 if (path.length === 1) {
@@ -675,7 +672,7 @@ define([
             var paths = getSelectedPaths($element);
             var $menu = $element.data('context');
             if (!$menu) { return; }
-            var actions = [];
+            //var actions = [];
             var $actions = $menu.find('a');
             var toHide = filterContextMenu($menu, paths);
             $actions = $actions.filter(function (i, el) {
@@ -1173,6 +1170,7 @@ define([
         };
 
         // Display the full path in the title when displaying a directory from the trash
+        /*
         var getTrashTitle = function (path) {
             if (!path[0] || path[0] !== TRASH) { return; }
             var title = TRASH_NAME;
@@ -1187,7 +1185,7 @@ define([
                 }
             }
             return title;
-        };
+        }; */
 
         var getPrettyName = function (name) {
             var pName;
@@ -1218,7 +1216,7 @@ define([
                 if (idx < path.length - 1) {
                     if (!noStyle) {
                         $span.addClass('clickable');
-                        $span.click(function (e) {
+                        $span.click(function () {
                             var sliceEnd = idx + 1;
                             if (isTrash && idx === 1) { sliceEnd = 4; } // Make sure we don't show the index or 'element' and 'path'
                             module.displayDirectory(path.slice(0, sliceEnd));
@@ -1359,13 +1357,13 @@ define([
                 $block.find('a.newFolder').click(function () {
                     filesOp.addFolder(currentPath, null, onCreated);
                 });
-                $block.find('a.newdoc').click(function (e) {
+                $block.find('a.newdoc').click(function () {
                     var type = $(this).attr('data-type') || 'pad';
                     var name = Cryptpad.getDefaultName({type: type});
                     filesOp.addFile(currentPath, name, type, onCreated);
                 });
             } else {
-                $block.find('a.newdoc').click(function (e) {
+                $block.find('a.newdoc').click(function () {
                     var type = $(this).attr('data-type') || 'pad';
                     sessionStorage[Cryptpad.newPadPathKey] = filesOp.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
                     window.open('/' + type + '/');
@@ -1390,7 +1388,7 @@ define([
             return Cryptpad.getLSAttribute(SORT_FOLDER_DESC) === "true";
         };
 
-        var onSortByClick = function (e) {
+        var onSortByClick = function () {
             var $span = $(this);
             var value;
             if ($span.hasClass('foldername')) {
@@ -1530,7 +1528,7 @@ define([
             return keys;
         };
         var sortTrashElements = function (folder, oldkeys, prop, asc) {
-            var root = files[TRASH];
+            //var root = files[TRASH];
             var test = folder ? filesOp.isFolder : filesOp.isFile;
             var keys = oldkeys.filter(function (e) {
                 return test(e.element);
@@ -1569,14 +1567,14 @@ define([
         };
 
         // Drive content toolbar
-        var createToolbar = function (path) {
+        var createToolbar = function () {
             var $toolbar = $driveToolbar;
             $toolbar.html('');
             var $leftside = $('<div>', {'class': 'leftside'}).appendTo($toolbar);
             if (!APP.mobile()) {
                 $leftside.width($tree.width());
             }
-            var $rightside = $('<div>', {'class': 'rightside'}).appendTo($toolbar);
+            $('<div>', {'class': 'rightside'}).appendTo($toolbar);
             return $toolbar;
         };
 
@@ -1702,7 +1700,7 @@ define([
                     var parsed = Cryptpad.parsePadUrl(href);
                     var $table = $('<table>');
                     var $icon = $('<td>', {'rowspan': '3', 'class': 'icon'}).append(getFileIcon(href));
-                    var $title = $('<td>', {'class': 'col1 title'}).text(r.data.title).click(function (e) {
+                    var $title = $('<td>', {'class': 'col1 title'}).text(r.data.title).click(function () {
                         openFile(r.data.href);
                     });
                     var $typeName = $('<td>', {'class': 'label2'}).text(Messages.fm_type);
@@ -1726,9 +1724,11 @@ define([
                         });
                     }
                     var $openDir = $('<td>', {'class': 'openDir'}).append($a);
-                    var $row1 = $('<tr>').append($icon).append($title).append($typeName).append($type).appendTo($table);
-                    var $row2 = $('<tr>').append($path).append($atimeName).append($atime).appendTo($table);
-                    var $row3 = $('<tr>').append($openDir).append($ctimeName).append($ctime).appendTo($table);
+
+                    // rows 1-3
+                    $('<tr>').append($icon).append($title).append($typeName).append($type).appendTo($table);
+                    $('<tr>').append($path).append($atimeName).append($atime).appendTo($table);
+                    $('<tr>').append($openDir).append($ctimeName).append($ctime).appendTo($table);
                     $('<li>', {'class':'searchResult'}).append($table).appendTo($list);
                 });
             });
@@ -1793,11 +1793,11 @@ define([
                 if (mode) {
                     $dirContent.addClass(getViewModeClass());
                 }
-                var $modeButton = createViewModeButton().appendTo($toolbar.find('.rightside'));
+                createViewModeButton().appendTo($toolbar.find('.rightside'));
             }
             var $list = $('<ul>').appendTo($dirContent);
 
-            var $title = createTitle(path).appendTo($toolbar.find('.rightside'));
+            createTitle(path).appendTo($toolbar.find('.rightside'));
             updatePathSize();
 
             if (APP.mobile()) {
@@ -1883,7 +1883,7 @@ define([
             appStatus.ready(true);
         };
 
-        var refreshFilesData = function () {
+/*      var refreshFilesData = function () {
             $content.find('.element-row').each(function (i, e) {
                 var $el = $(e);
                 if ($el.data('path')) {
@@ -1898,7 +1898,8 @@ define([
                     $el.find('.ctime').attr('title', getDate(data.ctime)).text(getDate(data.ctime));
                 }
             });
-        };
+        }; */
+
 
         var createTreeElement = function (name, $icon, path, draggable, droppable, collapsable, active) {
             var $name = $('<span>', { 'class': 'folder-element element' }).text(name);
@@ -1961,7 +1962,7 @@ define([
                 var $rootElement = createTreeElement(ROOT_NAME, $rootIcon.clone(), [ROOT], false, true, false, isRootOpened);
                 $rootElement.addClass('root');
                 $rootElement.find('>.element-row').contextmenu(openDirectoryContextMenu);
-                var $root = $('<ul>').append($rootElement).appendTo($container);
+                $('<ul>').append($rootElement).appendTo($container);
                 $container = $rootElement;
             } else if (filesOp.isFolderEmpty(root)) { return; }
 
@@ -2048,7 +2049,7 @@ define([
             $container.append($div);
         };
 
-        var resetTree = module.resetTree = function () {
+        module.resetTree = function () {
             $tree.html('');
             if (displayedCategories.indexOf(SEARCH) !== -1) { createSearch($tree); }
             if (displayedCategories.indexOf(ROOT) !== -1) { createTree($tree, [ROOT]); }
@@ -2057,7 +2058,7 @@ define([
             if (displayedCategories.indexOf(TRASH) !== -1) { createTrash($tree, [TRASH]); }
         };
 
-        var hideMenu = module.hideMenu = function () {
+        module.hideMenu = function () {
             $contextMenu.hide();
             $trashTreeContextMenu.hide();
             $trashContextMenu.hide();
@@ -2361,7 +2362,7 @@ define([
             removeInput();
             module.hideMenu(e);
         });
-        $appContainer.on('mouseup drop', function (e) {
+        $appContainer.on('mouseup drop', function () {
             $iframe.find('.droppable').removeClass('droppable');
         });
         $appContainer.on('keydown', function (e) {
@@ -2407,7 +2408,7 @@ define([
                 onRefresh.to = window.setTimeout(refresh, 500);
             }
         };
-        proxy.on('change', [], function (o, n, p) {
+        proxy.on('change', [], function () {
             if (history.isHistoryMode) { return; }
             var path = arguments[2];
             if (path[0] !== 'drive') { return false; }
@@ -2422,7 +2423,7 @@ define([
             }
             module.resetTree();
             return false;
-        }).on('remove', [], function (o, p) {
+        }).on('remove', [], function () {
             if (history.isHistoryMode) { return; }
             var path = arguments[1];
             if (path[0] !== 'drive') { return false; }
@@ -2437,7 +2438,7 @@ define([
             return false;
         });
 
-        $iframe.find('#tree').mousedown(function (e) {
+        $iframe.find('#tree').mousedown(function () {
             if (APP.mobile()) { return; }
             if (APP.resizeTree) { return; }
             APP.resizeTree = window.setInterval(function () {
@@ -2445,7 +2446,7 @@ define([
                 updatePathSize();
             }, 100);
         });
-        $appContainer.mouseup(function (e) {
+        $appContainer.mouseup(function () {
             window.clearInterval(APP.resizeTree);
             APP.resizeTree = undefined;
         });
@@ -2506,7 +2507,7 @@ define([
             myUserNameTemp = myUserNameTemp.substr(0, 32);
         }
         var myUserName = myUserNameTemp;
-        Cryptpad.setAttribute('username', myUserName, function (err, data) {
+        Cryptpad.setAttribute('username', myUserName, function (err) {
             if (err) {
                 logError("Couldn't set username", err);
                 return;
@@ -2587,7 +2588,7 @@ define([
                 common: Cryptpad,
                 hideShare: true
             };
-            var toolbar = APP.toolbar = info.realtime.toolbar = Toolbar.create(APP.$bar, info.myID, info.realtime, info.getLag, userList, config);
+            APP.toolbar = info.realtime.toolbar = Toolbar.create(APP.$bar, info.myID, info.realtime, info.getLag, userList, config);
 
             var $bar = APP.$bar;
             var $rightside = $bar.find('.' + Toolbar.constants.rightside);
@@ -2621,10 +2622,10 @@ define([
                     var $usage = $('<span>', {'class': 'usage'}).css('width', width+'px');
 
                     if (quota >= 0.8) {
-                        var $upgrade = $('<button>', {
+                        $('<button>', {
                             'class': 'upgrade buttonSuccess',
                             title: Messages.upgradeTitle
-                        }).text(Messages.upgrade).click(function (e) {
+                        }).text(Messages.upgrade).click(function () {
                             // TODO
                         }).appendTo($leftside);
                     }
@@ -2659,7 +2660,7 @@ define([
                 // Close button clicked
                 setHistory(false, true);
             };
-            histConfig.onRevert = function (val) {
+            histConfig.onRevert = function () {
                 // Revert button clicked
                 setHistory(false, false);
                 proxy.drive = history.currentObj.drive;
@@ -2701,7 +2702,7 @@ define([
                 Cryptpad.removeLoadingScreen();
             });
         };
-        var onDisconnect = function (info) {
+        var onDisconnect = function () {
             setEditable(false);
             if (APP.refresh) { APP.refresh(); }
             APP.toolbar.failed();

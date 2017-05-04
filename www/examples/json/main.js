@@ -26,15 +26,13 @@ define([
         });
     };
 
-    var initializing = true;
-
     setEditable(false);
 
     var rt = module.rt = RtListMap.create(config);
     rt.proxy.on('create', function (info) {
         console.log("initializing...");
         window.location.hash = info.channel + secret.key;
-    }).on('ready', function (info) {
+    }).on('ready', function () {
         console.log("...your realtime object is ready");
 
         rt.proxy
@@ -42,7 +40,7 @@ define([
             .on('change', [], function (o, n, p) {
                 console.log("root change event firing for path [%s]: %s => %s", p.join(','), o, n);
             })
-            .on('remove', [], function (o, p, root) {
+            .on('remove', [], function (o, p) {
                 console.log("Removal of value [%s] at path [%s]", o, p.join(','));
             })
             .on('change', ['a', 'b', 'c'], function (o, n, p) {
@@ -51,7 +49,7 @@ define([
                 return false;
             })
             // on(event, cb)
-            .on('disconnect', function (info) {
+            .on('disconnect', function () {
                 setEditable(false);
                 window.alert("Network connection lost");
             });
@@ -65,6 +63,7 @@ define([
 
                 console.log("evaluating `%s`", value);
                 var x = rt.proxy;
+                x = x; // LOL jshint says this is unused otherwise <3
 
                 console.log('> ', eval(value)); // jshint ignore:line
                 console.log();

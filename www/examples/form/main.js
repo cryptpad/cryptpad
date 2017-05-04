@@ -128,7 +128,7 @@ define([
 
     setEditable(false);
 
-    var onInit = config.onInit = function (info) {
+    config.onInit = function (info) {
         var realtime = module.realtime = info.realtime;
         window.location.hash = info.channel + secret.key;
 
@@ -140,7 +140,7 @@ define([
     };
 
     var readValues = function () {
-        UI.each(function (ui, i, list) {
+        UI.each(function (ui) {
             Map[ui.id] = ui.value();
         });
     };
@@ -165,7 +165,7 @@ define([
             if (UI.ids.indexOf(key) === -1) { Map[key] = parsed[key]; }
         });
 
-        UI.each(function (ui, i, list) {
+        UI.each(function (ui) {
             var newval = parsed[ui.id];
             var oldval = ui.value();
 
@@ -178,9 +178,7 @@ define([
             if (ui.preserveCursor) {
                 op = TextPatcher.diff(oldval, newval);
                 selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
-                    var before = element[attr];
-                    var after = TextPatcher.transformCursor(element[attr], op);
-                    return after;
+                    return TextPatcher.transformCursor(element[attr], op);
                 });
             }
 
@@ -195,13 +193,13 @@ define([
         });
     };
 
-    var onRemote = config.onRemote = function (info) {
+    config.onRemote = function () {
         if (initializing) { return; }
         /* integrate remote changes */
         updateValues();
     };
 
-    var onReady = config.onReady = function (info) {
+    config.onReady = function () {
         updateValues();
 
         console.log("READY");
@@ -209,13 +207,13 @@ define([
         initializing = false;
     };
 
-    var onAbort = config.onAbort = function (info) {
+    config.onAbort = function () {
         window.alert("Network Connection Lost");
     };
 
-    var rt = Realtime.start(config);
+    Realtime.start(config);
 
-    UI.each(function (ui, i, list) {
+    UI.each(function (ui) {
         var type = ui.type;
         var events = eventsByType[type];
         ui.$.on(events, onLocal);

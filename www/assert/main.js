@@ -38,8 +38,6 @@ define([
         });
     };
 
-    var $body = $('body');
-
     var HJSON_list = [
         '["DIV",{"id":"target"},[["P",{"class":" alice bob charlie has.dot","id":"bang"},["pewpewpew"]]]]',
 

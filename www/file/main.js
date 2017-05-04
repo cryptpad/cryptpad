@@ -27,7 +27,7 @@ define([
         var xhr = new XMLHttpRequest();
         xhr.open("GET", src, true);
         xhr.responseType = "arraybuffer";
-        xhr.onload = function (e) {
+        xhr.onload = function () {
             return void cb(void 0, new Uint8Array(xhr.response));
         };
         xhr.send(null);
@@ -57,19 +57,19 @@ define([
         var again = function (state, box) {
             switch (state) {
                 case 0:
-                    sendChunk(box, function (e, msg) {
+                    sendChunk(box, function (e) {
                         if (e) { return console.error(e); }
                         next(again);
                     });
                     break;
                 case 1:
-                    sendChunk(box, function (e, msg) {
+                    sendChunk(box, function (e) {
                         if (e) { return console.error(e); }
                         next(again);
                     });
                     break;
                 case 2:
-                    sendChunk(box, function (e, msg) {
+                    sendChunk(box, function (e) {
                         if (e) { return console.error(e); }
                         Cryptpad.rpc.send('UPLOAD_COMPLETE', '', function (e, res) {
                             if (e) { return void console.error(e); }
@@ -171,7 +171,6 @@ define([
             document.title = title;
         };
 
-        var blob;
         var exportFile = function () {
             var suggestion = document.title;
             Cryptpad.prompt(Messages.exportPrompt,
@@ -239,10 +238,10 @@ define([
             display: 'block',
         });
 
-        var $file = $form.find("#file").on('change', function (e) {
+        $form.find("#file").on('change', function (e) {
             var file = e.target.files[0];
             var reader = new FileReader();
-            reader.onloadend = function (e) {
+            reader.onloadend = function () {
                 upload(this.result, {
                     name: file.name,
                     type: file.type,
@@ -255,7 +254,7 @@ define([
         Cryptpad.removeLoadingScreen();
     };
 
-    Cryptpad.ready(function (err, anv) {
+    Cryptpad.ready(function () {
         andThen();
         Cryptpad.reportAppUsage();
     });

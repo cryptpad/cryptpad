@@ -55,7 +55,7 @@ define([
 
     var initializing = true;
 
-    var onInit = config.onInit = function (info) {
+    config.onInit = function (info) {
         window.location.hash = info.channel + secret.key;
         module.realtime = info.realtime;
     };
@@ -73,7 +73,7 @@ define([
     };
 
     // when your editor is ready
-    var onReady = config.onReady = function (info) {
+    config.onReady = function () {
         console.log("Realtime is ready!");
         var userDoc = module.realtime.getUserDoc();
         lazyDraw(getContent(userDoc));
@@ -81,13 +81,13 @@ define([
     };
 
     // when remote editors do things...
-    var onRemote = config.onRemote = function () {
+    config.onRemote = function () {
         if (initializing) { return; }
         var userDoc = module.realtime.getUserDoc();
         lazyDraw(getContent(userDoc));
     };
 
-    var onLocal = config.onLocal = function () {
+    config.onLocal = function () {
         // we're not really expecting any local events for this editor...
         /*  but we might add a second pane in the future so that you don't need
             a second window to edit your markdown */
@@ -96,9 +96,9 @@ define([
         lazyDraw(userDoc);
     };
 
-    var onAbort = config.onAbort = function () {
+    config.onAbort = function () {
         window.alert("Network Connection Lost");
     };
 
-    var rts = Realtime.start(config);
+    Realtime.start(config);
 });

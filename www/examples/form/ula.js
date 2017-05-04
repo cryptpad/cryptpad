@@ -1,7 +1,7 @@
 define([], function () {
     var ula = {};
 
-    var uid = ula.uid = (function () {
+    ula.uid = (function () {
         var i = 0;
         var prefix = 'rt_';
         return function () { return prefix + i++; };

@@ -87,7 +87,7 @@ define([
         return hj;
     };
 
-    var onConnectError = function (info) {
+    var onConnectError = function () {
         Cryptpad.errorLoadingScreen(Messages.websocketError);
     };
 
@@ -103,7 +103,7 @@ define([
         });
 
         editor.on('instanceReady', Links.addSupportForOpeningLinksInNewTab(Ckeditor));
-        editor.on('instanceReady', function (Ckeditor) {
+        editor.on('instanceReady', function () {
             var $bar = $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox');
             var parsedHash = Cryptpad.parsePadUrl(window.location.href);
             var defaultName = Cryptpad.getDefaultName(parsedHash);
@@ -167,7 +167,7 @@ define([
                     if (['addAttribute', 'modifyAttribute'].indexOf(info.diff.action) !== -1) {
                         if (info.diff.name === 'href') {
                             // console.log(info.diff);
-                            var href = info.diff.newValue;
+                            //var href = info.diff.newValue;
 
                             // TODO normalize HTML entities
                             if (/javascript *: */.test(info.diff.newValue)) {
@@ -314,18 +314,13 @@ define([
                     uid: Cryptpad.getUid(),
                 };
                 addToUserData(myData);
-                Cryptpad.setAttribute('username', newName, function (err, data) {
+                Cryptpad.setAttribute('username', newName, function (err) {
                     if (err) {
                         console.error("Couldn't set username");
                         return;
                     }
                     editor.fire('change');
                 });
-            };
-
-            var isDefaultTitle = function () {
-                var parsed = Cryptpad.parsePadUrl(window.location.href);
-                return Cryptpad.isDefaultName(parsed, document.title);
             };
 
             var getHeadingText = function () {
@@ -483,7 +478,7 @@ define([
                 }
             };
 
-            var onRemote = realtimeOptions.onRemote = function () {
+            realtimeOptions.onRemote = function () {
                 if (initializing) { return; }
                 if (isHistoryMode) { return; }
 
@@ -544,7 +539,7 @@ define([
                 }
             };
 
-            var getHTML = function (Dom) {
+            var getHTML = function () {
                 return ('<!DOCTYPE html>\n' + '<html>\n' + inner.innerHTML);
             };
 
@@ -562,7 +557,7 @@ define([
                     saveAs(blob, filename);
                 });
             };
-            var importFile = function (content, file) {
+            var importFile = function (content) {
                 var shjson = stringify(Hyperjson.fromDOM(domFromHTML(content).body));
                 applyHjson(shjson);
                 realtimeOptions.onLocal();
@@ -574,7 +569,7 @@ define([
                 editor.fire('change');
             };
 
-            var onInit = realtimeOptions.onInit = function (info) {
+            realtimeOptions.onInit = function (info) {
                 userList = info.userList;
 
                 var configTb = {
@@ -596,11 +591,10 @@ define([
                 toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, userList, configTb);
 
                 var $rightside = $bar.find('.' + Toolbar.constants.rightside);
-                var $userBlock = $bar.find('.' + Toolbar.constants.username);
-                var $usernameButton = module.$userNameButton = $($bar.find('.' + Toolbar.constants.changeUsername));
+                $bar.find('.' + Toolbar.constants.username);
+                module.$userNameButton = $($bar.find('.' + Toolbar.constants.changeUsername));
 
                 var editHash;
-                var viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
 
                 if (!readOnly) {
                     editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
@@ -680,7 +674,7 @@ define([
                 }
 
                 /* add a forget button */
-                var forgetCb = function (err, title) {
+                var forgetCb = function (err) {
                     if (err) { return; }
                     setEditable(false);
                 };
@@ -694,7 +688,7 @@ define([
             };
 
             // this should only ever get called once, when the chain syncs
-            var onReady = realtimeOptions.onReady = function (info) {
+            realtimeOptions.onReady = function (info) {
                 if (!module.isMaximized) {
                     editor.execCommand('maximize');
                     module.isMaximized = true;
@@ -780,7 +774,7 @@ define([
                 });
             };
 
-            var onAbort = realtimeOptions.onAbort = function (info) {
+            realtimeOptions.onAbort = function () {
                 console.log("Aborting the session!");
                 // stop the user from continuing to edit
                 setEditable(false);
@@ -788,7 +782,7 @@ define([
                 Cryptpad.alert(Messages.common_connectionLost, undefined, true);
             };
 
-            var onConnectionChange = realtimeOptions.onConnectionChange = function (info) {
+            realtimeOptions.onConnectionChange = function (info) {
                 setEditable(info.state);
                 toolbar.failed();
                 if (info.state) {
@@ -800,7 +794,7 @@ define([
                 }
             };
 
-            var onError = realtimeOptions.onError = onConnectError;
+            realtimeOptions.onError = onConnectError;
 
             var onLocal = realtimeOptions.onLocal = function () {
                 if (initializing) { return; }
@@ -816,7 +810,7 @@ define([
                 }
             };
 
-            var rti = module.realtimeInput = realtimeInput.start(realtimeOptions);
+            module.realtimeInput = realtimeInput.start(realtimeOptions);
 
             Cryptpad.onLogout(function () { setEditable(false); });
 
@@ -834,7 +828,7 @@ define([
             // export the typing tests to the window.
             // call like `test = easyTest()`
             // terminate the test like `test.cancel()`
-            var easyTest = window.easyTest = function () {
+            window.easyTest = function () {
                 cursor.update();
                 var start = cursor.Range.start;
                 var test = TypingTest.testInput(inner, start.el, start.offset, onLocal);
@@ -846,7 +840,7 @@ define([
 
     var interval = 100;
     var second = function (Ckeditor) {
-        Cryptpad.ready(function (err, env) {
+        Cryptpad.ready(function () {
             andThen(Ckeditor);
             Cryptpad.reportAppUsage();
         });

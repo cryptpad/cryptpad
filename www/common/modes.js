@@ -132,7 +132,7 @@ define(function () {
         };
     });
 
-    var extensionOf = Modes.extensionOf = function (mode) {
+    Modes.extensionOf = function (mode) {
         var ext = '';
         list.some(function (o) {
             if (o.mode !== mode) { return; }

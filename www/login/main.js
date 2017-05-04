@@ -3,11 +3,6 @@ define([
     '/common/cryptpad-common.js',
     '/common/login.js'
 ], function ($, Cryptpad, Login) {
-
-    var APP = window.APP = {
-        Cryptpad: Cryptpad,
-    };
-
     $(function () {
         var $main = $('#mainBlock');
         var Messages = Cryptpad.Messages;
@@ -61,7 +56,7 @@ define([
             $('button.login').click();
         });
 
-        $('button.login').click(function (e) {
+        $('button.login').click(function () {
             Cryptpad.addLoadingScreen(Messages.login_hashing);
             // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed after hashing the password
             window.setTimeout(function () {
