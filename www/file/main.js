@@ -89,7 +89,7 @@ define([
 
                             var newU8 = FileCrypto.joinChunks(chunks);
                             FileCrypto.decrypt(newU8, key, function (e, res) {
-                                var title = document.title = res.metadata.filename;
+                                var title = document.title = res.metadata.name;
                                 myFile = res.content;
                                 myDataType = res.metadata.type;
 
