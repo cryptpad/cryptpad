@@ -65,10 +65,11 @@ define([
 
         var $mt = $iframe.find('#encryptedFile');
         $mt.attr('src', '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName);
-        $mt.attr('data-crypto-key', cryptKey);
+        $mt.attr('data-crypto-key', 'salsa20poly1305:'+cryptKey);
         $mt.attr('data-type', type);
 
         require(['/common/media-tag.js'], function (MediaTag) {
+            console.log(MediaTag);
             var configTb = {
                 displayed: ['useradmin', 'share', 'newpad'],
                 ifrw: ifrw,
