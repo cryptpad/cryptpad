@@ -91,6 +91,9 @@ var expireSessions = function (Sessions) {
     var now = +new Date();
     Object.keys(Sessions).forEach(function (key) {
         if (isTooOld(Sessions[key].atime, now)) {
+            if (session.blobstage) {
+                session.blobstage.close();
+            }
             delete Sessions[key];
         }
     });
@@ -445,6 +448,7 @@ var upload = function (stagingPath, Sessions, publicKey, content, cb) {
     var dec = new Buffer(Nacl.util.decodeBase64(content)); // jshint ignore:line
 
     var session = Sessions[publicKey];
+    session.atime = +new Date();
     if (!session.blobstage) {
         makeFileStream(stagingPath, publicKey, function (e, stream) {
             if (e) { return void cb(e); }
