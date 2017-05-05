@@ -369,6 +369,9 @@ define([
         });
 
         $(ifrw).keydown(function (e) {
+            var $searchBar = $tree.find('#searchInput');
+            if ($searchBar.is(':focus') && $searchBar.val()) { return; }
+
             var $elements = $content.find('.element:not(.header)');
 
             var ev = {};
@@ -2025,6 +2028,14 @@ define([
                 placeholder: Messages.fm_searchPlaceholder
             }).keyup(function (e) {
                 if (search.to) { window.clearTimeout(search.to); }
+                if ([38, 39, 40, 41].indexOf(e.which) !== -1) {
+                    if (!$input.val()) {
+                        $input.blur();
+                        return;
+                    } else {
+                        e.stopPropagation();
+                    }
+                }
                 var isInSearchTmp = currentPath[0] === SEARCH;
                 if ($input.val().trim() === "") {
                     setSearchCursor(0);
