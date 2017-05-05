@@ -409,6 +409,30 @@ var resetUserPins = function (store, Sessions, publicKey, channelList, cb) {
     });
 };
 
+var getPrivilegedUserList = function (cb) {
+    Fs.readFile('./privileged.conf', 'utf8', function (e, body) {
+        if (e) {
+            if (e.code === 'ENOENT') {
+                return void cb(void 0, []);
+            }
+            return void (e.code);
+        }
+        var list = body.split(/\n/)
+            .map(function (line) {
+                return line.replace(/#.*$/, '').trim();
+            })
+            .filter(function (x) { return x; });
+        cb(void 0, list);
+    });
+};
+
+var isPrivilegedUser = function (publicKey, cb) {
+    getPrivilegedUserList(function (e, list) {
+        if (e) { return void cb(false); }
+        cb(list.indexOf(publicKey) !== -1);
+    });
+};
+
 var getLimit = function (cb) {
     cb = cb; // TODO
 };
@@ -625,6 +649,11 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
             return void Respond('INVALID_MSG');
         }
 
+        var deny = function () {
+            Respond('E_ACCESS_DENIED');
+        };
+
+        var handleMessage = function (privileged) {
         switch (msg[0]) {
             case 'COOKIE': return void Respond(void 0);
             case 'RESET':
@@ -662,25 +691,54 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                     Respond(void 0, dict);
                 });
 
+
+            // restricted to privileged users...
             case 'UPLOAD':
+                if (!privileged) { return deny(); }
                 return void upload(blobStagingPath, Sessions, safeKey, msg[1], function (e, len) {
                     Respond(e, len);
                 });
             case 'UPLOAD_STATUS':
+                if (!privileged) { return deny(); }
                 return void upload_status(blobStagingPath, Sessions, safeKey, function (e, stat) {
                     Respond(e, stat);
                 });
             case 'UPLOAD_COMPLETE':
+                if (!privileged) { return deny(); }
                 return void upload_complete(blobStagingPath, blobPath, Sessions, safeKey, function (e, hash) {
                     Respond(e, hash);
                 });
             case 'UPLOAD_CANCEL':
+                if (!privileged) { return deny(); }
                 return void upload_cancel(blobStagingPath, Sessions, safeKey, function (e) {
                     Respond(e);
                 });
             default:
                 return void Respond('UNSUPPORTED_RPC_CALL', msg);
         }
+        };
+
+        // reject uploads unless explicitly enabled
+        if (config.enableUploads !== true) {
+            return void handleMessage(false);
+        }
+
+        // restrict upload capability unless explicitly disabled
+        if (config.restrictUploads === false) {
+            return void handleMessage(true);
+        }
+
+        // if session has not been authenticated, do so
+        var session = Sessions[publicKey];
+        if (typeof(session.privilege) !== 'boolean') {
+            return void isPrivilegedUser(publicKey, function (yes) {
+                session.privilege = yes;
+                handleMessage(yes);
+            });
+        }
+
+        // if authenticated, proceed
+        handleMessage(session.privilege);
     };
 
     Store.create({

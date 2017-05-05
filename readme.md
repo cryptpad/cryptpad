@@ -54,6 +54,9 @@ These settings can be found in your configuration file in the  `contentSecurity`
 
 ## Maintenance
 
+Before upgrading your CryptPad instance to the latest version, we recommend that you check what has changed since your last update.
+You can do so by checking which version you have (see package.json), and comparing it against newer [release notes](https://github.com/xwiki-labs/cryptpad/releases).
+
 To get access to the most recent codebase:
 
 ```

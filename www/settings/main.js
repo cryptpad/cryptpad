@@ -252,6 +252,42 @@ define([
         return $div;
     };
 
+    var createLogoutEverywhere = function (obj) {
+        var proxy = obj.proxy;
+        var $div = $('<div>', { 'class': 'logoutEverywhere', });
+        $('<label>', { 'for': 'logoutEverywhere'})
+            .text(Messages.settings_logoutEverywhereTitle).appendTo($div);
+        $('<br>').appendTo($div);
+        var $button = $('<button>', { id: 'logoutEverywhere', 'class': 'btn btn-primary' })
+            .text(Messages.settings_logoutEverywhere)
+            .appendTo($div);
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide().appendTo($div);
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide().appendTo($div);
+
+        $button.click(function () {
+            var realtime = obj.info.realtime;
+            console.log(realtime);
+
+            Cryptpad.confirm(Messages.settings_logoutEverywhereConfirm, function (yes) {
+                if (!yes) { return; }
+                $spinner.show();
+                $ok.hide();
+
+                var token = proxy.loginToken = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
+                localStorage.setItem('loginToken', token);
+
+                Cryptpad.whenRealtimeSyncs(realtime, function () {
+                    $spinner.hide();
+                    $ok.show();
+                    window.setTimeout(function () {
+                        $ok.fadeOut(1500);
+                    }, 2500);
+                });
+            });
+        });
+        return $div;
+    };
+
     var createImportLocalPads = function (obj) {
         if (!Cryptpad.isLoggedIn()) { return; }
         var $div = $('<div>', {'class': 'importLocalPads'});
@@ -292,6 +328,10 @@ define([
         APP.$container.append(createInfoBlock(obj));
         APP.$container.append(createDisplayNameInput(obj));
         APP.$container.append(createLanguageSelector());
+
+        if (Cryptpad.isLoggedIn()) {
+            APP.$container.append(createLogoutEverywhere(obj));
+        }
         APP.$container.append(createResetTips());
         APP.$container.append(createBackupDrive(obj));
         APP.$container.append(createImportLocalPads(obj));

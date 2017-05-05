@@ -134,6 +134,14 @@ define([
         return ret;
     };
 
+    var tryParsing = function (x) {
+        try { return JSON.parse(x); }
+        catch (e) {
+            console.error(e);
+            return null;
+        }
+    };
+
     var onReady = function (f, proxy, Cryptpad, exp) {
         var fo = exp.fo = FO.init(proxy.drive, {
             Cryptpad: Cryptpad
@@ -143,6 +151,37 @@ define([
         store = initStore(fo, proxy, exp);
         if (typeof(f) === 'function') {
             f(void 0, store);
+        }
+
+        var requestLogin = function (Cryptpad) {
+            // log out so that you don't go into an endless loop...
+            Cryptpad.logout();
+
+            // redirect them to log in, and come back when they're done.
+            sessionStorage.redirectTo = window.location.href;
+            window.location.href = '/login/';
+        };
+
+        if (Cryptpad.isLoggedIn()) {
+/*  This isn't truly secure, since anyone who can read the user's object can
+    set their local loginToken to match that in the object. However, it exposes
+    a UI that will work most of the time. */
+            var tokenKey = 'loginToken';
+
+            // every user object should have a persistent, random number
+            if (typeof(proxy.loginToken) !== 'number') {
+                proxy[tokenKey] = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
+            }
+
+            var localToken = tryParsing(localStorage.getItem(tokenKey));
+            if (localToken === null) {
+                // if that number hasn't been set to localStorage, do so.
+                localStorage.setItem(tokenKey, proxy.loginToken);
+            } else if (localToken !== proxy[tokenKey]) {
+                // if it has been, and the local number doesn't match that in
+                // the user object, request that they reauthenticate.
+                return void requestLogin();
+            }
         }
 
         if (typeof(proxy.allowUserFeedback) !== 'boolean') {
@@ -157,13 +196,7 @@ define([
 
         // if the user is logged in, but does not have signing keys...
         if (Cryptpad.isLoggedIn() && !Cryptpad.hasSigningKeys(proxy)) {
-            // log out so that you don't go into an endless loop...
-            Cryptpad.logout();
-
-            // redirect them to log in, and come back when they're done.
-            sessionStorage.redirectTo = window.location.href;
-            window.location.href = '/login/';
-            return;
+            return void requestLogin();
         }
 
         proxy.on('change', [Cryptpad.displayNameKey], function (o, n) {
