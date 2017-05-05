@@ -134,15 +134,6 @@ define([
         return ret;
     };
 
-    var requestLogin = function () {
-        // log out so that you don't go into an endless loop...
-        Cryptpad.logout();
-
-        // redirect them to log in, and come back when they're done.
-        sessionStorage.redirectTo = window.location.href;
-        window.location.href = '/login/';
-    };
-
     var tryParsing = function (x) {
         try { return JSON.parse(x); }
         catch (e) {
@@ -161,6 +152,15 @@ define([
         if (typeof(f) === 'function') {
             f(void 0, store);
         }
+
+        var requestLogin = function (Cryptpad) {
+            // log out so that you don't go into an endless loop...
+            Cryptpad.logout();
+
+            // redirect them to log in, and come back when they're done.
+            sessionStorage.redirectTo = window.location.href;
+            window.location.href = '/login/';
+        };
 
         if (Cryptpad.isLoggedIn()) {
 /*  This isn't truly secure, since anyone who can read the user's object can
