@@ -192,6 +192,7 @@ define([
         [
             userNameKey,
             userHashKey,
+            'loginToken',
         ].forEach(function (k) {
             sessionStorage.removeItem(k);
             localStorage.removeItem(k);
