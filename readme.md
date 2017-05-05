@@ -70,9 +70,12 @@ bower update;
 # serverside dependencies
 npm update;
 ```
+## Deleting all data and resetting Cryptpad
+
 
 To reset your instance of Cryptpad and remove all the data that is being stored:
 
+**WARNING: This will reset your Cryptpad instance and remove all data**
 ```
 # change into your cryptpad directory
 cd /your/cryptpad/instance/location;
