@@ -1,6 +1,7 @@
 define([
+    '/customize/application_config.js',
     '/bower_components/scrypt-async/scrypt-async.min.js',
-], function () {
+], function (AppConfig) {
     var Cred = {};
     var Scrypt = window.scrypt;
 
@@ -20,9 +21,14 @@ define([
         return isString(a) && isString(b) && a === b;
     };
 
+    Cred.customSalt = function () {
+        return typeof(AppConfig.loginSalt) === 'string'?
+            AppConfig.loginSalt: '';
+    };
+
     Cred.deriveFromPassphrase = function (username, password, len, cb) {
         Scrypt(password,
-            username,
+            username + Cred.customSalt(), // salt
             8, // memoryCost (n)
             1024, // block size parameter (r)
             len || 128, // dkLen

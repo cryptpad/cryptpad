@@ -40,5 +40,17 @@ define(function() {
     //config.enablePinLimit = true;
     //config.pinLimit = 1000;
 
+    /*  user passwords are hashed with scrypt, and salted with their username.
+        this value will be appended to the username, causing the resulting hash
+        to differ from other CryptPad instances if customized. This makes it
+        such that anyone who wants to bruteforce common credentials must do so
+        again on each CryptPad instance that they wish to attack.
+
+        WARNING: this should only be set when your CryptPad instance is first
+        created. Changing it at a later time will break logins for all existing
+        users.
+    */
+    config.loginSalt = '';
+
     return config;
 });
