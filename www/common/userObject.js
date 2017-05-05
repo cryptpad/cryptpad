@@ -883,6 +883,11 @@ define([
                         toClean.push(el);
                         return;
                     }
+                    if (!el.href) {
+                        debug("Rmoving an element in filesData with a missing href.", el);
+                        toClean.push(el);
+                        return;
+                    }
                     if (rootFiles.indexOf(el.href) === -1) {
                         debug("An element in filesData was not in ROOT, TEMPLATE or TRASH.", el);
                         var name = el.title || NEW_FILE_NAME;

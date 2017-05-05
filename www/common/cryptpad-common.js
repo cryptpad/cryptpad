@@ -299,10 +299,14 @@ define([
         pads.forEach(function (pad, i) {
             if (pad && typeof(pad) === 'object') {
                 var hash = checkObjectData(pad);
-                if (!hash || !common.parseHash(hash)) { return; }
+                if (!hash || !common.parseHash(hash)) {
+                    console.error("[Cryptpad.checkRecentPads] pad had unexpected value", pad);
+                    getStore().removeData(i);
+                    return;
+                }
                 return pad;
             }
-            console.error("[Cryptpad.migrateRecentPads] pad had unexpected value");
+            console.error("[Cryptpad.checkRecentPads] pad had unexpected value", pad);
             getStore().removeData(i);
         });
     };
@@ -571,7 +575,7 @@ define([
                 return pad;
             });
 
-            if (!contains) {
+            if (!contains && href) {
                 var data = makePad(href, name);
                 getStore().pushData(data, function (e) {
                     if (e) {
