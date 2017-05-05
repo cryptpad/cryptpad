@@ -90,6 +90,7 @@ var isTooOld = function (time, now) {
 var expireSessions = function (Sessions) {
     var now = +new Date();
     Object.keys(Sessions).forEach(function (key) {
+        var session = Sessions[key];
         if (isTooOld(Sessions[key].atime, now)) {
             if (session.blobstage) {
                 session.blobstage.close();
