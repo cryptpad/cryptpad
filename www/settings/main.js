@@ -273,8 +273,9 @@ define([
                 $spinner.show();
                 $ok.hide();
 
-                var token = proxy.loginToken = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
+                var token = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
                 localStorage.setItem('loginToken', token);
+                proxy.loginToken = token;
 
                 Cryptpad.whenRealtimeSyncs(realtime, function () {
                     $spinner.hide();
