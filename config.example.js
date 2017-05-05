@@ -180,6 +180,17 @@ module.exports = {
      */
     suppressRPCErrors: false,
 
+    /*  TODO
+     *
+     */
+    enableUploads: true,
+
+    /*  TODO
+     *
+     */
+    restrictUploads: true,
+
+
     /* it is recommended that you serve cryptpad over https
      * the filepaths below are used to configure your certificates
      */
