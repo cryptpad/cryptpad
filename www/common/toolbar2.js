@@ -121,16 +121,15 @@ define([
         // Display only one time each user (if he is connected in multiple tabs)
         var myUid = userData[userNetfluxId] ? userData[userNetfluxId].uid : undefined;
         var uids = [];
-
         userList.forEach(function(user) {
-            if(user !== userNetfluxId) {
+            if (user !== userNetfluxId) {
                 var data = userData[user] || {};
                 var userName = data.name;
                 var userId = data.uid;
                 if (userName && uids.indexOf(userId) === -1 && (!myUid || userId !== myUid)) {
                     uids.push(userId);
                     list.push(userName);
-                } else { i++; }
+                } else if (userName) { i++; }
             }
         });
         return {
@@ -674,7 +673,7 @@ define([
         }
         Cryptpad.createUserAdminMenu(userMenuCfg);
 
-        var $userButton = $userAdmin.find('a.' + USERBUTTON_CLS);
+        var $userButton = toolbar.$userNameButton = $userAdmin.find('a.' + USERBUTTON_CLS);
         $userButton.click(function (e) {
             e.preventDefault();
             e.stopPropagation();
