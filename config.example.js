@@ -180,16 +180,30 @@ module.exports = {
      */
     suppressRPCErrors: false,
 
-    /*  TODO
+
+    /* WARNING: EXPERIMENTAL
      *
+     *  CryptPad features experimental support for encrypted file upload.
+     *  Our encryption format is still liable to change. As such, we do not
+     *  guarantee that files uploaded now will be supported in the future
+     */
+
+    /*  Setting this value to anything other than true will cause file upload
+     *  attempts to be rejected outright.
      */
     enableUploads: true,
 
-    /*  TODO
+    /*  If you have enabled file upload, you have the option of restricting it
+     *  to a list of users identified by their public keys. If this value is set
+     *  to true, your server will query a file (cryptpad/privileged.conf) when
+     *  users connect via RPC. Only users whose public keys can be found within
+     *  the file will be allowed to upload.
      *
+     *  privileged.conf uses '#' for line comments, and splits keys by newline.
+     *  This is a temporary measure until a better quota system is in place.
+     *  registered users' public keys can be found on the settings page.
      */
     restrictUploads: true,
-
 
     /* it is recommended that you serve cryptpad over https
      * the filepaths below are used to configure your certificates
