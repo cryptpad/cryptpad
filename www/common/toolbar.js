@@ -558,7 +558,8 @@ define([
             $userButton.click(function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                Cryptpad.getLastName(function (lastName) {
+                Cryptpad.getLastName(function (err, lastName) {
+                    if (err) { return void console.error("Cannot get last name", err); }
                     Cryptpad.prompt(Messages.changeNamePrompt, lastName || '', function (newName) {
                         if (newName === null && typeof(lastName) === "string") { return; }
                         if (newName === null) { newName = ''; }

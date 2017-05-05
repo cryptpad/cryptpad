@@ -7,11 +7,12 @@ define([
     '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/common-history.js',
+    '/common/common-userlist.js',
 
     '/common/clipboard.js',
     '/common/pinpad.js',
     '/customize/application_config.js'
-], function ($, Config, Messages, Store, Util, Hash, UI, History, Clipboard, Pinpad, AppConfig) {
+], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Clipboard, Pinpad, AppConfig) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -83,6 +84,9 @@ define([
     common.findWeaker = Hash.findWeaker;
     common.findStronger = Hash.findStronger;
     common.serializeHash = Hash.serializeHash;
+
+    // Userlist
+    common.createUserList = UserList.create;
 
     // History
     common.getHistory = function (config) { return History.create(common, config); };
@@ -300,10 +304,14 @@ define([
         pads.forEach(function (pad, i) {
             if (pad && typeof(pad) === 'object') {
                 var hash = checkObjectData(pad);
-                if (!hash || !common.parseHash(hash)) { return; }
+                if (!hash || !common.parseHash(hash)) {
+                    console.error("[Cryptpad.checkRecentPads] pad had unexpected value", pad);
+                    getStore().removeData(i);
+                    return;
+                }
                 return pad;
             }
-            console.error("[Cryptpad.migrateRecentPads] pad had unexpected value");
+            console.error("[Cryptpad.checkRecentPads] pad had unexpected value", pad);
             getStore().removeData(i);
         });
     };
@@ -572,7 +580,7 @@ define([
                 return pad;
             });
 
-            if (!contains) {
+            if (!contains && href) {
                 var data = makePad(href, name);
                 getStore().pushData(data, function (e) {
                     if (e) {

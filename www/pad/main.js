@@ -3,7 +3,7 @@ define([
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/hyperjson/hyperjson.js',
-    '/common/toolbar.js',
+    '/common/toolbar2.js',
     '/common/cursor.js',
     '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/TypingTests.js',
@@ -277,51 +277,7 @@ define([
             };
 
             var initializing = true;
-            var userData = module.userData = {}; // List of pretty names for all users (mapped with their ID)
-            var userList; // List of users still connected to the channel (server IDs)
-            var addToUserData = function(data) {
-                var users = module.users;
-                for (var attrname in data) { userData[attrname] = data[attrname]; }
-
-                if (users && users.length) {
-                    for (var userKey in userData) {
-                        if (users.indexOf(userKey) === -1) { delete userData[userKey]; }
-                    }
-                }
-
-                if(userList && typeof userList.onChange === "function") {
-                    userList.onChange(userData);
-                }
-            };
-
-            var myData = {};
-            var myUserName = ''; // My "pretty name"
-            var myID; // My server ID
-
-            var setMyID = function(info) {
-                myID = info.myID || null;
-            };
-
-            var setName = module.setName = function (newName) {
-                if (typeof(newName) !== 'string') { return; }
-                var myUserNameTemp = newName.trim();
-                if(myUserNameTemp.length > 32) {
-                    myUserNameTemp = myUserNameTemp.substr(0, 32);
-                }
-                myUserName = myUserNameTemp;
-                myData[myID] = {
-                    name: myUserName,
-                    uid: Cryptpad.getUid(),
-                };
-                addToUserData(myData);
-                Cryptpad.setAttribute('username', newName, function (err) {
-                    if (err) {
-                        console.error("Couldn't set username");
-                        return;
-                    }
-                    editor.fire('change');
-                });
-            };
+            var UserList;
 
             var getHeadingText = function () {
                 var text;
@@ -359,7 +315,7 @@ define([
                 var hjson = Hyperjson.fromDOM(dom, isNotMagicLine, brFilter);
                 hjson[3] = {
                     metadata: {
-                        users: userData,
+                        users: UserList.userData,
                         defaultTitle: defaultName
                     }
                 };
@@ -384,9 +340,6 @@ define([
                 // our public key
                 validateKey: secret.keys.validateKey || undefined,
                 readOnly: readOnly,
-
-                // method which allows us to get the id of the user
-                setMyID: setMyID,
 
                 // Pass in encrypt and decrypt methods
                 crypto: Crypto.createEncryptor(secret.keys),
@@ -449,7 +402,7 @@ define([
                     if (peerMetadata.metadata.users) {
                         var userData = peerMetadata.metadata.users;
                         // Update the local user data
-                        addToUserData(userData);
+                        UserList.addToUserData(userData);
                     }
                     if (peerMetadata.metadata.defaultTitle) {
                         updateDefaultTitle(peerMetadata.metadata.defaultTitle);
@@ -570,13 +523,11 @@ define([
             };
 
             realtimeOptions.onInit = function (info) {
-                userList = info.userList;
+                UserList = Cryptpad.createUserList(info, realtimeOptions.onLocal, Cryptget, Cryptpad);
 
                 var configTb = {
-                    displayed: ['useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit'],
-                    userData: userData,
-                    readOnly: readOnly,
-                    ifrw: ifrw,
+                    displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit'],
+                    userList: UserList.getToolbarConfig(),
                     share: {
                         secret: secret,
                         channel: info.channel
@@ -586,13 +537,16 @@ define([
                         defaultName: defaultName,
                         suggestName: suggestName
                     },
-                    common: Cryptpad
+                    common: Cryptpad,
+                    readOnly: readOnly,
+                    ifrw: ifrw,
+                    realtime: info.realtime,
+                    network: info.network,
+                    $container: $bar
                 };
-                toolbar = info.realtime.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, userList, configTb);
+                toolbar = info.realtime.toolbar = Toolbar.create(configTb);
 
-                var $rightside = $bar.find('.' + Toolbar.constants.rightside);
-                $bar.find('.' + Toolbar.constants.username);
-                module.$userNameButton = $($bar.find('.' + Toolbar.constants.changeUsername));
+                var $rightside = toolbar.$rightside;
 
                 var editHash;
 
@@ -667,10 +621,6 @@ define([
                     /* add an import button */
                     var $import = Cryptpad.createButton('import', true, {}, importFile);
                     $rightside.append($import);
-
-                    /* add a rename button */
-                    //var $setTitle = Cryptpad.createButton('rename', true, {suggestName: suggestName}, renameCb);
-                    //$rightside.append($setTitle);
                 }
 
                 /* add a forget button */
@@ -683,8 +633,6 @@ define([
 
                 // set the hash
                 if (!readOnly) { Cryptpad.replaceHash(editHash); }
-
-                Cryptpad.onDisplayNameChanged(setName);
             };
 
             // this should only ever get called once, when the chain syncs
@@ -707,7 +655,6 @@ define([
                     });
                 }
 
-                module.users = info.userList.users;
                 module.realtime = info.realtime;
 
                 var shjson = module.realtime.getUserDoc();
@@ -743,35 +690,18 @@ define([
                     documentBody.innerHTML = Messages.initialState;
                 }
 
-                Cryptpad.getLastName(function (err, lastName) {
-                    console.log("Unlocking editor");
-                    setEditable(!readOnly);
-                    initializing = false;
-                    Cryptpad.removeLoadingScreen(emitResize);
+                Cryptpad.removeLoadingScreen(emitResize);
+                setEditable(!readOnly);
+                initializing = false;
 
-                    // Update the toolbar list:
-                    // Add the current user in the metadata if he has edit rights
-                    if (readOnly) { return; }
-                    if (typeof(lastName) === 'string') {
-                        setName(lastName);
-                    } else {
-                        myData[myID] = {
-                            name: "",
-                            uid: Cryptpad.getUid()
-                        };
-                        addToUserData(myData);
-                        realtimeOptions.onLocal();
-                        module.$userNameButton.click();
-                    }
-
-                    editor.focus();
-                    if (newPad) {
-                        Cryptpad.selectTemplate('pad', info.realtime, Cryptget);
-                        cursor.setToEnd();
-                    } else {
-                        cursor.setToStart();
-                    }
-                });
+                if (readOnly) { return; }
+                UserList.getLastName(toolbar.$userNameButton, newPad);
+                editor.focus();
+                if (newPad) {
+                    cursor.setToEnd();
+                } else {
+                    cursor.setToStart();
+                }
             };
 
             realtimeOptions.onAbort = function () {

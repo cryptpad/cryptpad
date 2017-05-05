@@ -102,7 +102,7 @@ define([
     var checkSynchronizing = function (toolbar, config) {
         if (!toolbar.state) { return; }
         var userList = config.userList.list.users;
-        var userNetfluxId = config.userList.userNetfluxId; // TODO
+        var userNetfluxId = config.userList.userNetfluxId;
         var meIdx = userList.indexOf(userNetfluxId);
         if (meIdx === -1) {
             toolbar.state.text(Messages.synchronizing);
@@ -113,7 +113,7 @@ define([
     var getOtherUsers = function(config) {
         var userList = config.userList.list.users;
         var userData = config.userList.data;
-        var userNetfluxId = config.userList.userNetfluxId; // TODO
+        var userNetfluxId = config.userList.userNetfluxId;
 
         var i = 0; // duplicates counter
         var list = [];
@@ -121,16 +121,15 @@ define([
         // Display only one time each user (if he is connected in multiple tabs)
         var myUid = userData[userNetfluxId] ? userData[userNetfluxId].uid : undefined;
         var uids = [];
-
         userList.forEach(function(user) {
-            if(user !== userNetfluxId) {
+            if (user !== userNetfluxId) {
                 var data = userData[user] || {};
                 var userName = data.name;
                 var userId = data.uid;
                 if (userName && uids.indexOf(userId) === -1 && (!myUid || userId !== myUid)) {
                     uids.push(userId);
                     list.push(userName);
-                } else { i++; }
+                } else if (userName) { i++; }
             }
         });
         return {
@@ -260,8 +259,6 @@ define([
         var $block = Cryptpad.createDropdown(dropdownConfig);
         $block.attr('id', 'userButtons');
         toolbar.$leftside.prepend($block);
-
-        initUserList(toolbar, config);
 
         return $block;
     };
@@ -597,7 +594,7 @@ define([
             'class': 'synced fa fa-check',
             title: Messages.synced
         }).appendTo($spin);
-        toolbar.$userAdmin.prepend($spin); // TODO: put at the corretc position in userAdmin
+        toolbar.$userAdmin.prepend($spin);
         if (config.realtime) {
             config.realtime.onPatch(ks(toolbar, config));
             config.realtime.onMessage(ks(toolbar, config, true));
@@ -674,11 +671,12 @@ define([
         }
         Cryptpad.createUserAdminMenu(userMenuCfg);
 
-        var $userButton = $userAdmin.find('a.' + USERBUTTON_CLS);
+        var $userButton = toolbar.$userNameButton = $userAdmin.find('a.' + USERBUTTON_CLS);
         $userButton.click(function (e) {
             e.preventDefault();
             e.stopPropagation();
-            Cryptpad.getLastName(function (lastName) {
+            Cryptpad.getLastName(function (err, lastName) {
+                if (err) { return void console.error("Cannot get last name", err); }
                 Cryptpad.prompt(Messages.changeNamePrompt, lastName || '', function (newName) {
                     if (newName === null && typeof(lastName) === "string") { return; }
                     if (newName === null) { newName = ''; }
@@ -845,7 +843,7 @@ define([
         tb['userlist'] = createUserList;
         tb['share'] = createShare;
         tb['fileshare'] = createFileShare;
-        tb['title'] = createTitle; // TODO: New one, add it to the displayed in main.js ?
+        tb['title'] = createTitle;
         tb['lag'] = createLag;
         tb['spinner'] = createSpinner;
         tb['state'] = createState;
@@ -867,6 +865,7 @@ define([
         };
 
         addElement(config.displayed, {}, true);
+        initUserList(toolbar, config);
 
         toolbar['linkToMain'] = createLinkToMain(toolbar, config);
 

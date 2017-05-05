@@ -7,7 +7,7 @@ define([
     '/common/cryptget.js',
     '/bower_components/hyperjson/hyperjson.js',
     'render.js',
-    '/common/toolbar.js',
+    '/common/toolbar2.js',
     '/common/visible.js',
     '/common/notify.js',
     '/bower_components/file-saver/FileSaver.min.js'
@@ -442,47 +442,7 @@ define([
         });
     };
 
-    var userData = APP.userData = {}; // List of pretty names for all users (mapped with their ID)
-    var userList; // List of users still connected to the channel (server IDs)
-    var addToUserData = function(data) {
-        var users = userList ? userList.users : undefined;
-        //var userData = APP.proxy.info.userData;
-        for (var attrname in data) { userData[attrname] = data[attrname]; }
-
-        if (users && users.length) {
-            for (var userKey in userData) {
-                if (users.indexOf(userKey) === -1) { delete userData[userKey]; }
-            }
-        }
-
-        if(userList && typeof userList.onChange === "function") {
-            userList.onChange(userData);
-        }
-
-        APP.proxy.info.userData = userData;
-    };
-
-    var setName = APP.setName = function (newName) {
-        if (typeof(newName) !== 'string') { return; }
-        var myUserNameTemp = newName.trim();
-        if(myUserNameTemp.length > 32) {
-            myUserNameTemp = myUserNameTemp.substr(0, 32);
-        }
-        var myUserName = myUserNameTemp;
-        var myID = APP.myID;
-        var myData = {};
-        myData[myID] = {
-            name: myUserName,
-            uid: Cryptpad.getUid(),
-        };
-        addToUserData(myData);
-        Cryptpad.setAttribute('username', newName, function (err) {
-            if (err) {
-                console.error("Couldn't set username");
-                return;
-            }
-        });
-    };
+    var UserList;
 
     var updateTitle = function (newTitle) {
         if (newTitle === document.title) { return; }
@@ -526,248 +486,229 @@ define([
     // special UI elements
     var $description = $('#description').attr('placeholder', Messages.poll_descriptionHint || 'description');
 
-    var ready = function (info, userid, readOnly) {
-        debug("READY");
-        debug('userid: %s', userid);
+var ready = function (info, userid, readOnly) {
+    debug("READY");
+    debug('userid: %s', userid);
 
-        var proxy = APP.proxy;
+    var proxy = APP.proxy;
 
-        var isNew = false;
-        var userDoc = JSON.stringify(proxy);
-        if (userDoc === "" || userDoc === "{}") { isNew = true; }
+    var isNew = false;
+    var userDoc = JSON.stringify(proxy);
+    if (userDoc === "" || userDoc === "{}") { isNew = true; }
 
-        var uncommitted = APP.uncommitted = {};
-        prepareProxy(proxy, copyObject(Render.Example));
-        prepareProxy(uncommitted, copyObject(Render.Example));
-        if (!readOnly && proxy.table.colsOrder.indexOf(userid) === -1 &&
-            uncommitted.table.colsOrder.indexOf(userid) === -1) {
-            uncommitted.table.colsOrder.unshift(userid);
-        }
+    var uncommitted = APP.uncommitted = {};
+    prepareProxy(proxy, copyObject(Render.Example));
+    prepareProxy(uncommitted, copyObject(Render.Example));
+    if (!readOnly && proxy.table.colsOrder.indexOf(userid) === -1 &&
+        uncommitted.table.colsOrder.indexOf(userid) === -1) {
+        uncommitted.table.colsOrder.unshift(userid);
+    }
 
-        var displayedObj = mergeUncommitted(proxy, uncommitted, false);
+    var displayedObj = mergeUncommitted(proxy, uncommitted, false);
 
-        var colsOrder = sortColumns(displayedObj.table.colsOrder, userid);
+    var colsOrder = sortColumns(displayedObj.table.colsOrder, userid);
 
-        var $table = APP.$table = $(Render.asHTML(displayedObj, null, colsOrder, readOnly));
-        APP.$createRow = $('#create-option').click(function () {
-            //console.error("BUTTON CLICKED! LOL");
-            Render.createRow(proxy, function (empty, id) {
-                change(null, null, null, null, function() {
-                    $('.edit[data-rt-id="' + id + '"]').click();
-                });
+    var $table = APP.$table = $(Render.asHTML(displayedObj, null, colsOrder, readOnly));
+    APP.$createRow = $('#create-option').click(function () {
+        //console.error("BUTTON CLICKED! LOL");
+        Render.createRow(proxy, function (empty, id) {
+            change(null, null, null, null, function() {
+                $('.edit[data-rt-id="' + id + '"]').click();
             });
         });
+    });
 
-        APP.$createCol = $('#create-user').click(function () {
-            Render.createColumn(proxy, function (empty, id) {
-                change(null, null, null, null, function() {
-                    $('.edit[data-rt-id="' + id + '"]').click();
-                });
+    APP.$createCol = $('#create-user').click(function () {
+        Render.createColumn(proxy, function (empty, id) {
+            change(null, null, null, null, function() {
+                $('.edit[data-rt-id="' + id + '"]').click();
             });
         });
+    });
 
-        // Commit button
-        APP.$commit = $('#commit').click(function () {
-            var uncommittedCopy = JSON.parse(JSON.stringify(APP.uncommitted));
-            APP.uncommitted = {};
-            prepareProxy(APP.uncommitted, copyObject(Render.Example));
-            mergeUncommitted(proxy, uncommittedCopy, true);
-            APP.$commit.hide();
-            change();
+    // Commit button
+    APP.$commit = $('#commit').click(function () {
+        var uncommittedCopy = JSON.parse(JSON.stringify(APP.uncommitted));
+        APP.uncommitted = {};
+        prepareProxy(APP.uncommitted, copyObject(Render.Example));
+        mergeUncommitted(proxy, uncommittedCopy, true);
+        APP.$commit.hide();
+        change();
+    });
+
+    // #publish button is removed in readonly
+    APP.$publish = $('#publish')
+        .click(function () {
+            publish(true);
         });
 
-        // #publish button is removed in readonly
-        APP.$publish = $('#publish')
-            .click(function () {
-                publish(true);
-            });
-
-        // #publish button is removed in readonly
-        APP.$admin = $('#admin')
-            .click(function () {
-                publish(false);
-            });
-
-        // Title
-        if (APP.proxy.info.defaultTitle) {
-            updateDefaultTitle(APP.proxy.info.defaultTitle);
-        } else {
-            APP.proxy.info.defaultTitle = defaultName;
-        }
-        if (Cryptpad.initialName && !APP.proxy.info.title) {
-            APP.proxy.info.title = Cryptpad.initialName;
-            updateTitle(Cryptpad.initialName);
-        } else {
-            updateTitle(APP.proxy.info.title || defaultName);
-        }
-
-        // Description
-        var resize = function () {
-            var lineCount = $description.val().split('\n').length;
-            $description.css('height', lineCount + 'rem');
-        };
-        $description.on('change keyup', function () {
-            var val = $description.val();
-            proxy.info.description = val;
-            resize();
+    // #publish button is removed in readonly
+    APP.$admin = $('#admin')
+        .click(function () {
+            publish(false);
         });
+
+    // Title
+    if (APP.proxy.info.defaultTitle) {
+        updateDefaultTitle(APP.proxy.info.defaultTitle);
+    } else {
+        APP.proxy.info.defaultTitle = defaultName;
+    }
+    if (Cryptpad.initialName && !APP.proxy.info.title) {
+        APP.proxy.info.title = Cryptpad.initialName;
+        updateTitle(Cryptpad.initialName);
+    } else {
+        updateTitle(APP.proxy.info.title || defaultName);
+    }
+
+    // Description
+    var resize = function () {
+        var lineCount = $description.val().split('\n').length;
+        $description.css('height', lineCount + 'rem');
+    };
+    $description.on('change keyup', function () {
+        var val = $description.val();
+        proxy.info.description = val;
         resize();
-        if (typeof(proxy.info.description) !== 'undefined') {
-            $description.val(proxy.info.description);
-        }
+    });
+    resize();
+    if (typeof(proxy.info.description) !== 'undefined') {
+        $description.val(proxy.info.description);
+    }
 
-        $('#tableScroll').html('').prepend($table);
-        updateDisplayedTable();
+    $('#tableScroll').html('').prepend($table);
+    updateDisplayedTable();
 
-        $table
-            .click(handleClick)
-            .on('keyup', function (e) { handleClick(e, true); });
+    $table
+        .click(handleClick)
+        .on('keyup', function (e) { handleClick(e, true); });
 
-        proxy
-            .on('change', ['info'], function (o, n, p) {
-                if (p[1] === 'title') {
-                    updateTitle(n);
-                    notify();
-                } else if (p[1] === "userData") {
-                    addToUserData(APP.proxy.info.userData);
-                } else if (p[1] === 'description') {
-                    var op = TextPatcher.diff(o, n);
-                    var el = $description[0];
+    proxy
+        .on('change', ['info'], function (o, n, p) {
+            if (p[1] === 'title') {
+                updateTitle(n);
+                notify();
+            } else if (p[1] === "userData") {
+                UserList.addToUserData(APP.proxy.info.userData);
+            } else if (p[1] === 'description') {
+                var op = TextPatcher.diff(o, n);
+                var el = $description[0];
 
-                    var selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
-                        return TextPatcher.transformCursor(el[attr], op);
-                    });
-                    $description.val(n);
-                    if (op) {
-                        el.selectionStart = selects[0];
-                        el.selectionEnd = selects[1];
-                    }
-                    notify();
+                var selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
+                    return TextPatcher.transformCursor(el[attr], op);
+                });
+                $description.val(n);
+                if (op) {
+                    el.selectionStart = selects[0];
+                    el.selectionEnd = selects[1];
                 }
-
-                debug("change: (%s, %s, [%s])", o, n, p.join(', '));
-            })
-            .on('change', ['table'], change)
-            .on('remove', [], change);
-
-        addToUserData(APP.proxy.info.userData);
-
-        if (Visible.isSupported()) {
-            Visible.onChange(function (yes) {
-                if (yes) { unnotify(); }
-            });
-        }
-
-
-        Cryptpad.getLastName(function (err, lastName) {
-            APP.ready = true;
-
-            if (!proxy.published) {
-                publish(false);
-            } else {
-                publish(true);
+                notify();
             }
-            Cryptpad.removeLoadingScreen();
 
-            // Update the toolbar list:
-            // Add the current user in the metadata if he has edit rights
-            if (readOnly) { return; }
-            if (typeof(lastName) === 'string') {
-                setName(lastName);
-            } else {
-                var myData = {};
-                myData[info.myId] = {
-                    name: "",
-                    uid: Cryptpad.getUid(),
-                };
-                addToUserData(myData);
-                APP.$userNameButton.click();
-            }
-            if (isNew) {
-                Cryptpad.selectTemplate('poll', info.realtime, Cryptget);
-            }
+            debug("change: (%s, %s, [%s])", o, n, p.join(', '));
+        })
+        .on('change', ['table'], change)
+        .on('remove', [], change);
+
+    UserList.addToUserData(APP.proxy.info.userData);
+
+    if (Visible.isSupported()) {
+        Visible.onChange(function (yes) {
+            if (yes) { unnotify(); }
         });
+    }
+
+
+    APP.ready = true;
+    if (!proxy.published) {
+        publish(false);
+    } else {
+        publish(true);
+    }
+    Cryptpad.removeLoadingScreen();
+
+    if (readOnly) { return; }
+    UserList.getLastName(APP.toolbar.$userNameButton, isNew);
+};
+
+var disconnect = function () {
+    //setEditable(false); // TODO
+    APP.toolbar.failed();
+    Cryptpad.alert(Messages.common_connectionLost, undefined, true);
+};
+
+var reconnect = function (info) {
+    //setEditable(true); // TODO
+    APP.toolbar.reconnecting(info.myId);
+    Cryptpad.findOKButton().click();
+};
+
+var create = function (info) {
+    APP.myID = info.myID;
+
+    var editHash;
+    if (!readOnly) {
+        editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+    }
+
+    if (APP.realtime !== info.realtime) {
+        APP.realtime = info.realtime;
+        APP.patchText = TextPatcher.create({
+            realtime: info.realtime,
+            logging: true,
+        });
+    }
+
+    var onLocal = function () {
+        APP.proxy.info.userData = UserList.userData;
     };
+    UserList = Cryptpad.createUserList(info, onLocal, Cryptget, Cryptpad);
 
-    var disconnect = function () {
-        //setEditable(false); // TODO
-        APP.realtime.toolbar.failed();
-        Cryptpad.alert(Messages.common_connectionLost, undefined, true);
+    var configTb = {
+        displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit'],
+        userList: UserList.getToolbarConfig(),
+        share: {
+            secret: secret,
+            channel: info.channel
+        },
+        title: {
+            onRename: renameCb,
+            defaultName: defaultName,
+            suggestName: suggestName
+        },
+        common: Cryptpad,
+        readOnly: readOnly,
+        ifrw: window,
+        realtime: info.realtime,
+        network: info.network,
+        $container: APP.$bar
     };
+    APP.toolbar = Toolbar.create(configTb);
 
-    var reconnect = function (info) {
-        //setEditable(true); // TODO
-        APP.realtime.toolbar.reconnecting(info.myId);
-        Cryptpad.findOKButton().click();
+    var $rightside = APP.toolbar.$rightside;
+
+    /* add a forget button */
+    var forgetCb = function (err) {
+        if (err) { return; }
+        disconnect();
     };
+    var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
+    $rightside.append($forgetPad);
 
-    var create = function (info) {
-        APP.myID = info.myID;
+    // set the hash
+    if (!readOnly) { Cryptpad.replaceHash(editHash); }
 
-        var editHash;
-        if (!readOnly) {
-            editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
-        }
-
-        if (APP.realtime !== info.realtime) {
-            APP.realtime = info.realtime;
-            APP.patchText = TextPatcher.create({
-                realtime: info.realtime,
-                logging: true,
-            });
-        }
-
-        userList = APP.userList = info.userList;
-
-        var config = {
-            displayed: ['useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit'],
-            userData: userData,
-            readOnly: readOnly,
-            share: {
-                secret: secret,
-                channel: info.channel
-            },
-            title: {
-                onRename: renameCb,
-                defaultName: defaultName,
-                suggestName: suggestName
-            },
-            ifrw: window,
-            common: Cryptpad,
+    /* save as template */
+    if (!Cryptpad.isTemplate(window.location.href)) {
+        var templateObj = {
+            rt: info.realtime,
+            Crypt: Cryptget,
+            getTitle: function () { return document.title; }
         };
-        info.realtime.toolbar = Toolbar.create(APP.$bar, info.myID, info.realtime, info.getLag, userList, config);
-
-        var $bar = APP.$bar;
-        var $rightside = $bar.find('.' + Toolbar.constants.rightside);
-        $bar.find('.' + Toolbar.constants.username);
-        $bar.find('.' + Toolbar.constants.editShare);
-        $bar.find('.' + Toolbar.constants.viewShare);
-        APP.$userNameButton = $($bar.find('.' + Toolbar.constants.changeUsername));
-
-        /* add a forget button */
-        var forgetCb = function (err) {
-            if (err) { return; }
-            disconnect();
-        };
-        var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
-        $rightside.append($forgetPad);
-
-        // set the hash
-        if (!readOnly) { Cryptpad.replaceHash(editHash); }
-
-        /* save as template */
-        if (!Cryptpad.isTemplate(window.location.href)) {
-            var templateObj = {
-                rt: info.realtime,
-                Crypt: Cryptget,
-                getTitle: function () { return document.title; }
-            };
-            var $templateButton = Cryptpad.createButton('template', true, templateObj);
-            $rightside.append($templateButton);
-        }
-
-        Cryptpad.onDisplayNameChanged(setName);
-    };
+        var $templateButton = Cryptpad.createButton('template', true, templateObj);
+        $rightside.append($templateButton);
+    }
+};
 
     // don't initialize until the store is ready.
     Cryptpad.ready(function () {
