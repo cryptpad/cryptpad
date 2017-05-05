@@ -41,6 +41,7 @@ define([
         var ret = {};
 
         if (!href) { return ret; }
+        if (href.slice(-1) !== '/') { href += '/'; }
 
         if (!/^https*:\/\//.test(href)) {
             var idx = href.indexOf('/#');

@@ -6,7 +6,7 @@ define([
     'json.sortify',
     '/common/cryptpad-common.js',
     '/common/userObject.js',
-    '/common/toolbar.js',
+    '/common/toolbar2.js',
     '/customize/application_config.js',
     '/common/cryptget.js',
     '/common/mergeDrive.js'
@@ -2583,21 +2583,26 @@ define([
             var userList = APP.userList = info.userList;
             var config = {
                 displayed: ['useradmin', 'spinner', 'lag', 'state', 'limit'],
+                userList: {
+                    list: userList,
+                    userNetfluxId: info.myID
+                },
+                common: Cryptpad,
                 readOnly: readOnly,
                 ifrw: window,
-                common: Cryptpad,
-                hideShare: true
+                realtime: info.realtime,
+                network: info.network,
+                $container: APP.$bar
             };
-            APP.toolbar = info.realtime.toolbar = Toolbar.create(APP.$bar, info.myID, info.realtime, info.getLag, userList, config);
+            var toolbar = APP.toolbar = Toolbar.create(config);
 
-            var $bar = APP.$bar;
-            var $rightside = $bar.find('.' + Toolbar.constants.rightside);
-            var $leftside = $bar.find('.' + Toolbar.constants.leftside);
-            var $userBlock = $bar.find('.' + Toolbar.constants.userAdmin);
-            APP.$displayName = $bar.find('.' + Toolbar.constants.username);
+            var $rightside = toolbar.$rightside;
+            var $leftside = toolbar.$leftside;
+            var $userBlock = toolbar.$userAdmin;
+            APP.$displayName = APP.$bar.find('.' + Toolbar.constants.username);
 
             if (APP.homePageIframe) {
-                var $linkToMain = $bar.find('.cryptpad-link a');
+                var $linkToMain = toolbar.linkToMain;
                 $linkToMain.attr('href', '#');
                 $linkToMain.attr('title', '');
                 $linkToMain.css('cursor', 'default');
@@ -2669,7 +2674,7 @@ define([
                 // Called when the history is loaded and the UI displayed
                 setHistory(true);
             };
-            histConfig.$toolbar = $bar;
+            histConfig.$toolbar = APP.$bar;
             histConfig.href = window.location.origin + window.location.pathname + APP.hash;
             var $hist = Cryptpad.createButton('history', true, {histConfig: histConfig});
             $rightside.append($hist);

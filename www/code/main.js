@@ -329,7 +329,7 @@ define([
             };
 
              config.onInit = function (info) {
-                UserList = Cryptpad.createUserList(info, config.onLocal, Cryptpad);
+                UserList = Cryptpad.createUserList(info, config.onLocal, Cryptget, Cryptpad);
 
                 var configTb = {
                     displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit'],
@@ -500,7 +500,6 @@ define([
 
                 // set the hash
                 if (!readOnly) { Cryptpad.replaceHash(editHash); }
-
             };
 
             var unnotify = module.unnotify = function () {
@@ -574,7 +573,6 @@ define([
                 Cryptpad.removeLoadingScreen();
                 setEditable(true);
                 initializing = false;
-                //Cryptpad.log("Your document is ready");
 
                 onLocal(); // push local state to avoid parse errors later.
 

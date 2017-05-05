@@ -1,10 +1,9 @@
 define([
     'jquery',
-    '/common/cryptget.js',
-], function ($, Cryptget) {
+], function ($) {
     var module = {};
 
-    module.create = function (info, onLocal, Cryptpad) {
+    module.create = function (info, onLocal, Cryptget, Cryptpad) {
         var exp = {};
 
         var userData = exp.userData = {};
@@ -12,6 +11,9 @@ define([
         var myData = exp.myData = {};
         var myUserName = exp.myUserName = info.myID;
         var myNetfluxId = exp.myNetfluxId = info.myID;
+
+        var parsed = Cryptpad.parsePadUrl(window.location.href);
+        var appType = parsed ? parsed.type : undefined;
 
         var users = userList.users;
         var addToUserData = exp.addToUserData = function(data) {
@@ -41,7 +43,7 @@ define([
         var setName = exp.setName = function (newName, cb) {
             if (typeof(newName) !== 'string') { return; }
             var myUserNameTemp = newName.trim();
-            if(newName.trim().length > 32) {
+            if(myUserNameTemp.length > 32) {
               myUserNameTemp = myUserNameTemp.substr(0, 32);
             }
             myUserName = myUserNameTemp;
@@ -56,7 +58,7 @@ define([
                     console.error(err);
                     return;
                 }
-                if (typeof cb === "function") { onLocal(); }
+                if (typeof cb === "function") { cb(); }
             });
         };
 
@@ -80,8 +82,8 @@ define([
                     onLocal();
                     $changeNameButton.click();
                 }
-                if (isNew) {
-                    Cryptpad.selectTemplate('code', info.realtime, Cryptget);
+                if (isNew && appType) {
+                    Cryptpad.selectTemplate(appType, info.realtime, Cryptget);
                 }
             });
         };

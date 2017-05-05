@@ -3,7 +3,7 @@ define([
     '/api/config',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-crypto/crypto.js',
-    '/common/toolbar.js',
+    '/common/toolbar2.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
     '/bower_components/chainpad-json-validator/json-ot.js',
@@ -214,33 +214,7 @@ window.canvas = canvas;
         var $bar = $('#toolbar');
         var parsedHash = Cryptpad.parsePadUrl(window.location.href);
         var defaultName = Cryptpad.getDefaultName(parsedHash);
-        var userData = module.userData = {}; // List of pretty name of all users (mapped with their server ID)
-        var userList; // List of users still connected to the channel (server IDs)
-        var addToUserData = function(data) {
-            var users = module.users;
-            for (var attrname in data) { userData[attrname] = data[attrname]; }
-
-            if (users && users.length) {
-                for (var userKey in userData) {
-                    if (users.indexOf(userKey) === -1) {
-                        delete userData[userKey];
-                    }
-                }
-            }
-
-            if(userList && typeof userList.onChange === "function") {
-                userList.onChange(userData);
-            }
-        };
-
-        var myData = {};
-        var myUserName = ''; // My "pretty name"
-        var myID; // My server ID
-
-        var setMyID = function(info) {
-          myID = info.myID || null;
-          myUserName = myID;
-        };
+        var UserList;
 
         var config = module.config = {
             initialState: '{}',
@@ -249,7 +223,6 @@ window.canvas = canvas;
             readOnly: readOnly,
             channel: secret.channel,
             crypto: Crypto.createEncryptor(secret.keys),
-            setMyID: setMyID,
             transformFunction: JsonOT.transform,
         };
 
@@ -331,29 +304,30 @@ window.canvas = canvas;
         };
 
         config.onInit = function (info) {
-            userList = info.userList;
-            var config = {
-                displayed: ['useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit'],
-                userData: userData,
-                readOnly: readOnly,
+            UserList = Cryptpad.createUserList(info, config.onLocal, Cryptget, Cryptpad);
+            var configTb = {
+                displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit'],
+                userList: UserList.getToolbarConfig(),
                 share: {
                     secret: secret,
                     channel: info.channel
                 },
-                ifrw: window,
                 title: {
                     onRename: renameCb,
                     defaultName: defaultName,
                     suggestName: suggestName
                 },
-                common: Cryptpad
+                common: Cryptpad,
+                readOnly: readOnly,
+                ifrw: window,
+                realtime: info.realtime,
+                network: info.network,
+                $container: $bar
             };
-            if (readOnly) {delete config.changeNameID; }
 
-            toolbar = module.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, userList, config);
+            toolbar = module.toolbar = Toolbar.create(configTb);
 
-            var $rightside = $bar.find('.' + Toolbar.constants.rightside);
-            module.$userNameButton = $($bar.find('.' + Toolbar.constants.changeUsername));
+            var $rightside = toolbar.$rightside;
 
             /* save as template */
             if (!Cryptpad.isTemplate(window.location.href)) {
@@ -384,8 +358,6 @@ window.canvas = canvas;
                 editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
             }
             if (!readOnly) { Cryptpad.replaceHash(editHash); }
-
-            Cryptpad.onDisplayNameChanged(module.setName);
         };
 
         // used for debugging, feel free to remove
@@ -431,7 +403,7 @@ window.canvas = canvas;
                 if (json.metadata.users) {
                     var userData = json.metadata.users;
                     // Update the local user data
-                    addToUserData(userData);
+                    UserList.addToUserData(userData);
                 }
                 if (json.metadata.defaultTitle) {
                     updateDefaultTitle(json.metadata.defaultTitle);
@@ -486,7 +458,7 @@ window.canvas = canvas;
             var obj = {
                 content: textValue,
                 metadata: {
-                    users: userData,
+                    users: UserList.userData,
                     palette: palette,
                     defaultTitle: defaultName
                 }
@@ -508,28 +480,6 @@ window.canvas = canvas;
             module.patchText(content);
         });
 
-        var setName = module.setName = function (newName) {
-            if (typeof(newName) !== 'string') { return; }
-            var myUserNameTemp = newName.trim();
-            if(newName.trim().length > 32) {
-              myUserNameTemp = myUserNameTemp.substr(0, 32);
-            }
-            myUserName = myUserNameTemp;
-            myData[myID] = {
-               name: myUserName,
-               uid: Cryptpad.getUid(),
-            };
-            addToUserData(myData);
-            Cryptpad.setAttribute('username', myUserName, function (err) {
-                if (err) {
-                    console.log("Couldn't set username");
-                    console.error(err);
-                    return;
-                }
-                onLocal();
-            });
-        };
-
         config.onReady = function (info) {
             var realtime = module.realtime = info.realtime;
             module.patchText = TextPatcher.create({
@@ -550,30 +500,9 @@ window.canvas = canvas;
             }
 
             /*  TODO: restore palette from metadata.palette */
-            Cryptpad.getLastName(function (err, lastName) {
-                if (err) {
-                    console.log("Could not get previous name");
-                    console.error(err);
-                    return;
-                }
-                // Update the toolbar list:
-                // Add the current user in the metadata if he has edit rights
-                if (readOnly) { return; }
-                if (typeof(lastName) === 'string') {
-                    setName(lastName);
-                } else {
-                    myData[myID] = {
-                        name: "",
-                        uid: Cryptpad.getUid(),
-                    };
-                    addToUserData(myData);
-                    onLocal();
-                    module.$userNameButton.click();
-                }
-                if (isNew) {
-                    Cryptpad.selectTemplate('whiteboard', info.realtime, Cryptget);
-                }
-            });
+
+            if (readOnly) { return; }
+            UserList.getLastName(toolbar.$userNameButton, isNew);
         };
 
         config.onAbort = function () {
