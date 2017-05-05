@@ -1,6 +1,4 @@
-define([
-    'jquery',
-], function ($) {
+define(function () {
     var module = {};
 
     module.create = function (info, onLocal, Cryptget, Cryptpad) {
