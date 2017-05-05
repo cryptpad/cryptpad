@@ -333,8 +333,8 @@ define(function () {
     out.settings_pinningError = "Something went wrong";
     out.settings_usageAmount = "Your pinned pads occupy {0}MB";
 
-    out.settings_logoutEverywhere = "Expire remote sessions";
-    out.settings_logoutEverywhereTitle = "Log out of all other sessions";
+    out.settings_logoutEverywhereTitle = "Log out everywhere";
+    out.settings_logoutEverywhere = "Log out of all other web sessions";
     out.settings_logoutEverywhereConfirm = "Are you sure? You will need to log in with all your devices.";
 
     // index.html
