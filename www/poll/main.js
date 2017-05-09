@@ -8,10 +8,8 @@ define([
     '/bower_components/hyperjson/hyperjson.js',
     'render.js',
     '/common/toolbar2.js',
-    '/common/visible.js',
-    '/common/notify.js',
     '/bower_components/file-saver/FileSaver.min.js'
-], function ($, TextPatcher, Listmap, Crypto, Cryptpad, Cryptget, Hyperjson, Renderer, Toolbar, Visible, Notify) {
+], function ($, TextPatcher, Listmap, Crypto, Cryptpad, Cryptget, Hyperjson, Renderer, Toolbar) {
 
     var Messages = Cryptpad.Messages;
 
@@ -34,7 +32,6 @@ define([
     if (!DEBUG) {
         debug = function() {};
     }
-    var error = console.error;
 
     Cryptpad.addLoadingScreen();
     var onConnectError = function () {
@@ -186,20 +183,6 @@ define([
         }
     };
 
-    var unnotify = function () {
-        if (APP.tabNotification &&
-            typeof(APP.tabNotification.cancel) === 'function') {
-            APP.tabNotification.cancel();
-        }
-    };
-
-    var notify = function () {
-        if (Visible.isSupported() && !Visible.currently()) {
-            unnotify();
-            APP.tabNotification = Notify.tab(1000, 10);
-        }
-    };
-
     /*  Any time the realtime object changes, call this function */
     var change = function (o, n, path, throttle, cb) {
         if (path && !Cryptpad.isArray(path)) {
@@ -228,7 +211,7 @@ define([
 
             https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion
         */
-        notify();
+        Cryptpad.notify();
 
         var getFocus = function () {
             var active = document.activeElement;
@@ -442,42 +425,8 @@ define([
         });
     };
 
+    var Title;
     var UserList;
-
-    var updateTitle = function (newTitle) {
-        if (newTitle === document.title) { return; }
-        // Change the title now, and set it back to the old value if there is an error
-        var oldTitle = document.title;
-        document.title = newTitle;
-        Cryptpad.renamePad(newTitle, function (err, data) {
-            if (err) {
-                debug("Couldn't set pad title");
-                error(err);
-                document.title = oldTitle;
-                return;
-            }
-            document.title = data;
-            APP.$bar.find('.' + Toolbar.constants.title).find('span.title').text(data);
-            APP.$bar.find('.' + Toolbar.constants.title).find('input').val(data);
-        });
-    };
-
-    var updateDefaultTitle = function (defaultTitle) {
-        defaultName = defaultTitle;
-        APP.$bar.find('.' + Toolbar.constants.title).find('input').attr("placeholder", defaultName);
-    };
-    var renameCb = function (err, title) {
-        if (err) { return; }
-        document.title = title;
-        APP.proxy.info.title = title === defaultName ? "" : title;
-    };
-
-    var suggestName = function (fallback) {
-        if (document.title === defaultName) {
-            return fallback || "";
-        }
-        return document.title || defaultName || "";
-    };
 
     var copyObject = function (obj) {
         return JSON.parse(JSON.stringify(obj));
@@ -550,15 +499,15 @@ var ready = function (info, userid, readOnly) {
 
     // Title
     if (APP.proxy.info.defaultTitle) {
-        updateDefaultTitle(APP.proxy.info.defaultTitle);
+        Title.updateDefaultTitle(APP.proxy.info.defaultTitle);
     } else {
-        APP.proxy.info.defaultTitle = defaultName;
+        APP.proxy.info.defaultTitle = Title.defaultTitle;
     }
     if (Cryptpad.initialName && !APP.proxy.info.title) {
         APP.proxy.info.title = Cryptpad.initialName;
-        updateTitle(Cryptpad.initialName);
+        Title.updateTitle(Cryptpad.initialName);
     } else {
-        updateTitle(APP.proxy.info.title || defaultName);
+        Title.updateTitle(APP.proxy.info.title || Title.defaultTitle);
     }
 
     // Description
@@ -586,8 +535,8 @@ var ready = function (info, userid, readOnly) {
     proxy
         .on('change', ['info'], function (o, n, p) {
             if (p[1] === 'title') {
-                updateTitle(n);
-                notify();
+                Title.updateTitle(n);
+                Cryptpad.notify();
             } else if (p[1] === "userData") {
                 UserList.addToUserData(APP.proxy.info.userData);
             } else if (p[1] === 'description') {
@@ -602,7 +551,7 @@ var ready = function (info, userid, readOnly) {
                     el.selectionStart = selects[0];
                     el.selectionEnd = selects[1];
                 }
-                notify();
+                Cryptpad.notify();
             }
 
             debug("change: (%s, %s, [%s])", o, n, p.join(', '));
@@ -611,13 +560,6 @@ var ready = function (info, userid, readOnly) {
         .on('remove', [], change);
 
     UserList.addToUserData(APP.proxy.info.userData);
-
-    if (Visible.isSupported()) {
-        Visible.onChange(function (yes) {
-            if (yes) { unnotify(); }
-        });
-    }
-
 
     APP.ready = true;
     if (!proxy.published) {
@@ -664,6 +606,11 @@ var create = function (info) {
     };
     UserList = Cryptpad.createUserList(info, onLocal, Cryptget, Cryptpad);
 
+    var onLocalTitle = function () {
+        APP.proxy.info.title = Title.isDefaultTitle() ? "" : Title.title;
+    };
+    Title = Cryptpad.createTitle({}, onLocalTitle, Cryptpad);
+
     var configTb = {
         displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit'],
         userList: UserList.getToolbarConfig(),
@@ -671,11 +618,7 @@ var create = function (info) {
             secret: secret,
             channel: info.channel
         },
-        title: {
-            onRename: renameCb,
-            defaultName: defaultName,
-            suggestName: suggestName
-        },
+        title: Title.getTitleConfig(),
         common: Cryptpad,
         readOnly: readOnly,
         ifrw: window,
@@ -684,6 +627,8 @@ var create = function (info) {
         $container: APP.$bar
     };
     APP.toolbar = Toolbar.create(configTb);
+
+    Title.setToolbar(APP.toolbar);
 
     var $rightside = APP.toolbar.$rightside;
 
