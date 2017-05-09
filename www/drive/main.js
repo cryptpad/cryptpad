@@ -383,6 +383,13 @@ define([
 
             // Enter
             if (e.which === 13) {
+                var $allSelected = $content.find('.element.selected');
+                if ($allSelected.length === 1) {
+                    // Open the folder or the file
+                    $allSelected.dblclick();
+                    return;
+                }
+                // If more than one, open only the files
                 var $select = $content.find('.file-element.selected');
                 $select.each(function (idx, el) {
                     $(el).dblclick();
@@ -710,7 +717,7 @@ define([
             if (e) { module.hideMenu(); }
             // Remove the selection if we don't hold ctrl key or if we are right-clicking
             if (!e || !e.ctrlKey) {
-                removeSelected(e.shiftKey);
+                removeSelected(e && e.shiftKey);
             }
             if (!$element.length) {
                 log(Messages.fm_selectError);
@@ -730,7 +737,7 @@ define([
                 });
                 delete sel.endSelected;
             }
-            if (e.shiftKey) {
+            if (e && e.shiftKey) {
                 var end = $elements.index($element[0]);
                 sel.endSelected = end;
                 var $el;

@@ -64,6 +64,8 @@ define(function () {
         "Pour résoudre ce problème, vous pouvez soit supprimer des pads de votre CryptDrive (y compris la corbeille), soit vous abonner à une offre premium pour augmenter la limite maximale.";
     out.pinLimitNotPinned = "Vous avez atteint votre limite de stockage.<br>"+
                             "Ce pad n'est pas enregistré dans votre CryptDrive.";
+    out.pinLimitDrive = out.pinLimitReached+ ".<br>" +
+                        "Vous ne pouvez pas créer de nouveaux pads.";
 
     out.importButtonTitle = 'Importer un pad depuis un fichier local';
 
@@ -325,6 +327,10 @@ define(function () {
     out.settings_pinningNotAvailable = "Les pads épinglés sont disponibles uniquement pour les utilisateurs enregistrés.";
     out.settings_pinningError = "Un problème est survenu";
     out.settings_usageAmount = "Vos pads épinglés occupent {0} Mo";
+
+    out.settings_logoutEverywhereTitle = "Se déconnecter partout";
+    out.settings_logoutEverywhere = "Se déconnecter de toutes les autres sessions.";
+    out.settings_logoutEverywhereConfirm = "Êtes-vous sûr ? Vous devrez vous reconnecter sur tous vos autres appareils.";
 
     // index.html
 
