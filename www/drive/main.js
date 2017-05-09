@@ -383,6 +383,13 @@ define([
 
             // Enter
             if (e.which === 13) {
+                var $allSelected = $content.find('.element.selected');
+                if ($allSelected.length === 1) {
+                    // Open the folder or the file
+                    $allSelected.dblclick();
+                    return;
+                }
+                // If more than one, open only the files
                 var $select = $content.find('.file-element.selected');
                 $select.each(function (idx, el) {
                     $(el).dblclick();
