@@ -30,11 +30,17 @@
         position: absolute;
         z-index: -1;
     }
-    .inputfile + label {
-        border: 2px solid black;
+
+    .block {
         display: block;
         height: 500px;
         width: 500px;
+    }
+    .hidden {
+        display: none;
+    }
+    .inputfile + label {
+        border: 2px solid black;
         background-color: rgba(50, 50, 50, .10);
         margin: 50px;
     }
@@ -50,7 +56,9 @@
     <div id="toolbar" class="toolbar-container"></div>
     <div id="upload-form" style="display: none;">
         <input type="file" name="file" id="file" class="inputfile" />
-        <label for="file">Choose a file</label>
+        <label for="file" class="block">Choose a file</label>
+    </div>
+    <div id="feedback" class="block hidden">
     </div>
 </body>
 </html>

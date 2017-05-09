@@ -20,6 +20,7 @@ define([
 
     var ifrw = $('#pad-iframe')[0].contentWindow;
     var $iframe = $('#pad-iframe').contents();
+    var $form = $iframe.find('#upload-form');
 
     Cryptpad.addLoadingScreen();
 
@@ -85,16 +86,18 @@ define([
                                 ''
                             ].join('/');
 
-                            APP.$form.hide();
+                            $form.hide();
 
                             var newU8 = FileCrypto.joinChunks(chunks);
                             FileCrypto.decrypt(newU8, key, function (e, res) {
+                                if (e) { return console.error(e); }
                                 var title = document.title = res.metadata.name;
                                 myFile = res.content;
                                 myDataType = res.metadata.type;
 
                                 var defaultName = Cryptpad.getDefaultName(Cryptpad.parsePadUrl(window.location.href));
                                 APP.updateTitle(title || defaultName);
+
                             });
                         });
                     });
@@ -128,8 +131,6 @@ define([
     var andThen = function () {
         var $bar = $iframe.find('.toolbar-container');
 
-// Test hash:
-// #/2/K6xWU-LT9BJHCQcDCT-DcQ/TBo77200c0e-FdldQFcnQx4Y/
         var secret;
         var hexFileName;
         if (window.location.hash) {
@@ -218,12 +219,15 @@ define([
                 var key = Nacl.util.decodeBase64(cryptKey);
 
                 FileCrypto.decrypt(u8, key, function (e, data) {
+                    if (e) {
+                        Cryptpad.removeLoadingScreen();
+                        return console.error(e);
+                    }
                     console.log(data);
                     var title = document.title = data.metadata.name;
                     myFile = data.content;
                     myDataType = data.metadata.type;
                     updateTitle(title || defaultName);
-
                     Cryptpad.removeLoadingScreen();
                 });
             });
@@ -233,13 +237,12 @@ define([
             return Cryptpad.alert("You must be logged in to upload files");
         }
 
-        var $form = APP.$form = $iframe.find('#upload-form');
         $form.css({
             display: 'block',
         });
 
-        $form.find("#file").on('change', function (e) {
-            var file = e.target.files[0];
+        var handleFile = function (file) {
+            console.log(file);
             var reader = new FileReader();
             reader.onloadend = function () {
                 upload(this.result, {
@@ -248,6 +251,21 @@ define([
                 });
             };
             reader.readAsArrayBuffer(file);
+        };
+
+        $form.find("#file").on('change', function (e) {
+            var file = e.target.files[0];
+            handleFile(file);
+        });
+
+        $form
+        .on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        })
+        .on('drop', function (e) {
+            var dropped = e.originalEvent.dataTransfer.files;
+            handleFile(dropped[0]);
         });
 
         // we're in upload mode

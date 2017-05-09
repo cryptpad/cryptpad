@@ -2369,7 +2369,7 @@ define([
             module.hideMenu();
         });
 
-        $appContainer.on('click', function (e) {
+        $appContainer.on('mousedown', function (e) {
             if (e.which !== 1) { return ; }
             removeSelected(e);
             removeInput();
