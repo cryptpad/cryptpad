@@ -48,8 +48,6 @@ define([
             var $textarea = $pad.contents().find('#editor1');
 
             var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
-            var parsedHash = Cryptpad.parsePadUrl(window.location.href);
-            var defaultName = Cryptpad.getDefaultName(parsedHash);
 
             var isHistoryMode = false;
 
@@ -120,6 +118,7 @@ define([
                 editor.setOption('readOnly', !bool);
             };
 
+            var Title;
             var UserList;
 
             var config = {
@@ -144,11 +143,6 @@ define([
                 }
             };
 
-/*          var isDefaultTitle = function () {
-                var parsed = Cryptpad.parsePadUrl(window.location.href);
-                return Cryptpad.isDefaultName(parsed, document.title);
-            };*/
-
             var initializing = true;
 
             var stringifyInner = function (textValue) {
@@ -156,11 +150,11 @@ define([
                     content: textValue,
                     metadata: {
                         users: UserList.userData,
-                        defaultTitle: defaultName
+                        defaultTitle: Title.defaultTitle
                     }
                 };
                 if (!initializing) {
-                    obj.metadata.title = document.title;
+                    obj.metadata.title = Title.title;
                 }
                 // set mode too...
                 obj.highlightMode = module.highlightMode;
@@ -226,20 +220,12 @@ define([
                 return text.trim();
             };
 
-            var suggestName = function (fallback) {
-                if (document.title === defaultName) {
-                    return getHeadingText() || fallback || "";
-                } else {
-                    return document.title || getHeadingText() || defaultName;
-                }
-            };
-
             var exportText = module.exportText = function () {
                 var text = editor.getValue();
 
                 var ext = Modes.extensionOf(module.highlightMode);
 
-                var title = Cryptpad.fixFileName(suggestName('cryptpad')) + (ext || '.txt');
+                var title = Cryptpad.fixFileName(Title.suggestTitle('cryptpad')) + (ext || '.txt');
 
                 Cryptpad.prompt(Messages.exportPrompt, title, function (filename) {
                         if (filename === null) { return; }
@@ -276,35 +262,6 @@ define([
                 onLocal();
             };
 
-            var renameCb = function (err, title) {
-                if (err) { return; }
-                document.title = title;
-                onLocal();
-            };
-
-            var updateTitle = function (newTitle) {
-                if (newTitle === document.title) { return; }
-                // Change the title now, and set it back to the old value if there is an error
-                var oldTitle = document.title;
-                document.title = newTitle;
-                Cryptpad.renamePad(newTitle, function (err, data) {
-                    if (err) {
-                        console.log("Couldn't set pad title");
-                        console.error(err);
-                        document.title = oldTitle;
-                        return;
-                    }
-                    document.title = data;
-                    $bar.find('.' + Toolbar.constants.title).find('span.title').text(data);
-                    $bar.find('.' + Toolbar.constants.title).find('input').val(data);
-                });
-            };
-
-            var updateDefaultTitle = function (defaultTitle) {
-                defaultName = defaultTitle;
-                $bar.find('.' + Toolbar.constants.title).find('input').attr("placeholder", defaultName);
-            };
-
             var updateMetadata = function(shjson) {
                 // Extract the user list (metadata) from the hyperjson
                 var json = (shjson === "") ? "" : JSON.parse(shjson);
@@ -316,20 +273,26 @@ define([
                         UserList.addToUserData(userData);
                     }
                     if (json.metadata.defaultTitle) {
-                        updateDefaultTitle(json.metadata.defaultTitle);
+                        Title.updateDefaultTitle(json.metadata.defaultTitle);
                     }
                     if (typeof json.metadata.title !== "undefined") {
-                        updateTitle(json.metadata.title || defaultName);
+                        Title.updateTitle(json.metadata.title || Title.defaultTitle);
                         titleUpdated = true;
                     }
                 }
                 if (!titleUpdated) {
-                    updateTitle(defaultName);
+                    Title.updateTitle(Title.defaultTitle);
                 }
             };
 
              config.onInit = function (info) {
                 UserList = Cryptpad.createUserList(info, config.onLocal, Cryptget, Cryptpad);
+
+                var titleCfg = {
+                    $bar: $bar,
+                    getHeadingText: getHeadingText
+                };
+                Title = Cryptpad.createTitle(titleCfg, config.onLocal, Cryptpad);
 
                 var configTb = {
                     displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit'],
@@ -338,11 +301,7 @@ define([
                         secret: secret,
                         channel: info.channel
                     },
-                    title: {
-                        onRename: renameCb,
-                        defaultName: defaultName,
-                        suggestName: suggestName
-                    },
+                    title: Title.getTitleConfig(),
                     common: Cryptpad,
                     readOnly: readOnly,
                     ifrw: ifrw,
@@ -351,6 +310,8 @@ define([
                     $container: $bar
                 };
                 toolbar = module.toolbar = Toolbar.create(configTb);
+
+                Title.setToolbar(toolbar);
 
                 var $rightside = toolbar.$rightside;
 
@@ -396,7 +357,7 @@ define([
                     var templateObj = {
                         rt: info.realtime,
                         Crypt: Cryptget,
-                        getTitle: function () { return document.title; }
+                        getTitle: Title.getTitle
                     };
                     var $templateButton = Cryptpad.createButton('template', true, templateObj);
                     $rightside.append($templateButton);
@@ -410,10 +371,6 @@ define([
                     /* add an import button */
                     var $import = Cryptpad.createButton('import', true, {}, importText);
                     $rightside.append($import);
-
-                    /* add a rename button */
-                    //var $setTitle = Cryptpad.createButton('rename', true, {suggestName: suggestName}, renameCb);
-                    //$rightside.append($setTitle);
                 }
 
                 /* add a forget button */
@@ -559,9 +516,8 @@ define([
                     editor.setValue(newDoc);
                 }
 
-                if (Cryptpad.initialName && document.title === defaultName) {
-                    updateTitle(Cryptpad.initialName);
-                    onLocal();
+                if (Cryptpad.initialName && Title.isDefaultTitle()) {
+                    Title.updateTitle(Cryptpad.initialName);
                 }
 
                 if (Visible.isSupported()) {

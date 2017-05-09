@@ -8,11 +8,12 @@ define([
     '/common/common-interface.js',
     '/common/common-history.js',
     '/common/common-userlist.js',
+    '/common/common-title.js',
 
     '/common/clipboard.js',
     '/common/pinpad.js',
     '/customize/application_config.js'
-], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Clipboard, Pinpad, AppConfig) {
+], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Clipboard, Pinpad, AppConfig) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -87,6 +88,9 @@ define([
 
     // Userlist
     common.createUserList = UserList.create;
+
+    // Title
+    common.createTitle = Title.create;
 
     // History
     common.getHistory = function (config) { return History.create(common, config); };
