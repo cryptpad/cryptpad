@@ -20,6 +20,7 @@ define([
 
     var ifrw = $('#pad-iframe')[0].contentWindow;
     var $iframe = $('#pad-iframe').contents();
+    var $form = $iframe.find('#upload-form');
 
     Cryptpad.addLoadingScreen();
 
@@ -85,7 +86,7 @@ define([
                                 ''
                             ].join('/');
 
-                            APP.$form.hide();
+                            $form.hide();
 
                             var newU8 = FileCrypto.joinChunks(chunks);
                             FileCrypto.decrypt(newU8, key, function (e, res) {
@@ -95,6 +96,7 @@ define([
 
                                 var defaultName = Cryptpad.getDefaultName(Cryptpad.parsePadUrl(window.location.href));
                                 APP.updateTitle(title || defaultName);
+
                             });
                         });
                     });
@@ -128,8 +130,6 @@ define([
     var andThen = function () {
         var $bar = $iframe.find('.toolbar-container');
 
-// Test hash:
-// #/2/K6xWU-LT9BJHCQcDCT-DcQ/TBo77200c0e-FdldQFcnQx4Y/
         var secret;
         var hexFileName;
         if (window.location.hash) {
@@ -233,13 +233,12 @@ define([
             return Cryptpad.alert("You must be logged in to upload files");
         }
 
-        var $form = APP.$form = $iframe.find('#upload-form');
         $form.css({
             display: 'block',
         });
 
-        $form.find("#file").on('change', function (e) {
-            var file = e.target.files[0];
+        var handleFile = function (file) {
+            console.log(file);
             var reader = new FileReader();
             reader.onloadend = function () {
                 upload(this.result, {
@@ -248,6 +247,21 @@ define([
                 });
             };
             reader.readAsArrayBuffer(file);
+        };
+
+        $form.find("#file").on('change', function (e) {
+            var file = e.target.files[0];
+            handleFile(file);
+        });
+
+        $form
+        .on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        })
+        .on('drop', function (e) {
+            var dropped = e.originalEvent.dataTransfer.files;
+            handleFile(dropped[0]);
         });
 
         // we're in upload mode
