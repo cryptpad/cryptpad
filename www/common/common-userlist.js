@@ -7,14 +7,16 @@ define(function () {
         var userData = exp.userData = {};
         var userList = exp.userList = info.userList;
         var myData = exp.myData = {};
-        var myUserName = exp.myUserName = info.myID;
-        var myNetfluxId = exp.myNetfluxId = info.myID;
+        exp.myUserName = info.myID;
+        exp.myNetfluxId = info.myID;
+
+        var network = Cryptpad.getNetwork();
 
         var parsed = Cryptpad.parsePadUrl(window.location.href);
         var appType = parsed ? parsed.type : undefined;
 
-        var users = userList.users;
         var addToUserData = exp.addToUserData = function(data) {
+            var users = userList.users;
             for (var attrname in data) { userData[attrname] = data[attrname]; }
 
             if (users && users.length) {
@@ -34,7 +36,7 @@ define(function () {
             return {
                 data: userData,
                 list: userList,
-                userNetfluxId: myNetfluxId
+                userNetfluxId: exp.myNetfluxId
             };
         };
 
@@ -44,13 +46,14 @@ define(function () {
             if(myUserNameTemp.length > 32) {
               myUserNameTemp = myUserNameTemp.substr(0, 32);
             }
-            myUserName = myUserNameTemp;
-            myData[myNetfluxId] = {
-               name: myUserName,
+            exp.myUserName = myUserNameTemp;
+            myData = {};
+            myData[exp.myNetfluxId] = {
+               name: exp.myUserName,
                uid: Cryptpad.getUid(),
             };
             addToUserData(myData);
-            Cryptpad.setAttribute('username', myUserName, function (err) {
+            Cryptpad.setAttribute('username', exp.myUserName, function (err) {
                 if (err) {
                     console.log("Couldn't set username");
                     console.error(err);
@@ -72,7 +75,7 @@ define(function () {
                 if (typeof(lastName) === 'string') {
                     setName(lastName, onLocal);
                 } else {
-                    myData[myNetfluxId] = {
+                    myData[exp.myNetfluxId] = {
                         name: "",
                         uid: Cryptpad.getUid(),
                     };
@@ -88,6 +91,11 @@ define(function () {
 
         Cryptpad.onDisplayNameChanged(function (newName) {
             setName(newName, onLocal);
+        });
+
+        network.on('reconnect', function (uid) {
+            exp.myNetfluxId = uid;
+            exp.setName(exp.myUserName);
         });
 
         return exp;
