@@ -8,13 +8,7 @@ define([
     '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
-    '/common/modes.js',
-    '/common/themes.js',
-    '/common/visible.js',
-    '/common/notify.js',
-    '/bower_components/file-saver/FileSaver.min.js'
-], function ($, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad, Cryptget, Modes, Themes, Visible, Notify) {
-    var saveAs = window.saveAs;
+], function ($, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad, Cryptget) {
     var Messages = Cryptpad.Messages;
 
     var module = window.APP = {
@@ -30,6 +24,7 @@ define([
         };
 
         var toolbar;
+        var editor;
 
         var secret = Cryptpad.getSecrets();
         var readOnly = secret.keys && !secret.keys.editKeyStr;
@@ -42,76 +37,12 @@ define([
         };
 
         var andThen = function (CMeditor) {
-            var CodeMirror = module.CodeMirror = CMeditor;
-            CodeMirror.modeURL = "/bower_components/codemirror/mode/%N/%N.js";
-            var $pad = $('#pad-iframe');
-            var $textarea = $pad.contents().find('#editor1');
+            var CodeMirror = Cryptpad.createCodemirror(CMeditor, ifrw, Cryptpad);
+            editor = CodeMirror.editor;
 
             var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
 
             var isHistoryMode = false;
-
-            var editor = module.editor = CMeditor.fromTextArea($textarea[0], {
-                lineNumbers: true,
-                lineWrapping: true,
-                autoCloseBrackets: true,
-                matchBrackets : true,
-                showTrailingSpace : true,
-                styleActiveLine : true,
-                search: true,
-                highlightSelectionMatches: {showToken: /\w+/},
-                extraKeys: {"Shift-Ctrl-R": undefined},
-                foldGutter: true,
-                gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-                mode: "javascript",
-                readOnly: true
-            });
-            editor.setValue(Messages.codeInitialState);
-
-            var setMode = module.setMode = function (mode, $select) {
-                module.highlightMode = mode;
-                if (mode === 'text') {
-                    editor.setOption('mode', 'text');
-                    return;
-                }
-                CodeMirror.autoLoadMode(editor, mode);
-                editor.setOption('mode', mode);
-                if ($select) {
-                    var name = $select.find('a[data-value="' + mode + '"]').text() || 'Mode';
-                    $select.setValue(name);
-                }
-            };
-
-            var setTheme = module.setTheme = (function () {
-                var path = '/common/theme/';
-
-                var $head = $(ifrw.document.head);
-
-                var themeLoaded = module.themeLoaded = function (theme) {
-                    return $head.find('link[href*="'+theme+'"]').length;
-                };
-
-                var loadTheme = module.loadTheme = function (theme) {
-                    $head.append($('<link />', {
-                        rel: 'stylesheet',
-                        href: path + theme + '.css',
-                    }));
-                };
-
-                return function (theme, $select) {
-                    if (!theme) {
-                        editor.setOption('theme', 'default');
-                    } else {
-                        if (!themeLoaded(theme)) {
-                            loadTheme(theme);
-                        }
-                        editor.setOption('theme', theme);
-                    }
-                    if ($select) {
-                        $select.setValue(theme || 'Theme');
-                    }
-                };
-            }());
 
             var setEditable = module.setEditable = function (bool) {
                 if (readOnly && bool) { return; }
@@ -120,6 +51,7 @@ define([
 
             var Title;
             var UserList;
+            var Metadata;
 
             var config = {
                 initialState: '{}',
@@ -157,7 +89,7 @@ define([
                     obj.metadata.title = Title.title;
                 }
                 // set mode too...
-                obj.highlightMode = module.highlightMode;
+                obj.highlightMode = CodeMirror.highlightMode;
 
                 // stringify the json and send it into chainpad
                 return stringify(obj);
@@ -170,7 +102,7 @@ define([
 
                 editor.save();
 
-                var textValue = canonicalize($textarea.val());
+                var textValue = canonicalize(CodeMirror.$textarea.val());
                 var shjson = stringifyInner(textValue);
 
                 module.patchText(shjson);
@@ -180,119 +112,15 @@ define([
                 }
             };
 
-            var getHeadingText = function () {
-                var lines = editor.getValue().split(/\n/);
 
-                var text = '';
-                lines.some(function (line) {
-                    // lisps?
-                    var lispy = /^\s*(;|#\|)(.*?)$/;
-                    if (lispy.test(line)) {
-                        line.replace(lispy, function (a, one, two) {
-                            text = two;
-                        });
-                        return true;
-                    }
 
-                    // lines beginning with a hash are potentially valuable
-                    // works for markdown, python, bash, etc.
-                    var hash = /^#(.*?)$/;
-                    if (hash.test(line)) {
-                        line.replace(hash, function (a, one) {
-                            text = one;
-                        });
-                        return true;
-                    }
-
-                    // lines including a c-style comment are also valuable
-                    var clike = /^\s*(\/\*|\/\/)(.*)?(\*\/)*$/;
-                    if (clike.test(line)) {
-                        line.replace(clike, function (a, one, two) {
-                            if (!(two && two.replace)) { return; }
-                            text = two.replace(/\*\/\s*$/, '').trim();
-                        });
-                        return true;
-                    }
-
-                    // TODO make one more pass for multiline comments
-                });
-
-                return text.trim();
-            };
-
-            var exportText = module.exportText = function () {
-                var text = editor.getValue();
-
-                var ext = Modes.extensionOf(module.highlightMode);
-
-                var title = Cryptpad.fixFileName(Title.suggestTitle('cryptpad')) + (ext || '.txt');
-
-                Cryptpad.prompt(Messages.exportPrompt, title, function (filename) {
-                        if (filename === null) { return; }
-                        var blob = new Blob([text], {
-                            type: 'text/plain;charset=utf-8'
-                        });
-                        saveAs(blob, filename);
-                    });
-            };
-            var importText = function (content, file) {
-                var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
-                var mode;
-                var mime = CodeMirror.findModeByMIME(file.type);
-
-                if (!mime) {
-                    var ext = /.+\.([^.]+)$/.exec(file.name);
-                    if (ext[1]) {
-                        mode = CodeMirror.findModeByExtension(ext[1]);
-                    }
-                } else {
-                    mode = mime && mime.mode || null;
-                }
-
-                if (mode && Modes.list.some(function (o) { return o.mode === mode; })) {
-                    setMode(mode);
-                    $bar.find('#language-mode').val(mode);
-                } else {
-                    console.log("Couldn't find a suitable highlighting mode: %s", mode);
-                    setMode('text');
-                    $bar.find('#language-mode').val('text');
-                }
-
-                editor.setValue(content);
-                onLocal();
-            };
-
-            var updateMetadata = function(shjson) {
-                // Extract the user list (metadata) from the hyperjson
-                var json = (shjson === "") ? "" : JSON.parse(shjson);
-                var titleUpdated = false;
-                if (json && json.metadata) {
-                    if (json.metadata.users) {
-                        var userData = json.metadata.users;
-                        // Update the local user data
-                        UserList.addToUserData(userData);
-                    }
-                    if (json.metadata.defaultTitle) {
-                        Title.updateDefaultTitle(json.metadata.defaultTitle);
-                    }
-                    if (typeof json.metadata.title !== "undefined") {
-                        Title.updateTitle(json.metadata.title || Title.defaultTitle);
-                        titleUpdated = true;
-                    }
-                }
-                if (!titleUpdated) {
-                    Title.updateTitle(Title.defaultTitle);
-                }
-            };
-
-             config.onInit = function (info) {
+            config.onInit = function (info) {
                 UserList = Cryptpad.createUserList(info, config.onLocal, Cryptget, Cryptpad);
 
-                var titleCfg = {
-                    $bar: $bar,
-                    getHeadingText: getHeadingText
-                };
+                var titleCfg = { getHeadingText: CodeMirror.getHeadingText };
                 Title = Cryptpad.createTitle(titleCfg, config.onLocal, Cryptpad);
+
+                Metadata = Cryptpad.createMetadata(UserList, Title);
 
                 var configTb = {
                     displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit'],
@@ -312,6 +140,7 @@ define([
                 toolbar = module.toolbar = Toolbar.create(configTb);
 
                 Title.setToolbar(toolbar);
+                CodeMirror.init(config.onLocal, Title, toolbar);
 
                 var $rightside = toolbar.$rightside;
 
@@ -364,12 +193,12 @@ define([
                 }
 
                 /* add an export button */
-                var $export = Cryptpad.createButton('export', true, {}, exportText);
+                var $export = Cryptpad.createButton('export', true, {}, CodeMirror.exportText);
                 $rightside.append($export);
 
                 if (!readOnly) {
                     /* add an import button */
-                    var $import = Cryptpad.createButton('import', true, {}, importText);
+                    var $import = Cryptpad.createButton('import', true, {}, CodeMirror.importText);
                     $rightside.append($import);
                 }
 
@@ -381,96 +210,15 @@ define([
                 var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
                 $rightside.append($forgetPad);
 
-                var configureLanguage = function (cb) {
-                    // FIXME this is async so make it happen as early as possible
-                    var options = [];
-                    Modes.list.forEach(function (l) {
-                        options.push({
-                            tag: 'a',
-                            attributes: {
-                                'data-value': l.mode,
-                                'href': '#',
-                            },
-                            content: l.language // Pretty name of the language value
-                        });
-                    });
-                    var dropdownConfig = {
-                        text: 'Mode', // Button initial text
-                        options: options, // Entries displayed in the menu
-                        left: true, // Open to the left of the button
-                        isSelect: true,
-                    };
-                    var $block = module.$language = Cryptpad.createDropdown(dropdownConfig);
-                    $block.find('a').click(function () {
-                        setMode($(this).attr('data-value'), $block);
-                        onLocal();
-                    });
-
-                    $rightside.append($block);
-                    cb();
-                };
-
-                var configureTheme = function () {
-                    /*  Remember the user's last choice of theme using localStorage */
-                    var themeKey = 'CRYPTPAD_CODE_THEME';
-                    var lastTheme = localStorage.getItem(themeKey) || 'default';
-
-                    var options = [];
-                    Themes.forEach(function (l) {
-                        options.push({
-                            tag: 'a',
-                            attributes: {
-                                'data-value': l.name,
-                                'href': '#',
-                            },
-                            content: l.name // Pretty name of the language value
-                        });
-                    });
-                    var dropdownConfig = {
-                        text: 'Theme', // Button initial text
-                        options: options, // Entries displayed in the menu
-                        left: true, // Open to the left of the button
-                        isSelect: true,
-                        initialValue: lastTheme
-                    };
-                    var $block = module.$theme = Cryptpad.createDropdown(dropdownConfig);
-
-                    setTheme(lastTheme, $block);
-
-                    $block.find('a').click(function () {
-                        var theme = $(this).attr('data-value');
-                        setTheme(theme, $block);
-                        localStorage.setItem(themeKey, theme);
-                    });
-
-                    $rightside.append($block);
-                };
-
                 if (!readOnly) {
-                    configureLanguage(function () {
-                        configureTheme();
-                    });
+                    CodeMirror.configureLanguage(CodeMirror.configureTheme);
                 }
                 else {
-                    configureTheme();
+                    CodeMirror.configureTheme();
                 }
 
                 // set the hash
                 if (!readOnly) { Cryptpad.replaceHash(editHash); }
-            };
-
-            var unnotify = module.unnotify = function () {
-                if (module.tabNotification &&
-                    typeof(module.tabNotification.cancel) === 'function') {
-                    module.tabNotification.cancel();
-                }
-            };
-
-            var notify = module.notify = function () {
-                if (Visible.isSupported() && !Visible.currently()) {
-                    unnotify();
-                    module.tabNotification = Notify.tab(1000, 10);
-                }
             };
 
             config.onReady = function (info) {
@@ -500,17 +248,17 @@ define([
                     newDoc = hjson.content;
 
                     if (hjson.highlightMode) {
-                        setMode(hjson.highlightMode, module.$language);
+                        CodeMirror.setMode(hjson.highlightMode);
                     }
                 }
 
-                if (!module.highlightMode) {
-                    setMode('javascript', module.$language);
-                    console.log("%s => %s", module.highlightMode, module.$language.val());
+                if (!CodeMirror.highlightMode) {
+                    CodeMirror.setMode('javascript');
+                    console.log("%s => %s", CodeMirror.highlightMode, CodeMirror.$language.val());
                 }
 
                 // Update the user list (metadata) from the hyperjson
-                updateMetadata(userDoc);
+                Metadata.update(userDoc);
 
                 if (newDoc) {
                     editor.setValue(newDoc);
@@ -518,12 +266,6 @@ define([
 
                 if (Cryptpad.initialName && Title.isDefaultTitle()) {
                     Title.updateTitle(Cryptpad.initialName);
-                }
-
-                if (Visible.isSupported()) {
-                    Visible.onChange(function (yes) {
-                        if (yes) { unnotify(); }
-                    });
                 }
 
                 Cryptpad.removeLoadingScreen();
@@ -568,18 +310,18 @@ define([
                 if (isHistoryMode) { return; }
                 var scroll = editor.getScrollInfo();
 
-                var oldDoc = canonicalize($textarea.val());
+                var oldDoc = canonicalize(CodeMirror.$textarea.val());
                 var shjson = module.realtime.getUserDoc();
 
                 // Update the user list (metadata) from the hyperjson
-                updateMetadata(shjson);
+                Metadata.update(shjson);
 
                 var hjson = JSON.parse(shjson);
                 var remoteDoc = hjson.content;
 
                 var highlightMode = hjson.highlightMode;
                 if (highlightMode && highlightMode !== module.highlightMode) {
-                    setMode(highlightMode, module.$language);
+                    CodeMirror.setMode(highlightMode);
                 }
 
                 //get old cursor here
@@ -605,7 +347,7 @@ define([
                 editor.scrollTo(scroll.left, scroll.top);
 
                 if (!readOnly) {
-                    var textValue = canonicalize($textarea.val());
+                    var textValue = canonicalize(CodeMirror.$textarea.val());
                     var shjson2 = stringifyInner(textValue);
                     if (shjson2 !== shjson) {
                         console.error("shjson2 !== shjson");
@@ -613,9 +355,7 @@ define([
                         module.patchText(shjson2);
                     }
                 }
-                if (oldDoc !== remoteDoc) {
-                    notify();
-                }
+                if (oldDoc !== remoteDoc) { Cryptpad.notify(); }
             };
 
             config.onAbort = function () {

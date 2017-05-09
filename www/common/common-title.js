@@ -9,6 +9,8 @@ define(function () {
 
         exp.title = document.title; // TOOD slides
 
+        cfg = cfg || {};
+
         var getHeadingText = cfg.getHeadingText || function () { return; };
         var updateLocalTitle = function (newTitle) {
             exp.title = newTitle;

@@ -9,11 +9,13 @@ define([
     '/common/common-history.js',
     '/common/common-userlist.js',
     '/common/common-title.js',
+    '/common/common-metadata.js',
+    '/common/common-codemirror.js',
 
     '/common/clipboard.js',
     '/common/pinpad.js',
     '/customize/application_config.js'
-], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Clipboard, Pinpad, AppConfig) {
+], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Metadata, CodeMirror, Clipboard, Pinpad, AppConfig) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -54,6 +56,8 @@ define([
     common.addLoadingScreen = UI.addLoadingScreen;
     common.removeLoadingScreen = UI.removeLoadingScreen;
     common.errorLoadingScreen = UI.errorLoadingScreen;
+    common.notify = UI.notify;
+    common.unnotify = UI.unnotify;
 
     // import common utilities for export
     common.find = Util.find;
@@ -91,6 +95,12 @@ define([
 
     // Title
     common.createTitle = Title.create;
+
+    // Metadata
+    common.createMetadata = Metadata.create;
+
+    // CodeMirror
+    common.createCodemirror = CodeMirror.create;
 
     // History
     common.getHistory = function (config) { return History.create(common, config); };

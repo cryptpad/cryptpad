@@ -8,15 +8,8 @@ define([
     '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
-    '/common/modes.js',
-    '/common/themes.js',
-    '/common/visible.js',
-    '/common/notify.js',
     '/slide/slide.js',
-    '/bower_components/file-saver/FileSaver.min.js'
-], function ($, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad, Cryptget, Modes, Themes, Visible, Notify, Slide) {
-    var saveAs = window.saveAs;
-
+], function ($, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad, Cryptget, Slide) {
     var Messages = Cryptpad.Messages;
 
     var module = window.APP = {
@@ -30,23 +23,15 @@ define([
     var SLIDE_COLOR_ID = "cryptpad-color";
 
 
-    var stringify = function (obj) {
-        return JSONSortify(obj);
-    };
-
-    var setTabTitle = function () {
-        var slideNumber = '';
-        if (Slide.index && Slide.content.length) {
-            slideNumber = ' (' + Slide.index + '/' + Slide.content.length + ')';
-        }
-        document.title = APP.title + slideNumber;
-    };
-
     $(function () {
         Cryptpad.addLoadingScreen();
 
+        var stringify = function (obj) {
+            return JSONSortify(obj);
+        };
         var ifrw = module.ifrw = $('#pad-iframe')[0].contentWindow;
         var toolbar;
+        var editor;
 
         var secret = Cryptpad.getSecrets();
         var readOnly = secret.keys && !secret.keys.editKeyStr;
@@ -62,77 +47,32 @@ define([
         };
 
         var andThen = function (CMeditor) {
-            var CodeMirror = module.CodeMirror = CMeditor;
-            CodeMirror.modeURL = "/bower_components/codemirror/mode/%N/%N.js";
-            var $pad = $('#pad-iframe');
-            var $textarea = $pad.contents().find('#editor1');
+            var CodeMirror = Cryptpad.createCodemirror(CMeditor, ifrw, Cryptpad);
+            editor = CodeMirror.editor;
 
             var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
-            var parsedHash = Cryptpad.parsePadUrl(window.location.href);
-            var defaultName = Cryptpad.getDefaultName(parsedHash);
-            var initialState = Messages.slideInitialState;
+            var $pad = $('#pad-iframe');
 
             var isHistoryMode = false;
 
-            var editor = module.editor = CMeditor.fromTextArea($textarea[0], {
-                lineNumbers: true,
-                lineWrapping: true,
-                autoCloseBrackets: true,
-                matchBrackets : true,
-                showTrailingSpace : true,
-                styleActiveLine : true,
-                search: true,
-                highlightSelectionMatches: {showToken: /\w+/},
-                extraKeys: {"Shift-Ctrl-R": undefined},
-                foldGutter: true,
-                gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-                mode: "javascript",
-                readOnly: true
-            });
-            editor.setValue(initialState);
-
-            var setMode = module.setMode = function (mode, $select) {
-                module.highlightMode = mode;
-                if (mode === 'text') {
-                    editor.setOption('mode', 'text');
-                    return;
-                }
-                CodeMirror.autoLoadMode(editor, mode);
-                editor.setOption('mode', mode);
-                if ($select && $select.val) { $select.val(mode); }
+            var setEditable = module.setEditable = function (bool) {
+                if (readOnly && bool) { return; }
+                editor.setOption('readOnly', !bool);
             };
-            setMode('markdown');
 
-            var setTheme = module.setTheme = (function () {
-                var path = '/common/theme/';
+            var Title;
+            var UserList;
+            var Metadata;
 
-                var $head = $(ifrw.document.head);
+            var setTabTitle = function (title) {
+                var slideNumber = '';
+                if (Slide.index && Slide.content.length) {
+                    slideNumber = ' (' + Slide.index + '/' + Slide.content.length + ')';
+                }
+                document.title = title + slideNumber;
+            };
 
-                var themeLoaded = module.themeLoaded = function (theme) {
-                    return $head.find('link[href*="'+theme+'"]').length;
-                };
-
-                var loadTheme = module.loadTheme = function (theme) {
-                    $head.append($('<link />', {
-                        rel: 'stylesheet',
-                        href: path + theme + '.css',
-                    }));
-                };
-
-                return function (theme, $select) {
-                    if (!theme) {
-                        editor.setOption('theme', 'default');
-                    } else {
-                        if (!themeLoaded(theme)) {
-                            loadTheme(theme);
-                        }
-                        editor.setOption('theme', theme);
-                    }
-                    if ($select) {
-                        $select.setValue(theme || 'Theme');
-                    }
-                };
-            }());
+            var initialState = Messages.slideInitialState;
 
             var $modal = $pad.contents().find('#modal');
             var $content = $pad.contents().find('#content');
@@ -162,18 +102,10 @@ define([
                 enterPresentationMode(true);
             }
 
-            var setEditable = module.setEditable = function (bool) {
-                if (readOnly && bool) { return; }
-                editor.setOption('readOnly', !bool);
-            };
-
-            var UserList;
-
             var textColor;
             var backColor;
 
             var config = {
-                //initialState: Messages.codeInitialState,
                 initialState: '{}',
                 websocketURL: Cryptpad.getWebsocketURL(),
                 channel: secret.channel,
@@ -202,12 +134,12 @@ define([
                     content: textValue,
                     metadata: {
                         users: UserList.userData,
-                        defaultTitle: defaultName,
+                        defaultTitle: Title.defaultTitle,
                         slideOptions: slideOptions
                     }
                 };
                 if (!initializing) {
-                    obj.metadata.title = APP.title;
+                    obj.metadata.title = Title.title;
                 }
                 if (textColor) {
                     obj.metadata.color = textColor;
@@ -226,7 +158,7 @@ define([
 
                 editor.save();
 
-                var textValue = canonicalize($textarea.val());
+                var textValue = canonicalize(CodeMirror.$textarea.val());
                 var shjson = stringifyInner(textValue);
 
                 module.patchText(shjson);
@@ -237,156 +169,29 @@ define([
                 }
             };
 
-            var getHeadingText = function () {
-                var lines = editor.getValue().split(/\n/);
-
-                var text = '';
-                lines.some(function (line) {
-                    // lines beginning with a hash are potentially valuable
-                    // works for markdown, python, bash, etc.
-                    var hash = /^#(.*?)$/;
-                    if (hash.test(line)) {
-                        line.replace(hash, function (a, one) {
-                            text = one;
-                        });
-                        return true;
+            var metadataCfg = {
+                slideColors: function (text, back) {
+                    if (text) {
+                        textColor = text;
+                        $modal.css('color', text);
+                        $modal.css('border-color', text);
+                        $pad.contents().find('#' + SLIDE_COLOR_ID).css('color', text);
                     }
-                });
-
-                return text.trim();
-            };
-
-            var suggestName = function () {
-                if (APP.title === defaultName) {
-                    return getHeadingText() || "";
-                } else {
-                    return APP.title || getHeadingText() || defaultName;
-                }
-            };
-
-            var exportText = module.exportText = function () {
-                var text = editor.getValue();
-
-                var ext = Modes.extensionOf(module.highlightMode);
-
-                var title = Cryptpad.fixFileName(suggestName()) + ext;
-
-                Cryptpad.prompt(Messages.exportPrompt, title, function (filename) {
-                        if (filename === null) { return; }
-                        var blob = new Blob([text], {
-                            type: 'text/plain;charset=utf-8'
-                        });
-                        saveAs(blob, filename);
-                    });
-            };
-            var importText = function (content, file) {
-                var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
-                var mode;
-                var mime = CodeMirror.findModeByMIME(file.type);
-
-                if (!mime) {
-                    var ext = /.+\.([^.]+)$/.exec(file.name);
-                    if (ext[1]) {
-                        mode = CodeMirror.findModeByExtension(ext[1]);
+                    if (back) {
+                        backColor = back;
+                        $modal.css('background-color', back);
+                        $pad.contents().find('#' + SLIDE_COLOR_ID).css('background', back);
+                        $pad.contents().find('#' + SLIDE_BACKCOLOR_ID).css('color', back);
                     }
-                } else {
-                    mode = mime && mime.mode || null;
-                }
-
-                if (mode && Modes.list.some(function (o) { return o.mode === mode; })) {
-                    setMode(mode);
-                    $bar.find('#language-mode').val(mode);
-                } else {
-                    console.log("Couldn't find a suitable highlighting mode: %s", mode);
-                    setMode('text');
-                    $bar.find('#language-mode').val('text');
-                }
-
-                editor.setValue(content);
-                onLocal();
-            };
-
-            var updateTitle = function (newTitle) {
-                if (newTitle === APP.title) { return; }
-                // Change the title now, and set it back to the old value if there is an error
-                var oldTitle = APP.title;
-                APP.title = newTitle;
-                setTabTitle();
-                Cryptpad.renamePad(newTitle, function (err, data) {
-                    if (err) {
-                        console.log("Couldn't set pad title");
-                        console.error(err);
-                        APP.title = oldTitle;
-                        setTabTitle();
-                        return;
+                },
+                slideOptions: function (newOpt) {
+                    if (stringify(newOpt) !== stringify(slideOptions)) {
+                        $.extend(slideOptions, newOpt);
+                        // TODO: manage realtime + cursor in the "options" modal ??
+                        Slide.updateOptions();
                     }
-                    APP.title = data;
-                    setTabTitle();
-                    $bar.find('.' + Toolbar.constants.title).find('span.title').text(data);
-                    $bar.find('.' + Toolbar.constants.title).find('input').val(data);
-                    if (slideOptions.title) { Slide.updateOptions(); }
-                });
-            };
-
-            var updateColors = function (text, back) {
-                if (text) {
-                    textColor = text;
-                    $modal.css('color', text);
-                    $modal.css('border-color', text);
-                    $pad.contents().find('#' + SLIDE_COLOR_ID).css('color', text);
                 }
-                if (back) {
-                    backColor = back;
-                    $modal.css('background-color', back);
-                    $pad.contents().find('#' + SLIDE_COLOR_ID).css('background', back);
-                    $pad.contents().find('#' + SLIDE_BACKCOLOR_ID).css('color', back);
-                }
-            };
-
-            var updateOptions = function (newOpt) {
-                if (stringify(newOpt) !== stringify(slideOptions)) {
-                    $.extend(slideOptions, newOpt);
-                    // TODO: manage realtime + cursor in the "options" modal ??
-                    Slide.updateOptions();
-                }
-            };
-
-            var updateDefaultTitle = function (defaultTitle) {
-                defaultName = defaultTitle;
-                $bar.find('.' + Toolbar.constants.title).find('input').attr("placeholder", defaultName);
-            };
-
-            var updateMetadata = function(shjson) {
-                // Extract the user list (metadata) from the hyperjson
-                var json = (shjson === "") ? "" : JSON.parse(shjson);
-                var titleUpdated = false;
-                if (json && json.metadata) {
-                    if (json.metadata.users) {
-                        var userData = json.metadata.users;
-                        // Update the local user data
-                        UserList.addToUserData(userData);
-                    }
-                    if (json.metadata.defaultTitle) {
-                        updateDefaultTitle(json.metadata.defaultTitle);
-                    }
-                    if (typeof json.metadata.title !== "undefined") {
-                        updateTitle(json.metadata.title || defaultName);
-                        titleUpdated = true;
-                    }
-                    updateOptions(json.metadata.slideOptions);
-                    updateColors(json.metadata.color, json.metadata.backColor);
-                }
-                if (!titleUpdated) {
-                    updateTitle(defaultName);
-                }
-            };
-
-            var renameCb = function (err, title) {
-                if (err) { return; }
-                APP.title = title;
-                setTabTitle();
-                onLocal();
-            };
+            }
 
             var createPrintDialog = function () {
                 var slideOptionsTmp = {
@@ -461,6 +266,14 @@ define([
             config.onInit = function (info) {
                 UserList = Cryptpad.createUserList(info, config.onLocal, Cryptget, Cryptpad);
 
+                var titleCfg = {
+                    updateLocalTitle: setTabTitle,
+                    getHeadingText: CodeMirror.getHeadingText
+                };
+                Title = Cryptpad.createTitle(titleCfg, config.onLocal, Cryptpad);
+
+                Metadata = Cryptpad.createMetadata(UserList, Title, metadataCfg);
+
                 var configTb = {
                     displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit'],
                     userList: UserList.getToolbarConfig(),
@@ -468,11 +281,7 @@ define([
                         secret: secret,
                         channel: info.channel
                     },
-                    title: {
-                        onRename: renameCb,
-                        defaultName: defaultName,
-                        suggestName: suggestName
-                    },
+                    title: Title.getTitleConfig(),
                     common: Cryptpad,
                     readOnly: readOnly,
                     ifrw: ifrw,
@@ -481,6 +290,9 @@ define([
                     $container: $bar
                 };
                 toolbar = module.toolbar = Toolbar.create(configTb);
+
+                Title.setToolbar(toolbar);
+                CodeMirror.init(config.onLocal, Title, toolbar);
 
                 var $rightside = toolbar.$rightside;
 
@@ -534,12 +346,12 @@ define([
                 }
 
                 /* add an export button */
-                var $export = Cryptpad.createButton('export', true, {}, exportText);
+                var $export = Cryptpad.createButton('export', true, {}, CodeMirror.exportText);
                 $rightside.append($export);
 
                 if (!readOnly) {
                     /* add an import button */
-                    var $import = Cryptpad.createButton('import', true, {}, importText);
+                    var $import = Cryptpad.createButton('import', true, {}, CodeMirror.importText);
                     $rightside.append($import);
                 }
 
@@ -585,49 +397,6 @@ define([
                     $present.hide();
                 }
                 $rightside.append($present);
-
-                var $leavePresent = Cryptpad.createButton('source', true)
-                    .click(leavePresentationMode);
-                if (!presentMode) {
-                    $leavePresent.hide();
-                }
-                $rightside.append($leavePresent);
-
-                var configureTheme = function () {
-                    /*  Remember the user's last choice of theme using localStorage */
-                    var themeKey = 'CRYPTPAD_CODE_THEME';
-                    var lastTheme = localStorage.getItem(themeKey) || 'default';
-
-                    var options = [];
-                    Themes.forEach(function (l) {
-                        options.push({
-                            tag: 'a',
-                            attributes: {
-                                'data-value': l.name,
-                                'href': '#',
-                            },
-                            content: l.name // Pretty name of the language value
-                        });
-                    });
-                    var dropdownConfig = {
-                        text: 'Theme', // Button initial text
-                        options: options, // Entries displayed in the menu
-                        left: true, // Open to the left of the button
-                        isSelect: true,
-                        initialValue: lastTheme
-                    };
-                    var $block = module.$theme = Cryptpad.createDropdown(dropdownConfig);
-
-                    setTheme(lastTheme, $block);
-
-                    $block.find('a').click(function () {
-                        var theme = $(this).attr('data-value');
-                        setTheme(theme, $block);
-                        localStorage.setItem(themeKey, theme);
-                    });
-
-                    $rightside.append($block);
-                };
 
                 var configureColors = function () {
                     var $back = $('<button>', {
@@ -675,7 +444,7 @@ define([
                 };
 
                 configureColors();
-                configureTheme();
+                CodeMirror.configureTheme();
 
                 if (presentMode) {
                     $('#top-bar').hide();
@@ -684,20 +453,6 @@ define([
                 // set the hash
                 if (!window.location.hash || window.location.hash === '#') {
                     Cryptpad.replaceHash(editHash);
-                }
-            };
-
-            var unnotify = module.unnotify = function () {
-                if (module.tabNotification &&
-                    typeof(module.tabNotification.cancel) === 'function') {
-                    module.tabNotification.cancel();
-                }
-            };
-
-            var notify = module.notify = function () {
-                if (Visible.isSupported() && !Visible.currently()) {
-                    unnotify();
-                    module.tabNotification = Notify.tab(1000, 10);
                 }
             };
 
@@ -727,29 +482,21 @@ define([
                     }
 
                     if (hjson.highlightMode) {
-                        setMode(hjson.highlightMode, module.$language);
+                        CodeMirror.setMode(hjson.highlightMode);
                     }
                 }
-
-                if (!module.highlightMode) {
-                    setMode('javascript', module.$language);
-                    console.log("%s => %s", module.highlightMode, module.$language.val());
+                if (!CodeMirror.highlightMode) {
+                    CodeMirror.setMode('markdown');
                 }
 
                 // Update the user list (metadata) from the hyperjson
-                updateMetadata(userDoc);
+                Metadata.update(userDoc);
 
                 editor.setValue(newDoc || initialState);
 
                 if (Cryptpad.initialName && APP.title === defaultName) {
                     updateTitle(Cryptpad.initialName);
                     onLocal();
-                }
-
-                if (Visible.isSupported()) {
-                    Visible.onChange(function (yes) {
-                        if (yes) { unnotify(); }
-                    });
                 }
 
                 Slide.onChange(function (o, n, l) {
@@ -803,18 +550,18 @@ define([
                 if (isHistoryMode) { return; }
                 var scroll = editor.getScrollInfo();
 
-                var oldDoc = canonicalize($textarea.val());
+                var oldDoc = canonicalize(CodeMirror.$textarea.val());
                 var shjson = module.realtime.getUserDoc();
 
                 // Update the user list (metadata) from the hyperjson
-                updateMetadata(shjson);
+                Metadata.update(shjson);
 
                 var hjson = JSON.parse(shjson);
                 var remoteDoc = hjson.content;
 
                 var highlightMode = hjson.highlightMode;
-                if (highlightMode && highlightMode !== module.highlightMode) {
-                    setMode(highlightMode, module.$language);
+                if (highlightMode && highlightMode !== CodeMirror.highlightMode) {
+                    CodeMirror.setMode(highlightMode);
                 }
 
                 //get old cursor here
@@ -840,7 +587,7 @@ define([
                 editor.scrollTo(scroll.left, scroll.top);
 
                 if (!readOnly) {
-                    var textValue = canonicalize($textarea.val());
+                    var textValue = canonicalize(CodeMirror.$textarea.val());
                     var shjson2 = stringifyInner(textValue);
                     if (shjson2 !== shjson) {
                         console.error("shjson2 !== shjson");
@@ -851,7 +598,7 @@ define([
                 Slide.update(remoteDoc);
 
                 if (oldDoc !== remoteDoc) {
-                    notify();
+                    Cryptpad.notify();
                 }
             };
 
