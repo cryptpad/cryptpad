@@ -717,7 +717,7 @@ define([
             if (e) { module.hideMenu(); }
             // Remove the selection if we don't hold ctrl key or if we are right-clicking
             if (!e || !e.ctrlKey) {
-                removeSelected(e.shiftKey);
+                removeSelected(e && e.shiftKey);
             }
             if (!$element.length) {
                 log(Messages.fm_selectError);
@@ -737,7 +737,7 @@ define([
                 });
                 delete sel.endSelected;
             }
-            if (e.shiftKey) {
+            if (e && e.shiftKey) {
                 var end = $elements.index($element[0]);
                 sel.endSelected = end;
                 var $el;
