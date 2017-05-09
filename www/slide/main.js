@@ -81,21 +81,11 @@ define([
 
             Slide.setModal(APP, $modal, $content, $pad, ifrw, slideOptions, initialState);
 
-            var setStyleState = function (state) {
-                $pad.contents().find('#print, #content').find('style').each(function (i, el) {
-                    el.disabled = !state;
-                });
-            };
-
             var enterPresentationMode = function (shouldLog) {
                 Slide.show(true, editor.getValue());
                 if (shouldLog) {
                     Cryptpad.log(Messages.presentSuccess);
                 }
-            };
-            var leavePresentationMode = function () {
-                setStyleState(false);
-                Slide.show(false);
             };
 
             if (presentMode) {
@@ -170,20 +160,6 @@ define([
             };
 
             var metadataCfg = {
-                slideColors: function (text, back) {
-                    if (text) {
-                        textColor = text;
-                        $modal.css('color', text);
-                        $modal.css('border-color', text);
-                        $pad.contents().find('#' + SLIDE_COLOR_ID).css('color', text);
-                    }
-                    if (back) {
-                        backColor = back;
-                        $modal.css('background-color', back);
-                        $pad.contents().find('#' + SLIDE_COLOR_ID).css('background', back);
-                        $pad.contents().find('#' + SLIDE_BACKCOLOR_ID).css('color', back);
-                    }
-                },
                 slideOptions: function (newOpt) {
                     if (stringify(newOpt) !== stringify(slideOptions)) {
                         $.extend(slideOptions, newOpt);
@@ -191,7 +167,21 @@ define([
                         Slide.updateOptions();
                     }
                 }
-            }
+            };
+            var updateColors = metadataCfg.slideColors = function (text, back) {
+                if (text) {
+                    textColor = text;
+                    $modal.css('color', text);
+                    $modal.css('border-color', text);
+                    $pad.contents().find('#' + SLIDE_COLOR_ID).css('color', text);
+                }
+                if (back) {
+                    backColor = back;
+                    $modal.css('background-color', back);
+                    $pad.contents().find('#' + SLIDE_COLOR_ID).css('background', back);
+                    $pad.contents().find('#' + SLIDE_BACKCOLOR_ID).css('color', back);
+                }
+            };
 
             var createPrintDialog = function () {
                 var slideOptionsTmp = {
@@ -494,8 +484,8 @@ define([
 
                 editor.setValue(newDoc || initialState);
 
-                if (Cryptpad.initialName && APP.title === defaultName) {
-                    updateTitle(Cryptpad.initialName);
+                if (Cryptpad.initialName && Title.isDefaultTitle()) {
+                    Title.updateTitle(Cryptpad.initialName);
                     onLocal();
                 }
 

@@ -24,7 +24,7 @@ define(function () {
         var $title;
         exp.setToolbar = function (toolbar) {
             $title = toolbar && toolbar.title;
-        }
+        };
 
         exp.getTitle = function () { return exp.title; };
         var isDefaultTitle = exp.isDefaultTitle = function (){return exp.title === exp.defaultTitle;};
@@ -73,7 +73,7 @@ define(function () {
                 onRename: renameCb,
                 suggestName: suggestTitle,
                 defaultName: exp.defaultTitle
-            }
+            };
         };
 
         return exp;

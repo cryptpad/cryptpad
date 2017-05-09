@@ -91,7 +91,7 @@ define([
             };
         }());
 
-        var getHeadingText = function () {
+        exp.getHeadingText = function () {
             var lines = editor.getValue().split(/\n/);
 
             var text = '';

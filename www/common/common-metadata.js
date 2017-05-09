@@ -4,7 +4,7 @@ define(function () {
     module.create = function (UserList, Title, cfg) {
         var exp = {};
 
-        var updateMetadata = exp.update = function (shjson) {
+        exp.update = function (shjson) {
             // Extract the user list (metadata) from the hyperjson
             var json = (!shjson || typeof shjson !== "string") ? "" : JSON.parse(shjson);
             var titleUpdated = false;

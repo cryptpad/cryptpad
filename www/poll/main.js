@@ -32,7 +32,6 @@ define([
     if (!DEBUG) {
         debug = function() {};
     }
-    var error = console.error;
 
     Cryptpad.addLoadingScreen();
     var onConnectError = function () {
