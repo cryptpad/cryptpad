@@ -153,7 +153,7 @@ define([
             f(void 0, store);
         }
 
-        var requestLogin = function (Cryptpad) {
+        var requestLogin = function () {
             // log out so that you don't go into an endless loop...
             Cryptpad.logout();
 
@@ -162,11 +162,11 @@ define([
             window.location.href = '/login/';
         };
 
+        var tokenKey = 'loginToken';
         if (Cryptpad.isLoggedIn()) {
 /*  This isn't truly secure, since anyone who can read the user's object can
     set their local loginToken to match that in the object. However, it exposes
     a UI that will work most of the time. */
-            var tokenKey = 'loginToken';
 
             // every user object should have a persistent, random number
             if (typeof(proxy.loginToken) !== 'number') {
@@ -202,6 +202,13 @@ define([
         proxy.on('change', [Cryptpad.displayNameKey], function (o, n) {
             if (typeof(n) !== "string") { return; }
             Cryptpad.changeDisplayName(n);
+        });
+        proxy.on('change', [tokenKey], function () {
+            console.log('wut');
+            var localToken = tryParsing(localStorage.getItem(tokenKey));
+            if (localToken !== proxy[tokenKey]) {
+                return void requestLogin();
+            }
         });
     };
 
