@@ -518,37 +518,9 @@ define([
                 UserList.getLastName(toolbar.$userNameButton, isNew);
             };
 
-            var cursorToPos = function(cursor, oldText) {
-                var cLine = cursor.line;
-                var cCh = cursor.ch;
-                var pos = 0;
-                var textLines = oldText.split("\n");
-                for (var line = 0; line <= cLine; line++) {
-                    if(line < cLine) {
-                        pos += textLines[line].length+1;
-                    }
-                    else if(line === cLine) {
-                        pos += cCh;
-                    }
-                }
-                return pos;
-            };
-
-            var posToCursor = function(position, newText) {
-                var cursor = {
-                    line: 0,
-                    ch: 0
-                };
-                var textLines = newText.substr(0, position).split("\n");
-                cursor.line = textLines.length - 1;
-                cursor.ch = textLines[cursor.line].length;
-                return cursor;
-            };
-
             config.onRemote = function () {
                 if (initializing) { return; }
                 if (isHistoryMode) { return; }
-                var scroll = editor.getScrollInfo();
 
                 var oldDoc = canonicalize(CodeMirror.$textarea.val());
                 var shjson = module.realtime.getUserDoc();
@@ -564,27 +536,7 @@ define([
                     CodeMirror.setMode(highlightMode);
                 }
 
-                //get old cursor here
-                var oldCursor = {};
-                oldCursor.selectionStart = cursorToPos(editor.getCursor('from'), oldDoc);
-                oldCursor.selectionEnd = cursorToPos(editor.getCursor('to'), oldDoc);
-
-                editor.setValue(remoteDoc);
-                editor.save();
-
-                var op = TextPatcher.diff(oldDoc, remoteDoc);
-                var selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
-                    return TextPatcher.transformCursor(oldCursor[attr], op);
-                });
-
-                if(selects[0] === selects[1]) {
-                    editor.setCursor(posToCursor(selects[0], remoteDoc));
-                }
-                else {
-                    editor.setSelection(posToCursor(selects[0], remoteDoc), posToCursor(selects[1], remoteDoc));
-                }
-
-                editor.scrollTo(scroll.left, scroll.top);
+                CodeMirror.setValueAndCursor(oldDoc, remoteDoc, TextPatcher);
 
                 if (!readOnly) {
                     var textValue = canonicalize(CodeMirror.$textarea.val());
