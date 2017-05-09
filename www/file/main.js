@@ -89,6 +89,7 @@ define([
 
                             var newU8 = FileCrypto.joinChunks(chunks);
                             FileCrypto.decrypt(newU8, key, function (e, res) {
+                                if (e) { return console.error(e); }
                                 var title = document.title = res.metadata.name;
                                 myFile = res.content;
                                 myDataType = res.metadata.type;
@@ -218,12 +219,15 @@ define([
                 var key = Nacl.util.decodeBase64(cryptKey);
 
                 FileCrypto.decrypt(u8, key, function (e, data) {
+                    if (e) {
+                        Cryptpad.removeLoadingScreen();
+                        return console.error(e);
+                    }
                     console.log(data);
                     var title = document.title = data.metadata.name;
                     myFile = data.content;
                     myDataType = data.metadata.type;
                     updateTitle(title || defaultName);
-
                     Cryptpad.removeLoadingScreen();
                 });
             });
