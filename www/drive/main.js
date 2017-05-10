@@ -2529,7 +2529,6 @@ define([
         setEditable(!bool);
         if (!bool && update) {
             history.onLeaveHistory();
-            //init(); //TODO real proxy here
         }
     };
 
@@ -2682,33 +2681,20 @@ define([
             }
 
             /* add a history button */
-            var histConfig = {};
-            histConfig.onRender = function (val) {
-                if (typeof val === "undefined") { return; }
-                try {
+            var histConfig = {
+                onLocal: function () {
+                    proxy.drive = history.currentObj.drive;
+                },
+                onRemote: function () {},
+                setHistory: setHistory,
+                applyVal: function (val) {
                     var obj = JSON.parse(val || '{}');
                     history.currentObj = obj;
                     history.onEnterHistory(obj);
-                } catch (e) {
-                    // Probably a parse error
-                    logError(e);
-                }
+                },
+                $toolbar: APP.$bar,
+                href: window.location.origin + window.location.pathname + APP.hash
             };
-            histConfig.onClose = function () {
-                // Close button clicked
-                setHistory(false, true);
-            };
-            histConfig.onRevert = function () {
-                // Revert button clicked
-                setHistory(false, false);
-                proxy.drive = history.currentObj.drive;
-            };
-            histConfig.onReady = function () {
-                // Called when the history is loaded and the UI displayed
-                setHistory(true);
-            };
-            histConfig.$toolbar = APP.$bar;
-            histConfig.href = window.location.origin + window.location.pathname + APP.hash;
             var $hist = Cryptpad.createButton('history', true, {histConfig: histConfig});
             $rightside.append($hist);
 
