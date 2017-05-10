@@ -367,7 +367,7 @@ define([
         return "Loading share button";
     };
 
-    var createFileShare = function () {
+    var createFileShare = function (toolbar) {
         if (!window.location.hash) {
             throw new Error("Unable to display the share button: hash required in the URL");
         }
@@ -380,6 +380,7 @@ define([
             if (success) { Cryptpad.log(Messages.shareSuccess); }
         });
 
+        toolbar.$leftside.append($button);
         return $button;
     };
 
@@ -852,7 +853,7 @@ define([
         tb['useradmin'] = createUserAdmin;
 
 
-        var addElement = function (arr, additionnalCfg, init) {
+        var addElement = toolbar.addElement = function (arr, additionnalCfg, init) {
             if (typeof additionnalCfg === "object") { $.extend(true, config, additionnalCfg); }
             arr.forEach(function (el) {
                 if (typeof el !== "string" || !el.trim()) { return; }
