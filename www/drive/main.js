@@ -770,6 +770,7 @@ define([
 
         var displayMenu = function (e, $menu) {
             $menu.css({ display: "block" });
+            if (APP.mobile()) { return; }
             var h = $menu.outerHeight();
             var w = $menu.outerWidth();
             var wH = window.innerHeight;
@@ -1792,7 +1793,7 @@ define([
             module.resetTree();
 
             // in history mode we want to focus the version number input
-            if (!history.isHistoryMode) { $tree.find('#searchInput').focus(); }
+            if (!history.isHistoryMode && !APP.mobile()) { $tree.find('#searchInput').focus(); }
             $tree.find('#searchInput')[0].selectionStart = getSearchCursor();
             $tree.find('#searchInput')[0].selectionEnd = getSearchCursor();
 
@@ -2066,6 +2067,7 @@ define([
                     if (!filesOp.comparePath(newLocation, currentPath.slice())) { displayDirectory(newLocation); }
                     return;
                 }
+                if (APP.mobile()) { return; }
                 search.to = window.setTimeout(function () {
                     if (!isInSearchTmp) { search.oldLocation = currentPath.slice(); }
                     var newLocation = [SEARCH, $input.val()];

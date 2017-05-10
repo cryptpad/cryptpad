@@ -119,54 +119,57 @@ define([
         });
 
         $('button.login').click(function () {
-            Cryptpad.addLoadingScreen(Messages.login_hashing);
-            // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed after hashing the password
+            // setTimeout 100ms to remove the keyboard on mobile devices before the loading screen pops up
             window.setTimeout(function () {
-                loginReady(function () {
-                    var uname = $uname.val();
-                    var passwd = $passwd.val();
-                    Login.loginOrRegister(uname, passwd, false, function (err, result) {
-                        if (!err) {
-                            var proxy = result.proxy;
+                Cryptpad.addLoadingScreen(Messages.login_hashing);
+                // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed after hashing the password
+                window.setTimeout(function () {
+                    loginReady(function () {
+                        var uname = $uname.val();
+                        var passwd = $passwd.val();
+                        Login.loginOrRegister(uname, passwd, false, function (err, result) {
+                            if (!err) {
+                                var proxy = result.proxy;
 
-                            // successful validation and user already exists
-                            // set user hash in localStorage and redirect to drive
-                            if (proxy && !proxy.login_name) {
-                                proxy.login_name = result.userName;
+                                // successful validation and user already exists
+                                // set user hash in localStorage and redirect to drive
+                                if (proxy && !proxy.login_name) {
+                                    proxy.login_name = result.userName;
+                                }
+
+                                proxy.edPrivate = result.edPrivate;
+                                proxy.edPublic = result.edPublic;
+
+                                Cryptpad.whenRealtimeSyncs(result.realtime, function () {
+                                    Cryptpad.login(result.userHash, result.userName, function () {
+                                        document.location.href = '/drive/';
+                                    });
+                                });
+                                return;
                             }
-
-                            proxy.edPrivate = result.edPrivate;
-                            proxy.edPublic = result.edPublic;
-
-                            Cryptpad.whenRealtimeSyncs(result.realtime, function () {
-                                Cryptpad.login(result.userHash, result.userName, function () {
-                                    document.location.href = '/drive/';
-                                });
-                            });
-                            return;
-                        }
-                        switch (err) {
-                            case 'NO_SUCH_USER':
-                                Cryptpad.removeLoadingScreen(function () {
-                                    Cryptpad.alert(Messages.login_noSuchUser);
-                                });
-                                break;
-                            case 'INVAL_USER':
-                                Cryptpad.removeLoadingScreen(function () {
-                                    Cryptpad.alert(Messages.login_invalUser);
-                                });
-                                break;
-                            case 'INVAL_PASS':
-                                Cryptpad.removeLoadingScreen(function () {
-                                    Cryptpad.alert(Messages.login_invalPass);
-                                });
-                                break;
-                            default: // UNHANDLED ERROR
-                                Cryptpad.errorLoadingScreen(Messages.login_unhandledError);
-                        }
+                            switch (err) {
+                                case 'NO_SUCH_USER':
+                                    Cryptpad.removeLoadingScreen(function () {
+                                        Cryptpad.alert(Messages.login_noSuchUser);
+                                    });
+                                    break;
+                                case 'INVAL_USER':
+                                    Cryptpad.removeLoadingScreen(function () {
+                                        Cryptpad.alert(Messages.login_invalUser);
+                                    });
+                                    break;
+                                case 'INVAL_PASS':
+                                    Cryptpad.removeLoadingScreen(function () {
+                                        Cryptpad.alert(Messages.login_invalPass);
+                                    });
+                                    break;
+                                default: // UNHANDLED ERROR
+                                    Cryptpad.errorLoadingScreen(Messages.login_unhandledError);
+                            }
+                        });
                     });
-                });
-            }, 0);
+                }, 0);
+            }, 100);
         });
         /* End Log in UI */
 
