@@ -297,6 +297,7 @@ define([
         };
         $content.on('mousedown', function (e) {
             if (e.which !== 1) { return; }
+            $content.focus();
             sel.down = true;
             if (!e.ctrlKey) { removeSelected(); }
             var rect = e.currentTarget.getBoundingClientRect();
@@ -359,13 +360,15 @@ define([
             };
             $content.mousemove(sel.move);
         });
-        $content.on('mouseup', function (e) {
+        $(ifrw).on('mouseup', function (e) {
+            if (!sel.down) { return; }
             if (e.which !== 1) { return; }
             sel.down = false;
             sel.$selectBox.hide();
             $content.off('mousemove', sel.move);
             delete sel.move;
             $content.find('.selectedTmp').removeClass('selectedTmp').addClass('selected');
+            e.stopPropagation();
         });
 
         $(ifrw).keydown(function (e) {
@@ -520,6 +523,10 @@ define([
                     placeholder: name,
                     value: name
                 }).data('path', path);
+
+                // Stop propagation on keydown to avoid issues with arrow keys
+                $input.on('keydown', function (e) { e.stopPropagation(); });
+
                 $input.on('keyup', function (e) {
                     if (e.which === 13) {
                         removeInput(true);
@@ -560,7 +567,7 @@ define([
 
         var filterContextMenu = function ($menu, paths) {
             //var path = $element.data('path');
-            if (!paths || paths.length === 0) { console.error('no paths'); }
+            if (!paths || paths.length === 0) { logError('no paths'); }
 
             var hide = [];
             var hasFolder = false;
@@ -763,6 +770,7 @@ define([
 
         var displayMenu = function (e, $menu) {
             $menu.css({ display: "block" });
+            if (APP.mobile()) { return; }
             var h = $menu.outerHeight();
             var w = $menu.outerWidth();
             var wH = window.innerHeight;
@@ -1785,7 +1793,7 @@ define([
             module.resetTree();
 
             // in history mode we want to focus the version number input
-            if (!history.isHistoryMode) { $tree.find('#searchInput').focus(); }
+            if (!history.isHistoryMode && !APP.mobile()) { $tree.find('#searchInput').focus(); }
             $tree.find('#searchInput')[0].selectionStart = getSearchCursor();
             $tree.find('#searchInput')[0].selectionEnd = getSearchCursor();
 
@@ -2028,16 +2036,19 @@ define([
         var search = APP.Search = {};
         var createSearch = function ($container) {
             var isInSearch = currentPath[0] === SEARCH;
-            var $div = $('<div>', {'id': 'searchContainer'});
+            var $div = $('<div>', {'id': 'searchContainer', 'class': 'unselectable'});
             var $input = $('<input>', {
                 id: 'searchInput',
                 type: 'text',
+                draggable: false,
+                tabindex: 1,
                 placeholder: Messages.fm_searchPlaceholder
             }).keyup(function (e) {
                 if (search.to) { window.clearTimeout(search.to); }
                 if ([38, 39, 40, 41].indexOf(e.which) !== -1) {
                     if (!$input.val()) {
                         $input.blur();
+                        $content.focus();
                         return;
                     } else {
                         e.stopPropagation();
@@ -2056,6 +2067,7 @@ define([
                     if (!filesOp.comparePath(newLocation, currentPath.slice())) { displayDirectory(newLocation); }
                     return;
                 }
+                if (APP.mobile()) { return; }
                 search.to = window.setTimeout(function () {
                     if (!isInSearchTmp) { search.oldLocation = currentPath.slice(); }
                     var newLocation = [SEARCH, $input.val()];
@@ -2163,7 +2175,7 @@ define([
                 Cryptpad.getFileSize(el, function (e, bytes) {
                     if (e) {
                         // there was a problem with the RPC
-                        console.error(e);
+                        logError(e);
 
                         // but we don't want to break the interface.
                         // continue as if there was no RPC
@@ -2239,7 +2251,7 @@ define([
                 if (paths.length !== 1) { return; }
                 var el = filesOp.find(paths[0].path);
                 getProperties(el, function (e, $prop) {
-                    if (e) { return void console.error(e); }
+                    if (e) { return void logError(e); }
                     Cryptpad.alert('', undefined, true);
                     $('.alertify .msg').html("").append($prop);
                 });
@@ -2279,7 +2291,7 @@ define([
                 if (paths.length !== 1) { return; }
                 var el = filesOp.find(paths[0].path);
                 getProperties(el, function (e, $prop) {
-                    if (e) { return void console.error(e); }
+                    if (e) { return void logError(e); }
                     Cryptpad.alert('', undefined, true);
                     $('.alertify .msg').html("").append($prop);
                 });
@@ -2369,9 +2381,18 @@ define([
             module.hideMenu();
         });
 
-        $appContainer.on('mousedown', function (e) {
+        // Chrome considers the double-click means "select all" in the window
+        $content.on('mousedown', function (e) {
+            $content.focus();
+            e.preventDefault();
+        });
+        $appContainer.on('mouseup', function (e) {
+            if (sel.down) { return; }
             if (e.which !== 1) { return ; }
             removeSelected(e);
+        });
+        $appContainer.on('click', function (e) {
+            if (e.which !== 1) { return ; }
             removeInput();
             module.hideMenu(e);
             hideNewButton();
@@ -2514,7 +2535,6 @@ define([
         setEditable(!bool);
         if (!bool && update) {
             history.onLeaveHistory();
-            //init(); //TODO real proxy here
         }
     };
 
@@ -2667,33 +2687,20 @@ define([
             }
 
             /* add a history button */
-            var histConfig = {};
-            histConfig.onRender = function (val) {
-                if (typeof val === "undefined") { return; }
-                try {
+            var histConfig = {
+                onLocal: function () {
+                    proxy.drive = history.currentObj.drive;
+                },
+                onRemote: function () {},
+                setHistory: setHistory,
+                applyVal: function (val) {
                     var obj = JSON.parse(val || '{}');
                     history.currentObj = obj;
                     history.onEnterHistory(obj);
-                } catch (e) {
-                    // Probably a parse error
-                    console.error(e);
-                }
+                },
+                $toolbar: APP.$bar,
+                href: window.location.origin + window.location.pathname + APP.hash
             };
-            histConfig.onClose = function () {
-                // Close button clicked
-                setHistory(false, true);
-            };
-            histConfig.onRevert = function () {
-                // Revert button clicked
-                setHistory(false, false);
-                proxy.drive = history.currentObj.drive;
-            };
-            histConfig.onReady = function () {
-                // Called when the history is loaded and the UI displayed
-                setHistory(true);
-            };
-            histConfig.$toolbar = APP.$bar;
-            histConfig.href = window.location.origin + window.location.pathname + APP.hash;
             var $hist = Cryptpad.createButton('history', true, {histConfig: histConfig});
             $rightside.append($hist);
 

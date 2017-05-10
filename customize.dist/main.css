@@ -388,6 +388,11 @@
   right: 0;
   text-align: center;
 }
+@media screen and (max-height: 600px) {
+  .cp #loadingTip {
+    display: none;
+  }
+}
 .cp #loadingTip span {
   background-color: #302B28;
   color: #fafafa;

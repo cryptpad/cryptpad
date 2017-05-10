@@ -2,7 +2,7 @@ define([
     'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
-    '/common/toolbar.js',
+    '/common/toolbar2.js',
     '/common/cryptpad-common.js',
     '/common/visible.js',
     '/common/notify.js',
@@ -23,6 +23,8 @@ define([
     var $form = $iframe.find('#upload-form');
 
     Cryptpad.addLoadingScreen();
+
+    var Title;
 
     var myFile;
     var myDataType;
@@ -68,16 +70,12 @@ define([
                             var uri = ['', 'blob', id.slice(0,2), id].join('/');
                             console.log("encrypted blob is now available as %s", uri);
 
-                            // TODO use cryptpad-common utilities
-                            window.location.hash = [
-                                '',
-                                2,
-                                Cryptpad.hexToBase64(id).replace(/\//g, '-'),
-                                Nacl.util.encodeBase64(key).replace(/\//g, '-'),
-                                ''
-                            ].join('/');
+                            var b64Key = Nacl.util.encodeBase64(key);
+                            window.location.hash = Cryptpad.getFileHashFromKeys(id, b64Key);
 
                             $form.hide();
+
+                            APP.toolbar.addElement(['fileshare'], {});
 
                             // check if the uploaded file can be decrypted
                             var newU8 = FileCrypto.joinChunks(chunks);
@@ -88,7 +86,8 @@ define([
                                 myDataType = res.metadata.type;
 
                                 var defaultName = Cryptpad.getDefaultName(Cryptpad.parsePadUrl(window.location.href));
-                                APP.updateTitle(title || defaultName);
+                                Title.updateTitle(title || defaultName);
+                                APP.toolbar.title.show();
                                 Cryptpad.alert("successfully uploaded: " + title);
                             });
                         });
@@ -133,35 +132,11 @@ define([
             uploadMode = true;
         }
 
-        var parsed = Cryptpad.parsePadUrl(window.location.href);
-        var defaultName = Cryptpad.getDefaultName(parsed);
-
         var getTitle = function () {
             var pad = Cryptpad.getRelativeHref(window.location.href);
             var fo = Cryptpad.getStore().getProxy().fo;
             var data = fo.getFileData(pad);
             return data ? data.title : undefined;
-        };
-
-        var updateTitle = APP.updateTitle = function (newTitle) {
-            Cryptpad.renamePad(newTitle, function (err, data) {
-                if (err) {
-                    console.log("Couldn't set pad title");
-                    console.error(err);
-                    return;
-                }
-                document.title = newTitle;
-                $bar.find('.' + Toolbar.constants.title).find('span.title').text(data);
-                $bar.find('.' + Toolbar.constants.title).find('input').val(data);
-            });
-        };
-
-        var suggestName = function () {
-            return document.title || getTitle() || '';
-        };
-
-        var renameCb = function (err, title) {
-            document.title = title;
         };
 
         var exportFile = function () {
@@ -174,33 +149,33 @@ define([
             });
         };
 
-        var displayed = ['useradmin', 'newpad', 'limit'];
+        Title = Cryptpad.createTitle({}, function(){}, Cryptpad);
+
+        var displayed = ['title', 'useradmin', 'newpad', 'limit'];
         if (secret && hexFileName) {
-            displayed.push('share');
+            displayed.push('fileshare');
         }
 
         var configTb = {
             displayed: displayed,
             ifrw: ifrw,
             common: Cryptpad,
-            title: {
-                onRename: renameCb,
-                defaultName: defaultName,
-                suggestName: suggestName
-            },
-            share: {
-                secret: secret,
-                channel: hexFileName
-            },
-            hideDisplayName: true
+            title: Title.getTitleConfig(),
+            hideDisplayName: true,
+            $container: $bar
         };
-        Toolbar.create($bar, null, null, null, null, configTb);
-        var $rightside = $bar.find('.' + Toolbar.constants.rightside);
+        var toolbar = APP.toolbar = Toolbar.create(configTb);
+
+        Title.setToolbar(toolbar);
+
+        if (uploadMode) { toolbar.title.hide(); }
+
+        var $rightside = toolbar.$rightside;
 
         var $export = Cryptpad.createButton('export', true, {}, exportFile);
         $rightside.append($export);
 
-        updateTitle(Cryptpad.initialName || getTitle() || defaultName);
+        Title.updateTitle(Cryptpad.initialName || getTitle() || Title.defaultTitle);
 
         if (!uploadMode) {
             var src = Cryptpad.getBlobPathFromHex(hexFileName);
@@ -219,7 +194,7 @@ define([
                     var title = document.title = data.metadata.name;
                     myFile = data.content;
                     myDataType = data.metadata.type;
-                    updateTitle(title || defaultName);
+                    Title.updateTitle(title || Title.defaultTitle);
                     Cryptpad.removeLoadingScreen();
                 });
             });

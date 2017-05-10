@@ -43,6 +43,9 @@ body {
     margin-top: 0.5em;
   }
 }
+div:focus {
+  outline: none;
+}
 .fa {
   /*min-width: 17px;*/
   margin-right: 3px;

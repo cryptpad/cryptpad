@@ -211,7 +211,10 @@ define([
             $(ifrw).focus();
             change(null, Slide.index);
             if (!isPresentURL()) {
-                window.location.hash += '/present';
+                if (window.location.href.slice(-1) !== '/') {
+                    window.location.hash += '/';
+                }
+                window.location.hash += 'present';
             }
             $pad.contents().find('.cryptpad-present-button').hide();
             $pad.contents().find('.cryptpad-source-button').show();
@@ -220,7 +223,7 @@ define([
             $('.top-bar').hide();
             return;
         }
-        window.location.hash = window.location.hash.replace(/\/present$/, '');
+        window.location.hash = window.location.hash.replace(/\/present$/, '/');
         change(Slide.index, null);
         $pad.contents().find('.cryptpad-present-button').show();
         $pad.contents().find('.cryptpad-source-button').hide();

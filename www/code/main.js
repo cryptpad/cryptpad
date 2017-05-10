@@ -150,34 +150,17 @@ define([
                 }
 
                 /* add a history button */
-                var histConfig = {};
-                histConfig.onRender = function (val) {
-                    if (typeof val === "undefined") { return; }
-                    try {
-                        var hjson = JSON.parse(val || '{}');
-                        var remoteDoc = hjson.content;
+                var histConfig = {
+                    onLocal: config.onLocal(),
+                    onRemote: config.onRemote(),
+                    setHistory: setHistory,
+                    applyVal: function (val) {
+                        var remoteDoc = JSON.parse(val || '{}').content;
                         editor.setValue(remoteDoc || '');
                         editor.save();
-                    } catch (e) {
-                        // Probably a parse error
-                        console.error(e);
-                    }
+                    },
+                    $toolbar: $bar
                 };
-                histConfig.onClose = function () {
-                    // Close button clicked
-                    setHistory(false, true);
-                };
-                histConfig.onRevert = function () {
-                    // Revert button clicked
-                    setHistory(false, false);
-                    config.onLocal();
-                    config.onRemote();
-                };
-                histConfig.onReady = function () {
-                    // Called when the history is loaded and the UI displayed
-                    setHistory(true);
-                };
-                histConfig.$toolbar = $bar;
                 var $hist = Cryptpad.createButton('history', true, {histConfig: histConfig});
                 $rightside.append($hist);
 
