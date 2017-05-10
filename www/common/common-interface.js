@@ -143,7 +143,7 @@ define([
 
         return {
             show: function () {
-                $target.show();
+                $target.css('display', 'inline');
                 return this;
             },
             hide: function () {
