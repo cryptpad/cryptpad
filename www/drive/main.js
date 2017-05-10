@@ -523,6 +523,10 @@ define([
                     placeholder: name,
                     value: name
                 }).data('path', path);
+
+                // Stop propagation on keydown to avoid issues with arrow keys
+                $input.on('keydown', function (e) { e.stopPropagation(); });
+
                 $input.on('keyup', function (e) {
                     if (e.which === 13) {
                         removeInput(true);
