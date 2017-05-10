@@ -11,7 +11,6 @@ define([
     '/bower_components/file-saver/FileSaver.min.js',
 ], function ($, Crypto, realtimeInput, Toolbar, Cryptpad, Visible, Notify, FileCrypto) {
     var Nacl = window.nacl;
-
     $(function () {
 
     var filesAreSame = function (a, b) {
@@ -31,8 +30,8 @@ define([
 
     var upload = function (blob, metadata) {
         var u8 = new Uint8Array(blob);
-
         var key = Nacl.randomBytes(32);
+
         var next = FileCrypto.encrypt(u8, metadata, key);
 
         var chunks = [];
@@ -41,41 +40,32 @@ define([
             cb();
         };
 
-        var again = function (state, box) {
-            switch (state) {
-                case 0:
-                    sendChunk(box, function (e) {
-                        if (e) { return console.error(e); }
-                        next(again);
-                    });
-                    break;
-                case 1:
-                    sendChunk(box, function (e) {
-                        if (e) { return console.error(e); }
-                        next(again);
-                    });
-                    break;
-                case 2:
-                    sendChunk(box, function (e) {
-                        if (e) { return console.error(e); }
+        var again = function (err, box) {
+            if (err) { throw new Error(err); }
 
-                        // check if the uploaded file can be decrypted
-                        var newU8 = FileCrypto.joinChunks(chunks);
-                        FileCrypto.decrypt(newU8, key, function (e, res) {
-                            if (e) { return Cryptpad.alert(e); }
-
-                            if (filesAreSame(blob, res.content) &&
-                                metadataIsSame(res.metadata, metadata)) {
-                                Cryptpad.alert("successfully uploaded");
-                            } else {
-                                Cryptpad.alert('encryption failure!');
-                            }
-                        });
-                    });
-                    break;
-                default:
-                    throw new Error("E_INVAL_STATE");
+            if (box) {
+                return void sendChunk(box, function (e) {
+                    if (e) {
+                        console.error(e);
+                        return Cryptpad.alert('Something went wrong');
+                    }
+                    next(again);
+                });
             }
+            // check if the uploaded file can be decrypted
+            var newU8 = FileCrypto.joinChunks(chunks);
+
+            console.log('encrypted file with metadata is %s uint8s', newU8.length);
+            FileCrypto.decrypt(newU8, key, function (e, res) {
+                if (e) { return Cryptpad.alert(e); }
+
+                if (filesAreSame(blob, res.content) &&
+                    metadataIsSame(res.metadata, metadata)) {
+                    Cryptpad.alert("successfully uploaded");
+                } else {
+                    Cryptpad.alert('encryption failure!');
+                }
+            });
         };
         next(again);
     };
@@ -83,7 +73,7 @@ define([
     var andThen = function () {
         var src = '/customize/cryptofist_mini.png';
         Cryptpad.fetch(src, function (e, file) {
-            console.log(file);
+            console.log('original file is %s uint8s', file.length);
             upload(file, {
                 pew: 'pew',
                 bang: 'bang',
