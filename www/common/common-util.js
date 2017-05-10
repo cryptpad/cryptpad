@@ -21,7 +21,7 @@ define([], function () {
             .replace(/ +$/, "")
             .split(" ");
         var byteString = String.fromCharCode.apply(null, hexArray);
-        return window.btoa(byteString).replace(/\//g, '-').slice(0,-2);
+        return window.btoa(byteString).replace(/\//g, '-').replace(/=+$/, '');
     };
 
     Util.base64ToHex = function (b64String) {
