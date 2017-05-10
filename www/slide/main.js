@@ -491,11 +491,11 @@ define([
 
                 Slide.onChange(function (o, n, l) {
                     if (n !== null) {
-                        document.title = APP.title + ' (' + (++n) + '/' + l +  ')';
+                        document.title = Title.title + ' (' + (++n) + '/' + l +  ')';
                         return;
                     }
                     console.log("Exiting presentation mode");
-                    document.title = APP.title;
+                    document.title = Title.title;
                 });
 
                 Cryptpad.removeLoadingScreen();
