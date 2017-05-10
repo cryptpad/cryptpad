@@ -19,7 +19,7 @@ define([
         var count = ASSERTS.length;
         var successes = 0;
 
-        var done = function (err, index) {
+        var done = function (err) {
             count--;
             if (err) { failMessages.push(err); }
             else { successes++; }
