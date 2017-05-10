@@ -24,16 +24,6 @@ define([
 
     Cryptpad.addLoadingScreen();
 
-    var fetch = function (src, cb) {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", src, true);
-        xhr.responseType = "arraybuffer";
-        xhr.onload = function () {
-            return void cb(void 0, new Uint8Array(xhr.response));
-        };
-        xhr.send(null);
-    };
-
     var myFile;
     var myDataType;
 
@@ -78,6 +68,7 @@ define([
                             var uri = ['', 'blob', id.slice(0,2), id].join('/');
                             console.log("encrypted blob is now available as %s", uri);
 
+                            // TODO use cryptpad-common utilities
                             window.location.hash = [
                                 '',
                                 2,
@@ -88,6 +79,7 @@ define([
 
                             $form.hide();
 
+                            // check if the uploaded file can be decrypted
                             var newU8 = FileCrypto.joinChunks(chunks);
                             FileCrypto.decrypt(newU8, key, function (e, res) {
                                 if (e) { return console.error(e); }
@@ -97,7 +89,7 @@ define([
 
                                 var defaultName = Cryptpad.getDefaultName(Cryptpad.parsePadUrl(window.location.href));
                                 APP.updateTitle(title || defaultName);
-
+                                Cryptpad.alert("successfully uploaded: " + title);
                             });
                         });
                     });
@@ -212,7 +204,7 @@ define([
 
         if (!uploadMode) {
             var src = Cryptpad.getBlobPathFromHex(hexFileName);
-            return fetch(src, function (e, u8) {
+            return Cryptpad.fetch(src, function (e, u8) {
                 // now decrypt the u8
                 if (e) { return window.alert('error'); }
                 var cryptKey = secret.keys && secret.keys.fileKeyStr;

@@ -7,6 +7,18 @@ define([
     var plainChunkLength = 128 * 1024;
     var cypherChunkLength = 131088;
 
+    var encodePrefix = function (p) {
+        return [
+            65280, // 255 << 8
+            255,
+        ].map(function (n, i) {
+            return (p & n) >> ((1 - i) * 8);
+        });
+    };
+    var decodePrefix = function (A) {
+        return (A[0] << 8) | A[1];
+    };
+
     var slice = function (A) {
         return Array.prototype.slice.call(A);
     };
@@ -64,6 +76,7 @@ define([
         var nonce = createNonce();
         var i = 0;
 
+        decodePrefix([]); // TODO
         var takeChunk = function () {
             var start = i * cypherChunkLength;
             var end = start + cypherChunkLength;
@@ -125,6 +138,8 @@ define([
     /* { filename: 'raccoon.jpg', type: 'image/jpeg' } */
     var encrypt = function (u8, metadata, key) {
         var nonce = createNonce();
+
+        encodePrefix(); // TODO
 
         // encode metadata
         var metaBuffer = Array.prototype.slice

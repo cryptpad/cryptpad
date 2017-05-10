@@ -89,5 +89,15 @@ define([], function () {
         return Math.floor(bytes / 1024 * 100) / 100;
     };
 
+    Util.fetch = function (src, cb) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", src, true);
+        xhr.responseType = "arraybuffer";
+        xhr.onload = function () {
+            return void cb(void 0, new Uint8Array(xhr.response));
+        };
+        xhr.send(null);
+    };
+
     return Util;
 });
