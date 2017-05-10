@@ -66,6 +66,10 @@ define([
         return '/' + parsed.type + '/#' + parsed.hash;
     };
 
+    var fixDuplicateSlashes = function (s) {
+        return s.replace(/\/+/g, '/');
+    };
+
     /*
      * Returns all needed keys for a realtime channel
      * - no argument: use the URL hash or create one if it doesn't exist
@@ -95,7 +99,7 @@ define([
             }
             else {
                 // New hash
-                var hashArray = hash.split('/');
+                var hashArray = fixDuplicateSlashes(hash).split('/');
                 if (hashArray.length < 4) {
                     Hash.alert("Unable to parse the key");
                     throw new Error("Unable to parse the key");
@@ -179,7 +183,7 @@ Version 2
             parsed.version = 0;
             return parsed;
         }
-        var hashArr = hash.split('/');
+        var hashArr = fixDuplicateSlashes(hash).split('/');
         if (hashArr[1] && hashArr[1] === '1') {
             parsed.version = 1;
             parsed.mode = hashArr[2];
