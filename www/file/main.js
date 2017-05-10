@@ -71,7 +71,7 @@ define([
                             console.log("encrypted blob is now available as %s", uri);
 
                             var b64Key = Nacl.util.encodeBase64(key);
-                            window.location.hash = Cryptpad.getFileHashFromKeys(id, b64key);
+                            window.location.hash = Cryptpad.getFileHashFromKeys(id, b64Key);
 
                             $form.hide();
 
