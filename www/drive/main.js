@@ -297,6 +297,7 @@ define([
         };
         $content.on('mousedown', function (e) {
             if (e.which !== 1) { return; }
+            $content.focus();
             sel.down = true;
             if (!e.ctrlKey) { removeSelected(); }
             var rect = e.currentTarget.getBoundingClientRect();
@@ -359,13 +360,15 @@ define([
             };
             $content.mousemove(sel.move);
         });
-        $content.on('mouseup', function (e) {
+        $(ifrw).on('mouseup', function (e) {
+            if (!sel.down) { return; }
             if (e.which !== 1) { return; }
             sel.down = false;
             sel.$selectBox.hide();
             $content.off('mousemove', sel.move);
             delete sel.move;
             $content.find('.selectedTmp').removeClass('selectedTmp').addClass('selected');
+            e.stopPropagation();
         });
 
         $(ifrw).keydown(function (e) {
@@ -560,7 +563,7 @@ define([
 
         var filterContextMenu = function ($menu, paths) {
             //var path = $element.data('path');
-            if (!paths || paths.length === 0) { console.error('no paths'); }
+            if (!paths || paths.length === 0) { logError('no paths'); }
 
             var hide = [];
             var hasFolder = false;
@@ -2028,16 +2031,19 @@ define([
         var search = APP.Search = {};
         var createSearch = function ($container) {
             var isInSearch = currentPath[0] === SEARCH;
-            var $div = $('<div>', {'id': 'searchContainer'});
+            var $div = $('<div>', {'id': 'searchContainer', 'class': 'unselectable'});
             var $input = $('<input>', {
                 id: 'searchInput',
                 type: 'text',
+                draggable: false,
+                tabindex: 1,
                 placeholder: Messages.fm_searchPlaceholder
             }).keyup(function (e) {
                 if (search.to) { window.clearTimeout(search.to); }
                 if ([38, 39, 40, 41].indexOf(e.which) !== -1) {
                     if (!$input.val()) {
                         $input.blur();
+                        $content.focus();
                         return;
                     } else {
                         e.stopPropagation();
@@ -2163,7 +2169,7 @@ define([
                 Cryptpad.getFileSize(el, function (e, bytes) {
                     if (e) {
                         // there was a problem with the RPC
-                        console.error(e);
+                        logError(e);
 
                         // but we don't want to break the interface.
                         // continue as if there was no RPC
@@ -2239,7 +2245,7 @@ define([
                 if (paths.length !== 1) { return; }
                 var el = filesOp.find(paths[0].path);
                 getProperties(el, function (e, $prop) {
-                    if (e) { return void console.error(e); }
+                    if (e) { return void logError(e); }
                     Cryptpad.alert('', undefined, true);
                     $('.alertify .msg').html("").append($prop);
                 });
@@ -2279,7 +2285,7 @@ define([
                 if (paths.length !== 1) { return; }
                 var el = filesOp.find(paths[0].path);
                 getProperties(el, function (e, $prop) {
-                    if (e) { return void console.error(e); }
+                    if (e) { return void logError(e); }
                     Cryptpad.alert('', undefined, true);
                     $('.alertify .msg').html("").append($prop);
                 });
@@ -2369,9 +2375,18 @@ define([
             module.hideMenu();
         });
 
-        $appContainer.on('mousedown', function (e) {
+        // Chrome considers the double-click means "select all" in the window
+        $content.on('mousedown', function (e) {
+            $content.focus();
+            e.preventDefault();
+        });
+        $appContainer.on('mouseup', function (e) {
+            if (sel.down) { return; }
             if (e.which !== 1) { return ; }
             removeSelected(e);
+        });
+        $appContainer.on('click', function (e) {
+            if (e.which !== 1) { return ; }
             removeInput();
             module.hideMenu(e);
             hideNewButton();
@@ -2676,7 +2691,7 @@ define([
                     history.onEnterHistory(obj);
                 } catch (e) {
                     // Probably a parse error
-                    console.error(e);
+                    logError(e);
                 }
             };
             histConfig.onClose = function () {
