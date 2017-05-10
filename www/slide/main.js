@@ -303,7 +303,7 @@ define([
                         editor.save();
                     },
                     $toolbar: $bar
-                }
+                };
                 var $hist = Cryptpad.createButton('history', true, {histConfig: histConfig});
                 $rightside.append($hist);
 
