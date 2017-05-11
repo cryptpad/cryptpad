@@ -1793,7 +1793,11 @@ define([
             module.resetTree();
 
             // in history mode we want to focus the version number input
-            if (!history.isHistoryMode && !APP.mobile()) { $tree.find('#searchInput').focus(); }
+            if (!history.isHistoryMode && !APP.mobile()) {
+                var st = $tree.scrollTop() || 0;
+                $tree.find('#searchInput').focus();
+                $tree.scrollTop(st);
+            }
             $tree.find('#searchInput')[0].selectionStart = getSearchCursor();
             $tree.find('#searchInput')[0].selectionEnd = getSearchCursor();
 
@@ -2080,12 +2084,14 @@ define([
         };
 
         module.resetTree = function () {
+            var s = $tree.scrollTop() || 0;
             $tree.html('');
             if (displayedCategories.indexOf(SEARCH) !== -1) { createSearch($tree); }
             if (displayedCategories.indexOf(ROOT) !== -1) { createTree($tree, [ROOT]); }
             if (displayedCategories.indexOf(TEMPLATE) !== -1) { createTemplate($tree, [TEMPLATE]); }
             if (displayedCategories.indexOf(FILES_DATA) !== -1) { createAllFiles($tree, [FILES_DATA]); }
             if (displayedCategories.indexOf(TRASH) !== -1) { createTrash($tree, [TRASH]); }
+            $tree.scrollTop(s);
         };
 
         module.hideMenu = function () {
