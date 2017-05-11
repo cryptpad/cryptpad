@@ -116,6 +116,12 @@ module.exports = {
         'contact',
     ],
 
+    /*  Domain
+     *  If you want to have enable payments on your CryptPad instance, it has to be able to tell
+     *  our account server what is your domain
+     */
+    // domain: 'https://cryptpad.fr',
+
     /*
         You have the option of specifying an alternative storage adaptor.
         These status of these alternatives are specified in their READMEs,

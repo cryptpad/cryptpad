@@ -7,10 +7,14 @@ var Nacl = require("tweetnacl");
 
 var Fs = require("fs");
 var Path = require("path");
+var Https = require("https");
 
 var RPC = module.exports;
 
 var Store = require("./storage/file");
+var config = require('./config');
+
+var DEFAULT_LIMIT = 100;
 
 var isValidChannel = function (chan) {
     return /^[a-fA-F0-9]/.test(chan) ||
@@ -454,8 +458,42 @@ var isPrivilegedUser = function (publicKey, cb) {
     });
 };
 
-var getLimit = function (cb) {
-    cb = cb; // TODO
+var limits = {};
+var updateLimits = function (publicKey, cb) {
+    if (typeof cb !== "function") { cb = function () {}; }
+    var domain = config.domain;
+    var options = {
+        host: 'accounts.cryptpad.fr',
+        path: '/api/getAuthorized?domain=' + encodeURIComponent(domain)
+    };
+    var callback = function (response) {
+        var str = '';
+
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+
+        response.on('end', function () {
+            try {
+                var json = JSON.parse(str);
+                limits = json;
+                var l;
+                if (publicKey) {
+                    l = typeof limits[publicKey] === "number" ? limits[publicKey] : DEFAULT_LIMIT;
+                }
+                cb(void 0, l);
+            } catch (e) {
+                cb(e);
+            }
+        });
+    };
+    Https.get(options, callback).on('error', function (e) {
+        console.error(e);
+        cb(e);
+    });
+};
+var getLimit = function (publicKey, cb) {
+    return void cb(null, typeof limits[publicKey] === "number" ? limits[publicKey] : DEFAULT_LIMIT);
 };
 
 var safeMkdir = function (path, cb) {
@@ -714,10 +752,16 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                 });
             case 'GET_FILE_SIZE':
                 return void getFileSize(ctx.store, msg[1], Respond);
-            case 'GET_LIMIT': // TODO implement this and cache it per-user
-                return void getLimit(function (e, limit) {
+            case 'UPDATE_LIMITS':
+                return void updateLimits(safeKey, function (e, limit) {
+                    if (e) { return void Respond(e); }
+                    Respond(void 0, limit);
+                });
+            case 'GET_LIMIT':
+                return void getLimit(safeKey, function (e, limit) {
+                    if (e) { return void Respond(e); }
                     limit = limit;
-                    Respond('NOT_IMPLEMENTED');
+                    Respond(void 0, limit);
                 });
             case 'GET_MULTIPLE_FILE_SIZE':
                 return void getMultipleFileSize(ctx.store, msg[1], function (e, dict) {
@@ -774,6 +818,14 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
         // if authenticated, proceed
         handleMessage(session.privilege);
     };
+
+    var updateLimitDaily = function () {
+        updateLimits(function (e) {
+            if (e) { console.error('Error updating the storage limits', e); }
+        });
+    };
+    updateLimitDaily();
+    setInterval(updateLimitDaily, 24*3600*1000);
 
     Store.create({
         filePath: pinPath,
