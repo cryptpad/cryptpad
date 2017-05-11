@@ -371,6 +371,7 @@ define([
             e.stopPropagation();
         });
 
+        // Arrow keys to modify the selection
         $(ifrw).keydown(function (e) {
             var $searchBar = $tree.find('#searchInput');
             if ($searchBar.is(':focus') && $searchBar.val()) { return; }
@@ -381,6 +382,7 @@ define([
             if (e.ctrlKey) { ev.ctrlKey = true; }
             if (e.shiftKey) { ev.shiftKey = true; }
             var click = function (el) {
+                if (!el) { return; }
                 module.onElementClick(ev, $(el));
             };
 
@@ -402,6 +404,7 @@ define([
 
             // [Left, Up, Right, Down]
             if ([37, 38, 39, 40].indexOf(e.which) === -1) { return; }
+            e.preventDefault();
 
             var $selection = $content.find('.element.selected');
             if ($selection.length === 0) { return void click($elements.first()[0]); }
@@ -715,6 +718,21 @@ define([
             updatePathSize();
         };
 
+        var scrollTo = function ($element) {
+            // Current scroll position
+            var st = $content.scrollTop();
+            // Block height
+            var h = $content.height();
+            // Current top position of the element relative to the scroll position
+            var pos = Math.round($element.offset().top - $content.position().top);
+            // Element height
+            var eh = $element.outerHeight();
+            // New scroll value
+            var v = st + pos + eh - h;
+            // If the element is completely visile, don't change the scroll position
+            if (pos+eh <= h && pos >= 0) { return; }
+            $content.scrollTop(v);
+        };
         // Add the "selected" class to the "li" corresponding to the clicked element
         var onElementClick = module.onElementClick = function (e, $element) {
             // If "Ctrl" is pressed, do not remove the current selection
@@ -730,6 +748,7 @@ define([
                 log(Messages.fm_selectError);
                 return;
             }
+            scrollTo($element);
             // Add the selected class to the clicked / right-clicked element
             // Remove the class if it already has it
             // If ctrlKey, add to the selection
