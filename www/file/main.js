@@ -47,55 +47,43 @@ define([
             });
         };
 
-        var again = function (state, box) {
-            switch (state) {
-                case 0:
-                    sendChunk(box, function (e) {
-                        if (e) { return console.error(e); }
-                        next(again);
-                    });
-                    break;
-                case 1:
-                    sendChunk(box, function (e) {
-                        if (e) { return console.error(e); }
-                        next(again);
-                    });
-                    break;
-                case 2:
-                    sendChunk(box, function (e) {
-                        if (e) { return console.error(e); }
-                        Cryptpad.rpc.send('UPLOAD_COMPLETE', '', function (e, res) {
-                            if (e) { return void console.error(e); }
-                            var id = res[0];
-                            var uri = ['', 'blob', id.slice(0,2), id].join('/');
-                            console.log("encrypted blob is now available as %s", uri);
-
-                            var b64Key = Nacl.util.encodeBase64(key);
-                            window.location.hash = Cryptpad.getFileHashFromKeys(id, b64Key);
-
-                            $form.hide();
-
-                            APP.toolbar.addElement(['fileshare'], {});
-
-                            // check if the uploaded file can be decrypted
-                            var newU8 = FileCrypto.joinChunks(chunks);
-                            FileCrypto.decrypt(newU8, key, function (e, res) {
-                                if (e) { return console.error(e); }
-                                var title = document.title = res.metadata.name;
-                                myFile = res.content;
-                                myDataType = res.metadata.type;
-
-                                var defaultName = Cryptpad.getDefaultName(Cryptpad.parsePadUrl(window.location.href));
-                                Title.updateTitle(title || defaultName);
-                                APP.toolbar.title.show();
-                                Cryptpad.alert("successfully uploaded: " + title);
-                            });
-                        });
-                    });
-                    break;
-                default:
-                    throw new Error("E_INVAL_STATE");
+        var again = function (err, box) {
+            if (err) { throw new Error(err); }
+            if (box) {
+                return void sendChunk(box, function (e) {
+                    if (e) { return console.error(e); }
+                    next(again);
+                });
             }
+
+            // if not box then done
+            Cryptpad.rpc.send('UPLOAD_COMPLETE', '', function (e, res) {
+                if (e) { return void console.error(e); }
+                var id = res[0];
+                var uri = ['', 'blob', id.slice(0,2), id].join('/');
+                console.log("encrypted blob is now available as %s", uri);
+
+                var b64Key = Nacl.util.encodeBase64(key);
+                window.location.hash = Cryptpad.getFileHashFromKeys(id, b64Key);
+
+                $form.hide();
+
+                APP.toolbar.addElement(['fileshare'], {});
+
+                // check if the uploaded file can be decrypted
+                var newU8 = FileCrypto.joinChunks(chunks);
+                FileCrypto.decrypt(newU8, key, function (e, res) {
+                    if (e) { return console.error(e); }
+                    var title = document.title = res.metadata.name;
+                    myFile = res.content;
+                    myDataType = res.metadata.type;
+
+                    var defaultName = Cryptpad.getDefaultName(Cryptpad.parsePadUrl(window.location.href));
+                    Title.updateTitle(title || defaultName);
+                    APP.toolbar.title.show();
+                    Cryptpad.alert("successfully uploaded: " + title);
+                });
+            });
         };
 
         Cryptpad.rpc.send('UPLOAD_STATUS', '', function (e, pending) {

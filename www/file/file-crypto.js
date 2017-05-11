@@ -57,28 +57,40 @@ define([
         }, []));
     };
 
-    var padChunk = function (A) {
-        var padding;
-        if (A.length === plainChunkLength) { return A; }
-        if (A.length < plainChunkLength) {
-            padding = new Array(plainChunkLength - A.length).fill(32);
-            return A.concat(padding);
-        }
-        if (A.length > plainChunkLength) {
-            // how many times larger is it?
-            var chunks = Math.ceil(A.length / plainChunkLength);
-            padding = new Array((plainChunkLength * chunks) - A.length).fill(32);
-            return A.concat(padding);
-        }
-    };
-
     var decrypt = function (u8, key, cb) {
+        var fail = function (e) {
+            cb(e || "DECRYPTION_ERROR");
+        };
+
         var nonce = createNonce();
         var i = 0;
 
-        decodePrefix([]); // TODO
+        var prefix = u8.subarray(0, 2);
+        var metadataLength = decodePrefix(prefix);
+
+        var res = {
+            metadata: undefined,
+        };
+
+        var metaBox = new Uint8Array(u8.subarray(2, 2 + metadataLength));
+
+        var metaChunk = Nacl.secretbox.open(metaBox, nonce, key);
+        increment(nonce);
+
+        try {
+            res.metadata = JSON.parse(Nacl.util.encodeUTF8(metaChunk));
+        } catch (e) {
+            return fail('E_METADATA_DECRYPTION');
+        }
+
+        if (!res.metadata) {
+            return void setTimeout(function () {
+                cb('NO_METADATA');
+            });
+        }
+
         var takeChunk = function () {
-            var start = i * cypherChunkLength;
+            var start = i * cypherChunkLength + 2 + metadataLength;
             var end = start + cypherChunkLength;
             i++;
             var box = new Uint8Array(u8.subarray(start, end));
@@ -89,37 +101,9 @@ define([
             return plaintext;
         };
 
-        var buffer = '';
-
-        var res = {
-            metadata: undefined,
-        };
-
-        // decrypt metadata
-        var chunk;
-        for (; !res.metadata && i * cypherChunkLength < u8.length;) {
-            chunk = takeChunk();
-            buffer += Nacl.util.encodeUTF8(chunk);
-            try {
-                res.metadata = JSON.parse(buffer);
-                //console.log(res.metadata);
-            } catch (e) {
-                console.log('buffering another chunk for metadata');
-            }
-        }
-
-        if (!res.metadata) {
-            return void setTimeout(function () {
-                cb('NO_METADATA');
-            });
-        }
-
-        var fail = function () {
-            cb("DECRYPTION_ERROR");
-        };
-
         var chunks = [];
         // decrypt file contents
+        var chunk;
         for (;i * cypherChunkLength < u8.length;) {
             chunk = takeChunk();
             if (!chunk) {
@@ -139,15 +123,12 @@ define([
     var encrypt = function (u8, metadata, key) {
         var nonce = createNonce();
 
-        encodePrefix(); // TODO
-
         // encode metadata
         var metaBuffer = Array.prototype.slice
             .call(Nacl.util.decodeUTF8(JSON.stringify(metadata)));
 
-        var plaintext = new Uint8Array(padChunk(metaBuffer));
+        var plaintext = new Uint8Array(metaBuffer);
 
-        var j = 0;
         var i = 0;
 
         /*
@@ -164,22 +145,21 @@ define([
             var part;
             var box;
 
-            if (state === 0) { // metadata...
-                start = j * plainChunkLength;
-                end = start + plainChunkLength;
+            // DONE
+            if (state === 2) { return void cb(); }
 
-                part = plaintext.subarray(start, end);
+            if (state === 0) { // metadata...
+                part = new Uint8Array(plaintext);
                 box = Nacl.secretbox(part, nonce, key);
                 increment(nonce);
 
-                j++;
-
-                // metadata is done
-                if (j * plainChunkLength >= plaintext.length) {
-                    return void cb(state++, box);
+                if (box.length > 65535) {
+                    return void cb('METADATA_TOO_LARGE');
                 }
-
-                return void cb(state, box);
+                var prefixed = new Uint8Array(encodePrefix(box.length)
+                    .concat(slice(box)));
+                state++;
+                return void cb(void 0, prefixed);
             }
 
             // encrypt the rest of the file...
@@ -194,7 +174,7 @@ define([
             // regular data is done
             if (i * plainChunkLength >= u8.length) { state = 2; }
 
-            return void cb(state, box);
+            return void cb(void 0, box);
         };
 
         return next;

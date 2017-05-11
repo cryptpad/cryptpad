@@ -13,7 +13,8 @@ var RPC = module.exports;
 var Store = require("./storage/file");
 
 var isValidChannel = function (chan) {
-    return /^[a-fA-F0-9]/.test(chan);
+    return /^[a-fA-F0-9]/.test(chan) ||
+        [32, 48].indexOf(chan.length) !== -1;
 };
 
 var uint8ArrayToHex = function (a) {
@@ -33,10 +34,10 @@ var uint8ArrayToHex = function (a) {
     }).join('');
 };
 
-var createChannelId = function () {
-    var id = uint8ArrayToHex(Nacl.randomBytes(16));
-    if (id.length !== 32 || /[^a-f0-9]/.test(id)) {
-        throw new Error('channel ids must consist of 32 hex characters');
+var createFileId = function () {
+    var id = uint8ArrayToHex(Nacl.randomBytes(24));
+    if (id.length !== 48 || /[^a-f0-9]/.test(id)) {
+        throw new Error('file ids must consist of 48 hex characters');
     }
     return id;
 };
@@ -245,14 +246,32 @@ var getChannelList = function (store, Sessions, publicKey, cb) {
     });
 };
 
+var getUploadSize = function (store, channel, cb) {
+    var path = '';
+
+    Fs.stat(path, function (err, stats) {
+        if (err) { return void cb(err); }
+        cb(void 0, stats.size);
+    });
+};
+
 var getFileSize = function (store, channel, cb) {
     if (!isValidChannel(channel)) { return void cb('INVALID_CHAN'); }
-    if (typeof(store.getChannelSize) !== 'function') {
-        return cb('GET_CHANNEL_SIZE_UNSUPPORTED');
+
+    if (channel.length === 32) {
+        if (typeof(store.getChannelSize) !== 'function') {
+            return cb('GET_CHANNEL_SIZE_UNSUPPORTED');
+        }
+
+        return void store.getChannelSize(channel, function (e, size) {
+            if (e) { return void cb(e.code); }
+            cb(void 0, size);
+        });
     }
 
-    return void store.getChannelSize(channel, function (e, size) {
-        if (e) { return void cb(e.code); }
+    // 'channel' refers to a file, so you need anoter API
+    getUploadSize(null, channel, function (e, size) {
+        if (e) { return void cb(e); }
         cb(void 0, size);
     });
 };
@@ -332,6 +351,7 @@ var getHash = function (store, Sessions, publicKey, cb) {
     store.message(publicKey, JSON.stringify(msg), cb);
 }; */
 
+// TODO check if new pinned size exceeds user quota
 var pinChannel = function (store, Sessions, publicKey, channels, cb) {
     if (!channels && channels.filter) {
         // expected array
@@ -383,7 +403,7 @@ var unpinChannel = function (store, Sessions, publicKey, channels, cb) {
             function (e) {
             if (e) { return void cb(e); }
             toStore.forEach(function (channel) {
-                delete session.channels[channel]; // = false;
+                delete session.channels[channel];
             });
 
             getHash(store, Sessions, publicKey, cb);
@@ -391,6 +411,7 @@ var unpinChannel = function (store, Sessions, publicKey, channels, cb) {
     });
 };
 
+// TODO check if new pinned size exceeds user quota
 var resetUserPins = function (store, Sessions, publicKey, channelList, cb) {
     var session = beginSession(Sessions, publicKey);
 
@@ -469,13 +490,13 @@ var makeFileStream = function (root, id, cb) {
     });
 };
 
-var upload = function (stagingPath, Sessions, publicKey, content, cb) {
+var upload = function (paths, Sessions, publicKey, content, cb) {
     var dec = new Buffer(Nacl.util.decodeBase64(content)); // jshint ignore:line
 
     var session = Sessions[publicKey];
     session.atime = +new Date();
     if (!session.blobstage) {
-        makeFileStream(stagingPath, publicKey, function (e, stream) {
+        makeFileStream(paths.staging, publicKey, function (e, stream) {
             if (e) { return void cb(e); }
 
             var blobstage = session.blobstage = stream;
@@ -488,10 +509,10 @@ var upload = function (stagingPath, Sessions, publicKey, content, cb) {
     }
 };
 
-var upload_cancel = function (stagingPath, Sessions, publicKey, cb) {
-    var path = makeFilePath(stagingPath, publicKey);
+var upload_cancel = function (paths, Sessions, publicKey, cb) {
+    var path = makeFilePath(paths.staging, publicKey);
     if (!path) {
-        console.log(stagingPath, publicKey);
+        console.log(paths.staging, publicKey);
         console.log(path);
         return void cb('NO_FILE');
     }
@@ -512,7 +533,13 @@ var isFile = function (filePath, cb) {
     });
 };
 
-var upload_complete = function (stagingPath, storePath, Sessions, publicKey, cb) {
+/*  TODO
+change channel IDs to a different length so that when we pin, we will be able
+to tell that it is not a channel, but a file, just by its length.
+
+also, when your upload is complete, pin the resulting file.
+*/
+var upload_complete = function (paths, Sessions, publicKey, cb) {
     var session = Sessions[publicKey];
 
     if (session.blobstage && session.blobstage.close) {
@@ -520,14 +547,14 @@ var upload_complete = function (stagingPath, storePath, Sessions, publicKey, cb)
         delete session.blobstage;
     }
 
-    var oldPath = makeFilePath(stagingPath, publicKey);
+    var oldPath = makeFilePath(paths.staging, publicKey);
 
     var tryRandomLocation = function (cb) {
-        var id = createChannelId();
+        var id = createFileId();
         var prefix = id.slice(0, 2);
-        var newPath = makeFilePath(storePath, id);
+        var newPath = makeFilePath(paths.blob, id);
 
-        safeMkdir(Path.join(storePath, prefix), function (e) {
+        safeMkdir(Path.join(paths.blob, prefix), function (e) {
             if (e) {
                 console.error(e);
                 return void cb('RENAME_ERR');
@@ -558,8 +585,14 @@ var upload_complete = function (stagingPath, storePath, Sessions, publicKey, cb)
     });
 };
 
-var upload_status = function (stagingPath, Sessions, publicKey, cb) {
-    var filePath = makeFilePath(stagingPath, publicKey);
+/*  TODO
+when asking about your upload status, also send some information about how big
+your upload is going to be. if that would exceed your limit, return TOO_LARGE
+error.
+
+*/
+var upload_status = function (paths, Sessions, publicKey, cb) {
+    var filePath = makeFilePath(paths.staging, publicKey);
     if (!filePath) { return void cb('E_INVALID_PATH'); }
     isFile(filePath, function (e, yes) {
         cb(e, yes);
@@ -577,9 +610,10 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
         return typeof(config[key]) === 'string'? config[key]: def;
     };
 
-    var pinPath = keyOrDefaultString('pinPath', './pins');
-    var blobPath = keyOrDefaultString('blobPath', './blob');
-    var blobStagingPath = keyOrDefaultString('blobStagingPath', './blobstage');
+    var paths = {};
+    var pinPath = paths.pin = keyOrDefaultString('pinPath', './pins');
+    var blobPath = paths.blob = keyOrDefaultString('blobPath', './blob');
+    var blobStagingPath = paths.staging = keyOrDefaultString('blobStagingPath', './blobstage');
 
     var store;
 
@@ -695,22 +729,22 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
             // restricted to privileged users...
             case 'UPLOAD':
                 if (!privileged) { return deny(); }
-                return void upload(blobStagingPath, Sessions, safeKey, msg[1], function (e, len) {
+                return void upload(paths, Sessions, safeKey, msg[1], function (e, len) {
                     Respond(e, len);
                 });
             case 'UPLOAD_STATUS':
                 if (!privileged) { return deny(); }
-                return void upload_status(blobStagingPath, Sessions, safeKey, function (e, stat) {
+                return void upload_status(paths, Sessions, safeKey, function (e, stat) {
                     Respond(e, stat);
                 });
             case 'UPLOAD_COMPLETE':
                 if (!privileged) { return deny(); }
-                return void upload_complete(blobStagingPath, blobPath, Sessions, safeKey, function (e, hash) {
+                return void upload_complete(paths, Sessions, safeKey, function (e, hash) {
                     Respond(e, hash);
                 });
             case 'UPLOAD_CANCEL':
                 if (!privileged) { return deny(); }
-                return void upload_cancel(blobStagingPath, Sessions, safeKey, function (e) {
+                return void upload_cancel(paths, Sessions, safeKey, function (e) {
                     Respond(e);
                 });
             default:
