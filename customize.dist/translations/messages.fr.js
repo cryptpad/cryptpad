@@ -11,6 +11,8 @@ define(function () {
     out.type.slide = 'Présentation';
     out.type.drive = 'Drive';
     out.type.whiteboard = "Tableau Blanc";
+    out.type.file = "Fichier";
+    out.type.media = "Média";
 
     out.button_newpad = 'Nouveau document texte';
     out.button_newcode = 'Nouvelle page de code';
@@ -49,9 +51,21 @@ define(function () {
 
     out.language = "Langue";
 
+    out.upgrade = "Améliorer";
+    out.upgradeTitle = "Améliorer votre compte pour augmenter la limite de stockage";
+    out.MB = "Mo";
+
     out.greenLight = "Tout fonctionne bien";
     out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur";
     out.redLight = "Vous êtes déconnectés de la session";
+
+    out.pinLimitReached = "Vous avez atteint votre limite de stockage";
+    out.pinLimitReachedAlert = "Vous avez atteint votre limite de stockage. Les nouveaux pads ne seront pas enregistrés dans votre CrypDrive.<br>" +
+        "Pour résoudre ce problème, vous pouvez soit supprimer des pads de votre CryptDrive (y compris la corbeille), soit vous abonner à une offre premium pour augmenter la limite maximale.";
+    out.pinLimitNotPinned = "Vous avez atteint votre limite de stockage.<br>"+
+                            "Ce pad n'est pas enregistré dans votre CryptDrive.";
+    out.pinLimitDrive = out.pinLimitReached+ ".<br>" +
+                        "Vous ne pouvez pas créer de nouveaux pads.";
 
     out.importButtonTitle = 'Importer un pad depuis un fichier local';
 
@@ -93,6 +107,7 @@ define(function () {
     out.printDate = "Afficher la date";
     out.printTitle = "Afficher le titre du pad";
     out.printCSS = "Personnaliser l'apparence (CSS):";
+    out.printTransition = "Activer les animations de transition";
 
     out.slideOptionsTitle = "Personnaliser la présentation";
     out.slideOptionsButton = "Enregistrer (Entrée)";
@@ -125,6 +140,7 @@ define(function () {
     out.history_restoreTitle = "Restaurer la version du document sélectionnée";
     out.history_restorePrompt = "Êtes-vous sûr de vouloir remplacer la version actuelle du document par la version affichée ?";
     out.history_restoreDone = "Document restauré";
+    out.history_version = "Version :";
 
     // Polls
 
@@ -312,6 +328,10 @@ define(function () {
     out.settings_pinningNotAvailable = "Les pads épinglés sont disponibles uniquement pour les utilisateurs enregistrés.";
     out.settings_pinningError = "Un problème est survenu";
     out.settings_usageAmount = "Vos pads épinglés occupent {0} Mo";
+
+    out.settings_logoutEverywhereTitle = "Se déconnecter partout";
+    out.settings_logoutEverywhere = "Se déconnecter de toutes les autres sessions.";
+    out.settings_logoutEverywhereConfirm = "Êtes-vous sûr ? Vous devrez vous reconnecter sur tous vos autres appareils.";
 
     // index.html
 

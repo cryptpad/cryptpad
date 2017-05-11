@@ -39,10 +39,10 @@ module.exports = {
             if you are deploying to production, you'll probably want to remove
             the ws://* directive, and change '*' to your domain
          */
-        "connect-src 'self' ws://* wss://*",
+        "connect-src 'self' ws: wss:",
 
         // data: is used by codemirror
-        "img-src 'self' data:",
+        "img-src 'self' data: blob:",
     ].join('; '),
 
     // CKEditor requires significantly more lax content security policy in order to function.
@@ -59,7 +59,7 @@ module.exports = {
          "child-src 'self' *",
 
         // see the comment above in the 'contentSecurity' section
-         "connect-src 'self' ws://* wss://*",
+         "connect-src 'self' ws: wss:",
 
         // (insecure remote) images are included by users of the wysiwyg who embed photos in their pads
         "img-src *",
@@ -141,6 +141,23 @@ module.exports = {
     */
     filePath: './datastore/',
 
+    /*  CryptPad allows logged in users to request that particular documents be
+     *  stored by the server indefinitely. This is called 'pinning'.
+     *  Pin requests are stored in a pin-store. The location of this store is
+     *  defined here.
+     */
+    pinPath: './pins',
+
+    /*  CryptPad allows logged in users to upload encrypted files. Files/blobs
+     *  are stored in a 'blob-store'. Set its location here.
+     */
+    blobPath: './blob',
+
+    /*  CryptPad stores incomplete blobs in a 'staging' area until they are
+     *  fully uploaded. Set its location here.
+     */
+    blobStagingPath: './blobstage',
+
     /*  Cryptpad's file storage adaptor closes unused files after a configurale
      *  number of milliseconds (default 30000 (30 seconds))
      */
@@ -162,6 +179,31 @@ module.exports = {
      *  you can suppress them
      */
     suppressRPCErrors: false,
+
+
+    /* WARNING: EXPERIMENTAL
+     *
+     *  CryptPad features experimental support for encrypted file upload.
+     *  Our encryption format is still liable to change. As such, we do not
+     *  guarantee that files uploaded now will be supported in the future
+     */
+
+    /*  Setting this value to anything other than true will cause file upload
+     *  attempts to be rejected outright.
+     */
+    enableUploads: true,
+
+    /*  If you have enabled file upload, you have the option of restricting it
+     *  to a list of users identified by their public keys. If this value is set
+     *  to true, your server will query a file (cryptpad/privileged.conf) when
+     *  users connect via RPC. Only users whose public keys can be found within
+     *  the file will be allowed to upload.
+     *
+     *  privileged.conf uses '#' for line comments, and splits keys by newline.
+     *  This is a temporary measure until a better quota system is in place.
+     *  registered users' public keys can be found on the settings page.
+     */
+    restrictUploads: true,
 
     /* it is recommended that you serve cryptpad over https
      * the filepaths below are used to configure your certificates

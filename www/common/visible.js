@@ -20,18 +20,18 @@
         visibilityChange: visibilityChange,
     };
 
-    var isSupported = Visible.isSupported = function () {
+    Visible.isSupported = function () {
         return !(typeof(document.addEventListener) === "undefined" ||
             typeof document[hidden] === "undefined");
     };
 
-    var onChange = Visible.onChange = function (f) {
+    Visible.onChange = function (f) {
         document.addEventListener(visibilityChange, function (ev) {
             f(!document[hidden], ev);
         }, false);
     };
 
-    var currently = Visible.currently = function () {
+    Visible.currently = function () {
         return !document[hidden];
     };
 

@@ -23,13 +23,16 @@ define([
             return chanKey + keys;
         }
         if (!keys.editKeyStr) { return; }
-        return '/1/edit/' + hexToBase64(chanKey) + '/' + Crypto.b64RemoveSlashes(keys.editKeyStr);
+        return '/1/edit/' + hexToBase64(chanKey) + '/'+Crypto.b64RemoveSlashes(keys.editKeyStr)+'/';
     };
     var getViewHashFromKeys = Hash.getViewHashFromKeys = function (chanKey, keys) {
         if (typeof keys === 'string') {
             return;
         }
-        return '/1/view/' + hexToBase64(chanKey) + '/' + Crypto.b64RemoveSlashes(keys.viewKeyStr);
+        return '/1/view/' + hexToBase64(chanKey) + '/'+Crypto.b64RemoveSlashes(keys.viewKeyStr)+'/';
+    };
+    var getFileHashFromKeys = Hash.getFileHashFromKeys = function (fileKey, cryptKey) {
+        return '/2/' + hexToBase64(fileKey) + '/' + Crypto.b64RemoveSlashes(cryptKey) + '/';
     };
 
     var parsePadUrl = Hash.parsePadUrl = function (href) {
@@ -38,6 +41,7 @@ define([
         var ret = {};
 
         if (!href) { return ret; }
+        if (href.slice(-1) !== '/') { href += '/'; }
 
         if (!/^https*:\/\//.test(href)) {
             var idx = href.indexOf('/#');
@@ -46,7 +50,7 @@ define([
             return ret;
         }
 
-        var hash = href.replace(patt, function (a, domain, type, hash) {
+        var hash = href.replace(patt, function (a, domain, type) {
             ret.domain = domain;
             ret.type = type;
             return '';
@@ -62,12 +66,16 @@ define([
         return '/' + parsed.type + '/#' + parsed.hash;
     };
 
+    var fixDuplicateSlashes = function (s) {
+        return s.replace(/\/+/g, '/');
+    };
+
     /*
      * Returns all needed keys for a realtime channel
      * - no argument: use the URL hash or create one if it doesn't exist
      * - secretHash provided: use secretHash to find the keys
      */
-    var getSecrets = Hash.getSecrets = function (secretHash) {
+    Hash.getSecrets = function (secretHash) {
         var secret = {};
         var generate = function () {
             secret.keys = Crypto.createEditCryptor();
@@ -91,7 +99,7 @@ define([
             }
             else {
                 // New hash
-                var hashArray = hash.split('/');
+                var hashArray = fixDuplicateSlashes(hash).split('/');
                 if (hashArray.length < 4) {
                     Hash.alert("Unable to parse the key");
                     throw new Error("Unable to parse the key");
@@ -119,20 +127,24 @@ define([
                     }
                 } else if (version === "2") {
                     // version 2 hashes are to be used for encrypted blobs
-                    // TODO
+                    secret.channel = hashArray[2].replace(/-/g, '/');
+                    secret.keys = { fileKeyStr: hashArray[3].replace(/-/g, '/') };
                 }
             }
         }
         return secret;
     };
 
-    var getHashes = Hash.getHashes = function (channel, secret) {
+    Hash.getHashes = function (channel, secret) {
         var hashes = {};
         if (secret.keys.editKeyStr) {
             hashes.editHash = getEditHashFromKeys(channel, secret.keys);
         }
         if (secret.keys.viewKeyStr) {
             hashes.viewHash = getViewHashFromKeys(channel, secret.keys);
+        }
+        if (secret.keys.fileKeyStr) {
+            hashes.fileHash = getFileHashFromKeys(channel, secret.keys.fileKeyStr);
         }
         return hashes;
     };
@@ -145,12 +157,12 @@ define([
         return id;
     };
 
-    var createRandomHash = Hash.createRandomHash = function () {
+    Hash.createRandomHash = function () {
         // 16 byte channel Id
         var channelId = Util.hexToBase64(createChannelId());
         // 18 byte encryption key
         var key = Crypto.b64RemoveSlashes(Crypto.rand64(18));
-        return '/1/edit/' + [channelId, key].join('/');
+        return '/1/edit/' + [channelId, key].join('/') + '/';
     };
 
 /*
@@ -159,8 +171,8 @@ Version 0
 Version 1
     /code/#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI
 Version 2
-    /file/<fileId>/#/2/<cryptKey>/<contentType>
-    /file/<fileId>/#/2/ajExFODrFH4lVBwxxsrOKw/pdf
+    /file/#/2/<fileId>/<cryptKey>/<contentType>
+    /file/#/2/K6xWU-LT9BJHCQcDCT-DcQ/ajExFODrFH4lVBwxxsrOKw/image-png
 */
     var parseHash = Hash.parseHash = function (hash) {
         var parsed = {};
@@ -171,20 +183,26 @@ Version 2
             parsed.version = 0;
             return parsed;
         }
-        var hashArr = hash.split('/');
+        var hashArr = fixDuplicateSlashes(hash).split('/');
         if (hashArr[1] && hashArr[1] === '1') {
             parsed.version = 1;
             parsed.mode = hashArr[2];
             parsed.channel = hashArr[3];
             parsed.key = hashArr[4];
-            parsed.present = hashArr[5] && hashArr[5] === 'present';
+            parsed.present = typeof(hashArr[5]) === "string" && hashArr[5] === 'present';
+            return parsed;
+        }
+        if (hashArr[1] && hashArr[1] === '2') {
+            parsed.version = 2;
+            parsed.channel = hashArr[2].replace(/-/g, '/');
+            parsed.key = hashArr[3].replace(/-/g, '/');
             return parsed;
         }
         return;
     };
 
     // STORAGE
-    var findWeaker = Hash.findWeaker = function (href, recents) {
+    Hash.findWeaker = function (href, recents) {
         var rHref = href || getRelativeHref(window.location.href);
         var parsed = parsePadUrl(rHref);
         if (!parsed.hash) { return false; }
@@ -228,11 +246,11 @@ Version 2
         });
         return stronger;
     };
-    var isNotStrongestStored = Hash.isNotStrongestStored = function (href, recents) {
+    Hash.isNotStrongestStored = function (href, recents) {
         return findStronger(href, recents);
     };
 
-    var hrefToHexChannelId = Hash.hrefToHexChannelId = function (href) {
+    Hash.hrefToHexChannelId = function (href) {
         var parsed = Hash.parsePadUrl(href);
         if (!parsed || !parsed.hash) { return; }
 
@@ -240,7 +258,7 @@ Version 2
 
         if (parsed.version === 0) {
             return parsed.channel;
-        } else if (parsed.version !== 1) {
+        } else if (parsed.version !== 1 && parsed.version !== 2) {
             console.error("parsed href had no version");
             console.error(parsed);
             return;
@@ -251,6 +269,15 @@ Version 2
 
         var hex = base64ToHex(channel);
         return hex;
+    };
+
+    Hash.getBlobPathFromHex = function (id) {
+        return '/blob/' + id.slice(0,2) + '/' + id;
+    };
+
+    Hash.serializeHash = function (hash) {
+        if (hash && hash.slice(-1) !== "/") { hash += "/"; }
+        return hash;
     };
 
     return Hash;

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+    <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <style>
+    html, body {
+        margin: 0px;
+    }
+    .cryptpad-toolbar {
+        margin-bottom: 1px;
+        padding: 0px;
+        display: inline-block;
+    }
+    #file {
+        display: block;
+        height: 300px;
+        width: 300px;
+        border: 2px solid black;
+        margin: 50px;
+    }
+
+    .inputfile {
+        width: 0.1px;
+        height: 0.1px;
+        opacity: 0;
+        overflow: hidden;
+        position: absolute;
+        z-index: -1;
+    }
+
+    .block {
+        display: block;
+        height: 500px;
+        width: 500px;
+    }
+    .hidden {
+        display: none;
+    }
+    .inputfile + label {
+        border: 2px solid black;
+        background-color: rgba(50, 50, 50, .10);
+        margin: 50px;
+    }
+
+    .inputfile:focus + label,
+    .inputfile + label:hover {
+        background-color: rgba(50, 50, 50, 0.30);
+    }
+
+    </style>
+</head>
+<body>
+    <div id="toolbar" class="toolbar-container"></div>
+    <div id="upload-form" style="display: none;">
+        <input type="file" name="file" id="file" class="inputfile" />
+        <label for="file" class="block">Choose a file</label>
+    </div>
+    <div id="feedback" class="block hidden">
+    </div>
+</body>
+</html>
+

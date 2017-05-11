@@ -82,6 +82,8 @@ var mainPages = config.mainPages || ['index', 'privacy', 'terms', 'about', 'cont
 var mainPagePattern = new RegExp('^\/(' + mainPages.join('|') + ').html$');
 app.get(mainPagePattern, Express.static(__dirname + '/customize.dist'));
 
+app.use("/blob", Express.static(__dirname + '/blob'));
+
 app.use("/customize", Express.static(__dirname + '/customize'));
 app.use("/customize", Express.static(__dirname + '/customize.dist'));
 app.use(/^\/[^\/]*$/, Express.static('customize'));

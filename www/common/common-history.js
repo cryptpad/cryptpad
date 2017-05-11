@@ -18,13 +18,13 @@ define([
         return states;
     };
 
-    var loadHistory = function (common, cb) {
+    var loadHistory = function (config, common, cb) {
         var network = common.getNetwork();
         var hkn = network.historyKeeper;
 
-        var wcId = common.hrefToHexChannelId(window.location.href);
+        var wcId = common.hrefToHexChannelId(config.href || window.location.href);
 
-        var createRealtime = function(chan) {
+        var createRealtime = function () {
             return ChainPad.create({
                 userName: 'history',
                 initialState: '',
@@ -35,7 +35,8 @@ define([
         };
         var realtime = createRealtime();
 
-        var secret = common.getSecrets();
+        var hash = config.href ? common.parsePadUrl(config.href).hash : undefined;
+        var secret = common.getSecrets(hash);
         var crypto = Crypto.createEncryptor(secret.keys);
 
         var to = window.setTimeout(function () {
@@ -66,21 +67,44 @@ define([
             }
         };
 
-        network.on('message', function (msg, sender) {
+        network.on('message', function (msg) {
             onMsg(msg);
         });
 
         network.sendto(hkn, JSON.stringify(['GET_FULL_HISTORY', wcId, secret.keys.validateKey]));
     };
 
-    var create = History.create = function (common, config) {
+    History.create = function (common, config) {
         if (!config.$toolbar) { return void console.error("config.$toolbar is undefined");}
+        if (History.loading) { return void console.error("History is already being loaded..."); }
+        History.loading = true;
         var $toolbar = config.$toolbar;
-        var noFunc = function () {};
-        var render = config.onRender || noFunc;
-        var onClose = config.onClose || noFunc;
-        var onRevert = config.onRevert || noFunc;
-        var onReady = config.onReady || noFunc;
+
+        if (!config.applyVal || !config.setHistory || !config.onLocal || !config.onRemote) {
+            throw new Error("Missing config element: applyVal, onLocal, onRemote, setHistory");
+        }
+
+        // config.setHistory(bool, bool)
+        // - bool1: history value
+        // - bool2: reset old content?
+        var render = function (val) {
+            if (typeof val === "undefined") { return; }
+            try {
+                config.applyVal(val);
+            } catch (e) {
+                // Probably a parse error
+                console.error(e);
+            }
+        };
+        var onClose = function () { config.setHistory(false, true); };
+        var onRevert = function () {
+            config.setHistory(false, false);
+            config.onLocal();
+            config.onRemote();
+        };
+        var onReady = function () {
+            config.setHistory(true);
+        };
 
         var Messages = common.Messages;
 
@@ -112,9 +136,9 @@ define([
             var val = states[i].getContent().doc;
             c = i;
             if (typeof onUpdate === "function") { onUpdate(); }
-            $hist.find('.next, .previous').show();
-            if (c === states.length - 1) { $hist.find('.next').hide(); }
-            if (c === 0) { $hist.find('.previous').hide(); }
+            $hist.find('.next, .previous').css('visibility', '');
+            if (c === states.length - 1) { $hist.find('.next').css('visibility', 'hidden'); }
+            if (c === 0) { $hist.find('.previous').css('visibility', 'hidden'); }
             return val || '';
         };
 
@@ -132,15 +156,16 @@ define([
             $right.hide();
             $cke.hide();
             var $prev =$('<button>', {
-                'class': 'previous fa fa-step-backward',
+                'class': 'previous fa fa-step-backward buttonPrimary',
                 title: Messages.history_prev
             }).appendTo($hist);
+            var $nav = $('<div>', {'class': 'goto'}).appendTo($hist);
             var $next = $('<button>', {
-                'class': 'next fa fa-step-forward',
+                'class': 'next fa fa-step-forward buttonPrimary',
                 title: Messages.history_next
             }).appendTo($hist);
 
-            var $nav = $('<div>', {'class': 'goto'}).appendTo($hist);
+            $('<label>').text(Messages.history_version).appendTo($nav);
             var $cur = $('<input>', {
                 'class' : 'gotoInput',
                 'type' : 'number',
@@ -150,25 +175,21 @@ define([
                 // stopPropagation because the event would be cancelled by the dropdown menus
                 e.stopPropagation();
             });
-            var $label = $('<label>').text(' / '+ states.length).appendTo($nav);
-            var $goTo = $('<button>', {
-                'class': 'fa fa-check',
-                'title': Messages.history_goTo
-            }).appendTo($nav);
+            var $label2 = $('<label>').text(' / '+ states.length).appendTo($nav);
             $('<br>').appendTo($nav);
-            var $rev = $('<button>', {
-                'class':'revertHistory',
-                title: Messages.history_restoreTitle
-            }).text(Messages.history_restore).appendTo($nav);
             var $close = $('<button>', {
                 'class':'closeHistory',
                 title: Messages.history_closeTitle
             }).text(Messages.history_close).appendTo($nav);
+            var $rev = $('<button>', {
+                'class':'revertHistory buttonSuccess',
+                title: Messages.history_restoreTitle
+            }).text(Messages.history_restore).appendTo($nav);
 
             onUpdate = function () {
                 $cur.attr('max', states.length);
                 $cur.val(c+1);
-                $label.text(' / ' + states.length);
+                $label2.text(' / ' + states.length);
             };
 
             var close = function () {
@@ -181,7 +202,6 @@ define([
             // Buttons actions
             $prev.click(function () { render(getPrevious()); });
             $next.click(function () { render(getNext()); });
-            $goTo.click(function () { render( get($cur.val() - 1) ); });
             $cur.keydown(function (e) {
                 var p = function () { e.preventDefault(); };
                 if (e.which === 13) { p(); return render( get($cur.val() - 1) ); } // Enter
@@ -192,7 +212,7 @@ define([
                 if (e.which === 27) { p(); $close.click(); }
             }).focus();
             $cur.on('change', function () {
-                $goTo.click();
+                render( get($cur.val() - 1) );
             });
             $close.click(function () {
                 states = [];
@@ -213,7 +233,8 @@ define([
         };
 
         // Load all the history messages into a new chainpad object
-        loadHistory(common, function (err, newRt) {
+        loadHistory(config, common, function (err, newRt) {
+            History.loading = false;
             if (err) { throw new Error(err); }
             realtime = newRt;
             update();

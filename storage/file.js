@@ -28,7 +28,8 @@ var readMessages = function (path, msgHandler, cb) {
 };
 
 var checkPath = function (path, callback) {
-    Fs.stat(path, function (err, stats) {
+    // TODO check if we actually need to use stat at all
+    Fs.stat(path, function (err) {
         if (!err) {
             callback(undefined, true);
             return;
@@ -166,7 +167,7 @@ var getChannel = function (env, id, callback) {
                 });
             }
         });
-    }).nThen(function (waitFor) {
+    }).nThen(function () {
         if (errorState) { return; }
         complete();
     });

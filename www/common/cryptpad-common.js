@@ -7,11 +7,15 @@ define([
     '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/common-history.js',
+    '/common/common-userlist.js',
+    '/common/common-title.js',
+    '/common/common-metadata.js',
+    '/common/common-codemirror.js',
 
     '/common/clipboard.js',
     '/common/pinpad.js',
     '/customize/application_config.js'
-], function ($, Config, Messages, Store, Util, Hash, UI, History, Clipboard, Pinpad, AppConfig) {
+], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Metadata, CodeMirror, Clipboard, Pinpad, AppConfig) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -29,7 +33,7 @@ define([
     var userHashKey = common.userHashKey = 'User_hash';
     var userNameKey = common.userNameKey = 'User_name';
     var fileHashKey = common.fileHashKey = 'FS_hash';
-    var displayNameKey = common.displayNameKey = 'cryptpad.username';
+    common.displayNameKey = 'cryptpad.username';
     var newPadNameKey = common.newPadNameKey = "newPadName";
     var newPadPathKey = common.newPadPathKey = "newPadPath";
     var storageKey = common.storageKey = 'CryptPad_RECENTPADS';
@@ -39,10 +43,10 @@ define([
     var rpc;
 
     // import UI elements
-    var findCancelButton = common.findCancelButton = UI.findCancelButton;
-    var findOKButton = common.findOKButton = UI.findOKButton;
-    var listenForKeys = common.listenForKeys = UI.listenForKeys;
-    var stopListening = common.stopListening = UI.stopListening;
+    common.findCancelButton = UI.findCancelButton;
+    common.findOKButton = UI.findOKButton;
+    common.listenForKeys = UI.listenForKeys;
+    common.stopListening = UI.stopListening;
     common.prompt = UI.prompt;
     common.confirm = UI.confirm;
     common.alert = UI.alert;
@@ -52,19 +56,22 @@ define([
     common.addLoadingScreen = UI.addLoadingScreen;
     common.removeLoadingScreen = UI.removeLoadingScreen;
     common.errorLoadingScreen = UI.errorLoadingScreen;
+    common.notify = UI.notify;
+    common.unnotify = UI.unnotify;
 
     // import common utilities for export
-    var find = common.find = Util.find;
+    common.find = Util.find;
     var fixHTML = common.fixHTML = Util.fixHTML;
-    var hexToBase64 = common.hexToBase64 = Util.hexToBase64;
-    var base64ToHex = common.base64ToHex = Util.base64ToHex;
+    common.hexToBase64 = Util.hexToBase64;
+    common.base64ToHex = Util.base64ToHex;
     var deduplicateString = common.deduplicateString = Util.deduplicateString;
-    var uint8ArrayToHex = common.uint8ArrayToHex = Util.uint8ArrayToHex;
-    var replaceHash = common.replaceHash = Util.replaceHash;
+    common.uint8ArrayToHex = Util.uint8ArrayToHex;
+    common.replaceHash = Util.replaceHash;
     var getHash = common.getHash = Util.getHash;
-    var fixFileName = common.fixFileName = Util.fixFileName;
+    common.fixFileName = Util.fixFileName;
     common.bytesToMegabytes = Util.bytesToMegabytes;
     common.bytesToKilobytes = Util.bytesToKilobytes;
+    common.fetch = Util.fetch;
 
     // import hash utilities for export
     var createRandomHash = common.createRandomHash = Hash.createRandomHash;
@@ -73,14 +80,29 @@ define([
     var hrefToHexChannelId = common.hrefToHexChannelId = Hash.hrefToHexChannelId;
     var parseHash = common.parseHash = Hash.parseHash;
     var getRelativeHref = common.getRelativeHref = Hash.getRelativeHref;
+    common.getBlobPathFromHex = Hash.getBlobPathFromHex;
 
     common.getEditHashFromKeys = Hash.getEditHashFromKeys;
     common.getViewHashFromKeys = Hash.getViewHashFromKeys;
+    common.getFileHashFromKeys = Hash.getFileHashFromKeys;
     common.getSecrets = Hash.getSecrets;
     common.getHashes = Hash.getHashes;
     common.createChannelId = Hash.createChannelId;
     common.findWeaker = Hash.findWeaker;
     common.findStronger = Hash.findStronger;
+    common.serializeHash = Hash.serializeHash;
+
+    // Userlist
+    common.createUserList = UserList.create;
+
+    // Title
+    common.createTitle = Title.create;
+
+    // Metadata
+    common.createMetadata = Metadata.create;
+
+    // CodeMirror
+    common.createCodemirror = CodeMirror.create;
 
     // History
     common.getHistory = function (config) { return History.create(common, config); };
@@ -119,13 +141,13 @@ define([
         });
     };
 
-    var reportAppUsage = common.reportAppUsage = function () {
+    common.reportAppUsage = function () {
         var pattern = window.location.pathname.split('/')
             .filter(function (x) { return x; }).join('.');
         feedback(pattern);
     };
 
-    var getUid = common.getUid = function () {
+    common.getUid = function () {
         if (store && store.getProxy() && store.getProxy().proxy) {
             return store.getProxy().proxy.uid;
         }
@@ -150,7 +172,7 @@ define([
         }, 0);
     };
 
-    var getWebsocketURL = common.getWebsocketURL = function () {
+    common.getWebsocketURL = function () {
         if (!Config.websocketPath) { return Config.websocketURL; }
         var path = Config.websocketPath;
         if (/^ws{1,2}:\/\//.test(path)) { return path; }
@@ -162,9 +184,10 @@ define([
         return url;
     };
 
-    var login = common.login = function (hash, name, cb) {
+    common.login = function (hash, name, cb) {
         if (!hash) { throw new Error('expected a user hash'); }
         if (!name) { throw new Error('expected a user name'); }
+        hash = common.serializeHash(hash);
         localStorage.setItem(userHashKey, hash);
         localStorage.setItem(userNameKey, name);
         if (cb) { cb(); }
@@ -185,10 +208,11 @@ define([
     };
 
     var logoutHandlers = [];
-    var logout = common.logout = function (cb) {
+    common.logout = function (cb) {
         [
             userNameKey,
             userHashKey,
+            'loginToken',
         ].forEach(function (k) {
             sessionStorage.removeItem(k);
             localStorage.removeItem(k);
@@ -208,18 +232,19 @@ define([
 
         if (cb) { cb(); }
     };
-    var onLogout = common.onLogout = function (h) {
+    common.onLogout = function (h) {
         if (typeof (h) !== "function") { return; }
         if (logoutHandlers.indexOf(h) !== -1) { return; }
         logoutHandlers.push(h);
     };
 
     var getUserHash = common.getUserHash = function () {
-        var hash;
-        [sessionStorage, localStorage].some(function (s) {
-            var h = s[userHashKey];
-            if (h) { return (hash = h); }
-        });
+        var hash = localStorage[userHashKey];
+
+        if (hash) {
+            var sHash = common.serializeHash(hash);
+            if (sHash !== hash) { localStorage[userHashKey] = sHash; }
+        }
 
         return hash;
     };
@@ -228,7 +253,7 @@ define([
         return typeof getUserHash() === "string";
     };
 
-    var hasSigningKeys = common.hasSigningKeys = function (proxy) {
+    common.hasSigningKeys = function (proxy) {
         return typeof(proxy) === 'object' &&
             typeof(proxy.edPrivate) === 'string' &&
             typeof(proxy.edPublic) === 'string';
@@ -295,16 +320,20 @@ define([
         pads.forEach(function (pad, i) {
             if (pad && typeof(pad) === 'object') {
                 var hash = checkObjectData(pad);
-                if (!hash || !common.parseHash(hash)) { return; }
+                if (!hash || !common.parseHash(hash)) {
+                    console.error("[Cryptpad.checkRecentPads] pad had unexpected value", pad);
+                    getStore().removeData(i);
+                    return;
+                }
                 return pad;
             }
-            console.error("[Cryptpad.migrateRecentPads] pad had unexpected value");
+            console.error("[Cryptpad.checkRecentPads] pad had unexpected value", pad);
             getStore().removeData(i);
         });
     };
 
     // Get the pads from localStorage to migrate them to the object store
-    var getLegacyPads = common.getLegacyPads = function (cb) {
+    common.getLegacyPads = function (cb) {
         require(['/customize/store.js'], function(Legacy) { // TODO DEPRECATE_F
             Legacy.ready(function (err, legacy) {
                 if (err) { cb(err, null); return; }
@@ -324,7 +353,6 @@ define([
     // Create untitled documents when no name is given
     var getDefaultName = common.getDefaultName = function (parsed) {
         var type = parsed.type;
-        var untitledIndex = 1;
         var name = (Messages.type)[type] + ' - ' + new Date().toString().split(' ').slice(0,4).join(' ');
         return name;
     };
@@ -344,37 +372,37 @@ define([
     };
 
     /* Sort pads according to how recently they were accessed */
-    var mostRecent = common.mostRecent = function (a, b) {
+    common.mostRecent = function (a, b) {
         return new Date(b.atime).getTime() - new Date(a.atime).getTime();
     };
 
     // STORAGE
-    var setPadAttribute = common.setPadAttribute = function (attr, value, cb) {
+    common.setPadAttribute = function (attr, value, cb) {
         getStore().setDrive([getHash(), attr].join('.'), value, function (err, data) {
             cb(err, data);
         });
     };
-    var setAttribute = common.setAttribute = function (attr, value, cb) {
+    common.setAttribute = function (attr, value, cb) {
         getStore().set(["cryptpad", attr].join('.'), value, function (err, data) {
             cb(err, data);
         });
     };
-    var setLSAttribute = common.setLSAttribute = function (attr, value) {
+    common.setLSAttribute = function (attr, value) {
         localStorage[attr] = value;
     };
 
     // STORAGE
-    var getPadAttribute = common.getPadAttribute = function (attr, cb) {
+    common.getPadAttribute = function (attr, cb) {
         getStore().getDrive([getHash(), attr].join('.'), function (err, data) {
             cb(err, data);
         });
     };
-    var getAttribute = common.getAttribute = function (attr, cb) {
+    common.getAttribute = function (attr, cb) {
         getStore().get(["cryptpad", attr].join('.'), function (err, data) {
             cb(err, data);
         });
     };
-    var getLSAttribute = common.getLSAttribute = function (attr) {
+    common.getLSAttribute = function (attr) {
         return localStorage[attr];
     };
 
@@ -389,19 +417,19 @@ define([
         });
         return templates;
     };
-    var addTemplate = common.addTemplate = function (data) {
+    common.addTemplate = function (data) {
         getStore().pushData(data);
         getStore().addPad(data.href, ['template']);
     };
 
-    var isTemplate = common.isTemplate = function (href) {
+    common.isTemplate = function (href) {
         var rhref = getRelativeHref(href);
         var templates = listTemplates();
         return templates.some(function (t) {
             return t.href === rhref;
         });
     };
-    var selectTemplate = common.selectTemplate = function (type, rt, Crypt) {
+    common.selectTemplate = function (type, rt, Crypt) {
         if (!AppConfig.enableTemplates) { return; }
         var temps = listTemplates(type);
         if (temps.length === 0) { return; }
@@ -419,7 +447,7 @@ define([
                 Crypt.get(parsed.hash, function (err, val) {
                     if (err) { throw new Error(err); }
                     var p = parsePadUrl(window.location.href);
-                    Crypt.put(p.hash, val, function (e) {
+                    Crypt.put(p.hash, val, function () {
                         common.findOKButton().click();
                         common.removeLoadingScreen();
                     });
@@ -444,28 +472,28 @@ define([
     };
 
     // STORAGE: Display Name
-    var getLastName = common.getLastName = function (cb) {
+    common.getLastName = function (cb) {
         common.getAttribute('username', function (err, userName) {
             cb(err, userName);
         });
     };
     var _onDisplayNameChanged = [];
-    var onDisplayNameChanged = common.onDisplayNameChanged = function (h) {
+    common.onDisplayNameChanged = function (h) {
         if (typeof(h) !== "function") { return; }
         if (_onDisplayNameChanged.indexOf(h) !== -1) { return; }
         _onDisplayNameChanged.push(h);
     };
-    var changeDisplayName = common.changeDisplayName = function (newName) {
+    common.changeDisplayName = function (newName) {
         _onDisplayNameChanged.forEach(function (h) {
             h(newName);
         });
     };
 
     // STORAGE
-    var forgetPad = common.forgetPad = function (href, cb) {
+    common.forgetPad = function (href, cb) {
         var parsed = parsePadUrl(href);
 
-        var callback = function (err, data) {
+        var callback = function (err) {
             if (err) {
                 cb(err);
                 return;
@@ -495,7 +523,19 @@ define([
         }
     };
 
-    var setPadTitle = common.setPadTitle = function (name, cb) {
+    var updateFileName = function (href, oldName, newName) {
+        var fo = getStore().getProxy().fo;
+        var paths = fo.findFileInRoot(href);
+        paths.forEach(function (path) {
+            if (path.length !== 2) { return; }
+            var name = path[1].split('_')[0];
+            var parsed = parsePadUrl(href);
+            if (path.length === 2 && name === oldName && isDefaultName(parsed, name)) {
+                fo.rename(path, newName);
+            }
+        });
+    };
+    common.setPadTitle = function (name, cb) {
         var href = window.location.href;
         var parsed = parsePadUrl(href);
         href = getRelativeHref(href);
@@ -509,12 +549,12 @@ define([
 
             var updateWeaker = [];
             var contains;
-            var renamed = recent.map(function (pad) {
+            recent.forEach(function (pad) {
                 var p = parsePadUrl(pad.href);
 
                 if (p.type !== parsed.type) { return pad; }
 
-                var shouldUpdate = p.hash === parsed.hash;
+                var shouldUpdate = p.hash.replace(/\/$/, '') === parsed.hash.replace(/\/$/, '');
 
                 // Version 1 : we have up to 4 differents hash for 1 pad, keep the strongest :
                 // Edit > Edit (present) > View > View (present)
@@ -540,6 +580,7 @@ define([
                     pad.atime = +new Date();
 
                     // set the name
+                    var old = pad.title;
                     pad.title = name;
 
                     // If we now have a stronger version of a stored href, replace the weaker one by the strong one
@@ -550,14 +591,23 @@ define([
                         });
                     }
                     pad.href = href;
+                    updateFileName(href, old, name);
                 }
                 return pad;
             });
 
-            if (!contains) {
+            if (!contains && href) {
                 var data = makePad(href, name);
-                getStore().pushData(data);
-                getStore().addPad(href, common.initialPath, common.initialName || name);
+                getStore().pushData(data, function (e) {
+                    if (e) {
+                        if (e === 'E_OVER_LIMIT' && AppConfig.enablePinLimit) {
+                            common.alert(Messages.pinLimitNotPinned, null, true);
+                            return;
+                        }
+                        else { throw new Error("Cannot push this pad to CryptDrive", e); }
+                    }
+                    getStore().addPad(data, common.initialPath);
+                });
             }
             if (updateWeaker.length > 0) {
                 updateWeaker.forEach(function (obj) {
@@ -584,7 +634,7 @@ define([
     /*
      * Buttons
      */
-    var renamePad = common.renamePad = function (title, callback) {
+    common.renamePad = function (title, callback) {
         if (title === null) { return; }
 
         if (title.trim() === "") {
@@ -592,7 +642,7 @@ define([
             title = getDefaultName(parsed);
         }
 
-        common.setPadTitle(title, function (err, data) {
+        common.setPadTitle(title, function (err) {
             if (err) {
                 console.log("unable to set pad title");
                 console.log(err);
@@ -642,7 +692,7 @@ define([
         return true;
     };
 
-    var arePinsSynced = common.arePinsSynced = function (cb) {
+    common.arePinsSynced = function (cb) {
         if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
 
         var list = getCanonicalChannelList();
@@ -653,7 +703,7 @@ define([
         });
     };
 
-    var resetPins = common.resetPins = function (cb) {
+    common.resetPins = function (cb) {
         if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
 
         var list = getCanonicalChannelList();
@@ -663,7 +713,7 @@ define([
         });
     };
 
-    var pinPads = common.pinPads = function (pads, cb) {
+    common.pinPads = function (pads, cb) {
         if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
 
         rpc.pin(pads, function (e, hash) {
@@ -672,7 +722,7 @@ define([
         });
     };
 
-    var unpinPads = common.unpinPads = function (pads, cb) {
+    common.unpinPads = function (pads, cb) {
         if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
 
         rpc.unpin(pads, function (e, hash) {
@@ -681,12 +731,12 @@ define([
         });
     };
 
-    var getPinnedUsage = common.getPinnedUsage = function (cb) {
+    common.getPinnedUsage = function (cb) {
         if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
         rpc.getFileListSize(cb);
     };
 
-    var getFileSize = common.getFileSize = function (href, cb) {
+    common.getFileSize = function (href, cb) {
         var channelId = Hash.hrefToHexChannelId(href);
         rpc.getFileSize(channelId, function (e, bytes) {
             if (e) { return void cb(e); }
@@ -694,7 +744,30 @@ define([
         });
     };
 
-    var createButton = common.createButton = function (type, rightside, data, callback) {
+    common.getPinLimit = function (cb) {
+        cb(void 0, typeof(AppConfig.pinLimit) === 'number'? AppConfig.pinLimit: 1000);
+    };
+
+    common.isOverPinLimit = function (cb) {
+        if (!common.isLoggedIn() || !AppConfig.enablePinLimit) { return void cb(null, false); }
+        var usage;
+        var andThen = function (e, limit) {
+            if (e) { return void cb(e); }
+            var data = {usage: usage, limit: limit};
+            if (usage > limit) {
+                return void cb (null, true, data);
+            }
+            return void cb (null, false, data);
+        };
+        var todo = function (e, used) {
+            usage = common.bytesToMegabytes(used);
+            if (e) { return void cb(e); }
+            common.getPinLimit(andThen);
+        };
+        common.getPinnedUsage(todo);
+    };
+
+    common.createButton = function (type, rightside, data, callback) {
         var button;
         var size = "17px";
         switch (type) {
@@ -783,7 +856,7 @@ define([
                         var href = window.location.href;
                         common.confirm(Messages.forgetPrompt, function (yes) {
                             if (!yes) { return; }
-                            common.forgetPad(href, function (err, data) {
+                            common.forgetPad(href, function (err) {
                                 if (err) {
                                     console.log("unable to forget pad");
                                     console.error(err);
@@ -1002,7 +1075,7 @@ define([
 
     // Provide $container if you want to put the generated block in another element
     // Provide $initBlock if you already have the menu block and you want the content inserted in it
-    var createLanguageSelector = common.createLanguageSelector = function ($container, $initBlock) {
+    common.createLanguageSelector = function ($container, $initBlock) {
         var options = [];
         var languages = Messages._languages;
         var keys = Object.keys(languages).sort();
@@ -1036,7 +1109,7 @@ define([
         return $block;
     };
 
-    var createUserAdminMenu = common.createUserAdminMenu = function (config) {
+    common.createUserAdminMenu = function (config) {
         var $displayedName = $('<span>', {'class': config.displayNameCls || 'displayName'});
         var accountName = localStorage[common.userNameKey];
         var account = isLoggedIn();
@@ -1123,24 +1196,24 @@ define([
         };
         var $userAdmin = createDropdown(dropdownConfigUser);
 
-        $userAdmin.find('a.logout').click(function (e) {
+        $userAdmin.find('a.logout').click(function () {
             common.logout();
             window.location.href = '/';
         });
-        $userAdmin.find('a.settings').click(function (e) {
+        $userAdmin.find('a.settings').click(function () {
             if (parsed && parsed.type) {
                 window.open('/settings/');
             } else {
                 window.location.href = '/settings/';
             }
         });
-        $userAdmin.find('a.login').click(function (e) {
+        $userAdmin.find('a.login').click(function () {
             if (window.location.pathname !== "/") {
                 sessionStorage.redirectTo = window.location.href;
             }
             window.location.href = '/login/';
         });
-        $userAdmin.find('a.register').click(function (e) {
+        $userAdmin.find('a.register').click(function () {
             if (window.location.pathname !== "/") {
                 sessionStorage.redirectTo = window.location.href;
             }
@@ -1189,6 +1262,11 @@ define([
             if (typeof(window.Proxy) === 'undefined') {
                 feedback("NO_PROXIES");
             }
+
+            if (typeof(Array.isArray) !== 'function') {
+                feedback("NO_ISARRAY");
+            }
+
             $(function() {
                 // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
                 // won't work. We have to reset it now to make sure it uses a correct "body"
@@ -1227,7 +1305,8 @@ define([
 
                         common.arePinsSynced(function (err, yes) {
                             if (!yes) {
-                                common.resetPins(function (err, hash) {
+                                common.resetPins(function (err) {
+                                    if (err) { console.error(err); }
                                     console.log('RESET DONE');
                                 });
                             }

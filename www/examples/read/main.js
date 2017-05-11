@@ -2,9 +2,7 @@ define([
     'jquery',
     '/common/cryptget.js'
 ], function ($, Crypt) {
-
     var $target = $('#target');
-    var $dest = $('#dest');
 
     var useDoc = function (err, doc) {
         if (err) { return console.error(err); }

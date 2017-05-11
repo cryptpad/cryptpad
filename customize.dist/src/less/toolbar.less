@@ -42,12 +42,13 @@
     }
 
     button {
-        &#shareButton {
+        &#shareButton, &.buttonSuccess {
             // Bootstrap 4 colors
             color: #fff;
             background: @toolbar-green;
             border-color: @toolbar-green;
             &:hover {
+                color: #fff;
                 background: #449d44;
                 border: 1px solid #419641;
             }
@@ -58,12 +59,13 @@
                 margin-left: 5px;
             }
         }
-        &#newdoc {
+        &#newdoc, &.buttonPrimary {
             // Bootstrap 4 colors
             color: #fff;
             background: #0275d8;
             border-color: #0275d8;
             &:hover {
+                color: #fff;
                 background: #025aa5;
                 border: 1px solid #01549b;
             }
@@ -77,26 +79,84 @@
         &.hidden {
             display: none;
         }
-    }
 
-    .cryptpad-lag {
-        box-sizing: content-box;
-        height: 16px;
-        width: 16px;
-        display: inline-block;
-        padding: 5px;
-        margin: 3px 0;
-        div {
-            margin: auto;
+        // Bootstrap 4 colors (btn-secondary)
+        border: 1px solid transparent;
+        border-radius: .25rem;
+        color: #292b2c;
+        background-color: #fff;
+        border-color: #ccc;
+        &:hover {
+            color: #292b2c;
+            background-color: #e6e6e6;
+            border-color: #adadad;
         }
     }
 
-.clag () {
-    background: transparent;
-}
+    button.upgrade {
+        font-size: 14px;
+        vertical-align: top;
+        margin-left: 10px;
+    }
+    .cryptpad-drive-limit {
+        display: inline-block;
+        height: 26px;
+        width: 200px;
+        margin: 2px;
+        box-sizing: border-box;
+        border: 1px solid #999;
+        background: white;
+        position: relative;
+        text-align: center;
+        line-height: 24px;
+        .usage {
+            height: 24px;
+            display: inline-block;
+            background: blue;
+            position: absolute;
+            left: 0;
+            z-index:1;
+            &.normal {
+                background: @toolbar-green;
+            }
+            &.warning {
+                background: orange;
+            }
+            &.above {
+                background: red;
+            }
+        }
+        .usageText {
+            position: relative;
+            color: black;
+            text-shadow: 1px 0 2px white, 0 1px 2px white, -1px 0 2px white, 0 -1px 2px white;
+            z-index: 2;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    }
+    .cryptpad-limit {
+        box-sizing: border-box;
+        height: 26px;
+        width: 26px;
+        display: inline-block;
+        padding: 3px;
+        margin: 0px;
+        margin-right: 3px;
+        vertical-align: middle;
+        span {
+            color: red;
+            cursor: pointer;
+            margin: auto;
+            font-size: 20px;
+        }
+    }
 
+    .clag () {
+        background: transparent;
+    }
 
-    #newLag {
+    .cryptpad-lag {
         height: 20px;
         width: 23px;
         background: transparent;
@@ -179,17 +239,6 @@
         margin-right: 2px;
     }
 
-    button {
-        color: #000;
-        background-color: inherit;
-        background-image: linear-gradient(to bottom,#fff,#e4e4e4);
-        border: 1px solid #A6A6A6;
-        border-bottom-color: #979797;
-        border-radius: 3px;
-        &:hover {
-            background-image:linear-gradient(to bottom,#f2f2f2,#ccc);
-        }
-    }
     .cryptpad-state {
         line-height: 32px; /* equivalent to 26px + 2*2px margin used for buttons */
     }
@@ -378,9 +427,8 @@
     .cryptpad-user {
         position: absolute;
         right: 0;
-        span:not(.cryptpad-lag) {
+        :not(.cryptpad-lag) span {
             vertical-align: top;
-            //display: inline-block;
         }
         button {
             span.fa {
@@ -392,11 +440,9 @@
 .cryptpad-toolbar-leftside {
     float: left;
     margin-bottom: -1px;
-    .cryptpad-user-list {
-        //float: right;
+    .cryptpad-dropdown-users {
         pre {
-            white-space: pre;
-            margin: 0;
+            margin: 5px 0px;
         }
     }
     button {
@@ -413,14 +459,20 @@
     display: none;
     text-align: center;
     .next {
-        float: right;
+        display: inline-block;
+        vertical-align: middle;
+        margin: 20px;
     }
     .previous {
-        float: left;
+        display: inline-block;
+        vertical-align: middle;
+        margin: 20px;
     }
     .goto {
         display: inline-block;
-        input { width: 50px; }
+        vertical-align: middle;
+        text-align: center;
+        input { width: 75px; }
     }
     .gotoInput {
         vertical-align: middle;
@@ -434,7 +486,7 @@
         border-radius: 5px;
     }
 }
-.cryptpad-spinner {
+.cryptpad-spinner > span {
     height: 16px;
     width: 16px;
     margin: 8px;

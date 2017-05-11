@@ -3,8 +3,10 @@ define([
     '/customize/messages.js',
     '/common/common-util.js',
     '/customize/application_config.js',
-    '/bower_components/alertifyjs/dist/js/alertify.js'
-], function ($, Messages, Util, AppConfig, Alertify) {
+    '/bower_components/alertifyjs/dist/js/alertify.js',
+    '/common/notify.js',
+    '/common/visible.js'
+], function ($, Messages, Util, AppConfig, Alertify, Notify, Visible) {
 
     var UI = {};
 
@@ -48,7 +50,7 @@ define([
     UI.alert = function (msg, cb, force) {
         cb = cb || function () {};
         if (force !== true) { msg = Util.fixHTML(msg); }
-        var close = function (e) {
+        var close = function () {
             findOKButton().click();
         };
         var keyHandler = listenForKeys(close, close);
@@ -66,9 +68,9 @@ define([
         cb = cb || function () {};
         if (force !== true) { msg = Util.fixHTML(msg); }
 
-        var keyHandler = listenForKeys(function (e) { // yes
+        var keyHandler = listenForKeys(function () { // yes
             findOKButton().click();
-        }, function (e) { // no
+        }, function () { // no
             findCancelButton().click();
         });
 
@@ -90,9 +92,9 @@ define([
         cb = cb || function () {};
         if (force !== true) { msg = Util.fixHTML(msg); }
 
-        var keyHandler = listenForKeys(function (e) {
+        var keyHandler = listenForKeys(function () {
             findOKButton().click();
-        }, function (e) {
+        }, function () {
             findCancelButton().click();
         });
 
@@ -141,7 +143,7 @@ define([
 
         return {
             show: function () {
-                $target.show();
+                $target.css('display', 'inline');
                 return this;
             },
             hide: function () {
@@ -183,7 +185,7 @@ define([
         }
         if (Messages.tips && !hideTips) {
             var $loadingTip = $('<div>', {'id': 'loadingTip'});
-            var $tip = $('<span>', {'class': 'tips'}).text(getRandomTip()).appendTo($loadingTip);
+            $('<span>', {'class': 'tips'}).text(getRandomTip()).appendTo($loadingTip);
             $loadingTip.css({
                 'top': $('body').height()/2 + $container.height()/2 + 20 + 'px'
             });
@@ -204,7 +206,29 @@ define([
         $('#' + LOADING).find('p').html(error || Messages.error);
     };
 
-    var importContent = UI.importContent = function (type, f) {
+    // Notify
+    var notify = {};
+    UI.unnotify = function () {
+        if (notify.tabNotification &&
+            typeof(notify.tabNotification.cancel) === 'function') {
+            notify.tabNotification.cancel();
+        }
+    };
+
+    UI.notify = function () {
+        if (Visible.isSupported() && !Visible.currently()) {
+            UI.unnotify();
+            notify.tabNotification = Notify.tab(1000, 10);
+        }
+    };
+
+    if (Visible.isSupported()) {
+        Visible.onChange(function (yes) {
+            if (yes) { UI.unnotify(); }
+        });
+    }
+
+    UI.importContent = function (type, f) {
         return function () {
             var $files = $('<input type="file">').click();
             $files.on('change', function (e) {

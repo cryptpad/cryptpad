@@ -39,7 +39,7 @@ define([
         return !keys.some(function (k) { return data[k] !== null; });
     };
 
-    Frame.create(document.body, domain + path, function (err, iframe, loadEvent) {
+    Frame.create(document.body, domain + path, function (err, iframe) {
         if (handleErr(err)) { return; }
         console.log("Created iframe");
 
@@ -50,7 +50,7 @@ define([
 
         [function (i) { // test #1
             var pew = randInt();
-            frame.set('pew', pew, function (err, data) {
+            frame.set('pew', pew, function (err) {
                 if (handleErr(err)) { return; }
                 frame.get('pew', function (err, num) {
                     if (handleErr(err)) { return; }
@@ -76,9 +76,9 @@ define([
 
             var keys = Object.keys(map);
 
-            frame.setBatch(map, function (err, data) {
+            frame.setBatch(map, function (err) {
                 if (handleErr(err)) { return; }
-                frame.getBatch(keys, function (err, data) {
+                frame.getBatch(keys, function (err) {
                     if (handleErr(err)) { return; }
                     frame.removeBatch(Object.keys(map), function (err) {
                         if (handleErr(err)) { return; }

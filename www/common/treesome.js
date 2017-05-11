@@ -71,7 +71,7 @@ define([], function () {
         }
     };
 
-    var orderOfNodes = tree.orderOfNodes = function (a, b, root) {
+    tree.orderOfNodes = function (a, b, root) {
         // b might not be supplied
         if (!b) { return; }
         // a and b might be the same element

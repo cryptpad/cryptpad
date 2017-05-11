@@ -1,6 +1,7 @@
 define([
+    '/customize/application_config.js',
     '/bower_components/scrypt-async/scrypt-async.min.js',
-], function () {
+], function (AppConfig) {
     var Cred = {};
     var Scrypt = window.scrypt;
 
@@ -8,22 +9,26 @@ define([
         return typeof(x) === 'string';
     };
 
-    var isValidUsername = Cred.isValidUsername = function (name) {
+    Cred.isValidUsername = function (name) {
         return !!(name && isString(name));
     };
 
-    var isValidPassword = Cred.isValidPassword = function (passwd) {
+    Cred.isValidPassword = function (passwd) {
         return !!(passwd && isString(passwd));
     };
 
-    var passwordsMatch = Cred.passwordsMatch = function (a, b) {
+    Cred.passwordsMatch = function (a, b) {
         return isString(a) && isString(b) && a === b;
     };
 
-    var deriveFromPassphrase = Cred.deriveFromPassphrase = function 
-    (username, password, len, cb) {
+    Cred.customSalt = function () {
+        return typeof(AppConfig.loginSalt) === 'string'?
+            AppConfig.loginSalt: '';
+    };
+
+    Cred.deriveFromPassphrase = function (username, password, len, cb) {
         Scrypt(password,
-            username,
+            username + Cred.customSalt(), // salt
             8, // memoryCost (n)
             1024, // block size parameter (r)
             len || 128, // dkLen
@@ -32,7 +37,7 @@ define([
             undefined); // format, could be 'base64'
     };
 
-    var dispenser = Cred.dispenser = function (bytes) {
+    Cred.dispenser = function (bytes) {
         var entropy = {
             used: 0,
         };

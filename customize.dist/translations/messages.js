@@ -11,6 +11,8 @@ define(function () {
     out.type.slide = 'Presentation';
     out.type.drive = 'Drive';
     out.type.whiteboard = 'Whiteboard';
+    out.type.file = 'File';
+    out.type.media = 'Media';
 
     out.button_newpad = 'New Rich Text pad';
     out.button_newcode = 'New Code pad';
@@ -51,9 +53,21 @@ define(function () {
 
     out.language = "Language";
 
+    out.upgrade = "Upgrade";
+    out.upgradeTitle = "Upgrade your account to increase the storage limit";
+    out.MB = "MB";
+
     out.greenLight = "Everything is working fine";
     out.orangeLight = "Your slow connection may impact your experience";
     out.redLight = "You are disconnected from the session";
+
+    out.pinLimitReached = "You've reached your storage limit";
+    out.pinLimitReachedAlert = "You've reached your storage limit. New pads won't be stored in your CryptDrive.<br>" +
+        "To fix this problem, you can either remove pads from your CryptDrive (including the trash) or subscribe to a premium offer to increase your limit.";
+    out.pinLimitNotPinned = "You've reached your storage limit.<br>"+
+                            "This pad is not stored in your CryptDrive.";
+    out.pinLimitDrive = "You've reached your storage limit.<br>" +
+                        "You can't create new pads.";
 
     out.importButtonTitle = 'Import a pad from a local file';
 
@@ -95,6 +109,7 @@ define(function () {
     out.printDate = "Display the date";
     out.printTitle = "Display the pad title";
     out.printCSS = "Custom style rules (CSS):";
+    out.printTransition = "Enable transition animations";
 
     out.slideOptionsTitle = "Customize your slides";
     out.slideOptionsButton = "Save (enter)";
@@ -127,6 +142,7 @@ define(function () {
     out.history_restoreTitle = "Restore the selected version of the document";
     out.history_restorePrompt = "Are you sure you want to replace the current version of the document by the displayed one?";
     out.history_restoreDone = "Document restored";
+    out.history_version = "Version:";
 
     // Polls
 
@@ -317,6 +333,10 @@ define(function () {
     out.settings_pinningNotAvailable = "Pinned pads are only available to registered users.";
     out.settings_pinningError = "Something went wrong";
     out.settings_usageAmount = "Your pinned pads occupy {0}MB";
+
+    out.settings_logoutEverywhereTitle = "Log out everywhere";
+    out.settings_logoutEverywhere = "Log out of all other web sessions";
+    out.settings_logoutEverywhereConfirm = "Are you sure? You will need to log in with all your devices.";
 
     // index.html
 

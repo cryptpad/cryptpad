@@ -7,7 +7,7 @@ body {
   padding: 0;
   margin: 0;
   position: relative;
-  font-size: 20px;
+  font-size: 16px;
   overflow: auto;
 }
 body {
@@ -43,6 +43,9 @@ body {
     margin-top: 0.5em;
   }
 }
+div:focus {
+  outline: none;
+}
 .fa {
   /*min-width: 17px;*/
   margin-right: 3px;
@@ -66,7 +69,7 @@ li {
 .contextMenu {
   display: none;
   position: absolute;
-  z-index: 50;
+  z-index: 500;
 }
 .contextMenu li {
   padding: 0;
@@ -87,6 +90,16 @@ li {
 }
 .selected .fa-minus-square-o,
 .selected .fa-plus-square-o {
+  color: #000;
+}
+.selectedTmp {
+  border: 1px dotted #bbb;
+  background: #AAA;
+  color: #ddd;
+  margin: -1px;
+}
+.selectedTmp .fa-minus-square-o,
+.selectedTmp .fa-plus-square-o {
   color: #000;
 }
 span.fa-folder,
@@ -215,6 +228,13 @@ span.fa-folder-open {
   flex: 1;
   display: flex;
   flex-flow: column;
+  position: relative;
+}
+#content .selectBox {
+  display: none;
+  background-color: rgba(100, 100, 100, 0.7);
+  position: absolute;
+  z-index: 50;
 }
 #content.readonly {
   background: #e6e6e6;
@@ -242,7 +262,7 @@ span.fa-folder-open {
 #content li:not(.header) *:not(input) {
   /*pointer-events: none;*/
 }
-#content li:not(.header):hover:not(.selected) {
+#content li:not(.header):hover:not(.selected, .selectedTmp) {
   background-color: #eee;
 }
 #content li:not(.header):hover .name {
@@ -289,6 +309,9 @@ span.fa-folder-open {
   width: 50px;
   font-size: 40px;
 }
+#content .element .truncated {
+  display: none;
+}
 #content div.grid {
   padding: 20px;
 }
@@ -296,19 +319,35 @@ span.fa-folder-open {
   display: inline-block;
   margin: 10px 10px;
   width: 140px;
+  height: 140px;
   text-align: center;
   vertical-align: top;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-top: 10px;
+  padding-top: 5px;
   padding-bottom: 5px;
-  max-height: 145px;
 }
-#content div.grid li:not(.selected) {
-  border: transparent 1px;
+#content div.grid li:not(.selected):not(.selectedTmp) {
+  border: 1px solid #CCC;
 }
 #content div.grid li .name {
   width: 100%;
+  height: 48px;
+  margin: 8px 0;
+  display: inline-flex;
+  justify-content: center;
+  overflow: hidden;
+}
+#content div.grid li.element {
+  position: relative;
+}
+#content div.grid li .truncated {
+  display: block;
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+  right: 0;
+  text-align: center;
 }
 #content div.grid li input {
   width: 100%;
@@ -317,7 +356,8 @@ span.fa-folder-open {
 #content div.grid li .fa {
   display: block;
   margin: auto;
-  font-size: 40px;
+  font-size: 48px;
+  margin: 8px 0;
   text-align: center;
 }
 #content div.grid li .fa.listonly {
@@ -325,6 +365,9 @@ span.fa-folder-open {
 }
 #content div.grid .listElement {
   display: none;
+}
+#content .list {
+  padding-left: 20px;
 }
 #content .list ul {
   display: table;
