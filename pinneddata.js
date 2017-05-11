@@ -95,7 +95,7 @@ nThen((waitFor) => {
             })));
         });
     });
-}).nThen((waitFor) => {
+}).nThen(() => {
     out.sort((a,b) => (a[1] - b[1]));
     out.forEach((x) => { console.log(x[0] + '  ' + x[1] + ' MB'); });
 });
