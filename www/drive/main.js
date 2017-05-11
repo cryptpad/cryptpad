@@ -2690,12 +2690,16 @@ define([
                     var $usage = $('<span>', {'class': 'usage'}).css('width', width+'px');
 
                     if (quota >= 0.8) {
+                        var origin = encodeURIComponent(window.location.origin);
+                        var $upgradeLink = $('<a>', {
+                            href: "https://account.cryptpad.fr/#!on=" + origin,
+                            rel: "noreferrer noopener",
+                            target: "_blank",
+                        }).appendTo($leftside);
                         $('<button>', {
                             'class': 'upgrade buttonSuccess',
                             title: Messages.upgradeTitle
-                        }).text(Messages.upgrade).click(function () {
-                            // TODO
-                        }).appendTo($leftside);
+                        }).text(Messages.upgrade).appendTo($upgradeLink);
                     }
 
                     if (quota < 0.8) { $usage.addClass('normal'); }
