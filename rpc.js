@@ -461,12 +461,23 @@ var isPrivilegedUser = function (publicKey, cb) {
 var limits = {};
 var updateLimits = function (publicKey, cb) {
     if (typeof cb !== "function") { cb = function () {}; }
-    var domain = config.domain;
+    var body = JSON.stringify({
+        domain: config.domain,
+        subdomain: config.subdomain
+    });
     var options = {
         host: 'accounts.cryptpad.fr',
-        path: '/api/getAuthorized?domain=' + encodeURIComponent(domain)
+        path: '/api/getauthorized',
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+            "Content-Length": Buffer.byteLength(body)
+        }
     };
-    var callback = function (response) {
+    var req = Https.request(options, function (response) {
+        if (!('' + req.statusCode).match(/^2\d\d$/)) {
+            return void cb('SERVER ERROR ' + req.statusCode);
+        }
         var str = '';
 
         response.on('data', function (chunk) {
@@ -486,11 +497,14 @@ var updateLimits = function (publicKey, cb) {
                 cb(e);
             }
         });
-    };
-    Https.get(options, callback).on('error', function (e) {
+    });
+
+    req.on('error', function (e) {
         console.error(e);
         cb(e);
     });
+
+    req.end(body);
 };
 var getLimit = function (publicKey, cb) {
     return void cb(null, typeof limits[publicKey] === "number" ? limits[publicKey] : DEFAULT_LIMIT);
