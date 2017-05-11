@@ -840,21 +840,17 @@ define([
                     return;
                 }
                 var rootFiles = getFiles([ROOT, TEMPLATE]).slice();
-                //var toClean = [];
                 var root = find([ROOT]);
                 us.forEach(function (el) {
                     if (!isFile(el) || rootFiles.indexOf(el) !== -1) {
                         return;
-                        //toClean.push(idx);
                     }
-                    var name = getFileData(el).title || NEW_FILE_NAME;
+                    var data = getFileData(el);
+                    var name = data ? data.title : NEW_FILE_NAME;
                     var newName = getAvailableName(root, name);
                     root[newName] = el;
                 });
                 delete files[UNSORTED];
-                /*toClean.forEach(function (idx) {
-                    us.splice(idx, 1);
-                });*/
             };
             var fixTemplate = function () {
                 if (!Array.isArray(files[TEMPLATE])) { debug("TEMPLATE was not an array"); files[TEMPLATE] = []; }
