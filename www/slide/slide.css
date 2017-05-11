@@ -168,12 +168,15 @@ body .CodeMirror-focused .cm-matchhighlight {
 }
 .cp div.modal #content,
 .cp div#modal #content {
-  transition: margin-left 1s;
   font-size: 20vh;
   position: relative;
   height: 100%;
   overflow: visible;
   white-space: nowrap;
+}
+.cp div.modal #content.transition,
+.cp div#modal #content.transition {
+  transition: margin-left 1s;
 }
 .cp div.modal #content .slide-frame,
 .cp div#modal #content .slide-frame {
@@ -198,10 +201,11 @@ body .CodeMirror-focused .cm-matchhighlight {
 }
 .cp div.modal #content .slide-container,
 .cp div#modal #content .slide-container {
-  display: inline-block;
+  display: inline-flex;
   height: 100%;
   width: 100vw;
   text-align: center;
+  vertical-align: top;
 }
 .cp div.modal .center,
 .cp div#modal .center {

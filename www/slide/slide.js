@@ -184,6 +184,10 @@ define([
                 $('<div>', {'class': 'slideTitle'}).text(APP.title).appendTo($(el));
             }
         });
+        $content.removeClass('transition');
+        if (options.transition) {
+            $content.addClass('transition');
+        }
         //$content.find('.' + slideClass).hide();
         //$content.find('.' + slideClass + ':eq( ' + i + ' )').show();
         $content.css('margin-left', -(i*100)+'vw');

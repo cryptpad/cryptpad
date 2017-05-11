@@ -188,6 +188,7 @@ define([
                     title: false,
                     slide: false,
                     date: false,
+                    transition: true,
                     style: ''
                 };
 
@@ -219,6 +220,13 @@ define([
                     slideOptionsTmp.title = c;
                 }).appendTo($p).css('width', 'auto');
                 $('<label>', {'for': 'checkTitle'}).text(Messages.printTitle).appendTo($p);
+                $p.append($('<br>'));
+                // Transition
+                $('<input>', {type: 'checkbox', id: 'checkTransition', checked: slideOptionsTmp.transition}).on('change', function () {
+                    var c = this.checked;
+                    slideOptionsTmp.transition = c;
+                }).appendTo($p).css('width', 'auto');
+                $('<label>', {'for': 'checkTransition'}).text(Messages.printTransition).appendTo($p);
                 $p.append($('<br>'));
                 // CSS
                 $('<label>', {'for': 'cssPrint'}).text(Messages.printCSS).appendTo($p);

@@ -109,6 +109,7 @@ define(function () {
     out.printDate = "Display the date";
     out.printTitle = "Display the pad title";
     out.printCSS = "Custom style rules (CSS):";
+    out.printTransition = "Enable transition animations";
 
     out.slideOptionsTitle = "Customize your slides";
     out.slideOptionsButton = "Save (enter)";
