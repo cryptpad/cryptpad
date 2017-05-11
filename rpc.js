@@ -458,6 +458,8 @@ var isPrivilegedUser = function (publicKey, cb) {
     });
 };
 
+// The limits object contains storage limits for all the publicKey that have paid
+// To each key is associated an object containing the 'limit' value and a 'note' explaining that limit
 var limits = {};
 var updateLimits = function (publicKey, cb) {
     if (typeof cb !== "function") { cb = function () {}; }
@@ -490,7 +492,8 @@ var updateLimits = function (publicKey, cb) {
                 limits = json;
                 var l;
                 if (publicKey) {
-                    l = typeof limits[publicKey] === "number" ? limits[publicKey] : DEFAULT_LIMIT;
+                    var limit = limits[publicKey];
+                    l = limit && typeof limit.limit === "number" ? limit.limit : DEFAULT_LIMIT;
                 }
                 cb(void 0, l);
             } catch (e) {
@@ -507,7 +510,8 @@ var updateLimits = function (publicKey, cb) {
     req.end(body);
 };
 var getLimit = function (publicKey, cb) {
-    return void cb(null, typeof limits[publicKey] === "number" ? limits[publicKey] : DEFAULT_LIMIT);
+    var limit = limits[publicKey];
+    return limit && typeof limit.limit === "number" ? limit.limit : DEFAULT_LIMIT;
 };
 
 var safeMkdir = function (path, cb) {
