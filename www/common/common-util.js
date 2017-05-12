@@ -21,7 +21,7 @@ define([], function () {
             .replace(/ +$/, "")
             .split(" ");
         var byteString = String.fromCharCode.apply(null, hexArray);
-        return window.btoa(byteString).replace(/\//g, '-').slice(0,-2);
+        return window.btoa(byteString).replace(/\//g, '-').replace(/=+$/, '');
     };
 
     Util.base64ToHex = function (b64String) {
@@ -90,11 +90,21 @@ define([], function () {
     };
 
     Util.fetch = function (src, cb) {
+        var done = false;
+        var CB = function (err, res) {
+            if (done) { return; }
+            done = true;
+            cb(err, res);
+        };
+
         var xhr = new XMLHttpRequest();
         xhr.open("GET", src, true);
         xhr.responseType = "arraybuffer";
         xhr.onload = function () {
-            return void cb(void 0, new Uint8Array(xhr.response));
+            return void CB(void 0, new Uint8Array(xhr.response));
+        };
+        xhr.onerror = function () {
+            CB('XHR_ERROR');
         };
         xhr.send(null);
     };

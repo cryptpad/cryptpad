@@ -121,6 +121,29 @@ define([
                 });
             };
 
+            // Update the limit value for all the users and return the limit for your publicKey
+            exp.updatePinLimits = function (cb) {
+                rpc.send('UPDATE_LIMITS', undefined, function (e, response) {
+                    if (e) { return void cb(e); }
+                    if (response && typeof response === "number") {
+                        cb (void 0, response);
+                    } else {
+                        cb('INVALID_RESPONSE');
+                    }
+                });
+            };
+            // Get the storage limit associated with your publicKey
+            exp.getLimit = function (cb) {
+                rpc.send('GET_LIMIT', undefined, function (e, response) {
+                    if (e) { return void cb(e); }
+                    if (response && typeof response === "number") {
+                        cb (void 0, response);
+                    } else {
+                        cb('INVALID_RESPONSE');
+                    }
+                });
+            };
+
             cb(e, exp);
         });
     };

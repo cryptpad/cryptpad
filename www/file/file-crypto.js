@@ -7,6 +7,12 @@ define([
     var plainChunkLength = 128 * 1024;
     var cypherChunkLength = 131088;
 
+    var computeEncryptedSize = function (bytes, meta) {
+        var metasize = Nacl.util.decodeUTF8(JSON.stringify(meta)).length;
+        var chunks = Math.ceil(bytes / plainChunkLength);
+        return metasize + 18 + (chunks * 16) + bytes;
+    };
+
     var encodePrefix = function (p) {
         return [
             65280, // 255 << 8
@@ -131,22 +137,14 @@ define([
 
         var i = 0;
 
-        /*
-            0: metadata
-            1: u8
-            2: done
-        */
-
         var state = 0;
-
         var next = function (cb) {
+            if (state === 2) { return void cb(); }
+
             var start;
             var end;
             var part;
             var box;
-
-            // DONE
-            if (state === 2) { return void cb(); }
 
             if (state === 0) { // metadata...
                 part = new Uint8Array(plaintext);
@@ -159,6 +157,7 @@ define([
                 var prefixed = new Uint8Array(encodePrefix(box.length)
                     .concat(slice(box)));
                 state++;
+
                 return void cb(void 0, prefixed);
             }
 
@@ -184,5 +183,6 @@ define([
         decrypt: decrypt,
         encrypt: encrypt,
         joinChunks: joinChunks,
+        computeEncryptedSize: computeEncryptedSize,
     };
 });

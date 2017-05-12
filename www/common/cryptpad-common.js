@@ -746,8 +746,15 @@ define([
         });
     };
 
+    common.updatePinLimit = function (cb) {
+        if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
+        rpc.getFileListSize(cb);
+    };
+
     common.getPinLimit = function (cb) {
-        cb(void 0, typeof(AppConfig.pinLimit) === 'number'? AppConfig.pinLimit: 1000);
+        if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
+        rpc.getFileListSize(cb);
+        //cb(void 0, typeof(AppConfig.pinLimit) === 'number'? AppConfig.pinLimit: 1000);
     };
 
     common.isOverPinLimit = function (cb) {
