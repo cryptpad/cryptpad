@@ -180,6 +180,10 @@ define([
                 var cryptKey = secret.keys && secret.keys.fileKeyStr;
                 var key = Nacl.util.decodeBase64(cryptKey);
 
+                if (!u8 || !u8.length) {
+                    return void Cryptpad.errorLoadingScreen(e);
+                }
+
                 FileCrypto.decrypt(u8, key, function (e, data) {
                     if (e) {
                         Cryptpad.removeLoadingScreen();
