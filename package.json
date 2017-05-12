@@ -3,11 +3,12 @@
   "description": "realtime collaborative visual editor with zero knowlege server",
   "version": "1.6.0",
   "dependencies": {
+    "chainpad-server": "^1.0.1",
     "express": "~4.10.1",
-    "ws": "^1.0.1",
     "nthen": "~0.1.0",
+    "saferphore": "0.0.1",
     "tweetnacl": "~0.12.2",
-    "chainpad-server": "^1.0.1"
+    "ws": "^1.0.1"
   },
   "devDependencies": {
     "jshint": "~2.9.1",
@@ -15,9 +16,9 @@
     "less": "2.7.1"
   },
   "scripts": {
-      "lint": "jshint --config .jshintrc --exclude-path .jshintignore .",
-      "test": "node TestSelenium.js",
-      "style": "lessc ./customize.dist/src/less/cryptpad.less > ./customize.dist/main.css && lessc ./customize.dist/src/less/toolbar.less > ./customize.dist/toolbar.css && lessc ./www/drive/file.less > ./www/drive/file.css && lessc ./www/settings/main.less > ./www/settings/main.css && lessc ./www/slide/slide.less > ./www/slide/slide.css && lessc ./www/whiteboard/whiteboard.less > ./www/whiteboard/whiteboard.css && lessc ./www/poll/poll.less > ./www/poll/poll.css",
-      "template": "cd customize.dist/src && node build.js"
+    "lint": "jshint --config .jshintrc --exclude-path .jshintignore .",
+    "test": "node TestSelenium.js",
+    "style": "lessc ./customize.dist/src/less/cryptpad.less > ./customize.dist/main.css && lessc ./customize.dist/src/less/toolbar.less > ./customize.dist/toolbar.css && lessc ./www/drive/file.less > ./www/drive/file.css && lessc ./www/settings/main.less > ./www/settings/main.css && lessc ./www/slide/slide.less > ./www/slide/slide.css && lessc ./www/whiteboard/whiteboard.less > ./www/whiteboard/whiteboard.css && lessc ./www/poll/poll.less > ./www/poll/poll.css",
+    "template": "cd customize.dist/src && node build.js"
   }
 }
