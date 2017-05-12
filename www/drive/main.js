@@ -2155,7 +2155,7 @@ define([
         var getReadOnlyUrl = APP.getRO = function (href) {
             if (!filesOp.isFile(href)) { return; }
             var i = href.indexOf('#') + 1;
-            var parsed = Cryptpad.parsePadUrl(href);;
+            var parsed = Cryptpad.parsePadUrl(href);
             var base = href.slice(0, i);
             var hrefsecret = Cryptpad.getSecrets(parsed.type, parsed.hash);
             if (!hrefsecret.keys) { return; }

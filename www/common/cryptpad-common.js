@@ -75,7 +75,7 @@ define([
 
     // import hash utilities for export
     var createRandomHash = common.createRandomHash = Hash.createRandomHash;
-    var parseTypeHash = common.parseTypeHash = Hash.parseTypeHash;
+    common.parseTypeHash = Hash.parseTypeHash;
     var parsePadUrl = common.parsePadUrl = Hash.parsePadUrl;
     var isNotStrongestStored = common.isNotStrongestStored = Hash.isNotStrongestStored;
     var hrefToHexChannelId = common.hrefToHexChannelId = Hash.hrefToHexChannelId;
@@ -293,15 +293,10 @@ define([
         return pads.map(function (pad) {
             var parsedHash;
             if (Array.isArray(pad)) { // TODO DEPRECATE_F
-                var href = pad[0];
-                href.replace(/\#(.*)$/, function (a, h) {
-                    hash = h;
-                });
-
                 return {
                     href: pad[0],
                     atime: pad[1],
-                    title: pad[2] || hash && hash.slice(0,8),
+                    title: pad[2] || '',
                     ctime: pad[1],
                 };
             } else if (pad && typeof(pad) === 'object') {

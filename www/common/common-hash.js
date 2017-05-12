@@ -39,9 +39,16 @@ define([
         return s.replace(/\/+/g, '/');
     };
 
+/*
+Version 0
+    /pad/#67b8385b07352be53e40746d2be6ccd7XAYSuJYYqa9NfmInyHci7LNy
+Version 1
+    /code/#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI
+*/
+
     var parseTypeHash = Hash.parseTypeHash = function (type, hash) {
         if (!hash) { return; }
-        var parsed = {}
+        var parsed = {};
         var hashArr = fixDuplicateSlashes(hash).split('/');
         if (['media', 'file', 'user'].indexOf(type) === -1) {
             parsed.type = 'pad';
@@ -147,7 +154,6 @@ define([
             }
             //var parsed = parsePadUrl(window.location.href);
             //var hash = secretHash || window.location.hash.slice(1);
-            console.log(hash, parsed);
             if (hash.length === 0) {
                 generate();
                 return secret;
@@ -164,7 +170,6 @@ define([
                 if (parsed.type === "pad") {
                     secret.channel = base64ToHex(parsed.channel);
                     if (parsed.mode === 'edit') {
-                        console.log(parsed.key);
                         secret.keys = Crypto.createEditCryptor(parsed.key);
                         secret.key = secret.keys.editKeyStr;
                         if (secret.channel.length !== 32 || secret.key.length !== 24) {
@@ -217,43 +222,6 @@ define([
         // 18 byte encryption key
         var key = Crypto.b64RemoveSlashes(Crypto.rand64(18));
         return '/1/edit/' + [channelId, key].join('/') + '/';
-    };
-
-/*
-Version 0
-    /pad/#67b8385b07352be53e40746d2be6ccd7XAYSuJYYqa9NfmInyHci7LNy
-Version 1
-    /code/#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI
-Version 2
-    /file/#/2/<fileId>/<cryptKey>/<contentType>
-    /file/#/2/K6xWU-LT9BJHCQcDCT-DcQ/ajExFODrFH4lVBwxxsrOKw/image-png
-*/
-    var parseHash = Hash.parseHash = function (hash) {
-        throw new Error('parseHash deprecated');
-        var parsed = {};
-        if (hash.slice(0,1) !== '/' && hash.length >= 56) {
-            // Old hash
-            parsed.channel = hash.slice(0, 32);
-            parsed.key = hash.slice(32);
-            parsed.version = 0;
-            return parsed;
-        }
-        var hashArr = fixDuplicateSlashes(hash).split('/');
-        if (hashArr[1] && hashArr[1] === '1') {
-            parsed.version = 1;
-            parsed.mode = hashArr[2];
-            parsed.channel = hashArr[3];
-            parsed.key = hashArr[4];
-            parsed.present = typeof(hashArr[5]) === "string" && hashArr[5] === 'present';
-            return parsed;
-        }
-        if (hashArr[1] && hashArr[1] === '2') {
-            parsed.version = 2;
-            parsed.channel = hashArr[2].replace(/-/g, '/');
-            parsed.key = hashArr[3].replace(/-/g, '/');
-            return parsed;
-        }
-        return;
     };
 
     // STORAGE
