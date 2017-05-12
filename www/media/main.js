@@ -20,6 +20,11 @@ define([
     Cryptpad.addLoadingScreen();
 
     var andThen = function () {
+        $(window.document).on('decryption', function (e) {
+            var decrypted = e.originalEvent;
+            console.log(decrypted.blob, decrypted.metadata);
+        });
+
         var $bar = $iframe.find('.toolbar-container');
         var secret = Cryptpad.getSecrets();
 
