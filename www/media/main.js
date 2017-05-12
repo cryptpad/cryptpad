@@ -20,11 +20,6 @@ define([
     Cryptpad.addLoadingScreen();
 
     var andThen = function () {
-        $(window.document).on('decryption', function (e) {
-            var decrypted = e.originalEvent;
-            console.log(decrypted.blob, decrypted.metadata);
-        });
-
         var $bar = $iframe.find('.toolbar-container');
         var secret = Cryptpad.getSecrets();
 
@@ -71,11 +66,16 @@ define([
         $mt.attr('data-crypto-key', 'cryptpad:'+cryptKey);
         $mt.attr('data-type', type);
 
-        window.onMediaMetadata = function (metadata) {
+        $(window.document).on('decryption', function (e) {
+            var decrypted = e.originalEvent;
+            var metadata = decrypted.metadata;
+
+            console.log(metadata);
+            console.log(defaultName);
             if (!metadata || metadata.name !== defaultName) { return; }
             var title = document.title = metadata.name;
             updateTitle(title || defaultName);
-        };
+        });
 
         require(['/common/media-tag.js'], function (MediaTag) {
             var configTb = {

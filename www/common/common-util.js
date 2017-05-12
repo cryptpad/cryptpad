@@ -101,10 +101,10 @@ define([], function () {
         xhr.open("GET", src, true);
         xhr.responseType = "arraybuffer";
         xhr.onload = function () {
+            if ([200, 304].indexOf(this.status) === -1) {
+                return CB('XHR_ERROR');
+            }
             return void CB(void 0, new Uint8Array(xhr.response));
-        };
-        xhr.onerror = function () {
-            CB('XHR_ERROR');
         };
         xhr.send(null);
     };
