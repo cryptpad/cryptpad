@@ -7,10 +7,13 @@ var Nacl = require("tweetnacl");
 
 var Fs = require("fs");
 var Path = require("path");
+var Https = require("https");
 
 var RPC = module.exports;
 
 var Store = require("./storage/file");
+
+var DEFAULT_LIMIT = 100;
 
 var isValidChannel = function (chan) {
     return /^[a-fA-F0-9]/.test(chan) ||
@@ -454,8 +457,61 @@ var isPrivilegedUser = function (publicKey, cb) {
     });
 };
 
-var getLimit = function (cb) {
-    cb = cb; // TODO
+// The limits object contains storage limits for all the publicKey that have paid
+// To each key is associated an object containing the 'limit' value and a 'note' explaining that limit
+var limits = {};
+var updateLimits = function (config, publicKey, cb) {
+    if (typeof cb !== "function") { cb = function () {}; }
+
+    var body = JSON.stringify({
+        domain: config.domain,
+        subdomain: config.subdomain
+    });
+    var options = {
+        host: 'accounts.cryptpad.fr',
+        path: '/api/getauthorized',
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+            "Content-Length": Buffer.byteLength(body)
+        }
+    };
+    var req = Https.request(options, function (response) {
+        if (!('' + req.statusCode).match(/^2\d\d$/)) {
+            return void cb('SERVER ERROR ' + req.statusCode);
+        }
+        var str = '';
+
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+
+        response.on('end', function () {
+            try {
+                var json = JSON.parse(str);
+                limits = json;
+                var l;
+                if (publicKey) {
+                    var limit = limits[publicKey];
+                    l = limit && typeof limit.limit === "number" ? limit.limit : DEFAULT_LIMIT;
+                }
+                cb(void 0, l);
+            } catch (e) {
+                cb(e);
+            }
+        });
+    });
+
+    req.on('error', function (e) {
+        if (!config.domain) { return cb(); }
+        cb(e);
+    });
+
+    req.end(body);
+};
+var getLimit = function (publicKey, cb) {
+    var limit = limits[publicKey];
+    return limit && typeof limit.limit === "number" ? limit.limit : DEFAULT_LIMIT;
 };
 
 var safeMkdir = function (path, cb) {
@@ -714,10 +770,16 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                 });
             case 'GET_FILE_SIZE':
                 return void getFileSize(ctx.store, msg[1], Respond);
-            case 'GET_LIMIT': // TODO implement this and cache it per-user
-                return void getLimit(function (e, limit) {
+            case 'UPDATE_LIMITS':
+                return void updateLimits(config, safeKey, function (e, limit) {
+                    if (e) { return void Respond(e); }
+                    Respond(void 0, limit);
+                });
+            case 'GET_LIMIT':
+                return void getLimit(safeKey, function (e, limit) {
+                    if (e) { return void Respond(e); }
                     limit = limit;
-                    Respond('NOT_IMPLEMENTED');
+                    Respond(void 0, limit);
                 });
             case 'GET_MULTIPLE_FILE_SIZE':
                 return void getMultipleFileSize(ctx.store, msg[1], function (e, dict) {
@@ -774,6 +836,14 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
         // if authenticated, proceed
         handleMessage(session.privilege);
     };
+
+    var updateLimitDaily = function () {
+        updateLimits(config, undefined, function (e) {
+            if (e) { console.error('Error updating the storage limits', e); }
+        });
+    };
+    updateLimitDaily();
+    setInterval(updateLimitDaily, 24*3600*1000);
 
     Store.create({
         filePath: pinPath,
