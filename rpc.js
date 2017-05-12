@@ -12,7 +12,6 @@ var Https = require("https");
 var RPC = module.exports;
 
 var Store = require("./storage/file");
-var config = require('./config');
 
 var DEFAULT_LIMIT = 100;
 
@@ -461,8 +460,9 @@ var isPrivilegedUser = function (publicKey, cb) {
 // The limits object contains storage limits for all the publicKey that have paid
 // To each key is associated an object containing the 'limit' value and a 'note' explaining that limit
 var limits = {};
-var updateLimits = function (publicKey, cb) {
+var updateLimits = function (config, publicKey, cb) {
     if (typeof cb !== "function") { cb = function () {}; }
+
     var body = JSON.stringify({
         domain: config.domain,
         subdomain: config.subdomain
@@ -503,7 +503,7 @@ var updateLimits = function (publicKey, cb) {
     });
 
     req.on('error', function (e) {
-        console.error(e);
+        if (!config.domain) { return cb(); }
         cb(e);
     });
 
@@ -771,7 +771,7 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
             case 'GET_FILE_SIZE':
                 return void getFileSize(ctx.store, msg[1], Respond);
             case 'UPDATE_LIMITS':
-                return void updateLimits(safeKey, function (e, limit) {
+                return void updateLimits(config, safeKey, function (e, limit) {
                     if (e) { return void Respond(e); }
                     Respond(void 0, limit);
                 });
@@ -838,7 +838,7 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
     };
 
     var updateLimitDaily = function () {
-        updateLimits(function (e) {
+        updateLimits(config, undefined, function (e) {
             if (e) { console.error('Error updating the storage limits', e); }
         });
     };
