@@ -22,7 +22,8 @@ define([
     };
 
     var makeConfig = function (hash) {
-        var secret = Cryptpad.getSecrets(hash);
+        // We can't use cryptget with a file or a user so we can use 'pad' as hash type
+        var secret = Cryptpad.getSecrets('pad', hash);
         if (!secret.keys) { secret.keys = secret.key; } // support old hashses
         var config = {
             websocketURL: Cryptpad.getWebsocketURL(),

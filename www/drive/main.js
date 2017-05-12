@@ -1103,7 +1103,7 @@ define([
             var type = Messages.type[hrefData.type] || hrefData.type;
             var $title = $('<span>', {'class': 'title listElement', title: data.title}).text(data.title);
             var $type = $('<span>', {'class': 'type listElement', title: type}).text(type);
-            if (hrefData.hash && Cryptpad.parseHash(hrefData.hash) && Cryptpad.parseHash(hrefData.hash).mode === 'view') {
+            if (hrefData.hashData && hrefData.hashData.mode === 'view') {
                 $type.append(' (' + Messages.readonly+ ')');
             }
             var $adate = $('<span>', {'class': 'atime listElement', title: getDate(data.atime)}).text(getDate(data.atime));
@@ -2155,9 +2155,9 @@ define([
         var getReadOnlyUrl = APP.getRO = function (href) {
             if (!filesOp.isFile(href)) { return; }
             var i = href.indexOf('#') + 1;
-            var hash = href.slice(i);
+            var parsed = Cryptpad.parsePadUrl(href);;
             var base = href.slice(0, i);
-            var hrefsecret = Cryptpad.getSecrets(hash);
+            var hrefsecret = Cryptpad.getSecrets(parsed.type, parsed.hash);
             if (!hrefsecret.keys) { return; }
             var viewHash = Cryptpad.getViewHashFromKeys(hrefsecret.channel, hrefsecret.keys);
             return base + viewHash;
@@ -2608,7 +2608,7 @@ define([
         }
 
         var hash = window.location.hash.slice(1) || Cryptpad.getUserHash() || localStorage.FS_hash;
-        var secret = Cryptpad.getSecrets(hash);
+        var secret = Cryptpad.getSecrets('drive', hash);
         var readOnly = APP.readOnly = secret.keys && !secret.keys.editKeyStr;
 
         var listmapConfig = module.config = {

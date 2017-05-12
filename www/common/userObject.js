@@ -61,9 +61,7 @@ define([
             if (!isFile(element)) { return false; }
             var parsed = Cryptpad.parsePadUrl(element);
             if (!parsed) { return false; }
-            var hash = parsed.hash;
-            var pHash = Cryptpad.parseHash(hash);
-            if (pHash && !pHash.mode) { return; }
+            var pHash = parsed.hashData;
             return pHash && pHash.mode === 'view';
         };
 

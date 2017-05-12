@@ -222,7 +222,7 @@ define([
         if (!hash) {
             throw new Error('[Store.init] Unable to find or create a drive hash. Aborting...');
         }
-        var secret = Cryptpad.getSecrets(hash);
+        var secret = Cryptpad.getSecrets('drive', hash);
         var listmapConfig = {
             data: {},
             websocketURL: Cryptpad.getWebsocketURL(),

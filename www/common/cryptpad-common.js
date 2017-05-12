@@ -75,10 +75,10 @@ define([
 
     // import hash utilities for export
     var createRandomHash = common.createRandomHash = Hash.createRandomHash;
+    var parseTypeHash = common.parseTypeHash = Hash.parseTypeHash;
     var parsePadUrl = common.parsePadUrl = Hash.parsePadUrl;
     var isNotStrongestStored = common.isNotStrongestStored = Hash.isNotStrongestStored;
     var hrefToHexChannelId = common.hrefToHexChannelId = Hash.hrefToHexChannelId;
-    var parseHash = common.parseHash = Hash.parseHash;
     var getRelativeHref = common.getRelativeHref = Hash.getRelativeHref;
     common.getBlobPathFromHex = Hash.getBlobPathFromHex;
 
@@ -286,12 +286,12 @@ define([
         if (!pad.title) {
             pad.title = common.getDefaultname(parsed);
         }
-        return parsed.hash;
+        return parsed.hashData;
     };
     // Migrate from legacy store (localStorage)
     var migrateRecentPads = common.migrateRecentPads = function (pads) {
         return pads.map(function (pad) {
-            var hash;
+            var parsedHash;
             if (Array.isArray(pad)) { // TODO DEPRECATE_F
                 var href = pad[0];
                 href.replace(/\#(.*)$/, function (a, h) {
@@ -305,8 +305,8 @@ define([
                     ctime: pad[1],
                 };
             } else if (pad && typeof(pad) === 'object') {
-                hash = checkObjectData(pad);
-                if (!hash || !common.parseHash(hash)) { return; }
+                parsedHash = checkObjectData(pad);
+                if (!parsedHash || !parsedHash.type) { return; }
                 return pad;
             } else {
                 console.error("[Cryptpad.migrateRecentPads] pad had unexpected value");
@@ -319,8 +319,8 @@ define([
     var checkRecentPads = common.checkRecentPads = function (pads) {
         pads.forEach(function (pad, i) {
             if (pad && typeof(pad) === 'object') {
-                var hash = checkObjectData(pad);
-                if (!hash || !common.parseHash(hash)) {
+                var parsedHash = checkObjectData(pad);
+                if (!parsedHash || !parsedHash.type) {
                     console.error("[Cryptpad.checkRecentPads] pad had unexpected value", pad);
                     getStore().removeData(i);
                     return;
@@ -538,6 +538,7 @@ define([
     common.setPadTitle = function (name, cb) {
         var href = window.location.href;
         var parsed = parsePadUrl(href);
+        if (!parsed.hash) { return; }
         href = getRelativeHref(href);
         // getRecentPads return the array from the drive, not a copy
         // We don't have to call "set..." at the end, everything is stored with listmap
@@ -558,8 +559,8 @@ define([
 
                 // Version 1 : we have up to 4 differents hash for 1 pad, keep the strongest :
                 // Edit > Edit (present) > View > View (present)
-                var pHash = parseHash(p.hash);
-                var parsedHash = parseHash(parsed.hash);
+                var pHash = p.hashData;
+                var parsedHash = parsed.hashData;
 
                 if (!pHash) { return; } // We may have a corrupted pad in our storage, abort here in that case
 
@@ -661,7 +662,8 @@ define([
         var userHash = localStorage && localStorage.User_hash;
         if (!userHash) { return null; }
 
-        var userChannel = common.parseHash(userHash).channel;
+        var userParsedHash = common.parseTypeHash('drive', userHash);
+        var userChannel = userParsedHash && userParsedHash.channel;
         if (!userChannel) { return null; }
 
         var list = fo.getFiles([fo.FILES_DATA]).map(hrefToHexChannelId)
@@ -1273,20 +1275,21 @@ define([
                 UI.Alertify.reset();
 
                 // Load the new pad when the hash has changed
-                var oldHash  = document.location.hash.slice(1);
+                var oldHref  = document.location.href;
                 window.onhashchange = function () {
-                    var newHash = document.location.hash.slice(1);
-                    var parsedOld = parseHash(oldHash);
-                    var parsedNew = parseHash(newHash);
+                    var newHref = document.location.href;
+                    var parsedOld = parsePadUrl(oldHref).hashData;
+                    var parsedNew = parsePadUrl(newHref).hashData;
                     if (parsedOld && parsedNew && (
-                          parsedOld.channel !== parsedNew.channel
+                          parsedOld.type !== parsedNew.type
+                          || parsedOld.channel !== parsedNew.channel
                           || parsedOld.mode !== parsedNew.mode
                           || parsedOld.key !== parsedNew.key)) {
                         document.location.reload();
                         return;
                     }
                     if (parsedNew) {
-                        oldHash = newHash;
+                        oldHref = newHref;
                     }
                 };
 
