@@ -509,9 +509,12 @@ var updateLimits = function (config, publicKey, cb) {
 
     req.end(body);
 };
+
 var getLimit = function (publicKey, cb) {
     var limit = limits[publicKey];
-    return limit && typeof limit.limit === "number" ? limit.limit : DEFAULT_LIMIT;
+
+    cb(void 0, limit && typeof(limit.limit) === "number"?
+        limit.limit : DEFAULT_LIMIT);
 };
 
 var safeMkdir = function (path, cb) {
@@ -786,7 +789,6 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                     if (e) { return void Respond(e); }
                     Respond(void 0, dict);
                 });
-
 
             // restricted to privileged users...
             case 'UPLOAD':
