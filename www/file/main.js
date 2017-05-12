@@ -36,6 +36,7 @@ define([
         var key = Nacl.randomBytes(32);
         var next = FileCrypto.encrypt(u8, metadata, key);
 
+        var estimate = FileCrypto.computeEncryptedSize(blob.byteLength, metadata);
         var chunks = [];
 
         var sendChunk = function (box, cb) {
@@ -47,13 +48,19 @@ define([
             });
         };
 
+        var actual = 0;
         var again = function (err, box) {
             if (err) { throw new Error(err); }
             if (box) {
+                actual += box.length;
                 return void sendChunk(box, function (e) {
                     if (e) { return console.error(e); }
                     next(again);
                 });
+            }
+
+            if (actual !== estimate) {
+                console.error('Estimated size does not match actual size');
             }
 
             // if not box then done
