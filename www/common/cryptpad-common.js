@@ -743,13 +743,13 @@ define([
 
     common.updatePinLimit = function (cb) {
         if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
-        rpc.getFileListSize(cb);
+        rpc.updatePinLimits(cb);
     };
 
     common.getPinLimit = function (cb) {
         if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
-        rpc.getFileListSize(cb);
-        //cb(void 0, typeof(AppConfig.pinLimit) === 'number'? AppConfig.pinLimit: 1000);
+        cb(void 0, typeof(AppConfig.pinLimit) === 'number'? AppConfig.pinLimit: 1000);
+        //rpc.getLimit(cb); TODO
     };
 
     common.isOverPinLimit = function (cb) {
@@ -858,7 +858,8 @@ define([
                 if (callback) {
                     button.click(function() {
                         var href = window.location.href;
-                        common.confirm(Messages.forgetPrompt, function (yes) {
+                        var msg = isLoggedIn() ? Messages.forgetPrompt : Messages.fm_removePermanentlyDialog;
+                        common.confirm(msg, function (yes) {
                             if (!yes) { return; }
                             common.forgetPad(href, function (err) {
                                 if (err) {
@@ -877,7 +878,8 @@ define([
                                 } else {
                                     callback();
                                 }
-                                common.alert(Messages.movedToTrash, undefined, true);
+                                var cMsg = isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
+                                common.alert(cMsg, undefined, true);
                                 return;
                             });
                         });

@@ -149,9 +149,7 @@ define([
                 left: true, // Open to the left of the button
                 isSelect: true,
             };
-            console.log('here');
             var $block = exp.$language = Cryptpad.createDropdown(dropdownConfig);
-            console.log(exp);
             $block.find('a').click(function () {
                 setMode($(this).attr('data-value'), $block);
                 onLocal();
