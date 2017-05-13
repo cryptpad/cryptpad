@@ -211,6 +211,15 @@ module.exports = {
      */
     restrictUploads: true,
 
+    /*  clients can use the /settings/ app to opt out of usage feedback
+     *  which informs the server of things like how much each app is being
+     *  used, and whether certain clientside features are supported by
+     *  the client's browser. The intent is to provide feedback to the admin
+     *  such that the service can be improved. Enable this with `true`
+     *  and ignore feedback with `false` or by commenting the attribute
+     */
+    //logFeedback: true,
+
     /* it is recommended that you serve cryptpad over https
      * the filepaths below are used to configure your certificates
      */
