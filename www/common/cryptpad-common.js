@@ -1269,7 +1269,7 @@ define([
                 feedback("NO_PROXIES");
             }
 
-            if (typeof(Array.isArray) !== 'function') {
+            if (!/CRYPTPAD_SHIM/.test(Array.isArray.toString())) {
                 feedback("NO_ISARRAY");
             }
 
