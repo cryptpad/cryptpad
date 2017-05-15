@@ -34,7 +34,7 @@ define([
     var getFileHashFromKeys = Hash.getFileHashFromKeys = function (fileKey, cryptKey) {
         return '/1/' + hexToBase64(fileKey) + '/' + Crypto.b64RemoveSlashes(cryptKey) + '/';
     };
-    var getUserHrefFromKeys = Hash.getUserHrefFromKeys = function (username, pubkey) {
+    Hash.getUserHrefFromKeys = function (username, pubkey) {
         return window.location.origin + '/user/#/1/' + username + '/' + pubkey.replace(/\//g, '-');
     };
 
