@@ -230,26 +230,11 @@ define([
             .text(Messages.settings_usageTitle)
             .append('<br>');
 
-        $('<button>', {
-            'class': 'btn btn-primary', // fa fa-hdd-o ?
-        })
-        .text(Messages.settings_usage)
-        .click(function () {
-            if (!(proxy.edPublic && proxy.edPrivate)) {
-                // suggest that they login/register
-                Cryptpad.alert(Messages.settings_pinningNotAvailable);
-                return;
-            }
-            Cryptpad.getPinnedUsage(function (e, bytes) {
-                if (e) {
-                    Cryptpad.alert(Messages.settings_pinningError);
-                    return;
-                }
-                Cryptpad.alert(Messages._getKey('settings_usageAmount', [Cryptpad.bytesToMegabytes(bytes)]));
-            });
-        })
-        .appendTo($div);
-
+        Cryptpad.createUsageBar(function (err, $bar) {
+            $div.find('.limit-container').remove();
+            $bar.find('.upgrade').addClass('btn btn-success');
+            $div.append($bar);
+        });
         return $div;
     };
 
@@ -335,10 +320,10 @@ define([
             APP.$container.append(createLogoutEverywhere(obj));
         }
         APP.$container.append(createResetTips());
+        APP.$container.append(createUsageButton(obj));
         APP.$container.append(createBackupDrive(obj));
         APP.$container.append(createImportLocalPads(obj));
         APP.$container.append(createResetDrive(obj));
-        APP.$container.append(createUsageButton(obj));
         APP.$container.append(createUserFeedbackToggle(obj));
         obj.proxy.on('change', [], refresh);
         obj.proxy.on('remove', [], refresh);

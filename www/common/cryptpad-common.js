@@ -772,6 +772,50 @@ define([
         common.getPinnedUsage(todo);
     };
 
+    var LIMIT_REFRESH_RATE = 30000; // milliseconds
+    common.createUsageBar = function (cb) {
+        var todo = function (err, state, data) {
+            var $container = $('<span>', {'class':'limit-container'});
+            if (!data) {
+                return void window.setTimeout(function () {
+                    Cryptpad.isOverPinLimit(todo);
+                }, LIMIT_REFRESH_RATE);
+            }
+            var usage = data.usage;
+            var limit = data.limit;
+            var unit = Messages.MB;
+            var $limit = $('<span>', {'class': 'cryptpad-limit-bar'}).appendTo($container);
+            var quota = usage/limit;
+            var width = Math.floor(Math.min(quota, 1)*200); // the bar is 200px width
+            var $usage = $('<span>', {'class': 'usage'}).css('width', width+'px');
+
+            if (quota >= 0.8) {
+                var origin = encodeURIComponent(window.location.origin);
+                var $upgradeLink = $('<a>', {
+                    href: "https://account.cryptpad.fr/#!on=" + origin,
+                    rel: "noreferrer noopener",
+                    target: "_blank",
+                }).appendTo($container);
+                $('<button>', {
+                    'class': 'upgrade buttonSuccess',
+                    title: Messages.upgradeTitle
+                }).text(Messages.upgrade).appendTo($upgradeLink);
+            }
+
+            if (quota < 0.8) { $usage.addClass('normal'); }
+            else if (quota < 1) { $usage.addClass('warning'); }
+            else { $usage.addClass('above'); }
+            var $text = $('<span>', {'class': 'usageText'});
+            $text.text(usage + ' / ' + limit + ' ' + unit);
+            $limit.append($usage).append($text);
+            window.setTimeout(function () {
+                Cryptpad.isOverPinLimit(todo);
+            }, LIMIT_REFRESH_RATE);
+            cb(err, $container);
+        };
+        Cryptpad.isOverPinLimit(todo);
+    };
+
     common.createButton = function (type, rightside, data, callback) {
         var button;
         var size = "17px";

@@ -8,12 +8,14 @@
 @import "./topbar.less";
 @import "./footer.less";
 
+@toolbar-green: #5cb85c;
+
 html.cp, .cp body {
     font-size: .875em;
     background-color: @page-white; //@base;
     color: @fore;
 
-    font-family: Georgia,Cambria,serif;
+    font-family: Ubuntu,Georgia,Cambria,serif;
     height: 100%;
 }
 
@@ -534,6 +536,51 @@ noscript {
     color: @cp-red;
     cursor: pointer !important;
 }
+}
+
+/* Pin limit */
+.limit-container {
+    .cryptpad-limit-bar {
+        display: inline-block;
+        height: 26px;
+        width: 200px;
+        margin: 2px;
+        box-sizing: border-box;
+        border: 1px solid #999;
+        background: white;
+        position: relative;
+        text-align: center;
+        line-height: 24px;
+        vertical-align: middle;
+        .usage {
+            height: 24px;
+            display: inline-block;
+            background: blue;
+            position: absolute;
+            left: 0;
+            z-index:1;
+            &.normal {
+                background: @toolbar-green;
+            }
+            &.warning {
+                background: orange;
+            }
+            &.above {
+                background: red;
+            }
+        }
+        .usageText {
+            position: relative;
+            color: black;
+            text-shadow: 1px 0 2px white, 0 1px 2px white, -1px 0 2px white, 0 -1px 2px white;
+            z-index: 2;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    }
+    .upgrade {
+        margin-left: 10px;
+    }
 }
 
 // hack for our cross-origin iframe

@@ -37,7 +37,6 @@ define([
         return JSONSortify(obj);
     };
 
-    var LIMIT_REFRESH_RATE = 30000; // milliseconds
     var E_OVER_LIMIT = 'E_OVER_LIMIT';
 
     var SEARCH = "search";
@@ -2703,45 +2702,11 @@ define([
 
             /* add the usage */
             if (AppConfig.enablePinLimit) {
-                var todo = function (err, state, data) {
+                Cryptpad.createUsageBar(function (err, $limitContainer) {
+                    if (err) { return void logError(err); }
                     $leftside.html('');
-                    if (!data) {
-                        return void window.setTimeout(function () {
-                            Cryptpad.isOverPinLimit(todo);
-                        }, LIMIT_REFRESH_RATE);
-                    }
-                    var usage = data.usage;
-                    var limit = data.limit;
-                    var unit = Messages.MB;
-                    var $limit = $('<span>', {'class': 'cryptpad-drive-limit'}).appendTo($leftside);
-                    var quota = usage/limit;
-                    var width = Math.floor(Math.min(quota, 1)*$limit.width());
-                    var $usage = $('<span>', {'class': 'usage'}).css('width', width+'px');
-
-                    if (quota >= 0.8) {
-                        var origin = encodeURIComponent(window.location.origin);
-                        var $upgradeLink = $('<a>', {
-                            href: "https://account.cryptpad.fr/#!on=" + origin,
-                            rel: "noreferrer noopener",
-                            target: "_blank",
-                        }).appendTo($leftside);
-                        $('<button>', {
-                            'class': 'upgrade buttonSuccess',
-                            title: Messages.upgradeTitle
-                        }).text(Messages.upgrade).appendTo($upgradeLink);
-                    }
-
-                    if (quota < 0.8) { $usage.addClass('normal'); }
-                    else if (quota < 1) { $usage.addClass('warning'); }
-                    else { $usage.addClass('above'); }
-                    var $text = $('<span>', {'class': 'usageText'});
-                    $text.text(usage + ' / ' + limit + ' ' + unit);
-                    $limit.append($usage).append($text);
-                    window.setTimeout(function () {
-                        Cryptpad.isOverPinLimit(todo);
-                    }, LIMIT_REFRESH_RATE);
-                };
-                Cryptpad.isOverPinLimit(todo);
+                    $leftside.append($limitContainer);
+                });
             }
 
             /* add a history button */
