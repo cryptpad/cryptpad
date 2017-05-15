@@ -55,7 +55,7 @@ Version 1
             if (hash.slice(0,1) !== '/' && hash.length >= 56) {
                 // Old hash
                 parsed.channel = hash.slice(0, 32);
-                parsed.key = hash.slice(32);
+                parsed.key = hash.slice(32, 56);
                 parsed.version = 0;
                 return parsed;
             }
