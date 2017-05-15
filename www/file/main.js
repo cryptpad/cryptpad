@@ -44,6 +44,7 @@ define([
 
             chunks.push(box);
             Cryptpad.rpc.send('UPLOAD', enc, function (e, msg) {
+                console.log(box);
                 cb(e, msg);
             });
         };
@@ -93,14 +94,14 @@ define([
             });
         };
 
-        Cryptpad.rpc.send('UPLOAD_STATUS', '', function (e, pending) {
+        Cryptpad.rpc.send('UPLOAD_STATUS', estimate, function (e, pending) {
             if (e) {
                 console.error(e);
-                return void Cryptpad.alert("something went wrong");
+                return void Cryptpad.alert("something went wrong"); // TODO translate
             }
 
             if (pending[0]) {
-                return void Cryptpad.confirm('upload pending, abort?', function (yes) {
+                return void Cryptpad.confirm('upload pending, abort?', function (yes) { // TODO translate
                     if (!yes) { return; }
                     Cryptpad.rpc.send('UPLOAD_CANCEL', '', function (e, res) {
                         if (e) { return void console.error(e); }
