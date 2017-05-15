@@ -259,6 +259,9 @@ span.fa-folder-open {
   margin-left: 10px;
   float: right;
 }
+#content .info-box.noclose {
+  padding-right: 10px;
+}
 #content li {
   cursor: default;
 }
@@ -462,7 +465,7 @@ span.fa-folder-open {
   height: 100%;
 }
 #driveToolbar button {
-  height: 30px;
+  height: 26px;
 }
 #driveToolbar button.element {
   border-radius: 2px;

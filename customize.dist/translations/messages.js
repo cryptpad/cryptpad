@@ -228,10 +228,18 @@ define(function () {
     out.fm_info_template = 'Contains all the pads stored as templates and that you can re-use when you create a new pad.';
     out.fm_info_trash = 'Files deleted from the trash are also removed from "All files" and it is impossible to recover them from the file manager.'; // Same here for "All files" and "out.fm_filesDataName"
     out.fm_info_allFiles = 'Contains all the files from "Documents", "Unsorted" and "Trash". You can\'t move or remove files from here.'; // Same here
+    out.fm_info_login = "Log in";
+    out.fm_info_register = "Sign up";
+    out.fm_info_anonymous = 'You are not logged in so these pads may be deleted (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">find out why</a>). ' +
+                            '<a href="/register/">Sign up</a> or <a href="/login/">Log in</a> to keep them alive.';
     out.fm_alert_backupUrl = "Backup link for this drive.<br>" +
                              "It is <strong>highly recommended</strong> that you keep ip for yourself only.<br>" +
                              "You can use it to retrieve all your files in case your browser memory got erased.<br>" +
                              "Anybody with that link can edit or remove all the files in your file manager.<br>";
+    out.fm_alert_anonymous = "Hello there, you are currently using CryptPad anonymously, that's ok but your pads may be deleted after a period of " +
+                             "inactivity. We have disabled advanced features of the drive for anonymous users because we want to be clear that it is " +
+                             'not a safe place to store things. You can <a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">read more</a> about ' +
+                             'why we are doing this and why you really should <a href="/register/">Sign up</a> and <a href="/login/">Log in</a>.';
     out.fm_backup_title = 'Backup link';
     out.fm_nameFile = 'How would you like to name that file?';
     // File - Context menu
