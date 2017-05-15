@@ -10,5 +10,13 @@ define([], function () {
             "json.sortify": "/bower_components/json.sortify/dist/JSON.sortify"
         }
     });
+
+    // most of CryptPad breaks if you don't support isArray
+    if (!Array.isArray) {
+        Array.isArray = function(arg) { // CRYPTPAD_SHIM
+            return Object.prototype.toString.call(arg) === '[object Array]';
+        };
+    }
+
     require([document.querySelector('script[data-bootload]').getAttribute('data-bootload')]);
 });
