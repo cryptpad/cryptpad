@@ -35,8 +35,8 @@ define([
         };
         var realtime = createRealtime();
 
-        var hash = config.href ? common.parsePadUrl(config.href).hash : undefined;
-        var secret = common.getSecrets(hash);
+        var parsed = config.href ? common.parsePadUrl(config.href) : {};
+        var secret = common.getSecrets(parsed.type, parsed.hash);
         var crypto = Crypto.createEncryptor(secret.keys);
 
         var to = window.setTimeout(function () {

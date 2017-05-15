@@ -61,9 +61,7 @@ define([
             if (!isFile(element)) { return false; }
             var parsed = Cryptpad.parsePadUrl(element);
             if (!parsed) { return false; }
-            var hash = parsed.hash;
-            var pHash = Cryptpad.parseHash(hash);
-            if (pHash && !pHash.mode) { return; }
+            var pHash = parsed.hashData;
             return pHash && pHash.mode === 'view';
         };
 
@@ -541,6 +539,7 @@ define([
 
         // ADD
         var add = exp.add = function (data, path) {
+            if (!Cryptpad.isLoggedIn()) { return; }
             if (!data || typeof(data) !== "object") { return; }
             var href = data.href;
             var name = data.title;
@@ -598,6 +597,18 @@ define([
 
         // FORGET (move with href not path)
         exp.forget = function (href) {
+            if (!Cryptpad.isLoggedIn()) {
+                // delete permanently
+                var data = getFileData(href);
+                if (data) {
+                    var i = find([FILES_DATA]).indexOf(data);
+                    if (i !== -1) {
+                        exp.removePadAttribute(href);
+                        spliceFileData(i);
+                    }
+                }
+                return;
+            }
             var paths = findFile(href);
             move(paths, [TRASH]);
         };
@@ -605,7 +616,7 @@ define([
         // DELETE
         // Permanently delete multiple files at once using a list of paths
         // NOTE: We have to be careful when removing elements from arrays (trash root, unsorted or template)
-        var removePadAttribute = function (f) {
+        var removePadAttribute = exp.removePadAttribute = function (f) {
             if (typeof(f) !== 'string') {
                 console.error("Can't find pad attribute for an undefined pad");
                 return;
@@ -621,7 +632,7 @@ define([
         };
         var checkDeletedFiles = function () {
             // Nothing in FILES_DATA for workgroups
-            if (workgroup) { return; }
+            if (workgroup || !Cryptpad.isLoggedIn()) { return; }
 
             var filesList = getFiles([ROOT, 'hrefArray', TRASH]);
             var toRemove = [];
@@ -656,6 +667,23 @@ define([
             var hrefPaths = paths.filter(function(x) { return isPathIn(x, ['hrefArray']); });
             var rootPaths = paths.filter(function(x) { return isPathIn(x, [ROOT]); });
             var trashPaths = paths.filter(function(x) { return isPathIn(x, [TRASH]); });
+            var allFilesPaths = paths.filter(function(x) { return isPathIn(x, [FILES_DATA]); });
+
+            if (!Cryptpad.isLoggedIn()) {
+                var toSplice = [];
+                allFilesPaths.forEach(function (path) {
+                    var el = find(path);
+                    toSplice.push(el);
+                });
+                toSplice.forEach(function (el) {
+                    var i = find([FILES_DATA]).indexOf(el);
+                    if (i === -1) { return; }
+                    removePadAttribute(el.href);
+                    console.log(el.href);
+                    spliceFileData(i);
+                });
+                return;
+            }
 
             var hrefs = [];
             hrefPaths.forEach(function (path) {
@@ -884,7 +912,7 @@ define([
                         toClean.push(el);
                         return;
                     }
-                    if (rootFiles.indexOf(el.href) === -1) {
+                    if (Cryptpad.isLoggedIn() && rootFiles.indexOf(el.href) === -1) {
                         debug("An element in filesData was not in ROOT, TEMPLATE or TRASH.", el);
                         var name = el.title || NEW_FILE_NAME;
                         var newName = getAvailableName(root, name);

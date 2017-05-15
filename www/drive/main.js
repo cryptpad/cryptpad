@@ -205,7 +205,6 @@ define([
         var $trashTreeContextMenu = $iframe.find("#trashTreeContextMenu");
         var $trashContextMenu = $iframe.find("#trashContextMenu");
 
-
         // TOOLBAR
 
         /* add a "change username" button */
@@ -227,10 +226,14 @@ define([
         if (AppConfig.enableTemplates) { displayedCategories.push(TEMPLATE); }
         if (isWorkgroup()) { displayedCategories = [ROOT, TRASH, SEARCH]; }
 
+        if (!Cryptpad.isLoggedIn()) {
+            displayedCategories = [FILES_DATA];
+            currentPath = [FILES_DATA];
+        }
+
         if (!APP.readOnly) {
             setEditable(true);
         }
-
         var appStatus = {
             isReady: true,
             _onReady: [],
@@ -1103,7 +1106,7 @@ define([
             var type = Messages.type[hrefData.type] || hrefData.type;
             var $title = $('<span>', {'class': 'title listElement', title: data.title}).text(data.title);
             var $type = $('<span>', {'class': 'type listElement', title: type}).text(type);
-            if (hrefData.hash && Cryptpad.parseHash(hrefData.hash) && Cryptpad.parseHash(hrefData.hash).mode === 'view') {
+            if (hrefData.hashData && hrefData.hashData.mode === 'view') {
                 $type.append(' (' + Messages.readonly+ ')');
             }
             var $adate = $('<span>', {'class': 'atime listElement', title: getDate(data.atime)}).text(getDate(data.atime));
@@ -1811,14 +1814,16 @@ define([
 
             module.resetTree();
 
-            // in history mode we want to focus the version number input
-            if (!history.isHistoryMode && !APP.mobile()) {
-                var st = $tree.scrollTop() || 0;
-                $tree.find('#searchInput').focus();
-                $tree.scrollTop(st);
+            if (displayedCategories.indexOf(SEARCH) !== -1) {
+                // in history mode we want to focus the version number input
+                if (!history.isHistoryMode && !APP.mobile()) {
+                    var st = $tree.scrollTop() || 0;
+                    $tree.find('#searchInput').focus();
+                    $tree.scrollTop(st);
+                }
+                $tree.find('#searchInput')[0].selectionStart = getSearchCursor();
+                $tree.find('#searchInput')[0].selectionEnd = getSearchCursor();
             }
-            $tree.find('#searchInput')[0].selectionStart = getSearchCursor();
-            $tree.find('#searchInput')[0].selectionEnd = getSearchCursor();
 
             if (!isWorkgroup()) {
                 setLastOpenedFolder(path);
@@ -2155,9 +2160,9 @@ define([
         var getReadOnlyUrl = APP.getRO = function (href) {
             if (!filesOp.isFile(href)) { return; }
             var i = href.indexOf('#') + 1;
-            var hash = href.slice(i);
+            var parsed = Cryptpad.parsePadUrl(href);
             var base = href.slice(0, i);
-            var hrefsecret = Cryptpad.getSecrets(hash);
+            var hrefsecret = Cryptpad.getSecrets(parsed.type, parsed.hash);
             if (!hrefsecret.keys) { return; }
             var viewHash = Cryptpad.getViewHashFromKeys(hrefsecret.channel, hrefsecret.keys);
             return base + viewHash;
@@ -2310,6 +2315,19 @@ define([
             else if ($(this).hasClass('delete')) {
                 var pathsList = [];
                 paths.forEach(function (p) { pathsList.push(p.path); });
+                if (!Cryptpad.isLoggedIn()) {
+                    console.log(paths);
+                    var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [paths.length]);
+                    if (paths.length === 1) {
+                        msg = Messages.fm_removePermanentlyDialog;
+                    }
+                    Cryptpad.confirm(msg, function(res) {
+                        $(ifrw).focus();
+                        if (!res) { return; }
+                        filesOp.delete(pathsList, refresh);
+                    });
+                    return;
+                }
                 moveElements(pathsList, [TRASH], false, refresh);
             }
             else if ($(this).hasClass("properties")) {
@@ -2432,7 +2450,9 @@ define([
         $appContainer.on('keydown', function (e) {
             // "Del"
             if (e.which === 46) {
-                if (filesOp.isPathIn(currentPath, [FILES_DATA])) { return; } // We can't remove elements directly from filesData
+                if (filesOp.isPathIn(currentPath, [FILES_DATA]) && Cryptpad.isLoggedIn()) {
+                    return; // We can't remove elements directly from filesData
+                }
                 var $selected = $iframe.find('.selected');
                 if (!$selected.length) { return; }
                 var paths = [];
@@ -2442,7 +2462,7 @@ define([
                     paths.push($(elmt).data('path'));
                 });
                 // If we are in the trash or anon pad or if we are holding the "shift" key, delete permanently,
-                if (isTrash || e.shiftKey) {
+                if (!Cryptpad.isLoggedIn() || isTrash || e.shiftKey) {
                     var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [paths.length]);
                     if (paths.length === 1) {
                         msg = Messages.fm_removePermanentlyDialog;
@@ -2608,7 +2628,7 @@ define([
         }
 
         var hash = window.location.hash.slice(1) || Cryptpad.getUserHash() || localStorage.FS_hash;
-        var secret = Cryptpad.getSecrets(hash);
+        var secret = Cryptpad.getSecrets('drive', hash);
         var readOnly = APP.readOnly = secret.keys && !secret.keys.editKeyStr;
 
         var listmapConfig = module.config = {

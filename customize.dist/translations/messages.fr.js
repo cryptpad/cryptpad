@@ -32,6 +32,7 @@ define(function () {
     out.error = "Erreur";
     out.saved = "Enregistré";
     out.synced = "Tout est enregistré";
+    out.deleted = "Pad supprimé de votre CryptDrive";
 
     out.disconnected = 'Déconnecté';
     out.synchronizing = 'Synchronisation';

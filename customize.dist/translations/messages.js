@@ -34,6 +34,7 @@ define(function () {
     out.error = "Error";
     out.saved = "Saved";
     out.synced = "Everything is saved";
+    out.deleted = "Pad deleted from your CryptDrive";
 
     out.disconnected = 'Disconnected';
     out.synchronizing = 'Synchronizing';

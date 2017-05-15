@@ -154,6 +154,9 @@ span.fa-folder-open {
   min-width: 30px;
   cursor: pointer;
 }
+#tree #allfilesTree {
+  margin-top: 0;
+}
 #tree #searchContainer {
   text-align: center;
   padding: 5px 0;
