@@ -153,50 +153,50 @@ define([
 
     // check that old hashes parse correctly
     assert(function (cb) {
-        var secret = Cryptpad.parseHash('67b8385b07352be53e40746d2be6ccd7XAYSuJYYqa9NfmInyHci7LNy');
-        return cb(secret.channel === "67b8385b07352be53e40746d2be6ccd7" &&
-            secret.key === "XAYSuJYYqa9NfmInyHci7LNy" &&
-            secret.version === 0);
+        var secret = Cryptpad.parsePadUrl('/pad/#67b8385b07352be53e40746d2be6ccd7XAYSuJYYqa9NfmInyHci7LNy');
+        return cb(secret.hashData.channel === "67b8385b07352be53e40746d2be6ccd7" &&
+            secret.hashData.key === "XAYSuJYYqa9NfmInyHci7LNy" &&
+            secret.hashData.version === 0);
     }, "Old hash failed to parse");
 
     // make sure version 1 hashes parse correctly
     assert(function (cb) {
-        var secret = Cryptpad.parseHash('/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI');
-        return cb(secret.version === 1 &&
-            secret.mode === "edit" &&
-            secret.channel === "3Ujt4F2Sjnjbis6CoYWpoQ" &&
-            secret.key === "usn4+9CqVja8Q7RZOGTfRgqI" &&
-            !secret.present);
+        var secret = Cryptpad.parsePadUrl('/pad/#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI');
+        return cb(secret.hashData.version === 1 &&
+            secret.hashData.mode === "edit" &&
+            secret.hashData.channel === "3Ujt4F2Sjnjbis6CoYWpoQ" &&
+            secret.hashData.key === "usn4+9CqVja8Q7RZOGTfRgqI" &&
+            !secret.hashData.present);
+    }, "version 1 hash (without present mode) failed to parse");
+
+    // test support for present mode in hashes
+    assert(function (cb) {
+        var secret = Cryptpad.parsePadUrl('/pad/#/1/edit/CmN5+YJkrHFS3NSBg-P7Sg/DNZ2wcG683GscU4fyOyqA87G/present');
+        return cb(secret.hashData.version === 1
+            && secret.hashData.mode === "edit"
+            && secret.hashData.channel === "CmN5+YJkrHFS3NSBg-P7Sg"
+            && secret.hashData.key === "DNZ2wcG683GscU4fyOyqA87G"
+            && secret.hashData.present);
     }, "version 1 hash failed to parse");
 
     // test support for present mode in hashes
     assert(function (cb) {
-        var secret = Cryptpad.parseHash('/1/edit/CmN5+YJkrHFS3NSBg-P7Sg/DNZ2wcG683GscU4fyOyqA87G/present');
-        return cb(secret.version === 1
-            && secret.mode === "edit"
-            && secret.channel === "CmN5+YJkrHFS3NSBg-P7Sg"
-            && secret.key === "DNZ2wcG683GscU4fyOyqA87G"
-            && secret.present);
-    }, "version 1 hash failed to parse");
-
-    // test support for present mode in hashes
-    assert(function (cb) {
-        var secret = Cryptpad.parseHash('/1/edit//CmN5+YJkrHFS3NSBg-P7Sg/DNZ2wcG683GscU4fyOyqA87G//present');
-        return cb(secret.version === 1
-            && secret.mode === "edit"
-            && secret.channel === "CmN5+YJkrHFS3NSBg-P7Sg"
-            && secret.key === "DNZ2wcG683GscU4fyOyqA87G"
-            && secret.present);
+        var secret = Cryptpad.parsePadUrl('/pad/#/1/edit//CmN5+YJkrHFS3NSBg-P7Sg/DNZ2wcG683GscU4fyOyqA87G//present');
+        return cb(secret.hashData.version === 1
+            && secret.hashData.mode === "edit"
+            && secret.hashData.channel === "CmN5+YJkrHFS3NSBg-P7Sg"
+            && secret.hashData.key === "DNZ2wcG683GscU4fyOyqA87G"
+            && secret.hashData.present);
     }, "Couldn't handle multiple successive slashes");
 
     // test support for trailing slash
     assert(function (cb) {
-        var secret = Cryptpad.parseHash('/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI/');
-        return cb(secret.version === 1 &&
-            secret.mode === "edit" &&
-            secret.channel === "3Ujt4F2Sjnjbis6CoYWpoQ" &&
-            secret.key === "usn4+9CqVja8Q7RZOGTfRgqI" &&
-            !secret.present);
+        var secret = Cryptpad.parsePadUrl('/pad/#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI/');
+        return cb(secret.hashData.version === 1 &&
+            secret.hashData.mode === "edit" &&
+            secret.hashData.channel === "3Ujt4F2Sjnjbis6CoYWpoQ" &&
+            secret.hashData.key === "usn4+9CqVja8Q7RZOGTfRgqI" &&
+            !secret.hashData.present);
     }, "test support for trailing slashes in version 1 hash failed to parse");
 
     assert(function (cb) {
