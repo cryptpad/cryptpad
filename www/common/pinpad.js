@@ -125,7 +125,7 @@ define([
             exp.updatePinLimits = function (cb) {
                 rpc.send('UPDATE_LIMITS', undefined, function (e, response) {
                     if (e) { return void cb(e); }
-                    if (response && typeof response === "number") {
+                    if (response && response.length && typeof(response[0]) === "number") {
                         cb (void 0, response);
                     } else {
                         cb('INVALID_RESPONSE');
@@ -136,8 +136,8 @@ define([
             exp.getLimit = function (cb) {
                 rpc.send('GET_LIMIT', undefined, function (e, response) {
                     if (e) { return void cb(e); }
-                    if (response && typeof response === "number") {
-                        cb (void 0, response);
+                    if (response && response.length && typeof(response[0]) === "number") {
+                        cb (void 0, response[0]);
                     } else {
                         cb('INVALID_RESPONSE');
                     }

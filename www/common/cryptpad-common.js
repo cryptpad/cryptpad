@@ -743,13 +743,20 @@ define([
 
     common.updatePinLimit = function (cb) {
         if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
-        rpc.updatePinLimits(cb);
+        rpc.updatePinLimits(function (e, limit) {
+            if (e) { return cb(e); }
+            var MB = common.bytesToMegabytes(limit);
+            cb(e, MB);
+        });
     };
 
     common.getPinLimit = function (cb) {
         if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
-        cb(void 0, typeof(AppConfig.pinLimit) === 'number'? AppConfig.pinLimit: 1000);
-        //rpc.getLimit(cb); TODO
+        rpc.getLimit(function (e, limit) {
+            if (e) { return cb(e); }
+            var MB = common.bytesToMegabytes(limit);
+            cb(void 0, MB);
+        });
     };
 
     common.isOverPinLimit = function (cb) {
