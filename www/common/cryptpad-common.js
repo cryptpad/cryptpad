@@ -85,6 +85,7 @@ define([
     common.getEditHashFromKeys = Hash.getEditHashFromKeys;
     common.getViewHashFromKeys = Hash.getViewHashFromKeys;
     common.getFileHashFromKeys = Hash.getFileHashFromKeys;
+    common.getUserHrefFromKeys = Hash.getUserHrefFromKeys;
     common.getSecrets = Hash.getSecrets;
     common.getHashes = Hash.getHashes;
     common.createChannelId = Hash.createChannelId;

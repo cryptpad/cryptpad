@@ -49,13 +49,14 @@ define([
 
         var publicKey = obj.edPublic;
         if (publicKey) {
+            var userHref = Cryptpad.getUserHrefFromKeys(accountName, publicKey);
             var $pubLabel = $('<span>', {'class': 'label'})
                 .text(Messages.settings_publicSigningKey + ':');
             var $pubKey = $('<input>', {type: 'text', readonly: true})
                 .css({
                     width: '28em'
                 })
-                .val(publicKey);
+                .val(userHref);
             $div.append('<br>').append($pubLabel).append($pubKey);
         }
 

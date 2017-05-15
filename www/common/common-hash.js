@@ -34,6 +34,9 @@ define([
     var getFileHashFromKeys = Hash.getFileHashFromKeys = function (fileKey, cryptKey) {
         return '/1/' + hexToBase64(fileKey) + '/' + Crypto.b64RemoveSlashes(cryptKey) + '/';
     };
+    var getUserHrefFromKeys = Hash.getUserHrefFromKeys = function (username, pubkey) {
+        return window.location.origin + '/user/#/1/' + username + '/' + pubkey.replace(/\//g, '-');
+    };
 
     var fixDuplicateSlashes = function (s) {
         return s.replace(/\/+/g, '/');
@@ -188,6 +191,9 @@ Version 1
                     // version 2 hashes are to be used for encrypted blobs
                     secret.channel = parsed.channel;
                     secret.keys = { fileKeyStr: parsed.key };
+                } else if (parsed.type === "user") {
+                    // version 2 hashes are to be used for encrypted blobs
+                    throw new Error("User hashes can't be opened (yet)");
                 }
             }
         }
