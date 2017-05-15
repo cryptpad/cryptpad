@@ -15,6 +15,14 @@ define([
         $sel.find('button').addClass('btn').addClass('btn-secondary');
         $sel.show();
 
+        // User admin menu
+        var $userMenu = $('#user-menu');
+        var userMenuCfg = {
+            $initBlock: $userMenu
+        };
+        var $userAdmin = Cryptpad.createUserAdminMenu(userMenuCfg);
+        $userAdmin.find('button').addClass('btn').addClass('btn-secondary');
+
         $(window).click(function () {
             $('.cryptpad-dropdown').hide();
         });
