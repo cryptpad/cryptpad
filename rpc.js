@@ -15,7 +15,7 @@ var Store = require("./storage/file");
 
 var DEFAULT_LIMIT = 100;
 
-var isValidChannel = function (chan) {
+var isValidId = function (chan) {
     return /^[a-fA-F0-9]/.test(chan) ||
         [32, 48].indexOf(chan.length) !== -1;
 };
@@ -249,8 +249,16 @@ var getChannelList = function (store, Sessions, publicKey, cb) {
     });
 };
 
-var getUploadSize = function (store, channel, cb) {
-    var path = '';
+var makeFilePath = function (root, id) {
+    if (typeof(id) !== 'string' || id.length <= 2) { return null; }
+    return Path.join(root, id.slice(0, 2), id);
+};
+
+var getUploadSize = function (paths, channel, cb) {
+    var path = makeFilePath(paths.blob, channel);
+    if (!path) {
+        return cb('INVALID_UPLOAD_ID');
+    }
 
     Fs.stat(path, function (err, stats) {
         if (err) { return void cb(err); }
@@ -258,8 +266,8 @@ var getUploadSize = function (store, channel, cb) {
     });
 };
 
-var getFileSize = function (store, channel, cb) {
-    if (!isValidChannel(channel)) { return void cb('INVALID_CHAN'); }
+var getFileSize = function (paths, store, channel, cb) {
+    if (!isValidId(channel)) { return void cb('INVALID_CHAN'); }
 
     if (channel.length === 32) {
         if (typeof(store.getChannelSize) !== 'function') {
@@ -273,14 +281,13 @@ var getFileSize = function (store, channel, cb) {
     }
 
     // 'channel' refers to a file, so you need anoter API
-    getUploadSize(null, channel, function (e, size) {
+    getUploadSize(paths, channel, function (e, size) {
         if (e) { return void cb(e); }
         cb(void 0, size);
     });
 };
 
-var getMultipleFileSize = function (store, channels, cb) {
-
+var getMultipleFileSize = function (paths, store, channels, cb) {
     if (!Array.isArray(channels)) { return cb('INVALID_LIST'); }
     if (typeof(store.getChannelSize) !== 'function') {
         return cb('GET_CHANNEL_SIZE_UNSUPPORTED');
@@ -295,16 +302,12 @@ var getMultipleFileSize = function (store, channels, cb) {
     };
 
     channels.forEach(function (channel) {
-        if (!isValidChannel(channel)) {
-            counts[channel] = -1;
-            return done();
-        }
-        store.getChannelSize(channel, function (e, size) {
+        getFileSize(paths, store, channel, function (e, size) {
             if (e) {
+                console.error(e);
                 counts[channel] = -1;
                 return done();
             }
-
             counts[channel] = size;
             done();
         });
@@ -524,11 +527,6 @@ var safeMkdir = function (path, cb) {
     });
 };
 
-var makeFilePath = function (root, id) {
-    if (typeof(id) !== 'string' || id.length <= 2) { return null; }
-    return Path.join(root, id.slice(0, 2), id);
-};
-
 var makeFileStream = function (root, id, cb) {
     var stub = id.slice(0, 2);
     var full = makeFilePath(root, id);
@@ -551,6 +549,9 @@ var makeFileStream = function (root, id, cb) {
 
 var upload = function (paths, Sessions, publicKey, content, cb) {
     var dec = new Buffer(Nacl.util.decodeBase64(content)); // jshint ignore:line
+
+    // TODO check that the ongoing upload has not exceeded its declared size
+    // TODO fail if it has...
 
     var session = Sessions[publicKey];
     session.atime = +new Date();
@@ -650,7 +651,9 @@ your upload is going to be. if that would exceed your limit, return TOO_LARGE
 error.
 
 */
-var upload_status = function (paths, Sessions, publicKey, cb) {
+var upload_status = function (paths, Sessions, size, publicKey, cb) {
+    // TODO validate that size is within tolerance
+
     var filePath = makeFilePath(paths.staging, publicKey);
     if (!filePath) { return void cb('E_INVALID_PATH'); }
     isFile(filePath, function (e, yes) {
@@ -772,7 +775,7 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                     Respond(e, size);
                 });
             case 'GET_FILE_SIZE':
-                return void getFileSize(ctx.store, msg[1], Respond);
+                return void getFileSize(paths, ctx.store, msg[1], Respond);
             case 'UPDATE_LIMITS':
                 return void updateLimits(config, safeKey, function (e, limit) {
                     if (e) { return void Respond(e); }
@@ -785,7 +788,7 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                     Respond(void 0, limit);
                 });
             case 'GET_MULTIPLE_FILE_SIZE':
-                return void getMultipleFileSize(ctx.store, msg[1], function (e, dict) {
+                return void getMultipleFileSize(paths, ctx.store, msg[1], function (e, dict) {
                     if (e) { return void Respond(e); }
                     Respond(void 0, dict);
                 });
@@ -798,7 +801,7 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                 });
             case 'UPLOAD_STATUS':
                 if (!privileged) { return deny(); }
-                return void upload_status(paths, Sessions, safeKey, function (e, stat) {
+                return void upload_status(paths, Sessions, safeKey, msg[1], function (e, stat) {
                     Respond(e, stat);
                 });
             case 'UPLOAD_COMPLETE':
