@@ -413,6 +413,7 @@
   font-family: FontAwesome;
 }
 .dropdown-bar button .fa-caret-down {
+  margin-right: 0px;
   margin-left: 5px;
 }
 .dropdown-bar .dropdown-bar-content {

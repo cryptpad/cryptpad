@@ -1,3 +1,5 @@
+@import "../../customize.dist/src/less/variables.less";
+
 @tree-bg: #fff;
 @tree-fg: #000;
 @tree-lines-col: #888;
@@ -17,6 +19,8 @@
 @toolbar-fg: #555;
 @toolbar-border-col: #ccc;
 @toolbar-button-bg: #888;
+@toolbar-button-border: #888;
+@toolbar-button-bg-hover: #777;
 @toolbar-button-fg: #eee;
 @toolbar-path-bg: #fff;
 @toolbar-path-border: #888;
@@ -303,6 +307,9 @@ span {
             margin-left: 10px;
             float: right;
         }
+        &.noclose {
+            padding-right: 10px;
+        }
     }
     li {
         cursor: default;
@@ -512,7 +519,7 @@ span {
 #driveToolbar {
     background: @toolbar-bg;
     color: @toolbar-fg;
-    height: 40px;
+    height: 30px;
     display: flex;
     flex-flow: row;
     border-top: 1px solid @toolbar-border-col;
@@ -520,6 +527,7 @@ span {
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     z-index: 100;
     box-sizing: content-box;
+    padding: 0 6px;
 
     .newPadContainer {
         display: inline-block;
@@ -527,16 +535,23 @@ span {
     }
 
     button {
-        height: 30px;
+        height: 24px;
+        font: @toolbar-button-font;
+        span {
+            font: @toolbar-button-font;
+        }
+        .fa, &.fa {
+            font-family: FontAwesome;
+        }
         &.element {
             border-radius: 2px;
             background: @toolbar-button-bg;
             color: @toolbar-button-fg;
-            font-size: 16px;
-            border: none;
+            font-size: 14px;
+            border: 1px solid @toolbar-button-border;
             font-weight: bold;
             &:hover {
-                box-shadow: 0px 0px 2px #000;
+                background: @toolbar-button-bg-hover;
             }
         }
         &.new {
@@ -545,7 +560,7 @@ span {
     }
     /* The container <div> - needed to position the dropdown content */
     .dropdown-bar {
-        margin: 5px 5px;
+        margin: 2px 2px;
         line-height: 1em;
         position: relative;
         display: inline-block;
@@ -580,7 +595,7 @@ span {
     .path {
         display: inline-block;
         height: 100%;
-        line-height: 40px;
+        line-height: 30px;
         cursor: default;
         width: auto;
         overflow: hidden;

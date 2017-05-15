@@ -226,9 +226,14 @@ define([
         if (AppConfig.enableTemplates) { displayedCategories.push(TEMPLATE); }
         if (isWorkgroup()) { displayedCategories = [ROOT, TRASH, SEARCH]; }
 
-        if (!Cryptpad.isLoggedIn()) {
+        if (!APP.loggedIn) {
             displayedCategories = [FILES_DATA];
             currentPath = [FILES_DATA];
+            $tree.hide();
+            if (Object.keys(files.root).length && !proxy.anonymousAlert) {
+                Cryptpad.alert(Messages.fm_alert_anonymous, null, true);
+                proxy.anonymousAlert = true;
+            }
         }
 
         if (!APP.readOnly) {
@@ -607,7 +612,6 @@ define([
                     }
                     hasFolder = true;
                     hide.push($menu.find('a.open_ro'));
-                    // TODO: folder properties in the future?
                     hide.push($menu.find('a.properties'));
                 }
                 // If we're in the trash, hide restore and properties for non-root elements
@@ -1291,6 +1295,12 @@ define([
                     break;
                 default:
                     msg = undefined;
+            }
+            if (!APP.loggedIn) {
+                msg = Messages.fm_info_anonymous;
+                $box.html(msg);
+                $box.addClass('noclose');
+                return $box;
             }
             if (!msg || Cryptpad.getLSAttribute('hide-info-' + path[0]) === '1') {
                 $box.hide();
@@ -2200,7 +2210,7 @@ define([
                 .appendTo($d);
             }
 
-            if (Cryptpad.isLoggedIn() && AppConfig.enablePinning) {
+            if (APP.loggedIn && AppConfig.enablePinning) {
                 // check the size of this file...
                 Cryptpad.getFileSize(el, function (e, bytes) {
                     if (e) {
@@ -2315,8 +2325,7 @@ define([
             else if ($(this).hasClass('delete')) {
                 var pathsList = [];
                 paths.forEach(function (p) { pathsList.push(p.path); });
-                if (!Cryptpad.isLoggedIn()) {
-                    console.log(paths);
+                if (!APP.loggedIn) {
                     var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [paths.length]);
                     if (paths.length === 1) {
                         msg = Messages.fm_removePermanentlyDialog;
@@ -2450,7 +2459,7 @@ define([
         $appContainer.on('keydown', function (e) {
             // "Del"
             if (e.which === 46) {
-                if (filesOp.isPathIn(currentPath, [FILES_DATA]) && Cryptpad.isLoggedIn()) {
+                if (filesOp.isPathIn(currentPath, [FILES_DATA]) && APP.loggedIn) {
                     return; // We can't remove elements directly from filesData
                 }
                 var $selected = $iframe.find('.selected');
@@ -2462,7 +2471,7 @@ define([
                     paths.push($(elmt).data('path'));
                 });
                 // If we are in the trash or anon pad or if we are holding the "shift" key, delete permanently,
-                if (!Cryptpad.isLoggedIn() || isTrash || e.shiftKey) {
+                if (!APP.loggedIn || isTrash || e.shiftKey) {
                     var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [paths.length]);
                     if (paths.length === 1) {
                         msg = Messages.fm_removePermanentlyDialog;
@@ -2616,7 +2625,7 @@ define([
     // don't initialize until the store is ready.
     Cryptpad.ready(function () {
         Cryptpad.reportAppUsage();
-        if (!Cryptpad.isLoggedIn()) { Cryptpad.feedback('ANONYMOUS_DRIVE'); }
+        if (!APP.loggedIn) { Cryptpad.feedback('ANONYMOUS_DRIVE'); }
         APP.$bar = $iframe.find('#toolbar');
 
         var storeObj = Cryptpad.getStore().getProxy && Cryptpad.getStore().getProxy().proxy ? Cryptpad.getStore().getProxy() : undefined;
@@ -2752,6 +2761,7 @@ define([
             };
             var $hist = Cryptpad.createButton('history', true, {histConfig: histConfig});
             $rightside.append($hist);
+            if (!APP.loggedIn) { $hist.hide(); }
 
             if (!readOnly && !APP.loggedIn) {
                 var $backupButton = Cryptpad.createButton('', true).removeClass('fa').removeClass('fa-question');

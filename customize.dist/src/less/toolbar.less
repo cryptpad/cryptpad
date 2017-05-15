@@ -28,7 +28,10 @@
     box-sizing: border-box;
     padding: 0px 6px;
 
-    .fa {font-family: FontAwesome;}
+    .fa {
+        font: normal normal normal 14px/1 FontAwesome;
+        font-family: FontAwesome;
+    }
 
     .unselectable;
 
@@ -42,6 +45,10 @@
     }
 
     button {
+        font: @toolbar-button-font;
+        * {
+            font: @toolbar-button-font;
+        }
         &#shareButton, &.buttonSuccess {
             // Bootstrap 4 colors
             color: #fff;
@@ -83,7 +90,7 @@
         // Bootstrap 4 colors (btn-secondary)
         border: 1px solid transparent;
         border-radius: .25rem;
-        color: #292b2c;
+        color: #000;
         background-color: #fff;
         border-color: #ccc;
         &:hover {
@@ -165,6 +172,7 @@
         margin: 3px;
         vertical-align: top;
         box-sizing: content-box;
+        text-align: center;
         span {
             display: inline-block;
             width: 4px;
@@ -232,6 +240,7 @@
         padding-right: 5px;
         padding-left: 5px;
         margin: 3px 2px;
+        box-sizing: border-box;
     }
 
     .dropdown-bar-content {
@@ -492,6 +501,7 @@
     margin: 8px;
     line-height: 16px;
     font-size: 16px;
+    text-align: center;
 }
 .cryptpad-readonly {
     margin-right: 5px;
