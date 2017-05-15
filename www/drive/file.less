@@ -1,3 +1,5 @@
+@import "../../customize.dist/src/less/variables.less";
+
 @tree-bg: #fff;
 @tree-fg: #000;
 @tree-lines-col: #888;
@@ -22,8 +24,6 @@
 @toolbar-button-fg: #eee;
 @toolbar-path-bg: #fff;
 @toolbar-path-border: #888;
-
-@button-font-size: 12px;
 
 @size-mobile: 600px;
 
@@ -536,7 +536,13 @@ span {
 
     button {
         height: 24px;
-        font-size: @button-font-size;
+        font: @toolbar-button-font;
+        span {
+            font: @toolbar-button-font;
+        }
+        .fa, &.fa {
+            font-family: FontAwesome;
+        }
         &.element {
             border-radius: 2px;
             background: @toolbar-button-bg;

@@ -7,6 +7,7 @@
   font-family: FontAwesome;
 }
 .dropdown-bar button .fa-caret-down {
+  margin-right: 0px;
   margin-left: 5px;
 }
 .dropdown-bar .dropdown-bar-content {
@@ -112,18 +113,22 @@
   z-index: 9001;
 }
 .cryptpad-toolbar .fa {
+  font: normal normal normal 14px/1 FontAwesome;
   font-family: FontAwesome;
 }
 .cryptpad-toolbar a {
   float: right;
 }
 .cryptpad-toolbar button {
-  font-size: 12px;
+  font: 12px Ubuntu, Arial, sans-serif;
   border: 1px solid transparent;
   border-radius: .25rem;
-  color: #292b2c;
+  color: #000;
   background-color: #fff;
   border-color: #ccc;
+}
+.cryptpad-toolbar button * {
+  font: 12px Ubuntu, Arial, sans-serif;
 }
 .cryptpad-toolbar button#shareButton,
 .cryptpad-toolbar button.buttonSuccess {
@@ -240,6 +245,7 @@
   margin: 3px;
   vertical-align: top;
   box-sizing: content-box;
+  text-align: center;
 }
 .cryptpad-toolbar .cryptpad-lag span {
   display: inline-block;
@@ -315,6 +321,7 @@
   padding-right: 5px;
   padding-left: 5px;
   margin: 3px 2px;
+  box-sizing: border-box;
 }
 .cryptpad-toolbar .dropdown-bar-content {
   margin-top: -3px;
@@ -567,6 +574,7 @@
   margin: 8px;
   line-height: 16px;
   font-size: 16px;
+  text-align: center;
 }
 .cryptpad-readonly {
   margin-right: 5px;

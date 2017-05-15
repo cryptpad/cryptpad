@@ -467,7 +467,14 @@ span.fa-folder-open {
 }
 #driveToolbar button {
   height: 24px;
-  font-size: 12px;
+  font: 12px Ubuntu, Arial, sans-serif;
+}
+#driveToolbar button span {
+  font: 12px Ubuntu, Arial, sans-serif;
+}
+#driveToolbar button .fa,
+#driveToolbar button.fa {
+  font-family: FontAwesome;
 }
 #driveToolbar button.element {
   border-radius: 2px;
