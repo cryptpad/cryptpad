@@ -2201,12 +2201,15 @@ define([
                 .click(function () { $(this).select(); })
                 .appendTo($d);
             }
-            var roLink = ro ? base + el : getReadOnlyUrl(base + el);
-            if (roLink) {
-                $('<label>', {'for': 'propROLink'}).text(Messages.viewShare).appendTo($d);
-                $('<input>', {'id': 'propROLink', 'readonly': 'readonly', 'value': roLink})
-                .click(function () { $(this).select(); })
-                .appendTo($d);
+            var parsed = Cryptpad.parsePadUrl(el);
+            if (parsed.hashData && parsed.hashData.type === 'pad') {
+                var roLink = ro ? base + el : getReadOnlyUrl(base + el);
+                if (roLink) {
+                    $('<label>', {'for': 'propROLink'}).text(Messages.viewShare).appendTo($d);
+                    $('<input>', {'id': 'propROLink', 'readonly': 'readonly', 'value': roLink})
+                    .click(function () { $(this).select(); })
+                    .appendTo($d);
+                }
             }
 
             if (APP.loggedIn && AppConfig.enablePinning) {
@@ -2440,12 +2443,12 @@ define([
         $appContainer.on('mouseup', function (e) {
             if (sel.down) { return; }
             if (e.which !== 1) { return ; }
-            removeSelected(e);
+            module.hideMenu(e);
+            //removeSelected(e);
         });
         $appContainer.on('click', function (e) {
             if (e.which !== 1) { return ; }
             removeInput();
-            module.hideMenu(e);
             hideNewButton();
         });
         $appContainer.on('drag drop', function (e) {
