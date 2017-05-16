@@ -7,7 +7,8 @@ var map = {
     'es': 'Español',
     'pl': 'Polski',
     'de': 'Deutsch',
-    'pt-br': 'Português do Brasil'
+    'pt-br': 'Português do Brasil',
+    'ro': 'Română',
 };
 
 var getStoredLanguage = function () { return localStorage.getItem(LS_LANG); };
