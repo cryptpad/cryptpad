@@ -797,7 +797,7 @@ define([
             var $usage = $('<span>', {'class': 'usage'}).css('width', width+'px');
 
             if ((quota >= 0.8 || alwaysDisplayUpgrade) && data.plan !== "power") {
-                var origin = encodeURIComponent(window.location.origin);
+                var origin = encodeURIComponent(window.location.hostname);
                 var $upgradeLink = $('<a>', {
                     href: "https://accounts.cryptpad.fr/#!on=" + origin,
                     rel: "noreferrer noopener",
