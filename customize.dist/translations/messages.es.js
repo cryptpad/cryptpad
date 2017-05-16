@@ -419,6 +419,9 @@ define(function () {
     out.settings_logoutEverywhereTitle = "Cerrar sessión en todas partes";
     out.settings_logoutEverywhere = "Cerrar todas las otras sessiones";
     out.settings_logoutEverywhereConfirm = "¿Estás seguro? Tendrás que volver a iniciar sessión con todos tus dispositivos.";
+    out.upload_serverError = "Error: no pudimos subir tu archivo.";
+    out.upload_uploadPending = "Ya tienes una subida en progreso. ¿Cancelar y subir el nuevo archivo?";
+    out.upload_success = "Tu archivo ({0}) ha sido subido con éxito y fue añadido a tu drive.";
 
     return out;
 });
