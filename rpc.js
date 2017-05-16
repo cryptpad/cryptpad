@@ -497,7 +497,8 @@ var updateLimits = function (config, publicKey, cb) {
                 var l;
                 if (publicKey) {
                     var limit = limits[publicKey];
-                    l = limit && typeof limit.limit === "number" ? limit.limit : DEFAULT_LIMIT;
+                    l = limit && typeof limit.limit === "number" ?
+                            [limit.limit, limit.plan] : [DEFAULT_LIMIT, ''];
                 }
                 cb(void 0, l);
             } catch (e) {
@@ -519,7 +520,7 @@ var getLimit = function (publicKey, cb) {
     var limit = limits[unescapedKey];
 
     var toSend = limit && typeof(limit.limit) === "number"?
-        limit.limit : DEFAULT_LIMIT;
+        [limit.limit, limit.plan] : [DEFAULT_LIMIT, ''];
 
     cb(void 0, toSend);
 };

@@ -744,28 +744,28 @@ define([
 
     common.updatePinLimit = function (cb) {
         if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
-        rpc.updatePinLimits(function (e, limit) {
+        rpc.updatePinLimits(function (e, limit, plan) {
             if (e) { return cb(e); }
             var MB = common.bytesToMegabytes(limit);
-            cb(e, MB);
+            cb(e, MB, plan);
         });
     };
 
     common.getPinLimit = function (cb) {
         if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
-        rpc.getLimit(function (e, limit) {
+        rpc.getLimit(function (e, limit, plan) {
             if (e) { return cb(e); }
             var MB = common.bytesToMegabytes(limit);
-            cb(void 0, MB);
+            cb(void 0, MB, plan);
         });
     };
 
     common.isOverPinLimit = function (cb) {
         if (!common.isLoggedIn() || !AppConfig.enablePinLimit) { return void cb(null, false); }
         var usage;
-        var andThen = function (e, limit) {
+        var andThen = function (e, limit, plan) {
             if (e) { return void cb(e); }
-            var data = {usage: usage, limit: limit};
+            var data = {usage: usage, limit: limit, plan: plan};
             if (usage > limit) {
                 return void cb (null, true, data);
             }
@@ -780,7 +780,7 @@ define([
     };
 
     var LIMIT_REFRESH_RATE = 30000; // milliseconds
-    common.createUsageBar = function (cb) {
+    common.createUsageBar = function (cb, alwaysDisplayUpgrade) {
         var todo = function (err, state, data) {
             var $container = $('<span>', {'class':'limit-container'});
             if (!data) {
@@ -796,10 +796,10 @@ define([
             var width = Math.floor(Math.min(quota, 1)*200); // the bar is 200px width
             var $usage = $('<span>', {'class': 'usage'}).css('width', width+'px');
 
-            if (quota >= 0.8) {
+            if ((quota >= 0.8 || alwaysDisplayUpgrade) && data.plan !== "power") {
                 var origin = encodeURIComponent(window.location.origin);
                 var $upgradeLink = $('<a>', {
-                    href: "https://account.cryptpad.fr/#!on=" + origin,
+                    href: "https://accounts.cryptpad.fr/#!on=" + origin,
                     rel: "noreferrer noopener",
                     target: "_blank",
                 }).appendTo($container);

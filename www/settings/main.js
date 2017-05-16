@@ -60,7 +60,6 @@ define([
             $div.append('<br>').append($pubLabel).append($pubKey);
         }
 
-
         return $div;
     };
 
@@ -234,7 +233,7 @@ define([
             $div.find('.limit-container').remove();
             $bar.find('.upgrade').addClass('btn btn-success');
             $div.append($bar);
-        });
+        }, true);
         return $div;
     };
 
