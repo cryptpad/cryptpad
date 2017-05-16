@@ -785,7 +785,7 @@ define([
             var $container = $('<span>', {'class':'limit-container'});
             if (!data) {
                 return void window.setTimeout(function () {
-                    Cryptpad.isOverPinLimit(todo);
+                    common.isOverPinLimit(todo);
                 }, LIMIT_REFRESH_RATE);
             }
             var usage = data.usage;
@@ -816,11 +816,11 @@ define([
             $text.text(usage + ' / ' + limit + ' ' + unit);
             $limit.append($usage).append($text);
             window.setTimeout(function () {
-                Cryptpad.isOverPinLimit(todo);
+                common.isOverPinLimit(todo);
             }, LIMIT_REFRESH_RATE);
             cb(err, $container);
         };
-        Cryptpad.isOverPinLimit(todo);
+        common.isOverPinLimit(todo);
     };
 
     common.createButton = function (type, rightside, data, callback) {
