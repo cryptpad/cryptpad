@@ -78,6 +78,10 @@ var escapeKeyCharacters = function (key) {
     return key.replace(/\//g, '-');
 };
 
+var unescapeKeyCharacters = function (key) {
+    return key.replace(/\-/g, '/');
+};
+
 var beginSession = function (Sessions, key) {
     var safeKey = escapeKeyCharacters(key);
     if (Sessions[safeKey]) {
@@ -516,7 +520,7 @@ var updateLimits = function (config, publicKey, cb) {
 };
 
 var getLimit = function (publicKey, cb) {
-    var unescapedKey = escapeKeyCharacters(publicKey);
+    var unescapedKey = unescapeKeyCharacters(publicKey);
     var limit = limits[unescapedKey];
 
     var toSend = limit && typeof(limit.limit) === "number"?
