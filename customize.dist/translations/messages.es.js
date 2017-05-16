@@ -404,5 +404,24 @@ define(function () {
     out.history_restoreDone = "Documento restaurado";
     out.fc_sizeInKilobytes = "Talla en Kilobytes";
 
+    // 1.5.0/1.6.0 - Fenrir/Grootslang
+
+    out.deleted = "El pad fue borrado de tu CryptDrive";
+    out.upgrade = "Mejorar";
+    out.upgradeTitle = "Mejora tu cuenta para obtener más espacio";
+    out.MB = "MB";
+    out.pinLimitReached = "Has llegado al limite de espacio";
+    out.pinLimitReachedAlert = "Has llegado al limite de espacio. Nuevos pads no serán movidos a tu CryptDrive.<br>Para resolver este problema, puedes quitar pads de tu CryptDrive (incluso en la papelera) o mejorar tu cuenta para obtener más espacio.";
+    out.pinLimitNotPinned = "Has llegado al limite de espacio.<br>Este pad no estará presente en tu CryptDrive.";
+    out.pinLimitDrive = "Has llegado al limite de espacio.<br>No puedes crear nuevos pads.";
+    out.printTransition = "Activar transiciones";
+    out.history_version = "Versión: ";
+    out.settings_logoutEverywhereTitle = "Cerrar sessión en todas partes";
+    out.settings_logoutEverywhere = "Cerrar todas las otras sessiones";
+    out.settings_logoutEverywhereConfirm = "¿Estás seguro? Tendrás que volver a iniciar sessión con todos tus dispositivos.";
+    out.upload_serverError = "Error: no pudimos subir tu archivo.";
+    out.upload_uploadPending = "Ya tienes una subida en progreso. ¿Cancelar y subir el nuevo archivo?";
+    out.upload_success = "Tu archivo ({0}) ha sido subido con éxito y fue añadido a tu drive.";
+
     return out;
 });

@@ -222,9 +222,7 @@ define([
         return $div;
     };
 
-    var createUsageButton = function (obj) {
-        var proxy = obj.proxy;
-
+    var createUsageButton = function () {
         var $div = $('<div>', { 'class': 'pinned-usage' })
             .text(Messages.settings_usageTitle)
             .append('<br>');

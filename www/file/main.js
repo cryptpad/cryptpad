@@ -89,7 +89,7 @@ define([
                     var defaultName = Cryptpad.getDefaultName(Cryptpad.parsePadUrl(window.location.href));
                     Title.updateTitle(title || defaultName);
                     APP.toolbar.title.show();
-                    Cryptpad.alert("successfully uploaded: " + title);
+                    Cryptpad.alert(Messages._getKey('upload_success', [title]));
                 });
             });
         };
@@ -97,15 +97,16 @@ define([
         Cryptpad.rpc.send('UPLOAD_STATUS', estimate, function (e, pending) {
             if (e) {
                 console.error(e);
-                return void Cryptpad.alert("something went wrong"); // TODO translate
+                return void Cryptpad.alert(Messages.upload_serverError);
             }
 
             if (pending[0]) {
-                return void Cryptpad.confirm('upload pending, abort?', function (yes) { // TODO translate
+                return void Cryptpad.confirm(Messages.upload_uploadPending, function (yes) {
                     if (!yes) { return; }
                     Cryptpad.rpc.send('UPLOAD_CANCEL', '', function (e, res) {
                         if (e) { return void console.error(e); }
                         console.log(res);
+                        next(again);
                     });
                 });
             }
