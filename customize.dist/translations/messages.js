@@ -347,6 +347,10 @@ define(function () {
     out.settings_logoutEverywhere = "Log out of all other web sessions";
     out.settings_logoutEverywhereConfirm = "Are you sure? You will need to log in with all your devices.";
 
+    out.upload_serverError = "Server Error: unable to upload your file at this time.";
+    out.upload_uploadPending = "You already have an upload in progress. Cancel it and upload your new file?";
+    out.upload_success = "Your file ({0}) has been successfully uploaded and added to your drive";
+
     // index.html
 
 
