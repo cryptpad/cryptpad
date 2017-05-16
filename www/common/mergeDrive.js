@@ -188,6 +188,10 @@ define([
                         newRecentPads.push(data);
                     }
                 });
+                if (!proxy.FS_hashes || !Array.isArray(proxy.FS_hashes)) {
+                    proxy.FS_hashes = [];
+                }
+                proxy.FS_hashes.push(localStorage.FS_hash);
             }
             if (typeof(cb) === "function") { cb(); }
         };
