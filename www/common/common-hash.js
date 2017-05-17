@@ -113,12 +113,13 @@ Version 1
             return ret;
         }
 
-        var hash = href.replace(patt, function (a, domain, type) {
+        href.replace(patt, function (a, domain, type) {
             ret.domain = domain;
             ret.type = type;
             return '';
         });
-        ret.hash = hash.replace(/#/g, '');
+        var idx = href.indexOf('/#');
+        ret.hash = href.slice(idx + 2);
         ret.hashData = parseTypeHash(ret.type, ret.hash);
         return ret;
     };
