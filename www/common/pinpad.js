@@ -172,7 +172,7 @@ define([
             };
 
             exp.uploadCancel = function (cb) {
-                rpc.send('UPLOAD_CANCEL', void 0, function (e, res) {
+                rpc.send('UPLOAD_CANCEL', void 0, function (e) {
                     if (e) { return void cb(e); }
                     cb();
                 });

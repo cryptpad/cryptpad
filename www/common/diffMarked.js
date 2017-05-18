@@ -3,7 +3,7 @@ define([
     '/bower_components/marked/marked.min.js',
     '/bower_components/diff-dom/diffDOM.js'
 ],function ($, Marked) {
-    var DiffMd = {}
+    var DiffMd = {};
 
     var DiffDOM = window.diffDOM;
     var renderer = DiffMd.renderer = new Marked.Renderer();
@@ -90,7 +90,7 @@ define([
         return patch;
     };
 
-    var apply = DiffMd.apply = function (newHtml, $content) {
+    DiffMd.apply = function (newHtml, $content) {
         var id = $content.attr('id');
         if (!id) { throw new Error("The element must have a valid id"); }
         var $div = $('<div>', {id: id}).append(newHtml);

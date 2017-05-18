@@ -103,10 +103,10 @@ Version 1
         if (!href) { return ret; }
         if (href.slice(-1) !== '/') { href += '/'; }
 
-
+        var idx;
 
         if (!/^https*:\/\//.test(href)) {
-            var idx = href.indexOf('/#');
+            idx = href.indexOf('/#');
             ret.type = href.slice(1, idx);
             ret.hash = href.slice(idx + 2);
             ret.hashData = parseTypeHash(ret.type, ret.hash);
@@ -118,7 +118,7 @@ Version 1
             ret.type = type;
             return '';
         });
-        var idx = href.indexOf('/#');
+        idx = href.indexOf('/#');
         ret.hash = href.slice(idx + 2);
         ret.hashData = parseTypeHash(ret.type, ret.hash);
         return ret;
