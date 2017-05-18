@@ -144,6 +144,40 @@ define([
                 });
             };
 
+            exp.uploadComplete = function (cb) {
+                rpc.send('UPLOAD_COMPLETE', null, function (e, res) {
+                    if (e) { return void cb(e); }
+                    var id = res[0];
+                    if (typeof(id) !== 'string') {
+                        return void cb('INVALID_ID');
+                    }
+                    cb(void 0, id);
+                });
+            };
+
+            exp.uploadStatus = function (size, cb) {
+                if (typeof(size) !== 'number') {
+                    return void window.setTimeout(function () {
+                        cb('INVALID_SIZE');
+                    });
+                }
+                rpc.send('UPLOAD_STATUS', size, function (e, res) {
+                    if (e) { return void cb(e); }
+                    var pending = res[0];
+                    if (typeof(pending) !== 'boolean') {
+                        return void cb('INVALID_RESPONSE');
+                    }
+                    cb(void 0, pending);
+                });
+            };
+
+            exp.uploadCancel = function (cb) {
+                rpc.send('UPLOAD_CANCEL', void 0, function (e, res) {
+                    if (e) { return void cb(e); }
+                    cb();
+                });
+            };
+
             cb(e, exp);
         });
     };

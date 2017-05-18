@@ -779,6 +779,21 @@ define([
         common.getPinnedUsage(todo);
     };
 
+    common.uploadComplete = function (cb) {
+        if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
+        rpc.uploadComplete(cb);
+    };
+
+    common.uploadStatus = function (size, cb) {
+        if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
+        rpc.uploadStatus(size, cb);
+    };
+
+    common.uploadCancel = function (cb) {
+        if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
+        rpc.uploadCancel(cb);
+    };
+
     var LIMIT_REFRESH_RATE = 30000; // milliseconds
     common.createUsageBar = function (cb, alwaysDisplayUpgrade) {
         var todo = function (err, state, data) {
