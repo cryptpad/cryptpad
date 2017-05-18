@@ -8,7 +8,9 @@ define([
     '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
-], function ($, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad, Cryptget) {
+    '/common/diffMarked.js',
+], function ($, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad,
+             Cryptget, DiffMd) {
     var Messages = Cryptpad.Messages;
 
     var module = window.APP = {
@@ -25,6 +27,18 @@ define([
 
         var toolbar;
         var editor;
+        var $iframe = $('#pad-iframe').contents();
+        var $preview = $iframe.find('#preview');
+        $preview.click(function (e) {
+            if (!e.target) { return; }
+            var $t = $(e.target);
+            if ($t.is('a') || $t.parents('a').length) {
+                e.preventDefault();
+                var $a = $t.is('a') ? $t : $t.parents('a').first();
+                var href = $a.attr('href');
+                window.open(href);
+            }
+        });
 
         var secret = Cryptpad.getSecrets();
         var readOnly = secret.keys && !secret.keys.editKeyStr;
@@ -102,6 +116,8 @@ define([
 
                 editor.save();
 
+                DiffMd.apply(DiffMd.render(editor.getValue()), $preview);
+
                 var textValue = canonicalize(CodeMirror.$textarea.val());
                 var shjson = stringifyInner(textValue);
 
@@ -112,7 +128,15 @@ define([
                 }
             };
 
-
+            var onModeChanged = function (mode) {
+            if (mode === "markdown") {
+                    APP.$previewButton.show();
+                    $preview.show();
+                    return;
+                }
+                APP.$previewButton.hide();
+                $preview.hide();
+            };
 
             config.onInit = function (info) {
                 UserList = Cryptpad.createUserList(info, config.onLocal, Cryptget, Cryptpad);
@@ -193,8 +217,19 @@ define([
                 var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
                 $rightside.append($forgetPad);
 
+                var $previewButton = APP.$previewButton = Cryptpad.createButton(null, true);
+                $previewButton.removeClass('fa-question').addClass('fa-eye');
+                $previewButton.attr('title', 'TODO Preview'); //TODO
+                $previewButton.click(function () {
+                    if (CodeMirror.highlightMode !== 'markdown') {
+                        return void $preview.hide();
+                    }
+                    $preview.toggle();
+                });
+                $rightside.append($previewButton);
+
                 if (!readOnly) {
-                    CodeMirror.configureLanguage(CodeMirror.configureTheme);
+                    CodeMirror.configureLanguage(CodeMirror.configureTheme, onModeChanged);
                 }
                 else {
                     CodeMirror.configureTheme();
@@ -231,12 +266,12 @@ define([
                     newDoc = hjson.content;
 
                     if (hjson.highlightMode) {
-                        CodeMirror.setMode(hjson.highlightMode);
+                        CodeMirror.setMode(hjson.highlightMode, onModeChanged);
                     }
                 }
 
                 if (!CodeMirror.highlightMode) {
-                    CodeMirror.setMode('javascript');
+                    CodeMirror.setMode('markdown', onModeChanged);
                     console.log("%s => %s", CodeMirror.highlightMode, CodeMirror.$language.val());
                 }
 
@@ -274,9 +309,11 @@ define([
                 var hjson = JSON.parse(shjson);
                 var remoteDoc = hjson.content;
 
+                DiffMd.apply(DiffMd.render(remoteDoc), $preview);
+
                 var highlightMode = hjson.highlightMode;
                 if (highlightMode && highlightMode !== module.highlightMode) {
-                    CodeMirror.setMode(highlightMode);
+                    CodeMirror.setMode(highlightMode, onModeChanged);
                 }
 
                 CodeMirror.setValueAndCursor(oldDoc, remoteDoc, TextPatcher);
