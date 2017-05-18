@@ -21,6 +21,8 @@ define([
     var ifrw = $('#pad-iframe')[0].contentWindow;
     var $iframe = $('#pad-iframe').contents();
     var $form = $iframe.find('#upload-form');
+    var $progress = $form.find('#progress');
+    var $label = $form.find('label');
 
     Cryptpad.addLoadingScreen();
 
@@ -54,8 +56,15 @@ define([
             if (err) { throw new Error(err); }
             if (box) {
                 actual += box.length;
+                var progress = (actual / estimate * 100) + '%';
+                console.log(progress);
+
                 return void sendChunk(box, function (e) {
                     if (e) { return console.error(e); }
+                    $progress.css({
+                        width: progress,
+                    });
+
                     next(again);
                 });
             }
@@ -71,7 +80,7 @@ define([
                 console.log("encrypted blob is now available as %s", uri);
 
                 var b64Key = Nacl.util.encodeBase64(key);
-                window.location.hash = Cryptpad.getFileHashFromKeys(id, b64Key);
+                Cryptpad.replaceHash(Cryptpad.getFileHashFromKeys(id, b64Key));
 
                 $form.hide();
 
@@ -221,8 +230,25 @@ define([
             handleFile(file);
         });
 
+        var counter = 0;
+        $label
+        .on('dragenter', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            counter++;
+            $label.addClass('hovering');
+        })
+        .on('dragleave', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            counter--;
+            if (counter <= 0) {
+                $label.removeClass('hovering'); // FIXME Can get stuck...
+            }
+        });
+
         $form
-        .on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
+        .on('drag dragstart dragend dragover drop dragenter dragleave', function (e) {
             e.preventDefault();
             e.stopPropagation();
         })
