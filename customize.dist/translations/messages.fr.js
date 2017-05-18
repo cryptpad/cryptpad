@@ -52,6 +52,8 @@ define(function () {
 
     out.language = "Langue";
 
+    out.comingSoon = "Bientôt disponible...";
+
     out.upgrade = "Améliorer";
     out.upgradeTitle = "Améliorer votre compte pour augmenter la limite de stockage";
     out.MB = "Mo";

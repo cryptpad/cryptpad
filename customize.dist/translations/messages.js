@@ -54,6 +54,8 @@ define(function () {
 
     out.language = "Language";
 
+    out.comingSoon = "Coming soon...";
+
     out.upgrade = "Upgrade";
     out.upgradeTitle = "Upgrade your account to increase the storage limit";
     out.MB = "MB";
