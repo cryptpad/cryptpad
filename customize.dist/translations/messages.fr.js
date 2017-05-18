@@ -436,11 +436,10 @@ define(function () {
     ].join('');
 
     out.codeInitialState = [
-        '/*\n',
-        '   Voici l\'éditeur de code collaboratif et Zero Knowledge de CryptPad.\n',
-        '   Ce que vous tapez ici est chiffré de manière que seules les personnes avec le lien peuvent y accéder.\n',
-        '   Vous pouvez choisir le langage de programmation pour la coloration syntaxique, ainsi que le thème de couleurs, dans le coin supérieur droit.\n',
-        '*/'
+        '# Éditeur de code collaboratif et Zero Knowledge de CryptPad\n',
+        '\n',
+        '* Ce que vous tapez ici est chiffré de manière que seules les personnes avec le lien peuvent y accéder.\n',
+        '* Vous pouvez choisir le langage de programmation pour la coloration syntaxique, ainsi que le thème de couleurs, dans le coin supérieur droit.'
     ].join('');
 
     out.slideInitialState = [
