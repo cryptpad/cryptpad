@@ -6,7 +6,7 @@ define([
     var DiffMd = {}
 
     var DiffDOM = window.diffDOM;
-    var renderer = DiffMd.renderer = new Marked.Renderer();
+    var renderer = new Marked.Renderer();
 
     Marked.setOptions({
         renderer: renderer
@@ -14,6 +14,24 @@ define([
 
     DiffMd.render = function (md) {
         return Marked(md);
+    };
+
+    // Tasks list
+    var checkedTaskItemPtn = /^\s*\[x\]\s*/;
+    var uncheckedTaskItemPtn = /^\s*\[ \]\s*/;
+    renderer.listitem = function (text) {
+        var isCheckedTaskItem = checkedTaskItemPtn.test(text);
+        var isUncheckedTaskItem = uncheckedTaskItemPtn.test(text);
+        if (isCheckedTaskItem) {
+            text = text.replace(checkedTaskItemPtn,
+                '<i class="fa fa-check-square" aria-hidden="true"></i>&nbsp;') + '\n';
+        }
+        if (isUncheckedTaskItem) {
+            text = text.replace(uncheckedTaskItemPtn,
+                '<i class="fa fa-square-o" aria-hidden="true"></i>&nbsp;') + '\n';
+        }
+        var cls = (isCheckedTaskItem || isUncheckedTaskItem) ? ' class="todo-list-item"' : '';
+        return '<li'+ cls + '>' + text + '</li>\n';
     };
 
     var forbiddenTags = [
