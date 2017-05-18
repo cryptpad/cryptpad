@@ -223,7 +223,7 @@ define([
 
                 var $previewButton = APP.$previewButton = Cryptpad.createButton(null, true);
                 $previewButton.removeClass('fa-question').addClass('fa-eye');
-                $previewButton.attr('title', 'TODO Preview'); //TODO
+                $previewButton.attr('title', Messages.previewButtonTitle);
                 $previewButton.click(function () {
                     var $codeMirror = $iframe.find('.CodeMirror');
                     if (CodeMirror.highlightMode !== 'markdown') {
@@ -239,7 +239,9 @@ define([
                 $rightside.append($previewButton);
 
                 if (!readOnly) {
-                    CodeMirror.configureLanguage(CodeMirror.configureTheme, onModeChanged);
+                    CodeMirror.configureTheme(function () {
+                        CodeMirror.configureLanguage(null, onModeChanged);
+                    });
                 }
                 else {
                     CodeMirror.configureTheme();

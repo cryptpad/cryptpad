@@ -97,6 +97,8 @@ define(function () {
     out.templateSaved = "Template saved!";
     out.selectTemplate = "Select a template or press escape";
 
+    out.previewButtonTitle = "Display or hide the Markdown preview mode";
+
     out.presentButtonTitle = "Enter presentation mode";
     out.presentSuccess = 'Hit ESC to exit presentation mode';
 

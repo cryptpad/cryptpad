@@ -95,6 +95,8 @@ define(function () {
     out.templateSaved = "Modèle enregistré !";
     out.selectTemplate = "Sélectionner un modèle ou appuyer sur Échap";
 
+    out.previewButtonTitle = "Afficher ou cacher la prévisualisation de Markdown";
+
     out.presentButtonTitle = "Entrer en mode présentation";
     out.presentSuccess = 'Appuyer sur Échap pour quitter le mode présentation';
 
