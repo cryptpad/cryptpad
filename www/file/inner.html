@@ -31,10 +31,28 @@
         z-index: -1;
     }
 
+    #upload-form {
+        padding: 0px;
+        margin: 0px;
+
+        position: relative;
+        width: 50vh;
+        height: 50vh;
+        display: block;
+        margin: auto;
+    }
+    #upload-form label{
+        position: relative;
+    }
+
+    .hovering {
+        background-color: rgba(255, 0, 115, 0.5) !important;
+    }
+
     .block {
         display: block;
-        height: 500px;
-        width: 500px;
+        height: 50vh;
+        width: 50vh;
     }
     .hidden {
         display: none;
@@ -43,11 +61,25 @@
         border: 2px solid black;
         background-color: rgba(50, 50, 50, .10);
         margin: 50px;
+        display: block;
     }
 
     .inputfile:focus + label,
     .inputfile + label:hover {
         background-color: rgba(50, 50, 50, 0.30);
+    }
+
+    #progress {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        height: 100%;
+        width: 0%;
+        max-width: 100%;
+        max-height: 100%;
+        background-color: rgba(255, 0, 115, 0.75);
+        z-index: 10000;
+        display: block;
     }
 
     </style>
@@ -56,7 +88,7 @@
     <div id="toolbar" class="toolbar-container"></div>
     <div id="upload-form" style="display: none;">
         <input type="file" name="file" id="file" class="inputfile" />
-        <label for="file" class="block">Choose a file</label>
+        <label for="file" class="block">Choose a file<span class="block" id="progress">&nbsp;</span></label>
     </div>
     <div id="feedback" class="block hidden">
     </div>
