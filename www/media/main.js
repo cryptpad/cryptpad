@@ -70,11 +70,16 @@ define([
             var decrypted = e.originalEvent;
             var metadata = decrypted.metadata;
 
-            console.log(metadata);
-            console.log(defaultName);
+            if (decrypted.callback) { decrypted.callback(); }
+            //console.log(metadata);
+            //console.log(defaultName);
             if (!metadata || metadata.name !== defaultName) { return; }
             var title = document.title = metadata.name;
             updateTitle(title || defaultName);
+        })
+        .on('decryptionError', function (e) {
+            var error = e.originalEvent;
+            Cryptpad.alert(error.message);
         });
 
         require(['/common/media-tag.js'], function (MediaTag) {
