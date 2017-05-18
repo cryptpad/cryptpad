@@ -2,23 +2,6 @@ define([
     'jquery',
     '/common/diffMarked.js',
 ],function ($, DiffMd) {
-    // Tasks list
-    var checkedTaskItemPtn = /^\s*\[x\]\s*/;
-    var uncheckedTaskItemPtn = /^\s*\[ \]\s*/;
-    DiffMd.renderer.listitem = function (text) {
-        var isCheckedTaskItem = checkedTaskItemPtn.test(text);
-        var isUncheckedTaskItem = uncheckedTaskItemPtn.test(text);
-        if (isCheckedTaskItem) {
-            text = text.replace(checkedTaskItemPtn,
-                '<i class="fa fa-check-square" aria-hidden="true"></i>&nbsp;') + '\n';
-        }
-        if (isUncheckedTaskItem) {
-            text = text.replace(uncheckedTaskItemPtn,
-                '<i class="fa fa-square-o" aria-hidden="true"></i>&nbsp;') + '\n';
-        }
-        var cls = (isCheckedTaskItem || isUncheckedTaskItem) ? ' class="todo-list-item"' : '';
-        return '<li'+ cls + '>' + text + '</li>\n';
-    };
 
     var Slide = {
         index: 0,

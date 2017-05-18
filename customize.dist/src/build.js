@@ -60,7 +60,10 @@ var fragments = {};
 });
 
 // build static pages
-['../www/settings/index'].forEach(function (page) {
+[
+    '../www/settings/index',
+    '../www/user/index'
+].forEach(function (page) {
     var source = swap(template, {
        topbar: fragments.topbar,
        fork: fragments.fork,

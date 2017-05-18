@@ -52,6 +52,8 @@ define(function () {
 
     out.language = "Langue";
 
+    out.comingSoon = "Bientôt disponible...";
+
     out.upgrade = "Améliorer";
     out.upgradeTitle = "Améliorer votre compte pour augmenter la limite de stockage";
     out.MB = "Mo";
@@ -94,6 +96,8 @@ define(function () {
     out.saveTemplatePrompt = "Choisir un titre pour ce modèle";
     out.templateSaved = "Modèle enregistré !";
     out.selectTemplate = "Sélectionner un modèle ou appuyer sur Échap";
+
+    out.previewButtonTitle = "Afficher ou cacher la prévisualisation de Markdown";
 
     out.presentButtonTitle = "Entrer en mode présentation";
     out.presentSuccess = 'Appuyer sur Échap pour quitter le mode présentation';

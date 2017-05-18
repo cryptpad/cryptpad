@@ -158,10 +158,10 @@ define([
             });
 
             if ($rightside) { $rightside.append($block); }
-            cb();
+            if (cb) { cb(); }
         };
 
-        exp.configureTheme = function () {
+        exp.configureTheme = function (cb) {
             /*  Remember the user's last choice of theme using localStorage */
             var themeKey = 'CRYPTPAD_CODE_THEME';
             var lastTheme = localStorage.getItem(themeKey) || 'default';
@@ -195,6 +195,7 @@ define([
             });
 
             if ($rightside) { $rightside.append($block); }
+            if (cb) { cb(); }
         };
 
         exp.exportText = function () {

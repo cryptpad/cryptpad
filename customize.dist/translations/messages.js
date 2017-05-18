@@ -54,6 +54,8 @@ define(function () {
 
     out.language = "Language";
 
+    out.comingSoon = "Coming soon...";
+
     out.upgrade = "Upgrade";
     out.upgradeTitle = "Upgrade your account to increase the storage limit";
     out.MB = "MB";
@@ -96,6 +98,8 @@ define(function () {
     out.saveTemplatePrompt = "Choose a title for the template";
     out.templateSaved = "Template saved!";
     out.selectTemplate = "Select a template or press escape";
+
+    out.previewButtonTitle = "Display or hide the Markdown preview mode";
 
     out.presentButtonTitle = "Enter presentation mode";
     out.presentSuccess = 'Hit ESC to exit presentation mode';

@@ -13,14 +13,14 @@ define([
              Cryptget, DiffMd) {
     var Messages = Cryptpad.Messages;
 
-    var module = window.APP = {
+    var APP = window.APP = {
         Cryptpad: Cryptpad,
     };
 
     $(function () {
         Cryptpad.addLoadingScreen();
 
-        var ifrw = module.ifrw = $('#pad-iframe')[0].contentWindow;
+        var ifrw = APP.ifrw = $('#pad-iframe')[0].contentWindow;
         var stringify = function (obj) {
             return JSONSortify(obj);
         };
@@ -28,6 +28,7 @@ define([
         var toolbar;
         var editor;
         var $iframe = $('#pad-iframe').contents();
+        var $previewContainer = $iframe.find('#previewContainer');
         var $preview = $iframe.find('#preview');
         $preview.click(function (e) {
             if (!e.target) { return; }
@@ -58,7 +59,7 @@ define([
 
             var isHistoryMode = false;
 
-            var setEditable = module.setEditable = function (bool) {
+            var setEditable = APP.setEditable = function (bool) {
                 if (readOnly && bool) { return; }
                 editor.setOption('readOnly', !bool);
             };
@@ -121,21 +122,24 @@ define([
                 var textValue = canonicalize(CodeMirror.$textarea.val());
                 var shjson = stringifyInner(textValue);
 
-                module.patchText(shjson);
+                APP.patchText(shjson);
 
-                if (module.realtime.getUserDoc() !== shjson) {
+                if (APP.realtime.getUserDoc() !== shjson) {
                     console.error("realtime.getUserDoc() !== shjson");
                 }
             };
 
             var onModeChanged = function (mode) {
-            if (mode === "markdown") {
+                var $codeMirror = $iframe.find('.CodeMirror');
+                if (mode === "markdown") {
                     APP.$previewButton.show();
-                    $preview.show();
+                    $previewContainer.show();
+                    $codeMirror.removeClass('fullPage');
                     return;
                 }
                 APP.$previewButton.hide();
-                $preview.hide();
+                $previewContainer.hide();
+                $codeMirror.addClass('fullPage');
             };
 
             config.onInit = function (info) {
@@ -161,7 +165,7 @@ define([
                     network: info.network,
                     $container: $bar
                 };
-                toolbar = module.toolbar = Toolbar.create(configTb);
+                toolbar = APP.toolbar = Toolbar.create(configTb);
 
                 Title.setToolbar(toolbar);
                 CodeMirror.init(config.onLocal, Title, toolbar);
@@ -219,17 +223,25 @@ define([
 
                 var $previewButton = APP.$previewButton = Cryptpad.createButton(null, true);
                 $previewButton.removeClass('fa-question').addClass('fa-eye');
-                $previewButton.attr('title', 'TODO Preview'); //TODO
+                $previewButton.attr('title', Messages.previewButtonTitle);
                 $previewButton.click(function () {
+                    var $codeMirror = $iframe.find('.CodeMirror');
                     if (CodeMirror.highlightMode !== 'markdown') {
-                        return void $preview.hide();
+                        $previewContainer.show();
                     }
-                    $preview.toggle();
+                    $previewContainer.toggle();
+                    if ($previewContainer.is(':visible')) {
+                        $codeMirror.removeClass('fullPage');
+                    } else {
+                        $codeMirror.addClass('fullPage');
+                    }
                 });
                 $rightside.append($previewButton);
 
                 if (!readOnly) {
-                    CodeMirror.configureLanguage(CodeMirror.configureTheme, onModeChanged);
+                    CodeMirror.configureTheme(function () {
+                        CodeMirror.configureLanguage(null, onModeChanged);
+                    });
                 }
                 else {
                     CodeMirror.configureTheme();
@@ -240,15 +252,15 @@ define([
             };
 
             config.onReady = function (info) {
-                if (module.realtime !== info.realtime) {
-                    var realtime = module.realtime = info.realtime;
-                    module.patchText = TextPatcher.create({
+                if (APP.realtime !== info.realtime) {
+                    var realtime = APP.realtime = info.realtime;
+                    APP.patchText = TextPatcher.create({
                         realtime: realtime,
                         //logging: true
                     });
                 }
 
-                var userDoc = module.realtime.getUserDoc();
+                var userDoc = APP.realtime.getUserDoc();
 
                 var isNew = false;
                 if (userDoc === "" || userDoc === "{}") { isNew = true; }
@@ -301,7 +313,7 @@ define([
                 if (isHistoryMode) { return; }
 
                 var oldDoc = canonicalize(CodeMirror.$textarea.val());
-                var shjson = module.realtime.getUserDoc();
+                var shjson = APP.realtime.getUserDoc();
 
                 // Update the user list (metadata) from the hyperjson
                 Metadata.update(shjson);
@@ -312,7 +324,7 @@ define([
                 DiffMd.apply(DiffMd.render(remoteDoc), $preview);
 
                 var highlightMode = hjson.highlightMode;
-                if (highlightMode && highlightMode !== module.highlightMode) {
+                if (highlightMode && highlightMode !== APP.highlightMode) {
                     CodeMirror.setMode(highlightMode, onModeChanged);
                 }
 
@@ -324,7 +336,7 @@ define([
                     if (shjson2 !== shjson) {
                         console.error("shjson2 !== shjson");
                         TextPatcher.log(shjson, TextPatcher.diff(shjson, shjson2));
-                        module.patchText(shjson2);
+                        APP.patchText(shjson2);
                     }
                 }
                 if (oldDoc !== remoteDoc) { Cryptpad.notify(); }
@@ -351,7 +363,7 @@ define([
 
             config.onError = onConnectError;
 
-            module.realtime = Realtime.start(config);
+            APP.realtime = Realtime.start(config);
 
             editor.on('change', onLocal);
 
