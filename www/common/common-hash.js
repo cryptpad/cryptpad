@@ -113,12 +113,13 @@ Version 1
             return ret;
         }
 
-        var hash = href.replace(patt, function (a, domain, type) {
+        href.replace(patt, function (a, domain, type) {
             ret.domain = domain;
             ret.type = type;
             return '';
         });
-        ret.hash = hash.replace(/#/g, '');
+        var idx = href.indexOf('/#');
+        ret.hash = href.slice(idx + 2);
         ret.hashData = parseTypeHash(ret.type, ret.hash);
         return ret;
     };
@@ -166,8 +167,8 @@ Version 1
             // new hash system : #/{hashVersion}/{b64ChanKey}/{cryptKey}
             if (parsed.version === 0) {
                 // Old hash
-                secret.channel = hash.slice(0, 32);
-                secret.key = hash.slice(32);
+                secret.channel = parsed.channel;
+                secret.key = parsed.key;
             }
             else if (parsed.version === 1) {
                 // New hash

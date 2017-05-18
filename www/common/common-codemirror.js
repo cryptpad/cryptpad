@@ -46,10 +46,11 @@ define([
         });
         editor.setValue(Messages.codeInitialState);
 
-        var setMode = exp.setMode = function (mode) {
+        var setMode = exp.setMode = function (mode, cb) {
             exp.highlightMode = mode;
             if (mode === 'text') {
                 editor.setOption('mode', 'text');
+                if (cb) { cb('text'); }
                 return;
             }
             CMeditor.autoLoadMode(editor, mode);
@@ -58,6 +59,7 @@ define([
                 var name = exp.$language.find('a[data-value="' + mode + '"]').text() || 'Mode';
                 exp.$language.setValue(name);
             }
+            if(cb) { cb(mode); }
         };
 
         var setTheme = exp.setTheme = (function () {
@@ -131,7 +133,7 @@ define([
             return text.trim();
         };
 
-        exp.configureLanguage = function (cb) {
+        exp.configureLanguage = function (cb, onModeChanged) {
             var options = [];
             Modes.list.forEach(function (l) {
                 options.push({
@@ -151,7 +153,7 @@ define([
             };
             var $block = exp.$language = Cryptpad.createDropdown(dropdownConfig);
             $block.find('a').click(function () {
-                setMode($(this).attr('data-value'), $block);
+                setMode($(this).attr('data-value'), onModeChanged);
                 onLocal();
             });
 

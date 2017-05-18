@@ -2357,8 +2357,11 @@ define([
             e.stopPropagation();
             var path = $(this).data('path');
             var onCreated = function (err, info) {
-                if (err && err === E_OVER_LIMIT) {
+                if (err === E_OVER_LIMIT) {
                     return void Cryptpad.alert(Messages.pinLimitDrive, null, true);
+                }
+                if (err) {
+                    return void console.error("Unable to create the file", err);
                 }
                 module.newFolder = info.newPath;
                 refresh();

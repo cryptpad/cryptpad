@@ -8,6 +8,9 @@ define([
 ], function ($, Config, Realtime, Crypto, TextPatcher, Cryptpad) {
 
     var secret = Cryptpad.getSecrets();
+    if (!secret.keys) {
+        secret.keys = secret.key;
+    }
 
     var module = window.APP = {
         TextPatcher: TextPatcher
@@ -19,8 +22,9 @@ define([
     var config = module.config = {
         initialState: '',
         websocketURL: Config.websocketURL,
+        validateKey: secret.keys.validateKey || undefined,
         channel: secret.channel,
-        crypto: Crypto.createEncryptor(secret.key),
+        crypto: Crypto.createEncryptor(secret.keys),
     };
 
     var setEditable = function (bool) { $textarea.attr('disabled', !bool); };
@@ -29,7 +33,8 @@ define([
     setEditable(false);
 
     config.onInit = function (info) {
-        window.location.hash = info.channel + secret.key;
+        var editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+        Cryptpad.replaceHash(editHash);
         $(window).on('hashchange', function() {
             window.location.reload();
         });
