@@ -65,9 +65,8 @@ define([
             }
 
             // if not box then done
-            Cryptpad.rpc.send('UPLOAD_COMPLETE', '', function (e, res) {
+            Cryptpad.uploadComplete(function (e, id) {
                 if (e) { return void console.error(e); }
-                var id = res[0];
                 var uri = ['', 'blob', id.slice(0,2), id].join('/');
                 console.log("encrypted blob is now available as %s", uri);
 
@@ -78,32 +77,28 @@ define([
 
                 APP.toolbar.addElement(['fileshare'], {});
 
-                // check if the uploaded file can be decrypted
-                var newU8 = FileCrypto.joinChunks(chunks);
-                FileCrypto.decrypt(newU8, key, function (e, res) {
-                    if (e) { return console.error(e); }
-                    var title = document.title = res.metadata.name;
-                    myFile = res.content;
-                    myDataType = res.metadata.type;
-
-                    var defaultName = Cryptpad.getDefaultName(Cryptpad.parsePadUrl(window.location.href));
-                    Title.updateTitle(title || defaultName);
-                    APP.toolbar.title.show();
-                    Cryptpad.alert(Messages._getKey('upload_success', [title]));
-                });
+                var title = document.title = metadata.name;
+                myFile = blob;
+                myDataType = metadata.type;
+                var defaultName = Cryptpad.getDefaultName(Cryptpad.parsePadUrl(window.location.href));
+                Title.updateTitle(title || defaultName);
+                APP.toolbar.title.show();
+                console.log(title);
+                Cryptpad.alert(Messages._getKey('upload_success', [title]));
             });
         };
 
-        Cryptpad.rpc.send('UPLOAD_STATUS', estimate, function (e, pending) {
+        Cryptpad.uploadStatus(estimate, function (e, pending) {
             if (e) {
                 console.error(e);
                 return void Cryptpad.alert(Messages.upload_serverError);
             }
 
-            if (pending[0]) {
+            if (pending) {
+                // TODO queue uploads... ?
                 return void Cryptpad.confirm(Messages.upload_uploadPending, function (yes) {
                     if (!yes) { return; }
-                    Cryptpad.rpc.send('UPLOAD_CANCEL', '', function (e, res) {
+                    Cryptpad.uploadCancel(function (e, res) {
                         if (e) { return void console.error(e); }
                         console.log(res);
                         next(again);

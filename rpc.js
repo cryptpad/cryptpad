@@ -192,8 +192,9 @@ var checkSignature = function (signedMsg, signature, publicKey) {
     return Nacl.sign.detached.verify(signedBuffer, signatureBuffer, pubBuffer);
 };
 
-var loadUserPins = function (store, Sessions, publicKey, cb) {
-    var session = beginSession(Sessions, publicKey);
+var loadUserPins = function (Env, publicKey, cb) {
+    var pinStore = Env.pinStore;
+    var session = beginSession(Env.Sessions, publicKey);
 
     if (session.channels) {
         return cb(session.channels);
@@ -210,7 +211,7 @@ var loadUserPins = function (store, Sessions, publicKey, cb) {
         pins[channel] = false;
     };
 
-    store.getMessages(publicKey, function (msg) {
+    pinStore.getMessages(publicKey, function (msg) {
         // handle messages...
         var parsed;
         try {
@@ -252,8 +253,8 @@ var truthyKeys = function (O) {
     });
 };
 
-var getChannelList = function (store, Sessions, publicKey, cb) {
-    loadUserPins(store, Sessions, publicKey, function (pins) {
+var getChannelList = function (Env, publicKey, cb) {
+    loadUserPins(Env, publicKey, function (pins) {
         cb(truthyKeys(pins));
     });
 };
@@ -263,7 +264,8 @@ var makeFilePath = function (root, id) {
     return Path.join(root, id.slice(0, 2), id);
 };
 
-var getUploadSize = function (paths, channel, cb) {
+var getUploadSize = function (Env, channel, cb) {
+    var paths = Env.paths;
     var path = makeFilePath(paths.blob, channel);
     if (!path) {
         return cb('INVALID_UPLOAD_ID');
@@ -275,28 +277,29 @@ var getUploadSize = function (paths, channel, cb) {
     });
 };
 
-var getFileSize = function (paths, msgStore, channel, cb) {
+var getFileSize = function (Env, channel, cb) {
     if (!isValidId(channel)) { return void cb('INVALID_CHAN'); }
 
     if (channel.length === 32) {
-        if (typeof(msgStore.getChannelSize) !== 'function') {
+        if (typeof(Env.msgStore.getChannelSize) !== 'function') {
             return cb('GET_CHANNEL_SIZE_UNSUPPORTED');
         }
 
-        return void msgStore.getChannelSize(channel, function (e, size) {
+        return void Env.msgStore.getChannelSize(channel, function (e, size) {
             if (e) { return void cb(e.code); }
             cb(void 0, size);
         });
     }
 
     // 'channel' refers to a file, so you need anoter API
-    getUploadSize(paths, channel, function (e, size) {
+    getUploadSize(Env, channel, function (e, size) {
         if (e) { return void cb(e); }
         cb(void 0, size);
     });
 };
 
-var getMultipleFileSize = function (paths, msgStore, channels, cb) {
+var getMultipleFileSize = function (Env, channels, cb) {
+    var msgStore = Env.msgStore;
     if (!Array.isArray(channels)) { return cb('INVALID_LIST'); }
     if (typeof(msgStore.getChannelSize) !== 'function') {
         return cb('GET_CHANNEL_SIZE_UNSUPPORTED');
@@ -311,7 +314,7 @@ var getMultipleFileSize = function (paths, msgStore, channels, cb) {
     };
 
     channels.forEach(function (channel) {
-        getFileSize(paths, msgStore, channel, function (e, size) {
+        getFileSize(Env, channel, function (e, size) {
             if (e) {
                 console.error(e);
                 counts[channel] = -1;
@@ -323,17 +326,18 @@ var getMultipleFileSize = function (paths, msgStore, channels, cb) {
     });
 };
 
-var getTotalSize = function (paths, pinStore, msgStore, Sessions, publicKey, cb) {
+var getTotalSize = function (Env, publicKey, cb) {
     var bytes = 0;
+    //var msgStore = Env.msgStore;
 
-    return void getChannelList(pinStore, Sessions, publicKey, function (channels) {
+    return void getChannelList(Env, publicKey, function (channels) {
         if (!channels) { cb('NO_ARRAY'); } // unexpected
 
         var count = channels.length;
         if (!count) { cb(void 0, 0); }
 
         channels.forEach(function (channel) {
-            getFileSize(paths, msgStore, channel, function (e, size) {
+            getFileSize(Env, channel, function (e, size) {
                 count--;
                 if (!e) { bytes += size; }
                 if (count === 0) { return cb(void 0, bytes); }
@@ -356,112 +360,9 @@ var hashChannelList = function (A) {
     return hash;
 };
 
-var getHash = function (store, Sessions, publicKey, cb) {
-    getChannelList(store, Sessions, publicKey, function (channels) {
+var getHash = function (Env, publicKey, cb) {
+    getChannelList(Env, publicKey, function (channels) {
         cb(void 0, hashChannelList(channels));
-    });
-};
-
-// TODO check if new pinned size exceeds user quota
-var pinChannel = function (pinStore, Sessions, publicKey, channels, cb) {
-    if (!channels && channels.filter) {
-        // expected array
-        return void cb('[TYPE_ERROR] pin expects channel list argument');
-    }
-
-    getChannelList(pinStore, Sessions, publicKey, function (pinned) {
-        var session = beginSession(Sessions, publicKey);
-
-        // only pin channels which are not already pinned
-        var toStore = channels.filter(function (channel) {
-            return pinned.indexOf(channel) === -1;
-        });
-
-        if (toStore.length === 0) {
-            return void getHash(pinStore, Sessions, publicKey, cb);
-        }
-
-        pinStore.message(publicKey, JSON.stringify(['PIN', toStore]),
-            function (e) {
-            if (e) { return void cb(e); }
-            toStore.forEach(function (channel) {
-                session.channels[channel] = true;
-            });
-            getHash(pinStore, Sessions, publicKey, cb);
-        });
-    });
-};
-
-var unpinChannel = function (pinStore, Sessions, publicKey, channels, cb) {
-    if (!channels && channels.filter) {
-        // expected array
-        return void cb('[TYPE_ERROR] unpin expects channel list argument');
-    }
-
-    getChannelList(pinStore, Sessions, publicKey, function (pinned) {
-        var session = beginSession(Sessions, publicKey);
-
-        // only unpin channels which are pinned
-        var toStore = channels.filter(function (channel) {
-            return pinned.indexOf(channel) !== -1;
-        });
-
-        if (toStore.length === 0) {
-            return void getHash(pinStore, Sessions, publicKey, cb);
-        }
-
-        pinStore.message(publicKey, JSON.stringify(['UNPIN', toStore]),
-            function (e) {
-            if (e) { return void cb(e); }
-            toStore.forEach(function (channel) {
-                delete session.channels[channel];
-            });
-
-            getHash(pinStore, Sessions, publicKey, cb);
-        });
-    });
-};
-
-// TODO check if new pinned size exceeds user quota
-var resetUserPins = function (pinStore, Sessions, publicKey, channelList, cb) {
-    var session = beginSession(Sessions, publicKey);
-
-    var pins = session.channels = {};
-
-    pinStore.message(publicKey, JSON.stringify(['RESET', channelList]),
-        function (e) {
-        if (e) { return void cb(e); }
-        channelList.forEach(function (channel) {
-            pins[channel] = true;
-        });
-
-        getHash(pinStore, Sessions, publicKey, function (e, hash) {
-            cb(e, hash);
-        });
-    });
-};
-
-var getPrivilegedUserList = function (cb) {
-    Fs.readFile('./privileged.conf', 'utf8', function (e, body) {
-        if (e) {
-            if (e.code === 'ENOENT') {
-                return void cb(void 0, []);
-            }
-            return void (e.code);
-        }
-        var list = body.split(/\n/)
-            .map(function (line) {
-                return line.replace(/#.*$/, '').trim();
-            })
-            .filter(function (x) { return x; });
-        cb(void 0, list);
-    });
-};
-
-var isPrivilegedUser = function (publicKey, cb) {
-    getPrivilegedUserList(function (e, list) {
-        if (e) { return void cb(false); }
-        cb(list.indexOf(publicKey) !== -1);
     });
 };
 
@@ -470,6 +371,9 @@ var isPrivilegedUser = function (publicKey, cb) {
 var limits = {};
 var updateLimits = function (config, publicKey, cb) {
     if (typeof cb !== "function") { cb = function () {}; }
+
+    var defaultLimit = typeof(config.defaultStorageLimit) === 'number'?
+        config.defaultStorageLimit: DEFAULT_LIMIT;
 
     var body = JSON.stringify({
         domain: config.domain,
@@ -502,7 +406,7 @@ var updateLimits = function (config, publicKey, cb) {
                 if (publicKey) {
                     var limit = limits[publicKey];
                     l = limit && typeof limit.limit === "number" ?
-                            [limit.limit, limit.plan] : [DEFAULT_LIMIT, ''];
+                            [limit.limit, limit.plan] : [defaultLimit, ''];
                 }
                 cb(void 0, l);
             } catch (e) {
@@ -519,16 +423,177 @@ var updateLimits = function (config, publicKey, cb) {
     req.end(body);
 };
 
-var getLimit = function (publicKey, cb) {
+var getLimit = function (Env, publicKey, cb) {
     var unescapedKey = unescapeKeyCharacters(publicKey);
     var limit = limits[unescapedKey];
+    var defaultLimit = typeof(Env.defaultStorageLimit) === 'number'?
+        Env.defaultStorageLimit: DEFAULT_LIMIT;
 
     var toSend = limit && typeof(limit.limit) === "number"?
-        [limit.limit, limit.plan] : [DEFAULT_LIMIT, ''];
+        [limit.limit, limit.plan] : [defaultLimit, ''];
 
     cb(void 0, toSend);
 };
 
+var getFreeSpace = function (Env, publicKey, cb) {
+    getLimit(Env, publicKey, function (e, limit) {
+        if (e) { return void cb(e); }
+        getTotalSize(Env, publicKey, function (e, size) {
+            if (e) { return void cb(e); }
+
+            var rem = limit[0] - size;
+            if (typeof(rem) !== 'number') {
+                return void cb('invalid_response');
+            }
+            cb(void 0, rem);
+        });
+    });
+};
+
+var sumChannelSizes = function (sizes) {
+    return Object.keys(sizes).map(function (id) { return sizes[id]; })
+        .filter(function (x) {
+            // only allow positive numbers
+            return !(typeof(x) !== 'number' || x <= 0);
+        })
+        .reduce(function (a, b) { return a + b; });
+};
+
+var pinChannel = function (Env, publicKey, channels, cb) {
+    if (!channels && channels.filter) {
+        return void cb('[TYPE_ERROR] pin expects channel list argument');
+    }
+
+    // get channel list ensures your session has a cached channel list
+    getChannelList(Env, publicKey, function (pinned) {
+        var session = beginSession(Env.Sessions, publicKey);
+
+        // only pin channels which are not already pinned
+        var toStore = channels.filter(function (channel) {
+            return pinned.indexOf(channel) === -1;
+        });
+
+        if (toStore.length === 0) {
+            return void getHash(Env, publicKey, cb);
+        }
+
+        getMultipleFileSize(Env, toStore, function (e, sizes) {
+            if (e) { return void cb(e); }
+            var pinSize = sumChannelSizes(sizes);
+
+            getFreeSpace(Env, publicKey, function (e, free) {
+                if (e) {
+                    console.error(e);
+                    return void cb(e);
+                }
+                if (pinSize > free) { return void cb('E_OVER_LIMIT'); }
+
+                Env.pinStore.message(publicKey, JSON.stringify(['PIN', toStore]),
+                    function (e) {
+                    if (e) { return void cb(e); }
+                    toStore.forEach(function (channel) {
+                        session.channels[channel] = true;
+                    });
+                    getHash(Env, publicKey, cb);
+                });
+            });
+        });
+    });
+};
+
+var unpinChannel = function (Env, publicKey, channels, cb) {
+    var pinStore = Env.pinStore;
+    if (!channels && channels.filter) {
+        // expected array
+        return void cb('[TYPE_ERROR] unpin expects channel list argument');
+    }
+
+    getChannelList(Env, publicKey, function (pinned) {
+        var session = beginSession(Env.Sessions, publicKey);
+
+        // only unpin channels which are pinned
+        var toStore = channels.filter(function (channel) {
+            return pinned.indexOf(channel) !== -1;
+        });
+
+        if (toStore.length === 0) {
+            return void getHash(Env, publicKey, cb);
+        }
+
+        pinStore.message(publicKey, JSON.stringify(['UNPIN', toStore]),
+            function (e) {
+            if (e) { return void cb(e); }
+            toStore.forEach(function (channel) {
+                delete session.channels[channel];
+            });
+
+            getHash(Env, publicKey, cb);
+        });
+    });
+};
+
+var resetUserPins = function (Env, publicKey, channelList, cb) {
+    if (!Array.isArray(channelList)) { return void cb('INVALID_PIN_LIST'); }
+    var pinStore = Env.pinStore;
+    var session = beginSession(Env.Sessions, publicKey);
+
+    if (!channelList.length) {
+        return void getHash(Env, publicKey, function (e, hash) {
+            if (e) { return cb(e); }
+            cb(void 0, hash);
+        });
+    }
+
+    var pins = session.channels = {};
+
+    getMultipleFileSize(Env, channelList, function (e, sizes) {
+        if (e) { return void cb(e); }
+        var pinSize = sumChannelSizes(sizes);
+
+        getFreeSpace(Env, publicKey, function (e, free) {
+            if (e) {
+                console.error(e);
+                return void cb(e);
+            }
+            if (pinSize > free) { return void(cb('E_OVER_LIMIT')); }
+            pinStore.message(publicKey, JSON.stringify(['RESET', channelList]),
+                function (e) {
+                if (e) { return void cb(e); }
+                channelList.forEach(function (channel) {
+                    pins[channel] = true;
+                });
+
+                getHash(Env, publicKey, function (e, hash) {
+                    cb(e, hash);
+                });
+            });
+        });
+    });
+};
+
+var getPrivilegedUserList = function (cb) {
+    Fs.readFile('./privileged.conf', 'utf8', function (e, body) {
+        if (e) {
+            if (e.code === 'ENOENT') {
+                return void cb(void 0, []);
+            }
+            return void (e.code);
+        }
+        var list = body.split(/\n/)
+            .map(function (line) {
+                return line.replace(/#.*$/, '').trim();
+            })
+            .filter(function (x) { return x; });
+        cb(void 0, list);
+    });
+};
+
+var isPrivilegedUser = function (publicKey, cb) {
+    getPrivilegedUserList(function (e, list) {
+        if (e) { return void cb(false); }
+        cb(list.indexOf(publicKey) !== -1);
+    });
+};
 var safeMkdir = function (path, cb) {
     Fs.mkdir(path, function (e) {
         if (!e || e.code === 'EEXIST') { return void cb(); }
@@ -556,11 +621,12 @@ var makeFileStream = function (root, id, cb) {
     });
 };
 
-var upload = function (paths, Sessions, publicKey, content, cb) {
+var upload = function (Env, publicKey, content, cb) {
+    var paths = Env.paths;
     var dec = new Buffer(Nacl.util.decodeBase64(content)); // jshint ignore:line
     var len = dec.length;
 
-    var session = beginSession(Sessions, publicKey);
+    var session = beginSession(Env.Sessions, publicKey);
 
     if (typeof(session.currentUploadSize) !== 'number') {
         // improperly initialized... maybe they didn't check before uploading?
@@ -588,7 +654,8 @@ var upload = function (paths, Sessions, publicKey, content, cb) {
     }
 };
 
-var upload_cancel = function (paths, Sessions, publicKey, cb) {
+var upload_cancel = function (Env, publicKey, cb) {
+    var paths = Env.paths;
     var path = makeFilePath(paths.staging, publicKey);
     if (!path) {
         console.log(paths.staging, publicKey);
@@ -612,8 +679,9 @@ var isFile = function (filePath, cb) {
     });
 };
 
-var upload_complete = function (paths, Sessions, publicKey, cb) {
-    var session = beginSession(Sessions, publicKey);
+var upload_complete = function (Env, publicKey, cb) {
+    var paths = Env.paths;
+    var session = beginSession(Env.Sessions, publicKey);
 
     if (session.blobstage && session.blobstage.close) {
         session.blobstage.close();
@@ -657,7 +725,10 @@ var upload_complete = function (paths, Sessions, publicKey, cb) {
     });
 };
 
-var upload_status = function (paths, pinStore, msgStore, Sessions, publicKey, filesize, cb) {
+var upload_status = function (Env, publicKey, filesize, cb) {
+    var paths = Env.paths;
+    //var msgStore = Env.msgStore;
+
     // validate that the provided size is actually a positive number
     if (typeof(filesize) !== 'number' &&
         filesize >= 0) { return void cb('E_INVALID_SIZE'); }
@@ -666,17 +737,15 @@ var upload_status = function (paths, pinStore, msgStore, Sessions, publicKey, fi
     var filePath = makeFilePath(paths.staging, publicKey);
     if (!filePath) { return void cb('E_INVALID_PATH'); }
 
-    getLimit(publicKey, function (e, limit) {
+    getFreeSpace(Env, publicKey, function (e, free) {
         if (e) { return void cb(e); }
-        getTotalSize(paths, pinStore, msgStore, Sessions, publicKey, function (e, size) {
-            if ((filesize + size) >= limit) { return cb('TOO_LARGE'); }
-            isFile(filePath, function (e, yes) {
-                if (e) {
-                    console.error("uploadError: [%s]", e);
-                    return cb('UNNOWN_ERROR');
-                }
-                cb(e, yes);
-            });
+        if (filesize >= free) { return cb('TOO_LARGE'); }
+        isFile(filePath, function (e, yes) {
+            if (e) {
+                console.error("uploadError: [%s]", e);
+                return cb('UNNOWN_ERROR');
+            }
+            cb(e, yes);
         });
     });
 };
@@ -686,18 +755,21 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
     // load pin-store...
     console.log('loading rpc module...');
 
-    var Sessions = {};
-
     var keyOrDefaultString = function (key, def) {
         return typeof(config[key]) === 'string'? config[key]: def;
     };
 
-    var paths = {};
+    var Env = {};
+    Env.defaultStorageLimit = config.defaultStorageLimit;
+
+    Env.maxUploadSize = config.maxUploadSize || (20 * 1024 * 1024);
+
+    var Sessions = Env.Sessions = {};
+
+    var paths = Env.paths = {};
     var pinPath = paths.pin = keyOrDefaultString('pinPath', './pins');
     var blobPath = paths.blob = keyOrDefaultString('blobPath', './blob');
     var blobStagingPath = paths.staging = keyOrDefaultString('blobStagingPath', './blobstage');
-
-    var pinStore;
 
     var rpc = function (
         ctx /*:{ store: Object }*/,
@@ -769,47 +841,46 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
             Respond('E_ACCESS_DENIED');
         };
 
-        var msgStore = ctx.store;
+        if (!Env.msgStore) { Env.msgStore = ctx.store; }
 
         var handleMessage = function (privileged) {
         switch (msg[0]) {
             case 'COOKIE': return void Respond(void 0);
             case 'RESET':
-                return resetUserPins(pinStore, Sessions, safeKey, msg[1], function (e, hash) {
+                return resetUserPins(Env, safeKey, msg[1], function (e, hash) {
                     return void Respond(e, hash);
                 });
-            case 'PIN': // TODO don't pin if over the limit
-                // if over, send error E_OVER_LIMIT
-                return pinChannel(pinStore, Sessions, safeKey, msg[1], function (e, hash) {
+            case 'PIN':
+                return pinChannel(Env, safeKey, msg[1], function (e, hash) {
                     Respond(e, hash);
                 });
             case 'UNPIN':
-                return unpinChannel(pinStore, Sessions, safeKey, msg[1], function (e, hash) {
+                return unpinChannel(Env, safeKey, msg[1], function (e, hash) {
                     Respond(e, hash);
                 });
             case 'GET_HASH':
-                return void getHash(pinStore, Sessions, safeKey, function (e, hash) {
+                return void getHash(Env, safeKey, function (e, hash) {
                     Respond(e, hash);
                 });
             case 'GET_TOTAL_SIZE': // TODO cache this, since it will get called quite a bit
-                return getTotalSize(paths, pinStore, msgStore, Sessions, safeKey, function (e, size) {
+                return getTotalSize(Env, safeKey, function (e, size) {
                     if (e) { return void Respond(e); }
                     Respond(e, size);
                 });
             case 'GET_FILE_SIZE':
-                return void getFileSize(paths, msgStore, msg[1], Respond);
+                return void getFileSize(Env, msg[1], Respond);
             case 'UPDATE_LIMITS':
                 return void updateLimits(config, safeKey, function (e, limit) {
                     if (e) { return void Respond(e); }
                     Respond(void 0, limit);
                 });
             case 'GET_LIMIT':
-                return void getLimit(safeKey, function (e, limit) {
+                return void getLimit(Env, safeKey, function (e, limit) {
                     if (e) { return void Respond(e); }
                     Respond(void 0, limit);
                 });
             case 'GET_MULTIPLE_FILE_SIZE':
-                return void getMultipleFileSize(paths, msgStore, msg[1], function (e, dict) {
+                return void getMultipleFileSize(Env, msg[1], function (e, dict) {
                     if (e) { return void Respond(e); }
                     Respond(void 0, dict);
                 });
@@ -817,13 +888,13 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
             // restricted to privileged users...
             case 'UPLOAD':
                 if (!privileged) { return deny(); }
-                return void upload(paths, Sessions, safeKey, msg[1], function (e, len) {
+                return void upload(Env, safeKey, msg[1], function (e, len) {
                     Respond(e, len);
                 });
             case 'UPLOAD_STATUS':
                 if (!privileged) { return deny(); }
                 var filesize = msg[1];
-                return void upload_status(paths, pinStore, msgStore, Sessions, safeKey, msg[1], function (e, yes) {
+                return void upload_status(Env, safeKey, msg[1], function (e, yes) {
                     if (!e && !yes) {
                         // no pending uploads, set the new size
                         var user = beginSession(Sessions, safeKey);
@@ -834,12 +905,12 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                 });
             case 'UPLOAD_COMPLETE':
                 if (!privileged) { return deny(); }
-                return void upload_complete(paths, Sessions, safeKey, function (e, hash) {
+                return void upload_complete(Env, safeKey, function (e, hash) {
                     Respond(e, hash);
                 });
             case 'UPLOAD_CANCEL':
                 if (!privileged) { return deny(); }
-                return void upload_cancel(paths, Sessions, safeKey, function (e) {
+                return void upload_cancel(Env, safeKey, function (e) {
                     Respond(e);
                 });
             default:
@@ -881,7 +952,7 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
     Store.create({
         filePath: pinPath,
     }, function (s) {
-        pinStore = s;
+        Env.pinStore = s;
 
         safeMkdir(blobPath, function (e) {
             if (e) { throw e; }
