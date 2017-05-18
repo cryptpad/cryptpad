@@ -1336,7 +1336,7 @@ define([
                 feedback("NO_PROXIES");
             }
 
-            if (!/CRYPTPAD_SHIM/.test(Array.isArray.toString())) {
+            if (/CRYPTPAD_SHIM/.test(Array.isArray.toString())) {
                 feedback("NO_ISARRAY");
             }
 
