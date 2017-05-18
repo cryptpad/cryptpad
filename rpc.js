@@ -366,15 +366,105 @@ var getHash = function (Env, publicKey, cb) {
     });
 };
 
-// TODO check if new pinned size exceeds user quota
-var pinChannel = function (Env, publicKey, channels, cb) {
-    var pinStore = Env.pinStore;
+// The limits object contains storage limits for all the publicKey that have paid
+// To each key is associated an object containing the 'limit' value and a 'note' explaining that limit
+var limits = {};
+var updateLimits = function (config, publicKey, cb) {
+    if (typeof cb !== "function") { cb = function () {}; }
 
+    var defaultLimit = typeof(config.defaultStorageLimit) === 'number'?
+        config.defaultStorageLimit: DEFAULT_LIMIT;
+
+    var body = JSON.stringify({
+        domain: config.domain,
+        subdomain: config.subdomain
+    });
+    var options = {
+        host: 'accounts.cryptpad.fr',
+        path: '/api/getauthorized',
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+            "Content-Length": Buffer.byteLength(body)
+        }
+    };
+    var req = Https.request(options, function (response) {
+        if (!('' + response.statusCode).match(/^2\d\d$/)) {
+            return void cb('SERVER ERROR ' + response.statusCode);
+        }
+        var str = '';
+
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+
+        response.on('end', function () {
+            try {
+                var json = JSON.parse(str);
+                limits = json;
+                var l;
+                if (publicKey) {
+                    var limit = limits[publicKey];
+                    l = limit && typeof limit.limit === "number" ?
+                            [limit.limit, limit.plan] : [defaultLimit, ''];
+                }
+                cb(void 0, l);
+            } catch (e) {
+                cb(e);
+            }
+        });
+    });
+
+    req.on('error', function (e) {
+        if (!config.domain) { return cb(); }
+        cb(e);
+    });
+
+    req.end(body);
+};
+
+var getLimit = function (Env, publicKey, cb) {
+    var unescapedKey = unescapeKeyCharacters(publicKey);
+    var limit = limits[unescapedKey];
+    var defaultLimit = typeof(Env.defaultStorageLimit) === 'number'?
+        Env.defaultStorageLimit: DEFAULT_LIMIT;
+
+    var toSend = limit && typeof(limit.limit) === "number"?
+        [limit.limit, limit.plan] : [defaultLimit, ''];
+
+    cb(void 0, toSend);
+};
+
+var getFreeSpace = function (Env, publicKey, cb) {
+    getLimit(Env, publicKey, function (e, limit) {
+        if (e) { return void cb(e); }
+        getTotalSize(Env, publicKey, function (e, size) {
+            if (e) { return void cb(e); }
+
+            var rem = limit[0] - size;
+            if (typeof(rem) !== 'number') {
+                return void cb('invalid_response');
+            }
+            cb(void 0, rem);
+        });
+    });
+};
+
+var sumChannelSizes = function (sizes) {
+    return Object.keys(sizes).map(function (id) { return sizes[id]; })
+        .filter(function (x) {
+            // only allow positive numbers
+            return !(typeof(x) !== 'number' || x <= 0);
+        })
+        .reduce(function (a, b) { return a + b; });
+};
+
+var pinChannel = function (Env, publicKey, channels, cb) {
     if (!channels && channels.filter) {
-        // expected array
         return void cb('[TYPE_ERROR] pin expects channel list argument');
     }
 
+    // get channel list ensures your session has a cached channel list
     getChannelList(Env, publicKey, function (pinned) {
         var session = beginSession(Env.Sessions, publicKey);
 
@@ -387,13 +477,26 @@ var pinChannel = function (Env, publicKey, channels, cb) {
             return void getHash(Env, publicKey, cb);
         }
 
-        pinStore.message(publicKey, JSON.stringify(['PIN', toStore]),
-            function (e) {
+        getMultipleFileSize(Env, toStore, function (e, sizes) {
             if (e) { return void cb(e); }
-            toStore.forEach(function (channel) {
-                session.channels[channel] = true;
+            var pinSize = sumChannelSizes(sizes);
+
+            getFreeSpace(Env, publicKey, function (e, free) {
+                if (e) {
+                    console.error(e);
+                    return void cb(e);
+                }
+                if (pinSize > free) { return void cb('E_OVER_LIMIT'); }
+
+                Env.pinStore.message(publicKey, JSON.stringify(['PIN', toStore]),
+                    function (e) {
+                    if (e) { return void cb(e); }
+                    toStore.forEach(function (channel) {
+                        session.channels[channel] = true;
+                    });
+                    getHash(Env, publicKey, cb);
+                });
             });
-            getHash(Env, publicKey, cb);
         });
     });
 };
@@ -429,22 +532,41 @@ var unpinChannel = function (Env, publicKey, channels, cb) {
     });
 };
 
-// TODO check if new pinned size exceeds user quota
 var resetUserPins = function (Env, publicKey, channelList, cb) {
+    if (!Array.isArray(channelList)) { return void cb('INVALID_PIN_LIST'); }
     var pinStore = Env.pinStore;
     var session = beginSession(Env.Sessions, publicKey);
 
+    if (!channelList.length) {
+        return void getHash(Env, publicKey, function (e, hash) {
+            if (e) { return cb(e); }
+            cb(void 0, hash);
+        });
+    }
+
     var pins = session.channels = {};
 
-    pinStore.message(publicKey, JSON.stringify(['RESET', channelList]),
-        function (e) {
+    getMultipleFileSize(Env, channelList, function (e, sizes) {
         if (e) { return void cb(e); }
-        channelList.forEach(function (channel) {
-            pins[channel] = true;
-        });
+        var pinSize = sumChannelSizes(sizes);
 
-        getHash(Env, publicKey, function (e, hash) {
-            cb(e, hash);
+        getFreeSpace(Env, publicKey, function (e, free) {
+            if (e) {
+                console.error(e);
+                return void cb(e);
+            }
+            if (pinSize > free) { return void(cb('E_OVER_LIMIT')); }
+            pinStore.message(publicKey, JSON.stringify(['RESET', channelList]),
+                function (e) {
+                if (e) { return void cb(e); }
+                channelList.forEach(function (channel) {
+                    pins[channel] = true;
+                });
+
+                getHash(Env, publicKey, function (e, hash) {
+                    cb(e, hash);
+                });
+            });
         });
     });
 };
@@ -472,71 +594,6 @@ var isPrivilegedUser = function (publicKey, cb) {
         cb(list.indexOf(publicKey) !== -1);
     });
 };
-
-// The limits object contains storage limits for all the publicKey that have paid
-// To each key is associated an object containing the 'limit' value and a 'note' explaining that limit
-var limits = {};
-var updateLimits = function (config, publicKey, cb) {
-    if (typeof cb !== "function") { cb = function () {}; }
-
-    var body = JSON.stringify({
-        domain: config.domain,
-        subdomain: config.subdomain
-    });
-    var options = {
-        host: 'accounts.cryptpad.fr',
-        path: '/api/getauthorized',
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json",
-            "Content-Length": Buffer.byteLength(body)
-        }
-    };
-    var req = Https.request(options, function (response) {
-        if (!('' + response.statusCode).match(/^2\d\d$/)) {
-            return void cb('SERVER ERROR ' + response.statusCode);
-        }
-        var str = '';
-
-        response.on('data', function (chunk) {
-            str += chunk;
-        });
-
-        response.on('end', function () {
-            try {
-                var json = JSON.parse(str);
-                limits = json;
-                var l;
-                if (publicKey) {
-                    var limit = limits[publicKey];
-                    l = limit && typeof limit.limit === "number" ?
-                            [limit.limit, limit.plan] : [DEFAULT_LIMIT, ''];
-                }
-                cb(void 0, l);
-            } catch (e) {
-                cb(e);
-            }
-        });
-    });
-
-    req.on('error', function (e) {
-        if (!config.domain) { return cb(); }
-        cb(e);
-    });
-
-    req.end(body);
-};
-
-var getLimit = function (publicKey, cb) {
-    var unescapedKey = unescapeKeyCharacters(publicKey);
-    var limit = limits[unescapedKey];
-
-    var toSend = limit && typeof(limit.limit) === "number"?
-        [limit.limit, limit.plan] : [DEFAULT_LIMIT, ''];
-
-    cb(void 0, toSend);
-};
-
 var safeMkdir = function (path, cb) {
     Fs.mkdir(path, function (e) {
         if (!e || e.code === 'EEXIST') { return void cb(); }
@@ -680,17 +737,15 @@ var upload_status = function (Env, publicKey, filesize, cb) {
     var filePath = makeFilePath(paths.staging, publicKey);
     if (!filePath) { return void cb('E_INVALID_PATH'); }
 
-    getLimit(publicKey, function (e, limit) {
+    getFreeSpace(Env, publicKey, function (e, free) {
         if (e) { return void cb(e); }
-        getTotalSize(Env, publicKey, function (e, size) {
-            if ((filesize + size) >= limit) { return cb('TOO_LARGE'); }
-            isFile(filePath, function (e, yes) {
-                if (e) {
-                    console.error("uploadError: [%s]", e);
-                    return cb('UNNOWN_ERROR');
-                }
-                cb(e, yes);
-            });
+        if (filesize >= free) { return cb('TOO_LARGE'); }
+        isFile(filePath, function (e, yes) {
+            if (e) {
+                console.error("uploadError: [%s]", e);
+                return cb('UNNOWN_ERROR');
+            }
+            cb(e, yes);
         });
     });
 };
@@ -705,6 +760,10 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
     };
 
     var Env = {};
+    Env.defaultStorageLimit = config.defaultStorageLimit;
+
+    Env.maxUploadSize = config.maxUploadSize || (20 * 1024 * 1024);
+
     var Sessions = Env.Sessions = {};
 
     var paths = Env.paths = {};
@@ -791,8 +850,7 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                 return resetUserPins(Env, safeKey, msg[1], function (e, hash) {
                     return void Respond(e, hash);
                 });
-            case 'PIN': // TODO don't pin if over the limit
-                // if over, send error E_OVER_LIMIT
+            case 'PIN':
                 return pinChannel(Env, safeKey, msg[1], function (e, hash) {
                     Respond(e, hash);
                 });
@@ -817,7 +875,7 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                     Respond(void 0, limit);
                 });
             case 'GET_LIMIT':
-                return void getLimit(safeKey, function (e, limit) {
+                return void getLimit(Env, safeKey, function (e, limit) {
                     if (e) { return void Respond(e); }
                     Respond(void 0, limit);
                 });
