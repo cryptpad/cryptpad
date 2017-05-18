@@ -167,8 +167,8 @@ Version 1
             // new hash system : #/{hashVersion}/{b64ChanKey}/{cryptKey}
             if (parsed.version === 0) {
                 // Old hash
-                secret.channel = hash.slice(0, 32);
-                secret.key = hash.slice(32);
+                secret.channel = parsed.channel;
+                secret.key = parsed.key;
             }
             else if (parsed.version === 1) {
                 // New hash
