@@ -456,7 +456,7 @@ var sumChannelSizes = function (sizes) {
             // only allow positive numbers
             return !(typeof(x) !== 'number' || x <= 0);
         })
-        .reduce(function (a, b) { return a + b; });
+        .reduce(function (a, b) { return a + b; }, 0);
 };
 
 var pinChannel = function (Env, publicKey, channels, cb) {
