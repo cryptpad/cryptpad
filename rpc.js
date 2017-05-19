@@ -286,7 +286,10 @@ var getFileSize = function (Env, channel, cb) {
         }
 
         return void Env.msgStore.getChannelSize(channel, function (e, size) {
-            if (e) { return void cb(e.code); }
+            if (e) {
+                if (e === 'ENOENT') { return void cb(void 0, 0); }
+                return void cb(e.code);
+            }
             cb(void 0, size);
         });
     }
@@ -331,7 +334,7 @@ var getTotalSize = function (Env, publicKey, cb) {
     //var msgStore = Env.msgStore;
 
     return void getChannelList(Env, publicKey, function (channels) {
-        if (!channels) { cb('NO_ARRAY'); } // unexpected
+        if (!channels) { return cb('NO_ARRAY'); } // unexpected
 
         var count = channels.length;
         if (!count) { cb(void 0, 0); }
@@ -755,6 +758,12 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
     // load pin-store...
     console.log('loading rpc module...');
 
+    var warn = function (e, output) {
+        if (e && !config.suppressRPCErrors) {
+            console.error('[' + e + ']', output);
+        }
+    };
+
     var keyOrDefaultString = function (key, def) {
         return typeof(config[key]) === 'string'? config[key]: def;
     };
@@ -848,40 +857,59 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
             case 'COOKIE': return void Respond(void 0);
             case 'RESET':
                 return resetUserPins(Env, safeKey, msg[1], function (e, hash) {
+                    //warn(e, hash);
                     return void Respond(e, hash);
                 });
             case 'PIN':
                 return pinChannel(Env, safeKey, msg[1], function (e, hash) {
+                    warn(e, hash);
                     Respond(e, hash);
                 });
             case 'UNPIN':
                 return unpinChannel(Env, safeKey, msg[1], function (e, hash) {
+                    warn(e, hash);
                     Respond(e, hash);
                 });
             case 'GET_HASH':
                 return void getHash(Env, safeKey, function (e, hash) {
+                    warn(e, hash);
                     Respond(e, hash);
                 });
             case 'GET_TOTAL_SIZE': // TODO cache this, since it will get called quite a bit
                 return getTotalSize(Env, safeKey, function (e, size) {
-                    if (e) { return void Respond(e); }
+                    if (e) {
+                        warn(e, safeKey);
+                        return void Respond(e);
+                    }
                     Respond(e, size);
                 });
             case 'GET_FILE_SIZE':
-                return void getFileSize(Env, msg[1], Respond);
+                return void getFileSize(Env, msg[2], function (e, size) {
+                    warn(e, msg[2]);
+                    Respond(e, size);
+                });
             case 'UPDATE_LIMITS':
                 return void updateLimits(config, safeKey, function (e, limit) {
-                    if (e) { return void Respond(e); }
+                    if (e) {
+                        warn(e, limit);
+                        return void Respond(e);
+                    }
                     Respond(void 0, limit);
                 });
             case 'GET_LIMIT':
                 return void getLimit(Env, safeKey, function (e, limit) {
-                    if (e) { return void Respond(e); }
+                    if (e) {
+                        warn(e, limit);
+                        return void Respond(e);
+                    }
                     Respond(void 0, limit);
                 });
             case 'GET_MULTIPLE_FILE_SIZE':
                 return void getMultipleFileSize(Env, msg[1], function (e, dict) {
-                    if (e) { return void Respond(e); }
+                    if (e) {
+                        warn(e, dict);
+                        return void Respond(e);
+                    }
                     Respond(void 0, dict);
                 });
 
@@ -889,6 +917,7 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
             case 'UPLOAD':
                 if (!privileged) { return deny(); }
                 return void upload(Env, safeKey, msg[1], function (e, len) {
+                    warn(e, len);
                     Respond(e, len);
                 });
             case 'UPLOAD_STATUS':
@@ -906,11 +935,13 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
             case 'UPLOAD_COMPLETE':
                 if (!privileged) { return deny(); }
                 return void upload_complete(Env, safeKey, function (e, hash) {
+                    warn(e, hash);
                     Respond(e, hash);
                 });
             case 'UPLOAD_CANCEL':
                 if (!privileged) { return deny(); }
                 return void upload_cancel(Env, safeKey, function (e) {
+                    warn(e);
                     Respond(e);
                 });
             default:

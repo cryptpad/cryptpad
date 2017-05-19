@@ -80,6 +80,10 @@ define([
         .on('decryptionError', function (e) {
             var error = e.originalEvent;
             Cryptpad.alert(error.message);
+        })
+        .on('decryptionProgress', function (e) {
+            var progress = e.originalEvent;
+            console.log(progress.percent);
         });
 
         require(['/common/media-tag.js'], function (MediaTag) {
