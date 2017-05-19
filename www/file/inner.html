@@ -42,6 +42,8 @@
         margin: auto;
     }
     #upload-form label{
+        text-align: center;
+        line-height: 50vh;
         position: relative;
     }
 
@@ -82,14 +84,56 @@
         display: block;
     }
 
+    #status {
+        display: none;
+        width: 80vw;
+        margin-top: 50px;
+        margin-left: 10vw;
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    #status tr:nth-child(1) {
+        background-color: #ccc;
+        border: 1px solid #999;
+    }
+    #status tr:nth-child(1) td { text-align: center; }
+    #status td {
+        border-left: 1px solid #BBB;
+        border-right: 1px solid #BBB;
+        padding: 0 10px;
+    }
+    #status .upProgress {
+        width: 200px;
+        position: relative;
+        text-align: center;
+    }
+    #status .progressContainer {
+        position: absolute;
+        width: 0px;
+        left: 5px;
+        top: 1px; bottom: 1px;
+        background-color: rgba(0,0,255,0.3);
+    }
+    #status .upCancel { text-align: center; }
+    #status .fa.cancel {
+        color: rgb(255, 0, 115);
+    }
     </style>
 </head>
 <body>
     <div id="toolbar" class="toolbar-container"></div>
     <div id="upload-form" style="display: none;">
         <input type="file" name="file" id="file" class="inputfile" />
-        <label for="file" class="block">Choose a file<span class="block" id="progress">&nbsp;</span></label>
+        <label for="file" class="block" data-localization="upload_choose">Choose a file<span class="block" id="progress">&nbsp;</span></label>
     </div>
+    <table id="status">
+        <tr>
+            <td data-localization="upload_name">File name</td>
+            <td data-localization="upload_size">Size</td>
+            <td data-localization="upload_progress">Progress</td>
+            <td data-localization="cancel">Cancel</td>
+        </tr>
+    </table>
     <div id="feedback" class="block hidden">
     </div>
 </body>

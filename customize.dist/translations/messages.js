@@ -63,6 +63,7 @@ define(function () {
     out.upgrade = "Upgrade";
     out.upgradeTitle = "Upgrade your account to increase the storage limit";
     out.MB = "MB";
+    out.KB = "KB";
 
     out.greenLight = "Everything is working fine";
     out.orangeLight = "Your slow connection may impact your experience";
@@ -236,8 +237,6 @@ define(function () {
     out.fm_info_template = 'Contains all the pads stored as templates and that you can re-use when you create a new pad.';
     out.fm_info_trash = 'Files deleted from the trash are also removed from "All files" and it is impossible to recover them from the file manager.'; // Same here for "All files" and "out.fm_filesDataName"
     out.fm_info_allFiles = 'Contains all the files from "Documents", "Unsorted" and "Trash". You can\'t move or remove files from here.'; // Same here
-    out.fm_info_login = "Log in";
-    out.fm_info_register = "Sign up";
     out.fm_info_anonymous = 'You are not logged in so these pads may be deleted (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">find out why</a>). ' +
                             '<a href="/register/">Sign up</a> or <a href="/login/">Log in</a> to keep them alive.';
     out.fm_alert_backupUrl = "Backup link for this drive.<br>" +
@@ -360,6 +359,12 @@ define(function () {
     out.upload_success = "Your file ({0}) has been successfully uploaded and added to your drive.";
     out.upload_notEnoughSpace = "There is not enough space for this file in your CryptDrive.";
     out.upload_tooLarge = "This file exceeds the maximum upload size.";
+    out.upload_choose = "Choose a file";
+    out.upload_pending = "Pending";
+    out.upload_cancelled = "Cancelled";
+    out.upload_name = "File name";
+    out.upload_size = "Size";
+    out.upload_progress = "Progress";
 
     // general warnings
     out.warn_notPinned = "This pad is not in anyone's CryptDrive. It will expire after 3 months. <a href='/about.html#pinning'>Learn more...</a>";
