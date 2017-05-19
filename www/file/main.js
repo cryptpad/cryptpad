@@ -21,8 +21,9 @@ define([
     var ifrw = $('#pad-iframe')[0].contentWindow;
     var $iframe = $('#pad-iframe').contents();
     var $form = $iframe.find('#upload-form');
-    var $progress = $form.find('#progress');
+    //var $progress = $form.find('#progress');
     var $label = $form.find('label');
+    var $table = $iframe.find('#status');
 
     Cryptpad.addLoadingScreen();
 
@@ -31,8 +32,23 @@ define([
     var myFile;
     var myDataType;
 
-    var upload = function (blob, metadata) {
+    var queue = {
+        queue: [],
+        inProgress: false
+    };
+
+    var uid = function () {
+        return 'file-' + String(Math.random()).substring(2);
+    };
+
+    var upload = function (blob, metadata, id) {
         console.log(metadata);
+        if (queue.inProgress) { return; }
+        queue.inProgress = true;
+
+        var $cancelCell = $table.find('tr[id="'+id+'"]').find('.upCancel');
+        $cancelCell.html('-');
+
         var u8 = new Uint8Array(blob);
 
         var key = Nacl.randomBytes(32);
@@ -56,13 +72,19 @@ define([
             if (err) { throw new Error(err); }
             if (box) {
                 actual += box.length;
-                var progress = (actual / estimate * 100) + '%';
-                console.log(progress);
+                var progressValue = (actual / estimate * 100);
+                var progress = progressValue + '%';
 
                 return void sendChunk(box, function (e) {
                     if (e) { return console.error(e); }
-                    $progress.css({
+                    /*$progress.css({
                         width: progress,
+                    });*/
+                    var $pv = $table.find('tr[id="'+id+'"]').find('.progressValue');
+                    $pv.text(Math.round(progressValue*100)/100 + '%');
+                    var $pb = $table.find('tr[id="'+id+'"]').find('.progressContainer');
+                    $pb.css({
+                        width: (progressValue/100)*188+'px'
                     });
 
                     next(again);
@@ -82,7 +104,7 @@ define([
                 var b64Key = Nacl.util.encodeBase64(key);
                 Cryptpad.replaceHash(Cryptpad.getFileHashFromKeys(id, b64Key));
 
-                $form.hide();
+                //$form.hide();
 
                 APP.toolbar.addElement(['fileshare'], {});
 
@@ -94,11 +116,15 @@ define([
                 APP.toolbar.title.show();
                 console.log(title);
                 Cryptpad.alert(Messages._getKey('upload_success', [title]));
+                queue.inProgress = false;
+                queue.next();
             });
         };
 
         Cryptpad.uploadStatus(estimate, function (e, pending) {
             if (e) {
+                queue.inProgress = false;
+                queue.next();
                 if (e === 'TOO_LARGE') {
                     return void Cryptpad.alert(Messages.upload_tooLarge);
                 }
@@ -110,7 +136,7 @@ define([
             }
 
             if (pending) {
-                // TODO queue uploads... ?
+                // TODO keep this message in case of pending files in another window?
                 return void Cryptpad.confirm(Messages.upload_uploadPending, function (yes) {
                     if (!yes) { return; }
                     Cryptpad.uploadCancel(function (e, res) {
@@ -124,6 +150,48 @@ define([
             }
             next(again);
         });
+    };
+
+    var prettySize = function (bytes) {
+        var kB = Cryptpad.bytesToKilobytes(bytes);
+        if (kB < 1024) { return kB + Messages.KB; }
+        var mB = Cryptpad.bytesToMegabytes(bytes);
+        return mB + Messages.MB;
+    };
+
+    queue.next = function () {
+        if (queue.queue.length === 0) { return; }
+        if (queue.inProgress) { return; }
+        var file = queue.queue.shift();
+        upload(file.blob, file.metadata, file.id);
+    };
+    queue.push = function (obj) {
+        var id = uid();
+        obj.id = id;
+        queue.queue.push(obj);
+
+        $table.show();
+        var estimate = FileCrypto.computeEncryptedSize(obj.blob.byteLength, obj.metadata);
+
+        var $progressBar = $('<div>', {'class':'progressContainer'});
+        var $progressValue = $('<span>', {'class':'progressValue'}).text(Messages.upload_pending);
+
+        var $tr = $('<tr>', {id: id}).appendTo($table);
+
+        var $cancel = $('<span>', {'class': 'cancel fa fa-times'}).click(function () {
+            queue.queue = queue.queue.filter(function (el) { return el.id !== id });
+            $cancel.remove();
+            $tr.find('.upCancel').text('-');
+            $tr.find('.progressValue').text(Messages.upload_cancelled);
+        });
+
+        var $tr = $('<tr>', {id: id}).appendTo($table);
+        $('<td>').text(obj.metadata.name).appendTo($tr);
+        $('<td>').text(prettySize(estimate)).appendTo($tr);
+        $('<td>', {'class': 'upProgress'}).append($progressBar).append($progressValue).appendTo($tr);
+        $('<td>', {'class': 'upCancel'}).append($cancel).appendTo($tr);
+
+        queue.next();
     };
 
     var uploadMode = false;
@@ -225,9 +293,12 @@ define([
             console.log(file);
             var reader = new FileReader();
             reader.onloadend = function () {
-                upload(this.result, {
-                    name: file.name,
-                    type: file.type,
+                queue.push({
+                    blob: this.result,
+                    metadata: {
+                        name: file.name,
+                        type: file.type,
+                    }
                 });
             };
             reader.readAsArrayBuffer(file);

@@ -62,8 +62,11 @@ define(function () {
     out.upgradeTitle = "Améliorer votre compte pour augmenter la limite de stockage";
     out.MB = "Mo";
     out.GB = "Go";
+    out.KB = "Ko";
+
     out.formattedMB = "{0} Mo";
     out.formattedGB = "{0} Go";
+    out.formattedKB = "{0} Ko";
 
     out.greenLight = "Tout fonctionne bien";
     out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur";
@@ -350,6 +353,21 @@ define(function () {
     out.settings_logoutEverywhereTitle = "Se déconnecter partout";
     out.settings_logoutEverywhere = "Se déconnecter de toutes les autres sessions.";
     out.settings_logoutEverywhereConfirm = "Êtes-vous sûr ? Vous devrez vous reconnecter sur tous vos autres appareils.";
+
+    out.upload_serverError = "Erreur interne: impossible d'uploader le fichier pour l'instant.";
+    out.upload_uploadPending = "Vous avez déjà un fichier en cours d'upload. Souhaitez-vous l'annuler et uploader ce nouveau fichier ?";
+    out.upload_success = "Votre fichier ({0}) a été uploadé avec succès et ajouté à votre CryptDrive.";
+    out.upload_notEnoughSpace = "Il n'y a pas assez d'espace libre dans votre CryptDrive pour ce fichier.";
+    out.upload_tooLarge = "Ce fichier dépasse la taille maximale autorisée.";
+    out.upload_choose = "Choisir un fichier";
+    out.upload_pending = "En attente";
+    out.upload_cancelled = "Annulé";
+    out.upload_name = "Nom du fichier";
+    out.upload_size = "Taille";
+    out.upload_progress = "État";
+
+    // general warnings
+    out.warn_notPinned = "Ce pad n'est stocké dans aucun CryptDrive. Il va expirer après 3 mois d'inactivité. <a href='/about.html#pinning'>En savoir plus...</a>";
 
     // index.html
 

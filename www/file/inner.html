@@ -11,8 +11,16 @@
     <div id="toolbar" class="toolbar-container"></div>
     <div id="upload-form" style="display: none;">
         <input type="file" name="file" id="file" class="inputfile" />
-        <label for="file" class="block">Choose a file<span class="block" id="progress">&nbsp;</span></label>
+        <label for="file" class="block" data-localization="upload_choose">Choose a file<span class="block" id="progress">&nbsp;</span></label>
     </div>
+    <table id="status">
+        <tr>
+            <td data-localization="upload_name">File name</td>
+            <td data-localization="upload_size">Size</td>
+            <td data-localization="upload_progress">Progress</td>
+            <td data-localization="cancel">Cancel</td>
+        </tr>
+    </table>
     <div id="feedback" class="block hidden">
     </div>
 </body>

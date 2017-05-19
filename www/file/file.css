@@ -68,3 +68,42 @@ body {
   z-index: 10000;
   display: block;
 }
+#status {
+  display: none;
+  width: 80vw;
+  margin-top: 50px;
+  margin-left: 10vw;
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+#status tr:nth-child(1) {
+  background-color: #ccc;
+  border: 1px solid #999;
+}
+#status tr:nth-child(1) td {
+  text-align: center;
+}
+#status td {
+  border-left: 1px solid #BBB;
+  border-right: 1px solid #BBB;
+  padding: 0 10px;
+}
+#status .upProgress {
+  width: 200px;
+  position: relative;
+  text-align: center;
+}
+#status .progressContainer {
+  position: absolute;
+  width: 0px;
+  left: 5px;
+  top: 1px;
+  bottom: 1px;
+  background-color: rgba(0, 0, 255, 0.3);
+}
+#status .upCancel {
+  text-align: center;
+}
+#status .fa.cancel {
+  color: #ff0073;
+}

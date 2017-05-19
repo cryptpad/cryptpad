@@ -13,7 +13,7 @@ var RPC = module.exports;
 
 var Store = require("./storage/file");
 
-var DEFAULT_LIMIT = 50 * 1024 * 1024;
+var DEFAULT_LIMIT = 150 * 1024 * 1024;
 
 var isValidId = function (chan) {
     return /^[a-fA-F0-9]/.test(chan) ||
