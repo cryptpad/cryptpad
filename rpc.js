@@ -635,7 +635,7 @@ var upload = function (Env, publicKey, content, cb) {
     }
 
     if (session.currentUploadSize > session.pendingUploadSize) {
-        return cb('TOO_LARGE');
+        return cb('E_OVER_LIMIT');
     }
 
     if (!session.blobstage) {
@@ -739,7 +739,7 @@ var upload_status = function (Env, publicKey, filesize, cb) {
 
     getFreeSpace(Env, publicKey, function (e, free) {
         if (e) { return void cb(e); }
-        if (filesize >= free) { return cb('TOO_LARGE'); }
+        if (filesize >= free) { return cb('NOT_ENOUGH_SPACE'); }
         isFile(filePath, function (e, yes) {
             if (e) {
                 console.error("uploadError: [%s]", e);
