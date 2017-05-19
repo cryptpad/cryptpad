@@ -54,6 +54,10 @@ define(function () {
 
     out.comingSoon = "Bientôt disponible...";
 
+    out.newVersion = '<b>CryptPad a été mis à jour !</b><br>' +
+                     'Découvrez les nouveautés de la dernière version :<br>'+
+                     '<a href="https://github.com/xwiki-labs/cryptpad/releases/tag/{0}" target="_blank">Notes de version pour CryptPad {0}</a>';
+
     out.upgrade = "Améliorer";
     out.upgradeTitle = "Améliorer votre compte pour augmenter la limite de stockage";
     out.MB = "Mo";

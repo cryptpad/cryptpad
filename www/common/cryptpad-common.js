@@ -23,7 +23,6 @@ define([
 
     Additionally, there is some basic functionality for import/export.
 */
-
     var common = window.Cryptpad = {
         Messages: Messages,
         Clipboard: Clipboard
@@ -1296,6 +1295,25 @@ define([
         return $userAdmin;
     };
 
+    var CRYPTPAD_VERSION = 'cryptpad-version';
+    var updateLocalVersion = function () {
+        // Check for CryptPad updates
+        var urlArgs = Config.requireConf ? Config.requireConf.urlArgs : null;
+        if (!urlArgs) { return; }
+        var arr = /ver=([0-9.]+)(-[0-9]*)?/.exec(urlArgs);
+        var ver = arr[1];
+        if (!ver) { return; }
+        var verArr = ver.split('.');
+        if (verArr.length !== 3) { return; }
+        var stored = localStorage[CRYPTPAD_VERSION] || '0.0.0';
+        var storedArr = stored.split('.');
+        var shouldUpdate = parseInt(verArr[0]) > parseInt(storedArr[0]) ||
+                           (parseInt(verArr[0]) === parseInt(storedArr[0]) &&
+                            parseInt(verArr[1]) > parseInt(storedArr[1]));
+        if (!shouldUpdate) { return; }
+        common.alert(Messages._getKey('newVersion', [ver]), null, true);
+        localStorage[CRYPTPAD_VERSION] = ver;
+    };
 
     common.ready = (function () {
         var env = {};
@@ -1313,6 +1331,9 @@ define([
             block--;
             if (!block) {
                 initialized = true;
+
+                updateLocalVersion();
+
                 f(void 0, env);
             }
         };
