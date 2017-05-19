@@ -353,7 +353,12 @@ define(function () {
 
     out.upload_serverError = "Server Error: unable to upload your file at this time.";
     out.upload_uploadPending = "You already have an upload in progress. Cancel it and upload your new file?";
-    out.upload_success = "Your file ({0}) has been successfully uploaded and added to your drive";
+    out.upload_success = "Your file ({0}) has been successfully uploaded and added to your drive.";
+    out.upload_notEnoughSpace = "There is not enough space for this file in your CryptDrive.";
+    out.upload_tooLarge = "This file exceeds the maximum upload size.";
+
+    // general warnings
+    out.warn_notPinned = "This pad is not in anyone's CryptDrive. It will expire after 3 months. <a href='/about.html#pinning'>Learn more...</a>";
 
     // index.html
 
