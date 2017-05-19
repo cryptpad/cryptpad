@@ -99,6 +99,12 @@ define([
 
         Cryptpad.uploadStatus(estimate, function (e, pending) {
             if (e) {
+                if (e === 'TOO_LARGE') {
+                    return void Cryptpad.alert(Messages.upload_tooLarge);
+                }
+                if (e === 'NOT_ENOUGH_SPACE') {
+                    return void Cryptpad.alert(Messages.upload_notEnoughSpace);
+                }
                 console.error(e);
                 return void Cryptpad.alert(Messages.upload_serverError);
             }
@@ -108,7 +114,9 @@ define([
                 return void Cryptpad.confirm(Messages.upload_uploadPending, function (yes) {
                     if (!yes) { return; }
                     Cryptpad.uploadCancel(function (e, res) {
-                        if (e) { return void console.error(e); }
+                        if (e) {
+                            return void console.error(e);
+                        }
                         console.log(res);
                         next(again);
                     });
@@ -243,7 +251,7 @@ define([
             e.stopPropagation();
             counter--;
             if (counter <= 0) {
-                $label.removeClass('hovering'); // FIXME Can get stuck...
+                $label.removeClass('hovering');
             }
         });
 
@@ -254,6 +262,8 @@ define([
         })
         .on('drop', function (e) {
             var dropped = e.originalEvent.dataTransfer.files;
+            counter = 0;
+            $label.removeClass('hovering');
             handleFile(dropped[0]);
         });
 
