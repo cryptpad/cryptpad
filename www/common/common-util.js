@@ -81,12 +81,25 @@ define([], function () {
             .replace(/_+/g, '_');
     };
 
+    var oneKilobyte = 1024;
+    var oneMegabyte = 1024 * oneKilobyte;
+    var oneGigabyte = 1024 * oneMegabyte;
+
+    Util.bytesToGigabytes = function (bytes) {
+        return Math.ceil(bytes / oneGigabyte * 100) / 100;
+    };
+
     Util.bytesToMegabytes = function (bytes) {
-        return Math.floor((bytes / (1024 * 1024) * 100)) / 100;
+        return Math.ceil(bytes / oneMegabyte * 100) / 100;
     };
 
     Util.bytesToKilobytes = function (bytes) {
-        return Math.floor(bytes / 1024 * 100) / 100;
+        return Math.ceil(bytes / oneKilobyte * 100) / 100;
+    };
+
+    Util.magnitudeOfBytes = function (bytes) {
+        if (bytes >= oneGigabyte) { return 'GB'; }
+        else if (bytes >= oneMegabyte) { return 'MB'; }
     };
 
     Util.fetch = function (src, cb) {

@@ -61,6 +61,9 @@ define(function () {
     out.upgrade = "Améliorer";
     out.upgradeTitle = "Améliorer votre compte pour augmenter la limite de stockage";
     out.MB = "Mo";
+    out.GB = "Go";
+    out.formattedMB = "{0} Mo";
+    out.formattedGB = "{0} Go";
 
     out.greenLight = "Tout fonctionne bien";
     out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur";

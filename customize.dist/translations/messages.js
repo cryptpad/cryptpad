@@ -63,6 +63,10 @@ define(function () {
     out.upgrade = "Upgrade";
     out.upgradeTitle = "Upgrade your account to increase the storage limit";
     out.MB = "MB";
+    out.GB = "GB";
+
+    out.formattedMB = "{0} MB";
+    out.formattedGB = "{0} GB";
 
     out.greenLight = "Everything is working fine";
     out.orangeLight = "Your slow connection may impact your experience";

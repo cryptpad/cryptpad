@@ -745,8 +745,7 @@ define([
         if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
         rpc.updatePinLimits(function (e, limit, plan) {
             if (e) { return cb(e); }
-            var MB = common.bytesToMegabytes(limit);
-            cb(e, MB, plan);
+            cb(e, limit, plan);
         });
     };
 
@@ -754,8 +753,7 @@ define([
         if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
         rpc.getLimit(function (e, limit, plan) {
             if (e) { return cb(e); }
-            var MB = common.bytesToMegabytes(limit);
-            cb(void 0, MB, plan);
+            cb(void 0, limit, plan);
         });
     };
 
@@ -771,7 +769,7 @@ define([
             return void cb (null, false, data);
         };
         var todo = function (e, used) {
-            usage = common.bytesToMegabytes(used);
+            usage = used; //common.bytesToMegabytes(used);
             if (e) { return void cb(e); }
             common.getPinLimit(andThen);
         };
@@ -802,9 +800,14 @@ define([
                     common.isOverPinLimit(todo);
                 }, LIMIT_REFRESH_RATE);
             }
-            var usage = data.usage;
-            var limit = data.limit;
-            var unit = Messages.MB;
+
+            var unit = Util.magnitudeOfBytes(data.limit);
+
+            var usage = unit === 'GB'? Util.bytesToGigabytes(data.usage):
+                Util.bytesToMegabytes(data.usage);
+            var limit = unit === 'GB'? Util.bytesToGigabytes(data.limit):
+                Util.bytesToMegabytes(data.limit);
+
             var $limit = $('<span>', {'class': 'cryptpad-limit-bar'}).appendTo($container);
             var quota = usage/limit;
             var width = Math.floor(Math.min(quota, 1)*200); // the bar is 200px width
@@ -823,11 +826,22 @@ define([
                 }).text(Messages.upgrade).appendTo($upgradeLink);
             }
 
+            var prettyUsage;
+            var prettyLimit;
+
+            if (unit === 'GB') {
+                prettyUsage = usage; //Messages._getKey('formattedGB', [usage]);
+                prettyLimit = Messages._getKey('formattedGB', [limit]);
+            } else {
+                prettyUsage = usage; //Messages._getKey('formattedMB', [usage]);
+                prettyLimit = Messages._getKey('formattedMB', [limit]);
+            }
+
             if (quota < 0.8) { $usage.addClass('normal'); }
             else if (quota < 1) { $usage.addClass('warning'); }
             else { $usage.addClass('above'); }
             var $text = $('<span>', {'class': 'usageText'});
-            $text.text(usage + ' / ' + limit + ' ' + unit);
+            $text.text(prettyUsage + ' / ' + prettyLimit);
             $limit.append($usage).append($text);
             window.setTimeout(function () {
                 common.isOverPinLimit(todo);

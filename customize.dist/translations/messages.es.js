@@ -410,6 +410,10 @@ define(function () {
     out.upgrade = "Mejorar";
     out.upgradeTitle = "Mejora tu cuenta para obtener más espacio";
     out.MB = "MB";
+    out.GB = "GB";
+    out.formattedMB = "{0} MB";
+    out.formattedGB = "{0} GB";
+
     out.pinLimitReached = "Has llegado al limite de espacio";
     out.pinLimitReachedAlert = "Has llegado al limite de espacio. Nuevos pads no serán movidos a tu CryptDrive.<br>Para resolver este problema, puedes quitar pads de tu CryptDrive (incluso en la papelera) o mejorar tu cuenta para obtener más espacio.";
     out.pinLimitNotPinned = "Has llegado al limite de espacio.<br>Este pad no estará presente en tu CryptDrive.";
