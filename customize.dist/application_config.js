@@ -37,8 +37,7 @@ define(function() {
 
     config.enableHistory = true;
 
-    //config.enablePinLimit = true;
-    //config.pinLimit = 1000;
+    config.enablePinLimit = true;
 
     /*  user passwords are hashed with scrypt, and salted with their username.
         this value will be appended to the username, causing the resulting hash
