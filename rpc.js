@@ -303,7 +303,7 @@ var getFileSize = function (Env, channel, cb) {
 
 var getMultipleFileSize = function (Env, channels, cb) {
     var msgStore = Env.msgStore;
-    if (!Array.isArray(channels)) { return cb('INVALID_LIST'); }
+    if (!Array.isArray(channels)) { return cb('INVALID_PIN_LIST'); }
     if (typeof(msgStore.getChannelSize) !== 'function') {
         return cb('GET_CHANNEL_SIZE_UNSUPPORTED');
     }
@@ -331,10 +331,8 @@ var getMultipleFileSize = function (Env, channels, cb) {
 
 var getTotalSize = function (Env, publicKey, cb) {
     var bytes = 0;
-    //var msgStore = Env.msgStore;
-
     return void getChannelList(Env, publicKey, function (channels) {
-        if (!channels) { return cb('NO_ARRAY'); } // unexpected
+        if (!channels) { return cb('INVALID_PIN_LIST'); } // unexpected
 
         var count = channels.length;
         if (!count) { cb(void 0, 0); }
@@ -464,7 +462,7 @@ var sumChannelSizes = function (sizes) {
 
 var pinChannel = function (Env, publicKey, channels, cb) {
     if (!channels && channels.filter) {
-        return void cb('[TYPE_ERROR] pin expects channel list argument');
+        return void cb('INVALID_PIN_LIST');
     }
 
     // get channel list ensures your session has a cached channel list
@@ -508,7 +506,7 @@ var unpinChannel = function (Env, publicKey, channels, cb) {
     var pinStore = Env.pinStore;
     if (!channels && channels.filter) {
         // expected array
-        return void cb('[TYPE_ERROR] unpin expects channel list argument');
+        return void cb('INVALID_PIN_LIST');
     }
 
     getChannelList(Env, publicKey, function (pinned) {
@@ -700,7 +698,9 @@ var upload_complete = function (Env, publicKey, cb) {
 
         safeMkdir(Path.join(paths.blob, prefix), function (e) {
             if (e) {
+                console.error('[safeMkdir]');
                 console.error(e);
+                console.log();
                 return void cb('RENAME_ERR');
             }
             isFile(newPath, function (e, yes) {
@@ -717,20 +717,39 @@ var upload_complete = function (Env, publicKey, cb) {
         });
     };
 
-    tryRandomLocation(function (e, newPath, id) {
+    var retries = 3;
+
+    var handleMove = function (e, newPath, id) {
+        if (e) {
+            if (retries--) {
+                setTimeout(function () {
+                    return tryRandomLocation(handleMove);
+                }, 750);
+            }
+        }
+
+        // lol wut handle ur errors
         Fs.rename(oldPath, newPath, function (e) {
             if (e) {
                 console.error(e);
+
+                if (retries--) {
+                    return setTimeout(function () {
+                        tryRandomLocation(handleMove);
+                    }, 750);
+                }
+
                 return cb(e);
             }
             cb(void 0, id);
         });
-    });
+    };
+
+    tryRandomLocation(handleMove);
 };
 
 var upload_status = function (Env, publicKey, filesize, cb) {
     var paths = Env.paths;
-    //var msgStore = Env.msgStore;
 
     // validate that the provided size is actually a positive number
     if (typeof(filesize) !== 'number' &&
