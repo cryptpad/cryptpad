@@ -407,7 +407,7 @@ var updateLimits = function (config, publicKey, cb) {
                 if (publicKey) {
                     var limit = limits[publicKey];
                     l = limit && typeof limit.limit === "number" ?
-                            [limit.limit, limit.plan] : [defaultLimit, ''];
+                            [limit.limit, limit.plan, limit.note] : [defaultLimit, '', ''];
                 }
                 cb(void 0, l);
             } catch (e) {
@@ -431,7 +431,7 @@ var getLimit = function (Env, publicKey, cb) {
         Env.defaultStorageLimit: DEFAULT_LIMIT;
 
     var toSend = limit && typeof(limit.limit) === "number"?
-        [limit.limit, limit.plan] : [defaultLimit, ''];
+        [limit.limit, limit.plan, limit.note] : [defaultLimit, '', ''];
 
     cb(void 0, toSend);
 };
