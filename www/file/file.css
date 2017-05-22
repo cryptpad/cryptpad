@@ -35,13 +35,15 @@ body {
 }
 #upload-form label,
 #download-form label {
-  line-height: 50vh;
+  line-height: calc(50vh - 20px);
   text-align: center;
   position: relative;
   padding: 10px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  height: 50vh;
+  box-sizing: border-box;
 }
 .hovering {
   background-color: rgba(255, 0, 115, 0.5) !important;
@@ -63,8 +65,8 @@ body {
 }
 #progress {
   position: absolute;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   height: 100%;
   transition: width 500ms;
   width: 0%;

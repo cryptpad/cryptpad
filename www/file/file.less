@@ -1,6 +1,8 @@
 @import "../../customize.dist/src/less/variables.less";
 @import "../../customize.dist/src/less/mixins.less";
 
+@button-border: 2px;
+
 html, body {
     margin: 0px;
 }
@@ -13,7 +15,7 @@ html, body {
     display: block;
     height: 100%;
     width: 100%;
-    border: 2px solid black;
+    border: @button-border solid black;
 }
 
 .inputfile {
@@ -36,13 +38,15 @@ html, body {
     margin: 50px auto;
     max-width: 80vw;
     label {
-        line-height: 50vh;
+        line-height: ~"calc(50vh - 20px)";
         text-align: center;
         position: relative;
         padding: 10px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        height: 50vh;
+        box-sizing: border-box;
     }
 }
 .hovering {
@@ -68,8 +72,8 @@ html, body {
 
 #progress {
     position: absolute;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     height: 100%;
 
 

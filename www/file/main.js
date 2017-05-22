@@ -25,6 +25,7 @@ define([
     var $label = $form.find('label');
     var $dllabel = $dlform.find('label');
     var $table = $iframe.find('#status');
+    var $progress = $iframe.find('#progress');
 
     Cryptpad.addLoadingScreen();
 
@@ -276,6 +277,8 @@ define([
                         Title.updateTitle(title || Title.defaultTitle);
                         exportFile();
                     }, function (progress) {
+                        var p = progress * 100 +'%';
+                        $progress.width(p);
                         console.error(progress);
                     });
                 });
