@@ -11,10 +11,9 @@ html, body {
 }
 #file {
     display: block;
-    height: 300px;
-    width: 300px;
+    height: 100%;
+    width: 100%;
     border: 2px solid black;
-    margin: 50px;
 }
 
 .inputfile {
@@ -34,10 +33,17 @@ html, body {
     width: 50vh;
     height: 50vh;
     display: block;
-    margin: auto;
+    margin: 50px auto;
+    max-width: 80vw;
 }
-#upload-form label{
+#upload-form label {
+    line-height: 50vh;
+    text-align: center;
     position: relative;
+    padding: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .hovering {
@@ -46,8 +52,6 @@ html, body {
 
 .block {
     display: block;
-    height: 50vh;
-    width: 50vh;
 }
 .hidden {
     display: none;
@@ -55,7 +59,6 @@ html, body {
 .inputfile + label {
     border: 2px solid black;
     background-color: rgba(50, 50, 50, .10);
-    margin: 50px;
     display: block;
 }
 

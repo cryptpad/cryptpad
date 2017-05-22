@@ -181,11 +181,10 @@ define([
             $tr.find('.progressValue').text(Messages.upload_cancelled);
         });
 
-        var $tr2 = $('<tr>', {id: id}).appendTo($table);
-        $('<td>').text(obj.metadata.name).appendTo($tr2);
-        $('<td>').text(prettySize(estimate)).appendTo($tr2);
-        $('<td>', {'class': 'upProgress'}).append($progressBar).append($progressValue).appendTo($tr2);
-        $('<td>', {'class': 'upCancel'}).append($cancel).appendTo($tr2);
+        $('<td>').text(obj.metadata.name).appendTo($tr);
+        $('<td>').text(prettySize(estimate)).appendTo($tr);
+        $('<td>', {'class': 'upProgress'}).append($progressBar).append($progressValue).appendTo($tr);
+        $('<td>', {'class': 'upCancel'}).append($cancel).appendTo($tr);
 
         queue.next();
     };
