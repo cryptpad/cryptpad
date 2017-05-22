@@ -26,6 +26,9 @@ define([
     var $table = $iframe.find('#status');
     var $progress = $iframe.find('#progress');
 
+    $iframe.find('body').on('dragover', function (e) { e.preventDefault(); });
+    $iframe.find('body').on('drop', function (e) { e.preventDefault(); });
+
     Cryptpad.addLoadingScreen();
 
     var Title;
@@ -211,13 +214,10 @@ define([
         };
 
         var exportFile = function () {
-            var suggestion = document.title;
-            Cryptpad.prompt(Messages.exportPrompt,
-                Cryptpad.fixFileName(suggestion), function (filename) {
-                if (!(typeof(filename) === 'string' && filename)) { return; }
-                var blob = new Blob([myFile], {type: myDataType});
-                saveAs(blob, filename);
-            });
+            var filename = Cryptpad.fixFileName(document.title);
+            if (!(typeof(filename) === 'string' && filename)) { return; }
+            var blob = new Blob([myFile], {type: myDataType});
+            saveAs(blob, filename);
         };
 
         Title = Cryptpad.createTitle({}, function(){}, Cryptpad);
@@ -250,40 +250,50 @@ define([
 
         if (!uploadMode) {
             $dlform.show();
-            Cryptpad.removeLoadingScreen();
-            $dlform.find('#dl').click(function () {
-                if (myFile) { return void exportFile(); }
+            var src = Cryptpad.getBlobPathFromHex(hexFileName);
+            var cryptKey = secret.keys && secret.keys.fileKeyStr;
+            var key = Nacl.util.decodeBase64(cryptKey);
 
-                var src = Cryptpad.getBlobPathFromHex(hexFileName);
-                var cryptKey = secret.keys && secret.keys.fileKeyStr;
-                var key = Nacl.util.decodeBase64(cryptKey);
+            FileCrypto.fetchDecryptedMetadata(src, key, function (e, metadata) {
+                if (e) { return void console.error(e); }
+                var title = document.title = metadata.name;
+                Title.updateTitle(title || Title.defaultTitle);
 
-/*              return FileCrypto.fetchDecryptedMetadata(src, key, function (e, metadata) {
-                    if (e) { return console.error(e); }
-                    console.log(metadata);
-                });*/
-                return Cryptpad.fetch(src, function (e, u8) {
-                    if (e) { return void Cryptpad.alert(e); }
+                Cryptpad.removeLoadingScreen();
+                var decrypting = false;
+                $dlform.find('#dl, #progress').click(function () {
+                    if (decrypting) { return; }
+                    if (myFile) { return void exportFile(); }
+                    decrypting = true;
 
-                    // now decrypt the u8
-                    if (!u8 || !u8.length) {
-                        return void Cryptpad.errorLoadingScreen(e);
-                    }
-
-                    FileCrypto.decrypt(u8, key, function (e, data) {
+                    return Cryptpad.fetch(src, function (e, u8) {
                         if (e) {
-                            return console.error(e);
+                            decrypting = false;
+                            return void Cryptpad.alert(e);
                         }
-                        console.log(data);
-                        var title = document.title = data.metadata.name;
-                        myFile = data.content;
-                        myDataType = data.metadata.type;
-                        Title.updateTitle(title || Title.defaultTitle);
-                        exportFile();
-                    }, function (progress) {
-                        var p = progress * 100 +'%';
-                        $progress.width(p);
-                        console.error(progress);
+
+                        // now decrypt the u8
+                        if (!u8 || !u8.length) {
+                            return void Cryptpad.errorLoadingScreen(e);
+                        }
+
+                        FileCrypto.decrypt(u8, key, function (e, data) {
+                            if (e) {
+                                decrypting = false;
+                                return console.error(e);
+                            }
+                            console.log(data);
+                            var title = document.title = data.metadata.name;
+                            myFile = data.content;
+                            myDataType = data.metadata.type;
+                            Title.updateTitle(title || Title.defaultTitle);
+                            exportFile();
+                            decrypting = false;
+                        }, function (progress) {
+                            var p = progress * 100 +'%';
+                            $progress.width(p);
+                            console.error(progress);
+                        });
                     });
                 });
             });
@@ -341,6 +351,7 @@ define([
             e.stopPropagation();
         })
         .on('drop', function (e) {
+            e.stopPropagation();
             var dropped = e.originalEvent.dataTransfer.files;
             counter = 0;
             $label.removeClass('hovering');
