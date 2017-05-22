@@ -249,6 +249,7 @@ define(function () {
                              'why we are doing this and why you really should <a href="/register/">Sign up</a> and <a href="/login/">Log in</a>.';
     out.fm_backup_title = 'Backup link';
     out.fm_nameFile = 'How would you like to name that file?';
+    out.fm_error_cantPin = "Internal server error. Please reload the page and try again.";
     // File - Context menu
     out.fc_newfolder = "New folder";
     out.fc_rename = "Rename";
