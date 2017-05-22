@@ -61,6 +61,19 @@ define([
         return new Blob(chunks);
     };
 
+    var decryptMetadata = function (u8, key) {
+        var prefix = u8.subarray(0, 2);
+        var metadataLength = decodePrefix(prefix);
+
+        var metaBox = new Uint8Array(u8.subarray(2, 2 + metadataLength));
+        var metaChunk = Nacl.secretbox.open(metaBox, createNonce(), key);
+
+        try {
+            return JSON.parse(Nacl.util.encodeUTF8(metaChunk));
+        }
+        catch (e) { return null; }
+    };
+
     var decrypt = function (u8, key, done, progress) {
         var MAX = u8.length;
         var _progress = function (offset) {
@@ -198,5 +211,6 @@ define([
         encrypt: encrypt,
         joinChunks: joinChunks,
         computeEncryptedSize: computeEncryptedSize,
+        decryptMetadata: decryptMetadata,
     };
 });
