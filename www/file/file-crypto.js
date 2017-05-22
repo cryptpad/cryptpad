@@ -58,14 +58,14 @@ define([
     };
 
     var joinChunks = function (chunks) {
-        return new Uint8Array(chunks.reduce(function (A, B) {
-            return slice(A).concat(slice(B));
-        }, []));
+        return new Blob(chunks);
     };
 
-    var decrypt = function (u8, key, cb) {
-        var fail = function (e) {
-            cb(e || "DECRYPTION_ERROR");
+    var decrypt = function (u8, key, done, progress) {
+        var MAX = u8.length;
+        var _progress = function (offset) {
+            if (typeof(progress) !== 'function') { return; }
+            progress(Math.min(1, offset / MAX));
         };
 
         var nonce = createNonce();
@@ -86,16 +86,18 @@ define([
         try {
             res.metadata = JSON.parse(Nacl.util.encodeUTF8(metaChunk));
         } catch (e) {
-            return fail('E_METADATA_DECRYPTION');
+            return window.setTimeout(function () {
+                done('E_METADATA_DECRYPTION');
+            });
         }
 
         if (!res.metadata) {
             return void setTimeout(function () {
-                cb('NO_METADATA');
+                done('NO_METADATA');
             });
         }
 
-        var takeChunk = function () {
+        var takeChunk = function (cb) {
             var start = i * cypherChunkLength + 2 + metadataLength;
             var end = start + cypherChunkLength;
             i++;
@@ -104,24 +106,36 @@ define([
             // decrypt the chunk
             var plaintext = Nacl.secretbox.open(box, nonce, key);
             increment(nonce);
-            return plaintext;
+
+            if (!plaintext) { return cb('DECRYPTION_ERROR'); }
+
+            _progress(end);
+            cb(void 0, plaintext);
         };
 
         var chunks = [];
-        // decrypt file contents
-        var chunk;
-        for (;i * cypherChunkLength < u8.length;) {
-            chunk = takeChunk();
-            if (!chunk) {
-                return window.setTimeout(fail);
-            }
-            chunks.push(chunk);
-        }
 
-        // send chunks
-        res.content = joinChunks(chunks);
+        var again = function () {
+            takeChunk(function (e, plaintext) {
+                if (e) {
+                    return setTimeout(function () {
+                        done(e);
+                    });
+                }
+                if (plaintext) {
+                    if (i * cypherChunkLength < u8.length) { // not done
+                        chunks.push(plaintext);
+                        return setTimeout(again);
+                    }
+                    chunks.push(plaintext);
+                    res.content = joinChunks(chunks);
+                    return done(void 0, res);
+                }
+                done('UNEXPECTED_ENDING');
+            });
+        };
 
-        cb(void 0, res);
+        again();
     };
 
     // metadata

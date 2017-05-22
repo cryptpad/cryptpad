@@ -273,6 +273,8 @@ define([
                     myDataType = data.metadata.type;
                     Title.updateTitle(title || Title.defaultTitle);
                     Cryptpad.removeLoadingScreen();
+                }, function (progress) {
+                    console.error(progress);
                 });
             });
         }
