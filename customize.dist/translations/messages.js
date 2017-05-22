@@ -254,6 +254,7 @@ define(function () {
                              'why we are doing this and why you really should <a href="/register/">Sign up</a> and <a href="/login/">Log in</a>.';
     out.fm_backup_title = 'Backup link';
     out.fm_nameFile = 'How would you like to name that file?';
+    out.fm_error_cantPin = "Internal server error. Please reload the page and try again.";
     // File - Context menu
     out.fc_newfolder = "New folder";
     out.fc_rename = "Rename";
@@ -370,6 +371,7 @@ define(function () {
     out.upload_name = "File name";
     out.upload_size = "Size";
     out.upload_progress = "Progress";
+    out.download_button = "Decrypt & Download";
 
     // general warnings
     out.warn_notPinned = "This pad is not in anyone's CryptDrive. It will expire after 3 months. <a href='/about.html#pinning'>Learn more...</a>";

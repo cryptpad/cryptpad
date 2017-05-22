@@ -9,12 +9,11 @@ html, body {
     padding: 0px;
     display: inline-block;
 }
-#file {
+#file, #dl {
     display: block;
-    height: 300px;
-    width: 300px;
+    height: 100%;
+    width: 100%;
     border: 2px solid black;
-    margin: 50px;
 }
 
 .inputfile {
@@ -26,7 +25,7 @@ html, body {
     z-index: -1;
 }
 
-#upload-form {
+#upload-form, #download-form {
     padding: 0px;
     margin: 0px;
 
@@ -34,20 +33,24 @@ html, body {
     width: 50vh;
     height: 50vh;
     display: block;
-    margin: auto;
+    margin: 50px auto;
+    max-width: 80vw;
+    label {
+        line-height: 50vh;
+        text-align: center;
+        position: relative;
+        padding: 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
-#upload-form label{
-    position: relative;
-}
-
 .hovering {
     background-color: rgba(255, 0, 115, 0.5) !important;
 }
 
 .block {
     display: block;
-    height: 50vh;
-    width: 50vh;
 }
 .hidden {
     display: none;
@@ -55,7 +58,6 @@ html, body {
 .inputfile + label {
     border: 2px solid black;
     background-color: rgba(50, 50, 50, .10);
-    margin: 50px;
     display: block;
 }
 

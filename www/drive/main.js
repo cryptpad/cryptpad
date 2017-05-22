@@ -1397,8 +1397,11 @@ define([
             // Handlers
             if (isInRoot) {
                 var onCreated = function (err, info) {
-                    if (err && err === E_OVER_LIMIT) {
-                        return void Cryptpad.alert(Messages.pinLimitDrive, null, true);
+                    if (err) {
+                        if (err === E_OVER_LIMIT) {
+                            return void Cryptpad.alert(Messages.pinLimitDrive, null, true);
+                        }
+                        return void Cryptpad.alert(Messages.fm_error_cantPin);
                     }
                     module.newFolder = info.newPath;
                     refresh();
@@ -2361,7 +2364,7 @@ define([
                     return void Cryptpad.alert(Messages.pinLimitDrive, null, true);
                 }
                 if (err) {
-                    return void console.error("Unable to create the file", err);
+                    return void Cryptpad.alert(Messages.fm_error_cantPin);
                 }
                 module.newFolder = info.newPath;
                 refresh();

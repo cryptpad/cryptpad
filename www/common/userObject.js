@@ -575,7 +575,10 @@ define([
                 atime: +new Date(),
                 ctime: +new Date()
             }, function (err) {
-                if (err) { return void cb(err); }
+                if (err) {
+                    logError(err);
+                    return void cb(err);
+                }
                 parentEl[fileName] = href;
                 var newPath = filePath.slice();
                 newPath.push(fileName);
