@@ -73,13 +73,9 @@ define([
             if (box) {
                 actual += box.length;
                 var progressValue = (actual / estimate * 100);
-                var progress = progressValue + '%';
 
                 return void sendChunk(box, function (e) {
                     if (e) { return console.error(e); }
-                    /*$progress.css({
-                        width: progress,
-                    });*/
                     var $pv = $table.find('tr[id="'+id+'"]').find('.progressValue');
                     $pv.text(Math.round(progressValue*100)/100 + '%');
                     var $pb = $table.find('tr[id="'+id+'"]').find('.progressContainer');
@@ -179,17 +175,17 @@ define([
         var $tr = $('<tr>', {id: id}).appendTo($table);
 
         var $cancel = $('<span>', {'class': 'cancel fa fa-times'}).click(function () {
-            queue.queue = queue.queue.filter(function (el) { return el.id !== id });
+            queue.queue = queue.queue.filter(function (el) { return el.id !== id; });
             $cancel.remove();
             $tr.find('.upCancel').text('-');
             $tr.find('.progressValue').text(Messages.upload_cancelled);
         });
 
-        var $tr = $('<tr>', {id: id}).appendTo($table);
-        $('<td>').text(obj.metadata.name).appendTo($tr);
-        $('<td>').text(prettySize(estimate)).appendTo($tr);
-        $('<td>', {'class': 'upProgress'}).append($progressBar).append($progressValue).appendTo($tr);
-        $('<td>', {'class': 'upCancel'}).append($cancel).appendTo($tr);
+        var $tr2 = $('<tr>', {id: id}).appendTo($table);
+        $('<td>').text(obj.metadata.name).appendTo($tr2);
+        $('<td>').text(prettySize(estimate)).appendTo($tr2);
+        $('<td>', {'class': 'upProgress'}).append($progressBar).append($progressValue).appendTo($tr2);
+        $('<td>', {'class': 'upCancel'}).append($cancel).appendTo($tr2);
 
         queue.next();
     };
