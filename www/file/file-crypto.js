@@ -112,6 +112,11 @@ define([
     };
 
     var fetchDecryptedMetadata = function (src, key, cb) {
+        if (typeof(src) !== 'string') {
+            return window.setTimeout(function () {
+                cb('NO_SOURCE');
+            });
+        }
         fetchMetadata(src, function (e, buffer) {
             if (e) { return cb(e); }
             cb(void 0, decryptMetadata(buffer, key));
