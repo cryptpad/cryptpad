@@ -77,6 +77,13 @@ define([
                     return;
                 }
                 rpc.send('RESET', channels, function (e, response) {
+                    if (e) {
+                        return void cb(e);
+                    }
+                    if (!response.length) {
+                        console.log(response);
+                        return void cb('INVALID_RESPONSE');
+                    }
                     cb(e, response[0]);
                 });
             };
