@@ -255,19 +255,21 @@ define([
                 if (myFile) { return void exportFile(); }
 
                 var src = Cryptpad.getBlobPathFromHex(hexFileName);
+                var cryptKey = secret.keys && secret.keys.fileKeyStr;
+                var key = Nacl.util.decodeBase64(cryptKey);
+
+/*              return FileCrypto.fetchDecryptedMetadata(src, key, function (e, metadata) {
+                    if (e) { return console.error(e); }
+                    console.log(metadata);
+                });*/
                 return Cryptpad.fetch(src, function (e, u8) {
                     if (e) { return void Cryptpad.alert(e); }
 
-
                     // now decrypt the u8
-                    var cryptKey = secret.keys && secret.keys.fileKeyStr;
-                    var key = Nacl.util.decodeBase64(cryptKey);
-
                     if (!u8 || !u8.length) {
                         return void Cryptpad.errorLoadingScreen(e);
                     }
 
-                    return console.error(FileCrypto.decryptMetadata(u8, key));
                     FileCrypto.decrypt(u8, key, function (e, data) {
                         if (e) {
                             return console.error(e);
