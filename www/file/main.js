@@ -257,6 +257,8 @@ define([
                 var src = Cryptpad.getBlobPathFromHex(hexFileName);
                 return Cryptpad.fetch(src, function (e, u8) {
                     if (e) { return void Cryptpad.alert(e); }
+
+
                     // now decrypt the u8
                     var cryptKey = secret.keys && secret.keys.fileKeyStr;
                     var key = Nacl.util.decodeBase64(cryptKey);
@@ -265,6 +267,7 @@ define([
                         return void Cryptpad.errorLoadingScreen(e);
                     }
 
+                    return console.error(FileCrypto.decryptMetadata(u8, key));
                     FileCrypto.decrypt(u8, key, function (e, data) {
                         if (e) {
                             return console.error(e);
