@@ -41,9 +41,9 @@ define([
         };
 
         var updateTitle = function (newTitle) {
-            document.title = newTitle;
-            $bar.find('.' + Toolbar.constants.title).find('span.title').text(data);
-            $bar.find('.' + Toolbar.constants.title).find('input').val(data);
+            var title = document.title = newTitle;
+            $bar.find('.' + Toolbar.constants.title).find('span.title').text(title);
+            $bar.find('.' + Toolbar.constants.title).find('input').val(title);
         };
 
         var suggestName = function () {
