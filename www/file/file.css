@@ -7,7 +7,8 @@ body {
   padding: 0px;
   display: inline-block;
 }
-#file {
+#file,
+#dl {
   display: block;
   height: 100%;
   width: 100%;
@@ -21,7 +22,8 @@ body {
   position: absolute;
   z-index: -1;
 }
-#upload-form {
+#upload-form,
+#download-form {
   padding: 0px;
   margin: 0px;
   position: relative;
@@ -31,7 +33,8 @@ body {
   margin: 50px auto;
   max-width: 80vw;
 }
-#upload-form label {
+#upload-form label,
+#download-form label {
   line-height: 50vh;
   text-align: center;
   position: relative;

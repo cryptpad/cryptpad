@@ -366,6 +366,7 @@ define(function () {
     out.upload_name = "Nom du fichier";
     out.upload_size = "Taille";
     out.upload_progress = "État";
+    out.download_button = "Déchiffrer et télécharger";
 
     // general warnings
     out.warn_notPinned = "Ce pad n'est stocké dans aucun CryptDrive. Il va expirer après 3 mois d'inactivité. <a href='/about.html#pinning'>En savoir plus...</a>";

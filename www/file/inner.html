@@ -13,9 +13,14 @@
     <div id="upload-form" style="display: none;">
         <input type="file" name="file" id="file" class="inputfile" />
         <label for="file" class="block unselectable" data-localization-title="upload_choose"
-            data-localization="upload_choose"><span class="block" id="progress">&nbsp;</span></label>
+            data-localization="upload_choose"></label>
     </div>
-    <table id="status">
+    <div id="download-form" style="display: none;">
+        <input type="button" name="dl" id="dl" class="inputfile" />
+        <label for="dl" class="block unselectable" data-localization-title="download_button"
+            data-localization="download_button"></label>
+    </div>
+    <table id="status" style="display: none;">
         <tr>
             <td data-localization="upload_name">File name</td>
             <td data-localization="upload_size">Size</td>

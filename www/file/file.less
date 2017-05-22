@@ -9,7 +9,7 @@ html, body {
     padding: 0px;
     display: inline-block;
 }
-#file {
+#file, #dl {
     display: block;
     height: 100%;
     width: 100%;
@@ -25,7 +25,7 @@ html, body {
     z-index: -1;
 }
 
-#upload-form {
+#upload-form, #download-form {
     padding: 0px;
     margin: 0px;
 
@@ -35,17 +35,16 @@ html, body {
     display: block;
     margin: 50px auto;
     max-width: 80vw;
+    label {
+        line-height: 50vh;
+        text-align: center;
+        position: relative;
+        padding: 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
-#upload-form label {
-    line-height: 50vh;
-    text-align: center;
-    position: relative;
-    padding: 10px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .hovering {
     background-color: rgba(255, 0, 115, 0.5) !important;
 }

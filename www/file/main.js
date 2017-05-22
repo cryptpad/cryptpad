@@ -21,8 +21,9 @@ define([
     var ifrw = $('#pad-iframe')[0].contentWindow;
     var $iframe = $('#pad-iframe').contents();
     var $form = $iframe.find('#upload-form');
-    //var $progress = $form.find('#progress');
+    var $dlform = $iframe.find('#download-form');
     var $label = $form.find('label');
+    var $dllabel = $dlform.find('label');
     var $table = $iframe.find('#status');
 
     Cryptpad.addLoadingScreen();
@@ -99,8 +100,6 @@ define([
 
                 var b64Key = Nacl.util.encodeBase64(key);
                 Cryptpad.replaceHash(Cryptpad.getFileHashFromKeys(id, b64Key));
-
-                //$form.hide();
 
                 APP.toolbar.addElement(['fileshare'], {});
 
@@ -250,30 +249,38 @@ define([
         Title.updateTitle(Cryptpad.initialName || getTitle() || Title.defaultTitle);
 
         if (!uploadMode) {
-            var src = Cryptpad.getBlobPathFromHex(hexFileName);
-            return Cryptpad.fetch(src, function (e, u8) {
-                if (e) { return void Cryptpad.alert(e); }
-                // now decrypt the u8
-                var cryptKey = secret.keys && secret.keys.fileKeyStr;
-                var key = Nacl.util.decodeBase64(cryptKey);
+            $dlform.show();
+            Cryptpad.removeLoadingScreen();
+            $dlform.find('#dl').click(function (e) {
 
-                if (!u8 || !u8.length) {
-                    return void Cryptpad.errorLoadingScreen(e);
-                }
+                if (myFile) { exportFile(); }
 
-                FileCrypto.decrypt(u8, key, function (e, data) {
-                    if (e) {
-                        Cryptpad.removeLoadingScreen();
-                        return console.error(e);
+                var src = Cryptpad.getBlobPathFromHex(hexFileName);
+                return Cryptpad.fetch(src, function (e, u8) {
+                    if (e) { return void Cryptpad.alert(e); }
+                    // now decrypt the u8
+                    var cryptKey = secret.keys && secret.keys.fileKeyStr;
+                    var key = Nacl.util.decodeBase64(cryptKey);
+
+                    if (!u8 || !u8.length) {
+                        return void Cryptpad.errorLoadingScreen(e);
                     }
-                    console.log(data);
-                    var title = document.title = data.metadata.name;
-                    myFile = data.content;
-                    myDataType = data.metadata.type;
-                    Title.updateTitle(title || Title.defaultTitle);
-                    Cryptpad.removeLoadingScreen();
+
+                    FileCrypto.decrypt(u8, key, function (e, data) {
+                        if (e) {
+                            return console.error(e);
+                        }
+                        console.log(data);
+                        var title = document.title = data.metadata.name;
+                        myFile = data.content;
+                        myDataType = data.metadata.type;
+                        Title.updateTitle(title || Title.defaultTitle);
+                        exportFile();
+                    });
                 });
+
             });
+            return;
         }
 
         if (!Cryptpad.isLoggedIn()) {
