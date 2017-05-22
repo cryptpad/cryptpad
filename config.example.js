@@ -197,7 +197,7 @@ module.exports = {
     /*  Setting this value to anything other than true will cause file upload
      *  attempts to be rejected outright.
      */
-    enableUploads: true,
+    enableUploads: false,
 
     /*  If you have enabled file upload, you have the option of restricting it
      *  to a list of users identified by their public keys. If this value is set
@@ -209,7 +209,19 @@ module.exports = {
      *  This is a temporary measure until a better quota system is in place.
      *  registered users' public keys can be found on the settings page.
      */
-    restrictUploads: true,
+    //restrictUploads: false,
+
+    /*  Default user storage limit (bytes)
+     *  if you don't want to limit users,
+     *  you can set this to the size of your hard disk
+     */
+    defaultStorageLimit: 50 * 1024 * 1024,
+
+    /*  Max Upload Size (bytes)
+     *  this sets the maximum size of any one file uploaded to the server.
+     *  anything larger than this size will be rejected
+     */
+    maxUploadSize: 20 * 1024 * 1024,
 
     /*  clients can use the /settings/ app to opt out of usage feedback
      *  which informs the server of things like how much each app is being
