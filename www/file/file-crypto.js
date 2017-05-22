@@ -61,6 +61,43 @@ define([
         return new Blob(chunks);
     };
 
+    var concatBuffer = function (a, b) { // TODO make this not so ugly
+        return new Uint8Array(slice(a).concat(slice(b)));
+    };
+
+    var fetchMetadata = function (src, cb) {
+        var done = false;
+        var CB = function (err, res) {
+            if (done) { return; }
+            done = true;
+            cb(err, res);
+        };
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", src, true);
+        xhr.setRequestHeader('Range', 'bytes=0-1');
+        xhr.responseType = 'arraybuffer';
+
+        xhr.onload = function () {
+            if (/^4/.test('' + this.status)) { return CB('XHR_ERROR'); }
+            var res = new Uint8Array(xhr.response);
+            var size = decodePrefix(res);
+            var xhr2 = new XMLHttpRequest();
+
+            xhr2.open("GET", src, true);
+            xhr2.setRequestHeader('Range', 'bytes=2-' + (size + 2));
+            xhr2.responseType = 'arraybuffer';
+            xhr2.onload = function () {
+                if (/^4/.test('' + this.status)) { return CB('XHR_ERROR'); }
+                var res2 = new Uint8Array(xhr2.response);
+                var all = concatBuffer(res, res2);
+                CB(void 0, all);
+            };
+            xhr2.send(null);
+        };
+        xhr.send(null);
+    };
+
     var decryptMetadata = function (u8, key) {
         var prefix = u8.subarray(0, 2);
         var metadataLength = decodePrefix(prefix);
@@ -72,6 +109,13 @@ define([
             return JSON.parse(Nacl.util.encodeUTF8(metaChunk));
         }
         catch (e) { return null; }
+    };
+
+    var fetchDecryptedMetadata = function (src, key, cb) {
+        fetchMetadata(src, function (e, buffer) {
+            if (e) { return cb(e); }
+            cb(void 0, decryptMetadata(buffer, key));
+        });
     };
 
     var decrypt = function (u8, key, done, progress) {
@@ -212,5 +256,7 @@ define([
         joinChunks: joinChunks,
         computeEncryptedSize: computeEncryptedSize,
         decryptMetadata: decryptMetadata,
+        fetchMetadata: fetchMetadata,
+        fetchDecryptedMetadata: fetchDecryptedMetadata,
     };
 });

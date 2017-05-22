@@ -114,7 +114,7 @@ define([], function () {
         xhr.open("GET", src, true);
         xhr.responseType = "arraybuffer";
         xhr.onload = function () {
-            if ([200, 304].indexOf(this.status) === -1) {
+            if (/^4/.test(''+this.status)) {
                 return CB('XHR_ERROR');
             }
             return void CB(void 0, new Uint8Array(xhr.response));
