@@ -75,8 +75,10 @@ define(function () {
     out.redLight = "You are disconnected from the session";
 
     out.pinLimitReached = "You've reached your storage limit";
-    out.pinLimitReachedAlert = "You've reached your storage limit. New pads won't be stored in your CryptDrive.<br>" +
-        "To fix this problem, you can either remove pads from your CryptDrive (including the trash) or subscribe to a premium offer to increase your limit.";
+    out.updated_0_pinLimitReachedAlert = "You've reached your storage limit. New pads won't be stored in your CryptDrive.<br>" +
+        'You can either remove pads from your CryptDrive or <a href="https://accounts.cryptpad.fr/#!on={0}" target="_blank">subscribe to a premium offer</a> to increase your limit.';
+    out.pinLimitReachedAlert = out.updated_0_pinLimitReachedAlert;
+    out.pinAboveLimitAlert = 'As of this release, we are imposing a 50MB limit on free data storage and you are currently using {0}. You will need to either delete some pads or subscribe on <a href="https://accounts.cryptpad.fr/#!on={1}" target="_blank">accounts.cryptpad.fr</a>. Your contribution will help us improve CryptPad and spread Zero Knowledge. Please contact <a href="https://accounts.cryptpad.fr/#/support" target="_blank">support</a> if you have any other questions.';
     out.pinLimitNotPinned = "You've reached your storage limit.<br>"+
                             "This pad is not stored in your CryptDrive.";
     out.pinLimitDrive = "You've reached your storage limit.<br>" +
@@ -240,7 +242,8 @@ define(function () {
     out.fm_info_root = "Create as many nested folders here as you want to sort your files.";
     out.fm_info_unsorted = 'Contains all the files you\'ve visited that are not yet sorted in "Documents" or moved to the "Trash".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
     out.fm_info_template = 'Contains all the pads stored as templates and that you can re-use when you create a new pad.';
-    out.fm_info_trash = 'Files deleted from the trash are also removed from "All files" and it is impossible to recover them from the file manager.'; // Same here for "All files" and "out.fm_filesDataName"
+    out.updated_0_fm_info_trash = 'Empty your trash to free space in your CryptDrive.';
+    out.fm_info_trash = out.updated_0_fm_info_trash;
     out.fm_info_allFiles = 'Contains all the files from "Documents", "Unsorted" and "Trash". You can\'t move or remove files from here.'; // Same here
     out.fm_info_anonymous = 'You are not logged in so these pads may be deleted (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">find out why</a>). ' +
                             '<a href="/register/">Sign up</a> or <a href="/login/">Log in</a> to keep them alive.';

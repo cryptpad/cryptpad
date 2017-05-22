@@ -792,6 +792,7 @@ define([
     };
 
     var LIMIT_REFRESH_RATE = 30000; // milliseconds
+    var limitReachedDisplayed = false;
     common.createUsageBar = function (cb, alwaysDisplayUpgrade) {
         var todo = function (err, state, data) {
             var $container = $('<span>', {'class':'limit-container'});
@@ -830,18 +831,24 @@ define([
             var prettyLimit;
 
             if (unit === 'GB') {
-                prettyUsage = usage; //Messages._getKey('formattedGB', [usage]);
+                prettyUsage = Messages._getKey('formattedGB', [usage]);
                 prettyLimit = Messages._getKey('formattedGB', [limit]);
             } else {
-                prettyUsage = usage; //Messages._getKey('formattedMB', [usage]);
+                prettyUsage = Messages._getKey('formattedMB', [usage]);
                 prettyLimit = Messages._getKey('formattedMB', [limit]);
             }
 
             if (quota < 0.8) { $usage.addClass('normal'); }
             else if (quota < 1) { $usage.addClass('warning'); }
-            else { $usage.addClass('above'); }
+            else {
+                $usage.addClass('above');
+                if (!limitReachedDisplayed) {
+                    limitReachedDisplayed = true;
+                    common.alert(Messages._getKey('pinAboveLimitAlert', [prettyUsage, encodeURIComponent(window.location.hostname)]), null, true);
+                }
+            }
             var $text = $('<span>', {'class': 'usageText'});
-            $text.text(prettyUsage + ' / ' + prettyLimit);
+            $text.text(usage + ' / ' + prettyLimit);
             $limit.append($usage).append($text);
             window.setTimeout(function () {
                 common.isOverPinLimit(todo);

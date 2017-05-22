@@ -73,8 +73,10 @@ define(function () {
     out.redLight = "Vous êtes déconnectés de la session";
 
     out.pinLimitReached = "Vous avez atteint votre limite de stockage";
-    out.pinLimitReachedAlert = "Vous avez atteint votre limite de stockage. Les nouveaux pads ne seront pas enregistrés dans votre CrypDrive.<br>" +
-        "Pour résoudre ce problème, vous pouvez soit supprimer des pads de votre CryptDrive (y compris la corbeille), soit vous abonner à une offre premium pour augmenter la limite maximale.";
+    out.updated_0_pinLimitReachedAlert = "Vous avez atteint votre limite de stockage. Les nouveaux pads ne seront pas enregistrés dans votre CryptDrive.<br>" +
+        'Vous pouvez soit supprimer des pads de votre CryptDrive, soit vous <a href="https://accounts.cryptpad.fr/#!on={0}" target="_blank">abonner à une offre premium</a> pour augmenter la limite maximale.';
+    out.pinLimitReachedAlert = out.updated_0_pinLimitReachedAlert;
+    out.pinAboveLimitAlert = 'Depuis la dernière version, nous imposons désormais une limite de 50 Mo de stockage gratuit et vous utilisez actuellement {0}. You devriez soit supprimer certains pads ou soit vous abonner sur <a href="https://accounts.cryptpad.fr/#!on={1}" target="_blank">accounts.cryptpad.fr</a>. Votre contribution nous aidera à améliorer CryptPad et à répandre le Zero Knowledge. Vous pouvez contacter le <a href="https://accounts.cryptpad.fr/#/support" target="_blank">support</a> pour tout problème ou question concernant ces changements.';
     out.pinLimitNotPinned = "Vous avez atteint votre limite de stockage.<br>"+
                             "Ce pad n'est pas enregistré dans votre CryptDrive.";
     out.pinLimitDrive = out.pinLimitReached+ ".<br>" +
@@ -238,7 +240,8 @@ define(function () {
     out.fm_info_root = "Créez ici autant de dossiers que vous le souhaitez pour trier vos fichiers.";
     out.fm_info_unsorted = 'Contient tous les pads que vous avez ouvert et qui ne sont pas triés dans "Documents" ou déplacés vers la "Corbeille".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
     out.fm_info_template = "Contient tous les fichiers que vous avez sauvés en tant que modèle afin de les réutiliser lors de la création d'un nouveau pad.";
-    out.fm_info_trash = 'Les fichiers supprimés dans la corbeille sont également enlevés de "Tous les fichiers" et il est impossible de les récupérer depuis l\'explorateur de fichiers.'; // Same here for "All files" and "out.fm_filesDataName"
+    out.updated_0_fm_info_trash = "Vider la corbeille permet de libérer de l'espace dans votre CryptDrive";
+    out.fm_info_trash = out.updated_0_fm_info_trash;
     out.fm_info_allFiles = 'Contient tous les fichiers de "Documents", "Fichiers non triés" et "Corbeille". Vous ne pouvez pas supprimer ou déplacer des fichiers depuis cet endroit.'; // Same here
     out.fm_info_anonymous = 'Vous n\'êtes pas connectés, ces pads risquent donc d\'être supprimés (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">découvrez pourquoi</a>). ' +
                             '<a href="/register/">Inscrivez-vous</a> ou <a href="/login/">connectez-vous</a> pour les maintenir en vie.';
