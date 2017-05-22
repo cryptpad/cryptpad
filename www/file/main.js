@@ -23,7 +23,6 @@ define([
     var $form = $iframe.find('#upload-form');
     var $dlform = $iframe.find('#download-form');
     var $label = $form.find('label');
-    var $dllabel = $dlform.find('label');
     var $table = $iframe.find('#status');
     var $progress = $iframe.find('#progress');
 
@@ -252,7 +251,7 @@ define([
         if (!uploadMode) {
             $dlform.show();
             Cryptpad.removeLoadingScreen();
-            $dlform.find('#dl').click(function (e) {
+            $dlform.find('#dl').click(function () {
                 if (myFile) { return void exportFile(); }
 
                 var src = Cryptpad.getBlobPathFromHex(hexFileName);
@@ -268,7 +267,7 @@ define([
                         return void Cryptpad.errorLoadingScreen(e);
                     }
 
-                    return console.error(FileCrypto.decryptMetadata(u8, key));
+//                    return console.error(FileCrypto.decryptMetadata(u8, key));
                     FileCrypto.decrypt(u8, key, function (e, data) {
                         if (e) {
                             return console.error(e);
