@@ -41,16 +41,9 @@ define([
         };
 
         var updateTitle = function (newTitle) {
-            Cryptpad.renamePad(newTitle, function (err, data) {
-                if (err) {
-                    console.log("Couldn't set pad title");
-                    console.error(err);
-                    return;
-                }
-                document.title = newTitle;
-                $bar.find('.' + Toolbar.constants.title).find('span.title').text(data);
-                $bar.find('.' + Toolbar.constants.title).find('input').val(data);
-            });
+            var title = document.title = newTitle;
+            $bar.find('.' + Toolbar.constants.title).find('span.title').text(title);
+            $bar.find('.' + Toolbar.constants.title).find('input').val(title);
         };
 
         var suggestName = function () {
