@@ -376,6 +376,11 @@ var updateLimits = function (config, publicKey, cb) {
     var defaultLimit = typeof(config.defaultStorageLimit) === 'number'?
         config.defaultStorageLimit: DEFAULT_LIMIT;
 
+    var userId;
+    if (publicKey) {
+        userId = unescapeKeyCharacters(publicKey);
+    }
+
     var body = JSON.stringify({
         domain: config.domain,
         subdomain: config.subdomain
@@ -404,8 +409,8 @@ var updateLimits = function (config, publicKey, cb) {
                 var json = JSON.parse(str);
                 limits = json;
                 var l;
-                if (publicKey) {
-                    var limit = limits[publicKey];
+                if (userId) {
+                    var limit = limits[userId];
                     l = limit && typeof limit.limit === "number" ?
                             [limit.limit, limit.plan, limit.note] : [defaultLimit, '', ''];
                 }
