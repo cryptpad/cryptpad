@@ -1325,14 +1325,16 @@ define([
         var ver = arr[1];
         if (!ver) { return; }
         var verArr = ver.split('.');
+        verArr[2] = 0;
         if (verArr.length !== 3) { return; }
         var stored = localStorage[CRYPTPAD_VERSION] || '0.0.0';
         var storedArr = stored.split('.');
+        storedArr[2] = 0;
         var shouldUpdate = parseInt(verArr[0]) > parseInt(storedArr[0]) ||
                            (parseInt(verArr[0]) === parseInt(storedArr[0]) &&
                             parseInt(verArr[1]) > parseInt(storedArr[1]));
         if (!shouldUpdate) { return; }
-        common.alert(Messages._getKey('newVersion', [ver]), null, true);
+        common.alert(Messages._getKey('newVersion', [verArr.join('.')]), null, true);
         localStorage[CRYPTPAD_VERSION] = ver;
     };
 
