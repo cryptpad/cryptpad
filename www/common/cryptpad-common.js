@@ -445,6 +445,7 @@ define([
                     Crypt.put(p.hash, val, function () {
                         common.findOKButton().click();
                         common.removeLoadingScreen();
+                        common.feedback('TEMPLATE_USED');
                     });
                 });
             }).appendTo($p);
@@ -923,6 +924,7 @@ define([
                                 common.addTemplate(makePad(href, title));
                                 whenRealtimeSyncs(getStore().getProxy().info.realtime, function () {
                                     common.alert(Messages.templateSaved);
+                                    common.feedback('TEMPLATE_CREATED');
                                 });
                             });
                         };
