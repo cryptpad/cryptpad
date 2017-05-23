@@ -304,7 +304,10 @@ define([
 
                 onLocal(); // push local state to avoid parse errors later.
 
-                if (readOnly) { return; }
+                if (readOnly) {
+                    config.onRemote();
+                    return;
+                }
                 UserList.getLastName(toolbar.$userNameButton, isNew);
             };
 

@@ -42,6 +42,11 @@ define([
                         sig: sig
                     };
                 }
+            } else if (data.cmd === 'UPDATE_LIMIT') {
+                return Cryptpad.updatePinLimit(function (e, limit, plan, note) {
+                    ret.res = [limit, plan, note];
+                    srcWindow.postMessage(JSON.stringify(ret), domain);
+                });
             } else {
                 ret.error = "UNKNOWN_CMD";
             }
