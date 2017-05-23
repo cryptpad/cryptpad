@@ -133,7 +133,7 @@ define([
                 rpc.send('UPDATE_LIMITS', undefined, function (e, response) {
                     if (e) { return void cb(e); }
                     if (response && response.length && typeof(response[0]) === "number") {
-                        cb (void 0, response[0], response[1]);
+                        cb (void 0, response[0], response[1], response[2]);
                     } else {
                         cb('INVALID_RESPONSE');
                     }
@@ -144,7 +144,7 @@ define([
                 rpc.send('GET_LIMIT', undefined, function (e, response) {
                     if (e) { return void cb(e); }
                     if (response && response.length && typeof(response[0]) === "number") {
-                        cb (void 0, response[0], response[1]);
+                        cb (void 0, response[0], response[1], response[2]);
                     } else {
                         cb('INVALID_RESPONSE');
                     }

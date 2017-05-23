@@ -744,17 +744,17 @@ define([
 
     common.updatePinLimit = function (cb) {
         if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
-        rpc.updatePinLimits(function (e, limit, plan) {
+        rpc.updatePinLimits(function (e, limit, plan, note) {
             if (e) { return cb(e); }
-            cb(e, limit, plan);
+            cb(e, limit, plan, note);
         });
     };
 
     common.getPinLimit = function (cb) {
         if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
-        rpc.getLimit(function (e, limit, plan) {
+        rpc.getLimit(function (e, limit, plan, note) {
             if (e) { return cb(e); }
-            cb(void 0, limit, plan);
+            cb(void 0, limit, plan, note);
         });
     };
 
