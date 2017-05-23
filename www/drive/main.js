@@ -1771,7 +1771,8 @@ define([
                     if (parentPath) {
                         $a = $('<a>').text(Messages.fm_openParent).click(function (e) {
                             e.preventDefault();
-                            parentPath.pop();
+                            if (filesOp.isInTrashRoot(parentPath)) { parentPath = [TRASH]; }
+                            else { parentPath.pop(); }
                             module.displayDirectory(parentPath);
                         });
                     }
@@ -1823,6 +1824,7 @@ define([
                 displayDirectory(parentPath, true);
                 return;
             }
+            if (!isSearch) { delete APP.Search.oldLocation; }
 
             module.resetTree();
 
