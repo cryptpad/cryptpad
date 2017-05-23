@@ -489,6 +489,8 @@
   margin-bottom: -1px;
 }
 .cryptpad-toolbar-leftside .cryptpad-dropdown-users pre {
+  /* needed for ckeditor */
+  white-space: pre;
   margin: 5px 0px;
 }
 .cryptpad-toolbar-leftside button {
