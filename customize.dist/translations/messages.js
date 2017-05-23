@@ -481,7 +481,7 @@ define(function () {
         '# CryptPad\'s Zero Knowledge collaborative code editor\n',
         '\n',
         '* What you type here is encrypted so only people who have the link can access it.\n',
-        '*  You can choose the programming language to highlight and the UI color scheme in the upper right.'
+        '* You can choose the programming language to highlight and the UI color scheme in the upper right.'
     ].join('');
 
     out.slideInitialState = [
