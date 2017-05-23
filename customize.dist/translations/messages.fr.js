@@ -58,7 +58,7 @@ define(function () {
                      'Découvrez les nouveautés de la dernière version :<br>'+
                      '<a href="https://github.com/xwiki-labs/cryptpad/releases/tag/{0}" target="_blank">Notes de version pour CryptPad {0}</a>';
 
-    out.upgrade = "Améliorer";
+    out.upgrade = "Augmenter votre limite";
     out.upgradeTitle = "Améliorer votre compte pour augmenter la limite de stockage";
     out.MB = "Mo";
     out.GB = "Go";
