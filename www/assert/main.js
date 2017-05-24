@@ -4,7 +4,8 @@ define([
     '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
     '/common/cryptpad-common.js',
-], function ($, Hyperjson, TextPatcher, Sortify, Cryptpad) {
+    '/drive/tests.js'
+], function ($, Hyperjson, TextPatcher, Sortify, Cryptpad, Drive) {
     window.Hyperjson = Hyperjson;
     window.TextPatcher = TextPatcher;
     window.Sortify = Sortify;
@@ -203,6 +204,9 @@ define([
         // TODO
         return cb(true);
     }, "version 2 hash failed to parse correctly");
+
+
+    Drive.test(assert);
 
     var swap = function (str, dict) {
         return str.replace(/\{\{(.*?)\}\}/g, function (all, key) {

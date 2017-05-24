@@ -8,6 +8,7 @@ define([
     var UNSORTED = module.UNSORTED = "unsorted";
     var TRASH = module.TRASH = "trash";
     var TEMPLATE = module.TEMPLATE = "template";
+    var NEW_FILES_DATA = 'filesData';
 
     module.init = function (files, config) {
         var exp = {};
@@ -54,7 +55,7 @@ define([
         var compareFiles = function (fileA, fileB) { return fileA === fileB; };
 
         var isFile = exp.isFile = function (element) {
-            return typeof(element) === "string";
+            return typeof(element) === "number" || typeof(element) === "string";
         };
 
         exp.isReadOnlyFile = function (element) {
@@ -247,6 +248,7 @@ define([
         };
         _getFiles[FILES_DATA] = function () {
             var ret = [];
+            if (!files[FILES_DATA]) { return ret; }
             files[FILES_DATA].forEach(function (el) {
                 if (el.href && ret.indexOf(el.href) === -1) {
                     ret.push(el.href);
@@ -254,10 +256,21 @@ define([
             });
             return ret;
         };
+        _getFiles[NEW_FILES_DATA] = function () {
+            var ret = [];
+            if (!files[NEW_FILES_DATA]) { return ret; }
+            for (var k in files[NEW_FILES_DATA]) {
+                var el = files[NEW_FILES_DATA][k];
+                if (el.href && ret.indexOf(el.href) === -1) {
+                    ret.push(el.href);
+                }
+            };
+            return ret;
+        };
         var getFiles = exp.getFiles = function (categories) {
             var ret = [];
             if (!categories || !categories.length) {
-                categories = [ROOT, 'hrefArray', TRASH, FILES_DATA];
+                categories = [ROOT, 'hrefArray', TRASH, FILES_DATA, NEW_FILES_DATA];
             }
             categories.forEach(function (c) {
                 if (typeof _getFiles[c] === "function") {
@@ -298,6 +311,7 @@ define([
             return _findFileInRoot([ROOT], href);
         };
         var _findFileInHrefArray = function (rootName, href) {
+            if (!files[rootName]) { return []; }
             var unsorted = files[rootName].slice();
             var ret = [];
             var i = -1;
@@ -833,8 +847,19 @@ define([
                         debug("An element in ROOT was not a folder nor a file. ", element[el]);
                         element[el] = undefined;
                         delete element[el];
-                    } else if (isFolder(element[el])) {
+                        continue;
+                    }
+                    if (isFolder(element[el])) {
                         fixRoot(element[el]);
+                        continue;
+                    }
+                    if (typeof element[el] === "string") {
+                        // We have an old file (href) which is not in filesData: add it
+                        var id = Cryptpad.createRandomInteger();
+                        var key = Cryptpad.createChannelId();
+                        files[NEW_FILES_DATA][id] = {href: element[el], filename: el};
+                        element[key] = id;
+                        delete element[el];
                     }
                 }
             };
@@ -842,10 +867,17 @@ define([
                 if (typeof(files[TRASH]) !== "object") { debug("TRASH was not an object"); files[TRASH] = {}; }
                 var tr = files[TRASH];
                 var toClean;
-                var addToClean = function (obj, idx) {
+                var addToClean = function (obj, idx, el) {
                     if (typeof(obj) !== "object") { toClean.push(idx); return; }
                     if (!isFile(obj.element) && !isFolder(obj.element)) { toClean.push(idx); return; }
                     if (!$.isArray(obj.path)) { toClean.push(idx); return; }
+                    if (typeof obj.element === "string") {
+                        // We have an old file (href) which is not in filesData: add it
+                        var id = Cryptpad.createRandomInteger();
+                        files[NEW_FILES_DATA][id] = {href: obj.element, filename: el};
+                        obj.element = id;
+                    }
+                    if (isFolder(obj.element)) { fixRoot(obj.element); }
                 };
                 for (var el in tr) {
                     if (!$.isArray(tr[el])) {
@@ -854,34 +886,12 @@ define([
                         delete tr[el];
                     } else {
                         toClean = [];
-                        tr[el].forEach(addToClean);
+                        tr[el].forEach(function (obj, idx) { addToClean(obj, idx, el); });
                         for (var i = toClean.length-1; i>=0; i--) {
                             tr[el].splice(toClean[i], 1);
                         }
                     }
                 }
-            };
-            // Make sure unsorted doesn't exist anymore
-            var fixUnsorted = function () {
-                if (!files[UNSORTED]) { return; }
-                debug("UNSORTED still exists in the object, removing it...");
-                var us = files[UNSORTED];
-                if (us.length === 0) {
-                    delete files[UNSORTED];
-                    return;
-                }
-                var rootFiles = getFiles([ROOT, TEMPLATE]).slice();
-                var root = find([ROOT]);
-                us.forEach(function (el) {
-                    if (!isFile(el) || rootFiles.indexOf(el) !== -1) {
-                        return;
-                    }
-                    var data = getFileData(el);
-                    var name = data ? data.title : NEW_FILE_NAME;
-                    var newName = getAvailableName(root, name);
-                    root[newName] = el;
-                });
-                delete files[UNSORTED];
             };
             var fixTemplate = function () {
                 if (!Array.isArray(files[TEMPLATE])) { debug("TEMPLATE was not an array"); files[TEMPLATE] = []; }
@@ -893,36 +903,43 @@ define([
                     if (!isFile(el) || rootFiles.indexOf(el) !== -1) {
                         toClean.push(idx);
                     }
+                    if (typeof el === "string") {
+                        // We have an old file (href) which is not in filesData: add it
+                        var id = Cryptpad.createRandomInteger();
+                        files[NEW_FILES_DATA][id] = {href: el};
+                        us[idx] = id;
+                    }
                 });
                 toClean.forEach(function (idx) {
                     us.splice(idx, 1);
                 });
             };
             var fixFilesData = function () {
-                if (!$.isArray(files[FILES_DATA])) { debug("FILES_DATA was not an array"); files[FILES_DATA] = []; }
-                var fd = files[FILES_DATA];
+                if (typeof files[NEW_FILES_DATA] !== "object") { debug("FILES_DATA was not an object"); files[NEW_FILES_DATA] = {}; }
+                var fd = files[NEW_FILES_DATA];
                 var rootFiles = getFiles([ROOT, TRASH, 'hrefArray']);
                 var root = find([ROOT]);
                 var toClean = [];
-                fd.forEach(function (el) {
+                for (var id in fd) {
+                    id = Number(id);
+                    var el = fd[id];
                     if (!el || typeof(el) !== "object") {
                         debug("An element in filesData was not an object.", el);
                         toClean.push(el);
-                        return;
+                        continue;
                     }
                     if (!el.href) {
-                        debug("Rmoving an element in filesData with a missing href.", el);
+                        debug("Removing an element in filesData with a missing href.", el);
                         toClean.push(el);
-                        return;
+                        continue;
                     }
-                    if (Cryptpad.isLoggedIn() && rootFiles.indexOf(el.href) === -1) {
-                        debug("An element in filesData was not in ROOT, TEMPLATE or TRASH.", el);
-                        var name = el.title || NEW_FILE_NAME;
-                        var newName = getAvailableName(root, name);
-                        root[newName] = el.href;
-                        return;
+                    if (Cryptpad.isLoggedIn() && rootFiles.indexOf(id) === -1) {
+                        debug("An element in filesData was not in ROOT, TEMPLATE or TRASH.", id, el);
+                        var newName = Cryptpad.createChannelId();
+                        root[newName] = id;
+                        continue;
                     }
-                });
+                };
                 toClean.forEach(function (el) {
                     var idx = fd.indexOf(el);
                     if (idx !== -1) {
@@ -931,10 +948,90 @@ define([
                 });
             };
 
+            // Make sure unsorted doesn't exist anymore
+            // Note: Unsorted only works with ld structure where pads are href
+            // It should be called before the migration code
+            var fixUnsorted = function () {
+                if (!files[UNSORTED] || !files[FILES_DATA]) { return; }
+                debug("UNSORTED still exists in the object, removing it...");
+                var us = files[UNSORTED];
+                if (us.length === 0) {
+                    delete files[UNSORTED];
+                    return;
+                }
+                var root = find([ROOT]);
+                us.forEach(function (el) {
+                    if (typeof el !== "string") {
+                        return;
+                    }
+                    var data = files[FILES_DATA].filter(function (x) {
+                        return x.href === el;
+                    });
+                    if (data.length === 0) {
+                        files[FILES_DATA].push({
+                            href: el
+                        });
+                    }
+                    return;
+                    /*
+                    TODO remove
+                    var name = data.length !== 0 ? data[0].title : NEW_FILE_NAME;
+                    var newName = getAvailableName(root, name);
+                    root[newName] = el;
+                    */
+                });
+                delete files[UNSORTED];
+            };
+            // TODO: getRecentPads in cryptpad-common
+            // TODO: in fixRoot, trash and template, make sure we have a filedata associated to the id
+            var migrateToNewFormat = function () {
+                if (!files[FILES_DATA]) { return; }
+                try {
+                    var oldData = files[FILES_DATA].slice();
+                    var newData = files[NEW_FILES_DATA] = {};
+                    //var oldFiles = oldData.map(function (o) { return o.href; });
+                    oldData.forEach(function (obj) {
+                        if (!obj || !obj.href) { return; }
+                        var href = obj.href;
+                        var id = Cryptpad.createRandomInteger();
+                        var paths = findFile(href);
+                        var data = getFileData(href);
+                        var key = Cryptpad.createChannelId();
+                        if (data) {
+                            newData[id] = data;
+                        } else {
+                            newData[id] = {href: href};
+                        }
+                        paths.forEach(function (p) {
+                            var parentPath = p.slice();
+                            var okey = parentPath.pop(); // get the parent
+                            var parent = find(parentPath);
+                            if (isInTrashRoot(p)) {
+                                parent.element = id;
+                                newData[id].filename = p[1];
+                                return;
+                            }
+                            if (isPathIn(p, ['hrefArray'])) {
+                                parent[okey] = id;
+                                return;
+                            }
+                            // else root or trash (not trashroot)
+                            parent[key] = id;
+                            newData[id].filename = okey;
+                            delete parent[okey];
+                        });
+                    });
+                    delete files[FILES_DATA];
+                } catch(e) {
+                    console.error(e);
+                }
+            };
+
+            fixUnsorted();
+            migrateToNewFormat();
             fixRoot();
             fixTrashRoot();
             if (!workgroup) {
-                fixUnsorted();
                 fixTemplate();
                 fixFilesData();
             }
@@ -948,6 +1045,5 @@ define([
 
         return exp;
     };
-
     return module;
 });
