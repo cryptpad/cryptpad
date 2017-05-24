@@ -72,6 +72,7 @@ define([
     common.bytesToKilobytes = Util.bytesToKilobytes;
     common.fetch = Util.fetch;
     common.throttle = Util.throttle;
+    common.createRandomInteger = Util.createRandomInteger;
 
     // import hash utilities for export
     var createRandomHash = common.createRandomHash = Hash.createRandomHash;
