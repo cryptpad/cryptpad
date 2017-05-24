@@ -110,12 +110,16 @@ define([
                 return stringify(obj);
             };
 
-            var drawPreview = Cryptpad.throttle(function () {
-                if (CodeMirror.highlightMode !== 'markdown') { return; }
-                if (!$previewContainer.is(':visible')) { return; }
+            var forceDrawPreview = function () {
                 try {
                     DiffMd.apply(DiffMd.render(editor.getValue()), $preview);
                 } catch (e) { console.error(e); }
+            };
+
+            var drawPreview = Cryptpad.throttle(function () {
+                if (CodeMirror.highlightMode !== 'markdown') { return; }
+                if (!$previewContainer.is(':visible')) { return; }
+                forceDrawPreview();
             }, 150);
 
             var onLocal = config.onLocal = function () {
@@ -239,9 +243,16 @@ define([
                     }
                     $previewContainer.toggle();
                     if ($previewContainer.is(':visible')) {
+                        forceDrawPreview();
                         $codeMirror.removeClass('fullPage');
+                        Cryptpad.setPadAttribute('previewMode', true, function (e, data) {
+                            if (e) { return console.log(e); }
+                        });
                     } else {
                         $codeMirror.addClass('fullPage');
+                        Cryptpad.setPadAttribute('previewMode', false, function (e, data) {
+                            if (e) { return console.log(e); }
+                        });
                     }
                 });
                 $rightside.append($previewButton);
@@ -254,6 +265,7 @@ define([
                 else {
                     CodeMirror.configureTheme();
                 }
+
 
                 // set the hash
                 if (!readOnly) { Cryptpad.replaceHash(editHash); }
@@ -305,6 +317,14 @@ define([
                 if (Cryptpad.initialName && Title.isDefaultTitle()) {
                     Title.updateTitle(Cryptpad.initialName);
                 }
+
+                Cryptpad.getPadAttribute('previewMode', function (e, data) {
+                    if (e) { return void console.error(e); }
+                    var $codeMirror = $iframe.find('.CodeMirror');
+                    if (data === false && APP.$previewButton) {
+                        APP.$previewButton.click();
+                    }
+                });
 
                 Cryptpad.removeLoadingScreen();
                 setEditable(true);
