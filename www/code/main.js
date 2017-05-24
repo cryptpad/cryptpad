@@ -111,6 +111,7 @@ define([
             };
 
             var drawPreview = Cryptpad.throttle(function () {
+                if (CodeMirror.highlightMode !== 'markdown') { return; }
                 DiffMd.apply(DiffMd.render(editor.getValue()), $preview);
             }, 150);
 
