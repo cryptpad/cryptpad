@@ -25,7 +25,7 @@ define(function () {
     out.typeError = "Această filă nu este compatibilă cu aplicația aleasă";
     out.onLogout = "Nu mai ești autentificat, <a href=\"/\" target=\"_blank\">apasă aici</a> să te autentifici<br>sau apasă <em>Escape</em>să accesezi fila n modul citire.";
     out.wrongApp = "Momentan nu putem arăta conținutul sesiunii n timp real n fereastra ta. Te rugăm rencarcă pagina.";
-    out.loading = "Încarcă..."    
+    out.loading = "Încarcă...";
     out.error = "Eroare";
 
     out.saved = "Salvat";
@@ -113,7 +113,7 @@ define(function () {
     out.history_restore = "Restabilește";
     out.history_restoreTitle = "Restabilește versiunea selectată a documentului";
     out.history_restorePrompt = "Ești sigur că vrei să nlocuiești versiunea curentă a documentului cu cea afișată?";
-    out.history_restoreDone = ""; "Document restabilit";
+    out.history_restoreDone = "Document restabilit";
     out.history_version = "Versiune:";
     out.poll_title = "Zero Knowledge Selector Dată";
     out.poll_subtitle = "Zero Knowledge, <em>realtime</em> programare";
@@ -186,7 +186,7 @@ define(function () {
     out.fm_info_template = "Conține toate pad-urile stocate ca șabloane și pe care le poți refolosi atunci când creezi un nou pad.";
     out.fm_info_trash = "Fișierele șterse din gunoi vor fi șterse și din \"Toate fișierele\", făcând imposibilă recuperarea fișierelor din managerul de fișiere.";
     out.fm_info_allFiles = "Conține toate fișierele din \"Documente\", \"Nesortate\" și \"Gunoi\". Poți să muți sau să ștergi fișierele aici.";
-    out.fm_info_login = ""; "Loghează-te";
+    out.fm_info_login = "Loghează-te";
     out.fm_info_register = "Înscrie-te";
     out.fm_info_anonymous = "Nu ești logat cu un cont valid așa că aceste pad-uri vor fi șterse (<a href=\"https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/\" target=\"_blank\">află de ce</a>). <a href=\"/register/\">Înscrie-te</a> sau <a href=\"/login/\">Loghează-te</a> pentru a le salva.";
     out.fm_alert_backupUrl = "Link copie de rezervă pentru acest drive.<br> Este <strong>foarte recomandat</strong> să o păstrezi pentru tine.<br>Poți să o folosești pentru a recupera toate fișierele n cazul n care memoria browserului tău este șterge..<br>Oricine are linkul poate să editeze sau să ndepărteze toate fișierele din managerul tău de documente.<br>";
@@ -208,7 +208,7 @@ define(function () {
     out.fo_moveFolderToChildError = "Nu poți să muți un folder ntr-unul dintre descendenții săi";
     out.fo_unableToRestore = "Nu am reușit să restaurăm fișierul n locația de origine. Poți să ncerci să l muți ntr-o nouă locație.";
     out.fo_unavailableName = "Un fișier sau un folder cu același nume există deja n locația nouă. Redenumește elementul și ncearcă din nou.";
-    out.login_login = ""; "Loghează-te";
+    out.login_login = "Loghează-te";
     out.login_makeAPad = "Crează un pad n modul anonim";
     out.login_nologin = "Răsfoiește pad-urile locale";
     out.login_register = "Înscrie-te";
@@ -308,7 +308,7 @@ define(function () {
     out.policy_whatweknow_p2 = "Folosim <a href=\"https://www.elastic.co/products/kibana\" target=\"_blank\" rel=\"noopener noreferrer\" title=\"platforma de analiză open source\">Kibana</a>, o platformă open source, pentru a afla mai multe despre utilizatorii noștri. Kibana ne spune despre cum ai găsit CryptPad, căutare  directă, printr-un motor de căutare, sau prin recomandare de la un alt serviciu online ca Reddit sau Twitter.";
     out.policy_howweuse = "Cum folosim ce aflăm";
     out.policy_howweuse_p1 = "Folosim aceste informații pentru a lua decizii mai bune n promovarea CryptPad, prin evaluarea eforturilor trecute care au fost de succes. Informațiile despre locația ta ne ajută să aflăm dacă ar trebui să oferim suport pentru alte limbi, pe lângă engleză.";
-    out.policy_howweuse_p2 = ""; "Informațiile despre browser-ul tău (dacă este bazat pe un sistem de operare desktop sau mobil) ne ajută să luăm decizii când prioritizăm viitoare mbunătățiri. Echipa noastră de development este mică, și ncercăm să facem alegeri care să mbunătățească experiența câtor mai mulți utilizatori.";
+    out.policy_howweuse_p2 = "Informațiile despre browser-ul tău (dacă este bazat pe un sistem de operare desktop sau mobil) ne ajută să luăm decizii când prioritizăm viitoare mbunătățiri. Echipa noastră de development este mică, și ncercăm să facem alegeri care să mbunătățească experiența câtor mai mulți utilizatori.";
 
     out.policy_whatwetell = "Ce le spunem altora despre tine";
     out.policy_whatwetell_p1 = "Nu furnizăm informațiile obținute terților, decât dacă ne este cerut n mod legal.";
@@ -343,9 +343,9 @@ define(function () {
     out.readme_cat1_l2 = "Deschide pad-urile din CryptDrive-ul tău: doublu-click pe iconița unui pad pentru a-l deschide.";
     out.readme_cat1_l3 = "Organizează-ți pad-urile: Când ești logat, orice pad accesezi va fi afișat ca n secțiunea {0} a drive-ului tău.";
     out.readme_cat1_l3_l1 = "Poți să folosești funcția click and drag pentru a muta fișierele n folderele secțiunii {0} a drive-ului tău și pentru a crea noi foldere.";
-    out.readme_cat1_l3_l2 = ""; "Ține minte să ncerci click-dreapta pe iconițe pentru că există și meniuri adiționale.";
+    out.readme_cat1_l3_l2 = "Ține minte să ncerci click-dreapta pe iconițe pentru că există și meniuri adiționale.";
     out.readme_cat1_l4 = "Pune pad-urile vechi n gunoi. Poți să folosești funcția click and drag pe pad-uri n categoria {0} la fel ca și n cazul folderelor.";
-    out.readme_cat2 = ""; "Crează pad-uri ca un profesionist";
+    out.readme_cat2 = "Crează pad-uri ca un profesionist";
     out.edit = "editează";
     out.view = "vezi";
     out.readme_cat2_l1 = "Butonul {0} din pad-ul tău dă accesul colaboratorilor tăi să {1} sau să {2} pad-ul.";
@@ -354,12 +354,18 @@ define(function () {
     out.readme_cat3_l1 = "Cu editorul de cod CryptPad, poți colabora pe cod ca Javascript și markdown ca HTML și Markdown";
     out.readme_cat3_l2 = "Cu editorul de slide-uri CryptPad, poți să faci prezentări scurte folosind Markdown";
     out.readme_cat3_l3 = "Cu CryptPoll poți să organizezi votări rapide, mai ales pentru a programa ntâlniri care se potrivesc calendarelor tuturor";
-    out.tips = "";  {"lag":"Iconița verde din dreapta-sus arată calitatea conexiunii internetului tău la serverele CryptPad.","scurtături":"`ctrl+b`, `ctrl+i` and `ctrl+u` sunt scurtături pentru bold, italic și underline.","indentare":"În listele cu bulină sau cele numerotate, poți folosi  tab sau shift+tab pentru a mări sau micșora indentarea.","titlu":"Poți seta titlul pad-urilor tale prin click pe centru sus.","stocare":"De fiecare dată când vizitezi un pad, dacă ești logat va fi salvat pe CryptDrive-ul tău.","marker":"Poți sublinia text ntr-un pad folosind itemul \"marker\" n meniul de stiluri."}    out.feedback_about = "Dacă citești asta, probabil că ești curios de ce CryptPad cere pagini web atunci când ntreprinzi anumite acțiuni";
+
+    out.tips = { };
+    out.tips.lag = "Iconița verde din dreapta-sus arată calitatea conexiunii internetului tău la serverele CryptPad.";
+    out.tips.shortcuts = "`ctrl+b`, `ctrl+i` and `ctrl+u` sunt scurtături pentru bold, italic și underline.";
+    out.tips.indentare = "În listele cu bulină sau cele numerotate, poți folosi  tab sau shift+tab pentru a mări sau micșora indentarea.";
+    out.tips.titlu = "Poți seta titlul pad-urilor tale prin click pe centru sus.";
+    out.tips.stocare = "De fiecare dată când vizitezi un pad, dacă ești logat va fi salvat pe CryptDrive-ul tău.";
+    out.tips.marker = "Poți sublinia text ntr-un pad folosind itemul \"marker\" n meniul de stiluri.";
+
+    out.feedback_about = "Dacă citești asta, probabil că ești curios de ce CryptPad cere pagini web atunci când ntreprinzi anumite acțiuni";
     out.feedback_privacy = "Ne pasă de intimitatea ta, si n același timp vrem să păstrăm CryptPad ușor de folosit.  Folosim acest fișier pentru a ne da seama care beneficii UI contează cel mai mult pentru utilizatori, cerându-l alături de un parametru specific atunci când acțiunea se desfășoară";
     out.feedback_optout = "Dacă vrei să ieși, vizitează <a href='/settings/'>setările de pe pagina ta de user</a>, unde vei găsi o căsuță pentru a activa sau dezactiva feedback-ul de la user";
-
-    return out;
-});
 
     return out;
 });
