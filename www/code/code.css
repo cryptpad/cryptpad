@@ -61,7 +61,7 @@ body {
   border: 3px solid black;
   padding: 15px;
 }
-@media (max-width: 720px) {
+@media (max-width: 600px) {
   .CodeMirror {
     flex: 1;
     max-width: 100%;
