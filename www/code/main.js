@@ -245,12 +245,12 @@ define([
                     if ($previewContainer.is(':visible')) {
                         forceDrawPreview();
                         $codeMirror.removeClass('fullPage');
-                        Cryptpad.setPadAttribute('previewMode', true, function (e, data) {
+                        Cryptpad.setPadAttribute('previewMode', true, function (e) {
                             if (e) { return console.log(e); }
                         });
                     } else {
                         $codeMirror.addClass('fullPage');
-                        Cryptpad.setPadAttribute('previewMode', false, function (e, data) {
+                        Cryptpad.setPadAttribute('previewMode', false, function (e) {
                             if (e) { return console.log(e); }
                         });
                     }
@@ -320,7 +320,6 @@ define([
 
                 Cryptpad.getPadAttribute('previewMode', function (e, data) {
                     if (e) { return void console.error(e); }
-                    var $codeMirror = $iframe.find('.CodeMirror');
                     if (data === false && APP.$previewButton) {
                         APP.$previewButton.click();
                     }
