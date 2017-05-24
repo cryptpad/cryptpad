@@ -112,7 +112,9 @@ define([
 
             var drawPreview = Cryptpad.throttle(function () {
                 if (CodeMirror.highlightMode !== 'markdown') { return; }
-                DiffMd.apply(DiffMd.render(editor.getValue()), $preview);
+                try {
+                    DiffMd.apply(DiffMd.render(editor.getValue()), $preview);
+                } catch (e) { console.error(e); }
             }, 150);
 
             var onLocal = config.onLocal = function () {
