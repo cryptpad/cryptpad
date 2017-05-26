@@ -18,6 +18,9 @@ define([
         /^http(s)?:\/\/localhost\:/
     ];
 
+    // Safari is weird about localStorage in iframes but seems to let sessionStorage slide.
+    localStorage.User_hash = localStorage.User_hash || sessionStorage.User_hash;
+
     Cryptpad.ready(function () {
         console.log('IFRAME READY');
         $(window).on("message", function (jqe) {
