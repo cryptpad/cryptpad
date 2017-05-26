@@ -172,7 +172,7 @@ define([
             if (typeof(proxy.loginToken) !== 'number') {
                 proxy[tokenKey] = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
             }
-
+            if (sessionStorage) { sessionStorage.setItem('User_hash', localStorage.getItem('User_hash')); }
             var localToken = tryParsing(localStorage.getItem(tokenKey));
             if (localToken === null) {
                 // if that number hasn't been set to localStorage, do so.
