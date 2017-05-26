@@ -122,5 +122,14 @@ define([], function () {
         xhr.send(null);
     };
 
+    Util.throttle = function (f, ms) {
+        var to;
+        var g = function () {
+            window.clearTimeout(to);
+            to = window.setTimeout(f, ms);
+        };
+        return g;
+    };
+
     return Util;
 });

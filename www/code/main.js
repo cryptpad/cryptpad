@@ -110,6 +110,18 @@ define([
                 return stringify(obj);
             };
 
+            var forceDrawPreview = function () {
+                try {
+                    DiffMd.apply(DiffMd.render(editor.getValue()), $preview);
+                } catch (e) { console.error(e); }
+            };
+
+            var drawPreview = Cryptpad.throttle(function () {
+                if (CodeMirror.highlightMode !== 'markdown') { return; }
+                if (!$previewContainer.is(':visible')) { return; }
+                forceDrawPreview();
+            }, 150);
+
             var onLocal = config.onLocal = function () {
                 if (initializing) { return; }
                 if (isHistoryMode) { return; }
@@ -117,7 +129,7 @@ define([
 
                 editor.save();
 
-                DiffMd.apply(DiffMd.render(editor.getValue()), $preview);
+                drawPreview();
 
                 var textValue = canonicalize(CodeMirror.$textarea.val());
                 var shjson = stringifyInner(textValue);
@@ -324,14 +336,13 @@ define([
                 var hjson = JSON.parse(shjson);
                 var remoteDoc = hjson.content;
 
-                DiffMd.apply(DiffMd.render(remoteDoc), $preview);
-
                 var highlightMode = hjson.highlightMode;
                 if (highlightMode && highlightMode !== APP.highlightMode) {
                     CodeMirror.setMode(highlightMode, onModeChanged);
                 }
 
                 CodeMirror.setValueAndCursor(oldDoc, remoteDoc, TextPatcher);
+                drawPreview();
 
                 if (!readOnly) {
                     var textValue = canonicalize(CodeMirror.$textarea.val());
