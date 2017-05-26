@@ -37,8 +37,6 @@ define(function() {
 
     config.enableHistory = true;
 
-    config.enablePinLimit = true;
-
     /*  user passwords are hashed with scrypt, and salted with their username.
         this value will be appended to the username, causing the resulting hash
         to differ from other CryptPad instances if customized. This makes it

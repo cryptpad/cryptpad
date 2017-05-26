@@ -2712,13 +2712,11 @@ define([
             }
 
             /* add the usage */
-            if (AppConfig.enablePinLimit) {
-                Cryptpad.createUsageBar(function (err, $limitContainer) {
-                    if (err) { return void logError(err); }
-                    $leftside.html('');
-                    $leftside.append($limitContainer);
-                });
-            }
+            Cryptpad.createUsageBar(function (err, $limitContainer) {
+                if (err) { return void logError(err); }
+                $leftside.html('');
+                $leftside.append($limitContainer);
+            });
 
             /* add a history button */
             var histConfig = {

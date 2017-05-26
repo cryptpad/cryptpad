@@ -116,11 +116,46 @@ module.exports = {
         'contact',
     ],
 
-    /*  Domain
-     *  If you want to have enable payments on your CryptPad instance, it has to be able to tell
-     *  our account server what is your domain
+    /*  Limits, Subscriptions and Contact
+     *
+     *  CryptPad limits every registered user to 50MB of storage.
+     *  By default it also allows that limit to be increased by subscribing at accounts.cryptpad.fr
+     *  You can either:
+     *    A: Hide the button for subscribing, so everyone is limited to 50MB
+     *    B: Support cryptpad and share 50% of the revenue earned on your instance
+     * 
+     *  CryptPad is developed by people who need to live and who deserve an equivilent life to
+     *  what they would get at a company which monitizes user data. However, we intend to have
+     *  a mutually positive relationship with every one of our users, including you. If you are
+     *  getting value from CryptPad, you should be giving equal value back.
+     * 
+     *  If you are using CryptPad in a business context, please consider taking a support contract
+     *  by contacting sales@cryptpad.fr
+     * 
+     *  If you choose A, set this variable to true to hide the subscription button.
      */
-    // domain: 'https://cryptpad.fr',
+    noSubscriptionButton: false,
+    /*
+     *  If you choose B, set the domain of your cryptpad instance here and then contact
+     *  sales@cryptpad.fr and tell us your domain, we will tell you what is needed to get paid.
+     */
+    myDomain: 'i.did.not.read.my.config.cryptpad.myserver.tld',
+    /*
+     *  If you are using CryptPad internally and you want to increase the per-user storage limit,
+     *  change the following value.
+     *  Please note: Providing a public offer that is better than cryptpad.fr is an attack on
+     *    the project. Please leave this alone if you are providing a public service.
+     */
+    defaultStorageLimit: 50 * 1024 * 1024,
+    /*
+     *  By default, CryptPad contacts our accounts server once a day to check for changes in the
+     *  people who have accounts. This check-in will also send your email and the version of
+     *  CryptPad you run so we can reach you if we are aware of a serious problem with your
+     *  CryptPad instance. We will never sell it or use it for marketing. If you want to block this
+     *  check-in and remain completely private, set this to false and noSubscriptionButton to true.
+     */
+    adminEmail: 'i.did.not.read.my.config@cryptpad.fr',
+
 
     /*
         You have the option of specifying an alternative storage adaptor.
@@ -210,12 +245,6 @@ module.exports = {
      *  registered users' public keys can be found on the settings page.
      */
     //restrictUploads: false,
-
-    /*  Default user storage limit (bytes)
-     *  if you don't want to limit users,
-     *  you can set this to the size of your hard disk
-     */
-    defaultStorageLimit: 50 * 1024 * 1024,
 
     /*  Max Upload Size (bytes)
      *  this sets the maximum size of any one file uploaded to the server.
