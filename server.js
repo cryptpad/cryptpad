@@ -8,6 +8,7 @@ var Fs = require('fs');
 var WebSocketServer = require('ws').Server;
 var NetfluxSrv = require('./node_modules/chainpad-server/NetfluxWebsocketSrv');
 var Package = require('./package.json');
+var Path = require("path");
 
 var config = require('./config');
 var websocketPort = config.websocketPort || config.httpPort;
@@ -47,6 +48,21 @@ var setHeaders = (function () {
     return function () {};
 }());
 
+(function () {
+if (!config.logFeedback) { return; }
+
+const logFeedback = function (url) {
+    url.replace(/\?(.*?)=/, function (all, fb) {
+        console.log('[FEEDBACK] %s', fb);
+    });
+};
+
+app.head(/^\/common\/feedback\.html/, function (req, res, next) {
+    logFeedback(req.url);
+    next();
+});
+}());
+
 app.use(function (req, res, next) {
     setHeaders(req, res);
     if (/[\?\&]ver=[^\/]+$/.test(req.url)) { res.setHeader("Cache-Control", "max-age=31536000"); }
@@ -66,6 +82,8 @@ Fs.exists(__dirname + "/customize", function (e) {
 var mainPages = config.mainPages || ['index', 'privacy', 'terms', 'about', 'contact'];
 var mainPagePattern = new RegExp('^\/(' + mainPages.join('|') + ').html$');
 app.get(mainPagePattern, Express.static(__dirname + '/customize.dist'));
+
+app.use("/blob", Express.static(Path.join(__dirname, (config.blobPath || './blob'))));
 
 app.use("/customize", Express.static(__dirname + '/customize'));
 app.use("/customize", Express.static(__dirname + '/customize.dist'));

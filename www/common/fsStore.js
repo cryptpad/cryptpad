@@ -1,10 +1,10 @@
 define([
+    'jquery',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/textpatcher/TextPatcher.amd.js',
-    '/common/fileObject.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Listmap, Crypto, TextPatcher, FO) {
+    '/common/userObject.js',
+], function ($, Listmap, Crypto, TextPatcher, FO) {
     /*
         This module uses localStorage, which is synchronous, but exposes an
         asyncronous API. This is so that we can substitute other storage
@@ -13,7 +13,6 @@ define([
         To override these methods, create another file at:
         /customize/storage.js
     */
-    var $ = window.jQuery;
 
     var Store = {};
     var store;
@@ -89,21 +88,23 @@ define([
         ret.removeData = filesOp.removeData;
         ret.pushData = filesOp.pushData;
 
-        ret.addPad = function (href, path, name) {
-            filesOp.addPad(href, path, name);
+        ret.addPad = function (data, path) {
+            filesOp.add(data, path);
         };
 
         ret.forgetPad = function (href, cb) {
-            filesOp.forgetPad(href);
+            filesOp.forget(href);
             cb();
         };
 
-        ret.addTemplate = function (href) {
-            filesOp.addTemplate(href);
-        };
-
         ret.listTemplates = function () {
-            return filesOp.listTemplates();
+            var templateFiles = filesOp.getFiles(['template']);
+            var res = [];
+            templateFiles.forEach(function (f) {
+                var data = filesOp.getFileData(f);
+                res.push(JSON.parse(JSON.stringify(data)));
+            });
+            return res;
         };
 
         ret.getProxy = function () {
@@ -123,14 +124,22 @@ define([
         };
 
         ret.replaceHref = function (o, n) {
-            return filesOp.replaceHref(o, n);
+            return filesOp.replace(o, n);
         };
 
-        var changeHandlers = ret.changeHandlers = [];
+        ret.changeHandlers = [];
 
-        ret.change = function (f) {};
+        ret.change = function () {};
 
         return ret;
+    };
+
+    var tryParsing = function (x) {
+        try { return JSON.parse(x); }
+        catch (e) {
+            console.error(e);
+            return null;
+        }
     };
 
     var onReady = function (f, proxy, Cryptpad, exp) {
@@ -144,6 +153,37 @@ define([
             f(void 0, store);
         }
 
+        var requestLogin = function () {
+            // log out so that you don't go into an endless loop...
+            Cryptpad.logout();
+
+            // redirect them to log in, and come back when they're done.
+            sessionStorage.redirectTo = window.location.href;
+            window.location.href = '/login/';
+        };
+
+        var tokenKey = 'loginToken';
+        if (Cryptpad.isLoggedIn()) {
+/*  This isn't truly secure, since anyone who can read the user's object can
+    set their local loginToken to match that in the object. However, it exposes
+    a UI that will work most of the time. */
+
+            // every user object should have a persistent, random number
+            if (typeof(proxy.loginToken) !== 'number') {
+                proxy[tokenKey] = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
+            }
+            if (sessionStorage) { sessionStorage.setItem('User_hash', localStorage.getItem('User_hash')); }
+            var localToken = tryParsing(localStorage.getItem(tokenKey));
+            if (localToken === null) {
+                // if that number hasn't been set to localStorage, do so.
+                localStorage.setItem(tokenKey, proxy.loginToken);
+            } else if (localToken !== proxy[tokenKey]) {
+                // if it has been, and the local number doesn't match that in
+                // the user object, request that they reauthenticate.
+                return void requestLogin();
+            }
+        }
+
         if (typeof(proxy.allowUserFeedback) !== 'boolean') {
             proxy.allowUserFeedback = true;
         }
@@ -154,9 +194,21 @@ define([
             proxy.uid = Cryptpad.createChannelId();
         }
 
-        proxy.on('change', [Cryptpad.displayNameKey], function (o, n, p) {
+        // if the user is logged in, but does not have signing keys...
+        if (Cryptpad.isLoggedIn() && !Cryptpad.hasSigningKeys(proxy)) {
+            return void requestLogin();
+        }
+
+        proxy.on('change', [Cryptpad.displayNameKey], function (o, n) {
             if (typeof(n) !== "string") { return; }
             Cryptpad.changeDisplayName(n);
+        });
+        proxy.on('change', [tokenKey], function () {
+            console.log('wut');
+            var localToken = tryParsing(localStorage.getItem(tokenKey));
+            if (localToken !== proxy[tokenKey]) {
+                return void requestLogin();
+            }
         });
     };
 
@@ -170,7 +222,7 @@ define([
         if (!hash) {
             throw new Error('[Store.init] Unable to find or create a drive hash. Aborting...');
         }
-        var secret = Cryptpad.getSecrets(hash);
+        var secret = Cryptpad.getSecrets('drive', hash);
         var listmapConfig = {
             data: {},
             websocketURL: Cryptpad.getWebsocketURL(),
@@ -185,7 +237,6 @@ define([
         var exp = {};
 
         window.addEventListener('storage', function (e) {
-            var key = e.key;
             if (e.key !== Cryptpad.userHashKey) { return; }
             var o = e.oldValue;
             var n = e.newValue;

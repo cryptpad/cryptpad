@@ -1,7 +1,6 @@
 define([
     '/bower_components/tweetnacl/nacl-fast.min.js',
 ], function () {
-    var MAX_LAG_BEFORE_TIMEOUT = 30000;
     var Nacl = window.nacl;
 
     var uid = function () {
@@ -102,9 +101,16 @@ types of messages:
             timeouts: {}, // timeouts
             pending: {}, // callbacks
             cookie: null,
+            connected: true,
         };
 
         var send = function (type, msg, cb) {
+            if (!ctx.connected && type !== 'COOKIE') {
+                return void window.setTimeout(function () {
+                    cb('DISCONNECTED');
+                });
+            }
+
             // construct a signed message...
 
             var data = [type, msg];
@@ -123,11 +129,22 @@ types of messages:
             return sendMsg(ctx, data, cb);
         };
 
-        network.on('message', function (msg, sender) {
+        network.on('message', function (msg) {
             onMsg(ctx, msg);
         });
 
-        send('COOKIE', "", function (e, msg) {
+        network.on('disconnect', function () {
+            ctx.connected = false;
+        });
+
+        network.on('reconnect', function () {
+            send('COOKIE', "", function (e) {
+                if (e) { return void cb(e); }
+                ctx.connected = true;
+            });
+        });
+
+        send('COOKIE', "", function (e) {
             if (e) { return void cb(e); }
             // callback to provide 'send' method to whatever needs it
             cb(void 0, { send: send, });

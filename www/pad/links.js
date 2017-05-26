@@ -42,7 +42,7 @@ define(function () {
                     });
                 }
                 if (editor.contextMenu) {
-                    editor.contextMenu.addListener(function(startElement, selection, path) {
+                    editor.contextMenu.addListener(function(startElement) {
                         if (startElement) {
                             var anchor = getActiveLink(editor);
                             if (anchor && anchor.getAttribute('href')) {

@@ -1,11 +1,10 @@
 define([
+    'jquery',
     '/customize/application_config.js',
-    '/common/cryptpad-common.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Cryptpad) {
-    var $ = window.$;
+    '/common/cryptpad-common.js'
+], function ($, Config, Cryptpad) {
 
-    var APP = window.APP = {
+    window.APP = {
         Cryptpad: Cryptpad,
     };
 
@@ -119,68 +118,70 @@ define([
             $('button.login').click();
         });
 
-        $('button.login').click(function (e) {
-            Cryptpad.addLoadingScreen(Messages.login_hashing);
-            // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed after hashing the password
+        $('button.login').click(function () {
+            // setTimeout 100ms to remove the keyboard on mobile devices before the loading screen pops up
             window.setTimeout(function () {
-                loginReady(function () {
-                    var uname = $uname.val();
-                    var passwd = $passwd.val();
-                    Login.loginOrRegister(uname, passwd, false, function (err, result) {
-                        if (!err) {
-                            var proxy = result.proxy;
+                Cryptpad.addLoadingScreen(Messages.login_hashing);
+                // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed after hashing the password
+                window.setTimeout(function () {
+                    loginReady(function () {
+                        var uname = $uname.val();
+                        var passwd = $passwd.val();
+                        Login.loginOrRegister(uname, passwd, false, function (err, result) {
+                            if (!err) {
+                                var proxy = result.proxy;
 
-                            // successful validation and user already exists
-                            // set user hash in localStorage and redirect to drive
-                            if (proxy && !proxy.login_name) {
-                                proxy.login_name = result.userName;
+                                // successful validation and user already exists
+                                // set user hash in localStorage and redirect to drive
+                                if (proxy && !proxy.login_name) {
+                                    proxy.login_name = result.userName;
+                                }
+
+                                proxy.edPrivate = result.edPrivate;
+                                proxy.edPublic = result.edPublic;
+
+                                Cryptpad.whenRealtimeSyncs(result.realtime, function () {
+                                    Cryptpad.login(result.userHash, result.userName, function () {
+                                        document.location.href = '/drive/';
+                                    });
+                                });
+                                return;
                             }
-
-                            proxy.edPrivate = result.edPrivate;
-                            proxy.edPublic = result.edPublic;
-
-                            Cryptpad.whenRealtimeSyncs(result.realtime, function () {
-                                Cryptpad.login(result.userHash, result.userName, function () {
-                                    document.location.href = '/drive/';
-                                });
-                            });
-                            return;
-                        }
-                        switch (err) {
-                            case 'NO_SUCH_USER':
-                                Cryptpad.removeLoadingScreen(function () {
-                                    Cryptpad.alert(Messages.login_noSuchUser);
-                                });
-                                break;
-                            case 'INVAL_USER':
-                                Cryptpad.removeLoadingScreen(function () {
-                                    Cryptpad.alert(Messages.login_invalUser);
-                                });
-                                break;
-                            case 'INVAL_PASS':
-                                Cryptpad.removeLoadingScreen(function () {
-                                    Cryptpad.alert(Messages.login_invalPass);
-                                });
-                                break;
-                            default: // UNHANDLED ERROR
-                                Cryptpad.errorLoadingScreen(Messages.login_unhandledError);
-                        }
+                            switch (err) {
+                                case 'NO_SUCH_USER':
+                                    Cryptpad.removeLoadingScreen(function () {
+                                        Cryptpad.alert(Messages.login_noSuchUser);
+                                    });
+                                    break;
+                                case 'INVAL_USER':
+                                    Cryptpad.removeLoadingScreen(function () {
+                                        Cryptpad.alert(Messages.login_invalUser);
+                                    });
+                                    break;
+                                case 'INVAL_PASS':
+                                    Cryptpad.removeLoadingScreen(function () {
+                                        Cryptpad.alert(Messages.login_invalPass);
+                                    });
+                                    break;
+                                default: // UNHANDLED ERROR
+                                    Cryptpad.errorLoadingScreen(Messages.login_unhandledError);
+                            }
+                        });
                     });
-                });
-            }, 0);
+                }, 0);
+            }, 100);
         });
         /* End Log in UI */
 
         var addButtonHandlers = function () {
-            $('button.register').click(function (e) {
+            $('button.register').click(function () {
                 var username = $('#name').val();
                 var passwd = $('#password').val();
-                var remember = $('#rememberme').is(':checked');
                 sessionStorage.login_user = username;
                 sessionStorage.login_pass = passwd;
                 document.location.href = '/register/';
             });
-            $('button.gotodrive').click(function (e) {
+            $('button.gotodrive').click(function () {
                 document.location.href = '/drive/';
             });
         };
@@ -191,4 +192,3 @@ define([
         console.log("ready");
     });
 });
-

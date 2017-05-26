@@ -1,20 +1,20 @@
 define([
-    '/api/config?cb=' + Math.random().toString(16).substring(2),
+    'jquery',
+    '/api/config',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
-    '/common/cryptpad-common.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Realtime, Crypto, TextPatcher, Cryptpad) { 
-    var $ = window.jQuery;
+    '/common/cryptpad-common.js'
+], function ($, Config, Realtime, Crypto, TextPatcher, Cryptpad) {
 
     var secret = Cryptpad.getSecrets();
+    if (!secret.keys) {
+        secret.keys = secret.key;
+    }
 
     var module = window.APP = {
         TextPatcher: TextPatcher
     };
-
-    var userName = module.userName = Crypto.rand64(8);
 
     var initializing = true;
     var $textarea = $('textarea');
@@ -22,8 +22,9 @@ define([
     var config = module.config = {
         initialState: '',
         websocketURL: Config.websocketURL,
+        validateKey: secret.keys.validateKey || undefined,
         channel: secret.channel,
-        crypto: Crypto.createEncryptor(secret.key),
+        crypto: Crypto.createEncryptor(secret.keys),
     };
 
     var setEditable = function (bool) { $textarea.attr('disabled', !bool); };
@@ -31,14 +32,15 @@ define([
 
     setEditable(false);
 
-    var onInit = config.onInit = function (info) {
-        window.location.hash = info.channel + secret.key;
+    config.onInit = function (info) {
+        var editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+        Cryptpad.replaceHash(editHash);
         $(window).on('hashchange', function() {
             window.location.reload();
         });
     };
 
-    var onRemote = config.onRemote = function (info) {
+    config.onRemote = function () {
         if (initializing) { return; }
         var userDoc = module.realtime.getUserDoc();
         var content = canonicalize($textarea.val());
@@ -60,7 +62,7 @@ define([
         module.patchText(canonicalize($textarea.val()));
     };
 
-    var onReady = config.onReady = function (info) {
+    config.onReady = function (info) {
         var realtime = module.realtime = info.realtime;
         module.patchText = TextPatcher.create({
             realtime: realtime
@@ -72,12 +74,12 @@ define([
         initializing = false;
     };
 
-    var onAbort = config.onAbort = function (info) {
+    config.onAbort = function () {
         setEditable(false);
         window.alert("Server Connection Lost");
     };
 
-    var onConnectionChange = config.onConnectionChange = function (info) {
+    config.onConnectionChange = function (info) {
         if (info.state) {
             initializing = true;
         } else {
@@ -86,7 +88,7 @@ define([
         }
     };
 
-    var rt = Realtime.start(config);
+    Realtime.start(config);
 
     ['cut', 'paste', 'change', 'keyup', 'keydown', 'select', 'textInput']
         .forEach(function (evt) {

@@ -11,6 +11,8 @@ define(function () {
     out.type.slide = 'Présentation';
     out.type.drive = 'Drive';
     out.type.whiteboard = "Tableau Blanc";
+    out.type.file = "Fichier";
+    out.type.media = "Média";
 
     out.button_newpad = 'Nouveau document texte';
     out.button_newcode = 'Nouvelle page de code';
@@ -30,6 +32,7 @@ define(function () {
     out.error = "Erreur";
     out.saved = "Enregistré";
     out.synced = "Tout est enregistré";
+    out.deleted = "Pad supprimé de votre CryptDrive";
 
     out.disconnected = 'Déconnecté';
     out.synchronizing = 'Synchronisation';
@@ -49,9 +52,35 @@ define(function () {
 
     out.language = "Langue";
 
+    out.comingSoon = "Bientôt disponible...";
+
+    out.newVersion = '<b>CryptPad a été mis à jour !</b><br>' +
+                     'Découvrez les nouveautés de la dernière version :<br>'+
+                     '<a href="https://github.com/xwiki-labs/cryptpad/releases/tag/{0}" target="_blank">Notes de version pour CryptPad {0}</a>';
+
+    out.upgrade = "Augmenter votre limite";
+    out.upgradeTitle = "Améliorer votre compte pour augmenter la limite de stockage";
+    out.MB = "Mo";
+    out.GB = "Go";
+    out.KB = "Ko";
+
+    out.formattedMB = "{0} Mo";
+    out.formattedGB = "{0} Go";
+    out.formattedKB = "{0} Ko";
+
     out.greenLight = "Tout fonctionne bien";
     out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur";
     out.redLight = "Vous êtes déconnectés de la session";
+
+    out.pinLimitReached = "Vous avez atteint votre limite de stockage";
+    out.updated_0_pinLimitReachedAlert = "Vous avez atteint votre limite de stockage. Les nouveaux pads ne seront pas enregistrés dans votre CryptDrive.<br>" +
+        'Vous pouvez soit supprimer des pads de votre CryptDrive, soit vous <a href="https://accounts.cryptpad.fr/#!on={0}" target="_blank">abonner à une offre premium</a> pour augmenter la limite maximale.';
+    out.pinLimitReachedAlert = out.updated_0_pinLimitReachedAlert;
+    out.pinAboveLimitAlert = 'Depuis la dernière version, nous imposons désormais une limite de 50 Mo de stockage gratuit et vous utilisez actuellement {0}. You devriez soit supprimer certains pads ou soit vous abonner sur <a href="https://accounts.cryptpad.fr/#!on={1}" target="_blank">accounts.cryptpad.fr</a>. Votre contribution nous aidera à améliorer CryptPad et à répandre le Zero Knowledge. Vous pouvez contacter le <a href="https://accounts.cryptpad.fr/#/support" target="_blank">support</a> pour tout problème ou question concernant ces changements.';
+    out.pinLimitNotPinned = "Vous avez atteint votre limite de stockage.<br>"+
+                            "Ce pad n'est pas enregistré dans votre CryptDrive.";
+    out.pinLimitDrive = out.pinLimitReached+ ".<br>" +
+                        "Vous ne pouvez pas créer de nouveaux pads.";
 
     out.importButtonTitle = 'Importer un pad depuis un fichier local';
 
@@ -80,6 +109,8 @@ define(function () {
     out.templateSaved = "Modèle enregistré !";
     out.selectTemplate = "Sélectionner un modèle ou appuyer sur Échap";
 
+    out.previewButtonTitle = "Afficher ou cacher la prévisualisation de Markdown";
+
     out.presentButtonTitle = "Entrer en mode présentation";
     out.presentSuccess = 'Appuyer sur Échap pour quitter le mode présentation';
 
@@ -93,6 +124,7 @@ define(function () {
     out.printDate = "Afficher la date";
     out.printTitle = "Afficher le titre du pad";
     out.printCSS = "Personnaliser l'apparence (CSS):";
+    out.printTransition = "Activer les animations de transition";
 
     out.slideOptionsTitle = "Personnaliser la présentation";
     out.slideOptionsButton = "Enregistrer (Entrée)";
@@ -114,6 +146,18 @@ define(function () {
 
     out.cancel = "Annuler";
     out.cancelButton = 'Annuler (Echap)';
+
+    out.historyButton = "Afficher l'historique du document";
+    out.history_next = "Voir la version suivante";
+    out.history_prev = "Voir la version précédente";
+    out.history_goTo = "Voir la version sélectionnée";
+    out.history_close = "Retour";
+    out.history_closeTitle = "Fermer l'historique";
+    out.history_restore = "Restaurer";
+    out.history_restoreTitle = "Restaurer la version du document sélectionnée";
+    out.history_restorePrompt = "Êtes-vous sûr de vouloir remplacer la version actuelle du document par la version affichée ?";
+    out.history_restoreDone = "Document restauré";
+    out.history_version = "Version :";
 
     // Polls
 
@@ -196,14 +240,22 @@ define(function () {
     out.fm_info_root = "Créez ici autant de dossiers que vous le souhaitez pour trier vos fichiers.";
     out.fm_info_unsorted = 'Contient tous les pads que vous avez ouvert et qui ne sont pas triés dans "Documents" ou déplacés vers la "Corbeille".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
     out.fm_info_template = "Contient tous les fichiers que vous avez sauvés en tant que modèle afin de les réutiliser lors de la création d'un nouveau pad.";
-    out.fm_info_trash = 'Les fichiers supprimés dans la corbeille sont également enlevés de "Tous les fichiers" et il est impossible de les récupérer depuis l\'explorateur de fichiers.'; // Same here for "All files" and "out.fm_filesDataName"
+    out.updated_0_fm_info_trash = "Vider la corbeille permet de libérer de l'espace dans votre CryptDrive";
+    out.fm_info_trash = out.updated_0_fm_info_trash;
     out.fm_info_allFiles = 'Contient tous les fichiers de "Documents", "Fichiers non triés" et "Corbeille". Vous ne pouvez pas supprimer ou déplacer des fichiers depuis cet endroit.'; // Same here
+    out.fm_info_anonymous = 'Vous n\'êtes pas connectés, ces pads risquent donc d\'être supprimés (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">découvrez pourquoi</a>). ' +
+                            '<a href="/register/">Inscrivez-vous</a> ou <a href="/login/">connectez-vous</a> pour les maintenir en vie.';
     out.fm_alert_backupUrl = "Lien de secours pour ce disque.<br>" +
                              "Il est <strong>fortement recommandé</strong> de garder ce lien pour vous-même.<br>" +
                              "Elle vous servira en cas de perte des données de votre navigateur afin de retrouver vos fichiers.<br>" +
                              "Quiconque se trouve en possession de celle-ci peut modifier ou supprimer tous les fichiers de ce gestionnaire.<br>";
+    out.fm_alert_anonymous = "Bonjour ! Vous utilisez actuellement Cryptpad de manière anonyme, ce qui ne pose pas de problème mais vos pads peuvent être supprimés après un certain temps " +
+                             "d'inactivité. Nous avons désactivé certaines fonctionnalités avancées de CryptDrive pour les utilisateurs anonymes afin de rendre clair le fait que ce n'est pas " +
+                             'un endroit sûr pour le stockage des documents. Vous pouvez <a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">en lire plus</a> concernant ' +
+                             'nos raisons pour ces changements et pourquoi vous devriez vraiment <a href="/register/">vous enregistrer</a> et <a href="/login/">vous connecter</a>.';
     out.fm_backup_title = 'Lien de secours';
     out.fm_nameFile = 'Comment souhaitez-vous nommer ce fichier ?';
+    out.fm_error_cantPin = "Erreur interne du serveur. Veuillez recharger la page et essayer de nouveau.";
     // File - Context menu
     out.fc_newfolder = "Nouveau dossier";
     out.fc_rename = "Renommer";
@@ -214,6 +266,7 @@ define(function () {
     out.fc_remove = "Supprimer définitivement";
     out.fc_empty = "Vider la corbeille";
     out.fc_prop = "Propriétés";
+    out.fc_sizeInKilobytes = "Taille en kilo-octets";
     // fileObject.js (logs)
     out.fo_moveUnsortedError = "La liste des éléments non triés ne peut pas contenir de dossiers.";
     out.fo_existingNameError = "Ce nom est déjà utilisé dans ce répertoire. Veuillez en choisir un autre.";
@@ -294,6 +347,32 @@ define(function () {
 
     out.settings_anonymous = "Vous n'êtes pas connectés. Ces préférences seront utilisées pour ce navigateur.";
     out.settings_publicSigningKey = "Clé publique de signature";
+
+    out.settings_usage = "Utilisation";
+    out.settings_usageTitle = "Voir la taille totale de vos pads épinglés en Mo";
+    out.settings_pinningNotAvailable = "Les pads épinglés sont disponibles uniquement pour les utilisateurs enregistrés.";
+    out.settings_pinningError = "Un problème est survenu";
+    out.settings_usageAmount = "Vos pads épinglés occupent {0} Mo";
+
+    out.settings_logoutEverywhereTitle = "Se déconnecter partout";
+    out.settings_logoutEverywhere = "Se déconnecter de toutes les autres sessions.";
+    out.settings_logoutEverywhereConfirm = "Êtes-vous sûr ? Vous devrez vous reconnecter sur tous vos autres appareils.";
+
+    out.upload_serverError = "Erreur interne: impossible d'uploader le fichier pour l'instant.";
+    out.upload_uploadPending = "Vous avez déjà un fichier en cours d'upload. Souhaitez-vous l'annuler et uploader ce nouveau fichier ?";
+    out.upload_success = "Votre fichier ({0}) a été uploadé avec succès et ajouté à votre CryptDrive.";
+    out.upload_notEnoughSpace = "Il n'y a pas assez d'espace libre dans votre CryptDrive pour ce fichier.";
+    out.upload_tooLarge = "Ce fichier dépasse la taille maximale autorisée.";
+    out.upload_choose = "Choisir un fichier";
+    out.upload_pending = "En attente";
+    out.upload_cancelled = "Annulé";
+    out.upload_name = "Nom du fichier";
+    out.upload_size = "Taille";
+    out.upload_progress = "État";
+    out.download_button = "Déchiffrer et télécharger";
+
+    // general warnings
+    out.warn_notPinned = "Ce pad n'est stocké dans aucun CryptDrive. Il va expirer après 3 mois d'inactivité. <a href='/about.html#pinning'>En savoir plus...</a>";
 
     // index.html
 
@@ -378,12 +457,12 @@ define(function () {
     // Initial states
 
     out.initialState = [
-        '<span style="font-size:18px;"><p>',
+        '<span style="font-size:16px;"><p>',
         'Voici <strong>CryptPad</strong>, l\'éditeur collaboratif en temps-réel Zero Knowledge. Tout est sauvegardé dés que vous le tapez.',
         '<br>',
         'Partagez le lien vers ce pad avec des amis ou utilisez le bouton <span style="background-color:#5cb85c;color:#ffffff;">&nbsp;Partager&nbsp;</span> pour obtenir le <em>lien de lecture-seule</em>, qui permet la lecture mais non la modification.',
         '</p>',
-        '<p><span style="color:#808080; font-size: 18px;">',
+        '<p><span style="color:#808080; font-size: 16px;">',
         '<em>',
         'Lancez-vous, commencez à taper...',
         '</em></span></p></span>',
@@ -391,11 +470,10 @@ define(function () {
     ].join('');
 
     out.codeInitialState = [
-        '/*\n',
-        '   Voici l\'éditeur de code collaboratif et Zero Knowledge de CryptPad.\n',
-        '   Ce que vous tapez ici est chiffré de manière que seules les personnes avec le lien peuvent y accéder.\n',
-        '   Vous pouvez choisir le langage de programmation pour la coloration syntaxique, ainsi que le thème de couleurs, dans le coin supérieur droit.\n',
-        '*/'
+        '# Éditeur de code collaboratif et Zero Knowledge de CryptPad\n',
+        '\n',
+        '* Ce que vous tapez ici est chiffré de manière que seules les personnes avec le lien peuvent y accéder.\n',
+        '* Vous pouvez choisir le langage de programmation pour la coloration syntaxique, ainsi que le thème de couleurs, dans le coin supérieur droit.'
     ].join('');
 
     out.slideInitialState = [
@@ -446,7 +524,7 @@ define(function () {
     out.tips.marker = "Vous pouvez surligner du texte dans un pad en utilisant l'option \"marker\" dans le menu déroulant des styles.";
 
     out.feedback_about = "Si vous lisez ceci, vous vous demandez probablement pourquoi CryptPad envoie des requêtes vers des pages web quand vous realisez certaines actions.";
-    out.feedback_privacy = "Nous prenons au sérieux le respect de votre vie privée, et en même temps nous souhaitons rendre CryptPad très simple à utiliser. Nous utilisons cette page pour comprendre quelles foncitonnalités dans l'interface comptent le plus pour les utilisateurs, en l'appelant avec un paramètre spécifiant quelle action a été réalisée.";
+    out.feedback_privacy = "Nous prenons au sérieux le respect de votre vie privée, et en même temps nous souhaitons rendre CryptPad très simple à utiliser. Nous utilisons cette page pour comprendre quelles fonctionnalités dans l'interface comptent le plus pour les utilisateurs, en l'appelant avec un paramètre spécifiant quelle action a été réalisée.";
     out.feedback_optout = "Si vous le souhaitez, vous pouvez désactiver ces requêtes en vous rendant dans <a href='/settings/'>votre page de préférences</a>, où vous trouverez une case à cocher pour désactiver le retour d'expérience.";
 
     return out;

@@ -1,9 +1,8 @@
 define([
+    'jquery',
     '/customize/application_config.js',
-    '/api/config',
-    '/bower_components/jquery/dist/jquery.min.js'
-], function (Config, ApiConfig) {
-    var $ = window.jQuery;
+    '/api/config'
+], function ($, Config, ApiConfig) {
 
     var Messages = {};
 
@@ -17,12 +16,15 @@ define([
     /** Id of the div containing the lag info. */
     var LAG_ELEM_CLS = Bar.constants.lag = 'cryptpad-lag';
 
+    var LIMIT_ELEM_CLS = Bar.constants.lag = 'cryptpad-limit';
+
     /** The toolbar class which contains the user list, debug link and lag. */
     var TOOLBAR_CLS = Bar.constants.toolbar = 'cryptpad-toolbar';
 
     var TOP_CLS = Bar.constants.top = 'cryptpad-toolbar-top';
     var LEFTSIDE_CLS = Bar.constants.leftside = 'cryptpad-toolbar-leftside';
     var RIGHTSIDE_CLS = Bar.constants.rightside = 'cryptpad-toolbar-rightside';
+    var HISTORY_CLS = Bar.constants.history = 'cryptpad-toolbar-history';
 
     var SPINNER_CLS = Bar.constants.spinner = 'cryptpad-spinner';
 
@@ -74,7 +76,8 @@ define([
         })
         .append($('<div>', {'class': TOP_CLS}))
         .append($('<div>', {'class': LEFTSIDE_CLS}))
-        .append($('<div>', {'class': RIGHTSIDE_CLS}));
+        .append($('<div>', {'class': RIGHTSIDE_CLS}))
+        .append($('<div>', {'class': HISTORY_CLS}));
 
         // The 'notitle' class removes the line added for the title with a small screen
         if (!config || typeof config !== "object") {
@@ -93,14 +96,14 @@ define([
 
     var createSpinner = function ($container, config) {
         if (config.displayed.indexOf('spinner') !== -1) {
-            var $spin = $('<span>');
+            var $spin = $('<span>', {'class':SPINNER_CLS});
             var $spinner = $('<span>', {
                 id: uid(),
-                'class': SPINNER_CLS + ' spin fa fa-spinner fa-pulse',
+                'class': 'spin fa fa-spinner fa-pulse',
             }).appendTo($spin).hide();
             $('<span>', {
                 id: uid(),
-                'class': SPINNER_CLS + ' synced fa fa-check',
+                'class': 'synced fa fa-check',
                 title: Messages.synced
             }).appendTo($spin);
             $container.prepend($spin);
@@ -204,6 +207,13 @@ define([
                         });
                     }
                 }
+                if (hashes.fileHash) {
+                    options.push({
+                        tag: 'a',
+                        attributes: {title: Messages.viewShareTitle, 'class': 'fileShare'},
+                        content: '<span class="fa fa-eye"></span> ' + Messages.viewShare
+                    });
+                }
                 var dropdownConfigShare = {
                     text: $('<div>').append($shareIcon).append($span).html(),
                     options: options
@@ -222,7 +232,14 @@ define([
                 }
                 if (hashes.viewHash) {
                     $shareBlock.find('a.viewShare').click(function () {
-                        var url = window.location.origin + window.location.pathname + '#' + hashes.viewHash;
+                        var url = window.location.origin + window.location.pathname + '#' + hashes.viewHash ;
+                        var success = Cryptpad.Clipboard.copy(url);
+                        if (success) { Cryptpad.log(Messages.shareSuccess); }
+                    });
+                }
+                if (hashes.fileHash) {
+                    $shareBlock.find('a.fileShare').click(function () {
+                        var url = window.location.origin + window.location.pathname + '#' + hashes.fileHash ;
                         var success = Cryptpad.Clipboard.copy(url);
                         if (success) { Cryptpad.log(Messages.shareSuccess); }
                     });
@@ -371,7 +388,7 @@ define([
             'class': LAG_ELEM_CLS,
             id: uid(),
         });
-        var $a = $('<span>', {id: 'newLag'});
+        var $a = $('<span>', {'class': 'cryptpad-lag', id: 'newLag'});
         $('<span>', {'class': 'bar1'}).appendTo($a);
         $('<span>', {'class': 'bar2'}).appendTo($a);
         $('<span>', {'class': 'bar3'}).appendTo($a);
@@ -390,7 +407,7 @@ define([
         var title;
         var $lag = $(lagElement);
         if (lag) {
-            $lag.attr('class', '');
+            $lag.attr('class', 'cryptpad-lag');
             firstConnection = false;
             title = Messages.lag + ' : ' + lag + ' ms\n';
             if (lag > 30000) {
@@ -411,7 +428,7 @@ define([
             }
         }
         else if (!firstConnection) {
-            $lag.attr('class', '');
+            $lag.attr('class', 'cryptpad-lag');
             // Display the red light at the 2nd failed attemp to get the lag
             lagLight.addClass('lag-red');
             title = Messages.redLight;
@@ -473,6 +490,24 @@ define([
             $userContainer.append($lag);
         }
 
+        if (config.displayed.indexOf('limit') !== -1 && Config.enablePinning) {
+            var usage;
+            var $limitIcon = $('<span>', {'class': 'fa fa-exclamation-triangle'});
+            var $limit = $('<span>', {
+                'class': LIMIT_ELEM_CLS,
+                'title': Messages.pinLimitReached
+            }).append($limitIcon).hide().appendTo($userContainer);
+            var todo = function (e, overLimit) {
+                if (e) { return void console.error("Unable to get the pinned usage"); }
+                if (overLimit) {
+                    $limit.show().click(function () {
+                        Cryptpad.alert(Messages.pinLimitReachedAlert, null, true);
+                    });
+                }
+            };
+            Cryptpad.isOverPinLimit(todo);
+        }
+
         if (config.displayed.indexOf('newpad') !== -1) {
             var pads_options = [];
             Config.availablePadTypes.forEach(function (p) {
@@ -502,10 +537,13 @@ define([
 
         // User dropdown
         if (config.displayed.indexOf('useradmin') !== -1) {
-            var userMenuCfg = {
-                displayNameCls: USERNAME_CLS,
-                changeNameButtonCls: USERBUTTON_CLS,
-            };
+            var userMenuCfg = {};
+            if (!config.hideDisplayName) {
+                userMenuCfg = {
+                    displayNameCls: USERNAME_CLS,
+                    changeNameButtonCls: USERBUTTON_CLS,
+                };
+            }
             if (readOnly !== 1) {
                 userMenuCfg.displayName = 1;
                 userMenuCfg.displayChangeName = 1;
@@ -520,7 +558,8 @@ define([
             $userButton.click(function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                Cryptpad.getLastName(function (lastName) {
+                Cryptpad.getLastName(function (err, lastName) {
+                    if (err) { return void console.error("Cannot get last name", err); }
                     Cryptpad.prompt(Messages.changeNamePrompt, lastName || '', function (newName) {
                         if (newName === null && typeof(lastName) === "string") { return; }
                         if (newName === null) { newName = ''; }
@@ -673,25 +712,27 @@ define([
         }
 
         // Update user list
-        if (userData) {
-            userList.change.push(function (newUserData) {
-                var users = userList.users;
-                if (users.indexOf(myUserName) !== -1) { connected = true; }
-                if (!connected) { return; }
-                checkSynchronizing(users, myUserName, $stateElement);
-                updateUserList(config, myUserName, userListElement, users, userData, readOnly, $userAdminElement);
-            });
-        } else {
-            userList.change.push(function () {
-                var users = userList.users;
-                if (users.indexOf(myUserName) !== -1) { connected = true; }
-                if (!connected) { return; }
-                checkSynchronizing(users, myUserName, $stateElement);
-            });
+        if (userList) {
+            if (userData) {
+                userList.change.push(function (newUserData) {
+                    var users = userList.users;
+                    if (users.indexOf(myUserName) !== -1) { connected = true; }
+                    if (!connected) { return; }
+                    checkSynchronizing(users, myUserName, $stateElement);
+                    updateUserList(config, myUserName, userListElement, users, userData, readOnly, $userAdminElement);
+                });
+            } else {
+                userList.change.push(function () {
+                    var users = userList.users;
+                    if (users.indexOf(myUserName) !== -1) { connected = true; }
+                    if (!connected) { return; }
+                    checkSynchronizing(users, myUserName, $stateElement);
+                });
+            }
         }
         // Display notifications when users are joining/leaving the session
         var oldUserData;
-        if (typeof Cryptpad !== "undefined") {
+        if (typeof Cryptpad !== "undefined" && userList) {
             var notify = function(type, name, oldname) {
                 // type : 1 (+1 user), 0 (rename existing user), -1 (-1 user)
                 if (typeof name === "undefined") { return; }
@@ -757,7 +798,7 @@ define([
                 for (var k in newdata) {
                     if (k !== myUserName && userList.users.indexOf(k) !== -1) {
                         if (typeof oldUserData[k] === "undefined") {
-        // if the same uid is already present in the userdata, don't notify
+                            // if the same uid is already present in the userdata, don't notify
                             if (!userPresent(k, newdata[k], oldUserData)) {
                                 notify(1, newdata[k].name);
                             }
@@ -776,14 +817,16 @@ define([
             };
         };
 
-        realtime.onPatch(ks());
-        realtime.onMessage(ks(true));
+        if (realtime) {
+            realtime.onPatch(ks());
+            realtime.onMessage(ks(true));
 
-        checkLag(getLag, lagElement);
-        setInterval(function () {
-            if (!connected) { return; }
             checkLag(getLag, lagElement);
-        }, 3000);
+            setInterval(function () {
+                if (!connected) { return; }
+                checkLag(getLag, lagElement);
+            }, 3000);
+        } else { connected = true; }
 
         var failed = function () {
             connected = false;

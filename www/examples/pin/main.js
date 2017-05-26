@@ -1,11 +1,9 @@
-require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
+    'jquery',
     '/common/cryptpad-common.js',
-    '/common/pinpad.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Cryptpad, Pinpad) {
-    var $ = window.jQuery;
-    var APP = window.APP = {
+    '/common/pinpad.js'
+], function ($, Cryptpad, Pinpad) {
+    window.APP = {
         Cryptpad: Cryptpad,
     };
 
@@ -39,7 +37,7 @@ define([
     };
 
     $(function () {
-        Cryptpad.ready(function (err, env) {
+        Cryptpad.ready(function () {
             var network = Cryptpad.getNetwork();
             var proxy = Cryptpad.getStore().getProxy().proxy;
 

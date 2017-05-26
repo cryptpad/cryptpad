@@ -32,32 +32,75 @@
     <script src="/bower_components/codemirror/addon/fold/comment-fold.js"></script>
     <script src="/bower_components/codemirror/addon/display/placeholder.js"></script>
     <style>
-      html, body{
-          height: 100%;
-          width: 100%;
-          padding: 0px;
-          margin: 0px;
-          overflow: hidden;
-          box-sizing: border-box;
-          position: relative;
-      }
-      body {
-          display: flex;
-          flex-flow: column;
-      }
-      .CodeMirror {
-        height: 100%;
-      }
-      .CodeMirror-focused .cm-matchhighlight {
-        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQI12NgYGBgkKzc8x9CMDAwAAAmhwSbidEoSQAAAABJRU5ErkJggg==);
-        background-position: bottom;
-        background-repeat: repeat-x;
-      }
+        html, body{
+            height: 100%;
+            width: 100%;
+            padding: 0px;
+            margin: 0px;
+            overflow: hidden;
+            box-sizing: border-box;
+            position: relative;
+        }
+        body {
+            display: flex;
+            flex-flow: column;
+            max-height: 100%;
+            min-height: auto;
+        }
+        .CodeMirror {
+            display: inline-block;
+            height: 100%;
+            width: 50%;
+            min-width: 20%;
+            max-width: 80%;
+            resize: horizontal;
+        }
+        .CodeMirror.fullPage {
+            min-width: 100%;
+            max-width: 100%;
+            resize: none;
+        }
+        .CodeMirror-focused .cm-matchhighlight {
+            background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQI12NgYGBgkKzc8x9CMDAwAAAmhwSbidEoSQAAAABJRU5ErkJggg==);
+            background-position: bottom;
+            background-repeat: repeat-x;
+        }
+        #editorContainer {
+            flex: 1;
+            display: flex;
+            flex-flow: row;
+            height: 100%;
+            overflow: hidden;
+        }
+        #previewContainer {
+            flex: 1;
+            padding: 5px 20px;
+            overflow: auto;
+            display: inline-block;
+            height: 100%;
+            border-left: 1px solid black;
+            box-sizing: border-box;
+            font-family: Calibri,Ubuntu,sans-serif;
+        }
+        #preview {
+            max-width: 40vw;
+            margin: auto;
+        }
+        #preview table tr td, #preview table tr th {
+            border: 1px solid black;
+            padding: 15px;
+        }
+        #preview table tr th {
+            border: 3px solid black;
+        }
     </style>
 </head>
 <body>
   <div id="cme_toolbox" class="toolbar-container"></div>
-  <textarea id="editor1" name="editor1"></textarea>
+  <div id="editorContainer">
+    <textarea id="editor1" name="editor1"></textarea>
+    <div id="previewContainer"><div id="preview"></div></div>
+  </div>
 </body>
 </html>
 

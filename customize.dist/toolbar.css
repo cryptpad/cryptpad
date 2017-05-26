@@ -7,6 +7,7 @@
   font-family: FontAwesome;
 }
 .dropdown-bar button .fa-caret-down {
+  margin-right: 0px;
   margin-left: 5px;
 }
 .dropdown-bar .dropdown-bar-content {
@@ -112,56 +113,93 @@
   z-index: 9001;
 }
 .cryptpad-toolbar .fa {
+  font: normal normal normal 14px/1 FontAwesome;
   font-family: FontAwesome;
 }
 .cryptpad-toolbar a {
   float: right;
 }
-.cryptpad-toolbar button#shareButton {
+.cryptpad-toolbar button {
+  font: 12px Ubuntu, Arial, sans-serif;
+  border: 1px solid transparent;
+  border-radius: .25rem;
+  color: #000;
+  background-color: #fff;
+  border-color: #ccc;
+}
+.cryptpad-toolbar button * {
+  font: 12px Ubuntu, Arial, sans-serif;
+}
+.cryptpad-toolbar button#shareButton,
+.cryptpad-toolbar button.buttonSuccess {
   color: #fff;
   background: #5cb85c;
   border-color: #5cb85c;
 }
-.cryptpad-toolbar button#shareButton:hover {
+.cryptpad-toolbar button#shareButton:hover,
+.cryptpad-toolbar button.buttonSuccess:hover {
+  color: #fff;
   background: #449d44;
   border: 1px solid #419641;
 }
-.cryptpad-toolbar button#shareButton span {
+.cryptpad-toolbar button#shareButton span,
+.cryptpad-toolbar button.buttonSuccess span {
   color: #fff;
 }
-.cryptpad-toolbar button#shareButton .large {
+.cryptpad-toolbar button#shareButton .large,
+.cryptpad-toolbar button.buttonSuccess .large {
   margin-left: 5px;
 }
-.cryptpad-toolbar button#newdoc {
+.cryptpad-toolbar button#newdoc,
+.cryptpad-toolbar button.buttonPrimary {
   color: #fff;
   background: #0275d8;
   border-color: #0275d8;
 }
-.cryptpad-toolbar button#newdoc:hover {
+.cryptpad-toolbar button#newdoc:hover,
+.cryptpad-toolbar button.buttonPrimary:hover {
+  color: #fff;
   background: #025aa5;
   border: 1px solid #01549b;
 }
-.cryptpad-toolbar button#newdoc span {
+.cryptpad-toolbar button#newdoc span,
+.cryptpad-toolbar button.buttonPrimary span {
   color: #fff;
 }
-.cryptpad-toolbar button#newdoc .large {
+.cryptpad-toolbar button#newdoc .large,
+.cryptpad-toolbar button.buttonPrimary .large {
   margin-left: 5px;
 }
 .cryptpad-toolbar button.hidden {
   display: none;
 }
-.cryptpad-toolbar .cryptpad-lag {
-  box-sizing: content-box;
-  height: 16px;
-  width: 16px;
+.cryptpad-toolbar button:hover {
+  color: #292b2c;
+  background-color: #e6e6e6;
+  border-color: #adadad;
+}
+.cryptpad-toolbar button.upgrade {
+  font-size: 14px;
+  vertical-align: top;
+  margin-left: 10px;
+}
+.cryptpad-toolbar .cryptpad-limit {
+  box-sizing: border-box;
+  height: 26px;
+  width: 26px;
   display: inline-block;
-  padding: 5px;
-  margin: 3px 0;
+  padding: 3px;
+  margin: 0px;
+  margin-right: 3px;
+  vertical-align: middle;
 }
-.cryptpad-toolbar .cryptpad-lag div {
+.cryptpad-toolbar .cryptpad-limit span {
+  color: red;
+  cursor: pointer;
   margin: auto;
+  font-size: 20px;
 }
-.cryptpad-toolbar #newLag {
+.cryptpad-toolbar .cryptpad-lag {
   height: 20px;
   width: 23px;
   background: transparent;
@@ -170,8 +208,9 @@
   margin: 3px;
   vertical-align: top;
   box-sizing: content-box;
+  text-align: center;
 }
-.cryptpad-toolbar #newLag span {
+.cryptpad-toolbar .cryptpad-lag span {
   display: inline-block;
   width: 4px;
   margin: 0;
@@ -182,50 +221,50 @@
   border: 1px solid black;
   transition: background 1s, border 1s;
 }
-.cryptpad-toolbar #newLag span:last-child {
+.cryptpad-toolbar .cryptpad-lag span:last-child {
   margin-right: 0;
 }
-.cryptpad-toolbar #newLag span.bar1 {
+.cryptpad-toolbar .cryptpad-lag span.bar1 {
   height: 5px;
 }
-.cryptpad-toolbar #newLag span.bar2 {
+.cryptpad-toolbar .cryptpad-lag span.bar2 {
   height: 10px;
 }
-.cryptpad-toolbar #newLag span.bar3 {
+.cryptpad-toolbar .cryptpad-lag span.bar3 {
   height: 15px;
 }
-.cryptpad-toolbar #newLag span.bar4 {
+.cryptpad-toolbar .cryptpad-lag span.bar4 {
   height: 20px;
 }
-.cryptpad-toolbar #newLag.lag0 span {
+.cryptpad-toolbar .cryptpad-lag.lag0 span {
   background: transparent;
   border-color: red;
 }
-.cryptpad-toolbar #newLag.lag1 .bar2,
-.cryptpad-toolbar #newLag.lag1 .bar3,
-.cryptpad-toolbar #newLag.lag1 .bar4 {
+.cryptpad-toolbar .cryptpad-lag.lag1 .bar2,
+.cryptpad-toolbar .cryptpad-lag.lag1 .bar3,
+.cryptpad-toolbar .cryptpad-lag.lag1 .bar4 {
   background: transparent;
 }
-.cryptpad-toolbar #newLag.lag1 span {
+.cryptpad-toolbar .cryptpad-lag.lag1 span {
   background-color: orange;
   border-color: orange;
 }
-.cryptpad-toolbar #newLag.lag2 .bar3,
-.cryptpad-toolbar #newLag.lag2 .bar4 {
+.cryptpad-toolbar .cryptpad-lag.lag2 .bar3,
+.cryptpad-toolbar .cryptpad-lag.lag2 .bar4 {
   background: transparent;
 }
-.cryptpad-toolbar #newLag.lag2 span {
+.cryptpad-toolbar .cryptpad-lag.lag2 span {
   background-color: orange;
   border-color: orange;
 }
-.cryptpad-toolbar #newLag.lag3 .bar4 {
+.cryptpad-toolbar .cryptpad-lag.lag3 .bar4 {
   background: transparent;
 }
-.cryptpad-toolbar #newLag.lag3 span {
+.cryptpad-toolbar .cryptpad-lag.lag3 span {
   background-color: #5cb85c;
   border-color: #5cb85c;
 }
-.cryptpad-toolbar #newLag.lag4 span {
+.cryptpad-toolbar .cryptpad-lag.lag4 span {
   background-color: #5cb85c;
   border-color: #5cb85c;
 }
@@ -245,21 +284,11 @@
   padding-right: 5px;
   padding-left: 5px;
   margin: 3px 2px;
+  box-sizing: border-box;
 }
 .cryptpad-toolbar .dropdown-bar-content {
   margin-top: -3px;
   margin-right: 2px;
-}
-.cryptpad-toolbar button {
-  color: #000;
-  background-color: inherit;
-  background-image: linear-gradient(to bottom, #fff, #e4e4e4);
-  border: 1px solid #A6A6A6;
-  border-bottom-color: #979797;
-  border-radius: 3px;
-}
-.cryptpad-toolbar button:hover {
-  background-image: linear-gradient(to bottom, #f2f2f2, #ccc);
 }
 .cryptpad-toolbar .cryptpad-state {
   line-height: 32px;
@@ -449,7 +478,7 @@
   position: absolute;
   right: 0;
 }
-.cryptpad-toolbar-top .cryptpad-user span:not(.cryptpad-lag) {
+.cryptpad-toolbar-top .cryptpad-user :not(.cryptpad-lag) span {
   vertical-align: top;
 }
 .cryptpad-toolbar-top .cryptpad-user button span.fa {
@@ -459,9 +488,10 @@
   float: left;
   margin-bottom: -1px;
 }
-.cryptpad-toolbar-leftside .cryptpad-user-list pre {
+.cryptpad-toolbar-leftside .cryptpad-dropdown-users pre {
+  /* needed for ckeditor */
   white-space: pre;
-  margin: 0;
+  margin: 5px 0px;
 }
 .cryptpad-toolbar-leftside button {
   margin: 2px 4px 2px 0px;
@@ -472,12 +502,44 @@
 .cryptpad-toolbar-rightside {
   text-align: right;
 }
-.cryptpad-spinner {
+.cryptpad-toolbar-history {
+  display: none;
+  text-align: center;
+}
+.cryptpad-toolbar-history .next {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 20px;
+}
+.cryptpad-toolbar-history .previous {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 20px;
+}
+.cryptpad-toolbar-history .goto {
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+}
+.cryptpad-toolbar-history .goto input {
+  width: 75px;
+}
+.cryptpad-toolbar-history .gotoInput {
+  vertical-align: middle;
+}
+.cke_toolbox .cryptpad-toolbar-history input.gotoInput {
+  background: white;
+  height: 20px;
+  padding: 3px 3px;
+  border-radius: 5px;
+}
+.cryptpad-spinner > span {
   height: 16px;
   width: 16px;
   margin: 8px;
   line-height: 16px;
   font-size: 16px;
+  text-align: center;
 }
 .cryptpad-readonly {
   margin-right: 5px;

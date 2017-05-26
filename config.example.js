@@ -1,3 +1,4 @@
+/*@flow*/
 /*
     globals module
 */
@@ -38,10 +39,10 @@ module.exports = {
             if you are deploying to production, you'll probably want to remove
             the ws://* directive, and change '*' to your domain
          */
-        "connect-src 'self' ws://* wss://*",
+        "connect-src 'self' ws: wss:",
 
         // data: is used by codemirror
-        "img-src 'self' data:",
+        "img-src 'self' data: blob:",
     ].join('; '),
 
     // CKEditor requires significantly more lax content security policy in order to function.
@@ -58,7 +59,7 @@ module.exports = {
          "child-src 'self' *",
 
         // see the comment above in the 'contentSecurity' section
-         "connect-src 'self' ws://* wss://*",
+         "connect-src 'self' ws: wss:",
 
         // (insecure remote) images are included by users of the wysiwyg who embed photos in their pads
         "img-src *",
@@ -115,6 +116,12 @@ module.exports = {
         'contact',
     ],
 
+    /*  Domain
+     *  If you want to have enable payments on your CryptPad instance, it has to be able to tell
+     *  our account server what is your domain
+     */
+    // domain: 'https://cryptpad.fr',
+
     /*
         You have the option of specifying an alternative storage adaptor.
         These status of these alternatives are specified in their READMEs,
@@ -140,6 +147,23 @@ module.exports = {
     */
     filePath: './datastore/',
 
+    /*  CryptPad allows logged in users to request that particular documents be
+     *  stored by the server indefinitely. This is called 'pinning'.
+     *  Pin requests are stored in a pin-store. The location of this store is
+     *  defined here.
+     */
+    pinPath: './pins',
+
+    /*  CryptPad allows logged in users to upload encrypted files. Files/blobs
+     *  are stored in a 'blob-store'. Set its location here.
+     */
+    blobPath: './blob',
+
+    /*  CryptPad stores incomplete blobs in a 'staging' area until they are
+     *  fully uploaded. Set its location here.
+     */
+    blobStagingPath: './blobstage',
+
     /*  Cryptpad's file storage adaptor closes unused files after a configurale
      *  number of milliseconds (default 30000 (30 seconds))
      */
@@ -161,6 +185,52 @@ module.exports = {
      *  you can suppress them
      */
     suppressRPCErrors: false,
+
+
+    /* WARNING: EXPERIMENTAL
+     *
+     *  CryptPad features experimental support for encrypted file upload.
+     *  Our encryption format is still liable to change. As such, we do not
+     *  guarantee that files uploaded now will be supported in the future
+     */
+
+    /*  Setting this value to anything other than true will cause file upload
+     *  attempts to be rejected outright.
+     */
+    enableUploads: false,
+
+    /*  If you have enabled file upload, you have the option of restricting it
+     *  to a list of users identified by their public keys. If this value is set
+     *  to true, your server will query a file (cryptpad/privileged.conf) when
+     *  users connect via RPC. Only users whose public keys can be found within
+     *  the file will be allowed to upload.
+     *
+     *  privileged.conf uses '#' for line comments, and splits keys by newline.
+     *  This is a temporary measure until a better quota system is in place.
+     *  registered users' public keys can be found on the settings page.
+     */
+    //restrictUploads: false,
+
+    /*  Default user storage limit (bytes)
+     *  if you don't want to limit users,
+     *  you can set this to the size of your hard disk
+     */
+    defaultStorageLimit: 50 * 1024 * 1024,
+
+    /*  Max Upload Size (bytes)
+     *  this sets the maximum size of any one file uploaded to the server.
+     *  anything larger than this size will be rejected
+     */
+    maxUploadSize: 20 * 1024 * 1024,
+
+    /*  clients can use the /settings/ app to opt out of usage feedback
+     *  which informs the server of things like how much each app is being
+     *  used, and whether certain clientside features are supported by
+     *  the client's browser. The intent is to provide feedback to the admin
+     *  such that the service can be improved. Enable this with `true`
+     *  and ignore feedback with `false` or by commenting the attribute
+     */
+    //logFeedback: true,
 
     /* it is recommended that you serve cryptpad over https
      * the filepaths below are used to configure your certificates

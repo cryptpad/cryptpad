@@ -57,7 +57,7 @@ var Renderer = function (Cryptpad) {
         return null;
     };
 
-    var getCoordinates = Render.getCoordinates = function (id) {
+    Render.getCoordinates = function (id) {
         return id.split('_');
     };
 
@@ -91,7 +91,7 @@ var Renderer = function (Cryptpad) {
         return null;
     };
 
-    var createColumn = Render.createColumn = function (obj, cb, id, value) {
+    Render.createColumn = function (obj, cb, id, value) {
         var order = Cryptpad.find(obj, ['table', 'colsOrder']);
         if (!order) { throw new Error("Uninitialized realtime object!"); }
         id = id || coluid();
@@ -101,7 +101,7 @@ var Renderer = function (Cryptpad) {
         if (typeof(cb) === 'function') { cb(void 0, id); }
     };
 
-    var removeColumn = Render.removeColumn = function (obj, id, cb) {
+    Render.removeColumn = function (obj, id, cb) {
         var order = Cryptpad.find(obj, ['table', 'colsOrder']);
         var parent = Cryptpad.find(obj, ['table', 'cols']);
 
@@ -126,7 +126,7 @@ var Renderer = function (Cryptpad) {
         }
     };
 
-    var createRow = Render.createRow = function (obj, cb, id, value) {
+    Render.createRow = function (obj, cb, id, value) {
         var order = Cryptpad.find(obj, ['table', 'rowsOrder']);
         if (!order) { throw new Error("Uninitialized realtime object!"); }
         id = id || rowuid();
@@ -136,7 +136,7 @@ var Renderer = function (Cryptpad) {
         if (typeof(cb) === 'function') { cb(void 0, id); }
     };
 
-    var removeRow = Render.removeRow = function (obj, id, cb) {
+    Render.removeRow = function (obj, id, cb) {
         var order = Cryptpad.find(obj, ['table', 'rowsOrder']);
         var parent = Cryptpad.find(obj, ['table', 'rows']);
 
@@ -153,7 +153,7 @@ var Renderer = function (Cryptpad) {
         if (typeof(cb) === 'function') { cb(); }
     };
 
-    var setValue = Render.setValue = function (obj, id, value) {
+    Render.setValue = function (obj, id, value) {
         var type = typeofId(id);
 
         switch (type) {
@@ -167,7 +167,7 @@ var Renderer = function (Cryptpad) {
         }
     };
 
-    var getValue = Render.getValue = function (obj, id) {
+    Render.getValue = function (obj, id) {
         switch (typeofId(id)) {
             case 'row': return getRowValue(obj, id);
             case 'col': return getColumnValue(obj, id);
@@ -219,7 +219,7 @@ var Renderer = function (Cryptpad) {
                 }));
             }
             if (i === rows.length) {
-                return [null].concat(cols.map(function (col) {
+                return [null].concat(cols.map(function () {
                     return {
                         'class': 'lastRow',
                     };
@@ -357,7 +357,7 @@ var Renderer = function (Cryptpad) {
         return ['TABLE', {id:'table'}, [head, foot, body]];
     };
 
-    var asHTML = Render.asHTML = function (obj, rows, cols, readOnly) {
+    Render.asHTML = function (obj, rows, cols, readOnly) {
         return Hyperjson.toDOM(toHyperjson(cellMatrix(obj, rows, cols, readOnly), readOnly));
     };
 
@@ -382,9 +382,7 @@ var Renderer = function (Cryptpad) {
             var op = TextPatcher.diff(o, n);
 
             info.selection = ['selectionStart', 'selectionEnd'].map(function (attr) {
-                var before = element[attr];
-                var after = TextPatcher.transformCursor(element[attr], op);
-                return after;
+                return TextPatcher.transformCursor(element[attr], op);
             });
         }
     };
@@ -430,7 +428,7 @@ var Renderer = function (Cryptpad) {
         }
     };
 
-    var updateTable = Render.updateTable = function (table, obj, conf) {
+    Render.updateTable = function (table, obj, conf) {
         var DD = new DiffDOM(diffOptions);
 
         var rows = conf ? conf.rows : null;

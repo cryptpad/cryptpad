@@ -12,3 +12,5 @@ www/scratch
 data
 npm-debug.log
 pins/
+blob/
+privileged.conf

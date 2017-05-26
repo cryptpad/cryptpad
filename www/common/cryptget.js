@@ -1,12 +1,12 @@
 define([
+    'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/common/cryptpad-common.js',
-    '/bower_components/textpatcher/TextPatcher.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Crypto, Realtime, Cryptpad, TextPatcher) {
-    var Messages = Cryptpad.Messages;
-    var noop = function () {};
+    '/bower_components/textpatcher/TextPatcher.js'
+], function ($, Crypto, Realtime, Cryptpad, TextPatcher) {
+    //var Messages = Cryptpad.Messages;
+    //var noop = function () {};
     var finish = function (S, err, doc) {
         if (S.done) { return; }
         S.cb(err, doc);
@@ -22,7 +22,8 @@ define([
     };
 
     var makeConfig = function (hash) {
-        var secret = Cryptpad.getSecrets(hash);
+        // We can't use cryptget with a file or a user so we can use 'pad' as hash type
+        var secret = Cryptpad.getSecrets('pad', hash);
         if (!secret.keys) { secret.keys = secret.key; } // support old hashses
         var config = {
             websocketURL: Cryptpad.getWebsocketURL(),
@@ -50,14 +51,14 @@ define([
         var Session = { cb: cb, };
         var config = makeConfig(hash);
 
-        var onReady = config.onReady = function (info) {
+        config.onReady = function (info) {
             var rt = Session.session = info.realtime;
             Session.network = info.network;
             finish(Session, void 0, rt.getUserDoc());
         };
         overwrite(config, opt);
 
-        var realtime = Session.realtime = Realtime.start(config);
+        Session.realtime = Realtime.start(config);
     };
 
     var put = function (hash, doc, cb, opt) {
@@ -87,7 +88,7 @@ define([
         };
         overwrite(config, opt);
 
-        var realtime = Session.session = Realtime.start(config);
+        Session.session = Realtime.start(config);
     };
 
     return {

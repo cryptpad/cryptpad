@@ -290,10 +290,23 @@ define(function () {
     out.fm_categoryError = "No se pudo abrir la categoría seleccionada, mostrando la raíz.";
     out.settings_userFeedbackHint1 = "CryptPad suministra informaciones muy básicas al servidor, para ayudarnos a mejorar vuestra experiencia.";
     out.settings_userFeedbackHint2 = "El contenido de tu pad nunca será compartido con el servidor.";
-    out.settings_userFeedback = "Activar feedback"; // "Disable user feedback"
+    out.settings_userFeedback = "Activar feedback";
     out.settings_anonymous = "No has iniciado sesión. Tus ajustes se aplicarán solo a este navegador.";
     out.blog = "Blog";
-    out.initialState = "<p>Esto es <strong>CryptPad</strong>, el editor collaborativo en tiempo real zero knowledge.<br>Lo que escribes aquí es cifrado, con lo cual solo las personas con el enlace pueden accederlo.<br>Incluso el servido no puede ver lo que escribes.</p><p><small><i>Lo que ves aquí, lo que escuchas aquí, cuando sales, se queda aquí</i></small></p><p>&nbsp;<br></p>";
+
+    out.initialState = [
+        '<span style="font-size:18px;"><p>',
+        'Esto es&nbsp;<strong>CryptPad</strong>, el editor collaborativo en tiempo real Zero Knowledge. Todo está guardado cuando escribes.',
+        '<br>',
+        'Comparte el enlace a este pad para editar con amigos o utiliza el botón <span style="background-color:#5cb85c;color:#ffffff;">&nbsp;Compartir&nbsp;</span> para obtener un <em>enlace solo lectura</em>&nbsp;que permite leer pero no escribir.',
+        '</p>',
+
+        '<p><span style="color:#808080;"><em>',
+        'Vamos, solo empezia a escribir...',
+        '</em></span></p></span>',
+        '<p>&nbsp;<br></p>'
+    ].join('');
+
     out.codeInitialState = "/*\n   Esto es CryptPad, el editor collaborativo en tiempo real zero knowledge.\n   Lo que escribes aquí es cifrado, con lo cual solo las personas con el enlace pueden accederlo.\n   Incluso el servidor no puede ver lo que escribes.\n   Lo que ves aquí, lo que escuchas aquí, cuando sales, se queda aquí\n*/";
     out.slideInitialState = "# CryptSlide\n* Esto es CryptPad, el editor collaborativo en tiempo real zero knowledge.\n* Lo que escribes aquí es cifrado, con lo cual solo las personas con el enlace pueden accederlo.\n* Incluso el servidor no puede ver lo que escribes.\n* Lo que ves aquí, lo que escuchas aquí, cuando sales, se queda aquí\n\n---\n# Como utilizarlo\n1. Escribe tu contenido en Markdown\n  - Puedes aprender más sobre Markdown [aquí](http://www.markdowntutorial.com/)\n2. Separa tus slides con ---\n3. Haz clic en \"Presentar\" para ver el resultado  - Tus slides se actualizan en tiempo real";
     out.driveReadmeTitle = "¿Qué es CryptDrive?";
@@ -355,6 +368,66 @@ define(function () {
     out.register_cancel = "Volver";
     out.register_warning = "Zero Knowledge significa que no podemos recuperar tus datos si pierdes tu contraseña.";
     out.register_alreadyRegistered = "Este usuario ya existe, ¿iniciar sesión?";
+
+    // 1.4.0 - Easter Bunny
+
+    out.button_newwhiteboard = "Nueva Pizarra";
+    out.wrongApp = "No se pudo mostrar el contenido de la sessión en tiempo real en tu navigador. Por favor, actualiza la página.";
+    out.synced = "Todo está guardado.";
+    out.saveTemplateButton = "Guardar como plantilla";
+    out.saveTemplatePrompt = "Élige un título para la plantilla";
+    out.templateSaved = "¡Plantilla guardada!";
+    out.selectTemplate = "Élige una plantilla o pulsa ESC";
+    out.slideOptionsTitle = "Personaliza tus diapositivas";
+    out.slideOptionsButton = "Guardar (enter)";
+    out.canvas_clear = "Limpiar";
+    out.canvas_delete = "Borrar selección";
+    out.canvas_disable = "No permitir dibujos";
+    out.canvas_enable = "Permitir dibujos";
+    out.canvas_width = "Talla";
+    out.canvas_opacity = "Opacidad";
+    out.settings_publicSigningKey = "Clave de Firma Pública";
+    out.settings_usage = "Utilización";
+    out.settings_usageTitle = "Vee el uso total de tus pads en MB";
+    out.settings_pinningNotAvailable = "Los pads pegados solo están disponibles para usuarios registrados.";
+    out.settings_pinningError = "Algo salió mal";
+    out.settings_usageAmount = "Tus pads pegados utilizan {0}MB";
+    out.historyButton = "Mostrar el historial del documento";
+    out.history_next = "Ir a la versión anterior";
+    out.history_prev = "Ir a la versión posterior";
+    out.history_goTo = "Ir a la versión seleccionada";
+    out.history_close = "Volver";
+    out.history_closeTitle = "Cerrar el historial";
+    out.history_restore = "Restaurar";
+    out.history_restoreTitle = "Restaurar la versión seleccionada del documento";
+    out.history_restorePrompt = "¿Estás seguro que quieres cambiar la versión actual del documento por esta?";
+    out.history_restoreDone = "Documento restaurado";
+    out.fc_sizeInKilobytes = "Talla en Kilobytes";
+
+    // 1.5.0/1.6.0 - Fenrir/Grootslang
+
+    out.deleted = "El pad fue borrado de tu CryptDrive";
+    out.upgrade = "Mejorar";
+    out.upgradeTitle = "Mejora tu cuenta para obtener más espacio";
+    out.MB = "MB";
+    out.GB = "GB";
+    out.KB = "KB";
+    out.formattedMB = "{0} MB";
+    out.formattedGB = "{0} GB";
+    out.formattedKB = "{0} KB";
+
+    out.pinLimitReached = "Has llegado al limite de espacio";
+    out.pinLimitReachedAlert = "Has llegado al limite de espacio. Nuevos pads no serán movidos a tu CryptDrive.<br>Para resolver este problema, puedes quitar pads de tu CryptDrive (incluso en la papelera) o mejorar tu cuenta para obtener más espacio.";
+    out.pinLimitNotPinned = "Has llegado al limite de espacio.<br>Este pad no estará presente en tu CryptDrive.";
+    out.pinLimitDrive = "Has llegado al limite de espacio.<br>No puedes crear nuevos pads.";
+    out.printTransition = "Activar transiciones";
+    out.history_version = "Versión: ";
+    out.settings_logoutEverywhereTitle = "Cerrar sessión en todas partes";
+    out.settings_logoutEverywhere = "Cerrar todas las otras sessiones";
+    out.settings_logoutEverywhereConfirm = "¿Estás seguro? Tendrás que volver a iniciar sessión con todos tus dispositivos.";
+    out.upload_serverError = "Error: no pudimos subir tu archivo.";
+    out.upload_uploadPending = "Ya tienes una subida en progreso. ¿Cancelar y subir el nuevo archivo?";
+    out.upload_success = "Tu archivo ({0}) ha sido subido con éxito y fue añadido a tu drive.";
 
     out.poll_remove = "Quitar";
     out.poll_edit = "Editar";

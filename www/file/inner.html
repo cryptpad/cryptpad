@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+    <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/file/file.css">
+    <link rel="stylesheet" href="/customize/main.css">
+</head>
+<body>
+    <div id="toolbar" class="toolbar-container"></div>
+    <div id="upload-form" style="display: none;">
+        <input type="file" name="file" id="file" class="inputfile" />
+        <label for="file" class="block unselectable" data-localization-title="upload_choose"
+            data-localization="upload_choose"></label>
+    </div>
+    <div id="download-form" style="display: none;">
+        <input type="button" name="dl" id="dl" class="inputfile" />
+        <label for="dl" class="block unselectable" data-localization-title="download_button"
+            data-localization="download_button"></label>
+        <span class="block" id="progress"></span>
+    </div>
+    <table id="status" style="display: none;">
+        <tr>
+            <td data-localization="upload_name">File name</td>
+            <td data-localization="upload_size">Size</td>
+            <td data-localization="upload_progress">Progress</td>
+            <td data-localization="cancel">Cancel</td>
+        </tr>
+    </table>
+    <div id="feedback" class="block hidden">
+    </div>
+</body>
+</html>
+

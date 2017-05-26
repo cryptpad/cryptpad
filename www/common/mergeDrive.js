@@ -1,8 +1,7 @@
-require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
-    '/common/fileObject.js',
+    '/common/userObject.js',
     'json.sortify'
 ], function (Cryptpad, Crypt, FO, Sortify) {
     var exp = {};
@@ -47,7 +46,7 @@ define([
     var merge = function (obj1, obj2, keepOld) {
         if (typeof (obj1) !== "object" || typeof (obj2) !== "object") { return; }
         Object.keys(obj2).forEach(function (k) {
-            var v = obj2[k];
+            //var v = obj2[k];
             // If one of them is not an object or if we have a map and a array, don't override, create a new key
             if (!obj1[k] || typeof(obj1[k]) !== "object" || typeof(obj2[k]) !== "object" ||
                     (getType(obj1[k]) !== getType(obj2[k]))) {
@@ -76,12 +75,12 @@ define([
             console.error(msg || "Unable to find that path", path);
         };
 
-        if (path[0] === FO.TRASH && path.length === 4) {
-            href = oldFo.getTrashElementData(path);
+        if (oldFo.isInTrashRoot(path)) {
+            href = oldFo.find(path.slice(0,3));
             path.pop();
         }
 
-        var p, next, nextRoot;
+        var next, nextRoot;
         path.forEach(function (p, i) {
             if (!root) { return; }
             if (typeof(p) === "string") {
@@ -129,7 +128,7 @@ define([
         });
     };
 
-    var mergeAnonDrive = exp.anonDriveIntoUser = function (proxy, cb) {
+    exp.anonDriveIntoUser = function (proxy, cb) {
         // Make sure we have an FS_hash and we don't use it, otherwise just stop the migration and cb
         if (!localStorage.FS_hash || !Cryptpad.isLoggedIn()) {
             if (typeof(cb) === "function") { cb(); }
@@ -156,13 +155,13 @@ define([
                 var newData = Cryptpad.getStore().getProxy();
                 var newFo = newData.fo;
                 var newRecentPads = proxy.drive[Cryptpad.storageKey];
-                var newFiles = newFo.getFilesDataFiles();
-                var oldFiles = oldFo.getFilesDataFiles();
+                var newFiles = newFo.getFiles([newFo.FILES_DATA]);
+                var oldFiles = oldFo.getFiles([newFo.FILES_DATA]);
                 oldFiles.forEach(function (href) {
                     // Do not migrate a pad if we already have it, it would create a duplicate in the drive
                     if (newFiles.indexOf(href) !== -1) { return; }
                     // If we have a stronger version, do not add the current href
-                    if (Cryptpad.findStronger(href, newRecentPads)) { return; }
+                    if (Cryptpad.findStronger(href, newRecentPads)) { console.log(href); return; }
                     // If we have a weaker version, replace the href by the new one
                     // NOTE: if that weaker version is in the trash, the strong one will be put in unsorted
                     var weaker = Cryptpad.findWeaker(href, newRecentPads);
@@ -176,7 +175,7 @@ define([
                             return;
                         });
                         // Update the file in the drive
-                        newFo.replaceHref(weaker, href);
+                        newFo.replace(weaker, href);
                         return;
                     }
                     // Here it means we have a new href, so we should add it to the drive at its old location
@@ -189,6 +188,10 @@ define([
                         newRecentPads.push(data);
                     }
                 });
+                if (!proxy.FS_hashes || !Array.isArray(proxy.FS_hashes)) {
+                    proxy.FS_hashes = [];
+                }
+                proxy.FS_hashes.push(localStorage.FS_hash);
             }
             if (typeof(cb) === "function") { cb(); }
         };

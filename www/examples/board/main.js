@@ -1,18 +1,18 @@
 define([
-    '/api/config?cb=' + Math.random().toString(16).substring(2),
+    'jquery',
+    '/api/config',
     '/customize/messages.js',
     'board.js',
     '/bower_components/textpatcher/TextPatcher.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/cryptpad-common.js',
-    '/common/visible.js',
-    '/common/notify.js',
-    '/bower_components/file-saver/FileSaver.min.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Messages, Board, TextPatcher, Listmap, Crypto, Cryptpad, Visible, Notify) {
-    var $ = window.jQuery;
-    var saveAs = window.saveAs;
+    //'/common/visible.js',
+    //'/common/notify.js',
+    '/bower_components/file-saver/FileSaver.min.js'
+], function ($, Config, Messages, Board, TextPatcher, Listmap, Crypto, Cryptpad /*, Visible, Notify*/) {
+
+    // var saveAs = window.saveAs;
 
     Cryptpad.styleAlerts();
     console.log("Initializing your realtime session...");
@@ -23,28 +23,28 @@ define([
         Board: Board,
     };
 
+/*
     var unnotify = function () {
         if (!(module.tabNotification &&
             typeof(module.tabNotification.cancel) === 'function')) { return; }
         module.tabNotification.cancel();
     };
-
     var notify = function () {
         if (!(Visible.isSupported() && !Visible.currently())) { return; }
         unnotify();
         module.tabNotification = Notify.tab(1000, 10);
     };
+*/
 
     var setEditable = function (bool) {
-
+        bool = bool;
     };
 
     setEditable(false);
 
-
     var $lists = $('#lists');
 
-    var $addList = $('#create-list').click(function () {
+    $('#create-list').click(function () {
         Board.List.draw($lists);
     });
 
@@ -52,7 +52,7 @@ define([
         Cryptpad.log("You are the first user to visit this board");
     };
 
-    var whenReady = function (opt) {
+    var whenReady = function () {
         var rt = module.rt;
         var proxy = rt.proxy;
 
@@ -63,7 +63,6 @@ define([
         Board.Draw($lists);
 
         if (first) { firstUser(); }
-
     };
 
     var config = {
@@ -78,10 +77,10 @@ define([
         var proxy = rt.proxy;
         proxy
         .on('create', function (info) {
-            var realtime = module.realtime = info.realtime;
+            module.realtime = info.realtime;
             window.location.hash = info.channel + secret.key;
         })
-        .on('ready', function (info) {
+        .on('ready', function () {
             Cryptpad.log("Ready!");
             whenReady({
 

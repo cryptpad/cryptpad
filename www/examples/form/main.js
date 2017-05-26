@@ -1,16 +1,14 @@
-require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
-    '/api/config?cb=' + Math.random().toString(16).substring(2),
+    'jquery',
+    '/api/config',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
     'ula.js',
     '/bower_components/chainpad-json-validator/json-ot.js',
-    '/common/cryptpad-common.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Realtime, Crypto, TextPatcher, Sortify, Formula, JsonOT, Cryptpad) {
-    var $ = window.jQuery;
+    '/common/cryptpad-common.js'
+], function ($, Config, Realtime, Crypto, TextPatcher, Sortify, Formula, JsonOT, Cryptpad) {
 
     var secret = Cryptpad.getSecrets();
 
@@ -130,7 +128,7 @@ define([
 
     setEditable(false);
 
-    var onInit = config.onInit = function (info) {
+    config.onInit = function (info) {
         var realtime = module.realtime = info.realtime;
         window.location.hash = info.channel + secret.key;
 
@@ -142,7 +140,7 @@ define([
     };
 
     var readValues = function () {
-        UI.each(function (ui, i, list) {
+        UI.each(function (ui) {
             Map[ui.id] = ui.value();
         });
     };
@@ -167,7 +165,7 @@ define([
             if (UI.ids.indexOf(key) === -1) { Map[key] = parsed[key]; }
         });
 
-        UI.each(function (ui, i, list) {
+        UI.each(function (ui) {
             var newval = parsed[ui.id];
             var oldval = ui.value();
 
@@ -180,9 +178,7 @@ define([
             if (ui.preserveCursor) {
                 op = TextPatcher.diff(oldval, newval);
                 selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
-                    var before = element[attr];
-                    var after = TextPatcher.transformCursor(element[attr], op);
-                    return after;
+                    return TextPatcher.transformCursor(element[attr], op);
                 });
             }
 
@@ -197,13 +193,13 @@ define([
         });
     };
 
-    var onRemote = config.onRemote = function (info) {
+    config.onRemote = function () {
         if (initializing) { return; }
         /* integrate remote changes */
         updateValues();
     };
 
-    var onReady = config.onReady = function (info) {
+    config.onReady = function () {
         updateValues();
 
         console.log("READY");
@@ -211,13 +207,13 @@ define([
         initializing = false;
     };
 
-    var onAbort = config.onAbort = function (info) {
+    config.onAbort = function () {
         window.alert("Network Connection Lost");
     };
 
-    var rt = Realtime.start(config);
+    Realtime.start(config);
 
-    UI.each(function (ui, i, list) {
+    UI.each(function (ui) {
         var type = ui.type;
         var events = eventsByType[type];
         ui.$.on(events, onLocal);

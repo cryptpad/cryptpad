@@ -1,35 +1,28 @@
-require.config({ paths: {
-    'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify'
-}});
-
 define([
-    '/api/config?cb=' + Math.random().toString(16).substring(2),
+    'jquery',
+    '/api/config',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-crypto/crypto.js',
-    '/common/toolbar.js',
+    '/common/toolbar2.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
     '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
     '/whiteboard/colors.js',
-    '/common/visible.js',
-    '/common/notify.js',
     '/customize/application_config.js',
     '/bower_components/secure-fabric.js/dist/fabric.min.js',
-    '/bower_components/jquery/dist/jquery.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
-], function (Config, Realtime, Crypto, Toolbar, TextPatcher, JSONSortify, JsonOT, Cryptpad, Cryptget, Colors, Visible, Notify, AppConfig) {
+], function ($, Config, Realtime, Crypto, Toolbar, TextPatcher, JSONSortify, JsonOT, Cryptpad, Cryptget, Colors, AppConfig) {
     var saveAs = window.saveAs;
     var Messages = Cryptpad.Messages;
 
-    var module = window.APP = { };
-    var $ = module.$ = window.jQuery;
+    var module = window.APP = { $:$ };
     var Fabric = module.Fabric = window.fabric;
 
     $(function () {
     Cryptpad.addLoadingScreen();
-    var onConnectError = function (info) {
+    var onConnectError = function () {
         Cryptpad.errorLoadingScreen(Messages.websocketError);
     };
     var toolbar;
@@ -217,35 +210,10 @@ window.canvas = canvas;
         var initializing = true;
 
         var $bar = $('#toolbar');
-        var parsedHash = Cryptpad.parsePadUrl(window.location.href);
-        var defaultName = Cryptpad.getDefaultName(parsedHash);
-        var userData = module.userData = {}; // List of pretty name of all users (mapped with their server ID)
-        var userList; // List of users still connected to the channel (server IDs)
-        var addToUserData = function(data) {
-            var users = module.users;
-            for (var attrname in data) { userData[attrname] = data[attrname]; }
 
-            if (users && users.length) {
-                for (var userKey in userData) {
-                    if (users.indexOf(userKey) === -1) {
-                        delete userData[userKey];
-                    }
-                }
-            }
-
-            if(userList && typeof userList.onChange === "function") {
-                userList.onChange(userData);
-            }
-        };
-
-        var myData = {};
-        var myUserName = ''; // My "pretty name"
-        var myID; // My server ID
-
-        var setMyID = function(info) {
-          myID = info.myID || null;
-          myUserName = myID;
-        };
+        var Title;
+        var UserList;
+        var Metadata;
 
         var config = module.config = {
             initialState: '{}',
@@ -254,7 +222,6 @@ window.canvas = canvas;
             readOnly: readOnly,
             channel: secret.channel,
             crypto: Crypto.createEncryptor(secret.keys),
-            setMyID: setMyID,
             transformFunction: JsonOT.transform,
         };
 
@@ -285,27 +252,13 @@ window.canvas = canvas;
             $colors.append($color);
         };
 
-        var updatePalette = function (newPalette) {
+        var metadataCfg = {};
+        var updatePalette = metadataCfg.updatePalette = function (newPalette) {
             palette = newPalette;
             $colors.html('<div class="hidden">&nbsp;</div>');
             palette.forEach(addColorToPalette);
         };
         updatePalette(palette);
-
-        var suggestName = function (fallback) {
-            if (document.title === defaultName) {
-                return fallback || "";
-            } else {
-                return document.title || defaultName;
-            }
-        };
-
-        var renameCb = function (err, title) {
-            if (err) { return; }
-            document.title = title;
-            config.onLocal();
-        };
-
 
         var makeColorButton = function ($container) {
             var $testColor = $('<input>', { type: 'color', value: '!' });
@@ -335,31 +288,34 @@ window.canvas = canvas;
             return $color;
         };
 
-        var editHash;
-        var onInit = config.onInit = function (info) {
-            userList = info.userList;
-            var config = {
-                displayed: ['useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad'],
-                userData: userData,
-                readOnly: readOnly,
+        config.onInit = function (info) {
+            UserList = Cryptpad.createUserList(info, config.onLocal, Cryptget, Cryptpad);
+
+            Title = Cryptpad.createTitle({}, config.onLocal, Cryptpad);
+
+            Metadata = Cryptpad.createMetadata(UserList, Title, metadataCfg);
+
+            var configTb = {
+                displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit'],
+                userList: UserList.getToolbarConfig(),
                 share: {
                     secret: secret,
                     channel: info.channel
                 },
+                title: Title.getTitleConfig(),
+                common: Cryptpad,
+                readOnly: readOnly,
                 ifrw: window,
-                title: {
-                    onRename: renameCb,
-                    defaultName: defaultName,
-                    suggestName: suggestName
-                },
-                common: Cryptpad
+                realtime: info.realtime,
+                network: info.network,
+                $container: $bar
             };
-            if (readOnly) {delete config.changeNameID; }
 
-            toolbar = module.toolbar = Toolbar.create($bar, info.myID, info.realtime, info.getLag, userList, config);
+            toolbar = module.toolbar = Toolbar.create(configTb);
 
-            var $rightside = $bar.find('.' + Toolbar.constants.rightside);
-            module.$userNameButton = $($bar.find('.' + Toolbar.constants.changeUsername));
+            Title.setToolbar(toolbar);
+
+            var $rightside = toolbar.$rightside;
 
             /* save as template */
             if (!Cryptpad.isTemplate(window.location.href)) {
@@ -375,7 +331,7 @@ window.canvas = canvas;
             var $export = Cryptpad.createButton('export', true, {}, saveImage);
             $rightside.append($export);
 
-            var $forget = Cryptpad.createButton('forget', true, {}, function (err, title) {
+            var $forget = Cryptpad.createButton('forget', true, {}, function (err) {
                 if (err) { return; }
                 setEditable(false);
                 toolbar.failed();
@@ -385,14 +341,11 @@ window.canvas = canvas;
             makeColorButton($rightside);
 
             var editHash;
-            var viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
 
             if (!readOnly) {
                 editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
             }
             if (!readOnly) { Cryptpad.replaceHash(editHash); }
-
-            Cryptpad.onDisplayNameChanged(module.setName);
         };
 
         // used for debugging, feel free to remove
@@ -406,75 +359,11 @@ window.canvas = canvas;
             };
         };
 
-        var updateTitle = function (newTitle) {
-            if (newTitle === document.title) { return; }
-            // Change the title now, and set it back to the old value if there is an error
-            var oldTitle = document.title;
-            document.title = newTitle;
-            Cryptpad.renamePad(newTitle, function (err, data) {
-                if (err) {
-                    console.log("Couldn't set pad title");
-                    console.error(err);
-                    document.title = oldTitle;
-                    return;
-                }
-                document.title = data;
-                $bar.find('.' + Toolbar.constants.title).find('span.title').text(data);
-                $bar.find('.' + Toolbar.constants.title).find('input').val(data);
-            });
-        };
-
-        var updateDefaultTitle = function (defaultTitle) {
-            defaultName = defaultTitle;
-            $bar.find('.' + Toolbar.constants.title).find('input').attr("placeholder", defaultName);
-        };
-
-
-        var updateMetadata = function(shjson) {
-            // Extract the user list (metadata) from the hyperjson
-            var json = (shjson === "") ? "" : JSON.parse(shjson);
-            var titleUpdated = false;
-            if (json && json.metadata) {
-                if (json.metadata.users) {
-                    var userData = json.metadata.users;
-                    // Update the local user data
-                    addToUserData(userData);
-                }
-                if (json.metadata.defaultTitle) {
-                    updateDefaultTitle(json.metadata.defaultTitle);
-                }
-                if (typeof json.metadata.title !== "undefined") {
-                    updateTitle(json.metadata.title || defaultName);
-                    titleUpdated = true;
-                }
-                if (typeof(json.metadata.palette) !== 'undefined') {
-                    updatePalette(json.metadata.palette);
-                }
-            }
-            if (!titleUpdated) {
-                updateTitle(defaultName);
-            }
-        };
-
-        var unnotify = function () {
-            if (module.tabNotification &&
-                typeof(module.tabNotification.cancel) === 'function') {
-                module.tabNotification.cancel();
-            }
-        };
-
-        var notify = function () {
-            if (Visible.isSupported() && !Visible.currently()) {
-                unnotify();
-                module.tabNotification = Notify.tab(1000, 10);
-            }
-        };
-
         var onRemote = config.onRemote = Catch(function () {
             if (initializing) { return; }
             var userDoc = module.realtime.getUserDoc();
 
-            updateMetadata(userDoc);
+            Metadata.update(userDoc);
             var json = JSON.parse(userDoc);
             var remoteDoc = json.content;
 
@@ -484,7 +373,7 @@ window.canvas = canvas;
             canvas.renderAll();
 
             var content = canvas.toDatalessJSON();
-            if (content !== remoteDoc) { notify(); }
+            if (content !== remoteDoc) { Cryptpad.notify(); }
             if (readOnly) { setEditable(false); }
         });
         setEditable(false);
@@ -493,13 +382,13 @@ window.canvas = canvas;
             var obj = {
                 content: textValue,
                 metadata: {
-                    users: userData,
+                    users: UserList.userData,
                     palette: palette,
-                    defaultTitle: defaultName
+                    defaultTitle: Title.defaultTitle
                 }
             };
             if (!initializing) {
-                obj.metadata.title = document.title;
+                obj.metadata.title = Title.title;
             }
             // stringify the json and send it into chainpad
             return JSONSortify(obj);
@@ -515,29 +404,7 @@ window.canvas = canvas;
             module.patchText(content);
         });
 
-        var setName = module.setName = function (newName) {
-            if (typeof(newName) !== 'string') { return; }
-            var myUserNameTemp = newName.trim();
-            if(newName.trim().length > 32) {
-              myUserNameTemp = myUserNameTemp.substr(0, 32);
-            }
-            myUserName = myUserNameTemp;
-            myData[myID] = {
-               name: myUserName,
-               uid: Cryptpad.getUid(),
-            };
-            addToUserData(myData);
-            Cryptpad.setAttribute('username', myUserName, function (err, data) {
-                if (err) {
-                    console.log("Couldn't set username");
-                    console.error(err);
-                    return;
-                }
-                onLocal();
-            });
-        };
-
-        var onReady = config.onReady = function (info) {
+        config.onReady = function (info) {
             var realtime = module.realtime = info.realtime;
             module.patchText = TextPatcher.create({
                 realtime: realtime
@@ -552,45 +419,20 @@ window.canvas = canvas;
             initializing = false;
             onRemote();
 
-            if (Visible.isSupported()) {
-                Visible.onChange(function (yes) { if (yes) { unnotify(); } });
-            }
-
             /*  TODO: restore palette from metadata.palette */
-            Cryptpad.getLastName(function (err, lastName) {
-                if (err) {
-                    console.log("Could not get previous name");
-                    console.error(err);
-                    return;
-                }
-                // Update the toolbar list:
-                // Add the current user in the metadata if he has edit rights
-                if (readOnly) { return; }
-                if (typeof(lastName) === 'string') {
-                    setName(lastName);
-                } else {
-                    myData[myID] = {
-                        name: "",
-                        uid: Cryptpad.getUid(),
-                    };
-                    addToUserData(myData);
-                    onLocal();
-                    module.$userNameButton.click();
-                }
-                if (isNew) {
-                    Cryptpad.selectTemplate('whiteboard', info.realtime, Cryptget);
-                }
-            });
+
+            if (readOnly) { return; }
+            UserList.getLastName(toolbar.$userNameButton, isNew);
         };
 
-        var onAbort = config.onAbort = function (info) {
+        config.onAbort = function () {
             setEditable(false);
             toolbar.failed();
             Cryptpad.alert(Messages.common_connectionLost, undefined, true);
         };
 
         // TODO onConnectionStateChange
-        var onConnectionChange = config.onConnectionChange = function (info) {
+        config.onConnectionChange = function (info) {
             setEditable(info.state);
             toolbar.failed();
             if (info.state) {
@@ -602,7 +444,7 @@ window.canvas = canvas;
             }
         };
 
-        var rt = Realtime.start(config);
+        module.rt = Realtime.start(config);
 
         canvas.on('mouse:up', onLocal);
 
@@ -616,8 +458,9 @@ window.canvas = canvas;
         });
     };
 
-    Cryptpad.ready(function (err, env) {
+    Cryptpad.ready(function () {
         andThen();
+        Cryptpad.reportAppUsage();
     });
     Cryptpad.onError(function (info) {
         if (info) {

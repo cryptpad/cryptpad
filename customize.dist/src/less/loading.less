@@ -36,6 +36,9 @@
     left: 0;
     right: 0;
     text-align: center;
+    @media screen and (max-height: @media-medium-screen) {
+        display: none;
+    }
     span {
         background-color: @bg-loading;
         color: @color-loading;
