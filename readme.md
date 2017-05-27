@@ -35,7 +35,9 @@ bower install
 ## copy config.example.js to config.js
 cp config.example.js config.js
 
-node ./server.js
+node ./server.js &
+mkdir -p customize/api
+wget 127.0.0.1:3000/api/config -O customize/api/config
 ```
 
 ## Configuration
