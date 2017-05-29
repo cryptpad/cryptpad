@@ -500,8 +500,8 @@ define([
 
                 /* add a history button */
                 var histConfig = {
-                    onLocal: realtimeOptions.onLocal(),
-                    onRemote: realtimeOptions.onRemote(),
+                    onLocal: realtimeOptions.onLocal,
+                    onRemote: realtimeOptions.onRemote,
                     setHistory: setHistory,
                     applyVal: function (val) { applyHjson(val || '["BODY",{},[]]'); },
                     $toolbar: $bar
