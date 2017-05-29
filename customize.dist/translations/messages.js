@@ -78,6 +78,7 @@ define(function () {
     out.updated_0_pinLimitReachedAlert = "You've reached your storage limit. New pads won't be stored in your CryptDrive.<br>" +
         'You can either remove pads from your CryptDrive or <a href="https://accounts.cryptpad.fr/#!on={0}" target="_blank">subscribe to a premium offer</a> to increase your limit.';
     out.pinLimitReachedAlert = out.updated_0_pinLimitReachedAlert;
+    out.pinLimitReachedAlertNoAccounts = out.pinLimitReached;
     out.pinAboveLimitAlert = 'As of this release, we are imposing a 50MB limit on free data storage and you are currently using {0}. You will need to either delete some pads or subscribe on <a href="https://accounts.cryptpad.fr/#!on={1}" target="_blank">accounts.cryptpad.fr</a>. Your contribution will help us improve CryptPad and spread Zero Knowledge. Please contact <a href="https://accounts.cryptpad.fr/#/support" target="_blank">support</a> if you have any other questions.';
     out.pinLimitNotPinned = "You've reached your storage limit.<br>"+
                             "This pad is not stored in your CryptDrive.";

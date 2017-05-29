@@ -500,8 +500,12 @@ define([
             var todo = function (e, overLimit) {
                 if (e) { return void console.error("Unable to get the pinned usage"); }
                 if (overLimit) {
+                    var message = Messages.pinLimitReachedAlert;
+                    if (ApiConfig.noSubscriptionButton === true) {
+                        message = Messages.pinLimitReachedAlertNoAccounts;
+                    }
                     $limit.show().click(function () {
-                        Cryptpad.alert(Messages.pinLimitReachedAlert, null, true);
+                        Cryptpad.alert(message, null, true);
                     });
                 }
             };

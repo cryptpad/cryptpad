@@ -1,4 +1,5 @@
 /*@flow*/
+/*jshint esversion: 6 */
 /*  Use Nacl for checking signatures of messages */
 var Nacl = require("tweetnacl");
 
@@ -8,6 +9,7 @@ var Nacl = require("tweetnacl");
 var Fs = require("fs");
 var Path = require("path");
 var Https = require("https");
+const Package = require('./package.json');
 
 var RPC = module.exports;
 
@@ -371,6 +373,7 @@ var getHash = function (Env, publicKey, cb) {
 // To each key is associated an object containing the 'limit' value and a 'note' explaining that limit
 var limits = {};
 var updateLimits = function (config, publicKey, cb) {
+    if (config.adminEmail === false && config.noSubscriptionButton === true) { return; }
     if (typeof cb !== "function") { cb = function () {}; }
 
     var defaultLimit = typeof(config.defaultStorageLimit) === 'number'?
@@ -382,8 +385,10 @@ var updateLimits = function (config, publicKey, cb) {
     }
 
     var body = JSON.stringify({
-        domain: config.domain,
-        subdomain: config.subdomain
+        domain: config.myDomain,
+        subdomain: config.mySubdomain,
+        adminEmail: config.adminEmail,
+        version: Package.version
     });
     var options = {
         host: 'accounts.cryptpad.fr',

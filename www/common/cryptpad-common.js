@@ -72,6 +72,7 @@ define([
     common.bytesToKilobytes = Util.bytesToKilobytes;
     common.fetch = Util.fetch;
     common.throttle = Util.throttle;
+    common.createRandomInteger = Util.createRandomInteger;
 
     // import hash utilities for export
     var createRandomHash = common.createRandomHash = Hash.createRandomHash;
@@ -598,7 +599,7 @@ define([
                 var data = makePad(href, name);
                 getStore().pushData(data, function (e) {
                     if (e) {
-                        if (e === 'E_OVER_LIMIT' && AppConfig.enablePinLimit) {
+                        if (e === 'E_OVER_LIMIT') {
                             common.alert(Messages.pinLimitNotPinned, null, true);
                             return;
                         }
@@ -760,7 +761,7 @@ define([
     };
 
     common.isOverPinLimit = function (cb) {
-        if (!common.isLoggedIn() || !AppConfig.enablePinLimit) { return void cb(null, false); }
+        if (!common.isLoggedIn()) { return void cb(null, false); }
         var usage;
         var andThen = function (e, limit, plan) {
             if (e) { return void cb(e); }
@@ -816,7 +817,10 @@ define([
             var width = Math.floor(Math.min(quota, 1)*200); // the bar is 200px width
             var $usage = $('<span>', {'class': 'usage'}).css('width', width+'px');
 
-            if ((quota >= 0.8 || alwaysDisplayUpgrade) && data.plan !== "power") {
+            if (Config.noSubscriptionButton !== true &&
+                (quota >= 0.8 || alwaysDisplayUpgrade) &&
+                data.plan !== "power")
+            {
                 var origin = encodeURIComponent(window.location.hostname);
                 var $upgradeLink = $('<a>', {
                     href: "https://accounts.cryptpad.fr/#!on=" + origin,
@@ -844,7 +848,7 @@ define([
             else if (quota < 1) { $usage.addClass('warning'); }
             else {
                 $usage.addClass('above');
-                if (!limitReachedDisplayed) {
+                if (!limitReachedDisplayed && Config.noSubscriptionButton === true) {
                     limitReachedDisplayed = true;
                     common.alert(Messages._getKey('pinAboveLimitAlert', [prettyUsage, encodeURIComponent(window.location.hostname)]), null, true);
                 }

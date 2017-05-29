@@ -243,9 +243,16 @@ define([
                     }
                     $previewContainer.toggle();
                     if ($previewContainer.is(':visible')) {
+                        forceDrawPreview();
                         $codeMirror.removeClass('fullPage');
+                        Cryptpad.setPadAttribute('previewMode', true, function (e) {
+                            if (e) { return console.log(e); }
+                        });
                     } else {
                         $codeMirror.addClass('fullPage');
+                        Cryptpad.setPadAttribute('previewMode', false, function (e) {
+                            if (e) { return console.log(e); }
+                        });
                     }
                 });
                 $rightside.append($previewButton);
@@ -258,6 +265,7 @@ define([
                 else {
                     CodeMirror.configureTheme();
                 }
+
 
                 // set the hash
                 if (!readOnly) { Cryptpad.replaceHash(editHash); }
@@ -309,6 +317,13 @@ define([
                 if (Cryptpad.initialName && Title.isDefaultTitle()) {
                     Title.updateTitle(Cryptpad.initialName);
                 }
+
+                Cryptpad.getPadAttribute('previewMode', function (e, data) {
+                    if (e) { return void console.error(e); }
+                    if (data === false && APP.$previewButton) {
+                        APP.$previewButton.click();
+                    }
+                });
 
                 Cryptpad.removeLoadingScreen();
                 setEditable(true);

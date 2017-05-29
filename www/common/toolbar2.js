@@ -616,8 +616,12 @@ define([
         var todo = function (e, overLimit) {
             if (e) { return void console.error("Unable to get the pinned usage"); }
             if (overLimit) {
+                var key = 'pinLimitReachedAlert';
+                if (ApiConfig.noSubscriptionButton === true) {
+                    key = 'pinLimitReachedAlertNoAccounts';
+                }
                 $limit.show().click(function () {
-                    Cryptpad.alert(Messages._getKey('pinLimitReachedAlert', [encodeURIComponent(window.location.hostname)]), null, true);
+                    Cryptpad.alert(Messages._getKey(key, [encodeURIComponent(window.location.hostname)]), null, true);
                 });
             }
         };
