@@ -1,5 +1,5 @@
 // Tradução para protuguês brasileiro efetuada por Gustavo Henrique Machado da Silva (www.linkedin.com/in/gustavohmsilva)
-// Embora o software original possa não possuir as mesmas licenças, a tradução produzida por mim is protected under 
+// Embora o software original possa não possuir as mesmas licenças, a tradução produzida por mim is protected under
 // Creative Commons, Attribution-ShareAlike 4.0 International
 // Contate-me via email no endereço gustavohmsilva@member.fsf.org
 // Translation to brazilian portuguese done by Gustavo Henrique Machado da Silva (www.linkedin.com/in/gustavohmsilva)
@@ -24,27 +24,27 @@ define(function () {
     out.type.file = 'File';
     out.type.media = 'Media';
 
-    out.button_newpad = 'New Rich Text pad';
-    out.button_newcode = 'New Code pad';
-    out.button_newpoll = 'New Poll';
-    out.button_newslide = 'New Presentation';
-    out.button_newwhiteboard = 'New Whiteboard';
+    out.button_newpad = 'Novo bloco RTF';
+    out.button_newcode = 'Novo bloco de código';
+    out.button_newpoll = 'Novo questionário';
+    out.button_newslide = 'Nova apresentação';
+    out.button_newwhiteboard = 'Novo quadro branco';
 
     // NOTE: We want to update the 'common_connectionLost' key.
     // Please do not add a new 'updated_common_connectionLostAndInfo' but change directly the value of 'common_connectionLost'
-    out.updated_0_common_connectionLost = "<b>Server Connection Lost</b><br>You're now in read-only mode until the connection is back.";
+    out.updated_0_common_connectionLost = "<b>Conexão com o Servidor Perdida</b><br>Você agora está em modo somente leitura até a conexão ser restaurada.";
     out.common_connectionLost = out.updated_0_common_connectionLost;
 
-    out.websocketError = 'Unable to connect to the websocket server...';
-    out.typeError = "This pad is not compatible with the selected application";
-    out.onLogout = 'You are logged out, <a href="/" target="_blank">click here</a> to log in<br>or press <em>Escape</em> to access your pad in read-only mode.';
-    out.wrongApp = "Unable to display the content of that realtime session in your browser. Please try to reload that page.";
+    out.websocketError = 'Incapaz de se conectar com o servidor websocket...';
+    out.typeError = "Este bloco não é compatível com a aplicação selecionada";
+    out.onLogout = 'você foi desconectado, <a href="/" target="_blank">clique aqui</a> para se conectar, <br>ou pressione <em>ESC</em> para acessar seu bloco em modo somente leitura.';
+    out.wrongApp = "Incapaz de mostrar o conteúdo em tempo real no seu navegador. Por favor tente recarregar a página.";
 
-    out.loading = "Loading...";
-    out.error = "Error";
-    out.saved = "Saved";
-    out.synced = "Everything is saved";
-    out.deleted = "Pad deleted from your CryptDrive";
+    out.loading = "Carregando...";
+    out.error = "Erro";
+    out.saved = "Salvo";
+    out.synced = "Tudo foi salvo";
+    out.deleted = "Bloco deletado do seu CryptDrive";
 
     out.disconnected = 'Desconectado';
     out.synchronizing = 'Sincronizando';
@@ -62,16 +62,16 @@ define(function () {
     out.editor = "editor";
     out.editors = "editores";
 
-    out.language = "Language";
+    out.language = "Lingua";
 
-    out.comingSoon = "Coming soon...";
+    out.comingSoon = "Em breve...";
 
-    out.newVersion = '<b>CryptPad has been updated!</b><br>' +
-                     'Check out what\'s new in the latest version:<br>'+
-                     '<a href="https://github.com/xwiki-labs/cryptpad/releases/tag/{0}" target="_blank">Release notes for CryptPad {0}</a>';
+    out.newVersion = '<b>O CryptPad foi atualizado!</b><br>' +
+                     'Cheque as novidades na última versão:<br>'+
+                     '<a href="https://github.com/xwiki-labs/cryptpad/releases/tag/{0}" target="_blank">Notas da atualização do CryptPad {0}</a>';
 
     out.upgrade = "Upgrade";
-    out.upgradeTitle = "Upgrade your account to increase the storage limit";
+    out.upgradeTitle = "Faça um upgrade na sua conta para aumentar o limite de armazenamento";
     out.MB = "MB";
     out.GB = "GB";
     out.KB = "KB";
@@ -81,28 +81,28 @@ define(function () {
     out.formattedKB = "{0} KB";
 
     out.greenLight = "Tudo está funcionando bem";
-    out.orangeLight = "Sua conexão longa pode impactar sua experiência";
+    out.orangeLight = "Sua conexão lenta pode impactar sua experiência";
     out.redLight = "Você está desconectado da sua sessão";
 
-    out.pinLimitReached = "You've reached your storage limit";
-    out.updated_0_pinLimitReachedAlert = "You've reached your storage limit. New pads won't be stored in your CryptDrive.<br>" +
-        'You can either remove pads from your CryptDrive or <a href="https://accounts.cryptpad.fr/#!on={0}" target="_blank">subscribe to a premium offer</a> to increase your limit.';
+    out.pinLimitReached = "Você alcançou o limite de armazenamento";
+    out.updated_0_pinLimitReachedAlert = "Você alcançou o limite de armazenamento. Novos blocos não serão mais salvos no seu CryptDrive.<br>" +
+        'Você pode deletar blocos do seu CryptDrive ou <a href="https://accounts.cryptpad.fr/#!on={0}" target="_blank">se inscrever como premium</a> para aumentar o limite de espaço.';
     out.pinLimitReachedAlert = out.updated_0_pinLimitReachedAlert;
-    out.pinAboveLimitAlert = 'As of this release, we are imposing a 50MB limit on free data storage and you are currently using {0}. You will need to either delete some pads or subscribe on <a href="https://accounts.cryptpad.fr/#!on={1}" target="_blank">accounts.cryptpad.fr</a>. Your contribution will help us improve CryptPad and spread Zero Knowledge. Please contact <a href="https://accounts.cryptpad.fr/#/support" target="_blank">support</a> if you have any other questions.';
-    out.pinLimitNotPinned = "You've reached your storage limit.<br>"+
-                            "This pad is not stored in your CryptDrive.";
-    out.pinLimitDrive = "You've reached your storage limit.<br>" +
-                        "You can't create new pads.";
+    out.pinAboveLimitAlert = 'A partir desta atualização, nós estamos impondo um limite de 50MB no armazenamento gratuito. Você está atualmente usando {0}. Você irá precisar deletar alguns blocos ou se inscrever no <a href="https://accounts.cryptpad.fr/#!on={1}" target="_blank">accounts.cryptpad.fr</a>. Sua contribuição irá nos ajudar a melhorar o CryptPad e expandir a metodologia Zero Knowledge. Por favor contacte o <a href="https://accounts.cryptpad.fr/#/support" target="_blank">suporte</a> se você possui outras dúvidas.';
+    out.pinLimitNotPinned = "Você alcançou o limite de armazenamento.<br>"+
+                            "Este bloco não está armazenado no seu CryptDrive.";
+    out.pinLimitDrive = "Você alcançou o limite de armazenamento.<br>" +
+                        "Você não pode criar novos blocos.";
 
     out.importButtonTitle = 'Importar um documento de um arquivo local';
 
     out.exportButtonTitle = 'Exportar esta sesão para um arquivo local';
-    out.exportPrompt = 'Como deseja nomeear seu arquivo?';
+    out.exportPrompt = 'Como deseja nomear seu arquivo?';
 
     out.changeNamePrompt = 'Mude seu nome (deixe em branco para se manter anônimo): ';
-    out.user_rename = "Change display name";
-    out.user_displayName = "Display name";
-    out.user_accountName = "Account name";
+    out.user_rename = "Mudar nome de exibição";
+    out.user_displayName = "Nome visível";
+    out.user_accountName = "Nome da Conta";
 
     out.clickToEdit = "Clique para Editar";
 
@@ -113,51 +113,49 @@ define(function () {
     out.shareButton = 'Compartilhar';
     out.shareSuccess = 'Endereço copiado para o clipboard';
 
-    out.newButton = 'New';
-    out.newButtonTitle = 'Create a new pad';
+    out.newButton = 'Novo';
+    out.newButtonTitle = 'Criar um novo bloco';
 
-    out.saveTemplateButton = "Save as template";
-    out.saveTemplatePrompt = "Choose a title for the template";
-    out.templateSaved = "Template saved!";
-    out.selectTemplate = "Select a template or press escape";
+    out.saveTemplateButton = "Salvar como modelo";
+    out.saveTemplatePrompt = "Escolha o nome do modelo";
+    out.templateSaved = "Modelo salvo!";
+    out.selectTemplate = "Selecione um modelo ou pressione ESC";
 
-    out.previewButtonTitle = "Display or hide the Markdown preview mode";
+    out.previewButtonTitle = "Mostrar ou esconder o modo de visualização markdown";
 
     out.presentButtonTitle = "Entrar no modo apresentação";
     out.presentSuccess = 'Pressione ESC para sair do modo de apresentação';
 
-    out.backgroundButtonTitle = 'Change the background color in the presentation';
+    out.backgroundButtonTitle = 'Mudar cor do fundo da apresentação';
     out.colorButtonTitle = 'Mudar a cor do texto no modo apresentação';
 
-    out.printButton = "Print (enter)";
-    out.printButtonTitle = "Print your slides or export them as a PDF file";
-    out.printOptions = "Layout options";
-    out.printSlideNumber = "Display the slide number";
-    out.printDate = "Display the date";
-    out.printTitle = "Display the pad title";
+    out.printButton = "Imprimir (Enter)";
+    out.printButtonTitle = "Imprimir seus slides ou exportá-los como PDF";
+    out.printOptions = "Opções de leiaute";
+    out.printSlideNumber = "Mostrar o número do slide";
+    out.printDate = "Mostrar a data";
+    out.printTitle = "Mostrar título do bloco";
     out.printCSS = "Custom style rules (CSS):";
-    out.printTransition = "Enable transition animations";
+    out.printTransition = "Ativar animações de transição";
 
-    out.slideOptionsTitle = "Customize your slides";
-    out.slideOptionsButton = "Save (enter)";
+    out.slideOptionsTitle = "Personalizar seus slides";
+    out.slideOptionsButton = "Salvar (Enter)";
 
     out.editShare = "Compartilhar endereço editável";
     out.editShareTitle = "Copiar endereço editável";
-    out.editOpen = "Open editing link in a new tab";
-    out.editOpenTitle = "Open this pad in editing mode in a new tab";
-    out.viewShare = "Compartilhar endereó de visualização";
+    out.editOpen = "Abrir endereço editável em nova aba";
+    out.editOpenTitle = "Abrir este bloco em modo editável em nova aba";
+    out.viewShare = "Compartilhar endereço de visualização";
     out.viewShareTitle = "Copiar o endereço somente leitura";
-    out.editOpen = "Open editing link in a new tab";
-    out.editOpenTitle = "Open this pad in editing mode in a new tab";
 
     out.notifyJoined = "{0} entraram na sessão colaborativa";
     out.notifyRenamed = "{0} agora é conhecido como {1}";
     out.notifyLeft = "{0} deixou essa sessão colaborativa";
 
-    out.okButton = 'OK (enter)';
+    out.okButton = 'OK (Enter)';
 
     out.cancel = "Cancelar";
-    out.cancelButton = 'Cancelar (esc)';
+    out.cancelButton = 'Cancelar (ESC)';
 
     out.historyButton = "Display the document history";
     out.history_next = "Go to the next version";
@@ -390,7 +388,7 @@ define(function () {
     out.warn_notPinned = "This pad is not in anyone's CryptDrive. It will expire after 3 months. <a href='/about.html#pinning'>Learn more...</a>";
 
     // index.html
-    
+
     //about.html
     out.main_p2 = 'This project uses the <a href="http://ckeditor.com/">CKEditor</a> Visual Editor, <a href="https://codemirror.net/">CodeMirror</a>, and the <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a> realtime engine.';
     out.main_howitworks_p1 = 'CryptPad uses a variant of the <a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> algorithm which is able to find distributed consensus using a <a href="https://bitcoin.org/bitcoin.pdf">Nakamoto Blockchain</a>, a construct popularized by <a href="https://en.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. This way the algorithm can avoid the need for a central server to resolve Operational Transform Edit Conflicts and without the need for resolving conflicts, the server can be kept unaware of the content which is being edited on the pad.';
