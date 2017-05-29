@@ -451,5 +451,10 @@ define(function () {
     out.download_button = "Descifrar y descargar";
     out.warn_notPinned = "Este pad no está en ningun CryptDrive. Expirará después de 3 meses. <a href='/about.html#pinning'>Acerca de...</a>";
 
+    out.poll_remove = "Quitar";
+    out.poll_edit = "Editar";
+    out.poll_locked = "Cerrado";
+    out.poll_unlocked = "Abierto";
+
     return out;
 });
