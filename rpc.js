@@ -789,7 +789,7 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
 
     var warn = function (e, output) {
         if (e && !config.suppressRPCErrors) {
-            console.error('[' + e + ']', output);
+            console.error(new Date().toISOString() + ' [' + e + ']', output);
         }
     };
 
