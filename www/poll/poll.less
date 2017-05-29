@@ -2,6 +2,7 @@
 @import "../../customize.dist/src/less/mixins.less";
 
 @poll-th-bg: #aaa;
+@poll-th-user-bg: #999;
 @poll-td-bg: #aaa;
 @poll-placeholder: #666;
 @poll-border-color: #555;
@@ -293,20 +294,32 @@ form.realtime, div.realtime {
                 width: 80%;
             }
         }
+        span {
+            user-select: none;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
         thead {
             td {
                 padding: 0px 5px;
                 background: @poll-th-bg;
                 border-radius: 20px 20px 0 0;
-                text-align: center;
+                //text-align: center;
+                &:nth-of-type(2) {
+                    background: @poll-th-user-bg;
+                    .lock {
+                        cursor: default;
+                    }
+                }
                 input {
                     &[type="text"] {
                         width: 100%;
                         box-sizing: border-box;
+                        padding: 1px 5px;
                         &[disabled] {
                             color: @poll-fg;
-                            padding: 1px 5px;
-                            border: none;
+                            border: 1px solid transparent;
                         }
                     }
                 }
@@ -344,6 +357,12 @@ form.realtime, div.realtime {
             margin-left: 10px;
         }
 
+        .lock {
+            margin-left: ~"calc(50% - 0.5em)";
+            cursor: pointer;
+            width: 1em;
+            text-align: center;
+        }
         .remove {
             float: right;
             margin-right: 10px;

@@ -266,23 +266,37 @@ div.realtime table input[type="text"] {
   border: 1px solid #fff;
   width: 80%;
 }
+form.realtime table span,
+div.realtime table span {
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
 form.realtime table thead td,
 div.realtime table thead td {
   padding: 0px 5px;
   background: #aaa;
   border-radius: 20px 20px 0 0;
-  text-align: center;
+}
+form.realtime table thead td:nth-of-type(2),
+div.realtime table thead td:nth-of-type(2) {
+  background: #999;
+}
+form.realtime table thead td:nth-of-type(2) .lock,
+div.realtime table thead td:nth-of-type(2) .lock {
+  cursor: default;
 }
 form.realtime table thead td input[type="text"],
 div.realtime table thead td input[type="text"] {
   width: 100%;
   box-sizing: border-box;
+  padding: 1px 5px;
 }
 form.realtime table thead td input[type="text"][disabled],
 div.realtime table thead td input[type="text"][disabled] {
   color: #000;
-  padding: 1px 5px;
-  border: none;
+  border: 1px solid transparent;
 }
 form.realtime table tbody .text-cell,
 div.realtime table tbody .text-cell {
@@ -302,10 +316,6 @@ div.realtime table tbody .text-cell .remove {
   float: left;
   margin: 0 0 0 10px;
 }
-form.realtime table tbody tr td:nth-child(2),
-div.realtime table tbody tr td:nth-child(2) {
-  border-left: 1px solid #555;
-}
 form.realtime table tbody tr:not(:first-child) td:not(:first-child) label,
 div.realtime table tbody tr:not(:first-child) td:not(:first-child) label {
   border-top: 1px solid #555;
@@ -316,6 +326,13 @@ div.realtime table .edit {
   cursor: pointer;
   float: left;
   margin-left: 10px;
+}
+form.realtime table .lock,
+div.realtime table .lock {
+  margin-left: calc(50% - 0.5em);
+  cursor: pointer;
+  width: 1em;
+  text-align: center;
 }
 form.realtime table .remove,
 div.realtime table .remove {

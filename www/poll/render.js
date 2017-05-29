@@ -269,12 +269,8 @@ var Renderer = function (Cryptpad) {
         return ['SPAN', {
             'data-rt-id': id,
             'title': Cryptpad.Messages.poll_locked,
-            class: 'lock',
-        }, [['i', {
-                class: 'fa fa-lock',
-                'aria-hidden': true,
-            }, []]
-        ]];
+            class: 'lock fa fa-lock',
+        }, []];
     };
 
     var makeHeadingCell = Render.makeHeadingCell = function (cell, readOnly) {
@@ -284,7 +280,6 @@ var Renderer = function (Cryptpad) {
             if (!readOnly) {
                 elements.unshift(makeRemoveElement(cell['data-rt-id']));
                 elements.unshift(makeLockElement(cell['data-rt-id']));
-                elements.unshift(makeEditElement(cell['data-rt-id']));
             }
             return ['TD', {}, elements];
         }
