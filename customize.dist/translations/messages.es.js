@@ -13,8 +13,7 @@ define(function () {
     out.type.slide = 'Presentación';
     out.type.whiteboard = 'Pizarra';
 
-    out.updated_0_common_connectionLost = "<b>Connexión perdida</b><br>El documento está ahora en modo solo lectura hasta que la conexión vuelva.";
-    out.common_connectionLost = out.updated_0_common_connectionLost;
+    out.common_connectionLost = "<b>Connexión perdida</b><br>El documento está ahora en modo solo lectura hasta que la conexión vuelva.";
 
     out.disconnected = "Desconectado";
     out.synchronizing = "Sincronización";
@@ -200,7 +199,6 @@ define(function () {
     out.fm_info_root = "Crea carpetas aquí para organizar tus documentos.";
     out.fm_info_unsorted = "Contiene todos los documentos que has visitado que no estan organizados en \"Documentos\" o movidos a la \"Papelera\".";
     out.fm_info_template = "Contiene todas las plantillas que puedes volver a usar para crear nuevos documentos.";
-    out.fm_info_trash = "Archivos eliminados de la papelera también se eliminan de \"Todos los archivos\" y es imposible recuparlos desde el explorador.";
     out.fm_info_allFiles = "Contiene todos los archivos de \"Documentos\", \"Sin organizar\" y \"Papelera\". No puedes mover o eliminar archivos aquí.";
     out.fm_alert_backupUrl = "Enlace de copia de seguridad para este drive. Te recomendamos <strong>muy fuertemente</strong> que lo guardes secreto.<br>Lo puedes usar para recuparar todos tus archivos en el caso que la memoria de tu navegador se borre.<br>Cualquiera con este enlace puede editar o eliminar todos los archivos en el explorador.<br>";
     out.fm_backup_title = "Enlace de copia de seguridad";
@@ -417,7 +415,6 @@ define(function () {
     out.formattedKB = "{0} KB";
 
     out.pinLimitReached = "Has llegado al limite de espacio";
-    out.pinLimitReachedAlert = "Has llegado al limite de espacio. Nuevos pads no serán movidos a tu CryptDrive.<br>Para resolver este problema, puedes quitar pads de tu CryptDrive (incluso en la papelera) o mejorar tu cuenta para obtener más espacio.";
     out.pinLimitNotPinned = "Has llegado al limite de espacio.<br>Este pad no estará presente en tu CryptDrive.";
     out.pinLimitDrive = "Has llegado al limite de espacio.<br>No puedes crear nuevos pads.";
     out.printTransition = "Activar transiciones";
@@ -428,6 +425,31 @@ define(function () {
     out.upload_serverError = "Error: no pudimos subir tu archivo.";
     out.upload_uploadPending = "Ya tienes una subida en progreso. ¿Cancelar y subir el nuevo archivo?";
     out.upload_success = "Tu archivo ({0}) ha sido subido con éxito y fue añadido a tu drive.";
+
+    // 1.7.0 - Hodag
+    out.comingSoon = "Próximamente..."; // "Coming soon..."
+    out.newVersion = ["<b>CryptPad ha sido actualizado!</b>",
+                      "Puedes ver lo que ha cambiada aquí (en inglés):",
+                      "<a href=\"https://github.com/xwiki-labs/cryptpad/releases/tag/{0}\" target=\"_blank\">Notas de versión para CryptPad {0}</a>"].join("<br>");
+    out.pinLimitReachedAlert = ["Has llegado a tu limite de espacio. Nuevos pads no serán guardados en tu CryptDrive.",
+        "Puedes eliminar pads de tu CryptDrive o <a href=\"https://accounts.cryptpad.fr/#!on={0}\" target=\"_blank\">suscribirte a una oferta premium</a> para obtener más espacio."].join("<br>");
+    out.pinLimitReachedAlertNoAccounts = "Has llegado a tu limite de espacio";
+    out.pinAboveLimitAlert = "Desde esta versión, ponemos un limite de 50MB a las cuentas gratís y estás usando {0}. Tendrás que eliminar unos pads o suscribirte en <a href=\"https://accounts.cryptpad.fr/#!on={1}\" target=\"_blank\">accounts.cryptpad.fr</a>. Tu contribución nos ayuda a mejorar CryptPad y extender el Zero Knowledge. Por favor contacta <a href=\"https://accounts.cryptpad.fr/#/support\" target=\"_blank\">el soporte</a> si tienes preguntas adicionales.";
+    out.previewButtonTitle = "Mostrar/esconder la vista previa Markdown";
+    out.fm_info_trash = "Vacía tu papelera para liberar espaci en tu CryptDrive.";
+    out.fm_info_anonymous = "No estás conectado, así que estos pads pueden ser borrados (<a href=\"https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/\" target=\"_blank\">¿por qué?</a>). <a href=\"/register/\">Registrate</a> o <a href=\"/login/\">Inicia sesión</a> para asegurarlos.";
+    out.fm_alert_anonymous = "Hola, estás usando CryptPad anónimamente. Está bien, pero tus pads pueden ser borrados después de un périodo de inactividad. Hemos desactivado funciones avanzadas de CryptDrive para usuarios anónimos porque queremos ser claros que no es un lugar seguro para almacenar cosas. Puedes <a href=\"https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/\" target=\"_blank\">leer este articulo</a> (en inglés) sobre por qué hacemos esto y por qué deberías <a href=\"/register/\">Registrarte</a> e <a href=\"/login/\">Iniciar sesión</a>.";
+    out.fm_error_cantPin = "Error del servidor. Por favor, recarga la página e intentalo de nuevo.";
+    out.upload_notEnoughSpace = "No tienes suficiente espacio para este archivo en tu CryptDrive";
+    out.upload_tooLarge = "Este archivo supera el límite de carga.";
+    out.upload_choose = "Escoge un archivo";
+    out.upload_pending = "Esperando";
+    out.upload_cancelled = "Cancelado";
+    out.upload_name = "Nombre";
+    out.upload_size = "Tamaño";
+    out.upload_progress = "Progreso";
+    out.download_button = "Descifrar y descargar";
+    out.warn_notPinned = "Este pad no está en ningun CryptDrive. Expirará después de 3 meses. <a href='/about.html#pinning'>Acerca de...</a>";
 
     return out;
 });
