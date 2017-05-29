@@ -301,7 +301,12 @@ define([
         }
 
         if (!Cryptpad.isLoggedIn()) {
-            return Cryptpad.alert("You must be logged in to upload files");
+            return Cryptpad.alert(Messages.upload_mustLogin, function () {
+                if (sessionStorage) {
+                    sessionStorage.redirectTo = window.location.href;
+                }
+                window.location.href = '/login/';
+            });
         }
 
         $form.css({

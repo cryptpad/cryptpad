@@ -302,6 +302,9 @@ define(function () {
     out.login_invalPass = 'Password required';
     out.login_unhandledError = 'An unexpected error occurred :(';
 
+    out.login_notRegistered = 'Not registered?';
+
+
     out.register_importRecent = "Import pad history (Recommended)";
     out.register_acceptTerms = "I accept <a href='/terms.html'>the terms of service</a>";
     out.register_passwordsDontMatch = "Passwords do not match!";
@@ -375,6 +378,7 @@ define(function () {
     out.upload_name = "File name";
     out.upload_size = "Size";
     out.upload_progress = "Progress";
+    out.upload_mustLogin = "You must be logged in to upload files";
     out.download_button = "Decrypt & Download";
 
     // general warnings
