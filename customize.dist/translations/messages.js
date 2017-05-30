@@ -66,6 +66,8 @@ define(function () {
     out.GB = "GB";
     out.KB = "KB";
 
+    out.supportCryptpad = "Support CryptPad";
+
     out.formattedMB = "{0} MB";
     out.formattedGB = "{0} GB";
     out.formattedKB = "{0} KB";
@@ -400,6 +402,7 @@ define(function () {
     out.main_zeroKnowledge = 'Zero Knowledge';
     out.main_zeroKnowledge_p = "You don't have to trust that we <em>won't</em> look at your pads, with CryptPad's revolutionary Zero Knowledge Technology we <em>can't</em>. Learn more about how we protect your <a href=\"/privacy.html\" title='Privacy'>Privacy and Security</a>.";
     out.main_writeItDown = 'Write it down';
+
     out.main_writeItDown_p = "The greatest projects come from the smallest ideas. Take down the moments of inspiration and unexpected ideas because you never know which one might be a breakthrough.";
     out.main_share = 'Share the link, share the pad';
     out.main_share_p = "Grow your ideas together: conduct efficient meetings, collaborate on TODO lists and make quick presentations with all your friends and all your devices.";
