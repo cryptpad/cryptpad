@@ -7,7 +7,9 @@ define([], function () {
             // jquery declares itself as literally "jquery" so it cannot be pulled by path :(
             "jquery": "/bower_components/jquery/dist/jquery.min",
             // json.sortify same
-            "json.sortify": "/bower_components/json.sortify/dist/JSON.sortify"
+            "json.sortify": "/bower_components/json.sortify/dist/JSON.sortify",
+            "pdfjs-dist/build/pdf": "/bower_components/pdfjs-dist/build/pdf",
+            "pdfjs-dist/build/pdf.worker": "/bower_components/pdfjs-dist/build/pdf.worker"
         }
     });
 

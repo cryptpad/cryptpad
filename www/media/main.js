@@ -6,6 +6,8 @@ define([
     '/common/cryptpad-common.js',
     //'/common/visible.js',
     //'/common/notify.js',
+    'pdfjs-dist/build/pdf',
+    'pdfjs-dist/build/pdf.worker',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
 ], function ($, Crypto, realtimeInput, Toolbar, Cryptpad /*, Visible, Notify*/) {
@@ -57,7 +59,7 @@ define([
         var $mt = $iframe.find('#encryptedFile');
         $mt.attr('src', '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName);
         $mt.attr('data-crypto-key', 'cryptpad:'+cryptKey);
-        $mt.attr('data-type', type);
+        // $mt.attr('data-type', type);
 
         $(window.document).on('decryption', function (e) {
             var decrypted = e.originalEvent;
@@ -97,6 +99,30 @@ define([
             Toolbar.create($bar, null, null, null, null, configTb);
 
             updateTitle(Cryptpad.initialName || getTitle() || defaultName);
+
+            /**
+             * Allowed mime types that have to be set for a rendering after a decryption.
+             *
+             * @type       {Array}
+             */
+            const allowedMediaTypes = [
+                'image/png',
+                'image/jpeg',
+                'image/jpg',
+                'image/gif',
+                'audio/mp3',
+                'audio/ogg',
+                'audio/wav',
+                'audio/webm',
+                'video/mp4',
+                'video/ogg',
+                'video/webm',
+                'application/pdf',
+                'application/dash+xml',
+                'download'
+            ];
+
+            MediaTag.CryptoFilter.setAllowedMediaTypes(allowedMediaTypes);
 
             MediaTag($mt[0]);
 
