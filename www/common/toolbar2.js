@@ -702,14 +702,22 @@ define([
         if (Cryptpad.account.plan) { return; }
 
         var text;
+        var feedback;
         if (ApiConfig.allowSubscriptions && Cryptpad.isLoggedIn()) {
             text = Messages.upgradeAccount;
-        } else { text = Messages.supportCryptpad; }
+            feedback = "UPGRADE_ACCOUNT";
+        } else {
+            text = Messages.supportCryptpad;
+            feedback = "SUPPORT_CRYPTPAD";
+        }
 
         var $upgrade = toolbar.$top.find('.' + UPGRADE_CLS).attr({
             'title': Messages.supportCryptpad
         }).text(text).show()
-        .click(function () { window.open(Cryptpad.donateURL,'_blank'); });
+        .click(function () {
+            Cryptpad.feedback(feedback);
+            window.open(Cryptpad.donateURL,'_blank');
+        });
         return $upgrade;
     };
 
