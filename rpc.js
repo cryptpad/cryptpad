@@ -373,7 +373,10 @@ var getHash = function (Env, publicKey, cb) {
 // To each key is associated an object containing the 'limit' value and a 'note' explaining that limit
 var limits = {};
 var updateLimits = function (config, publicKey, cb) {
-    if (config.adminEmail === false && config.allowSubscriptions === false) { return; }
+    if (config.adminEmail === false) {
+        if (config.allowSubscriptions === false) { return; }
+        throw new Error("allowSubscriptions must be false if adminEmail is false");
+    }
     if (typeof cb !== "function") { cb = function () {}; }
 
     var defaultLimit = typeof(config.defaultStorageLimit) === 'number'?
