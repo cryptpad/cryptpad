@@ -25,7 +25,9 @@ define([
 */
     var common = window.Cryptpad = {
         Messages: Messages,
-        Clipboard: Clipboard
+        Clipboard: Clipboard,
+        donateURL: 'https://accounts.cryptpad.fr/#/donate?on=' + window.location.hostname,
+        account: {},
     };
 
     // constants
@@ -1428,6 +1430,14 @@ define([
                         console.log('RPC handshake complete');
                         rpc = common.rpc = env.rpc = call;
 
+                        common.getPinLimit(function (e, limit, plan, note) {
+                            if (e) { return void console.error(e); }
+                            common.account.limit = limit;
+                            common.account.plan = plan;
+                            common.account.note = note;
+                            cb();
+                        });
+
                         common.arePinsSynced(function (err, yes) {
                             if (!yes) {
                                 common.resetPins(function (err) {
@@ -1436,7 +1446,6 @@ define([
                                 });
                             }
                         });
-                        cb();
                     });
                 } else if (PINNING_ENABLED) {
                     console.log('not logged in. pads will not be pinned');
