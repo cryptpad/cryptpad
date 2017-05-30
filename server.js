@@ -121,7 +121,9 @@ app.get('/api/config', function(req, res){
             waitSeconds: 60,
             urlArgs: 'ver=' + Package.version + (DEV_MODE? '-' + (+new Date()): ''),
         },
-        noSubscriptionButton: (config.noSubscriptionButton === true),
+        removeDonateButton: (config.removeDonateButton === true),
+        allowSubscriptions: (config.allowSubscriptions === true),
+
         websocketPath: config.useExternalWebsocket ? undefined : config.websocketPath,
         websocketURL:'ws' + ((useSecureWebsockets) ? 's' : '') + '://' + host + ':' +
             websocketPort + '/cryptpad_websocket',
