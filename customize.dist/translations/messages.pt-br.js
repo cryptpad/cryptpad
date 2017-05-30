@@ -1,5 +1,5 @@
 // Tradução para protuguês brasileiro efetuada por Gustavo Henrique Machado da Silva (www.linkedin.com/in/gustavohmsilva)
-// Embora o software original possa não possuir as mesmas licenças, a tradução produzida por mim is protected under
+// Embora o software original possa não possuir as mesmas licenças, a tradução produzida por mim é protegida sob termos
 // Creative Commons, Attribution-ShareAlike 4.0 International
 // Contate-me via email no endereço gustavohmsilva@member.fsf.org
 // Translation to brazilian portuguese done by Gustavo Henrique Machado da Silva (www.linkedin.com/in/gustavohmsilva)
