@@ -3,8 +3,9 @@ define([
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
     '/common/mergeDrive.js',
-    '/bower_components/file-saver/FileSaver.min.js'
-], function ($, Cryptpad, Crypt, Merge) {
+    '/api/config',
+    '/bower_components/file-saver/FileSaver.min.js',
+], function ($, Cryptpad, Crypt, Merge, ApiConfig) {
     var saveAs = window.saveAs;
 
     var USERNAME_KEY = 'cryptpad.username';
@@ -15,6 +16,12 @@ define([
     };
 
     var $upgrade = $('#upgrade');
+    var showUpgrade = function (text) {
+        if (ApiConfig.removeDonateButton) { return; }
+        if (localStorage.plan) { return; }
+        if (!text) { return; }
+        $upgrade.text(text).show();
+    };
 
     var Messages = Cryptpad.Messages;
 
@@ -329,11 +336,9 @@ define([
 
 
         if (Cryptpad.isLoggedIn()) {
-            if (!Cryptpad.account.plan) {
-                $upgrade.text(Messages.upgradeAccount).show();
-            }
+            showUpgrade(Messages.upgradeAccount);
         } else {
-            $upgrade.text(Messages.supportCryptpad).show();
+            showUpgrade(Messages.supportCryptpad);
         }
     };
 

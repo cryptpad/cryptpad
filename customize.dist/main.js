@@ -1,7 +1,8 @@
 define([
     'jquery',
     '/customize/application_config.js',
-    '/common/cryptpad-common.js'
+    '/common/cryptpad-common.js',
+    '/api/config',
 ], function ($, Config, Cryptpad, ApiConfig) {
 
     window.APP = {
@@ -20,6 +21,13 @@ define([
         $sel.show();
 
         var $upgrade = $('#upgrade');
+
+        var showUpgrade = function (text) {
+            if (ApiConfig.removeDonateButton) { return; }
+            if (localStorage.plan) { return; }
+            if (!text) { return; }
+            $upgrade.text(text).show();
+        };
 
         // User admin menu
         var $userMenu = $('#user-menu');
@@ -58,17 +66,13 @@ define([
                 });
             });
 
-            if (!localStorage.plan) {
-                $upgrade.show().text(Messages.upgradeAccount);
-            }
-
+            showUpgrade(Messages.upgradeAccount);
 
             $loggedInBlock.removeClass('hidden');
-            //return;
         } else {
             $main.find('#userForm').removeClass('hidden');
             $('#name').focus();
-            $upgrade.show().text(Messages.supportCryptpad);
+            showUpgrade(Messages.supportCryptpad);
         }
 
         var displayCreateButtons = function () {
