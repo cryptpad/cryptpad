@@ -525,6 +525,22 @@
   margin: 0px 10px;
   line-height: 40px;
 }
+#cryptpadTopBar .right .buttonSuccess {
+  color: #fff;
+  background: #5cb85c;
+  border-color: #5cb85c;
+}
+#cryptpadTopBar .right .buttonSuccess:hover {
+  color: #fff;
+  background: #449d44;
+  border: 1px solid #419641;
+}
+#cryptpadTopBar .right .buttonSuccess span {
+  color: #fff;
+}
+#cryptpadTopBar .right .buttonSuccess .large {
+  margin-left: 5px;
+}
 #cryptpadTopBar .right button .buttonTitle .fa-user {
   margin-right: 5px;
 }

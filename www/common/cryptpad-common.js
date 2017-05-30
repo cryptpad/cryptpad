@@ -217,6 +217,7 @@ define([
             userNameKey,
             userHashKey,
             'loginToken',
+            'plan',
         ].forEach(function (k) {
             sessionStorage.removeItem(k);
             localStorage.removeItem(k);
@@ -1433,7 +1434,7 @@ define([
                         common.getPinLimit(function (e, limit, plan, note) {
                             if (e) { return void console.error(e); }
                             common.account.limit = limit;
-                            common.account.plan = plan;
+                            localStorage.plan = common.account.plan = plan;
                             common.account.note = note;
                             cb();
                         });

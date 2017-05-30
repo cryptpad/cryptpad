@@ -14,6 +14,8 @@ define([
         _onRefresh: []
     };
 
+    var $upgrade = $('#upgrade');
+
     var Messages = Cryptpad.Messages;
 
     // Manage changes in the realtime object made from another page
@@ -324,6 +326,15 @@ define([
         APP.$container.append(createUserFeedbackToggle(obj));
         obj.proxy.on('change', [], refresh);
         obj.proxy.on('remove', [], refresh);
+
+
+        if (Cryptpad.isLoggedIn()) {
+            if (!Cryptpad.account.plan) {
+                $upgrade.text(Messages.upgradeAccount).show();
+            }
+        } else {
+            $upgrade.text(Messages.supportCryptpad).show();
+        }
     };
 
     $(function () {
