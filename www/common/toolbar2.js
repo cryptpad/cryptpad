@@ -71,7 +71,7 @@ define([
         var $userContainer = $('<span>', {
             'class': USER_CLS
         }).appendTo($topContainer);
-        $('<button>', {'class': UPGRADE_CLS}).hide().appendTo($userContainer);
+        $('<button>', {'class': UPGRADE_CLS + ' buttonSuccess'}).hide().appendTo($userContainer);
         $('<span>', {'class': SPINNER_CLS}).hide().appendTo($userContainer);
         $('<span>', {'class': STATE_CLS}).hide().appendTo($userContainer);
         $('<span>', {'class': LAG_CLS}).hide().appendTo($userContainer);
