@@ -453,7 +453,7 @@ define([
                 Metadata = Cryptpad.createMetadata(UserList, Title);
 
                 var configTb = {
-                    displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit'],
+                    displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit', 'upgrade'],
                     userList: UserList.getToolbarConfig(),
                     share: {
                         secret: secret,

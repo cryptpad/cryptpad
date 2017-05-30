@@ -222,7 +222,7 @@ define([
 
         Title = Cryptpad.createTitle({}, function(){}, Cryptpad);
 
-        var displayed = ['title', 'useradmin', 'newpad', 'limit'];
+        var displayed = ['title', 'useradmin', 'newpad', 'limit', 'upgrade'];
         if (secret && hexFileName) {
             displayed.push('fileshare');
         }
