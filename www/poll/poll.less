@@ -2,7 +2,9 @@
 @import "../../customize.dist/src/less/mixins.less";
 
 @poll-th-bg: #aaa;
+@poll-th-user-bg: #999;
 @poll-td-bg: #aaa;
+@poll-placeholder: #666;
 @poll-border-color: #555;
 @poll-cover-color: #000;
 @poll-fg: #000;
@@ -42,6 +44,13 @@ input[type="text"][disabled], textarea[disabled] {
     font: white;
     border: 0px;
 }
+
+// The placeholder color only seems to effect Safari when not set
+
+input[type="text"]::placeholder {
+    color: @poll-placeholder;
+}
+
 table#table {
     margin: 0px;
 }
@@ -75,7 +84,7 @@ table#table {
 #tableScroll {
     overflow-y: hidden;
     overflow-x: auto;
-    margin-left: calc(~"30% - 50px + 29px");
+    margin-left: calc(~"30% - 50px + 31px");
     max-width: 70%;
     width: auto;
     display: inline-block;
@@ -118,6 +127,9 @@ table {
 }
 tbody {
     border: 1px solid @poll-border-color;
+    * {
+        box-sizing: border-box;
+    }
     tr {
         text-align: center;
         &:first-of-type th{
@@ -282,20 +294,32 @@ form.realtime, div.realtime {
                 width: 80%;
             }
         }
+        span {
+            user-select: none;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
         thead {
             td {
                 padding: 0px 5px;
                 background: @poll-th-bg;
                 border-radius: 20px 20px 0 0;
-                text-align: center;
+                //text-align: center;
+                &:nth-of-type(2) {
+                    background: @poll-th-user-bg;
+                    .lock {
+                        cursor: default;
+                    }
+                }
                 input {
                     &[type="text"] {
                         width: 100%;
                         box-sizing: border-box;
+                        padding: 1px 5px;
                         &[disabled] {
                             color: @poll-fg;
-                            padding: 1px 5px;
-                            border: none;
+                            border: 1px solid transparent;
                         }
                     }
                 }
@@ -318,9 +342,11 @@ form.realtime, div.realtime {
                     margin: 0 0 0 10px;
                 }
             }
-            td {
-                label {
-                    border: .5px solid @poll-border-color;
+            tr:not(:first-child) {
+                td:not(:first-child) {
+                    label {
+                        border-top: 1px solid @poll-border-color;
+                    }
                 }
             }
         }
@@ -331,6 +357,12 @@ form.realtime, div.realtime {
             margin-left: 10px;
         }
 
+        .lock {
+            margin-left: ~"calc(50% - 0.5em)";
+            cursor: pointer;
+            width: 1em;
+            text-align: center;
+        }
         .remove {
             float: right;
             margin-right: 10px;

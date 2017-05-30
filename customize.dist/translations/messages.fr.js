@@ -193,6 +193,11 @@ define(function () {
     out.poll_titleHint = "Titre";
     out.poll_descriptionHint = "Description";
 
+    out.poll_remove = "Supprimer";
+    out.poll_edit = "Modifier";
+    out.poll_locked = "Verrouillé";
+    out.poll_unlocked = "Déverrouillé";
+
     // Canvas
     out.canvas_clear = "Nettoyer";
     out.canvas_delete = "Supprimer la sélection";
