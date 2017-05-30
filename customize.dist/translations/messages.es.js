@@ -407,6 +407,8 @@ define(function () {
     out.deleted = "El pad fue borrado de tu CryptDrive";
     out.upgrade = "Mejorar";
     out.upgradeTitle = "Mejora tu cuenta para obtener más espacio";
+    out.upgradeAccount = "Mejorar cuenta";
+
     out.MB = "MB";
     out.GB = "GB";
     out.KB = "KB";

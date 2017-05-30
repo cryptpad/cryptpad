@@ -62,6 +62,8 @@ define(function () {
 
     out.upgrade = "Upgrade";
     out.upgradeTitle = "Upgrade your account to increase the storage limit";
+
+    out.upgradeAccount = "Upgrade account";
     out.MB = "MB";
     out.GB = "GB";
     out.KB = "KB";
