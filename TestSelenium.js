@@ -22,43 +22,55 @@ if (process.env.SAUCE_USERNAME !== undefined) {
     driver = new WebDriver.Builder().withCapabilities({ browserName: "chrome" }).build();
 }
 
-var SC_GET_LOGS = "return (window.__CRYPTPAD_TEST__) ? window.__CRYPTPAD_TEST__.getLogs() : '[]'";
+var SC_GET_DATA = "return (window.__CRYPTPAD_TEST__) ? window.__CRYPTPAD_TEST__.getData() : '[]'";
 
+var failed = false;
 var nt = nThen;
 [
     '/assert/#?test=test',
     '/auth/#?test=test'
 ].forEach(function (path) {
+    if (failed) { return; }
     var url = 'http://localhost:3000' + path;
-    nt = nThen(function (waitFor) {
+    nt = nt(function (waitFor) {
+        var done = waitFor();
+        console.log('\n\n-----TEST ' + url + ' -----');
         driver.get(url);
-        var done = false;
-        var logMore = function (cb) {
-            if (done) { return; }
-            driver.executeScript(SC_GET_LOGS).then(waitFor(function (logs) {
-                JSON.parse(logs).forEach(function (l) { console.log('>' + l); });
-                if (cb) { cb(); } else { setTimeout(logMore, 50); }
+        var waitTo = setTimeout(function () {
+            console.log("no report in 10 seconds, timing out");
+            failed = true;
+        }, 10000);
+        var logMore = function () {
+            driver.executeScript(SC_GET_DATA).then(waitFor(function (dataS) {
+                var data = JSON.parse(dataS);
+                data.forEach(function (d) {
+                    if (d.type !== 'log') { return; }
+                    console.log('>' + d.val);
+                });
+                data.forEach(function (d) {
+                    if (d.type !== 'report') { return; }
+                    console.log('RESULT: ' + d.val);
+                    if (d.val !== 'passed') {
+                        if (d.error) {
+                            console.log(d.error.message);
+                            console.log(d.error.stack);
+                        }
+                        failed = true;
+                    }
+                    clearTimeout(waitTo);
+                    console.log('-----END TEST ' + url + ' -----');
+                    done();
+                    done = undefined;
+                });
+                if (done) { setTimeout(logMore, 50); }
             }));
         };
         logMore();
-        driver.wait(WebDriver.until.elementLocated(WebDriver.By.className("report")), 5000);
-        var report = driver.wait(WebDriver.until.elementLocated(WebDriver.By.className("report")), 5000);
-        report.getAttribute("class").then(waitFor(function (cls) {
-            report.getText().then(waitFor(function (text) {
-                logMore(function () { done = true; });
-                console.log("\n-----\n" + url + '  ' + text + "\n-----");
-                if (!cls) {
-                    throw new Error("cls is null");
-                } else if (cls.indexOf("failure") !== -1) {
-                    throw new Error("cls contains the word failure");
-                } else if (cls.indexOf("success") === -1) {
-                    throw new Error("cls does not contain the word success");
-                }
-            }));
-        }));
     }).nThen;
 });
 
-nt(function () {
-    driver.quit();
+nt(function (waitFor) {
+    driver.quit().then(waitFor(function () {
+        if (failed) { process.exit(100); }
+    }));
 });

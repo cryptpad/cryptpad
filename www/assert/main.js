@@ -5,7 +5,7 @@ define([
     'json.sortify',
     '/common/cryptpad-common.js',
     '/common/test.js'
-], function ($, Hyperjson, TextPatcher, Sortify, Cryptpad) {
+], function ($, Hyperjson, TextPatcher, Sortify, Cryptpad, Test) {
     window.Hyperjson = Hyperjson;
     window.TextPatcher = TextPatcher;
     window.Sortify = Sortify;
@@ -268,6 +268,12 @@ The test returned:
 
         var $report = $('.report');
         $report.addClass(failed?'failure':'success');
+
+        if (failed) {
+            Test.failed();
+        } else {
+            Test.passed();
+        }
     });
 
 });
