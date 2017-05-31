@@ -26,14 +26,14 @@ const hashesFromPinFile = (pinFile, fileName) => {
     return Object.keys(pins);
 };
 
-const sizeForHashes = (hashes, dsFileSizes) => {
+const sizeForHashes = (hashes, dsFileStats) => {
     let sum = 0;
     hashes.forEach((h) => {
-        const s = dsFileSizes[h];
+        const s = dsFileStats[h];
         if (typeof(s) !== 'number') {
             //console.log('missing ' + h + '  ' + typeof(s));
         } else {
-            sum += s;
+            sum += s.size;
         }
     });
     return sum;
@@ -43,8 +43,9 @@ const sema = Semaphore.create(20);
 
 let dirList;
 const fileList = [];
-const dsFileSizes = {};
+const dsFileStats = {};
 const out = [];
+const pinned = {};
 
 nThen((waitFor) => {
     Fs.readdir('./datastore', waitFor((err, list) => {
@@ -65,7 +66,7 @@ nThen((waitFor) => {
         sema.take((returnAfter) => {
             Fs.stat(f, waitFor(returnAfter((err, st) => {
                 if (err) { throw err; }
-                dsFileSizes[f.replace(/^.*\/([^\/]*)\.ndjson$/, (all, a) => (a))] = st.size;
+                dsFileStats[f.replace(/^.*\/([^\/]*)\.ndjson$/, (all, a) => (a))] = st;
             })));
         });
     });
@@ -90,12 +91,25 @@ nThen((waitFor) => {
             Fs.readFile(f, waitFor(returnAfter((err, content) => {
                 if (err) { throw err; }
                 const hashes = hashesFromPinFile(content.toString('utf8'), f);
-                const size = sizeForHashes(hashes, dsFileSizes);
-                out.push([f, Math.floor(size / (1024 * 1024))]);
+                const size = sizeForHashes(hashes, dsFileStats);
+                if (process.argv.indexOf('--unpinned') > -1) {
+                    hashes.forEach((x) => { pinned[x] = 1; });
+                } else {
+                    out.push([f, Math.floor(size / (1024 * 1024))]);
+                }
             })));
         });
     });
 }).nThen(() => {
-    out.sort((a,b) => (a[1] - b[1]));
-    out.forEach((x) => { console.log(x[0] + '  ' + x[1] + ' MB'); });
+    if (process.argv.indexOf('--unpinned') > -1) {
+        Object.keys(dsFileStats).forEach((f) => {
+            if (!(f in pinned)) {
+                console.log("./datastore/" + f.slice(0,2) + "/" + f + ".ndjson " +
+                    dsFileStats[f].size + " " + (+dsFileStats[f].mtime));
+            }
+        });
+    } else {
+        out.sort((a,b) => (a[1] - b[1]));
+        out.forEach((x) => { console.log(x[0] + '  ' + x[1] + ' MB'); });
+    }
 });
