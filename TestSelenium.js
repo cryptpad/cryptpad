@@ -45,6 +45,7 @@ var nt = nThen;
         var logMore = function () {
             if (!done) { return; }
             driver.executeScript(SC_GET_DATA).then(waitFor(function (dataS) {
+                if (!done) { return; }
                 var data = JSON.parse(dataS);
                 data.forEach(function (d) {
                     if (d.type !== 'log') { return; }
