@@ -30,7 +30,7 @@ define([
         var cryptKey = secret.keys && secret.keys.fileKeyStr;
         var fileId = secret.channel;
         var hexFileName = Cryptpad.base64ToHex(fileId);
-        var type = "image/png";
+        // var type = "image/png";
 
         var parsed = Cryptpad.parsePadUrl(window.location.href);
         var defaultName = Cryptpad.getDefaultName(parsed);
@@ -105,7 +105,7 @@ define([
              *
              * @type       {Array}
              */
-            const allowedMediaTypes = [
+            var allowedMediaTypes = [
                 'image/png',
                 'image/jpeg',
                 'image/jpg',
