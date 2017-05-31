@@ -7,7 +7,7 @@ define([], function () {
         rpt.setAttribute('class', 'report ' + (pass ? 'success' : 'failure'));
         rpt.setAttribute('style', 'display:none;');
         document.body.appendChild(rpt);
-    }
+    };
     if (window.location.hash.indexOf("?test=test") > -1) {
         window.onerror = function (msg, url, lineNo, columnNo, e) {
             mkReport([
