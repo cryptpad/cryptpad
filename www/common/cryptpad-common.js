@@ -246,7 +246,7 @@ define([
     var getUserHash = common.getUserHash = function () {
         var hash = localStorage[userHashKey];
 
-        if (['undefined', 'undefined/'].indexOf(hash) === -1) {
+        if (['undefined', 'undefined/'].indexOf(hash) !== -1) {
             localStorage.removeItem(userHashKey);
             return;
         }
