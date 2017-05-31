@@ -35,11 +35,13 @@ module.exports = {
          */
         "child-src 'self' *",
 
+        "media-src *",
+
         /*  this allows connections over secure or insecure websockets
             if you are deploying to production, you'll probably want to remove
             the ws://* directive, and change '*' to your domain
          */
-        "connect-src 'self' ws: wss:",
+        "connect-src 'self' ws: wss: blob:",
 
         // data: is used by codemirror
         "img-src 'self' data: blob:",
