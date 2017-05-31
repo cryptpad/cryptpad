@@ -313,8 +313,8 @@ define([
 
                 /* add a history button */
                 var histConfig = {
-                    onLocal: config.onLocal(),
-                    onRemote: config.onRemote(),
+                    onLocal: config.onLocal,
+                    onRemote: config.onRemote,
                     setHistory: setHistory,
                     applyVal: function (val) {
                         var remoteDoc = JSON.parse(val || '{}').content;
