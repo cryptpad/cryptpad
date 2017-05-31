@@ -246,10 +246,10 @@ define([
     var getUserHash = common.getUserHash = function () {
         var hash = localStorage[userHashKey];
 
-        if (hash && ['undefined', 'undefined/'].indexOf(hash) !== -1) {
+        if (hash && ['undefined', 'undefined/'].indexOf(hash) === -1) {
             var sHash = common.serializeHash(hash);
             if (sHash !== hash) { localStorage[userHashKey] = sHash; }
-        }
+        } else { return; }
 
         return hash;
     };
