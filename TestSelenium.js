@@ -48,4 +48,4 @@ var nt = nThen;
 
 nt(function () {
     driver.quit();
-})
+});

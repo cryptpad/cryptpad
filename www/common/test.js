@@ -21,10 +21,10 @@ define([], function () {
                 ]).replace(/</g, '') +
             '</div>';
         };
-        out = function (f) { f(); }
+        out = function (f) { f(); };
     }
     out.passed = function () {
         document.body.innerHTML = '<div class="report success">Test Passed</div>';
-    }
+    };
     return out;
 });
