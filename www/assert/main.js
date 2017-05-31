@@ -29,6 +29,7 @@ define([
 
         ASSERTS.forEach(function (f, index) {
             f(function (err) {
+                console.log("test " + index);
                 done(err, index);
             }, index);
         });

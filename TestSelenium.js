@@ -37,10 +37,13 @@ var nt = nThen;
         console.log('\n\n-----TEST ' + url + ' -----');
         driver.get(url);
         var waitTo = setTimeout(function () {
-            console.log("no report in 10 seconds, timing out");
+            console.log("no report in 20 seconds, timing out");
             failed = true;
-        }, 10000);
+            done();
+            done = undefined;
+        }, 20000);
         var logMore = function () {
+            if (!done) { return; }
             driver.executeScript(SC_GET_DATA).then(waitFor(function (dataS) {
                 var data = JSON.parse(dataS);
                 data.forEach(function (d) {
