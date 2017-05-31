@@ -1,30 +1,64 @@
 define([], function () {
     var out = function () { };
+    out.passed = out;
+    var mkReport = function (list, pass) {
+        var rpt = document.createElement('div');
+        rpt.textContent = JSON.stringify(list);
+        rpt.setAttribute('class', 'report ' + (pass ? 'success' : 'failure'));
+        rpt.setAttribute('style', 'display:none;');
+        document.body.appendChild(rpt);
+    }
     if (window.location.hash.indexOf("?test=test") > -1) {
         window.onerror = function (msg, url, lineNo, columnNo, e) {
-            document.body.innerHTML = '<div class="report fail">' +
-                JSON.stringify([
-                    msg,
-                    url,
-                    lineNo,
-                    columnNo,
-                    e ? e.message : null,
-                    e ? e.stack : null
-                ]).replace(/</g, '') +
-            '</div>';
+            mkReport([
+                msg,
+                url,
+                lineNo,
+                columnNo,
+                e ? e.message : null,
+                e ? e.stack : null
+            ]);
         };
         require.onError = function (e) {
-            document.body.innerHTML = '<div class="report fail">' +
-                JSON.stringify([
-                    e ? e.message : null,
-                    e ? e.stack : null
-                ]).replace(/</g, '') +
-            '</div>';
+            mkReport([
+                e ? e.message : null,
+                e ? e.stack : null
+            ]);
         };
         out = function (f) { f(); };
+        out.passed = function () { mkReport("Test Passed", true); };
+
+        var cpt = window.__CRYPTPAD_TEST__ = {
+            logs: [],
+            getLogs: function () {
+                var logs = JSON.stringify(cpt.logs);
+                cpt.logs = [];
+                return logs;
+            }
+        };
+
+        // jshint -W103
+        var errProto = (new Error()).__proto__;
+        var doLog = function (o) {
+            var s;
+            if (typeof(o) === 'object' && o.__proto__ === errProto) {
+                s = JSON.stringify([ o.message, o.stack ]);
+            } else if (typeof(s) !== 'string') {
+                try {
+                    s = JSON.stringify(o);
+                } catch (e) {
+                    s = String(o);
+                }
+            }
+            var out = [s];
+            try { throw new Error(); } catch (e) { out.push(e.stack.split('\n')[3]); }
+            window.__CRYPTPAD_TEST__.logs.push(out);
+        };
+
+        window.console._error = window.console.error;
+        window.console._log = window.console.log;
+        window.console.error = function (e) { window.console._error(e); doLog(e); };
+        window.console.log = function (l) { window.console._log(l); doLog(l); };
     }
-    out.passed = function () {
-        document.body.innerHTML = '<div class="report success">Test Passed</div>';
-    };
     return out;
 });

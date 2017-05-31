@@ -22,17 +22,30 @@ if (process.env.SAUCE_USERNAME !== undefined) {
     driver = new WebDriver.Builder().withCapabilities({ browserName: "chrome" }).build();
 }
 
+var SC_GET_LOGS = "return (window.__CRYPTPAD_TEST__) ? window.__CRYPTPAD_TEST__.getLogs() : '[]'";
+
 var nt = nThen;
 [
-    '/assert/',
+    '/assert/#?test=test',
     '/auth/#?test=test'
 ].forEach(function (path) {
     var url = 'http://localhost:3000' + path;
     nt = nThen(function (waitFor) {
         driver.get(url);
+        var done = false;
+        var logMore = function (cb) {
+            if (done) { return; }
+            driver.executeScript(SC_GET_LOGS).then(waitFor(function (logs) {
+                JSON.parse(logs).forEach(function (l) { console.log('>' + l); });
+                if (cb) { cb(); } else { setTimeout(logMore, 50); }
+            }));
+        };
+        logMore();
+        driver.wait(WebDriver.until.elementLocated(WebDriver.By.className("report")), 5000);
         var report = driver.wait(WebDriver.until.elementLocated(WebDriver.By.className("report")), 5000);
         report.getAttribute("class").then(waitFor(function (cls) {
             report.getText().then(waitFor(function (text) {
+                logMore(function () { done = true; });
                 console.log("\n-----\n" + url + '  ' + text + "\n-----");
                 if (!cls) {
                     throw new Error("cls is null");
@@ -48,4 +61,4 @@ var nt = nThen;
 
 nt(function () {
     driver.quit();
-});
+})

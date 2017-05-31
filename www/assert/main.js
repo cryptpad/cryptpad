@@ -4,6 +4,7 @@ define([
     '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
     '/common/cryptpad-common.js',
+    '/common/test.js'
 ], function ($, Hyperjson, TextPatcher, Sortify, Cryptpad) {
     window.Hyperjson = Hyperjson;
     window.TextPatcher = TextPatcher;
