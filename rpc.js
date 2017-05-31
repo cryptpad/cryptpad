@@ -785,6 +785,24 @@ var upload_status = function (Env, publicKey, filesize, cb) {
     });
 };
 
+var isAuthenticatedCall = function (call) {
+    return [
+        //'COOKIE',
+        'RESET',
+        'PIN',
+        'UNPIN',
+        'GET_HASH',
+        'GET_TOTAL_SIZE',
+        'GET_FILE_SIZE',
+        'UPDATE_LIMITS',
+        'GET_LIMIT',
+        'GET_MULTIPLE_FILE_SIZE',
+        'UPLOAD',
+        'UPLOAD_COMPLETE',
+        'UPLOAD_CANCEL',
+    ].indexOf(call) !== -1;
+};
+
 /*::const ConfigType = require('./config.example.js');*/
 RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)=>void*/) {
     // load pin-store...
@@ -840,7 +858,6 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
         beginSession(Sessions, publicKey);
 
         var cookie = msg[0];
-
         if (!isValidCookie(Sessions, publicKey, cookie)) {
             // no cookie is fine if the RPC is to get a cookie
             if (msg[1] !== 'COOKIE') {
@@ -854,8 +871,10 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
             return void respond('INVALID_MESSAGE_OR_PUBLIC_KEY');
         }
 
-        if (checkSignature(serialized, signature, publicKey) !== true) {
-            return void respond("INVALID_SIGNATURE_OR_PUBLIC_KEY");
+        if (isAuthenticatedCall(msg[1])) {
+            if (checkSignature(serialized, signature, publicKey) !== true) {
+                return void respond("INVALID_SIGNATURE_OR_PUBLIC_KEY");
+            }
         }
 
         var safeKey = escapeKeyCharacters(publicKey);
