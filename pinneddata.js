@@ -1,4 +1,4 @@
-/* jshint esversion: 6 */
+/* jshint esversion: 6, node: true */
 const Fs = require('fs');
 const Semaphore = require('saferphore');
 const nThen = require('nthen');
