@@ -84,6 +84,7 @@ var unescapeKeyCharacters = function (key) {
     return key.replace(/\-/g, '/');
 };
 
+//  TODO Rename to getSession ?
 var beginSession = function (Sessions, key) {
     var safeKey = escapeKeyCharacters(key);
     if (Sessions[safeKey]) {
@@ -625,6 +626,7 @@ var makeFileStream = function (root, id, cb) {
             var stream = Fs.createWriteStream(full, {
                 flags: 'a',
                 encoding: 'binary',
+                highWaterMark: Math.pow(2, 16),
             });
             stream.on('open', function () {
                 cb(void 0, stream);
@@ -637,12 +639,15 @@ var makeFileStream = function (root, id, cb) {
 
 var upload = function (Env, publicKey, content, cb) {
     var paths = Env.paths;
-    var dec = new Buffer(Nacl.util.decodeBase64(content)); // jshint ignore:line
+    var dec;
+    try { dec = Buffer.from(content, 'base64'); }
+    catch (e) { return void cb(e); }
     var len = dec.length;
 
     var session = beginSession(Env.Sessions, publicKey);
 
-    if (typeof(session.currentUploadSize) !== 'number') {
+    if (typeof(session.currentUploadSize) !== 'number' ||
+        typeof(session.currentUploadSize) !== 'number') {
         // improperly initialized... maybe they didn't check before uploading?
         // reject it, just in case
         return cb('NOT_READY');
@@ -670,6 +675,12 @@ var upload = function (Env, publicKey, content, cb) {
 
 var upload_cancel = function (Env, publicKey, cb) {
     var paths = Env.paths;
+
+    var session = beginSession(Env.Sessions, publicKey);
+    delete session.currentUploadSize;
+    delete session.pendingUploadSize;
+    if (session.blobstage) { session.blobstage.close(); }
+
     var path = makeFilePath(paths.staging, publicKey);
     if (!path) {
         console.log(paths.staging, publicKey);
@@ -797,7 +808,7 @@ var isAuthenticatedCall = function (call) {
         'UPDATE_LIMITS',
         'GET_LIMIT',
         'GET_MULTIPLE_FILE_SIZE',
-        'UPLOAD',
+        //'UPLOAD',
         'UPLOAD_COMPLETE',
         'UPLOAD_CANCEL',
     ].indexOf(call) !== -1;

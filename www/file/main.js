@@ -65,7 +65,7 @@ define([
             var enc = Nacl.util.encodeBase64(box);
 
             chunks.push(box);
-            Cryptpad.rpc.send('UPLOAD', enc, function (e, msg) {
+            Cryptpad.rpc.send.unauthenticated('UPLOAD', enc, function (e, msg) {
                 console.log(box);
                 cb(e, msg);
             });
