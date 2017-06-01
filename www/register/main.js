@@ -143,6 +143,7 @@ define([
                                     case 'ALREADY_REGISTERED':
                                         Cryptpad.removeLoadingScreen(function () {
                                             Cryptpad.confirm(Messages.register_alreadyRegistered, function (yes) {
+                                                if (!yes) { return; }
                                                 proxy.login_name = uname;
 
                                                 if (!proxy[Cryptpad.displayNameKey]) {
@@ -194,7 +195,7 @@ define([
             $register.click();
 
             window.setTimeout(function () {
-                Cryptpad.findOKButton().click()
+                Cryptpad.findOKButton().click();
             }, 1000);
         });
     });
