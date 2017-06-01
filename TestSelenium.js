@@ -35,7 +35,6 @@ var nt = nThen;
     nt = nt(function (waitFor) {
         var done = waitFor();
         console.log('\n\n-----TEST ' + url + ' -----');
-        driver.get(url);
         var waitTo = setTimeout(function () {
             console.log("no report in 20 seconds, timing out");
             failed = true;
@@ -69,7 +68,7 @@ var nt = nThen;
                 if (done) { setTimeout(logMore, 50); }
             }));
         };
-        logMore();
+        driver.get(url).then(waitFor(logMore));
     }).nThen;
 });
 
