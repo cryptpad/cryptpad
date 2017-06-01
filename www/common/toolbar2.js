@@ -10,7 +10,7 @@ define([
         constants: {},
     };
 
-    var SPINNER_DISAPPEAR_TIME = 3000;
+    var SPINNER_DISAPPEAR_TIME = 1000;
 
     // Toolbar parts
     var TOOLBAR_CLS = Bar.constants.toolbar = 'cryptpad-toolbar';
