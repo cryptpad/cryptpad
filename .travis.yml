@@ -6,7 +6,7 @@ env:
     - "BROWSER='MicrosoftEdge:14.14393:Windows 10'"
     - "BROWSER='internet explorer:11.103:Windows 10'"
     #- "BROWSER='safari:10.0:macOS 10.12'"
-    - "BROWSER='safari:9.0:OS X 10.11'"
+    #- "BROWSER='safari:9.0:OS X 10.11'"
 branches:
   only:
     - master
