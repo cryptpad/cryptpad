@@ -52,6 +52,7 @@ define([], function () {
             });
         };
         out = function (f) { f(); };
+        out.testing = true;
         out.passed = function () {
             cpt.data.push({
                 type: 'report',
@@ -67,6 +68,8 @@ define([], function () {
                 error: { message: e.message, stack: e.stack }
             });
         };
+    } else {
+        out.testing = false;
     }
     return out;
 });
