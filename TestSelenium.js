@@ -27,6 +27,7 @@ var SC_GET_DATA = "return (window.__CRYPTPAD_TEST__) ? window.__CRYPTPAD_TEST__.
 var failed = false;
 var nt = nThen;
 [
+    '/register/#?test=test',
     '/assert/#?test=test',
   //  '/auth/#?test=test' // TODO(cjd): Not working on automatic tests, understand why.
 ].forEach(function (path) {
