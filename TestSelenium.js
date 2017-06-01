@@ -7,6 +7,7 @@ if (process.env.TRAVIS_PULL_REQUEST && process.env.TRAVIS_PULL_REQUEST !== 'fals
     return;
 }
 
+// https://wiki.saucelabs.com/display/DOCS/Platform+Configurator#/
 var driver;
 if (process.env.SAUCE_USERNAME !== undefined) {
     var browserArray = process.env.BROWSER.split(':');
