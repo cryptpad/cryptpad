@@ -52,7 +52,7 @@ define([
 
         var $row = $table.find('tr[id="'+id+'"]');
 
-        var $cancelCell = $row.find('.upCancel').html('-');
+        $row.find('.upCancel').html('-');
         var $pv = $row.find('.progressValue');
         var $pb = $row.find('.progressContainer');
 
