@@ -387,6 +387,8 @@
   left: 0;
   right: 0;
   text-align: center;
+  transition: opacity 750ms;
+  transition-delay: 3000ms;
 }
 @media screen and (max-height: 600px) {
   .cp #loadingTip {
