@@ -798,7 +798,7 @@ var upload_status = function (Env, publicKey, filesize, cb) {
 
 var isAuthenticatedCall = function (call) {
     return [
-        //'COOKIE',
+        'COOKIE',
         'RESET',
         'PIN',
         'UNPIN',
@@ -893,6 +893,9 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
             public key which you provided.
 
             We can safely modify the state for that key
+
+            OR it's an unauthenticated call, which must not modify the state
+            for that key in a meaningful way.
         */
 
         // discard validated cookie from message
