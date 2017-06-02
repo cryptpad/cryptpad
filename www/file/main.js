@@ -50,8 +50,18 @@ define([
         if (queue.inProgress) { return; }
         queue.inProgress = true;
 
-        var $cancelCell = $table.find('tr[id="'+id+'"]').find('.upCancel');
-        $cancelCell.html('-');
+        var $row = $table.find('tr[id="'+id+'"]');
+
+        var $cancelCell = $row.find('.upCancel').html('-');
+        var $pv = $row.find('.progressValue');
+        var $pb = $row.find('.progressContainer');
+
+        var updateProgress = function (progressValue) {
+            $pv.text(Math.round(progressValue*100)/100 + '%');
+            $pb.css({
+                width: (progressValue/100)*188+'px'
+            });
+        };
 
         var u8 = new Uint8Array(blob);
 
@@ -59,12 +69,9 @@ define([
         var next = FileCrypto.encrypt(u8, metadata, key);
 
         var estimate = FileCrypto.computeEncryptedSize(blob.byteLength, metadata);
-        var chunks = [];
 
         var sendChunk = function (box, cb) {
             var enc = Nacl.util.encodeBase64(box);
-
-            chunks.push(box);
             Cryptpad.rpc.send.unauthenticated('UPLOAD', enc, function (e, msg) {
                 console.log(box);
                 cb(e, msg);
@@ -77,16 +84,10 @@ define([
             if (box) {
                 actual += box.length;
                 var progressValue = (actual / estimate * 100);
+                updateProgress(progressValue);
 
                 return void sendChunk(box, function (e) {
                     if (e) { return console.error(e); }
-                    var $pv = $table.find('tr[id="'+id+'"]').find('.progressValue');
-                    $pv.text(Math.round(progressValue*100)/100 + '%');
-                    var $pb = $table.find('tr[id="'+id+'"]').find('.progressContainer');
-                    $pb.css({
-                        width: (progressValue/100)*188+'px'
-                    });
-
                     next(again);
                 });
             }
