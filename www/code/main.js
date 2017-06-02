@@ -53,6 +53,7 @@ define([
 
         var andThen = function (CMeditor) {
             var CodeMirror = Cryptpad.createCodemirror(CMeditor, ifrw, Cryptpad);
+            $iframe.find('.CodeMirror').addClass('fullPage');
             editor = CodeMirror.editor;
 
             var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
@@ -145,8 +146,13 @@ define([
                 var $codeMirror = $iframe.find('.CodeMirror');
                 if (mode === "markdown") {
                     APP.$previewButton.show();
-                    $previewContainer.show();
-                    $codeMirror.removeClass('fullPage');
+                    Cryptpad.getPadAttribute('previewMode', function (e, data) {
+                        if (e) { return void console.error(e); }
+                        if (data !== false) {
+                            $previewContainer.show();
+                            $codeMirror.removeClass('fullPage');
+                        }
+                    });
                     return;
                 }
                 APP.$previewButton.hide();

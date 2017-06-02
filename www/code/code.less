@@ -16,10 +16,13 @@ body {
     max-height: 100%;
     min-height: auto;
 }
+
+@slideTime: 500ms;
 .CodeMirror {
     display: inline-block;
     height: 100%;
     width: 50%;
+    transition: width @slideTime, min-width @slideTime, max-width @slideTime;
     min-width: 20%;
     max-width: 80%;
     resize: horizontal;
