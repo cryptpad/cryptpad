@@ -243,7 +243,7 @@ define(function () {
     out.fm_selectError = "無法選取目標的要素。如果這個問題一直發生，請試著重新載入此頁。";
     out.fm_categoryError = "無法打開所選的類別，正在顯示根目錄。";
     out.fm_info_root = "在此建立任何巢狀目錄夾以便於整理分類你的檔案。";
-    out.fm_info_unsorted = '包含所有你曾訪問過的檔案，其尚未被整理在 "根目錄" 或移到到"垃圾筒".';「// "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
+    out.fm_info_unsorted = '包含所有你曾訪問過的檔案，其尚未被整理在 "根目錄" 或移到到"垃圾筒".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
     out.fm_info_template = '包含所有工作檔案已存成模版，便於讓你在建立新工作檔案時套用。';
     out.updated_0_fm_info_trash = '清空垃圾筒好讓 CryptDrive 多出一些空間';
     out.fm_info_trash = out.updated_0_fm_info_trash;
