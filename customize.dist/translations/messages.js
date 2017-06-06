@@ -313,7 +313,6 @@ define(function () {
 
     out.login_notRegistered = 'Not registered?';
 
-
     out.register_importRecent = "Import pad history (Recommended)";
     out.register_acceptTerms = "I accept <a href='/terms.html'>the terms of service</a>";
     out.register_passwordsDontMatch = "Passwords do not match!";

@@ -60,9 +60,13 @@ define(function () {
 
     out.upgrade = "Augmenter votre limite";
     out.upgradeTitle = "Améliorer votre compte pour augmenter la limite de stockage";
+
+    out.upgradeAccount = "Améliorer le compte";
     out.MB = "Mo";
     out.GB = "Go";
     out.KB = "Ko";
+
+    out.supportCryptpad = "Soutenir CryptPad";
 
     out.formattedMB = "{0} Mo";
     out.formattedGB = "{0} Go";
@@ -76,6 +80,7 @@ define(function () {
     out.updated_0_pinLimitReachedAlert = "Vous avez atteint votre limite de stockage. Les nouveaux pads ne seront pas enregistrés dans votre CryptDrive.<br>" +
         'Vous pouvez soit supprimer des pads de votre CryptDrive, soit vous <a href="https://accounts.cryptpad.fr/#!on={0}" target="_blank">abonner à une offre premium</a> pour augmenter la limite maximale.';
     out.pinLimitReachedAlert = out.updated_0_pinLimitReachedAlert;
+    out.pinLimitReachedAlertNoAccounts = out.pinLimitReached;
     out.pinAboveLimitAlert = 'Depuis la dernière version, nous imposons désormais une limite de 50 Mo de stockage gratuit et vous utilisez actuellement {0}. You devriez soit supprimer certains pads ou soit vous abonner sur <a href="https://accounts.cryptpad.fr/#!on={1}" target="_blank">accounts.cryptpad.fr</a>. Votre contribution nous aidera à améliorer CryptPad et à répandre le Zero Knowledge. Vous pouvez contacter le <a href="https://accounts.cryptpad.fr/#/support" target="_blank">support</a> pour tout problème ou question concernant ces changements.';
     out.pinLimitNotPinned = "Vous avez atteint votre limite de stockage.<br>"+
                             "Ce pad n'est pas enregistré dans votre CryptDrive.";
@@ -304,6 +309,8 @@ define(function () {
     out.login_invalPass = 'Mot de passe requis';
     out.login_unhandledError = "Une erreur inattendue s'est produite :(";
 
+    out.login_notRegistered = 'Pas enregistré ?';
+
     out.register_importRecent = "Importer l'historique (Recommendé)";
     out.register_acceptTerms = "J'accepte <a href='/terms.html'>les conditions d'utilisation</a>";
     out.register_passwordsDontMatch = "Les mots de passe doivent être identiques!";
@@ -374,6 +381,7 @@ define(function () {
     out.upload_name = "Nom du fichier";
     out.upload_size = "Taille";
     out.upload_progress = "État";
+    out.upload_mustLogin = "Vous devez vous connecter pour uploader un fichier";
     out.download_button = "Déchiffrer et télécharger";
 
     // general warnings
