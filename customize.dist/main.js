@@ -57,6 +57,8 @@ define([
             var $container = $('<div>', {'class': 'dropdown-bar'}).appendTo($parent);
             Config.availablePadTypes.forEach(function (el) {
                 if (el === 'drive') { return; }
+                if (!Cryptpad.isLoggedIn() && Config.registeredOnlyTypes &&
+                    Config.registeredOnlyTypes.indexOf(el) !== -1) { return; }
                 options.push({
                     tag: 'a',
                     attributes: {
