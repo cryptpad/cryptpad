@@ -1415,6 +1415,12 @@ define([
                 });
                 $block.find('a.newdoc').click(function () {
                     var type = $(this).attr('data-type') || 'pad';
+                    // We can't create a hash for files before uploading the file
+                    if (type === 'file') { // TODO: remove when filename are gone?
+                        sessionStorage[Cryptpad.newPadPathKey] = filesOp.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
+                        window.open('/' + type + '/');
+                        return;
+                    }
                     var name = Cryptpad.getDefaultName({type: type});
                     filesOp.addFile(currentPath, name, type, onCreated);
                 });
