@@ -436,7 +436,6 @@ define(function () {
     out.pinLimitReachedAlert = ["Has llegado a tu limite de espacio. Nuevos pads no serán guardados en tu CryptDrive.",
         "Puedes eliminar pads de tu CryptDrive o <a href=\"https://accounts.cryptpad.fr/#!on={0}\" target=\"_blank\">suscribirte a una oferta premium</a> para obtener más espacio."].join("<br>");
     out.pinLimitReachedAlertNoAccounts = "Has llegado a tu limite de espacio";
-    out.pinAboveLimitAlert = "Desde esta versión, ponemos un limite de 50MB a las cuentas gratís y estás usando {0}. Tendrás que eliminar unos pads o suscribirte en <a href=\"https://accounts.cryptpad.fr/#!on={1}\" target=\"_blank\">accounts.cryptpad.fr</a>. Tu contribución nos ayuda a mejorar CryptPad y extender el Zero Knowledge. Por favor contacta <a href=\"https://accounts.cryptpad.fr/#/support\" target=\"_blank\">el soporte</a> si tienes preguntas adicionales.";
     out.previewButtonTitle = "Mostrar/esconder la vista previa Markdown";
     out.fm_info_trash = "Vacía tu papelera para liberar espaci en tu CryptDrive.";
     out.fm_info_anonymous = "No estás conectado, así que estos pads pueden ser borrados (<a href=\"https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/\" target=\"_blank\">¿por qué?</a>). <a href=\"/register/\">Registrate</a> o <a href=\"/login/\">Inicia sesión</a> para asegurarlos.";

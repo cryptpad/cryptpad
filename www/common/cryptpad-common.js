@@ -803,7 +803,6 @@ define([
     };
 
     var LIMIT_REFRESH_RATE = 30000; // milliseconds
-    var limitReachedDisplayed = false;
     common.createUsageBar = function (cb, alwaysDisplayUpgrade) {
         var todo = function (err, state, data) {
             var $container = $('<span>', {'class':'limit-container'});
@@ -854,13 +853,7 @@ define([
 
             if (quota < 0.8) { $usage.addClass('normal'); }
             else if (quota < 1) { $usage.addClass('warning'); }
-            else {
-                $usage.addClass('above');
-                if (!limitReachedDisplayed && Config.noSubscriptionButton === true) {
-                    limitReachedDisplayed = true;
-                    common.alert(Messages._getKey('pinAboveLimitAlert', [prettyUsage, encodeURIComponent(window.location.hostname)]), null, true);
-                }
-            }
+            else { $usage.addClass('above'); }
             var $text = $('<span>', {'class': 'usageText'});
             $text.text(usage + ' / ' + prettyLimit);
             $limit.append($usage).append($text);

@@ -82,7 +82,6 @@ define(function () {
     out.updated_0_pinLimitReachedAlert = "你已達到儲存容量上限，新檔案不會儲存到你的 CryptDrive.<br>" +
         '要嘛你可以自 CryptDrive 移除原有文件或是 <a href="https://accounts.cryptpad.fr/#!on={0}" target="_blank">昇級到付費版</a>增加你的儲存容量。';
     out.pinLimitReachedAlert = out.updated_0_pinLimitReachedAlert;
-    out.pinAboveLimitAlert = '這個版本中, 我們對免費用戶實施 50MB 容量上限的儲存限制，你目前已使用了 {0}。你可以刪除一些檔案或是昇級到付費帳戶 <a href="https://accounts.cryptpad.fr/#!on={1}" target="_blank">accounts.cryptpad.fr</a>。你的貢獻可助我們改善 CryptPad 並散佈零知識技術。可聯絡 <a href="https://accounts.cryptpad.fr/#/support" target="_blank">用戶支援</a>如果有任何問題的話。';
     out.pinLimitNotPinned = "你已達到容量使用上限<br>"+
                             "這個檔案無法儲存到你的 CryptDrive.";
     out.pinLimitDrive = "你已達到容量使用上限<br>" +
