@@ -3,6 +3,7 @@ define([
     '/customize/application_config.js',
     '/common/cryptpad-common.js',
     '/api/config',
+    '/customize/header.js',
 ], function ($, Config, Cryptpad, ApiConfig) {
 
     window.APP = {
@@ -13,29 +14,6 @@ define([
 
     $(function () {
         var $main = $('#mainBlock');
-
-        // Language selector
-        var $sel = $('#language-selector');
-        Cryptpad.createLanguageSelector(undefined, $sel);
-        $sel.find('button').addClass('btn').addClass('btn-secondary');
-        $sel.show();
-
-        var $upgrade = $('#upgrade');
-
-        var showUpgrade = function (text) {
-            if (ApiConfig.removeDonateButton) { return; }
-            if (localStorage.plan) { return; }
-            if (!text) { return; }
-            $upgrade.text(text).show();
-        };
-
-        // User admin menu
-        var $userMenu = $('#user-menu');
-        var userMenuCfg = {
-            $initBlock: $userMenu
-        };
-        var $userAdmin = Cryptpad.createUserAdminMenu(userMenuCfg);
-        $userAdmin.find('button').addClass('btn').addClass('btn-secondary');
 
         $(window).click(function () {
             $('.cryptpad-dropdown').hide();
@@ -66,13 +44,11 @@ define([
                 });
             });
 
-            showUpgrade(Messages.upgradeAccount);
-
             $loggedInBlock.removeClass('hidden');
-        } else {
+        }
+        else {
             $main.find('#userForm').removeClass('hidden');
             $('#name').focus();
-            showUpgrade(Messages.supportCryptpad);
         }
 
         var displayCreateButtons = function () {
@@ -99,7 +75,6 @@ define([
             var $block = Cryptpad.createDropdown(dropdownConfig);
             $block.find('button').addClass('btn').addClass('btn-primary');
             $block.appendTo($parent);
-
         };
 
         /* Log in UI */

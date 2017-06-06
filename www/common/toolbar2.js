@@ -703,12 +703,15 @@ define([
 
         var text;
         var feedback;
+        var url;
         if (ApiConfig.allowSubscriptions && Cryptpad.isLoggedIn()) {
             text = Messages.upgradeAccount;
             feedback = "UPGRADE_ACCOUNT";
+            url = Cryptpad.upgradeURL;
         } else {
             text = Messages.supportCryptpad;
             feedback = "SUPPORT_CRYPTPAD";
+            url = Cryptpad.donateURL;
         }
 
         var $upgrade = toolbar.$top.find('.' + UPGRADE_CLS).attr({
@@ -716,7 +719,7 @@ define([
         }).text(text).show()
         .click(function () {
             Cryptpad.feedback(feedback);
-            window.open(Cryptpad.donateURL,'_blank');
+            window.open(url,'_blank');
         });
         return $upgrade;
     };

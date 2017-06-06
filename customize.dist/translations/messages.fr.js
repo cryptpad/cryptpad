@@ -308,7 +308,7 @@ define(function () {
     out.login_invalPass = 'Mot de passe requis';
     out.login_unhandledError = "Une erreur inattendue s'est produite :(";
 
-    out.login_notRegistered = 'Pas enregistré ?';
+    out.login_notRegistered = 'Pas encore inscrit ?';
 
     out.register_importRecent = "Importer l'historique (Recommendé)";
     out.register_acceptTerms = "J'accepte <a href='/terms.html'>les conditions d'utilisation</a>";

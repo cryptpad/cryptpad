@@ -5,6 +5,7 @@ define([
     '/common/mergeDrive.js',
     '/api/config',
     '/bower_components/file-saver/FileSaver.min.js',
+    '/customize/header.js',
 ], function ($, Cryptpad, Crypt, Merge, ApiConfig) {
     var saveAs = window.saveAs;
 
@@ -13,14 +14,6 @@ define([
     var APP = window.APP = {
         Cryptpad: Cryptpad,
         _onRefresh: []
-    };
-
-    var $upgrade = $('#upgrade');
-    var showUpgrade = function (text) {
-        if (ApiConfig.removeDonateButton) { return; }
-        if (localStorage.plan) { return; }
-        if (!text) { return; }
-        $upgrade.text(text).show();
     };
 
     var Messages = Cryptpad.Messages;
@@ -333,30 +326,10 @@ define([
         APP.$container.append(createUserFeedbackToggle(obj));
         obj.proxy.on('change', [], refresh);
         obj.proxy.on('remove', [], refresh);
-
-
-        if (Cryptpad.isLoggedIn()) {
-            showUpgrade(Messages.upgradeAccount);
-        } else {
-            showUpgrade(Messages.supportCryptpad);
-        }
     };
 
     $(function () {
         var $main = $('#mainBlock');
-        // Language selector
-        var $sel = $('#language-selector');
-        Cryptpad.createLanguageSelector(undefined, $sel);
-        $sel.find('button').addClass('btn').addClass('btn-secondary');
-        $sel.show();
-
-        // User admin menu
-        var $userMenu = $('#user-menu');
-        var userMenuCfg = {
-            $initBlock: $userMenu
-        };
-        var $userAdmin = Cryptpad.createUserAdminMenu(userMenuCfg);
-        $userAdmin.find('button').addClass('btn').addClass('btn-secondary');
 
         $(window).click(function () {
             $('.cryptpad-dropdown').hide();

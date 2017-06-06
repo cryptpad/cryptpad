@@ -27,6 +27,7 @@ define([
         Messages: Messages,
         Clipboard: Clipboard,
         donateURL: 'https://accounts.cryptpad.fr/#/donate?on=' + window.location.hostname,
+        upgradeURL: 'https://accounts.cryptpad.fr/#/?on=' + window.location.hostname,
         account: {},
     };
 
