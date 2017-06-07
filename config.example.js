@@ -45,6 +45,9 @@ module.exports = {
 
         // data: is used by codemirror
         "img-src 'self' data: blob:",
+
+        // for accounts.cryptpad.fr authentication
+        "frame-ancestors 'self' accounts.cryptpad.fr",
     ].join('; '),
 
     // CKEditor requires significantly more lax content security policy in order to function.
