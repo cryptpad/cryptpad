@@ -3,10 +3,9 @@ define([
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
     '/common/mergeDrive.js',
-    '/api/config',
     '/bower_components/file-saver/FileSaver.min.js',
     '/customize/header.js',
-], function ($, Cryptpad, Crypt, Merge, ApiConfig) {
+], function ($, Cryptpad, Crypt, Merge) {
     var saveAs = window.saveAs;
 
     var USERNAME_KEY = 'cryptpad.username';

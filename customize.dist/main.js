@@ -2,9 +2,8 @@ define([
     'jquery',
     '/customize/application_config.js',
     '/common/cryptpad-common.js',
-    '/api/config',
     '/customize/header.js',
-], function ($, Config, Cryptpad, ApiConfig) {
+], function ($, Config, Cryptpad) {
 
     window.APP = {
         Cryptpad: Cryptpad,
