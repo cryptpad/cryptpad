@@ -92,8 +92,8 @@ define([
             exp.getFileSize = function (file, cb) {
                 rpc.send('GET_FILE_SIZE', file, function (e, response) {
                     if (e) { return void cb(e); }
-                    if (response && response.length) {
-                        cb(void 0, response[0]);
+                    if (response && response.length && typeof(response[0]) === 'number') {
+                        return void cb(void 0, response[0]);
                     } else {
                         cb('INVALID_RESPONSE');
                     }
