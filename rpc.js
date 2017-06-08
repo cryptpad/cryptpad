@@ -78,7 +78,7 @@ var parseCookie = function (cookie) {
 };
 
 var escapeKeyCharacters = function (key) {
-    return key.replace(/\//g, '-');
+    return key && key.replace && key.replace(/\//g, '-');
 };
 
 var unescapeKeyCharacters = function (key) {
