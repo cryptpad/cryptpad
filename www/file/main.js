@@ -361,7 +361,10 @@ define([
             var dropped = e.originalEvent.dataTransfer.files;
             counter = 0;
             $label.removeClass('hovering');
-            handleFile(dropped[0]);
+
+            Array.prototype.slice.call(dropped).forEach(function (d) {
+                handleFile(d);
+            });
         });
 
         // we're in upload mode
