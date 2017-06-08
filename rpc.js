@@ -16,9 +16,10 @@ var RPC = module.exports;
 var Store = require("./storage/file");
 
 var DEFAULT_LIMIT = 50 * 1024 * 1024;
+var SESSION_EXPIRATION_TIME = 60 * 1000;
 
 var isValidId = function (chan) {
-    return /^[a-fA-F0-9]/.test(chan) ||
+    return chan && chan.length && /^[a-fA-F0-9]/.test(chan) ||
         [32, 48].indexOf(chan.length) !== -1;
 };
 
@@ -1058,7 +1059,7 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                 // expire old sessions once per minute
                 setInterval(function () {
                     expireSessions(Sessions);
-                }, 60000);
+                }, SESSION_EXPIRATION_TIME);
             });
         });
     });
