@@ -949,8 +949,8 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                     Respond(e, size);
                 });
             case 'GET_FILE_SIZE':
-                return void getFileSize(Env, msg[2], function (e, size) {
-                    warn(e, msg[2]);
+                return void getFileSize(Env, msg[1], function (e, size) {
+                    warn(e, msg[1]);
                     Respond(e, size);
                 });
             case 'UPDATE_LIMITS':
