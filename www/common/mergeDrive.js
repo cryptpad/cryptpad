@@ -22,61 +22,17 @@ define([
         return nkey;
     };
 
-    var copy = function (el) {
-        if (typeof (el) !== "object") { return el; }
-        return JSON.parse(JSON.stringify(el));
-    };
-
-    var deduplicate = function (array) {
-        var a = array.slice();
-        for(var i=0; i<a.length; i++) {
-            for(var j=i+1; j<a.length; j++) {
-                if(a[i] === a[j] || (
-                    typeof(a[i]) === "object" && Sortify(a[i]) === Sortify(a[j]))) {
-                    a.splice(j--, 1);
-                }
-            }
-        }
-        return a;
-    };
-
-    // Merge obj2 into obj1
-    // If keepOld is true, obj1 values are kept in case of conflicti
-    // Not used ATM
-    var merge = function (obj1, obj2, keepOld) {
-        if (typeof (obj1) !== "object" || typeof (obj2) !== "object") { return; }
-        Object.keys(obj2).forEach(function (k) {
-            //var v = obj2[k];
-            // If one of them is not an object or if we have a map and a array, don't override, create a new key
-            if (!obj1[k] || typeof(obj1[k]) !== "object" || typeof(obj2[k]) !== "object" ||
-                    (getType(obj1[k]) !== getType(obj2[k]))) {
-                // We don't want to override the values in the object (username, preferences)
-                // These values should be the ones stored in the first object
-                if (keepOld) { return; }
-                if (obj1[k] === obj2[k]) { return; }
-                var nkey = findAvailableKey(obj1, k);
-                obj1[nkey] = copy(obj2[k]);
-                return;
-            }
-            // Else, they're both maps or both arrays
-            if (getType(obj1[k]) === "array" && getType(obj2[k]) === "array") {
-                var c = obj1[k].concat(obj2[k]);
-                obj1[k] = deduplicate(c);
-                return;
-            }
-            merge(obj1[k], obj2[k], keepOld);
-        });
-    };
-
-    var createFromPath = function (proxy, oldFo, path, href) {
+    var createFromPath = function (proxy, oldFo, path, id) {
         var root = proxy.drive;
+
+        if (!oldFo.isFile(id)) { return; }
 
         var error = function (msg) {
             console.error(msg || "Unable to find that path", path);
         };
 
         if (oldFo.isInTrashRoot(path)) {
-            href = oldFo.find(path.slice(0,3));
+            id = oldFo.find(path.slice(0,3));
             path.pop();
         }
 
@@ -86,7 +42,7 @@ define([
             if (typeof(p) === "string") {
                 if (getType(root) !== "object") { root = undefined; error(); return; }
                 if (i === path.length - 1) {
-                    root[findAvailableKey(root, p)] = href;
+                    root[Cryptpad.createChannelId()] = id;
                     return;
                 }
                 next = getType(path[i+1]);
@@ -111,7 +67,7 @@ define([
             if (typeof(p) !== "number") { root = undefined; error(); return; }
             if (getType(root) !== "array") { root = undefined; error(); return; }
             if (i === path.length - 1) {
-                if (root.indexOf(href) === -1) { root.push(href); }
+                if (root.indexOf(id) === -1) { root.push(id); }
                 return;
             }
             next = getType(path[i+1]);
@@ -147,21 +103,22 @@ define([
                 return;
             }
             if (parsed) {
-                //merge(proxy, parsed, true);
                 var oldFo = FO.init(parsed.drive, {
                     Cryptpad: Cryptpad
                 });
                 oldFo.fixFiles();
                 var newData = Cryptpad.getStore().getProxy();
                 var newFo = newData.fo;
-                var newRecentPads = proxy.drive[Cryptpad.storageKey];
+                var oldRecentPads = parsed.drive[newFo.FILES_DATA];
+                var newRecentPads = proxy.drive[newFo.FILES_DATA];
                 var newFiles = newFo.getFiles([newFo.FILES_DATA]);
                 var oldFiles = oldFo.getFiles([newFo.FILES_DATA]);
-                oldFiles.forEach(function (href) {
+                oldFiles.forEach(function (id) {
+                    var href = oldRecentPads[id].href;
                     // Do not migrate a pad if we already have it, it would create a duplicate in the drive
-                    if (newFiles.indexOf(href) !== -1) { return; }
+                    if (newFiles.indexOf(id) !== -1) { return; }
                     // If we have a stronger version, do not add the current href
-                    if (Cryptpad.findStronger(href, newRecentPads)) { console.log(href); return; }
+                    if (Cryptpad.findStronger(href, newRecentPads)) { return; }
                     // If we have a weaker version, replace the href by the new one
                     // NOTE: if that weaker version is in the trash, the strong one will be put in unsorted
                     var weaker = Cryptpad.findWeaker(href, newRecentPads);
@@ -179,13 +136,15 @@ define([
                         return;
                     }
                     // Here it means we have a new href, so we should add it to the drive at its old location
-                    var paths = oldFo.findFile(href);
+                    var paths = oldFo.findFile(id);
                     if (paths.length === 0) { return; }
-                    createFromPath(proxy, oldFo, paths[0], href);
-                    // Also, push the file data in our array
-                    var data = oldFo.getFileData(href);
+                    // Add the file data in our array and use the id to add the file
+                    var data = oldFo.getFileData(id);
                     if (data) {
-                        newRecentPads.push(data);
+                        newFo.pushData(data, function (err, id) {
+                            if (err) { return void console.error("Cannot import file:", data, err); }
+                            createFromPath(proxy, oldFo, paths[0], id);
+                        });
                     }
                 });
                 if (!proxy.FS_hashes || !Array.isArray(proxy.FS_hashes)) {
