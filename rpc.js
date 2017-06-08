@@ -276,7 +276,11 @@ var getUploadSize = function (Env, channel, cb) {
     }
 
     Fs.stat(path, function (err, stats) {
-        if (err) { return void cb(err); }
+        if (err) {
+            // if a file was deleted, its size is 0 bytes
+            if (err.code === 'ENOENT') { return cb(void 0, 0); }
+            return void cb(err);
+        }
         cb(void 0, stats.size);
     });
 };
