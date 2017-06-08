@@ -220,6 +220,7 @@ var loadUserPins = function (Env, publicKey, cb) {
         var parsed;
         try {
             parsed = JSON.parse(msg);
+            session.hasPinned = true;
 
             switch (parsed[0]) {
                 case 'PIN':
@@ -575,7 +576,16 @@ var resetUserPins = function (Env, publicKey, channelList, cb) {
                 console.error(e);
                 return void cb(e);
             }
-            if (pinSize > free) { return void(cb('E_OVER_LIMIT')); }
+
+            /*  we want to let people pin, even if they are over their limit,
+                but they should only be able to do this once.
+
+                This prevents data loss in the case that someone registers, but
+                does not have enough free space to pin their migrated data.
+
+                They will not be able to pin additional pads until they upgrade
+                or delete enough files to go back under their limit. */
+            if (pinSize > free && session.hasPinned) { return void(cb('E_OVER_LIMIT')); }
             pinStore.message(publicKey, JSON.stringify(['RESET', channelList]),
                 function (e) {
                 if (e) { return void cb(e); }
