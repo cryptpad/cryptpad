@@ -951,6 +951,7 @@ define([
                             delete parent[okey];
                         });
                     });
+                    files[OLD_FILES_DATA] = undefined;
                     delete files[OLD_FILES_DATA];
                 } catch(e) {
                     console.error(e);
