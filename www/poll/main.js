@@ -15,8 +15,6 @@ define([
 
     $(function () {
 
-    var unlockHTML = '<i class="fa fa-unlock" aria-hidden="true"></i>';
-    var lockHTML = '<i class="fa fa-lock" aria-hidden="true"></i>';
     var HIDE_INTRODUCTION_TEXT = "hide_poll_text";
     var defaultName;
 
@@ -100,12 +98,10 @@ define([
         // Enable the checkboxes for the user's column (committed or not)
         $('input[disabled="disabled"][data-rt-id^="' + id + '"]').removeAttr('disabled');
         $('input[type="checkbox"][data-rt-id^="' + id + '"]').addClass('enabled');
-        $('[data-rt-id="' + id + '"] ~ .edit').css('visibility', 'hidden');
-        $('.lock[data-rt-id="' + id + '"]').html(unlockHTML);
+        $('.lock[data-rt-id="' + id + '"]').addClass('fa-unlock').removeClass('fa-lock').attr('title', Messages.poll_unlocked);
 
         if (isOwnColumnCommitted()) { return; }
         $('[data-rt-id^="' + id + '"]').closest('td').addClass("uncommitted");
-        $('td.uncommitted .remove, td.uncommitted .edit').css('visibility', 'hidden');
         $('td.uncommitted .cover').addClass("uncommitted");
         $('.uncommitted input[type="text"]').attr("placeholder", Messages.poll_userPlaceholder);
     };
@@ -118,8 +114,7 @@ define([
         APP.editable.col.forEach(function (id) {
             $('input[disabled="disabled"][data-rt-id^="' + id + '"]').removeAttr('disabled');
             $('input[type="checkbox"][data-rt-id^="' + id + '"]').addClass('enabled');
-            $('span.edit[data-rt-id="' + id + '"]').css('visibility', 'hidden');
-            $('.lock[data-rt-id="' + id + '"]').html(unlockHTML);
+            $('.lock[data-rt-id="' + id + '"]').addClass('fa-unlock').removeClass('fa-lock').attr('title', Messages.poll_unlocked);
         });
     };
 
@@ -276,7 +271,6 @@ define([
         switch (type) {
             case 'text':
                 debug("text[rt-id='%s'] [%s]", id, input.value);
-                if (!input.value) { return void debug("Hit enter?"); }
                 Render.setValue(object, id, input.value);
                 change(null, null, null, 50);
                 break;
@@ -295,12 +289,26 @@ define([
         }
     };
 
+    var hideInputs = function (target, isKeyup) {
+        if (!isKeyup && $(target).is('[type="text"]')) {
+            return;
+        }
+        $('.lock[data-rt-id!="' + APP.userid + '"]').addClass('fa-lock').removeClass('fa-unlock').attr('title', Messages.poll_locked);
+        var $cells = APP.$table.find('thead td:not(.uncommitted), tbody td');
+        $cells.find('[type="text"][data-rt-id!="' + APP.userid + '"]').attr('disabled', true);
+        $('.edit[data-rt-id!="' + APP.userid + '"]').css('visibility', 'visible');
+        APP.editable.col = [APP.userid];
+        APP.editable.row = [];
+    };
+
     /*  Called whenever an event is fired on a span */
     var handleSpan = function (span) {
         var id = span.getAttribute('data-rt-id');
         var type = Render.typeofId(id);
         var isRemove = span.className && span.className.split(' ').indexOf('remove') !== -1;
         var isEdit = span.className && span.className.split(' ').indexOf('edit') !== -1;
+        var isLock = span.className && span.className.split(' ').indexOf('lock') !== -1;
+        var isLocked = span.className && span.className.split(' ').indexOf('fa-lock') !== -1;
         if (type === 'row') {
             if (isRemove) {
                 Cryptpad.confirm(Messages.poll_removeOption, function (res) {
@@ -310,6 +318,7 @@ define([
                     });
                 });
             } else if (isEdit) {
+                hideInputs(span);
                 unlockRow(id, function () {
                     change(null, null, null, null, function() {
                         $('input[data-rt-id="' + id + '"]').focus();
@@ -324,7 +333,8 @@ define([
                         change();
                     });
                 });
-            } else if (isEdit) {
+            } else if (isLock && isLocked) {
+                hideInputs(span);
                 unlockColumn(id, function () {
                     change(null, null, null, null, function() {
                         $('input[data-rt-id="' + id + '"]').focus();
@@ -338,48 +348,34 @@ define([
         }
     };
 
-    var hideInputs = function (e, isKeyup) {
-        if (!isKeyup && $(e.target).is('[type="text"]')) {
-            return;
-        }
-        $('.lock[data-rt-id!="' + APP.userid + '"]').html(lockHTML);
-        var $cells = APP.$table.find('thead td:not(.uncommitted), tbody td');
-        $cells.find('[type="text"][data-rt-id!="' + APP.userid + '"]').attr('disabled', true);
-        $('.edit[data-rt-id!="' + APP.userid + '"]').css('visibility', 'visible');
-        APP.editable.col = [APP.userid];
-        APP.editable.row = [];
-    };
-
-    $(window).click(hideInputs);
-
     var handleClick = function (e, isKeyup) {
         e.stopPropagation();
 
         if (!APP.ready) { return; }
         var target = e && e.target;
 
-        if (isKeyup) {
-            debug("Keyup!");
-        }
-
         if (!target) { return void debug("NO TARGET"); }
 
         var nodeName = target && target.nodeName;
+        var shouldLock = $(target).hasClass('fa-unlock');
 
-        if (!$(target).parents('#table tbody').length || $(target).hasClass('edit')) {
+        if ((!$(target).parents('#table tbody').length && $(target).hasClass('lock'))) {
             hideInputs(e);
         }
 
         switch (nodeName) {
             case 'INPUT':
                 if (isKeyup && (e.keyCode === 13 || e.keyCode === 27)) {
-                    hideInputs(e, isKeyup);
-                    return;
+                    hideInputs(target, isKeyup);
+                    break;
                 }
                 handleInput(target);
                 break;
             case 'SPAN':
             //case 'LABEL':
+                if (shouldLock) {
+                    break;
+                }
                 handleSpan(target);
                 break;
             case undefined:
@@ -459,7 +455,6 @@ var ready = function (info, userid, readOnly) {
 
     var $table = APP.$table = $(Render.asHTML(displayedObj, null, colsOrder, readOnly));
     APP.$createRow = $('#create-option').click(function () {
-        //console.error("BUTTON CLICKED! LOL");
         Render.createRow(proxy, function (empty, id) {
             change(null, null, null, null, function() {
                 $('.edit[data-rt-id="' + id + '"]').click();
@@ -470,7 +465,7 @@ var ready = function (info, userid, readOnly) {
     APP.$createCol = $('#create-user').click(function () {
         Render.createColumn(proxy, function (empty, id) {
             change(null, null, null, null, function() {
-                $('.edit[data-rt-id="' + id + '"]').click();
+                $('.lock[data-rt-id="' + id + '"]').click();
             });
         });
     });
@@ -531,6 +526,8 @@ var ready = function (info, userid, readOnly) {
     $table
         .click(handleClick)
         .on('keyup', function (e) { handleClick(e, true); });
+
+    $(window).click(hideInputs);
 
     proxy
         .on('change', ['info'], function (o, n, p) {
@@ -612,7 +609,7 @@ var create = function (info) {
     Title = Cryptpad.createTitle({}, onLocalTitle, Cryptpad);
 
     var configTb = {
-        displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit'],
+        displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit', 'upgrade'],
         userList: UserList.getToolbarConfig(),
         share: {
             secret: secret,

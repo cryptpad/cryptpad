@@ -62,9 +62,13 @@ define(function () {
 
     out.upgrade = "Upgrade";
     out.upgradeTitle = "Upgrade your account to increase the storage limit";
+
+    out.upgradeAccount = "Upgrade account";
     out.MB = "MB";
     out.GB = "GB";
     out.KB = "KB";
+
+    out.supportCryptpad = "Support CryptPad";
 
     out.formattedMB = "{0} MB";
     out.formattedGB = "{0} GB";
@@ -78,7 +82,7 @@ define(function () {
     out.updated_0_pinLimitReachedAlert = "You've reached your storage limit. New pads won't be stored in your CryptDrive.<br>" +
         'You can either remove pads from your CryptDrive or <a href="https://accounts.cryptpad.fr/#!on={0}" target="_blank">subscribe to a premium offer</a> to increase your limit.';
     out.pinLimitReachedAlert = out.updated_0_pinLimitReachedAlert;
-    out.pinAboveLimitAlert = 'As of this release, we are imposing a 50MB limit on free data storage and you are currently using {0}. You will need to either delete some pads or subscribe on <a href="https://accounts.cryptpad.fr/#!on={1}" target="_blank">accounts.cryptpad.fr</a>. Your contribution will help us improve CryptPad and spread Zero Knowledge. Please contact <a href="https://accounts.cryptpad.fr/#/support" target="_blank">support</a> if you have any other questions.';
+    out.pinLimitReachedAlertNoAccounts = out.pinLimitReached;
     out.pinLimitNotPinned = "You've reached your storage limit.<br>"+
                             "This pad is not stored in your CryptDrive.";
     out.pinLimitDrive = "You've reached your storage limit.<br>" +
@@ -195,6 +199,11 @@ define(function () {
     out.poll_titleHint = "Title";
     out.poll_descriptionHint = "Describe your poll, and use the 'publish' button when you're done. Anyone with the link can change the description, but this is discouraged.";
 
+    out.poll_remove = "Remove";
+    out.poll_edit = "Edit";
+    out.poll_locked = "Locked";
+    out.poll_unlocked = "Unlocked";
+
     // Canvas
     out.canvas_clear = "Clear";
     out.canvas_delete = "Delete selection";
@@ -301,6 +310,8 @@ define(function () {
     out.login_invalPass = 'Password required';
     out.login_unhandledError = 'An unexpected error occurred :(';
 
+    out.login_notRegistered = 'Not registered?';
+
     out.register_importRecent = "Import pad history (Recommended)";
     out.register_acceptTerms = "I accept <a href='/terms.html'>the terms of service</a>";
     out.register_passwordsDontMatch = "Passwords do not match!";
@@ -374,6 +385,7 @@ define(function () {
     out.upload_name = "File name";
     out.upload_size = "Size";
     out.upload_progress = "Progress";
+    out.upload_mustLogin = "You must be logged in to upload files";
     out.download_button = "Decrypt & Download";
 
     // general warnings
@@ -395,6 +407,7 @@ define(function () {
     out.main_zeroKnowledge = 'Zero Knowledge';
     out.main_zeroKnowledge_p = "You don't have to trust that we <em>won't</em> look at your pads, with CryptPad's revolutionary Zero Knowledge Technology we <em>can't</em>. Learn more about how we protect your <a href=\"/privacy.html\" title='Privacy'>Privacy and Security</a>.";
     out.main_writeItDown = 'Write it down';
+
     out.main_writeItDown_p = "The greatest projects come from the smallest ideas. Take down the moments of inspiration and unexpected ideas because you never know which one might be a breakthrough.";
     out.main_share = 'Share the link, share the pad';
     out.main_share_p = "Grow your ideas together: conduct efficient meetings, collaborate on TODO lists and make quick presentations with all your friends and all your devices.";

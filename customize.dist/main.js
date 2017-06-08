@@ -1,7 +1,8 @@
 define([
     'jquery',
     '/customize/application_config.js',
-    '/common/cryptpad-common.js'
+    '/common/cryptpad-common.js',
+    '/customize/header.js',
 ], function ($, Config, Cryptpad) {
 
     window.APP = {
@@ -13,24 +14,9 @@ define([
     $(function () {
         var $main = $('#mainBlock');
 
-        // Language selector
-        var $sel = $('#language-selector');
-        Cryptpad.createLanguageSelector(undefined, $sel);
-        $sel.find('button').addClass('btn').addClass('btn-secondary');
-        $sel.show();
-
-        // User admin menu
-        var $userMenu = $('#user-menu');
-        var userMenuCfg = {
-            $initBlock: $userMenu
-        };
-        var $userAdmin = Cryptpad.createUserAdminMenu(userMenuCfg);
-        $userAdmin.find('button').addClass('btn').addClass('btn-secondary');
-
         $(window).click(function () {
             $('.cryptpad-dropdown').hide();
         });
-
 
         // main block is hidden in case javascript is disabled
         $main.removeClass('hidden');
@@ -58,8 +44,8 @@ define([
             });
 
             $loggedInBlock.removeClass('hidden');
-            //return;
-        } else {
+        }
+        else {
             $main.find('#userForm').removeClass('hidden');
             $('#name').focus();
         }
@@ -70,6 +56,8 @@ define([
             var $container = $('<div>', {'class': 'dropdown-bar'}).appendTo($parent);
             Config.availablePadTypes.forEach(function (el) {
                 if (el === 'drive') { return; }
+                if (!Cryptpad.isLoggedIn() && Config.registeredOnlyTypes &&
+                    Config.registeredOnlyTypes.indexOf(el) !== -1) { return; }
                 options.push({
                     tag: 'a',
                     attributes: {
@@ -89,7 +77,6 @@ define([
             $block.find('button').addClass('btn').addClass('btn-primary');
             $block.appendTo($parent);
         };
-
 
         /* Log in UI */
         var Login;

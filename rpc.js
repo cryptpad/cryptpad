@@ -1,4 +1,5 @@
 /*@flow*/
+/*jshint esversion: 6 */
 /*  Use Nacl for checking signatures of messages */
 var Nacl = require("tweetnacl");
 
@@ -8,15 +9,17 @@ var Nacl = require("tweetnacl");
 var Fs = require("fs");
 var Path = require("path");
 var Https = require("https");
+const Package = require('./package.json');
 
 var RPC = module.exports;
 
 var Store = require("./storage/file");
 
 var DEFAULT_LIMIT = 50 * 1024 * 1024;
+var SESSION_EXPIRATION_TIME = 60 * 1000;
 
 var isValidId = function (chan) {
-    return /^[a-fA-F0-9]/.test(chan) ||
+    return chan && chan.length && /^[a-fA-F0-9]/.test(chan) ||
         [32, 48].indexOf(chan.length) !== -1;
 };
 
@@ -75,13 +78,14 @@ var parseCookie = function (cookie) {
 };
 
 var escapeKeyCharacters = function (key) {
-    return key.replace(/\//g, '-');
+    return key && key.replace && key.replace(/\//g, '-');
 };
 
 var unescapeKeyCharacters = function (key) {
     return key.replace(/\-/g, '/');
 };
 
+//  TODO Rename to getSession ?
 var beginSession = function (Sessions, key) {
     var safeKey = escapeKeyCharacters(key);
     if (Sessions[safeKey]) {
@@ -216,6 +220,7 @@ var loadUserPins = function (Env, publicKey, cb) {
         var parsed;
         try {
             parsed = JSON.parse(msg);
+            session.hasPinned = true;
 
             switch (parsed[0]) {
                 case 'PIN':
@@ -272,7 +277,11 @@ var getUploadSize = function (Env, channel, cb) {
     }
 
     Fs.stat(path, function (err, stats) {
-        if (err) { return void cb(err); }
+        if (err) {
+            // if a file was deleted, its size is 0 bytes
+            if (err.code === 'ENOENT') { return cb(void 0, 0); }
+            return void cb(err);
+        }
         cb(void 0, stats.size);
     });
 };
@@ -371,6 +380,10 @@ var getHash = function (Env, publicKey, cb) {
 // To each key is associated an object containing the 'limit' value and a 'note' explaining that limit
 var limits = {};
 var updateLimits = function (config, publicKey, cb) {
+    if (config.adminEmail === false) {
+        if (config.allowSubscriptions === false) { return; }
+        throw new Error("allowSubscriptions must be false if adminEmail is false");
+    }
     if (typeof cb !== "function") { cb = function () {}; }
 
     var defaultLimit = typeof(config.defaultStorageLimit) === 'number'?
@@ -382,8 +395,10 @@ var updateLimits = function (config, publicKey, cb) {
     }
 
     var body = JSON.stringify({
-        domain: config.domain,
-        subdomain: config.subdomain
+        domain: config.myDomain,
+        subdomain: config.mySubdomain,
+        adminEmail: config.adminEmail,
+        version: Package.version
     });
     var options = {
         host: 'accounts.cryptpad.fr',
@@ -561,7 +576,16 @@ var resetUserPins = function (Env, publicKey, channelList, cb) {
                 console.error(e);
                 return void cb(e);
             }
-            if (pinSize > free) { return void(cb('E_OVER_LIMIT')); }
+
+            /*  we want to let people pin, even if they are over their limit,
+                but they should only be able to do this once.
+
+                This prevents data loss in the case that someone registers, but
+                does not have enough free space to pin their migrated data.
+
+                They will not be able to pin additional pads until they upgrade
+                or delete enough files to go back under their limit. */
+            if (pinSize > free && session.hasPinned) { return void(cb('E_OVER_LIMIT')); }
             pinStore.message(publicKey, JSON.stringify(['RESET', channelList]),
                 function (e) {
                 if (e) { return void cb(e); }
@@ -617,6 +641,7 @@ var makeFileStream = function (root, id, cb) {
             var stream = Fs.createWriteStream(full, {
                 flags: 'a',
                 encoding: 'binary',
+                highWaterMark: Math.pow(2, 16),
             });
             stream.on('open', function () {
                 cb(void 0, stream);
@@ -629,12 +654,15 @@ var makeFileStream = function (root, id, cb) {
 
 var upload = function (Env, publicKey, content, cb) {
     var paths = Env.paths;
-    var dec = new Buffer(Nacl.util.decodeBase64(content)); // jshint ignore:line
+    var dec;
+    try { dec = Buffer.from(content, 'base64'); }
+    catch (e) { return void cb(e); }
     var len = dec.length;
 
     var session = beginSession(Env.Sessions, publicKey);
 
-    if (typeof(session.currentUploadSize) !== 'number') {
+    if (typeof(session.currentUploadSize) !== 'number' ||
+        typeof(session.currentUploadSize) !== 'number') {
         // improperly initialized... maybe they didn't check before uploading?
         // reject it, just in case
         return cb('NOT_READY');
@@ -662,6 +690,12 @@ var upload = function (Env, publicKey, content, cb) {
 
 var upload_cancel = function (Env, publicKey, cb) {
     var paths = Env.paths;
+
+    var session = beginSession(Env.Sessions, publicKey);
+    delete session.currentUploadSize;
+    delete session.pendingUploadSize;
+    if (session.blobstage) { session.blobstage.close(); }
+
     var path = makeFilePath(paths.staging, publicKey);
     if (!path) {
         console.log(paths.staging, publicKey);
@@ -777,6 +811,24 @@ var upload_status = function (Env, publicKey, filesize, cb) {
     });
 };
 
+var isAuthenticatedCall = function (call) {
+    return [
+        'COOKIE',
+        'RESET',
+        'PIN',
+        'UNPIN',
+        'GET_HASH',
+        'GET_TOTAL_SIZE',
+        'GET_FILE_SIZE',
+        'UPDATE_LIMITS',
+        'GET_LIMIT',
+        'GET_MULTIPLE_FILE_SIZE',
+        //'UPLOAD',
+        'UPLOAD_COMPLETE',
+        'UPLOAD_CANCEL',
+    ].indexOf(call) !== -1;
+};
+
 /*::const ConfigType = require('./config.example.js');*/
 RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)=>void*/) {
     // load pin-store...
@@ -784,7 +836,7 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
 
     var warn = function (e, output) {
         if (e && !config.suppressRPCErrors) {
-            console.error('[' + e + ']', output);
+            console.error(new Date().toISOString() + ' [' + e + ']', output);
         }
     };
 
@@ -832,7 +884,6 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
         beginSession(Sessions, publicKey);
 
         var cookie = msg[0];
-
         if (!isValidCookie(Sessions, publicKey, cookie)) {
             // no cookie is fine if the RPC is to get a cookie
             if (msg[1] !== 'COOKIE') {
@@ -846,8 +897,10 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
             return void respond('INVALID_MESSAGE_OR_PUBLIC_KEY');
         }
 
-        if (checkSignature(serialized, signature, publicKey) !== true) {
-            return void respond("INVALID_SIGNATURE_OR_PUBLIC_KEY");
+        if (isAuthenticatedCall(msg[1])) {
+            if (checkSignature(serialized, signature, publicKey) !== true) {
+                return void respond("INVALID_SIGNATURE_OR_PUBLIC_KEY");
+            }
         }
 
         var safeKey = escapeKeyCharacters(publicKey);
@@ -855,6 +908,9 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
             public key which you provided.
 
             We can safely modify the state for that key
+
+            OR it's an unauthenticated call, which must not modify the state
+            for that key in a meaningful way.
         */
 
         // discard validated cookie from message
@@ -908,8 +964,8 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                     Respond(e, size);
                 });
             case 'GET_FILE_SIZE':
-                return void getFileSize(Env, msg[2], function (e, size) {
-                    warn(e, msg[2]);
+                return void getFileSize(Env, msg[1], function (e, size) {
+                    warn(e, msg[1]);
                     Respond(e, size);
                 });
             case 'UPDATE_LIMITS':
@@ -1017,7 +1073,7 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                 // expire old sessions once per minute
                 setInterval(function () {
                     expireSessions(Sessions);
-                }, 60000);
+                }, SESSION_EXPIRATION_TIME);
             });
         });
     });

@@ -194,10 +194,17 @@ define([
     };
     UI.removeLoadingScreen = function (cb) {
         $('#' + LOADING).fadeOut(750, cb);
-        $('#loadingTip').css('top', '');
-        window.setTimeout(function () {
-            $('#loadingTip').fadeOut(750);
-        }, 3000);
+        var $tip = $('#loadingTip').css('top', '')
+        // loading.less sets transition-delay: $wait-time
+        // and               transition: opacity $fadeout-time
+            .css({
+                'opacity': 0,
+                'pointer-events': 'none',
+            });
+            setTimeout(function () {
+                $tip.remove();
+            }, 3750);
+        // jquery.fadeout can get stuck
     };
     UI.errorLoadingScreen = function (error, transparent) {
         if (!$('#' + LOADING).is(':visible')) { UI.addLoadingScreen(undefined, true); }

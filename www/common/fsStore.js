@@ -170,6 +170,10 @@ define([
                 proxy[tokenKey] = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
             }
 
+            // copy User_hash into sessionStorage because cross-domain iframes
+            // on safari replaces localStorage with sessionStorage or something
+            if (sessionStorage) { sessionStorage.setItem('User_hash', localStorage.getItem('User_hash')); }
+
             var localToken = tryParsing(localStorage.getItem(tokenKey));
             if (localToken === null) {
                 // if that number hasn't been set to localStorage, do so.

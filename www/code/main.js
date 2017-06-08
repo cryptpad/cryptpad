@@ -53,6 +53,7 @@ define([
 
         var andThen = function (CMeditor) {
             var CodeMirror = Cryptpad.createCodemirror(CMeditor, ifrw, Cryptpad);
+            $iframe.find('.CodeMirror').addClass('fullPage');
             editor = CodeMirror.editor;
 
             var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
@@ -110,8 +111,16 @@ define([
                 return stringify(obj);
             };
 
+            var forceDrawPreview = function () {
+                try {
+                    DiffMd.apply(DiffMd.render(editor.getValue()), $preview);
+                } catch (e) { console.error(e); }
+            };
+
             var drawPreview = Cryptpad.throttle(function () {
-                DiffMd.apply(DiffMd.render(editor.getValue()), $preview);
+                if (CodeMirror.highlightMode !== 'markdown') { return; }
+                if (!$previewContainer.is(':visible')) { return; }
+                forceDrawPreview();
             }, 150);
 
             var onLocal = config.onLocal = function () {
@@ -137,8 +146,13 @@ define([
                 var $codeMirror = $iframe.find('.CodeMirror');
                 if (mode === "markdown") {
                     APP.$previewButton.show();
-                    $previewContainer.show();
-                    $codeMirror.removeClass('fullPage');
+                    Cryptpad.getPadAttribute('previewMode', function (e, data) {
+                        if (e) { return void console.error(e); }
+                        if (data !== false) {
+                            $previewContainer.show();
+                            $codeMirror.removeClass('fullPage');
+                        }
+                    });
                     return;
                 }
                 APP.$previewButton.hide();
@@ -155,7 +169,7 @@ define([
                 Metadata = Cryptpad.createMetadata(UserList, Title);
 
                 var configTb = {
-                    displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit'],
+                    displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit', 'upgrade'],
                     userList: UserList.getToolbarConfig(),
                     share: {
                         secret: secret,
@@ -183,8 +197,8 @@ define([
 
                 /* add a history button */
                 var histConfig = {
-                    onLocal: config.onLocal(),
-                    onRemote: config.onRemote(),
+                    onLocal: config.onLocal,
+                    onRemote: config.onRemote,
                     setHistory: setHistory,
                     applyVal: function (val) {
                         var remoteDoc = JSON.parse(val || '{}').content;
@@ -235,9 +249,16 @@ define([
                     }
                     $previewContainer.toggle();
                     if ($previewContainer.is(':visible')) {
+                        forceDrawPreview();
                         $codeMirror.removeClass('fullPage');
+                        Cryptpad.setPadAttribute('previewMode', true, function (e) {
+                            if (e) { return console.log(e); }
+                        });
                     } else {
                         $codeMirror.addClass('fullPage');
+                        Cryptpad.setPadAttribute('previewMode', false, function (e) {
+                            if (e) { return console.log(e); }
+                        });
                     }
                 });
                 $rightside.append($previewButton);
@@ -250,6 +271,7 @@ define([
                 else {
                     CodeMirror.configureTheme();
                 }
+
 
                 // set the hash
                 if (!readOnly) { Cryptpad.replaceHash(editHash); }
@@ -301,6 +323,13 @@ define([
                 if (Cryptpad.initialName && Title.isDefaultTitle()) {
                     Title.updateTitle(Cryptpad.initialName);
                 }
+
+                Cryptpad.getPadAttribute('previewMode', function (e, data) {
+                    if (e) { return void console.error(e); }
+                    if (data === false && APP.$previewButton) {
+                        APP.$previewButton.click();
+                    }
+                });
 
                 Cryptpad.removeLoadingScreen();
                 setEditable(true);

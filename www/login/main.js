@@ -128,5 +128,16 @@ define([
                 }, 0);
             }, 100);
         });
+        $('#register').on('click', function () {
+            if (sessionStorage) {
+                if ($uname.val()) {
+                    sessionStorage.login_user = $uname.val();
+                }
+                if ($passwd.val()) {
+                    sessionStorage.login_pass = $passwd.val();
+                }
+            }
+            window.location.href = '/register/';
+        });
     });
 });

@@ -387,6 +387,8 @@
   left: 0;
   right: 0;
   text-align: center;
+  transition: opacity 750ms;
+  transition-delay: 3000ms;
 }
 @media screen and (max-height: 600px) {
   .cp #loadingTip {
@@ -524,6 +526,22 @@
   font-size: 20px;
   margin: 0px 10px;
   line-height: 40px;
+}
+#cryptpadTopBar .right .buttonSuccess {
+  color: #fff;
+  background: #5cb85c;
+  border-color: #5cb85c;
+}
+#cryptpadTopBar .right .buttonSuccess:hover {
+  color: #fff;
+  background: #449d44;
+  border: 1px solid #419641;
+}
+#cryptpadTopBar .right .buttonSuccess span {
+  color: #fff;
+}
+#cryptpadTopBar .right .buttonSuccess .large {
+  margin-left: 5px;
 }
 #cryptpadTopBar .right button .buttonTitle .fa-user {
   margin-right: 5px;
@@ -874,6 +892,12 @@ html.cp,
 .cp #main #main-container,
 .cp #main_other #main-container {
   display: inline-block;
+}
+.cp #main #userForm .extra p,
+.cp #main_other #userForm .extra p {
+  font-size: 28px;
+  padding: 15px;
+  text-align: center;
 }
 .cp #main #data,
 .cp #main_other #data {

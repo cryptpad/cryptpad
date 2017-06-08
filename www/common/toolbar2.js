@@ -10,7 +10,7 @@ define([
         constants: {},
     };
 
-    var SPINNER_DISAPPEAR_TIME = 3000;
+    var SPINNER_DISAPPEAR_TIME = 1000;
 
     // Toolbar parts
     var TOOLBAR_CLS = Bar.constants.toolbar = 'cryptpad-toolbar';
@@ -33,6 +33,7 @@ define([
     var LIMIT_CLS = Bar.constants.lag = 'cryptpad-limit';
     var TITLE_CLS = Bar.constants.title = "cryptpad-title";
     var NEWPAD_CLS = Bar.constants.newpad = "cryptpad-newpad";
+    var UPGRADE_CLS = Bar.constants.upgrade = "cryptpad-upgrade";
 
     // User admin menu
     var USERADMIN_CLS = Bar.constants.user = 'cryptpad-user-dropdown';
@@ -70,6 +71,7 @@ define([
         var $userContainer = $('<span>', {
             'class': USER_CLS
         }).appendTo($topContainer);
+        $('<button>', {'class': UPGRADE_CLS + ' buttonSuccess'}).hide().appendTo($userContainer);
         $('<span>', {'class': SPINNER_CLS}).hide().appendTo($userContainer);
         $('<span>', {'class': STATE_CLS}).hide().appendTo($userContainer);
         $('<span>', {'class': LAG_CLS}).hide().appendTo($userContainer);
@@ -595,7 +597,6 @@ define([
             'class': 'synced fa fa-check',
             title: Messages.synced
         }).appendTo($spin);
-        toolbar.$userAdmin.prepend($spin);
         if (config.realtime) {
             config.realtime.onPatch(ks(toolbar, config));
             config.realtime.onMessage(ks(toolbar, config, true));
@@ -616,8 +617,12 @@ define([
         var todo = function (e, overLimit) {
             if (e) { return void console.error("Unable to get the pinned usage"); }
             if (overLimit) {
+                var key = 'pinLimitReachedAlert';
+                if (ApiConfig.noSubscriptionButton === true) {
+                    key = 'pinLimitReachedAlertNoAccounts';
+                }
                 $limit.show().click(function () {
-                    Cryptpad.alert(Messages._getKey('pinLimitReachedAlert', [encodeURIComponent(window.location.hostname)]), null, true);
+                    Cryptpad.alert(Messages._getKey(key, [encodeURIComponent(window.location.hostname)]), null, true);
                 });
             }
         };
@@ -631,6 +636,8 @@ define([
         var pads_options = [];
         Config.availablePadTypes.forEach(function (p) {
             if (p === 'drive') { return; }
+            if (!Cryptpad.isLoggedIn() && Config.registeredOnlyTypes &&
+                Config.registeredOnlyTypes.indexOf(p) !== -1) { return; }
             pads_options.push({
                 tag: 'a',
                 attributes: {
@@ -690,6 +697,33 @@ define([
         });
 
         return $userAdmin;
+    };
+
+    var createUpgrade = function (toolbar) {
+        if (ApiConfig.removeDonateButton) { return; }
+        if (Cryptpad.account.plan) { return; }
+
+        var text;
+        var feedback;
+        var url;
+        if (ApiConfig.allowSubscriptions && Cryptpad.isLoggedIn()) {
+            text = Messages.upgradeAccount;
+            feedback = "UPGRADE_ACCOUNT";
+            url = Cryptpad.upgradeURL;
+        } else {
+            text = Messages.supportCryptpad;
+            feedback = "SUPPORT_CRYPTPAD";
+            url = Cryptpad.donateURL;
+        }
+
+        var $upgrade = toolbar.$top.find('.' + UPGRADE_CLS).attr({
+            'title': Messages.supportCryptpad
+        }).text(text).show()
+        .click(function () {
+            Cryptpad.feedback(feedback);
+            window.open(url,'_blank');
+        });
+        return $upgrade;
     };
 
     // Events
@@ -849,9 +883,9 @@ define([
         tb['spinner'] = createSpinner;
         tb['state'] = createState;
         tb['limit'] = createLimit;
+        tb['upgrade'] = createUpgrade;
         tb['newpad'] = createNewPad;
         tb['useradmin'] = createUserAdmin;
-
 
         var addElement = toolbar.addElement = function (arr, additionnalCfg, init) {
             if (typeof additionnalCfg === "object") { $.extend(true, config, additionnalCfg); }

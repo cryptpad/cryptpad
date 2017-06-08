@@ -3,7 +3,8 @@ define([
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
     '/common/mergeDrive.js',
-    '/bower_components/file-saver/FileSaver.min.js'
+    '/bower_components/file-saver/FileSaver.min.js',
+    '/customize/header.js',
 ], function ($, Cryptpad, Crypt, Merge) {
     var saveAs = window.saveAs;
 
@@ -328,19 +329,6 @@ define([
 
     $(function () {
         var $main = $('#mainBlock');
-        // Language selector
-        var $sel = $('#language-selector');
-        Cryptpad.createLanguageSelector(undefined, $sel);
-        $sel.find('button').addClass('btn').addClass('btn-secondary');
-        $sel.show();
-
-        // User admin menu
-        var $userMenu = $('#user-menu');
-        var userMenuCfg = {
-            $initBlock: $userMenu
-        };
-        var $userAdmin = Cryptpad.createUserAdminMenu(userMenuCfg);
-        $userAdmin.find('button').addClass('btn').addClass('btn-secondary');
 
         $(window).click(function () {
             $('.cryptpad-dropdown').hide();

@@ -34,6 +34,11 @@ var setHeaders = (function () {
     const headers = clone(config.httpHeaders);
     if (config.contentSecurity) {
         headers['Content-Security-Policy'] = clone(config.contentSecurity);
+        if (headers['Content-Security-Policy'].indexOf('frame-ancestors') === -1) {
+            // backward compat for those who do not merge the new version of the config
+            // when updating. This prevents endless spinner if someone clicks donate.
+            headers['Content-Security-Policy'] += "frame-ancestors 'self' accounts.cryptpad.fr;";
+        }
     }
     const padHeaders = clone(headers);
     if (config.padContentSecurity) {
@@ -121,6 +126,9 @@ app.get('/api/config', function(req, res){
             waitSeconds: 60,
             urlArgs: 'ver=' + Package.version + (DEV_MODE? '-' + (+new Date()): ''),
         },
+        removeDonateButton: (config.removeDonateButton === true),
+        allowSubscriptions: (config.allowSubscriptions === true),
+
         websocketPath: config.useExternalWebsocket ? undefined : config.websocketPath,
         websocketURL:'ws' + ((useSecureWebsockets) ? 's' : '') + '://' + host + ':' +
             websocketPort + '/cryptpad_websocket',

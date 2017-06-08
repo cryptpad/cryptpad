@@ -1373,6 +1373,10 @@ define([
             }
             AppConfig.availablePadTypes.forEach(function (type) {
                 if (type === 'drive') { return; }
+                if (!Cryptpad.isLoggedIn() && AppConfig.registeredOnlyTypes &&
+                    AppConfig.registeredOnlyTypes.indexOf(type) !== -1) {
+                    return;
+                }
                 var attributes = {
                     'class': 'newdoc',
                     'data-type': type,
@@ -2674,13 +2678,11 @@ define([
             }
 
             /* add the usage */
-            if (AppConfig.enablePinLimit) {
-                Cryptpad.createUsageBar(function (err, $limitContainer) {
-                    if (err) { return void logError(err); }
-                    $leftside.html('');
-                    $leftside.append($limitContainer);
-                });
-            }
+            Cryptpad.createUsageBar(function (err, $limitContainer) {
+                if (err) { return void logError(err); }
+                $leftside.html('');
+                $leftside.append($limitContainer);
+            }, true);
 
             /* add a history button */
             var histConfig = {

@@ -4,8 +4,9 @@ define([
     '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
     '/common/cryptpad-common.js',
-    '/drive/tests.js'
-], function ($, Hyperjson, TextPatcher, Sortify, Cryptpad, Drive) {
+    '/drive/tests.js',
+    '/common/test.js'
+], function ($, Hyperjson, TextPatcher, Sortify, Cryptpad, Drive, Test) {
     window.Hyperjson = Hyperjson;
     window.TextPatcher = TextPatcher;
     window.Sortify = Sortify;
@@ -29,6 +30,7 @@ define([
 
         ASSERTS.forEach(function (f, index) {
             f(function (err) {
+                console.log("test " + index);
                 done(err, index);
             }, index);
         });
@@ -271,6 +273,12 @@ The test returned:
 
         var $report = $('.report');
         $report.addClass(failed?'failure':'success');
+
+        if (failed) {
+            Test.failed();
+        } else {
+            Test.passed();
+        }
     });
 
 });

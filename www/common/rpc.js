@@ -27,7 +27,11 @@ types of messages:
         var hkn = network.historyKeeper;
         var txid = uid();
 
-        ctx.pending[txid] = cb;
+        var pending = ctx.pending[txid] = function (err, response) {
+            cb(err, response);
+        };
+        pending.data = data;
+        pending.called = 0;
         return network.sendto(hkn, JSON.stringify([txid, data]));
     };
 
@@ -60,7 +64,22 @@ types of messages:
 
         if (typeof(pending) === 'function') {
             if (parsed[1] === 'ERROR') {
-                return void pending(parsed[2]);
+                if (parsed[2] === 'NO_COOKIE') {
+                    return void ctx.send('COOKIE', "", function (e) {
+                        if (e) {
+                            console.error(e);
+                            return void pending(e);
+                        }
+
+                        // resend the same command again
+                        // give up if you've already tried resending
+                        if (ctx.resend(txid)) { delete ctx.pending[txid]; }
+                    });
+                }
+
+                pending(parsed[2]);
+                delete ctx.pending[txid];
+                return;
             } else {
                 // update the cookie
                 if (/\|/.test(cookie)) {
@@ -70,8 +89,13 @@ types of messages:
                 }
             }
             pending(void 0, response);
+
+            // if successful, delete the callback...
+            delete ctx.pending[txid];
         }
-        //else { console.log("No callback provided"); }
+        else {
+            console.log("received message for txid with no callback");
+        }
     };
 
     var create = function (network, edPrivateKey, edPublicKey, cb) {
@@ -104,7 +128,7 @@ types of messages:
             connected: true,
         };
 
-        var send = function (type, msg, cb) {
+        var send = ctx.send = function (type, msg, cb) {
             if (!ctx.connected && type !== 'COOKIE') {
                 return void window.setTimeout(function () {
                     cb('DISCONNECTED');
@@ -126,6 +150,44 @@ types of messages:
             data.unshift(sig);
 
             // [sig, edPublicKey, cookie, type, msg]
+            return sendMsg(ctx, data, cb);
+        };
+
+        ctx.resend = function (txid) {
+            var pending = ctx.pending[txid];
+            if (pending.called) {
+                console.error("[%s] called too many times", txid);
+                return true;
+            }
+            pending.called++;
+
+            // update the cookie and signature...
+            pending.data[2] = ctx.cookie;
+            pending.data[0] = signMsg(pending.data.slice(2), signKey);
+            try {
+                return ctx.network.sendto(ctx.network.historyKeeper,
+                    JSON.stringify([txid, pending.data]));
+            } catch (e) {
+                console.log("failed to resend");
+                console.error(e);
+            }
+        };
+
+        send.unauthenticated = function (type, msg, cb) {
+            if (!ctx.connected) {
+                return void window.setTimeout(function () {
+                    cb('DISCONNECTED');
+                });
+            }
+
+            // construct an unsigned message
+            var data = [null, edPublicKey, null, type, msg];
+            if (ctx.cookie && ctx.cookie.join) {
+                data[2] = ctx.cookie.join('|');
+            } else {
+                data[2] = ctx.cookie;
+            }
+
             return sendMsg(ctx, data, cb);
         };
 

@@ -37,6 +37,7 @@
     "diff-dom": "^2.1.1",
     "alertifyjs": "^1.0.11",
     "scrypt-async": "^1.2.0",
-    "bootstrap": "#v4.0.0-alpha.6"
+    "bootstrap": "#v4.0.0-alpha.6",
+    "pdfjs-dist": "^1.8.398"
   }
 }

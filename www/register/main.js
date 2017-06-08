@@ -2,8 +2,9 @@ define([
     'jquery',
     '/common/login.js',
     '/common/cryptpad-common.js',
-    '/common/credential.js' // preloaded for login.js
-], function ($, Login, Cryptpad) {
+    '/common/test.js',
+    '/common/credential.js', // preloaded for login.js
+], function ($, Login, Cryptpad, Test) {
     var Messages = Cryptpad.Messages;
 
     $(function () {
@@ -63,6 +64,11 @@ define([
         var $register = $('button#register');
 
         var logMeIn = function (result) {
+            if (Test.testing) {
+                Test.passed();
+                window.alert("Test passed!");
+                return;
+            }
             localStorage.User_hash = result.userHash;
 
             var proxy = result.proxy;
@@ -153,6 +159,9 @@ define([
                                 }
                                 return;
                             }
+
+                            if (Test.testing) { return void logMeIn(result); }
+
                             Cryptpad.eraseTempSessionValues();
                             if (shouldImport) {
                                 sessionStorage.migrateAnonDrive = 1;
@@ -175,6 +184,19 @@ define([
             }, true, function ($dialog) {
                 $dialog.find('> div').addClass('half');
             });
+        });
+
+        Test(function () {
+            $uname.val('test' + Math.random());
+            $passwd.val('test');
+            $confirm.val('test');
+            $checkImport[0].checked = true;
+            $checkAcceptTerms[0].checked = true;
+            $register.click();
+
+            window.setTimeout(function () {
+                Cryptpad.findOKButton().click();
+            }, 1000);
         });
     });
 });

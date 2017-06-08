@@ -25,7 +25,10 @@ define([
 */
     var common = window.Cryptpad = {
         Messages: Messages,
-        Clipboard: Clipboard
+        Clipboard: Clipboard,
+        donateURL: 'https://accounts.cryptpad.fr/#/donate?on=' + window.location.hostname,
+        upgradeURL: 'https://accounts.cryptpad.fr/#/?on=' + window.location.hostname,
+        account: {},
     };
 
     // constants
@@ -216,6 +219,7 @@ define([
             userNameKey,
             userHashKey,
             'loginToken',
+            'plan',
         ].forEach(function (k) {
             sessionStorage.removeItem(k);
             localStorage.removeItem(k);
@@ -243,6 +247,11 @@ define([
 
     var getUserHash = common.getUserHash = function () {
         var hash = localStorage[userHashKey];
+
+        if (['undefined', 'undefined/'].indexOf(hash) !== -1) {
+            localStorage.removeItem(userHashKey);
+            return;
+        }
 
         if (hash) {
             var sHash = common.serializeHash(hash);
@@ -575,7 +584,7 @@ define([
                 var data = makePad(href, name);
                 getStore().pushData(data, function (e, id) {
                     if (e) {
-                        if (e === 'E_OVER_LIMIT' && AppConfig.enablePinLimit) {
+                        if (e === 'E_OVER_LIMIT') {
                             common.alert(Messages.pinLimitNotPinned, null, true);
                             return;
                         }
@@ -741,7 +750,7 @@ define([
     };
 
     common.isOverPinLimit = function (cb) {
-        if (!common.isLoggedIn() || !AppConfig.enablePinLimit) { return void cb(null, false); }
+        if (!common.isLoggedIn()) { return void cb(null, false); }
         var usage;
         var andThen = function (e, limit, plan) {
             if (e) { return void cb(e); }
@@ -775,7 +784,6 @@ define([
     };
 
     var LIMIT_REFRESH_RATE = 30000; // milliseconds
-    var limitReachedDisplayed = false;
     common.createUsageBar = function (cb, alwaysDisplayUpgrade) {
         var todo = function (err, state, data) {
             var $container = $('<span>', {'class':'limit-container'});
@@ -797,7 +805,10 @@ define([
             var width = Math.floor(Math.min(quota, 1)*200); // the bar is 200px width
             var $usage = $('<span>', {'class': 'usage'}).css('width', width+'px');
 
-            if ((quota >= 0.8 || alwaysDisplayUpgrade) && data.plan !== "power") {
+            if (Config.noSubscriptionButton !== true &&
+                (quota >= 0.8 || alwaysDisplayUpgrade) &&
+                data.plan !== "power")
+            {
                 var origin = encodeURIComponent(window.location.hostname);
                 var $upgradeLink = $('<a>', {
                     href: "https://accounts.cryptpad.fr/#!on=" + origin,
@@ -823,13 +834,7 @@ define([
 
             if (quota < 0.8) { $usage.addClass('normal'); }
             else if (quota < 1) { $usage.addClass('warning'); }
-            else {
-                $usage.addClass('above');
-                if (!limitReachedDisplayed) {
-                    limitReachedDisplayed = true;
-                    common.alert(Messages._getKey('pinAboveLimitAlert', [prettyUsage, encodeURIComponent(window.location.hostname)]), null, true);
-                }
-            }
+            else { $usage.addClass('above'); }
             var $text = $('<span>', {'class': 'usageText'});
             $text.text(usage + ' / ' + prettyLimit);
             $limit.append($usage).append($text);
@@ -1405,6 +1410,14 @@ define([
                         console.log('RPC handshake complete');
                         rpc = common.rpc = env.rpc = call;
 
+                        common.getPinLimit(function (e, limit, plan, note) {
+                            if (e) { return void console.error(e); }
+                            common.account.limit = limit;
+                            localStorage.plan = common.account.plan = plan;
+                            common.account.note = note;
+                            cb();
+                        });
+
                         common.arePinsSynced(function (err, yes) {
                             if (!yes) {
                                 common.resetPins(function (err) {
@@ -1413,7 +1426,6 @@ define([
                                 });
                             }
                         });
-                        cb();
                     });
                 } else if (PINNING_ENABLED) {
                     console.log('not logged in. pads will not be pinned');
