@@ -853,7 +853,6 @@ define([
         };
 
         exp.fixFiles = function () {
-            console.error('.');
             // Explore the tree and check that everything is correct:
             //  * 'root', 'trash', 'unsorted' and 'filesData' exist and are objects
             //  * ROOT: Folders are objects, files are href
