@@ -626,7 +626,13 @@ define([
                 });
             }
         };
-        Cryptpad.isOverPinLimit(todo);
+        var limit = Cryptpad.account.limit;
+        var usage = Cryptpad.account.usage;
+        if (typeof(limit) !== 'number' || typeof(usage) !== 'number') {
+            todo("invalid types");
+        } else if (Cryptpad.isLoggedIn() && usage >= limit) {
+            todo(void 0, true);
+        } else { todo(void 0, false); }
         return $limit;
     };
 
