@@ -1798,7 +1798,7 @@ define([
 
             module.resetTree();
 
-            if (displayedCategories.indexOf(SEARCH) !== -1) {
+            if (displayedCategories.indexOf(SEARCH) !== -1 && $tree.find('#searchInput').length) {
                 // in history mode we want to focus the version number input
                 if (!history.isHistoryMode && !APP.mobile()) {
                     var st = $tree.scrollTop() || 0;
@@ -2040,7 +2040,7 @@ define([
             var isOpened = filesOp.comparePath(path, currentPath);
             var $trashElement = createTreeElement(TRASH_NAME, $icon, [TRASH], false, true, false, isOpened);
             $trashElement.addClass('root');
-            $trashElement.contextmenu(openTrashTreeContextMenu);
+            $trashElement.find('>.element-row').contextmenu(openTrashTreeContextMenu);
             var $trashList = $('<ul>', { id: 'trashTree', 'class': 'category2' }).append($trashElement);
             $container.append($trashList);
         };
