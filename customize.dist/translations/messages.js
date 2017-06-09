@@ -285,6 +285,8 @@ define(function () {
     out.fo_unableToRestore = "Unable to restore that file to its original location. You can try to move it to a new location.";
     out.fo_unavailableName = "A file or a folder with the same name already exist at the new location. Rename the element and try again.";
 
+    out.fs_migration = "Your CryptDrive is being updated to a new version. As a result, the current page has to be reloaded.<br><strong>Please reload this page to continue to use it.</strong>";
+
     // login
     out.login_login = "Log in";
     out.login_makeAPad = 'Create a pad anonymously';

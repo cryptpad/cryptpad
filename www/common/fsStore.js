@@ -292,8 +292,16 @@ define([
                 }
                 return;
             }
+        })
+        .on('change', ['drive', 'migrate'], function () {
+            var path = arguments[2];
+            var value = arguments[1];
+            if (path[0] === 'drive' && path[1] === "migrate" && value == 1) {
+                rt.network.disconnect();
+                rt.realtime.abort();
+                Cryptpad.alert(Cryptpad.Messages.fs_migration);
+            }
         });
-
     };
 
     Store.ready = function (f, Cryptpad) {
