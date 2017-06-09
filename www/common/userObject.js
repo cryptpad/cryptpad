@@ -914,6 +914,7 @@ define([
             var migrateToNewFormat = function () {
                 if (!files[OLD_FILES_DATA]) { return; }
                 try {
+                    files.migrate = 1;
                     var oldData = files[OLD_FILES_DATA].slice();
                     if (!files[FILES_DATA]) {
                         files[FILES_DATA] = {};
@@ -953,6 +954,8 @@ define([
                     });
                     files[OLD_FILES_DATA] = undefined;
                     delete files[OLD_FILES_DATA];
+                    files.migrate = undefined;
+                    delete files.migrate;
                 } catch(e) {
                     console.error(e);
                 }

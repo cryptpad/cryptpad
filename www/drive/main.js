@@ -2503,6 +2503,12 @@ define([
             }
             module.resetTree();
             return false;
+        }).on('change', ['drive', 'migrate'], function () {
+            var path = arguments[2];
+            var value = arguments[1];
+            if (path[1] === "migrate" && value === 1) {
+                if (APP.onDisconnect) { APP.onDisconnect(true); }
+            }
         });
 
         $iframe.find('#tree').mousedown(function () {
@@ -2731,11 +2737,11 @@ define([
                 Cryptpad.removeLoadingScreen();
             });
         };
-        var onDisconnect = function () {
+        var onDisconnect = APP.onDisconnect = function (noAlert) {
             setEditable(false);
             if (APP.refresh) { APP.refresh(); }
             APP.toolbar.failed();
-            Cryptpad.alert(Messages.common_connectionLost, undefined, true);
+            if (!noAlert) { Cryptpad.alert(Messages.common_connectionLost, undefined, true); }
         };
         var onReconnect = function (info) {
             setEditable(true);

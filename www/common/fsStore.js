@@ -275,7 +275,6 @@ define([
                 && !drive['filesData']) {
                 Cryptpad.getLegacyPads(function (err, data) {
                     drive[Cryptpad.oldStorageKey] = data;
-                    console.log(drive);
                     onReady(f, rt.proxy, Cryptpad, exp);
                 });
                 return;
@@ -290,6 +289,15 @@ define([
                     Cryptpad.storeError();
                 }
                 return;
+            }
+        })
+        .on('change', ['drive'], function () {
+            var path = arguments[2];
+            var value = arguments[1];
+            if (path[1] === "migrate" && value === 1) {
+                rt.network.disconnect();
+                rt.realtime.abort();
+                Cryptpad.alert("Disconnected while migration");
             }
         });
 
