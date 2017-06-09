@@ -1838,7 +1838,7 @@ define([
 
             module.resetTree();
 
-            if (displayedCategories.indexOf(SEARCH) !== -1) {
+            if (displayedCategories.indexOf(SEARCH) !== -1 && $tree.find('#searchInput').length) {
                 // in history mode we want to focus the version number input
                 if (!history.isHistoryMode && !APP.mobile()) {
                     var st = $tree.scrollTop() || 0;
