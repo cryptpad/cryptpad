@@ -795,8 +795,8 @@ define([
             return void cb (null, false, data);
         };
         var todo = function (e, used) {
-            usage = used; //common.bytesToMegabytes(used);
             if (e) { return void cb(e); }
+            usage = used;
             common.getPinLimit(andThen);
         };
         common.getPinnedUsage(todo);
@@ -818,21 +818,23 @@ define([
     };
 
     var LIMIT_REFRESH_RATE = 30000; // milliseconds
-    common.createUsageBar = function (cb, alwaysDisplayUpgrade) {
-        var todo = function (err, state, data) {
+    common.createUsageBar = function (cb) {
+        // getPinnedUsage updates common.account.usage, and other values
+        // so we can just use those and only check for errors
+        var todo = function (err) {
             var $container = $('<span>', {'class':'limit-container'});
-            if (!data) {
+            if (err) {
                 return void window.setTimeout(function () {
-                    common.isOverPinLimit(todo);
+                    common.getPinnedUsage(todo);
                 }, LIMIT_REFRESH_RATE);
             }
 
-            var unit = Util.magnitudeOfBytes(data.limit);
+            var unit = Util.magnitudeOfBytes(common.account.limit);
 
-            var usage = unit === 'GB'? Util.bytesToGigabytes(data.usage):
-                Util.bytesToMegabytes(data.usage);
-            var limit = unit === 'GB'? Util.bytesToGigabytes(data.limit):
-                Util.bytesToMegabytes(data.limit);
+            var usage = unit === 'GB'? Util.bytesToGigabytes(common.account.usage):
+                Util.bytesToMegabytes(common.account.usage);
+            var limit = unit === 'GB'? Util.bytesToGigabytes(common.account.limit):
+                Util.bytesToMegabytes(common.account.limit);
 
             var $limit = $('<span>', {'class': 'cryptpad-limit-bar'}).appendTo($container);
             var quota = usage/limit;
@@ -893,11 +895,11 @@ define([
             $text.text(usage + ' / ' + prettyLimit);
             $limit.append($usage).append($text);
             window.setTimeout(function () {
-                common.isOverPinLimit(todo);
+                common.getPinnedUsage(todo);
             }, LIMIT_REFRESH_RATE);
             cb(err, $container);
         };
-        common.isOverPinLimit(todo);
+        common.getPinnedUsage(todo);
     };
 
     common.createButton = function (type, rightside, data, callback) {
