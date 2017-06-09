@@ -2,8 +2,7 @@ define([
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
     '/common/userObject.js',
-    'json.sortify'
-], function (Cryptpad, Crypt, FO, Sortify) {
+], function (Cryptpad, Crypt, FO) {
     var exp = {};
 
     var getType = function (el) {

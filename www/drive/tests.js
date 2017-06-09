@@ -1,8 +1,7 @@
 define([
     '/common/cryptpad-common.js',
     '/common/userObject.js',
-    'json.sortify',
-],function (Cryptpad, FO, sortify) {
+],function (Cryptpad, FO) {
     var module = {};
 
     var href1 = "/pad/#/1/edit/a798u+miu2tg5b-QaP9SvA/UIPoGUPewZscBUFhNIi+eBBM/";
@@ -126,7 +125,7 @@ define([
                     && files.filesData[files.trash.DeletedF[1].element].filename === "DeletedF"
                     && typeof files.template[0] === "number"
                     && typeof files.filesData[files.template[0]] === "object"
-                    && !files.filesData[files.template[0]].filename
+                    && !files.filesData[files.template[0]].filename;
             return cb(res);
         }, "DRIVE1: migration and fixFiles without unsorted");
 
@@ -169,7 +168,7 @@ define([
             }
             var fileKey = Object.keys(files.root.Folder2)[0];
             var fileKey2 = Object.keys(files.root).filter(function (x) {
-                return typeof files.root[x] === "number"
+                return typeof files.root[x] === "number";
             })[0];
             if (!fileKey || !fileKey2) { return cb(); }
             var fileId = files.root.Folder2[fileKey];
@@ -179,7 +178,7 @@ define([
                     && files.filesData[fileId].filename === "FileName"
                     && typeof fileId2 === "number"
                     && typeof files.filesData[fileId2] === "object"
-                    && !files.filesData[fileId2].filename
+                    && !files.filesData[fileId2].filename;
             return cb(res);
         }, "DRIVE2: migration and fixFiles with unsorted");
 

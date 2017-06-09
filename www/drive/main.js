@@ -1511,7 +1511,7 @@ define([
             }
         };
         // _WORKGROUP_ : do not display title, atime and ctime in workgroups since we don't have files data
-        var getFileListHeader = function (displayTitle) {
+        var getFileListHeader = function () {
             var $fihElement = $('<li>', {'class': 'file-header header listElement element'});
             //var $fihElement = $('<span>', {'class': 'element'}).appendTo($fileHeader);
             var $fhIcon = $('<span>', {'class': 'icon'});
@@ -1659,7 +1659,6 @@ define([
             var keys = filesOp.getFiles([FILES_DATA]);
             var sortedFiles = sortElements(false, [FILES_DATA], keys, Cryptpad.getLSAttribute(SORT_FILE_BY), !getSortFileDesc(), true);
             sortedFiles.forEach(function (id) {
-                var file = filesOp.getFileData(id);
                 var $icon = getFileIcon(id);
                 var ro = filesOp.isReadOnlyFile(id);
                 // ro undefined maens it's an old hash which doesn't support read-only

@@ -133,18 +133,6 @@ define([
             return data.filename || data.title || NEW_FILE_NAME;
         };
 
-        var getIdFromHref = exp.getIdFromHref = function (href) {
-            var result;
-            getFiles([FILES_DATA]).some(function (id) {
-                if (files[FILES_DATA][id].href === href) {
-                    result = id;
-                    return true;
-                }
-                return;
-            });
-            return result;
-        };
-
         // PATHS
 
         var comparePath  = exp.comparePath = function (a, b) {
@@ -282,6 +270,18 @@ define([
             return Cryptpad.deduplicateString(ret);
         };
 
+        var getIdFromHref = exp.getIdFromHref = function (href) {
+            var result;
+            getFiles([FILES_DATA]).some(function (id) {
+                if (files[FILES_DATA][id].href === href) {
+                    result = id;
+                    return true;
+                }
+                return;
+            });
+            return result;
+        };
+
         // SEARCH
         var _findFileInRoot = function (path, file) {
             if (!isPathIn(path, [ROOT, TRASH])) { return []; }
@@ -415,7 +415,7 @@ define([
         };
 
         // FILES DATA
-        var pushFileData = exp.pushData = function (data, cb) {
+        exp.pushData = function (data, cb) {
             if (typeof cb !== "function") { cb = function () {}; }
             var todo = function () {
                 var id = Cryptpad.createRandomInteger();
@@ -535,7 +535,7 @@ define([
             }
             // Add to root if path is ROOT or if no path
             var filesList = getFiles([ROOT, TRASH, 'hrefArray']);
-            if (path && isPathIn(newPath, [ROOT]) || filesList.indexOf(href) === -1) {
+            if (path && isPathIn(newPath, [ROOT]) || filesList.indexOf(id) === -1) {
                 parentEl = find(newPath || [ROOT]);
                 if (parentEl) {
                     var newName = getAvailableName(parentEl, Cryptpad.createChannelId());
@@ -618,7 +618,6 @@ define([
             var allFilesPaths = paths.filter(function(x) { return isPathIn(x, [FILES_DATA]); });
 
             if (!Cryptpad.isLoggedIn()) {
-                var toSplice = [];
                 allFilesPaths.forEach(function (path) {
                     var el = find(path);
                     if (!el) { return; }
@@ -717,8 +716,7 @@ define([
                 if (typeof cb === "function") { cb(); }
                 return;
             }
-            var oldName = getTitle(element, 'name');
-            if (oldName === newName) { return; }
+            if (getTitle(element, 'name') === newName) { return; }
             data.filename = newName;
             if (typeof cb === "function") { cb(); }
         };
@@ -771,7 +769,6 @@ define([
                     delete files[UNSORTED];
                     return;
                 }
-                var root = find([ROOT]);
                 us.forEach(function (el) {
                     if (typeof el !== "string") {
                         return;
@@ -916,7 +913,9 @@ define([
                         delete tr[el];
                     } else {
                         toClean = [];
-                        tr[el].forEach(function (obj, idx) { addToClean(obj, idx, el); });
+                        for (var j=0; j<tr[el].length; j++) {
+                            addToClean(tr[el][j], j, el);
+                        }
                         for (var i = toClean.length-1; i>=0; i--) {
                             tr[el].splice(toClean[i], 1);
                         }
@@ -969,7 +968,7 @@ define([
                         root[newName] = id;
                         continue;
                     }
-                };
+                }
                 toClean.forEach(function (id) {
                     spliceFileData(id);
                 });
