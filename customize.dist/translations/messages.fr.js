@@ -248,6 +248,8 @@ define(function () {
     out.fo_unableToRestore = "Impossible de restaurer ce fichier à son emplacement d'origine. Vous pouvez essayer de le déplacer à un nouvel emplacement.";
     out.fo_unavailableName = "Un fichier ou dossier avec le même nom existe déjà au nouvel emplacement. Renommez cet élément avant d'essayer à nouveau.";
 
+    out.fs_migration = "Votre CryptDrive est en train d'être mis à jour vers une nouvelle version. Cela implique que cette page doive être rechargée.<br><strong>Veuillez recharger la page pour pouvoir continuer à l'utiliser.</<strong>";
+
     // login
     out.login_login = "Connexion";
     out.login_makeAPad = 'Créer un pad anonymement';
