@@ -759,7 +759,101 @@ define([
          * INTEGRITY CHECK
          */
 
+        exp.migrate = function (cb) {
+            // Make sure unsorted doesn't exist anymore
+            // Note: Unsorted only works with the old structure where pads are href
+            // It should be called before the migration code
+            var fixUnsorted = function () {
+                if (!files[UNSORTED] || !files[OLD_FILES_DATA]) { return; }
+                debug("UNSORTED still exists in the object, removing it...");
+                var us = files[UNSORTED];
+                if (us.length === 0) {
+                    delete files[UNSORTED];
+                    return;
+                }
+                var root = find([ROOT]);
+                us.forEach(function (el) {
+                    if (typeof el !== "string") {
+                        return;
+                    }
+                    var data = files[OLD_FILES_DATA].filter(function (x) {
+                        return x.href === el;
+                    });
+                    if (data.length === 0) {
+                        files[OLD_FILES_DATA].push({
+                            href: el
+                        });
+                    }
+                    return;
+                });
+                delete files[UNSORTED];
+            };
+            // mergeDrive...
+            var migrateToNewFormat = function (todo) {
+                if (!files[OLD_FILES_DATA]) {
+                    return void todo();
+                }
+                try {
+                    debug("Migrating file system...");
+                    files.migrate = 1;
+                    if (exp.rt) { exp.rt.sync(); }
+                    window.setTimeout(function () {
+                        var oldData = files[OLD_FILES_DATA].slice();
+                        if (!files[FILES_DATA]) {
+                            files[FILES_DATA] = {};
+                        }
+                        var newData = files[FILES_DATA];
+                        //var oldFiles = oldData.map(function (o) { return o.href; });
+                        oldData.forEach(function (obj) {
+                            if (!obj || !obj.href) { return; }
+                            var href = obj.href;
+                            var id = Cryptpad.createRandomInteger();
+                            var paths = findFile(href);
+                            var data = obj;
+                            var key = Cryptpad.createChannelId();
+                            if (data) {
+                                newData[id] = data;
+                            } else {
+                                newData[id] = {href: href};
+                            }
+                            paths.forEach(function (p) {
+                                var parentPath = p.slice();
+                                var okey = parentPath.pop(); // get the parent
+                                var parent = find(parentPath);
+                                if (isInTrashRoot(p)) {
+                                    parent.element = id;
+                                    newData[id].filename = p[1];
+                                    return;
+                                }
+                                if (isPathIn(p, ['hrefArray'])) {
+                                    parent[okey] = id;
+                                    return;
+                                }
+                                // else root or trash (not trashroot)
+                                parent[key] = id;
+                                newData[id].filename = okey;
+                                delete parent[okey];
+                            });
+                        });
+                        files[OLD_FILES_DATA] = undefined;
+                        delete files[OLD_FILES_DATA];
+                        files.migrate = undefined;
+                        delete files.migrate;
+                        console.log('done');
+                        todo();
+                    }, 300);
+                } catch(e) {
+                    console.error(e);
+                    todo();
+                }
+            };
+
+            fixUnsorted();
+            migrateToNewFormat(cb);
+        };
+
         exp.fixFiles = function () {
+            console.error('.');
             // Explore the tree and check that everything is correct:
             //  * 'root', 'trash', 'unsorted' and 'filesData' exist and are objects
             //  * ROOT: Folders are objects, files are href
@@ -882,87 +976,6 @@ define([
                 });
             };
 
-            // Make sure unsorted doesn't exist anymore
-            // Note: Unsorted only works with the old structure where pads are href
-            // It should be called before the migration code
-            var fixUnsorted = function () {
-                if (!files[UNSORTED] || !files[OLD_FILES_DATA]) { return; }
-                debug("UNSORTED still exists in the object, removing it...");
-                var us = files[UNSORTED];
-                if (us.length === 0) {
-                    delete files[UNSORTED];
-                    return;
-                }
-                var root = find([ROOT]);
-                us.forEach(function (el) {
-                    if (typeof el !== "string") {
-                        return;
-                    }
-                    var data = files[OLD_FILES_DATA].filter(function (x) {
-                        return x.href === el;
-                    });
-                    if (data.length === 0) {
-                        files[OLD_FILES_DATA].push({
-                            href: el
-                        });
-                    }
-                    return;
-                });
-                delete files[UNSORTED];
-            };
-            // mergeDrive...
-            var migrateToNewFormat = function () {
-                if (!files[OLD_FILES_DATA]) { return; }
-                try {
-                    files.migrate = 1;
-                    var oldData = files[OLD_FILES_DATA].slice();
-                    if (!files[FILES_DATA]) {
-                        files[FILES_DATA] = {};
-                    }
-                    var newData = files[FILES_DATA];
-                    //var oldFiles = oldData.map(function (o) { return o.href; });
-                    oldData.forEach(function (obj) {
-                        if (!obj || !obj.href) { return; }
-                        var href = obj.href;
-                        var id = Cryptpad.createRandomInteger();
-                        var paths = findFile(href);
-                        var data = obj;
-                        var key = Cryptpad.createChannelId();
-                        if (data) {
-                            newData[id] = data;
-                        } else {
-                            newData[id] = {href: href};
-                        }
-                        paths.forEach(function (p) {
-                            var parentPath = p.slice();
-                            var okey = parentPath.pop(); // get the parent
-                            var parent = find(parentPath);
-                            if (isInTrashRoot(p)) {
-                                parent.element = id;
-                                newData[id].filename = p[1];
-                                return;
-                            }
-                            if (isPathIn(p, ['hrefArray'])) {
-                                parent[okey] = id;
-                                return;
-                            }
-                            // else root or trash (not trashroot)
-                            parent[key] = id;
-                            newData[id].filename = okey;
-                            delete parent[okey];
-                        });
-                    });
-                    files[OLD_FILES_DATA] = undefined;
-                    delete files[OLD_FILES_DATA];
-                    files.migrate = undefined;
-                    delete files.migrate;
-                } catch(e) {
-                    console.error(e);
-                }
-            };
-
-            fixUnsorted();
-            migrateToNewFormat();
             fixRoot();
             fixTrashRoot();
             if (!workgroup) {

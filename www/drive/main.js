@@ -2504,6 +2504,7 @@ define([
             module.resetTree();
             return false;
         }).on('change', ['drive', 'migrate'], function () {
+            console.log('OKOKOK');
             var path = arguments[2];
             var value = arguments[1];
             if (path[1] === "migrate" && value === 1) {

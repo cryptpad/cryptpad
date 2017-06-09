@@ -106,51 +106,54 @@ define([
                 var oldFo = FO.init(parsed.drive, {
                     Cryptpad: Cryptpad
                 });
-                oldFo.fixFiles();
-                var newData = Cryptpad.getStore().getProxy();
-                var newFo = newData.fo;
-                var oldRecentPads = parsed.drive[newFo.FILES_DATA];
-                var newRecentPads = proxy.drive[newFo.FILES_DATA];
-                var newFiles = newFo.getFiles([newFo.FILES_DATA]);
-                var oldFiles = oldFo.getFiles([newFo.FILES_DATA]);
-                oldFiles.forEach(function (id) {
-                    var href = oldRecentPads[id].href;
-                    // Do not migrate a pad if we already have it, it would create a duplicate in the drive
-                    if (newFiles.indexOf(id) !== -1) { return; }
-                    // If we have a stronger version, do not add the current href
-                    if (Cryptpad.findStronger(href, newRecentPads)) { return; }
-                    // If we have a weaker version, replace the href by the new one
-                    // NOTE: if that weaker version is in the trash, the strong one will be put in unsorted
-                    var weaker = Cryptpad.findWeaker(href, newRecentPads);
-                    if (weaker) {
-                        // Update RECENTPADS
-                        newRecentPads.some(function (pad) {
-                            if (pad.href === weaker) {
-                                pad.href = href;
-                                return true;
-                            }
+                var todo = function () {
+                    oldFo.fixFiles();
+                    var newData = Cryptpad.getStore().getProxy();
+                    var newFo = newData.fo;
+                    var oldRecentPads = parsed.drive[newFo.FILES_DATA];
+                    var newRecentPads = proxy.drive[newFo.FILES_DATA];
+                    var newFiles = newFo.getFiles([newFo.FILES_DATA]);
+                    var oldFiles = oldFo.getFiles([newFo.FILES_DATA]);
+                    oldFiles.forEach(function (id) {
+                        var href = oldRecentPads[id].href;
+                        // Do not migrate a pad if we already have it, it would create a duplicate in the drive
+                        if (newFiles.indexOf(id) !== -1) { return; }
+                        // If we have a stronger version, do not add the current href
+                        if (Cryptpad.findStronger(href, newRecentPads)) { return; }
+                        // If we have a weaker version, replace the href by the new one
+                        // NOTE: if that weaker version is in the trash, the strong one will be put in unsorted
+                        var weaker = Cryptpad.findWeaker(href, newRecentPads);
+                        if (weaker) {
+                            // Update RECENTPADS
+                            newRecentPads.some(function (pad) {
+                                if (pad.href === weaker) {
+                                    pad.href = href;
+                                    return true;
+                                }
+                                return;
+                            });
+                            // Update the file in the drive
+                            newFo.replace(weaker, href);
                             return;
-                        });
-                        // Update the file in the drive
-                        newFo.replace(weaker, href);
-                        return;
+                        }
+                        // Here it means we have a new href, so we should add it to the drive at its old location
+                        var paths = oldFo.findFile(id);
+                        if (paths.length === 0) { return; }
+                        // Add the file data in our array and use the id to add the file
+                        var data = oldFo.getFileData(id);
+                        if (data) {
+                            newFo.pushData(data, function (err, id) {
+                                if (err) { return void console.error("Cannot import file:", data, err); }
+                                createFromPath(proxy, oldFo, paths[0], id);
+                            });
+                        }
+                    });
+                    if (!proxy.FS_hashes || !Array.isArray(proxy.FS_hashes)) {
+                        proxy.FS_hashes = [];
                     }
-                    // Here it means we have a new href, so we should add it to the drive at its old location
-                    var paths = oldFo.findFile(id);
-                    if (paths.length === 0) { return; }
-                    // Add the file data in our array and use the id to add the file
-                    var data = oldFo.getFileData(id);
-                    if (data) {
-                        newFo.pushData(data, function (err, id) {
-                            if (err) { return void console.error("Cannot import file:", data, err); }
-                            createFromPath(proxy, oldFo, paths[0], id);
-                        });
-                    }
-                });
-                if (!proxy.FS_hashes || !Array.isArray(proxy.FS_hashes)) {
-                    proxy.FS_hashes = [];
-                }
-                proxy.FS_hashes.push(localStorage.FS_hash);
+                    proxy.FS_hashes.push(localStorage.FS_hash);
+                };
+                oldFo.migrate(todo);
             }
             if (typeof(cb) === "function") { cb(); }
         };
