@@ -427,9 +427,9 @@ define(function () {
     out.upload_success = "Tu archivo ({0}) ha sido subido con éxito y fue añadido a tu drive.";
 
     // 1.7.0 - Hodag
-    out.comingSoon = "Próximamente..."; // "Coming soon..."
+    out.comingSoon = "Próximamente...";
     out.newVersion = ["<b>CryptPad ha sido actualizado!</b>",
-        "Puedes ver lo que ha cambiada aquí (en inglés):",
+        "Puedes ver lo que ha cambiado aquí (en inglés):",
         "<a href=\"https://github.com/xwiki-labs/cryptpad/releases/tag/{0}\" target=\"_blank\">Notas de versión para CryptPad {0}</a>"].join("<br>");
     out.pinLimitReachedAlertNoAccounts = "Has llegado a tu limite de espacio";
     out.previewButtonTitle = "Mostrar/esconder la vista previa Markdown";
