@@ -4,7 +4,8 @@ define([
     '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
     '/common/cryptpad-common.js',
-], function ($, Hyperjson, TextPatcher, Sortify, Cryptpad) {
+    '/common/test.js'
+], function ($, Hyperjson, TextPatcher, Sortify, Cryptpad, Test) {
     window.Hyperjson = Hyperjson;
     window.TextPatcher = TextPatcher;
     window.Sortify = Sortify;
@@ -15,26 +16,41 @@ define([
     var failMessages = [];
 
     var ASSERTS = [];
-    var runASSERTS = function () {
+    var runASSERTS = function (cb) {
+        var count = ASSERTS.length;
+        var successes = 0;
+
+        var done = function (err) {
+            count--;
+            if (err) { failMessages.push(err); }
+            else { successes++; }
+            if (count === 0) { cb(); }
+        };
+
         ASSERTS.forEach(function (f, index) {
-            f(index);
+            f(function (err) {
+                console.log("test " + index);
+                done(err, index);
+            }, index);
         });
     };
 
     var assert = function (test, msg) {
-        ASSERTS.push(function (i) {
-            var returned = test();
-            if (returned === true) {
-                assertions++;
-            } else {
-                failed = true;
-                failedOn = assertions;
-                failMessages.push({
-                    test: i,
-                    message: msg,
-                    output: returned,
-                });
-            }
+        ASSERTS.push(function (cb, i) {
+            test(function (result) {
+                if (result === true) {
+                    assertions++;
+                    cb();
+                } else {
+                    failed = true;
+                    failedOn = assertions;
+                    cb({
+                        test: i,
+                        message: msg,
+                        output: result,
+                    });
+                }
+            });
         });
     };
 
@@ -58,7 +74,7 @@ define([
     };
 
     var HJSON_equal = function (shjson) {
-        assert(function () {
+        assert(function (cb) {
             // parse your stringified Hyperjson
             var hjson;
 
@@ -82,10 +98,10 @@ define([
             var diff = TextPatcher.format(shjson, op);
 
             if (success) {
-                return true;
+                return cb(true);
             } else {
-                return  '<br><br>insert: ' + diff.insert + '<br><br>' +
-                        'remove: ' + diff.remove + '<br><br>';
+                return  cb('<br><br>insert: ' + diff.insert + '<br><br>' +
+                        'remove: ' + diff.remove + '<br><br>');
             }
         },  "expected hyperjson equality");
     };
@@ -94,7 +110,7 @@ define([
 
     var roundTrip = function (sel) {
         var target = $(sel)[0];
-        assert(function () {
+        assert(function (cb) {
             var hjson = Hyperjson.fromDOM(target);
             var cloned = Hyperjson.toDOM(hjson);
             var success = cloned.outerHTML === target.outerHTML;
@@ -111,7 +127,7 @@ define([
                 TextPatcher.log(target.outerHTML, op);
             }
 
-            return success;
+            return cb(success);
         }, "Round trip serialization introduced artifacts.");
     };
 
@@ -125,9 +141,9 @@ define([
 
     var strungJSON = function (orig) {
         var result;
-        assert(function () {
+        assert(function (cb) {
             result = JSON.stringify(JSON.parse(orig));
-            return result === orig;
+            return cb(result === orig);
         }, "expected result (" + result + ") to equal original (" + orig + ")");
     };
 
@@ -138,46 +154,56 @@ define([
     });
 
     // check that old hashes parse correctly
-    assert(function () {
-        var secret = Cryptpad.parseHash('67b8385b07352be53e40746d2be6ccd7XAYSuJYYqa9NfmInyHci7LNy');
-        return secret.channel === "67b8385b07352be53e40746d2be6ccd7" &&
-            secret.key === "XAYSuJYYqa9NfmInyHci7LNy" &&
-            secret.version === 0;
+    assert(function (cb) {
+        var secret = Cryptpad.parsePadUrl('/pad/#67b8385b07352be53e40746d2be6ccd7XAYSuJYYqa9NfmInyHci7LNy');
+        return cb(secret.hashData.channel === "67b8385b07352be53e40746d2be6ccd7" &&
+            secret.hashData.key === "XAYSuJYYqa9NfmInyHci7LNy" &&
+            secret.hashData.version === 0);
     }, "Old hash failed to parse");
 
     // make sure version 1 hashes parse correctly
-    assert(function () {
-        var secret = Cryptpad.parseHash('/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI');
-        return secret.version === 1 &&
-            secret.mode === "edit" &&
-            secret.channel === "3Ujt4F2Sjnjbis6CoYWpoQ" &&
-            secret.key === "usn4+9CqVja8Q7RZOGTfRgqI" &&
-            !secret.present;
+    assert(function (cb) {
+        var secret = Cryptpad.parsePadUrl('/pad/#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI');
+        return cb(secret.hashData.version === 1 &&
+            secret.hashData.mode === "edit" &&
+            secret.hashData.channel === "3Ujt4F2Sjnjbis6CoYWpoQ" &&
+            secret.hashData.key === "usn4+9CqVja8Q7RZOGTfRgqI" &&
+            !secret.hashData.present);
+    }, "version 1 hash (without present mode) failed to parse");
+
+    // test support for present mode in hashes
+    assert(function (cb) {
+        var secret = Cryptpad.parsePadUrl('/pad/#/1/edit/CmN5+YJkrHFS3NSBg-P7Sg/DNZ2wcG683GscU4fyOyqA87G/present');
+        return cb(secret.hashData.version === 1
+            && secret.hashData.mode === "edit"
+            && secret.hashData.channel === "CmN5+YJkrHFS3NSBg-P7Sg"
+            && secret.hashData.key === "DNZ2wcG683GscU4fyOyqA87G"
+            && secret.hashData.present);
     }, "version 1 hash failed to parse");
 
     // test support for present mode in hashes
-    assert(function () {
-        var secret = Cryptpad.parseHash('/1/edit/CmN5+YJkrHFS3NSBg-P7Sg/DNZ2wcG683GscU4fyOyqA87G/present');
-        return secret.version === 1
-            && secret.mode === "edit"
-            && secret.channel === "CmN5+YJkrHFS3NSBg-P7Sg"
-            && secret.key === "DNZ2wcG683GscU4fyOyqA87G"
-            && secret.present;
-    }, "version 1 hash failed to parse");
+    assert(function (cb) {
+        var secret = Cryptpad.parsePadUrl('/pad/#/1/edit//CmN5+YJkrHFS3NSBg-P7Sg/DNZ2wcG683GscU4fyOyqA87G//present');
+        return cb(secret.hashData.version === 1
+            && secret.hashData.mode === "edit"
+            && secret.hashData.channel === "CmN5+YJkrHFS3NSBg-P7Sg"
+            && secret.hashData.key === "DNZ2wcG683GscU4fyOyqA87G"
+            && secret.hashData.present);
+    }, "Couldn't handle multiple successive slashes");
 
     // test support for trailing slash
-    assert(function () {
-        var secret = Cryptpad.parseHash('/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI/');
-        return secret.version === 1 &&
-            secret.mode === "edit" &&
-            secret.channel === "3Ujt4F2Sjnjbis6CoYWpoQ" &&
-            secret.key === "usn4+9CqVja8Q7RZOGTfRgqI" &&
-            !secret.present;
+    assert(function (cb) {
+        var secret = Cryptpad.parsePadUrl('/pad/#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI/');
+        return cb(secret.hashData.version === 1 &&
+            secret.hashData.mode === "edit" &&
+            secret.hashData.channel === "3Ujt4F2Sjnjbis6CoYWpoQ" &&
+            secret.hashData.key === "usn4+9CqVja8Q7RZOGTfRgqI" &&
+            !secret.hashData.present);
     }, "test support for trailing slashes in version 1 hash failed to parse");
 
-    assert(function () {
+    assert(function (cb) {
         // TODO
-        return true;
+        return cb(true);
     }, "version 2 hash failed to parse correctly");
 
     var swap = function (str, dict) {
@@ -194,7 +220,7 @@ define([
         return str || '';
         };
 
-    var formatFailures = function () {
+        var formatFailures = function () {
         var template = multiline(function () { /*
 <p class="error">
 Failed on test number {{test}} with error message:
@@ -215,16 +241,15 @@ The test returned:
         }).join("\n");
     };
 
-    runASSERTS();
-
-    $("body").html(function (i, val) {
-        var dict = {
-            previous: val,
-            totalAssertions: ASSERTS.length,
-            passedAssertions: assertions,
-            plural: (assertions === 1? '' : 's'),
-            failMessages: formatFailures()
-        };
+    runASSERTS(function () {
+        $("body").html(function (i, val) {
+            var dict = {
+                previous: val,
+                totalAssertions: ASSERTS.length,
+                passedAssertions: assertions,
+                plural: (assertions === 1? '' : 's'),
+                failMessages: formatFailures()
+            };
 
         var SUCCESS = swap(multiline(function(){/*
 <div class="report">{{passedAssertions}} / {{totalAssertions}} test{{plural}} passed.
@@ -237,12 +262,19 @@ The test returned:
 {{previous}}
         */}), dict);
 
-        var report = SUCCESS;
+            var report = SUCCESS;
 
-        return report;
+            return report;
+        });
+
+        var $report = $('.report');
+        $report.addClass(failed?'failure':'success');
+
+        if (failed) {
+            Test.failed();
+        } else {
+            Test.passed();
+        }
     });
-
-    var $report = $('.report');
-    $report.addClass(failed?'failure':'success');
 
 });

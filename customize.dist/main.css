@@ -387,6 +387,13 @@
   left: 0;
   right: 0;
   text-align: center;
+  transition: opacity 750ms;
+  transition-delay: 3000ms;
+}
+@media screen and (max-height: 600px) {
+  .cp #loadingTip {
+    display: none;
+  }
 }
 .cp #loadingTip span {
   background-color: #302B28;
@@ -408,6 +415,7 @@
   font-family: FontAwesome;
 }
 .dropdown-bar button .fa-caret-down {
+  margin-right: 0px;
   margin-left: 5px;
 }
 .dropdown-bar .dropdown-bar-content {
@@ -519,6 +527,22 @@
   margin: 0px 10px;
   line-height: 40px;
 }
+#cryptpadTopBar .right .buttonSuccess {
+  color: #fff;
+  background: #5cb85c;
+  border-color: #5cb85c;
+}
+#cryptpadTopBar .right .buttonSuccess:hover {
+  color: #fff;
+  background: #449d44;
+  border: 1px solid #419641;
+}
+#cryptpadTopBar .right .buttonSuccess span {
+  color: #fff;
+}
+#cryptpadTopBar .right .buttonSuccess .large {
+  margin-left: 5px;
+}
 #cryptpadTopBar .right button .buttonTitle .fa-user {
   margin-right: 5px;
 }
@@ -571,7 +595,7 @@ html.cp,
   font-size: .875em;
   background-color: #fafafa;
   color: #555;
-  font-family: Georgia,Cambria,serif;
+  font-family: Ubuntu,Georgia,Cambria,serif;
   height: 100%;
 }
 .cp {
@@ -596,6 +620,14 @@ html.cp,
 .cp .lato {
   font-family: lato, Helvetica, sans-serif;
   font-size: 1.02em;
+}
+.cp .unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 .cp h1,
 .cp h2,
@@ -861,6 +893,12 @@ html.cp,
 .cp #main_other #main-container {
   display: inline-block;
 }
+.cp #main #userForm .extra p,
+.cp #main_other #userForm .extra p {
+  font-size: 28px;
+  padding: 15px;
+  text-align: center;
+}
 .cp #main #data,
 .cp #main_other #data {
   width: 600px;
@@ -1083,6 +1121,48 @@ html.cp,
 .cp .remove {
   color: #FA5858;
   cursor: pointer !important;
+}
+/* Pin limit */
+.limit-container .cryptpad-limit-bar {
+  display: inline-block;
+  height: 26px;
+  width: 200px;
+  margin: 2px;
+  box-sizing: border-box;
+  border: 1px solid #999;
+  background: white;
+  position: relative;
+  text-align: center;
+  line-height: 24px;
+  vertical-align: middle;
+}
+.limit-container .cryptpad-limit-bar .usage {
+  height: 24px;
+  display: inline-block;
+  background: blue;
+  position: absolute;
+  left: 0;
+  z-index: 1;
+}
+.limit-container .cryptpad-limit-bar .usage.normal {
+  background: #5cb85c;
+}
+.limit-container .cryptpad-limit-bar .usage.warning {
+  background: orange;
+}
+.limit-container .cryptpad-limit-bar .usage.above {
+  background: red;
+}
+.limit-container .cryptpad-limit-bar .usageText {
+  position: relative;
+  color: black;
+  text-shadow: 1px 0 2px white, 0 1px 2px white, -1px 0 2px white, 0 -1px 2px white;
+  z-index: 2;
+  font-size: 16px;
+  font-weight: bold;
+}
+.limit-container .upgrade {
+  margin-left: 10px;
 }
 #cors-store {
   display: none;

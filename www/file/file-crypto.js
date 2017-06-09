@@ -7,6 +7,24 @@ define([
     var plainChunkLength = 128 * 1024;
     var cypherChunkLength = 131088;
 
+    var computeEncryptedSize = function (bytes, meta) {
+        var metasize = Nacl.util.decodeUTF8(JSON.stringify(meta)).length;
+        var chunks = Math.ceil(bytes / plainChunkLength);
+        return metasize + 18 + (chunks * 16) + bytes;
+    };
+
+    var encodePrefix = function (p) {
+        return [
+            65280, // 255 << 8
+            255,
+        ].map(function (n, i) {
+            return (p & n) >> ((1 - i) * 8);
+        });
+    };
+    var decodePrefix = function (A) {
+        return (A[0] << 8) | A[1];
+    };
+
     var slice = function (A) {
         return Array.prototype.slice.call(A);
     };
@@ -40,32 +58,109 @@ define([
     };
 
     var joinChunks = function (chunks) {
-        return new Uint8Array(chunks.reduce(function (A, B) {
-            return slice(A).concat(slice(B));
-        }, []));
+        return new Blob(chunks);
     };
 
-    var padChunk = function (A) {
-        var padding;
-        if (A.length === plainChunkLength) { return A; }
-        if (A.length < plainChunkLength) {
-            padding = new Array(plainChunkLength - A.length).fill(32);
-            return A.concat(padding);
-        }
-        if (A.length > plainChunkLength) {
-            // how many times larger is it?
-            var chunks = Math.ceil(A.length / plainChunkLength);
-            padding = new Array((plainChunkLength * chunks) - A.length).fill(32);
-            return A.concat(padding);
-        }
+    var concatBuffer = function (a, b) { // TODO make this not so ugly
+        return new Uint8Array(slice(a).concat(slice(b)));
     };
 
-    var decrypt = function (u8, key, cb) {
+    var fetchMetadata = function (src, cb) {
+        var done = false;
+        var CB = function (err, res) {
+            if (done) { return; }
+            done = true;
+            cb(err, res);
+        };
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", src, true);
+        xhr.setRequestHeader('Range', 'bytes=0-1');
+        xhr.responseType = 'arraybuffer';
+
+        xhr.onload = function () {
+            if (/^4/.test('' + this.status)) { return CB('XHR_ERROR'); }
+            var res = new Uint8Array(xhr.response);
+            var size = decodePrefix(res);
+            var xhr2 = new XMLHttpRequest();
+
+            xhr2.open("GET", src, true);
+            xhr2.setRequestHeader('Range', 'bytes=2-' + (size + 2));
+            xhr2.responseType = 'arraybuffer';
+            xhr2.onload = function () {
+                if (/^4/.test('' + this.status)) { return CB('XHR_ERROR'); }
+                var res2 = new Uint8Array(xhr2.response);
+                var all = concatBuffer(res, res2);
+                CB(void 0, all);
+            };
+            xhr2.send(null);
+        };
+        xhr.send(null);
+    };
+
+    var decryptMetadata = function (u8, key) {
+        var prefix = u8.subarray(0, 2);
+        var metadataLength = decodePrefix(prefix);
+
+        var metaBox = new Uint8Array(u8.subarray(2, 2 + metadataLength));
+        var metaChunk = Nacl.secretbox.open(metaBox, createNonce(), key);
+
+        try {
+            return JSON.parse(Nacl.util.encodeUTF8(metaChunk));
+        }
+        catch (e) { return null; }
+    };
+
+    var fetchDecryptedMetadata = function (src, key, cb) {
+        if (typeof(src) !== 'string') {
+            return window.setTimeout(function () {
+                cb('NO_SOURCE');
+            });
+        }
+        fetchMetadata(src, function (e, buffer) {
+            if (e) { return cb(e); }
+            cb(void 0, decryptMetadata(buffer, key));
+        });
+    };
+
+    var decrypt = function (u8, key, done, progress) {
+        var MAX = u8.length;
+        var _progress = function (offset) {
+            if (typeof(progress) !== 'function') { return; }
+            progress(Math.min(1, offset / MAX));
+        };
+
         var nonce = createNonce();
         var i = 0;
 
-        var takeChunk = function () {
-            var start = i * cypherChunkLength;
+        var prefix = u8.subarray(0, 2);
+        var metadataLength = decodePrefix(prefix);
+
+        var res = {
+            metadata: undefined,
+        };
+
+        var metaBox = new Uint8Array(u8.subarray(2, 2 + metadataLength));
+
+        var metaChunk = Nacl.secretbox.open(metaBox, nonce, key);
+        increment(nonce);
+
+        try {
+            res.metadata = JSON.parse(Nacl.util.encodeUTF8(metaChunk));
+        } catch (e) {
+            return window.setTimeout(function () {
+                done('E_METADATA_DECRYPTION');
+            });
+        }
+
+        if (!res.metadata) {
+            return void setTimeout(function () {
+                done('NO_METADATA');
+            });
+        }
+
+        var takeChunk = function (cb) {
+            var start = i * cypherChunkLength + 2 + metadataLength;
             var end = start + cypherChunkLength;
             i++;
             var box = new Uint8Array(u8.subarray(start, end));
@@ -73,52 +168,36 @@ define([
             // decrypt the chunk
             var plaintext = Nacl.secretbox.open(box, nonce, key);
             increment(nonce);
-            return plaintext;
-        };
 
-        var buffer = '';
+            if (!plaintext) { return cb('DECRYPTION_ERROR'); }
 
-        var res = {
-            metadata: undefined,
-        };
-
-        // decrypt metadata
-        var chunk;
-        for (; !res.metadata && i * cypherChunkLength < u8.length;) {
-            chunk = takeChunk();
-            buffer += Nacl.util.encodeUTF8(chunk);
-            try {
-                res.metadata = JSON.parse(buffer);
-                //console.log(res.metadata);
-            } catch (e) {
-                console.log('buffering another chunk for metadata');
-            }
-        }
-
-        if (!res.metadata) {
-            return void setTimeout(function () {
-                cb('NO_METADATA');
-            });
-        }
-
-        var fail = function () {
-            cb("DECRYPTION_ERROR");
+            _progress(end);
+            cb(void 0, plaintext);
         };
 
         var chunks = [];
-        // decrypt file contents
-        for (;i * cypherChunkLength < u8.length;) {
-            chunk = takeChunk();
-            if (!chunk) {
-                return window.setTimeout(fail);
-            }
-            chunks.push(chunk);
-        }
 
-        // send chunks
-        res.content = joinChunks(chunks);
+        var again = function () {
+            takeChunk(function (e, plaintext) {
+                if (e) {
+                    return setTimeout(function () {
+                        done(e);
+                    });
+                }
+                if (plaintext) {
+                    if (i * cypherChunkLength < u8.length) { // not done
+                        chunks.push(plaintext);
+                        return setTimeout(again);
+                    }
+                    chunks.push(plaintext);
+                    res.content = joinChunks(chunks);
+                    return done(void 0, res);
+                }
+                done('UNEXPECTED_ENDING');
+            });
+        };
 
-        cb(void 0, res);
+        again();
     };
 
     // metadata
@@ -130,41 +209,32 @@ define([
         var metaBuffer = Array.prototype.slice
             .call(Nacl.util.decodeUTF8(JSON.stringify(metadata)));
 
-        var plaintext = new Uint8Array(padChunk(metaBuffer));
+        var plaintext = new Uint8Array(metaBuffer);
 
-        var j = 0;
         var i = 0;
 
-        /*
-            0: metadata
-            1: u8
-            2: done
-        */
-
         var state = 0;
-
         var next = function (cb) {
+            if (state === 2) { return void cb(); }
+
             var start;
             var end;
             var part;
             var box;
 
             if (state === 0) { // metadata...
-                start = j * plainChunkLength;
-                end = start + plainChunkLength;
-
-                part = plaintext.subarray(start, end);
+                part = new Uint8Array(plaintext);
                 box = Nacl.secretbox(part, nonce, key);
                 increment(nonce);
 
-                j++;
-
-                // metadata is done
-                if (j * plainChunkLength >= plaintext.length) {
-                    return void cb(state++, box);
+                if (box.length > 65535) {
+                    return void cb('METADATA_TOO_LARGE');
                 }
+                var prefixed = new Uint8Array(encodePrefix(box.length)
+                    .concat(slice(box)));
+                state++;
 
-                return void cb(state, box);
+                return void cb(void 0, prefixed);
             }
 
             // encrypt the rest of the file...
@@ -179,7 +249,7 @@ define([
             // regular data is done
             if (i * plainChunkLength >= u8.length) { state = 2; }
 
-            return void cb(state, box);
+            return void cb(void 0, box);
         };
 
         return next;
@@ -189,5 +259,9 @@ define([
         decrypt: decrypt,
         encrypt: encrypt,
         joinChunks: joinChunks,
+        computeEncryptedSize: computeEncryptedSize,
+        decryptMetadata: decryptMetadata,
+        fetchMetadata: fetchMetadata,
+        fetchDecryptedMetadata: fetchDecryptedMetadata,
     };
 });

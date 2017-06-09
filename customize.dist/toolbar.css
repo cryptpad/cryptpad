@@ -7,6 +7,7 @@
   font-family: FontAwesome;
 }
 .dropdown-bar button .fa-caret-down {
+  margin-right: 0px;
   margin-left: 5px;
 }
 .dropdown-bar .dropdown-bar-content {
@@ -112,17 +113,22 @@
   z-index: 9001;
 }
 .cryptpad-toolbar .fa {
+  font: normal normal normal 14px/1 FontAwesome;
   font-family: FontAwesome;
 }
 .cryptpad-toolbar a {
   float: right;
 }
 .cryptpad-toolbar button {
+  font: 12px Ubuntu, Arial, sans-serif;
   border: 1px solid transparent;
   border-radius: .25rem;
-  color: #292b2c;
+  color: #000;
   background-color: #fff;
   border-color: #ccc;
+}
+.cryptpad-toolbar button * {
+  font: 12px Ubuntu, Arial, sans-serif;
 }
 .cryptpad-toolbar button#shareButton,
 .cryptpad-toolbar button.buttonSuccess {
@@ -177,43 +183,6 @@
   vertical-align: top;
   margin-left: 10px;
 }
-.cryptpad-toolbar .cryptpad-drive-limit {
-  display: inline-block;
-  height: 26px;
-  width: 200px;
-  margin: 2px;
-  box-sizing: border-box;
-  border: 1px solid #999;
-  background: white;
-  position: relative;
-  text-align: center;
-  line-height: 24px;
-}
-.cryptpad-toolbar .cryptpad-drive-limit .usage {
-  height: 24px;
-  display: inline-block;
-  background: blue;
-  position: absolute;
-  left: 0;
-  z-index: 1;
-}
-.cryptpad-toolbar .cryptpad-drive-limit .usage.normal {
-  background: #5cb85c;
-}
-.cryptpad-toolbar .cryptpad-drive-limit .usage.warning {
-  background: orange;
-}
-.cryptpad-toolbar .cryptpad-drive-limit .usage.above {
-  background: red;
-}
-.cryptpad-toolbar .cryptpad-drive-limit .usageText {
-  position: relative;
-  color: black;
-  text-shadow: 1px 0 2px white, 0 1px 2px white, -1px 0 2px white, 0 -1px 2px white;
-  z-index: 2;
-  font-size: 16px;
-  font-weight: bold;
-}
 .cryptpad-toolbar .cryptpad-limit {
   box-sizing: border-box;
   height: 26px;
@@ -239,6 +208,7 @@
   margin: 3px;
   vertical-align: top;
   box-sizing: content-box;
+  text-align: center;
 }
 .cryptpad-toolbar .cryptpad-lag span {
   display: inline-block;
@@ -314,6 +284,7 @@
   padding-right: 5px;
   padding-left: 5px;
   margin: 3px 2px;
+  box-sizing: border-box;
 }
 .cryptpad-toolbar .dropdown-bar-content {
   margin-top: -3px;
@@ -518,6 +489,8 @@
   margin-bottom: -1px;
 }
 .cryptpad-toolbar-leftside .cryptpad-dropdown-users pre {
+  /* needed for ckeditor */
+  white-space: pre;
   margin: 5px 0px;
 }
 .cryptpad-toolbar-leftside button {
@@ -566,6 +539,7 @@
   margin: 8px;
   line-height: 16px;
   font-size: 16px;
+  text-align: center;
 }
 .cryptpad-readonly {
   margin-right: 5px;

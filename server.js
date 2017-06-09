@@ -8,6 +8,7 @@ var Fs = require('fs');
 var WebSocketServer = require('ws').Server;
 var NetfluxSrv = require('./node_modules/chainpad-server/NetfluxWebsocketSrv');
 var Package = require('./package.json');
+var Path = require("path");
 
 var config = require('./config');
 var websocketPort = config.websocketPort || config.httpPort;
@@ -82,7 +83,7 @@ var mainPages = config.mainPages || ['index', 'privacy', 'terms', 'about', 'cont
 var mainPagePattern = new RegExp('^\/(' + mainPages.join('|') + ').html$');
 app.get(mainPagePattern, Express.static(__dirname + '/customize.dist'));
 
-app.use("/blob", Express.static(__dirname + '/blob'));
+app.use("/blob", Express.static(Path.join(__dirname, (config.blobPath || './blob'))));
 
 app.use("/customize", Express.static(__dirname + '/customize'));
 app.use("/customize", Express.static(__dirname + '/customize.dist'));
@@ -120,6 +121,9 @@ app.get('/api/config', function(req, res){
             waitSeconds: 60,
             urlArgs: 'ver=' + Package.version + (DEV_MODE? '-' + (+new Date()): ''),
         },
+        removeDonateButton: (config.removeDonateButton === true),
+        allowSubscriptions: (config.allowSubscriptions === true),
+
         websocketPath: config.useExternalWebsocket ? undefined : config.websocketPath,
         websocketURL:'ws' + ((useSecureWebsockets) ? 's' : '') + '://' + host + ':' +
             websocketPort + '/cryptpad_websocket',

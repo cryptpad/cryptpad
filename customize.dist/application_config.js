@@ -4,7 +4,8 @@ define(function() {
     /* Select the buttons displayed on the main page to create new collaborative sessions
      * Existing types : pad, code, poll, slide
      */
-    config.availablePadTypes = ['drive', 'pad', 'code', 'slide', 'poll', 'whiteboard'];
+    config.availablePadTypes = ['drive', 'pad', 'code', 'slide', 'poll', 'whiteboard', 'file'];
+    config.registeredOnlyTypes = ['file'];
 
     /*  Cryptpad apps use a common API to display notifications to users
      *  by default, notifications are hidden after 5 seconds
@@ -36,9 +37,6 @@ define(function() {
     config.enableTemplates = true;
 
     config.enableHistory = true;
-
-    //config.enablePinLimit = true;
-    //config.pinLimit = 1000;
 
     /*  user passwords are hashed with scrypt, and salted with their username.
         this value will be appended to the username, causing the resulting hash

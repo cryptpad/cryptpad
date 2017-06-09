@@ -10,12 +10,10 @@ define([
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
     '/whiteboard/colors.js',
-    '/common/visible.js',
-    '/common/notify.js',
     '/customize/application_config.js',
     '/bower_components/secure-fabric.js/dist/fabric.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
-], function ($, Config, Realtime, Crypto, Toolbar, TextPatcher, JSONSortify, JsonOT, Cryptpad, Cryptget, Colors, Visible, Notify, AppConfig) {
+], function ($, Config, Realtime, Crypto, Toolbar, TextPatcher, JSONSortify, JsonOT, Cryptpad, Cryptget, Colors, AppConfig) {
     var saveAs = window.saveAs;
     var Messages = Cryptpad.Messages;
 
@@ -212,9 +210,10 @@ window.canvas = canvas;
         var initializing = true;
 
         var $bar = $('#toolbar');
-        var parsedHash = Cryptpad.parsePadUrl(window.location.href);
-        var defaultName = Cryptpad.getDefaultName(parsedHash);
+
+        var Title;
         var UserList;
+        var Metadata;
 
         var config = module.config = {
             initialState: '{}',
@@ -253,27 +252,13 @@ window.canvas = canvas;
             $colors.append($color);
         };
 
-        var updatePalette = function (newPalette) {
+        var metadataCfg = {};
+        var updatePalette = metadataCfg.updatePalette = function (newPalette) {
             palette = newPalette;
             $colors.html('<div class="hidden">&nbsp;</div>');
             palette.forEach(addColorToPalette);
         };
         updatePalette(palette);
-
-        var suggestName = function (fallback) {
-            if (document.title === defaultName) {
-                return fallback || "";
-            } else {
-                return document.title || defaultName;
-            }
-        };
-
-        var renameCb = function (err, title) {
-            if (err) { return; }
-            document.title = title;
-            config.onLocal();
-        };
-
 
         var makeColorButton = function ($container) {
             var $testColor = $('<input>', { type: 'color', value: '!' });
@@ -305,18 +290,19 @@ window.canvas = canvas;
 
         config.onInit = function (info) {
             UserList = Cryptpad.createUserList(info, config.onLocal, Cryptget, Cryptpad);
+
+            Title = Cryptpad.createTitle({}, config.onLocal, Cryptpad);
+
+            Metadata = Cryptpad.createMetadata(UserList, Title, metadataCfg);
+
             var configTb = {
-                displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit'],
+                displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit', 'upgrade'],
                 userList: UserList.getToolbarConfig(),
                 share: {
                     secret: secret,
                     channel: info.channel
                 },
-                title: {
-                    onRename: renameCb,
-                    defaultName: defaultName,
-                    suggestName: suggestName
-                },
+                title: Title.getTitleConfig(),
                 common: Cryptpad,
                 readOnly: readOnly,
                 ifrw: window,
@@ -326,6 +312,8 @@ window.canvas = canvas;
             };
 
             toolbar = module.toolbar = Toolbar.create(configTb);
+
+            Title.setToolbar(toolbar);
 
             var $rightside = toolbar.$rightside;
 
@@ -371,75 +359,11 @@ window.canvas = canvas;
             };
         };
 
-        var updateTitle = function (newTitle) {
-            if (newTitle === document.title) { return; }
-            // Change the title now, and set it back to the old value if there is an error
-            var oldTitle = document.title;
-            document.title = newTitle;
-            Cryptpad.renamePad(newTitle, function (err, data) {
-                if (err) {
-                    console.log("Couldn't set pad title");
-                    console.error(err);
-                    document.title = oldTitle;
-                    return;
-                }
-                document.title = data;
-                $bar.find('.' + Toolbar.constants.title).find('span.title').text(data);
-                $bar.find('.' + Toolbar.constants.title).find('input').val(data);
-            });
-        };
-
-        var updateDefaultTitle = function (defaultTitle) {
-            defaultName = defaultTitle;
-            $bar.find('.' + Toolbar.constants.title).find('input').attr("placeholder", defaultName);
-        };
-
-
-        var updateMetadata = function(shjson) {
-            // Extract the user list (metadata) from the hyperjson
-            var json = (shjson === "") ? "" : JSON.parse(shjson);
-            var titleUpdated = false;
-            if (json && json.metadata) {
-                if (json.metadata.users) {
-                    var userData = json.metadata.users;
-                    // Update the local user data
-                    UserList.addToUserData(userData);
-                }
-                if (json.metadata.defaultTitle) {
-                    updateDefaultTitle(json.metadata.defaultTitle);
-                }
-                if (typeof json.metadata.title !== "undefined") {
-                    updateTitle(json.metadata.title || defaultName);
-                    titleUpdated = true;
-                }
-                if (typeof(json.metadata.palette) !== 'undefined') {
-                    updatePalette(json.metadata.palette);
-                }
-            }
-            if (!titleUpdated) {
-                updateTitle(defaultName);
-            }
-        };
-
-        var unnotify = function () {
-            if (module.tabNotification &&
-                typeof(module.tabNotification.cancel) === 'function') {
-                module.tabNotification.cancel();
-            }
-        };
-
-        var notify = function () {
-            if (Visible.isSupported() && !Visible.currently()) {
-                unnotify();
-                module.tabNotification = Notify.tab(1000, 10);
-            }
-        };
-
         var onRemote = config.onRemote = Catch(function () {
             if (initializing) { return; }
             var userDoc = module.realtime.getUserDoc();
 
-            updateMetadata(userDoc);
+            Metadata.update(userDoc);
             var json = JSON.parse(userDoc);
             var remoteDoc = json.content;
 
@@ -449,7 +373,7 @@ window.canvas = canvas;
             canvas.renderAll();
 
             var content = canvas.toDatalessJSON();
-            if (content !== remoteDoc) { notify(); }
+            if (content !== remoteDoc) { Cryptpad.notify(); }
             if (readOnly) { setEditable(false); }
         });
         setEditable(false);
@@ -460,11 +384,11 @@ window.canvas = canvas;
                 metadata: {
                     users: UserList.userData,
                     palette: palette,
-                    defaultTitle: defaultName
+                    defaultTitle: Title.defaultTitle
                 }
             };
             if (!initializing) {
-                obj.metadata.title = document.title;
+                obj.metadata.title = Title.title;
             }
             // stringify the json and send it into chainpad
             return JSONSortify(obj);
@@ -494,10 +418,6 @@ window.canvas = canvas;
             setEditable(true);
             initializing = false;
             onRemote();
-
-            if (Visible.isSupported()) {
-                Visible.onChange(function (yes) { if (yes) { unnotify(); } });
-            }
 
             /*  TODO: restore palette from metadata.palette */
 

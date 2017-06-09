@@ -1,8 +1,9 @@
 define([
     '/common/common-util.js',
+    '/common/common-interface.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/tweetnacl/nacl-fast.min.js'
-], function (Util, Crypto) {
+], function (Util, UI, Crypto) {
     var Nacl = window.nacl;
 
     var Hash = {};
@@ -32,9 +33,68 @@ define([
         return '/1/view/' + hexToBase64(chanKey) + '/'+Crypto.b64RemoveSlashes(keys.viewKeyStr)+'/';
     };
     var getFileHashFromKeys = Hash.getFileHashFromKeys = function (fileKey, cryptKey) {
-        return '/2/' + hexToBase64(fileKey) + '/' + Crypto.b64RemoveSlashes(cryptKey) + '/';
+        return '/1/' + hexToBase64(fileKey) + '/' + Crypto.b64RemoveSlashes(cryptKey) + '/';
+    };
+    Hash.getUserHrefFromKeys = function (username, pubkey) {
+        return window.location.origin + '/user/#/1/' + username + '/' + pubkey.replace(/\//g, '-');
     };
 
+    var fixDuplicateSlashes = function (s) {
+        return s.replace(/\/+/g, '/');
+    };
+
+/*
+Version 0
+    /pad/#67b8385b07352be53e40746d2be6ccd7XAYSuJYYqa9NfmInyHci7LNy
+Version 1
+    /code/#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI
+*/
+
+    var parseTypeHash = Hash.parseTypeHash = function (type, hash) {
+        if (!hash) { return; }
+        var parsed = {};
+        var hashArr = fixDuplicateSlashes(hash).split('/');
+        if (['media', 'file', 'user'].indexOf(type) === -1) {
+            parsed.type = 'pad';
+            if (hash.slice(0,1) !== '/' && hash.length >= 56) {
+                // Old hash
+                parsed.channel = hash.slice(0, 32);
+                parsed.key = hash.slice(32, 56);
+                parsed.version = 0;
+                return parsed;
+            }
+            if (hashArr[1] && hashArr[1] === '1') {
+                parsed.version = 1;
+                parsed.mode = hashArr[2];
+                parsed.channel = hashArr[3];
+                parsed.key = hashArr[4].replace(/-/g, '/');
+                parsed.present = typeof(hashArr[5]) === "string" && hashArr[5] === 'present';
+                return parsed;
+            }
+            return parsed;
+        }
+        if (['media', 'file'].indexOf(type) !== -1) {
+            parsed.type = 'file';
+            if (hashArr[1] && hashArr[1] === '1') {
+                parsed.version = 1;
+                parsed.channel = hashArr[2].replace(/-/g, '/');
+                parsed.key = hashArr[3].replace(/-/g, '/');
+                return parsed;
+            }
+            return parsed;
+        }
+        if (['user'].indexOf(type) !== -1) {
+            parsed.type = 'user';
+            if (hashArr[1] && hashArr[1] === '1') {
+                parsed.version = 1;
+                parsed.user = hashArr[2];
+                parsed.pubkey = hashArr[3].replace(/-/g, '/');
+                return parsed;
+            }
+            return parsed;
+        }
+        return;
+    };
     var parsePadUrl = Hash.parsePadUrl = function (href) {
         var patt = /^https*:\/\/([^\/]*)\/(.*?)\//i;
 
@@ -43,19 +103,24 @@ define([
         if (!href) { return ret; }
         if (href.slice(-1) !== '/') { href += '/'; }
 
+        var idx;
+
         if (!/^https*:\/\//.test(href)) {
-            var idx = href.indexOf('/#');
+            idx = href.indexOf('/#');
             ret.type = href.slice(1, idx);
             ret.hash = href.slice(idx + 2);
+            ret.hashData = parseTypeHash(ret.type, ret.hash);
             return ret;
         }
 
-        var hash = href.replace(patt, function (a, domain, type) {
+        href.replace(patt, function (a, domain, type) {
             ret.domain = domain;
             ret.type = type;
             return '';
         });
-        ret.hash = hash.replace(/#/g, '');
+        idx = href.indexOf('/#');
+        ret.hash = href.slice(idx + 2);
+        ret.hashData = parseTypeHash(ret.type, ret.hash);
         return ret;
     };
 
@@ -71,7 +136,7 @@ define([
      * - no argument: use the URL hash or create one if it doesn't exist
      * - secretHash provided: use secretHash to find the keys
      */
-    Hash.getSecrets = function (secretHash) {
+    Hash.getSecrets = function (type, secretHash) {
         var secret = {};
         var generate = function () {
             secret.keys = Crypto.createEditCryptor();
@@ -81,50 +146,56 @@ define([
             generate();
             return secret;
         } else {
-            var hash = secretHash || window.location.hash.slice(1);
+            var parsed;
+            var hash;
+            if (secretHash) {
+                if (!type) { throw new Error("getSecrets with a hash requires a type parameter"); }
+                parsed = parseTypeHash(type, secretHash);
+                hash = secretHash;
+            } else {
+                var pHref = parsePadUrl(window.location.href);
+                parsed = pHref.hashData;
+                hash = pHref.hash;
+            }
+            //var parsed = parsePadUrl(window.location.href);
+            //var hash = secretHash || window.location.hash.slice(1);
             if (hash.length === 0) {
                 generate();
                 return secret;
             }
             // old hash system : #{hexChanKey}{cryptKey}
             // new hash system : #/{hashVersion}/{b64ChanKey}/{cryptKey}
-            if (hash.slice(0,1) !== '/' && hash.length >= 56) {
+            if (parsed.version === 0) {
                 // Old hash
-                secret.channel = hash.slice(0, 32);
-                secret.key = hash.slice(32);
+                secret.channel = parsed.channel;
+                secret.key = parsed.key;
             }
-            else {
+            else if (parsed.version === 1) {
                 // New hash
-                var hashArray = hash.split('/');
-                if (hashArray.length < 4) {
-                    Hash.alert("Unable to parse the key");
-                    throw new Error("Unable to parse the key");
-                }
-                var version = hashArray[1];
-                if (version === "1") {
-                    var mode = hashArray[2];
-                    if (mode === 'edit') {
-                        secret.channel = base64ToHex(hashArray[3]);
-                        var keys = Crypto.createEditCryptor(hashArray[4].replace(/-/g, '/'));
-                        secret.keys = keys;
-                        secret.key = keys.editKeyStr;
+                if (parsed.type === "pad") {
+                    secret.channel = base64ToHex(parsed.channel);
+                    if (parsed.mode === 'edit') {
+                        secret.keys = Crypto.createEditCryptor(parsed.key);
+                        secret.key = secret.keys.editKeyStr;
                         if (secret.channel.length !== 32 || secret.key.length !== 24) {
-                            Hash.alert("The channel key and/or the encryption key is invalid");
+                            UI.alert("The channel key and/or the encryption key is invalid");
                             throw new Error("The channel key and/or the encryption key is invalid");
                         }
                     }
-                    else if (mode === 'view') {
-                        secret.channel = base64ToHex(hashArray[3]);
-                        secret.keys = Crypto.createViewCryptor(hashArray[4].replace(/-/g, '/'));
+                    else if (parsed.mode === 'view') {
+                        secret.keys = Crypto.createViewCryptor(parsed.key);
                         if (secret.channel.length !== 32) {
-                            Hash.alert("The channel key is invalid");
+                            UI.alert("The channel key is invalid");
                             throw new Error("The channel key is invalid");
                         }
                     }
-                } else if (version === "2") {
+                } else if (parsed.type === "file") {
                     // version 2 hashes are to be used for encrypted blobs
-                    secret.channel = hashArray[2].replace(/-/g, '/');
-                    secret.keys = { fileKeyStr: hashArray[3].replace(/-/g, '/') };
+                    secret.channel = parsed.channel;
+                    secret.keys = { fileKeyStr: parsed.key };
+                } else if (parsed.type === "user") {
+                    // version 2 hashes are to be used for encrypted blobs
+                    throw new Error("User hashes can't be opened (yet)");
                 }
             }
         }
@@ -161,42 +232,6 @@ define([
         return '/1/edit/' + [channelId, key].join('/') + '/';
     };
 
-/*
-Version 0
-    /pad/#67b8385b07352be53e40746d2be6ccd7XAYSuJYYqa9NfmInyHci7LNy
-Version 1
-    /code/#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI
-Version 2
-    /file/#/2/<fileId>/<cryptKey>/<contentType>
-    /file/#/2/K6xWU-LT9BJHCQcDCT-DcQ/ajExFODrFH4lVBwxxsrOKw/image-png
-*/
-    var parseHash = Hash.parseHash = function (hash) {
-        var parsed = {};
-        if (hash.slice(0,1) !== '/' && hash.length >= 56) {
-            // Old hash
-            parsed.channel = hash.slice(0, 32);
-            parsed.key = hash.slice(32);
-            parsed.version = 0;
-            return parsed;
-        }
-        var hashArr = hash.split('/');
-        if (hashArr[1] && hashArr[1] === '1') {
-            parsed.version = 1;
-            parsed.mode = hashArr[2];
-            parsed.channel = hashArr[3];
-            parsed.key = hashArr[4];
-            parsed.present = typeof(hashArr[5]) === "string" && hashArr[5] === 'present';
-            return parsed;
-        }
-        if (hashArr[1] && hashArr[1] === '2') {
-            parsed.version = 2;
-            parsed.channel = hashArr[2].replace(/-/g, '/');
-            parsed.key = hashArr[3].replace(/-/g, '/');
-            return parsed;
-        }
-        return;
-    };
-
     // STORAGE
     Hash.findWeaker = function (href, recents) {
         var rHref = href || getRelativeHref(window.location.href);
@@ -207,9 +242,13 @@ Version 2
             var p = parsePadUrl(pad.href);
             if (p.type !== parsed.type) { return; } // Not the same type
             if (p.hash === parsed.hash) { return; } // Same hash, not stronger
-            var pHash = parseHash(p.hash);
-            var parsedHash = parseHash(parsed.hash);
+            var pHash = p.hashData;
+            var parsedHash = parsed.hashData;
             if (!parsedHash || !pHash) { return; }
+
+            // We don't have stronger/weaker versions of files or users
+            if (pHash.type !== 'pad' && parsedHash.type !== 'pad') { return; }
+
             if (pHash.version !== parsedHash.version) { return; }
             if (pHash.channel !== parsedHash.channel) { return; }
             if (pHash.mode === 'view' && parsedHash.mode === 'edit') {
@@ -229,9 +268,13 @@ Version 2
             var p = parsePadUrl(pad.href);
             if (p.type !== parsed.type) { return; } // Not the same type
             if (p.hash === parsed.hash) { return; } // Same hash, not stronger
-            var pHash = parseHash(p.hash);
-            var parsedHash = parseHash(parsed.hash);
+            var pHash = p.hashData;
+            var parsedHash = parsed.hashData;
             if (!parsedHash || !pHash) { return; }
+
+            // We don't have stronger/weaker versions of files or users
+            if (pHash.type !== 'pad' && parsedHash.type !== 'pad') { return; }
+
             if (pHash.version !== parsedHash.version) { return; }
             if (pHash.channel !== parsedHash.channel) { return; }
             if (pHash.mode === 'edit' && parsedHash.mode === 'view') {
@@ -250,8 +293,7 @@ Version 2
         var parsed = Hash.parsePadUrl(href);
         if (!parsed || !parsed.hash) { return; }
 
-        parsed = Hash.parseHash(parsed.hash);
-
+        parsed = parsed.hashData;
         if (parsed.version === 0) {
             return parsed.channel;
         } else if (parsed.version !== 1 && parsed.version !== 2) {

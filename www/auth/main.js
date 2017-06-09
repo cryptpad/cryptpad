@@ -1,8 +1,9 @@
 define([
     'jquery',
     '/common/cryptpad-common.js',
+    '/common/test.js',
     '/bower_components/tweetnacl/nacl-fast.min.js'
-], function ($, Cryptpad) {
+], function ($, Cryptpad, Test) {
     var Nacl = window.nacl;
 
     var signMsg = function (msg, privKey) {
@@ -18,8 +19,16 @@ define([
         /^http(s)?:\/\/localhost\:/
     ];
 
+    // Safari is weird about localStorage in iframes but seems to let sessionStorage slide.
+    localStorage.User_hash = localStorage.User_hash || sessionStorage.User_hash;
+
     Cryptpad.ready(function () {
         console.log('IFRAME READY');
+        Test(function () {
+            // This is only here to maybe trigger an error.
+            window.drive = Cryptpad.getStore().getProxy().proxy['drive'];
+            Test.passed();
+        });
         $(window).on("message", function (jqe) {
             var evt = jqe.originalEvent;
             var data = JSON.parse(evt.data);
@@ -42,6 +51,11 @@ define([
                         sig: sig
                     };
                 }
+            } else if (data.cmd === 'UPDATE_LIMIT') {
+                return Cryptpad.updatePinLimit(function (e, limit, plan, note) {
+                    ret.res = [limit, plan, note];
+                    srcWindow.postMessage(JSON.stringify(ret), domain);
+                });
             } else {
                 ret.error = "UNKNOWN_CMD";
             }

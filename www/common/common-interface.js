@@ -3,8 +3,10 @@ define([
     '/customize/messages.js',
     '/common/common-util.js',
     '/customize/application_config.js',
-    '/bower_components/alertifyjs/dist/js/alertify.js'
-], function ($, Messages, Util, AppConfig, Alertify) {
+    '/bower_components/alertifyjs/dist/js/alertify.js',
+    '/common/notify.js',
+    '/common/visible.js'
+], function ($, Messages, Util, AppConfig, Alertify, Notify, Visible) {
 
     var UI = {};
 
@@ -141,7 +143,7 @@ define([
 
         return {
             show: function () {
-                $target.show();
+                $target.css('display', 'inline');
                 return this;
             },
             hide: function () {
@@ -192,10 +194,17 @@ define([
     };
     UI.removeLoadingScreen = function (cb) {
         $('#' + LOADING).fadeOut(750, cb);
-        $('#loadingTip').css('top', '');
-        window.setTimeout(function () {
-            $('#loadingTip').fadeOut(750);
-        }, 3000);
+        var $tip = $('#loadingTip').css('top', '')
+        // loading.less sets transition-delay: $wait-time
+        // and               transition: opacity $fadeout-time
+            .css({
+                'opacity': 0,
+                'pointer-events': 'none',
+            });
+            setTimeout(function () {
+                $tip.remove();
+            }, 3750);
+        // jquery.fadeout can get stuck
     };
     UI.errorLoadingScreen = function (error, transparent) {
         if (!$('#' + LOADING).is(':visible')) { UI.addLoadingScreen(undefined, true); }
@@ -203,6 +212,28 @@ define([
         if (transparent) { $('#' + LOADING).css('opacity', 0.8); }
         $('#' + LOADING).find('p').html(error || Messages.error);
     };
+
+    // Notify
+    var notify = {};
+    UI.unnotify = function () {
+        if (notify.tabNotification &&
+            typeof(notify.tabNotification.cancel) === 'function') {
+            notify.tabNotification.cancel();
+        }
+    };
+
+    UI.notify = function () {
+        if (Visible.isSupported() && !Visible.currently()) {
+            UI.unnotify();
+            notify.tabNotification = Notify.tab(1000, 10);
+        }
+    };
+
+    if (Visible.isSupported()) {
+        Visible.onChange(function (yes) {
+            if (yes) { UI.unnotify(); }
+        });
+    }
 
     UI.importContent = function (type, f) {
         return function () {

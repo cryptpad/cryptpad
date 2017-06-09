@@ -1,0 +1,14 @@
+.cp #mainBlock {
+  z-index: 1;
+  width: 1000px;
+  max-width: 90%;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cp #mainBlock #container {
+    text-align: center;
+    font-size: 25px;
+}
+

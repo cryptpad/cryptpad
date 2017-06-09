@@ -3,7 +3,8 @@ define([
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
     '/common/mergeDrive.js',
-    '/bower_components/file-saver/FileSaver.min.js'
+    '/bower_components/file-saver/FileSaver.min.js',
+    '/customize/header.js',
 ], function ($, Cryptpad, Crypt, Merge) {
     var saveAs = window.saveAs;
 
@@ -49,16 +50,16 @@ define([
 
         var publicKey = obj.edPublic;
         if (publicKey) {
+            var userHref = Cryptpad.getUserHrefFromKeys(accountName, publicKey);
             var $pubLabel = $('<span>', {'class': 'label'})
                 .text(Messages.settings_publicSigningKey + ':');
             var $pubKey = $('<input>', {type: 'text', readonly: true})
                 .css({
                     width: '28em'
                 })
-                .val(publicKey);
+                .val(userHref);
             $div.append('<br>').append($pubLabel).append($pubKey);
         }
-
 
         return $div;
     };
@@ -222,33 +223,16 @@ define([
         return $div;
     };
 
-    var createUsageButton = function (obj) {
-        var proxy = obj.proxy;
-
+    var createUsageButton = function () {
         var $div = $('<div>', { 'class': 'pinned-usage' })
             .text(Messages.settings_usageTitle)
             .append('<br>');
 
-        $('<button>', {
-            'class': 'btn btn-primary', // fa fa-hdd-o ?
-        })
-        .text(Messages.settings_usage)
-        .click(function () {
-            if (!(proxy.edPublic && proxy.edPrivate)) {
-                // suggest that they login/register
-                Cryptpad.alert(Messages.settings_pinningNotAvailable);
-                return;
-            }
-            Cryptpad.getPinnedUsage(function (e, bytes) {
-                if (e) {
-                    Cryptpad.alert(Messages.settings_pinningError);
-                    return;
-                }
-                Cryptpad.alert(Messages._getKey('settings_usageAmount', [Cryptpad.bytesToMegabytes(bytes)]));
-            });
-        })
-        .appendTo($div);
-
+        Cryptpad.createUsageBar(function (err, $bar) {
+            $div.find('.limit-container').remove();
+            $bar.find('.upgrade').addClass('btn btn-success');
+            $div.append($bar);
+        }, true);
         return $div;
     };
 
@@ -334,10 +318,10 @@ define([
             APP.$container.append(createLogoutEverywhere(obj));
         }
         APP.$container.append(createResetTips());
+        APP.$container.append(createUsageButton(obj));
         APP.$container.append(createBackupDrive(obj));
         APP.$container.append(createImportLocalPads(obj));
         APP.$container.append(createResetDrive(obj));
-        APP.$container.append(createUsageButton(obj));
         APP.$container.append(createUserFeedbackToggle(obj));
         obj.proxy.on('change', [], refresh);
         obj.proxy.on('remove', [], refresh);
@@ -345,19 +329,6 @@ define([
 
     $(function () {
         var $main = $('#mainBlock');
-        // Language selector
-        var $sel = $('#language-selector');
-        Cryptpad.createLanguageSelector(undefined, $sel);
-        $sel.find('button').addClass('btn').addClass('btn-secondary');
-        $sel.show();
-
-        // User admin menu
-        var $userMenu = $('#user-menu');
-        var userMenuCfg = {
-            $initBlock: $userMenu
-        };
-        var $userAdmin = Cryptpad.createUserAdminMenu(userMenuCfg);
-        $userAdmin.find('button').addClass('btn').addClass('btn-secondary');
 
         $(window).click(function () {
             $('.cryptpad-dropdown').hide();

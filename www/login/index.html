@@ -18,6 +18,7 @@
         </a>
     </span>
 
+    <span id="user-menu" class="right dropdown-bar"></span>
     <span id="language-selector" class="right dropdown-bar"></span>
     <span class="right">
         <a href="/about.html" data-localization="about">About</a>
@@ -61,6 +62,10 @@
             <input type="text" id="name" name="name" class="form-control" data-localization-placeholder="login_username" autofocus>
             <input type="password" id="password" name="password" class="form-control" data-localization-placeholder="login_password">
             <button class="btn btn-primary login first" data-localization="login_login"></button>
+            <div class="extra">
+                <p data-localization="login_notRegistered"></p>
+                <button id="register" class="btn btn-success register first" data-localization="login_register"></button>
+            </div>
         </div>
     </div>
     </div>

@@ -161,7 +161,9 @@ div.modal, div#modal {
         width: 100%;
     }
     #content {
-        transition: margin-left 1s;
+        &.transition {
+            transition: margin-left 1s;
+        }
         font-size: 20vh;
         position: relative;
         height: 100%;
@@ -191,9 +193,10 @@ div.modal, div#modal {
             margin: auto;
         }
         .slide-container {
-            display: inline-block;
+            display: inline-flex;
             height: 100%; width: 100vw;
             text-align: center;
+            vertical-align: top;
         }
     }
 

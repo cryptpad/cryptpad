@@ -5,52 +5,31 @@
     <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
     <script src="/bower_components/jquery/dist/jquery.min.js"></script>
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <style>
-    html, body {
-        margin: 0px;
-    }
-    .cryptpad-toolbar {
-        margin-bottom: 1px;
-        padding: 0px;
-        display: inline-block;
-    }
-    #file {
-        display: block;
-        height: 300px;
-        width: 300px;
-        border: 2px solid black;
-        margin: 50px;
-    }
-
-    .inputfile {
-        width: 0.1px;
-        height: 0.1px;
-        opacity: 0;
-        overflow: hidden;
-        position: absolute;
-        z-index: -1;
-    }
-    .inputfile + label {
-        border: 2px solid black;
-        display: block;
-        height: 500px;
-        width: 500px;
-        background-color: rgba(50, 50, 50, .10);
-        margin: 50px;
-    }
-
-    .inputfile:focus + label,
-    .inputfile + label:hover {
-        background-color: rgba(50, 50, 50, 0.30);
-    }
-
-    </style>
+    <link rel="stylesheet" href="/file/file.css">
+    <link rel="stylesheet" href="/customize/main.css">
 </head>
 <body>
     <div id="toolbar" class="toolbar-container"></div>
     <div id="upload-form" style="display: none;">
         <input type="file" name="file" id="file" class="inputfile" />
-        <label for="file">Choose a file</label>
+        <label for="file" class="block unselectable" data-localization-title="upload_choose"
+            data-localization="upload_choose"></label>
+    </div>
+    <div id="download-form" style="display: none;">
+        <input type="button" name="dl" id="dl" class="inputfile" />
+        <label for="dl" class="block unselectable" data-localization-title="download_button"
+            data-localization="download_button"></label>
+        <span class="block" id="progress"></span>
+    </div>
+    <table id="status" style="display: none;">
+        <tr>
+            <td data-localization="upload_name">File name</td>
+            <td data-localization="upload_size">Size</td>
+            <td data-localization="upload_progress">Progress</td>
+            <td data-localization="cancel">Cancel</td>
+        </tr>
+    </table>
+    <div id="feedback" class="block hidden">
     </div>
 </body>
 </html>

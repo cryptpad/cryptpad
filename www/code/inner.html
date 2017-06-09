@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/bower_components/codemirror/lib/codemirror.css">
     <link rel="stylesheet" href="/bower_components/codemirror/addon/dialog/dialog.css">
     <link rel="stylesheet" href="/bower_components/codemirror/addon/fold/foldgutter.css" />
+    <link rel="stylesheet" href="/code/code.css" />
     <script src="/bower_components/codemirror/mode/javascript/javascript.js"></script>
     <script src="/bower_components/codemirror/addon/mode/loadmode.js"></script>
     <script src="/bower_components/codemirror/mode/meta.js"></script>
@@ -31,33 +32,13 @@
     <script src="/bower_components/codemirror/addon/fold/markdown-fold.js"></script>
     <script src="/bower_components/codemirror/addon/fold/comment-fold.js"></script>
     <script src="/bower_components/codemirror/addon/display/placeholder.js"></script>
-    <style>
-      html, body{
-          height: 100%;
-          width: 100%;
-          padding: 0px;
-          margin: 0px;
-          overflow: hidden;
-          box-sizing: border-box;
-          position: relative;
-      }
-      body {
-          display: flex;
-          flex-flow: column;
-      }
-      .CodeMirror {
-        height: 100%;
-      }
-      .CodeMirror-focused .cm-matchhighlight {
-        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQI12NgYGBgkKzc8x9CMDAwAAAmhwSbidEoSQAAAABJRU5ErkJggg==);
-        background-position: bottom;
-        background-repeat: repeat-x;
-      }
-    </style>
 </head>
 <body>
   <div id="cme_toolbox" class="toolbar-container"></div>
-  <textarea id="editor1" name="editor1"></textarea>
+  <div id="editorContainer">
+    <textarea id="editor1" name="editor1"></textarea>
+    <div id="previewContainer"><div id="preview"></div></div>
+  </div>
 </body>
 </html>
 

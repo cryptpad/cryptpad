@@ -129,6 +129,24 @@ types of messages:
             return sendMsg(ctx, data, cb);
         };
 
+        send.unauthenticated = function (type, msg, cb) {
+            if (!ctx.connected) {
+                return void window.setTimeout(function () {
+                    cb('DISCONNECTED');
+                });
+            }
+
+            // construct an unsigned message
+            var data = [null, edPublicKey, null, type, msg];
+            if (ctx.cookie && ctx.cookie.join) {
+                data[2] = ctx.cookie.join('|');
+            } else {
+                data[2] = ctx.cookie;
+            }
+
+            return sendMsg(ctx, data, cb);
+        };
+
         network.on('message', function (msg) {
             onMsg(ctx, msg);
         });

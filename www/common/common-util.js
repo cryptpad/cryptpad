@@ -21,7 +21,7 @@ define([], function () {
             .replace(/ +$/, "")
             .split(" ");
         var byteString = String.fromCharCode.apply(null, hexArray);
-        return window.btoa(byteString).replace(/\//g, '-').slice(0,-2);
+        return window.btoa(byteString).replace(/\//g, '-').replace(/=+$/, '');
     };
 
     Util.base64ToHex = function (b64String) {
@@ -81,12 +81,58 @@ define([], function () {
             .replace(/_+/g, '_');
     };
 
+    var oneKilobyte = 1024;
+    var oneMegabyte = 1024 * oneKilobyte;
+    var oneGigabyte = 1024 * oneMegabyte;
+
+    Util.bytesToGigabytes = function (bytes) {
+        return Math.ceil(bytes / oneGigabyte * 100) / 100;
+    };
+
     Util.bytesToMegabytes = function (bytes) {
-        return Math.floor((bytes / (1024 * 1024) * 100)) / 100;
+        return Math.ceil(bytes / oneMegabyte * 100) / 100;
     };
 
     Util.bytesToKilobytes = function (bytes) {
-        return Math.floor(bytes / 1024 * 100) / 100;
+        return Math.ceil(bytes / oneKilobyte * 100) / 100;
+    };
+
+    Util.magnitudeOfBytes = function (bytes) {
+        if (bytes >= oneGigabyte) { return 'GB'; }
+        else if (bytes >= oneMegabyte) { return 'MB'; }
+    };
+
+    Util.fetch = function (src, cb) {
+        var done = false;
+        var CB = function (err, res) {
+            if (done) { return; }
+            done = true;
+            cb(err, res);
+        };
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", src, true);
+        xhr.responseType = "arraybuffer";
+        xhr.onload = function () {
+            if (/^4/.test(''+this.status)) {
+                return CB('XHR_ERROR');
+            }
+            return void CB(void 0, new Uint8Array(xhr.response));
+        };
+        xhr.send(null);
+    };
+
+    Util.throttle = function (f, ms) {
+        var to;
+        var g = function () {
+            window.clearTimeout(to);
+            to = window.setTimeout(f, ms);
+        };
+        return g;
+    };
+
+    Util.createRandomInteger = function () {
+        return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
     };
 
     return Util;

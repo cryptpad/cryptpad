@@ -34,6 +34,7 @@ define(function () {
     out.error = "Error";
     out.saved = "Saved";
     out.synced = "Everything is saved";
+    out.deleted = "Pad deleted from your CryptDrive";
 
     out.disconnected = 'Disconnected';
     out.synchronizing = 'Synchronizing';
@@ -53,17 +54,35 @@ define(function () {
 
     out.language = "Language";
 
+    out.comingSoon = "Coming soon...";
+
+    out.newVersion = '<b>CryptPad has been updated!</b><br>' +
+                     'Check out what\'s new in the latest version:<br>'+
+                     '<a href="https://github.com/xwiki-labs/cryptpad/releases/tag/{0}" target="_blank">Release notes for CryptPad {0}</a>';
+
     out.upgrade = "Upgrade";
     out.upgradeTitle = "Upgrade your account to increase the storage limit";
+
+    out.upgradeAccount = "Upgrade account";
     out.MB = "MB";
+    out.GB = "GB";
+    out.KB = "KB";
+
+    out.supportCryptpad = "Support CryptPad";
+
+    out.formattedMB = "{0} MB";
+    out.formattedGB = "{0} GB";
+    out.formattedKB = "{0} KB";
 
     out.greenLight = "Everything is working fine";
     out.orangeLight = "Your slow connection may impact your experience";
     out.redLight = "You are disconnected from the session";
 
     out.pinLimitReached = "You've reached your storage limit";
-    out.pinLimitReachedAlert = "You've reached your storage limit. New pads won't be stored in your CryptDrive.<br>" +
-        "To fix this problem, you can either remove pads from your CryptDrive (including the trash) or subscribe to a premium offer to increase your limit.";
+    out.updated_0_pinLimitReachedAlert = "You've reached your storage limit. New pads won't be stored in your CryptDrive.<br>" +
+        'You can either remove pads from your CryptDrive or <a href="https://accounts.cryptpad.fr/#!on={0}" target="_blank">subscribe to a premium offer</a> to increase your limit.';
+    out.pinLimitReachedAlert = out.updated_0_pinLimitReachedAlert;
+    out.pinLimitReachedAlertNoAccounts = out.pinLimitReached;
     out.pinLimitNotPinned = "You've reached your storage limit.<br>"+
                             "This pad is not stored in your CryptDrive.";
     out.pinLimitDrive = "You've reached your storage limit.<br>" +
@@ -96,6 +115,8 @@ define(function () {
     out.templateSaved = "Template saved!";
     out.selectTemplate = "Select a template or press escape";
 
+    out.previewButtonTitle = "Display or hide the Markdown preview mode";
+
     out.presentButtonTitle = "Enter presentation mode";
     out.presentSuccess = 'Hit ESC to exit presentation mode';
 
@@ -109,6 +130,7 @@ define(function () {
     out.printDate = "Display the date";
     out.printTitle = "Display the pad title";
     out.printCSS = "Custom style rules (CSS):";
+    out.printTransition = "Enable transition animations";
 
     out.slideOptionsTitle = "Customize your slides";
     out.slideOptionsButton = "Save (enter)";
@@ -177,6 +199,11 @@ define(function () {
     out.poll_titleHint = "Title";
     out.poll_descriptionHint = "Describe your poll, and use the 'publish' button when you're done. Anyone with the link can change the description, but this is discouraged.";
 
+    out.poll_remove = "Remove";
+    out.poll_edit = "Edit";
+    out.poll_locked = "Locked";
+    out.poll_unlocked = "Unlocked";
+
     // Canvas
     out.canvas_clear = "Clear";
     out.canvas_delete = "Delete selection";
@@ -224,14 +251,22 @@ define(function () {
     out.fm_info_root = "Create as many nested folders here as you want to sort your files.";
     out.fm_info_unsorted = 'Contains all the files you\'ve visited that are not yet sorted in "Documents" or moved to the "Trash".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
     out.fm_info_template = 'Contains all the pads stored as templates and that you can re-use when you create a new pad.';
-    out.fm_info_trash = 'Files deleted from the trash are also removed from "All files" and it is impossible to recover them from the file manager.'; // Same here for "All files" and "out.fm_filesDataName"
+    out.updated_0_fm_info_trash = 'Empty your trash to free space in your CryptDrive.';
+    out.fm_info_trash = out.updated_0_fm_info_trash;
     out.fm_info_allFiles = 'Contains all the files from "Documents", "Unsorted" and "Trash". You can\'t move or remove files from here.'; // Same here
+    out.fm_info_anonymous = 'You are not logged in so these pads may be deleted (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">find out why</a>). ' +
+                            '<a href="/register/">Sign up</a> or <a href="/login/">Log in</a> to keep them alive.';
     out.fm_alert_backupUrl = "Backup link for this drive.<br>" +
                              "It is <strong>highly recommended</strong> that you keep ip for yourself only.<br>" +
                              "You can use it to retrieve all your files in case your browser memory got erased.<br>" +
                              "Anybody with that link can edit or remove all the files in your file manager.<br>";
+    out.fm_alert_anonymous = "Hello there, you are currently using CryptPad anonymously, that's ok but your pads may be deleted after a period of " +
+                             "inactivity. We have disabled advanced features of the drive for anonymous users because we want to be clear that it is " +
+                             'not a safe place to store things. You can <a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">read more</a> about ' +
+                             'why we are doing this and why you really should <a href="/register/">Sign up</a> and <a href="/login/">Log in</a>.';
     out.fm_backup_title = 'Backup link';
     out.fm_nameFile = 'How would you like to name that file?';
+    out.fm_error_cantPin = "Internal server error. Please reload the page and try again.";
     // File - Context menu
     out.fc_newfolder = "New folder";
     out.fc_rename = "Rename";
@@ -276,6 +311,8 @@ define(function () {
     out.login_invalUser = 'Username required';
     out.login_invalPass = 'Password required';
     out.login_unhandledError = 'An unexpected error occurred :(';
+
+    out.login_notRegistered = 'Not registered?';
 
     out.register_importRecent = "Import pad history (Recommended)";
     out.register_acceptTerms = "I accept <a href='/terms.html'>the terms of service</a>";
@@ -339,6 +376,23 @@ define(function () {
     out.settings_logoutEverywhere = "Log out of all other web sessions";
     out.settings_logoutEverywhereConfirm = "Are you sure? You will need to log in with all your devices.";
 
+    out.upload_serverError = "Server Error: unable to upload your file at this time.";
+    out.upload_uploadPending = "You already have an upload in progress. Cancel it and upload your new file?";
+    out.upload_success = "Your file ({0}) has been successfully uploaded and added to your drive.";
+    out.upload_notEnoughSpace = "There is not enough space for this file in your CryptDrive.";
+    out.upload_tooLarge = "This file exceeds the maximum upload size.";
+    out.upload_choose = "Choose a file";
+    out.upload_pending = "Pending";
+    out.upload_cancelled = "Cancelled";
+    out.upload_name = "File name";
+    out.upload_size = "Size";
+    out.upload_progress = "Progress";
+    out.upload_mustLogin = "You must be logged in to upload files";
+    out.download_button = "Decrypt & Download";
+
+    // general warnings
+    out.warn_notPinned = "This pad is not in anyone's CryptDrive. It will expire after 3 months. <a href='/about.html#pinning'>Learn more...</a>";
+
     // index.html
 
 
@@ -355,6 +409,7 @@ define(function () {
     out.main_zeroKnowledge = 'Zero Knowledge';
     out.main_zeroKnowledge_p = "You don't have to trust that we <em>won't</em> look at your pads, with CryptPad's revolutionary Zero Knowledge Technology we <em>can't</em>. Learn more about how we protect your <a href=\"/privacy.html\" title='Privacy'>Privacy and Security</a>.";
     out.main_writeItDown = 'Write it down';
+
     out.main_writeItDown_p = "The greatest projects come from the smallest ideas. Take down the moments of inspiration and unexpected ideas because you never know which one might be a breakthrough.";
     out.main_share = 'Share the link, share the pad';
     out.main_share_p = "Grow your ideas together: conduct efficient meetings, collaborate on TODO lists and make quick presentations with all your friends and all your devices.";
@@ -438,11 +493,10 @@ define(function () {
     ].join('');
 
     out.codeInitialState = [
-        '/*\n',
-        '   This is the CryptPad Zero Knowledge collaborative code editor.\n',
-        '   What you type here is encrypted so only people who have the link can access it.\n',
-        '   You can choose the programming language to highlight and the UI color scheme in the upper right.\n',
-        '*/'
+        '# CryptPad\'s Zero Knowledge collaborative code editor\n',
+        '\n',
+        '* What you type here is encrypted so only people who have the link can access it.\n',
+        '* You can choose the programming language to highlight and the UI color scheme in the upper right.'
     ].join('');
 
     out.slideInitialState = [

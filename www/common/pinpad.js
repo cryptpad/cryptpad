@@ -77,6 +77,13 @@ define([
                     return;
                 }
                 rpc.send('RESET', channels, function (e, response) {
+                    if (e) {
+                        return void cb(e);
+                    }
+                    if (!response.length) {
+                        console.log(response);
+                        return void cb('INVALID_RESPONSE');
+                    }
                     cb(e, response[0]);
                 });
             };
@@ -118,6 +125,63 @@ define([
                     } else {
                         cb('INVALID_RESPONSE');
                     }
+                });
+            };
+
+            // Update the limit value for all the users and return the limit for your publicKey
+            exp.updatePinLimits = function (cb) {
+                rpc.send('UPDATE_LIMITS', undefined, function (e, response) {
+                    if (e) { return void cb(e); }
+                    if (response && response.length && typeof(response[0]) === "number") {
+                        cb (void 0, response[0], response[1], response[2]);
+                    } else {
+                        cb('INVALID_RESPONSE');
+                    }
+                });
+            };
+            // Get the storage limit associated with your publicKey
+            exp.getLimit = function (cb) {
+                rpc.send('GET_LIMIT', undefined, function (e, response) {
+                    if (e) { return void cb(e); }
+                    if (response && response.length && typeof(response[0]) === "number") {
+                        cb (void 0, response[0], response[1], response[2]);
+                    } else {
+                        cb('INVALID_RESPONSE');
+                    }
+                });
+            };
+
+            exp.uploadComplete = function (cb) {
+                rpc.send('UPLOAD_COMPLETE', null, function (e, res) {
+                    if (e) { return void cb(e); }
+                    var id = res[0];
+                    if (typeof(id) !== 'string') {
+                        return void cb('INVALID_ID');
+                    }
+                    cb(void 0, id);
+                });
+            };
+
+            exp.uploadStatus = function (size, cb) {
+                if (typeof(size) !== 'number') {
+                    return void window.setTimeout(function () {
+                        cb('INVALID_SIZE');
+                    });
+                }
+                rpc.send('UPLOAD_STATUS', size, function (e, res) {
+                    if (e) { return void cb(e); }
+                    var pending = res[0];
+                    if (typeof(pending) !== 'boolean') {
+                        return void cb('INVALID_RESPONSE');
+                    }
+                    cb(void 0, pending);
+                });
+            };
+
+            exp.uploadCancel = function (cb) {
+                rpc.send('UPLOAD_CANCEL', void 0, function (e) {
+                    if (e) { return void cb(e); }
+                    cb();
                 });
             };
 

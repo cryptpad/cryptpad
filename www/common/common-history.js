@@ -24,7 +24,6 @@ define([
 
         var wcId = common.hrefToHexChannelId(config.href || window.location.href);
 
-        console.log(wcId);
         var createRealtime = function () {
             return ChainPad.create({
                 userName: 'history',
@@ -36,8 +35,8 @@ define([
         };
         var realtime = createRealtime();
 
-        var hash = config.href ? common.parsePadUrl(config.href).hash : undefined;
-        var secret = common.getSecrets(hash);
+        var parsed = config.href ? common.parsePadUrl(config.href) : {};
+        var secret = common.getSecrets(parsed.type, parsed.hash);
         var crypto = Crypto.createEncryptor(secret.keys);
 
         var to = window.setTimeout(function () {
@@ -80,11 +79,32 @@ define([
         if (History.loading) { return void console.error("History is already being loaded..."); }
         History.loading = true;
         var $toolbar = config.$toolbar;
-        var noFunc = function () {};
-        var render = config.onRender || noFunc;
-        var onClose = config.onClose || noFunc;
-        var onRevert = config.onRevert || noFunc;
-        var onReady = config.onReady || noFunc;
+
+        if (!config.applyVal || !config.setHistory || !config.onLocal || !config.onRemote) {
+            throw new Error("Missing config element: applyVal, onLocal, onRemote, setHistory");
+        }
+
+        // config.setHistory(bool, bool)
+        // - bool1: history value
+        // - bool2: reset old content?
+        var render = function (val) {
+            if (typeof val === "undefined") { return; }
+            try {
+                config.applyVal(val);
+            } catch (e) {
+                // Probably a parse error
+                console.error(e);
+            }
+        };
+        var onClose = function () { config.setHistory(false, true); };
+        var onRevert = function () {
+            config.setHistory(false, false);
+            config.onLocal();
+            config.onRemote();
+        };
+        var onReady = function () {
+            config.setHistory(true);
+        };
 
         var Messages = common.Messages;
 

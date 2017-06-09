@@ -37,7 +37,6 @@ define([
         return JSONSortify(obj);
     };
 
-    var LIMIT_REFRESH_RATE = 30000; // milliseconds
     var E_OVER_LIMIT = 'E_OVER_LIMIT';
 
     var SEARCH = "search";
@@ -205,7 +204,6 @@ define([
         var $trashTreeContextMenu = $iframe.find("#trashTreeContextMenu");
         var $trashContextMenu = $iframe.find("#trashContextMenu");
 
-
         // TOOLBAR
 
         /* add a "change username" button */
@@ -227,10 +225,19 @@ define([
         if (AppConfig.enableTemplates) { displayedCategories.push(TEMPLATE); }
         if (isWorkgroup()) { displayedCategories = [ROOT, TRASH, SEARCH]; }
 
+        if (!APP.loggedIn) {
+            displayedCategories = [FILES_DATA];
+            currentPath = [FILES_DATA];
+            $tree.hide();
+            if (Object.keys(files.root).length && !proxy.anonymousAlert) {
+                Cryptpad.alert(Messages.fm_alert_anonymous, null, true);
+                proxy.anonymousAlert = true;
+            }
+        }
+
         if (!APP.readOnly) {
             setEditable(true);
         }
-
         var appStatus = {
             isReady: true,
             _onReady: [],
@@ -371,6 +378,7 @@ define([
             e.stopPropagation();
         });
 
+        // Arrow keys to modify the selection
         $(ifrw).keydown(function (e) {
             var $searchBar = $tree.find('#searchInput');
             if ($searchBar.is(':focus') && $searchBar.val()) { return; }
@@ -381,6 +389,7 @@ define([
             if (e.ctrlKey) { ev.ctrlKey = true; }
             if (e.shiftKey) { ev.shiftKey = true; }
             var click = function (el) {
+                if (!el) { return; }
                 module.onElementClick(ev, $(el));
             };
 
@@ -402,6 +411,7 @@ define([
 
             // [Left, Up, Right, Down]
             if ([37, 38, 39, 40].indexOf(e.which) === -1) { return; }
+            e.preventDefault();
 
             var $selection = $content.find('.element.selected');
             if ($selection.length === 0) { return void click($elements.first()[0]); }
@@ -523,6 +533,10 @@ define([
                     placeholder: name,
                     value: name
                 }).data('path', path);
+
+                // Stop propagation on keydown to avoid issues with arrow keys
+                $input.on('keydown', function (e) { e.stopPropagation(); });
+
                 $input.on('keyup', function (e) {
                     if (e.which === 13) {
                         removeInput(true);
@@ -597,7 +611,6 @@ define([
                     }
                     hasFolder = true;
                     hide.push($menu.find('a.open_ro'));
-                    // TODO: folder properties in the future?
                     hide.push($menu.find('a.properties'));
                 }
                 // If we're in the trash, hide restore and properties for non-root elements
@@ -711,6 +724,21 @@ define([
             updatePathSize();
         };
 
+        var scrollTo = function ($element) {
+            // Current scroll position
+            var st = $content.scrollTop();
+            // Block height
+            var h = $content.height();
+            // Current top position of the element relative to the scroll position
+            var pos = Math.round($element.offset().top - $content.position().top);
+            // Element height
+            var eh = $element.outerHeight();
+            // New scroll value
+            var v = st + pos + eh - h;
+            // If the element is completely visile, don't change the scroll position
+            if (pos+eh <= h && pos >= 0) { return; }
+            $content.scrollTop(v);
+        };
         // Add the "selected" class to the "li" corresponding to the clicked element
         var onElementClick = module.onElementClick = function (e, $element) {
             // If "Ctrl" is pressed, do not remove the current selection
@@ -726,6 +754,7 @@ define([
                 log(Messages.fm_selectError);
                 return;
             }
+            scrollTo($element);
             // Add the selected class to the clicked / right-clicked element
             // Remove the class if it already has it
             // If ctrlKey, add to the selection
@@ -766,6 +795,7 @@ define([
 
         var displayMenu = function (e, $menu) {
             $menu.css({ display: "block" });
+            if (APP.mobile()) { return; }
             var h = $menu.outerHeight();
             var w = $menu.outerWidth();
             var wH = window.innerHeight;
@@ -1079,7 +1109,7 @@ define([
             var type = Messages.type[hrefData.type] || hrefData.type;
             var $title = $('<span>', {'class': 'title listElement', title: data.title}).text(data.title);
             var $type = $('<span>', {'class': 'type listElement', title: type}).text(type);
-            if (hrefData.hash && Cryptpad.parseHash(hrefData.hash) && Cryptpad.parseHash(hrefData.hash).mode === 'view') {
+            if (hrefData.hashData && hrefData.hashData.mode === 'view') {
                 $type.append(' (' + Messages.readonly+ ')');
             }
             var $adate = $('<span>', {'class': 'atime listElement', title: getDate(data.atime)}).text(getDate(data.atime));
@@ -1265,6 +1295,12 @@ define([
                 default:
                     msg = undefined;
             }
+            if (!APP.loggedIn) {
+                msg = Messages.fm_info_anonymous;
+                $box.html(msg);
+                $box.addClass('noclose');
+                return $box;
+            }
             if (!msg || Cryptpad.getLSAttribute('hide-info-' + path[0]) === '1') {
                 $box.hide();
             } else {
@@ -1334,6 +1370,10 @@ define([
             }
             AppConfig.availablePadTypes.forEach(function (type) {
                 if (type === 'drive') { return; }
+                if (!Cryptpad.isLoggedIn() && AppConfig.registeredOnlyTypes &&
+                    AppConfig.registeredOnlyTypes.indexOf(type) !== -1) {
+                    return;
+                }
                 var attributes = {
                     'class': 'newdoc',
                     'data-type': type,
@@ -1361,8 +1401,11 @@ define([
             // Handlers
             if (isInRoot) {
                 var onCreated = function (err, info) {
-                    if (err && err === E_OVER_LIMIT) {
-                        return void Cryptpad.alert(Messages.pinLimitDrive, null, true);
+                    if (err) {
+                        if (err === E_OVER_LIMIT) {
+                            return void Cryptpad.alert(Messages.pinLimitDrive, null, true);
+                        }
+                        return void Cryptpad.alert(Messages.fm_error_cantPin);
                     }
                     module.newFolder = info.newPath;
                     refresh();
@@ -1372,6 +1415,12 @@ define([
                 });
                 $block.find('a.newdoc').click(function () {
                     var type = $(this).attr('data-type') || 'pad';
+                    // We can't create a hash for files before uploading the file
+                    if (type === 'file') { // TODO: remove when filename are gone?
+                        sessionStorage[Cryptpad.newPadPathKey] = filesOp.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
+                        window.open('/' + type + '/');
+                        return;
+                    }
                     var name = Cryptpad.getDefaultName({type: type});
                     filesOp.addFile(currentPath, name, type, onCreated);
                 });
@@ -1732,7 +1781,8 @@ define([
                     if (parentPath) {
                         $a = $('<a>').text(Messages.fm_openParent).click(function (e) {
                             e.preventDefault();
-                            parentPath.pop();
+                            if (filesOp.isInTrashRoot(parentPath)) { parentPath = [TRASH]; }
+                            else { parentPath.pop(); }
                             module.displayDirectory(parentPath);
                         });
                     }
@@ -1784,13 +1834,20 @@ define([
                 displayDirectory(parentPath, true);
                 return;
             }
+            if (!isSearch) { delete APP.Search.oldLocation; }
 
             module.resetTree();
 
-            // in history mode we want to focus the version number input
-            if (!history.isHistoryMode) { $tree.find('#searchInput').focus(); }
-            $tree.find('#searchInput')[0].selectionStart = getSearchCursor();
-            $tree.find('#searchInput')[0].selectionEnd = getSearchCursor();
+            if (displayedCategories.indexOf(SEARCH) !== -1) {
+                // in history mode we want to focus the version number input
+                if (!history.isHistoryMode && !APP.mobile()) {
+                    var st = $tree.scrollTop() || 0;
+                    $tree.find('#searchInput').focus();
+                    $tree.scrollTop(st);
+                }
+                $tree.find('#searchInput')[0].selectionStart = getSearchCursor();
+                $tree.find('#searchInput')[0].selectionEnd = getSearchCursor();
+            }
 
             if (!isWorkgroup()) {
                 setLastOpenedFolder(path);
@@ -2062,6 +2119,7 @@ define([
                     if (!filesOp.comparePath(newLocation, currentPath.slice())) { displayDirectory(newLocation); }
                     return;
                 }
+                if (APP.mobile()) { return; }
                 search.to = window.setTimeout(function () {
                     if (!isInSearchTmp) { search.oldLocation = currentPath.slice(); }
                     var newLocation = [SEARCH, $input.val()];
@@ -2074,12 +2132,14 @@ define([
         };
 
         module.resetTree = function () {
+            var s = $tree.scrollTop() || 0;
             $tree.html('');
             if (displayedCategories.indexOf(SEARCH) !== -1) { createSearch($tree); }
             if (displayedCategories.indexOf(ROOT) !== -1) { createTree($tree, [ROOT]); }
             if (displayedCategories.indexOf(TEMPLATE) !== -1) { createTemplate($tree, [TEMPLATE]); }
             if (displayedCategories.indexOf(FILES_DATA) !== -1) { createAllFiles($tree, [FILES_DATA]); }
             if (displayedCategories.indexOf(TRASH) !== -1) { createTrash($tree, [TRASH]); }
+            $tree.scrollTop(s);
         };
 
         module.hideMenu = function () {
@@ -2124,9 +2184,9 @@ define([
         var getReadOnlyUrl = APP.getRO = function (href) {
             if (!filesOp.isFile(href)) { return; }
             var i = href.indexOf('#') + 1;
-            var hash = href.slice(i);
+            var parsed = Cryptpad.parsePadUrl(href);
             var base = href.slice(0, i);
-            var hrefsecret = Cryptpad.getSecrets(hash);
+            var hrefsecret = Cryptpad.getSecrets(parsed.type, parsed.hash);
             if (!hrefsecret.keys) { return; }
             var viewHash = Cryptpad.getViewHashFromKeys(hrefsecret.channel, hrefsecret.keys);
             return base + viewHash;
@@ -2156,15 +2216,18 @@ define([
                 .click(function () { $(this).select(); })
                 .appendTo($d);
             }
-            var roLink = ro ? base + el : getReadOnlyUrl(base + el);
-            if (roLink) {
-                $('<label>', {'for': 'propROLink'}).text(Messages.viewShare).appendTo($d);
-                $('<input>', {'id': 'propROLink', 'readonly': 'readonly', 'value': roLink})
-                .click(function () { $(this).select(); })
-                .appendTo($d);
+            var parsed = Cryptpad.parsePadUrl(el);
+            if (parsed.hashData && parsed.hashData.type === 'pad') {
+                var roLink = ro ? base + el : getReadOnlyUrl(base + el);
+                if (roLink) {
+                    $('<label>', {'for': 'propROLink'}).text(Messages.viewShare).appendTo($d);
+                    $('<input>', {'id': 'propROLink', 'readonly': 'readonly', 'value': roLink})
+                    .click(function () { $(this).select(); })
+                    .appendTo($d);
+                }
             }
 
-            if (Cryptpad.isLoggedIn() && AppConfig.enablePinning) {
+            if (APP.loggedIn && AppConfig.enablePinning) {
                 // check the size of this file...
                 Cryptpad.getFileSize(el, function (e, bytes) {
                     if (e) {
@@ -2279,6 +2342,18 @@ define([
             else if ($(this).hasClass('delete')) {
                 var pathsList = [];
                 paths.forEach(function (p) { pathsList.push(p.path); });
+                if (!APP.loggedIn) {
+                    var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [paths.length]);
+                    if (paths.length === 1) {
+                        msg = Messages.fm_removePermanentlyDialog;
+                    }
+                    Cryptpad.confirm(msg, function(res) {
+                        $(ifrw).focus();
+                        if (!res) { return; }
+                        filesOp.delete(pathsList, refresh);
+                    });
+                    return;
+                }
                 moveElements(pathsList, [TRASH], false, refresh);
             }
             else if ($(this).hasClass("properties")) {
@@ -2297,8 +2372,11 @@ define([
             e.stopPropagation();
             var path = $(this).data('path');
             var onCreated = function (err, info) {
-                if (err && err === E_OVER_LIMIT) {
+                if (err === E_OVER_LIMIT) {
                     return void Cryptpad.alert(Messages.pinLimitDrive, null, true);
+                }
+                if (err) {
+                    return void Cryptpad.alert(Messages.fm_error_cantPin);
                 }
                 module.newFolder = info.newPath;
                 refresh();
@@ -2383,12 +2461,12 @@ define([
         $appContainer.on('mouseup', function (e) {
             if (sel.down) { return; }
             if (e.which !== 1) { return ; }
-            removeSelected(e);
+            module.hideMenu(e);
+            //removeSelected(e);
         });
         $appContainer.on('click', function (e) {
             if (e.which !== 1) { return ; }
             removeInput();
-            module.hideMenu(e);
             hideNewButton();
         });
         $appContainer.on('drag drop', function (e) {
@@ -2401,7 +2479,9 @@ define([
         $appContainer.on('keydown', function (e) {
             // "Del"
             if (e.which === 46) {
-                if (filesOp.isPathIn(currentPath, [FILES_DATA])) { return; } // We can't remove elements directly from filesData
+                if (filesOp.isPathIn(currentPath, [FILES_DATA]) && APP.loggedIn) {
+                    return; // We can't remove elements directly from filesData
+                }
                 var $selected = $iframe.find('.selected');
                 if (!$selected.length) { return; }
                 var paths = [];
@@ -2411,7 +2491,7 @@ define([
                     paths.push($(elmt).data('path'));
                 });
                 // If we are in the trash or anon pad or if we are holding the "shift" key, delete permanently,
-                if (isTrash || e.shiftKey) {
+                if (!APP.loggedIn || isTrash || e.shiftKey) {
                     var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [paths.length]);
                     if (paths.length === 1) {
                         msg = Messages.fm_removePermanentlyDialog;
@@ -2529,7 +2609,6 @@ define([
         setEditable(!bool);
         if (!bool && update) {
             history.onLeaveHistory();
-            //init(); //TODO real proxy here
         }
     };
 
@@ -2566,7 +2645,7 @@ define([
     // don't initialize until the store is ready.
     Cryptpad.ready(function () {
         Cryptpad.reportAppUsage();
-        if (!Cryptpad.isLoggedIn()) { Cryptpad.feedback('ANONYMOUS_DRIVE'); }
+        if (!APP.loggedIn) { Cryptpad.feedback('ANONYMOUS_DRIVE'); }
         APP.$bar = $iframe.find('#toolbar');
 
         var storeObj = Cryptpad.getStore().getProxy && Cryptpad.getStore().getProxy().proxy ? Cryptpad.getStore().getProxy() : undefined;
@@ -2578,7 +2657,7 @@ define([
         }
 
         var hash = window.location.hash.slice(1) || Cryptpad.getUserHash() || localStorage.FS_hash;
-        var secret = Cryptpad.getSecrets(hash);
+        var secret = Cryptpad.getSecrets('drive', hash);
         var readOnly = APP.readOnly = secret.keys && !secret.keys.editKeyStr;
 
         var listmapConfig = module.config = {
@@ -2643,74 +2722,30 @@ define([
             }
 
             /* add the usage */
-            if (AppConfig.enablePinLimit) {
-                var todo = function (err, state, data) {
-                    $leftside.html('');
-                    if (!data) {
-                        return void window.setTimeout(function () {
-                            Cryptpad.isOverPinLimit(todo);
-                        }, LIMIT_REFRESH_RATE);
-                    }
-                    var usage = data.usage;
-                    var limit = data.limit;
-                    var unit = Messages.MB;
-                    var $limit = $('<span>', {'class': 'cryptpad-drive-limit'}).appendTo($leftside);
-                    var quota = usage/limit;
-                    var width = Math.floor(Math.min(quota, 1)*$limit.width());
-                    var $usage = $('<span>', {'class': 'usage'}).css('width', width+'px');
-
-                    if (quota >= 0.8) {
-                        $('<button>', {
-                            'class': 'upgrade buttonSuccess',
-                            title: Messages.upgradeTitle
-                        }).text(Messages.upgrade).click(function () {
-                            // TODO
-                        }).appendTo($leftside);
-                    }
-
-                    if (quota < 0.8) { $usage.addClass('normal'); }
-                    else if (quota < 1) { $usage.addClass('warning'); }
-                    else { $usage.addClass('above'); }
-                    var $text = $('<span>', {'class': 'usageText'});
-                    $text.text(usage + ' / ' + limit + ' ' + unit);
-                    $limit.append($usage).append($text);
-                    window.setTimeout(function () {
-                        Cryptpad.isOverPinLimit(todo);
-                    }, LIMIT_REFRESH_RATE);
-                };
-                Cryptpad.isOverPinLimit(todo);
-            }
+            Cryptpad.createUsageBar(function (err, $limitContainer) {
+                if (err) { return void logError(err); }
+                $leftside.html('');
+                $leftside.append($limitContainer);
+            });
 
             /* add a history button */
-            var histConfig = {};
-            histConfig.onRender = function (val) {
-                if (typeof val === "undefined") { return; }
-                try {
+            var histConfig = {
+                onLocal: function () {
+                    proxy.drive = history.currentObj.drive;
+                },
+                onRemote: function () {},
+                setHistory: setHistory,
+                applyVal: function (val) {
                     var obj = JSON.parse(val || '{}');
                     history.currentObj = obj;
                     history.onEnterHistory(obj);
-                } catch (e) {
-                    // Probably a parse error
-                    logError(e);
-                }
+                },
+                $toolbar: APP.$bar,
+                href: window.location.origin + window.location.pathname + APP.hash
             };
-            histConfig.onClose = function () {
-                // Close button clicked
-                setHistory(false, true);
-            };
-            histConfig.onRevert = function () {
-                // Revert button clicked
-                setHistory(false, false);
-                proxy.drive = history.currentObj.drive;
-            };
-            histConfig.onReady = function () {
-                // Called when the history is loaded and the UI displayed
-                setHistory(true);
-            };
-            histConfig.$toolbar = APP.$bar;
-            histConfig.href = window.location.origin + window.location.pathname + APP.hash;
             var $hist = Cryptpad.createButton('history', true, {histConfig: histConfig});
             $rightside.append($hist);
+            if (!APP.loggedIn) { $hist.hide(); }
 
             if (!readOnly && !APP.loggedIn) {
                 var $backupButton = Cryptpad.createButton('', true).removeClass('fa').removeClass('fa-question');

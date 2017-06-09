@@ -11,14 +11,11 @@ define([
     '/bower_components/textpatcher/TextPatcher.js',
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
-    '/common/visible.js',
-    '/common/notify.js',
     '/pad/links.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/diff-dom/diffDOM.js'
 ], function ($, Crypto, realtimeInput, Hyperjson,
-    Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad, Cryptget,
-    Visible, Notify, Links) {
+    Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad, Cryptget, Links) {
     var saveAs = window.saveAs;
     var Messages = Cryptpad.Messages;
 
@@ -105,8 +102,6 @@ define([
         editor.on('instanceReady', Links.addSupportForOpeningLinksInNewTab(Ckeditor));
         editor.on('instanceReady', function () {
             var $bar = $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox');
-            var parsedHash = Cryptpad.parsePadUrl(window.location.href);
-            var defaultName = Cryptpad.getDefaultName(parsedHash);
 
             var isHistoryMode = false;
 
@@ -277,7 +272,10 @@ define([
             };
 
             var initializing = true;
+
+            var Title;
             var UserList;
+            var Metadata;
 
             var getHeadingText = function () {
                 var text;
@@ -288,14 +286,6 @@ define([
                         return true;
                     }
                 })) { return text; }
-            };
-
-            var suggestName = function (fallback) {
-                if (document.title === defaultName) {
-                    return getHeadingText() || fallback || "";
-                } else {
-                    return document.title || getHeadingText() || defaultName;
-                }
             };
 
             var DD = new DiffDom(diffOptions);
@@ -316,11 +306,11 @@ define([
                 hjson[3] = {
                     metadata: {
                         users: UserList.userData,
-                        defaultTitle: defaultName
+                        defaultTitle: Title.defaultTitle
                     }
                 };
                 if (!initializing) {
-                    hjson[3].metadata.title = document.title;
+                    hjson[3].metadata.title = Title.title;
                 } else if (Cryptpad.initialName && !hjson[3].metadata.title) {
                     hjson[3].metadata.title = Cryptpad.initialName;
                 }
@@ -369,68 +359,6 @@ define([
                 }
             };
 
-            var updateTitle = function (newTitle) {
-                if (newTitle === document.title) { return; }
-                // Change the title now, and set it back to the old value if there is an error
-                var oldTitle = document.title;
-                document.title = newTitle;
-                Cryptpad.renamePad(newTitle, function (err, data) {
-                    if (err) {
-                        console.log("Couldn't set pad title");
-                        console.error(err);
-                        document.title = oldTitle;
-                        return;
-                    }
-                    document.title = data;
-                    $bar.find('.' + Toolbar.constants.title).find('span.title').text(data);
-                    $bar.find('.' + Toolbar.constants.title).find('input').val(data);
-                });
-            };
-
-            var updateDefaultTitle = function (defaultTitle) {
-                defaultName = defaultTitle;
-                $bar.find('.' + Toolbar.constants.title).find('input').attr("placeholder", defaultName);
-            };
-
-            var updateMetadata = function(shjson) {
-                // Extract the user list (metadata) from the hyperjson
-                if (!shjson || typeof (shjson) !== "string") { updateTitle(defaultName); return; }
-                var hjson = JSON.parse(shjson);
-                var peerMetadata = hjson[3];
-                var titleUpdated = false;
-                if (peerMetadata && peerMetadata.metadata) {
-                    if (peerMetadata.metadata.users) {
-                        var userData = peerMetadata.metadata.users;
-                        // Update the local user data
-                        UserList.addToUserData(userData);
-                    }
-                    if (peerMetadata.metadata.defaultTitle) {
-                        updateDefaultTitle(peerMetadata.metadata.defaultTitle);
-                    }
-                    if (typeof peerMetadata.metadata.title !== "undefined") {
-                        updateTitle(peerMetadata.metadata.title || defaultName);
-                        titleUpdated = true;
-                    }
-                }
-                if (!titleUpdated) {
-                    updateTitle(defaultName);
-                }
-            };
-
-            var unnotify = function () {
-                if (module.tabNotification &&
-                    typeof(module.tabNotification.cancel) === 'function') {
-                    module.tabNotification.cancel();
-                }
-            };
-
-            var notify = function () {
-                if (Visible.isSupported() && !Visible.currently()) {
-                    unnotify();
-                    module.tabNotification = Notify.tab(1000, 10);
-                }
-            };
-
             realtimeOptions.onRemote = function () {
                 if (initializing) { return; }
                 if (isHistoryMode) { return; }
@@ -443,7 +371,7 @@ define([
                 cursor.update();
 
                 // Update the user list (metadata) from the hyperjson
-                updateMetadata(shjson);
+                Metadata.update(shjson);
 
                 var newInner = JSON.parse(shjson);
                 var newSInner;
@@ -488,7 +416,7 @@ define([
                 // Notify only when the content has changed, not when someone has joined/left
                 var oldSInner = stringify(JSON.parse(oldShjson)[2]);
                 if (newSInner && newSInner !== oldSInner) {
-                    notify();
+                    Cryptpad.notify();
                 }
             };
 
@@ -502,7 +430,7 @@ define([
 
             var exportFile = function () {
                 var html = getHTML();
-                var suggestion = suggestName('cryptpad-document');
+                var suggestion = Title.suggestTitle('cryptpad-document');
                 Cryptpad.prompt(Messages.exportPrompt,
                     Cryptpad.fixFileName(suggestion) + '.html', function (filename) {
                     if (!(typeof(filename) === 'string' && filename)) { return; }
@@ -516,27 +444,22 @@ define([
                 realtimeOptions.onLocal();
             };
 
-            var renameCb = function (err, title) {
-                if (err) { return; }
-                document.title = title;
-                editor.fire('change');
-            };
-
             realtimeOptions.onInit = function (info) {
                 UserList = Cryptpad.createUserList(info, realtimeOptions.onLocal, Cryptget, Cryptpad);
 
+                var titleCfg = { getHeadingText: getHeadingText };
+                Title = Cryptpad.createTitle(titleCfg, realtimeOptions.onLocal, Cryptpad);
+
+                Metadata = Cryptpad.createMetadata(UserList, Title);
+
                 var configTb = {
-                    displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit'],
+                    displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit', 'upgrade'],
                     userList: UserList.getToolbarConfig(),
                     share: {
                         secret: secret,
                         channel: info.channel
                     },
-                    title: {
-                        onRename: renameCb,
-                        defaultName: defaultName,
-                        suggestName: suggestName
-                    },
+                    title: Title.getTitleConfig(),
                     common: Cryptpad,
                     readOnly: readOnly,
                     ifrw: ifrw,
@@ -545,6 +468,8 @@ define([
                     $container: $bar
                 };
                 toolbar = info.realtime.toolbar = Toolbar.create(configTb);
+
+                Title.setToolbar(toolbar);
 
                 var $rightside = toolbar.$rightside;
 
@@ -574,31 +499,13 @@ define([
                 }
 
                 /* add a history button */
-                var histConfig = {};
-                histConfig.onRender = function (val) {
-                    if (typeof val === "undefined") { return; }
-                    try {
-                        applyHjson(val || '["BODY",{},[]]');
-                    } catch (e) {
-                        // Probably a parse error
-                        console.error(e);
-                    }
+                var histConfig = {
+                    onLocal: realtimeOptions.onLocal,
+                    onRemote: realtimeOptions.onRemote,
+                    setHistory: setHistory,
+                    applyVal: function (val) { applyHjson(val || '["BODY",{},[]]'); },
+                    $toolbar: $bar
                 };
-                histConfig.onClose = function () {
-                    // Close button clicked
-                    setHistory(false, true);
-                };
-                histConfig.onRevert = function () {
-                    // Revert button clicked
-                    setHistory(false, false);
-                    realtimeOptions.onLocal();
-                    realtimeOptions.onRemote();
-                };
-                histConfig.onReady = function () {
-                    // Called when the history is loaded and the UI displayed
-                    setHistory(true);
-                };
-                histConfig.$toolbar = $bar;
                 var $hist = Cryptpad.createButton('history', true, {histConfig: histConfig});
                 $rightside.append($hist);
 
@@ -666,13 +573,7 @@ define([
                     applyHjson(shjson);
 
                     // Update the user list (metadata) from the hyperjson
-                    updateMetadata(shjson);
-
-                    if (Visible.isSupported()) {
-                        Visible.onChange(function (yes) {
-                            if (yes) { unnotify(); }
-                        });
-                    }
+                    Metadata.update(shjson);
 
                     if (!readOnly) {
                         var shjson2 = stringifyDOM(inner);
@@ -686,7 +587,7 @@ define([
                         }
                     }
                 } else {
-                    updateTitle(Cryptpad.initialName || defaultName);
+                    Title.updateTitle(Cryptpad.initialName || Title.defaultTitle);
                     documentBody.innerHTML = Messages.initialState;
                 }
 

@@ -1,32 +1,7 @@
 define([
     'jquery',
-    '/bower_components/marked/marked.min.js',
-    '/bower_components/diff-dom/diffDOM.js'
-],function ($, Marked) {
-    var DiffDOM = window.diffDOM;
-
-    var renderer = new Marked.Renderer();
-
-    var checkedTaskItemPtn = /^\s*\[x\]\s*/;
-    var uncheckedTaskItemPtn = /^\s*\[ \]\s*/;
-    renderer.listitem = function (text) {
-        var isCheckedTaskItem = checkedTaskItemPtn.test(text);
-        var isUncheckedTaskItem = uncheckedTaskItemPtn.test(text);
-        if (isCheckedTaskItem) {
-            text = text.replace(checkedTaskItemPtn,
-                '<i class="fa fa-check-square" aria-hidden="true"></i>&nbsp;') + '\n';
-        }
-        if (isUncheckedTaskItem) {
-            text = text.replace(uncheckedTaskItemPtn,
-                '<i class="fa fa-square-o" aria-hidden="true"></i>&nbsp;') + '\n';
-        }
-        var cls = (isCheckedTaskItem || isUncheckedTaskItem) ? ' class="todo-list-item"' : '';
-        return '<li'+ cls + '>' + text + '</li>\n';
-    };
-
-    Marked.setOptions({
-        renderer: renderer
-    });
+    '/common/diffMarked.js',
+],function ($, DiffMd) {
 
     var Slide = {
         index: 0,
@@ -63,78 +38,6 @@ define([
         }
     };
 
-    var forbiddenTags = Slide.forbiddenTags = [
-        'SCRIPT',
-        'IFRAME',
-        'OBJECT',
-        'APPLET',
-        'VIDEO',
-        'AUDIO',
-    ];
-    var unsafeTag = function (info) {
-        if (['addAttribute', 'modifyAttribute'].indexOf(info.diff.action) !== -1) {
-            if (/^on/.test(info.diff.name)) {
-                console.log("Rejecting forbidden element attribute with name", info.diff.name);
-                return true;
-            }
-        }
-        if (['addElement', 'replaceElement'].indexOf(info.diff.action) !== -1) {
-            var msg = "Rejecting forbidden tag of type (%s)";
-            if (info.diff.element && forbiddenTags.indexOf(info.diff.element.nodeName) !== -1) {
-                console.log(msg, info.diff.element.nodeName);
-                return true;
-            } else if (info.diff.newValue && forbiddenTags.indexOf(info.diff.newValue.nodeName) !== -1) {
-                console.log("Replacing restricted element type (%s) with PRE", info.diff.newValue.nodeName);
-                info.diff.newValue.nodeName = 'PRE';
-            }
-        }
-    };
-
-    var domFromHTML = Slide.domFromHTML = function (html) {
-        return new DOMParser().parseFromString(html, "text/html");
-    };
-
-    var DD = new DiffDOM({
-        preDiffApply: function (info) {
-            if (unsafeTag(info)) { return true; }
-        }
-    });
-
-    var makeDiff = function (A, B) {
-        var Err;
-        var Els = [A, B].map(function (frag) {
-            if (typeof(frag) === 'object') {
-                if (!frag || (frag && !frag.body)) {
-                    Err = "No body";
-                    return;
-                }
-                var els = frag.body.querySelectorAll('#content');
-                if (els.length) {
-                    return els[0];
-                }
-            }
-            Err = 'No candidate found';
-        });
-        if (Err) { return Err; }
-        var patch = DD.diff(Els[0], Els[1]);
-        return patch;
-    };
-
-    var slice = function (coll) {
-        return Array.prototype.slice.call(coll);
-    };
-
-    /*  remove listeners from the DOM */
-    var removeListeners = function (root) {
-        slice(root.attributes).map(function (attr) {
-            if (/^on/.test(attr.name)) {
-                root.attributes.removeNamedItem(attr.name);
-            }
-        });
-        // all the way down
-        slice(root.children).forEach(removeListeners);
-    };
-
     var updateFontSize = Slide.updateFontSize = function() {
         // 20vh
         // 20 * 16 / 9vw
@@ -157,17 +60,10 @@ define([
         if (typeof(Slide.content) !== 'string') { return; }
 
         var c = Slide.content;
-        var m = '<span class="slide-container"><span class="'+slideClass+'">'+Marked(c).replace(separatorReg, '</span></span><span class="slide-container"><span class="'+slideClass+'">')+'</span></span>';
+        var m = '<span class="slide-container"><span class="'+slideClass+'">'+DiffMd.render(c).replace(separatorReg, '</span></span><span class="slide-container"><span class="'+slideClass+'">')+'</span></span>';
 
-        var Dom = domFromHTML('<div id="content">' + m + '</div>');
-        removeListeners(Dom.body);
-        var patch = makeDiff(domFromHTML($content[0].outerHTML), Dom);
+        DiffMd.apply(m, $content);
 
-        if (typeof(patch) === 'string') {
-            $content.html(m);
-        } else {
-            DD.apply($content[0], patch);
-        }
         var length = getNumberOfSlides();
         $modal.find('style.slideStyle').remove();
         if (options.style && Slide.shown) {
@@ -184,6 +80,10 @@ define([
                 $('<div>', {'class': 'slideTitle'}).text(APP.title).appendTo($(el));
             }
         });
+        $content.removeClass('transition');
+        if (options.transition || typeof(options.transition) === "undefined") {
+            $content.addClass('transition');
+        }
         //$content.find('.' + slideClass).hide();
         //$content.find('.' + slideClass + ':eq( ' + i + ' )').show();
         $content.css('margin-left', -(i*100)+'vw');
@@ -211,7 +111,10 @@ define([
             $(ifrw).focus();
             change(null, Slide.index);
             if (!isPresentURL()) {
-                window.location.hash += '/present';
+                if (window.location.href.slice(-1) !== '/') {
+                    window.location.hash += '/';
+                }
+                window.location.hash += 'present';
             }
             $pad.contents().find('.cryptpad-present-button').hide();
             $pad.contents().find('.cryptpad-source-button').show();
@@ -220,7 +123,7 @@ define([
             $('.top-bar').hide();
             return;
         }
-        window.location.hash = window.location.hash.replace(/\/present$/, '');
+        window.location.hash = window.location.hash.replace(/\/present$/, '/');
         change(Slide.index, null);
         $pad.contents().find('.cryptpad-present-button').show();
         $pad.contents().find('.cryptpad-source-button').hide();

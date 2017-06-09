@@ -8,11 +8,14 @@ define([
     '/common/common-interface.js',
     '/common/common-history.js',
     '/common/common-userlist.js',
+    '/common/common-title.js',
+    '/common/common-metadata.js',
+    '/common/common-codemirror.js',
 
     '/common/clipboard.js',
     '/common/pinpad.js',
     '/customize/application_config.js'
-], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Clipboard, Pinpad, AppConfig) {
+], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Metadata, CodeMirror, Clipboard, Pinpad, AppConfig) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -20,10 +23,12 @@ define([
 
     Additionally, there is some basic functionality for import/export.
 */
-
     var common = window.Cryptpad = {
         Messages: Messages,
-        Clipboard: Clipboard
+        Clipboard: Clipboard,
+        donateURL: 'https://accounts.cryptpad.fr/#/donate?on=' + window.location.hostname,
+        upgradeURL: 'https://accounts.cryptpad.fr/#/?on=' + window.location.hostname,
+        account: {},
     };
 
     // constants
@@ -53,6 +58,8 @@ define([
     common.addLoadingScreen = UI.addLoadingScreen;
     common.removeLoadingScreen = UI.removeLoadingScreen;
     common.errorLoadingScreen = UI.errorLoadingScreen;
+    common.notify = UI.notify;
+    common.unnotify = UI.unnotify;
 
     // import common utilities for export
     common.find = Util.find;
@@ -66,18 +73,23 @@ define([
     common.fixFileName = Util.fixFileName;
     common.bytesToMegabytes = Util.bytesToMegabytes;
     common.bytesToKilobytes = Util.bytesToKilobytes;
+    common.fetch = Util.fetch;
+    common.throttle = Util.throttle;
+    common.createRandomInteger = Util.createRandomInteger;
 
     // import hash utilities for export
     var createRandomHash = common.createRandomHash = Hash.createRandomHash;
+    common.parseTypeHash = Hash.parseTypeHash;
     var parsePadUrl = common.parsePadUrl = Hash.parsePadUrl;
     var isNotStrongestStored = common.isNotStrongestStored = Hash.isNotStrongestStored;
     var hrefToHexChannelId = common.hrefToHexChannelId = Hash.hrefToHexChannelId;
-    var parseHash = common.parseHash = Hash.parseHash;
     var getRelativeHref = common.getRelativeHref = Hash.getRelativeHref;
     common.getBlobPathFromHex = Hash.getBlobPathFromHex;
 
     common.getEditHashFromKeys = Hash.getEditHashFromKeys;
     common.getViewHashFromKeys = Hash.getViewHashFromKeys;
+    common.getFileHashFromKeys = Hash.getFileHashFromKeys;
+    common.getUserHrefFromKeys = Hash.getUserHrefFromKeys;
     common.getSecrets = Hash.getSecrets;
     common.getHashes = Hash.getHashes;
     common.createChannelId = Hash.createChannelId;
@@ -87,6 +99,15 @@ define([
 
     // Userlist
     common.createUserList = UserList.create;
+
+    // Title
+    common.createTitle = Title.create;
+
+    // Metadata
+    common.createMetadata = Metadata.create;
+
+    // CodeMirror
+    common.createCodemirror = CodeMirror.create;
 
     // History
     common.getHistory = function (config) { return History.create(common, config); };
@@ -197,6 +218,7 @@ define([
             userNameKey,
             userHashKey,
             'loginToken',
+            'plan',
         ].forEach(function (k) {
             sessionStorage.removeItem(k);
             localStorage.removeItem(k);
@@ -224,6 +246,11 @@ define([
 
     var getUserHash = common.getUserHash = function () {
         var hash = localStorage[userHashKey];
+
+        if (['undefined', 'undefined/'].indexOf(hash) !== -1) {
+            localStorage.removeItem(userHashKey);
+            return;
+        }
 
         if (hash) {
             var sHash = common.serializeHash(hash);
@@ -270,27 +297,22 @@ define([
         if (!pad.title) {
             pad.title = common.getDefaultname(parsed);
         }
-        return parsed.hash;
+        return parsed.hashData;
     };
     // Migrate from legacy store (localStorage)
     var migrateRecentPads = common.migrateRecentPads = function (pads) {
         return pads.map(function (pad) {
-            var hash;
+            var parsedHash;
             if (Array.isArray(pad)) { // TODO DEPRECATE_F
-                var href = pad[0];
-                href.replace(/\#(.*)$/, function (a, h) {
-                    hash = h;
-                });
-
                 return {
                     href: pad[0],
                     atime: pad[1],
-                    title: pad[2] || hash && hash.slice(0,8),
+                    title: pad[2] || '',
                     ctime: pad[1],
                 };
             } else if (pad && typeof(pad) === 'object') {
-                hash = checkObjectData(pad);
-                if (!hash || !common.parseHash(hash)) { return; }
+                parsedHash = checkObjectData(pad);
+                if (!parsedHash || !parsedHash.type) { return; }
                 return pad;
             } else {
                 console.error("[Cryptpad.migrateRecentPads] pad had unexpected value");
@@ -303,8 +325,8 @@ define([
     var checkRecentPads = common.checkRecentPads = function (pads) {
         pads.forEach(function (pad, i) {
             if (pad && typeof(pad) === 'object') {
-                var hash = checkObjectData(pad);
-                if (!hash || !common.parseHash(hash)) {
+                var parsedHash = checkObjectData(pad);
+                if (!parsedHash || !parsedHash.type) {
                     console.error("[Cryptpad.checkRecentPads] pad had unexpected value", pad);
                     getStore().removeData(i);
                     return;
@@ -434,6 +456,7 @@ define([
                     Crypt.put(p.hash, val, function () {
                         common.findOKButton().click();
                         common.removeLoadingScreen();
+                        common.feedback('TEMPLATE_USED');
                     });
                 });
             }).appendTo($p);
@@ -522,6 +545,7 @@ define([
     common.setPadTitle = function (name, cb) {
         var href = window.location.href;
         var parsed = parsePadUrl(href);
+        if (!parsed.hash) { return; }
         href = getRelativeHref(href);
         // getRecentPads return the array from the drive, not a copy
         // We don't have to call "set..." at the end, everything is stored with listmap
@@ -542,8 +566,8 @@ define([
 
                 // Version 1 : we have up to 4 differents hash for 1 pad, keep the strongest :
                 // Edit > Edit (present) > View > View (present)
-                var pHash = parseHash(p.hash);
-                var parsedHash = parseHash(parsed.hash);
+                var pHash = p.hashData;
+                var parsedHash = parsed.hashData;
 
                 if (!pHash) { return; } // We may have a corrupted pad in our storage, abort here in that case
 
@@ -584,7 +608,7 @@ define([
                 var data = makePad(href, name);
                 getStore().pushData(data, function (e) {
                     if (e) {
-                        if (e === 'E_OVER_LIMIT' && AppConfig.enablePinLimit) {
+                        if (e === 'E_OVER_LIMIT') {
                             common.alert(Messages.pinLimitNotPinned, null, true);
                             return;
                         }
@@ -645,7 +669,8 @@ define([
         var userHash = localStorage && localStorage.User_hash;
         if (!userHash) { return null; }
 
-        var userChannel = common.parseHash(userHash).channel;
+        var userParsedHash = common.parseTypeHash('drive', userHash);
+        var userChannel = userParsedHash && userParsedHash.channel;
         if (!userChannel) { return null; }
 
         var list = fo.getFiles([fo.FILES_DATA]).map(hrefToHexChannelId)
@@ -728,27 +753,117 @@ define([
         });
     };
 
+    common.updatePinLimit = function (cb) {
+        if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
+        rpc.updatePinLimits(function (e, limit, plan, note) {
+            if (e) { return cb(e); }
+            cb(e, limit, plan, note);
+        });
+    };
+
     common.getPinLimit = function (cb) {
-        cb(void 0, typeof(AppConfig.pinLimit) === 'number'? AppConfig.pinLimit: 1000);
+        if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
+        rpc.getLimit(function (e, limit, plan, note) {
+            if (e) { return cb(e); }
+            cb(void 0, limit, plan, note);
+        });
     };
 
     common.isOverPinLimit = function (cb) {
-        if (!common.isLoggedIn() || !AppConfig.enablePinLimit) { return void cb(null, false); }
+        if (!common.isLoggedIn()) { return void cb(null, false); }
         var usage;
-        var andThen = function (e, limit) {
+        var andThen = function (e, limit, plan) {
             if (e) { return void cb(e); }
-            var data = {usage: usage, limit: limit};
+            var data = {usage: usage, limit: limit, plan: plan};
             if (usage > limit) {
                 return void cb (null, true, data);
             }
             return void cb (null, false, data);
         };
         var todo = function (e, used) {
-            usage = common.bytesToMegabytes(used);
+            usage = used; //common.bytesToMegabytes(used);
             if (e) { return void cb(e); }
             common.getPinLimit(andThen);
         };
         common.getPinnedUsage(todo);
+    };
+
+    common.uploadComplete = function (cb) {
+        if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
+        rpc.uploadComplete(cb);
+    };
+
+    common.uploadStatus = function (size, cb) {
+        if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
+        rpc.uploadStatus(size, cb);
+    };
+
+    common.uploadCancel = function (cb) {
+        if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
+        rpc.uploadCancel(cb);
+    };
+
+    var LIMIT_REFRESH_RATE = 30000; // milliseconds
+    common.createUsageBar = function (cb, alwaysDisplayUpgrade) {
+        var todo = function (err, state, data) {
+            var $container = $('<span>', {'class':'limit-container'});
+            if (!data) {
+                return void window.setTimeout(function () {
+                    common.isOverPinLimit(todo);
+                }, LIMIT_REFRESH_RATE);
+            }
+
+            var unit = Util.magnitudeOfBytes(data.limit);
+
+            var usage = unit === 'GB'? Util.bytesToGigabytes(data.usage):
+                Util.bytesToMegabytes(data.usage);
+            var limit = unit === 'GB'? Util.bytesToGigabytes(data.limit):
+                Util.bytesToMegabytes(data.limit);
+
+            var $limit = $('<span>', {'class': 'cryptpad-limit-bar'}).appendTo($container);
+            var quota = usage/limit;
+            var width = Math.floor(Math.min(quota, 1)*200); // the bar is 200px width
+            var $usage = $('<span>', {'class': 'usage'}).css('width', width+'px');
+
+            if (Config.noSubscriptionButton !== true &&
+                (quota >= 0.8 || alwaysDisplayUpgrade) &&
+                data.plan !== "power")
+            {
+                var origin = encodeURIComponent(window.location.hostname);
+                var $upgradeLink = $('<a>', {
+                    href: "https://accounts.cryptpad.fr/#!on=" + origin,
+                    rel: "noreferrer noopener",
+                    target: "_blank",
+                }).appendTo($container);
+                $('<button>', {
+                    'class': 'upgrade buttonSuccess',
+                    title: Messages.upgradeTitle
+                }).text(Messages.upgrade).appendTo($upgradeLink);
+            }
+
+            var prettyUsage;
+            var prettyLimit;
+
+            if (unit === 'GB') {
+                prettyUsage = Messages._getKey('formattedGB', [usage]);
+                prettyLimit = Messages._getKey('formattedGB', [limit]);
+            } else {
+                prettyUsage = Messages._getKey('formattedMB', [usage]);
+                prettyLimit = Messages._getKey('formattedMB', [limit]);
+            }
+
+            if (quota < 0.8) { $usage.addClass('normal'); }
+            else if (quota < 1) { $usage.addClass('warning'); }
+            else { $usage.addClass('above'); }
+            var $text = $('<span>', {'class': 'usageText'});
+            $text.text(usage + ' / ' + prettyLimit);
+            $limit.append($usage).append($text);
+            window.setTimeout(function () {
+                common.isOverPinLimit(todo);
+            }, LIMIT_REFRESH_RATE);
+            cb(err, $container);
+        };
+        common.isOverPinLimit(todo);
     };
 
     common.createButton = function (type, rightside, data, callback) {
@@ -816,6 +931,7 @@ define([
                                 common.addTemplate(makePad(href, title));
                                 whenRealtimeSyncs(getStore().getProxy().info.realtime, function () {
                                     common.alert(Messages.templateSaved);
+                                    common.feedback('TEMPLATE_CREATED');
                                 });
                             });
                         };
@@ -838,7 +954,8 @@ define([
                 if (callback) {
                     button.click(function() {
                         var href = window.location.href;
-                        common.confirm(Messages.forgetPrompt, function (yes) {
+                        var msg = isLoggedIn() ? Messages.forgetPrompt : Messages.fm_removePermanentlyDialog;
+                        common.confirm(msg, function (yes) {
                             if (!yes) { return; }
                             common.forgetPad(href, function (err) {
                                 if (err) {
@@ -857,7 +974,8 @@ define([
                                 } else {
                                     callback();
                                 }
-                                common.alert(Messages.movedToTrash, undefined, true);
+                                var cMsg = isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
+                                common.alert(cMsg, undefined, true);
                                 return;
                             });
                         });
@@ -1207,6 +1325,27 @@ define([
         return $userAdmin;
     };
 
+    var CRYPTPAD_VERSION = 'cryptpad-version';
+    var updateLocalVersion = function () {
+        // Check for CryptPad updates
+        var urlArgs = Config.requireConf ? Config.requireConf.urlArgs : null;
+        if (!urlArgs) { return; }
+        var arr = /ver=([0-9.]+)(-[0-9]*)?/.exec(urlArgs);
+        var ver = arr[1];
+        if (!ver) { return; }
+        var verArr = ver.split('.');
+        verArr[2] = 0;
+        if (verArr.length !== 3) { return; }
+        var stored = localStorage[CRYPTPAD_VERSION] || '0.0.0';
+        var storedArr = stored.split('.');
+        storedArr[2] = 0;
+        var shouldUpdate = parseInt(verArr[0]) > parseInt(storedArr[0]) ||
+                           (parseInt(verArr[0]) === parseInt(storedArr[0]) &&
+                            parseInt(verArr[1]) > parseInt(storedArr[1]));
+        if (!shouldUpdate) { return; }
+        common.alert(Messages._getKey('newVersion', [verArr.join('.')]), null, true);
+        localStorage[CRYPTPAD_VERSION] = ver;
+    };
 
     common.ready = (function () {
         var env = {};
@@ -1224,6 +1363,9 @@ define([
             block--;
             if (!block) {
                 initialized = true;
+
+                updateLocalVersion();
+
                 f(void 0, env);
             }
         };
@@ -1247,7 +1389,7 @@ define([
                 feedback("NO_PROXIES");
             }
 
-            if (typeof(Array.isArray) !== 'function') {
+            if (/CRYPTPAD_SHIM/.test(Array.isArray.toString())) {
                 feedback("NO_ISARRAY");
             }
 
@@ -1257,20 +1399,21 @@ define([
                 UI.Alertify.reset();
 
                 // Load the new pad when the hash has changed
-                var oldHash  = document.location.hash.slice(1);
+                var oldHref  = document.location.href;
                 window.onhashchange = function () {
-                    var newHash = document.location.hash.slice(1);
-                    var parsedOld = parseHash(oldHash);
-                    var parsedNew = parseHash(newHash);
+                    var newHref = document.location.href;
+                    var parsedOld = parsePadUrl(oldHref).hashData;
+                    var parsedNew = parsePadUrl(newHref).hashData;
                     if (parsedOld && parsedNew && (
-                          parsedOld.channel !== parsedNew.channel
+                          parsedOld.type !== parsedNew.type
+                          || parsedOld.channel !== parsedNew.channel
                           || parsedOld.mode !== parsedNew.mode
                           || parsedOld.key !== parsedNew.key)) {
                         document.location.reload();
                         return;
                     }
                     if (parsedNew) {
-                        oldHash = newHash;
+                        oldHref = newHref;
                     }
                 };
 
@@ -1287,6 +1430,14 @@ define([
                         console.log('RPC handshake complete');
                         rpc = common.rpc = env.rpc = call;
 
+                        common.getPinLimit(function (e, limit, plan, note) {
+                            if (e) { return void console.error(e); }
+                            common.account.limit = limit;
+                            localStorage.plan = common.account.plan = plan;
+                            common.account.note = note;
+                            cb();
+                        });
+
                         common.arePinsSynced(function (err, yes) {
                             if (!yes) {
                                 common.resetPins(function (err) {
@@ -1295,7 +1446,6 @@ define([
                                 });
                             }
                         });
-                        cb();
                     });
                 } else if (PINNING_ENABLED) {
                     console.log('not logged in. pads will not be pinned');

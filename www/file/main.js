@@ -2,7 +2,7 @@ define([
     'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
-    '/common/toolbar.js',
+    '/common/toolbar2.js',
     '/common/cryptpad-common.js',
     '/common/visible.js',
     '/common/notify.js',
@@ -20,103 +20,130 @@ define([
 
     var ifrw = $('#pad-iframe')[0].contentWindow;
     var $iframe = $('#pad-iframe').contents();
+    var $form = $iframe.find('#upload-form');
+    var $dlform = $iframe.find('#download-form');
+    var $label = $form.find('label');
+    var $table = $iframe.find('#status');
+    var $progress = $iframe.find('#progress');
+
+    $iframe.find('body').on('dragover', function (e) { e.preventDefault(); });
+    $iframe.find('body').on('drop', function (e) { e.preventDefault(); });
 
     Cryptpad.addLoadingScreen();
 
-    var fetch = function (src, cb) {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", src, true);
-        xhr.responseType = "arraybuffer";
-        xhr.onload = function () {
-            return void cb(void 0, new Uint8Array(xhr.response));
-        };
-        xhr.send(null);
-    };
+    var Title;
 
     var myFile;
     var myDataType;
 
-    var upload = function (blob, metadata) {
+    var queue = {
+        queue: [],
+        inProgress: false
+    };
+
+    var uid = function () {
+        return 'file-' + String(Math.random()).substring(2);
+    };
+
+    var upload = function (blob, metadata, id) {
         console.log(metadata);
+        if (queue.inProgress) { return; }
+        queue.inProgress = true;
+
+        var $row = $table.find('tr[id="'+id+'"]');
+
+        $row.find('.upCancel').html('-');
+        var $pv = $row.find('.progressValue');
+        var $pb = $row.find('.progressContainer');
+
+        var updateProgress = function (progressValue) {
+            $pv.text(Math.round(progressValue*100)/100 + '%');
+            $pb.css({
+                width: (progressValue/100)*188+'px'
+            });
+        };
+
         var u8 = new Uint8Array(blob);
 
         var key = Nacl.randomBytes(32);
         var next = FileCrypto.encrypt(u8, metadata, key);
 
-        var chunks = [];
+        var estimate = FileCrypto.computeEncryptedSize(blob.byteLength, metadata);
 
         var sendChunk = function (box, cb) {
             var enc = Nacl.util.encodeBase64(box);
-
-            chunks.push(box);
-            Cryptpad.rpc.send('UPLOAD', enc, function (e, msg) {
+            Cryptpad.rpc.send.unauthenticated('UPLOAD', enc, function (e, msg) {
+                console.log(box);
                 cb(e, msg);
             });
         };
 
-        var again = function (state, box) {
-            switch (state) {
-                case 0:
-                    sendChunk(box, function (e) {
-                        if (e) { return console.error(e); }
-                        next(again);
-                    });
-                    break;
-                case 1:
-                    sendChunk(box, function (e) {
-                        if (e) { return console.error(e); }
-                        next(again);
-                    });
-                    break;
-                case 2:
-                    sendChunk(box, function (e) {
-                        if (e) { return console.error(e); }
-                        Cryptpad.rpc.send('UPLOAD_COMPLETE', '', function (e, res) {
-                            if (e) { return void console.error(e); }
-                            var id = res[0];
-                            var uri = ['', 'blob', id.slice(0,2), id].join('/');
-                            console.log("encrypted blob is now available as %s", uri);
+        var actual = 0;
+        var again = function (err, box) {
+            if (err) { throw new Error(err); }
+            if (box) {
+                actual += box.length;
+                var progressValue = (actual / estimate * 100);
+                updateProgress(progressValue);
 
-                            window.location.hash = [
-                                '',
-                                2,
-                                Cryptpad.hexToBase64(id).replace(/\//g, '-'),
-                                Nacl.util.encodeBase64(key).replace(/\//g, '-'),
-                                ''
-                            ].join('/');
-
-                            APP.$form.hide();
-
-                            var newU8 = FileCrypto.joinChunks(chunks);
-                            FileCrypto.decrypt(newU8, key, function (e, res) {
-                                if (e) { return console.error(e); }
-                                var title = document.title = res.metadata.name;
-                                myFile = res.content;
-                                myDataType = res.metadata.type;
-
-                                var defaultName = Cryptpad.getDefaultName(Cryptpad.parsePadUrl(window.location.href));
-                                APP.updateTitle(title || defaultName);
-                            });
-                        });
-                    });
-                    break;
-                default:
-                    throw new Error("E_INVAL_STATE");
+                return void sendChunk(box, function (e) {
+                    if (e) { return console.error(e); }
+                    next(again);
+                });
             }
+
+            if (actual !== estimate) {
+                console.error('Estimated size does not match actual size');
+            }
+
+            // if not box then done
+            Cryptpad.uploadComplete(function (e, id) {
+                if (e) { return void console.error(e); }
+                var uri = ['', 'blob', id.slice(0,2), id].join('/');
+                console.log("encrypted blob is now available as %s", uri);
+
+                var b64Key = Nacl.util.encodeBase64(key);
+                Cryptpad.replaceHash(Cryptpad.getFileHashFromKeys(id, b64Key));
+
+                APP.toolbar.addElement(['fileshare'], {});
+
+                var title = document.title = metadata.name;
+                myFile = blob;
+                myDataType = metadata.type;
+                var defaultName = Cryptpad.getDefaultName(Cryptpad.parsePadUrl(window.location.href));
+                Title.updateTitle(title || defaultName);
+                APP.toolbar.title.show();
+                console.log(title);
+                Cryptpad.alert(Messages._getKey('upload_success', [title]));
+                queue.inProgress = false;
+                queue.next();
+            });
         };
 
-        Cryptpad.rpc.send('UPLOAD_STATUS', '', function (e, pending) {
+        Cryptpad.uploadStatus(estimate, function (e, pending) {
             if (e) {
+                queue.inProgress = false;
+                queue.next();
+                if (e === 'TOO_LARGE') {
+                    return void Cryptpad.alert(Messages.upload_tooLarge);
+                }
+                if (e === 'NOT_ENOUGH_SPACE') {
+                    return void Cryptpad.alert(Messages.upload_notEnoughSpace);
+                }
                 console.error(e);
-                return void Cryptpad.alert("something went wrong");
+                return void Cryptpad.alert(Messages.upload_serverError);
             }
 
-            if (pending[0]) {
-                return void Cryptpad.confirm('upload pending, abort?', function (yes) {
+            if (pending) {
+                // TODO keep this message in case of pending files in another window?
+                return void Cryptpad.confirm(Messages.upload_uploadPending, function (yes) {
                     if (!yes) { return; }
-                    Cryptpad.rpc.send('UPLOAD_CANCEL', '', function (e, res) {
-                        if (e) { return void console.error(e); }
+                    Cryptpad.uploadCancel(function (e, res) {
+                        if (e) {
+                            return void console.error(e);
+                        }
                         console.log(res);
+                        next(again);
                     });
                 });
             }
@@ -124,13 +151,52 @@ define([
         });
     };
 
+    var prettySize = function (bytes) {
+        var kB = Cryptpad.bytesToKilobytes(bytes);
+        if (kB < 1024) { return kB + Messages.KB; }
+        var mB = Cryptpad.bytesToMegabytes(bytes);
+        return mB + Messages.MB;
+    };
+
+    queue.next = function () {
+        if (queue.queue.length === 0) { return; }
+        if (queue.inProgress) { return; }
+        var file = queue.queue.shift();
+        upload(file.blob, file.metadata, file.id);
+    };
+    queue.push = function (obj) {
+        var id = uid();
+        obj.id = id;
+        queue.queue.push(obj);
+
+        $table.show();
+        var estimate = FileCrypto.computeEncryptedSize(obj.blob.byteLength, obj.metadata);
+
+        var $progressBar = $('<div>', {'class':'progressContainer'});
+        var $progressValue = $('<span>', {'class':'progressValue'}).text(Messages.upload_pending);
+
+        var $tr = $('<tr>', {id: id}).appendTo($table);
+
+        var $cancel = $('<span>', {'class': 'cancel fa fa-times'}).click(function () {
+            queue.queue = queue.queue.filter(function (el) { return el.id !== id; });
+            $cancel.remove();
+            $tr.find('.upCancel').text('-');
+            $tr.find('.progressValue').text(Messages.upload_cancelled);
+        });
+
+        $('<td>').text(obj.metadata.name).appendTo($tr);
+        $('<td>').text(prettySize(estimate)).appendTo($tr);
+        $('<td>', {'class': 'upProgress'}).append($progressBar).append($progressValue).appendTo($tr);
+        $('<td>', {'class': 'upCancel'}).append($cancel).appendTo($tr);
+
+        queue.next();
+    };
+
     var uploadMode = false;
 
     var andThen = function () {
         var $bar = $iframe.find('.toolbar-container');
 
-// Test hash:
-// #/2/K6xWU-LT9BJHCQcDCT-DcQ/TBo77200c0e-FdldQFcnQx4Y/
         var secret;
         var hexFileName;
         if (window.location.hash) {
@@ -141,9 +207,6 @@ define([
             uploadMode = true;
         }
 
-        var parsed = Cryptpad.parsePadUrl(window.location.href);
-        var defaultName = Cryptpad.getDefaultName(parsed);
-
         var getTitle = function () {
             var pad = Cryptpad.getRelativeHref(window.location.href);
             var fo = Cryptpad.getStore().getProxy().fo;
@@ -151,107 +214,154 @@ define([
             return data ? data.title : undefined;
         };
 
-        var updateTitle = APP.updateTitle = function (newTitle) {
-            Cryptpad.renamePad(newTitle, function (err, data) {
-                if (err) {
-                    console.log("Couldn't set pad title");
-                    console.error(err);
-                    return;
-                }
-                document.title = newTitle;
-                $bar.find('.' + Toolbar.constants.title).find('span.title').text(data);
-                $bar.find('.' + Toolbar.constants.title).find('input').val(data);
-            });
-        };
-
-        var suggestName = function () {
-            return document.title || getTitle() || '';
-        };
-
-        var renameCb = function (err, title) {
-            document.title = title;
-        };
-
         var exportFile = function () {
-            var suggestion = document.title;
-            Cryptpad.prompt(Messages.exportPrompt,
-                Cryptpad.fixFileName(suggestion), function (filename) {
-                if (!(typeof(filename) === 'string' && filename)) { return; }
-                var blob = new Blob([myFile], {type: myDataType});
-                saveAs(blob, filename);
-            });
+            var filename = Cryptpad.fixFileName(document.title);
+            if (!(typeof(filename) === 'string' && filename)) { return; }
+            var blob = new Blob([myFile], {type: myDataType});
+            saveAs(blob, filename);
         };
 
-        var displayed = ['useradmin', 'newpad', 'limit'];
+        Title = Cryptpad.createTitle({}, function(){}, Cryptpad);
+
+        var displayed = ['title', 'useradmin', 'newpad', 'limit', 'upgrade'];
         if (secret && hexFileName) {
-            displayed.push('share');
+            displayed.push('fileshare');
         }
 
         var configTb = {
             displayed: displayed,
             ifrw: ifrw,
             common: Cryptpad,
-            title: {
-                onRename: renameCb,
-                defaultName: defaultName,
-                suggestName: suggestName
-            },
-            share: {
-                secret: secret,
-                channel: hexFileName
-            },
-            hideDisplayName: true
+            title: Title.getTitleConfig(),
+            hideDisplayName: true,
+            $container: $bar
         };
-        Toolbar.create($bar, null, null, null, null, configTb);
-        var $rightside = $bar.find('.' + Toolbar.constants.rightside);
+        var toolbar = APP.toolbar = Toolbar.create(configTb);
+
+        Title.setToolbar(toolbar);
+
+        if (uploadMode) { toolbar.title.hide(); }
+
+        var $rightside = toolbar.$rightside;
 
         var $export = Cryptpad.createButton('export', true, {}, exportFile);
         $rightside.append($export);
 
-        updateTitle(Cryptpad.initialName || getTitle() || defaultName);
+        Title.updateTitle(Cryptpad.initialName || getTitle() || Title.defaultTitle);
 
         if (!uploadMode) {
+            $dlform.show();
             var src = Cryptpad.getBlobPathFromHex(hexFileName);
-            return fetch(src, function (e, u8) {
-                // now decrypt the u8
-                if (e) { return window.alert('error'); }
-                var cryptKey = secret.keys && secret.keys.fileKeyStr;
-                var key = Nacl.util.decodeBase64(cryptKey);
+            var cryptKey = secret.keys && secret.keys.fileKeyStr;
+            var key = Nacl.util.decodeBase64(cryptKey);
 
-                FileCrypto.decrypt(u8, key, function (e, data) {
-                    if (e) {
-                        Cryptpad.removeLoadingScreen();
-                        return console.error(e);
-                    }
-                    console.log(data);
-                    var title = document.title = data.metadata.name;
-                    myFile = data.content;
-                    myDataType = data.metadata.type;
-                    updateTitle(title || defaultName);
-                    Cryptpad.removeLoadingScreen();
+            FileCrypto.fetchDecryptedMetadata(src, key, function (e, metadata) {
+                if (e) { return void console.error(e); }
+                var title = document.title = metadata.name;
+                Title.updateTitle(title || Title.defaultTitle);
+
+                Cryptpad.removeLoadingScreen();
+                var decrypting = false;
+                $dlform.find('#dl, #progress').click(function () {
+                    if (decrypting) { return; }
+                    if (myFile) { return void exportFile(); }
+                    decrypting = true;
+
+                    return Cryptpad.fetch(src, function (e, u8) {
+                        if (e) {
+                            decrypting = false;
+                            return void Cryptpad.alert(e);
+                        }
+
+                        // now decrypt the u8
+                        if (!u8 || !u8.length) {
+                            return void Cryptpad.errorLoadingScreen(e);
+                        }
+
+                        FileCrypto.decrypt(u8, key, function (e, data) {
+                            if (e) {
+                                decrypting = false;
+                                return console.error(e);
+                            }
+                            console.log(data);
+                            var title = document.title = data.metadata.name;
+                            myFile = data.content;
+                            myDataType = data.metadata.type;
+                            Title.updateTitle(title || Title.defaultTitle);
+                            exportFile();
+                            decrypting = false;
+                        }, function (progress) {
+                            var p = progress * 100 +'%';
+                            $progress.width(p);
+                            console.error(progress);
+                        });
+                    });
                 });
             });
+            return;
         }
 
         if (!Cryptpad.isLoggedIn()) {
-            return Cryptpad.alert("You must be logged in to upload files");
+            return Cryptpad.alert(Messages.upload_mustLogin, function () {
+                if (sessionStorage) {
+                    sessionStorage.redirectTo = window.location.href;
+                }
+                window.location.href = '/login/';
+            });
         }
 
-        var $form = APP.$form = $iframe.find('#upload-form');
         $form.css({
             display: 'block',
         });
 
-        $form.find("#file").on('change', function (e) {
-            var file = e.target.files[0];
+        var handleFile = function (file) {
+            console.log(file);
             var reader = new FileReader();
             reader.onloadend = function () {
-                upload(this.result, {
-                    name: file.name,
-                    type: file.type,
+                queue.push({
+                    blob: this.result,
+                    metadata: {
+                        name: file.name,
+                        type: file.type,
+                    }
                 });
             };
             reader.readAsArrayBuffer(file);
+        };
+
+        $form.find("#file").on('change', function (e) {
+            var file = e.target.files[0];
+            handleFile(file);
+        });
+
+        var counter = 0;
+        $label
+        .on('dragenter', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            counter++;
+            $label.addClass('hovering');
+        })
+        .on('dragleave', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            counter--;
+            if (counter <= 0) {
+                $label.removeClass('hovering');
+            }
+        });
+
+        $form
+        .on('drag dragstart dragend dragover drop dragenter dragleave', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        })
+        .on('drop', function (e) {
+            e.stopPropagation();
+            var dropped = e.originalEvent.dataTransfer.files;
+            counter = 0;
+            $label.removeClass('hovering');
+            handleFile(dropped[0]);
         });
 
         // we're in upload mode
