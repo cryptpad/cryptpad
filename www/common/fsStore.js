@@ -303,7 +303,7 @@ define([
             if (path[0] === 'drive' && path[1] === "migrate" && value == 1) {
                 rt.network.disconnect();
                 rt.realtime.abort();
-                Cryptpad.alert(Cryptpad.Messages.fs_migration);
+                Cryptpad.alert(Cryptpad.Messages.fs_migration, null, true);
             }
         });
     };
