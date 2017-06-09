@@ -41,7 +41,7 @@ define([
     var newPadNameKey = common.newPadNameKey = "newPadName";
     var newPadPathKey = common.newPadPathKey = "newPadPath";
     var oldStorageKey = common.oldStorageKey = 'CryptPad_RECENTPADS';
-    var storageKey = common.storageKey = 'filesData';
+    common.storageKey = 'filesData';
     var PINNING_ENABLED = AppConfig.enablePinning;
 
     var store;
@@ -373,7 +373,7 @@ define([
         var name = (Messages.type)[type] + ' - ' + getLocaleDate();
         return name;
     };
-    var isDefaultName = common.isDefaultName = function (parsed, title) {
+    common.isDefaultName = function (parsed, title) {
         var name = getDefaultName(parsed);
         return title === name;
     };
@@ -511,8 +511,6 @@ define([
 
     // STORAGE
     common.forgetPad = function (href, cb) {
-        var parsed = parsePadUrl(href);
-
         if (typeof(getStore().forgetPad) === "function") {
             getStore().forgetPad(common.getRelativeHref(href), cb);
             return;
@@ -567,7 +565,6 @@ define([
                     pad.atime = +new Date();
 
                     // set the name
-                    var old = pad.title;
                     pad.title = name;
 
                     // If we now have a stronger version of a stored href, replace the weaker one by the strong one
