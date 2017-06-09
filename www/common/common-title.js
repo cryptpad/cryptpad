@@ -40,7 +40,6 @@ define(function () {
         var renameCb = function (err, newTitle) {
             if (err) { return; }
             updateLocalTitle(newTitle);
-            console.log('here');
             onLocal();
         };
 
