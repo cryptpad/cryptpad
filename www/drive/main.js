@@ -2080,7 +2080,7 @@ define([
             var isOpened = filesOp.comparePath(path, currentPath);
             var $trashElement = createTreeElement(TRASH_NAME, $icon, [TRASH], false, true, false, isOpened);
             $trashElement.addClass('root');
-            $trashElement.contextmenu(openTrashTreeContextMenu);
+            $trashElement.find('>.element-row').contextmenu(openTrashTreeContextMenu);
             var $trashList = $('<ul>', { id: 'trashTree', 'class': 'category2' }).append($trashElement);
             $container.append($trashList);
         };
