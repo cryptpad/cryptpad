@@ -23,11 +23,13 @@ define([
 
     Additionally, there is some basic functionality for import/export.
 */
+
+    var origin = encodeURIComponent(window.location.hostname);
     var common = window.Cryptpad = {
         Messages: Messages,
         Clipboard: Clipboard,
-        donateURL: 'https://accounts.cryptpad.fr/#/donate?on=' + window.location.hostname,
-        upgradeURL: 'https://accounts.cryptpad.fr/#/?on=' + window.location.hostname,
+        donateURL: 'https://accounts.cryptpad.fr/#/donate?on=' + origin,
+        upgradeURL: 'https://accounts.cryptpad.fr/#/?on=' + origin,
         account: {},
     };
 
@@ -829,9 +831,9 @@ define([
                 (quota >= 0.8 || alwaysDisplayUpgrade) &&
                 data.plan !== "power")
             {
-                var origin = encodeURIComponent(window.location.hostname);
+                // TODO show donate url if applicable
                 var $upgradeLink = $('<a>', {
-                    href: "https://accounts.cryptpad.fr/#!on=" + origin,
+                    href: common.upgradeLink,
                     rel: "noreferrer noopener",
                     target: "_blank",
                 }).appendTo($container);
