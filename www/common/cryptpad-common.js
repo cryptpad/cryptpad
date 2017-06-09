@@ -827,20 +827,40 @@ define([
             var width = Math.floor(Math.min(quota, 1)*200); // the bar is 200px width
             var $usage = $('<span>', {'class': 'usage'}).css('width', width+'px');
 
-            if (Config.noSubscriptionButton !== true &&
-                (quota >= 0.8 || alwaysDisplayUpgrade) &&
-                data.plan !== "power")
-            {
-                // TODO show donate url if applicable
+            var makeDonateButton = function () {
                 var $upgradeLink = $('<a>', {
-                    href: common.upgradeLink,
+                    href: common.donateURL,
+                    rel: "noreferrer noopener",
+                    target: "_blank",
+                }).appendTo($container);
+                $('<button>', {
+                    'class': 'upgrade buttonSuccess',
+                }).text(Messages.supportCryptpad).appendTo($upgradeLink);
+            };
+
+            var makeUpgradeButton = function () {
+                var $upgradeLink = $('<a>', {
+                    href: common.upgradeURL,
                     rel: "noreferrer noopener",
                     target: "_blank",
                 }).appendTo($container);
                 $('<button>', {
                     'class': 'upgrade buttonSuccess',
                     title: Messages.upgradeTitle
-                }).text(Messages.upgrade).appendTo($upgradeLink);
+                }).text(Messages.upgradeAccount).appendTo($upgradeLink);
+            };
+
+            if (!Config.removeDonateButton) {
+                if (!common.isLoggedIn() || !Config.allowSubscriptions) {
+                    // user is not logged in, or subscriptions are disallowed
+                    makeDonateButton();
+                } else if (!common.account.plan) {
+                    // user is logged in and subscriptions are allowed
+                    // and they don't have one. show upgrades
+                    makeUpgradeButton();
+                } else {
+                    // they have a plan. show nothing
+                }
             }
 
             var prettyUsage;
