@@ -30,7 +30,9 @@ define([
         Clipboard: Clipboard,
         donateURL: 'https://accounts.cryptpad.fr/#/donate?on=' + origin,
         upgradeURL: 'https://accounts.cryptpad.fr/#/?on=' + origin,
-        account: {},
+        account: {
+            usage: 0,
+        },
     };
 
     // constants
@@ -744,7 +746,11 @@ define([
 
     common.getPinnedUsage = function (cb) {
         if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
-        rpc.getFileListSize(cb);
+
+        rpc.getFileListSize(function (err, bytes) {
+            common.account.usage = typeof(bytes) === 'number'? bytes: 0;
+            cb(err, bytes);
+        });
     };
 
     common.getFileSize = function (href, cb) {
@@ -759,6 +765,9 @@ define([
         if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
         rpc.updatePinLimits(function (e, limit, plan, note) {
             if (e) { return cb(e); }
+            common.account.limit = limit;
+            common.account.plan = plan;
+            common.account.note = note;
             cb(e, limit, plan, note);
         });
     };
@@ -767,6 +776,9 @@ define([
         if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
         rpc.getLimit(function (e, limit, plan, note) {
             if (e) { return cb(e); }
+            common.account.limit = limit;
+            common.account.plan = plan;
+            common.account.note = note;
             cb(void 0, limit, plan, note);
         });
     };
