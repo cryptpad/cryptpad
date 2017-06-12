@@ -18,7 +18,6 @@ define([
 
     // Use `$(function () {});` to make sure the html is loaded before doing anything else
     $(function () {
-    var $iframe = $('#pad-iframe').contents();
     var ifrw = $('#pad-iframe')[0].contentWindow;
 
     Cryptpad.addLoadingScreen();
@@ -126,7 +125,7 @@ define([
     };
 
     var setSearchCursor = function () {
-        var $input = $iframe.find('#searchInput');
+        var $input = APP.$iframe.find('#searchInput');
         localStorage.searchCursor = $input[0].selectionStart;
     };
     var getSearchCursor = function () {
@@ -140,12 +139,12 @@ define([
     var setEditable = function (state) {
         APP.editable = state;
         if (!state) {
-            $iframe.find('#content').addClass('readonly');
-            $iframe.find('[draggable="true"]').attr('draggable', false);
+            APP.$iframe.find('#content').addClass('readonly');
+            APP.$iframe.find('[draggable="true"]').attr('draggable', false);
         }
         else {
-            $iframe.find('#content').removeClass('readonly');
-            $iframe.find('[draggable="false"]').attr('draggable', true);
+            APP.$iframe.find('#content').removeClass('readonly');
+            APP.$iframe.find('[draggable="false"]').attr('draggable', true);
         }
     };
 
@@ -188,6 +187,8 @@ define([
         };
         config.workgroup = isWorkgroup();
         config.Cryptpad = Cryptpad;
+
+        var $iframe = APP.$iframe;
 
         var filesOp = FO.init(files, config);
         filesOp.fixFiles();
@@ -2646,6 +2647,7 @@ define([
     Cryptpad.ready(function () {
         Cryptpad.reportAppUsage();
         if (!APP.loggedIn) { Cryptpad.feedback('ANONYMOUS_DRIVE'); }
+        var $iframe = APP.$iframe = $('#pad-iframe').contents();
         APP.$bar = $iframe.find('#toolbar');
 
         var storeObj = Cryptpad.getStore().getProxy && Cryptpad.getStore().getProxy().proxy ? Cryptpad.getStore().getProxy() : undefined;
