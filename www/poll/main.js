@@ -589,7 +589,7 @@ var setEditable = function (editable) {
 
     if (editable === false) {
         // disable all the things
-        $('.realtime input, .realtime button').attr('disabled', APP.locked);
+        $('.realtime input, .realtime button, .upper button, .realtime textarea').attr('disabled', APP.locked);
         $('span.edit, span.remove').hide();
         $('span.lock').addClass('fa-lock').removeClass('fa-unlock')
             .attr('title', Messages.poll_locked)
@@ -598,7 +598,7 @@ var setEditable = function (editable) {
         // enable
         $('span.edit, span.remove').show();
         $('span.lock').css({'cursor': ''});
-        $('.realtime button').attr('disabled', APP.locked);
+        $('.realtime button, .upper button, .realtime textarea').attr('disabled', APP.locked);
         unlockElements();
     }
 };
