@@ -278,7 +278,14 @@ define([
             case 'number':
                 debug("checkbox[tr-id='%s'] %s", id, input.value);
                 if (APP.editable.col.indexOf(x) >= 0 || x === APP.userid) {
-                    Render.setValue(object, id, parseInt(input.value));
+                    var value = parseInt(input.value);
+
+                    if (isNaN(value)) {
+                        console.error("Got NaN?!");
+                        break;
+                    }
+
+                    Render.setValue(object, id, value);
                     change();
                 } else {
                     debug('checkbox locked');
@@ -359,7 +366,6 @@ define([
         if (!APP.ready) { return; }
         if (!isKeyup && e.which !== 1) { return; }
 
-
         var target = e && e.target;
 
         if (!target) { return void debug("NO TARGET"); }
@@ -384,6 +390,7 @@ define([
             case 'LABEL':
                 var input = $('input[type="number"][id=' + $(target).attr('for') + ']');
                 var value = parseInt(input.val());
+
                 input.val((value + 1) % 4);
 
                 handleInput(input[0]);
