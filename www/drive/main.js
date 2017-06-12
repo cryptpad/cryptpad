@@ -2687,7 +2687,7 @@ define([
                 if (err) { return void logError(err); }
                 $leftside.html('');
                 $leftside.append($limitContainer);
-            }, true);
+            });
 
             /* add a history button */
             var histConfig = {

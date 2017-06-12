@@ -120,7 +120,7 @@ define([
             exp.getFileListSize = function (cb) {
                 rpc.send('GET_TOTAL_SIZE', undefined, function (e, response) {
                     if (e) { return void cb(e); }
-                    if (response && response.length) {
+                    if (response && response.length && typeof(response[0]) === 'number') {
                         cb(void 0, response[0]);
                     } else {
                         cb('INVALID_RESPONSE');
