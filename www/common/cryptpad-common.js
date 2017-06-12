@@ -1197,10 +1197,10 @@ define([
                 }, 1000);
             });
 
-            $container.setValue = function (val) {
+            $container.setValue = function (val, name) {
                 value = val;
                 var $val = $innerblock.find('[data-value="'+val+'"]');
-                var textValue = $val.html() || val;
+                var textValue = name || $val.html() || val;
                 $button.find('.buttonTitle').html(textValue);
             };
             $container.getValue = function () {
