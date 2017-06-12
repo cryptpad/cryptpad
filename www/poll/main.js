@@ -142,12 +142,10 @@ define([
     var setTablePublished = function (bool) {
         if (bool) {
             if (APP.$publish) { APP.$publish.hide(); }
-            if (APP.$admin) { APP.$admin.show(); }
             $('#create-option').hide();
             $('.remove[data-rt-id^="y"], .edit[data-rt-id^="y"]').hide();
         } else {
             if (APP.$publish) { APP.$publish.show(); }
-            if (APP.$admin) { APP.$admin.hide(); }
             $('#create-option').show();
             $('.remove[data-rt-id^="y"], .edit[data-rt-id^="y"]').show();
         }
@@ -432,6 +430,15 @@ define([
         });
     };
 
+    var showHelp = function(help) {
+        if (typeof help === 'undefined') { help = !$('#howItWorks').is(':visible'); }
+
+        var msg = (help ? Messages.poll_hide_help_button : Messages.poll_show_help_button);
+
+        $('#howItWorks').toggle(help);
+        $('#help').text(msg).attr('title', msg);
+    };
+
     var Title;
     var UserList;
 
@@ -498,9 +505,9 @@ var ready = function (info, userid, readOnly) {
         });
 
     // #publish button is removed in readonly
-    APP.$admin = $('#admin')
+    APP.$help = $('#help')
         .click(function () {
-            publish(false);
+            showHelp();
         });
 
     // Title
@@ -702,7 +709,7 @@ var create = function (info) {
         };
 
         if (readOnly) {
-            $('#commit, #create-user, #create-option, #publish, #admin').remove();
+            $('#commit, #create-user, #create-option, #publish').remove();
         }
 
         var parsedHash = Cryptpad.parsePadUrl(window.location.href);
@@ -732,7 +739,7 @@ var create = function (info) {
                     if (e) { console.error(e); }
                 });
             } else if (value === "1") {
-                $('#howItWorks').hide();
+                showHelp(false);
             }
         });
 
