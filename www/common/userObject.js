@@ -793,8 +793,7 @@ define([
                 try {
                     debug("Migrating file system...");
                     files.migrate = 1;
-                    if (exp.rt) { exp.rt.sync(); }
-                    window.setTimeout(function () {
+                    var next = function () {
                         var oldData = files[OLD_FILES_DATA].slice();
                         if (!files[FILES_DATA]) {
                             files[FILES_DATA] = {};
@@ -838,7 +837,13 @@ define([
                         delete files.migrate;
                         console.log('done');
                         todo();
-                    }, 300);
+                    };
+                    if (exp.rt) {
+                        exp.rt.sync();
+                        Cryptpad.whenRealtimeSyncs(exp.rt, next);
+                    } else {
+                        window.setTimeout(next, 1000);
+                    }
                 } catch(e) {
                     console.error(e);
                     todo();
