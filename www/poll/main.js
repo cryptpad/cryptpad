@@ -141,10 +141,12 @@ define([
     var setTablePublished = function (bool) {
         if (bool) {
             if (APP.$publish) { APP.$publish.hide(); }
+            if (APP.$admin) { APP.$admin.show(); }
             $('#create-option').hide();
             $('.remove[data-rt-id^="y"], .edit[data-rt-id^="y"]').hide();
         } else {
             if (APP.$publish) { APP.$publish.show(); }
+            if (APP.$admin) { APP.$admin.hide(); }
             $('#create-option').show();
             $('.remove[data-rt-id^="y"], .edit[data-rt-id^="y"]').show();
         }
@@ -518,7 +520,11 @@ var ready = function (info, userid, readOnly) {
             publish(true);
         });
 
-    // #publish button is removed in readonly
+    APP.$admin = $('#admin')
+        .click(function () {
+            publish(false);
+        });
+
     APP.$help = $('#help')
         .click(function () {
             showHelp();
@@ -723,7 +729,7 @@ var create = function (info) {
         };
 
         if (readOnly) {
-            $('#commit, #create-user, #create-option, #publish').remove();
+            $('#commit, #create-user, #create-option, #publish, #admin').remove();
         }
 
         var parsedHash = Cryptpad.parsePadUrl(window.location.href);
