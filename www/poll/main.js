@@ -46,7 +46,8 @@ define([
         editable: {
             row: [],
             col: []
-        }
+        },
+        locked: false
     };
 
     var sortColumns = function (order, firstcol) {
@@ -293,6 +294,7 @@ define([
     };
 
     var hideInputs = function (target, isKeyup) {
+        if (APP.locked) { return; }
         if (!isKeyup && $(target).is('[type="text"]')) {
             return;
         }
@@ -353,10 +355,13 @@ define([
     };
 
     var handleClick = function (e, isKeyup) {
+        if (APP.locked) { return; }
+
         e.stopPropagation();
 
         if (!APP.ready) { return; }
-        if (e.which !== 1) { return; }
+        if (!isKeyup && e.which !== 1) { return; }
+
 
         var target = e && e.target;
 
@@ -533,7 +538,10 @@ var ready = function (info, userid, readOnly) {
         .click(handleClick)
         .on('keyup', function (e) { handleClick(e, true); });
 
-    $(window).click(hideInputs);
+    $(window).click(function(e) {
+        if (e.which !== 1) { return; }
+        hideInputs();
+    });
 
     proxy
         .on('change', ['info'], function (o, n, p) {
@@ -576,14 +584,33 @@ var ready = function (info, userid, readOnly) {
     UserList.getLastName(APP.toolbar.$userNameButton, isNew);
 };
 
+var setEditable = function (editable) {
+    APP.locked = !editable;
+
+    if (editable === false) {
+        // disable all the things
+        $('.realtime input, .realtime button').attr('disabled', APP.locked);
+        $('span.edit, span.remove').hide();
+        $('span.lock').addClass('fa-lock').removeClass('fa-unlock')
+            .attr('title', Messages.poll_locked)
+            .css({'cursor': 'default'});
+    } else {
+        // enable
+        $('span.edit, span.remove').show();
+        $('span.lock').css({'cursor': ''});
+        $('.realtime button').attr('disabled', APP.locked);
+        unlockElements();
+    }
+};
+
 var disconnect = function () {
-    //setEditable(false); // TODO
+    setEditable(false);
     APP.toolbar.failed();
     Cryptpad.alert(Messages.common_connectionLost, undefined, true);
 };
 
 var reconnect = function (info) {
-    //setEditable(true); // TODO
+    setEditable(true);
     APP.toolbar.reconnecting(info.myId);
     Cryptpad.findOKButton().click();
 };
@@ -638,7 +665,7 @@ var create = function (info) {
     /* add a forget button */
     var forgetCb = function (err) {
         if (err) { return; }
-        disconnect();
+        setEditable(false);
     };
     var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
     $rightside.append($forgetPad);
@@ -709,7 +736,7 @@ var create = function (info) {
             }
         });
 
-        //Cryptpad.onLogout(function () { setEditable(false); }); TODO
+        Cryptpad.onLogout(function () { setEditable(false); });
     });
     Cryptpad.onError(function (info) {
         if (info) {
