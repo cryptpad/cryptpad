@@ -28,6 +28,8 @@
     box-sizing: border-box;
     padding: 0px 6px;
 
+    background-color: #BBBBFF;
+
     .fa {
         font: normal normal normal 14px/1 FontAwesome;
         font-family: FontAwesome;
@@ -321,17 +323,32 @@
     height: 32px;
     position: relative;
     .cryptpad-title {
-        .title, .pencilIcon {
+        .title, .pencilIcon, .saveIcon {
             font-size: 1.5em;
             vertical-align: middle;
             line-height: 32px;
         }
         .pencilIcon {
-            //display: none;
             margin-left: 11px;
             &:hover {
                 color: #999;
                 margin-left: 0px;
+            }
+            span {
+                cursor: pointer;
+            }
+        }
+        .saveIcon {
+            cursor: pointer;
+            border: 1px solid black;
+            border-radius: 0px 2px 2px 0px;
+            background: white;
+            padding: 5px;
+            display: inline;
+            margin-left: -1px;
+            border-collapse: collapse;
+            &:hover {
+                color: #999;
             }
             span {
                 cursor: pointer;
@@ -410,6 +427,7 @@
     }
 }
 .cryptpad-toolbar-leftside {
+    height: 32px;
     float: left;
     margin-bottom: -1px;
     .cryptpad-dropdown-users {
@@ -427,6 +445,7 @@
     }
 }
 .cryptpad-toolbar-rightside {
+    height: 32px;
     text-align: right;
 }
 .cryptpad-toolbar-history {

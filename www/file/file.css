@@ -3,8 +3,10 @@ body {
   margin: 0px;
   height: 100%;
 }
+#toolbar {
+  display: flex;
+}
 .cryptpad-toolbar {
-  margin-bottom: 1px;
   padding: 0px;
   display: inline-block;
 }

@@ -99,6 +99,7 @@ define(function () {
     out.user_accountName = "Account name";
 
     out.clickToEdit = "Click to edit";
+    out.saveTitle = "Save the title (enter)";
 
     out.forgetButtonTitle = 'Move this pad to the trash';
     out.forgetPrompt = 'Clicking OK will move this pad to your trash. Are you sure?';

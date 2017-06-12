@@ -101,6 +101,7 @@
 .cryptpad-toolbar {
   box-sizing: border-box;
   padding: 0px 6px;
+  background-color: #BBBBFF;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -406,7 +407,8 @@
   position: relative;
 }
 .cryptpad-toolbar-top .cryptpad-title .title,
-.cryptpad-toolbar-top .cryptpad-title .pencilIcon {
+.cryptpad-toolbar-top .cryptpad-title .pencilIcon,
+.cryptpad-toolbar-top .cryptpad-title .saveIcon {
   font-size: 1.5em;
   vertical-align: middle;
   line-height: 32px;
@@ -419,6 +421,22 @@
   margin-left: 0px;
 }
 .cryptpad-toolbar-top .cryptpad-title .pencilIcon span {
+  cursor: pointer;
+}
+.cryptpad-toolbar-top .cryptpad-title .saveIcon {
+  cursor: pointer;
+  border: 1px solid black;
+  border-radius: 0px 2px 2px 0px;
+  background: white;
+  padding: 5px;
+  display: inline;
+  margin-left: -1px;
+  border-collapse: collapse;
+}
+.cryptpad-toolbar-top .cryptpad-title .saveIcon:hover {
+  color: #999;
+}
+.cryptpad-toolbar-top .cryptpad-title .saveIcon span {
   cursor: pointer;
 }
 .cryptpad-toolbar-top .cryptpad-title:not(input):hover .editable {
@@ -485,6 +503,7 @@
   vertical-align: baseline;
 }
 .cryptpad-toolbar-leftside {
+  height: 32px;
   float: left;
   margin-bottom: -1px;
 }
@@ -500,6 +519,7 @@
   margin-top: -1px;
 }
 .cryptpad-toolbar-rightside {
+  height: 32px;
   text-align: right;
 }
 .cryptpad-toolbar-history {

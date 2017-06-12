@@ -97,6 +97,7 @@ define(function () {
     out.user_accountName = "Nom d'utilisateur";
 
     out.clickToEdit = 'Cliquer pour modifier';
+    out.saveTitle = "Enregistrer le titre (Entrée)";
 
     out.forgetButtonTitle = 'Déplacer ce pad vers la corbeille';
     out.forgetPrompt = 'Cliquer sur OK déplacera ce pad vers la corbeille de votre CryptDrive, êtes-vous sûr ?';
