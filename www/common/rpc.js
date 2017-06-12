@@ -50,7 +50,11 @@ types of messages:
             return void console.error(new Error('could not parse message: %s', msg));
         }
 
+        // RPC messages are always arrays.
+        if (!Array.isArray(parsed)) { return; }
         var txid = parsed[0];
+        // txid must be a string, or this message is not meant for us
+        if (typeof(txid) !== 'string') { return; }
         var cookie = parsed[1];
 
         var pending = ctx.pending[txid];
@@ -92,10 +96,9 @@ types of messages:
 
             // if successful, delete the callback...
             delete ctx.pending[txid];
+            return;
         }
-        else {
-            console.error("received message for txid with no callback");
-        }
+        console.error("received message for txid[%s] with no callback", txid);
     };
 
     var create = function (network, edPrivateKey, edPublicKey, cb) {
