@@ -27,19 +27,6 @@ define([
 
         var toolbar;
         var editor;
-        var $iframe = $('#pad-iframe').contents();
-        var $previewContainer = $iframe.find('#previewContainer');
-        var $preview = $iframe.find('#preview');
-        $preview.click(function (e) {
-            if (!e.target) { return; }
-            var $t = $(e.target);
-            if ($t.is('a') || $t.parents('a').length) {
-                e.preventDefault();
-                var $a = $t.is('a') ? $t : $t.parents('a').first();
-                var href = $a.attr('href');
-                window.open(href);
-            }
-        });
 
         var secret = Cryptpad.getSecrets();
         var readOnly = secret.keys && !secret.keys.editKeyStr;
@@ -52,6 +39,20 @@ define([
         };
 
         var andThen = function (CMeditor) {
+            var $iframe = $('#pad-iframe').contents();
+            var $previewContainer = $iframe.find('#previewContainer');
+            var $preview = $iframe.find('#preview');
+            $preview.click(function (e) {
+                if (!e.target) { return; }
+                var $t = $(e.target);
+                if ($t.is('a') || $t.parents('a').length) {
+                    e.preventDefault();
+                    var $a = $t.is('a') ? $t : $t.parents('a').first();
+                    var href = $a.attr('href');
+                    window.open(href);
+                }
+            });
+
             var CodeMirror = Cryptpad.createCodemirror(CMeditor, ifrw, Cryptpad);
             $iframe.find('.CodeMirror').addClass('fullPage');
             editor = CodeMirror.editor;
