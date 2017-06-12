@@ -55,6 +55,7 @@ define([
         $row.find('.upCancel').html('-');
         var $pv = $row.find('.progressValue');
         var $pb = $row.find('.progressContainer');
+        var $link = $row.find('.upLink');
 
         var updateProgress = function (progressValue) {
             $pv.text(Math.round(progressValue*100)/100 + '%');
@@ -103,9 +104,17 @@ define([
                 console.log("encrypted blob is now available as %s", uri);
 
                 var b64Key = Nacl.util.encodeBase64(key);
-                Cryptpad.replaceHash(Cryptpad.getFileHashFromKeys(id, b64Key));
 
-                APP.toolbar.addElement(['fileshare'], {});
+                var hash = Cryptpad.getFileHashFromKeys(id, b64Key);
+
+                $link.attr('href', '/file/#' + hash)
+                    .click(function (e) {
+                        e.preventDefault();
+                        window.open($link.attr('href'), '_blank');
+                    });
+
+                // TODO add button to table which copies link to clipboard?
+                //APP.toolbar.addElement(['fileshare'], {});
 
                 var title = document.title = metadata.name;
                 myFile = blob;
@@ -114,7 +123,7 @@ define([
                 Title.updateTitle(title || defaultName);
                 APP.toolbar.title.show();
                 console.log(title);
-                Cryptpad.alert(Messages._getKey('upload_success', [title]));
+                Cryptpad.log(Messages._getKey('upload_success', [title]));
                 queue.inProgress = false;
                 queue.next();
             });
@@ -125,9 +134,11 @@ define([
                 queue.inProgress = false;
                 queue.next();
                 if (e === 'TOO_LARGE') {
+                    // TODO update table to say too big?
                     return void Cryptpad.alert(Messages.upload_tooLarge);
                 }
                 if (e === 'NOT_ENOUGH_SPACE') {
+                    // TODO update table to say not enough space?
                     return void Cryptpad.alert(Messages.upload_notEnoughSpace);
                 }
                 console.error(e);
@@ -184,7 +195,11 @@ define([
             $tr.find('.progressValue').text(Messages.upload_cancelled);
         });
 
-        $('<td>').text(obj.metadata.name).appendTo($tr);
+        var $link = $('<a>', {
+            'class': 'upLink',
+        }).text(obj.metadata.name);
+
+        $('<td>').append($link).appendTo($tr);
         $('<td>').text(prettySize(estimate)).appendTo($tr);
         $('<td>', {'class': 'upProgress'}).append($progressBar).append($progressValue).appendTo($tr);
         $('<td>', {'class': 'upCancel'}).append($cancel).appendTo($tr);
