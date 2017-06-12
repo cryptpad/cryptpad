@@ -144,6 +144,11 @@ define([
 
             var onModeChanged = function (mode) {
                 var $codeMirror = $iframe.find('.CodeMirror');
+                window.clearTimeout(APP.previewTo);
+                $codeMirror.addClass('transition');
+                APP.previewTo = window.setTimeout(function () {
+                    $codeMirror.removeClass('transition');
+                }, 500);
                 if (mode === "markdown") {
                     APP.$previewButton.show();
                     Cryptpad.getPadAttribute('previewMode', function (e, data) {
@@ -244,6 +249,11 @@ define([
                 $previewButton.attr('title', Messages.previewButtonTitle);
                 $previewButton.click(function () {
                     var $codeMirror = $iframe.find('.CodeMirror');
+                    window.clearTimeout(APP.previewTo);
+                    $codeMirror.addClass('transition');
+                    APP.previewTo = window.setTimeout(function () {
+                        $codeMirror.removeClass('transition');
+                    }, 500);
                     if (CodeMirror.highlightMode !== 'markdown') {
                         $previewContainer.show();
                     }

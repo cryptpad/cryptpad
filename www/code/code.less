@@ -22,7 +22,9 @@ body {
     display: inline-block;
     height: 100%;
     width: 50%;
-    transition: width @slideTime, min-width @slideTime, max-width @slideTime;
+    &.transition {
+        transition: width @slideTime, min-width @slideTime, max-width @slideTime;
+    }
     min-width: 20%;
     max-width: 80%;
     resize: horizontal;
