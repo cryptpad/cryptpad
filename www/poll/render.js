@@ -72,7 +72,7 @@ var Renderer = function (Cryptpad) {
     var getCellValue = Render.getCellValue = function (obj, cellId) {
         var value = Cryptpad.find(obj, ['table', 'cells'].concat([cellId]));
         if (typeof value === 'boolean') {
-            return (value === true ? '1' : '0');
+            return (value === true ? 1 : 0);
         } else {
             return value;
         }
