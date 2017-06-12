@@ -97,7 +97,8 @@ window.canvas = canvas;
         var updateBrushWidth = function () {
             var val = $width.val();
             canvas.freeDrawingBrush.width = Number(val);
-            $widthLabel.text(val);
+            $widthLabel.text(val)
+            $widthLabel.text(Cryptpad.Messages._getKey("canvas_widthLabel", [val]))
             $widthLabel.text("width: " + $width.val())
             createCursor();
             console.log("change size")
@@ -111,7 +112,7 @@ window.canvas = canvas;
             brush.opacity = Number(val);
             canvas.freeDrawingBrush.color = Colors.hex2rgba(brush.color, brush.opacity);
             $opacityLabel.text(val)
-            $opacityLabel.text("opacity: " + $opacity.val());
+            $opacityLabel.text(Cryptpad.Messages._getKey("canvas_opacityLabel", [val]));
             createCursor();
             console.log("change opacity")
             console.log("opacity: " + $opacity.val())

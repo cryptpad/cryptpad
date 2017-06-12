@@ -211,6 +211,9 @@ define(function () {
     out.canvas_enable = "Enable draw";
     out.canvas_width = "Width";
     out.canvas_opacity = "Opacity";
+    out.canvas_opacityLabel = "opacity: {0}";
+    out.canvas_widthLabel = "Width: {0}";
+    
 
     // File manager
 
