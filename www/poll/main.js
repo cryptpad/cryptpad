@@ -364,7 +364,7 @@ define([
         e.stopPropagation();
 
         if (!APP.ready) { return; }
-        if (!isKeyup && e.which !== 1) { return; }
+        if (!isKeyup && e.which !== 1) { return; } // only allow left clicks
 
         var target = e && e.target;
 
