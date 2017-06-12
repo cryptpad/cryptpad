@@ -758,7 +758,8 @@ var create = function (info) {
                 Cryptpad.setAttribute(HIDE_INTRODUCTION_TEXT, "1", function (e) {
                     if (e) { console.error(e); }
                 });
-            } else if (value === "1") {
+                showHelp(true);
+            } else {
                 showHelp(false);
             }
         });
