@@ -98,7 +98,7 @@ define([
 
         // Enable the checkboxes for the user's column (committed or not)
         $('input[disabled="disabled"][data-rt-id^="' + id + '"]').removeAttr('disabled');
-        $('input[type="checkbox"][data-rt-id^="' + id + '"]').addClass('enabled');
+        $('input[type="number"][data-rt-id^="' + id + '"]').addClass('enabled');
         $('.lock[data-rt-id="' + id + '"]').addClass('fa-unlock').removeClass('fa-lock').attr('title', Messages.poll_unlocked);
 
         if (isOwnColumnCommitted()) { return; }
@@ -117,7 +117,7 @@ define([
         APP.editable.col.forEach(function (id) {
             $input = $('input[disabled="disabled"][data-rt-id^="' + id + '"]').removeAttr('disabled');
             $input.parent().addClass('editing');
-            $('input[type="checkbox"][data-rt-id^="' + id + '"]').addClass('enabled');
+            $('input[type="number"][data-rt-id^="' + id + '"]').addClass('enabled');
             $('.lock[data-rt-id="' + id + '"]').addClass('fa-unlock').removeClass('fa-lock').attr('title', Messages.poll_unlocked);
         });
     };
@@ -276,10 +276,10 @@ define([
                 Render.setValue(object, id, input.value);
                 change(null, null, null, 50);
                 break;
-            case 'checkbox':
-                debug("checkbox[tr-id='%s'] %s", id, input.checked);
+            case 'number':
+                debug("checkbox[tr-id='%s'] %s", id, input.value);
                 if (APP.editable.col.indexOf(x) >= 0 || x === APP.userid) {
-                    Render.setValue(object, id, input.checked);
+                    Render.setValue(object, id, parseInt(input.value));
                     change();
                 } else {
                     debug('checkbox locked');
@@ -378,10 +378,18 @@ define([
                     hideInputs(target, isKeyup);
                     break;
                 }
+                if ($(target).is('input[type="number"]')) { break; }
+
                 handleInput(target);
                 break;
+            case 'LABEL':
+                var input = $('input[type="number"][id=' + $(target).attr('for') + ']');
+                var value = parseInt(input.val());
+                input.val((value + 1) % 4);
+
+                handleInput(input[0]);
+                break;
             case 'SPAN':
-            //case 'LABEL':
                 if (shouldLock) {
                     break;
                 }

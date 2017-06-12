@@ -9,6 +9,8 @@
 @poll-border-color: #555;
 @poll-cover-color: #000;
 @poll-fg: #000;
+@poll-option-yellow: #ff5;
+@poll-option-gray: #ccc;
 
 html, body {
     width: 100%;
@@ -251,7 +253,7 @@ form.realtime, div.realtime {
                         }
 
                         input {
-                            &[type="checkbox"] {
+                            &[type="number"] {
                                 &:not(.editable) {
                                     display: none;
 
@@ -259,31 +261,51 @@ form.realtime, div.realtime {
                                         display: block;
                                         font-weight: bold;
 
-                                        background-color: @cp-red;
                                         color: @poll-cover-color;
 
                                         &:after {
                                             height: 100%;
                                         }
 
-                                        &:after { content: "✖"; }
-
                                         display: block;
                                         &.yes {
                                             background-color: @cp-green;
-                                            &:after { content: "✔"; }
                                         }
 
                                         &.uncommitted {
                                             background: #ddd;
                                         }
 
-
                                         &.mine {
                                             display: none;
                                         }
                                     }
                                 }
+                            }
+                        }
+
+                        input[type="number"][value="0"] {
+                            ~ .cover {
+                                background-color: @cp-red;
+                                &:after { content: "✖"; }
+                            }
+                        }
+                        input[type="number"][value="1"] {
+                            ~ .cover {
+                                background-color: @cp-green;
+                                &:after { content: "✔"; }
+                            }
+                        }
+                        input[type="number"][value="2"] {
+                            ~ .cover {
+                                background-color: @poll-option-yellow;
+                                &:after { content: "~"; }
+                            }
+                        }
+                        input[type="number"][value="3"] {
+                            ~ .cover {
+                                background-color: @poll-option-gray;
+                                &:after { content: "?"; }
                             }
                         }
                     }
