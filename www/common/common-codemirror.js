@@ -53,7 +53,7 @@ define([
             if (exp.$language) {
                 var name = exp.$language.find('a[data-value="' + mode + '"]').text() || undefined;
                 name = name ? Messages.languageButton + ' ('+name+')' : Messages.languageButton;
-                exp.$language.setValue(name);
+                exp.$language.setValue(mode, name);
             }
             if(cb) { cb(mode); }
         };
@@ -86,7 +86,7 @@ define([
                 if ($select) {
                     var name = theme || undefined;
                     name = name ? Messages.themeButton + ' ('+theme+')' : Messages.themeButton;
-                    $select.setValue(name);
+                    $select.setValue(theme, name);
                 }
             };
         }());
