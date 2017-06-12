@@ -108,14 +108,13 @@ define([
     };
 
     var unlockElements = function () {
-        var $input;
         APP.editable.row.forEach(function (id) {
-            $input = $('input[type="text"][disabled="disabled"][data-rt-id="' + id + '"]').removeAttr('disabled');
+            var $input = $('input[type="text"][disabled="disabled"][data-rt-id="' + id + '"]').removeAttr('disabled');
             $input.parent().parent().addClass('editing');
             $('span.edit[data-rt-id="' + id + '"]').css('visibility', 'hidden');
         });
         APP.editable.col.forEach(function (id) {
-            $input = $('input[disabled="disabled"][data-rt-id^="' + id + '"]').removeAttr('disabled');
+            var $input = $('input[disabled="disabled"][data-rt-id^="' + id + '"]').removeAttr('disabled');
             $input.parent().addClass('editing');
             $('input[type="number"][data-rt-id^="' + id + '"]').addClass('enabled');
             $('.lock[data-rt-id="' + id + '"]').addClass('fa-unlock').removeClass('fa-lock').attr('title', Messages.poll_unlocked);
