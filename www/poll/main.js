@@ -383,7 +383,7 @@ define([
                     hideInputs(target, isKeyup);
                     break;
                 }
-                if ($(target).is('input[type="number"]')) { break; }
+                if ($(target).is('input[type="number"]')) { console.error("number input focused?"); break; }
 
                 handleInput(target);
                 break;
