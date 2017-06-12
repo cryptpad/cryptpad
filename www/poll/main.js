@@ -107,12 +107,15 @@ define([
     };
 
     var unlockElements = function () {
+        var $input;
         APP.editable.row.forEach(function (id) {
-            $('input[type="text"][disabled="disabled"][data-rt-id="' + id + '"]').removeAttr('disabled');
+            $input = $('input[type="text"][disabled="disabled"][data-rt-id="' + id + '"]').removeAttr('disabled');
+            $input.parent().parent().addClass('editing');
             $('span.edit[data-rt-id="' + id + '"]').css('visibility', 'hidden');
         });
         APP.editable.col.forEach(function (id) {
-            $('input[disabled="disabled"][data-rt-id^="' + id + '"]').removeAttr('disabled');
+            $input = $('input[disabled="disabled"][data-rt-id^="' + id + '"]').removeAttr('disabled');
+            $input.parent().addClass('editing');
             $('input[type="checkbox"][data-rt-id^="' + id + '"]').addClass('enabled');
             $('.lock[data-rt-id="' + id + '"]').addClass('fa-unlock').removeClass('fa-lock').attr('title', Messages.poll_unlocked);
         });
@@ -296,6 +299,7 @@ define([
         $('.lock[data-rt-id!="' + APP.userid + '"]').addClass('fa-lock').removeClass('fa-unlock').attr('title', Messages.poll_locked);
         var $cells = APP.$table.find('thead td:not(.uncommitted), tbody td');
         $cells.find('[type="text"][data-rt-id!="' + APP.userid + '"]').attr('disabled', true);
+        $cells.removeClass('editing');
         $('.edit[data-rt-id!="' + APP.userid + '"]').css('visibility', 'visible');
         APP.editable.col = [APP.userid];
         APP.editable.row = [];
@@ -352,6 +356,8 @@ define([
         e.stopPropagation();
 
         if (!APP.ready) { return; }
+        if (e.which !== 1) { return; }
+
         var target = e && e.target;
 
         if (!target) { return void debug("NO TARGET"); }

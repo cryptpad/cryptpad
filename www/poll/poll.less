@@ -4,6 +4,7 @@
 @poll-th-bg: #aaa;
 @poll-th-user-bg: #999;
 @poll-td-bg: #aaa;
+@poll-editing: #88b8cc;
 @poll-placeholder: #666;
 @poll-border-color: #555;
 @poll-cover-color: #000;
@@ -195,6 +196,9 @@ form.realtime, div.realtime {
     table {
         border-collapse: collapse;
         width: ~"calc(100% - 1px)";
+        .editing {
+            background-color: @poll-editing;
+        }
         tr {
             td:first-child {
                 position:absolute;
@@ -327,8 +331,12 @@ form.realtime, div.realtime {
         }
 
         tbody {
+            td:not(.editing) {
+                .text-cell {
+                    background: @poll-td-bg;
+                }
+            }
             .text-cell {
-                background: @poll-td-bg;
                 //border-radius: 20px 0 0 20px;
                 input[type="text"] {
                     width: ~"calc(100% - 50px)";
