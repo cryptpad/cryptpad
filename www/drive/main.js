@@ -485,6 +485,7 @@ define([
         };
 
         var getDate = function (sDate) {
+            if (!sDate) { return ''; }
             var ret = sDate.toString();
             try {
                 var date = new Date(sDate);
@@ -501,12 +502,15 @@ define([
             return ret;
         };
 
-        var openFile = function (fileEl, name) {
-            if (name) {
-                sessionStorage[Cryptpad.newPadNameKey] = name;
+        var openFile = function (el, href) {
+            if (!href) {
+                var data = filesOp.getFileData(el);
+                if (!data || !data.href) {
+                    return void logError("Missing data for the file", el, data);
+                }
+                href = data.href;
             }
-            window.open(fileEl);
-            delete sessionStorage[Cryptpad.newPadNameKey];
+            window.open(href);
         };
 
         var refresh = APP.refresh = function () {
@@ -529,7 +533,8 @@ define([
                     $name = $element.find('> .element');
                 }
                 $name.hide();
-                var name = path[path.length - 1];
+                var el = filesOp.find(path);
+                var name = filesOp.isFile(el) ? filesOp.getTitle(el)  : path[path.length - 1];
                 var $input = $('<input>', {
                     placeholder: name,
                     value: name
@@ -934,19 +939,9 @@ define([
         };
 
         var getElementName = function (path) {
-            // Trash root
-            if (filesOp.isInTrashRoot(path)) { return path[0]; }
-            // Root or trash
-            if (filesOp.isPathIn(path, [ROOT, TRASH])) { return path[path.length - 1]; }
-            // Unsorted or template
-            if (filesOp.isPathIn(path, ['hrefArray'])) {
-                var file = filesOp.find(path);
-                if (filesOp.isFile(file) && filesOp.getTitle(file)) {
-                    return filesOp.getTitle(file);
-                }
-            }
-            // default
-            return "???";
+            var file = filesOp.find(path);
+            if (!file || !filesOp.isFile(file)) { return '???'; }
+            return filesOp.getTitle(file);
         };
         // filesOp.moveElements is able to move several paths to a new location, including
         // the Trash or the "Unsorted files" folder
@@ -966,8 +961,9 @@ define([
             }
             var msg = Messages._getKey('fm_removeSeveralDialog', [paths.length]);
             if (paths.length === 1) {
-                var path = paths[0];
-                var name = path[0] === TEMPLATE ? filesOp.getTitle(filesOp.find(path)) : path[path.length - 1];
+                var path = paths[0].slice();
+                var el = filesOp.find(path);
+                var name = filesOp.isFile(el) ? getElementName(path) : path.pop();
                 msg = Messages._getKey('fm_removeDialog', [name]);
             }
             Cryptpad.confirm(msg, function (res) {
@@ -1094,30 +1090,27 @@ define([
 
         // In list mode, display metadata from the filesData object
         // _WORKGROUP_ : Do not display title, atime and ctime columns since we don't have files data
-        var addFileData = function (element, key, $span, displayTitle) {
+        var addFileData = function (element, $span) {
             if (!filesOp.isFile(element)) { return; }
 
+            var data = filesOp.getFileData(element);
+            if (!data) { return void logError("No data for the file", element); }
+
+            var name = filesOp.getTitle(element);
+
             // The element with the class '.name' is underlined when the 'li' is hovered
-            var $name = $('<span>', {'class': 'name', title: key}).text(key);
+            var $name = $('<span>', {'class': 'name', title: name}).text(name);
             $span.html('');
             $span.append($name);
 
-            if (!filesOp.getFileData(element)) {
-                return;
-            }
-            var hrefData = Cryptpad.parsePadUrl(element);
-            var data = filesOp.getFileData(element);
+            var hrefData = Cryptpad.parsePadUrl(data.href);
             var type = Messages.type[hrefData.type] || hrefData.type;
-            var $title = $('<span>', {'class': 'title listElement', title: data.title}).text(data.title);
             var $type = $('<span>', {'class': 'type listElement', title: type}).text(type);
             if (hrefData.hashData && hrefData.hashData.mode === 'view') {
                 $type.append(' (' + Messages.readonly+ ')');
             }
             var $adate = $('<span>', {'class': 'atime listElement', title: getDate(data.atime)}).text(getDate(data.atime));
             var $cdate = $('<span>', {'class': 'ctime listElement', title: getDate(data.ctime)}).text(getDate(data.ctime));
-            if (displayTitle && !isWorkgroup()) {
-                $span.append($title);
-            }
             $span.append($type);
             if (!isWorkgroup()) {
                 $span.append($adate).append($cdate);
@@ -1136,8 +1129,14 @@ define([
             $span.append($name).append($subfolders).append($files);
         };
 
-        var getFileIcon = function (href) {
+        var getFileIcon = function (id) {
             var $icon = $fileIcon.clone();
+
+            var data = filesOp.getFileData(id);
+            if (!data) { return $icon; }
+
+            var href = data.href;
+            if (!href) { return $icon; }
 
             if (href.indexOf('/pad/') !== -1) { $icon = $padIcon.clone(); }
             else if (href.indexOf('/code/') !== -1) { $icon = $codeIcon.clone(); }
@@ -1154,7 +1153,7 @@ define([
             var isTrash = path[0] === TRASH;
             var newPath = path.slice();
             var key;
-            if (isTrash && $.isArray(elPath)) {
+            if (isTrash && Array.isArray(elPath)) {
                 key = elPath[0];
                 elPath.forEach(function (k) { newPath.push(k); });
             } else {
@@ -1179,7 +1178,7 @@ define([
             if (isFolder) {
                 addFolderData(element, key, $element);
             } else {
-                addFileData(element, key, $element, true);
+                addFileData(element, $element);
             }
             $element.prepend($icon).dblclick(function () {
                 if (isFolder) {
@@ -1187,7 +1186,7 @@ define([
                     return;
                 }
                 if (isTrash) { return; }
-                openFile(root[key], key);
+                openFile(root[key]);
             });
             $element.addClass(liClass);
             $element.data('path', newPath);
@@ -1252,9 +1251,12 @@ define([
             if (APP.mobile()) {
                 return $title;
             }
+            var el = path[0] === SEARCH ? undefined : filesOp.find(path);
             path = path[0] === SEARCH ? path.slice(0,1) : path;
             path.forEach(function (p, idx) {
                 if (isTrash && [2,3].indexOf(idx) !== -1) { return; }
+
+                var name = p;
 
                 var $span = $('<span>', {'class': 'element'});
                 if (idx < path.length - 1) {
@@ -1266,9 +1268,10 @@ define([
                             module.displayDirectory(path.slice(0, sliceEnd));
                         });
                     }
+                } else if (idx > 0 && filesOp.isFile(el)) {
+                    name = getElementName(path);
                 }
 
-                var name = p;
                 if (idx === 0) { name = getPrettyName(p); }
                 else { $title.append(' > '); }
 
@@ -1414,24 +1417,12 @@ define([
                 $block.find('a.newFolder').click(function () {
                     filesOp.addFolder(currentPath, null, onCreated);
                 });
-                $block.find('a.newdoc').click(function () {
-                    var type = $(this).attr('data-type') || 'pad';
-                    // We can't create a hash for files before uploading the file
-                    if (type === 'file') { // TODO: remove when filename are gone?
-                        sessionStorage[Cryptpad.newPadPathKey] = filesOp.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
-                        window.open('/' + type + '/');
-                        return;
-                    }
-                    var name = Cryptpad.getDefaultName({type: type});
-                    filesOp.addFile(currentPath, name, type, onCreated);
-                });
-            } else {
-                $block.find('a.newdoc').click(function () {
-                    var type = $(this).attr('data-type') || 'pad';
-                    sessionStorage[Cryptpad.newPadPathKey] = filesOp.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
-                    window.open('/' + type + '/');
-                });
             }
+            $block.find('a.newdoc').click(function () {
+                var type = $(this).attr('data-type') || 'pad';
+                sessionStorage[Cryptpad.newPadPathKey] = filesOp.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
+                window.open('/' + type + '/');
+            });
 
             return $block;
         };
@@ -1521,67 +1512,44 @@ define([
             }
         };
         // _WORKGROUP_ : do not display title, atime and ctime in workgroups since we don't have files data
-        var getFileListHeader = function (displayTitle) {
+        var getFileListHeader = function () {
             var $fihElement = $('<li>', {'class': 'file-header header listElement element'});
             //var $fihElement = $('<span>', {'class': 'element'}).appendTo($fileHeader);
             var $fhIcon = $('<span>', {'class': 'icon'});
             var $fhName = $('<span>', {'class': 'name filename clickable'}).text(Messages.fm_fileName).click(onSortByClick);
-            var $fhTitle = $('<span>', {'class': 'title clickable'}).text(Messages.fm_title).click(onSortByClick);
             var $fhType = $('<span>', {'class': 'type clickable'}).text(Messages.fm_type).click(onSortByClick);
             var $fhAdate = $('<span>', {'class': 'atime clickable'}).text(Messages.fm_lastAccess).click(onSortByClick);
             var $fhCdate = $('<span>', {'class': 'ctime clickable'}).text(Messages.fm_creation).click(onSortByClick);
             // If displayTitle is false, it means the "name" is the title, so do not display the "name" header
-            $fihElement.append($fhIcon);
-            if (displayTitle || isWorkgroup()) {
-                $fihElement.append($fhName);
-            } else {
-                $fhTitle.width('auto');
-            }
-            if (!isWorkgroup()) {
-                $fihElement.append($fhTitle);
-            }
-            $fihElement.append($fhType);
+            $fihElement.append($fhIcon).append($fhName).append($fhType);
             if (!isWorkgroup()) {
                 $fihElement.append($fhAdate).append($fhCdate);
             }
             addFileSortIcon($fihElement);
             return $fihElement;
-            //return $fileHeader;
         };
 
-        var sortElements = function (folder, path, oldkeys, prop, asc, useHref, useData) {
+        var sortElements = function (folder, path, oldkeys, prop, asc, useId) {
             var root = filesOp.find(path);
             var test = folder ? filesOp.isFolder : filesOp.isFile;
-            var keys;
-            if (!useData) {
-                keys = oldkeys.filter(function (e) {
-                    return useHref ? test(e) : test(root[e]);
-                });
-            } else { keys = oldkeys.slice(); }
+            var keys = oldkeys.filter(function (e) {
+                return useId ? test(e) : test(root[e]);
+            });
             if (keys.length < 2) { return keys; }
             var mult = asc ? 1 : -1;
             var getProp = function (el, prop) {
-                if (prop) {
-                    var element = useHref || useData ? el : root[el];
-                    var e = useData ? element : filesOp.getFileData(element);
-                    if (!e) {
-                        e = {
-                            href : element,
-                            title : Messages.fm_noname,
-                            atime : 0,
-                            ctime : 0
-                        };
-                    }
-                    if (prop === 'type') {
-                        var hrefData = Cryptpad.parsePadUrl(e.href);
-                        return hrefData.type;
-                    }
-                    if (prop === 'atime' || prop === 'ctime') {
-                        return new Date(e[prop]);
-                    }
-                    return e && e.title ? e.title.toLowerCase() : '';
+                if (folder) { return el.toLowerCase(); }
+                var id = useId ? el : root[el];
+                var data = filesOp.getFileData(id);
+                if (!data) { return ''; }
+                if (prop === 'type') {
+                    var hrefData = Cryptpad.parsePadUrl(data.href);
+                    return hrefData.type;
                 }
-                return useData ? el.title.toLowerCase() : el.toLowerCase();
+                if (prop === 'atime' || prop === 'ctime') {
+                    return new Date(data[prop]);
+                }
+                return filesOp.getTitle(id).toLowerCase();
             };
             keys.sort(function(a, b) {
                 if (getProp(a, prop) < getProp(b, prop)) { return mult * -1; }
@@ -1591,7 +1559,6 @@ define([
             return keys;
         };
         var sortTrashElements = function (folder, oldkeys, prop, asc) {
-            //var root = files[TRASH];
             var test = folder ? filesOp.isFolder : filesOp.isFile;
             var keys = oldkeys.filter(function (e) {
                 return test(e.element);
@@ -1617,7 +1584,6 @@ define([
                     if (prop === 'atime' || prop === 'ctime') {
                         return new Date(e[prop]);
                     }
-                    return e.title.toLowerCase();
                 }
                 return el.name.toLowerCase();
             };
@@ -1649,27 +1615,27 @@ define([
             $container.append($fileHeader);
             var keys = unsorted;
             var sortBy = Cryptpad.getLSAttribute(SORT_FILE_BY);
-            sortBy = sortBy === "" ? sortBy = 'title' : sortBy;
+            sortBy = sortBy === "" ? sortBy = 'name' : sortBy;
             var sortedFiles = sortElements(false, [rootName], keys, sortBy, !getSortFileDesc(), true);
-            sortedFiles.forEach(function (href) {
-                var file = filesOp.getFileData(href);
+            sortedFiles.forEach(function (id) {
+                var file = filesOp.getFileData(id);
                 if (!file) {
                     //debug("Unsorted or template returns an element not present in filesData: ", href);
                     file = { title: Messages.fm_noname };
                     //return;
                 }
-                var idx = files[rootName].indexOf(href);
-                var $icon = getFileIcon(href);
-                var ro = filesOp.isReadOnlyFile(href);
+                var idx = files[rootName].indexOf(id);
+                var $icon = getFileIcon(id);
+                var ro = filesOp.isReadOnlyFile(id);
                 // ro undefined mens it's an old hash which doesn't support read-only
                 var roClass = typeof(ro) === 'undefined' ? ' noreadonly' : ro ? ' readonly' : '';
                 var $element = $('<li>', {
                     'class': 'file-element element element-row' + roClass,
                     draggable: draggable
                 });
-                addFileData(href, file.title, $element, false);
+                addFileData(id, $element);
                 $element.prepend($icon).dblclick(function () {
-                    openFile(href);
+                    openFile(id);
                 });
                 var path = [rootName, idx];
                 $element.data('path', path);
@@ -1691,20 +1657,19 @@ define([
             if (allfiles.length === 0) { return; }
             var $fileHeader = getFileListHeader(false);
             $container.append($fileHeader);
-            var keys = allfiles;
-
-            var sortedFiles = sortElements(false, [FILES_DATA], keys, Cryptpad.getLSAttribute(SORT_FILE_BY), !getSortFileDesc(), false, true);
-            sortedFiles.forEach(function (file) {
-                var $icon = getFileIcon(file.href);
-                var ro = filesOp.isReadOnlyFile(file.href);
-                // ro undefined mens it's an old hash which doesn't support read-only
+            var keys = filesOp.getFiles([FILES_DATA]);
+            var sortedFiles = sortElements(false, [FILES_DATA], keys, Cryptpad.getLSAttribute(SORT_FILE_BY), !getSortFileDesc(), true);
+            sortedFiles.forEach(function (id) {
+                var $icon = getFileIcon(id);
+                var ro = filesOp.isReadOnlyFile(id);
+                // ro undefined maens it's an old hash which doesn't support read-only
                 var roClass = typeof(ro) === 'undefined' ? ' noreadonly' : ro ? ' readonly' : '';
                 var $element = $('<li>', { 'class': 'file-element element element-row' + roClass });
-                addFileData(file.href, file.title, $element, false);
-                $element.data('path', [FILES_DATA, allfiles.indexOf(file)]);
-                $element.data('element', file.href);
+                addFileData(id, $element);
+                $element.data('path', [FILES_DATA, id]);
+                $element.data('element', id);
                 $element.prepend($icon).dblclick(function () {
-                    openFile(file.href);
+                    openFile(id);
                 });
                 $element.click(function(e) {
                     e.stopPropagation();
@@ -1720,24 +1685,18 @@ define([
             var filesList = [];
             var root = files[TRASH];
             // Elements in the trash are JS arrays (several elements can have the same name)
-            [true,false].forEach(function (folder) {
-                var testElement = filesOp.isFile;
-                if (!folder) {
-                    testElement = filesOp.isFolder;
+            Object.keys(root).forEach(function (key) {
+                if (!Array.isArray(root[key])) {
+                    logError("Trash element has a wrong type", root[key]);
+                    return;
                 }
-                Object.keys(root).forEach(function (key) {
-                    if (!$.isArray(root[key])) {
-                        logError("Trash element has a wrong type", root[key]);
-                        return;
-                    }
-                    root[key].forEach(function (el, idx) {
-                        if (testElement(el.element)) { return; }
-                        var spath = [key, idx, 'element'];
-                        filesList.push({
-                            element: el.element,
-                            spath: spath,
-                            name: key
-                        });
+                root[key].forEach(function (el, idx) {
+                    if (!filesOp.isFile(el.element) && !filesOp.isFolder(el.element)) { return; }
+                    var spath = [key, idx, 'element'];
+                    filesList.push({
+                        element: el.element,
+                        spath: spath,
+                        name: key
                     });
                 });
             });
@@ -1763,8 +1722,9 @@ define([
                     var parsed = Cryptpad.parsePadUrl(href);
                     var $table = $('<table>');
                     var $icon = $('<td>', {'rowspan': '3', 'class': 'icon'}).append(getFileIcon(href));
-                    var $title = $('<td>', {'class': 'col1 title'}).text(r.data.title).click(function () {
-                        openFile(r.data.href);
+                    var $title = $('<td>', {'class': 'col1 title'}).text(r.data.title)
+                        .click(function () {
+                        openFile(null, r.data.href);
                     });
                     var $typeName = $('<td>', {'class': 'label2'}).text(Messages.fm_type);
                     var $type = $('<td>', {'class': 'col2'}).text(Messages.type[parsed.type] || parsed.type);
@@ -2152,29 +2112,12 @@ define([
         };
 
         var stringifyPath = function (path) {
-            if (!$.isArray(path)) { return; }
-            var rootName = function (s) {
-                var prettyName;
-                switch (s) {
-                    case ROOT:
-                        prettyName = ROOT_NAME;
-                        break;
-                    case FILES_DATA:
-                        prettyName = FILES_DATA_NAME;
-                        break;
-                    case TRASH:
-                        prettyName = TRASH_NAME;
-                        break;
-                    default:
-                        prettyName = s;
-                }
-                return prettyName;
-            };
+            if (!Array.isArray(path)) { return; }
             var $div = $('<div>');
             var i = 0;
             var space = 10;
             path.forEach(function (s) {
-                if (i === 0) { s = rootName(s); }
+                if (i === 0) { s = getPrettyName(s); }
                 $div.append($('<span>', {'style': 'margin: 0 0 0 ' + i * space + 'px;'}).text(s));
                 $div.append($('<br>'));
                 i++;
@@ -2182,11 +2125,15 @@ define([
             return $div.html();
         };
 
-        var getReadOnlyUrl = APP.getRO = function (href) {
-            if (!filesOp.isFile(href)) { return; }
-            var i = href.indexOf('#') + 1;
-            var parsed = Cryptpad.parsePadUrl(href);
-            var base = href.slice(0, i);
+        var getReadOnlyUrl = APP.getRO = function (id) {
+            if (!filesOp.isFile(id)) { return; }
+            var data = filesOp.getFileData(id);
+            if (!data) { return; }
+            var parsed = Cryptpad.parsePadUrl(data.href);
+            if (parsed.hashData.type !== "pad") { return; }
+            var origin = window.location.origin;
+            var i = data.href.indexOf('#') + 1;
+            var base = origin + data.href.slice(0, i);
             var hrefsecret = Cryptpad.getSecrets(parsed.type, parsed.hash);
             if (!hrefsecret.keys) { return; }
             var viewHash = Cryptpad.getViewHashFromKeys(hrefsecret.channel, hrefsecret.keys);
@@ -2210,16 +2157,21 @@ define([
             var base = window.location.origin;
             var $d = $('<div>');
             $('<strong>').text(Messages.fc_prop).appendTo($d);
+
+            var data = filesOp.getFileData(el);
+            if (!data || !data.href) { return void cb(void 0, $d); }
+
             $('<br>').appendTo($d);
             if (!ro) {
                 $('<label>', {'for': 'propLink'}).text(Messages.editShare).appendTo($d);
-                $('<input>', {'id': 'propLink', 'readonly': 'readonly', 'value': base + el})
+                $('<input>', {'id': 'propLink', 'readonly': 'readonly', 'value': base + data.href})
                 .click(function () { $(this).select(); })
                 .appendTo($d);
             }
-            var parsed = Cryptpad.parsePadUrl(el);
+
+            var parsed = Cryptpad.parsePadUrl(data.href);
             if (parsed.hashData && parsed.hashData.type === 'pad') {
-                var roLink = ro ? base + el : getReadOnlyUrl(base + el);
+                var roLink = ro ? base + data.href : getReadOnlyUrl(el);
                 if (roLink) {
                     $('<label>', {'for': 'propROLink'}).text(Messages.viewShare).appendTo($d);
                     $('<input>', {'id': 'propROLink', 'readonly': 'readonly', 'value': roLink})
@@ -2230,7 +2182,8 @@ define([
 
             if (APP.loggedIn && AppConfig.enablePinning) {
                 // check the size of this file...
-                Cryptpad.getFileSize(el, function (e, bytes) {
+                console.log(data.href);
+                Cryptpad.getFileSize(data.href, function (e, bytes) {
                     if (e) {
                         // there was a problem with the RPC
                         logError(e);
@@ -2293,7 +2246,7 @@ define([
                     var el = filesOp.find(p.path);
                     if (filesOp.isFolder(el)) { return; }
                     var roUrl = getReadOnlyUrl(el);
-                    openFile(roUrl, false);
+                    openFile(null, roUrl);
                 });
             }
             else if ($(this).hasClass('newfolder')) {
@@ -2337,7 +2290,7 @@ define([
                     if (filesOp.isPathIn(p.path, [FILES_DATA])) { el = el.href; }
                     if (!el || filesOp.isFolder(el)) { return; }
                     var roUrl = getReadOnlyUrl(el);
-                    openFile(roUrl, false);
+                    openFile(null, roUrl);
                 });
             }
             else if ($(this).hasClass('delete')) {
@@ -2387,8 +2340,8 @@ define([
             }
             else if ($(this).hasClass("newdoc")) {
                 var type = $(this).data('type') || 'pad';
-                var name = Cryptpad.getDefaultName({type: type});
-                filesOp.addFile(path, name, type, onCreated);
+                sessionStorage[Cryptpad.newPadPathKey] = filesOp.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
+                window.open('/' + type + '/');
             }
             module.hideMenu();
         });
@@ -2550,6 +2503,12 @@ define([
             }
             module.resetTree();
             return false;
+        }).on('change', ['drive', 'migrate'], function () {
+            var path = arguments[2];
+            var value = arguments[1];
+            if (path[1] === "migrate" && value === 1) {
+                if (APP.onDisconnect) { APP.onDisconnect(true); }
+            }
         });
 
         $iframe.find('#tree').mousedown(function () {
@@ -2588,8 +2547,10 @@ define([
                         atime: new Date().toISOString(),
                         ctime: new Date().toISOString()
                     };
-                    filesOp.pushData(data);
-                    filesOp.add(data);
+                    filesOp.pushData(data, function (e, id) {
+                        if (e) { return void console.error("Error while creating the default pad:", e); } // TODO LIMIT?
+                        filesOp.add(id);
+                    });
                     if (typeof(cb) === "function") { cb(); }
                 });
                 delete sessionStorage.createReadme;
@@ -2777,11 +2738,11 @@ define([
                 Cryptpad.removeLoadingScreen();
             });
         };
-        var onDisconnect = function () {
+        var onDisconnect = APP.onDisconnect = function (noAlert) {
             setEditable(false);
             if (APP.refresh) { APP.refresh(); }
             APP.toolbar.failed();
-            Cryptpad.alert(Messages.common_connectionLost, undefined, true);
+            if (!noAlert) { Cryptpad.alert(Messages.common_connectionLost, undefined, true); }
         };
         var onReconnect = function (info) {
             setEditable(true);
