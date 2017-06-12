@@ -133,6 +133,11 @@ define(function () {
     out.slideOptionsTitle = "Personnaliser la présentation";
     out.slideOptionsButton = "Enregistrer (Entrée)";
 
+    out.languageButton = "Langage";
+    out.languageButtonTitle = "Sélectionner le langage à utiliser pour la coloration syntaxique";
+    out.themeButton = "Thème";
+    out.themeButtonTitle = "Sélectionner le thème de couleurs à utiliser pour les éditeurs de code et de présentations";
+
     out.editShare = "Lien d'édition";
     out.editShareTitle = "Copier le lien d'édition dans le presse-papiers";
     out.editOpen = "Éditer dans un nouvel onglet";

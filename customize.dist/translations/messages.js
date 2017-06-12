@@ -135,6 +135,11 @@ define(function () {
     out.slideOptionsTitle = "Customize your slides";
     out.slideOptionsButton = "Save (enter)";
 
+    out.languageButton = "Language";
+    out.languageButtonTitle = "Select the language to use for the syntax highlighting";
+    out.themeButton = "Theme";
+    out.themeButtonTitle = "Select the color theme to use for the code and slide editors";
+
     out.editShare = "Editing link";
     out.editShareTitle = "Copy the editing link to clipboard";
     out.editOpen = "Open editing link in a new tab";

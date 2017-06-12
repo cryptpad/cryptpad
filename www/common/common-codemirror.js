@@ -48,15 +48,11 @@ define([
 
         var setMode = exp.setMode = function (mode, cb) {
             exp.highlightMode = mode;
-            if (mode === 'text') {
-                editor.setOption('mode', 'text');
-                if (cb) { cb('text'); }
-                return;
-            }
-            CMeditor.autoLoadMode(editor, mode);
+            if (mode !== "text") { CMeditor.autoLoadMode(editor, mode); }
             editor.setOption('mode', mode);
             if (exp.$language) {
-                var name = exp.$language.find('a[data-value="' + mode + '"]').text() || 'Mode';
+                var name = exp.$language.find('a[data-value="' + mode + '"]').text() || undefined;
+                name = name ? Messages.languageButton + ' ('+name+')' : Messages.languageButton;
                 exp.$language.setValue(name);
             }
             if(cb) { cb(mode); }
@@ -88,7 +84,9 @@ define([
                     editor.setOption('theme', theme);
                 }
                 if ($select) {
-                    $select.setValue(theme || 'Theme');
+                    var name = theme || undefined;
+                    name = name ? Messages.themeButton + ' ('+theme+')' : Messages.themeButton;
+                    $select.setValue(name);
                 }
             };
         }());
@@ -152,6 +150,7 @@ define([
                 isSelect: true,
             };
             var $block = exp.$language = Cryptpad.createDropdown(dropdownConfig);
+            $block.find('button').attr('title', Messages.languageButtonTitle);
             $block.find('a').click(function () {
                 setMode($(this).attr('data-value'), onModeChanged);
                 onLocal();
@@ -185,6 +184,7 @@ define([
                 initialValue: lastTheme
             };
             var $block = exp.$theme = Cryptpad.createDropdown(dropdownConfig);
+            $block.find('button').attr('title', Messages.themeButtonTitle);
 
             setTheme(lastTheme, $block);
 
