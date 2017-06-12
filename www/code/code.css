@@ -18,10 +18,12 @@ body {
   display: inline-block;
   height: 100%;
   width: 50%;
-  transition: width 500ms, min-width 500ms, max-width 500ms;
   min-width: 20%;
   max-width: 80%;
   resize: horizontal;
+}
+.CodeMirror.transition {
+  transition: width 500ms, min-width 500ms, max-width 500ms;
 }
 .CodeMirror.fullPage {
   min-width: 100%;
