@@ -94,7 +94,7 @@ types of messages:
             delete ctx.pending[txid];
         }
         else {
-            console.log("received message for txid with no callback");
+            console.error("received message for txid with no callback");
         }
     };
 
