@@ -42,7 +42,8 @@ define([
     common.displayNameKey = 'cryptpad.username';
     var newPadNameKey = common.newPadNameKey = "newPadName";
     var newPadPathKey = common.newPadPathKey = "newPadPath";
-    var storageKey = common.storageKey = 'CryptPad_RECENTPADS';
+    var oldStorageKey = common.oldStorageKey = 'CryptPad_RECENTPADS';
+    common.storageKey = 'filesData';
     var PINNING_ENABLED = AppConfig.enablePinning;
 
     var store;
@@ -327,7 +328,8 @@ define([
     };
     // Remove everything from RecentPads that is not an object and check the objects
     var checkRecentPads = common.checkRecentPads = function (pads) {
-        pads.forEach(function (pad, i) {
+        Object.keys(pads).forEach(function (id, i) {
+            var pad = pads[id];
             if (pad && typeof(pad) === 'object') {
                 var parsedHash = checkObjectData(pad);
                 if (!parsedHash || !parsedHash.type) {
@@ -347,7 +349,7 @@ define([
         require(['/customize/store.js'], function(Legacy) { // TODO DEPRECATE_F
             Legacy.ready(function (err, legacy) {
                 if (err) { cb(err, null); return; }
-                legacy.get(storageKey, function (err2, recentPads) {
+                legacy.get(oldStorageKey, function (err2, recentPads) {
                     if (err2) { cb(err2, null); return; }
                     if (Array.isArray(recentPads)) {
                         feedback('MIGRATE_LEGACY_STORE');
@@ -361,23 +363,30 @@ define([
     };
 
     // Create untitled documents when no name is given
+    var getLocaleDate = common.getLocaleDate = function () {
+        if (window.Intl && window.Intl.DateTimeFormat) {
+            var options = {weekday: "short", year: "numeric", month: "long", day: "numeric"};
+            return new window.Intl.DateTimeFormat(undefined, options).format(new Date());
+        }
+        return new Date().toString().split(' ').slice(0,4).join(' ');
+    };
     var getDefaultName = common.getDefaultName = function (parsed) {
         var type = parsed.type;
-        var name = (Messages.type)[type] + ' - ' + new Date().toString().split(' ').slice(0,4).join(' ');
+        var name = (Messages.type)[type] + ' - ' + getLocaleDate();
         return name;
     };
-    var isDefaultName = common.isDefaultName = function (parsed, title) {
+    common.isDefaultName = function (parsed, title) {
         var name = getDefaultName(parsed);
         return title === name;
     };
 
-    var makePad = function (href, title) {
+    var makePad = common.makePad = function (href, title) {
         var now = +new Date();
         return {
             href: href,
             atime: now,
             ctime: now,
-            title: title || window.location.hash.slice(1, 9),
+            title: title || getDefaultName(parsePadUrl(href)),
         };
     };
 
@@ -428,8 +437,10 @@ define([
         return templates;
     };
     common.addTemplate = function (data) {
-        getStore().pushData(data);
-        getStore().addPad(data.href, ['template']);
+        getStore().pushData(data, function (e, id) {
+            if (e) { return void console.error("Error while adding a template:", e); } // TODO LIMIT
+            getStore().addPad(id, ['template']);
+        });
     };
 
     common.isTemplate = function (href) {
@@ -472,13 +483,13 @@ define([
     // STORAGE
     /* fetch and migrate your pad history from the store */
     var getRecentPads = common.getRecentPads = function (cb) {
-        getStore().getDrive(storageKey, function (err, recentPads) {
-            if (Array.isArray(recentPads)) {
+        getStore().getDrive('filesData', function (err, recentPads) {
+            if (typeof(recentPads) === "object") {
                 checkRecentPads(recentPads);
                 cb(void 0, recentPads);
                 return;
             }
-            cb(void 0, []);
+            cb(void 0, {});
         });
     };
 
@@ -502,50 +513,13 @@ define([
 
     // STORAGE
     common.forgetPad = function (href, cb) {
-        var parsed = parsePadUrl(href);
-
-        var callback = function (err) {
-            if (err) {
-                cb(err);
-                return;
-            }
-
-            getStore().keys(function (err, keys) {
-                if (err) {
-                    cb(err);
-                    return;
-                }
-                var toRemove = keys.filter(function (k) {
-                    return k.indexOf(parsed.hash) === 0;
-                });
-
-                if (!toRemove.length) {
-                    cb();
-                    return;
-                }
-                getStore().removeBatch(toRemove, function (err, data) {
-                    cb(err, data);
-                });
-            });
-        };
-
         if (typeof(getStore().forgetPad) === "function") {
-            getStore().forgetPad(common.getRelativeHref(href), callback);
+            getStore().forgetPad(common.getRelativeHref(href), cb);
+            return;
         }
+        cb ("store.forgetPad is not a function");
     };
 
-    var updateFileName = function (href, oldName, newName) {
-        var fo = getStore().getProxy().fo;
-        var paths = fo.findFileInRoot(href);
-        paths.forEach(function (path) {
-            if (path.length !== 2) { return; }
-            var name = path[1].split('_')[0];
-            var parsed = parsePadUrl(href);
-            if (path.length === 2 && name === oldName && isDefaultName(parsed, name)) {
-                fo.rename(path, newName);
-            }
-        });
-    };
     common.setPadTitle = function (name, cb) {
         var href = window.location.href;
         var parsed = parsePadUrl(href);
@@ -561,7 +535,8 @@ define([
 
             var updateWeaker = [];
             var contains;
-            recent.forEach(function (pad) {
+            Object.keys(recent).forEach(function (id) {
+                var pad = recent[id];
                 var p = parsePadUrl(pad.href);
 
                 if (p.type !== parsed.type) { return pad; }
@@ -592,7 +567,6 @@ define([
                     pad.atime = +new Date();
 
                     // set the name
-                    var old = pad.title;
                     pad.title = name;
 
                     // If we now have a stronger version of a stored href, replace the weaker one by the strong one
@@ -603,14 +577,13 @@ define([
                         });
                     }
                     pad.href = href;
-                    updateFileName(href, old, name);
                 }
                 return pad;
             });
 
             if (!contains && href) {
                 var data = makePad(href, name);
-                getStore().pushData(data, function (e) {
+                getStore().pushData(data, function (e, id) {
                     if (e) {
                         if (e === 'E_OVER_LIMIT') {
                             common.alert(Messages.pinLimitNotPinned, null, true);
@@ -618,12 +591,14 @@ define([
                         }
                         else { throw new Error("Cannot push this pad to CryptDrive", e); }
                     }
-                    getStore().addPad(data, common.initialPath);
+                    getStore().addPad(id, common.initialPath);
                 });
             }
             if (updateWeaker.length > 0) {
                 updateWeaker.forEach(function (obj) {
-                    getStore().replaceHref(obj.o, obj.n);
+                    // If we have a stronger url, and if all the occurences of the weaker were
+                    // in the trash, add remove them from the trash and add the stronger in root
+                    getStore().restoreHref(obj.n);
                 });
             }
             cb(err, recent);
@@ -677,7 +652,9 @@ define([
         var userChannel = userParsedHash && userParsedHash.channel;
         if (!userChannel) { return null; }
 
-        var list = fo.getFiles([fo.FILES_DATA]).map(hrefToHexChannelId)
+        var list = fo.getFiles([fo.FILES_DATA]).map(function (id) {
+                return hrefToHexChannelId(fo.getFileData(id).href);
+            })
             .filter(function (x) { return x; });
 
         list.push(common.base64ToHex(userChannel));

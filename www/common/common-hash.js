@@ -238,7 +238,8 @@ Version 1
         var parsed = parsePadUrl(rHref);
         if (!parsed.hash) { return false; }
         var weaker;
-        recents.some(function (pad) {
+        Object.keys(recents).some(function (id) {
+            var pad = recents[id];
             var p = parsePadUrl(pad.href);
             if (p.type !== parsed.type) { return; } // Not the same type
             if (p.hash === parsed.hash) { return; } // Same hash, not stronger
@@ -264,7 +265,8 @@ Version 1
         var parsed = parsePadUrl(rHref);
         if (!parsed.hash) { return false; }
         var stronger;
-        recents.some(function (pad) {
+        Object.keys(recents).some(function (id) {
+            var pad = recents[id];
             var p = parsePadUrl(pad.href);
             if (p.type !== parsed.type) { return; } // Not the same type
             if (p.hash === parsed.hash) { return; } // Same hash, not stronger
