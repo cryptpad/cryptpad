@@ -50,7 +50,7 @@ define([
         };
 
         var $toggle = $('#toggleDraw');
-        var $width = $('#width');
+        var $width = $('#width'); // brush width
         var $widthLabel = $('label[for="width"]');
         var $opacity = $('#opacity');
         var $opacityLabel = $('label[for="opacity"]');
@@ -98,7 +98,9 @@ window.canvas = canvas;
             var val = $width.val();
             canvas.freeDrawingBrush.width = Number(val);
             $widthLabel.text(val);
+            $widthLabel.text("width: " + $width.val())
             createCursor();
+            console.log("change size")
         };
         updateBrushWidth();
 
@@ -108,8 +110,11 @@ window.canvas = canvas;
             var val = $opacity.val();
             brush.opacity = Number(val);
             canvas.freeDrawingBrush.color = Colors.hex2rgba(brush.color, brush.opacity);
-            $opacityLabel.text(val);
+            $opacityLabel.text(val)
+            $opacityLabel.text("opacity: " + $opacity.val());
             createCursor();
+            console.log("change opacity")
+            console.log("opacity: " + $opacity.val())
         };
         updateBrushOpacity();
 
