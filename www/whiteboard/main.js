@@ -50,7 +50,7 @@ define([
         };
 
         var $toggle = $('#toggleDraw');
-        var $width = $('#width'); // brush width
+        var $width = $('#width');
         var $widthLabel = $('label[for="width"]');
         var $opacity = $('#opacity');
         var $opacityLabel = $('label[for="opacity"]');
@@ -97,8 +97,7 @@ window.canvas = canvas;
         var updateBrushWidth = function () {
             var val = $width.val();
             canvas.freeDrawingBrush.width = Number(val);
-            $widthLabel.text(val)
-            $widthLabel.text(Cryptpad.Messages._getKey("canvas_widthLabel", [val]))
+            $widthLabel.text(Cryptpad.Messages._getKey("canvas_widthLabel", [val]));
             createCursor();
         };
         updateBrushWidth();
@@ -109,7 +108,6 @@ window.canvas = canvas;
             var val = $opacity.val();
             brush.opacity = Number(val);
             canvas.freeDrawingBrush.color = Colors.hex2rgba(brush.color, brush.opacity);
-            $opacityLabel.text(val)
             $opacityLabel.text(Cryptpad.Messages._getKey("canvas_opacityLabel", [val]));
             createCursor();
         };
