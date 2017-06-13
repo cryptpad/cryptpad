@@ -17,6 +17,15 @@ var Store = require("./storage/file");
 
 var DEFAULT_LIMIT = 50 * 1024 * 1024;
 var SESSION_EXPIRATION_TIME = 60 * 1000;
+var SUPPRESS_RPC_ERRORS = false;
+
+var WARN = function (e, output) {
+    if (!SUPPRESS_RPC_ERRORS) {
+        console.error(new Date().toISOString() + ' [' + e + ']', output);
+        console.error(new Error(e).stack);
+        console.error();
+    }
+};
 
 var isValidId = function (chan) {
     return chan && chan.length && /^[a-fA-F0-9]/.test(chan) ||
@@ -237,11 +246,10 @@ var loadUserPins = function (Env, publicKey, cb) {
                     }
                     break;
                 default:
-                    console.error('invalid message read from store');
+                    WARN('invalid message read from store', msg);
             }
         } catch (e) {
-            console.log('invalid message read from store');
-            console.error(e);
+            WARN('invalid message read from store', e);
         }
     }, function () {
         // no more messages
@@ -328,7 +336,7 @@ var getMultipleFileSize = function (Env, channels, cb) {
     channels.forEach(function (channel) {
         getFileSize(Env, channel, function (e, size) {
             if (e) {
-                console.error(e);
+                WARN('getFileSize', e);
                 counts[channel] = -1;
                 return done();
             }
@@ -504,7 +512,7 @@ var pinChannel = function (Env, publicKey, channels, cb) {
 
             getFreeSpace(Env, publicKey, function (e, free) {
                 if (e) {
-                    console.error(e);
+                    WARN('getFreeSpace', e);
                     return void cb(e);
                 }
                 if (pinSize > free) { return void cb('E_OVER_LIMIT'); }
@@ -573,7 +581,7 @@ var resetUserPins = function (Env, publicKey, channelList, cb) {
 
         getFreeSpace(Env, publicKey, function (e, free) {
             if (e) {
-                console.error(e);
+                WARN('getFreeSpace', e);
                 return void cb(e);
             }
 
@@ -645,6 +653,9 @@ var makeFileStream = function (root, id, cb) {
             });
             stream.on('open', function () {
                 cb(void 0, stream);
+            });
+            stream.on('error', function (e) {
+                WARN('stream error', e);
             });
         } catch (err) {
             cb('BAD_STREAM');
@@ -737,14 +748,12 @@ var upload_complete = function (Env, publicKey, cb) {
 
         safeMkdir(Path.join(paths.blob, prefix), function (e) {
             if (e) {
-                console.error('[safeMkdir]');
-                console.error(e);
-                console.log();
+                WARN('safeMkdir', e);
                 return void cb('RENAME_ERR');
             }
             isFile(newPath, function (e, yes) {
                 if (e) {
-                    console.error(e);
+                    WARN('isFile', e);
                     return void cb(e);
                 }
                 if (yes) {
@@ -770,7 +779,7 @@ var upload_complete = function (Env, publicKey, cb) {
         // lol wut handle ur errors
         Fs.rename(oldPath, newPath, function (e) {
             if (e) {
-                console.error(e);
+                WARN('rename', e);
 
                 if (retries--) {
                     return setTimeout(function () {
@@ -803,7 +812,7 @@ var upload_status = function (Env, publicKey, filesize, cb) {
         if (filesize >= free) { return cb('NOT_ENOUGH_SPACE'); }
         isFile(filePath, function (e, yes) {
             if (e) {
-                console.error("uploadError: [%s]", e);
+                WARN('upload', e);
                 return cb('UNNOWN_ERROR');
             }
             cb(e, yes);
@@ -834,11 +843,7 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
     // load pin-store...
     console.log('loading rpc module...');
 
-    var warn = function (e, output) {
-        if (e && !config.suppressRPCErrors) {
-            console.error(new Date().toISOString() + ' [' + e + ']', output);
-        }
-    };
+    if (config.suppressRPCErrors) { SUPPRESS_RPC_ERRORS = true; }
 
     var keyOrDefaultString = function (key, def) {
         return typeof(config[key]) === 'string'? config[key]: def;
@@ -937,41 +942,41 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
             case 'COOKIE': return void Respond(void 0);
             case 'RESET':
                 return resetUserPins(Env, safeKey, msg[1], function (e, hash) {
-                    //warn(e, hash);
+                    //WARN(e, hash);
                     return void Respond(e, hash);
                 });
             case 'PIN':
                 return pinChannel(Env, safeKey, msg[1], function (e, hash) {
-                    warn(e, hash);
+                    WARN(e, hash);
                     Respond(e, hash);
                 });
             case 'UNPIN':
                 return unpinChannel(Env, safeKey, msg[1], function (e, hash) {
-                    warn(e, hash);
+                    WARN(e, hash);
                     Respond(e, hash);
                 });
             case 'GET_HASH':
                 return void getHash(Env, safeKey, function (e, hash) {
-                    warn(e, hash);
+                    WARN(e, hash);
                     Respond(e, hash);
                 });
             case 'GET_TOTAL_SIZE': // TODO cache this, since it will get called quite a bit
                 return getTotalSize(Env, safeKey, function (e, size) {
                     if (e) {
-                        warn(e, safeKey);
+                        WARN(e, safeKey);
                         return void Respond(e);
                     }
                     Respond(e, size);
                 });
             case 'GET_FILE_SIZE':
                 return void getFileSize(Env, msg[1], function (e, size) {
-                    warn(e, msg[1]);
+                    WARN(e, msg[1]);
                     Respond(e, size);
                 });
             case 'UPDATE_LIMITS':
                 return void updateLimits(config, safeKey, function (e, limit) {
                     if (e) {
-                        warn(e, limit);
+                        WARN(e, limit);
                         return void Respond(e);
                     }
                     Respond(void 0, limit);
@@ -979,7 +984,7 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
             case 'GET_LIMIT':
                 return void getLimit(Env, safeKey, function (e, limit) {
                     if (e) {
-                        warn(e, limit);
+                        WARN(e, limit);
                         return void Respond(e);
                     }
                     Respond(void 0, limit);
@@ -987,7 +992,7 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
             case 'GET_MULTIPLE_FILE_SIZE':
                 return void getMultipleFileSize(Env, msg[1], function (e, dict) {
                     if (e) {
-                        warn(e, dict);
+                        WARN(e, dict);
                         return void Respond(e);
                     }
                     Respond(void 0, dict);
@@ -997,7 +1002,7 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
             case 'UPLOAD':
                 if (!privileged) { return deny(); }
                 return void upload(Env, safeKey, msg[1], function (e, len) {
-                    warn(e, len);
+                    WARN(e, len);
                     Respond(e, len);
                 });
             case 'UPLOAD_STATUS':
@@ -1015,13 +1020,13 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
             case 'UPLOAD_COMPLETE':
                 if (!privileged) { return deny(); }
                 return void upload_complete(Env, safeKey, function (e, hash) {
-                    warn(e, hash);
+                    WARN(e, hash);
                     Respond(e, hash);
                 });
             case 'UPLOAD_CANCEL':
                 if (!privileged) { return deny(); }
                 return void upload_cancel(Env, safeKey, function (e) {
-                    warn(e);
+                    WARN(e);
                     Respond(e);
                 });
             default:
@@ -1054,7 +1059,9 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
 
     var updateLimitDaily = function () {
         updateLimits(config, undefined, function (e) {
-            if (e) { console.error('Error updating the storage limits', e); }
+            if (e) {
+                WARN('limitUpdate', e);
+            }
         });
     };
     updateLimitDaily();
