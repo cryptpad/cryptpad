@@ -37,7 +37,9 @@ define([
 
             data.name = file.metadata.name;
             data.url = href;
-            data.mediatag = true;
+            if (file.metadata.type.slice(0,6) === 'image/') {
+                data.mediatag = true;
+            }
 
             return data;
         };
