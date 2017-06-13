@@ -220,14 +220,14 @@ define([
                 e.preventDefault();
                 e.stopPropagation();
                 counter++;
-                $label.addClass('hovering');
+                $hoverArea.addClass('hovering');
             })
             .on('dragleave', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 counter--;
                 if (counter <= 0) {
-                    $label.removeClass('hovering');
+                    $hoverArea.removeClass('hovering');
                 }
             });
 
@@ -240,7 +240,7 @@ define([
                 e.stopPropagation();
                 var dropped = e.originalEvent.dataTransfer.files;
                 counter = 0;
-                $label.removeClass('hovering');
+                $hoverArea.removeClass('hovering');
 
                 Array.prototype.slice.call(dropped).forEach(function (d) {
                     todo(d);
