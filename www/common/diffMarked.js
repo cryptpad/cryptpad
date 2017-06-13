@@ -60,6 +60,10 @@ define([
         'AUDIO',
     ];
     var unsafeTag = function (info) {
+        if (info.node && $(info.node).parents('media-tag').length) {
+            // Do not remove elements inside a media-tag
+            return true;
+        }
         if (['addAttribute', 'modifyAttribute'].indexOf(info.diff.action) !== -1) {
             if (/^on/.test(info.diff.name)) {
                 console.log("Rejecting forbidden element attribute with name", info.diff.name);
@@ -127,17 +131,7 @@ define([
     var DD = new DiffDOM({
         preDiffApply: function (info) {
             if (unsafeTag(info)) { return true; }
-            //var mt = mediaTag(info);
-            //console.log(mt);
-            //if (mt) { toTransform = toTransform.concat(mt); }
         },
-        postDiffApply: function () {
-            /*while (toTransform.length) {
-                var el = toTransform.pop();
-                console.log(el);
-                MediaTag(el);
-            }*/
-        }
     });
 
     var makeDiff = function (A, B, id) {
@@ -173,29 +167,15 @@ define([
             DD.apply($content[0], patch);
             var $mts = $content.find('media-tag:not(:has(*))');
             $mts.each(function (i, el) {
-                console.log(el);
-                var allowedMediaTypes = [
-                    'image/png',
-                    'image/jpeg',
-                    'image/jpg',
-                    'image/gif',
-                    'audio/mp3',
-                    'audio/ogg',
-                    'audio/wav',
-                    'audio/webm',
-                    'video/mp4',
-                    'video/ogg',
-                    'video/webm',
-                    'application/pdf',
-                    'application/dash+xml',
-                    'download'
-                ];
-
-                MediaTag.CryptoFilter.setAllowedMediaTypes(allowedMediaTypes);
                 MediaTag(el);
             });
         }
     };
+
+    $(window.document).on('decryption', function (e) {
+        var decrypted = e.originalEvent;
+        if (decrypted.callback) { decrypted.callback(); }
+    });
 
     return DiffMd;
 });

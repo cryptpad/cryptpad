@@ -37,11 +37,7 @@ define([
 
             data.name = file.metadata.name;
             data.url = href;
-            if (file.metadata.type.slice(0,6) === 'image/') {
-                data.mediatag = true;
-            }
-            //var generatedBlob = new Blob([file.blob]);
-            //window.URL.createObjectURL(generatedBlob);
+            data.mediatag = true;
 
             return data;
         };
