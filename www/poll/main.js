@@ -46,7 +46,8 @@ define([
         editable: {
             row: [],
             col: []
-        }
+        },
+        locked: false
     };
 
     var sortColumns = function (order, firstcol) {
@@ -97,7 +98,7 @@ define([
 
         // Enable the checkboxes for the user's column (committed or not)
         $('input[disabled="disabled"][data-rt-id^="' + id + '"]').removeAttr('disabled');
-        $('input[type="checkbox"][data-rt-id^="' + id + '"]').addClass('enabled');
+        $('input[type="number"][data-rt-id^="' + id + '"]').addClass('enabled');
         $('.lock[data-rt-id="' + id + '"]').addClass('fa-unlock').removeClass('fa-lock').attr('title', Messages.poll_unlocked);
 
         if (isOwnColumnCommitted()) { return; }
@@ -108,12 +109,14 @@ define([
 
     var unlockElements = function () {
         APP.editable.row.forEach(function (id) {
-            $('input[type="text"][disabled="disabled"][data-rt-id="' + id + '"]').removeAttr('disabled');
+            var $input = $('input[type="text"][disabled="disabled"][data-rt-id="' + id + '"]').removeAttr('disabled');
+            $input.parent().parent().addClass('editing');
             $('span.edit[data-rt-id="' + id + '"]').css('visibility', 'hidden');
         });
         APP.editable.col.forEach(function (id) {
-            $('input[disabled="disabled"][data-rt-id^="' + id + '"]').removeAttr('disabled');
-            $('input[type="checkbox"][data-rt-id^="' + id + '"]').addClass('enabled');
+            var $input = $('input[disabled="disabled"][data-rt-id^="' + id + '"]').removeAttr('disabled');
+            $input.parent().addClass('editing');
+            $('input[type="number"][data-rt-id^="' + id + '"]').addClass('enabled');
             $('.lock[data-rt-id="' + id + '"]').addClass('fa-unlock').removeClass('fa-lock').attr('title', Messages.poll_unlocked);
         });
     };
@@ -274,10 +277,17 @@ define([
                 Render.setValue(object, id, input.value);
                 change(null, null, null, 50);
                 break;
-            case 'checkbox':
-                debug("checkbox[tr-id='%s'] %s", id, input.checked);
+            case 'number':
+                debug("checkbox[tr-id='%s'] %s", id, input.value);
                 if (APP.editable.col.indexOf(x) >= 0 || x === APP.userid) {
-                    Render.setValue(object, id, input.checked);
+                    var value = parseInt(input.value);
+
+                    if (isNaN(value)) {
+                        console.error("Got NaN?!");
+                        break;
+                    }
+
+                    Render.setValue(object, id, value);
                     change();
                 } else {
                     debug('checkbox locked');
@@ -290,12 +300,14 @@ define([
     };
 
     var hideInputs = function (target, isKeyup) {
+        if (APP.locked) { return; }
         if (!isKeyup && $(target).is('[type="text"]')) {
             return;
         }
         $('.lock[data-rt-id!="' + APP.userid + '"]').addClass('fa-lock').removeClass('fa-unlock').attr('title', Messages.poll_locked);
         var $cells = APP.$table.find('thead td:not(.uncommitted), tbody td');
         $cells.find('[type="text"][data-rt-id!="' + APP.userid + '"]').attr('disabled', true);
+        $cells.removeClass('editing');
         $('.edit[data-rt-id!="' + APP.userid + '"]').css('visibility', 'visible');
         APP.editable.col = [APP.userid];
         APP.editable.row = [];
@@ -349,9 +361,13 @@ define([
     };
 
     var handleClick = function (e, isKeyup) {
+        if (APP.locked) { return; }
+
         e.stopPropagation();
 
         if (!APP.ready) { return; }
+        if (!isKeyup && e.which !== 1) { return; } // only allow left clicks
+
         var target = e && e.target;
 
         if (!target) { return void debug("NO TARGET"); }
@@ -369,10 +385,19 @@ define([
                     hideInputs(target, isKeyup);
                     break;
                 }
+                if ($(target).is('input[type="number"]')) { console.error("number input focused?"); break; }
+
                 handleInput(target);
                 break;
+            case 'LABEL':
+                var input = $('input[type="number"][id=' + $(target).attr('for') + ']');
+                var value = parseInt(input.val());
+
+                input.val((value + 1) % 4);
+
+                handleInput(input[0]);
+                break;
             case 'SPAN':
-            //case 'LABEL':
                 if (shouldLock) {
                     break;
                 }
@@ -419,6 +444,15 @@ define([
         ['textarea'].forEach(function (sel) {
             $(sel).attr('disabled', bool);
         });
+    };
+
+    var showHelp = function(help) {
+        if (typeof help === 'undefined') { help = !$('#howItWorks').is(':visible'); }
+
+        var msg = (help ? Messages.poll_hide_help_button : Messages.poll_show_help_button);
+
+        $('#howItWorks').toggle(help);
+        $('#help').text(msg).attr('title', msg);
     };
 
     var Title;
@@ -486,10 +520,14 @@ var ready = function (info, userid, readOnly) {
             publish(true);
         });
 
-    // #publish button is removed in readonly
     APP.$admin = $('#admin')
         .click(function () {
             publish(false);
+        });
+
+    APP.$help = $('#help')
+        .click(function () {
+            showHelp();
         });
 
     // Title
@@ -527,7 +565,10 @@ var ready = function (info, userid, readOnly) {
         .click(handleClick)
         .on('keyup', function (e) { handleClick(e, true); });
 
-    $(window).click(hideInputs);
+    $(window).click(function(e) {
+        if (e.which !== 1) { return; }
+        hideInputs();
+    });
 
     proxy
         .on('change', ['info'], function (o, n, p) {
@@ -570,14 +611,33 @@ var ready = function (info, userid, readOnly) {
     UserList.getLastName(APP.toolbar.$userNameButton, isNew);
 };
 
+var setEditable = function (editable) {
+    APP.locked = !editable;
+
+    if (editable === false) {
+        // disable all the things
+        $('.realtime input, .realtime button, .upper button, .realtime textarea').attr('disabled', APP.locked);
+        $('span.edit, span.remove').hide();
+        $('span.lock').addClass('fa-lock').removeClass('fa-unlock')
+            .attr('title', Messages.poll_locked)
+            .css({'cursor': 'default'});
+    } else {
+        // enable
+        $('span.edit, span.remove').show();
+        $('span.lock').css({'cursor': ''});
+        $('.realtime button, .upper button, .realtime textarea').attr('disabled', APP.locked);
+        unlockElements();
+    }
+};
+
 var disconnect = function () {
-    //setEditable(false); // TODO
+    setEditable(false);
     APP.toolbar.failed();
     Cryptpad.alert(Messages.common_connectionLost, undefined, true);
 };
 
 var reconnect = function (info) {
-    //setEditable(true); // TODO
+    setEditable(true);
     APP.toolbar.reconnecting(info.myId);
     Cryptpad.findOKButton().click();
 };
@@ -632,7 +692,7 @@ var create = function (info) {
     /* add a forget button */
     var forgetCb = function (err) {
         if (err) { return; }
-        disconnect();
+        setEditable(false);
     };
     var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
     $rightside.append($forgetPad);
@@ -698,12 +758,13 @@ var create = function (info) {
                 Cryptpad.setAttribute(HIDE_INTRODUCTION_TEXT, "1", function (e) {
                     if (e) { console.error(e); }
                 });
-            } else if (value === "1") {
-                $('#howItWorks').hide();
+                showHelp(true);
+            } else {
+                showHelp(false);
             }
         });
 
-        //Cryptpad.onLogout(function () { setEditable(false); }); TODO
+        Cryptpad.onLogout(function () { setEditable(false); });
     });
     Cryptpad.onError(function (info) {
         if (info) {

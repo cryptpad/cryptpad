@@ -170,6 +170,10 @@ div.realtime table {
   border-collapse: collapse;
   width: calc(100% - 1px);
 }
+form.realtime table .editing,
+div.realtime table .editing {
+  background-color: #88b8cc;
+}
 form.realtime table tr td:first-child,
 div.realtime table tr td:first-child {
   position: absolute;
@@ -225,40 +229,63 @@ div.realtime table tr td.checkbox-cell div.checkbox-contain label {
   height: 100%;
   width: 100%;
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable),
-div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) {
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"]:not(.editable),
+div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"]:not(.editable) {
   display: none;
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover,
-div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover {
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"]:not(.editable) ~ .cover,
+div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"]:not(.editable) ~ .cover {
   font-weight: bold;
-  background-color: #FA5858;
   color: #000;
   display: block;
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover:after,
-div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover:after {
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"]:not(.editable) ~ .cover:after,
+div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"]:not(.editable) ~ .cover:after {
   height: 100%;
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover:after,
-div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover:after {
-  content: "✖";
-}
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.yes,
-div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.yes {
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"]:not(.editable) ~ .cover.yes,
+div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"]:not(.editable) ~ .cover.yes {
   background-color: #46E981;
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.yes:after,
-div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.yes:after {
-  content: "✔";
-}
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.uncommitted,
-div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.uncommitted {
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"]:not(.editable) ~ .cover.uncommitted,
+div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"]:not(.editable) ~ .cover.uncommitted {
   background: #ddd;
 }
-form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.mine,
-div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="checkbox"]:not(.editable) ~ .cover.mine {
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"]:not(.editable) ~ .cover.mine,
+div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"]:not(.editable) ~ .cover.mine {
   display: none;
+}
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"][value="0"] ~ .cover,
+div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"][value="0"] ~ .cover {
+  background-color: #FA5858;
+}
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"][value="0"] ~ .cover:after,
+div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"][value="0"] ~ .cover:after {
+  content: "✖";
+}
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"][value="1"] ~ .cover,
+div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"][value="1"] ~ .cover {
+  background-color: #46E981;
+}
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"][value="1"] ~ .cover:after,
+div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"][value="1"] ~ .cover:after {
+  content: "✔";
+}
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"][value="2"] ~ .cover,
+div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"][value="2"] ~ .cover {
+  background-color: #ff5;
+}
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"][value="2"] ~ .cover:after,
+div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"][value="2"] ~ .cover:after {
+  content: "~";
+}
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"][value="3"] ~ .cover,
+div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"][value="3"] ~ .cover {
+  background-color: #ccc;
+}
+form.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"][value="3"] ~ .cover:after,
+div.realtime table tr td.checkbox-cell div.checkbox-contain input[type="number"][value="3"] ~ .cover:after {
+  content: "?";
 }
 form.realtime table input[type="text"],
 div.realtime table input[type="text"] {
@@ -298,8 +325,8 @@ div.realtime table thead td input[type="text"][disabled] {
   color: #000;
   border: 1px solid transparent;
 }
-form.realtime table tbody .text-cell,
-div.realtime table tbody .text-cell {
+form.realtime table tbody td:not(.editing) .text-cell,
+div.realtime table tbody td:not(.editing) .text-cell {
   background: #aaa;
 }
 form.realtime table tbody .text-cell input[type="text"],

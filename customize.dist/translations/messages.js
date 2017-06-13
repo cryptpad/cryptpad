@@ -209,6 +209,9 @@ define(function () {
     out.poll_locked = "Locked";
     out.poll_unlocked = "Unlocked";
 
+    out.poll_show_help_button = "Show help";
+    out.poll_hide_help_button = "Hide help";
+
     // Canvas
     out.canvas_clear = "Clear";
     out.canvas_delete = "Delete selection";

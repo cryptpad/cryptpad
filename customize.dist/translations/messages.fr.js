@@ -207,6 +207,9 @@ define(function () {
     out.poll_locked = "Verrouillé";
     out.poll_unlocked = "Déverrouillé";
 
+    out.poll_show_help_button = "Afficher l'aide";
+    out.poll_hide_help_button = "Cacher l'aide";
+
     // Canvas
     out.canvas_clear = "Nettoyer";
     out.canvas_delete = "Supprimer la sélection";

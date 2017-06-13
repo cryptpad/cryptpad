@@ -70,7 +70,12 @@ var Renderer = function (Cryptpad) {
     };
 
     var getCellValue = Render.getCellValue = function (obj, cellId) {
-        return Cryptpad.find(obj, ['table', 'cells'].concat([cellId]));
+        var value = Cryptpad.find(obj, ['table', 'cells'].concat([cellId]));
+        if (typeof value === 'boolean') {
+            return (value === true ? 1 : 0);
+        } else {
+            return value;
+        }
     };
 
     var setRowValue = Render.setRowValue = function (obj, rowId, value) {
@@ -234,16 +239,20 @@ var Renderer = function (Cryptpad) {
                 disabled: 'disabled'
             }].concat(cols.map(function (col) {
                 var id = [col, rows[i-1]].join('_');
-                var val = cells[id] || false;
+                var val = cells[id];
                 var result = {
                     'data-rt-id': id,
-                    type: 'checkbox',
+                    type: 'number',
                     autocomplete: 'nope',
+                    value: '3',
                 };
                 if (readOnly) {
                     result.disabled = "disabled";
                 }
-                if (val) { result.checked = true; }
+                if (typeof val !== 'undefined') {
+                    if (typeof val === 'boolean') { val = (val ? '1' : '0'); }
+                    result.value = val;
+                }
                 return result;
             }));
         });
@@ -297,9 +306,6 @@ var Renderer = function (Cryptpad) {
         attrs.id = cell['data-rt-id'];
 
         var labelClass = 'cover';
-        if (cell.checked) {
-            labelClass += ' yes';
-        }
 
         // TODO implement Yes/No/Maybe/Undecided
         return ['TD', {class:"checkbox-cell"}, [
@@ -326,7 +332,7 @@ var Renderer = function (Cryptpad) {
             ]];
         }
 
-        if (cell && cell.type === 'checkbox') {
+        if (cell && cell.type === 'number') {
             return makeCheckbox(cell);
         }
         return ['TD', cell, []];
@@ -399,7 +405,7 @@ var Renderer = function (Cryptpad) {
         preDiffApply: function (info) {
             if (!diffIsInput(info)) { return; }
             switch (getInputType(info)) {
-                case 'checkbox':
+                case 'number':
                     //console.log('checkbox');
                     //console.log("[preDiffApply]", info);
                     break;
