@@ -17,28 +17,28 @@ define([
     var APP = {};
 
     $(function () {
-// TODO race condition with contents() here
-    var ifrw = $('#pad-iframe')[0].contentWindow;
-    var $iframe = $('#pad-iframe').contents();
-    var $form = $iframe.find('#upload-form');
-    var $dlform = $iframe.find('#download-form');
-    var $label = $form.find('label');
-    var $progress = $iframe.find('#progress');
-    var $body = $iframe.find('body');
-
-    $body.on('dragover', function (e) { e.preventDefault(); });
-    $body.on('drop', function (e) { e.preventDefault(); });
-
-    Cryptpad.addLoadingScreen();
-
-    var Title;
-
-    var myFile;
-    var myDataType;
-
-    var uploadMode = false;
 
     var andThen = function () {
+        var ifrw = $('#pad-iframe')[0].contentWindow;
+        var $iframe = $('#pad-iframe').contents();
+        var $form = $iframe.find('#upload-form');
+        var $dlform = $iframe.find('#download-form');
+        var $label = $form.find('label');
+        var $progress = $iframe.find('#progress');
+        var $body = $iframe.find('body');
+
+        $body.on('dragover', function (e) { e.preventDefault(); });
+        $body.on('drop', function (e) { e.preventDefault(); });
+
+        Cryptpad.addLoadingScreen();
+
+        var Title;
+
+        var myFile;
+        var myDataType;
+
+        var uploadMode = false;
+
         var $bar = $iframe.find('.toolbar-container');
 
         var secret;
