@@ -59,7 +59,7 @@ define([
 
             var sendChunk = function (box, cb) {
                 var enc = Nacl.util.encodeBase64(box);
-                Cryptpad.rpc.send.unauthenticated('UPLOAD', enc, function (e, msg) {
+                common.rpc.send.unauthenticated('UPLOAD', enc, function (e, msg) {
                     console.log(box);
                     cb(e, msg);
                 });
@@ -84,14 +84,14 @@ define([
                 }
 
                 // if not box then done
-                Cryptpad.uploadComplete(function (e, id) {
+                common.uploadComplete(function (e, id) {
                     if (e) { return void console.error(e); }
                     var uri = ['', 'blob', id.slice(0,2), id].join('/');
                     console.log("encrypted blob is now available as %s", uri);
 
                     var b64Key = Nacl.util.encodeBase64(key);
 
-                    var hash = Cryptpad.getFileHashFromKeys(id, b64Key);
+                    var hash = common.getFileHashFromKeys(id, b64Key);
                     var href = '/file/#' + hash;
                     $link.attr('href', href)
                         .click(function (e) {
@@ -103,42 +103,40 @@ define([
                     //APP.toolbar.addElement(['fileshare'], {});
 
                     var title = document.title = metadata.name;
-                    myFile = blob;
-                    myDataType = metadata.type;
 
-                    Cryptpad.renamePad(title || "", href, function (err) {
+                    common.renamePad(title || "", href, function (err) {
                         if (err) { console.error(err); } // TODO
                         console.log(title);
-                        Cryptpad.log(Messages._getKey('upload_success', [title]));
+                        common.log(Messages._getKey('upload_success', [title]));
                         queue.inProgress = false;
                         queue.next();
-                    })
+                    });
                     //Title.updateTitle(title || "", href);
                     //APP.toolbar.title.show();
                 });
             };
 
-            Cryptpad.uploadStatus(estimate, function (e, pending) {
+            common.uploadStatus(estimate, function (e, pending) {
                 if (e) {
                     queue.inProgress = false;
                     queue.next();
                     if (e === 'TOO_LARGE') {
                         // TODO update table to say too big?
-                        return void Cryptpad.alert(Messages.upload_tooLarge);
+                        return void common.alert(Messages.upload_tooLarge);
                     }
                     if (e === 'NOT_ENOUGH_SPACE') {
                         // TODO update table to say not enough space?
-                        return void Cryptpad.alert(Messages.upload_notEnoughSpace);
+                        return void common.alert(Messages.upload_notEnoughSpace);
                     }
                     console.error(e);
-                    return void Cryptpad.alert(Messages.upload_serverError);
+                    return void common.alert(Messages.upload_serverError);
                 }
 
                 if (pending) {
                     // TODO keep this message in case of pending files in another window?
-                    return void Cryptpad.confirm(Messages.upload_uploadPending, function (yes) {
+                    return void common.confirm(Messages.upload_uploadPending, function (yes) {
                         if (!yes) { return; }
-                        Cryptpad.uploadCancel(function (e, res) {
+                        common.uploadCancel(function (e, res) {
                             if (e) {
                                 return void console.error(e);
                             }
@@ -152,9 +150,9 @@ define([
         };
 
         var prettySize = function (bytes) {
-            var kB = Cryptpad.bytesToKilobytes(bytes);
+            var kB = common.bytesToKilobytes(bytes);
             if (kB < 1024) { return kB + Messages.KB; }
-            var mB = Cryptpad.bytesToMegabytes(bytes);
+            var mB = common.bytesToMegabytes(bytes);
             return mB + Messages.MB;
         };
 
@@ -250,7 +248,7 @@ define([
 
         File.createUploader = function ($area, $hover, $body) {
             createAreaHandlers($area, null, handleFile);
-            var $c = createTableContainer($body);
+            createTableContainer($body);
         };
 
         return File;
