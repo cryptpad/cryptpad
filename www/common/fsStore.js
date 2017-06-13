@@ -87,10 +87,7 @@ define([
 
         ret.removeData = filesOp.removeData;
         ret.pushData = filesOp.pushData;
-
-        ret.addPad = function (data, path) {
-            filesOp.add(data, path);
-        };
+        ret.addPad = filesOp.add;
 
         ret.forgetPad = function (href, cb) {
             filesOp.forget(href);
@@ -123,9 +120,9 @@ define([
             return filesOp.getStructure();
         };
 
-        ret.replaceHref = function (o, n) {
-            return filesOp.replace(o, n);
-        };
+        ret.replace = filesOp.replace;
+
+        ret.restoreHref = filesOp.restoreHref;
 
         ret.changeHandlers = [];
 
@@ -144,76 +141,81 @@ define([
 
     var onReady = function (f, proxy, Cryptpad, exp) {
         var fo = exp.fo = FO.init(proxy.drive, {
-            Cryptpad: Cryptpad
+            Cryptpad: Cryptpad,
+            rt: exp.realtime
         });
+        var todo = function () {
+            fo.fixFiles();
 
-        //storeObj = proxy;
-        store = initStore(fo, proxy, exp);
-        if (typeof(f) === 'function') {
-            f(void 0, store);
-        }
+            //storeObj = proxy;
+            store = initStore(fo, proxy, exp);
+            if (typeof(f) === 'function') {
+                f(void 0, store);
+            }
 
-        var requestLogin = function () {
-            // log out so that you don't go into an endless loop...
-            Cryptpad.logout();
+            var requestLogin = function () {
+                // log out so that you don't go into an endless loop...
+                Cryptpad.logout();
 
-            // redirect them to log in, and come back when they're done.
-            sessionStorage.redirectTo = window.location.href;
-            window.location.href = '/login/';
+                // redirect them to log in, and come back when they're done.
+                sessionStorage.redirectTo = window.location.href;
+                window.location.href = '/login/';
+            };
+
+            var tokenKey = 'loginToken';
+            if (Cryptpad.isLoggedIn()) {
+    /*  This isn't truly secure, since anyone who can read the user's object can
+        set their local loginToken to match that in the object. However, it exposes
+        a UI that will work most of the time. */
+
+                // every user object should have a persistent, random number
+                if (typeof(proxy.loginToken) !== 'number') {
+                    proxy[tokenKey] = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
+                }
+
+                // copy User_hash into sessionStorage because cross-domain iframes
+                // on safari replaces localStorage with sessionStorage or something
+                if (sessionStorage) { sessionStorage.setItem('User_hash', localStorage.getItem('User_hash')); }
+
+                var localToken = tryParsing(localStorage.getItem(tokenKey));
+                if (localToken === null) {
+                    // if that number hasn't been set to localStorage, do so.
+                    localStorage.setItem(tokenKey, proxy.loginToken);
+                } else if (localToken !== proxy[tokenKey]) {
+                    // if it has been, and the local number doesn't match that in
+                    // the user object, request that they reauthenticate.
+                    return void requestLogin();
+                }
+            }
+
+            if (typeof(proxy.allowUserFeedback) !== 'boolean') {
+                proxy.allowUserFeedback = true;
+            }
+
+            if (typeof(proxy.uid) !== 'string' || proxy.uid.length !== 32) {
+                // even anonymous users should have a persistent, unique-ish id
+                console.log('generating a persistent identifier');
+                proxy.uid = Cryptpad.createChannelId();
+            }
+
+            // if the user is logged in, but does not have signing keys...
+            if (Cryptpad.isLoggedIn() && !Cryptpad.hasSigningKeys(proxy)) {
+                return void requestLogin();
+            }
+
+            proxy.on('change', [Cryptpad.displayNameKey], function (o, n) {
+                if (typeof(n) !== "string") { return; }
+                Cryptpad.changeDisplayName(n);
+            });
+            proxy.on('change', [tokenKey], function () {
+                console.log('wut');
+                var localToken = tryParsing(localStorage.getItem(tokenKey));
+                if (localToken !== proxy[tokenKey]) {
+                    return void requestLogin();
+                }
+            });
         };
-
-        var tokenKey = 'loginToken';
-        if (Cryptpad.isLoggedIn()) {
-/*  This isn't truly secure, since anyone who can read the user's object can
-    set their local loginToken to match that in the object. However, it exposes
-    a UI that will work most of the time. */
-
-            // every user object should have a persistent, random number
-            if (typeof(proxy.loginToken) !== 'number') {
-                proxy[tokenKey] = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
-            }
-
-            // copy User_hash into sessionStorage because cross-domain iframes
-            // on safari replaces localStorage with sessionStorage or something
-            if (sessionStorage) { sessionStorage.setItem('User_hash', localStorage.getItem('User_hash')); }
-
-            var localToken = tryParsing(localStorage.getItem(tokenKey));
-            if (localToken === null) {
-                // if that number hasn't been set to localStorage, do so.
-                localStorage.setItem(tokenKey, proxy.loginToken);
-            } else if (localToken !== proxy[tokenKey]) {
-                // if it has been, and the local number doesn't match that in
-                // the user object, request that they reauthenticate.
-                return void requestLogin();
-            }
-        }
-
-        if (typeof(proxy.allowUserFeedback) !== 'boolean') {
-            proxy.allowUserFeedback = true;
-        }
-
-        if (typeof(proxy.uid) !== 'string' || proxy.uid.length !== 32) {
-            // even anonymous users should have a persistent, unique-ish id
-            console.log('generating a persistent identifier');
-            proxy.uid = Cryptpad.createChannelId();
-        }
-
-        // if the user is logged in, but does not have signing keys...
-        if (Cryptpad.isLoggedIn() && !Cryptpad.hasSigningKeys(proxy)) {
-            return void requestLogin();
-        }
-
-        proxy.on('change', [Cryptpad.displayNameKey], function (o, n) {
-            if (typeof(n) !== "string") { return; }
-            Cryptpad.changeDisplayName(n);
-        });
-        proxy.on('change', [tokenKey], function () {
-            console.log('wut');
-            var localToken = tryParsing(localStorage.getItem(tokenKey));
-            if (localToken !== proxy[tokenKey]) {
-                return void requestLogin();
-            }
-        });
+        fo.migrate(todo);
     };
 
     var initialized = false;
@@ -263,6 +265,7 @@ define([
 
         var rt = window.rt = Listmap.create(listmapConfig);
 
+        exp.realtime = rt.realtime;
         exp.proxy = rt.proxy;
         rt.proxy.on('create', function (info) {
             exp.info = info;
@@ -274,9 +277,10 @@ define([
             if (!rt.proxy.drive || typeof(rt.proxy.drive) !== 'object') { rt.proxy.drive = {}; }
             var drive = rt.proxy.drive;
             // Creating a new anon drive: import anon pads from localStorage
-            if (!drive[Cryptpad.storageKey] || !Cryptpad.isArray(drive[Cryptpad.storageKey])) {
+            if ((!drive[Cryptpad.oldStorageKey] || !Cryptpad.isArray(drive[Cryptpad.oldStorageKey]))
+                && !drive['filesData']) {
                 Cryptpad.getLegacyPads(function (err, data) {
-                    drive[Cryptpad.storageKey] = data;
+                    drive[Cryptpad.oldStorageKey] = data;
                     onReady(f, rt.proxy, Cryptpad, exp);
                 });
                 return;
