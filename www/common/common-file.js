@@ -6,7 +6,7 @@ define([
     var Nacl = window.nacl;
     var module = {};
 
-    module.create = function (common) {
+    module.create = function (common, config) {
         var File = {};
 
         var Messages = common.Messages;
@@ -32,7 +32,24 @@ define([
             return File.$container;
         };
 
-        var upload = function (blob, metadata, id) {
+        var getData = function (file, href) {
+            var data = {};
+
+            data.name = file.metadata.name;
+            data.url = href;
+            if (file.metadata.type.slice(0,6) === 'image/') {
+                data.mediatag = true;
+            }
+            //var generatedBlob = new Blob([file.blob]);
+            //window.URL.createObjectURL(generatedBlob);
+
+            return data;
+        };
+
+        var upload = function (file) {
+            var blob = file.blob;
+            var metadata = file.metadata;
+            var id = file.id;
             if (queue.inProgress) { return; }
             queue.inProgress = true;
 
@@ -102,12 +119,18 @@ define([
                     // TODO add button to table which copies link to clipboard?
                     //APP.toolbar.addElement(['fileshare'], {});
 
-                    var title = document.title = metadata.name;
+                    var title = metadata.name;
 
                     common.renamePad(title || "", href, function (err) {
-                        if (err) { console.error(err); } // TODO
+                        if (err) { return void console.error(err); } // TODO
                         console.log(title);
                         common.log(Messages._getKey('upload_success', [title]));
+
+                        if (config.onUploaded) {
+                            var data = getData(file, href);
+                            config.onUploaded(file.dropEvent, data);
+                        }
+
                         queue.inProgress = false;
                         queue.next();
                     });
@@ -157,10 +180,16 @@ define([
         };
 
         queue.next = function () {
-            if (queue.queue.length === 0) { return; }
+            if (queue.queue.length === 0) {
+                queue.to = window.setTimeout(function () {
+                    File.$container.fadeOut();
+                }, 3000);
+                return;
+            }
             if (queue.inProgress) { return; }
+            File.$container.show();
             var file = queue.queue.shift();
-            upload(file.blob, file.metadata, file.id);
+            upload(file);
         };
         queue.push = function (obj) {
             var id = uid();
@@ -195,7 +224,7 @@ define([
             queue.next();
         };
 
-        var handleFile = File.handleFile = function (file) {
+        var handleFile = File.handleFile = function (file, e) {
             console.log(file);
             var reader = new FileReader();
             reader.onloadend = function () {
@@ -204,7 +233,8 @@ define([
                     metadata: {
                         name: file.name,
                         type: file.type,
-                    }
+                    },
+                    dropEvent: e
                 });
             };
             reader.readAsArrayBuffer(file);
@@ -241,15 +271,17 @@ define([
                 $hoverArea.removeClass('hovering');
 
                 Array.prototype.slice.call(dropped).forEach(function (d) {
-                    todo(d);
+                    todo(d, e);
                 });
             });
         };
 
-        File.createUploader = function ($area, $hover, $body) {
+        var createUploader = function ($area, $hover, $body) {
             createAreaHandlers($area, null, handleFile);
             createTableContainer($body);
         };
+
+        createUploader(config.dropArea, config.hoverArea, config.body);
 
         return File;
     };

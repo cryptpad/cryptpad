@@ -158,15 +158,18 @@ define([
             display: 'block',
         });
 
-        var FM = Cryptpad.createFileManager();
+        var fmConfig = {
+            dropArea: $form,
+            hoverArea: $label,
+            body: $body
+        };
+
+        var FM = Cryptpad.createFileManager(fmConfig);
 
         $form.find("#file").on('change', function (e) {
             var file = e.target.files[0];
             FM.handleFile(file);
         });
-
-        //FM.createDropArea($form, $label, handleFile);
-        FM.createUploader($form, $label, $body);
 
         // we're in upload mode
         Cryptpad.removeLoadingScreen();

@@ -1,8 +1,11 @@
 define([
     'jquery',
     '/bower_components/marked/marked.min.js',
-    '/bower_components/diff-dom/diffDOM.js'
-],function ($, Marked) {
+    '/common/cryptpad-common.js',
+    '/common/media-tag.js',
+    '/bower_components/diff-dom/diffDOM.js',
+    '/bower_components/tweetnacl/nacl-fast.min.js',
+],function ($, Marked, Cryptpad, MediaTag) {
     var DiffMd = {};
 
     var DiffDOM = window.diffDOM;
@@ -33,6 +36,20 @@ define([
         var cls = (isCheckedTaskItem || isUncheckedTaskItem) ? ' class="todo-list-item"' : '';
         return '<li'+ cls + '>' + text + '</li>\n';
     };
+    renderer.image = function (href, title, text) {
+        if (href.slice(0,6) === '/file/') {
+            var parsed = Cryptpad.parsePadUrl(href);
+            var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+            var mt = '<media-tag src="/blob/' + hexFileName.slice(0,2) + '/' + hexFileName + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '"></media-tag>';
+            return mt;
+        }
+        var out = '<img src="' + href + '" alt="' + text + '"';
+        if (title) {
+            out += ' title="' + title + '"';
+        }
+        out += this.options.xhtml ? '/>' : '>';
+        return out;
+    };
 
     var forbiddenTags = [
         'SCRIPT',
@@ -61,6 +78,30 @@ define([
         }
     };
 
+    var getSubMediaTag = function (element) {
+        var result = [];
+        console.log(element);
+        if (element.nodeName === "MEDIA-TAG") {
+            result.push(element);
+            return result;
+        }
+        if (element.childNodes) {
+            element.childNodes.forEach(function (el) {
+                result = result.concat(getSubMediaTag(el, result));
+            });
+        }
+        console.log(result);
+        return result;
+    };
+    var mediaTag = function (info) {
+        if (info.diff.action === 'addElement') {
+            return getSubMediaTag(info.diff.element);
+            //MediaTag.CryptoFilter.setAllowedMediaTypes(allowedMediaTypes);
+            //MediaTag($mt[0]);
+        }
+        return;
+    };
+
     var slice = function (coll) {
         return Array.prototype.slice.call(coll);
     };
@@ -82,9 +123,20 @@ define([
         return Dom;
     };
 
+    //var toTransform = [];
     var DD = new DiffDOM({
         preDiffApply: function (info) {
             if (unsafeTag(info)) { return true; }
+            //var mt = mediaTag(info);
+            //console.log(mt);
+            //if (mt) { toTransform = toTransform.concat(mt); }
+        },
+        postDiffApply: function () {
+            /*while (toTransform.length) {
+                var el = toTransform.pop();
+                console.log(el);
+                MediaTag(el);
+            }*/
         }
     });
 
@@ -119,6 +171,29 @@ define([
             throw new Error(patch);
         } else {
             DD.apply($content[0], patch);
+            var $mts = $content.find('media-tag:not(:has(*))');
+            $mts.each(function (i, el) {
+                console.log(el);
+                var allowedMediaTypes = [
+                    'image/png',
+                    'image/jpeg',
+                    'image/jpg',
+                    'image/gif',
+                    'audio/mp3',
+                    'audio/ogg',
+                    'audio/wav',
+                    'audio/webm',
+                    'video/mp4',
+                    'video/ogg',
+                    'video/webm',
+                    'application/pdf',
+                    'application/dash+xml',
+                    'download'
+                ];
+
+                MediaTag.CryptoFilter.setAllowedMediaTypes(allowedMediaTypes);
+                MediaTag(el);
+            });
         }
     };
 

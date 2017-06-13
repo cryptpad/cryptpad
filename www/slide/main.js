@@ -47,6 +47,7 @@ define([
         };
 
         var andThen = function (CMeditor) {
+            var $iframe = $('#pad-iframe').contents();
             var CodeMirror = Cryptpad.createCodemirror(CMeditor, ifrw, Cryptpad);
             editor = CodeMirror.editor;
 
@@ -508,6 +509,37 @@ define([
 
                 if (readOnly) { return; }
                 UserList.getLastName(toolbar.$userNameButton, isNew);
+
+
+                /*editor.on('dragover', function (e) {
+                    //console.log(editor.coordsChar());
+                    console.log(e);
+                });*/
+                var fmConfig = {
+                    dropArea: $iframe.find('.CodeMirror'),
+                    body: $iframe.find('body'),
+                    onUploaded: function (ev, data) {
+                        console.log(ev, data);
+                        /* 
+                        TODO: test if getCursor() works
+                        If we can drop a file without updating the cursor, we'll need the following
+                        code to get the cursor position from the drop event
+                        var obj = {
+                            left: ev.originalEvent.pageX,
+                            top: ev.originalEvent.pageY,
+                        };
+                        var cursor = editor.coordsChar(obj);
+                        */
+                        var cursor = editor.getCursor();
+                        var cleanName = data.name.replace(/[\[\]]/g, '');
+                        var text = '['+cleanName+']('+data.url+')';
+                        if (data.mediatag) {
+                            var text = '!['+cleanName+']('+data.url+')';
+                        }
+                        editor.replaceSelection(text);
+                    }
+                };
+                var FM = Cryptpad.createFileManager(fmConfig);
             };
 
             config.onRemote = function () {

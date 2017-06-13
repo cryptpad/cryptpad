@@ -117,7 +117,7 @@ define([
     common.createCodemirror = CodeMirror.create;
 
     // Files
-    common.createFileManager = function () { return Files.create(common); };
+    common.createFileManager = function (config) { return Files.create(common, config); };
 
     // History
     common.getHistory = function (config) { return History.create(common, config); };
@@ -594,7 +594,7 @@ define([
                             common.alert(Messages.pinLimitNotPinned, null, true);
                             return;
                         }
-                        else { throw new Error("Cannot push this pad to CryptDrive", e); }
+                        else { return void cb(e); }
                     }
                     getStore().addPad(id, common.initialPath);
                 });
@@ -637,7 +637,7 @@ define([
         common.setPadTitle(title, href, function (err) {
             if (err) {
                 console.log("unable to set pad title");
-                console.log(err);
+                console.error(err);
                 return;
             }
             callback(null, title);
