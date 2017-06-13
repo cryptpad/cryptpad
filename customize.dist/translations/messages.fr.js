@@ -209,6 +209,8 @@ define(function () {
     out.canvas_enable = "Activer le dessin";
     out.canvas_width = "Épaisseur";
     out.canvas_opacity = "Opacité";
+    out.canvas_opacityLabel = "opacité: {0}";
+    out.canvas_widthLabel = "taille: {0}";
 
     // File manager
 
