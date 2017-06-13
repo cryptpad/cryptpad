@@ -11,11 +11,13 @@ define([
     '/common/common-title.js',
     '/common/common-metadata.js',
     '/common/common-codemirror.js',
+    '/common/common-file.js',
 
     '/common/clipboard.js',
     '/common/pinpad.js',
     '/customize/application_config.js'
-], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Metadata, CodeMirror, Clipboard, Pinpad, AppConfig) {
+], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Metadata,
+            CodeMirror, Files, Clipboard, Pinpad, AppConfig) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -113,6 +115,9 @@ define([
 
     // CodeMirror
     common.createCodemirror = CodeMirror.create;
+
+    // Files
+    common.createFileManager = function () { return Files.create(common); };
 
     // History
     common.getHistory = function (config) { return History.create(common, config); };
@@ -520,8 +525,8 @@ define([
         cb ("store.forgetPad is not a function");
     };
 
-    common.setPadTitle = function (name, cb) {
-        var href = window.location.href;
+    common.setPadTitle = function (name, padHref, cb) {
+        var href = padHref || window.location.href;
         var parsed = parsePadUrl(href);
         if (!parsed.hash) { return; }
         href = getRelativeHref(href);
@@ -621,15 +626,15 @@ define([
     /*
      * Buttons
      */
-    common.renamePad = function (title, callback) {
+    common.renamePad = function (title, href, callback) {
         if (title === null) { return; }
 
         if (title.trim() === "") {
-            var parsed = parsePadUrl(window.location.href);
+            var parsed = parsePadUrl(href || window.location.href);
             title = getDefaultName(parsed);
         }
 
-        common.setPadTitle(title, function (err) {
+        common.setPadTitle(title, href, function (err) {
             if (err) {
                 console.log("unable to set pad title");
                 console.log(err);

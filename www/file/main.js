@@ -17,7 +17,7 @@ define([
     var APP = {};
 
     $(function () {
-
+// TODO race condition with contents() here
     var ifrw = $('#pad-iframe')[0].contentWindow;
     var $iframe = $('#pad-iframe').contents();
     var $form = $iframe.find('#upload-form');
@@ -25,9 +25,10 @@ define([
     var $label = $form.find('label');
     var $table = $iframe.find('#status');
     var $progress = $iframe.find('#progress');
+    var $body = $iframe.find('body');
 
-    $iframe.find('body').on('dragover', function (e) { e.preventDefault(); });
-    $iframe.find('body').on('drop', function (e) { e.preventDefault(); });
+    $body.on('dragover', function (e) { e.preventDefault(); });
+    $body.on('drop', function (e) { e.preventDefault(); });
 
     Cryptpad.addLoadingScreen();
 
@@ -35,7 +36,7 @@ define([
 
     var myFile;
     var myDataType;
-
+/*
     var queue = {
         queue: [],
         inProgress: false
@@ -206,7 +207,7 @@ define([
 
         queue.next();
     };
-
+*/
     var uploadMode = false;
 
     var andThen = function () {
@@ -329,7 +330,7 @@ define([
             display: 'block',
         });
 
-        var handleFile = function (file) {
+        /*var handleFile = function (file) {
             console.log(file);
             var reader = new FileReader();
             reader.onloadend = function () {
@@ -342,45 +343,17 @@ define([
                 });
             };
             reader.readAsArrayBuffer(file);
-        };
+        };*/
+
+        var FM = Cryptpad.createFileManager();
 
         $form.find("#file").on('change', function (e) {
             var file = e.target.files[0];
-            handleFile(file);
+            FM.handleFile(file);
         });
 
-        var counter = 0;
-        $label
-        .on('dragenter', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            counter++;
-            $label.addClass('hovering');
-        })
-        .on('dragleave', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            counter--;
-            if (counter <= 0) {
-                $label.removeClass('hovering');
-            }
-        });
-
-        $form
-        .on('drag dragstart dragend dragover drop dragenter dragleave', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-        })
-        .on('drop', function (e) {
-            e.stopPropagation();
-            var dropped = e.originalEvent.dataTransfer.files;
-            counter = 0;
-            $label.removeClass('hovering');
-
-            Array.prototype.slice.call(dropped).forEach(function (d) {
-                handleFile(d);
-            });
-        });
+        //FM.createDropArea($form, $label, handleFile);
+        FM.createUploader($form, $label, $body);
 
         // we're in upload mode
         Cryptpad.removeLoadingScreen();

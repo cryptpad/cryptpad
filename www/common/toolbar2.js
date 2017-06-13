@@ -438,7 +438,7 @@ define([
                 if (name === "") {
                     name = $input.attr('placeholder');
                 }
-                Cryptpad.renamePad(name, function (err, newtitle) {
+                Cryptpad.renamePad(name, null, function (err, newtitle) {
                     if (err) { return; }
                     $text.text(newtitle);
                     callback(null, newtitle);

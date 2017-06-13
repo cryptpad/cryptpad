@@ -43,11 +43,12 @@ define(function () {
             onLocal();
         };
 
-        exp.updateTitle = function (newTitle) {
+        // update title: href is optional; if not specified, we use window.location.href
+        exp.updateTitle = function (newTitle, href) {
             if (newTitle === exp.title) { return; }
             // Change the title now, and set it back to the old value if there is an error
             var oldTitle = exp.title;
-            Cryptpad.renamePad(newTitle, function (err, data) {
+            Cryptpad.renamePad(newTitle, href, function (err, data) {
                 if (err) {
                     console.log("Couldn't set pad title");
                     console.error(err);
