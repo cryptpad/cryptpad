@@ -21,6 +21,7 @@ define([], function () {
     }
 
     var failStore = function () {
+        console.error(new Error('wut'));
         require(['jquery'], function ($) {
             $.ajax({
                 type: 'HEAD',
@@ -34,7 +35,7 @@ define([], function () {
         var test_key = 'localStorage_test';
         var testval = Math.random().toString();
         localStorage.setItem(test_key, testval);
-        if (localStorage.getItem(test_key) !== test_key) {
+        if (localStorage.getItem(test_key) !== testval) {
             failStore();
         }
     } catch (e) { console.error(e); failStore(); }
