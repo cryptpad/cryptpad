@@ -20,16 +20,24 @@ define([], function () {
         };
     }
 
-    if (!localStorage || typeof(localStorage.getItem) !== 'function') {
-        require('jquery', function ($) {
+    var failStore = function () {
+        require(['jquery'], function ($) {
             $.ajax({
                 type: 'HEAD',
                 url: '/common/feedback.html?NO_LOCALSTORAGE=' + (+new Date()),
             });
         });
         window.alert("CryptPad needs localStorage to work, try a different browser");
-        return;
-    }
+    };
+
+    try {
+        var test_key = 'localStorage_test';
+        var testval = Math.random().toString();
+        localStorage.setItem(test_key, testval);
+        if (localStorage.getItem(test_key) !== test_key) {
+            return failStore();
+        }
+    } catch (e) { console.error(e); return failStore(); }
 
     require([document.querySelector('script[data-bootload]').getAttribute('data-bootload')]);
 });
