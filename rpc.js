@@ -20,7 +20,7 @@ var SESSION_EXPIRATION_TIME = 60 * 1000;
 var SUPPRESS_RPC_ERRORS = false;
 
 var WARN = function (e, output) {
-    if (!SUPPRESS_RPC_ERRORS) {
+    if (!SUPPRESS_RPC_ERRORS && e && output) {
         console.error(new Date().toISOString() + ' [' + e + ']', output);
         console.error(new Error(e).stack);
         console.error();
