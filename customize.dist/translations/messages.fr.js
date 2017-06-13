@@ -207,6 +207,9 @@ define(function () {
     out.poll_locked = "Verrouillé";
     out.poll_unlocked = "Déverrouillé";
 
+    out.poll_show_help_button = "Afficher l'aide";
+    out.poll_hide_help_button = "Cacher l'aide";
+
     // Canvas
     out.canvas_clear = "Nettoyer";
     out.canvas_delete = "Supprimer la sélection";
@@ -214,6 +217,8 @@ define(function () {
     out.canvas_enable = "Activer le dessin";
     out.canvas_width = "Épaisseur";
     out.canvas_opacity = "Opacité";
+    out.canvas_opacityLabel = "opacité: {0}";
+    out.canvas_widthLabel = "taille: {0}";
 
     // File manager
 

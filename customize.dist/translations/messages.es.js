@@ -452,6 +452,9 @@ define(function () {
     out.poll_locked = "Cerrado";
     out.poll_unlocked = "Abierto";
 
+    out.poll_show_help_button = "Mostrar ayuda";
+    out.poll_hide_help_button = "Esconder ayuda";
+
     // 1.8.0 - Idopogo
 
     out.common_connectionLost = "<b>Connexión perdida</b><br>El documento está ahora en modo solo lectura hasta que la conexión vuelva.";

@@ -209,6 +209,9 @@ define(function () {
     out.poll_locked = "Locked";
     out.poll_unlocked = "Unlocked";
 
+    out.poll_show_help_button = "Show help";
+    out.poll_hide_help_button = "Hide help";
+
     // Canvas
     out.canvas_clear = "Clear";
     out.canvas_delete = "Delete selection";
@@ -216,6 +219,9 @@ define(function () {
     out.canvas_enable = "Enable draw";
     out.canvas_width = "Width";
     out.canvas_opacity = "Opacity";
+    out.canvas_opacityLabel = "opacity: {0}";
+    out.canvas_widthLabel = "Width: {0}";
+    
 
     // File manager
 

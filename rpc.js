@@ -336,8 +336,13 @@ var getMultipleFileSize = function (Env, channels, cb) {
     channels.forEach(function (channel) {
         getFileSize(Env, channel, function (e, size) {
             if (e) {
-                WARN('getFileSize', e);
-                counts[channel] = -1;
+                // most likely error here is that a file no longer exists
+                // but a user still has it in their drive, and wants to know
+                // its size. We should find a way to inform them of this in
+                // the future. For now we can just tell them it has no size.
+
+                //WARN('getFileSize', e);
+                counts[channel] = 0;
                 return done();
             }
             counts[channel] = size;
