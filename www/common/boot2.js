@@ -35,9 +35,9 @@ define([], function () {
         var testval = Math.random().toString();
         localStorage.setItem(test_key, testval);
         if (localStorage.getItem(test_key) !== test_key) {
-            return failStore();
+            failStore();
         }
-    } catch (e) { console.error(e); return failStore(); }
+    } catch (e) { console.error(e); failStore(); }
 
     require([document.querySelector('script[data-bootload]').getAttribute('data-bootload')]);
 });
