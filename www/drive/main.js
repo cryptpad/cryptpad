@@ -2389,8 +2389,7 @@ define([
             var name = paths[0].path[paths[0].path.length - 1];
             if ($(this).hasClass("remove")) {
                 if (paths.length === 1) {
-                    if (path.length === 4) { name = path[1]; }
-                    Cryptpad.confirm(Messages._getKey("fm_removePermanentlyDialog", [name]), function(res) {
+                    Cryptpad.confirm(Messages.fm_removePermanentlyDialog, function(res) {
                         if (!res) { return; }
                         filesOp.delete([path], refresh);
                     });
@@ -2406,7 +2405,14 @@ define([
             }
             else if ($(this).hasClass("restore")) {
                 if (paths.length !== 1) { return; }
-                if (path.length === 4) { name = path[1]; }
+                if (path.length === 4) {
+                    var el = filesOp.find(path);
+                    if (filesOp.isFile(el)) {
+                        name = filesOp.getTitle(el);
+                    } else {
+                        name = path[1];
+                    }
+                }
                 Cryptpad.confirm(Messages._getKey("fm_restoreDialog", [name]), function(res) {
                     if (!res) { return; }
                     filesOp.restore(path, refresh);
