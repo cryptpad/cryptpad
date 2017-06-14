@@ -138,7 +138,13 @@ app.get('/api/config', function(req, res){
 var httpServer = httpsOpts ? Https.createServer(httpsOpts, app) : Http.createServer(app);
 
 httpServer.listen(config.httpPort,config.httpAddress,function(){
-    console.log('[%s] listening on port %s', new Date().toISOString(), config.httpPort);
+    var host = config.httpAddress;
+    var hostName = !host.indexOf(':') ? '[' + host + ']' : host;
+
+    var port = config.httpPort;
+    var ps = port === 80? '': ':' + port;
+
+    console.log('\n[%s] server available http://%s%s', new Date().toISOString(), hostName, ps);
 });
 
 var wsConfig = { server: httpServer };
