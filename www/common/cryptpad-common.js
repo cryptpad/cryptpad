@@ -1447,7 +1447,7 @@ define([
                     if (parsedOld && parsedNew && (
                           parsedOld.type !== parsedNew.type
                           || parsedOld.channel !== parsedNew.channel
-                          || parsedOld.mode !== parsedNew.mode
+                          //|| parsedOld.mode !== parsedNew.mode
                           || parsedOld.key !== parsedNew.key)) {
                         document.location.reload();
                         return;
