@@ -1441,6 +1441,30 @@ define([
             return $block;
         };
 
+        var createUploadButton = function () {
+            var inTrash = filesOp.isPathIn(currentPath, [TRASH]);
+            var $icon = $('<span>', {
+                'class': 'fa fa-upload'
+            });
+            var $input = $('<input>', {
+                'type': 'file',
+                'style': 'display: none;'
+            }).on('change', function (e) {
+                var file = e.target.files[0];
+                var ev = {
+                    target: $content[0]
+                };
+                APP.FM.handleFile(file, ev);
+            });
+            var $button = $('<button>', {
+                'class': 'btn btn-primary new',
+                title: Messages.uploadButtonTitle
+            }).append($icon).append(' '+Messages.uploadButton).click(function () {
+                $input.click();
+            });
+            return $button;
+        };
+
         var hideNewButton = function () {
             $iframe.find('.dropdown-bar-content').hide();
         };
@@ -1877,6 +1901,7 @@ define([
 
             // NewButton can be undefined if we're in read only mode
             $toolbar.find('.leftside').append(createNewButton(isInRoot));
+            $toolbar.find('.leftside').append(createUploadButton());
 
 
             var $folderHeader = getFolderListHeader();
@@ -2700,7 +2725,7 @@ define([
 
             var userList = APP.userList = info.userList;
             var config = {
-                displayed: ['useradmin', 'spinner', 'lag', 'state', 'limit'],
+                displayed: ['useradmin', 'spinner', 'lag', 'state', 'limit', 'newpad'],
                 userList: {
                     list: userList,
                     userNetfluxId: info.myID

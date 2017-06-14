@@ -223,7 +223,6 @@ define([
         };
 
         var handleFile = File.handleFile = function (file, e) {
-            console.log(file);
             var reader = new FileReader();
             reader.onloadend = function () {
                 queue.push({
