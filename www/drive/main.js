@@ -205,6 +205,17 @@ define([
         var $trashTreeContextMenu = $iframe.find("#trashTreeContextMenu");
         var $trashContextMenu = $iframe.find("#trashContextMenu");
 
+        $tree.on('drop dragover', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+        $driveToolbar.on('drop dragover', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+
+
         // TOOLBAR
 
         /* add a "change username" button */
@@ -1012,13 +1023,30 @@ define([
             ev.dataTransfer.setData("text", stringify(data));
         };
 
+        var onFileDrop = APP.onFileDrop = function (file, e) {
+            APP.FM.onFileDrop(file, e);
+        };
+        var findDropPath = function (target) {
+            var $target = $(target);
+            var $el = findDataHolder($target);
+            var newPath = $el.data('path');
+            if ((!newPath || filesOp.isFile(filesOp.find(newPath)))
+                    && $target.parents('#content')) {
+                newPath = currentPath;
+            }
+            return newPath;
+        };
         var onDrop = function (ev) {
             ev.preventDefault();
             $iframe.find('.droppable').removeClass('droppable');
             var data = ev.dataTransfer.getData("text");
+
+            // Don't the the normal drop handler for file upload
+            var fileDrop = ev.dataTransfer.files;
+            if (fileDrop) { return void onFileDrop(fileDrop, ev); }
+
             var oldPaths = JSON.parse(data).path;
             if (!oldPaths) { return; }
-
             // Dropped elements can be moved from the same file manager or imported from another one.
             // A moved element should be removed from its previous location
             var movedPaths = [];
@@ -1032,8 +1060,7 @@ define([
                 }
             });
 
-            var $el = findDataHolder($(ev.target));
-            var newPath = $el.data('path');
+            var newPath = findDropPath(ev.target);
             if (!newPath) { return; }
             if (movedPaths && movedPaths.length) {
                 moveElements(movedPaths, newPath, null, refresh);
@@ -1069,6 +1096,8 @@ define([
                 e.preventDefault();
             });
             $element.on('drop', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
                 onDrop(e.originalEvent);
             });
             $element.on('dragenter', function (e) {
@@ -1087,6 +1116,7 @@ define([
                 }
             });
         };
+        addDragAndDropHandlers($content, null, true, true);
 
         // In list mode, display metadata from the filesData object
         // _WORKGROUP_ : Do not display title, atime and ctime columns since we don't have files data
@@ -2558,6 +2588,29 @@ define([
             }
             if (typeof(cb) === "function") { cb(); }
         };
+
+        var fmConfig = {
+            noHandlers: true,
+            onUploaded: function (ev, data) {
+                try {
+                    // Get the folder path
+                    var newPath = findDropPath(ev.target);
+                    if (!newPath) { return void refresh(); }
+                    var href = data.url;
+                    // Get the current file location in ROOT
+                    var id = filesOp.getIdFromHref(href);
+                    var paths = filesOp.findFile(id);
+                    if (paths.length !== 1) { return; }
+                    // Try to move and refresh
+                    moveElements([paths[0]], newPath, true);
+                    refresh();
+                } catch (e) {
+                    console.error(e);
+                    refresh();
+                }
+            }
+        };
+        APP.FM = Cryptpad.createFileManager(fmConfig);
 
         createReadme(proxy, function () {
             refresh();

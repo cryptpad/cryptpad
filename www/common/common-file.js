@@ -238,7 +238,13 @@ define([
             reader.readAsArrayBuffer(file);
         };
 
-        var createAreaHandlers = File.createDropArea = function ($area, $hoverArea, todo) {
+        var onFileDrop = File.onFileDrop = function (file, e) {
+            Array.prototype.slice.call(file).forEach(function (d) {
+                handleFile(d, e);
+            });
+        };
+
+        var createAreaHandlers = File.createDropArea = function ($area, $hoverArea) {
             var counter = 0;
             if (!$hoverArea) { $hoverArea = $area; }
             $hoverArea
@@ -267,15 +273,14 @@ define([
                 var dropped = e.originalEvent.dataTransfer.files;
                 counter = 0;
                 $hoverArea.removeClass('hovering');
-
-                Array.prototype.slice.call(dropped).forEach(function (d) {
-                    todo(d, e);
-                });
+                onFileDrop(dropped, e);
             });
         };
 
         var createUploader = function ($area, $hover, $body) {
-            createAreaHandlers($area, null, handleFile);
+            if (!config.noHandlers) {
+                createAreaHandlers($area, null);
+            }
             createTableContainer($body);
         };
 
