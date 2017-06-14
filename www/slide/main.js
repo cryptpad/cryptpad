@@ -531,16 +531,16 @@ define([
                         };
                         var cursor = editor.coordsChar(obj);
                         */
-                        var cursor = editor.getCursor();
+                        //var cursor = editor.getCursor();
                         var cleanName = data.name.replace(/[\[\]]/g, '');
                         var text = '['+cleanName+']('+data.url+')';
                         if (data.mediatag) {
-                            var text = '!['+cleanName+']('+data.url+')';
+                            text = '!'+text;
                         }
                         editor.replaceSelection(text);
                     }
                 };
-                var FM = Cryptpad.createFileManager(fmConfig);
+                Cryptpad.createFileManager(fmConfig);
             };
 
             config.onRemote = function () {
