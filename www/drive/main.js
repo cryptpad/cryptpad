@@ -965,23 +965,7 @@ define([
             if (filesOp.isPathIn(newPath, [TRASH]) && paths.length && paths[0][0] === TRASH) {
                 return;
             }
-            // "force" is currently unused but may be configurable by user
-            if (newPath[0] !== TRASH || force) {
-                andThen();
-                return;
-            }
-            var msg = Messages._getKey('fm_removeSeveralDialog', [paths.length]);
-            if (paths.length === 1) {
-                var path = paths[0].slice();
-                var el = filesOp.find(path);
-                var name = filesOp.isFile(el) ? getElementName(path) : path.pop();
-                msg = Messages._getKey('fm_removeDialog', [name]);
-            }
-            Cryptpad.confirm(msg, function (res) {
-                $(ifrw).focus();
-                if (!res) { return; }
-                andThen();
-            });
+            andThen();
         };
         // Drag & drop:
         // The data transferred is a stringified JSON containing the path of the dragged element
