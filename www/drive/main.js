@@ -1027,7 +1027,7 @@ define([
 
             // Don't the the normal drop handler for file upload
             var fileDrop = ev.dataTransfer.files;
-            if (fileDrop) { return void onFileDrop(fileDrop, ev); }
+            if (fileDrop.length) { return void onFileDrop(fileDrop, ev); }
 
             var oldPaths = JSON.parse(data).path;
             if (!oldPaths) { return; }
