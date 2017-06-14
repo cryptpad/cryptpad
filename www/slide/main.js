@@ -511,11 +511,6 @@ define([
                 if (readOnly) { return; }
                 UserList.getLastName(toolbar.$userNameButton, isNew);
 
-
-                /*editor.on('dragover', function (e) {
-                    //console.log(editor.coordsChar());
-                    console.log(e);
-                });*/
                 var fmConfig = {
                     dropArea: $iframe.find('.CodeMirror'),
                     body: $iframe.find('body'),

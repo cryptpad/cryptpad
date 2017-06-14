@@ -107,6 +107,8 @@ define(function () {
 
     out.newButton = 'Nouveau';
     out.newButtonTitle = 'Créer un nouveau pad';
+    out.uploadButton = 'Upload';
+    out.uploadButtonTitle = 'Uploader un nouveau fichier dans le dossier actuel';
 
     out.saveTemplateButton = "Sauver en tant que modèle";
     out.saveTemplatePrompt = "Choisir un titre pour ce modèle";

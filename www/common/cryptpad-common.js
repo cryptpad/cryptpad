@@ -585,25 +585,26 @@ define([
                 return pad;
             });
 
-            if (!contains && href) {
-                var data = makePad(href, name);
-                getStore().pushData(data, function (e, id) {
-                    if (e) {
-                        if (e === 'E_OVER_LIMIT') {
-                            common.alert(Messages.pinLimitNotPinned, null, true);
-                            return;
-                        }
-                        else { return void cb(e); }
-                    }
-                    getStore().addPad(id, common.initialPath);
-                });
-            }
             if (updateWeaker.length > 0) {
                 updateWeaker.forEach(function (obj) {
                     // If we have a stronger url, and if all the occurences of the weaker were
                     // in the trash, add remove them from the trash and add the stronger in root
                     getStore().restoreHref(obj.n);
                 });
+            }
+            if (!contains && href) {
+                var data = makePad(href, name);
+                getStore().pushData(data, function (e, id) {
+                    if (e) {
+                        if (e === 'E_OVER_LIMIT') {
+                            common.alert(Messages.pinLimitNotPinned, null, true);
+                        }
+                        return void cb(e);
+                    }
+                    getStore().addPad(id, common.initialPath);
+                    cb(err, recent);
+                });
+                return;
             }
             cb(err, recent);
         });
