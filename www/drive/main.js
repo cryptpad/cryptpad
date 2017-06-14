@@ -649,12 +649,7 @@ define([
         };
 
         var updatePathSize = function () {
-            var $context = $iframe.find('#contextButtonsContainer');
-            var l = 50;
-            if ($context.length) {
-                l += $context.width() || 0;
-            }
-            $driveToolbar.find('.path').css('max-width', 'calc(100vw - '+$tree.width()+'px - '+l+'px)');
+            $driveToolbar.find('.path').css('max-width', 'calc(100vw - '+$tree.width()+'px - 50px)');
         };
 
         var getSelectedPaths = function ($element) {
@@ -1261,7 +1256,7 @@ define([
         var createTitle = function (path, noStyle) {
             if (!path || path.length === 0) { return; }
             var isTrash = filesOp.isPathIn(path, [TRASH]);
-            var $title = $('<span>', {'class': 'path unselectable'});
+            var $title = $driveToolbar.find('.path');
             if (APP.mobile()) {
                 return $title;
             }
@@ -1638,10 +1633,8 @@ define([
             var $toolbar = $driveToolbar;
             $toolbar.html('');
             var $leftside = $('<div>', {'class': 'leftside'}).appendTo($toolbar);
-            if (!APP.mobile()) {
-                $leftside.width($tree.width());
-            }
             $('<div>', {'class': 'rightside'}).appendTo($toolbar);
+            $('<div>', {'class': 'path unselectable'}).appendTo($toolbar);
             return $toolbar;
         };
 
@@ -1866,7 +1859,7 @@ define([
             }
             var $list = $('<ul>').appendTo($dirContent);
 
-            createTitle(path).appendTo($toolbar.find('.rightside'));
+            createTitle(path).appendTo($toolbar.find('.path'));
             updatePathSize();
 
             if (APP.mobile()) {
@@ -2554,19 +2547,6 @@ define([
             if (path[1] === "migrate" && value === 1) {
                 if (APP.onDisconnect) { APP.onDisconnect(true); }
             }
-        });
-
-        $iframe.find('#tree').mousedown(function () {
-            if (APP.mobile()) { return; }
-            if (APP.resizeTree) { return; }
-            APP.resizeTree = window.setInterval(function () {
-                $driveToolbar.find('.leftside').width($tree.width());
-                updatePathSize();
-            }, 100);
-        });
-        $appContainer.mouseup(function () {
-            window.clearInterval(APP.resizeTree);
-            APP.resizeTree = undefined;
         });
 
         history.onEnterHistory = function (obj) {

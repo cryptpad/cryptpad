@@ -132,7 +132,7 @@ span.fa-folder-open {
   width: calc(100% - 30px);
 }
 #tree li > span.element-row {
-  width: calc(100% + 5px);
+  min-width: calc(100% + 5px);
   display: inline-block;
   cursor: pointer;
   margin-left: -5px;
@@ -223,6 +223,11 @@ span.fa-folder-open {
   display: none;
 }
 /* CONTENT */
+#rightCol {
+  display: flex;
+  flex-flow: column;
+  flex: 1;
+}
 #content {
   box-sizing: border-box;
   background: #fff;
@@ -450,9 +455,6 @@ span.fa-folder-open {
 #driveToolbar {
   background: #ddd;
   color: #555;
-  height: 30px;
-  display: flex;
-  flex-flow: row;
   border-top: 1px solid #ccc;
   border-bottom: ;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -516,21 +518,25 @@ span.fa-folder-open {
   width: 250px;
   margin: 0;
   padding: 0;
+  display: inline-block;
 }
 #driveToolbar .rightside {
   margin: 0;
   padding: 0;
-  flex: 1;
+  display: inline-block;
+  float: right;
 }
 #driveToolbar .path {
-  display: inline-block;
-  height: 100%;
+  width: 100%;
+  height: 30px;
   line-height: 30px;
   cursor: default;
   width: auto;
   overflow: hidden;
   white-space: nowrap;
   direction: rtl;
+  max-width: 100%;
+  text-align: left;
 }
 #driveToolbar .path .element {
   padding: 5px;
