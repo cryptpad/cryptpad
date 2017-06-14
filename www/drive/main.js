@@ -1438,6 +1438,7 @@ define([
 
         var createUploadButton = function () {
             var inTrash = filesOp.isPathIn(currentPath, [TRASH]);
+            if (inTrash) { return; }
             var $icon = $('<span>', {
                 'class': 'fa fa-upload'
             });
@@ -1632,7 +1633,7 @@ define([
         var createToolbar = function () {
             var $toolbar = $driveToolbar;
             $toolbar.html('');
-            var $leftside = $('<div>', {'class': 'leftside'}).appendTo($toolbar);
+            $('<div>', {'class': 'leftside'}).appendTo($toolbar);
             $('<div>', {'class': 'rightside'}).appendTo($toolbar);
             $('<div>', {'class': 'path unselectable'}).appendTo($toolbar);
             return $toolbar;
