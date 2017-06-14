@@ -149,7 +149,6 @@ define([
         }
 
         var href = '/common/feedback.html?' + action + '=' + (+new Date());
-        console.log('[feedback] %s', href);
         $.ajax({
             type: "HEAD",
             url: href,
@@ -884,6 +883,21 @@ define([
         common.getPinnedUsage(todo);
     };
 
+    var getAppSuffix = function () {
+        var parts = window.location.pathname.split('/')
+            .filter(function (x) { return x; });
+
+        if (!parts[0]) { return ''; }
+        return '_' + parts[0].toUpperCase();
+    };
+
+    var prepareFeedback = function (key) {
+        if (typeof(key) !== 'string') { return $.noop; }
+        return function () {
+            feedback(key.toUpperCase() + getAppSuffix());
+        };
+    };
+
     common.createButton = function (type, rightside, data, callback) {
         var button;
         var size = "17px";
@@ -893,7 +907,7 @@ define([
                     title: Messages.exportButtonTitle,
                 }).append($('<span>', {'class':'fa fa-download', style: 'font:'+size+' FontAwesome'}));
                 if (callback) {
-                    button.click(callback);
+                    button.click(prepareFeedback(type)).click(callback);
                 }
                 break;
             case 'import':
@@ -901,7 +915,9 @@ define([
                     title: Messages.importButtonTitle,
                 }).append($('<span>', {'class':'fa fa-upload', style: 'font:'+size+' FontAwesome'}));
                 if (callback) {
-                    button.click(UI.importContent('text/plain', function (content, file) {
+                    button
+                    .click(prepareFeedback(type))
+                    .click(UI.importContent('text/plain', function (content, file) {
                         callback(content, file);
                     }));
                 }
@@ -912,7 +928,8 @@ define([
                     title: Messages.saveTemplateButton,
                 }).append($('<span>', {'class':'fa fa-bookmark', style: 'font:'+size+' FontAwesome'}));
                 if (data.rt && data.Crypt) {
-                    button.click(function () {
+                    button
+                    .click(function () {
                         var title = data.getTitle() || document.title;
                         var todo = function (val) {
                             if (typeof(val) !== "string") { return; }
@@ -970,7 +987,9 @@ define([
                     }
                 });
                 if (callback) {
-                    button.click(function() {
+                    button
+                    .click(prepareFeedback(type))
+                    .click(function() {
                         var href = window.location.href;
                         var msg = isLoggedIn() ? Messages.forgetPrompt : Messages.fm_removePermanentlyDialog;
                         common.confirm(msg, function (yes) {
@@ -1026,7 +1045,9 @@ define([
                     style: 'font:'+size+' FontAwesome'
                 });
                 if (data.histConfig) {
-                    button.click(function () {
+                    button
+                    .click(prepareFeedback(type))
+                    .click(function () {
                         common.getHistory(data.histConfig);
                     });
                 }
@@ -1035,7 +1056,8 @@ define([
                 button = $('<button>', {
                     'class': "fa fa-question",
                     style: 'font:'+size+' FontAwesome'
-                });
+                })
+                .click(prepareFeedback(type));
         }
         if (rightside) {
             button.addClass('rightside-button');
