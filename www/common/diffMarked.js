@@ -82,29 +82,6 @@ define([
         }
     };
 
-    var getSubMediaTag = function (element) {
-        var result = [];
-        console.log(element);
-        if (element.nodeName === "MEDIA-TAG") {
-            result.push(element);
-            return result;
-        }
-        if (element.childNodes) {
-            element.childNodes.forEach(function (el) {
-                result = result.concat(getSubMediaTag(el, result));
-            });
-        }
-        console.log(result);
-        return result;
-    };
-    var mediaTag = function (info) {
-        if (info.diff.action === 'addElement') {
-            return getSubMediaTag(info.diff.element);
-            //MediaTag.CryptoFilter.setAllowedMediaTypes(allowedMediaTypes);
-            //MediaTag($mt[0]);
-        }
-        return;
-    };
 
     var slice = function (coll) {
         return Array.prototype.slice.call(coll);
@@ -127,7 +104,6 @@ define([
         return Dom;
     };
 
-    //var toTransform = [];
     var DD = new DiffDOM({
         preDiffApply: function (info) {
             if (unsafeTag(info)) { return true; }
