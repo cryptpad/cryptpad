@@ -134,8 +134,9 @@ define(function () {
 
     out.filePickerButton = "Intégrer un fichier";
     out.filePicker_close = "Fermer";
-    out.filePicker_description = "Choisissez un fichier de votre CryptDrive pour l'intégrer";
+    out.filePicker_description = "Choisissez un fichier de votre CryptDrive pour l'intégrer ou uploadez-en un nouveau";
     out.filePicker_filter = "Filtrez les fichiers par leur nom";
+    out.or = 'ou';
 
     out.slideOptionsTitle = "Personnaliser la présentation";
     out.slideOptionsButton = "Enregistrer (Entrée)";

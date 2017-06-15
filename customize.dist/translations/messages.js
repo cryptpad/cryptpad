@@ -136,8 +136,9 @@ define(function () {
 
     out.filePickerButton = "Embed a file";
     out.filePicker_close = "Close";
-    out.filePicker_description = "Choose a file from your CryptDrive to embed it";
+    out.filePicker_description = "Choose a file from your CryptDrive to embed it or upload a new one";
     out.filePicker_filter = "Filter files by name";
+    out.or = 'or';
 
     out.slideOptionsTitle = "Customize your slides";
     out.slideOptionsButton = "Save (enter)";

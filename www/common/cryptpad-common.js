@@ -945,6 +945,25 @@ define([
                     }));
                 }
                 break;
+            case 'upload':
+                button = $('<button>', {
+                    'class': 'btn btn-primary new',
+                    title: Messages.uploadButtonTitle,
+                }).append($('<span>', {'class':'fa fa-upload'})).append(' '+Messages.uploadButton);
+                if (!data.FM) { return; }
+                var $input = $('<input>', {
+                    'type': 'file',
+                    'style': 'display: none;'
+                }).on('change', function (e) {
+                    var file = e.target.files[0];
+                    var ev = {
+                        target: data.target
+                    };
+                    data.FM.handleFile(file, ev);
+                    if (callback) { callback(); }
+                });
+                button.click(function () { $input.click(); })
+                break;
             case 'template':
                 if (!AppConfig.enableTemplates) { return; }
                 button = $('<button>', {
