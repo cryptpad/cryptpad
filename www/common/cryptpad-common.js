@@ -1449,8 +1449,8 @@ define([
                 initialized = true;
 
                 updateLocalVersion();
-
                 f(void 0, env);
+                if (typeof(window.onhashchange) === 'function') { window.onhashchange(); }
             }
         };
 
@@ -1491,8 +1491,9 @@ define([
                     if (parsedOld && parsedNew && (
                           parsedOld.type !== parsedNew.type
                           || parsedOld.channel !== parsedNew.channel
-                          //|| parsedOld.mode !== parsedNew.mode
+                          || parsedOld.mode !== parsedNew.mode
                           || parsedOld.key !== parsedNew.key)) {
+                        if (!parsedOld.channel) { oldHref = newHref; return; }
                         document.location.reload();
                         return;
                     }
