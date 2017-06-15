@@ -300,6 +300,8 @@ body .CodeMirror-focused .cm-matchhighlight {
   width: 90%;
   margin: auto;
   padding-left: .25vw;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 .cp div#modal #content .slide-frame ul,
 .cp #print .slide-frame ul,
