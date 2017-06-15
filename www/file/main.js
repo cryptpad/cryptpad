@@ -105,8 +105,7 @@ define([
                 Title.updateTitle(title || Title.defaultTitle);
 
                 var displayFile = function (ev) {
-                        console.log(e);
-                    $mt = $dlview.find('media-tag');
+                    var $mt = $dlview.find('media-tag');
                     var cryptKey = secret.keys && secret.keys.fileKeyStr;
                     var hexFileName = Cryptpad.base64ToHex(secret.channel);
                     $mt.attr('src', '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName);
