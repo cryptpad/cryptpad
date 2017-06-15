@@ -33,9 +33,9 @@ module.exports = {
          *  it is recommended that you configure these fields to match the
          *  domain which will serve your CryptPad instance.
          */
-        "child-src 'self' *",
+        "child-src 'self' blob: *",
 
-        "media-src *",
+        "media-src * blob:",
 
         /*  this allows connections over secure or insecure websockets
             if you are deploying to production, you'll probably want to remove
