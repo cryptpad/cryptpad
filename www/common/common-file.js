@@ -123,6 +123,7 @@ define([
                         if (err) { return void console.error(err); } // TODO
                         console.log(title);
                         common.log(Messages._getKey('upload_success', [title]));
+                        common.prepareFeedback('upload')();
 
                         if (config.onUploaded) {
                             var data = getData(file, href);
