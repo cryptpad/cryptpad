@@ -8,10 +8,8 @@ define([
     '/common/notify.js',
     '/file/file-crypto.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
-    '/bower_components/file-saver/FileSaver.min.js',
 ], function ($, Crypto, realtimeInput, Toolbar, Cryptpad, Visible, Notify, FileCrypto) {
     var Messages = Cryptpad.Messages;
-    var saveAs = window.saveAs;
     var Nacl = window.nacl;
 
     var APP = {};
@@ -36,9 +34,6 @@ define([
         Cryptpad.addLoadingScreen();
 
         var Title;
-
-        var myFile;
-        var myDataType;
 
         var uploadMode = false;
 
@@ -162,7 +157,6 @@ define([
                     var decrypting = false;
                     var onClick = function (ev) {
                         if (decrypting) { return; }
-                        if (myFile) { return void exportFile(); }
                         decrypting = true;
                         displayFile(ev);
                     };
