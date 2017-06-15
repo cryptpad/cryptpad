@@ -131,6 +131,11 @@ define([
             return store.getProxy().proxy;
         }
     };
+    common.getFO = function () {
+        if (store && store.getProxy()) {
+            return store.getProxy().fo;
+        }
+    };
     var getNetwork = common.getNetwork = function () {
         if (store) {
             if (store.getProxy() && store.getProxy().info) {
@@ -642,6 +647,23 @@ define([
             }
             callback(null, title);
         });
+    };
+
+    common.getUserFilesList = function () {
+        var store = common.getStore();
+        var proxy = store.getProxy();
+        var fo = proxy.fo;
+        var hashes = [];
+        var list = fo.getFiles().filter(function (id) {
+            var href = fo.getFileData(id).href;
+            var parsed = parsePadUrl(href);
+            if ((parsed.type === 'file' || parsed.type === 'media')
+                 && hashes.indexOf(parsed.hash) === -1) {
+                hashes.push(parsed.hash);
+                return true;
+            }
+        });
+        return list;
     };
 
     var getUserChannelList = common.getUserChannelList = function () {

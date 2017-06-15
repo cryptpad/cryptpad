@@ -132,6 +132,11 @@ define(function () {
     out.printCSS = "Personnaliser l'apparence (CSS):";
     out.printTransition = "Activer les animations de transition";
 
+    out.filePickerButton = "Intégrer un fichier";
+    out.filePicker_close = "Fermer";
+    out.filePicker_description = "Choisissez un fichier de votre CryptDrive pour l'intégrer";
+    out.filePicker_filter = "Filtrez les fichiers par leur nom";
+
     out.slideOptionsTitle = "Personnaliser la présentation";
     out.slideOptionsButton = "Enregistrer (Entrée)";
 

@@ -345,3 +345,42 @@ body .CodeMirror-focused .cm-matchhighlight {
   font-size: 10%;
   line-height: 110%;
 }
+#fileDialog {
+  position: absolute;
+  background-color: rgba(200, 200, 200, 0.8);
+  top: 15vh;
+  bottom: 15vh;
+  left: 10vw;
+  right: 10vw;
+  border: 1px solid black;
+  z-index: 10;
+  overflow: auto;
+  display: none;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  text-align: center;
+}
+#fileDialog .close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 5px;
+  cursor: pointer;
+}
+#fileDialog .element {
+  cursor: pointer;
+  display: inline-flex;
+  width: 100px;
+  height: 100px;
+  border: 1px solid #ccc;
+  margin: 5px;
+  overflow: hidden;
+  word-wrap: break-word;
+  background-color: white;
+  padding: 5px;
+  align-items: center;
+}
+#fileDialog .element span {
+  width: 100px;
+  text-align: center;
+}
