@@ -1439,26 +1439,11 @@ define([
         var createUploadButton = function () {
             var inTrash = filesOp.isPathIn(currentPath, [TRASH]);
             if (inTrash) { return; }
-            var $icon = $('<span>', {
-                'class': 'fa fa-upload'
-            });
-            var $input = $('<input>', {
-                'type': 'file',
-                'style': 'display: none;'
-            }).on('change', function (e) {
-                var file = e.target.files[0];
-                var ev = {
-                    target: $content[0]
-                };
-                APP.FM.handleFile(file, ev);
-            });
-            var $button = $('<button>', {
-                'class': 'btn btn-primary new',
-                title: Messages.uploadButtonTitle
-            }).append($icon).append(' '+Messages.uploadButton).click(function () {
-                $input.click();
-            });
-            return $button;
+            var data = {
+                FM: APP.FM,
+                target: $content[0]
+            };
+            return Cryptpad.createButton('upload', false, data);
         };
 
         var hideNewButton = function () {

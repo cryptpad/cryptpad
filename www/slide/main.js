@@ -244,6 +244,11 @@ define([
                     if (to) { window.clearTimeout(to); }
                     to = window.setTimeout(updateContainer, 300);
                 });
+                $filter.append(' '+Messages.or+' ');
+                var data = {FM: APP.FM};
+                $filter.append(Cryptpad.createButton('upload', false, data, function () {
+                    $block.hide();
+                }));
                 updateContainer();
                 $body.keydown(function (e) {
                     if (e.which === 27) { $block.hide(); }
@@ -578,27 +583,16 @@ define([
                     dropArea: $iframe.find('.CodeMirror'),
                     body: $iframe.find('body'),
                     onUploaded: function (ev, data) {
-                        console.log(ev, data);
-                        /* 
-                        TODO: test if getCursor() works
-                        If we can drop a file without updating the cursor, we'll need the following
-                        code to get the cursor position from the drop event
-                        var obj = {
-                            left: ev.originalEvent.pageX,
-                            top: ev.originalEvent.pageY,
-                        };
-                        var cursor = editor.coordsChar(obj);
-                        */
                         //var cursor = editor.getCursor();
                         var cleanName = data.name.replace(/[\[\]]/g, '');
-                        var text = '['+cleanName+']('+data.url+')';
-                        if (data.mediatag) {
+                        var text = '!['+cleanName+']('+data.url+')';
+                        /*if (data.mediatag) {
                             text = '!'+text;
-                        }
+                        }*/
                         editor.replaceSelection(text);
                     }
                 };
-                Cryptpad.createFileManager(fmConfig);
+                APP.FM = Cryptpad.createFileManager(fmConfig);
             };
 
             config.onRemote = function () {
