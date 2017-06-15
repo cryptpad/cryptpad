@@ -68,7 +68,11 @@ define([], function () {
     Util.replaceHash = function (hash) {
         if (window.history && window.history.replaceState) {
             if (!/^#/.test(hash)) { hash = '#' + hash; }
-            return void window.history.replaceState({}, window.document.title, hash);
+            void window.history.replaceState({}, window.document.title, hash);
+            if (typeof(window.onhashchange) === 'function') {
+                window.onhashchange();
+            }
+            return;
         }
         window.location.hash = hash;
     };
