@@ -914,7 +914,7 @@ define([
         return '_' + parts[0].toUpperCase();
     };
 
-    var prepareFeedback = function (key) {
+    var prepareFeedback = common.prepareFeedback = function (key) {
         if (typeof(key) !== 'string') { return $.noop; }
         return function () {
             feedback(key.toUpperCase() + getAppSuffix());
@@ -929,8 +929,10 @@ define([
                 button = $('<button>', {
                     title: Messages.exportButtonTitle,
                 }).append($('<span>', {'class':'fa fa-download', style: 'font:'+size+' FontAwesome'}));
+
+                button.click(prepareFeedback(type));
                 if (callback) {
-                    button.click(prepareFeedback(type)).click(callback);
+                    button.click(callback);
                 }
                 break;
             case 'import':
