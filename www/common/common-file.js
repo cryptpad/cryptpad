@@ -180,6 +180,7 @@ define([
         queue.next = function () {
             if (queue.queue.length === 0) {
                 queue.to = window.setTimeout(function () {
+                    if (config.keepTable) { return; }
                     File.$container.fadeOut();
                 }, 3000);
                 return;

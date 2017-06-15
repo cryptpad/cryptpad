@@ -7,6 +7,19 @@ html, body {
     margin: 0px;
     height: 100%;
 }
+body {
+    display: flex;
+    flex-flow: column;
+}
+#app {
+    flex: 1;
+    background: url('/customize/bg3.jpg') no-repeat center center;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .cryptpad-toolbar {
     margin-bottom: 1px;
     padding: 0px;
@@ -26,6 +39,13 @@ html, body {
     overflow: hidden;
     position: absolute;
     z-index: -1;
+}
+
+media-tag {
+    img {
+        max-width: 100%;
+        max-height: ~"calc(100vh - 64px)";
+    }
 }
 
 #upload-form, #download-form {
@@ -61,14 +81,14 @@ html, body {
     display: none;
 }
 .inputfile + label {
-    border: 2px solid black;
-    background-color: rgba(50, 50, 50, .10);
+    //border: 2px solid black;
+    //background-color: rgba(50, 50, 50, .10);
     display: block;
 }
 
 .inputfile:focus + label,
 .inputfile + label:hover {
-    background-color: rgba(50, 50, 50, 0.30);
+    //background-color: rgba(50, 50, 50, 0.30);
 }
 
 #progress {
@@ -78,7 +98,7 @@ html, body {
     height: 100%;
 
 
-    transition: width 500ms;
+    transition: width 200ms;
     width: 0%;
     max-width: 100%;
     max-height: 100%;
@@ -87,3 +107,9 @@ html, body {
     display: block;
 }
 
+body #uploadStatusContainer {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: black;
+    opacity: 0.9;
+    display: block !important;
+}

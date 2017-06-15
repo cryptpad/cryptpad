@@ -21,6 +21,7 @@ define([
     var andThen = function () {
         var ifrw = $('#pad-iframe')[0].contentWindow;
         var $iframe = $('#pad-iframe').contents();
+        var $appContainer = $iframe.find('#app');
         var $form = $iframe.find('#upload-form');
         var $dlform = $iframe.find('#download-form');
         var $dlview = $iframe.find('#download-view');
@@ -116,10 +117,12 @@ define([
                         if (decrypted.callback) { decrypted.callback(); }
                         $dlview.show();
                         $dlform.hide();
-                        if (ev) {
-                            var $dlButton = $dlview.find('media-tag button');
-                            $dlButton.click();
+                        var $dlButton = $dlview.find('media-tag button');
+                        if (ev) { $dlButton.click(); }
+                        if (!$dlButton.length) {
+                            $appContainer.css('background', 'white');
                         }
+                        $dlButton.addClass('btn btn-success');
                         Cryptpad.removeLoadingScreen();
                     })
                     .on('decryptionError', function (e) {
@@ -165,11 +168,11 @@ define([
                     $dlform.show();
                     Cryptpad.removeLoadingScreen();
                     var decrypting = false;
-                    var onClick = function () {
+                    var onClick = function (ev) {
                         if (decrypting) { return; }
                         if (myFile) { return void exportFile(); }
                         decrypting = true;
-                        displayFile();
+                        displayFile(ev);
                     };
                     if (sizeMb < 5) { return void onClick(); }
                     Cryptpad.removeLoadingScreen();
@@ -200,7 +203,8 @@ define([
         var fmConfig = {
             dropArea: $form,
             hoverArea: $label,
-            body: $body
+            body: $body,
+            keepTable: true // Don't fadeOut the tbale with the uploaded files
         };
 
         var FM = Cryptpad.createFileManager(fmConfig);
