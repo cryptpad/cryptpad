@@ -34,6 +34,7 @@ var setHeaders = (function () {
     const headers = clone(config.httpHeaders);
     if (config.contentSecurity) {
         headers['Content-Security-Policy'] = clone(config.contentSecurity);
+        if (!/;$/.test(headers['Content-Security-Policy'])) { headers['Content-Security-Policy'] += ';' }
         if (headers['Content-Security-Policy'].indexOf('frame-ancestors') === -1) {
             // backward compat for those who do not merge the new version of the config
             // when updating. This prevents endless spinner if someone clicks donate.
