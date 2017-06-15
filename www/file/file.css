@@ -63,6 +63,19 @@ media-tag img {
   height: 50vh;
   box-sizing: border-box;
 }
+#download-form label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  white-space: normal;
+  word-wrap: break-word;
+}
+#download-form label span {
+  width: 50vh;
+  max-width: 80vw;
+  text-align: center;
+  line-height: 1.5em;
+}
 .hovering {
   background-color: rgba(255, 0, 115, 0.5) !important;
 }
@@ -92,5 +105,4 @@ body #uploadStatusContainer {
   background-color: rgba(255, 255, 255, 0.9);
   color: black;
   opacity: 0.9;
-  display: block !important;
 }

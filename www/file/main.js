@@ -26,6 +26,7 @@ define([
         var $dlform = $iframe.find('#download-form');
         var $dlview = $iframe.find('#download-view');
         var $label = $form.find('label');
+        var $dllabel = $dlform.find('label span');
         var $progress = $iframe.find('#progress');
         var $body = $iframe.find('body');
 
@@ -60,13 +61,6 @@ define([
             return data ? data.title : undefined;
         };
 
-        var exportFile = function () {
-            var filename = Cryptpad.fixFileName(document.title);
-            if (!(typeof(filename) === 'string' && filename)) { return; }
-            var blob = new Blob([myFile], {type: myDataType});
-            saveAs(blob, filename);
-        };
-
         Title = Cryptpad.createTitle({}, function(){}, Cryptpad);
 
         var displayed = ['title', 'useradmin', 'newpad', 'limit', 'upgrade'];
@@ -87,11 +81,6 @@ define([
         Title.setToolbar(toolbar);
 
         if (uploadMode) { toolbar.title.hide(); }
-
-        var $rightside = toolbar.$rightside;
-
-        var $export = Cryptpad.createButton('export', true, {}, exportFile);
-        $rightside.append($export);
 
         Title.updateTitle(Cryptpad.initialName || getTitle() || Title.defaultTitle);
 
@@ -123,7 +112,6 @@ define([
                             $appContainer.css('background', 'white');
                         }
                         $dlButton.addClass('btn btn-success');
-                        Cryptpad.removeLoadingScreen();
                     })
                     .on('decryptionError', function (e) {
                         var error = e.originalEvent;
@@ -167,6 +155,10 @@ define([
                 var todoBigFile = function (sizeMb) {
                     $dlform.show();
                     Cryptpad.removeLoadingScreen();
+                    $dllabel.append($('<br>'));
+                    $dllabel.append(metadata.name);
+                    $dllabel.append($('<br>'));
+                    $dllabel.append(Messages._getKey('formattedMB', [sizeMb]));
                     var decrypting = false;
                     var onClick = function (ev) {
                         if (decrypting) { return; }
@@ -175,7 +167,6 @@ define([
                         displayFile(ev);
                     };
                     if (sizeMb < 5) { return void onClick(); }
-                    Cryptpad.removeLoadingScreen();
                     $dlform.find('#dl, #progress').click(onClick);
                 };
                 Cryptpad.getFileSize(window.location.href, function (e, data) {
