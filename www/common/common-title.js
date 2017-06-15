@@ -14,6 +14,7 @@ define(function () {
         var getHeadingText = cfg.getHeadingText || function () { return; };
         var updateLocalTitle = function (newTitle) {
             exp.title = newTitle;
+            onLocal();
             if (typeof cfg.updateLocalTitle === "function") {
                 cfg.updateLocalTitle(newTitle);
             } else {

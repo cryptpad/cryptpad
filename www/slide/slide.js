@@ -205,6 +205,7 @@ define([
 
         $(ifrw).on('keyup', function (e) {
             if (!Slide.shown) { return; }
+            if (e.ctrlKey) { return; }
             switch(e.which) {
                 case 33: // pageup
                 case 38: // up
