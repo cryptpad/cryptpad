@@ -23,6 +23,7 @@ define([
         var $iframe = $('#pad-iframe').contents();
         var $form = $iframe.find('#upload-form');
         var $dlform = $iframe.find('#download-form');
+        var $dlview = $iframe.find('#download-view');
         var $label = $form.find('label');
         var $progress = $iframe.find('#progress');
         var $body = $iframe.find('body');
@@ -94,7 +95,6 @@ define([
         Title.updateTitle(Cryptpad.initialName || getTitle() || Title.defaultTitle);
 
         if (!uploadMode) {
-            $dlform.show();
             var src = Cryptpad.getBlobPathFromHex(hexFileName);
             var cryptKey = secret.keys && secret.keys.fileKeyStr;
             var key = Nacl.util.decodeBase64(cryptKey);
@@ -104,42 +104,82 @@ define([
                 var title = document.title = metadata.name;
                 Title.updateTitle(title || Title.defaultTitle);
 
-                Cryptpad.removeLoadingScreen();
-                var decrypting = false;
-                $dlform.find('#dl, #progress').click(function () {
-                    if (decrypting) { return; }
-                    if (myFile) { return void exportFile(); }
-                    decrypting = true;
+                var displayFile = function (ev) {
+                        console.log(e);
+                    $mt = $dlview.find('media-tag');
+                    var cryptKey = secret.keys && secret.keys.fileKeyStr;
+                    var hexFileName = Cryptpad.base64ToHex(secret.channel);
+                    $mt.attr('src', '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName);
+                    $mt.attr('data-crypto-key', 'cryptpad:'+cryptKey);
 
-                    return Cryptpad.fetch(src, function (e, u8) {
-                        if (e) {
-                            decrypting = false;
-                            return void Cryptpad.alert(e);
+                    $(window.document).on('decryption', function (e) {
+                        var decrypted = e.originalEvent;
+                        if (decrypted.callback) { decrypted.callback(); }
+                        $dlview.show();
+                        $dlform.hide();
+                        if (ev) {
+                            var $dlButton = $dlview.find('media-tag button');
+                            $dlButton.click();
                         }
-
-                        // now decrypt the u8
-                        if (!u8 || !u8.length) {
-                            return void Cryptpad.errorLoadingScreen(e);
-                        }
-
-                        FileCrypto.decrypt(u8, key, function (e, data) {
-                            if (e) {
-                                decrypting = false;
-                                return console.error(e);
-                            }
-                            console.log(data);
-                            var title = document.title = data.metadata.name;
-                            myFile = data.content;
-                            myDataType = data.metadata.type;
-                            Title.updateTitle(title || Title.defaultTitle);
-                            exportFile();
-                            decrypting = false;
-                        }, function (progress) {
-                            var p = progress * 100 +'%';
-                            $progress.width(p);
-                            console.error(progress);
-                        });
+                        Cryptpad.removeLoadingScreen();
+                    })
+                    .on('decryptionError', function (e) {
+                        var error = e.originalEvent;
+                        Cryptpad.alert(error.message);
+                    })
+                    .on('decryptionProgress', function (e) {
+                        var progress = e.originalEvent;
+                        var p = progress.percent +'%';
+                        $progress.width(p);
+                        console.log(progress.percent);
                     });
+
+                    require(['/common/media-tag.js'], function (MediaTag) {
+                        /**
+                         * Allowed mime types that have to be set for a rendering after a decryption.
+                         *
+                         * @type       {Array}
+                         */
+                        var allowedMediaTypes = [
+                            'image/png',
+                            'image/jpeg',
+                            'image/jpg',
+                            'image/gif',
+                            'audio/mp3',
+                            'audio/ogg',
+                            'audio/wav',
+                            'audio/webm',
+                            'video/mp4',
+                            'video/ogg',
+                            'video/webm',
+                            'application/pdf',
+                            'application/dash+xml',
+                            'download'
+                        ];
+                        MediaTag.CryptoFilter.setAllowedMediaTypes(allowedMediaTypes);
+
+                        MediaTag($mt[0]);
+                    });
+                };
+
+                var todoBigFile = function (sizeMb) {
+                    $dlform.show();
+                    Cryptpad.removeLoadingScreen();
+                    var decrypting = false;
+                    var onClick = function () {
+                        if (decrypting) { return; }
+                        if (myFile) { return void exportFile(); }
+                        decrypting = true;
+                        displayFile();
+                    };
+                    if (sizeMb < 5) { return void onClick(); }
+                    Cryptpad.removeLoadingScreen();
+                    $dlform.find('#dl, #progress').click(onClick);
+                };
+                Cryptpad.getFileSize(window.location.href, function (e, data) {
+                    if (e) { return void Cryptpad.errorLoadingScreen(e); }
+                    var size = Cryptpad.bytesToMegabytes(data);
+                    return void todoBigFile(size);
                 });
             });
             return;

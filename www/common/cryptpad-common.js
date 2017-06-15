@@ -962,7 +962,7 @@ define([
                     data.FM.handleFile(file, ev);
                     if (callback) { callback(); }
                 });
-                button.click(function () { $input.click(); })
+                button.click(function () { $input.click(); });
                 break;
             case 'template':
                 if (!AppConfig.enableTemplates) { return; }
