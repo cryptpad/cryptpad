@@ -71,6 +71,41 @@ body .CodeMirror-focused .cm-matchhighlight {
     visibility: visible;
   }
 }
+#editorContainer {
+  flex: 1;
+  display: flex;
+  flex-flow: row;
+  height: 100%;
+  overflow: hidden;
+}
+#editorContainer .CodeMirror {
+  resize: none;
+  width: 100vw;
+}
+#editorContainer.preview .CodeMirror {
+  width: 50vw;
+}
+.preview .cp {
+  flex: 1;
+  overflow: hidden;
+}
+.preview .cp div#modal {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: auto;
+  display: block;
+  height: 100%;
+}
+.preview .cp div#modal #content .slide-container {
+  width: 100%;
+}
+.preview .cp div#modal #content .slide-frame {
+  width: 50vw;
+  height: 28.125vw;
+  max-height: 100vh;
+  max-width: 177.78vh;
+}
 .cp {
   /* Slide position (print mode) */
   /* Slide position (present mode) */
@@ -114,6 +149,8 @@ body .CodeMirror-focused .cm-matchhighlight {
 }
 .cp div.modal,
 .cp div#modal {
+  background-color: black;
+  color: white;
   /* Navigation buttons */
   box-sizing: border-box;
   z-index: 9001;
@@ -161,8 +198,6 @@ body .CodeMirror-focused .cm-matchhighlight {
   top: 0px;
   left: 0px;
   z-index: 100;
-  background-color: black;
-  color: white;
   height: 100vh;
   width: 100%;
 }
@@ -173,10 +208,6 @@ body .CodeMirror-focused .cm-matchhighlight {
   height: 100%;
   overflow: visible;
   white-space: nowrap;
-}
-.cp div.modal #content.transition,
-.cp div#modal #content.transition {
-  transition: margin-left 1s;
 }
 .cp div.modal #content .slide-frame,
 .cp div#modal #content .slide-frame {
@@ -206,6 +237,10 @@ body .CodeMirror-focused .cm-matchhighlight {
   width: 100vw;
   text-align: center;
   vertical-align: top;
+}
+.cp div.modal #content.transition .slide-container,
+.cp div#modal #content.transition .slide-container {
+  transition: margin-left 1s;
 }
 .cp div.modal .center,
 .cp div#modal .center {

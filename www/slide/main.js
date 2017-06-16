@@ -425,6 +425,25 @@ define([
                     $('body').append(createFileDialog());
                 }).appendTo($rightside);
 
+                var $previewButton = APP.$previewButton = Cryptpad.createButton(null, true);
+                $previewButton.removeClass('fa-question').addClass('fa-eye');
+                $previewButton.attr('title', Messages.previewButtonTitle);
+                $previewButton.click(function () {
+                    var $c = $iframe.find('#editorContainer');
+                    if ($c.hasClass('preview')) {
+                        Cryptpad.setPadAttribute('previewMode', false, function (e) {
+                            if (e) { return console.log(e); }
+                        });
+                        return void $c.removeClass('preview');
+                    }
+                    Cryptpad.setPadAttribute('previewMode', true, function (e) {
+                        if (e) { return console.log(e); }
+                    });
+                    $c.addClass('preview');
+                    Slide.updateFontSize();
+                });
+                $rightside.append($previewButton);
+
                 var $printButton = $('<button>', {
                     title: Messages.printButtonTitle,
                     'class': 'rightside-button fa fa-print',
@@ -558,8 +577,14 @@ define([
 
                 if (Cryptpad.initialName && Title.isDefaultTitle()) {
                     Title.updateTitle(Cryptpad.initialName);
-                    onLocal();
                 }
+
+                Cryptpad.getPadAttribute('previewMode', function (e, data) {
+                    if (e) { return void console.error(e); }
+                    if (data === true && APP.$previewButton) {
+                        APP.$previewButton.click();
+                    }
+                });
 
                 Slide.onChange(function (o, n, l) {
                     if (n !== null) {
