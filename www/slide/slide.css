@@ -71,6 +71,9 @@ body .CodeMirror-focused .cm-matchhighlight {
     visibility: visible;
   }
 }
+#cme_toolbox {
+  z-index: 10000;
+}
 #editorContainer {
   flex: 1;
   display: flex;
