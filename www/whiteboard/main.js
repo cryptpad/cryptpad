@@ -338,12 +338,12 @@ window.canvas = canvas;
             });
             $rightside.append($forget);
 
-            makeColorButton($rightside);
 
             var editHash;
 
             if (!readOnly) {
                 editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+                makeColorButton($rightside);
             }
             if (!readOnly) { Cryptpad.replaceHash(editHash); }
         };
