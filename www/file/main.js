@@ -111,7 +111,7 @@ define([
                         // make pdfs big
                         $iframe.find('media-tag iframe').css({
                             'height': 'calc(100vh - 64px)',
-                            width: '100vw',
+                            width: 'calc(100vw - 15px)',
                         });
                     })
                     .on('decryptionError', function (e) {
