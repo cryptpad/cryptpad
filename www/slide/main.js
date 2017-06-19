@@ -572,7 +572,6 @@ define([
 
                 // Update the user list (metadata) from the hyperjson
                 Metadata.update(userDoc);
-
                 editor.setValue(newDoc || initialState);
 
                 if (Cryptpad.initialName && Title.isDefaultTitle()) {
@@ -593,7 +592,6 @@ define([
                             slideNumber = ' (' + ++n + '/' + l + ')';
                         }
                     }
-                    console.log("Exiting presentation mode");
                     document.title = Title.title + slideNumber;
                 });
 
@@ -602,6 +600,7 @@ define([
                 initializing = false;
 
                 onLocal(); // push local state to avoid parse errors later.
+                Slide.update(editor.getValue());
 
                 if (readOnly) { return; }
                 UserList.getLastName(toolbar.$userNameButton, isNew);

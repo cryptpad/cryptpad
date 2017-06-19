@@ -201,7 +201,7 @@ body .CodeMirror-focused .cm-matchhighlight {
   position: fixed;
   top: 0px;
   left: 0px;
-  z-index: 100;
+  z-index: 100000;
   height: 100vh;
   width: 100%;
 }
