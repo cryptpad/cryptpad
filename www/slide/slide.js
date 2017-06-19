@@ -144,7 +144,7 @@ define([
         updateFontSize();
     };
 
-    Slide.update = function (content, init) {
+    Slide.update = function (content) {
         updateFontSize();
         //if (!init) { return; }
         if (!content) { content = ''; }
