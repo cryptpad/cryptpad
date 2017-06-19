@@ -107,6 +107,12 @@ define([
                             $appContainer.css('background', 'white');
                         }
                         $dlButton.addClass('btn btn-success');
+
+                        // make pdfs big
+                        $iframe.find('media-tag iframe').css({
+                            'height': 'calc(100vh - 64px)',
+                            width: '100vw',
+                        });
                     })
                     .on('decryptionError', function (e) {
                         var error = e.originalEvent;
