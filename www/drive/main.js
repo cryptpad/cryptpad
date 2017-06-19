@@ -328,6 +328,7 @@ define([
                 width: '0px',
                 height: '0px'
             });
+            module.hideMenu(e);
             if (sel.move) { return; }
             sel.move = function (ev) {
                 var rectMove = ev.currentTarget.getBoundingClientRect(),
@@ -2437,7 +2438,7 @@ define([
             e.preventDefault();
         });
         $appContainer.on('mouseup', function (e) {
-            if (sel.down) { return; }
+            //if (sel.down) { return; }
             if (e.which !== 1) { return ; }
             module.hideMenu(e);
             //removeSelected(e);
