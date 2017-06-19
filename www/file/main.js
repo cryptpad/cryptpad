@@ -7,12 +7,14 @@ define([
     '/common/visible.js',
     '/common/notify.js',
     '/file/file-crypto.js',
+    '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
 ], function ($, Crypto, realtimeInput, Toolbar, Cryptpad, Visible, Notify, FileCrypto) {
     var Messages = Cryptpad.Messages;
+    var saveAs = window.saveAs;
     var Nacl = window.nacl;
 
-    var APP = {};
+    var APP = window.APP = {};
 
     $(function () {
 
@@ -84,6 +86,7 @@ define([
             var cryptKey = secret.keys && secret.keys.fileKeyStr;
             var key = Nacl.util.decodeBase64(cryptKey);
 
+
             FileCrypto.fetchDecryptedMetadata(src, key, function (e, metadata) {
                 if (e) { return void console.error(e); }
                 var title = document.title = metadata.name;
@@ -99,6 +102,8 @@ define([
                     $(window.document).on('decryption', function (e) {
                         var decrypted = e.originalEvent;
                         if (decrypted.callback) { decrypted.callback(); }
+
+                        console.log(decrypted);
                         $dlview.show();
                         $dlform.hide();
                         var $dlButton = $dlview.find('media-tag button');
@@ -107,6 +112,10 @@ define([
                             $appContainer.css('background', 'white');
                         }
                         $dlButton.addClass('btn btn-success');
+
+                        toolbar.$rightside.append(Cryptpad.createButton('export', true, {}, function () {
+                            saveAs(decrypted.blob, decrypted.metadata.name);
+                        }));
 
                         // make pdfs big
                         $iframe.find('media-tag iframe').css({
