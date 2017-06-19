@@ -89,7 +89,9 @@ var mainPages = config.mainPages || ['index', 'privacy', 'terms', 'about', 'cont
 var mainPagePattern = new RegExp('^\/(' + mainPages.join('|') + ').html$');
 app.get(mainPagePattern, Express.static(__dirname + '/customize.dist'));
 
-app.use("/blob", Express.static(Path.join(__dirname, (config.blobPath || './blob'))));
+app.use("/blob", Express.static(Path.join(__dirname, (config.blobPath || './blob')), {
+    maxAge: DEV_MODE? "0d": "365d"
+}));
 
 app.use("/customize", Express.static(__dirname + '/customize'));
 app.use("/customize", Express.static(__dirname + '/customize.dist'));

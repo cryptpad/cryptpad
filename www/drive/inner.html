@@ -17,7 +17,7 @@
             <div id="driveToolbar"></div>
             <div id="content" tabindex="2"></div>
         </div>
-        <div id="treeContextMenu" class="contextMenu dropdown clearfix">
+        <div id="treeContextMenu" class="contextMenu dropdown clearfix unselectable">
             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
                 <li><a tabindex="-1" data-icon="fa-folder-open" class="open dropdown-item" data-localization="fc_open">Open</a></li>
                 <li><a tabindex="-1" data-icon="fa-eye" class="open_ro dropdown-item" data-localization="fc_open_ro">Open (read-only)</a></li>
@@ -27,7 +27,7 @@
                 <li><a tabindex="-1" data-icon="fa-database" class="properties dropdown-item" data-localization="fc_prop">Properties</a></li>
             </ul>
         </div>
-        <div id="contentContextMenu" class="contextMenu dropdown clearfix">
+        <div id="contentContextMenu" class="contextMenu dropdown clearfix unselectable">
             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
                 <li><a tabindex="-1" data-icon="fa-folder" class="newfolder editable dropdown-item" data-localization="fc_newfolder">New folder</a></li>
                 <li><a tabindex="-1" data-icon="fa-file-word-o" class="newdoc own editable dropdown-item" data-type="pad" data-localization="button_newpad">New pad</a></li>
@@ -37,7 +37,7 @@
                 <li><a tabindex="-1" data-icon="fa-paint-brush" class="newdoc own editable dropdown-item" data-type="whiteboard" data-localization="button_newwhiteboard">New whiteboard</a></li>
             </ul>
         </div>
-        <div id="defaultContextMenu" class="contextMenu dropdown clearfix">
+        <div id="defaultContextMenu" class="contextMenu dropdown clearfix unselectable">
             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
                 <li><a tabindex="-1" data-icon="fa-folder-open" class="open dropdown-item" data-localization="fc_open">Open</a></li>
                 <li><a tabindex="-1" data-icon="fa-eye" class="open_ro dropdown-item" data-localization="fc_open_ro">Open (read-only)</a></li>
@@ -45,12 +45,12 @@
                 <li><a tabindex="-1" data-icon="fa-database" class="properties dropdown-item" data-localization="fc_prop">Properties</a></li>
             </ul>
         </div>
-        <div id="trashTreeContextMenu" class="contextMenu dropdown clearfix">
+        <div id="trashTreeContextMenu" class="contextMenu dropdown clearfix unselectable">
             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
                 <li><a tabindex="-1" data-icon="fa-trash-o" class="empty editable dropdown-item" data-localization="fc_empty">Empty the trash</a></li>
             </ul>
         </div>
-        <div id="trashContextMenu" class="contextMenu dropdown clearfix">
+        <div id="trashContextMenu" class="contextMenu dropdown clearfix unselectable">
             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
                 <li><a tabindex="-1" data-icon="fa-eraser" class="remove editable dropdown-item" data-localization="fc_remove">Delete permanently</a></li>
                 <li><a tabindex="-1" data-icon="fa-repeat" class="restore editable dropdown-item" data-localization="fc_restore">Restore</a></li>
