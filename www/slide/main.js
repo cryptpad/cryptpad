@@ -68,7 +68,7 @@ define([
 
             var setTabTitle = function (title) {
                 var slideNumber = '';
-                if (Slide.index && Slide.content.length) {
+                if (Slide.shown) { //Slide.index && Slide.content.length) {
                     slideNumber = ' (' + Slide.index + '/' + Slide.content.length + ')';
                 }
                 document.title = title + slideNumber;
@@ -587,12 +587,14 @@ define([
                 });
 
                 Slide.onChange(function (o, n, l) {
+                    var slideNumber = '';
                     if (n !== null) {
-                        document.title = Title.title + ' (' + (++n) + '/' + l +  ')';
-                        return;
+                        if (Slide.shown) { //Slide.index && Slide.content.length) {
+                            slideNumber = ' (' + ++n + '/' + l + ')';
+                        }
                     }
                     console.log("Exiting presentation mode");
-                    document.title = Title.title;
+                    document.title = Title.title + slideNumber;
                 });
 
                 Cryptpad.removeLoadingScreen();

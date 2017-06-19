@@ -132,6 +132,7 @@ body .CodeMirror-focused .cm-matchhighlight {
   page-break-after: always;
   position: relative;
   box-sizing: border-box;
+  overflow: hidden;
   align-items: center;
   justify-content: center;
 }
@@ -214,6 +215,7 @@ body .CodeMirror-focused .cm-matchhighlight {
 }
 .cp div.modal #content .slide-frame,
 .cp div#modal #content .slide-frame {
+  overflow: hidden;
   display: inline-block;
   box-sizing: border-box;
   border: 1px solid;
