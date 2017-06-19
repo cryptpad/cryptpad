@@ -115,6 +115,9 @@ define([
 
                         toolbar.$rightside.append(Cryptpad.createButton('export', true, {}, function () {
                             saveAs(decrypted.blob, decrypted.metadata.name);
+                        }))
+                        .append(Cryptpad.createButton('forget', true, {}, function () {
+                            // not sure what to do here
                         }));
 
                         // make pdfs big

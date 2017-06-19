@@ -351,6 +351,7 @@ define(function () {
     out.tips.title = "Puedes cambiar el título de tus pads en la parte superior de la pantalla.";
     out.tips.store = "Cada vez que visitas un pad con una sesión iniciada se guardará a tu CryptDrive.";
     out.tips.marker = "Puedes resaltar texto en un pad utilizando el \"marcador\" en el menú de estílo.";
+    out.tips.driveUpload = "Usuarios registrados pueden subir archivos cifrados arrastrandolos hacia CryptDrive.";
 
     out.feedback_about = "Si estas leyendo esto, quizas estés curioso de saber porqué CryptPad solicita esta página cuando haces algunas acciones";
     out.feedback_privacy = "Nos importa tu privacidad, y al mismo tiempo queremos que CryptPad sea muy fácil de usar. Utilizamos esta página para conocer las funcionalidades que importan a nuestros usuarios, pidiendolo con un parametro que nos dice que accion fue realizada.";
