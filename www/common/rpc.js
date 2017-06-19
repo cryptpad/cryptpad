@@ -63,6 +63,7 @@ types of messages:
             // RPC responses are arrays. this message isn't meant for us.
             return;
         }
+        if (/FULL_HISTORY/.test(parsed[0])) { return; }
 
         var response = parsed.slice(2);
 
@@ -98,7 +99,7 @@ types of messages:
             delete ctx.pending[txid];
             return;
         }
-        console.error("received message for txid[%s] with no callback", txid);
+        console.error("received message [%s] for txid[%s] with no callback", msg, txid);
     };
 
     var create = function (network, edPrivateKey, edPublicKey, cb) {
