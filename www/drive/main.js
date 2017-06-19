@@ -1783,6 +1783,7 @@ define([
             module.hideMenu();
             if (!APP.editable) { debug("Read-only mode"); }
             if (!appStatus.isReady && !force) { return; }
+
             // Only Trash and Root are available in not-owned files manager
             if (displayedCategories.indexOf(path[0]) === -1) {
                 log(Messages.categoryError);
@@ -1816,7 +1817,6 @@ define([
             if (!isSearch) { delete APP.Search.oldLocation; }
 
             module.resetTree();
-
             if (displayedCategories.indexOf(SEARCH) !== -1 && $tree.find('#searchInput').length) {
                 // in history mode we want to focus the version number input
                 if (!history.isHistoryMode && !APP.mobile()) {
@@ -2539,6 +2539,7 @@ define([
         history.onEnterHistory = function (obj) {
             var files = obj.drive;
             filesOp = FO.init(files, config);
+            appStatus.isReady = true;
             refresh();
         };
         history.onLeaveHistory = function () {
