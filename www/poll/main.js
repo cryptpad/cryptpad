@@ -491,7 +491,7 @@ var ready = function (info, userid, readOnly) {
     APP.$createRow = $('#create-option').click(function () {
         Render.createRow(proxy, function (empty, id) {
             change(null, null, null, null, function() {
-                $('.edit[data-rt-id="' + id + '"]').click();
+                handleSpan($('.edit[data-rt-id="' + id + '"]')[0]);
             });
         });
     });
@@ -499,7 +499,7 @@ var ready = function (info, userid, readOnly) {
     APP.$createCol = $('#create-user').click(function () {
         Render.createColumn(proxy, function (empty, id) {
             change(null, null, null, null, function() {
-                $('.lock[data-rt-id="' + id + '"]').click();
+                handleSpan($('.lock[data-rt-id="' + id + '"]')[0]);
             });
         });
     });
