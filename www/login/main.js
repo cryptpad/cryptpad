@@ -64,7 +64,12 @@ define([
             $('button.login').click();
         });
 
+        var hashing = false;
         $('button.login').click(function () {
+            if (hashing) { return void console.log("hashing is already in progress"); }
+
+            hashing = true;
+
             // setTimeout 100ms to remove the keyboard on mobile devices before the loading screen pops up
             window.setTimeout(function () {
                 Cryptpad.addLoadingScreen(Messages.login_hashing);
@@ -89,6 +94,7 @@ define([
                                 Cryptpad.feedback('LOGIN', true);
                                 Cryptpad.whenRealtimeSyncs(result.realtime, function() {
                                     Cryptpad.login(result.userHash, result.userName, function () {
+                                        hashing = false;
                                         if (sessionStorage.redirectTo) {
                                             var h = sessionStorage.redirectTo;
                                             var parser = document.createElement('a');
@@ -107,17 +113,23 @@ define([
                             switch (err) {
                                 case 'NO_SUCH_USER':
                                     Cryptpad.removeLoadingScreen(function () {
-                                        Cryptpad.alert(Messages.login_noSuchUser);
+                                        Cryptpad.alert(Messages.login_noSuchUser, function () {
+                                            hashing = false;
+                                        });
                                     });
                                     break;
                                 case 'INVAL_USER':
                                     Cryptpad.removeLoadingScreen(function () {
-                                        Cryptpad.alert(Messages.login_invalUser);
+                                        Cryptpad.alert(Messages.login_invalUser, function () {
+                                            hashing = false;
+                                        });
                                     });
                                     break;
                                 case 'INVAL_PASS':
                                     Cryptpad.removeLoadingScreen(function () {
-                                        Cryptpad.alert(Messages.login_invalPass);
+                                        Cryptpad.alert(Messages.login_invalPass, function () {
+                                            hashing = false;
+                                        });
                                     });
                                     break;
                                 default: // UNHANDLED ERROR
