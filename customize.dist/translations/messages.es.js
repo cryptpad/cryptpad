@@ -470,5 +470,19 @@ define(function () {
     out.login_notRegistered = "¿No estás registrado?";
     out.upload_mustLogin = "Tienes que estar conectado para subir archivos";
 
+    out.uploadButton = "Subir";
+    out.uploadButtonTitle = "Subir un archivo a la carpeta";
+    out.filePickerButton = "Incrustar un archivo";
+    out.filePicker_close = "Cerrar";
+    out.filePicker_description = "Elige un archivo de tu CryptDrive para incrustarlo o sube uno nuevo";
+    out.filePicker_filter = "Filtrar por nombre";
+    out.or = "o";
+    out.languageButton = "Lenguaje";
+    out.languageButtonTitle = "Elige el lenguaje para resaltado de sintaxis";
+    out.themeButton = "Tema";
+    out.themeButtonTitle = "Selecciona el tema de color para los editores de código y presentación";
+    out.canvas_opacityLabel = "Opacidad: {0}";
+    out.canvas_widthLabel = "Talla: {0}";
+
     return out;
 });
