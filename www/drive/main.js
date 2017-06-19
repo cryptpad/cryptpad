@@ -2561,8 +2561,8 @@ define([
                     filesOp.pushData(data, function (e, id) {
                         if (e) { return void console.error("Error while creating the default pad:", e); } // TODO LIMIT?
                         filesOp.add(id);
+                        if (typeof(cb) === "function") { cb(); }
                     });
-                    if (typeof(cb) === "function") { cb(); }
                 });
                 delete sessionStorage.createReadme;
                 return;

@@ -105,7 +105,7 @@ define([
                 var oldFo = FO.init(parsed.drive, {
                     Cryptpad: Cryptpad
                 });
-                var todo = function () {
+                var onMigrated = function () {
                     oldFo.fixFiles();
                     var newData = Cryptpad.getStore().getProxy();
                     var newFo = newData.fo;
@@ -151,8 +151,10 @@ define([
                         proxy.FS_hashes = [];
                     }
                     proxy.FS_hashes.push(localStorage.FS_hash);
+                    if (typeof(cb) === "function") { cb(); }
                 };
-                oldFo.migrate(todo);
+                oldFo.migrate(onMigrated);
+                return;
             }
             if (typeof(cb) === "function") { cb(); }
         };
