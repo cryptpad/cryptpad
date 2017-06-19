@@ -235,7 +235,7 @@ define(function () {
     out.login_invalPass = "Contraseña requirida";
     out.login_unhandledError = "Un error inesperado se produjo :(";
     out.register_importRecent = "Importar historial (recomendado)";
-    out.register_acceptTerms = "Accepto los <a href='/terms.html'>términos de servicio</a>";
+    out.register_acceptTerms = "Accepto los <a href='/terms.html' tabindex='-1'>términos de servicio</a>";
     out.register_passwordsDontMatch = "Las contraseñas no corresponden";
     out.register_mustAcceptTerms = "Tienes que acceptar los términos de servicio";
     out.register_mustRememberPass = "No podemos reiniciar tu contraseña si la olvidas. ¡Es muy importante que la recuerdes! Marca la casilla para confirmarlo.";

@@ -331,7 +331,7 @@ define(function () {
     out.login_notRegistered = 'Pas encore inscrit ?';
 
     out.register_importRecent = "Importer l'historique (Recommendé)";
-    out.register_acceptTerms = "J'accepte <a href='/terms.html'>les conditions d'utilisation</a>";
+    out.register_acceptTerms = "J'accepte <a href='/terms.html' tabindex='-1'>les conditions d'utilisation</a>";
     out.register_passwordsDontMatch = "Les mots de passe doivent être identiques!";
     out.register_mustAcceptTerms = "Vous devez accepter les conditions d'utilisation.";
     out.register_mustRememberPass = "Nous ne pouvons pas réinitialiser votre mot de passe si vous l'oubliez. C'est important que vous vous en souveniez! Veuillez cocher la case pour confirmer.";
