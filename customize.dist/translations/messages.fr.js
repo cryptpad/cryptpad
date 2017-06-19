@@ -554,6 +554,7 @@ define(function () {
     out.tips.title = "Vous pouvez changer le titre de votre pad en cliquant au centre en haut de la page.";
     out.tips.store = "Dés que vous ouvrez un nouveau pad, il est automatiquement stocké dans votre CryptDrive si vous êtes connectés.";
     out.tips.marker = "Vous pouvez surligner du texte dans un pad en utilisant l'option \"marker\" dans le menu déroulant des styles.";
+    out.tips.driveUpload = "Les utilisateurs enregistrés peuvent importer des fichiers en les faisant glisser et en les déposant dans leur CryptDrive.";
 
     out.feedback_about = "Si vous lisez ceci, vous vous demandez probablement pourquoi CryptPad envoie des requêtes vers des pages web quand vous realisez certaines actions.";
     out.feedback_privacy = "Nous prenons au sérieux le respect de votre vie privée, et en même temps nous souhaitons rendre CryptPad très simple à utiliser. Nous utilisons cette page pour comprendre quelles fonctionnalités dans l'interface comptent le plus pour les utilisateurs, en l'appelant avec un paramètre spécifiant quelle action a été réalisée.";
