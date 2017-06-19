@@ -589,7 +589,7 @@ define([
                     var slideNumber = '';
                     if (n !== null) {
                         if (Slide.shown) { //Slide.index && Slide.content.length) {
-                            slideNumber = ' (' + ++n + '/' + l + ')';
+                            slideNumber = ' (' + (++n) + '/' + l + ')';
                         }
                     }
                     document.title = Title.title + slideNumber;
