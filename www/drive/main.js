@@ -2739,7 +2739,7 @@ define([
                     history.onEnterHistory(obj);
                 },
                 $toolbar: APP.$bar,
-                href: window.location.origin + window.location.pathname + APP.hash
+                href: window.location.origin + window.location.pathname + '#' + APP.hash
             };
             var $hist = Cryptpad.createButton('history', true, {histConfig: histConfig});
             $rightside.append($hist);
