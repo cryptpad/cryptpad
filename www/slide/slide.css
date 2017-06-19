@@ -89,7 +89,7 @@ body .CodeMirror-focused .cm-matchhighlight {
   flex: 1;
   overflow: hidden;
 }
-.preview .cp div#modal {
+.preview .cp div#modal:not(.shown) {
   position: relative;
   top: auto;
   left: auto;
@@ -97,10 +97,10 @@ body .CodeMirror-focused .cm-matchhighlight {
   display: block;
   height: 100%;
 }
-.preview .cp div#modal #content .slide-container {
+.preview .cp div#modal:not(.shown) #content .slide-container {
   width: 100%;
 }
-.preview .cp div#modal #content .slide-frame {
+.preview .cp div#modal:not(.shown) #content .slide-frame {
   width: 50vw;
   height: 28.125vw;
   max-height: 100vh;

@@ -38,7 +38,7 @@ define([
         }
     };
 
-    var updateFontSize = Slide.updateFontSize = function() {
+    var updateFontSize = Slide.updateFontSize = function () {
         // 20vh
         // 20 * 16 / 9vw
         var wbase = 20;
@@ -130,6 +130,7 @@ define([
             $pad.addClass('fullscreen');
             $('#iframe-container').addClass('fullscreen');
             $('.top-bar').hide();
+            updateFontSize();
             return;
         }
         window.location.hash = window.location.hash.replace(/\/present$/, '/');
@@ -140,10 +141,10 @@ define([
         $('#iframe-container').removeClass('fullscreen');
         $('.top-bar').show();
         $modal.removeClass('shown');
+        updateFontSize();
     };
 
     Slide.update = function (content, init) {
-        console.log(content, init);
         updateFontSize();
         //if (!init) { return; }
         if (!content) { content = ''; }
