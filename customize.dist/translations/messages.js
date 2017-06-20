@@ -171,6 +171,9 @@ define(function () {
     out.history_restoreDone = "Document restored";
     out.history_version = "Version:";
 
+    // Ckeditor links
+    out.openLinkInNewTab = "Open Link in New Tab";
+
     // Polls
 
     out.poll_title = "Zero Knowledge Date Picker";
