@@ -650,13 +650,6 @@ define([
             return hide;
         };
 
-        var updatePathSize = function () {
-            return;
-            var $tb = $driveToolbar;
-            var w = $tree.width() + $tb.find('.leftside').width() + $tb.find('.rightside').width();
-            $driveToolbar.find('.path').css('max-width', 'calc(100vw - '+w+'px)');
-        };
-
         var getSelectedPaths = function ($element) {
             var paths = [];
             if ($iframe.find('.selected').length > 1) {
@@ -738,7 +731,6 @@ define([
                 $container.append($a);
                 $a.click(function() { $(el).click(); });
             });
-            updatePathSize();
         };
 
         var scrollTo = function ($element) {
@@ -1448,7 +1440,6 @@ define([
                             target: $content[0]
                         };
                         APP.FM.handleFile(file, ev);
-                        if (callback) { callback(); }
                     });
                     $input.click();
                 });
@@ -1865,7 +1856,6 @@ define([
             $toolbar.find('.leftside').append(createNewButton(isInRoot));
 
             createTitle(path).appendTo($toolbar.find('.path'));
-            updatePathSize();
 
             if (APP.mobile()) {
                 var $context = $('<button>', {'class': 'element right dropdown-bar', id: 'contextButton'});
