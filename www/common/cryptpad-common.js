@@ -309,7 +309,7 @@ define([
             cb(parsed);
         }
         if (!pad.title) {
-            pad.title = common.getDefaultname(parsed);
+            pad.title = common.getDefaultName(parsed);
         }
         return parsed.hashData;
     };
