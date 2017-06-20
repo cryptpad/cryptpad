@@ -110,7 +110,7 @@ define(function () {
 
     out.newButton = 'New';
     out.newButtonTitle = 'Create a new pad';
-    out.uploadButton = 'Upload';
+    out.uploadButton = 'Upload files';
     out.uploadButtonTitle = 'Upload a new file to the current folder';
 
     out.saveTemplateButton = "Save as template";
@@ -244,8 +244,8 @@ define(function () {
     out.fm_templateName = "Templates";
     out.fm_searchName = "Search";
     out.fm_searchPlaceholder = "Search...";
-    out.fm_newButton = "New";
-    out.fm_newButtonTitle = "Create a new pad or folder";
+    out.fm_newButton = "Add to this folder";
+    out.fm_newButtonTitle = "Create a new pad or folder, import a file in the current folder";
     out.fm_newFolder = "New folder";
     out.fm_newFile = "New pad";
     out.fm_folder = "Folder";

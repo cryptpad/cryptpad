@@ -21,7 +21,9 @@
         }
     }
 }
-
+.cke_reset_all * {
+    color: inherit;
+}
 .cryptpad-toolbar {
     @toolbar-green: #5cb85c;
 
@@ -29,7 +31,37 @@
     padding: 0px 6px;
 
     //background-color: #BBBBFF;
-    background-color: #FF0073;
+    background-color: @toolbar-default-bg;
+    color: @toolbar-default-color;
+
+    &.pad {
+        background-color: @toolbar-pad-bg;
+        color: @toolbar-pad-color;
+    }
+    &.code {
+        background-color: @toolbar-code-bg;
+        color: @toolbar-code-color;
+    }
+    &.slide {
+        background-color: @toolbar-slide-bg;
+        color: @toolbar-slide-color;
+    }
+    &.poll {
+        background-color: @toolbar-poll-bg;
+        color: @toolbar-poll-color;
+    }
+    &.whiteboard {
+        background-color: @toolbar-whiteboard-bg;
+        color: @toolbar-whiteboard-color;
+    }
+    &.drive {
+        background-color: @toolbar-drive-bg;
+        color: @toolbar-drive-color;
+    }
+    &.file {
+        background-color: @toolbar-file-bg;
+        color: @toolbar-file-color;
+    }
 
     .fa {
         font: normal normal normal 14px/1 FontAwesome;
@@ -39,7 +71,6 @@
     .unselectable;
 
     font: normal normal normal 12px Arial,Helvetica,Tahoma,Verdana,Sans-Serif;
-    color: #000;
     width: 100%;
     z-index: 9001;
 
@@ -48,10 +79,6 @@
     }
 
     button {
-        font: @toolbar-button-font;
-        * {
-            font: @toolbar-button-font;
-        }
         &#shareButton, &.buttonSuccess {
             // Bootstrap 4 colors
             color: #fff;
@@ -96,6 +123,11 @@
         color: #000;
         background-color: #fff;
         border-color: #ccc;
+        font: @toolbar-button-font;
+        * {
+            color: #000;
+            font: @toolbar-button-font;
+        }
         &:hover {
             color: #292b2c;
             background-color: #e6e6e6;

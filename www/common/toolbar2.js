@@ -67,6 +67,11 @@ define([
             id: uid(),
         });
 
+        var parsed = Cryptpad.parsePadUrl(window.location.href);
+        if (typeof parsed.type === "string") {
+            $toolbar.addClass(parsed.type);
+        }
+
         var $topContainer = $('<div>', {'class': TOP_CLS});
         var $userContainer = $('<span>', {
             'class': USER_CLS
