@@ -917,7 +917,7 @@ define([
                         var data = files[FILES_DATA][obj.element];
                         if (!data) {
                             debug("An element in TRASH doesn't have associated data", obj.element, el);
-                            delete element[el];
+                            toClean.push(idx);
                         }
                     }
 
@@ -962,7 +962,7 @@ define([
                         var data = files[FILES_DATA][el];
                         if (!data) {
                             debug("An element in TEMPLATE doesn't have associated data", el);
-                            delete element[el];
+                            toClean.push(idx);
                         }
                     }
                 });
