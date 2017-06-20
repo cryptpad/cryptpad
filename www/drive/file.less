@@ -276,7 +276,9 @@ span {
     display: flex;
     flex-flow: column;
     flex: 1;
-}
+    // Needed to avoid the folder's path to overflows
+    // https://stackoverflow.com/questions/38223879/white-space-nowrap-breaks-flexbox-layout
+    min-width: 0;}
 #content {
     box-sizing: border-box;
     background: @content-bg;

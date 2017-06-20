@@ -650,9 +650,10 @@ define([
         };
 
         var updatePathSize = function () {
+            return;
             var $tb = $driveToolbar;
             var w = $tree.width() + $tb.find('.leftside').width() + $tb.find('.rightside').width();
-            $driveToolbar.find('.path').css('max-width', 'calc(100vw - '+w+'px - 50px)');
+            $driveToolbar.find('.path').css('max-width', 'calc(100vw - '+w+'px)');
         };
 
         var getSelectedPaths = function ($element) {
