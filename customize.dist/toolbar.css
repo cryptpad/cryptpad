@@ -103,9 +103,39 @@
 }
 .cryptpad-toolbar {
   box-sizing: border-box;
-  padding: 0px 6px;
-  background-color: #fff;
+  padding: 0px;
+  background-color: #ddd;
   color: #000;
+  /*
+    &.pad {
+        background-color: @toolbar-pad-bg;
+        color: @toolbar-pad-color;
+    }
+    &.code {
+        background-color: @toolbar-code-bg;
+        color: @toolbar-code-color;
+    }
+    &.slide {
+        background-color: @toolbar-slide-bg;
+        color: @toolbar-slide-color;
+    }
+    &.poll {
+        background-color: @toolbar-poll-bg;
+        color: @toolbar-poll-color;
+    }
+    &.whiteboard {
+        background-color: @toolbar-whiteboard-bg;
+        color: @toolbar-whiteboard-color;
+    }
+    &.drive {
+        background-color: @toolbar-drive-bg;
+        color: @toolbar-drive-color;
+    }
+    &.file {
+        background-color: @toolbar-file-bg;
+        color: @toolbar-file-color;
+    }
+*/
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -117,32 +147,32 @@
   z-index: 9001;
 }
 .cryptpad-toolbar.pad {
-  background-color: #1c4fa0;
-  color: #fff;
+  background: linear-gradient(20deg, #1c4fa0 150px, #ddd 150px);
+  border-bottom: 2px solid #1c4fa0;
 }
 .cryptpad-toolbar.code {
-  background-color: #ffae00;
-  color: #000;
+  background: linear-gradient(20deg, #ffae00 150px, #ddd 150px);
+  border-bottom: 2px solid #ffae00;
 }
 .cryptpad-toolbar.slide {
-  background-color: #a01c1c;
-  color: #fff;
+  background: linear-gradient(20deg, #e57614 150px, #ddd 150px);
+  border-bottom: 2px solid #e57614;
 }
 .cryptpad-toolbar.poll {
-  background-color: #006304;
-  color: #fff;
+  background: linear-gradient(20deg, #006304 150px, #ddd 150px);
+  border-bottom: 2px solid #006304;
 }
 .cryptpad-toolbar.whiteboard {
-  background-color: #570063;
-  color: #fff;
+  background: linear-gradient(20deg, #800080 150px, #ddd 150px);
+  border-bottom: 2px solid #800080;
 }
 .cryptpad-toolbar.drive {
-  background-color: #0087ff;
-  color: #fff;
+  background: linear-gradient(20deg, #0087ff 150px, #ddd 150px);
+  border-bottom: 2px solid #0087ff;
 }
 .cryptpad-toolbar.file {
-  background-color: #ccffa0;
-  color: #000;
+  background: linear-gradient(20deg, #cd2532 150px, #ddd 150px);
+  border-bottom: 2px solid #cd2532;
 }
 .cryptpad-toolbar .fa {
   font: normal normal normal 14px/1 FontAwesome;
@@ -150,6 +180,15 @@
 }
 .cryptpad-toolbar a {
   float: right;
+}
+.cryptpad-toolbar .dropdown-bar {
+  height: 100%;
+  display: inline-block;
+}
+.cryptpad-toolbar .dropdown-bar button {
+  height: 100%;
+  border-radius: 0;
+  margin: 0;
 }
 .cryptpad-toolbar button {
   border: 1px solid transparent;
@@ -502,6 +541,7 @@
   position: absolute;
   left: 0px;
   height: 32px;
+  background: #0087ff;
 }
 .cryptpad-toolbar-top .cryptpad-link a.cryptpad-logo {
   cursor: pointer;
@@ -525,6 +565,7 @@
   cursor: pointer;
 }
 .cryptpad-toolbar-top .cryptpad-user {
+  height: 100%;
   position: absolute;
   right: 0;
 }
@@ -553,6 +594,12 @@
 .cryptpad-toolbar-rightside {
   height: 32px;
   text-align: right;
+}
+.cryptpad-toolbar-rightside > button {
+  height: 100%;
+  margin: 0;
+  border-radius: 0;
+  padding: 0 10px;
 }
 .cryptpad-toolbar-history {
   display: none;

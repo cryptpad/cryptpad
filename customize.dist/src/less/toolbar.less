@@ -28,12 +28,47 @@
     @toolbar-green: #5cb85c;
 
     box-sizing: border-box;
-    padding: 0px 6px;
+    padding: 0px;
 
     //background-color: #BBBBFF;
     background-color: @toolbar-default-bg;
     color: @toolbar-default-color;
-
+    &.pad {
+        @color: @toolbar-pad-bg;
+        background: linear-gradient(20deg, @color 150px, @toolbar-default-bg 150px);
+        border-bottom: 2px solid @color;
+    }
+    &.code {
+        @color: @toolbar-code-bg;
+        background: linear-gradient(20deg, @color 150px, @toolbar-default-bg 150px);
+        border-bottom: 2px solid @color;
+    }
+    &.slide {
+        @color: @toolbar-slide-bg;
+        background: linear-gradient(20deg, @color 150px, @toolbar-default-bg 150px);
+        border-bottom: 2px solid @color;
+    }
+    &.poll {
+        @color: @toolbar-poll-bg;
+        background: linear-gradient(20deg, @color 150px, @toolbar-default-bg 150px);
+        border-bottom: 2px solid @color;
+    }
+    &.whiteboard {
+        @color: @toolbar-whiteboard-bg;
+        background: linear-gradient(20deg, @color 150px, @toolbar-default-bg 150px);
+        border-bottom: 2px solid @color;
+    }
+    &.drive {
+        @color: @toolbar-drive-bg;
+        background: linear-gradient(20deg, @color 150px, @toolbar-default-bg 150px);
+        border-bottom: 2px solid @color;
+    }
+    &.file {
+        @color: @toolbar-file-bg;
+        background: linear-gradient(20deg, @color 150px, @toolbar-default-bg 150px);
+        border-bottom: 2px solid @color;
+    }
+/*
     &.pad {
         background-color: @toolbar-pad-bg;
         color: @toolbar-pad-color;
@@ -62,7 +97,7 @@
         background-color: @toolbar-file-bg;
         color: @toolbar-file-color;
     }
-
+*/
     .fa {
         font: normal normal normal 14px/1 FontAwesome;
         font-family: FontAwesome;
@@ -76,6 +111,17 @@
 
     a {
         float: right;
+    }
+
+
+    .dropdown-bar {
+        height: 100%;
+        display: inline-block;
+        button {
+            height: 100%;
+            border-radius: 0;
+            margin: 0;
+        }
     }
 
     button {
@@ -421,6 +467,7 @@
         position: absolute;
         left: 0px;
         height: 32px;
+        background: @toolbar-drive-bg;
 
         a.cryptpad-logo {
             cursor: pointer;
@@ -447,6 +494,7 @@
         }
     }
     .cryptpad-user {
+        height: 100%;
         position: absolute;
         right: 0;
         :not(.cryptpad-lag) span {
@@ -480,6 +528,13 @@
 .cryptpad-toolbar-rightside {
     height: 32px;
     text-align: right;
+    &> button {
+        height: 100%;
+        margin: 0;
+        border-radius: 0;
+        padding: 0 10px;
+
+    }
 }
 .cryptpad-toolbar-history {
     display: none;

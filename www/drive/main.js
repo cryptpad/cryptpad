@@ -154,11 +154,12 @@ define([
     var $folderOpenedIcon = $('<span>', {"class": "fa fa-folder-open folder"});
     var $folderOpenedEmptyIcon = $folderOpenedIcon.clone();
     var $fileIcon = $('<span>', {"class": "fa fa-file-text-o file icon"});
-    var $padIcon = $('<span>', {"class": "fa fa-file-word-o file icon"});
-    var $codeIcon = $('<span>', {"class": "fa fa-file-code-o file icon"});
-    var $slideIcon = $('<span>', {"class": "fa fa-file-powerpoint-o file icon"});
-    var $pollIcon = $('<span>', {"class": "fa fa-calendar file icon"});
-    var $whiteboardIcon = $('<span>', {"class": "fa fa-paint-brush"});
+    var $fileAppIcon = $('<span>', {"class": "fa fa-file-text-o file icon fileColor"});
+    var $padIcon = $('<span>', {"class": "fa fa-file-word-o file icon padColor"});
+    var $codeIcon = $('<span>', {"class": "fa fa-file-code-o file icon codeColor"});
+    var $slideIcon = $('<span>', {"class": "fa fa-file-powerpoint-o file icon slideColor"});
+    var $pollIcon = $('<span>', {"class": "fa fa-calendar file icon pollColor"});
+    var $whiteboardIcon = $('<span>', {"class": "fa fa-paint-brush whiteboardColor"});
     //var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
     var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
     var $templateIcon = $('<span>', {"class": "fa fa-cubes"});
@@ -1156,6 +1157,7 @@ define([
             else if (href.indexOf('/slide/') !== -1) { $icon = $slideIcon.clone(); }
             else if (href.indexOf('/poll/') !== -1) { $icon = $pollIcon.clone(); }
             else if (href.indexOf('/whiteboard/') !== -1) { $icon = $whiteboardIcon.clone(); }
+            else if (href.indexOf('/file/') !== -1) { $icon = $fileAppIcon.clone(); }
 
             return $icon;
         };

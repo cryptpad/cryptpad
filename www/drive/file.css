@@ -43,6 +43,30 @@ body {
     margin-top: 0.5em;
   }
 }
+.padColor {
+  color: #1c4fa0;
+}
+.codeColor {
+  color: #ffae00;
+}
+.slideColor {
+  color: #e57614;
+}
+.pollColor {
+  color: #006304;
+}
+.fileColor {
+  color: #cd2532;
+}
+.whiteboardColor {
+  color: #800080;
+}
+.driveColor {
+  color: #0087ff;
+}
+.defaultColor {
+  color: #ddd;
+}
 div:focus {
   outline: none;
 }

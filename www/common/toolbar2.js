@@ -509,8 +509,8 @@ define([
             title: Messages.header_logoTitle,
             'class': "cryptpad-logo"
         }).append($imgTag);
-        var $span = $('<span>').text('CryptDrive');
-        var $aTagBig = $aTagSmall.clone().addClass('large').append($span);
+        //var $span = $('<span>').text('CryptDrive');
+        var $aTagBig = $aTagSmall.clone().addClass('large');//.append($span);
         $aTagSmall.addClass('narrow');
         var onClick = function (e) {
             e.preventDefault();
