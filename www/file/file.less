@@ -7,6 +7,11 @@ html, body {
     margin: 0px;
     height: 100%;
 }
+
+#toolbar {
+    display: flex; // We need this to remove a 3px border at the bottom of the toolbar
+}
+
 body {
     display: flex;
     flex-flow: column;
@@ -21,7 +26,6 @@ body {
     align-items: center;
 }
 .cryptpad-toolbar {
-    margin-bottom: 1px;
     padding: 0px;
     display: inline-block;
 }

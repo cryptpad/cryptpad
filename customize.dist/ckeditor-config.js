@@ -50,7 +50,7 @@ CKEDITOR.editorConfig = function( config ) {
 
     //skin: 'moono-cryptpad,/pad/themes/moono-cryptpad/'
     //skin: 'flat,/pad/themes/flat/'
-    //skin: 'moono-lisa,/pad/themes/moono-lisa/'
+    //config.skin= 'moono-lisa,/pad/themes/moono-lisa/'
     //skin: 'moono-dark,/pad/themes/moono-dark/'
     //skin: 'office2013,/pad/themes/office2013/'
 };

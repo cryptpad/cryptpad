@@ -3,6 +3,9 @@ body {
   margin: 0px;
   height: 100%;
 }
+#toolbar {
+  display: flex;
+}
 body {
   display: flex;
   flex-flow: column;
@@ -17,7 +20,6 @@ body {
   align-items: center;
 }
 .cryptpad-toolbar {
-  margin-bottom: 1px;
   padding: 0px;
   display: inline-block;
 }

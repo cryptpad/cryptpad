@@ -98,9 +98,14 @@
 .toolbar-container .cryptpad-toolbar select {
   box-sizing: border-box;
 }
+.cke_reset_all * {
+  color: inherit;
+}
 .cryptpad-toolbar {
   box-sizing: border-box;
   padding: 0px 6px;
+  background-color: #fff;
+  color: #000;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -108,9 +113,36 @@
   -ms-user-select: none;
   user-select: none;
   font: normal normal normal 12px Arial, Helvetica, Tahoma, Verdana, Sans-Serif;
-  color: #000;
   width: 100%;
   z-index: 9001;
+}
+.cryptpad-toolbar.pad {
+  background-color: #1c4fa0;
+  color: #fff;
+}
+.cryptpad-toolbar.code {
+  background-color: #ffae00;
+  color: #000;
+}
+.cryptpad-toolbar.slide {
+  background-color: #a01c1c;
+  color: #fff;
+}
+.cryptpad-toolbar.poll {
+  background-color: #006304;
+  color: #fff;
+}
+.cryptpad-toolbar.whiteboard {
+  background-color: #570063;
+  color: #fff;
+}
+.cryptpad-toolbar.drive {
+  background-color: #0087ff;
+  color: #fff;
+}
+.cryptpad-toolbar.file {
+  background-color: #ccffa0;
+  color: #000;
 }
 .cryptpad-toolbar .fa {
   font: normal normal normal 14px/1 FontAwesome;
@@ -120,14 +152,11 @@
   float: right;
 }
 .cryptpad-toolbar button {
-  font: 12px Ubuntu, Arial, sans-serif;
   border: 1px solid transparent;
   border-radius: .25rem;
   color: #000;
   background-color: #fff;
   border-color: #ccc;
-}
-.cryptpad-toolbar button * {
   font: 12px Ubuntu, Arial, sans-serif;
 }
 .cryptpad-toolbar button#shareButton,
@@ -172,6 +201,10 @@
 }
 .cryptpad-toolbar button.hidden {
   display: none;
+}
+.cryptpad-toolbar button * {
+  color: #000;
+  font: 12px Ubuntu, Arial, sans-serif;
 }
 .cryptpad-toolbar button:hover {
   color: #292b2c;
@@ -406,7 +439,8 @@
   position: relative;
 }
 .cryptpad-toolbar-top .cryptpad-title .title,
-.cryptpad-toolbar-top .cryptpad-title .pencilIcon {
+.cryptpad-toolbar-top .cryptpad-title .pencilIcon,
+.cryptpad-toolbar-top .cryptpad-title .saveIcon {
   font-size: 1.5em;
   vertical-align: middle;
   line-height: 32px;
@@ -419,6 +453,22 @@
   margin-left: 0px;
 }
 .cryptpad-toolbar-top .cryptpad-title .pencilIcon span {
+  cursor: pointer;
+}
+.cryptpad-toolbar-top .cryptpad-title .saveIcon {
+  cursor: pointer;
+  border: 1px solid black;
+  border-radius: 0px 2px 2px 0px;
+  background: white;
+  padding: 5px;
+  display: inline;
+  margin-left: -1px;
+  border-collapse: collapse;
+}
+.cryptpad-toolbar-top .cryptpad-title .saveIcon:hover {
+  color: #999;
+}
+.cryptpad-toolbar-top .cryptpad-title .saveIcon span {
   cursor: pointer;
 }
 .cryptpad-toolbar-top .cryptpad-title:not(input):hover .editable {
@@ -485,6 +535,7 @@
   vertical-align: baseline;
 }
 .cryptpad-toolbar-leftside {
+  height: 32px;
   float: left;
   margin-bottom: -1px;
 }
@@ -500,6 +551,7 @@
   margin-top: -1px;
 }
 .cryptpad-toolbar-rightside {
+  height: 32px;
   text-align: right;
 }
 .cryptpad-toolbar-history {

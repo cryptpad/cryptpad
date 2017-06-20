@@ -97,6 +97,7 @@ define(function () {
     out.user_accountName = "Nom d'utilisateur";
 
     out.clickToEdit = 'Cliquer pour modifier';
+    out.saveTitle = "Enregistrer le titre (Entrée)";
 
     out.forgetButtonTitle = 'Déplacer ce pad vers la corbeille';
     out.forgetPrompt = 'Cliquer sur OK déplacera ce pad vers la corbeille de votre CryptDrive, êtes-vous sûr ?';
@@ -107,8 +108,8 @@ define(function () {
 
     out.newButton = 'Nouveau';
     out.newButtonTitle = 'Créer un nouveau pad';
-    out.uploadButton = 'Upload';
-    out.uploadButtonTitle = 'Uploader un nouveau fichier dans le dossier actuel';
+    out.uploadButton = 'Importer des fichiers';
+    out.uploadButtonTitle = 'Importer un nouveau fichier dans le dossier actuel';
 
     out.saveTemplateButton = "Sauver en tant que modèle";
     out.saveTemplatePrompt = "Choisir un titre pour ce modèle";
@@ -176,6 +177,9 @@ define(function () {
     out.history_restoreDone = "Document restauré";
     out.history_version = "Version :";
 
+    // Ckeditor links
+    out.openLinkInNewTab = "Ouvrir le lien dans un nouvel onglet";
+
     // Polls
 
     out.poll_title = "Sélecteur de date Zero Knowledge";
@@ -237,8 +241,8 @@ define(function () {
     out.fm_templateName = "Modèles";
     out.fm_searchName = "Recherche";
     out.fm_searchPlaceholder = "Rechercher...";
-    out.fm_newButton = "Nouveau";
-    out.fm_newButtonTitle = "Créer un nouveau pad ou un dossier";
+    out.fm_newButton = "Ajouter à ce dossier";
+    out.fm_newButtonTitle = "Créer un nouveau pad ou un dossier, importer un fichier dans le dossier courant";
     out.fm_newFolder = "Nouveau dossier";
     out.fm_newFile = "Nouveau pad";
     out.fm_folder = "Dossier";
@@ -389,9 +393,9 @@ define(function () {
     out.settings_logoutEverywhere = "Se déconnecter de toutes les autres sessions.";
     out.settings_logoutEverywhereConfirm = "Êtes-vous sûr ? Vous devrez vous reconnecter sur tous vos autres appareils.";
 
-    out.upload_serverError = "Erreur interne: impossible d'uploader le fichier pour l'instant.";
-    out.upload_uploadPending = "Vous avez déjà un fichier en cours d'upload. Souhaitez-vous l'annuler et uploader ce nouveau fichier ?";
-    out.upload_success = "Votre fichier ({0}) a été uploadé avec succès et ajouté à votre CryptDrive.";
+    out.upload_serverError = "Erreur interne: impossible d'importer le fichier pour l'instant.";
+    out.upload_uploadPending = "Vous avez déjà un fichier en cours d'importation. Souhaitez-vous l'annuler et importer ce nouveau fichier ?";
+    out.upload_success = "Votre fichier ({0}) a été importé avec succès et ajouté à votre CryptDrive.";
     out.upload_notEnoughSpace = "Il n'y a pas assez d'espace libre dans votre CryptDrive pour ce fichier.";
     out.upload_tooLarge = "Ce fichier dépasse la taille maximale autorisée.";
     out.upload_choose = "Choisir un fichier";
@@ -400,7 +404,7 @@ define(function () {
     out.upload_name = "Nom du fichier";
     out.upload_size = "Taille";
     out.upload_progress = "État";
-    out.upload_mustLogin = "Vous devez vous connecter pour uploader un fichier";
+    out.upload_mustLogin = "Vous devez vous connecter pour importer un fichier";
     out.download_button = "Déchiffrer et télécharger";
 
     // general warnings

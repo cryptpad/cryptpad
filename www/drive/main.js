@@ -650,7 +650,10 @@ define([
         };
 
         var updatePathSize = function () {
-            $driveToolbar.find('.path').css('max-width', 'calc(100vw - '+$tree.width()+'px - 50px)');
+            return;
+            var $tb = $driveToolbar;
+            var w = $tree.width() + $tb.find('.leftside').width() + $tb.find('.rightside').width();
+            $driveToolbar.find('.path').css('max-width', 'calc(100vw - '+w+'px)');
         };
 
         var getSelectedPaths = function ($element) {
@@ -1339,10 +1342,10 @@ define([
             });
 
             var $listButton = $('<button>', {
-                'class': 'element'
+                'class': 'element btn btn-secondary'
             }).append($listIcon.clone());
             var $gridButton = $('<button>', {
-                'class': 'element'
+                'class': 'element btn btn-secondary'
             }).append($gridIcon.clone());
 
             $listButton.click(function () {
@@ -1379,6 +1382,12 @@ define([
                     tag: 'a',
                     attributes: {'class': 'newFolder'},
                     content: Messages.fm_folder
+                });
+                options.push({tag: 'hr'});
+                options.push({
+                    tag: 'a',
+                    attributes: {'class': 'uploadFile'},
+                    content: Messages.uploadButton
                 });
                 options.push({tag: 'hr'});
             }
@@ -1427,6 +1436,20 @@ define([
                 $block.find('a.newFolder').click(function () {
                     filesOp.addFolder(currentPath, null, onCreated);
                 });
+                $block.find('a.uploadFile').click(function () {
+                    var $input = $('<input>', {
+                        'type': 'file',
+                        'style': 'display: none;'
+                    }).on('change', function (e) {
+                        var file = e.target.files[0];
+                        var ev = {
+                            target: $content[0]
+                        };
+                        APP.FM.handleFile(file, ev);
+                        if (callback) { callback(); }
+                    });
+                    $input.click();
+                });
             }
             $block.find('a.newdoc').click(function () {
                 var type = $(this).attr('data-type') || 'pad';
@@ -1435,16 +1458,6 @@ define([
             });
 
             return $block;
-        };
-
-        var createUploadButton = function () {
-            var inTrash = filesOp.isPathIn(currentPath, [TRASH]);
-            if (inTrash) { return; }
-            var data = {
-                FM: APP.FM,
-                target: $content[0]
-            };
-            return Cryptpad.createButton('upload', false, data);
         };
 
         var hideNewButton = function () {
@@ -1620,8 +1633,8 @@ define([
             var $toolbar = $driveToolbar;
             $toolbar.html('');
             $('<div>', {'class': 'leftside'}).appendTo($toolbar);
-            $('<div>', {'class': 'rightside'}).appendTo($toolbar);
             $('<div>', {'class': 'path unselectable'}).appendTo($toolbar);
+            $('<div>', {'class': 'rightside'}).appendTo($toolbar);
             return $toolbar;
         };
 
@@ -1846,6 +1859,9 @@ define([
             }
             var $list = $('<ul>').appendTo($dirContent);
 
+            // NewButton can be undefined if we're in read only mode
+            $toolbar.find('.leftside').append(createNewButton(isInRoot));
+
             createTitle(path).appendTo($toolbar.find('.path'));
             updatePathSize();
 
@@ -1878,11 +1894,6 @@ define([
                 $contextButtons.appendTo($toolbar.find('.rightside'));
             }
             updateContextButton();
-
-            // NewButton can be undefined if we're in read only mode
-            $toolbar.find('.leftside').append(createNewButton(isInRoot));
-            $toolbar.find('.leftside').append(createUploadButton());
-
 
             var $folderHeader = getFolderListHeader();
             var $fileHeader = getFileListHeader(true);

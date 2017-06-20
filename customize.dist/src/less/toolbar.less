@@ -21,12 +21,47 @@
         }
     }
 }
-
+.cke_reset_all * {
+    color: inherit;
+}
 .cryptpad-toolbar {
     @toolbar-green: #5cb85c;
 
     box-sizing: border-box;
     padding: 0px 6px;
+
+    //background-color: #BBBBFF;
+    background-color: @toolbar-default-bg;
+    color: @toolbar-default-color;
+
+    &.pad {
+        background-color: @toolbar-pad-bg;
+        color: @toolbar-pad-color;
+    }
+    &.code {
+        background-color: @toolbar-code-bg;
+        color: @toolbar-code-color;
+    }
+    &.slide {
+        background-color: @toolbar-slide-bg;
+        color: @toolbar-slide-color;
+    }
+    &.poll {
+        background-color: @toolbar-poll-bg;
+        color: @toolbar-poll-color;
+    }
+    &.whiteboard {
+        background-color: @toolbar-whiteboard-bg;
+        color: @toolbar-whiteboard-color;
+    }
+    &.drive {
+        background-color: @toolbar-drive-bg;
+        color: @toolbar-drive-color;
+    }
+    &.file {
+        background-color: @toolbar-file-bg;
+        color: @toolbar-file-color;
+    }
 
     .fa {
         font: normal normal normal 14px/1 FontAwesome;
@@ -36,7 +71,6 @@
     .unselectable;
 
     font: normal normal normal 12px Arial,Helvetica,Tahoma,Verdana,Sans-Serif;
-    color: #000;
     width: 100%;
     z-index: 9001;
 
@@ -45,10 +79,6 @@
     }
 
     button {
-        font: @toolbar-button-font;
-        * {
-            font: @toolbar-button-font;
-        }
         &#shareButton, &.buttonSuccess {
             // Bootstrap 4 colors
             color: #fff;
@@ -93,6 +123,11 @@
         color: #000;
         background-color: #fff;
         border-color: #ccc;
+        font: @toolbar-button-font;
+        * {
+            color: #000;
+            font: @toolbar-button-font;
+        }
         &:hover {
             color: #292b2c;
             background-color: #e6e6e6;
@@ -321,17 +356,32 @@
     height: 32px;
     position: relative;
     .cryptpad-title {
-        .title, .pencilIcon {
+        .title, .pencilIcon, .saveIcon {
             font-size: 1.5em;
             vertical-align: middle;
             line-height: 32px;
         }
         .pencilIcon {
-            //display: none;
             margin-left: 11px;
             &:hover {
                 color: #999;
                 margin-left: 0px;
+            }
+            span {
+                cursor: pointer;
+            }
+        }
+        .saveIcon {
+            cursor: pointer;
+            border: 1px solid black;
+            border-radius: 0px 2px 2px 0px;
+            background: white;
+            padding: 5px;
+            display: inline;
+            margin-left: -1px;
+            border-collapse: collapse;
+            &:hover {
+                color: #999;
             }
             span {
                 cursor: pointer;
@@ -410,6 +460,7 @@
     }
 }
 .cryptpad-toolbar-leftside {
+    height: 32px;
     float: left;
     margin-bottom: -1px;
     .cryptpad-dropdown-users {
@@ -427,6 +478,7 @@
     }
 }
 .cryptpad-toolbar-rightside {
+    height: 32px;
     text-align: right;
 }
 .cryptpad-toolbar-history {

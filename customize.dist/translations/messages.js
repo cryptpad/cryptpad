@@ -99,6 +99,7 @@ define(function () {
     out.user_accountName = "Account name";
 
     out.clickToEdit = "Click to edit";
+    out.saveTitle = "Save the title (enter)";
 
     out.forgetButtonTitle = 'Move this pad to the trash';
     out.forgetPrompt = 'Clicking OK will move this pad to your trash. Are you sure?';
@@ -109,7 +110,7 @@ define(function () {
 
     out.newButton = 'New';
     out.newButtonTitle = 'Create a new pad';
-    out.uploadButton = 'Upload';
+    out.uploadButton = 'Upload files';
     out.uploadButtonTitle = 'Upload a new file to the current folder';
 
     out.saveTemplateButton = "Save as template";
@@ -178,6 +179,9 @@ define(function () {
     out.history_restoreDone = "Document restored";
     out.history_version = "Version:";
 
+    // Ckeditor links
+    out.openLinkInNewTab = "Open Link in New Tab";
+
     // Polls
 
     out.poll_title = "Zero Knowledge Date Picker";
@@ -240,8 +244,8 @@ define(function () {
     out.fm_templateName = "Templates";
     out.fm_searchName = "Search";
     out.fm_searchPlaceholder = "Search...";
-    out.fm_newButton = "New";
-    out.fm_newButtonTitle = "Create a new pad or folder";
+    out.fm_newButton = "Add to this folder";
+    out.fm_newButtonTitle = "Create a new pad or folder, import a file in the current folder";
     out.fm_newFolder = "New folder";
     out.fm_newFile = "New pad";
     out.fm_folder = "Folder";

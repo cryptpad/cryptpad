@@ -67,6 +67,11 @@ define([
             id: uid(),
         });
 
+        var parsed = Cryptpad.parsePadUrl(window.location.href);
+        if (typeof parsed.type === "string") {
+            $toolbar.addClass(parsed.type);
+        }
+
         var $topContainer = $('<div>', {'class': TOP_CLS});
         var $userContainer = $('<span>', {
             'class': USER_CLS
@@ -396,7 +401,6 @@ define([
             'class': TITLE_CLS
         }).appendTo(toolbar.$top);
 
-        // TODO: move these functions to toolbar or common?
         if (typeof config.title !== "object") {
             console.error("config.title", config);
             throw new Error("config.title is not an object");
@@ -413,6 +417,10 @@ define([
             'class': 'pencilIcon',
             'title': Messages.clickToEdit
         });
+        var $saveIcon = $('<span>', {
+            'class': 'saveIcon',
+            'title': Messages.saveTitle
+        }).hide();
         if (config.readOnly === 1 || typeof(Cryptpad) === "undefined") { return $titleContainer; }
         var $input = $('<input>', {
             type: 'text',
@@ -426,6 +434,11 @@ define([
                 style: 'font-family: FontAwesome;'
             });
             $pencilIcon.append($icon).appendTo($titleContainer);
+            var $icon2 = $('<span>', {
+                'class': 'fa fa-check readonly',
+                style: 'font-family: FontAwesome;'
+            });
+            $saveIcon.append($icon2).appendTo($titleContainer);
         }
 
         // Events
@@ -436,26 +449,34 @@ define([
             e.stopPropagation();
             return true;
         });
+        var save = function () {
+            var name = $input.val().trim();
+            if (name === "") {
+                name = $input.attr('placeholder');
+            }
+            Cryptpad.renamePad(name, function (err, newtitle) {
+                if (err) { return; }
+                $text.text(newtitle);
+                callback(null, newtitle);
+                $input.hide();
+                $text.show();
+                $pencilIcon.show();
+                $saveIcon.hide();
+                //$pencilIcon.css('display', '');
+            });
+        };
         $input.on('keyup', function (e) {
             if (e.which === 13 && toolbar.connected === true) {
-                var name = $input.val().trim();
-                if (name === "") {
-                    name = $input.attr('placeholder');
-                }
-                Cryptpad.renamePad(name, null, function (err, newtitle) {
-                    if (err) { return; }
-                    $text.text(newtitle);
-                    callback(null, newtitle);
-                    $input.hide();
-                    $text.show();
-                    //$pencilIcon.css('display', '');
-                });
+                save();
             } else if (e.which === 27) {
                 $input.hide();
                 $text.show();
+                $pencilIcon.show();
+                $saveIcon.hide();
                 //$pencilIcon.css('display', '');
             }
         });
+        $saveIcon.click(save);
 
         var displayInput = function () {
             if (toolbar.connected === false) { return; }
@@ -465,6 +486,8 @@ define([
             $input.val(inputVal);
             $input.show();
             $input.focus();
+            $pencilIcon.hide();
+            $saveIcon.show();
         };
         $text.on('click', displayInput);
         $pencilIcon.on('click', displayInput);
@@ -486,16 +509,16 @@ define([
             title: Messages.header_logoTitle,
             'class': "cryptpad-logo"
         }).append($imgTag);
-        var $span = $('<span>').text('CryptPad');
+        var $span = $('<span>').text('CryptDrive');
         var $aTagBig = $aTagSmall.clone().addClass('large').append($span);
         $aTagSmall.addClass('narrow');
         var onClick = function (e) {
             e.preventDefault();
             if (e.ctrlKey) {
-                window.open('/');
+                window.open('/drive');
                 return;
             }
-            window.location = "/";
+            window.location = "/drive";
         };
 
         var onContext = function (e) { e.stopPropagation(); };
