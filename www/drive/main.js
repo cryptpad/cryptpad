@@ -1569,7 +1569,7 @@ define([
                 if (prop === 'atime' || prop === 'ctime') {
                     return new Date(data[prop]);
                 }
-                return filesOp.getTitle(id).toLowerCase();
+                return (filesOp.getTitle(id) || "").toLowerCase();
             };
             keys.sort(function(a, b) {
                 if (getProp(a, prop) < getProp(b, prop)) { return mult * -1; }
@@ -1605,7 +1605,7 @@ define([
                         return new Date(e[prop]);
                     }
                 }
-                return el.name.toLowerCase();
+                return (el.name || "").toLowerCase();
             };
             keys.sort(function(a, b) {
                 if (getProp(a, prop) < getProp(b, prop)) { return mult * -1; }

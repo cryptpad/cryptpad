@@ -889,6 +889,13 @@ define([
                         element[key] = id;
                         delete element[el];
                     }
+                    if (typeof element[el] === "number") {
+                        var data = files[FILES_DATA][element[el]];
+                        if (!data) {
+                            debug("An element in ROOT doesn't have associated data", element[el], el);
+                            delete element[el];
+                        }
+                    }
                 }
             };
             var fixTrashRoot = function () {
@@ -906,6 +913,14 @@ define([
                         obj.element = id;
                     }
                     if (isFolder(obj.element)) { fixRoot(obj.element); }
+                    if (typeof obj.element === "number") {
+                        var data = files[FILES_DATA][obj.element];
+                        if (!data) {
+                            debug("An element in TRASH doesn't have associated data", obj.element, el);
+                            delete element[el];
+                        }
+                    }
+
                 };
                 for (var el in tr) {
                     if (!Array.isArray(tr[el])) {
@@ -942,6 +957,13 @@ define([
                         var id = Cryptpad.createRandomInteger();
                         files[FILES_DATA][id] = {href: el};
                         us[idx] = id;
+                    }
+                    if (typeof el === "number") {
+                        var data = files[FILES_DATA][el];
+                        if (!data) {
+                            debug("An element in TEMPLATE doesn't have associated data", el);
+                            delete element[el];
+                        }
                     }
                 });
                 toClean.forEach(function (idx) {
