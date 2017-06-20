@@ -77,6 +77,49 @@ body {
 }
 
 
+#cme_toolbox {
+    z-index: 10000;
+}
+#editorContainer {
+    flex: 1;
+    display: flex;
+    flex-flow: row;
+    height: 100%;
+    overflow: hidden;
+    .CodeMirror {
+        resize: none;
+        width: 100vw;
+    }
+    &.preview {
+        .CodeMirror {
+            //resize: horizontal;
+            width: 50vw;
+        }
+    }
+}
+.preview .cp {
+    flex: 1;
+    overflow: hidden;
+    div#modal:not(.shown) {
+        position: relative;
+        top: auto;
+        left: auto;
+        width: auto;
+        display: block;
+        height: 100%;
+        #content {
+            .slide-container {
+                width: 100%;
+            }
+            .slide-frame {
+                width: 50vw;
+                height: 28.125vw; // height:width ratio = 9/16 = .5625
+                max-height: 100vh;
+                max-width: 177.78vh; // 16/9 = 1.778
+            }
+        }
+    }
+}
 .cp {
 
 /* Slide position (print mode) */
@@ -95,6 +138,7 @@ body {
         page-break-after: always;
         position: relative;
         box-sizing: border-box;
+        overflow: hidden;
         li {
             min-width: @ratio*50vw;
         }
@@ -123,6 +167,8 @@ body {
 /* Slide position (present mode) */
 div.modal, div#modal {
     display: none;
+    background-color: black;
+    color: white;
 
     /* Navigation buttons */
     .button {
@@ -154,22 +200,18 @@ div.modal, div#modal {
         position: fixed;
         top: 0px;
         left: 0px;
-        z-index: 100;
-        background-color: black;
-        color: white;
+        z-index: 100000;
         height: 100vh;
         width: 100%;
     }
     #content {
-        &.transition {
-            transition: margin-left 1s;
-        }
         font-size: 20vh;
         position: relative;
         height: 100%;
         overflow: visible;
         white-space: nowrap;
         .slide-frame {
+            overflow: hidden;
             display: inline-block;
             box-sizing: border-box;
             border: 1px solid;
@@ -197,6 +239,11 @@ div.modal, div#modal {
             height: 100%; width: 100vw;
             text-align: center;
             vertical-align: top;
+        }
+        &.transition {
+            .slide-container {
+                transition: margin-left 1s;
+            }
         }
     }
 
@@ -266,6 +313,8 @@ div#modal #content, #print {
             width: 90%;
             margin: auto;
             padding-left: .25vw;
+            overflow-x: auto;
+            overflow-y: hidden;
         }
 
         ul, ol {
@@ -308,3 +357,42 @@ div#modal #content, #print {
     }
 }
 }
+
+#fileDialog {
+    position: absolute;
+    background-color: rgba(200, 200, 200, 0.8);
+    top: 15vh; bottom: 15vh;
+    left: 10vw; right: 10vw;
+    border: 1px solid black;
+    z-index: 10;
+    overflow: auto;
+    display: none;
+    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    font-size: 16px;
+    text-align: center;
+    .close {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 5px;
+        cursor: pointer;
+    }
+    .element {
+        cursor: pointer;
+        display: inline-flex;
+        width: 100px;
+        height: 100px;
+        border: 1px solid #ccc;
+        margin: 5px;
+        overflow: hidden;
+        word-wrap: break-word;
+        background-color: white;
+        padding: 5px;
+        align-items: center;
+        span {
+            width: 100px;
+            text-align: center;
+        }
+    }
+}
+

@@ -1164,6 +1164,57 @@ html.cp,
 .limit-container .upgrade {
   margin-left: 10px;
 }
+/* Upload status table */
+#uploadStatusContainer {
+  position: absolute;
+  left: 10vw;
+  right: 10vw;
+  bottom: 100px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  opacity: 0.7;
+  font-family: Ubuntu,Georgia,Cambria,serif;
+  box-sizing: border-box;
+  z-index: 10;
+  display: none;
+}
+#uploadStatusContainer #uploadStatus {
+  width: 80vw;
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+#uploadStatusContainer #uploadStatus tr:nth-child(1) {
+  background-color: #888;
+  border: 1px solid #999;
+}
+#uploadStatusContainer #uploadStatus tr:nth-child(1) td {
+  text-align: center;
+}
+#uploadStatusContainer #uploadStatus td {
+  border-left: 1px solid #BBB;
+  border-right: 1px solid #BBB;
+  padding: 0 10px;
+}
+#uploadStatusContainer #uploadStatus .upProgress {
+  width: 200px;
+  position: relative;
+  text-align: center;
+  box-sizing: border-box;
+}
+#uploadStatusContainer #uploadStatus .progressContainer {
+  position: absolute;
+  width: 0px;
+  left: 5px;
+  top: 1px;
+  bottom: 1px;
+  background-color: rgba(0, 0, 255, 0.3);
+}
+#uploadStatusContainer #uploadStatus .upCancel {
+  text-align: center;
+}
+#uploadStatusContainer #uploadStatus .fa.cancel {
+  color: #ff0073;
+}
 #cors-store {
   display: none;
 }

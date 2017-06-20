@@ -110,6 +110,8 @@ define(function () {
 
     out.newButton = 'New';
     out.newButtonTitle = 'Create a new pad';
+    out.uploadButton = 'Upload';
+    out.uploadButtonTitle = 'Upload a new file to the current folder';
 
     out.saveTemplateButton = "Save as template";
     out.saveTemplatePrompt = "Choose a title for the template";
@@ -132,6 +134,12 @@ define(function () {
     out.printTitle = "Display the pad title";
     out.printCSS = "Custom style rules (CSS):";
     out.printTransition = "Enable transition animations";
+
+    out.filePickerButton = "Embed a file";
+    out.filePicker_close = "Close";
+    out.filePicker_description = "Choose a file from your CryptDrive to embed it or upload a new one";
+    out.filePicker_filter = "Filter files by name";
+    out.or = 'or';
 
     out.slideOptionsTitle = "Customize your slides";
     out.slideOptionsButton = "Save (enter)";
@@ -213,6 +221,9 @@ define(function () {
     out.poll_locked = "Locked";
     out.poll_unlocked = "Unlocked";
 
+    out.poll_show_help_button = "Show help";
+    out.poll_hide_help_button = "Hide help";
+
     // Canvas
     out.canvas_clear = "Clear";
     out.canvas_delete = "Delete selection";
@@ -220,6 +231,9 @@ define(function () {
     out.canvas_enable = "Enable draw";
     out.canvas_width = "Width";
     out.canvas_opacity = "Opacity";
+    out.canvas_opacityLabel = "opacity: {0}";
+    out.canvas_widthLabel = "Width: {0}";
+    
 
     // File manager
 
@@ -324,7 +338,7 @@ define(function () {
     out.login_notRegistered = 'Not registered?';
 
     out.register_importRecent = "Import pad history (Recommended)";
-    out.register_acceptTerms = "I accept <a href='/terms.html'>the terms of service</a>";
+    out.register_acceptTerms = "I accept <a href='/terms.html' tabindex='-1'>the terms of service</a>";
     out.register_passwordsDontMatch = "Passwords do not match!";
     out.register_mustAcceptTerms = "You must accept the terms of service.";
     out.register_mustRememberPass = "We cannot reset your password if you forget it. It's very important that you remember it! Please check the checkbox to confirm.";
@@ -556,6 +570,7 @@ define(function () {
     out.tips.title = "You can set the title of your pad by clicking the top center.";
     out.tips.store = "Every time you visit a pad, if you're logged in it will be saved to your CryptDrive.";
     out.tips.marker = "You can highlight text in a pad using the \"marker\" item in the styles dropdown menu.";
+    out.tips.driveUpload = "Registered users can upload encrypted files by dragging and dropping them into their CryptDrive.";
 
     out.feedback_about = "If you're reading this, you were probably curious why CryptPad is requesting web pages when you perform certain actions";
     out.feedback_privacy = "We care about your privacy, and at the same time we want CryptPad to be very easy to use.  We use this file to figure out which UI features matter to our users, by requesting it along with a parameter specifying which action was taken.";

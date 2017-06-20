@@ -6,8 +6,8 @@ define([
     '/common/cryptpad-common.js',
     //'/common/visible.js',
     //'/common/notify.js',
-    'pdfjs-dist/build/pdf',
-    'pdfjs-dist/build/pdf.worker',
+    //'pdfjs-dist/build/pdf',
+    //'pdfjs-dist/build/pdf.worker',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
 ], function ($, Crypto, realtimeInput, Toolbar, Cryptpad /*, Visible, Notify*/) {

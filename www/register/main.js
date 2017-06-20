@@ -63,6 +63,7 @@ define([
 
         var $register = $('button#register');
 
+        var registering = false;
         var logMeIn = function (result) {
             if (Test.testing) {
                 Test.passed();
@@ -79,6 +80,7 @@ define([
 
             Cryptpad.whenRealtimeSyncs(result.realtime, function () {
                 Cryptpad.login(result.userHash, result.userName, function () {
+                    registering = false;
                     if (sessionStorage.redirectTo) {
                         var h = sessionStorage.redirectTo;
                         var parser = document.createElement('a');
@@ -95,6 +97,11 @@ define([
         };
 
         $register.click(function () {
+            if (registering) {
+                console.log("registration is already in progress");
+                return;
+            }
+
             var uname = $uname.val();
             var passwd = $passwd.val();
             var confirmPassword = $confirm.val();
@@ -115,6 +122,7 @@ define([
             function (yes) {
                 if (!yes) { return; }
 
+                registering = true;
                 // setTimeout 100ms to remove the keyboard on mobile devices before the loading screen pops up
                 window.setTimeout(function () {
                     Cryptpad.addLoadingScreen(Messages.login_hashing);
@@ -127,20 +135,27 @@ define([
                                 switch (err) {
                                     case 'NO_SUCH_USER':
                                         Cryptpad.removeLoadingScreen(function () {
-                                            Cryptpad.alert(Messages.login_noSuchUser);
+                                            Cryptpad.alert(Messages.login_noSuchUser, function () {
+                                                registering = false;
+                                            });
                                         });
                                         break;
                                     case 'INVAL_USER':
                                         Cryptpad.removeLoadingScreen(function () {
-                                            Cryptpad.alert(Messages.login_invalUser);
+                                            Cryptpad.alert(Messages.login_invalUser, function () {
+                                                registering = false;
+                                            });
                                         });
                                         break;
                                     case 'INVAL_PASS':
                                         Cryptpad.removeLoadingScreen(function () {
-                                            Cryptpad.alert(Messages.login_invalPass);
+                                            Cryptpad.alert(Messages.login_invalPass, function () {
+                                                registering = false;
+                                            });
                                         });
                                         break;
                                     case 'ALREADY_REGISTERED':
+                                        // logMeIn should reset registering = false
                                         Cryptpad.removeLoadingScreen(function () {
                                             Cryptpad.confirm(Messages.register_alreadyRegistered, function (yes) {
                                                 if (!yes) { return; }
@@ -155,6 +170,7 @@ define([
                                         });
                                         break;
                                     default: // UNHANDLED ERROR
+                                        registering = false;
                                         Cryptpad.errorLoadingScreen(Messages.login_unhandledError);
                                 }
                                 return;

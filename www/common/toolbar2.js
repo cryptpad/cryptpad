@@ -96,6 +96,10 @@ define([
         } else {
             styleToolbar($container);
         }
+        $container.on('drop dragover', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
         return $toolbar;
     };
 

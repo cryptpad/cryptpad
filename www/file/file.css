@@ -6,6 +6,19 @@ body {
 #toolbar {
   display: flex;
 }
+body {
+  display: flex;
+  flex-flow: column;
+}
+#app {
+  flex: 1;
+  background: url('/customize/bg3.jpg') no-repeat center center;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .cryptpad-toolbar {
   padding: 0px;
   display: inline-block;
@@ -24,6 +37,10 @@ body {
   overflow: hidden;
   position: absolute;
   z-index: -1;
+}
+media-tag img {
+  max-width: 100%;
+  max-height: calc(100vh - 64px);
 }
 #upload-form,
 #download-form {
@@ -48,6 +65,19 @@ body {
   height: 50vh;
   box-sizing: border-box;
 }
+#download-form label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  white-space: normal;
+  word-wrap: break-word;
+}
+#download-form label span {
+  width: 50vh;
+  max-width: 80vw;
+  text-align: center;
+  line-height: 1.5em;
+}
 .hovering {
   background-color: rgba(255, 0, 115, 0.5) !important;
 }
@@ -58,20 +88,14 @@ body {
   display: none;
 }
 .inputfile + label {
-  border: 2px solid black;
-  background-color: rgba(50, 50, 50, 0.1);
   display: block;
-}
-.inputfile:focus + label,
-.inputfile + label:hover {
-  background-color: rgba(50, 50, 50, 0.3);
 }
 #progress {
   position: absolute;
   top: 0;
   left: 0;
   height: 100%;
-  transition: width 500ms;
+  transition: width 200ms;
   width: 0%;
   max-width: 100%;
   max-height: 100%;
@@ -79,42 +103,8 @@ body {
   z-index: 10000;
   display: block;
 }
-#status {
-  display: none;
-  width: 80vw;
-  margin-top: 50px;
-  margin-left: 10vw;
-  border: 1px solid black;
-  border-collapse: collapse;
-}
-#status tr:nth-child(1) {
-  background-color: #ccc;
-  border: 1px solid #999;
-}
-#status tr:nth-child(1) td {
-  text-align: center;
-}
-#status td {
-  border-left: 1px solid #BBB;
-  border-right: 1px solid #BBB;
-  padding: 0 10px;
-}
-#status .upProgress {
-  width: 200px;
-  position: relative;
-  text-align: center;
-}
-#status .progressContainer {
-  position: absolute;
-  width: 0px;
-  left: 5px;
-  top: 1px;
-  bottom: 1px;
-  background-color: rgba(0, 0, 255, 0.3);
-}
-#status .upCancel {
-  text-align: center;
-}
-#status .fa.cancel {
-  color: #ff0073;
+body #uploadStatusContainer {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: black;
+  opacity: 0.9;
 }

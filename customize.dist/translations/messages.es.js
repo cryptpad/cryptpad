@@ -235,7 +235,7 @@ define(function () {
     out.login_invalPass = "Contraseña requirida";
     out.login_unhandledError = "Un error inesperado se produjo :(";
     out.register_importRecent = "Importar historial (recomendado)";
-    out.register_acceptTerms = "Accepto los <a href='/terms.html'>términos de servicio</a>";
+    out.register_acceptTerms = "Accepto los <a href='/terms.html' tabindex='-1'>términos de servicio</a>";
     out.register_passwordsDontMatch = "Las contraseñas no corresponden";
     out.register_mustAcceptTerms = "Tienes que acceptar los términos de servicio";
     out.register_mustRememberPass = "No podemos reiniciar tu contraseña si la olvidas. ¡Es muy importante que la recuerdes! Marca la casilla para confirmarlo.";
@@ -351,6 +351,7 @@ define(function () {
     out.tips.title = "Puedes cambiar el título de tus pads en la parte superior de la pantalla.";
     out.tips.store = "Cada vez que visitas un pad con una sesión iniciada se guardará a tu CryptDrive.";
     out.tips.marker = "Puedes resaltar texto en un pad utilizando el \"marcador\" en el menú de estílo.";
+    out.tips.driveUpload = "Usuarios registrados pueden subir archivos cifrados arrastrandolos hacia CryptDrive.";
 
     out.feedback_about = "Si estas leyendo esto, quizas estés curioso de saber porqué CryptPad solicita esta página cuando haces algunas acciones";
     out.feedback_privacy = "Nos importa tu privacidad, y al mismo tiempo queremos que CryptPad sea muy fácil de usar. Utilizamos esta página para conocer las funcionalidades que importan a nuestros usuarios, pidiendolo con un parametro que nos dice que accion fue realizada.";
@@ -452,6 +453,9 @@ define(function () {
     out.poll_locked = "Cerrado";
     out.poll_unlocked = "Abierto";
 
+    out.poll_show_help_button = "Mostrar ayuda";
+    out.poll_hide_help_button = "Esconder ayuda";
+
     // 1.8.0 - Idopogo
 
     out.common_connectionLost = "<b>Connexión perdida</b><br>El documento está ahora en modo solo lectura hasta que la conexión vuelva.";
@@ -466,6 +470,20 @@ define(function () {
     out.fs_migration = "Tu CryptDrive fue actualizado a una nueva versión.<br><strong>Por favor, recarga la página.</strong>";
     out.login_notRegistered = "¿No estás registrado?";
     out.upload_mustLogin = "Tienes que estar conectado para subir archivos";
+
+    out.uploadButton = "Subir";
+    out.uploadButtonTitle = "Subir un archivo a la carpeta";
+    out.filePickerButton = "Incrustar un archivo";
+    out.filePicker_close = "Cerrar";
+    out.filePicker_description = "Elige un archivo de tu CryptDrive para incrustarlo o sube uno nuevo";
+    out.filePicker_filter = "Filtrar por nombre";
+    out.or = "o";
+    out.languageButton = "Lenguaje";
+    out.languageButtonTitle = "Elige el lenguaje para resaltado de sintaxis";
+    out.themeButton = "Tema";
+    out.themeButtonTitle = "Selecciona el tema de color para los editores de código y presentación";
+    out.canvas_opacityLabel = "Opacidad: {0}";
+    out.canvas_widthLabel = "Talla: {0}";
 
     return out;
 });

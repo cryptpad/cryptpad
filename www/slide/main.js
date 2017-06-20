@@ -9,6 +9,7 @@ define([
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
     '/slide/slide.js',
+    '/bower_components/tweetnacl/nacl-fast.min.js', // needed for media-tag
 ], function ($, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad, Cryptget, Slide) {
     var Messages = Cryptpad.Messages;
 
@@ -47,6 +48,7 @@ define([
         };
 
         var andThen = function (CMeditor) {
+            var $iframe = $('#pad-iframe').contents();
             var CodeMirror = Cryptpad.createCodemirror(CMeditor, ifrw, Cryptpad);
             editor = CodeMirror.editor;
 
@@ -66,7 +68,7 @@ define([
 
             var setTabTitle = function (title) {
                 var slideNumber = '';
-                if (Slide.index && Slide.content.length) {
+                if (Slide.shown) { //Slide.index && Slide.content.length) {
                     slideNumber = ' (' + Slide.index + '/' + Slide.content.length + ')';
                 }
                 document.title = title + slideNumber;
@@ -192,6 +194,66 @@ define([
                     $pad.contents().find('#' + SLIDE_COLOR_ID).css('background', back);
                     $pad.contents().find('#' + SLIDE_BACKCOLOR_ID).css('color', back);
                 }
+            };
+
+            var createFileDialog = function () {
+                var $body = $iframe.find('body');
+                var $block = $body.find('#fileDialog');
+                if (!$block.length) {
+                    $block = $('<div>', {id: "fileDialog"}).appendTo($body);
+                }
+                $block.html('');
+                $('<span>', {
+                    'class': 'close fa fa-times',
+                    'title': Messages.filePicker_close
+                }).click(function () {
+                    $block.hide();
+                }).appendTo($block);
+                var $description = $('<p>').text(Messages.filePicker_description);
+                $block.append($description);
+                var $filter = $('<p>').appendTo($block);
+                var $container = $('<span>', {'class': 'fileContainer'}).appendTo($block);
+                var updateContainer = function () {
+                    $container.html('');
+                    var filter = $filter.find('.filter').val().trim();
+                    var list = Cryptpad.getUserFilesList();
+                    var fo = Cryptpad.getFO();
+                    list.forEach(function (id) {
+                        var data = fo.getFileData(id);
+                        var name = fo.getTitle(id);
+                        if (filter && name.toLowerCase().indexOf(filter.toLowerCase()) === -1) {
+                            return;
+                        }
+                        var $span = $('<span>', {'class': 'element'}).appendTo($container);
+                        var $inner = $('<span>').text(name);
+                        $span.append($inner).click(function () {
+                            var cleanName = name.replace(/[\[\]]/g, '');
+                            var text = '!['+cleanName+']('+data.href+')';
+                            editor.replaceSelection(text);
+                            $block.hide();
+                            console.log(data.href);
+                        });
+                    });
+                };
+                var to;
+                $('<input>', {
+                    type: 'text',
+                    'class': 'filter',
+                    'placeholder': Messages.filePicker_filter
+                }).appendTo($filter).on('keypress', function () {
+                    if (to) { window.clearTimeout(to); }
+                    to = window.setTimeout(updateContainer, 300);
+                });
+                $filter.append(' '+Messages.or+' ');
+                var data = {FM: APP.FM};
+                $filter.append(Cryptpad.createButton('upload', false, data, function () {
+                    $block.hide();
+                }));
+                updateContainer();
+                $body.keydown(function (e) {
+                    if (e.which === 27) { $block.hide(); }
+                });
+                $block.show();
             };
 
             var createPrintDialog = function () {
@@ -355,6 +417,33 @@ define([
                 var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
                 $rightside.append($forgetPad);
 
+                $('<button>', {
+                    title: Messages.filePickerButton,
+                    'class': 'rightside-button fa fa-picture-o',
+                    style: 'font-size: 17px'
+                }).click(function () {
+                    $('body').append(createFileDialog());
+                }).appendTo($rightside);
+
+                var $previewButton = APP.$previewButton = Cryptpad.createButton(null, true);
+                $previewButton.removeClass('fa-question').addClass('fa-eye');
+                $previewButton.attr('title', Messages.previewButtonTitle);
+                $previewButton.click(function () {
+                    var $c = $iframe.find('#editorContainer');
+                    if ($c.hasClass('preview')) {
+                        Cryptpad.setPadAttribute('previewMode', false, function (e) {
+                            if (e) { return console.log(e); }
+                        });
+                        return void $c.removeClass('preview');
+                    }
+                    Cryptpad.setPadAttribute('previewMode', true, function (e) {
+                        if (e) { return console.log(e); }
+                    });
+                    $c.addClass('preview');
+                    Slide.updateFontSize();
+                });
+                $rightside.append($previewButton);
+
                 var $printButton = $('<button>', {
                     title: Messages.printButtonTitle,
                     'class': 'rightside-button fa fa-print',
@@ -483,21 +572,27 @@ define([
 
                 // Update the user list (metadata) from the hyperjson
                 Metadata.update(userDoc);
-
                 editor.setValue(newDoc || initialState);
 
                 if (Cryptpad.initialName && Title.isDefaultTitle()) {
                     Title.updateTitle(Cryptpad.initialName);
-                    onLocal();
                 }
 
-                Slide.onChange(function (o, n, l) {
-                    if (n !== null) {
-                        document.title = Title.title + ' (' + (++n) + '/' + l +  ')';
-                        return;
+                Cryptpad.getPadAttribute('previewMode', function (e, data) {
+                    if (e) { return void console.error(e); }
+                    if (data === true && APP.$previewButton) {
+                        APP.$previewButton.click();
                     }
-                    console.log("Exiting presentation mode");
-                    document.title = Title.title;
+                });
+
+                Slide.onChange(function (o, n, l) {
+                    var slideNumber = '';
+                    if (n !== null) {
+                        if (Slide.shown) { //Slide.index && Slide.content.length) {
+                            slideNumber = ' (' + (++n) + '/' + l + ')';
+                        }
+                    }
+                    document.title = Title.title + slideNumber;
                 });
 
                 Cryptpad.removeLoadingScreen();
@@ -505,9 +600,25 @@ define([
                 initializing = false;
 
                 onLocal(); // push local state to avoid parse errors later.
+                Slide.update(editor.getValue());
 
                 if (readOnly) { return; }
                 UserList.getLastName(toolbar.$userNameButton, isNew);
+
+                var fmConfig = {
+                    dropArea: $iframe.find('.CodeMirror'),
+                    body: $iframe.find('body'),
+                    onUploaded: function (ev, data) {
+                        //var cursor = editor.getCursor();
+                        var cleanName = data.name.replace(/[\[\]]/g, '');
+                        var text = '!['+cleanName+']('+data.url+')';
+                        /*if (data.mediatag) {
+                            text = '!'+text;
+                        }*/
+                        editor.replaceSelection(text);
+                    }
+                };
+                APP.FM = Cryptpad.createFileManager(fmConfig);
             };
 
             config.onRemote = function () {

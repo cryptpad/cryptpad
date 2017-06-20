@@ -8,16 +8,25 @@
     <style>
     html, body {
         margin: 0px;
+        height: 100%;
     }
     .cryptpad-toolbar {
         margin-bottom: 1px;
         padding: 0px;
         display: inline-block;
     }
+
     media-tag * {
         max-width: 100%;
         margin: auto;
         display: block;
+    }
+    media-tag *:not(button) {
+        height: 100%;
+    }
+    media-tag video {
+        min-width: 100%;
+        max-height: 100%;
     }
     </style>
 </head>

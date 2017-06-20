@@ -53,6 +53,9 @@ body {
   font-family: Calibri, Ubuntu, sans-serif;
   word-wrap: break-word;
 }
+#previewContainer media-tag * {
+  max-width: 100%;
+}
 #preview {
   max-width: 40vw;
   margin: auto;

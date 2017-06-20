@@ -1,8 +1,11 @@
 define([
     'jquery',
     '/bower_components/marked/marked.min.js',
-    '/bower_components/diff-dom/diffDOM.js'
-],function ($, Marked) {
+    '/common/cryptpad-common.js',
+    '/common/media-tag.js',
+    '/bower_components/diff-dom/diffDOM.js',
+    '/bower_components/tweetnacl/nacl-fast.min.js',
+],function ($, Marked, Cryptpad, MediaTag) {
     var DiffMd = {};
 
     var DiffDOM = window.diffDOM;
@@ -33,6 +36,20 @@ define([
         var cls = (isCheckedTaskItem || isUncheckedTaskItem) ? ' class="todo-list-item"' : '';
         return '<li'+ cls + '>' + text + '</li>\n';
     };
+    renderer.image = function (href, title, text) {
+        if (href.slice(0,6) === '/file/') {
+            var parsed = Cryptpad.parsePadUrl(href);
+            var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+            var mt = '<media-tag src="/blob/' + hexFileName.slice(0,2) + '/' + hexFileName + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '"></media-tag>';
+            return mt;
+        }
+        var out = '<img src="' + href + '" alt="' + text + '"';
+        if (title) {
+            out += ' title="' + title + '"';
+        }
+        out += this.options.xhtml ? '/>' : '>';
+        return out;
+    };
 
     var forbiddenTags = [
         'SCRIPT',
@@ -43,6 +60,10 @@ define([
         'AUDIO',
     ];
     var unsafeTag = function (info) {
+        if (info.node && $(info.node).parents('media-tag').length) {
+            // Do not remove elements inside a media-tag
+            return true;
+        }
         if (['addAttribute', 'modifyAttribute'].indexOf(info.diff.action) !== -1) {
             if (/^on/.test(info.diff.name)) {
                 console.log("Rejecting forbidden element attribute with name", info.diff.name);
@@ -60,6 +81,7 @@ define([
             }
         }
     };
+
 
     var slice = function (coll) {
         return Array.prototype.slice.call(coll);
@@ -85,7 +107,7 @@ define([
     var DD = new DiffDOM({
         preDiffApply: function (info) {
             if (unsafeTag(info)) { return true; }
-        }
+        },
     });
 
     var makeDiff = function (A, B, id) {
@@ -119,8 +141,17 @@ define([
             throw new Error(patch);
         } else {
             DD.apply($content[0], patch);
+            var $mts = $content.find('media-tag:not(:has(*))');
+            $mts.each(function (i, el) {
+                MediaTag(el);
+            });
         }
     };
+
+    $(window.document).on('decryption', function (e) {
+        var decrypted = e.originalEvent;
+        if (decrypted.callback) { decrypted.callback(); }
+    });
 
     return DiffMd;
 });

@@ -205,6 +205,17 @@ define([
         var $trashTreeContextMenu = $iframe.find("#trashTreeContextMenu");
         var $trashContextMenu = $iframe.find("#trashContextMenu");
 
+        $tree.on('drop dragover', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+        $driveToolbar.on('drop dragover', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+
+
         // TOOLBAR
 
         /* add a "change username" button */
@@ -317,6 +328,7 @@ define([
                 width: '0px',
                 height: '0px'
             });
+            module.hideMenu(e);
             if (sel.move) { return; }
             sel.move = function (ev) {
                 var rectMove = ev.currentTarget.getBoundingClientRect(),
@@ -638,12 +650,7 @@ define([
         };
 
         var updatePathSize = function () {
-            var $context = $iframe.find('#contextButtonsContainer');
-            var l = 50;
-            if ($context.length) {
-                l += $context.width() || 0;
-            }
-            $driveToolbar.find('.path').css('max-width', 'calc(100vw - '+$tree.width()+'px - '+l+'px)');
+            $driveToolbar.find('.path').css('max-width', 'calc(100vw - '+$tree.width()+'px - 50px)');
         };
 
         var getSelectedPaths = function ($element) {
@@ -954,23 +961,7 @@ define([
             if (filesOp.isPathIn(newPath, [TRASH]) && paths.length && paths[0][0] === TRASH) {
                 return;
             }
-            // "force" is currently unused but may be configurable by user
-            if (newPath[0] !== TRASH || force) {
-                andThen();
-                return;
-            }
-            var msg = Messages._getKey('fm_removeSeveralDialog', [paths.length]);
-            if (paths.length === 1) {
-                var path = paths[0].slice();
-                var el = filesOp.find(path);
-                var name = filesOp.isFile(el) ? getElementName(path) : path.pop();
-                msg = Messages._getKey('fm_removeDialog', [name]);
-            }
-            Cryptpad.confirm(msg, function (res) {
-                $(ifrw).focus();
-                if (!res) { return; }
-                andThen();
-            });
+            andThen();
         };
         // Drag & drop:
         // The data transferred is a stringified JSON containing the path of the dragged element
@@ -1012,13 +1003,30 @@ define([
             ev.dataTransfer.setData("text", stringify(data));
         };
 
+        var onFileDrop = APP.onFileDrop = function (file, e) {
+            APP.FM.onFileDrop(file, e);
+        };
+        var findDropPath = function (target) {
+            var $target = $(target);
+            var $el = findDataHolder($target);
+            var newPath = $el.data('path');
+            if ((!newPath || filesOp.isFile(filesOp.find(newPath)))
+                    && $target.parents('#content')) {
+                newPath = currentPath;
+            }
+            return newPath;
+        };
         var onDrop = function (ev) {
             ev.preventDefault();
             $iframe.find('.droppable').removeClass('droppable');
             var data = ev.dataTransfer.getData("text");
+
+            // Don't the the normal drop handler for file upload
+            var fileDrop = ev.dataTransfer.files;
+            if (fileDrop.length) { return void onFileDrop(fileDrop, ev); }
+
             var oldPaths = JSON.parse(data).path;
             if (!oldPaths) { return; }
-
             // Dropped elements can be moved from the same file manager or imported from another one.
             // A moved element should be removed from its previous location
             var movedPaths = [];
@@ -1032,8 +1040,7 @@ define([
                 }
             });
 
-            var $el = findDataHolder($(ev.target));
-            var newPath = $el.data('path');
+            var newPath = findDropPath(ev.target);
             if (!newPath) { return; }
             if (movedPaths && movedPaths.length) {
                 moveElements(movedPaths, newPath, null, refresh);
@@ -1069,6 +1076,8 @@ define([
                 e.preventDefault();
             });
             $element.on('drop', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
                 onDrop(e.originalEvent);
             });
             $element.on('dragenter', function (e) {
@@ -1087,6 +1096,7 @@ define([
                 }
             });
         };
+        addDragAndDropHandlers($content, null, true, true);
 
         // In list mode, display metadata from the filesData object
         // _WORKGROUP_ : Do not display title, atime and ctime columns since we don't have files data
@@ -1247,7 +1257,7 @@ define([
         var createTitle = function (path, noStyle) {
             if (!path || path.length === 0) { return; }
             var isTrash = filesOp.isPathIn(path, [TRASH]);
-            var $title = $('<span>', {'class': 'path unselectable'});
+            var $title = $driveToolbar.find('.path');
             if (APP.mobile()) {
                 return $title;
             }
@@ -1427,6 +1437,16 @@ define([
             return $block;
         };
 
+        var createUploadButton = function () {
+            var inTrash = filesOp.isPathIn(currentPath, [TRASH]);
+            if (inTrash) { return; }
+            var data = {
+                FM: APP.FM,
+                target: $content[0]
+            };
+            return Cryptpad.createButton('upload', false, data);
+        };
+
         var hideNewButton = function () {
             $iframe.find('.dropdown-bar-content').hide();
         };
@@ -1599,11 +1619,9 @@ define([
         var createToolbar = function () {
             var $toolbar = $driveToolbar;
             $toolbar.html('');
-            var $leftside = $('<div>', {'class': 'leftside'}).appendTo($toolbar);
-            if (!APP.mobile()) {
-                $leftside.width($tree.width());
-            }
+            $('<div>', {'class': 'leftside'}).appendTo($toolbar);
             $('<div>', {'class': 'rightside'}).appendTo($toolbar);
+            $('<div>', {'class': 'path unselectable'}).appendTo($toolbar);
             return $toolbar;
         };
 
@@ -1765,6 +1783,7 @@ define([
             module.hideMenu();
             if (!APP.editable) { debug("Read-only mode"); }
             if (!appStatus.isReady && !force) { return; }
+
             // Only Trash and Root are available in not-owned files manager
             if (displayedCategories.indexOf(path[0]) === -1) {
                 log(Messages.categoryError);
@@ -1798,7 +1817,6 @@ define([
             if (!isSearch) { delete APP.Search.oldLocation; }
 
             module.resetTree();
-
             if (displayedCategories.indexOf(SEARCH) !== -1 && $tree.find('#searchInput').length) {
                 // in history mode we want to focus the version number input
                 if (!history.isHistoryMode && !APP.mobile()) {
@@ -1828,7 +1846,7 @@ define([
             }
             var $list = $('<ul>').appendTo($dirContent);
 
-            createTitle(path).appendTo($toolbar.find('.rightside'));
+            createTitle(path).appendTo($toolbar.find('.path'));
             updatePathSize();
 
             if (APP.mobile()) {
@@ -1863,6 +1881,7 @@ define([
 
             // NewButton can be undefined if we're in read only mode
             $toolbar.find('.leftside').append(createNewButton(isInRoot));
+            $toolbar.find('.leftside').append(createUploadButton());
 
 
             var $folderHeader = getFolderListHeader();
@@ -2375,8 +2394,7 @@ define([
             var name = paths[0].path[paths[0].path.length - 1];
             if ($(this).hasClass("remove")) {
                 if (paths.length === 1) {
-                    if (path.length === 4) { name = path[1]; }
-                    Cryptpad.confirm(Messages._getKey("fm_removePermanentlyDialog", [name]), function(res) {
+                    Cryptpad.confirm(Messages.fm_removePermanentlyDialog, function(res) {
                         if (!res) { return; }
                         filesOp.delete([path], refresh);
                     });
@@ -2392,7 +2410,14 @@ define([
             }
             else if ($(this).hasClass("restore")) {
                 if (paths.length !== 1) { return; }
-                if (path.length === 4) { name = path[1]; }
+                if (path.length === 4) {
+                    var el = filesOp.find(path);
+                    if (filesOp.isFile(el)) {
+                        name = filesOp.getTitle(el);
+                    } else {
+                        name = path[1];
+                    }
+                }
                 Cryptpad.confirm(Messages._getKey("fm_restoreDialog", [name]), function(res) {
                     if (!res) { return; }
                     filesOp.restore(path, refresh);
@@ -2413,7 +2438,7 @@ define([
             e.preventDefault();
         });
         $appContainer.on('mouseup', function (e) {
-            if (sel.down) { return; }
+            //if (sel.down) { return; }
             if (e.which !== 1) { return ; }
             module.hideMenu(e);
             //removeSelected(e);
@@ -2511,22 +2536,10 @@ define([
             }
         });
 
-        $iframe.find('#tree').mousedown(function () {
-            if (APP.mobile()) { return; }
-            if (APP.resizeTree) { return; }
-            APP.resizeTree = window.setInterval(function () {
-                $driveToolbar.find('.leftside').width($tree.width());
-                updatePathSize();
-            }, 100);
-        });
-        $appContainer.mouseup(function () {
-            window.clearInterval(APP.resizeTree);
-            APP.resizeTree = undefined;
-        });
-
         history.onEnterHistory = function (obj) {
             var files = obj.drive;
             filesOp = FO.init(files, config);
+            appStatus.isReady = true;
             refresh();
         };
         history.onLeaveHistory = function () {
@@ -2550,14 +2563,37 @@ define([
                     filesOp.pushData(data, function (e, id) {
                         if (e) { return void console.error("Error while creating the default pad:", e); } // TODO LIMIT?
                         filesOp.add(id);
+                        if (typeof(cb) === "function") { cb(); }
                     });
-                    if (typeof(cb) === "function") { cb(); }
                 });
                 delete sessionStorage.createReadme;
                 return;
             }
             if (typeof(cb) === "function") { cb(); }
         };
+
+        var fmConfig = {
+            noHandlers: true,
+            onUploaded: function (ev, data) {
+                try {
+                    // Get the folder path
+                    var newPath = findDropPath(ev.target);
+                    if (!newPath) { return void refresh(); }
+                    var href = data.url;
+                    // Get the current file location in ROOT
+                    var id = filesOp.getIdFromHref(href);
+                    var paths = filesOp.findFile(id);
+                    if (paths.length !== 1) { return; }
+                    // Try to move and refresh
+                    moveElements([paths[0]], newPath, true);
+                    refresh();
+                } catch (e) {
+                    console.error(e);
+                    refresh();
+                }
+            }
+        };
+        APP.FM = Cryptpad.createFileManager(fmConfig);
 
         createReadme(proxy, function () {
             refresh();
@@ -2657,7 +2693,7 @@ define([
 
             var userList = APP.userList = info.userList;
             var config = {
-                displayed: ['useradmin', 'spinner', 'lag', 'state', 'limit'],
+                displayed: ['useradmin', 'spinner', 'lag', 'state', 'limit', 'newpad'],
                 userList: {
                     list: userList,
                     userNetfluxId: info.myID
@@ -2689,7 +2725,7 @@ define([
                 if (err) { return void logError(err); }
                 $leftside.html('');
                 $leftside.append($limitContainer);
-            });
+            }, true);
 
             /* add a history button */
             var histConfig = {
@@ -2704,7 +2740,7 @@ define([
                     history.onEnterHistory(obj);
                 },
                 $toolbar: APP.$bar,
-                href: window.location.origin + window.location.pathname + APP.hash
+                href: window.location.origin + window.location.pathname + '#' + APP.hash
             };
             var $hist = Cryptpad.createButton('history', true, {histConfig: histConfig});
             $rightside.append($hist);

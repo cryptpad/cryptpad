@@ -108,6 +108,8 @@ define(function () {
 
     out.newButton = 'Nouveau';
     out.newButtonTitle = 'Créer un nouveau pad';
+    out.uploadButton = 'Upload';
+    out.uploadButtonTitle = 'Uploader un nouveau fichier dans le dossier actuel';
 
     out.saveTemplateButton = "Sauver en tant que modèle";
     out.saveTemplatePrompt = "Choisir un titre pour ce modèle";
@@ -130,6 +132,12 @@ define(function () {
     out.printTitle = "Afficher le titre du pad";
     out.printCSS = "Personnaliser l'apparence (CSS):";
     out.printTransition = "Activer les animations de transition";
+
+    out.filePickerButton = "Intégrer un fichier";
+    out.filePicker_close = "Fermer";
+    out.filePicker_description = "Choisissez un fichier de votre CryptDrive pour l'intégrer ou uploadez-en un nouveau";
+    out.filePicker_filter = "Filtrez les fichiers par leur nom";
+    out.or = 'ou';
 
     out.slideOptionsTitle = "Personnaliser la présentation";
     out.slideOptionsButton = "Enregistrer (Entrée)";
@@ -211,6 +219,9 @@ define(function () {
     out.poll_locked = "Verrouillé";
     out.poll_unlocked = "Déverrouillé";
 
+    out.poll_show_help_button = "Afficher l'aide";
+    out.poll_hide_help_button = "Cacher l'aide";
+
     // Canvas
     out.canvas_clear = "Nettoyer";
     out.canvas_delete = "Supprimer la sélection";
@@ -218,6 +229,8 @@ define(function () {
     out.canvas_enable = "Activer le dessin";
     out.canvas_width = "Épaisseur";
     out.canvas_opacity = "Opacité";
+    out.canvas_opacityLabel = "opacité: {0}";
+    out.canvas_widthLabel = "taille: {0}";
 
     // File manager
 
@@ -322,7 +335,7 @@ define(function () {
     out.login_notRegistered = 'Pas encore inscrit ?';
 
     out.register_importRecent = "Importer l'historique (Recommendé)";
-    out.register_acceptTerms = "J'accepte <a href='/terms.html'>les conditions d'utilisation</a>";
+    out.register_acceptTerms = "J'accepte <a href='/terms.html' tabindex='-1'>les conditions d'utilisation</a>";
     out.register_passwordsDontMatch = "Les mots de passe doivent être identiques!";
     out.register_mustAcceptTerms = "Vous devez accepter les conditions d'utilisation.";
     out.register_mustRememberPass = "Nous ne pouvons pas réinitialiser votre mot de passe si vous l'oubliez. C'est important que vous vous en souveniez! Veuillez cocher la case pour confirmer.";
@@ -545,6 +558,7 @@ define(function () {
     out.tips.title = "Vous pouvez changer le titre de votre pad en cliquant au centre en haut de la page.";
     out.tips.store = "Dés que vous ouvrez un nouveau pad, il est automatiquement stocké dans votre CryptDrive si vous êtes connectés.";
     out.tips.marker = "Vous pouvez surligner du texte dans un pad en utilisant l'option \"marker\" dans le menu déroulant des styles.";
+    out.tips.driveUpload = "Les utilisateurs enregistrés peuvent importer des fichiers en les faisant glisser et en les déposant dans leur CryptDrive.";
 
     out.feedback_about = "Si vous lisez ceci, vous vous demandez probablement pourquoi CryptPad envoie des requêtes vers des pages web quand vous realisez certaines actions.";
     out.feedback_privacy = "Nous prenons au sérieux le respect de votre vie privée, et en même temps nous souhaitons rendre CryptPad très simple à utiliser. Nous utilisons cette page pour comprendre quelles fonctionnalités dans l'interface comptent le plus pour les utilisateurs, en l'appelant avec un paramètre spécifiant quelle action a été réalisée.";

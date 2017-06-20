@@ -34,6 +34,7 @@ var setHeaders = (function () {
     const headers = clone(config.httpHeaders);
     if (config.contentSecurity) {
         headers['Content-Security-Policy'] = clone(config.contentSecurity);
+        if (!/;$/.test(headers['Content-Security-Policy'])) { headers['Content-Security-Policy'] += ';' }
         if (headers['Content-Security-Policy'].indexOf('frame-ancestors') === -1) {
             // backward compat for those who do not merge the new version of the config
             // when updating. This prevents endless spinner if someone clicks donate.
@@ -88,7 +89,9 @@ var mainPages = config.mainPages || ['index', 'privacy', 'terms', 'about', 'cont
 var mainPagePattern = new RegExp('^\/(' + mainPages.join('|') + ').html$');
 app.get(mainPagePattern, Express.static(__dirname + '/customize.dist'));
 
-app.use("/blob", Express.static(Path.join(__dirname, (config.blobPath || './blob'))));
+app.use("/blob", Express.static(Path.join(__dirname, (config.blobPath || './blob')), {
+    maxAge: DEV_MODE? "0d": "365d"
+}));
 
 app.use("/customize", Express.static(__dirname + '/customize'));
 app.use("/customize", Express.static(__dirname + '/customize.dist'));
@@ -138,7 +141,13 @@ app.get('/api/config', function(req, res){
 var httpServer = httpsOpts ? Https.createServer(httpsOpts, app) : Http.createServer(app);
 
 httpServer.listen(config.httpPort,config.httpAddress,function(){
-    console.log('[%s] listening on port %s', new Date().toISOString(), config.httpPort);
+    var host = config.httpAddress;
+    var hostName = !host.indexOf(':') ? '[' + host + ']' : host;
+
+    var port = config.httpPort;
+    var ps = port === 80? '': ':' + port;
+
+    console.log('\n[%s] server available http://%s%s', new Date().toISOString(), hostName, ps);
 });
 
 var wsConfig = { server: httpServer };

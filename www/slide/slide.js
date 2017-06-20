@@ -38,15 +38,23 @@ define([
         }
     };
 
-    var updateFontSize = Slide.updateFontSize = function() {
+    var updateFontSize = Slide.updateFontSize = function () {
         // 20vh
         // 20 * 16 / 9vw
-        if ($(window).width() > 16/9*$(window).height()) {
-            $content.css('font-size', '20vh');
+        var wbase = 20;
+        var vh = 20;
+        var $elem = $(window);
+        if (!Slide.shown) {
+            wbase = 10;
+            vh *= $content.height()/$(window).height();
+            $elem = $content;
+        }
+        if ($elem.width() > 16/9*$elem.height()) {
+            $content.css('font-size', vh+'vh');
             // $print.css('font-size', '20vh');
             return;
         }
-        $content.css('font-size', (20*9/16)+'vw');
+        $content.css('font-size', (wbase*9/16)+'vw');
         // $print.css('font-size', (20*9/16)+'vw');
     };
 
@@ -86,7 +94,8 @@ define([
         }
         //$content.find('.' + slideClass).hide();
         //$content.find('.' + slideClass + ':eq( ' + i + ' )').show();
-        $content.css('margin-left', -(i*100)+'vw');
+        //$content.css('margin-left', -(i*100)+'vw');
+        $content.find('.slide-container').first().css('margin-left', -(i*100)+'%');
         updateFontSize();
         change(Slide.lastIndex, Slide.index);
     };
@@ -121,6 +130,7 @@ define([
             $pad.addClass('fullscreen');
             $('#iframe-container').addClass('fullscreen');
             $('.top-bar').hide();
+            updateFontSize();
             return;
         }
         window.location.hash = window.location.hash.replace(/\/present$/, '/');
@@ -131,10 +141,12 @@ define([
         $('#iframe-container').removeClass('fullscreen');
         $('.top-bar').show();
         $modal.removeClass('shown');
+        updateFontSize();
     };
 
-    Slide.update = function (content, init) {
-        if (!Slide.shown && !init) { return; }
+    Slide.update = function (content) {
+        updateFontSize();
+        //if (!init) { return; }
         if (!content) { content = ''; }
         var old = Slide.content;
         Slide.content = content.replace(/\n\s*\-\-\-\s*\n/g, '\n\n'+separator+'\n\n');
@@ -198,13 +210,16 @@ define([
             $modal.trigger(ev);
         });
         $modal.find('#button_right').click(function () {
+            console.log('right');
             var ev = $.Event("keyup");
             ev.which = 39;
             $modal.trigger(ev);
         });
 
+        $pad.contents().find('.CodeMirror').keyup(function (e) { e.stopPropagation(); });
         $(ifrw).on('keyup', function (e) {
-            if (!Slide.shown) { return; }
+            //if (!Slide.shown) { return; }
+            if (e.ctrlKey) { return; }
             switch(e.which) {
                 case 33: // pageup
                 case 38: // up

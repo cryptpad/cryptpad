@@ -487,8 +487,14 @@ define([
                     var updateIcon = function () {
                         $collapse.removeClass('fa-caret-down').removeClass('fa-caret-up');
                         var isCollapsed = !$bar.find('.cke_toolbox_main').is(':visible');
-                        if (isCollapsed) { $collapse.addClass('fa-caret-down'); }
-                        else { $collapse.addClass('fa-caret-up'); }
+                        if (isCollapsed) {
+                            if (!initializing) { Cryptpad.feedback('HIDETOOLBAR_PAD'); }
+                            $collapse.addClass('fa-caret-down');
+                        }
+                        else {
+                            if (!initializing) { Cryptpad.feedback('SHOWTOOLBAR_PAD'); }
+                            $collapse.addClass('fa-caret-up');
+                        }
                     };
                     updateIcon();
                     $collapse.click(function () {
@@ -666,6 +672,19 @@ define([
                 onLocal();
                 return test;
             };
+
+            $bar.find('.cke_button').click(function () {
+                var e = this;
+                var classString = e.getAttribute('class');
+                var classes = classString.split(' ').filter(function (c) {
+                    return /cke_button__/.test(c);
+                });
+
+                var id = classes[0];
+                if (typeof(id) === 'string') {
+                    Cryptpad.feedback(id.toUpperCase());
+                }
+            });
         });
     };
 

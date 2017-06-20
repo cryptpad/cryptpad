@@ -4,10 +4,13 @@
 @poll-th-bg: #aaa;
 @poll-th-user-bg: #999;
 @poll-td-bg: #aaa;
+@poll-editing: #88b8cc;
 @poll-placeholder: #666;
 @poll-border-color: #555;
 @poll-cover-color: #000;
 @poll-fg: #000;
+@poll-option-yellow: #ff5;
+@poll-option-gray: #ccc;
 
 html, body {
     width: 100%;
@@ -195,6 +198,9 @@ form.realtime, div.realtime {
     table {
         border-collapse: collapse;
         width: ~"calc(100% - 1px)";
+        .editing {
+            background-color: @poll-editing;
+        }
         tr {
             td:first-child {
                 position:absolute;
@@ -247,7 +253,7 @@ form.realtime, div.realtime {
                         }
 
                         input {
-                            &[type="checkbox"] {
+                            &[type="number"] {
                                 &:not(.editable) {
                                     display: none;
 
@@ -255,31 +261,51 @@ form.realtime, div.realtime {
                                         display: block;
                                         font-weight: bold;
 
-                                        background-color: @cp-red;
                                         color: @poll-cover-color;
 
                                         &:after {
                                             height: 100%;
                                         }
 
-                                        &:after { content: "✖"; }
-
                                         display: block;
                                         &.yes {
                                             background-color: @cp-green;
-                                            &:after { content: "✔"; }
                                         }
 
                                         &.uncommitted {
                                             background: #ddd;
                                         }
 
-
                                         &.mine {
                                             display: none;
                                         }
                                     }
                                 }
+                            }
+                        }
+
+                        input[type="number"][value="0"] {
+                            ~ .cover {
+                                background-color: @cp-red;
+                                &:after { content: "✖"; }
+                            }
+                        }
+                        input[type="number"][value="1"] {
+                            ~ .cover {
+                                background-color: @cp-green;
+                                &:after { content: "✔"; }
+                            }
+                        }
+                        input[type="number"][value="2"] {
+                            ~ .cover {
+                                background-color: @poll-option-yellow;
+                                &:after { content: "~"; }
+                            }
+                        }
+                        input[type="number"][value="3"] {
+                            ~ .cover {
+                                background-color: @poll-option-gray;
+                                &:after { content: "?"; }
                             }
                         }
                     }
@@ -327,8 +353,12 @@ form.realtime, div.realtime {
         }
 
         tbody {
+            td:not(.editing) {
+                .text-cell {
+                    background: @poll-td-bg;
+                }
+            }
             .text-cell {
-                background: @poll-td-bg;
                 //border-radius: 20px 0 0 20px;
                 input[type="text"] {
                     width: ~"calc(100% - 50px)";

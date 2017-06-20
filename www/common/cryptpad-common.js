@@ -11,11 +11,13 @@ define([
     '/common/common-title.js',
     '/common/common-metadata.js',
     '/common/common-codemirror.js',
+    '/common/common-file.js',
 
     '/common/clipboard.js',
     '/common/pinpad.js',
     '/customize/application_config.js'
-], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Metadata, CodeMirror, Clipboard, Pinpad, AppConfig) {
+], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Metadata,
+            CodeMirror, Files, Clipboard, Pinpad, AppConfig) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -114,6 +116,9 @@ define([
     // CodeMirror
     common.createCodemirror = CodeMirror.create;
 
+    // Files
+    common.createFileManager = function (config) { return Files.create(common, config); };
+
     // History
     common.getHistory = function (config) { return History.create(common, config); };
 
@@ -124,6 +129,11 @@ define([
     var getProxy = common.getProxy = function () {
         if (store && store.getProxy()) {
             return store.getProxy().proxy;
+        }
+    };
+    common.getFO = function () {
+        if (store && store.getProxy()) {
+            return store.getProxy().fo;
         }
     };
     var getNetwork = common.getNetwork = function () {
@@ -144,7 +154,6 @@ define([
         }
 
         var href = '/common/feedback.html?' + action + '=' + (+new Date());
-        console.log('[feedback] %s', href);
         $.ajax({
             type: "HEAD",
             url: href,
@@ -300,7 +309,7 @@ define([
             cb(parsed);
         }
         if (!pad.title) {
-            pad.title = common.getDefaultname(parsed);
+            pad.title = common.getDefaultName(parsed);
         }
         return parsed.hashData;
     };
@@ -520,8 +529,8 @@ define([
         cb ("store.forgetPad is not a function");
     };
 
-    common.setPadTitle = function (name, cb) {
-        var href = window.location.href;
+    common.setPadTitle = function (name, padHref, cb) {
+        var href = padHref || window.location.href;
         var parsed = parsePadUrl(href);
         if (!parsed.hash) { return; }
         href = getRelativeHref(href);
@@ -581,25 +590,26 @@ define([
                 return pad;
             });
 
-            if (!contains && href) {
-                var data = makePad(href, name);
-                getStore().pushData(data, function (e, id) {
-                    if (e) {
-                        if (e === 'E_OVER_LIMIT') {
-                            common.alert(Messages.pinLimitNotPinned, null, true);
-                            return;
-                        }
-                        else { throw new Error("Cannot push this pad to CryptDrive", e); }
-                    }
-                    getStore().addPad(id, common.initialPath);
-                });
-            }
             if (updateWeaker.length > 0) {
                 updateWeaker.forEach(function (obj) {
                     // If we have a stronger url, and if all the occurences of the weaker were
                     // in the trash, add remove them from the trash and add the stronger in root
                     getStore().restoreHref(obj.n);
                 });
+            }
+            if (!contains && href) {
+                var data = makePad(href, name);
+                getStore().pushData(data, function (e, id) {
+                    if (e) {
+                        if (e === 'E_OVER_LIMIT') {
+                            common.alert(Messages.pinLimitNotPinned, null, true);
+                        }
+                        return void cb(e);
+                    }
+                    getStore().addPad(id, common.initialPath);
+                    cb(err, recent);
+                });
+                return;
             }
             cb(err, recent);
         });
@@ -621,22 +631,39 @@ define([
     /*
      * Buttons
      */
-    common.renamePad = function (title, callback) {
+    common.renamePad = function (title, href, callback) {
         if (title === null) { return; }
 
         if (title.trim() === "") {
-            var parsed = parsePadUrl(window.location.href);
+            var parsed = parsePadUrl(href || window.location.href);
             title = getDefaultName(parsed);
         }
 
-        common.setPadTitle(title, function (err) {
+        common.setPadTitle(title, href, function (err) {
             if (err) {
                 console.log("unable to set pad title");
-                console.log(err);
+                console.error(err);
                 return;
             }
             callback(null, title);
         });
+    };
+
+    common.getUserFilesList = function () {
+        var store = common.getStore();
+        var proxy = store.getProxy();
+        var fo = proxy.fo;
+        var hashes = [];
+        var list = fo.getFiles().filter(function (id) {
+            var href = fo.getFileData(id).href;
+            var parsed = parsePadUrl(href);
+            if ((parsed.type === 'file' || parsed.type === 'media')
+                 && hashes.indexOf(parsed.hash) === -1) {
+                hashes.push(parsed.hash);
+                return true;
+            }
+        });
+        return list;
     };
 
     var getUserChannelList = common.getUserChannelList = function () {
@@ -879,6 +906,21 @@ define([
         common.getPinnedUsage(todo);
     };
 
+    var getAppSuffix = function () {
+        var parts = window.location.pathname.split('/')
+            .filter(function (x) { return x; });
+
+        if (!parts[0]) { return ''; }
+        return '_' + parts[0].toUpperCase();
+    };
+
+    var prepareFeedback = common.prepareFeedback = function (key) {
+        if (typeof(key) !== 'string') { return $.noop; }
+        return function () {
+            feedback(key.toUpperCase() + getAppSuffix());
+        };
+    };
+
     common.createButton = function (type, rightside, data, callback) {
         var button;
         var size = "17px";
@@ -887,6 +929,8 @@ define([
                 button = $('<button>', {
                     title: Messages.exportButtonTitle,
                 }).append($('<span>', {'class':'fa fa-download', style: 'font:'+size+' FontAwesome'}));
+
+                button.click(prepareFeedback(type));
                 if (callback) {
                     button.click(callback);
                 }
@@ -896,10 +940,31 @@ define([
                     title: Messages.importButtonTitle,
                 }).append($('<span>', {'class':'fa fa-upload', style: 'font:'+size+' FontAwesome'}));
                 if (callback) {
-                    button.click(UI.importContent('text/plain', function (content, file) {
+                    button
+                    .click(prepareFeedback(type))
+                    .click(UI.importContent('text/plain', function (content, file) {
                         callback(content, file);
                     }));
                 }
+                break;
+            case 'upload':
+                button = $('<button>', {
+                    'class': 'btn btn-primary new',
+                    title: Messages.uploadButtonTitle,
+                }).append($('<span>', {'class':'fa fa-upload'})).append(' '+Messages.uploadButton);
+                if (!data.FM) { return; }
+                var $input = $('<input>', {
+                    'type': 'file',
+                    'style': 'display: none;'
+                }).on('change', function (e) {
+                    var file = e.target.files[0];
+                    var ev = {
+                        target: data.target
+                    };
+                    data.FM.handleFile(file, ev);
+                    if (callback) { callback(); }
+                });
+                button.click(function () { $input.click(); });
                 break;
             case 'template':
                 if (!AppConfig.enableTemplates) { return; }
@@ -907,7 +972,8 @@ define([
                     title: Messages.saveTemplateButton,
                 }).append($('<span>', {'class':'fa fa-bookmark', style: 'font:'+size+' FontAwesome'}));
                 if (data.rt && data.Crypt) {
-                    button.click(function () {
+                    button
+                    .click(function () {
                         var title = data.getTitle() || document.title;
                         var todo = function (val) {
                             if (typeof(val) !== "string") { return; }
@@ -965,7 +1031,9 @@ define([
                     }
                 });
                 if (callback) {
-                    button.click(function() {
+                    button
+                    .click(prepareFeedback(type))
+                    .click(function() {
                         var href = window.location.href;
                         var msg = isLoggedIn() ? Messages.forgetPrompt : Messages.fm_removePermanentlyDialog;
                         common.confirm(msg, function (yes) {
@@ -1021,7 +1089,9 @@ define([
                     style: 'font:'+size+' FontAwesome'
                 });
                 if (data.histConfig) {
-                    button.click(function () {
+                    button
+                    .click(prepareFeedback(type))
+                    .click(function () {
                         common.getHistory(data.histConfig);
                     });
                 }
@@ -1030,7 +1100,8 @@ define([
                 button = $('<button>', {
                     'class': "fa fa-question",
                     style: 'font:'+size+' FontAwesome'
-                });
+                })
+                .click(prepareFeedback(type));
         }
         if (rightside) {
             button.addClass('rightside-button');
@@ -1378,8 +1449,8 @@ define([
                 initialized = true;
 
                 updateLocalVersion();
-
                 f(void 0, env);
+                if (typeof(window.onhashchange) === 'function') { window.onhashchange(); }
             }
         };
 
@@ -1422,6 +1493,7 @@ define([
                           || parsedOld.channel !== parsedNew.channel
                           || parsedOld.mode !== parsedNew.mode
                           || parsedOld.key !== parsedNew.key)) {
+                        if (!parsedOld.channel) { oldHref = newHref; return; }
                         document.location.reload();
                         return;
                     }

@@ -520,7 +520,7 @@ define([
 
         // ADD
         var add = exp.add = function (id, path) {
-            if (!Cryptpad.isLoggedIn()) { return; }
+            if (!Cryptpad.isLoggedIn() && !config.testMode) { return; }
             var data = files[FILES_DATA][id];
             if (!data || typeof(data) !== "object") { return; }
             var newPath = path, parentEl;
@@ -559,7 +559,7 @@ define([
         exp.forget = function (href) {
             var id = getIdFromHref(href);
             if (!id) { return; }
-            if (!Cryptpad.isLoggedIn()) {
+            if (!Cryptpad.isLoggedIn() && !config.testMode) {
                 // delete permanently
                 exp.removePadAttribute(href);
                 spliceFileData(id);
@@ -588,7 +588,7 @@ define([
         };
         var checkDeletedFiles = function () {
             // Nothing in OLD_FILES_DATA for workgroups
-            if (workgroup || !Cryptpad.isLoggedIn()) { return; }
+            if (workgroup || (!Cryptpad.isLoggedIn() && !config.testMode)) { return; }
 
             var filesList = getFiles([ROOT, 'hrefArray', TRASH]);
             var fData = files[FILES_DATA];
@@ -617,7 +617,7 @@ define([
             var trashPaths = paths.filter(function(x) { return isPathIn(x, [TRASH]); });
             var allFilesPaths = paths.filter(function(x) { return isPathIn(x, [FILES_DATA]); });
 
-            if (!Cryptpad.isLoggedIn()) {
+            if (!Cryptpad.isLoggedIn() && !config.testMode) {
                 allFilesPaths.forEach(function (path) {
                     var el = find(path);
                     if (!el) { return; }
@@ -967,7 +967,7 @@ define([
                         toClean.push(id);
                         continue;
                     }
-                    if (Cryptpad.isLoggedIn() && rootFiles.indexOf(id) === -1) {
+                    if ((Cryptpad.isLoggedIn() || config.testMode) && rootFiles.indexOf(id) === -1) {
                         debug("An element in filesData was not in ROOT, TEMPLATE or TRASH.", id, el);
                         var newName = Cryptpad.createChannelId();
                         root[newName] = id;
