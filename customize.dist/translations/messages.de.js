@@ -5,8 +5,8 @@
       // the language dropdowns that are shown throughout Cryptpad's interface
       out._languageName = 'German';
 
-      out.main_title = "Cryptpad: Echtzeitzusammenarbeit, ohne Vorwissen";
-      out.main_slogan = "Einigkeit macht stark - Zusammenarbeit ist der Schlüssel"; // Der Slogan sollte evtl. besser englisch bleiben.
+      out.main_title = "Cryptpad: Echtzeitzusammenarbeit, ohne Preisgabe von Informationen";
+      out.main_slogan = "Einigkeit ist Stärke - Zusammenarbeit der Schlüssel"; // Der Slogan sollte evtl. besser englisch bleiben.
 
       out.type = {};
       out.type.pad = 'Pad';
@@ -44,16 +44,16 @@
 
       out.changeNamePrompt = 'Ändere deinen Namen (oder lasse dieses Feld leer um anonym mitzuarbeiten): ';
 
-      out.clickToEdit = "Zum bearbeiten klicken";
+      out.clickToEdit = "Zum Bearbeiten klicken";
 
-      out.forgetButtonTitle = 'Entferne dieses Dokumnt von deiner Startseitenliste';
+      out.forgetButtonTitle = 'Entferne dieses Dokument von deiner Startseitenliste';
       out.forgetPrompt = 'Mit dem Klick auf OK wird das Dokument aus deinem lokalen Speicher gelöscht. Fortfahren?';
 
       out.shareButton = 'Teilen';
-      out.shareSuccess = 'URL wurde in die Zwischenablage kopiert';
+      out.shareSuccess = 'Die URL wurde in die Zwischenablage kopiert';
 
       out.presentButtonTitle = "Präsentationsmodus starten";
-      out.presentSuccess = 'Hit ESC to exit presentation mode';
+      out.presentSuccess = 'Drücke ESC um den Präsentationsmodus zu beenden';
 
       out.backgroundButtonTitle = 'Die Hintergrundfarbe der Präsentation ändern';
       out.colorButtonTitle = 'Die Textfarbe im Präsentationsmodus ändern';
@@ -73,36 +73,43 @@
 
       out.tryIt = 'Probier\'s aus!';
 
-      out.okButton = 'OK (enter)';
-      out.cancelButton = 'Abbrechen (esc)';
+      out.okButton = 'OK (Enter)';
+      out.cancelButton = 'Abbrechen (ESC)';
 
       // Polls
 
-      out.poll_title = "Kenntnisfreier Datumsplaner";
-      out.poll_subtitle = "Kenntnisfreies, <em>echtzeit</em> planen";
+      out.poll_title = "Datumsplaner ohne Preisgabe von Infos";
+      out.poll_subtitle = "<em>Echtzeit</em>-planen ohne Preisgabe von Infos";
 
-      out.poll_p_save = "Deine Einstellungen werden sofort automatisch gesichtert.";
+      out.poll_p_save = "Deine Einstellungen werden sofort automatisch gesichert.";
       out.poll_p_encryption = "Alle Eingaben sind verschlüsselt, deshalb haben nur Leute im Besitz des Links Zugriff. Selbst der Server sieht nicht was du änderst.";
 
       out.wizardLog = "Klicke auf den Button links oben um zur Umfrage zurückzukehren.";
       out.wizardTitle = "Nutze den Assistenten um deine Umfrage zu erstellen.";
       out.wizardConfirm = "Bist du wirklich bereit die angegebenen Optionen bereits zu deiner Umfrage hinzuzufügen?";
 
-      out.poll_closeWizardButton = "Assistenten schließen";
-      out.poll_closeWizardButtonTitle = "Assistenten schließen";
+
+      out.poll_publish_button = "Veröffentlichen";
+      out.poll_admin_button = "Admin";
+      out.poll_create_user = "Neuen Benutzer hinzufügen";
+      out.poll_create_option = "Neue Option hinzufügen";
+      out.poll_commit = "Einchecken";
+
+      out.poll_closeWizardButton = "Assistent schließen";
+      out.poll_closeWizardButtonTitle = "Assistent schließen";
       out.poll_wizardComputeButton = "Optionen übernehmen";
       out.poll_wizardClearButton = "Tabelle leeren";
-      out.poll_wizardDescription = "Erstellt automatisch die Optionen indem eine beliebige Anzahl von Daten und Zeiten eingegeben wird.";
+      out.poll_wizardDescription = "Erstelle die Optionen automatisch, indem du eine beliebige Anzahl von Daten und Zeiten eingibst.";
       out.poll_wizardAddDateButton = "+ Daten";
       out.poll_wizardAddTimeButton = "+ Zeiten";
 
       out.poll_optionPlaceholder = "Option";
       out.poll_userPlaceholder = "Dein Name";
       out.poll_removeOption = "Bist du sicher, dass du diese Option entfernen möchtest?";
-      out.poll_removeUser = "Bist du sicher, dass du diese Nutzer*in entfernen möchtest?";
+      out.poll_removeUser = "Bist du sicher, dass du diese(n) Nutzer*in entfernen möchtest?";
 
       out.poll_titleHint = "Titel";
-      out.poll_descriptionHint = "Beschreibung";
+      out.poll_descriptionHint = "Beschreibe deine Abstimmung und publiziere sie mit dem 'Veröffentlichen'-Knopf wenn du fertig bis. Jeder mit dem Link kann die Beschreibung ändern.";
 
       // index.html
 
@@ -112,10 +119,10 @@
 
       out.main_about_p2 = 'Für Fragen und Kommentare kannst du uns <a href="https://twitter.com/cryptpad">tweeten</a>, ein Ticket <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">auf Github öffnen</a>, hi auf irc sagen (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), oder <a href="mailto:research@xwiki.com">eine Mail zukommen lassen</a>.';
 
-      out.button_newpad = 'NEUES WYSIWYG-PAD ERSTELLEN';
-      out.button_newcode = 'NEUES CODE-PAD ERSTELLEN';
-      out.button_newpoll = 'NEUE ABSTIMMUNG ERSTELLEN';
-      out.button_newslide = 'NEUE PRÄSENTATION ERSTELLEN';
+      out.button_newpad = 'Neues WYSIWYG-Pad erstellen';
+      out.button_newcode = 'Neues Code-Pad erstellen';
+      out.button_newpoll = 'Neue Abstimmung erstellen';
+      out.button_newslide = 'Neue Präsentation erstellen';
 
       // privacy.html
 
