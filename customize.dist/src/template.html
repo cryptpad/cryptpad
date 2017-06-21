@@ -5,21 +5,12 @@
     <title data-localization="main_title">Cryptpad: Zero Knowledge, Collaborative Real Time Editing</title>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <link rel="stylesheet" type="text/css" href="/customize/main.css" />
-    <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
     <link rel="icon" type="image/png" href="/customize/main-favicon.png" id="favicon"/>
-    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
-    {{script}}
+    <script async data-bootload="/customize/main2.js" data-main="/common/boot.js?ver=1.0" src="/bower_components/requirejs/require.js?ver=2.1.15"></script>
 </head>
 <body class="html">
-    {{topbar}}
-
-    {{noscript}}
-
-    <div id="mainBlock" class="hidden">
-    {{main}}
-    </div>
-
-    {{footer}}
-</body>
+    <noscript>
+        <p><strong>OOPS</strong> In order to do encryption in your browser, Javascript is really <strong>really</strong> required.</p>
+        <p><strong>OUPS</strong> Afin de pouvoir réaliser le chiffrement dans votre navigateur, Javascript est <strong>vraiment</strong> nécessaire.</p>
+    </noscript>
 </html>
