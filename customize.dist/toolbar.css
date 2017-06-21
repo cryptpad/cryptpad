@@ -27,7 +27,7 @@
   display: block;
 }
 .dropdown-bar .dropdown-bar-content a {
-  color: black !important;
+  color: black;
   padding: 5px 16px;
   text-decoration: none;
   display: block;
@@ -41,11 +41,11 @@
 }
 .dropdown-bar .dropdown-bar-content a:hover {
   background-color: #f1f1f1;
-  color: black !important;
+  color: black;
 }
 .dropdown-bar .dropdown-bar-content a.active {
   background-color: #e8e8e8;
-  color: black !important;
+  color: black;
 }
 .dropdown-bar .dropdown-bar-content hr {
   margin: 5px 0px;
@@ -108,34 +108,50 @@
   color: #000;
   /*
     &.pad {
-        background-color: @toolbar-pad-bg;
-        color: @toolbar-pad-color;
+        @bgcolor: @toolbar-pad-bg;
+        @color: @toolbar-pad-color;
+        background-color: @bgcolor;
+        color: @color;
     }
     &.code {
-        background-color: @toolbar-code-bg;
-        color: @toolbar-code-color;
+        @bgcolor: @toolbar-code-bg;
+        @color: @toolbar-code-color;
+        background-color: @bgcolor;
+        color: @color;
+        .cryptpad-toolbar-leftside, .cryptpad-toolbar-rightside {
+            lighten($bgcolor, 15%);
+        }
     }
     &.slide {
-        background-color: @toolbar-slide-bg;
-        color: @toolbar-slide-color;
+        @bgcolor: @toolbar-slide-bg;
+        @color: @toolbar-slide-color;
+        background-color: @toolbar-default-bg 150px);
+        border-bottom: 2px solid @color;
     }
     &.poll {
-        background-color: @toolbar-poll-bg;
-        color: @toolbar-poll-color;
+        @bgcolor: @toolbar-poll-bg;
+        @color: @toolbar-poll-color;
+        background: linear-gradient(20deg, @color 150px, @toolbar-default-bg 150px);
+        border-bottom: 2px solid @color;
     }
     &.whiteboard {
-        background-color: @toolbar-whiteboard-bg;
-        color: @toolbar-whiteboard-color;
+        @bgcolor: @toolbar-whiteboard-bg;
+        @color: @toolbar-whiteboard-color;
+        background: linear-gradient(20deg, @color 150px, @toolbar-default-bg 150px);
+        border-bottom: 2px solid @color;
     }
     &.drive {
-        background-color: @toolbar-drive-bg;
-        color: @toolbar-drive-color;
+        @bgcolor: @toolbar-drive-bg;
+        @color: @toolbar-drive-color;
+        background: linear-gradient(20deg, @color 150px, @toolbar-default-bg 150px);
+        border-bottom: 2px solid @color;
     }
     &.file {
-        background-color: @toolbar-file-bg;
-        color: @toolbar-file-color;
-    }
-*/
+        @bgcolor: @toolbar-file-bg;
+        @color: @toolbar-file-color;
+        background: linear-gradient(20deg, @color 150px, @toolbar-default-bg 150px);
+        border-bottom: 2px solid @color;
+    }*/
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -147,32 +163,473 @@
   z-index: 9001;
 }
 .cryptpad-toolbar.pad {
-  background: linear-gradient(20deg, #1c4fa0 150px, #ddd 150px);
-  border-bottom: 2px solid #1c4fa0;
+  background-color: #1c4fa0;
+  color: #fff;
+}
+.cryptpad-toolbar.pad .cryptpad-toolbar-leftside,
+.cryptpad-toolbar.pad .cryptpad-toolbar-rightside,
+.cryptpad-toolbar.pad .drawer-content {
+  background-color: #2260c3;
+}
+.cryptpad-toolbar.pad .cryptpad-toolbar-leftside button:hover,
+.cryptpad-toolbar.pad .cryptpad-toolbar-rightside button:hover,
+.cryptpad-toolbar.pad .drawer-content button:hover {
+  background-color: #1c4fa0;
+}
+.cryptpad-toolbar.pad .hoverable:hover .editable {
+  cursor: text;
+  border: 1px solid #2e71da;
+  background: #143a75;
+  color: #fff;
+}
+.cryptpad-toolbar.pad .hoverable:hover .pencilIcon {
+  border: 1px solid #2e71da;
+  background: #143a75;
+  color: #fff;
+}
+.cryptpad-toolbar.pad .hoverable:hover .pencilIcon:hover {
+  background: #18448a;
+}
+.cryptpad-toolbar.pad .saveIcon {
+  border: 1px solid #2e71da;
+  background: #143a75;
+  color: #fff;
+}
+.cryptpad-toolbar.pad .saveIcon:hover {
+  background: #18448a;
+}
+.cryptpad-toolbar.pad input {
+  border: 1px solid #2e71da;
+  background: #143a75;
+  color: #fff;
+}
+.cryptpad-toolbar.pad .dropdown-bar-content {
+  line-height: 14px;
+  background: #18448a;
+  border: 1px solid #fff;
+  color: #fff;
+}
+.cryptpad-toolbar.pad .dropdown-bar-content a {
+  color: #fff;
+}
+.cryptpad-toolbar.pad .dropdown-bar-content a.active {
+  background-color: #143a75;
+  color: #fff;
+}
+.cryptpad-toolbar.pad .dropdown-bar-content a:hover {
+  background-color: #1c4fa0;
+  color: #fff;
+}
+.cryptpad-toolbar.pad .dropdown-bar-content hr {
+  background-color: #112f5f;
+}
+.cryptpad-toolbar.pad .dropdown-bar-content p h2 {
+  background-color: #143a75;
+}
+.cryptpad-toolbar.pad .dropdown-bar-content p .accountData {
+  background-color: #1c4fa0;
 }
 .cryptpad-toolbar.code {
-  background: linear-gradient(20deg, #ffae00 150px, #ddd 150px);
-  border-bottom: 2px solid #ffae00;
+  background-color: #ffae00;
+  color: #000;
+}
+.cryptpad-toolbar.code .cryptpad-toolbar-leftside,
+.cryptpad-toolbar.code .cryptpad-toolbar-rightside,
+.cryptpad-toolbar.code .drawer-content {
+  background-color: #ffbb29;
+}
+.cryptpad-toolbar.code .cryptpad-toolbar-leftside button:hover,
+.cryptpad-toolbar.code .cryptpad-toolbar-rightside button:hover,
+.cryptpad-toolbar.code .drawer-content button:hover {
+  background-color: #ffae00;
+}
+.cryptpad-toolbar.code .hoverable:hover .editable {
+  cursor: text;
+  border: 1px solid #ffc64d;
+  background: #cc8b00;
+  color: #000;
+}
+.cryptpad-toolbar.code .hoverable:hover .pencilIcon {
+  border: 1px solid #ffc64d;
+  background: #cc8b00;
+  color: #000;
+}
+.cryptpad-toolbar.code .hoverable:hover .pencilIcon:hover {
+  background: #e69d00;
+}
+.cryptpad-toolbar.code .saveIcon {
+  border: 1px solid #ffc64d;
+  background: #cc8b00;
+  color: #000;
+}
+.cryptpad-toolbar.code .saveIcon:hover {
+  background: #e69d00;
+}
+.cryptpad-toolbar.code input {
+  border: 1px solid #ffc64d;
+  background: #cc8b00;
+  color: #000;
+}
+.cryptpad-toolbar.code .dropdown-bar-content {
+  line-height: 14px;
+  background: #e69d00;
+  border: 1px solid #000;
+  color: #000;
+}
+.cryptpad-toolbar.code .dropdown-bar-content a {
+  color: #000;
+}
+.cryptpad-toolbar.code .dropdown-bar-content a.active {
+  background-color: #cc8b00;
+  color: #000;
+}
+.cryptpad-toolbar.code .dropdown-bar-content a:hover {
+  background-color: #ffae00;
+  color: #000;
+}
+.cryptpad-toolbar.code .dropdown-bar-content hr {
+  background-color: #b37a00;
+}
+.cryptpad-toolbar.code .dropdown-bar-content p h2 {
+  background-color: #cc8b00;
+}
+.cryptpad-toolbar.code .dropdown-bar-content p .accountData {
+  background-color: #ffae00;
 }
 .cryptpad-toolbar.slide {
-  background: linear-gradient(20deg, #e57614 150px, #ddd 150px);
-  border-bottom: 2px solid #e57614;
+  background-color: #e57614;
+  color: #fff;
+}
+.cryptpad-toolbar.slide .cryptpad-toolbar-leftside,
+.cryptpad-toolbar.slide .cryptpad-toolbar-rightside,
+.cryptpad-toolbar.slide .drawer-content {
+  background-color: #ed8b34;
+}
+.cryptpad-toolbar.slide .cryptpad-toolbar-leftside button:hover,
+.cryptpad-toolbar.slide .cryptpad-toolbar-rightside button:hover,
+.cryptpad-toolbar.slide .drawer-content button:hover {
+  background-color: #e57614;
+}
+.cryptpad-toolbar.slide .hoverable:hover .editable {
+  cursor: text;
+  border: 1px solid #f09e55;
+  background: #b65e10;
+  color: #fff;
+}
+.cryptpad-toolbar.slide .hoverable:hover .pencilIcon {
+  border: 1px solid #f09e55;
+  background: #b65e10;
+  color: #fff;
+}
+.cryptpad-toolbar.slide .hoverable:hover .pencilIcon:hover {
+  background: #ce6a12;
+}
+.cryptpad-toolbar.slide .saveIcon {
+  border: 1px solid #f09e55;
+  background: #b65e10;
+  color: #fff;
+}
+.cryptpad-toolbar.slide .saveIcon:hover {
+  background: #ce6a12;
+}
+.cryptpad-toolbar.slide input {
+  border: 1px solid #f09e55;
+  background: #b65e10;
+  color: #fff;
+}
+.cryptpad-toolbar.slide .dropdown-bar-content {
+  line-height: 14px;
+  background: #ce6a12;
+  border: 1px solid #fff;
+  color: #fff;
+}
+.cryptpad-toolbar.slide .dropdown-bar-content a {
+  color: #fff;
+}
+.cryptpad-toolbar.slide .dropdown-bar-content a.active {
+  background-color: #b65e10;
+  color: #fff;
+}
+.cryptpad-toolbar.slide .dropdown-bar-content a:hover {
+  background-color: #e57614;
+  color: #fff;
+}
+.cryptpad-toolbar.slide .dropdown-bar-content hr {
+  background-color: #9f520e;
+}
+.cryptpad-toolbar.slide .dropdown-bar-content p h2 {
+  background-color: #b65e10;
+}
+.cryptpad-toolbar.slide .dropdown-bar-content p .accountData {
+  background-color: #e57614;
 }
 .cryptpad-toolbar.poll {
-  background: linear-gradient(20deg, #006304 150px, #ddd 150px);
-  border-bottom: 2px solid #006304;
+  background-color: #006304;
+  color: #fff;
+}
+.cryptpad-toolbar.poll .cryptpad-toolbar-leftside,
+.cryptpad-toolbar.poll .cryptpad-toolbar-rightside,
+.cryptpad-toolbar.poll .drawer-content {
+  background-color: #008c06;
+}
+.cryptpad-toolbar.poll .cryptpad-toolbar-leftside button:hover,
+.cryptpad-toolbar.poll .cryptpad-toolbar-rightside button:hover,
+.cryptpad-toolbar.poll .drawer-content button:hover {
+  background-color: #006304;
+}
+.cryptpad-toolbar.poll .hoverable:hover .editable {
+  cursor: text;
+  border: 1px solid #00b007;
+  background: #003002;
+  color: #fff;
+}
+.cryptpad-toolbar.poll .hoverable:hover .pencilIcon {
+  border: 1px solid #00b007;
+  background: #003002;
+  color: #fff;
+}
+.cryptpad-toolbar.poll .hoverable:hover .pencilIcon:hover {
+  background: #004a03;
+}
+.cryptpad-toolbar.poll .saveIcon {
+  border: 1px solid #00b007;
+  background: #003002;
+  color: #fff;
+}
+.cryptpad-toolbar.poll .saveIcon:hover {
+  background: #004a03;
+}
+.cryptpad-toolbar.poll input {
+  border: 1px solid #00b007;
+  background: #003002;
+  color: #fff;
+}
+.cryptpad-toolbar.poll .dropdown-bar-content {
+  line-height: 14px;
+  background: #004a03;
+  border: 1px solid #fff;
+  color: #fff;
+}
+.cryptpad-toolbar.poll .dropdown-bar-content a {
+  color: #fff;
+}
+.cryptpad-toolbar.poll .dropdown-bar-content a.active {
+  background-color: #003002;
+  color: #fff;
+}
+.cryptpad-toolbar.poll .dropdown-bar-content a:hover {
+  background-color: #006304;
+  color: #fff;
+}
+.cryptpad-toolbar.poll .dropdown-bar-content hr {
+  background-color: #001701;
+}
+.cryptpad-toolbar.poll .dropdown-bar-content p h2 {
+  background-color: #003002;
+}
+.cryptpad-toolbar.poll .dropdown-bar-content p .accountData {
+  background-color: #006304;
 }
 .cryptpad-toolbar.whiteboard {
-  background: linear-gradient(20deg, #800080 150px, #ddd 150px);
-  border-bottom: 2px solid #800080;
+  background-color: #800080;
+  color: #fff;
+}
+.cryptpad-toolbar.whiteboard .cryptpad-toolbar-leftside,
+.cryptpad-toolbar.whiteboard .cryptpad-toolbar-rightside,
+.cryptpad-toolbar.whiteboard .drawer-content {
+  background-color: #a900a9;
+}
+.cryptpad-toolbar.whiteboard .cryptpad-toolbar-leftside button:hover,
+.cryptpad-toolbar.whiteboard .cryptpad-toolbar-rightside button:hover,
+.cryptpad-toolbar.whiteboard .drawer-content button:hover {
+  background-color: #800080;
+}
+.cryptpad-toolbar.whiteboard .hoverable:hover .editable {
+  cursor: text;
+  border: 1px solid #cd00cc;
+  background: #4d004d;
+  color: #fff;
+}
+.cryptpad-toolbar.whiteboard .hoverable:hover .pencilIcon {
+  border: 1px solid #cd00cc;
+  background: #4d004d;
+  color: #fff;
+}
+.cryptpad-toolbar.whiteboard .hoverable:hover .pencilIcon:hover {
+  background: #670066;
+}
+.cryptpad-toolbar.whiteboard .saveIcon {
+  border: 1px solid #cd00cc;
+  background: #4d004d;
+  color: #fff;
+}
+.cryptpad-toolbar.whiteboard .saveIcon:hover {
+  background: #670066;
+}
+.cryptpad-toolbar.whiteboard input {
+  border: 1px solid #cd00cc;
+  background: #4d004d;
+  color: #fff;
+}
+.cryptpad-toolbar.whiteboard .dropdown-bar-content {
+  line-height: 14px;
+  background: #670066;
+  border: 1px solid #fff;
+  color: #fff;
+}
+.cryptpad-toolbar.whiteboard .dropdown-bar-content a {
+  color: #fff;
+}
+.cryptpad-toolbar.whiteboard .dropdown-bar-content a.active {
+  background-color: #4d004d;
+  color: #fff;
+}
+.cryptpad-toolbar.whiteboard .dropdown-bar-content a:hover {
+  background-color: #800080;
+  color: #fff;
+}
+.cryptpad-toolbar.whiteboard .dropdown-bar-content hr {
+  background-color: #340033;
+}
+.cryptpad-toolbar.whiteboard .dropdown-bar-content p h2 {
+  background-color: #4d004d;
+}
+.cryptpad-toolbar.whiteboard .dropdown-bar-content p .accountData {
+  background-color: #800080;
 }
 .cryptpad-toolbar.drive {
-  background: linear-gradient(20deg, #0087ff 150px, #ddd 150px);
-  border-bottom: 2px solid #0087ff;
+  background-color: #0087ff;
+  color: #fff;
+}
+.cryptpad-toolbar.drive .cryptpad-toolbar-leftside,
+.cryptpad-toolbar.drive .cryptpad-toolbar-rightside,
+.cryptpad-toolbar.drive .drawer-content {
+  background-color: #299aff;
+}
+.cryptpad-toolbar.drive .cryptpad-toolbar-leftside button:hover,
+.cryptpad-toolbar.drive .cryptpad-toolbar-rightside button:hover,
+.cryptpad-toolbar.drive .drawer-content button:hover {
+  background-color: #0087ff;
+}
+.cryptpad-toolbar.drive .hoverable:hover .editable {
+  cursor: text;
+  border: 1px solid #4dabff;
+  background: #006ccc;
+  color: #fff;
+}
+.cryptpad-toolbar.drive .hoverable:hover .pencilIcon {
+  border: 1px solid #4dabff;
+  background: #006ccc;
+  color: #fff;
+}
+.cryptpad-toolbar.drive .hoverable:hover .pencilIcon:hover {
+  background: #0079e6;
+}
+.cryptpad-toolbar.drive .saveIcon {
+  border: 1px solid #4dabff;
+  background: #006ccc;
+  color: #fff;
+}
+.cryptpad-toolbar.drive .saveIcon:hover {
+  background: #0079e6;
+}
+.cryptpad-toolbar.drive input {
+  border: 1px solid #4dabff;
+  background: #006ccc;
+  color: #fff;
+}
+.cryptpad-toolbar.drive .dropdown-bar-content {
+  line-height: 14px;
+  background: #0079e6;
+  border: 1px solid #fff;
+  color: #fff;
+}
+.cryptpad-toolbar.drive .dropdown-bar-content a {
+  color: #fff;
+}
+.cryptpad-toolbar.drive .dropdown-bar-content a.active {
+  background-color: #006ccc;
+  color: #fff;
+}
+.cryptpad-toolbar.drive .dropdown-bar-content a:hover {
+  background-color: #0087ff;
+  color: #fff;
+}
+.cryptpad-toolbar.drive .dropdown-bar-content hr {
+  background-color: #005eb3;
+}
+.cryptpad-toolbar.drive .dropdown-bar-content p h2 {
+  background-color: #006ccc;
+}
+.cryptpad-toolbar.drive .dropdown-bar-content p .accountData {
+  background-color: #0087ff;
 }
 .cryptpad-toolbar.file {
-  background: linear-gradient(20deg, #cd2532 150px, #ddd 150px);
-  border-bottom: 2px solid #cd2532;
+  background-color: #cd2532;
+  color: #fff;
+}
+.cryptpad-toolbar.file .cryptpad-toolbar-leftside,
+.cryptpad-toolbar.file .cryptpad-toolbar-rightside,
+.cryptpad-toolbar.file .drawer-content {
+  background-color: #dc3f4b;
+}
+.cryptpad-toolbar.file .cryptpad-toolbar-leftside button:hover,
+.cryptpad-toolbar.file .cryptpad-toolbar-rightside button:hover,
+.cryptpad-toolbar.file .drawer-content button:hover {
+  background-color: #cd2532;
+}
+.cryptpad-toolbar.file .hoverable:hover .editable {
+  cursor: text;
+  border: 1px solid #e25d67;
+  background: #a21d27;
+  color: #fff;
+}
+.cryptpad-toolbar.file .hoverable:hover .pencilIcon {
+  border: 1px solid #e25d67;
+  background: #a21d27;
+  color: #fff;
+}
+.cryptpad-toolbar.file .hoverable:hover .pencilIcon:hover {
+  background: #b7212d;
+}
+.cryptpad-toolbar.file .saveIcon {
+  border: 1px solid #e25d67;
+  background: #a21d27;
+  color: #fff;
+}
+.cryptpad-toolbar.file .saveIcon:hover {
+  background: #b7212d;
+}
+.cryptpad-toolbar.file input {
+  border: 1px solid #e25d67;
+  background: #a21d27;
+  color: #fff;
+}
+.cryptpad-toolbar.file .dropdown-bar-content {
+  line-height: 14px;
+  background: #b7212d;
+  border: 1px solid #fff;
+  color: #fff;
+}
+.cryptpad-toolbar.file .dropdown-bar-content a {
+  color: #fff;
+}
+.cryptpad-toolbar.file .dropdown-bar-content a.active {
+  background-color: #a21d27;
+  color: #fff;
+}
+.cryptpad-toolbar.file .dropdown-bar-content a:hover {
+  background-color: #cd2532;
+  color: #fff;
+}
+.cryptpad-toolbar.file .dropdown-bar-content hr {
+  background-color: #8c1922;
+}
+.cryptpad-toolbar.file .dropdown-bar-content p h2 {
+  background-color: #a21d27;
+}
+.cryptpad-toolbar.file .dropdown-bar-content p .accountData {
+  background-color: #cd2532;
 }
 .cryptpad-toolbar .fa {
   font: normal normal normal 14px/1 FontAwesome;
@@ -189,13 +646,30 @@
   height: 100%;
   border-radius: 0;
   margin: 0;
+  background: transparent;
+}
+.cryptpad-toolbar .separator {
+  content: '';
+  display: inline-block;
+  background: #888;
+  margin: 7px 4px;
+  height: 18px;
+  width: 1px;
+  vertical-align: top;
+}
+.cryptpad-toolbar .separator:last-child {
+  display: none;
 }
 .cryptpad-toolbar button {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   border: 1px solid transparent;
   border-radius: .25rem;
-  color: #000;
-  background-color: #fff;
-  border-color: #ccc;
+  color: inherit;
   font: 12px Ubuntu, Arial, sans-serif;
 }
 .cryptpad-toolbar button#shareButton,
@@ -242,12 +716,16 @@
   display: none;
 }
 .cryptpad-toolbar button * {
-  color: #000;
+  color: inherit;
   font: 12px Ubuntu, Arial, sans-serif;
 }
-.cryptpad-toolbar button:hover {
-  color: #292b2c;
-  background-color: #e6e6e6;
+.cryptpad-toolbar .cryptpad-toolbar-rightside button,
+.cryptpad-toolbar .cryptpad-toolbar-leftside button {
+  background: transparent;
+}
+.cryptpad-toolbar .cryptpad-toolbar-rightside button:hover,
+.cryptpad-toolbar .cryptpad-toolbar-leftside button:hover {
+  background-color: rgba(50, 50, 50, 0.3);
   border-color: #adadad;
 }
 .cryptpad-toolbar button.upgrade {
@@ -271,74 +749,90 @@
   margin: auto;
   font-size: 20px;
 }
+.cryptpad-toolbar .cryptpad-state {
+  line-height: 64px;
+}
 .cryptpad-toolbar .cryptpad-lag {
-  height: 20px;
-  width: 23px;
-  background: transparent;
   display: inline-block;
-  padding: 3px;
-  margin: 3px;
   vertical-align: top;
   box-sizing: content-box;
   text-align: center;
+  line-height: 64px;
 }
-.cryptpad-toolbar .cryptpad-lag span {
+.cryptpad-toolbar .cryptpad-lag .disconnected {
+  display: none;
+  color: inherit;
+  width: 28px;
+  margin: 8px;
+  font-size: 28px;
+  text-align: center;
+  vertical-align: middle;
+}
+.cryptpad-toolbar .cryptpad-lag .bars {
+  margin: 8px;
+  height: 26px;
+  line-height: 26px;
   display: inline-block;
-  width: 4px;
+}
+.cryptpad-toolbar .cryptpad-lag .bars span {
+  display: inline-block;
+  width: 6px;
   margin: 0;
   margin-right: 1px;
-  background: black;
+  background: white;
   vertical-align: bottom;
   box-sizing: border-box;
   border: 1px solid black;
+  visibility: hidden;
   transition: background 1s, border 1s;
 }
-.cryptpad-toolbar .cryptpad-lag span:last-child {
+.cryptpad-toolbar .cryptpad-lag .bars span:last-child {
   margin-right: 0;
 }
-.cryptpad-toolbar .cryptpad-lag span.bar1 {
-  height: 5px;
+.cryptpad-toolbar .cryptpad-lag .bars span.bar1 {
+  height: 6px;
 }
-.cryptpad-toolbar .cryptpad-lag span.bar2 {
-  height: 10px;
+.cryptpad-toolbar .cryptpad-lag .bars span.bar2 {
+  height: 12px;
 }
-.cryptpad-toolbar .cryptpad-lag span.bar3 {
-  height: 15px;
+.cryptpad-toolbar .cryptpad-lag .bars span.bar3 {
+  height: 18px;
 }
-.cryptpad-toolbar .cryptpad-lag span.bar4 {
-  height: 20px;
+.cryptpad-toolbar .cryptpad-lag .bars span.bar4 {
+  height: 24px;
 }
-.cryptpad-toolbar .cryptpad-lag.lag0 span {
+.cryptpad-toolbar .cryptpad-lag.dc .disconnected {
+  display: inline;
+}
+.cryptpad-toolbar .cryptpad-lag.dc .bars {
+  display: none;
+}
+.cryptpad-toolbar .cryptpad-lag.lag0 span span {
   background: transparent;
-  border-color: red;
 }
 .cryptpad-toolbar .cryptpad-lag.lag1 .bar2,
 .cryptpad-toolbar .cryptpad-lag.lag1 .bar3,
 .cryptpad-toolbar .cryptpad-lag.lag1 .bar4 {
   background: transparent;
 }
-.cryptpad-toolbar .cryptpad-lag.lag1 span {
-  background-color: orange;
-  border-color: orange;
+.cryptpad-toolbar .cryptpad-lag.lag1 span span {
+  visibility: visible;
 }
 .cryptpad-toolbar .cryptpad-lag.lag2 .bar3,
 .cryptpad-toolbar .cryptpad-lag.lag2 .bar4 {
   background: transparent;
 }
-.cryptpad-toolbar .cryptpad-lag.lag2 span {
-  background-color: orange;
-  border-color: orange;
+.cryptpad-toolbar .cryptpad-lag.lag2 span span {
+  visibility: visible;
 }
 .cryptpad-toolbar .cryptpad-lag.lag3 .bar4 {
   background: transparent;
 }
-.cryptpad-toolbar .cryptpad-lag.lag3 span {
-  background-color: #5cb85c;
-  border-color: #5cb85c;
+.cryptpad-toolbar .cryptpad-lag.lag3 span span {
+  visibility: visible;
 }
-.cryptpad-toolbar .cryptpad-lag.lag4 span {
-  background-color: #5cb85c;
-  border-color: #5cb85c;
+.cryptpad-toolbar .cryptpad-lag.lag4 span span {
+  visibility: visible;
 }
 .cryptpad-toolbar div {
   white-space: normal;
@@ -357,14 +851,6 @@
   padding-left: 5px;
   margin: 3px 2px;
   box-sizing: border-box;
-}
-.cryptpad-toolbar .dropdown-bar-content {
-  margin-top: -3px;
-  margin-right: 2px;
-}
-.cryptpad-toolbar .cryptpad-state {
-  line-height: 32px;
-  /* equivalent to 26px + 2*2px margin used for buttons */
 }
 .cryptpad-toolbar .rightside-button {
   float: right;
@@ -454,126 +940,191 @@
     display: none;
   }
 }
-@media screen and (max-width: 600px) {
-  .cryptpad-toolbar:not(.notitle) .cryptpad-toolbar-top {
-    height: 67px;
-  }
-}
-@media screen and (max-width: 600px) {
-  .cryptpad-toolbar:not(.notitle) .cryptpad-toolbar-top .cryptpad-link,
-  .cryptpad-toolbar:not(.notitle) .cryptpad-toolbar-top .cryptpad-user {
-    top: 35px;
-  }
-}
-@media screen and (min-width: 601px) {
-  .cryptpad-toolbar:not(.notitle) .cryptpad-toolbar-top .cryptpad-link,
-  .cryptpad-toolbar:not(.notitle) .cryptpad-toolbar-top .cryptpad-user {
-    top: 0px;
-  }
+.cryptpad-toolbar:not(.notitle) {
+  /*.cryptpad-toolbar-top {
+        @media screen and (max-width: @media-medium-screen) {
+            height: 67px;
+        }
+        .cryptpad-link, .cryptpad-user {
+            @media screen and (max-width: @media-medium-screen) {
+                top: 35px;
+            }
+            @media screen and (min-width: (@media-medium-screen + 1px)) {
+                top: 0px;
+            }
+        }
+    }*/
 }
 .cryptpad-toolbar-top {
-  display: block;
-  text-align: center;
-  height: 32px;
+  display: flex;
+  flex-flow: row;
+  height: 64px;
   position: relative;
+}
+.cryptpad-toolbar-top .cryptpad-title {
+  order: 3;
+  height: 100%;
+  display: inline-block;
+  line-height: 64px;
+  flex: 1;
+  margin-left: 20px;
 }
 .cryptpad-toolbar-top .cryptpad-title .title,
 .cryptpad-toolbar-top .cryptpad-title .pencilIcon,
 .cryptpad-toolbar-top .cryptpad-title .saveIcon {
-  font-size: 1.5em;
+  font-size: 25px;
   vertical-align: middle;
-  line-height: 32px;
+  line-height: 25px;
 }
 .cryptpad-toolbar-top .cryptpad-title .pencilIcon {
-  margin-left: 11px;
-}
-.cryptpad-toolbar-top .cryptpad-title .pencilIcon:hover {
-  color: #999;
-  margin-left: 0px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 0px 2px 2px 0px;
+  padding: 5px;
+  border-collapse: collapse;
 }
 .cryptpad-toolbar-top .cryptpad-title .pencilIcon span {
+  font-size: 25px;
   cursor: pointer;
 }
 .cryptpad-toolbar-top .cryptpad-title .saveIcon {
   cursor: pointer;
-  border: 1px solid black;
   border-radius: 0px 2px 2px 0px;
-  background: white;
   padding: 5px;
-  display: inline;
-  margin-left: -1px;
   border-collapse: collapse;
-}
-.cryptpad-toolbar-top .cryptpad-title .saveIcon:hover {
-  color: #999;
 }
 .cryptpad-toolbar-top .cryptpad-title .saveIcon span {
+  font-size: 25px;
   cursor: pointer;
 }
-.cryptpad-toolbar-top .cryptpad-title:not(input):hover .editable {
-  border: 1px solid #888;
+.cryptpad-toolbar-top .cryptpad-title .editable {
+  border: 1px solid transparent;
   border-radius: 2px 0px 0px 2px;
-  background: white;
   padding: 5px;
-  border-collapse: collapse;
-}
-.cryptpad-toolbar-top .cryptpad-title:not(input):hover .pencilIcon {
-  cursor: pointer;
-  border: 1px solid #888;
-  border-radius: 0px 2px 2px 0px;
-  background: white;
-  padding: 5px;
-  display: inline;
-  margin-left: -1px;
   border-collapse: collapse;
 }
 .cryptpad-toolbar-top .cryptpad-title input {
   font-size: 1.5em;
   vertical-align: middle;
   box-sizing: border-box;
-  border: 1px solid black;
-  background: #fff;
   cursor: auto;
   width: 300px;
+  font-size: 25px;
   padding: 5px 5px;
+  height: 40px;
+}
+.cryptpad-toolbar-top .cryptpad-link,
+.cryptpad-toolbar-top .cryptpad-new {
+  font-size: 48px;
+  line-height: 64px;
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  box-sizing: border-box;
+  display: inline-block;
+  color: white;
+  transition: all 0.15s;
+}
+.cryptpad-toolbar-top .cryptpad-new {
+  background-color: rgba(0, 0, 0, 0.2);
+  order: 2;
+  text-align: center;
+}
+.cryptpad-toolbar-top .cryptpad-new:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.cryptpad-toolbar-top .cryptpad-new > button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px !important;
+  font-size: 1em;
+  color: inherit;
+  height: auto;
+  padding: 0px;
+  margin: 0;
+}
+.cryptpad-toolbar-top .cryptpad-new > button::before {
+  padding-top: 4px;
+}
+.cryptpad-toolbar-top .cryptpad-new > button:hover {
+  background-color: initial;
+  border-color: transparent;
+}
+.cryptpad-toolbar-top .cryptpad-new > button span {
+  vertical-align: top;
+  font-size: 1em;
+  text-decoration: none;
+  color: inherit;
+}
+.cryptpad-toolbar-top .cryptpad-new .dropdown-bar-content {
+  font-size: 12px;
+  line-height: 14px;
 }
 .cryptpad-toolbar-top .cryptpad-link {
-  position: absolute;
-  left: 0px;
-  height: 32px;
-  background: #0087ff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.4);
+  order: 1;
+}
+.cryptpad-toolbar-top .cryptpad-link:hover {
+  background-color: rgba(0, 0, 0, 0.5);
 }
 .cryptpad-toolbar-top .cryptpad-link a.cryptpad-logo {
   cursor: pointer;
-  height: 32px;
+  font-size: 1em;
+  height: auto;
   padding: 0px 5px;
   text-decoration: none;
   color: inherit;
 }
-.cryptpad-toolbar-top .cryptpad-link a.cryptpad-logo:hover span {
-  text-decoration: underline;
-}
-.cryptpad-toolbar-top .cryptpad-link a.cryptpad-logo img {
-  vertical-align: middle;
-  height: 32px;
-  cursor: pointer;
-}
-.cryptpad-toolbar-top .cryptpad-link a.cryptpad-logo span {
-  font-size: 1.5em;
-  margin-left: 5px;
-  vertical-align: middle;
-  cursor: pointer;
-}
 .cryptpad-toolbar-top .cryptpad-user {
   height: 100%;
-  position: absolute;
-  right: 0;
+  display: inline-block;
+  order: 4;
+  line-height: 64px;
 }
-.cryptpad-toolbar-top .cryptpad-user :not(.cryptpad-lag) span {
+.cryptpad-toolbar-top .cryptpad-user > * {
+  display: inline-block;
+  height: 100%;
   vertical-align: top;
 }
-.cryptpad-toolbar-top .cryptpad-user button span.fa {
-  vertical-align: baseline;
+.cryptpad-toolbar-top .cryptpad-user .cryptpad-upgrade {
+  height: 32px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.cryptpad-toolbar-top .cryptpad-user .cryptpad-user-dropdown {
+  margin-left: 20px;
+  height: 64px;
+  width: 64px;
+  padding: 0px;
+  box-sizing: border-box;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.cryptpad-toolbar-top .cryptpad-user .cryptpad-user-dropdown:hover {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.cryptpad-toolbar-top .cryptpad-user .cryptpad-user-dropdown .dropdown-bar-content {
+  margin: 0;
+}
+.cryptpad-toolbar-top .cryptpad-user .cryptpad-user-dropdown button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 64px;
+  width: 64px;
+  padding: 0;
+}
+.cryptpad-toolbar-top .cryptpad-user .cryptpad-user-dropdown button span {
+  font-size: 32px;
+}
+.cryptpad-toolbar-top .cryptpad-user .cryptpad-user-dropdown button span .fa {
+  margin-left: 3px;
 }
 .cryptpad-toolbar-leftside {
   height: 32px;
@@ -600,6 +1151,28 @@
   margin: 0;
   border-radius: 0;
   padding: 0 10px;
+}
+.cryptpad-toolbar-rightside .drawer-content {
+  position: absolute;
+  right: 0px;
+  top: 96px;
+  width: 50px;
+  background: white;
+  border: 1px solid black;
+  display: none;
+}
+.cryptpad-toolbar-rightside .drawer-content button {
+  text-align: center;
+  width: 100%;
+  margin: 0;
+  border-radius: 0;
+  border: 1px solid transparent;
+}
+.cryptpad-toolbar-rightside .drawer-content button:hover {
+  border: 1px solid transparent;
+}
+.cryptpad-toolbar-rightside .drawer-content button:not(:last-child) {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 .cryptpad-toolbar-history {
   display: none;
@@ -632,6 +1205,9 @@
   padding: 3px 3px;
   border-radius: 5px;
 }
+.cryptpad-spinner {
+  line-height: 64px;
+}
 .cryptpad-spinner > span {
   height: 16px;
   width: 16px;
@@ -645,20 +1221,11 @@
   font-weight: bold;
   text-transform: uppercase;
 }
-.cryptpad-user p.accountData {
-  background: #f0f0f0;
-}
 .cryptpad-user p.accountData > span {
   font-weight: bold;
 }
 .cryptpad-user p.accountData > span span {
   font-weight: normal;
-}
-.cryptpad-user .buttonTitle .fa:not(.fa-caret-down) {
-  margin-right: 5px;
-}
-.cryptpad-user .buttonTitle .account-name {
-  margin-left: 5px;
 }
 .cryptpad-dropdown-share a .fa {
   margin-right: 5px;

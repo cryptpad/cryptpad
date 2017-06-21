@@ -530,7 +530,7 @@ define([
     };
 
     common.setPadTitle = function (name, padHref, cb) {
-        var href = padHref || window.location.href;
+        var href = typeof padHref === "string" ? padHref : window.location.href;
         var parsed = parsePadUrl(href);
         if (!parsed.hash) { return; }
         href = getRelativeHref(href);
@@ -924,6 +924,7 @@ define([
     common.createButton = function (type, rightside, data, callback) {
         var button;
         var size = "17px";
+        console.log(type);
         switch (type) {
             case 'export':
                 button = $('<button>', {
@@ -1096,6 +1097,13 @@ define([
                     });
                 }
                 break;
+            case 'more':
+                button = $('<button>', {
+                    title: Messages.moreActions || 'TODO',
+                    'class': "fa fa-ellipsis-h",
+                    style: 'font:'+size+' FontAwesome'
+                });
+                break;
             default:
                 button = $('<button>', {
                     'class': "fa fa-question",
@@ -1143,9 +1151,9 @@ define([
         var $button = $('<button>', {
             'class': ''
         }).append($('<span>', {'class': 'buttonTitle'}).html(config.text || ""));
-        $('<span>', {
+        /*$('<span>', {
             'class': 'fa fa-caret-down',
-        }).appendTo($button);
+        }).appendTo($button);*/
 
         // Menu
         var $innerblock = $('<div>', {'class': 'cryptpad-dropdown dropdown-bar-content'});
@@ -1186,7 +1194,7 @@ define([
             }
         };
 
-        $button.click(function (e) {
+        $container.click(function (e) {
             e.stopPropagation();
             var state = $innerblock.is(':visible');
             $('.dropdown-bar-content').hide();
@@ -1365,15 +1373,19 @@ define([
                 content: Messages.login_register
             });
         }
-        var $icon = $('<span>', {'class': 'fa fa-user'});
-        var $userbig = $('<span>', {'class': 'big'}).append($displayedName.clone());
-        var $userButton = $('<div>').append($icon).append($userbig);
-        if (account && config.displayNameCls) {
+        var $icon = $('<span>', {'class': 'fa fa-user-secret'});
+        //var $userbig = $('<span>', {'class': 'big'}).append($displayedName.clone());
+        var $userButton = $('<div>').append($icon);//.append($userbig);
+        if (account) {
+
+            $userButton = $('<div>').append(accountName.slice(0,1).toUpperCase());
+        }
+        /*if (account && config.displayNameCls) {
             $userbig.append($('<span>', {'class': 'account-name'}).text('(' + accountName + ')'));
         } else if (account) {
             // If no display name, do not display the parentheses
             $userbig.append($('<span>', {'class': 'account-name'}).text(accountName));
-        }
+        }*/
         var dropdownConfigUser = {
             text: $userButton.html(), // Button initial text
             options: options, // Entries displayed in the menu

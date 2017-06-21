@@ -74,7 +74,7 @@ define(function () {
 
     out.greenLight = "Tout fonctionne bien";
     out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur";
-    out.redLight = "Vous êtes déconnectés de la session";
+    out.redLight = "Vous êtes déconnecté de la session";
 
     out.pinLimitReached = "Vous avez atteint votre limite de stockage";
     out.updated_0_pinLimitReachedAlert = "Vous avez atteint votre limite de stockage. Les nouveaux pads ne seront pas enregistrés dans votre CryptDrive.<br>" +

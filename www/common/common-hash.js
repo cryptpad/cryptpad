@@ -100,6 +100,8 @@ Version 1
 
         var ret = {};
 
+    if (typeof href !== "string") { console.error(href); }
+
         if (!href) { return ret; }
         if (href.slice(-1) !== '/') { href += '/'; }
 

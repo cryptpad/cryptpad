@@ -17,6 +17,7 @@ define([
     var TOP_CLS = Bar.constants.top = 'cryptpad-toolbar-top';
     var LEFTSIDE_CLS = Bar.constants.leftside = 'cryptpad-toolbar-leftside';
     var RIGHTSIDE_CLS = Bar.constants.rightside = 'cryptpad-toolbar-rightside';
+    var DRAWER_CLS = Bar.constants.drawer = 'drawer-content';
     var HISTORY_CLS = Bar.constants.history = 'cryptpad-toolbar-history';
 
     // Userlist
@@ -81,13 +82,22 @@ define([
         $('<span>', {'class': STATE_CLS}).hide().appendTo($userContainer);
         $('<span>', {'class': LAG_CLS}).hide().appendTo($userContainer);
         $('<span>', {'class': LIMIT_CLS}).hide().appendTo($userContainer);
-        $('<span>', {'class': NEWPAD_CLS + ' dropdown-bar'}).hide().appendTo($userContainer);
+        //$('<span>', {'class': NEWPAD_CLS + ' dropdown-bar'}).hide().appendTo($userContainer);
         $('<span>', {'class': USERADMIN_CLS + ' dropdown-bar'}).hide().appendTo($userContainer);
 
         $toolbar.append($topContainer)
         .append($('<div>', {'class': LEFTSIDE_CLS}))
         .append($('<div>', {'class': RIGHTSIDE_CLS}))
         .append($('<div>', {'class': HISTORY_CLS}));
+
+        var $rightside = $toolbar.find('.'+RIGHTSIDE_CLS);
+        if (!config.hideDrawer) {
+            var $drawerContent = $('<div>', {'class': 'drawer-content'}).appendTo($rightside);
+            var $drawer = Cryptpad.createButton('more', true).appendTo($rightside);
+            $drawer.click(function (e) {
+                $drawerContent.toggle();
+            });
+        }
 
         // The 'notitle' class removes the line added for the title with a small screen
         if (!config.title || typeof config.title !== "object") {
@@ -216,9 +226,11 @@ define([
         var fa_viewusers = '<span class="fa fa-eye"></span>';
         var viewersText = numberOfViewUsers !== 1 ? Messages.viewers : Messages.viewer;
         var editorsText = numberOfEditUsers !== 1 ? Messages.editors : Messages.editor;
-        var $span = $('<span>', {'class': 'large'}).html(fa_editusers + ' ' + numberOfEditUsers + ' ' + editorsText + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers + ' ' + viewersText);
-        var $spansmall = $('<span>', {'class': 'narrow'}).html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
-        $userButtons.find('.buttonTitle').html('').append($span).append($spansmall);
+        //var $span = $('<span>', {'class': 'large'}).html(fa_editusers + ' ' + numberOfEditUsers + ' ' + editorsText + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers + ' ' + viewersText);
+        //var $spansmall = $('<span>', {'class': 'narrow'}).html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
+        //$userButtons.find('.buttonTitle').html('').append($span).append($spansmall);
+        var $spansmall = $('<span>').html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
+        $userButtons.find('.buttonTitle').html('').append($spansmall);
 
         // Change username in useradmin dropdown
         if (config.displayed.indexOf('useradmin') !== -1) {
@@ -269,6 +281,7 @@ define([
         };
         var $block = Cryptpad.createDropdown(dropdownConfig);
         $block.attr('id', 'userButtons');
+        toolbar.$leftside.prepend($('<span>', {'class': 'separator'}));
         toolbar.$leftside.prepend($block);
 
         return $block;
@@ -282,7 +295,6 @@ define([
         }
         Cryptpad.getRecentPads(function (err, recent) {
             var $shareIcon = $('<span>', {'class': 'fa fa-share-alt'});
-            var $span = $('<span>', {'class': 'large'}).append(' ' +Messages.shareButton);
             var hashes = Cryptpad.getHashes(channel, secret);
             var options = [];
 
@@ -342,11 +354,11 @@ define([
                 });
             }
             var dropdownConfigShare = {
-                text: $('<div>').append($shareIcon).append($span).html(),
+                text: $('<div>').append($shareIcon).html(),
                 options: options
             };
             var $shareBlock = Cryptpad.createDropdown(dropdownConfigShare);
-            $shareBlock.find('button').attr('id', 'shareButton');
+            //$shareBlock.find('button').attr('id', 'shareButton');
             $shareBlock.find('.dropdown-bar-content').addClass(SHARE_CLS).addClass(EDITSHARE_CLS).addClass(VIEWSHARE_CLS);
 
             if (hashes.editHash) {
@@ -401,6 +413,8 @@ define([
             'class': TITLE_CLS
         }).appendTo(toolbar.$top);
 
+        var $hoverable = $('<span>', {'class': 'hoverable'}).appendTo($titleContainer);
+
         if (typeof config.title !== "object") {
             console.error("config.title", config);
             throw new Error("config.title is not an object");
@@ -412,7 +426,7 @@ define([
         // Buttons
         var $text = $('<span>', {
             'class': 'title'
-        }).appendTo($titleContainer);
+        }).appendTo($hoverable);
         var $pencilIcon = $('<span>', {
             'class': 'pencilIcon',
             'title': Messages.clickToEdit
@@ -425,7 +439,7 @@ define([
         var $input = $('<input>', {
             type: 'text',
             placeholder: placeholder
-        }).appendTo($titleContainer).hide();
+        }).appendTo($hoverable).hide();
         if (config.readOnly !== 1) {
             $text.attr("title", Messages.clickToEdit);
             $text.addClass("editable");
@@ -433,12 +447,12 @@ define([
                 'class': 'fa fa-pencil readonly',
                 style: 'font-family: FontAwesome;'
             });
-            $pencilIcon.append($icon).appendTo($titleContainer);
+            $pencilIcon.append($icon).appendTo($hoverable);
             var $icon2 = $('<span>', {
                 'class': 'fa fa-check readonly',
                 style: 'font-family: FontAwesome;'
             });
-            $saveIcon.append($icon2).appendTo($titleContainer);
+            $saveIcon.append($icon2).appendTo($hoverable);
         }
 
         // Events
@@ -454,15 +468,14 @@ define([
             if (name === "") {
                 name = $input.attr('placeholder');
             }
-            Cryptpad.renamePad(name, function (err, newtitle) {
-                if (err) { return; }
+            Cryptpad.renamePad(name, null, function (err, newtitle) {
+                if (err) { return console.error(err); }
                 $text.text(newtitle);
                 callback(null, newtitle);
                 $input.hide();
                 $text.show();
                 $pencilIcon.show();
                 $saveIcon.hide();
-                //$pencilIcon.css('display', '');
             });
         };
         $input.on('keyup', function (e) {
@@ -498,20 +511,13 @@ define([
         var $linkContainer = $('<span>', {
             'class': "cryptpad-link"
         }).appendTo(toolbar.$top);
-        var $imgTag = $('<img>', {
-            src: "/customize/cryptofist_mini.png",
-            alt: "Cryptpad"
-        });
 
         // We need to override the "a" tag action here because it is inside the iframe!
-        var $aTagSmall = $('<a>', {
+        var $aTag = $('<a>', {
             href: "/",
             title: Messages.header_logoTitle,
-            'class': "cryptpad-logo"
-        }).append($imgTag);
-        //var $span = $('<span>').text('CryptDrive');
-        var $aTagBig = $aTagSmall.clone().addClass('large');//.append($span);
-        $aTagSmall.addClass('narrow');
+            'class': "cryptpad-logo fa fa-hdd-o"
+        });
         var onClick = function (e) {
             e.preventDefault();
             if (e.ctrlKey) {
@@ -523,10 +529,9 @@ define([
 
         var onContext = function (e) { e.stopPropagation(); };
 
-        $aTagBig.click(onClick).contextmenu(onContext);
-        $aTagSmall.click(onClick).contextmenu(onContext);
+        $aTag.click(onClick).contextmenu(onContext);
 
-        $linkContainer.append($aTagSmall).append($aTagBig);
+        $linkContainer.append($aTag);
 
         return $linkContainer;
     };
@@ -539,9 +544,6 @@ define([
         if(typeof getLag === "function") {
             lag = getLag();
         }
-        var lagLight = $('<div>', {
-            'class': 'lag'
-        });
         var title;
         if (lag && toolbar.connected) {
             $lag.attr('class', LAG_CLS);
@@ -566,9 +568,10 @@ define([
         }
         else if (!toolbar.firstConnection) {
             $lag.attr('class', LAG_CLS);
-            // Display the red light at the 2nd failed attemp to get the lag
-            lagLight.addClass('lag-red');
+            $lag.addClass('dc');
             title = Messages.redLight;
+        } else {
+            $lag.addClass('lag4');
         }
         if (title) {
             $lag.attr('title', title);
@@ -576,10 +579,12 @@ define([
     };
     var createLag = function (toolbar, config) {
         var $a = toolbar.$userAdmin.find('.'+LAG_CLS).show();
-        $('<span>', {'class': 'bar1'}).appendTo($a);
-        $('<span>', {'class': 'bar2'}).appendTo($a);
-        $('<span>', {'class': 'bar3'}).appendTo($a);
-        $('<span>', {'class': 'bar4'}).appendTo($a);
+        var $container = $('<span>', {'class': 'bars'}).appendTo($a);
+        $('<span>', {'class': 'bar1'}).appendTo($container);
+        $('<span>', {'class': 'bar2'}).appendTo($container);
+        $('<span>', {'class': 'bar3'}).appendTo($container);
+        $('<span>', {'class': 'bar4'}).appendTo($container);
+        $('<span>', {'class': 'disconnected fa fa-exclamation-circle'}).appendTo($a);
         if (config.realtime) {
             checkLag(toolbar, config, $a);
             setInterval(function () {
@@ -664,7 +669,9 @@ define([
     };
 
     var createNewPad = function (toolbar) {
-        var $newPad = toolbar.$userAdmin.find('.'+NEWPAD_CLS).show();
+        var $newPad = $('<span>', {
+            'class': "cryptpad-new dropdown-bar"
+        }).appendTo(toolbar.$top);
 
         var pads_options = [];
         Config.availablePadTypes.forEach(function (p) {
@@ -680,18 +687,14 @@ define([
                 content: Messages.type[p]
             });
         });
-        var $plusIcon = $('<span>', {'class': 'fa fa-plus'});
-        var $newbig = $('<span>', {'class': 'big'}).append(' ' +Messages.newButton);
-        var $newButton = $('<div>').append($plusIcon).append($newbig);
         var dropdownConfig = {
-            text: $newButton.html(), // Button initial text
+            text: '', // Button initial text
             options: pads_options, // Entries displayed in the menu
-            left: true, // Open to the left of the button,
             container: $newPad
         };
         var $newPadBlock = Cryptpad.createDropdown(dropdownConfig);
         $newPadBlock.find('button').attr('title', Messages.newButtonTitle);
-        $newPadBlock.find('button').attr('id', 'newdoc');
+        $newPadBlock.find('button').addClass('fa fa-plus');
         return $newPadBlock;
     };
 
@@ -901,6 +904,7 @@ define([
         var $toolbar = toolbar.$toolbar = createRealtimeToolbar(config);
         toolbar.$leftside = $toolbar.find('.'+Bar.constants.leftside);
         toolbar.$rightside = $toolbar.find('.'+Bar.constants.rightside);
+        toolbar.$drawer = $toolbar.find('.'+Bar.constants.drawer);
         toolbar.$top = $toolbar.find('.'+Bar.constants.top);
         toolbar.$history = $toolbar.find('.'+Bar.constants.history);
 

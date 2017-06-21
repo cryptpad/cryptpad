@@ -435,7 +435,7 @@
   display: block;
 }
 .dropdown-bar .dropdown-bar-content a {
-  color: black !important;
+  color: black;
   padding: 5px 16px;
   text-decoration: none;
   display: block;
@@ -449,11 +449,11 @@
 }
 .dropdown-bar .dropdown-bar-content a:hover {
   background-color: #f1f1f1;
-  color: black !important;
+  color: black;
 }
 .dropdown-bar .dropdown-bar-content a.active {
   background-color: #e8e8e8;
-  color: black !important;
+  color: black;
 }
 .dropdown-bar .dropdown-bar-content hr {
   margin: 5px 0px;

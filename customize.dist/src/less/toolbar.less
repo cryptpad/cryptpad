@@ -32,72 +32,157 @@
 
     //background-color: #BBBBFF;
     background-color: @toolbar-default-bg;
-    color: @toolbar-default-color;
+    color: @toolbar-default-color;/*
     &.pad {
-        @color: @toolbar-pad-bg;
-        background: linear-gradient(20deg, @color 150px, @toolbar-default-bg 150px);
-        border-bottom: 2px solid @color;
+        @bgcolor: @toolbar-pad-bg;
+        @color: @toolbar-pad-color;
+        background-color: @bgcolor;
+        color: @color;
     }
     &.code {
-        @color: @toolbar-code-bg;
-        background: linear-gradient(20deg, @color 150px, @toolbar-default-bg 150px);
-        border-bottom: 2px solid @color;
+        @bgcolor: @toolbar-code-bg;
+        @color: @toolbar-code-color;
+        background-color: @bgcolor;
+        color: @color;
+        .cryptpad-toolbar-leftside, .cryptpad-toolbar-rightside {
+            lighten($bgcolor, 15%);
+        }
     }
     &.slide {
-        @color: @toolbar-slide-bg;
-        background: linear-gradient(20deg, @color 150px, @toolbar-default-bg 150px);
+        @bgcolor: @toolbar-slide-bg;
+        @color: @toolbar-slide-color;
+        background-color: @toolbar-default-bg 150px);
         border-bottom: 2px solid @color;
     }
     &.poll {
-        @color: @toolbar-poll-bg;
+        @bgcolor: @toolbar-poll-bg;
+        @color: @toolbar-poll-color;
         background: linear-gradient(20deg, @color 150px, @toolbar-default-bg 150px);
         border-bottom: 2px solid @color;
     }
     &.whiteboard {
-        @color: @toolbar-whiteboard-bg;
+        @bgcolor: @toolbar-whiteboard-bg;
+        @color: @toolbar-whiteboard-color;
         background: linear-gradient(20deg, @color 150px, @toolbar-default-bg 150px);
         border-bottom: 2px solid @color;
     }
     &.drive {
-        @color: @toolbar-drive-bg;
+        @bgcolor: @toolbar-drive-bg;
+        @color: @toolbar-drive-color;
         background: linear-gradient(20deg, @color 150px, @toolbar-default-bg 150px);
         border-bottom: 2px solid @color;
     }
     &.file {
-        @color: @toolbar-file-bg;
+        @bgcolor: @toolbar-file-bg;
+        @color: @toolbar-file-color;
         background: linear-gradient(20deg, @color 150px, @toolbar-default-bg 150px);
         border-bottom: 2px solid @color;
+    }*/
+
+    .addToolbarColors (@color, @bg-color) {
+        background-color: @bgcolor;
+        color: @color;
+        .cryptpad-toolbar-leftside, .cryptpad-toolbar-rightside, .drawer-content {
+            background-color: lighten(@bgcolor, 8%);
+            button:hover {
+                background-color: @bgcolor;
+            }
+        }
+        .hoverable:hover {
+            .editable {
+                cursor: text;
+                border: 1px solid lighten(@bgcolor, 15%);
+                background: darken(@bgcolor, 10%);
+                color: @color;
+            }
+            .pencilIcon {
+                border: 1px solid lighten(@bgcolor, 15%);
+                background: darken(@bgcolor, 10%);
+                color: @color;
+                &:hover {
+                    background: darken(@bgcolor, 5%);
+                }
+            }
+        }
+        .saveIcon {
+            border: 1px solid lighten(@bgcolor, 15%);
+            background: darken(@bgcolor, 10%);
+            color: @color;
+            &:hover {
+                background: darken(@bgcolor, 5%);
+            }
+        }
+        input {
+            border: 1px solid lighten(@bgcolor, 15%);
+            background: darken(@bgcolor, 10%);
+            color: @color;
+        }
+        .dropdown-bar-content {
+            line-height: 14px;
+            background: darken(@bgcolor, 5%);
+            border: 1px solid @color;
+            color: @color;
+            a {
+                color: @color;
+                &.active {
+                    background-color: darken(@bgcolor, 10%);
+                    color: @color;
+                }
+                &:hover {
+                    background-color: @bgcolor;
+                    color: @color;
+                }
+            }
+            hr {
+                background-color: darken(@bgcolor, 15%);
+            }
+            p {
+                h2 {
+                    background-color: darken(@bgcolor, 10%);
+                }
+                .accountData {
+                    background-color: @bgcolor;
+                }
+            }
+        }
     }
-/*
+
     &.pad {
-        background-color: @toolbar-pad-bg;
-        color: @toolbar-pad-color;
+        @bgcolor: @toolbar-pad-bg;
+        @color: @toolbar-pad-color;
+        .addToolbarColors(@color, @bgcolor);
     }
     &.code {
-        background-color: @toolbar-code-bg;
-        color: @toolbar-code-color;
+        @bgcolor: @toolbar-code-bg;
+        @color: @toolbar-code-color;
+        .addToolbarColors(@color, @bgcolor);
     }
     &.slide {
-        background-color: @toolbar-slide-bg;
-        color: @toolbar-slide-color;
+        @bgcolor: @toolbar-slide-bg;
+        @color: @toolbar-slide-color;
+        .addToolbarColors(@color, @bgcolor);
     }
     &.poll {
-        background-color: @toolbar-poll-bg;
-        color: @toolbar-poll-color;
+        @bgcolor: @toolbar-poll-bg;
+        @color: @toolbar-poll-color;
+        .addToolbarColors(@color, @bgcolor);
     }
     &.whiteboard {
-        background-color: @toolbar-whiteboard-bg;
-        color: @toolbar-whiteboard-color;
+        @bgcolor: @toolbar-whiteboard-bg;
+        @color: @toolbar-whiteboard-color;
+        .addToolbarColors(@color, @bgcolor);
     }
     &.drive {
-        background-color: @toolbar-drive-bg;
-        color: @toolbar-drive-color;
+        @bgcolor: @toolbar-drive-bg;
+        @color: @toolbar-drive-color;
+        .addToolbarColors(@color, @bgcolor);
     }
     &.file {
-        background-color: @toolbar-file-bg;
-        color: @toolbar-file-color;
+        @bgcolor: @toolbar-file-bg;
+        @color: @toolbar-file-color;
+        .addToolbarColors(@color, @bgcolor);
     }
-*/
+
     .fa {
         font: normal normal normal 14px/1 FontAwesome;
         font-family: FontAwesome;
@@ -121,10 +206,25 @@
             height: 100%;
             border-radius: 0;
             margin: 0;
+            background: transparent;
         }
     }
 
+    .separator {
+        content: '';
+        display: inline-block;
+        background: #888;
+        margin: 7px 4px;
+        height: 18px;
+        width: 1px;
+        vertical-align: top;
+    }
+    .separator:last-child {
+        display: none;
+    }
+
     button {
+        .unselectable();
         &#shareButton, &.buttonSuccess {
             // Bootstrap 4 colors
             color: #fff;
@@ -162,21 +262,24 @@
         &.hidden {
             display: none;
         }
-
         // Bootstrap 4 colors (btn-secondary)
         border: 1px solid transparent;
         border-radius: .25rem;
-        color: #000;
-        background-color: #fff;
-        border-color: #ccc;
+        color: inherit;
         font: @toolbar-button-font;
         * {
-            color: #000;
+            color: inherit;
             font: @toolbar-button-font;
         }
+    }
+    .cryptpad-toolbar-rightside button, .cryptpad-toolbar-leftside button {
+        //background-color: #fff;
+        //border-color: #ccc;
+        background: transparent;
         &:hover {
-            color: #292b2c;
-            background-color: #e6e6e6;
+            //color: #292b2c;
+            background-color: rgba(50,50,50,0.3);
+            //background-color: #e6e6e6;
             border-color: #adadad;
         }
     }
@@ -204,68 +307,95 @@
     }
 
     .clag () {
-        background: transparent;
+        background: transparent
     }
 
+    .cryptpad-state {
+        line-height: @toolbar-top-height;
+    }
     .cryptpad-lag {
-        height: 20px;
-        width: 23px;
-        background: transparent;
         display: inline-block;
-        padding: 3px;
-        margin: 3px;
         vertical-align: top;
         box-sizing: content-box;
         text-align: center;
-        span {
+        line-height: @toolbar-top-height;
+        .disconnected {
+            display: none;
+            color: inherit;
+            width: 28px;
+            margin: 8px;
+            font-size: 28px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        .bars {
+            margin: 8px;
+            height: 26px;
+            line-height: 26px;
             display: inline-block;
-            width: 4px;
-            margin: 0;
-            margin-right: 1px;
-            background: black;
-            vertical-align: bottom;
-            box-sizing: border-box;
-            border: 1px solid black;
-            transition: background 1s, border 1s;
-            &:last-child {
-                margin-right: 0;
+            span {
+                display: inline-block;
+                width: 6px;
+                margin: 0;
+                margin-right: 1px;
+                background: white;
+                vertical-align: bottom;
+                box-sizing: border-box;
+                border: 1px solid black;
+                visibility: hidden;
+                transition: background 1s, border 1s;
+                &:last-child {
+                    margin-right: 0;
+                }
+                &.bar1 { height: 6px; }
+                &.bar2 { height: 12px; }
+                &.bar3 { height: 18px; }
+                &.bar4 { height: 24px; }
             }
-            &.bar1 { height: 5px; }
-            &.bar2 { height: 10px; }
-            &.bar3 { height: 15px; }
-            &.bar4 { height: 20px; }
+        }
+        &.dc {
+            .disconnected {
+                display: inline;
+            }
+            .bars {
+                display: none
+            }
         }
         &.lag0 {
-            span {
+            span span {
                 .clag();
-                border-color: red;
+                //border-color: red;
             }
         }
         &.lag1 {
             .bar2, .bar3, .bar4 { .clag(); }
-            span {
-                background-color: orange;
-                border-color: orange;
+            span span {
+                visibility: visible;
+                //background-color: orange;
+                //border-color: orange;
             }
         }
         &.lag2 {
             .bar3, .bar4 { .clag(); }
-            span {
-                background-color: orange;
-                border-color: orange;
+            span span {
+                visibility: visible;
+                //background-color: orange;
+                //border-color: orange;
             }
         }
         &.lag3 {
             .bar4 { .clag(); }
-            span {
-                background-color: @toolbar-green;
-                border-color: @toolbar-green;
+            span span {
+                visibility: visible;
+                //background-color: @toolbar-green;
+                //border-color: @toolbar-green;
             }
         }
         &.lag4 {
-            span {
-                background-color: @toolbar-green;
-                border-color: @toolbar-green;
+            span span {
+                visibility: visible;
+                //background-color: @toolbar-green;
+                //border-color: @toolbar-green;
             }
         }
     }
@@ -285,15 +415,6 @@
         padding-left: 5px;
         margin: 3px 2px;
         box-sizing: border-box;
-    }
-
-    .dropdown-bar-content {
-        margin-top: -3px;
-        margin-right: 2px;
-    }
-
-    .cryptpad-state {
-        line-height: 32px; /* equivalent to 26px + 2*2px margin used for buttons */
     }
 
     .rightside-button {
@@ -381,7 +502,8 @@
 }
 
 .cryptpad-toolbar:not(.notitle) {
-    .cryptpad-toolbar-top {
+    // TODO
+    /*.cryptpad-toolbar-top {
         @media screen and (max-width: @media-medium-screen) {
             height: 67px;
         }
@@ -393,116 +515,174 @@
                 top: 0px;
             }
         }
-    }
+    }*/
 }
 
 .cryptpad-toolbar-top {
-    display: block;
-    text-align: center;
-    height: 32px;
+    display: flex;
+    flex-flow: row;
+    height: @toolbar-top-height;
     position: relative;
     .cryptpad-title {
+        order: 3;
+        height: 100%;
+        display: inline-block;
+        line-height: @toolbar-top-height;
+        flex: 1;
+        margin-left: 20px;
         .title, .pencilIcon, .saveIcon {
-            font-size: 1.5em;
+            font-size: 25px;
             vertical-align: middle;
-            line-height: 32px;
+            line-height: 25px;
         }
         .pencilIcon {
-            margin-left: 11px;
-            &:hover {
-                color: #999;
-                margin-left: 0px;
-            }
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-radius: 0px 2px 2px 0px;
+            padding: 5px;
+            border-collapse: collapse;
             span {
+                font-size: 25px;
                 cursor: pointer;
             }
         }
         .saveIcon {
             cursor: pointer;
-            border: 1px solid black;
             border-radius: 0px 2px 2px 0px;
-            background: white;
             padding: 5px;
-            display: inline;
-            margin-left: -1px;
             border-collapse: collapse;
-            &:hover {
-                color: #999;
-            }
             span {
+                font-size: 25px;
                 cursor: pointer;
             }
         }
-        &:not(input):hover {
-            .editable {
-                border: 1px solid #888;
-                border-radius: 2px 0px 0px 2px;
-                background: white;
-                padding: 5px;
-                border-collapse: collapse;
-            }
-            .pencilIcon {
-                cursor: pointer;
-                border: 1px solid #888;
-                border-radius: 0px 2px 2px 0px;
-                background: white;
-                padding: 5px;
-                display: inline;
-                margin-left: -1px;
-                border-collapse: collapse;
-            }
+        .editable {
+            border: 1px solid transparent;
+            border-radius: 2px 0px 0px 2px;
+            padding: 5px;
+            border-collapse: collapse;
         }
         input {
             font-size: 1.5em;
             vertical-align: middle;
             box-sizing: border-box;
-            border: 1px solid black;
-            background: #fff;
             cursor: auto;
             width: 300px;
+            font-size: 25px;
             padding: 5px 5px;
+            height: 40px;
+        }
+    }
+    .cryptpad-link, .cryptpad-new {
+        font-size: 48px;
+        line-height: 64px;
+        width: @toolbar-top-height;
+        height: @toolbar-top-height;
+        padding: 0;
+        box-sizing: border-box;
+        display: inline-block;
+
+        color: white;
+        transition: all 0.15s;
+    }
+    .cryptpad-new {
+        background-color: rgba(0,0,0,0.2);
+        &:hover {
+            background-color: rgba(0,0,0,0.3);
+        }
+        order: 2;
+        text-align: center;
+        &> button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 64px;
+            height: 64px !important; // Allows us to have a nice square outline when focused
+            font-size: 1em;
+            color: inherit;
+            height: auto;
+            padding: 0px;
+            margin: 0;
+            &::before {
+                padding-top: 4px;
+            }
+            &:hover {
+                background-color: initial;
+                border-color: transparent;
+            }
+            span {
+                vertical-align: top;
+                font-size: 1em;
+                text-decoration: none;
+                color: inherit;
+            }
+        }
+        .dropdown-bar-content {
+            font-size: 12px;
+            line-height: 14px;
         }
     }
     .cryptpad-link {
-        position: absolute;
-        left: 0px;
-        height: 32px;
-        background: @toolbar-drive-bg;
-
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        background-color: rgba(0,0,0,0.4);
+        &:hover {
+            background-color: rgba(0,0,0,0.5);
+        }
+        order: 1;
         a.cryptpad-logo {
             cursor: pointer;
-            height: 32px;
+            font-size: 1em;
+            height: auto;
             padding: 0px 5px;
             text-decoration: none;
             color: inherit;
-            &:hover {
-                span {
-                    text-decoration: underline;
-                }
-            }
-            img {
-                vertical-align: middle;
-                height: 32px;
-                cursor: pointer;
-            }
-            span {
-                font-size: 1.5em;
-                margin-left: 5px;
-                vertical-align: middle;
-                cursor: pointer;
-            }
         }
     }
     .cryptpad-user {
         height: 100%;
-        position: absolute;
-        right: 0;
-        :not(.cryptpad-lag) span {
+        display: inline-block;
+        order: 4;
+        line-height: @toolbar-top-height;
+        &> * {
+            display: inline-block;
+            height: 100%;
             vertical-align: top;
         }
-        button {
-            span.fa {
-                vertical-align: baseline;
+        .cryptpad-upgrade {
+            height: 32px;
+            vertical-align: middle;
+            cursor: pointer;
+        }
+        .cryptpad-user-dropdown {
+            margin-left: 20px;
+            height: 64px;
+            width: 64px;
+            padding: 0px;
+            box-sizing: border-box;
+            text-align: center;
+            background-color: rgba(0,0,0,0.3);
+            &:hover {
+                background-color: rgba(0,0,0,0.4);
+            }
+            .dropdown-bar-content {
+                margin: 0;
+            }
+            button {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 64px;
+                width: 64px;
+                padding: 0;
+                span {
+                    font-size: 32px;
+                    .fa {
+                        margin-left: 3px;
+                    }
+                }
             }
         }
     }
@@ -533,7 +713,28 @@
         margin: 0;
         border-radius: 0;
         padding: 0 10px;
-
+    }
+    .drawer-content {
+        position: absolute;
+        right:0px;
+        top:96px;
+        width: 50px;
+        background: white;
+        border: 1px solid black;
+        display: none;
+        button {
+            text-align: center;
+            width: 100%;
+            margin: 0;
+            border-radius: 0;
+            border: 1px solid transparent;
+            &:hover {
+                border: 1px solid transparent;
+            }
+            &:not(:last-child) {
+                border-bottom: 1px solid rgba(0,0,0,0.2);
+            }
+        }
     }
 }
 .cryptpad-toolbar-history {
@@ -567,13 +768,16 @@
         border-radius: 5px;
     }
 }
-.cryptpad-spinner > span {
-    height: 16px;
-    width: 16px;
-    margin: 8px;
-    line-height: 16px;
-    font-size: 16px;
-    text-align: center;
+.cryptpad-spinner {
+    line-height: @toolbar-top-height;
+    &> span {
+        height: 16px;
+        width: 16px;
+        margin: 8px;
+        line-height: 16px;
+        font-size: 16px;
+        text-align: center;
+    }
 }
 .cryptpad-readonly {
     margin-right: 5px;
@@ -582,20 +786,11 @@
 }
 .cryptpad-user {
     p.accountData {
-        background: #f0f0f0;
         &> span {
             font-weight: bold;
             span {
                 font-weight: normal;
             }
-        }
-    }
-    .buttonTitle {
-        .fa:not(.fa-caret-down) {
-            margin-right: 5px;
-        }
-        .account-name {
-            margin-left: 5px;
         }
     }
 }

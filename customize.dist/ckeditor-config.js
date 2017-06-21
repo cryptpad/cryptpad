@@ -8,7 +8,8 @@ CKEDITOR.editorConfig = function( config ) {
     config.removeButtons= 'Source,Maximize';
     // magicline plugin inserts html crap into the document which is not part of the
     // document itself and causes problems when it's sent across the wire and reflected back
-    config.removePlugins= 'resize';
+    config.removePlugins= 'resize,elementspath';
+    config.resize_enabled= false; //bottom-bar
     config.extraPlugins= 'autolink,colorbutton,colordialog,font,indentblock,justify';
     config.toolbarGroups= [
         // {"name":"clipboard","groups":["clipboard","undo"]},
