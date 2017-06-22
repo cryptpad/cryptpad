@@ -1,76 +1,16 @@
 <!DOCTYPE html>
 <html class="cp">
+<!-- If this file is not called customize.dist/src/template.html, it is generated -->
 <head>
-    <title data-localization="main_title">Cryptpad: Log in</title>
+    <title data-localization="main_title">Cryptpad: Zero Knowledge, Collaborative Real Time Editing</title>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <link rel="stylesheet" type="text/css" href="/customize/main.css" />
-    <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
     <link rel="icon" type="image/png" href="/customize/main-favicon.png" id="favicon"/>
-    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <script data-bootload="main.js" data-main="/common/boot.js" src="/bower_components/requirejs/require.js"></script>
+    <script async data-bootload="/customize/main2.js" data-main="/common/boot.js?ver=1.0" src="/bower_components/requirejs/require.js?ver=2.1.15"></script>
 </head>
 <body class="html">
-    <div id="cryptpadTopBar">
-    <span>
-        <a class="gotoMain" href="/">
-            <img src="/customize/cryptofist_mini.png" class="cryptpad-logo" alt="" /> CryptPad
-        </a>
-    </span>
-
-    <span id="user-menu" class="right dropdown-bar"></span>
-    <span id="language-selector" class="right dropdown-bar"></span>
-    <span class="right">
-        <a href="/about.html" data-localization="about">About</a>
-    </span>
-    <span class="right">
-        <a href="/privacy.html" data-localization="privacy">Privacy</a>
-    </span>
-    <span class="right">
-        <a href="/terms.html" data-localization="terms">ToS</a>
-    </span>
-    <span class="right">
-        <a href="/contact.html" data-localization="contact">Contact</a>
-    </span>
-</div>
     <noscript>
-        <div id="noscriptContainer">
-            <div class="mainOverlay"></div>
-            <div id="noscript">
-              <p>
-                <strong>OOPS</strong> In order to do encryption in your browser, Javascript is really <strong>really</strong> required.
-              </p>
-              <hr>
-              <p>
-                <strong>OUPS</strong> Afin de pouvoir réaliser le chiffrement dans votre navigateur, Javascript est <strong>vraiment</strong> nécessaire.
-              </p>
-            </div>
-        </div>
+        <p><strong>OOPS</strong> In order to do encryption in your browser, Javascript is really <strong>really</strong> required.</p>
+        <p><strong>OUPS</strong> Afin de pouvoir réaliser le chiffrement dans votre navigateur, Javascript est <strong>vraiment</strong> nécessaire.</p>
     </noscript>
-
-    <div id="mainBlock" class="hidden">
-
-<div id="main">
-    <div class="mainOverlay"></div>
-    <div id="align-container">
-    <div id="main-container">
-        <div id="data" class="hidden">
-            <p class="left" data-localization="main_info"><!-- Zero Knowledge collaborative realtime editor. Protected from the NSA. --></p>
-        </div>
-
-        <div id="userForm" class="form-group hidden">
-            <input type="text" id="name" name="name" class="form-control" data-localization-placeholder="login_username" autofocus>
-            <input type="password" id="password" name="password" class="form-control" data-localization-placeholder="login_password">
-            <button class="btn btn-primary login first" data-localization="login_login"></button>
-            <div class="extra">
-                <p data-localization="login_notRegistered"></p>
-                <button id="register" class="btn btn-success register first" data-localization="login_register"></button>
-            </div>
-        </div>
-    </div>
-    </div>
-</div>
-    </div>
-
-</body>
 </html>

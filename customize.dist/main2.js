@@ -15,7 +15,7 @@ $(function () {
     var rightLink = function (ref, loc, txt) {
         return h('span.link.right', [
             h('a', { href: ref, 'data-localization': loc}, txt)
-        ])
+        ]);
     };
 
     var $topbar = $(h('div#cryptpadTopBar', [
@@ -42,7 +42,7 @@ $(function () {
             })
         ])
         ]
-    ))
+    ));
 
     var $main = $(h('div#mainBlock.hidden',
         typeof(Pages[location.pathname]) === 'function'?
@@ -59,7 +59,7 @@ $(function () {
                     return h('li', [ l ]);
                 }))
             )
-        ])
+        ]);
     };
 
     var footLink = function (ref, loc, text) {
@@ -117,9 +117,14 @@ $(function () {
     } else if (/^\/user\//.test(location.pathname)) {
         // do nothing. bogus app.
         require([ '/user/main.js'], function () {});
+    } else if (/^\/register\//.test(location.pathname)) {
+        require([ '/register/main.js' ], function () {});
+    } else if (/^\/login\//.test(location.pathname)) {
+        require([ '/login/main.js' ], function () {});
     } else {
         setTimeout(function () {
             require([ '/customize/main.js', ], function () {});
         });
     }
-})});
+});
+});

@@ -5,25 +5,23 @@ define([
     var Pages = {};
     var Msg = Cryptpad.Messages;
 
-    Pages['/about.html'] = function () {
-        var p2 = h('p');
-        p2.innerHTML = Msg.main_p2;
+    var setHTML = function (e, html) {
+        e.innerHTML = html;
+        return e;
+    };
 
-        var hiw = h('p');
-        hiw.innerHTML = Msg.main_howitworks_p1;
+    Pages['/about.html'] = function () {
         return h('div#main_other', [
             h('center', [
                 h('h1', Msg.about)
             ]),
-            p2,
+            setHTML(h('p'), Msg.main_p2),
             h('h2', Msg.main_howitworks),
-            hiw
+            setHTML(h('p', Msg.main_howitworks_p1))
         ]);
     };
 
     Pages['/privacy.html'] = function () {
-        var vpn = h('p');
-        vpn.innerHTML = Msg.policy_choices_vpn;
         return h('div#main_other', [
             h('center', h('h1', Msg.policy_title)),
             h('h2', Msg.policy_whatweknow),
@@ -44,7 +42,7 @@ define([
 
             h('h2', Msg.policy_choices),
             h('p', Msg.policy_choices_open),
-            vpn,
+            setHTML(h('p'), Msg.policy_choices_vpn),
 
             h('br')
         ]);
@@ -62,12 +60,10 @@ define([
     };
 
     Pages['/contact.html'] = function () {
-        var about = h('p');
-        about.innerHTML = Msg.main_about_p2;
         return h('div#main_other', [
             h('center', h('h1', Msg.contact)),
-            about
-        ])
+            setHTML(h('p'), Msg.main_about_p2)
+        ]);
     };
 
     var userForm = function () {
@@ -110,8 +106,6 @@ define([
     };
 
     var indexContent = function () {
-        var mainZK = h('p');
-        mainZK.innerHTML = Msg.main_zeroKnowledge_p;
         return [
             h('div.page.category.first#knowmore', [
                 h('center', [
@@ -128,7 +122,7 @@ define([
                     ]),
                     h('div.right', [
                         h('h2', Msg.main_zeroKnowledge),
-                        mainZK
+                        setHTML(h('p'), Msg.main_zeroKnowledge_p)
                     ])
                 ])
             ]),
@@ -178,9 +172,6 @@ define([
     };
 
     var appButton = function (alt, h2, img, p, url, btn, id) {
-        var P = h('p');
-        P.innerHTML = p;
-
         return h('div.app', [
             h('center', [
                 h('h2', h2),
@@ -189,7 +180,7 @@ define([
                     src: img,
                 })
             ]),
-            P,
+            setHTML(h('p'), p),
             h('p.buttons', [
                 h('a#' + id, {
                     href: url,
@@ -241,19 +232,17 @@ define([
                     ])
                 ])
             ])
-        ]
+        ];
     };
 
     Pages['/'] = Pages['/index.html'] = function () {
-        var slogan = h('p.left');
-        slogan.innerHTML = Msg.main_info;
         return [
             h('div#main', [
                 h('div.mainOverlay'),
                 h('div#align-container', [
                     h('div#main-container', [
                         h('div#data.hidden', [
-                            slogan
+                            setHTML(h('p.left'), Msg.main_info),
                         ]),
                         userForm(),
                         h('div#loggedIn.hidden', [
@@ -269,8 +258,8 @@ define([
                 ]),
             ])
         ]
-        .concat(indexContent())
-        .concat(tryIt());
+        .concat(tryIt())
+        .concat(indexContent());
     };
 
     Pages['/settings/'] = Pages['/settings/index.html'] = function () {
@@ -279,6 +268,87 @@ define([
 
     Pages['/user/'] = Pages['/user/index.html'] = function () {
         return h('div#container');
+    };
+
+    Pages['/register/'] = Pages['/register/index.html'] = function () {
+        return [h('div#main', [
+            h('div.mainOverlay'),
+            h('div#align-container', [
+                h('div#data.hidden', [
+                    h('h1', Msg.register_header),
+                    h('br'),
+                    setHTML(h('p.left.register-explanation'), Msg.register_explanation)
+                ]),
+                h('div#userForm.form-group.hidden', [
+                    h('input.form-control#username', {
+                        type: 'text',
+                        autocomplete: 'off',
+                        autocorrect: 'off',
+                        autocapitalize: 'off',
+                        spellcheck: false,
+                        placeholder: Msg.login_username,
+                        autofocus: true,
+                    }),
+                    h('input.form-control#password', {
+                        type: 'password',
+                        placeholder: Msg.login_password,
+                    }),
+                    h('input.form-control#password-confirm', {
+                        type: 'password',
+                        placeholder: Msg.login_confirm,
+                    }),
+                    h('input#import-recent', {
+                        type: 'checkbox',
+                        checked: true
+                    }),
+                    h('label', {
+                        'for': 'import-recent',
+                    }, Msg.register_importRecent),
+                    h('br'),
+                    h('input#accept-terms', {
+                        type: 'checkbox'
+                    }),
+                    setHTML(h('label', {
+                        'for': 'accept-terms',
+                    }), Msg.register_acceptTerms),
+                    h('br'),
+                    h('button#register.btn.btn-primary', Msg.login_register)
+                ])
+            ])
+        ])];
+    };
+
+    Pages['/login/'] = Pages['/login/index.html'] = function () {
+        return [h('div#main', [
+            h('div.mainOverlay'),
+            h('div#align-container',
+                h('div#main-container', [
+                    h('div#data.hidden', setHTML(h('p.left'), Msg.main_info)),
+                    h('div#userForm.form-group.hidden', [
+                        h('input.form-control#name', {
+                            name: 'name',
+                            type: 'text',
+                            autocomplete: 'off',
+                            autocorrect: 'off',
+                            autocapitalize: 'off',
+                            spellcheck: false,
+                            placeholder: Msg.login_username,
+                            autofocus: true,
+                        }),
+                        h('input.form-control#password', {
+                            type: 'password',
+                            'name': 'password',
+                            placeholder: Msg.login_password,
+                        }),
+                        h('button.btn.btn-primary.login.first', Msg.login_login),
+                        h('div.extra', [
+                            h('p', Msg.login_notRegistered),
+                            h('button#register.btn.btn-success.register.first', Msg.login_register)
+                        ])
+                    ])
+                ])
+            )
+        ])];
     };
 
     return Pages;
