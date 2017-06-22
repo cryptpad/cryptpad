@@ -173,7 +173,7 @@ define([
                 var titleCfg = { getHeadingText: CodeMirror.getHeadingText };
                 Title = Cryptpad.createTitle(titleCfg, config.onLocal, Cryptpad);
 
-                Metadata = Cryptpad.createMetadata(UserList, Title);
+                Metadata = Cryptpad.createMetadata(UserList, Title, null, Cryptpad);
 
                 var configTb = {
                     displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit', 'upgrade'],
@@ -308,7 +308,8 @@ define([
                 if(userDoc !== "") {
                     var hjson = JSON.parse(userDoc);
 
-                    if (typeof (hjson) !== 'object' || Array.isArray(hjson)) {
+                    if (typeof (hjson) !== 'object' || Array.isArray(hjson) ||
+                        (typeof(hjson.type) !== 'undefined' && hjson.type !== 'code')) {
                         var errorText = Messages.typeError;
                         Cryptpad.errorLoadingScreen(errorText);
                         throw new Error(errorText);

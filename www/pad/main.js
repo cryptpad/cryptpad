@@ -306,7 +306,8 @@ define([
                 hjson[3] = {
                     metadata: {
                         users: UserList.userData,
-                        defaultTitle: Title.defaultTitle
+                        defaultTitle: Title.defaultTitle,
+                        type: 'pad'
                     }
                 };
                 if (!initializing) {
@@ -450,7 +451,7 @@ define([
                 var titleCfg = { getHeadingText: getHeadingText };
                 Title = Cryptpad.createTitle(titleCfg, realtimeOptions.onLocal, Cryptpad);
 
-                Metadata = Cryptpad.createMetadata(UserList, Title);
+                Metadata = Cryptpad.createMetadata(UserList, Title, null, Cryptpad);
 
                 var configTb = {
                     displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit', 'upgrade'],

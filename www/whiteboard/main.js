@@ -293,7 +293,7 @@ window.canvas = canvas;
 
             Title = Cryptpad.createTitle({}, config.onLocal, Cryptpad);
 
-            Metadata = Cryptpad.createMetadata(UserList, Title, metadataCfg);
+            Metadata = Cryptpad.createMetadata(UserList, Title, metadataCfg, Cryptpad);
 
             var configTb = {
                 displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit', 'upgrade'],
@@ -384,7 +384,8 @@ window.canvas = canvas;
                 metadata: {
                     users: UserList.userData,
                     palette: palette,
-                    defaultTitle: Title.defaultTitle
+                    defaultTitle: Title.defaultTitle,
+                    type: 'whiteboard',
                 }
             };
             if (!initializing) {
@@ -413,6 +414,14 @@ window.canvas = canvas;
             var isNew = false;
             var userDoc = module.realtime.getUserDoc();
             if (userDoc === "" || userDoc === "{}") { isNew = true; }
+            else {
+                var hjson = JSON.parse(userDoc);
+                if (typeof(hjson) !== 'object' || Array.isArray(hjson) ||
+                    (typeof(hjson.type) !== 'undefined' && hjson.type !== whiteboard)) {
+                    Cryptpad.errorLoadingScreen(Messages.typeError);
+                    throw new Error(Messages.typeError);
+                }
+            }
 
             Cryptpad.removeLoadingScreen();
             setEditable(true);

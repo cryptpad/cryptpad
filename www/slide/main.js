@@ -343,7 +343,7 @@ define([
                 };
                 Title = Cryptpad.createTitle(titleCfg, config.onLocal, Cryptpad);
 
-                Metadata = Cryptpad.createMetadata(UserList, Title, metadataCfg);
+                Metadata = Cryptpad.createMetadata(UserList, Title, metadataCfg, Cryptpad);
 
                 var configTb = {
                     displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit', 'upgrade'],
@@ -557,7 +557,8 @@ define([
                     var hjson = JSON.parse(userDoc);
                     newDoc = hjson.content;
 
-                    if (typeof (hjson) !== 'object' || Array.isArray(hjson)) {
+                    if (typeof (hjson) !== 'object' || Array.isArray(hjson) ||
+                        (typeof(hjson.type) !== 'undefined' && hjson.type !== 'slide')) {
                         var errorText = Messages.typeError;
                         Cryptpad.errorLoadingScreen(errorText);
                         throw new Error(errorText);

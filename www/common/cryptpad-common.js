@@ -83,6 +83,7 @@ define([
     common.fetch = Util.fetch;
     common.throttle = Util.throttle;
     common.createRandomInteger = Util.createRandomInteger;
+    common.getAppType = Util.getAppType;
 
     // import hash utilities for export
     var createRandomHash = common.createRandomHash = Hash.createRandomHash;
@@ -906,18 +907,12 @@ define([
         common.getPinnedUsage(todo);
     };
 
-    var getAppSuffix = function () {
-        var parts = window.location.pathname.split('/')
-            .filter(function (x) { return x; });
-
-        if (!parts[0]) { return ''; }
-        return '_' + parts[0].toUpperCase();
-    };
-
     var prepareFeedback = common.prepareFeedback = function (key) {
         if (typeof(key) !== 'string') { return $.noop; }
+
+        var type = common.getAppType();
         return function () {
-            feedback(key.toUpperCase() + getAppSuffix());
+            feedback((key + (type? '_' + type: '')).toUpperCase());
         };
     };
 
