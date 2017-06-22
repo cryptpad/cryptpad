@@ -44,10 +44,12 @@ $(function () {
         ]
     ));
 
-    var $main = $(h('div#mainBlock.hidden',
-        typeof(Pages[location.pathname]) === 'function'?
-            Pages[location.pathname](): [h('div#container')]
-    ));
+    var infoPage = function () {
+        return h('div#mainBlock.hidden', typeof(Pages[location.pathname]) === 'function'?
+            Pages[location.pathname](): [h('div#container')]);
+    };
+
+    var $main = $(infoPage());
 
     var footerCol = function (title, L, literal) {
         return h('div.col', [
@@ -110,21 +112,27 @@ $(function () {
         h('div.version-footer', "CryptPad v1.10.0 (Kraken)")
     ]));
 
+    var pathname = location.pathname;
+    if (/^\/(pad|code|slide|poll|whiteboard)\//.test(pathname)) {
+        // TODO load apps
+        return;
+    }
+
     $body.append($topbar).append($main).append($footer);
 
-    if (/^\/settings\//.test(location.pathname)) {
+    if (/^\/settings\//.test(pathname)) {
         require([ '/settings/main.js', ], function () {});
-    } else if (/^\/user\//.test(location.pathname)) {
-        // do nothing. bogus app.
+    } else if (/^\/user\//.test(pathname)) {
         require([ '/user/main.js'], function () {});
-    } else if (/^\/register\//.test(location.pathname)) {
+    } else if (/^\/register\//.test(pathname)) {
         require([ '/register/main.js' ], function () {});
-    } else if (/^\/login\//.test(location.pathname)) {
+    } else if (/^\/login\//.test(pathname)) {
         require([ '/login/main.js' ], function () {});
+    } else if (/^\/($|^\/index\.html$)/.test(pathname)) {
+        // TODO use different top bar
+        require([ '/customize/main.js', ], function () {});
     } else {
-        setTimeout(function () {
-            require([ '/customize/main.js', ], function () {});
-        });
+        require([ '/customize/main.js', ], function () {});
     }
 });
 });
