@@ -167,6 +167,12 @@ define([
         feedback(pattern);
     };
 
+    common.reportScreenDimensions = function () {
+        var h = window.innerHeight;
+        var w = window.innerWidth;
+        feedback('DIMENSIONS:' + h + 'x' + w);
+    };
+
     common.getUid = function () {
         if (store && store.getProxy() && store.getProxy().proxy) {
             return store.getProxy().proxy.uid;
@@ -1483,6 +1489,8 @@ define([
             if (/CRYPTPAD_SHIM/.test(Array.isArray.toString())) {
                 feedback("NO_ISARRAY");
             }
+
+            common.reportScreenDimensions();
 
             $(function() {
                 // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
