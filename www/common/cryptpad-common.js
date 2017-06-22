@@ -419,7 +419,7 @@ define([
     };
     common.setAttribute = function (attr, value, cb) {
         getStore().set(["cryptpad", attr].join('.'), value, function (err, data) {
-            cb(err, data);
+            if (cb) { cb(err, data); }
         });
     };
     common.setLSAttribute = function (attr, value) {
@@ -925,7 +925,6 @@ define([
     common.createButton = function (type, rightside, data, callback) {
         var button;
         var size = "17px";
-        console.log(type);
         switch (type) {
             case 'export':
                 button = $('<button>', {

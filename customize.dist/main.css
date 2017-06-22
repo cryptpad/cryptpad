@@ -467,14 +467,6 @@
   white-space: normal;
   text-align: left;
 }
-.dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users {
-  text-align: baseline;
-}
-.dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users .yourself,
-.dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users .anonymous,
-.dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users .viewer {
-  font-style: italic;
-}
 .dropdown-bar .dropdown-bar-content p h2 {
   font-weight: bold;
   text-align: center;

@@ -692,7 +692,8 @@ var create = function (info) {
         ifrw: window,
         realtime: info.realtime,
         network: info.network,
-        $container: APP.$bar
+        $container: APP.$bar,
+        $contentContainer: $('#content')
     };
     APP.toolbar = Toolbar.create(configTb);
 

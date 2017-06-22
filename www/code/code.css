@@ -26,9 +26,9 @@ body {
   transition: width 500ms, min-width 500ms, max-width 500ms;
 }
 .CodeMirror.fullPage {
-  min-width: 100%;
   max-width: 100%;
   resize: none;
+  flex: 1;
 }
 .CodeMirror-focused .cm-matchhighlight {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQI12NgYGBgkKzc8x9CMDAwAAAmhwSbidEoSQAAAABJRU5ErkJggg==);

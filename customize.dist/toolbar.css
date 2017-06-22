@@ -59,14 +59,6 @@
   white-space: normal;
   text-align: left;
 }
-.dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users {
-  text-align: baseline;
-}
-.dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users .yourself,
-.dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users .anonymous,
-.dropdown-bar .dropdown-bar-content p.cryptpad-dropdown-users .viewer {
-  font-style: italic;
-}
 .dropdown-bar .dropdown-bar-content p h2 {
   font-weight: bold;
   text-align: center;
@@ -101,6 +93,616 @@
 .cke_reset_all * {
   color: inherit;
 }
+#cke_1_contents {
+  margin-top: -1px;
+  display: flex;
+}
+.userlist-drawer {
+  font: normal normal normal 14px Arial, Helvetica, Tahoma, Verdana, Sans-Serif;
+  width: 175px;
+  display: block;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px;
+  box-sizing: border-box;
+  text-align: baseline;
+}
+.userlist-drawer h2 {
+  color: inherit;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-align: center;
+  padding: 5px 0px;
+  margin: 5px 0px;
+  font-size: 16px;
+  white-space: normal;
+}
+.userlist-drawer .viewer {
+  font-style: italic;
+  padding: 5px;
+  background: rgba(0, 0, 0, 0.1);
+  margin: 2px 0;
+}
+.userlist-drawer .userlist-others {
+  display: flex;
+  flex-flow: column;
+  margin: 10px 0;
+  margin-bottom: 20px;
+}
+.userlist-drawer .userlist-others > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 5px;
+  background: rgba(0, 0, 0, 0.1);
+  margin: 2px 0;
+}
+body.app-pad .userlist-drawer {
+  background-color: #1c4fa0;
+  color: #fff;
+}
+body.app-pad .userlist-drawer h2 {
+  background-color: #143a75;
+}
+body.app-pad .cryptpad-toolbar {
+  background-color: #1c4fa0;
+  color: #fff;
+}
+body.app-pad .cryptpad-toolbar .userlist-drawer {
+  background-color: #1c4fa0;
+  width: 150px;
+  position: absolute;
+  left: 0;
+  top: 96px;
+  bottom: 0;
+}
+body.app-pad .cryptpad-toolbar .cryptpad-toolbar-leftside,
+body.app-pad .cryptpad-toolbar .cryptpad-toolbar-rightside,
+body.app-pad .cryptpad-toolbar .drawer-content {
+  background-color: #2260c3;
+}
+body.app-pad .cryptpad-toolbar .cryptpad-toolbar-leftside button:hover,
+body.app-pad .cryptpad-toolbar .cryptpad-toolbar-rightside button:hover,
+body.app-pad .cryptpad-toolbar .drawer-content button:hover {
+  background-color: #1c4fa0;
+}
+body.app-pad .cryptpad-toolbar .hoverable:hover .editable {
+  cursor: text;
+  border: 1px solid #2e71da;
+  background: #143a75;
+  color: #fff;
+}
+body.app-pad .cryptpad-toolbar .hoverable:hover .pencilIcon {
+  border: 1px solid #2e71da;
+  background: #143a75;
+  color: #fff;
+}
+body.app-pad .cryptpad-toolbar .hoverable:hover .pencilIcon:hover {
+  background: #18448a;
+}
+body.app-pad .cryptpad-toolbar .saveIcon {
+  border: 1px solid #2e71da;
+  background: #143a75;
+  color: #fff;
+}
+body.app-pad .cryptpad-toolbar .saveIcon:hover {
+  background: #18448a;
+}
+body.app-pad .cryptpad-toolbar input {
+  border: 1px solid #2e71da;
+  background: #143a75;
+  color: #fff;
+}
+body.app-pad .cryptpad-toolbar .dropdown-bar-content {
+  background: #18448a;
+  border: 1px solid #fff;
+  color: #fff;
+}
+body.app-pad .cryptpad-toolbar .dropdown-bar-content a {
+  color: #fff;
+}
+body.app-pad .cryptpad-toolbar .dropdown-bar-content a.active {
+  background-color: #143a75;
+  color: #fff;
+}
+body.app-pad .cryptpad-toolbar .dropdown-bar-content a:hover {
+  background-color: #1c4fa0;
+  color: #fff;
+}
+body.app-pad .cryptpad-toolbar .dropdown-bar-content hr {
+  background-color: #112f5f;
+}
+body.app-pad .cryptpad-toolbar .dropdown-bar-content p h2 {
+  background-color: #143a75;
+}
+body.app-pad .cryptpad-toolbar .dropdown-bar-content p .accountData {
+  background-color: #1c4fa0;
+}
+body.app-code .userlist-drawer {
+  background-color: #ffae00;
+  color: #000;
+}
+body.app-code .userlist-drawer h2 {
+  background-color: #cc8b00;
+}
+body.app-code .cryptpad-toolbar {
+  background-color: #ffae00;
+  color: #000;
+}
+body.app-code .cryptpad-toolbar .userlist-drawer {
+  background-color: #ffae00;
+  width: 150px;
+  position: absolute;
+  left: 0;
+  top: 96px;
+  bottom: 0;
+}
+body.app-code .cryptpad-toolbar .cryptpad-toolbar-leftside,
+body.app-code .cryptpad-toolbar .cryptpad-toolbar-rightside,
+body.app-code .cryptpad-toolbar .drawer-content {
+  background-color: #ffbb29;
+}
+body.app-code .cryptpad-toolbar .cryptpad-toolbar-leftside button:hover,
+body.app-code .cryptpad-toolbar .cryptpad-toolbar-rightside button:hover,
+body.app-code .cryptpad-toolbar .drawer-content button:hover {
+  background-color: #ffae00;
+}
+body.app-code .cryptpad-toolbar .hoverable:hover .editable {
+  cursor: text;
+  border: 1px solid #ffc64d;
+  background: #cc8b00;
+  color: #000;
+}
+body.app-code .cryptpad-toolbar .hoverable:hover .pencilIcon {
+  border: 1px solid #ffc64d;
+  background: #cc8b00;
+  color: #000;
+}
+body.app-code .cryptpad-toolbar .hoverable:hover .pencilIcon:hover {
+  background: #e69d00;
+}
+body.app-code .cryptpad-toolbar .saveIcon {
+  border: 1px solid #ffc64d;
+  background: #cc8b00;
+  color: #000;
+}
+body.app-code .cryptpad-toolbar .saveIcon:hover {
+  background: #e69d00;
+}
+body.app-code .cryptpad-toolbar input {
+  border: 1px solid #ffc64d;
+  background: #cc8b00;
+  color: #000;
+}
+body.app-code .cryptpad-toolbar .dropdown-bar-content {
+  background: #e69d00;
+  border: 1px solid #000;
+  color: #000;
+}
+body.app-code .cryptpad-toolbar .dropdown-bar-content a {
+  color: #000;
+}
+body.app-code .cryptpad-toolbar .dropdown-bar-content a.active {
+  background-color: #cc8b00;
+  color: #000;
+}
+body.app-code .cryptpad-toolbar .dropdown-bar-content a:hover {
+  background-color: #ffae00;
+  color: #000;
+}
+body.app-code .cryptpad-toolbar .dropdown-bar-content hr {
+  background-color: #b37a00;
+}
+body.app-code .cryptpad-toolbar .dropdown-bar-content p h2 {
+  background-color: #cc8b00;
+}
+body.app-code .cryptpad-toolbar .dropdown-bar-content p .accountData {
+  background-color: #ffae00;
+}
+body.app-slide .userlist-drawer {
+  background-color: #e57614;
+  color: #fff;
+}
+body.app-slide .userlist-drawer h2 {
+  background-color: #b65e10;
+}
+body.app-slide .cryptpad-toolbar {
+  background-color: #e57614;
+  color: #fff;
+}
+body.app-slide .cryptpad-toolbar .userlist-drawer {
+  background-color: #e57614;
+  width: 150px;
+  position: absolute;
+  left: 0;
+  top: 96px;
+  bottom: 0;
+}
+body.app-slide .cryptpad-toolbar .cryptpad-toolbar-leftside,
+body.app-slide .cryptpad-toolbar .cryptpad-toolbar-rightside,
+body.app-slide .cryptpad-toolbar .drawer-content {
+  background-color: #ed8b34;
+}
+body.app-slide .cryptpad-toolbar .cryptpad-toolbar-leftside button:hover,
+body.app-slide .cryptpad-toolbar .cryptpad-toolbar-rightside button:hover,
+body.app-slide .cryptpad-toolbar .drawer-content button:hover {
+  background-color: #e57614;
+}
+body.app-slide .cryptpad-toolbar .hoverable:hover .editable {
+  cursor: text;
+  border: 1px solid #f09e55;
+  background: #b65e10;
+  color: #fff;
+}
+body.app-slide .cryptpad-toolbar .hoverable:hover .pencilIcon {
+  border: 1px solid #f09e55;
+  background: #b65e10;
+  color: #fff;
+}
+body.app-slide .cryptpad-toolbar .hoverable:hover .pencilIcon:hover {
+  background: #ce6a12;
+}
+body.app-slide .cryptpad-toolbar .saveIcon {
+  border: 1px solid #f09e55;
+  background: #b65e10;
+  color: #fff;
+}
+body.app-slide .cryptpad-toolbar .saveIcon:hover {
+  background: #ce6a12;
+}
+body.app-slide .cryptpad-toolbar input {
+  border: 1px solid #f09e55;
+  background: #b65e10;
+  color: #fff;
+}
+body.app-slide .cryptpad-toolbar .dropdown-bar-content {
+  background: #ce6a12;
+  border: 1px solid #fff;
+  color: #fff;
+}
+body.app-slide .cryptpad-toolbar .dropdown-bar-content a {
+  color: #fff;
+}
+body.app-slide .cryptpad-toolbar .dropdown-bar-content a.active {
+  background-color: #b65e10;
+  color: #fff;
+}
+body.app-slide .cryptpad-toolbar .dropdown-bar-content a:hover {
+  background-color: #e57614;
+  color: #fff;
+}
+body.app-slide .cryptpad-toolbar .dropdown-bar-content hr {
+  background-color: #9f520e;
+}
+body.app-slide .cryptpad-toolbar .dropdown-bar-content p h2 {
+  background-color: #b65e10;
+}
+body.app-slide .cryptpad-toolbar .dropdown-bar-content p .accountData {
+  background-color: #e57614;
+}
+body.app-poll .userlist-drawer {
+  background-color: #006304;
+  color: #fff;
+}
+body.app-poll .userlist-drawer h2 {
+  background-color: #003002;
+}
+body.app-poll .cryptpad-toolbar {
+  background-color: #006304;
+  color: #fff;
+}
+body.app-poll .cryptpad-toolbar .userlist-drawer {
+  background-color: #006304;
+  width: 150px;
+  position: absolute;
+  left: 0;
+  top: 96px;
+  bottom: 0;
+}
+body.app-poll .cryptpad-toolbar .cryptpad-toolbar-leftside,
+body.app-poll .cryptpad-toolbar .cryptpad-toolbar-rightside,
+body.app-poll .cryptpad-toolbar .drawer-content {
+  background-color: #008c06;
+}
+body.app-poll .cryptpad-toolbar .cryptpad-toolbar-leftside button:hover,
+body.app-poll .cryptpad-toolbar .cryptpad-toolbar-rightside button:hover,
+body.app-poll .cryptpad-toolbar .drawer-content button:hover {
+  background-color: #006304;
+}
+body.app-poll .cryptpad-toolbar .hoverable:hover .editable {
+  cursor: text;
+  border: 1px solid #00b007;
+  background: #003002;
+  color: #fff;
+}
+body.app-poll .cryptpad-toolbar .hoverable:hover .pencilIcon {
+  border: 1px solid #00b007;
+  background: #003002;
+  color: #fff;
+}
+body.app-poll .cryptpad-toolbar .hoverable:hover .pencilIcon:hover {
+  background: #004a03;
+}
+body.app-poll .cryptpad-toolbar .saveIcon {
+  border: 1px solid #00b007;
+  background: #003002;
+  color: #fff;
+}
+body.app-poll .cryptpad-toolbar .saveIcon:hover {
+  background: #004a03;
+}
+body.app-poll .cryptpad-toolbar input {
+  border: 1px solid #00b007;
+  background: #003002;
+  color: #fff;
+}
+body.app-poll .cryptpad-toolbar .dropdown-bar-content {
+  background: #004a03;
+  border: 1px solid #fff;
+  color: #fff;
+}
+body.app-poll .cryptpad-toolbar .dropdown-bar-content a {
+  color: #fff;
+}
+body.app-poll .cryptpad-toolbar .dropdown-bar-content a.active {
+  background-color: #003002;
+  color: #fff;
+}
+body.app-poll .cryptpad-toolbar .dropdown-bar-content a:hover {
+  background-color: #006304;
+  color: #fff;
+}
+body.app-poll .cryptpad-toolbar .dropdown-bar-content hr {
+  background-color: #001701;
+}
+body.app-poll .cryptpad-toolbar .dropdown-bar-content p h2 {
+  background-color: #003002;
+}
+body.app-poll .cryptpad-toolbar .dropdown-bar-content p .accountData {
+  background-color: #006304;
+}
+body.app-whiteboard .userlist-drawer {
+  background-color: #800080;
+  color: #fff;
+}
+body.app-whiteboard .userlist-drawer h2 {
+  background-color: #4d004d;
+}
+body.app-whiteboard .cryptpad-toolbar {
+  background-color: #800080;
+  color: #fff;
+}
+body.app-whiteboard .cryptpad-toolbar .userlist-drawer {
+  background-color: #800080;
+  width: 150px;
+  position: absolute;
+  left: 0;
+  top: 96px;
+  bottom: 0;
+}
+body.app-whiteboard .cryptpad-toolbar .cryptpad-toolbar-leftside,
+body.app-whiteboard .cryptpad-toolbar .cryptpad-toolbar-rightside,
+body.app-whiteboard .cryptpad-toolbar .drawer-content {
+  background-color: #a900a9;
+}
+body.app-whiteboard .cryptpad-toolbar .cryptpad-toolbar-leftside button:hover,
+body.app-whiteboard .cryptpad-toolbar .cryptpad-toolbar-rightside button:hover,
+body.app-whiteboard .cryptpad-toolbar .drawer-content button:hover {
+  background-color: #800080;
+}
+body.app-whiteboard .cryptpad-toolbar .hoverable:hover .editable {
+  cursor: text;
+  border: 1px solid #cd00cc;
+  background: #4d004d;
+  color: #fff;
+}
+body.app-whiteboard .cryptpad-toolbar .hoverable:hover .pencilIcon {
+  border: 1px solid #cd00cc;
+  background: #4d004d;
+  color: #fff;
+}
+body.app-whiteboard .cryptpad-toolbar .hoverable:hover .pencilIcon:hover {
+  background: #670066;
+}
+body.app-whiteboard .cryptpad-toolbar .saveIcon {
+  border: 1px solid #cd00cc;
+  background: #4d004d;
+  color: #fff;
+}
+body.app-whiteboard .cryptpad-toolbar .saveIcon:hover {
+  background: #670066;
+}
+body.app-whiteboard .cryptpad-toolbar input {
+  border: 1px solid #cd00cc;
+  background: #4d004d;
+  color: #fff;
+}
+body.app-whiteboard .cryptpad-toolbar .dropdown-bar-content {
+  background: #670066;
+  border: 1px solid #fff;
+  color: #fff;
+}
+body.app-whiteboard .cryptpad-toolbar .dropdown-bar-content a {
+  color: #fff;
+}
+body.app-whiteboard .cryptpad-toolbar .dropdown-bar-content a.active {
+  background-color: #4d004d;
+  color: #fff;
+}
+body.app-whiteboard .cryptpad-toolbar .dropdown-bar-content a:hover {
+  background-color: #800080;
+  color: #fff;
+}
+body.app-whiteboard .cryptpad-toolbar .dropdown-bar-content hr {
+  background-color: #340033;
+}
+body.app-whiteboard .cryptpad-toolbar .dropdown-bar-content p h2 {
+  background-color: #4d004d;
+}
+body.app-whiteboard .cryptpad-toolbar .dropdown-bar-content p .accountData {
+  background-color: #800080;
+}
+body.app-drive .userlist-drawer {
+  background-color: #0087ff;
+  color: #fff;
+}
+body.app-drive .userlist-drawer h2 {
+  background-color: #006ccc;
+}
+body.app-drive .cryptpad-toolbar {
+  background-color: #0087ff;
+  color: #fff;
+}
+body.app-drive .cryptpad-toolbar .userlist-drawer {
+  background-color: #0087ff;
+  width: 150px;
+  position: absolute;
+  left: 0;
+  top: 96px;
+  bottom: 0;
+}
+body.app-drive .cryptpad-toolbar .cryptpad-toolbar-leftside,
+body.app-drive .cryptpad-toolbar .cryptpad-toolbar-rightside,
+body.app-drive .cryptpad-toolbar .drawer-content {
+  background-color: #299aff;
+}
+body.app-drive .cryptpad-toolbar .cryptpad-toolbar-leftside button:hover,
+body.app-drive .cryptpad-toolbar .cryptpad-toolbar-rightside button:hover,
+body.app-drive .cryptpad-toolbar .drawer-content button:hover {
+  background-color: #0087ff;
+}
+body.app-drive .cryptpad-toolbar .hoverable:hover .editable {
+  cursor: text;
+  border: 1px solid #4dabff;
+  background: #006ccc;
+  color: #fff;
+}
+body.app-drive .cryptpad-toolbar .hoverable:hover .pencilIcon {
+  border: 1px solid #4dabff;
+  background: #006ccc;
+  color: #fff;
+}
+body.app-drive .cryptpad-toolbar .hoverable:hover .pencilIcon:hover {
+  background: #0079e6;
+}
+body.app-drive .cryptpad-toolbar .saveIcon {
+  border: 1px solid #4dabff;
+  background: #006ccc;
+  color: #fff;
+}
+body.app-drive .cryptpad-toolbar .saveIcon:hover {
+  background: #0079e6;
+}
+body.app-drive .cryptpad-toolbar input {
+  border: 1px solid #4dabff;
+  background: #006ccc;
+  color: #fff;
+}
+body.app-drive .cryptpad-toolbar .dropdown-bar-content {
+  background: #0079e6;
+  border: 1px solid #fff;
+  color: #fff;
+}
+body.app-drive .cryptpad-toolbar .dropdown-bar-content a {
+  color: #fff;
+}
+body.app-drive .cryptpad-toolbar .dropdown-bar-content a.active {
+  background-color: #006ccc;
+  color: #fff;
+}
+body.app-drive .cryptpad-toolbar .dropdown-bar-content a:hover {
+  background-color: #0087ff;
+  color: #fff;
+}
+body.app-drive .cryptpad-toolbar .dropdown-bar-content hr {
+  background-color: #005eb3;
+}
+body.app-drive .cryptpad-toolbar .dropdown-bar-content p h2 {
+  background-color: #006ccc;
+}
+body.app-drive .cryptpad-toolbar .dropdown-bar-content p .accountData {
+  background-color: #0087ff;
+}
+body.app-file .userlist-drawer {
+  background-color: #cd2532;
+  color: #fff;
+}
+body.app-file .userlist-drawer h2 {
+  background-color: #a21d27;
+}
+body.app-file .cryptpad-toolbar {
+  background-color: #cd2532;
+  color: #fff;
+}
+body.app-file .cryptpad-toolbar .userlist-drawer {
+  background-color: #cd2532;
+  width: 150px;
+  position: absolute;
+  left: 0;
+  top: 96px;
+  bottom: 0;
+}
+body.app-file .cryptpad-toolbar .cryptpad-toolbar-leftside,
+body.app-file .cryptpad-toolbar .cryptpad-toolbar-rightside,
+body.app-file .cryptpad-toolbar .drawer-content {
+  background-color: #dc3f4b;
+}
+body.app-file .cryptpad-toolbar .cryptpad-toolbar-leftside button:hover,
+body.app-file .cryptpad-toolbar .cryptpad-toolbar-rightside button:hover,
+body.app-file .cryptpad-toolbar .drawer-content button:hover {
+  background-color: #cd2532;
+}
+body.app-file .cryptpad-toolbar .hoverable:hover .editable {
+  cursor: text;
+  border: 1px solid #e25d67;
+  background: #a21d27;
+  color: #fff;
+}
+body.app-file .cryptpad-toolbar .hoverable:hover .pencilIcon {
+  border: 1px solid #e25d67;
+  background: #a21d27;
+  color: #fff;
+}
+body.app-file .cryptpad-toolbar .hoverable:hover .pencilIcon:hover {
+  background: #b7212d;
+}
+body.app-file .cryptpad-toolbar .saveIcon {
+  border: 1px solid #e25d67;
+  background: #a21d27;
+  color: #fff;
+}
+body.app-file .cryptpad-toolbar .saveIcon:hover {
+  background: #b7212d;
+}
+body.app-file .cryptpad-toolbar input {
+  border: 1px solid #e25d67;
+  background: #a21d27;
+  color: #fff;
+}
+body.app-file .cryptpad-toolbar .dropdown-bar-content {
+  background: #b7212d;
+  border: 1px solid #fff;
+  color: #fff;
+}
+body.app-file .cryptpad-toolbar .dropdown-bar-content a {
+  color: #fff;
+}
+body.app-file .cryptpad-toolbar .dropdown-bar-content a.active {
+  background-color: #a21d27;
+  color: #fff;
+}
+body.app-file .cryptpad-toolbar .dropdown-bar-content a:hover {
+  background-color: #cd2532;
+  color: #fff;
+}
+body.app-file .cryptpad-toolbar .dropdown-bar-content hr {
+  background-color: #8c1922;
+}
+body.app-file .cryptpad-toolbar .dropdown-bar-content p h2 {
+  background-color: #a21d27;
+}
+body.app-file .cryptpad-toolbar .dropdown-bar-content p .accountData {
+  background-color: #cd2532;
+}
 .cryptpad-toolbar {
   box-sizing: border-box;
   padding: 0px;
@@ -115,468 +717,6 @@
   font: normal normal normal 12px Arial, Helvetica, Tahoma, Verdana, Sans-Serif;
   width: 100%;
   z-index: 9001;
-}
-.cryptpad-toolbar.pad {
-  background-color: #1c4fa0;
-  color: #fff;
-}
-.cryptpad-toolbar.pad .cryptpad-toolbar-leftside,
-.cryptpad-toolbar.pad .cryptpad-toolbar-rightside,
-.cryptpad-toolbar.pad .drawer-content {
-  background-color: #2260c3;
-}
-.cryptpad-toolbar.pad .cryptpad-toolbar-leftside button:hover,
-.cryptpad-toolbar.pad .cryptpad-toolbar-rightside button:hover,
-.cryptpad-toolbar.pad .drawer-content button:hover {
-  background-color: #1c4fa0;
-}
-.cryptpad-toolbar.pad .hoverable:hover .editable {
-  cursor: text;
-  border: 1px solid #2e71da;
-  background: #143a75;
-  color: #fff;
-}
-.cryptpad-toolbar.pad .hoverable:hover .pencilIcon {
-  border: 1px solid #2e71da;
-  background: #143a75;
-  color: #fff;
-}
-.cryptpad-toolbar.pad .hoverable:hover .pencilIcon:hover {
-  background: #18448a;
-}
-.cryptpad-toolbar.pad .saveIcon {
-  border: 1px solid #2e71da;
-  background: #143a75;
-  color: #fff;
-}
-.cryptpad-toolbar.pad .saveIcon:hover {
-  background: #18448a;
-}
-.cryptpad-toolbar.pad input {
-  border: 1px solid #2e71da;
-  background: #143a75;
-  color: #fff;
-}
-.cryptpad-toolbar.pad .dropdown-bar-content {
-  background: #18448a;
-  border: 1px solid #fff;
-  color: #fff;
-}
-.cryptpad-toolbar.pad .dropdown-bar-content a {
-  color: #fff;
-}
-.cryptpad-toolbar.pad .dropdown-bar-content a.active {
-  background-color: #143a75;
-  color: #fff;
-}
-.cryptpad-toolbar.pad .dropdown-bar-content a:hover {
-  background-color: #1c4fa0;
-  color: #fff;
-}
-.cryptpad-toolbar.pad .dropdown-bar-content hr {
-  background-color: #112f5f;
-}
-.cryptpad-toolbar.pad .dropdown-bar-content p h2 {
-  background-color: #143a75;
-}
-.cryptpad-toolbar.pad .dropdown-bar-content p .accountData {
-  background-color: #1c4fa0;
-}
-.cryptpad-toolbar.code {
-  background-color: #ffae00;
-  color: #000;
-}
-.cryptpad-toolbar.code .cryptpad-toolbar-leftside,
-.cryptpad-toolbar.code .cryptpad-toolbar-rightside,
-.cryptpad-toolbar.code .drawer-content {
-  background-color: #ffbb29;
-}
-.cryptpad-toolbar.code .cryptpad-toolbar-leftside button:hover,
-.cryptpad-toolbar.code .cryptpad-toolbar-rightside button:hover,
-.cryptpad-toolbar.code .drawer-content button:hover {
-  background-color: #ffae00;
-}
-.cryptpad-toolbar.code .hoverable:hover .editable {
-  cursor: text;
-  border: 1px solid #ffc64d;
-  background: #cc8b00;
-  color: #000;
-}
-.cryptpad-toolbar.code .hoverable:hover .pencilIcon {
-  border: 1px solid #ffc64d;
-  background: #cc8b00;
-  color: #000;
-}
-.cryptpad-toolbar.code .hoverable:hover .pencilIcon:hover {
-  background: #e69d00;
-}
-.cryptpad-toolbar.code .saveIcon {
-  border: 1px solid #ffc64d;
-  background: #cc8b00;
-  color: #000;
-}
-.cryptpad-toolbar.code .saveIcon:hover {
-  background: #e69d00;
-}
-.cryptpad-toolbar.code input {
-  border: 1px solid #ffc64d;
-  background: #cc8b00;
-  color: #000;
-}
-.cryptpad-toolbar.code .dropdown-bar-content {
-  background: #e69d00;
-  border: 1px solid #000;
-  color: #000;
-}
-.cryptpad-toolbar.code .dropdown-bar-content a {
-  color: #000;
-}
-.cryptpad-toolbar.code .dropdown-bar-content a.active {
-  background-color: #cc8b00;
-  color: #000;
-}
-.cryptpad-toolbar.code .dropdown-bar-content a:hover {
-  background-color: #ffae00;
-  color: #000;
-}
-.cryptpad-toolbar.code .dropdown-bar-content hr {
-  background-color: #b37a00;
-}
-.cryptpad-toolbar.code .dropdown-bar-content p h2 {
-  background-color: #cc8b00;
-}
-.cryptpad-toolbar.code .dropdown-bar-content p .accountData {
-  background-color: #ffae00;
-}
-.cryptpad-toolbar.slide {
-  background-color: #e57614;
-  color: #fff;
-}
-.cryptpad-toolbar.slide .cryptpad-toolbar-leftside,
-.cryptpad-toolbar.slide .cryptpad-toolbar-rightside,
-.cryptpad-toolbar.slide .drawer-content {
-  background-color: #ed8b34;
-}
-.cryptpad-toolbar.slide .cryptpad-toolbar-leftside button:hover,
-.cryptpad-toolbar.slide .cryptpad-toolbar-rightside button:hover,
-.cryptpad-toolbar.slide .drawer-content button:hover {
-  background-color: #e57614;
-}
-.cryptpad-toolbar.slide .hoverable:hover .editable {
-  cursor: text;
-  border: 1px solid #f09e55;
-  background: #b65e10;
-  color: #fff;
-}
-.cryptpad-toolbar.slide .hoverable:hover .pencilIcon {
-  border: 1px solid #f09e55;
-  background: #b65e10;
-  color: #fff;
-}
-.cryptpad-toolbar.slide .hoverable:hover .pencilIcon:hover {
-  background: #ce6a12;
-}
-.cryptpad-toolbar.slide .saveIcon {
-  border: 1px solid #f09e55;
-  background: #b65e10;
-  color: #fff;
-}
-.cryptpad-toolbar.slide .saveIcon:hover {
-  background: #ce6a12;
-}
-.cryptpad-toolbar.slide input {
-  border: 1px solid #f09e55;
-  background: #b65e10;
-  color: #fff;
-}
-.cryptpad-toolbar.slide .dropdown-bar-content {
-  background: #ce6a12;
-  border: 1px solid #fff;
-  color: #fff;
-}
-.cryptpad-toolbar.slide .dropdown-bar-content a {
-  color: #fff;
-}
-.cryptpad-toolbar.slide .dropdown-bar-content a.active {
-  background-color: #b65e10;
-  color: #fff;
-}
-.cryptpad-toolbar.slide .dropdown-bar-content a:hover {
-  background-color: #e57614;
-  color: #fff;
-}
-.cryptpad-toolbar.slide .dropdown-bar-content hr {
-  background-color: #9f520e;
-}
-.cryptpad-toolbar.slide .dropdown-bar-content p h2 {
-  background-color: #b65e10;
-}
-.cryptpad-toolbar.slide .dropdown-bar-content p .accountData {
-  background-color: #e57614;
-}
-.cryptpad-toolbar.poll {
-  background-color: #006304;
-  color: #fff;
-}
-.cryptpad-toolbar.poll .cryptpad-toolbar-leftside,
-.cryptpad-toolbar.poll .cryptpad-toolbar-rightside,
-.cryptpad-toolbar.poll .drawer-content {
-  background-color: #008c06;
-}
-.cryptpad-toolbar.poll .cryptpad-toolbar-leftside button:hover,
-.cryptpad-toolbar.poll .cryptpad-toolbar-rightside button:hover,
-.cryptpad-toolbar.poll .drawer-content button:hover {
-  background-color: #006304;
-}
-.cryptpad-toolbar.poll .hoverable:hover .editable {
-  cursor: text;
-  border: 1px solid #00b007;
-  background: #003002;
-  color: #fff;
-}
-.cryptpad-toolbar.poll .hoverable:hover .pencilIcon {
-  border: 1px solid #00b007;
-  background: #003002;
-  color: #fff;
-}
-.cryptpad-toolbar.poll .hoverable:hover .pencilIcon:hover {
-  background: #004a03;
-}
-.cryptpad-toolbar.poll .saveIcon {
-  border: 1px solid #00b007;
-  background: #003002;
-  color: #fff;
-}
-.cryptpad-toolbar.poll .saveIcon:hover {
-  background: #004a03;
-}
-.cryptpad-toolbar.poll input {
-  border: 1px solid #00b007;
-  background: #003002;
-  color: #fff;
-}
-.cryptpad-toolbar.poll .dropdown-bar-content {
-  background: #004a03;
-  border: 1px solid #fff;
-  color: #fff;
-}
-.cryptpad-toolbar.poll .dropdown-bar-content a {
-  color: #fff;
-}
-.cryptpad-toolbar.poll .dropdown-bar-content a.active {
-  background-color: #003002;
-  color: #fff;
-}
-.cryptpad-toolbar.poll .dropdown-bar-content a:hover {
-  background-color: #006304;
-  color: #fff;
-}
-.cryptpad-toolbar.poll .dropdown-bar-content hr {
-  background-color: #001701;
-}
-.cryptpad-toolbar.poll .dropdown-bar-content p h2 {
-  background-color: #003002;
-}
-.cryptpad-toolbar.poll .dropdown-bar-content p .accountData {
-  background-color: #006304;
-}
-.cryptpad-toolbar.whiteboard {
-  background-color: #800080;
-  color: #fff;
-}
-.cryptpad-toolbar.whiteboard .cryptpad-toolbar-leftside,
-.cryptpad-toolbar.whiteboard .cryptpad-toolbar-rightside,
-.cryptpad-toolbar.whiteboard .drawer-content {
-  background-color: #a900a9;
-}
-.cryptpad-toolbar.whiteboard .cryptpad-toolbar-leftside button:hover,
-.cryptpad-toolbar.whiteboard .cryptpad-toolbar-rightside button:hover,
-.cryptpad-toolbar.whiteboard .drawer-content button:hover {
-  background-color: #800080;
-}
-.cryptpad-toolbar.whiteboard .hoverable:hover .editable {
-  cursor: text;
-  border: 1px solid #cd00cc;
-  background: #4d004d;
-  color: #fff;
-}
-.cryptpad-toolbar.whiteboard .hoverable:hover .pencilIcon {
-  border: 1px solid #cd00cc;
-  background: #4d004d;
-  color: #fff;
-}
-.cryptpad-toolbar.whiteboard .hoverable:hover .pencilIcon:hover {
-  background: #670066;
-}
-.cryptpad-toolbar.whiteboard .saveIcon {
-  border: 1px solid #cd00cc;
-  background: #4d004d;
-  color: #fff;
-}
-.cryptpad-toolbar.whiteboard .saveIcon:hover {
-  background: #670066;
-}
-.cryptpad-toolbar.whiteboard input {
-  border: 1px solid #cd00cc;
-  background: #4d004d;
-  color: #fff;
-}
-.cryptpad-toolbar.whiteboard .dropdown-bar-content {
-  background: #670066;
-  border: 1px solid #fff;
-  color: #fff;
-}
-.cryptpad-toolbar.whiteboard .dropdown-bar-content a {
-  color: #fff;
-}
-.cryptpad-toolbar.whiteboard .dropdown-bar-content a.active {
-  background-color: #4d004d;
-  color: #fff;
-}
-.cryptpad-toolbar.whiteboard .dropdown-bar-content a:hover {
-  background-color: #800080;
-  color: #fff;
-}
-.cryptpad-toolbar.whiteboard .dropdown-bar-content hr {
-  background-color: #340033;
-}
-.cryptpad-toolbar.whiteboard .dropdown-bar-content p h2 {
-  background-color: #4d004d;
-}
-.cryptpad-toolbar.whiteboard .dropdown-bar-content p .accountData {
-  background-color: #800080;
-}
-.cryptpad-toolbar.drive {
-  background-color: #0087ff;
-  color: #fff;
-}
-.cryptpad-toolbar.drive .cryptpad-toolbar-leftside,
-.cryptpad-toolbar.drive .cryptpad-toolbar-rightside,
-.cryptpad-toolbar.drive .drawer-content {
-  background-color: #299aff;
-}
-.cryptpad-toolbar.drive .cryptpad-toolbar-leftside button:hover,
-.cryptpad-toolbar.drive .cryptpad-toolbar-rightside button:hover,
-.cryptpad-toolbar.drive .drawer-content button:hover {
-  background-color: #0087ff;
-}
-.cryptpad-toolbar.drive .hoverable:hover .editable {
-  cursor: text;
-  border: 1px solid #4dabff;
-  background: #006ccc;
-  color: #fff;
-}
-.cryptpad-toolbar.drive .hoverable:hover .pencilIcon {
-  border: 1px solid #4dabff;
-  background: #006ccc;
-  color: #fff;
-}
-.cryptpad-toolbar.drive .hoverable:hover .pencilIcon:hover {
-  background: #0079e6;
-}
-.cryptpad-toolbar.drive .saveIcon {
-  border: 1px solid #4dabff;
-  background: #006ccc;
-  color: #fff;
-}
-.cryptpad-toolbar.drive .saveIcon:hover {
-  background: #0079e6;
-}
-.cryptpad-toolbar.drive input {
-  border: 1px solid #4dabff;
-  background: #006ccc;
-  color: #fff;
-}
-.cryptpad-toolbar.drive .dropdown-bar-content {
-  background: #0079e6;
-  border: 1px solid #fff;
-  color: #fff;
-}
-.cryptpad-toolbar.drive .dropdown-bar-content a {
-  color: #fff;
-}
-.cryptpad-toolbar.drive .dropdown-bar-content a.active {
-  background-color: #006ccc;
-  color: #fff;
-}
-.cryptpad-toolbar.drive .dropdown-bar-content a:hover {
-  background-color: #0087ff;
-  color: #fff;
-}
-.cryptpad-toolbar.drive .dropdown-bar-content hr {
-  background-color: #005eb3;
-}
-.cryptpad-toolbar.drive .dropdown-bar-content p h2 {
-  background-color: #006ccc;
-}
-.cryptpad-toolbar.drive .dropdown-bar-content p .accountData {
-  background-color: #0087ff;
-}
-.cryptpad-toolbar.file {
-  background-color: #cd2532;
-  color: #fff;
-}
-.cryptpad-toolbar.file .cryptpad-toolbar-leftside,
-.cryptpad-toolbar.file .cryptpad-toolbar-rightside,
-.cryptpad-toolbar.file .drawer-content {
-  background-color: #dc3f4b;
-}
-.cryptpad-toolbar.file .cryptpad-toolbar-leftside button:hover,
-.cryptpad-toolbar.file .cryptpad-toolbar-rightside button:hover,
-.cryptpad-toolbar.file .drawer-content button:hover {
-  background-color: #cd2532;
-}
-.cryptpad-toolbar.file .hoverable:hover .editable {
-  cursor: text;
-  border: 1px solid #e25d67;
-  background: #a21d27;
-  color: #fff;
-}
-.cryptpad-toolbar.file .hoverable:hover .pencilIcon {
-  border: 1px solid #e25d67;
-  background: #a21d27;
-  color: #fff;
-}
-.cryptpad-toolbar.file .hoverable:hover .pencilIcon:hover {
-  background: #b7212d;
-}
-.cryptpad-toolbar.file .saveIcon {
-  border: 1px solid #e25d67;
-  background: #a21d27;
-  color: #fff;
-}
-.cryptpad-toolbar.file .saveIcon:hover {
-  background: #b7212d;
-}
-.cryptpad-toolbar.file input {
-  border: 1px solid #e25d67;
-  background: #a21d27;
-  color: #fff;
-}
-.cryptpad-toolbar.file .dropdown-bar-content {
-  background: #b7212d;
-  border: 1px solid #fff;
-  color: #fff;
-}
-.cryptpad-toolbar.file .dropdown-bar-content a {
-  color: #fff;
-}
-.cryptpad-toolbar.file .dropdown-bar-content a.active {
-  background-color: #a21d27;
-  color: #fff;
-}
-.cryptpad-toolbar.file .dropdown-bar-content a:hover {
-  background-color: #cd2532;
-  color: #fff;
-}
-.cryptpad-toolbar.file .dropdown-bar-content hr {
-  background-color: #8c1922;
-}
-.cryptpad-toolbar.file .dropdown-bar-content p h2 {
-  background-color: #a21d27;
-}
-.cryptpad-toolbar.file .dropdown-bar-content p .accountData {
-  background-color: #cd2532;
 }
 .cryptpad-toolbar .fa {
   font: normal normal normal 14px/1 FontAwesome;
@@ -1095,7 +1235,9 @@
   margin: 5px 0px;
 }
 .cryptpad-toolbar-leftside button {
-  margin: 2px 4px 2px 0px;
+  margin: 0px;
+  border-radius: 0;
+  height: 100%;
 }
 .cryptpad-toolbar-leftside .dropdown-bar-content {
   margin-top: -1px;

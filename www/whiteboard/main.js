@@ -312,7 +312,8 @@ window.canvas = canvas;
                 ifrw: window,
                 realtime: info.realtime,
                 network: info.network,
-                $container: $bar
+                $container: $bar,
+                $contentContainer: $('#canvas-area')
             };
 
             toolbar = module.toolbar = Toolbar.create(configTb);

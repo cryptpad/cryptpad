@@ -44,7 +44,6 @@ define([
             History.readOnly = 2;
         }
         else if (!secret.keys.validateKey) {
-            secret.keys.validateKey = true;
             History.readOnly = 0;
         }
 
@@ -70,6 +69,10 @@ define([
                 return;
             }
             if (parsed[0] !== 'FULL_HISTORY') { return; }
+            if (parsed[1] && parsed[1].validateKey) { // First message
+                secret.keys.validateKey = parsed[1].validateKey;
+                return;
+            }
             msg = parsed[1][4];
             if (msg) {
                 msg = msg.replace(/^cp\|/, '');

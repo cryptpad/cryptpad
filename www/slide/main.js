@@ -49,6 +49,7 @@ define([
 
         var andThen = function (CMeditor) {
             var $iframe = $('#pad-iframe').contents();
+            var $contentContainer = $iframe.find('#editorContainer');
             var CodeMirror = Cryptpad.createCodemirror(CMeditor, ifrw, Cryptpad);
             editor = CodeMirror.editor;
 
@@ -358,7 +359,8 @@ define([
                     ifrw: ifrw,
                     realtime: info.realtime,
                     network: info.network,
-                    $container: $bar
+                    $container: $bar,
+                    $contentContainer: $contentContainer
                 };
                 toolbar = module.toolbar = Toolbar.create(configTb);
 

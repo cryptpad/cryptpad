@@ -24,6 +24,176 @@
 .cke_reset_all * {
     color: inherit;
 }
+
+#cke_1_contents {
+    margin-top: -1px;
+    display: flex;
+}
+
+.userlist-drawer {
+    font: normal normal normal 14px Arial,Helvetica,Tahoma,Verdana,Sans-Serif;
+    width: 175px;
+    display: block;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 10px;
+    box-sizing: border-box;
+    h2 {
+        color: inherit;
+        font-size: 1.2em;
+        font-weight: bold;
+        text-align: center;
+        padding: 5px 0px;
+        margin: 5px 0px;
+        font-size: 16px;
+        white-space: normal;
+    }
+    text-align:baseline;
+    .viewer {
+        font-style: italic;
+        padding: 5px;
+        background: rgba(0,0,0,0.1);
+        margin: 2px 0;
+    }
+
+    .userlist-others {
+        display: flex;
+        flex-flow: column;
+        margin: 10px 0;
+        margin-bottom: 20px;
+        &>span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 5px;
+            background: rgba(0,0,0,0.1);
+            margin: 2px 0;
+        }
+    }
+}
+
+body {
+    .addToolbarColors (@color, @bg-color) {
+        .userlist-drawer {
+            background-color: @bgcolor;
+            color: @color;
+            h2 {
+                background-color: darken(@bgcolor, 10%);
+            }
+        }
+        .cryptpad-toolbar {
+            background-color: @bgcolor;
+            color: @color;
+            .userlist-drawer {
+                background-color: @bgcolor;
+                width: 150px;
+                position: absolute;
+                left: 0;
+                top: 96px;
+                bottom: 0;
+            }
+            .cryptpad-toolbar-leftside, .cryptpad-toolbar-rightside, .drawer-content {
+                background-color: lighten(@bgcolor, 8%);
+                button:hover {
+                    background-color: @bgcolor;
+                }
+            }
+            .hoverable:hover {
+                .editable {
+                    cursor: text;
+                    border: 1px solid lighten(@bgcolor, 15%);
+                    background: darken(@bgcolor, 10%);
+                    color: @color;
+                }
+                .pencilIcon {
+                    border: 1px solid lighten(@bgcolor, 15%);
+                    background: darken(@bgcolor, 10%);
+                    color: @color;
+                    &:hover {
+                        background: darken(@bgcolor, 5%);
+                    }
+                }
+            }
+            .saveIcon {
+                border: 1px solid lighten(@bgcolor, 15%);
+                background: darken(@bgcolor, 10%);
+                color: @color;
+                &:hover {
+                    background: darken(@bgcolor, 5%);
+                }
+            }
+            input {
+                border: 1px solid lighten(@bgcolor, 15%);
+                background: darken(@bgcolor, 10%);
+                color: @color;
+            }
+            .dropdown-bar-content {
+                background: darken(@bgcolor, 5%);
+                border: 1px solid @color;
+                color: @color;
+                a {
+                    color: @color;
+                    &.active {
+                        background-color: darken(@bgcolor, 10%);
+                        color: @color;
+                    }
+                    &:hover {
+                        background-color: @bgcolor;
+                        color: @color;
+                    }
+                }
+                hr {
+                    background-color: darken(@bgcolor, 15%);
+                }
+                p {
+                    h2 {
+                        background-color: darken(@bgcolor, 10%);
+                    }
+                    .accountData {
+                        background-color: @bgcolor;
+                    }
+                }
+            }
+        }
+    }
+
+    &.app-pad {
+        @bgcolor: @toolbar-pad-bg;
+        @color: @toolbar-pad-color;
+        .addToolbarColors(@color, @bgcolor);
+    }
+    &.app-code {
+        @bgcolor: @toolbar-code-bg;
+        @color: @toolbar-code-color;
+        .addToolbarColors(@color, @bgcolor);
+    }
+    &.app-slide {
+        @bgcolor: @toolbar-slide-bg;
+        @color: @toolbar-slide-color;
+        .addToolbarColors(@color, @bgcolor);
+    }
+    &.app-poll {
+        @bgcolor: @toolbar-poll-bg;
+        @color: @toolbar-poll-color;
+        .addToolbarColors(@color, @bgcolor);
+    }
+    &.app-whiteboard {
+        @bgcolor: @toolbar-whiteboard-bg;
+        @color: @toolbar-whiteboard-color;
+        .addToolbarColors(@color, @bgcolor);
+    }
+    &.app-drive {
+        @bgcolor: @toolbar-drive-bg;
+        @color: @toolbar-drive-color;
+        .addToolbarColors(@color, @bgcolor);
+    }
+    &.app-file {
+        @bgcolor: @toolbar-file-bg;
+        @color: @toolbar-file-color;
+        .addToolbarColors(@color, @bgcolor);
+    }
+
+}
+
 .cryptpad-toolbar {
     @toolbar-green: #5cb85c;
 
@@ -34,108 +204,7 @@
     background-color: @toolbar-default-bg;
     color: @toolbar-default-color;
 
-    .addToolbarColors (@color, @bg-color) {
-        background-color: @bgcolor;
-        color: @color;
-        .cryptpad-toolbar-leftside, .cryptpad-toolbar-rightside, .drawer-content {
-            background-color: lighten(@bgcolor, 8%);
-            button:hover {
-                background-color: @bgcolor;
-            }
-        }
-        .hoverable:hover {
-            .editable {
-                cursor: text;
-                border: 1px solid lighten(@bgcolor, 15%);
-                background: darken(@bgcolor, 10%);
-                color: @color;
-            }
-            .pencilIcon {
-                border: 1px solid lighten(@bgcolor, 15%);
-                background: darken(@bgcolor, 10%);
-                color: @color;
-                &:hover {
-                    background: darken(@bgcolor, 5%);
-                }
-            }
-        }
-        .saveIcon {
-            border: 1px solid lighten(@bgcolor, 15%);
-            background: darken(@bgcolor, 10%);
-            color: @color;
-            &:hover {
-                background: darken(@bgcolor, 5%);
-            }
-        }
-        input {
-            border: 1px solid lighten(@bgcolor, 15%);
-            background: darken(@bgcolor, 10%);
-            color: @color;
-        }
-        .dropdown-bar-content {
-            background: darken(@bgcolor, 5%);
-            border: 1px solid @color;
-            color: @color;
-            a {
-                color: @color;
-                &.active {
-                    background-color: darken(@bgcolor, 10%);
-                    color: @color;
-                }
-                &:hover {
-                    background-color: @bgcolor;
-                    color: @color;
-                }
-            }
-            hr {
-                background-color: darken(@bgcolor, 15%);
-            }
-            p {
-                h2 {
-                    background-color: darken(@bgcolor, 10%);
-                }
-                .accountData {
-                    background-color: @bgcolor;
-                }
-            }
-        }
-    }
 
-    &.pad {
-        @bgcolor: @toolbar-pad-bg;
-        @color: @toolbar-pad-color;
-        .addToolbarColors(@color, @bgcolor);
-    }
-    &.code {
-        @bgcolor: @toolbar-code-bg;
-        @color: @toolbar-code-color;
-        .addToolbarColors(@color, @bgcolor);
-    }
-    &.slide {
-        @bgcolor: @toolbar-slide-bg;
-        @color: @toolbar-slide-color;
-        .addToolbarColors(@color, @bgcolor);
-    }
-    &.poll {
-        @bgcolor: @toolbar-poll-bg;
-        @color: @toolbar-poll-color;
-        .addToolbarColors(@color, @bgcolor);
-    }
-    &.whiteboard {
-        @bgcolor: @toolbar-whiteboard-bg;
-        @color: @toolbar-whiteboard-color;
-        .addToolbarColors(@color, @bgcolor);
-    }
-    &.drive {
-        @bgcolor: @toolbar-drive-bg;
-        @color: @toolbar-drive-color;
-        .addToolbarColors(@color, @bgcolor);
-    }
-    &.file {
-        @bgcolor: @toolbar-file-bg;
-        @color: @toolbar-file-color;
-        .addToolbarColors(@color, @bgcolor);
-    }
 
     .fa {
         font: normal normal normal 14px/1 FontAwesome;
@@ -664,7 +733,9 @@
         }
     }
     button {
-        margin: 2px 4px 2px 0px;
+        margin: 0px;
+        border-radius: 0;
+        height: 100%;
     }
     .dropdown-bar-content {
         margin-top: -1px;

@@ -488,7 +488,8 @@ define(function () {
 
     out.header_france = '<a href="http://www.xwiki.com/fr" target="_blank" rel="noopener noreferrer">Fait avec <img class="bottom-bar-heart" src="/customize/heart.png" alt="amour" /> en <img class="bottom-bar-fr" title="France" alt="France" src="/customize/fr.png" /> par <img src="/customize/logo-xwiki.png" alt="XWiki SAS" class="bottom-bar-xwiki"/></a>';
     out.header_support = '<a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
-    out.header_logoTitle = "Aller vers la page d'accueil";
+    out.updated_0_header_logoTitle = 'Retourner vers votre CryptDrive';
+    out.header_logoTitle = out.updated_0_header_logoTitle;
 
     // Initial states
 
