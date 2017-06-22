@@ -400,8 +400,8 @@ define([
             throw new Error("Unable to display the share button: hash required in the URL");
         }
         var $shareIcon = $('<span>', {'class': 'fa fa-share-alt'});
-        var $span = $('<span>', {'class': 'large'}).append(' ' +Messages.shareButton);
-        var $button = $('<button>', {'id': 'shareButton'}).append($shareIcon).append($span);
+        //var $span = $('<span>', {'class': 'large'}).append(' ' +Messages.shareButton);
+        var $button = $('<button>', {'title': Messages.shareButton}).append($shareIcon);//:.append($span);
         $button.click(function () {
             var url = window.location.href;
             var success = Cryptpad.Clipboard.copy(url);
