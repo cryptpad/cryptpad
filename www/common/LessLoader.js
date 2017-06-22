@@ -42,7 +42,7 @@ define([
         localStorage['LESS_CACHE'] = key;
     };
 
-    var load = module.exports.load = function (url /*:string*/, cb /*:()=>void*/) {
+    module.exports.load = function (url /*:string*/, cb /*:()=>void*/) {
         checkCache();
         if (localStorage['LESS_CACHE|' + key + '|' + url]) {
             inject(localStorage['LESS_CACHE|' + key + '|' + url], url);

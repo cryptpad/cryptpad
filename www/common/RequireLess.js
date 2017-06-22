@@ -5,7 +5,7 @@ define([
     api.normalize = function(name, normalize) {
         return normalize(name);
     };
-    api.load = function(cssId, req, load, config) {
+    api.load = function(cssId, req, load /*, config */) {
         LessLoader.load(cssId, load);
     };
     return api;
