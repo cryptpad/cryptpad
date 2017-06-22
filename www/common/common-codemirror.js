@@ -21,12 +21,14 @@ define([
         var Title;
         var onLocal = function () {};
         var $rightside;
+        var $drawer;
         exp.init = function (local, title, toolbar) {
             if (typeof local === "function") {
                 onLocal = local;
             }
             Title = title;
             $rightside = toolbar.$rightside;
+            $drawer = toolbar.$drawer;
         };
 
         var editor = exp.editor = CMeditor.fromTextArea($textarea[0], {
@@ -156,7 +158,7 @@ define([
                 onLocal();
             });
 
-            if ($rightside) { $rightside.append($block); }
+            if ($drawer) { $drawer.append($block); }
             if (cb) { cb(); }
         };
 
@@ -194,7 +196,7 @@ define([
                 localStorage.setItem(themeKey, theme);
             });
 
-            if ($rightside) { $rightside.append($block); }
+            if ($drawer) { $drawer.append($block); }
             if (cb) { cb(); }
         };
 

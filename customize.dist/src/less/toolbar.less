@@ -32,52 +32,7 @@
 
     //background-color: #BBBBFF;
     background-color: @toolbar-default-bg;
-    color: @toolbar-default-color;/*
-    &.pad {
-        @bgcolor: @toolbar-pad-bg;
-        @color: @toolbar-pad-color;
-        background-color: @bgcolor;
-        color: @color;
-    }
-    &.code {
-        @bgcolor: @toolbar-code-bg;
-        @color: @toolbar-code-color;
-        background-color: @bgcolor;
-        color: @color;
-        .cryptpad-toolbar-leftside, .cryptpad-toolbar-rightside {
-            lighten($bgcolor, 15%);
-        }
-    }
-    &.slide {
-        @bgcolor: @toolbar-slide-bg;
-        @color: @toolbar-slide-color;
-        background-color: @toolbar-default-bg 150px);
-        border-bottom: 2px solid @color;
-    }
-    &.poll {
-        @bgcolor: @toolbar-poll-bg;
-        @color: @toolbar-poll-color;
-        background: linear-gradient(20deg, @color 150px, @toolbar-default-bg 150px);
-        border-bottom: 2px solid @color;
-    }
-    &.whiteboard {
-        @bgcolor: @toolbar-whiteboard-bg;
-        @color: @toolbar-whiteboard-color;
-        background: linear-gradient(20deg, @color 150px, @toolbar-default-bg 150px);
-        border-bottom: 2px solid @color;
-    }
-    &.drive {
-        @bgcolor: @toolbar-drive-bg;
-        @color: @toolbar-drive-color;
-        background: linear-gradient(20deg, @color 150px, @toolbar-default-bg 150px);
-        border-bottom: 2px solid @color;
-    }
-    &.file {
-        @bgcolor: @toolbar-file-bg;
-        @color: @toolbar-file-color;
-        background: linear-gradient(20deg, @color 150px, @toolbar-default-bg 150px);
-        border-bottom: 2px solid @color;
-    }*/
+    color: @toolbar-default-color;
 
     .addToolbarColors (@color, @bg-color) {
         background-color: @bgcolor;
@@ -118,7 +73,6 @@
             color: @color;
         }
         .dropdown-bar-content {
-            line-height: 14px;
             background: darken(@bgcolor, 5%);
             border: 1px solid @color;
             color: @color;
@@ -207,6 +161,9 @@
             border-radius: 0;
             margin: 0;
             background: transparent;
+        }
+        .dropdown-bar-content {
+            line-height: 14px;
         }
     }
 
@@ -523,12 +480,17 @@
     flex-flow: row;
     height: @toolbar-top-height;
     position: relative;
+    .filler {
+        height: 100%;
+        display: inline-block;
+        order: 4;
+        flex: 1;
+    }
     .cryptpad-title {
         order: 3;
         height: 100%;
         display: inline-block;
         line-height: @toolbar-top-height;
-        flex: 1;
         margin-left: 20px;
         .title, .pencilIcon, .saveIcon {
             font-size: 25px;
@@ -632,6 +594,9 @@
             background-color: rgba(0,0,0,0.5);
         }
         order: 1;
+        .fa {
+            margin: 0;
+        }
         a.cryptpad-logo {
             cursor: pointer;
             font-size: 1em;
@@ -644,7 +609,7 @@
     .cryptpad-user {
         height: 100%;
         display: inline-block;
-        order: 4;
+        order: 5;
         line-height: @toolbar-top-height;
         &> * {
             display: inline-block;
@@ -714,17 +679,37 @@
         border-radius: 0;
         padding: 0 10px;
     }
+    .drawer-content:empty ~ .drawer-button {
+        display: none;
+    }
     .drawer-content {
         position: absolute;
         right:0px;
         top:96px;
-        width: 50px;
+        min-width: 50px;
         background: white;
         border: 1px solid black;
-        display: none;
+        display: flex;
+        flex-flow: column;
+        z-index:1000;
+        &> span {
+            box-sizing: border-box;
+            width: 150px;
+            height: 26px;
+            border-radius: 0;
+            border: 0;
+            &:not(:last-child) {
+                border-bottom: 1px solid rgba(0,0,0,0.2);
+            }
+            button {
+                border: 0;
+            }
+        }
         button {
-            text-align: center;
             width: 100%;
+        }
+        &> button {
+            text-align: center;
             margin: 0;
             border-radius: 0;
             border: 1px solid transparent;

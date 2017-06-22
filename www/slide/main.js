@@ -366,6 +366,7 @@ define([
                 CodeMirror.init(config.onLocal, Title, toolbar);
 
                 var $rightside = toolbar.$rightside;
+                var $drawer = toolbar.$drawer;
 
                 var editHash;
 
@@ -386,7 +387,7 @@ define([
                     $toolbar: $bar
                 };
                 var $hist = Cryptpad.createButton('history', true, {histConfig: histConfig});
-                $rightside.append($hist);
+                $drawer.append($hist);
 
                 /* save as template */
                 if (!Cryptpad.isTemplate(window.location.href)) {
@@ -401,12 +402,12 @@ define([
 
                 /* add an export button */
                 var $export = Cryptpad.createButton('export', true, {}, CodeMirror.exportText);
-                $rightside.append($export);
+                $drawer.append($export);
 
                 if (!readOnly) {
                     /* add an import button */
                     var $import = Cryptpad.createButton('import', true, {}, CodeMirror.importText);
-                    $rightside.append($import);
+                    $drawer.append($import);
                 }
 
                 /* add a forget button */
@@ -459,7 +460,7 @@ define([
                     }, {ok: Messages.printButton});
                     //$('body').append(createPrintDialog());
                 });
-                $rightside.append($printButton);
+                $drawer.append($printButton);
 
                 var $slideOptions = $('<button>', {
                     title: Messages.slideOptionsTitle,
@@ -468,7 +469,7 @@ define([
                 }).click(function () {
                     $('body').append(createPrintDialog());
                 });
-                $rightside.append($slideOptions);
+                $drawer.append($slideOptions);
 
                 var $present = Cryptpad.createButton('present', true)
                     .click(function () {
