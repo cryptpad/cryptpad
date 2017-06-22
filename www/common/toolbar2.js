@@ -70,7 +70,8 @@ define([
 
         var parsed = Cryptpad.parsePadUrl(window.location.href);
         if (typeof parsed.type === "string") {
-            $toolbar.addClass(parsed.type);
+            var b = config.$container.parents('body')[0];
+            config.$container.parents('body').addClass('app-' + parsed.type);
         }
 
         var $topContainer = $('<div>', {'class': TOP_CLS});
@@ -144,15 +145,16 @@ define([
         var myUid = userData[userNetfluxId] ? userData[userNetfluxId].uid : undefined;
         var uids = [];
         userList.forEach(function(user) {
-            if (user !== userNetfluxId) {
+            //if (user !== userNetfluxId) {
                 var data = userData[user] || {};
                 var userName = data.name;
                 var userId = data.uid;
-                if (userName && uids.indexOf(userId) === -1 && (!myUid || userId !== myUid)) {
+                if (!data.uid) { return; }
+                if (uids.indexOf(userId) === -1) {// && (!myUid || userId !== myUid)) {
                     uids.push(userId);
-                    list.push(userName);
-                } else if (userName) { i++; }
-            }
+                    list.push(data);
+                } else { i++; }
+            //}
         });
         return {
             list: list,
@@ -167,6 +169,7 @@ define([
     var updateUserList = function (toolbar, config) {
         // Make sure the elements are displayed
         var $userButtons = toolbar.userlist;
+        var $userlistContent = toolbar.userlistContent;
 
         var userList = config.userList.list.users;
         var userData = config.userList.data;
@@ -185,38 +188,34 @@ define([
         var editUsersNames = others.list;
         var duplicates = others.duplicates; // Number of duplicates
 
+        editUsersNames.sort(function (a, b) {
+            var na = a.name || Messages.anonymous;
+            var nb = b.name || Messages.anonymous;
+            return na.toLowerCase() > nb.toLowerCase();
+        });
+
         var numberOfEditUsers = userList.length - duplicates;
         var numberOfViewUsers = numberOfUsers - userList.length;
 
-        // Number of anonymous editing users
-        var anonymous = numberOfEditUsers - editUsersNames.length;
-
         // Update the userlist
         var $usersTitle = $('<h2>').text(Messages.users);
-        var $editUsers = $userButtons.find('.' + USERLIST_CLS);
+        var $editUsers = $userlistContent;
         $editUsers.html('').append($usersTitle);
 
-        var $editUsersList = $('<pre>');
-        // Yourself (edit only)
-        if (config.readOnly !== 1) {
-            $editUsers.append('<span class="yourself">' + Messages.yourself + '</span>');
-            anonymous--;
-        }
+        var $editUsersList = $('<div>', {'class': 'userlist-others'});
+
         // Editors
-        $editUsersList.text(editUsersNames.join('\n')); // .text() to avoid XSS
+        editUsersNames.forEach(function (data) {
+            var name = data.name || Messages.anonymous;
+            var $span = $('<span>', {'title': name}).text(name);
+            $span.data('uid', data.uid);
+            $editUsersList.append($span);
+        });
         $editUsers.append($editUsersList);
-        // Anonymous editors
-        if (anonymous > 0) {
-            var text = anonymous === 1 ? Messages.anonymousUser : Messages.anonymousUsers;
-            $editUsers.append('<span class="anonymous">' + anonymous + ' ' + text + '</span>');
-        }
+
         // Viewers
         if (numberOfViewUsers > 0) {
             var viewText = '<span class="viewer">';
-            if (numberOfEditUsers > 0) {
-                $editUsers.append('<br>');
-                viewText += Messages.and + ' ';
-            }
             var viewerText = numberOfViewUsers !== 1 ? Messages.viewers : Messages.viewer;
             viewText += numberOfViewUsers + ' ' + viewerText + '</span>';
             $editUsers.append(viewText);
@@ -275,12 +274,33 @@ define([
                 attributes: {'class': USERLIST_CLS},
             }]
         };
-        var $block = Cryptpad.createDropdown(dropdownConfig);
-        $block.attr('id', 'userButtons');
-        toolbar.$leftside.prepend($('<span>', {'class': 'separator'}));
-        toolbar.$leftside.prepend($block);
 
-        return $block;
+        var $content = $('<div>', {'class': 'userlist-drawer'});
+        $('<p>', {'class': USERLIST_CLS}).appendTo($content);
+        toolbar.userlistContent = $content;
+
+        var $container = $('<span>', {id: 'userButtons'});
+
+        var $button = $('<button>').appendTo($container);
+        $('<span>',{'class': 'buttonTitle'}).appendTo($button);
+
+        toolbar.$leftside.prepend($('<span>', {'class': 'separator'}));
+        toolbar.$leftside.prepend($container);
+
+        if (config.$contentContainer) {
+            config.$contentContainer.prepend($content);
+        }
+
+        $button.click(function (e) {
+            $content.toggle();
+            Cryptpad.setAttribute('userlist-drawer', $content.is(':visible'));
+        });
+
+        Cryptpad.getAttribute('userlist-drawer', function (err, val) {
+            if (val === false) { $content.hide(); }
+        });
+
+        return $container;
     };
 
     var createShare = function (toolbar, config) {

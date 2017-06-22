@@ -924,7 +924,6 @@ define([
     common.createButton = function (type, rightside, data, callback) {
         var button;
         var size = "17px";
-        console.log(type);
         switch (type) {
             case 'export':
                 button = $('<button>', {

@@ -41,6 +41,7 @@ define([
 
         var andThen = function (CMeditor) {
             var $iframe = $('#pad-iframe').contents();
+            var $contentContainer = $iframe.find('#editorContainer');
             var $previewContainer = $iframe.find('#previewContainer');
             var $preview = $iframe.find('#preview');
             $preview.click(function (e) {
@@ -188,7 +189,8 @@ define([
                     ifrw: ifrw,
                     realtime: info.realtime,
                     network: info.network,
-                    $container: $bar
+                    $container: $bar,
+                    $contentContainer: $contentContainer
                 };
                 toolbar = APP.toolbar = Toolbar.create(configTb);
 

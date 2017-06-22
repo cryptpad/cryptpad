@@ -89,6 +89,7 @@ define([
     };
 
     var andThen = function (Ckeditor) {
+        var $iframe = $('#pad-iframe').contents();
         var secret = Cryptpad.getSecrets();
         var readOnly = secret.keys && !secret.keys.editKeyStr;
         if (!secret.keys) {
@@ -465,7 +466,8 @@ define([
                     ifrw: ifrw,
                     realtime: info.realtime,
                     network: info.network,
-                    $container: $bar
+                    $container: $bar,
+                    $contentContainer: $iframe.find('#cke_1_contents')
                 };
                 toolbar = info.realtime.toolbar = Toolbar.create(configTb);
 
@@ -561,6 +563,8 @@ define([
                         editor.execCommand('maximize');
                     }
                 }
+                // editor.execCommand('maximize') removes all the classes from the body tag
+                $iframe.find('body').addClass('app-pad');
 
                 if (module.realtime !== info.realtime) {
                     module.patchText = TextPatcher.create({
