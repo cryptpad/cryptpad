@@ -365,5 +365,62 @@ define([
         ])];
     };
 
+    var appToolbar = function () {
+        return h('div#toolbar.toolbar-container');
+    };
+
+    Pages['/whiteboard/'] = Pages['/whiteboard/index.html'] = function () {
+        return [
+            appToolbar(),
+            h('div#canvas-area', h('canvas#canvas', {
+                width: 600,
+                height: 600
+            })),
+            h('div#controls', {
+                style: {
+                    display: 'block',
+                }
+            }, [
+                h('button#clear', Msg.canvas_clear), ' ',
+                h('button#toggleDraw', Msg.canvas_disable),
+                h('button#delete', {
+                    style: {
+                        display: 'none',
+                    }
+                }),
+                h('input#width', {
+                    type: 'range',
+                    value: "5",
+                    min: "1",
+                    max: "100"
+                }),
+                h('label', {
+                    'for': 'width'
+                }, Msg.canvas_width),
+                h('input#opacity', {
+                    type: 'range',
+                    value: "1",
+                    min: "0.1",
+                    max: "1",
+                    step: "0.1"
+                }),
+                h('label', {
+                    'for': 'width',
+                }),
+                h('span.selected')
+            ]),
+            setHTML(h('div#colors'), '&nbsp;'),
+            loadingScreen(),
+            h('div#cursors', {
+                style: {
+                    display: 'none',
+                    background: 'white',
+                    'text-align': 'center',
+                }
+            }),
+            h('div#pickers'),
+        ];
+    };
+
     return Pages;
 });
