@@ -70,7 +70,6 @@ define([
 
         var parsed = Cryptpad.parsePadUrl(window.location.href);
         if (typeof parsed.type === "string") {
-            var b = config.$container.parents('body')[0];
             config.$container.parents('body').addClass('app-' + parsed.type);
         }
 
@@ -136,18 +135,15 @@ define([
     var getOtherUsers = function(config) {
         var userList = config.userList.list.users;
         var userData = config.userList.data;
-        var userNetfluxId = config.userList.userNetfluxId;
 
         var i = 0; // duplicates counter
         var list = [];
 
         // Display only one time each user (if he is connected in multiple tabs)
-        var myUid = userData[userNetfluxId] ? userData[userNetfluxId].uid : undefined;
         var uids = [];
         userList.forEach(function(user) {
             //if (user !== userNetfluxId) {
                 var data = userData[user] || {};
-                var userName = data.name;
                 var userId = data.uid;
                 if (!data.uid) { return; }
                 if (uids.indexOf(userId) === -1) {// && (!myUid || userId !== myUid)) {
@@ -268,13 +264,6 @@ define([
             !config.userList.data || !config.userList.userNetfluxId) {
             throw new Error("You must provide a `userList` object to display the userlist");
         }
-        var dropdownConfig = {
-            options: [{
-                tag: 'p',
-                attributes: {'class': USERLIST_CLS},
-            }]
-        };
-
         var $content = $('<div>', {'class': 'userlist-drawer'});
         $('<p>', {'class': USERLIST_CLS}).appendTo($content);
         toolbar.userlistContent = $content;
@@ -291,7 +280,7 @@ define([
             config.$contentContainer.prepend($content);
         }
 
-        $button.click(function (e) {
+        $button.click(function () {
             $content.toggle();
             Cryptpad.setAttribute('userlist-drawer', $content.is(':visible'));
         });

@@ -108,6 +108,7 @@
   text-align: baseline;
 }
 .userlist-drawer h2 {
+  color: inherit;
   font-size: 1.2em;
   font-weight: bold;
   text-align: center;

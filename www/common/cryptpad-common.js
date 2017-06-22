@@ -413,7 +413,7 @@ define([
     };
     common.setAttribute = function (attr, value, cb) {
         getStore().set(["cryptpad", attr].join('.'), value, function (err, data) {
-            cb(err, data);
+            if (cb) { cb(err, data); }
         });
     };
     common.setLSAttribute = function (attr, value) {
