@@ -119,10 +119,10 @@ $(function () {
 
     if (isMainApp()) {
         if (typeof(Pages[pathname]) === 'function') {
-            var $body = $('body').html(h('body', Pages[pathname]()).innerHTML);
+            $('body').html(h('body', Pages[pathname]()).innerHTML);
             setTimeout(function () {
                 require(['/whiteboard/main.js'], function () {
-                    $body.removeClass('noscroll');
+                    $('body').removeClass('noscroll');
                 });
             });
             return;
