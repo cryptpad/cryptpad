@@ -430,6 +430,7 @@ define([
         });
 
         proxy.version = 1;
+        proxy.type = 'poll';
     };
 
     /*
@@ -474,6 +475,16 @@ var ready = function (info, userid, readOnly) {
     var isNew = false;
     var userDoc = JSON.stringify(proxy);
     if (userDoc === "" || userDoc === "{}") { isNew = true; }
+
+    if (!isNew && typeof(proxy.type) !== 'undefined' && proxy.type !== 'poll') {
+        var errorText = Messages.typeError;
+        Cryptpad.errorLoadingScreen(errorText);
+        throw new Error(errorText);
+    }
+
+    if (typeof(proxy.type) === 'undefined') {
+        proxy.type = 'poll';
+    }
 
     var uncommitted = APP.uncommitted = {};
     prepareProxy(proxy, copyObject(Render.Example));

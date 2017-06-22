@@ -139,5 +139,12 @@ define([], function () {
         return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
     };
 
+    Util.getAppType = function () {
+        var parts = window.location.pathname.split('/')
+            .filter(function (x) { return x; });
+        if (!parts[0]) { return ''; }
+        return parts[0];
+    };
+
     return Util;
 });

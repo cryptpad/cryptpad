@@ -1,7 +1,7 @@
 define(function () {
     var module = {};
 
-    module.create = function (UserList, Title, cfg) {
+    module.create = function (UserList, Title, cfg, Cryptpad) {
         var exp = {};
 
         exp.update = function (shjson) {
@@ -15,6 +15,14 @@ define(function () {
                 metadata = json.metadata;
             }
             if (typeof metadata === "object") {
+                if (Cryptpad) {
+                    if (typeof(metadata.type) === 'undefined') {
+                        // initialize pad type by location.pathname
+                        metadata.type = Cryptpad.getAppType();
+                    }
+                } else {
+                    console.log("Cryptpad should exist but it does not");
+                }
                 if (metadata.users) {
                     var userData = metadata.users;
                     // Update the local user data
