@@ -13,6 +13,10 @@ define([
     '/customize/application_config.js',
     '/bower_components/secure-fabric.js/dist/fabric.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
+
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/customize/main.css',
+    'less!/whiteboard/whiteboard.less',
 ], function ($, Config, Realtime, Crypto, Toolbar, TextPatcher, JSONSortify, JsonOT, Cryptpad, Cryptget, Colors, AppConfig) {
     var saveAs = window.saveAs;
     var Messages = Cryptpad.Messages;
@@ -417,7 +421,7 @@ window.canvas = canvas;
             else {
                 var hjson = JSON.parse(userDoc);
                 if (typeof(hjson) !== 'object' || Array.isArray(hjson) ||
-                    (typeof(hjson.type) !== 'undefined' && hjson.type !== whiteboard)) {
+                    (typeof(hjson.type) !== 'undefined' && hjson.type !== 'whiteboard')) {
                     Cryptpad.errorLoadingScreen(Messages.typeError);
                     throw new Error(Messages.typeError);
                 }

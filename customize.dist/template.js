@@ -6,11 +6,13 @@ define([
 
     'css!/customize/main.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
 ], function ($, h, Cryptpad, Pages) {
 $(function () {
     var Messages = Cryptpad.Messages;
     var $body = $('body');
+    var isMainApp = function () {
+        return /^\/(pad|code|slide|poll|whiteboard)\//.test(location.pathname);
+    };
 
     var rightLink = function (ref, loc, txt) {
         return h('span.link.right', [
@@ -113,10 +115,23 @@ $(function () {
     ]));
 
     var pathname = location.pathname;
-    if (/^\/(pad|code|slide|poll|whiteboard)\//.test(pathname)) {
-        // TODO load apps
-        return;
+
+
+    if (isMainApp()) {
+        if (typeof(Pages[pathname]) === 'function') {
+            $('body').html(h('body', Pages[pathname]()).innerHTML);
+            setTimeout(function () {
+                require(['/whiteboard/main.js'], function () {
+                    $('body').removeClass('noscroll');
+                });
+            });
+            return;
+        }
     }
+
+    require([
+        'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
+    ], function () {});
 
     $body.append($topbar).append($main).append($footer);
 
