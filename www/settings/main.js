@@ -5,6 +5,11 @@ define([
     '/common/mergeDrive.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/customize/header.js',
+
+    'css!/customize/main.css',
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
+    'css!/settings/main.css',
 ], function ($, Cryptpad, Crypt, Merge) {
     var saveAs = window.saveAs;
 
