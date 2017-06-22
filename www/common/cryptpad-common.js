@@ -1100,7 +1100,7 @@ define([
             case 'more':
                 button = $('<button>', {
                     title: Messages.moreActions || 'TODO',
-                    'class': "fa fa-ellipsis-h",
+                    'class': "drawer-button fa fa-ellipsis-h",
                     style: 'font:'+size+' FontAwesome'
                 });
                 break;

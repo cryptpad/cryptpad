@@ -33,7 +33,7 @@ define([
     var LAG_CLS = Bar.constants.lag = 'cryptpad-lag';
     var LIMIT_CLS = Bar.constants.lag = 'cryptpad-limit';
     var TITLE_CLS = Bar.constants.title = "cryptpad-title";
-    var NEWPAD_CLS = Bar.constants.newpad = "cryptpad-newpad";
+    var NEWPAD_CLS = Bar.constants.newpad = "cryptpad-new";
     var UPGRADE_CLS = Bar.constants.upgrade = "cryptpad-upgrade";
 
     // User admin menu
@@ -74,6 +74,7 @@ define([
         }
 
         var $topContainer = $('<div>', {'class': TOP_CLS});
+        $('<span>', {'class': 'filler'}).appendTo($topContainer);
         var $userContainer = $('<span>', {
             'class': USER_CLS
         }).appendTo($topContainer);
@@ -92,9 +93,9 @@ define([
 
         var $rightside = $toolbar.find('.'+RIGHTSIDE_CLS);
         if (!config.hideDrawer) {
-            var $drawerContent = $('<div>', {'class': 'drawer-content'}).appendTo($rightside);
+            var $drawerContent = $('<div>', {'class': DRAWER_CLS}).appendTo($rightside).hide();
             var $drawer = Cryptpad.createButton('more', true).appendTo($rightside);
-            $drawer.click(function (e) {
+            $drawer.click(function () {
                 $drawerContent.toggle();
             });
         }
@@ -224,11 +225,6 @@ define([
         // Update the buttons
         var fa_editusers = '<span class="fa fa-users"></span>';
         var fa_viewusers = '<span class="fa fa-eye"></span>';
-        var viewersText = numberOfViewUsers !== 1 ? Messages.viewers : Messages.viewer;
-        var editorsText = numberOfEditUsers !== 1 ? Messages.editors : Messages.editor;
-        //var $span = $('<span>', {'class': 'large'}).html(fa_editusers + ' ' + numberOfEditUsers + ' ' + editorsText + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers + ' ' + viewersText);
-        //var $spansmall = $('<span>', {'class': 'narrow'}).html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
-        //$userButtons.find('.buttonTitle').html('').append($span).append($spansmall);
         var $spansmall = $('<span>').html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
         $userButtons.find('.buttonTitle').html('').append($spansmall);
 
@@ -670,7 +666,7 @@ define([
 
     var createNewPad = function (toolbar) {
         var $newPad = $('<span>', {
-            'class': "cryptpad-new dropdown-bar"
+            'class': NEWPAD_CLS + " dropdown-bar"
         }).appendTo(toolbar.$top);
 
         var pads_options = [];
