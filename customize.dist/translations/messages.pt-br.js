@@ -157,17 +157,17 @@ define(function () {
     out.cancel = "Cancelar";
     out.cancelButton = 'Cancelar (ESC)';
 
-    out.historyButton = "Display the document history";
-    out.history_next = "Go to the next version";
-    out.history_prev = "Go to the previous version";
-    out.history_goTo = "Go to the selected version";
-    out.history_close = "Back";
-    out.history_closeTitle = "Close the history";
-    out.history_restore = "Restore";
-    out.history_restoreTitle = "Restore the selected version of the document";
-    out.history_restorePrompt = "Are you sure you want to replace the current version of the document by the displayed one?";
-    out.history_restoreDone = "Document restored";
-    out.history_version = "Version:";
+    out.historyButton = "Exibir histórico do documento";
+    out.history_next = "Ir para próxima versão";
+    out.history_prev = "Ir para versão anterior";
+    out.history_goTo = "Ir para versão selecionada";
+    out.history_close = "Voltar";
+    out.history_closeTitle = "Fechar o histórico";
+    out.history_restore = "Restaurar";
+    out.history_restoreTitle = "Restaurar a versão selecionada do documento";
+    out.history_restorePrompt = "Você tem certeza que deseja substituir a versão atual do documento pela que está sendo exibida agora?";
+    out.history_restoreDone = "Documento restaurado";
+    out.history_version = "Versão:";
 
     // Polls
 
@@ -181,11 +181,11 @@ define(function () {
     out.wizardTitle = "Use o assistente para criar sua enquete";
     out.wizardConfirm = "Você está realmente pronto para adicionar estas opções em sua enquete?";
 
-    out.poll_publish_button = "Publish";
+    out.poll_publish_button = "Publicar";
     out.poll_admin_button = "Admin";
-    out.poll_create_user = "Add a new user";
-    out.poll_create_option = "Add a new option";
-    out.poll_commit = "Commit";
+    out.poll_create_user = "Adicionar novo usuário";
+    out.poll_create_option = "Adicionar nova opção";
+    out.poll_commit = "Submeter";
 
     out.poll_closeWizardButton = "Fechar assistente";
     out.poll_closeWizardButtonTitle = "Fechar assistente";
@@ -197,125 +197,124 @@ define(function () {
 
     out.poll_optionPlaceholder = "Alternativa";
     out.poll_userPlaceholder = "Seu nome";
-    out.poll_removeOption = "Are you sure you'd like to remove this option?";
+    out.poll_removeOption = "Você tem certeza que deseja remover esta opção?";
     out.poll_removeUser = "Você tem certeza que quer remover este usuário?";
 
     out.poll_titleHint = "Título";
     out.poll_descriptionHint = "Descrição";
 
     // Canvas
-    out.canvas_clear = "Clear";
-    out.canvas_delete = "Delete selection";
-    out.canvas_disable = "Disable draw";
-    out.canvas_enable = "Enable draw";
-    out.canvas_width = "Width";
-    out.canvas_opacity = "Opacity";
+    out.canvas_clear = "Limpar";
+    out.canvas_delete = "Deletar seleção";
+    out.canvas_disable = "Desabilitar desenho";
+    out.canvas_enable = "Habilitar desenho";
+    out.canvas_width = "Largura";
+    out.canvas_opacity = "Opacidade";
 
     // File manager
 
-    out.fm_rootName = "Documents";
-    out.fm_trashName = "Trash";
-    out.fm_unsortedName = "Unsorted files";
-    out.fm_filesDataName = "All files";
-    out.fm_templateName = "Templates";
-    out.fm_searchName = "Search";
-    out.fm_searchPlaceholder = "Search...";
-    out.fm_newButton = "New";
-    out.fm_newButtonTitle = "Create a new pad or folder";
-    out.fm_newFolder = "New folder";
-    out.fm_newFile = "New pad";
-    out.fm_folder = "Folder";
-    out.fm_folderName = "Folder name";
-    out.fm_numberOfFolders = "# of folders";
-    out.fm_numberOfFiles = "# of files";
-    out.fm_fileName = "File name";
-    out.fm_title = "Title";
-    out.fm_type = "Type";
-    out.fm_lastAccess = "Last access";
-    out.fm_creation = "Creation";
-    out.fm_forbidden = "Forbidden action";
-    out.fm_originalPath = "Original path";
-    out.fm_openParent = "Show in folder";
-    out.fm_noname = "Untitled Document";
-    out.fm_emptyTrashDialog = "Are you sure you want to empty the trash?";
-    out.fm_removeSeveralPermanentlyDialog = "Are you sure you want to remove these {0} elements from the trash permanently?";
-    out.fm_removePermanentlyDialog = "Are you sure you want to remove that element permanently?";
-    out.fm_removeSeveralDialog = "Are you sure you want to move these {0} elements to the trash?";
-    out.fm_removeDialog = "Are you sure you want to move {0} to the trash?";
-    out.fm_restoreDialog = "Are you sure you want to restore {0} to its previous location?";
-    out.fm_unknownFolderError = "The selected or last visited directory no longer exist. Opening the parent folder...";
-    out.fm_contextMenuError = "Unable to open the context menu for that element. If the problem persist, try to reload the page.";
-    out.fm_selectError = "Unable to select the targetted element. If the problem persist, try to reload the page.";
-    out.fm_categoryError = "Unable to open the selected category, displaying root.";
-    out.fm_info_root = "Create as many nested folders here as you want to sort your files.";
-    out.fm_info_unsorted = 'Contains all the files you\'ve visited that are not yet sorted in "Documents" or moved to the "Trash".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
-    out.fm_info_template = 'Contains all the pads stored as templates and that you can re-use when you create a new pad.';
+    out.fm_rootName = "Documentos";
+    out.fm_trashName = "Lixeira";
+    out.fm_unsortedName = "Arquivos não organizados";
+    out.fm_filesDataName = "Todos os Arquivos";
+    out.fm_templateName = "Temas";
+    out.fm_searchName = "Busca";
+    out.fm_searchPlaceholder = "Buscar...";
+    out.fm_newButton = "Novo";
+    out.fm_newButtonTitle = "Criar um novo bloco ou diretório";
+    out.fm_newFolder = "Novo diretório";
+    out.fm_newFile = "Novo bloco";
+    out.fm_folder = "Diretório";
+    out.fm_folderName = "Nome do diretório";
+    out.fm_numberOfFolders = "# de diretórios";
+    out.fm_numberOfFiles = "# de arquivos";
+    out.fm_fileName = "Nome do arquivo";
+    out.fm_title = "Título";
+    out.fm_type = "Tipo";
+    out.fm_lastAccess = "Último acesso";
+    out.fm_creation = "Criação";
+    out.fm_forbidden = "Ação não permitida";
+    out.fm_originalPath = "Caminho original";
+    out.fm_openParent = "Exibir no diretório";
+    out.fm_noname = "Documento sem título";
+    out.fm_emptyTrashDialog = "Você tem certeza que deseja limpar a lixeira??";
+    out.fm_removeSeveralPermanentlyDialog = "Você tem certeza que deseja deletar estes {0} elementos da lixeira permanentemente?";
+    out.fm_removePermanentlyDialog = "Você tem certeza que deseja deletar este elemento da lixeira permanentemente?";
+    out.fm_removeSeveralDialog = "Você tem certeza que deseja mover estes {0} elementos para a lixeira?";
+    out.fm_removeDialog = "Você tem certeza que deseja mover {0} para a lixeira?";
+    out.fm_restoreDialog = "Você tem certeza que deseja restaurar {0} de volta para seu diretório original?";
+    out.fm_unknownFolderError = "O diretório selecionado ou visitado por último não existe mais. Abrindo diretório superior...";
+    out.fm_contextMenuError = "Incapaz de abrir o menu de contextualização para este elementos. Se o problema persistir, tente recarregar a página.";
+    out.fm_selectError = "Incapaz de selecionar o elemento marcado. Se o problema persistir, tente recarregar a página.";
+    out.fm_categoryError = "Incapaz de abrir a categoria selecionada, Exibindo diretório raiz";
+    out.fm_info_root = "Crie quantos diretórios aninhados aqui desejar para organizar seus arquivos..";
+    out.fm_info_unsorted = "Contém todos os arquivos que você visitou e não estão ainda organizados na pasta Documentos ou foram movidos para a pasta lixeira"; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"    out.fm_info_template = 'Contains all the pads stored as templates and that you can re-use when you create a new pad.';
     out.updated_0_fm_info_trash = 'Empty your trash to free space in your CryptDrive.';
     out.fm_info_trash = out.updated_0_fm_info_trash;
-    out.fm_info_allFiles = 'Contains all the files from "Documents", "Unsorted" and "Trash". You can\'t move or remove files from here.'; // Same here
-    out.fm_info_anonymous = 'You are not logged in so these pads may be deleted (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">find out why</a>). ' +
-                            '<a href="/register/">Sign up</a> or <a href="/login/">Log in</a> to keep them alive.';
-    out.fm_alert_backupUrl = "Backup link for this drive.<br>" +
-                             "It is <strong>highly recommended</strong> that you keep ip for yourself only.<br>" +
-                             "You can use it to retrieve all your files in case your browser memory got erased.<br>" +
-                             "Anybody with that link can edit or remove all the files in your file manager.<br>";
-    out.fm_alert_anonymous = "Hello there, you are currently using CryptPad anonymously, that's ok but your pads may be deleted after a period of " +
-                             "inactivity. We have disabled advanced features of the drive for anonymous users because we want to be clear that it is " +
-                             'not a safe place to store things. You can <a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">read more</a> about ' +
-                             'why we are doing this and why you really should <a href="/register/">Sign up</a> and <a href="/login/">Log in</a>.';
-    out.fm_backup_title = 'Backup link';
-    out.fm_nameFile = 'How would you like to name that file?';
-    out.fm_error_cantPin = "Internal server error. Please reload the page and try again.";
+    out.fm_info_allFiles = 'Contém todos os arquivos de "Documentos", "Não organizados" e "Lixeira". Não é possível mover ou remover arquivos daqui.'; // Same here
+    out.fm_info_anonymous = 'Você não está logado, então estes blocos podem ser deletados! (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">Descubra o porque</a>). ' +
+                            '<a href="/register/">Cadastre-se</a> or <a href="/login/">Entre</a> Para deixá-los salvos.';
+    out.fm_alert_backupUrl = "Link de backup desta conta.<br>" +
+                             "É <strong>fortemente recomendado</strong> que você deixe para você e somente você.<br>" +
+                             "Você pode usá-lo para resgatar os seus dados caso a memória do seu navegador se perca.<br>" +
+                             "Qualquer um com este link pode editar ou apagar todos os arquivos no gerenciador da conta.<br>";
+    out.fm_alert_anonymous = "Ola! Você está utilizando o CryptPad anonimamente, isto é ok, mas seus blocos podem ser apagados " +
+                             "se ficarem muito tempo inativo. Nós desativamos as funções avançadas nas contas anônimas para que isto fique claro para você " +
+                             'Este não é um bom lugar apra salvar senhas! Entenda: <a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">Clicando aqui!</a>  ' +
+                             'Porque estamos fazendo isso e porque você deveria criar uma onta? <a href="/register/">Sign up</a> and <a href="/login/">Clique e entenda!</a>.';
+    out.fm_backup_title = 'Link de restauração';
+    out.fm_nameFile = 'Como deseja nomear este arquivo?';
+    out.fm_error_cantPin = "Erro interno do servidor. Por favor recarregue a página e tente novamente.";
     // File - Context menu
-    out.fc_newfolder = "New folder";
-    out.fc_rename = "Rename";
-    out.fc_open = "Open";
-    out.fc_open_ro = "Open (read-only)";
-    out.fc_delete = "Delete";
-    out.fc_restore = "Restore";
-    out.fc_remove = "Delete permanently";
-    out.fc_empty = "Empty the trash";
-    out.fc_prop = "Properties";
-    out.fc_sizeInKilobytes = "Size in Kilobytes";
+    out.fc_newfolder = "Nova pasta";
+    out.fc_rename = "Renomear";
+    out.fc_open = "Abrir";
+    out.fc_open_ro = "Abrir (somente leitura)";
+    out.fc_delete = "Deletar";
+    out.fc_restore = "Restaurar";
+    out.fc_remove = "Deletar permanentemente";
+    out.fc_empty = "Esvaziar lixeira";
+    out.fc_prop = "Propriedades";
+    out.fc_sizeInKilobytes = "tamanho em Kilobytes";
     // fileObject.js (logs)
-    out.fo_moveUnsortedError = "You can't move a folder to the list of unsorted pads";
-    out.fo_existingNameError = "Name already used in that directory. Please choose another one.";
-    out.fo_moveFolderToChildError = "You can't move a folder into one of its descendants";
-    out.fo_unableToRestore = "Unable to restore that file to its original location. You can try to move it to a new location.";
-    out.fo_unavailableName = "A file or a folder with the same name already exist at the new location. Rename the element and try again.";
+    out.fo_moveUnsortedError = "Você não pode mover uma pasta na lista de notas não organizadas";
+    out.fo_existingNameError = "Nome já em uso neste diretório. Por favor escolha outro.";
+    out.fo_moveFolderToChildError = "Você não pode mover uma sub-diretório para dentro de um de seus sub-diretórios";
+    out.fo_unableToRestore = "Fomos incapazes de restaurar este arquivo para sua posição original. Você pode tentar move-lo para o local de destino porém.";
+    out.fo_unavailableName = "Um arquivo ou diretório com o mesmo nome já existe no novo locao. Renomeie-o e tente novamente.";
 
     // login
-    out.login_login = "Log in";
-    out.login_makeAPad = 'Create a pad anonymously';
-    out.login_nologin = "Browse local pads";
-    out.login_register = "Sign up";
-    out.logoutButton = "Log out";
-    out.settingsButton = "Settings";
+    out.login_login = "Entrar";
+    out.login_makeAPad = 'Criar bloco anonimamente';
+    out.login_nologin = "Navegar nos blocos locais";
+    out.login_register = "Cadastro";
+    out.logoutButton = "Sair";
+    out.settingsButton = "Configurações";
 
-    out.login_username = "Username";
-    out.login_password = "Password";
-    out.login_confirm = "Confirm your password";
-    out.login_remember = "Remember me";
+    out.login_username = "Usuário";
+    out.login_password = "Senha";
+    out.login_confirm = "Confirme sua senha";
+    out.login_remember = "Memorize-me";
 
-    out.login_hashing = "Hashing your password, this might take some time.";
+    out.login_hashing = "Encriptando sua senha, isto pode tomar algum tempo.";
 
-    out.login_hello = 'Hello {0},'; // {0} is the username
-    out.login_helloNoName = 'Hello,';
-    out.login_accessDrive = 'Access your drive';
-    out.login_orNoLogin = 'or';
+    out.login_hello = 'Ola {0},'; // {0} is the username
+    out.login_helloNoName = 'Ola,';
+    out.login_accessDrive = 'Acesse seu diretório';
+    out.login_orNoLogin = 'ou';
 
-    out.login_noSuchUser = 'Invalid username or password. Try again, or sign up';
-    out.login_invalUser = 'Username required';
-    out.login_invalPass = 'Password required';
-    out.login_unhandledError = 'An unexpected error occurred :(';
+    out.login_noSuchUser = 'Usuário ou senha inválido. Tente nocamente ou cadastre-se';
+    out.login_invalUser = 'É necessário um usuário';
+    out.login_invalPass = 'É necessário uma senha';
+    out.login_unhandledError = 'Um erro não esperado ocorreu :(';
 
-    out.register_importRecent = "Import pad history (Recommended)";
-    out.register_acceptTerms = "I accept <a href='/terms.html'>the terms of service</a>";
-    out.register_passwordsDontMatch = "Passwords do not match!";
-    out.register_mustAcceptTerms = "You must accept the terms of service.";
-    out.register_mustRememberPass = "We cannot reset your password if you forget it. It's very important that you remember it! Please check the checkbox to confirm.";
+    out.register_importRecent = "Importar histórico de blocos (Recomendado)";
+    out.register_acceptTerms = "Eu aceito <a href='/terms.html'>os termos de serviço</a>";
+    out.register_passwordsDontMatch = "Senhas não coincidem!";
+    out.register_mustAcceptTerms = "Você precisa aceitar os termos de serviço.";
+    out.register_mustRememberPass = "Nós não podemos restaurar sua senha caso você a esqueça. É muito importante que você lembre-se dela! Clique nesta caixa de seleção para confirmar que você compreendeu isto.";
 
-    out.register_header = "Welcome to CryptPad";
+    out.register_header = "Bem vindo ao CryptPad";
     out.register_explanation = [
         "<p>Lets go over a couple things first</p>",
         "<ul>",
