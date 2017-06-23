@@ -1290,6 +1290,14 @@ body.app-file .cryptpad-toolbar .dropdown-bar-content p .accountData {
 .cryptpad-toolbar-top .cryptpad-user .cryptpad-user-dropdown button span .fa {
   margin-left: 3px;
 }
+.cryptpad-toolbar-top .cryptpad-user .cryptpad-backup {
+  margin: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.cryptpad-toolbar-top .cryptpad-user .cryptpad-backup:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
 .cryptpad-toolbar-leftside {
   height: 32px;
   float: left;

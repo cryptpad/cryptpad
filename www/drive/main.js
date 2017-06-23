@@ -2753,7 +2753,7 @@ define([
             if (!APP.loggedIn) { $hist.hide(); }
 
             if (!readOnly && !APP.loggedIn) {
-                var $backupButton = Cryptpad.createButton('', true).removeClass('fa').removeClass('fa-question');
+                var $backupButton = Cryptpad.createButton('', true).removeClass('fa').removeClass('fa-question').addClass('cryptpad-backup');
                 $backupButton.append($backupIcon.clone().css('marginRight', '0px'));
                 $backupButton.attr('title', Messages.fm_backup_title);
                 $backupButton.on('click', function() {
