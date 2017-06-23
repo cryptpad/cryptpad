@@ -741,7 +741,7 @@ define([
         return $userAdmin;
     };
 
-    var createUpgrade = function (toolbar) {
+    var createUpgrade = function (/*toolbar*/) {
         return; // TODO
         /*if (ApiConfig.removeDonateButton) { return; }
         if (Cryptpad.account.plan) { return; }
