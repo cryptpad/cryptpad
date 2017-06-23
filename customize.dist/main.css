@@ -590,6 +590,9 @@ html.cp,
   font-family: Ubuntu,Georgia,Cambria,serif;
   height: 100%;
 }
+.fa {
+  cursor: default;
+}
 .cp {
   /* buttons */
   /*  Tables

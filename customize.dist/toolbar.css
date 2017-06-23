@@ -1284,6 +1284,7 @@ body.app-file .cryptpad-toolbar .dropdown-bar-content p .accountData {
   padding: 0;
 }
 .cryptpad-toolbar-top .cryptpad-user .cryptpad-user-dropdown button span {
+  cursor: default;
   font-size: 32px;
 }
 .cryptpad-toolbar-top .cryptpad-user .cryptpad-user-dropdown button span .fa {

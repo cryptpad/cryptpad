@@ -44,6 +44,9 @@ body {
     display: flex;
     flex-flow: column;
 }
+img.icon {
+    max-width: 20px;
+}
 
 .unselectable {
     -webkit-touch-callout: none;
@@ -170,6 +173,10 @@ span {
     min-width: 200px;
     padding: 10px 0px;
     color: @tree-fg;
+    img.icon {
+        margin-bottom: 3px;
+        margin-left: -2px;
+    }
     li {
         padding: 0 0 0 5px;
         cursor: auto;
@@ -381,7 +388,7 @@ span {
                     .col2 {
                         width: 250px;
                     }
-                    .icon {
+                    td.icon {
                         width: 50px;
                         font-size: 40px;
                     }
@@ -433,6 +440,11 @@ span {
             input {
                 width: 100%;
                 margin-top: 5px;
+            }
+            img.icon {
+                height: 48px;
+                max-width: none;
+                margin: 8px 0;
             }
             .fa {
                 display: block;

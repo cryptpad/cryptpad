@@ -149,9 +149,11 @@ define([
     };
 
     // Icons
-    var $folderIcon = $('<span>', {"class": "fa fa-folder folder icon"});
+    //var $folderIcon = $('<span>', {"class": "fa fa-folder folder icon"});
+    var $folderIcon = $('<img>', {src: "/customize/images/icons/folder.svg", "class": "folder icon"});
     var $folderEmptyIcon = $folderIcon.clone();
-    var $folderOpenedIcon = $('<span>', {"class": "fa fa-folder-open folder"});
+    //var $folderOpenedIcon = $('<span>', {"class": "fa fa-folder-open folder"});
+    var $folderOpenedIcon = $('<img>', {src: "/customize/images/icons/folderOpen.svg", "class": "folder icon"});
     var $folderOpenedEmptyIcon = $folderOpenedIcon.clone();
     var $fileIcon = $('<span>', {"class": "fa fa-file-text-o file icon"});
     var $fileAppIcon = $('<span>', {"class": "fa fa-file-text-o file icon fileColor"});
@@ -1368,6 +1370,7 @@ define([
 
         var createNewButton = function (isInRoot) {
             if (!APP.editable) { return; }
+            if (!APP.loggedIn) { return; } // Anonymous users can use the + menu in the toolbar
 
             // Create dropdown
             var options = [];
