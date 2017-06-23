@@ -671,16 +671,19 @@ html.cp,
   margin-bottom: -0.65001rem;
   padding-top: .65001rem;
 }
-.cp a {
+.cp a:not(.btn) {
   cursor: pointer;
   color: #41b7d8;
   text-decoration: none;
 }
-.cp a:hover {
+.cp a:not(.btn):hover {
   color: #279ebf;
 }
-.cp a:visited {
+.cp a:not(.btn):visited {
   color: #41b7d8;
+}
+.cp a.btn {
+  font-family: sans-serif;
 }
 .cp img {
   height: auto;
@@ -1119,7 +1122,8 @@ html.cp,
   display: inline-block;
   height: 26px;
   width: 200px;
-  margin: 2px;
+  max-width: 40vw;
+  margin: 3px;
   box-sizing: border-box;
   border: 1px solid #999;
   background: white;

@@ -849,7 +849,7 @@ define([
 
             var $limit = $('<span>', {'class': 'cryptpad-limit-bar'}).appendTo($container);
             var quota = usage/limit;
-            var width = Math.floor(Math.min(quota, 1)*200); // the bar is 200px width
+            var width = Math.floor(Math.min(quota, 1)*$limit.width()); // the bar is 200px width
             var $usage = $('<span>', {'class': 'usage'}).css('width', width+'px');
 
             var makeDonateButton = function () {
@@ -864,15 +864,12 @@ define([
             };
 
             var makeUpgradeButton = function () {
-                var $upgradeLink = $('<a>', {
+                $('<a>', {
+                    'class': 'upgrade btn btn-success',
                     href: common.upgradeURL,
                     rel: "noreferrer noopener",
                     target: "_blank",
-                }).appendTo($container);
-                $('<button>', {
-                    'class': 'upgrade buttonSuccess',
-                    title: Messages.upgradeTitle
-                }).text(Messages.upgradeAccount).appendTo($upgradeLink);
+                }).text(Messages.upgradeAccount).appendTo($container);
             };
 
             if (!Config.removeDonateButton) {

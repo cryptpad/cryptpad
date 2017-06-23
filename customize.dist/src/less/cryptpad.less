@@ -105,7 +105,7 @@ h6 {
     padding-top: .65001rem;
 }
 
-a {
+a:not(.btn) {
     cursor: pointer;
     color: @cp-link;
 
@@ -117,6 +117,9 @@ a {
     &:visited {
         color: @cp-link-visited;
     }
+}
+a.btn {
+    font-family: sans-serif;
 }
 
 img {
@@ -561,7 +564,8 @@ noscript {
         display: inline-block;
         height: 26px;
         width: 200px;
-        margin: 2px;
+        max-width: 40vw;
+        margin: 3px;
         box-sizing: border-box;
         border: 1px solid #999;
         background: white;

@@ -498,6 +498,7 @@ define([
 
         var displayInput = function () {
             if (toolbar.connected === false) { return; }
+            $input.width(Math.max($text.width(), 300)+'px');
             $text.hide();
             //$pencilIcon.css('display', 'none');
             var inputVal = suggestName() || "";
@@ -741,7 +742,8 @@ define([
     };
 
     var createUpgrade = function (toolbar) {
-        if (ApiConfig.removeDonateButton) { return; }
+        return; // TODO
+        /*if (ApiConfig.removeDonateButton) { return; }
         if (Cryptpad.account.plan) { return; }
 
         var text;
@@ -764,7 +766,7 @@ define([
             Cryptpad.feedback(feedback);
             window.open(url,'_blank');
         });
-        return $upgrade;
+        return $upgrade;*/
     };
 
     // Events

@@ -235,7 +235,6 @@ define([
 
         Cryptpad.createUsageBar(function (err, $bar) {
             $div.find('.limit-container').remove();
-            $bar.find('.upgrade').addClass('btn btn-success');
             $div.append($bar);
         }, true);
         return $div;
