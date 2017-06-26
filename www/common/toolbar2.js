@@ -492,6 +492,8 @@ define([
                 $pencilIcon.show();
                 $saveIcon.hide();
                 //$pencilIcon.css('display', '');
+            } else if (e.which === 32) {
+                e.stopPropagation();
             }
         });
         $saveIcon.click(save);
