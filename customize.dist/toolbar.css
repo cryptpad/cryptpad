@@ -1303,6 +1303,9 @@ body.app-file .cryptpad-toolbar .dropdown-bar-content p .accountData {
   float: left;
   margin-bottom: -1px;
 }
+.cryptpad-toolbar-leftside:empty {
+  height: 0;
+}
 .cryptpad-toolbar-leftside .cryptpad-dropdown-users pre {
   /* needed for ckeditor */
   white-space: pre;
@@ -1331,6 +1334,9 @@ body.app-file .cryptpad-toolbar .dropdown-bar-content p .accountData {
 .cryptpad-toolbar-rightside {
   height: 32px;
   text-align: right;
+}
+.cryptpad-toolbar-rightside:empty {
+  height: 0;
 }
 .cryptpad-toolbar-rightside > button {
   height: 100%;

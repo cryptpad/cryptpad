@@ -2714,6 +2714,7 @@ define([
             var toolbar = APP.toolbar = Toolbar.create(config);
 
             var $rightside = toolbar.$rightside;
+            $rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
             var $leftside = toolbar.$leftside;
             var $userBlock = toolbar.$userAdmin;
             APP.$displayName = APP.$bar.find('.' + Toolbar.constants.username);
@@ -2749,8 +2750,7 @@ define([
                 href: window.location.origin + window.location.pathname + '#' + APP.hash
             };
             var $hist = Cryptpad.createButton('history', true, {histConfig: histConfig});
-            $rightside.append($hist);
-            if (!APP.loggedIn) { $hist.hide(); }
+            if (APP.loggedIn) { $rightside.append($hist); }
 
             if (!readOnly && !APP.loggedIn) {
                 var $backupButton = Cryptpad.createButton('', true).removeClass('fa').removeClass('fa-question').addClass('cryptpad-backup');
