@@ -51,13 +51,6 @@ define([
             uploadMode = true;
         }
 
-        var getTitle = function () {
-            var pad = Cryptpad.getRelativeHref(window.location.href);
-            var fo = Cryptpad.getStore().getProxy().fo;
-            var data = fo.getFileData(pad);
-            return data ? data.title : undefined;
-        };
-
         Title = Cryptpad.createTitle({}, function(){}, Cryptpad);
 
         var displayed = ['useradmin', 'newpad', 'limit', 'upgrade'];
