@@ -225,7 +225,7 @@ define([
                 if (e.which === 33) { p(); return render(getNext(10)); } // PageUp
                 if (e.which === 34) { p(); return render(getPrevious(10)); } // PageUp
                 if (e.which === 27) { p(); $close.click(); }
-            }).focus();
+            }).keyup(function (e) { e.stopPropagation(); }).focus();
             $cur.on('change', function () {
                 render( get($cur.val() - 1) );
             });
