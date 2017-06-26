@@ -17,7 +17,7 @@ define([
             ]),
             setHTML(h('p'), Msg.main_p2),
             h('h2', Msg.main_howitworks),
-            setHTML(h('p', Msg.main_howitworks_p1))
+            setHTML(h('p'), Msg.main_howitworks_p1)
         ]);
     };
 
