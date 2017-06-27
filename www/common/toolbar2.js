@@ -667,21 +667,7 @@ define([
                 });
             }
         };
-
-        Cryptpad.isOverPinLimit(function (e, isOver, data) {
-            if (e) { return console.error(e); }
-
-            if (isOver) { return todo(void 0, true); }
-
-            if (!data) { return console.error("Problem creating limit"); }
-            var limit = data.limit;
-            var usage = data.usage;
-            if (typeof(limit) !== 'number' || typeof(usage) !== 'number') {
-                todo("invalid types");
-            } else if (Cryptpad.isLoggedIn() && usage >= limit) {
-                todo(void 0, true);
-            } else { todo(void 0, false); }
-        });
+        Cryptpad.isOverPinLimit(todo);
 
         return $limit;
     };
