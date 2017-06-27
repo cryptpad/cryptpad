@@ -4,14 +4,13 @@ define([
     '/common/cryptpad-common.js',
     '/customize/pages.js',
 
-    'css!/customize/main.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, h, Cryptpad, Pages) {
 $(function () {
     var Messages = Cryptpad.Messages;
     var $body = $('body');
     var isMainApp = function () {
-        return /^\/(pad|code|slide|poll|whiteboard)\//.test(location.pathname);
+        return /^\/(pad|code|slide|poll|whiteboard|file|media)\//.test(location.pathname);
     };
 
     var rightLink = function (ref, loc, txt) {
@@ -130,24 +129,26 @@ $(function () {
     }
 
     require([
+        'less!/customize/src/less/cryptpad.less',
         'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    ], function () {});
+    ], function () {
+        $body.append($topbar).append($main).append($footer);
 
-    $body.append($topbar).append($main).append($footer);
+        if (/^\/settings\//.test(pathname)) {
+            require([ '/settings/main.js', ], function () {});
+        } else if (/^\/user\//.test(pathname)) {
+            require([ '/user/main.js'], function () {});
+        } else if (/^\/register\//.test(pathname)) {
+            require([ '/register/main.js' ], function () {});
+        } else if (/^\/login\//.test(pathname)) {
+            require([ '/login/main.js' ], function () {});
+        } else if (/^\/($|^\/index\.html$)/.test(pathname)) {
+            // TODO use different top bar
+            require([ '/customize/main.js', ], function () {});
+        } else {
+            require([ '/customize/main.js', ], function () {});
+        }
+    });
 
-    if (/^\/settings\//.test(pathname)) {
-        require([ '/settings/main.js', ], function () {});
-    } else if (/^\/user\//.test(pathname)) {
-        require([ '/user/main.js'], function () {});
-    } else if (/^\/register\//.test(pathname)) {
-        require([ '/register/main.js' ], function () {});
-    } else if (/^\/login\//.test(pathname)) {
-        require([ '/login/main.js' ], function () {});
-    } else if (/^\/($|^\/index\.html$)/.test(pathname)) {
-        // TODO use different top bar
-        require([ '/customize/main.js', ], function () {});
-    } else {
-        require([ '/customize/main.js', ], function () {});
-    }
 });
 });

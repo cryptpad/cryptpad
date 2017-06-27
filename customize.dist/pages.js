@@ -10,6 +10,72 @@ define([
         return e;
     };
 
+    var indexContent = function () {
+        return [
+            h('div.page.category.first#knowmore', [
+                h('center', [
+                    h('h1', Msg.main_howitworks)
+                ])
+            ]),
+            h('div.page', [
+                h('div.info-container', [
+                    h('div.left.image', [
+                        h('img', {
+                            src: '/customize/images/zeroknowledge_small.png',
+                            alt: 'Zero Knowledge'
+                        })
+                    ]),
+                    h('div.right', [
+                        h('h2', Msg.main_zeroKnowledge),
+                        setHTML(h('p'), Msg.main_zeroKnowledge_p)
+                    ])
+                ])
+            ]),
+            h('div.page.even', [
+                h('div.info-container', [
+                    h('div.left', [
+                        h('h2', Msg.main_writeItDown),
+                        h('p', Msg.main_writeItDown_p)
+                    ]),
+                    h('div.right.image', [
+                        h('img', {
+                            alt: "User account",
+                            src: '/customize/images/realtime_small.png',
+                        })
+                    ])
+                ])
+            ]),
+            h('div.page', [
+                h('div.info-container', [
+                    h('div.left.image', [
+                        h('img', {
+                            src: '/customize/images/key_small.png',
+                            alt: 'User account'
+                        })
+                    ]),
+                    h('div.right', [
+                        h('h2', Msg.main_share),
+                        h('p', Msg.main_share_p)
+                    ])
+                ])
+            ]),
+            h('div.page.even', [
+                h('div.info-container', [
+                    h('div.left', [
+                        h('h2', Msg.main_organize),
+                        h('p', Msg.main_organize_p)
+                    ]),
+                    h('div.right.image', [
+                        h('img', {
+                            src: '/customize/images/organize.png',
+                            alt: 'User account'
+                        })
+                    ])
+                ])
+            ])
+        ];
+    };
+
     Pages['/about.html'] = function () {
         return h('div#main_other', [
             h('center', [
@@ -18,7 +84,7 @@ define([
             setHTML(h('p'), Msg.main_p2),
             h('h2', Msg.main_howitworks),
             setHTML(h('p'), Msg.main_howitworks_p1)
-        ]);
+        ].concat(indexContent()));
     };
 
     Pages['/privacy.html'] = function () {
@@ -105,71 +171,6 @@ define([
         ]);
     };
 
-    var indexContent = function () {
-        return [
-            h('div.page.category.first#knowmore', [
-                h('center', [
-                    h('h1', Msg.main_howitworks)
-                ])
-            ]),
-            h('div.page', [
-                h('div.info-container', [
-                    h('div.left.image', [
-                        h('img', {
-                            src: '/customize/images/zeroknowledge_small.png',
-                            alt: 'Zero Knowledge'
-                        })
-                    ]),
-                    h('div.right', [
-                        h('h2', Msg.main_zeroKnowledge),
-                        setHTML(h('p'), Msg.main_zeroKnowledge_p)
-                    ])
-                ])
-            ]),
-            h('div.page.even', [
-                h('div.info-container', [
-                    h('div.left', [
-                        h('h2', Msg.main_writeItDown),
-                        h('p', Msg.main_writeItDown_p)
-                    ]),
-                    h('div.right.image', [
-                        h('img', {
-                            alt: "User account",
-                            src: '/customize/images/realtime_small.png',
-                        })
-                    ])
-                ])
-            ]),
-            h('div.page', [
-                h('div.info-container', [
-                    h('div.left.image', [
-                        h('img', {
-                            src: '/customize/images/key_small.png',
-                            alt: 'User account'
-                        })
-                    ]),
-                    h('div.right', [
-                        h('h2', Msg.main_share),
-                        h('p', Msg.main_share_p)
-                    ])
-                ])
-            ]),
-            h('div.page.even', [
-                h('div.info-container', [
-                    h('div.left', [
-                        h('h2', Msg.main_organize),
-                        h('p', Msg.main_organize_p)
-                    ]),
-                    h('div.right.image', [
-                        h('img', {
-                            src: '/customize/images/organize.png',
-                            alt: 'User account'
-                        })
-                    ])
-                ])
-            ])
-        ];
-    };
 
     var appButton = function (alt, h2, img, p, url, btn, id) {
         return h('div.app', [
@@ -259,7 +260,7 @@ define([
             ])
         ]
         .concat(tryIt())
-        .concat(indexContent());
+        //.concat(indexContent());
     };
 
     var loadingScreen = function () {

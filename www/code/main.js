@@ -10,6 +10,8 @@ define([
     '/common/cryptget.js',
     '/common/diffMarked.js',
     '/bower_components/tweetnacl/nacl-fast.min.js', // needed for media-tag
+
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad,
              Cryptget, DiffMd) {
     var Messages = Cryptpad.Messages;

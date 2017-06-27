@@ -48,7 +48,8 @@ define([
         return 'cryptpad-uid-' + String(Math.random()).substring(2);
     };
 
-    var styleToolbar = function ($container, href, version) {
+    var styleToolbar = function ($container, href, version, force) {
+        if (!force) { return; }
         href = href || '/customize/toolbar.css' + (version?('?' + version): '');
 
         $.ajax({
@@ -108,9 +109,9 @@ define([
         $container.prepend($toolbar);
 
         if (ApiConfig && ApiConfig.requireConf && ApiConfig.requireConf.urlArgs) {
-            styleToolbar($container, undefined, ApiConfig.requireConf.urlArgs);
+            styleToolbar($container, undefined, ApiConfig.requireConf.urlArgs, config.legacyStyle);
         } else {
-            styleToolbar($container);
+            styleToolbar($container, void 0, void 0, config.legacyStyle);
         }
         $container.on('drop dragover', function (e) {
             e.preventDefault();
@@ -668,6 +669,11 @@ define([
         };
 
         Cryptpad.isOverPinLimit(function (e, isOver, data) {
+            if (e) { return console.error(e); }
+
+            if (isOver) { return todo(void 0, true); }
+
+            if (!data) { return console.error("Problem creating limit"); }
             var limit = data.limit;
             var usage = data.usage;
             if (typeof(limit) !== 'number' || typeof(usage) !== 'number') {

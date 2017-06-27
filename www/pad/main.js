@@ -13,7 +13,10 @@ define([
     '/common/cryptget.js',
     '/pad/links.js',
     '/bower_components/file-saver/FileSaver.min.js',
-    '/bower_components/diff-dom/diffDOM.js'
+    '/bower_components/diff-dom/diffDOM.js',
+
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/customize/src/less/cryptpad.less',
 ], function ($, Crypto, realtimeInput, Hyperjson,
     Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad, Cryptget, Links) {
     var saveAs = window.saveAs;
@@ -468,7 +471,8 @@ define([
                     realtime: info.realtime,
                     network: info.network,
                     $container: $bar,
-                    $contentContainer: $iframe.find('#cke_1_contents')
+                    $contentContainer: $iframe.find('#cke_1_contents'),
+                    legacyStyle: true,
                 };
                 toolbar = info.realtime.toolbar = Toolbar.create(configTb);
 
