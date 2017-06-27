@@ -736,7 +736,7 @@ define([
                 Cryptpad.prompt(Messages.changeNamePrompt, lastName || '', function (newName) {
                     if (newName === null && typeof(lastName) === "string") { return; }
                     if (newName === null) { newName = ''; }
-                    Cryptpad.changeDisplayName(newName);
+                    Cryptpad.changeDisplayName(newName, true);
                 });
             });
         });

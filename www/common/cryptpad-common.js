@@ -519,9 +519,9 @@ define([
         if (_onDisplayNameChanged.indexOf(h) !== -1) { return; }
         _onDisplayNameChanged.push(h);
     };
-    common.changeDisplayName = function (newName) {
+    common.changeDisplayName = function (newName, isLocal) {
         _onDisplayNameChanged.forEach(function (h) {
-            h(newName);
+            h(newName, isLocal);
         });
     };
 

@@ -18,7 +18,7 @@
   "scripts": {
     "lint": "jshint --config .jshintrc --exclude-path .jshintignore .",
     "test": "node TestSelenium.js",
-    "style": "lessc ./customize.dist/src/less/cryptpad.less > ./customize.dist/main.css && lessc ./customize.dist/src/less/toolbar.less > ./customize.dist/toolbar.css && lessc ./www/drive/file.less > ./www/drive/file.css && lessc ./www/settings/main.less > ./www/settings/main.css && lessc ./www/slide/slide.less > ./www/slide/slide.css && lessc ./www/whiteboard/whiteboard.less > ./www/whiteboard/whiteboard.css && lessc ./www/poll/poll.less > ./www/poll/poll.css && lessc ./www/file/file.less > ./www/file/file.css && lessc ./www/code/code.less > ./www/code/code.css",
+    "style": "lessc ./customize.dist/src/less/cryptpad.less > ./customize.dist/main.css && lessc ./customize.dist/src/less/toolbar.less > ./customize.dist/toolbar.css && lessc ./www/drive/file.less > ./www/drive/file.css && lessc ./www/settings/main.less > ./www/settings/main.css && lessc ./www/whiteboard/whiteboard.less > ./www/whiteboard/whiteboard.css && lessc ./www/poll/poll.less > ./www/poll/poll.css && lessc ./www/file/file.less > ./www/file/file.css && lessc ./www/code/code.less > ./www/code/code.css",
     "template": "cd customize.dist/src && for page in ../index.html ../privacy.html ../terms.html ../about.html ../contact.html ../../www/login/index.html ../../www/register/index.html ../../www/settings/index.html ../../www/user/index.html;do echo $page; cp template.html $page; done;"
   }
 }

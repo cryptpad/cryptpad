@@ -412,6 +412,7 @@ define(function () {
     out.upload_progress = "Progress";
     out.upload_mustLogin = "You must be logged in to upload files";
     out.download_button = "Decrypt & Download";
+    out.download_mt_button = "Download";
 
     // general warnings
     out.warn_notPinned = "This pad is not in anyone's CryptDrive. It will expire after 3 months. <a href='/about.html#pinning'>Learn more...</a>";

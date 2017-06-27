@@ -780,6 +780,9 @@ body {
 }
 .cryptpad-toolbar-leftside {
     height: 32px;
+    &:empty {
+        height: 0;
+    }
     float: left;
     margin-bottom: -1px;
     .cryptpad-dropdown-users {
@@ -812,6 +815,9 @@ body {
 }
 .cryptpad-toolbar-rightside {
     height: 32px;
+    &:empty {
+        height: 0;
+    }
     text-align: right;
     &> button {
         height: 100%;
@@ -825,7 +831,7 @@ body {
     .drawer-content {
         position: absolute;
         right:0px;
-        top:96px;
+        margin-top: 32px;
         min-width: 50px;
         background: white;
         border: 1px solid black;

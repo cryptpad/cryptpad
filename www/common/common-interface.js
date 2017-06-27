@@ -19,11 +19,11 @@ define([
     Alertify._$$alertify.delay = AppConfig.notificationTimeout || 5000;
 
     var findCancelButton = UI.findCancelButton = function () {
-        return $('button.cancel');
+        return $('button.cancel').last();
     };
 
     var findOKButton = UI.findOKButton = function () {
-        return $('button.ok');
+        return $('button.ok').last();
     };
 
     var listenForKeys = UI.listenForKeys = function (yes, no) {
@@ -74,14 +74,22 @@ define([
             findCancelButton().click();
         });
 
+        // Make sure we don't call both the "yes" and "no" handlers if we use "findOKButton().click()"
+        // in the callback
+        var isClicked = false;
+
         Alertify
             .defaultValue(def || '')
             .okBtn(opt.ok || Messages.okButton || 'OK')
             .cancelBtn(opt.cancel || Messages.cancelButton || 'Cancel')
             .prompt(msg, function (val, ev) {
+                if (isClicked) { return; }
+                isClicked = true;
                 cb(val, ev);
                 stopListening(keyHandler);
             }, function (ev) {
+                if (isClicked) { return; }
+                isClicked = true;
                 cb(null, ev);
                 stopListening(keyHandler);
             });
@@ -98,13 +106,21 @@ define([
             findCancelButton().click();
         });
 
+        // Make sure we don't call both the "yes" and "no" handlers if we use "findOKButton().click()"
+        // in the callback
+        var isClicked = false;
+
         Alertify
             .okBtn(opt.ok || Messages.okButton || 'OK')
             .cancelBtn(opt.cancel || Messages.cancelButton || 'Cancel')
             .confirm(msg, function () {
+                if (isClicked) { return; }
+                isClicked = true;
                 cb(true);
                 stopListening(keyHandler);
             }, function () {
+                if (isClicked) { return; }
+                isClicked = true;
                 cb(false);
                 stopListening(keyHandler);
             });

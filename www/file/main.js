@@ -51,16 +51,9 @@ define([
             uploadMode = true;
         }
 
-        var getTitle = function () {
-            var pad = Cryptpad.getRelativeHref(window.location.href);
-            var fo = Cryptpad.getStore().getProxy().fo;
-            var data = fo.getFileData(pad);
-            return data ? data.title : undefined;
-        };
-
         Title = Cryptpad.createTitle({}, function(){}, Cryptpad);
 
-        var displayed = ['title', 'useradmin', 'newpad', 'limit', 'upgrade'];
+        var displayed = ['useradmin', 'newpad', 'limit', 'upgrade'];
         if (secret && hexFileName) {
             displayed.push('fileshare');
         }
@@ -69,30 +62,24 @@ define([
             displayed: displayed,
             ifrw: ifrw,
             common: Cryptpad,
-            title: Title.getTitleConfig(),
             hideDisplayName: true,
             $container: $bar
         };
         var toolbar = APP.toolbar = Toolbar.create(configTb);
+        toolbar.$rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
 
-        Title.setToolbar(toolbar);
-
-        if (uploadMode) { toolbar.title.hide(); }
-
-        Title.updateTitle(Cryptpad.initialName || getTitle() || Title.defaultTitle);
 
         if (!uploadMode) {
             var src = Cryptpad.getBlobPathFromHex(hexFileName);
             var cryptKey = secret.keys && secret.keys.fileKeyStr;
             var key = Nacl.util.decodeBase64(cryptKey);
 
-
             FileCrypto.fetchDecryptedMetadata(src, key, function (e, metadata) {
                 if (e) { return void console.error(e); }
                 var title = document.title = metadata.name;
                 Title.updateTitle(title || Title.defaultTitle);
 
-                var displayFile = function (ev) {
+                var displayFile = function (ev, sizeMb) {
                     var $mt = $dlview.find('media-tag');
                     var cryptKey = secret.keys && secret.keys.fileKeyStr;
                     var hexFileName = Cryptpad.base64ToHex(secret.channel);
@@ -112,6 +99,10 @@ define([
                             $appContainer.css('background', 'white');
                         }
                         $dlButton.addClass('btn btn-success');
+                        var text = Messages.download_mt_button + '<br>';
+                        text += '<b>' + Cryptpad.fixHTML(title) + '</b><br>';
+                        text += '<em>' + Messages._getKey('formattedMB', [sizeMb]) + '</em>';
+                        $dlButton.html(text);
 
                         toolbar.$rightside.append(Cryptpad.createButton('export', true, {}, function () {
                             saveAs(decrypted.blob, decrypted.metadata.name);
@@ -169,14 +160,14 @@ define([
                     $dlform.show();
                     Cryptpad.removeLoadingScreen();
                     $dllabel.append($('<br>'));
-                    $dllabel.append(metadata.name);
+                    $dllabel.append(Cryptpad.fixHTML(metadata.name));
                     $dllabel.append($('<br>'));
                     $dllabel.append(Messages._getKey('formattedMB', [sizeMb]));
                     var decrypting = false;
                     var onClick = function (ev) {
                         if (decrypting) { return; }
                         decrypting = true;
-                        displayFile(ev);
+                        displayFile(ev, sizeMb);
                     };
                     if (sizeMb < 5) { return void onClick(); }
                     $dlform.find('#dl, #progress').click(onClick);
