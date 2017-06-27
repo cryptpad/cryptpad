@@ -284,6 +284,10 @@ define([
         return h('div#container');
     };
 
+    Pages['/profile/'] = Pages['/profile/index.html'] = function () {
+        return h('div#container');
+    };
+
     Pages['/register/'] = Pages['/register/index.html'] = function () {
         return [h('div#main', [
             h('div.mainOverlay'),

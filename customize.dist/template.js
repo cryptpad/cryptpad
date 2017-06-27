@@ -139,6 +139,8 @@ $(function () {
         require([ '/settings/main.js', ], function () {});
     } else if (/^\/user\//.test(pathname)) {
         require([ '/user/main.js'], function () {});
+    } else if (/^\/profile\//.test(pathname)) {
+        require([ '/profile/main.js'], function () {});
     } else if (/^\/register\//.test(pathname)) {
         require([ '/register/main.js' ], function () {});
     } else if (/^\/login\//.test(pathname)) {
