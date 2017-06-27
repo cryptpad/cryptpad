@@ -9,6 +9,9 @@ define([
     '/file/file-crypto.js',
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
+
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/customize/src/less/cryptpad.less',
 ], function ($, Crypto, realtimeInput, Toolbar, Cryptpad, Visible, Notify, FileCrypto) {
     var Messages = Cryptpad.Messages;
     var saveAs = window.saveAs;

@@ -48,7 +48,8 @@ define([
         return 'cryptpad-uid-' + String(Math.random()).substring(2);
     };
 
-    var styleToolbar = function ($container, href, version) {
+    var styleToolbar = function ($container, href, version, force) {
+        if (!force) { return; }
         href = href || '/customize/toolbar.css' + (version?('?' + version): '');
 
         $.ajax({
@@ -108,9 +109,9 @@ define([
         $container.prepend($toolbar);
 
         if (ApiConfig && ApiConfig.requireConf && ApiConfig.requireConf.urlArgs) {
-            styleToolbar($container, undefined, ApiConfig.requireConf.urlArgs);
+            styleToolbar($container, undefined, ApiConfig.requireConf.urlArgs, config.legacyStyle);
         } else {
-            styleToolbar($container);
+            styleToolbar($container, void 0, void 0, config.legacyStyle);
         }
         $container.on('drop dragover', function (e) {
             e.preventDefault();
@@ -666,16 +667,7 @@ define([
                 });
             }
         };
-
-        Cryptpad.isOverPinLimit(function (e, isOver, data) {
-            var limit = data.limit;
-            var usage = data.usage;
-            if (typeof(limit) !== 'number' || typeof(usage) !== 'number') {
-                todo("invalid types");
-            } else if (Cryptpad.isLoggedIn() && usage >= limit) {
-                todo(void 0, true);
-            } else { todo(void 0, false); }
-        });
+        Cryptpad.isOverPinLimit(todo);
 
         return $limit;
     };
@@ -736,6 +728,7 @@ define([
                 Cryptpad.prompt(Messages.changeNamePrompt, lastName || '', function (newName) {
                     if (newName === null && typeof(lastName) === "string") { return; }
                     if (newName === null) { newName = ''; }
+                    else { Cryptpad.feedback('NAME_CHANGED'); }
                     Cryptpad.changeDisplayName(newName, true);
                 });
             });

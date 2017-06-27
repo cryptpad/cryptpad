@@ -10,6 +10,72 @@ define([
         return e;
     };
 
+    var indexContent = function () {
+        return [
+            h('div.page.category.first#knowmore', [
+                h('center', [
+                    h('h1', Msg.main_howitworks)
+                ])
+            ]),
+            h('div.page', [
+                h('div.info-container', [
+                    h('div.left.image', [
+                        h('img', {
+                            src: '/customize/images/zeroknowledge_small.png',
+                            alt: 'Zero Knowledge'
+                        })
+                    ]),
+                    h('div.right', [
+                        h('h2', Msg.main_zeroKnowledge),
+                        setHTML(h('p'), Msg.main_zeroKnowledge_p)
+                    ])
+                ])
+            ]),
+            h('div.page.even', [
+                h('div.info-container', [
+                    h('div.left', [
+                        h('h2', Msg.main_writeItDown),
+                        h('p', Msg.main_writeItDown_p)
+                    ]),
+                    h('div.right.image', [
+                        h('img', {
+                            alt: "User account",
+                            src: '/customize/images/realtime_small.png',
+                        })
+                    ])
+                ])
+            ]),
+            h('div.page', [
+                h('div.info-container', [
+                    h('div.left.image', [
+                        h('img', {
+                            src: '/customize/images/key_small.png',
+                            alt: 'User account'
+                        })
+                    ]),
+                    h('div.right', [
+                        h('h2', Msg.main_share),
+                        h('p', Msg.main_share_p)
+                    ])
+                ])
+            ]),
+            h('div.page.even', [
+                h('div.info-container', [
+                    h('div.left', [
+                        h('h2', Msg.main_organize),
+                        h('p', Msg.main_organize_p)
+                    ]),
+                    h('div.right.image', [
+                        h('img', {
+                            src: '/customize/images/organize.png',
+                            alt: 'User account'
+                        })
+                    ])
+                ])
+            ])
+        ];
+    };
+
     Pages['/about.html'] = function () {
         return h('div#main_other', [
             h('center', [
@@ -18,7 +84,7 @@ define([
             setHTML(h('p'), Msg.main_p2),
             h('h2', Msg.main_howitworks),
             setHTML(h('p'), Msg.main_howitworks_p1)
-        ]);
+        ].concat(indexContent()));
     };
 
     Pages['/privacy.html'] = function () {
@@ -105,71 +171,6 @@ define([
         ]);
     };
 
-    var indexContent = function () {
-        return [
-            h('div.page.category.first#knowmore', [
-                h('center', [
-                    h('h1', Msg.main_howitworks)
-                ])
-            ]),
-            h('div.page', [
-                h('div.info-container', [
-                    h('div.left.image', [
-                        h('img', {
-                            src: '/customize/images/zeroknowledge_small.png',
-                            alt: 'Zero Knowledge'
-                        })
-                    ]),
-                    h('div.right', [
-                        h('h2', Msg.main_zeroKnowledge),
-                        setHTML(h('p'), Msg.main_zeroKnowledge_p)
-                    ])
-                ])
-            ]),
-            h('div.page.even', [
-                h('div.info-container', [
-                    h('div.left', [
-                        h('h2', Msg.main_writeItDown),
-                        h('p', Msg.main_writeItDown_p)
-                    ]),
-                    h('div.right.image', [
-                        h('img', {
-                            alt: "User account",
-                            src: '/customize/images/realtime_small.png',
-                        })
-                    ])
-                ])
-            ]),
-            h('div.page', [
-                h('div.info-container', [
-                    h('div.left.image', [
-                        h('img', {
-                            src: '/customize/images/key_small.png',
-                            alt: 'User account'
-                        })
-                    ]),
-                    h('div.right', [
-                        h('h2', Msg.main_share),
-                        h('p', Msg.main_share_p)
-                    ])
-                ])
-            ]),
-            h('div.page.even', [
-                h('div.info-container', [
-                    h('div.left', [
-                        h('h2', Msg.main_organize),
-                        h('p', Msg.main_organize_p)
-                    ]),
-                    h('div.right.image', [
-                        h('img', {
-                            src: '/customize/images/organize.png',
-                            alt: 'User account'
-                        })
-                    ])
-                ])
-            ])
-        ];
-    };
 
     var appButton = function (alt, h2, img, p, url, btn, id) {
         return h('div.app', [
@@ -258,12 +259,11 @@ define([
                 ]),
             ])
         ]
-        .concat(tryIt())
-        .concat(indexContent());
+        .concat(tryIt());
     };
 
     var loadingScreen = function () {
-        return h('div#loading',
+        return h('div#loading', 
             h('div.loadingContainer', [
                 h('img.cryptofist', {
                     src: '/customize/cryptofist_small.png'
@@ -424,6 +424,79 @@ define([
             }),
             h('div#pickers'),
         ];
+    };
+
+    Pages['/poll/'] = Pages['/poll/index.html'] = function () {
+        return [
+            appToolbar(),
+            h('div#content', [
+                h('div#poll', [
+                    h('div#howItWorks', [
+                        h('h1', 'CryptPoll'),
+                        h('h2', Msg.poll_subtitle),
+                        h('p', Msg.poll_p_save),
+                        h('p', Msg.poll_p_encryption)
+                    ]),
+                    h('div.upper', [
+                        h('button#publish', {
+                            style: { display: 'none' }
+                        }, Msg.poll_publish_button),
+                        h('button#admin', {
+                            style: { display: 'none' },
+                            title: Msg.poll_admin_button
+                        }, Msg.poll_admin_button),
+                        h('button#help', {
+                            title: Msg.poll_show_help_button,
+                            style: { display: 'none' }
+                        }, Msg.poll_show_help_button)
+                    ]),
+                    h('div.realtime', [
+                        h('br'),
+                        h('center', [
+                            h('textarea#description', {
+                                rows: "5",
+                                cols: "50",
+                                disabled: true
+                            }),
+                            h('br')
+                        ]),
+                        h('div#tableContainer', [
+                            h('div#tableScroll'),
+                            h('button#create-user', {
+                                title: Msg.poll_create_user
+                            }, h('span.fa.fa-plus')),
+                            h('button#create-option', {
+                                title: Msg.poll_create_option
+                            }, h('span.fa.fa-plus')),
+                            h('button#commit', {
+                                title: Msg.poll_commit
+                            }, h('span.fa.fa-check'))
+                        ])
+                    ])
+                ])
+            ]),
+            loadingScreen()
+        ];
+    };
+
+    Pages['/drive/'] = Pages['/drive/index.html'] = function () {
+        return loadingScreen();
+    };
+
+    Pages['/file/'] = Pages['/file/index.html'] = function () {
+        return loadingScreen();
+    };
+
+    Pages['/pad/'] = Pages['/pad/index.html'] = function () {
+        return loadingScreen();
+    };
+
+    Pages['/code/'] = Pages['/code/index.html'] = function () {
+        return loadingScreen();
+    };
+
+    Pages['/slide/'] = Pages['/slide/index.html'] = function () {
+        return loadingScreen();
     };
 
     return Pages;

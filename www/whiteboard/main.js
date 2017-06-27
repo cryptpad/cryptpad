@@ -15,8 +15,9 @@ define([
     '/bower_components/file-saver/FileSaver.min.js',
 
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'css!/customize/main.css',
+    'less!/customize/src/less/cryptpad.less',
     'less!/whiteboard/whiteboard.less',
+    'less!/customize/src/less/toolbar.less',
 ], function ($, Config, Realtime, Crypto, Toolbar, TextPatcher, JSONSortify, JsonOT, Cryptpad, Cryptget, Colors, AppConfig) {
     var saveAs = window.saveAs;
     var Messages = Cryptpad.Messages;

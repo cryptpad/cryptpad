@@ -4,14 +4,14 @@ define([
     '/common/cryptpad-common.js',
     '/customize/pages.js',
 
-    'css!/customize/main.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, h, Cryptpad, Pages) {
 $(function () {
     var Messages = Cryptpad.Messages;
     var $body = $('body');
     var isMainApp = function () {
-        return /^\/(pad|code|slide|poll|whiteboard)\//.test(location.pathname);
+        console.error("Checking if is main app");
+        return /^\/(pad|code|slide|poll|whiteboard|file|media|drive)\/$/.test(location.pathname);
     };
 
     var rightLink = function (ref, loc, txt) {
@@ -116,40 +116,87 @@ $(function () {
 
     var pathname = location.pathname;
 
-
     if (isMainApp()) {
+        console.log("Is main app");
         if (typeof(Pages[pathname]) === 'function') {
-            $('body').html(h('body', Pages[pathname]()).innerHTML);
-            setTimeout(function () {
-                require(['/whiteboard/main.js'], function () {
-                    $('body').removeClass('noscroll');
-                });
+            require([
+                'less!/customize/src/less/loading.less'
+            ], function () {
+                //$('body').html(h('body', Pages[pathname]()).innerHTML);
+
+                console.log("TEMPLATED");
+
+                if (/whiteboard/.test(pathname)) {
+                    $('body').html(h('body', Pages[pathname]()).innerHTML);
+                    setTimeout(function () {
+                        require(['/whiteboard/main.js'], function () {
+                            $('body').removeClass('noscroll');
+                        });
+                    });
+                } else if (/poll/.test(pathname)) {
+                    $('body').html(h('body', Pages[pathname]()).innerHTML);
+                    setTimeout(function () {
+                        require(['/poll/main.js'], function () {
+                            $('body').removeClass('noscroll');
+                            console.log("TEMPLATE!");
+                        });
+                    });
+                } else if (/drive/.test(pathname)) {
+                    $('body').append(h('body', Pages[pathname]()).innerHTML);
+                    setTimeout(function () {
+                        require(['/drive/main.js'], function () {
+                            console.log("Templating done");
+                        });
+                    });
+                } else if (/file/.test(pathname)) {
+                    $('body').append(h('body', Pages[pathname]()).innerHTML);
+                    require([ '/file/main.js' ], function () {
+                        console.log("Templating done");
+                    });
+                } else if (/pad/.test(pathname)) {
+                    $('body').append(h('body', Pages[pathname]()).innerHTML);
+                    require([ '/pad/main.js' ], function () {
+                        console.log("Templating done");
+                    });
+                } else if (/code/.test(pathname)) {
+                    $('body').append(h('body', Pages[pathname]()).innerHTML);
+                    require([ '/code/main.js' ], function () {
+                        console.log("Templating done");
+                    });
+                } else if (/slide/.test(pathname)) {
+                    $('body').append(h('body', Pages[pathname]()).innerHTML);
+                    require([ '/slide/main.js' ], function () {
+                        console.log("Templating done");
+                    });
+                }
             });
+
             return;
         }
     }
 
     require([
+        'less!/customize/src/less/cryptpad.less',
         'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    ], function () {});
+    ], function () {
+        $body.append($topbar).append($main).append($footer);
 
-    $body.append($topbar).append($main).append($footer);
-
-    if (/^\/settings\//.test(pathname)) {
-        require([ '/settings/main.js', ], function () {});
-    } else if (/^\/user\//.test(pathname)) {
-        require([ '/user/main.js'], function () {});
-    } else if (/^\/profile\//.test(pathname)) {
-        require([ '/profile/main.js'], function () {});
-    } else if (/^\/register\//.test(pathname)) {
-        require([ '/register/main.js' ], function () {});
-    } else if (/^\/login\//.test(pathname)) {
-        require([ '/login/main.js' ], function () {});
-    } else if (/^\/($|^\/index\.html$)/.test(pathname)) {
-        // TODO use different top bar
-        require([ '/customize/main.js', ], function () {});
-    } else {
-        require([ '/customize/main.js', ], function () {});
-    }
+        if (/^\/settings\//.test(pathname)) {
+            require([ '/settings/main.js', ], function () {});
+        } else if (/^\/profile\//.test(pathname)) {
+            require([ '/profile/main.js'], function () {});
+        } else if (/^\/user\//.test(pathname)) {
+            require([ '/user/main.js'], function () {});
+        } else if (/^\/register\//.test(pathname)) {
+            require([ '/register/main.js' ], function () {});
+        } else if (/^\/login\//.test(pathname)) {
+            require([ '/login/main.js' ], function () {});
+        } else if (/^\/($|^\/index\.html$)/.test(pathname)) {
+            // TODO use different top bar
+            require([ '/customize/main.js', ], function () {});
+        } else {
+            require([ '/customize/main.js', ], function () {});
+        }
+    });
 });
 });

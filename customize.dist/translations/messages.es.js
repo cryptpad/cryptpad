@@ -297,9 +297,9 @@ define(function () {
         'Comparte el enlace a este pad para editar con amigos o utiliza el botón <span style="background-color:#5cb85c;color:#ffffff;">&nbsp;Compartir&nbsp;</span> para obtener un <em>enlace solo lectura</em>&nbsp;que permite leer pero no escribir.',
         '</p>',
 
-        '<p><span style="color:#808080;"><em>',
+        '<p><em>',
         'Vamos, solo empezia a escribir...',
-        '</em></span></p></span>',
+        '</em></p></span>',
         '<p>&nbsp;<br></p>'
     ].join('');
 
