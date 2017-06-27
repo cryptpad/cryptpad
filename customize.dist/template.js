@@ -10,7 +10,8 @@ $(function () {
     var Messages = Cryptpad.Messages;
     var $body = $('body');
     var isMainApp = function () {
-        return /^\/(pad|code|slide|poll|whiteboard|file|media)\//.test(location.pathname);
+        console.error("Checking if is main app");
+        return /^\/(pad|code|slide|poll|whiteboard|file|media|drive)\/$/.test(location.pathname);
     };
 
     var rightLink = function (ref, loc, txt) {
@@ -115,25 +116,61 @@ $(function () {
 
     var pathname = location.pathname;
 
-
     if (isMainApp()) {
+        console.log("Is main app");
         if (typeof(Pages[pathname]) === 'function') {
-            $('body').html(h('body', Pages[pathname]()).innerHTML);
+            require([
+                'less!/customize/src/less/loading.less'
+            ], function () {
+                //$('body').html(h('body', Pages[pathname]()).innerHTML);
 
-            if (/whiteboard/.test(pathname)) {
-                setTimeout(function () {
-                    require(['/whiteboard/main.js'], function () {
-                        $('body').removeClass('noscroll');
+                console.log("TEMPLATED");
+
+                if (/whiteboard/.test(pathname)) {
+                    $('body').html(h('body', Pages[pathname]()).innerHTML);
+                    setTimeout(function () {
+                        require(['/whiteboard/main.js'], function () {
+                            $('body').removeClass('noscroll');
+                        });
                     });
-                });
-            } else if (/poll/.test(pathname)) {
-                setTimeout(function () {
-                    require(['/poll/main.js'], function () {
-                        $('body').removeClass('noscroll');
-                        console.log("TEMPLATE!");
+                } else if (/poll/.test(pathname)) {
+                    $('body').html(h('body', Pages[pathname]()).innerHTML);
+                    setTimeout(function () {
+                        require(['/poll/main.js'], function () {
+                            $('body').removeClass('noscroll');
+                            console.log("TEMPLATE!");
+                        });
                     });
-                });
-            }
+                } else if (/drive/.test(pathname)) {
+                    $('body').append(h('body', Pages[pathname]()).innerHTML);
+                    setTimeout(function () {
+                        require(['/drive/main.js'], function () {
+                            console.log("Templating done");
+                        });
+                    });
+                } else if (/file/.test(pathname)) {
+                    $('body').append(h('body', Pages[pathname]()).innerHTML);
+                    require([ '/file/main.js' ], function () {
+                        console.log("Templating done");
+                    });
+                } else if (/pad/.test(pathname)) {
+                    $('body').append(h('body', Pages[pathname]()).innerHTML);
+                    require([ '/pad/main.js' ], function () {
+                        console.log("Templating done");
+                    });
+                } else if (/code/.test(pathname)) {
+                    $('body').append(h('body', Pages[pathname]()).innerHTML);
+                    require([ '/code/main.js' ], function () {
+                        console.log("Templating done");
+                    });
+                } else if (/slide/.test(pathname)) {
+                    $('body').append(h('body', Pages[pathname]()).innerHTML);
+                    require([ '/slide/main.js' ], function () {
+                        console.log("Templating done");
+                    });
+                }
+            });
+
             return;
         }
     }

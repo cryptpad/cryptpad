@@ -263,7 +263,7 @@ define([
     };
 
     var loadingScreen = function () {
-        return h('div#loading',
+        return h('div#loading', 
             h('div.loadingContainer', [
                 h('img.cryptofist', {
                     src: '/customize/cryptofist_small.png'
@@ -477,6 +477,26 @@ define([
             ]),
             loadingScreen()
         ];
+    };
+
+    Pages['/drive/'] = Pages['/drive/index.html'] = function () {
+        return loadingScreen();
+    };
+
+    Pages['/file/'] = Pages['/file/index.html'] = function () {
+        return loadingScreen();
+    };
+
+    Pages['/pad/'] = Pages['/pad/index.html'] = function () {
+        return loadingScreen();
+    };
+
+    Pages['/code/'] = Pages['/code/index.html'] = function () {
+        return loadingScreen();
+    };
+
+    Pages['/slide/'] = Pages['/slide/index.html'] = function () {
+        return loadingScreen();
     };
 
     return Pages;

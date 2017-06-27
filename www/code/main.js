@@ -12,6 +12,7 @@ define([
     '/bower_components/tweetnacl/nacl-fast.min.js', // needed for media-tag
 
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/customize/src/less/cryptpad.less'
 ], function ($, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad,
              Cryptget, DiffMd) {
     var Messages = Cryptpad.Messages;
