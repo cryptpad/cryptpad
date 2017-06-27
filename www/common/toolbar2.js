@@ -492,6 +492,8 @@ define([
                 $pencilIcon.show();
                 $saveIcon.hide();
                 //$pencilIcon.css('display', '');
+            } else if (e.which === 32) {
+                e.stopPropagation();
             }
         });
         $saveIcon.click(save);
@@ -664,13 +666,17 @@ define([
                 });
             }
         };
-        var limit = Cryptpad.account.limit;
-        var usage = Cryptpad.account.usage;
-        if (typeof(limit) !== 'number' || typeof(usage) !== 'number') {
-            todo("invalid types");
-        } else if (Cryptpad.isLoggedIn() && usage >= limit) {
-            todo(void 0, true);
-        } else { todo(void 0, false); }
+
+        Cryptpad.isOverPinLimit(function (e, isOver, data) {
+            var limit = data.limit;
+            var usage = data.usage;
+            if (typeof(limit) !== 'number' || typeof(usage) !== 'number') {
+                todo("invalid types");
+            } else if (Cryptpad.isLoggedIn() && usage >= limit) {
+                todo(void 0, true);
+            } else { todo(void 0, false); }
+        });
+
         return $limit;
     };
 

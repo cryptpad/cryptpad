@@ -32,9 +32,7 @@ define([
         Clipboard: Clipboard,
         donateURL: 'https://accounts.cryptpad.fr/#/donate?on=' + origin,
         upgradeURL: 'https://accounts.cryptpad.fr/#/?on=' + origin,
-        account: {
-            usage: 0,
-        },
+        account: {},
     };
 
     // constants
@@ -759,7 +757,9 @@ define([
         if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
 
         rpc.getFileListSize(function (err, bytes) {
-            common.account.usage = typeof(bytes) === 'number'? bytes: 0;
+            if (typeof(bytes) === 'number') {
+                common.account.usage = bytes;
+            }
             cb(err, bytes);
         });
     };
@@ -785,13 +785,21 @@ define([
 
     common.getPinLimit = function (cb) {
         if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
-        rpc.getLimit(function (e, limit, plan, note) {
-            if (e) { return cb(e); }
-            common.account.limit = limit;
-            common.account.plan = plan;
-            common.account.note = note;
-            cb(void 0, limit, plan, note);
-        });
+
+        var account = common.account;
+        if (typeof(account.limit) !== 'number' ||
+            typeof(account.plan) !== 'string' ||
+            typeof(account.note) !== 'string') {
+            return void rpc.getLimit(function (e, limit, plan, note) {
+                if (e) { return cb(e); }
+                common.account.limit = limit;
+                common.account.plan = plan;
+                common.account.note = note;
+                cb(void 0, limit, plan, note);
+            });
+        }
+
+        cb(void 0, account.limit, account.plan, account.note);
     };
 
     common.isOverPinLimit = function (cb) {
