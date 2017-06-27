@@ -473,9 +473,9 @@ define(function () {
         '分享這個工作檔案的網址連結給友人或是使用、 <span style="background-color:#5cb85c;color:#ffffff;">&nbsp;分享&nbsp;</span> 按鈕分享<em>唯讀的連結</em>&nbsp;其只能看不能編寫。',
         '</p>',
 
-        '<p><span style="color:#808080;"><em>',
+        '<p><em>',
         '來吧, 開始打字輸入吧...',
-        '</em></span></p></span>',
+        '</em></p></span>',
         '<p>&nbsp;<br></p>'
     ].join('');
 

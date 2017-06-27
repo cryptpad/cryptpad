@@ -511,9 +511,9 @@ define(function () {
         'Share the link to this pad to edit with friends or use the <span style="background-color:#5cb85c;color:#ffffff;">&nbsp;Share&nbsp;</span> button to share a <em>read-only link</em>&nbsp;which allows viewing but not editing.',
         '</p>',
 
-        '<p><span style="color:#808080;"><em>',
+        '<p><em>',
         'Go ahead, just start typing...',
-        '</em></span></p></span>',
+        '</em></p></span>',
         '<p>&nbsp;<br></p>'
     ].join('');
 
