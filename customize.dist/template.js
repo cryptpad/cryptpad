@@ -119,11 +119,21 @@ $(function () {
     if (isMainApp()) {
         if (typeof(Pages[pathname]) === 'function') {
             $('body').html(h('body', Pages[pathname]()).innerHTML);
-            setTimeout(function () {
-                require(['/whiteboard/main.js'], function () {
-                    $('body').removeClass('noscroll');
+
+            if (/whiteboard/.test(pathname)) {
+                setTimeout(function () {
+                    require(['/whiteboard/main.js'], function () {
+                        $('body').removeClass('noscroll');
+                    });
                 });
-            });
+            } else if (/poll/.test(pathname)) {
+                setTimeout(function () {
+                    require(['/poll/main.js'], function () {
+                        $('body').removeClass('noscroll');
+                        console.log("TEMPLATE!");
+                    });
+                });
+            }
             return;
         }
     }

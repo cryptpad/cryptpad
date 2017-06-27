@@ -9,48 +9,7 @@
         data-main-favicon="/customize/main-favicon.png"
         data-alt-favicon="/customize/alt-favicon.png"
         id="favicon" />
-    <script data-bootload="main.js" data-main="/common/boot.js" src="/bower_components/requirejs/require.js"></script>
+    <script data-bootload="/customize/template.js" data-main="/common/boot.js" src="/bower_components/requirejs/require.js"></script>
 </head>
 <body>
 
-<div id="toolbar" class="toolbar-container"></div>
-<div id="content">
-    <div id="poll">
-        <div id="howItWorks">
-            <h1 id="mainTitle">CryptPoll</h1>
-            <h2 data-localization="poll_subtitle"></h2>
-
-            <p data-localization="poll_p_save"></p>
-            <p data-localization="poll_p_encryption"></p>
-        </div>
-
-        <div class="upper">
-            <button id="publish" data-localization-title="poll_publish_button" data-localization="poll_publish_button" style="display: none;">publish poll</button>
-            <button id="admin" data-localization-title="poll_admin_button" data-localization="poll_admin_button" style="display: none;">admin</button>
-            <button id="help" data-localization-title="poll_show_help_button" data-localization="poll_show_help_button">help</button>
-        </div>
-
-        <div class="realtime">
-            <br />
-            <center>
-            <textarea rows=5 cols=50 disabled="disabled" id="description"></textarea><br />
-            </center>
-            <div id="tableContainer">
-                <div id="tableScroll"></div>
-                <button data-localization-title="poll_create_user" id="create-user"><span class="fa fa-plus"></span></button>
-                <button data-localization-title="poll_create_option" id="create-option"><span class="fa fa-plus"></span></button>
-                <button data-localization-title="poll_commit" id="commit"><span class="fa fa-check"></span></button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="loading">
-    <div class="loadingContainer">
-        <img class="cryptofist" src="/customize/cryptofist_small.png" />
-        <div class="spinnerContainer">
-            <span class="fa fa-spinner fa-pulse fa-4x fa-fw"></span>
-        </div>
-        <p data-localization="loading"></p>
-    </div>
-</div>

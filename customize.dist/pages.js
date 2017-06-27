@@ -259,8 +259,7 @@ define([
                 ]),
             ])
         ]
-        .concat(tryIt())
-        //.concat(indexContent());
+        .concat(tryIt());
     };
 
     var loadingScreen = function () {
@@ -424,6 +423,59 @@ define([
                 }
             }),
             h('div#pickers'),
+        ];
+    };
+
+    Pages['/poll/'] = Pages['/poll/index.html'] = function () {
+        return [
+            appToolbar(),
+            h('div#content', [
+                h('div#poll', [
+                    h('div#howItWorks', [
+                        h('h1', 'CryptPoll'),
+                        h('h2', Msg.poll_subtitle),
+                        h('p', Msg.poll_p_save),
+                        h('p', Msg.poll_p_encryption)
+                    ]),
+                    h('div.upper', [
+                        h('button#publish', {
+                            style: { display: 'none' }
+                        }, Msg.poll_publish_button),
+                        h('button#admin', {
+                            style: { display: 'none' },
+                            title: Msg.poll_admin_button
+                        }, Msg.poll_admin_button),
+                        h('button#help', {
+                            title: Msg.poll_show_help_button,
+                            style: { display: 'none' }
+                        }, Msg.poll_show_help_button)
+                    ]),
+                    h('div.realtime', [
+                        h('br'),
+                        h('center', [
+                            h('textarea#description', {
+                                rows: "5",
+                                cols: "50",
+                                disabled: true
+                            }),
+                            h('br')
+                        ]),
+                        h('div#tableContainer', [
+                            h('div#tableScroll'),
+                            h('button#create-user', {
+                                title: Msg.poll_create_user
+                            }, h('span.fa.fa-plus')),
+                            h('button#create-option', {
+                                title: Msg.poll_create_option
+                            }, h('span.fa.fa-plus')),
+                            h('button#commit', {
+                                title: Msg.poll_commit
+                            }, h('span.fa.fa-check'))
+                        ])
+                    ])
+                ])
+            ]),
+            loadingScreen()
         ];
     };
 
