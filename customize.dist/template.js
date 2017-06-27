@@ -136,6 +136,8 @@ $(function () {
 
         if (/^\/settings\//.test(pathname)) {
             require([ '/settings/main.js', ], function () {});
+        } else if (/^\/profile\//.test(pathname)) {
+            require([ '/profile/main.js'], function () {});
         } else if (/^\/user\//.test(pathname)) {
             require([ '/user/main.js'], function () {});
         } else if (/^\/register\//.test(pathname)) {
@@ -149,6 +151,5 @@ $(function () {
             require([ '/customize/main.js', ], function () {});
         }
     });
-
 });
 });
