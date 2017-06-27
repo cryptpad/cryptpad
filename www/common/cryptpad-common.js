@@ -861,14 +861,12 @@ define([
             var $usage = $('<span>', {'class': 'usage'}).css('width', width+'px');
 
             var makeDonateButton = function () {
-                var $upgradeLink = $('<a>', {
+                $('<a>', {
+                    'class': 'upgrade btn btn-success',
                     href: common.donateURL,
                     rel: "noreferrer noopener",
                     target: "_blank",
-                }).appendTo($container);
-                $('<button>', {
-                    'class': 'upgrade buttonSuccess',
-                }).text(Messages.supportCryptpad).appendTo($upgradeLink);
+                }).text(Messages.supportCryptpad).appendTo($container);
             };
 
             var makeUpgradeButton = function () {
