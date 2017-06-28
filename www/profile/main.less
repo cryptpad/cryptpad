@@ -23,25 +23,43 @@
         width: 300px;
         //height: 350px;
         margin: 10px;
+        margin-right: 20px;
         text-align: center;
         &> span {
             display: inline-block;
-            line-height: 300px;
             text-align: center;
             height: 300px;
+            width: 300px;
             border: 1px solid black;
             border-radius: 10px;
             overflow: hidden;
+            position: relative;
+            .delete {
+                right: 0;
+                position: absolute;
+                opacity: 0.7;
+                &:hover {
+                    opacity: 1;
+                }
+            }
         }
         img {
-            max-width: 300px;
-            max-height: 300px;
+            max-width: 100%;
+            max-height: 100%;
+            vertical-align: top;
         }
         media-tag {
             height: 100%;
-            display: inline-block;
+            width: 100%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
             img {
-                vertical-align: top;
+                min-width: 100%;
+                min-height: 100%;
+                max-width: none;
+                max-height: none;
+                flex-shrink: 0;
             }
         }
         button {
@@ -83,6 +101,7 @@
         position: relative;
         font-size: 16px;
         border: 1px solid #DDD;
+        margin-bottom: 20px;
         .rendered {
             padding: 0 15px;
         }

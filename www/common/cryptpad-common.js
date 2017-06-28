@@ -12,12 +12,13 @@ define([
     '/common/common-metadata.js',
     '/common/common-codemirror.js',
     '/common/common-file.js',
+    '/file/file-crypto.js',
 
     '/common/clipboard.js',
     '/common/pinpad.js',
     '/customize/application_config.js'
 ], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Metadata,
-            CodeMirror, Files, Clipboard, Pinpad, AppConfig) {
+            CodeMirror, Files, FileCrypto, Clipboard, Pinpad, AppConfig) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -974,9 +975,14 @@ define([
                     var ev = {
                         target: data.target
                     };
+                    if (data.filter && !data.filter(file)) {
+                        common.log('TODO: invalid avatar (type or size)');
+                        return;
+                    }
                     data.FM.handleFile(file, ev);
                     if (callback) { callback(); }
                 });
+                if (data.accept) { $input.attr('accept', data.accept); }
                 button.click(function () { $input.click(); });
                 break;
             case 'template':
@@ -1127,6 +1133,70 @@ define([
             button.addClass('rightside-button');
         }
         return button;
+    };
+
+    common.avatarAllowedTypes = [
+        'image/png',
+        'image/jpeg',
+        'image/jpg',
+        'image/gif',
+    ];
+    common.displayAvatar = function ($container, href) {
+        var MutationObserver = window.MutationObserver;
+        $container.html('');
+        if (href) {
+            var parsed = common.parsePadUrl(href);
+            var secret = common.getSecrets('file', parsed.hash);
+            if (secret.keys && secret.channel) {
+                var cryptKey = secret.keys && secret.keys.fileKeyStr;
+                var hexFileName = common.base64ToHex(secret.channel);
+                var src = common.getBlobPathFromHex(hexFileName);
+                common.getFileSize(href, function (e, data) {
+                    if (e) { return void console.error(e); }
+                    if (typeof data !== "number") { return; }
+                    if (common.bytesToMegabytes(data) > 0.5) { return; }
+                    var $img = $('<media-tag>').appendTo($container);
+                    $img.attr('src', src);
+                    $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
+                    require(['/common/media-tag.js'], function (MediaTag) {
+                        MediaTag.CryptoFilter.setAllowedMediaTypes(common.avatarAllowedTypes);
+                        MediaTag($img[0]);
+                        var observer = new MutationObserver(function(mutations) {
+                            mutations.forEach(function(mutation) {
+                                if (mutation.type === 'childList' && mutation.addedNodes.length) {
+                                    console.log(mutation);
+                                    if (mutation.addedNodes.length > 1 ||
+                                        mutation.addedNodes[0].nodeName !== 'IMG') {
+                                        $img.remove();
+                                        return;
+                                        //TODO display default avatar
+                                    }
+                                    var $image = $img.find('img');
+                                    var onLoad = function () {
+                                        var w = $image.width();
+                                        var h = $image.height();
+                                        if (w>h) {
+                                            $image.css('max-height', '100%');
+                                            $img.css('flex-direction', 'row');
+                                            return;
+                                        }
+                                        $image.css('max-width', '100%');
+                                        $img.css('flex-direction', 'column');
+                                    };
+                                    if ($image[0].complete) { onLoad(); }
+                                    $image.on('load', onLoad);
+                                }
+                            });
+                        });
+                        observer.observe($img[0], {
+                            attributes: false,
+                            childList: true,
+                            characterData: false
+                        });
+                    });
+                });
+            }
+        }
     };
 
     // Create a button with a dropdown menu

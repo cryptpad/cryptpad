@@ -156,7 +156,6 @@ define([
                 MediaTag(el);
                 var observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
-                        console.log(mutation);
                         if (mutation.type === 'childList') {
                             var list_values = [].slice.call(el.children);
                             mediaMap[el.getAttribute('src')] = list_values;

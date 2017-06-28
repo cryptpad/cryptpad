@@ -196,51 +196,105 @@ define([
             cb();
         };
         var rt = APP.lm.realtime;
-        var placeholder = "URL"; //TODO
+        var placeholder = "URL"; //XXX
         createEditableInput($block, LINK_ID, placeholder, getValue, setValue, rt);
     };
 
     var addAvatar = function ($container) {
         var $block = $('<div>', {id: AVATAR_ID}).appendTo($container);
         var $span = $('<span>').appendTo($block);
-        if (APP.lm.proxy.avatar) {
-            //var file = APP.lm.proxy.avatar;
-            var $img = $('<media-tag>').appendTo($span);
-            $img.attr('src', '/blob/45/45170bcd64aae1726b0b0e06c4360181a08bad9596640863');
-            $img.attr('data-crypto-key', 'cryptpad:5vs/ciPzSAyHeP6XRwxpFZt/cjkRC+EE2CRw+/xfcVI=');
-            require(['/common/media-tag.js'], function (MediaTag) {
-                var allowedMediaTypes = [
-                    'image/png',
-                    'image/jpeg',
-                    'image/jpg',
-                    'image/gif',
-                ];
-                MediaTag.CryptoFilter.setAllowedMediaTypes(allowedMediaTypes);
-                MediaTag($img[0]);
-            });
-        }
-        if (APP.readOnly) { return; }
+        var allowedMediaTypes = Cryptpad.avatarAllowedTypes;
+        var displayAvatar = function () {
+            $span.html('');
+            if (!APP.lm.proxy.avatar) {
+                $('<img>', {
+                    src: '/customize/images/avatar.png',
+                    title: 'Avatar', // XXX
+                    alt: 'Avatar'
+                }).appendTo($span);
+                return;
+            }
+            Cryptpad.displayAvatar($span, APP.lm.proxy.avatar);
 
-        //var $button = $('<button>', {'class': 'btn btn-success'}).text('TODO: change avatar');
-        //$block.append($button);
+            if (APP.readOnly) { return; }
+
+            var $delButton = $('<button>', {'class': 'delete btn btn-danger fa fa-times'}); //XXX
+            $span.append($delButton);
+            $delButton.click(function () {
+                console.log('clicked');
+                var oldChanId = Cryptpad.hrefToHexChannelId(APP.lm.proxy.avatar);
+                Cryptpad.unpinPads([oldChanId], function (e) {
+                    if (e) { Cryptpad.log(e); }
+                    console.log('unpinned');
+                    delete APP.lm.proxy.avatar;
+                    delete Cryptpad.getProxy().profile.avatar;
+                    Cryptpad.whenRealtimeSyncs(APP.lm.realtime, function () {
+                        console.log('synced1');
+                        var driveRt = Cryptpad.getStore().getProxy().info.realtime;
+                        Cryptpad.whenRealtimeSyncs(driveRt, function () {
+                            console.log('synced2');
+                            displayAvatar();
+                        });
+                    });
+                });
+            });
+        };
+        displayAvatar();
+        if (APP.readOnly) { return; }
 
         var fmConfig = {
             noHandlers: true,
             noStore: true,
             body: $('body'),
             onUploaded: function (ev, data) {
-                console.log(data);
+                var chanId = Cryptpad.hrefToHexChannelId(data.url);
+                var profile = Cryptpad.getProxy().profile;
+                var old = profile.avatar;
+                var todo = function () {
+                    Cryptpad.pinPads([chanId], function (e) {
+                        if (e) { return void Cryptpad.log(e); }
+                        APP.lm.proxy.avatar = data.url;
+                        Cryptpad.getProxy().profile.avatar = data.url;
+                        Cryptpad.whenRealtimeSyncs(APP.lm.realtime, function () {
+                            var driveRt = Cryptpad.getStore().getProxy().info.realtime;
+                            Cryptpad.whenRealtimeSyncs(driveRt, function () {
+                                displayAvatar();
+                            });
+                        });
+                    });
+                };
+                if (old) {
+                    var oldChanId = Cryptpad.hrefToHexChannelId(old);
+                    Cryptpad.unpinPads([oldChanId], function (e) {
+                        if (e) { Cryptpad.log(e); }
+                        todo();
+                    });
+                    return;
+                }
+                todo();
             }
         };
         APP.FM = Cryptpad.createFileManager(fmConfig);
-        var data = {FM: APP.FM};
-        $block.append(Cryptpad.createButton('upload', false, data));
+        var data = {
+            FM: APP.FM,
+            filter: function (file) {
+                var sizeMB = Cryptpad.bytesToMegabytes(file.size);
+                var type = file.type;
+                return sizeMB <= 0.5 && allowedMediaTypes.indexOf(type) !== -1;
+            },
+            accept: ".gif,.jpg,.jpeg,.png"
+        };
+        var $upButton = Cryptpad.createButton('upload', false, data);
+        $upButton.text(" Upload a new avatar");
+        $upButton.prepend($('<span>', {'class': 'fa fa-upload'}));
+        $block.append($upButton);
     };
 
     var addDescription = function ($container) {
         var $block = $('<div>', {id: DESCRIPTION_ID}).appendTo($container);
 
         if (APP.readOnly) {
+            if (!APP.lm.proxy.description.trim()) { return void $block.hide(); }
             var $div = $('<div>', {'class': 'rendered'}).appendTo($block);
             var val = Marked(APP.lm.proxy.description);
             $div.html(val);
@@ -274,13 +328,10 @@ define([
 
     var addPublicKey = function ($container) {
         var $block = $('<div>', {id: PUBKEY_ID});
-        var pubKey = Cryptpad.getProxy().edPublic;
-        $block.text(pubKey);
         $container.append($block);
     };
 
     var onReady = function () {
-        // TODO: on reconnect, this is called multiple times...
         APP.$container.find('#'+CREATE_ID).remove();
 
         if (!APP.initialized) {
@@ -332,13 +383,32 @@ define([
             var secret = Cryptpad.getSecrets();
             obj.profile = {};
             var channel = Cryptpad.createChannelId();
-            obj.profile.edit = Cryptpad.getEditHashFromKeys(channel, secret.keys);
-            obj.profile.view = Cryptpad.getViewHashFromKeys(channel, secret.keys);
-            obj.profile.name = APP.rt.proxy[Cryptpad.displayNameKey] || '';
-            andThen(obj.profile.edit);
+            Cryptpad.pinPads([channel], function (e) {
+                if (e) {
+                    if (e === 'E_OVER_LIMIT') {
+                        Cryptpad.alert(Messages.pinLimitNotPinned, null, true);
+                    }
+                    return void Cryptpad.log('Error while creating your profile: ' + e); // XXX
+                }
+                obj.profile.edit = Cryptpad.getEditHashFromKeys(channel, secret.keys);
+                obj.profile.view = Cryptpad.getViewHashFromKeys(channel, secret.keys);
+                obj.profile.name = APP.rt.proxy[Cryptpad.displayNameKey] || '';
+                andThen(obj.profile.edit);
+            });
         };
 
-        // TODO: if not logged in, display a register button here?
+        if (!Cryptpad.isLoggedIn()) { // XXX
+            var $p = $('<p>').text('TODO: You have to register to create a profile');
+            var $a = $('<a>', {
+                href: '/register/'
+            });
+            $('<button>', {
+                'class': 'btn btn-success',
+            }).text(Messages.login_register).appendTo($a);
+            $p.append($('<br>')).append($a);
+            APP.$container.append($p);
+            return;
+        }
         var $create = $('<div>', {id: CREATE_ID});
         var $button = $('<button>', {'class': 'btn btn-success'});
         $button.text('TODO: create a profile?').click(todo).appendTo($create); // XXX
