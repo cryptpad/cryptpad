@@ -578,8 +578,7 @@ var resetUserPins = function (Env, publicKey, channelList, cb) {
         });
     }
 
-    var pins = session.channels = {};
-
+    var pins = {};
     getMultipleFileSize(Env, channelList, function (e, sizes) {
         if (e) { return void cb(e); }
         var pinSize = sumChannelSizes(sizes);
@@ -606,6 +605,8 @@ var resetUserPins = function (Env, publicKey, channelList, cb) {
                     pins[channel] = true;
                 });
 
+                // update in-memory cache IFF the reset was allowed.
+                session.channels = pins;
                 getHash(Env, publicKey, function (e, hash) {
                     cb(e, hash);
                 });
