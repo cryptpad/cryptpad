@@ -18,7 +18,6 @@
   "scripts": {
     "lint": "jshint --config .jshintrc --exclude-path .jshintignore .",
     "test": "node TestSelenium.js",
-    "style": "lessc ./customize.dist/src/less/toolbar.less > ./customize.dist/toolbar.css",
     "template": "cd customize.dist/src && for page in ../index.html ../privacy.html ../terms.html ../about.html ../contact.html ../../www/login/index.html ../../www/register/index.html ../../www/settings/index.html ../../www/user/index.html;do echo $page; cp template.html $page; done;"
   }
 }
