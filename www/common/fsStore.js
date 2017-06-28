@@ -128,6 +128,10 @@ define([
 
         ret.change = function () {};
 
+        ret.getProfile = function () {
+            return storeObj.profile;
+        };
+
         return ret;
     };
 

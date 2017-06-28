@@ -204,6 +204,7 @@ define([
         var $block = $('<div>', {id: AVATAR_ID}).appendTo($container);
         var $span = $('<span>').appendTo($block);
         if (APP.lm.proxy.avatar) {
+            //var file = APP.lm.proxy.avatar;
             var $img = $('<media-tag>').appendTo($span);
             $img.attr('src', '/blob/45/45170bcd64aae1726b0b0e06c4360181a08bad9596640863');
             $img.attr('data-crypto-key', 'cryptpad:5vs/ciPzSAyHeP6XRwxpFZt/cjkRC+EE2CRw+/xfcVI=');
@@ -219,8 +220,21 @@ define([
             });
         }
         if (APP.readOnly) { return; }
-        var $button = $('<button>', {'class': 'btn btn-success'}).text('TODO: change avatar');
-        $block.append($button);
+
+        //var $button = $('<button>', {'class': 'btn btn-success'}).text('TODO: change avatar');
+        //$block.append($button);
+
+        var fmConfig = {
+            noHandlers: true,
+            noStore: true,
+            body: $('body'),
+            onUploaded: function (ev, data) {
+                console.log(data);
+            }
+        };
+        APP.FM = Cryptpad.createFileManager(fmConfig);
+        var data = {FM: APP.FM};
+        $block.append(Cryptpad.createButton('upload', false, data));
     };
 
     var addDescription = function ($container) {

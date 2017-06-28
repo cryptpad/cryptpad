@@ -689,6 +689,15 @@ define([
             })
             .filter(function (x) { return x; });
 
+        // Get the avatar
+        var profile = store.getProfile();
+        if (profile) {
+            var profileChan = profile.edit ? hrefToHexChannelId('/profile/#' + profile.edit) : null;
+            if (profileChan) { list.push(profileChan); }
+            var avatarChan = profile.avatar ? hrefToHexChannelId(profile.avatar) : null;
+            if (avatarChan) { list.push(avatarChan); }
+        }
+
         list.push(common.base64ToHex(userChannel));
         list.sort();
 
