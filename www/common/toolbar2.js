@@ -48,19 +48,6 @@ define([
         return 'cryptpad-uid-' + String(Math.random()).substring(2);
     };
 
-    var styleToolbar = function ($container, href, version, force) {
-        if (!force) { return; }
-        href = href || '/customize/toolbar.css' + (version?('?' + version): '');
-
-        $.ajax({
-            url: href,
-            dataType: 'text',
-            success: function (data) {
-                $container.append($('<style>').text(data));
-            },
-        });
-    };
-
     var createRealtimeToolbar = function (config) {
         if (!config.$container) { return; }
         var $container = config.$container;
@@ -108,11 +95,6 @@ define([
 
         $container.prepend($toolbar);
 
-        if (ApiConfig && ApiConfig.requireConf && ApiConfig.requireConf.urlArgs) {
-            styleToolbar($container, undefined, ApiConfig.requireConf.urlArgs, config.legacyStyle);
-        } else {
-            styleToolbar($container, void 0, void 0, config.legacyStyle);
-        }
         $container.on('drop dragover', function (e) {
             e.preventDefault();
             e.stopPropagation();

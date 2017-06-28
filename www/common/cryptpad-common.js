@@ -1622,7 +1622,10 @@ define([
                         common.arePinsSynced(function (err, yes) {
                             if (!yes) {
                                 common.resetPins(function (err) {
-                                    if (err) { console.error(err); }
+                                    if (err) {
+                                        console.error("Pin Reset Error");
+                                        return console.error(err);
+                                    }
                                     console.log('RESET DONE');
                                 });
                             }

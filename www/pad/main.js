@@ -472,9 +472,18 @@ define([
                     network: info.network,
                     $container: $bar,
                     $contentContainer: $iframe.find('#cke_1_contents'),
-                    legacyStyle: true,
                 };
                 toolbar = info.realtime.toolbar = Toolbar.create(configTb);
+
+                var src = 'less!/customize/src/less/toolbar.less';
+                require([
+                    src
+                ], function () {
+                    var $html = $bar.closest('html');
+                    $html
+                        .find('head style[data-original-src="' + src.replace(/less!/, '') + '"]')
+                        .appendTo($html.find('head'));
+                });
 
                 Title.setToolbar(toolbar);
 
