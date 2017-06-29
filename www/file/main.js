@@ -164,19 +164,28 @@ define([
                     Cryptpad.removeLoadingScreen();
                     $dllabel.append($('<br>'));
                     $dllabel.append(Cryptpad.fixHTML(metadata.name));
-                    $dllabel.append($('<br>'));
-                    $dllabel.append(Messages._getKey('formattedMB', [sizeMb]));
+
+                    // don't display the size if you don't know it.
+                    if (typeof(sizeM) === 'number') {
+                        $dllabel.append($('<br>'));
+                        $dllabel.append(Messages._getKey('formattedMB', [sizeMb]));
+                    }
                     var decrypting = false;
                     var onClick = function (ev) {
                         if (decrypting) { return; }
                         decrypting = true;
                         displayFile(ev, sizeMb);
                     };
-                    if (sizeMb < 5) { return void onClick(); }
+                    if (typeof(sizeMb) === 'number' && sizeMb < 5) { return void onClick(); }
                     $dlform.find('#dl, #progress').click(onClick);
                 };
                 Cryptpad.getFileSize(window.location.href, function (e, data) {
-                    if (e) { return void Cryptpad.errorLoadingScreen(e); }
+                    if (e) {
+                        // TODO when GET_FILE_SIZE is made unauthenticated
+                        // you won't need to handle this error (there won't be one)
+                        if (e === 'RPC_NOT_READY') { return todoBigFile(); }
+                        return void Cryptpad.errorLoadingScreen(e);
+                    }
                     var size = Cryptpad.bytesToMegabytes(data);
                     return void todoBigFile(size);
                 });
