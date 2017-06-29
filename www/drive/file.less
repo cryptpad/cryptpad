@@ -46,6 +46,7 @@ body {
 }
 img.icon {
     max-width: 20px;
+    max-height: 16px;
 }
 
 .unselectable {
@@ -481,6 +482,7 @@ span {
             }
             img.icon {
                 height: 48px;
+                max-height: none;
                 max-width: none;
                 margin: 8px 0;
             }
@@ -595,6 +597,13 @@ span {
     display: flex;
     flex-flow: row;
 
+    * {
+        outline-width: 0;
+        &:focus {
+            outline-width: 0;
+        }
+    }
+
     .newPadContainer {
         display: inline-block;
         height: 100%;
@@ -680,19 +689,6 @@ span {
         position: relative;
         display: inline-block;
     }
-    /*.right {
-        float: right;
-        /* Right-side buttons */
-    /*    button {
-            display: inline-block;
-            &.active {
-                display: none;
-            }
-            .fa {
-                margin-right: 0px;
-            }
-        }
-    }*/
     .dropdown-bar-content {
         margin-right: 2px;
     }
@@ -710,13 +706,19 @@ span {
         max-width: 100%;
         text-align: left;
         .element {
+            display: inline-block;
+            height: 32px;
+            line-height: 32px;
             font-size: 17px;
-            padding: 5px;
+            padding: 0 5px;
             border: 0;
             background: darken(@toolbar-drive-bg, 10%);
             color: @toolbar-drive-color;
             box-sizing: border-box;
             transition: all 0.15s;
+            &.separator {
+                color: #ccc;
+            }
             &.clickable {
                 cursor: pointer;
                 &:hover {

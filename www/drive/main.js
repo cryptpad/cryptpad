@@ -1280,11 +1280,11 @@ define([
 
                 if (idx === 0) { name = getPrettyName(p); }
                 else {
-                    var $span2 = $('<span>', {'class': 'element'}).text(' > ');
-                    $title.append($span2);
+                    var $span2 = $('<span>', {'class': 'element separator'}).text(' / ');
+                    $title.prepend($span2);
                 }
 
-                $span.text(name).appendTo($title);
+                $span.text(name).prependTo($title);
             });
             return $title;
         };
