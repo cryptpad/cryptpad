@@ -1205,6 +1205,7 @@ define([
                 setActive($val);
                 $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
             }
+            if (config.feedback) { Cryptpad.feedback(config.feedback); }
         };
 
         $container.click(function (e) {
@@ -1403,7 +1404,8 @@ define([
             text: $userButton.html(), // Button initial text
             options: options, // Entries displayed in the menu
             left: true, // Open to the left of the button
-            container: config.$initBlock // optional
+            container: config.$initBlock, // optional
+            feedback: "USER_ADMIN",
         };
         var $userAdmin = createDropdown(dropdownConfigUser);
 

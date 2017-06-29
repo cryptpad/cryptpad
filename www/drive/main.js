@@ -1353,6 +1353,7 @@ define([
                 setViewMode('list');
                 $iframe.find('#' + FOLDER_CONTENT_ID).removeClass('grid');
                 $iframe.find('#' + FOLDER_CONTENT_ID).addClass('list');
+                Cryptpad.feedback('DRIVE_LIST_MODE');
             });
             $gridButton.click(function () {
                 $listButton.removeClass('active');
@@ -1360,6 +1361,7 @@ define([
                 setViewMode('grid');
                 $iframe.find('#' + FOLDER_CONTENT_ID).addClass('grid');
                 $iframe.find('#' + FOLDER_CONTENT_ID).removeClass('list');
+                Cryptpad.feedback('DRIVE_GRID_MODE');
             });
 
             if (getViewMode() === 'list') {
@@ -1413,7 +1415,8 @@ define([
 
             var dropdownConfig = {
                 text: $plusIcon.html() + Messages.fm_newButton,
-                options: options
+                options: options,
+                feedback: 'DRIVE_NEWPAD_LOCALFOLDER',
             };
             var $block = Cryptpad.createDropdown(dropdownConfig);
 
