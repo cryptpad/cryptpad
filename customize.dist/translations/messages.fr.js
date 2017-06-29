@@ -241,7 +241,7 @@ define(function () {
     out.fm_templateName = "Modèles";
     out.fm_searchName = "Recherche";
     out.fm_searchPlaceholder = "Rechercher...";
-    out.fm_newButton = "Ajouter à ce dossier";
+    out.fm_newButton = "Nouveau";
     out.fm_newButtonTitle = "Créer un nouveau pad ou un dossier, importer un fichier dans le dossier courant";
     out.fm_newFolder = "Nouveau dossier";
     out.fm_newFile = "Nouveau pad";

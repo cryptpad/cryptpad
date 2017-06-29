@@ -263,5 +263,28 @@ define([
         };
     };
 
+    var $fileIcon = $('<span>', {"class": "fa fa-file-text-o file icon"});
+    var $fileAppIcon = $('<span>', {"class": "fa fa-file-text-o file icon fileColor"});
+    var $padIcon = $('<span>', {"class": "fa fa-file-word-o file icon padColor"});
+    var $codeIcon = $('<span>', {"class": "fa fa-file-code-o file icon codeColor"});
+    var $slideIcon = $('<span>', {"class": "fa fa-file-powerpoint-o file icon slideColor"});
+    var $pollIcon = $('<span>', {"class": "fa fa-calendar file icon pollColor"});
+    var $whiteboardIcon = $('<span>', {"class": "fa fa-paint-brush whiteboardColor"});
+    UI.getIcon = function (type) {
+        var $icon;
+
+        switch(type) {
+            case 'pad': $icon = $padIcon.clone(); break;
+            case 'file': $icon = $fileAppIcon.clone(); break;
+            case 'code': $icon = $codeIcon.clone(); break;
+            case 'slide': $icon = $slideIcon.clone(); break;
+            case 'poll': $icon = $pollIcon.clone(); break;
+            case 'whiteboard': $icon = $whiteboardIcon.clone(); break;
+            default: $icon = $fileIcon.clone();
+        }
+
+        return $icon;
+    };
+
     return UI;
 });

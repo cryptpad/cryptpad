@@ -71,7 +71,7 @@ define([
         $('<span>', {'class': STATE_CLS}).hide().appendTo($userContainer);
         $('<span>', {'class': LAG_CLS}).hide().appendTo($userContainer);
         $('<span>', {'class': LIMIT_CLS}).hide().appendTo($userContainer);
-        //$('<span>', {'class': NEWPAD_CLS + ' dropdown-bar'}).hide().appendTo($userContainer);
+        $('<span>', {'class': NEWPAD_CLS + ' dropdown-bar'}).hide().appendTo($userContainer);
         $('<span>', {'class': USERADMIN_CLS + ' dropdown-bar'}).hide().appendTo($userContainer);
 
         $toolbar.append($topContainer)
@@ -177,9 +177,8 @@ define([
         var numberOfViewUsers = numberOfUsers - userList.length;
 
         // Update the userlist
-        var $usersTitle = $('<h2>').text(Messages.users);
-        var $editUsers = $userlistContent;
-        $editUsers.html('').append($usersTitle);
+        var $editUsers = $userlistContent.find('.' + USERLIST_CLS).html('');
+
 
         var $editUsersList = $('<div>', {'class': 'userlist-others'});
 
@@ -248,7 +247,10 @@ define([
             throw new Error("You must provide a `userList` object to display the userlist");
         }
         var $content = $('<div>', {'class': 'userlist-drawer'});
+        var $closeIcon = $('<span>', {"class": "fa fa-window-close close"}).appendTo($content);
+        $('<h2>').text(Messages.users).appendTo($content);
         $('<p>', {'class': USERLIST_CLS}).appendTo($content);
+
         toolbar.userlistContent = $content;
 
         var $container = $('<span>', {id: 'userButtons'});
@@ -263,15 +265,41 @@ define([
             config.$contentContainer.prepend($content);
         }
 
+        var $ck = config.$container.find('.cke_toolbox_main');
+        var hide = function () {
+            $content.hide();
+            $button.removeClass('active');
+            $ck.css({
+                'display': '',
+                'padding-left': '',
+                'margin-bottom': ''
+            });
+        };
+        var show = function () {
+            $content.show();
+            $button.addClass('active');
+            $ck.css({
+                'display': 'inline-block',
+                'padding-left': '175px',
+                'margin-bottom': '-3px'
+            });
+            $content.css('margin-top', (-$ck.height())+'px');
+        };
+
+        $closeIcon.click(hide);
         $button.click(function () {
-            $content.toggle();
             var visible = $content.is(':visible');
+            if (visible) { hide(); }
+            else { show(); }
+            visible = !visible;
             Cryptpad.setAttribute('userlist-drawer', visible);
             Cryptpad.feedback(visible?'USERLIST_SHOW': 'USERLIST_HIDE');
         });
 
+
         Cryptpad.getAttribute('userlist-drawer', function (err, val) {
-            if (val === false) { $content.hide(); }
+            if (val === false) { return void hide(); }
+            show();
         });
 
         return $container;
@@ -658,9 +686,10 @@ define([
     };
 
     var createNewPad = function (toolbar) {
-        var $newPad = $('<span>', {
+        /*var $newPad = $('<span>', {
             'class': NEWPAD_CLS + " dropdown-bar"
-        }).appendTo(toolbar.$top);
+        }).appendTo(toolbar.$top);*/
+        var $newPad = toolbar.$top.find('.'+NEWPAD_CLS).show();
 
         var pads_options = [];
         Config.availablePadTypes.forEach(function (p) {
@@ -673,19 +702,20 @@ define([
                     'target': '_blank',
                     'href': '/' + p + '/',
                 },
-                content: Messages.type[p]
+                content: $('<div>').append(Cryptpad.getIcon(p)).html() + Messages.type[p]
             });
         });
         var dropdownConfig = {
             text: '', // Button initial text
             options: pads_options, // Entries displayed in the menu
             container: $newPad,
+            left: true,
             feedback: /drive/.test(window.location.pathname)?
                 'DRIVE_NEWPAD': 'NEWPAD',
         };
         var $newPadBlock = Cryptpad.createDropdown(dropdownConfig);
         $newPadBlock.find('button').attr('title', Messages.newButtonTitle);
-        $newPadBlock.find('button').addClass('fa fa-plus');
+        $newPadBlock.find('button').addClass('fa fa-th');
         return $newPadBlock;
     };
 

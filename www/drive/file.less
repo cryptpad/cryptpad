@@ -171,8 +171,16 @@ span {
     white-space: nowrap;
     max-width: 500px;
     min-width: 200px;
-    padding: 10px 0px;
+    padding: 0px;
     color: @tree-fg;
+    display: flex;
+    flex-flow: column;
+    max-height: 100%;
+    .categories-container {
+        flex: 1;
+        max-width: 500px;
+        overflow: auto;
+    }
     img.icon {
         margin-bottom: 3px;
         margin-left: -2px;
@@ -218,10 +226,20 @@ span {
         margin-top: 0;
     }
     #searchContainer {
+        margin-bottom: 20px;
         text-align: center;
-        padding: 5px 0;
+        padding: 0;
         input {
-            width: 80%;
+            outline-width: 0px;
+            border-radius: 0;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-right: 0;
+            height: 32px;
+            padding: 0 5px;
+            &:focus {
+                outline-width: 0px;
+            }
         }
     }
     .fa.expcol {
@@ -284,7 +302,27 @@ span {
             }
         }
     }
-
+    .limit-container {
+        display: inline-flex;
+        flex-flow: column-reverse;
+        width: 100%;
+        margin-top: 20px;
+        .upgrade {
+            padding: 0;
+            line-height: 25px;
+            height: 25px;
+            margin: 0 3px;
+            border-radius: 0;
+        }
+        .cryptpad-limit-bar {
+            width: ~"calc(100% - 6px)";
+            height: 25px;
+            line-height: 25px;
+            .usage {
+                height: 100%;
+            }
+        }
+    }
 }
 
 /* CONTENT */
@@ -545,17 +583,15 @@ span {
 /* Toolbar */
 
 #driveToolbar {
-    background: @toolbar-bg;
-    color: @toolbar-fg;
+    background: lighten(@toolbar-drive-bg, 8%);
+    color: @toolbar-drive-color;
     //height: 30px;
     //display: flex;
     //flex-flow: row;
-    border-top: 1px solid @toolbar-border-col;
-    border-bottom: ;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     z-index: 100;
-    box-sizing: content-box;
-    padding: 0 6px;
+    box-sizing: border-box;
+    height: 32px;
+    padding: 0;
     display: flex;
     flex-flow: row;
 
@@ -564,23 +600,77 @@ span {
         height: 100%;
     }
 
+    .history {
+        float: right;
+    }
+
+    .rightside, .leftside {
+        display: inline-block;
+        margin: 0;
+        padding: 0;
+        .fa {
+            margin: 0;
+        }
+        button {
+            height: 100%;
+            padding: 0 10px;
+            border: none;
+            border-radius: 0;
+            box-sizing: border-box;
+            background: transparent;
+            font-size: 17px;
+            color: @toolbar-drive-color;
+            transition: all 0.15s;
+            .fa, span {
+                font-size: 17px;
+            }
+            &:hover {
+                background: @toolbar-drive-bg;
+            }
+            &.active {
+                display: none;
+            }
+        }
+    }
+    .rightside {
+        float: right;
+        & > * {
+            float: right;
+        }
+        #contextButtonsContainer {
+            display: inline-block;
+            height: 100%;
+        }
+        padding-left: 10px;
+    }
+    .leftside {
+        & > span {
+            height: 100%;
+            margin: 0;
+        }
+        button {
+            padding: 0 10px;
+            .fa {
+                margin-right: 5px;
+            }
+            .buttonTitle {
+                display: inline-flex;
+                height: 32px;
+                align-items: center;
+                span:not(.fa) {
+                    line-height: 23px;
+                }
+            }
+        }
+    }
+
     button {
-        height: 24px;
         font: @toolbar-button-font;
         span {
             font: @toolbar-button-font;
         }
         .fa, &.fa {
             font-family: FontAwesome;
-        }
-        &.element {
-            height: 26px;
-            width: 26px;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        &.new {
-            padding: 0 5px;
         }
     }
     /* The container <div> - needed to position the dropdown content */
@@ -590,10 +680,10 @@ span {
         position: relative;
         display: inline-block;
     }
-    .right {
+    /*.right {
         float: right;
         /* Right-side buttons */
-        button {
+    /*    button {
             display: inline-block;
             &.active {
                 display: none;
@@ -602,28 +692,16 @@ span {
                 margin-right: 0px;
             }
         }
-    }
+    }*/
     .dropdown-bar-content {
         margin-right: 2px;
     }
 
-    .leftside {
-        width: auto;
-        margin: 0;
-        padding: 0;
-        display: inline-block;
-    }
-    .rightside {
-        margin: 0;
-        padding: 0;
-        display: inline-block;
-        float: right;
-    }
     .path {
         flex: 1;
         width: 100%;
-        height: 30px;
-        line-height: 30px;
+        height: 32px;
+        line-height: 32px;
         cursor: default;
         width: auto;
         overflow: hidden;
@@ -632,24 +710,19 @@ span {
         max-width: 100%;
         text-align: left;
         .element {
+            font-size: 17px;
             padding: 5px;
-            border: 1px solid @toolbar-bg;
-            border-radius: 2px;
+            border: 0;
+            background: darken(@toolbar-drive-bg, 10%);
+            color: @toolbar-drive-color;
             box-sizing: border-box;
+            transition: all 0.15s;
             &.clickable {
                 cursor: pointer;
                 &:hover {
-                    background: @toolbar-path-bg;
-                    border: 1px solid @toolbar-path-border;
+                    background: darken(@toolbar-drive-bg, 15%);
                 }
             }
-        }
-    }
-    #contextButtonsContainer {
-        float: right;
-        margin: 2px;
-        button {
-            vertical-align: top;
         }
     }
 }
