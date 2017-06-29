@@ -25,7 +25,22 @@
     color: inherit;
 }
 
+#cke_editor1 {
+    .cke_inner {
+        bottom: 0;
+        right: 0;
+        display: flex;
+        flex-flow: column;
+        height: 100vh;
+        width: 100vw;
+    }
+}
+.cke_toolbox_main {
+    display: inline-block;
+    margin-bottom: -3px;
+}
 #cke_1_contents {
+    flex: 1;
     margin-top: -1px;
     display: flex;
     overflow: visible;
@@ -51,11 +66,12 @@
     box-sizing: border-box;
     .close {
         position: absolute;
-        margin-top: -11px;
+        margin-top: -10px;
         margin-left: 149px;
         font-size: 15px;
         opacity: 0.5;
         cursor: pointer;
+        text-shadow: unset;
         &:hover {
             opacity: 1;
         }
@@ -112,6 +128,9 @@ body {
                 left: 0;
                 top: 96px;
                 bottom: 0;
+                .close {
+                    color: @color;
+                }
             }
             .cryptpad-limit {
                 text-shadow: -1px 0 @color, 0 1px @color, 1px 0 @color, 0 -1px @color;
@@ -216,6 +235,13 @@ body {
 }
 
 .cryptpad-toolbar {
+    * {
+        outline-width: 0;
+        &:focus {
+            outline-width: 0;
+        }
+    }
+
     @toolbar-green: #5cb85c;
 
     box-sizing: border-box;

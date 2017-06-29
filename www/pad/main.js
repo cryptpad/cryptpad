@@ -515,7 +515,9 @@ define([
                     };
                     updateIcon();
                     $collapse.click(function () {
-                        $existingButton.click();
+                        $(window).trigger('resize');
+                        $iframe.find('.cke_toolbox_main').toggle();
+                        $(window).trigger('cryptpad-ck-toolbar');
                         updateIcon();
                     });
                     $rightside.append($collapse);

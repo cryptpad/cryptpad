@@ -247,6 +247,10 @@ define([
             throw new Error("You must provide a `userList` object to display the userlist");
         }
         var $content = $('<div>', {'class': 'userlist-drawer'});
+        $content.on('drop dragover', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
         var $closeIcon = $('<span>', {"class": "fa fa-window-close close"}).appendTo($content);
         $('<h2>').text(Messages.users).appendTo($content);
         $('<p>', {'class': USERLIST_CLS}).appendTo($content);
@@ -266,26 +270,31 @@ define([
         }
 
         var $ck = config.$container.find('.cke_toolbox_main');
+        var mobile = $('body').width() <= 600;
         var hide = function () {
             $content.hide();
             $button.removeClass('active');
             $ck.css({
-                'display': '',
                 'padding-left': '',
-                'margin-bottom': ''
             });
         };
         var show = function () {
             $content.show();
+            if (mobile) {
+                $ck.hide();
+            }
             $button.addClass('active');
             $ck.css({
-                'display': 'inline-block',
                 'padding-left': '175px',
-                'margin-bottom': '-3px'
             });
-            $content.css('margin-top', (-$ck.height())+'px');
+            var h = $ck.is(':visible') ? -$ck.height() : 0;
+            $content.css('margin-top', h+'px');
         };
-
+        $(window).on('cryptpad-ck-toolbar', function () {
+            if (mobile && $ck.is(':visible')) { return void hide(); }
+            if ($content.is(':visible')) { return void show(); }
+            hide();
+        });
         $closeIcon.click(hide);
         $button.click(function () {
             var visible = $content.is(':visible');
@@ -298,7 +307,7 @@ define([
 
 
         Cryptpad.getAttribute('userlist-drawer', function (err, val) {
-            if (val === false) { return void hide(); }
+            if (val === false || mobile) { return void hide(); }
             show();
         });
 
