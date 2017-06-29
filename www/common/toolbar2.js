@@ -291,7 +291,9 @@ define([
             var visible = $content.is(':visible');
             if (visible) { hide(); }
             else { show(); }
-            Cryptpad.setAttribute('userlist-drawer', $content.is(':visible'));
+            visible = !visible;
+            Cryptpad.setAttribute('userlist-drawer', visible);
+            Cryptpad.feedback(visible?'USERLIST_SHOW': 'USERLIST_HIDE');
         });
 
 
@@ -371,7 +373,8 @@ define([
             }
             var dropdownConfigShare = {
                 text: $('<div>').append($shareIcon).html(),
-                options: options
+                options: options,
+                feedback: 'SHARE',
             };
             var $shareBlock = Cryptpad.createDropdown(dropdownConfigShare);
             //$shareBlock.find('button').attr('id', 'shareButton');
@@ -706,7 +709,9 @@ define([
             text: '', // Button initial text
             options: pads_options, // Entries displayed in the menu
             container: $newPad,
-            left: true
+            left: true,
+            feedback: /drive/.test(window.location.pathname)?
+                'DRIVE_NEWPAD': 'NEWPAD',
         };
         var $newPadBlock = Cryptpad.createDropdown(dropdownConfig);
         $newPadBlock.find('button').attr('title', Messages.newButtonTitle);

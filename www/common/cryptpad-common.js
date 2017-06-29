@@ -719,14 +719,14 @@ define([
             return false;
         }
         if (!rpc) {
-            console.error('[RPC_NOT_READY]');
+            console.error('RPC_NOT_READY');
             return false;
         }
         return true;
     };
 
     common.arePinsSynced = function (cb) {
-        if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
+        if (!pinsReady()) { return void cb ('RPC_NOT_READY'); }
 
         var list = getCanonicalChannelList();
         var local = Hash.hashChannelList(list);
@@ -737,7 +737,7 @@ define([
     };
 
     common.resetPins = function (cb) {
-        if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
+        if (!pinsReady()) { return void cb ('RPC_NOT_READY'); }
 
         var list = getCanonicalChannelList();
         rpc.reset(list, function (e, hash) {
@@ -747,7 +747,7 @@ define([
     };
 
     common.pinPads = function (pads, cb) {
-        if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
+        if (!pinsReady()) { return void cb ('RPC_NOT_READY'); }
 
         rpc.pin(pads, function (e, hash) {
             if (e) { return void cb(e); }
@@ -756,7 +756,7 @@ define([
     };
 
     common.unpinPads = function (pads, cb) {
-        if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
+        if (!pinsReady()) { return void cb ('RPC_NOT_READY'); }
 
         rpc.unpin(pads, function (e, hash) {
             if (e) { return void cb(e); }
@@ -765,7 +765,7 @@ define([
     };
 
     common.getPinnedUsage = function (cb) {
-        if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
+        if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
 
         rpc.getFileListSize(function (err, bytes) {
             if (typeof(bytes) === 'number') {
@@ -776,6 +776,7 @@ define([
     };
 
     common.getFileSize = function (href, cb) {
+        if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
         var channelId = Hash.hrefToHexChannelId(href);
         rpc.getFileSize(channelId, function (e, bytes) {
             if (e) { return void cb(e); }
@@ -784,7 +785,7 @@ define([
     };
 
     common.updatePinLimit = function (cb) {
-        if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
+        if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
         rpc.updatePinLimits(function (e, limit, plan, note) {
             if (e) { return cb(e); }
             common.account.limit = limit;
@@ -795,7 +796,7 @@ define([
     };
 
     common.getPinLimit = function (cb) {
-        if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
+        if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
 
         var account = common.account;
         if (typeof(account.limit) !== 'number' ||
@@ -833,17 +834,17 @@ define([
     };
 
     common.uploadComplete = function (cb) {
-        if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
+        if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
         rpc.uploadComplete(cb);
     };
 
     common.uploadStatus = function (size, cb) {
-        if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
+        if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
         rpc.uploadStatus(size, cb);
     };
 
     common.uploadCancel = function (cb) {
-        if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
+        if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
         rpc.uploadCancel(cb);
     };
 
@@ -1274,6 +1275,7 @@ define([
                 setActive($val);
                 $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
             }
+            if (config.feedback) { Cryptpad.feedback(config.feedback); }
         };
 
         $container.click(function (e) {
@@ -1472,7 +1474,8 @@ define([
             text: $userButton.html(), // Button initial text
             options: options, // Entries displayed in the menu
             left: true, // Open to the left of the button
-            container: config.$initBlock // optional
+            container: config.$initBlock, // optional
+            feedback: "USER_ADMIN",
         };
         var $userAdmin = createDropdown(dropdownConfigUser);
 

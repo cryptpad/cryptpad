@@ -1346,6 +1346,7 @@ define([
                 setViewMode('list');
                 $iframe.find('#' + FOLDER_CONTENT_ID).removeClass('grid');
                 $iframe.find('#' + FOLDER_CONTENT_ID).addClass('list');
+                Cryptpad.feedback('DRIVE_LIST_MODE');
             });
             $gridButton.click(function () {
                 $listButton.removeClass('active');
@@ -1353,6 +1354,7 @@ define([
                 setViewMode('grid');
                 $iframe.find('#' + FOLDER_CONTENT_ID).addClass('grid');
                 $iframe.find('#' + FOLDER_CONTENT_ID).removeClass('list');
+                Cryptpad.feedback('DRIVE_GRID_MODE');
             });
 
             if (getViewMode() === 'list') {
@@ -1405,7 +1407,8 @@ define([
 
             var dropdownConfig = {
                 text: $plusIcon.html() + '<span>'+Messages.fm_newButton+'</span>',
-                options: options
+                options: options,
+                feedback: 'DRIVE_NEWPAD_LOCALFOLDER',
             };
             var $block = Cryptpad.createDropdown(dropdownConfig);
 
@@ -2771,6 +2774,7 @@ define([
             Cryptpad.onDisplayNameChanged(setName);
         };
         var onReady = function () {
+            APP.$iframe.find('body').css('display', '');
             module.files = proxy;
             if (!proxy.drive || typeof(proxy.drive) !== 'object') { proxy.drive = {}; }
             migrateAnonDrive(proxy, function () {

@@ -2,7 +2,7 @@
 /*:: const define = () => {}; */
 define([
     '/api/config',
-    '/bower_components/less/dist/less.js'
+    '/bower_components/less/dist/less.min.js'
 ], function (Config, Less) { /*::});module.exports = (function() {
     const Config = (undefined:any);
     const Less = (undefined:any);

@@ -12,6 +12,7 @@ define([
 
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less/toolbar.less',
+    'less!/customize/src/less/cryptpad.less',
     'less!/poll/poll.less',
 ], function ($, TextPatcher, Listmap, Crypto, Cryptpad, Cryptget, Hyperjson, Renderer, Toolbar) {
 

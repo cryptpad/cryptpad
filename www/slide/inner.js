@@ -1,5 +1,8 @@
 define([
-    'less!/slide/slide.less',
+    'jquery',
     'less!/customize/src/less/toolbar.less',
     'less!/customize/src/less/cryptpad.less',
-], function () {});
+    'less!/slide/slide.less',
+], function ($) {
+    $('.loading-hidden').removeClass('loading-hidden');
+});

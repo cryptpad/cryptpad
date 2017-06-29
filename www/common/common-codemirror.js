@@ -150,6 +150,7 @@ define([
                 options: options, // Entries displayed in the menu
                 left: true, // Open to the left of the button
                 isSelect: true,
+                feedback: 'CODE_LANGUAGE',
             };
             var $block = exp.$language = Cryptpad.createDropdown(dropdownConfig);
             $block.find('button').attr('title', Messages.languageButtonTitle);
@@ -183,7 +184,8 @@ define([
                 options: options, // Entries displayed in the menu
                 left: true, // Open to the left of the button
                 isSelect: true,
-                initialValue: lastTheme
+                initialValue: lastTheme,
+                feedback: 'CODE_THEME',
             };
             var $block = exp.$theme = Cryptpad.createDropdown(dropdownConfig);
             $block.find('button').attr('title', Messages.themeButtonTitle);
