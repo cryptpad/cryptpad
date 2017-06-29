@@ -147,6 +147,9 @@ body {
                 background: darken(@bgcolor, 10%);
                 color: @color;
             }
+            .dropdown-bar-content.left a {
+                color: black;
+            }
             /*.dropdown-bar-content {
                 background: darken(@bgcolor, 5%);
                 border: 1px solid @color;
@@ -673,6 +676,9 @@ body {
         display: inline-block;
 
         color: white;
+        a {
+            color: white;
+        }
         transition: all 0.15s;
     }
     .cryptpad-new {
@@ -729,7 +735,9 @@ body {
             height: auto;
             padding: 0px 5px;
             text-decoration: none;
-            color: inherit;
+
+            // hack because of whiteboard and poll
+            color: white !important;
         }
     }
     .cryptpad-user {
