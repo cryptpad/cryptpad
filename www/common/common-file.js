@@ -242,6 +242,10 @@ define([
         };
 
         var onFileDrop = File.onFileDrop = function (file, e) {
+            if (!common.isLoggedIn()) {
+                return common.alert(common.Messages.upload_mustLogin);
+            }
+
             Array.prototype.slice.call(file).forEach(function (d) {
                 handleFile(d, e);
             });
@@ -273,6 +277,7 @@ define([
             })
             .on('drop', function (e) {
                 e.stopPropagation();
+
                 var dropped = e.originalEvent.dataTransfer.files;
                 counter = 0;
                 $hoverArea.removeClass('hovering');

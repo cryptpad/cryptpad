@@ -203,7 +203,7 @@ define([
             var $loadingTip = $('<div>', {'id': 'loadingTip'});
             $('<span>', {'class': 'tips'}).text(getRandomTip()).appendTo($loadingTip);
             $loadingTip.css({
-                'top': $('body').height()/2 + $container.height()/2 + 20 + 'px'
+                'bottom': $('body').height()/2 - $container.height()/2 + 20 + 'px'
             });
             $('body').append($loadingTip);
         }

@@ -383,7 +383,7 @@ define([
             var dropdownConfigShare = {
                 text: $('<div>').append($shareIcon).html(),
                 options: options,
-                feedback: 'SHARE',
+                feedback: 'SHARE_MENU',
             };
             var $shareBlock = Cryptpad.createDropdown(dropdownConfigShare);
             //$shareBlock.find('button').attr('id', 'shareButton');
