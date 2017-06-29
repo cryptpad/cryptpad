@@ -4,7 +4,6 @@
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-    <link rel="stylesheet" href="/customize/main.css">
     <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
     <script src="/bower_components/jquery/dist/jquery.min.js"></script>
     <script src="/bower_components/codemirror/lib/codemirror.js"></script>
@@ -36,8 +35,9 @@
     <script src="/bower_components/codemirror/addon/display/placeholder.js"></script>
 
     <script data-bootload="inner.js" data-main="/common/boot.js" src="/bower_components/requirejs/require.js"></script>
+    <style>.loading-hidden { display: none; } </style>
 </head>
-<body>
+<body class="loading-hidden">
     <div id="bar"></div>
 <!--    <textarea></textarea>-->
     <div id="cme_toolbox" class="toolbar-container"></div>

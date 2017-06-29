@@ -2774,6 +2774,7 @@ define([
             Cryptpad.onDisplayNameChanged(setName);
         };
         var onReady = function () {
+            APP.$iframe.find('body').css('display', '');
             module.files = proxy;
             if (!proxy.drive || typeof(proxy.drive) !== 'object') { proxy.drive = {}; }
             migrateAnonDrive(proxy, function () {
