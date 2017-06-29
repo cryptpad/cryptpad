@@ -32,6 +32,9 @@
         z-index: 1000;
         max-height: 300px;
         overflow-y: auto;
+        font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+        font-size: 16px;
+        line-height: 1em;
 
         &.left {
             right: 0;
@@ -45,7 +48,7 @@
             color: black;
             padding: 5px 16px;
             text-decoration: none;
-            display: block;
+            display: flex;
             cursor: pointer;
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -53,6 +56,16 @@
             user-select: none;
             float: none;
             text-align: left;
+            font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+            font-size: 16px;
+            line-height: 1em;
+
+
+            .fa {
+                width: 20px;
+                text-align: center;
+                margin-right: 5px;
+            }
 
             &:hover {
                 background-color: #f1f1f1;
@@ -77,7 +90,13 @@
             margin: 0;
             white-space: normal;
             text-align: left;
+            color: black;
+            font-size: 14px;
+            * {
+                font-size: 14px;
+            }
             h2 {
+                color: black;
                 font-weight: bold;
                 text-align: center;
                 background-color: #EEEEEE;

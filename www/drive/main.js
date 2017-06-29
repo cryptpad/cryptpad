@@ -158,13 +158,6 @@ define([
     //var $folderOpenedIcon = $('<span>', {"class": "fa fa-folder-open folder"});
     var $folderOpenedIcon = $('<img>', {src: "/customize/images/icons/folderOpen.svg", "class": "folder icon"});
     var $folderOpenedEmptyIcon = $folderOpenedIcon.clone();
-    var $fileIcon = $('<span>', {"class": "fa fa-file-text-o file icon"});
-    var $fileAppIcon = $('<span>', {"class": "fa fa-file-text-o file icon fileColor"});
-    var $padIcon = $('<span>', {"class": "fa fa-file-word-o file icon padColor"});
-    var $codeIcon = $('<span>', {"class": "fa fa-file-code-o file icon codeColor"});
-    var $slideIcon = $('<span>', {"class": "fa fa-file-powerpoint-o file icon slideColor"});
-    var $pollIcon = $('<span>', {"class": "fa fa-calendar file icon pollColor"});
-    var $whiteboardIcon = $('<span>', {"class": "fa fa-paint-brush whiteboardColor"});
     //var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
     var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
     var $templateIcon = $('<span>', {"class": "fa fa-cubes"});
@@ -172,8 +165,8 @@ define([
     var $trashEmptyIcon = $('<span>', {"class": "fa fa-trash-o"});
     //var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o expcol"});
     var $expandIcon = $('<span>', {"class": "fa fa-plus-square-o expcol"});
-    var $listIcon = $('<span>', {"class": "fa fa-list"});
-    var $gridIcon = $('<span>', {"class": "fa fa-th"});
+    var $listIcon = $('<button>', {"class": "fa fa-list"});
+    var $gridIcon = $('<button>', {"class": "fa fa-th-large"});
     var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up sortasc"});
     var $sortDescIcon = $('<span>', {"class": "fa fa-angle-down sortdesc"});
     var $closeIcon = $('<span>', {"class": "fa fa-window-close"});
@@ -1141,7 +1134,7 @@ define([
         };
 
         var getFileIcon = function (id) {
-            var $icon = $fileIcon.clone();
+            var $icon = Cryptpad.getIcon();
 
             var data = filesOp.getFileData(id);
             if (!data) { return $icon; }
@@ -1149,15 +1142,16 @@ define([
             var href = data.href;
             if (!href) { return $icon; }
 
-            if (href.indexOf('/pad/') !== -1) { $icon = $padIcon.clone(); }
-            else if (href.indexOf('/code/') !== -1) { $icon = $codeIcon.clone(); }
-            else if (href.indexOf('/slide/') !== -1) { $icon = $slideIcon.clone(); }
-            else if (href.indexOf('/poll/') !== -1) { $icon = $pollIcon.clone(); }
-            else if (href.indexOf('/whiteboard/') !== -1) { $icon = $whiteboardIcon.clone(); }
-            else if (href.indexOf('/file/') !== -1) { $icon = $fileAppIcon.clone(); }
+            if (href.indexOf('/pad/') !== -1) { $icon = Cryptpad.getIcon('pad'); }
+            else if (href.indexOf('/code/') !== -1) { $icon = Cryptpad.getIcon('code'); }
+            else if (href.indexOf('/slide/') !== -1) { $icon = Cryptpad.getIcon('slide'); }
+            else if (href.indexOf('/poll/') !== -1) { $icon = Cryptpad.getIcon('poll'); }
+            else if (href.indexOf('/whiteboard/') !== -1) { $icon = Cryptpad.getIcon('whiteboard'); }
+            else if (href.indexOf('/file/') !== -1) { $icon = Cryptpad.getIcon('file'); }
 
             return $icon;
         };
+        var getIcon = Cryptpad.getIcon;
 
         // Create the "li" element corresponding to the file/folder located in "path"
         var createElement = function (path, elPath, root, isFolder) {
@@ -1285,7 +1279,10 @@ define([
                 }
 
                 if (idx === 0) { name = getPrettyName(p); }
-                else { $title.append(' > '); }
+                else {
+                    var $span2 = $('<span>', {'class': 'element'}).text(' > ');
+                    $title.append($span2);
+                }
 
                 $span.text(name).appendTo($title);
             });
@@ -1335,17 +1332,13 @@ define([
         };
 
         // Create the button allowing the user to switch from list to icons modes
-        var createViewModeButton = function () {
-            var $block = $('<div>', {
+        var createViewModeButton = function ($container) {
+            /*var $block = $('<div>', {
                 'class': 'dropdown-bar right changeViewModeContainer'
-            });
+            });*/
 
-            var $listButton = $('<button>', {
-                'class': 'element btn btn-secondary'
-            }).append($listIcon.clone());
-            var $gridButton = $('<button>', {
-                'class': 'element btn btn-secondary'
-            }).append($gridIcon.clone());
+            var $listButton = $listIcon.clone().addClass('element');
+            var $gridButton = $gridIcon.clone().addClass('element');
 
             $listButton.click(function () {
                 $gridButton.removeClass('active');
@@ -1367,11 +1360,10 @@ define([
             } else {
                 $gridButton.addClass('active');
             }
-            $block.append($listButton).append($gridButton);
-            return $block;
+            $container.append($listButton).append($gridButton);
         };
 
-        var createNewButton = function (isInRoot) {
+        var createNewButton = function (isInRoot, $container) {
             if (!APP.editable) { return; }
             if (!APP.loggedIn) { return; } // Anonymous users can use the + menu in the toolbar
 
@@ -1381,13 +1373,13 @@ define([
                 options.push({
                     tag: 'a',
                     attributes: {'class': 'newFolder'},
-                    content: Messages.fm_folder
+                    content: $('<div>').append($folderIcon.clone()).html() + Messages.fm_folder
                 });
                 options.push({tag: 'hr'});
                 options.push({
                     tag: 'a',
                     attributes: {'class': 'uploadFile'},
-                    content: Messages.uploadButton
+                    content: $('<div>').append(getIcon('file')).html() + Messages.uploadButton
                 });
                 options.push({tag: 'hr'});
             }
@@ -1405,20 +1397,20 @@ define([
                 options.push({
                     tag: 'a',
                     attributes: attributes,
-                    content: Messages.type[type]
+                    content: $('<div>').append(getIcon(type)).html() + Messages.type[type]
                 });
             });
             var $plusIcon = $('<div>').append($('<span>', {'class': 'fa fa-plus'}));
 
 
             var dropdownConfig = {
-                text: $plusIcon.html() + Messages.fm_newButton,
+                text: $plusIcon.html() + '<span>'+Messages.fm_newButton+'</span>',
                 options: options
             };
             var $block = Cryptpad.createDropdown(dropdownConfig);
 
             // Custom style:
-            $block.find('button').addClass('btn').addClass('btn-primary').addClass('new');
+            $block.find('button').addClass('new');
             $block.find('button').attr('title', Messages.fm_newButtonTitle);
 
             // Handlers
@@ -1456,7 +1448,7 @@ define([
                 window.open('/' + type + '/');
             });
 
-            return $block;
+            $container.append($block);
         };
 
         var hideNewButton = function () {
@@ -1633,7 +1625,8 @@ define([
             $toolbar.html('');
             $('<div>', {'class': 'leftside'}).appendTo($toolbar);
             $('<div>', {'class': 'path unselectable'}).appendTo($toolbar);
-            $('<div>', {'class': 'rightside'}).appendTo($toolbar);
+            var $rightside = $('<div>', {'class': 'rightside'}).appendTo($toolbar);
+            if (APP.$hist) { $rightside.append(APP.$hist); }
             return $toolbar;
         };
 
@@ -1854,12 +1847,12 @@ define([
                 if (mode) {
                     $dirContent.addClass(getViewModeClass());
                 }
-                createViewModeButton().appendTo($toolbar.find('.rightside'));
+                createViewModeButton($toolbar.find('.rightside'));
             }
             var $list = $('<ul>').appendTo($dirContent);
 
             // NewButton can be undefined if we're in read only mode
-            $toolbar.find('.leftside').append(createNewButton(isInRoot));
+            createNewButton(isInRoot, $toolbar.find('.leftside'));
 
             createTitle(path).appendTo($toolbar.find('.path'));
 
@@ -2124,10 +2117,15 @@ define([
             var s = $tree.scrollTop() || 0;
             $tree.html('');
             if (displayedCategories.indexOf(SEARCH) !== -1) { createSearch($tree); }
-            if (displayedCategories.indexOf(ROOT) !== -1) { createTree($tree, [ROOT]); }
-            if (displayedCategories.indexOf(TEMPLATE) !== -1) { createTemplate($tree, [TEMPLATE]); }
-            if (displayedCategories.indexOf(FILES_DATA) !== -1) { createAllFiles($tree, [FILES_DATA]); }
-            if (displayedCategories.indexOf(TRASH) !== -1) { createTrash($tree, [TRASH]); }
+            var $div = $('<div>', {'class': 'categories-container'}).appendTo($tree);
+            if (displayedCategories.indexOf(ROOT) !== -1) { createTree($div, [ROOT]); }
+            if (displayedCategories.indexOf(TEMPLATE) !== -1) { createTemplate($div, [TEMPLATE]); }
+            if (displayedCategories.indexOf(FILES_DATA) !== -1) { createAllFiles($div, [FILES_DATA]); }
+            if (displayedCategories.indexOf(TRASH) !== -1) { createTrash($div, [TRASH]); }
+
+            //$tree.append($('<div>', {'class': 'filler'}));
+            $tree.append(APP.$limit);
+
             $tree.scrollTop(s);
         };
 
@@ -2718,7 +2716,6 @@ define([
 
             var $rightside = toolbar.$rightside;
             $rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
-            var $leftside = toolbar.$leftside;
             var $userBlock = toolbar.$userAdmin;
             APP.$displayName = APP.$bar.find('.' + Toolbar.constants.username);
 
@@ -2733,8 +2730,7 @@ define([
             /* add the usage */
             Cryptpad.createUsageBar(function (err, $limitContainer) {
                 if (err) { return void logError(err); }
-                $leftside.html('');
-                $leftside.append($limitContainer);
+                APP.$limit = $limitContainer;
             }, true);
 
             /* add a history button */
@@ -2752,8 +2748,9 @@ define([
                 $toolbar: APP.$bar,
                 href: window.location.origin + window.location.pathname + '#' + APP.hash
             };
-            var $hist = Cryptpad.createButton('history', true, {histConfig: histConfig});
-            if (APP.loggedIn) { $rightside.append($hist); }
+            APP.$hist = Cryptpad.createButton('history', true, {histConfig: histConfig});
+            APP.$hist.addClass('element');
+            //if (APP.loggedIn) { $rightside.append($hist); } TODO
 
             if (!readOnly && !APP.loggedIn) {
                 var $backupButton = Cryptpad.createButton('', true).removeClass('fa').removeClass('fa-question').addClass('cryptpad-backup');

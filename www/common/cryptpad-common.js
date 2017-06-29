@@ -66,6 +66,7 @@ define([
     common.errorLoadingScreen = UI.errorLoadingScreen;
     common.notify = UI.notify;
     common.unnotify = UI.unnotify;
+    common.getIcon = UI.getIcon;
 
     // import common utilities for export
     common.find = Util.find;
@@ -850,8 +851,9 @@ define([
     common.createUsageBar = function (cb) {
         // getPinnedUsage updates common.account.usage, and other values
         // so we can just use those and only check for errors
+        var $container = $('<span>', {'class':'limit-container'});
         var todo = function (err) {
-            var $container = $('<span>', {'class':'limit-container'});
+            $container.html('');
             if (err) {
                 return void window.setTimeout(function () {
                     common.getPinnedUsage(todo);
@@ -867,8 +869,7 @@ define([
 
             var $limit = $('<span>', {'class': 'cryptpad-limit-bar'}).appendTo($container);
             var quota = usage/limit;
-            var width = Math.floor(Math.min(quota, 1)*$limit.width()); // the bar is 200px width
-            var $usage = $('<span>', {'class': 'usage'}).css('width', width+'px');
+            var $usage = $('<span>', {'class': 'usage'}).css('width', quota*100+'%');
 
             var makeDonateButton = function () {
                 $('<a>', {
@@ -921,9 +922,9 @@ define([
             window.setTimeout(function () {
                 common.getPinnedUsage(todo);
             }, LIMIT_REFRESH_RATE);
-            cb(err, $container);
         };
         common.getPinnedUsage(todo);
+        cb(null, $container);
     };
 
     var prepareFeedback = common.prepareFeedback = function (key) {
@@ -1104,8 +1105,7 @@ define([
                 }
                 button = $('<button>', {
                     title: Messages.historyButton,
-                    'class': "fa fa-history",
-                    style: 'font:'+size+' FontAwesome'
+                    'class': "fa fa-history history",
                 });
                 if (data.histConfig) {
                     button
