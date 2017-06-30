@@ -81,15 +81,31 @@ define([
 
         var $rightside = $toolbar.find('.'+RIGHTSIDE_CLS);
         if (!config.hideDrawer) {
-            var $drawerContent = $('<div>', {'class': DRAWER_CLS}).appendTo($rightside).hide();
+            var $drawerContent = $('<div>', {
+                'class': DRAWER_CLS,// + ' dropdown-bar-content cryptpad-dropdown'
+                'tabindex': 1
+            }).appendTo($rightside).hide();
             var $drawer = Cryptpad.createButton('more', true).appendTo($rightside);
             $drawer.click(function () {
                 $drawerContent.toggle();
                 $drawer.removeClass('active');
                 if ($drawerContent.is(':visible')) {
                     $drawer.addClass('active');
+                    $drawerContent.focus();
                 }
             });
+            var onBlur = function (e) {
+                if (e.relatedTarget) {
+                    if ($(e.relatedTarget).is('.drawer-button')) { return; }
+                    if ($(e.relatedTarget).parents('.'+DRAWER_CLS).length) {
+                        $(e.relatedTarget).blur(onBlur);
+                        return;
+                    }
+                }
+                $drawer.removeClass('active');
+                $drawerContent.hide();
+            };
+            $drawerContent.blur(onBlur);
         }
 
         // The 'notitle' class removes the line added for the title with a small screen
