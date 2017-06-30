@@ -3,10 +3,12 @@ define([
     '/common/hyperscript.js',
     '/common/cryptpad-common.js',
     '/customize/pages.js',
+    '/api/config',
 
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
-], function ($, h, Cryptpad, Pages) {
+], function ($, h, Cryptpad, Pages, Config) {
 $(function () {
+    var urlArgs = Config.requireConf.urlArgs;
     var Messages = Cryptpad.Messages;
     var $body = $('body');
     var isMainApp = function () {
@@ -24,7 +26,7 @@ $(function () {
         h('span', [
             h('a.gotoMain', {href: '/'}, [
                 h('img.cryptpad-logo', {
-                    src: '/customize/cryptofist_mini.png',
+                    src: '/customize/cryptofist_mini.png?' + urlArgs,
                     alt: '',
                 }),
                 'CryptPad'
