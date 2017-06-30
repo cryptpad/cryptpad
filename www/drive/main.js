@@ -152,11 +152,11 @@ define([
     };
 
     // Icons
-    //var $folderIcon = $('<span>', {"class": "fa fa-folder folder icon"});
-    var $folderIcon = $('<img>', {src: "/customize/images/icons/folder.svg", "class": "folder icon"});
+    var $folderIcon = $('<span>', {"class": "fa fa-folder folder icon"});
+    //var $folderIcon = $('<img>', {src: "/customize/images/icons/folder.svg", "class": "folder icon"});
     var $folderEmptyIcon = $folderIcon.clone();
-    //var $folderOpenedIcon = $('<span>', {"class": "fa fa-folder-open folder"});
-    var $folderOpenedIcon = $('<img>', {src: "/customize/images/icons/folderOpen.svg", "class": "folder icon"});
+    var $folderOpenedIcon = $('<span>', {"class": "fa fa-folder-open folder"});
+    //var $folderOpenedIcon = $('<img>', {src: "/customize/images/icons/folderOpen.svg", "class": "folder icon"});
     var $folderOpenedEmptyIcon = $folderOpenedIcon.clone();
     //var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
     var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
