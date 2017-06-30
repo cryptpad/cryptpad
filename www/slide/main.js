@@ -463,6 +463,7 @@ define([
                             window.frames["pad-iframe"].print();
                         }
                     }, {ok: Messages.printButton});
+                    Cryptpad.feedback('PRINT_SLIDES');
                     //$('body').append(createPrintDialog());
                 });
                 $drawer.append($printButton);
