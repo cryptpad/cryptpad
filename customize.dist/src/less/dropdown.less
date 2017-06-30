@@ -26,7 +26,7 @@
     .dropdown-bar-content {
         display: none;
         position: absolute;
-        background-color: #f9f9f9;
+        background-color: @dropdown-bg;
         min-width: 250px;
         box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
         z-index: 1000;
@@ -45,7 +45,7 @@
         }
 
         a {
-            color: black;
+            color: @dropdown-color;
             padding: 5px 16px;
             text-decoration: none;
             display: flex;
@@ -56,8 +56,7 @@
             user-select: none;
             float: none;
             text-align: left;
-            font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-            font-size: 16px;
+            font: @dropdown-font;
             line-height: 1em;
 
 
@@ -68,13 +67,13 @@
             }
 
             &:hover {
-                background-color: #f1f1f1;
-                color: black;
+                background-color: @dropdown-bg-hover;
+                color: @dropdown-color;
             }
 
             &.active {
-                background-color: #e8e8e8;
-                color: black;
+                background-color: @dropdown-bg-active;
+                color: @dropdown-color;
             }
         }
 

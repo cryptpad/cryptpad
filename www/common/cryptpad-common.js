@@ -942,9 +942,11 @@ define([
         var size = "17px";
         switch (type) {
             case 'export':
+                var $text = $('<span>', {'class': 'drawer'}).text(Messages.exportButton);
                 button = $('<button>', {
+                    'class': 'fa fa-download',
                     title: Messages.exportButtonTitle,
-                }).append($('<span>', {'class':'fa fa-download', style: 'font:'+size+' FontAwesome'}));
+                }).append($text);
 
                 button.click(prepareFeedback(type));
                 if (callback) {
@@ -952,9 +954,11 @@ define([
                 }
                 break;
             case 'import':
+                var $text = $('<span>', {'class': 'drawer'}).text(Messages.importButton);
                 button = $('<button>', {
+                    'class': 'fa fa-upload',
                     title: Messages.importButtonTitle,
-                }).append($('<span>', {'class':'fa fa-upload', style: 'font:'+size+' FontAwesome'}));
+                }).append($text);
                 if (callback) {
                     button
                     .click(prepareFeedback(type))
@@ -1104,10 +1108,11 @@ define([
                     button = $('<span>');
                     break;
                 }
+                var $text = $('<span>', {'class': 'drawer'}).text(Messages.historyText);
                 button = $('<button>', {
                     title: Messages.historyButton,
                     'class': "fa fa-history history",
-                });
+                }).append($text);
                 if (data.histConfig) {
                     button
                     .click(prepareFeedback(type))
