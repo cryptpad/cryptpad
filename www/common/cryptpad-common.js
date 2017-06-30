@@ -966,11 +966,10 @@ define([
         var size = "17px";
         switch (type) {
             case 'export':
-                var $text = $('<span>', {'class': 'drawer'}).text(Messages.exportButton);
                 button = $('<button>', {
                     'class': 'fa fa-download',
                     title: Messages.exportButtonTitle,
-                }).append($text);
+                }).append($('<span>', {'class': 'drawer'}).text(Messages.exportButton));
 
                 button.click(prepareFeedback(type));
                 if (callback) {
@@ -978,11 +977,10 @@ define([
                 }
                 break;
             case 'import':
-                var $text = $('<span>', {'class': 'drawer'}).text(Messages.importButton);
                 button = $('<button>', {
                     'class': 'fa fa-upload',
                     title: Messages.importButtonTitle,
-                }).append($text);
+                }).append($('<span>', {'class': 'drawer'}).text(Messages.importButton));
                 if (callback) {
                     button
                     .click(prepareFeedback(type))
