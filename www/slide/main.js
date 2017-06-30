@@ -195,7 +195,7 @@ define([
                 if (back) {
                     backColor = back;
                     $modal.css('background-color', back);
-                    $pad.contents().find('#' + SLIDE_COLOR_ID).css('background', back);
+                    //$pad.contents().find('#' + SLIDE_COLOR_ID).css('background', back);
                     $pad.contents().find('#' + SLIDE_BACKCOLOR_ID).css('color', back);
                 }
             };
@@ -498,7 +498,7 @@ define([
                     var $text = $('<button>', {
                         id: SLIDE_COLOR_ID,
                         'class': 'fa fa-i-cursor rightside-button',
-                        'style': 'font-family: FontAwesome; font-weight: bold; color: #fff; background: #000;',
+                        'style': 'font-family: FontAwesome; font-weight: bold; color: #fff;',
                         title: Messages.colorButtonTitle
                     });
                     var $testColor = $('<input>', { type: 'color', value: '!' });
