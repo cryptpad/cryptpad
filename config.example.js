@@ -277,6 +277,11 @@ module.exports = {
      */
     //logFeedback: true,
 
+    /*  If you wish to see which remote procedure calls clients request,
+     *  set this to true
+     */
+    //logRPC: true,
+
     /* it is recommended that you serve CryptPad over https
      * the filepaths below are used to configure your certificates
      */

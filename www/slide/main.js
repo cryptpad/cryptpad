@@ -465,6 +465,7 @@ define([
                             window.frames["pad-iframe"].print();
                         }
                     }, {ok: Messages.printButton});
+                    Cryptpad.feedback('PRINT_SLIDES');
                     //$('body').append(createPrintDialog());
                 }).append($('<span>', {'class': 'drawer'}).text(Messages.printText));
                 $drawer.append($printButton);

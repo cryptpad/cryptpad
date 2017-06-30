@@ -84,6 +84,7 @@ define([
     common.throttle = Util.throttle;
     common.createRandomInteger = Util.createRandomInteger;
     common.getAppType = Util.getAppType;
+    common.notAgainForAnother = Util.notAgainForAnother;
 
     // import hash utilities for export
     var createRandomHash = common.createRandomHash = Hash.createRandomHash;
@@ -848,19 +849,28 @@ define([
         rpc.uploadCancel(cb);
     };
 
+    /*  Create a usage bar which keeps track of how much storage space is used
+        by your CryptDrive. The getPinnedUsage RPC is one of the heavier calls,
+        so we throttle its usage. Clients will not update more than once per
+        LIMIT_REFRESH_RATE. It will be update at least once every three such intervals
+        If changes are made to your drive in the interim, they will trigger an
+        update.
+    */
     var LIMIT_REFRESH_RATE = 30000; // milliseconds
     common.createUsageBar = function (cb) {
         // getPinnedUsage updates common.account.usage, and other values
         // so we can just use those and only check for errors
         var $container = $('<span>', {'class':'limit-container'});
-        var todo = function (err) {
-            $container.html('');
-            if (err) {
-                return void window.setTimeout(function () {
-                    common.getPinnedUsage(todo);
-                }, LIMIT_REFRESH_RATE);
-            }
+        var todo;
+        var updateUsage = window.updateUsage = common.notAgainForAnother(function () {
+            console.log("updating usage bar");
+            common.getPinnedUsage(todo);
+        }, LIMIT_REFRESH_RATE);
 
+        todo = function (err) {
+            if (err) { return void console.error(err); }
+
+            $container.html('');
             var unit = Util.magnitudeOfBytes(common.account.limit);
 
             var usage = unit === 'GB'? Util.bytesToGigabytes(common.account.usage):
@@ -920,11 +930,25 @@ define([
             var $text = $('<span>', {'class': 'usageText'});
             $text.text(usage + ' / ' + prettyLimit);
             $limit.append($usage).append($text);
-            window.setTimeout(function () {
-                common.getPinnedUsage(todo);
-            }, LIMIT_REFRESH_RATE);
         };
-        common.getPinnedUsage(todo);
+
+        setInterval(function () {
+            var t = updateUsage();
+            if (t) {
+                console.log("usage already updated. eligible for refresh in %sms", t);
+            }
+        }, LIMIT_REFRESH_RATE * 3);
+
+        updateUsage();
+        getProxy().on('change', ['drive'], function () {
+            var t = updateUsage();
+            if (t) {
+                console.log("usage bar update throttled due to overuse." +
+                    " Eligible for update in %sms", t);
+            } else {
+                console.log("usage bar updated");
+            }
+        });
         cb(null, $container);
     };
 
