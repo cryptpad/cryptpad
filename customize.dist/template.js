@@ -12,7 +12,6 @@ $(function () {
     var Messages = Cryptpad.Messages;
     var $body = $('body');
     var isMainApp = function () {
-        console.error("Checking if is main app");
         return /^\/(pad|code|slide|poll|whiteboard|file|media|drive)\/$/.test(location.pathname);
     };
 
@@ -119,57 +118,37 @@ $(function () {
     var pathname = location.pathname;
 
     if (isMainApp()) {
-        console.log("Is main app");
         if (typeof(Pages[pathname]) === 'function') {
+            var $flash = $('body, #iframe-container, #pad-iframe').removeClass('noscroll');
+            $flash.css({
+                'display': 'none'
+            });
+            var ready = function () { $flash.css('display', ''); };
+
             require([
                 'less!/customize/src/less/loading.less'
             ], function () {
-                //$('body').html(h('body', Pages[pathname]()).innerHTML);
-
-                console.log("TEMPLATED");
-
                 if (/whiteboard/.test(pathname)) {
                     $('body').html(h('body', Pages[pathname]()).innerHTML);
-                    setTimeout(function () {
-                        require(['/whiteboard/main.js'], function () {
-                            $('body').removeClass('noscroll');
-                        });
-                    });
+                    require(['/whiteboard/main.js'], ready);
                 } else if (/poll/.test(pathname)) {
                     $('body').html(h('body', Pages[pathname]()).innerHTML);
-                    setTimeout(function () {
-                        require(['/poll/main.js'], function () {
-                            $('body').removeClass('noscroll');
-                            console.log("TEMPLATE!");
-                        });
-                    });
+                    require(['/poll/main.js'], ready);
                 } else if (/drive/.test(pathname)) {
                     $('body').append(h('body', Pages[pathname]()).innerHTML);
-                    setTimeout(function () {
-                        require(['/drive/main.js'], function () {
-                            console.log("Templating done");
-                        });
-                    });
+                    require(['/drive/main.js'], ready);
                 } else if (/file/.test(pathname)) {
                     $('body').append(h('body', Pages[pathname]()).innerHTML);
-                    require([ '/file/main.js' ], function () {
-                        console.log("Templating done");
-                    });
+                    require([ '/file/main.js' ], ready);
                 } else if (/pad/.test(pathname)) {
                     $('body').append(h('body', Pages[pathname]()).innerHTML);
-                    require([ '/pad/main.js' ], function () {
-                        console.log("Templating done");
-                    });
+                    require([ '/pad/main.js' ], ready);
                 } else if (/code/.test(pathname)) {
                     $('body').append(h('body', Pages[pathname]()).innerHTML);
-                    require([ '/code/main.js' ], function () {
-                        console.log("Templating done");
-                    });
+                    require([ '/code/main.js' ], ready);
                 } else if (/slide/.test(pathname)) {
                     $('body').append(h('body', Pages[pathname]()).innerHTML);
-                    require([ '/slide/main.js' ], function () {
-                        console.log("Templating done");
-                    });
+                    require([ '/slide/main.js' ], ready);
                 }
             });
 
