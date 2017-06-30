@@ -944,6 +944,7 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
         if (!Env.msgStore) { Env.msgStore = ctx.store; }
 
         var handleMessage = function (privileged) {
+            if (config.logRPC) { console.log(msg[0]); }
         switch (msg[0]) {
             case 'COOKIE': return void Respond(void 0);
             case 'RESET':
