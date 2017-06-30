@@ -156,11 +156,11 @@ define([
         var getValue = function (cb) {
             cb(APP.lm.proxy.name);
         };
-        var placeholder = Messages.anonymous;
+        var placeholder = Messages.profile_namePlaceholder;
         if (APP.readOnly) {
             var $span = $('<span>', {'class': DISPLAYNAME_ID}).appendTo($block);
             getValue(function (value) {
-                $span.text(value || placeholder);
+                $span.text(value || Messages.anonymous);
             });
             return;
         }
@@ -257,7 +257,6 @@ define([
                         Cryptpad.whenRealtimeSyncs(APP.lm.realtime, function () {
                             var driveRt = Cryptpad.getStore().getProxy().info.realtime;
                             Cryptpad.whenRealtimeSyncs(driveRt, function () {
-                                Cryptpad.changeDisplayName();
                                 displayAvatar();
                             });
                         });
@@ -393,14 +392,12 @@ define([
                 }
                 obj.profile.edit = Cryptpad.getEditHashFromKeys(channel, secret.keys);
                 obj.profile.view = Cryptpad.getViewHashFromKeys(channel, secret.keys);
-                obj.profile.name = APP.rt.proxy[Cryptpad.displayNameKey] || '';
-                Cryptpad.changeDisplayName();
                 andThen(obj.profile.edit);
             });
         };
 
         if (!Cryptpad.isLoggedIn()) {
-            var $p = $('<p>').text(Messages.error_register);
+            var $p = $('<p>', {id: CREATE_ID}).append(Messages.profile_register);
             var $a = $('<a>', {
                 href: '/register/'
             });

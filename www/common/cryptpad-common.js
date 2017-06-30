@@ -1476,6 +1476,13 @@ define([
                 content: Messages.user_rename
             });
         }
+        if (account) {
+            options.push({
+                tag: 'a',
+                attributes: {'class': 'profile'},
+                content: Messages.profileButton
+            });
+        }
         if (parsed && (!parsed.type || parsed.type !== 'settings')) {
             options.push({
                 tag: 'a',
@@ -1533,6 +1540,13 @@ define([
                 window.open('/settings/');
             } else {
                 window.location.href = '/settings/';
+            }
+        });
+        $userAdmin.find('a.profile').click(function () {
+            if (parsed && parsed.type) {
+                window.open('/profile/');
+            } else {
+                window.location.href = '/profile/';
             }
         });
         $userAdmin.find('a.login').click(function () {

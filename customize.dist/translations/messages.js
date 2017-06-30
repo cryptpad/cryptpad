@@ -243,7 +243,9 @@ define(function () {
     out.canvas_widthLabel = "Width: {0}";
 
     // Profile
+    out.profileButton = "Profile"; // dropdown menu
     out.profile_urlPlaceholder = 'URL';
+    out.profile_namePlaceholder = 'Name displayed in your profile';
     out.profile_avatar = "Avatar";
     out.profile_upload = " Upload a new avatar";
     out.profile_error = "Error while creating your profile: {0}";
