@@ -1,4 +1,5 @@
 define([
+    '/api/config',
     'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
@@ -9,7 +10,8 @@ define([
     '/file/file-crypto.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
-], function ($, Crypto, realtimeInput, Toolbar, Cryptpad, Visible, Notify, FileCrypto) {
+], function (Config, $, Crypto, realtimeInput, Toolbar, Cryptpad, Visible, Notify, FileCrypto) {
+    var urlArgs = Config.requireConf.urlArgs;
     var Nacl = window.nacl;
     $(function () {
 
@@ -71,7 +73,7 @@ define([
     };
 
     var andThen = function () {
-        var src = '/customize/cryptofist_mini.png';
+        var src = '/customize/cryptofist_mini.png?' + urlArgs;
         Cryptpad.fetch(src, function (e, file) {
             console.log('original file is %s uint8s', file.length);
             upload(file, {

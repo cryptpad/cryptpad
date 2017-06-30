@@ -1,9 +1,11 @@
 define([
+    '/api/config',
     '/common/hyperscript.js',
     '/common/cryptpad-common.js',
-], function (h, Cryptpad) {
+], function (Config, h, Cryptpad) {
     var Pages = {};
     var Msg = Cryptpad.Messages;
+    var urlArgs = Config.requireConf.urlArgs;
 
     var setHTML = function (e, html) {
         e.innerHTML = html;
@@ -21,7 +23,7 @@ define([
                 h('div.info-container', [
                     h('div.left.image', [
                         h('img', {
-                            src: '/customize/images/zeroknowledge_small.png',
+                            src: '/customize/images/zeroknowledge_small.png?' + urlArgs ,
                             alt: 'Zero Knowledge'
                         })
                     ]),
@@ -40,7 +42,7 @@ define([
                     h('div.right.image', [
                         h('img', {
                             alt: "User account",
-                            src: '/customize/images/realtime_small.png',
+                            src: '/customize/images/realtime_small.png?' + urlArgs,
                         })
                     ])
                 ])
@@ -49,7 +51,7 @@ define([
                 h('div.info-container', [
                     h('div.left.image', [
                         h('img', {
-                            src: '/customize/images/key_small.png',
+                            src: '/customize/images/key_small.png?' + urlArgs,
                             alt: 'User account'
                         })
                     ]),
@@ -67,7 +69,7 @@ define([
                     ]),
                     h('div.right.image', [
                         h('img', {
-                            src: '/customize/images/organize.png',
+                            src: '/customize/images/organize.png?' + urlArgs,
                             alt: 'User account'
                         })
                     ])
@@ -204,28 +206,28 @@ define([
                     h('div.app-row', [
                         appButton("Rich Text application",
                             Msg.main_richText,
-                            '/customize/images/pad.png',
+                            '/customize/images/pad.png?' + urlArgs,
                             Msg.main_richText_p,
                             '/pad/',
                             Msg.button_newpad,
                             'create-pad'),
                         appButton('Code application',
                             Msg.main_code,
-                            '/customize/images/code.png',
+                            '/customize/images/code.png?' + urlArgs,
                             Msg.main_code_p,
                             '/code/',
                             Msg.button_newcode,
                             'create-code'),
                         appButton('Slide application',
                             Msg.main_slide,
-                            '/customize/images/slide.png',
+                            '/customize/images/slide.png?' + urlArgs,
                             Msg.main_slide_p,
                             '/slide/',
                             Msg.button_newslide,
                             'create-slide'),
                         appButton('Poll application',
                             Msg.main_poll,
-                            '/customize/images/poll.png',
+                            '/customize/images/poll.png?' + urlArgs,
                             Msg.main_poll_p,
                             '/poll/',
                             Msg.button_newpoll,
@@ -266,7 +268,7 @@ define([
         return h('div#loading', 
             h('div.loadingContainer', [
                 h('img.cryptofist', {
-                    src: '/customize/cryptofist_small.png'
+                    src: '/customize/cryptofist_small.png?' + urlArgs
                 }),
                 h('div.spinnerContainer',
                     h('span.fa.fa-spinner.fa-pulse.fa-4x.fa-fw')),
