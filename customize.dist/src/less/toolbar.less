@@ -46,8 +46,8 @@
 .driveColor { color: @toolbar-drive-bg; }
 .defaultColor { color: @toolbar-default-bg; }
 
-.userlist-drawer {
-    font: normal normal normal 14px Arial,Helvetica,Tahoma,Verdana,Sans-Serif;
+body .userlist-drawer {
+    font: normal normal normal 16px Arial,Helvetica,Tahoma,Verdana,Sans-Serif;
     min-width: 175px;
     width: 175px;
     display: block;
@@ -69,13 +69,13 @@
     }
     h2 {
         color: inherit;
-        font-size: 1.2em;
-        font-weight: bold;
         text-align: center;
         padding: 5px 0px;
         margin: 5px 0px;
-        font-size: 16px;
+        font: inherit;
+        font-weight: bold;
         white-space: normal;
+        line-height: auto;
     }
     text-align:baseline;
     .viewer {
@@ -83,6 +83,13 @@
         padding: 5px;
         background: rgba(0,0,0,0.1);
         margin: 2px 0;
+    }
+
+    & > p {
+        font: normal normal normal 16px Arial,Helvetica,Tahoma,Verdana,Sans-Serif;
+        margin: 0;
+        padding: 0;
+        display: block;
     }
 
     .userlist-others {
@@ -96,6 +103,7 @@
             padding: 5px;
             background: rgba(0,0,0,0.1);
             margin: 2px 0;
+            font-size: 16px;
         }
     }
 }
@@ -107,6 +115,7 @@ body {
             color: @color;
             h2 {
                 background-color: darken(@bgcolor, 10%);
+                color: @color;
             }
         }
         .cryptpad-toolbar {
@@ -124,6 +133,7 @@ body {
                 }
             }
             .cryptpad-spinner, .cryptpad-state {
+                font-size: 16px;
                 color: @color;
             }
             .cryptpad-limit {
@@ -239,7 +249,7 @@ body {
 
 }
 
-.cryptpad-toolbar {
+body .cryptpad-toolbar {
     * {
         outline-width: 0;
         &:focus {
@@ -440,11 +450,11 @@ body {
     }
 
     button, select, .rightside-element {
-        height: 26px;
-        padding-right: 5px;
-        padding-left: 5px;
-        margin: 3px 2px;
+        height: 32px;
         box-sizing: border-box;
+        padding: 3px 10px;
+        margin: 0;
+
     }
 
     .rightside-button {
