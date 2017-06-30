@@ -119,11 +119,19 @@ $(function () {
 
     if (isMainApp()) {
         if (typeof(Pages[pathname]) === 'function') {
-            var $flash = $('body, #iframe-container, #pad-iframe').removeClass('noscroll');
+            var $flash = $('body, #iframe-container, #pad-iframe, textarea');
             $flash.css({
-                'display': 'none'
+                display: 'none',
+                opacity: 0,
+                overflow: 'hidden',
             });
-            var ready = function () { $flash.css('display', ''); };
+            var ready = function () {
+                $flash.css({
+                    display: '',
+                    opacity: '',
+                    overflow: '',
+                });
+            };
 
             require([
                 'less!/customize/src/less/loading.less'
