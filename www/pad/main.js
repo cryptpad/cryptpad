@@ -496,6 +496,7 @@ define([
                     editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
                 }
 
+                $bar.find('#cke_1_toolbar_collapser').hide();
                 if (!readOnly) {
                     // Expand / collapse the toolbar
                     var $collapse = Cryptpad.createButton(null, true);

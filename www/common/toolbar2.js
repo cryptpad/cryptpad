@@ -85,6 +85,10 @@ define([
             var $drawer = Cryptpad.createButton('more', true).appendTo($rightside);
             $drawer.click(function () {
                 $drawerContent.toggle();
+                $drawer.removeClass('active');
+                if ($drawerContent.is(':visible')) {
+                    $drawer.addClass('active');
+                }
             });
         }
 
@@ -463,6 +467,10 @@ define([
             'class': 'saveIcon',
             'title': Messages.saveTitle
         }).hide();
+        if (config.readOnly === 1) {
+            $titleContainer.append($('<span>', {'class': 'readOnly'})
+                .text('('+Messages.readonly+')'));
+        }
         if (config.readOnly === 1 || typeof(Cryptpad) === "undefined") { return $titleContainer; }
         var $input = $('<input>', {
             type: 'text',

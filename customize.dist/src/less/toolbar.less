@@ -12,15 +12,6 @@
     user-select: none;
 }
 
-.toolbar-container {
-    font: 12px Arial,Helvetica,Tahoma,Verdana,sans-serif;
-    .two-part-gradient(@toolbar-gradient-start, @toolbar-gradient-end);
-    .cryptpad-toolbar {
-        select {
-            box-sizing: border-box;
-        }
-    }
-}
 .cke_reset_all * {
     color: inherit;
 }
@@ -132,10 +123,21 @@ body {
                     color: @color;
                 }
             }
+            .cryptpad-spinner, .cryptpad-state {
+                color: @color;
+            }
             .cryptpad-limit {
                 text-shadow: -1px 0 @color, 0 1px @color, 1px 0 @color, 0 -1px @color;
             }
-            .cryptpad-toolbar-leftside, .cryptpad-toolbar-rightside, .drawer-content {
+            .cryptpad-lag {
+                .bars {
+                    span {
+                        background: @color;
+                        border: 1px solid darken(@bgcolor, 20%);
+                    }
+                }
+            }
+            .cryptpad-toolbar-leftside, .cryptpad-toolbar-rightside {
                 background-color: lighten(@bgcolor, 8%);
                 button:hover, button.active {
                     background-color: @bgcolor;
@@ -263,7 +265,7 @@ body {
 
     .unselectable;
 
-    font: normal normal normal 12px Arial,Helvetica,Tahoma,Verdana,Sans-Serif;
+    font: @toolbar-button-font;
     width: 100%;
     z-index: 9001;
 
@@ -294,41 +296,10 @@ body {
     button {
         transition: all 0.15s;
         .unselectable();
-        &#shareButton, &.buttonSuccess {
-            // Bootstrap 4 colors
-            color: #fff;
-            background: @toolbar-green;
-            border-color: @toolbar-green;
-            &:hover {
-                color: #fff;
-                background: #449d44;
-                border: 1px solid #419641;
-            }
-            span {
-                color: #fff;
-            }
-            .large {
-                margin-left: 5px;
-            }
-        }
-        &#newdoc, &.buttonPrimary {
-            // Bootstrap 4 colors
-            color: #fff;
-            background: #0275d8;
-            border-color: #0275d8;
-            &:hover {
-                color: #fff;
-                background: #025aa5;
-                border: 1px solid #01549b;
-            }
-            span {
-                color: #fff;
-            }
-            .large {
-                margin-left: 5px;
-            }
-        }
         &.hidden {
+            display: none;
+        }
+        .drawer {
             display: none;
         }
         // Bootstrap 4 colors (btn-secondary)
@@ -359,8 +330,7 @@ body {
         width: 26px;
         display: inline-block;
         padding: 3px;
-        margin: 0px;
-        margin-right: 3px;
+        margin: 0px 3px 0 6px;
         vertical-align: middle;
         line-height: @toolbar-top-height;
         span {
@@ -377,6 +347,11 @@ body {
 
     .cryptpad-state {
         line-height: @toolbar-top-height;
+        padding: 0 5px;
+        color: inherit;
+        &:empty {
+            display: none;
+        }
     }
     .cryptpad-lag {
         display: inline-block;
@@ -429,38 +404,29 @@ body {
         &.lag0 {
             span span {
                 .clag();
-                //border-color: red;
             }
         }
         &.lag1 {
             .bar2, .bar3, .bar4 { .clag(); }
             span span {
                 visibility: visible;
-                //background-color: orange;
-                //border-color: orange;
             }
         }
         &.lag2 {
             .bar3, .bar4 { .clag(); }
             span span {
                 visibility: visible;
-                //background-color: orange;
-                //border-color: orange;
             }
         }
         &.lag3 {
             .bar4 { .clag(); }
             span span {
                 visibility: visible;
-                //background-color: @toolbar-green;
-                //border-color: @toolbar-green;
             }
         }
         &.lag4 {
             span span {
                 visibility: visible;
-                //background-color: @toolbar-green;
-                //border-color: @toolbar-green;
             }
         }
     }
@@ -644,10 +610,27 @@ body {
         align-items: center;
         line-height: @toolbar-top-height;
         margin: 0 10px;
-        .title, .pencilIcon, .saveIcon {
+        .title {
             font-size: 25px;
             vertical-align: middle;
             line-height: 25px;
+            white-space: nowrap;
+        }
+        .pencilIcon, .saveIcon {
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            vertical-align: middle;
+            line-height: 20px;
+            .fa {
+                font-size: 20px;
+            }
+        }
+        .readOnly {
+            margin-left: 10px;
+            font-size: 25px;
+            font-style: italic;
+            white-space: nowrap;
         }
         .hoverable {
             display: inline-flex;
@@ -659,7 +642,6 @@ body {
             padding: 5px;
             border-collapse: collapse;
             span {
-                font-size: 25px;
                 cursor: pointer;
             }
         }
@@ -668,7 +650,6 @@ body {
             padding: 5px;
             border-collapse: collapse;
             span {
-                font-size: 25px;
                 cursor: pointer;
             }
         }
@@ -875,44 +856,42 @@ body {
         display: none;
     }
     .drawer-content {
+        box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
         position: absolute;
         right:0px;
         margin-top: 32px;
         min-width: 50px;
-        background: white;
-        border: 1px solid black;
+        background: @dropdown-bg;
         display: flex;
         flex-flow: column;
         z-index:1000;
+        color: black;
         .fa {
             font-size: 17px;
         }
         &> span {
             box-sizing: border-box;
-            width: 150px;
+            min-width: 150px;
             height: 26px;
             border-radius: 0;
             border: 0;
-            &:not(:last-child) {
-                border-bottom: 1px solid rgba(0,0,0,0.2);
-            }
-            button {
-                border: 0;
-            }
         }
         button {
-            width: 100%;
-        }
-        &> button {
-            text-align: center;
+            padding: 5px 16px;
+            text-align: left;
             margin: 0;
             border-radius: 0;
-            border: 1px solid transparent;
-            &:hover {
-                border: 1px solid transparent;
+            border: 0;
+            width: 100%;
+            line-height: 1em;
+            .drawer {
+                margin-left: 10px;
+                display: inline;
+                vertical-align: top;
             }
-            &:not(:last-child) {
-                border-bottom: 1px solid rgba(0,0,0,0.2);
+            &:hover {
+                background-color: @dropdown-bg-hover !important;
+                color: @dropdown-color;
             }
         }
     }
@@ -951,12 +930,12 @@ body {
 }
 .cryptpad-spinner {
     line-height: @toolbar-top-height;
-    &> span {
-        height: 16px;
-        width: 16px;
+    &> span.fa {
+        height: 20px;
+        width: 20px;
         margin: 8px;
-        line-height: 16px;
-        font-size: 16px;
+        line-height: 20px;
+        font-size: 20px;
         text-align: center;
     }
 }

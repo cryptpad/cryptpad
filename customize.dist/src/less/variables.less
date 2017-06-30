@@ -70,11 +70,19 @@
 @media-narrow-screen: 400px;
 @media-medium-screen: 600px;
 
-@toolbar-gradient-start: #f5f5f5;
-@toolbar-gradient-end: #DDDDDD;
-@toolbar-button-font: 12px Ubuntu, Arial, sans-serif;
+
+// Dropdown
+
+@dropdown-font: 16px -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+@dropdown-bg: #f9f9f9;
+@dropdown-color: black;
+@dropdown-bg-hover: #f1f1f1;
+@dropdown-bg-active: #e8e8e8;
 
 // Toolbar
+
+@toolbar-button-font: @dropdown-font;
+
 @toolbar-pad-bg: #1c4fa0;
 @toolbar-pad-color: #fff;
 @toolbar-slide-bg: #e57614;

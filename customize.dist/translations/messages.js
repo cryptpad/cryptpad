@@ -88,8 +88,12 @@ define(function () {
     out.pinLimitDrive = "You've reached your storage limit.<br>" +
                         "You can't create new pads.";
 
+    out.moreActions = "More actions";
+
+    out.importButton = "Import";
     out.importButtonTitle = 'Import a pad from a local file';
 
+    out.exportButton = "Export";
     out.exportButtonTitle = 'Export this pad to a local file';
     out.exportPrompt = 'What would you like to name your file?';
 
@@ -101,6 +105,7 @@ define(function () {
     out.clickToEdit = "Click to edit";
     out.saveTitle = "Save the title (enter)";
 
+    out.forgetButton = "Delete";
     out.forgetButtonTitle = 'Move this pad to the trash';
     out.forgetPrompt = 'Clicking OK will move this pad to your trash. Are you sure?';
     out.movedToTrash = 'That pad has been moved to the trash.<br><a href="/drive/">Access my Drive</a>';
@@ -126,6 +131,7 @@ define(function () {
     out.backgroundButtonTitle = 'Change the background color in the presentation';
     out.colorButtonTitle = 'Change the text color in presentation mode';
 
+    out.printText = "Print";
     out.printButton = "Print (enter)";
     out.printButtonTitle = "Print your slides or export them as a PDF file";
     out.printOptions = "Layout options";
@@ -141,6 +147,7 @@ define(function () {
     out.filePicker_filter = "Filter files by name";
     out.or = 'or';
 
+    out.slideOptionsText = "Options";
     out.slideOptionsTitle = "Customize your slides";
     out.slideOptionsButton = "Save (enter)";
 
@@ -167,6 +174,7 @@ define(function () {
     out.cancel = "Cancel";
     out.cancelButton = 'Cancel (esc)';
 
+    out.historyText = "History";
     out.historyButton = "Display the document history";
     out.history_next = "Go to the next version";
     out.history_prev = "Go to the previous version";

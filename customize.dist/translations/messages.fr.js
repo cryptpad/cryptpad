@@ -86,8 +86,12 @@ define(function () {
     out.pinLimitDrive = out.pinLimitReached+ ".<br>" +
                         "Vous ne pouvez pas créer de nouveaux pads.";
 
+    out.moreActions = "Autres actions";
+
+    out.importButton = "Importer";
     out.importButtonTitle = 'Importer un pad depuis un fichier local';
 
+    out.exportButton = "Exporter";
     out.exportButtonTitle = 'Exporter ce pad vers un fichier local';
     out.exportPrompt = 'Comment souhaitez-vous nommer ce fichier ?';
 
@@ -99,6 +103,7 @@ define(function () {
     out.clickToEdit = 'Cliquer pour modifier';
     out.saveTitle = "Enregistrer le titre (Entrée)";
 
+    out.forgetButton = "Supprimer";
     out.forgetButtonTitle = 'Déplacer ce pad vers la corbeille';
     out.forgetPrompt = 'Cliquer sur OK déplacera ce pad vers la corbeille de votre CryptDrive, êtes-vous sûr ?';
     out.movedToTrash = 'Ce pad a été déplacé vers la corbeille.<br><a href="/drive/">Accéder à mon Drive</a>';
@@ -124,6 +129,7 @@ define(function () {
     out.backgroundButtonTitle = 'Changer la couleur de fond de la présentation';
     out.colorButtonTitle = 'Changer la couleur du texte en mode présentation';
 
+    out.printText = "Imprimer";
     out.printButton = "Imprimer (Entrée)";
     out.printButtonTitle = "Imprimer votre présentation ou l'enregistrer au format PDF";
     out.printOptions = "Options de mise en page";
@@ -139,6 +145,7 @@ define(function () {
     out.filePicker_filter = "Filtrez les fichiers par leur nom";
     out.or = 'ou';
 
+    out.slideOptionsText = "Options";
     out.slideOptionsTitle = "Personnaliser la présentation";
     out.slideOptionsButton = "Enregistrer (Entrée)";
 
@@ -165,6 +172,7 @@ define(function () {
     out.cancel = "Annuler";
     out.cancelButton = 'Annuler (Echap)';
 
+    out.historyText = "Historique";
     out.historyButton = "Afficher l'historique du document";
     out.history_next = "Voir la version suivante";
     out.history_prev = "Voir la version précédente";

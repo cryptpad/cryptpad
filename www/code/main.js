@@ -161,6 +161,7 @@ define([
                         if (e) { return void console.error(e); }
                         if (data !== false) {
                             $previewContainer.show();
+                            APP.$previewButton.addClass('active');
                             $codeMirror.removeClass('fullPage');
                         }
                     });
@@ -168,6 +169,7 @@ define([
                 }
                 APP.$previewButton.hide();
                 $previewContainer.hide();
+                APP.$previewButton.removeClass('active');
                 $codeMirror.addClass('fullPage');
             };
 
@@ -272,8 +274,10 @@ define([
                         Cryptpad.setPadAttribute('previewMode', true, function (e) {
                             if (e) { return console.log(e); }
                         });
+                        $previewButton.addClass('active');
                     } else {
                         $codeMirror.addClass('fullPage');
+                        $previewButton.removeClass('active');
                         Cryptpad.setPadAttribute('previewMode', false, function (e) {
                             if (e) { return console.log(e); }
                         });

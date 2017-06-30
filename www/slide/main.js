@@ -440,12 +440,14 @@ define([
                         Cryptpad.setPadAttribute('previewMode', false, function (e) {
                             if (e) { return console.log(e); }
                         });
+                        $previewButton.removeClass('active');
                         return void $c.removeClass('preview');
                     }
                     Cryptpad.setPadAttribute('previewMode', true, function (e) {
                         if (e) { return console.log(e); }
                     });
                     $c.addClass('preview');
+                    $previewButton.addClass('active');
                     Slide.updateFontSize();
                 });
                 $rightside.append($previewButton);
@@ -465,7 +467,7 @@ define([
                     }, {ok: Messages.printButton});
                     Cryptpad.feedback('PRINT_SLIDES');
                     //$('body').append(createPrintDialog());
-                });
+                }).append($('<span>', {'class': 'drawer'}).text(Messages.printText));
                 $drawer.append($printButton);
 
                 var $slideOptions = $('<button>', {
@@ -474,7 +476,7 @@ define([
                     style: 'font-size: 17px'
                 }).click(function () {
                     $('body').append(createPrintDialog());
-                });
+                }).append($('<span>', {'class': 'drawer'}).text(Messages.slideOptionsText));
                 $drawer.append($slideOptions);
 
                 var $present = Cryptpad.createButton('present', true)
