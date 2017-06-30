@@ -132,6 +132,13 @@ define([
         var $right = $toolbar.find('.cryptpad-toolbar-rightside');
         var $cke = $toolbar.find('.cke_toolbox_main');
 
+        $hist.html('').show();
+        $left.hide();
+        $right.hide();
+        $cke.hide();
+
+        common.spinner($hist).get().show();
+
         var onUpdate;
 
         var update = function () {
@@ -165,10 +172,7 @@ define([
 
         // Create the history toolbar
         var display = function () {
-            $hist.html('').show();
-            $left.hide();
-            $right.hide();
-            $cke.hide();
+            $hist.html('');
             var $prev =$('<button>', {
                 'class': 'previous fa fa-step-backward buttonPrimary',
                 title: Messages.history_prev
@@ -194,7 +198,7 @@ define([
             var $close = $('<button>', {
                 'class':'closeHistory',
                 title: Messages.history_closeTitle
-            }).text(Messages.history_close).appendTo($nav);
+            }).text(Messages.history_closeTitle).appendTo($nav);
             var $rev = $('<button>', {
                 'class':'revertHistory buttonSuccess',
                 title: Messages.history_restoreTitle

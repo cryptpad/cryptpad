@@ -304,7 +304,6 @@ body {
         }
         // Bootstrap 4 colors (btn-secondary)
         border: 1px solid transparent;
-        border-radius: .25rem;
         color: inherit;
         font: @toolbar-button-font;
         * {
@@ -918,9 +917,22 @@ body {
     .gotoInput {
         vertical-align: middle;
     }
+    button {
+        color: inherit;
+        background-color: rgba(0,0,0,0.2);
+        &:hover {
+            background-color: rgba(0,0,0,0.4);
+        }
+    }
     .closeHistory {
         background: white;
         color: black;
+        &:hover {
+            background-color: #e6e6e6;
+        }
+    }
+    .fa-spinner {
+        font-size: 66px;
     }
 }
 .cke_toolbox .cryptpad-toolbar-history {

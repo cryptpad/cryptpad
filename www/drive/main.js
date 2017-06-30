@@ -1629,7 +1629,9 @@ define([
             $('<div>', {'class': 'leftside'}).appendTo($toolbar);
             $('<div>', {'class': 'path unselectable'}).appendTo($toolbar);
             var $rightside = $('<div>', {'class': 'rightside'}).appendTo($toolbar);
-            if (APP.$hist) { $rightside.append(APP.$hist); }
+            var $hist = Cryptpad.createButton('history', true, {histConfig: APP.histConfig});
+            $hist.addClass('element');
+            $rightside.append($hist);
             return $toolbar;
         };
 
@@ -2737,7 +2739,7 @@ define([
             }, true);
 
             /* add a history button */
-            var histConfig = {
+            APP.histConfig = {
                 onLocal: function () {
                     proxy.drive = history.currentObj.drive;
                 },
@@ -2751,9 +2753,6 @@ define([
                 $toolbar: APP.$bar,
                 href: window.location.origin + window.location.pathname + '#' + APP.hash
             };
-            APP.$hist = Cryptpad.createButton('history', true, {histConfig: histConfig});
-            APP.$hist.addClass('element');
-            //if (APP.loggedIn) { $rightside.append($hist); } TODO
 
             if (!readOnly && !APP.loggedIn) {
                 var $backupButton = Cryptpad.createButton('', true).removeClass('fa').removeClass('fa-question').addClass('cryptpad-backup');

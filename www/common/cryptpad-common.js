@@ -1130,15 +1130,14 @@ define([
                     button = $('<span>');
                     break;
                 }
-                var $text = $('<span>', {'class': 'drawer'}).text(Messages.historyText);
                 button = $('<button>', {
                     title: Messages.historyButton,
                     'class': "fa fa-history history",
-                }).append($text);
+                }).append($('<span>', {'class': 'drawer'}).text(Messages.historyText));
                 if (data.histConfig) {
                     button
                     .click(prepareFeedback(type))
-                    .click(function () {
+                    .on('click', function () {
                         common.getHistory(data.histConfig);
                     });
                 }
