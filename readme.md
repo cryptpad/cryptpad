@@ -23,7 +23,7 @@ to others who want to participate.
 Cryptpad depends on the Nodejs runtime.
 We recommend installing it via [NVM](https://github.com/creationix/nvm "Node Version Manager") to ensure that you are running an up to date version.
 
-Once you have a recent runtime:
+Once you have a recent runtime (we use v6.6.0):
 
 ```
 git clone <this repo>
