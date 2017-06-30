@@ -104,6 +104,43 @@ body .userlist-drawer {
             background: rgba(0,0,0,0.1);
             margin: 2px 0;
             font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            &.clickable {
+                cursor: pointer;
+                &:hover {
+                    background-color: rgba(0,0,0,0.3);
+                }
+            }
+            .default, media-tag {
+                display: inline-flex;
+                width: 50px;
+                height: 50px;
+                justify-content: center;
+                align-items: center;
+                margin-right: 5px;
+                border-radius: 10px / 6px;
+                overflow: hidden;
+                border: 1px solid black;
+                box-sizing: content-box;
+            }
+            .default {
+                .unselectable();
+                background: white;
+                color: black;
+                font-size: 40px;
+            }
+            media-tag {
+                max-height: 50px;
+                max-width: 50px;
+                img {
+                    min-width: 100%;
+                    min-height: 100%;
+                    max-width: none;
+                    max-height: none !important; // To override 'media-tag img' in slide.less
+                    flex-shrink: 0;
+                }
+            }
         }
     }
 }
@@ -850,8 +887,10 @@ body .cryptpad-toolbar {
     }
 }
 .cryptpad-toolbar-rightside {
-    height: 32px;
+    min-height: 32px;
+    overflow: hidden;
     &:empty {
+        min-height: 0;
         height: 0;
     }
     text-align: right;

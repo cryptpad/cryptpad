@@ -149,6 +149,7 @@ define([
             return $.inArray(i, b) > -1;
         });
     };
+    var avatars = {};
     var updateUserList = function (toolbar, config) {
         // Make sure the elements are displayed
         var $userButtons = toolbar.userlist;
@@ -189,7 +190,24 @@ define([
         // Editors
         editUsersNames.forEach(function (data) {
             var name = data.name || Messages.anonymous;
-            var $span = $('<span>', {'title': name}).text(name);
+            var $span = $('<span>', {'title': name});
+            if (data.profile) {
+                $span.addClass('clickable');
+                $span.click(function () {
+                    window.open('/profile/#' + data.profile);
+                });
+            }
+            if (data.avatar && avatars[data.avatar]) {
+                $span.append(avatars[data.avatar]);
+                $span.append(name);
+            } else {
+                Cryptpad.displayAvatar($span, data.avatar, name, function ($img) {
+                    if (data.avatar && $img) {
+                        avatars[data.avatar] = $img[0].outerHTML;
+                    }
+                    $span.append(name);
+                });
+            }
             $span.data('uid', data.uid);
             $editUsersList.append($span);
         });
@@ -197,9 +215,9 @@ define([
 
         // Viewers
         if (numberOfViewUsers > 0) {
-            var viewText = '<span class="viewer">';
+            var viewText = '<div class="viewer">';
             var viewerText = numberOfViewUsers !== 1 ? Messages.viewers : Messages.viewer;
-            viewText += numberOfViewUsers + ' ' + viewerText + '</span>';
+            viewText += numberOfViewUsers + ' ' + viewerText + '</div>';
             $editUsers.append(viewText);
         }
 

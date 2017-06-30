@@ -241,7 +241,16 @@ define(function () {
     out.canvas_opacity = "Opacity";
     out.canvas_opacityLabel = "opacity: {0}";
     out.canvas_widthLabel = "Width: {0}";
-    
+
+    // Profile
+    out.profile_urlPlaceholder = 'URL';
+    out.profile_avatar = "Avatar";
+    out.profile_upload = " Upload a new avatar";
+    out.profile_error = "Error while creating your profile: {0}";
+    out.profile_register = "You have to sign up to create a profile!";
+    out.profile_create = "Create a profile";
+    out.profile_description = "Description";
+    out.profile_fieldSaved = 'New value saved: {0}';
 
     // File manager
 

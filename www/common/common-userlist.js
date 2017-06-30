@@ -49,8 +49,10 @@ define(function () {
             exp.myUserName = myUserNameTemp;
             myData = {};
             myData[exp.myNetfluxId] = {
-               name: exp.myUserName,
-               uid: Cryptpad.getUid(),
+                name: exp.myUserName,
+                uid: Cryptpad.getUid(),
+                avatar: Cryptpad.getAvatarUrl(),
+                profile: Cryptpad.getProfileUrl()
             };
             addToUserData(myData);
             Cryptpad.setAttribute('username', exp.myUserName, function (err) {
@@ -78,6 +80,8 @@ define(function () {
                     myData[exp.myNetfluxId] = {
                         name: "",
                         uid: Cryptpad.getUid(),
+                        avatar: Cryptpad.getAvatarUrl(),
+                        profile: Cryptpad.getProfileUrl()
                     };
                     addToUserData(myData);
                     onLocal();

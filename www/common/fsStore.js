@@ -211,6 +211,10 @@ define([
                 if (typeof(n) !== "string") { return; }
                 Cryptpad.changeDisplayName(n);
             });
+            proxy.on('change', ['profile'], function () {
+                // Trigger userlist update when the avatar has changed
+                Cryptpad.changeDisplayName(proxy[Cryptpad.displayNameKey]);
+            });
             proxy.on('change', [tokenKey], function () {
                 console.log('wut');
                 var localToken = tryParsing(localStorage.getItem(tokenKey));

@@ -146,6 +146,16 @@ define([
         }
         return;
     };
+    common.getProfileUrl = function () {
+        if (store && store.getProfile()) {
+            return store.getProfile().view;
+        }
+    };
+    common.getAvatarUrl = function () {
+        if (store && store.getProfile()) {
+            return store.getProfile().avatar;
+        }
+    };
 
     var feedback = common.feedback = function (action, force) {
         if (force !== true) {
@@ -1168,61 +1178,70 @@ define([
         'image/jpg',
         'image/gif',
     ];
-    common.displayAvatar = function ($container, href) {
+    common.displayAvatar = function ($container, href, name, cb) {
         var MutationObserver = window.MutationObserver;
-        $container.html('');
-        if (href) {
-            var parsed = common.parsePadUrl(href);
-            var secret = common.getSecrets('file', parsed.hash);
-            if (secret.keys && secret.channel) {
-                var cryptKey = secret.keys && secret.keys.fileKeyStr;
-                var hexFileName = common.base64ToHex(secret.channel);
-                var src = common.getBlobPathFromHex(hexFileName);
-                common.getFileSize(href, function (e, data) {
-                    if (e) { return void console.error(e); }
-                    if (typeof data !== "number") { return; }
-                    if (common.bytesToMegabytes(data) > 0.5) { return; }
-                    var $img = $('<media-tag>').appendTo($container);
-                    $img.attr('src', src);
-                    $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
-                    require(['/common/media-tag.js'], function (MediaTag) {
-                        MediaTag.CryptoFilter.setAllowedMediaTypes(common.avatarAllowedTypes);
-                        MediaTag($img[0]);
-                        var observer = new MutationObserver(function(mutations) {
-                            mutations.forEach(function(mutation) {
-                                if (mutation.type === 'childList' && mutation.addedNodes.length) {
-                                    console.log(mutation);
-                                    if (mutation.addedNodes.length > 1 ||
-                                        mutation.addedNodes[0].nodeName !== 'IMG') {
-                                        $img.remove();
-                                        return;
-                                        //TODO display default avatar
-                                    }
-                                    var $image = $img.find('img');
-                                    var onLoad = function () {
-                                        var w = $image.width();
-                                        var h = $image.height();
-                                        if (w>h) {
-                                            $image.css('max-height', '100%');
-                                            $img.css('flex-direction', 'row');
-                                            return;
-                                        }
-                                        $image.css('max-width', '100%');
-                                        $img.css('flex-direction', 'column');
-                                    };
-                                    if ($image[0].complete) { onLoad(); }
-                                    $image.on('load', onLoad);
+        var displayDefault = function () {
+            var text = name.trim().length ? name.trim().slice(0,1) : '?';
+            var $avatar = $('<span>', {'class': 'default'}).text(text);
+            $container.append($avatar);
+            if (cb) { cb(); }
+        };
+
+        if (!href) { return void displayDefault(); }
+        var parsed = common.parsePadUrl(href);
+        var secret = common.getSecrets('file', parsed.hash);
+        if (secret.keys && secret.channel) {
+            var cryptKey = secret.keys && secret.keys.fileKeyStr;
+            var hexFileName = common.base64ToHex(secret.channel);
+            var src = common.getBlobPathFromHex(hexFileName);
+            common.getFileSize(href, function (e, data) {
+                if (e) {
+                    displayDefault();
+                    return void console.error(e);
+                }
+                if (typeof data !== "number") { return void displayDefault(); }
+                if (common.bytesToMegabytes(data) > 0.5) { return void displayDefault(); }
+                var $img = $('<media-tag>').appendTo($container);
+                $img.attr('src', src);
+                $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
+                require(['/common/media-tag.js'], function (MediaTag) {
+                    MediaTag.CryptoFilter.setAllowedMediaTypes(common.avatarAllowedTypes);
+                    MediaTag($img[0]);
+                    var observer = new MutationObserver(function(mutations) {
+                        mutations.forEach(function(mutation) {
+                            if (mutation.type === 'childList' && mutation.addedNodes.length) {
+                                console.log(mutation);
+                                if (mutation.addedNodes.length > 1 ||
+                                    mutation.addedNodes[0].nodeName !== 'IMG') {
+                                    $img.remove();
+                                    return void displayDefault();
                                 }
-                            });
-                        });
-                        observer.observe($img[0], {
-                            attributes: false,
-                            childList: true,
-                            characterData: false
+                                var $image = $img.find('img');
+                                var onLoad = function () {
+                                    var w = $image.width();
+                                    var h = $image.height();
+                                    if (w>h) {
+                                        $image.css('max-height', '100%');
+                                        $img.css('flex-direction', 'row');
+                                        if (cb) { cb($img); }
+                                        return;
+                                    }
+                                    $image.css('max-width', '100%');
+                                    $img.css('flex-direction', 'column');
+                                    if (cb) { cb($img); }
+                                };
+                                if ($image[0].complete) { onLoad(); }
+                                $image.on('load', onLoad);
+                            }
                         });
                     });
+                    observer.observe($img[0], {
+                        attributes: false,
+                        childList: true,
+                        characterData: false
+                    });
                 });
-            }
+            });
         }
     };
 
