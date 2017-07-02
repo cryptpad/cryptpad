@@ -244,8 +244,9 @@ define([
                 h('div.mainOverlay'),
                 h('div#align-container', [
                     h('div#main-container', [
-                        h('div#data.hidden', [
-                            setHTML(h('p.left'), Msg.main_info),
+                        h('div#data.hidden.title', [
+                            h('h1', 'CryptPad'),
+                            h('p', Msg.main_catch_phrase)
                         ]),
                         userForm(),
                         h('div#loggedIn.hidden', [
