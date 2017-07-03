@@ -872,28 +872,17 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
     var blobStagingPath = paths.staging = keyOrDefaultString('blobStagingPath', './blobstage');
 
     var isUnauthenticateMessage = function (msg) {
-        var unAuthed = msg && msg.length === 2 && isUnauthenticatedCall(msg[0]);
-
-        if (unAuthed) {
-            console.log(msg);
-            console.log('is unauthenticated call!');
-            return unAuthed;
-        } else {
-            return false;
-        }
+        return msg && msg.length === 2 && isUnauthenticatedCall(msg[0]);
     };
 
     var handleUnauthenticatedMessage = function (msg, respond) {
-        console.log(msg);
         switch (msg[0]) {
             case 'GET_FILE_SIZE':
-                console.log("Get file size");
                 return void getFileSize(Env, msg[1], function (e, size) {
                     if (e) {
                         console.error(e);
                     }
                     WARN(e, msg[1]);
-                    console.log(size);
                     respond(e, [null, size, null]);
                 });
             case 'GET_MULTIPLE_FILE_SIZE':
