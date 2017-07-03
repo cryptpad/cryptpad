@@ -590,7 +590,7 @@ define([
 
                 Cryptpad.getPadAttribute('previewMode', function (e, data) {
                     if (e) { return void console.error(e); }
-                    if (data === true && APP.$previewButton) {
+                    if ([true, undefined].indexOf(data) !== -1 && APP.$previewButton) {
                         APP.$previewButton.click();
                     }
                 });
