@@ -333,6 +333,11 @@ define([
             if ($content.is(':visible')) { return void show(); }
             hide();
         });
+        $(window).on('resize', function () {
+            mobile = $('body').width() <= 600;
+            var h = $ck.is(':visible') ? -$ck.height() : 0;
+            $content.css('margin-top', h+'px');
+        });
         $closeIcon.click(hide);
         $button.click(function () {
             var visible = $content.is(':visible');

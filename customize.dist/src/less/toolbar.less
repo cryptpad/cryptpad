@@ -12,19 +12,32 @@
     user-select: none;
 }
 
+
+.padColor { color: @toolbar-pad-bg; }
+.codeColor { color: @toolbar-code-bg; }
+.slideColor { color: @toolbar-slide-bg; }
+.pollColor { color: @toolbar-poll-bg; }
+.fileColor { color: @toolbar-file-bg; }
+.whiteboardColor { color: @toolbar-whiteboard-bg; }
+.driveColor { color: @toolbar-drive-bg; }
+.defaultColor { color: @toolbar-default-bg; }
+
+.toolbar-container {
+    display: flex;
+}
 .cke_reset_all * {
     color: inherit;
 }
-
-#cke_editor1 {
-    .cke_inner {
-        bottom: 0;
-        right: 0;
-        display: flex;
-        flex-flow: column;
-        height: 100vh;
-        width: 100vw;
-    }
+#cke_editor1 .cke_inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    flex-flow: column;
+    height: 100vh;
+    width: 100vw;
 }
 .cke_toolbox_main {
     display: inline-block;
@@ -35,16 +48,11 @@
     margin-top: -1px;
     display: flex;
     overflow: visible;
+    iframe {
+        height: auto;
+        width: 100%;
+    }
 }
-
-.padColor { color: @toolbar-pad-bg; }
-.codeColor { color: @toolbar-code-bg; }
-.slideColor { color: @toolbar-slide-bg; }
-.pollColor { color: @toolbar-poll-bg; }
-.fileColor { color: @toolbar-file-bg; }
-.whiteboardColor { color: @toolbar-whiteboard-bg; }
-.driveColor { color: @toolbar-drive-bg; }
-.defaultColor { color: @toolbar-default-bg; }
 
 body .userlist-drawer {
     font: normal normal normal 16px Arial,Helvetica,Tahoma,Verdana,Sans-Serif;
