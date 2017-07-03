@@ -91,7 +91,11 @@ define([
 
                     $(window.document).on('decryption', function (e) {
                         var decrypted = e.originalEvent;
-                        if (decrypted.callback) { decrypted.callback(); }
+                        if (decrypted.callback) {
+                            var cb = decrypted.callback;
+                            decrypted.callback = undefined;
+                            cb();
+                        }
 
                         console.log(decrypted);
                         $dlview.show();
