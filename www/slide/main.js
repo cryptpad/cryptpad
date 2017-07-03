@@ -53,7 +53,7 @@ define([
         var andThen = function () {
             var $iframe = $('#pad-iframe').contents();
             var $contentContainer = $iframe.find('#editorContainer');
-            var CodeMirror = Cryptpad.createCodemirror(ifrw, Cryptpad, 'slide');
+            var CodeMirror = Cryptpad.createCodemirror(ifrw, Cryptpad, 'markdown');
             editor = CodeMirror.editor;
 
             var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
