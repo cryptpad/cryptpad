@@ -240,29 +240,37 @@ define([
 
     Pages['/'] = Pages['/index.html'] = function () {
         return [
-            h('div#main', [
+            h('div#main.page-index', [
                 h('div.mainOverlay'),
                 h('div#align-container', [
-                    h('div#main-container', [
-                        h('div#data.hidden.title', [
-                            h('h1', 'CryptPad'),
-                            h('p', Msg.main_catch_phrase)
-                        ]),
-                        userForm(),
-                        h('div#loggedIn.hidden', [
-                            h('p#loggedInHello'),
-                            h('p', [
-                                h('button.btn.btn-primary.gotodrive', Msg.login_accessDrive),
+                    h('div#main-container.container', [
+                        h('div.row', [
+                            h('div#data.hidden.title.col-xs-6', [
+                                h('h1', 'CryptPad'),
+                                h('p', Msg.main_catch_phrase)
                             ]),
-                            h('p', [
-                                h('button#loggedInLogout.btn.btn-secondary', Msg.logoutButton)
+                            /*userForm(),*/
+                            h('div.col-xs-6', [
+                                "Make a pad, no login needed",
+                                h('div.bs-callout.bs-callout-pad', [
+                                    h('h4', 'Rich Text Pad'),
+                                    "Collaborate in Real time on notes and ideas."
+                                ]),
+                                h('div.bs-callout.bs-callout-code', [
+                                    h('h4', 'Markdown/code Pad'),
+                                    "Edit Markdown with realtime visual rendering."
+                                ]),
+                                h('div.bs-callout.bs-callout-slide', [
+                                    h('h4', 'Markdown Presentation'),
+                                    "Make quick presentations with Markdown slides."
+                                ]),
                             ])
                         ])
                     ])
                 ]),
             ])
-        ]
-        .concat(tryIt());
+        ];
+        //.concat(tryIt());
     };
 
     var loadingScreen = function () {
