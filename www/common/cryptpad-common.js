@@ -1235,7 +1235,6 @@ define([
                 $img.attr('src', src);
                 $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
                 require(['/common/media-tag.js'], function (MediaTag) {
-                    MediaTag.CryptoFilter.setAllowedMediaTypes(common.avatarAllowedTypes);
                     MediaTag($img[0]);
                     var observer = new MutationObserver(function(mutations) {
                         mutations.forEach(function(mutation) {
