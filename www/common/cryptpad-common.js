@@ -1194,6 +1194,27 @@ define([
         return button;
     };
 
+
+    var emoji_patt = /([\uD800-\uDBFF][\uDC00-\uDFFF])/;
+    var isEmoji = function (str) {
+      return emoji_patt.test(str);
+    };
+    var emojiStringToArray = function (str) {
+      var split = str.split(emoji_patt);
+      var arr = [];
+      for (var i=0; i<split.length; i++) {
+        var char = split[i]
+        if (char !== "") {
+          arr.push(char);
+        }
+      }
+      return arr;
+    };
+    var getFirstEmojiOrCharacter = function (str) {
+      if (!str || !str.trim()) { return '?'; }
+      var emojis = emojiStringToArray(str);
+      return isEmoji(emojis[0])? emojis[0]: str[0];
+    }
     $(window.document).on('decryption', function (e) {
         var decrypted = e.originalEvent;
         if (decrypted.callback) {
@@ -1211,7 +1232,7 @@ define([
     common.displayAvatar = function ($container, href, name, cb) {
         var MutationObserver = window.MutationObserver;
         var displayDefault = function () {
-            var text = name.trim().length ? name.trim().slice(0,1) : '?';
+            var text = getFirstEmojiOrCharacter(name);
             var $avatar = $('<span>', {'class': 'default'}).text(text);
             $container.append($avatar);
             if (cb) { cb(); }
