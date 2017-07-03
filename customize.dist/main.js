@@ -171,6 +171,10 @@ define([
             $('button.gotodrive').click(function () {
                 document.location.href = '/drive/';
             });
+
+            $('button#loggedInLogout').click(function () {
+                $('#user-menu .logout').click();
+            });
         };
 
         displayCreateButtons();
