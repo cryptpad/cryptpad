@@ -1203,7 +1203,7 @@ define([
       var split = str.split(emoji_patt);
       var arr = [];
       for (var i=0; i<split.length; i++) {
-        var char = split[i]
+        var char = split[i];
         if (char !== "") {
           arr.push(char);
         }
@@ -1214,7 +1214,7 @@ define([
       if (!str || !str.trim()) { return '?'; }
       var emojis = emojiStringToArray(str);
       return isEmoji(emojis[0])? emojis[0]: str[0];
-    }
+    };
     $(window.document).on('decryption', function (e) {
         var decrypted = e.originalEvent;
         if (decrypted.callback) {
