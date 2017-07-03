@@ -1342,7 +1342,7 @@ define([
                 setActive($val);
                 $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
             }
-            if (config.feedback) { common.feedback(config.feedback); }
+            if (config.feedback && store) { common.feedback(config.feedback); }
         };
 
         $container.click(function (e) {
