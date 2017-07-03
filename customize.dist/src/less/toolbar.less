@@ -137,7 +137,7 @@ body .userlist-drawer {
                     min-width: 100%;
                     min-height: 100%;
                     max-width: none;
-                    max-height: none !important; // To override 'media-tag img' in slide.less
+                    max-height: none; // To override 'media-tag img' in slide.less
                     flex-shrink: 0;
                 }
             }
@@ -833,6 +833,7 @@ body .cryptpad-toolbar {
                 width: 64px;
                 padding: 0;
                 span {
+                    width: 100%;
                     cursor: default;
                     font-size: 32px;
                     .fa {
