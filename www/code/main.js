@@ -428,8 +428,6 @@ define([
             Cryptpad.onLogout(function () { setEditable(false); });
         };
 
-        var interval = 100;
-
         var first = function () {
             Cryptpad.ready(function () {
                 andThen();

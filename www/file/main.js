@@ -185,9 +185,6 @@ define([
                 };
                 Cryptpad.getFileSize(window.location.href, function (e, data) {
                     if (e) {
-                        // TODO when GET_FILE_SIZE is made unauthenticated
-                        // you won't need to handle this error (there won't be one)
-                        if (e === 'RPC_NOT_READY') { return todoBigFile(); }
                         return void Cryptpad.errorLoadingScreen(e);
                     }
                     var size = Cryptpad.bytesToMegabytes(data);

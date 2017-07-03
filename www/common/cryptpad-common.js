@@ -49,6 +49,7 @@ define([
 
     var store;
     var rpc;
+    var anon_rpc;
 
     // import UI elements
     common.findCancelButton = UI.findCancelButton;
@@ -787,11 +788,32 @@ define([
     };
 
     common.getFileSize = function (href, cb) {
-        if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
+        if (!anon_rpc) { return void cb('ANON_RPC_NOT_READY'); }
+        //if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
         var channelId = Hash.hrefToHexChannelId(href);
-        rpc.getFileSize(channelId, function (e, bytes) {
+        anon_rpc.send("GET_FILE_SIZE", channelId, function (e, response) {
             if (e) { return void cb(e); }
-            cb(void 0, bytes);
+            if (response && response.length && typeof(response[0]) === 'number') {
+                return void cb(void 0, response[0]);
+            } else {
+                cb('INVALID_RESPONSE');
+            }
+        });
+    };
+
+    common.getMultipleFileSize = function (files, cb) {
+        if (!anon_rpc) { return void cb('ANON_RPC_NOT_READY'); }
+        if (!Array.isArray(files)) {
+            return void setTimeout(function () { cb('INVALID_FILE_LIST'); });
+        }
+
+        anon_rpc.send('GET_MULTIPLE_FILE_SIZE', files, function (e, res) {
+            if (e) { return cb(e); }
+            if (res && res.length && typeof(res[0]) === 'object') {
+                cb(void 0, res[0]);
+            } else {
+                cb('UNEXPECTED_RESPONSE');
+            }
         });
     };
 
@@ -1328,7 +1350,7 @@ define([
                 setActive($val);
                 $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
             }
-            if (config.feedback) { common.feedback(config.feedback); }
+            if (config.feedback && store) { common.feedback(config.feedback); }
         };
 
         $container.click(function (e) {
@@ -1706,6 +1728,21 @@ define([
                 } else {
                     console.log('pinning disabled');
                 }
+
+                block++;
+                require([
+                    '/common/rpc.js',
+                ], function (Rpc) {
+                    Rpc.createAnonymous(network, function (e, call) {
+                        if (e) {
+                            console.error(e);
+                            return void cb();
+                        }
+                        anon_rpc = common.anon_rpc = env.anon_rpc = call;
+                        cb();
+                    });
+                });
+
 
                 // Everything's ready, continue...
                 if($('#pad-iframe').length) {
