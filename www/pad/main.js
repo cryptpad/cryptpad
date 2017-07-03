@@ -570,16 +570,10 @@ define([
             // this should only ever get called once, when the chain syncs
             realtimeOptions.onReady = function (info) {
                 if (!module.isMaximized) {
-                    editor.execCommand('maximize');
                     module.isMaximized = true;
-                    // We have to call it 3 times in Safari
-                    // in order to have the editor fully maximized -_-
-                    if ((''+window.navigator.vendor).indexOf('Apple') !== -1) {
-                        editor.execCommand('maximize');
-                        editor.execCommand('maximize');
-                    }
+                    $iframe.find('iframe.cke_wysiwyg_frame').css('width', '');
+                    $iframe.find('iframe.cke_wysiwyg_frame').css('height', '');
                 }
-                // editor.execCommand('maximize') removes all the classes from the body tag
                 $iframe.find('body').addClass('app-pad');
 
                 if (module.realtime !== info.realtime) {
@@ -727,12 +721,11 @@ define([
         if (Ckeditor) {
             // mobile configuration
             Ckeditor.config.toolbarCanCollapse = true;
-            Ckeditor.config.height = '72vh';
             if (screen.height < 800) {
-              Ckeditor.config.toolbarStartupExpanded = false;
-              $('meta[name=viewport]').attr('content', 'width=device-width, initial-scale=1.0, user-scalable=no');
+                Ckeditor.config.toolbarStartupExpanded = false;
+                $('meta[name=viewport]').attr('content', 'width=device-width, initial-scale=1.0, user-scalable=no');
             } else {
-              $('meta[name=viewport]').attr('content', 'width=device-width, initial-scale=1.0, user-scalable=yes');
+                $('meta[name=viewport]').attr('content', 'width=device-width, initial-scale=1.0, user-scalable=yes');
             }
             second(Ckeditor);
         } else {
