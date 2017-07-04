@@ -1170,7 +1170,7 @@ define([
             var element = filesOp.find(newPath);
             var $icon = !isFolder ? getFileIcon(element) : undefined;
             var ro = filesOp.isReadOnlyFile(element);
-            // ro undefined mens it's an old hash which doesn't support read-only
+            // ro undefined means it's an old hash which doesn't support read-only
             var roClass = typeof(ro) === 'undefined' ? ' noreadonly' : ro ? ' readonly' : '';
             var liClass = 'file-item file-element element' + roClass;
             if (isFolder) {
@@ -2140,6 +2140,7 @@ define([
             $trashContextMenu.hide();
             $contentContextMenu.hide();
             $defaultContextMenu.hide();
+            $iframe.find('.cryptpad-dropdown').hide();
         };
 
         var stringifyPath = function (path) {

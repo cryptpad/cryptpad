@@ -206,6 +206,7 @@ define([
         // Editors
         editUsersNames.forEach(function (data) {
             var name = data.name || Messages.anonymous;
+            var $name = $('<span>', {'class': 'name'}).text(name);
             var $span = $('<span>', {'title': name});
             if (data.profile) {
                 $span.addClass('clickable');
@@ -215,13 +216,13 @@ define([
             }
             if (data.avatar && avatars[data.avatar]) {
                 $span.append(avatars[data.avatar]);
-                $span.append(name);
+                $span.append($name);
             } else {
                 Cryptpad.displayAvatar($span, data.avatar, name, function ($img) {
                     if (data.avatar && $img) {
                         avatars[data.avatar] = $img[0].outerHTML;
                     }
-                    $span.append(name);
+                    $span.append($name);
                 });
             }
             $span.data('uid', data.uid);
