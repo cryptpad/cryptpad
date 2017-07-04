@@ -92,9 +92,7 @@ define([
                     $(window.document).on('decryption', function (e) {
                         var decrypted = e.originalEvent;
                         if (decrypted.callback) {
-                            var cb = decrypted.callback;
-                            decrypted.callback = undefined;
-                            cb();
+                            decrypted.callback();
                         }
 
                         console.log(decrypted);
