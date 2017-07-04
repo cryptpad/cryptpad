@@ -832,7 +832,9 @@ define([
         if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
 
         var account = common.account;
-        if (typeof(account.limit) !== 'number' ||
+
+        var ALWAYS_REVALIDATE = true;
+        if (ALWAYS_REVALIDATE || typeof(account.limit) !== 'number' ||
             typeof(account.plan) !== 'string' ||
             typeof(account.note) !== 'string') {
             return void rpc.getLimit(function (e, limit, plan, note) {
