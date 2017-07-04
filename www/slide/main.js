@@ -468,7 +468,9 @@ define([
                     Cryptpad.feedback('PRINT_SLIDES');
                     //$('body').append(createPrintDialog());
                 }).append($('<span>', {'class': 'drawer'}).text(Messages.printText));
-                $drawer.append($printButton);
+
+                // TODO reenable this when it is working again
+                //$drawer.append($printButton);
 
                 var $slideOptions = $('<button>', {
                     title: Messages.slideOptionsTitle,
