@@ -593,17 +593,17 @@ define([
 
         // We need to override the "a" tag action here because it is inside the iframe!
         var $aTag = $('<a>', {
-            href: "/",
+            href: "/drive/",
             title: Messages.header_logoTitle,
             'class': "cryptpad-logo fa fa-hdd-o"
         });
         var onClick = function (e) {
             e.preventDefault();
             if (e.ctrlKey) {
-                window.open('/drive');
+                window.open('/drive/');
                 return;
             }
-            window.location = "/drive";
+            window.location = "/drive/";
         };
 
         var onContext = function (e) { e.stopPropagation(); };
