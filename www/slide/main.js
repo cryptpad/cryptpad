@@ -470,6 +470,7 @@ define([
                 }).append($('<span>', {'class': 'drawer'}).text(Messages.printText));
 
                 // TODO reenable this when it is working again
+                $printButton = $printButton;
                 //$drawer.append($printButton);
 
                 var $slideOptions = $('<button>', {

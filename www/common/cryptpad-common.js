@@ -895,7 +895,6 @@ define([
         var $container = $('<span>', {'class':'limit-container'});
         var todo;
         var updateUsage = window.updateUsage = common.notAgainForAnother(function () {
-            console.log("updating usage bar");
             common.getPinnedUsage(todo);
         }, LIMIT_REFRESH_RATE);
 
@@ -965,21 +964,12 @@ define([
         };
 
         setInterval(function () {
-            var t = updateUsage();
-            if (t) {
-                console.log("usage already updated. eligible for refresh in %sms", t);
-            }
+            updateUsage();
         }, LIMIT_REFRESH_RATE * 3);
 
         updateUsage();
         getProxy().on('change', ['drive'], function () {
-            var t = updateUsage();
-            if (t) {
-                console.log("usage bar update throttled due to overuse." +
-                    " Eligible for update in %sms", t);
-            } else {
-                console.log("usage bar updated");
-            }
+            updateUsage();
         });
         cb(null, $container);
     };
@@ -1233,18 +1223,18 @@ define([
                 }
 
                 if (decrypted.blob) {
-                    size = decrypted.blob.size
+                    size = decrypted.blob.size;
                 }
 
-                var sizeMb = Cryptpad.bytesToMegabytes(size);
+                var sizeMb = common.bytesToMegabytes(size);
 
                 var $btn = $(root).find('button');
                 $btn.addClass('btn btn-success')
                     .attr('type', 'download')
-                    .html(function (i, html) {
+                    .html(function () {
                         var text = Messages.download_mt_button + '<br>';
                         if (title) {
-                            text += '<b>' + Cryptpad.fixHTML(title) + '</b><br>';
+                            text += '<b>' + common.fixHTML(title) + '</b><br>';
                         }
                         if (size) {
                             text += '<em>' + Messages._getKey('formattedMB', [sizeMb]) + '</em>';
