@@ -12,6 +12,9 @@
     user-select: none;
 }
 
+.cke_reset_all * {
+    color: inherit;
+}
 
 .padColor { color: @toolbar-pad-bg; }
 .codeColor { color: @toolbar-code-bg; }
@@ -24,9 +27,6 @@
 
 .toolbar-container {
     display: flex;
-}
-.cke_reset_all * {
-    color: inherit;
 }
 #cke_editor1 .cke_inner {
     position: absolute;
@@ -855,9 +855,6 @@ body .cryptpad-toolbar {
                     width: 100%;
                     cursor: default;
                     font-size: 32px;
-                    .fa {
-                        margin-left: 3px;
-                    }
                 }
             }
         }
