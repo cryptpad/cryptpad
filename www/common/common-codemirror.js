@@ -3,36 +3,12 @@ define([
     '/common/modes.js',
     '/common/themes.js',
 
-    'cm/lib/codemirror',
-    'cm/mode/javascript/javascript',
-    'cm/mode/markdown/markdown',
-    'cm/addon/mode/loadmode',
-    'cm/mode/meta',
-    'cm/addon/mode/overlay',
-    'cm/addon/mode/multiplex',
-    'cm/addon/mode/simple',
-    'cm/addon/edit/closebrackets',
-    'cm/addon/edit/matchbrackets',
-    'cm/addon/edit/trailingspace',
-    'cm/addon/selection/active-line',
-    'cm/addon/search/search',
-    'cm/addon/search/match-highlighter',
-    'cm/addon/search/searchcursor',
-    'cm/addon/dialog/dialog',
-    'cm/addon/fold/foldcode',
-    'cm/addon/fold/foldgutter',
-    'cm/addon/fold/brace-fold',
-    'cm/addon/fold/xml-fold',
-    'cm/addon/fold/markdown-fold',
-    'cm/addon/fold/comment-fold',
-    'cm/addon/display/placeholder',
-
     '/bower_components/file-saver/FileSaver.min.js'
-], function ($, Modes, Themes, CMeditor) {
+], function ($, Modes, Themes) {
     var saveAs = window.saveAs;
     var module = {};
 
-    module.create = function (ifrw, Cryptpad, defaultMode) {
+    module.create = function (ifrw, Cryptpad, defaultMode, CMeditor) {
         var exp = {};
         var Messages = Cryptpad.Messages;
 

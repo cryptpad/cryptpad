@@ -50,10 +50,10 @@ define([
             Cryptpad.errorLoadingScreen(Messages.websocketError);
         };
 
-        var andThen = function () {
+        var andThen = function (CMeditor) {
             var $iframe = $('#pad-iframe').contents();
             var $contentContainer = $iframe.find('#editorContainer');
-            var CodeMirror = Cryptpad.createCodemirror(ifrw, Cryptpad, 'markdown');
+            var CodeMirror = Cryptpad.createCodemirror(ifrw, Cryptpad, null, CMeditor);
             editor = CodeMirror.editor;
 
             var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
@@ -697,9 +697,11 @@ define([
             Cryptpad.onLogout(function () { setEditable(false); });
         };
 
-        var first = function () {
+        var interval = 100;
+
+        var second = function (CM) {
             Cryptpad.ready(function () {
-                andThen();
+                andThen(CM);
                 Cryptpad.reportAppUsage();
             });
             Cryptpad.onError(function (info) {
@@ -707,6 +709,17 @@ define([
                     onConnectError();
                 }
             });
+        };
+
+        var first = function () {
+            if (ifrw.CodeMirror) {
+                // it exists, call your continuation
+                second(ifrw.CodeMirror);
+            } else {
+                console.log("CodeMirror was not defined. Trying again in %sms", interval);
+                // try again in 'interval' ms
+                setTimeout(first, interval);
+            }
         };
 
         first();
