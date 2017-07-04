@@ -1239,7 +1239,7 @@ define([
                 var sizeMb = Cryptpad.bytesToMegabytes(size);
 
                 var $btn = $(root).find('button');
-                $btn.addClass('btn btn-primary btn-success')
+                $btn.addClass('btn btn-success')
                     .attr('type', 'download')
                     .html(function (i, html) {
                         var text = Messages.download_mt_button + '<br>';
