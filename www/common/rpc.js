@@ -99,7 +99,10 @@ types of messages:
             delete ctx.pending[txid];
             return;
         }
-        if (parsed.length !== 2) {
+
+        // HACK to hide messages from the anon rpc
+        if (parsed.length !== 4) {
+            console.log(parsed);
             console.error("received message [%s] for txid[%s] with no callback", msg, txid);
         }
     };
