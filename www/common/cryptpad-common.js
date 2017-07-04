@@ -1198,8 +1198,39 @@ define([
         var decrypted = e.originalEvent;
         if (decrypted.callback) {
             var cb = decrypted.callback;
-            decrypted.callback = undefined;
-            cb();
+            cb(function (mediaObject) {
+                if (mediaObject.type !== 'download') { return; }
+                var root = mediaObject.rootElement;
+                if (!root) { return; }
+
+                var metadata = decrypted.metadata;
+
+                var title = '';
+                var size = 0;
+                if (metadata && metadata.name) {
+                    title = metadata.name;
+                }
+
+                if (decrypted.blob) {
+                    size = decrypted.blob.size
+                }
+
+                var sizeMb = Cryptpad.bytesToMegabytes(size);
+
+                var $btn = $(root).find('button');
+                $btn.addClass('btn btn-primary btn-success')
+                    .attr('type', 'download')
+                    .html(function (i, html) {
+                        var text = Messages.download_mt_button + '<br>';
+                        if (title) {
+                            text += '<b>' + Cryptpad.fixHTML(title) + '</b><br>';
+                        }
+                        if (size) {
+                            text += '<em>' + Messages._getKey('formattedMB', [sizeMb]) + '</em>';
+                        }
+                        return text;
+                    });
+            });
         }
     });
     common.avatarAllowedTypes = [
