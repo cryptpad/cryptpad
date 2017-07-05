@@ -583,9 +583,10 @@ var resetUserPins = function (Env, publicKey, channelList, cb) {
         if (e) { return void cb(e); }
         var pinSize = sumChannelSizes(sizes);
 
-        getFreeSpace(Env, publicKey, function (e, free) {
+
+        getLimit(Env, publicKey, function (e, limit) {
             if (e) {
-                WARN('getFreeSpace', e);
+                WARN('[RESET_ERR]', e);
                 return void cb(e);
             }
 
@@ -597,7 +598,7 @@ var resetUserPins = function (Env, publicKey, channelList, cb) {
 
                 They will not be able to pin additional pads until they upgrade
                 or delete enough files to go back under their limit. */
-            if (pinSize > free && session.hasPinned) { return void(cb('E_OVER_LIMIT')); }
+            if (pinSize > limit && session.hasPinned) { return void(cb('E_OVER_LIMIT')); }
             pinStore.message(publicKey, JSON.stringify(['RESET', channelList]),
                 function (e) {
                 if (e) { return void cb(e); }
