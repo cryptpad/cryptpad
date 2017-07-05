@@ -148,7 +148,8 @@ define([
             //if (user !== userNetfluxId) {
                 var data = userData[user] || {};
                 var userId = data.uid;
-                if (!data.uid) { return; }
+                if (!userId) { return; }
+                data.netfluxId = user;
                 if (uids.indexOf(userId) === -1) {// && (!myUid || userId !== myUid)) {
                     uids.push(userId);
                     list.push(data);
@@ -206,8 +207,17 @@ define([
         // Editors
         editUsersNames.forEach(function (data) {
             var name = data.name || Messages.anonymous;
-            var $name = $('<span>', {'class': 'name'}).text(name);
             var $span = $('<span>', {'title': name});
+            var $rightCol = $('<span>', {'class': 'right-col'});
+            var $name = $('<span>', {'class': 'name'}).text(name).appendTo($rightCol);
+            // TODO: if account
+            var $button = $('<button>', {'class': 'friend'}).appendTo($rightCol);
+            $button.text('Add friend').click(function (e) {
+                console.log('TODO');
+                e.stopPropagation();
+                Cryptpad.inviteFromUserlist(data.netfluxId);
+            });
+            // TODO: end if
             if (data.profile) {
                 $span.addClass('clickable');
                 $span.click(function () {
@@ -216,13 +226,13 @@ define([
             }
             if (data.avatar && avatars[data.avatar]) {
                 $span.append(avatars[data.avatar]);
-                $span.append($name);
+                $span.append($rightCol);
             } else {
                 Cryptpad.displayAvatar($span, data.avatar, name, function ($img) {
                     if (data.avatar && $img) {
                         avatars[data.avatar] = $img[0].outerHTML;
                     }
-                    $span.append($name);
+                    $span.append($rightCol);
                 });
             }
             $span.data('uid', data.uid);

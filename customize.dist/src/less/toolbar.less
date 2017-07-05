@@ -138,11 +138,22 @@ body .userlist-drawer {
                 color: black;
                 font-size: 40px;
             }
-            .name {
+            .right-col {
                 flex: 1;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
+                display: flex;
+                flex-flow: column;
+                .name {
+                    flex: 1;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+                .friend {
+                    padding: 0;
+                }
             }
             media-tag {
                 min-height: 50px;

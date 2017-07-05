@@ -1185,6 +1185,21 @@ define([
         return button;
     };
 
+    // Messaging
+    var addDirectMessageHandler = function () {
+        var network = getNetwork();
+        if (!network) { return void console.error('Network not ready'); }
+        network.on('message', function (msg, sender) {
+            if (sender === network.historyKeeper) { return; }
+
+        });
+    };
+    common.inviteFromUserlist = function (netfluxId) {
+        var network = getNetwork();
+        network.sendto(netfluxId, '["FRIEND_REQ", "Salut"]')
+    };
+
+
 
     var emoji_patt = /([\uD800-\uDBFF][\uDC00-\uDFFF])/;
     var isEmoji = function (str) {
@@ -1690,6 +1705,8 @@ define([
 
         Store.ready(function (err, storeObj) {
             store = common.store = env.store = storeObj;
+
+            addDirectMessageHandler();
 
             var proxy = getProxy();
             var network = getNetwork();
