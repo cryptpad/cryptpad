@@ -22,7 +22,12 @@ define([
         // 16 bytes for a deterministic channel key
         var channelSeed = dispense(16);
         // 32 bytes for a curve key
-        opt.curveSeed = dispense(32);
+        var curveSeed = dispense(32);
+
+        var curvePair = Nacl.box.keyPair.fromSecretKey(new Uint8Array(curveSeed));
+        opt.curvePrivate = Nacl.util.encodeBase64(curvePair.secretKey);
+        opt.curvePublic = Nacl.util.encodeBase64(curvePair.publicKey);
+
         // 32 more for a signing key
         var edSeed = opt.edSeed = dispense(32);
 
@@ -108,6 +113,9 @@ define([
                 // export their signing key
                 res.edPrivate = opt.edPrivate;
                 res.edPublic = opt.edPublic;
+
+                res.curvePrivate = opt.curvePrivate;
+                res.curvePublic = opt.curvePublic;
 
                 // they tried to just log in but there's no such user
                 if (!isRegister && isProxyEmpty(rt.proxy)) {

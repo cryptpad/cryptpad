@@ -91,6 +91,9 @@ define([
                                 proxy.edPrivate = result.edPrivate;
                                 proxy.edPublic = result.edPublic;
 
+                                proxy.curvePrivate = result.curvePrivate;
+                                proxy.curvePublic = result.curvePublic;
+
                                 Cryptpad.feedback('LOGIN', true);
                                 Cryptpad.whenRealtimeSyncs(result.realtime, function() {
                                     Cryptpad.login(result.userHash, result.userName, function () {
