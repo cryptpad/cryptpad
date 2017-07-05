@@ -1088,8 +1088,8 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
             return void handleMessage(false);
         }
 
-        // restrict upload capability unless explicitly disabled
-        if (config.restrictUploads === false) {
+        // allow unrestricted uploads unless restrictUploads is true
+        if (config.restrictUploads !== true) {
             return void handleMessage(true);
         }
 
