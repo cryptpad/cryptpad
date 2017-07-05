@@ -16,9 +16,10 @@ define([
 
     '/common/clipboard.js',
     '/common/pinpad.js',
-    '/customize/application_config.js'
+    '/customize/application_config.js',
+    '/common/media-tag.js',
 ], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Metadata,
-            CodeMirror, Files, FileCrypto, Clipboard, Pinpad, AppConfig) {
+            CodeMirror, Files, FileCrypto, Clipboard, Pinpad, AppConfig, MediaTag) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -1278,35 +1279,32 @@ define([
                 var $img = $('<media-tag>').appendTo($container);
                 $img.attr('src', src);
                 $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
-                require(['/common/media-tag.js'], function (MediaTag) {
-                    MediaTag($img[0]);
-                    var observer = new MutationObserver(function(mutations) {
-                        mutations.forEach(function(mutation) {
-                            if (mutation.type === 'childList' && mutation.addedNodes.length) {
-                                console.log(mutation);
-                                if (mutation.addedNodes.length > 1 ||
-                                    mutation.addedNodes[0].nodeName !== 'IMG') {
-                                    $img.remove();
-                                    return void displayDefault();
-                                }
-                                var $image = $img.find('img');
-                                var onLoad = function () {
-                                    var w = $image.width();
-                                    var h = $image.height();
-                                    if (w>h) {
-                                        $image.css('max-height', '100%');
-                                        $img.css('flex-direction', 'row');
-                                        if (cb) { cb($img); }
-                                        return;
-                                    }
-                                    $image.css('max-width', '100%');
-                                    $img.css('flex-direction', 'column');
-                                    if (cb) { cb($img); }
-                                };
-                                if ($image[0].complete) { onLoad(); }
-                                $image.on('load', onLoad);
+                MediaTag($img[0]);
+                var observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.type === 'childList' && mutation.addedNodes.length) {
+                            if (mutation.addedNodes.length > 1 ||
+                                mutation.addedNodes[0].nodeName !== 'IMG') {
+                                $img.remove();
+                                return void displayDefault();
                             }
-                        });
+                            var $image = $img.find('img');
+                            var onLoad = function () {
+                                var w = $image.width();
+                                var h = $image.height();
+                                if (w>h) {
+                                    $image.css('max-height', '100%');
+                                    $img.css('flex-direction', 'row');
+                                    if (cb) { cb($img); }
+                                    return;
+                                }
+                                $image.css('max-width', '100%');
+                                $img.css('flex-direction', 'column');
+                                if (cb) { cb($img); }
+                            };
+                            if ($image[0].complete) { onLoad(); }
+                            $image.on('load', onLoad);
+                        }
                     });
                     observer.observe($img[0], {
                         attributes: false,

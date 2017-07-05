@@ -11,7 +11,6 @@ define([
     '/bower_components/marked/marked.min.js',
     'cm/lib/codemirror',
     'cm/mode/markdown/markdown',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
     'less!/profile/main.less',
 ], function ($, Cryptpad, Listmap, Crypto, Marked, CodeMirror) {
 
