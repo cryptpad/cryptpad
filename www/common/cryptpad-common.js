@@ -78,7 +78,7 @@ define([
     var deduplicateString = common.deduplicateString = Util.deduplicateString;
     common.uint8ArrayToHex = Util.uint8ArrayToHex;
     common.replaceHash = Util.replaceHash;
-    var getHash = common.getHash = Util.getHash;
+    common.getHash = Util.getHash;
     common.fixFileName = Util.fixFileName;
     common.bytesToMegabytes = Util.bytesToMegabytes;
     common.bytesToKilobytes = Util.bytesToKilobytes;
