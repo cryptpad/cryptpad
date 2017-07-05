@@ -60,6 +60,9 @@ define([
             cb(void 0, res);
         };
 
+        ret.setPadAttribute = filesOp.setAttribute;
+        ret.getPadAttribute = filesOp.getAttribute;
+
         ret.getDrive = function (key, cb) {
             cb(void 0, storeObj.drive[key]);
         };

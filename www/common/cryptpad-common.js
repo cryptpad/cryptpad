@@ -425,9 +425,8 @@ define([
 
     // STORAGE
     common.setPadAttribute = function (attr, value, cb) {
-        getStore().setDrive([getHash(), attr].join('.'), value, function (err, data) {
-            cb(err, data);
-        });
+        var href = getRelativeHref(window.location.href);
+        getStore().setPadAttribute(href, attr, value, cb);
     };
     common.setAttribute = function (attr, value, cb) {
         getStore().set(["cryptpad", attr].join('.'), value, function (err, data) {
@@ -440,9 +439,8 @@ define([
 
     // STORAGE
     common.getPadAttribute = function (attr, cb) {
-        getStore().getDrive([getHash(), attr].join('.'), function (err, data) {
-            cb(err, data);
-        });
+        var href = getRelativeHref(window.location.href);
+        getStore().getPadAttribute(href, attr, cb);
     };
     common.getAttribute = function (attr, cb) {
         getStore().get(["cryptpad", attr].join('.'), function (err, data) {
