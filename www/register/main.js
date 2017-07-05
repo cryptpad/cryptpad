@@ -75,6 +75,8 @@ define([
             var proxy = result.proxy;
             proxy.edPublic = result.edPublic;
             proxy.edPrivate = result.edPrivate;
+            proxy.curvePublic = result.curvePublic;
+            proxy.curvePrivate = result.curvePrivate;
 
             Cryptpad.feedback('REGISTRATION', true);
 

@@ -206,7 +206,8 @@ define([
             }
 
             // if the user is logged in, but does not have signing keys...
-            if (Cryptpad.isLoggedIn() && !Cryptpad.hasSigningKeys(proxy)) {
+            if (Cryptpad.isLoggedIn() && (!Cryptpad.hasSigningKeys(proxy) ||
+                !Cryptpad.hasCurveKeys(proxy))) {
                 return void requestLogin();
             }
 
@@ -219,7 +220,6 @@ define([
                 Cryptpad.changeDisplayName(proxy[Cryptpad.displayNameKey]);
             });
             proxy.on('change', [tokenKey], function () {
-                console.log('wut');
                 var localToken = tryParsing(localStorage.getItem(tokenKey));
                 if (localToken !== proxy[tokenKey]) {
                     return void requestLogin();

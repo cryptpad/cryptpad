@@ -304,6 +304,12 @@ define([
             typeof(proxy.edPublic) === 'string';
     };
 
+    common.hasCurveKeys = function (proxy) {
+        return typeof(proxy) === 'object' &&
+            typeof(proxy.curvePrivate) === 'string' &&
+            typeof(proxy.curvePublic) === 'string';
+    };
+
     common.isArray = $.isArray;
 
     /*
