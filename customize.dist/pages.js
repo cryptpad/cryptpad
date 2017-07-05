@@ -501,5 +501,9 @@ define([
         return loadingScreen();
     };
 
+    Pages['/invite/'] = Pages['/invite/index.html'] = function () {
+        return loadingScreen();
+    };
+
     return Pages;
 });
