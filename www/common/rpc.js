@@ -305,7 +305,7 @@ types of messages:
             }
         };
 
-        network.on('message', function (msg) {
+        network.on('message', function (msg, sender) {
             if (sender !== network.historyKeeper) { return; }
             onAnonMsg(ctx, msg);
         });
