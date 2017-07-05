@@ -209,13 +209,12 @@ define([
             var name = data.name || Messages.anonymous;
             var $span = $('<span>', {'title': name});
             var $rightCol = $('<span>', {'class': 'right-col'});
-            var $name = $('<span>', {'class': 'name'}).text(name).appendTo($rightCol);
+            $('<span>', {'class': 'name'}).text(name).appendTo($rightCol);
             // TODO: if account
             var $button = $('<button>', {'class': 'friend'}).appendTo($rightCol);
             $button.text('Add friend').click(function (e) {
-                console.log('TODO');
                 e.stopPropagation();
-                Cryptpad.inviteFromUserlist(data.netfluxId);
+                Cryptpad.inviteFromUserlist(Cryptpad, data.netfluxId);
             });
             // TODO: end if
             if (data.profile) {
