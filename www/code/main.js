@@ -9,7 +9,6 @@ define([
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
     '/common/diffMarked.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js', // needed for media-tag
 
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less/cryptpad.less'

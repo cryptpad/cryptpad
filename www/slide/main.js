@@ -9,7 +9,6 @@ define([
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
     '/slide/slide.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js', // needed for media-tag
 
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less/cryptpad.less',
@@ -470,6 +469,7 @@ define([
                 }).append($('<span>', {'class': 'drawer'}).text(Messages.printText));
 
                 // TODO reenable this when it is working again
+                $printButton = $printButton;
                 //$drawer.append($printButton);
 
                 var $slideOptions = $('<button>', {

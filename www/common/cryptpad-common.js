@@ -16,9 +16,10 @@ define([
 
     '/common/clipboard.js',
     '/common/pinpad.js',
-    '/customize/application_config.js'
+    '/customize/application_config.js',
+    '/common/media-tag.js',
 ], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Metadata,
-            CodeMirror, Files, FileCrypto, Clipboard, Pinpad, AppConfig) {
+            CodeMirror, Files, FileCrypto, Clipboard, Pinpad, AppConfig, MediaTag) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -830,7 +831,9 @@ define([
         if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
 
         var account = common.account;
-        if (typeof(account.limit) !== 'number' ||
+
+        var ALWAYS_REVALIDATE = true;
+        if (ALWAYS_REVALIDATE || typeof(account.limit) !== 'number' ||
             typeof(account.plan) !== 'string' ||
             typeof(account.note) !== 'string') {
             return void rpc.getLimit(function (e, limit, plan, note) {
@@ -893,7 +896,6 @@ define([
         var $container = $('<span>', {'class':'limit-container'});
         var todo;
         var updateUsage = window.updateUsage = common.notAgainForAnother(function () {
-            console.log("updating usage bar");
             common.getPinnedUsage(todo);
         }, LIMIT_REFRESH_RATE);
 
@@ -963,21 +965,12 @@ define([
         };
 
         setInterval(function () {
-            var t = updateUsage();
-            if (t) {
-                console.log("usage already updated. eligible for refresh in %sms", t);
-            }
+            updateUsage();
         }, LIMIT_REFRESH_RATE * 3);
 
         updateUsage();
         getProxy().on('change', ['drive'], function () {
-            var t = updateUsage();
-            if (t) {
-                console.log("usage bar update throttled due to overuse." +
-                    " Eligible for update in %sms", t);
-            } else {
-                console.log("usage bar updated");
-            }
+            updateUsage();
         });
         cb(null, $container);
     };
@@ -1231,18 +1224,18 @@ define([
                 }
 
                 if (decrypted.blob) {
-                    size = decrypted.blob.size
+                    size = decrypted.blob.size;
                 }
 
-                var sizeMb = Cryptpad.bytesToMegabytes(size);
+                var sizeMb = common.bytesToMegabytes(size);
 
                 var $btn = $(root).find('button');
                 $btn.addClass('btn btn-success')
                     .attr('type', 'download')
-                    .html(function (i, html) {
+                    .html(function () {
                         var text = Messages.download_mt_button + '<br>';
                         if (title) {
-                            text += '<b>' + Cryptpad.fixHTML(title) + '</b><br>';
+                            text += '<b>' + common.fixHTML(title) + '</b><br>';
                         }
                         if (size) {
                             text += '<em>' + Messages._getKey('formattedMB', [sizeMb]) + '</em>';
@@ -1284,35 +1277,32 @@ define([
                 var $img = $('<media-tag>').appendTo($container);
                 $img.attr('src', src);
                 $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
-                require(['/common/media-tag.js'], function (MediaTag) {
-                    MediaTag($img[0]);
-                    var observer = new MutationObserver(function(mutations) {
-                        mutations.forEach(function(mutation) {
-                            if (mutation.type === 'childList' && mutation.addedNodes.length) {
-                                console.log(mutation);
-                                if (mutation.addedNodes.length > 1 ||
-                                    mutation.addedNodes[0].nodeName !== 'IMG') {
-                                    $img.remove();
-                                    return void displayDefault();
-                                }
-                                var $image = $img.find('img');
-                                var onLoad = function () {
-                                    var w = $image.width();
-                                    var h = $image.height();
-                                    if (w>h) {
-                                        $image.css('max-height', '100%');
-                                        $img.css('flex-direction', 'row');
-                                        if (cb) { cb($img); }
-                                        return;
-                                    }
-                                    $image.css('max-width', '100%');
-                                    $img.css('flex-direction', 'column');
-                                    if (cb) { cb($img); }
-                                };
-                                if ($image[0].complete) { onLoad(); }
-                                $image.on('load', onLoad);
+                MediaTag($img[0]);
+                var observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.type === 'childList' && mutation.addedNodes.length) {
+                            if (mutation.addedNodes.length > 1 ||
+                                mutation.addedNodes[0].nodeName !== 'IMG') {
+                                $img.remove();
+                                return void displayDefault();
                             }
-                        });
+                            var $image = $img.find('img');
+                            var onLoad = function () {
+                                var w = $image.width();
+                                var h = $image.height();
+                                if (w>h) {
+                                    $image.css('max-height', '100%');
+                                    $img.css('flex-direction', 'row');
+                                    if (cb) { cb($img); }
+                                    return;
+                                }
+                                $image.css('max-width', '100%');
+                                $img.css('flex-direction', 'column');
+                                if (cb) { cb($img); }
+                            };
+                            if ($image[0].complete) { onLoad(); }
+                            $image.on('load', onLoad);
+                        }
                     });
                     observer.observe($img[0], {
                         attributes: false,
