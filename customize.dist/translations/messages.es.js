@@ -485,5 +485,32 @@ define(function () {
     out.canvas_opacityLabel = "Opacidad: {0}";
     out.canvas_widthLabel = "Talla: {0}";
 
+    // 1.10.0 - Kraken
+
+    out.moreActions = "Más acciones";
+    out.importButton = "Importar";
+    out.exportButton = "Exportar";
+    out.saveTitle = "Guardar título (enter)";
+    out.forgetButton = "Eliminar";
+    out.printText = "Imprimir";
+    out.slideOptionsText = "Opciones";
+    out.historyText = "Historial";
+    out.openLinkInNewTab = "Abrir enlace en pestaña nueva";
+    out.profileButton = "Perfíl";
+    out.profile_urlPlaceholder = "URL";
+    out.profile_namePlaceholder = "Nombre mostrado en su perfíl";
+    out.profile_avatar = "Imágen";
+    out.profile_upload = "Subir una imágen";
+    out.profile_error = "Error al crear tu perfíl: {0}";
+    out.profile_register = "Tienes que registrarte para crear perfíl";
+    out.profile_create = "Crear perfíl";
+    out.profile_description = "Descripción";
+    out.profile_fieldSaved = "Guardado: {0}";
+    out.download_mt_button = "Descargar";
+    out.updated_0_header_logoTitle = "Volver a tu CryptDrive";
+    out.header_logoTitle = out.updated_0_header_logoTitle;
+
+
+
     return out;
 });
