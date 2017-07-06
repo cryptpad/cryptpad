@@ -108,6 +108,7 @@ define([
     common.findWeaker = Hash.findWeaker;
     common.findStronger = Hash.findStronger;
     common.serializeHash = Hash.serializeHash;
+    common.createInviteUrl = Hash.createInviteUrl;
 
     // Messaging
     common.addDirectMessageHandler = Messaging.addDirectMessageHandler;
