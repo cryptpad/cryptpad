@@ -36,7 +36,8 @@ define([
         };
         var toolbar = APP.toolbar = Toolbar.create(configTb);
         toolbar.$rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
-        
+
+        Cryptpad.getFriendListUI(Cryptpad).appendTo($list);
 
         Cryptpad.removeLoadingScreen();
     };

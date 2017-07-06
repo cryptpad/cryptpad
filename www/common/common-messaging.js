@@ -40,6 +40,7 @@ define([
                 });
             }
         });
+        return $block;
     };
 
     Msg.createOwnedChannel = function (common, channelId, validateKey, owners, cb) {
@@ -86,7 +87,7 @@ define([
         common.changeDisplayName(proxy[common.displayNameKey]);
     };
 
-    var createData = function (common, hash) {
+    var createData = Msg.createData = function (common, hash) {
         var proxy = common.getProxy();
         return {
             channel: hash || common.createChannelId(),
