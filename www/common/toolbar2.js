@@ -210,13 +210,16 @@ define([
             var $span = $('<span>', {'title': name});
             var $rightCol = $('<span>', {'class': 'right-col'});
             $('<span>', {'class': 'name'}).text(name).appendTo($rightCol);
-            // TODO: if account
-            var $button = $('<button>', {'class': 'friend'}).appendTo($rightCol);
-            $button.text('Add friend').click(function (e) {
-                e.stopPropagation();
-                Cryptpad.inviteFromUserlist(Cryptpad, data.netfluxId);
-            });
-            // TODO: end if
+            var proxy = Cryptpad.getProxy();
+            if (Cryptpad.isLoggedIn() && data.edPublic && data.edPublic !== proxy.edPublic) {
+                if (!proxy.friends || !proxy.friends[data.edPublic]) {
+                    var $button = $('<button>', {'class': 'friend'}).appendTo($rightCol);
+                    $button.text('Add friend').click(function (e) {
+                        e.stopPropagation();
+                        Cryptpad.inviteFromUserlist(Cryptpad, data.netfluxId);
+                    });
+                }
+            }
             if (data.profile) {
                 $span.addClass('clickable');
                 $span.click(function () {

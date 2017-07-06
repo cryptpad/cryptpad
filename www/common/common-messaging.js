@@ -5,6 +5,8 @@ define([
 
     var pending = {};
 
+    // Remove should be called from the friend app at the moment
+    // The other user will know it from the private channel ("REMOVE_FRIEND" message?)
     Msg.removeFromFriendList = function (common, edPublic, cb) {
         var proxy = common.getProxy();
         if (!proxy.friends) {
@@ -28,6 +30,7 @@ define([
 
         friends[pubKey] = data;
         common.whenRealtimeSyncs(common.getRealtime(), cb);
+        common.changeDisplayName(proxy[common.displayNameKey]);
     };
 
     var createData = function (common, hash) {
@@ -41,9 +44,15 @@ define([
         };
     };
 
+    var getFriend = function (common, pubkey) {
+        var proxy = common.getProxy();
+        return proxy.friends ? proxy.friends[pubkey] : undefined;
+    };
+
     Msg.addDirectMessageHandler = function (common) {
         var network = common.getNetwork();
         if (!network) { return void console.error('Network not ready'); }
+        var proxy = common.getProxy();
         network.on('message', function (message, sender) {
             var msg;
             if (sender === network.historyKeeper) { return; }
@@ -60,15 +69,23 @@ define([
                 msg = JSON.parse(decryptMsg);
                 if (msg[1] !== parsed.hashData.channel) { return; }
                 var msgData = msg[2];
+                var msg;
+                var msgStr;
                 if (msg[0] === "FRIEND_REQ") {
+                    msg = ["FRIEND_REQ_NOK", chan];
+                    var existing = getFriend(common, msgData.edPublic);
+                    if (existing) {
+                        msg = ["FRIEND_REQ_OK", chan, createData(common, existing.channelHash)];
+                        msgStr = Crypto.encrypt(JSON.stringify(msg), key);
+                        network.sendto(sender, msgStr);
+                        return;
+                    }
                     common.confirm("Accept friend?", function (yes) { // XXX
-                        var msg = ["FRIEND_REQ_NOK", chan];
                         if (yes) {
                             pending[sender] = msgData;
                             msg = ["FRIEND_REQ_OK", chan, createData(common, msgData.channelHash)];
                         }
-                        var msgStr = Crypto.encrypt(JSON.stringify(msg), key);
-                        // Send encrypted message
+                        msgStr = Crypto.encrypt(JSON.stringify(msg), key);
                         network.sendto(sender, msgStr);
                     });
                     return;

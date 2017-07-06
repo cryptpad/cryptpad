@@ -153,6 +153,14 @@ define([
         }
         return;
     };
+    common.getUserlist = function () {
+        if (store) {
+            if (store.getProxy() && store.getProxy().info) {
+                return store.getProxy().info.userList;
+            }
+        }
+        return;
+    };
     common.getProfileUrl = function () {
         if (store && store.getProfile()) {
             return store.getProfile().view;
