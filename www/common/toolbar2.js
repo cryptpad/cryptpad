@@ -676,7 +676,7 @@ define([
         $('<span>', {'class': 'bar3'}).appendTo($container);
         $('<span>', {'class': 'bar4'}).appendTo($container);
         $('<span>', {'class': 'disconnected fa fa-exclamation-circle'}).appendTo($a);
-        if (config.realtime) {
+        if (config.network) {
             checkLag(toolbar, config, $a);
             setInterval(function () {
                 if (!toolbar.connected) { return; }
