@@ -5,6 +5,22 @@ define([
 
     var pending = {};
 
+    Msg.createOwnedChannel = function (common, channelId, validateKey, owners, cb) {
+        var network = common.getNetwork();
+        network.join(channelId).then(function (wc) {
+            var cfg = {
+                validateKey: validateKey,
+                owners: owners
+            };
+            var msg = ['GET_HISTORY', wc.id, cfg];
+            network.sendto(network.historyKeeper, JSON.stringify(msg)).then(cb, function (err) {
+                throw new Error(err);
+            });
+        }, function (err) {
+            throw new Error(err);
+        });
+    };
+
     // Remove should be called from the friend app at the moment
     // The other user will know it from the private channel ("REMOVE_FRIEND" message?)
     Msg.removeFromFriendList = function (common, edPublic, cb) {
