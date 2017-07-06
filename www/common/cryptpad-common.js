@@ -10,6 +10,7 @@ define([
     '/common/common-userlist.js',
     '/common/common-title.js',
     '/common/common-metadata.js',
+    '/common/common-messaging.js',
     '/common/common-codemirror.js',
     '/common/common-file.js',
     '/file/file-crypto.js',
@@ -19,7 +20,7 @@ define([
     '/customize/application_config.js',
     '/common/media-tag.js',
 ], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Metadata,
-            CodeMirror, Files, FileCrypto, Clipboard, Pinpad, AppConfig, MediaTag) {
+            Messaging, CodeMirror, Files, FileCrypto, Clipboard, Pinpad, AppConfig, MediaTag) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -108,6 +109,10 @@ define([
     common.findStronger = Hash.findStronger;
     common.serializeHash = Hash.serializeHash;
     common.createInviteUrl = Hash.createInviteUrl;
+
+    // Messaging
+    common.addDirectMessageHandler = Messaging.addDirectMessageHandler;
+    common.inviteFromUserlist = Messaging.inviteFromUserlist;
 
     // Userlist
     common.createUserList = UserList.create;
@@ -1192,22 +1197,6 @@ define([
         return button;
     };
 
-    // Messaging
-    var addDirectMessageHandler = function () {
-        var network = getNetwork();
-        if (!network) { return void console.error('Network not ready'); }
-        network.on('message', function (msg, sender) {
-            if (sender === network.historyKeeper) { return; }
-
-        });
-    };
-    common.inviteFromUserlist = function (netfluxId) {
-        var network = getNetwork();
-        network.sendto(netfluxId, '["FRIEND_REQ", "Salut"]')
-    };
-
-
-
     var emoji_patt = /([\uD800-\uDBFF][\uDC00-\uDFFF])/;
     var isEmoji = function (str) {
       return emoji_patt.test(str);
@@ -1713,7 +1702,7 @@ define([
         Store.ready(function (err, storeObj) {
             store = common.store = env.store = storeObj;
 
-            addDirectMessageHandler();
+            common.addDirectMessageHandler(common);
 
             var proxy = getProxy();
             var network = getNetwork();
