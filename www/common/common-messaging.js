@@ -52,7 +52,7 @@ define([
     var createData = function (common, hash) {
         var proxy = common.getProxy();
         return {
-            channelHash: hash || common.createRandomHash(),
+            channel: hash || common.createChannelId(),
             displayName: proxy[common.displayNameKey],
             profile: proxy.profile.view,
             edPublic: proxy.edPublic,
@@ -91,7 +91,7 @@ define([
                     msg = ["FRIEND_REQ_NOK", chan];
                     var existing = getFriend(common, msgData.edPublic);
                     if (existing) {
-                        msg = ["FRIEND_REQ_OK", chan, createData(common, existing.channelHash)];
+                        msg = ["FRIEND_REQ_OK", chan, createData(common, existing.channel)];
                         msgStr = Crypto.encrypt(JSON.stringify(msg), key);
                         network.sendto(sender, msgStr);
                         return;
@@ -99,7 +99,7 @@ define([
                     common.confirm("Accept friend?", function (yes) { // XXX
                         if (yes) {
                             pending[sender] = msgData;
-                            msg = ["FRIEND_REQ_OK", chan, createData(common, msgData.channelHash)];
+                            msg = ["FRIEND_REQ_OK", chan, createData(common, msgData.channel)];
                         }
                         msgStr = Crypto.encrypt(JSON.stringify(msg), key);
                         network.sendto(sender, msgStr);
