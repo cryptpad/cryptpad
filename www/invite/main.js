@@ -7,15 +7,7 @@ define([
 ], function ($, Cryptpad, Listmap, Curve) {
     var APP = window.APP = {};
 
-    var Nacl = window.nacl;
-
     //var Messages = Cryptpad.Messages;
-    var onReady = function () {
-        if (!APP.initialized) {
-            APP.initialized = true;
-        }
-    };
-
     var onInit = function () {};
 
     var onDisconnect = function () {};
@@ -55,6 +47,7 @@ define([
         var lm = APP.lm = Listmap.create(listmapConfig);
         lm.proxy.on('create', onInit)
                 .on('ready', function () {
+                    APP.initialized = true;
                     console.log(JSON.stringify(lm.proxy));
                 })
                 .on('disconnect', onDisconnect)

@@ -30,7 +30,7 @@ define([
             })
             .on('ready', function () {
                 console.log('ready');
-                cb(lm);
+                cb(lm, done);
             })
             .on('disconnect', function () {
                 console.log('disconnected');
