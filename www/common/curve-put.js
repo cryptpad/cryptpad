@@ -4,15 +4,19 @@ define([
 ], function (Curve, Listmap) {
     var Edit = {};
 
-    Edit.create = function (network, channel, theirs, mine, cb) {
+    Edit.create = function (config, cb) { //network, channel, theirs, mine, cb) {
+        var network = config.network;
+        var channel = config.channel;
+        var keys = config.keys;
+
         try {
-            var encryptor = Curve.createEncryptor(theirs, mine);
+            var encryptor = Curve.createEncryptor(keys);
             var lm = Listmap.create({
                 network: network,
                 data: {},
                 channel: channel,
                 readOnly: false,
-                validateKey: undefined,
+                validateKey: keys.validateKey || undefined,
                 crypto: encryptor,
                 userName: 'lol',
                 logLevel: 1,
