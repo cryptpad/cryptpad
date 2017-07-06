@@ -489,6 +489,10 @@ define([
         return loadingScreen();
     };
 
+    Pages['/friends/'] = Pages['/friends/index.html'] = function () {
+        return loadingScreen();
+    };
+
     Pages['/pad/'] = Pages['/pad/index.html'] = function () {
         return loadingScreen();
     };

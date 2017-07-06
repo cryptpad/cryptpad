@@ -1,0 +1,47 @@
+@import "/customize/src/less/variables.less";
+@import "/customize/src/less/mixins.less";
+
+@button-border: 2px;
+@bg-color: @toolbar-friends-bg;
+
+html, body {
+    margin: 0px;
+    height: 100%;
+}
+
+#toolbar {
+    display: flex; // We need this to remove a 3px border at the bottom of the toolbar
+}
+
+body {
+    display: flex;
+    flex-flow: column;
+}
+#app {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#app.ready {
+    //background: url('/customize/bg3.jpg') no-repeat center center;
+    background-size: cover;
+    background-position: center;
+}
+.cryptpad-toolbar {
+    padding: 0px;
+    display: inline-block;
+}
+
+#friendList {
+    width: 350px;
+    height: 100%;
+    background-color: lighten(@bg-color, 10%);
+}
+
+#messaging {
+    flex: 1;
+    height: 100%;
+    background-color: lighten(@bg-color, 20%);
+}

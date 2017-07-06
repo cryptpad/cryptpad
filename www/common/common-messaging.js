@@ -1,9 +1,46 @@
 define([
+    'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
-], function (Crypto) {
+], function ($, Crypto) {
     var Msg = {};
 
     var pending = {};
+
+    Msg.getFriendList = function (common) {
+        var proxy = common.getProxy();
+        return proxy.friends || {};
+    };
+
+    var avatars = {};
+    Msg.getFriendListUI = function (common) {
+        var proxy = common.getProxy();
+        var $block = $('<div>');
+        var friends = proxy.friends || {};
+        Object.keys(friends).forEach(function (f) {
+            var data = friends[f];
+            var $friend = $('<div>', {'class': 'friend'}).appendTo($block);
+            $friend.data('key', f);
+            var $rightCol = $('<span>', {'class': 'right-col'});
+            $('<span>', {'class': 'name'}).text(data.displayName).appendTo($rightCol);
+            $friend.dblclick(function () {
+                window.open('/profile/#' + data.profile);
+            });
+            $friend.click(function () {
+                // TODO
+            });
+            if (data.avatar && avatars[data.avatar]) {
+                $friend.append(avatars[data.avatar]);
+                $friend.append($rightCol);
+            } else {
+                common.displayAvatar($friend, data.avatar, data.displayName, function ($img) {
+                    if (data.avatar && $img) {
+                        avatars[data.avatar] = $img[0].outerHTML;
+                    }
+                    $friend.append($rightCol);
+                });
+            }
+        });
+    };
 
     Msg.createOwnedChannel = function (common, channelId, validateKey, owners, cb) {
         var network = common.getNetwork();
@@ -56,7 +93,8 @@ define([
             displayName: proxy[common.displayNameKey],
             profile: proxy.profile.view,
             edPublic: proxy.edPublic,
-            curvePublic: proxy.curvePublic
+            curvePublic: proxy.curvePublic,
+            avatar: proxy.profile.avatar
         };
     };
 
@@ -68,7 +106,6 @@ define([
     Msg.addDirectMessageHandler = function (common) {
         var network = common.getNetwork();
         if (!network) { return void console.error('Network not ready'); }
-        var proxy = common.getProxy();
         network.on('message', function (message, sender) {
             var msg;
             if (sender === network.historyKeeper) { return; }
@@ -85,7 +122,6 @@ define([
                 msg = JSON.parse(decryptMsg);
                 if (msg[1] !== parsed.hashData.channel) { return; }
                 var msgData = msg[2];
-                var msg;
                 var msgStr;
                 if (msg[0] === "FRIEND_REQ") {
                     msg = ["FRIEND_REQ_NOK", chan];
