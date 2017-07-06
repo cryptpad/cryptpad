@@ -28,11 +28,10 @@ define([
         var proxy = Cryptpad.getProxy();
         var mySecret = proxy.curvePrivate;
 
-        var encryptor = Curve.createEncryptor(info.pubkey, mySecret);
+        var keys = Curve.deriveKeys(info.pubkey, mySecret);
+        var encryptor = Curve.createEncryptor(keys);
 
         Cryptpad.removeLoadingScreen();
-        var message = 'hello!';
-        Cryptpad.alert(message);
 
         var listmapConfig = {
             data: {},
