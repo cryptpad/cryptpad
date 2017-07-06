@@ -107,6 +107,7 @@ define([
     common.findWeaker = Hash.findWeaker;
     common.findStronger = Hash.findStronger;
     common.serializeHash = Hash.serializeHash;
+    common.createInviteUrl = Hash.createInviteUrl;
 
     // Userlist
     common.createUserList = UserList.create;
