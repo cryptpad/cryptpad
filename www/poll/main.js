@@ -552,11 +552,19 @@ var ready = function (info, userid, readOnly) {
     } else {
         APP.proxy.info.defaultTitle = Title.defaultTitle;
     }
+
+    var andThen = function () {
+        if (readOnly) { return; }
+        Cryptpad.setPadAttribute('userid', userid, function (e) {
+            if (e) { console.error(e); }
+        });
+    };
+
     if (Cryptpad.initialName && !APP.proxy.info.title) {
         APP.proxy.info.title = Cryptpad.initialName;
-        Title.updateTitle(Cryptpad.initialName);
+        Title.updateTitle(Cryptpad.initialName, null, andThen);
     } else {
-        Title.updateTitle(APP.proxy.info.title || Title.defaultTitle);
+        Title.updateTitle(APP.proxy.info.title || Title.defaultTitle, null, andThen);
     }
 
     // Description
@@ -621,6 +629,7 @@ var ready = function (info, userid, readOnly) {
     } else {
         publish(true);
     }
+
     Cryptpad.removeLoadingScreen();
 
     if (readOnly) { return; }
@@ -760,10 +769,7 @@ var create = function (info) {
                 if (e) { console.error(e); }
                 if (!userid) { userid = Render.coluid(); }
                 APP.userid = userid;
-                Cryptpad.setPadAttribute('userid', userid, function (e) {
-                    if (e) { console.error(e); }
-                    ready(info, userid, readOnly);
-                });
+                ready(info, userid, readOnly);
             });
         })
         .on('disconnect', disconnect)
