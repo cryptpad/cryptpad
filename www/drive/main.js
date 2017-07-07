@@ -528,6 +528,12 @@ define([
             module.displayDirectory(currentPath);
         };
 
+        var getFileNameExtension = function (name) {
+            var matched = /\.\S+$/.exec(name);
+            if (matched && matched.length) { return matched[matched.length -1]; }
+            return '';
+        };
+
         // Replace a file/folder name by an input to change its value
         var displayRenameInput = function ($element, path) {
             // NOTE: setTimeout(f, 0) otherwise the "rename" button in the toolbar is not working
@@ -551,6 +557,7 @@ define([
                     value: name
                 }).data('path', path);
 
+
                 // Stop propagation on keydown to avoid issues with arrow keys
                 $input.on('keydown', function (e) { e.stopPropagation(); });
 
@@ -567,7 +574,12 @@ define([
                 //$element.parent().append($input);
                 $name.after($input);
                 $input.focus();
-                $input.select();
+
+                var extension = getFileNameExtension(name);
+                var input = $input[0];
+                input.selectionStart = 0;
+                input.selectionEnd = name.length - extension.length;
+
                 // We don't want to open the file/folder when clicking on the input
                 $input.on('click dblclick', function (e) {
                     removeSelected();
