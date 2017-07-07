@@ -162,7 +162,7 @@ define([
                 ])
             ]),
             h('button.btn.btn-secondary.login.half.first', Msg.login_login),
-            h('button.btn.btn-success.register.half.first', Msg.login_register),
+            h('button.btn.btn-success.register.half', Msg.login_register),
             h('p.separator', Msg.login_orNoLogin),
             h('p#buttons.buttons'),
             h('p.driveLink', [
@@ -363,7 +363,7 @@ define([
                         h('button.btn.btn-primary.login.first', Msg.login_login),
                         h('div.extra', [
                             h('p', Msg.login_notRegistered),
-                            h('button#register.btn.btn-success.register.first', Msg.login_register)
+                            h('button#register.btn.btn-success.register', Msg.login_register)
                         ])
                     ])
                 ])
