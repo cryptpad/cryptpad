@@ -159,6 +159,9 @@ define([
         }
     };
 
+    var randomToken = function () {
+        return Math.random().toString(16).replace(/0./, '');
+    };
     var feedback = common.feedback = function (action, force) {
         if (force !== true) {
             if (!action) { return; }
@@ -167,7 +170,7 @@ define([
             } catch (e) { return void console.error(e); }
         }
 
-        var href = '/common/feedback.html?' + action + '=' + (+new Date());
+        var href = '/common/feedback.html?' + action + '=' + randomToken();
         $.ajax({
             type: "HEAD",
             url: href,
