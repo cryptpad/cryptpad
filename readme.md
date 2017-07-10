@@ -129,7 +129,7 @@ Still there are other low-lives in the world so using CryptPad over HTTPS is pro
 
 ## Setup using Docker
 
-See [Cryptpad-Docker](cryptpad-docker.md)
+See [Cryptpad-Docker](docs/cryptpad-docker.md)
 
 ## Translations
 
