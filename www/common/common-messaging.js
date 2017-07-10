@@ -1,18 +1,59 @@
 define([
     'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
-], function ($, Crypto) {
+    '/common/curve.js'
+], function ($, Crypto, Curve) {
     var Msg = {};
+
+    var Types = {
+        message: 'MSG'
+    };
+
+    // TODO: pin the chat channel!
+
+
+    // TODO: new Types
+    // - send a rename message to the chat
+    // - petnames
+    // - close a chat / remove a friend
+
+    // TODO
+    // - mute a channel (hide notifications or don't open it?)
+    // 
 
     var pending = {};
 
-    Msg.getFriendList = function (common) {
+    var createData = Msg.createData = function (common, hash) {
+        var proxy = common.getProxy();
+        return {
+            channel: hash || common.createChannelId(),
+            displayName: proxy[common.displayNameKey],
+            profile: proxy.profile.view,
+            edPublic: proxy.edPublic,
+            curvePublic: proxy.curvePublic,
+            avatar: proxy.profile.avatar
+        };
+    };
+
+    var getFriend = function (common, pubkey) {
+        var proxy = common.getProxy();
+        if (pubkey === proxy.edPublic) {
+            var data = createData(common);
+            delete data.channel;
+            return data;
+        }
+        return proxy.friends ? proxy.friends[pubkey] : undefined;
+    };
+
+    var getFriendList = Msg.getFriendList = function (common) {
         var proxy = common.getProxy();
         return proxy.friends || {};
     };
 
+    // Messaging tools
+
     var avatars = {};
-    Msg.getFriendListUI = function (common) {
+    Msg.getFriendListUI = function (common, open) {
         var proxy = common.getProxy();
         var $block = $('<div>');
         var friends = proxy.friends || {};
@@ -26,7 +67,7 @@ define([
                 window.open('/profile/#' + data.profile);
             });
             $friend.click(function () {
-                // TODO
+                open(data.edPublic);
             });
             if (data.avatar && avatars[data.avatar]) {
                 $friend.append(avatars[data.avatar]);
@@ -59,6 +100,214 @@ define([
         });
     };
 
+    var channels = Msg.channels  = window.channels = {};
+
+    var pushMsg = function (channel, cryptMsg) {
+        var msg = channel.encryptor.decrypt(cryptMsg);
+        var parsedMsg = JSON.parse(msg);
+        if (parsedMsg[0] !== Types.message) { return; }
+        parsedMsg.shift();
+        channel.messages.push([cryptMsg.slice(0,64), parsedMsg]);
+    };
+
+    var onDirectMessage = function (msg, sender) {
+        if (sender !== Msg.hk) { return; }
+        var parsed = JSON.parse(msg);
+        if ((parsed.validateKey || parsed.owners) && parsed.channel) {
+            return;
+        }
+        if (parsed.state && parsed.state === 1 && parsed.channel) {
+            if (channels[parsed.channel]) {
+                // parsed.channel is Ready
+                // TODO: call a function that shows that the channel is ready? (remove a spinner, ...)
+                // channel[parsed.channel].ready();
+                channels[parsed.channel].ready = true;
+            }
+            return;
+        }
+        var chan = parsed[3];
+        if (!chan || !channels[chan]) { return; }
+        pushMsg(channels[chan], parsed[4]);
+    };
+    var onMessage = function (msg, sender, chan) {
+        if (!channels[chan.id]) { return; }
+        pushMsg(channels[chan.id], msg);
+        channels[chan.id].notify();
+        channels[chan.id].refresh();
+    };
+
+    var createChatBox = function (common, $container, edPublic) {
+        var data = getFriend(common, edPublic);
+        var proxy = common.getProxy();
+
+        var $header = $('<div>', {'class': 'header'}).appendTo($container);
+        $('<div>', {'class': 'messages'}).appendTo($container);
+        var $inputBlock = $('<div>', {'class': 'input'}).appendTo($container);
+
+        // Input
+        var channel = channels[data.channel];
+        var $input = $('<input>', {type: 'text'}).appendTo($inputBlock);
+        var send = function () {
+            if (!$input.val()) { return; }
+            var msg = [Types.message, proxy.edPublic, +new Date(), $input.val()];
+            var msgStr = JSON.stringify(msg);
+            var cryptMsg = channel.encryptor.encrypt(msgStr);
+            channel.wc.bcast(cryptMsg).then(function () {
+                $input.val('');
+                pushMsg(channel, cryptMsg);
+                channel.refresh();
+            }, function (err) {
+                console.error(err);
+            });
+        };
+        $('<button>').text('TODO: Send').appendTo($inputBlock).click(send); // XXX
+        $input.on('keypress', function (e) {
+            if (e.which === 13) { send(); }
+        });
+
+        // Header
+        var $rightCol = $('<span>', {'class': 'right-col'});
+        $('<span>', {'class': 'name'}).text(data.displayName).appendTo($rightCol);
+        if (data.avatar && avatars[data.avatar]) {
+            $header.append(avatars[data.avatar]);
+            $header.append($rightCol);
+        } else {
+            common.displayAvatar($header, data.avatar, data.displayName, function ($img) {
+                if (data.avatar && $img) {
+                    avatars[data.avatar] = $img[0].outerHTML;
+                }
+                $header.append($rightCol);
+            });
+        }
+
+    };
+
+    Msg.init = function (common, $listContainer, $msgContainer) {
+        var network = common.getNetwork();
+        var proxy = common.getProxy();
+        Msg.hk = network.historyKeeper;
+        var friends = getFriendList(common);
+        network.on('message', onDirectMessage);
+
+        // Refresh the active channel
+        var refresh = function (edPublic) {
+            if (Msg.active !== edPublic) { return; }
+            var data = friends[edPublic];
+            var channel = channels[data.channel];
+            if (!channel) { return; }
+
+            var $chat = $msgContainer.find('.chat').filter(function (idx, el) {
+                return $(el).data('key') === edPublic;
+            });
+
+            if (!$chat.length) { return; }
+            // Add new messages
+            var messages = channel.messages;
+            var $messages = $chat.find('.messages');
+            var $msg, msg, date, name;
+            var last = channel.lastDisplayed || -1;
+            for (var i = last + 1; i<messages.length; i++) {
+                msg = messages[i][1]; // 0 is the hash, 1 the array
+                $msg = $('<div>', {'class': 'message'}).appendTo($messages);
+
+                // date
+                date = msg[1] ? new Date(msg[1]).toLocaleString() : '?';
+                //$('<div>', {'class':'date'}).text(date).appendTo($msg);
+                $msg.attr('title', date);
+
+                // name
+                if (msg[0] !== channel.lastSender) {
+                    name = getFriend(common, msg[0]).displayName;
+                    $('<div>', {'class':'sender'}).text(name).appendTo($msg);
+                }
+                channel.lastSender = msg[0];
+
+                // content
+                $('<div>', {'class':'content'}).text(msg[2]).appendTo($msg);
+            }
+            $messages.scrollTop($messages[0].scrollHeight);
+            channel.lastDisplayed = i-1;
+            channel.unnotify();
+
+            if (messages.length > 10) {
+                var lastKnownMsg = messages[messages.length - 11];
+                data.lastKnownHash = lastKnownMsg[0];
+            }
+        };
+        // Display a new channel
+        var display = function (edPublic) {
+            var isNew = false;
+            var $chat = $msgContainer.find('.chat').filter(function (idx, el) {
+                return $(el).data('key') === edPublic;
+            });
+            if (!$chat.length) {
+                $chat = $('<div>', {'class':'chat'}).data('key', edPublic).appendTo($msgContainer);
+                createChatBox(common, $chat, edPublic);
+                isNew = true;
+            }
+            // Show the correct div
+            $msgContainer.find('.chat').hide();
+            $chat.show();
+
+            Msg.active = edPublic;
+
+            refresh(edPublic);
+        };
+
+        // Display friend list
+        common.getFriendListUI(common, display).appendTo($listContainer);
+
+        // Notify on new messages
+        var notify = function (edPublic) {
+            if (Msg.active === edPublic) { return; }
+            var $friend = $listContainer.find('.friend').filter(function (idx, el) {
+                return $(el).data('key') === edPublic;
+            });
+            $friend.addClass('notify');
+        };
+        var unnotify = function (edPublic) {
+            var $friend = $listContainer.find('.friend').filter(function (idx, el) {
+                return $(el).data('key') === edPublic;
+            });
+            $friend.removeClass('notify');
+        };
+
+        // Open the channels
+        Object.keys(friends).forEach(function (f) {
+            var data = friends[f];
+            var keys = Curve.deriveKeys(data.curvePublic, proxy.curvePrivate);
+            var encryptor = Curve.createEncryptor(keys);
+            channels[data.channel] = {
+                keys: keys,
+                encryptor: encryptor,
+                messages: [],
+                refresh: function () { refresh(data.edPublic); },
+                notify: function () { notify(data.edPublic); },
+                unnotify: function () { unnotify(data.edPublic); }
+            };
+            network.join(data.channel).then(function (chan) {
+                channels[data.channel].wc = chan;
+                chan.on('message', function (msg, sender) {
+                    onMessage(msg, sender, chan);
+                });
+                var cfg = {
+                    validateKey: keys.validateKey,
+                    owners: [proxy.edPublic, data.edPublic],
+                    lastKnownHash: data.lastKnownHash
+                };
+                var msg = ['GET_HISTORY', chan.id, cfg];
+                network.sendto(network.historyKeeper, JSON.stringify(msg))
+                  .then($.noop, function (err) {
+                    throw new Error(err);
+                });
+            }, function (err) {
+                console.error(err);
+            });
+        });
+    };
+
+    // Invitation
+
     // Remove should be called from the friend app at the moment
     // The other user will know it from the private channel ("REMOVE_FRIEND" message?)
     Msg.removeFromFriendList = function (common, edPublic, cb) {
@@ -85,23 +334,6 @@ define([
         friends[pubKey] = data;
         common.whenRealtimeSyncs(common.getRealtime(), cb);
         common.changeDisplayName(proxy[common.displayNameKey]);
-    };
-
-    var createData = Msg.createData = function (common, hash) {
-        var proxy = common.getProxy();
-        return {
-            channel: hash || common.createChannelId(),
-            displayName: proxy[common.displayNameKey],
-            profile: proxy.profile.view,
-            edPublic: proxy.edPublic,
-            curvePublic: proxy.curvePublic,
-            avatar: proxy.profile.avatar
-        };
-    };
-
-    var getFriend = function (common, pubkey) {
-        var proxy = common.getProxy();
-        return proxy.friends ? proxy.friends[pubkey] : undefined;
     };
 
     Msg.addDirectMessageHandler = function (common) {
@@ -183,7 +415,7 @@ define([
     Msg.inviteFromUserlist = function (common, netfluxId) {
         var network = common.getNetwork();
         var parsed = common.parsePadUrl(window.location.href);
-        if (!parsed.hashData) { return; } // TODO
+        if (!parsed.hashData) { return; }
         // Message
         var chan = parsed.hashData.channel;
         var myData = createData(common);

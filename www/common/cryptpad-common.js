@@ -111,6 +111,7 @@ define([
     common.createInviteUrl = Hash.createInviteUrl;
 
     // Messaging
+    common.initMessaging = Messaging.init;
     common.addDirectMessageHandler = Messaging.addDirectMessageHandler;
     common.inviteFromUserlist = Messaging.inviteFromUserlist;
     common.createOwnedChannel = Messaging.createOwnedChannel;
@@ -175,6 +176,12 @@ define([
         if (store && store.getProfile()) {
             return store.getProfile().avatar;
         }
+    };
+    common.getDisplayName = function () {
+        if (getProxy()) {
+            return getProxy()[common.displayNameKey] || '';
+        }
+        return '';
     };
 
     var feedback = common.feedback = function (action, force) {
@@ -1325,7 +1332,6 @@ define([
                                 img.onload = function () {
                                     var w = img.width;
                                     var h = img.height;
-                                    console.log(w,h);
                                     if (w>h) {
                                         $image.css('max-height', '100%');
                                         $img.css('flex-direction', 'column');
