@@ -21,6 +21,7 @@
 .slideColor { color: @toolbar-slide-bg; }
 .pollColor { color: @toolbar-poll-bg; }
 .fileColor { color: @toolbar-file-bg; }
+.friendsColor { color: @toolbar-friends-bg; }
 .whiteboardColor { color: @toolbar-whiteboard-bg; }
 .driveColor { color: @toolbar-drive-bg; }
 .defaultColor { color: @toolbar-default-bg; }
@@ -253,6 +254,11 @@ body {
     &.app-file {
         @bgcolor: @toolbar-file-bg;
         @color: @toolbar-file-color;
+        .addToolbarColors(@color, @bgcolor);
+    }
+    &.app-friends {
+        @bgcolor: @toolbar-friends-bg;
+        @color: @toolbar-friends-color;
         .addToolbarColors(@color, @bgcolor);
     }
 

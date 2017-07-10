@@ -10,6 +10,7 @@ define([
     '/common/common-userlist.js',
     '/common/common-title.js',
     '/common/common-metadata.js',
+    '/common/common-messaging.js',
     '/common/common-codemirror.js',
     '/common/common-file.js',
     '/file/file-crypto.js',
@@ -19,7 +20,7 @@ define([
     '/customize/application_config.js',
     '/common/media-tag.js',
 ], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Metadata,
-            CodeMirror, Files, FileCrypto, Clipboard, Pinpad, AppConfig, MediaTag) {
+            Messaging, CodeMirror, Files, FileCrypto, Clipboard, Pinpad, AppConfig, MediaTag) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -107,6 +108,17 @@ define([
     common.findWeaker = Hash.findWeaker;
     common.findStronger = Hash.findStronger;
     common.serializeHash = Hash.serializeHash;
+    common.createInviteUrl = Hash.createInviteUrl;
+
+    // Messaging
+    common.initMessaging = Messaging.init;
+    common.addDirectMessageHandler = Messaging.addDirectMessageHandler;
+    common.inviteFromUserlist = Messaging.inviteFromUserlist;
+    common.createOwnedChannel = Messaging.createOwnedChannel;
+    common.getFriendList = Messaging.getFriendList;
+    common.getFriendChannelsList = Messaging.getFriendChannelsList;
+    common.getFriendListUI = Messaging.getFriendListUI;
+    common.createData = Messaging.createData;
 
     // Userlist
     common.createUserList = UserList.create;
@@ -148,6 +160,14 @@ define([
         }
         return;
     };
+    common.getUserlist = function () {
+        if (store) {
+            if (store.getProxy() && store.getProxy().info) {
+                return store.getProxy().info.userList;
+            }
+        }
+        return;
+    };
     common.getProfileUrl = function () {
         if (store && store.getProfile()) {
             return store.getProfile().view;
@@ -157,6 +177,12 @@ define([
         if (store && store.getProfile()) {
             return store.getProfile().avatar;
         }
+    };
+    common.getDisplayName = function () {
+        if (getProxy()) {
+            return getProxy()[common.displayNameKey] || '';
+        }
+        return '';
     };
 
     var randomToken = function () {
@@ -328,6 +354,21 @@ define([
         return typeof(proxy) === 'object' &&
             typeof(proxy.edPrivate) === 'string' &&
             typeof(proxy.edPublic) === 'string';
+    };
+
+    common.hasCurveKeys = function (proxy) {
+        return typeof(proxy) === 'object' &&
+            typeof(proxy.curvePrivate) === 'string' &&
+            typeof(proxy.curvePublic) === 'string';
+    };
+
+    common.getPublicKeys = function (proxy) {
+        proxy = proxy || common.getProxy();
+        if (!proxy || !proxy.edPublic || !proxy.curvePublic) { return; }
+        return {
+            curve: proxy.curvePublic,
+            ed: proxy.edPublic,
+        };
     };
 
     common.isArray = $.isArray;
@@ -735,6 +776,11 @@ define([
             if (profileChan) { list.push(profileChan); }
             var avatarChan = profile.avatar ? hrefToHexChannelId(profile.avatar) : null;
             if (avatarChan) { list.push(avatarChan); }
+        }
+
+        if (getProxy().friends) {
+            var fList = common.getFriendChannelsList(common);
+            list = list.concat(fList);
         }
 
         list.push(common.base64ToHex(userChannel));
@@ -1210,7 +1256,6 @@ define([
         }
         return button;
     };
-
 
     var emoji_patt = /([\uD800-\uDBFF][\uDC00-\uDFFF])/;
     var isEmoji = function (str) {
@@ -1730,6 +1775,8 @@ define([
 
         Store.ready(function (err, storeObj) {
             store = common.store = env.store = storeObj;
+
+            common.addDirectMessageHandler(common);
 
             var proxy = getProxy();
             var network = getNetwork();

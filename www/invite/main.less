@@ -7,7 +7,6 @@
         #container {
             font-size: 25px;
             width: 100%;
-            height: 100%;
         }
     }
     #header {
@@ -58,7 +57,7 @@
                 min-height: 100%;
                 max-width: none;
                 max-height: none;
-                flex: 1;
+                flex-shrink: 0;
             }
         }
         button {
@@ -95,15 +94,6 @@
         .displayName, .link {
             line-height: 40px;
         }
-    }
-
-    // I tried using flexbox but messed with how the pencil icon was displayed
-    #inviteButton {
-        float: right;
-    }
-    #viewProfileButton {
-        margin-bottom: 20px;
-        float: right;
     }
     #description {
         position: relative;

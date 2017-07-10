@@ -12,7 +12,7 @@ $(function () {
     var Messages = Cryptpad.Messages;
     var $body = $('body');
     var isMainApp = function () {
-        return /^\/(pad|code|slide|poll|whiteboard|file|media|drive)\/$/.test(location.pathname);
+        return /^\/(pad|code|slide|poll|whiteboard|file|media|friends|drive)\/$/.test(location.pathname);
     };
 
     var rightLink = function (ref, loc, txt) {
@@ -148,6 +148,9 @@ $(function () {
                 } else if (/file/.test(pathname)) {
                     $('body').append(h('body', Pages[pathname]()).innerHTML);
                     require([ '/file/main.js' ], ready);
+                } else if (/friends/.test(pathname)) {
+                    $('body').append(h('body', Pages[pathname]()).innerHTML);
+                    require([ '/friends/main.js' ], ready);
                 } else if (/pad/.test(pathname)) {
                     $('body').append(h('body', Pages[pathname]()).innerHTML);
                     require([ '/pad/main.js' ], ready);
@@ -183,6 +186,8 @@ $(function () {
         } else if (/^\/($|^\/index\.html$)/.test(pathname)) {
             // TODO use different top bar
             require([ '/customize/main.js', ], function () {});
+        } else if (/invite/.test(pathname)) {
+            require([ '/invite/main.js'], function () {});
         } else {
             require([ '/customize/main.js', ], function () {});
         }

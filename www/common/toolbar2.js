@@ -148,7 +148,8 @@ define([
             //if (user !== userNetfluxId) {
                 var data = userData[user] || {};
                 var userId = data.uid;
-                if (!data.uid) { return; }
+                if (!userId) { return; }
+                data.netfluxId = user;
                 if (uids.indexOf(userId) === -1) {// && (!myUid || userId !== myUid)) {
                     uids.push(userId);
                     list.push(data);
@@ -206,8 +207,19 @@ define([
         // Editors
         editUsersNames.forEach(function (data) {
             var name = data.name || Messages.anonymous;
-            var $name = $('<span>', {'class': 'name'}).text(name);
             var $span = $('<span>', {'title': name, 'class': 'avatar'});
+            var $rightCol = $('<span>', {'class': 'right-col'});
+            $('<span>', {'class': 'name'}).text(name).appendTo($rightCol);
+            var proxy = Cryptpad.getProxy();
+            if (Cryptpad.isLoggedIn() && data.edPublic && data.edPublic !== proxy.edPublic) {
+                if (!proxy.friends || !proxy.friends[data.edPublic]) {
+                    var $button = $('<button>', {'class': 'friend'}).appendTo($rightCol);
+                    $button.text('Add friend').click(function (e) {
+                        e.stopPropagation();
+                        Cryptpad.inviteFromUserlist(Cryptpad, data.netfluxId);
+                    });
+                }
+            }
             if (data.profile) {
                 $span.addClass('clickable');
                 $span.click(function () {
@@ -216,13 +228,13 @@ define([
             }
             if (data.avatar && avatars[data.avatar]) {
                 $span.append(avatars[data.avatar]);
-                $span.append($name);
+                $span.append($rightCol);
             } else {
                 Cryptpad.displayAvatar($span, data.avatar, name, function ($img) {
                     if (data.avatar && $img) {
                         avatars[data.avatar] = $img[0].outerHTML;
                     }
-                    $span.append($name);
+                    $span.append($rightCol);
                 });
             }
             $span.data('uid', data.uid);
@@ -664,7 +676,7 @@ define([
         $('<span>', {'class': 'bar3'}).appendTo($container);
         $('<span>', {'class': 'bar4'}).appendTo($container);
         $('<span>', {'class': 'disconnected fa fa-exclamation-circle'}).appendTo($a);
-        if (config.realtime) {
+        if (config.network) {
             checkLag(toolbar, config, $a);
             setInterval(function () {
                 if (!toolbar.connected) { return; }
