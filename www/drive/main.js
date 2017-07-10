@@ -171,6 +171,7 @@ define([
     var $sortDescIcon = $('<span>', {"class": "fa fa-angle-down sortdesc"});
     var $closeIcon = $('<span>', {"class": "fa fa-window-close"});
     var $backupIcon = $('<span>', {"class": "fa fa-life-ring"});
+    var $searchIcon = $('<span>', {"class": "fa fa-search searchIcon"});
 
     var history = {
         isHistoryMode: false,
@@ -2125,6 +2126,7 @@ define([
                     if (!filesOp.comparePath(newLocation, currentPath.slice())) { displayDirectory(newLocation); }
                 }, 500);
             }).appendTo($div);
+            $searchIcon.clone().appendTo($div);
             if (isInSearch) { $input.val(currentPath[1] || ''); }
             $container.append($div);
         };

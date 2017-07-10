@@ -1,13 +1,14 @@
 @import "/customize/src/less/variables.less";
+@import "/customize/src/less/mixins.less";
 
-@tree-bg: #fff;
+@tree-bg: #eee;
 @tree-fg: #000;
 @tree-lines-col: #888;
 
 @drive-hover: #eee;
 @drive-hover-light: lighten(@drive-hover, 20%);
 
-@content-bg: @tree-bg;
+@content-bg: #fff;
 @content-bg-ro: darken(@content-bg, 10%);
 @content-fg: @tree-fg;
 @info-box-bg: #ddddff;
@@ -163,7 +164,7 @@ span {
 
 
 #tree {
-    border-right: 1px solid #ccc;
+    //border-right: 1px solid #ccc;
     box-sizing: border-box;
     background: @tree-bg;
     overflow: auto;
@@ -230,17 +231,30 @@ span {
         margin-bottom: 20px;
         text-align: center;
         padding: 0;
+        position: relative;
         input {
+            background: lighten(@toolbar-drive-bg, 8%);
+            color: @toolbar-drive-color;
+            .placeholderColor(@toolbar-drive-color);
             outline-width: 0px;
             border-radius: 0;
             width: 100%;
-            border: 1px solid #ccc;
-            border-right: 0;
+            //border: 1px solid #ccc;
+            border: 0;
+            border-right: 1px solid lighten(@toolbar-drive-bg, 16%);
+            //border-right: 0;
             height: 32px;
             padding: 0 5px;
+            padding-left: 45px;
             &:focus {
                 outline-width: 0px;
             }
+        }
+        .searchIcon {
+            color: @toolbar-drive-color;
+            position: absolute;
+            left: 20px; // TODO align with drive categories
+            top: 8px;
         }
     }
     .fa.expcol {
