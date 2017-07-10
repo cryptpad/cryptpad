@@ -278,10 +278,6 @@ define([
     };
     loadingScreen = loadingScreen; // TODO use this
 
-    Pages['/settings/'] = Pages['/settings/index.html'] = function () {
-        return h('div#container');
-    };
-
     Pages['/user/'] = Pages['/user/index.html'] = function () {
         return h('div#container');
     };
@@ -507,6 +503,14 @@ define([
 
     Pages['/invite/'] = Pages['/invite/index.html'] = function () {
         return loadingScreen();
+    };
+
+    Pages['/settings/'] = Pages['/settings/index.html'] = function () {
+        return [
+            h('div#toolbar'),
+            h('div#container'),
+            loadingScreen()
+        ];
     };
 
     return Pages;

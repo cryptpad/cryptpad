@@ -24,6 +24,7 @@
 .friendsColor { color: @toolbar-friends-bg; }
 .whiteboardColor { color: @toolbar-whiteboard-bg; }
 .driveColor { color: @toolbar-drive-bg; }
+.settingsColor { color: @toolbar-settings-bg; }
 .defaultColor { color: @toolbar-default-bg; }
 
 .toolbar-container {
@@ -259,6 +260,11 @@ body {
     &.app-friends {
         @bgcolor: @toolbar-friends-bg;
         @color: @toolbar-friends-color;
+        .addToolbarColors(@color, @bgcolor);
+    }
+    &.app-settings {
+        @bgcolor: @toolbar-settings-bg;
+        @color: @toolbar-settings-color;
         .addToolbarColors(@color, @bgcolor);
     }
 

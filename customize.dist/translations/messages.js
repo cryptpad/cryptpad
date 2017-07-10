@@ -387,28 +387,37 @@ define(function () {
     out.register_alreadyRegistered = "This user already exists, do you want to log in?";
 
     // Settings
+    out.settings_cat_account = "Account";
+    out.settings_cat_drive = "CryptDrive";
     out.settings_title = "Settings";
     out.settings_save = "Save";
+
+    out.settings_backupCategory = "Backup";
     out.settings_backupTitle = "Backup or restore all your data";
     out.settings_backup = "Backup";
     out.settings_restore = "Restore";
-    out.settings_resetTitle = "Clean your drive";
+
+    out.settings_resetNewTitle = "Clean CryptDrive";
+    out.settings_resetButton = "Remove";
     out.settings_reset = "Remove all the files and folders from your CryptDrive";
     out.settings_resetPrompt = "This action will remove all the pads from your drive.<br>"+
                                "Are you sure you want to continue?<br>" +
                                "Type “<em>I love CryptPad</em>” to confirm.";
     out.settings_resetDone = "Your drive is now empty!";
     out.settings_resetError = "Incorrect verification text. Your CryptDrive has not been changed.";
-    out.settings_resetTips = "Tips in CryptDrive";
+
+    out.settings_resetTipsAction = "Reset";
+    out.settings_resetTips = "Tips";
     out.settings_resetTipsButton = "Reset the available tips in CryptDrive";
     out.settings_resetTipsDone = "All the tips are now visible again.";
 
-    out.settings_importTitle = "Import this browser's recent pads in my CryptDrive";
+    out.settings_importTitle = "Import this browser's recent pads in your CryptDrive";
     out.settings_import = "Import";
     out.settings_importConfirm = "Are you sure you want to import recent pads from this browser to your user account's CryptDrive?";
     out.settings_importDone = "Import completed";
 
-    out.settings_userFeedbackHint1 = "CryptPad provides some very basic feedback to the server, to let us know how to improve your experience.";
+    out.settings_userFeedbackTitle = "Feedback";
+    out.settings_userFeedbackHint1 = "CryptPad provides some very basic feedback to the server, to let us know how to improve your experience. ";
     out.settings_userFeedbackHint2 = "Your pad's content will never be shared with the server.";
     out.settings_userFeedback = "Enable user feedback";
 
@@ -421,8 +430,9 @@ define(function () {
     out.settings_pinningError = "Something went wrong";
     out.settings_usageAmount = "Your pinned pads occupy {0}MB";
 
+    out.settings_logoutEverywhereButton = "Log out";
     out.settings_logoutEverywhereTitle = "Log out everywhere";
-    out.settings_logoutEverywhere = "Log out of all other web sessions";
+    out.settings_logoutEverywhere = "Force log out of all other web sessions";
     out.settings_logoutEverywhereConfirm = "Are you sure? You will need to log in with all your devices.";
 
     out.upload_serverError = "Server Error: unable to upload your file at this time.";

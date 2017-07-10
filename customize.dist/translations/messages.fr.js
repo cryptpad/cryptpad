@@ -375,28 +375,37 @@ define(function () {
     ];
 
     // Settings
+    out.settings_cat_account = "Compte";
+    out.settings_cat_drive = "CryptDrive";
     out.settings_title = "Préférences";
     out.settings_save = "Sauver";
+
+    out.settings_backupCategory = "Sauvegarde";
     out.settings_backupTitle = "Créer ou restaurer une sauvegarde de vos données";
-    out.settings_backup = "Créer une sauvegarde";
-    out.settings_restore = "Restaurer une sauvegarde";
-    out.settings_resetTitle = "Vider votre drive";
+    out.settings_backup = "Sauvegarder";
+    out.settings_restore = "Restaurer";
+
+    out.settings_resetNewTitle = "Vider CryptDrive";
+    out.settings_resetButotn = "Supprimer";
     out.settings_reset = "Supprimer tous les fichiers et dossiers de votre CryptDrive";
     out.settings_resetPrompt = "Cette action va supprimer tous les pads de votre drive.<br>"+
                                "Êtes-vous sûr de vouloir continuer ?<br>" +
                                "Tapez “<em>I love CryptPad</em>” pour confirmer.";
     out.settings_resetDone = "Votre drive est désormais vide!";
     out.settings_resetError = "Texte de vérification incorrect. Votre CryptDrive n'a pas été modifié.";
-    out.settings_resetTips = "Astuces et informations dans CryptDrive";
+
+    out.settings_resetTipsAction  ="Réinitialiser";
+    out.settings_resetTips = "Astuces";
     out.settings_resetTipsButton = "Réinitialiser les astuces visibles dans CryptDrive";
     out.settings_resetTipsDone = "Toutes les astuces sont de nouveau visibles.";
 
-    out.settings_importTitle = "Importer les pads récents de ce navigateur dans mon CryptDrive";
+    out.settings_importTitle = "Importer les pads récents de ce navigateur dans votre CryptDrive";
     out.settings_import = "Importer";
     out.settings_importConfirm = "Êtes-vous sûr de vouloir importer les pads récents de ce navigateur dans le CryptDrive de votre compte utilisateur ?";
     out.settings_importDone = "Importation terminée";
 
-    out.settings_userFeedbackHint1 = "CryptPad peut envoyer des retours d'expérience très limités vers le serveur, de manière à nous permettre d'améliorer l'expérience des utilisateurs.";
+    out.settings_userFeedbackTitle = "Retour d'expérience";
+    out.settings_userFeedbackHint1 = "CryptPad peut envoyer des retours d'expérience très limités vers le serveur, de manière à nous permettre d'améliorer l'expérience des utilisateurs. ";
     out.settings_userFeedbackHint2 = "Le contenu de vos pads et les clés de déchiffrement ne seront jamais partagés avec le serveur.";
     out.settings_userFeedback = "Activer l'envoi de retours d'expérience";
 
@@ -409,8 +418,9 @@ define(function () {
     out.settings_pinningError = "Un problème est survenu";
     out.settings_usageAmount = "Vos pads épinglés occupent {0} Mo";
 
+    out.settings_logoutEverywhereButton = "Se déconnecter";
     out.settings_logoutEverywhereTitle = "Se déconnecter partout";
-    out.settings_logoutEverywhere = "Se déconnecter de toutes les autres sessions.";
+    out.settings_logoutEverywhere = "Se déconnecter de force de toutes les autres sessions.";
     out.settings_logoutEverywhereConfirm = "Êtes-vous sûr ? Vous devrez vous reconnecter sur tous vos autres appareils.";
 
     out.upload_serverError = "Erreur interne: impossible d'importer le fichier pour l'instant.";
