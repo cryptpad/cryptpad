@@ -328,6 +328,15 @@ define([
             typeof(proxy.curvePublic) === 'string';
     };
 
+    common.getPublicKeys = function (proxy) {
+        proxy = proxy || common.getProxy();
+        if (!proxy || !proxy.edPublic || !proxy.curvePublic) { return; }
+        return {
+            curve: proxy.curvePublic,
+            ed: proxy.edPublic,
+        };
+    };
+
     common.isArray = $.isArray;
 
     /*
