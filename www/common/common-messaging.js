@@ -50,6 +50,15 @@ define([
         return proxy.friends || {};
     };
 
+    Msg.getFriendChannelsList = function (common) {
+        var friends = getFriendList(common);
+        var list = [];
+        Object.keys(friends).forEach(function (key) {
+            list.push(friends[key].channel);
+        });
+        return list;
+    };
+
     // Messaging tools
 
     var avatars = {};
@@ -332,7 +341,9 @@ define([
         if (friends[pubKey]) { return void cb("E_EXISTS"); }
 
         friends[pubKey] = data;
-        common.whenRealtimeSyncs(common.getRealtime(), cb);
+        common.whenRealtimeSyncs(common.getRealtime(), function () {
+            common.pinPads([data.channel], cb);
+        });
         common.changeDisplayName(proxy[common.displayNameKey]);
     };
 

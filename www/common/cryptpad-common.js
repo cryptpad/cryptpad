@@ -116,6 +116,7 @@ define([
     common.inviteFromUserlist = Messaging.inviteFromUserlist;
     common.createOwnedChannel = Messaging.createOwnedChannel;
     common.getFriendList = Messaging.getFriendList;
+    common.getFriendChannelsList = Messaging.getFriendChannelsList;
     common.getFriendListUI = Messaging.getFriendListUI;
     common.createData = Messaging.createData;
 
@@ -749,6 +750,11 @@ define([
             if (profileChan) { list.push(profileChan); }
             var avatarChan = profile.avatar ? hrefToHexChannelId(profile.avatar) : null;
             if (avatarChan) { list.push(avatarChan); }
+        }
+
+        if (getProxy().friends) {
+            var fList = common.getFriendChannelsList(common);
+            list = list.concat(fList);
         }
 
         list.push(common.base64ToHex(userChannel));
