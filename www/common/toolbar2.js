@@ -207,7 +207,7 @@ define([
         editUsersNames.forEach(function (data) {
             var name = data.name || Messages.anonymous;
             var $name = $('<span>', {'class': 'name'}).text(name);
-            var $span = $('<span>', {'title': name});
+            var $span = $('<span>', {'title': name, 'class': 'avatar'});
             if (data.profile) {
                 $span.addClass('clickable');
                 $span.click(function () {

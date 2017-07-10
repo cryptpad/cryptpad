@@ -1307,27 +1307,31 @@ define([
                             }
                             var $image = $img.find('img');
                             var onLoad = function () {
-                                var w = $image.width();
-                                var h = $image.height();
-                                if (w>h) {
-                                    $image.css('max-height', '100%');
+                                var img = new Image();
+                                img.src = $image.attr('src');
+                                img.onload = function () {
+                                    var w = img.width;
+                                    var h = img.height;
+                                    if (w>h) {
+                                        $image.css('max-height', '100%');
+                                        $img.css('flex-direction', 'column');
+                                        if (cb) { cb($img); }
+                                        return;
+                                    }
+                                    $image.css('max-width', '100%');
                                     $img.css('flex-direction', 'row');
                                     if (cb) { cb($img); }
-                                    return;
-                                }
-                                $image.css('max-width', '100%');
-                                $img.css('flex-direction', 'column');
-                                if (cb) { cb($img); }
+                                };
                             };
                             if ($image[0].complete) { onLoad(); }
                             $image.on('load', onLoad);
                         }
                     });
-                    observer.observe($img[0], {
-                        attributes: false,
-                        childList: true,
-                        characterData: false
-                    });
+                });
+                observer.observe($img[0], {
+                    attributes: false,
+                    childList: true,
+                    characterData: false
                 });
             });
         }
@@ -1622,7 +1626,11 @@ define([
             var $avatar = $userAdmin.find('.buttonTitle');
             var url = getStore() ? getStore().getProfile().avatar : undefined;
             $avatar.html('');
-            common.displayAvatar($avatar, url, accountName, function ($img) {});
+            common.displayAvatar($avatar, url, accountName, function ($img) {
+                if ($img) {
+                    $userAdmin.find('button').addClass('avatar');
+                }
+            });
         }
 
         $userAdmin.find('a.logout').click(function () {

@@ -37,3 +37,64 @@
     background: linear-gradient(@start, @end); /* Standard syntax */
 }
 
+.avatar (@width) {
+    &.avatar {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    &.clickable {
+        cursor: pointer;
+        &:hover {
+            background-color: rgba(0,0,0,0.3);
+        }
+    }
+    .default, media-tag {
+        display: inline-flex;
+        width: @width;
+        height: @width;
+        justify-content: center;
+        align-items: center;
+        margin-right: 5px;
+        border-radius: @width / 30px;
+        overflow: hidden;
+        box-sizing: content-box;
+    }
+    .default {
+        .unselectable();
+        background: white;
+        color: black;
+        font-size: 40px;
+    }
+    .right-col {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: flex;
+        flex-flow: column;
+        .friend {
+            padding: 0;
+        }
+    }
+    .name {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    media-tag {
+        min-height: @width;
+        min-width: @width;
+        max-height: @width;
+        max-width: @width;
+        img {
+            min-width: 100%;
+            min-height: 100%;
+            max-width: none;
+            max-height: none; // To override 'media-tag img' in slide.less
+        }
+    }
+    }
+}

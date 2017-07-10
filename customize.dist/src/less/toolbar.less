@@ -106,56 +106,12 @@ body .userlist-drawer {
         margin: 10px 0;
         margin-bottom: 20px;
         &>span {
-            overflow: hidden;
-            text-overflow: ellipsis;
             padding: 5px;
-            background: rgba(0,0,0,0.1);
             margin: 2px 0;
-            font-size: 16px;
-            display: inline-flex;
-            align-items: center;
-            &.clickable {
-                cursor: pointer;
-                &:hover {
-                    background-color: rgba(0,0,0,0.3);
-                }
-            }
+            background: rgba(0,0,0,0.1);
+            .avatar(50px);
             .default, media-tag {
-                display: inline-flex;
-                width: 50px;
-                height: 50px;
-                justify-content: center;
-                align-items: center;
-                margin-right: 5px;
-                border-radius: 10px / 6px;
-                overflow: hidden;
                 border: 1px solid black;
-                box-sizing: content-box;
-            }
-            .default {
-                .unselectable();
-                background: white;
-                color: black;
-                font-size: 40px;
-            }
-            .name {
-                flex: 1;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
-            media-tag {
-                min-height: 50px;
-                min-width: 50px;
-                max-height: 50px;
-                max-width: 50px;
-                img {
-                    min-width: 100%;
-                    min-height: 100%;
-                    max-width: none;
-                    max-height: none; // To override 'media-tag img' in slide.less
-                    flex-shrink: 0;
-                }
             }
         }
     }
@@ -855,6 +811,10 @@ body .cryptpad-toolbar {
                     width: 100%;
                     cursor: default;
                     font-size: 32px;
+                }
+                &.avatar {
+                    .avatar(64px);
+                    border: 0;
                 }
             }
         }
