@@ -113,15 +113,21 @@ var isTooOld = function (time, now) {
     return (now - time) > 300000;
 };
 
+var expireSession = function (Sessions, key) {
+    var session = Sessions[key];
+    if (!session) { return; }
+    if (session.blobstage) {
+        session.blobstage.close();
+    }
+    delete Sessions[key];
+};
+
 var expireSessions = function (Sessions) {
     var now = +new Date();
     Object.keys(Sessions).forEach(function (key) {
         var session = Sessions[key];
-        if (isTooOld(Sessions[key].atime, now)) {
-            if (session.blobstage) {
-                session.blobstage.close();
-            }
-            delete Sessions[key];
+        if (session && isTooOld(session.atime, now)) {
+            expireSession(Sessions, key);
         }
     });
 };
@@ -846,6 +852,7 @@ var isAuthenticatedCall = function (call) {
         'GET_LIMIT',
         'UPLOAD_COMPLETE',
         'UPLOAD_CANCEL',
+        'EXPIRE_SESSION',
     ].indexOf(call) !== -1;
 };
 
@@ -1046,7 +1053,11 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                     }
                     Respond(void 0, dict);
                 });
-
+            case 'EXPIRE_SESSION':
+                return void setTimeout(function () {
+                    expireSession(Sessions, safeKey);
+                    Respond(void 0, "OK");
+                });
             // restricted to privileged users...
             case 'UPLOAD':
                 if (!privileged) { return deny(); }

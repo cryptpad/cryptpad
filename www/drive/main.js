@@ -528,6 +528,12 @@ define([
             module.displayDirectory(currentPath);
         };
 
+        var getFileNameExtension = function (name) {
+            var matched = /\.\S+$/.exec(name);
+            if (matched && matched.length) { return matched[matched.length -1]; }
+            return '';
+        };
+
         // Replace a file/folder name by an input to change its value
         var displayRenameInput = function ($element, path) {
             // NOTE: setTimeout(f, 0) otherwise the "rename" button in the toolbar is not working
@@ -551,6 +557,7 @@ define([
                     value: name
                 }).data('path', path);
 
+
                 // Stop propagation on keydown to avoid issues with arrow keys
                 $input.on('keydown', function (e) { e.stopPropagation(); });
 
@@ -567,7 +574,12 @@ define([
                 //$element.parent().append($input);
                 $name.after($input);
                 $input.focus();
-                $input.select();
+
+                var extension = getFileNameExtension(name);
+                var input = $input[0];
+                input.selectionStart = 0;
+                input.selectionEnd = name.length - extension.length;
+
                 // We don't want to open the file/folder when clicking on the input
                 $input.on('click dblclick', function (e) {
                     removeSelected();
@@ -1250,12 +1262,11 @@ define([
         };
 
         // Create the title block with the "parent folder" button
-        var createTitle = function (path, noStyle) {
+        var createTitle = function ($container, path, noStyle) {
             if (!path || path.length === 0) { return; }
             var isTrash = filesOp.isPathIn(path, [TRASH]);
-            var $title = $driveToolbar.find('.path');
-            if (APP.mobile()) {
-                return $title;
+            if (APP.mobile() && !noStyle) { // noStyle means title in search result
+                return $container;
             }
             var el = path[0] === SEARCH ? undefined : filesOp.find(path);
             path = path[0] === SEARCH ? path.slice(0,1) : path;
@@ -1281,12 +1292,11 @@ define([
                 if (idx === 0) { name = getPrettyName(p); }
                 else {
                     var $span2 = $('<span>', {'class': 'element separator'}).text(' / ');
-                    $title.prepend($span2);
+                    $container.prepend($span2);
                 }
 
-                $span.text(name).prependTo($title);
+                $span.text(name).prependTo($container);
             });
-            return $title;
         };
 
         var createInfoBox = function (path) {
@@ -1764,7 +1774,8 @@ define([
                         path.pop();
                         path.push(r.data.title);
                     }
-                    var $path = $('<td>', {'class': 'col1 path'}).html(createTitle(path, true).html());
+                    var $path = $('<td>', {'class': 'col1 path'});
+                    createTitle($path, path, true);
                     var parentPath = path.slice();
                     var $a;
                     if (parentPath) {
@@ -1859,7 +1870,7 @@ define([
             // NewButton can be undefined if we're in read only mode
             createNewButton(isInRoot, $toolbar.find('.leftside'));
 
-            createTitle(path).appendTo($toolbar.find('.path'));
+            createTitle($toolbar.find('.path'), path);
 
             if (APP.mobile()) {
                 var $context = $('<button>', {'class': 'element right dropdown-bar', id: 'contextButton'});

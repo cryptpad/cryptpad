@@ -54,7 +54,7 @@ define([
         };
         loginReady();
 
-        var $uname = $('#name');
+        var $uname = $('#name').focus();
 
         var $passwd = $('#password')
         // background loading of login assets

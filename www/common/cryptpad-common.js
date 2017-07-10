@@ -159,6 +159,9 @@ define([
         }
     };
 
+    var randomToken = function () {
+        return Math.random().toString(16).replace(/0./, '');
+    };
     var feedback = common.feedback = function (action, force) {
         if (force !== true) {
             if (!action) { return; }
@@ -167,7 +170,7 @@ define([
             } catch (e) { return void console.error(e); }
         }
 
-        var href = '/common/feedback.html?' + action + '=' + (+new Date());
+        var href = '/common/feedback.html?' + action + '=' + randomToken();
         $.ajax({
             type: "HEAD",
             url: href,
@@ -199,13 +202,29 @@ define([
         return;
     };
 
+    common.infiniteSpinnerDetected = false;
     var whenRealtimeSyncs = common.whenRealtimeSyncs = function (realtime, cb) {
         realtime.sync();
+
         window.setTimeout(function () {
             if (realtime.getAuthDoc() === realtime.getUserDoc()) {
                 return void cb();
             }
+
+            var to = setTimeout(function () {
+                realtime.abort();
+                // don't launch more than one popup
+                if (common.infiniteSpinnerDetected) { return; }
+
+                // inform the user their session is in a bad state
+                common.confirm(Messages.realtime_unrecoverableError, function (yes) {
+                    if (!yes) { return; }
+                    window.location.reload();
+                });
+                common.infiniteSpinnerDetected = true;
+            }, 30000);
             realtime.onSettle(function () {
+                clearTimeout(to);
                 cb();
             });
         }, 0);

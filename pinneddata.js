@@ -30,7 +30,7 @@ const sizeForHashes = (hashes, dsFileStats) => {
     let sum = 0;
     hashes.forEach((h) => {
         const s = dsFileStats[h];
-        if (typeof(s) !== 'number') {
+        if (typeof(s) !== 'object' || typeof(s.size) !== 'number') {
             //console.log('missing ' + h + '  ' + typeof(s));
         } else {
             sum += s.size;
@@ -62,11 +62,26 @@ nThen((waitFor) => {
         });
     });
 }).nThen((waitFor) => {
+
+    Fs.readdir('./blob', waitFor((err, list) => {
+        if (err) { throw err; }
+        dirList = list;
+    }));
+}).nThen((waitFor) => {
+    dirList.forEach((f) => {
+        sema.take((returnAfter) => {
+            Fs.readdir('./blob/' + f, waitFor(returnAfter((err, list2) => {
+                if (err) { throw err; }
+                list2.forEach((ff) => { fileList.push('./blob/' + f + '/' + ff); });
+            })));
+        });
+    });
+}).nThen((waitFor) => {
     fileList.forEach((f) => {
         sema.take((returnAfter) => {
             Fs.stat(f, waitFor(returnAfter((err, st) => {
                 if (err) { throw err; }
-                dsFileStats[f.replace(/^.*\/([^\/]*)\.ndjson$/, (all, a) => (a))] = st;
+                dsFileStats[f.replace(/^.*\/([^\/\.]*)(\.ndjson)?$/, (all, a) => (a))] = st;
             })));
         });
     });

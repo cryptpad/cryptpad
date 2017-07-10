@@ -36,6 +36,8 @@ define(function () {
     out.synced = "Everything is saved";
     out.deleted = "Pad deleted from your CryptDrive";
 
+    out.realtime_unrecoverableError = "The realtime engine has encountered an unrecoverable error. Click OK to reload.";
+
     out.disconnected = 'Disconnected';
     out.synchronizing = 'Synchronizing';
     out.reconnecting = 'Reconnecting...';
