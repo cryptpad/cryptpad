@@ -1676,7 +1676,7 @@ define([
 
         if (account) {
             var $avatar = $userAdmin.find('.buttonTitle');
-            var url = getStore() ? getStore().getProfile().avatar : undefined;
+            var url = store ? store.getProfile().avatar : undefined;
             $avatar.html('');
             common.displayAvatar($avatar, url, accountName, function ($img) {
                 if ($img) {
