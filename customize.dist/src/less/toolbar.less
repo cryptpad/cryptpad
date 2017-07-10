@@ -111,8 +111,9 @@ body .userlist-drawer {
             padding: 5px;
             margin: 2px 0;
             background: rgba(0,0,0,0.1);
-            .avatar(50px);
+            .avatar(30px);
             .default, media-tag {
+                margin-right: 5px;
                 border: 1px solid black;
             }
         }
@@ -825,7 +826,10 @@ body .cryptpad-toolbar {
                     font-size: 32px;
                 }
                 &.avatar {
-                    .avatar(64px);
+                    .avatar(48px);
+                    media-tag {
+                        margin: 8px;
+                    }
                     border: 0;
                 }
             }
