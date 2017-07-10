@@ -180,7 +180,11 @@ define([
     common.reportAppUsage = function () {
         var pattern = window.location.pathname.split('/')
             .filter(function (x) { return x; }).join('.');
-        feedback(pattern);
+        if (/^#\/1\/view\//.test(window.location.hash)) {
+            feedback(pattern + '_VIEW');
+        } else {
+            feedback(pattern);
+        }
     };
 
     common.reportScreenDimensions = function () {
