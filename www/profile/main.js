@@ -500,7 +500,8 @@ define([
         // User admin menu
         var $userMenu = $('#user-menu');
         var userMenuCfg = {
-            $initBlock: $userMenu
+            $initBlock: $userMenu,
+            'static': true
         };
         var $userAdmin = Cryptpad.createUserAdminMenu(userMenuCfg);
         $userAdmin.find('button').addClass('btn').addClass('btn-secondary');

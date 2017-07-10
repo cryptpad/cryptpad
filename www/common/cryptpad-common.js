@@ -1657,7 +1657,7 @@ define([
         //var $userbig = $('<span>', {'class': 'big'}).append($displayedName.clone());
         var $userButton = $('<div>').append($icon);//.append($userbig);
         if (account) {
-            $userButton = $('<div>');//.append(accountName.slice(0,1).toUpperCase());
+            $userButton = $('<div>').append(accountName);
         }
         /*if (account && config.displayNameCls) {
             $userbig.append($('<span>', {'class': 'account-name'}).text('(' + accountName + ')'));
@@ -1674,15 +1674,19 @@ define([
         };
         var $userAdmin = createDropdown(dropdownConfigUser);
 
-        if (account) {
+        if (account && !config.static && store) {
             var $avatar = $userAdmin.find('.buttonTitle');
-            var url = store ? store.getProfile().avatar : undefined;
-            $avatar.html('');
-            common.displayAvatar($avatar, url, accountName, function ($img) {
-                if ($img) {
-                    $userAdmin.find('button').addClass('avatar');
-                }
-            });
+            var updateButton = function (newName) {
+                var url = store.getProfile().avatar;
+                $avatar.html('');
+                common.displayAvatar($avatar, url, newName, function ($img) {
+                    if ($img) {
+                        $userAdmin.find('button').addClass('avatar');
+                    }
+                });
+            };
+            common.onDisplayNameChanged(updateButton);
+            updateButton(common.getDisplayName());
         }
 
         $userAdmin.find('a.logout').click(function () {

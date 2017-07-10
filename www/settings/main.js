@@ -13,8 +13,6 @@ define([
 ], function ($, Cryptpad, Crypt, Merge) {
     var saveAs = window.saveAs;
 
-    console.log("wut");
-
     var USERNAME_KEY = 'cryptpad.username';
 
     var APP = window.APP = {
