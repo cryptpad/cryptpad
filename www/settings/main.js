@@ -52,11 +52,6 @@ define([
         ]
     };
 
-    // Title block
-    var createTitle = function () {
-        return $('<h1>').text(Messages.settings_title);
-    };
-
     var createInfoBlock = function (store) {
         var obj = store.proxy;
         var $div = $('<div>', {'class': 'infoBlock'});
