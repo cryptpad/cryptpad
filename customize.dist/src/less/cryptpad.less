@@ -219,13 +219,13 @@ body.html {
         margin: 0 auto;
     }
     .app-row {
-        display: inline-block;
-        white-space: nowrap;
-        width: 700px;
+        display: flex;
+        justify-content: center;
+        flex-flow: row wrap;
         max-width: 100%;
         margin: 0 auto;
         @media screen and (max-width: 1399px) {
-            display: block;
+            display: flex;
         }
         img {
             @media screen and (max-width: @media-not-big) {
