@@ -68,7 +68,7 @@ define([
         var friends = proxy.friends || {};
         Object.keys(friends).forEach(function (f) {
             var data = friends[f];
-            var $friend = $('<div>', {'class': 'friend'}).appendTo($block);
+            var $friend = $('<div>', {'class': 'friend avatar'}).appendTo($block);
             $friend.data('key', f);
             var $rightCol = $('<span>', {'class': 'right-col'});
             $('<span>', {'class': 'name'}).text(data.displayName).appendTo($rightCol);
@@ -149,7 +149,7 @@ define([
         var data = getFriend(common, edPublic);
         var proxy = common.getProxy();
 
-        var $header = $('<div>', {'class': 'header'}).appendTo($container);
+        var $header = $('<div>', {'class': 'header avatar'}).appendTo($container);
         $('<div>', {'class': 'messages'}).appendTo($container);
         var $inputBlock = $('<div>', {'class': 'input'}).appendTo($container);
 

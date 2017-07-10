@@ -74,15 +74,15 @@
         white-space: nowrap;
         display: flex;
         flex-flow: column;
+        .name {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
         .friend {
             padding: 0;
         }
-    }
-    .name {
-        flex: 1;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
     }
     media-tag {
         min-height: @width;

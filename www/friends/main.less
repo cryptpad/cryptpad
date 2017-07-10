@@ -67,63 +67,17 @@ body {
 }
 
 #friendList .friend, #messaging .header {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        font-size: 16px;
+    .avatar(50px);
+    &.avatar {
         display: flex;
-        align-items: center;
-        cursor: pointer;
-        color: @color;
-        .default, media-tag {
-            display: inline-flex;
-            width: 50px;
-            height: 50px;
-            justify-content: center;
-            align-items: center;
-            margin-right: 5px;
-            border-radius: 10px / 6px;
-            overflow: hidden;
-            border: 1px solid black;
-            box-sizing: content-box;
+    }
+    cursor: pointer;
+    color: @color;
+    media-tag {
+        img {
+            color: #000;
         }
-        .default {
-            .unselectable();
-            background: white;
-            color: black;
-            font-size: 40px;
-        }
-        .right-col {
-            flex: 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            display: flex;
-            flex-flow: column;
-            .name {
-                flex: 1;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
-            .friend {
-                padding: 0;
-            }
-        }
-        media-tag {
-            min-height: 50px;
-            min-width: 50px;
-            max-height: 50px;
-            max-width: 50px;
-            img {
-                color: #000;
-                min-width: 100%;
-                min-height: 100%;
-                max-width: none;
-                max-height: none; // To override 'media-tag img' in slide.less
-            }
-        }
-
-
+    }
 }
 
 #messaging {
