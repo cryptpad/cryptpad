@@ -46,6 +46,7 @@ define(req, function($, Default, Language) {
     }
 
     messages._languages = map;
+    messages._languageUsed = language;
 
     messages._checkTranslationState = function (cb) {
         if (typeof(cb) !== "function") { return; }

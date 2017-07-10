@@ -180,13 +180,20 @@ define([
     common.reportAppUsage = function () {
         var pattern = window.location.pathname.split('/')
             .filter(function (x) { return x; }).join('.');
-        feedback(pattern);
+        if (/^#\/1\/view\//.test(window.location.hash)) {
+            feedback(pattern + '_VIEW');
+        } else {
+            feedback(pattern);
+        }
     };
 
     common.reportScreenDimensions = function () {
         var h = window.innerHeight;
         var w = window.innerWidth;
         feedback('DIMENSIONS:' + h + 'x' + w);
+    };
+    common.reportLanguage = function () {
+        feedback('LANG_' + Messages._languageUsed);
     };
 
     common.getUid = function () {
@@ -1736,6 +1743,7 @@ define([
             }
 
             common.reportScreenDimensions();
+            common.reportLanguage();
 
             $(function() {
                 // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
