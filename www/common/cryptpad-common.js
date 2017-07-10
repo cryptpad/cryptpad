@@ -1582,8 +1582,7 @@ define([
         //var $userbig = $('<span>', {'class': 'big'}).append($displayedName.clone());
         var $userButton = $('<div>').append($icon);//.append($userbig);
         if (account) {
-
-            $userButton = $('<div>').append(accountName.slice(0,1).toUpperCase());
+            $userButton = $('<div>');//.append(accountName.slice(0,1).toUpperCase());
         }
         /*if (account && config.displayNameCls) {
             $userbig.append($('<span>', {'class': 'account-name'}).text('(' + accountName + ')'));
@@ -1599,6 +1598,13 @@ define([
             feedback: "USER_ADMIN",
         };
         var $userAdmin = createDropdown(dropdownConfigUser);
+
+        if (account) {
+            var $avatar = $userAdmin.find('.buttonTitle');
+            var url = getStore() ? getStore().getProfile().avatar : undefined;
+            $avatar.html('');
+            common.displayAvatar($avatar, url, accountName, function ($img) {});
+        }
 
         $userAdmin.find('a.logout').click(function () {
             common.logout();
