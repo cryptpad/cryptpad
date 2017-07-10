@@ -166,6 +166,24 @@ define([
             return $.inArray(i, b) > -1;
         });
     };
+    var updateDisplayName = function (toolbar, config) {
+        // Change username in useradmin dropdown
+        var name = Cryptpad.getDisplayName();
+        if (config.displayed.indexOf('useradmin') !== -1) {
+            var $userAdminElement = toolbar.$userAdmin;
+            var $userElement = $userAdminElement.find('.' + USERNAME_CLS);
+            $userElement.show();
+            if (config.readOnly === 1) {
+                $userElement.addClass(READONLY_CLS).text(Messages.readonly);
+            }
+            else {
+                if (!name) {
+                    name = Messages.anonymous;
+                }
+                $userElement.removeClass(READONLY_CLS).text(name);
+            }
+        }
+    };
     var avatars = {};
     var updateUserList = function (toolbar, config) {
         // Make sure the elements are displayed
@@ -174,7 +192,6 @@ define([
 
         var userList = config.userList.list.users;
         var userData = config.userList.data;
-        var userNetfluxId = config.userList.userNetfluxId;
 
         var numberOfUsers = userList.length;
 
@@ -256,22 +273,7 @@ define([
         var $spansmall = $('<span>').html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
         $userButtons.find('.buttonTitle').html('').append($spansmall);
 
-        // Change username in useradmin dropdown
-        if (config.displayed.indexOf('useradmin') !== -1) {
-            var $userAdminElement = toolbar.$userAdmin;
-            var $userElement = $userAdminElement.find('.' + USERNAME_CLS);
-            $userElement.show();
-            if (config.readOnly === 1) {
-                $userElement.addClass(READONLY_CLS).text(Messages.readonly);
-            }
-            else {
-                var name = userData[userNetfluxId] && userData[userNetfluxId].name;
-                if (!name) {
-                    name = Messages.anonymous;
-                }
-                $userElement.removeClass(READONLY_CLS).text(name);
-            }
-        }
+        updateDisplayName(toolbar, config);
     };
 
     var initUserList = function (toolbar, config) {
@@ -815,13 +817,23 @@ define([
                     if (newName === null && typeof(lastName) === "string") { return; }
                     if (newName === null) { newName = ''; }
                     else { Cryptpad.feedback('NAME_CHANGED'); }
-                    Cryptpad.changeDisplayName(newName, true);
+                    Cryptpad.setAttribute('username', newName, function (err) {
+                        if (err) {
+                            console.log("Couldn't set username");
+                            console.error(err);
+                            return;
+                        }
+                        updateDisplayName(toolbar, config);
+                        Cryptpad.changeDisplayName(newName, true);
+                    });
                 });
             });
         });
         Cryptpad.onDisplayNameChanged(function () {
             Cryptpad.findCancelButton().click();
         });
+
+        updateDisplayName(toolbar, config);
 
         return $userAdmin;
     };

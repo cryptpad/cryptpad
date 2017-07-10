@@ -56,14 +56,15 @@ define(function () {
                 edPublic: Cryptpad.getProxy().edPublic
             };
             addToUserData(myData);
-            Cryptpad.setAttribute('username', exp.myUserName, function (err) {
+            /*Cryptpad.setAttribute('username', exp.myUserName, function (err) {
                 if (err) {
                     console.log("Couldn't set username");
                     console.error(err);
                     return;
                 }
                 if (typeof cb === "function") { cb(); }
-            });
+            });*/
+            if (typeof cb === "function") { cb(); }
         };
 
         exp.getLastName = function ($changeNameButton, isNew) {
