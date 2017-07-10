@@ -78,8 +78,11 @@ define([
     var CREATE_ID = "createProfile";
     var HEADER_ID = "header";
     var HEADER_RIGHT_ID = "rightside";
+    var CREATE_INVITE_BUTTON = 'inviteButton';
+    var VIEW_PROFILE_BUTTON = 'viewProfileButton';
 
-    var createEditableInput = function ($block, name, ph, getValue, setValue, realtime) {
+    var createEditableInput = function ($block, name, ph, getValue, setValue, realtime, fallbackValue) {
+        fallbackValue = fallbackValue || ''; // don't ever display 'null' or 'undefined'
         var lastVal;
         getValue(function (value) {
             lastVal = value;
@@ -104,7 +107,7 @@ define([
                     if (err) { return void console.error(err); }
                     Cryptpad.whenRealtimeSyncs(realtime, function () {
                         lastVal = newVal;
-                        Cryptpad.log(Messages._getKey('profile_fieldSaved', [newVal]));
+                        Cryptpad.log(Messages._getKey('profile_fieldSaved', [newVal || fallbackValue]));
                         editing = false;
                     });
                 });
@@ -150,8 +153,69 @@ define([
         createEditableInput($block, DISPLAYNAME_ID, placeholder, 32, getValue, setValue, rt);
     };
     */
+
+    var addCreateInviteLinkButton = function ($container) {
+        var obj = APP.lm.proxy;
+
+        var proxy = Cryptpad.getProxy();
+        var userViewHash = Cryptpad.find(proxy, ['profile', 'view']);
+
+        if (!APP.readOnly || !obj.curveKey || userViewHash === window.location.hash.slice(1)) {
+            console.log("edit mode or missing curve key, or you're viewing your own profile");
+            return;
+        }
+
+        // sanitize user inputs
+
+        var unsafeName = obj.name || '';
+        console.log(unsafeName);
+        var name = Cryptpad.fixHTML(unsafeName) || Messages.anonymous;
+        console.log(name);
+
+        console.log("Creating invite button");
+        var $button = $("<button>", {
+            id: CREATE_INVITE_BUTTON,
+            title: Messages.profile_inviteButtonTitle,
+        })
+        .addClass('btn btn-success')
+        .text(Messages.profile_inviteButton)
+        .click(function (e) {
+            Cryptpad.confirm(Messages._getKey('profile_inviteExplanation', [name]), function (yes) {
+                if (!yes) { return; }
+                console.log(obj.curveKey);
+                Cryptpad.alert("TODO");
+                // TODO create a listmap object using your curve keys
+                // TODO fill the listmap object with your invite data
+                // TODO generate link to invite object
+                // TODO copy invite link to clipboard
+            }, null, true);
+        })
+        .appendTo($container);
+    };
+
+    var addViewButton = function ($container) {
+        if (!Cryptpad.isLoggedIn() || window.location.hash) {
+            return;
+        }
+
+        var hash = Cryptpad.find(Cryptpad.getProxy(), ['profile', 'view']);
+        var url = '/profile/#' + hash;
+
+        var $button = $('<button>', {
+            'class': 'btn btn-success',
+            id: VIEW_PROFILE_BUTTON,
+        })
+        .text(Messages.profile_viewMyProfile)
+        .click(function () {
+            window.open(url, '_blank');
+        });
+        $container.append($button);
+    };
+
     var addDisplayName = function ($container) {
         var $block = $('<div>', {id: DISPLAYNAME_ID}).appendTo($container);
+
+
         var getValue = function (cb) {
             cb(APP.lm.proxy.name);
         };
@@ -161,6 +225,8 @@ define([
             getValue(function (value) {
                 $span.text(value || Messages.anonymous);
             });
+
+            addCreateInviteLinkButton($block);
             return;
         }
         var setValue = function (value, cb) {
@@ -168,7 +234,7 @@ define([
             cb();
         };
         var rt = Cryptpad.getStore().getProxy().info.realtime;
-        createEditableInput($block, DISPLAYNAME_ID, placeholder, getValue, setValue, rt);
+        createEditableInput($block, DISPLAYNAME_ID, placeholder, getValue, setValue, rt, Messages.anonymous);
     };
 
     var addLink = function ($container) {
@@ -330,8 +396,17 @@ define([
         $container.append($block);
     };
 
+
     var onReady = function () {
         APP.$container.find('#'+CREATE_ID).remove();
+
+        var obj = APP.lm && APP.lm.proxy;
+        if (!APP.readOnly) {
+            var pubKeys = Cryptpad.getPublicKeys();
+            if (pubKeys && pubKeys.curve) {
+                obj.curveKey = pubKeys.curve;
+            }
+        }
 
         if (!APP.initialized) {
             var $header = $('<div>', {id: HEADER_ID}).appendTo(APP.$container);
@@ -340,6 +415,7 @@ define([
             addDisplayName($rightside);
             addLink($rightside);
             addDescription(APP.$container);
+            addViewButton(APP.$container); //$rightside);
             addPublicKey(APP.$container);
             APP.initialized = true;
         }
@@ -377,7 +453,7 @@ define([
         if (obj.profile && obj.profile.view && obj.profile.edit) {
             return void andThen(obj.profile.edit);
         }
-        // If the user doesn't have a public profile, ask him if he wants to create one
+        // If the user doesn't have a public profile, ask them if they want to create one
         var todo = function () {
             var secret = Cryptpad.getSecrets();
             obj.profile = {};

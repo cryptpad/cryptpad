@@ -254,6 +254,11 @@ define(function () {
     out.profile_description = "Description";
     out.profile_fieldSaved = 'New value saved: {0}';
 
+    out.profile_inviteButton = "Connect";
+    out.profile_inviteButtonTitle ='Create a link that will invite this user to connect with you.';
+    out.profile_inviteExplanation = "Clicking <strong>OK</strong> will create a link to a secure messaging session that <em>only {0} will be able to redeem.</em><br><br>The link will be copied to your clipboard and can be shared publicly.";
+    out.profile_viewMyProfile = "View my profile";
+
     // File manager
 
     out.fm_rootName = "Documents";
