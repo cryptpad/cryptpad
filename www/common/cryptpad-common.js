@@ -188,6 +188,9 @@ define([
         var w = window.innerWidth;
         feedback('DIMENSIONS:' + h + 'x' + w);
     };
+    common.reportLanguage = function () {
+        feedback('LANG_' + Messages._languageUsed);
+    };
 
     common.getUid = function () {
         if (store && store.getProxy() && store.getProxy().proxy) {
@@ -1722,6 +1725,7 @@ define([
             }
 
             common.reportScreenDimensions();
+            common.reportLanguage();
 
             $(function() {
                 // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
