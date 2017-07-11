@@ -364,6 +364,21 @@ define([
                     return;
                 }
                 UserList.getLastName(toolbar.$userNameButton, isNew);
+                var fmConfig = {
+                    dropArea: $iframe.find('.CodeMirror'),
+                    body: $iframe.find('body'),
+                    onUploaded: function (ev, data) {
+                        //var cursor = editor.getCursor();
+                        var cleanName = data.name.replace(/[\[\]]/g, '');
+                        //var text = '!['+cleanName+']('+data.url+')';
+                        var parsed = Cryptpad.parsePadUrl(data.url);
+                        var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+                        var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
+                        var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '"></media-tag>';
+                        editor.replaceSelection(mt);
+                    }
+                };
+                APP.FM = Cryptpad.createFileManager(fmConfig);
             };
 
             config.onRemote = function () {
