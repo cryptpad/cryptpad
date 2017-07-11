@@ -610,7 +610,7 @@ define([
         var $hoverable = $('<span>', {'class': 'hoverable'}).appendTo($titleContainer);
 
         // Buttons
-        var $text = $('<span>', {
+        $('<span>', {
             'class': 'title pageTitle'
         }).appendTo($hoverable).text(config.pageTitle);
     };

@@ -144,7 +144,7 @@ define([
         var id = $content.attr('id');
         if (!id) { throw new Error("The element must have a valid id"); }
         var pattern = /(<media-tag src="([^"]*)" data-crypto-key="([^"]*)">)<\/media-tag>/g;
-        var newHtmlFixed = newHtml.replace(pattern, function (all, tag, src, key) {
+        var newHtmlFixed = newHtml.replace(pattern, function (all, tag, src) {
             var mt = tag;
             if (mediaMap[src]) {
                 mediaMap[src].forEach(function (n) {
