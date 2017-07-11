@@ -1650,8 +1650,10 @@ define([
         // and they don't hav a hierarchical structure (folder/subfolders)
         var displayHrefArray = function ($container, rootName, draggable) {
             var unsorted = files[rootName];
-            var $fileHeader = getFileListHeader(false);
-            $container.append($fileHeader);
+            if (unsorted.length) {
+                var $fileHeader = getFileListHeader(false);
+                $container.append($fileHeader);
+            }
             var keys = unsorted;
             var sortBy = Cryptpad.getLSAttribute(SORT_FILE_BY);
             sortBy = sortBy === "" ? sortBy = 'name' : sortBy;

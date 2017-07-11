@@ -538,8 +538,10 @@ span {
                 padding: 0 5px;
                 display: table-cell;
             }
-        }
-        li {
+            &:not(.header) {
+                height: @toolbar-line-height;
+                line-height: @toolbar-line-height;
+            }
             &.header {
                 cursor: default;
                 color: @table-header-fg;
