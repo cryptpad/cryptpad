@@ -369,7 +369,7 @@ define([
                     body: $iframe.find('body'),
                     onUploaded: function (ev, data) {
                         //var cursor = editor.getCursor();
-                        var cleanName = data.name.replace(/[\[\]]/g, '');
+                        //var cleanName = data.name.replace(/[\[\]]/g, '');
                         //var text = '!['+cleanName+']('+data.url+')';
                         var parsed = Cryptpad.parsePadUrl(data.url);
                         var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
