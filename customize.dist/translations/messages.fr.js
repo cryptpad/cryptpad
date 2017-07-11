@@ -9,7 +9,7 @@ define(function () {
     out.type.code = 'Code';
     out.type.poll = 'Sondage';
     out.type.slide = 'Présentation';
-    out.type.drive = 'Drive';
+    out.type.drive = 'CryptDrive';
     out.type.whiteboard = "Tableau Blanc";
     out.type.file = "Fichier";
     out.type.media = "Média";
@@ -423,6 +423,7 @@ define(function () {
     out.settings_logoutEverywhere = "Se déconnecter de force de toutes les autres sessions.";
     out.settings_logoutEverywhereConfirm = "Êtes-vous sûr ? Vous devrez vous reconnecter sur tous vos autres appareils.";
 
+    out.upload_title = "Hébergement de fichiers";
     out.upload_serverError = "Erreur interne: impossible d'importer le fichier pour l'instant.";
     out.upload_uploadPending = "Vous avez déjà un fichier en cours d'importation. Souhaitez-vous l'annuler et importer ce nouveau fichier ?";
     out.upload_success = "Votre fichier ({0}) a été importé avec succès et ajouté à votre CryptDrive.";

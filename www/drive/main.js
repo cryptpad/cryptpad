@@ -2721,7 +2721,7 @@ define([
 
             var userList = APP.userList = info.userList;
             var config = {
-                displayed: ['useradmin', 'spinner', 'lag', 'state', 'limit', 'newpad'],
+                displayed: ['useradmin', 'spinner', 'lag', 'state', 'limit', 'newpad', 'pageTitle'],
                 userList: {
                     list: userList,
                     userNetfluxId: info.myID
@@ -2731,7 +2731,8 @@ define([
                 ifrw: window,
                 realtime: info.realtime,
                 network: info.network,
-                $container: APP.$bar
+                $container: APP.$bar,
+                pageTitle: Messages.type.drive
             };
             var toolbar = APP.toolbar = Toolbar.create(config);
 

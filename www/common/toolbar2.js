@@ -600,6 +600,21 @@ define([
         return $titleContainer;
     };
 
+    var createPageTitle = function (toolbar, config) {
+        if (config.title || !config.pageTitle) { return; }
+        var $titleContainer = $('<span>', {
+            id: 'toolbarTitle',
+            'class': TITLE_CLS
+        }).appendTo(toolbar.$top);
+
+        var $hoverable = $('<span>', {'class': 'hoverable'}).appendTo($titleContainer);
+
+        // Buttons
+        var $text = $('<span>', {
+            'class': 'title pageTitle'
+        }).appendTo($hoverable).text(config.pageTitle);
+    };
+
     var createLinkToMain = function (toolbar) {
         var $linkContainer = $('<span>', {
             'class': "cryptpad-link"
@@ -1020,6 +1035,7 @@ define([
         tb['share'] = createShare;
         tb['fileshare'] = createFileShare;
         tb['title'] = createTitle;
+        tb['pageTitle'] = createPageTitle;
         tb['lag'] = createLag;
         tb['spinner'] = createSpinner;
         tb['state'] = createState;

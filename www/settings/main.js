@@ -5,7 +5,6 @@ define([
     '/common/mergeDrive.js',
     '/common/toolbar2.js',
     '/bower_components/file-saver/FileSaver.min.js',
-//    '/customize/header.js',
 
     'less!/customize/src/less/cryptpad.less',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -361,13 +360,14 @@ define([
     };
 
     var createToolbar = function () {
-        var displayed = ['useradmin', 'newpad', 'limit', 'upgrade'];
+        var displayed = ['useradmin', 'newpad', 'limit', 'upgrade', 'pageTitle'];
         var configTb = {
             displayed: displayed,
             ifrw: window,
             common: Cryptpad,
             hideDisplayName: true,
-            $container: APP.$toolbar
+            $container: APP.$toolbar,
+            pageTitle: Messages.settings_title
         };
         var toolbar = APP.toolbar = Toolbar.create(configTb);
         toolbar.$rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
