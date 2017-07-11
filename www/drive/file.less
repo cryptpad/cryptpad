@@ -72,7 +72,7 @@ img.icon {
             width: 100%;
             max-width: unset;
             border-bottom: 1px solid @toolbar-border-col;
-            .category2 {
+            .category {
                 margin-top: 0.5em;
             }
         }
@@ -164,6 +164,8 @@ span {
 
 
 #tree {
+    font-family: Ubuntu,Georgia,Cambria,serif;
+    font-size: 16px;
     //border-right: 1px solid #ccc;
     box-sizing: border-box;
     background: @tree-bg;
@@ -187,48 +189,76 @@ span {
         margin-bottom: 3px;
         margin-left: -2px;
     }
-    li {
-        padding: 0 0 0 5px;
+    .docTree {
+        margin-top: 20px;
+        padding: 0 0 0 20px;
         cursor: auto;
-        &.collapsed ul {
-            display: none;
-        }
-        input {
-            width: ~"calc(100% - 30px)";
-        }
-        & > span.element-row {
-            min-width: ~"calc(100% + 5px)";
-            display: inline-block;
-            cursor: pointer;
-            margin-left: -5px;
-            padding-left: 5px;
-        }
-        & > span.element-row:not(.selected):not(.active):hover {
-            background-color: @drive-hover;
+        &li, li {
+            padding: 0;
+            &.collapsed ul {
+                display: none;
+            }
+            input {
+                width: ~"calc(100% - 30px)";
+            }
+            & > span.element-row {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                //min-width: ~"calc(100% + 5px)";
+                .leftsideCategory();
+                width: ~"calc(100% + 5px)";
+                margin: 0;
+                margin-bottom: -5px;
+                display: inline-block;
+                cursor: pointer;
+                margin-left: -5px;
+                padding-left: 5px;
+            }
+            & > span.element-row:not(.selected):not(.active):hover {
+                //background-color: @drive-hover;
+            }
         }
     }
     span.element {
         cursor: pointer;
     }
-    .active {
+    /*.active {
         &:not(.selected):not(.droppable) {
             background-color: darken(@drive-hover, 15%);
         }
-    }
-    .category2 {
-        margin-top: 2em;
+    }*/
+    .category {
+        margin: 0;
+        margin-top: 15px;
         .root {
             &> .fa {
                 min-width: 30px;
                 cursor: pointer;
             }
         }
+        li {
+            padding: 0;
+            .element-row {
+                display: block;
+                padding-left: 20px;
+                .leftsideCategory();
+                margin: 0;
+                .fa {
+                    width: 25px;
+                }
+            }
+        }
+    }
+    .category:last-child {
+        margin-bottom: 20px;
     }
     #allfilesTree {
         margin-top: 0;
     }
+    .limit-container {
+        margin-top: 0;
+    }
     #searchContainer {
-        margin-bottom: 20px;
         text-align: center;
         padding: 0;
         position: relative;
@@ -262,9 +292,9 @@ span {
         font-size: 14px;
         position: absolute;
         left: -20px;
-        top: 9px;
-        width: auto;
-        height: 11px;
+        top: 10px;
+        width: 11px !important;
+        height: 11px !important;
         padding: 0;
         margin: 0;
         background: white;
@@ -277,7 +307,7 @@ span {
     }
 
     // Expand/collapse lines
-    ul {
+    .docTree ul {
         margin: 0px 0px 0px 10px;
         list-style: none;
         padding-left: 10px;
@@ -286,13 +316,13 @@ span {
             &:before {
                 position: absolute;
                 left: -15px;
-                top: -0.25em;
+                top: -11px;
                 content: '';
                 display: block;
                 border-left: 1px solid @tree-lines-col;
-                height: 1em;
+                height: ~"calc(1em + 11px)";
                 border-bottom: 1px solid @tree-lines-col;
-                width: 17.5px;
+                width: 15px;
             }
             &:after {
                 position: absolute;
@@ -326,7 +356,8 @@ span {
     flex: 1;
     // Needed to avoid the folder's path to overflows
     // https://stackoverflow.com/questions/38223879/white-space-nowrap-breaks-flexbox-layout
-    min-width: 0;}
+    min-width: 0;
+}
 #content {
     box-sizing: border-box;
     background: @content-bg;
