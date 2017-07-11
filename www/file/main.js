@@ -67,7 +67,7 @@ define([
             displayed: displayed,
             ifrw: ifrw,
             common: Cryptpad,
-            hideDisplayName: true,
+            //hideDisplayName: true,
             $container: $bar,
         };
 

@@ -101,6 +101,7 @@ define([
             displayName = $input.val();
             if (displayName === obj[USERNAME_KEY]) { return; }
             obj[USERNAME_KEY] = displayName;
+            Cryptpad.changeDisplayName(displayName);
             $spinner.show();
             Cryptpad.whenRealtimeSyncs(store.info.realtime, function () {
                 $spinner.hide();
@@ -365,7 +366,6 @@ define([
             displayed: displayed,
             ifrw: window,
             common: Cryptpad,
-            hideDisplayName: true,
             $container: APP.$toolbar,
             pageTitle: Messages.settings_title
         };
@@ -395,6 +395,7 @@ define([
 
         obj.proxy.on('change', [], refresh);
         obj.proxy.on('remove', [], refresh);
+        Cryptpad.onDisplayNameChanged(refresh);
 
         createLeftside();
         createUsageButton();

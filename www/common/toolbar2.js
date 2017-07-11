@@ -838,7 +838,6 @@ define([
                             console.error(err);
                             return;
                         }
-                        updateDisplayName(toolbar, config);
                         Cryptpad.changeDisplayName(newName, true);
                     });
                 });
@@ -846,6 +845,7 @@ define([
         });
         Cryptpad.onDisplayNameChanged(function () {
             Cryptpad.findCancelButton().click();
+            updateDisplayName(toolbar, config);
         });
 
         updateDisplayName(toolbar, config);
