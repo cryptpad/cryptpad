@@ -945,6 +945,11 @@ define([
         common.getPinnedUsage(todo);
     };
 
+    common.clearOwnedChannel = function (channel, cb) {
+        if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
+        rpc.clearOwnedChannel(channel, cb);
+    };
+
     common.uploadComplete = function (cb) {
         if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
         rpc.uploadComplete(cb);

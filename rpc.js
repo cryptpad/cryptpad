@@ -676,6 +676,29 @@ var makeFileStream = function (root, id, cb) {
     });
 };
 
+var clearOwnedChannel = function (Env, channelId, unsafeKey, cb) {
+    if (typeof(channelId) !== 'string' || channelId.length !== 32) {
+        return cb('INVALID_ARGUMENTS');
+    }
+
+    if (!(Env.msgStore && Env.msgStore.getChannelMetadata)) {
+        return cb('E_NOT_IMPLEMENTED');
+    }
+
+    Env.msgStore.getChannelMetadata(channelId, function (e, metadata) {
+        if (e) { return Respond(e); }
+        if (!(metadata && Array.isArray(metadata.owners))) { return void cb('E_NO_OWNERS'); }
+        // Confirm that the channel is owned by the user is question
+        if (metadata.owners.indexOf(unsafeKey) === -1) {
+            return void cb('INSUFFICIENT_PERMISSIONS');
+        }
+
+        return void Env.msgStore.clearChannel(channelId, function (e) {
+            cb(e);
+        });
+    });
+};
+
 var upload = function (Env, publicKey, content, cb) {
     var paths = Env.paths;
     var dec;
@@ -1057,6 +1080,11 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                 return void setTimeout(function () {
                     expireSession(Sessions, safeKey);
                     Respond(void 0, "OK");
+                });
+            case 'CLEAR_OWNED_CHANNEL':
+                return void clearOwnedChannel(Env, msg[1], publicKey, function (e, response) {
+                    if (e) { return void Respond(e); }
+                    Respond(void 0, response);
                 });
             // restricted to privileged users...
             case 'UPLOAD':
