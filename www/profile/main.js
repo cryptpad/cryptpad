@@ -173,13 +173,13 @@ define([
         console.log(name);
 
         console.log("Creating invite button");
-        var $button = $("<button>", {
+        $("<button>", {
             id: CREATE_INVITE_BUTTON,
             title: Messages.profile_inviteButtonTitle,
         })
         .addClass('btn btn-success')
         .text(Messages.profile_inviteButton)
-        .click(function (e) {
+        .click(function () {
             Cryptpad.confirm(Messages._getKey('profile_inviteExplanation', [name]), function (yes) {
                 if (!yes) { return; }
                 console.log(obj.curveKey);

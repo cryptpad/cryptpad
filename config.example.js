@@ -25,7 +25,7 @@ module.exports = {
         "default-src 'none'",
         "style-src 'unsafe-inline' 'self'",
         "script-src 'self'",
-        "font-src 'self'",
+        "font-src 'self' data:",
 
         /*  child-src is used to restrict iframes to a set of allowed domains.
          *  connect-src is used to restrict what domains can connect to the websocket.

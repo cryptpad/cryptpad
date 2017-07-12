@@ -22,6 +22,11 @@ define([
 ], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Metadata,
             Messaging, CodeMirror, Files, FileCrypto, Clipboard, Pinpad, AppConfig, MediaTag) {
 
+    // Configure MediaTags to use our local viewer
+    if (MediaTag && MediaTag.PdfPlugin) {
+        MediaTag.PdfPlugin.viewer = '/common/pdfjs/web/viewer.html';
+    }
+
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
@@ -36,6 +41,7 @@ define([
         donateURL: 'https://accounts.cryptpad.fr/#/donate?on=' + origin,
         upgradeURL: 'https://accounts.cryptpad.fr/#/?on=' + origin,
         account: {},
+        MediaTag: MediaTag,
     };
 
     // constants
@@ -1277,11 +1283,42 @@ define([
       var emojis = emojiStringToArray(str);
       return isEmoji(emojis[0])? emojis[0]: str[0];
     };
+
+    var cropImageToSquare = function (container, cb) {
+        var $container = $(container);
+        var $image = $(container).find('img');
+
+        var onLoad = function () {
+            var img = new Image();
+            img.src = $image.attr('src');
+            img.onload = function () {
+                if (img.width > img.height) {
+                    $image.css('max-height', '100%');
+                    $container.css('flex-direction', 'column');
+                    if (cb) { cb($image); }
+                    return;
+                }
+                $image.css('max-width', '100%');
+                $container.css('flex-direction', 'row');
+                if (cb) { cb($container); }
+            };
+        };
+
+        if ($image[0].complete) { return void onLoad(); }
+        $image.on('load', onLoad);
+    };
+
     $(window.document).on('decryption', function (e) {
         var decrypted = e.originalEvent;
         if (decrypted.callback) {
             var cb = decrypted.callback;
             cb(function (mediaObject) {
+                if (mediaObject.type === 'image') {
+                    var $parent = $(mediaObject.element).parent();
+                    if ($parent.hasClass('avatar')) {
+                        return cropImageToSquare(mediaObject.element);
+                    }
+                }
                 if (mediaObject.type !== 'download') { return; }
                 var root = mediaObject.rootElement;
                 if (!root) { return; }
