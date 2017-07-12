@@ -112,7 +112,7 @@ $(function () {
                 ])
             ])
         ]),
-        h('div.version-footer', "CryptPad v1.10.0 (Kraken)")
+        h('div.version-footer', "CryptPad v1.11.0 (Lutin)")
     ]));
 
     var pathname = location.pathname;
