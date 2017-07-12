@@ -24,7 +24,7 @@ define([
 
     // Configure MediaTags to use our local viewer
     if (MediaTag && MediaTag.PdfPlugin) {
-        MediaTag.PdfPlugin.viewer = '/common/pdfjs/web/viewer.html'
+        MediaTag.PdfPlugin.viewer = '/common/pdfjs/web/viewer.html';
     }
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
@@ -1295,7 +1295,7 @@ define([
                 if (img.width > img.height) {
                     $image.css('max-height', '100%');
                     $container.css('flex-direction', 'column');
-                    if (cb) { cb($img); }
+                    if (cb) { cb($image); }
                     return;
                 }
                 $image.css('max-width', '100%');
