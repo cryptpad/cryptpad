@@ -400,16 +400,6 @@ define([
         $container.append($block);
     };
 
-    var hideCategories = function () {
-        APP.$rightside.find('> div').hide();
-    };
-    var showCategories = function (cat) {
-        hideCategories();
-        cat.forEach(function (c) {
-            APP.$rightside.find('.'+c).show();
-        });
-    };
-
     var createLeftside = function () {
         var $categories = $('<div>', {'class': 'categories'}).appendTo(APP.$leftside);
         APP.$usage = $('<div>', {'class': 'usage'}).appendTo(APP.$leftside);
@@ -531,7 +521,7 @@ define([
 
     var onCryptpadReady = function () {
         APP.$leftside = $('<div>', {id: 'leftSide'}).appendTo(APP.$container);
-        var $rightside = APP.$rightside = $('<div>', {id: 'rightSide'}).appendTo(APP.$container);
+        APP.$rightside = $('<div>', {id: 'rightSide'}).appendTo(APP.$container);
 
         createToolbar();
 
