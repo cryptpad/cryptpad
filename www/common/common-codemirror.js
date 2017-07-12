@@ -100,8 +100,18 @@ define([
 
             var text = '';
             lines.some(function (line) {
+                // lines including a c-style comment are also valuable
+                var clike = /^\s*(\/\*|\/\/)(.*)?(\*\/)*$/;
+                if (clike.test(line)) {
+                    line.replace(clike, function (a, one, two) {
+                        if (!(two && two.replace)) { return; }
+                        text = two.replace(/\*\/\s*$/, '').trim();
+                    });
+                    return true;
+                }
+
                 // lisps?
-                var lispy = /^\s*(;|#\|)(.*?)$/;
+                var lispy = /^\s*(;|#\|)+(.*?)$/;
                 if (lispy.test(line)) {
                     line.replace(lispy, function (a, one, two) {
                         text = two;
@@ -111,20 +121,10 @@ define([
 
                 // lines beginning with a hash are potentially valuable
                 // works for markdown, python, bash, etc.
-                var hash = /^#(.*?)$/;
+                var hash = /^#+(.*?)$/;
                 if (hash.test(line)) {
                     line.replace(hash, function (a, one) {
                         text = one;
-                    });
-                    return true;
-                }
-
-                // lines including a c-style comment are also valuable
-                var clike = /^\s*(\/\*|\/\/)(.*)?(\*\/)*$/;
-                if (clike.test(line)) {
-                    line.replace(clike, function (a, one, two) {
-                        if (!(two && two.replace)) { return; }
-                        text = two.replace(/\*\/\s*$/, '').trim();
                     });
                     return true;
                 }
