@@ -24,6 +24,7 @@
 .friendsColor { color: @toolbar-friends-bg; }
 .whiteboardColor { color: @toolbar-whiteboard-bg; }
 .driveColor { color: @toolbar-drive-bg; }
+.settingsColor { color: @toolbar-settings-bg; }
 .defaultColor { color: @toolbar-default-bg; }
 
 .toolbar-container {
@@ -56,7 +57,7 @@
 }
 
 body .userlist-drawer {
-    font: normal normal normal 16px Arial,Helvetica,Tahoma,Verdana,Sans-Serif;
+    font: normal normal normal @main-font-size Arial,Helvetica,Tahoma,Verdana,Sans-Serif;
     min-width: 175px;
     width: 175px;
     display: block;
@@ -95,7 +96,7 @@ body .userlist-drawer {
     }
 
     & > p {
-        font: normal normal normal 16px Arial,Helvetica,Tahoma,Verdana,Sans-Serif;
+        font: normal normal normal @main-font-size Arial,Helvetica,Tahoma,Verdana,Sans-Serif;
         margin: 0;
         padding: 0;
         display: block;
@@ -110,8 +111,9 @@ body .userlist-drawer {
             padding: 5px;
             margin: 2px 0;
             background: rgba(0,0,0,0.1);
-            .avatar(50px);
+            .avatar(30px);
             .default, media-tag {
+                margin-right: 5px;
                 border: 1px solid black;
             }
         }
@@ -143,7 +145,7 @@ body {
                 }
             }
             .cryptpad-spinner, .cryptpad-state {
-                font-size: 16px;
+                font-size: @main-font-size;
                 color: @color;
             }
             .cryptpad-limit {
@@ -259,6 +261,11 @@ body {
     &.app-friends {
         @bgcolor: @toolbar-friends-bg;
         @color: @toolbar-friends-color;
+        .addToolbarColors(@color, @bgcolor);
+    }
+    &.app-settings {
+        @bgcolor: @toolbar-settings-bg;
+        @color: @toolbar-settings-color;
         .addToolbarColors(@color, @bgcolor);
     }
 
@@ -465,7 +472,7 @@ body .cryptpad-toolbar {
     }
 
     button, select, .rightside-element {
-        height: 32px;
+        height: @toolbar-line-height;
         box-sizing: border-box;
         padding: 3px 10px;
         margin: 0;
@@ -575,7 +582,7 @@ body .cryptpad-toolbar {
                     flex: auto;
                     width: 100%;
                     order: 10;
-                    height: 32px;
+                    height: @toolbar-line-height;
                     line-height: initial;
                     margin: 0;
                     .hoverable {
@@ -586,24 +593,24 @@ body .cryptpad-toolbar {
                         display: inline-block;
                         overflow: hidden;
                         text-overflow: ellipsis;
-                        font-size: 16px;
-                        height: 32px;
+                        font-size: @main-font-size;
+                        height: @toolbar-line-height;
                         box-sizing: border-box;
                         line-height: 20px;
                     }
                     .pencilIcon, .saveIcon {
                         box-sizing: border-box;
-                        height: 32px;
-                        line-height: 16px;
+                        height: @toolbar-line-height;
+                        line-height: @main-font-size;
                         display: inline-block;
 
                         .fa {
-                            font-size: 16px;
+                            font-size: @main-font-size;
                         }
                     }
                     input {
-                        height: 32px;
-                        font-size: 16px;
+                        height: @toolbar-line-height;
+                        font-size: @main-font-size;
                         flex: 1;
                         max-width: none;
                     }
@@ -639,6 +646,9 @@ body .cryptpad-toolbar {
             vertical-align: middle;
             line-height: 25px;
             white-space: nowrap;
+        }
+        .pageTitle {
+            padding: 0 5px;
         }
         .pencilIcon, .saveIcon {
             display: flex;
@@ -785,7 +795,7 @@ body .cryptpad-toolbar {
             vertical-align: top;
         }
         .cryptpad-upgrade {
-            height: 32px;
+            height: @toolbar-line-height;
             vertical-align: middle;
             cursor: pointer;
         }
@@ -819,7 +829,10 @@ body .cryptpad-toolbar {
                     font-size: 32px;
                 }
                 &.avatar {
-                    .avatar(64px);
+                    .avatar(48px);
+                    media-tag {
+                        margin: 8px;
+                    }
                     border: 0;
                 }
             }
@@ -835,7 +848,7 @@ body .cryptpad-toolbar {
     }
 }
 .cryptpad-toolbar-leftside {
-    height: 32px;
+    height: @toolbar-line-height;
     &:empty {
         height: 0;
     }
@@ -870,7 +883,7 @@ body .cryptpad-toolbar {
     }
 }
 .cryptpad-toolbar-rightside {
-    min-height: 32px;
+    min-height: @toolbar-line-height;
     overflow: hidden;
     &:empty {
         min-height: 0;
@@ -890,7 +903,7 @@ body .cryptpad-toolbar {
         box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
         position: absolute;
         right:0px;
-        margin-top: 32px;
+        margin-top: @toolbar-line-height;
         min-width: 50px;
         background: @dropdown-bg;
         display: flex;
@@ -903,7 +916,7 @@ body .cryptpad-toolbar {
         &> span {
             box-sizing: border-box;
             min-width: 150px;
-            height: 32px;
+            height: @toolbar-line-height;
             border-radius: 0;
             border: 0;
         }

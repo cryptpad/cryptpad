@@ -7,6 +7,8 @@
 @old-base: #302B28;
 @old-fore: #fafafa;
 
+@main-font-size: 16px;
+
 @cp-green: #46E981;
 @cp-accent: lighten(@cp-green, 20%);
 
@@ -73,7 +75,7 @@
 
 // Dropdown
 
-@dropdown-font: 16px -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+@dropdown-font: @main-font-size -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 @dropdown-bg: #f9f9f9;
 @dropdown-color: black;
 @dropdown-bg-hover: #f1f1f1;
@@ -101,6 +103,8 @@
 @toolbar-friends-color: #fff;
 @toolbar-default-bg: #ddd;
 @toolbar-default-color: #000;
+@toolbar-settings-bg: #0087ff;
+@toolbar-settings-color: #fff;
 
 
 @topbar-back: #fff;
@@ -129,3 +133,5 @@
     -ms-user-select: none;
     user-select: none;
 }
+
+@toolbar-line-height: 32px;

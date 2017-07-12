@@ -67,9 +67,15 @@ define([
             displayed: displayed,
             ifrw: ifrw,
             common: Cryptpad,
-            hideDisplayName: true,
-            $container: $bar
+            //hideDisplayName: true,
+            $container: $bar,
         };
+
+        if (uploadMode) {
+            displayed.push('pageTitle');
+            configTb.pageTitle = Messages.upload_title;
+        }
+
         var toolbar = APP.toolbar = Toolbar.create(configTb);
         toolbar.$rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
 
@@ -83,6 +89,7 @@ define([
                 if (e) { return void console.error(e); }
                 var title = document.title = metadata.name;
                 Title.updateTitle(title || Title.defaultTitle);
+                toolbar.addElement(['pageTitle'], {pageTitle: title});
 
                 var displayFile = function (ev, sizeMb) {
                     var $mt = $dlview.find('media-tag');

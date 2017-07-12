@@ -161,7 +161,7 @@ define([
     //var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
     var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
     var $templateIcon = $('<span>', {"class": "fa fa-cubes"});
-    var $trashIcon = $('<span>', {"class": "fa fa-trash"});
+    var $trashIcon = $('<span>', {"class": "fa fa-trash-o"});
     var $trashEmptyIcon = $('<span>', {"class": "fa fa-trash-o"});
     //var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o expcol"});
     var $expandIcon = $('<span>', {"class": "fa fa-plus-square-o expcol"});
@@ -1650,8 +1650,10 @@ define([
         // and they don't hav a hierarchical structure (folder/subfolders)
         var displayHrefArray = function ($container, rootName, draggable) {
             var unsorted = files[rootName];
-            var $fileHeader = getFileListHeader(false);
-            $container.append($fileHeader);
+            if (unsorted.length) {
+                var $fileHeader = getFileListHeader(false);
+                $container.append($fileHeader);
+            }
             var keys = unsorted;
             var sortBy = Cryptpad.getLSAttribute(SORT_FILE_BY);
             sortBy = sortBy === "" ? sortBy = 'name' : sortBy;
@@ -2011,7 +2013,9 @@ define([
             }
             $elementRow.data('path', path);
             addDragAndDropHandlers($elementRow, path, true, droppable);
-            if (active) { $elementRow.addClass('active'); }
+            if (active) {
+                $elementRow.addClass('active');
+            }
             return $element;
         };
 
@@ -2031,7 +2035,7 @@ define([
                 var $rootElement = createTreeElement(ROOT_NAME, $rootIcon.clone(), [ROOT], false, true, false, isRootOpened);
                 $rootElement.addClass('root');
                 $rootElement.find('>.element-row').contextmenu(openDirectoryContextMenu);
-                $('<ul>').append($rootElement).appendTo($container);
+                $('<ul>', {'class': 'docTree'}).append($rootElement).appendTo($container);
                 $container = $rootElement;
             } else if (filesOp.isFolderEmpty(root)) { return; }
 
@@ -2061,7 +2065,7 @@ define([
             var isOpened = filesOp.comparePath(path, currentPath);
             var $element = createTreeElement(TEMPLATE_NAME, $icon, [TEMPLATE], false, true, false, isOpened);
             $element.addClass('root');
-            var $list = $('<ul>', { id: 'templateTree', 'class': 'category2' }).append($element);
+            var $list = $('<ul>', { id: 'templateTree', 'class': 'category' }).append($element);
             $container.append($list);
         };
 
@@ -2070,7 +2074,7 @@ define([
             var isOpened = filesOp.comparePath(path, currentPath);
             var $allfilesElement = createTreeElement(FILES_DATA_NAME, $icon, [FILES_DATA], false, false, false, isOpened);
             $allfilesElement.addClass('root');
-            var $allfilesList = $('<ul>', { id: 'allfilesTree', 'class': 'category2' }).append($allfilesElement);
+            var $allfilesList = $('<ul>', { id: 'allfilesTree', 'class': 'category' }).append($allfilesElement);
             $container.append($allfilesList);
         };
 
@@ -2080,7 +2084,7 @@ define([
             var $trashElement = createTreeElement(TRASH_NAME, $icon, [TRASH], false, true, false, isOpened);
             $trashElement.addClass('root');
             $trashElement.find('>.element-row').contextmenu(openTrashTreeContextMenu);
-            var $trashList = $('<ul>', { id: 'trashTree', 'class': 'category2' }).append($trashElement);
+            var $trashList = $('<ul>', { id: 'trashTree', 'class': 'category' }).append($trashElement);
             $container.append($trashList);
         };
 
@@ -2719,7 +2723,7 @@ define([
 
             var userList = APP.userList = info.userList;
             var config = {
-                displayed: ['useradmin', 'spinner', 'lag', 'state', 'limit', 'newpad'],
+                displayed: ['useradmin', 'spinner', 'lag', 'state', 'limit', 'newpad', 'pageTitle'],
                 userList: {
                     list: userList,
                     userNetfluxId: info.myID
@@ -2729,7 +2733,8 @@ define([
                 ifrw: window,
                 realtime: info.realtime,
                 network: info.network,
-                $container: APP.$bar
+                $container: APP.$bar,
+                pageTitle: Messages.type.drive
             };
             var toolbar = APP.toolbar = Toolbar.create(config);
 

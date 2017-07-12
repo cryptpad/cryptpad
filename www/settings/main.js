@@ -3,14 +3,15 @@ define([
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
     '/common/mergeDrive.js',
+    '/common/toolbar2.js',
     '/bower_components/file-saver/FileSaver.min.js',
-    '/customize/header.js',
 
     'less!/customize/src/less/cryptpad.less',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
+    'less!/customize/src/less/toolbar.less',
     'less!/settings/main.less',
-], function ($, Cryptpad, Crypt, Merge) {
+], function ($, Cryptpad, Crypt, Merge, Toolbar) {
     var saveAs = window.saveAs;
 
     var USERNAME_KEY = 'cryptpad.username';
@@ -34,36 +35,45 @@ define([
         });
     };
 
-    // Title block
-    var createTitle = function () {
-        return $('<h1>').text(Messages.settings_title);
+    var categories = {
+        'account': [
+            'infoBlock',
+            'displayName',
+            'languageSelector',
+            'logoutEverywhere',
+            'resetTips',
+            'userFeedback'
+        ],
+        'drive': [
+            'backupDrive',
+            'importLocalPads',
+            'resetDrive'
+        ]
     };
 
     var createInfoBlock = function (store) {
         var obj = store.proxy;
         var $div = $('<div>', {'class': 'infoBlock'});
 
+        var $account = $('<div>', {'class': 'element'}).appendTo($div);
         var accountName = obj.login_name || localStorage[Cryptpad.userNameKey];
-        var $label = $('<span>', {'class': 'label'}).text(Messages.user_accountName + ':');
+        var $label = $('<span>', {'class': 'label'}).text(Messages.user_accountName);
         var $name = $('<span>').text(accountName || '');
         if (!accountName) {
             $label.text('');
             $name.text(Messages.settings_anonymous);
         }
-
-        $div.append($label).append($name);
+        $account.append($label).append($name);
 
         var publicKey = obj.edPublic;
         if (publicKey) {
+            var $key = $('<div>', {'class': 'element'}).appendTo($div);
             var userHref = Cryptpad.getUserHrefFromKeys(accountName, publicKey);
             var $pubLabel = $('<span>', {'class': 'label'})
-                .text(Messages.settings_publicSigningKey + ':');
+                .text(Messages.settings_publicSigningKey);
             var $pubKey = $('<input>', {type: 'text', readonly: true})
-                .css({
-                    width: '28em'
-                })
                 .val(userHref);
-            $div.append('<br>').append($pubLabel).append($pubKey);
+            $key.append($pubLabel).append($pubKey);
         }
 
         return $div;
@@ -72,14 +82,14 @@ define([
     // Create the block containing the display name field
     var createDisplayNameInput = function (store) {
         var obj = store.proxy;
-        var $div = $('<div>', {'class': 'displayName'});
+        var $div = $('<div>', {'class': 'displayName element'});
         $('<label>', {'for' : 'displayName'}).text(Messages.user_displayName).appendTo($div);
-        $('<br>').appendTo($div);
+        var $inputBlock = $('<div>', {'class': 'inputBlock'}).appendTo($div);
         var $input = $('<input>', {
             'type': 'text',
             'id': 'displayName',
-            'placeholder': Messages.anonymous}).appendTo($div);
-        var $save = $('<button>', {'class': 'btn btn-primary'}).text(Messages.settings_save).appendTo($div);
+            'placeholder': Messages.anonymous}).appendTo($inputBlock);
+        var $save = $('<button>', {'class': 'btn btn-primary'}).text(Messages.settings_save).appendTo($inputBlock);
         var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide().appendTo($div);
         var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide().appendTo($div);
 
@@ -91,6 +101,7 @@ define([
             displayName = $input.val();
             if (displayName === obj[USERNAME_KEY]) { return; }
             obj[USERNAME_KEY] = displayName;
+            Cryptpad.changeDisplayName(displayName);
             $spinner.show();
             Cryptpad.whenRealtimeSyncs(store.info.realtime, function () {
                 $spinner.hide();
@@ -115,11 +126,12 @@ define([
         return $div;
     };
     var createResetTips = function () {
-        var $div = $('<div>', {'class': 'resetTips'});
+        var $div = $('<div>', {'class': 'resetTips element'});
         $('<label>', {'for' : 'resetTips'}).text(Messages.settings_resetTips).appendTo($div);
-        $('<br>').appendTo($div);
-        var $button = $('<button>', {'id': 'resetTips', 'class': 'btn btn-primary'})
+        $('<span>', {'class': 'description'})
             .text(Messages.settings_resetTipsButton).appendTo($div);
+        var $button = $('<button>', {'id': 'resetTips', 'class': 'btn btn-primary'})
+            .text(Messages.settings_resetTipsAction).appendTo($div);
 
         $button.click(function () {
             Object.keys(localStorage).forEach(function (k) {
@@ -134,7 +146,7 @@ define([
     };
     var createBackupDrive = function (store) {
         var obj = store.proxy;
-        var $div = $('<div>', {'class': 'backupDrive'});
+        var $div = $('<div>', {'class': 'backupDrive element'});
 
         var exportFile = function () {
             var sjson = JSON.stringify(obj);
@@ -155,27 +167,29 @@ define([
             });
         };
 
-        $('<label>', {'for' : 'exportDrive'}).text(Messages.settings_backupTitle).appendTo($div);
-        $('<br>').appendTo($div);
+        $('<label>', {'for' : 'exportDrive'}).text(Messages.settings_backupCategory).appendTo($div);
+        $('<span>', {'class': 'description'})
+            .text(Messages.settings_backupTitle).appendTo($div);
         /* add an export button */
         var $export = Cryptpad.createButton('export', true, {}, exportFile);
-        $export.addClass('btn').addClass('btn-success').append(Messages.settings_backup);
+        $export.attr('class', 'btn btn-success').text(Messages.settings_backup);
         $div.append($export);
 
         /* add an import button */
         var $import = Cryptpad.createButton('import', true, {}, importFile);
-        $import.addClass('btn').addClass('btn-warning').append(Messages.settings_restore);
+        $import.attr('class', 'btn btn-success').text(Messages.settings_restore);
         $div.append($import);
 
         return $div;
     };
 
     var createResetDrive = function (obj) {
-        var $div = $('<div>', {'class': 'resetDrive'});
-        $('<label>', {'for' : 'resetDrive'}).text(Messages.settings_resetTitle).appendTo($div);
-        $('<br>').appendTo($div);
-        var $button = $('<button>', {'id': 'resetDrive', 'class': 'btn btn-danger'})
+        var $div = $('<div>', {'class': 'resetDrive element'});
+        $('<label>', {'for' : 'resetDrive'}).text(Messages.settings_resetNewTitle).appendTo($div);
+        $('<span>', {'class': 'description'})
             .text(Messages.settings_reset).appendTo($div);
+        var $button = $('<button>', {'id': 'resetDrive', 'class': 'btn btn-danger'})
+            .text(Messages.settings_resetButton).appendTo($div);
 
         $button.click(function () {
             Cryptpad.prompt(Messages.settings_resetPrompt, "", function (val) {
@@ -192,14 +206,16 @@ define([
     };
 
     var createUserFeedbackToggle = function (obj) {
-        var $div = $('<div>', { 'class': 'userFeedback', });
-        var $label = $('<label>', { 'for': 'userFeedback'})
+        var $div = $('<div>', { 'class': 'userFeedback element'});
+
+        $('<span>', {'class': 'label'}).text(Messages.settings_userFeedbackTitle).appendTo($div);
+
+        var $label = $('<label>', { 'for': 'userFeedback', 'class': 'noTitle' })
             .text(Messages.settings_userFeedback);
 
-        $div.html('<hr />' + Messages.settings_userFeedbackHint1 + '<br />' +
-            Messages.settings_userFeedbackHint2).appendTo($div);
-
-        $('<br>').appendTo($div);
+        $('<span>', {'class': 'description'})
+            .append(Messages.settings_userFeedbackHint1)
+            .append(Messages.settings_userFeedbackHint2).appendTo($div);
 
         var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
         var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
@@ -229,25 +245,21 @@ define([
     };
 
     var createUsageButton = function () {
-        var $div = $('<div>', { 'class': 'pinned-usage' })
-            .text(Messages.settings_usageTitle)
-            .append('<br>');
-
         Cryptpad.createUsageBar(function (err, $bar) {
-            $div.find('.limit-container').remove();
-            $div.append($bar);
+            if (err) { return void console.error(err); }
+            APP.$usage.html('').append($bar);
         }, true);
-        return $div;
     };
 
     var createLogoutEverywhere = function (obj) {
         var proxy = obj.proxy;
-        var $div = $('<div>', { 'class': 'logoutEverywhere', });
+        var $div = $('<div>', { 'class': 'logoutEverywhere element'});
         $('<label>', { 'for': 'logoutEverywhere'})
             .text(Messages.settings_logoutEverywhereTitle).appendTo($div);
-        $('<br>').appendTo($div);
+        $('<span>', {'class': 'description'})
+            .text(Messages.settings_logoutEverywhere).appendTo($div);
         var $button = $('<button>', { id: 'logoutEverywhere', 'class': 'btn btn-primary' })
-            .text(Messages.settings_logoutEverywhere)
+            .text(Messages.settings_logoutEverywhereButton)
             .appendTo($div);
         var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide().appendTo($div);
         var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide().appendTo($div);
@@ -279,9 +291,10 @@ define([
 
     var createImportLocalPads = function (obj) {
         if (!Cryptpad.isLoggedIn()) { return; }
-        var $div = $('<div>', {'class': 'importLocalPads'});
-        $('<label>', {'for' : 'importLocalPads'}).text(Messages.settings_importTitle).appendTo($div);
-        $('<br>').appendTo($div);
+        var $div = $('<div>', {'class': 'importLocalPads element'});
+        $('<label>', {'for' : 'importLocalPads'}).text(Messages.settings_import).appendTo($div);
+        $('<span>', {'class': 'description'})
+            .text(Messages.settings_importTitle).appendTo($div);
         var $button = $('<button>', {'id': 'importLocalPads', 'class': 'btn btn-primary'})
             .text(Messages.settings_import).appendTo($div);
         var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide().appendTo($div);
@@ -304,31 +317,90 @@ define([
     };
 
     var createLanguageSelector = function () {
-        var $div = $('<div>', {'class': 'importLocalPads'});
+        var $div = $('<div>', {'class': 'languageSelector element'});
         $('<label>').text(Messages.language).appendTo($div);
-        $('<br>').appendTo($div);
         var $b = Cryptpad.createLanguageSelector().appendTo($div);
         $b.find('button').addClass('btn btn-secondary');
         return $div;
     };
 
+
+    var hideCategories = function () {
+        APP.$rightside.find('> div').hide();
+    };
+    var showCategories = function (cat) {
+        hideCategories();
+        cat.forEach(function (c) {
+            APP.$rightside.find('.'+c).show();
+        });
+    };
+
+    var createLeftside = function () {
+        var $categories = $('<div>', {'class': 'categories'}).appendTo(APP.$leftside);
+        APP.$usage = $('<div>', {'class': 'usage'}).appendTo(APP.$leftside);
+        var active = 'account';
+        Object.keys(categories).forEach(function (key) {
+            var $category = $('<div>', {'class': 'category'}).appendTo($categories);
+            if (key === 'account') { $category.append($('<span>', {'class': 'fa fa-user-o'})); }
+            if (key === 'drive') { $category.append($('<span>', {'class': 'fa fa-hdd-o'})); }
+
+            if (key === active) {
+                $category.addClass('active');
+            }
+
+            $category.click(function () {
+                active = key;
+                $categories.find('.active').removeClass('active');
+                $category.addClass('active');
+                showCategories(categories[key]);
+            });
+
+            $category.append(Messages['settings_cat_'+key]);
+        });
+        showCategories(categories[active]);
+    };
+
+    var createToolbar = function () {
+        var displayed = ['useradmin', 'newpad', 'limit', 'upgrade', 'pageTitle'];
+        var configTb = {
+            displayed: displayed,
+            ifrw: window,
+            common: Cryptpad,
+            $container: APP.$toolbar,
+            pageTitle: Messages.settings_title
+        };
+        var toolbar = APP.toolbar = Toolbar.create(configTb);
+        toolbar.$rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
+    };
+
     var andThen = function (obj) {
-        APP.$container.append(createTitle());
-        APP.$container.append(createInfoBlock(obj));
-        APP.$container.append(createDisplayNameInput(obj));
-        APP.$container.append(createLanguageSelector());
+        APP.$leftside = $('<div>', {id: 'leftSide'}).appendTo(APP.$container);
+        var $rightside = APP.$rightside = $('<div>', {id: 'rightSide'}).appendTo(APP.$container);
+
+        createToolbar();
+
+        //$rightside.append(createTitle());
+        $rightside.append(createInfoBlock(obj));
+        $rightside.append(createDisplayNameInput(obj));
+        $rightside.append(createLanguageSelector());
 
         if (Cryptpad.isLoggedIn()) {
-            APP.$container.append(createLogoutEverywhere(obj));
+            $rightside.append(createLogoutEverywhere(obj));
         }
-        APP.$container.append(createResetTips());
-        APP.$container.append(createUsageButton(obj));
-        APP.$container.append(createBackupDrive(obj));
-        APP.$container.append(createImportLocalPads(obj));
-        APP.$container.append(createResetDrive(obj));
-        APP.$container.append(createUserFeedbackToggle(obj));
+        $rightside.append(createResetTips());
+        $rightside.append(createBackupDrive(obj));
+        $rightside.append(createImportLocalPads(obj));
+        $rightside.append(createResetDrive(obj));
+        $rightside.append(createUserFeedbackToggle(obj));
+
         obj.proxy.on('change', [], refresh);
         obj.proxy.on('remove', [], refresh);
+        Cryptpad.onDisplayNameChanged(refresh);
+
+        createLeftside();
+        createUsageButton();
+
+        Cryptpad.removeLoadingScreen();
     };
 
     $(function () {
@@ -342,6 +414,7 @@ define([
         $main.removeClass('hidden');
 
         APP.$container = $('#container');
+        APP.$toolbar = $('#toolbar');
 
         Cryptpad.ready(function () {
             //if (!Cryptpad.getUserHash()) { return redirectToMain(); }
