@@ -404,14 +404,9 @@ define([
     };
 
     $(function () {
-        var $main = $('#mainBlock');
-
         $(window).click(function () {
             $('.cryptpad-dropdown').hide();
         });
-
-        // main block is hidden in case javascript is disabled
-        $main.removeClass('hidden');
 
         APP.$container = $('#container');
         APP.$toolbar = $('#toolbar');

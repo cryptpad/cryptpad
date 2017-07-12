@@ -1657,7 +1657,7 @@ define([
                 content: Messages.user_rename
             });
         }
-        if (account && parsed && (!parsed.type || parsed.type !== 'profile')) {
+        if (account) {
             options.push({
                 tag: 'a',
                 attributes: {'class': 'profile'},

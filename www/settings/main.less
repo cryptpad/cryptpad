@@ -1,64 +1,10 @@
 @import '/customize/src/less/variables.less';
 @import '/customize/src/less/mixins.less';
-
-@border: 1px solid #555;
-
-@leftside-bg: #eee;
-@leftside-color: #000;
-@rightside-color: #000;
-@description-color: #777;
-
-@button-width: 400px;
-@button-bg: #3066e5;
-@button-alt-bg: #fff;
-@button-red-bg: #e54e4e;
-
+@import '/customize/src/less/sidebar-layout.less';
 
 .cp {
-    input[type="text"] {
-        padding-left: 10px;
-    }
     #container {
-        font-size: 16px;
-        display: flex;
-        flex: 1;
-        min-height: 0;
-        #leftSide {
-            color: @leftside-color;
-            width: 250px;
-            background: @leftside-bg;
-            display: flex;
-            flex-flow: column;
-            .categories {
-                flex: 1;
-                .category {
-                    .leftsideCategory();
-                }
-            }
-        }
         #rightSide {
-            flex: 1;
-            padding: 5px 20px;
-            color: @rightside-color;
-            overflow: auto;
-            .element {
-                label:not(.noTitle), .label {
-                    display: block;
-                    font-weight: bold;
-                    margin-bottom: 0;
-                }
-                .description {
-                    display: block;
-                    color: @description-color;
-                    margin-bottom: 5px;
-                }
-                margin-bottom: 20px;
-            }
-            [type="text"], button {
-                vertical-align: middle;
-                height: 40px;
-                box-sizing: border-box;
-            }
             .userFeedback {
                 input {
                     vertical-align: middle;
@@ -81,21 +27,6 @@
                     width: @button-width;
                 }
             }
-            .inputBlock {
-                display: inline-flex;
-                width: @button-width;
-                input {
-                    flex: 1;
-                    border-radius: 0.25em 0 0 0.25em;
-                    border: 1px solid #adadad;
-                    border-right: 0px;
-                }
-                button {
-                    border-radius: 0 0.25em 0.25em 0;
-                    //border: 1px solid #adadad;
-                    border-left: 0px;
-                }
-            }
             .backupDrive {
                 button {
                     span.fa {
@@ -103,25 +34,6 @@
                     }
                     margin-right: 5px;
                 }
-            }
-            button.btn {
-                background-color: @button-bg;
-                border-color: darken(@button-bg, 10%);
-                color: white;
-                &:hover {
-                    background-color: darken(@button-bg, 10%);
-                }
-                &.btn-danger {
-                    background-color: @button-red-bg;
-                    border-color: darken(@button-red-bg, 10%);
-                    color: white;
-                    &:hover {
-                        background-color: darken(@button-red-bg, 10%);
-                    }
-                }
-            }
-            &>div {
-                margin: 10px 0;
             }
         }
     }

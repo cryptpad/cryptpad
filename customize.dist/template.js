@@ -12,7 +12,7 @@ $(function () {
     var Messages = Cryptpad.Messages;
     var $body = $('body');
     var isMainApp = function () {
-        return /^\/(pad|code|slide|poll|whiteboard|file|media|friends|drive|settings)\/$/.test(location.pathname);
+        return /^\/(pad|code|slide|poll|whiteboard|file|media|friends|drive|settings|profile)\/$/.test(location.pathname);
     };
 
     var rightLink = function (ref, loc, txt) {
@@ -145,7 +145,7 @@ $(function () {
                 } else if (/drive/.test(pathname)) {
                     $('body').append(h('body', Pages[pathname]()).innerHTML);
                     require(['/drive/main.js'], ready);
-                } else if (/file/.test(pathname)) {
+                } else if (/\/file\//.test(pathname)) {
                     $('body').append(h('body', Pages[pathname]()).innerHTML);
                     require([ '/file/main.js' ], ready);
                 } else if (/friends/.test(pathname)) {
@@ -163,6 +163,9 @@ $(function () {
                 } else if (/^\/settings\//.test(pathname)) {
                     $('body').append(h('body', Pages[pathname]()).innerHTML);
                     require([ '/settings/main.js', ], ready);
+                } else if (/^\/profile\//.test(pathname)) {
+                    $('body').append(h('body', Pages[pathname]()).innerHTML);
+                    require([ '/profile/main.js', ], ready);
                 }
             });
 
@@ -176,9 +179,7 @@ $(function () {
     ], function () {
         $body.append($topbar).append($main).append($footer);
 
-        if (/^\/profile\//.test(pathname)) {
-            require([ '/profile/main.js'], function () {});
-        } else if (/^\/user\//.test(pathname)) {
+        if (/^\/user\//.test(pathname)) {
             require([ '/user/main.js'], function () {});
         } else if (/^\/register\//.test(pathname)) {
             require([ '/register/main.js' ], function () {});
