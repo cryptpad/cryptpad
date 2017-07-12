@@ -2723,7 +2723,7 @@ define([
 
             var userList = APP.userList = info.userList;
             var config = {
-                displayed: ['useradmin', 'spinner', 'lag', 'state', 'limit', 'newpad', 'pageTitle'],
+                displayed: ['useradmin', 'limit', 'newpad', 'pageTitle'],
                 userList: {
                     list: userList,
                     userNetfluxId: info.myID

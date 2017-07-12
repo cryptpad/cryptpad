@@ -9,10 +9,14 @@ define([
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/marked/marked.min.js',
+    '/common/toolbar2.js',
     'cm/lib/codemirror',
     'cm/mode/markdown/markdown',
     'less!/profile/main.less',
-], function ($, Cryptpad, Listmap, Crypto, Marked, CodeMirror) {
+    'less!/customize/src/less/toolbar.less',
+    'less!/customize/src/less/cryptpad.less',
+    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
+], function ($, Cryptpad, Listmap, Crypto, Marked, Toolbar, CodeMirror) {
 
     var APP = window.APP = {
         Cryptpad: Cryptpad,
@@ -396,6 +400,28 @@ define([
         $container.append($block);
     };
 
+    var createLeftside = function () {
+        var $categories = $('<div>', {'class': 'categories'}).appendTo(APP.$leftside);
+        APP.$usage = $('<div>', {'class': 'usage'}).appendTo(APP.$leftside);
+
+        var $category = $('<div>', {'class': 'category'}).appendTo($categories);
+        $category.append($('<span>', {'class': 'fa fa-user'}));
+        $category.addClass('active');
+        $category.append(Messages.profileButton);
+    };
+
+    var createToolbar = function () {
+        var displayed = ['useradmin', 'newpad', 'limit', 'upgrade', 'pageTitle'];
+        var configTb = {
+            displayed: displayed,
+            ifrw: window,
+            common: Cryptpad,
+            $container: APP.$toolbar,
+            pageTitle: Messages.settings_title
+        };
+        var toolbar = APP.toolbar = Toolbar.create(configTb);
+        toolbar.$rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
+    };
 
     var onReady = function () {
         APP.$container.find('#'+CREATE_ID).remove();
@@ -409,22 +435,24 @@ define([
         }
 
         if (!APP.initialized) {
-            var $header = $('<div>', {id: HEADER_ID}).appendTo(APP.$container);
+            var $header = $('<div>', {id: HEADER_ID}).appendTo(APP.$rightside);
             addAvatar($header);
             var $rightside = $('<div>', {id: HEADER_RIGHT_ID}).appendTo($header);
             addDisplayName($rightside);
             addLink($rightside);
-            addDescription(APP.$container);
-            addViewButton(APP.$container); //$rightside);
-            addPublicKey(APP.$container);
+            addDescription(APP.$rightside);
+            addViewButton(APP.$rightside); //$rightside);
+            addPublicKey(APP.$rightside);
             APP.initialized = true;
         }
+
+        createLeftside();
+        Cryptpad.removeLoadingScreen();
     };
 
     var onInit = function () {
         
     };
-
     var onDisconnect = function () {};
     var onChange = function () {};
 
@@ -471,6 +499,8 @@ define([
             });
         };
 
+        Cryptpad.removeLoadingScreen();
+
         if (!Cryptpad.isLoggedIn()) {
             var $p = $('<p>', {id: CREATE_ID}).append(Messages.profile_register);
             var $a = $('<a>', {
@@ -489,39 +519,29 @@ define([
         APP.$container.append($create);
     };
 
+    var onCryptpadReady = function () {
+        APP.$leftside = $('<div>', {id: 'leftSide'}).appendTo(APP.$container);
+        APP.$rightside = $('<div>', {id: 'rightSide'}).appendTo(APP.$container);
+
+        createToolbar();
+
+        if (window.location.hash) {
+            return void andThen(window.location.hash.slice(1));
+        }
+        getOrCreateProfile();
+    };
+
     $(function () {
-        var $main = $('#mainBlock');
-        // Language selector
-        var $sel = $('#language-selector');
-        Cryptpad.createLanguageSelector(undefined, $sel);
-        $sel.find('button').addClass('btn').addClass('btn-secondary');
-        $sel.show();
-
-        // User admin menu
-        var $userMenu = $('#user-menu');
-        var userMenuCfg = {
-            $initBlock: $userMenu,
-            'static': true
-        };
-        var $userAdmin = Cryptpad.createUserAdminMenu(userMenuCfg);
-        $userAdmin.find('button').addClass('btn').addClass('btn-secondary');
-
         $(window).click(function () {
             $('.cryptpad-dropdown').hide();
         });
 
-        // main block is hidden in case javascript is disabled
-        $main.removeClass('hidden');
-
         APP.$container = $('#container');
+        APP.$toolbar = $('#toolbar');
 
         Cryptpad.ready(function () {
             Cryptpad.reportAppUsage();
-
-            if (window.location.hash) {
-                return void andThen(window.location.hash.slice(1));
-            }
-            getOrCreateProfile();
+            onCryptpadReady();
         });
     });
 

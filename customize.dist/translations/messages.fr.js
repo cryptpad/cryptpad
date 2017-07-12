@@ -37,6 +37,7 @@ define(function () {
     out.disconnected = 'Déconnecté';
     out.synchronizing = 'Synchronisation';
     out.reconnecting = 'Reconnexion...';
+    out.typing = "Édition";
     out.lag = 'Latence';
     out.readonly = 'Lecture seule';
     out.anonymous = "Anonyme";
