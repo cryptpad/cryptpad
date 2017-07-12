@@ -67,10 +67,16 @@ img.icon {
     flex-flow: row;
     @media screen and (max-width: @size-mobile) {
         display: block;
+        #driveToolbar {
+            .path .element {
+                display: none;
+            }
+        }
         #tree {
             resize: none;
             width: 100%;
             max-width: unset;
+            max-height: unset;
             border-bottom: 1px solid @toolbar-border-col;
             .category {
                 margin-top: 0.5em;

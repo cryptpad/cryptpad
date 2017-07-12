@@ -302,8 +302,8 @@ body .cryptpad-toolbar {
     z-index: 9001;
 
     .dropdown-bar {
-        height: 100%;
-        display: inline-block;
+        //height: 100%;
+        //display: inline-block;
         button {
             height: 100%;
             border-radius: 0;
@@ -620,6 +620,32 @@ body .cryptpad-toolbar {
     }
 }
 
+.app-slide {
+    @media screen and (max-width: @media-medium-screen) {
+        .cryptpad-toolbar-leftside {
+            flex-flow: row wrap;
+            width: 175px;
+            height: auto;
+            .cryptpad-spinner { order: 0; }
+        }
+        .cryptpad-toolbar-rightside {
+            height: 2*@toolbar-line-height;
+        }
+    }
+    @media screen and (max-width: 320px) {
+        .cryptpad-toolbar-leftside {
+            flex-flow: row wrap;
+            width: 175px;
+            height: auto;
+            padding-top: @toolbar-line-height;
+            .cryptpad-spinner { order: 0; }
+        }
+        .cryptpad-toolbar-rightside {
+            height: auto;
+        }
+    }
+}
+
 .cryptpad-toolbar-top {
     display: flex;
     flex-flow: row;
@@ -727,7 +753,6 @@ body .cryptpad-toolbar {
         &:hover {
             background-color: rgba(0,0,0,0.3);
         }
-        order: 2;
         text-align: center;
         font-size: 32px;
         margin-left: 10px;
@@ -785,10 +810,14 @@ body .cryptpad-toolbar {
     }
     .cryptpad-user {
         height: 100%;
-        display: inline-block;
+        display: inline-flex;
         order: 5;
         line-height: @toolbar-top-height;
         color: white;
+        .cryptpad-upgrade { order: 1; }
+        .cryptpad-new { order: 2; }
+        .cryptpad-user-dropdown { order: 3; }
+        .cryptpad-backup { order: 4; }
         &> * {
             display: inline-block;
             height: 100%;
@@ -837,6 +866,14 @@ body .cryptpad-toolbar {
                 }
             }
         }
+        p.accountData {
+            &> span {
+                font-weight: bold;
+                span {
+                    font-weight: normal;
+                }
+            }
+        }
         .cryptpad-backup {
             margin: 0;
             border-radius: 0;
@@ -848,12 +885,14 @@ body .cryptpad-toolbar {
     }
 }
 .cryptpad-toolbar-leftside {
-    height: @toolbar-line-height;
+    //height: @toolbar-line-height;
     &:empty {
         height: 0;
     }
     float: left;
-    margin-bottom: -1px;
+    display: inline-flex;
+    align-items: center;
+    //margin-bottom: -1px;
     .cryptpad-dropdown-users {
         pre {
             /* needed for ckeditor */
@@ -869,17 +908,22 @@ body .cryptpad-toolbar {
     .dropdown-bar-content {
         margin-top: -1px;
     }
-    .limit-container a {
-        height: 26px;
-        margin: 3px 0;
-        line-height: 26px;
-        padding: 0 5px;
-        box-sizing: border-box;
-        border: 1px solid transparent;
-        font-size: 14px;
-        &:hover {
-            text-decoration: none;
-        }
+
+    & > span {
+        height: @toolbar-line-height;
+    }
+
+    #userButtons { order: 1; }
+    .shareButton { order: 2; }
+    .cryptpad-spinner { order: 3; }
+
+    #userButtons button {
+        width: 125px;
+        text-align: center;
+    }
+    .shareButton button {
+        width: 50px;
+        text-align: center;
     }
 }
 .cryptpad-toolbar-rightside {
@@ -986,11 +1030,12 @@ body .cryptpad-toolbar {
     }
 }
 .cryptpad-spinner {
-    line-height: @toolbar-top-height;
+    line-height: @toolbar-line-height;
+    padding: 0 20px;
     &> span.fa {
         height: 20px;
         width: 20px;
-        margin: 8px;
+        //margin: 8px;
         line-height: 20px;
         font-size: 20px;
         text-align: center;
@@ -1000,16 +1045,6 @@ body .cryptpad-toolbar {
     margin-right: 5px;
     font-weight: bold;
     text-transform: uppercase;
-}
-.cryptpad-user {
-    p.accountData {
-        &> span {
-            font-weight: bold;
-            span {
-                font-weight: normal;
-            }
-        }
-    }
 }
 .cryptpad-dropdown-share {
     a {
