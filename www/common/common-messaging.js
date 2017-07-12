@@ -214,7 +214,7 @@ define([
             var messages = channel.messages;
             var $messages = $chat.find('.messages');
             var $msg, msg, date, name;
-            var last = channel.lastDisplayed || -1;
+            var last = typeof(channel.lastDisplayed) === 'number'? channel.lastDisplayed: -1;
             for (var i = last + 1; i<messages.length; i++) {
                 msg = messages[i][1]; // 0 is the hash, 1 the array
                 $msg = $('<div>', {'class': 'message'}).appendTo($messages);
