@@ -1719,7 +1719,9 @@ define([
         if (account && !config.static && store) {
             var $avatar = $userAdmin.find('.buttonTitle');
             var updateButton = function (newName) {
-                var url = store.getProfile().avatar;
+                var profile = store.getProfile();
+                var url = profile && profile.avatar;
+
                 $avatar.html('');
                 common.displayAvatar($avatar, url, newName, function ($img) {
                     if ($img) {
