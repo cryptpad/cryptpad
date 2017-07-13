@@ -6,7 +6,9 @@ define([
     var Msg = {};
 
     var Types = {
-        message: 'MSG'
+        message: 'MSG',
+        update: 'UPDATE',
+        unfriend: 'UNFRIEND'
     };
 
     // TODO: pin the chat channel!
@@ -28,10 +30,10 @@ define([
         return {
             channel: hash || common.createChannelId(),
             displayName: proxy[common.displayNameKey],
-            profile: proxy.profile.view,
+            profile: proxy.profile && proxy.profile.view,
             edPublic: proxy.edPublic,
             curvePublic: proxy.curvePublic,
-            avatar: proxy.profile.avatar
+            avatar: proxy.profile && proxy.profile.avatar
         };
     };
 
@@ -43,6 +45,16 @@ define([
             return data;
         }
         return proxy.friends ? proxy.friends[pubkey] : undefined;
+    };
+
+    var removeFromFriendList = Msg.removeFromFriendList = function (common, edPublic, cb) {
+        var proxy = common.getProxy();
+        if (!proxy.friends) {
+            return;
+        }
+        var friends = proxy.friends;
+        delete friends[edPublic];
+        common.whenRealtimeSyncs(common.getRealtime(), cb);
     };
 
     var getFriendList = Msg.getFriendList = function (common) {
@@ -62,7 +74,7 @@ define([
     // Messaging tools
 
     var avatars = {};
-    Msg.getFriendListUI = function (common, open) {
+    Msg.getFriendListUI = function (common, open, remove) {
         var proxy = common.getProxy();
         var $block = $('<div>');
         var friends = proxy.friends || {};
@@ -72,11 +84,21 @@ define([
             $friend.data('key', f);
             var $rightCol = $('<span>', {'class': 'right-col'});
             $('<span>', {'class': 'name'}).text(data.displayName).appendTo($rightCol);
+            var $remove = $('<span>', {'class': 'remove fa fa-user-times'}).appendTo($rightCol);
             $friend.dblclick(function () {
-                window.open('/profile/#' + data.profile);
+                if (data.profile) {
+                    window.open('/profile/#' + data.profile);
+                }
             });
             $friend.click(function () {
                 open(data.edPublic);
+            });
+            $remove.click(function (e) {
+                e.stopPropagation();
+                Cryptpad.confirm("TODO: Are you sure?", function (yes) {
+                    if (!yes) { return; }
+                    remove(data.edPublic);
+                });
             });
             if (data.avatar && avatars[data.avatar]) {
                 $friend.append(avatars[data.avatar]);
@@ -111,15 +133,40 @@ define([
 
     var channels = Msg.channels  = window.channels = {};
 
-    var pushMsg = function (channel, cryptMsg) {
+    var pushMsg = function (common, channel, cryptMsg) {
         var msg = channel.encryptor.decrypt(cryptMsg);
         var parsedMsg = JSON.parse(msg);
-        if (parsedMsg[0] !== Types.message) { return; }
-        parsedMsg.shift();
-        channel.messages.push([cryptMsg.slice(0,64), parsedMsg]);
+        console.log(parsedMsg);
+        if (parsedMsg[0] === Types.message) {
+            parsedMsg.shift();
+            channel.messages.push([cryptMsg.slice(0,64), parsedMsg]);
+            return;
+        }
+        if (parsedMsg[0] === Types.update) {
+            var proxy = common.getProxy();
+            if (parsedMsg[1] === common.getProxy().edPublic) { return; }
+            var newdata = parsedMsg[3];
+            var data = getFriend(common, parsedMsg[1]);
+            var types = []
+            Object.keys(newdata).forEach(function (k) {
+                if (data[k] !== newdata[k]) {
+                    types.push(k);
+                    data[k] = newdata[k];
+                }
+            });
+            channel.updateUI(types);
+            return;
+        }
+        if (parsedMsg[0] === Types.unfriend) {
+            var proxy = common.getProxy();
+            if (parsedMsg[1] === common.getProxy().edPublic) { return; }
+            channel.wc.leave(Types.unfriend);
+            channel.removeUI();
+            return;
+        }
     };
 
-    var onDirectMessage = function (msg, sender) {
+    var onDirectMessage = function (common, msg, sender) {
         if (sender !== Msg.hk) { return; }
         var parsed = JSON.parse(msg);
         if ((parsed.validateKey || parsed.owners) && parsed.channel) {
@@ -131,16 +178,20 @@ define([
                 // TODO: call a function that shows that the channel is ready? (remove a spinner, ...)
                 // channel[parsed.channel].ready();
                 channels[parsed.channel].ready = true;
+                var updateTypes = channels[parsed.channel].updateOnReady;
+                if (updateTypes) {
+                    channels[parsed.channel].updateUI(updateTypes);
+                }
             }
             return;
         }
         var chan = parsed[3];
         if (!chan || !channels[chan]) { return; }
-        pushMsg(channels[chan], parsed[4]);
+        pushMsg(common, channels[chan], parsed[4]);
     };
-    var onMessage = function (msg, sender, chan) {
+    var onMessage = function (common, msg, sender, chan) {
         if (!channels[chan.id]) { return; }
-        pushMsg(channels[chan.id], msg);
+        pushMsg(common, channels[chan.id], msg);
         channels[chan.id].notify();
         channels[chan.id].refresh();
     };
@@ -158,12 +209,13 @@ define([
         var $input = $('<input>', {type: 'text'}).appendTo($inputBlock);
         var send = function () {
             if (!$input.val()) { return; }
+            // Send the message
             var msg = [Types.message, proxy.edPublic, +new Date(), $input.val()];
             var msgStr = JSON.stringify(msg);
             var cryptMsg = channel.encryptor.encrypt(msgStr);
             channel.wc.bcast(cryptMsg).then(function () {
                 $input.val('');
-                pushMsg(channel, cryptMsg);
+                pushMsg(common, channel, cryptMsg);
                 channel.refresh();
             }, function (err) {
                 console.error(err);
@@ -196,7 +248,9 @@ define([
         var proxy = common.getProxy();
         Msg.hk = network.historyKeeper;
         var friends = getFriendList(common);
-        network.on('message', onDirectMessage);
+        network.on('message', function(msg, sender) {
+            onDirectMessage(common, msg, sender);
+        });
 
         // Refresh the active channel
         var refresh = function (edPublic) {
@@ -263,8 +317,25 @@ define([
             refresh(edPublic);
         };
 
+        var remove = function (edPublic) {
+            var data = getFriend(common, edPublic);
+            var channel = channels[data.channel];
+            var newdata = createData(common, data.channel);
+            var msg = [Types.unfriend, proxy.edPublic, +new Date()];
+            var msgStr = JSON.stringify(msg);
+            var cryptMsg = channel.encryptor.encrypt(msgStr);
+            channel.wc.bcast(cryptMsg).then(function () {
+                removeFromFriendList(common, edPublici, function () {
+                    channel.wc.leave(Types.unfriend);
+                    channel.removeUI();
+                });
+            }, function (err) {
+                console.error(err);
+            });
+        };
+
         // Display friend list
-        common.getFriendListUI(common, display).appendTo($listContainer);
+        common.getFriendListUI(common, display, remove).appendTo($listContainer);
 
         // Notify on new messages
         var notify = function (edPublic) {
@@ -280,6 +351,40 @@ define([
             });
             $friend.removeClass('notify');
         };
+        var removeUI = function (edPublic) {
+            var $friend = $listContainer.find('.friend').filter(function (idx, el) {
+                return $(el).data('key') === edPublic;
+            });
+            $friend.remove();
+        };
+        var updateUI = function (edPublic, types) {
+            var data = getFriend(common, edPublic);
+            var chan = channels[data.channel];
+            if (!chan.ready) {
+                chan.updateOnReady = (chan.updateOnReady || []).concat(types);
+                return;
+            }
+            var $friend = $listContainer.find('.friend').filter(function (idx, el) {
+                return $(el).data('key') === edPublic;
+            });
+            if (types.indexOf('displayName') >= 0) {
+                $friend.find('.name').text(data.displayName);
+            }
+            if (types.indexOf('avatar') >= 0) {
+                $friend.find('.default').remove();
+                $friend.find('media-tag').remove();
+                if (data.avatar && avatars[data.avatar]) {
+                    $friend.prepend(avatars[data.avatar]);
+                } else {
+                    common.displayAvatar($friend, data.avatar, data.displayName, function ($img) {
+                        if (data.avatar && $img) {
+                            avatars[data.avatar] = $img[0].outerHTML;
+
+                        }
+                    });
+                }
+            }
+        };
 
         // Open the channels
         Object.keys(friends).forEach(function (f) {
@@ -292,12 +397,14 @@ define([
                 messages: [],
                 refresh: function () { refresh(data.edPublic); },
                 notify: function () { notify(data.edPublic); },
-                unnotify: function () { unnotify(data.edPublic); }
+                unnotify: function () { unnotify(data.edPublic); },
+                removeUI: function () { removeUI(data.edPublic); },
+                updateUI: function (types) { updateUI(data.edPublic, types); }
             };
             network.join(data.channel).then(function (chan) {
                 channels[data.channel].wc = chan;
                 chan.on('message', function (msg, sender) {
-                    onMessage(msg, sender, chan);
+                    onMessage(common, msg, sender, chan);
                 });
                 var cfg = {
                     validateKey: keys.validateKey,
@@ -313,21 +420,25 @@ define([
                 console.error(err);
             });
         });
+
+        Cryptpad.onDisplayNameChanged(function() {
+            Object.keys(channels).forEach(function (chan) {
+                var channel = channels[chan];
+                var newdata = createData(common, chan);
+                delete newdata.channel;
+                var msg = [Types.update, proxy.edPublic, +new Date(), newdata];
+                var msgStr = JSON.stringify(msg);
+                var cryptMsg = channel.encryptor.encrypt(msgStr);
+                channel.wc.bcast(cryptMsg).then(function () {
+                    channel.refresh();
+                }, function (err) {
+                    console.error(err);
+                });
+            });
+        });
     };
 
     // Invitation
-
-    // Remove should be called from the friend app at the moment
-    // The other user will know it from the private channel ("REMOVE_FRIEND" message?)
-    Msg.removeFromFriendList = function (common, edPublic, cb) {
-        var proxy = common.getProxy();
-        if (!proxy.friends) {
-            return;
-        }
-        var friends = proxy.friends;
-        delete friends[edPublic];
-        common.whenRealtimeSyncs(common.getRealtime(), cb);
-    };
 
     var addToFriendList = Msg.addToFriendList = function (common, data, cb) {
         var proxy = common.getProxy();

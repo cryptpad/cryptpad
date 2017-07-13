@@ -211,6 +211,7 @@ define([
             $('<span>', {'class': 'name'}).text(name).appendTo($rightCol);
             var proxy = Cryptpad.getProxy();
             if (Cryptpad.isLoggedIn() && data.edPublic && data.edPublic !== proxy.edPublic) {
+                console.log(data.edPublic);
                 if (!proxy.friends || !proxy.friends[data.edPublic]) {
                     var $button = $('<button>', {'class': 'friend'}).appendTo($rightCol);
                     $button.text('Add friend').click(function (e) {
