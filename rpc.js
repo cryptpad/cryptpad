@@ -686,7 +686,7 @@ var clearOwnedChannel = function (Env, channelId, unsafeKey, cb) {
     }
 
     Env.msgStore.getChannelMetadata(channelId, function (e, metadata) {
-        if (e) { return Respond(e); }
+        if (e) { return cb(e); }
         if (!(metadata && Array.isArray(metadata.owners))) { return void cb('E_NO_OWNERS'); }
         // Confirm that the channel is owned by the user is question
         if (metadata.owners.indexOf(unsafeKey) === -1) {

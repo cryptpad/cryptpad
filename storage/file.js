@@ -44,6 +44,18 @@ var getChannelMetadata = function (Env, channelId, cb) {
     getMetadataAtPath(Env, path, cb);
 };
 
+var closeChannel = function (env, channelName, cb) {
+    if (!env.channels[channelName]) { return; }
+    try {
+        env.channels[channelName].writeStream.close();
+        delete env.channels[channelName];
+        env.openFiles--;
+        cb();
+    } catch (err) {
+        cb(err);
+    }
+};
+
 var clearChannel = function (Env, channelId, cb) {
     var path = mkPath(Env, channelId);
     getMetadataAtPath(Env, path, function (e, metadata) {
@@ -110,18 +122,6 @@ var checkPath = function (path, callback) {
 var removeChannel = function (env, channelName, cb) {
     var filename = Path.join(env.root, channelName.slice(0, 2), channelName + '.ndjson');
     Fs.unlink(filename, cb);
-};
-
-var closeChannel = function (env, channelName, cb) {
-    if (!env.channels[channelName]) { return; }
-    try {
-        env.channels[channelName].writeStream.close();
-        delete env.channels[channelName];
-        env.openFiles--;
-        cb();
-    } catch (err) {
-        cb(err);
-    }
 };
 
 var flushUnusedChannels = function (env, cb, frame) {
