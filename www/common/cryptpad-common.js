@@ -1829,6 +1829,10 @@ define([
             var proxy = getProxy();
             var network = getNetwork();
 
+            if (Object.keys(proxy).length === 1) {
+                feedback("FIRST_APP_USE", true);
+            }
+
             if (typeof(window.Proxy) === 'undefined') {
                 feedback("NO_PROXIES");
             }
