@@ -1289,41 +1289,11 @@ define([
       return isEmoji(emojis[0])? emojis[0]: str[0];
     };
 
-    var cropImageToSquare = function (container, cb) {
-        var $container = $(container);
-        var $image = $(container).find('img');
-
-        var onLoad = function () {
-            var img = new Image();
-            img.src = $image.attr('src');
-            img.onload = function () {
-                if (img.width > img.height) {
-                    $image.css('max-height', '100%');
-                    $container.css('flex-direction', 'column');
-                    if (cb) { cb($image); }
-                    return;
-                }
-                $image.css('max-width', '100%');
-                $container.css('flex-direction', 'row');
-                if (cb) { cb($container); }
-            };
-        };
-
-        if ($image[0].complete) { return void onLoad(); }
-        $image.on('load', onLoad);
-    };
-
     $(window.document).on('decryption', function (e) {
         var decrypted = e.originalEvent;
         if (decrypted.callback) {
             var cb = decrypted.callback;
             cb(function (mediaObject) {
-                if (mediaObject.type === 'image') {
-                    var $parent = $(mediaObject.element).parent();
-                    if ($parent.hasClass('avatar')) {
-                        return cropImageToSquare(mediaObject.element);
-                    }
-                }
                 if (mediaObject.type !== 'download') { return; }
                 var root = mediaObject.rootElement;
                 if (!root) { return; }
@@ -1390,7 +1360,6 @@ define([
                 var $img = $('<media-tag>').appendTo($container);
                 $img.attr('src', src);
                 $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
-                MediaTag($img[0]);
                 var observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
                         if (mutation.type === 'childList' && mutation.addedNodes.length) {
@@ -1402,7 +1371,6 @@ define([
                             var $image = $img.find('img');
                             var onLoad = function () {
                                 var img = new Image();
-                                img.src = $image.attr('src');
                                 img.onload = function () {
                                     var w = img.width;
                                     var h = img.height;
@@ -1416,6 +1384,7 @@ define([
                                     $img.css('flex-direction', 'row');
                                     if (cb) { cb($img); }
                                 };
+                                img.src = $image.attr('src');
                             };
                             if ($image[0].complete) { onLoad(); }
                             $image.on('load', onLoad);
@@ -1427,6 +1396,7 @@ define([
                     childList: true,
                     characterData: false
                 });
+                MediaTag($img[0]);
             });
         }
     };
