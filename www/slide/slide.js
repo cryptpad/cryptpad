@@ -66,6 +66,7 @@ define([
 
     var goTo = Slide.goTo = function (i) {
         i = i || 0;
+        Slide.index = i;
         $content.find('.slide-container').first().css('margin-left', -(i*100)+'%');
         updateFontSize();
         change(Slide.lastIndex, Slide.index);
@@ -107,7 +108,7 @@ define([
         //$content.find('.' + slideClass).hide();
         //$content.find('.' + slideClass + ':eq( ' + i + ' )').show();
         //$content.css('margin-left', -(i*100)+'vw');
-        goTo(i);
+        goTo(Math.min(i, getNumberOfSlides() - 1));
     };
 
     Slide.updateOptions = function () {
