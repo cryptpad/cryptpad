@@ -67,7 +67,7 @@ module.exports = {
          "connect-src 'self' ws: wss:",
 
         // (insecure remote) images are included by users of the wysiwyg who embed photos in their pads
-        "img-src *",
+        "img-src * blob:",
     ].join('; '),
 
     httpPort: 3000,
