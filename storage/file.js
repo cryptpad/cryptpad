@@ -56,9 +56,9 @@ var closeChannel = function (env, channelName, cb) {
     }
 };
 
-var clearChannel = function (Env, channelId, cb) {
-    var path = mkPath(Env, channelId);
-    getMetadataAtPath(Env, path, function (e, metadata) {
+var clearChannel = function (env, channelId, cb) {
+    var path = mkPath(env, channelId);
+    getMetadataAtPath(env, path, function (e, metadata) {
         if (e) { return cb(e); }
         if (!metadata) {
             return void Fs.truncate(path, 0, function (err) {
@@ -70,9 +70,17 @@ var clearChannel = function (Env, channelId, cb) {
         }
 
         var len = JSON.stringify(metadata).length + 1;
-        Fs.truncate(path, len, function (err) {
-            if (err) { return cb(err); }
-            closeChannel(Env, channelId, cb);
+
+        // as long as closeChannel is synchronous, this should not cause
+        // any race conditions. truncate ought to return faster than a channel
+        // can be opened and read by another user. if that turns out not to be
+        // the case, we'll need to implement locking.
+        closeChannel(env, channelId, function (err) {
+            if (err) { cb(err); }
+            Fs.truncate(path, len, function (err) {
+                if (err) { return cb(err); }
+                cb();
+            });
         });
     });
 };
@@ -120,7 +128,7 @@ var checkPath = function (path, callback) {
 };
 
 var removeChannel = function (env, channelName, cb) {
-    var filename = Path.join(env.root, channelName.slice(0, 2), channelName + '.ndjson');
+    var filename = mkPath(env, channelName);
     Fs.unlink(filename, cb);
 };
 
