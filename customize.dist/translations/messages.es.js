@@ -294,7 +294,7 @@ define(function () {
         '<span style="font-size:18px;"><p>',
         'Esto es&nbsp;<strong>CryptPad</strong>, el editor collaborativo en tiempo real Zero Knowledge. Todo está guardado cuando escribes.',
         '<br>',
-        'Comparte el enlace a este pad para editar con amigos o utiliza el botón <span style="background-color:#5cb85c;color:#ffffff;">&nbsp;Compartir&nbsp;</span> para obtener un <em>enlace solo lectura</em>&nbsp;que permite leer pero no escribir.',
+        'Comparte el enlace a este pad para editar con amigos o utiliza el botón <span class="fa fa-share-alt" style="border: 1px solid black;color:#000;">&nbsp;Compartir&nbsp;</span> para obtener un <em>enlace solo lectura</em>&nbsp;que permite leer pero no escribir.',
         '</p>',
 
         '<p><em>',
