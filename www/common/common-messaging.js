@@ -95,7 +95,7 @@ define([
             });
             $remove.click(function (e) {
                 e.stopPropagation();
-                Cryptpad.confirm("TODO: Are you sure?", function (yes) {
+                common.confirm("TODO: Are you sure?", function (yes) {
                     if (!yes) { return; }
                     remove(data.edPublic);
                 });
@@ -142,12 +142,13 @@ define([
             channel.messages.push([cryptMsg.slice(0,64), parsedMsg]);
             return;
         }
+        var proxy;
         if (parsedMsg[0] === Types.update) {
-            var proxy = common.getProxy();
+            proxy = common.getProxy();
             if (parsedMsg[1] === common.getProxy().edPublic) { return; }
             var newdata = parsedMsg[3];
             var data = getFriend(common, parsedMsg[1]);
-            var types = []
+            var types = [];
             Object.keys(newdata).forEach(function (k) {
                 if (data[k] !== newdata[k]) {
                     types.push(k);
@@ -158,7 +159,7 @@ define([
             return;
         }
         if (parsedMsg[0] === Types.unfriend) {
-            var proxy = common.getProxy();
+            proxy = common.getProxy();
             if (parsedMsg[1] === common.getProxy().edPublic) { return; }
             channel.wc.leave(Types.unfriend);
             channel.removeUI();
@@ -320,12 +321,12 @@ define([
         var remove = function (edPublic) {
             var data = getFriend(common, edPublic);
             var channel = channels[data.channel];
-            var newdata = createData(common, data.channel);
+            //var newdata = createData(common, data.channel);
             var msg = [Types.unfriend, proxy.edPublic, +new Date()];
             var msgStr = JSON.stringify(msg);
             var cryptMsg = channel.encryptor.encrypt(msgStr);
             channel.wc.bcast(cryptMsg).then(function () {
-                removeFromFriendList(common, edPublici, function () {
+                removeFromFriendList(common, edPublic, function () {
                     channel.wc.leave(Types.unfriend);
                     channel.removeUI();
                 });
@@ -421,7 +422,7 @@ define([
             });
         });
 
-        Cryptpad.onDisplayNameChanged(function() {
+        common.onDisplayNameChanged(function() {
             Object.keys(channels).forEach(function (chan) {
                 var channel = channels[chan];
                 var newdata = createData(common, chan);
