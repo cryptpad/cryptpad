@@ -16,15 +16,28 @@
     color: inherit;
 }
 
-#cke_editor1 {
-    .cke_inner {
-        bottom: 0;
-        right: 0;
-        display: flex;
-        flex-flow: column;
-        height: 100vh;
-        width: 100vw;
-    }
+.padColor { color: @toolbar-pad-bg; }
+.codeColor { color: @toolbar-code-bg; }
+.slideColor { color: @toolbar-slide-bg; }
+.pollColor { color: @toolbar-poll-bg; }
+.fileColor { color: @toolbar-file-bg; }
+.whiteboardColor { color: @toolbar-whiteboard-bg; }
+.driveColor { color: @toolbar-drive-bg; }
+.defaultColor { color: @toolbar-default-bg; }
+
+.toolbar-container {
+    display: flex;
+}
+#cke_editor1 .cke_inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    flex-flow: column;
+    height: 100vh;
+    width: 100vw;
 }
 .cke_toolbox_main {
     display: inline-block;
@@ -35,16 +48,11 @@
     margin-top: -1px;
     display: flex;
     overflow: visible;
+    iframe {
+        height: auto;
+        width: 100%;
+    }
 }
-
-.padColor { color: @toolbar-pad-bg; }
-.codeColor { color: @toolbar-code-bg; }
-.slideColor { color: @toolbar-slide-bg; }
-.pollColor { color: @toolbar-poll-bg; }
-.fileColor { color: @toolbar-file-bg; }
-.whiteboardColor { color: @toolbar-whiteboard-bg; }
-.driveColor { color: @toolbar-drive-bg; }
-.defaultColor { color: @toolbar-default-bg; }
 
 body .userlist-drawer {
     font: normal normal normal 16px Arial,Helvetica,Tahoma,Verdana,Sans-Serif;
@@ -104,6 +112,51 @@ body .userlist-drawer {
             background: rgba(0,0,0,0.1);
             margin: 2px 0;
             font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            &.clickable {
+                cursor: pointer;
+                &:hover {
+                    background-color: rgba(0,0,0,0.3);
+                }
+            }
+            .default, media-tag {
+                display: inline-flex;
+                width: 50px;
+                height: 50px;
+                justify-content: center;
+                align-items: center;
+                margin-right: 5px;
+                border-radius: 10px / 6px;
+                overflow: hidden;
+                border: 1px solid black;
+                box-sizing: content-box;
+            }
+            .default {
+                .unselectable();
+                background: white;
+                color: black;
+                font-size: 40px;
+            }
+            .name {
+                flex: 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            media-tag {
+                min-height: 50px;
+                min-width: 50px;
+                max-height: 50px;
+                max-width: 50px;
+                img {
+                    min-width: 100%;
+                    min-height: 100%;
+                    max-width: none;
+                    max-height: none; // To override 'media-tag img' in slide.less
+                    flex-shrink: 0;
+                }
+            }
         }
     }
 }
@@ -718,6 +771,8 @@ body .cryptpad-toolbar {
             padding: 0px;
             margin: 0;
             &::before {
+                width: 100%;
+                text-align: center;
                 padding-top: 4px;
             }
             &:hover {
@@ -796,11 +851,10 @@ body .cryptpad-toolbar {
                 width: 64px;
                 padding: 0;
                 span {
+                    text-align: center;
+                    width: 100%;
                     cursor: default;
                     font-size: 32px;
-                    .fa {
-                        margin-left: 3px;
-                    }
                 }
             }
         }
@@ -850,8 +904,10 @@ body .cryptpad-toolbar {
     }
 }
 .cryptpad-toolbar-rightside {
-    height: 32px;
+    min-height: 32px;
+    overflow: hidden;
     &:empty {
+        min-height: 0;
         height: 0;
     }
     text-align: right;
@@ -873,7 +929,7 @@ body .cryptpad-toolbar {
         background: @dropdown-bg;
         display: flex;
         flex-flow: column;
-        z-index:1000;
+        z-index:10000;
         color: black;
         .fa {
             font-size: 17px;
@@ -881,7 +937,7 @@ body .cryptpad-toolbar {
         &> span {
             box-sizing: border-box;
             min-width: 150px;
-            height: 26px;
+            height: 32px;
             border-radius: 0;
             border: 0;
         }

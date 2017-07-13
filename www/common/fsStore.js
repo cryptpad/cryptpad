@@ -60,6 +60,9 @@ define([
             cb(void 0, res);
         };
 
+        ret.setPadAttribute = filesOp.setAttribute;
+        ret.getPadAttribute = filesOp.getAttribute;
+
         ret.getDrive = function (key, cb) {
             cb(void 0, storeObj.drive[key]);
         };
@@ -210,6 +213,10 @@ define([
             proxy.on('change', [Cryptpad.displayNameKey], function (o, n) {
                 if (typeof(n) !== "string") { return; }
                 Cryptpad.changeDisplayName(n);
+            });
+            proxy.on('change', ['profile'], function () {
+                // Trigger userlist update when the avatar has changed
+                Cryptpad.changeDisplayName(proxy[Cryptpad.displayNameKey]);
             });
             proxy.on('change', [tokenKey], function () {
                 console.log('wut');

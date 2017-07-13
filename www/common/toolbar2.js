@@ -81,15 +81,31 @@ define([
 
         var $rightside = $toolbar.find('.'+RIGHTSIDE_CLS);
         if (!config.hideDrawer) {
-            var $drawerContent = $('<div>', {'class': DRAWER_CLS}).appendTo($rightside).hide();
+            var $drawerContent = $('<div>', {
+                'class': DRAWER_CLS,// + ' dropdown-bar-content cryptpad-dropdown'
+                'tabindex': 1
+            }).appendTo($rightside).hide();
             var $drawer = Cryptpad.createButton('more', true).appendTo($rightside);
             $drawer.click(function () {
                 $drawerContent.toggle();
                 $drawer.removeClass('active');
                 if ($drawerContent.is(':visible')) {
                     $drawer.addClass('active');
+                    $drawerContent.focus();
                 }
             });
+            var onBlur = function (e) {
+                if (e.relatedTarget) {
+                    if ($(e.relatedTarget).is('.drawer-button')) { return; }
+                    if ($(e.relatedTarget).parents('.'+DRAWER_CLS).length) {
+                        $(e.relatedTarget).blur(onBlur);
+                        return;
+                    }
+                }
+                $drawer.removeClass('active');
+                $drawerContent.hide();
+            };
+            $drawerContent.blur(onBlur);
         }
 
         // The 'notitle' class removes the line added for the title with a small screen
@@ -149,6 +165,7 @@ define([
             return $.inArray(i, b) > -1;
         });
     };
+    var avatars = {};
     var updateUserList = function (toolbar, config) {
         // Make sure the elements are displayed
         var $userButtons = toolbar.userlist;
@@ -189,7 +206,25 @@ define([
         // Editors
         editUsersNames.forEach(function (data) {
             var name = data.name || Messages.anonymous;
-            var $span = $('<span>', {'title': name}).text(name);
+            var $name = $('<span>', {'class': 'name'}).text(name);
+            var $span = $('<span>', {'title': name});
+            if (data.profile) {
+                $span.addClass('clickable');
+                $span.click(function () {
+                    window.open('/profile/#' + data.profile);
+                });
+            }
+            if (data.avatar && avatars[data.avatar]) {
+                $span.append(avatars[data.avatar]);
+                $span.append($name);
+            } else {
+                Cryptpad.displayAvatar($span, data.avatar, name, function ($img) {
+                    if (data.avatar && $img) {
+                        avatars[data.avatar] = $img[0].outerHTML;
+                    }
+                    $span.append($name);
+                });
+            }
             $span.data('uid', data.uid);
             $editUsersList.append($span);
         });
@@ -197,9 +232,9 @@ define([
 
         // Viewers
         if (numberOfViewUsers > 0) {
-            var viewText = '<span class="viewer">';
+            var viewText = '<div class="viewer">';
             var viewerText = numberOfViewUsers !== 1 ? Messages.viewers : Messages.viewer;
-            viewText += numberOfViewUsers + ' ' + viewerText + '</span>';
+            viewText += numberOfViewUsers + ' ' + viewerText + '</div>';
             $editUsers.append(viewText);
         }
 
@@ -298,6 +333,11 @@ define([
             if (mobile && $ck.is(':visible')) { return void hide(); }
             if ($content.is(':visible')) { return void show(); }
             hide();
+        });
+        $(window).on('resize', function () {
+            mobile = $('body').width() <= 600;
+            var h = $ck.is(':visible') ? -$ck.height() : 0;
+            $content.css('margin-top', h+'px');
         });
         $closeIcon.click(hide);
         $button.click(function () {
@@ -553,17 +593,17 @@ define([
 
         // We need to override the "a" tag action here because it is inside the iframe!
         var $aTag = $('<a>', {
-            href: "/",
+            href: "/drive/",
             title: Messages.header_logoTitle,
             'class': "cryptpad-logo fa fa-hdd-o"
         });
         var onClick = function (e) {
             e.preventDefault();
             if (e.ctrlKey) {
-                window.open('/drive');
+                window.open('/drive/');
                 return;
             }
-            window.location = "/drive";
+            window.location = "/drive/";
         };
 
         var onContext = function (e) { e.stopPropagation(); };

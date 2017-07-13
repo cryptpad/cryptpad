@@ -9,7 +9,6 @@ define([
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
     '/common/diffMarked.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js', // needed for media-tag
 
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less/cryptpad.less'
@@ -58,7 +57,7 @@ define([
                 }
             });
 
-            var CodeMirror = Cryptpad.createCodemirror(CMeditor, ifrw, Cryptpad);
+            var CodeMirror = Cryptpad.createCodemirror(ifrw, Cryptpad, null, CMeditor);
             $iframe.find('.CodeMirror').addClass('fullPage');
             editor = CodeMirror.editor;
 
@@ -429,7 +428,6 @@ define([
         };
 
         var interval = 100;
-
         var second = function (CM) {
             Cryptpad.ready(function () {
                 andThen(CM);
@@ -444,11 +442,9 @@ define([
 
         var first = function () {
             if (ifrw.CodeMirror) {
-                // it exists, call your continuation
                 second(ifrw.CodeMirror);
             } else {
                 console.log("CodeMirror was not defined. Trying again in %sms", interval);
-                // try again in 'interval' ms
                 setTimeout(first, interval);
             }
         };

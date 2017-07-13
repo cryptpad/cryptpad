@@ -281,7 +281,7 @@ var getUploadSize = function (Env, channel, cb) {
     var paths = Env.paths;
     var path = makeFilePath(paths.blob, channel);
     if (!path) {
-        return cb('INVALID_UPLOAD_ID');
+        return cb('INVALID_UPLOAD_ID', path);
     }
 
     Fs.stat(path, function (err, stats) {
@@ -583,9 +583,10 @@ var resetUserPins = function (Env, publicKey, channelList, cb) {
         if (e) { return void cb(e); }
         var pinSize = sumChannelSizes(sizes);
 
-        getFreeSpace(Env, publicKey, function (e, free) {
+
+        getLimit(Env, publicKey, function (e, limit) {
             if (e) {
-                WARN('getFreeSpace', e);
+                WARN('[RESET_ERR]', e);
                 return void cb(e);
             }
 
@@ -597,7 +598,7 @@ var resetUserPins = function (Env, publicKey, channelList, cb) {
 
                 They will not be able to pin additional pads until they upgrade
                 or delete enough files to go back under their limit. */
-            if (pinSize > free && session.hasPinned) { return void(cb('E_OVER_LIMIT')); }
+            if (pinSize > limit && session.hasPinned) { return void(cb('E_OVER_LIMIT')); }
             pinStore.message(publicKey, JSON.stringify(['RESET', channelList]),
                 function (e) {
                 if (e) { return void cb(e); }
@@ -826,6 +827,13 @@ var upload_status = function (Env, publicKey, filesize, cb) {
     });
 };
 
+var isUnauthenticatedCall = function (call) {
+    return [
+        'GET_FILE_SIZE',
+        'GET_MULTIPLE_FILE_SIZE',
+    ].indexOf(call) !== -1;
+};
+
 var isAuthenticatedCall = function (call) {
     return [
         'COOKIE',
@@ -834,11 +842,8 @@ var isAuthenticatedCall = function (call) {
         'UNPIN',
         'GET_HASH',
         'GET_TOTAL_SIZE',
-        'GET_FILE_SIZE',
         'UPDATE_LIMITS',
         'GET_LIMIT',
-        'GET_MULTIPLE_FILE_SIZE',
-        //'UPLOAD',
         'UPLOAD_COMPLETE',
         'UPLOAD_CANCEL',
     ].indexOf(call) !== -1;
@@ -867,6 +872,34 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
     var blobPath = paths.blob = keyOrDefaultString('blobPath', './blob');
     var blobStagingPath = paths.staging = keyOrDefaultString('blobStagingPath', './blobstage');
 
+    var isUnauthenticateMessage = function (msg) {
+        return msg && msg.length === 2 && isUnauthenticatedCall(msg[0]);
+    };
+
+    var handleUnauthenticatedMessage = function (msg, respond) {
+        switch (msg[0]) {
+            case 'GET_FILE_SIZE':
+                return void getFileSize(Env, msg[1], function (e, size) {
+                    if (e) {
+                        console.error(e);
+                    }
+                    WARN(e, msg[1]);
+                    respond(e, [null, size, null]);
+                });
+            case 'GET_MULTIPLE_FILE_SIZE':
+                return void getMultipleFileSize(Env, msg[1], function (e, dict) {
+                    if (e) {
+                        WARN(e, dict);
+                        return respond(e);
+                    }
+                    respond(e, [null, dict, null]);
+                });
+            default:
+                console.error("unsupported!");
+                return respond('UNSUPPORTED_RPC_CALL', msg);
+        }
+    };
+
     var rpc = function (
         ctx /*:{ store: Object }*/,
         data /*:Array<Array<any>>*/,
@@ -888,11 +921,19 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
             return void respond('INVALID_ARG_FORMAT');
         }
 
+        if (isUnauthenticateMessage(msg)) {
+            return handleUnauthenticatedMessage(msg, respond);
+        }
+
         var signature = msg.shift();
         var publicKey = msg.shift();
 
         // make sure a user object is initialized in the cookie jar
-        beginSession(Sessions, publicKey);
+        if (publicKey) {
+            beginSession(Sessions, publicKey);
+        } else {
+            console.log("No public key");
+        }
 
         var cookie = msg[0];
         if (!isValidCookie(Sessions, publicKey, cookie)) {
@@ -928,7 +969,8 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
         msg.shift();
 
         var Respond = function (e, msg) {
-            var token = Sessions[safeKey].tokens.slice(-1)[0];
+            var session = Sessions[safeKey];
+            var token = session? session.tokens.slice(-1)[0]: '';
             var cookie = makeCookie(token).join('|');
             respond(e, [cookie].concat(typeof(msg) !== 'undefined' ?msg: []));
         };
@@ -1046,8 +1088,8 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
             return void handleMessage(false);
         }
 
-        // restrict upload capability unless explicitly disabled
-        if (config.restrictUploads === false) {
+        // allow unrestricted uploads unless restrictUploads is true
+        if (config.restrictUploads !== true) {
             return void handleMessage(true);
         }
 

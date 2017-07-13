@@ -10,6 +10,7 @@ define([], function () {
             "json.sortify": "/bower_components/json.sortify/dist/JSON.sortify",
             //"pdfjs-dist/build/pdf": "/bower_components/pdfjs-dist/build/pdf",
             //"pdfjs-dist/build/pdf.worker": "/bower_components/pdfjs-dist/build/pdf.worker"
+            cm: '/bower_components/codemirror'
         },
         map: {
             '*': {

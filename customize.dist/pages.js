@@ -444,7 +444,7 @@ define([
                 h('div#poll', [
                     h('div#howItWorks', [
                         h('h1', 'CryptPoll'),
-                        h('h2', Msg.poll_subtitle),
+                        setHTML(h('h2'), Msg.poll_subtitle),
                         h('p', Msg.poll_p_save),
                         h('p', Msg.poll_p_encryption)
                     ]),

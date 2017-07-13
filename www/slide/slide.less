@@ -19,6 +19,7 @@ html, body{
     position: relative;
 }
 body {
+    font-size: unset;
     display: flex;
     flex-flow: column;
 }
@@ -238,6 +239,9 @@ div.modal, div#modal {
                 transition: margin-left 1s;
             }
         }
+        media-tag button {
+            max-height: none;
+        }
     }
 
     box-sizing: border-box;
@@ -321,8 +325,6 @@ div#modal #content, #print {
         img {
             position: relative;
             min-width: 1%;
-            max-width: 90%;
-            max-height: 90%;
             margin: auto;
         }
         .slideNumber {

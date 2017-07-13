@@ -118,6 +118,7 @@ define([
                 return void Cryptpad.alert(Messages.register_mustAcceptTerms);
             }
 
+            setTimeout(function () {
             Cryptpad.confirm("<h2 class='bright'>" + Messages.register_warning + "</h2>",
             function (yes) {
                 if (!yes) { return; }
@@ -200,6 +201,24 @@ define([
             }, true, function ($dialog) {
                 $dialog.find('> div').addClass('half');
             });
+            }, 150);
+        });
+
+        var clickRegister = Cryptpad.notAgainForAnother(function () {
+            $register.click();
+        }, 500);
+
+        $register.on('keypress', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            console.error(e.which);
+            switch (e.which) {
+                case 13: return clickRegister();
+                case 13: return clickRegister();
+                default:
+                    //console.log(e.which);
+            }
         });
 
         Test(function () {

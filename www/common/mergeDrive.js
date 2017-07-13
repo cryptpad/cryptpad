@@ -86,7 +86,7 @@ define([
     exp.anonDriveIntoUser = function (proxy, cb) {
         // Make sure we have an FS_hash and we don't use it, otherwise just stop the migration and cb
         if (!localStorage.FS_hash || !Cryptpad.isLoggedIn()) {
-            if (typeof(cb) === "function") { cb(); }
+            if (typeof(cb) === "function") { return void cb(); }
         }
         // Get the content of FS_hash and then merge the objects, remove the migration key and cb
         var todo = function (err, doc) {

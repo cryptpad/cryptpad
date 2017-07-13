@@ -7,12 +7,14 @@ define([
     '/common/visible.js',
     '/common/notify.js',
     '/file/file-crypto.js',
+
+    '/common/media-tag.js',
+
     '/bower_components/file-saver/FileSaver.min.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
 
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less/cryptpad.less',
-], function ($, Crypto, realtimeInput, Toolbar, Cryptpad, Visible, Notify, FileCrypto) {
+], function ($, Crypto, realtimeInput, Toolbar, Cryptpad, Visible, Notify, FileCrypto, MediaTag) {
     var Messages = Cryptpad.Messages;
     var saveAs = window.saveAs;
     var Nacl = window.nacl;
@@ -91,7 +93,9 @@ define([
 
                     $(window.document).on('decryption', function (e) {
                         var decrypted = e.originalEvent;
-                        if (decrypted.callback) { decrypted.callback(); }
+                        if (decrypted.callback) {
+                            decrypted.callback();
+                        }
 
                         console.log(decrypted);
                         $dlview.show();
@@ -131,32 +135,30 @@ define([
                         console.log(progress.percent);
                     });
 
-                    require(['/common/media-tag.js'], function (MediaTag) {
-                        /**
-                         * Allowed mime types that have to be set for a rendering after a decryption.
-                         *
-                         * @type       {Array}
-                         */
-                        var allowedMediaTypes = [
-                            'image/png',
-                            'image/jpeg',
-                            'image/jpg',
-                            'image/gif',
-                            'audio/mp3',
-                            'audio/ogg',
-                            'audio/wav',
-                            'audio/webm',
-                            'video/mp4',
-                            'video/ogg',
-                            'video/webm',
-                            'application/pdf',
-                            'application/dash+xml',
-                            'download'
-                        ];
-                        MediaTag.CryptoFilter.setAllowedMediaTypes(allowedMediaTypes);
+                    /**
+                     * Allowed mime types that have to be set for a rendering after a decryption.
+                     *
+                     * @type       {Array}
+                     */
+                    var allowedMediaTypes = [
+                        'image/png',
+                        'image/jpeg',
+                        'image/jpg',
+                        'image/gif',
+                        'audio/mp3',
+                        'audio/ogg',
+                        'audio/wav',
+                        'audio/webm',
+                        'video/mp4',
+                        'video/ogg',
+                        'video/webm',
+                        'application/pdf',
+                        'application/dash+xml',
+                        'download'
+                    ];
+                    MediaTag.CryptoFilter.setAllowedMediaTypes(allowedMediaTypes);
 
-                        MediaTag($mt[0]);
-                    });
+                    MediaTag($mt[0]);
                 };
 
                 var todoBigFile = function (sizeMb) {
@@ -181,9 +183,6 @@ define([
                 };
                 Cryptpad.getFileSize(window.location.href, function (e, data) {
                     if (e) {
-                        // TODO when GET_FILE_SIZE is made unauthenticated
-                        // you won't need to handle this error (there won't be one)
-                        if (e === 'RPC_NOT_READY') { return todoBigFile(); }
                         return void Cryptpad.errorLoadingScreen(e);
                     }
                     var size = Cryptpad.bytesToMegabytes(data);

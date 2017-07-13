@@ -240,6 +240,18 @@ define(function () {
     out.canvas_opacityLabel = "opacité: {0}";
     out.canvas_widthLabel = "taille: {0}";
 
+    // Profile
+    out.profileButton = "Profil"; // dropdown menu
+    out.profile_urlPlaceholder = 'URL';
+    out.profile_namePlaceholder = 'Nom ou pseudo pour le profil';
+    out.profile_avatar = "Avatar";
+    out.profile_upload = " Importer un nouvel avatar";
+    out.profile_error = "Erreur lors de la création du profil : {0}";
+    out.profile_register = "Vous devez vous inscrire pour pouvoir créer un profil !";
+    out.profile_create = "Créer un profil";
+    out.profile_description = "Description";
+    out.profile_fieldSaved = 'Nouvelle valeur enregistrée: {0}';
+
     // File manager
 
     out.fm_rootName = "Documents";

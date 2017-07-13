@@ -9,7 +9,6 @@ define([
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
     '/slide/slide.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js', // needed for media-tag
 
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less/cryptpad.less',
@@ -53,7 +52,7 @@ define([
         var andThen = function (CMeditor) {
             var $iframe = $('#pad-iframe').contents();
             var $contentContainer = $iframe.find('#editorContainer');
-            var CodeMirror = Cryptpad.createCodemirror(CMeditor, ifrw, Cryptpad);
+            var CodeMirror = Cryptpad.createCodemirror(ifrw, Cryptpad, null, CMeditor);
             editor = CodeMirror.editor;
 
             var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
@@ -468,7 +467,10 @@ define([
                     Cryptpad.feedback('PRINT_SLIDES');
                     //$('body').append(createPrintDialog());
                 }).append($('<span>', {'class': 'drawer'}).text(Messages.printText));
-                $drawer.append($printButton);
+
+                // TODO reenable this when it is working again
+                $printButton = $printButton;
+                //$drawer.append($printButton);
 
                 var $slideOptions = $('<button>', {
                     title: Messages.slideOptionsTitle,
@@ -590,7 +592,7 @@ define([
 
                 Cryptpad.getPadAttribute('previewMode', function (e, data) {
                     if (e) { return void console.error(e); }
-                    if (data === true && APP.$previewButton) {
+                    if ([true, undefined].indexOf(data) !== -1 && APP.$previewButton) {
                         APP.$previewButton.click();
                     }
                 });

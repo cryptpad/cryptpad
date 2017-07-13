@@ -11,7 +11,6 @@ define([
     '/bower_components/marked/marked.min.js',
     'cm/lib/codemirror',
     'cm/mode/markdown/markdown',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
     'less!/profile/main.less',
 ], function ($, Cryptpad, Listmap, Crypto, Marked, CodeMirror) {
 
@@ -105,7 +104,7 @@ define([
                     if (err) { return void console.error(err); }
                     Cryptpad.whenRealtimeSyncs(realtime, function () {
                         lastVal = newVal;
-                        Cryptpad.log('TODO: '+name+' saved');
+                        Cryptpad.log(Messages._getKey('profile_fieldSaved', [newVal]));
                         editing = false;
                     });
                 });
@@ -156,11 +155,11 @@ define([
         var getValue = function (cb) {
             cb(APP.lm.proxy.name);
         };
-        var placeholder = Messages.anonymous;
+        var placeholder = Messages.profile_namePlaceholder;
         if (APP.readOnly) {
             var $span = $('<span>', {'class': DISPLAYNAME_ID}).appendTo($block);
             getValue(function (value) {
-                $span.text(value || placeholder);
+                $span.text(value || Messages.anonymous);
             });
             return;
         }
@@ -196,7 +195,7 @@ define([
             cb();
         };
         var rt = APP.lm.realtime;
-        var placeholder = "URL"; //XXX
+        var placeholder = Messages.profile_urlPlaceholder;
         createEditableInput($block, LINK_ID, placeholder, getValue, setValue, rt);
     };
 
@@ -209,7 +208,7 @@ define([
             if (!APP.lm.proxy.avatar) {
                 $('<img>', {
                     src: '/customize/images/avatar.png',
-                    title: 'Avatar', // XXX
+                    title: Messages.profile_avatar,
                     alt: 'Avatar'
                 }).appendTo($span);
                 return;
@@ -218,21 +217,20 @@ define([
 
             if (APP.readOnly) { return; }
 
-            var $delButton = $('<button>', {'class': 'delete btn btn-danger fa fa-times'}); //XXX
+            var $delButton = $('<button>', {
+                'class': 'delete btn btn-danger fa fa-times',
+                title: Messages.fc_delete
+            });
             $span.append($delButton);
             $delButton.click(function () {
-                console.log('clicked');
                 var oldChanId = Cryptpad.hrefToHexChannelId(APP.lm.proxy.avatar);
                 Cryptpad.unpinPads([oldChanId], function (e) {
                     if (e) { Cryptpad.log(e); }
-                    console.log('unpinned');
                     delete APP.lm.proxy.avatar;
                     delete Cryptpad.getProxy().profile.avatar;
                     Cryptpad.whenRealtimeSyncs(APP.lm.realtime, function () {
-                        console.log('synced1');
                         var driveRt = Cryptpad.getStore().getProxy().info.realtime;
                         Cryptpad.whenRealtimeSyncs(driveRt, function () {
-                            console.log('synced2');
                             displayAvatar();
                         });
                     });
@@ -285,7 +283,7 @@ define([
             accept: ".gif,.jpg,.jpeg,.png"
         };
         var $upButton = Cryptpad.createButton('upload', false, data);
-        $upButton.text(" Upload a new avatar");
+        $upButton.text(Messages.profile_upload);
         $upButton.prepend($('<span>', {'class': 'fa fa-upload'}));
         $block.append($upButton);
     };
@@ -300,6 +298,7 @@ define([
             $div.html(val);
             return;
         }
+        $('<h3>').text(Messages.profile_description).insertBefore($block);
 
         var $ok = $('<span>', {'class': 'ok fa fa-check', title: Messages.saved}).appendTo($block);
         var $spinner = $('<span>', {'class': 'spin fa fa-spinner fa-pulse'}).appendTo($block);
@@ -388,17 +387,16 @@ define([
                     if (e === 'E_OVER_LIMIT') {
                         Cryptpad.alert(Messages.pinLimitNotPinned, null, true);
                     }
-                    return void Cryptpad.log('Error while creating your profile: ' + e); // XXX
+                    return void Cryptpad.log(Messages._getKey('profile_error', [e]));
                 }
                 obj.profile.edit = Cryptpad.getEditHashFromKeys(channel, secret.keys);
                 obj.profile.view = Cryptpad.getViewHashFromKeys(channel, secret.keys);
-                obj.profile.name = APP.rt.proxy[Cryptpad.displayNameKey] || '';
                 andThen(obj.profile.edit);
             });
         };
 
-        if (!Cryptpad.isLoggedIn()) { // XXX
-            var $p = $('<p>').text('TODO: You have to register to create a profile');
+        if (!Cryptpad.isLoggedIn()) {
+            var $p = $('<p>', {id: CREATE_ID}).append(Messages.profile_register);
             var $a = $('<a>', {
                 href: '/register/'
             });
@@ -411,7 +409,7 @@ define([
         }
         var $create = $('<div>', {id: CREATE_ID});
         var $button = $('<button>', {'class': 'btn btn-success'});
-        $button.text('TODO: create a profile?').click(todo).appendTo($create); // XXX
+        $button.text(Messages.profile_create).click(todo).appendTo($create);
         APP.$container.append($create);
     };
 

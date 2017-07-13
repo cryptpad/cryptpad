@@ -16,9 +16,10 @@ define([
 
     '/common/clipboard.js',
     '/common/pinpad.js',
-    '/customize/application_config.js'
+    '/customize/application_config.js',
+    '/common/media-tag.js',
 ], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Metadata,
-            CodeMirror, Files, FileCrypto, Clipboard, Pinpad, AppConfig) {
+            CodeMirror, Files, FileCrypto, Clipboard, Pinpad, AppConfig, MediaTag) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -49,6 +50,7 @@ define([
 
     var store;
     var rpc;
+    var anon_rpc;
 
     // import UI elements
     common.findCancelButton = UI.findCancelButton;
@@ -76,7 +78,7 @@ define([
     var deduplicateString = common.deduplicateString = Util.deduplicateString;
     common.uint8ArrayToHex = Util.uint8ArrayToHex;
     common.replaceHash = Util.replaceHash;
-    var getHash = common.getHash = Util.getHash;
+    common.getHash = Util.getHash;
     common.fixFileName = Util.fixFileName;
     common.bytesToMegabytes = Util.bytesToMegabytes;
     common.bytesToKilobytes = Util.bytesToKilobytes;
@@ -145,6 +147,16 @@ define([
             }
         }
         return;
+    };
+    common.getProfileUrl = function () {
+        if (store && store.getProfile()) {
+            return store.getProfile().view;
+        }
+    };
+    common.getAvatarUrl = function () {
+        if (store && store.getProfile()) {
+            return store.getProfile().avatar;
+        }
     };
 
     var feedback = common.feedback = function (action, force) {
@@ -414,9 +426,8 @@ define([
 
     // STORAGE
     common.setPadAttribute = function (attr, value, cb) {
-        getStore().setDrive([getHash(), attr].join('.'), value, function (err, data) {
-            cb(err, data);
-        });
+        var href = getRelativeHref(window.location.href);
+        getStore().setPadAttribute(href, attr, value, cb);
     };
     common.setAttribute = function (attr, value, cb) {
         getStore().set(["cryptpad", attr].join('.'), value, function (err, data) {
@@ -429,9 +440,8 @@ define([
 
     // STORAGE
     common.getPadAttribute = function (attr, cb) {
-        getStore().getDrive([getHash(), attr].join('.'), function (err, data) {
-            cb(err, data);
-        });
+        var href = getRelativeHref(window.location.href);
+        getStore().getPadAttribute(href, attr, cb);
     };
     common.getAttribute = function (attr, cb) {
         getStore().get(["cryptpad", attr].join('.'), function (err, data) {
@@ -777,11 +787,32 @@ define([
     };
 
     common.getFileSize = function (href, cb) {
-        if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
+        if (!anon_rpc) { return void cb('ANON_RPC_NOT_READY'); }
+        //if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
         var channelId = Hash.hrefToHexChannelId(href);
-        rpc.getFileSize(channelId, function (e, bytes) {
+        anon_rpc.send("GET_FILE_SIZE", channelId, function (e, response) {
             if (e) { return void cb(e); }
-            cb(void 0, bytes);
+            if (response && response.length && typeof(response[0]) === 'number') {
+                return void cb(void 0, response[0]);
+            } else {
+                cb('INVALID_RESPONSE');
+            }
+        });
+    };
+
+    common.getMultipleFileSize = function (files, cb) {
+        if (!anon_rpc) { return void cb('ANON_RPC_NOT_READY'); }
+        if (!Array.isArray(files)) {
+            return void setTimeout(function () { cb('INVALID_FILE_LIST'); });
+        }
+
+        anon_rpc.send('GET_MULTIPLE_FILE_SIZE', files, function (e, res) {
+            if (e) { return cb(e); }
+            if (res && res.length && typeof(res[0]) === 'object') {
+                cb(void 0, res[0]);
+            } else {
+                cb('UNEXPECTED_RESPONSE');
+            }
         });
     };
 
@@ -800,7 +831,9 @@ define([
         if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
 
         var account = common.account;
-        if (typeof(account.limit) !== 'number' ||
+
+        var ALWAYS_REVALIDATE = true;
+        if (ALWAYS_REVALIDATE || typeof(account.limit) !== 'number' ||
             typeof(account.plan) !== 'string' ||
             typeof(account.note) !== 'string') {
             return void rpc.getLimit(function (e, limit, plan, note) {
@@ -863,7 +896,6 @@ define([
         var $container = $('<span>', {'class':'limit-container'});
         var todo;
         var updateUsage = window.updateUsage = common.notAgainForAnother(function () {
-            console.log("updating usage bar");
             common.getPinnedUsage(todo);
         }, LIMIT_REFRESH_RATE);
 
@@ -933,21 +965,12 @@ define([
         };
 
         setInterval(function () {
-            var t = updateUsage();
-            if (t) {
-                console.log("usage already updated. eligible for refresh in %sms", t);
-            }
+            updateUsage();
         }, LIMIT_REFRESH_RATE * 3);
 
         updateUsage();
         getProxy().on('change', ['drive'], function () {
-            var t = updateUsage();
-            if (t) {
-                console.log("usage bar update throttled due to overuse." +
-                    " Eligible for update in %sms", t);
-            } else {
-                console.log("usage bar updated");
-            }
+            updateUsage();
         });
         cb(null, $container);
     };
@@ -1162,67 +1185,132 @@ define([
         return button;
     };
 
+
+    var emoji_patt = /([\uD800-\uDBFF][\uDC00-\uDFFF])/;
+    var isEmoji = function (str) {
+      return emoji_patt.test(str);
+    };
+    var emojiStringToArray = function (str) {
+      var split = str.split(emoji_patt);
+      var arr = [];
+      for (var i=0; i<split.length; i++) {
+        var char = split[i];
+        if (char !== "") {
+          arr.push(char);
+        }
+      }
+      return arr;
+    };
+    var getFirstEmojiOrCharacter = function (str) {
+      if (!str || !str.trim()) { return '?'; }
+      var emojis = emojiStringToArray(str);
+      return isEmoji(emojis[0])? emojis[0]: str[0];
+    };
+    $(window.document).on('decryption', function (e) {
+        var decrypted = e.originalEvent;
+        if (decrypted.callback) {
+            var cb = decrypted.callback;
+            cb(function (mediaObject) {
+                if (mediaObject.type !== 'download') { return; }
+                var root = mediaObject.rootElement;
+                if (!root) { return; }
+
+                var metadata = decrypted.metadata;
+
+                var title = '';
+                var size = 0;
+                if (metadata && metadata.name) {
+                    title = metadata.name;
+                }
+
+                if (decrypted.blob) {
+                    size = decrypted.blob.size;
+                }
+
+                var sizeMb = common.bytesToMegabytes(size);
+
+                var $btn = $(root).find('button');
+                $btn.addClass('btn btn-success')
+                    .attr('type', 'download')
+                    .html(function () {
+                        var text = Messages.download_mt_button + '<br>';
+                        if (title) {
+                            text += '<b>' + common.fixHTML(title) + '</b><br>';
+                        }
+                        if (size) {
+                            text += '<em>' + Messages._getKey('formattedMB', [sizeMb]) + '</em>';
+                        }
+                        return text;
+                    });
+            });
+        }
+    });
     common.avatarAllowedTypes = [
         'image/png',
         'image/jpeg',
         'image/jpg',
         'image/gif',
     ];
-    common.displayAvatar = function ($container, href) {
+    common.displayAvatar = function ($container, href, name, cb) {
         var MutationObserver = window.MutationObserver;
-        $container.html('');
-        if (href) {
-            var parsed = common.parsePadUrl(href);
-            var secret = common.getSecrets('file', parsed.hash);
-            if (secret.keys && secret.channel) {
-                var cryptKey = secret.keys && secret.keys.fileKeyStr;
-                var hexFileName = common.base64ToHex(secret.channel);
-                var src = common.getBlobPathFromHex(hexFileName);
-                common.getFileSize(href, function (e, data) {
-                    if (e) { return void console.error(e); }
-                    if (typeof data !== "number") { return; }
-                    if (common.bytesToMegabytes(data) > 0.5) { return; }
-                    var $img = $('<media-tag>').appendTo($container);
-                    $img.attr('src', src);
-                    $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
-                    require(['/common/media-tag.js'], function (MediaTag) {
-                        MediaTag.CryptoFilter.setAllowedMediaTypes(common.avatarAllowedTypes);
-                        MediaTag($img[0]);
-                        var observer = new MutationObserver(function(mutations) {
-                            mutations.forEach(function(mutation) {
-                                if (mutation.type === 'childList' && mutation.addedNodes.length) {
-                                    console.log(mutation);
-                                    if (mutation.addedNodes.length > 1 ||
-                                        mutation.addedNodes[0].nodeName !== 'IMG') {
-                                        $img.remove();
-                                        return;
-                                        //TODO display default avatar
-                                    }
-                                    var $image = $img.find('img');
-                                    var onLoad = function () {
-                                        var w = $image.width();
-                                        var h = $image.height();
-                                        if (w>h) {
-                                            $image.css('max-height', '100%');
-                                            $img.css('flex-direction', 'row');
-                                            return;
-                                        }
-                                        $image.css('max-width', '100%');
-                                        $img.css('flex-direction', 'column');
-                                    };
-                                    if ($image[0].complete) { onLoad(); }
-                                    $image.on('load', onLoad);
+        var displayDefault = function () {
+            var text = getFirstEmojiOrCharacter(name);
+            var $avatar = $('<span>', {'class': 'default'}).text(text);
+            $container.append($avatar);
+            if (cb) { cb(); }
+        };
+
+        if (!href) { return void displayDefault(); }
+        var parsed = common.parsePadUrl(href);
+        var secret = common.getSecrets('file', parsed.hash);
+        if (secret.keys && secret.channel) {
+            var cryptKey = secret.keys && secret.keys.fileKeyStr;
+            var hexFileName = common.base64ToHex(secret.channel);
+            var src = common.getBlobPathFromHex(hexFileName);
+            common.getFileSize(href, function (e, data) {
+                if (e) {
+                    displayDefault();
+                    return void console.error(e);
+                }
+                if (typeof data !== "number") { return void displayDefault(); }
+                if (common.bytesToMegabytes(data) > 0.5) { return void displayDefault(); }
+                var $img = $('<media-tag>').appendTo($container);
+                $img.attr('src', src);
+                $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
+                MediaTag($img[0]);
+                var observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.type === 'childList' && mutation.addedNodes.length) {
+                            if (mutation.addedNodes.length > 1 ||
+                                mutation.addedNodes[0].nodeName !== 'IMG') {
+                                $img.remove();
+                                return void displayDefault();
+                            }
+                            var $image = $img.find('img');
+                            var onLoad = function () {
+                                var w = $image.width();
+                                var h = $image.height();
+                                if (w>h) {
+                                    $image.css('max-height', '100%');
+                                    $img.css('flex-direction', 'row');
+                                    if (cb) { cb($img); }
+                                    return;
                                 }
-                            });
-                        });
-                        observer.observe($img[0], {
-                            attributes: false,
-                            childList: true,
-                            characterData: false
-                        });
+                                $image.css('max-width', '100%');
+                                $img.css('flex-direction', 'column');
+                                if (cb) { cb($img); }
+                            };
+                            if ($image[0].complete) { onLoad(); }
+                            $image.on('load', onLoad);
+                        }
+                    });
+                    observer.observe($img[0], {
+                        attributes: false,
+                        childList: true,
+                        characterData: false
                     });
                 });
-            }
+            });
         }
     };
 
@@ -1301,7 +1389,7 @@ define([
                 setActive($val);
                 $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
             }
-            if (config.feedback) { common.feedback(config.feedback); }
+            if (config.feedback && store) { common.feedback(config.feedback); }
         };
 
         $container.click(function (e) {
@@ -1457,6 +1545,13 @@ define([
                 content: Messages.user_rename
             });
         }
+        if (account) {
+            options.push({
+                tag: 'a',
+                attributes: {'class': 'profile'},
+                content: Messages.profileButton
+            });
+        }
         if (parsed && (!parsed.type || parsed.type !== 'settings')) {
             options.push({
                 tag: 'a',
@@ -1514,6 +1609,13 @@ define([
                 window.open('/settings/');
             } else {
                 window.location.href = '/settings/';
+            }
+        });
+        $userAdmin.find('a.profile').click(function () {
+            if (parsed && parsed.type) {
+                window.open('/profile/');
+            } else {
+                window.location.href = '/profile/';
             }
         });
         $userAdmin.find('a.login').click(function () {
@@ -1665,6 +1767,21 @@ define([
                 } else {
                     console.log('pinning disabled');
                 }
+
+                block++;
+                require([
+                    '/common/rpc.js',
+                ], function (Rpc) {
+                    Rpc.createAnonymous(network, function (e, call) {
+                        if (e) {
+                            console.error(e);
+                            return void cb();
+                        }
+                        anon_rpc = common.anon_rpc = env.anon_rpc = call;
+                        cb();
+                    });
+                });
+
 
                 // Everything's ready, continue...
                 if($('#pad-iframe').length) {

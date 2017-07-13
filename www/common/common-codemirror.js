@@ -2,18 +2,18 @@ define([
     'jquery',
     '/common/modes.js',
     '/common/themes.js',
+
     '/bower_components/file-saver/FileSaver.min.js'
 ], function ($, Modes, Themes) {
     var saveAs = window.saveAs;
     var module = {};
 
-    module.create = function (CMeditor, ifrw, Cryptpad) {
+    module.create = function (ifrw, Cryptpad, defaultMode, CMeditor) {
         var exp = {};
-
         var Messages = Cryptpad.Messages;
 
         var CodeMirror = exp.CodeMirror = CMeditor;
-        CodeMirror.modeURL = "/bower_components/codemirror/mode/%N/%N.js";
+        CodeMirror.modeURL = "cm/mode/%N/%N";
 
         var $pad = $('#pad-iframe');
         var $textarea = exp.$textarea = $pad.contents().find('#editor1');
@@ -43,14 +43,16 @@ define([
             extraKeys: {"Shift-Ctrl-R": undefined},
             foldGutter: true,
             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-            mode: "javascript",
+            mode: defaultMode || "javascript",
             readOnly: true
         });
         editor.setValue(Messages.codeInitialState);
 
         var setMode = exp.setMode = function (mode, cb) {
             exp.highlightMode = mode;
-            if (mode !== "text") { CMeditor.autoLoadMode(editor, mode); }
+            if (mode !== "text") {
+                CMeditor.autoLoadMode(editor, mode);
+            }
             editor.setOption('mode', mode);
             if (exp.$language) {
                 var name = exp.$language.find('a[data-value="' + mode + '"]').text() || undefined;
