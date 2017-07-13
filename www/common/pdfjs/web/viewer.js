@@ -1550,7 +1550,7 @@ var PDFViewerApplication = {
 
       _this5.documentInfo = info;
       _this5.metadata = metadata;
-      console.log('PDF ' + pdfDocument.fingerprint + ' [' + info.PDFFormatVersion + ' ' + (info.Producer || '-').trim() + ' / ' + (info.Creator || '-').trim() + ']' + ' (PDF.js: ' + (_pdfjsLib.version || '-') + (!_pdfjsLib.PDFJS.disableWebGL ? ' [WebGL]' : '') + ')');
+      //console.log('PDF ' + pdfDocument.fingerprint + ' [' + info.PDFFormatVersion + ' ' + (info.Producer || '-').trim() + ' / ' + (info.Creator || '-').trim() + ']' + ' (PDF.js: ' + (_pdfjsLib.version || '-') + (!_pdfjsLib.PDFJS.disableWebGL ? ' [WebGL]' : '') + ')');
       var pdfTitle = void 0;
       if (metadata && metadata.has('dc:title')) {
         var title = metadata.get('dc:title');
@@ -3786,7 +3786,7 @@ document.webL10n = function (window, document, undefined) {
         xhrLoadText(url, function (content) {
           parseRawLines(content, false, callback);
         }, function () {
-          console.warn(url + ' not found.');
+          //console.warn(url + ' not found.');
           callback();
         });
       }
@@ -4231,7 +4231,7 @@ document.webL10n = function (window, document, undefined) {
   function getL10nData(key, args, fallback) {
     var data = gL10nData[key];
     if (!data) {
-      console.warn('#' + key + ' is undefined.');
+      //console.warn('#' + key + ' is undefined.');
       if (!fallback) {
         return null;
       }
@@ -4282,7 +4282,7 @@ document.webL10n = function (window, document, undefined) {
     if (!l10n.id) return;
     var data = getL10nData(l10n.id, l10n.args);
     if (!data) {
-      console.warn('#' + l10n.id + ' is undefined.');
+      //console.warn('#' + l10n.id + ' is undefined.');
       return;
     }
     if (data[gTextProp]) {

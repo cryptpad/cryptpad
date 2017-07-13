@@ -5277,7 +5277,7 @@ g = function () {
   return this;
 }();
 try {
-  g = g || Function("return this")() || (1, eval)("this");
+  g = g || function () { return this; }; //Function("return this")() || (1, eval)("this");
 } catch (e) {
   if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === "object") g = window;
 }
