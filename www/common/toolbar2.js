@@ -208,12 +208,21 @@ define([
             var name = data.name || Messages.anonymous;
             var $span = $('<span>', {'title': name, 'class': 'avatar'});
             var $rightCol = $('<span>', {'class': 'right-col'});
-            $('<span>', {'class': 'name'}).text(name).appendTo($rightCol);
+            var $nameSpan = $('<span>', {'class': 'name'}).text(name).appendTo($rightCol);
             var proxy = Cryptpad.getProxy();
-            if (Cryptpad.isLoggedIn() && data.edPublic && data.edPublic !== proxy.edPublic) {
-                if (!proxy.friends || !proxy.friends[data.edPublic]) {
-                    var $button = $('<button>', {'class': 'friend'}).appendTo($rightCol);
-                    $button.text('Add friend').click(function (e) {
+            var isMe = data.edPublic === proxy.edPublic;
+            if (Cryptpad.isLoggedIn() && data.edPublic) {
+                if (isMe) {
+                    $nameSpan.attr('title', Messages._getKey('userlist_thisIsYou', [
+                        name
+                    ])).text(name);
+                } else if (!proxy.friends || !proxy.friends[data.edPublic]) {
+                    $('<span>', {
+                        'class': 'fa fa-user-plus friend',
+                        'title': Messages._getKey('userlist_addAsFriendTitle', [
+                            name
+                        ])
+                    }).appendTo($rightCol).click(function (e) {
                         e.stopPropagation();
                         Cryptpad.inviteFromUserlist(Cryptpad, data.netfluxId);
                     });
