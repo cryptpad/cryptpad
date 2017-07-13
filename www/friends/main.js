@@ -7,7 +7,7 @@ define([
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less/cryptpad.less',
 ], function ($, Crypto, Toolbar, Cryptpad) {
-    //var Messages = Cryptpad.Messages;
+    var Messages = Cryptpad.Messages;
 
     var APP = window.APP = {
         Cryptpad: Cryptpad
@@ -25,7 +25,7 @@ define([
         var $messages = $iframe.find('#messaging');
         var $bar = $iframe.find('.toolbar-container');
 
-        var displayed = ['useradmin', 'newpad', 'limit', 'lag', 'spinner'];
+        var displayed = ['useradmin', 'newpad', 'limit'];
 
         var configTb = {
             displayed: displayed,
@@ -36,6 +36,15 @@ define([
         };
         var toolbar = APP.toolbar = Toolbar.create(configTb);
         toolbar.$rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
+
+        Cryptpad.getProxy().on('disconnect', function () {
+            // TODO readonly
+            Cryptpad.alert(Messages.common_connectionLost, undefined, true);
+        });
+        Cryptpad.getProxy().on('reconnect', function () {
+            // TODO cancel readonly
+            Cryptpad.findOKButton().click();
+        });
 
         Cryptpad.initMessaging(Cryptpad, $list, $messages);
 
