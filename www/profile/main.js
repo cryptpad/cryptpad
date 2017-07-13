@@ -158,14 +158,22 @@ define([
     };
     */
 
+    var isFriend = function (proxy, edKey) {
+        var friends = Cryptpad.find(proxy, ['friends']);
+        return typeof(edKey) === 'string' && friends && (edKey in friends);
+    };
+
     var addCreateInviteLinkButton = function ($container) {
         var obj = APP.lm.proxy;
 
         var proxy = Cryptpad.getProxy();
         var userViewHash = Cryptpad.find(proxy, ['profile', 'view']);
 
-        if (!APP.readOnly || !obj.curveKey || userViewHash === window.location.hash.slice(1)) {
-            console.log("edit mode or missing curve key, or you're viewing your own profile");
+        var edKey = obj.edKey;
+        var curveKey = obj.curveKey;
+
+        if (!APP.readOnly || !curveKey || !edKey || userViewHash === window.location.hash.slice(1) || isFriend(proxy, edKey)) {
+            //console.log("edit mode or missing curve key, or you're viewing your own profile");
             return;
         }
 
@@ -431,6 +439,7 @@ define([
             var pubKeys = Cryptpad.getPublicKeys();
             if (pubKeys && pubKeys.curve) {
                 obj.curveKey = pubKeys.curve;
+                obj.edKey = pubKeys.ed;
             }
         }
 
