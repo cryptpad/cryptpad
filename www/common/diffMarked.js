@@ -168,7 +168,7 @@ define([
                 var observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
                         if (mutation.type === 'childList') {
-                            console.log(el.outerHTML);
+                            //console.log(el.outerHTML);
                             var list_values = [].slice.call(el.children);
                             mediaMap[el.getAttribute('src')] = list_values;
                         }
