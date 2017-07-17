@@ -242,6 +242,24 @@ define([
         var proxy = common.getProxy();
 
         var $header = $('<div>', {'class': 'header avatar'}).appendTo($container);
+/*
+        var $removeHistory = $('<button>', {
+            'class': 'remove-history'
+        }).text('remove chat history').click(function () {
+            Cryptpad.confirm('are you sure?', function (yes) {
+                if (!yes) { return; }
+                Cryptpad.clearOwnedChannel(data.channel, function (e) {
+                    if (e) {
+                        console.error(e);
+                        Cryptpad.alert("Something went wrong");
+                        return;
+                    }
+                });
+            });
+        });
+        $removeHistory.appendTo($header); //rightCol);
+*/
+
         $('<div>', {'class': 'messages'}).appendTo($container);
         var $inputBlock = $('<div>', {'class': 'input'}).appendTo($container);
 
