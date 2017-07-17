@@ -53,7 +53,7 @@ define(function () {
                 uid: Cryptpad.getUid(),
                 avatar: Cryptpad.getAvatarUrl(),
                 profile: Cryptpad.getProfileUrl(),
-                edPublic: Cryptpad.getProxy().edPublic
+                curvePublic: Cryptpad.getProxy().curvePublic
             };
             addToUserData(myData);
             /*Cryptpad.setAttribute('username', exp.myUserName, function (err) {
@@ -84,7 +84,7 @@ define(function () {
                         uid: Cryptpad.getUid(),
                         avatar: Cryptpad.getAvatarUrl(),
                         profile: Cryptpad.getProfileUrl(),
-                        edPublic: Cryptpad.getProxy().edPublic
+                        curvePublic: Cryptpad.getProxy().curvePublic
                     };
                     addToUserData(myData);
                     onLocal();

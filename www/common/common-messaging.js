@@ -23,6 +23,7 @@ define([
     // - mute a channel (hide notifications or don't open it?)
     // 
 
+    var ready = [];
     var pending = {};
 
     var createData = Msg.createData = function (common, hash) {
@@ -39,7 +40,7 @@ define([
 
     var getFriend = function (common, pubkey) {
         var proxy = common.getProxy();
-        if (pubkey === proxy.edPublic) {
+        if (pubkey === proxy.curvePublic) {
             var data = createData(common);
             delete data.channel;
             return data;
@@ -47,70 +48,78 @@ define([
         return proxy.friends ? proxy.friends[pubkey] : undefined;
     };
 
-    var removeFromFriendList = Msg.removeFromFriendList = function (common, edPublic, cb) {
+    var removeFromFriendList = Msg.removeFromFriendList = function (common, curvePublic, cb) {
         var proxy = common.getProxy();
         if (!proxy.friends) {
             return;
         }
         var friends = proxy.friends;
-        delete friends[edPublic];
+        delete friends[curvePublic];
         common.whenRealtimeSyncs(common.getRealtime(), cb);
     };
 
     var getFriendList = Msg.getFriendList = function (common) {
         var proxy = common.getProxy();
-        return proxy.friends || {};
+        if (!proxy.friends) { proxy.friends = {}; }
+        return proxy.friends;
     };
 
     Msg.getFriendChannelsList = function (common) {
         var friends = getFriendList(common);
         var list = [];
         Object.keys(friends).forEach(function (key) {
+            if (key === "me") { return; }
             list.push(friends[key].channel);
         });
         return list;
     };
 
     // Messaging tools
-
     var avatars = {};
+
+    var addToFriendListUI = function (common, $block, open, remove, f) {
+        var proxy = common.getProxy();
+        var friends = proxy.friends || {};
+        if (f === "me") { return; }
+        var data = friends[f];
+        var $friend = $('<div>', {'class': 'friend avatar'}).appendTo($block);
+        $friend.data('key', f);
+        var $rightCol = $('<span>', {'class': 'right-col'});
+        $('<span>', {'class': 'name'}).text(data.displayName).appendTo($rightCol);
+        var $remove = $('<span>', {'class': 'remove fa fa-user-times'}).appendTo($rightCol);
+        $friend.dblclick(function () {
+            if (data.profile) {
+                window.open('/profile/#' + data.profile);
+            }
+        });
+        $friend.click(function () {
+            open(data.curvePublic);
+        });
+        $remove.click(function (e) {
+            e.stopPropagation();
+            common.confirm("TODO: Are you sure?", function (yes) {//XXX
+                if (!yes) { return; }
+                remove(data.curvePublic);
+            });
+        });
+        if (data.avatar && avatars[data.avatar]) {
+            $friend.append(avatars[data.avatar]);
+            $friend.append($rightCol);
+        } else {
+            common.displayAvatar($friend, data.avatar, data.displayName, function ($img) {
+                if (data.avatar && $img) {
+                    avatars[data.avatar] = $img[0].outerHTML;
+                }
+                $friend.append($rightCol);
+            });
+        }
+    };
     Msg.getFriendListUI = function (common, open, remove) {
         var proxy = common.getProxy();
         var $block = $('<div>');
         var friends = proxy.friends || {};
         Object.keys(friends).forEach(function (f) {
-            var data = friends[f];
-            var $friend = $('<div>', {'class': 'friend avatar'}).appendTo($block);
-            $friend.data('key', f);
-            var $rightCol = $('<span>', {'class': 'right-col'});
-            $('<span>', {'class': 'name'}).text(data.displayName).appendTo($rightCol);
-            var $remove = $('<span>', {'class': 'remove fa fa-user-times'}).appendTo($rightCol);
-            $friend.dblclick(function () {
-                if (data.profile) {
-                    window.open('/profile/#' + data.profile);
-                }
-            });
-            $friend.click(function () {
-                open(data.edPublic);
-            });
-            $remove.click(function (e) {
-                e.stopPropagation();
-                common.confirm("TODO: Are you sure?", function (yes) {
-                    if (!yes) { return; }
-                    remove(data.edPublic);
-                });
-            });
-            if (data.avatar && avatars[data.avatar]) {
-                $friend.append(avatars[data.avatar]);
-                $friend.append($rightCol);
-            } else {
-                common.displayAvatar($friend, data.avatar, data.displayName, function ($img) {
-                    if (data.avatar && $img) {
-                        avatars[data.avatar] = $img[0].outerHTML;
-                    }
-                    $friend.append($rightCol);
-                });
-            }
+            addToFriendListUI(common, $block, open, remove, f);
         });
         return $block;
     };
@@ -136,16 +145,15 @@ define([
     var pushMsg = function (common, channel, cryptMsg) {
         var msg = channel.encryptor.decrypt(cryptMsg);
         var parsedMsg = JSON.parse(msg);
-        console.log(parsedMsg);
         if (parsedMsg[0] === Types.message) {
             parsedMsg.shift();
             channel.messages.push([cryptMsg.slice(0,64), parsedMsg]);
-            return;
+            return true;
         }
         var proxy;
         if (parsedMsg[0] === Types.update) {
             proxy = common.getProxy();
-            if (parsedMsg[1] === common.getProxy().edPublic) { return; }
+            if (parsedMsg[1] === common.getProxy().curvePublic) { return; }
             var newdata = parsedMsg[3];
             var data = getFriend(common, parsedMsg[1]);
             var types = [];
@@ -160,11 +168,46 @@ define([
         }
         if (parsedMsg[0] === Types.unfriend) {
             proxy = common.getProxy();
-            if (parsedMsg[1] === common.getProxy().edPublic) { return; }
-            channel.wc.leave(Types.unfriend);
-            channel.removeUI();
+            removeFromFriendList(common, channel.friendEd, function () {
+                channel.wc.leave(Types.unfriend);
+                channel.removeUI();
+            });
             return;
         }
+    };
+
+    var updateMyData = function (common) {
+        var friends = getFriendList(common);
+        var mySyncData = friends.me;
+        var myData = createData(common);
+        if (!mySyncData || mySyncData.displayName !== myData.displayName
+             || mySyncData.profile !== myData.profile
+             || mySyncData.avatar !== myData.avatar) {
+            delete myData.channel;
+            Object.keys(channels).forEach(function (chan) {
+                var channel = channels[chan];
+                var msg = [Types.update, myData.curvePublic, +new Date(), myData];
+                var msgStr = JSON.stringify(msg);
+                var cryptMsg = channel.encryptor.encrypt(msgStr);
+                channel.wc.bcast(cryptMsg).then(function () {
+                    channel.refresh();
+                }, function (err) {
+                    console.error(err);
+                });
+            });
+            friends.me = myData;
+        }
+    };
+
+    var onChannelReady = function (common, chanId) {
+        if (ready.indexOf(chanId) !== -1) { return; }
+        ready.push(chanId);
+        var friends = getFriendList(common);
+        if (ready.length === Object.keys(friends).length) {
+            // All channels are ready
+            updateMyData(common);
+        }
+        return ready.length;
     };
 
     var onDirectMessage = function (common, msg, sender) {
@@ -179,6 +222,7 @@ define([
                 // TODO: call a function that shows that the channel is ready? (remove a spinner, ...)
                 // channel[parsed.channel].ready();
                 channels[parsed.channel].ready = true;
+                onChannelReady(common, parsed.channel);
                 var updateTypes = channels[parsed.channel].updateOnReady;
                 if (updateTypes) {
                     channels[parsed.channel].updateUI(updateTypes);
@@ -192,13 +236,15 @@ define([
     };
     var onMessage = function (common, msg, sender, chan) {
         if (!channels[chan.id]) { return; }
-        pushMsg(common, channels[chan.id], msg);
-        channels[chan.id].notify();
-        channels[chan.id].refresh();
+        var isMessage = pushMsg(common, channels[chan.id], msg);
+        if (isMessage) {
+            channels[chan.id].notify();
+            channels[chan.id].refresh();
+        }
     };
 
-    var createChatBox = function (common, $container, edPublic) {
-        var data = getFriend(common, edPublic);
+    var createChatBox = function (common, $container, curvePublic) {
+        var data = getFriend(common, curvePublic);
         var proxy = common.getProxy();
 
         var $header = $('<div>', {'class': 'header avatar'}).appendTo($container);
@@ -208,17 +254,22 @@ define([
         // Input
         var channel = channels[data.channel];
         var $input = $('<input>', {type: 'text'}).appendTo($inputBlock);
+        var sending = false;
         var send = function () {
+            if (sending) { return; }
             if (!$input.val()) { return; }
             // Send the message
-            var msg = [Types.message, proxy.edPublic, +new Date(), $input.val()];
+            var msg = [Types.message, proxy.curvePublic, +new Date(), $input.val()];
             var msgStr = JSON.stringify(msg);
             var cryptMsg = channel.encryptor.encrypt(msgStr);
+            sending = true;
             channel.wc.bcast(cryptMsg).then(function () {
                 $input.val('');
                 pushMsg(common, channel, cryptMsg);
                 channel.refresh();
+                sending = false;
             }, function (err) {
+                sending = false;
                 console.error(err);
             });
         };
@@ -254,14 +305,15 @@ define([
         });
 
         // Refresh the active channel
-        var refresh = function (edPublic) {
-            if (Msg.active !== edPublic) { return; }
-            var data = friends[edPublic];
+        var refresh = function (curvePublic) {
+            if (Msg.active !== curvePublic) { return; }
+            var data = friends[curvePublic];
+            if (!data) { return; }
             var channel = channels[data.channel];
             if (!channel) { return; }
 
             var $chat = $msgContainer.find('.chat').filter(function (idx, el) {
-                return $(el).data('key') === edPublic;
+                return $(el).data('key') === curvePublic;
             });
 
             if (!$chat.length) { return; }
@@ -299,34 +351,35 @@ define([
             }
         };
         // Display a new channel
-        var display = function (edPublic) {
+        var display = function (curvePublic) {
             var isNew = false;
             var $chat = $msgContainer.find('.chat').filter(function (idx, el) {
-                return $(el).data('key') === edPublic;
+                return $(el).data('key') === curvePublic;
             });
             if (!$chat.length) {
-                $chat = $('<div>', {'class':'chat'}).data('key', edPublic).appendTo($msgContainer);
-                createChatBox(common, $chat, edPublic);
+                $chat = $('<div>', {'class':'chat'})
+                        .data('key', curvePublic).appendTo($msgContainer);
+                createChatBox(common, $chat, curvePublic);
                 isNew = true;
             }
             // Show the correct div
             $msgContainer.find('.chat').hide();
             $chat.show();
 
-            Msg.active = edPublic;
+            Msg.active = curvePublic;
 
-            refresh(edPublic);
+            refresh(curvePublic);
         };
 
-        var remove = function (edPublic) {
-            var data = getFriend(common, edPublic);
+        var remove = function (curvePublic) {
+            var data = getFriend(common, curvePublic);
             var channel = channels[data.channel];
             //var newdata = createData(common, data.channel);
-            var msg = [Types.unfriend, proxy.edPublic, +new Date()];
+            var msg = [Types.unfriend, proxy.curvePublic, +new Date()];
             var msgStr = JSON.stringify(msg);
             var cryptMsg = channel.encryptor.encrypt(msgStr);
             channel.wc.bcast(cryptMsg).then(function () {
-                removeFromFriendList(common, edPublic, function () {
+                removeFromFriendList(common, curvePublic, function () {
                     channel.wc.leave(Types.unfriend);
                     channel.removeUI();
                 });
@@ -339,34 +392,34 @@ define([
         common.getFriendListUI(common, display, remove).appendTo($listContainer);
 
         // Notify on new messages
-        var notify = function (edPublic) {
-            if (Msg.active === edPublic) { return; }
+        var notify = function (curvePublic) {
+            if (Msg.active === curvePublic) { return; }
             var $friend = $listContainer.find('.friend').filter(function (idx, el) {
-                return $(el).data('key') === edPublic;
+                return $(el).data('key') === curvePublic;
             });
             $friend.addClass('notify');
         };
-        var unnotify = function (edPublic) {
+        var unnotify = function (curvePublic) {
             var $friend = $listContainer.find('.friend').filter(function (idx, el) {
-                return $(el).data('key') === edPublic;
+                return $(el).data('key') === curvePublic;
             });
             $friend.removeClass('notify');
         };
-        var removeUI = function (edPublic) {
+        var removeUI = function (curvePublic) {
             var $friend = $listContainer.find('.friend').filter(function (idx, el) {
-                return $(el).data('key') === edPublic;
+                return $(el).data('key') === curvePublic;
             });
             $friend.remove();
         };
-        var updateUI = function (edPublic, types) {
-            var data = getFriend(common, edPublic);
+        var updateUI = function (curvePublic, types) {
+            var data = getFriend(common, curvePublic);
             var chan = channels[data.channel];
             if (!chan.ready) {
                 chan.updateOnReady = (chan.updateOnReady || []).concat(types);
                 return;
             }
             var $friend = $listContainer.find('.friend').filter(function (idx, el) {
-                return $(el).data('key') === edPublic;
+                return $(el).data('key') === curvePublic;
             });
             if (types.indexOf('displayName') >= 0) {
                 $friend.find('.name').text(data.displayName);
@@ -380,7 +433,6 @@ define([
                     common.displayAvatar($friend, data.avatar, data.displayName, function ($img) {
                         if (data.avatar && $img) {
                             avatars[data.avatar] = $img[0].outerHTML;
-
                         }
                     });
                 }
@@ -388,22 +440,24 @@ define([
         };
 
         // Open the channels
-        Object.keys(friends).forEach(function (f) {
+        var openFriendChannel = function (f) {
+            if (f === "me") { return; }
             var data = friends[f];
             var keys = Curve.deriveKeys(data.curvePublic, proxy.curvePrivate);
             var encryptor = Curve.createEncryptor(keys);
-            channels[data.channel] = {
-                keys: keys,
-                encryptor: encryptor,
-                messages: [],
-                refresh: function () { refresh(data.edPublic); },
-                notify: function () { notify(data.edPublic); },
-                unnotify: function () { unnotify(data.edPublic); },
-                removeUI: function () { removeUI(data.edPublic); },
-                updateUI: function (types) { updateUI(data.edPublic, types); }
-            };
             network.join(data.channel).then(function (chan) {
-                channels[data.channel].wc = chan;
+                channels[data.channel] = {
+                    friendEd: f,
+                    keys: keys,
+                    encryptor: encryptor,
+                    messages: [],
+                    refresh: function () { refresh(data.curvePublic); },
+                    notify: function () { notify(data.curvePublic); },
+                    unnotify: function () { unnotify(data.curvePublic); },
+                    removeUI: function () { removeUI(data.curvePublic); },
+                    updateUI: function (types) { updateUI(data.curvePublic, types); },
+                    wc: chan
+                };
                 chan.on('message', function (msg, sender) {
                     onMessage(common, msg, sender, chan);
                 });
@@ -420,22 +474,24 @@ define([
             }, function (err) {
                 console.error(err);
             });
-        });
+        };
+        Object.keys(friends).forEach(openFriendChannel);
 
-        common.onDisplayNameChanged(function() {
-            Object.keys(channels).forEach(function (chan) {
-                var channel = channels[chan];
-                var newdata = createData(common, chan);
-                delete newdata.channel;
-                var msg = [Types.update, proxy.edPublic, +new Date(), newdata];
-                var msgStr = JSON.stringify(msg);
-                var cryptMsg = channel.encryptor.encrypt(msgStr);
-                channel.wc.bcast(cryptMsg).then(function () {
-                    channel.refresh();
-                }, function (err) {
-                    console.error(err);
+        var checkNewFriends = function () {
+            Object.keys(friends).forEach(function (f) {
+                var $friend = $listContainer.find('.friend').filter(function (idx, el) {
+                    return $(el).data('key') === f;
                 });
+                if (!$friend.length) {
+                    openFriendChannel(f);
+                    addToFriendListUI(common, $listContainer.find('> div'), display, remove, f);
+                }
             });
+        };
+
+        common.onDisplayNameChanged(function () {
+            checkNewFriends();
+            updateMyData(common);
         });
     };
 
@@ -447,12 +503,12 @@ define([
             proxy.friends = {};
         }
         var friends = proxy.friends;
-        var pubKey = data.edPublic;
+        var pubKey = data.curvePublic;
 
-        if (pubKey === proxy.edPublic) { return void cb("E_MYKEY"); }
-        if (friends[pubKey]) { return void cb("E_EXISTS"); }
+        if (pubKey === proxy.curvePublic) { return void cb("E_MYKEY"); }
 
         friends[pubKey] = data;
+
         common.whenRealtimeSyncs(common.getRealtime(), function () {
             common.pinPads([data.channel], cb);
         });
@@ -481,21 +537,20 @@ define([
                 var msgStr;
                 if (msg[0] === "FRIEND_REQ") {
                     msg = ["FRIEND_REQ_NOK", chan];
-                    var existing = getFriend(common, msgData.edPublic);
-                    if (existing) {
-                        msg = ["FRIEND_REQ_OK", chan, createData(common, existing.channel)];
-                        msgStr = Crypto.encrypt(JSON.stringify(msg), key);
-                        network.sendto(sender, msgStr);
-                        return;
-                    }
-                    common.confirm("Accept friend?", function (yes) { // XXX
+                    var todo = function (yes) {
                         if (yes) {
                             pending[sender] = msgData;
                             msg = ["FRIEND_REQ_OK", chan, createData(common, msgData.channel)];
                         }
                         msgStr = Crypto.encrypt(JSON.stringify(msg), key);
                         network.sendto(sender, msgStr);
-                    });
+                    };
+                    var existing = getFriend(common, msgData.curvePublic);
+                    if (existing) {
+                        todo(true);
+                        return;
+                    }
+                    common.confirm("Accept friend?", todo);// TODO
                     return;
                 }
                 if (msg[0] === "FRIEND_REQ_OK") {

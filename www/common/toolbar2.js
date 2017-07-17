@@ -200,7 +200,6 @@ define([
         // Update the userlist
         var $editUsers = $userlistContent.find('.' + USERLIST_CLS).html('');
 
-
         var $editUsersList = $('<div>', {'class': 'userlist-others'});
 
         // Editors
@@ -210,13 +209,14 @@ define([
             var $rightCol = $('<span>', {'class': 'right-col'});
             var $nameSpan = $('<span>', {'class': 'name'}).text(name).appendTo($rightCol);
             var proxy = Cryptpad.getProxy();
-            var isMe = data.edPublic === proxy.edPublic;
-            if (Cryptpad.isLoggedIn() && data.edPublic) {
+            var isMe = data.curvePublic === proxy.curvePublic;
+
+            if (Cryptpad.isLoggedIn() && data.curvePublic) {
                 if (isMe) {
                     $nameSpan.attr('title', Messages._getKey('userlist_thisIsYou', [
                         name
                     ])).text(name);
-                } else if (!proxy.friends || !proxy.friends[data.edPublic]) {
+                } else if (!proxy.friends || !proxy.friends[data.curvePublic]) {
                     $('<span>', {
                         'class': 'fa fa-user-plus friend',
                         'title': Messages._getKey('userlist_addAsFriendTitle', [
@@ -777,8 +777,14 @@ define([
             });
         });
         Cryptpad.onDisplayNameChanged(function () {
-            Cryptpad.findCancelButton().click();
-            updateDisplayName(toolbar, config);
+            window.setTimeout(function () {
+                Cryptpad.findCancelButton().click();
+                if (config.userList) {
+                    updateUserList(toolbar, config);
+                    return;
+                }
+                updateDisplayName(toolbar, config);
+            }, 0);
         });
 
         updateDisplayName(toolbar, config);
