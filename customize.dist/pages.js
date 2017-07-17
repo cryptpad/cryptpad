@@ -481,7 +481,7 @@ define([
         return loadingScreen();
     };
 
-    Pages['/friends/'] = Pages['/friends/index.html'] = function () {
+    Pages['/contacts/'] = Pages['/contacts/index.html'] = function () {
         return loadingScreen();
     };
 
