@@ -5,6 +5,22 @@ define([
     '/common/curve.js',
     'less!/invite/main.less',
 ], function ($, Cryptpad, Listmap, Curve) {
+    var Messages = Cryptpad.Messages;
+    var comingSoon = function () {
+        return $('<div>', {
+            'class': 'coming-soon',
+        })
+        .text(Messages.comingSoon)
+        .append('<br>');
+    };
+
+    $(function () {
+        Cryptpad.removeLoadingScreen();
+        console.log("wut");
+        $('body #mainBlock').append(comingSoon());
+    });
+    return;
+
     var APP = window.APP = {};
 
     //var Messages = Cryptpad.Messages;

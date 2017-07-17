@@ -164,6 +164,7 @@ define([
     };
 
     var addCreateInviteLinkButton = function ($container) {
+        return;
         var obj = APP.lm.proxy;
 
         var proxy = Cryptpad.getProxy();
