@@ -28,8 +28,8 @@ var WARN = function (e, output) {
 };
 
 var isValidId = function (chan) {
-    return chan && chan.length && /^[a-fA-F0-9]/.test(chan) ||
-        [32, 48].indexOf(chan.length) !== -1;
+    return chan && chan.length && /^[a-fA-F0-9]/.test(chan) &&
+        [32, 48].indexOf(chan.length) > -1;
 };
 
 var uint8ArrayToHex = function (a) {
