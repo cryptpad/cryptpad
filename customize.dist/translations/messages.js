@@ -266,6 +266,13 @@ define(function () {
     out.userlist_addAsFriendTitle = 'Add "{0}" as a contact';
     out.userlist_thisIsYou = 'This is you ("{0}")';
     out.contacts_title = "Contacts";
+    out.contacts_addError = 'Error while adding that contact to the list';
+    out.contacts_added = 'Contact invite accepted.';
+    out.contacts_rejected = 'Contact invite rejected';
+    out.contacts_request = '<em>{0}</em> would like to add you as a contact. <b>Accept<b>?';
+    out.contacts_send = 'Send';
+    out.contacts_remove = 'Remove this contact';
+    out.contacts_confirmRemove = 'Are you sure you want to remove <em>{0}</em> from your contacts?';
 
     // File manager
 

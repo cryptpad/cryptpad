@@ -119,11 +119,8 @@ body .userlist-drawer {
         }
     }
     .friend {
-        display: flex;
-        text-align: right;
-        &:hover {
-            background-color: rgba(0, 0, 0, 0.1);
-        }
+        display: inline-block;
+        width: 20px;
     }
 }
 
@@ -135,6 +132,11 @@ body {
             h2 {
                 background-color: darken(@bgcolor, 10%);
                 color: @color;
+            }
+            .friend {
+                &:hover {
+                    color: darken(@color, 15%);
+                }
             }
         }
         .cryptpad-toolbar {
