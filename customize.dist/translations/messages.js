@@ -274,6 +274,12 @@ define(function () {
     out.contacts_remove = 'Remove this contact';
     out.contacts_confirmRemove = 'Are you sure you want to remove <em>{0}</em> from your contacts?';
 
+
+    out.contacts_info1 = "These are your contacts. From here, you can:";
+    out.contacts_info2 = "Click your contact's icon to chat with them";
+    out.contacts_info3 = "Double-click their icon to view their profile";
+    out.contacts_info4 = "Either participant can clear permanently a chat history";
+
     // File manager
 
     out.fm_rootName = "Documents";

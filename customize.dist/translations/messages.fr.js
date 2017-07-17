@@ -265,6 +265,12 @@ define(function () {
     out.contacts_remove = 'Supprimer ce contact';
     out.contacts_confirmRemove = 'Êtes-vous sûr de voulour supprimer <em>{0}</em> de vos contacts ?';
 
+
+    out.contacts_info1 = "Voici vos contacts. Ici, vous pouvez :";
+    out.contacts_info2 = "Cliquer sur le nom d'un contact pour discuter avec lui";
+    out.contacts_info3 = "Double-cliquer sur son nom pour voir son profil";
+    out.contacts_info4 = "Chaque participant peut nettoyer définitivement l'historique d'une discussion";
+
     // File manager
 
     out.fm_rootName = "Documents";
