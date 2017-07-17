@@ -25,14 +25,15 @@ define([
         var $messages = $iframe.find('#messaging');
         var $bar = $iframe.find('.toolbar-container');
 
-        var displayed = ['useradmin', 'newpad', 'limit'];
+        var displayed = ['useradmin', 'newpad', 'limit', 'pageTitle'];
 
         var configTb = {
             displayed: displayed,
             ifrw: ifrw,
             common: Cryptpad,
             $container: $bar,
-            network: Cryptpad.getNetwork()
+            network: Cryptpad.getNetwork(),
+            pageTitle: Messages.contacts_title,
         };
         var toolbar = APP.toolbar = Toolbar.create(configTb);
         toolbar.$rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
