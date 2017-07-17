@@ -262,8 +262,8 @@ define(function () {
     out.profile_inviteExplanation = "Clicking <strong>OK</strong> will create a link to a secure messaging session that <em>only {0} will be able to redeem.</em><br><br>The link will be copied to your clipboard and can be shared publicly.";
     out.profile_viewMyProfile = "View my profile";
 
-    // friends/userlist
-    out.userlist_addAsFriendTitle = 'Add "{0}" as a friend';
+    // contacts/userlist
+    out.userlist_addAsFriendTitle = 'Add "{0}" as a contact';
     out.userlist_thisIsYou = 'This is you ("{0}")';
 
     // File manager
