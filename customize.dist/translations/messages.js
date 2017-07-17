@@ -265,6 +265,7 @@ define(function () {
     // contacts/userlist
     out.userlist_addAsFriendTitle = 'Add "{0}" as a contact';
     out.userlist_thisIsYou = 'This is you ("{0}")';
+    out.contacts_title = "Contacts";
 
     // File manager
 
