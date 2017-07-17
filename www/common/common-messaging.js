@@ -11,17 +11,8 @@ define([
         unfriend: 'UNFRIEND'
     };
 
-    // TODO: pin the chat channel!
-
-
-    // TODO: new Types
-    // - send a rename message to the chat
-    // - petnames
-    // - close a chat / remove a friend
-
     // TODO
     // - mute a channel (hide notifications or don't open it?)
-    // 
 
     var ready = [];
     var pending = {};
@@ -87,6 +78,7 @@ define([
         var $rightCol = $('<span>', {'class': 'right-col'});
         $('<span>', {'class': 'name'}).text(data.displayName).appendTo($rightCol);
         var $remove = $('<span>', {'class': 'remove fa fa-user-times'}).appendTo($rightCol);
+        $remove.attr('title', common.Messages.contacts_remove);
         $friend.dblclick(function () {
             if (data.profile) {
                 window.open('/profile/#' + data.profile);
@@ -97,10 +89,12 @@ define([
         });
         $remove.click(function (e) {
             e.stopPropagation();
-            common.confirm("TODO: Are you sure?", function (yes) {//XXX
+            common.confirm(common.Messages.getKey('contacts_confirmRemove', [
+                common.fixHTML(data.displayName)
+            ]), function (yes) {
                 if (!yes) { return; }
                 remove(data.curvePublic);
-            });
+            }, null, true);
         });
         if (data.avatar && avatars[data.avatar]) {
             $friend.append(avatars[data.avatar]);
@@ -291,7 +285,7 @@ define([
                 console.error(err);
             });
         };
-        $('<button>').text('TODO: Send').appendTo($inputBlock).click(send); // XXX
+        $('<button>').text(common.Messages.contacts_send).appendTo($inputBlock).click(send);
         $input.on('keypress', function (e) {
             if (e.which === 13) { send(); }
         });
@@ -568,16 +562,18 @@ define([
                         todo(true);
                         return;
                     }
-                    common.confirm("Accept friend?", todo);// TODO
+                    var confirmMsg = common.Messages._getKey('contacts_request', [
+                        common.fixHTML(msgData.displayName)
+                    ]);
+                    common.confirm(confirmMsg, todo, null, true);
                     return;
                 }
                 if (msg[0] === "FRIEND_REQ_OK") {
-                    // XXX
                     addToFriendList(common, msgData, function (err) {
                         if (err) {
-                            return void common.log('Error while adding that friend to the list');
+                            return void common.log(common.Messages.contacts_addError);
                         }
-                        common.log('Friend invite accepted.');
+                        common.log(common.Messages.contacts_added);
                         var msg = ["FRIEND_REQ_ACK", chan];
                         var msgStr = Crypto.encrypt(JSON.stringify(msg), key);
                         network.sendto(sender, msgStr);
@@ -585,19 +581,17 @@ define([
                     return;
                 }
                 if (msg[0] === "FRIEND_REQ_NOK") {
-                    // XXX
-                    common.log('Friend invite rejected');
+                    common.log(common.Messages.contacts_rejected);
                     return;
                 }
                 if (msg[0] === "FRIEND_REQ_ACK") {
-                    // XXX
                     var data = pending[sender];
                     if (!data) { return; }
                     addToFriendList(common, data, function (err) {
                         if (err) {
-                            return void common.log('Error while adding that friend to the list');
+                            return void common.log(common.Messages.contacts_addError);
                         }
-                        common.log('Friend added to the list.');
+                        common.log(common.Messages.contacts_added);
                     });
                     return;
                 }
