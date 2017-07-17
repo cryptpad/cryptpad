@@ -263,8 +263,8 @@ define(function () {
     out.profile_viewMyProfile = "View my profile";
 
     // friends/userlist
-    out.userlist_addAsFriendTitle = 'add "{0}" as a friend';
-    out.userlist_thisIsYou = 'this is you ("{0}")';
+    out.userlist_addAsFriendTitle = 'Add "{0}" as a friend';
+    out.userlist_thisIsYou = 'This is you ("{0}")';
 
     // File manager
 
