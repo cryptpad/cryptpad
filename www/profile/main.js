@@ -82,7 +82,7 @@ define([
     var CREATE_ID = "createProfile";
     var HEADER_ID = "header";
     var HEADER_RIGHT_ID = "rightside";
-    var CREATE_INVITE_BUTTON = 'inviteButton';
+    var CREATE_INVITE_BUTTON = 'inviteButton'; /* jshint ignore: line */
     var VIEW_PROFILE_BUTTON = 'viewProfileButton';
 
     var createEditableInput = function ($block, name, ph, getValue, setValue, realtime, fallbackValue) {
@@ -158,6 +158,7 @@ define([
     };
     */
 
+/* jshint ignore:start */
     var isFriend = function (proxy, edKey) {
         var friends = Cryptpad.find(proxy, ['friends']);
         return typeof(edKey) === 'string' && friends && (edKey in friends);
@@ -205,6 +206,7 @@ define([
         })
         .appendTo($container);
     };
+        /* jshint ignore:end */
 
     var addViewButton = function ($container) {
         if (!Cryptpad.isLoggedIn() || window.location.hash) {
@@ -239,7 +241,7 @@ define([
                 $span.text(value || Messages.anonymous);
             });
 
-            addCreateInviteLinkButton($block);
+            //addCreateInviteLinkButton($block);
             return;
         }
         var setValue = function (value, cb) {

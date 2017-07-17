@@ -2,9 +2,9 @@ define([
     'jquery',
     '/common/cryptpad-common.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
-    '/common/curve.js',
+    //'/common/curve.js',
     'less!/invite/main.less',
-], function ($, Cryptpad, Listmap, Curve) {
+], function ($, Cryptpad /*, Listmap, Curve*/) {
     var Messages = Cryptpad.Messages;
     var comingSoon = function () {
         return $('<div>', {
@@ -21,6 +21,7 @@ define([
     });
     return;
 
+    /* jshint ignore:start */
     var APP = window.APP = {};
 
     //var Messages = Cryptpad.Messages;
@@ -99,4 +100,5 @@ define([
             andThen();
         });
     });
+    /* jshint ignore:end */
 });
