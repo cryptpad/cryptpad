@@ -49,11 +49,12 @@ define([
 
         Cryptpad.initMessaging(Cryptpad, $list, $messages);
 
-        var $title = $('<h2>').text(Messages.contacts_info1).appendTo($messages);
-        var $ul = $('<ul>').appendTo($messages);
+        var $infoBlock = $('<div>', {'class': 'info'}).appendTo($messages);
+        $('<h2>').text(Messages.contacts_info1).appendTo($infoBlock);
+        var $ul = $('<ul>').appendTo($infoBlock);
         $('<li>').text(Messages.contacts_info2).appendTo($ul);
         $('<li>').text(Messages.contacts_info3).appendTo($ul);
-        $('<li>').text(Messages.contacts_info4).appendTo($ul);
+        //$('<li>').text(Messages.contacts_info4).appendTo($ul);
 
         Cryptpad.removeLoadingScreen();
     };

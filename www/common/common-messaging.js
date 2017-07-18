@@ -89,7 +89,7 @@ define([
         });
         $remove.click(function (e) {
             e.stopPropagation();
-            common.confirm(common.Messages.getKey('contacts_confirmRemove', [
+            common.confirm(common.Messages._getKey('contacts_confirmRemove', [
                 common.fixHTML(data.displayName)
             ]), function (yes) {
                 if (!yes) { return; }
@@ -364,6 +364,7 @@ define([
         };
         // Display a new channel
         var display = function (curvePublic) {
+            $msgContainer.find('.info').hide();
             var isNew = false;
             var $chat = $msgContainer.find('.chat').filter(function (idx, el) {
                 return $(el).data('key') === curvePublic;
@@ -421,7 +422,12 @@ define([
             var $friend = $listContainer.find('.friend').filter(function (idx, el) {
                 return $(el).data('key') === curvePublic;
             });
+            var $chat = $msgContainer.find('.chat').filter(function (idx, el) {
+                return $(el).data('key') === curvePublic;
+            });
             $friend.remove();
+            $chat.remove();
+            $msgContainer.find('.info').show();
         };
         var updateUI = function (curvePublic, types) {
             var data = getFriend(common, curvePublic);
