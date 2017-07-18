@@ -522,13 +522,13 @@ define([
                 'class': 'btn btn-success',
             }).text(Messages.login_register).appendTo($a);
             $p.append($('<br>')).append($a);
-            APP.$container.append($p);
+            APP.$rightside.append($p);
             return;
         }
         var $create = $('<div>', {id: CREATE_ID});
         var $button = $('<button>', {'class': 'btn btn-success'});
         $button.text(Messages.profile_create).click(todo).appendTo($create);
-        APP.$container.append($create);
+        APP.$rightside.append($create);
     };
 
     var onCryptpadReady = function () {
