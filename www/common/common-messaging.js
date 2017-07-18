@@ -411,6 +411,7 @@ define([
                 return $(el).data('key') === curvePublic;
             });
             $friend.addClass('notify');
+            common.notify();
         };
         var unnotify = function (curvePublic) {
             var $friend = $listContainer.find('.friend').filter(function (idx, el) {
