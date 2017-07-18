@@ -13,6 +13,7 @@ define(function () {
     out.type.whiteboard = "Tableau Blanc";
     out.type.file = "Fichier";
     out.type.media = "Média";
+    out.type.contacts = "Contacts";
 
     out.button_newpad = 'Nouveau document texte';
     out.button_newcode = 'Nouvelle page de code';

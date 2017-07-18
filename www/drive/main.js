@@ -1398,6 +1398,7 @@ define([
             }
             AppConfig.availablePadTypes.forEach(function (type) {
                 if (type === 'drive') { return; }
+                if (type === 'contacts') { return; }
                 if (!Cryptpad.isLoggedIn() && AppConfig.registeredOnlyTypes &&
                     AppConfig.registeredOnlyTypes.indexOf(type) !== -1) {
                     return;

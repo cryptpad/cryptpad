@@ -13,6 +13,7 @@ define(function () {
     out.type.whiteboard = 'Whiteboard';
     out.type.file = 'File';
     out.type.media = 'Media';
+    out.type.contacts = 'Contacts';
 
     out.button_newpad = 'New Rich Text pad';
     out.button_newcode = 'New Code pad';
