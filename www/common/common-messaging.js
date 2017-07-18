@@ -618,13 +618,13 @@ define([
                 var keyStr = parsed.hashData.key;
                 var cryptor = Crypto.createEditCryptor(keyStr);
                 var key = cryptor.cryptKey;
-                var decryptMsg
+                var decryptMsg;
                 try {
                     decryptMsg = Crypto.decrypt(message, key);
-                } catch () {
+                } catch (e) {
                     // If we can't decrypt, it means it is not a friend request message
                 }
-                if (!decrypMsg) { return; }
+                if (!decryptMsg) { return; }
                 // Parse
                 msg = JSON.parse(decryptMsg);
                 if (msg[1] !== parsed.hashData.channel) { return; }
