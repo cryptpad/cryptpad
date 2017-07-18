@@ -35,6 +35,8 @@ define(function () {
     out.synced = "Tout est enregistré";
     out.deleted = "Pad supprimé de votre CryptDrive";
 
+    out.realtime_unrecoverableError = "Le moteur temps-réel a rencontré une erreur critique. Cliquez sur OK pour recharger la page.";
+
     out.disconnected = 'Déconnecté';
     out.synchronizing = 'Synchronisation';
     out.reconnecting = 'Reconnexion...';
@@ -253,6 +255,8 @@ define(function () {
     out.profile_create = "Créer un profil";
     out.profile_description = "Description";
     out.profile_fieldSaved = 'Nouvelle valeur enregistrée: {0}';
+
+    out.profile_viewMyProfile = "Voir mon profil";
 
     // contacts/userlist
     out.userlist_addAsFriendTitle = 'Ajouter "{0}" comme contact';
