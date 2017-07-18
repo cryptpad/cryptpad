@@ -8,7 +8,9 @@ define([
     var Types = {
         message: 'MSG',
         update: 'UPDATE',
-        unfriend: 'UNFRIEND'
+        unfriend: 'UNFRIEND',
+        mapId: 'MAP_ID',
+        mapIdAck: 'MAP_ID_ACK'
     };
 
     // TODO
@@ -107,6 +109,7 @@ define([
                 $friend.append($rightCol);
             });
         }
+        $('<span>', {'class': 'status'}).appendTo($friend);
     };
     Msg.getFriendListUI = function (common, open, remove) {
         var proxy = common.getProxy();
@@ -204,8 +207,37 @@ define([
         return ready.length;
     };
 
+    // Id message allows us to map a netfluxId with a public curve key
+    var onIdMessage = function (common, msg, sender) {
+        var channel;
+        var isId = Object.keys(channels).some(function (chanId) {
+            if (channels[chanId].userList.indexOf(sender) !== -1) {
+                channel = channels[chanId];
+                return true;
+            }
+        });
+
+        if (!isId) { return; }
+
+        var decryptedMsg = channel.encryptor.decrypt(msg);
+        var parsed = JSON.parse(decryptedMsg);
+        if (parsed[0] !== Types.mapId && parsed[0] !== Types.mapidAck) { return; }
+        if (parsed[2] !== sender || !parsed[1]) { return; }
+        channel.mapId[sender] = parsed[1];
+
+        channel.updateStatus();
+
+        if (parsed[0] !== Types.mapId) { return; } // Don't send your key if it's already an ACK
+        // Answer with your own key
+        var proxy = common.getProxy();
+        var network = common.getNetwork();
+        var rMsg = [Types.mapIdAck, proxy.curvePublic, channel.wc.myID];
+        var rMsgStr = JSON.stringify(rMsg);
+        var cryptMsg = channel.encryptor.encrypt(rMsgStr);
+        network.sendto(sender, cryptMsg);
+    };
     var onDirectMessage = function (common, msg, sender) {
-        if (sender !== Msg.hk) { return; }
+        if (sender !== Msg.hk) { return void onIdMessage(common, msg, sender); }
         var parsed = JSON.parse(msg);
         if ((parsed.validateKey || parsed.owners) && parsed.channel) {
             return;
@@ -232,7 +264,10 @@ define([
         if (!channels[chan.id]) { return; }
         var isMessage = pushMsg(common, channels[chan.id], msg);
         if (isMessage) {
-            channels[chan.id].notify();
+            // Don't notify for your own messages
+            if (channels[chan.id].wc.myID !== sender) {
+                channels[chan.id].notify();
+            }
             channels[chan.id].refresh();
         }
     };
@@ -457,6 +492,18 @@ define([
                 }
             }
         };
+        var updateStatus = function (curvePublic) {
+            var data = getFriend(common, curvePublic);
+            var chan = channels[data.channel];
+            var $friend = $listContainer.find('.friend').filter(function (idx, el) {
+                return $(el).data('key') === curvePublic;
+            });
+            var status = chan.userList.some(function (nId) {
+                return chan.mapId[nId] === curvePublic;
+            });
+            var statusText = status ? 'online' : 'offline';
+            $friend.find('.status').attr('class', 'status '+statusText);
+        };
 
         // Open the channels
         var openFriendChannel = function (f) {
@@ -465,7 +512,7 @@ define([
             var keys = Curve.deriveKeys(data.curvePublic, proxy.curvePrivate);
             var encryptor = Curve.createEncryptor(keys);
             network.join(data.channel).then(function (chan) {
-                channels[data.channel] = {
+                var channel = channels[data.channel] = {
                     friendEd: f,
                     keys: keys,
                     encryptor: encryptor,
@@ -475,10 +522,33 @@ define([
                     unnotify: function () { unnotify(data.curvePublic); },
                     removeUI: function () { removeUI(data.curvePublic); },
                     updateUI: function (types) { updateUI(data.curvePublic, types); },
-                    wc: chan
+                    updateStatus: function () { updateStatus(data.curvePublic); },
+                    wc: chan,
+                    userList: [],
+                    mapId: {}
                 };
                 chan.on('message', function (msg, sender) {
                     onMessage(common, msg, sender, chan);
+                });
+                var onJoining = function (peer) {
+                    if (peer === Msg.hk) { return; }
+                    if (channel.userList.indexOf(peer) !== -1) { return; }
+                    channel.userList.push(peer);
+                    var msg = [Types.mapId, proxy.curvePublic, chan.myID];
+                    var msgStr = JSON.stringify(msg);
+                    var cryptMsg = channel.encryptor.encrypt(msgStr);
+                    network.sendto(peer, cryptMsg);
+                    channel.updateStatus();
+                };
+                chan.members.forEach(onJoining);
+                chan.on('join', onJoining);
+                chan.on('leave', function (peer) {
+                    var i = channel.userList.indexOf(peer);
+                    while (i !== -1) {
+                        channel.userList.splice(i, 1);
+                        i = channel.userList.indexOf(peer);
+                    }
+                    channel.updateStatus();
                 });
                 var cfg = {
                     validateKey: keys.validateKey,
@@ -548,7 +618,13 @@ define([
                 var keyStr = parsed.hashData.key;
                 var cryptor = Crypto.createEditCryptor(keyStr);
                 var key = cryptor.cryptKey;
-                var decryptMsg = Crypto.decrypt(message, key);
+                var decryptMsg
+                try {
+                    decryptMsg = Crypto.decrypt(message, key);
+                } catch () {
+                    // If we can't decrypt, it means it is not a friend request message
+                }
+                if (!decrypMsg) { return; }
                 // Parse
                 msg = JSON.parse(decryptMsg);
                 if (msg[1] !== parsed.hashData.channel) { return; }

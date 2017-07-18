@@ -81,9 +81,28 @@ body {
     media-tag, .default {
         margin-right: 5px;
     }
+    .status {
+        width: 5px;
+        display: inline-block;
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        opacity: 0.7;
+        background-color: #777;
+        &.online {
+            background-color: green;
+        }
+        &.offline {
+            background-color: red;
+        }
+    }
 }
 
 #friendList {
+    .friend {
+        position: relative;
+    }
     .remove {
         cursor: pointer;
         width: 20px;
