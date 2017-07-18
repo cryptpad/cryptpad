@@ -373,7 +373,7 @@ define([
         var $block = $('<div>', {id: DESCRIPTION_ID}).appendTo($container);
 
         if (APP.readOnly) {
-            if (!APP.lm.proxy.description.trim()) { return void $block.hide(); }
+            if (!(APP.lm.proxy.description || "").trim()) { return void $block.hide(); }
             var $div = $('<div>', {'class': 'rendered'}).appendTo($block);
             var val = Marked(APP.lm.proxy.description);
             $div.html(val);
