@@ -405,7 +405,7 @@ define(function () {
     out.settings_restore = "Restaurer";
 
     out.settings_resetNewTitle = "Vider CryptDrive";
-    out.settings_resetButotn = "Supprimer";
+    out.settings_resetButton = "Supprimer";
     out.settings_reset = "Supprimer tous les fichiers et dossiers de votre CryptDrive";
     out.settings_resetPrompt = "Cette action va supprimer tous les pads de votre drive.<br>"+
                                "Êtes-vous sûr de vouloir continuer ?<br>" +
