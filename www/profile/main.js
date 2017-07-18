@@ -456,9 +456,9 @@ define([
             addViewButton(APP.$rightside); //$rightside);
             addPublicKey(APP.$rightside);
             APP.initialized = true;
+            createLeftside();
         }
 
-        createLeftside();
         Cryptpad.removeLoadingScreen();
     };
 
