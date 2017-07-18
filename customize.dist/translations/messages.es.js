@@ -12,6 +12,7 @@ define(function () {
     out.type.poll = 'Encuesta';
     out.type.slide = 'Presentación';
     out.type.whiteboard = 'Pizarra';
+    out.type.contacts = 'Contactos';
 
     out.disconnected = "Desconectado";
     out.synchronizing = "Sincronización";
@@ -246,7 +247,6 @@ define(function () {
     out.settings_backupTitle = "Copia de seguridad";
     out.settings_backup = "Copia de seguridad";
     out.settings_restore = "Recuparar datos";
-    out.settings_resetTitle = "Limpiar tu drive";
     out.settings_reset = "Quita todos los documentos de tu CryptDrive";
     out.settings_resetPrompt = "Esta acción eliminará todos tus documentos.<br>¿Seguro que quieres continuar?<br>Introduce “<em>I love CryptPad</em>” para confirmar.";
     out.settings_resetDone = "¡Tu drive ahora está vacio!";
@@ -510,7 +510,37 @@ define(function () {
     out.updated_0_header_logoTitle = "Volver a tu CryptDrive";
     out.header_logoTitle = out.updated_0_header_logoTitle;
 
+    // 1.11.0 - Lutin
 
+    out.realtime_unrecoverableError = "El motor de tiempo real a encontrado un error. Haga clic en OK para recargar la página.";
+    out.typing = "Escribiendo";
+    out.profile_inviteButton = "Connectar";
+    out.profile_inviteButtonTitle = "Crear un enlace de invitación para este usuario.";
+    out.profile_inviteExplanation = "Hacer clic en <strong>OK</strong> creará un enlace de mensaje seguro que <em>sólo {0} podrá ver.</em><br><br>El enlace será copiado a tu portapapeles y puede ser compartido publicamente.";
+    out.profile_viewMyProfile = "Ver mi perfíl";
+    out.userlist_addAsFriendTitle = 'Agregar "{0}" como contacto';
+    out.userlist_thisIsYou = 'Tú mismo ("{0}")';
+    out.contacts_title = "Contactos";
+    out.contacts_addError = "Error al agregar este contacto a la lista";
+    out.contacts_added = "Invitación acceptada";
+    out.contacts_rejected = "Invitación denegada";
+    out.contacts_request = "<em>{0}</em> quiere agregarte como contacto. <b>Acceptar</b>?";
+    out.contacts_send = "Enviar";
+    out.contacts_remove = "Eliminar este contacto";
+    out.contacts_confirmRemove = "Estás seguro que quieres eliminar <em>{0}</em> de tus contactos?";
+    out.contacts_info1 = "Estos son tus contactos. De aquí, puedes:";
+    out.contacts_info2 = "Hacer clic en el icono de tu contacto para chatear";
+    out.contacts_info3 = "Hacer doble-clic para ver su perfil";
+    out.contacts_info4 = "Cualquier participante puede eliminar definitivamente el historial de chat";
+    out.settings_cat_account = "Cuenta";
+    out.settings_cat_drive = "CryptDrive";
+    out.settings_backupCategory = "Copia de seguridad";
+    out.settings_resetNewTitle = "Limpiar CryptDrive";
+    out.settings_resetButton = "Eliminar";
+    out.settings_resetTipsAction = "Reiniciar";
+    out.settings_userFeedbackTitle = "Feedback";
+    out.settings_logoutEverywhereButton = "Cerar sesión";
+    out.upload_title = "Subir archivo";
 
     return out;
 });
