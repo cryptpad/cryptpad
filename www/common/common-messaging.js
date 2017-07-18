@@ -406,7 +406,7 @@ define([
 
         // Notify on new messages
         var notify = function (curvePublic) {
-            if (Msg.active === curvePublic) { return; }
+            //if (Msg.active === curvePublic) { return; }
             var $friend = $listContainer.find('.friend').filter(function (idx, el) {
                 return $(el).data('key') === curvePublic;
             });
