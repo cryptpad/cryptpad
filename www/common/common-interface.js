@@ -5,8 +5,10 @@ define([
     '/customize/application_config.js',
     '/bower_components/alertifyjs/dist/js/alertify.js',
     '/common/notify.js',
-    '/common/visible.js'
-], function ($, Messages, Util, AppConfig, Alertify, Notify, Visible) {
+    '/common/visible.js',
+    '/common/tippy.min.js',
+    'css!/common/tippy.css',
+], function ($, Messages, Util, AppConfig, Alertify, Notify, Visible, Tippy) {
 
     var UI = {};
 
@@ -251,9 +253,13 @@ define([
         });
     }
 
-    UI.importContent = function (type, f) {
+    UI.importContent = function (type, f, cfg) {
         return function () {
-            var $files = $('<input type="file">').click();
+            var $files = $('<input>', {type:"file"});
+            if (cfg && cfg.accept) {
+                $files.attr('accept', cfg.accept);
+            }
+            $files.click();
             $files.on('change', function (e) {
                 var file = e.target.files[0];
                 var reader = new FileReader();
@@ -286,6 +292,56 @@ define([
         }
 
         return $icon;
+    };
+
+    // Tooltips
+    UI.addTooltips = function () {
+        var MutationObserver = window.MutationObserver;
+        var addTippy = function (el) {
+            if (el.nodeName === 'IFRAME') { return; }
+            console.log(el);
+            Tippy(el, {
+                position: 'bottom',
+                distance: 0,
+                performance: true,
+                delay: [500, 0]
+            });
+        };
+        var $body = $('body');
+        var $padIframe = $('#pad-iframe').contents().find('body');
+        $('[title]').each(function (i, el) {
+            addTippy(el);
+        });
+        $('#pad-iframe').contents().find('[title]').each(function (i, el) {
+            addTippy(el);
+        });
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList' && mutation.addedNodes.length) {
+                    $body.find('[title]').each(function (i, el) {
+                        addTippy(el);
+                    });
+                    if (!$padIframe.length) { return; }
+                    $padIframe.find('[title]').each(function (i, el) {
+                        addTippy(el);
+                    });
+                }
+            });
+        });
+        observer.observe($('body')[0], {
+            attributes: false,
+            childList: true,
+            characterData: false,
+            subtree: true
+        });
+        if ($('#pad-iframe').length) {
+            observer.observe($('#pad-iframe').contents().find('body')[0], {
+                attributes: false,
+                childList: true,
+                characterData: false,
+                subtree: true
+            });
+        }
     };
 
     return UI;

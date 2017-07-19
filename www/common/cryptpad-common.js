@@ -76,6 +76,7 @@ define([
     common.notify = UI.notify;
     common.unnotify = UI.unnotify;
     common.getIcon = UI.getIcon;
+    common.addTooltips = UI.addTooltips;
 
     // import common utilities for export
     common.find = Util.find;
@@ -1093,7 +1094,7 @@ define([
                     .click(prepareFeedback(type))
                     .click(UI.importContent('text/plain', function (content, file) {
                         callback(content, file);
-                    }));
+                    }, {accept: data ? data.accept : undefined}));
                 }
                 break;
             case 'upload':
@@ -1796,6 +1797,7 @@ define([
             store = common.store = env.store = storeObj;
 
             common.addDirectMessageHandler(common);
+            common.addTooltips();
 
             var proxy = getProxy();
             var network = getNetwork();

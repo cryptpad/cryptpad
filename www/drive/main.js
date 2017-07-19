@@ -1116,18 +1116,18 @@ define([
             var name = filesOp.getTitle(element);
 
             // The element with the class '.name' is underlined when the 'li' is hovered
-            var $name = $('<span>', {'class': 'name', title: name}).text(name);
+            var $name = $('<span>', {'class': 'name'}).text(name);
             $span.html('');
             $span.append($name);
 
             var hrefData = Cryptpad.parsePadUrl(data.href);
             var type = Messages.type[hrefData.type] || hrefData.type;
-            var $type = $('<span>', {'class': 'type listElement', title: type}).text(type);
+            var $type = $('<span>', {'class': 'type listElement'}).text(type);
             if (hrefData.hashData && hrefData.hashData.mode === 'view') {
                 $type.append(' (' + Messages.readonly+ ')');
             }
-            var $adate = $('<span>', {'class': 'atime listElement', title: getDate(data.atime)}).text(getDate(data.atime));
-            var $cdate = $('<span>', {'class': 'ctime listElement', title: getDate(data.ctime)}).text(getDate(data.ctime));
+            var $adate = $('<span>', {'class': 'atime listElement'}).text(getDate(data.atime));
+            var $cdate = $('<span>', {'class': 'ctime listElement'}).text(getDate(data.ctime));
             $span.append($type);
             if (!isWorkgroup()) {
                 $span.append($adate).append($cdate);
@@ -1140,9 +1140,9 @@ define([
             // The element with the class '.name' is underlined when the 'li' is hovered
             var sf = filesOp.hasSubfolder(element);
             var files = filesOp.hasFile(element);
-            var $name = $('<span>', {'class': 'name', title: key}).text(key);
-            var $subfolders = $('<span>', {'class': 'folders listElement', title: sf}).text(sf);
-            var $files = $('<span>', {'class': 'files listElement', title: files}).text(files);
+            var $name = $('<span>', {'class': 'name'}).text(key);
+            var $subfolders = $('<span>', {'class': 'folders listElement'}).text(sf);
+            var $files = $('<span>', {'class': 'files listElement'}).text(files);
             $span.append($name).append($subfolders).append($files);
         };
 

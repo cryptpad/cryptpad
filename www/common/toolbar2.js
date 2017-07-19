@@ -1,7 +1,7 @@
 define([
     'jquery',
     '/customize/application_config.js',
-    '/api/config'
+    '/api/config',
 ], function ($, Config, ApiConfig) {
     var Messages = {};
     var Cryptpad;
@@ -206,7 +206,7 @@ define([
         var pendingFriends = Cryptpad.getPendingInvites();
         editUsersNames.forEach(function (data) {
             var name = data.name || Messages.anonymous;
-            var $span = $('<span>', {'title': name, 'class': 'avatar'});
+            var $span = $('<span>', {'class': 'avatar'});
             var $rightCol = $('<span>', {'class': 'right-col'});
             var $nameSpan = $('<span>', {'class': 'name'}).text(name).appendTo($rightCol);
             var proxy = Cryptpad.getProxy();
@@ -214,9 +214,10 @@ define([
 
             if (Cryptpad.isLoggedIn() && data.curvePublic) {
                 if (isMe) {
-                    $nameSpan.attr('title', Messages._getKey('userlist_thisIsYou', [
+                    $span.attr('title', Messages._getKey('userlist_thisIsYou', [
                         name
-                    ])).text(name);
+                    ]));
+                    $nameSpan.text(name);
                 } else if (!proxy.friends || !proxy.friends[data.curvePublic]) {
                     if (pendingFriends.indexOf(data.netfluxId) !== -1) {
                         $('<span>', {'class': 'friend'}).text(Messages.userlist_pending)
