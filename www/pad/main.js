@@ -556,7 +556,9 @@ define([
 
                 if (!readOnly) {
                     /* add an import button */
-                    var $import = Cryptpad.createButton('import', true, {}, importFile);
+                    var $import = Cryptpad.createButton('import', true, {
+                        accept: 'text/html'
+                    }, importFile);
                     $drawer.append($import);
                 }
 
