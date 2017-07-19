@@ -348,7 +348,10 @@ define([
             var h = $ck.is(':visible') ? -$ck.height() : 0;
             $content.css('margin-top', h+'px');
         });
-        $closeIcon.click(hide);
+        $closeIcon.click(function () {
+            Cryptpad.setAttribute('userlist-drawer', false);
+            hide();
+        });
         $button.click(function () {
             var visible = $content.is(':visible');
             if (visible) { hide(); }
@@ -357,7 +360,6 @@ define([
             Cryptpad.setAttribute('userlist-drawer', visible);
             Cryptpad.feedback(visible?'USERLIST_SHOW': 'USERLIST_HIDE');
         });
-
 
         Cryptpad.getAttribute('userlist-drawer', function (err, val) {
             if (val === false || mobile) { return void hide(); }
