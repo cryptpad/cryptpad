@@ -990,12 +990,12 @@ define([
                 ['userid', 'previewMode'].forEach(function (attr) {
                     var key = parsed.hash + '.' + attr;
                     var key2 = parsed.hash.slice(0,-1) + '.' + attr;// old pads not ending with /
-                    if (files[key] || files[key2]) {
+                    if (typeof(files[key]) !== "undefined" || typeof(files[key2]) !== "undefined") {
                         debug("Migrating pad attribute", attr, "for pad", id);
                         el[attr] = files[key] || files[key2];
+                        delete files[key];
+                        delete files[key2];
                     }
-                    delete files[key];
-                    delete files[key2];
                 });
                 // Migration done
             };
