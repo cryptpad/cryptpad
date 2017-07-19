@@ -203,6 +203,7 @@ define([
         var $editUsersList = $('<div>', {'class': 'userlist-others'});
 
         // Editors
+        var pendingFriends = Cryptpad.getPendingInvites();
         editUsersNames.forEach(function (data) {
             var name = data.name || Messages.anonymous;
             var $span = $('<span>', {'title': name, 'class': 'avatar'});
@@ -217,15 +218,20 @@ define([
                         name
                     ])).text(name);
                 } else if (!proxy.friends || !proxy.friends[data.curvePublic]) {
-                    $('<span>', {
-                        'class': 'fa fa-user-plus friend',
-                        'title': Messages._getKey('userlist_addAsFriendTitle', [
-                            name
-                        ])
-                    }).appendTo($rightCol).click(function (e) {
-                        e.stopPropagation();
-                        Cryptpad.inviteFromUserlist(Cryptpad, data.netfluxId);
-                    });
+                    if (pendingFriends.indexOf(data.netfluxId) !== -1) {
+                        $('<span>', {'class': 'friend'}).text(Messages.userlist_pending)
+                            .appendTo($rightCol);
+                    } else {
+                        $('<span>', {
+                            'class': 'fa fa-user-plus friend',
+                            'title': Messages._getKey('userlist_addAsFriendTitle', [
+                                name
+                            ])
+                        }).appendTo($rightCol).click(function (e) {
+                            e.stopPropagation();
+                            Cryptpad.inviteFromUserlist(Cryptpad, data.netfluxId);
+                        });
+                    }
                 }
             }
             if (data.profile) {

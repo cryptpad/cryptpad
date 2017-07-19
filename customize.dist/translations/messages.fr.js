@@ -261,10 +261,11 @@ define(function () {
     // contacts/userlist
     out.userlist_addAsFriendTitle = 'Ajouter "{0}" comme contact';
     out.userlist_thisIsYou = 'Vous ("{0}")';
+    out.userlist_pending = "En attente...";
     out.contacts_title = "Contacts";
     out.contacts_addError = "Erreur lors de l'ajout de ce contact dans votre liste";
     out.contacts_added = 'Invitation de contact acceptée';
-    out.contacts_rejected = 'Invitation d econtact rejetée';
+    out.contacts_rejected = 'Invitation de contact rejetée';
     out.contacts_request = '<em>{0}</em> souhaite vous ajouter en tant que contact. <b>Accepter<b> ?';
     out.contacts_send = 'Envoyer';
     out.contacts_remove = 'Supprimer ce contact';

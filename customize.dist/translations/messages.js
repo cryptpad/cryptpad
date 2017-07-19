@@ -266,6 +266,7 @@ define(function () {
     // contacts/userlist
     out.userlist_addAsFriendTitle = 'Add "{0}" as a contact';
     out.userlist_thisIsYou = 'This is you ("{0}")';
+    out.userlist_pending = "Pending...";
     out.contacts_title = "Contacts";
     out.contacts_addError = 'Error while adding that contact to the list';
     out.contacts_added = 'Contact invite accepted.';

@@ -19,6 +19,7 @@ define([
 
     var ready = [];
     var pending = {};
+    var pendingRequests = [];
 
     var parseMessage = function (content) {
         return Marked(content);
@@ -637,7 +638,8 @@ define([
         friends[pubKey] = data;
 
         common.whenRealtimeSyncs(common.getRealtime(), function () {
-            common.pinPads([data.channel], cb);
+            cb();
+            common.pinPads([data.channel]);
         });
         common.changeDisplayName(proxy[common.displayNameKey]);
     };
@@ -690,6 +692,8 @@ define([
                     return;
                 }
                 if (msg[0] === "FRIEND_REQ_OK") {
+                    var idx = pendingRequests.indexOf(sender);
+                    if (idx !== -1) { pendingRequests.splice(idx, 1); }
                     addToFriendList(common, msgData, function (err) {
                         if (err) {
                             return void common.log(common.Messages.contacts_addError);
@@ -702,7 +706,11 @@ define([
                     return;
                 }
                 if (msg[0] === "FRIEND_REQ_NOK") {
+                    var idx = pendingRequests.indexOf(sender);
+                    if (idx !== -1) { pendingRequests.splice(idx, 1); }
                     common.log(common.Messages.contacts_rejected);
+                    var proxy = common.getProxy();
+                    common.changeDisplayName(proxy[common.displayNameKey]);
                     return;
                 }
                 if (msg[0] === "FRIEND_REQ_ACK") {
@@ -723,6 +731,10 @@ define([
         });
     };
 
+    Msg.getPending = function () {
+        return pendingRequests;
+    };
+
     Msg.inviteFromUserlist = function (common, netfluxId) {
         var network = common.getNetwork();
         var parsed = common.parsePadUrl(window.location.href);
@@ -737,6 +749,11 @@ define([
         var key = cryptor.cryptKey;
         var msgStr = Crypto.encrypt(JSON.stringify(msg), key);
         // Send encrypted message
+        if (pendingRequests.indexOf(netfluxId) === -1) {
+            pendingRequests.push(netfluxId);
+            var proxy = common.getProxy();
+            common.changeDisplayName(proxy[common.displayNameKey]);
+        }
         network.sendto(netfluxId, msgStr);
     };
 
