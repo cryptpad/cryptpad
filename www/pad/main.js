@@ -549,7 +549,7 @@ define([
                     var $templateButton = Cryptpad.createButton('template', true, templateObj);
                     $rightside.append($templateButton);
                 }
-console.log('init');
+
                 /* add an export button */
                 var $export = Cryptpad.createButton('export', true, {}, exportFile);
                 $drawer.append($export);
