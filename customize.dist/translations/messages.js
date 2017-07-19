@@ -274,7 +274,7 @@ define(function () {
     out.contacts_send = 'Send';
     out.contacts_remove = 'Remove this contact';
     out.contacts_confirmRemove = 'Are you sure you want to remove <em>{0}</em> from your contacts?';
-
+    out.contacts_typeHere = "Type a message here...";
 
     out.contacts_info1 = "These are your contacts. From here, you can:";
     out.contacts_info2 = "Click your contact's icon to chat with them";

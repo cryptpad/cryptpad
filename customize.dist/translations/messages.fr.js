@@ -269,6 +269,7 @@ define(function () {
     out.contacts_send = 'Envoyer';
     out.contacts_remove = 'Supprimer ce contact';
     out.contacts_confirmRemove = 'Êtes-vous sûr de voulour supprimer <em>{0}</em> de vos contacts ?';
+    out.contacts_typeHere = "Entrez un message ici...";
 
 
     out.contacts_info1 = "Voici vos contacts. Ici, vous pouvez :";

@@ -140,6 +140,9 @@ body {
                 .content {
                     overflow: hidden;
                     word-wrap: break-word;
+                    &> * {
+                        margin: 0;
+                    }
                 }
                 .date {
                     display: none;
@@ -155,13 +158,31 @@ body {
     }
     .input {
         background-color: lighten(@bg-color, 15%);
-        height: 50px;
+        height: auto;
+        min-height: 50px;
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 0 75px;
-        input {
+        textarea {
+            margin: 5px 0;
+            padding: 0 10px;
+            border: none;
+            height: 50px;
             flex: 1;
+            background-color: darken(@bg-color, 10%);
+            color: @color;
+            resize: none;
+            &:placeholder-shown { line-height: 50px; }
+        }
+        button {
+            height: 50px;
+            border-radius: 0;
+            border: none;
+            background-color: darken(@bg-color, 15%);
+            &:hover {
+                background-color: darken(@bg-color, 20%);
+            }
         }
     }
 }
