@@ -337,10 +337,10 @@ define([
             if (e.which === 13) { send(); }
         });*/
         var onKeyDown = function (e) {
-            if (e.keyCode == 13) {
+            if (e.keyCode === 13) {
                 if (e.ctrlKey) {
                     var val = this.value;
-                    if (typeof this.selectionStart == "number" && typeof this.selectionEnd == "number") {
+                    if (typeof this.selectionStart === "number" && typeof this.selectionEnd === "number") {
                         var start = this.selectionStart;
                         this.value = val.slice(0, start) + "\n" + val.slice(this.selectionEnd);
                         this.selectionStart = this.selectionEnd = start + 1;
@@ -706,8 +706,8 @@ define([
                     return;
                 }
                 if (msg[0] === "FRIEND_REQ_NOK") {
-                    var idx = pendingRequests.indexOf(sender);
-                    if (idx !== -1) { pendingRequests.splice(idx, 1); }
+                    var i = pendingRequests.indexOf(sender);
+                    if (i !== -1) { pendingRequests.splice(i, 1); }
                     common.log(common.Messages.contacts_rejected);
                     var proxy = common.getProxy();
                     common.changeDisplayName(proxy[common.displayNameKey]);
