@@ -1,8 +1,9 @@
 define([
     'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
-    '/common/curve.js'
-], function ($, Crypto, Curve) {
+    '/common/curve.js',
+    '/bower_components/marked/marked.min.js',
+], function ($, Crypto, Curve, Marked) {
     var Msg = {};
 
     var Types = {
@@ -18,6 +19,10 @@ define([
 
     var ready = [];
     var pending = {};
+
+    var parseMessage = function (content) {
+        return Marked(content);
+    };
 
     var createData = Msg.createData = function (common, hash) {
         var proxy = common.getProxy();
@@ -199,6 +204,7 @@ define([
     var onChannelReady = function (common, chanId) {
         if (ready.indexOf(chanId) !== -1) { return; }
         ready.push(chanId);
+        channels[chanId].updateStatus();
         var friends = getFriendList(common);
         if (ready.length === Object.keys(friends).length) {
             // All channels are ready
@@ -220,8 +226,9 @@ define([
         if (!isId) { return; }
 
         var decryptedMsg = channel.encryptor.decrypt(msg);
+        console.log(decryptedMsg);
         var parsed = JSON.parse(decryptedMsg);
-        if (parsed[0] !== Types.mapId && parsed[0] !== Types.mapidAck) { return; }
+        if (parsed[0] !== Types.mapId && parsed[0] !== Types.mapIdAck) { return; }
         if (parsed[2] !== sender || !parsed[1]) { return; }
         channel.mapId[sender] = parsed[1];
 
@@ -300,7 +307,9 @@ define([
 
         // Input
         var channel = channels[data.channel];
-        var $input = $('<input>', {type: 'text'}).appendTo($inputBlock);
+        var $input = $('<textarea>').appendTo($inputBlock);
+        $input.attr('placeholder', common.Messages.contacts_typeHere);
+
         var sending = false;
         var send = function () {
             if (sending) { return; }
@@ -320,10 +329,34 @@ define([
                 console.error(err);
             });
         };
-        $('<button>').text(common.Messages.contacts_send).appendTo($inputBlock).click(send);
-        $input.on('keypress', function (e) {
+        $('<button>', {'class': 'btn btn-primary fa fa-paper-plane'})
+            //.text(common.Messages.contacts_send)
+            .appendTo($inputBlock).click(send);
+        /*$input.on('keypress', function (e) {
             if (e.which === 13) { send(); }
-        });
+        });*/
+        var onKeyDown = function (e) {
+            if (e.keyCode == 13) {
+                if (e.ctrlKey) {
+                    var val = this.value;
+                    if (typeof this.selectionStart == "number" && typeof this.selectionEnd == "number") {
+                        var start = this.selectionStart;
+                        this.value = val.slice(0, start) + "\n" + val.slice(this.selectionEnd);
+                        this.selectionStart = this.selectionEnd = start + 1;
+                    } else if (document.selection && document.selection.createRange) {
+                        this.focus();
+                        var range = document.selection.createRange();
+                        range.text = "\r\n";
+                        range.collapse(false);
+                        range.select();
+                    }
+                    return false;
+                }
+                send();
+                return false;
+            }
+        };
+        $input.on('keydown', onKeyDown);
 
         // Header
         var $rightCol = $('<span>', {'class': 'right-col'});
@@ -386,7 +419,8 @@ define([
                 channel.lastSender = msg[0];
 
                 // content
-                $('<div>', {'class':'content'}).text(msg[2]).appendTo($msg);
+                //$('<div>', {'class':'content'}).text(msg[2]).appendTo($msg);
+                $('<div>', {'class':'content'}).html(parseMessage(msg[2])).appendTo($msg);
             }
             $messages.scrollTop($messages[0].scrollHeight);
             channel.lastDisplayed = i-1;
@@ -540,7 +574,11 @@ define([
                     network.sendto(peer, cryptMsg);
                     channel.updateStatus();
                 };
-                chan.members.forEach(onJoining);
+                chan.members.forEach(function (peer) {
+                    if (peer === Msg.hk) { return; }
+                    if (channel.userList.indexOf(peer) !== -1) { return; }
+                    channel.userList.push(peer);
+                });
                 chan.on('join', onJoining);
                 chan.on('leave', function (peer) {
                     var i = channel.userList.indexOf(peer);
