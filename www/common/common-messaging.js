@@ -283,24 +283,29 @@ define([
         var data = getFriend(common, curvePublic);
         var proxy = common.getProxy();
 
-        var $header = $('<div>', {'class': 'header avatar'}).appendTo($container);
-/*
-        var $removeHistory = $('<button>', {
-            'class': 'remove-history'
-        }).text('remove chat history').click(function () {
-            Cryptpad.confirm('are you sure?', function (yes) {
+        var $header = $('<div>', {
+            'class': 'cp-contact-top-bar header',
+        }).appendTo($container);
+
+        var $avatar = $('<div>', {'class': 'avatar'}).appendTo($header);
+
+        var $removeHistory = $('<span>', {
+            'class': 'remove-history fa fa-eraser'
+        })
+        // TODO set title
+        .click(function () {
+            Cryptpad.confirm(common.Messages.contacts_confirmRemoveHistory, function (yes) {
                 if (!yes) { return; }
                 Cryptpad.clearOwnedChannel(data.channel, function (e) {
                     if (e) {
                         console.error(e);
-                        Cryptpad.alert("Something went wrong");
+                        Cryptpad.alert(common.Messages.contacts_removeHistoryServerError);
                         return;
                     }
                 });
             });
         });
-        $removeHistory.appendTo($header); //rightCol);
-*/
+        $removeHistory.appendTo($header);
 
         $('<div>', {'class': 'messages'}).appendTo($container);
         var $inputBlock = $('<div>', {'class': 'input'}).appendTo($container);
@@ -362,14 +367,14 @@ define([
         var $rightCol = $('<span>', {'class': 'right-col'});
         $('<span>', {'class': 'name'}).text(data.displayName).appendTo($rightCol);
         if (data.avatar && avatars[data.avatar]) {
-            $header.append(avatars[data.avatar]);
-            $header.append($rightCol);
+            $avatar.append(avatars[data.avatar]);
+            $avatar.append($rightCol);
         } else {
-            common.displayAvatar($header, data.avatar, data.displayName, function ($img) {
+            common.displayAvatar($avatar, data.avatar, data.displayName, function ($img) {
                 if (data.avatar && $img) {
                     avatars[data.avatar] = $img[0].outerHTML;
                 }
-                $header.append($rightCol);
+                $avatar.append($rightCol);
             });
         }
 

@@ -142,7 +142,11 @@ define([
                 }
                 rpc.send('CLEAR_OWNED_CHANNEL', channel, function (e, response) {
                     if (e) { return cb(e); }
-                    cb(response);
+                    if (response && response.length) {
+                        cb(void 0, response[0]);
+                    } else {
+                        cb();
+                    }
                 });
             };
 
