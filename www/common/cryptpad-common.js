@@ -1779,6 +1779,7 @@ define([
                 initialized = true;
 
                 updateLocalVersion();
+                common.addTooltips();
                 f(void 0, env);
                 if (typeof(window.onhashchange) === 'function') { window.onhashchange(); }
             }
@@ -1797,7 +1798,6 @@ define([
             store = common.store = env.store = storeObj;
 
             common.addDirectMessageHandler(common);
-            common.addTooltips();
 
             var proxy = getProxy();
             var network = getNetwork();
