@@ -116,12 +116,17 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     .avatar,
     .right-col {
-         flex:1 1 auto; //; // 1 auto;
+         flex:1 1 auto;
     }
     .remove-history {
-        // TODO
+        height: 100%;
+
+        &:hover {
+            background-color: lighten(@bg-color, 20%);
+        }
     }
 }
 

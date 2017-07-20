@@ -289,9 +289,11 @@ define([
 
         var $avatar = $('<div>', {'class': 'avatar'}).appendTo($header);
 
-        var $removeHistory = $('<button>', {
-            'class': 'remove-history'
-        }).text('remove chat history').click(function () {
+        var $removeHistory = $('<span>', {
+            'class': 'remove-history fa fa-eraser'
+        })
+        // TODO set title
+        .click(function () {
             Cryptpad.confirm(common.Messages.contacts_confirmRemoveHistory, function (yes) {
                 if (!yes) { return; }
                 Cryptpad.clearOwnedChannel(data.channel, function (e) {
