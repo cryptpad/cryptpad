@@ -199,70 +199,6 @@ define([
                 }
             };
 
-            var createFileDialog = function () {
-                var $body = $iframe.find('body');
-                var $block = $body.find('#fileDialog');
-                if (!$block.length) {
-                    $block = $('<div>', {id: "fileDialog"}).appendTo($body);
-                }
-                $block.html('');
-                $('<span>', {
-                    'class': 'close fa fa-times',
-                    'title': Messages.filePicker_close
-                }).click(function () {
-                    $block.hide();
-                }).appendTo($block);
-                var $description = $('<p>').text(Messages.filePicker_description);
-                $block.append($description);
-                var $filter = $('<p>').appendTo($block);
-                var $container = $('<span>', {'class': 'fileContainer'}).appendTo($block);
-                var updateContainer = function () {
-                    $container.html('');
-                    var filter = $filter.find('.filter').val().trim();
-                    var list = Cryptpad.getUserFilesList();
-                    var fo = Cryptpad.getFO();
-                    list.forEach(function (id) {
-                        var data = fo.getFileData(id);
-                        var name = fo.getTitle(id);
-                        if (filter && name.toLowerCase().indexOf(filter.toLowerCase()) === -1) {
-                            return;
-                        }
-                        var $span = $('<span>', {'class': 'element'}).appendTo($container);
-                        var $inner = $('<span>').text(name);
-                        $span.append($inner).click(function () {
-                            var parsed = Cryptpad.parsePadUrl(data.href);
-                            var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
-                            var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
-                            var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '"></media-tag>';
-                            editor.replaceSelection(mt);
-                            //var cleanName = name.replace(/[\[\]]/g, '');
-                            //var text = '!['+cleanName+']('+data.href+')';
-                            //editor.replaceSelection(text);
-                            $block.hide();
-                        });
-                    });
-                };
-                var to;
-                $('<input>', {
-                    type: 'text',
-                    'class': 'filter',
-                    'placeholder': Messages.filePicker_filter
-                }).appendTo($filter).on('keypress', function () {
-                    if (to) { window.clearTimeout(to); }
-                    to = window.setTimeout(updateContainer, 300);
-                });
-                $filter.append(' '+Messages.or+' ');
-                var data = {FM: APP.FM};
-                $filter.append(Cryptpad.createButton('upload', false, data, function () {
-                    $block.hide();
-                }));
-                updateContainer();
-                $body.keydown(function (e) {
-                    if (e.which === 27) { $block.hide(); }
-                });
-                $block.show();
-            };
-
             var createPrintDialog = function () {
                 var slideOptionsTmp = {
                     title: false,
@@ -427,12 +363,23 @@ define([
                 var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
                 $rightside.append($forgetPad);
 
+                var fileDialogCfg = {
+                    $body: $iframe.find('body'),
+                    onSelect: function (href) {
+                        var parsed = Cryptpad.parsePadUrl(href);
+                        var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+                        var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
+                        var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '"></media-tag>';
+                        editor.replaceSelection(mt);
+                    },
+                    data: APP
+                };
                 $('<button>', {
                     title: Messages.filePickerButton,
                     'class': 'rightside-button fa fa-picture-o',
                     style: 'font-size: 17px'
                 }).click(function () {
-                    $('body').append(createFileDialog());
+                    Cryptpad.createFileDialog(fileDialogCfg);
                 }).appendTo($rightside);
 
                 var $previewButton = APP.$previewButton = Cryptpad.createButton(null, true);
