@@ -63,6 +63,7 @@ body {
         display:block;
     }
     html, body {
+        height: auto;
         max-height: none;
         overflow: visible;
     }
@@ -73,6 +74,20 @@ body {
             * {
                 visibility: visible;
             }
+        }
+        .cp #modal {
+            display: none !important;
+        }
+        .cp {
+            flex: 1 !important;
+            overflow: visible !important;
+        }
+        .userlist-drawer {
+            display: none !important;
+        }
+        #editorContainer {
+            height: auto;
+            display: block;
         }
     }
 }
@@ -98,30 +113,37 @@ body {
         }
     }
 }
-.preview .cp {
-    flex: 1;
-    overflow: hidden;
-    div#modal:not(.shown) {
-        position: relative;
-        top: auto;
-        left: auto;
-        width: auto;
-        display: block;
-        height: 100%;
-        #content {
-            .slide-container {
-                width: 100%;
+.preview {
+    .cp {
+        width: 50vw;
+        overflow: hidden;
+        div#modal:not(.shown) {
+            position: relative;
+            top: auto;
+            left: auto;
+            width: auto;
+            display: block;
+            height: 100%;
+            #content {
+                .slide-container {
+                    width: 100%;
+                }
+                .slide-frame {
+                    width: 50vw;
+                    height: 28.125vw; // height:width ratio = 9/16 = .5625
+                    max-height: ~"calc(100vh - 96px)";
+                    max-width: ~"calc(16 / 9 * (100vh - 96px))";
+                    //max-height: 100vh;
+                    //max-width: 177.78vh; // 16/9 = 1.778
+                }
             }
-            .slide-frame {
-                width: 50vw;
-                height: 28.125vw; // height:width ratio = 9/16 = .5625
-                max-height: 100vh;
-                max-width: 177.78vh; // 16/9 = 1.778
+            #button_exit {
+                visibility: hidden;
             }
         }
-        #button_exit {
-            visibility: hidden;
-        }
+    }
+    .CodeMirror {
+        flex: 1;
     }
 }
 .cp {
@@ -156,7 +178,7 @@ body {
     .slide-container {
         width: 90vw;
         height: 100vh;
-        margin: 0vh 5vw;
+        margin: 0vh 5vw !important;
         display: flex;
         &:last-child {
             height: ~"calc(100vh - 2px)";

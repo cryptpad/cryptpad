@@ -299,7 +299,6 @@ define([
         var MutationObserver = window.MutationObserver;
         var addTippy = function (el) {
             if (el.nodeName === 'IFRAME') { return; }
-            console.log(el);
             Tippy(el, {
                 position: 'bottom',
                 distance: 0,

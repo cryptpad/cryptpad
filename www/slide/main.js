@@ -95,7 +95,7 @@ define([
                 }
             });
 
-            Slide.setModal(APP, $modal, $content, $pad, ifrw, slideOptions, initialState);
+            Slide.setModal($modal, $content, $pad, ifrw, slideOptions, initialState);
 
             var enterPresentationMode = function (shouldLog) {
                 Slide.show(true, editor.getValue());
@@ -282,7 +282,6 @@ define([
                 // Slide number
                 $('<input>', {type: 'checkbox', id: 'checkNumber', checked: slideOptionsTmp.slide}).on('change', function () {
                     var c = this.checked;
-                    console.log(c);
                     slideOptionsTmp.slide = c;
                 }).appendTo($p).css('width', 'auto');
                 $('<label>', {'for': 'checkNumber'}).text(Messages.printSlideNumber).appendTo($p);
@@ -349,6 +348,8 @@ define([
                     getHeadingText: CodeMirror.getHeadingText
                 };
                 Title = Cryptpad.createTitle(titleCfg, config.onLocal, Cryptpad);
+
+                Slide.setTitle(Title);
 
                 Metadata = Cryptpad.createMetadata(UserList, Title, metadataCfg, Cryptpad);
 
@@ -472,9 +473,7 @@ define([
                     //$('body').append(createPrintDialog());
                 }).append($('<span>', {'class': 'drawer'}).text(Messages.printText));
 
-                // TODO reenable this when it is working again
-                $printButton = $printButton;
-                //$drawer.append($printButton);
+                $drawer.append($printButton);
 
                 var $slideOptions = $('<button>', {
                     title: Messages.slideOptionsTitle,

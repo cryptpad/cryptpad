@@ -227,7 +227,6 @@ define([
         if (!isId) { return; }
 
         var decryptedMsg = channel.encryptor.decrypt(msg);
-        console.log(decryptedMsg);
         var parsed = JSON.parse(decryptedMsg);
         if (parsed[0] !== Types.mapId && parsed[0] !== Types.mapIdAck) { return; }
         if (parsed[2] !== sender || !parsed[1]) { return; }
@@ -341,7 +340,7 @@ define([
         });*/
         var onKeyDown = function (e) {
             if (e.keyCode === 13) {
-                if (e.ctrlKey) {
+                if (e.ctrlKey || e.shiftKey) {
                     var val = this.value;
                     if (typeof this.selectionStart === "number" && typeof this.selectionEnd === "number") {
                         var start = this.selectionStart;
