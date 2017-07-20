@@ -278,6 +278,10 @@ define(function () {
     out.contacts_info3 = "Double-cliquer sur son nom pour voir son profil";
     out.contacts_info4 = "Chaque participant peut nettoyer définitivement l'historique d'une discussion";
 
+    out.contacts_removeHistoryTitle = "Supprimer l'historique du chat";
+    out.contacts_confirmRemoveHistory = 'Êtes-vous sûr de vouloir supprimer définitivement l\'historique de votre chat ? Les messages ne pourront pas être restaurés.';
+    out.contacts_removeHistoryServerError = 'Une erreur est survenue lors de la supprimer de l\'historique du chat. Veuillez réessayer plus tard.';
+
     // File manager
 
     out.fm_rootName = "Documents";

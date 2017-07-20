@@ -112,24 +112,6 @@ body {
     }
 }
 
-.cp-contact-top-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    .avatar,
-    .right-col {
-         flex:1 1 auto;
-    }
-    .remove-history {
-        height: 100%;
-
-        &:hover {
-            background-color: lighten(@bg-color, 20%);
-        }
-    }
-}
-
 #messaging {
     flex: 1;
     height: 100%;
@@ -140,7 +122,27 @@ body {
     }
     .header {
         background-color: lighten(@bg-color, 15%);
-        padding: 10px;
+        padding: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 50px;
+
+        .avatar,
+        .right-col {
+             flex:1 1 auto;
+        }
+        .remove-history {
+            height: 100%;
+            line-height: 30px;
+            padding: 10px;
+            &:hover {
+                background-color: rgba(50,50,50,0.3);
+            }
+        }
+        .avatar {
+            margin: 10px;
+        }
     }
     .chat {
         height: 100%;
