@@ -9,10 +9,14 @@ define([
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/marked/marked.min.js',
+    '/common/toolbar2.js',
     'cm/lib/codemirror',
     'cm/mode/markdown/markdown',
     'less!/profile/main.less',
-], function ($, Cryptpad, Listmap, Crypto, Marked, CodeMirror) {
+    'less!/customize/src/less/toolbar.less',
+    'less!/customize/src/less/cryptpad.less',
+    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
+], function ($, Cryptpad, Listmap, Crypto, Marked, Toolbar, CodeMirror) {
 
     var APP = window.APP = {
         Cryptpad: Cryptpad,
@@ -78,8 +82,11 @@ define([
     var CREATE_ID = "createProfile";
     var HEADER_ID = "header";
     var HEADER_RIGHT_ID = "rightside";
+    var CREATE_INVITE_BUTTON = 'inviteButton'; /* jshint ignore: line */
+    var VIEW_PROFILE_BUTTON = 'viewProfileButton';
 
-    var createEditableInput = function ($block, name, ph, getValue, setValue, realtime) {
+    var createEditableInput = function ($block, name, ph, getValue, setValue, realtime, fallbackValue) {
+        fallbackValue = fallbackValue || ''; // don't ever display 'null' or 'undefined'
         var lastVal;
         getValue(function (value) {
             lastVal = value;
@@ -104,7 +111,7 @@ define([
                     if (err) { return void console.error(err); }
                     Cryptpad.whenRealtimeSyncs(realtime, function () {
                         lastVal = newVal;
-                        Cryptpad.log(Messages._getKey('profile_fieldSaved', [newVal]));
+                        Cryptpad.log(Messages._getKey('profile_fieldSaved', [newVal || fallbackValue]));
                         editing = false;
                     });
                 });
@@ -150,8 +157,80 @@ define([
         createEditableInput($block, DISPLAYNAME_ID, placeholder, 32, getValue, setValue, rt);
     };
     */
+
+/* jshint ignore:start */
+    var isFriend = function (proxy, edKey) {
+        var friends = Cryptpad.find(proxy, ['friends']);
+        return typeof(edKey) === 'string' && friends && (edKey in friends);
+    };
+
+    var addCreateInviteLinkButton = function ($container) {
+        return;
+        var obj = APP.lm.proxy;
+
+        var proxy = Cryptpad.getProxy();
+        var userViewHash = Cryptpad.find(proxy, ['profile', 'view']);
+
+        var edKey = obj.edKey;
+        var curveKey = obj.curveKey;
+
+        if (!APP.readOnly || !curveKey || !edKey || userViewHash === window.location.hash.slice(1) || isFriend(proxy, edKey)) {
+            //console.log("edit mode or missing curve key, or you're viewing your own profile");
+            return;
+        }
+
+        // sanitize user inputs
+
+        var unsafeName = obj.name || '';
+        console.log(unsafeName);
+        var name = Cryptpad.fixHTML(unsafeName) || Messages.anonymous;
+        console.log(name);
+
+        console.log("Creating invite button");
+        $("<button>", {
+            id: CREATE_INVITE_BUTTON,
+            title: Messages.profile_inviteButtonTitle,
+        })
+        .addClass('btn btn-success')
+        .text(Messages.profile_inviteButton)
+        .click(function () {
+            Cryptpad.confirm(Messages._getKey('profile_inviteExplanation', [name]), function (yes) {
+                if (!yes) { return; }
+                console.log(obj.curveKey);
+                Cryptpad.alert("TODO");
+                // TODO create a listmap object using your curve keys
+                // TODO fill the listmap object with your invite data
+                // TODO generate link to invite object
+                // TODO copy invite link to clipboard
+            }, null, true);
+        })
+        .appendTo($container);
+    };
+        /* jshint ignore:end */
+
+    var addViewButton = function ($container) {
+        if (!Cryptpad.isLoggedIn() || window.location.hash) {
+            return;
+        }
+
+        var hash = Cryptpad.find(Cryptpad.getProxy(), ['profile', 'view']);
+        var url = '/profile/#' + hash;
+
+        var $button = $('<button>', {
+            'class': 'btn btn-success',
+            id: VIEW_PROFILE_BUTTON,
+        })
+        .text(Messages.profile_viewMyProfile)
+        .click(function () {
+            window.open(url, '_blank');
+        });
+        $container.append($button);
+    };
+
     var addDisplayName = function ($container) {
         var $block = $('<div>', {id: DISPLAYNAME_ID}).appendTo($container);
+
+
         var getValue = function (cb) {
             cb(APP.lm.proxy.name);
         };
@@ -161,6 +240,8 @@ define([
             getValue(function (value) {
                 $span.text(value || Messages.anonymous);
             });
+
+            //addCreateInviteLinkButton($block);
             return;
         }
         var setValue = function (value, cb) {
@@ -168,7 +249,7 @@ define([
             cb();
         };
         var rt = Cryptpad.getStore().getProxy().info.realtime;
-        createEditableInput($block, DISPLAYNAME_ID, placeholder, getValue, setValue, rt);
+        createEditableInput($block, DISPLAYNAME_ID, placeholder, getValue, setValue, rt, Messages.anonymous);
     };
 
     var addLink = function ($container) {
@@ -292,7 +373,7 @@ define([
         var $block = $('<div>', {id: DESCRIPTION_ID}).appendTo($container);
 
         if (APP.readOnly) {
-            if (!APP.lm.proxy.description.trim()) { return void $block.hide(); }
+            if (!(APP.lm.proxy.description || "").trim()) { return void $block.hide(); }
             var $div = $('<div>', {'class': 'rendered'}).appendTo($block);
             var val = Marked(APP.lm.proxy.description);
             $div.html(val);
@@ -330,25 +411,60 @@ define([
         $container.append($block);
     };
 
+    var createLeftside = function () {
+        var $categories = $('<div>', {'class': 'categories'}).appendTo(APP.$leftside);
+        APP.$usage = $('<div>', {'class': 'usage'}).appendTo(APP.$leftside);
+
+        var $category = $('<div>', {'class': 'category'}).appendTo($categories);
+        $category.append($('<span>', {'class': 'fa fa-user'}));
+        $category.addClass('active');
+        $category.append(Messages.profileButton);
+    };
+
+    var createToolbar = function () {
+        var displayed = ['useradmin', 'newpad', 'limit', 'upgrade', 'pageTitle'];
+        var configTb = {
+            displayed: displayed,
+            ifrw: window,
+            common: Cryptpad,
+            $container: APP.$toolbar,
+            pageTitle: Messages.settings_title
+        };
+        var toolbar = APP.toolbar = Toolbar.create(configTb);
+        toolbar.$rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
+    };
+
     var onReady = function () {
         APP.$container.find('#'+CREATE_ID).remove();
 
+        var obj = APP.lm && APP.lm.proxy;
+        if (!APP.readOnly) {
+            var pubKeys = Cryptpad.getPublicKeys();
+            if (pubKeys && pubKeys.curve) {
+                obj.curveKey = pubKeys.curve;
+                obj.edKey = pubKeys.ed;
+            }
+        }
+
         if (!APP.initialized) {
-            var $header = $('<div>', {id: HEADER_ID}).appendTo(APP.$container);
+            var $header = $('<div>', {id: HEADER_ID}).appendTo(APP.$rightside);
             addAvatar($header);
             var $rightside = $('<div>', {id: HEADER_RIGHT_ID}).appendTo($header);
             addDisplayName($rightside);
             addLink($rightside);
-            addDescription(APP.$container);
-            addPublicKey(APP.$container);
+            addDescription(APP.$rightside);
+            addViewButton(APP.$rightside); //$rightside);
+            addPublicKey(APP.$rightside);
             APP.initialized = true;
+            createLeftside();
         }
+
+        Cryptpad.removeLoadingScreen();
     };
 
     var onInit = function () {
         
     };
-
     var onDisconnect = function () {};
     var onChange = function () {};
 
@@ -377,7 +493,7 @@ define([
         if (obj.profile && obj.profile.view && obj.profile.edit) {
             return void andThen(obj.profile.edit);
         }
-        // If the user doesn't have a public profile, ask him if he wants to create one
+        // If the user doesn't have a public profile, ask them if they want to create one
         var todo = function () {
             var secret = Cryptpad.getSecrets();
             obj.profile = {};
@@ -395,6 +511,8 @@ define([
             });
         };
 
+        Cryptpad.removeLoadingScreen();
+
         if (!Cryptpad.isLoggedIn()) {
             var $p = $('<p>', {id: CREATE_ID}).append(Messages.profile_register);
             var $a = $('<a>', {
@@ -404,47 +522,38 @@ define([
                 'class': 'btn btn-success',
             }).text(Messages.login_register).appendTo($a);
             $p.append($('<br>')).append($a);
-            APP.$container.append($p);
+            APP.$rightside.append($p);
             return;
         }
         var $create = $('<div>', {id: CREATE_ID});
         var $button = $('<button>', {'class': 'btn btn-success'});
         $button.text(Messages.profile_create).click(todo).appendTo($create);
-        APP.$container.append($create);
+        APP.$rightside.append($create);
+    };
+
+    var onCryptpadReady = function () {
+        APP.$leftside = $('<div>', {id: 'leftSide'}).appendTo(APP.$container);
+        APP.$rightside = $('<div>', {id: 'rightSide'}).appendTo(APP.$container);
+
+        createToolbar();
+
+        if (window.location.hash) {
+            return void andThen(window.location.hash.slice(1));
+        }
+        getOrCreateProfile();
     };
 
     $(function () {
-        var $main = $('#mainBlock');
-        // Language selector
-        var $sel = $('#language-selector');
-        Cryptpad.createLanguageSelector(undefined, $sel);
-        $sel.find('button').addClass('btn').addClass('btn-secondary');
-        $sel.show();
-
-        // User admin menu
-        var $userMenu = $('#user-menu');
-        var userMenuCfg = {
-            $initBlock: $userMenu
-        };
-        var $userAdmin = Cryptpad.createUserAdminMenu(userMenuCfg);
-        $userAdmin.find('button').addClass('btn').addClass('btn-secondary');
-
         $(window).click(function () {
             $('.cryptpad-dropdown').hide();
         });
 
-        // main block is hidden in case javascript is disabled
-        $main.removeClass('hidden');
-
         APP.$container = $('#container');
+        APP.$toolbar = $('#toolbar');
 
         Cryptpad.ready(function () {
             Cryptpad.reportAppUsage();
-
-            if (window.location.hash) {
-                return void andThen(window.location.hash.slice(1));
-            }
-            getOrCreateProfile();
+            onCryptpadReady();
         });
     });
 

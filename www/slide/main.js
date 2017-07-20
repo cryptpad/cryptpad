@@ -230,11 +230,15 @@ define([
                         var $span = $('<span>', {'class': 'element'}).appendTo($container);
                         var $inner = $('<span>').text(name);
                         $span.append($inner).click(function () {
-                            var cleanName = name.replace(/[\[\]]/g, '');
-                            var text = '!['+cleanName+']('+data.href+')';
-                            editor.replaceSelection(text);
+                            var parsed = Cryptpad.parsePadUrl(data.href);
+                            var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+                            var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
+                            var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '"></media-tag>';
+                            editor.replaceSelection(mt);
+                            //var cleanName = name.replace(/[\[\]]/g, '');
+                            //var text = '!['+cleanName+']('+data.href+')';
+                            //editor.replaceSelection(text);
                             $block.hide();
-                            console.log(data.href);
                         });
                     });
                 };
@@ -622,12 +626,13 @@ define([
                     body: $iframe.find('body'),
                     onUploaded: function (ev, data) {
                         //var cursor = editor.getCursor();
-                        var cleanName = data.name.replace(/[\[\]]/g, '');
-                        var text = '!['+cleanName+']('+data.url+')';
-                        /*if (data.mediatag) {
-                            text = '!'+text;
-                        }*/
-                        editor.replaceSelection(text);
+                        //var cleanName = data.name.replace(/[\[\]]/g, '');
+                        //var text = '!['+cleanName+']('+data.url+')';
+                        var parsed = Cryptpad.parsePadUrl(data.url);
+                        var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+                        var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
+                        var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '"></media-tag>';
+                        editor.replaceSelection(mt);
                     }
                 };
                 APP.FM = Cryptpad.createFileManager(fmConfig);

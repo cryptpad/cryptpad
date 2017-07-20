@@ -9,10 +9,11 @@ define(function () {
     out.type.code = 'Code';
     out.type.poll = 'Poll';
     out.type.slide = 'Presentation';
-    out.type.drive = 'Drive';
+    out.type.drive = 'CryptDrive';
     out.type.whiteboard = 'Whiteboard';
     out.type.file = 'File';
     out.type.media = 'Media';
+    out.type.contacts = 'Contacts';
 
     out.button_newpad = 'New Rich Text pad';
     out.button_newcode = 'New Code pad';
@@ -36,9 +37,12 @@ define(function () {
     out.synced = "Everything is saved";
     out.deleted = "Pad deleted from your CryptDrive";
 
+    out.realtime_unrecoverableError = "The realtime engine has encountered an unrecoverable error. Click OK to reload.";
+
     out.disconnected = 'Disconnected';
     out.synchronizing = 'Synchronizing';
     out.reconnecting = 'Reconnecting...';
+    out.typing = "Typing";
     out.lag = 'Lag';
     out.readonly = 'Read only';
     out.anonymous = "Anonymous";
@@ -254,6 +258,30 @@ define(function () {
     out.profile_description = "Description";
     out.profile_fieldSaved = 'New value saved: {0}';
 
+    out.profile_inviteButton = "Connect";
+    out.profile_inviteButtonTitle ='Create a link that will invite this user to connect with you.';
+    out.profile_inviteExplanation = "Clicking <strong>OK</strong> will create a link to a secure messaging session that <em>only {0} will be able to redeem.</em><br><br>The link will be copied to your clipboard and can be shared publicly.";
+    out.profile_viewMyProfile = "View my profile";
+
+    // contacts/userlist
+    out.userlist_addAsFriendTitle = 'Add "{0}" as a contact';
+    out.userlist_thisIsYou = 'This is you ("{0}")';
+    out.userlist_pending = "Pending...";
+    out.contacts_title = "Contacts";
+    out.contacts_addError = 'Error while adding that contact to the list';
+    out.contacts_added = 'Contact invite accepted.';
+    out.contacts_rejected = 'Contact invite rejected';
+    out.contacts_request = '<em>{0}</em> would like to add you as a contact. <b>Accept<b>?';
+    out.contacts_send = 'Send';
+    out.contacts_remove = 'Remove this contact';
+    out.contacts_confirmRemove = 'Are you sure you want to remove <em>{0}</em> from your contacts?';
+    out.contacts_typeHere = "Type a message here...";
+
+    out.contacts_info1 = "These are your contacts. From here, you can:";
+    out.contacts_info2 = "Click your contact's icon to chat with them";
+    out.contacts_info3 = "Double-click their icon to view their profile";
+    out.contacts_info4 = "Either participant can clear permanently a chat history";
+
     // File manager
 
     out.fm_rootName = "Documents";
@@ -380,28 +408,37 @@ define(function () {
     out.register_alreadyRegistered = "This user already exists, do you want to log in?";
 
     // Settings
+    out.settings_cat_account = "Account";
+    out.settings_cat_drive = "CryptDrive";
     out.settings_title = "Settings";
     out.settings_save = "Save";
+
+    out.settings_backupCategory = "Backup";
     out.settings_backupTitle = "Backup or restore all your data";
     out.settings_backup = "Backup";
     out.settings_restore = "Restore";
-    out.settings_resetTitle = "Clean your drive";
+
+    out.settings_resetNewTitle = "Clean CryptDrive";
+    out.settings_resetButton = "Remove";
     out.settings_reset = "Remove all the files and folders from your CryptDrive";
     out.settings_resetPrompt = "This action will remove all the pads from your drive.<br>"+
                                "Are you sure you want to continue?<br>" +
                                "Type “<em>I love CryptPad</em>” to confirm.";
     out.settings_resetDone = "Your drive is now empty!";
     out.settings_resetError = "Incorrect verification text. Your CryptDrive has not been changed.";
-    out.settings_resetTips = "Tips in CryptDrive";
+
+    out.settings_resetTipsAction = "Reset";
+    out.settings_resetTips = "Tips";
     out.settings_resetTipsButton = "Reset the available tips in CryptDrive";
     out.settings_resetTipsDone = "All the tips are now visible again.";
 
-    out.settings_importTitle = "Import this browser's recent pads in my CryptDrive";
+    out.settings_importTitle = "Import this browser's recent pads in your CryptDrive";
     out.settings_import = "Import";
     out.settings_importConfirm = "Are you sure you want to import recent pads from this browser to your user account's CryptDrive?";
     out.settings_importDone = "Import completed";
 
-    out.settings_userFeedbackHint1 = "CryptPad provides some very basic feedback to the server, to let us know how to improve your experience.";
+    out.settings_userFeedbackTitle = "Feedback";
+    out.settings_userFeedbackHint1 = "CryptPad provides some very basic feedback to the server, to let us know how to improve your experience. ";
     out.settings_userFeedbackHint2 = "Your pad's content will never be shared with the server.";
     out.settings_userFeedback = "Enable user feedback";
 
@@ -414,10 +451,12 @@ define(function () {
     out.settings_pinningError = "Something went wrong";
     out.settings_usageAmount = "Your pinned pads occupy {0}MB";
 
+    out.settings_logoutEverywhereButton = "Log out";
     out.settings_logoutEverywhereTitle = "Log out everywhere";
-    out.settings_logoutEverywhere = "Log out of all other web sessions";
+    out.settings_logoutEverywhere = "Force log out of all other web sessions";
     out.settings_logoutEverywhereConfirm = "Are you sure? You will need to log in with all your devices.";
 
+    out.upload_title = "File upload";
     out.upload_serverError = "Server Error: unable to upload your file at this time.";
     out.upload_uploadPending = "You already have an upload in progress. Cancel it and upload your new file?";
     out.upload_success = "Your file ({0}) has been successfully uploaded and added to your drive.";
@@ -528,7 +567,7 @@ define(function () {
         '<span style="font-size:16px;"><p>',
         'This is&nbsp;<strong>CryptPad</strong>, the Zero Knowledge realtime collaborative editor. Everything is saved as you type.',
         '<br>',
-        'Share the link to this pad to edit with friends or use the <span style="background-color:#5cb85c;color:#ffffff;">&nbsp;Share&nbsp;</span> button to share a <em>read-only link</em>&nbsp;which allows viewing but not editing.',
+        'Share the link to this pad to edit with friends or use the <span class="fa fa-share-alt" style="border: 1px solid black;color:#000;">&nbsp;Share&nbsp;</span> button to share a <em>read-only link</em>&nbsp;which allows viewing but not editing.',
         '</p>',
 
         '<p><em>',

@@ -54,7 +54,7 @@ Version 1
         if (!hash) { return; }
         var parsed = {};
         var hashArr = fixDuplicateSlashes(hash).split('/');
-        if (['media', 'file', 'user'].indexOf(type) === -1) {
+        if (['media', 'file', 'user', 'invite'].indexOf(type) === -1) {
             parsed.type = 'pad';
             if (hash.slice(0,1) !== '/' && hash.length >= 56) {
                 // Old hash
@@ -88,6 +88,16 @@ Version 1
             if (hashArr[1] && hashArr[1] === '1') {
                 parsed.version = 1;
                 parsed.user = hashArr[2];
+                parsed.pubkey = hashArr[3].replace(/-/g, '/');
+                return parsed;
+            }
+            return parsed;
+        }
+        if (['invite'].indexOf(type) !== -1) {
+            parsed.type = 'invite';
+            if (hashArr[1] && hashArr[1] === '1') {
+                parsed.version = 1;
+                parsed.channel = hashArr[2];
                 parsed.pubkey = hashArr[3].replace(/-/g, '/');
                 return parsed;
             }
@@ -318,6 +328,12 @@ Version 1
     Hash.serializeHash = function (hash) {
         if (hash && hash.slice(-1) !== "/") { hash += "/"; }
         return hash;
+    };
+
+    Hash.createInviteUrl = function (curvePublic, channel) {
+        channel = channel || Hash.createChannelId();
+        return window.location.origin + '/invite/#/1/' + channel +
+            '/' + curvePublic.replace(/\//g, '-') + '/';
     };
 
     return Hash;

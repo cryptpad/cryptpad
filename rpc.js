@@ -28,8 +28,8 @@ var WARN = function (e, output) {
 };
 
 var isValidId = function (chan) {
-    return chan && chan.length && /^[a-fA-F0-9]/.test(chan) ||
-        [32, 48].indexOf(chan.length) !== -1;
+    return chan && chan.length && /^[a-fA-F0-9]/.test(chan) &&
+        [32, 48].indexOf(chan.length) > -1;
 };
 
 var uint8ArrayToHex = function (a) {
@@ -113,15 +113,21 @@ var isTooOld = function (time, now) {
     return (now - time) > 300000;
 };
 
+var expireSession = function (Sessions, key) {
+    var session = Sessions[key];
+    if (!session) { return; }
+    if (session.blobstage) {
+        session.blobstage.close();
+    }
+    delete Sessions[key];
+};
+
 var expireSessions = function (Sessions) {
     var now = +new Date();
     Object.keys(Sessions).forEach(function (key) {
         var session = Sessions[key];
-        if (isTooOld(Sessions[key].atime, now)) {
-            if (session.blobstage) {
-                session.blobstage.close();
-            }
-            delete Sessions[key];
+        if (session && isTooOld(session.atime, now)) {
+            expireSession(Sessions, key);
         }
     });
 };
@@ -670,6 +676,29 @@ var makeFileStream = function (root, id, cb) {
     });
 };
 
+var clearOwnedChannel = function (Env, channelId, unsafeKey, cb) {
+    if (typeof(channelId) !== 'string' || channelId.length !== 32) {
+        return cb('INVALID_ARGUMENTS');
+    }
+
+    if (!(Env.msgStore && Env.msgStore.getChannelMetadata)) {
+        return cb('E_NOT_IMPLEMENTED');
+    }
+
+    Env.msgStore.getChannelMetadata(channelId, function (e, metadata) {
+        if (e) { return cb(e); }
+        if (!(metadata && Array.isArray(metadata.owners))) { return void cb('E_NO_OWNERS'); }
+        // Confirm that the channel is owned by the user is question
+        if (metadata.owners.indexOf(unsafeKey) === -1) {
+            return void cb('INSUFFICIENT_PERMISSIONS');
+        }
+
+        return void Env.msgStore.clearChannel(channelId, function (e) {
+            cb(e);
+        });
+    });
+};
+
 var upload = function (Env, publicKey, content, cb) {
     var paths = Env.paths;
     var dec;
@@ -846,6 +875,7 @@ var isAuthenticatedCall = function (call) {
         'GET_LIMIT',
         'UPLOAD_COMPLETE',
         'UPLOAD_CANCEL',
+        'EXPIRE_SESSION',
     ].indexOf(call) !== -1;
 };
 
@@ -1046,7 +1076,16 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                     }
                     Respond(void 0, dict);
                 });
-
+            case 'EXPIRE_SESSION':
+                return void setTimeout(function () {
+                    expireSession(Sessions, safeKey);
+                    Respond(void 0, "OK");
+                });
+            case 'CLEAR_OWNED_CHANNEL':
+                return void clearOwnedChannel(Env, msg[1], publicKey, function (e, response) {
+                    if (e) { return void Respond(e); }
+                    Respond(void 0, response);
+                });
             // restricted to privileged users...
             case 'UPLOAD':
                 if (!privileged) { return deny(); }

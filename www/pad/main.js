@@ -107,6 +107,11 @@ define([
         editor.on('instanceReady', function () {
             var $bar = $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox');
 
+            var $html = $bar.closest('html');
+            var $faLink = $html.find('head link[href*="/bower_components/components-font-awesome/css/font-awesome.min.css"]');
+            if ($faLink.length) {
+                $html.find('iframe').contents().find('head').append($faLink.clone());
+            }
             var isHistoryMode = false;
 
             if (readOnly) {
@@ -544,14 +549,16 @@ define([
                     var $templateButton = Cryptpad.createButton('template', true, templateObj);
                     $rightside.append($templateButton);
                 }
-
+console.log('init');
                 /* add an export button */
                 var $export = Cryptpad.createButton('export', true, {}, exportFile);
                 $drawer.append($export);
 
                 if (!readOnly) {
                     /* add an import button */
-                    var $import = Cryptpad.createButton('import', true, {}, importFile);
+                    var $import = Cryptpad.createButton('import', true, {
+                        accept: 'text/html'
+                    }, importFile);
                     $drawer.append($import);
                 }
 

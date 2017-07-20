@@ -25,7 +25,7 @@ module.exports = {
         "default-src 'none'",
         "style-src 'unsafe-inline' 'self'",
         "script-src 'self'",
-        "font-src 'self'",
+        "font-src 'self' data:",
 
         /*  child-src is used to restrict iframes to a set of allowed domains.
          *  connect-src is used to restrict what domains can connect to the websocket.
@@ -67,7 +67,7 @@ module.exports = {
          "connect-src 'self' ws: wss:",
 
         // (insecure remote) images are included by users of the wysiwyg who embed photos in their pads
-        "img-src *",
+        "img-src * blob:",
     ].join('; '),
 
     httpPort: 3000,

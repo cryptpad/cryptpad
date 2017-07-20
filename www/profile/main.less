@@ -1,14 +1,8 @@
+@import '/customize/src/less/variables.less';
+@import '/customize/src/less/mixins.less';
+@import '/customize/src/less/sidebar-layout.less';
+
 .cp {
-    #mainBlock {
-        z-index: 1;
-        width: 1000px;
-        max-width: 90%;
-        margin: auto;
-        #container {
-            font-size: 25px;
-            width: 100%;
-        }
-    }
     #header {
         display: flex;
         #rightside {
@@ -29,7 +23,7 @@
             height: 300px;
             width: 300px;
             border: 1px solid black;
-            border-radius: 10px;
+            border-radius: 4px;
             overflow: hidden;
             position: relative;
             .delete {
@@ -57,7 +51,7 @@
                 min-height: 100%;
                 max-width: none;
                 max-height: none;
-                flex-shrink: 0;
+                flex: 1;
             }
         }
         button {
@@ -91,9 +85,21 @@
             font-weight: bold;
             font-size: 30px;
         }
+        .link {
+            font-size: 25px;
+        }
         .displayName, .link {
             line-height: 40px;
         }
+    }
+
+    // I tried using flexbox but messed with how the pencil icon was displayed
+    #inviteButton {
+        float: right;
+    }
+    #viewProfileButton {
+        margin-bottom: 20px;
+        float: right;
     }
     #description {
         position: relative;

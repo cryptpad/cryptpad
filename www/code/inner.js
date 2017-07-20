@@ -6,6 +6,8 @@ define([
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/code/code.less',
     'less!/customize/src/less/toolbar.less',
+    'less!/customize/src/less/cryptpad.less',
+
     'css!cm/lib/codemirror.css',
     'css!cm/addon/dialog/dialog.css',
     'css!cm/addon/fold/foldgutter.css',

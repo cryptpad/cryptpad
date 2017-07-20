@@ -66,9 +66,16 @@ define([
 
     var goTo = Slide.goTo = function (i) {
         i = i || 0;
+        Slide.index = i;
         $content.find('.slide-container').first().css('margin-left', -(i*100)+'%');
         updateFontSize();
         change(Slide.lastIndex, Slide.index);
+        $modal.find('#button_left > span').css({
+            opacity: Slide.index === 0? 0: 1
+        });
+        $modal.find('#button_right > span').css({
+            opacity: Slide.index === (getNumberOfSlides() -1)? 0: 1
+        });
     };
     var draw = Slide.draw =  function (i) {
         if (typeof(Slide.content) !== 'string') { return; }
@@ -101,7 +108,7 @@ define([
         //$content.find('.' + slideClass).hide();
         //$content.find('.' + slideClass + ':eq( ' + i + ' )').show();
         //$content.css('margin-left', -(i*100)+'vw');
-        goTo(i);
+        goTo(Math.min(i, getNumberOfSlides() - 1));
     };
 
     Slide.updateOptions = function () {

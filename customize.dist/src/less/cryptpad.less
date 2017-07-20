@@ -19,7 +19,6 @@ html.cp, .cp body {
     background-color: @page-white; //@base;
     color: @fore;
 
-    font-family: Ubuntu,Georgia,Cambria,serif;
     height: 100%;
 }
 .fa {
@@ -28,9 +27,19 @@ html.cp, .cp body {
 
 .cp {
 
+// add font for tooltips
+.tippy-popper {
+    font: normal normal normal 16px Arial, Helvetica, Tahoma, Verdana, Sans-Serif;
+}
+
 // override bootstrap colors
 .btn-primary {
     background-color: @cp-blue;
+    &:hover {
+        color: #fff;
+        background-color: #025aa5;
+        border-color: #01549b;
+    }
 }
 
 body {
@@ -223,13 +232,13 @@ body.html {
         margin: 0 auto;
     }
     .app-row {
-        display: inline-block;
-        white-space: nowrap;
-        width: 700px;
+        display: flex;
+        justify-content: center;
+        flex-flow: row wrap;
         max-width: 100%;
         margin: 0 auto;
         @media screen and (max-width: 1399px) {
-            display: block;
+            display: flex;
         }
         img {
             @media screen and (max-width: @media-not-big) {
@@ -425,6 +434,8 @@ noscript {
 
         label {
             margin-bottom: 0;
+            margin-left: 5px;
+            vertical-align: middle;
         }
 
         button {
@@ -432,7 +443,7 @@ noscript {
             width: 100%;
             cursor: pointer;
             &.half {
-                width: ~"calc(50% - 2px)";
+                width: ~"calc(50% - 10px)";
                 &:not(.first) {
                     float: right;
                 }
@@ -569,10 +580,12 @@ noscript {
 
 /* Pin limit */
 .limit-container {
+    display: inline-flex;
+    flex-flow: column-reverse;
+    width: 100%;
+    margin-top: 20px;
     .cryptpad-limit-bar {
         display: inline-block;
-        height: 26px;
-        width: 200px;
         max-width: 40vw;
         margin: 3px;
         box-sizing: border-box;
@@ -580,8 +593,10 @@ noscript {
         background: white;
         position: relative;
         text-align: center;
-        line-height: 24px;
         vertical-align: middle;
+        width: ~"calc(100% - 6px)";
+        height: 25px;
+        line-height: 25px;
         .usage {
             height: 100%;
             display: inline-block;
@@ -604,12 +619,16 @@ noscript {
             color: black;
             text-shadow: 1px 0 2px white, 0 1px 2px white, -1px 0 2px white, 0 -1px 2px white;
             z-index: 2;
-            font-size: 16px;
+            font-size: @main-font-size;
             font-weight: bold;
         }
     }
     .upgrade {
-        margin-left: 10px;
+        padding: 0;
+        line-height: 25px;
+        height: 25px;
+        margin: 0 3px;
+        border-radius: 0;
     }
 }
 
@@ -621,10 +640,10 @@ noscript {
     background-color: rgba(0,0,0,0.5);
     color: white;
     opacity: 0.7;
-    font-family: Ubuntu,Georgia,Cambria,serif;
     box-sizing: border-box;
     z-index:10000;
     display: none;
+    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     #uploadStatus {
         width: 80vw;
         border: 1px solid black;
