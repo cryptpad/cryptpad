@@ -300,7 +300,6 @@ define([
         var addTippy = function (el) {
             if (el.nodeName === 'IFRAME') { return; }
             var delay = typeof(AppConfig.tooltipDelay) === "number" ? AppConfig.tooltipDelay : 500;
-            if (el.nodeName === 'A') { d.push(el); }
             Tippy(el, {
                 position: 'bottom',
                 distance: 0,
