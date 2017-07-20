@@ -338,7 +338,7 @@ define([
         });*/
         var onKeyDown = function (e) {
             if (e.keyCode === 13) {
-                if (e.ctrlKey) {
+                if (e.ctrlKey || e.shiftKey) {
                     var val = this.value;
                     if (typeof this.selectionStart === "number" && typeof this.selectionEnd === "number") {
                         var start = this.selectionStart;
