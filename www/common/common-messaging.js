@@ -227,7 +227,6 @@ define([
         if (!isId) { return; }
 
         var decryptedMsg = channel.encryptor.decrypt(msg);
-        console.log(decryptedMsg);
         var parsed = JSON.parse(decryptedMsg);
         if (parsed[0] !== Types.mapId && parsed[0] !== Types.mapIdAck) { return; }
         if (parsed[2] !== sender || !parsed[1]) { return; }

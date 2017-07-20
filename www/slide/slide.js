@@ -9,7 +9,6 @@ define([
         content: [],
         changeHandlers: [],
     };
-    var APP;
     var ifrw;
     var $modal;
     var $content;
@@ -19,6 +18,7 @@ define([
     var separator = '<hr data-pewpew="pezpez">';
     var separatorReg = /<hr data\-pewpew="pezpez">/g;
     var slideClass = 'slide-frame';
+    var Title;
 
     Slide.onChange = function (f) {
         if (typeof(f) === 'function') {
@@ -98,7 +98,7 @@ define([
                 $('<div>', {'class': 'slideDate'}).text(new Date().toLocaleDateString()).appendTo($(el));
             }
             if (options.title) {
-                $('<div>', {'class': 'slideTitle'}).text(APP.title).appendTo($(el));
+                $('<div>', {'class': 'slideTitle'}).text(Title.title).appendTo($(el));
             }
         });
         $content.removeClass('transition');
@@ -304,16 +304,19 @@ define([
     };
 
 
-    Slide.setModal = function (appObj, $m, $c, $p, iframe, opt, ph) {
+    Slide.setModal = function ($m, $c, $p, iframe, opt, ph) {
         $modal = Slide.$modal = $m;
         $content = Slide.$content = $c;
         $pad = Slide.$pad = $p;
         ifrw = Slide.ifrw = iframe;
         placeholder = Slide.placeholder = ph;
         options = Slide.options = opt;
-        APP = appObj;
         addEvent();
         addSwipeEvents();
+    };
+
+    Slide.setTitle = function (titleObj) {
+        Title = titleObj;
     };
 
     return Slide;

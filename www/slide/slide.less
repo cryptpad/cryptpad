@@ -63,6 +63,7 @@ body {
         display:block;
     }
     html, body {
+        height: auto;
         max-height: none;
         overflow: visible;
     }
@@ -73,6 +74,20 @@ body {
             * {
                 visibility: visible;
             }
+        }
+        .cp #modal {
+            display: none !important;
+        }
+        .cp {
+            flex: 1 !important;
+            overflow: visible !important;
+        }
+        .userlist-drawer {
+            display: none !important;
+        }
+        #editorContainer {
+            height: auto;
+            display: block;
         }
     }
 }
@@ -163,7 +178,7 @@ body {
     .slide-container {
         width: 90vw;
         height: 100vh;
-        margin: 0vh 5vw;
+        margin: 0vh 5vw !important;
         display: flex;
         &:last-child {
             height: ~"calc(100vh - 2px)";
