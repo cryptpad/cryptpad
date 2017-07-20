@@ -299,11 +299,13 @@ define([
         var MutationObserver = window.MutationObserver;
         var addTippy = function (el) {
             if (el.nodeName === 'IFRAME') { return; }
+            var delay = typeof(AppConfig.tooltipDelay) === "number" ? AppConfig.tooltipDelay : 500;
+            if (el.nodeName === 'A') { d.push(el); }
             Tippy(el, {
                 position: 'bottom',
                 distance: 0,
                 performance: true,
-                delay: [500, 0]
+                delay: [delay, 0]
             });
         };
         var $body = $('body');
