@@ -282,6 +282,9 @@ define(function () {
     out.contacts_info3 = "Double-click their icon to view their profile";
     out.contacts_info4 = "Either participant can clear permanently a chat history";
 
+    out.contacts_confirmRemoveHistory = 'Are you sure you want to permanently remove your chat history? Data cannot be restored';
+    out.contacts_removeHistoryServerError = 'There was an error while removing your chat history. Try again later';
+
     // File manager
 
     out.fm_rootName = "Documents";

@@ -66,7 +66,7 @@ body {
     }
 }
 
-#friendList .friend, #messaging .header {
+#friendList .friend, #messaging .avatar {
     .avatar(30px);
     &.avatar {
         display: flex;
@@ -109,6 +109,19 @@ body {
         &:hover {
             color: darken(@color, 20%);
         }
+    }
+}
+
+.cp-contact-top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .avatar,
+    .right-col {
+         flex:1 1 auto; //; // 1 auto;
+    }
+    .remove-history {
+        // TODO
     }
 }
 
