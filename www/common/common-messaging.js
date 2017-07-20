@@ -294,12 +294,12 @@ define([
             title: common.Messages.contacts_removeHistoryTitle
         })
         .click(function () {
-            Cryptpad.confirm(common.Messages.contacts_confirmRemoveHistory, function (yes) {
+            common.confirm(common.Messages.contacts_confirmRemoveHistory, function (yes) {
                 if (!yes) { return; }
-                Cryptpad.clearOwnedChannel(data.channel, function (e) {
+                common.clearOwnedChannel(data.channel, function (e) {
                     if (e) {
                         console.error(e);
-                        Cryptpad.alert(common.Messages.contacts_removeHistoryServerError);
+                        common.alert(common.Messages.contacts_removeHistoryServerError);
                         return;
                     }
                 });
