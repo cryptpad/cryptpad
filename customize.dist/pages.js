@@ -238,36 +238,54 @@ define([
         ];
     };
 
+    var infopageTopbar = function () {
+        return h('div.cp-topbar',
+            h('div.cp-left',
+                h('a', { href: '/zeroknowledge.html'}, 'TODO What is Zero Knowledge'),
+                h('a', { href: 'https://blog.cryptpad.fr/'}, 'TODO Blog'),
+                h('a', { href: '/contact.html'}, 'TODO Contact'),
+                h('a', { href: '/about.html'}, 'TODO About')
+            ),
+            h('div.cp-right',
+                h('a', { href: '/register'}, 'TODO Register'),
+                h('a', { href: '/login'}, 'TODO Log in')
+            )
+        );
+    }
+
     Pages['/'] = Pages['/index.html'] = function () {
         return [
-            h('div#main.page-index', [
-                h('div.mainOverlay'),
-                h('div#align-container', [
-                    h('div#main-container.container', [
-                        h('div.row', [
-                            h('div#data.hidden.title.col-xs-6', [
-                                h('h1', 'CryptPad'),
-                                h('p', Msg.main_catch_phrase)
+            h('div#cp-main.cp-page-index', [
+                infopageTopbar(),
+                h('div.container', [
+                    h('div.row', [
+                        h('div.cp-title.col-6.col-xs-6', [
+                            h('img', { src: '/customize/cryptpad-new-logo-big-white-logoonly.png?' + urlArgs }),
+                            h('h1', 'CryptPad'),
+                            h('p', Msg.main_catch_phrase)
+                        ]),
+                        /*userForm(),*/
+                        h('div.col-6.col-xs-6', [
+                            h('div.bs-callout.cp-callout-pad', [
+                                h('h4', 'TODO Rich Text Pad'),
+                   //             "TODO Collaborate in realtime on notes and ideas."
                             ]),
-                            /*userForm(),*/
-                            h('div.col-xs-6', [
-                                "Make a pad, no login needed",
-                                h('div.bs-callout.bs-callout-pad', [
-                                    h('h4', 'Rich Text Pad'),
-                                    "Collaborate in Real time on notes and ideas."
-                                ]),
-                                h('div.bs-callout.bs-callout-code', [
-                                    h('h4', 'Markdown/code Pad'),
-                                    "Edit Markdown with realtime visual rendering."
-                                ]),
-                                h('div.bs-callout.bs-callout-slide', [
-                                    h('h4', 'Markdown Presentation'),
-                                    "Make quick presentations with Markdown slides."
-                                ]),
-                            ])
+                            h('div.bs-callout.cp-callout-code', [
+                                h('h4', 'TODO Markdown/Code Pad'),
+                     //           "TODO Edit Markdown with realtime visual rendering."
+                            ]),
+                            h('div.bs-callout.cp-callout-slide', [
+                                h('h4', 'TODO Markdown Presentation'),
+                       //         "TODO Make quick presentations with Markdown slides."
+                            ]),
+                            /*h('div.bs-callout.cp-callout-recent', [
+                                h('h4', 'TODO Your Recent Pads'),
+                         ///       "TODO See pads recently edited on this computer."
+                            ]),*/
                         ])
                     ])
                 ]),
+                //h('footer.cp-more', "More")
             ])
         ];
         //.concat(tryIt());

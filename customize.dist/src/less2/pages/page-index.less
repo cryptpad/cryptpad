@@ -1,0 +1,82 @@
+//@import (once) "./variables.less";
+
+@import (once) "../include/infopages.less";
+@import (once) "../include/colortheme.less";
+
+
+.infopages_main();
+.infopages_topbar();
+
+@background: rgba(0,0,0,0.2);
+&#cp-main {
+    color: #FFF;
+    background: linear-gradient( @background, @background ), url('/customize/bg8.jpg');
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.cp-title {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    img {
+        height: 30vh;
+    }
+    margin-left: 0;
+    h1 {
+        font-family: "Roboto";
+        //font-family: Garamond, Baskerville, "Baskerville Old Face", "Hoefler Text", "Times New Roman", Times, serif;
+        //font-family: "Raleway";
+        font-size: 65px;
+    }
+    p {
+        //font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+        font-size: 20px;
+        font-style: italic;
+    }
+}
+
+
+.bs-callout {
+    padding: 15px;
+    margin: 25px 0;
+    border: 1px solid #eee;
+    border-left-width: 5px;
+    border-radius: 3px;
+    background:rgba(255,255,255,0.6);
+    color: black;
+    transition: all .1s ease-in-out;
+}
+.bs-callout h4 {
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+.bs-callout p:last-child {
+    margin-bottom: 0;
+}
+.bs-callout+.bs-callout {
+    margin-top: -5px;
+}
+
+.bs-callout:hover {
+    //background:rgba(255,255,255,0.8);
+    transform: scale(1.05);
+}
+
+.cp-callout-pad { border-left-color: @colortheme_pad-bg; }
+//.cp-callout-pad h4 { color: @colortheme_pad-bg; }
+
+.cp-callout-code { border-left-color: @colortheme_code-bg; }
+//.cp-callout-code h4 { color: @colortheme_code-bg; }
+
+.cp-callout-pad { border-left-color: @colortheme_pad-bg; }
+//.cp-callout-pad h4 { color: @colortheme_pad-bg; }
+
+.cp-callout-slide { border-left-color: @colortheme_slide-bg; }
+//.cp-callout-slide h4 { color: @colortheme_slide-bg; }
+
+.cp-callout-recent { border-left-color: @colortheme_drive-bg; }
+//.cp-callout-recent h4 { color: @colortheme_drive-bg; }

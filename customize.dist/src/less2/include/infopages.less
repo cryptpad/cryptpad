@@ -1,0 +1,58 @@
+// Basic setup for info pages, this should be used at the global level
+.infopages_main () {
+    min-height: 100vh;
+    background-color: #FAFAFA;
+
+    a {
+        color: #FFF;
+        opacity: 0.8;
+        transition: opacity 0.2s;
+    }
+    a:hover {
+        opacity: 1;
+    }
+
+    border: 0;
+	padding: 0;
+	margin: 0;
+
+	font-size: 14px;
+	font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
+};
+
+// Apply this to the top bar div
+.infopages_topbar () {
+    .cp-topbar {
+        position: fixed;
+        top: 0;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+
+        box-sizing: border-box;
+        width: 100%;
+        height: 64px;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+        vertical-align: middle;
+        font-size: 1.25em;
+        line-height: 1.25em;
+
+        cursor: default;
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+
+        a {
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.6em;
+            color: #FFF;
+
+            cursor: pointer;
+        }
+    }
+}

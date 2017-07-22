@@ -174,9 +174,14 @@ $(function () {
     }
 
     require([
-        'less!/customize/src/less/cryptpad.less',
+        'less!/customize/src/less2/main.less',
         'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     ], function () {
+        if (pathname === '/') {
+            // TODO(cjd): This is a hack because the template system doesn't make it easy.
+            $body.append($main);
+            return;
+        }
         $body.append($topbar).append($main).append($footer);
 
         if (/^\/user\//.test(pathname)) {
