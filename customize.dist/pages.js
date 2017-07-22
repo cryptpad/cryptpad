@@ -267,15 +267,18 @@ define([
                         /*userForm(),*/
                         h('div.col-6.col-xs-6', [
                             h('div.bs-callout.cp-callout-pad', [
-                                h('h4', 'TODO Rich Text Pad'),
+                                h('i.fa.fa-file-word-o'),
+                                h('div', [h('h4', 'TODO Rich Text Pad')]),
                    //             "TODO Collaborate in realtime on notes and ideas."
                             ]),
                             h('div.bs-callout.cp-callout-code', [
-                                h('h4', 'TODO Markdown/Code Pad'),
+                                h('i.fa.fa-file-code-o'),
+                                h('div', [h('h4', 'TODO Markdown/Code Pad')]),
                      //           "TODO Edit Markdown with realtime visual rendering."
                             ]),
                             h('div.bs-callout.cp-callout-slide', [
-                                h('h4', 'TODO Markdown Presentation'),
+                                h('i.fa.fa-file-powerpoint-o'),
+                                h('div', [h('h4', 'TODO Markdown Presentation')]),
                        //         "TODO Make quick presentations with Markdown slides."
                             ]),
                             /*h('div.bs-callout.cp-callout-recent', [
