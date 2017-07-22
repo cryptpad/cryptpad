@@ -1,12 +1,7 @@
 define([
-    '/bower_components/marked/marked.min.js',
-    '/bower_components/diff-dom/diffDOM.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-],function (Marked) {
-    var $ = window.jQuery;
-    var DiffDOM = window.diffDOM;
-
-    var truthy = function (x) { return x; };
+    'jquery',
+    '/common/diffMarked.js',
+],function ($, DiffMd) {
 
     var Slide = {
         index: 0,
@@ -14,10 +9,16 @@ define([
         content: [],
         changeHandlers: [],
     };
+    var APP;
     var ifrw;
     var $modal;
     var $content;
     var $pad;
+    var placeholder;
+    var options;
+    var separator = '<hr data-pewpew="pezpez">';
+    var separatorReg = /<hr data\-pewpew="pezpez">/g;
+    var slideClass = 'slide-frame';
 
     Slide.onChange = function (f) {
         if (typeof(f) === 'function') {
@@ -25,102 +26,93 @@ define([
         }
     };
 
+    var getNumberOfSlides = Slide.getNumberOfSlides = function () {
+        return $content.find('.' + slideClass).length;
+    };
+
     var change = function (oldIndex, newIndex) {
         if (Slide.changeHandlers.length) {
-            Slide.changeHandlers.some(function (f, i) {
-                // HERE
-                f(oldIndex, newIndex, Slide.content.length);
+            Slide.changeHandlers.some(function (f) {
+                f(oldIndex, newIndex, getNumberOfSlides());
             });
         }
     };
 
-    var forbiddenTags = Slide.forbiddenTags = [
-        'SCRIPT',
-        'IFRAME',
-        'OBJECT',
-        'APPLET',
-        'VIDEO',
-        'AUDIO',
-    ];
-    var unsafeTag = function (info) {
-        if (['addAttribute', 'modifyAttribute'].indexOf(info.diff.action) !== -1) {
-            if (/^on/.test(info.diff.name)) {
-                console.log("Rejecting forbidden element attribute with name", info.diff.name);
-                return true;
-            }
+    var updateFontSize = Slide.updateFontSize = function () {
+        // 20vh
+        // 20 * 16 / 9vw
+        var wbase = 20;
+        var vh = 20;
+        var $elem = $(window);
+        if (!Slide.shown) {
+            wbase = 10;
+            vh *= $content.height()/$(window).height();
+            $elem = $content;
         }
-        if (['addElement', 'replaceElement'].indexOf(info.diff.action) !== -1) {
-            var msg = "Rejecting forbidden tag of type (%s)";
-            if (info.diff.element && forbiddenTags.indexOf(info.diff.element.nodeName) !== -1) {
-                console.log(msg, info.diff.element.nodeName);
-                return true;
-            } else if (info.diff.newValue && forbiddenTags.indexOf(info.diff.newValue.nodeName) !== -1) {
-                console.log("Replacing restricted element type (%s) with PRE", info.diff.newValue.nodeName);
-                info.diff.newValue.nodeName = 'PRE';
-            }
+        if ($elem.width() > 16/9*$elem.height()) {
+            $content.css('font-size', vh+'vh');
+            // $print.css('font-size', '20vh');
+            return;
         }
+        $content.css('font-size', (wbase*9/16)+'vw');
+        // $print.css('font-size', (20*9/16)+'vw');
     };
 
-    var domFromHTML = Slide.domFromHTML = function (html) {
-        return new DOMParser().parseFromString(html, "text/html");
+    var fixCSS = function (css) {
+        var append = '.cp #print .slide-frame ';
+        var append2 = '.cp div#modal #content .slide-frame ';
+        return css.replace(/(\n*)([^\n}]+)\s*\{/g, '$1' + append + '$2,' + append2 + '$2 {');
     };
 
-    var DD = new DiffDOM({
-        preDiffApply: function (info) {
-            if (unsafeTag(info)) { return true; }
-        }
-    });
-
-    var makeDiff = function (A, B) {
-        var Err;
-        var Els = [A, B].map(function (frag) {
-            if (typeof(frag) === 'object') {
-                if (!frag && frag.body) {
-                    Err = "No body";
-                    return;
-                }
-                var els = frag.body.querySelectorAll('#content');
-                if (els.length) {
-                    return els[0];
-                }
-            }
-            Err = 'No candidate found';
-        });
-        if (Err) { return Err; }
-        var patch = DD.diff(Els[0], Els[1]);
-        return patch;
-    };
-
-    var slice = function (coll) {
-        return Array.prototype.slice.call(coll);
-    };
-
-    /*  remove listeners from the DOM */
-    var removeListeners = function (root) {
-        slice(root.attributes).map(function (attr) {
-            if (/^on/.test(attr.name)) {
-                root.attributes.removeNamedItem(attr.name);
-            }
-        });
-        // all the way down
-        slice(root.children).forEach(removeListeners);
-    };
-
-    var draw = Slide.draw =  function (i) {
-        console.log("Trying to draw slide #%s", i);
-        if (typeof(Slide.content[i]) !== 'string') { return; }
-
-        var c = Slide.content[i];
-        var Dom = domFromHTML('<div id="content">' + Marked(c) + '</div>');
-        removeListeners(Dom.body);
-        var patch = makeDiff(domFromHTML($content[0].outerHTML), Dom);
-
-        if (typeof(patch) === 'string') {
-            $content.html(Marked(c));
-        } else {
-            DD.apply($content[0], patch);
-        }
+    var goTo = Slide.goTo = function (i) {
+        i = i || 0;
+        Slide.index = i;
+        $content.find('.slide-container').first().css('margin-left', -(i*100)+'%');
+        updateFontSize();
         change(Slide.lastIndex, Slide.index);
+        $modal.find('#button_left > span').css({
+            opacity: Slide.index === 0? 0: 1
+        });
+        $modal.find('#button_right > span').css({
+            opacity: Slide.index === (getNumberOfSlides() -1)? 0: 1
+        });
+    };
+    var draw = Slide.draw =  function (i) {
+        if (typeof(Slide.content) !== 'string') { return; }
+
+        var c = Slide.content;
+        var m = '<span class="slide-container"><span class="'+slideClass+'">'+DiffMd.render(c).replace(separatorReg, '</span></span><span class="slide-container"><span class="'+slideClass+'">')+'</span></span>';
+
+        DiffMd.apply(m, $content);
+
+        var length = getNumberOfSlides();
+        $modal.find('style.slideStyle').remove();
+        if (options.style && Slide.shown) {
+            $modal.prepend($('<style>', {'class': 'slideStyle'}).text(fixCSS(options.style)));
+        }
+        $content.find('.slide-frame').each(function (i, el) {
+            if (options.slide) {
+                $('<div>', {'class': 'slideNumber'}).text((i+1)+'/'+length).appendTo($(el));
+            }
+            if (options.date) {
+                $('<div>', {'class': 'slideDate'}).text(new Date().toLocaleDateString()).appendTo($(el));
+            }
+            if (options.title) {
+                $('<div>', {'class': 'slideTitle'}).text(APP.title).appendTo($(el));
+            }
+        });
+        $content.removeClass('transition');
+        if (options.transition || typeof(options.transition) === "undefined") {
+            $content.addClass('transition');
+        }
+        //$content.find('.' + slideClass).hide();
+        //$content.find('.' + slideClass + ':eq( ' + i + ' )').show();
+        //$content.css('margin-left', -(i*100)+'vw');
+        goTo(Math.min(i, getNumberOfSlides() - 1));
+    };
+
+    Slide.updateOptions = function () {
+        draw(Slide.index);
     };
 
     var isPresentURL = Slide.isPresentURL = function () {
@@ -139,16 +131,20 @@ define([
             $(ifrw).focus();
             change(null, Slide.index);
             if (!isPresentURL()) {
-                window.location.hash += '/present';
+                if (window.location.href.slice(-1) !== '/') {
+                    window.location.hash += '/';
+                }
+                window.location.hash += 'present';
             }
             $pad.contents().find('.cryptpad-present-button').hide();
             $pad.contents().find('.cryptpad-source-button').show();
             $pad.addClass('fullscreen');
             $('#iframe-container').addClass('fullscreen');
             $('.top-bar').hide();
+            updateFontSize();
             return;
         }
-        window.location.hash = window.location.hash.replace(/\/present$/, '');
+        window.location.hash = window.location.hash.replace(/\/present$/, '/');
         change(Slide.index, null);
         $pad.contents().find('.cryptpad-present-button').show();
         $pad.contents().find('.cryptpad-source-button').hide();
@@ -156,54 +152,85 @@ define([
         $('#iframe-container').removeClass('fullscreen');
         $('.top-bar').show();
         $modal.removeClass('shown');
+        updateFontSize();
     };
 
-    var update = Slide.update = function (content) {
-        if (!Slide.shown) { return; }
-        var old = Slide.content[Slide.index];
-        Slide.content = content.split(/\n\s*\-\-\-\s*\n/).filter(truthy);
-        if (old !== Slide.content[Slide.index]) {
+    Slide.update = function (content) {
+        updateFontSize();
+        //if (!init) { return; }
+        if (!content) { content = ''; }
+        var old = Slide.content;
+        Slide.content = content.replace(/\n\s*\-\-\-\s*\n/g, '\n\n'+separator+'\n\n');
+        if (old !== Slide.content) {
             draw(Slide.index);
             return;
         }
         change(Slide.lastIndex, Slide.index);
     };
 
-    var left = Slide.left = function () {
+    Slide.left = function () {
         console.log('left');
         Slide.lastIndex = Slide.index;
 
         var i = Slide.index = Math.max(0, Slide.index - 1);
-        Slide.draw(i);
+        Slide.goTo(i);
     };
 
-    var right = Slide.right = function () {
+    Slide.right = function () {
         console.log('right');
         Slide.lastIndex = Slide.index;
 
-        var i = Slide.index = Math.min(Slide.content.length -1, Slide.index + 1);
-        Slide.draw(i);
+        var i = Slide.index = Math.min(getNumberOfSlides() -1, Slide.index + 1);
+        Slide.goTo(i);
     };
 
-    var first = Slide.first = function () {
+    Slide.first = function () {
         console.log('first');
         Slide.lastIndex = Slide.index;
 
         var i = Slide.index = 0;
-        Slide.draw(i);
+        Slide.goTo(i);
     };
 
-    var last = Slide.last = function () {
+    Slide.last = function () {
         console.log('end');
         Slide.lastIndex = Slide.index;
 
-        var i = Slide.index = Slide.content.length - 1;
-        Slide.draw(i);
+        var i = Slide.index = getNumberOfSlides() - 1;
+        Slide.goTo(i);
     };
 
     var addEvent = function () {
+        var icon_to;
+        $modal.mousemove(function () {
+            var $buttons = $modal.find('.button');
+            $buttons.show();
+            if (icon_to) { window.clearTimeout(icon_to); }
+            icon_to = window.setTimeout(function() {
+                $buttons.fadeOut();
+            }, 1000);
+        });
+        $modal.find('#button_exit').click(function () {
+            var ev = $.Event("keyup");
+            ev.which = 27;
+            $modal.trigger(ev);
+        });
+        $modal.find('#button_left').click(function () {
+            var ev = $.Event("keyup");
+            ev.which = 37;
+            $modal.trigger(ev);
+        });
+        $modal.find('#button_right').click(function () {
+            console.log('right');
+            var ev = $.Event("keyup");
+            ev.which = 39;
+            $modal.trigger(ev);
+        });
+
+        $pad.contents().find('.CodeMirror').keyup(function (e) { e.stopPropagation(); });
         $(ifrw).on('keyup', function (e) {
-            if (!Slide.shown) { return; }
+            //if (!Slide.shown) { return; }
+            if (e.ctrlKey) { return; }
             switch(e.which) {
                 case 33: // pageup
                 case 38: // up
@@ -231,12 +258,62 @@ define([
         });
     };
 
-    Slide.setModal = function ($m, $c, $p, iframe) {
+    $(window).resize(Slide.updateFontSize);
+
+    // Swipe
+    var addSwipeEvents = function () {
+        var touch = {
+            maxTime: 2000,
+            minXDist: 150,
+            maxYDist: 100
+        };
+
+        var resetSwipe = function () {
+            touch.x = 0;
+            touch.y = 0;
+            touch.time = 0;
+        };
+
+        $content.on('touchstart', function (e) {
+            e.preventDefault();
+            resetSwipe();
+            var t = e.originalEvent.changedTouches[0];
+            touch.x = t.pageX;
+            touch.y = t.pageY;
+            touch.time = new Date().getTime();
+        });
+
+        $content.on('touchend', function (e) {
+            e.preventDefault();
+            var t = e.originalEvent.changedTouches[0];
+            var xDist = t.pageX - touch.x;
+            var yDist = t.pageY - touch.y;
+            var time = new Date().getTime() - touch.time;
+            if (time <= touch.maxTime && Math.abs(xDist) >= touch.minXDist && Math.abs(yDist) <= touch.maxYDist) {
+                if (xDist < 0) {
+                    Slide.right();
+                    return;
+                }
+                Slide.left();
+            }
+        });
+
+        $content.on('touchmove', function (e){
+            e.preventDefault();
+        });
+    };
+
+
+    Slide.setModal = function (appObj, $m, $c, $p, iframe, opt, ph) {
         $modal = Slide.$modal = $m;
         $content = Slide.$content = $c;
         $pad = Slide.$pad = $p;
         ifrw = Slide.ifrw = iframe;
+        placeholder = Slide.placeholder = ph;
+        options = Slide.options = opt;
+        APP = appObj;
         addEvent();
+        addSwipeEvents();
     };
 
     return Slide;

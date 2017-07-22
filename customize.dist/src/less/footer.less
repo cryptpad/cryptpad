@@ -1,0 +1,29 @@
+@import "./variables.less";
+
+.cp footer {
+    background: @category-bg;
+    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    padding-top: 1em;
+    font-size: 1.2em;
+    a {
+        color: @cp-link;
+        &:visited {
+            color: @cp-link-visited;
+        }
+        &:hover {
+            color: @cp-link-hover;
+        }
+    }
+    li.title {
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+    div.version-footer {
+        background-color: @old-base;
+        color: @old-fore;
+        text-align: center;
+        width: 100%;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+}

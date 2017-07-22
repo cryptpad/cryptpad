@@ -20,62 +20,50 @@ To include your translation in the list, you'll need to add it to `/customize.di
 There are comments indicating what to modify in three places:
 
 ```javascript
-define(['/customize/languageSelector.js',
-        '/customize/translations/messages.js',
-        '/customize/translations/messages.es.js',
-        '/customize/translations/messages.fr.js',
+(function () {
+var LS_LANG = "CRYPTPAD_LANG";
 
-    // 1) additional translation files can be added here...
+var getStoredLanguage = function () { return localStorage.getItem(LS_LANG); };
+var getBrowserLanguage = function () { return navigator.language || navigator.userLanguage; };
+var getLanguage = function () { return getStoredLanguage() || getBrowserLanguage(); };
+var language = getLanguage();
 
-        '/bower_components/jquery/dist/jquery.min.js'],
-
-    // 2) name your language module here...
-        function(LS, Default, Spanish, French) {
-    var $ = window.jQuery;
-
-    // 3) add your module to this map so it gets used
-    var map = {
-        'fr': French,
-        'es': Spanish,
-    };
+// add your module to this map so it gets used
+// please use the translated name of your language ("Français" and not "French"
+var map = {
+    'fr': 'Français',
+    'es': 'Español',
+    'pl': 'Polski',
+    'de': 'Deutsch',
+    'pt-br': 'Português do Brasil'
+};
 ```
 
-We need to modify these three places to include our file:
+We need to modify that map to include our translation:
 
 ```javascript
-define(['/customize/languageSelector.js',
-        '/customize/translations/messages.js',
-        '/customize/translations/messages.es.js',
-        '/customize/translations/messages.fr.js',
+(function () {
+var LS_LANG = "CRYPTPAD_LANG";
 
-    // 1) additional translation files can be added here...
-        '/customize/translations/messages.pirate.js', // add our module via its path
+var getStoredLanguage = function () { return localStorage.getItem(LS_LANG); };
+var getBrowserLanguage = function () { return navigator.language || navigator.userLanguage; };
+var getLanguage = function () { return getStoredLanguage() || getBrowserLanguage(); };
+var language = getLanguage();
 
-        '/bower_components/jquery/dist/jquery.min.js'],
-
-    // 2) name your language module here...
-        function(LS, Default, Spanish, French, Pirate) { // name our module 'Pirate' for use as a variable
-    var $ = window.jQuery;
-
-    // 3) add your module to this map so it gets used
-    var map = {
-        'fr': French,
-        'es': Spanish,
-        'pirate': Pirate, // add our module to the map of languages
-    };
+// add your module to this map so it gets used
+// please use the translated name of your language ("Français" and not "French"
+var map = {
+    'fr': 'Français',
+    'es': 'Español',
+    'pl': 'Polski',
+    'de': 'Deutsch',
+    'pt-br': 'Português do Brasil'
+    'pirate': 'English Pirate', // add our module to the map of languages
+};
 ```
 
-Note that the path to the file is `/customize/translations/`, not `/customize.dist/translations`.
-Cryptpad's server is configured to search for files in `/customize/` first.
-If a file is not found, it falls back to `/customize.dist/`.
-This allows administrators of a Cryptpad installation to override the default behaviour with their own files.
-
-We want translations to be the default behaviour, so we'll place it in `/customize.dist/translations/`, but resolve it via `/customize/translations/`.
-
-The second and third steps are simpler.
 Just add your module in a similar fashion to the existing translations, save your changes, and close `/customize.dist/messages.js`.
 That's all!
-
 
 ## Actually translating content
 
@@ -88,9 +76,7 @@ You should see something like:
 define(function () {
     var out = {};
 
-    // translations must set this key for their language to be available in
-    // the language dropdowns that are shown throughout Cryptpad's interface
-    out._languageName = 'English';
+    out.main_title = "Cryptpad: Zero Knowledge, Collaborative Real Time Editing";
 ```
 
 Now you just need to work through this file, updating the strings like so:
@@ -99,13 +85,11 @@ Now you just need to work through this file, updating the strings like so:
 define(function () {
     var out = {};
 
-    // translations must set this key for their language to be available in
-    // the language dropdowns that are shown throughout Cryptpad's interface
-    out._languageName = 'Pirate';
+    out.main_title = "Cryptpad: Knowledge lost at sea while ye scribble with yer mateys";
 ```
 
 It's important that you modify just the string, and not the variable name which is used to access its content.
-For instance, changing `_languageName` to `_language_name` would make the string `'Pirate'` inaccessible to the rest of the codebase.
+For instance, changing `main_title` to `mainTitle` would make the translated string inaccessible to the rest of the codebase.
 
 If a key is not found in your translation, the default English version of that key will be used.
 This is to make sure that buttons and other interface elements are not empty, but it's obviously not ideal.
@@ -119,8 +103,8 @@ Checking frequently will make it easier to know which change caused the error.
 
 Additionally, we advise using the apps and visiting the various pages, to make sure that your translations make sense in context.
 
-When you're happy with your translation file, you can visit http://localhost:3000/assert/ to view Cryptpad's tests.
-Among other things, these tests will check to make sure that your translation has an entry for every entry in the default English translation.
+When you're happy with your translation file, you can visit http://localhost:3000/assert/translations/ to view Cryptpad's tests.
+These tests will check to make sure that your translation has an entry for every entry in the default English translation.
 
 ## Getting Help
 

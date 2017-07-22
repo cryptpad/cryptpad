@@ -23,7 +23,7 @@ to others who want to participate.
 Cryptpad depends on the Nodejs runtime.
 We recommend installing it via [NVM](https://github.com/creationix/nvm "Node Version Manager") to ensure that you are running an up to date version.
 
-Once you have a recent runtime:
+Once you have a recent runtime (we use v6.6.0):
 
 ```
 git clone <this repo>
@@ -32,17 +32,30 @@ npm install
 npm install -g bower ## if necessary
 bower install
 
-## copy config.js.dist to config.js
-cp config.js.dist config.js
-
-## modify configuration to use your own mongodb instance
-## for example aon the default mongodb port `mongodb://localhost:27017/demo_database`
-$EDITOR config.js
+## copy config.example.js to config.js
+cp config.example.js config.js
 
 node ./server.js
 ```
 
+## Configuration
+
+CryptPad _should_ work with an unmodified configuration file, though there are many things which you may want to customize.
+Attributes in the config should have comments indicating how they are used.
+
+```
+$EDITOR config.js
+```
+
+If you are deploying CryptPad in a production environment, we recommend that you take the time to understand and correctly customize your server's [Content Security Policy headers](https://content-security-policy.com/).
+Modern browsers use these headers to allow or deny actions from malicious clients which could compromise the confidentiality of your user's data.
+
+These settings can be found in your configuration file in the  `contentSecurity` and `padContentSecurity` sections.
+
 ## Maintenance
+
+Before upgrading your CryptPad instance to the latest version, we recommend that you check what has changed since your last update.
+You can do so by checking which version you have (see package.json), and comparing it against newer [release notes](https://github.com/xwiki-labs/cryptpad/releases).
 
 To get access to the most recent codebase:
 
@@ -60,20 +73,23 @@ bower update;
 # serverside dependencies
 npm update;
 ```
+## Deleting all data and resetting Cryptpad
+
 
 To reset your instance of Cryptpad and remove all the data that is being stored:
 
-If you are using the leveldb adaptor, this is as simple as deleting the folder which contains your leveldb datastore:
-
+**WARNING: This will reset your Cryptpad instance and remove all data**
 ```
-# change into your cryptpade directory
+# change into your cryptpad directory
 cd /your/cryptpad/instance/location;
 
 # delete the datastore
-rm -rf ./cryptpad.db
+rm -rf ./datastore
 ```
 
 If you are using the mongodb adaptor, [drop the relevant collection](https://docs.mongodb.org/manual/reference/method/db.collection.drop/#db.collection.drop).
+
+If you are using the [leveldb adaptor](https://github.com/xwiki-labs/cryptpad-level-store), delete the datastore directory you have configured.
 
 ## Testing
 
@@ -81,6 +97,16 @@ To test CryptPad, go to http://your.server:3000/assert/
 
 You can use WebDriver to run this test automatically by running TestSelenium.js but you will need chromedriver installed.
 If you use Mac, you can `brew install chromedriver`.
+
+## Developing CryptPad
+
+CryptPad is built with a lot of small javascript libraries.
+To make js files load faster, we apply an aggressive caching policy.
+
+If you want to add new features to CryptPad, you'll want to turn off caching.
+You can do so by launching your server in _dev mode_, like so:
+
+`DEV=1 node server.js`
 
 ## Security
 
@@ -101,17 +127,21 @@ the battery out of your computer before it spawns Agent Smith.
 
 Still there are other low-lives in the world so using CryptPad over HTTPS is probably a good idea.
 
+## Setup using Docker
+
+See [Cryptpad-Docker](docs/cryptpad-docker.md)
+
 ## Translations
 
 We'd like to make it easy for more people to use encryption in their routine activities.
-As such, we've tried to make language-specific parts of Cryptpad translatable. If you're
-able to translate Cryptpad's interface, and would like to help, please contact us!
+As such, we've tried to make language-specific parts of CryptPad translatable. If you're
+able to translate CryptPad's interface, and would like to help, please contact us!
 
 You can also see [our translation guide](/customize.dist/translations/README.md).
 
 ## Contacting Us
 
-You can reach members of the Cryptpad development team on [twitter](https://twitter.com/cryptpad),
+You can reach members of the CryptPad development team on [twitter](https://twitter.com/cryptpad),
 via our [github issue tracker](https://github.com/xwiki-labs/cryptpad/issues/), on the
 [freenode](http://webchat.freenode.net/?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7)
 irc network, or by [email](mailto:research@xwiki.com).
@@ -132,9 +162,6 @@ This software is and will always be available under the GNU Affero General Publi
 published by the Free Software Foundation, either version 3 of the License, or (at your option)
 any later version. If you wish to use this technology in a proprietary product, please contact
 sales@xwiki.com
-
-* Icons thanks to http://www.famfamfam.com/ licensed [Creative Commons Attribution 2.5 License]
-
 
 [ChainPad]: https://github.com/xwiki-contrib/chainpad
 [CKEditor]: http://ckeditor.com/

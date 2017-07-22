@@ -54,11 +54,9 @@ define(function () {
         "jsx jsx .jsx",
         "julia julia",
         "livescript livescript",
-        "loadmode.js loadmode.js",
         "lua lua",
         "markdown markdown .md",
         "mathematica mathematica",
-        "meta.js meta.js",
         "mirc mirc",
         "mllike mllike",
         "modelica modelica",
@@ -132,7 +130,7 @@ define(function () {
         };
     });
 
-    var extensionOf = Modes.extensionOf = function (mode) {
+    Modes.extensionOf = function (mode) {
         var ext = '';
         list.some(function (o) {
             if (o.mode !== mode) { return; }

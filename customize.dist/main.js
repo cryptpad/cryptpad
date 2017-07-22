@@ -1,160 +1,185 @@
 define([
-    '/customize/messages.js',
-    '/customize/DecorateToolbar.js',
+    'jquery',
     '/customize/application_config.js',
     '/common/cryptpad-common.js',
-    '/bower_components/lil-uri/uri.min.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages, DecorateToolbar, Config, Cryptpad, LilUri) {
-    var $ = window.$;
+    '/customize/header.js',
+], function ($, Config, Cryptpad) {
 
-    var APP = window.APP = {
+    window.APP = {
         Cryptpad: Cryptpad,
     };
 
-    var padTypes = {
-        '/pad/': Messages.type.pad,
-        '/code/': Messages.type.code,
-        '/poll/': Messages.type.poll,
-        '/slide/': Messages.type.slide,
-    };
+    var Messages = Cryptpad.Messages;
 
-    var $table;
-    var $tbody;
-    var $tryit;
-    var now = new Date();
-    var hasRecent = false;
+    $(function () {
+        var $main = $('#mainBlock');
 
-    var forgetPad = Cryptpad.forgetPad;
-
-    var displayCreateButtons = function () {
-        var $parent = $('#buttons');
-        Config.availablePadTypes.forEach(function (el) {
-            $('#create-' + el).detach().appendTo($parent).show();
-        });
-    };
-
-    var makeRecentPadsTable = function (recentPads) {
-        if (!recentPads.length) { return; }
-
-        $('tbody tr').each(function (i, e) {
-            if (!i) { return; }
-            $(this).remove();
+        $(window).click(function () {
+            $('.cryptpad-dropdown').hide();
         });
 
-        recentPads.some(function (pad, index) {
-            if (!pad) { return; }
+        // main block is hidden in case javascript is disabled
+        $main.removeClass('hidden');
 
-            hasRecent = true;
+        // Make sure we don't display non-translated content (empty button)
+        $main.find('#data').removeClass('hidden');
 
-            // split up the uri
-            var uri = LilUri(pad.href);
+        if (Cryptpad.isLoggedIn()) {
+            var name = localStorage[Cryptpad.userNameKey] || sessionStorage[Cryptpad.userNameKey];
+            var $loggedInBlock = $main.find('#loggedIn');
+            var $hello = $loggedInBlock.find('#loggedInHello');
+            var $logout = $loggedInBlock.find('#loggedInLogOut');
 
-            // derive the name
-            var name = padTypes[uri.path()];
-
-            var title = pad.title || uri.parts.hash.slice(0,8);
-            var shortTitle = Cryptpad.truncate(pad.title, 48);
-
-            var date = new Date(pad.atime).toLocaleDateString();
-            var created = new Date(pad.ctime).toLocaleDateString();
-
-            if (date === now.toLocaleDateString()) {
-                date = new Date(pad.atime).toLocaleTimeString().replace(/ /g, '');
+            if (name) {
+                $hello.text(Messages._getKey('login_hello', [name]));
+            } else {
+                $hello.text(Messages.login_helloNoName);
             }
+            $('#buttons').find('.nologin').hide();
 
-            var id = 'pad-'+index;
-
-            var $row = $('<tr>', {
-                id: id
-            });
-
-            var $remove = $('<td>', {
-                'class': 'remove',
-                title: Messages.forget + " '"+shortTitle + "'"
-            }).text('✖').click(function () {
-                Cryptpad.confirm(Messages.forgetPrompt + ' (' + Cryptpad.fixHTML(shortTitle) + ')', function (yes) {
-                    if (!yes) { return; }
-                    forgetPad(pad.href, function (err, data) {
-                        if (err) {
-                            console.log("Unable to forget pad");
-                            console.log(err);
-                            return;
-                        }
-                        $row.fadeOut(750, function () {
-                            $row.remove();
-                            if (!$table.find('tr').find('td').length) {
-                                $table.remove();
-                                $tryit.text(Messages.tryIt);
-                            }
-                        });
-                    });
+            $logout.click(function () {
+                Cryptpad.logout(function () {
+                    window.location.reload();
                 });
             });
 
-            var readOnly = false;
-            if (pad.href.indexOf('#') !== -1) {
-                var modeArray = pad.href.split('#')[1].split('/');
-                if (modeArray.length >= 3 && modeArray[2] === 'view') {
-                    readOnly =  true;
-                }
-            }
-            var readOnlyText = readOnly ? '(' + Messages.readonly + ') ' : '';
-            $row
-                .append($('<td>').text(name))
-                .append($('<td>').append(readOnlyText).append($('<a>', {
-                    href: pad.href,
-                    title: pad.title,
-                }).text(shortTitle)))
-                .append($('<td>').text(created))
-                .append($('<td>').text(date))
-                .append($remove);
-            $tbody.append($row);
-        });
-    };
+            $loggedInBlock.removeClass('hidden');
+        }
+        else {
+            $main.find('#userForm').removeClass('hidden');
+            $('#name').focus();
+        }
 
-    var refreshTable = function () {
-        Cryptpad.getRecentPads(function (err, recentPads) {
-            if (err) {
-                console.log("unable to get recent pads");
-                console.error(err);
+        var displayCreateButtons = function () {
+            var $parent = $('#buttons');
+            var options = [];
+            var $container = $('<div>', {'class': 'dropdown-bar'}).appendTo($parent);
+            Config.availablePadTypes.forEach(function (el) {
+                if (el === 'drive') { return; }
+                if (!Cryptpad.isLoggedIn() && Config.registeredOnlyTypes &&
+                    Config.registeredOnlyTypes.indexOf(el) !== -1) { return; }
+                options.push({
+                    tag: 'a',
+                    attributes: {
+                        'class': 'newdoc',
+                        'href': '/' + el + '/',
+                        'target': '_blank'
+                    },
+                    content: Messages['button_new' + el] // Pretty name of the language value
+                });
+            });
+            var dropdownConfig = {
+                text: Messages.login_makeAPad, // Button initial text
+                options: options, // Entries displayed in the menu
+                container: $container
+            };
+            var $block = Cryptpad.createDropdown(dropdownConfig);
+            $block.find('button').addClass('btn').addClass('btn-primary');
+            $block.appendTo($parent);
+        };
+
+        /* Log in UI */
+        var Login;
+        // deferred execution to avoid unnecessary asset loading
+        var loginReady = function (cb) {
+            if (Login) {
+                if (typeof(cb) === 'function') { cb(); }
                 return;
             }
+            require([
+                '/common/login.js',
+            ], function (_Login) {
+                Login = Login || _Login;
+                if (typeof(cb) === 'function') { cb(); }
+            });
+        };
 
-            if (recentPads.length) {
-                recentPads.sort(Cryptpad.mostRecent);
-                makeRecentPadsTable(recentPads);
-            }
+        var $uname = $('#name').on('focus', loginReady);
 
-            if (hasRecent) {
-                $('table').attr('style', '');
-                // Race condition here, this is triggered before the localization in HTML
-                // so we have to remove the data-localization attr
-                $tryit.removeAttr('data-localization');
-                $tryit.text(Messages.recentPads);
-            }
+        var $passwd = $('#password')
+        // background loading of login assets
+        .on('focus', loginReady)
+        // enter key while on password field clicks signup
+        .on('keyup', function (e) {
+            if (e.which !== 13) { return; } // enter
+            $('button.login').click();
         });
-    };
 
-    Cryptpad.ready(function () {
-        console.log("ready");
+        $('button.login').click(function () {
+            // setTimeout 100ms to remove the keyboard on mobile devices before the loading screen pops up
+            window.setTimeout(function () {
+                Cryptpad.addLoadingScreen(Messages.login_hashing);
+                // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed after hashing the password
+                window.setTimeout(function () {
+                    loginReady(function () {
+                        var uname = $uname.val();
+                        var passwd = $passwd.val();
+                        Login.loginOrRegister(uname, passwd, false, function (err, result) {
+                            if (!err) {
+                                var proxy = result.proxy;
 
-        $table = $('table.scroll');
-        $tbody = $table.find('tbody');
-        $tryit = $('#tryit');
+                                // successful validation and user already exists
+                                // set user hash in localStorage and redirect to drive
+                                if (proxy && !proxy.login_name) {
+                                    proxy.login_name = result.userName;
+                                }
 
-        DecorateToolbar.main($('#bottom-bar'));
-        Cryptpad.styleAlerts();
+                                proxy.edPrivate = result.edPrivate;
+                                proxy.edPublic = result.edPublic;
+
+                                Cryptpad.whenRealtimeSyncs(result.realtime, function () {
+                                    Cryptpad.login(result.userHash, result.userName, function () {
+                                        document.location.href = '/drive/';
+                                    });
+                                });
+                                return;
+                            }
+                            switch (err) {
+                                case 'NO_SUCH_USER':
+                                    Cryptpad.removeLoadingScreen(function () {
+                                        Cryptpad.alert(Messages.login_noSuchUser);
+                                    });
+                                    break;
+                                case 'INVAL_USER':
+                                    Cryptpad.removeLoadingScreen(function () {
+                                        Cryptpad.alert(Messages.login_invalUser);
+                                    });
+                                    break;
+                                case 'INVAL_PASS':
+                                    Cryptpad.removeLoadingScreen(function () {
+                                        Cryptpad.alert(Messages.login_invalPass);
+                                    });
+                                    break;
+                                default: // UNHANDLED ERROR
+                                    Cryptpad.errorLoadingScreen(Messages.login_unhandledError);
+                            }
+                        });
+                    });
+                }, 0);
+            }, 100);
+        });
+        /* End Log in UI */
+
+        var addButtonHandlers = function () {
+            $('button.register').click(function () {
+                var username = $('#name').val();
+                var passwd = $('#password').val();
+                sessionStorage.login_user = username;
+                sessionStorage.login_pass = passwd;
+                document.location.href = '/register/';
+            });
+            $('button.gotodrive').click(function () {
+                document.location.href = '/drive/';
+            });
+
+            $('button#loggedInLogout').click(function () {
+                $('#user-menu .logout').click();
+            });
+        };
 
         displayCreateButtons();
-        refreshTable();
-        if (Cryptpad.store && Cryptpad.store.change) {
-            Cryptpad.store.change(function (data) {
-                if (data.key === 'CryptPad_RECENTPADS') {
-                    refreshTable();
-                }
-            });
-        }
+
+        addButtonHandlers();
+        console.log("ready");
     });
 });
-

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script async data-bootload="/file/inner.js" data-main="/common/boot.js?ver=1.0" src="/bower_components/requirejs/require.js?ver=2.1.15"></script>
+    <style>.loading-hidden, .loading-hidden * {display: none !important;}</style>
+</head>
+<body class="loading-hidden">
+    <div id="toolbar" class="toolbar-container"></div>
+    <div id="app">
+        <div id="upload-form" style="display: none;">
+            <input type="file" name="file" id="file" class="inputfile" />
+            <label for="file" class="btn btn-primary block unselectable" data-localization-title="upload_choose"
+                data-localization="upload_choose"></label>
+        </div>
+        <div id="download-form" style="display: none;">
+            <input type="button" name="dl" id="dl" class="inputfile" />
+            <label for="dl" class="btn btn-success block unselectable" data-localization-title="download_button"><span data-localization="download_button"></span></label>
+            <span class="block" id="progress"></span>
+        </div>
+        <div id="download-view" style="display: none;">
+            <media-tag id="encryptedFile"></media-tag>
+        </div>
+        <div id="feedback" class="block hidden">
+        </div>
+    </div>
+</body>
+</html>
+

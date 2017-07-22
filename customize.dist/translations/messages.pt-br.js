@@ -19,6 +19,7 @@ define(function () {
     out.type.code = 'Código';
     out.type.poll = 'votação';
     out.type.slide = 'Apresentação';
+
     out.type.drive = 'Drive';
     out.type.whiteboard = 'Whiteboard';
     out.type.file = 'File';
@@ -45,6 +46,7 @@ define(function () {
     out.saved = "Salvo";
     out.synced = "Tudo foi salvo";
     out.deleted = "Bloco deletado do seu CryptDrive";
+
 
     out.disconnected = 'Desconectado';
     out.synchronizing = 'Sincronizando';
@@ -84,6 +86,7 @@ define(function () {
     out.orangeLight = "Sua conexão lenta pode impactar sua experiência";
     out.redLight = "Você está desconectado da sua sessão";
 
+
     out.pinLimitReached = "Você alcançou o limite de armazenamento";
     out.updated_0_pinLimitReachedAlert = "Você alcançou o limite de armazenamento. Novos blocos não serão mais salvos no seu CryptDrive.<br>" +
         'Você pode deletar blocos do seu CryptDrive ou <a href="https://accounts.cryptpad.fr/#!on={0}" target="_blank">se inscrever como premium</a> para aumentar o limite de espaço.';
@@ -98,6 +101,7 @@ define(function () {
 
     out.exportButtonTitle = 'Exportar esta sesão para um arquivo local';
     out.exportPrompt = 'Como deseja nomear seu arquivo?';
+
 
     out.changeNamePrompt = 'Mude seu nome (deixe em branco para se manter anônimo): ';
     out.user_rename = "Mudar nome de exibição";
@@ -141,6 +145,7 @@ define(function () {
     out.slideOptionsTitle = "Personalizar seus slides";
     out.slideOptionsButton = "Salvar (Enter)";
 
+
     out.editShare = "Compartilhar endereço editável";
     out.editShareTitle = "Copiar endereço editável";
     out.editOpen = "Abrir endereço editável em nova aba";
@@ -151,6 +156,7 @@ define(function () {
     out.notifyJoined = "{0} entraram na sessão colaborativa";
     out.notifyRenamed = "{0} agora é conhecido como {1}";
     out.notifyLeft = "{0} deixou essa sessão colaborativa";
+
 
     out.okButton = 'OK (Enter)';
 
@@ -168,6 +174,7 @@ define(function () {
     out.history_restorePrompt = "Você tem certeza que deseja substituir a versão atual do documento pela que está sendo exibida agora?";
     out.history_restoreDone = "Documento restaurado";
     out.history_version = "Versão:";
+    out.tryIt = 'Experimente!';
 
     // Polls
 
@@ -197,11 +204,14 @@ define(function () {
 
     out.poll_optionPlaceholder = "Alternativa";
     out.poll_userPlaceholder = "Seu nome";
+
     out.poll_removeOption = "Você tem certeza que deseja remover esta opção?";
+
     out.poll_removeUser = "Você tem certeza que quer remover este usuário?";
 
     out.poll_titleHint = "Título";
     out.poll_descriptionHint = "Descrição";
+
 
     // Canvas
     out.canvas_clear = "Limpar";
@@ -324,6 +334,7 @@ define(function () {
         "</ul>"
     ].join('');
 
+
     out.register_writtenPassword = "I have written down my username and password, proceed";
     out.register_cancel = "Go back";
 
@@ -386,6 +397,7 @@ define(function () {
     // general warnings
     out.warn_notPinned = "This pad is not in anyone's CryptDrive. It will expire after 3 months. <a href='/about.html#pinning'>Learn more...</a>";
 
+
     // index.html
 
     //about.html
@@ -426,6 +438,7 @@ define(function () {
     out.contact = "Contact";
     out.terms = "ToS";
     out.blog = "Blog";
+
 
     // privacy.html
 

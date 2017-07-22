@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script data-bootload="main.js" data-main="/common/boot.js" src="/bower_components/requirejs/require.js"></script>
+    <style>
+        html, body{
+            padding: 0px;
+            margin: 0px;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        form {
+            border: 3px solid black;
+            border-radius: 5px;
+            padding: 15px;
+            font-weight: bold !important;
+            font-size: 18px !important;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="number"],
+        input[type="range"],
+        select
+        {
+            margin-top: 5px;
+            margin-bottom: 5px;
+            width: 80%;
+        }
+        textarea {
+            width: 80%;
+            height: 40vh;
+            font-weight: bold;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <form>
+        <input type="radio" name="radio" value="one" checked>One
+        <input type="radio" name="radio" value="two">Two
+        <input type="radio" name="radio" value="three">Three<br>
+
+        <input type="checkbox" name="checkbox1" value="1">Checkbox One
+        <input type="checkbox" name="checkbox2" value="2">Checkbox Two<br>
+
+        <input type="text" name="text" placeholder="Text Input"><br>
+        <input type="password" name="password" placeholder="Passwords"><br>
+
+
+        <input type="number" name="number" min="1" max="5" placeholder="Numbers">Number<br>
+
+        <input type="range" name="range" min="0" max="100">Ranges<br>
+
+        <select name="select">
+            <option value="one">One</option>
+            <option value="two">Two</option>
+            <option value="three">Three</option>
+            <option value="four">Four</option>
+        </select> Dropdowns<br>
+
+        <select name="select-multiple" multiple>
+            <option value="pew">Pew</option>
+            <option value="bang">Bang</option>
+            <option value="kapow">Kapow</option>
+            <option value="zing">Zing</option>
+        </select>
+
+        <textarea name="textarea"></textarea><br>
+
+    </form>
+
+</body>
+</html>

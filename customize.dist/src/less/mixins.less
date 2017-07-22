@@ -1,0 +1,140 @@
+@import "/customize/src/less/variables.less";
+
+.fontface(@family, @src, @style: normal, @weight: 400, @fmt: 'truetype'){
+    @font-face {
+        font-family: @family;
+        src: url(@src) format(@fmt);
+        font-weight: @weight;
+        font-style: @style;
+    }
+}
+
+.transform(...) {
+    -webkit-transform: @arguments;
+    -moz-transform: @arguments;
+    -o-transform: @arguments;
+    -ms-transform: @arguments;
+    transform: @arguments;
+}
+
+.translate(@x:0, @y:0) {
+    .transform(translate(@x, @y));
+}
+
+.bottom-left(@s: 5px) { border-bottom-left-radius: @s; }
+.top-left(@s: 5px) { border-top-left-radius: @s; }
+
+.size (@n) {
+    // font-size: @n * 1vmin;
+    // line-height: @n * 1.1vmin;
+    font-size: @n * 10%;
+    // line-height: @n * 11%;
+    line-height: 110%;
+}
+
+.two-part-gradient (@start, @end) {
+    background: -webkit-linear-gradient(@start, @end); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(@start, @end); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(@start, @end); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(@start, @end); /* Standard syntax */
+}
+
+.placeholderColor (@color) {
+    &::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+        color: @color;;
+    }
+    &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+        color: @color;
+        opacity: 1;
+    }
+    &::-moz-placeholder { /* Mozilla Firefox 19+ */
+        color: @color;
+        opacity: 1;
+    }
+    &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+        color: @color;
+    }
+    &::-ms-input-placeholder { /* Microsoft Edge */
+        color: @color;
+    }
+}
+
+.avatar (@width) {
+    &.avatar {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    &.clickable {
+        cursor: pointer;
+        &:hover {
+            background-color: rgba(0,0,0,0.3);
+        }
+    }
+    .default, media-tag {
+        display: inline-flex;
+        width: @width;
+        height: @width;
+        justify-content: center;
+        align-items: center;
+        border-radius: 4px;
+        overflow: hidden;
+        box-sizing: content-box;
+    }
+    .default {
+        .unselectable();
+        background: white;
+        color: black;
+        font-size: @width/1.2;
+    }
+    .right-col {
+        order: 10;
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: flex;
+        flex-flow: column;
+        .name {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .friend {
+            padding: 0;
+        }
+    }
+    media-tag {
+        min-height: @width;
+        min-width: @width;
+        max-height: @width;
+        max-width: @width;
+        img {
+            min-width: 100%;
+            min-height: 100%;
+            max-width: none;
+            max-height: none; // To override 'media-tag img' in slide.less
+        }
+    }
+    }
+}
+
+.leftsideCategory {
+    .unselectable();
+    padding: 5px 20px;
+    margin: 15px 0;
+    cursor: pointer;
+    height: @toolbar-line-height;
+    line-height: @toolbar-line-height - 10px;
+    .fa {
+        width: 25px;
+    }
+    &:hover {
+        background: rgba(0,0,0,0.05);
+    }
+    &.active {
+        background: white;
+    }
+}

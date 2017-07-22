@@ -22,6 +22,7 @@ define(function () {
         "isotope isotope.css",
         "lesser-dark lesser-dark.css",
         "liquibyte liquibyte.css",
+        "LOL lol.css",
         "material material.css",
         "mbo mbo.css",
         "mdn-like mdn-like.css",

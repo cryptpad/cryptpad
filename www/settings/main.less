@@ -1,0 +1,40 @@
+@import '/customize/src/less/variables.less';
+@import '/customize/src/less/mixins.less';
+@import '/customize/src/less/sidebar-layout.less';
+
+.cp {
+    #container {
+        #rightSide {
+            .userFeedback {
+                input {
+                    vertical-align: middle;
+                    margin-right: 5px;
+                }
+            }
+            .languageSelector {
+                button.btn {
+                    width: @button-width;
+                    background-color: @button-alt-bg;
+                    border-color: #adadad;
+                    color: black;
+                    &:hover {
+                        background-color: darken(@button-alt-bg, 15%);
+                    }
+                }
+            }
+            .infoBlock {
+                [type="text"] {
+                    width: @button-width;
+                }
+            }
+            .backupDrive {
+                button {
+                    span.fa {
+                        margin-right: 5px;
+                    }
+                    margin-right: 5px;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,114 @@
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown-bar {
+    position: relative;
+    display: inline-block;
+
+    .dropbtn {
+    }
+
+    &:hover {
+        .dropbtn {
+        }
+    }
+
+    .fa {
+        font-family: FontAwesome;
+    }
+
+    button {
+        .fa-caret-down{
+            margin-right: 0px;
+            margin-left: 5px;
+        }
+        * {
+            .unselectable();
+            cursor: default;
+        }
+    }
+
+    .dropdown-bar-content {
+        display: none;
+        position: absolute;
+        background-color: @dropdown-bg;
+        min-width: 250px;
+        box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        max-height: 300px;
+        overflow-y: auto;
+        font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+        font-size: 16px;
+        line-height: 1em;
+
+        &.left {
+            right: 0;
+        }
+
+        &:hover {
+            display: block;
+        }
+
+        a {
+            color: @dropdown-color;
+            padding: 5px 16px;
+            text-decoration: none;
+            display: flex;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            float: none;
+            text-align: left;
+            font: @dropdown-font;
+            line-height: 1em;
+
+
+            .fa {
+                width: 20px;
+                text-align: center;
+                margin-right: 5px !important;
+            }
+
+            &:hover {
+                background-color: @dropdown-bg-hover;
+                color: @dropdown-color;
+            }
+
+            &.active {
+                background-color: @dropdown-bg-active;
+                color: @dropdown-color;
+            }
+        }
+
+        hr {
+            margin: 5px 0px;
+            height: 1px;
+            background: #bbb;
+        }
+
+        p {
+            min-width: 160px;
+            padding: 5px;
+            margin: 0;
+            white-space: normal;
+            text-align: left;
+            color: black;
+            font-size: 14px;
+            * {
+                font-size: 14px;
+            }
+            h2 {
+                color: black;
+                font-weight: bold;
+                text-align: center;
+                background-color: #EEEEEE;
+                padding: 5px 0px;
+                margin: 5px 0px;
+                font-size: 16px;
+                white-space: normal;
+            }
+        }
+    }
+}
+

@@ -1,91 +1,6 @@
 define([], function () {
     var tree = {};
 
-    // FIXME this isn't being used
-    var someElement = tree.some = function (root, predicate) {
-        // take the index of the last element in the current root
-        var last = root.childElementCount - 1;
-
-        // it might be a leaf node
-        if (last < 0) { return false; }
-
-        // otherwise it has children
-        while (last >= 0) {
-            // check from back to front
-
-            // check the node's children (depth first)
-            // if the predicate tests true, return true
-            if (tree.some(root.children[last], predicate)) {
-                return true;
-            } // otherwise none of the nodes inside it matched.
-
-            // check the node itself
-            if (predicate(root.children[last], last)) {
-                return true;
-            }
-            last--;
-        }
-        return false;
-    };
-
-    // FIXME this isn't being used
-    var someText = tree.someIncludingText = function (root, predicate) {
-        // take the index of the last element in the current root
-        var last = root.childNodes.length - 1;
-
-        // it might be a leaf node
-        if (last < 0) { return false; }
-
-        // otherwise it has children
-        while (last >= 0) {
-            // check from back to front
-
-            // check the node's children (depth first)
-            // if the predicate tests true, return true
-            if (tree.someIncludingText(root.childNodes[last], predicate)) {
-                return true;
-            } // otherwise none of the nodes inside it matched.
-
-            // check the node itself
-            if (predicate(root.childNodes[last], last)) {
-                return true;
-            }
-            last--;
-        }
-        return false;
-    };
-
-    // FIXME not being used
-    tree.findSameHierarchy = function (list, ancestor) {
-        var i = 0;
-        var success = true;
-        var last = list.length - 1;
-        var el;
-
-        tree.someIncludingText(ancestor, function (e) {
-            // don't out of bounds
-            if (i > last) {
-                // unsuccessful
-                success = false;
-                return true;
-            }
-
-            if (list[i] === (e.tagName||e.nodeName)) {
-
-                if (i === last) {
-                    el = e;
-                    return true;
-                }
-                i++;
-            } else {
-                // hierarchy has changed, what should we do?
-                success = false;
-                return true; // terminate
-            }
-        });
-        return success? el: false;
-    };
-
     var indexOfNode = tree.indexOfNode = function (el) {
         if (!(el && el.parentNode)) {
             console.log("No parentNode found!");
@@ -105,13 +20,6 @@ define([], function () {
 
     var childCount = tree.childCount = function (el) {
         return el.childNodes.length;
-    };
-
-    var parentsOf = tree.parentsOf = function (el, root) {
-        var P = [];
-        var p = el;
-        while (p !== root) { P.push((p = p.parentNode)); }
-        return P;
     };
 
     /* rightmost and leftmost return the deepest right and left
@@ -163,7 +71,7 @@ define([], function () {
         }
     };
 
-    var orderOfNodes = tree.orderOfNodes = function (a, b, root) {
+    tree.orderOfNodes = function (a, b, root) {
         // b might not be supplied
         if (!b) { return; }
         // a and b might be the same element

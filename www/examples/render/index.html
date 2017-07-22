@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="render-sd.css" />
+    <script data-bootload="main.js" data-main="/common/boot.js" src="/bower_components/requirejs/require.js"></script>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            min-height: 100%;
+        }
+
+        body { overflow-y: auto; }
+
+        #inner {
+            display: fixed;
+            width: 95%;
+            height: 100%;
+            top: 0px;
+            left: 0px;
+
+            margin: 0px auto;
+            padding: 0px;
+        }
+        img { max-width: 100%; }
+        code { font-family: monospace; }
+
+        blockquote, p, pre, code, li { font-size: 20px; }
+        table, thead, tbody, th, tr, td{
+            border: 1pt solid #586e75;
+            background-color: #002b36;
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div id="target">
+        <div id="inner"></div>
+    </div>

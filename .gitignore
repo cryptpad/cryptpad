@@ -8,3 +8,10 @@ customization
 /customize/
 messages.log
 .DS_Store
+www/scratch
+data
+npm-debug.log
+pins/
+blob/
+blobstage/
+privileged.conf

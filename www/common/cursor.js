@@ -1,17 +1,11 @@
 define([
     '/common/treesome.js',
     '/bower_components/rangy/rangy-core.min.js'
-], function (Tree, Rangy, saveRestore) {
-    //window.Rangy = Rangy;
-    //window.Tree = Tree;
-    // do some function for the start and end of the cursor
-
-    var log = function (x) { console.log(x); };
-    var error = function (x) { console.log(x); };
+], function (Tree, Rangy) {
     var verbose = function (x) { if (window.verboseMode) { console.log(x); } };
 
     /* accepts the document used by the editor */
-    return function (inner) {
+    var Cursor = function (inner) {
         var cursor = {};
 
         // there ought to only be one cursor at a time, so let's just
@@ -25,108 +19,6 @@ define([
                 el: null,
                 offset:0
             }
-        };
-
-        // TODO deprecate
-        // assumes a negative index
-        var seekLeft /* = cursor.seekLeft*/ = function (el, delta, current) {
-            var textLength;
-            var previous;
-
-            // normalize
-
-            if (-delta >= current) {
-                delta += current;
-                current = 0;
-            } else {
-                current += delta;
-                delta = 0;
-            }
-
-            while (delta) {
-                previous = el;
-                el = Tree.previousNode(el, inner);
-                if (el) {
-                    textLength = el.textContent.length;
-                    if (-delta > textLength) {
-                        delta -= textLength;
-                    } else {
-                        current = textLength + delta;
-                        delta = 0;
-                    }
-                } else {
-                    return {
-                        el: previous,
-                        offset: 0,
-                        error: "out of bounds"
-                    };
-                }
-            }
-            return {
-                el: el,
-                offset: current
-            };
-        };
-
-        // TODO deprecate
-        // seekRight assumes a positive delta
-        var seekRight = /* cursor.seekRight = */ function (el, delta, current) {
-            var textLength;
-            var previous;
-
-            // normalize
-            delta += current;
-            current = 0;
-
-            while (delta) {
-                if (el) {
-                    textLength = el.textContent.length;
-                    if (delta >= textLength) {
-                        delta -= textLength;
-                        previous = el;
-                        el = Tree.nextNode(el, inner);
-                    } else {
-                        current = delta;
-                        delta = 0;
-                    }
-                } else {
-                    // don't ever return a negative index
-                    if (previous.textContent.length) {
-                        textLength = previous.textContent.length - 1;
-                    } else {
-                        textLength = 0;
-                    }
-                    return {
-                        el: previous,
-                        offset: textLength,
-                        error: "out of bounds"
-                    };
-                }
-            }
-            return {
-                el: el,
-                offset: current
-            };
-        };
-
-        // TODO deprecate
-        var seekToDelta = /* cursor.seekToDelta = */ function (el, delta, current) {
-            var result = null;
-            if (el) {
-                if (delta < 0)  {
-                    return seekLeft(el, delta, current);
-                } else if (delta > 0) {
-                    return seekRight(el, delta, current);
-                } else {
-                    result = {
-                        el: el,
-                        offset: current
-                    };
-                }
-            } else {
-                error("[cursor.seekToDelta] el is undefined");
-            }
-            return result;
         };
 
         /*  cursor.update takes notes about wherever the cursor was last seen
@@ -151,7 +43,7 @@ define([
             });
         };
 
-        var exists = cursor.exists = function () {
+        cursor.exists = function () {
             return (Range.start.el?1:0) | (Range.end.el?2:0);
         };
 
@@ -161,7 +53,7 @@ define([
             2 if end
             3 if start and end
         */
-        var inNode = cursor.inNode = function (el) {
+        cursor.inNode = function (el) {
             var state = ['start', 'end'].map(function (pos, i) {
                 return Tree.contains(el, Range[pos].el)? i +1: 0;
             });
@@ -228,7 +120,7 @@ define([
             }
         };
 
-        var pushDelta = cursor.pushDelta = function (oldVal, newVal, offset) {
+        cursor.pushDelta = function (oldVal, newVal) {
             if (oldVal === newVal) { return; }
             var commonStart = 0;
             while (oldVal.charAt(commonStart) === newVal.charAt(commonStart)) {
@@ -262,109 +154,6 @@ define([
             };
         };
 
-        /* getLength assumes that both nodes exist inside of the active editor.  */
-        // unused currently
-        var getLength = cursor.getLength = function () {
-            if (Range.start.el === Range.end.el) {
-                if (Range.start.offset === Range.end.offset) { return 0; }
-                if (Range.start.offset < Range.end.offset) {
-                    return Range.end.offset - Range.start.offset;
-                } else {
-                    return Range.start.offset - Range.end.offset;
-                }
-            } else {
-                var order = Tree.orderOfNodes(Range.start.el, Range.end.el, inner);
-                var L;
-                var cur;
-
-                /*  we know that the cursor elements are different, and that we
-                    must traverse to find the total length. We also know the
-                    order of the nodes (probably 1 or -1) */
-                if (order === 1) {
-                    L = (Range.start.el.textContent.length - Range.start.offset);
-                    cur = Tree.nextNode(Range.start.el, inner);
-                    while (cur && cur !== Range.end.el) {
-                        L += cur.textContent.length;
-                        cur = Tree.nextNode(cur, inner);
-                    }
-                    L += Range.end.offset;
-                    return L;
-                } else if (order === -1) {
-                    L = (Range.end.el.textContent - Range.end.offset);
-                    cur = Tree.nextNode(Range.end.el, inner);
-                    while (cur && cur !== Range.start.el) {
-                        L += cur.textContent.length;
-                        cur = Tree.nextNode(cur, inner);
-                    }
-                    L += Range.start.offset;
-                    return -L;
-                } else {
-                    console.error("unexpected ordering of nodes...");
-                    return null;
-                }
-            }
-        };
-
-        // previously used for testing
-        // TODO deprecate
-        var delta = /* cursor.delta = */ function (delta1, delta2) {
-            var sel = Rangy.getSelection(inner);
-            delta2 = (typeof delta2 !== 'undefined') ? delta2 : delta1;
-
-            // update returns errors if there are problems
-            // and updates the persistent Range object
-            var err = cursor.update(sel, inner);
-            if (err) { return err; }
-
-            // create a range to modify
-            var range = Rangy.createRange();
-
-            /*
-                The assumption below is that Range.(start|end).el
-                actually exists. This might not be the case.
-                TODO check if start and end elements are defined
-            */
-
-            // using infromation about wherever you were last...
-            // move both parts by some delta
-            var start = seekToDelta(Range.start.el, delta1, Range.start.offset);
-            var end = seekToDelta(Range.end.el, delta2, Range.end.offset);
-
-            /*  if range is backwards, cursor.delta fails
-                so check if they're in the expected order
-                before setting the new range */
-
-            var order = Tree.orderOfNodes(start.el, end.el, inner);
-            var backward;
-
-            // this could all be one line but nobody would be able to read it
-            if (order === -1) {
-                // definitely backward
-                backward = true;
-            } else if (order === 0) {
-                // might be backward, check offsets to know for sure
-                backward = (start.offset > end.offset);
-            } else {
-                // definitely not backward
-                backward = false;
-            }
-
-            if (backward) {
-                range.setStart(end.el, end.offset);
-                range.setEnd(start.el, start.offset);
-            } else {
-                range.setStart(start.el, start.offset);
-                range.setEnd(end.el, end.offset);
-            }
-
-            // actually set the cursor to the new range
-            sel.setSingleRange(range);
-            return {
-                startError: start.error,
-                endError: end.error
-            };
-        };
-
         cursor.brFix = function () {
             cursor.update();
             var start = Range.start;
@@ -387,6 +176,58 @@ define([
             }
         };
 
+        cursor.lastTextNode = function () {
+            var lastEl = Tree.rightmostNode(inner);
+            if (lastEl && lastEl.nodeType === 3) { return lastEl; }
+
+            var firstEl = Tree.leftmostNode(inner);
+
+            while (lastEl !== firstEl) {
+                lastEl = Tree.previousNode(lastEl, inner);
+                if (lastEl && lastEl.nodeType === 3) { return lastEl; }
+            }
+
+            return lastEl;
+        };
+
+        cursor.firstTextNode = function () {
+            var firstEl = Tree.leftmostNode(inner);
+            if (firstEl && firstEl.nodeType === 3) { return firstEl; }
+
+            var lastEl = Tree.rightmostNode(inner);
+
+            while (firstEl !== lastEl) {
+                firstEl = Tree.nextNode(firstEl, inner);
+                if (firstEl && firstEl.nodeType === 3) { return firstEl; }
+            }
+            return firstEl;
+        };
+
+        cursor.setToStart = function () {
+            var el = cursor.firstTextNode();
+            if (!el) { return; }
+            fixStart(el, 0);
+            fixEnd(el, 0);
+            fixSelection(makeSelection(), makeRange());
+            return el;
+        };
+
+        cursor.setToEnd = function () {
+            var el = cursor.lastTextNode();
+            if (!el) { return; }
+
+            var offset = el.textContent.length;
+
+            fixStart(el, offset);
+            fixEnd(el, offset);
+            fixSelection(makeSelection(), makeRange());
+            return el;
+        };
+
         return cursor;
     };
+
+    Cursor.Tree = Tree;
+
+    return Cursor;
 });

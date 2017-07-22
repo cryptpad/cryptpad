@@ -1,0 +1,91 @@
+.cm-s-lol.CodeMirror {
+  font-family: Comic Sans MS, cursive;
+  font-size: 16px;
+}
+.cm-s-lol.CodeMirror,
+.cm-s-lol .CodeMirror-gutters {
+  background-color: #2E3436 !important;
+  color: #719FC9 !important;
+  border: none;
+}
+.cm-s-lol .CodeMirror-gutters {
+  color: #2E3436;
+}
+.cm-s-lol .CodeMirror-cursor {
+  border-left: solid thin #f8f8f0;
+}
+.cm-s-lol .CodeMirror-linenumber {
+  color: #8AE234;
+}
+.cm-s-lol.CodeMirror-focused div.CodeMirror-selected {
+  background: rgba(255, 255, 255, 0.1);
+}
+.cm-s-lol .CodeMirror-line::selection,
+.cm-s-lol .cm-s-transition .CodeMirror-line > span::selection,
+.cm-s-lol .cm-s-transition .CodeMirror-line > span > span::selection {
+  background: rgba(255, 255, 255, 0.1);
+}
+.cm-s-lol .CodeMirror-line::-moz-selection,
+.cm-s-lol .cm-s-transition .CodeMirror-line > span::-moz-selection,
+.cm-s-lol .cm-s-transition .CodeMirror-line > span > span::-moz-selection {
+  background: rgba(255, 255, 255, 0.1);
+}
+.cm-s-lol span.cm-comment {
+  color: #50FA7B;
+}
+.cm-s-lol span.cm-string,
+.cm-s-lol .cm-s-transition span.cm-string-2 {
+  color: #f1fa8c;
+}
+.cm-s-lol span.cm-number {
+  color: #bd93f9;
+}
+.cm-s-lol span.cm-variable {
+  color: #9292e4;
+}
+.cm-s-lol span.cm-variable-2 {
+  color: white;
+}
+.cm-s-lol span.cm-def {
+  color: #ffb86c;
+}
+.cm-s-lol span.cm-keyword {
+  color: ff79c6;
+}
+.cm-s-lol span.cm-operator {
+  color: ff79c6;
+}
+.cm-s-lol span.cm-keyword {
+  color: ff79c6;
+}
+.cm-s-lol span.cm-atom {
+  color: #bd93f9;
+}
+.cm-s-lol span.cm-meta {
+  color: #719FC9;
+}
+.cm-s-lol span.cm-tag {
+  color: ff79c6;
+}
+.cm-s-lol span.cm-attribute {
+  color: #50fa7b;
+}
+.cm-s-lol span.cm-qualifier {
+  color: #50fa7b;
+}
+.cm-s-lol span.cm-property {
+  color: #66d9ef;
+}
+.cm-s-lol span.cm-builtin {
+  color: #50fa7b;
+}
+.cm-s-lol span.cm-variable-3 {
+  color: #50fa7b;
+}
+.cm-s-lol .CodeMirror-activeline-background {
+  background: rgba(255, 255, 255, 0.1);
+}
+.cm-s-lol .CodeMirror-matchingbracket {
+  text-decoration: underline;
+  color: white !important;
+}

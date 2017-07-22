@@ -2,74 +2,16 @@
 <html style="height: 100%;">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
-    <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
     <script src="/bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="/bower_components/codemirror/lib/codemirror.js"></script>
-    <link rel="stylesheet" href="/bower_components/codemirror/lib/codemirror.css">
-    <link rel="stylesheet" href="/bower_components/codemirror/addon/dialog/dialog.css">
-    <link rel="stylesheet" href="/bower_components/codemirror/addon/fold/foldgutter.css" />
-    <script src="/bower_components/codemirror/mode/javascript/javascript.js"></script>
-    <script src="/bower_components/codemirror/addon/mode/loadmode.js"></script>
-    <script src="/bower_components/codemirror/mode/meta.js"></script>
-
-    <script src="/bower_components/codemirror/addon/mode/overlay.js"></script>
-    <script src="/bower_components/codemirror/addon/mode/multiplex.js"></script>
-    <script src="/bower_components/codemirror/addon/mode/simple.js"></script>
-
-    <script src="/bower_components/codemirror/addon/edit/closebrackets.js"></script>
-    <script src="/bower_components/codemirror/addon/edit/matchbrackets.js"></script>
-    <script src="/bower_components/codemirror/addon/edit/trailingspace.js"></script>
-    <script src="/bower_components/codemirror/addon/selection/active-line.js"></script>
-    <script src="/bower_components/codemirror/addon/search/search.js"></script>
-    <script src="/bower_components/codemirror/addon/search/match-highlighter.js"></script>
-    <script src="/bower_components/codemirror/addon/search/searchcursor.js"></script>
-    <script src="/bower_components/codemirror/addon/dialog/dialog.js"></script>
-    <script src="/bower_components/codemirror/addon/fold/foldcode.js"></script>
-    <script src="/bower_components/codemirror/addon/fold/foldgutter.js"></script>
-    <script src="/bower_components/codemirror/addon/fold/brace-fold.js"></script>
-    <script src="/bower_components/codemirror/addon/fold/xml-fold.js"></script>
-    <script src="/bower_components/codemirror/addon/fold/markdown-fold.js"></script>
-    <script src="/bower_components/codemirror/addon/fold/comment-fold.js"></script>
-    <style>
-      html, body{
-          height: 100%;
-          width: 100%;
-          padding: 0px;
-          margin: 0px;
-          overflow: hidden;
-          box-sizing: border-box;
-          position: relative;
-      }
-      body {
-          display: flex;
-          flex-flow: column;
-      }
-      .CodeMirror {
-        height: 100%;
-      }
-      .cryptpad-toolbar {
-        padding: 0px 6px;
-      }
-      #cme_toolbox div.cryptpad-lag {
-        line-height: 24px;
-      }
-      #cme_toolbox {
-        font: 12px Arial,Helvetica,Tahoma,Verdana,sans-serif;
-        background: -webkit-linear-gradient(#EEEEEE, #DADADA); /* For Safari 5.1 to 6.0 */
-        background: -o-linear-gradient(white, #DDDDDD); /* For Opera 11.1 to 12.0 */
-        background: -moz-linear-gradient(white, #DDDDDD); /* For Firefox 3.6 to 15 */
-        background: linear-gradient(white, #DDDDDD); /* Standard syntax */
-      }
-      .CodeMirror-focused .cm-matchhighlight {
-        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQI12NgYGBgkKzc8x9CMDAwAAAmhwSbidEoSQAAAABJRU5ErkJggg==);
-        background-position: bottom;
-        background-repeat: repeat-x;
-      }
-    </style>
+    <script async data-bootload="inner.js" data-main="/common/boot.js?ver=1.0" src="/bower_components/requirejs/require.js?ver=2.1.15"></script>
+    <style> .loading-hidden { display: none; } </style>
 </head>
-<body>
-  <div id="cme_toolbox"></div>
-  <textarea id="editor1" name="editor1"></textarea>
+<body class="loading-hidden">
+  <div id="cme_toolbox" class="toolbar-container"></div>
+  <div id="editorContainer">
+    <textarea id="editor1" name="editor1"></textarea>
+    <div id="previewContainer"><div id="preview"></div></div>
+  </div>
 </body>
 </html>
 

@@ -1,140 +1,158 @@
 define([
-    '/api/config?cb=' + Math.random().toString(16).substring(2),
-    '/bower_components/chainpad-listmap/chainpad-listmap.js',
-    '/bower_components/chainpad-crypto/crypto.js',
+    'jquery',
     '/common/cryptpad-common.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
-    '/bower_components/scrypt-async/scrypt-async.min.js',
-    '/bower_components/jquery/dist/jquery.min.js',
-], function (Config, Listmap, Crypto, Cryptpad) {
-    var $ = window.jQuery;
-    var Scrypt = window.scrypt;
-    var Nacl = window.nacl;
+    '/common/login.js'
+], function ($, Cryptpad, Login) {
+    $(function () {
+        var $main = $('#mainBlock');
+        var Messages = Cryptpad.Messages;
 
-    Cryptpad.styleAlerts();
+        // Language selector
+        var $sel = $('#language-selector');
+        Cryptpad.createLanguageSelector(undefined, $sel);
+        $sel.find('button').addClass('btn').addClass('btn-secondary');
+        $sel.show();
 
-    var secret = {};
+        // User admin menu
+        var $userMenu = $('#user-menu');
+        var userMenuCfg = {
+            $initBlock: $userMenu
+        };
+        var $userAdmin = Cryptpad.createUserAdminMenu(userMenuCfg);
+        $userAdmin.find('button').addClass('btn').addClass('btn-secondary');
 
-    var module = window.APP = {
-        Cryptpad: Cryptpad,
-    };
-
-    var print = function (S, t) {
-        $('body').append($('<' + (t || 'p') + '>').text(S));
-    };
-
-    var getInputs = function (cb) {
-        Cryptpad.prompt("What is your username?", "", function (name) {
-            if (!name || typeof(name) !== 'string') { return cb('no name'); }
-            setTimeout(function () {
-                Cryptpad.prompt("What is your password?", "", function (pw) {
-                    if (!pw || typeof(pw) !== 'string') { return cb('no password'); }
-                    cb(void 0, {
-                        password: pw,
-                        salt: name,
-                    });
-                }, {
-                    sensitive: true,
-                });
-            }, 1000);
+        $(window).click(function () {
+            $('.cryptpad-dropdown').hide();
         });
-    };
 
-    var login = function (cb) {
-        getInputs(function (err, input) {
-            if (err) {
-                Cryptpad.alert(err);
-                return;
-            }
+        // main block is hidden in case javascript is disabled
+        $main.removeClass('hidden');
 
-            var time = +new Date();
-            Scrypt(input.password,
-                input.salt,
-                8, // memoryCost (n)
-                1024, // block size parameter (r)
-                128, // dkLen
-                undefined && 200, // interruptStep
-                function (S) {
-                    print("Login took " + ((+new Date()) -time )+ "ms");
-                    cb(S);
-                },
-                'base64');
-        });
-    };
+        // Make sure we don't display non-translated content (empty button)
+        $main.find('#data').removeClass('hidden');
 
-    var read = function (proxy) {
-        console.log("Proxy ready!");
-
-        var otime = +new Date(proxy.atime);
-
-        var atime = proxy.atime = ('' + new Date());
-
-        if (otime) {
-            print("Last visit was " +
-                (((+new Date(atime)) - otime) / 1000) +
-                " seconds ago");
+        if (Cryptpad.isLoggedIn()) {
+            // already logged in, redirect to drive
+            document.location.href = '/drive/';
+            return;
+        } else {
+            $main.find('#userForm').removeClass('hidden');
         }
 
-        proxy.ctime = proxy.ctime || atime;
-        proxy.schema = proxy.schema || 'login_data';
-        print(JSON.stringify(proxy, null, 2), 'pre');
-    };
-
-    var change = function (o, n, p) {
-        console.log("change at [%s] %s => %s", p.join(","), o, n);
-    };
-
-    var remove = function (o, p, root) {
-        console.log("removal at [%s]", p.join(','));
-    };
-
-    var ready = function (proxy, next) {
-        //console.log("umm");
-        proxy.on('ready', function (info) {
-            read(proxy);
-
-            proxy.on('change', [], change)
-            .on('remove', [], remove);
-            next();
-        })
-        .on('disconnect', function (info) {
-
-        });
-    };
-
-    var authenticated = function (password, next) {
-        console.log("Authenticated!");
-        var secret = {};
-
-        secret.channel = password.slice(0, 32);
-        secret.key = password.slice(32, 48);
-        secret.junk = password.slice(48, 64); // consider reordering things
-        secret.curve = password.slice(64, 96);
-        secret.ed = password.slice(96, 128);
-
-        print(JSON.stringify(secret, null, 2), 'pre');
-
-        var config = {
-            websocketURL: Config.websocketURL,
-            channel: secret.channel,
-            data: {},
-            crypto: Crypto.createEncryptor(secret.key),
-            loglevel: 0,
+        /* Log in UI */
+        // deferred execution to avoid unnecessary asset loading
+        var loginReady = function (cb) {
+            if (Login) {
+                if (typeof(cb) === 'function') { cb(); }
+                return;
+            }
+            require([
+            ], function (_Login) {
+                Login = Login || _Login;
+                if (typeof(cb) === 'function') { cb(); }
+            });
         };
+        loginReady();
 
-        console.log("creating proxy!");
-        var rt = module.rt = Listmap.create(config);
+        var $uname = $('#name').focus();
 
-        next(rt.proxy, function () {
-            Cryptpad.log("Ready!");
+        var $passwd = $('#password')
+        // background loading of login assets
+        // enter key while on password field clicks signup
+        .on('keyup', function (e) {
+            if (e.which !== 13) { return; } // enter
+            $('button.login').click();
         });
-    };
 
-    $('#login').click(function () {
-        login(function (hash) {
-            print('Your Key', 'h1');
-            print(hash, 'pre');
-            authenticated(hash, ready);
+        var hashing = false;
+        $('button.login').click(function () {
+            if (hashing) { return void console.log("hashing is already in progress"); }
+
+            hashing = true;
+
+            // setTimeout 100ms to remove the keyboard on mobile devices before the loading screen pops up
+            window.setTimeout(function () {
+                Cryptpad.addLoadingScreen(Messages.login_hashing);
+                // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed after hashing the password
+                window.setTimeout(function () {
+                    loginReady(function () {
+                        var uname = $uname.val();
+                        var passwd = $passwd.val();
+                        Login.loginOrRegister(uname, passwd, false, function (err, result) {
+                            if (!err) {
+                                var proxy = result.proxy;
+
+                                // successful validation and user already exists
+                                // set user hash in localStorage and redirect to drive
+                                if (!proxy.login_name) {
+                                    result.proxy.login_name = result.userName;
+                                }
+
+                                proxy.edPrivate = result.edPrivate;
+                                proxy.edPublic = result.edPublic;
+
+                                proxy.curvePrivate = result.curvePrivate;
+                                proxy.curvePublic = result.curvePublic;
+
+                                Cryptpad.feedback('LOGIN', true);
+                                Cryptpad.whenRealtimeSyncs(result.realtime, function() {
+                                    Cryptpad.login(result.userHash, result.userName, function () {
+                                        hashing = false;
+                                        if (sessionStorage.redirectTo) {
+                                            var h = sessionStorage.redirectTo;
+                                            var parser = document.createElement('a');
+                                            parser.href = h;
+                                            if (parser.origin === window.location.origin) {
+                                                delete sessionStorage.redirectTo;
+                                                window.location.href = h;
+                                                return;
+                                            }
+                                        }
+                                        window.location.href = '/drive/';
+                                    });
+                                });
+                                return;
+                            }
+                            switch (err) {
+                                case 'NO_SUCH_USER':
+                                    Cryptpad.removeLoadingScreen(function () {
+                                        Cryptpad.alert(Messages.login_noSuchUser, function () {
+                                            hashing = false;
+                                        });
+                                    });
+                                    break;
+                                case 'INVAL_USER':
+                                    Cryptpad.removeLoadingScreen(function () {
+                                        Cryptpad.alert(Messages.login_invalUser, function () {
+                                            hashing = false;
+                                        });
+                                    });
+                                    break;
+                                case 'INVAL_PASS':
+                                    Cryptpad.removeLoadingScreen(function () {
+                                        Cryptpad.alert(Messages.login_invalPass, function () {
+                                            hashing = false;
+                                        });
+                                    });
+                                    break;
+                                default: // UNHANDLED ERROR
+                                    Cryptpad.errorLoadingScreen(Messages.login_unhandledError);
+                            }
+                        });
+                    });
+                }, 0);
+            }, 100);
+        });
+        $('#register').on('click', function () {
+            if (sessionStorage) {
+                if ($uname.val()) {
+                    sessionStorage.login_user = $uname.val();
+                }
+                if ($passwd.val()) {
+                    sessionStorage.login_pass = $passwd.val();
+                }
+            }
+            window.location.href = '/register/';
         });
     });
 });

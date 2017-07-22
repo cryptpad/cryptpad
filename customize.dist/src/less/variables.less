@@ -1,0 +1,139 @@
+@base: #fff; //#f5f5f5;
+@dark-base: darken(@base, 20%);
+@less-dark-base: darken(@base, 10%);
+@light-base: lighten(@base, 20%);
+@less-light-base: lighten(@base, 10%);
+@fore: #555;
+@old-base: #302B28;
+@old-fore: #fafafa;
+
+@main-font-size: 16px;
+
+@cp-green: #46E981;
+@cp-accent: lighten(@cp-green, 20%);
+
+//@cp-red: #FF0073; // remove red
+@cp-red: #FA5858; // remove red
+@cp-outline: #444;
+
+@cp-orange: #FE9A2E;
+
+@cp-blue: #00CFC1;
+@cp-blue: #00ADEE;
+@cp-light-blue: #41b7d8; // lighten(@cp-blue, 20%);
+
+@cp-purple: #558;
+
+@page-white: #fafafa;
+
+// links
+@cp-link: @cp-light-blue;
+@cp-link-visited: @cp-light-blue;
+@cp-link-hover: darken(@cp-light-blue, 10%);
+
+// alertify things
+
+@box-shadow: 0 2px 5px 0 rgba(0,0,0,.2);
+@padding-base: 12px;
+
+@success-color: @cp-green;
+@success-fore: @base;
+@danger-color: @cp-red;
+
+@text-color: rgba(0, 0, 0, .8);
+@border-radius: 1px;
+
+@alertify-fore: @old-fore;
+@alertify-base: @old-base;
+
+@alertify-dialog-bg: #444;
+@alertify-dialog-fg: @old-fore;
+
+@alertify-btn-fg: @old-fore;
+
+@alertify-btn-bg: rgba(200, 200, 200, 0.05);
+@alertify-btn-bg-hover: rgba(200, 200, 200, .15);
+
+@alertify-bg: rgba(0, 0, 0, .3);
+@alertify-fg: @old-fore;
+
+@alertify-input-bg: @old-base;
+@alertify-input-fg: @old-fore;
+
+@slide-default-bg: #000;
+
+@bg-loading: @old-base;
+@color-loading: @old-fore;
+
+@media-not-big: 800px;
+@media-not-small: 801px;
+
+@media-short-screen: 450px;
+@media-narrow-screen: 400px;
+@media-medium-screen: 600px;
+
+
+// Dropdown
+
+@dropdown-font: @main-font-size -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+@dropdown-bg: #f9f9f9;
+@dropdown-color: black;
+@dropdown-bg-hover: #f1f1f1;
+@dropdown-bg-active: #e8e8e8;
+
+// Toolbar
+
+@toolbar-button-font: @dropdown-font;
+
+@toolbar-pad-bg: #1c4fa0;
+@toolbar-pad-color: #fff;
+@toolbar-slide-bg: #e57614;
+@toolbar-slide-color: #fff;
+@toolbar-code-bg: #ffae00;
+@toolbar-code-color: #000;
+@toolbar-poll-bg: #006304;
+@toolbar-poll-color: #fff;
+@toolbar-whiteboard-bg: #800080;
+@toolbar-whiteboard-color: #fff;
+@toolbar-drive-bg: #0087ff;
+@toolbar-drive-color: #fff;
+@toolbar-file-bg: #cd2532;
+@toolbar-file-color: #fff;
+@toolbar-friends-bg: #607B8D;
+@toolbar-friends-color: #fff;
+@toolbar-default-bg: #ddd;
+@toolbar-default-color: #000;
+@toolbar-settings-bg: #0087ff;
+@toolbar-settings-color: #fff;
+@toolbar-profile-bg: #0087ff;
+@toolbar-profile-color: #fff;
+
+
+@topbar-back: #fff;
+@topbar-color: #000;
+@topbar-button-bg: #2E9AFE;
+@topbar-button-color: #fff;
+@topbar-height: 50px;
+
+@toolbar-top-height: 64px;
+
+@main-border-width: 15vw;
+@cp-darkblue: #3333ff;
+@cp-accent2: darken(@cp-darkblue, 20%);
+
+@main-block-bg: rgba(200, 200, 200, 0.3);
+@main-color: #fff;
+@main-bg: url('/customize/bg3.jpg') no-repeat center center;
+
+@category-bg: #f4f4f4;
+
+.unselectable () {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+@toolbar-line-height: 32px;

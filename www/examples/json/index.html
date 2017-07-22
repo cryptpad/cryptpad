@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script data-bootload="main.js" data-main="/common/boot.js" src="/bower_components/requirejs/require.js"></script>
+    <style>
+        html, body{
+            padding: 0px;
+            margin: 0px;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        form {
+            border: 3px solid black;
+            border-radius: 5px;
+            padding: 15px;
+            font-weight: bold !important;
+            font-size: 18px !important;
+        }
+
+        input[type="text"]
+        {
+            margin-top: 5px;
+            margin-bottom: 5px;
+            width: 80%;
+            height: 3em;
+            font-weight: bold;
+            font-size: 18px;
+
+        }
+        textarea {
+            width: 80%;
+            height: 40vh;
+        }
+        div#content {
+            width: 80%;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <p>The field below behaves like a <a target="_blank" href="https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop">REPL</a>, with the realtime object created by this page exposed as the value <code>x</code></p>
+        <p>Open your browser's console to see the output.</p>
+        <input type="text" name="repl" placeholder="Value" autofocus><br>
+    </div>
+</body>
+</html>
