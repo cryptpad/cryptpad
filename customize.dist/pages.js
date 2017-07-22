@@ -241,14 +241,14 @@ define([
     var infopageTopbar = function () {
         return h('div.cp-topbar',
             h('div.cp-left',
-                h('a', { href: '/zeroknowledge.html'}, 'TODO What is Zero Knowledge'),
-                h('a', { href: 'https://blog.cryptpad.fr/'}, 'TODO Blog'),
-                h('a', { href: '/contact.html'}, 'TODO Contact'),
-                h('a', { href: '/about.html'}, 'TODO About')
+                h('a', { href: '/zeroknowledge.html'}, 'What is Zero Knowledge'),
+                h('a', { href: 'https://blog.cryptpad.fr/'}, 'Blog'),
+                h('a', { href: '/contact.html'}, 'Contact'),
+                h('a', { href: '/about.html'}, 'About')
             ),
             h('div.cp-right',
-                h('a', { href: '/register'}, 'TODO Register'),
-                h('a', { href: '/login'}, 'TODO Log in')
+                h('a', { href: '/register'}, 'Register'),
+                h('a', { href: '/login'}, 'Log in')
             )
         );
     }
@@ -260,22 +260,22 @@ define([
                 h('div.container', [
                     h('div.row', [
                         h('div.cp-title.col-6.col-xs-6', [
-                            h('img', { src: '/customize/cryptpad-new-logo-big-white-logoonly.png?' + urlArgs }),
+                            h('img', { src: '/customize/cryptpad-new-logo-colors-logoonly.png?' + urlArgs }),
                             h('h1', 'CryptPad'),
                             h('p', Msg.main_catch_phrase)
                         ]),
                         /*userForm(),*/
                         h('div.col-6.col-xs-6', [
                             h('div.bs-callout.cp-callout-pad', [
-                                h('h4', 'TODO Rich Text Pad'),
+                                h('h4', 'Rich Text Pad'),
                    //             "TODO Collaborate in realtime on notes and ideas."
                             ]),
                             h('div.bs-callout.cp-callout-code', [
-                                h('h4', 'TODO Markdown/Code Pad'),
+                                h('h4', 'Markdown/Code Pad'),
                      //           "TODO Edit Markdown with realtime visual rendering."
                             ]),
                             h('div.bs-callout.cp-callout-slide', [
-                                h('h4', 'TODO Markdown Presentation'),
+                                h('h4', 'Markdown Presentation'),
                        //         "TODO Make quick presentations with Markdown slides."
                             ]),
                             /*h('div.bs-callout.cp-callout-recent', [
