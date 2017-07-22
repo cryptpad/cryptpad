@@ -49,6 +49,7 @@ define(function() {
         users.
     */
     config.loginSalt = '';
+    config.badStateTimeout = 30000;
 
     return config;
 });

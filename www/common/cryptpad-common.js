@@ -244,6 +244,8 @@ define([
     };
 
     common.infiniteSpinnerDetected = false;
+    var BAD_STATE_TIMEOUT = typeof(AppConfig.badStateTimeout) === 'number'?
+        AppConfig.badStateTimeout: 30000;
     var whenRealtimeSyncs = common.whenRealtimeSyncs = function (realtime, cb) {
         realtime.sync();
 
@@ -263,7 +265,7 @@ define([
                     window.location.reload();
                 });
                 common.infiniteSpinnerDetected = true;
-            }, 30000);
+            }, BAD_STATE_TIMEOUT)
             realtime.onSettle(function () {
                 clearTimeout(to);
                 cb();
