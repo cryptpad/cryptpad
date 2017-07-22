@@ -164,7 +164,6 @@ define([
             var $mts = $content.find('media-tag:not(:has(*))');
             $mts.each(function (i, el) {
                 MediaTag(el);
-                console.log(el.outerHTML);
                 var observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
                         if (mutation.type === 'childList') {

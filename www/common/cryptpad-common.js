@@ -1100,6 +1100,7 @@ define([
                 }
                 break;
             case 'upload':
+                console.log('UPLOAD');
                 button = $('<button>', {
                     'class': 'btn btn-primary new',
                     title: Messages.uploadButtonTitle,
@@ -1404,6 +1405,67 @@ define([
             });
         }
     };
+
+
+    common.createFileDialog = function (cfg) {
+        var $body = cfg.$body || $('body');
+        var $block = $body.find('#fileDialog');
+        if (!$block.length) {
+            $block = $('<div>', {id: "fileDialog"}).appendTo($body);
+        }
+        $block.html('');
+        $('<span>', {
+            'class': 'close fa fa-times',
+            'title': Messages.filePicker_close
+        }).click(function () {
+            $block.hide();
+        }).appendTo($block);
+        var $description = $('<p>').text(Messages.filePicker_description);
+        $block.append($description);
+        var $filter = $('<p>').appendTo($block);
+        var $container = $('<span>', {'class': 'fileContainer'}).appendTo($block);
+        var updateContainer = function () {
+            $container.html('');
+            var filter = $filter.find('.filter').val().trim();
+            var list = common.getUserFilesList();
+            var fo = common.getFO();
+            list.forEach(function (id) {
+                var data = fo.getFileData(id);
+                var name = fo.getTitle(id);
+                if (filter && name.toLowerCase().indexOf(filter.toLowerCase()) === -1) {
+                    return;
+                }
+                var $span = $('<span>', {'class': 'element'}).appendTo($container);
+                var $inner = $('<span>').text(name);
+                $span.append($inner).click(function () {
+                    if (typeof cfg.onSelect === "function") { cfg.onSelect(data.href); }
+                    $block.hide();
+                });
+            });
+        };
+        var to;
+        $('<input>', {
+            type: 'text',
+            'class': 'filter',
+            'placeholder': Messages.filePicker_filter
+        }).appendTo($filter).on('keypress', function () {
+            if (to) { window.clearTimeout(to); }
+            to = window.setTimeout(updateContainer, 300);
+        });
+        //$filter.append(' '+Messages.or+' ');
+        var data = {FM: cfg.data.FM};
+        $filter.append(common.createButton('upload', false, data, function () {
+            $block.hide();
+        }));
+        updateContainer();
+        $body.keydown(function (e) {
+            if (e.which === 27) { $block.hide(); }
+        });
+        $block.show();
+    };
+
+
+
 
     // Create a button with a dropdown menu
     // input is a config object with parameters:
