@@ -14,11 +14,11 @@ define([
     'less!/customize/src/less/cryptpad.less',
 ], function ($, Crypto, realtimeInput, Toolbar, Cryptpad /*, Visible, Notify*/) {
     var Messages = Cryptpad.Messages;
+    Messages = Messages; // jshint
     //var saveAs = window.saveAs;
     //var Nacl = window.nacl;
 
     var APP = window.APP = {};
-
     $(function () {
 
     var andThen = function () {
@@ -32,27 +32,17 @@ define([
         Cryptpad.addLoadingScreen();
 
         var Title;
-
-        var uploadMode = false;
-
         var $bar = $iframe.find('.toolbar-container');
 
         var secret;
-        var hexFileName;
         if (window.location.hash) {
             secret = Cryptpad.getSecrets();
             if (!secret.keys) { throw new Error("You need a hash"); } // TODO
-            hexFileName = Cryptpad.base64ToHex(secret.channel);
-        } else {
-            uploadMode = true;
         }
 
         Title = Cryptpad.createTitle({}, function(){}, Cryptpad);
 
         var displayed = ['useradmin', 'newpad', 'limit', 'upgrade'];
-        if (secret && hexFileName) {
-            displayed.push('fileshare');
-        }
 
         var configTb = {
             displayed: displayed,
@@ -62,13 +52,8 @@ define([
             $container: $bar,
         };
 
-        if (uploadMode) {
-            displayed.push('pageTitle');
-            configTb.pageTitle = Messages.upload_title;
-        }
-
-        var toolbar = APP.toolbar = Toolbar.create(configTb);
-        toolbar.$rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
+        APP.toolbar = Toolbar.create(configTb);
+        //toolbar.$rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
 
         // we're in upload mode
         Cryptpad.removeLoadingScreen();
