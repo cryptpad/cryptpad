@@ -265,7 +265,7 @@ define([
                     window.location.reload();
                 });
                 common.infiniteSpinnerDetected = true;
-            }, BAD_STATE_TIMEOUT)
+            }, BAD_STATE_TIMEOUT);
             realtime.onSettle(function () {
                 clearTimeout(to);
                 cb();
