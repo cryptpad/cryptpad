@@ -263,7 +263,7 @@ define(function () {
     out.main_organize = "Organízate";
     out.main_organize_p = "Con CryptPad Drive, mantén tu atención en lo más importante. Las carpetas te permiten organizar tus proyectos y tener una visión global de dónde van las cosas.";
     out.main_richText = "Editor de Texto Enriquecido";
-    out.main_richText_p = "Collabora en texto enriquecido con nuestro editor Zero Knowledge en tiempo real <a href=\"http://ckeditor.com\" target=\"_blank\">CkEditor</a>.";
+    out.main_richText_p = "Colabora en texto enriquecido con nuestro editor Zero Knowledge en tiempo real <a href=\"http://ckeditor.com\" target=\"_blank\">CkEditor</a>.";
     out.main_code = "Editor de código";
     out.main_code_p = "Edita código fuente para tus programas con nuestro editor Zero Knowledge en tiempo real <a href=\"https://www.codemirror.net\" target=\"_blank\">CodeMirror</a>.";
     out.main_slide = "Editor de presentación";
