@@ -13,6 +13,7 @@ define(function () {
     out.type.whiteboard = "Tableau Blanc";
     out.type.file = "Fichier";
     out.type.media = "Média";
+    out.type.todo = "Todo";
     out.type.contacts = "Contacts";
 
     out.button_newpad = 'Nouveau document texte';
@@ -468,6 +469,8 @@ define(function () {
     out.upload_mustLogin = "Vous devez vous connecter pour importer un fichier";
     out.download_button = "Déchiffrer et télécharger";
     out.download_mt_button = "Télécharger";
+
+    out.todo_title = "CryptTodo";
 
     // general warnings
     out.warn_notPinned = "Ce pad n'est stocké dans aucun CryptDrive. Il va expirer après 3 mois d'inactivité. <a href='/about.html#pinning'>En savoir plus...</a>";

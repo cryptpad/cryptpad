@@ -10,7 +10,7 @@ define([
     //'/common/media-tag.js',
     //'/bower_components/file-saver/FileSaver.min.js',
 
-    //'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less/cryptpad.less',
 ], function ($, Crypto, realtimeInput, Toolbar, Cryptpad /*, Visible, Notify*/) {
     var Messages = Cryptpad.Messages;
@@ -42,14 +42,13 @@ define([
 
         Title = Cryptpad.createTitle({}, function(){}, Cryptpad);
 
-        var displayed = ['useradmin', 'newpad', 'limit', 'upgrade'];
-
         var configTb = {
-            displayed: displayed,
+            displayed: ['useradmin', 'newpad', 'limit', 'upgrade', 'pageTitle'],
             ifrw: ifrw,
             common: Cryptpad,
             //hideDisplayName: true,
             $container: $bar,
+            pageTitle: Messages.todo_title
         };
 
         APP.toolbar = Toolbar.create(configTb);

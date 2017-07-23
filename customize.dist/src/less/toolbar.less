@@ -29,6 +29,7 @@
 .settingsColor { color: @toolbar-settings-bg; }
 .profileColor { color: @toolbar-settings-bg; }
 .defaultColor { color: @toolbar-default-bg; }
+.todoColor { color:@toolbar-todo-bg; }
 
 .toolbar-container {
     display: flex;
@@ -282,6 +283,11 @@ body {
     &.app-profile {
         @bgcolor: @toolbar-profile-bg;
         @color: @toolbar-profile-color;
+        .addToolbarColors(@color, @bgcolor);
+    }
+    &.app-todo {
+        @bgcolor: @toolbar-todo-bg;
+        @color: @toolbar-todo-color;
         .addToolbarColors(@color, @bgcolor);
     }
 

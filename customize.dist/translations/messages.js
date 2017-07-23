@@ -13,6 +13,7 @@ define(function () {
     out.type.whiteboard = 'Whiteboard';
     out.type.file = 'File';
     out.type.media = 'Media';
+    out.type.todo = "Todo";
     out.type.contacts = 'Contacts';
 
     out.button_newpad = 'New Rich Text pad';
@@ -475,6 +476,8 @@ define(function () {
     out.upload_mustLogin = "You must be logged in to upload files";
     out.download_button = "Decrypt & Download";
     out.download_mt_button = "Download";
+
+    out.todo_title = "CryptTodo";
 
     // general warnings
     out.warn_notPinned = "This pad is not in anyone's CryptDrive. It will expire after 3 months. <a href='/about.html#pinning'>Learn more...</a>";
