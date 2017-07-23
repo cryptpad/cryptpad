@@ -517,5 +517,13 @@ define([
         ];
     };
 
+    Pages['/todo/'] = Pages['/todo/index.html'] = function () {
+        return [
+            h('div#toolbar'),
+            h('div#container'),
+            loadingScreen()
+        ];
+    };
+
     return Pages;
 });
