@@ -48,7 +48,7 @@ define([
                     .text(new Date(APP.lm.proxy.data[el].ctime).toLocaleString())
                     .appendTo($taskDiv);
                 $('<button>', {
-                    'class': 'fa fa-times cp-task-remove'
+                    'class': 'fa fa-times cp-task-remove btn btn-danger'
                 }).appendTo($taskDiv).on('click', function() {
                     deleteTask(el);
                 });
@@ -71,7 +71,16 @@ define([
             display();
         };
 
-        $iframe.find('.cp-create-form button').on('click', addTask);
+        var $formSubmit = $iframe.find('.cp-create-form button').on('click', addTask);
+        var $input = $iframe.find('#newTodoName').on('keypress', function (e) {
+            switch (e.which) {
+                case 13:
+                    $formSubmit.click();
+                    break;
+                default:
+                    console.log(e.which);
+            }
+        });
 
         var editTask = function () {
 
