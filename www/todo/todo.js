@@ -28,7 +28,7 @@ define([
     var initialize = function (proxy) {
         // run migration
         if (typeof(proxy.data) !== 'object') { proxy.data = {}; }
-        if (Array.isArray(proxy.order)) { proxy.order = []; }
+        if (!Array.isArray(proxy.order)) { proxy.order = []; }
         if (typeof(proxy.type) !== 'string') { proxy.type = 'todo'; }
     };
 

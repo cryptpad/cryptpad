@@ -4,15 +4,14 @@ define([
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/common/toolbar2.js',
     '/common/cryptpad-common.js',
-    '/common/visible.js',
-    '/common/notify.js',
+    '/todo/todo.js',
 
     //'/common/media-tag.js',
     //'/bower_components/file-saver/FileSaver.min.js',
 
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less/cryptpad.less',
-], function ($, Crypto, Listmap, Toolbar, Cryptpad /*, Visible, Notify*/) {
+], function ($, Crypto, Listmap, Toolbar, Cryptpad, Todo) {
     var Messages = Cryptpad.Messages;
 
     var APP = window.APP = {};
@@ -24,16 +23,62 @@ define([
 
     var onReady = function () {
 
+        var todo = Todo.init(APP.lm.proxy, Cryptpad);
+
+        var deleteTask = function(id) {
+            todo.remove(id);
+
+            APP.display();
+        };
+
+        var display = APP.display = function () {
+            var $list = $iframe.find('#tasksList');
+
+            $list.empty();
+
+            APP.lm.proxy.order.forEach(function(el) {
+                var $taskDiv = $('<div>', {
+                    'class': 'cp-task'
+                }).appendTo($list);
+
+                $('<span>', {})
+                    .text(APP.lm.proxy.data[el].task)
+                    .appendTo($taskDiv);
+                $('<span>', {})
+                    .text(new Date(APP.lm.proxy.data[el].ctime).toLocaleString())
+                    .appendTo($taskDiv);
+                $('<button>', {
+                    'class': 'fa fa-times'
+                }).appendTo($taskDiv).on('click', function() {
+                    deleteTask(el);
+                });
+                    
+            });
+        };
+
         var addTask = function () {
-            
+            var $input = $iframe.find('#newTodoName');
+            var obj = {
+                "state": 0,
+                "task": $input.val(),
+                "ctime": +new Date(),
+                "mtime": +new Date()
+            };
+
+            todo.add(Cryptpad.createChannelId(), obj);
+
+            $input.empty();
+
+            display();
         };
 
-        var editTask = function () {};
+        $iframe.find('.create-form button').on('click', addTask);
 
-        var display = function () {
-            
+        var editTask = function () {
+
         };
 
+        display();
         Cryptpad.removeLoadingScreen();
     };
 
@@ -67,6 +112,8 @@ define([
 
         if(obj.todo) {
             hash = obj.todo;
+        } else {
+            obj.todo = hash;
         }
 
         var secret = Cryptpad.getSecrets('todo', hash);
