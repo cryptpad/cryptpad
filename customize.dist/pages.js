@@ -283,8 +283,8 @@ define([
                             ]),
                             h('div.bs-callout.cp-callout-more', [
                                 h('div', [
-                                    h('i.fa.fa-caret-down'),
-                                    "More"
+                                    "see more ",
+                                    h('i.fa.fa-caret-down')
                                 ]),
                        //         "TODO Make quick presentations with Markdown slides."
                             ]),

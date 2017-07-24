@@ -71,6 +71,7 @@ h4 {
 .bs-callout:hover {
     //color: white;
     transform: scale(1.05);
+    cursor: pointer;
 }
 .bs-callout:hover .fa {
     //width: 100%;
@@ -85,11 +86,20 @@ h4 {
     transition: width 0.1s;
 }
 
-.cp-callout-pad .fa { background-color: @colortheme_pad-bg; }
+.cp-callout-pad .fa { 
+	background-color: @colortheme_pad-bg;
+	color: #fff;
+}
 
-.cp-callout-code .fa { background-color: @colortheme_code-bg; }
+.cp-callout-code .fa { 
+	background-color: @colortheme_code-bg;
+	color: #fff;
+}
 
-.cp-callout-slide .fa { background-color: @colortheme_slide-bg; }
+.cp-callout-slide .fa { 
+	background-color: @colortheme_slide-bg;
+	color: #fff;
+}
 
 .cp-callout-recent { border-left-color: @colortheme_drive-bg; }
 
@@ -101,15 +111,17 @@ h4 {
     border-radius: 1em;
     margin-left: auto;
     margin-right: auto;
+    background: none;
+    width: 100%;
     div {
-        left: auto;
-        margin-right: auto;
-        margin-left: auto;
-        position: relative;
+        color: #fff;
         .fa {
             font-size: inherit;
             padding: 0;
             width: 1em;
+        }
+        .fa-caret-down {
+        	padding-left: 5px;
         }
     }
 }
