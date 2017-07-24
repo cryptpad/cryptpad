@@ -40,43 +40,76 @@
 }
 
 
+@callout-padding: 15px;
+
 .bs-callout {
-    padding: 15px;
+    display: flex;
+    align-items: stretch;
     margin: 25px 0;
-    border: 1px solid #eee;
-    border-left-width: 5px;
-    border-radius: 3px;
     background:rgba(255,255,255,0.6);
     color: black;
     transition: all .1s ease-in-out;
+    box-sizing: border-box;
+    height: 5em;
+    position: relative;
 }
-.bs-callout h4 {
-    margin-top: 0;
-    margin-bottom: 5px;
+h4 {
+    margin: 0;
 }
-.bs-callout p:last-child {
-    margin-bottom: 0;
+.bs-callout div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    position: absolute;
+    left: 5em;
 }
 .bs-callout+.bs-callout {
     margin-top: -5px;
 }
 
 .bs-callout:hover {
-    //background:rgba(255,255,255,0.8);
+    //color: white;
     transform: scale(1.05);
 }
+.bs-callout:hover .fa {
+    //width: 100%;
+}
 
-.cp-callout-pad { border-left-color: @colortheme_pad-bg; }
-//.cp-callout-pad h4 { color: @colortheme_pad-bg; }
+.bs-callout .fa {
+    display: flex;
+    align-items: center;
+    font-size: 2em;
+    padding-left: 0.57em;
+    width: 2em;
+    transition: width 0.1s;
+}
 
-.cp-callout-code { border-left-color: @colortheme_code-bg; }
-//.cp-callout-code h4 { color: @colortheme_code-bg; }
+.cp-callout-pad .fa { background-color: @colortheme_pad-bg; }
 
-.cp-callout-pad { border-left-color: @colortheme_pad-bg; }
-//.cp-callout-pad h4 { color: @colortheme_pad-bg; }
+.cp-callout-code .fa { background-color: @colortheme_code-bg; }
 
-.cp-callout-slide { border-left-color: @colortheme_slide-bg; }
-//.cp-callout-slide h4 { color: @colortheme_slide-bg; }
+.cp-callout-slide .fa { background-color: @colortheme_slide-bg; }
 
 .cp-callout-recent { border-left-color: @colortheme_drive-bg; }
-//.cp-callout-recent h4 { color: @colortheme_drive-bg; }
+
+.cp-callout-more {
+    width: auto;
+    display: inline-block;
+    align-content: center;
+    height: 2em;
+    border-radius: 1em;
+    margin-left: auto;
+    margin-right: auto;
+    div {
+        left: auto;
+        margin-right: auto;
+        margin-left: auto;
+        position: relative;
+        .fa {
+            font-size: inherit;
+            padding: 0;
+            width: 1em;
+        }
+    }
+}
