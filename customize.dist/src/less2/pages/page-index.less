@@ -7,7 +7,7 @@
 .infopages_main();
 .infopages_topbar();
 
-@background: rgba(0,0,0,0.1);
+@background: rgba(0,0,0,0.2);
 &#cp-main {
     color: #FFF;
     background: linear-gradient( @background, @background ), url('/customize/bg14.jpg');
@@ -17,7 +17,28 @@
     justify-content: space-around;
     align-items: center;
 }
-
+.cp-right {
+	.cp-register-btn {
+		background: #4190c6;
+		padding: 0.5em 1em 0.7em 1em;
+		border: 2px solid transparent;
+		text-transform: uppercase;
+		&:hover {
+			transform: scale(1.05);
+		}
+	}
+	.cp-login-btn {
+		background: #999;
+		color: #fff;
+		margin-left: 0.6em;
+		padding: 0.5em 1em 0.7em 1em;
+		border: 2px solid transparent;
+		text-transform: uppercase;
+		&:hover {
+			transform: scale(1.05);
+		}
+	}
+}
 .cp-title {
     display: flex;
     align-items: center;
@@ -38,7 +59,14 @@
         font-style: italic;
     }
 }
-
+.cp-topbar {
+	a {
+		display: inline-flex;
+		&:hover {
+		transform: scale(1.05);
+		}
+	}
+}
 
 @callout-padding: 15px;
 
@@ -73,6 +101,9 @@ h4 {
     transform: scale(1.05);
     cursor: pointer;
 }
+.cp-callout-more:hover {
+    	transform: none;
+    }
 .bs-callout:hover .fa {
     //width: 100%;
 }

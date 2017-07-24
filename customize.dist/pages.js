@@ -247,8 +247,8 @@ define([
                 h('a', { href: '/about.html'}, 'About')
             ),
             h('div.cp-right',
-                h('a', { href: '/register'}, 'Register'),
-                h('a', { href: '/login'}, 'Log in')
+                h('a.cp-register-btn', { href: '/register'}, 'Register'),
+                h('a.cp-login-btn', { href: '/login'}, 'Log in')
             )
         );
     }
