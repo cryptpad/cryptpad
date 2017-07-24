@@ -25,6 +25,16 @@ define([
 }
 */
 
+    var val = function (proxy, id, k, v) {
+        var el = proxy.data[id];
+        if (!el) {
+            throw new Error('expected an element');
+        }
+        if (typeof(v) === 'function') { el[k] = v(el[k]); }
+        else { el[k] = v; }
+        return el[k];
+    };
+
     var initialize = function (proxy) {
         // run migration
         if (typeof(proxy.data) !== 'object') { proxy.data = {}; }
@@ -56,6 +66,9 @@ define([
         var api = {};
         initialize(proxy);
 
+        api.val = function (id, k, v) {
+            return val(proxy, id, k, v);
+        };
         api.add = function (id, obj) {
             return add(proxy, id, obj);
         };
