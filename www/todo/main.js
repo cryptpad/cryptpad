@@ -21,21 +21,25 @@ define([
     var andThen = function () {
         var ifrw = $('#pad-iframe')[0].contentWindow;
         var $iframe = $('#pad-iframe').contents();
-        var $body = $iframe.find('body');
 
+        var addTask = function () {};
+
+        var editTask = function () {};
+
+        var display = function () {
+            
+        };
+    };
+
+    var onInit = function () {
+        Cryptpad.addLoadingScreen();
+
+        var $body = $iframe.find('body');
         $body.on('dragover', function (e) { e.preventDefault(); });
         $body.on('drop', function (e) { e.preventDefault(); });
 
-        Cryptpad.addLoadingScreen();
-
         var Title;
         var $bar = $iframe.find('.toolbar-container');
-
-        var secret;
-        if (window.location.hash) {
-            secret = Cryptpad.getSecrets();
-            if (!secret.keys) { throw new Error("You need a hash"); } // TODO
-        }
 
         Title = Cryptpad.createTitle({}, function(){}, Cryptpad);
 
@@ -53,6 +57,7 @@ define([
 
         // we're in upload mode
         Cryptpad.removeLoadingScreen();
+        andThen();
     };
 
     var createTodo = function() {
@@ -63,7 +68,7 @@ define([
             hash = obj.todo;
         }
 
-        Cryptpad.getSecrets('todo', hash);
+        var secret = Cryptpad.getSecrets('todo', hash);
 
         var listmapConfig = {
             data: {},
@@ -74,12 +79,12 @@ define([
             userName: 'todo',
             logLevel: 1,
         };
-        var lm = Listmap.create(listmapConfig);
+        var lm = APP.lm = Listmap.create(listmapConfig);
     }
 
     Cryptpad.ready(function () {
-        andThen();
-        //Cryptpad.reportAppUsage();
+        createTodo();
+        Cryptpad.reportAppUsage();
     });
 
     });
