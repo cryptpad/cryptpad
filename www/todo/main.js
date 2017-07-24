@@ -31,6 +31,16 @@ define([
             APP.display();
         };
 
+        // TODO make this actually work, and scroll to bottom...
+        var scrollTo = function (t) {
+            var $list = $iframe.find('#tasksList');
+
+            $list.animate({
+                scrollTop: t,
+            });
+        };
+        scrollTo = scrollTo;
+
         var display = APP.display = function () {
             var $list = $iframe.find('#tasksList');
 
@@ -52,8 +62,8 @@ define([
                 }).appendTo($taskDiv).on('click', function() {
                     deleteTask(el);
                 });
-                    
             });
+            //scrollTo('300px');
         };
 
         var addTask = function () {
@@ -72,7 +82,7 @@ define([
         };
 
         var $formSubmit = $iframe.find('.cp-create-form button').on('click', addTask);
-        var $input = $iframe.find('#newTodoName').on('keypress', function (e) {
+        $iframe.find('#newTodoName').on('keypress', function (e) {
             switch (e.which) {
                 case 13:
                     $formSubmit.click();
@@ -85,6 +95,7 @@ define([
         var editTask = function () {
 
         };
+        editTask = editTask;
 
         display();
         Cryptpad.removeLoadingScreen();
