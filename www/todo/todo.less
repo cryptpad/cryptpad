@@ -33,9 +33,16 @@ body {
     padding: 20px;
     align-items: center;
     background-color: lighten(@toolbar-todo-bg, 15%);
+    min-height: 0;
 }
 
 @spacing: 15px;
+
+#tasksList {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto,
+}
 
 .cp-create-form {
     margin: @spacing;
