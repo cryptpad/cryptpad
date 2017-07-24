@@ -32,4 +32,30 @@ body {
     flex-flow: column;
     padding: 20px;
     align-items: center;
+    background-color: lighten(@toolbar-todo-bg, 15%);
+}
+
+@spacing: 15px;
+
+.cp-create-form {
+    margin: @spacing;
+}
+
+.cp-task {
+    border: 1px solid black;
+    padding: @spacing;
+    display: flex;
+    align-items: center;
+    background-color: white;
+
+    .cp-task-text {
+        margin: @spacing;
+        flex: 1;
+    }
+    .cp-task-date {
+        margin: @spacing;
+    }
+    .cp-task-remove {
+        margin: @spacing;
+    }
 }

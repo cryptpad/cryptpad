@@ -41,14 +41,14 @@ define([
                     'class': 'cp-task'
                 }).appendTo($list);
 
-                $('<span>', {})
+                $('<span>', { 'class': 'cp-task-text' })
                     .text(APP.lm.proxy.data[el].task)
                     .appendTo($taskDiv);
-                $('<span>', {})
+                $('<span>', { 'class': 'cp-task-date' })
                     .text(new Date(APP.lm.proxy.data[el].ctime).toLocaleString())
                     .appendTo($taskDiv);
                 $('<button>', {
-                    'class': 'fa fa-times'
+                    'class': 'fa fa-times cp-task-remove'
                 }).appendTo($taskDiv).on('click', function() {
                     deleteTask(el);
                 });
@@ -67,12 +67,11 @@ define([
 
             todo.add(Cryptpad.createChannelId(), obj);
 
-            $input.empty();
-
+            $input.val("");
             display();
         };
 
-        $iframe.find('.create-form button').on('click', addTask);
+        $iframe.find('.cp-create-form button').on('click', addTask);
 
         var editTask = function () {
 
