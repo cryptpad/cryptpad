@@ -18,23 +18,28 @@ define([
     var APP = window.APP = {};
     $(function () {
 
-    var andThen = function () {
-        var ifrw = $('#pad-iframe')[0].contentWindow;
-        var $iframe = $('#pad-iframe').contents();
+    var $iframe = $('#pad-iframe').contents();
+    var $body = $iframe.find('body');
+    var ifrw = $('#pad-iframe')[0].contentWindow;
 
-        var addTask = function () {};
+    var onReady = function () {
+
+        var addTask = function () {
+            
+        };
 
         var editTask = function () {};
 
         var display = function () {
             
         };
+
+        Cryptpad.removeLoadingScreen();
     };
 
     var onInit = function () {
         Cryptpad.addLoadingScreen();
 
-        var $body = $iframe.find('body');
         $body.on('dragover', function (e) { e.preventDefault(); });
         $body.on('drop', function (e) { e.preventDefault(); });
 
@@ -54,10 +59,6 @@ define([
 
         APP.toolbar = Toolbar.create(configTb);
         APP.toolbar.$rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
-
-        // we're in upload mode
-        Cryptpad.removeLoadingScreen();
-        andThen();
     };
 
     var createTodo = function() {
@@ -79,8 +80,12 @@ define([
             userName: 'todo',
             logLevel: 1,
         };
+
         var lm = APP.lm = Listmap.create(listmapConfig);
-    }
+
+        lm.proxy.on('create', onInit)
+                .on('ready', onReady);
+    };
 
     Cryptpad.ready(function () {
         createTodo();
