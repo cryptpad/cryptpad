@@ -124,6 +124,10 @@ define([
 
         var addTask = function () {
             var $input = $iframe.find('#newTodoName');
+            // if the input is empty after removing leading and trailing spaces
+            // don't create a new entry
+            if (!$input.val().trim()) { return; }
+
             var obj = {
                 "state": 0,
                 "task": $input.val(),
