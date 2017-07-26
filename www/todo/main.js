@@ -34,6 +34,7 @@ define([
             });
             $els.fadeOut(null, function () {
                 $els.remove();
+                $('.tippy-popper').remove();
             });
             //APP.display();
         };
@@ -91,7 +92,8 @@ define([
                 .text(new Date(entry.ctime).toLocaleString())
                 .appendTo($taskDiv);*/
             $('<button>', {
-                'class': 'fa fa-times cp-task-remove btn btn-danger'
+                'class': 'fa fa-times cp-task-remove btn btn-danger',
+                title: Messages.todo_removeTaskTitle,
             }).appendTo($taskDiv).on('click', function() {
                 deleteTask(el);
             });
@@ -106,6 +108,7 @@ define([
         };
         var display = APP.display = function () {
             $list.empty();
+            $('.tippy-popper').remove();
             APP.lm.proxy.order.forEach(function (el) {
                 addTaskUI(el);
             });
