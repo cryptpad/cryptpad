@@ -65,11 +65,17 @@ define([
                     'class': 'cp-task'
                 }).appendTo($list);
 
-                makeCheckbox(el, function (state) {
+                var $box = makeCheckbox(el, function (state) {
                     display();
-                }).appendTo($taskDiv);
+                })
+                .appendTo($taskDiv);
 
                 var entry = APP.lm.proxy.data[el];
+
+                if (entry.state) {
+                    $taskDiv.addClass('cp-task-complete');
+                }
+
                 $('<span>', { 'class': 'cp-task-text' })
                     .text(entry.task)
                     .appendTo($taskDiv);
