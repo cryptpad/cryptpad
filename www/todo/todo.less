@@ -43,6 +43,7 @@ body {
     min-height: 0;
     overflow-y: auto;
     min-width: 40%;
+    max-width: 90%;
 }
 
 .cp-create-form {
@@ -71,6 +72,8 @@ body {
     .cp-task-text {
         margin: @spacing;
         flex: 1;
+        word-wrap: break-word;
+        min-width: 0;
     }
     .cp-task-date {
         margin: @spacing;
