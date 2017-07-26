@@ -20,6 +20,7 @@ define([
     var $iframe = $('#pad-iframe').contents();
     var $body = $iframe.find('body');
     var ifrw = $('#pad-iframe')[0].contentWindow;
+    var $list = $iframe.find('#tasksList');
 
     var onReady = function () {
 
@@ -28,7 +29,13 @@ define([
         var deleteTask = function(id) {
             todo.remove(id);
 
-            APP.display();
+            var $els = $list.find('.cp-task').filter(function (i, el) {
+                return $(el).data('id') === id;
+            });
+            $els.fadeOut(null, function () {
+                $els.remove();
+            });
+            //APP.display();
         };
 
         // TODO make this actually work, and scroll to bottom...
@@ -55,38 +62,48 @@ define([
             });
         };
 
-        var display = APP.display = function () {
-            var $list = $iframe.find('#tasksList');
+        var addTaskUI = function (el, animate) {
+            var $taskDiv = $('<div>', {
+                'class': 'cp-task'
+            }).appendTo($list);
+            $taskDiv.data('id', el);
 
+            var $box = makeCheckbox(el, function (state) {
+                display();
+            })
+            .appendTo($taskDiv);
+
+            var entry = APP.lm.proxy.data[el];
+
+            if (entry.state) {
+                $taskDiv.addClass('cp-task-complete');
+            }
+
+            $('<span>', { 'class': 'cp-task-text' })
+                .text(entry.task)
+                .appendTo($taskDiv);
+            $('<span>', { 'class': 'cp-task-date' })
+                .text(new Date(entry.ctime).toLocaleString())
+                .appendTo($taskDiv);
+            $('<button>', {
+                'class': 'fa fa-times cp-task-remove btn btn-danger'
+            }).appendTo($taskDiv).on('click', function() {
+                deleteTask(el);
+            });
+
+            if (animate) {
+                $taskDiv.hide();
+                window.setTimeout(function () {
+                    // ???
+                    $taskDiv.fadeIn();
+                }, 0);
+            }
+        };
+        var display = APP.display = function () {
             $list.empty();
 
-            APP.lm.proxy.order.forEach(function(el) {
-                var $taskDiv = $('<div>', {
-                    'class': 'cp-task'
-                }).appendTo($list);
-
-                var $box = makeCheckbox(el, function (state) {
-                    display();
-                })
-                .appendTo($taskDiv);
-
-                var entry = APP.lm.proxy.data[el];
-
-                if (entry.state) {
-                    $taskDiv.addClass('cp-task-complete');
-                }
-
-                $('<span>', { 'class': 'cp-task-text' })
-                    .text(entry.task)
-                    .appendTo($taskDiv);
-                $('<span>', { 'class': 'cp-task-date' })
-                    .text(new Date(entry.ctime).toLocaleString())
-                    .appendTo($taskDiv);
-                $('<button>', {
-                    'class': 'fa fa-times cp-task-remove btn btn-danger'
-                }).appendTo($taskDiv).on('click', function() {
-                    deleteTask(el);
-                });
+            APP.lm.proxy.order.forEach(function (el) {
+                addTaskUI(el);
             });
             //scrollTo('300px');
         };
@@ -100,10 +117,12 @@ define([
                 "mtime": +new Date()
             };
 
-            todo.add(Cryptpad.createChannelId(), obj);
+            var id = Cryptpad.createChannelId();
+            todo.add(id, obj);
 
             $input.val("");
-            display();
+            addTaskUI(id, true);
+            //display();
         };
 
         var $formSubmit = $iframe.find('.cp-create-form button').on('click', addTask);
