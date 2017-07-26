@@ -53,6 +53,20 @@ body {
     #newTodoName {
         flex: 1;
         margin-right: 15px;
+        border-radius: 0;
+        border: 0;
+        background-color: darken(@toolbar-todo-bg, 10%);
+        color: #fff;
+        padding: 5px 10px;
+    }
+
+    button {
+        border-radius: 0;
+        background-color: darken(@toolbar-todo-bg, 20%);
+        border:0;
+        &:hover {
+            background-color: darken(@toolbar-todo-bg, 25%);
+        }
     }
 }
 

@@ -7,9 +7,6 @@
 @description-color: #777;
 
 @button-width: 400px;
-@button-bg: #3066e5;
-@button-alt-bg: #fff;
-@button-red-bg: #e54e4e;
 
 
 .cp {
@@ -72,25 +69,10 @@
                     border-left: 0px;
                 }
             }
-            button.btn {
-                background-color: @button-bg;
-                border-color: darken(@button-bg, 10%);
-                color: white;
-                &:hover {
-                    background-color: darken(@button-bg, 10%);
-                }
-                &.btn-danger {
-                    background-color: @button-red-bg;
-                    border-color: darken(@button-red-bg, 10%);
-                    color: white;
-                    &:hover {
-                        background-color: darken(@button-red-bg, 10%);
-                    }
-                }
-            }
             &>div {
                 margin: 10px 0;
             }
+            .sidebarButton;
         }
     }
 }
