@@ -79,9 +79,10 @@ define([
                 $('<span>', { 'class': 'cp-task-text' })
                     .text(entry.task)
                     .appendTo($taskDiv);
+                    /*
                 $('<span>', { 'class': 'cp-task-date' })
-                    .text(new Date(entry.ctime).toLocaleString())
-                    .appendTo($taskDiv);
+                    .text(new Date(entry.ctime).toLocaleDateString())
+                    .appendTo($taskDiv);*/
                 $('<button>', {
                     'class': 'fa fa-times cp-task-remove btn btn-danger'
                 }).appendTo($taskDiv).on('click', function() {
