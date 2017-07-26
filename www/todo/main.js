@@ -41,6 +41,20 @@ define([
         };
         scrollTo = scrollTo;
 
+        var makeCheckbox = function (id, cb) {
+            var entry = APP.lm.proxy.data[id];
+            var checked = entry.state === 1? 'fa-check-square-o': 'fa-square-o';
+
+            return $('<span>', {
+                'class': 'cp-task-checkbox fa ' + checked,
+            }).on('click', function () {
+                entry.state = (entry.state + 1) % 2;
+                if (typeof(cb) === 'function') {
+                    cb(entry.state);
+                }
+            });
+        };
+
         var display = APP.display = function () {
             var $list = $iframe.find('#tasksList');
 
@@ -51,19 +65,11 @@ define([
                     'class': 'cp-task'
                 }).appendTo($list);
 
+                makeCheckbox(el, function (state) {
+                    display();
+                }).appendTo($taskDiv);
+
                 var entry = APP.lm.proxy.data[el];
-
-                var $check = $('<input>',  {
-                    type: 'checkbox',
-                })
-                .on('change', function (e) {
-                    var checked = $check[0].checked;
-                    entry.state = checked? 1: 0;
-                    entry.mtime = +new Date();
-                })
-                .appendTo($taskDiv);
-                $check[0].checked = entry.state? true: false;
-
                 $('<span>', { 'class': 'cp-task-text' })
                     .text(entry.task)
                     .appendTo($taskDiv);

@@ -47,6 +47,13 @@ body {
 
 .cp-create-form {
     margin: @spacing;
+    min-width: 40%;
+    display: flex;
+
+    #newTodoName {
+        flex: 1;
+        margin-right: 15px;
+    }
 }
 
 .cp-task {
@@ -65,5 +72,9 @@ body {
     }
     .cp-task-remove {
         margin: @spacing;
+    }
+    .cp-task-checkbox {
+        font-size: 45px;
+        width: 45px;
     }
 }
