@@ -43,7 +43,7 @@ define([
 
         var makeCheckbox = function (id, cb) {
             var entry = APP.lm.proxy.data[id];
-            var checked = entry.state === 1? 'fa-check-square-o': 'fa-square-o';
+            var checked = entry.state === 1? 'cp-task-checkbox-checked fa-check-square-o': 'cp-task-checkbox-unchecked fa-square-o';
 
             return $('<span>', {
                 'class': 'cp-task-checkbox fa ' + checked,
