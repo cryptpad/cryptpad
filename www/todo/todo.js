@@ -47,7 +47,7 @@ define([
         if (!Array.isArray(proxy.order)) {
             throw new Error('expected an array');
         }
-        proxy.order.push(id);
+        proxy.order.unshift(id);
         proxy.data[id] = obj;
     };
 

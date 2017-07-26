@@ -77,7 +77,12 @@ define([
         var addTaskUI = function (el, animate) {
             var $taskDiv = $('<div>', {
                 'class': 'cp-task'
-            }).appendTo($list);
+            });
+            if (animate) {
+                $taskDiv.prependTo($list);
+            } else {
+                $taskDiv.appendTo($list);
+            }
             $taskDiv.data('id', el);
 
             makeCheckbox(el, function (/*state*/) {
