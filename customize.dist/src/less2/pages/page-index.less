@@ -54,14 +54,7 @@
         font-style: italic;
     }
 }
-.cp-topbar {
-	a {
-		display: inline-flex;
-		&:hover {
-		transform: scale(1.05);
-		}
-	}
-}
+.cp-topbar { position: absolute; }
 
 @callout-padding: 15px;
 
@@ -75,6 +68,10 @@
     box-sizing: border-box;
     height: 5em;
     position: relative;
+    a {
+        color: black;
+        &:hover { text-decoration-line: none; }
+    }
 }
 h4 {
     margin: 0;
@@ -110,24 +107,17 @@ h4 {
     padding-left: 0.57em;
     width: 2em;
     transition: width 0.1s;
+    color: #fff;
 }
 
-.cp-callout-pad .fa { 
-	background-color: @colortheme_pad-bg;
-	color: #fff;
-}
+.cp-callout-pad .fa { background-color: @colortheme_pad-bg; }
+.cp-callout-code .fa { background-color: @colortheme_code-bg; }
+.cp-callout-slide .fa { background-color: @colortheme_slide-bg; }
+.cp-callout-poll .fa { background-color: @colortheme_poll-bg; }
+.cp-callout-whiteboard .fa { background-color: @colortheme_whiteboard-bg; }
+.cp-callout-recent .fa { background-color: @colortheme_drive-bg; }
 
-.cp-callout-code .fa { 
-	background-color: @colortheme_code-bg;
-	color: #fff;
-}
-
-.cp-callout-slide .fa { 
-	background-color: @colortheme_slide-bg;
-	color: #fff;
-}
-
-.cp-callout-recent { border-left-color: @colortheme_drive-bg; }
+.cp-hidden { display: none !important; }
 
 .cp-callout-more {
     width: auto;
@@ -137,17 +127,17 @@ h4 {
     border-radius: 1em;
     margin-left: auto;
     margin-right: auto;
+    margin-top: 0;
     background: none;
     width: 100%;
     div {
+        .infopages_link();
         color: #fff;
         .fa {
             font-size: inherit;
             padding: 0;
             width: 1em;
-        }
-        .fa-caret-down {
-        	padding-left: 5px;
+            padding-left: 5px;
         }
     }
 }

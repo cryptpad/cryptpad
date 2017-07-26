@@ -2,7 +2,8 @@ define([
     '/api/config',
     '/common/hyperscript.js',
     '/common/cryptpad-common.js',
-], function (Config, h, Cryptpad) {
+    'jquery'
+], function (Config, h, Cryptpad, $) {
     var Pages = {};
     var Msg = Cryptpad.Messages;
     var urlArgs = Config.requireConf.urlArgs;
@@ -254,10 +255,11 @@ define([
     }
 
     Pages['/'] = Pages['/index.html'] = function () {
+        var showingMore = false;
         return [
             h('div#cp-main.cp-page-index', [
                 infopageTopbar(),
-                h('div.container', [
+                h('div.container.cp-container', [
                     h('div.row', [
                         h('div.cp-title.col-6.col-xs-6', [
                             h('img', { src: '/customize/cryptpad-new-logo-colors-logoonly.png?' + urlArgs }),
@@ -266,32 +268,44 @@ define([
                         ]),
                         /*userForm(),*/
                         h('div.col-6.col-xs-6', [
-                            h('div.bs-callout.cp-callout-pad', [
-                                h('i.fa.fa-file-word-o'),
-                                h('div', [h('h4', 'Rich Text Pad')]),
-                   //             "TODO Collaborate in realtime on notes and ideas."
-                            ]),
-                            h('div.bs-callout.cp-callout-code', [
-                                h('i.fa.fa-file-code-o'),
-                                h('div', [h('h4', 'Markdown/Code Pad')]),
-                     //           "TODO Edit Markdown with realtime visual rendering."
-                            ]),
-                            h('div.bs-callout.cp-callout-slide', [
-                                h('i.fa.fa-file-powerpoint-o'),
-                                h('div', [h('h4', 'Markdown Presentation')]),
-                       //         "TODO Make quick presentations with Markdown slides."
-                            ]),
+                            [
+                                [ 'pad', '/pad/', 'Rich Text Pad', 'fa-file-word-o' ],
+                                [ 'code', '/code/', 'Markdown/Code Pad', 'fa-file-code-o' ],
+                                [ 'slide', '/slide/', 'Markdown Presentation', 'fa-file-powerpoint-o' ],
+                                [ 'poll.cp-more.cp-hidden', '/poll/', 'Poll or Schedule', 'fa-calendar' ],
+                                [ 'whiteboard.cp-more.cp-hidden', '/whiteboard/', 'Whiteboard', 'fa-paint-brush' ],
+                                [ 'recent.cp-more.cp-hidden', '/drive/', 'Recent Pads', 'fa-hdd-o' ]
+                            ].map(function (x) {
+                                return h('a', [
+                                    { href: x[1] },
+                                    h('div.bs-callout.cp-callout-' + x[0], [
+                                        h('i.fa.' + x[3]),
+                                        h('div', [ h('h4', x[2]) ])
+                                    ])
+                                ]);
+                            }),
                             h('div.bs-callout.cp-callout-more', [
-                                h('div', [
+                                h('div.cp-callout-more-lessmsg.cp-hidden', [
+                                    "see less ",
+                                    h('i.fa.fa-caret-up')
+                                ]), 
+                                h('div.cp-callout-more-moremsg', [
                                     "see more ",
                                     h('i.fa.fa-caret-down')
                                 ]),
-                       //         "TODO Make quick presentations with Markdown slides."
-                            ]),
-                            /*h('div.bs-callout.cp-callout-recent', [
-                                h('h4', 'TODO Your Recent Pads'),
-                         ///       "TODO See pads recently edited on this computer."
-                            ]),*/
+                                {
+                                    onclick: function () {
+                                        if (showingMore) {
+                                            $('.cp-more, .cp-callout-more-lessmsg').addClass('cp-hidden');
+                                            $('.cp-callout-more-moremsg').removeClass('cp-hidden');
+                                        } else {
+                                            $('.cp-more, .cp-callout-more-lessmsg').removeClass('cp-hidden');
+                                            $('.cp-callout-more-moremsg').addClass('cp-hidden');
+                                        }
+                                        showingMore = !showingMore;
+                                    }
+                                }
+                            ])
                         ])
                     ])
                 ]),

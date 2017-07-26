@@ -20,6 +20,16 @@
 	font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
 };
 
+.infopages_link () {
+    text-decoration: none;
+    color: #FFF;
+    cursor: pointer;
+    display: inline-flex;
+    &:hover {
+        transform: scale(1.05);
+    }
+}
+
 // Apply this to the top bar div
 .infopages_topbar () {
     .cp-topbar {
@@ -47,12 +57,9 @@
         -ms-user-select: none;
 
         a {
-            text-decoration: none;
             font-weight: 500;
             padding: 0.6em;
-            color: #FFF;
-
-            cursor: pointer;
+            .infopages_link()
         }
     }
 }
