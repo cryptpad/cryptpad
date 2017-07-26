@@ -51,11 +51,24 @@ define([
                     'class': 'cp-task'
                 }).appendTo($list);
 
+                var entry = APP.lm.proxy.data[el];
+
+                var $check = $('<input>',  {
+                    type: 'checkbox',
+                })
+                .on('change', function (e) {
+                    var checked = $check[0].checked;
+                    entry.state = checked? 1: 0;
+                    entry.mtime = +new Date();
+                })
+                .appendTo($taskDiv);
+                $check[0].checked = entry.state? true: false;
+
                 $('<span>', { 'class': 'cp-task-text' })
-                    .text(APP.lm.proxy.data[el].task)
+                    .text(entry.task)
                     .appendTo($taskDiv);
                 $('<span>', { 'class': 'cp-task-date' })
-                    .text(new Date(APP.lm.proxy.data[el].ctime).toLocaleString())
+                    .text(new Date(entry.ctime).toLocaleString())
                     .appendTo($taskDiv);
                 $('<button>', {
                     'class': 'fa fa-times cp-task-remove btn btn-danger'
