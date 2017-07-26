@@ -60,11 +60,12 @@ define([
             var title = entry.state === 1?
                 Messages.todo_markAsIncompleteTitle:
                 Messages.todo_markAsCompleteTitle;
+                title = title;
 
             removeTips();
             return $('<span>', {
                 'class': 'cp-task-checkbox fa ' + checked,
-                title: title,
+                //title: title,
             }).on('click', function () {
                 entry.state = (entry.state + 1) % 2;
                 if (typeof(cb) === 'function') {
@@ -110,6 +111,7 @@ define([
                     $taskDiv.fadeIn();
                 }, 0);
             }
+            removeTips();
         };
         var display = APP.display = function () {
             $list.empty();
