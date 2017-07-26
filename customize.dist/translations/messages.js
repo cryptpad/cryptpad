@@ -478,6 +478,10 @@ define(function () {
     out.download_mt_button = "Download";
 
     out.todo_title = "CryptTodo";
+    out.todo_newTodoNamePlaceholder = "Describe your task...";
+    out.todo_newTodoNameTitle = "Add this task to your todo list";
+    out.todo_markAsCompleteTitle = "Mark this task as complete";
+    out.todo_markAsIncompleteTitle = "Mark this task as incomplete";
 
     // general warnings
     out.warn_notPinned = "This pad is not in anyone's CryptDrive. It will expire after 3 months. <a href='/about.html#pinning'>Learn more...</a>";
