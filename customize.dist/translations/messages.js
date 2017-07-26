@@ -482,6 +482,7 @@ define(function () {
     out.todo_newTodoNameTitle = "Add this task to your todo list";
     out.todo_markAsCompleteTitle = "Mark this task as complete";
     out.todo_markAsIncompleteTitle = "Mark this task as incomplete";
+    out.todo_removeTaskTitle = "Remove this task from your todo list";
 
     // general warnings
     out.warn_notPinned = "This pad is not in anyone's CryptDrive. It will expire after 3 months. <a href='/about.html#pinning'>Learn more...</a>";
