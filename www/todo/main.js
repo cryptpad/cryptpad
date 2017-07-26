@@ -138,7 +138,7 @@ define([
                 default:
                     console.log(e.which);
             }
-        });
+        }).focus();
 
         var editTask = function () {
 
