@@ -22,6 +22,10 @@ define([
     var ifrw = $('#pad-iframe')[0].contentWindow;
     var $list = $iframe.find('#tasksList');
 
+    var removeTips = function () {
+        $('.tippy-popper').remove();
+    };
+
     var onReady = function () {
 
         var todo = Todo.init(APP.lm.proxy, Cryptpad);
@@ -34,7 +38,7 @@ define([
             });
             $els.fadeOut(null, function () {
                 $els.remove();
-                $('.tippy-popper').remove();
+                removeTips();
             });
             //APP.display();
         };
@@ -57,6 +61,7 @@ define([
                 Messages.todo_markAsIncompleteTitle:
                 Messages.todo_markAsCompleteTitle;
 
+            removeTips();
             return $('<span>', {
                 'class': 'cp-task-checkbox fa ' + checked,
                 title: title,
@@ -108,7 +113,7 @@ define([
         };
         var display = APP.display = function () {
             $list.empty();
-            $('.tippy-popper').remove();
+            removeTips();
             APP.lm.proxy.order.forEach(function (el) {
                 addTaskUI(el);
             });
