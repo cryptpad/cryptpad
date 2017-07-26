@@ -52,8 +52,13 @@ define([
             var entry = APP.lm.proxy.data[id];
             var checked = entry.state === 1? 'cp-task-checkbox-checked fa-check-square-o': 'cp-task-checkbox-unchecked fa-square-o';
 
+            var title = entry.state === 1?
+                Messages.todo_markAsIncompleteTitle:
+                Messages.todo_markAsCompleteTitle;
+
             return $('<span>', {
                 'class': 'cp-task-checkbox fa ' + checked,
+                //title: title,
             }).on('click', function () {
                 entry.state = (entry.state + 1) % 2;
                 if (typeof(cb) === 'function') {
@@ -82,9 +87,9 @@ define([
             $('<span>', { 'class': 'cp-task-text' })
                 .text(entry.task)
                 .appendTo($taskDiv);
-            $('<span>', { 'class': 'cp-task-date' })
+          /*$('<span>', { 'class': 'cp-task-date' })
                 .text(new Date(entry.ctime).toLocaleString())
-                .appendTo($taskDiv);
+                .appendTo($taskDiv);*/
             $('<button>', {
                 'class': 'fa fa-times cp-task-remove btn btn-danger'
             }).appendTo($taskDiv).on('click', function() {
@@ -101,7 +106,6 @@ define([
         };
         var display = APP.display = function () {
             $list.empty();
-
             APP.lm.proxy.order.forEach(function (el) {
                 addTaskUI(el);
             });
