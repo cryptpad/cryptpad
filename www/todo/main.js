@@ -52,8 +52,13 @@ define([
             var entry = APP.lm.proxy.data[id];
             var checked = entry.state === 1? 'cp-task-checkbox-checked fa-check-square-o': 'cp-task-checkbox-unchecked fa-square-o';
 
+            var title = entry.state === 1?
+                Messages.todo_markAsIncompleteTitle:
+                Messages.todo_markAsCompleteTitle;
+
             return $('<span>', {
                 'class': 'cp-task-checkbox fa ' + checked,
+                //title: title,
             }).on('click', function () {
                 entry.state = (entry.state + 1) % 2;
                 if (typeof(cb) === 'function') {
