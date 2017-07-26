@@ -59,7 +59,7 @@ define([
 
             return $('<span>', {
                 'class': 'cp-task-checkbox fa ' + checked,
-                //title: title,
+                title: title,
             }).on('click', function () {
                 entry.state = (entry.state + 1) % 2;
                 if (typeof(cb) === 'function') {
@@ -74,8 +74,8 @@ define([
             }).appendTo($list);
             $taskDiv.data('id', el);
 
-            var $box = makeCheckbox(el, function (state) {
-                display();
+            makeCheckbox(el, function (/*state*/) {
+                APP.display();
             })
             .appendTo($taskDiv);
 
