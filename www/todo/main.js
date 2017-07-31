@@ -23,7 +23,7 @@ define([
     var $list = $iframe.find('#tasksList');
 
     var removeTips = function () {
-        $('.tippy-popper').remove();
+        Cryptpad.clearTooltips();
     };
 
     var onReady = function () {
