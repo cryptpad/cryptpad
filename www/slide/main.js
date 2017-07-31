@@ -635,7 +635,9 @@ define([
                     toolbar.reconnecting(info.myId);
                     Cryptpad.findOKButton().click();
                 } else {
-                    Cryptpad.alert(Messages.common_connectionLost, undefined, true);
+                    if (!Slide.isPresentURL()) {
+                        Cryptpad.alert(Messages.common_connectionLost, undefined, true);
+                    }
                 }
             };
 
