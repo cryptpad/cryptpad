@@ -1,15 +1,10 @@
 node_modules/
 www/bower_components/
-www/code/codemirror*
-www/common/chainpad.js
-storage/kad.js
-www/common/otaml.js
+www/common/pdfjs/
 
 server.js
-NetFluxWebsocketSrv.js
-NetFluxWebsocketServer.js
-WebRTCSrv.js
 www/common/media-tag.js
 www/scratch
 
 www/common/toolbar.js
+www/common/hyperscript.js

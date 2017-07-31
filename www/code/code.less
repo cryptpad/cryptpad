@@ -1,5 +1,5 @@
-@import "../../customize.dist/src/less/variables.less";
-@import "../../customize.dist/src/less/mixins.less";
+@import "/customize/src/less/variables.less";
+@import "/customize/src/less/mixins.less";
 
 html, body{
     height: 100%;
@@ -30,9 +30,10 @@ body {
     resize: horizontal;
 }
 .CodeMirror.fullPage {
-    min-width: 100%;
+    //min-width: 100%;
     max-width: 100%;
     resize: none;
+    flex: 1;
 }
 .CodeMirror-focused .cm-matchhighlight {
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQI12NgYGBgkKzc8x9CMDAwAAAmhwSbidEoSQAAAABJRU5ErkJggg==);

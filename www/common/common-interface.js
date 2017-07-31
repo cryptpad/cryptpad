@@ -19,11 +19,11 @@ define([
     Alertify._$$alertify.delay = AppConfig.notificationTimeout || 5000;
 
     var findCancelButton = UI.findCancelButton = function () {
-        return $('button.cancel');
+        return $('button.cancel').last();
     };
 
     var findOKButton = UI.findOKButton = function () {
-        return $('button.ok');
+        return $('button.ok').last();
     };
 
     var listenForKeys = UI.listenForKeys = function (yes, no) {
@@ -74,14 +74,22 @@ define([
             findCancelButton().click();
         });
 
+        // Make sure we don't call both the "yes" and "no" handlers if we use "findOKButton().click()"
+        // in the callback
+        var isClicked = false;
+
         Alertify
             .defaultValue(def || '')
             .okBtn(opt.ok || Messages.okButton || 'OK')
             .cancelBtn(opt.cancel || Messages.cancelButton || 'Cancel')
             .prompt(msg, function (val, ev) {
+                if (isClicked) { return; }
+                isClicked = true;
                 cb(val, ev);
                 stopListening(keyHandler);
             }, function (ev) {
+                if (isClicked) { return; }
+                isClicked = true;
                 cb(null, ev);
                 stopListening(keyHandler);
             });
@@ -98,13 +106,21 @@ define([
             findCancelButton().click();
         });
 
+        // Make sure we don't call both the "yes" and "no" handlers if we use "findOKButton().click()"
+        // in the callback
+        var isClicked = false;
+
         Alertify
             .okBtn(opt.ok || Messages.okButton || 'OK')
             .cancelBtn(opt.cancel || Messages.cancelButton || 'Cancel')
             .confirm(msg, function () {
+                if (isClicked) { return; }
+                isClicked = true;
                 cb(true);
                 stopListening(keyHandler);
             }, function () {
+                if (isClicked) { return; }
+                isClicked = true;
                 cb(false);
                 stopListening(keyHandler);
             });
@@ -187,7 +203,7 @@ define([
             var $loadingTip = $('<div>', {'id': 'loadingTip'});
             $('<span>', {'class': 'tips'}).text(getRandomTip()).appendTo($loadingTip);
             $loadingTip.css({
-                'top': $('body').height()/2 + $container.height()/2 + 20 + 'px'
+                'bottom': $('body').height()/2 - $container.height()/2 + 20 + 'px'
             });
             $('body').append($loadingTip);
         }
@@ -245,6 +261,31 @@ define([
                 reader.readAsText(file, type);
             });
         };
+    };
+
+    var $fileIcon = $('<span>', {"class": "fa fa-file-text-o file icon"});
+    var $fileAppIcon = $('<span>', {"class": "fa fa-file-text-o file icon fileColor"});
+    var $padIcon = $('<span>', {"class": "fa fa-file-word-o file icon padColor"});
+    var $codeIcon = $('<span>', {"class": "fa fa-file-code-o file icon codeColor"});
+    var $slideIcon = $('<span>', {"class": "fa fa-file-powerpoint-o file icon slideColor"});
+    var $pollIcon = $('<span>', {"class": "fa fa-calendar file icon pollColor"});
+    var $whiteboardIcon = $('<span>', {"class": "fa fa-paint-brush whiteboardColor"});
+    var $contactsIcon = $('<span>', {"class": "fa fa-users friendsColor"});
+    UI.getIcon = function (type) {
+        var $icon;
+
+        switch(type) {
+            case 'pad': $icon = $padIcon.clone(); break;
+            case 'file': $icon = $fileAppIcon.clone(); break;
+            case 'code': $icon = $codeIcon.clone(); break;
+            case 'slide': $icon = $slideIcon.clone(); break;
+            case 'poll': $icon = $pollIcon.clone(); break;
+            case 'whiteboard': $icon = $whiteboardIcon.clone(); break;
+            case 'contacts': $icon = $contactsIcon.clone(); break;
+            default: $icon = $fileIcon.clone();
+        }
+
+        return $icon;
     };
 
     return UI;

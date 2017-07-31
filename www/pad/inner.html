@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
     <script src="/bower_components/jquery/dist/jquery.min.js"></script>
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <script async data-bootload="/pad/inner.js" data-main="/common/boot.js?ver=1.0" src="/bower_components/requirejs/require.js?ver=2.1.15"></script>
     <script src="/bower_components/ckeditor/ckeditor.js"></script>
     <style>
     html, body {
@@ -12,20 +13,28 @@
     }
     #cke_1_top {
         overflow: visible;
-        padding: 0 6px;
+        padding: 0px;
+        display: flex;
     }
     #cke_1_toolbox {
         display: inline-block;
         width: 100%;
+        background-color: #c1e7ff;
+    }
+    #cke_1_toolbox .cke_toolbar {
+        height: 28px;
+        padding: 2px 0;
     }
     #cke_1_top .cryptpad-toolbar {
-        margin-bottom: 1px;
-        padding: 0px;
-        display: inline-block;
+        padding: 0;
+        display: block;
+    }
+    .cke_wysiwyg_frame {
+        min-width: 60%;
     }
     </style>
 </head>
-<body>
+<body class="app-pad">
     <textarea style="display:none" id="editor1" name="editor1"></textarea>
 </body>
 </html>

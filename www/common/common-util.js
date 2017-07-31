@@ -135,8 +135,34 @@ define([], function () {
         return g;
     };
 
+    /*  takes a function (f) and a time (t) in ms. returns a function wrapper
+        which prevents the internal function from being called more than once
+        every t ms. if the function is prevented, returns time til next valid
+        execution, else null.
+    */
+    Util.notAgainForAnother = function (f, t) {
+        if (typeof(f) !== 'function' || typeof(t) !== 'number') {
+            throw new Error("invalid inputs");
+        }
+        var last = null;
+        return function () {
+            var now = +new Date();
+            if (last && now <= last + t) { return t - (now - last); }
+            last = now;
+            f();
+            return null;
+        };
+    };
+
     Util.createRandomInteger = function () {
         return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+    };
+
+    Util.getAppType = function () {
+        var parts = window.location.pathname.split('/')
+            .filter(function (x) { return x; });
+        if (!parts[0]) { return ''; }
+        return parts[0];
     };
 
     return Util;

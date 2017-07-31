@@ -1,31 +1,30 @@
-@import '../../customize.dist/src/less/variables.less';
-
-@border: 1px solid #555;
+@import '/customize/src/less/variables.less';
+@import '/customize/src/less/mixins.less';
+@import '/customize/src/less/sidebar-layout.less';
 
 .cp {
-    input[type="text"] {
-        padding-left: 10px;
-    }
-    #mainBlock {
-        z-index: 1;
-        width: 1000px;
-        max-width: 90%;
-        margin: auto;
-
-        #container {
-            .infoBlock {
-                padding: 15px;
-                border: @border;
-                background: @dark-base;
-                .label {
-                    font-weight: bold;
-                    text-decoration: underline;
+    #container {
+        #rightSide {
+            .userFeedback {
+                input {
+                    vertical-align: middle;
                     margin-right: 5px;
                 }
             }
-            .displayName {
-                input, button {
-                    vertical-align: middle;
+            .languageSelector {
+                button.btn {
+                    width: @button-width;
+                    background-color: @button-alt-bg;
+                    border-color: #adadad;
+                    color: black;
+                    &:hover {
+                        background-color: darken(@button-alt-bg, 15%);
+                    }
+                }
+            }
+            .infoBlock {
+                [type="text"] {
+                    width: @button-width;
                 }
             }
             .backupDrive {
@@ -35,9 +34,6 @@
                     }
                     margin-right: 5px;
                 }
-            }
-            &>div {
-                margin: 10px 0;
             }
         }
     }

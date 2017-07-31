@@ -13,7 +13,10 @@ define([
     '/common/cryptget.js',
     '/pad/links.js',
     '/bower_components/file-saver/FileSaver.min.js',
-    '/bower_components/diff-dom/diffDOM.js'
+    '/bower_components/diff-dom/diffDOM.js',
+
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/customize/src/less/cryptpad.less',
 ], function ($, Crypto, realtimeInput, Hyperjson,
     Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad, Cryptget, Links) {
     var saveAs = window.saveAs;
@@ -89,6 +92,7 @@ define([
     };
 
     var andThen = function (Ckeditor) {
+        var $iframe = $('#pad-iframe').contents();
         var secret = Cryptpad.getSecrets();
         var readOnly = secret.keys && !secret.keys.editKeyStr;
         if (!secret.keys) {
@@ -103,6 +107,11 @@ define([
         editor.on('instanceReady', function () {
             var $bar = $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox');
 
+            var $html = $bar.closest('html');
+            var $faLink = $html.find('head link[href*="/bower_components/components-font-awesome/css/font-awesome.min.css"]');
+            if ($faLink.length) {
+                $html.find('iframe').contents().find('head').append($faLink.clone());
+            }
             var isHistoryMode = false;
 
             if (readOnly) {
@@ -306,7 +315,8 @@ define([
                 hjson[3] = {
                     metadata: {
                         users: UserList.userData,
-                        defaultTitle: Title.defaultTitle
+                        defaultTitle: Title.defaultTitle,
+                        type: 'pad'
                     }
                 };
                 if (!initializing) {
@@ -450,7 +460,7 @@ define([
                 var titleCfg = { getHeadingText: getHeadingText };
                 Title = Cryptpad.createTitle(titleCfg, realtimeOptions.onLocal, Cryptpad);
 
-                Metadata = Cryptpad.createMetadata(UserList, Title);
+                Metadata = Cryptpad.createMetadata(UserList, Title, null, Cryptpad);
 
                 var configTb = {
                     displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit', 'upgrade'],
@@ -465,13 +475,25 @@ define([
                     ifrw: ifrw,
                     realtime: info.realtime,
                     network: info.network,
-                    $container: $bar
+                    $container: $bar,
+                    $contentContainer: $iframe.find('#cke_1_contents'),
                 };
                 toolbar = info.realtime.toolbar = Toolbar.create(configTb);
+
+                var src = 'less!/customize/src/less/toolbar.less';
+                require([
+                    src
+                ], function () {
+                    var $html = $bar.closest('html');
+                    $html
+                        .find('head style[data-original-src="' + src.replace(/less!/, '') + '"]')
+                        .appendTo($html.find('head'));
+                });
 
                 Title.setToolbar(toolbar);
 
                 var $rightside = toolbar.$rightside;
+                var $drawer = toolbar.$drawer;
 
                 var editHash;
 
@@ -479,7 +501,7 @@ define([
                     editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
                 }
 
-                var $existingButton = $bar.find('#cke_1_toolbar_collapser').hide();
+                $bar.find('#cke_1_toolbar_collapser').hide();
                 if (!readOnly) {
                     // Expand / collapse the toolbar
                     var $collapse = Cryptpad.createButton(null, true);
@@ -498,7 +520,9 @@ define([
                     };
                     updateIcon();
                     $collapse.click(function () {
-                        $existingButton.click();
+                        $(window).trigger('resize');
+                        $iframe.find('.cke_toolbox_main').toggle();
+                        $(window).trigger('cryptpad-ck-toolbar');
                         updateIcon();
                     });
                     $rightside.append($collapse);
@@ -513,7 +537,7 @@ define([
                     $toolbar: $bar
                 };
                 var $hist = Cryptpad.createButton('history', true, {histConfig: histConfig});
-                $rightside.append($hist);
+                $drawer.append($hist);
 
                 /* save as template */
                 if (!Cryptpad.isTemplate(window.location.href)) {
@@ -528,12 +552,12 @@ define([
 
                 /* add an export button */
                 var $export = Cryptpad.createButton('export', true, {}, exportFile);
-                $rightside.append($export);
+                $drawer.append($export);
 
                 if (!readOnly) {
                     /* add an import button */
                     var $import = Cryptpad.createButton('import', true, {}, importFile);
-                    $rightside.append($import);
+                    $drawer.append($import);
                 }
 
                 /* add a forget button */
@@ -551,15 +575,11 @@ define([
             // this should only ever get called once, when the chain syncs
             realtimeOptions.onReady = function (info) {
                 if (!module.isMaximized) {
-                    editor.execCommand('maximize');
                     module.isMaximized = true;
-                    // We have to call it 3 times in Safari
-                    // in order to have the editor fully maximized -_-
-                    if ((''+window.navigator.vendor).indexOf('Apple') !== -1) {
-                        editor.execCommand('maximize');
-                        editor.execCommand('maximize');
-                    }
+                    $iframe.find('iframe.cke_wysiwyg_frame').css('width', '');
+                    $iframe.find('iframe.cke_wysiwyg_frame').css('height', '');
                 }
+                $iframe.find('body').addClass('app-pad');
 
                 if (module.realtime !== info.realtime) {
                     module.patchText = TextPatcher.create({
@@ -706,12 +726,11 @@ define([
         if (Ckeditor) {
             // mobile configuration
             Ckeditor.config.toolbarCanCollapse = true;
-            Ckeditor.config.height = '72vh';
             if (screen.height < 800) {
-              Ckeditor.config.toolbarStartupExpanded = false;
-              $('meta[name=viewport]').attr('content', 'width=device-width, initial-scale=1.0, user-scalable=no');
+                Ckeditor.config.toolbarStartupExpanded = false;
+                $('meta[name=viewport]').attr('content', 'width=device-width, initial-scale=1.0, user-scalable=no');
             } else {
-              $('meta[name=viewport]').attr('content', 'width=device-width, initial-scale=1.0, user-scalable=yes');
+                $('meta[name=viewport]').attr('content', 'width=device-width, initial-scale=1.0, user-scalable=yes');
             }
             second(Ckeditor);
         } else {

@@ -8,7 +8,8 @@ CKEDITOR.editorConfig = function( config ) {
     config.removeButtons= 'Source,Maximize';
     // magicline plugin inserts html crap into the document which is not part of the
     // document itself and causes problems when it's sent across the wire and reflected back
-    config.removePlugins= 'resize';
+    config.removePlugins= 'resize,elementspath';
+    config.resize_enabled= false; //bottom-bar
     config.extraPlugins= 'autolink,colorbutton,colordialog,font,indentblock,justify';
     config.toolbarGroups= [
         // {"name":"clipboard","groups":["clipboard","undo"]},
@@ -50,7 +51,7 @@ CKEDITOR.editorConfig = function( config ) {
 
     //skin: 'moono-cryptpad,/pad/themes/moono-cryptpad/'
     //skin: 'flat,/pad/themes/flat/'
-    //skin: 'moono-lisa,/pad/themes/moono-lisa/'
+    //config.skin= 'moono-lisa,/pad/themes/moono-lisa/'
     //skin: 'moono-dark,/pad/themes/moono-dark/'
     //skin: 'office2013,/pad/themes/office2013/'
 };

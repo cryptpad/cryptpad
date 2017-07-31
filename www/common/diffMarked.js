@@ -19,6 +19,8 @@ define([
         return Marked(md);
     };
 
+    var mediaMap = {};
+
     // Tasks list
     var checkedTaskItemPtn = /^\s*\[x\]\s*/;
     var uncheckedTaskItemPtn = /^\s*\[ \]\s*/;
@@ -40,7 +42,14 @@ define([
         if (href.slice(0,6) === '/file/') {
             var parsed = Cryptpad.parsePadUrl(href);
             var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
-            var mt = '<media-tag src="/blob/' + hexFileName.slice(0,2) + '/' + hexFileName + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '"></media-tag>';
+            var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
+            var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '">';
+            if (mediaMap[src]) {
+                mediaMap[src].forEach(function (n) {
+                    mt += n.outerHTML;
+                });
+            }
+            mt += '</media-tag>';
             return mt;
         }
         var out = '<img src="' + href + '" alt="' + text + '"';
@@ -51,19 +60,20 @@ define([
         return out;
     };
 
+    var MutationObserver = window.MutationObserver;
     var forbiddenTags = [
         'SCRIPT',
         'IFRAME',
         'OBJECT',
         'APPLET',
-        'VIDEO',
+        //'VIDEO',
         'AUDIO',
     ];
     var unsafeTag = function (info) {
-        if (info.node && $(info.node).parents('media-tag').length) {
+        /*if (info.node && $(info.node).parents('media-tag').length) {
             // Do not remove elements inside a media-tag
             return true;
-        }
+        }*/
         if (['addAttribute', 'modifyAttribute'].indexOf(info.diff.action) !== -1) {
             if (/^on/.test(info.diff.name)) {
                 console.log("Rejecting forbidden element attribute with name", info.diff.name);
@@ -133,7 +143,17 @@ define([
     DiffMd.apply = function (newHtml, $content) {
         var id = $content.attr('id');
         if (!id) { throw new Error("The element must have a valid id"); }
-        var $div = $('<div>', {id: id}).append(newHtml);
+        var pattern = /(<media-tag src="([^"]*)" data-crypto-key="([^"]*)">)<\/media-tag>/g;
+        var newHtmlFixed = newHtml.replace(pattern, function (all, tag, src) {
+            var mt = tag;
+            if (mediaMap[src]) {
+                mediaMap[src].forEach(function (n) {
+                    mt += n.outerHTML;
+                });
+            }
+            return mt + '</media-tag>';
+        });
+        var $div = $('<div>', {id: id}).append(newHtmlFixed);
         var Dom = domFromHTML($('<div>').append($div).html());
         var oldDom = domFromHTML($content[0].outerHTML);
         var patch = makeDiff(oldDom, Dom, id);
@@ -144,14 +164,24 @@ define([
             var $mts = $content.find('media-tag:not(:has(*))');
             $mts.each(function (i, el) {
                 MediaTag(el);
+                console.log(el.outerHTML);
+                var observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.type === 'childList') {
+                            //console.log(el.outerHTML);
+                            var list_values = [].slice.call(el.children);
+                            mediaMap[el.getAttribute('src')] = list_values;
+                        }
+                    });
+                });
+                observer.observe(el, {
+                    attributes: false,
+                    childList: true,
+                    characterData: false
+                });
             });
         }
     };
-
-    $(window.document).on('decryption', function (e) {
-        var decrypted = e.originalEvent;
-        if (decrypted.callback) { decrypted.callback(); }
-    });
 
     return DiffMd;
 });

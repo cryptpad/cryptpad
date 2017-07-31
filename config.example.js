@@ -25,7 +25,7 @@ module.exports = {
         "default-src 'none'",
         "style-src 'unsafe-inline' 'self'",
         "script-src 'self'",
-        "font-src 'self'",
+        "font-src 'self' data:",
 
         /*  child-src is used to restrict iframes to a set of allowed domains.
          *  connect-src is used to restrict what domains can connect to the websocket.
@@ -67,7 +67,7 @@ module.exports = {
          "connect-src 'self' ws: wss:",
 
         // (insecure remote) images are included by users of the wysiwyg who embed photos in their pads
-        "img-src *",
+        "img-src * blob:",
     ].join('; '),
 
     httpPort: 3000,
@@ -276,6 +276,11 @@ module.exports = {
      *  and ignore feedback with `false` or by commenting the attribute
      */
     //logFeedback: true,
+
+    /*  If you wish to see which remote procedure calls clients request,
+     *  set this to true
+     */
+    //logRPC: true,
 
     /* it is recommended that you serve CryptPad over https
      * the filepaths below are used to configure your certificates

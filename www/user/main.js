@@ -1,6 +1,7 @@
 define([
     'jquery',
     '/common/cryptpad-common.js',
+    'css!/user/main.css',
 ], function ($, Cryptpad) {
 
     var APP = window.APP = {

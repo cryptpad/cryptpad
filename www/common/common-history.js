@@ -44,7 +44,6 @@ define([
             History.readOnly = 2;
         }
         else if (!secret.keys.validateKey) {
-            secret.keys.validateKey = true;
             History.readOnly = 0;
         }
 
@@ -70,6 +69,10 @@ define([
                 return;
             }
             if (parsed[0] !== 'FULL_HISTORY') { return; }
+            if (parsed[1] && parsed[1].validateKey) { // First message
+                secret.keys.validateKey = parsed[1].validateKey;
+                return;
+            }
             msg = parsed[1][4];
             if (msg) {
                 msg = msg.replace(/^cp\|/, '');
@@ -129,6 +132,13 @@ define([
         var $right = $toolbar.find('.cryptpad-toolbar-rightside');
         var $cke = $toolbar.find('.cke_toolbox_main');
 
+        $hist.html('').show();
+        $left.hide();
+        $right.hide();
+        $cke.hide();
+
+        common.spinner($hist).get().show();
+
         var onUpdate;
 
         var update = function () {
@@ -162,10 +172,7 @@ define([
 
         // Create the history toolbar
         var display = function () {
-            $hist.html('').show();
-            $left.hide();
-            $right.hide();
-            $cke.hide();
+            $hist.html('');
             var $prev =$('<button>', {
                 'class': 'previous fa fa-step-backward buttonPrimary',
                 title: Messages.history_prev
@@ -191,7 +198,7 @@ define([
             var $close = $('<button>', {
                 'class':'closeHistory',
                 title: Messages.history_closeTitle
-            }).text(Messages.history_close).appendTo($nav);
+            }).text(Messages.history_closeTitle).appendTo($nav);
             var $rev = $('<button>', {
                 'class':'revertHistory buttonSuccess',
                 title: Messages.history_restoreTitle
@@ -222,7 +229,7 @@ define([
                 if (e.which === 33) { p(); return render(getNext(10)); } // PageUp
                 if (e.which === 34) { p(); return render(getPrevious(10)); } // PageUp
                 if (e.which === 27) { p(); $close.click(); }
-            }).focus();
+            }).keyup(function (e) { e.stopPropagation(); }).focus();
             $cur.on('change', function () {
                 render( get($cur.val() - 1) );
             });

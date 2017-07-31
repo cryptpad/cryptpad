@@ -114,14 +114,9 @@ define([
                             window.open($link.attr('href'), '_blank');
                         });
 
-                    // TODO add button to table which copies link to clipboard?
-                    //APP.toolbar.addElement(['fileshare'], {});
-
                     var title = metadata.name;
 
-                    common.renamePad(title || "", href, function (err) {
-                        if (err) { return void console.error(err); } // TODO
-                        console.log(title);
+                    var onComplete = function () {
                         common.log(Messages._getKey('upload_success', [title]));
                         common.prepareFeedback('upload')();
 
@@ -132,6 +127,13 @@ define([
 
                         queue.inProgress = false;
                         queue.next();
+                    };
+
+                    if (config.noStore) { return void onComplete(); }
+
+                    common.renamePad(title || "", href, function (err) {
+                        if (err) { return void console.error(err); } // TODO
+                        onComplete();
                     });
                     //Title.updateTitle(title || "", href);
                     //APP.toolbar.title.show();
@@ -240,6 +242,10 @@ define([
         };
 
         var onFileDrop = File.onFileDrop = function (file, e) {
+            if (!common.isLoggedIn()) {
+                return common.alert(common.Messages.upload_mustLogin);
+            }
+
             Array.prototype.slice.call(file).forEach(function (d) {
                 handleFile(d, e);
             });
@@ -271,6 +277,7 @@ define([
             })
             .on('drop', function (e) {
                 e.stopPropagation();
+
                 var dropped = e.originalEvent.dataTransfer.files;
                 counter = 0;
                 $hoverArea.removeClass('hovering');

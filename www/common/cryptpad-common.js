@@ -10,14 +10,22 @@ define([
     '/common/common-userlist.js',
     '/common/common-title.js',
     '/common/common-metadata.js',
+    '/common/common-messaging.js',
     '/common/common-codemirror.js',
     '/common/common-file.js',
+    '/file/file-crypto.js',
 
     '/common/clipboard.js',
     '/common/pinpad.js',
-    '/customize/application_config.js'
+    '/customize/application_config.js',
+    '/common/media-tag.js',
 ], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Metadata,
-            CodeMirror, Files, Clipboard, Pinpad, AppConfig) {
+            Messaging, CodeMirror, Files, FileCrypto, Clipboard, Pinpad, AppConfig, MediaTag) {
+
+    // Configure MediaTags to use our local viewer
+    if (MediaTag && MediaTag.PdfPlugin) {
+        MediaTag.PdfPlugin.viewer = '/common/pdfjs/web/viewer.html';
+    }
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -32,9 +40,8 @@ define([
         Clipboard: Clipboard,
         donateURL: 'https://accounts.cryptpad.fr/#/donate?on=' + origin,
         upgradeURL: 'https://accounts.cryptpad.fr/#/?on=' + origin,
-        account: {
-            usage: 0,
-        },
+        account: {},
+        MediaTag: MediaTag,
     };
 
     // constants
@@ -50,6 +57,7 @@ define([
 
     var store;
     var rpc;
+    var anon_rpc;
 
     // import UI elements
     common.findCancelButton = UI.findCancelButton;
@@ -67,6 +75,7 @@ define([
     common.errorLoadingScreen = UI.errorLoadingScreen;
     common.notify = UI.notify;
     common.unnotify = UI.unnotify;
+    common.getIcon = UI.getIcon;
 
     // import common utilities for export
     common.find = Util.find;
@@ -76,13 +85,15 @@ define([
     var deduplicateString = common.deduplicateString = Util.deduplicateString;
     common.uint8ArrayToHex = Util.uint8ArrayToHex;
     common.replaceHash = Util.replaceHash;
-    var getHash = common.getHash = Util.getHash;
+    common.getHash = Util.getHash;
     common.fixFileName = Util.fixFileName;
     common.bytesToMegabytes = Util.bytesToMegabytes;
     common.bytesToKilobytes = Util.bytesToKilobytes;
     common.fetch = Util.fetch;
     common.throttle = Util.throttle;
     common.createRandomInteger = Util.createRandomInteger;
+    common.getAppType = Util.getAppType;
+    common.notAgainForAnother = Util.notAgainForAnother;
 
     // import hash utilities for export
     var createRandomHash = common.createRandomHash = Hash.createRandomHash;
@@ -103,6 +114,17 @@ define([
     common.findWeaker = Hash.findWeaker;
     common.findStronger = Hash.findStronger;
     common.serializeHash = Hash.serializeHash;
+    common.createInviteUrl = Hash.createInviteUrl;
+
+    // Messaging
+    common.initMessaging = Messaging.init;
+    common.addDirectMessageHandler = Messaging.addDirectMessageHandler;
+    common.inviteFromUserlist = Messaging.inviteFromUserlist;
+    common.createOwnedChannel = Messaging.createOwnedChannel;
+    common.getFriendList = Messaging.getFriendList;
+    common.getFriendChannelsList = Messaging.getFriendChannelsList;
+    common.getFriendListUI = Messaging.getFriendListUI;
+    common.createData = Messaging.createData;
 
     // Userlist
     common.createUserList = UserList.create;
@@ -144,7 +166,34 @@ define([
         }
         return;
     };
+    common.getUserlist = function () {
+        if (store) {
+            if (store.getProxy() && store.getProxy().info) {
+                return store.getProxy().info.userList;
+            }
+        }
+        return;
+    };
+    common.getProfileUrl = function () {
+        if (store && store.getProfile()) {
+            return store.getProfile().view;
+        }
+    };
+    common.getAvatarUrl = function () {
+        if (store && store.getProfile()) {
+            return store.getProfile().avatar;
+        }
+    };
+    common.getDisplayName = function () {
+        if (getProxy()) {
+            return getProxy()[common.displayNameKey] || '';
+        }
+        return '';
+    };
 
+    var randomToken = function () {
+        return Math.random().toString(16).replace(/0./, '');
+    };
     var feedback = common.feedback = function (action, force) {
         if (force !== true) {
             if (!action) { return; }
@@ -153,7 +202,7 @@ define([
             } catch (e) { return void console.error(e); }
         }
 
-        var href = '/common/feedback.html?' + action + '=' + (+new Date());
+        var href = '/common/feedback.html?' + action + '=' + randomToken();
         $.ajax({
             type: "HEAD",
             url: href,
@@ -163,7 +212,20 @@ define([
     common.reportAppUsage = function () {
         var pattern = window.location.pathname.split('/')
             .filter(function (x) { return x; }).join('.');
-        feedback(pattern);
+        if (/^#\/1\/view\//.test(window.location.hash)) {
+            feedback(pattern + '_VIEW');
+        } else {
+            feedback(pattern);
+        }
+    };
+
+    common.reportScreenDimensions = function () {
+        var h = window.innerHeight;
+        var w = window.innerWidth;
+        feedback('DIMENSIONS:' + h + 'x' + w);
+    };
+    common.reportLanguage = function () {
+        feedback('LANG_' + Messages._languageUsed);
     };
 
     common.getUid = function () {
@@ -179,13 +241,29 @@ define([
         return;
     };
 
+    common.infiniteSpinnerDetected = false;
     var whenRealtimeSyncs = common.whenRealtimeSyncs = function (realtime, cb) {
         realtime.sync();
+
         window.setTimeout(function () {
             if (realtime.getAuthDoc() === realtime.getUserDoc()) {
                 return void cb();
             }
+
+            var to = setTimeout(function () {
+                realtime.abort();
+                // don't launch more than one popup
+                if (common.infiniteSpinnerDetected) { return; }
+
+                // inform the user their session is in a bad state
+                common.confirm(Messages.realtime_unrecoverableError, function (yes) {
+                    if (!yes) { return; }
+                    window.location.reload();
+                });
+                common.infiniteSpinnerDetected = true;
+            }, 30000);
             realtime.onSettle(function () {
+                clearTimeout(to);
                 cb();
             });
         }, 0);
@@ -282,6 +360,21 @@ define([
         return typeof(proxy) === 'object' &&
             typeof(proxy.edPrivate) === 'string' &&
             typeof(proxy.edPublic) === 'string';
+    };
+
+    common.hasCurveKeys = function (proxy) {
+        return typeof(proxy) === 'object' &&
+            typeof(proxy.curvePrivate) === 'string' &&
+            typeof(proxy.curvePublic) === 'string';
+    };
+
+    common.getPublicKeys = function (proxy) {
+        proxy = proxy || common.getProxy();
+        if (!proxy || !proxy.edPublic || !proxy.curvePublic) { return; }
+        return {
+            curve: proxy.curvePublic,
+            ed: proxy.edPublic,
+        };
     };
 
     common.isArray = $.isArray;
@@ -406,13 +499,12 @@ define([
 
     // STORAGE
     common.setPadAttribute = function (attr, value, cb) {
-        getStore().setDrive([getHash(), attr].join('.'), value, function (err, data) {
-            cb(err, data);
-        });
+        var href = getRelativeHref(window.location.href);
+        getStore().setPadAttribute(href, attr, value, cb);
     };
     common.setAttribute = function (attr, value, cb) {
         getStore().set(["cryptpad", attr].join('.'), value, function (err, data) {
-            cb(err, data);
+            if (cb) { cb(err, data); }
         });
     };
     common.setLSAttribute = function (attr, value) {
@@ -421,9 +513,8 @@ define([
 
     // STORAGE
     common.getPadAttribute = function (attr, cb) {
-        getStore().getDrive([getHash(), attr].join('.'), function (err, data) {
-            cb(err, data);
-        });
+        var href = getRelativeHref(window.location.href);
+        getStore().getPadAttribute(href, attr, cb);
     };
     common.getAttribute = function (attr, cb) {
         getStore().get(["cryptpad", attr].join('.'), function (err, data) {
@@ -514,9 +605,9 @@ define([
         if (_onDisplayNameChanged.indexOf(h) !== -1) { return; }
         _onDisplayNameChanged.push(h);
     };
-    common.changeDisplayName = function (newName) {
+    common.changeDisplayName = function (newName, isLocal) {
         _onDisplayNameChanged.forEach(function (h) {
-            h(newName);
+            h(newName, isLocal);
         });
     };
 
@@ -530,7 +621,7 @@ define([
     };
 
     common.setPadTitle = function (name, padHref, cb) {
-        var href = padHref || window.location.href;
+        var href = typeof padHref === "string" ? padHref : window.location.href;
         var parsed = parsePadUrl(href);
         if (!parsed.hash) { return; }
         href = getRelativeHref(href);
@@ -684,6 +775,20 @@ define([
             })
             .filter(function (x) { return x; });
 
+        // Get the avatar
+        var profile = store.getProfile();
+        if (profile) {
+            var profileChan = profile.edit ? hrefToHexChannelId('/profile/#' + profile.edit) : null;
+            if (profileChan) { list.push(profileChan); }
+            var avatarChan = profile.avatar ? hrefToHexChannelId(profile.avatar) : null;
+            if (avatarChan) { list.push(avatarChan); }
+        }
+
+        if (getProxy().friends) {
+            var fList = common.getFriendChannelsList(common);
+            list = list.concat(fList);
+        }
+
         list.push(common.base64ToHex(userChannel));
         list.sort();
 
@@ -703,14 +808,14 @@ define([
             return false;
         }
         if (!rpc) {
-            console.error('[RPC_NOT_READY]');
+            console.error('RPC_NOT_READY');
             return false;
         }
         return true;
     };
 
     common.arePinsSynced = function (cb) {
-        if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
+        if (!pinsReady()) { return void cb ('RPC_NOT_READY'); }
 
         var list = getCanonicalChannelList();
         var local = Hash.hashChannelList(list);
@@ -721,7 +826,7 @@ define([
     };
 
     common.resetPins = function (cb) {
-        if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
+        if (!pinsReady()) { return void cb ('RPC_NOT_READY'); }
 
         var list = getCanonicalChannelList();
         rpc.reset(list, function (e, hash) {
@@ -731,7 +836,7 @@ define([
     };
 
     common.pinPads = function (pads, cb) {
-        if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
+        if (!pinsReady()) { return void cb ('RPC_NOT_READY'); }
 
         rpc.pin(pads, function (e, hash) {
             if (e) { return void cb(e); }
@@ -740,7 +845,7 @@ define([
     };
 
     common.unpinPads = function (pads, cb) {
-        if (!pinsReady()) { return void cb ('[RPC_NOT_READY]'); }
+        if (!pinsReady()) { return void cb ('RPC_NOT_READY'); }
 
         rpc.unpin(pads, function (e, hash) {
             if (e) { return void cb(e); }
@@ -749,24 +854,48 @@ define([
     };
 
     common.getPinnedUsage = function (cb) {
-        if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
+        if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
 
         rpc.getFileListSize(function (err, bytes) {
-            common.account.usage = typeof(bytes) === 'number'? bytes: 0;
+            if (typeof(bytes) === 'number') {
+                common.account.usage = bytes;
+            }
             cb(err, bytes);
         });
     };
 
     common.getFileSize = function (href, cb) {
+        if (!anon_rpc) { return void cb('ANON_RPC_NOT_READY'); }
+        //if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
         var channelId = Hash.hrefToHexChannelId(href);
-        rpc.getFileSize(channelId, function (e, bytes) {
+        anon_rpc.send("GET_FILE_SIZE", channelId, function (e, response) {
             if (e) { return void cb(e); }
-            cb(void 0, bytes);
+            if (response && response.length && typeof(response[0]) === 'number') {
+                return void cb(void 0, response[0]);
+            } else {
+                cb('INVALID_RESPONSE');
+            }
+        });
+    };
+
+    common.getMultipleFileSize = function (files, cb) {
+        if (!anon_rpc) { return void cb('ANON_RPC_NOT_READY'); }
+        if (!Array.isArray(files)) {
+            return void setTimeout(function () { cb('INVALID_FILE_LIST'); });
+        }
+
+        anon_rpc.send('GET_MULTIPLE_FILE_SIZE', files, function (e, res) {
+            if (e) { return cb(e); }
+            if (res && res.length && typeof(res[0]) === 'object') {
+                cb(void 0, res[0]);
+            } else {
+                cb('UNEXPECTED_RESPONSE');
+            }
         });
     };
 
     common.updatePinLimit = function (cb) {
-        if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
+        if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
         rpc.updatePinLimits(function (e, limit, plan, note) {
             if (e) { return cb(e); }
             common.account.limit = limit;
@@ -777,14 +906,24 @@ define([
     };
 
     common.getPinLimit = function (cb) {
-        if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
-        rpc.getLimit(function (e, limit, plan, note) {
-            if (e) { return cb(e); }
-            common.account.limit = limit;
-            common.account.plan = plan;
-            common.account.note = note;
-            cb(void 0, limit, plan, note);
-        });
+        if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
+
+        var account = common.account;
+
+        var ALWAYS_REVALIDATE = true;
+        if (ALWAYS_REVALIDATE || typeof(account.limit) !== 'number' ||
+            typeof(account.plan) !== 'string' ||
+            typeof(account.note) !== 'string') {
+            return void rpc.getLimit(function (e, limit, plan, note) {
+                if (e) { return cb(e); }
+                common.account.limit = limit;
+                common.account.plan = plan;
+                common.account.note = note;
+                cb(void 0, limit, plan, note);
+            });
+        }
+
+        cb(void 0, account.limit, account.plan, account.note);
     };
 
     common.isOverPinLimit = function (cb) {
@@ -806,33 +945,47 @@ define([
         common.getPinnedUsage(todo);
     };
 
+    common.clearOwnedChannel = function (channel, cb) {
+        if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
+        rpc.clearOwnedChannel(channel, cb);
+    };
+
     common.uploadComplete = function (cb) {
-        if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
+        if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
         rpc.uploadComplete(cb);
     };
 
     common.uploadStatus = function (size, cb) {
-        if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
+        if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
         rpc.uploadStatus(size, cb);
     };
 
     common.uploadCancel = function (cb) {
-        if (!pinsReady()) { return void cb('[RPC_NOT_READY]'); }
+        if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
         rpc.uploadCancel(cb);
     };
 
+    /*  Create a usage bar which keeps track of how much storage space is used
+        by your CryptDrive. The getPinnedUsage RPC is one of the heavier calls,
+        so we throttle its usage. Clients will not update more than once per
+        LIMIT_REFRESH_RATE. It will be update at least once every three such intervals
+        If changes are made to your drive in the interim, they will trigger an
+        update.
+    */
     var LIMIT_REFRESH_RATE = 30000; // milliseconds
     common.createUsageBar = function (cb) {
         // getPinnedUsage updates common.account.usage, and other values
         // so we can just use those and only check for errors
-        var todo = function (err) {
-            var $container = $('<span>', {'class':'limit-container'});
-            if (err) {
-                return void window.setTimeout(function () {
-                    common.getPinnedUsage(todo);
-                }, LIMIT_REFRESH_RATE);
-            }
+        var $container = $('<span>', {'class':'limit-container'});
+        var todo;
+        var updateUsage = window.updateUsage = common.notAgainForAnother(function () {
+            common.getPinnedUsage(todo);
+        }, LIMIT_REFRESH_RATE);
 
+        todo = function (err) {
+            if (err) { return void console.error(err); }
+
+            $container.html('');
             var unit = Util.magnitudeOfBytes(common.account.limit);
 
             var usage = unit === 'GB'? Util.bytesToGigabytes(common.account.usage):
@@ -842,30 +995,24 @@ define([
 
             var $limit = $('<span>', {'class': 'cryptpad-limit-bar'}).appendTo($container);
             var quota = usage/limit;
-            var width = Math.floor(Math.min(quota, 1)*200); // the bar is 200px width
-            var $usage = $('<span>', {'class': 'usage'}).css('width', width+'px');
+            var $usage = $('<span>', {'class': 'usage'}).css('width', quota*100+'%');
 
             var makeDonateButton = function () {
-                var $upgradeLink = $('<a>', {
+                $('<a>', {
+                    'class': 'upgrade btn btn-success',
                     href: common.donateURL,
                     rel: "noreferrer noopener",
                     target: "_blank",
-                }).appendTo($container);
-                $('<button>', {
-                    'class': 'upgrade buttonSuccess',
-                }).text(Messages.supportCryptpad).appendTo($upgradeLink);
+                }).text(Messages.supportCryptpad).appendTo($container);
             };
 
             var makeUpgradeButton = function () {
-                var $upgradeLink = $('<a>', {
+                $('<a>', {
+                    'class': 'upgrade btn btn-success',
                     href: common.upgradeURL,
                     rel: "noreferrer noopener",
                     target: "_blank",
-                }).appendTo($container);
-                $('<button>', {
-                    'class': 'upgrade buttonSuccess',
-                    title: Messages.upgradeTitle
-                }).text(Messages.upgradeAccount).appendTo($upgradeLink);
+                }).text(Messages.upgradeAccount).appendTo($container);
             };
 
             if (!Config.removeDonateButton) {
@@ -898,26 +1045,25 @@ define([
             var $text = $('<span>', {'class': 'usageText'});
             $text.text(usage + ' / ' + prettyLimit);
             $limit.append($usage).append($text);
-            window.setTimeout(function () {
-                common.getPinnedUsage(todo);
-            }, LIMIT_REFRESH_RATE);
-            cb(err, $container);
         };
-        common.getPinnedUsage(todo);
-    };
 
-    var getAppSuffix = function () {
-        var parts = window.location.pathname.split('/')
-            .filter(function (x) { return x; });
+        setInterval(function () {
+            updateUsage();
+        }, LIMIT_REFRESH_RATE * 3);
 
-        if (!parts[0]) { return ''; }
-        return '_' + parts[0].toUpperCase();
+        updateUsage();
+        getProxy().on('change', ['drive'], function () {
+            updateUsage();
+        });
+        cb(null, $container);
     };
 
     var prepareFeedback = common.prepareFeedback = function (key) {
         if (typeof(key) !== 'string') { return $.noop; }
+
+        var type = common.getAppType();
         return function () {
-            feedback(key.toUpperCase() + getAppSuffix());
+            feedback((key + (type? '_' + type: '')).toUpperCase());
         };
     };
 
@@ -927,8 +1073,9 @@ define([
         switch (type) {
             case 'export':
                 button = $('<button>', {
+                    'class': 'fa fa-download',
                     title: Messages.exportButtonTitle,
-                }).append($('<span>', {'class':'fa fa-download', style: 'font:'+size+' FontAwesome'}));
+                }).append($('<span>', {'class': 'drawer'}).text(Messages.exportButton));
 
                 button.click(prepareFeedback(type));
                 if (callback) {
@@ -937,8 +1084,9 @@ define([
                 break;
             case 'import':
                 button = $('<button>', {
+                    'class': 'fa fa-upload',
                     title: Messages.importButtonTitle,
-                }).append($('<span>', {'class':'fa fa-upload', style: 'font:'+size+' FontAwesome'}));
+                }).append($('<span>', {'class': 'drawer'}).text(Messages.importButton));
                 if (callback) {
                     button
                     .click(prepareFeedback(type))
@@ -961,9 +1109,14 @@ define([
                     var ev = {
                         target: data.target
                     };
+                    if (data.filter && !data.filter(file)) {
+                        common.log('TODO: invalid avatar (type or size)');
+                        return;
+                    }
                     data.FM.handleFile(file, ev);
                     if (callback) { callback(); }
                 });
+                if (data.accept) { $input.attr('accept', data.accept); }
                 button.click(function () { $input.click(); });
                 break;
             case 'template':
@@ -1085,16 +1238,22 @@ define([
                 }
                 button = $('<button>', {
                     title: Messages.historyButton,
-                    'class': "fa fa-history",
-                    style: 'font:'+size+' FontAwesome'
-                });
+                    'class': "fa fa-history history",
+                }).append($('<span>', {'class': 'drawer'}).text(Messages.historyText));
                 if (data.histConfig) {
                     button
                     .click(prepareFeedback(type))
-                    .click(function () {
+                    .on('click', function () {
                         common.getHistory(data.histConfig);
                     });
                 }
+                break;
+            case 'more':
+                button = $('<button>', {
+                    title: Messages.moreActions || 'TODO',
+                    'class': "drawer-button fa fa-ellipsis-h",
+                    style: 'font:'+size+' FontAwesome'
+                });
                 break;
             default:
                 button = $('<button>', {
@@ -1107,6 +1266,139 @@ define([
             button.addClass('rightside-button');
         }
         return button;
+    };
+
+    var emoji_patt = /([\uD800-\uDBFF][\uDC00-\uDFFF])/;
+    var isEmoji = function (str) {
+      return emoji_patt.test(str);
+    };
+    var emojiStringToArray = function (str) {
+      var split = str.split(emoji_patt);
+      var arr = [];
+      for (var i=0; i<split.length; i++) {
+        var char = split[i];
+        if (char !== "") {
+          arr.push(char);
+        }
+      }
+      return arr;
+    };
+    var getFirstEmojiOrCharacter = function (str) {
+      if (!str || !str.trim()) { return '?'; }
+      var emojis = emojiStringToArray(str);
+      return isEmoji(emojis[0])? emojis[0]: str[0];
+    };
+
+    $(window.document).on('decryption', function (e) {
+        var decrypted = e.originalEvent;
+        if (decrypted.callback) {
+            var cb = decrypted.callback;
+            cb(function (mediaObject) {
+                if (mediaObject.type !== 'download') { return; }
+                var root = mediaObject.rootElement;
+                if (!root) { return; }
+
+                var metadata = decrypted.metadata;
+
+                var title = '';
+                var size = 0;
+                if (metadata && metadata.name) {
+                    title = metadata.name;
+                }
+
+                if (decrypted.blob) {
+                    size = decrypted.blob.size;
+                }
+
+                var sizeMb = common.bytesToMegabytes(size);
+
+                var $btn = $(root).find('button');
+                $btn.addClass('btn btn-success')
+                    .attr('type', 'download')
+                    .html(function () {
+                        var text = Messages.download_mt_button + '<br>';
+                        if (title) {
+                            text += '<b>' + common.fixHTML(title) + '</b><br>';
+                        }
+                        if (size) {
+                            text += '<em>' + Messages._getKey('formattedMB', [sizeMb]) + '</em>';
+                        }
+                        return text;
+                    });
+            });
+        }
+    });
+    common.avatarAllowedTypes = [
+        'image/png',
+        'image/jpeg',
+        'image/jpg',
+        'image/gif',
+    ];
+    common.displayAvatar = function ($container, href, name, cb) {
+        var MutationObserver = window.MutationObserver;
+        var displayDefault = function () {
+            var text = getFirstEmojiOrCharacter(name);
+            var $avatar = $('<span>', {'class': 'default'}).text(text);
+            $container.append($avatar);
+            if (cb) { cb(); }
+        };
+
+        if (!href) { return void displayDefault(); }
+        var parsed = common.parsePadUrl(href);
+        var secret = common.getSecrets('file', parsed.hash);
+        if (secret.keys && secret.channel) {
+            var cryptKey = secret.keys && secret.keys.fileKeyStr;
+            var hexFileName = common.base64ToHex(secret.channel);
+            var src = common.getBlobPathFromHex(hexFileName);
+            common.getFileSize(href, function (e, data) {
+                if (e) {
+                    displayDefault();
+                    return void console.error(e);
+                }
+                if (typeof data !== "number") { return void displayDefault(); }
+                if (common.bytesToMegabytes(data) > 0.5) { return void displayDefault(); }
+                var $img = $('<media-tag>').appendTo($container);
+                $img.attr('src', src);
+                $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
+                var observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.type === 'childList' && mutation.addedNodes.length) {
+                            if (mutation.addedNodes.length > 1 ||
+                                mutation.addedNodes[0].nodeName !== 'IMG') {
+                                $img.remove();
+                                return void displayDefault();
+                            }
+                            var $image = $img.find('img');
+                            var onLoad = function () {
+                                var img = new Image();
+                                img.onload = function () {
+                                    var w = img.width;
+                                    var h = img.height;
+                                    if (w>h) {
+                                        $image.css('max-height', '100%');
+                                        $img.css('flex-direction', 'column');
+                                        if (cb) { cb($img); }
+                                        return;
+                                    }
+                                    $image.css('max-width', '100%');
+                                    $img.css('flex-direction', 'row');
+                                    if (cb) { cb($img); }
+                                };
+                                img.src = $image.attr('src');
+                            };
+                            if ($image[0].complete) { onLoad(); }
+                            $image.on('load', onLoad);
+                        }
+                    });
+                });
+                observer.observe($img[0], {
+                    attributes: false,
+                    childList: true,
+                    characterData: false
+                });
+                MediaTag($img[0]);
+            });
+        }
     };
 
     // Create a button with a dropdown menu
@@ -1143,9 +1435,9 @@ define([
         var $button = $('<button>', {
             'class': ''
         }).append($('<span>', {'class': 'buttonTitle'}).html(config.text || ""));
-        $('<span>', {
+        /*$('<span>', {
             'class': 'fa fa-caret-down',
-        }).appendTo($button);
+        }).appendTo($button);*/
 
         // Menu
         var $innerblock = $('<div>', {'class': 'cryptpad-dropdown dropdown-bar-content'});
@@ -1184,9 +1476,10 @@ define([
                 setActive($val);
                 $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
             }
+            if (config.feedback && store) { common.feedback(config.feedback); }
         };
 
-        $button.click(function (e) {
+        $container.click(function (e) {
             e.stopPropagation();
             var state = $innerblock.is(':visible');
             $('.dropdown-bar-content').hide();
@@ -1339,6 +1632,13 @@ define([
                 content: Messages.user_rename
             });
         }
+        if (account) {
+            options.push({
+                tag: 'a',
+                attributes: {'class': 'profile'},
+                content: Messages.profileButton
+            });
+        }
         if (parsed && (!parsed.type || parsed.type !== 'settings')) {
             options.push({
                 tag: 'a',
@@ -1365,22 +1665,43 @@ define([
                 content: Messages.login_register
             });
         }
-        var $icon = $('<span>', {'class': 'fa fa-user'});
-        var $userbig = $('<span>', {'class': 'big'}).append($displayedName.clone());
-        var $userButton = $('<div>').append($icon).append($userbig);
-        if (account && config.displayNameCls) {
+        var $icon = $('<span>', {'class': 'fa fa-user-secret'});
+        //var $userbig = $('<span>', {'class': 'big'}).append($displayedName.clone());
+        var $userButton = $('<div>').append($icon);//.append($userbig);
+        if (account) {
+            $userButton = $('<div>').append(accountName);
+        }
+        /*if (account && config.displayNameCls) {
             $userbig.append($('<span>', {'class': 'account-name'}).text('(' + accountName + ')'));
         } else if (account) {
             // If no display name, do not display the parentheses
             $userbig.append($('<span>', {'class': 'account-name'}).text(accountName));
-        }
+        }*/
         var dropdownConfigUser = {
             text: $userButton.html(), // Button initial text
             options: options, // Entries displayed in the menu
             left: true, // Open to the left of the button
-            container: config.$initBlock // optional
+            container: config.$initBlock, // optional
+            feedback: "USER_ADMIN",
         };
         var $userAdmin = createDropdown(dropdownConfigUser);
+
+        if (account && !config.static && store) {
+            var $avatar = $userAdmin.find('.buttonTitle');
+            var updateButton = function (newName) {
+                var profile = store.getProfile();
+                var url = profile && profile.avatar;
+
+                $avatar.html('');
+                common.displayAvatar($avatar, url, newName, function ($img) {
+                    if ($img) {
+                        $userAdmin.find('button').addClass('avatar');
+                    }
+                });
+            };
+            common.onDisplayNameChanged(updateButton);
+            updateButton(common.getDisplayName());
+        }
 
         $userAdmin.find('a.logout').click(function () {
             common.logout();
@@ -1391,6 +1712,13 @@ define([
                 window.open('/settings/');
             } else {
                 window.location.href = '/settings/';
+            }
+        });
+        $userAdmin.find('a.profile').click(function () {
+            if (parsed && parsed.type) {
+                window.open('/profile/');
+            } else {
+                window.location.href = '/profile/';
             }
         });
         $userAdmin.find('a.login').click(function () {
@@ -1466,8 +1794,14 @@ define([
         Store.ready(function (err, storeObj) {
             store = common.store = env.store = storeObj;
 
+            common.addDirectMessageHandler(common);
+
             var proxy = getProxy();
             var network = getNetwork();
+
+            if (Object.keys(proxy).length === 1) {
+                feedback("FIRST_APP_USE", true);
+            }
 
             if (typeof(window.Proxy) === 'undefined') {
                 feedback("NO_PROXIES");
@@ -1476,6 +1810,9 @@ define([
             if (/CRYPTPAD_SHIM/.test(Array.isArray.toString())) {
                 feedback("NO_ISARRAY");
             }
+
+            common.reportScreenDimensions();
+            common.reportLanguage();
 
             $(function() {
                 // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
@@ -1526,7 +1863,10 @@ define([
                         common.arePinsSynced(function (err, yes) {
                             if (!yes) {
                                 common.resetPins(function (err) {
-                                    if (err) { console.error(err); }
+                                    if (err) {
+                                        console.error("Pin Reset Error");
+                                        return console.error(err);
+                                    }
                                     console.log('RESET DONE');
                                 });
                             }
@@ -1537,6 +1877,21 @@ define([
                 } else {
                     console.log('pinning disabled');
                 }
+
+                block++;
+                require([
+                    '/common/rpc.js',
+                ], function (Rpc) {
+                    Rpc.createAnonymous(network, function (e, call) {
+                        if (e) {
+                            console.error(e);
+                            return void cb();
+                        }
+                        anon_rpc = common.anon_rpc = env.anon_rpc = call;
+                        cb();
+                    });
+                });
+
 
                 // Everything's ready, continue...
                 if($('#pad-iframe').length) {

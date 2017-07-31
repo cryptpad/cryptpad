@@ -2,13 +2,11 @@
 <html>
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
-    <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
     <script src="/bower_components/jquery/dist/jquery.min.js"></script>
-    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/file/file.css">
-    <link rel="stylesheet" href="/customize/main.css">
+    <script async data-bootload="/file/inner.js" data-main="/common/boot.js?ver=1.0" src="/bower_components/requirejs/require.js?ver=2.1.15"></script>
+    <style>.loading-hidden, .loading-hidden * {display: none !important;}</style>
 </head>
-<body>
+<body class="loading-hidden">
     <div id="toolbar" class="toolbar-container"></div>
     <div id="app">
         <div id="upload-form" style="display: none;">

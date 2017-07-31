@@ -9,7 +9,9 @@ define([
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
     '/slide/slide.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js', // needed for media-tag
+
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/customize/src/less/cryptpad.less',
 ], function ($, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad, Cryptget, Slide) {
     var Messages = Cryptpad.Messages;
 
@@ -49,7 +51,8 @@ define([
 
         var andThen = function (CMeditor) {
             var $iframe = $('#pad-iframe').contents();
-            var CodeMirror = Cryptpad.createCodemirror(CMeditor, ifrw, Cryptpad);
+            var $contentContainer = $iframe.find('#editorContainer');
+            var CodeMirror = Cryptpad.createCodemirror(ifrw, Cryptpad, null, CMeditor);
             editor = CodeMirror.editor;
 
             var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
@@ -191,7 +194,7 @@ define([
                 if (back) {
                     backColor = back;
                     $modal.css('background-color', back);
-                    $pad.contents().find('#' + SLIDE_COLOR_ID).css('background', back);
+                    //$pad.contents().find('#' + SLIDE_COLOR_ID).css('background', back);
                     $pad.contents().find('#' + SLIDE_BACKCOLOR_ID).css('color', back);
                 }
             };
@@ -227,11 +230,15 @@ define([
                         var $span = $('<span>', {'class': 'element'}).appendTo($container);
                         var $inner = $('<span>').text(name);
                         $span.append($inner).click(function () {
-                            var cleanName = name.replace(/[\[\]]/g, '');
-                            var text = '!['+cleanName+']('+data.href+')';
-                            editor.replaceSelection(text);
+                            var parsed = Cryptpad.parsePadUrl(data.href);
+                            var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+                            var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
+                            var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '"></media-tag>';
+                            editor.replaceSelection(mt);
+                            //var cleanName = name.replace(/[\[\]]/g, '');
+                            //var text = '!['+cleanName+']('+data.href+')';
+                            //editor.replaceSelection(text);
                             $block.hide();
-                            console.log(data.href);
                         });
                     });
                 };
@@ -343,7 +350,7 @@ define([
                 };
                 Title = Cryptpad.createTitle(titleCfg, config.onLocal, Cryptpad);
 
-                Metadata = Cryptpad.createMetadata(UserList, Title, metadataCfg);
+                Metadata = Cryptpad.createMetadata(UserList, Title, metadataCfg, Cryptpad);
 
                 var configTb = {
                     displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit', 'upgrade'],
@@ -358,7 +365,8 @@ define([
                     ifrw: ifrw,
                     realtime: info.realtime,
                     network: info.network,
-                    $container: $bar
+                    $container: $bar,
+                    $contentContainer: $contentContainer
                 };
                 toolbar = module.toolbar = Toolbar.create(configTb);
 
@@ -366,6 +374,7 @@ define([
                 CodeMirror.init(config.onLocal, Title, toolbar);
 
                 var $rightside = toolbar.$rightside;
+                var $drawer = toolbar.$drawer;
 
                 var editHash;
 
@@ -386,7 +395,7 @@ define([
                     $toolbar: $bar
                 };
                 var $hist = Cryptpad.createButton('history', true, {histConfig: histConfig});
-                $rightside.append($hist);
+                $drawer.append($hist);
 
                 /* save as template */
                 if (!Cryptpad.isTemplate(window.location.href)) {
@@ -401,12 +410,12 @@ define([
 
                 /* add an export button */
                 var $export = Cryptpad.createButton('export', true, {}, CodeMirror.exportText);
-                $rightside.append($export);
+                $drawer.append($export);
 
                 if (!readOnly) {
                     /* add an import button */
                     var $import = Cryptpad.createButton('import', true, {}, CodeMirror.importText);
-                    $rightside.append($import);
+                    $drawer.append($import);
                 }
 
                 /* add a forget button */
@@ -434,12 +443,14 @@ define([
                         Cryptpad.setPadAttribute('previewMode', false, function (e) {
                             if (e) { return console.log(e); }
                         });
+                        $previewButton.removeClass('active');
                         return void $c.removeClass('preview');
                     }
                     Cryptpad.setPadAttribute('previewMode', true, function (e) {
                         if (e) { return console.log(e); }
                     });
                     $c.addClass('preview');
+                    $previewButton.addClass('active');
                     Slide.updateFontSize();
                 });
                 $rightside.append($previewButton);
@@ -457,9 +468,13 @@ define([
                             window.frames["pad-iframe"].print();
                         }
                     }, {ok: Messages.printButton});
+                    Cryptpad.feedback('PRINT_SLIDES');
                     //$('body').append(createPrintDialog());
-                });
-                $rightside.append($printButton);
+                }).append($('<span>', {'class': 'drawer'}).text(Messages.printText));
+
+                // TODO reenable this when it is working again
+                $printButton = $printButton;
+                //$drawer.append($printButton);
 
                 var $slideOptions = $('<button>', {
                     title: Messages.slideOptionsTitle,
@@ -467,8 +482,8 @@ define([
                     style: 'font-size: 17px'
                 }).click(function () {
                     $('body').append(createPrintDialog());
-                });
-                $rightside.append($slideOptions);
+                }).append($('<span>', {'class': 'drawer'}).text(Messages.slideOptionsText));
+                $drawer.append($slideOptions);
 
                 var $present = Cryptpad.createButton('present', true)
                     .click(function () {
@@ -489,7 +504,7 @@ define([
                     var $text = $('<button>', {
                         id: SLIDE_COLOR_ID,
                         'class': 'fa fa-i-cursor rightside-button',
-                        'style': 'font-family: FontAwesome; font-weight: bold; color: #fff; background: #000;',
+                        'style': 'font-family: FontAwesome; font-weight: bold; color: #fff;',
                         title: Messages.colorButtonTitle
                     });
                     var $testColor = $('<input>', { type: 'color', value: '!' });
@@ -556,7 +571,8 @@ define([
                     var hjson = JSON.parse(userDoc);
                     newDoc = hjson.content;
 
-                    if (typeof (hjson) !== 'object' || Array.isArray(hjson)) {
+                    if (typeof (hjson) !== 'object' || Array.isArray(hjson) ||
+                        (typeof(hjson.type) !== 'undefined' && hjson.type !== 'slide')) {
                         var errorText = Messages.typeError;
                         Cryptpad.errorLoadingScreen(errorText);
                         throw new Error(errorText);
@@ -580,7 +596,7 @@ define([
 
                 Cryptpad.getPadAttribute('previewMode', function (e, data) {
                     if (e) { return void console.error(e); }
-                    if (data === true && APP.$previewButton) {
+                    if ([true, undefined].indexOf(data) !== -1 && APP.$previewButton) {
                         APP.$previewButton.click();
                     }
                 });
@@ -610,12 +626,13 @@ define([
                     body: $iframe.find('body'),
                     onUploaded: function (ev, data) {
                         //var cursor = editor.getCursor();
-                        var cleanName = data.name.replace(/[\[\]]/g, '');
-                        var text = '!['+cleanName+']('+data.url+')';
-                        /*if (data.mediatag) {
-                            text = '!'+text;
-                        }*/
-                        editor.replaceSelection(text);
+                        //var cleanName = data.name.replace(/[\[\]]/g, '');
+                        //var text = '!['+cleanName+']('+data.url+')';
+                        var parsed = Cryptpad.parsePadUrl(data.url);
+                        var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+                        var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
+                        var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '"></media-tag>';
+                        editor.replaceSelection(mt);
                     }
                 };
                 APP.FM = Cryptpad.createFileManager(fmConfig);

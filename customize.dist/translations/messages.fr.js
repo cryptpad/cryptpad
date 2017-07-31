@@ -9,10 +9,11 @@ define(function () {
     out.type.code = 'Code';
     out.type.poll = 'Sondage';
     out.type.slide = 'Présentation';
-    out.type.drive = 'Drive';
+    out.type.drive = 'CryptDrive';
     out.type.whiteboard = "Tableau Blanc";
     out.type.file = "Fichier";
     out.type.media = "Média";
+    out.type.contacts = "Contacts";
 
     out.button_newpad = 'Nouveau document texte';
     out.button_newcode = 'Nouvelle page de code';
@@ -34,9 +35,12 @@ define(function () {
     out.synced = "Tout est enregistré";
     out.deleted = "Pad supprimé de votre CryptDrive";
 
+    out.realtime_unrecoverableError = "Le moteur temps-réel a rencontré une erreur critique. Cliquez sur OK pour recharger la page.";
+
     out.disconnected = 'Déconnecté';
     out.synchronizing = 'Synchronisation';
     out.reconnecting = 'Reconnexion...';
+    out.typing = "Édition";
     out.lag = 'Latence';
     out.readonly = 'Lecture seule';
     out.anonymous = "Anonyme";
@@ -74,7 +78,7 @@ define(function () {
 
     out.greenLight = "Tout fonctionne bien";
     out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur";
-    out.redLight = "Vous êtes déconnectés de la session";
+    out.redLight = "Vous êtes déconnecté de la session";
 
     out.pinLimitReached = "Vous avez atteint votre limite de stockage";
     out.updated_0_pinLimitReachedAlert = "Vous avez atteint votre limite de stockage. Les nouveaux pads ne seront pas enregistrés dans votre CryptDrive.<br>" +
@@ -86,8 +90,12 @@ define(function () {
     out.pinLimitDrive = out.pinLimitReached+ ".<br>" +
                         "Vous ne pouvez pas créer de nouveaux pads.";
 
+    out.moreActions = "Autres actions";
+
+    out.importButton = "Importer";
     out.importButtonTitle = 'Importer un pad depuis un fichier local';
 
+    out.exportButton = "Exporter";
     out.exportButtonTitle = 'Exporter ce pad vers un fichier local';
     out.exportPrompt = 'Comment souhaitez-vous nommer ce fichier ?';
 
@@ -97,7 +105,9 @@ define(function () {
     out.user_accountName = "Nom d'utilisateur";
 
     out.clickToEdit = 'Cliquer pour modifier';
+    out.saveTitle = "Enregistrer le titre (Entrée)";
 
+    out.forgetButton = "Supprimer";
     out.forgetButtonTitle = 'Déplacer ce pad vers la corbeille';
     out.forgetPrompt = 'Cliquer sur OK déplacera ce pad vers la corbeille de votre CryptDrive, êtes-vous sûr ?';
     out.movedToTrash = 'Ce pad a été déplacé vers la corbeille.<br><a href="/drive/">Accéder à mon Drive</a>';
@@ -107,8 +117,8 @@ define(function () {
 
     out.newButton = 'Nouveau';
     out.newButtonTitle = 'Créer un nouveau pad';
-    out.uploadButton = 'Upload';
-    out.uploadButtonTitle = 'Uploader un nouveau fichier dans le dossier actuel';
+    out.uploadButton = 'Importer des fichiers';
+    out.uploadButtonTitle = 'Importer un nouveau fichier dans le dossier actuel';
 
     out.saveTemplateButton = "Sauver en tant que modèle";
     out.saveTemplatePrompt = "Choisir un titre pour ce modèle";
@@ -123,6 +133,7 @@ define(function () {
     out.backgroundButtonTitle = 'Changer la couleur de fond de la présentation';
     out.colorButtonTitle = 'Changer la couleur du texte en mode présentation';
 
+    out.printText = "Imprimer";
     out.printButton = "Imprimer (Entrée)";
     out.printButtonTitle = "Imprimer votre présentation ou l'enregistrer au format PDF";
     out.printOptions = "Options de mise en page";
@@ -138,6 +149,7 @@ define(function () {
     out.filePicker_filter = "Filtrez les fichiers par leur nom";
     out.or = 'ou';
 
+    out.slideOptionsText = "Options";
     out.slideOptionsTitle = "Personnaliser la présentation";
     out.slideOptionsButton = "Enregistrer (Entrée)";
 
@@ -164,6 +176,7 @@ define(function () {
     out.cancel = "Annuler";
     out.cancelButton = 'Annuler (Echap)';
 
+    out.historyText = "Historique";
     out.historyButton = "Afficher l'historique du document";
     out.history_next = "Voir la version suivante";
     out.history_prev = "Voir la version précédente";
@@ -175,6 +188,9 @@ define(function () {
     out.history_restorePrompt = "Êtes-vous sûr de vouloir remplacer la version actuelle du document par la version affichée ?";
     out.history_restoreDone = "Document restauré";
     out.history_version = "Version :";
+
+    // Ckeditor links
+    out.openLinkInNewTab = "Ouvrir le lien dans un nouvel onglet";
 
     // Polls
 
@@ -228,6 +244,38 @@ define(function () {
     out.canvas_opacityLabel = "opacité: {0}";
     out.canvas_widthLabel = "taille: {0}";
 
+    // Profile
+    out.profileButton = "Profil"; // dropdown menu
+    out.profile_urlPlaceholder = 'URL';
+    out.profile_namePlaceholder = 'Nom ou pseudo pour le profil';
+    out.profile_avatar = "Avatar";
+    out.profile_upload = " Importer un nouvel avatar";
+    out.profile_error = "Erreur lors de la création du profil : {0}";
+    out.profile_register = "Vous devez vous inscrire pour pouvoir créer un profil !";
+    out.profile_create = "Créer un profil";
+    out.profile_description = "Description";
+    out.profile_fieldSaved = 'Nouvelle valeur enregistrée: {0}';
+
+    out.profile_viewMyProfile = "Voir mon profil";
+
+    // contacts/userlist
+    out.userlist_addAsFriendTitle = 'Ajouter "{0}" comme contact';
+    out.userlist_thisIsYou = 'Vous ("{0}")';
+    out.contacts_title = "Contacts";
+    out.contacts_addError = "Erreur lors de l'ajout de ce contact dans votre liste";
+    out.contacts_added = 'Invitation de contact acceptée';
+    out.contacts_rejected = 'Invitation d econtact rejetée';
+    out.contacts_request = '<em>{0}</em> souhaite vous ajouter en tant que contact. <b>Accepter<b> ?';
+    out.contacts_send = 'Envoyer';
+    out.contacts_remove = 'Supprimer ce contact';
+    out.contacts_confirmRemove = 'Êtes-vous sûr de voulour supprimer <em>{0}</em> de vos contacts ?';
+
+
+    out.contacts_info1 = "Voici vos contacts. Ici, vous pouvez :";
+    out.contacts_info2 = "Cliquer sur le nom d'un contact pour discuter avec lui";
+    out.contacts_info3 = "Double-cliquer sur son nom pour voir son profil";
+    out.contacts_info4 = "Chaque participant peut nettoyer définitivement l'historique d'une discussion";
+
     // File manager
 
     out.fm_rootName = "Documents";
@@ -238,7 +286,7 @@ define(function () {
     out.fm_searchName = "Recherche";
     out.fm_searchPlaceholder = "Rechercher...";
     out.fm_newButton = "Nouveau";
-    out.fm_newButtonTitle = "Créer un nouveau pad ou un dossier";
+    out.fm_newButtonTitle = "Créer un nouveau pad ou un dossier, importer un fichier dans le dossier courant";
     out.fm_newFolder = "Nouveau dossier";
     out.fm_newFile = "Nouveau pad";
     out.fm_folder = "Dossier";
@@ -270,12 +318,12 @@ define(function () {
     out.updated_0_fm_info_trash = "Vider la corbeille permet de libérer de l'espace dans votre CryptDrive";
     out.fm_info_trash = out.updated_0_fm_info_trash;
     out.fm_info_allFiles = 'Contient tous les fichiers de "Documents", "Fichiers non triés" et "Corbeille". Vous ne pouvez pas supprimer ou déplacer des fichiers depuis cet endroit.'; // Same here
-    out.fm_info_anonymous = 'Vous n\'êtes pas connectés, ces pads risquent donc d\'être supprimés (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">découvrez pourquoi</a>). ' +
+    out.fm_info_anonymous = 'Vous n\'êtes pas connecté, ces pads risquent donc d\'être supprimés (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">découvrez pourquoi</a>). ' +
                             '<a href="/register/">Inscrivez-vous</a> ou <a href="/login/">connectez-vous</a> pour les maintenir en vie.';
-    out.fm_alert_backupUrl = "Lien de secours pour ce disque.<br>" +
+    out.fm_alert_backupUrl = "Lien de secours pour ce CryptDrive.<br>" +
                              "Il est <strong>fortement recommandé</strong> de garder ce lien pour vous-même.<br>" +
-                             "Elle vous servira en cas de perte des données de votre navigateur afin de retrouver vos fichiers.<br>" +
-                             "Quiconque se trouve en possession de celle-ci peut modifier ou supprimer tous les fichiers de ce gestionnaire.<br>";
+                             "Il vous servira en cas de perte des données de votre navigateur afin de retrouver vos fichiers.<br>" +
+                             "Quiconque se trouve en possession de celui-ci peut modifier ou supprimer tous les fichiers de ce gestionnaire.<br>";
     out.fm_alert_anonymous = "Bonjour ! Vous utilisez actuellement Cryptpad de manière anonyme, ce qui ne pose pas de problème mais vos pads peuvent être supprimés après un certain temps " +
                              "d'inactivité. Nous avons désactivé certaines fonctionnalités avancées de CryptDrive pour les utilisateurs anonymes afin de rendre clair le fait que ce n'est pas " +
                              'un endroit sûr pour le stockage des documents. Vous pouvez <a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">en lire plus</a> concernant ' +
@@ -351,28 +399,37 @@ define(function () {
     ];
 
     // Settings
+    out.settings_cat_account = "Compte";
+    out.settings_cat_drive = "CryptDrive";
     out.settings_title = "Préférences";
     out.settings_save = "Sauver";
+
+    out.settings_backupCategory = "Sauvegarde";
     out.settings_backupTitle = "Créer ou restaurer une sauvegarde de vos données";
-    out.settings_backup = "Créer une sauvegarde";
-    out.settings_restore = "Restaurer une sauvegarde";
-    out.settings_resetTitle = "Vider votre drive";
+    out.settings_backup = "Sauvegarder";
+    out.settings_restore = "Restaurer";
+
+    out.settings_resetNewTitle = "Vider CryptDrive";
+    out.settings_resetButton = "Supprimer";
     out.settings_reset = "Supprimer tous les fichiers et dossiers de votre CryptDrive";
     out.settings_resetPrompt = "Cette action va supprimer tous les pads de votre drive.<br>"+
                                "Êtes-vous sûr de vouloir continuer ?<br>" +
                                "Tapez “<em>I love CryptPad</em>” pour confirmer.";
     out.settings_resetDone = "Votre drive est désormais vide!";
     out.settings_resetError = "Texte de vérification incorrect. Votre CryptDrive n'a pas été modifié.";
-    out.settings_resetTips = "Astuces et informations dans CryptDrive";
+
+    out.settings_resetTipsAction  ="Réinitialiser";
+    out.settings_resetTips = "Astuces";
     out.settings_resetTipsButton = "Réinitialiser les astuces visibles dans CryptDrive";
     out.settings_resetTipsDone = "Toutes les astuces sont de nouveau visibles.";
 
-    out.settings_importTitle = "Importer les pads récents de ce navigateur dans mon CryptDrive";
+    out.settings_importTitle = "Importer les pads récents de ce navigateur dans votre CryptDrive";
     out.settings_import = "Importer";
     out.settings_importConfirm = "Êtes-vous sûr de vouloir importer les pads récents de ce navigateur dans le CryptDrive de votre compte utilisateur ?";
     out.settings_importDone = "Importation terminée";
 
-    out.settings_userFeedbackHint1 = "CryptPad peut envoyer des retours d'expérience très limités vers le serveur, de manière à nous permettre d'améliorer l'expérience des utilisateurs.";
+    out.settings_userFeedbackTitle = "Retour d'expérience";
+    out.settings_userFeedbackHint1 = "CryptPad peut envoyer des retours d'expérience très limités vers le serveur, de manière à nous permettre d'améliorer l'expérience des utilisateurs. ";
     out.settings_userFeedbackHint2 = "Le contenu de vos pads et les clés de déchiffrement ne seront jamais partagés avec le serveur.";
     out.settings_userFeedback = "Activer l'envoi de retours d'expérience";
 
@@ -385,13 +442,15 @@ define(function () {
     out.settings_pinningError = "Un problème est survenu";
     out.settings_usageAmount = "Vos pads épinglés occupent {0} Mo";
 
+    out.settings_logoutEverywhereButton = "Se déconnecter";
     out.settings_logoutEverywhereTitle = "Se déconnecter partout";
-    out.settings_logoutEverywhere = "Se déconnecter de toutes les autres sessions.";
+    out.settings_logoutEverywhere = "Se déconnecter de force de toutes les autres sessions.";
     out.settings_logoutEverywhereConfirm = "Êtes-vous sûr ? Vous devrez vous reconnecter sur tous vos autres appareils.";
 
-    out.upload_serverError = "Erreur interne: impossible d'uploader le fichier pour l'instant.";
-    out.upload_uploadPending = "Vous avez déjà un fichier en cours d'upload. Souhaitez-vous l'annuler et uploader ce nouveau fichier ?";
-    out.upload_success = "Votre fichier ({0}) a été uploadé avec succès et ajouté à votre CryptDrive.";
+    out.upload_title = "Hébergement de fichiers";
+    out.upload_serverError = "Erreur interne: impossible d'importer le fichier pour l'instant.";
+    out.upload_uploadPending = "Vous avez déjà un fichier en cours d'importation. Souhaitez-vous l'annuler et importer ce nouveau fichier ?";
+    out.upload_success = "Votre fichier ({0}) a été importé avec succès et ajouté à votre CryptDrive.";
     out.upload_notEnoughSpace = "Il n'y a pas assez d'espace libre dans votre CryptDrive pour ce fichier.";
     out.upload_tooLarge = "Ce fichier dépasse la taille maximale autorisée.";
     out.upload_choose = "Choisir un fichier";
@@ -400,8 +459,9 @@ define(function () {
     out.upload_name = "Nom du fichier";
     out.upload_size = "Taille";
     out.upload_progress = "État";
-    out.upload_mustLogin = "Vous devez vous connecter pour uploader un fichier";
+    out.upload_mustLogin = "Vous devez vous connecter pour importer un fichier";
     out.download_button = "Déchiffrer et télécharger";
+    out.download_mt_button = "Télécharger";
 
     // general warnings
     out.warn_notPinned = "Ce pad n'est stocké dans aucun CryptDrive. Il va expirer après 3 mois d'inactivité. <a href='/about.html#pinning'>En savoir plus...</a>";
@@ -484,7 +544,8 @@ define(function () {
 
     out.header_france = '<a href="http://www.xwiki.com/fr" target="_blank" rel="noopener noreferrer">Fait avec <img class="bottom-bar-heart" src="/customize/heart.png" alt="amour" /> en <img class="bottom-bar-fr" title="France" alt="France" src="/customize/fr.png" /> par <img src="/customize/logo-xwiki.png" alt="XWiki SAS" class="bottom-bar-xwiki"/></a>';
     out.header_support = '<a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
-    out.header_logoTitle = "Aller vers la page d'accueil";
+    out.updated_0_header_logoTitle = 'Retourner vers votre CryptDrive';
+    out.header_logoTitle = out.updated_0_header_logoTitle;
 
     // Initial states
 
@@ -492,12 +553,12 @@ define(function () {
         '<span style="font-size:16px;"><p>',
         'Voici <strong>CryptPad</strong>, l\'éditeur collaboratif en temps-réel Zero Knowledge. Tout est sauvegardé dés que vous le tapez.',
         '<br>',
-        'Partagez le lien vers ce pad avec des amis ou utilisez le bouton <span style="background-color:#5cb85c;color:#ffffff;">&nbsp;Partager&nbsp;</span> pour obtenir le <em>lien de lecture-seule</em>, qui permet la lecture mais non la modification.',
+        'Partagez le lien vers ce pad avec des amis ou utilisez le bouton <span class="fa fa-share-alt" style="border: 1px solid black;color:#000;">&nbsp;Partager&nbsp;</span> pour obtenir le <em>lien de lecture-seule</em>, qui permet la lecture mais non la modification.',
         '</p>',
-        '<p><span style="color:#808080; font-size: 16px;">',
+        '<p>',
         '<em>',
         'Lancez-vous, commencez à taper...',
-        '</em></span></p></span>',
+        '</em></p></span>',
         '<p>&nbsp;<br></p>'
     ].join('');
 

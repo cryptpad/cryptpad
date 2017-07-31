@@ -9,7 +9,10 @@ define([
     '/common/toolbar2.js',
     '/customize/application_config.js',
     '/common/cryptget.js',
-    '/common/mergeDrive.js'
+    '/common/mergeDrive.js',
+
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/customize/src/less/cryptpad.less',
 ], function ($, Listmap, Crypto, TextPatcher, JSONSortify, Cryptpad, FO, Toolbar, AppConfig, Get, Merge) {
     var module = window.MODULE = {};
 
@@ -150,28 +153,25 @@ define([
 
     // Icons
     var $folderIcon = $('<span>', {"class": "fa fa-folder folder icon"});
+    //var $folderIcon = $('<img>', {src: "/customize/images/icons/folder.svg", "class": "folder icon"});
     var $folderEmptyIcon = $folderIcon.clone();
     var $folderOpenedIcon = $('<span>', {"class": "fa fa-folder-open folder"});
+    //var $folderOpenedIcon = $('<img>', {src: "/customize/images/icons/folderOpen.svg", "class": "folder icon"});
     var $folderOpenedEmptyIcon = $folderOpenedIcon.clone();
-    var $fileIcon = $('<span>', {"class": "fa fa-file-text-o file icon"});
-    var $padIcon = $('<span>', {"class": "fa fa-file-word-o file icon"});
-    var $codeIcon = $('<span>', {"class": "fa fa-file-code-o file icon"});
-    var $slideIcon = $('<span>', {"class": "fa fa-file-powerpoint-o file icon"});
-    var $pollIcon = $('<span>', {"class": "fa fa-calendar file icon"});
-    var $whiteboardIcon = $('<span>', {"class": "fa fa-paint-brush"});
     //var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
     var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
     var $templateIcon = $('<span>', {"class": "fa fa-cubes"});
-    var $trashIcon = $('<span>', {"class": "fa fa-trash"});
+    var $trashIcon = $('<span>', {"class": "fa fa-trash-o"});
     var $trashEmptyIcon = $('<span>', {"class": "fa fa-trash-o"});
     //var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o expcol"});
     var $expandIcon = $('<span>', {"class": "fa fa-plus-square-o expcol"});
-    var $listIcon = $('<span>', {"class": "fa fa-list"});
-    var $gridIcon = $('<span>', {"class": "fa fa-th"});
+    var $listIcon = $('<button>', {"class": "fa fa-list"});
+    var $gridIcon = $('<button>', {"class": "fa fa-th-large"});
     var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up sortasc"});
     var $sortDescIcon = $('<span>', {"class": "fa fa-angle-down sortdesc"});
     var $closeIcon = $('<span>', {"class": "fa fa-window-close"});
     var $backupIcon = $('<span>', {"class": "fa fa-life-ring"});
+    var $searchIcon = $('<span>', {"class": "fa fa-search searchIcon"});
 
     var history = {
         isHistoryMode: false,
@@ -529,6 +529,12 @@ define([
             module.displayDirectory(currentPath);
         };
 
+        var getFileNameExtension = function (name) {
+            var matched = /\.\S+$/.exec(name);
+            if (matched && matched.length) { return matched[matched.length -1]; }
+            return '';
+        };
+
         // Replace a file/folder name by an input to change its value
         var displayRenameInput = function ($element, path) {
             // NOTE: setTimeout(f, 0) otherwise the "rename" button in the toolbar is not working
@@ -552,6 +558,7 @@ define([
                     value: name
                 }).data('path', path);
 
+
                 // Stop propagation on keydown to avoid issues with arrow keys
                 $input.on('keydown', function (e) { e.stopPropagation(); });
 
@@ -568,7 +575,12 @@ define([
                 //$element.parent().append($input);
                 $name.after($input);
                 $input.focus();
-                $input.select();
+
+                var extension = getFileNameExtension(name);
+                var input = $input[0];
+                input.selectionStart = 0;
+                input.selectionEnd = name.length - extension.length;
+
                 // We don't want to open the file/folder when clicking on the input
                 $input.on('click dblclick', function (e) {
                     removeSelected();
@@ -647,10 +659,6 @@ define([
                 hide.push($menu.find('a.open'));
             }
             return hide;
-        };
-
-        var updatePathSize = function () {
-            $driveToolbar.find('.path').css('max-width', 'calc(100vw - '+$tree.width()+'px - 50px)');
         };
 
         var getSelectedPaths = function ($element) {
@@ -734,7 +742,6 @@ define([
                 $container.append($a);
                 $a.click(function() { $(el).click(); });
             });
-            updatePathSize();
         };
 
         var scrollTo = function ($element) {
@@ -1140,7 +1147,7 @@ define([
         };
 
         var getFileIcon = function (id) {
-            var $icon = $fileIcon.clone();
+            var $icon = Cryptpad.getIcon();
 
             var data = filesOp.getFileData(id);
             if (!data) { return $icon; }
@@ -1148,14 +1155,16 @@ define([
             var href = data.href;
             if (!href) { return $icon; }
 
-            if (href.indexOf('/pad/') !== -1) { $icon = $padIcon.clone(); }
-            else if (href.indexOf('/code/') !== -1) { $icon = $codeIcon.clone(); }
-            else if (href.indexOf('/slide/') !== -1) { $icon = $slideIcon.clone(); }
-            else if (href.indexOf('/poll/') !== -1) { $icon = $pollIcon.clone(); }
-            else if (href.indexOf('/whiteboard/') !== -1) { $icon = $whiteboardIcon.clone(); }
+            if (href.indexOf('/pad/') !== -1) { $icon = Cryptpad.getIcon('pad'); }
+            else if (href.indexOf('/code/') !== -1) { $icon = Cryptpad.getIcon('code'); }
+            else if (href.indexOf('/slide/') !== -1) { $icon = Cryptpad.getIcon('slide'); }
+            else if (href.indexOf('/poll/') !== -1) { $icon = Cryptpad.getIcon('poll'); }
+            else if (href.indexOf('/whiteboard/') !== -1) { $icon = Cryptpad.getIcon('whiteboard'); }
+            else if (href.indexOf('/file/') !== -1) { $icon = Cryptpad.getIcon('file'); }
 
             return $icon;
         };
+        var getIcon = Cryptpad.getIcon;
 
         // Create the "li" element corresponding to the file/folder located in "path"
         var createElement = function (path, elPath, root, isFolder) {
@@ -1174,7 +1183,7 @@ define([
             var element = filesOp.find(newPath);
             var $icon = !isFolder ? getFileIcon(element) : undefined;
             var ro = filesOp.isReadOnlyFile(element);
-            // ro undefined mens it's an old hash which doesn't support read-only
+            // ro undefined means it's an old hash which doesn't support read-only
             var roClass = typeof(ro) === 'undefined' ? ' noreadonly' : ro ? ' readonly' : '';
             var liClass = 'file-item file-element element' + roClass;
             if (isFolder) {
@@ -1254,12 +1263,11 @@ define([
         };
 
         // Create the title block with the "parent folder" button
-        var createTitle = function (path, noStyle) {
+        var createTitle = function ($container, path, noStyle) {
             if (!path || path.length === 0) { return; }
             var isTrash = filesOp.isPathIn(path, [TRASH]);
-            var $title = $driveToolbar.find('.path');
-            if (APP.mobile()) {
-                return $title;
+            if (APP.mobile() && !noStyle) { // noStyle means title in search result
+                return $container;
             }
             var el = path[0] === SEARCH ? undefined : filesOp.find(path);
             path = path[0] === SEARCH ? path.slice(0,1) : path;
@@ -1283,11 +1291,13 @@ define([
                 }
 
                 if (idx === 0) { name = getPrettyName(p); }
-                else { $title.append(' > '); }
+                else {
+                    var $span2 = $('<span>', {'class': 'element separator'}).text(' / ');
+                    $container.prepend($span2);
+                }
 
-                $span.text(name).appendTo($title);
+                $span.text(name).prependTo($container);
             });
-            return $title;
         };
 
         var createInfoBox = function (path) {
@@ -1333,17 +1343,13 @@ define([
         };
 
         // Create the button allowing the user to switch from list to icons modes
-        var createViewModeButton = function () {
-            var $block = $('<div>', {
+        var createViewModeButton = function ($container) {
+            /*var $block = $('<div>', {
                 'class': 'dropdown-bar right changeViewModeContainer'
-            });
+            });*/
 
-            var $listButton = $('<button>', {
-                'class': 'element'
-            }).append($listIcon.clone());
-            var $gridButton = $('<button>', {
-                'class': 'element'
-            }).append($gridIcon.clone());
+            var $listButton = $listIcon.clone().addClass('element');
+            var $gridButton = $gridIcon.clone().addClass('element');
 
             $listButton.click(function () {
                 $gridButton.removeClass('active');
@@ -1351,6 +1357,7 @@ define([
                 setViewMode('list');
                 $iframe.find('#' + FOLDER_CONTENT_ID).removeClass('grid');
                 $iframe.find('#' + FOLDER_CONTENT_ID).addClass('list');
+                Cryptpad.feedback('DRIVE_LIST_MODE');
             });
             $gridButton.click(function () {
                 $listButton.removeClass('active');
@@ -1358,6 +1365,7 @@ define([
                 setViewMode('grid');
                 $iframe.find('#' + FOLDER_CONTENT_ID).addClass('grid');
                 $iframe.find('#' + FOLDER_CONTENT_ID).removeClass('list');
+                Cryptpad.feedback('DRIVE_GRID_MODE');
             });
 
             if (getViewMode() === 'list') {
@@ -1365,12 +1373,12 @@ define([
             } else {
                 $gridButton.addClass('active');
             }
-            $block.append($listButton).append($gridButton);
-            return $block;
+            $container.append($listButton).append($gridButton);
         };
 
-        var createNewButton = function (isInRoot) {
+        var createNewButton = function (isInRoot, $container) {
             if (!APP.editable) { return; }
+            if (!APP.loggedIn) { return; } // Anonymous users can use the + menu in the toolbar
 
             // Create dropdown
             var options = [];
@@ -1378,12 +1386,19 @@ define([
                 options.push({
                     tag: 'a',
                     attributes: {'class': 'newFolder'},
-                    content: Messages.fm_folder
+                    content: $('<div>').append($folderIcon.clone()).html() + Messages.fm_folder
+                });
+                options.push({tag: 'hr'});
+                options.push({
+                    tag: 'a',
+                    attributes: {'class': 'uploadFile'},
+                    content: $('<div>').append(getIcon('file')).html() + Messages.uploadButton
                 });
                 options.push({tag: 'hr'});
             }
             AppConfig.availablePadTypes.forEach(function (type) {
                 if (type === 'drive') { return; }
+                if (type === 'contacts') { return; }
                 if (!Cryptpad.isLoggedIn() && AppConfig.registeredOnlyTypes &&
                     AppConfig.registeredOnlyTypes.indexOf(type) !== -1) {
                     return;
@@ -1396,20 +1411,21 @@ define([
                 options.push({
                     tag: 'a',
                     attributes: attributes,
-                    content: Messages.type[type]
+                    content: $('<div>').append(getIcon(type)).html() + Messages.type[type]
                 });
             });
             var $plusIcon = $('<div>').append($('<span>', {'class': 'fa fa-plus'}));
 
 
             var dropdownConfig = {
-                text: $plusIcon.html() + Messages.fm_newButton,
-                options: options
+                text: $plusIcon.html() + '<span>'+Messages.fm_newButton+'</span>',
+                options: options,
+                feedback: 'DRIVE_NEWPAD_LOCALFOLDER',
             };
             var $block = Cryptpad.createDropdown(dropdownConfig);
 
             // Custom style:
-            $block.find('button').addClass('btn').addClass('btn-primary').addClass('new');
+            $block.find('button').addClass('new');
             $block.find('button').attr('title', Messages.fm_newButtonTitle);
 
             // Handlers
@@ -1427,6 +1443,19 @@ define([
                 $block.find('a.newFolder').click(function () {
                     filesOp.addFolder(currentPath, null, onCreated);
                 });
+                $block.find('a.uploadFile').click(function () {
+                    var $input = $('<input>', {
+                        'type': 'file',
+                        'style': 'display: none;'
+                    }).on('change', function (e) {
+                        var file = e.target.files[0];
+                        var ev = {
+                            target: $content[0]
+                        };
+                        APP.FM.handleFile(file, ev);
+                    });
+                    $input.click();
+                });
             }
             $block.find('a.newdoc').click(function () {
                 var type = $(this).attr('data-type') || 'pad';
@@ -1434,17 +1463,7 @@ define([
                 window.open('/' + type + '/');
             });
 
-            return $block;
-        };
-
-        var createUploadButton = function () {
-            var inTrash = filesOp.isPathIn(currentPath, [TRASH]);
-            if (inTrash) { return; }
-            var data = {
-                FM: APP.FM,
-                target: $content[0]
-            };
-            return Cryptpad.createButton('upload', false, data);
+            $container.append($block);
         };
 
         var hideNewButton = function () {
@@ -1620,8 +1639,11 @@ define([
             var $toolbar = $driveToolbar;
             $toolbar.html('');
             $('<div>', {'class': 'leftside'}).appendTo($toolbar);
-            $('<div>', {'class': 'rightside'}).appendTo($toolbar);
             $('<div>', {'class': 'path unselectable'}).appendTo($toolbar);
+            var $rightside = $('<div>', {'class': 'rightside'}).appendTo($toolbar);
+            var $hist = Cryptpad.createButton('history', true, {histConfig: APP.histConfig});
+            $hist.addClass('element');
+            $rightside.append($hist);
             return $toolbar;
         };
 
@@ -1629,8 +1651,10 @@ define([
         // and they don't hav a hierarchical structure (folder/subfolders)
         var displayHrefArray = function ($container, rootName, draggable) {
             var unsorted = files[rootName];
-            var $fileHeader = getFileListHeader(false);
-            $container.append($fileHeader);
+            if (unsorted.length) {
+                var $fileHeader = getFileListHeader(false);
+                $container.append($fileHeader);
+            }
             var keys = unsorted;
             var sortBy = Cryptpad.getLSAttribute(SORT_FILE_BY);
             sortBy = sortBy === "" ? sortBy = 'name' : sortBy;
@@ -1754,7 +1778,8 @@ define([
                         path.pop();
                         path.push(r.data.title);
                     }
-                    var $path = $('<td>', {'class': 'col1 path'}).html(createTitle(path, true).html());
+                    var $path = $('<td>', {'class': 'col1 path'});
+                    createTitle($path, path, true);
                     var parentPath = path.slice();
                     var $a;
                     if (parentPath) {
@@ -1842,12 +1867,14 @@ define([
                 if (mode) {
                     $dirContent.addClass(getViewModeClass());
                 }
-                createViewModeButton().appendTo($toolbar.find('.rightside'));
+                createViewModeButton($toolbar.find('.rightside'));
             }
             var $list = $('<ul>').appendTo($dirContent);
 
-            createTitle(path).appendTo($toolbar.find('.path'));
-            updatePathSize();
+            // NewButton can be undefined if we're in read only mode
+            createNewButton(isInRoot, $toolbar.find('.leftside'));
+
+            createTitle($toolbar.find('.path'), path);
 
             if (APP.mobile()) {
                 var $context = $('<button>', {'class': 'element right dropdown-bar', id: 'contextButton'});
@@ -1878,11 +1905,6 @@ define([
                 $contextButtons.appendTo($toolbar.find('.rightside'));
             }
             updateContextButton();
-
-            // NewButton can be undefined if we're in read only mode
-            $toolbar.find('.leftside').append(createNewButton(isInRoot));
-            $toolbar.find('.leftside').append(createUploadButton());
-
 
             var $folderHeader = getFolderListHeader();
             var $fileHeader = getFileListHeader(true);
@@ -1992,7 +2014,9 @@ define([
             }
             $elementRow.data('path', path);
             addDragAndDropHandlers($elementRow, path, true, droppable);
-            if (active) { $elementRow.addClass('active'); }
+            if (active) {
+                $elementRow.addClass('active');
+            }
             return $element;
         };
 
@@ -2012,7 +2036,7 @@ define([
                 var $rootElement = createTreeElement(ROOT_NAME, $rootIcon.clone(), [ROOT], false, true, false, isRootOpened);
                 $rootElement.addClass('root');
                 $rootElement.find('>.element-row').contextmenu(openDirectoryContextMenu);
-                $('<ul>').append($rootElement).appendTo($container);
+                $('<ul>', {'class': 'docTree'}).append($rootElement).appendTo($container);
                 $container = $rootElement;
             } else if (filesOp.isFolderEmpty(root)) { return; }
 
@@ -2042,7 +2066,7 @@ define([
             var isOpened = filesOp.comparePath(path, currentPath);
             var $element = createTreeElement(TEMPLATE_NAME, $icon, [TEMPLATE], false, true, false, isOpened);
             $element.addClass('root');
-            var $list = $('<ul>', { id: 'templateTree', 'class': 'category2' }).append($element);
+            var $list = $('<ul>', { id: 'templateTree', 'class': 'category' }).append($element);
             $container.append($list);
         };
 
@@ -2051,7 +2075,7 @@ define([
             var isOpened = filesOp.comparePath(path, currentPath);
             var $allfilesElement = createTreeElement(FILES_DATA_NAME, $icon, [FILES_DATA], false, false, false, isOpened);
             $allfilesElement.addClass('root');
-            var $allfilesList = $('<ul>', { id: 'allfilesTree', 'class': 'category2' }).append($allfilesElement);
+            var $allfilesList = $('<ul>', { id: 'allfilesTree', 'class': 'category' }).append($allfilesElement);
             $container.append($allfilesList);
         };
 
@@ -2061,7 +2085,7 @@ define([
             var $trashElement = createTreeElement(TRASH_NAME, $icon, [TRASH], false, true, false, isOpened);
             $trashElement.addClass('root');
             $trashElement.find('>.element-row').contextmenu(openTrashTreeContextMenu);
-            var $trashList = $('<ul>', { id: 'trashTree', 'class': 'category2' }).append($trashElement);
+            var $trashList = $('<ul>', { id: 'trashTree', 'class': 'category' }).append($trashElement);
             $container.append($trashList);
         };
 
@@ -2107,6 +2131,7 @@ define([
                     if (!filesOp.comparePath(newLocation, currentPath.slice())) { displayDirectory(newLocation); }
                 }, 500);
             }).appendTo($div);
+            $searchIcon.clone().appendTo($div);
             if (isInSearch) { $input.val(currentPath[1] || ''); }
             $container.append($div);
         };
@@ -2115,10 +2140,15 @@ define([
             var s = $tree.scrollTop() || 0;
             $tree.html('');
             if (displayedCategories.indexOf(SEARCH) !== -1) { createSearch($tree); }
-            if (displayedCategories.indexOf(ROOT) !== -1) { createTree($tree, [ROOT]); }
-            if (displayedCategories.indexOf(TEMPLATE) !== -1) { createTemplate($tree, [TEMPLATE]); }
-            if (displayedCategories.indexOf(FILES_DATA) !== -1) { createAllFiles($tree, [FILES_DATA]); }
-            if (displayedCategories.indexOf(TRASH) !== -1) { createTrash($tree, [TRASH]); }
+            var $div = $('<div>', {'class': 'categories-container'}).appendTo($tree);
+            if (displayedCategories.indexOf(ROOT) !== -1) { createTree($div, [ROOT]); }
+            if (displayedCategories.indexOf(TEMPLATE) !== -1) { createTemplate($div, [TEMPLATE]); }
+            if (displayedCategories.indexOf(FILES_DATA) !== -1) { createAllFiles($div, [FILES_DATA]); }
+            if (displayedCategories.indexOf(TRASH) !== -1) { createTrash($div, [TRASH]); }
+
+            //$tree.append($('<div>', {'class': 'filler'}));
+            $tree.append(APP.$limit);
+
             $tree.scrollTop(s);
         };
 
@@ -2128,6 +2158,7 @@ define([
             $trashContextMenu.hide();
             $contentContextMenu.hide();
             $defaultContextMenu.hide();
+            $iframe.find('.cryptpad-dropdown').hide();
         };
 
         var stringifyPath = function (path) {
@@ -2693,7 +2724,7 @@ define([
 
             var userList = APP.userList = info.userList;
             var config = {
-                displayed: ['useradmin', 'spinner', 'lag', 'state', 'limit', 'newpad'],
+                displayed: ['useradmin', 'limit', 'newpad', 'pageTitle'],
                 userList: {
                     list: userList,
                     userNetfluxId: info.myID
@@ -2703,12 +2734,13 @@ define([
                 ifrw: window,
                 realtime: info.realtime,
                 network: info.network,
-                $container: APP.$bar
+                $container: APP.$bar,
+                pageTitle: Messages.type.drive
             };
             var toolbar = APP.toolbar = Toolbar.create(config);
 
             var $rightside = toolbar.$rightside;
-            var $leftside = toolbar.$leftside;
+            $rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
             var $userBlock = toolbar.$userAdmin;
             APP.$displayName = APP.$bar.find('.' + Toolbar.constants.username);
 
@@ -2723,12 +2755,11 @@ define([
             /* add the usage */
             Cryptpad.createUsageBar(function (err, $limitContainer) {
                 if (err) { return void logError(err); }
-                $leftside.html('');
-                $leftside.append($limitContainer);
+                APP.$limit = $limitContainer;
             }, true);
 
             /* add a history button */
-            var histConfig = {
+            APP.histConfig = {
                 onLocal: function () {
                     proxy.drive = history.currentObj.drive;
                 },
@@ -2742,12 +2773,9 @@ define([
                 $toolbar: APP.$bar,
                 href: window.location.origin + window.location.pathname + '#' + APP.hash
             };
-            var $hist = Cryptpad.createButton('history', true, {histConfig: histConfig});
-            $rightside.append($hist);
-            if (!APP.loggedIn) { $hist.hide(); }
 
             if (!readOnly && !APP.loggedIn) {
-                var $backupButton = Cryptpad.createButton('', true).removeClass('fa').removeClass('fa-question');
+                var $backupButton = Cryptpad.createButton('', true).removeClass('fa').removeClass('fa-question').addClass('cryptpad-backup');
                 $backupButton.append($backupIcon.clone().css('marginRight', '0px'));
                 $backupButton.attr('title', Messages.fm_backup_title);
                 $backupButton.on('click', function() {
@@ -2765,6 +2793,7 @@ define([
             Cryptpad.onDisplayNameChanged(setName);
         };
         var onReady = function () {
+            APP.$iframe.find('body').css('display', '');
             module.files = proxy;
             if (!proxy.drive || typeof(proxy.drive) !== 'object') { proxy.drive = {}; }
             migrateAnonDrive(proxy, function () {

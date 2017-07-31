@@ -60,6 +60,9 @@ define([
             cb(void 0, res);
         };
 
+        ret.setPadAttribute = filesOp.setAttribute;
+        ret.getPadAttribute = filesOp.getAttribute;
+
         ret.getDrive = function (key, cb) {
             cb(void 0, storeObj.drive[key]);
         };
@@ -127,6 +130,10 @@ define([
         ret.changeHandlers = [];
 
         ret.change = function () {};
+
+        ret.getProfile = function () {
+            return storeObj.profile;
+        };
 
         return ret;
     };
@@ -199,7 +206,8 @@ define([
             }
 
             // if the user is logged in, but does not have signing keys...
-            if (Cryptpad.isLoggedIn() && !Cryptpad.hasSigningKeys(proxy)) {
+            if (Cryptpad.isLoggedIn() && (!Cryptpad.hasSigningKeys(proxy) ||
+                !Cryptpad.hasCurveKeys(proxy))) {
                 return void requestLogin();
             }
 
@@ -207,8 +215,15 @@ define([
                 if (typeof(n) !== "string") { return; }
                 Cryptpad.changeDisplayName(n);
             });
+            proxy.on('change', ['profile'], function () {
+                // Trigger userlist update when the avatar has changed
+                Cryptpad.changeDisplayName(proxy[Cryptpad.displayNameKey]);
+            });
+            proxy.on('change', ['friends'], function () {
+                // Trigger userlist update when the avatar has changed
+                Cryptpad.changeDisplayName(proxy[Cryptpad.displayNameKey]);
+            });
             proxy.on('change', [tokenKey], function () {
-                console.log('wut');
                 var localToken = tryParsing(localStorage.getItem(tokenKey));
                 if (localToken !== proxy[tokenKey]) {
                     return void requestLogin();

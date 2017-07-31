@@ -1,5 +1,5 @@
-@import "../../customize.dist/src/less/variables.less";
-@import "../../customize.dist/src/less/mixins.less";
+@import "/customize/src/less/variables.less";
+@import "/customize/src/less/mixins.less";
 
 // used for slides
 .viewportRatio (@x, @y, @p: 100) {
@@ -19,6 +19,7 @@ html, body{
     position: relative;
 }
 body {
+    font-size: unset;
     display: flex;
     flex-flow: column;
 }
@@ -118,6 +119,9 @@ body {
                 max-width: 177.78vh; // 16/9 = 1.778
             }
         }
+        #button_exit {
+            visibility: hidden;
+        }
     }
 }
 .cp {
@@ -158,11 +162,7 @@ body {
             height: ~"calc(100vh - 2px)";
         }
     }
-    /*.slide-frame:first-child {
-        margin-top: ~"calc(((100vh - 56.25vw)/2))";
-    }*/
 }
-
 
 /* Slide position (present mode) */
 div.modal, div#modal {
@@ -212,20 +212,14 @@ div.modal, div#modal {
         white-space: nowrap;
         .slide-frame {
             overflow: hidden;
-            display: inline-block;
+            display: flex;
+            flex-flow: column !important;
+
             box-sizing: border-box;
             border: 1px solid;
             white-space: normal;
 
             vertical-align: middle;
-
-            /* center things as much as possible
-
-                margin-top: 50vh;
-                margin-bottom: 50vh;
-                transform: translateY(-50%);
-
-            */
 
             padding: 0.5em;
             width: 100vw;
@@ -244,6 +238,9 @@ div.modal, div#modal {
             .slide-container {
                 transition: margin-left 1s;
             }
+        }
+        media-tag button {
+            max-height: none;
         }
     }
 
@@ -282,7 +279,7 @@ div#modal #content, #print {
         * {
             .size(2.75);
             * {
-                font-size: 100%;
+                font-size: 1em;
                 line-height: 1em;
             }
         }
@@ -324,13 +321,10 @@ div#modal #content, #print {
             margin: 0 auto;
             padding-left: 0.3em;
         }
-        // p, ul, ol { padding-left: 10%; }
 
         img {
             position: relative;
             min-width: 1%;
-            max-width: 90%;
-            max-height: 90%;
             margin: auto;
         }
         .slideNumber {
@@ -364,7 +358,7 @@ div#modal #content, #print {
     top: 15vh; bottom: 15vh;
     left: 10vw; right: 10vw;
     border: 1px solid black;
-    z-index: 10;
+    z-index: 100000;
     overflow: auto;
     display: none;
     font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
@@ -396,3 +390,34 @@ div#modal #content, #print {
     }
 }
 
+.slide-frame * {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+p {
+    //display: flex;
+    //flex-flow: row wrap;
+    padding: 0;
+    margin: 0;
+    min-height:0;
+    min-width:0;
+    //flex: 1;
+}
+
+media-tag {
+    min-height: 0;
+    flex: 1;
+    display: flex;
+    flex-flow: column;
+    text-align: center;
+}
+
+media-tag img {
+    flex: 1;
+    max-height: 100% !important;
+}
+
+media-tag iframe {
+  min-height: 100%;
+}

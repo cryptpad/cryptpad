@@ -1,13 +1,14 @@
-@import "../../customize.dist/src/less/variables.less";
+@import "/customize/src/less/variables.less";
+@import "/customize/src/less/mixins.less";
 
-@tree-bg: #fff;
+@tree-bg: #eee;
 @tree-fg: #000;
 @tree-lines-col: #888;
 
 @drive-hover: #eee;
 @drive-hover-light: lighten(@drive-hover, 20%);
 
-@content-bg: @tree-bg;
+@content-bg: #fff;
 @content-bg-ro: darken(@content-bg, 10%);
 @content-fg: @tree-fg;
 @info-box-bg: #ddddff;
@@ -36,13 +37,17 @@ html, body {
     padding: 0;
     margin: 0;
     position: relative;
-    font-size: 16px;
+    font-size: @main-font-size;
     overflow: auto;
 }
 
 body {
     display: flex;
     flex-flow: column;
+}
+img.icon {
+    max-width: 20px;
+    max-height: 16px;
 }
 
 .unselectable {
@@ -62,25 +67,38 @@ body {
     flex-flow: row;
     @media screen and (max-width: @size-mobile) {
         display: block;
+        #driveToolbar {
+            .path .element {
+                display: none;
+            }
+        }
         #tree {
             resize: none;
             width: 100%;
             max-width: unset;
+            max-height: unset;
             border-bottom: 1px solid @toolbar-border-col;
-            .category2 {
+            .category {
                 margin-top: 0.5em;
             }
         }
     }
 }
 
+.padColor { color: @toolbar-pad-bg; }
+.codeColor { color: @toolbar-code-bg; }
+.slideColor { color: @toolbar-slide-bg; }
+.pollColor { color: @toolbar-poll-bg; }
+.fileColor { color: @toolbar-file-bg; }
+.whiteboardColor { color: @toolbar-whiteboard-bg; }
+.driveColor { color: @toolbar-drive-bg; }
+.defaultColor { color: @toolbar-default-bg; }
+
 div:focus {
     outline: none;
 }
 
 .fa {
-    /*min-width: 17px;*/
-    margin-right: 3px;
     font-family: FontAwesome;
 }
 
@@ -97,17 +115,13 @@ li {
     user-select: none;
 }
 
-.folder, .file {
-    margin-right: 5px;
-}
-
 .contextMenu {
     display: none;
     position: absolute;
     z-index: 500;
     li {
         padding: 0;
-        font-size: 16px;
+        font-size: @main-font-size;
         a {
             cursor: pointer;
         }
@@ -141,8 +155,8 @@ li {
 
 span {
     &.fa-folder, &.fa-folder-open {
-        color: #FEDE8B;
-        text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        //color: #FEDE8B;
+        //text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
     }
 }
 
@@ -150,7 +164,8 @@ span {
 
 
 #tree {
-    border-right: 1px solid #ccc;
+    font-size: @main-font-size;
+    //border-right: 1px solid #ccc;
     box-sizing: border-box;
     background: @tree-bg;
     overflow: auto;
@@ -159,53 +174,116 @@ span {
     white-space: nowrap;
     max-width: 500px;
     min-width: 200px;
-    padding: 10px 0px;
+    padding: 0px;
     color: @tree-fg;
-    li {
-        padding: 0 0 0 5px;
+    display: flex;
+    flex-flow: column;
+    max-height: 100%;
+    .categories-container {
+        flex: 1;
+        max-width: 500px;
+        overflow: auto;
+    }
+    img.icon {
+        margin-bottom: 3px;
+        margin-left: -2px;
+    }
+    .docTree {
+        margin-top: 20px;
+        padding: 0 0 0 20px;
         cursor: auto;
-        &.collapsed ul {
-            display: none;
-        }
-        input {
-            width: ~"calc(100% - 30px)";
-        }
-        & > span.element-row {
-            min-width: ~"calc(100% + 5px)";
-            display: inline-block;
-            cursor: pointer;
-            margin-left: -5px;
-            padding-left: 5px;
-        }
-        & > span.element-row:not(.selected):not(.active):hover {
-            background-color: @drive-hover;
+        &li, li {
+            padding: 0;
+            &.collapsed ul {
+                display: none;
+            }
+            input {
+                width: ~"calc(100% - 30px)";
+            }
+            & > span.element-row {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                //min-width: ~"calc(100% + 5px)";
+                .leftsideCategory();
+                width: ~"calc(100% + 5px)";
+                margin: 0;
+                margin-bottom: -6px;
+                display: inline-block;
+                cursor: pointer;
+                margin-left: -5px;
+                padding-left: 5px;
+            }
+            & > span.element-row:not(.selected):not(.active):hover {
+                //background-color: @drive-hover;
+            }
         }
     }
     span.element {
         cursor: pointer;
     }
-    .active {
+    /*.active {
         &:not(.selected):not(.droppable) {
             background-color: darken(@drive-hover, 15%);
         }
-    }
-    .category2 {
-        margin-top: 2em;
+    }*/
+    .category {
+        margin: 0;
+        margin-top: 15px;
         .root {
             &> .fa {
                 min-width: 30px;
                 cursor: pointer;
             }
         }
+        li {
+            padding: 0;
+            .element-row {
+                display: block;
+                padding-left: 20px;
+                .leftsideCategory();
+                margin: 0;
+                .fa {
+                    width: 25px;
+                }
+            }
+        }
+    }
+    .category:last-child {
+        margin-bottom: 20px;
     }
     #allfilesTree {
         margin-top: 0;
     }
+    .limit-container {
+        margin-top: 0;
+    }
     #searchContainer {
         text-align: center;
-        padding: 5px 0;
+        padding: 0;
+        position: relative;
         input {
-            width: 80%;
+            background: lighten(@toolbar-drive-bg, 8%);
+            color: @toolbar-drive-color;
+            .placeholderColor(@toolbar-drive-color);
+            outline-width: 0px;
+            border-radius: 0;
+            width: 100%;
+            //border: 1px solid #ccc;
+            border: 0;
+            border-right: 1px solid lighten(@toolbar-drive-bg, 16%);
+            //border-right: 0;
+            height: @toolbar-line-height;
+            padding: 0 5px;
+            padding-left: 45px;
+            &:focus {
+                outline-width: 0px;
+            }
+        }
+        .searchIcon {
+            color: @toolbar-drive-color;
+            position: absolute;
+            left: 20px; // TODO align with drive categories
+            top: 8px;
         }
     }
     .fa.expcol {
@@ -213,9 +291,9 @@ span {
         font-size: 14px;
         position: absolute;
         left: -20px;
-        top: 9px;
-        width: auto;
-        height: 11px;
+        top: 10px;
+        width: 11px !important;
+        height: 11px !important;
         padding: 0;
         margin: 0;
         background: white;
@@ -228,7 +306,7 @@ span {
     }
 
     // Expand/collapse lines
-    ul {
+    .docTree ul {
         margin: 0px 0px 0px 10px;
         list-style: none;
         padding-left: 10px;
@@ -237,13 +315,13 @@ span {
             &:before {
                 position: absolute;
                 left: -15px;
-                top: -0.25em;
+                top: -11px;
                 content: '';
                 display: block;
                 border-left: 1px solid @tree-lines-col;
-                height: 1em;
+                height: ~"calc(1em + 11px)";
                 border-bottom: 1px solid @tree-lines-col;
-                width: 17.5px;
+                width: 15px;
             }
             &:after {
                 position: absolute;
@@ -268,7 +346,6 @@ span {
             }
         }
     }
-
 }
 
 /* CONTENT */
@@ -276,6 +353,9 @@ span {
     display: flex;
     flex-flow: column;
     flex: 1;
+    // Needed to avoid the folder's path to overflows
+    // https://stackoverflow.com/questions/38223879/white-space-nowrap-breaks-flexbox-layout
+    min-width: 0;
 }
 #content {
     box-sizing: border-box;
@@ -359,6 +439,11 @@ span {
                     }
                     .path {
                         font-style: italic;
+                        direction: rtl;
+                        .element {
+                            display: inline-block;
+                            margin-right: 5px;
+                        }
                     }
                     .title {
                         font-weight: bold;
@@ -370,7 +455,7 @@ span {
                     .col2 {
                         width: 250px;
                     }
-                    .icon {
+                    td.icon {
                         width: 50px;
                         font-size: 40px;
                     }
@@ -423,6 +508,12 @@ span {
                 width: 100%;
                 margin-top: 5px;
             }
+            img.icon {
+                height: 48px;
+                max-height: none;
+                max-width: none;
+                margin: 8px 0;
+            }
             .fa {
                 display: block;
                 margin: auto;
@@ -453,8 +544,10 @@ span {
                 padding: 0 5px;
                 display: table-cell;
             }
-        }
-        li {
+            &:not(.header) {
+                height: @toolbar-line-height;
+                line-height: @toolbar-line-height;
+            }
             &.header {
                 cursor: default;
                 color: @table-header-fg;
@@ -522,45 +615,104 @@ span {
 /* Toolbar */
 
 #driveToolbar {
-    background: @toolbar-bg;
-    color: @toolbar-fg;
+    background: lighten(@toolbar-drive-bg, 8%);
+    color: @toolbar-drive-color;
     //height: 30px;
     //display: flex;
     //flex-flow: row;
-    border-top: 1px solid @toolbar-border-col;
-    border-bottom: ;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     z-index: 100;
-    box-sizing: content-box;
-    padding: 0 6px;
+    box-sizing: border-box;
+    height: @toolbar-line-height;
+    padding: 0;
+    display: flex;
+    flex-flow: row;
+
+    * {
+        outline-width: 0;
+        &:focus {
+            outline-width: 0;
+        }
+    }
 
     .newPadContainer {
         display: inline-block;
         height: 100%;
     }
 
+    .history {
+        float: right;
+    }
+
+    .rightside, .leftside {
+        display: inline-block;
+        margin: 0;
+        padding: 0;
+        .fa {
+            margin: 0;
+        }
+        button {
+            height: @toolbar-line-height;
+            padding: 0 10px;
+            border: none;
+            border-radius: 0;
+            box-sizing: border-box;
+            background: transparent;
+            font-size: @main-font-size;
+            color: @toolbar-drive-color;
+            transition: all 0.15s;
+            .drawer {
+                display: none;
+            }
+            .fa, span {
+                font-size: @main-font-size;
+            }
+            &:hover {
+                background: @toolbar-drive-bg;
+            }
+            &.active {
+                display: none;
+            }
+        }
+    }
+    .rightside {
+        float: right;
+        & > * {
+            float: right;
+        }
+        #contextButtonsContainer {
+            display: inline-block;
+            height: 100%;
+        }
+        padding-left: 10px;
+    }
+    .leftside {
+        & > span {
+            height: 100%;
+            margin: 0;
+        }
+        button {
+            padding: 0 10px;
+            .fa {
+                margin-right: 5px;
+            }
+            .buttonTitle {
+                display: inline-flex;
+                height: @toolbar-line-height;
+                align-items: center;
+                span:not(.fa) {
+                    line-height: 23px;
+                }
+            }
+        }
+    }
+
     button {
-        height: 24px;
         font: @toolbar-button-font;
         span {
             font: @toolbar-button-font;
         }
         .fa, &.fa {
             font-family: FontAwesome;
-        }
-        &.element {
-            border-radius: 2px;
-            background: @toolbar-button-bg;
-            color: @toolbar-button-fg;
-            font-size: 14px;
-            border: 1px solid @toolbar-button-border;
-            font-weight: bold;
-            &:hover {
-                background: @toolbar-button-bg-hover;
-            }
-        }
-        &.new {
-            padding: 0 5px;
         }
     }
     /* The container <div> - needed to position the dropdown content */
@@ -570,39 +722,15 @@ span {
         position: relative;
         display: inline-block;
     }
-    .right {
-        float: right;
-        /* Right-side buttons */
-        button {
-            display: inline-block;
-            &.active {
-                display: none;
-            }
-            .fa {
-                margin-right: 0px;
-            }
-        }
-    }
     .dropdown-bar-content {
         margin-right: 2px;
     }
 
-    .leftside {
-        width: 250px;
-        margin: 0;
-        padding: 0;
-        display: inline-block;
-    }
-    .rightside {
-        margin: 0;
-        padding: 0;
-        display: inline-block;
-        float: right;
-    }
     .path {
+        flex: 1;
         width: 100%;
-        height: 30px;
-        line-height: 30px;
+        height: @toolbar-line-height;
+        line-height: @toolbar-line-height;
         cursor: default;
         width: auto;
         overflow: hidden;
@@ -611,24 +739,25 @@ span {
         max-width: 100%;
         text-align: left;
         .element {
-            padding: 5px;
-            border: 1px solid @toolbar-bg;
-            border-radius: 2px;
+            display: inline-block;
+            height: @toolbar-line-height;
+            line-height: @toolbar-line-height;
+            font-size: @main-font-size;
+            padding: 0 5px;
+            border: 0;
+            background: darken(@toolbar-drive-bg, 10%);
+            color: @toolbar-drive-color;
             box-sizing: border-box;
+            transition: all 0.15s;
+            &.separator {
+                color: #ccc;
+            }
             &.clickable {
                 cursor: pointer;
                 &:hover {
-                    background: @toolbar-path-bg;
-                    border: 1px solid @toolbar-path-border;
+                    background: darken(@toolbar-drive-bg, 15%);
                 }
             }
-        }
-    }
-    #contextButtonsContainer {
-        float: right;
-        margin: 2px;
-        button {
-            vertical-align: top;
         }
     }
 }

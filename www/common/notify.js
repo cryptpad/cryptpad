@@ -41,13 +41,39 @@
         }
     };
 
+    var DEFAULT_MAIN = '/customize/main-favicon.png';
+    var DEFAULT_ALT = '/customize/alt-favicon.png';
+
+    var createFavicon = function () {
+        console.log("creating favicon");
+        var fav = document.createElement('link');
+        var attrs = {
+            id: 'favicon',
+            type: 'image/png',
+            rel: 'icon',
+            'data-main-favicon': DEFAULT_MAIN,
+            'data-alt-favicon': DEFAULT_ALT,
+            href: DEFAULT_MAIN,
+        };
+        Object.keys(attrs).forEach(function (k) {
+            fav.setAttribute(k, attrs[k]);
+        });
+        document.head.appendChild(fav);
+    };
+
+    if (!document.getElementById('favicon')) { createFavicon(); }
+
     Module.tab = function (frequency, count) {
         var key = '_pendingTabNotification';
 
         var favicon = document.getElementById('favicon');
+
+        var main = DEFAULT_MAIN;
+        var alt = DEFAULT_ALT;
+
         if (favicon) {
-            var main = favicon.getAttribute('data-main-favicon');
-            var alt = favicon.getAttribute('data-alt-favicon');
+            main = favicon.getAttribute('data-main-favicon') || DEFAULT_MAIN;
+            alt = favicon.getAttribute('data-alt-favicon') || DEFAULT_ALT;
             favicon.setAttribute('href', main);
         }
 

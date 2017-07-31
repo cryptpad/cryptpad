@@ -63,8 +63,21 @@ define([
         var append2 = '.cp div#modal #content .slide-frame ';
         return css.replace(/(\n*)([^\n}]+)\s*\{/g, '$1' + append + '$2,' + append2 + '$2 {');
     };
-    var draw = Slide.draw =  function (i) {
+
+    var goTo = Slide.goTo = function (i) {
         i = i || 0;
+        Slide.index = i;
+        $content.find('.slide-container').first().css('margin-left', -(i*100)+'%');
+        updateFontSize();
+        change(Slide.lastIndex, Slide.index);
+        $modal.find('#button_left > span').css({
+            opacity: Slide.index === 0? 0: 1
+        });
+        $modal.find('#button_right > span').css({
+            opacity: Slide.index === (getNumberOfSlides() -1)? 0: 1
+        });
+    };
+    var draw = Slide.draw =  function (i) {
         if (typeof(Slide.content) !== 'string') { return; }
 
         var c = Slide.content;
@@ -95,9 +108,7 @@ define([
         //$content.find('.' + slideClass).hide();
         //$content.find('.' + slideClass + ':eq( ' + i + ' )').show();
         //$content.css('margin-left', -(i*100)+'vw');
-        $content.find('.slide-container').first().css('margin-left', -(i*100)+'%');
-        updateFontSize();
-        change(Slide.lastIndex, Slide.index);
+        goTo(Math.min(i, getNumberOfSlides() - 1));
     };
 
     Slide.updateOptions = function () {
@@ -162,7 +173,7 @@ define([
         Slide.lastIndex = Slide.index;
 
         var i = Slide.index = Math.max(0, Slide.index - 1);
-        Slide.draw(i);
+        Slide.goTo(i);
     };
 
     Slide.right = function () {
@@ -170,7 +181,7 @@ define([
         Slide.lastIndex = Slide.index;
 
         var i = Slide.index = Math.min(getNumberOfSlides() -1, Slide.index + 1);
-        Slide.draw(i);
+        Slide.goTo(i);
     };
 
     Slide.first = function () {
@@ -178,7 +189,7 @@ define([
         Slide.lastIndex = Slide.index;
 
         var i = Slide.index = 0;
-        Slide.draw(i);
+        Slide.goTo(i);
     };
 
     Slide.last = function () {
@@ -186,7 +197,7 @@ define([
         Slide.lastIndex = Slide.index;
 
         var i = Slide.index = getNumberOfSlides() - 1;
-        Slide.draw(i);
+        Slide.goTo(i);
     };
 
     var addEvent = function () {

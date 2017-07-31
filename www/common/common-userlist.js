@@ -49,18 +49,22 @@ define(function () {
             exp.myUserName = myUserNameTemp;
             myData = {};
             myData[exp.myNetfluxId] = {
-               name: exp.myUserName,
-               uid: Cryptpad.getUid(),
+                name: exp.myUserName,
+                uid: Cryptpad.getUid(),
+                avatar: Cryptpad.getAvatarUrl(),
+                profile: Cryptpad.getProfileUrl(),
+                curvePublic: Cryptpad.getProxy().curvePublic
             };
             addToUserData(myData);
-            Cryptpad.setAttribute('username', exp.myUserName, function (err) {
+            /*Cryptpad.setAttribute('username', exp.myUserName, function (err) {
                 if (err) {
                     console.log("Couldn't set username");
                     console.error(err);
                     return;
                 }
                 if (typeof cb === "function") { cb(); }
-            });
+            });*/
+            if (typeof cb === "function") { cb(); }
         };
 
         exp.getLastName = function ($changeNameButton, isNew) {
@@ -78,6 +82,9 @@ define(function () {
                     myData[exp.myNetfluxId] = {
                         name: "",
                         uid: Cryptpad.getUid(),
+                        avatar: Cryptpad.getAvatarUrl(),
+                        profile: Cryptpad.getProfileUrl(),
+                        curvePublic: Cryptpad.getProxy().curvePublic
                     };
                     addToUserData(myData);
                     onLocal();

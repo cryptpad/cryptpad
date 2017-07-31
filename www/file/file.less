@@ -1,5 +1,5 @@
-@import "../../customize.dist/src/less/variables.less";
-@import "../../customize.dist/src/less/mixins.less";
+@import "/customize/src/less/variables.less";
+@import "/customize/src/less/mixins.less";
 
 @button-border: 2px;
 
@@ -7,21 +7,28 @@ html, body {
     margin: 0px;
     height: 100%;
 }
+
+#toolbar {
+    display: flex; // We need this to remove a 3px border at the bottom of the toolbar
+}
+
 body {
     display: flex;
     flex-flow: column;
 }
 #app {
     flex: 1;
-    background: url('/customize/bg3.jpg') no-repeat center center;
-    background-size: cover;
-    background-position: center;
     display: flex;
     justify-content: center;
     align-items: center;
 }
+
+#app.ready {
+    background: url('/customize/bg3.jpg') no-repeat center center;
+    background-size: cover;
+    background-position: center;
+}
 .cryptpad-toolbar {
-    margin-bottom: 1px;
     padding: 0px;
     display: inline-block;
 }
@@ -44,7 +51,7 @@ body {
 media-tag {
     img {
         max-width: 100%;
-        max-height: ~"calc(100vh - 64px)";
+        max-height: ~"calc(100vh - 96px)";
     }
 }
 

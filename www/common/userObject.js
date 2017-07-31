@@ -132,6 +132,21 @@ define([
             if (type === 'name') { return data.filename; }
             return data.filename || data.title || NEW_FILE_NAME;
         };
+        exp.getAttribute = function (href, attr, cb) {
+            cb = cb || $.noop;
+            var id = exp.getIdFromHref(href);
+            if (!id) { return void cb(null, undefined); }
+            var data = getFileData(id);
+            cb(null, data[attr]);
+        };
+        exp.setAttribute = function (href, attr, value, cb) {
+            cb = cb || $.noop;
+            var id = exp.getIdFromHref(href);
+            if (!id) { return void cb("E_INVAL_HREF"); }
+            if (!attr || !attr.trim()) { return void cb("E_INVAL_ATTR"); }
+            var data = getFileData(id);
+            data[attr] = value;
+        };
 
         // PATHS
 
@@ -970,6 +985,20 @@ define([
                     us.splice(idx, 1);
                 });
             };
+            var migrateAttributes = function (el, id, parsed) {
+                // Migrate old pad attributes
+                ['userid', 'previewMode'].forEach(function (attr) {
+                    var key = parsed.hash + '.' + attr;
+                    var key2 = parsed.hash.slice(0,-1) + '.' + attr;// old pads not ending with /
+                    if (typeof(files[key]) !== "undefined" || typeof(files[key2]) !== "undefined") {
+                        debug("Migrating pad attribute", attr, "for pad", id);
+                        el[attr] = files[key] || files[key2];
+                        delete files[key];
+                        delete files[key2];
+                    }
+                });
+                // Migration done
+            };
             var fixFilesData = function () {
                 if (typeof files[FILES_DATA] !== "object") { debug("OLD_FILES_DATA was not an object"); files[FILES_DATA] = {}; }
                 var fd = files[FILES_DATA];
@@ -989,6 +1018,15 @@ define([
                         toClean.push(id);
                         continue;
                     }
+                    var parsed = Cryptpad.parsePadUrl(el.href);
+                    if (!parsed.hash) {
+                        debug("Removing an element in filesData with a invalid href.", el);
+                        toClean.push(id);
+                        continue;
+                    }
+
+                    migrateAttributes(el, id, parsed);
+
                     if ((Cryptpad.isLoggedIn() || config.testMode) && rootFiles.indexOf(id) === -1) {
                         debug("An element in filesData was not in ROOT, TEMPLATE or TRASH.", id, el);
                         var newName = Cryptpad.createChannelId();
@@ -1001,12 +1039,19 @@ define([
                 });
             };
 
+            var fixDrive = function () {
+                Object.keys(files).forEach(function (key) {
+                    if (key.slice(0,1) === '/') { delete files[key]; }
+                });
+            };
+
             fixRoot();
             fixTrashRoot();
             if (!workgroup) {
                 fixTemplate();
                 fixFilesData();
             }
+            fixDrive();
 
             if (JSON.stringify(files) !== before) {
                 debug("Your file system was corrupted. It has been cleaned so that the pads you visit can be stored safely");

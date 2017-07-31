@@ -1,0 +1,149 @@
+@import "/customize/src/less/variables.less";
+@import "/customize/src/less/mixins.less";
+
+@button-border: 2px;
+@bg-color: @toolbar-friends-bg;
+@color: @toolbar-friends-color;
+
+html, body {
+    margin: 0px;
+    height: 100%;
+}
+
+#toolbar {
+    display: flex; // We need this to remove a 3px border at the bottom of the toolbar
+}
+
+body {
+    display: flex;
+    flex-flow: column;
+}
+#app {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 0;
+}
+
+#app.ready {
+    //background: url('/customize/bg3.jpg') no-repeat center center;
+    background-size: cover;
+    background-position: center;
+}
+.cryptpad-toolbar {
+    padding: 0px;
+    display: inline-block;
+}
+
+
+@keyframes example {
+    0% {
+        background: rgba(0,0,0,0.1);
+    }
+    50% {
+        background: rgba(0,0,0,0.3);
+    }
+    100% {
+        background: rgba(0,0,0,0.1);
+    }
+}
+#friendList {
+    width: 350px;
+    height: 100%;
+    background-color: lighten(@bg-color, 10%);
+    .friend {
+        background: rgba(0,0,0,0.1);
+        padding: 5px;
+        margin: 10px;
+        cursor: pointer;
+        &:hover {
+            background-color: rgba(0,0,0,0.3);
+        }
+        &.notify {
+            animation: example 2s ease-in-out infinite;
+        }
+    }
+}
+
+#friendList .friend, #messaging .header {
+    .avatar(30px);
+    &.avatar {
+        display: flex;
+    }
+    cursor: pointer;
+    color: @color;
+    media-tag {
+        img {
+            color: #000;
+        }
+    }
+    media-tag, .default {
+        margin-right: 5px;
+    }
+}
+
+#friendList {
+    .remove {
+        cursor: pointer;
+        width: 20px;
+        &:hover {
+            color: darken(@color, 20%);
+        }
+    }
+}
+
+#messaging {
+    flex: 1;
+    height: 100%;
+    background-color: lighten(@bg-color, 20%);
+    min-width: 0;
+    .info {
+        padding: 20px;
+    }
+    .header {
+        background-color: lighten(@bg-color, 15%);
+        padding: 10px;
+    }
+    .chat {
+        height: 100%;
+        display: flex;
+        flex-flow: column;
+        .messages {
+            padding: 0 20px;
+            margin: 10px 0;
+            flex: 1;
+            overflow-x: auto;
+            .message {
+                & > div {
+                    padding: 0 10px;
+                }
+                .content {
+                    overflow: hidden;
+                    word-wrap: break-word;
+                }
+                .date {
+                    display: none;
+                    font-style: italic;
+                }
+                .sender {
+                    margin-top: 10px;
+                    font-weight: bold;
+                    background-color: rgba(0,0,0,0.1);
+                }
+            }
+        }
+    }
+    .input {
+        background-color: lighten(@bg-color, 15%);
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 75px;
+        input {
+            flex: 1;
+        }
+    }
+}
+

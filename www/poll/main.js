@@ -8,7 +8,12 @@ define([
     '/bower_components/hyperjson/hyperjson.js',
     'render.js',
     '/common/toolbar2.js',
-    '/bower_components/file-saver/FileSaver.min.js'
+    '/bower_components/file-saver/FileSaver.min.js',
+
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/customize/src/less/toolbar.less',
+    'less!/customize/src/less/cryptpad.less',
+    'less!/poll/poll.less',
 ], function ($, TextPatcher, Listmap, Crypto, Cryptpad, Cryptget, Hyperjson, Renderer, Toolbar) {
 
     var Messages = Cryptpad.Messages;
@@ -430,6 +435,7 @@ define([
         });
 
         proxy.version = 1;
+        proxy.type = 'poll';
     };
 
     /*
@@ -474,6 +480,16 @@ var ready = function (info, userid, readOnly) {
     var isNew = false;
     var userDoc = JSON.stringify(proxy);
     if (userDoc === "" || userDoc === "{}") { isNew = true; }
+
+    if (!isNew && typeof(proxy.type) !== 'undefined' && proxy.type !== 'poll') {
+        var errorText = Messages.typeError;
+        Cryptpad.errorLoadingScreen(errorText);
+        throw new Error(errorText);
+    }
+
+    if (typeof(proxy.type) === 'undefined') {
+        proxy.type = 'poll';
+    }
 
     var uncommitted = APP.uncommitted = {};
     prepareProxy(proxy, copyObject(Render.Example));
@@ -536,11 +552,19 @@ var ready = function (info, userid, readOnly) {
     } else {
         APP.proxy.info.defaultTitle = Title.defaultTitle;
     }
+
+    var andThen = function () {
+        if (readOnly) { return; }
+        Cryptpad.setPadAttribute('userid', userid, function (e) {
+            if (e) { console.error(e); }
+        });
+    };
+
     if (Cryptpad.initialName && !APP.proxy.info.title) {
         APP.proxy.info.title = Cryptpad.initialName;
-        Title.updateTitle(Cryptpad.initialName);
+        Title.updateTitle(Cryptpad.initialName, null, andThen);
     } else {
-        Title.updateTitle(APP.proxy.info.title || Title.defaultTitle);
+        Title.updateTitle(APP.proxy.info.title || Title.defaultTitle, null, andThen);
     }
 
     // Description
@@ -605,6 +629,7 @@ var ready = function (info, userid, readOnly) {
     } else {
         publish(true);
     }
+
     Cryptpad.removeLoadingScreen();
 
     if (readOnly) { return; }
@@ -681,7 +706,8 @@ var create = function (info) {
         ifrw: window,
         realtime: info.realtime,
         network: info.network,
-        $container: APP.$bar
+        $container: APP.$bar,
+        $contentContainer: $('#content')
     };
     APP.toolbar = Toolbar.create(configTb);
 
@@ -743,10 +769,7 @@ var create = function (info) {
                 if (e) { console.error(e); }
                 if (!userid) { userid = Render.coluid(); }
                 APP.userid = userid;
-                Cryptpad.setPadAttribute('userid', userid, function (e) {
-                    if (e) { console.error(e); }
-                    ready(info, userid, readOnly);
-                });
+                ready(info, userid, readOnly);
             });
         })
         .on('disconnect', disconnect)

@@ -8,8 +8,15 @@ define([], function () {
             "jquery": "/bower_components/jquery/dist/jquery.min",
             // json.sortify same
             "json.sortify": "/bower_components/json.sortify/dist/JSON.sortify",
-            "pdfjs-dist/build/pdf": "/bower_components/pdfjs-dist/build/pdf",
-            "pdfjs-dist/build/pdf.worker": "/bower_components/pdfjs-dist/build/pdf.worker"
+            //"pdfjs-dist/build/pdf": "/bower_components/pdfjs-dist/build/pdf",
+            //"pdfjs-dist/build/pdf.worker": "/bower_components/pdfjs-dist/build/pdf.worker"
+            cm: '/bower_components/codemirror'
+        },
+        map: {
+            '*': {
+                'css': '/bower_components/require-css/css.js',
+                'less': '/common/RequireLess.js',
+            }
         }
     });
 

@@ -9,7 +9,9 @@ define([
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
     '/common/diffMarked.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js', // needed for media-tag
+
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/customize/src/less/cryptpad.less'
 ], function ($, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad,
              Cryptget, DiffMd) {
     var Messages = Cryptpad.Messages;
@@ -41,6 +43,7 @@ define([
 
         var andThen = function (CMeditor) {
             var $iframe = $('#pad-iframe').contents();
+            var $contentContainer = $iframe.find('#editorContainer');
             var $previewContainer = $iframe.find('#previewContainer');
             var $preview = $iframe.find('#preview');
             $preview.click(function (e) {
@@ -54,7 +57,7 @@ define([
                 }
             });
 
-            var CodeMirror = Cryptpad.createCodemirror(CMeditor, ifrw, Cryptpad);
+            var CodeMirror = Cryptpad.createCodemirror(ifrw, Cryptpad, null, CMeditor);
             $iframe.find('.CodeMirror').addClass('fullPage');
             editor = CodeMirror.editor;
 
@@ -157,6 +160,7 @@ define([
                         if (e) { return void console.error(e); }
                         if (data !== false) {
                             $previewContainer.show();
+                            APP.$previewButton.addClass('active');
                             $codeMirror.removeClass('fullPage');
                         }
                     });
@@ -164,6 +168,7 @@ define([
                 }
                 APP.$previewButton.hide();
                 $previewContainer.hide();
+                APP.$previewButton.removeClass('active');
                 $codeMirror.addClass('fullPage');
             };
 
@@ -173,7 +178,7 @@ define([
                 var titleCfg = { getHeadingText: CodeMirror.getHeadingText };
                 Title = Cryptpad.createTitle(titleCfg, config.onLocal, Cryptpad);
 
-                Metadata = Cryptpad.createMetadata(UserList, Title);
+                Metadata = Cryptpad.createMetadata(UserList, Title, null, Cryptpad);
 
                 var configTb = {
                     displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit', 'upgrade'],
@@ -188,7 +193,8 @@ define([
                     ifrw: ifrw,
                     realtime: info.realtime,
                     network: info.network,
-                    $container: $bar
+                    $container: $bar,
+                    $contentContainer: $contentContainer
                 };
                 toolbar = APP.toolbar = Toolbar.create(configTb);
 
@@ -196,6 +202,7 @@ define([
                 CodeMirror.init(config.onLocal, Title, toolbar);
 
                 var $rightside = toolbar.$rightside;
+                var $drawer = toolbar.$drawer;
 
                 var editHash;
                 if (!readOnly) {
@@ -215,7 +222,7 @@ define([
                     $toolbar: $bar
                 };
                 var $hist = Cryptpad.createButton('history', true, {histConfig: histConfig});
-                $rightside.append($hist);
+                $drawer.append($hist);
 
                 /* save as template */
                 if (!Cryptpad.isTemplate(window.location.href)) {
@@ -230,12 +237,12 @@ define([
 
                 /* add an export button */
                 var $export = Cryptpad.createButton('export', true, {}, CodeMirror.exportText);
-                $rightside.append($export);
+                $drawer.append($export);
 
                 if (!readOnly) {
                     /* add an import button */
                     var $import = Cryptpad.createButton('import', true, {}, CodeMirror.importText);
-                    $rightside.append($import);
+                    $drawer.append($import);
                 }
 
                 /* add a forget button */
@@ -266,8 +273,10 @@ define([
                         Cryptpad.setPadAttribute('previewMode', true, function (e) {
                             if (e) { return console.log(e); }
                         });
+                        $previewButton.addClass('active');
                     } else {
                         $codeMirror.addClass('fullPage');
+                        $previewButton.removeClass('active');
                         Cryptpad.setPadAttribute('previewMode', false, function (e) {
                             if (e) { return console.log(e); }
                         });
@@ -307,7 +316,8 @@ define([
                 if(userDoc !== "") {
                     var hjson = JSON.parse(userDoc);
 
-                    if (typeof (hjson) !== 'object' || Array.isArray(hjson)) {
+                    if (typeof (hjson) !== 'object' || Array.isArray(hjson) ||
+                        (typeof(hjson.type) !== 'undefined' && hjson.type !== 'code')) {
                         var errorText = Messages.typeError;
                         Cryptpad.errorLoadingScreen(errorText);
                         throw new Error(errorText);
@@ -354,6 +364,21 @@ define([
                     return;
                 }
                 UserList.getLastName(toolbar.$userNameButton, isNew);
+                var fmConfig = {
+                    dropArea: $iframe.find('.CodeMirror'),
+                    body: $iframe.find('body'),
+                    onUploaded: function (ev, data) {
+                        //var cursor = editor.getCursor();
+                        //var cleanName = data.name.replace(/[\[\]]/g, '');
+                        //var text = '!['+cleanName+']('+data.url+')';
+                        var parsed = Cryptpad.parsePadUrl(data.url);
+                        var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+                        var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
+                        var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '"></media-tag>';
+                        editor.replaceSelection(mt);
+                    }
+                };
+                APP.FM = Cryptpad.createFileManager(fmConfig);
             };
 
             config.onRemote = function () {
@@ -418,7 +443,6 @@ define([
         };
 
         var interval = 100;
-
         var second = function (CM) {
             Cryptpad.ready(function () {
                 andThen(CM);
@@ -433,11 +457,9 @@ define([
 
         var first = function () {
             if (ifrw.CodeMirror) {
-                // it exists, call your continuation
                 second(ifrw.CodeMirror);
             } else {
                 console.log("CodeMirror was not defined. Trying again in %sms", interval);
-                // try again in 'interval' ms
                 setTimeout(first, interval);
             }
         };

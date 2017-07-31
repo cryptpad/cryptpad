@@ -1,5 +1,5 @@
-@import "../../customize.dist/src/less/variables.less";
-@import "../../customize.dist/src/less/mixins.less";
+@import "/customize/src/less/variables.less";
+@import "/customize/src/less/mixins.less";
 
 @poll-th-bg: #aaa;
 @poll-th-user-bg: #999;
@@ -18,6 +18,18 @@ html, body {
     margin: 0px;
     padding: 0px;
     border: 0px;
+}
+body {
+    display: flex;
+    flex-flow: column;
+    overflow-x: hidden;
+}
+#content {
+    display: flex;
+    flex: 1;
+    #poll {
+        flex: 1;
+    }
 }
 
 .cryptpad-toolbar h2 {

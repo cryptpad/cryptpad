@@ -100,21 +100,6 @@ define([
                 });
             };
 
-            // take a list of channels and return a dictionary of their sizes
-            exp.getMultipleFileSize = function (files, cb) {
-                if (!Array.isArray(files)) {
-                    return window.setTimeout(function () {
-                        cb('[TypeError] pin expects an array');
-                    });
-                }
-                rpc.send('GET_MULTIPLE_FILE_SIZE', files, function (e, res) {
-                    if (e) { return void cb(e); }
-                    if (typeof(res) !== 'object') {
-                        return void cb('INVALID_RESPONSE');
-                    }
-                });
-            };
-
             // get the combined size of all channels (in bytes) for all the
             // channels which the server has pinned for your publicKey
             exp.getFileListSize = function (cb) {
@@ -148,6 +133,16 @@ define([
                     } else {
                         cb('INVALID_RESPONSE');
                     }
+                });
+            };
+
+            exp.clearOwnedChannel = function (channel, cb) {
+                if (typeof(channel) !== 'string' || channel.length !== 32) {
+                    return void cb('INVALID_ARGUMENTS');
+                }
+                rpc.send('CLEAR_OWNED_CHANNEL', channel, function (e, response) {
+                    if (e) { return cb(e); }
+                    cb(response);
                 });
             };
 

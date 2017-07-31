@@ -7,9 +7,14 @@ define([
     '/common/visible.js',
     '/common/notify.js',
     '/file/file-crypto.js',
+
+    '/common/media-tag.js',
+
     '/bower_components/file-saver/FileSaver.min.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
-], function ($, Crypto, realtimeInput, Toolbar, Cryptpad, Visible, Notify, FileCrypto) {
+
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/customize/src/less/cryptpad.less',
+], function ($, Crypto, realtimeInput, Toolbar, Cryptpad, Visible, Notify, FileCrypto, MediaTag) {
     var Messages = Cryptpad.Messages;
     var saveAs = window.saveAs;
     var Nacl = window.nacl;
@@ -51,16 +56,9 @@ define([
             uploadMode = true;
         }
 
-        var getTitle = function () {
-            var pad = Cryptpad.getRelativeHref(window.location.href);
-            var fo = Cryptpad.getStore().getProxy().fo;
-            var data = fo.getFileData(pad);
-            return data ? data.title : undefined;
-        };
-
         Title = Cryptpad.createTitle({}, function(){}, Cryptpad);
 
-        var displayed = ['title', 'useradmin', 'newpad', 'limit', 'upgrade'];
+        var displayed = ['useradmin', 'newpad', 'limit', 'upgrade'];
         if (secret && hexFileName) {
             displayed.push('fileshare');
         }
@@ -69,30 +67,31 @@ define([
             displayed: displayed,
             ifrw: ifrw,
             common: Cryptpad,
-            title: Title.getTitleConfig(),
-            hideDisplayName: true,
-            $container: $bar
+            //hideDisplayName: true,
+            $container: $bar,
         };
+
+        if (uploadMode) {
+            displayed.push('pageTitle');
+            configTb.pageTitle = Messages.upload_title;
+        }
+
         var toolbar = APP.toolbar = Toolbar.create(configTb);
+        toolbar.$rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
 
-        Title.setToolbar(toolbar);
-
-        if (uploadMode) { toolbar.title.hide(); }
-
-        Title.updateTitle(Cryptpad.initialName || getTitle() || Title.defaultTitle);
 
         if (!uploadMode) {
             var src = Cryptpad.getBlobPathFromHex(hexFileName);
             var cryptKey = secret.keys && secret.keys.fileKeyStr;
             var key = Nacl.util.decodeBase64(cryptKey);
 
-
             FileCrypto.fetchDecryptedMetadata(src, key, function (e, metadata) {
                 if (e) { return void console.error(e); }
                 var title = document.title = metadata.name;
                 Title.updateTitle(title || Title.defaultTitle);
+                toolbar.addElement(['pageTitle'], {pageTitle: title});
 
-                var displayFile = function (ev) {
+                var displayFile = function (ev, sizeMb) {
                     var $mt = $dlview.find('media-tag');
                     var cryptKey = secret.keys && secret.keys.fileKeyStr;
                     var hexFileName = Cryptpad.base64ToHex(secret.channel);
@@ -101,7 +100,9 @@ define([
 
                     $(window.document).on('decryption', function (e) {
                         var decrypted = e.originalEvent;
-                        if (decrypted.callback) { decrypted.callback(); }
+                        if (decrypted.callback) {
+                            decrypted.callback();
+                        }
 
                         console.log(decrypted);
                         $dlview.show();
@@ -112,6 +113,10 @@ define([
                             $appContainer.css('background', 'white');
                         }
                         $dlButton.addClass('btn btn-success');
+                        var text = Messages.download_mt_button + '<br>';
+                        text += '<b>' + Cryptpad.fixHTML(title) + '</b><br>';
+                        text += '<em>' + Messages._getKey('formattedMB', [sizeMb]) + '</em>';
+                        $dlButton.html(text);
 
                         toolbar.$rightside.append(Cryptpad.createButton('export', true, {}, function () {
                             saveAs(decrypted.blob, decrypted.metadata.name);
@@ -137,52 +142,56 @@ define([
                         console.log(progress.percent);
                     });
 
-                    require(['/common/media-tag.js'], function (MediaTag) {
-                        /**
-                         * Allowed mime types that have to be set for a rendering after a decryption.
-                         *
-                         * @type       {Array}
-                         */
-                        var allowedMediaTypes = [
-                            'image/png',
-                            'image/jpeg',
-                            'image/jpg',
-                            'image/gif',
-                            'audio/mp3',
-                            'audio/ogg',
-                            'audio/wav',
-                            'audio/webm',
-                            'video/mp4',
-                            'video/ogg',
-                            'video/webm',
-                            'application/pdf',
-                            'application/dash+xml',
-                            'download'
-                        ];
-                        MediaTag.CryptoFilter.setAllowedMediaTypes(allowedMediaTypes);
+                    /**
+                     * Allowed mime types that have to be set for a rendering after a decryption.
+                     *
+                     * @type       {Array}
+                     */
+                    var allowedMediaTypes = [
+                        'image/png',
+                        'image/jpeg',
+                        'image/jpg',
+                        'image/gif',
+                        'audio/mp3',
+                        'audio/ogg',
+                        'audio/wav',
+                        'audio/webm',
+                        'video/mp4',
+                        'video/ogg',
+                        'video/webm',
+                        'application/pdf',
+                        'application/dash+xml',
+                        'download'
+                    ];
+                    MediaTag.CryptoFilter.setAllowedMediaTypes(allowedMediaTypes);
 
-                        MediaTag($mt[0]);
-                    });
+                    MediaTag($mt[0]);
                 };
 
                 var todoBigFile = function (sizeMb) {
                     $dlform.show();
                     Cryptpad.removeLoadingScreen();
                     $dllabel.append($('<br>'));
-                    $dllabel.append(metadata.name);
-                    $dllabel.append($('<br>'));
-                    $dllabel.append(Messages._getKey('formattedMB', [sizeMb]));
+                    $dllabel.append(Cryptpad.fixHTML(metadata.name));
+
+                    // don't display the size if you don't know it.
+                    if (typeof(sizeM) === 'number') {
+                        $dllabel.append($('<br>'));
+                        $dllabel.append(Messages._getKey('formattedMB', [sizeMb]));
+                    }
                     var decrypting = false;
                     var onClick = function (ev) {
                         if (decrypting) { return; }
                         decrypting = true;
-                        displayFile(ev);
+                        displayFile(ev, sizeMb);
                     };
-                    if (sizeMb < 5) { return void onClick(); }
+                    if (typeof(sizeMb) === 'number' && sizeMb < 5) { return void onClick(); }
                     $dlform.find('#dl, #progress').click(onClick);
                 };
                 Cryptpad.getFileSize(window.location.href, function (e, data) {
-                    if (e) { return void Cryptpad.errorLoadingScreen(e); }
+                    if (e) {
+                        return void Cryptpad.errorLoadingScreen(e);
+                    }
                     var size = Cryptpad.bytesToMegabytes(data);
                     return void todoBigFile(size);
                 });

@@ -2,18 +2,18 @@ define([
     'jquery',
     '/common/modes.js',
     '/common/themes.js',
+
     '/bower_components/file-saver/FileSaver.min.js'
 ], function ($, Modes, Themes) {
     var saveAs = window.saveAs;
     var module = {};
 
-    module.create = function (CMeditor, ifrw, Cryptpad) {
+    module.create = function (ifrw, Cryptpad, defaultMode, CMeditor) {
         var exp = {};
-
         var Messages = Cryptpad.Messages;
 
         var CodeMirror = exp.CodeMirror = CMeditor;
-        CodeMirror.modeURL = "/bower_components/codemirror/mode/%N/%N.js";
+        CodeMirror.modeURL = "cm/mode/%N/%N";
 
         var $pad = $('#pad-iframe');
         var $textarea = exp.$textarea = $pad.contents().find('#editor1');
@@ -21,12 +21,14 @@ define([
         var Title;
         var onLocal = function () {};
         var $rightside;
+        var $drawer;
         exp.init = function (local, title, toolbar) {
             if (typeof local === "function") {
                 onLocal = local;
             }
             Title = title;
             $rightside = toolbar.$rightside;
+            $drawer = toolbar.$drawer;
         };
 
         var editor = exp.editor = CMeditor.fromTextArea($textarea[0], {
@@ -41,14 +43,16 @@ define([
             extraKeys: {"Shift-Ctrl-R": undefined},
             foldGutter: true,
             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-            mode: "javascript",
+            mode: defaultMode || "javascript",
             readOnly: true
         });
         editor.setValue(Messages.codeInitialState);
 
         var setMode = exp.setMode = function (mode, cb) {
             exp.highlightMode = mode;
-            if (mode !== "text") { CMeditor.autoLoadMode(editor, mode); }
+            if (mode !== "text") {
+                CMeditor.autoLoadMode(editor, mode);
+            }
             editor.setOption('mode', mode);
             if (exp.$language) {
                 var name = exp.$language.find('a[data-value="' + mode + '"]').text() || undefined;
@@ -96,8 +100,18 @@ define([
 
             var text = '';
             lines.some(function (line) {
+                // lines including a c-style comment are also valuable
+                var clike = /^\s*(\/\*|\/\/)(.*)?(\*\/)*$/;
+                if (clike.test(line)) {
+                    line.replace(clike, function (a, one, two) {
+                        if (!(two && two.replace)) { return; }
+                        text = two.replace(/\*\/\s*$/, '').trim();
+                    });
+                    return true;
+                }
+
                 // lisps?
-                var lispy = /^\s*(;|#\|)(.*?)$/;
+                var lispy = /^\s*(;|#\|)+(.*?)$/;
                 if (lispy.test(line)) {
                     line.replace(lispy, function (a, one, two) {
                         text = two;
@@ -107,20 +121,10 @@ define([
 
                 // lines beginning with a hash are potentially valuable
                 // works for markdown, python, bash, etc.
-                var hash = /^#(.*?)$/;
+                var hash = /^#+(.*?)$/;
                 if (hash.test(line)) {
                     line.replace(hash, function (a, one) {
                         text = one;
-                    });
-                    return true;
-                }
-
-                // lines including a c-style comment are also valuable
-                var clike = /^\s*(\/\*|\/\/)(.*)?(\*\/)*$/;
-                if (clike.test(line)) {
-                    line.replace(clike, function (a, one, two) {
-                        if (!(two && two.replace)) { return; }
-                        text = two.replace(/\*\/\s*$/, '').trim();
                     });
                     return true;
                 }
@@ -148,6 +152,7 @@ define([
                 options: options, // Entries displayed in the menu
                 left: true, // Open to the left of the button
                 isSelect: true,
+                feedback: 'CODE_LANGUAGE',
             };
             var $block = exp.$language = Cryptpad.createDropdown(dropdownConfig);
             $block.find('button').attr('title', Messages.languageButtonTitle);
@@ -156,7 +161,7 @@ define([
                 onLocal();
             });
 
-            if ($rightside) { $rightside.append($block); }
+            if ($drawer) { $drawer.append($block); }
             if (cb) { cb(); }
         };
 
@@ -181,7 +186,8 @@ define([
                 options: options, // Entries displayed in the menu
                 left: true, // Open to the left of the button
                 isSelect: true,
-                initialValue: lastTheme
+                initialValue: lastTheme,
+                feedback: 'CODE_THEME',
             };
             var $block = exp.$theme = Cryptpad.createDropdown(dropdownConfig);
             $block.find('button').attr('title', Messages.themeButtonTitle);
@@ -194,7 +200,7 @@ define([
                 localStorage.setItem(themeKey, theme);
             });
 
-            if ($rightside) { $rightside.append($block); }
+            if ($drawer) { $drawer.append($block); }
             if (cb) { cb(); }
         };
 

@@ -4,6 +4,8 @@ define([
     '/api/config'
 ], function ($, Config, ApiConfig) {
 
+    var urlArgs = ApiConfig.requireConf.urlArgs;
+
     var Messages = {};
 
     var Bar = {
@@ -443,7 +445,7 @@ define([
             'class': "cryptpad-link"
         }).appendTo($topContainer);
         var $imgTag = $('<img>', {
-            src: "/customize/cryptofist_mini.png",
+            src: "/customize/cryptofist_mini.png?" + urlArgs,
             alt: "Cryptpad"
         });
 
