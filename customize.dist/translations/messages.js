@@ -509,6 +509,13 @@ define(function () {
     out.main_poll_p = 'Plan your meeting or your event, or vote for the best solution regarding your problem.';
     out.main_drive = 'CryptDrive';
 
+    out.main_richTextPad = 'Rich Text Pad';
+    out.main_codePad = 'Markdown/Code Pad';
+    out.main_slidePad = 'Markdown Presentation';
+    out.main_pollPad = 'Poll or Schedule';
+    out.main_whiteboardPad = 'Whiteboard';
+    out.main_recentPads = 'Recent Pads';
+
     out.footer_applications = "Applications";
     out.footer_contact = "Contact";
     out.footer_aboutUs = "About us";
