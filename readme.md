@@ -68,9 +68,7 @@ If you have any questions or comments, or if you're interested in contributing t
 
 # License
 
-<a href="https://github.com/xwiki-labs/cryptpad/blob/master/LICENSE">
 ![AGPL logo](https://www.gnu.org/graphics/agplv3-155x51.png "GNU Affero General Public License")
-</a>
 
 This software is and will always be available under the GNU Affero General Public License as
 published by the Free Software Foundation, either version 3 of the License, or (at your option)
