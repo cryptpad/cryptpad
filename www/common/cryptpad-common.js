@@ -51,7 +51,7 @@ define([
     common.displayNameKey = 'cryptpad.username';
     var newPadNameKey = common.newPadNameKey = "newPadName";
     var newPadPathKey = common.newPadPathKey = "newPadPath";
-    var oldStorageKey = common.oldStorageKey = 'CryptPad_RECENTPADS';
+    common.oldStorageKey = 'CryptPad_RECENTPADS';
     common.storageKey = 'filesData';
     var PINNING_ENABLED = AppConfig.enablePinning;
 
@@ -412,7 +412,7 @@ define([
         return parsed.hashData;
     };
     // Migrate from legacy store (localStorage)
-    var migrateRecentPads = common.migrateRecentPads = function (pads) {
+    common.migrateRecentPads = function (pads) {
         return pads.map(function (pad) {
             var parsedHash;
             if (Array.isArray(pad)) { // TODO DEPRECATE_F
