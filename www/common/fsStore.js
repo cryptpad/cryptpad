@@ -294,10 +294,8 @@ define([
             // Creating a new anon drive: import anon pads from localStorage
             if ((!drive[Cryptpad.oldStorageKey] || !Cryptpad.isArray(drive[Cryptpad.oldStorageKey]))
                 && !drive['filesData']) {
-                Cryptpad.getLegacyPads(function (err, data) {
-                    drive[Cryptpad.oldStorageKey] = data;
-                    onReady(f, rt.proxy, Cryptpad, exp);
-                });
+                drive[Cryptpad.oldStorageKey] = [];
+                onReady(f, rt.proxy, Cryptpad, exp);
                 return;
             }
             // Drive already exist: return the existing drive, don't load data from legacy store

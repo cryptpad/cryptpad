@@ -451,24 +451,6 @@ define([
         });
     };
 
-    // Get the pads from localStorage to migrate them to the object store
-    common.getLegacyPads = function (cb) {
-        require(['/customize/store.js'], function(Legacy) { // TODO DEPRECATE_F
-            Legacy.ready(function (err, legacy) {
-                if (err) { cb(err, null); return; }
-                legacy.get(oldStorageKey, function (err2, recentPads) {
-                    if (err2) { cb(err2, null); return; }
-                    if (Array.isArray(recentPads)) {
-                        feedback('MIGRATE_LEGACY_STORE');
-                        cb(void 0, migrateRecentPads(recentPads));
-                        return;
-                    }
-                    cb(void 0, []);
-                });
-            });
-        });
-    };
-
     // Create untitled documents when no name is given
     var getLocaleDate = common.getLocaleDate = function () {
         if (window.Intl && window.Intl.DateTimeFormat) {
