@@ -297,6 +297,11 @@ define([
     };
 
     // Tooltips
+
+    UI.clearTooltips = function () {
+        $('.tippy-popper').remove();
+    };
+
     UI.addTooltips = function () {
         var MutationObserver = window.MutationObserver;
         var addTippy = function (el) {

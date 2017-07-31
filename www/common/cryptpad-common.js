@@ -77,6 +77,7 @@ define([
     common.unnotify = UI.unnotify;
     common.getIcon = UI.getIcon;
     common.addTooltips = UI.addTooltips;
+    common.clearTooltips = UI.clearTooltips;
 
     // import common utilities for export
     common.find = Util.find;
