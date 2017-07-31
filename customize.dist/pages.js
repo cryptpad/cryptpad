@@ -243,7 +243,7 @@ define([
         return h('div.cp-topbar',
             h('div.cp-left.navbar.navbar-toggleable-sm.navbar-light.navbar-inverse',
             	h('button.navbar-toggler.navbar-toggler-left', {'type':'button'}, {'data-toggle':'collapse'}, {'data-target':'#menuCollapse'}, {'aria-controls': 'menuCollapse'}, {'aria-expanded':'false'}, {'aria-label':'Toggle navigation'},
-            		[h('i.fa.fa-bars')
+            		[h('i.fa.fa-bars ')
             		]),
             	h('div.collapse.navbar-collapse#menuCollapse', [
             			h('a', { href: '/zeroknowledge.html'}, 'What is Zero Knowledge'),
