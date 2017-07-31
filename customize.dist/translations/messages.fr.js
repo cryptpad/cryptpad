@@ -471,6 +471,11 @@ define(function () {
     out.download_mt_button = "Télécharger";
 
     out.todo_title = "CryptTodo";
+    out.todo_newTodoNamePlaceholder = "Décrivez votre tâche...";
+    out.todo_newTodoNameTitle = "Ajouter cette tâche à votre liste";
+    out.todo_markAsCompleteTitle = "Marquer tâche comme terminée";
+    out.todo_markAsIncompleteTitle = "Marquer tâche comme non incomplète";
+    out.todo_removeTaskTitle = "Enlever cette tâche de votre liste";
 
     // general warnings
     out.warn_notPinned = "Ce pad n'est stocké dans aucun CryptDrive. Il va expirer après 3 mois d'inactivité. <a href='/about.html#pinning'>En savoir plus...</a>";
