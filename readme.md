@@ -51,10 +51,10 @@ You can also see [our translation guide](/customize.dist/translations/README.md)
 
 # Contacting Us
 
-You can reach members of the CryptPad development team on [twitter](https://twitter.com/cryptpad),
-via our [github issue tracker](https://github.com/xwiki-labs/cryptpad/issues/), on the
-[freenode](http://webchat.freenode.net/?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7)
-irc network, or by [email](mailto:research@xwiki.com).
+You can reach members of the CryptPad development team on [Twitter](https://twitter.com/cryptpad),
+via our [GitHub issue tracker](https://github.com/xwiki-labs/cryptpad/issues/), on our
+[Matrix channel](https://riot.im/app/#/room/#cryptpad:matrix.org), or by
+[e-mail](mailto:research@xwiki.com).
 
 # Contributing
 
@@ -68,7 +68,9 @@ If you have any questions or comments, or if you're interested in contributing t
 
 # License
 
-![AGPL logo](https://www.gnu.org/graphics/agplv3-155x51.png)
+<a href="https://github.com/xwiki-labs/cryptpad/blob/master/LICENSE">
+![AGPL logo](https://www.gnu.org/graphics/agplv3-155x51.png "GNU Affero General Public License")
+</a>
 
 This software is and will always be available under the GNU Affero General Public License as
 published by the Free Software Foundation, either version 3 of the License, or (at your option)
@@ -76,7 +78,4 @@ any later version. If you wish to use this technology in a proprietary product, 
 sales@xwiki.com
 
 [ChainPad]: https://github.com/xwiki-contrib/chainpad
-[CKEditor]: http://ckeditor.com/
-[fragment identifier]: https://en.wikipedia.org/wiki/Fragment_identifier
 [active attack]: https://en.wikipedia.org/wiki/Attack_(computing)#Types_of_attacks
-[Creative Commons Attribution 2.5 License]: http://creativecommons.org/licenses/by/2.5/
