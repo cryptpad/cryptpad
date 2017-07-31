@@ -687,6 +687,14 @@ define([
             config.realtime.onPatch(ks(toolbar, config));
             config.realtime.onMessage(ks(toolbar, config, true));
         }
+        // without this, users in read-only mode say 'synchronizing' until they
+        // receive a patch.
+        if (Cryptpad) {
+            typing = 0;
+            Cryptpad.whenRealtimeSyncs(config.realtime, function () {
+                kickSpinner(toolbar, config);
+            });
+        }
         return $spin;
     };
 
