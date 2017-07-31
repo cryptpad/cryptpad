@@ -542,5 +542,17 @@ define(function () {
     out.settings_logoutEverywhereButton = "Cerrar sesión";
     out.upload_title = "Subir archivo";
 
+    // 1.12.0 - Minotaur
+    out.userlist_pending = "Pendiente...";
+    out.contacts_typeHere = "Escribe un mensaje aquí...";
+    out.contacts_removeHistoryTitle = "Borrar el historial de chat";
+    out.contacts_confirmRemoveHistory = "¿Estás seguro de que quieres borrar el historial de forma permanente? No se podrán recuparar los datos.";
+    out.contacts_removeHistoryServerError = "Hubo un error al borrar el historial. Inténtalo de nuevo más tarde.";
+    out.todo_title = "CryptTodo";
+    out.todo_newTodoNamePlaceholder = "Describe tu tarea...";
+    out.todo_newTodoNameTitle = "Añadir tarea a la lista";
+    out.todo_markAsCompleteTitle = "Marcar esta tarea como completa";
+    out.todo_markAsIncompleteTitle = "Marcar esta tarea como incompleta";
+    out.todo_removeTaskTitle = "Borrar esta tarea de la lista";
     return out;
 });
