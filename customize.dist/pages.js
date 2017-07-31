@@ -274,12 +274,12 @@ define([
                         /*userForm(),*/
                         h('div.col-12.col-sm-6', [
                             [
-                                [ 'pad', '/pad/', 'Rich Text Pad', 'fa-file-word-o' ],
-                                [ 'code', '/code/', 'Markdown/Code Pad', 'fa-file-code-o' ],
-                                [ 'slide', '/slide/', 'Markdown Presentation', 'fa-file-powerpoint-o' ],
-                                [ 'poll.cp-more.cp-hidden', '/poll/', 'Poll or Schedule', 'fa-calendar' ],
-                                [ 'whiteboard.cp-more.cp-hidden', '/whiteboard/', 'Whiteboard', 'fa-paint-brush' ],
-                                [ 'recent.cp-more.cp-hidden', '/drive/', 'Recent Pads', 'fa-hdd-o' ]
+                                [ 'pad', '/pad/', Msg.main_richTextPad, 'fa-file-word-o' ],
+                                [ 'code', '/code/', Msg.main_codePad, 'fa-file-code-o' ],
+                                [ 'slide', '/slide/', Msg.main_slidePad, 'fa-file-powerpoint-o' ],
+                                [ 'poll.cp-more.cp-hidden', '/poll/', Msg.main_pollPad, 'fa-calendar' ],
+                                [ 'whiteboard.cp-more.cp-hidden', '/whiteboard/', Msg.main_whiteboardPad, 'fa-paint-brush' ],
+                                [ 'recent.cp-more.cp-hidden', '/drive/', Msg.main_recentPads, 'fa-hdd-o' ]
                             ].map(function (x) {
                                 return h('a', [
                                     { href: x[1] },
