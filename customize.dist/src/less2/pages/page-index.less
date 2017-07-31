@@ -16,6 +16,11 @@
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
+    .container {
+        @media only screen and (max-device-width : 576px) {
+            margin-top: 6em;
+        }
+    }
 }
 .cp-right {
 	.cp-register-btn {
@@ -51,11 +56,23 @@
     p {
         //font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
         font-size: 20px;
-        font-style: italic;
+        //font-style: italic;
     }
 }
-.cp-topbar { position: absolute; }
-
+.cp-topbar { 
+    position: absolute;
+    button:focus {
+        outline: none;
+    }
+    .navbar-toggler-left {
+        top: -0.59rem;
+    }
+    .cp-left {
+        .fa-bars {
+            font-size: 1.6rem;
+        }
+    }
+}
 @callout-padding: 15px;
 
 .bs-callout {
@@ -71,6 +88,11 @@
     a {
         color: black;
         &:hover { text-decoration-line: none; }
+    }
+    div {
+        @media only screen and (min-device-width : 576px) and (max-device-width : 767px) {
+            left: 4.5em !important;
+        }
     }
 }
 h4 {
@@ -139,5 +161,17 @@ h4 {
             width: 1em;
             padding-left: 5px;
         }
+    }
+}
+.navbar-inverse .navbar-toggler {
+    border-color: transparent;
+}
+@media (min-width: 576px) and (max-width: 767px) {
+    .container {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    div#cp-main.cp-page-index .cp-topbar .navbar-toggler-left {
+        left: 5px;
     }
 }

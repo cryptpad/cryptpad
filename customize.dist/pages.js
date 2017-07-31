@@ -241,11 +241,16 @@ define([
 
     var infopageTopbar = function () {
         return h('div.cp-topbar',
-            h('div.cp-left',
-                h('a', { href: '/zeroknowledge.html'}, 'What is Zero Knowledge'),
-                h('a', { href: 'https://blog.cryptpad.fr/'}, 'Blog'),
-                h('a', { href: '/contact.html'}, 'Contact'),
-                h('a', { href: '/about.html'}, 'About')
+            h('div.cp-left.navbar.navbar-toggleable-sm.navbar-light.navbar-inverse',
+            	h('button.navbar-toggler.navbar-toggler-left', {'type':'button'}, {'data-toggle':'collapse'}, {'data-target':'#menuCollapse'}, {'aria-controls': 'menuCollapse'}, {'aria-expanded':'false'}, {'aria-label':'Toggle navigation'},
+            		[h('i.fa.fa-bars')
+            		]),
+            	h('div.collapse.navbar-collapse#menuCollapse', [
+            			h('a', { href: '/zeroknowledge.html'}, 'What is Zero Knowledge'),
+                		h('a', { href: 'https://blog.cryptpad.fr/'}, 'Blog'),
+               			h('a', { href: '/contact.html'}, 'Contact'),
+                		h('a', { href: '/about.html'}, 'About')
+            		]),
             ),
             h('div.cp-right',
                 h('a.cp-register-btn', { href: '/register'}, 'Register'),
@@ -261,13 +266,13 @@ define([
                 infopageTopbar(),
                 h('div.container.cp-container', [
                     h('div.row', [
-                        h('div.cp-title.col-6.col-xs-6', [
+                        h('div.cp-title.col-12.col-sm-6', [
                             h('img', { src: '/customize/cryptpad-new-logo-colors-logoonly.png?' + urlArgs }),
                             h('h1', 'CryptPad'),
                             h('p', Msg.main_catch_phrase)
                         ]),
                         /*userForm(),*/
-                        h('div.col-6.col-xs-6', [
+                        h('div.col-12.col-sm-6', [
                             [
                                 [ 'pad', '/pad/', 'Rich Text Pad', 'fa-file-word-o' ],
                                 [ 'code', '/code/', 'Markdown/Code Pad', 'fa-file-code-o' ],
