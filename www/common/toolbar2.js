@@ -996,13 +996,18 @@ define([
 
         var failed = toolbar.failed = function () {
             toolbar.connected = false;
-            toolbar.spinner.text(Messages.disconnected);
+
+            if (toolbar.spinner) {
+                toolbar.spinner.text(Messages.disconnected);
+            }
             //checkLag(toolbar, config);
         };
         toolbar.reconnecting = function (userId) {
             if (config.userList) { config.userList.userNetfluxId = userId; }
             toolbar.connected = false;
-            toolbar.spinner.text(Messages.reconnecting);
+            if (toolbar.spinner) {
+                toolbar.spinner.text(Messages.reconnecting);
+            }
             //checkLag(toolbar, config);
         };
 
