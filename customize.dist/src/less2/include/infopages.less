@@ -1,12 +1,17 @@
+@import (once) "./colortheme.less";
+
 @infopages_infobar-height: 64px;
 
 // Basic setup for info pages, this should be used at the global level
 .infopages_main () {
     min-height: 100vh;
-    background-color: #FAFAFA;
+    background-color: @colortheme_info-background;
 
     a {
-        color: #FFF;
+        color: @colortheme_link-color;
+        &:visited {
+            color: @colortheme_link-color-visited;
+        }
         //opacity: 0.8;
         //transition: opacity 0.2s;
     }
@@ -28,7 +33,7 @@
 
 .infopages_link () {
     text-decoration: none;
-    color: #000;
+    color: #0275D8;
     cursor: pointer;
     display: inline-flex;
     &:hover {
