@@ -241,15 +241,25 @@ define([
 
     var infopageTopbar = function () {
         return h('div.cp-topbar',
-            h('div.cp-left.navbar.navbar-toggleable-sm.navbar-light.navbar-inverse',
+            h('div.navbar.navbar-toggleable-sm.navbar-light.navbar-inverse',
             	h('button.navbar-toggler.navbar-toggler-left', {'type':'button'}, {'data-toggle':'collapse'}, {'data-target':'#menuCollapse'}, {'aria-controls': 'menuCollapse'}, {'aria-expanded':'false'}, {'aria-label':'Toggle navigation'},
             		[h('i.fa.fa-bars ')
             		]),
             	h('div.collapse.navbar-collapse#menuCollapse', [
-            			h('a', { href: '/zeroknowledge.html'}, 'What is Zero Knowledge'),
-                		h('a', { href: 'https://blog.cryptpad.fr/'}, 'Blog'),
-               			h('a', { href: '/contact.html'}, 'Contact'),
-                		h('a', { href: '/about.html'}, 'About')
+                    h('ul.navbar-nav', [
+                            h('li.nav-item', [
+                                    h('a.nav-link', { href: '/what-is-cryptpad.html'}, 'What is CryptPad'),
+                                ]),
+                            h('li.nav-item', [
+                                    h('a.nav-link', { href: 'https://blog.cryptpad.fr/'}, 'Blog'),
+                                ]),
+                            h('li.nav-item', [
+                                    h('a.nav-link', { href: '/contact.html'}, 'Contact'),
+                                ]),
+                            h('li.nav-item', [
+                                    h('a.nav-link', { href: '/about.html'}, 'About'),
+                                ]),
+                        ]),
             		]),
             ),
             h('div.cp-right',

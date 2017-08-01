@@ -58,7 +58,7 @@
     }
     p {
         //font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-        font-size: 21px;
+        font-size: 20px;
         //font-style: italic;
     }
 }
@@ -66,6 +66,11 @@
     position: absolute;
     button:focus {
         outline: none;
+    }
+    .collapse {
+        a {
+            display: block;
+        }
     }
     .navbar-toggler-left {
         top: -0.59rem;
@@ -177,5 +182,10 @@ h4 {
     }
     div#cp-main.cp-page-index .cp-topbar .navbar-toggler-left {
         left: 5px;
+    }
+}
+@media (max-width: 767px) {
+    .collapse.show {
+        margin-bottom: -12em;
     }
 }

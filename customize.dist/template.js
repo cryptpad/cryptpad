@@ -176,6 +176,7 @@ $(function () {
     require([
         'less!/customize/src/less2/main.less',
         'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
+        '/bower_components/bootstrap/dist/js/bootstrap.min.js'
     ], function () {
         if (pathname === '/') {
             // TODO(cjd): This is a hack because the template system doesn't make it easy.
