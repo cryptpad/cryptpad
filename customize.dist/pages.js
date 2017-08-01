@@ -129,9 +129,12 @@ define([
     };
 
     Pages['/contact.html'] = function () {
-        return h('div#main_other', [
-            h('center', h('h1', Msg.contact)),
-            setHTML(h('p'), Msg.main_about_p2)
+        return h('div#cp-main.cp-page-contact', [
+            infopageTopbar(),
+            h('div.container.cp-container', [
+                h('center', h('h1', Msg.contact)),
+                setHTML(h('p'), Msg.main_about_p2)
+            ])
         ]);
     };
 
