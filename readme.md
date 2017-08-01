@@ -1,8 +1,6 @@
 [![An XWiki Labs Project](https://raw.githubusercontent.com/xwiki-labs/xwiki-labs-logo/master/projects/xwikilabs/xlabs-project.png "XWiki labs")](https://labs.xwiki.com/xwiki/bin/view/Main/WebHome)
 
-<span align="center">
 ![CryptPad screenshot](https://github.com/xwiki-labs/cryptpad/raw/master/screenshot.png "Pads are an easy way to collaborate")
-</span>
 
 CryptPad is the **Zero Knowledge** realtime collaborative editor.
 
