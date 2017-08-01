@@ -342,9 +342,9 @@ define([
     };
 
     Pages['/register/'] = Pages['/register/index.html'] = function () {
-        return [h('div#main', [
-            h('div.mainOverlay'),
-            h('div#align-container', [
+        return [h('div#cp-main.cp-page-register', [
+            infopageTopbar(),
+            h('div.container.cp-container', [
                 h('div#data.hidden', [
                     h('h1', Msg.register_header),
                     h('br'),
