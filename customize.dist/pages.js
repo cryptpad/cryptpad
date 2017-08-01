@@ -419,12 +419,12 @@ define([
         return [h('div#cp-main.cp-page-register', [
             infopageTopbar(),
             h('div.container.cp-container', [
-                h('div#data.hidden', [
+                h('div.row.align-items-center', [
+                h('div#data.hidden.col-md-6', [
                     h('h1', Msg.register_header),
-                    h('br'),
-                    setHTML(h('p.left.register-explanation'), Msg.register_explanation)
+                    setHTML(h('p.register-explanation'), Msg.register_explanation)
                 ]),
-                h('div#userForm.form-group.hidden', [
+                h('div#userForm.form-group.hidden.col-md-6', [
                     h('input.form-control#username', {
                         type: 'text',
                         autocomplete: 'off',
@@ -442,34 +442,38 @@ define([
                         type: 'password',
                         placeholder: Msg.login_confirm,
                     }),
-                    h('input#import-recent', {
-                        type: 'checkbox',
-                        checked: true
-                    }),
-                    h('label', {
-                        'for': 'import-recent',
-                    }, Msg.register_importRecent),
-                    h('br'),
-                    h('input#accept-terms', {
-                        type: 'checkbox'
-                    }),
-                    setHTML(h('label', {
-                        'for': 'accept-terms',
-                    }), Msg.register_acceptTerms),
-                    h('br'),
+                    h('div.checkbox-container', [
+                        h('input#import-recent', {
+                            type: 'checkbox',
+                            checked: true
+                        }),
+                        h('label', {
+                            'for': 'import-recent',
+                        }, Msg.register_importRecent),
+                    ]),
+                    h('div.checkbox-container', [
+                        h('input#accept-terms', {
+                            type: 'checkbox'
+                        }),
+                        setHTML(h('label', {
+                            'for': 'accept-terms',
+                        }), Msg.register_acceptTerms),
+                    ]),
                     h('button#register.btn.btn-primary', Msg.login_register)
                 ])
-            ])
+                ]),
+            ]),
+            infopageFooter(),
         ])];
     };
 
     Pages['/login/'] = Pages['/login/index.html'] = function () {
-        return [h('div#main', [
-            h('div.mainOverlay'),
-            h('div#align-container',
-                h('div#main-container', [
-                    h('div#data.hidden', setHTML(h('p.left'), Msg.main_info)),
-                    h('div#userForm.form-group.hidden', [
+        return [h('div#cp-main.cp-page-login', [
+            infopageTopbar(),
+            h('div.container.cp-container', [
+                h('div.row.align-items-center', [
+                    h('div#data.hidden.col-md-6', setHTML(h('p.left'), Msg.main_info)),
+                    h('div#userForm.form-group.hidden.col-md-6', [
                         h('input.form-control#name', {
                             name: 'name',
                             type: 'text',
@@ -485,14 +489,15 @@ define([
                             'name': 'password',
                             placeholder: Msg.login_password,
                         }),
-                        h('button.btn.btn-primary.login.first', Msg.login_login),
                         h('div.extra', [
-                            h('p', Msg.login_notRegistered),
+                            h('button.btn.btn-primary.login.first', Msg.login_login),
+                            h('span', Msg.login_notRegistered),
                             h('button#register.btn.btn-success.register', Msg.login_register)
                         ])
                     ])
-                ])
-            )
+                ]),
+            ]),
+            infopageFooter(),
         ])];
     };
 
