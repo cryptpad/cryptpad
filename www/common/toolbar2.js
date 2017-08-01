@@ -199,6 +199,7 @@ define([
 
         // Update the userlist
         var $editUsers = $userlistContent.find('.' + USERLIST_CLS).html('');
+        Cryptpad.clearTooltips();
 
         var $editUsersList = $('<div>', {'class': 'userlist-others'});
 
