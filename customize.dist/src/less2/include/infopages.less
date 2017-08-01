@@ -1,3 +1,5 @@
+@infopages_infobar-height: 64px;
+
 // Basic setup for info pages, this should be used at the global level
 .infopages_main () {
     min-height: 100vh;
@@ -17,12 +19,16 @@
 	margin: 0;
 
 	font-size: 14px;
-	font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
+
+    .cp-container {
+        padding-top: @infopages_infobar-height;
+    }
 };
 
 .infopages_link () {
     text-decoration: none;
-    color: #FFF;
+    color: #000;
     cursor: pointer;
     display: inline-flex;
     &:hover {
@@ -33,6 +39,8 @@
 // Apply this to the top bar div
 .infopages_topbar () {
     .cp-topbar {
+        background: #fff;
+        z-index: 9001;
         position: fixed;
         top: 0;
 
@@ -43,7 +51,7 @@
 
         box-sizing: border-box;
         width: 100%;
-        height: 64px;
+        height: @infopages_infobar-height;
         padding-left: 0.5em;
         padding-right: 0.5em;
         vertical-align: middle;
