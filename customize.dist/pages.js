@@ -216,8 +216,22 @@ define([
         return h('div#cp-main.cp-page-what-is-cryptpad', [
             infopageTopbar(),
             h('div.container.cp-container', [
-                h('center', h('h1', 'What is Cryptpad')), //TODO: add translation
-                setHTML(h('p'), Msg.main_about_p2)
+                h('center', h('h1', Msg.whatis_title)),
+                setHTML(h('h2'), Msg.whatis_collaboration),
+                setHTML(h('p'), Msg.whatis_collaboration_p1),
+                setHTML(h('p'), Msg.whatis_collaboration_p2),
+                setHTML(h('p'), Msg.whatis_collaboration_p3),
+                setHTML(h('h2'), Msg.whatis_zeroknowledge),
+                setHTML(h('p'), Msg.whatis_zeroknowledge_p1),
+                setHTML(h('p'), Msg.whatis_zeroknowledge_p2),
+                setHTML(h('p'), Msg.whatis_zeroknowledge_p3),
+                setHTML(h('h2'), Msg.whatis_drive),
+                setHTML(h('p'), Msg.whatis_drive_p1),
+                setHTML(h('p'), Msg.whatis_drive_p2),
+                setHTML(h('p'), Msg.whatis_drive_p3),
+                setHTML(h('h2'), Msg.whatis_business),
+                setHTML(h('p'), Msg.whatis_business_p1),
+                setHTML(h('p'), Msg.whatis_business_p2),
             ]),
             infopageFooter(),
         ]);
