@@ -251,6 +251,9 @@ define([
             		]),
             	h('div.collapse.navbar-collapse#menuCollapse', [
                     h('ul.navbar-nav', [
+                            h('a.cp-logo', { href: '/' }, [
+                                h('img', { src: '/customize/cryptpad-new-logo-colors-logoonly.png?' + urlArgs })
+                            ]),
                             h('li.nav-item', [
                                     h('a.nav-link', { href: '/what-is-cryptpad.html'}, Msg.topbar_whatIsCryptpad),
                                 ]),

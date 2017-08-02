@@ -120,10 +120,22 @@
         -webkit-user-select: none;
         -ms-user-select: none;
 
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+        }
+
         a {
             font-weight: 500;
             padding: 0.6em;
             .infopages_link()
+        }
+
+        .cp-logo {
+            img {
+                height: @infopages_infobar-height / 2;
+            }
+            margin-right: 0.5em;
         }
     }
 }
