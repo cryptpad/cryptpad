@@ -255,7 +255,7 @@ define([
                                     h('a.nav-link', { href: '/what-is-cryptpad.html'}, Msg.topbar_whatIsCryptpad),
                                 ]),
                             h('li.nav-item', [
-                                    h('a.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.Blog),
+                                    h('a.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.blog),
                                 ]),
                             h('li.nav-item', [
                                     h('a.nav-link', { href: '/contact.html'}, Msg.contact),
