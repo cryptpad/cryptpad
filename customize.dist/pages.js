@@ -361,10 +361,10 @@ define([
         return h('div#loading', 
             h('div.loadingContainer', [
                 h('img.cryptofist', {
-                    src: '/customize/cryptofist_small.png?' + urlArgs
+                    src: '/customize/cryptpad-new-logo-colors-logoonly.png?' + urlArgs
                 }),
                 h('div.spinnerContainer',
-                    h('span.fa.fa-spinner.fa-pulse.fa-4x.fa-fw')),
+                    h('span.fa.fa-circle-o-notch.fa-spin.fa-4x.fa-fw')),
                 h('p', Msg.loading)
             ])
         );
