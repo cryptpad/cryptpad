@@ -143,51 +143,61 @@ define([
     };
 
     Pages['/about.html'] = function () {
-        return h('div#main_other', [
-            h('center', [
-                h('h1', Msg.about)
+        return h('div#cp-main.cp-page-privacy', [
+            infopageTopbar(),
+            h('div.container.cp-container', [
+                h('center', [
+                    h('h1', Msg.about)
+                ]),
+                setHTML(h('p'), Msg.main_p2),
+                h('h2', Msg.main_howitworks),
+                setHTML(h('p'), Msg.main_howitworks_p1)
             ]),
-            setHTML(h('p'), Msg.main_p2),
-            h('h2', Msg.main_howitworks),
-            setHTML(h('p'), Msg.main_howitworks_p1)
+            infopageFooter()
         ].concat(indexContent()));
     };
 
     Pages['/privacy.html'] = function () {
-        return h('div#main_other', [
-            h('center', h('h1', Msg.policy_title)),
-            h('h2', Msg.policy_whatweknow),
-            h('p', Msg.policywhatweknow_p1),
+        return h('div#cp-main.cp-page-privacy', [
+            infopageTopbar(),
+            h('div.container.cp-container', [
+                h('center', h('h1', Msg.policy_title)),
+                h('h2', Msg.policy_whatweknow),
+                h('p', Msg.policywhatweknow_p1),
 
-            h('h2', Msg.policy_howweuse),
-            h('p', Msg.policy_howweuse_p1),
-            h('p', Msg.policy_howweuse_p2),
+                h('h2', Msg.policy_howweuse),
+                h('p', Msg.policy_howweuse_p1),
+                h('p', Msg.policy_howweuse_p2),
 
-            h('h2', Msg.policy_whatwetell),
-            h('p', Msg.policy_whatwetell_p1),
+                h('h2', Msg.policy_whatwetell),
+                h('p', Msg.policy_whatwetell_p1),
 
-            h('h2', Msg.policy_links),
-            h('p', Msg.policy_links_p1),
+                h('h2', Msg.policy_links),
+                h('p', Msg.policy_links_p1),
 
-            h('h2', Msg.policy_ads),
-            h('p', Msg.policy_ads_p1),
+                h('h2', Msg.policy_ads),
+                h('p', Msg.policy_ads_p1),
 
-            h('h2', Msg.policy_choices),
-            h('p', Msg.policy_choices_open),
-            setHTML(h('p'), Msg.policy_choices_vpn),
-
-            h('br')
+                h('h2', Msg.policy_choices),
+                h('p', Msg.policy_choices_open),
+                setHTML(h('p'), Msg.policy_choices_vpn),
+            ]),
+            infopageFooter()
         ]);
     };
 
     Pages['/terms.html'] = function () {
-        return h('div#main_other', [
-            h('center', h('h1', Msg.tos_title)),
-            h('p', Msg.tos_legal),
-            h('p', Msg.tos_availability),
-            h('p', Msg.tos_e2ee),
-            h('p', Msg.tos_logs),
-            h('p', Msg.tos_3rdparties),
+        return h('div#cp-main.cp-page-terms', [
+            infopageTopbar(),
+            h('div.container.cp-container', [
+                h('center', h('h1', Msg.tos_title)),
+                h('p', Msg.tos_legal),
+                h('p', Msg.tos_availability),
+                h('p', Msg.tos_e2ee),
+                h('p', Msg.tos_logs),
+                h('p', Msg.tos_3rdparties),
+            ]),
+            infopageFooter()
         ]);
     };
 
@@ -201,6 +211,18 @@ define([
             infopageFooter(),
         ]);
     };
+
+    Pages['/what-is-cryptpad.html'] = function () {
+        return h('div#cp-main.cp-page-what-is-cryptpad', [
+            infopageTopbar(),
+            h('div.container.cp-container', [
+                h('center', h('h1', 'What is Cryptpad')), //TODO: add translation
+                setHTML(h('p'), Msg.main_about_p2)
+            ]),
+            infopageFooter(),
+        ]);
+    };
+
 
     var userForm = function () {
         return h('div#userForm.form-group.hidden', [
