@@ -6,13 +6,10 @@
 // Basic setup for info pages, this should be used at the global level
 .infopages_main () {
     background-color: @colortheme_info-background;
-    min-height: 100vh;
 
     a {
         color: @colortheme_link-color;
-        &:visited {
-            color: @colortheme_link-color-visited;
-        }
+        &:visited { color: @colortheme_link-color-visited; }
         //opacity: 0.8;
         //transition: opacity 0.2s;
     }
@@ -56,6 +53,31 @@
                     margin-right: 0.5em;
                 }
             }
+        }
+    }
+
+    footer {
+        background-color: white;
+
+        .container {
+            .col {
+                margin-top: 1em;
+            }
+
+            width: 100%;
+            text-align: center;
+            margin-bottom: 1em;
+
+            ul.list-unstyled {
+                margin: 0;
+            }
+        }
+
+        .cp-version-footer {
+            background-color: @colortheme_info-background;
+            color: black;
+            text-align: center;
+            padding: 0.5em;
         }
     }
 };
