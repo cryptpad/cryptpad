@@ -525,10 +525,9 @@ define([
             APP.$rightside.append($p);
             return;
         }
-        var $create = $('<div>', {id: CREATE_ID});
-        var $button = $('<button>', {'class': 'btn btn-success'});
-        $button.text(Messages.profile_create).click(todo).appendTo($create);
-        APP.$rightside.append($create);
+
+        // make an empty profile for the user on their first visit
+        todo();
     };
 
     var onCryptpadReady = function () {
