@@ -508,6 +508,8 @@ define(function () {
     out.terms = "Conditions";
     out.blog = "Blog";
 
+    out.topbar_whatIsCryptpad = "Qu'est-ce que CryptPad";
+
     // privacy.html
 
     out.policy_title = 'Politique de confidentialité de CryptPad';

@@ -526,6 +526,8 @@ define(function () {
     out.terms = "ToS";
     out.blog = "Blog";
 
+    out.topbar_whatIsCryptpad = "What is CryptPad";
+
     // privacy.html
 
     out.policy_title = 'CryptPad Privacy Policy';

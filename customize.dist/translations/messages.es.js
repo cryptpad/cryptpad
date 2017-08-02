@@ -542,5 +542,8 @@ define(function () {
     out.settings_logoutEverywhereButton = "Cerar sesión";
     out.upload_title = "Subir archivo";
 
+    // 1.13.0 - Naiad
+    out.topbar_whatIsCryptpad = "Qué es CryptPad";
+
     return out;
 });

@@ -223,47 +223,6 @@ define([
         ]);
     };
 
-
-    var userForm = function () {
-        return h('div#userForm.form-group.hidden', [
-            h('input#name.form-control', {
-                name: 'name',
-                type: 'text',
-                placeholder: Msg.login_username
-            }),
-            h('input#password.form-control', {
-                name: 'password',
-                type: 'password',
-                placeholder: Msg.login_password
-            }),
-            h('div', {
-                style: { display: 'none' }
-            }, [
-                h('span.remember.form-check', [
-                    h('label.form-check-label', {
-                        'for': 'rememberme',
-                        placeholder: Msg.login_remember,
-                    }, [
-                        h('input#rememberme.form-check-input', {
-                            type: 'checkbox',
-                            checked: true
-                        })
-                    ])
-                ])
-            ]),
-            h('button.btn.btn-secondary.login.half.first', Msg.login_login),
-            h('button.btn.btn-success.register.half', Msg.login_register),
-            h('p.separator', Msg.login_orNoLogin),
-            h('p#buttons.buttons'),
-            h('p.driveLink', [
-                h('a.gotodrive', {
-                    href: '/drive/'
-                }, Msg.login_nologin)
-            ])
-        ]);
-    };
-
-
     var appButton = function (alt, h2, img, p, url, btn, id) {
         return h('div.app', [
             h('center', [
@@ -284,50 +243,6 @@ define([
         ]);
     };
 
-    var tryIt = function () {
-        return [
-            h('div.class.category#tryit', [
-                h('center', [
-                    h('h1', Msg.tryIt)
-                ])
-            ]),
-            h('div.page', [
-                h('div.app-container', [
-                    h('div.app-row', [
-                        appButton("Rich Text application",
-                            Msg.main_richText,
-                            '/customize/images/pad.png?' + urlArgs,
-                            Msg.main_richText_p,
-                            '/pad/',
-                            Msg.button_newpad,
-                            'create-pad'),
-                        appButton('Code application',
-                            Msg.main_code,
-                            '/customize/images/code.png?' + urlArgs,
-                            Msg.main_code_p,
-                            '/code/',
-                            Msg.button_newcode,
-                            'create-code'),
-                        appButton('Slide application',
-                            Msg.main_slide,
-                            '/customize/images/slide.png?' + urlArgs,
-                            Msg.main_slide_p,
-                            '/slide/',
-                            Msg.button_newslide,
-                            'create-slide'),
-                        appButton('Poll application',
-                            Msg.main_poll,
-                            '/customize/images/poll.png?' + urlArgs,
-                            Msg.main_poll_p,
-                            '/poll/',
-                            Msg.button_newpoll,
-                            'create-poll')
-                    ])
-                ])
-            ])
-        ];
-    };
-
     var infopageTopbar = function () {
         return h('div.cp-topbar',
             h('div.navbar.navbar-toggleable-sm.navbar-light.navbar-inverse',
@@ -337,23 +252,23 @@ define([
             	h('div.collapse.navbar-collapse#menuCollapse', [
                     h('ul.navbar-nav', [
                             h('li.nav-item', [
-                                    h('a.nav-link', { href: '/what-is-cryptpad.html'}, 'What is CryptPad'),
+                                    h('a.nav-link', { href: '/what-is-cryptpad.html'}, Msg.topbar_whatIsCryptpad),
                                 ]),
                             h('li.nav-item', [
-                                    h('a.nav-link', { href: 'https://blog.cryptpad.fr/'}, 'Blog'),
+                                    h('a.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.Blog),
                                 ]),
                             h('li.nav-item', [
-                                    h('a.nav-link', { href: '/contact.html'}, 'Contact'),
+                                    h('a.nav-link', { href: '/contact.html'}, Msg.contact),
                                 ]),
                             h('li.nav-item', [
-                                    h('a.nav-link', { href: '/about.html'}, 'About'),
+                                    h('a.nav-link', { href: '/about.html'}, Msg.about),
                                 ]),
                         ]),
             		]),
             ),
             h('div.cp-right',
-                h('a.cp-register-btn', { href: '/register'}, 'Register'),
-                h('a.cp-login-btn', { href: '/login'}, 'Log in')
+                h('a.cp-register-btn', { href: '/register'}, Msg.login_register),
+                h('a.cp-login-btn', { href: '/login'}, Msg.login_login)
             )
         );
     }
@@ -370,7 +285,6 @@ define([
                             h('h1', 'CryptPad'),
                             h('p', Msg.main_catch_phrase)
                         ]),
-                        /*userForm(),*/
                         h('div.col-12.col-sm-6', [
                             [
                                 [ 'pad', '/pad/', Msg.main_richTextPad, 'fa-file-word-o' ],
@@ -413,10 +327,8 @@ define([
                         ])
                     ])
                 ]),
-                //h('footer.cp-more', "More")
             ])
         ];
-        //.concat(tryIt());
     };
 
     var loadingScreen = function () {
@@ -513,7 +425,6 @@ define([
                         }),
                         h('div.extra', [
                             h('button.btn.btn-primary.login.first', Msg.login_login),
-                            h('span', Msg.login_notRegistered),
                             h('button#register.btn.btn-success.register', Msg.login_register)
                         ])
                     ])
