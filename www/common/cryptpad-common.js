@@ -1243,6 +1243,13 @@ define([
                     style: 'font:'+size+' FontAwesome'
                 });
                 break;
+            case 'savetodrive':
+                button = $('<button>', {
+                    'class': 'fa fa-cloud-upload',
+                    title: Messages.canvas_saveToDrive,
+                })
+                .click(prepareFeedback(type));
+                break;
             default:
                 button = $('<button>', {
                     'class': "fa fa-question",

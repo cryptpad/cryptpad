@@ -212,6 +212,18 @@ window.canvas = canvas;
             });
         };
 
+        module.FM = Cryptpad.createFileManager({});
+        module.upload = function (title) {
+            $canvas[0].toBlob(function (blob) {
+                blob.name = title;
+                var reader = new FileReader();
+                reader.onloadend = function () {
+                    module.FM.handleFile(blob);
+                };
+                reader.readAsArrayBuffer(blob);
+            });
+        };
+
         var initializing = true;
 
         var $bar = $('#toolbar');
@@ -337,13 +349,21 @@ window.canvas = canvas;
             var $export = Cryptpad.createButton('export', true, {}, saveImage);
             $rightside.append($export);
 
+            Cryptpad.createButton('savetodrive', true, {}, function () {})
+            .click(function () {
+                Cryptpad.prompt(Messages.exportPrompt, document.title + '.png',
+                function (name) {
+                    if (name === null || !name.trim()) { return; }
+                    module.upload(name);
+                });
+            }).appendTo($rightside);
+
             var $forget = Cryptpad.createButton('forget', true, {}, function (err) {
                 if (err) { return; }
                 setEditable(false);
                 toolbar.failed();
             });
             $rightside.append($forget);
-
 
             var editHash;
 
