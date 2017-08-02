@@ -143,7 +143,7 @@ define([
     };
 
     Pages['/about.html'] = function () {
-        return h('div#cp-main.cp-page-privacy', [
+        return h('div#cp-main.cp-page-about', [
             infopageTopbar(),
             h('div.container.cp-container', [
                 h('center', [
