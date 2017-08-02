@@ -1,5 +1,6 @@
 @import "/customize/src/less/variables.less";
 @import "/customize/src/less/mixins.less";
+@import "/common/markdown.less";
 
 // used for slides
 .viewportRatio (@x, @y, @p: 100) {
@@ -325,16 +326,7 @@ div#modal #content, #print {
             margin-bottom: 0.5em;
         }
 
-        pre > code {
-            display: block;
-            position: relative;
-            border: 1px solid #333;
-            width: 90%;
-            margin: auto;
-            padding-left: .25vw;
-            overflow-x: auto;
-            overflow-y: hidden;
-        }
+        .markdown_preformatted-code;
 
         ul, ol {
             min-width: 50%;
