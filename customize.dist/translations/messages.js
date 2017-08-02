@@ -246,6 +246,7 @@ define(function () {
     out.canvas_opacity = "Opacity";
     out.canvas_opacityLabel = "opacity: {0}";
     out.canvas_widthLabel = "Width: {0}";
+    out.canvas_saveToDrive = "Save this image as a file in your CryptDrive";
 
     // Profile
     out.profileButton = "Profile"; // dropdown menu
