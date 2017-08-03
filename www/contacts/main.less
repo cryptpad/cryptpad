@@ -112,11 +112,32 @@ body {
     }
 }
 
+.placeholder (@color: #bbb) {
+    &::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+        color: @color;
+    }
+    &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+        color: @color;
+        opacity:  1;
+    }
+    &::-moz-placeholder { /* Mozilla Firefox 19+ */
+        color: @color;
+        opacity:  1;
+    }
+    &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+        color: @color;
+    }
+    &::-ms-input-placeholder { /* Microsoft Edge */
+        color: @color;
+    }
+}
+
 #messaging {
     flex: 1;
     height: 100%;
     background-color: lighten(@bg-color, 20%);
     min-width: 0;
+
     .info {
         padding: 20px;
     }
@@ -193,6 +214,9 @@ body {
             background-color: darken(@bg-color, 10%);
             color: @color;
             resize: none;
+            line-height: 50px;
+            overflow-y: auto;
+            .placeholder;
             &:placeholder-shown { line-height: 50px; }
         }
         button {
