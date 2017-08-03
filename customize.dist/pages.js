@@ -170,13 +170,9 @@ define([
     };
 
     Pages['/contact.html'] = function () {
-        return h('div#cp-main.cp-page-contact', [
-            infopageTopbar(),
-            h('div.container.cp-container', [
-                h('center', h('h1', Msg.contact)),
-                setHTML(h('p'), Msg.main_about_p2)
-            ]),
-            infopageFooter(),
+        return h('div#main_other', [
+            h('center', h('h1', Msg.contact)),
+            setHTML(h('p'), Msg.main_about_p2)
         ]);
     };
 
@@ -236,36 +232,26 @@ define([
 
     var infopageTopbar = function () {
         return h('div.cp-topbar',
-            h('div.navbar.navbar-toggleable-sm.navbar-light.navbar-inverse',
-            	h('button.navbar-toggler.navbar-toggler-left', {'type':'button'}, {'data-toggle':'collapse'}, {'data-target':'#menuCollapse'}, {'aria-controls': 'menuCollapse'}, {'aria-expanded':'false'}, {'aria-label':'Toggle navigation'},
-            		[h('i.fa.fa-bars ')
-            		]),
-            	h('div.collapse.navbar-collapse#menuCollapse', [
-                    h('ul.navbar-nav', [
-                            h('a.cp-logo', { href: '/' }, [
-                                h('img', { src: '/customize/cryptpad-new-logo-colors-logoonly.png?' + urlArgs })
-                            ]),
-                            h('li.nav-item', [
-                                    h('a.nav-link', { href: '/what-is-cryptpad.html'}, Msg.topbar_whatIsCryptpad),
-                                ]),
-                            h('li.nav-item', [
-                                    h('a.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.blog),
-                                ]),
-                            h('li.nav-item', [
-                                    h('a.nav-link', { href: '/contact.html'}, Msg.contact),
-                                ]),
-                            h('li.nav-item', [
-                                    h('a.nav-link', { href: '/about.html'}, Msg.about),
-                                ]),
-                        ]),
-            		]),
+            h('div.cp-left',
+                h('a.navbar-brand', { href: 'index.html'}, [
+                    h( 'img', { src: '/customize/CryptPad-white-logo.svg' })
+            ])
             ),
-            h('div.cp-right',
-                h('a.cp-register-btn', { href: '/register'}, Msg.login_register),
-                h('a.cp-login-btn', { href: '/login'}, Msg.login_login)
+            h('div.cp-right.navbar.navbar-toggleable-md.navbar-light.navbar-inverse',
+                h('button.navbar-toggler.navbar-toggler-right', {'type':'button'}, {'data-toggle':'collapse'}, {'data-target':'#menuCollapse'}, {'aria-controls': 'menuCollapse'}, {'aria-expanded':'false'}, {'aria-label':'Toggle navigation'},
+                    [h('i.fa.fa-bars ')
+                    ]),
+                h('div.collapse.navbar-collapse#menuCollapse', [  
+                    h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.topbar_whatIsCryptpad),
+                    h('a.nav-item.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.blog),
+                    h('a.nav-item.nav-link', { href: '/contact.html'}, Msg.contact),
+                    h('a.nav-item.nav-link', { href: '/about.html'}, Msg.about),
+                    h('a.cp-login-btn', { href: '/login'}, Msg.login_login),
+                    h('a.cp-register-btn', { href: '/register'}, Msg.login_register)
+                ])
             )
         );
-    }
+    };
 
     Pages['/'] = Pages['/index.html'] = function () {
         var showingMore = false;
