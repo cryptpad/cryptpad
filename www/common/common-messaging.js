@@ -9,10 +9,15 @@ define([
     };
 
     var Messages;
-    var setEditable = Msg.setEditable = function (bool) {
+    Msg.setEditable = function (bool) {
         bool = !bool;
         Msg.inputs.forEach(function (input) {
-            input.setAttribute('disabled', bool);
+            if (bool) {
+                input.setAttribute('disabled', bool);
+            } else {
+                input.removeAttribute('disabled');
+            }
+
             if (Messages) {
                 // set placeholder
                 var placeholder = bool? Messages.disconnected: Messages.contacts_typeHere;
@@ -281,6 +286,7 @@ define([
         var chan = parsed[3];
         if (!chan || !channels[chan]) { return; }
         pushMsg(common, channels[chan], parsed[4]);
+        channels[chan].refresh();
     };
     var onMessage = function (common, msg, sender, chan) {
         if (!channels[chan.id]) { return; }
@@ -298,11 +304,25 @@ define([
         var data = getFriend(common, curvePublic);
         var proxy = common.getProxy();
 
+        // Input
+        var channel = channels[data.channel];
+
         var $header = $('<div>', {
             'class': 'header',
         }).appendTo($container);
 
         var $avatar = $('<div>', {'class': 'avatar'}).appendTo($header);
+
+        // more history...
+        $('<span>', {
+            'class': 'more-history',
+        })
+        .text('get more history')
+        .click(function () {
+            console.log("GETTING HISTORY");
+            channel.getPreviousMessages();
+        })
+        .appendTo($header);
 
         var $removeHistory = $('<span>', {
             'class': 'remove-history fa fa-eraser',
@@ -394,6 +414,15 @@ define([
 
     };
 
+    Msg.getLatestMessages = function () {
+        Object.keys(channels).forEach(function (id) {
+            if (id === 'me') { return; }
+            var friend = channels[id];
+            friend.getMessagesSinceDisconnect();
+            friend.refresh();
+        });
+    };
+
     Msg.init = function (common, $listContainer, $msgContainer) {
         var network = common.getNetwork();
         var proxy = common.getProxy();
@@ -470,6 +499,7 @@ define([
             $chat.show();
 
             Msg.active = curvePublic;
+            // TODO don't mark messages as read unless you have displayed them
 
             refresh(curvePublic);
         };
@@ -559,6 +589,37 @@ define([
             var statusText = status ? 'online' : 'offline';
             $friend.find('.status').attr('class', 'status '+statusText);
         };
+        var getMoreHistory = function (network, chan, hash, count) {
+            var msg = [
+                'GET_HISTORY_RANGE',
+                chan.id,
+                {
+                    from: hash,
+                    count: count,
+                }
+            ];
+
+            console.log(msg);
+
+            network.sendto(network.historyKeeper, JSON.stringify(msg)).then(function (a, b, c) {
+                console.log(a, b, c);
+            }, function (err) {
+                throw new Error(err);
+            });
+        };
+
+        var getChannelMessagesSince = function (network, chan, data, keys) {
+            var cfg = {
+                validateKey: keys.validateKey,
+                owners: [proxy.edPublic, data.edPublic],
+                lastKnownHash: data.lastKnownHash
+            };
+            var msg = ['GET_HISTORY', chan.id, cfg];
+            network.sendto(network.historyKeeper, JSON.stringify(msg))
+              .then($.noop, function (err) {
+                throw new Error(err);
+            });
+        };
 
         // Open the channels
         var openFriendChannel = function (f) {
@@ -578,9 +639,18 @@ define([
                     removeUI: function () { removeUI(data.curvePublic); },
                     updateUI: function (types) { updateUI(data.curvePublic, types); },
                     updateStatus: function () { updateStatus(data.curvePublic); },
+                    getMessagesSinceDisconnect: function () {
+                        getChannelMessagesSince(network, chan, data, keys);
+                    },
                     wc: chan,
                     userList: [],
-                    mapId: {}
+                    mapId: {},
+                    getPreviousMessages: function () {
+                        var oldestMessages = channel.messages[0];
+                        var oldestHash = oldestMessages[0];
+
+                        getMoreHistory(network, chan, oldestHash, 10);
+                    },
                 };
                 chan.on('message', function (msg, sender) {
                     onMessage(common, msg, sender, chan);
@@ -609,20 +679,13 @@ define([
                     }
                     channel.updateStatus();
                 });
-                var cfg = {
-                    validateKey: keys.validateKey,
-                    owners: [proxy.edPublic, data.edPublic],
-                    lastKnownHash: data.lastKnownHash
-                };
-                var msg = ['GET_HISTORY', chan.id, cfg];
-                network.sendto(network.historyKeeper, JSON.stringify(msg))
-                  .then($.noop, function (err) {
-                    throw new Error(err);
-                });
+
+                getChannelMessagesSince(network, chan, data, keys);
             }, function (err) {
                 console.error(err);
             });
         };
+
         Object.keys(friends).forEach(openFriendChannel);
 
         var checkNewFriends = function () {
