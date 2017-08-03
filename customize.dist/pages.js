@@ -87,17 +87,17 @@ define([
                 h('h2', 'Core Developers'),
                 h('div.row', [
                     h('div.col-md-4', [
-                        h('img.bio-avatar', {'src': '/customize/images/avatar.png'}),
+                        h('img.bio-avatar', {'src': '/customize/images/aaron.jpg'}),
                         h('h3', "Aaron MacSween"),
                         setHTML(h('div#bio'), '<p>Aaron transitioned into distributed systems development from a background in jazz and live stage performance.</p><p>He appreciates the elegance of biological systems and functional programming, and focused on both as a student at the University of Toronto, where he studied cognitive and computer sciences.</p><p>He moved to Paris in 2015 to work as a research engineer at XWiki SAS, after having dedicated significant time to various cryptography-related software projects.</p><p>He spends his spare time experimenting with guitars, photography, science fiction, and spicy food.</p>')
                     ]),
                     h('div.col-md-4', [
-                        h('img.bio-avatar', {'src': '/customize/images/avatar.png'}),
+                        h('img.bio-avatar', {'src': '/customize/images/caleb.jpg'}),
                         h('h3', "Caleb James Delisle"),
                         setHTML(h('div#bio'), '<p>Caleb is a cryptography developer, Machine Technology graduate of the Franklin County Technical School and lifelong tinkerer.</p><p>In 2011, he started the cjdns Open Source project to show that secure networking could be invisible and easily deployed.</p><p>After joining XWiki SAS in 2014, he started the CryptPad project with the intent of bringing the same transparent security to collaborative editing.</p><p>He\'s always trying to learn from more experienced colleagues and when someone passes through the Research Team office, his favorite words are "Pull up a chair!".</p>')
                     ]),
                     h('div.col-md-4', [
-                        h('img.bio-avatar', {'src': '/customize/images/avatar.png'}),
+                        h('img.bio-avatar', {'src': '/customize/images/yann.jpg'}),
                         h('h3', "Yann Flory"),
                         setHTML(h('div#bio'), '<p>Yann is a mysterious person.</p>')
                     ]),
@@ -170,9 +170,13 @@ define([
     };
 
     Pages['/contact.html'] = function () {
-        return h('div#main_other', [
-            h('center', h('h1', Msg.contact)),
-            setHTML(h('p'), Msg.main_about_p2)
+        return h('div#cp-main.cp-page-contact', [
+            infopageTopbar(),
+            h('div.container.cp-container', [
+                h('center', h('h1', Msg.contact)),
+                setHTML(h('p'), Msg.main_about_p2)
+            ]),
+            infopageFooter(),
         ]);
     };
 
