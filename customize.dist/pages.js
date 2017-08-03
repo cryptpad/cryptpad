@@ -13,72 +13,6 @@ define([
         return e;
     };
 
-    var indexContent = function () {
-        return [
-            h('div.page.category.first#knowmore', [
-                h('center', [
-                    h('h1', Msg.main_howitworks)
-                ])
-            ]),
-            h('div.page', [
-                h('div.info-container', [
-                    h('div.left.image', [
-                        h('img', {
-                            src: '/customize/images/zeroknowledge_small.png?' + urlArgs ,
-                            alt: 'Zero Knowledge'
-                        })
-                    ]),
-                    h('div.right', [
-                        h('h2', Msg.main_zeroKnowledge),
-                        setHTML(h('p'), Msg.main_zeroKnowledge_p)
-                    ])
-                ])
-            ]),
-            h('div.page.even', [
-                h('div.info-container', [
-                    h('div.left', [
-                        h('h2', Msg.main_writeItDown),
-                        h('p', Msg.main_writeItDown_p)
-                    ]),
-                    h('div.right.image', [
-                        h('img', {
-                            alt: "User account",
-                            src: '/customize/images/realtime_small.png?' + urlArgs,
-                        })
-                    ])
-                ])
-            ]),
-            h('div.page', [
-                h('div.info-container', [
-                    h('div.left.image', [
-                        h('img', {
-                            src: '/customize/images/key_small.png?' + urlArgs,
-                            alt: 'User account'
-                        })
-                    ]),
-                    h('div.right', [
-                        h('h2', Msg.main_share),
-                        h('p', Msg.main_share_p)
-                    ])
-                ])
-            ]),
-            h('div.page.even', [
-                h('div.info-container', [
-                    h('div.left', [
-                        h('h2', Msg.main_organize),
-                        h('p', Msg.main_organize_p)
-                    ]),
-                    h('div.right.image', [
-                        h('img', {
-                            src: '/customize/images/organize.png?' + urlArgs,
-                            alt: 'User account'
-                        })
-                    ])
-                ])
-            ])
-        ];
-    };
-
     var footerCol = function (title, L, literal) {
         return h('div.col', [
             h('ul.list-unstyled', [
@@ -149,10 +83,44 @@ define([
                 h('center', [
                     h('h1', Msg.about)
                 ]),
-                setHTML(h('p'), Msg.main_p2),
-                h('h2', Msg.main_howitworks),
-                setHTML(h('p'), Msg.main_howitworks_p1)
-            ].concat(indexContent())),
+                setHTML(h('p'), 'CryptPad is created inside of the Research Team at <a href="http://xwiki.com">XWiki SAS</a>, a small business located in Paris France and Iasi Romania. There are 3 core team members working on CryptPad plus a number of contributors both inside and outside of XWiki SAS.'),
+                h('h2', 'Core Developers'),
+                h('div.row', [
+                    h('div.col-md-4', [
+                        h('img.bio-avatar', {'src': '/customize/images/avatar.png'}),
+                        h('h3', "Aaron MacSween"),
+                        setHTML(h('div#bio'), '<p>Aaron transitioned into distributed systems development from a background in jazz and live stage performance.</p><p>He appreciates the elegance of biological systems and functional programming, and focused on both as a student at the University of Toronto, where he studied cognitive and computer sciences.</p><p>He moved to Paris in 2015 to work as a research engineer at XWiki SAS, after having dedicated significant time to various cryptography-related software projects.</p><p>He spends his spare time experimenting with guitars, photography, science fiction, and spicy food.</p>')
+                    ]),
+                    h('div.col-md-4', [
+                        h('img.bio-avatar', {'src': '/customize/images/avatar.png'}),
+                        h('h3', "Caleb James Delisle"),
+                        setHTML(h('div#bio'), '<p>Caleb is a cryptography developer, Machine Technology graduate of the Franklin County Technical School and lifelong tinkerer.</p><p>In 2011, he started the cjdns Open Source project to show that secure networking could be invisible and easily deployed.</p><p>After joining XWiki SAS in 2014, he started the CryptPad project with the intent of bringing the same transparent security to collaborative editing.</p><p>He\'s always trying to learn from more experienced colleagues and when someone passes through the Research Team office, his favorite words are "Pull up a chair!".</p>')
+                    ]),
+                    h('div.col-md-4', [
+                        h('img.bio-avatar', {'src': '/customize/images/avatar.png'}),
+                        h('h3', "Yann Flory"),
+                        setHTML(h('div#bio'), '<p>Yann is a mysterious person.</p>')
+                    ]),
+                ]),
+                h('h2', 'Key Contributors'),
+                h('div.row', [
+                    h('div.col-md-4', [
+                        h('img.bio-avatar', {'src': '/customize/images/avatar.png'}),
+                        h('h3', "Pierre Bondoerffer"),
+                        setHTML(h('div#bio'), '<p>Resident CSS wizard and emoji extraordinaire, Pierre is passionate about anything related to technology. He loves to hack around computers and put parts together.</p><p>He is currently studying at 42, where he learns about algorithms, networking, kernel programming and graphics.</p><p>As a part of an internship, he joined XWiki SAS and worked on CryptPad to improve user experience. He also maintains the Spanish translation.</p>')
+                    ]),
+                    h('div.col-md-4', [
+                        h('img.bio-avatar', {'src': '/customize/images/avatar.png'}),
+                        h('h3', "Catalin Scripcariu"),
+                        setHTML(h('div#bio'), '')
+                    ]),
+                    h('div.col-md-4', [
+                        h('img.bio-avatar', {'src': '/customize/images/avatar.png'}),
+                        h('h3', "Ludovic Dubost"),
+                        setHTML(h('div#bio'), '')
+                    ])
+                ]),
+            ]),
             infopageFooter()
         ]);
     };
