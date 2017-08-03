@@ -382,8 +382,6 @@ define(function () {
     out.login_invalPass = 'Password required';
     out.login_unhandledError = 'An unexpected error occurred :(';
 
-    out.login_notRegistered = 'Not registered?';
-
     out.register_importRecent = "Import pad history (Recommended)";
     out.register_acceptTerms = "I accept <a href='/terms.html' tabindex='-1'>the terms of service</a>";
     out.register_passwordsDontMatch = "Passwords do not match!";
@@ -483,7 +481,7 @@ define(function () {
     out.main_howitworks_p1 = 'CryptPad uses a variant of the <a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> algorithm which is able to find distributed consensus using a <a href="https://bitcoin.org/bitcoin.pdf">Nakamoto Blockchain</a>, a construct popularized by <a href="https://en.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. This way the algorithm can avoid the need for a central server to resolve Operational Transform Edit Conflicts and without the need for resolving conflicts, the server can be kept unaware of the content which is being edited on the pad.';
 
     // contact.html
-    out.main_about_p2 = 'If you have any questions or comments, you can <a href="https://twitter.com/cryptpad">tweet us</a>, open an issue <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">on github</a>, come say hi on irc (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), or <a href="mailto:research@xwiki.com">send us an email</a>.';
+    out.main_about_p2 = 'If you have any questions or comments, feel free to reach out! You can <a href="https://twitter.com/cryptpad"><i class="fa fa-twitter"></i>tweet us</a>, open an issue <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">on <i class="fa fa-github"></i>GitHub</a>. Come say hi on <a href="https://riot.im/app/#/room/#cryptpad:matrix.org" title="Matrix">our <i class="fa fa-comment"></i>Matrix channel</a> or IRC (#cryptpad on irc.freenode.net), or <a href="mailto:research@xwiki.com"><i class="fa fa-envelope"></i>send us an email</a>.';
 
     out.main_info = "<h1>Collaborate in Confidence</h1><br> Grow your ideas together with shared documents while <strong>Zero Knowledge</strong> technology secures your privacy; even from us.";
     out.main_catch_phrase = "The Zero Knowledge Cloud";
@@ -525,6 +523,27 @@ define(function () {
     out.contact = "Contact";
     out.terms = "ToS";
     out.blog = "Blog";
+
+    out.topbar_whatIsCryptpad = "What is CryptPad";
+
+    // what-is-cryptpad.html
+
+    out.whatis_title = 'What is CryptPad';
+    out.whatis_collaboration = 'Fast, Easy Collaboration';
+    out.whatis_collaboration_p1 = 'With CryptPad, you can make quick collaborative documents for taking notes and writing down ideas together. When you sign up and log in, you get file upload capability and a CryptDrive where you can organize all of your pads. As a registered user you get 50MB of space for free.';
+    out.whatis_collaboration_p2 = 'You can share access to a CryptPad document simply by sharing the link. You can also share a link which provides <em>read only</em> access to a pad, allowing you to publicise your collaborative work while still being able to edit it.';
+    out.whatis_collaboration_p3 = 'You can make simple rich text documents with <a href="http://ckeditor.com/">CKEditor</a> as well as Markdown documents which are rendered in realtime while you type. You can also use the poll app for scheduling events with multiple participants.';
+    out.whatis_zeroknowledge = 'Zero Knowledge';
+    out.whatis_zeroknowledge_p1 = "We don't want to know what you're typing and with modern cryptography, we make sure that we can't. CryptPad uses client side encryption to protect the content that you type from us, the people who host the server.";
+    out.whatis_zeroknowledge_p2 = 'When you sign up and log in, your username and password are never sent to the server, instead they are computed into a secret key using <a href="https://en.wikipedia.org/wiki/Scrypt">scrypt key derivation function</a>. This secret key is able to decrypt the content of your CryptDrive, which contains the keys to all pads that you are able to access.';
+    out.whatis_zeroknowledge_p3 = 'When you share the link to a document, you\'re sharing the cryptographic key for accessing that document but since the key is in the <a href="https://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a>, it is never directly sent to the server. Check out our <a href="https://blog.cryptpad.fr/2017/07/07/cryptpad-analytics-what-we-cant-know-what-we-must-know-what-we-want-to-know/">privacy blog post</a> to learn more about what types of metadata we do and do not have access to.';
+    out.whatis_drive = 'Organization with CryptDrive';
+    out.whatis_drive_p1 = 'Whenever you access a pad in CryptPad, the pad is automatically added to your CryptDrive in the main folder. Later on, you can organize these pads into folders or you can put them in the trash bin. CryptDrive allows you to search through your pads and to organize them whenever you want, however you want.';
+    out.whatis_drive_p2 = 'With intuitive drag-and-drop, you can move pads around in your drive and the link to these pads will stay the same so your collaborators will never lose access.';
+    out.whatis_drive_p3 = 'You can also upload files in your CryptDrive and share them with colleagues. Uploaded files can be organized just like collaborative pads.';
+    out.whatis_business = 'CryptPad for Business';
+    out.whatis_business_p1 = 'CryptPad\'s Zero Knowledge encryption is excellent for multiplying the effectiveness of existing security protocols by mirroring organizational access controls in cryptography. Because sensitive assets can only be decrypted using employee access credentials, CryptPad removes the hacker jackpot which exists in traditional IT servers. Read the <a href="https://blog.cryptpad.fr/images/whitepaper.pdf">CryptPad Whitepaper</a> to learn more about how it can help your business.';
+    out.whatis_business_p2 = 'CryptPad is deployable on premises and the <a href="https://cryptpad.fr/about.html">CryptPad developers</a> at XWiki SAS are able to offer commercial support, customization and development. Reach out to <a href="mailto:sales@cryptpad.fr">sales@cryptpad.fr</a> for more information.';
 
     // privacy.html
 

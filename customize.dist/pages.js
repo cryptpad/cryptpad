@@ -13,6 +13,7 @@ define([
         return e;
     };
 
+<<<<<<< HEAD
     var indexContent = function () {
         return [
             h('div.page.category.first#knowmore', [
@@ -77,54 +78,161 @@ define([
                 ])
             ])
         ];
+=======
+    var footerCol = function (title, L, literal) {
+        return h('div.col', [
+            h('ul.list-unstyled', [
+                h('li.title', {
+                    'data-localization': title,
+                }, title? Msg[title]: literal )
+                ].concat(L.map(function (l) {
+                    return h('li', [ l ]);
+                }))
+            )
+        ]);
+    };
+
+    var footLink = function (ref, loc, text) {
+        var attrs =  {
+            href: ref,
+        };
+        if (!/^\//.test(ref)) {
+            attrs.target = '_blank';
+            attrs.rel = 'noopener noreferrer';
+        }
+        if (loc) {
+            attrs['data-localization'] =  loc;
+            text = Msg[loc];
+        }
+        return h('a', attrs, text);
+    };
+
+    var infopageFooter = function () {
+        return h('footer', [
+            h('div.container', [
+                h('div.row', [
+                    footerCol(null, [
+                        footLink('/about.html', 'about'),
+                        footLink('/terms.html', 'terms'),
+                        footLink('/privacy.html', 'privacy'),
+                    ], 'CryptPad'),
+                    footerCol('footer_applications', [
+                        footLink('/drive/', 'main_drive'),
+                        footLink('/pad/', 'main_richText'),
+                        footLink('/code/', 'main_code'),
+                        footLink('/slide/', 'main_slide'),
+                        footLink('/poll/', 'main_poll'),
+                        footLink('/whiteboard/', null, Msg.type.whiteboard)
+                    ]),
+                    footerCol('footer_aboutUs', [
+                        footLink('https://blog.cryptpad.fr', 'blog'),
+                        footLink('https://labs.xwiki.com', null, 'XWiki Labs'),
+                        footLink('http://www.xwiki.com', null, 'XWiki SAS'),
+                        footLink('https://www.open-paas.org', null, 'OpenPaaS')
+                    ]),
+                    footerCol('footer_contact', [
+                        footLink('https://riot.im/app/#/room/#cryptpad:matrix.org', null, 'Chat'),
+                        footLink('https://twitter.com/cryptpad', null, 'Twitter'),
+                        footLink('https://github.com/xwiki-labs/cryptpad', null, 'GitHub'),
+                        footLink('/contact.html', null, 'Email')
+                    ])
+                ])
+            ]),
+            h('div.cp-version-footer', "CryptPad v1.13.0 (Naiad)")
+        ]);
+>>>>>>> ae176b0465121f57e2147ed0c80c9e62ce65c3a5
     };
 
     Pages['/about.html'] = function () {
-        return h('div#main_other', [
-            h('center', [
-                h('h1', Msg.about)
+        return h('div#cp-main.cp-page-about', [
+            infopageTopbar(),
+            h('div.container.cp-container', [
+                h('center', [
+                    h('h1', Msg.about)
+                ]),
+                setHTML(h('p'), 'CryptPad is created inside of the Research Team at <a href="http://xwiki.com">XWiki SAS</a>, a small business located in Paris France and Iasi Romania. There are 3 core team members working on CryptPad plus a number of contributors both inside and outside of XWiki SAS.'),
+                h('h2', 'Core Developers'),
+                h('div.row', [
+                    h('div.col-md-4', [
+                        h('img.bio-avatar', {'src': '/customize/images/avatar.png'}),
+                        h('h3', "Aaron MacSween"),
+                        setHTML(h('div#bio'), '<p>Aaron transitioned into distributed systems development from a background in jazz and live stage performance.</p><p>He appreciates the elegance of biological systems and functional programming, and focused on both as a student at the University of Toronto, where he studied cognitive and computer sciences.</p><p>He moved to Paris in 2015 to work as a research engineer at XWiki SAS, after having dedicated significant time to various cryptography-related software projects.</p><p>He spends his spare time experimenting with guitars, photography, science fiction, and spicy food.</p>')
+                    ]),
+                    h('div.col-md-4', [
+                        h('img.bio-avatar', {'src': '/customize/images/avatar.png'}),
+                        h('h3', "Caleb James Delisle"),
+                        setHTML(h('div#bio'), '<p>Caleb is a cryptography developer, Machine Technology graduate of the Franklin County Technical School and lifelong tinkerer.</p><p>In 2011, he started the cjdns Open Source project to show that secure networking could be invisible and easily deployed.</p><p>After joining XWiki SAS in 2014, he started the CryptPad project with the intent of bringing the same transparent security to collaborative editing.</p><p>He\'s always trying to learn from more experienced colleagues and when someone passes through the Research Team office, his favorite words are "Pull up a chair!".</p>')
+                    ]),
+                    h('div.col-md-4', [
+                        h('img.bio-avatar', {'src': '/customize/images/avatar.png'}),
+                        h('h3', "Yann Flory"),
+                        setHTML(h('div#bio'), '<p>Yann is a mysterious person.</p>')
+                    ]),
+                ]),
+                h('h2', 'Key Contributors'),
+                h('div.row', [
+                    h('div.col-md-4', [
+                        h('img.bio-avatar', {'src': '/customize/images/avatar.png'}),
+                        h('h3', "Pierre Bondoerffer"),
+                        setHTML(h('div#bio'), '<p>Resident CSS wizard and emoji extraordinaire, Pierre is passionate about anything related to technology. He loves to hack around computers and put parts together.</p><p>He is currently studying at 42, where he learns about algorithms, networking, kernel programming and graphics.</p><p>As a part of an internship, he joined XWiki SAS and worked on CryptPad to improve user experience. He also maintains the Spanish translation.</p>')
+                    ]),
+                    h('div.col-md-4', [
+                        h('img.bio-avatar', {'src': '/customize/images/avatar.png'}),
+                        h('h3', "Catalin Scripcariu"),
+                        setHTML(h('div#bio'), '')
+                    ]),
+                    h('div.col-md-4', [
+                        h('img.bio-avatar', {'src': '/customize/images/avatar.png'}),
+                        h('h3', "Ludovic Dubost"),
+                        setHTML(h('div#bio'), '')
+                    ])
+                ]),
             ]),
-            setHTML(h('p'), Msg.main_p2),
-            h('h2', Msg.main_howitworks),
-            setHTML(h('p'), Msg.main_howitworks_p1)
-        ].concat(indexContent()));
+            infopageFooter()
+        ]);
     };
 
     Pages['/privacy.html'] = function () {
-        return h('div#main_other', [
-            h('center', h('h1', Msg.policy_title)),
-            h('h2', Msg.policy_whatweknow),
-            h('p', Msg.policywhatweknow_p1),
+        return h('div#cp-main.cp-page-privacy', [
+            infopageTopbar(),
+            h('div.container.cp-container', [
+                h('center', h('h1', Msg.policy_title)),
+                h('h2', Msg.policy_whatweknow),
+                h('p', Msg.policywhatweknow_p1),
 
-            h('h2', Msg.policy_howweuse),
-            h('p', Msg.policy_howweuse_p1),
-            h('p', Msg.policy_howweuse_p2),
+                h('h2', Msg.policy_howweuse),
+                h('p', Msg.policy_howweuse_p1),
+                h('p', Msg.policy_howweuse_p2),
 
-            h('h2', Msg.policy_whatwetell),
-            h('p', Msg.policy_whatwetell_p1),
+                h('h2', Msg.policy_whatwetell),
+                h('p', Msg.policy_whatwetell_p1),
 
-            h('h2', Msg.policy_links),
-            h('p', Msg.policy_links_p1),
+                h('h2', Msg.policy_links),
+                h('p', Msg.policy_links_p1),
 
-            h('h2', Msg.policy_ads),
-            h('p', Msg.policy_ads_p1),
+                h('h2', Msg.policy_ads),
+                h('p', Msg.policy_ads_p1),
 
-            h('h2', Msg.policy_choices),
-            h('p', Msg.policy_choices_open),
-            setHTML(h('p'), Msg.policy_choices_vpn),
-
-            h('br')
+                h('h2', Msg.policy_choices),
+                h('p', Msg.policy_choices_open),
+                setHTML(h('p'), Msg.policy_choices_vpn),
+            ]),
+            infopageFooter()
         ]);
     };
 
     Pages['/terms.html'] = function () {
-        return h('div#main_other', [
-            h('center', h('h1', Msg.tos_title)),
-            h('p', Msg.tos_legal),
-            h('p', Msg.tos_availability),
-            h('p', Msg.tos_e2ee),
-            h('p', Msg.tos_logs),
-            h('p', Msg.tos_3rdparties),
+        return h('div#cp-main.cp-page-terms', [
+            infopageTopbar(),
+            h('div.container.cp-container', [
+                h('center', h('h1', Msg.tos_title)),
+                h('p', Msg.tos_legal),
+                h('p', Msg.tos_availability),
+                h('p', Msg.tos_e2ee),
+                h('p', Msg.tos_logs),
+                h('p', Msg.tos_3rdparties),
+            ]),
+            infopageFooter()
         ]);
     };
 
@@ -135,45 +243,39 @@ define([
         ]);
     };
 
-    var userForm = function () {
-        return h('div#userForm.form-group.hidden', [
-            h('input#name.form-control', {
-                name: 'name',
-                type: 'text',
-                placeholder: Msg.login_username
-            }),
-            h('input#password.form-control', {
-                name: 'password',
-                type: 'password',
-                placeholder: Msg.login_password
-            }),
-            h('div', {
-                style: { display: 'none' }
-            }, [
-                h('span.remember.form-check', [
-                    h('label.form-check-label', {
-                        'for': 'rememberme',
-                        placeholder: Msg.login_remember,
-                    }, [
-                        h('input#rememberme.form-check-input', {
-                            type: 'checkbox',
-                            checked: true
-                        })
-                    ])
-                ])
+    Pages['/what-is-cryptpad.html'] = function () {
+        return h('div#cp-main.cp-page-what-is-cryptpad', [
+            infopageTopbar(),
+            h('div.container.cp-container', [
+                h('center', h('h1', Msg.whatis_title)),
+                setHTML(h('h2'), Msg.whatis_collaboration),
+                setHTML(h('p'), Msg.whatis_collaboration_p1),
+                h('img', { src: '/customize/images/pad_screenshot.png?' + urlArgs }),
+                setHTML(h('p'), Msg.whatis_collaboration_p2),
+                setHTML(h('p'), Msg.whatis_collaboration_p3),
+                setHTML(h('h2'), Msg.whatis_zeroknowledge),
+                h('div.row', [
+                    h('div.col-md-4.align-self-center', [
+                        h('img#zeroknowledge', { src: '/customize/images/zeroknowledge_small.png?' + urlArgs }),
+                    ]),
+                    h('div.col-md-8', [
+                        setHTML(h('p'), Msg.whatis_zeroknowledge_p1),
+                        setHTML(h('p'), Msg.whatis_zeroknowledge_p2),
+                        setHTML(h('p'), Msg.whatis_zeroknowledge_p3),
+                    ]),
+                ]),
+                setHTML(h('h2'), Msg.whatis_drive),
+                setHTML(h('p'), Msg.whatis_drive_p1),
+                h('img', { src: '/customize/images/drive_screenshot.png?' + urlArgs }),
+                setHTML(h('p'), Msg.whatis_drive_p2),
+                setHTML(h('p'), Msg.whatis_drive_p3),
+                setHTML(h('h2'), Msg.whatis_business),
+                setHTML(h('p'), Msg.whatis_business_p1),
+                setHTML(h('p'), Msg.whatis_business_p2),
             ]),
-            h('button.btn.btn-secondary.login.half.first', Msg.login_login),
-            h('button.btn.btn-success.register.half', Msg.login_register),
-            h('p.separator', Msg.login_orNoLogin),
-            h('p#buttons.buttons'),
-            h('p.driveLink', [
-                h('a.gotodrive', {
-                    href: '/drive/'
-                }, Msg.login_nologin)
-            ])
+            infopageFooter(),
         ]);
     };
-
 
     var appButton = function (alt, h2, img, p, url, btn, id) {
         return h('div.app', [
@@ -195,52 +297,9 @@ define([
         ]);
     };
 
-    var tryIt = function () {
-        return [
-            h('div.class.category#tryit', [
-                h('center', [
-                    h('h1', Msg.tryIt)
-                ])
-            ]),
-            h('div.page', [
-                h('div.app-container', [
-                    h('div.app-row', [
-                        appButton("Rich Text application",
-                            Msg.main_richText,
-                            '/customize/images/pad.png?' + urlArgs,
-                            Msg.main_richText_p,
-                            '/pad/',
-                            Msg.button_newpad,
-                            'create-pad'),
-                        appButton('Code application',
-                            Msg.main_code,
-                            '/customize/images/code.png?' + urlArgs,
-                            Msg.main_code_p,
-                            '/code/',
-                            Msg.button_newcode,
-                            'create-code'),
-                        appButton('Slide application',
-                            Msg.main_slide,
-                            '/customize/images/slide.png?' + urlArgs,
-                            Msg.main_slide_p,
-                            '/slide/',
-                            Msg.button_newslide,
-                            'create-slide'),
-                        appButton('Poll application',
-                            Msg.main_poll,
-                            '/customize/images/poll.png?' + urlArgs,
-                            Msg.main_poll_p,
-                            '/poll/',
-                            Msg.button_newpoll,
-                            'create-poll')
-                    ])
-                ])
-            ])
-        ];
-    };
-
     var infopageTopbar = function () {
         return h('div.cp-topbar',
+<<<<<<< HEAD
             h('div.cp-left',
                 h('a.navbar-brand', { href: 'index.html'}, [
                     h( 'img', { src: '/customize/CryptPad-white-logo.svg' })
@@ -258,6 +317,35 @@ define([
                     h('a.cp-login-btn', { href: '/login'}, 'Log in'),
                     h('a.cp-register-btn', { href: '/register'}, 'Register')
                 ]),
+=======
+            h('div.navbar.navbar-toggleable-sm.navbar-light.navbar-inverse',
+            	h('button.navbar-toggler.navbar-toggler-left', {'type':'button'}, {'data-toggle':'collapse'}, {'data-target':'#menuCollapse'}, {'aria-controls': 'menuCollapse'}, {'aria-expanded':'false'}, {'aria-label':'Toggle navigation'},
+            		[h('i.fa.fa-bars ')
+            		]),
+            	h('div.collapse.navbar-collapse#menuCollapse', [
+                    h('ul.navbar-nav', [
+                            h('a.cp-logo', { href: '/' }, [
+                                h('img', { src: '/customize/cryptpad-new-logo-colors-logoonly.png?' + urlArgs })
+                            ]),
+                            h('li.nav-item', [
+                                    h('a.nav-link', { href: '/what-is-cryptpad.html'}, Msg.topbar_whatIsCryptpad),
+                                ]),
+                            h('li.nav-item', [
+                                    h('a.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.blog),
+                                ]),
+                            h('li.nav-item', [
+                                    h('a.nav-link', { href: '/contact.html'}, Msg.contact),
+                                ]),
+                            h('li.nav-item', [
+                                    h('a.nav-link', { href: '/about.html'}, Msg.about),
+                                ]),
+                        ]),
+            		]),
+            ),
+            h('div.cp-right',
+                h('a.cp-register-btn', { href: '/register'}, Msg.login_register),
+                h('a.cp-login-btn', { href: '/login'}, Msg.login_login)
+>>>>>>> ae176b0465121f57e2147ed0c80c9e62ce65c3a5
             )
         );
     }
@@ -274,7 +362,6 @@ define([
                             h('h1', 'CryptPad'),
                             h('p', Msg.main_catch_phrase)
                         ]),
-                        /*userForm(),*/
                         h('div.col-12.col-sm-6', [
                             [
                                 [ 'pad', '/pad/', Msg.main_richTextPad, 'fa-file-word-o' ],
@@ -317,20 +404,18 @@ define([
                         ])
                     ])
                 ]),
-                //h('footer.cp-more', "More")
             ])
         ];
-        //.concat(tryIt());
     };
 
     var loadingScreen = function () {
         return h('div#loading', 
             h('div.loadingContainer', [
                 h('img.cryptofist', {
-                    src: '/customize/cryptofist_small.png?' + urlArgs
+                    src: '/customize/cryptpad-new-logo-colors-logoonly.png?' + urlArgs
                 }),
                 h('div.spinnerContainer',
-                    h('span.fa.fa-spinner.fa-pulse.fa-4x.fa-fw')),
+                    h('span.fa.fa-circle-o-notch.fa-spin.fa-4x.fa-fw')),
                 h('p', Msg.loading)
             ])
         );
@@ -342,15 +427,15 @@ define([
     };
 
     Pages['/register/'] = Pages['/register/index.html'] = function () {
-        return [h('div#main', [
-            h('div.mainOverlay'),
-            h('div#align-container', [
-                h('div#data.hidden', [
+        return [h('div#cp-main.cp-page-register', [
+            infopageTopbar(),
+            h('div.container.cp-container', [
+                h('div.row.align-items-center', [
+                h('div#data.hidden.col-md-6', [
                     h('h1', Msg.register_header),
-                    h('br'),
-                    setHTML(h('p.left.register-explanation'), Msg.register_explanation)
+                    setHTML(h('p.register-explanation'), Msg.register_explanation)
                 ]),
-                h('div#userForm.form-group.hidden', [
+                h('div#userForm.form-group.hidden.col-md-6', [
                     h('input.form-control#username', {
                         type: 'text',
                         autocomplete: 'off',
@@ -368,34 +453,38 @@ define([
                         type: 'password',
                         placeholder: Msg.login_confirm,
                     }),
-                    h('input#import-recent', {
-                        type: 'checkbox',
-                        checked: true
-                    }),
-                    h('label', {
-                        'for': 'import-recent',
-                    }, Msg.register_importRecent),
-                    h('br'),
-                    h('input#accept-terms', {
-                        type: 'checkbox'
-                    }),
-                    setHTML(h('label', {
-                        'for': 'accept-terms',
-                    }), Msg.register_acceptTerms),
-                    h('br'),
+                    h('div.checkbox-container', [
+                        h('input#import-recent', {
+                            type: 'checkbox',
+                            checked: true
+                        }),
+                        h('label', {
+                            'for': 'import-recent',
+                        }, Msg.register_importRecent),
+                    ]),
+                    h('div.checkbox-container', [
+                        h('input#accept-terms', {
+                            type: 'checkbox'
+                        }),
+                        setHTML(h('label', {
+                            'for': 'accept-terms',
+                        }), Msg.register_acceptTerms),
+                    ]),
                     h('button#register.btn.btn-primary', Msg.login_register)
                 ])
-            ])
+                ]),
+            ]),
+            infopageFooter(),
         ])];
     };
 
     Pages['/login/'] = Pages['/login/index.html'] = function () {
-        return [h('div#main', [
-            h('div.mainOverlay'),
-            h('div#align-container',
-                h('div#main-container', [
-                    h('div#data.hidden', setHTML(h('p.left'), Msg.main_info)),
-                    h('div#userForm.form-group.hidden', [
+        return [h('div#cp-main.cp-page-login', [
+            infopageTopbar(),
+            h('div.container.cp-container', [
+                h('div.row.align-items-center', [
+                    h('div#data.hidden.col-md-6', setHTML(h('p.left'), Msg.main_info)),
+                    h('div#userForm.form-group.hidden.col-md-6', [
                         h('input.form-control#name', {
                             name: 'name',
                             type: 'text',
@@ -411,14 +500,14 @@ define([
                             'name': 'password',
                             placeholder: Msg.login_password,
                         }),
-                        h('button.btn.btn-primary.login.first', Msg.login_login),
                         h('div.extra', [
-                            h('p', Msg.login_notRegistered),
+                            h('button.btn.btn-primary.login.first', Msg.login_login),
                             h('button#register.btn.btn-success.register', Msg.login_register)
                         ])
                     ])
-                ])
-            )
+                ]),
+            ]),
+            infopageFooter(),
         ])];
     };
 

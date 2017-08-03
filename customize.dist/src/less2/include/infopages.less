@@ -1,17 +1,15 @@
 @import (once) "./colortheme.less";
 
 @infopages_infobar-height: 64px;
+@infopages_padding: 32px;
 
 // Basic setup for info pages, this should be used at the global level
 .infopages_main () {
-    min-height: 100vh;
     background-color: @colortheme_info-background;
 
     a {
         color: @colortheme_link-color;
-        &:visited {
-            color: @colortheme_link-color-visited;
-        }
+        &:visited { color: @colortheme_link-color-visited; }
         //opacity: 0.8;
         //transition: opacity 0.2s;
     }
@@ -20,14 +18,86 @@
     }
 
     border: 0;
-	padding: 0;
-	margin: 0;
+    padding: 0;
+    margin: 0;
 
-	font-size: 14px;
+    font-size: 14px;
     font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
 
     .cp-container {
-        padding-top: @infopages_infobar-height;
+        margin-top: @infopages_infobar-height;
+        padding-top: @infopages_padding;
+        padding-bottom: @infopages_padding;
+        min-height: 75vh;
+        h1 {
+            font-size: 3em;
+            margin-bottom: 0.5em;
+        }
+        h2 {
+            font-size: 2em;
+            margin-top: 1em;
+            margin-bottom: 0.5em;
+        }
+        h3 {
+            font-size: 1.5em;
+            margin-top: 1em;
+            margin-bottom: 0.5em;
+        }
+
+        img {
+            &.left {
+                float: left;
+            }
+
+            max-width: 100%;
+        }
+
+        .form-group {
+            & > * {
+                margin-top: 0.5em;
+            }
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .checkbox-container {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                label {
+                    margin: 0;
+                }
+                input {
+                    margin-right: 0.5em;
+                }
+            }
+        }
+    }
+
+    footer {
+        background-color: white;
+
+        .container {
+            .col {
+                margin-top: 1em;
+            }
+
+            width: 100%;
+            text-align: center;
+            margin-bottom: 1em;
+
+            ul.list-unstyled {
+                margin: 0;
+            }
+        }
+
+        .cp-version-footer {
+            background-color: @colortheme_info-background;
+            color: black;
+            text-align: center;
+            padding: 0.5em;
+        }
     }
 };
 
@@ -69,10 +139,22 @@
         -webkit-user-select: none;
         -ms-user-select: none;
 
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+        }
+
         a {
             font-weight: 500;
             padding: 0.6em;
             .infopages_link()
+        }
+
+        .cp-logo {
+            img {
+                height: @infopages_infobar-height / 2;
+            }
+            margin-right: 0.5em;
         }
     }
 }
