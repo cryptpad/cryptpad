@@ -45,6 +45,7 @@ define([
         Cryptpad.getProxy().on('reconnect', function () {
             Cryptpad.findOKButton().click();
             Cryptpad.enableMessaging(true);
+            Cryptpad.getLatestMessages();
         });
 
         Cryptpad.initMessaging(Cryptpad, $list, $messages);
