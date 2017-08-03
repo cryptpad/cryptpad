@@ -1,18 +1,11 @@
+//@import (once) "./variables.less";
+
 @import (once) "../include/infopages.less";
 @import (once) "../include/colortheme.less";
 
 
 .infopages_main();
 .infopages_topbar();
-
-.cp-topbar {
-    background: transparent;
-    position: fixed;
-    a {
-        color: #fff;
-    }
-}
-
 
 @background_lighter: rgba(0,0,0,0.1);
 @background_darker: rgba(0,0,0,0.4);
@@ -40,12 +33,11 @@
 	}
 	.cp-login-btn {
 		color: #fff;
-		margin-left: 0.6em;
 		padding: 0.5em 1em 0.7em 1em;
 		&:hover {
 			transform: scale(1.05);
 		}
-	}
+	} 
 }
 .cp-title {
     display: flex;
@@ -71,6 +63,11 @@
 }
 .cp-topbar { 
     position: absolute;
+    background: transparent;
+    a {
+        color: #fff;
+        padding: 0.5em 0.5em 0.5em 0.5em;
+    }
     button:focus {
         outline: none;
     }
@@ -87,6 +84,15 @@
             font-size: 1.6rem;
         }
     }
+    img {
+        height: 5vh;
+        margin-top: -4px;
+    }
+    &:hover {
+        img {
+            transform: none;
+        }
+    };
 }
 @callout-padding: 15px;
 a:hover {
@@ -181,6 +187,8 @@ h4 {
 }
 .navbar-inverse .navbar-toggler {
     border-color: transparent;
+    margin-top: -12px;
+    padding: 0;
 }
 @media (min-width: 576px) and (max-width: 767px) {
     .container {
@@ -191,8 +199,24 @@ h4 {
         left: 5px;
     }
 }
-@media (max-width: 767px) {
-    .collapse.show {
-        margin-bottom: -12em;
+@media (max-width: 991px) {
+    #menuCollapse {
+        position: absolute;
+        left: -131px;
+        margin-top: 0.5em;
+        text-align: right;
     }
+    #menuCollapse a {
+        width: 100%;
+        text-align: right;
+    }
+    .navbar-nav a {
+        text-align: right !important;
+    }
+    .cp-right .cp-login-btn {
+        padding: 0.5em;
+    }
+}
+.collapsing a {
+    text-align: right !important;
 }

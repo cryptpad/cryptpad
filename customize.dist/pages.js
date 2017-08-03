@@ -79,69 +79,6 @@ define([
         ];
     };
 
-    var footerCol = function (title, L, literal) {
-        return h('div.col', [
-            h('ul.list-unstyled', [
-                h('li.title', {
-                    'data-localization': title,
-                }, title? Msg[title]: literal )
-                ].concat(L.map(function (l) {
-                    return h('li', [ l ]);
-                }))
-            )
-        ]);
-    };
-
-    var footLink = function (ref, loc, text) {
-        var attrs =  {
-            href: ref,
-        };
-        if (!/^\//.test(ref)) {
-            attrs.target = '_blank';
-            attrs.rel = 'noopener noreferrer';
-        }
-        if (loc) {
-            attrs['data-localization'] =  loc;
-            text = Msg[loc];
-        }
-        return h('a', attrs, text);
-    };
-
-    var infopageFooter = function () {
-        return h('footer', [
-            h('div.container', [
-                h('div.row', [
-                    footerCol(null, [
-                        footLink('/about.html', 'about'),
-                        footLink('/terms.html', 'terms'),
-                        footLink('/privacy.html', 'privacy'),
-                    ], 'CryptPad'),
-                    footerCol('footer_applications', [
-                        footLink('/drive/', 'main_drive'),
-                        footLink('/pad/', 'main_richText'),
-                        footLink('/code/', 'main_code'),
-                        footLink('/slide/', 'main_slide'),
-                        footLink('/poll/', 'main_poll'),
-                        footLink('/whiteboard/', null, Msg.type.whiteboard)
-                    ]),
-                    footerCol('footer_aboutUs', [
-                        footLink('https://blog.cryptpad.fr', 'blog'),
-                        footLink('https://labs.xwiki.com', null, 'XWiki Labs'),
-                        footLink('http://www.xwiki.com', null, 'XWiki SAS'),
-                        footLink('https://www.open-paas.org', null, 'OpenPaaS')
-                    ]),
-                    footerCol('footer_contact', [
-                        footLink('https://riot.im/app/#/room/#cryptpad:matrix.org', null, 'Chat'),
-                        footLink('https://twitter.com/cryptpad', null, 'Twitter'),
-                        footLink('https://github.com/xwiki-labs/cryptpad', null, 'GitHub'),
-                        footLink('/contact.html', null, 'Email')
-                    ])
-                ])
-            ]),
-            h('div.cp-version-footer', "CryptPad v1.13.0 (Naiad)")
-        ]);
-    };
-
     Pages['/about.html'] = function () {
         return h('div#main_other', [
             h('center', [
@@ -192,13 +129,9 @@ define([
     };
 
     Pages['/contact.html'] = function () {
-        return h('div#cp-main.cp-page-contact', [
-            infopageTopbar(),
-            h('div.container.cp-container', [
-                h('center', h('h1', Msg.contact)),
-                setHTML(h('p'), Msg.main_about_p2)
-            ]),
-            infopageFooter(),
+        return h('div#main_other', [
+            h('center', h('h1', Msg.contact)),
+            setHTML(h('p'), Msg.main_about_p2)
         ]);
     };
 
@@ -308,30 +241,23 @@ define([
 
     var infopageTopbar = function () {
         return h('div.cp-topbar',
-            h('div.navbar.navbar-toggleable-sm.navbar-light.navbar-inverse',
-            	h('button.navbar-toggler.navbar-toggler-left', {'type':'button'}, {'data-toggle':'collapse'}, {'data-target':'#menuCollapse'}, {'aria-controls': 'menuCollapse'}, {'aria-expanded':'false'}, {'aria-label':'Toggle navigation'},
-            		[h('i.fa.fa-bars ')
-            		]),
-            	h('div.collapse.navbar-collapse#menuCollapse', [
-                    h('ul.navbar-nav', [
-                            h('li.nav-item', [
-                                    h('a.nav-link', { href: '/what-is-cryptpad.html'}, 'What is CryptPad'),
-                                ]),
-                            h('li.nav-item', [
-                                    h('a.nav-link', { href: 'https://blog.cryptpad.fr/'}, 'Blog'),
-                                ]),
-                            h('li.nav-item', [
-                                    h('a.nav-link', { href: '/contact.html'}, 'Contact'),
-                                ]),
-                            h('li.nav-item', [
-                                    h('a.nav-link', { href: '/about.html'}, 'About'),
-                                ]),
-                        ]),
-            		]),
+            h('div.cp-left',
+                h('a.navbar-brand', { href: 'index.html'}, [
+                    h( 'img', { src: '/customize/CryptPad-white-logo.svg' })
+            ])
             ),
-            h('div.cp-right',
-                h('a.cp-register-btn', { href: '/register'}, 'Register'),
-                h('a.cp-login-btn', { href: '/login'}, 'Log in')
+            h('div.cp-right.navbar.navbar-toggleable-md.navbar-light.navbar-inverse',
+                h('button.navbar-toggler.navbar-toggler-right', {'type':'button'}, {'data-toggle':'collapse'}, {'data-target':'#menuCollapse'}, {'aria-controls': 'menuCollapse'}, {'aria-expanded':'false'}, {'aria-label':'Toggle navigation'},
+                    [h('i.fa.fa-bars ')
+                    ]),
+                h('div.collapse.navbar-collapse#menuCollapse', [  
+                    h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, 'What is CryptPad'),
+                    h('a.nav-item.nav-link', { href: 'https://blog.cryptpad.fr/'}, 'Blog'),
+                    h('a.nav-item.nav-link', { href: '/contact.html'}, 'Contact'),
+                    h('a.nav-item.nav-link', { href: '/about.html'}, 'About'),
+                    h('a.cp-login-btn', { href: '/login'}, 'Log in'),
+                    h('a.cp-register-btn', { href: '/register'}, 'Register')
+                ]),
             )
         );
     }
