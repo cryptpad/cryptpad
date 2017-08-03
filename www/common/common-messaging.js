@@ -4,7 +4,22 @@ define([
     '/common/curve.js',
     '/bower_components/marked/marked.min.js',
 ], function ($, Crypto, Curve, Marked) {
-    var Msg = {};
+    var Msg = {
+        inputs: [],
+    };
+
+    var Messages;
+    var setEditable = Msg.setEditable = function (bool) {
+        bool = !bool;
+        Msg.inputs.forEach(function (input) {
+            input.setAttribute('disabled', bool);
+            if (Messages) {
+                // set placeholder
+                var placeholder = bool? Messages.disconnected: Messages.contacts_typeHere;
+                input.setAttribute('placeholder', placeholder);
+            }
+        });
+    };
 
     var Types = {
         message: 'MSG',
@@ -310,10 +325,9 @@ define([
         $('<div>', {'class': 'messages'}).appendTo($container);
         var $inputBlock = $('<div>', {'class': 'input'}).appendTo($container);
 
-        // Input
-        var channel = channels[data.channel];
         var $input = $('<textarea>').appendTo($inputBlock);
         $input.attr('placeholder', common.Messages.contacts_typeHere);
+        Msg.inputs.push($input[0]);
 
         var sending = false;
         var send = function () {
@@ -385,6 +399,8 @@ define([
         var proxy = common.getProxy();
         Msg.hk = network.historyKeeper;
         var friends = getFriendList(common);
+        Messages = Messages || common.Messages;
+
         network.on('message', function(msg, sender) {
             onDirectMessage(common, msg, sender);
         });

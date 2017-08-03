@@ -39,12 +39,12 @@ define([
         toolbar.$rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
 
         Cryptpad.getProxy().on('disconnect', function () {
-            // TODO readonly
             Cryptpad.alert(Messages.common_connectionLost, undefined, true);
+            Cryptpad.enableMessaging(false);
         });
         Cryptpad.getProxy().on('reconnect', function () {
-            // TODO cancel readonly
             Cryptpad.findOKButton().click();
+            Cryptpad.enableMessaging(true);
         });
 
         Cryptpad.initMessaging(Cryptpad, $list, $messages);

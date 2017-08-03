@@ -223,7 +223,10 @@ body {
             resize: none;
             line-height: 50px;
             overflow-y: auto;
-            .placeholder;
+            .placeholder(#bbb);
+            &[disabled=true] {
+                .placeholder(#999);
+            }
             &:placeholder-shown { line-height: 50px; }
         }
         button {
