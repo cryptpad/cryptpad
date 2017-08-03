@@ -147,6 +147,17 @@ define([
                 }
             };
 
+            var mediaTagModes = [
+                'markdown',
+                'html',
+                'htmlembedded',
+                'htmlmixed',
+                'index.html',
+                'php',
+                'velocity',
+                'xml',
+            ];
+
             var onModeChanged = function (mode) {
                 var $codeMirror = $iframe.find('.CodeMirror');
                 window.clearTimeout(APP.previewTo);
@@ -154,6 +165,10 @@ define([
                 APP.previewTo = window.setTimeout(function () {
                     $codeMirror.removeClass('transition');
                 }, 500);
+                if (mediaTagModes.indexOf(mode) !== -1) {
+                    APP.$mediaTagButton.show();
+                } else { APP.$mediaTagButton.hide(); }
+
                 if (mode === "markdown") {
                     APP.$previewButton.show();
                     Cryptpad.getPadAttribute('previewMode', function (e, data) {
@@ -252,6 +267,25 @@ define([
                 };
                 var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
                 $rightside.append($forgetPad);
+
+                var fileDialogCfg = {
+                    $body: $iframe.find('body'),
+                    onSelect: function (href) {
+                        var parsed = Cryptpad.parsePadUrl(href);
+                        var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+                        var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
+                        var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '"></media-tag>';
+                        editor.replaceSelection(mt);
+                    },
+                    data: APP
+                };
+                APP.$mediaTagButton = $('<button>', {
+                    title: Messages.filePickerButton,
+                    'class': 'rightside-button fa fa-picture-o',
+                    style: 'font-size: 17px'
+                }).click(function () {
+                    Cryptpad.createFileDialog(fileDialogCfg);
+                }).appendTo($rightside);
 
                 var $previewButton = APP.$previewButton = Cryptpad.createButton(null, true);
                 $previewButton.removeClass('fa-question').addClass('fa-eye');
