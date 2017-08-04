@@ -1,21 +1,21 @@
 @import (once) '../less2/include/colortheme.less';
+@import (once) '../less2/include/browser.less';
 
-@base: #fff; //#f5f5f5;
+@base: @colortheme_base;
 @dark-base: darken(@base, 20%);
 @less-dark-base: darken(@base, 10%);
-@light-base: lighten(@base, 20%);
+@light-base: @colortheme_light-base;
 @less-light-base: lighten(@base, 10%);
 @fore: #555;
-@old-base: #302B28;
-@old-fore: #fafafa;
+@old-base: @colortheme_old-base;
+@old-fore: @colortheme_old-fore;
 
 @main-font-size: 16px;
 
-@cp-green: #46E981;
+@cp-green: @colortheme_cp-green;
 @cp-accent: lighten(@cp-green, 20%);
 
-//@cp-red: #FF0073; // remove red
-@cp-red: #FA5858; // remove red
+@cp-red: @colortheme_cp-red;
 @cp-outline: #444;
 
 @cp-orange: #FE9A2E;
@@ -33,46 +33,18 @@
 @cp-link-visited: @cp-light-blue;
 @cp-link-hover: darken(@cp-light-blue, 10%);
 
-// alertify things
-
-@box-shadow: 0 2px 5px 0 rgba(0,0,0,.2);
-@padding-base: 12px;
-
-@success-color: @cp-green;
-@success-fore: @base;
-@danger-color: @cp-red;
-
-@text-color: rgba(0, 0, 0, .8);
-@border-radius: 1px;
-
-@alertify-fore: @old-fore;
-@alertify-base: @old-base;
-
-@alertify-dialog-bg: #444;
-@alertify-dialog-fg: @old-fore;
-
-@alertify-btn-fg: @old-fore;
-
-@alertify-btn-bg: rgba(200, 200, 200, 0.05);
-@alertify-btn-bg-hover: rgba(200, 200, 200, .15);
-
-@alertify-bg: rgba(0, 0, 0, .3);
-@alertify-fg: @old-fore;
-
-@alertify-input-bg: @old-base;
-@alertify-input-fg: @old-fore;
 
 @slide-default-bg: #000;
 
 @bg-loading: #222;
 @color-loading: @old-fore;
 
-@media-not-big: 800px;
-@media-not-small: 801px;
+@media-not-big: @browser_media-not-big;
+@media-not-small: @browser_media-not-small;
 
-@media-short-screen: 450px;
-@media-narrow-screen: 400px;
-@media-medium-screen: 600px;
+@media-short-screen: @browser_media-short-screen;
+@media-narrow-screen: @browser_media-narrow-screen;
+@media-medium-screen: @browser_media-medium-screen;
 
 
 // Dropdown
