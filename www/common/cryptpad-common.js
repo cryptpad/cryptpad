@@ -128,7 +128,6 @@ define([
     common.getFriendListUI = Messaging.getFriendListUI;
     common.createData = Messaging.createData;
     common.getPendingInvites = Messaging.getPending;
-    common.enableMessaging = Messaging.setEditable;
     common.getLatestMessages = Messaging.getLatestMessages;
 
     // Userlist

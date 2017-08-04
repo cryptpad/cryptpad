@@ -8,23 +8,6 @@ define([
         inputs: [],
     };
 
-    var Messages;
-    Msg.setEditable = function (bool) {
-        bool = !bool;
-        Msg.inputs.forEach(function (input) {
-            if (bool) {
-                input.setAttribute('disabled', bool);
-            } else {
-                input.removeAttribute('disabled');
-            }
-
-            if (Messages) {
-                // set placeholder
-                var placeholder = bool? Messages.disconnected: Messages.contacts_typeHere;
-                input.setAttribute('placeholder', placeholder);
-            }
-        });
-    };
 
     var Types = {
         message: 'MSG',
@@ -310,7 +293,7 @@ define([
         }
     };
 
-    var createChatBox = function (common, $container, curvePublic) {
+    var createChatBox = function (common, $container, curvePublic, messenger) {
         var data = getFriend(common, curvePublic);
         var proxy = common.getProxy();
 
@@ -357,24 +340,49 @@ define([
 
         var $input = $('<textarea>').appendTo($inputBlock);
         $input.attr('placeholder', common.Messages.contacts_typeHere);
-        Msg.inputs.push($input[0]);
+        messenger.input = $input[0];
 
-        var sending = false;
         var send = function () {
-            if (sending) { return; }
-            if (!$input.val()) { return; }
+            var channel = channels[data.channel];
+            if (channel.sending) {
+                console.error("still sending");
+                return;
+            }
+            if (!$input.val()) {
+                console.error("nothing to send");
+                return;
+            }
+            if ($input.attr('disabled')) {
+                console.error("input is disabled");
+                return;
+            }
             // Send the message
             var msg = [Types.message, proxy.curvePublic, +new Date(), $input.val()];
             var msgStr = JSON.stringify(msg);
             var cryptMsg = channel.encryptor.encrypt(msgStr);
-            sending = true;
+            channel.sending = true;
+
+            console.log(channel.wc);
+            var network = common.getNetwork();
+            if (!network.webChannels.some(function (wc) {
+                if (wc.id === channel.wc.id) {
+                    console.error(wc.id, channel.wc.id);
+                    return true;
+                }
+                console.error(wc.id, channel.wc.id);
+                //return wc.id === channel.wc.id;
+            })) {
+                console.error('no such channel:' + channel.wc.id);
+                return;
+            }
+
             channel.wc.bcast(cryptMsg).then(function () {
                 $input.val('');
                 pushMsg(common, channel, cryptMsg);
                 channel.refresh();
-                sending = false;
+                channel.sending = false;
             }, function (err) {
-                sending = false;
+                channel.sending = false;
                 console.error(err);
             });
         };
@@ -434,11 +442,12 @@ define([
     };
 
     Msg.init = function (common, $listContainer, $msgContainer) {
+        var messenger = {};
+
         var network = common.getNetwork();
         var proxy = common.getProxy();
         Msg.hk = network.historyKeeper;
         var friends = getFriendList(common);
-        Messages = Messages || common.Messages;
 
         network.on('message', function(msg, sender) {
             onDirectMessage(common, msg, sender);
@@ -501,7 +510,7 @@ define([
             if (!$chat.length) {
                 $chat = $('<div>', {'class':'chat'})
                         .data('key', curvePublic).appendTo($msgContainer);
-                createChatBox(common, $chat, curvePublic);
+                createChatBox(common, $chat, curvePublic, messenger);
                 isNew = true;
             }
             // Show the correct div
@@ -639,6 +648,7 @@ define([
             var encryptor = Curve.createEncryptor(keys);
             network.join(data.channel).then(function (chan) {
                 var channel = channels[data.channel] = {
+                    sending: false,
                     friendEd: f,
                     keys: keys,
                     encryptor: encryptor,
@@ -656,15 +666,25 @@ define([
                     userList: [],
                     mapId: {},
                     getPreviousMessages: function () {
-                        var oldestMessages = channel.messages[0];
-                        var oldestHash = oldestMessages[0];
+                        var history = channel.messages;
+                        if (!history || !history.length) {
+                            // TODO ask for default history?
+                            return;
+                        }
 
-                        getMoreHistory(network, chan, oldestHash, 10);
+                        var oldestMessage = history[0];
+                        if (!oldestMessage) {
+                            return; // nothing to fetch
+                        }
+
+                        var messageHash = oldestMessage[0];
+                        getMoreHistory(network, chan, messageHash, 10);
                     },
                 };
                 chan.on('message', function (msg, sender) {
                     onMessage(common, msg, sender, chan);
                 });
+
                 var onJoining = function (peer) {
                     if (peer === Msg.hk) { return; }
                     if (channel.userList.indexOf(peer) !== -1) { return; }
@@ -696,7 +716,37 @@ define([
             });
         };
 
-        Object.keys(friends).forEach(openFriendChannel);
+        messenger.cleanFriendChannels = function () {
+            Object.keys(channels).forEach(function (id) {
+                delete channels[id];
+            });
+        };
+
+        var openFriendChannels = messenger.openFriendChannels = function () {
+            Object.keys(friends).forEach(openFriendChannel);
+        };
+
+        messenger.setEditable = function (bool) {
+            bool = !bool;
+            var input = messenger.input;
+            if (!input) { return; }
+
+            if (bool) {
+                input.setAttribute('disabled', bool);
+            } else {
+                input.removeAttribute('disabled');
+            }
+
+            if (Messages) {
+                // set placeholder
+                var placeholder = bool?
+                    common.Messages.disconnected:
+                    common.Messages.contacts_typeHere;
+                input.setAttribute('placeholder', placeholder);
+            }
+        };
+
+        openFriendChannels();
 
         var checkNewFriends = function () {
             Object.keys(friends).forEach(function (f) {
@@ -714,6 +764,8 @@ define([
             checkNewFriends();
             updateMyData(common);
         });
+
+        return messenger;
     };
 
     // Invitation

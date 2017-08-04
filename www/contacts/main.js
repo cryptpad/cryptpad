@@ -42,13 +42,16 @@ define([
             Cryptpad.alert(Messages.common_connectionLost, undefined, true);
             Cryptpad.enableMessaging(false);
         });
-        Cryptpad.getProxy().on('reconnect', function () {
+        Cryptpad.getProxy().on('reconnect', function (uid) {
+            console.error('reconnecting: ', uid);
             Cryptpad.findOKButton().click();
-            Cryptpad.enableMessaging(true);
-            Cryptpad.getLatestMessages();
+
+            APP.messenger.cleanFriendChannels();
+            APP.messenger.openFriendChannels();
+            APP.messenger.setEditable(true);
         });
 
-        Cryptpad.initMessaging(Cryptpad, $list, $messages);
+        APP.messenger = Cryptpad.initMessaging(Cryptpad, $list, $messages);
 
         var $infoBlock = $('<div>', {'class': 'info'}).appendTo($messages);
         $('<h2>').text(Messages.contacts_info1).appendTo($infoBlock);
