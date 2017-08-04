@@ -138,9 +138,9 @@ define([
                         setHTML(h('div#bio'), '')
                     ]),
                     h('div.col-md-4', [
-                        h('img.bio-avatar', {'src': '/customize/images/avatar.png'}),
+                        h('img.bio-avatar', {'src': '/customize/images/ludovic.jpg'}),
                         h('h3', "Ludovic Dubost"),
-                        setHTML(h('div#bio'), '')
+                        setHTML(h('div#bio'), '<p>A graduate of PolyTech (X90) and Telecom School in Paris, Ludovic Dubost started his career as a software architect for Netscape Communications Europe. He then became CTO of NetValue, one of the first French start-ups that went public. He left NetValue after the company was purchased by Nielsen/NetRatings and in 2004 launched XWiki, the next generation wiki.</p><p>Since the very beginning, Ludovic has been immensely helpful to the CryptPad project. He believed in the idea when there was nothing more than the collaborative pad and his help with sales strategy for the project.</p>')
                     ])
                 ]),
             ]),
