@@ -63,6 +63,7 @@
     }
 }
 .navbar {
+    background: transparent;
     width: 100%;
     @media only screen and (max-device-width: 991px) {
         margin-top: 0;
@@ -72,22 +73,17 @@
     }
     a {
         color: #fff;
-        border: 2px solid transparent;
         &:visited {
             color: rgba(255,255,255,.8);
         };
     }
     .nav-link {
-        padding: 0.5em 0.7em;
         &:hover {
             transform: scale(1.05);
         };
     }
     .cp-register-btn {
             border: 2px solid #fff;
-    }
-    button:focus {
-        outline: none;
     }
     .navbar-toggler {
         margin-top: 10px;
@@ -192,29 +188,6 @@ h4 {
     }
     div#cp-main.cp-page-index .cp-topbar .navbar-toggler-left {
         left: 5px;
-    }
-}
-@media (max-width: 991px) {
-    #menuCollapse {
-        text-align: right;
-    }
-    .navbar-nav a {
-        text-align: right !important;
-    }
-    .cp-register-btn {
-        margin-right: 13px;
-        margin-left: 83vw;
-        text-align: center;
-     }
-}
-@media (max-width: 687px) {
-    .cp-register-btn {
-         margin-left: 75vw;
-    }
-}
-@media (max-width: 467px) {
-    .cp-register-btn {
-         margin-left: 63vw;
     }
 }
 

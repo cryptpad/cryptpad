@@ -8,8 +8,8 @@
     background-color: @colortheme_info-background;
 
     a {
-        color: @colortheme_link-color;
-        &:visited { color: @colortheme_link-color-visited; }
+        color: @cryptpad_color_blue;
+        &:visited { color: darken(@cryptpad_color_blue, 10%); }
         //opacity: 0.8;
         //transition: opacity 0.2s;
     }
@@ -76,25 +76,26 @@
     }
 
     footer {
-        background-color: white;
-
+        background-color: @cryptpad_color_grey;
         .container {
             .col {
                 margin-top: 1em;
             }
-
-            width: 100%;
-            text-align: center;
-            margin-bottom: 1em;
-
-            ul.list-unstyled {
+        a {
+            color: #fff;
+            &:visited {
+                color: darken(#fff, 20%);
+            };
+        }
+        margin-bottom: 1em;
+        ul.list-unstyled {
                 margin: 0;
             }
         }
 
         .cp-version-footer {
-            background-color: @colortheme_info-background;
-            color: black;
+            background-color: #6C6C6C;
+            color: #fff;
             text-align: center;
             padding: 0.5em;
         }
@@ -163,4 +164,65 @@
             margin-right: 0.5em;
         }
     }
+}
+
+// navigation top bar 
+.navbar  {
+    background: #fff;
+    .navbar-brand {
+        background: url(/customize/CryptPad_logo_color.svg) no-repeat;
+        width: 250px;
+        height: 50px;
+    }
+    a {
+        border: 2px solid transparent;
+    }
+    .nav-link {
+        padding: 0.5em 0.7em;
+        &:hover {
+            transform: scale(1.05);
+        };
+    }
+    .cp-register-btn {
+            border: 2px solid #4591C4;
+    }
+    button:focus {
+        outline: none;
+    }
+    .navbar-toggler {
+        margin-top: 10px;
+        color: #4591C4;
+    }
+}
+@media (max-width: 991px) {
+    #menuCollapse {
+        text-align: right;
+    }
+    .navbar-nav a {
+        text-align: right !important;
+    }
+    .cp-register-btn {
+        margin-right: 13px;
+        margin-left: 83vw;
+        text-align: center;
+     }
+}
+@media (max-width: 687px) {
+    .cp-register-btn {
+         margin-left: 75vw;
+    }
+}
+@media (max-width: 467px) {
+    .cp-register-btn {
+         margin-left: 63vw;
+    }
+}
+
+
+//footer general styles
+
+.cp-title {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #1E1F1F;
 }

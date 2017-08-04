@@ -16,7 +16,7 @@ define([
     var footerCol = function (title, L, literal) {
         return h('div.col', [
             h('ul.list-unstyled', [
-                h('li.title', {
+                h('li.cp-title', {
                     'data-localization': title,
                 }, title? Msg[title]: literal )
                 ].concat(L.map(function (l) {
@@ -135,14 +135,14 @@ define([
                 h('h2', 'Key Contributors'),
                 h('div.row', [
                     h('div.col-md-4', [
-                        h('img.bio-avatar', {'src': '/customize/images/pierre.jpg'}),
+                        h('img.bio-avatar', {'src': '/customize/images/Pierre-new.jpg'}),
                         h('h3', "Pierre Bondoerffer"),
                         setHTML(h('div#bio'), '<p>Resident CSS wizard and emoji extraordinaire, Pierre is passionate about anything related to technology. He loves to hack around computers and put parts together.</p><p>He is currently studying at 42, where he learns about algorithms, networking, kernel programming and graphics.</p><p>As a part of an internship, he joined XWiki SAS and worked on CryptPad to improve user experience. He also maintains the Spanish translation.</p>')
                     ]),
                     h('div.col-md-4', [
-                        h('img.bio-avatar', {'src': '/customize/images/avatar.png'}),
+                        h('img.bio-avatar', {'src': '/customize/images/Catalin.jpg'}),
                         h('h3', "Catalin Scripcariu"),
-                        setHTML(h('div#bio'), '')
+                        setHTML(h('div#bio'), '<p> Catalin is a Maths majour and has worked in B2B sales for 12 years. Design was always his passion and 3 years ago he started to dedicate himself to web design and front-end.</p><p>At the beginning of 2017 he joined the Xwiki family, where he worked both on the business and the community side of XWiki, including the research team and CryptPad. </p>')
                     ]),
                     h('div.col-md-4', [
                         h('img.bio-avatar', {'src': '/customize/images/ludovic.jpg'}),
@@ -298,7 +298,7 @@ define([
                         ])
                     ])
                 ]),
-            ])
+            ]),
         ];
     };
 
