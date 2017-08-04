@@ -9,14 +9,14 @@
 
 @background_lighter: rgba(0,0,0,0.1);
 @background_darker: rgba(0,0,0,0.4);
-&#cp-main {
+#cp-main {
     color: #FFF;
     background: linear-gradient( @background_darker, @background_lighter ), url('/customize/bg14.jpg');
     background-size: cover;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     .container {
         @media only screen and (max-device-width : 576px) {
@@ -64,7 +64,6 @@
 }
 .navbar {
     width: 100%;
-    margin-top: -1em;
     @media only screen and (max-device-width: 991px) {
         margin-top: 0;
     }
