@@ -12,7 +12,7 @@ $(function () {
     var Messages = Cryptpad.Messages;
     var $body = $('body');
     var isMainApp = function () {
-        return /^\/(pad|code|slide|poll|whiteboard|file|media|contacts|drive|settings|profile)\/$/.test(location.pathname);
+        return /^\/(pad|code|slide|poll|whiteboard|file|media|contacts|drive|settings|profile|todo)\/$/.test(location.pathname);
     };
 
     var rightLink = function (ref, loc, txt) {
@@ -112,7 +112,7 @@ $(function () {
                 ])
             ])
         ]),
-        h('div.version-footer', "CryptPad v1.11.0 (Lutin)")
+        h('div.version-footer', "CryptPad v1.12.0 (Minotaur)")
     ]));
 
     var pathname = location.pathname;
@@ -166,6 +166,9 @@ $(function () {
                 } else if (/^\/profile\//.test(pathname)) {
                     $('body').append(h('body', Pages[pathname]()).innerHTML);
                     require([ '/profile/main.js', ], ready);
+                } else if (/^\/todo\//.test(pathname)) {
+                    $('body').append(h('body', Pages[pathname]()).innerHTML);
+                    require([ '/todo/main.js', ], ready);
                 }
             });
 

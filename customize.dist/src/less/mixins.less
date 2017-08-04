@@ -138,3 +138,75 @@
         background: white;
     }
 }
+
+.fileIcon {
+    li {
+        display: inline-block;
+        margin: 10px 10px;
+        width: 140px;
+        height: 140px;
+        text-align: center;
+        vertical-align: top;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-top: 5px;
+        padding-bottom: 5px;
+
+        &:not(.selected):not(.selectedTmp) {
+            border: 1px solid #CCC;
+        }
+        .name {
+            width: 100%;
+            height: 48px;
+            margin: 8px 0;
+            display: inline-block;
+            //align-items: center;
+            //justify-content: center;
+            overflow: hidden;
+            //text-overflow: ellipsis;
+            word-wrap: break-word;
+        }
+        .truncated {
+            display: block;
+            position: absolute;
+            bottom: 0px;
+            left: 0; right: 0;
+            text-align: center;
+        }
+        img.icon {
+            height: 48px;
+            max-height: none;
+            max-width: none;
+            margin: 8px 0;
+        }
+        .fa {
+            display: block;
+            margin: auto;
+            font-size: 48px;
+            margin: 8px 0;
+            text-align: center;
+            &.listonly {
+                display: none;
+            }
+        }
+    }
+}
+
+.sidebarButton {
+    button.btn {
+        background-color: @button-bg;
+        border-color: darken(@button-bg, 10%);
+        color: white;
+        &:hover {
+            background-color: darken(@button-bg, 10%);
+        }
+        &.btn-danger {
+            background-color: @button-red-bg;
+            border-color: darken(@button-red-bg, 10%);
+            color: white;
+            &:hover {
+                background-color: darken(@button-red-bg, 10%);
+            }
+        }
+    }
+}

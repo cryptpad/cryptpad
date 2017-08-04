@@ -18,7 +18,7 @@ module.exports = {
     httpHeaders: {
         "X-XSS-Protection": "1; mode=block",
         "X-Content-Type-Options": "nosniff",
-        // 'X-Frame-Options': 'SAMEORIGIN',
+        'X-Frame-Options': 'SAMEORIGIN',
     },
 
     contentSecurity: [
@@ -249,7 +249,7 @@ module.exports = {
     /*  Setting this value to anything other than true will cause file upload
      *  attempts to be rejected outright.
      */
-    enableUploads: false,
+    enableUploads: true,
 
     /*  If you have enabled file upload, you have the option of restricting it
      *  to a list of users identified by their public keys. If this value is set

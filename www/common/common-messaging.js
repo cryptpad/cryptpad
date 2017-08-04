@@ -4,7 +4,27 @@ define([
     '/common/curve.js',
     '/bower_components/marked/marked.min.js',
 ], function ($, Crypto, Curve, Marked) {
-    var Msg = {};
+    var Msg = {
+        inputs: [],
+    };
+
+    var Messages;
+    Msg.setEditable = function (bool) {
+        bool = !bool;
+        Msg.inputs.forEach(function (input) {
+            if (bool) {
+                input.setAttribute('disabled', bool);
+            } else {
+                input.removeAttribute('disabled');
+            }
+
+            if (Messages) {
+                // set placeholder
+                var placeholder = bool? Messages.disconnected: Messages.contacts_typeHere;
+                input.setAttribute('placeholder', placeholder);
+            }
+        });
+    };
 
     var Types = {
         message: 'MSG',
@@ -227,7 +247,6 @@ define([
         if (!isId) { return; }
 
         var decryptedMsg = channel.encryptor.decrypt(msg);
-        console.log(decryptedMsg);
         var parsed = JSON.parse(decryptedMsg);
         if (parsed[0] !== Types.mapId && parsed[0] !== Types.mapIdAck) { return; }
         if (parsed[2] !== sender || !parsed[1]) { return; }
@@ -267,6 +286,7 @@ define([
         var chan = parsed[3];
         if (!chan || !channels[chan]) { return; }
         pushMsg(common, channels[chan], parsed[4]);
+        channels[chan].refresh();
     };
     var onMessage = function (common, msg, sender, chan) {
         if (!channels[chan.id]) { return; }
@@ -284,32 +304,50 @@ define([
         var data = getFriend(common, curvePublic);
         var proxy = common.getProxy();
 
-        var $header = $('<div>', {'class': 'header avatar'}).appendTo($container);
-/*
-        var $removeHistory = $('<button>', {
-            'class': 'remove-history'
-        }).text('remove chat history').click(function () {
-            Cryptpad.confirm('are you sure?', function (yes) {
+        // Input
+        var channel = channels[data.channel];
+
+        var $header = $('<div>', {
+            'class': 'header',
+        }).appendTo($container);
+
+        var $avatar = $('<div>', {'class': 'avatar'}).appendTo($header);
+
+        // more history...
+        $('<span>', {
+            'class': 'more-history',
+        })
+        .text('get more history')
+        .click(function () {
+            console.log("GETTING HISTORY");
+            channel.getPreviousMessages();
+        })
+        .appendTo($header);
+
+        var $removeHistory = $('<span>', {
+            'class': 'remove-history fa fa-eraser',
+            title: common.Messages.contacts_removeHistoryTitle
+        })
+        .click(function () {
+            common.confirm(common.Messages.contacts_confirmRemoveHistory, function (yes) {
                 if (!yes) { return; }
-                Cryptpad.clearOwnedChannel(data.channel, function (e) {
+                common.clearOwnedChannel(data.channel, function (e) {
                     if (e) {
                         console.error(e);
-                        Cryptpad.alert("Something went wrong");
+                        common.alert(common.Messages.contacts_removeHistoryServerError);
                         return;
                     }
                 });
             });
         });
-        $removeHistory.appendTo($header); //rightCol);
-*/
+        $removeHistory.appendTo($header);
 
         $('<div>', {'class': 'messages'}).appendTo($container);
         var $inputBlock = $('<div>', {'class': 'input'}).appendTo($container);
 
-        // Input
-        var channel = channels[data.channel];
         var $input = $('<textarea>').appendTo($inputBlock);
         $input.attr('placeholder', common.Messages.contacts_typeHere);
+        Msg.inputs.push($input[0]);
 
         var sending = false;
         var send = function () {
@@ -338,7 +376,7 @@ define([
         });*/
         var onKeyDown = function (e) {
             if (e.keyCode === 13) {
-                if (e.ctrlKey) {
+                if (e.ctrlKey || e.shiftKey) {
                     var val = this.value;
                     if (typeof this.selectionStart === "number" && typeof this.selectionEnd === "number") {
                         var start = this.selectionStart;
@@ -363,17 +401,26 @@ define([
         var $rightCol = $('<span>', {'class': 'right-col'});
         $('<span>', {'class': 'name'}).text(data.displayName).appendTo($rightCol);
         if (data.avatar && avatars[data.avatar]) {
-            $header.append(avatars[data.avatar]);
-            $header.append($rightCol);
+            $avatar.append(avatars[data.avatar]);
+            $avatar.append($rightCol);
         } else {
-            common.displayAvatar($header, data.avatar, data.displayName, function ($img) {
+            common.displayAvatar($avatar, data.avatar, data.displayName, function ($img) {
                 if (data.avatar && $img) {
                     avatars[data.avatar] = $img[0].outerHTML;
                 }
-                $header.append($rightCol);
+                $avatar.append($rightCol);
             });
         }
 
+    };
+
+    Msg.getLatestMessages = function () {
+        Object.keys(channels).forEach(function (id) {
+            if (id === 'me') { return; }
+            var friend = channels[id];
+            friend.getMessagesSinceDisconnect();
+            friend.refresh();
+        });
     };
 
     Msg.init = function (common, $listContainer, $msgContainer) {
@@ -381,6 +428,8 @@ define([
         var proxy = common.getProxy();
         Msg.hk = network.historyKeeper;
         var friends = getFriendList(common);
+        Messages = Messages || common.Messages;
+
         network.on('message', function(msg, sender) {
             onDirectMessage(common, msg, sender);
         });
@@ -450,6 +499,7 @@ define([
             $chat.show();
 
             Msg.active = curvePublic;
+            // TODO don't mark messages as read unless you have displayed them
 
             refresh(curvePublic);
         };
@@ -539,6 +589,37 @@ define([
             var statusText = status ? 'online' : 'offline';
             $friend.find('.status').attr('class', 'status '+statusText);
         };
+        var getMoreHistory = function (network, chan, hash, count) {
+            var msg = [
+                'GET_HISTORY_RANGE',
+                chan.id,
+                {
+                    from: hash,
+                    count: count,
+                }
+            ];
+
+            console.log(msg);
+
+            network.sendto(network.historyKeeper, JSON.stringify(msg)).then(function (a, b, c) {
+                console.log(a, b, c);
+            }, function (err) {
+                throw new Error(err);
+            });
+        };
+
+        var getChannelMessagesSince = function (network, chan, data, keys) {
+            var cfg = {
+                validateKey: keys.validateKey,
+                owners: [proxy.edPublic, data.edPublic],
+                lastKnownHash: data.lastKnownHash
+            };
+            var msg = ['GET_HISTORY', chan.id, cfg];
+            network.sendto(network.historyKeeper, JSON.stringify(msg))
+              .then($.noop, function (err) {
+                throw new Error(err);
+            });
+        };
 
         // Open the channels
         var openFriendChannel = function (f) {
@@ -558,9 +639,18 @@ define([
                     removeUI: function () { removeUI(data.curvePublic); },
                     updateUI: function (types) { updateUI(data.curvePublic, types); },
                     updateStatus: function () { updateStatus(data.curvePublic); },
+                    getMessagesSinceDisconnect: function () {
+                        getChannelMessagesSince(network, chan, data, keys);
+                    },
                     wc: chan,
                     userList: [],
-                    mapId: {}
+                    mapId: {},
+                    getPreviousMessages: function () {
+                        var oldestMessages = channel.messages[0];
+                        var oldestHash = oldestMessages[0];
+
+                        getMoreHistory(network, chan, oldestHash, 10);
+                    },
                 };
                 chan.on('message', function (msg, sender) {
                     onMessage(common, msg, sender, chan);
@@ -589,20 +679,13 @@ define([
                     }
                     channel.updateStatus();
                 });
-                var cfg = {
-                    validateKey: keys.validateKey,
-                    owners: [proxy.edPublic, data.edPublic],
-                    lastKnownHash: data.lastKnownHash
-                };
-                var msg = ['GET_HISTORY', chan.id, cfg];
-                network.sendto(network.historyKeeper, JSON.stringify(msg))
-                  .then($.noop, function (err) {
-                    throw new Error(err);
-                });
+
+                getChannelMessagesSince(network, chan, data, keys);
             }, function (err) {
                 console.error(err);
             });
         };
+
         Object.keys(friends).forEach(openFriendChannel);
 
         var checkNewFriends = function () {

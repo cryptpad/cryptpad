@@ -13,6 +13,7 @@ define(function () {
     out.type.whiteboard = 'Whiteboard';
     out.type.file = 'File';
     out.type.media = 'Media';
+    out.type.todo = "Todo";
     out.type.contacts = 'Contacts';
 
     out.button_newpad = 'New Rich Text pad';
@@ -245,6 +246,7 @@ define(function () {
     out.canvas_opacity = "Opacity";
     out.canvas_opacityLabel = "opacity: {0}";
     out.canvas_widthLabel = "Width: {0}";
+    out.canvas_saveToDrive = "Save this image as a file in your CryptDrive";
 
     // Profile
     out.profileButton = "Profile"; // dropdown menu
@@ -281,6 +283,10 @@ define(function () {
     out.contacts_info2 = "Click your contact's icon to chat with them";
     out.contacts_info3 = "Double-click their icon to view their profile";
     out.contacts_info4 = "Either participant can clear permanently a chat history";
+
+    out.contacts_removeHistoryTitle = 'Clean the chat history';
+    out.contacts_confirmRemoveHistory = 'Are you sure you want to permanently remove your chat history? Data cannot be restored';
+    out.contacts_removeHistoryServerError = 'There was an error while removing your chat history. Try again later';
 
     // File manager
 
@@ -469,6 +475,13 @@ define(function () {
     out.upload_mustLogin = "You must be logged in to upload files";
     out.download_button = "Decrypt & Download";
     out.download_mt_button = "Download";
+
+    out.todo_title = "CryptTodo";
+    out.todo_newTodoNamePlaceholder = "Describe your task...";
+    out.todo_newTodoNameTitle = "Add this task to your todo list";
+    out.todo_markAsCompleteTitle = "Mark this task as complete";
+    out.todo_markAsIncompleteTitle = "Mark this task as incomplete";
+    out.todo_removeTaskTitle = "Remove this task from your todo list";
 
     // general warnings
     out.warn_notPinned = "This pad is not in anyone's CryptDrive. It will expire after 3 months. <a href='/about.html#pinning'>Learn more...</a>";

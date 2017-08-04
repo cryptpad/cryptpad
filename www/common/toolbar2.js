@@ -199,6 +199,7 @@ define([
 
         // Update the userlist
         var $editUsers = $userlistContent.find('.' + USERLIST_CLS).html('');
+        Cryptpad.clearTooltips();
 
         var $editUsersList = $('<div>', {'class': 'userlist-others'});
 
@@ -689,6 +690,14 @@ define([
             config.realtime.onPatch(ks(toolbar, config));
             config.realtime.onMessage(ks(toolbar, config, true));
         }
+        // without this, users in read-only mode say 'synchronizing' until they
+        // receive a patch.
+        if (Cryptpad) {
+            typing = 0;
+            Cryptpad.whenRealtimeSyncs(config.realtime, function () {
+                kickSpinner(toolbar, config);
+            });
+        }
         return $spin;
     };
 
@@ -990,13 +999,18 @@ define([
 
         var failed = toolbar.failed = function () {
             toolbar.connected = false;
-            toolbar.spinner.text(Messages.disconnected);
+
+            if (toolbar.spinner) {
+                toolbar.spinner.text(Messages.disconnected);
+            }
             //checkLag(toolbar, config);
         };
         toolbar.reconnecting = function (userId) {
             if (config.userList) { config.userList.userNetfluxId = userId; }
             toolbar.connected = false;
-            toolbar.spinner.text(Messages.reconnecting);
+            if (toolbar.spinner) {
+                toolbar.spinner.text(Messages.reconnecting);
+            }
             //checkLag(toolbar, config);
         };
 

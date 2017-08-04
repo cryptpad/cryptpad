@@ -4,7 +4,7 @@ define(function() {
     /* Select the buttons displayed on the main page to create new collaborative sessions
      * Existing types : pad, code, poll, slide
      */
-    config.availablePadTypes = ['drive', 'pad', 'code', 'slide', 'poll', 'whiteboard', 'file', 'contacts'];
+    config.availablePadTypes = ['drive', 'pad', 'code', 'slide', 'poll', 'whiteboard', 'file', 'todo', 'contacts'];
     config.registeredOnlyTypes = ['file', 'contacts'];
 
     /*  Cryptpad apps use a common API to display notifications to users
@@ -49,6 +49,7 @@ define(function() {
         users.
     */
     config.loginSalt = '';
+    config.badStateTimeout = 30000;
 
     return config;
 });

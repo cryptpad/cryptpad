@@ -276,6 +276,7 @@ define([
     var $slideIcon = $('<span>', {"class": "fa fa-file-powerpoint-o file icon slideColor"});
     var $pollIcon = $('<span>', {"class": "fa fa-calendar file icon pollColor"});
     var $whiteboardIcon = $('<span>', {"class": "fa fa-paint-brush whiteboardColor"});
+    var $todoIcon = $('<span>', {"class": "fa fa-tasks todoColor"});
     var $contactsIcon = $('<span>', {"class": "fa fa-users friendsColor"});
     UI.getIcon = function (type) {
         var $icon;
@@ -287,6 +288,7 @@ define([
             case 'slide': $icon = $slideIcon.clone(); break;
             case 'poll': $icon = $pollIcon.clone(); break;
             case 'whiteboard': $icon = $whiteboardIcon.clone(); break;
+            case 'todo': $icon = $todoIcon.clone(); break;
             case 'contacts': $icon = $contactsIcon.clone(); break;
             default: $icon = $fileIcon.clone();
         }
@@ -295,16 +297,21 @@ define([
     };
 
     // Tooltips
+
+    UI.clearTooltips = function () {
+        $('.tippy-popper').remove();
+    };
+
     UI.addTooltips = function () {
         var MutationObserver = window.MutationObserver;
         var addTippy = function (el) {
             if (el.nodeName === 'IFRAME') { return; }
-            console.log(el);
+            var delay = typeof(AppConfig.tooltipDelay) === "number" ? AppConfig.tooltipDelay : 500;
             Tippy(el, {
                 position: 'bottom',
                 distance: 0,
                 performance: true,
-                delay: [500, 0]
+                delay: [delay, 0]
             });
         };
         var $body = $('body');

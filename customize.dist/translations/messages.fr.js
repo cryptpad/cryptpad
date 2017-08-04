@@ -13,6 +13,7 @@ define(function () {
     out.type.whiteboard = "Tableau Blanc";
     out.type.file = "Fichier";
     out.type.media = "Média";
+    out.type.todo = "Todo";
     out.type.contacts = "Contacts";
 
     out.button_newpad = 'Nouveau document texte';
@@ -278,6 +279,10 @@ define(function () {
     out.contacts_info3 = "Double-cliquer sur son nom pour voir son profil";
     out.contacts_info4 = "Chaque participant peut nettoyer définitivement l'historique d'une discussion";
 
+    out.contacts_removeHistoryTitle = "Supprimer l'historique du chat";
+    out.contacts_confirmRemoveHistory = 'Êtes-vous sûr de vouloir supprimer définitivement l\'historique de votre chat ? Les messages ne pourront pas être restaurés.';
+    out.contacts_removeHistoryServerError = 'Une erreur est survenue lors de la supprimer de l\'historique du chat. Veuillez réessayer plus tard.';
+
     // File manager
 
     out.fm_rootName = "Documents";
@@ -464,6 +469,13 @@ define(function () {
     out.upload_mustLogin = "Vous devez vous connecter pour importer un fichier";
     out.download_button = "Déchiffrer et télécharger";
     out.download_mt_button = "Télécharger";
+
+    out.todo_title = "CryptTodo";
+    out.todo_newTodoNamePlaceholder = "Décrivez votre tâche...";
+    out.todo_newTodoNameTitle = "Ajouter cette tâche à votre liste";
+    out.todo_markAsCompleteTitle = "Marquer tâche comme terminée";
+    out.todo_markAsIncompleteTitle = "Marquer tâche comme non incomplète";
+    out.todo_removeTaskTitle = "Enlever cette tâche de votre liste";
 
     // general warnings
     out.warn_notPinned = "Ce pad n'est stocké dans aucun CryptDrive. Il va expirer après 3 mois d'inactivité. <a href='/about.html#pinning'>En savoir plus...</a>";
