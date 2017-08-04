@@ -56,10 +56,12 @@ define([
             findOKButton().click();
         };
         var keyHandler = listenForKeys(close, close);
-        Alertify.alert(msg, function (ev) {
-            cb(ev);
-            stopListening(keyHandler);
-        });
+        Alertify
+            .okBtn(Messages.okButton || 'OK')
+            .alert(msg, function (ev) {
+                cb(ev);
+                stopListening(keyHandler);
+            });
         window.setTimeout(function () {
             findOKButton().focus();
         });
