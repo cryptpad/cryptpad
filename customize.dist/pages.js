@@ -77,6 +77,21 @@ define([
     };
 
     var infopageTopbar = function () {
+        var rightLinks;
+        var username = window.localStorage.getItem('User_name');
+        if (username === null) {
+            rightLinks = [
+                h('a.nav-item.nav-link.cp-login-btn', { href: '/login'}, Msg.login_login),
+                h('a.nav-item.nav-link.cp-register-btn', { href: '/register'}, Msg.login_register)
+            ];
+        } else {
+            rightLinks = h('a.nav-item.nav-link.cp-user-btn', { href: '/drive' }, [
+                h('i.fa.fa-user-circle'),
+                " ",
+                username
+            ]);
+        }
+
         return h('nav.navbar.navbar-toggleable-md',
                      h('button.navbar-toggler.navbar-toggler-right', {'type':'button'}, {'data-toggle':'collapse'}, {'data-target':'#menuCollapse'}, {'aria-controls': 'menuCollapse'}, {'aria-expanded':'false'}, {'aria-label':'Toggle navigation'},
                     [h('i.fa.fa-bars ')
@@ -87,9 +102,7 @@ define([
                     h('a.nav-item.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.blog),
                     h('a.nav-item.nav-link', { href: '/contact.html'}, Msg.contact),
                     h('a.nav-item.nav-link', { href: '/about.html'}, Msg.about),
-                    h('a.nav-item.nav-link.cp-login-btn', { href: '/login'}, Msg.login_login),
-                    h('a.nav-item.nav-link.cp-register-btn', { href: '/register'}, Msg.login_register)
-                ])
+                ].concat(rightLinks))
         );
     };
 
