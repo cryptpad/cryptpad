@@ -94,7 +94,7 @@ define([
     };
 
     Pages['/about.html'] = function () {
-        return h('div#cp-main.cp-page-about', [
+        return h('div#cp-main', [
             infopageTopbar(),
             h('div.container.cp-container', [
                 h('center', [
@@ -143,7 +143,7 @@ define([
     };
 
     Pages['/privacy.html'] = function () {
-        return h('div#cp-main.cp-page-privacy', [
+        return h('div#cp-main', [
             infopageTopbar(),
             h('div.container.cp-container', [
                 h('center', h('h1', Msg.policy_title)),
@@ -172,7 +172,7 @@ define([
     };
 
     Pages['/terms.html'] = function () {
-        return h('div#cp-main.cp-page-terms', [
+        return h('div#cp-main', [
             infopageTopbar(),
             h('div.container.cp-container', [
                 h('center', h('h1', Msg.tos_title)),
@@ -187,7 +187,7 @@ define([
     };
 
     Pages['/contact.html'] = function () {
-        return h('div#cp-main.cp-page-contact', [
+        return h('div#cp-main', [
             infopageTopbar(),
             h('div.container.cp-container', [
                 h('center', h('h1', Msg.contact)),
@@ -198,7 +198,7 @@ define([
     };
 
     Pages['/what-is-cryptpad.html'] = function () {
-        return h('div#cp-main.cp-page-what-is-cryptpad', [
+        return h('div#cp-main', [
             infopageTopbar(),
             h('div.container.cp-container', [
                 h('center', h('h1', Msg.whatis_title)),
@@ -234,7 +234,7 @@ define([
     Pages['/'] = Pages['/index.html'] = function () {
         var showingMore = false;
         return [
-            h('div#cp-main.cp-page-index', [
+            h('div#cp-main', [
                 infopageTopbar(),
                 h('div.container.cp-container', [
                     h('div.row', [
@@ -310,7 +310,7 @@ define([
     };
 
     Pages['/register/'] = Pages['/register/index.html'] = function () {
-        return [h('div#cp-main.cp-page-register', [
+        return [h('div#cp-main', [
             infopageTopbar(),
             h('div.container.cp-container', [
                 h('div.row.align-items-center', [
@@ -362,7 +362,7 @@ define([
     };
 
     Pages['/login/'] = Pages['/login/index.html'] = function () {
-        return [h('div#cp-main.cp-page-login', [
+        return [h('div#cp-main', [
             infopageTopbar(),
             h('div.container.cp-container', [
                 h('div.row.align-items-center', [
