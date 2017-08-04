@@ -16,7 +16,7 @@ define([
     var footerCol = function (title, L, literal) {
         return h('div.col', [
             h('ul.list-unstyled', [
-                h('li.cp-title', {
+                h('li.footer-title', {
                     'data-localization': title,
                 }, title? Msg[title]: literal )
                 ].concat(L.map(function (l) {

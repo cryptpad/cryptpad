@@ -10,8 +10,6 @@
     a {
         color: @cryptpad_color_blue;
         &:visited { color: darken(@cryptpad_color_blue, 10%); }
-        //opacity: 0.8;
-        //transition: opacity 0.2s;
     }
     a:hover {
         opacity: 1;
@@ -114,15 +112,6 @@
 
 // Apply this to the top bar div
 .infopages_topbar () {
-    .navbar-brand {
-        display: block;
-        background-image: url(/customize/CryptPad-blue-logo.svg);
-        background-repeat: no-repeat;
-        background-size: contain;
-        height: 50px;
-        width: 250px;
-    }
-
     .cp-topbar {
         background: #fff;
         z-index: 9001;
@@ -170,9 +159,12 @@
 .navbar  {
     background: #fff;
     .navbar-brand {
-        background: url(/customize/CryptPad_logo_color.svg) no-repeat;
-        width: 250px;
+        display: block;
+        background-image: url(/customize/CryptPad_logo_color.svg);
+        background-repeat: no-repeat;
+        background-size: contain;
         height: 50px;
+        width: 250px;
     }
     a {
         border: 2px solid transparent;
@@ -221,7 +213,7 @@
 
 //footer general styles
 
-.cp-title {
+.footer-title {
     font-weight: bold;
     font-size: 1.2em;
     color: #1E1F1F;
