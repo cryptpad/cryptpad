@@ -815,13 +815,16 @@ body .cryptpad-toolbar {
         }
         a.cryptpad-logo {
             cursor: pointer;
-            font-size: 1em;
-            height: auto;
-            padding: 0px 5px;
+            display: inline-flex;
             text-decoration: none;
+            height: auto;
+            padding: 10px;
 
-            // hack because of whiteboard and poll
-            color: white !important;
+            img {
+                cursor: pointer;
+                height: 100%;
+                width: 100%;
+            }
         }
     }
     .cryptpad-user {
