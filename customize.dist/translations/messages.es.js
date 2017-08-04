@@ -104,11 +104,7 @@ define(function () {
     out.main_p2 = 'Este proyecto utiliza el editor de texto visual <a href="http://ckeditor.com/">CKEditor</a>, <a href="https://codemirror.net/">CodeMirror</a>, y el motor en tiempo real <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a>.';
     out.main_howitworks = '¿Cómo funciona?';
     out.main_howitworks_p1 = "CryptPad utiliza una variante del algoritmo de <a href='https://en.wikipedia.org/wiki/Operational_transformation'>transformación operacional</a> (página en inglés) que es capaz de encontrar un consenso distribuido usando un <a href='https://bitcoin.org/bitcoin.pdf'>Blockchain Nakamoto</a> (página en inglés), popularizado por <a href='https://es.wikipedia.org/wiki/Bitcoin'>Bitcoin</a>. De esta manera el algoritmo puede evitar la necesidad de un servidor central para resolver conflictos de edición de la transformación operacional y sin necesidad de resolver conflictos, el servidor puede mantenerse inconsciente del contenido que se está editando en el pad.";
-<<<<<<< HEAD
     out.main_about_p2 = 'Si tienes preguntas o comentarios, puedes <a href="https://twitter.com/cryptpad"><i class="fa fa-twitter"></i>enviarnos un tweet</a>, abrir un issue <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="nuestro issue tracker">en <i class="fa fa-github"></i>GitHub</a>. saludarnos en <a href="https://riot.im/app/#/room/#cryptpad:matrix.org" title="Matrix">nuestro <i class="fa fa-comment"></i>canal Matrix</a> o en IRC (#cryptpad on irc.freenode.net), o <a href="mailto:research@xwiki.com"><i class="fa fa-envelope"></i>envianos un email</a>.';
-=======
-    out.main_about_p2 = 'Si tienes preguntas o comentarios, puedes <a href="https://twitter.com/cryptpad">enviarnos un tweet</a>, abrir un issue <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="nuestro issue tracker">en GitHub</a>, saludarnos en nuestro canal IRC (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), o <a href="mailto:research@xwiki.com">envíanos un email</a>.';
->>>>>>> fb13e656b7b3ee611bf195a1f1ccf7475f2f1ee4
 
     out.button_newpad = 'Crear nuevo pad de texto enriquecido';
     out.button_newcode = 'Crear nuevo pad de código';
@@ -546,11 +542,6 @@ define(function () {
     out.settings_logoutEverywhereButton = "Cerrar sesión";
     out.upload_title = "Subir archivo";
 
-<<<<<<< HEAD
-    // 1.13.0 - Naiad
-    out.topbar_whatIsCryptpad = "Qué es CryptPad";
-
-=======
     // 1.12.0 - Minotaur
     out.userlist_pending = "Pendiente...";
     out.contacts_typeHere = "Escribe un mensaje aquí...";
@@ -563,6 +554,9 @@ define(function () {
     out.todo_markAsCompleteTitle = "Marcar esta tarea como completa";
     out.todo_markAsIncompleteTitle = "Marcar esta tarea como incompleta";
     out.todo_removeTaskTitle = "Borrar esta tarea de la lista";
->>>>>>> fb13e656b7b3ee611bf195a1f1ccf7475f2f1ee4
+
+    // 1.13.0 - Naiad
+    out.topbar_whatIsCryptpad = "Qué es CryptPad";
+    
     return out;
 });
