@@ -80,8 +80,9 @@ $(function () {
         }
     } else {
         // add class on info-pages
-        var css = location.pathname.replace(/(\/$|^\/|.html$)/gm, "")
-            .replace(/[^a-zA-Z]/gi, "-");
+        var css = location.pathname.replace(/(index)?\.html$/gi, "") // .html
+            .replace(/[^a-zA-Z]+/gi, '-') // any non-alpha character
+            .replace(/^-|-$/g, ''); // starting/trailing dashes
         if (css === '')
         {
             css = 'index';
