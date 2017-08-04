@@ -25,6 +25,10 @@ define([
         $main.find('#data').removeClass('hidden');
 
         if (Cryptpad.isLoggedIn()) {
+            if (window.location.pathname === '/') {
+                window.location = '/drive/';
+            }
+
             var name = localStorage[Cryptpad.userNameKey] || sessionStorage[Cryptpad.userNameKey];
             var $loggedInBlock = $main.find('#loggedIn');
             var $hello = $loggedInBlock.find('#loggedInHello');
