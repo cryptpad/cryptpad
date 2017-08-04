@@ -77,6 +77,21 @@ define([
     };
 
     var infopageTopbar = function () {
+        var rightLinks;
+        var username = window.localStorage.getItem('User_name');
+        if (username === null) {
+            rightLinks = [
+                h('a.nav-item.nav-link.cp-login-btn', { href: '/login'}, Msg.login_login),
+                h('a.nav-item.nav-link.cp-register-btn', { href: '/register'}, Msg.login_register)
+            ];
+        } else {
+            rightLinks = h('a.nav-item.nav-link.cp-user-btn', { href: '/drive' }, [
+                h('i.fa.fa-user-circle'),
+                " ",
+                username
+            ]);
+        }
+
         return h('nav.navbar.navbar-toggleable-md',
                      h('button.navbar-toggler.navbar-toggler-right', {'type':'button'}, {'data-toggle':'collapse'}, {'data-target':'#menuCollapse'}, {'aria-controls': 'menuCollapse'}, {'aria-expanded':'false'}, {'aria-label':'Toggle navigation'},
                     [h('i.fa.fa-bars ')
@@ -87,14 +102,12 @@ define([
                     h('a.nav-item.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.blog),
                     h('a.nav-item.nav-link', { href: '/contact.html'}, Msg.contact),
                     h('a.nav-item.nav-link', { href: '/about.html'}, Msg.about),
-                    h('a.nav-item.nav-link.cp-login-btn', { href: '/login'}, Msg.login_login),
-                    h('a.nav-item.nav-link.cp-register-btn', { href: '/register'}, Msg.login_register)
-                ])
+                ].concat(rightLinks))
         );
     };
 
     Pages['/about.html'] = function () {
-        return h('div#cp-main.cp-page-about', [
+        return h('div#cp-main', [
             infopageTopbar(),
             h('div.container.cp-container', [
                 h('center', [
@@ -143,7 +156,7 @@ define([
     };
 
     Pages['/privacy.html'] = function () {
-        return h('div#cp-main.cp-page-privacy', [
+        return h('div#cp-main', [
             infopageTopbar(),
             h('div.container.cp-container', [
                 h('center', h('h1', Msg.policy_title)),
@@ -172,7 +185,7 @@ define([
     };
 
     Pages['/terms.html'] = function () {
-        return h('div#cp-main.cp-page-terms', [
+        return h('div#cp-main', [
             infopageTopbar(),
             h('div.container.cp-container', [
                 h('center', h('h1', Msg.tos_title)),
@@ -187,7 +200,7 @@ define([
     };
 
     Pages['/contact.html'] = function () {
-        return h('div#cp-main.cp-page-contact', [
+        return h('div#cp-main', [
             infopageTopbar(),
             h('div.container.cp-container', [
                 h('center', h('h1', Msg.contact)),
@@ -198,7 +211,7 @@ define([
     };
 
     Pages['/what-is-cryptpad.html'] = function () {
-        return h('div#cp-main.cp-page-what-is-cryptpad', [
+        return h('div#cp-main', [
             infopageTopbar(),
             h('div.container.cp-container', [
                 h('center', h('h1', Msg.whatis_title)),
@@ -234,7 +247,7 @@ define([
     Pages['/'] = Pages['/index.html'] = function () {
         var showingMore = false;
         return [
-            h('div#cp-main.cp-page-index', [
+            h('div#cp-main', [
                 infopageTopbar(),
                 h('div.container.cp-container', [
                     h('div.row', [
@@ -274,11 +287,9 @@ define([
                                         if (showingMore) {
                                             $('.cp-more, .cp-callout-more-lessmsg').addClass('cp-hidden');
                                             $('.cp-callout-more-moremsg').removeClass('cp-hidden');
-                                            if ( $( window ).width() >991 ) $('.navbar').css('margin-top','-1em');
                                         } else {
                                             $('.cp-more, .cp-callout-more-lessmsg').removeClass('cp-hidden');
                                             $('.cp-callout-more-moremsg').addClass('cp-hidden');
-                                            $('.navbar').css('margin-top','0');
                                         }
                                         showingMore = !showingMore;
                                     }
@@ -310,7 +321,7 @@ define([
     };
 
     Pages['/register/'] = Pages['/register/index.html'] = function () {
-        return [h('div#cp-main.cp-page-register', [
+        return [h('div#cp-main', [
             infopageTopbar(),
             h('div.container.cp-container', [
                 h('div.row.align-items-center', [
@@ -362,7 +373,7 @@ define([
     };
 
     Pages['/login/'] = Pages['/login/index.html'] = function () {
-        return [h('div#cp-main.cp-page-login', [
+        return [h('div#cp-main', [
             infopageTopbar(),
             h('div.container.cp-container', [
                 h('div.row.align-items-center', [

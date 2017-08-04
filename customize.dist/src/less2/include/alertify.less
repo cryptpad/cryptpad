@@ -5,15 +5,15 @@
     @alertify-fore: @colortheme_old-fore;
     @alertify-base: @colortheme_old-base;
 
-    @alertify-dialog-bg: #444;
+    @alertify-dialog-bg: #222;
     @alertify-dialog-fg: @colortheme_old-fore;
 
     @alertify-btn-fg: @colortheme_old-fore;
 
-    @alertify-btn-bg: rgba(200, 200, 200, 0.05);
-    @alertify-btn-bg-hover: rgba(200, 200, 200, .15);
+    @alertify-btn-bg: rgba(200, 200, 200, 0.1);
+    @alertify-btn-bg-hover: rgba(200, 200, 200, .3);
 
-    @alertify-bg: rgba(0, 0, 0, .3);
+    @alertify-bg: rgba(0, 0, 0, .4);
     @alertify-fg: @colortheme_old-fore;
 
     @alertify-input-bg: @colortheme_old-base;
@@ -21,7 +21,6 @@
 
     @alertify_padding-base: 12px;
     @alertify_box-shadow: 0 2px 5px 0 rgba(0,0,0,.2);
-    @alertify_border-radius: 1px;
 
     // Logs to show that something has happened
     // These show only once
@@ -38,7 +37,6 @@
             font-size: large;
 
             box-shadow: @alertify_box-shadow;
-            border-radius: @alertify_border-radius;
             &, &.default {
                 // FIXME
                 background: rgba(0, 0, 0, .8);
@@ -63,6 +61,10 @@
         width: 100%;
         height: 100%;
         z-index: 99999;
+
+        h1, h2, h3 {
+            margin-top: 0;
+        }
 
         &.hide {
             opacity: 0;
@@ -89,7 +91,6 @@
 
             & > div {
                 background-color: @alertify-dialog-bg;
-                border-radius: 5px;
                 &.half {
                     width: 50%;
                     @media (max-width: @browser_media-medium-screen) {
@@ -106,10 +107,10 @@
 
             > * {
                 width: 30%;
-                width: 500px;
+                min-width: 500px;
                 max-width: 95%;
                 margin: 0 auto;
-                text-align: center;
+                text-align: left;
                 padding: @alertify_padding-base;
                 background: #fff;
                 // FIXME
@@ -120,14 +121,12 @@
                 padding: @alertify_padding-base;
                 margin-bottom: @alertify_padding-base;
                 margin: 0;
-                text-align: left;
             }
 
             input:not(.form-control){
                 background-color: @alertify-input-bg;
                 color: @alertify-input-fg; 
                 border: 0px;
-                border-radius: 5px;
 
                 margin-bottom: 15px;
                 width: 100%;
@@ -161,10 +160,10 @@
                     font-size: 14px;
                     text-decoration: none;
                     cursor: pointer;
+                    border-radius: 0;
 
                     color: @alertify-btn-fg;
-                    border: 1px solid @alertify-base;
-                    border-radius: 5px;
+                    border: 1px solid transparent;
 
                     &.safe, &.danger {
                         color: @colortheme_old-base;
@@ -172,16 +171,16 @@
                         font-weight: bold;
                     }
                     &.danger {
-                        background-color: @colortheme_cp-red;
+                        background-color: @colortheme_alertify-red;
                         &:hover, &:active {
-                            background-color: lighten(@colortheme_cp-red, 5%);
+                            background-color: lighten(@colortheme_alertify-red, 5%);
                         }
                     }
 
                     &.safe {
-                        background-color: @colortheme_cp-green;
+                        background-color: @colortheme_alertify-green;
                         &:hover, &:active {
-                            background-color: lighten(@colortheme_cp-green, 10%);
+                            background-color: lighten(@colortheme_alertify-green, 10%);
                         }
                     }
 

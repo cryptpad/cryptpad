@@ -121,7 +121,7 @@ define([
             }
 
             setTimeout(function () {
-            Cryptpad.confirm("<h2 class='bright'>" + Messages.register_warning + "</h2>",
+            Cryptpad.confirm("<h2 class='bright msg'>" + Messages.register_warning + "</h2>",
             function (yes) {
                 if (!yes) { return; }
 
