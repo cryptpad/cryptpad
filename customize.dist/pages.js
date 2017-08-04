@@ -105,7 +105,7 @@ define([
                 h('h2', 'Key Contributors'),
                 h('div.row', [
                     h('div.col-md-4', [
-                        h('img.bio-avatar', {'src': '/customize/images/pierre.png'}),
+                        h('img.bio-avatar', {'src': '/customize/images/pierre.jpg'}),
                         h('h3', "Pierre Bondoerffer"),
                         setHTML(h('div#bio'), '<p>Resident CSS wizard and emoji extraordinaire, Pierre is passionate about anything related to technology. He loves to hack around computers and put parts together.</p><p>He is currently studying at 42, where he learns about algorithms, networking, kernel programming and graphics.</p><p>As a part of an internship, he joined XWiki SAS and worked on CryptPad to improve user experience. He also maintains the Spanish translation.</p>')
                     ]),
