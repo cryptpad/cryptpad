@@ -1813,7 +1813,7 @@ define([
                            (parseInt(verArr[0]) === parseInt(storedArr[0]) &&
                             parseInt(verArr[1]) > parseInt(storedArr[1]));
         if (!shouldUpdate) { return; }
-        common.alert(Messages._getKey('newVersion', [verArr.join('.')]), null, true);
+        //common.alert(Messages._getKey('newVersion', [verArr.join('.')]), null, true);
         localStorage[CRYPTPAD_VERSION] = ver;
     };
 
