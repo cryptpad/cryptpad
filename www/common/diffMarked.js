@@ -143,7 +143,17 @@ define([
     DiffMd.apply = function (newHtml, $content) {
         var id = $content.attr('id');
         if (!id) { throw new Error("The element must have a valid id"); }
-        var $div = $('<div>', {id: id}).append(newHtml);
+        var pattern = /(<media-tag src="([^"]*)" data-crypto-key="([^"]*)">)<\/media-tag>/g;
+        var newHtmlFixed = newHtml.replace(pattern, function (all, tag, src) {
+            var mt = tag;
+            if (mediaMap[src]) {
+                mediaMap[src].forEach(function (n) {
+                    mt += n.outerHTML;
+                });
+            }
+            return mt + '</media-tag>';
+        });
+        var $div = $('<div>', {id: id}).append(newHtmlFixed);
         var Dom = domFromHTML($('<div>').append($div).html());
         var oldDom = domFromHTML($content[0].outerHTML);
         var patch = makeDiff(oldDom, Dom, id);
@@ -157,6 +167,7 @@ define([
                 var observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
                         if (mutation.type === 'childList') {
+                            //console.log(el.outerHTML);
                             var list_values = [].slice.call(el.children);
                             mediaMap[el.getAttribute('src')] = list_values;
                         }

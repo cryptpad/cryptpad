@@ -10,15 +10,22 @@ define([
     '/common/common-userlist.js',
     '/common/common-title.js',
     '/common/common-metadata.js',
+    '/common/common-messaging.js',
     '/common/common-codemirror.js',
     '/common/common-file.js',
     '/file/file-crypto.js',
 
     '/common/clipboard.js',
     '/common/pinpad.js',
-    '/customize/application_config.js'
+    '/customize/application_config.js',
+    '/common/media-tag.js',
 ], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Metadata,
-            CodeMirror, Files, FileCrypto, Clipboard, Pinpad, AppConfig) {
+            Messaging, CodeMirror, Files, FileCrypto, Clipboard, Pinpad, AppConfig, MediaTag) {
+
+    // Configure MediaTags to use our local viewer
+    if (MediaTag && MediaTag.PdfPlugin) {
+        MediaTag.PdfPlugin.viewer = '/common/pdfjs/web/viewer.html';
+    }
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -34,6 +41,7 @@ define([
         donateURL: 'https://accounts.cryptpad.fr/#/donate?on=' + origin,
         upgradeURL: 'https://accounts.cryptpad.fr/#/?on=' + origin,
         account: {},
+        MediaTag: MediaTag,
     };
 
     // constants
@@ -43,7 +51,7 @@ define([
     common.displayNameKey = 'cryptpad.username';
     var newPadNameKey = common.newPadNameKey = "newPadName";
     var newPadPathKey = common.newPadPathKey = "newPadPath";
-    var oldStorageKey = common.oldStorageKey = 'CryptPad_RECENTPADS';
+    common.oldStorageKey = 'CryptPad_RECENTPADS';
     common.storageKey = 'filesData';
     var PINNING_ENABLED = AppConfig.enablePinning;
 
@@ -68,6 +76,8 @@ define([
     common.notify = UI.notify;
     common.unnotify = UI.unnotify;
     common.getIcon = UI.getIcon;
+    common.addTooltips = UI.addTooltips;
+    common.clearTooltips = UI.clearTooltips;
 
     // import common utilities for export
     common.find = Util.find;
@@ -77,7 +87,7 @@ define([
     var deduplicateString = common.deduplicateString = Util.deduplicateString;
     common.uint8ArrayToHex = Util.uint8ArrayToHex;
     common.replaceHash = Util.replaceHash;
-    var getHash = common.getHash = Util.getHash;
+    common.getHash = Util.getHash;
     common.fixFileName = Util.fixFileName;
     common.bytesToMegabytes = Util.bytesToMegabytes;
     common.bytesToKilobytes = Util.bytesToKilobytes;
@@ -106,6 +116,20 @@ define([
     common.findWeaker = Hash.findWeaker;
     common.findStronger = Hash.findStronger;
     common.serializeHash = Hash.serializeHash;
+    common.createInviteUrl = Hash.createInviteUrl;
+
+    // Messaging
+    common.initMessaging = Messaging.init;
+    common.addDirectMessageHandler = Messaging.addDirectMessageHandler;
+    common.inviteFromUserlist = Messaging.inviteFromUserlist;
+    common.createOwnedChannel = Messaging.createOwnedChannel;
+    common.getFriendList = Messaging.getFriendList;
+    common.getFriendChannelsList = Messaging.getFriendChannelsList;
+    common.getFriendListUI = Messaging.getFriendListUI;
+    common.createData = Messaging.createData;
+    common.getPendingInvites = Messaging.getPending;
+    common.enableMessaging = Messaging.setEditable;
+    common.getLatestMessages = Messaging.getLatestMessages;
 
     // Userlist
     common.createUserList = UserList.create;
@@ -147,6 +171,14 @@ define([
         }
         return;
     };
+    common.getUserlist = function () {
+        if (store) {
+            if (store.getProxy() && store.getProxy().info) {
+                return store.getProxy().info.userList;
+            }
+        }
+        return;
+    };
     common.getProfileUrl = function () {
         if (store && store.getProfile()) {
             return store.getProfile().view;
@@ -157,7 +189,16 @@ define([
             return store.getProfile().avatar;
         }
     };
+    common.getDisplayName = function () {
+        if (getProxy()) {
+            return getProxy()[common.displayNameKey] || '';
+        }
+        return '';
+    };
 
+    var randomToken = function () {
+        return Math.random().toString(16).replace(/0./, '');
+    };
     var feedback = common.feedback = function (action, force) {
         if (force !== true) {
             if (!action) { return; }
@@ -166,7 +207,7 @@ define([
             } catch (e) { return void console.error(e); }
         }
 
-        var href = '/common/feedback.html?' + action + '=' + (+new Date());
+        var href = '/common/feedback.html?' + action + '=' + randomToken();
         $.ajax({
             type: "HEAD",
             url: href,
@@ -176,13 +217,20 @@ define([
     common.reportAppUsage = function () {
         var pattern = window.location.pathname.split('/')
             .filter(function (x) { return x; }).join('.');
-        feedback(pattern);
+        if (/^#\/1\/view\//.test(window.location.hash)) {
+            feedback(pattern + '_VIEW');
+        } else {
+            feedback(pattern);
+        }
     };
 
     common.reportScreenDimensions = function () {
         var h = window.innerHeight;
         var w = window.innerWidth;
         feedback('DIMENSIONS:' + h + 'x' + w);
+    };
+    common.reportLanguage = function () {
+        feedback('LANG_' + Messages._languageUsed);
     };
 
     common.getUid = function () {
@@ -198,13 +246,31 @@ define([
         return;
     };
 
+    common.infiniteSpinnerDetected = false;
+    var BAD_STATE_TIMEOUT = typeof(AppConfig.badStateTimeout) === 'number'?
+        AppConfig.badStateTimeout: 30000;
     var whenRealtimeSyncs = common.whenRealtimeSyncs = function (realtime, cb) {
         realtime.sync();
+
         window.setTimeout(function () {
             if (realtime.getAuthDoc() === realtime.getUserDoc()) {
                 return void cb();
             }
+
+            var to = setTimeout(function () {
+                realtime.abort();
+                // don't launch more than one popup
+                if (common.infiniteSpinnerDetected) { return; }
+
+                // inform the user their session is in a bad state
+                common.confirm(Messages.realtime_unrecoverableError, function (yes) {
+                    if (!yes) { return; }
+                    window.location.reload();
+                });
+                common.infiniteSpinnerDetected = true;
+            }, BAD_STATE_TIMEOUT);
             realtime.onSettle(function () {
+                clearTimeout(to);
                 cb();
             });
         }, 0);
@@ -303,6 +369,21 @@ define([
             typeof(proxy.edPublic) === 'string';
     };
 
+    common.hasCurveKeys = function (proxy) {
+        return typeof(proxy) === 'object' &&
+            typeof(proxy.curvePrivate) === 'string' &&
+            typeof(proxy.curvePublic) === 'string';
+    };
+
+    common.getPublicKeys = function (proxy) {
+        proxy = proxy || common.getProxy();
+        if (!proxy || !proxy.edPublic || !proxy.curvePublic) { return; }
+        return {
+            curve: proxy.curvePublic,
+            ed: proxy.edPublic,
+        };
+    };
+
     common.isArray = $.isArray;
 
     /*
@@ -333,7 +414,7 @@ define([
         return parsed.hashData;
     };
     // Migrate from legacy store (localStorage)
-    var migrateRecentPads = common.migrateRecentPads = function (pads) {
+    common.migrateRecentPads = function (pads) {
         return pads.map(function (pad) {
             var parsedHash;
             if (Array.isArray(pad)) { // TODO DEPRECATE_F
@@ -372,24 +453,6 @@ define([
         });
     };
 
-    // Get the pads from localStorage to migrate them to the object store
-    common.getLegacyPads = function (cb) {
-        require(['/customize/store.js'], function(Legacy) { // TODO DEPRECATE_F
-            Legacy.ready(function (err, legacy) {
-                if (err) { cb(err, null); return; }
-                legacy.get(oldStorageKey, function (err2, recentPads) {
-                    if (err2) { cb(err2, null); return; }
-                    if (Array.isArray(recentPads)) {
-                        feedback('MIGRATE_LEGACY_STORE');
-                        cb(void 0, migrateRecentPads(recentPads));
-                        return;
-                    }
-                    cb(void 0, []);
-                });
-            });
-        });
-    };
-
     // Create untitled documents when no name is given
     var getLocaleDate = common.getLocaleDate = function () {
         if (window.Intl && window.Intl.DateTimeFormat) {
@@ -425,9 +488,8 @@ define([
 
     // STORAGE
     common.setPadAttribute = function (attr, value, cb) {
-        getStore().setDrive([getHash(), attr].join('.'), value, function (err, data) {
-            cb(err, data);
-        });
+        var href = getRelativeHref(window.location.href);
+        getStore().setPadAttribute(href, attr, value, cb);
     };
     common.setAttribute = function (attr, value, cb) {
         getStore().set(["cryptpad", attr].join('.'), value, function (err, data) {
@@ -440,9 +502,8 @@ define([
 
     // STORAGE
     common.getPadAttribute = function (attr, cb) {
-        getStore().getDrive([getHash(), attr].join('.'), function (err, data) {
-            cb(err, data);
-        });
+        var href = getRelativeHref(window.location.href);
+        getStore().getPadAttribute(href, attr, cb);
     };
     common.getAttribute = function (attr, cb) {
         getStore().get(["cryptpad", attr].join('.'), function (err, data) {
@@ -712,6 +773,11 @@ define([
             if (avatarChan) { list.push(avatarChan); }
         }
 
+        if (getProxy().friends) {
+            var fList = common.getFriendChannelsList(common);
+            list = list.concat(fList);
+        }
+
         list.push(common.base64ToHex(userChannel));
         list.sort();
 
@@ -868,6 +934,11 @@ define([
         common.getPinnedUsage(todo);
     };
 
+    common.clearOwnedChannel = function (channel, cb) {
+        if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
+        rpc.clearOwnedChannel(channel, cb);
+    };
+
     common.uploadComplete = function (cb) {
         if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
         rpc.uploadComplete(cb);
@@ -1010,10 +1081,11 @@ define([
                     .click(prepareFeedback(type))
                     .click(UI.importContent('text/plain', function (content, file) {
                         callback(content, file);
-                    }));
+                    }, {accept: data ? data.accept : undefined}));
                 }
                 break;
             case 'upload':
+                console.log('UPLOAD');
                 button = $('<button>', {
                     'class': 'btn btn-primary new',
                     title: Messages.uploadButtonTitle,
@@ -1173,6 +1245,13 @@ define([
                     style: 'font:'+size+' FontAwesome'
                 });
                 break;
+            case 'savetodrive':
+                button = $('<button>', {
+                    'class': 'fa fa-cloud-upload',
+                    title: Messages.canvas_saveToDrive,
+                })
+                .click(prepareFeedback(type));
+                break;
             default:
                 button = $('<button>', {
                     'class': "fa fa-question",
@@ -1185,7 +1264,6 @@ define([
         }
         return button;
     };
-
 
     var emoji_patt = /([\uD800-\uDBFF][\uDC00-\uDFFF])/;
     var isEmoji = function (str) {
@@ -1207,6 +1285,7 @@ define([
       var emojis = emojiStringToArray(str);
       return isEmoji(emojis[0])? emojis[0]: str[0];
     };
+
     $(window.document).on('decryption', function (e) {
         var decrypted = e.originalEvent;
         if (decrypted.callback) {
@@ -1278,45 +1357,107 @@ define([
                 var $img = $('<media-tag>').appendTo($container);
                 $img.attr('src', src);
                 $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
-                require(['/common/media-tag.js'], function (MediaTag) {
-                    MediaTag($img[0]);
-                    var observer = new MutationObserver(function(mutations) {
-                        mutations.forEach(function(mutation) {
-                            if (mutation.type === 'childList' && mutation.addedNodes.length) {
-                                console.log(mutation);
-                                if (mutation.addedNodes.length > 1 ||
-                                    mutation.addedNodes[0].nodeName !== 'IMG') {
-                                    $img.remove();
-                                    return void displayDefault();
-                                }
-                                var $image = $img.find('img');
-                                var onLoad = function () {
-                                    var w = $image.width();
-                                    var h = $image.height();
+                var observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.type === 'childList' && mutation.addedNodes.length) {
+                            if (mutation.addedNodes.length > 1 ||
+                                mutation.addedNodes[0].nodeName !== 'IMG') {
+                                $img.remove();
+                                return void displayDefault();
+                            }
+                            var $image = $img.find('img');
+                            var onLoad = function () {
+                                var img = new Image();
+                                img.onload = function () {
+                                    var w = img.width;
+                                    var h = img.height;
                                     if (w>h) {
                                         $image.css('max-height', '100%');
-                                        $img.css('flex-direction', 'row');
+                                        $img.css('flex-direction', 'column');
                                         if (cb) { cb($img); }
                                         return;
                                     }
                                     $image.css('max-width', '100%');
-                                    $img.css('flex-direction', 'column');
+                                    $img.css('flex-direction', 'row');
                                     if (cb) { cb($img); }
                                 };
-                                if ($image[0].complete) { onLoad(); }
-                                $image.on('load', onLoad);
-                            }
-                        });
-                    });
-                    observer.observe($img[0], {
-                        attributes: false,
-                        childList: true,
-                        characterData: false
+                                img.src = $image.attr('src');
+                            };
+                            if ($image[0].complete) { onLoad(); }
+                            $image.on('load', onLoad);
+                        }
                     });
                 });
+                observer.observe($img[0], {
+                    attributes: false,
+                    childList: true,
+                    characterData: false
+                });
+                MediaTag($img[0]);
             });
         }
     };
+
+
+    common.createFileDialog = function (cfg) {
+        var $body = cfg.$body || $('body');
+        var $block = $body.find('#fileDialog');
+        if (!$block.length) {
+            $block = $('<div>', {id: "fileDialog"}).appendTo($body);
+        }
+        $block.html('');
+        $('<span>', {
+            'class': 'close fa fa-times',
+            'title': Messages.filePicker_close
+        }).click(function () {
+            $block.hide();
+        }).appendTo($block);
+        var $description = $('<p>').text(Messages.filePicker_description);
+        $block.append($description);
+        var $filter = $('<p>').appendTo($block);
+        var $container = $('<span>', {'class': 'fileContainer'}).appendTo($block);
+        var updateContainer = function () {
+            $container.html('');
+            var filter = $filter.find('.filter').val().trim();
+            var list = common.getUserFilesList();
+            var fo = common.getFO();
+            list.forEach(function (id) {
+                var data = fo.getFileData(id);
+                var name = fo.getTitle(id);
+                if (filter && name.toLowerCase().indexOf(filter.toLowerCase()) === -1) {
+                    return;
+                }
+                var $span = $('<span>', {'class': 'element'}).appendTo($container);
+                var $inner = $('<span>').text(name);
+                $span.append($inner).click(function () {
+                    if (typeof cfg.onSelect === "function") { cfg.onSelect(data.href); }
+                    $block.hide();
+                });
+            });
+        };
+        var to;
+        $('<input>', {
+            type: 'text',
+            'class': 'filter',
+            'placeholder': Messages.filePicker_filter
+        }).appendTo($filter).on('keypress', function () {
+            if (to) { window.clearTimeout(to); }
+            to = window.setTimeout(updateContainer, 300);
+        });
+        //$filter.append(' '+Messages.or+' ');
+        var data = {FM: cfg.data.FM};
+        $filter.append(common.createButton('upload', false, data, function () {
+            $block.hide();
+        }));
+        updateContainer();
+        $body.keydown(function (e) {
+            if (e.which === 27) { $block.hide(); }
+        });
+        $block.show();
+    };
+
+
+
 
     // Create a button with a dropdown menu
     // input is a config object with parameters:
@@ -1586,8 +1727,7 @@ define([
         //var $userbig = $('<span>', {'class': 'big'}).append($displayedName.clone());
         var $userButton = $('<div>').append($icon);//.append($userbig);
         if (account) {
-
-            $userButton = $('<div>').append(accountName.slice(0,1).toUpperCase());
+            $userButton = $('<div>').append(accountName);
         }
         /*if (account && config.displayNameCls) {
             $userbig.append($('<span>', {'class': 'account-name'}).text('(' + accountName + ')'));
@@ -1603,6 +1743,23 @@ define([
             feedback: "USER_ADMIN",
         };
         var $userAdmin = createDropdown(dropdownConfigUser);
+
+        if (account && !config.static && store) {
+            var $avatar = $userAdmin.find('.buttonTitle');
+            var updateButton = function (newName) {
+                var profile = store.getProfile();
+                var url = profile && profile.avatar;
+
+                $avatar.html('');
+                common.displayAvatar($avatar, url, newName, function ($img) {
+                    if ($img) {
+                        $userAdmin.find('button').addClass('avatar');
+                    }
+                });
+            };
+            common.onDisplayNameChanged(updateButton);
+            updateButton(common.getDisplayName());
+        }
 
         $userAdmin.find('a.logout').click(function () {
             common.logout();
@@ -1678,6 +1835,7 @@ define([
                 initialized = true;
 
                 updateLocalVersion();
+                common.addTooltips();
                 f(void 0, env);
                 if (typeof(window.onhashchange) === 'function') { window.onhashchange(); }
             }
@@ -1695,8 +1853,14 @@ define([
         Store.ready(function (err, storeObj) {
             store = common.store = env.store = storeObj;
 
+            common.addDirectMessageHandler(common);
+
             var proxy = getProxy();
             var network = getNetwork();
+
+            if (Object.keys(proxy).length === 1) {
+                feedback("FIRST_APP_USE", true);
+            }
 
             if (typeof(window.Proxy) === 'undefined') {
                 feedback("NO_PROXIES");
@@ -1707,6 +1871,7 @@ define([
             }
 
             common.reportScreenDimensions();
+            common.reportLanguage();
 
             $(function() {
                 // Race condition : if document.body is undefined when alertify.js is loaded, Alertify

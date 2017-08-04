@@ -161,7 +161,7 @@ define([
     //var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
     var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
     var $templateIcon = $('<span>', {"class": "fa fa-cubes"});
-    var $trashIcon = $('<span>', {"class": "fa fa-trash"});
+    var $trashIcon = $('<span>', {"class": "fa fa-trash-o"});
     var $trashEmptyIcon = $('<span>', {"class": "fa fa-trash-o"});
     //var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o expcol"});
     var $expandIcon = $('<span>', {"class": "fa fa-plus-square-o expcol"});
@@ -171,6 +171,7 @@ define([
     var $sortDescIcon = $('<span>', {"class": "fa fa-angle-down sortdesc"});
     var $closeIcon = $('<span>', {"class": "fa fa-window-close"});
     var $backupIcon = $('<span>', {"class": "fa fa-life-ring"});
+    var $searchIcon = $('<span>', {"class": "fa fa-search searchIcon"});
 
     var history = {
         isHistoryMode: false,
@@ -528,6 +529,12 @@ define([
             module.displayDirectory(currentPath);
         };
 
+        var getFileNameExtension = function (name) {
+            var matched = /\.\S+$/.exec(name);
+            if (matched && matched.length) { return matched[matched.length -1]; }
+            return '';
+        };
+
         // Replace a file/folder name by an input to change its value
         var displayRenameInput = function ($element, path) {
             // NOTE: setTimeout(f, 0) otherwise the "rename" button in the toolbar is not working
@@ -551,6 +558,7 @@ define([
                     value: name
                 }).data('path', path);
 
+
                 // Stop propagation on keydown to avoid issues with arrow keys
                 $input.on('keydown', function (e) { e.stopPropagation(); });
 
@@ -567,7 +575,12 @@ define([
                 //$element.parent().append($input);
                 $name.after($input);
                 $input.focus();
-                $input.select();
+
+                var extension = getFileNameExtension(name);
+                var input = $input[0];
+                input.selectionStart = 0;
+                input.selectionEnd = name.length - extension.length;
+
                 // We don't want to open the file/folder when clicking on the input
                 $input.on('click dblclick', function (e) {
                     removeSelected();
@@ -1103,18 +1116,18 @@ define([
             var name = filesOp.getTitle(element);
 
             // The element with the class '.name' is underlined when the 'li' is hovered
-            var $name = $('<span>', {'class': 'name', title: name}).text(name);
+            var $name = $('<span>', {'class': 'name'}).text(name);
             $span.html('');
             $span.append($name);
 
             var hrefData = Cryptpad.parsePadUrl(data.href);
             var type = Messages.type[hrefData.type] || hrefData.type;
-            var $type = $('<span>', {'class': 'type listElement', title: type}).text(type);
+            var $type = $('<span>', {'class': 'type listElement'}).text(type);
             if (hrefData.hashData && hrefData.hashData.mode === 'view') {
                 $type.append(' (' + Messages.readonly+ ')');
             }
-            var $adate = $('<span>', {'class': 'atime listElement', title: getDate(data.atime)}).text(getDate(data.atime));
-            var $cdate = $('<span>', {'class': 'ctime listElement', title: getDate(data.ctime)}).text(getDate(data.ctime));
+            var $adate = $('<span>', {'class': 'atime listElement'}).text(getDate(data.atime));
+            var $cdate = $('<span>', {'class': 'ctime listElement'}).text(getDate(data.ctime));
             $span.append($type);
             if (!isWorkgroup()) {
                 $span.append($adate).append($cdate);
@@ -1127,9 +1140,9 @@ define([
             // The element with the class '.name' is underlined when the 'li' is hovered
             var sf = filesOp.hasSubfolder(element);
             var files = filesOp.hasFile(element);
-            var $name = $('<span>', {'class': 'name', title: key}).text(key);
-            var $subfolders = $('<span>', {'class': 'folders listElement', title: sf}).text(sf);
-            var $files = $('<span>', {'class': 'files listElement', title: files}).text(files);
+            var $name = $('<span>', {'class': 'name'}).text(key);
+            var $subfolders = $('<span>', {'class': 'folders listElement'}).text(sf);
+            var $files = $('<span>', {'class': 'files listElement'}).text(files);
             $span.append($name).append($subfolders).append($files);
         };
 
@@ -1250,12 +1263,11 @@ define([
         };
 
         // Create the title block with the "parent folder" button
-        var createTitle = function (path, noStyle) {
+        var createTitle = function ($container, path, noStyle) {
             if (!path || path.length === 0) { return; }
             var isTrash = filesOp.isPathIn(path, [TRASH]);
-            var $title = $driveToolbar.find('.path');
-            if (APP.mobile()) {
-                return $title;
+            if (APP.mobile() && !noStyle) { // noStyle means title in search result
+                return $container;
             }
             var el = path[0] === SEARCH ? undefined : filesOp.find(path);
             path = path[0] === SEARCH ? path.slice(0,1) : path;
@@ -1281,12 +1293,11 @@ define([
                 if (idx === 0) { name = getPrettyName(p); }
                 else {
                     var $span2 = $('<span>', {'class': 'element separator'}).text(' / ');
-                    $title.prepend($span2);
+                    $container.prepend($span2);
                 }
 
-                $span.text(name).prependTo($title);
+                $span.text(name).prependTo($container);
             });
-            return $title;
         };
 
         var createInfoBox = function (path) {
@@ -1387,6 +1398,7 @@ define([
             }
             AppConfig.availablePadTypes.forEach(function (type) {
                 if (type === 'drive') { return; }
+                if (type === 'contacts') { return; }
                 if (!Cryptpad.isLoggedIn() && AppConfig.registeredOnlyTypes &&
                     AppConfig.registeredOnlyTypes.indexOf(type) !== -1) {
                     return;
@@ -1639,8 +1651,10 @@ define([
         // and they don't hav a hierarchical structure (folder/subfolders)
         var displayHrefArray = function ($container, rootName, draggable) {
             var unsorted = files[rootName];
-            var $fileHeader = getFileListHeader(false);
-            $container.append($fileHeader);
+            if (unsorted.length) {
+                var $fileHeader = getFileListHeader(false);
+                $container.append($fileHeader);
+            }
             var keys = unsorted;
             var sortBy = Cryptpad.getLSAttribute(SORT_FILE_BY);
             sortBy = sortBy === "" ? sortBy = 'name' : sortBy;
@@ -1764,7 +1778,8 @@ define([
                         path.pop();
                         path.push(r.data.title);
                     }
-                    var $path = $('<td>', {'class': 'col1 path'}).html(createTitle(path, true).html());
+                    var $path = $('<td>', {'class': 'col1 path'});
+                    createTitle($path, path, true);
                     var parentPath = path.slice();
                     var $a;
                     if (parentPath) {
@@ -1859,7 +1874,7 @@ define([
             // NewButton can be undefined if we're in read only mode
             createNewButton(isInRoot, $toolbar.find('.leftside'));
 
-            createTitle(path).appendTo($toolbar.find('.path'));
+            createTitle($toolbar.find('.path'), path);
 
             if (APP.mobile()) {
                 var $context = $('<button>', {'class': 'element right dropdown-bar', id: 'contextButton'});
@@ -1999,7 +2014,9 @@ define([
             }
             $elementRow.data('path', path);
             addDragAndDropHandlers($elementRow, path, true, droppable);
-            if (active) { $elementRow.addClass('active'); }
+            if (active) {
+                $elementRow.addClass('active');
+            }
             return $element;
         };
 
@@ -2019,7 +2036,7 @@ define([
                 var $rootElement = createTreeElement(ROOT_NAME, $rootIcon.clone(), [ROOT], false, true, false, isRootOpened);
                 $rootElement.addClass('root');
                 $rootElement.find('>.element-row').contextmenu(openDirectoryContextMenu);
-                $('<ul>').append($rootElement).appendTo($container);
+                $('<ul>', {'class': 'docTree'}).append($rootElement).appendTo($container);
                 $container = $rootElement;
             } else if (filesOp.isFolderEmpty(root)) { return; }
 
@@ -2049,7 +2066,7 @@ define([
             var isOpened = filesOp.comparePath(path, currentPath);
             var $element = createTreeElement(TEMPLATE_NAME, $icon, [TEMPLATE], false, true, false, isOpened);
             $element.addClass('root');
-            var $list = $('<ul>', { id: 'templateTree', 'class': 'category2' }).append($element);
+            var $list = $('<ul>', { id: 'templateTree', 'class': 'category' }).append($element);
             $container.append($list);
         };
 
@@ -2058,7 +2075,7 @@ define([
             var isOpened = filesOp.comparePath(path, currentPath);
             var $allfilesElement = createTreeElement(FILES_DATA_NAME, $icon, [FILES_DATA], false, false, false, isOpened);
             $allfilesElement.addClass('root');
-            var $allfilesList = $('<ul>', { id: 'allfilesTree', 'class': 'category2' }).append($allfilesElement);
+            var $allfilesList = $('<ul>', { id: 'allfilesTree', 'class': 'category' }).append($allfilesElement);
             $container.append($allfilesList);
         };
 
@@ -2068,7 +2085,7 @@ define([
             var $trashElement = createTreeElement(TRASH_NAME, $icon, [TRASH], false, true, false, isOpened);
             $trashElement.addClass('root');
             $trashElement.find('>.element-row').contextmenu(openTrashTreeContextMenu);
-            var $trashList = $('<ul>', { id: 'trashTree', 'class': 'category2' }).append($trashElement);
+            var $trashList = $('<ul>', { id: 'trashTree', 'class': 'category' }).append($trashElement);
             $container.append($trashList);
         };
 
@@ -2114,6 +2131,7 @@ define([
                     if (!filesOp.comparePath(newLocation, currentPath.slice())) { displayDirectory(newLocation); }
                 }, 500);
             }).appendTo($div);
+            $searchIcon.clone().appendTo($div);
             if (isInSearch) { $input.val(currentPath[1] || ''); }
             $container.append($div);
         };
@@ -2706,7 +2724,7 @@ define([
 
             var userList = APP.userList = info.userList;
             var config = {
-                displayed: ['useradmin', 'spinner', 'lag', 'state', 'limit', 'newpad'],
+                displayed: ['useradmin', 'limit', 'newpad', 'pageTitle'],
                 userList: {
                     list: userList,
                     userNetfluxId: info.myID
@@ -2716,7 +2734,8 @@ define([
                 ifrw: window,
                 realtime: info.realtime,
                 network: info.network,
-                $container: APP.$bar
+                $container: APP.$bar,
+                pageTitle: Messages.type.drive
             };
             var toolbar = APP.toolbar = Toolbar.create(config);
 

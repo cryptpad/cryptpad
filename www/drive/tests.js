@@ -242,6 +242,18 @@ define([
             fo.migrate(todo);
         }, "DRIVE4: migration and fixFiles with a pad in trash not root");
 
+        // Pad attributes migration
+        assert(function (cb) {
+            console.log('START PAD ATTRIBUTES');
+            var files = JSON.parse(JSON.stringify(example));
+            files[href1.slice(6) + '.userid'] = 'value';
+            files[href1.slice(6) + '.previewMode'] = true;
+            var fo = FO.init(files, config);
+            fo.fixFiles();
+            return cb(files.filesData[id1].userid === 'value'
+                        && files.filesData[id1].previewMode);
+        }, "PAD ATTRIBUTES");
+
         // userObject Tests
 
         // UTILS

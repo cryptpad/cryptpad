@@ -60,6 +60,9 @@ define([
             cb(void 0, res);
         };
 
+        ret.setPadAttribute = filesOp.setAttribute;
+        ret.getPadAttribute = filesOp.getAttribute;
+
         ret.getDrive = function (key, cb) {
             cb(void 0, storeObj.drive[key]);
         };
@@ -203,7 +206,8 @@ define([
             }
 
             // if the user is logged in, but does not have signing keys...
-            if (Cryptpad.isLoggedIn() && !Cryptpad.hasSigningKeys(proxy)) {
+            if (Cryptpad.isLoggedIn() && (!Cryptpad.hasSigningKeys(proxy) ||
+                !Cryptpad.hasCurveKeys(proxy))) {
                 return void requestLogin();
             }
 
@@ -215,8 +219,11 @@ define([
                 // Trigger userlist update when the avatar has changed
                 Cryptpad.changeDisplayName(proxy[Cryptpad.displayNameKey]);
             });
+            proxy.on('change', ['friends'], function () {
+                // Trigger userlist update when the avatar has changed
+                Cryptpad.changeDisplayName(proxy[Cryptpad.displayNameKey]);
+            });
             proxy.on('change', [tokenKey], function () {
-                console.log('wut');
                 var localToken = tryParsing(localStorage.getItem(tokenKey));
                 if (localToken !== proxy[tokenKey]) {
                     return void requestLogin();
@@ -287,10 +294,8 @@ define([
             // Creating a new anon drive: import anon pads from localStorage
             if ((!drive[Cryptpad.oldStorageKey] || !Cryptpad.isArray(drive[Cryptpad.oldStorageKey]))
                 && !drive['filesData']) {
-                Cryptpad.getLegacyPads(function (err, data) {
-                    drive[Cryptpad.oldStorageKey] = data;
-                    onReady(f, rt.proxy, Cryptpad, exp);
-                });
+                drive[Cryptpad.oldStorageKey] = [];
+                onReady(f, rt.proxy, Cryptpad, exp);
                 return;
             }
             // Drive already exist: return the existing drive, don't load data from legacy store

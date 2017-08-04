@@ -1,3 +1,5 @@
+@import "/customize/src/less/variables.less";
+
 .fontface(@family, @src, @style: normal, @weight: 400, @fmt: 'truetype'){
     @font-face {
         font-family: @family;
@@ -37,3 +39,174 @@
     background: linear-gradient(@start, @end); /* Standard syntax */
 }
 
+.placeholderColor (@color) {
+    &::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+        color: @color;;
+    }
+    &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+        color: @color;
+        opacity: 1;
+    }
+    &::-moz-placeholder { /* Mozilla Firefox 19+ */
+        color: @color;
+        opacity: 1;
+    }
+    &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+        color: @color;
+    }
+    &::-ms-input-placeholder { /* Microsoft Edge */
+        color: @color;
+    }
+}
+
+.avatar (@width) {
+    &.avatar {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    &.clickable {
+        cursor: pointer;
+        &:hover {
+            background-color: rgba(0,0,0,0.3);
+        }
+    }
+    .default, media-tag {
+        display: inline-flex;
+        width: @width;
+        height: @width;
+        justify-content: center;
+        align-items: center;
+        border-radius: 4px;
+        overflow: hidden;
+        box-sizing: content-box;
+    }
+    .default {
+        .unselectable();
+        background: white;
+        color: black;
+        font-size: @width/1.2;
+    }
+    .right-col {
+        order: 10;
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: flex;
+        flex-flow: column;
+        .name {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .friend {
+            padding: 0;
+        }
+    }
+    media-tag {
+        min-height: @width;
+        min-width: @width;
+        max-height: @width;
+        max-width: @width;
+        img {
+            min-width: 100%;
+            min-height: 100%;
+            max-width: none;
+            max-height: none; // To override 'media-tag img' in slide.less
+        }
+    }
+    }
+}
+
+.leftsideCategory {
+    .unselectable();
+    padding: 5px 20px;
+    margin: 15px 0;
+    cursor: pointer;
+    height: @toolbar-line-height;
+    line-height: @toolbar-line-height - 10px;
+    .fa {
+        width: 25px;
+    }
+    &:hover {
+        background: rgba(0,0,0,0.05);
+    }
+    &.active {
+        background: white;
+    }
+}
+
+.fileIcon {
+    li {
+        display: inline-block;
+        margin: 10px 10px;
+        width: 140px;
+        height: 140px;
+        text-align: center;
+        vertical-align: top;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-top: 5px;
+        padding-bottom: 5px;
+
+        &:not(.selected):not(.selectedTmp) {
+            border: 1px solid #CCC;
+        }
+        .name {
+            width: 100%;
+            height: 48px;
+            margin: 8px 0;
+            display: inline-block;
+            //align-items: center;
+            //justify-content: center;
+            overflow: hidden;
+            //text-overflow: ellipsis;
+            word-wrap: break-word;
+        }
+        .truncated {
+            display: block;
+            position: absolute;
+            bottom: 0px;
+            left: 0; right: 0;
+            text-align: center;
+        }
+        img.icon {
+            height: 48px;
+            max-height: none;
+            max-width: none;
+            margin: 8px 0;
+        }
+        .fa {
+            display: block;
+            margin: auto;
+            font-size: 48px;
+            margin: 8px 0;
+            text-align: center;
+            &.listonly {
+                display: none;
+            }
+        }
+    }
+}
+
+.sidebarButton {
+    button.btn {
+        background-color: @button-bg;
+        border-color: darken(@button-bg, 10%);
+        color: white;
+        &:hover {
+            background-color: darken(@button-bg, 10%);
+        }
+        &.btn-danger {
+            background-color: @button-red-bg;
+            border-color: darken(@button-red-bg, 10%);
+            color: white;
+            &:hover {
+                background-color: darken(@button-red-bg, 10%);
+            }
+        }
+    }
+}

@@ -1,4 +1,4 @@
-define(function () {
+define(['jquery'], function ($) {
     var module = {};
 
     module.create = function (cfg, onLocal, Cryptpad) {
@@ -45,7 +45,8 @@ define(function () {
         };
 
         // update title: href is optional; if not specified, we use window.location.href
-        exp.updateTitle = function (newTitle, href) {
+        exp.updateTitle = function (newTitle, href, cb) {
+            cb = cb || $.noop;
             if (newTitle === exp.title) { return; }
             // Change the title now, and set it back to the old value if there is an error
             var oldTitle = exp.title;
@@ -54,9 +55,10 @@ define(function () {
                     console.log("Couldn't set pad title");
                     console.error(err);
                     updateLocalTitle(oldTitle);
-                    return;
+                    return void cb(err);
                 }
                 updateLocalTitle(data);
+                cb(null, data);
                 if (!$title) { return; }
                 $title.find('span.title').text(data);
                 $title.find('input').val(data);

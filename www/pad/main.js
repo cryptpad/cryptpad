@@ -107,6 +107,11 @@ define([
         editor.on('instanceReady', function () {
             var $bar = $('#pad-iframe')[0].contentWindow.$('#cke_1_toolbox');
 
+            var $html = $bar.closest('html');
+            var $faLink = $html.find('head link[href*="/bower_components/components-font-awesome/css/font-awesome.min.css"]');
+            if ($faLink.length) {
+                $html.find('iframe').contents().find('head').append($faLink.clone());
+            }
             var isHistoryMode = false;
 
             if (readOnly) {
@@ -294,6 +299,13 @@ define([
 
             var DD = new DiffDom(diffOptions);
 
+            var openLink = function (e) {
+                var el = e.currentTarget;
+                if (!el || el.nodeName !== 'A') { return; }
+                var href = el.getAttribute('href');
+                if (href) { window.open(href, '_blank'); }
+            };
+
             // apply patches, and try not to lose the cursor in the process!
             var applyHjson = function (shjson) {
                 var userDocStateDom = hjsonToDom(JSON.parse(shjson));
@@ -303,6 +315,11 @@ define([
                 }
                 var patch = (DD).diff(inner, userDocStateDom);
                 (DD).apply(inner, patch);
+                if (readOnly) {
+                    var $links = $(inner).find('a');
+                    // off so that we don't end up with multiple identical handlers
+                    $links.off('click', openLink).on('click', openLink);
+                }
             };
 
             var stringifyDOM = module.stringifyDOM = function (dom) {
@@ -551,7 +568,9 @@ define([
 
                 if (!readOnly) {
                     /* add an import button */
-                    var $import = Cryptpad.createButton('import', true, {}, importFile);
+                    var $import = Cryptpad.createButton('import', true, {
+                        accept: 'text/html'
+                    }, importFile);
                     $drawer.append($import);
                 }
 

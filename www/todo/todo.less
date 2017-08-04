@@ -1,0 +1,121 @@
+@import "/customize/src/less/variables.less";
+@import "/customize/src/less/mixins.less";
+
+@button-border: 2px;
+
+html, body {
+    margin: 0px;
+    height: 100%;
+}
+
+#toolbar {
+    display: flex; // We need this to remove a 3px border at the bottom of the toolbar
+}
+
+body {
+    display: flex;
+    flex-flow: column;
+}
+#app {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.cryptpad-toolbar {
+    padding: 0px;
+    display: inline-block;
+}
+#container {
+    display: flex;
+    flex: 1;
+    flex-flow: column;
+    padding: 20px;
+    align-items: center;
+    background-color: lighten(@toolbar-todo-bg, 15%);
+    min-height: 0;
+}
+
+@spacing: 15px;
+
+#tasksList {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    min-width: 40%;
+    max-width: 90%;
+}
+
+.cp-create-form {
+    margin: @spacing;
+    min-width: 40%;
+    display: flex;
+
+    #newTodoName {
+        flex: 1;
+        margin-right: 15px;
+        border-radius: 0;
+        border: 0;
+        background-color: darken(@toolbar-todo-bg, 10%);
+        color: #fff;
+        padding: 5px 10px;
+        font-weight: bold;
+    }
+
+    button {
+        cursor: pointer;
+        border-radius: 0;
+        background-color: darken(@toolbar-todo-bg, 20%);
+        border:0;
+        &:hover {
+            background-color: darken(@toolbar-todo-bg, 25%);
+        }
+    }
+}
+
+.cp-task {
+    border: 1px solid black;
+    padding: @spacing;
+    display: flex;
+    align-items: center;
+    background-color: white;
+
+    &.cp-task-complete {
+        background-color: #f0f0f0;
+        color: #777;
+    }
+
+    .cp-task-text {
+        margin: @spacing;
+        flex: 1;
+        word-wrap: break-word;
+        min-width: 0;
+        font-weight: bold;
+    }
+    .cp-task-date {
+        margin: @spacing;
+    }
+    .cp-task-remove {
+        margin: @spacing;
+        cursor: pointer;
+    }
+    .cp-task-checkbox {
+        font-size: 45px;
+        width: 45px;
+        cursor: pointer;
+        &:hover {
+            color: #999;
+        }
+    }
+    .cp-task-checkbox-checked {
+
+    }
+    .cp-task-checkbox-unchecked {
+
+    }
+
+    button {
+        border-radius: 0;
+        border:0;
+    }
+}

@@ -54,7 +54,7 @@ define([
         };
         loginReady();
 
-        var $uname = $('#name');
+        var $uname = $('#name').focus();
 
         var $passwd = $('#password')
         // background loading of login assets
@@ -90,6 +90,9 @@ define([
 
                                 proxy.edPrivate = result.edPrivate;
                                 proxy.edPublic = result.edPublic;
+
+                                proxy.curvePrivate = result.curvePrivate;
+                                proxy.curvePublic = result.curvePublic;
 
                                 Cryptpad.feedback('LOGIN', true);
                                 Cryptpad.whenRealtimeSyncs(result.realtime, function() {

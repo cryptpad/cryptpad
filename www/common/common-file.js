@@ -254,6 +254,7 @@ define([
         var createAreaHandlers = File.createDropArea = function ($area, $hoverArea) {
             var counter = 0;
             if (!$hoverArea) { $hoverArea = $area; }
+            if (!$area) { return; }
             $hoverArea
             .on('dragenter', function (e) {
                 e.preventDefault();

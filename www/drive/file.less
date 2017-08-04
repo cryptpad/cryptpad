@@ -1,13 +1,14 @@
 @import "/customize/src/less/variables.less";
+@import "/customize/src/less/mixins.less";
 
-@tree-bg: #fff;
+@tree-bg: #eee;
 @tree-fg: #000;
 @tree-lines-col: #888;
 
 @drive-hover: #eee;
 @drive-hover-light: lighten(@drive-hover, 20%);
 
-@content-bg: @tree-bg;
+@content-bg: #fff;
 @content-bg-ro: darken(@content-bg, 10%);
 @content-fg: @tree-fg;
 @info-box-bg: #ddddff;
@@ -36,7 +37,7 @@ html, body {
     padding: 0;
     margin: 0;
     position: relative;
-    font-size: 16px;
+    font-size: @main-font-size;
     overflow: auto;
 }
 
@@ -66,12 +67,18 @@ img.icon {
     flex-flow: row;
     @media screen and (max-width: @size-mobile) {
         display: block;
+        #driveToolbar {
+            .path .element {
+                display: none;
+            }
+        }
         #tree {
             resize: none;
             width: 100%;
             max-width: unset;
+            max-height: unset;
             border-bottom: 1px solid @toolbar-border-col;
-            .category2 {
+            .category {
                 margin-top: 0.5em;
             }
         }
@@ -92,8 +99,6 @@ div:focus {
 }
 
 .fa {
-    /*min-width: 17px;*/
-    margin-right: 3px;
     font-family: FontAwesome;
 }
 
@@ -110,17 +115,13 @@ li {
     user-select: none;
 }
 
-.folder, .file {
-    margin-right: 5px;
-}
-
 .contextMenu {
     display: none;
     position: absolute;
     z-index: 500;
     li {
         padding: 0;
-        font-size: 16px;
+        font-size: @main-font-size;
         a {
             cursor: pointer;
         }
@@ -163,7 +164,8 @@ span {
 
 
 #tree {
-    border-right: 1px solid #ccc;
+    font-size: @main-font-size;
+    //border-right: 1px solid #ccc;
     box-sizing: border-box;
     background: @tree-bg;
     overflow: auto;
@@ -186,61 +188,102 @@ span {
         margin-bottom: 3px;
         margin-left: -2px;
     }
-    li {
-        padding: 0 0 0 5px;
+    .docTree {
+        margin-top: 20px;
+        padding: 0 0 0 20px;
         cursor: auto;
-        &.collapsed ul {
-            display: none;
-        }
-        input {
-            width: ~"calc(100% - 30px)";
-        }
-        & > span.element-row {
-            min-width: ~"calc(100% + 5px)";
-            display: inline-block;
-            cursor: pointer;
-            margin-left: -5px;
-            padding-left: 5px;
-        }
-        & > span.element-row:not(.selected):not(.active):hover {
-            background-color: @drive-hover;
+        &li, li {
+            padding: 0;
+            &.collapsed ul {
+                display: none;
+            }
+            input {
+                width: ~"calc(100% - 30px)";
+            }
+            & > span.element-row {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                //min-width: ~"calc(100% + 5px)";
+                .leftsideCategory();
+                width: ~"calc(100% + 5px)";
+                margin: 0;
+                margin-bottom: -6px;
+                display: inline-block;
+                cursor: pointer;
+                margin-left: -5px;
+                padding-left: 5px;
+            }
+            & > span.element-row:not(.selected):not(.active):hover {
+                //background-color: @drive-hover;
+            }
         }
     }
     span.element {
         cursor: pointer;
     }
-    .active {
+    /*.active {
         &:not(.selected):not(.droppable) {
             background-color: darken(@drive-hover, 15%);
         }
-    }
-    .category2 {
-        margin-top: 2em;
+    }*/
+    .category {
+        margin: 0;
+        margin-top: 15px;
         .root {
             &> .fa {
                 min-width: 30px;
                 cursor: pointer;
             }
         }
+        li {
+            padding: 0;
+            .element-row {
+                display: block;
+                padding-left: 20px;
+                .leftsideCategory();
+                margin: 0;
+                .fa {
+                    width: 25px;
+                }
+            }
+        }
+    }
+    .category:last-child {
+        margin-bottom: 20px;
     }
     #allfilesTree {
         margin-top: 0;
     }
+    .limit-container {
+        margin-top: 0;
+    }
     #searchContainer {
-        margin-bottom: 20px;
         text-align: center;
         padding: 0;
+        position: relative;
         input {
+            background: lighten(@toolbar-drive-bg, 8%);
+            color: @toolbar-drive-color;
+            .placeholderColor(@toolbar-drive-color);
             outline-width: 0px;
             border-radius: 0;
             width: 100%;
-            border: 1px solid #ccc;
-            border-right: 0;
-            height: 32px;
+            //border: 1px solid #ccc;
+            border: 0;
+            border-right: 1px solid lighten(@toolbar-drive-bg, 16%);
+            //border-right: 0;
+            height: @toolbar-line-height;
             padding: 0 5px;
+            padding-left: 45px;
             &:focus {
                 outline-width: 0px;
             }
+        }
+        .searchIcon {
+            color: @toolbar-drive-color;
+            position: absolute;
+            left: 20px; // TODO align with drive categories
+            top: 8px;
         }
     }
     .fa.expcol {
@@ -248,9 +291,9 @@ span {
         font-size: 14px;
         position: absolute;
         left: -20px;
-        top: 9px;
-        width: auto;
-        height: 11px;
+        top: 10px;
+        width: 11px !important;
+        height: 11px !important;
         padding: 0;
         margin: 0;
         background: white;
@@ -263,7 +306,7 @@ span {
     }
 
     // Expand/collapse lines
-    ul {
+    .docTree ul {
         margin: 0px 0px 0px 10px;
         list-style: none;
         padding-left: 10px;
@@ -272,13 +315,13 @@ span {
             &:before {
                 position: absolute;
                 left: -15px;
-                top: -0.25em;
+                top: -11px;
                 content: '';
                 display: block;
                 border-left: 1px solid @tree-lines-col;
-                height: 1em;
+                height: ~"calc(1em + 11px)";
                 border-bottom: 1px solid @tree-lines-col;
-                width: 17.5px;
+                width: 15px;
             }
             &:after {
                 position: absolute;
@@ -303,27 +346,6 @@ span {
             }
         }
     }
-    .limit-container {
-        display: inline-flex;
-        flex-flow: column-reverse;
-        width: 100%;
-        margin-top: 20px;
-        .upgrade {
-            padding: 0;
-            line-height: 25px;
-            height: 25px;
-            margin: 0 3px;
-            border-radius: 0;
-        }
-        .cryptpad-limit-bar {
-            width: ~"calc(100% - 6px)";
-            height: 25px;
-            line-height: 25px;
-            .usage {
-                height: 100%;
-            }
-        }
-    }
 }
 
 /* CONTENT */
@@ -333,7 +355,8 @@ span {
     flex: 1;
     // Needed to avoid the folder's path to overflows
     // https://stackoverflow.com/questions/38223879/white-space-nowrap-breaks-flexbox-layout
-    min-width: 0;}
+    min-width: 0;
+}
 #content {
     box-sizing: border-box;
     background: @content-bg;
@@ -416,6 +439,11 @@ span {
                     }
                     .path {
                         font-style: italic;
+                        direction: rtl;
+                        .element {
+                            display: inline-block;
+                            margin-right: 5px;
+                        }
                     }
                     .title {
                         font-weight: bold;
@@ -440,61 +468,14 @@ span {
     }
     div.grid {
         padding: 20px;
+        .fileIcon;
         li {
-            display: inline-block;
-            margin: 10px 10px;
-            width: 140px;
-            height: 140px;
-            text-align: center;
-            vertical-align: top;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            padding-top: 5px;
-            padding-bottom: 5px;
-
-            &:not(.selected):not(.selectedTmp) {
-                border: 1px solid #CCC;
-            }
-            .name {
-                width: 100%;
-                height: 48px;
-                margin: 8px 0;
-                display: inline-block;
-                //align-items: center;
-                //justify-content: center;
-                overflow: hidden;
-                //text-overflow: ellipsis;
-                word-wrap: break-word;
-            }
             &.element {
                 position: relative;
-            }
-            .truncated {
-                display: block;
-                position: absolute;
-                bottom: 0px;
-                left: 0; right: 0;
-                text-align: center;
             }
             input {
                 width: 100%;
                 margin-top: 5px;
-            }
-            img.icon {
-                height: 48px;
-                max-height: none;
-                max-width: none;
-                margin: 8px 0;
-            }
-            .fa {
-                display: block;
-                margin: auto;
-                font-size: 48px;
-                margin: 8px 0;
-                text-align: center;
-                &.listonly {
-                    display: none;
-                }
             }
         }
         .listElement {
@@ -516,8 +497,10 @@ span {
                 padding: 0 5px;
                 display: table-cell;
             }
-        }
-        li {
+            &:not(.header) {
+                height: @toolbar-line-height;
+                line-height: @toolbar-line-height;
+            }
             &.header {
                 cursor: default;
                 color: @table-header-fg;
@@ -592,7 +575,7 @@ span {
     //flex-flow: row;
     z-index: 100;
     box-sizing: border-box;
-    height: 32px;
+    height: @toolbar-line-height;
     padding: 0;
     display: flex;
     flex-flow: row;
@@ -621,20 +604,20 @@ span {
             margin: 0;
         }
         button {
-            height: 32px;
+            height: @toolbar-line-height;
             padding: 0 10px;
             border: none;
             border-radius: 0;
             box-sizing: border-box;
             background: transparent;
-            font-size: 17px;
+            font-size: @main-font-size;
             color: @toolbar-drive-color;
             transition: all 0.15s;
             .drawer {
                 display: none;
             }
             .fa, span {
-                font-size: 17px;
+                font-size: @main-font-size;
             }
             &:hover {
                 background: @toolbar-drive-bg;
@@ -667,7 +650,7 @@ span {
             }
             .buttonTitle {
                 display: inline-flex;
-                height: 32px;
+                height: @toolbar-line-height;
                 align-items: center;
                 span:not(.fa) {
                     line-height: 23px;
@@ -699,8 +682,8 @@ span {
     .path {
         flex: 1;
         width: 100%;
-        height: 32px;
-        line-height: 32px;
+        height: @toolbar-line-height;
+        line-height: @toolbar-line-height;
         cursor: default;
         width: auto;
         overflow: hidden;
@@ -710,9 +693,9 @@ span {
         text-align: left;
         .element {
             display: inline-block;
-            height: 32px;
-            line-height: 32px;
-            font-size: 17px;
+            height: @toolbar-line-height;
+            line-height: @toolbar-line-height;
+            font-size: @main-font-size;
             padding: 0 5px;
             border: 0;
             background: darken(@toolbar-drive-bg, 10%);

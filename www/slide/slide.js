@@ -9,7 +9,6 @@ define([
         content: [],
         changeHandlers: [],
     };
-    var APP;
     var ifrw;
     var $modal;
     var $content;
@@ -19,6 +18,7 @@ define([
     var separator = '<hr data-pewpew="pezpez">';
     var separatorReg = /<hr data\-pewpew="pezpez">/g;
     var slideClass = 'slide-frame';
+    var Title;
 
     Slide.onChange = function (f) {
         if (typeof(f) === 'function') {
@@ -66,9 +66,16 @@ define([
 
     var goTo = Slide.goTo = function (i) {
         i = i || 0;
+        Slide.index = i;
         $content.find('.slide-container').first().css('margin-left', -(i*100)+'%');
         updateFontSize();
         change(Slide.lastIndex, Slide.index);
+        $modal.find('#button_left > span').css({
+            opacity: Slide.index === 0? 0: 1
+        });
+        $modal.find('#button_right > span').css({
+            opacity: Slide.index === (getNumberOfSlides() -1)? 0: 1
+        });
     };
     var draw = Slide.draw =  function (i) {
         if (typeof(Slide.content) !== 'string') { return; }
@@ -91,7 +98,7 @@ define([
                 $('<div>', {'class': 'slideDate'}).text(new Date().toLocaleDateString()).appendTo($(el));
             }
             if (options.title) {
-                $('<div>', {'class': 'slideTitle'}).text(APP.title).appendTo($(el));
+                $('<div>', {'class': 'slideTitle'}).text(Title.title).appendTo($(el));
             }
         });
         $content.removeClass('transition');
@@ -101,7 +108,7 @@ define([
         //$content.find('.' + slideClass).hide();
         //$content.find('.' + slideClass + ':eq( ' + i + ' )').show();
         //$content.css('margin-left', -(i*100)+'vw');
-        goTo(i);
+        goTo(Math.min(i, getNumberOfSlides() - 1));
     };
 
     Slide.updateOptions = function () {
@@ -297,16 +304,19 @@ define([
     };
 
 
-    Slide.setModal = function (appObj, $m, $c, $p, iframe, opt, ph) {
+    Slide.setModal = function ($m, $c, $p, iframe, opt, ph) {
         $modal = Slide.$modal = $m;
         $content = Slide.$content = $c;
         $pad = Slide.$pad = $p;
         ifrw = Slide.ifrw = iframe;
         placeholder = Slide.placeholder = ph;
         options = Slide.options = opt;
-        APP = appObj;
         addEvent();
         addSwipeEvents();
+    };
+
+    Slide.setTitle = function (titleObj) {
+        Title = titleObj;
     };
 
     return Slide;

@@ -136,6 +136,20 @@ define([
                 });
             };
 
+            exp.clearOwnedChannel = function (channel, cb) {
+                if (typeof(channel) !== 'string' || channel.length !== 32) {
+                    return void cb('INVALID_ARGUMENTS');
+                }
+                rpc.send('CLEAR_OWNED_CHANNEL', channel, function (e, response) {
+                    if (e) { return cb(e); }
+                    if (response && response.length) {
+                        cb(void 0, response[0]);
+                    } else {
+                        cb();
+                    }
+                });
+            };
+
             exp.uploadComplete = function (cb) {
                 rpc.send('UPLOAD_COMPLETE', null, function (e, res) {
                     if (e) { return void cb(e); }

@@ -12,7 +12,7 @@ $(function () {
     var Messages = Cryptpad.Messages;
     var $body = $('body');
     var isMainApp = function () {
-        return /^\/(pad|code|slide|poll|whiteboard|file|media|drive)\/$/.test(location.pathname);
+        return /^\/(pad|code|slide|poll|whiteboard|file|media|contacts|drive|settings|profile|todo)\/$/.test(location.pathname);
     };
 
     var rightLink = function (ref, loc, txt) {
@@ -112,7 +112,7 @@ $(function () {
                 ])
             ])
         ]),
-        h('div.version-footer', "CryptPad v1.10.0 (Kraken)")
+        h('div.version-footer', "CryptPad v1.12.0 (Minotaur)")
     ]));
 
     var pathname = location.pathname;
@@ -145,9 +145,12 @@ $(function () {
                 } else if (/drive/.test(pathname)) {
                     $('body').append(h('body', Pages[pathname]()).innerHTML);
                     require(['/drive/main.js'], ready);
-                } else if (/file/.test(pathname)) {
+                } else if (/\/file\//.test(pathname)) {
                     $('body').append(h('body', Pages[pathname]()).innerHTML);
                     require([ '/file/main.js' ], ready);
+                } else if (/contacts/.test(pathname)) {
+                    $('body').append(h('body', Pages[pathname]()).innerHTML);
+                    require([ '/contacts/main.js' ], ready);
                 } else if (/pad/.test(pathname)) {
                     $('body').append(h('body', Pages[pathname]()).innerHTML);
                     require([ '/pad/main.js' ], ready);
@@ -157,6 +160,15 @@ $(function () {
                 } else if (/slide/.test(pathname)) {
                     $('body').append(h('body', Pages[pathname]()).innerHTML);
                     require([ '/slide/main.js' ], ready);
+                } else if (/^\/settings\//.test(pathname)) {
+                    $('body').append(h('body', Pages[pathname]()).innerHTML);
+                    require([ '/settings/main.js', ], ready);
+                } else if (/^\/profile\//.test(pathname)) {
+                    $('body').append(h('body', Pages[pathname]()).innerHTML);
+                    require([ '/profile/main.js', ], ready);
+                } else if (/^\/todo\//.test(pathname)) {
+                    $('body').append(h('body', Pages[pathname]()).innerHTML);
+                    require([ '/todo/main.js', ], ready);
                 }
             });
 
@@ -170,11 +182,7 @@ $(function () {
     ], function () {
         $body.append($topbar).append($main).append($footer);
 
-        if (/^\/settings\//.test(pathname)) {
-            require([ '/settings/main.js', ], function () {});
-        } else if (/^\/profile\//.test(pathname)) {
-            require([ '/profile/main.js'], function () {});
-        } else if (/^\/user\//.test(pathname)) {
+        if (/^\/user\//.test(pathname)) {
             require([ '/user/main.js'], function () {});
         } else if (/^\/register\//.test(pathname)) {
             require([ '/register/main.js' ], function () {});
@@ -183,6 +191,8 @@ $(function () {
         } else if (/^\/($|^\/index\.html$)/.test(pathname)) {
             // TODO use different top bar
             require([ '/customize/main.js', ], function () {});
+        } else if (/invite/.test(pathname)) {
+            require([ '/invite/main.js'], function () {});
         } else {
             require([ '/customize/main.js', ], function () {});
         }

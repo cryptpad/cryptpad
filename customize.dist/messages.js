@@ -46,6 +46,7 @@ define(req, function($, Default, Language) {
     }
 
     messages._languages = map;
+    messages._languageUsed = language;
 
     messages._checkTranslationState = function (cb) {
         if (typeof(cb) !== "function") { return; }
@@ -150,10 +151,12 @@ define(req, function($, Default, Language) {
     messages._applyTranslation = function () {
         $('[data-localization]').each(translateText);
         $('[data-localization-append]').each(translateAppend);
-        $('#pad-iframe').contents().find('[data-localization]').each(translateText);
         $('[data-localization-title]').each(translateTitle);
         $('[data-localization-placeholder]').each(translatePlaceholder);
+        $('#pad-iframe').contents().find('[data-localization]').each(translateText);
+        $('#pad-iframe').contents().find('[data-localization-append]').each(translateAppend);
         $('#pad-iframe').contents().find('[data-localization-title]').each(translateTitle);
+        $('#pad-iframe').contents().find('[data-localization-placeholder]').each(translatePlaceholder);
     };
 
     messages.driveReadme = '["BODY",{"class":"cke_editable cke_editable_themed cke_contents_ltr cke_show_borders","contenteditable":"true","spellcheck":"false","style":"color: rgb(51, 51, 51);"},' +

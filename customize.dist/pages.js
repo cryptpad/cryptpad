@@ -162,7 +162,7 @@ define([
                 ])
             ]),
             h('button.btn.btn-secondary.login.half.first', Msg.login_login),
-            h('button.btn.btn-success.register.half.first', Msg.login_register),
+            h('button.btn.btn-success.register.half', Msg.login_register),
             h('p.separator', Msg.login_orNoLogin),
             h('p#buttons.buttons'),
             h('p.driveLink', [
@@ -278,15 +278,7 @@ define([
     };
     loadingScreen = loadingScreen; // TODO use this
 
-    Pages['/settings/'] = Pages['/settings/index.html'] = function () {
-        return h('div#container');
-    };
-
     Pages['/user/'] = Pages['/user/index.html'] = function () {
-        return h('div#container');
-    };
-
-    Pages['/profile/'] = Pages['/profile/index.html'] = function () {
         return h('div#container');
     };
 
@@ -363,7 +355,7 @@ define([
                         h('button.btn.btn-primary.login.first', Msg.login_login),
                         h('div.extra', [
                             h('p', Msg.login_notRegistered),
-                            h('button#register.btn.btn-success.register.first', Msg.login_register)
+                            h('button#register.btn.btn-success.register', Msg.login_register)
                         ])
                     ])
                 ])
@@ -489,6 +481,10 @@ define([
         return loadingScreen();
     };
 
+    Pages['/contacts/'] = Pages['/contacts/index.html'] = function () {
+        return loadingScreen();
+    };
+
     Pages['/pad/'] = Pages['/pad/index.html'] = function () {
         return loadingScreen();
     };
@@ -499,6 +495,34 @@ define([
 
     Pages['/slide/'] = Pages['/slide/index.html'] = function () {
         return loadingScreen();
+    };
+
+    Pages['/invite/'] = Pages['/invite/index.html'] = function () {
+        return loadingScreen();
+    };
+
+    Pages['/settings/'] = Pages['/settings/index.html'] = function () {
+        return [
+            h('div#toolbar'),
+            h('div#container'),
+            loadingScreen()
+        ];
+    };
+
+    Pages['/profile/'] = Pages['/profile/index.html'] = function () {
+        return [
+            h('div#toolbar'),
+            h('div#container'),
+            loadingScreen()
+        ];
+    };
+
+    Pages['/todo/'] = Pages['/todo/index.html'] = function () {
+        return [
+            h('div#toolbar'),
+            h('div#container'),
+            loadingScreen()
+        ];
     };
 
     return Pages;

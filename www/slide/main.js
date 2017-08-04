@@ -9,7 +9,6 @@ define([
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
     '/slide/slide.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js', // needed for media-tag
 
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less/cryptpad.less',
@@ -96,7 +95,7 @@ define([
                 }
             });
 
-            Slide.setModal(APP, $modal, $content, $pad, ifrw, slideOptions, initialState);
+            Slide.setModal($modal, $content, $pad, ifrw, slideOptions, initialState);
 
             var enterPresentationMode = function (shouldLog) {
                 Slide.show(true, editor.getValue());
@@ -200,66 +199,6 @@ define([
                 }
             };
 
-            var createFileDialog = function () {
-                var $body = $iframe.find('body');
-                var $block = $body.find('#fileDialog');
-                if (!$block.length) {
-                    $block = $('<div>', {id: "fileDialog"}).appendTo($body);
-                }
-                $block.html('');
-                $('<span>', {
-                    'class': 'close fa fa-times',
-                    'title': Messages.filePicker_close
-                }).click(function () {
-                    $block.hide();
-                }).appendTo($block);
-                var $description = $('<p>').text(Messages.filePicker_description);
-                $block.append($description);
-                var $filter = $('<p>').appendTo($block);
-                var $container = $('<span>', {'class': 'fileContainer'}).appendTo($block);
-                var updateContainer = function () {
-                    $container.html('');
-                    var filter = $filter.find('.filter').val().trim();
-                    var list = Cryptpad.getUserFilesList();
-                    var fo = Cryptpad.getFO();
-                    list.forEach(function (id) {
-                        var data = fo.getFileData(id);
-                        var name = fo.getTitle(id);
-                        if (filter && name.toLowerCase().indexOf(filter.toLowerCase()) === -1) {
-                            return;
-                        }
-                        var $span = $('<span>', {'class': 'element'}).appendTo($container);
-                        var $inner = $('<span>').text(name);
-                        $span.append($inner).click(function () {
-                            var cleanName = name.replace(/[\[\]]/g, '');
-                            var text = '!['+cleanName+']('+data.href+')';
-                            editor.replaceSelection(text);
-                            $block.hide();
-                            console.log(data.href);
-                        });
-                    });
-                };
-                var to;
-                $('<input>', {
-                    type: 'text',
-                    'class': 'filter',
-                    'placeholder': Messages.filePicker_filter
-                }).appendTo($filter).on('keypress', function () {
-                    if (to) { window.clearTimeout(to); }
-                    to = window.setTimeout(updateContainer, 300);
-                });
-                $filter.append(' '+Messages.or+' ');
-                var data = {FM: APP.FM};
-                $filter.append(Cryptpad.createButton('upload', false, data, function () {
-                    $block.hide();
-                }));
-                updateContainer();
-                $body.keydown(function (e) {
-                    if (e.which === 27) { $block.hide(); }
-                });
-                $block.show();
-            };
-
             var createPrintDialog = function () {
                 var slideOptionsTmp = {
                     title: false,
@@ -279,7 +218,6 @@ define([
                 // Slide number
                 $('<input>', {type: 'checkbox', id: 'checkNumber', checked: slideOptionsTmp.slide}).on('change', function () {
                     var c = this.checked;
-                    console.log(c);
                     slideOptionsTmp.slide = c;
                 }).appendTo($p).css('width', 'auto');
                 $('<label>', {'for': 'checkNumber'}).text(Messages.printSlideNumber).appendTo($p);
@@ -346,6 +284,8 @@ define([
                     getHeadingText: CodeMirror.getHeadingText
                 };
                 Title = Cryptpad.createTitle(titleCfg, config.onLocal, Cryptpad);
+
+                Slide.setTitle(Title);
 
                 Metadata = Cryptpad.createMetadata(UserList, Title, metadataCfg, Cryptpad);
 
@@ -423,12 +363,23 @@ define([
                 var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
                 $rightside.append($forgetPad);
 
+                var fileDialogCfg = {
+                    $body: $iframe.find('body'),
+                    onSelect: function (href) {
+                        var parsed = Cryptpad.parsePadUrl(href);
+                        var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+                        var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
+                        var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '"></media-tag>';
+                        editor.replaceSelection(mt);
+                    },
+                    data: APP
+                };
                 $('<button>', {
                     title: Messages.filePickerButton,
                     'class': 'rightside-button fa fa-picture-o',
                     style: 'font-size: 17px'
                 }).click(function () {
-                    $('body').append(createFileDialog());
+                    Cryptpad.createFileDialog(fileDialogCfg);
                 }).appendTo($rightside);
 
                 var $previewButton = APP.$previewButton = Cryptpad.createButton(null, true);
@@ -469,9 +420,7 @@ define([
                     //$('body').append(createPrintDialog());
                 }).append($('<span>', {'class': 'drawer'}).text(Messages.printText));
 
-                // TODO reenable this when it is working again
-                $printButton = $printButton;
-                //$drawer.append($printButton);
+                $drawer.append($printButton);
 
                 var $slideOptions = $('<button>', {
                     title: Messages.slideOptionsTitle,
@@ -623,12 +572,13 @@ define([
                     body: $iframe.find('body'),
                     onUploaded: function (ev, data) {
                         //var cursor = editor.getCursor();
-                        var cleanName = data.name.replace(/[\[\]]/g, '');
-                        var text = '!['+cleanName+']('+data.url+')';
-                        /*if (data.mediatag) {
-                            text = '!'+text;
-                        }*/
-                        editor.replaceSelection(text);
+                        //var cleanName = data.name.replace(/[\[\]]/g, '');
+                        //var text = '!['+cleanName+']('+data.url+')';
+                        var parsed = Cryptpad.parsePadUrl(data.url);
+                        var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+                        var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
+                        var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '"></media-tag>';
+                        editor.replaceSelection(mt);
                     }
                 };
                 APP.FM = Cryptpad.createFileManager(fmConfig);
@@ -685,7 +635,9 @@ define([
                     toolbar.reconnecting(info.myId);
                     Cryptpad.findOKButton().click();
                 } else {
-                    Cryptpad.alert(Messages.common_connectionLost, undefined, true);
+                    if (!Slide.isPresentURL()) {
+                        Cryptpad.alert(Messages.common_connectionLost, undefined, true);
+                    }
                 }
             };
 

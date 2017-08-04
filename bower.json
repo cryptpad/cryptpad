@@ -38,6 +38,7 @@
     "scrypt-async": "1.2.0",
     "require-css": "0.1.10",
     "less": "^2.7.2",
-    "bootstrap": "#v4.0.0-alpha.6"
+    "bootstrap": "#v4.0.0-alpha.6",
+    "diff-dom": "2.1.1"
   }
 }

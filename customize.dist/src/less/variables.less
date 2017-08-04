@@ -7,6 +7,8 @@
 @old-base: #302B28;
 @old-fore: #fafafa;
 
+@main-font-size: 16px;
+
 @cp-green: #46E981;
 @cp-accent: lighten(@cp-green, 20%);
 
@@ -73,7 +75,7 @@
 
 // Dropdown
 
-@dropdown-font: 16px -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+@dropdown-font: @main-font-size -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 @dropdown-bg: #f9f9f9;
 @dropdown-color: black;
 @dropdown-bg-hover: #f1f1f1;
@@ -97,9 +99,16 @@
 @toolbar-drive-color: #fff;
 @toolbar-file-bg: #cd2532;
 @toolbar-file-color: #fff;
+@toolbar-friends-bg: #607B8D;
+@toolbar-friends-color: #fff;
 @toolbar-default-bg: #ddd;
 @toolbar-default-color: #000;
-
+@toolbar-settings-bg: #0087ff;
+@toolbar-settings-color: #fff;
+@toolbar-profile-bg: #0087ff;
+@toolbar-profile-color: #fff;
+@toolbar-todo-bg: #7bccd1;
+@toolbar-todo-color: #000;
 
 @topbar-back: #fff;
 @topbar-color: #000;
@@ -119,6 +128,10 @@
 
 @category-bg: #f4f4f4;
 
+@button-bg: #3066e5;
+@button-alt-bg: #fff;
+@button-red-bg: #e54e4e;
+
 .unselectable () {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -127,3 +140,5 @@
     -ms-user-select: none;
     user-select: none;
 }
+
+@toolbar-line-height: 32px;
