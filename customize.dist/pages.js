@@ -274,7 +274,7 @@ define([
                                         if (showingMore) {
                                             $('.cp-more, .cp-callout-more-lessmsg').addClass('cp-hidden');
                                             $('.cp-callout-more-moremsg').removeClass('cp-hidden');
-                                            if ( $( window ).width() >991 ) $('.navbar').css('margin-top','-1em');
+                                            if ( $( window ).width() >991 ) { $('.navbar').css('margin-top','-1em'); }
                                         } else {
                                             $('.cp-more, .cp-callout-more-lessmsg').removeClass('cp-hidden');
                                             $('.cp-callout-more-moremsg').addClass('cp-hidden');
