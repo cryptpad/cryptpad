@@ -626,8 +626,10 @@ define([
         var $aTag = $('<a>', {
             href: "/drive/",
             title: Messages.header_logoTitle,
-            'class': "cryptpad-logo fa fa-hdd-o"
-        });
+            'class': "cryptpad-logo"
+        }).append($('<img>', {
+            src: '/customize/images/logo_white.svg'
+        }));
         var onClick = function (e) {
             e.preventDefault();
             if (e.ctrlKey) {

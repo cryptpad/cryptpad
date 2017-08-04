@@ -177,10 +177,11 @@ $(function () {
     }
 
     require([
-        'less!/customize/src/less/cryptpad.less',
+        'less!/customize/src/less2/main.less',
         'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
+        '/bower_components/bootstrap/dist/js/bootstrap.min.js'
     ], function () {
-        $body.append($topbar).append($main).append($footer);
+        $body.append($main);
 
         if (/^\/user\//.test(pathname)) {
             require([ '/user/main.js'], function () {});

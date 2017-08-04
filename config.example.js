@@ -119,6 +119,7 @@ module.exports = {
         'terms',
         'about',
         'contact',
+        'what-is-cryptpad'
     ],
 
     /*  Limits, Donations, Subscriptions and Contact

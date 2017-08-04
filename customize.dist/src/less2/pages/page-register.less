@@ -1,0 +1,23 @@
+@import (once) "../include/infopages.less";
+@import (once) "../include/colortheme.less";
+
+.infopages_main();
+.infopages_topbar();
+
+.cp-container {
+    .form-group {
+        .checkbox-container {
+            &:nth-of-type(1) {
+                margin-top: 2em;
+            }
+            &:last-of-type {
+                margin-bottom: 1em;
+            }
+        }
+        #register {
+            margin-top: 16px;
+            font-size: 1.25em;
+            width: 30%;
+        }
+    }
+}
