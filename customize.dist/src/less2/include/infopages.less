@@ -113,6 +113,15 @@
 
 // Apply this to the top bar div
 .infopages_topbar () {
+    .navbar-brand {
+        display: block;
+        background-image: url(/customize/CryptPad-blue-logo.svg);
+        background-repeat: no-repeat;
+        background-size: contain;
+        height: 50px;
+        width: 250px;
+    }
+
     .cp-topbar {
         background: #fff;
         z-index: 9001;
@@ -151,9 +160,6 @@
         }
 
         .cp-logo {
-            img {
-                height: @infopages_infobar-height / 2;
-            }
             margin-right: 0.5em;
         }
     }
