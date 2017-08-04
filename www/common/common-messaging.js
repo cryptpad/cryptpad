@@ -165,12 +165,22 @@ define([
 
     var channels = Msg.channels  = window.channels = {};
 
+    var msgAlreadyKnown = function (channel, sig) {
+        return channel.messages.some(function (message) {
+            return message[0] === sig;
+        });
+    };
+
     var pushMsg = function (common, channel, cryptMsg) {
         var msg = channel.encryptor.decrypt(cryptMsg);
+
+        var sig = cryptMsg.slice(0, 64);
+        if (msgAlreadyKnown(channel, sig)) { return; }
+
         var parsedMsg = JSON.parse(msg);
         if (parsedMsg[0] === Types.message) {
             parsedMsg.shift();
-            channel.messages.push([cryptMsg.slice(0,64), parsedMsg]);
+            channel.messages.push([sig, parsedMsg]);
             return true;
         }
         var proxy;

@@ -62,43 +62,39 @@
         //font-style: italic;
     }
 }
-.cp-topbar { 
-    //position: absolute;
-    background: transparent;
+.navbar {
+    width: 100%;
+    margin-top: -1em;
+    @media only screen and (max-device-width: 991px) {
+        margin-top: 0;
+    }
+    .navbar-brand {
+        background: url(/customize/CryptPad-white-logo.svg) no-repeat;
+        width: 250px;
+        height: 50px;
+    }
     a {
         color: #fff;
-        padding: 0.5em 0.5em 0.5em 0.5em;
+        border: 2px solid transparent;
+        &:visited {
+            color: rgba(255,255,255,.8);
+        };
+    }
+    .nav-link {
+        padding: 0.5em 0.7em;
+        &:hover {
+            transform: scale(1.05);
+        };
+    }
+    .cp-register-btn {
+            border: 2px solid #fff;
     }
     button:focus {
         outline: none;
     }
-    .collapse {
-        a {
-            display: block;
-        }
-    }
-    .navbar-toggler-left {
-        top: -0.59rem;
-    }
-    .cp-left {
-        .fa-bars {
-            font-size: 1.6rem;
-        }
-    }
-    a.cp-logo {
-        display: none;
-    }
-    img {
-        height: 5vh;
-        margin-top: -4px;
-    }
-    &:hover {
-        img {
-            transform: none;
-        }
-    };
-    a.cp-logo {
-        display: none;
+    .navbar-toggler {
+        margin-top: 10px;
+        color: #fff;
     }
 }
 @callout-padding: 15px;
@@ -119,9 +115,9 @@ a:hover {
         color: black;
         &:hover { text-decoration-line: none; }
     }
-    div {
+    div h4 {
         @media only screen and (min-device-width: 576px) and (max-device-width: 767px) {
-            left: 4.5em !important;
+            font-size: 1.3em;
         }
     }
 }
@@ -192,11 +188,6 @@ h4 {
         }
     }
 }
-.navbar-inverse .navbar-toggler {
-    border-color: transparent;
-    margin-top: -12px;
-    padding: 0;
-}
 @media (min-width: 576px) and (max-width: 767px) {
     .container {
         padding-left: 0;
@@ -208,22 +199,25 @@ h4 {
 }
 @media (max-width: 991px) {
     #menuCollapse {
-        /*position: absolute;
-        left: -131px;*/
-        margin-top: 0.5em;
-        text-align: right;
-    }
-    #menuCollapse a {
-        width: 100%;
         text-align: right;
     }
     .navbar-nav a {
         text-align: right !important;
     }
-    .cp-right .cp-login-btn {
-        padding: 0.5em;
+    .cp-register-btn {
+        margin-right: 13px;
+        margin-left: 83vw;
+        text-align: center;
+     }
+}
+@media (max-width: 687px) {
+    .cp-register-btn {
+         margin-left: 75vw;
     }
 }
-.collapsing a {
-    text-align: right !important;
+@media (max-width: 467px) {
+    .cp-register-btn {
+         margin-left: 63vw;
+    }
 }
+
