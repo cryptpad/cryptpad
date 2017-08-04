@@ -78,6 +78,15 @@ $(function () {
 
             return;
         }
+    } else {
+        // add class on info-pages
+        var css = location.pathname.replace(/(\/$|^\/|.html$)/gm, "")
+            .replace(/[^a-zA-Z]/gi, "-");
+        if (css === '')
+        {
+            css = 'index';
+        }
+        $('body').addClass('cp-page-' + css);
     }
 
     require([
