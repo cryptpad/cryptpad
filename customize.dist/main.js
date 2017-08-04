@@ -27,6 +27,7 @@ define([
         if (Cryptpad.isLoggedIn()) {
             if (window.location.pathname === '/') {
                 window.location = '/drive/';
+                return;
             }
 
             var name = localStorage[Cryptpad.userNameKey] || sessionStorage[Cryptpad.userNameKey];
