@@ -737,7 +737,7 @@ define([
                 input.removeAttribute('disabled');
             }
 
-            if (Messages) {
+            if (common.Messages) {
                 // set placeholder
                 var placeholder = bool?
                     common.Messages.disconnected:
