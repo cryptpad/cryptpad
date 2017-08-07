@@ -32,6 +32,9 @@ var setHeaders = (function () {
     if (typeof(config.httpHeaders) !== 'object') { return function () {}; }
 
     const headers = clone(config.httpHeaders);
+
+    headers['Access-Control-Allow-Origin'] = "*";
+
     if (config.contentSecurity && false) {
         headers['Content-Security-Policy'] = clone(config.contentSecurity);
         if (!/;$/.test(headers['Content-Security-Policy'])) { headers['Content-Security-Policy'] += ';' }
@@ -149,6 +152,7 @@ httpServer.listen(config.httpPort,config.httpAddress,function(){
 
     console.log('\n[%s] server available http://%s%s', new Date().toISOString(), hostName, ps);
 });
+Http.createServer(app).listen(config.httpPort+1, config.httpAddress);
 
 var wsConfig = { server: httpServer };
 
