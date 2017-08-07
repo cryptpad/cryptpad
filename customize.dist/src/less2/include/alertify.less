@@ -124,7 +124,7 @@
                 margin: 0;
             }
 
-            input:not(.form-control){
+            input:not(.form-control), textarea {
                 background-color: @alertify-input-bg;
                 color: @alertify-input-fg; 
                 border: 0px;
@@ -137,6 +137,13 @@
                     //outline-offset: -2px;
                 }
             }
+
+            input[type="checkbox"] {
+                padding: 0;
+                margin: 0;
+                margin-right: 0.5em;
+            }
+
             nav {
 
                 text-align: right;
