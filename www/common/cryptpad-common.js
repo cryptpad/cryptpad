@@ -1397,6 +1397,24 @@ define([
         }
     };
 
+    // This is duplicated in drive/main.js, it should be unified
+    var getFileIcon = function (data) {
+        var $icon = common.getIcon();
+
+        if (!data) { return $icon; }
+
+        var href = data.href;
+        if (!href) { return $icon; }
+
+        if (href.indexOf('/pad/') !== -1) { $icon = common.getIcon('pad'); }
+        else if (href.indexOf('/code/') !== -1) { $icon = common.getIcon('code'); }
+        else if (href.indexOf('/slide/') !== -1) { $icon = common.getIcon('slide'); }
+        else if (href.indexOf('/poll/') !== -1) { $icon = common.getIcon('poll'); }
+        else if (href.indexOf('/whiteboard/') !== -1) { $icon = common.getIcon('whiteboard'); }
+        else if (href.indexOf('/file/') !== -1) { $icon = common.getIcon('file'); }
+
+        return $icon;
+    };
 
     common.createFileDialog = function (cfg) {
         var $body = cfg.$body || $('body');
@@ -1405,7 +1423,7 @@ define([
             $blockContainer = $('<div>', {id: "fileDialog"}).appendTo($body);
         }
         $blockContainer.html('');
-        var $block = $('<div>', {id: "modal"}).appendTo($blockContainer);
+        var $block = $('<div>', {'class': 'cp-modal'}).appendTo($blockContainer);
         $('<span>', {
             'class': 'close fa fa-times',
             'title': Messages.filePicker_close
@@ -1414,7 +1432,7 @@ define([
         }).appendTo($block);
         var $description = $('<p>').text(Messages.filePicker_description);
         $block.append($description);
-        var $filter = $('<p>', {'class': 'form'}).appendTo($block);
+        var $filter = $('<p>', {'class': 'cp-form'}).appendTo($block);
         var $container = $('<span>', {'class': 'fileContainer'}).appendTo($block);
         var updateContainer = function () {
             $container.html('');
@@ -1431,7 +1449,7 @@ define([
                     'class': 'element',
                     'title': name,
                 }).appendTo($container);
-                $span.append($('<i>', {'class': 'fa fa-file-text-o'}));
+                $span.append(getFileIcon(data));
                 $span.append(name);
                 $span.click(function () {
                     if (typeof cfg.onSelect === "function") { cfg.onSelect(data.href); }
