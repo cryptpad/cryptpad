@@ -372,6 +372,8 @@ define([
         messenger.input = $input[0];
 
         var send = function () {
+            // TODO implement sending queue
+            // TODO separate message logic from UI
             var channel = channels[data.channel];
             if (channel.sending) {
                 console.error("still sending");
@@ -385,34 +387,18 @@ define([
                 console.error("input is disabled");
                 return;
             }
+
+            var payload = $input.val();
             // Send the message
-            var msg = [Types.message, proxy.curvePublic, +new Date(), $input.val()];
-            var msgStr = JSON.stringify(msg);
-            var cryptMsg = channel.encryptor.encrypt(msgStr);
-            channel.sending = true;
-
-            console.log(channel.wc);
-            var network = common.getNetwork();
-            if (!network.webChannels.some(function (wc) {
-                if (wc.id === channel.wc.id) {
-                    console.error(wc.id, channel.wc.id);
-                    return true;
+            channel.send(payload, function (e) {
+                if (e) {
+                    channel.sending = false;
+                    console.error(err);
+                    return;
                 }
-                console.error(wc.id, channel.wc.id);
-                //return wc.id === channel.wc.id;
-            })) {
-                console.error('no such channel:' + channel.wc.id);
-                return;
-            }
-
-            channel.wc.bcast(cryptMsg).then(function () {
                 $input.val('');
-                pushMsg(common, channel, cryptMsg);
                 channel.refresh();
                 channel.sending = false;
-            }, function (err) {
-                channel.sending = false;
-                console.error(err);
             });
         };
         $('<button>', {'class': 'btn btn-primary fa fa-paper-plane'})
@@ -709,6 +695,25 @@ define([
 
                         var messageHash = oldestMessage[0];
                         getMoreHistory(network, chan, messageHash, 10);
+                    },
+                    send: function (payload, cb) {
+                        if (!network.webChannels.some(function (wc) {
+                            if (wc.id === channel.wc.id) { return true; }
+                        })) {
+                            return void cb('NO_SUCH_CHANNEL');
+                        }
+
+                        var msg = [Types.message, proxy.curvePublic, +new Date(), payload];
+                        var msgStr = JSON.stringify(msg);
+                        var cryptMsg = channel.encryptor.encrypt(msgStr);
+                        channel.sending = true;
+
+                        channel.wc.bcast(cryptMsg).then(function () {
+                            pushMsg(common, channel, cryptMsg);
+                            cb();
+                        }, function (err) {
+                            cb(err);
+                        });
                     },
                 };
                 chan.on('message', function (msg, sender) {
