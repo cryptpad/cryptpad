@@ -35,6 +35,7 @@ define([
         var nonce = decodeBase64(unpacked[0]);
         var box = decodeBase64(unpacked[1]);
         var message = Nacl.box.open.after(box, nonce, secret);
+        if (message === false) { return null; }
         return encodeUTF8(message);
     };
 

@@ -240,7 +240,28 @@ define([
         if (!isId) { return; }
 
         var decryptedMsg = channel.encryptor.decrypt(msg);
-        var parsed = JSON.parse(decryptedMsg);
+
+        if (decryptedMsg === null) {
+            // console.error('unable to decrypt message');
+            // console.error('potentially meant for yourself');
+
+            // message failed to parse, meaning somebody sent it to you but
+            // encrypted it with the wrong key, or you're sending a message to
+            // yourself in a different tab.
+            return;
+        }
+
+        if (!decryptedMsg) {
+            console.error('decrypted message was falsey but not null');
+            return;
+        }
+
+        try {
+            var parsed = JSON.parse(decryptedMsg);
+        } catch (e) {
+            console.error(decryptedMsg);
+            return;
+        }
         if (parsed[0] !== Types.mapId && parsed[0] !== Types.mapIdAck) { return; }
         if (parsed[2] !== sender || !parsed[1]) { return; }
         channel.mapId[sender] = parsed[1];
