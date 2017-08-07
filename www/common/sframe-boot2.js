@@ -22,6 +22,5 @@ console.log('boot2');
     window.__defineGetter__('localStorage', function () { return mkFakeStore(); });
     window.__defineGetter__('sessionStorage', function () { return mkFakeStore(); });
 
-
     require([document.querySelector('script[data-bootload]').getAttribute('data-bootload')]);
 });

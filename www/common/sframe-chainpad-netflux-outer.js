@@ -27,44 +27,23 @@ define([
 
     var unBencode = function (str) { return str.replace(/^\d+:/, ''); };
 
-    module.exports.start = function (config) {
-        var websocketUrl = config.websocketURL;
-        var userName = config.userName;
-        var channel = config.channel;
-        var Crypto = config.crypto;
-        var validateKey = config.validateKey;
-        var readOnly = config.readOnly || false;
-
-        // make sure configuration is defined
-        config = config || {};
+    module.exports.start = function (conf) {
+        var websocketUrl = conf.websocketURL;
+        var userName = conf.userName;
+        var channel = conf.channel;
+        var Crypto = conf.crypto;
+        var validateKey = conf.validateKey;
+        var readOnly = conf.readOnly || false;
+        var websocketURL = conf.websocketURL;
+        var network = conf.network;
+        conf = undefined;
 
         var initializing = true;
         var toReturn = {};
         var messagesHistory = [];
         var chainpadAdapter = {};
         var realtime;
-        var network = config.network;
         var lastKnownHash;
-
-        var userList = {
-            change : [],
-            onChange : function(newData) {
-                userList.change.forEach(function (el) {
-                    el(newData);
-                });
-            },
-            users: []
-        };
-
-        var onJoining = function(peer) {
-            if(peer.length !== 32) { return; }
-            var list = userList.users;
-            var index = list.indexOf(peer);
-            if(index === -1) {
-                userList.users.push(peer);
-            }
-            userList.onChange();
-        };
 
         var onReady = function(wc, network) {
             // Trigger onReady only if not ready yet. This is important because the history keeper sends a direct
@@ -73,10 +52,8 @@ define([
 
             realtime.start();
 
-            if(config.setMyID) {
-                config.setMyID({
-                    myID: wc.myID
-                });
+            if(setMyID) {
+                setMyID({ myID: wc.myID });
             }
             // Trigger onJoining with our own Cryptpad username to tell the toolbar that we are synced
             if (!readOnly) {
