@@ -349,20 +349,26 @@ define([
                     }),
                     h('div.checkbox-container', [
                         h('input#import-recent', {
+                            name: 'import-recent',
                             type: 'checkbox',
                             checked: true
                         }),
-                        h('label', {
+                        // hscript doesn't generate for on label for some
+                        // reason... use jquery as a temporary fallback
+                        setHTML($('<label for="import-recent"></label>')[0], Msg.register_importRecent)
+                        /*h('label', {
                             'for': 'import-recent',
-                        }, Msg.register_importRecent),
+                        }, Msg.register_importRecent),*/
                     ]),
                     h('div.checkbox-container', [
                         h('input#accept-terms', {
+                            name: 'accept-terms',
                             type: 'checkbox'
                         }),
-                        setHTML(h('label', {
+                        setHTML($('<label for="accept-terms"></label>')[0], Msg.register_acceptTerms)
+                        /*setHTML(h('label', {
                             'for': 'accept-terms',
-                        }), Msg.register_acceptTerms),
+                        }), Msg.register_acceptTerms),*/
                     ]),
                     h('button#register.btn.btn-primary', Msg.login_register)
                 ])
