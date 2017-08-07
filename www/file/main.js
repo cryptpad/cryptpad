@@ -126,9 +126,14 @@ define([
                         }));
 
                         // make pdfs big
+                        var toolbarHeight = $iframe.find('#toolbar').height();
                         $iframe.find('media-tag iframe').css({
-                            'height': 'calc(100vh - 64px)',
-                            width: 'calc(100vw - 15px)',
+                            'height': 'calc(100vh - ' + toolbarHeight + 'px)',
+                            'width': '100vw',
+                            'position': 'absolute',
+                            'bottom': 0,
+                            'left': 0,
+                            'border': 0
                         });
                     })
                     .on('decryptionError', function (e) {
