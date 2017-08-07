@@ -162,8 +162,16 @@ define([
 
         var parsedMsg = JSON.parse(msg);
         if (parsedMsg[0] === Types.message) {
-            parsedMsg.shift();
-            channel.messages.push([sig, parsedMsg]);
+            // TODO validate messages here
+            var res = {
+                type: parsedMsg[0], //Types.message,
+                sig: sig,
+                channel: parsedMsg[1],
+                time: parsedMsg[2],
+                text: parsedMsg[3],
+            };
+
+            channel.messages.push(res);
             return true;
         }
         var proxy;
@@ -493,24 +501,22 @@ define([
             var $msg, msg, date, name;
             var last = typeof(channel.lastDisplayed) === 'number'? channel.lastDisplayed: -1;
             for (var i = last + 1; i<messages.length; i++) {
-                msg = messages[i][1]; // 0 is the hash, 1 the array
+                msg = messages[i];
                 $msg = $('<div>', {'class': 'message'}).appendTo($messages);
 
                 // date
-                date = msg[1] ? new Date(msg[1]).toLocaleString() : '?';
+                date = msg.time ? new Date(msg.time).toLocaleString(): '?';
                 //$('<div>', {'class':'date'}).text(date).appendTo($msg);
                 $msg.attr('title', date);
 
                 // name
-                if (msg[0] !== channel.lastSender) {
-                    name = getFriend(common, msg[0]).displayName;
+                if (msg.channel !== channel.lastSender) {
+                    name = getFriend(common, msg.channel).displayName;
                     $('<div>', {'class':'sender'}).text(name).appendTo($msg);
                 }
-                channel.lastSender = msg[0];
+                channel.lastSender = msg.channel;
 
-                // content
-                //$('<div>', {'class':'content'}).text(msg[2]).appendTo($msg);
-                $('<div>', {'class':'content'}).html(parseMessage(msg[2])).appendTo($msg);
+                $('<div>', {'class':'content'}).html(parseMessage(msg.text)).appendTo($msg);
             }
             $messages.scrollTop($messages[0].scrollHeight);
             channel.lastDisplayed = i-1;
@@ -518,7 +524,7 @@ define([
 
             if (messages.length > 10) {
                 var lastKnownMsg = messages[messages.length - 11];
-                data.lastKnownHash = lastKnownMsg[0];
+                channel.setLastMessageRead(lastKnownMsg.sig);
             }
         };
         // Display a new channel
@@ -680,6 +686,9 @@ define([
                     removeUI: function () { removeUI(data.curvePublic); },
                     updateUI: function (types) { updateUI(data.curvePublic, types); },
                     updateStatus: function () { updateStatus(data.curvePublic); },
+                    setLastMessageRead: function (hash) {
+                        data.lastKnownHash = hash;
+                    },
                     getMessagesSinceDisconnect: function () {
                         getChannelMessagesSince(network, chan, data, keys);
                     },
