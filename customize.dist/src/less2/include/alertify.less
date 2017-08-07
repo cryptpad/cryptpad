@@ -2,25 +2,25 @@
 @import (once) "./browser.less";
 
 .alertify_main () {
-    @alertify-fore: @colortheme_old-fore;
-    @alertify-base: @colortheme_old-base;
+    @alertify-fore: @colortheme_modal-fg;
+    @alertify-base: @colortheme_modal-bg;
 
-    @alertify-dialog-bg: #222;
-    @alertify-dialog-fg: @colortheme_old-fore;
+    @alertify-dialog-bg: @alertify-base;
+    @alertify-dialog-fg: @alertify-fore;
 
-    @alertify-btn-fg: @colortheme_old-fore;
+    @alertify-btn-fg: @alertify-fore;
 
     @alertify-btn-bg: rgba(200, 200, 200, 0.1);
     @alertify-btn-bg-hover: rgba(200, 200, 200, .3);
 
-    @alertify-bg: rgba(0, 0, 0, .4);
-    @alertify-fg: @colortheme_old-fore;
+    @alertify-bg: @colortheme_modal-dim;
+    @alertify-fg: @alertify-fore;
 
-    @alertify-input-bg: @colortheme_old-base;
-    @alertify-input-fg: @colortheme_old-fore;
+    @alertify-input-bg: @colortheme_modal-input;
+    @alertify-input-fg: @colortheme_modal-fg;
 
-    @alertify_padding-base: 12px;
-    @alertify_box-shadow: 0 2px 5px 0 rgba(0,0,0,.2);
+    @alertify_padding-base: @colortheme_modal-padding;
+    @alertify_box-shadow: @colortheme_modal-shadow;
 
     // Logs to show that something has happened
     // These show only once
@@ -33,7 +33,7 @@
             padding: @alertify_padding-base @alertify_padding-base * 4;
             color: @alertify-fore;
 
-            font-weight: bold;
+            font-family: @colortheme_font;
             font-size: large;
 
             box-shadow: @alertify_box-shadow;
@@ -42,10 +42,11 @@
                 background: rgba(0, 0, 0, .8);
             }
             &.error {
+                font-weight: bold;
                 background: @colortheme_cp-red;
             }
             &.success {
-                background: @colortheme_cp-green;
+                background: rgba(0, 0, 0, .8);
             }
         }
     }
@@ -123,7 +124,7 @@
                 margin: 0;
             }
 
-            input:not(.form-control){
+            input:not(.form-control), textarea {
                 background-color: @alertify-input-bg;
                 color: @alertify-input-fg; 
                 border: 0px;
@@ -136,6 +137,13 @@
                     //outline-offset: -2px;
                 }
             }
+
+            input[type="checkbox"] {
+                padding: 0;
+                margin: 0;
+                margin-right: 0.5em;
+            }
+
             nav {
 
                 text-align: right;

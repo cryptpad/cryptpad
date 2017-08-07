@@ -1146,6 +1146,7 @@ define([
             $span.append($name).append($subfolders).append($files);
         };
 
+        // This is duplicated in cryptpad-common, it should be unified
         var getFileIcon = function (id) {
             var $icon = Cryptpad.getIcon();
 

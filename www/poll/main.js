@@ -621,6 +621,12 @@ var ready = function (info, userid, readOnly) {
         .on('change', ['table'], change)
         .on('remove', [], change);
 
+    var userInput = $('.uncommitted > input');
+    if (userInput.val() === '')
+    {
+        userInput.val(Cryptpad.getProxy()[Cryptpad.displayNameKey]);
+    }
+
     UserList.addToUserData(APP.proxy.info.userData);
 
     APP.ready = true;

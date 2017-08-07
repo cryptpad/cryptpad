@@ -1397,23 +1397,42 @@ define([
         }
     };
 
+    // This is duplicated in drive/main.js, it should be unified
+    var getFileIcon = function (data) {
+        var $icon = common.getIcon();
+
+        if (!data) { return $icon; }
+
+        var href = data.href;
+        if (!href) { return $icon; }
+
+        if (href.indexOf('/pad/') !== -1) { $icon = common.getIcon('pad'); }
+        else if (href.indexOf('/code/') !== -1) { $icon = common.getIcon('code'); }
+        else if (href.indexOf('/slide/') !== -1) { $icon = common.getIcon('slide'); }
+        else if (href.indexOf('/poll/') !== -1) { $icon = common.getIcon('poll'); }
+        else if (href.indexOf('/whiteboard/') !== -1) { $icon = common.getIcon('whiteboard'); }
+        else if (href.indexOf('/file/') !== -1) { $icon = common.getIcon('file'); }
+
+        return $icon;
+    };
 
     common.createFileDialog = function (cfg) {
         var $body = cfg.$body || $('body');
-        var $block = $body.find('#fileDialog');
-        if (!$block.length) {
-            $block = $('<div>', {id: "fileDialog"}).appendTo($body);
+        var $blockContainer = $body.find('#fileDialog');
+        if (!$blockContainer.length) {
+            $blockContainer = $('<div>', {id: "fileDialog"}).appendTo($body);
         }
-        $block.html('');
+        $blockContainer.html('');
+        var $block = $('<div>', {'class': 'cp-modal'}).appendTo($blockContainer);
         $('<span>', {
             'class': 'close fa fa-times',
             'title': Messages.filePicker_close
         }).click(function () {
-            $block.hide();
+            $blockContainer.hide();
         }).appendTo($block);
         var $description = $('<p>').text(Messages.filePicker_description);
         $block.append($description);
-        var $filter = $('<p>').appendTo($block);
+        var $filter = $('<p>', {'class': 'cp-form'}).appendTo($block);
         var $container = $('<span>', {'class': 'fileContainer'}).appendTo($block);
         var updateContainer = function () {
             $container.html('');
@@ -1426,11 +1445,15 @@ define([
                 if (filter && name.toLowerCase().indexOf(filter.toLowerCase()) === -1) {
                     return;
                 }
-                var $span = $('<span>', {'class': 'element'}).appendTo($container);
-                var $inner = $('<span>').text(name);
-                $span.append($inner).click(function () {
+                var $span = $('<span>', {
+                    'class': 'element',
+                    'title': name,
+                }).appendTo($container);
+                $span.append(getFileIcon(data));
+                $span.append(name);
+                $span.click(function () {
                     if (typeof cfg.onSelect === "function") { cfg.onSelect(data.href); }
-                    $block.hide();
+                    $blockContainer.hide();
                 });
             });
         };
@@ -1446,13 +1469,13 @@ define([
         //$filter.append(' '+Messages.or+' ');
         var data = {FM: cfg.data.FM};
         $filter.append(common.createButton('upload', false, data, function () {
-            $block.hide();
+            $blockContainer.hide();
         }));
         updateContainer();
         $body.keydown(function (e) {
-            if (e.which === 27) { $block.hide(); }
+            if (e.which === 27) { $blockContainer.hide(); }
         });
-        $block.show();
+        $blockContainer.show();
     };
 
 
