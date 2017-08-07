@@ -1400,20 +1400,21 @@ define([
 
     common.createFileDialog = function (cfg) {
         var $body = cfg.$body || $('body');
-        var $block = $body.find('#fileDialog');
-        if (!$block.length) {
-            $block = $('<div>', {id: "fileDialog"}).appendTo($body);
+        var $blockContainer = $body.find('#fileDialog');
+        if (!$blockContainer.length) {
+            $blockContainer = $('<div>', {id: "fileDialog"}).appendTo($body);
         }
-        $block.html('');
+        $blockContainer.html('');
+        var $block = $('<div>', {id: "modal"}).appendTo($blockContainer);
         $('<span>', {
             'class': 'close fa fa-times',
             'title': Messages.filePicker_close
         }).click(function () {
-            $block.hide();
+            $blockContainer.hide();
         }).appendTo($block);
         var $description = $('<p>').text(Messages.filePicker_description);
         $block.append($description);
-        var $filter = $('<p>').appendTo($block);
+        var $filter = $('<p>', {'class': 'form'}).appendTo($block);
         var $container = $('<span>', {'class': 'fileContainer'}).appendTo($block);
         var updateContainer = function () {
             $container.html('');
@@ -1426,11 +1427,15 @@ define([
                 if (filter && name.toLowerCase().indexOf(filter.toLowerCase()) === -1) {
                     return;
                 }
-                var $span = $('<span>', {'class': 'element'}).appendTo($container);
-                var $inner = $('<span>').text(name);
-                $span.append($inner).click(function () {
+                var $span = $('<span>', {
+                    'class': 'element',
+                    'title': name,
+                }).appendTo($container);
+                $span.append($('<i>', {'class': 'fa fa-file-text-o'}));
+                $span.append(name);
+                $span.click(function () {
                     if (typeof cfg.onSelect === "function") { cfg.onSelect(data.href); }
-                    $block.hide();
+                    $blockContainer.hide();
                 });
             });
         };
@@ -1446,13 +1451,13 @@ define([
         //$filter.append(' '+Messages.or+' ');
         var data = {FM: cfg.data.FM};
         $filter.append(common.createButton('upload', false, data, function () {
-            $block.hide();
+            $blockContainer.hide();
         }));
         updateContainer();
         $body.keydown(function (e) {
-            if (e.which === 27) { $block.hide(); }
+            if (e.which === 27) { $blockContainer.hide(); }
         });
-        $block.show();
+        $blockContainer.show();
     };
 
 

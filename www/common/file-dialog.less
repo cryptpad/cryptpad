@@ -1,39 +1,101 @@
+@import (once) '../customize/src/less2/include/colortheme.less';
+
 #fileDialog {
-    position: absolute;
-    background-color: rgba(200, 200, 200, 0.8);
-    top: 15vh; bottom: 15vh;
-    left: 10vw; right: 10vw;
-    border: 1px solid black;
-    z-index: 100000;
-    overflow: auto;
     display: none;
-    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-    font-size: 16px;
-    text-align: center;
-    .close {
+
+    z-index: 100000;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: @colortheme_modal-dim;
+
+    #modal {
+        background-color: @colortheme_modal-bg;
+        color: @colortheme_modal-fg;
+        box-shadow: @colortheme_modal-shadow;
+
+        padding: @colortheme_modal-padding;
+
         position: absolute;
-        top: 0;
-        right: 0;
-        padding: 5px;
-        cursor: pointer;
-    }
-    .element {
-        cursor: pointer;
-        display: inline-flex;
-        width: 100px;
-        height: 100px;
-        border: 1px solid #ccc;
-        margin: 5px;
-        overflow: hidden;
-        word-wrap: break-word;
-        background-color: white;
-        padding: 5px;
-        align-items: center;
-        span {
-            width: 100px;
-            text-align: center;
+        top: 15vh; bottom: 15vh;
+        left: 10vw; right: 10vw;
+
+        overflow: auto;
+
+        font-family: @colortheme_font;
+        text-align: center;
+
+        & > p {
+            margin-bottom: 1em;
+        }
+
+        .form {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+        }
+
+        input {
+            background-color: @colortheme_modal-input;
+            color: @colortheme_modal-fg;
+            border: 0;
+            padding: 8px 12px;
+            margin: 1em;
+        }
+
+        .close {
+            text-shadow: none;
+            color: inherit;
+
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: @colortheme_modal-padding;
+            cursor: pointer;
+        }
+
+        .fileContainer {
+            display: flex;
+            flex-wrap: wrap;
+            overflow-y: auto;
+        }
+
+        .element {
+            @darker: darken(@colortheme_modal-fg, 30%);
+
+            width: 200px;
+            min-width: 200px;
+            height: 1em;
+            padding: 0.5em;
+            margin: 5px;
+            box-sizing: content-box;
+
+            text-align: left;
+            line-height: 1.25em;
+            cursor: pointer;
+
+            background-color: #111;
+            color: @darker;
+
+            transition: all 0.1s;
+
+            &:hover {
+                color: @colortheme_modal-fg;
+            }
+
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            align-items: center;
+
+            .fa {
+                cursor: pointer;
+                margin-right: 0.5em;
+            }
         }
     }
 }
-
-
