@@ -60,6 +60,10 @@ define([
         return out;
     };
 
+    renderer.paragraph = function (p) {
+        return /<media\-tag[\s\S]*>/i.test(p)? p + '\n': '<p>' + p + '</p>\n';
+    };
+
     var MutationObserver = window.MutationObserver;
     var forbiddenTags = [
         'SCRIPT',
