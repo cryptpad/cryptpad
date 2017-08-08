@@ -313,6 +313,7 @@ define([
                 position: 'bottom',
                 distance: 0,
                 performance: true,
+                dynamicTitle: true,
                 delay: [delay, 0]
             });
         };
