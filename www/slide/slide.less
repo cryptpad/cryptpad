@@ -392,19 +392,6 @@ p {
     //flex: 1;
 }
 
-media-tag {
-    min-height: 0;
-    flex: 1;
-    display: flex;
-    flex-flow: column;
-    text-align: center;
-}
+@import "../customize/src/less2/include/mediatag.less";
 
-media-tag img {
-    flex: 1;
-    max-height: 100% !important;
-}
-
-media-tag iframe {
-  min-height: 100%;
-}
+.mediatag_base();
