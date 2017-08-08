@@ -118,6 +118,10 @@ define(function () {
     out.shareButton = 'Share';
     out.shareSuccess = 'Copied link to clipboard';
 
+    out.userListButton = "User list";
+
+    out.userAccountButton = "Your account";
+
     out.newButton = 'New';
     out.newButtonTitle = 'Create a new pad';
     out.uploadButton = 'Upload files';
