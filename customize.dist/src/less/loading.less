@@ -1,4 +1,5 @@
 @import "./variables.less";
+@import (once) "../less2/include/colortheme.less";
 
 .cp #loading {
     position: fixed;
@@ -51,7 +52,7 @@
         text-align: center;
         font-size: 1.5em;
         opacity: 0.7;
-        font-family: lato, Helvetica, sans-serif;
+        font-family: @colortheme_font;
         padding: 15px;
         max-width: 60%;
         display: inline-block;

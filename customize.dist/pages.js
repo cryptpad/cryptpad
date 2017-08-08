@@ -16,7 +16,7 @@ define([
     var footerCol = function (title, L, literal) {
         return h('div.col', [
             h('ul.list-unstyled', [
-                h('li.title', {
+                h('li.footer-title', {
                     'data-localization': title,
                 }, title? Msg[title]: literal )
                 ].concat(L.map(function (l) {
@@ -77,6 +77,21 @@ define([
     };
 
     var infopageTopbar = function () {
+        var rightLinks;
+        var username = window.localStorage.getItem('User_name');
+        if (username === null) {
+            rightLinks = [
+                h('a.nav-item.nav-link.cp-login-btn', { href: '/login'}, Msg.login_login),
+                h('a.nav-item.nav-link.cp-register-btn', { href: '/register'}, Msg.login_register)
+            ];
+        } else {
+            rightLinks = h('a.nav-item.nav-link.cp-user-btn', { href: '/drive' }, [
+                h('i.fa.fa-user-circle'),
+                " ",
+                username
+            ]);
+        }
+
         return h('nav.navbar.navbar-toggleable-md',
                      h('button.navbar-toggler.navbar-toggler-right', {'type':'button'}, {'data-toggle':'collapse'}, {'data-target':'#menuCollapse'}, {'aria-controls': 'menuCollapse'}, {'aria-expanded':'false'}, {'aria-label':'Toggle navigation'},
                     [h('i.fa.fa-bars ')
@@ -87,9 +102,7 @@ define([
                     h('a.nav-item.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.blog),
                     h('a.nav-item.nav-link', { href: '/contact.html'}, Msg.contact),
                     h('a.nav-item.nav-link', { href: '/about.html'}, Msg.about),
-                    h('a.nav-item.nav-link.cp-login-btn', { href: '/login'}, Msg.login_login),
-                    h('a.nav-item.nav-link.cp-register-btn', { href: '/register'}, Msg.login_register)
-                ])
+                ].concat(rightLinks))
         );
     };
 
@@ -122,14 +135,14 @@ define([
                 h('h2', 'Key Contributors'),
                 h('div.row', [
                     h('div.col-md-4', [
-                        h('img.bio-avatar', {'src': '/customize/images/pierre.jpg'}),
+                        h('img.bio-avatar', {'src': '/customize/images/Pierre-new.jpg'}),
                         h('h3', "Pierre Bondoerffer"),
                         setHTML(h('div#bio'), '<p>Resident CSS wizard and emoji extraordinaire, Pierre is passionate about anything related to technology. He loves to hack around computers and put parts together.</p><p>He is currently studying at 42, where he learns about algorithms, networking, kernel programming and graphics.</p><p>As a part of an internship, he joined XWiki SAS and worked on CryptPad to improve user experience. He also maintains the Spanish translation.</p>')
                     ]),
                     h('div.col-md-4', [
-                        h('img.bio-avatar', {'src': '/customize/images/avatar.png'}),
+                        h('img.bio-avatar', {'src': '/customize/images/Catalin.jpg'}),
                         h('h3', "Catalin Scripcariu"),
-                        setHTML(h('div#bio'), '')
+                        setHTML(h('div#bio'), '<p> Catalin is a Maths majour and has worked in B2B sales for 12 years. Design was always his passion and 3 years ago he started to dedicate himself to web design and front-end.</p><p>At the beginning of 2017 he joined the Xwiki family, where he worked both on the business and the community side of XWiki, including the research team and CryptPad. </p>')
                     ]),
                     h('div.col-md-4', [
                         h('img.bio-avatar', {'src': '/customize/images/ludovic.jpg'}),
@@ -285,7 +298,7 @@ define([
                         ])
                     ])
                 ]),
-            ])
+            ]),
         ];
     };
 
@@ -336,20 +349,26 @@ define([
                     }),
                     h('div.checkbox-container', [
                         h('input#import-recent', {
+                            name: 'import-recent',
                             type: 'checkbox',
                             checked: true
                         }),
-                        h('label', {
+                        // hscript doesn't generate for on label for some
+                        // reason... use jquery as a temporary fallback
+                        setHTML($('<label for="import-recent"></label>')[0], Msg.register_importRecent)
+                        /*h('label', {
                             'for': 'import-recent',
-                        }, Msg.register_importRecent),
+                        }, Msg.register_importRecent),*/
                     ]),
                     h('div.checkbox-container', [
                         h('input#accept-terms', {
+                            name: 'accept-terms',
                             type: 'checkbox'
                         }),
-                        setHTML(h('label', {
+                        setHTML($('<label for="accept-terms"></label>')[0], Msg.register_acceptTerms)
+                        /*setHTML(h('label', {
                             'for': 'accept-terms',
-                        }), Msg.register_acceptTerms),
+                        }), Msg.register_acceptTerms),*/
                     ]),
                     h('button#register.btn.btn-primary', Msg.login_register)
                 ])
