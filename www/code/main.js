@@ -387,6 +387,26 @@ define([
                     }
                 });
 
+                // add the splitter
+                var splitter = $('<div>', {
+                    'class': 'cp-splitter'
+                }).appendTo($iframe.find('#previewContainer'));
+
+                var $target = $iframe.find('.CodeMirror');
+                splitter.on('mousedown', function (e) {
+                    e.preventDefault();
+                    var x = e.pageX;
+                    var w = $target.width();
+
+                    $iframe.on('mouseup mousemove', function handler(evt) {
+                        if (evt.type === 'mouseup') {
+                            $iframe.off('mouseup mousemove', handler);
+                            return;
+                        }
+                        $target.css('width', (w - x + evt.pageX) + 'px');
+                    });
+                });
+
                 Cryptpad.removeLoadingScreen();
                 setEditable(true);
                 initializing = false;
