@@ -291,7 +291,7 @@ define(function () {
     out.blog = "Blog";
 
     out.initialState = [
-        '<span style="font-size:18px;"><p>',
+        '<p>',
         'Esto es&nbsp;<strong>CryptPad</strong>, el editor colaborativo en tiempo real Zero Knowledge. Todo está guardado cuando escribes.',
         '<br>',
         'Comparte el enlace a este pad para editar con amigos o utiliza el botón <span class="fa fa-share-alt" style="border: 1px solid black;color:#000;">&nbsp;Compartir&nbsp;</span> para obtener un <em>enlace sólo lectura</em>&nbsp;que permite leer pero no escribir.',
@@ -299,7 +299,7 @@ define(function () {
 
         '<p><em>',
         'Vamos, empieza a escribir...',
-        '</em></p></span>',
+        '</em></p>',
         '<p>&nbsp;<br></p>'
     ].join('');
 
