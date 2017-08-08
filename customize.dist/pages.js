@@ -263,7 +263,7 @@ define([
                                 [ 'slide', '/slide/', Msg.main_slidePad, 'fa-file-powerpoint-o' ],
                                 [ 'poll.cp-more.cp-hidden', '/poll/', Msg.main_pollPad, 'fa-calendar' ],
                                 [ 'whiteboard.cp-more.cp-hidden', '/whiteboard/', Msg.main_whiteboardPad, 'fa-paint-brush' ],
-                                [ 'recent.cp-more.cp-hidden', '/drive/', Msg.main_recentPads, 'fa-hdd-o' ]
+                                [ 'recent.cp-more.cp-hidden', '/drive/', Msg.main_localPads, 'fa-hdd-o' ]
                             ].map(function (x) {
                                 return h('a', [
                                     { href: x[1] },
