@@ -525,7 +525,7 @@ define(function () {
     out.main_slidePad = 'Markdown Presentation';
     out.main_pollPad = 'Poll or Schedule';
     out.main_whiteboardPad = 'Whiteboard';
-    out.main_recentPads = 'Recent Pads';
+    out.main_localPads = 'Local Pads';
 
     out.footer_applications = "Applications";
     out.footer_contact = "Contact";
