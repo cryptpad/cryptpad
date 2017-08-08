@@ -79,7 +79,120 @@ define([
     // Messaging tools
     var avatars = {};
 
-    var addToFriendListUI = function (common, $block, open, remove, f) {
+    // TODO make this internal to the messenger
+    var channels = Msg.channels  = window.channels = {};
+
+    var UI = Msg.UI = {};
+    UI.init = function (common, $listContainer, $msgContainer) {
+        var ui = {
+            containers: {
+                friendList: $listContainer,
+                messages: $msgContainer,
+            },
+        };
+
+        ui.setFriendList = function (display, remove) {
+            UI.getFriendList(common, display, remove).appendTo($listContainer);
+        };
+
+        ui.notify = function (curvePublic) {
+            var $friend = $listContainer.find('.friend').filter(function (idx, el) {
+                return $(el).data('key') === curvePublic;
+            });
+            $friend.addClass('notify');
+        };
+
+        ui.unnotify = function (curvePublic) {
+            var $friend = $listContainer.find('.friend').filter(function (idx, el) {
+                return $(el).data('key') === curvePublic;
+            });
+            $friend.removeClass('notify');
+        };
+
+        ui.update = function (curvePublic, types) {
+            var data = getFriend(common, curvePublic);
+            var chan = channels[data.channel];
+            if (!chan.ready) {
+                chan.updateOnReady = (chan.updateOnReady || []).concat(types);
+                return;
+            }
+            var $friend = $listContainer.find('.friend').filter(function (idx, el) {
+                return $(el).data('key') === curvePublic;
+            });
+            if (types.indexOf('displayName') >= 0) {
+                $friend.find('.name').text(data.displayName);
+            }
+            if (types.indexOf('avatar') >= 0) {
+                $friend.find('.default').remove();
+                $friend.find('media-tag').remove();
+                if (data.avatar && avatars[data.avatar]) {
+                    $friend.prepend(avatars[data.avatar]);
+                } else {
+                    common.displayAvatar($friend, data.avatar, data.displayName, function ($img) {
+                        if (data.avatar && $img) {
+                            avatars[data.avatar] = $img[0].outerHTML;
+                        }
+                    });
+                }
+            }
+        };
+
+        ui.updateStatus = function (curvePublic) {
+            var data = getFriend(common, curvePublic);
+            var chan = channels[data.channel];
+
+            // FIXME mixes logic and presentation
+            var $friend = $listContainer.find('.friend').filter(function (idx, el) {
+                return $(el).data('key') === curvePublic;
+            });
+            var status = chan.userList.some(function (nId) {
+                return chan.mapId[nId] === curvePublic;
+            });
+            var statusText = status ? 'online' : 'offline';
+            $friend.find('.status').attr('class', 'status '+statusText);
+        };
+
+        ui.getChannel = function (curvePublic) {
+            // TODO extract into UI method
+            var $chat = $msgContainer.find('.chat').filter(function (idx, el) {
+                return $(el).data('key') === curvePublic;
+            });
+            return $chat.length? $chat: null;
+        };
+
+        ui.hideInfo = function () {
+            $msgContainer.find('.info').hide();
+        };
+
+        ui.showInfo = function () {
+            $msgContainer.find('.info').show();
+        };
+
+        ui.createChat = function (curvePublic) {
+            return $('<div>', {'class':'chat'})
+                .data('key', curvePublic).appendTo($msgContainer);
+        };
+
+        ui.hideChat = function () {
+            $msgContainer.find('.chat').hide();
+        };
+
+        ui.getFriend = function (curvePublic) {
+            return $listContainer.find('.friend').filter(function (idx, el) {
+                return $(el).data('key') === curvePublic;
+            });
+        };
+
+        ui.addToFriendList = function (curvePublic, display, remove) {
+            var $block = $listContainer.find('> div');
+            UI.addToFriendList(common, $block, display, remove, curvePublic);
+        };
+
+        return ui;
+    };
+
+    // internal
+    UI.addToFriendList = function (common, $block, open, remove, f) {
         var proxy = common.getProxy();
         var friends = proxy.friends || {};
         if (f === "me") { return; }
@@ -120,12 +233,14 @@ define([
         }
         $('<span>', {'class': 'status'}).appendTo($friend);
     };
-    Msg.getFriendListUI = function (common, open, remove) {
-        var proxy = common.getProxy();
+
+    //  iterate over your friends list and return a dom element containing UI
+    UI.getFriendList = function (common, open, remove) {
+        var proxy = common.getProxy(); // throws
         var $block = $('<div>');
         var friends = proxy.friends || {};
         Object.keys(friends).forEach(function (f) {
-            addToFriendListUI(common, $block, open, remove, f);
+            UI.addToFriendList(common, $block, open, remove, f);
         });
         return $block;
     };
@@ -146,7 +261,6 @@ define([
         });
     };
 
-    var channels = Msg.channels  = window.channels = {};
 
     var msgAlreadyKnown = function (channel, sig) {
         return channel.messages.some(function (message) {
@@ -164,7 +278,7 @@ define([
         if (parsedMsg[0] === Types.message) {
             // TODO validate messages here
             var res = {
-                type: parsedMsg[0], //Types.message,
+                type: parsedMsg[0],
                 sig: sig,
                 channel: parsedMsg[1],
                 time: parsedMsg[2],
@@ -200,6 +314,8 @@ define([
         }
     };
 
+    /*  Broadcast a display name, profile, or avatar change to all contacts
+    */
     var updateMyData = function (common) {
         var friends = getFriendList(common);
         var mySyncData = friends.me;
@@ -226,7 +342,7 @@ define([
     var onChannelReady = function (common, chanId) {
         if (ready.indexOf(chanId) !== -1) { return; }
         ready.push(chanId);
-        channels[chanId].updateStatus();
+        channels[chanId].updateStatus(); // c'est quoi?
         var friends = getFriendList(common);
         if (ready.length === Object.keys(friends).length) {
             // All channels are ready
@@ -323,6 +439,7 @@ define([
         }
     };
 
+    // TODO extract into UI method
     var createChatBox = function (common, $container, curvePublic, messenger) {
         var data = getFriend(common, curvePublic);
 
@@ -390,6 +507,7 @@ define([
 
             var payload = $input.val();
             // Send the message
+            channel.sending = true;
             channel.send(payload, function (e) {
                 if (e) {
                     channel.sending = false;
@@ -401,12 +519,11 @@ define([
                 channel.sending = false;
             });
         };
-        $('<button>', {'class': 'btn btn-primary fa fa-paper-plane'})
-            //.text(common.Messages.contacts_send)
-            .appendTo($inputBlock).click(send);
-        /*$input.on('keypress', function (e) {
-            if (e.which === 13) { send(); }
-        });*/
+        $('<button>', {
+            'class': 'btn btn-primary fa fa-paper-plane',
+            title: common.Messages.contacts_send,
+        }).appendTo($inputBlock).click(send);
+
         var onKeyDown = function (e) {
             if (e.keyCode === 13) {
                 if (e.ctrlKey || e.shiftKey) {
@@ -456,31 +573,67 @@ define([
         });
     };
 
-    Msg.init = function (common, $listContainer, $msgContainer) {
-        var messenger = {};
+    var getMoreHistory = function (network, chan, hash, count) {
+        var msg = [ 'GET_HISTORY_RANGE', chan.id, {
+                from: hash,
+                count: count,
+            }
+        ];
 
+        network.sendto(network.historyKeeper, JSON.stringify(msg)).then(function () {
+        }, function (err) {
+            throw new Error(err);
+        });
+    };
+
+    var getChannelMessagesSince = function (network, proxy, chan, data, keys) {
+        var cfg = {
+            validateKey: keys.validateKey,
+            owners: [proxy.edPublic, data.edPublic],
+            lastKnownHash: data.lastKnownHash
+        };
+        var msg = ['GET_HISTORY', chan.id, cfg];
+        network.sendto(network.historyKeeper, JSON.stringify(msg))
+          .then($.noop, function (err) {
+            throw new Error(err);
+        });
+    };
+
+    Msg.init = function (common, ui) { //$listContainer, $msgContainer) {
+        // declare common variables
         var network = common.getNetwork();
         var proxy = common.getProxy();
         Msg.hk = network.historyKeeper;
         var friends = getFriendList(common);
 
+        // listen for messages...
         network.on('message', function(msg, sender) {
             onDirectMessage(common, msg, sender);
         });
 
+        // declare messenger and common methods
+        var messenger = {
+            ui: ui,
+        };
+
+        messenger.setActive = function (id) {
+            // TODO validate id
+            messenger.active = id;
+        };
+
         // Refresh the active channel
+        // TODO extract into UI method
         var refresh = function (curvePublic) {
-            if (Msg.active !== curvePublic) { return; }
+            if (messenger.active !== curvePublic) { return; }
             var data = friends[curvePublic];
             if (!data) { return; }
             var channel = channels[data.channel];
             if (!channel) { return; }
 
-            var $chat = $msgContainer.find('.chat').filter(function (idx, el) {
-                return $(el).data('key') === curvePublic;
-            });
+            var $chat = ui.getChannel(curvePublic);
 
-            if (!$chat.length) { return; }
+            if (!$chat) { return; }
+
             // Add new messages
             var messages = channel.messages;
             var $messages = $chat.find('.messages');
@@ -515,28 +668,28 @@ define([
             }
         };
         // Display a new channel
+        // TODO extract into UI method
         var display = function (curvePublic) {
-            $msgContainer.find('.info').hide();
+            ui.hideInfo();
             var isNew = false;
-            var $chat = $msgContainer.find('.chat').filter(function (idx, el) {
-                return $(el).data('key') === curvePublic;
-            });
-            if (!$chat.length) {
-                $chat = $('<div>', {'class':'chat'})
-                        .data('key', curvePublic).appendTo($msgContainer);
+            var $chat = ui.getChannel(curvePublic);
+            if (!$chat) {
+                $chat = ui.createChat(curvePublic);
                 createChatBox(common, $chat, curvePublic, messenger);
                 isNew = true;
             }
             // Show the correct div
-            $msgContainer.find('.chat').hide();
+            ui.hideChat();
             $chat.show();
 
-            Msg.active = curvePublic;
+            // TODO set this attr per-messenger
+            messenger.setActive(curvePublic);
             // TODO don't mark messages as read unless you have displayed them
 
             refresh(curvePublic);
         };
 
+        // TODO take a callback
         var remove = function (curvePublic) {
             var data = getFriend(common, curvePublic);
             var channel = channels[data.channel];
@@ -555,106 +708,20 @@ define([
         };
 
         // Display friend list
-        common.getFriendListUI(common, display, remove).appendTo($listContainer);
+        ui.setFriendList(display, remove);
 
-        // Notify on new messages
-        var notify = function (curvePublic) {
-            //if (Msg.active === curvePublic) { return; }
-            var $friend = $listContainer.find('.friend').filter(function (idx, el) {
-                return $(el).data('key') === curvePublic;
-            });
-            $friend.addClass('notify');
-            common.notify();
-        };
-        var unnotify = function (curvePublic) {
-            var $friend = $listContainer.find('.friend').filter(function (idx, el) {
-                return $(el).data('key') === curvePublic;
-            });
-            $friend.removeClass('notify');
-        };
+        // TODO extract into UI method...
         var removeUI = function (curvePublic) {
-            var $friend = $listContainer.find('.friend').filter(function (idx, el) {
-                return $(el).data('key') === curvePublic;
-            });
-            var $chat = $msgContainer.find('.chat').filter(function (idx, el) {
-                return $(el).data('key') === curvePublic;
-            });
+            var $friend = ui.getFriend(curvePublic);
+            var $chat = ui.getChannel(curvePublic);
             $friend.remove();
             $chat.remove();
-            $msgContainer.find('.info').show();
-        };
-        var updateUI = function (curvePublic, types) {
-            var data = getFriend(common, curvePublic);
-            var chan = channels[data.channel];
-            if (!chan.ready) {
-                chan.updateOnReady = (chan.updateOnReady || []).concat(types);
-                return;
-            }
-            var $friend = $listContainer.find('.friend').filter(function (idx, el) {
-                return $(el).data('key') === curvePublic;
-            });
-            if (types.indexOf('displayName') >= 0) {
-                $friend.find('.name').text(data.displayName);
-            }
-            if (types.indexOf('avatar') >= 0) {
-                $friend.find('.default').remove();
-                $friend.find('media-tag').remove();
-                if (data.avatar && avatars[data.avatar]) {
-                    $friend.prepend(avatars[data.avatar]);
-                } else {
-                    common.displayAvatar($friend, data.avatar, data.displayName, function ($img) {
-                        if (data.avatar && $img) {
-                            avatars[data.avatar] = $img[0].outerHTML;
-                        }
-                    });
-                }
-            }
-        };
-        var updateStatus = function (curvePublic) {
-            var data = getFriend(common, curvePublic);
-            var chan = channels[data.channel];
-            var $friend = $listContainer.find('.friend').filter(function (idx, el) {
-                return $(el).data('key') === curvePublic;
-            });
-            var status = chan.userList.some(function (nId) {
-                return chan.mapId[nId] === curvePublic;
-            });
-            var statusText = status ? 'online' : 'offline';
-            $friend.find('.status').attr('class', 'status '+statusText);
-        };
-        var getMoreHistory = function (network, chan, hash, count) {
-            var msg = [
-                'GET_HISTORY_RANGE',
-                chan.id,
-                {
-                    from: hash,
-                    count: count,
-                }
-            ];
-
-            console.log(msg);
-
-            network.sendto(network.historyKeeper, JSON.stringify(msg)).then(function (a, b, c) {
-                console.log(a, b, c);
-            }, function (err) {
-                throw new Error(err);
-            });
-        };
-
-        var getChannelMessagesSince = function (network, chan, data, keys) {
-            var cfg = {
-                validateKey: keys.validateKey,
-                owners: [proxy.edPublic, data.edPublic],
-                lastKnownHash: data.lastKnownHash
-            };
-            var msg = ['GET_HISTORY', chan.id, cfg];
-            network.sendto(network.historyKeeper, JSON.stringify(msg))
-              .then($.noop, function (err) {
-                throw new Error(err);
-            });
+            ui.showInfo();
         };
 
         // Open the channels
+
+        // TODO extract this into an external function
         var openFriendChannel = function (f) {
             if (f === "me") { return; }
             var data = friends[f];
@@ -668,11 +735,14 @@ define([
                     encryptor: encryptor,
                     messages: [],
                     refresh: function () { refresh(data.curvePublic); },
-                    notify: function () { notify(data.curvePublic); },
-                    unnotify: function () { unnotify(data.curvePublic); },
+                    notify: function () {
+                        ui.notify(data.curvePublic);
+                        common.notify();
+                    },
+                    unnotify: function () { ui.unnotify(data.curvePublic); },
                     removeUI: function () { removeUI(data.curvePublic); },
-                    updateUI: function (types) { updateUI(data.curvePublic, types); },
-                    updateStatus: function () { updateStatus(data.curvePublic); },
+                    updateUI: function (types) { ui.update(data.curvePublic, types); },
+                    updateStatus: function () { ui.updateStatus(data.curvePublic); },
                     setLastMessageRead: function (hash) {
                         data.lastKnownHash = hash;
                     },
@@ -680,10 +750,10 @@ define([
                         return data.lastKnownHash;
                     },
                     isActive: function () {
-                        return data.curvePublic === Msg.active;
+                        return data.curvePublic === messenger.active;
                     },
                     getMessagesSinceDisconnect: function () {
-                        getChannelMessagesSince(network, chan, data, keys);
+                        getChannelMessagesSince(network, proxy, chan, data, keys);
                     },
                     wc: chan,
                     userList: [],
@@ -713,7 +783,6 @@ define([
                         var msg = [Types.message, proxy.curvePublic, +new Date(), payload];
                         var msgStr = JSON.stringify(msg);
                         var cryptMsg = channel.encryptor.encrypt(msgStr);
-                        channel.sending = true;
 
                         channel.wc.bcast(cryptMsg).then(function () {
                             pushMsg(common, channel, cryptMsg);
@@ -752,7 +821,7 @@ define([
                     channel.updateStatus();
                 });
 
-                getChannelMessagesSince(network, chan, data, keys);
+                getChannelMessagesSince(network, proxy, chan, data, keys);
             }, function (err) {
                 console.error(err);
             });
@@ -768,6 +837,7 @@ define([
             Object.keys(friends).forEach(openFriendChannel);
         };
 
+        // TODO split out into UI
         messenger.setEditable = function (bool) {
             bool = !bool;
             var input = messenger.input;
@@ -790,14 +860,14 @@ define([
 
         openFriendChannels();
 
+        // TODO split loop innards into ui methods
         var checkNewFriends = function () {
             Object.keys(friends).forEach(function (f) {
-                var $friend = $listContainer.find('.friend').filter(function (idx, el) {
-                    return $(el).data('key') === f;
-                });
+                var $friend = ui.getFriend(f);
+
                 if (!$friend.length) {
                     openFriendChannel(f);
-                    addToFriendListUI(common, $listContainer.find('> div'), display, remove, f);
+                    ui.addToFriendList(f, display, remove);
                 }
             });
         };
@@ -939,6 +1009,7 @@ define([
         if (pendingRequests.indexOf(netfluxId) === -1) {
             pendingRequests.push(netfluxId);
             var proxy = common.getProxy();
+            // FIXME this name doesn't indicate what it does
             common.changeDisplayName(proxy[common.displayNameKey]);
         }
         network.sendto(netfluxId, msgStr);

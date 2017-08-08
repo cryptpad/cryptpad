@@ -125,10 +125,10 @@ define([
     common.createOwnedChannel = Messaging.createOwnedChannel;
     common.getFriendList = Messaging.getFriendList;
     common.getFriendChannelsList = Messaging.getFriendChannelsList;
-    common.getFriendListUI = Messaging.getFriendListUI;
     common.createData = Messaging.createData;
     common.getPendingInvites = Messaging.getPending;
     common.getLatestMessages = Messaging.getLatestMessages;
+    common.initMessagingUI = Messaging.UI.init;
 
     // Userlist
     common.createUserList = UserList.create;

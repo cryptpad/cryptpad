@@ -51,7 +51,8 @@ define([
             APP.messenger.setEditable(true);
         });
 
-        APP.messenger = Cryptpad.initMessaging(Cryptpad, $list, $messages);
+        var ui = APP.ui = Cryptpad.initMessagingUI(Cryptpad, $list, $messages);
+        APP.messenger = Cryptpad.initMessaging(Cryptpad, ui);
 
         var $infoBlock = $('<div>', {'class': 'info'}).appendTo($messages);
         $('<h2>').text(Messages.contacts_info1).appendTo($infoBlock);
