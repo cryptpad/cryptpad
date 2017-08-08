@@ -188,6 +188,18 @@ define([
             UI.addToFriendList(common, $block, display, remove, curvePublic);
         };
 
+        ui.createMessage = function (msg, name) {
+            var $msg = $('<div>', {'class': 'message'})
+                .attr('title', msg.time ? new Date(msg.time).toLocaleString(): '?');
+
+            if (name) {
+                $('<div>', {'class':'sender'}).text(name).appendTo($msg);
+            }
+
+            $('<div>', {'class':'content'}).html(parseMessage(msg.text)).appendTo($msg);
+            return $msg;
+        };
+
         return ui;
     };
 
@@ -599,7 +611,7 @@ define([
         });
     };
 
-    Msg.init = function (common, ui) { //$listContainer, $msgContainer) {
+    Msg.init = function (common, ui) {
         // declare common variables
         var network = common.getNetwork();
         var proxy = common.getProxy();
@@ -641,21 +653,11 @@ define([
             var last = typeof(channel.lastDisplayed) === 'number'? channel.lastDisplayed: -1;
             for (var i = last + 1; i<messages.length; i++) {
                 msg = messages[i];
-                $msg = $('<div>', {'class': 'message'}).appendTo($messages);
+                name = (msg.channel !== channel.lastSender)?
+                    getFriend(common, msg.channel).displayName: undefined;
 
-                // date
-                date = msg.time ? new Date(msg.time).toLocaleString(): '?';
-                //$('<div>', {'class':'date'}).text(date).appendTo($msg);
-                $msg.attr('title', date);
-
-                // name
-                if (msg.channel !== channel.lastSender) {
-                    name = getFriend(common, msg.channel).displayName;
-                    $('<div>', {'class':'sender'}).text(name).appendTo($msg);
-                }
+                ui.createMessage(msg, name).appendTo($messages);
                 channel.lastSender = msg.channel;
-
-                $('<div>', {'class':'content'}).html(parseMessage(msg.text)).appendTo($msg);
             }
             $messages.scrollTop($messages[0].scrollHeight);
             channel.lastDisplayed = i-1;
