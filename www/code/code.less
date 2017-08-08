@@ -59,8 +59,14 @@ body {
     box-sizing: border-box;
     font-family: Calibri,Ubuntu,sans-serif;
     word-wrap: break-word;
-    media-tag * {
-        max-width:100%;
+    position: relative;
+    media-tag {
+        * {
+            max-width:100%;
+        }
+        iframe[type="application/pdf"] {
+            max-height:50vh;
+        }
     }
 }
 
@@ -70,6 +76,17 @@ body {
 
     .markdown_preformatted-code;
     .markdown_gfm-table(black);
+}
+
+.cp-splitter {
+    position: absolute;
+    height: 100%;
+    width: 8px;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+
+    cursor: col-resize;
 }
 
 @media (max-width: @media-medium-screen) {

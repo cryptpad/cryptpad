@@ -39,14 +39,14 @@
             box-shadow: @alertify_box-shadow;
             &, &.default {
                 // FIXME
-                background: rgba(0, 0, 0, .8);
+                background: @colortheme_notification-log;
             }
             &.error {
                 font-weight: bold;
-                background: @colortheme_cp-red;
+                background: @colortheme_notification-warn;
             }
             &.success {
-                background: rgba(0, 0, 0, .8);
+                background: @colortheme_notification-log;
             }
         }
     }
