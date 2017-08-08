@@ -59,8 +59,13 @@ body {
     box-sizing: border-box;
     font-family: Calibri,Ubuntu,sans-serif;
     word-wrap: break-word;
-    media-tag * {
-        max-width:100%;
+    media-tag {
+        * {
+            max-width:100%;
+        }
+        iframe[type="application/pdf"] {
+            max-height:50vh;
+        }
     }
 }
 
