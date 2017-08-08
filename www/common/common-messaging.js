@@ -264,8 +264,9 @@ define([
             return;
         }
 
+        var parsed;
         try {
-            var parsed = JSON.parse(decryptedMsg);
+            parsed = JSON.parse(decryptedMsg);
         } catch (e) {
             console.error(decryptedMsg);
             return;
@@ -324,7 +325,6 @@ define([
 
     var createChatBox = function (common, $container, curvePublic, messenger) {
         var data = getFriend(common, curvePublic);
-        var proxy = common.getProxy();
 
         // Input
         var channel = channels[data.channel];
@@ -393,7 +393,7 @@ define([
             channel.send(payload, function (e) {
                 if (e) {
                     channel.sending = false;
-                    console.error(err);
+                    console.error(e);
                     return;
                 }
                 $input.val('');
@@ -508,6 +508,7 @@ define([
             channel.lastDisplayed = i-1;
             channel.unnotify();
 
+            // return void channel.notify();
             if (messages.length > 10) {
                 var lastKnownMsg = messages[messages.length - 11];
                 channel.setLastMessageRead(lastKnownMsg.sig);
@@ -674,6 +675,12 @@ define([
                     updateStatus: function () { updateStatus(data.curvePublic); },
                     setLastMessageRead: function (hash) {
                         data.lastKnownHash = hash;
+                    },
+                    getLastMessageRead: function () {
+                        return data.lastKnownHash;
+                    },
+                    isActive: function () {
+                        return data.curvePublic === Msg.active;
                     },
                     getMessagesSinceDisconnect: function () {
                         getChannelMessagesSince(network, chan, data, keys);
