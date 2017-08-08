@@ -649,7 +649,7 @@ define([
             // Add new messages
             var messages = channel.messages;
             var $messages = $chat.find('.messages');
-            var $msg, msg, date, name;
+            var msg, name;
             var last = typeof(channel.lastDisplayed) === 'number'? channel.lastDisplayed: -1;
             for (var i = last + 1; i<messages.length; i++) {
                 msg = messages[i];
