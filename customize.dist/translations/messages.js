@@ -244,9 +244,11 @@ define(function () {
     out.canvas_enable = "Enable draw";
     out.canvas_width = "Width";
     out.canvas_opacity = "Opacity";
-    out.canvas_opacityLabel = "opacity: {0}";
+    out.canvas_opacityLabel = "Opacity: {0}";
     out.canvas_widthLabel = "Width: {0}";
     out.canvas_saveToDrive = "Save this image as a file in your CryptDrive";
+    out.canvas_currentBrush = "Current brush";
+    out.canvas_chooseColor = "Choose a color";
 
     // Profile
     out.profileButton = "Profile"; // dropdown menu
@@ -343,6 +345,8 @@ define(function () {
     out.fm_backup_title = 'Backup link';
     out.fm_nameFile = 'How would you like to name that file?';
     out.fm_error_cantPin = "Internal server error. Please reload the page and try again.";
+    out.fm_viewListButton = "List view";
+    out.fm_viewGridButton = "Grid view";
     // File - Context menu
     out.fc_newfolder = "New folder";
     out.fc_rename = "Rename";
@@ -482,6 +486,10 @@ define(function () {
     out.todo_markAsCompleteTitle = "Mark this task as complete";
     out.todo_markAsIncompleteTitle = "Mark this task as incomplete";
     out.todo_removeTaskTitle = "Remove this task from your todo list";
+
+    // pad
+    out.pad_showToolbar = "Show toolbar";
+    out.pad_hideToolbar = "Hide toolbar";
 
     // general warnings
     out.warn_notPinned = "This pad is not in anyone's CryptDrive. It will expire after 3 months. <a href='/about.html#pinning'>Learn more...</a>";

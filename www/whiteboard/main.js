@@ -93,7 +93,7 @@ window.canvas = canvas;
             var img = ccanvas.toDataURL("image/png");
             var $img = $('<img>', {
                 src: img,
-                title: 'Current brush'
+                title: Messages.canvas_currentBrush
             });
             $controls.find('.selected').html('').append($img);
             canvas.freeDrawingCursor = 'url('+img+') '+size/2+' '+size/2+', crosshair';
@@ -289,7 +289,7 @@ window.canvas = canvas;
 
             var $color = module.$color = $('<button>', {
                 id: "color-picker",
-                title: "choose a color",
+                title: Messages.canvas_chooseColor,
                 'class': "fa fa-square rightside-button",
             })
             .on('click', function () {
