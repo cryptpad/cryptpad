@@ -22,15 +22,6 @@ Or, using docker-compose
 docker-compose up -d
 ```
 
-## TODO
-
-```
-cryptpad_1  | Linking config.js
-cryptpad_1  | Using secure websockets: true
-cryptpad_1  | Using storage adapter: './storage/file'
-cryptpad_1  | sed: -e expression #1, char 27: unknown option to `s'
-```
-
 ## Configuration
 
 Set configurations Dockerfile or in .env (using docker-compose) file.
