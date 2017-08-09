@@ -428,8 +428,8 @@ define([
                 }
             }, [
                 h('button#clear.btn.btn-danger', Msg.canvas_clear), ' ',
-                h('button#toggleDraw.btn.btn-default', Msg.canvas_disable),
-                h('button#delete.btn.btn-default', {
+                h('button#toggleDraw.btn.btn-secondary', Msg.canvas_disable),
+                h('button#delete.btn.btn-secondary', {
                     style: {
                         display: 'none',
                     }
@@ -497,7 +497,7 @@ define([
                             style: { display: 'none' },
                             title: Msg.poll_admin_button
                         }, Msg.poll_admin_button),
-                        h('button#help.btn.btn-default', {
+                        h('button#help.btn.btn-secondary', {
                             title: Msg.poll_show_help_button
                         }, Msg.poll_show_help_button)
                     ]),
@@ -513,13 +513,13 @@ define([
                         ]),
                         h('div#tableContainer', [
                             h('div#tableScroll'),
-                            h('button#create-user.btn.btn-default', {
+                            h('button#create-user.btn.btn-secondary', {
                                 title: Msg.poll_create_user
                             }, h('span.fa.fa-plus')),
-                            h('button#create-option.btn.btn-default', {
+                            h('button#create-option.btn.btn-secondary', {
                                 title: Msg.poll_create_option
                             }, h('span.fa.fa-plus')),
-                            h('button#commit.btn.btn-default', {
+                            h('button#commit.btn.btn-secondary', {
                                 title: Msg.poll_commit
                             }, h('span.fa.fa-check'))
                         ])
