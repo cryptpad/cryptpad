@@ -15,9 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 define([
-    '/common/sframe-channel.js',
     '/bower_components/chainpad/chainpad.dist.js',
-], function (SFrameChannel) {
+], function () {
     var ChainPad = window.ChainPad;
     var module = { exports: {} };
 
@@ -81,6 +80,7 @@ define([
         var avgSyncMilliseconds = config.avgSyncMilliseconds;
         var logLevel = typeof(config.logLevel) !== 'undefined'? config.logLevel : 1;
         var readOnly = config.readOnly || false;
+        var sframeChan = config.sframeChan;
         config = undefined;
 
         var chainpad;
@@ -88,14 +88,14 @@ define([
         var myID;
         var isReady = false;
 
-        SFrameChannel.on('EV_RT_JOIN', userList.onJoin);
-        SFrameChannel.on('EV_RT_LEAVE', userList.onLeave);
-        SFrameChannel.on('EV_RT_DISCONNECT', function () {
+        sframeChan.on('EV_RT_JOIN', userList.onJoin);
+        sframeChan.on('EV_RT_LEAVE', userList.onLeave);
+        sframeChan.on('EV_RT_DISCONNECT', function () {
             isReady = false;
             userList.onReset();
             onConnectionChange({ state: false });
         });
-        SFrameChannel.on('EV_RT_CONNECT', function (content) {
+        sframeChan.on('EV_RT_CONNECT', function (content) {
             content.members.forEach(userList.onJoin);
             myID = content.myID;
             isReady = false;
@@ -113,26 +113,26 @@ define([
                 logLevel: logLevel
             });
             chainpad.onMessage(function(message, cb) {
-                SFrameChannel.query('Q_RT_MESSAGE', message, cb);
+                sframeChan.query('Q_RT_MESSAGE', message, cb);
             });
             chainpad.onPatch(function () {
                 onRemote({ realtime: chainpad });
             });
             onInit({
-                myID: content.myID,
+                myID: myID,
                 realtime: chainpad,
                 userList: userList,
                 readOnly: readOnly
             });
         });
-        SFrameChannel.on('Q_RT_MESSAGE', function (content, cb) {
+        sframeChan.on('Q_RT_MESSAGE', function (content, cb) {
             if (isReady) {
                 onLocal(); // should be onBeforeMessage
             }
             chainpad.message(content);
             cb('OK');
         });
-        SFrameChannel.on('EV_RT_READY', function () {
+        sframeChan.on('EV_RT_READY', function () {
             if (isReady) { return; }
             isReady = true;
             chainpad.start();
@@ -141,7 +141,9 @@ define([
             if (!readOnly) { userList.onJoin(myID); }
             onReady({ realtime: chainpad });
         });
-        return;
+        return {
+            getMyID: function () { return myID; }
+        };
     };
     return module.exports;
 });

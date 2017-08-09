@@ -8,10 +8,12 @@ define([
     '/bower_components/chainpad-crypto/crypto.js'
 ], function (SFrameChannel, $, CpNfOuter, nThen, Cryptpad, Crypto) {
     console.log('xxx');
+    var sframeChan;
     nThen(function (waitFor) {
         $(waitFor());
     }).nThen(function (waitFor) {
-        SFrameChannel.init($('#sbox-iframe')[0].contentWindow, waitFor(function () {
+        SFrameChannel.create($('#sbox-iframe')[0].contentWindow, waitFor(function (sfc) {
+            sframeChan = sfc;
             console.log('sframe initialized');
         }));
         Cryptpad.ready(waitFor());
@@ -23,12 +25,13 @@ define([
                 //onConnectError();
             }
         });
-    }).nThen(function (waitFor) {
+
         var secret = Cryptpad.getSecrets();
         var readOnly = secret.keys && !secret.keys.editKeyStr;
         if (!secret.keys) { secret.keys = secret.key; }
 
-        var outer = CpNfOuter.start({
+        CpNfOuter.start({
+            sframeChan: sframeChan,
             channel: secret.channel,
             network: Cryptpad.getNetwork(),
             validateKey: secret.keys.validateKey || undefined,

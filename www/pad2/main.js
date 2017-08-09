@@ -14,6 +14,7 @@ define([
     '/common/cryptget.js',
     '/pad/links.js',
     '/bower_components/nthen/index.js',
+    '/common/sframe-channel.js',
 
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/diff-dom/diffDOM.js',
@@ -21,8 +22,8 @@ define([
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less/cryptpad.less',
     'less!/customize/src/less/toolbar.less'
-], function ($, Crypto, realtimeInput, Hyperjson,
-    Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad, Cryptget, Links, nThen) {
+], function ($, Crypto, CpNfInner, Hyperjson,
+    Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad, Cryptget, Links, nThen, SFrameChannel) {
     var saveAs = window.saveAs;
     var Messages = Cryptpad.Messages;
     var DiffDom = window.diffDOM;
@@ -84,67 +85,48 @@ define([
         Cryptpad.errorLoadingScreen(Messages.websocketError);
     };
 
-    var andThen = function (editor) {
-        //var $iframe = $('#pad-iframe').contents();
-        //var secret = Cryptpad.getSecrets();
-        //var readOnly = secret.keys && !secret.keys.editKeyStr;
-        //if (!secret.keys) {
-        //    secret.keys = secret.key;
-        //}
-        var readOnly = false; // TODO
+    var domFromHTML = function (html) {
+        return new DOMParser().parseFromString(html, 'text/html');
+    };
 
+    var forbiddenTags = [
+        'SCRIPT',
+        'IFRAME',
+        'OBJECT',
+        'APPLET',
+        'VIDEO',
+        'AUDIO'
+    ];
 
-        var $bar = $('#cke_1_toolbox');
+    var openLink = function (e) {
+        var el = e.currentTarget;
+        if (!el || el.nodeName !== 'A') { return; }
+        var href = el.getAttribute('href');
+        if (href) { window.open(href, '_blank'); }
+    };
 
-        var $html = $bar.closest('html');
-        var $faLink = $html.find('head link[href*="/bower_components/components-font-awesome/css/font-awesome.min.css"]');
-        if ($faLink.length) {
-            $html.find('iframe').contents().find('head').append($faLink.clone());
-        }
-        var isHistoryMode = false;
+    var getHTML = function (inner) {
+        return ('<!DOCTYPE html>\n' + '<html>\n' + inner.innerHTML);
+    };
 
-        if (readOnly) {
-            $('#cke_1_toolbox > .cke_toolbox_main').hide();
-        }
-
-        /* add a class to the magicline plugin so we can pick it out more easily */
-
-        var ml = window.CKEDITOR.instances.editor1.plugins.magicline.backdoor.that.line.$;
-
-        [ml, ml.parentElement].forEach(function (el) {
-            el.setAttribute('class', 'non-realtime');
-        });
-
-        var documentBody = $html.find('iframe')[0].contentWindow.document.body;
-
-        var inner = window.inner = documentBody;
-
-        var cursor = module.cursor = Cursor(inner);
-
-        var setEditable = module.setEditable = function (bool) {
-            if (bool) {
-                $(inner).css({
-                    color: '#333',
-                });
-            }
-            if (!readOnly || !bool) {
-                inner.setAttribute('contenteditable', bool);
+    var CKEDITOR_CHECK_INTERVAL = 100;
+    var ckEditorAvailable = function (cb) {
+        var intr;
+        var check = function () {
+            if (window.CKEDITOR) {
+                clearTimeout(intr);
+                cb(window.CKEDITOR);
             }
         };
+        intr = setInterval(function () {
+            console.log("Ckeditor was not defined. Trying again in %sms", CKEDITOR_CHECK_INTERVAL);
+            check();
+        }, CKEDITOR_CHECK_INTERVAL);
+        check();
+    };
 
-        // don't let the user edit until the pad is ready
-        setEditable(false);
-
-        var forbiddenTags = [
-            'SCRIPT',
-            'IFRAME',
-            'OBJECT',
-            'APPLET',
-            'VIDEO',
-            'AUDIO'
-        ];
-
-        var diffOptions = {
+    var mkDiffOptions = function (cursor, readOnly) {
+        return {
             preDiffApply: function (info) {
                 /*
                     Don't accept attributes that begin with 'on'
@@ -262,12 +244,69 @@ define([
                 }
             }
         };
+    };
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    var andThen = function (editor, Ckeditor, sframeChan) {
+        //var $iframe = $('#pad-iframe').contents();
+        //var secret = Cryptpad.getSecrets();
+        //var readOnly = secret.keys && !secret.keys.editKeyStr;
+        //if (!secret.keys) {
+        //    secret.keys = secret.key;
+        //}
+        var readOnly = false; // TODO
+
+
+        var $bar = $('#cke_1_toolbox');
+
+        var $html = $bar.closest('html');
+        var $faLink = $html.find('head link[href*="/bower_components/components-font-awesome/css/font-awesome.min.css"]');
+        if ($faLink.length) {
+            $html.find('iframe').contents().find('head').append($faLink.clone());
+        }
+        var isHistoryMode = false;
+
+        if (readOnly) {
+            $('#cke_1_toolbox > .cke_toolbox_main').hide();
+        }
+
+        /* add a class to the magicline plugin so we can pick it out more easily */
+
+        var ml = Ckeditor.instances.editor1.plugins.magicline.backdoor.that.line.$;
+        [ml, ml.parentElement].forEach(function (el) {
+            el.setAttribute('class', 'non-realtime');
+        });
+
+        var documentBody = $html.find('iframe')[0].contentWindow.document.body;
+
+        var inner = window.inner = documentBody;
+
+        var cursor = module.cursor = Cursor(inner);
+
+        var setEditable = module.setEditable = function (bool) {
+            if (bool) {
+                $(inner).css({
+                    color: '#333',
+                });
+            }
+            if (!readOnly || !bool) {
+                inner.setAttribute('contenteditable', bool);
+            }
+        };
+
+        // don't let the user edit until the pad is ready
+        setEditable(false);
 
         var initializing = true;
 
-        var Title;
-        var UserList;
-        var Metadata;
+        //var Title;
+        //var UserList;
+        //var Metadata;
 
         var getHeadingText = function () {
             var text;
@@ -280,14 +319,7 @@ define([
             })) { return text; }
         };
 
-        var DD = new DiffDom(diffOptions);
-
-        var openLink = function (e) {
-            var el = e.currentTarget;
-            if (!el || el.nodeName !== 'A') { return; }
-            var href = el.getAttribute('href');
-            if (href) { window.open(href, '_blank'); }
-        };
+        var DD = new DiffDom(mkDiffOptions(cursor, readOnly));
 
         // apply patches, and try not to lose the cursor in the process!
         var applyHjson = function (shjson) {
@@ -323,28 +355,12 @@ define([
         };
 
         var realtimeOptions = {
-            // the websocket URL
-            websocketURL: Cryptpad.getWebsocketURL(),
-
-            // the channel we will communicate over
-            channel: 'x',//secret.channel,
-
-            // the nework used for the file store if it exists
-            network: Cryptpad.getNetwork(),
-
-            // our public key
-            validateKey: undefined,//secret.keys.validateKey || undefined,
+            sframeChan: sframeChan,
             readOnly: readOnly,
-
-            // Pass in encrypt and decrypt methods
-            crypto: undefined,//Crypto.createEncryptor(secret.keys),
-
             // really basic operational transform
             transformFunction : JsonOT.validate,
-
             // cryptpad debug logging (default is 1)
             // logLevel: 0,
-
             validateContent: function (content) {
                 try {
                     JSON.parse(content);
@@ -440,16 +456,8 @@ define([
             }
         };
 
-        var getHTML = function () {
-            return ('<!DOCTYPE html>\n' + '<html>\n' + inner.innerHTML);
-        };
-
-        var domFromHTML = function (html) {
-            return new DOMParser().parseFromString(html, 'text/html');
-        };
-
         var exportFile = function () {
-            var html = getHTML();
+            var html = getHTML(inner);
             var suggestion = Title.suggestTitle('cryptpad-document');
             Cryptpad.prompt(Messages.exportPrompt,
                 Cryptpad.fixFileName(suggestion) + '.html', function (filename) {
@@ -477,7 +485,8 @@ define([
             Metadata = Cryptpad.createMetadata(UserList, Title, null, Cryptpad);
 
             var configTb = {
-                displayed: ['title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit', 'upgrade'],
+                displayed: [
+                    'title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit', 'upgrade'],
                 userList: UserList.getToolbarConfig(),
                 share: {
                     secret: secret,
@@ -648,14 +657,6 @@ define([
                 cursor.setToStart();
             }
         };
-/* unreachable
-        realtimeOptions.onAbort = function () {
-            console.log("Aborting the session!");
-            // stop the user from continuing to edit
-            setEditable(false);
-            toolbar.failed();
-            Cryptpad.alert(Messages.common_connectionLost, undefined, true);
-        }; */
 
         realtimeOptions.onConnectionChange = function (info) {
             setEditable(info.state);
@@ -685,7 +686,9 @@ define([
             }
         };
 
-        module.realtimeInput = realtimeInput.start(realtimeOptions);
+        var cpNfInner = CpNfInner.start(realtimeOptions);
+
+        
 
         Cryptpad.onLogout(function () { setEditable(false); });
 
@@ -725,32 +728,17 @@ define([
         });
     };
 
-
-    var CKEDITOR_CHECK_INTERVAL = 100;
-    var ckEditorAvailable = function (cb) {
-        var intr;
-        var check = function () {
-            if (window.CKEDITOR) {
-                clearTimeout(intr);
-                cb(window.CKEDITOR);
-            }
-        };
-        intr = setInterval(function () {
-            console.log("Ckeditor was not defined. Trying again in %sms", CKEDITOR_CHECK_INTERVAL);
-            check();
-        }, CKEDITOR_CHECK_INTERVAL);
-        check();
-    };
-
     var main = function () {
         var Ckeditor;
         var editor;
+        var sframeChan;
 
         nThen(function (waitFor) {
             ckEditorAvailable(waitFor(function (ck) { Ckeditor = ck; }));
             $(waitFor(function () {
                 Cryptpad.addLoadingScreen();
             }));
+            SFrameChannel.create(window.top, waitFor(function (sfc) { sframeChan = sfc; }));
         }).nThen(function (waitFor) {
             Ckeditor.config.toolbarCanCollapse = true;
             if (screen.height < 800) {
@@ -770,7 +758,7 @@ define([
                     onConnectError();
                 }
             });
-            andThen(editor);
+            andThen(editor, Ckeditor, sframeChan);
         });
     };
     main();

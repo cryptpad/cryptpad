@@ -4,6 +4,11 @@
 // Please document the queries and events you create, and please please avoid making generic
 // "do stuff" events/queries which are used for many different things because it makes the
 // protocol unclear.
+//
+// WARNING: At this point, this protocol is still EXPERIMENTAL. This is not it's final form.
+//   We need to define protocol one piece at a time and then when we are satisfied that we
+//   fully understand the problem, we will define the *right* protocol and this file will be dynomited.
+//
 define({
     // When the iframe first launches, this query is sent repeatedly by the controller
     // to wait for it to awake and give it the requirejs config to use.

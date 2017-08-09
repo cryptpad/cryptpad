@@ -2,22 +2,92 @@
 define([
     '/common/sframe-protocol.js'
 ], function (SFrameProtocol) {
-    var otherWindow;
-    var handlers = {};
-    var queries = {};
-
-    // list of handlers which are registered from the other side...
-    var insideHandlers = [];
-    var callWhenRegistered = {};
-
-    var module = { exports: {} };
 
     var mkTxid = function () {
         return Math.random().toString(16).replace('0.', '') + Math.random().toString(16).replace('0.', '');
     };
 
-    module.exports.init = function (ow, cb) {
-        if (otherWindow) { throw new Error('already initialized'); }
+    var create = function (ow, cb) {
+        var otherWindow;
+        var handlers = {};
+        var queries = {};
+
+        // list of handlers which are registered from the other side...
+        var insideHandlers = [];
+        var callWhenRegistered = {};
+
+        var chan = {};
+
+        chan.query = function (q, content, cb) {
+            if (!otherWindow) { throw new Error('not yet initialized'); }
+            if (!SFrameProtocol[q]) {
+                throw new Error('please only make queries are defined in sframe-protocol.js');
+            }
+            var txid = mkTxid();
+            var timeout = setTimeout(function () {
+                delete queries[txid];
+                console.log("Timeout making query " + q);
+            }, 30000);
+            queries[txid] = function (data, msg) {
+                clearTimeout(timeout);
+                delete queries[txid];
+                cb(undefined, data.content, msg);
+            };
+            otherWindow.postMessage(JSON.stringify({
+                txid: txid,
+                content: content,
+                q: q
+            }), '*');
+        };
+
+        var event = chan.event = function (e, content) {
+            if (!otherWindow) { throw new Error('not yet initialized'); }
+            if (!SFrameProtocol[e]) {
+                throw new Error('please only fire events that are defined in sframe-protocol.js');
+            }
+            if (e.indexOf('EV_') !== 0) {
+                throw new Error('please only use events (starting with EV_) for event messages');
+            }
+            otherWindow.postMessage(JSON.stringify({ content: content, q: e }), '*');
+        };
+
+        chan.on = function (queryType, handler) {
+            if (!otherWindow) { throw new Error('not yet initialized'); }
+            if (typeof(handlers[queryType]) !== 'undefined') { throw new Error('already registered'); }
+            if (!SFrameProtocol[queryType]) {
+                throw new Error('please only register handlers which are defined in sframe-protocol.js');
+            }
+            handlers[queryType] = function (data, msg) {
+                handler(data.content, function (replyContent) {
+                    msg.source.postMessage(JSON.stringify({
+                        txid: data.txid,
+                        content: replyContent
+                    }), '*');
+                }, msg);
+            };
+            event('EV_REGISTER_HANDLER', queryType);
+        };
+
+        chan.whenReg = function (queryType, handler) {
+            if (!otherWindow) { throw new Error('not yet initialized'); }
+            if (!SFrameProtocol[queryType]) {
+                throw new Error('please only register handlers which are defined in sframe-protocol.js');
+            }
+            if (insideHandlers.indexOf(queryType) > -1) {
+                handler();
+            } else {
+                (callWhenRegistered[queryType] = callWhenRegistered[queryType] || []).push(handler);
+            }
+        };
+
+        handlers['EV_REGISTER_HANDLER'] = function (data) {
+            if (callWhenRegistered[data.content]) {
+                callWhenRegistered[data.content].forEach(function (f) { f(); });
+                delete callWhenRegistered[data.content];
+            }
+            insideHandlers.push(data.content);
+        };
+
         var intr;
         var txid;
         window.addEventListener('message', function (msg) {
@@ -32,7 +102,7 @@ define([
                 }
                 clearInterval(intr);
                 otherWindow = ow;
-                cb();
+                cb(chan);
             } else if (typeof(data.q) === 'string' && handlers[data.q]) {
                 handlers[data.q](data, msg);
             } else if (typeof(data.q) === 'undefined' && queries[data.txid]) {
@@ -48,7 +118,7 @@ define([
         if (window !== window.top) {
             // we're in the sandbox
             otherWindow = ow;
-            cb();
+            cb(chan);
         } else {
             require(['/common/requireconfig.js'], function (RequireConfig) {
                 txid = mkTxid();
@@ -63,75 +133,5 @@ define([
         }
     };
 
-    module.exports.query = function (q, content, cb) {
-        if (!otherWindow) { throw new Error('not yet initialized'); }
-        if (!SFrameProtocol[q]) {
-            throw new Error('please only make queries are defined in sframe-protocol.js');
-        }
-        var txid = mkTxid();
-        var timeout = setTimeout(function () {
-            delete queries[txid];
-            console.log("Timeout making query " + q);
-        }, 30000);
-        queries[txid] = function (data, msg) {
-            clearTimeout(timeout);
-            delete queries[txid];
-            cb(undefined, data.content, msg);
-        };
-        otherWindow.postMessage(JSON.stringify({
-            txid: txid,
-            content: content,
-            q: q
-        }), '*');
-    };
-
-    var event = module.exports.event = function (e, content) {
-        if (!otherWindow) { throw new Error('not yet initialized'); }
-        if (!SFrameProtocol[e]) {
-            throw new Error('please only fire events that are defined in sframe-protocol.js');
-        }
-        if (e.indexOf('EV_') !== 0) {
-            throw new Error('please only use events (starting with EV_) for event messages');
-        }
-        otherWindow.postMessage(JSON.stringify({ content: content, q: e }), '*');
-    };
-
-    module.exports.on = function (queryType, handler) {
-        if (!otherWindow) { throw new Error('not yet initialized'); }
-        if (typeof(handlers[queryType]) !== 'undefined') { throw new Error('already registered'); }
-        if (!SFrameProtocol[queryType]) {
-            throw new Error('please only register handlers which are defined in sframe-protocol.js');
-        }
-        handlers[queryType] = function (data, msg) {
-            handler(data.content, function (replyContent) {
-                msg.source.postMessage(JSON.stringify({
-                    txid: data.txid,
-                    content: replyContent
-                }), '*');
-            }, msg);
-        };
-        event('EV_REGISTER_HANDLER', queryType);
-    };
-
-    module.exports.whenReg = function (queryType, handler) {
-        if (!otherWindow) { throw new Error('not yet initialized'); }
-        if (!SFrameProtocol[queryType]) {
-            throw new Error('please only register handlers which are defined in sframe-protocol.js');
-        }
-        if (insideHandlers.indexOf(queryType) > -1) {
-            handler();
-        } else {
-            (callWhenRegistered[queryType] = callWhenRegistered[queryType] || []).push(handler);
-        }
-    };
-
-    handlers['EV_REGISTER_HANDLER'] = function (data) {
-        if (callWhenRegistered[data.content]) {
-            callWhenRegistered[data.content].forEach(function (f) { f(); });
-            delete callWhenRegistered[data.content];
-        }
-        insideHandlers.push(data.content);
-    };
-
-    return module.exports;
+    return { create: create };
 });

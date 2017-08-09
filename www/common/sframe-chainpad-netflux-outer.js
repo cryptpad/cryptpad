@@ -14,11 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-define([
-    '/common/sframe-channel.js',
-], function (SFrameChannel) {
+define([], function () {
     var USE_HISTORY = true;
-    var module = { exports: {} };
 
     var verbose = function (x) { console.log(x); };
     verbose = function () {}; // comment out to enable verbose logging
@@ -31,6 +28,7 @@ define([
         var validateKey = conf.validateKey;
         var readOnly = conf.readOnly || false;
         var network = conf.network;
+        var sframeChan = conf.sframeChan;
         conf = undefined;
 
         var initializing = true;
@@ -38,15 +36,15 @@ define([
 
         var queue = [];
         var messageFromInner = function (m, cb) { queue.push([ m, cb ]); };
-        SFrameChannel.on('Q_RT_MESSAGE', function (message, cb) {
+        sframeChan.on('Q_RT_MESSAGE', function (message, cb) {
             messageFromInner(message, cb);
         });        
 
-        var onReady = function(wc) {
+        var onReady = function () {
             // Trigger onReady only if not ready yet. This is important because the history keeper sends a direct
             // message through "network" when it is synced, and it triggers onReady for each channel joined.
             if (!initializing) { return; }
-            SFrameChannel.event('EV_RT_READY', null);
+            sframeChan.event('EV_RT_READY', null);
             // we're fully synced
             initializing = false;
         };
@@ -122,7 +120,7 @@ define([
             message = unBencode(message);//.slice(message.indexOf(':[') + 1);
 
             // pass the message into Chainpad
-            SFrameChannel.query('Q_RT_MESSAGE', message, function () { });
+            sframeChan.query('Q_RT_MESSAGE', message, function () { });
         };
 
         // We use an object to store the webchannel so that we don't have to push new handlers to chainpad
@@ -134,14 +132,14 @@ define([
             channel = wc.id;
 
             // Add the existing peers in the userList
-            SFrameChannel.event('EV_RT_CONNECT', { myID: wc.myID, members: wc.members, readOnly: readOnly });
+            sframeChan.event('EV_RT_CONNECT', { myID: wc.myID, members: wc.members, readOnly: readOnly });
 
             // Add the handlers to the WebChannel
             wc.on('message', function (msg, sender) { //Channel msg
                 onMessage(sender, msg, wc, network);
             });
-            wc.on('join', function (m) { SFrameChannel.event('EV_RT_JOIN', m); });
-            wc.on('leave', function (m) { SFrameChannel.event('EV_RT_LEAVE', m); });
+            wc.on('join', function (m) { sframeChan.event('EV_RT_JOIN', m); });
+            wc.on('leave', function (m) { sframeChan.event('EV_RT_LEAVE', m); });
 
             if (firstConnection) {
                 // Sending a message...
@@ -210,7 +208,7 @@ define([
         network.on('disconnect', function (reason) {
             if (isIntentionallyLeaving) { return; }
             if (reason === "network.disconnect() called") { return; }
-            SFrameChannel.event('EV_RT_DISCONNECT');
+            sframeChan.event('EV_RT_DISCONNECT');
         });
 
         network.on('reconnect', function (uid) {
@@ -230,7 +228,7 @@ define([
 
     return {
         start: function (config) {
-            SFrameChannel.whenReg('EV_RT_READY', function () { start(config); });
+            config.sframeChan.whenReg('EV_RT_READY', function () { start(config); });
         }
     };
 });

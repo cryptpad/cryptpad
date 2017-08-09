@@ -1,11 +1,8 @@
 // This is stage 1, it can be changed but you must bump the version of the project.
 // Note: This must only be loaded from inside of a sandbox-iframe.
-define([
-    '/common/requireconfig.js',
-    '/common/sframe-channel.js'
-], function (RequireConfig, SFrameChannel) {
+define(['/common/requireconfig.js'], function (RequireConfig) {
     require.config(RequireConfig);
-console.log('boot2');
+
     // most of CryptPad breaks if you don't support isArray
     if (!Array.isArray) {
         Array.isArray = function(arg) { // CRYPTPAD_SHIM
@@ -22,8 +19,6 @@ console.log('boot2');
     };
     window.__defineGetter__('localStorage', function () { return mkFakeStore(); });
     window.__defineGetter__('sessionStorage', function () { return mkFakeStore(); });
-
-    SFrameChannel.init(window.top, function () { });
 
     require([document.querySelector('script[data-bootload]').getAttribute('data-bootload')]);
 });
