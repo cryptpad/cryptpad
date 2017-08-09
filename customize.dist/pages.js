@@ -427,33 +427,43 @@ define([
                     display: 'block',
                 }
             }, [
-                h('button#clear', Msg.canvas_clear), ' ',
-                h('button#toggleDraw', Msg.canvas_disable),
-                h('button#delete', {
+                h('button#clear.btn.btn-danger', Msg.canvas_clear), ' ',
+                h('button#toggleDraw.btn.btn-default', Msg.canvas_disable),
+                h('button#delete.btn.btn-default', {
                     style: {
                         display: 'none',
                     }
-                }),
-                h('input#width', {
-                    type: 'range',
-                    value: "5",
-                    min: "1",
-                    max: "100"
-                }),
-                h('label', {
-                    'for': 'width'
-                }, Msg.canvas_width),
-                h('input#opacity', {
-                    type: 'range',
-                    value: "1",
-                    min: "0.1",
-                    max: "1",
-                    step: "0.1"
-                }),
-                h('label', {
-                    'for': 'width',
-                }),
-                h('span.selected')
+                }, Msg.canvas_delete),
+                h('div.range-group', [
+                    h('label', {
+                        'for': 'width'
+                    }, Msg.canvas_width),
+                    h('input#width', {
+                        type: 'range',
+                        value: "5",
+                        min: "1",
+                        max: "100"
+                    }),
+                    h('span#width-val', '5px')
+                ]),
+                h('div.range-group', [
+                    h('label', {
+                        'for': 'opacity',
+                    }, Msg.canvas_opacity),
+                    h('input#opacity', {
+                        type: 'range',
+                        value: "1",
+                        min: "0.1",
+                        max: "1",
+                        step: "0.1"
+                    }),
+                    h('span#opacity-val', '100%')
+                ]),
+                h('span.selected', [
+                    h('img', {
+                        title: Msg.canvas_currentBrush
+                    })
+                ])
             ]),
             setHTML(h('div#colors'), '&nbsp;'),
             loadingScreen(),
@@ -480,16 +490,15 @@ define([
                         h('p', Msg.poll_p_encryption)
                     ]),
                     h('div.upper', [
-                        h('button#publish', {
+                        h('button#publish.btn.btn-success', {
                             style: { display: 'none' }
                         }, Msg.poll_publish_button),
-                        h('button#admin', {
+                        h('button#admin.btn.btn-primary', {
                             style: { display: 'none' },
                             title: Msg.poll_admin_button
                         }, Msg.poll_admin_button),
-                        h('button#help', {
-                            title: Msg.poll_show_help_button,
-                            style: { display: 'none' }
+                        h('button#help.btn.btn-default', {
+                            title: Msg.poll_show_help_button
                         }, Msg.poll_show_help_button)
                     ]),
                     h('div.realtime', [
@@ -504,13 +513,13 @@ define([
                         ]),
                         h('div#tableContainer', [
                             h('div#tableScroll'),
-                            h('button#create-user', {
+                            h('button#create-user.btn.btn-default', {
                                 title: Msg.poll_create_user
                             }, h('span.fa.fa-plus')),
-                            h('button#create-option', {
+                            h('button#create-option.btn.btn-default', {
                                 title: Msg.poll_create_option
                             }, h('span.fa.fa-plus')),
-                            h('button#commit', {
+                            h('button#commit.btn.btn-default', {
                                 title: Msg.poll_commit
                             }, h('span.fa.fa-check'))
                         ])

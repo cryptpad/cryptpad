@@ -15,6 +15,7 @@ define([
     '/bower_components/file-saver/FileSaver.min.js',
 
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/customize/src/less/cryptpad.less',
     'less!/whiteboard/whiteboard.less',
     'less!/customize/src/less/toolbar.less',
@@ -89,13 +90,8 @@ window.canvas = canvas;
             ctx.strokeStyle = '#000000';
             ctx.stroke();
 
-
             var img = ccanvas.toDataURL("image/png");
-            var $img = $('<img>', {
-                src: img,
-                title: 'Current brush'
-            });
-            $controls.find('.selected').html('').append($img);
+            $controls.find('.selected > img').attr('src', img);
             canvas.freeDrawingCursor = 'url('+img+') '+size/2+' '+size/2+', crosshair';
         };
 
@@ -103,6 +99,7 @@ window.canvas = canvas;
             var val = $width.val();
             canvas.freeDrawingBrush.width = Number(val);
             $widthLabel.text(Cryptpad.Messages._getKey("canvas_widthLabel", [val]));
+            $('#width-val').text(val + 'px');
             createCursor();
         };
         updateBrushWidth();
@@ -114,6 +111,7 @@ window.canvas = canvas;
             brush.opacity = Number(val);
             canvas.freeDrawingBrush.color = Colors.hex2rgba(brush.color, brush.opacity);
             $opacityLabel.text(Cryptpad.Messages._getKey("canvas_opacityLabel", [val]));
+            $('#opacity-val').text((Number(val) * 100) + '%');
             createCursor();
         };
         updateBrushOpacity();
@@ -188,7 +186,7 @@ window.canvas = canvas;
 
         var setEditable = function (bool) {
             if (readOnly && bool) { return; }
-            if (bool) { $controls.show(); }
+            if (bool) { $controls.css('display', 'flex'); }
             else { $controls.hide(); }
 
             canvas.isDrawingMode = bool ? module.draw : false;
@@ -199,7 +197,7 @@ window.canvas = canvas;
             canvas.forEachObject(function (object) {
                 object.selectable = bool;
             });
-            $canvasContainer.css('border-color', bool? 'black': 'red');
+            $canvasContainer.find('canvas').css('border-color', bool? 'black': 'red');
         };
 
         var saveImage = module.saveImage = function () {
@@ -289,7 +287,7 @@ window.canvas = canvas;
 
             var $color = module.$color = $('<button>', {
                 id: "color-picker",
-                title: "choose a color",
+                title: Messages.canvas_chooseColor,
                 'class': "fa fa-square rightside-button",
             })
             .on('click', function () {

@@ -308,7 +308,7 @@ define([
 
         toolbar.userlistContent = $content;
 
-        var $container = $('<span>', {id: 'userButtons'});
+        var $container = $('<span>', {id: 'userButtons', title: Messages.userListButton});
 
         var $button = $('<button>').appendTo($container);
         $('<span>',{'class': 'buttonTitle'}).appendTo($button);
@@ -446,6 +446,7 @@ define([
             //$shareBlock.find('button').attr('id', 'shareButton');
             $shareBlock.find('.dropdown-bar-content').addClass(SHARE_CLS).addClass(EDITSHARE_CLS).addClass(VIEWSHARE_CLS);
             $shareBlock.addClass('shareButton');
+            $shareBlock.find('button').attr('title', Messages.shareButton);
 
             if (hashes.editHash) {
                 $shareBlock.find('a.editShare').click(function () {
@@ -774,6 +775,7 @@ define([
             userMenuCfg.displayChangeName = 1;
         }
         Cryptpad.createUserAdminMenu(userMenuCfg);
+        $userAdmin.find('button').attr('title', Messages.userAccountButton);
 
         var $userButton = toolbar.$userNameButton = $userAdmin.find('a.' + USERBUTTON_CLS);
         $userButton.click(function (e) {
