@@ -488,8 +488,7 @@ define([
                             title: Msg.poll_admin_button
                         }, Msg.poll_admin_button),
                         h('button#help', {
-                            title: Msg.poll_show_help_button,
-                            style: { display: 'none' }
+                            title: Msg.poll_show_help_button
                         }, Msg.poll_show_help_button)
                     ]),
                     h('div.realtime', [
