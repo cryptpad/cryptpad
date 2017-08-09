@@ -122,7 +122,6 @@ define([
     common.initMessaging = Messaging.init;
     common.addDirectMessageHandler = Messaging.addDirectMessageHandler;
     common.inviteFromUserlist = Messaging.inviteFromUserlist;
-    common.createOwnedChannel = Messaging.createOwnedChannel;
     common.getFriendList = Messaging.getFriendList;
     common.getFriendChannelsList = Messaging.getFriendChannelsList;
     common.createData = Messaging.createData;
