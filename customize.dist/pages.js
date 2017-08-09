@@ -427,33 +427,43 @@ define([
                     display: 'block',
                 }
             }, [
-                h('button#clear', Msg.canvas_clear), ' ',
-                h('button#toggleDraw', Msg.canvas_disable),
-                h('button#delete', {
+                h('button#clear.btn.btn-danger', Msg.canvas_clear), ' ',
+                h('button#toggleDraw.btn.btn-default', Msg.canvas_disable),
+                h('button#delete.btn.btn-default', {
                     style: {
                         display: 'none',
                     }
-                }),
-                h('input#width', {
-                    type: 'range',
-                    value: "5",
-                    min: "1",
-                    max: "100"
-                }),
-                h('label', {
-                    'for': 'width'
-                }, Msg.canvas_width),
-                h('input#opacity', {
-                    type: 'range',
-                    value: "1",
-                    min: "0.1",
-                    max: "1",
-                    step: "0.1"
-                }),
-                h('label', {
-                    'for': 'width',
-                }),
-                h('span.selected')
+                }, Msg.canvas_delete),
+                h('div.range-group', [
+                    h('label', {
+                        'for': 'width'
+                    }, Msg.canvas_width),
+                    h('input#width', {
+                        type: 'range',
+                        value: "5",
+                        min: "1",
+                        max: "100"
+                    }),
+                    h('span#width-val', '5px')
+                ]),
+                h('div.range-group', [
+                    h('label', {
+                        'for': 'opacity',
+                    }, Msg.canvas_opacity),
+                    h('input#opacity', {
+                        type: 'range',
+                        value: "1",
+                        min: "0.1",
+                        max: "1",
+                        step: "0.1"
+                    }),
+                    h('span#opacity-val', '100%')
+                ]),
+                h('span.selected', [
+                    h('img', {
+                        title: Msg.canvas_currentBrush
+                    })
+                ])
             ]),
             setHTML(h('div#colors'), '&nbsp;'),
             loadingScreen(),
