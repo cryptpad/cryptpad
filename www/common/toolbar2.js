@@ -761,7 +761,6 @@ define([
 
     var createUserAdmin = function (toolbar, config) {
         var $userAdmin = toolbar.$userAdmin.find('.'+USERADMIN_CLS).show();
-        $userAdmin.find('button').attr('title', Messages.userAccountButton);
         var userMenuCfg = {
             $initBlock: $userAdmin
         };
@@ -776,6 +775,7 @@ define([
             userMenuCfg.displayChangeName = 1;
         }
         Cryptpad.createUserAdminMenu(userMenuCfg);
+        $userAdmin.find('button').attr('title', Messages.userAccountButton);
 
         var $userButton = toolbar.$userNameButton = $userAdmin.find('a.' + USERBUTTON_CLS);
         $userButton.click(function (e) {
