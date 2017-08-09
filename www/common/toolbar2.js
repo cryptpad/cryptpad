@@ -629,7 +629,7 @@ define([
             title: Messages.header_logoTitle,
             'class': "cryptpad-logo"
         }).append($('<img>', {
-            src: '/customize/images/logo_white.svg'
+            src: '/customize/images/logo_white.png'
         }));
         var onClick = function (e) {
             e.preventDefault();
