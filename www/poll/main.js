@@ -458,7 +458,7 @@ define([
         var msg = (help ? Messages.poll_hide_help_button : Messages.poll_show_help_button);
 
         $('#howItWorks').toggle(help);
-        $('#help').text(msg).attr('title', msg);
+        $('#help').text(msg);
     };
 
     var Title;
