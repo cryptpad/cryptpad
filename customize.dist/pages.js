@@ -480,14 +480,14 @@ define([
                         h('p', Msg.poll_p_encryption)
                     ]),
                     h('div.upper', [
-                        h('button#publish', {
+                        h('button#publish.btn.btn-success', {
                             style: { display: 'none' }
                         }, Msg.poll_publish_button),
-                        h('button#admin', {
+                        h('button#admin.btn.btn-primary', {
                             style: { display: 'none' },
                             title: Msg.poll_admin_button
                         }, Msg.poll_admin_button),
-                        h('button#help', {
+                        h('button#help.btn.btn-default', {
                             title: Msg.poll_show_help_button
                         }, Msg.poll_show_help_button)
                     ]),
@@ -503,13 +503,13 @@ define([
                         ]),
                         h('div#tableContainer', [
                             h('div#tableScroll'),
-                            h('button#create-user', {
+                            h('button#create-user.btn.btn-default', {
                                 title: Msg.poll_create_user
                             }, h('span.fa.fa-plus')),
-                            h('button#create-option', {
+                            h('button#create-option.btn.btn-default', {
                                 title: Msg.poll_create_option
                             }, h('span.fa.fa-plus')),
-                            h('button#commit', {
+                            h('button#commit.btn.btn-default', {
                                 title: Msg.poll_commit
                             }, h('span.fa.fa-check'))
                         ])
