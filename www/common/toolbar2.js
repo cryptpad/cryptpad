@@ -446,7 +446,7 @@ define([
             //$shareBlock.find('button').attr('id', 'shareButton');
             $shareBlock.find('.dropdown-bar-content').addClass(SHARE_CLS).addClass(EDITSHARE_CLS).addClass(VIEWSHARE_CLS);
             $shareBlock.addClass('shareButton');
-            $shareBlock.attr('title', Messages.shareButton);
+            $shareBlock.find('button').attr('title', Messages.shareButton);
 
             if (hashes.editHash) {
                 $shareBlock.find('a.editShare').click(function () {
@@ -761,7 +761,7 @@ define([
 
     var createUserAdmin = function (toolbar, config) {
         var $userAdmin = toolbar.$userAdmin.find('.'+USERADMIN_CLS).show();
-        $userAdmin.attr('title', Messages.userAccountButton);
+        $userAdmin.find('button').attr('title', Messages.userAccountButton);
         var userMenuCfg = {
             $initBlock: $userAdmin
         };
