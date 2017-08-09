@@ -74,7 +74,7 @@
     }
 
     footer {
-        background-color: @cryptpad_color_grey;
+        background-color: @cryptpad_color_blue;
         .container {
             .col {
                 margin-top: 1em;
@@ -82,20 +82,33 @@
         a {
             color: #fff;
             &:visited {
-                color: darken(#fff, 20%);
+                color: darken(#fff, 10%);
             };
         }
         margin-bottom: 1em;
         ul.list-unstyled {
-                margin: 0;
+                margin-top: 1em;
+                text-align: center;
             }
         }
+        .cp-bio-foot {
+            background-image: url(/customize/CryptPad-white-logo.svg);
+            background-size: 100%;
+            background-repeat: no-repeat;
+            p {
+                color: #fff;
+                padding-top: 30%;
+                margin-bottom: 0;
+                
+            }
 
+        }
         .cp-version-footer {
-            background-color: #6C6C6C;
+            background-color: @cryptpad_color_blue;
             color: #fff;
             text-align: center;
             padding: 0.5em;
+            border-top: 2px solid #fff;
         }
     }
 };
