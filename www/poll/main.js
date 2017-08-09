@@ -11,6 +11,7 @@ define([
     '/bower_components/file-saver/FileSaver.min.js',
 
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/customize/src/less/toolbar.less',
     'less!/customize/src/less/cryptpad.less',
     'less!/poll/poll.less',
@@ -135,7 +136,7 @@ define([
         var $commitCell = APP.$table.find('tfoot tr td:nth-child(2)');
         $createOption.append(APP.$createRow);
         $commitCell.append(APP.$commit);
-        $('#create-user, #create-option').css('display', 'inline-block');
+        $('#create-user, #create-option').css('display', 'inline-flex');
         if (!APP.proxy || !APP.proxy.table.rowsOrder || APP.proxy.table.rowsOrder.length === 0) { $('#create-user').hide(); }
         var width = $('#table').outerWidth();
         if (width) {
@@ -458,7 +459,7 @@ define([
         var msg = (help ? Messages.poll_hide_help_button : Messages.poll_show_help_button);
 
         $('#howItWorks').toggle(help);
-        $('#help').text(msg).attr('title', msg);
+        $('#help').text(msg);
     };
 
     var Title;

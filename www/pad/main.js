@@ -520,14 +520,17 @@ define([
                     $collapse.removeClass('fa-question');
                     var updateIcon = function () {
                         $collapse.removeClass('fa-caret-down').removeClass('fa-caret-up');
+                        $collapse.attr('title', '');
                         var isCollapsed = !$bar.find('.cke_toolbox_main').is(':visible');
                         if (isCollapsed) {
                             if (!initializing) { Cryptpad.feedback('HIDETOOLBAR_PAD'); }
                             $collapse.addClass('fa-caret-down');
+                            $collapse.attr('title', Messages.pad_showToolbar);
                         }
                         else {
                             if (!initializing) { Cryptpad.feedback('SHOWTOOLBAR_PAD'); }
                             $collapse.addClass('fa-caret-up');
+                            $collapse.attr('title', Messages.pad_hideToolbar);
                         }
                     };
                     updateIcon();
