@@ -99,7 +99,7 @@ define([
                      h('button.navbar-toggler.navbar-toggler-right', {'type':'button'}, {'data-toggle':'collapse'}, {'data-target':'#menuCollapse'}, {'aria-controls': 'menuCollapse'}, {'aria-expanded':'false'}, {'aria-label':'Toggle navigation'},
                     [h('i.fa.fa-bars ')
                     ]),
-                    h('a.navbar-brand', { href: '/'}),
+                    h('a.navbar-brand', { href: '/index.html'}),
                 h('div.collapse.navbar-collapse.justify-content-end#menuCollapse', [  
                     h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.topbar_whatIsCryptpad),
                     h('a.nav-item.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.blog),
