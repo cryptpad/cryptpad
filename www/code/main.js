@@ -61,6 +61,20 @@ define([
             $iframe.find('.CodeMirror').addClass('fullPage');
             editor = CodeMirror.editor;
 
+            var setIndentation = APP.setIndentation = function (units) {
+                if (typeof(units) !== 'number') { return; }
+                editor.setOption('indentUnit', units);
+                editor.setOption('tabSize', units);
+                //editor.setOption('indentWithTabs', true);
+            };
+
+            var indentKey = 'cryptpad.indentUnit';
+            var proxy = Cryptpad.getProxy();
+            proxy.on('change', [indentKey], function (o, n) {
+                APP.setIndentation(n);
+            });
+            setIndentation(proxy[indentKey]);
+
             var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
 
             var isHistoryMode = false;

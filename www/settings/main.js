@@ -39,6 +39,7 @@ define([
         'account': [
             'infoBlock',
             'displayName',
+            'indentUnit',
             'languageSelector',
             'logoutEverywhere',
             'resetTips',
@@ -125,6 +126,42 @@ define([
 
         return $div;
     };
+    var createIndentUnitSelector = function (obj) {
+        var proxy = obj.proxy;
+
+        console.log('create indent unit selector');
+        var $div = $('<div>', {
+            'class': 'indentUnit element'
+        });
+
+        var $inputBlock = $('<div>', {
+            'class': 'inputBlock',
+        }).appendTo($div);
+
+        var $input = $('<input>', {
+            'min': 1,
+            'max': 8,
+            type: 'number',
+        }).on('change', function () {
+            var val = parseInt($input.val());
+            console.log(val, typeof(val));
+            if (typeof(val) !== 'number') { return; }
+            proxy['cryptpad.indentUnit'] = val;
+        }).appendTo($inputBlock);
+
+        proxy.on('change', [ 'cryptpad.indentUnit', ], function (o, n) { $input.val(n); });
+
+        Cryptpad.getAttribute('indentUnit', function (e, val) {
+            if (e) { return void console.error(e); }
+            if (typeof(val) !== 'number') {
+                $input.val(2);
+            } else {
+                $input.val(val);
+            }
+        });
+        return $div;
+    };
+
     var createResetTips = function () {
         var $div = $('<div>', {'class': 'resetTips element'});
         $('<label>', {'for' : 'resetTips'}).text(Messages.settings_resetTips).appendTo($div);
@@ -383,6 +420,7 @@ define([
         $rightside.append(createInfoBlock(obj));
         $rightside.append(createDisplayNameInput(obj));
         $rightside.append(createLanguageSelector());
+        $rightside.append(createIndentUnitSelector(obj));
 
         if (Cryptpad.isLoggedIn()) {
             $rightside.append(createLogoutEverywhere(obj));
