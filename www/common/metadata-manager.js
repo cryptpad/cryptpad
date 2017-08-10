@@ -1,24 +1,38 @@
 define([], function () {
+    var UNINIT = 'uninitialized';
     var create = function (sframeChan) {
-        var personalMetadata = 'uninitialized';
-        var myID = 'uninitialized';
+        var meta = UNINIT;
+        var myID = UNINIT;
         var members = [];
-        var metadataObj = 'unintialized';
+        var metadataObj = UNINIT;
         var dirty = true;
         var changeHandlers = [];
 
         var checkUpdate = function () {
             if (!dirty) { return; }
-            if (metadataObj === 'uninitialized') { throw new Error(); }
-            if (myID === 'uninitialized') { throw new Error(); }
-            if (personalMetadata === 'uninitialized') { throw new Error(); }
+            if (meta === UNINIT) { throw new Error(); }
+            if (myID === UNINIT) { myID = meta.myID; }
+            if (metadataObj === UNINIT) {
+                metadataObj = {
+                    defaultTitle: meta.doc.defaultTitle,
+                    title: meta.doc.defaultTitle,
+                    users: {}
+                };
+            }
             var mdo = {};
-            Object.keys(metadataObj).forEach(function (x) {
+            // We don't want to add our user data to the object multiple times.
+            var containsYou = false;
+            console.log(metadataObj);
+            Object.keys(metadataObj.users).forEach(function (x) {
                 if (members.indexOf(x) === -1) { return; }
-                mdo[x] = metadataObj[x];
+                mdo[x] = metadataObj.users[x];
+                if (metadataObj.users[x].uid === meta.user.uid) {
+                    console.log('document already contains you');
+                    containsYou = true;
+                }
             });
-            mdo[myID] = personalMetadata;
-            metadataObj = mdo;
+            if (!containsYou) { mdo[myID] = meta.user; }
+            metadataObj.users = mdo;
             dirty = false;
             changeHandlers.forEach(function (f) { f(); });
         };
@@ -27,8 +41,8 @@ define([], function () {
             setTimeout(checkUpdate);
         };
 
-        sframeChan.on('EV_USERDATA_UPDATE', function (ev) {
-            personalMetadata = ev;
+        sframeChan.on('EV_METADATA_UPDATE', function (ev) {
+            meta = ev;
             change();
         });
         sframeChan.on('EV_RT_CONNECT', function (ev) {
@@ -52,8 +66,9 @@ define([], function () {
         });
 
         return Object.freeze({
-            metadataChange: function (meta) {
-                metadataObj = meta;
+            updateMetadata: function (m) {
+                if (JSON.stringify(metadataObj) === JSON.stringify(m)) { return; }
+                metadataObj = m;
                 change();
             },
             getMetadata: function () {

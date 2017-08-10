@@ -228,7 +228,9 @@ define([], function () {
 
     return {
         start: function (config) {
-            config.sframeChan.whenReg('EV_RT_READY', function () { start(config); });
+            config.sframeChan.whenReg('EV_RT_READY', function () {
+                start(config);
+            });
         }
     };
 });

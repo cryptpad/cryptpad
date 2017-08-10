@@ -18,6 +18,34 @@ define([
         }));
         Cryptpad.ready(waitFor());
     }).nThen(function (waitFor) {
+        var parsed = Cryptpad.parsePadUrl(window.location.href);
+        if (!parsed.type) { throw new Error(); }
+        var defaultTitle = Cryptpad.getDefaultName(parsed);
+        var updateMeta = function () {
+            console.log('EV_METADATA_UPDATE');
+            var name;
+            nThen(function (waitFor) {
+                Cryptpad.getLastName(waitFor(function (n) { name = n }));
+            }).nThen(function (waitFor) {
+                sframeChan.event('EV_METADATA_UPDATE', {
+                    doc: {
+                        defaultTitle: defaultTitle,
+                        type: parsed.type
+                    },
+                    myID: Cryptpad.getNetwork().webChannels[0].myID,
+                    user: {
+                        name: name,
+                        uid: Cryptpad.getUid(),
+                        avatar: Cryptpad.getAvatarUrl(),
+                        profile: Cryptpad.getProfileUrl(),
+                        curvePublic: Cryptpad.getProxy().curvePublic
+                    }
+                });
+            });
+        };
+        Cryptpad.onDisplayNameChanged(updateMeta);
+        sframeChan.onReg('EV_METADATA_UPDATE', updateMeta);
+
         Cryptpad.onError(function (info) {
             console.log('error');
             console.log(info);

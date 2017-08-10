@@ -52,7 +52,7 @@ define([
             onConnectionChange({ state: false });
         });
         sframeChan.on('EV_RT_CONNECT', function (content) {
-            content.members.forEach(userList.onJoin);
+            //content.members.forEach(userList.onJoin);
             myID = content.myID;
             isReady = false;
             if (chainpad) {

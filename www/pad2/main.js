@@ -260,6 +260,7 @@ define([
         //    secret.keys = secret.key;
         //}
         var readOnly = false; // TODO
+        var cpNfInner;
 
 
         var $bar = $('#cke_1_toolbox');
@@ -339,7 +340,9 @@ define([
 
         var stringifyDOM = module.stringifyDOM = function (dom) {
             var hjson = Hyperjson.fromDOM(dom, isNotMagicLine, brFilter);
-
+            hjson[3] = {
+                metadata: cpNfInner.metadataMgr.getMetadata()
+            };
             /*hjson[3] = { TODO
                     users: UserList.userData,
                     defaultTitle: Title.defaultTitle,
@@ -380,9 +383,6 @@ define([
             }
         };
 
-        var meta;
-        var metaStr;
-
         realtimeOptions.onRemote = function () {
             if (initializing) { return; }
             if (isHistoryMode) { return; }
@@ -401,6 +401,10 @@ define([
             var newSInner;
             if (newInner.length > 2) {
                 newSInner = stringify(newInner[2]);
+            }
+
+            if (newInner[3]) {
+                cpNfInner.metadataMgr.updateMetadata(newInner[3].metadata);
             }
 
             // build a dom from HJSON, diff, and patch the editor
@@ -446,14 +450,6 @@ define([
             if (newSInner && newSInner !== oldSInner) {
                 Cryptpad.notify();
             }
-
-            var newMeta = newInner[3];
-            var newMetaStr = JSON.stringify(newMeta);
-            if (newMetaStr !== metaStr) {
-                metaStr = newMetaStr;
-                meta = newMeta;
-                //meta[] HERE
-            }
         };
 
         var exportFile = function () {
@@ -473,7 +469,7 @@ define([
         };
 
         realtimeOptions.onInit = function (info) {
-
+            console.log('onInit');
             // TODO
             return;
 
@@ -599,6 +595,7 @@ define([
 
         // this should only ever get called once, when the chain syncs
         realtimeOptions.onReady = function (info) {
+            console.log('onReady');
             if (!module.isMaximized) {
                 module.isMaximized = true;
                 $('iframe.cke_wysiwyg_frame').css('width', '');
@@ -686,9 +683,7 @@ define([
             }
         };
 
-        var cpNfInner = CpNfInner.start(realtimeOptions);
-
-        
+        cpNfInner = CpNfInner.start(realtimeOptions);
 
         Cryptpad.onLogout(function () { setEditable(false); });
 

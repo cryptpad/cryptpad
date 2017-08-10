@@ -34,5 +34,5 @@ define({
     // Called from the outside, this informs the inside whenever the user's data has been changed.
     // The argument is the object representing the content of the user profile minus the netfluxID
     // which changes per-reconnect.
-    'EV_USERDATA_UPDATE': true
+    'EV_METADATA_UPDATE': true
 });

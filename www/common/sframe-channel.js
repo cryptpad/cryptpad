@@ -18,6 +18,7 @@ define([
 
         var chan = {};
 
+        // Send a query.  channel.query('Q_SOMETHING', { args: "whatever" }, function (reply) { ... });
         chan.query = function (q, content, cb) {
             if (!otherWindow) { throw new Error('not yet initialized'); }
             if (!SFrameProtocol[q]) {
@@ -40,6 +41,7 @@ define([
             }), '*');
         };
 
+        // Fire an event.  channel.event('EV_SOMETHING', { args: "whatever" });
         var event = chan.event = function (e, content) {
             if (!otherWindow) { throw new Error('not yet initialized'); }
             if (!SFrameProtocol[e]) {
@@ -51,13 +53,17 @@ define([
             otherWindow.postMessage(JSON.stringify({ content: content, q: e }), '*');
         };
 
+        // Be notified on query or event.  channel.on('EV_SOMETHING', function (args, reply) { ... });
+        // If the type is a query, your handler will be invoked with a reply function that takes
+        // one argument (the content to reply with).
         chan.on = function (queryType, handler, quiet) {
-            if (!otherWindow) { throw new Error('not yet initialized'); }
+            if (!otherWindow && !quiet) { throw new Error('not yet initialized'); }
             if (!SFrameProtocol[queryType]) {
                 throw new Error('please only register handlers which are defined in sframe-protocol.js');
             }
             (handlers[queryType] = handlers[queryType] || []).push(function (data, msg) {
                 handler(data.content, function (replyContent) {
+                    if (queryType.indexOf('Q_') !== 0) { throw new Error("replies to events are invalid"); }
                     msg.source.postMessage(JSON.stringify({
                         txid: data.txid,
                         content: replyContent
@@ -69,25 +75,35 @@ define([
             }
         };
 
-        chan.whenReg = function (queryType, handler) {
+        // If a particular handler is registered, call the callback immediately, otherwise it will be called
+        // when that handler is first registered.
+        // channel.whenReg('Q_SOMETHING', function () { ...query Q_SOMETHING?... });
+        chan.whenReg = function (queryType, cb, always) {
             if (!otherWindow) { throw new Error('not yet initialized'); }
             if (!SFrameProtocol[queryType]) {
                 throw new Error('please only register handlers which are defined in sframe-protocol.js');
             }
+            var reg = always;
             if (insideHandlers.indexOf(queryType) > -1) {
-                handler();
+                cb();
             } else {
-                (callWhenRegistered[queryType] = callWhenRegistered[queryType] || []).push(handler);
+                reg = true;
+            }
+            if (reg) {
+                (callWhenRegistered[queryType] = callWhenRegistered[queryType] || []).push(cb);
             }
         };
 
-        (handlers['EV_REGISTER_HANDLER'] = handlers['EV_REGISTER_HANDLER'] || []).push(function (data) {
-            if (callWhenRegistered[data.content]) {
-                callWhenRegistered[data.content].forEach(function (f) { f(); });
-                delete callWhenRegistered[data.content];
+        // Same as whenReg except it will invoke every time there is another registration, not just once.
+        chan.onReg = function (queryType, cb) { chan.whenReg(queryType, cb, true); };
+
+        chan.on('EV_REGISTER_HANDLER', function (content) {
+            if (callWhenRegistered[content]) {
+                callWhenRegistered[content].forEach(function (f) { f(); });
+                delete callWhenRegistered[content];
             }
-            insideHandlers.push(data.content);
-        });
+            insideHandlers.push(content);
+        }, true);
 
         var intr;
         var txid;
