@@ -27,7 +27,6 @@ docker-compose up -d
 Set configurations Dockerfile or in .env (using docker-compose) file.
 
 - VERSION=latest
-- USE_SSL=false
 - STORAGE='./storage/file'
 - LOG_TO_STDOUT=true
 

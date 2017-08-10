@@ -13,7 +13,6 @@ EXPOSE 3000
 VOLUME /cryptpad/datastore
 VOLUME /cryptpad/customize
 
-ENV USE_SSL=false
 ENV STORAGE='./storage/file'
 ENV LOG_TO_STDOUT=true
 

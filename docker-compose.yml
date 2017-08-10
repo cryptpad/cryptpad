@@ -13,7 +13,6 @@ services:
       - traefik.port=3000
       - traefik.frontend.passHostHeader=true
     environment:
-      - USE_SSL=${USE_SSL}
       - STORAGE=${STORAGE}
       - LOG_TO_STDOUT=${LOG_TO_STDOUT}
 

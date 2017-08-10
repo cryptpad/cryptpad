@@ -12,7 +12,6 @@ var Path = require("path");
 
 var config = require('./config');
 var websocketPort = config.websocketPort || config.httpPort;
-var useSecureWebsockets = config.useSecureWebsockets || false;
 
 // support multiple storage back ends
 var Storage = require(config.storage||'./storage/file');
@@ -132,9 +131,7 @@ app.get('/api/config', function(req, res){
         removeDonateButton: (config.removeDonateButton === true),
         allowSubscriptions: (config.allowSubscriptions === true),
 
-        websocketPath: config.useExternalWebsocket ? undefined : config.websocketPath,
-        websocketURL:'ws' + ((useSecureWebsockets) ? 's' : '') + '://' + host + ':' +
-            websocketPort + '/cryptpad_websocket',
+        websocketPath: config.websocketPath,
     }) + ');');
 });
 
