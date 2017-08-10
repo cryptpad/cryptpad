@@ -2,10 +2,7 @@ version: '2'
 services:
 
   cryptpad:
-    build:
-      context: .
-      args:
-        - VERSION=${VERSION}
+    build: .
     image: "xwiki/cryptpad:${VERSION}"
     hostname: cryptpad
 
@@ -13,7 +10,6 @@ services:
       - traefik.port=3000
       - traefik.frontend.passHostHeader=true
     environment:
-      - USE_SSL=${USE_SSL}
       - STORAGE=${STORAGE}
       - LOG_TO_STDOUT=${LOG_TO_STDOUT}
 

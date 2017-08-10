@@ -1,11 +1,10 @@
 # Cryptpad Docker Image
 
-- Configuration via .env file
 - Ready for use with traffic
-- Using github master for now, release 0.3.0 too old
+- Built from current working directory
 - Creating customize folder
 - Adding config.js to customize folder
-- Persistance for datastore and customize folder
+- Persistence for datastore and customize folder
 
 ## Run
 
@@ -22,25 +21,12 @@ Or, using docker-compose
 docker-compose up -d
 ```
 
-## Configuration
-
-Set configurations Dockerfile or in .env (using docker-compose) file.
-
-- VERSION=latest
-- USE_SSL=false
-- STORAGE='./storage/file'
-- LOG_TO_STDOUT=true
-
-The .env variables are read by docker-compose and forwarded to docker container.
-On runtime, in `bin/container-start.sh` the settings are written to the `config.js` file.
-
-
-## Persistance
+## Persistence
 
 The docker-compose file is preconfigured to persist folders
 
-- cryptpad/datastore --> ./data/customize
-- cryptpad/customize --> ./data/customize
+- /cryptpad/datastore --> ./data/files
+- /cryptpad/customize --> ./data/customize
 
 In customize included find your configuration in `config.js`.
 

@@ -83,7 +83,9 @@ module.exports = {
     websocketPath: '/cryptpad_websocket',
 
     /*  it is assumed that your websocket will bind to the same port as http
-     *  you can override this behaviour by supplying a number via websocketPort
+     *  you can override this behaviour by supplying a number via websocketPort.
+     *  If this differs from httpPort, you have to specify a full absolute
+     *  websocketPath as well!
      */
     //websocketPort: 3000,
 
@@ -93,16 +95,10 @@ module.exports = {
      */
     //useExternalWebsocket: false,
 
-    /*  If CryptPad is proxied without using https, the server needs to know.
-     *  Specify 'useSecureWebsockets: true' so that it can send
-     *  Content Security Policy Headers that prevent http and https from mixing
-     */
-     useSecureWebsockets: false,
-
     /*  CryptPad can log activity to stdout
      *  This may be useful for debugging
      */
-    logToStdout: false,
+    logToStdout: true,
 
     /*  CryptPad supports verbose logging
      *  (false by default)

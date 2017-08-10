@@ -275,7 +275,6 @@ define([
     };
 
     common.getWebsocketURL = function () {
-        if (!Config.websocketPath) { return Config.websocketURL; }
         var path = Config.websocketPath;
         if (/^ws{1,2}:\/\//.test(path)) { return path; }
 
