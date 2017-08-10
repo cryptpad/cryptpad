@@ -19,10 +19,11 @@ define([
         Cryptpad.ready(waitFor());
     }).nThen(function (waitFor) {
         var parsed = Cryptpad.parsePadUrl(window.location.href);
+        parsed.type = parsed.type.replace('pad2', 'pad');
         if (!parsed.type) { throw new Error(); }
         var defaultTitle = Cryptpad.getDefaultName(parsed);
         var updateMeta = function () {
-            console.log('EV_METADATA_UPDATE');
+            //console.log('EV_METADATA_UPDATE');
             var name;
             nThen(function (waitFor) {
                 Cryptpad.getLastName(waitFor(function (n) { name = n }));
@@ -32,13 +33,13 @@ define([
                         defaultTitle: defaultTitle,
                         type: parsed.type
                     },
-                    myID: Cryptpad.getNetwork().webChannels[0].myID,
                     user: {
                         name: name,
                         uid: Cryptpad.getUid(),
                         avatar: Cryptpad.getAvatarUrl(),
                         profile: Cryptpad.getProfileUrl(),
-                        curvePublic: Cryptpad.getProxy().curvePublic
+                        curvePublic: Cryptpad.getProxy().curvePublic,
+                        netfluxId: Cryptpad.getNetwork().webChannels[0].myID,
                     }
                 });
             });

@@ -2,7 +2,6 @@ define([], function () {
     var UNINIT = 'uninitialized';
     var create = function (sframeChan) {
         var meta = UNINIT;
-        var myID = UNINIT;
         var members = [];
         var metadataObj = UNINIT;
         var dirty = true;
@@ -11,27 +10,27 @@ define([], function () {
         var checkUpdate = function () {
             if (!dirty) { return; }
             if (meta === UNINIT) { throw new Error(); }
-            if (myID === UNINIT) { myID = meta.myID; }
             if (metadataObj === UNINIT) {
                 metadataObj = {
                     defaultTitle: meta.doc.defaultTitle,
                     title: meta.doc.defaultTitle,
+                    type: meta.doc.type,
                     users: {}
                 };
             }
             var mdo = {};
             // We don't want to add our user data to the object multiple times.
             var containsYou = false;
-            console.log(metadataObj);
+            //console.log(metadataObj);
             Object.keys(metadataObj.users).forEach(function (x) {
                 if (members.indexOf(x) === -1) { return; }
                 mdo[x] = metadataObj.users[x];
                 if (metadataObj.users[x].uid === meta.user.uid) {
-                    console.log('document already contains you');
+                    //console.log('document already contains you');
                     containsYou = true;
                 }
             });
-            if (!containsYou) { mdo[myID] = meta.user; }
+            if (!containsYou) { mdo[meta.user.netfluxId] = meta.user; }
             metadataObj.users = mdo;
             dirty = false;
             changeHandlers.forEach(function (f) { f(); });
@@ -46,7 +45,7 @@ define([], function () {
             change();
         });
         sframeChan.on('EV_RT_CONNECT', function (ev) {
-            myID = ev.myID;
+            meta.user.netfluxId = ev.myID;
             members = ev.members;
             change();
         });

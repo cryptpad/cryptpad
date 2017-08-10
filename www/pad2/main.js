@@ -622,6 +622,10 @@ define([
 
                 // Update the user list (metadata) from the hyperjson
                 // XXX Metadata.update(shjson);
+                var parsed = JSON.parse(shjson);
+                if (parsed[3] && parsed[3].metadata) {
+                    cpNfInner.metadataMgr.updateMetadata(parsed[3].metadata);
+                }
 
                 if (!readOnly) {
                     var shjson2 = stringifyDOM(inner);
