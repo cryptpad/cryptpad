@@ -2,10 +2,7 @@ version: '2'
 services:
 
   cryptpad:
-    build:
-      context: .
-      args:
-        - VERSION=${VERSION}
+    build: .
     image: "xwiki/cryptpad:${VERSION}"
     hostname: cryptpad
 

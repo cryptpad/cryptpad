@@ -1,6 +1,5 @@
 # Cryptpad Docker Image
 
-- Configuration via .env file
 - Ready for use with traffic
 - Using github master for now, release 0.3.0 too old
 - Creating customize folder
@@ -21,18 +20,6 @@ Or, using docker-compose
 ```
 docker-compose up -d
 ```
-
-## Configuration
-
-Set configurations Dockerfile or in .env (using docker-compose) file.
-
-- VERSION=latest
-- STORAGE='./storage/file'
-- LOG_TO_STDOUT=true
-
-The .env variables are read by docker-compose and forwarded to docker container.
-On runtime, in `bin/container-start.sh` the settings are written to the `config.js` file.
-
 
 ## Persistance
 

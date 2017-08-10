@@ -13,7 +13,4 @@ EXPOSE 3000
 VOLUME /cryptpad/datastore
 VOLUME /cryptpad/customize
 
-ENV STORAGE='./storage/file'
-ENV LOG_TO_STDOUT=true
-
 CMD ["/sbin/tini", "--", "/cryptpad/container-start.sh"]
