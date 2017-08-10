@@ -14,7 +14,7 @@ define([
     };
 
     var footerCol = function (title, L, literal) {
-        return h('div.col', [
+        return h('div.col-6.col-sm-3', [
             h('ul.list-unstyled', [
                 h('li.footer-title', {
                     'data-localization': title,
@@ -46,10 +46,13 @@ define([
             h('div.container', [
                 h('div.row', [
                     footerCol(null, [
+                        setHTML(h('div.cp-bio-foot'), '<p>With CryptPad, you can make quick collaborative documents for taking notes and writing down ideas together.</p>'),
+                    ], ''),
+                   /* footerCol(null, [
                         footLink('/about.html', 'about'),
                         footLink('/terms.html', 'terms'),
                         footLink('/privacy.html', 'privacy'),
-                    ], 'CryptPad'),
+                    ], 'CryptPad'),*/
                     footerCol('footer_applications', [
                         footLink('/drive/', 'main_drive'),
                         footLink('/pad/', 'main_richText'),
@@ -109,13 +112,21 @@ define([
     Pages['/about.html'] = function () {
         return h('div#cp-main', [
             infopageTopbar(),
+            h('div.container-fluid.cp-about-intro', [
+                h('div.container', [
+                    h('center', [
+                    h('h1', Msg.about),
+                    setHTML(h('p'), 'CryptPad is created inside of the Research Team at <a href="http://xwiki.com">XWiki SAS</a>, a small business located in Paris France and Iasi Romania. There are 3 core team members working on CryptPad plus a number of contributors both inside and outside of XWiki SAS.'),
+                    ]),
+                ]),
+            ]),
             h('div.container.cp-container', [
-                h('center', [
+                /*h('center', [
                     h('h1', Msg.about)
                 ]),
-                setHTML(h('p'), 'CryptPad is created inside of the Research Team at <a href="http://xwiki.com">XWiki SAS</a>, a small business located in Paris France and Iasi Romania. There are 3 core team members working on CryptPad plus a number of contributors both inside and outside of XWiki SAS.'),
-                h('h2', 'Core Developers'),
+                setHTML(h('p'), 'CryptPad is created inside of the Research Team at <a href="http://xwiki.com">XWiki SAS</a>, a small business located in Paris France and Iasi Romania. There are 3 core team members working on CryptPad plus a number of contributors both inside and outside of XWiki SAS.'),*/
                 h('div.row', [
+                    h('h2.col-12', 'Core Developers'),
                     h('div.col-md-4', [
                         h('img.bio-avatar', {'src': '/customize/images/aaron.jpg'}),
                         h('h3', "Aaron MacSween"),
