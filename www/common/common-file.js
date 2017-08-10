@@ -56,12 +56,13 @@ define([
             $row.find('.upCancel').html('-');
             var $pv = $row.find('.progressValue');
             var $pb = $row.find('.progressContainer');
+            var $pc = $row.find('.upProgress');
             var $link = $row.find('.upLink');
 
             var updateProgress = function (progressValue) {
                 $pv.text(Math.round(progressValue*100)/100 + '%');
                 $pb.css({
-                    width: (progressValue/100)*188+'px'
+                    width: (progressValue/100)*$pc.width()+'px'
                 });
             };
 

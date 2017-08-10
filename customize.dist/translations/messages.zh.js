@@ -467,7 +467,7 @@ define(function () {
     // Initial states
 
     out.initialState = [
-        '<span style="font-size:16px;"><p>',
+        '<p>',
         '這是&nbsp;<strong>CryptPad</strong>, 零知識即時協作編輯平台，當你輸入時一切已即存好。',
         '<br>',
         '分享這個工作檔案的網址連結給友人或是使用、 <span class="fa fa-share-alt" style="border: 1px solid black;color:#000;">&nbsp;分享&nbsp;</span> 按鈕分享<em>唯讀的連結</em>&nbsp;其只能看不能編寫。',
@@ -475,7 +475,7 @@ define(function () {
 
         '<p><em>',
         '來吧, 開始打字輸入吧...',
-        '</em></p></span>',
+        '</em></p>',
         '<p>&nbsp;<br></p>'
     ].join('');
 

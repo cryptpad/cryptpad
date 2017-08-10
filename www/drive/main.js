@@ -1374,6 +1374,8 @@ define([
             } else {
                 $gridButton.addClass('active');
             }
+            $listButton.attr('title', Messages.fm_viewListButton);
+            $gridButton.attr('title', Messages.fm_viewGridButton);
             $container.append($listButton).append($gridButton);
         };
 

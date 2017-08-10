@@ -14,7 +14,7 @@ define([
     };
 
     var footerCol = function (title, L, literal) {
-        return h('div.col', [
+        return h('div.col-6.col-sm-3', [
             h('ul.list-unstyled', [
                 h('li.footer-title', {
                     'data-localization': title,
@@ -46,10 +46,13 @@ define([
             h('div.container', [
                 h('div.row', [
                     footerCol(null, [
+                        setHTML(h('div.cp-bio-foot'), '<p>With CryptPad, you can make quick collaborative documents for taking notes and writing down ideas together.</p>'),
+                    ], ''),
+                   /* footerCol(null, [
                         footLink('/about.html', 'about'),
                         footLink('/terms.html', 'terms'),
                         footLink('/privacy.html', 'privacy'),
-                    ], 'CryptPad'),
+                    ], 'CryptPad'),*/
                     footerCol('footer_applications', [
                         footLink('/drive/', 'main_drive'),
                         footLink('/pad/', 'main_richText'),
@@ -109,13 +112,21 @@ define([
     Pages['/about.html'] = function () {
         return h('div#cp-main', [
             infopageTopbar(),
+            h('div.container-fluid.cp-about-intro', [
+                h('div.container', [
+                    h('center', [
+                    h('h1', Msg.about),
+                    setHTML(h('p'), 'CryptPad is created inside of the Research Team at <a href="http://xwiki.com">XWiki SAS</a>, a small business located in Paris France and Iasi Romania. There are 3 core team members working on CryptPad plus a number of contributors both inside and outside of XWiki SAS.'),
+                    ]),
+                ]),
+            ]),
             h('div.container.cp-container', [
-                h('center', [
+                /*h('center', [
                     h('h1', Msg.about)
                 ]),
-                setHTML(h('p'), 'CryptPad is created inside of the Research Team at <a href="http://xwiki.com">XWiki SAS</a>, a small business located in Paris France and Iasi Romania. There are 3 core team members working on CryptPad plus a number of contributors both inside and outside of XWiki SAS.'),
-                h('h2', 'Core Developers'),
+                setHTML(h('p'), 'CryptPad is created inside of the Research Team at <a href="http://xwiki.com">XWiki SAS</a>, a small business located in Paris France and Iasi Romania. There are 3 core team members working on CryptPad plus a number of contributors both inside and outside of XWiki SAS.'),*/
                 h('div.row', [
+                    h('h2.col-12', 'Core Developers'),
                     h('div.col-md-4', [
                         h('img.bio-avatar', {'src': '/customize/images/aaron.jpg'}),
                         h('h3', "Aaron MacSween"),
@@ -427,33 +438,43 @@ define([
                     display: 'block',
                 }
             }, [
-                h('button#clear', Msg.canvas_clear), ' ',
-                h('button#toggleDraw', Msg.canvas_disable),
-                h('button#delete', {
+                h('button#clear.btn.btn-danger', Msg.canvas_clear), ' ',
+                h('button#toggleDraw.btn.btn-secondary', Msg.canvas_disable),
+                h('button#delete.btn.btn-secondary', {
                     style: {
                         display: 'none',
                     }
-                }),
-                h('input#width', {
-                    type: 'range',
-                    value: "5",
-                    min: "1",
-                    max: "100"
-                }),
-                h('label', {
-                    'for': 'width'
-                }, Msg.canvas_width),
-                h('input#opacity', {
-                    type: 'range',
-                    value: "1",
-                    min: "0.1",
-                    max: "1",
-                    step: "0.1"
-                }),
-                h('label', {
-                    'for': 'width',
-                }),
-                h('span.selected')
+                }, Msg.canvas_delete),
+                h('div.range-group', [
+                    h('label', {
+                        'for': 'width'
+                    }, Msg.canvas_width),
+                    h('input#width', {
+                        type: 'range',
+                        value: "5",
+                        min: "1",
+                        max: "100"
+                    }),
+                    h('span#width-val', '5px')
+                ]),
+                h('div.range-group', [
+                    h('label', {
+                        'for': 'opacity',
+                    }, Msg.canvas_opacity),
+                    h('input#opacity', {
+                        type: 'range',
+                        value: "1",
+                        min: "0.1",
+                        max: "1",
+                        step: "0.1"
+                    }),
+                    h('span#opacity-val', '100%')
+                ]),
+                h('span.selected', [
+                    h('img', {
+                        title: Msg.canvas_currentBrush
+                    })
+                ])
             ]),
             setHTML(h('div#colors'), '&nbsp;'),
             loadingScreen(),
@@ -480,16 +501,15 @@ define([
                         h('p', Msg.poll_p_encryption)
                     ]),
                     h('div.upper', [
-                        h('button#publish', {
+                        h('button#publish.btn.btn-success', {
                             style: { display: 'none' }
                         }, Msg.poll_publish_button),
-                        h('button#admin', {
+                        h('button#admin.btn.btn-primary', {
                             style: { display: 'none' },
                             title: Msg.poll_admin_button
                         }, Msg.poll_admin_button),
-                        h('button#help', {
-                            title: Msg.poll_show_help_button,
-                            style: { display: 'none' }
+                        h('button#help.btn.btn-secondary', {
+                            title: Msg.poll_show_help_button
                         }, Msg.poll_show_help_button)
                     ]),
                     h('div.realtime', [
@@ -504,13 +524,13 @@ define([
                         ]),
                         h('div#tableContainer', [
                             h('div#tableScroll'),
-                            h('button#create-user', {
+                            h('button#create-user.btn.btn-secondary', {
                                 title: Msg.poll_create_user
                             }, h('span.fa.fa-plus')),
-                            h('button#create-option', {
+                            h('button#create-option.btn.btn-secondary', {
                                 title: Msg.poll_create_option
                             }, h('span.fa.fa-plus')),
-                            h('button#commit', {
+                            h('button#commit.btn.btn-secondary', {
                                 title: Msg.poll_commit
                             }, h('span.fa.fa-check'))
                         ])

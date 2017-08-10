@@ -402,24 +402,32 @@ define([
                 });
 
                 // add the splitter
-                var splitter = $('<div>', {
-                    'class': 'cp-splitter'
-                }).appendTo($iframe.find('#previewContainer'));
+                if (!$iframe.has('.cp-splitter').length) {
+                    var $preview = $iframe.find('#previewContainer');
+                    var splitter = $('<div>', {
+                        'class': 'cp-splitter'
+                    }).appendTo($preview);
 
-                var $target = $iframe.find('.CodeMirror');
-                splitter.on('mousedown', function (e) {
-                    e.preventDefault();
-                    var x = e.pageX;
-                    var w = $target.width();
-
-                    $iframe.on('mouseup mousemove', function handler(evt) {
-                        if (evt.type === 'mouseup') {
-                            $iframe.off('mouseup mousemove', handler);
-                            return;
-                        }
-                        $target.css('width', (w - x + evt.pageX) + 'px');
+                    $preview.on('scroll', function() {
+                        splitter.css('top', $preview.scrollTop() + 'px');
                     });
-                });
+
+                    var $target = $iframe.find('.CodeMirror');
+
+                    splitter.on('mousedown', function (e) {
+                        e.preventDefault();
+                        var x = e.pageX;
+                        var w = $target.width();
+
+                        $iframe.on('mouseup mousemove', function handler(evt) {
+                            if (evt.type === 'mouseup') {
+                                $iframe.off('mouseup mousemove', handler);
+                                return;
+                            }
+                            $target.css('width', (w - x + evt.pageX) + 'px');
+                        });
+                    });
+                }
 
                 Cryptpad.removeLoadingScreen();
                 setEditable(true);
