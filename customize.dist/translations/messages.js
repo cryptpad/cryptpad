@@ -611,6 +611,7 @@ define(function () {
     out.header_support = '<a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
     out.updated_0_header_logoTitle = 'Go to your CryptDrive';
     out.header_logoTitle = out.updated_0_header_logoTitle;
+    out.header_homeTitle = 'Go to CryptPad homepage';
 
     // Initial states
 

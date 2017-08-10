@@ -624,9 +624,14 @@ define([
         }).appendTo(toolbar.$top);
 
         // We need to override the "a" tag action here because it is inside the iframe!
+        var inDrive = /^\/drive/;
+
+        var href = inDrive ? '/index.html' : '/drive/';
+        var buttonTitle = inDrive ? Messages.header_homeTitle : Messages.header_logoTitle;
+
         var $aTag = $('<a>', {
-            href: "/drive/",
-            title: Messages.header_logoTitle,
+            href: href,
+            title: buttonTitle,
             'class': "cryptpad-logo"
         }).append($('<img>', {
             src: '/customize/images/logo_white.png'
@@ -634,10 +639,10 @@ define([
         var onClick = function (e) {
             e.preventDefault();
             if (e.ctrlKey) {
-                window.open('/drive/');
+                window.open(href);
                 return;
             }
-            window.location = "/drive/";
+            window.location = href;
         };
 
         var onContext = function (e) { e.stopPropagation(); };
