@@ -1,10 +1,10 @@
 # Cryptpad Docker Image
 
 - Ready for use with traffic
-- Using github master for now, release 0.3.0 too old
+- Built from current working directory
 - Creating customize folder
 - Adding config.js to customize folder
-- Persistance for datastore and customize folder
+- Persistence for datastore and customize folder
 
 ## Run
 
@@ -21,12 +21,12 @@ Or, using docker-compose
 docker-compose up -d
 ```
 
-## Persistance
+## Persistence
 
 The docker-compose file is preconfigured to persist folders
 
-- cryptpad/datastore --> ./data/customize
-- cryptpad/customize --> ./data/customize
+- /cryptpad/datastore --> ./data/files
+- /cryptpad/customize --> ./data/customize
 
 In customize included find your configuration in `config.js`.
 

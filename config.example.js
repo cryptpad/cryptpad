@@ -83,7 +83,9 @@ module.exports = {
     websocketPath: '/cryptpad_websocket',
 
     /*  it is assumed that your websocket will bind to the same port as http
-     *  you can override this behaviour by supplying a number via websocketPort
+     *  you can override this behaviour by supplying a number via websocketPort.
+     *  If this differs from httpPort, you have to specify a full absolute
+     *  websocketPath as well!
      */
     //websocketPort: 3000,
 
