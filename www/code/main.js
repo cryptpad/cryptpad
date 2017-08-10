@@ -388,11 +388,17 @@ define([
                 });
 
                 // add the splitter
+                var $preview = $iframe.find('#previewContainer');
                 var splitter = $('<div>', {
                     'class': 'cp-splitter'
-                }).appendTo($iframe.find('#previewContainer'));
+                }).appendTo($preview);
+
+                $preview.on('scroll', function() {
+                    splitter.css('top', $preview.scrollTop() + 'px');
+                });
 
                 var $target = $iframe.find('.CodeMirror');
+
                 splitter.on('mousedown', function (e) {
                     e.preventDefault();
                     var x = e.pageX;
