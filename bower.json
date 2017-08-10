@@ -39,6 +39,7 @@
     "require-css": "0.1.10",
     "less": "^2.7.2",
     "bootstrap": "#v4.0.0-alpha.6",
-    "diff-dom": "2.1.1"
+    "diff-dom": "2.1.1",
+    "open-sans-fontface": "^1.4.2"
   }
 }
