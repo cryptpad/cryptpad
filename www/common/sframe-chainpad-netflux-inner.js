@@ -15,56 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 define([
-    '/bower_components/chainpad/chainpad.dist.js',
-], function () {
+    '/common/metadata-manager.js',
+    '/bower_components/chainpad/chainpad.dist.js'
+], function (MetadataMgr) {
     var ChainPad = window.ChainPad;
     var module = { exports: {} };
 
     var verbose = function (x) { console.log(x); };
     verbose = function () {}; // comment out to enable verbose logging
-
-    var mkUserList = function () {
-        var userList = Object.freeze({
-            change : [],
-            onChange : function(newData) {
-                userList.change.forEach(function (el) {
-                    el(newData);
-                });
-            },
-            users: []
-        });
-
-        var onJoining = function (peer) {
-            if(peer.length !== 32) { return; }
-            var list = userList.users;
-            var index = list.indexOf(peer);
-            if(index === -1) {
-                userList.users.push(peer);
-            }
-            userList.onChange();
-        };
-
-        // update UI components to show that one of the other peers has left
-        var onLeaving = function (peer) {
-            var list = userList.users;
-            var index = list.indexOf(peer);
-            if(index !== -1) {
-                userList.users.splice(index, 1);
-            }
-            userList.onChange();
-        };
-
-        var onReset = function () {
-            userList.users.forEach(onLeaving);
-        };
-
-        return Object.freeze({
-            list: userList,
-            onJoin: onJoining,
-            onLeave: onLeaving,
-            onReset: onReset
-        });
-    };
 
     module.exports.start = function (config) {
         var onConnectionChange = config.onConnectionChange || function () { };
@@ -84,15 +42,13 @@ define([
         config = undefined;
 
         var chainpad;
-        var userList = mkUserList();
         var myID;
         var isReady = false;
 
-        sframeChan.on('EV_RT_JOIN', userList.onJoin);
-        sframeChan.on('EV_RT_LEAVE', userList.onLeave);
+        var metadataMgr = MetadataMgr.create(sframeChan);
+
         sframeChan.on('EV_RT_DISCONNECT', function () {
             isReady = false;
-            userList.onReset();
             onConnectionChange({ state: false });
         });
         sframeChan.on('EV_RT_CONNECT', function (content) {
@@ -121,7 +77,6 @@ define([
             onInit({
                 myID: myID,
                 realtime: chainpad,
-                userList: userList,
                 readOnly: readOnly
             });
         });
@@ -137,13 +92,12 @@ define([
             isReady = true;
             chainpad.start();
             setMyID({ myID: myID });
-            // Trigger onJoining with our own Cryptpad username to tell the toolbar that we are synced
-            if (!readOnly) { userList.onJoin(myID); }
             onReady({ realtime: chainpad });
         });
-        return {
-            getMyID: function () { return myID; }
-        };
+        return Object.freeze({
+            getMyID: function () { return myID; },
+            metadataMgr: metadataMgr
+        });
     };
-    return module.exports;
+    return Object.freeze(module.exports);
 });

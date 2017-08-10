@@ -51,21 +51,22 @@ define([
             otherWindow.postMessage(JSON.stringify({ content: content, q: e }), '*');
         };
 
-        chan.on = function (queryType, handler) {
+        chan.on = function (queryType, handler, quiet) {
             if (!otherWindow) { throw new Error('not yet initialized'); }
-            if (typeof(handlers[queryType]) !== 'undefined') { throw new Error('already registered'); }
             if (!SFrameProtocol[queryType]) {
                 throw new Error('please only register handlers which are defined in sframe-protocol.js');
             }
-            handlers[queryType] = function (data, msg) {
+            (handlers[queryType] = handlers[queryType] || []).push(function (data, msg) {
                 handler(data.content, function (replyContent) {
                     msg.source.postMessage(JSON.stringify({
                         txid: data.txid,
                         content: replyContent
                     }), '*');
                 }, msg);
-            };
-            event('EV_REGISTER_HANDLER', queryType);
+            });
+            if (!quiet) {
+                event('EV_REGISTER_HANDLER', queryType);
+            }
         };
 
         chan.whenReg = function (queryType, handler) {
@@ -80,13 +81,13 @@ define([
             }
         };
 
-        handlers['EV_REGISTER_HANDLER'] = function (data) {
+        (handlers['EV_REGISTER_HANDLER'] = handlers['EV_REGISTER_HANDLER'] || []).push(function (data) {
             if (callWhenRegistered[data.content]) {
                 callWhenRegistered[data.content].forEach(function (f) { f(); });
                 delete callWhenRegistered[data.content];
             }
             insideHandlers.push(data.content);
-        };
+        });
 
         var intr;
         var txid;
@@ -104,9 +105,12 @@ define([
                 otherWindow = ow;
                 cb(chan);
             } else if (typeof(data.q) === 'string' && handlers[data.q]) {
-                handlers[data.q](data, msg);
+                handlers[data.q].forEach(function (f) {
+                    f(data || JSON.parse(msg.data), msg);
+                    data = undefined;
+                });
             } else if (typeof(data.q) === 'undefined' && queries[data.txid]) {
-                queries[data.txid](data, msg);
+                queries[data.txid](msg, msg);
             } else if (data.txid === txid) {
                 // stray message from init
                 return;

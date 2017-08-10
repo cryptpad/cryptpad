@@ -660,10 +660,10 @@ define([
 
         realtimeOptions.onConnectionChange = function (info) {
             setEditable(info.state);
-            toolbar.failed();
+            //toolbar.failed(); TODO
             if (info.state) {
                 initializing = true;
-                toolbar.reconnecting(info.myId);
+                //toolbar.reconnecting(info.myId); // TODO
                 Cryptpad.findOKButton().click();
             } else {
                 Cryptpad.alert(Messages.common_connectionLost, undefined, true);
