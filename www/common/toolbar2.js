@@ -624,7 +624,7 @@ define([
         }).appendTo(toolbar.$top);
 
         // We need to override the "a" tag action here because it is inside the iframe!
-        var inDrive = /^\/drive/;
+        var inDrive = /^\/drive/.test(window.location.pathname);
 
         var href = inDrive ? '/index.html' : '/drive/';
         var buttonTitle = inDrive ? Messages.header_homeTitle : Messages.header_logoTitle;
