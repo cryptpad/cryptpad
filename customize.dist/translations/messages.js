@@ -336,10 +336,10 @@ define(function () {
     out.updated_0_fm_info_trash = 'Empty your trash to free space in your CryptDrive.';
     out.fm_info_trash = out.updated_0_fm_info_trash;
     out.fm_info_allFiles = 'Contains all the files from "Documents", "Unsorted" and "Trash". You can\'t move or remove files from here.'; // Same here
-    out.fm_info_anonymous = 'You are not logged in so these pads may be deleted (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">find out why</a>). ' +
+    out.fm_info_anonymous = 'You are not logged in so your pads will expire after 3 months (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">find out more</a>). ' +
                             '<a href="/register/">Sign up</a> or <a href="/login/">Log in</a> to keep them alive.';
     out.fm_alert_backupUrl = "Backup link for this drive.<br>" +
-                             "It is <strong>highly recommended</strong> that you keep ip for yourself only.<br>" +
+                             "It is <strong>highly recommended</strong> that you keep it secret.<br>" +
                              "You can use it to retrieve all your files in case your browser memory got erased.<br>" +
                              "Anybody with that link can edit or remove all the files in your file manager.<br>";
     out.fm_alert_anonymous = "Hello there, you are currently using CryptPad anonymously, that's ok but your pads may be deleted after a period of " +
