@@ -39,7 +39,6 @@ define([
         'account': [
             'infoBlock',
             'displayName',
-            'indentUnit',
             'languageSelector',
             'logoutEverywhere',
             'resetTips',
@@ -49,6 +48,9 @@ define([
             'backupDrive',
             'importLocalPads',
             'resetDrive'
+        ],
+        'code': [
+            'indentUnit',
         ]
     };
 
@@ -129,10 +131,10 @@ define([
     var createIndentUnitSelector = function (obj) {
         var proxy = obj.proxy;
 
-        console.log('create indent unit selector');
         var $div = $('<div>', {
             'class': 'indentUnit element'
         });
+        $('<label>').text(Messages.settings_codeIndentation).appendTo($div);
 
         var $inputBlock = $('<div>', {
             'class': 'inputBlock',
@@ -144,7 +146,6 @@ define([
             type: 'number',
         }).on('change', function () {
             var val = parseInt($input.val());
-            console.log(val, typeof(val));
             if (typeof(val) !== 'number') { return; }
             proxy['cryptpad.indentUnit'] = val;
         }).appendTo($inputBlock);
@@ -380,6 +381,7 @@ define([
             var $category = $('<div>', {'class': 'category'}).appendTo($categories);
             if (key === 'account') { $category.append($('<span>', {'class': 'fa fa-user-o'})); }
             if (key === 'drive') { $category.append($('<span>', {'class': 'fa fa-hdd-o'})); }
+            if (key === 'code') { $category.append($('<span>', {'class': 'fa fa-file-code-o' })); }
 
             if (key === active) {
                 $category.addClass('active');

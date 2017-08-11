@@ -422,6 +422,7 @@ define(function () {
     // Settings
     out.settings_cat_account = "Account";
     out.settings_cat_drive = "CryptDrive";
+    out.settings_cat_code = "Code";
     out.settings_title = "Settings";
     out.settings_save = "Save";
 
@@ -467,6 +468,9 @@ define(function () {
     out.settings_logoutEverywhereTitle = "Log out everywhere";
     out.settings_logoutEverywhere = "Force log out of all other web sessions";
     out.settings_logoutEverywhereConfirm = "Are you sure? You will need to log in with all your devices.";
+
+    out.settings_codeIndentation = 'Code editor indentation (spaces)';
+    out.settings_codeUseTabs = "Indent using tabs (instead of spaces)";
 
     out.upload_title = "File upload";
     out.upload_serverError = "Server Error: unable to upload your file at this time.";
