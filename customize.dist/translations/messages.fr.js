@@ -630,7 +630,7 @@ define(function () {
         '  - La présentation est mise à jour en temps-réel'
     ].join('');
 
-    out.driveReadmeTitle = "Qu'est-ce que CryptDrive ?";
+    out.driveReadmeTitle = "Qu'est-ce que CryptPad ?";
     out.readme_welcome = "Bienvenue dans CryptPad !";
     out.readme_p1 = "Bienvenue dans CryptPad, le lieu où vous pouvez prendre des notes seul ou avec des amis.";
     out.readme_p2 = "Ce pad va vous donner un aperçu de la manière dont vous pouvez utiliser CryptPad pour prendre des notes, les organiser et travailler en groupe sur celles-ci.";

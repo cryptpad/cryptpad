@@ -659,7 +659,7 @@ define(function () {
 
     // Readme
 
-    out.driveReadmeTitle = "What is CryptDrive?";
+    out.driveReadmeTitle = "What is CryptPad?";
     out.readme_welcome = "Welcome to CryptPad !";
     out.readme_p1 = "Welcome to CryptPad, this is where you can take note of things alone and with friends.";
     out.readme_p2 = "This pad will give you a quick walk through of how you can use CryptPad to take notes, keep them organized and work together on them.";

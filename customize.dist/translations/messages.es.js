@@ -305,7 +305,7 @@ define(function () {
 
     out.codeInitialState = "/*\n   Esto es CryptPad, el editor colaborativo en tiempo real zero knowledge.\n   Lo que escribes aquí está cifrado de manera que sólo las personas con el enlace pueden acceder a ello.\n   Incluso el servidor no puede ver lo que escribes.\n   Lo que ves aquí, lo que escuchas aquí, cuando sales, se queda aquí\n*/";
     out.slideInitialState = "# CryptSlide\n* Esto es CryptPad, el editor colaborativo en tiempo real zero knowledge.\n* Lo que escribes aquí está cifrado de manera que sólo las personas con el enlace pueden acceder a ello.\n* Incluso el servidor no puede ver lo que escribes.\n* Lo que ves aquí, lo que escuchas aquí, cuando sales, se queda aquí\n\n---\n# Cómo utilizarlo\n1. Escribe tu contenido en Markdown\n  - Puedes aprender más sobre Markdown [aquí](http://www.markdowntutorial.com/)\n2. Separa tus diapositivas con ---\n3. Haz clic en \"Presentar\" para ver el resultado  - Tus diapositivas se actualizan en tiempo real";
-    out.driveReadmeTitle = "¿Qué es CryptDrive?";
+    out.driveReadmeTitle = "¿Qué es CryptPad?";
     out.readme_welcome = "¡Bienvenido a CryptPad!";
     out.readme_p1 = "Bienvenido a CryptPad, aquí podrás anotar cosas solo o con otra gente.";
     out.readme_p2 = "Este pad es una guía rápida para aprender a usar a CryptPad para tomar notas, organizarlas y trabajar con más personas.";
