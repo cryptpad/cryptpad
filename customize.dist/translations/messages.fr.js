@@ -116,6 +116,10 @@ define(function () {
     out.shareButton = 'Partager';
     out.shareSuccess = 'Lien copié dans le presse-papiers';
 
+    out.userListButton = "Liste d'utilisateurs";
+
+    out.userAccountButton = "Votre compte";
+
     out.newButton = 'Nouveau';
     out.newButtonTitle = 'Créer un nouveau pad';
     out.uploadButton = 'Importer des fichiers';
@@ -240,10 +244,13 @@ define(function () {
     out.canvas_delete = "Supprimer la sélection";
     out.canvas_disable = "Désactiver le dessin";
     out.canvas_enable = "Activer le dessin";
-    out.canvas_width = "Épaisseur";
+    out.canvas_width = "Taille";
     out.canvas_opacity = "Opacité";
-    out.canvas_opacityLabel = "opacité: {0}";
-    out.canvas_widthLabel = "taille: {0}";
+    out.canvas_opacityLabel = "Opacité: {0}";
+    out.canvas_widthLabel = "Taille: {0}";
+    out.canvas_saveToDrive = "Sauvegarder cette image en tant que fichier dans CryptDrive";
+    out.canvas_currentBrush = "Pinceau actuel";
+    out.canvas_chooseColor = "Choisir une couleur";
 
     // Profile
     out.profileButton = "Profil"; // dropdown menu
@@ -257,6 +264,9 @@ define(function () {
     out.profile_description = "Description";
     out.profile_fieldSaved = 'Nouvelle valeur enregistrée: {0}';
 
+    out.profile_inviteButton = "Inviter";
+    out.profile_inviteButtonTitle = 'Creer un lien pour inviter cet utilisateur à se connecter avec vous.';
+    out.profile_inviteExplanation = "Cliquer sur <strong>OK</strong> créera un lien vers un session de messagerie sécurisée <em>uniquement accessible par {0}.</em><br><br>Le lien peut être copié et partagé de manièé de manière publique.";
     out.profile_viewMyProfile = "Voir mon profil";
 
     // contacts/userlist
@@ -338,6 +348,8 @@ define(function () {
     out.fm_backup_title = 'Lien de secours';
     out.fm_nameFile = 'Comment souhaitez-vous nommer ce fichier ?';
     out.fm_error_cantPin = "Erreur interne du serveur. Veuillez recharger la page et essayer de nouveau.";
+    out.fm_viewListButton = "Liste";
+    out.fm_viewGridButton = "Grille";
     // File - Context menu
     out.fc_newfolder = "Nouveau dossier";
     out.fc_rename = "Renommer";
@@ -383,8 +395,6 @@ define(function () {
     out.login_invalPass = 'Mot de passe requis';
     out.login_unhandledError = "Une erreur inattendue s'est produite :(";
 
-    out.login_notRegistered = 'Pas encore inscrit ?';
-
     out.register_importRecent = "Importer l'historique (Recommendé)";
     out.register_acceptTerms = "J'accepte <a href='/terms.html' tabindex='-1'>les conditions d'utilisation</a>";
     out.register_passwordsDontMatch = "Les mots de passe doivent être identiques!";
@@ -408,6 +418,7 @@ define(function () {
     // Settings
     out.settings_cat_account = "Compte";
     out.settings_cat_drive = "CryptDrive";
+    out.settings_cat_code = "Code";
     out.settings_title = "Préférences";
     out.settings_save = "Sauver";
 
@@ -454,6 +465,9 @@ define(function () {
     out.settings_logoutEverywhere = "Se déconnecter de force de toutes les autres sessions.";
     out.settings_logoutEverywhereConfirm = "Êtes-vous sûr ? Vous devrez vous reconnecter sur tous vos autres appareils.";
 
+    out.settings_codeIndentation = "Indentation dans l'éditeur de code (nombre d'espaces)";
+    out.settings_codeUseTabs = "Utiliser des tabulations au lieu d'espaces";
+
     out.upload_title = "Hébergement de fichiers";
     out.upload_serverError = "Erreur interne: impossible d'importer le fichier pour l'instant.";
     out.upload_uploadPending = "Vous avez déjà un fichier en cours d'importation. Souhaitez-vous l'annuler et importer ce nouveau fichier ?";
@@ -477,6 +491,10 @@ define(function () {
     out.todo_markAsIncompleteTitle = "Marquer tâche comme non incomplète";
     out.todo_removeTaskTitle = "Enlever cette tâche de votre liste";
 
+    // pad
+    out.pad_showToolbar = "Afficher la barre d'outils";
+    out.pad_hideToolbar = "Cacher la barre d'outils";
+
     // general warnings
     out.warn_notPinned = "Ce pad n'est stocké dans aucun CryptDrive. Il va expirer après 3 mois d'inactivité. <a href='/about.html#pinning'>En savoir plus...</a>";
 
@@ -489,6 +507,7 @@ define(function () {
     out.main_about_p2 = 'Si vous avez des questions ou commentaires, vous pouvez <a href="https://twitter.com/cryptpad"><i class="fa fa-twitter"></i>nous tweeter</a>, ouvrir une issue sur <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker"><i class="fa fa-github"></i>GitHub</a>, venir dire bonjour sur <a href="https://riot.im/app/#/room/#cryptpad:matrix.org" title="Matrix">notre <i class="fa fa-comment"></i>salle Matrix</a> ou IRC (#cryptpad sur irc.freenode.net), ou bien encore <a href="mailto:research@xwiki.com"><i class="fa fa-envelope"></i>nous envoyer un email</a>.';
 
     out.main_info = "<h2>Collaborez avec confiance</h2><br>Développez vos idées en groupe avec des document partagés; la technologie <strong>Zero Knowledge</strong> sécurise vos données.";
+    out.main_catch_phrase = "Le Cloud Zero Knowledge";
 
     out.main_howitworks = 'Comment ça fonctionne';
     out.main_zeroKnowledge = 'Zero Knowledge';
@@ -509,6 +528,14 @@ define(function () {
     out.main_poll = 'Sondages';
     out.main_poll_p = 'Plannifiez vos réunions ou évènements, ou votez pour la meilleure solution concernant votre problème.';
     out.main_drive = 'CryptDrive';
+
+    out.main_richTextPad = 'Pad de Texte Riche';
+    out.main_codePad = 'Pad de Code';
+    out.main_slidePad = 'Présentation Markdown';
+    out.main_pollPad = 'Sondage ou Planning';
+    out.main_whiteboardPad = 'Tableau blanc';
+    out.main_localPads = 'Pads Locaux';
+    out.main_yourCryptDrive = 'Votre CryptDrive';
 
     out.footer_applications = "Applications";
     out.footer_contact = "Contact";
@@ -562,6 +589,7 @@ define(function () {
     out.header_support = '<a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
     out.updated_0_header_logoTitle = 'Retourner vers votre CryptDrive';
     out.header_logoTitle = out.updated_0_header_logoTitle;
+    out.header_homeTitle = "Aller sur la page d'acceuil";
 
     // Initial states
 

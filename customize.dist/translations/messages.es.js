@@ -557,6 +557,27 @@ define(function () {
 
     // 1.13.0 - Naiad
     out.topbar_whatIsCryptpad = "Qué es CryptPad";
-    
+    out.header_homeTitle = "Volver a la página de inicio";
+    out.userListButton = "Lista de usuarios";
+    out.userAccountButton = "Tu cuenta";
+    out.canvas_saveToDrive = "Guardar esta imagen como archivo en tu CryptDrive";
+    out.canvas_currentBrush = "Pincel actual";
+    out.canvas_chooseColor = "Eligir un color";
+    out.fm_viewListButton = "Lista";
+    out.fm_viewGridButton = "Cuadrícula";
+    out.settings_cat_code = "Código";
+    out.settings_codeIndentation = "Indentación del editor de código (espacios)";
+    out.settings_codeUseTabs = "Utilizar tabulaciones en vez de espacios";
+    out.pad_showToolbar = "Mostrar la barra de herramientas";
+    out.pad_hideToolbar = "Esconder la barra de herramientas";
+    out.main_catch_phrase = "El Cloud Zero Knowledge";
+    out.main_richTextPad = "Pad de Texto Enriquecido";
+    out.main_codePad = "Pad de Código";
+    out.main_slidePad = "Presentación Markdown";
+    out.main_pollPad = "Encuesta";
+    out.main_whiteboardPad = "Pizarra";
+    out.main_localPads = "Pad Locales";
+    out.main_yourCryptDrive =  "Tu CryptDrive";
+
     return out;
 });
