@@ -538,6 +538,7 @@ define(function () {
     out.main_pollPad = 'Poll or Schedule';
     out.main_whiteboardPad = 'Whiteboard';
     out.main_localPads = 'Local Pads';
+    out.main_yourCryptDrive = 'Your CryptDrive';
 
     out.footer_applications = "Applications";
     out.footer_contact = "Contact";

@@ -84,11 +84,11 @@ define([
         var username = window.localStorage.getItem('User_name');
         if (username === null) {
             rightLinks = [
-                h('a.nav-item.nav-link.cp-login-btn', { href: '/login'}, Msg.login_login),
-                h('a.nav-item.nav-link.cp-register-btn', { href: '/register'}, Msg.login_register)
+                h('a.nav-item.nav-link.cp-login-btn', { href: '/login/'}, Msg.login_login),
+                h('a.nav-item.nav-link.cp-register-btn', { href: '/register/'}, Msg.login_register)
             ];
         } else {
-            rightLinks = h('a.nav-item.nav-link.cp-user-btn', { href: '/drive' }, [
+            rightLinks = h('a.nav-item.nav-link.cp-user-btn', { href: '/drive/' }, [
                 h('i.fa.fa-user-circle'),
                 " ",
                 username
@@ -153,7 +153,7 @@ define([
                     h('div.col-md-4', [
                         h('img.bio-avatar', {'src': '/customize/images/Catalin.jpg'}),
                         h('h3', "Catalin Scripcariu"),
-                        setHTML(h('div#bio'), '<p> Catalin is a Maths majour and has worked in B2B sales for 12 years. Design was always his passion and 3 years ago he started to dedicate himself to web design and front-end.</p><p>At the beginning of 2017 he joined the Xwiki family, where he worked both on the business and the community side of XWiki, including the research team and CryptPad. </p>')
+                        setHTML(h('div#bio'), '<p> Catalin is a Maths majour and has worked in B2B sales for 12 years. Design was always his passion and 3 years ago he started to dedicate himself to web design and front-end.</p><p>At the beginning of 2017 he joined the XWiki family, where he worked both on the business and the community side of XWiki, including the research team and CryptPad. </p>')
                     ]),
                     h('div.col-md-4', [
                         h('img.bio-avatar', {'src': '/customize/images/ludovic.jpg'}),
@@ -280,7 +280,7 @@ define([
                                     { href: x[1] },
                                     h('div.bs-callout.cp-callout-' + x[0], [
                                         h('i.fa.' + x[3]),
-                                        h('div', [ h('h4', x[2]) ])
+                                        h('div.pad-button-text', [ h('h4', x[2]) ])
                                     ])
                                 ]);
                             }),
@@ -325,7 +325,6 @@ define([
             ])
         );
     };
-    loadingScreen = loadingScreen; // TODO use this
 
     Pages['/user/'] = Pages['/user/index.html'] = function () {
         return h('div#container');
