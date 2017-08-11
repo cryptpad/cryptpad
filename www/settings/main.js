@@ -51,6 +51,7 @@ define([
         ],
         'code': [
             'indentUnit',
+            'indentType'
         ]
     };
 
@@ -151,6 +152,41 @@ define([
         }).appendTo($inputBlock);
 
         proxy.on('change', [ 'cryptpad.indentUnit', ], function (o, n) { $input.val(n); });
+
+        Cryptpad.getAttribute('indentUnit', function (e, val) {
+            if (e) { return void console.error(e); }
+            if (typeof(val) !== 'number') {
+                $input.val(2);
+            } else {
+                $input.val(val);
+            }
+        });
+        return $div;
+    };
+
+    var createIndentTypeSelector = function (obj) {
+        var proxy = obj.proxy;
+
+        var key = 'cryptpad.indentWithTabs';
+
+        var $div = $('<div>', {
+            'class': 'indentType element'
+        });
+        $('<label>').text(Messages.settings_codeUseTabs).appendTo($div);
+
+        var $inputBlock = $('<div>', {
+            'class': 'inputBlock',
+        }).appendTo($div);
+
+        var $input = $('<input>', {
+            type: 'checkbox',
+        }).on('change', function () {
+            var val = $input.is(':checked');
+            if (typeof(val) !== 'boolean') { return; }
+            proxy[key] = val;
+        }).appendTo($inputBlock);
+
+        proxy.on('change', [key], function (o, n) { $input.val(n); });
 
         Cryptpad.getAttribute('indentUnit', function (e, val) {
             if (e) { return void console.error(e); }
@@ -423,6 +459,7 @@ define([
         $rightside.append(createDisplayNameInput(obj));
         $rightside.append(createLanguageSelector());
         $rightside.append(createIndentUnitSelector(obj));
+        $rightside.append(createIndentTypeSelector(obj));
 
         if (Cryptpad.isLoggedIn()) {
             $rightside.append(createLogoutEverywhere(obj));
