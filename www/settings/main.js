@@ -39,7 +39,6 @@ define([
         'account': [
             'infoBlock',
             'displayName',
-            'indentUnit',
             'languageSelector',
             'logoutEverywhere',
             'resetTips',
@@ -49,6 +48,9 @@ define([
             'backupDrive',
             'importLocalPads',
             'resetDrive'
+        ],
+        'code': [
+            'indentUnit',
         ]
     };
 
@@ -379,6 +381,7 @@ define([
             var $category = $('<div>', {'class': 'category'}).appendTo($categories);
             if (key === 'account') { $category.append($('<span>', {'class': 'fa fa-user-o'})); }
             if (key === 'drive') { $category.append($('<span>', {'class': 'fa fa-hdd-o'})); }
+            if (key === 'code') { $category.append($('<span>', {'class': 'fa fa-file-code-o' })); }
 
             if (key === active) {
                 $category.addClass('active');

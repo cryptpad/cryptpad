@@ -422,6 +422,7 @@ define(function () {
     // Settings
     out.settings_cat_account = "Account";
     out.settings_cat_drive = "CryptDrive";
+    out.settings_cat_code = "Code";
     out.settings_title = "Settings";
     out.settings_save = "Save";
 
