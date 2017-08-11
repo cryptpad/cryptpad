@@ -1,8 +1,6 @@
-@font-face {
-	font-family: Neuropolitical;
-	src: url(./customize/fonts/neuropolitical.ttf)
-}
-@import (once) '/customize/fonts/open-sans.less';
+@import (once) './include/font.less';
+.font-neuropolitical();
+.font-open-sans();
 
 body.cp-page-index { @import "./pages/page-index.less"; }
 body.cp-page-contact { @import "./pages/page-contact.less"; }
