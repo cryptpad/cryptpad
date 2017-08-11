@@ -11,7 +11,7 @@
 @content-bg: #fff;
 @content-bg-ro: darken(@content-bg, 10%);
 @content-fg: @tree-fg;
-@info-box-bg: #ddddff;
+@info-box-bg: #d2e1f2;
 @info-box-border: #bbb;
 @table-header-fg: #555;
 @table-header-bg: #e8e8e8;
@@ -380,19 +380,16 @@ span {
         margin-top: 10px;
     }
     .info-box {
-        line-height: 40px;
-        padding-left: 10px;
-        margin: 10px auto;
+        line-height: 2em;
+        padding: 0.25em 0.75em;
+        margin: 1em;
         background: @info-box-bg;
-        border: 1px solid @info-box-border;
-        border-radius: 5px;
         span {
             cursor: pointer;
-            margin-left: 10px;
             float: right;
+            margin-top: 0.5em;
         }
         &.noclose {
-            padding-right: 10px;
         }
     }
     li {
