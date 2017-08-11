@@ -470,6 +470,7 @@ define(function () {
     out.settings_logoutEverywhereConfirm = "Are you sure? You will need to log in with all your devices.";
 
     out.settings_codeIndentation = 'Code editor indentation (spaces)';
+    out.settings_codeUseTabs = "Indent using tabs (instead of spaces)";
 
     out.upload_title = "File upload";
     out.upload_serverError = "Server Error: unable to upload your file at this time.";
