@@ -468,6 +468,8 @@ define(function () {
     out.settings_logoutEverywhere = "Force log out of all other web sessions";
     out.settings_logoutEverywhereConfirm = "Are you sure? You will need to log in with all your devices.";
 
+    out.settings_codeIndentation = 'Code editor indentation (spaces)';
+
     out.upload_title = "File upload";
     out.upload_serverError = "Server Error: unable to upload your file at this time.";
     out.upload_uploadPending = "You already have an upload in progress. Cancel it and upload your new file?";

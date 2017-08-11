@@ -129,10 +129,10 @@ define([
     var createIndentUnitSelector = function (obj) {
         var proxy = obj.proxy;
 
-        console.log('create indent unit selector');
         var $div = $('<div>', {
             'class': 'indentUnit element'
         });
+        $('<label>').text(Messages.settings_codeIndentation).appendTo($div);
 
         var $inputBlock = $('<div>', {
             'class': 'inputBlock',
@@ -144,7 +144,6 @@ define([
             type: 'number',
         }).on('change', function () {
             var val = parseInt($input.val());
-            console.log(val, typeof(val));
             if (typeof(val) !== 'number') { return; }
             proxy['cryptpad.indentUnit'] = val;
         }).appendTo($inputBlock);
