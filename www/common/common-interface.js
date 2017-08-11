@@ -304,8 +304,9 @@ define([
         // If an element is removed from the UI while a tooltip is applied on that element, the tooltip will get hung
         // forever, this is a solution which just searches for tooltips which have no corrisponding element and removes
         // them.
-        var win = $('#pad-iframe')[0].contentWindow;
+        var win;
         $('.tippy-popper').each(function (i, el) {
+            win = win || $('#pad-iframe')[0].contentWindow;
             if (win.$('[aria-describedby=' + el.getAttribute('id') + ']').length === 0) {
                 el.remove();
             }
