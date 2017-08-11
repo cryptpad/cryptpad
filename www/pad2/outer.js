@@ -18,6 +18,10 @@ define([
         }));
         Cryptpad.ready(waitFor());
     }).nThen(function (waitFor) {
+        var secret = Cryptpad.getSecrets();
+        var readOnly = secret.keys && !secret.keys.editKeyStr;
+        if (!secret.keys) { secret.keys = secret.key; }
+        
         var parsed = Cryptpad.parsePadUrl(window.location.href);
         parsed.type = parsed.type.replace('pad2', 'pad');
         if (!parsed.type) { throw new Error(); }
@@ -55,10 +59,6 @@ define([
             }
         });
 
-        var secret = Cryptpad.getSecrets();
-        var readOnly = secret.keys && !secret.keys.editKeyStr;
-        if (!secret.keys) { secret.keys = secret.key; }
-
         CpNfOuter.start({
             sframeChan: sframeChan,
             channel: secret.channel,
@@ -66,6 +66,10 @@ define([
             validateKey: secret.keys.validateKey || undefined,
             readOnly: readOnly,
             crypto: Crypto.createEncryptor(secret.keys),
+            onConnect: function (wc) {
+                if (readOnly) { return; }
+                Cryptpad.replaceHash(Cryptpad.getEditHashFromKeys(wc.id, secret.keys));
+            }
         });
     });
 });

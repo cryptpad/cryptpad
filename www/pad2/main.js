@@ -641,7 +641,7 @@ define([
                     }
                 }
             } else {
-                Title.updateTitle(Cryptpad.initialName || Title.defaultTitle);
+                //Title.updateTitle(Cryptpad.initialName || Title.defaultTitle);
                 documentBody.innerHTML = Messages.initialState;
             }
 

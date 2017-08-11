@@ -29,6 +29,7 @@ define([], function () {
         var readOnly = conf.readOnly || false;
         var network = conf.network;
         var sframeChan = conf.sframeChan;
+        var onConnect = conf.onConnect || function () { };
         conf = undefined;
 
         var initializing = true;
@@ -40,7 +41,7 @@ define([], function () {
             messageFromInner(message, cb);
         });        
 
-        var onReady = function () {
+        var onReady = function (wc) {
             // Trigger onReady only if not ready yet. This is important because the history keeper sends a direct
             // message through "network" when it is synced, and it triggers onReady for each channel joined.
             if (!initializing) { return; }
@@ -130,6 +131,9 @@ define([], function () {
         var onOpen = function(wc, network, firstConnection) {
             wcObject.wc = wc;
             channel = wc.id;
+
+            onConnect(wc);
+            onConnect = function () { };
 
             // Add the existing peers in the userList
             sframeChan.event('EV_RT_CONNECT', { myID: wc.myID, members: wc.members, readOnly: readOnly });
