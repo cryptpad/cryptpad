@@ -32,7 +32,7 @@ var setHeaders = (function () {
     if (typeof(config.httpHeaders) !== 'object') { return function () {}; }
 
     const headers = clone(config.httpHeaders);
-    if (config.contentSecurity && false) {
+    if (config.contentSecurity) {
         headers['Content-Security-Policy'] = clone(config.contentSecurity);
         if (!/;$/.test(headers['Content-Security-Policy'])) { headers['Content-Security-Policy'] += ';' }
         if (headers['Content-Security-Policy'].indexOf('frame-ancestors') === -1) {
