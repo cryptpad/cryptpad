@@ -117,7 +117,7 @@ define([
 
     /*  remove listeners from the DOM */
     var removeListeners = function (root) {
-        slice(root.attributes).map(function (attr, i) {
+        slice(root.attributes).map(function (attr) {
             if (/^on/i.test(attr.name)) {
                 console.log('removing attribute', attr.name, root.attributes[attr.name]);
                 root.attributes.removeNamedItem(attr.name);
