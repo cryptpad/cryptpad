@@ -43,7 +43,7 @@ define([
 
     var removeListeners = function (root) {
         slice(root.attributes).map(function (attr) {
-            if (/^on/.test(attr.name)) {
+            if (/^on/i.test(attr.name)) {
                 root.attributes.removeNamedItem(attr.name);
             }
         });
