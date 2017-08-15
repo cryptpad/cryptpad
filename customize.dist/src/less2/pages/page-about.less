@@ -34,10 +34,22 @@
     }
     .cp-bio-avatar {
         padding-right: 0;
+        @media (max-width: 991px) {
+            padding-right: 15px;
+        }
+        img {
+            @media (max-width: 991px) {
+                margin: 0 auto;
+                display: block;
+            }
+        }
     }
     .cp-bio-avatar-right    {
         padding-right: 15px;
         padding-left: 0;
+        @media (max-width: 991px) {
+            padding-left: 15px;
+        }
     }
 }
 .cp-develop-about {
