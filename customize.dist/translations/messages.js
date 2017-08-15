@@ -404,13 +404,15 @@ define(function () {
 
     out.register_header = "Welcome to CryptPad";
     out.register_explanation = [
-        "<p>Lets go over a couple things first</p>",
-        "<ul>",
-            "<li>Your password is your secret key which encrypts all of your pads. If you lose it there is no way we can recover your data.</li>",
-            "<li>You can import pads which were recently viewed in your browser so you have them in your account.</li>",
-            "<li>If you are using a shared computer, you need to log out when you are done, closing the tab is not enough.</li>",
+        "<h3>Lets go over a couple things first:</h3>",
+        "<ul class='list-unstyled'>",
+            "<li><i class='fa fa-info-circle'> </i> Your password is your secret key which encrypts all of your pads. If you lose it there is no way we can recover your data.</li>",
+            "<li><i class='fa fa-info-circle'> </i> You can import pads which were recently viewed in your browser so you have them in your account.</li>",
+            "<li><i class='fa fa-info-circle'> </i> If you are using a shared computer, you need to log out when you are done, closing the tab is not enough.</li>",
         "</ul>"
     ].join('');
+    out.register_testimonial =" \"Tools like Etherpad and Google Docs [...] all share a weakness, which is that whomever owns the document server can see everything you're typing. Cryptpad is a free/open project that uses some of the ideas behind blockchain to implement a \"zero-knowledge\" version of a collaborative document editor, ensuring that only the people working on a document can see it.\"  ";
+    out.register_testimonial_name = "Cory Doctorow";
 
     out.register_writtenPassword = "I have written down my username and password, proceed";
     out.register_cancel = "Go back";

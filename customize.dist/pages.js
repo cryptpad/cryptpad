@@ -406,10 +406,18 @@ define([
     Pages['/register/'] = Pages['/register/index.html'] = function () {
         return [h('div#cp-main', [
             infopageTopbar(),
+            h('div.container-fluid.cp-register-wel',[
+                h('div.container',[
+                    h('div.row',[
+                        h('div.col-12',[
+                            h('h1.text-center', Msg.register_header)
+                        ])
+                    ])
+                ])
+            ]),
             h('div.container.cp-container', [
-                h('div.row.align-items-center', [
+                h('div.row.align-items-center.cp-register-det', [
                 h('div#data.hidden.col-md-6', [
-                    h('h1', Msg.register_header),
                     setHTML(h('p.register-explanation'), Msg.register_explanation)
                 ]),
                 h('div#userForm.form-group.hidden.col-md-6', [
@@ -453,10 +461,18 @@ define([
                             'for': 'accept-terms',
                         }), Msg.register_acceptTerms),*/
                     ]),
-                    h('button#register.btn.btn-primary', Msg.login_register)
+                    h('button#register.btn.cp-login-register', Msg.login_register)
                 ])
                 ]),
+                h('div.row.cp-register-test',[
+                    h('hr'),
+                    h('div.col-12', [
+                        setHTML(h('p.test-details'), Msg.register_testimonial),
+                        h('a.cp-test-source.pull-right', { href : 'http://boingboing.net/2016/09/26/cryptpad-a-freeopen-end-to.html'}, Msg.register_testimonial_name)
+                    ])
+                ])
             ]),
+
             infopageFooter(),
         ])];
     };
