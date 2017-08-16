@@ -410,7 +410,7 @@ define([
                 ])
             ]),
             h('div.container.cp-container', [
-                h('div.row.align-items-center.cp-register-det', [
+                h('div.row.cp-register-det', [
                 h('div#data.hidden.col-md-6', [
                     setHTML(h('p.register-explanation'), Msg.register_explanation)
                 ]),
