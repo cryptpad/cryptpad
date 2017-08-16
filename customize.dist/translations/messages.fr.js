@@ -536,6 +536,7 @@ define(function () {
     out.main_whiteboardPad = 'Tableau blanc';
     out.main_localPads = 'Pads Locaux';
     out.main_yourCryptDrive = 'Votre CryptDrive';
+    out.main_footerText = "Avec CryptPad, vous pouvez créer des documents collaboratifs rapidement pour prendre des notes à plusieurs.";
 
     out.footer_applications = "Applications";
     out.footer_contact = "Contact";
