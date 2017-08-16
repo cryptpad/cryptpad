@@ -60,14 +60,18 @@ define([
         return out;
     };
 
+    renderer.paragraph = function (p) {
+        return /<media\-tag[\s\S]*>/i.test(p)? p + '\n': '<p>' + p + '</p>\n';
+    };
+
     var MutationObserver = window.MutationObserver;
     var forbiddenTags = [
         'SCRIPT',
         'IFRAME',
         'OBJECT',
         'APPLET',
-        //'VIDEO',
-        'AUDIO',
+        //'VIDEO', // privacy implications of videos are the same as images
+        //'AUDIO', // same with audio
     ];
     var unsafeTag = function (info) {
         /*if (info.node && $(info.node).parents('media-tag').length) {
@@ -75,7 +79,7 @@ define([
             return true;
         }*/
         if (['addAttribute', 'modifyAttribute'].indexOf(info.diff.action) !== -1) {
-            if (/^on/.test(info.diff.name)) {
+            if (/^on/i.test(info.diff.name)) {
                 console.log("Rejecting forbidden element attribute with name", info.diff.name);
                 return true;
             }
@@ -97,10 +101,25 @@ define([
         return Array.prototype.slice.call(coll);
     };
 
+    var removeNode = function (node) {
+        if (!(node && node.parentElement)) { return; }
+        var parent = node.parentElement;
+        if (!parent) { return; }
+        console.log('removing %s tag', node.nodeName);
+        parent.removeChild(node);
+    };
+
+    var removeForbiddenTags = function (root) {
+        if (!root) { return; }
+        if (forbiddenTags.indexOf(root.nodeName) !== -1) { removeNode(root); }
+        slice(root.children).forEach(removeForbiddenTags);
+    };
+
     /*  remove listeners from the DOM */
     var removeListeners = function (root) {
         slice(root.attributes).map(function (attr) {
-            if (/^on/.test(attr.name)) {
+            if (/^on/i.test(attr.name)) {
+                console.log('removing attribute', attr.name, root.attributes[attr.name]);
                 root.attributes.removeNamedItem(attr.name);
             }
         });
@@ -110,6 +129,7 @@ define([
 
     var domFromHTML = function (html) {
         var Dom = new DOMParser().parseFromString(html, "text/html");
+        removeForbiddenTags(Dom.body);
         removeListeners(Dom.body);
         return Dom;
     };
@@ -144,7 +164,8 @@ define([
         var id = $content.attr('id');
         if (!id) { throw new Error("The element must have a valid id"); }
         var pattern = /(<media-tag src="([^"]*)" data-crypto-key="([^"]*)">)<\/media-tag>/g;
-        var newHtmlFixed = newHtml.replace(pattern, function (all, tag, src) {
+
+        var unsafe_newHtmlFixed = newHtml.replace(pattern, function (all, tag, src) {
             var mt = tag;
             if (mediaMap[src]) {
                 mediaMap[src].forEach(function (n) {
@@ -153,7 +174,10 @@ define([
             }
             return mt + '</media-tag>';
         });
-        var $div = $('<div>', {id: id}).append(newHtmlFixed);
+
+        var safe_newHtmlFixed = domFromHTML(unsafe_newHtmlFixed).body.outerHTML;
+        var $div = $('<div>', {id: id}).append(safe_newHtmlFixed);
+
         var Dom = domFromHTML($('<div>').append($div).html());
         var oldDom = domFromHTML($content[0].outerHTML);
         var patch = makeDiff(oldDom, Dom, id);

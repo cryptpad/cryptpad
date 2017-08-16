@@ -1,8 +1,9 @@
 @import "./variables.less";
+@import (once) "../less2/include/colortheme.less";
 
-.cp footer {
+footer {
     background: @category-bg;
-    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    font-family: @colortheme_font;
     padding-top: 1em;
     font-size: 1.2em;
     a {

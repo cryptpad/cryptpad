@@ -118,6 +118,10 @@ define(function () {
     out.shareButton = 'Share';
     out.shareSuccess = 'Copied link to clipboard';
 
+    out.userListButton = "User list";
+
+    out.userAccountButton = "Your account";
+
     out.newButton = 'New';
     out.newButtonTitle = 'Create a new pad';
     out.uploadButton = 'Upload files';
@@ -244,8 +248,11 @@ define(function () {
     out.canvas_enable = "Enable draw";
     out.canvas_width = "Width";
     out.canvas_opacity = "Opacity";
-    out.canvas_opacityLabel = "opacity: {0}";
+    out.canvas_opacityLabel = "Opacity: {0}";
     out.canvas_widthLabel = "Width: {0}";
+    out.canvas_saveToDrive = "Save this image as a file in your CryptDrive";
+    out.canvas_currentBrush = "Current brush";
+    out.canvas_chooseColor = "Choose a color";
 
     // Profile
     out.profileButton = "Profile"; // dropdown menu
@@ -329,10 +336,10 @@ define(function () {
     out.updated_0_fm_info_trash = 'Empty your trash to free space in your CryptDrive.';
     out.fm_info_trash = out.updated_0_fm_info_trash;
     out.fm_info_allFiles = 'Contains all the files from "Documents", "Unsorted" and "Trash". You can\'t move or remove files from here.'; // Same here
-    out.fm_info_anonymous = 'You are not logged in so these pads may be deleted (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">find out why</a>). ' +
+    out.fm_info_anonymous = 'You are not logged in so your pads will expire after 3 months (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">find out more</a>). ' +
                             '<a href="/register/">Sign up</a> or <a href="/login/">Log in</a> to keep them alive.';
     out.fm_alert_backupUrl = "Backup link for this drive.<br>" +
-                             "It is <strong>highly recommended</strong> that you keep ip for yourself only.<br>" +
+                             "It is <strong>highly recommended</strong> that you keep it secret.<br>" +
                              "You can use it to retrieve all your files in case your browser memory got erased.<br>" +
                              "Anybody with that link can edit or remove all the files in your file manager.<br>";
     out.fm_alert_anonymous = "Hello there, you are currently using CryptPad anonymously, that's ok but your pads may be deleted after a period of " +
@@ -342,6 +349,8 @@ define(function () {
     out.fm_backup_title = 'Backup link';
     out.fm_nameFile = 'How would you like to name that file?';
     out.fm_error_cantPin = "Internal server error. Please reload the page and try again.";
+    out.fm_viewListButton = "List view";
+    out.fm_viewGridButton = "Grid view";
     // File - Context menu
     out.fc_newfolder = "New folder";
     out.fc_rename = "Rename";
@@ -387,8 +396,6 @@ define(function () {
     out.login_invalPass = 'Password required';
     out.login_unhandledError = 'An unexpected error occurred :(';
 
-    out.login_notRegistered = 'Not registered?';
-
     out.register_importRecent = "Import pad history (Recommended)";
     out.register_acceptTerms = "I accept <a href='/terms.html' tabindex='-1'>the terms of service</a>";
     out.register_passwordsDontMatch = "Passwords do not match!";
@@ -397,13 +404,15 @@ define(function () {
 
     out.register_header = "Welcome to CryptPad";
     out.register_explanation = [
-        "<p>Lets go over a couple things first</p>",
-        "<ul>",
-            "<li>Your password is your secret key which encrypts all of your pads. If you lose it there is no way we can recover your data.</li>",
-            "<li>You can import pads which were recently viewed in your browser so you have them in your account.</li>",
-            "<li>If you are using a shared computer, you need to log out when you are done, closing the tab is not enough.</li>",
+        "<h3>Lets go over a couple things first:</h3>",
+        "<ul class='list-unstyled'>",
+            "<li><i class='fa fa-info-circle'> </i> Your password is your secret key which encrypts all of your pads. If you lose it there is no way we can recover your data.</li>",
+            "<li><i class='fa fa-info-circle'> </i> You can import pads which were recently viewed in your browser so you have them in your account.</li>",
+            "<li><i class='fa fa-info-circle'> </i> If you are using a shared computer, you need to log out when you are done, closing the tab is not enough.</li>",
         "</ul>"
     ].join('');
+    out.register_testimonial =" \"Tools like Etherpad and Google Docs [...] all share a weakness, which is that whomever owns the document server can see everything you're typing. Cryptpad is a free/open project that uses some of the ideas behind blockchain to implement a \"zero-knowledge\" version of a collaborative document editor, ensuring that only the people working on a document can see it.\"  ";
+    out.register_testimonial_name = "Cory Doctorow";
 
     out.register_writtenPassword = "I have written down my username and password, proceed";
     out.register_cancel = "Go back";
@@ -415,6 +424,7 @@ define(function () {
     // Settings
     out.settings_cat_account = "Account";
     out.settings_cat_drive = "CryptDrive";
+    out.settings_cat_code = "Code";
     out.settings_title = "Settings";
     out.settings_save = "Save";
 
@@ -461,6 +471,9 @@ define(function () {
     out.settings_logoutEverywhere = "Force log out of all other web sessions";
     out.settings_logoutEverywhereConfirm = "Are you sure? You will need to log in with all your devices.";
 
+    out.settings_codeIndentation = 'Code editor indentation (spaces)';
+    out.settings_codeUseTabs = "Indent using tabs (instead of spaces)";
+
     out.upload_title = "File upload";
     out.upload_serverError = "Server Error: unable to upload your file at this time.";
     out.upload_uploadPending = "You already have an upload in progress. Cancel it and upload your new file?";
@@ -484,6 +497,10 @@ define(function () {
     out.todo_markAsIncompleteTitle = "Mark this task as incomplete";
     out.todo_removeTaskTitle = "Remove this task from your todo list";
 
+    // pad
+    out.pad_showToolbar = "Show toolbar";
+    out.pad_hideToolbar = "Hide toolbar";
+
     // general warnings
     out.warn_notPinned = "This pad is not in anyone's CryptDrive. It will expire after 3 months. <a href='/about.html#pinning'>Learn more...</a>";
 
@@ -495,9 +512,10 @@ define(function () {
     out.main_howitworks_p1 = 'CryptPad uses a variant of the <a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> algorithm which is able to find distributed consensus using a <a href="https://bitcoin.org/bitcoin.pdf">Nakamoto Blockchain</a>, a construct popularized by <a href="https://en.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. This way the algorithm can avoid the need for a central server to resolve Operational Transform Edit Conflicts and without the need for resolving conflicts, the server can be kept unaware of the content which is being edited on the pad.';
 
     // contact.html
-    out.main_about_p2 = 'If you have any questions or comments, you can <a href="https://twitter.com/cryptpad">tweet us</a>, open an issue <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">on github</a>, come say hi on irc (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), or <a href="mailto:research@xwiki.com">send us an email</a>.';
+    out.main_about_p2 = 'If you have any questions or comments, feel free to reach out! You can <a href="https://twitter.com/cryptpad"><i class="fa fa-twitter"></i>tweet us</a>, open an issue <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">on <i class="fa fa-github"></i>GitHub</a>. Come say hi on <a href="https://riot.im/app/#/room/#cryptpad:matrix.org" title="Matrix">our <i class="fa fa-comment"></i>Matrix channel</a> or IRC (#cryptpad on irc.freenode.net), or <a href="mailto:research@xwiki.com"><i class="fa fa-envelope"></i>send us an email</a>.';
 
-    out.main_info = "<h1>Collaborate in Confidence</h1><br> Grow your ideas together with shared documents while <strong>Zero Knowledge</strong> technology secures your privacy; even from us.";
+    out.main_info = "<h2>Collaborate in Confidence</h2> Grow your ideas together with shared documents while <strong>Zero Knowledge</strong> technology secures your privacy; <strong>even from us</strong>.";
+    out.main_catch_phrase = "The Zero Knowledge Cloud";
 
     out.main_howitworks = 'How It Works';
     out.main_zeroKnowledge = 'Zero Knowledge';
@@ -520,6 +538,15 @@ define(function () {
     out.main_poll_p = 'Plan your meeting or your event, or vote for the best solution regarding your problem.';
     out.main_drive = 'CryptDrive';
 
+    out.main_richTextPad = 'Rich Text Pad';
+    out.main_codePad = 'Markdown/Code Pad';
+    out.main_slidePad = 'Markdown Presentation';
+    out.main_pollPad = 'Poll or Schedule';
+    out.main_whiteboardPad = 'Whiteboard';
+    out.main_localPads = 'Local Pads';
+    out.main_yourCryptDrive = 'Your CryptDrive';
+    out.main_footerText = "With CryptPad, you can make quick collaborative documents for taking notes and writing down ideas together.";
+
     out.footer_applications = "Applications";
     out.footer_contact = "Contact";
     out.footer_aboutUs = "About us";
@@ -529,6 +556,27 @@ define(function () {
     out.contact = "Contact";
     out.terms = "ToS";
     out.blog = "Blog";
+
+    out.topbar_whatIsCryptpad = "What is CryptPad";
+
+    // what-is-cryptpad.html
+
+    out.whatis_title = 'What is CryptPad';
+    out.whatis_collaboration = 'Fast, Easy Collaboration';
+    out.whatis_collaboration_p1 = 'With CryptPad, you can make quick collaborative documents for taking notes and writing down ideas together. When you sign up and log in, you get file upload capability and a CryptDrive where you can organize all of your pads. As a registered user you get 50MB of space for free.';
+    out.whatis_collaboration_p2 = 'You can share access to a CryptPad document simply by sharing the link. You can also share a link which provides <em>read only</em> access to a pad, allowing you to publicise your collaborative work while still being able to edit it.';
+    out.whatis_collaboration_p3 = 'You can make simple rich text documents with <a href="http://ckeditor.com/">CKEditor</a> as well as Markdown documents which are rendered in realtime while you type. You can also use the poll app for scheduling events with multiple participants.';
+    out.whatis_zeroknowledge = 'Zero Knowledge';
+    out.whatis_zeroknowledge_p1 = "We don't want to know what you're typing and with modern cryptography, you can be sure that we can't know. CryptPad uses <strong>100% client side encryption</strong> to protect the content that you type from us, the people who host the server.";
+    out.whatis_zeroknowledge_p2 = 'When you sign up and log in, your username and password are computed into a secret key using <a href="https://en.wikipedia.org/wiki/Scrypt">scrypt key derivation function</a>. Neither this key, nor the username and password are ever sent to the server. Instead they are used on the client side to decrypt the content of your CryptDrive, which contains the keys to all pads that you are able to access.';
+    out.whatis_zeroknowledge_p3 = 'When you share the link to a document, you\'re sharing the cryptographic key for accessing that document but since the key is in the <a href="https://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a>, it is never directly sent to the server. Check out our <a href="https://blog.cryptpad.fr/2017/07/07/cryptpad-analytics-what-we-cant-know-what-we-must-know-what-we-want-to-know/">privacy blog post</a> to learn more about what types of metadata we do and do not have access to.';
+    out.whatis_drive = 'Organization with CryptDrive';
+    out.whatis_drive_p1 = 'Whenever you access a pad in CryptPad, the pad is automatically added to your CryptDrive in the main folder. Later on, you can organize these pads into folders or you can put them in the trash bin. CryptDrive allows you to search through your pads and to organize them whenever you want, however you want.';
+    out.whatis_drive_p2 = 'With intuitive drag-and-drop, you can move pads around in your drive and the link to these pads will stay the same so your collaborators will never lose access.';
+    out.whatis_drive_p3 = 'You can also upload files in your CryptDrive and share them with colleagues. Uploaded files can be organized just like collaborative pads.';
+    out.whatis_business = 'CryptPad for Business';
+    out.whatis_business_p1 = 'CryptPad\'s Zero Knowledge encryption is excellent for multiplying the effectiveness of existing security protocols by mirroring organizational access controls in cryptography. Because sensitive assets can only be decrypted using employee access credentials, CryptPad removes the hacker jackpot which exists in traditional IT servers. Read the <a href="https://blog.cryptpad.fr/images/CryptPad-Whitepaper-v1.0.pdf">CryptPad Whitepaper</a> to learn more about how it can help your business.';
+    out.whatis_business_p2 = 'CryptPad is deployable on premises and the <a href="https://cryptpad.fr/about.html">CryptPad developers</a> at XWiki SAS are able to offer commercial support, customization and development. Reach out to <a href="mailto:sales@cryptpad.fr">sales@cryptpad.fr</a> for more information.';
 
     // privacy.html
 
@@ -571,11 +619,12 @@ define(function () {
     out.header_support = '<a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
     out.updated_0_header_logoTitle = 'Go to your CryptDrive';
     out.header_logoTitle = out.updated_0_header_logoTitle;
+    out.header_homeTitle = 'Go to CryptPad homepage';
 
     // Initial states
 
     out.initialState = [
-        '<span style="font-size:16px;"><p>',
+        '<p>',
         'This is&nbsp;<strong>CryptPad</strong>, the Zero Knowledge realtime collaborative editor. Everything is saved as you type.',
         '<br>',
         'Share the link to this pad to edit with friends or use the <span class="fa fa-share-alt" style="border: 1px solid black;color:#000;">&nbsp;Share&nbsp;</span> button to share a <em>read-only link</em>&nbsp;which allows viewing but not editing.',
@@ -583,7 +632,7 @@ define(function () {
 
         '<p><em>',
         'Go ahead, just start typing...',
-        '</em></p></span>',
+        '</em></p>',
         '<p>&nbsp;<br></p>'
     ].join('');
 
@@ -613,7 +662,7 @@ define(function () {
 
     // Readme
 
-    out.driveReadmeTitle = "What is CryptDrive?";
+    out.driveReadmeTitle = "What is CryptPad?";
     out.readme_welcome = "Welcome to CryptPad !";
     out.readme_p1 = "Welcome to CryptPad, this is where you can take note of things alone and with friends.";
     out.readme_p2 = "This pad will give you a quick walk through of how you can use CryptPad to take notes, keep them organized and work together on them.";

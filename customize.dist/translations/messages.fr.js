@@ -116,6 +116,10 @@ define(function () {
     out.shareButton = 'Partager';
     out.shareSuccess = 'Lien copié dans le presse-papiers';
 
+    out.userListButton = "Liste d'utilisateurs";
+
+    out.userAccountButton = "Votre compte";
+
     out.newButton = 'Nouveau';
     out.newButtonTitle = 'Créer un nouveau pad';
     out.uploadButton = 'Importer des fichiers';
@@ -240,10 +244,13 @@ define(function () {
     out.canvas_delete = "Supprimer la sélection";
     out.canvas_disable = "Désactiver le dessin";
     out.canvas_enable = "Activer le dessin";
-    out.canvas_width = "Épaisseur";
+    out.canvas_width = "Taille";
     out.canvas_opacity = "Opacité";
-    out.canvas_opacityLabel = "opacité: {0}";
-    out.canvas_widthLabel = "taille: {0}";
+    out.canvas_opacityLabel = "Opacité: {0}";
+    out.canvas_widthLabel = "Taille: {0}";
+    out.canvas_saveToDrive = "Sauvegarder cette image en tant que fichier dans CryptDrive";
+    out.canvas_currentBrush = "Pinceau actuel";
+    out.canvas_chooseColor = "Choisir une couleur";
 
     // Profile
     out.profileButton = "Profil"; // dropdown menu
@@ -257,6 +264,9 @@ define(function () {
     out.profile_description = "Description";
     out.profile_fieldSaved = 'Nouvelle valeur enregistrée: {0}';
 
+    out.profile_inviteButton = "Inviter";
+    out.profile_inviteButtonTitle = 'Créer un lien pour inviter cet utilisateur à se connecter avec vous.';
+    out.profile_inviteExplanation = "Cliquer sur <strong>OK</strong> créera un lien vers une session de messagerie sécurisée <em>uniquement accessible par {0}.</em><br><br>Le lien peut être copié et partagé de manière publique.";
     out.profile_viewMyProfile = "Voir mon profil";
 
     // contacts/userlist
@@ -338,6 +348,8 @@ define(function () {
     out.fm_backup_title = 'Lien de secours';
     out.fm_nameFile = 'Comment souhaitez-vous nommer ce fichier ?';
     out.fm_error_cantPin = "Erreur interne du serveur. Veuillez recharger la page et essayer de nouveau.";
+    out.fm_viewListButton = "Liste";
+    out.fm_viewGridButton = "Grille";
     // File - Context menu
     out.fc_newfolder = "Nouveau dossier";
     out.fc_rename = "Renommer";
@@ -383,8 +395,6 @@ define(function () {
     out.login_invalPass = 'Mot de passe requis';
     out.login_unhandledError = "Une erreur inattendue s'est produite :(";
 
-    out.login_notRegistered = 'Pas encore inscrit ?';
-
     out.register_importRecent = "Importer l'historique (Recommendé)";
     out.register_acceptTerms = "J'accepte <a href='/terms.html' tabindex='-1'>les conditions d'utilisation</a>";
     out.register_passwordsDontMatch = "Les mots de passe doivent être identiques!";
@@ -403,11 +413,12 @@ define(function () {
             "<li>Vous pouvez importer les pads récents de ce navigateur pour les avoir dans votre compte utilisateur.</li>",
             "<li>Si vous utilisez un ordinateur partagé, vous devez vous déconnecter avant de partir, fermer l'onglet n'est pas suffisant.</li>",
         "</ul>"
-    ];
+    ].join('');
 
     // Settings
     out.settings_cat_account = "Compte";
     out.settings_cat_drive = "CryptDrive";
+    out.settings_cat_code = "Code";
     out.settings_title = "Préférences";
     out.settings_save = "Sauver";
 
@@ -454,6 +465,9 @@ define(function () {
     out.settings_logoutEverywhere = "Se déconnecter de force de toutes les autres sessions.";
     out.settings_logoutEverywhereConfirm = "Êtes-vous sûr ? Vous devrez vous reconnecter sur tous vos autres appareils.";
 
+    out.settings_codeIndentation = "Indentation dans l'éditeur de code (nombre d'espaces)";
+    out.settings_codeUseTabs = "Utiliser des tabulations au lieu d'espaces";
+
     out.upload_title = "Hébergement de fichiers";
     out.upload_serverError = "Erreur interne: impossible d'importer le fichier pour l'instant.";
     out.upload_uploadPending = "Vous avez déjà un fichier en cours d'importation. Souhaitez-vous l'annuler et importer ce nouveau fichier ?";
@@ -473,9 +487,13 @@ define(function () {
     out.todo_title = "CryptTodo";
     out.todo_newTodoNamePlaceholder = "Décrivez votre tâche...";
     out.todo_newTodoNameTitle = "Ajouter cette tâche à votre liste";
-    out.todo_markAsCompleteTitle = "Marquer tâche comme terminée";
-    out.todo_markAsIncompleteTitle = "Marquer tâche comme non incomplète";
+    out.todo_markAsCompleteTitle = "Marquer cette tâche comme terminée";
+    out.todo_markAsIncompleteTitle = "Marquer cette tâche comme incomplète";
     out.todo_removeTaskTitle = "Enlever cette tâche de votre liste";
+
+    // pad
+    out.pad_showToolbar = "Afficher la barre d'outils";
+    out.pad_hideToolbar = "Cacher la barre d'outils";
 
     // general warnings
     out.warn_notPinned = "Ce pad n'est stocké dans aucun CryptDrive. Il va expirer après 3 mois d'inactivité. <a href='/about.html#pinning'>En savoir plus...</a>";
@@ -486,9 +504,10 @@ define(function () {
     out.main_p2 = 'Ce projet utilise l\'éditeur visuel (WYSIWYG) <a href="http://ckeditor.com/">CKEditor</a>, l\'éditeur de code source <a href="https://codemirror.net/">CodeMirror</a>, et le moteur temps-réel <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a>.';
     out.main_howitworks_p1 = 'CryptPad utilise une variante de l\'algorithme d\'<a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> qui est capable de trouver un consensus distribué en utilisant <a href="https://bitcoin.org/bitcoin.pdf">une chaîne de bloc Nakamoto</a>, un outil popularisé par le <a href="https://fr.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. De cette manière, l\'algorithme évite la nécessité d\'utiliser un serveur central pour résoudre les conflits d\'édition de l\'Operational Transformation, et sans ce besoin de résolution des conflits le serveur peut rester ignorant du contenu qui est édité dans le pad.';
     //contact.html
-    out.main_about_p2 = 'Si vous avez des questions ou commentaires, vous pouvez <a href="https://twitter.com/cryptpad">nous tweeter</a>, ouvrir une issue sur <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">Github</a>, venir dire bonjour sur IRC (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), ou <a href="mailto:research@xwiki.com">nous envoyer un email</a>.';
+    out.main_about_p2 = 'Si vous avez des questions ou commentaires, vous pouvez <a href="https://twitter.com/cryptpad"><i class="fa fa-twitter"></i>nous tweeter</a>, ouvrir une issue sur <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker"><i class="fa fa-github"></i>GitHub</a>, venir dire bonjour sur <a href="https://riot.im/app/#/room/#cryptpad:matrix.org" title="Matrix">notre <i class="fa fa-comment"></i>salle Matrix</a> ou IRC (#cryptpad sur irc.freenode.net), ou bien encore <a href="mailto:research@xwiki.com"><i class="fa fa-envelope"></i>nous envoyer un email</a>.';
 
-    out.main_info = "<h2>Collaborez avec confiance</h2><br>Développez vos idées en groupe avec des document partagés; la technologie <strong>Zero Knowledge</strong> sécurise vos données.";
+    out.main_info = "<h2>Collaborez avec confiance</h2><br>Développez vos idées en groupe avec des documents partagés; la technologie <strong>Zero Knowledge</strong> sécurise vos données.";
+    out.main_catch_phrase = "Le Cloud Zero Knowledge";
 
     out.main_howitworks = 'Comment ça fonctionne';
     out.main_zeroKnowledge = 'Zero Knowledge';
@@ -510,6 +529,15 @@ define(function () {
     out.main_poll_p = 'Plannifiez vos réunions ou évènements, ou votez pour la meilleure solution concernant votre problème.';
     out.main_drive = 'CryptDrive';
 
+    out.main_richTextPad = 'Pad de Texte Riche';
+    out.main_codePad = 'Pad de Code';
+    out.main_slidePad = 'Présentation Markdown';
+    out.main_pollPad = 'Sondage ou Planning';
+    out.main_whiteboardPad = 'Tableau blanc';
+    out.main_localPads = 'Pads Locaux';
+    out.main_yourCryptDrive = 'Votre CryptDrive';
+    out.main_footerText = "Avec CryptPad, vous pouvez créer des documents collaboratifs rapidement pour prendre des notes à plusieurs.";
+
     out.footer_applications = "Applications";
     out.footer_contact = "Contact";
     out.footer_aboutUs = "À propos";
@@ -519,6 +547,8 @@ define(function () {
     out.contact = "Contact";
     out.terms = "Conditions";
     out.blog = "Blog";
+
+    out.topbar_whatIsCryptpad = "Qu'est-ce que CryptPad";
 
     // privacy.html
 
@@ -560,11 +590,12 @@ define(function () {
     out.header_support = '<a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
     out.updated_0_header_logoTitle = 'Retourner vers votre CryptDrive';
     out.header_logoTitle = out.updated_0_header_logoTitle;
+    out.header_homeTitle = "Aller sur la page d'accueil";
 
     // Initial states
 
     out.initialState = [
-        '<span style="font-size:16px;"><p>',
+        '<p>',
         'Voici <strong>CryptPad</strong>, l\'éditeur collaboratif en temps-réel Zero Knowledge. Tout est sauvegardé dés que vous le tapez.',
         '<br>',
         'Partagez le lien vers ce pad avec des amis ou utilisez le bouton <span class="fa fa-share-alt" style="border: 1px solid black;color:#000;">&nbsp;Partager&nbsp;</span> pour obtenir le <em>lien de lecture-seule</em>, qui permet la lecture mais non la modification.',
@@ -572,7 +603,7 @@ define(function () {
         '<p>',
         '<em>',
         'Lancez-vous, commencez à taper...',
-        '</em></p></span>',
+        '</em></p>',
         '<p>&nbsp;<br></p>'
     ].join('');
 
@@ -600,7 +631,7 @@ define(function () {
         '  - La présentation est mise à jour en temps-réel'
     ].join('');
 
-    out.driveReadmeTitle = "Qu'est-ce que CryptDrive ?";
+    out.driveReadmeTitle = "Qu'est-ce que CryptPad ?";
     out.readme_welcome = "Bienvenue dans CryptPad !";
     out.readme_p1 = "Bienvenue dans CryptPad, le lieu où vous pouvez prendre des notes seul ou avec des amis.";
     out.readme_p2 = "Ce pad va vous donner un aperçu de la manière dont vous pouvez utiliser CryptPad pour prendre des notes, les organiser et travailler en groupe sur celles-ci.";

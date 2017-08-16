@@ -1,5 +1,7 @@
 @import "/customize/src/less/variables.less";
 @import "/customize/src/less/mixins.less";
+@import "/common/markdown.less";
+@import "/common/file-dialog.less";
 
 html, body{
     height: 100%;
@@ -28,6 +30,7 @@ body {
     min-width: 20%;
     max-width: 80%;
     resize: horizontal;
+    font-size: initial;
 }
 .CodeMirror.fullPage {
     //min-width: 100%;
@@ -57,24 +60,33 @@ body {
     box-sizing: border-box;
     font-family: Calibri,Ubuntu,sans-serif;
     word-wrap: break-word;
-    media-tag * {
-        max-width:100%;
+    position: relative;
+    media-tag {
+        * {
+            max-width:100%;
+        }
+        iframe[type="application/pdf"] {
+            max-height:50vh;
+        }
     }
 }
 
 #preview {
     max-width: 40vw;
-    margin: auto;
+    margin: 1em auto;
 
-    table {
-        border-collapse: collapse;
-        tr {
-            th {
-                border: 3px solid black;
-                padding: 15px;
-            }
-        }
-    }
+    .markdown_preformatted-code;
+    .markdown_gfm-table(black);
+}
+
+.cp-splitter {
+    position: absolute;
+    height: 100%;
+    width: 8px;
+    top: 0;
+    left: 0;
+
+    cursor: col-resize;
 }
 
 @media (max-width: @media-medium-screen) {

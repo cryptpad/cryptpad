@@ -43,7 +43,7 @@ define([
 
     var removeListeners = function (root) {
         slice(root.attributes).map(function (attr) {
-            if (/^on/.test(attr.name)) {
+            if (/^on/i.test(attr.name)) {
                 root.attributes.removeNamedItem(attr.name);
             }
         });
@@ -299,6 +299,13 @@ define([
 
             var DD = new DiffDom(diffOptions);
 
+            var openLink = function (e) {
+                var el = e.currentTarget;
+                if (!el || el.nodeName !== 'A') { return; }
+                var href = el.getAttribute('href');
+                if (href) { window.open(href, '_blank'); }
+            };
+
             // apply patches, and try not to lose the cursor in the process!
             var applyHjson = function (shjson) {
                 var userDocStateDom = hjsonToDom(JSON.parse(shjson));
@@ -306,8 +313,17 @@ define([
                 if (!readOnly && !initializing) {
                     userDocStateDom.setAttribute("contenteditable", "true"); // lol wtf
                 }
+                $(userDocStateDom).find('script, applet, object, iframe').remove();
+                $(userDocStateDom).find('a').filter(function (i, x) {
+                    return ! /^(https|http|ftp):\/\/[^\s\n]*$/.test(x.getAttribute('href'));
+                }).remove();
                 var patch = (DD).diff(inner, userDocStateDom);
                 (DD).apply(inner, patch);
+                if (readOnly) {
+                    var $links = $(inner).find('a');
+                    // off so that we don't end up with multiple identical handlers
+                    $links.off('click', openLink).on('click', openLink);
+                }
             };
 
             var stringifyDOM = module.stringifyDOM = function (dom) {
@@ -508,14 +524,17 @@ define([
                     $collapse.removeClass('fa-question');
                     var updateIcon = function () {
                         $collapse.removeClass('fa-caret-down').removeClass('fa-caret-up');
+                        $collapse.attr('title', '');
                         var isCollapsed = !$bar.find('.cke_toolbox_main').is(':visible');
                         if (isCollapsed) {
                             if (!initializing) { Cryptpad.feedback('HIDETOOLBAR_PAD'); }
                             $collapse.addClass('fa-caret-down');
+                            $collapse.attr('title', Messages.pad_showToolbar);
                         }
                         else {
                             if (!initializing) { Cryptpad.feedback('SHOWTOOLBAR_PAD'); }
                             $collapse.addClass('fa-caret-up');
+                            $collapse.attr('title', Messages.pad_hideToolbar);
                         }
                     };
                     updateIcon();
@@ -610,8 +629,10 @@ define([
                         if (stringify(hjson2) !== stringify(hjson)) {
                             console.log('err');
                             console.error("shjson2 !== shjson");
-                            Cryptpad.errorLoadingScreen(Messages.wrongApp);
-                            throw new Error();
+                            // TODO(cjd): This is removed because the XSS filter in applyHjson()
+                            //            is applied on incoming content so it causes this to fail.
+                            //Cryptpad.errorLoadingScreen(Messages.wrongApp);
+                            //throw new Error();
                         }
                     }
                 } else {

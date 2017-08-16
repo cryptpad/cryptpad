@@ -14,13 +14,15 @@ define([
     '/common/common-codemirror.js',
     '/common/common-file.js',
     '/file/file-crypto.js',
+    '/common/common-realtime.js',
 
     '/common/clipboard.js',
     '/common/pinpad.js',
     '/customize/application_config.js',
     '/common/media-tag.js',
 ], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Metadata,
-            Messaging, CodeMirror, Files, FileCrypto, Clipboard, Pinpad, AppConfig, MediaTag) {
+            Messaging, CodeMirror, Files, FileCrypto, Realtime, Clipboard,
+            Pinpad, AppConfig, MediaTag) {
 
     // Configure MediaTags to use our local viewer
     if (MediaTag && MediaTag.PdfPlugin) {
@@ -122,12 +124,15 @@ define([
     common.initMessaging = Messaging.init;
     common.addDirectMessageHandler = Messaging.addDirectMessageHandler;
     common.inviteFromUserlist = Messaging.inviteFromUserlist;
-    common.createOwnedChannel = Messaging.createOwnedChannel;
     common.getFriendList = Messaging.getFriendList;
     common.getFriendChannelsList = Messaging.getFriendChannelsList;
-    common.getFriendListUI = Messaging.getFriendListUI;
     common.createData = Messaging.createData;
     common.getPendingInvites = Messaging.getPending;
+    common.getLatestMessages = Messaging.getLatestMessages;
+    common.initMessagingUI = Messaging.UI.init;
+
+    // Realtime
+    var whenRealtimeSyncs = common.whenRealtimeSyncs = Realtime.whenRealtimeSyncs;
 
     // Userlist
     common.createUserList = UserList.create;
@@ -242,36 +247,6 @@ define([
                 return store.getProxy().info.realtime;
         }
         return;
-    };
-
-    common.infiniteSpinnerDetected = false;
-    var BAD_STATE_TIMEOUT = typeof(AppConfig.badStateTimeout) === 'number'?
-        AppConfig.badStateTimeout: 30000;
-    var whenRealtimeSyncs = common.whenRealtimeSyncs = function (realtime, cb) {
-        realtime.sync();
-
-        window.setTimeout(function () {
-            if (realtime.getAuthDoc() === realtime.getUserDoc()) {
-                return void cb();
-            }
-
-            var to = setTimeout(function () {
-                realtime.abort();
-                // don't launch more than one popup
-                if (common.infiniteSpinnerDetected) { return; }
-
-                // inform the user their session is in a bad state
-                common.confirm(Messages.realtime_unrecoverableError, function (yes) {
-                    if (!yes) { return; }
-                    window.location.reload();
-                });
-                common.infiniteSpinnerDetected = true;
-            }, BAD_STATE_TIMEOUT);
-            realtime.onSettle(function () {
-                clearTimeout(to);
-                cb();
-            });
-        }, 0);
     };
 
     common.getWebsocketURL = function () {
@@ -1243,6 +1218,13 @@ define([
                     style: 'font:'+size+' FontAwesome'
                 });
                 break;
+            case 'savetodrive':
+                button = $('<button>', {
+                    'class': 'fa fa-cloud-upload',
+                    title: Messages.canvas_saveToDrive,
+                })
+                .click(prepareFeedback(type));
+                break;
             default:
                 button = $('<button>', {
                     'class': "fa fa-question",
@@ -1389,23 +1371,42 @@ define([
         }
     };
 
+    // This is duplicated in drive/main.js, it should be unified
+    var getFileIcon = function (data) {
+        var $icon = common.getIcon();
+
+        if (!data) { return $icon; }
+
+        var href = data.href;
+        if (!href) { return $icon; }
+
+        if (href.indexOf('/pad/') !== -1) { $icon = common.getIcon('pad'); }
+        else if (href.indexOf('/code/') !== -1) { $icon = common.getIcon('code'); }
+        else if (href.indexOf('/slide/') !== -1) { $icon = common.getIcon('slide'); }
+        else if (href.indexOf('/poll/') !== -1) { $icon = common.getIcon('poll'); }
+        else if (href.indexOf('/whiteboard/') !== -1) { $icon = common.getIcon('whiteboard'); }
+        else if (href.indexOf('/file/') !== -1) { $icon = common.getIcon('file'); }
+
+        return $icon;
+    };
 
     common.createFileDialog = function (cfg) {
         var $body = cfg.$body || $('body');
-        var $block = $body.find('#fileDialog');
-        if (!$block.length) {
-            $block = $('<div>', {id: "fileDialog"}).appendTo($body);
+        var $blockContainer = $body.find('#fileDialog');
+        if (!$blockContainer.length) {
+            $blockContainer = $('<div>', {id: "fileDialog"}).appendTo($body);
         }
-        $block.html('');
+        $blockContainer.html('');
+        var $block = $('<div>', {'class': 'cp-modal'}).appendTo($blockContainer);
         $('<span>', {
             'class': 'close fa fa-times',
             'title': Messages.filePicker_close
         }).click(function () {
-            $block.hide();
+            $blockContainer.hide();
         }).appendTo($block);
         var $description = $('<p>').text(Messages.filePicker_description);
         $block.append($description);
-        var $filter = $('<p>').appendTo($block);
+        var $filter = $('<p>', {'class': 'cp-form'}).appendTo($block);
         var $container = $('<span>', {'class': 'fileContainer'}).appendTo($block);
         var updateContainer = function () {
             $container.html('');
@@ -1418,11 +1419,15 @@ define([
                 if (filter && name.toLowerCase().indexOf(filter.toLowerCase()) === -1) {
                     return;
                 }
-                var $span = $('<span>', {'class': 'element'}).appendTo($container);
-                var $inner = $('<span>').text(name);
-                $span.append($inner).click(function () {
+                var $span = $('<span>', {
+                    'class': 'element',
+                    'title': name,
+                }).appendTo($container);
+                $span.append(getFileIcon(data));
+                $span.append(name);
+                $span.click(function () {
                     if (typeof cfg.onSelect === "function") { cfg.onSelect(data.href); }
-                    $block.hide();
+                    $blockContainer.hide();
                 });
             });
         };
@@ -1438,13 +1443,13 @@ define([
         //$filter.append(' '+Messages.or+' ');
         var data = {FM: cfg.data.FM};
         $filter.append(common.createButton('upload', false, data, function () {
-            $block.hide();
+            $blockContainer.hide();
         }));
         updateContainer();
         $body.keydown(function (e) {
-            if (e.which === 27) { $block.hide(); }
+            if (e.which === 27) { $blockContainer.hide(); }
         });
-        $block.show();
+        $blockContainer.show();
     };
 
 
@@ -1804,7 +1809,7 @@ define([
                            (parseInt(verArr[0]) === parseInt(storedArr[0]) &&
                             parseInt(verArr[1]) > parseInt(storedArr[1]));
         if (!shouldUpdate) { return; }
-        common.alert(Messages._getKey('newVersion', [verArr.join('.')]), null, true);
+        //common.alert(Messages._getKey('newVersion', [verArr.join('.')]), null, true);
         localStorage[CRYPTPAD_VERSION] = ver;
     };
 

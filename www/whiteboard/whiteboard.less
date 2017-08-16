@@ -27,20 +27,29 @@ body {
 }
 // created by fabricjs. styled so defaults don't break anything
 .canvas-container {
-    border: 1px solid black;
     margin: auto;
     background: white;
+    & > canvas {
+        border: 1px solid black;
+    }
 }
 
 // contains user tools
 #controls {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     position: relative;
     border-top: 1px solid black;
     background: white;
-    height: 100px;
-    line-height: 100px;
-    padding-bottom: 5px;
+
+    padding: 1em;
+
+    & > * + * {
+        margin: 0;
+        margin-left: 1em;
+    }
 
     #width, #opacity {
         .middle;
@@ -50,15 +59,36 @@ body {
         vertical-align: middle;
     }
     .selected {
-        margin-left: 20px;
-        display: inline-block;
-        height: 135px;
-        width: 135px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         z-index: 9001;
-        text-align: center;
-        img {
-            vertical-align: middle;
+
+        width: 100px;
+        height: 100px;
+    }
+
+    .range-group {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+
+        input[type="range"] {
+            background-color: inherit;
         }
+
+        & > span {
+            cursor: default;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+    }
+    .range-group:first-of-type {
+        margin-left: 2em;
+    }
+    .range-group:last-of-type {
+        margin-right: 1em;
     }
 }
 
@@ -70,13 +100,21 @@ body {
     display: flex;
     justify-content: space-between;
 
+    padding: 1em;
+
     span.palette-color {
         height: 4vw;
         width: 4vw;
-        display: inline-block;
+        display: block;
         margin: 5px;
         border: 1px solid black;
         vertical-align: top;
+        border-radius: 50%;
+        transition: transform 0.1s;
+
+        &:hover {
+            transform: scale(1.2);
+        }
     }
 }
 
@@ -87,6 +125,7 @@ body {
 
 // input[type=color] must exist in the dom to work correctly
 // styled so that they don't break layouts
+
 #pickers {
     visibility: hidden;
     position: absolute;
@@ -94,4 +133,3 @@ body {
     height: 0;
     z-index: -5;
 }
-

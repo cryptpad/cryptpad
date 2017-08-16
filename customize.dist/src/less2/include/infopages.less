@@ -1,0 +1,217 @@
+@import (once) "./colortheme.less";
+
+@infopages_infobar-height: 64px;
+@infopages_padding: 32px;
+
+// Basic setup for info pages, this should be used at the global level
+.infopages_main () {
+    background-color: @colortheme_info-background;
+    a {
+        color: @cryptpad_color_blue;
+        &:visited { color: darken(@cryptpad_color_blue, 5%); }
+    }
+    a:hover {
+        opacity: 1;
+    }
+    border: 0;
+    padding: 0;
+    margin: 0;
+    font-size: 16px;
+    font-family: @colortheme_font;
+    .cp-container {
+        font-size: 16px;
+        padding-top: @infopages_padding;
+        padding-bottom: @infopages_padding;
+        min-height: 75vh;
+        h1 {
+            font-size: 3em;
+            margin-bottom: 0.5em;
+        }
+        h2 {
+            font-size: 2em;
+            margin-top: 1em;
+            margin-bottom: 0.5em;
+        }
+        h3 {
+            font-size: 1.5em;
+            margin-top: 1em;
+            margin-bottom: 0.5em;
+        }
+        img {
+            &.left {
+                float: left;
+            }
+            max-width: 100%;
+        }
+        .form-group {
+            & > * {
+                margin-top: 0.5em;
+            }
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            .checkbox-container {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                label {
+                    margin: 0;
+                }
+                input {
+                    margin-right: 0.5em;
+                }
+            }
+        }
+    }
+    footer {
+        background-color: @cryptpad_color_blue;
+        .container {
+            .col {
+                margin-top: 1em;
+            }
+        a {
+            color: #fff;
+            &:visited {
+                color: darken(#fff, 5%);
+            };
+        }
+        margin-bottom: 1em;
+        ul.list-unstyled {
+                margin-top: 1em;
+                text-align: center;
+            }
+        }
+        .cp-bio-foot {
+            background-image: url(/customize/CryptPad-white-logo.svg);
+            background-size: 100%;
+            background-repeat: no-repeat;
+            p {
+                color: #fff;
+                padding-top: 30%;
+                margin-bottom: 0;
+                
+            }
+
+        }
+        .cp-version-footer {
+            background-color: @cryptpad_color_blue;
+            color: #fff;
+            text-align: center;
+            padding: 0.5em;
+            border-top: 2px solid #fff;
+        }
+    }
+};
+
+.infopages_link () {
+    text-decoration: none;
+    color: #0275D8;
+    cursor: pointer;
+    display: inline-flex;
+    &:hover {
+        transform: scale(1.05);
+    }
+}
+
+// Apply this to the top bar div
+.infopages_topbar () {
+    .cp-topbar {
+        background: #fff;
+        z-index: 9001;
+        position: fixed;
+        top: 0;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        box-sizing: border-box;
+        width: 100%;
+        height: @infopages_infobar-height;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+        vertical-align: middle;
+        font-size: 1.25em;
+        line-height: 1.25em;
+        cursor: default;
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+        }
+        a {
+            font-weight: 500;
+            padding: 0.6em;
+            .infopages_link()
+        }
+        .cp-logo {
+            margin-right: 0.5em;
+        }
+    }
+}
+
+// navigation top bar 
+.navbar  {
+    background: #fff;
+    .navbar-brand {
+        display: block;
+        background-image: url(/customize/CryptPad_logo_color.svg);
+        background-repeat: no-repeat;
+        background-size: contain;
+        height: 50px;
+        width: 250px;
+    }
+    a {
+        border: 2px solid transparent;
+    }
+    .nav-link {
+        padding: 0.5em 0.7em;
+        &:hover {
+            transform: scale(1.05);
+        };
+    }
+    .cp-register-btn {
+            border: 2px solid #4591C4;
+    }
+    button:focus {
+        outline: none;
+    }
+    .navbar-toggler {
+        margin-top: 10px;
+        color: #4591C4;
+    }
+}
+@media (max-width: 991px) {
+    #menuCollapse {
+        text-align: right;
+    }
+    .navbar-nav a {
+        text-align: right !important;
+    }
+    .cp-register-btn {
+        margin-right: 13px;
+        margin-left: 83vw;
+        text-align: center;
+     }
+}
+@media (max-width: 687px) {
+    .cp-register-btn {
+         margin-left: 75vw;
+    }
+}
+@media (max-width: 467px) {
+    .cp-register-btn {
+         margin-left: 63vw;
+    }
+}
+
+
+//footer general styles
+
+.footer-title {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #1E1F1F;
+}

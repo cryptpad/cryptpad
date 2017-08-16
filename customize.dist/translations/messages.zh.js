@@ -467,7 +467,7 @@ define(function () {
     // Initial states
 
     out.initialState = [
-        '<span style="font-size:16px;"><p>',
+        '<p>',
         '這是&nbsp;<strong>CryptPad</strong>, 零知識即時協作編輯平台，當你輸入時一切已即存好。',
         '<br>',
         '分享這個工作檔案的網址連結給友人或是使用、 <span class="fa fa-share-alt" style="border: 1px solid black;color:#000;">&nbsp;分享&nbsp;</span> 按鈕分享<em>唯讀的連結</em>&nbsp;其只能看不能編寫。',
@@ -475,7 +475,7 @@ define(function () {
 
         '<p><em>',
         '來吧, 開始打字輸入吧...',
-        '</em></p></span>',
+        '</em></p>',
         '<p>&nbsp;<br></p>'
     ].join('');
 
@@ -505,7 +505,7 @@ define(function () {
 
     // Readme
 
-    out.driveReadmeTitle = "什麼是 CryptDrive?";
+    out.driveReadmeTitle = "什麼是 CryptPad?";
     out.readme_welcome = "歡迎來到 CryptPad !";
     out.readme_p1 = "歡迎來到 CryptPad, 這裏你可以獨自作個人筆記或是和別人共享協作。";
     out.readme_p2 = "這個工作檔案可以讓你快速地了解如何使用 CryptPad 作筆記，有效地整理管理文件工作檔案。";

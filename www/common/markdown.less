@@ -1,0 +1,27 @@
+.markdown_preformatted-code (@color: #333) {
+    pre > code {
+        display: block;
+        position: relative;
+        border: 1px solid @color;
+        width: 90%;
+        margin: auto;
+        padding-left: .25vw;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+}
+
+.markdown_gfm-table (@color: black) {
+    table {
+        border-collapse: collapse;
+        tr {
+            th {
+                border: 3px solid @color;
+                padding: 15px;
+            }
+        }
+    }
+}
+
+// todo ul, ol
+

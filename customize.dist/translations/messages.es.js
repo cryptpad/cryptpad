@@ -104,7 +104,7 @@ define(function () {
     out.main_p2 = 'Este proyecto utiliza el editor de texto visual <a href="http://ckeditor.com/">CKEditor</a>, <a href="https://codemirror.net/">CodeMirror</a>, y el motor en tiempo real <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a>.';
     out.main_howitworks = '¿Cómo funciona?';
     out.main_howitworks_p1 = "CryptPad utiliza una variante del algoritmo de <a href='https://en.wikipedia.org/wiki/Operational_transformation'>transformación operacional</a> (página en inglés) que es capaz de encontrar un consenso distribuido usando un <a href='https://bitcoin.org/bitcoin.pdf'>Blockchain Nakamoto</a> (página en inglés), popularizado por <a href='https://es.wikipedia.org/wiki/Bitcoin'>Bitcoin</a>. De esta manera el algoritmo puede evitar la necesidad de un servidor central para resolver conflictos de edición de la transformación operacional y sin necesidad de resolver conflictos, el servidor puede mantenerse inconsciente del contenido que se está editando en el pad.";
-    out.main_about_p2 = 'Si tienes preguntas o comentarios, puedes <a href="https://twitter.com/cryptpad">enviarnos un tweet</a>, abrir un issue <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="nuestro issue tracker">en GitHub</a>, saludarnos en nuestro canal IRC (<a href="http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7" title="freenode webchat">irc.freenode.net</a>), o <a href="mailto:research@xwiki.com">envíanos un email</a>.';
+    out.main_about_p2 = 'Si tienes preguntas o comentarios, puedes <a href="https://twitter.com/cryptpad"><i class="fa fa-twitter"></i>enviarnos un tweet</a>, abrir un issue <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="nuestro issue tracker">en <i class="fa fa-github"></i>GitHub</a>. saludarnos en <a href="https://riot.im/app/#/room/#cryptpad:matrix.org" title="Matrix">nuestro <i class="fa fa-comment"></i>canal Matrix</a> o en IRC (#cryptpad on irc.freenode.net), o <a href="mailto:research@xwiki.com"><i class="fa fa-envelope"></i>envianos un email</a>.';
 
     out.button_newpad = 'Crear nuevo pad de texto enriquecido';
     out.button_newcode = 'Crear nuevo pad de código';
@@ -291,7 +291,7 @@ define(function () {
     out.blog = "Blog";
 
     out.initialState = [
-        '<span style="font-size:18px;"><p>',
+        '<p>',
         'Esto es&nbsp;<strong>CryptPad</strong>, el editor colaborativo en tiempo real Zero Knowledge. Todo está guardado cuando escribes.',
         '<br>',
         'Comparte el enlace a este pad para editar con amigos o utiliza el botón <span class="fa fa-share-alt" style="border: 1px solid black;color:#000;">&nbsp;Compartir&nbsp;</span> para obtener un <em>enlace sólo lectura</em>&nbsp;que permite leer pero no escribir.',
@@ -299,13 +299,13 @@ define(function () {
 
         '<p><em>',
         'Vamos, empieza a escribir...',
-        '</em></p></span>',
+        '</em></p>',
         '<p>&nbsp;<br></p>'
     ].join('');
 
     out.codeInitialState = "/*\n   Esto es CryptPad, el editor colaborativo en tiempo real zero knowledge.\n   Lo que escribes aquí está cifrado de manera que sólo las personas con el enlace pueden acceder a ello.\n   Incluso el servidor no puede ver lo que escribes.\n   Lo que ves aquí, lo que escuchas aquí, cuando sales, se queda aquí\n*/";
     out.slideInitialState = "# CryptSlide\n* Esto es CryptPad, el editor colaborativo en tiempo real zero knowledge.\n* Lo que escribes aquí está cifrado de manera que sólo las personas con el enlace pueden acceder a ello.\n* Incluso el servidor no puede ver lo que escribes.\n* Lo que ves aquí, lo que escuchas aquí, cuando sales, se queda aquí\n\n---\n# Cómo utilizarlo\n1. Escribe tu contenido en Markdown\n  - Puedes aprender más sobre Markdown [aquí](http://www.markdowntutorial.com/)\n2. Separa tus diapositivas con ---\n3. Haz clic en \"Presentar\" para ver el resultado  - Tus diapositivas se actualizan en tiempo real";
-    out.driveReadmeTitle = "¿Qué es CryptDrive?";
+    out.driveReadmeTitle = "¿Qué es CryptPad?";
     out.readme_welcome = "¡Bienvenido a CryptPad!";
     out.readme_p1 = "Bienvenido a CryptPad, aquí podrás anotar cosas solo o con otra gente.";
     out.readme_p2 = "Este pad es una guía rápida para aprender a usar a CryptPad para tomar notas, organizarlas y trabajar con más personas.";
@@ -554,5 +554,30 @@ define(function () {
     out.todo_markAsCompleteTitle = "Marcar esta tarea como completa";
     out.todo_markAsIncompleteTitle = "Marcar esta tarea como incompleta";
     out.todo_removeTaskTitle = "Borrar esta tarea de la lista";
+
+    // 1.13.0 - Naiad
+    out.topbar_whatIsCryptpad = "Qué es CryptPad";
+    out.header_homeTitle = "Volver a la página de inicio";
+    out.userListButton = "Lista de usuarios";
+    out.userAccountButton = "Tu cuenta";
+    out.canvas_saveToDrive = "Guardar esta imagen como archivo en tu CryptDrive";
+    out.canvas_currentBrush = "Pincel actual";
+    out.canvas_chooseColor = "Eligir un color";
+    out.fm_viewListButton = "Lista";
+    out.fm_viewGridButton = "Cuadrícula";
+    out.settings_cat_code = "Código";
+    out.settings_codeIndentation = "Indentación del editor de código (espacios)";
+    out.settings_codeUseTabs = "Utilizar tabulaciones en vez de espacios";
+    out.pad_showToolbar = "Mostrar la barra de herramientas";
+    out.pad_hideToolbar = "Esconder la barra de herramientas";
+    out.main_catch_phrase = "El Cloud Zero Knowledge";
+    out.main_richTextPad = "Pad de Texto Enriquecido";
+    out.main_codePad = "Pad de Código";
+    out.main_slidePad = "Presentación Markdown";
+    out.main_pollPad = "Encuesta";
+    out.main_whiteboardPad = "Pizarra";
+    out.main_localPads = "Pad Locales";
+    out.main_yourCryptDrive =  "Tu CryptDrive";
+
     return out;
 });

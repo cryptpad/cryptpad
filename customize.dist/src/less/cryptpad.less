@@ -1,7 +1,10 @@
 @import "./variables.less";
 @import "./mixins.less";
 
-@import "./alertify.less";
+@import "../less2/include/alertify.less";
+@import "../less2/include/colortheme.less";
+@import "../less2/include/modal.less";
+@import "../less2/include/font.less";
 @import "./bar.less";
 @import "./loading.less";
 @import "./dropdown.less";
@@ -9,6 +12,10 @@
 @import "./footer.less";
 
 @toolbar-green: #5cb85c;
+
+.font_open-sans();
+
+.alertify_main();
 
 html.cp, .cp body {
     font-size: .875em;
@@ -25,7 +32,7 @@ html.cp, .cp body {
 
 // add font for tooltips
 .tippy-popper {
-    font: normal normal normal 16px Arial, Helvetica, Tahoma, Verdana, Sans-Serif;
+    font: 16px @colortheme_font;
 }
 
 // override bootstrap colors
@@ -67,7 +74,7 @@ a.github-corner > svg {
 h1,h2,h3,h4,h5,h6 {
     color: @fore;
 
-    font-family: "Source Sans Pro","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: @colortheme_font;
     -webkit-font-feature-settings: 'dlig' 1,'liga' 1,'lnum' 1,'kern' 1;
     -moz-font-feature-settings: 'dlig' 1,'liga' 1,'lnum' 1,'kern' 1;
     font-feature-settings: 'dlig' 1,'liga' 1,'lnum' 1,'kern' 1;
@@ -425,7 +432,7 @@ noscript {
         max-width: 40%;
         padding: 10px;
         box-sizing: border-box;
-        font-family: lato, Helvetica, sans-serif;
+        font-family: @colortheme_font;
         color: @main-color;
 
         label {
@@ -630,29 +637,29 @@ noscript {
 
 /* Upload status table */
 #uploadStatusContainer {
+    .modal_base();
     position: absolute;
     left: 10vw; right: 10vw;
-    bottom: 100px;
-    background-color: rgba(0,0,0,0.5);
-    color: white;
-    opacity: 0.7;
+    bottom: 10vh;
+    opacity: 0.9;
     box-sizing: border-box;
-    z-index:10000;
+    z-index: 10000;
     display: none;
-    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     #uploadStatus {
         width: 80vw;
-        border: 1px solid black;
-        border-collapse: collapse;
         tr:nth-child(1) {
-            background-color: #888;
-            border: 1px solid #999;
-            td { text-align: center; }
+            background-color: darken(@colortheme_modal-bg, 20%);
+            td {
+                text-align: center;
+                font-weight: bold;
+                padding: 0.25em;
+            }
         }
+        @upload_pad_h: 0.25em;
+        @upload_pad_v: 0.5em;
+
         td {
-            border-left: 1px solid #BBB;
-            border-right: 1px solid #BBB;
-            padding: 0 10px;
+            padding: @upload_pad_h @upload_pad_v;
         }
         .upProgress {
             width: 200px;
@@ -663,9 +670,10 @@ noscript {
         .progressContainer {
             position: absolute;
             width: 0px;
-            left: 5px;
-            top: 1px; bottom: 1px;
+            left: @upload_pad_v;
+            top: @upload_pad_h; bottom: @upload_pad_h;
             background-color: rgba(0,0,255,0.3);
+            z-index: -1;
         }
         .upCancel { text-align: center; }
         .fa.cancel {

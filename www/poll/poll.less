@@ -29,6 +29,7 @@ body {
     flex: 1;
     #poll {
         flex: 1;
+        overflow-y: auto;
     }
 }
 
@@ -54,9 +55,14 @@ body {
     width: 400px;
 }
 
+input[type="text"], textarea {
+    background-color: white;
+    color: black;
+    border: 0;
+}
+
 input[type="text"][disabled], textarea[disabled] {
     background-color: transparent;
-    font: white;
     border: 0px;
 }
 
@@ -110,9 +116,10 @@ table#table {
 
     min-width: 80%;
     width: 80%;
-    min-height: 5em;
+    min-height: 7em;
     font-size: 20px;
     font-weight: bold;
+    border: 1px solid black;
 
 }
 #description[disabled] {
@@ -131,6 +138,10 @@ table#table {
 div.upper {
     width: 80%;
     margin: auto;
+
+    & > * {
+        margin-right: 1em;
+    }
 }
 
 // from cryptpad.less
@@ -328,7 +339,6 @@ form.realtime, div.realtime {
         input {
             &[type="text"] {
                 height: auto;
-                border: 1px solid @base;
                 width: 80%;
             }
         }
@@ -374,6 +384,7 @@ form.realtime, div.realtime {
                 //border-radius: 20px 0 0 20px;
                 input[type="text"] {
                     width: ~"calc(100% - 50px)";
+                    padding: 0 0.5em;
                 }
                 .edit {
                     float:right;
@@ -459,3 +470,10 @@ form.realtime, div.realtime {
     #adduser { .top-left; }
     #addoption { .bottom-left; }
 }
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+

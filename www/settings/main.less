@@ -22,6 +22,20 @@
                     }
                 }
             }
+            .inputBlock {
+                input {
+                    border-top-right-radius: 0.25em;
+                    border-bottom-right-radius: 0.25em;
+                    padding: 5px;
+                    padding-left: 15px;
+                    &[type="number"] {
+                        border-right: 1px solid #adadad;
+                    }
+                    &[type="checkbox"] {
+                        margin-right: 100%;
+                    }
+                }
+            }
             .infoBlock {
                 [type="text"] {
                     width: @button-width;

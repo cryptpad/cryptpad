@@ -1,0 +1,17 @@
+@import (once) "./colortheme.less";
+
+.modal_base() {
+    font-family: @colortheme_font;
+
+    background-color: @colortheme_modal-bg;
+    color: @colortheme_modal-fg;
+    box-shadow: @colortheme_modal-shadow;
+
+    a {
+        color: @colortheme_modal-link;
+
+        &:visited {
+            color: @colortheme_modal-link-visited;
+        }
+    }
+}

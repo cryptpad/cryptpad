@@ -56,10 +56,12 @@ define([
             findOKButton().click();
         };
         var keyHandler = listenForKeys(close, close);
-        Alertify.alert(msg, function (ev) {
-            cb(ev);
-            stopListening(keyHandler);
-        });
+        Alertify
+            .okBtn(Messages.okButton || 'OK')
+            .alert(msg, function (ev) {
+                cb(ev);
+                stopListening(keyHandler);
+            });
         window.setTimeout(function () {
             findOKButton().focus();
         });
@@ -299,7 +301,16 @@ define([
     // Tooltips
 
     UI.clearTooltips = function () {
-        $('.tippy-popper').remove();
+        // If an element is removed from the UI while a tooltip is applied on that element, the tooltip will get hung
+        // forever, this is a solution which just searches for tooltips which have no corrisponding element and removes
+        // them.
+        var win;
+        $('.tippy-popper').each(function (i, el) {
+            win = win || $('#pad-iframe')[0].contentWindow;
+            if (win.$('[aria-describedby=' + el.getAttribute('id') + ']').length === 0) {
+                el.remove();
+            }
+        });
     };
 
     UI.addTooltips = function () {
@@ -311,6 +322,7 @@ define([
                 position: 'bottom',
                 distance: 0,
                 performance: true,
+                dynamicTitle: true,
                 delay: [delay, 0]
             });
         };

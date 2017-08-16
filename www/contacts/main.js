@@ -39,15 +39,20 @@ define([
         toolbar.$rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
 
         Cryptpad.getProxy().on('disconnect', function () {
-            // TODO readonly
             Cryptpad.alert(Messages.common_connectionLost, undefined, true);
+            Cryptpad.enableMessaging(false);
         });
-        Cryptpad.getProxy().on('reconnect', function () {
-            // TODO cancel readonly
+        Cryptpad.getProxy().on('reconnect', function (uid) {
+            console.error('reconnecting: ', uid);
             Cryptpad.findOKButton().click();
+
+            APP.messenger.cleanFriendChannels();
+            APP.messenger.openFriendChannels();
+            APP.messenger.setEditable(true);
         });
 
-        Cryptpad.initMessaging(Cryptpad, $list, $messages);
+        var ui = APP.ui = Cryptpad.initMessagingUI(Cryptpad, $list, $messages);
+        APP.messenger = Cryptpad.initMessaging(Cryptpad, ui);
 
         var $infoBlock = $('<div>', {'class': 'info'}).appendTo($messages);
         $('<h2>').text(Messages.contacts_info1).appendTo($infoBlock);

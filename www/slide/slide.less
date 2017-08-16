@@ -1,5 +1,6 @@
 @import "/customize/src/less/variables.less";
 @import "/customize/src/less/mixins.less";
+@import "/common/markdown.less";
 
 // used for slides
 .viewportRatio (@x, @y, @p: 100) {
@@ -35,6 +36,7 @@ h6 { font-size: 24px; }
 body {
     .CodeMirror {
         height: 100%;
+        font-size: initial;
     }
     .CodeMirror-focused .cm-matchhighlight {
         background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQI12NgYGBgkKzc8x9CMDAwAAAmhwSbidEoSQAAAABJRU5ErkJggg==);
@@ -325,16 +327,7 @@ div#modal #content, #print {
             margin-bottom: 0.5em;
         }
 
-        pre > code {
-            display: block;
-            position: relative;
-            border: 1px solid #333;
-            width: 90%;
-            margin: auto;
-            padding-left: .25vw;
-            overflow-x: auto;
-            overflow-y: hidden;
-        }
+        .markdown_preformatted-code;
 
         ul, ol {
             min-width: 50%;
@@ -342,6 +335,15 @@ div#modal #content, #print {
             display: table;
             margin: 0 auto;
             padding-left: 0.3em;
+        }
+
+        // fixes image overflowing
+        media-tag {
+            height: 100%;
+
+            & + * {
+                margin-top: 1rem;
+            }
         }
 
         img {
@@ -374,43 +376,7 @@ div#modal #content, #print {
 }
 }
 
-#fileDialog {
-    position: absolute;
-    background-color: rgba(200, 200, 200, 0.8);
-    top: 15vh; bottom: 15vh;
-    left: 10vw; right: 10vw;
-    border: 1px solid black;
-    z-index: 100000;
-    overflow: auto;
-    display: none;
-    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-    font-size: 16px;
-    text-align: center;
-    .close {
-        position: absolute;
-        top: 0;
-        right: 0;
-        padding: 5px;
-        cursor: pointer;
-    }
-    .element {
-        cursor: pointer;
-        display: inline-flex;
-        width: 100px;
-        height: 100px;
-        border: 1px solid #ccc;
-        margin: 5px;
-        overflow: hidden;
-        word-wrap: break-word;
-        background-color: white;
-        padding: 5px;
-        align-items: center;
-        span {
-            width: 100px;
-            text-align: center;
-        }
-    }
-}
+@import "/common/file-dialog.less";
 
 .slide-frame * {
   max-width: 100%;
@@ -427,19 +393,6 @@ p {
     //flex: 1;
 }
 
-media-tag {
-    min-height: 0;
-    flex: 1;
-    display: flex;
-    flex-flow: column;
-    text-align: center;
-}
+@import "../customize/src/less2/include/mediatag.less";
 
-media-tag img {
-    flex: 1;
-    max-height: 100% !important;
-}
-
-media-tag iframe {
-  min-height: 100%;
-}
+.mediatag_base();

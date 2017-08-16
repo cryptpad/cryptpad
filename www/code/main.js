@@ -61,6 +61,29 @@ define([
             $iframe.find('.CodeMirror').addClass('fullPage');
             editor = CodeMirror.editor;
 
+            var setIndentation = APP.setIndentation = function (units, useTabs) {
+                if (typeof(units) !== 'number') { return; }
+                editor.setOption('indentUnit', units);
+                editor.setOption('tabSize', units);
+                editor.setOption('indentWithTabs', useTabs);
+            };
+
+            var indentKey = 'cryptpad.indentUnit';
+            var useTabsKey = 'cryptpad.indentWithTabs';
+
+            var proxy = Cryptpad.getProxy();
+
+            var updateIndentSettings = function () {
+                var indentUnit = proxy[indentKey];
+                var useTabs = proxy[useTabsKey];
+                setIndentation(
+                    typeof(indentUnit) === 'number'? indentUnit: 2,
+                    typeof(useTabs) === 'boolean'? useTabs: false);
+            };
+
+            proxy.on('change', [indentKey], updateIndentSettings);
+            proxy.on('change', [useTabsKey], updateIndentSettings);
+
             var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
 
             var isHistoryMode = false;
@@ -147,6 +170,17 @@ define([
                 }
             };
 
+            var mediaTagModes = [
+                'markdown',
+                'html',
+                'htmlembedded',
+                'htmlmixed',
+                'index.html',
+                'php',
+                'velocity',
+                'xml',
+            ];
+
             var onModeChanged = function (mode) {
                 var $codeMirror = $iframe.find('.CodeMirror');
                 window.clearTimeout(APP.previewTo);
@@ -154,6 +188,10 @@ define([
                 APP.previewTo = window.setTimeout(function () {
                     $codeMirror.removeClass('transition');
                 }, 500);
+                if (mediaTagModes.indexOf(mode) !== -1) {
+                    APP.$mediaTagButton.show();
+                } else { APP.$mediaTagButton.hide(); }
+
                 if (mode === "markdown") {
                     APP.$previewButton.show();
                     Cryptpad.getPadAttribute('previewMode', function (e, data) {
@@ -252,6 +290,25 @@ define([
                 };
                 var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
                 $rightside.append($forgetPad);
+
+                var fileDialogCfg = {
+                    $body: $iframe.find('body'),
+                    onSelect: function (href) {
+                        var parsed = Cryptpad.parsePadUrl(href);
+                        var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+                        var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
+                        var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '"></media-tag>';
+                        editor.replaceSelection(mt);
+                    },
+                    data: APP
+                };
+                APP.$mediaTagButton = $('<button>', {
+                    title: Messages.filePickerButton,
+                    'class': 'rightside-button fa fa-picture-o',
+                    style: 'font-size: 17px'
+                }).click(function () {
+                    Cryptpad.createFileDialog(fileDialogCfg);
+                }).appendTo($rightside);
 
                 var $previewButton = APP.$previewButton = Cryptpad.createButton(null, true);
                 $previewButton.removeClass('fa-question').addClass('fa-eye');
@@ -352,6 +409,36 @@ define([
                         APP.$previewButton.click();
                     }
                 });
+
+/*
+                // add the splitter
+                if (!$iframe.has('.cp-splitter').length) {
+                    var $preview = $iframe.find('#previewContainer');
+                    var splitter = $('<div>', {
+                        'class': 'cp-splitter'
+                    }).appendTo($preview);
+
+                    $preview.on('scroll', function() {
+                        splitter.css('top', $preview.scrollTop() + 'px');
+                    });
+
+                    var $target = $iframe.find('.CodeMirror');
+
+                    splitter.on('mousedown', function (e) {
+                        e.preventDefault();
+                        var x = e.pageX;
+                        var w = $target.width();
+
+                        $iframe.on('mouseup mousemove', function handler(evt) {
+                            if (evt.type === 'mouseup') {
+                                $iframe.off('mouseup mousemove', handler);
+                                return;
+                            }
+                            $target.css('width', (w - x + evt.pageX) + 'px');
+                        });
+                    });
+                }
+*/
 
                 Cryptpad.removeLoadingScreen();
                 setEditable(true);

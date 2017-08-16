@@ -2,6 +2,7 @@
 @import "./mixins.less";
 
 @import "./dropdown.less";
+@import (once) "../less2/include/colortheme.less";
 
 .unselectable {
     -webkit-touch-callout: none;
@@ -61,7 +62,7 @@
 }
 
 body .userlist-drawer {
-    font: normal normal normal @main-font-size Arial,Helvetica,Tahoma,Verdana,Sans-Serif;
+    font: @main-font-size @colortheme_font;
     min-width: 175px;
     width: 175px;
     display: block;
@@ -100,7 +101,7 @@ body .userlist-drawer {
     }
 
     & > p {
-        font: normal normal normal @main-font-size Arial,Helvetica,Tahoma,Verdana,Sans-Serif;
+        font: @main-font-size @colortheme_font;
         margin: 0;
         padding: 0;
         display: block;
@@ -821,13 +822,16 @@ body .cryptpad-toolbar {
         }
         a.cryptpad-logo {
             cursor: pointer;
-            font-size: 1em;
-            height: auto;
-            padding: 0px 5px;
+            display: inline-flex;
             text-decoration: none;
+            height: auto;
+            padding: 10px;
 
-            // hack because of whiteboard and poll
-            color: white !important;
+            img {
+                cursor: pointer;
+                height: 100%;
+                width: 100%;
+            }
         }
     }
     .cryptpad-user {

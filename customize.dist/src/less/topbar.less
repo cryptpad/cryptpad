@@ -1,4 +1,5 @@
 @import "./variables.less";
+@import (once) "../less2/include/colortheme.less";
 
 #cryptpadTopBar {
     background: @topbar-back;
@@ -8,7 +9,7 @@
     right: 0;
     height: @topbar-height;
     color: @topbar-color;
-    font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: @colortheme_font;
     padding: 5px;
     box-sizing: border-box;
     font-size: 30px;

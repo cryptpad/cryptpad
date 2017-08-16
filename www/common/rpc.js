@@ -63,7 +63,7 @@ types of messages:
             // RPC responses are arrays. this message isn't meant for us.
             return;
         }
-        if (/FULL_HISTORY/.test(parsed[0])) { return; }
+        if (/(FULL_HISTORY|HISTORY_RANGE)/.test(parsed[0])) { return; }
 
         var response = parsed.slice(2);
 

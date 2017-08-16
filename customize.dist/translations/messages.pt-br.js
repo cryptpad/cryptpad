@@ -484,7 +484,7 @@ define(function () {
     // Initial states
 
     out.initialState = [
-        '<span style="font-size:16px;"><p>',
+        '<p>',
         'This is&nbsp;<strong>CryptPad</strong>, the Zero Knowledge realtime collaborative editor. Everything is saved as you type.',
         '<br>',
         'Share the link to this pad to edit with friends or use the <span style="background-color:#5cb85c;color:#ffffff;">&nbsp;Share&nbsp;</span> button to share a <em>read-only link</em>&nbsp;which allows viewing but not editing.',
@@ -492,7 +492,7 @@ define(function () {
 
         '<p><span style="color:#808080;"><em>',
         'Go ahead, just start typing...',
-        '</em></span></p></span>',
+        '</em></span></p>',
         '<p>&nbsp;<br></p>'
     ].join('');
 
@@ -522,7 +522,7 @@ define(function () {
 
     // Readme
 
-    out.driveReadmeTitle = "What is CryptDrive?";
+    out.driveReadmeTitle = "What is CryptPad?";
     out.readme_welcome = "Welcome to CryptPad !";
     out.readme_p1 = "Welcome to CryptPad, this is where you can take note of things alone and with friends.";
     out.readme_p2 = "This pad will give you a quick walk through of how you can use CryptPad to take notes, keep them organized and work together on them.";

@@ -1146,6 +1146,7 @@ define([
             $span.append($name).append($subfolders).append($files);
         };
 
+        // This is duplicated in cryptpad-common, it should be unified
         var getFileIcon = function (id) {
             var $icon = Cryptpad.getIcon();
 
@@ -1373,6 +1374,8 @@ define([
             } else {
                 $gridButton.addClass('active');
             }
+            $listButton.attr('title', Messages.fm_viewListButton);
+            $gridButton.attr('title', Messages.fm_viewGridButton);
             $container.append($listButton).append($gridButton);
         };
 
