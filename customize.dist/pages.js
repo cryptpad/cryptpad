@@ -121,45 +121,113 @@ define([
                 ]),
             ]),
             h('div.container.cp-container', [
-                /*h('center', [
-                    h('h1', Msg.about)
-                ]),
-                setHTML(h('p'), 'CryptPad is created inside of the Research Team at <a href="http://xwiki.com">XWiki SAS</a>, a small business located in Paris France and Iasi Romania. There are 3 core team members working on CryptPad plus a number of contributors both inside and outside of XWiki SAS.'),*/
                 h('div.row', [
-                    h('h2.col-12', 'Core Developers'),
-                    h('div.col-md-4', [
-                        h('img.bio-avatar', {'src': '/customize/images/aaron.jpg'}),
-                        h('h3', "Aaron MacSween"),
-                        setHTML(h('div#bio'), '<p>Aaron transitioned into distributed systems development from a background in jazz and live stage performance.</p><p>He appreciates the elegance of biological systems and functional programming, and focused on both as a student at the University of Toronto, where he studied cognitive and computer sciences.</p><p>He moved to Paris in 2015 to work as a research engineer at XWiki SAS, after having dedicated significant time to various cryptography-related software projects.</p><p>He spends his spare time experimenting with guitars, photography, science fiction, and spicy food.</p>')
+                    h('div.cp-develop-about.col-12',[
+                            h('div.cp-icon-cent'),
+                            h('h2.text-center', 'Core Developers')
+                        ]),
                     ]),
-                    h('div.col-md-4', [
-                        h('img.bio-avatar', {'src': '/customize/images/caleb.jpg'}),
+                h('div.row.align-items-center', [
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.cp-bio-avatar', [
+                        h('img.img-fluid', {'src': '/customize/images/CalebJames.jpg'})
+                            ]),
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.cp-profile-det', [
                         h('h3', "Caleb James Delisle"),
-                        setHTML(h('div#bio'), '<p>Caleb is a cryptography developer, Machine Technology graduate of the Franklin County Technical School and lifelong tinkerer.</p><p>In 2011, he started the cjdns Open Source project to show that secure networking could be invisible and easily deployed.</p><p>After joining XWiki SAS in 2014, he started the CryptPad project with the intent of bringing the same transparent security to collaborative editing.</p><p>He\'s always trying to learn from more experienced colleagues and when someone passes through the Research Team office, his favorite words are "Pull up a chair!".</p>')
-                    ]),
-                    h('div.col-md-4', [
-                        h('img.bio-avatar', {'src': '/customize/images/yann.jpg'}),
-                        h('h3', "Yann Flory"),
-                        setHTML(h('div#bio'), '<p>Yann is a mysterious person.</p>')
+                        h('hr'),
+                        setHTML(h('div#bioCaleb'), '<p>Caleb is a cryptography developer, Machine Technology graduate of the Franklin County Technical School and lifelong tinkerer.<br/>In 2011, he started the cjdns Open Source project to show that secure networking could be invisible and easily deployed.<br/>After joining XWiki SAS in 2014, he started the CryptPad project with the intent of bringing the same transparent security to collaborative editing.<br/>He\'s always trying to learn from more experienced colleagues and when someone passes through the Research Team office, his favorite words are "Pull up a chair!".</p>'),
+                        h('a.cp-soc-media', { href : 'https://twitter.com/cjdelisle'}, [
+                                h('i.fa.fa-twitter')
+                            ]),
+                        h('a.cp-soc-media', { href : 'https://github.com/cjdelisle'}, [
+                                h('i.fa.fa-github')
+                            ])
                     ]),
                 ]),
-                h('h2', 'Key Contributors'),
+                h('div.row.align-items-center',[
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.push-lg-6.cp-bio-avatar.cp-bio-avatar-right', [
+                            h('img.img-fluid', {'src': '/customize/images/AaronMacSween.jpg'})
+                    ]),
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.pull-lg-6.cp-profile-det',[
+                        h('h3', "Aaron MacSween"),
+                        h('hr'),
+                        setHTML(h('div#bioAaron'), '<p>Aaron transitioned into distributed systems development from a background in jazz and live stage performance. <br/> He appreciates the elegance of biological systems and functional programming, and focused on both as a student at the University of Toronto, where he studied cognitive and computer sciences.<br/>He moved to Paris in 2015 to work as a research engineer at XWiki SAS, after having dedicated significant time to various cryptography-related software projects.<br/>He spends his spare time experimenting with guitars, photography, science fiction, and spicy food.</p>'),
+                        h('a.cp-soc-media', { href : 'https://twitter.com/fc00ansuz'}, [
+                                h('i.fa.fa-twitter')
+                            ]),
+                        h('a.cp-soc-media', { href : 'https://github.com/ansuz/'}, [
+                                h('i.fa.fa-github')
+                            ])
+                    ]),
+                ]),
+                h('div.row.align-items-center', [
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.cp-bio-avatar', [
+                        h('img.img-fluid', {'src': '/customize/images/YannFlory.jpg'})
+                            ]),
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.cp-profile-det', [
+                        h('h3', "Yann Flory"),
+                        h('hr'),
+                        setHTML(h('div#bioYann'), '<p>Yann is a mysterious person.</p>'),
+                        h('a.cp-soc-media', { href : 'https://twitter.com/'}, [
+                                h('i.fa.fa-twitter')
+                            ]),
+                        h('a.cp-soc-media', { href : 'https://github.com/yflory/'}, [
+                                h('i.fa.fa-github')
+                            ])
+                    ]),
+                ]),
                 h('div.row', [
-                    h('div.col-md-4', [
-                        h('img.bio-avatar', {'src': '/customize/images/Pierre-new.jpg'}),
+                    h('div.cp-develop-about.col-12.cp-contrib',[
+                            h('div.cp-icon-cent'),
+                            h('h2.text-center', 'Key Contributors')
+                        ]),
+                    ]),
+                h('div.row.align-items-center', [
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.cp-bio-avatar', [
+                        h('img.img-fluid', {'src': '/customize/images/Pierre-new.jpg'})
+                            ]),
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.cp-profile-det', [
                         h('h3', "Pierre Bondoerffer"),
-                        setHTML(h('div#bio'), '<p>Resident CSS wizard and emoji extraordinaire, Pierre is passionate about anything related to technology. He loves to hack around computers and put parts together.</p><p>He is currently studying at 42, where he learns about algorithms, networking, kernel programming and graphics.</p><p>As a part of an internship, he joined XWiki SAS and worked on CryptPad to improve user experience. He also maintains the Spanish translation.</p>')
+                        h('hr'),
+                        setHTML(h('div#bioPierre'), '<p>Resident CSS wizard and emoji extraordinaire, Pierre is passionate about anything related to technology. He loves to hack around computers and put parts together.<br/>He is currently studying at 42, where he learns about algorithms, networking, kernel programming and graphics.<br/>As a part of an internship, he joined XWiki SAS and worked on CryptPad to improve user experience. He also maintains the Spanish translation.</p>'),
+                        h('a.cp-soc-media', { href : 'https://twitter.com/cjdelisle'}, [
+                                h('i.fa.fa-twitter')
+                            ]),
+                        h('a.cp-soc-media', { href : 'https://github.com/cjdelisle'}, [
+                                h('i.fa.fa-github')
+                            ])
                     ]),
-                    h('div.col-md-4', [
-                        h('img.bio-avatar', {'src': '/customize/images/Catalin.jpg'}),
+                ]),
+                h('div.row.align-items-center',[
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.push-lg-6.cp-bio-avatar.cp-bio-avatar-right', [
+                            h('img.img-fluid', {'src': '/customize/images/Catalin.jpg'})
+                    ]),
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.pull-lg-6.cp-profile-det',[
                         h('h3', "Catalin Scripcariu"),
-                        setHTML(h('div#bio'), '<p> Catalin is a Maths majour and has worked in B2B sales for 12 years. Design was always his passion and 3 years ago he started to dedicate himself to web design and front-end.</p><p>At the beginning of 2017 he joined the XWiki family, where he worked both on the business and the community side of XWiki, including the research team and CryptPad. </p>')
+                        h('hr'),
+                        setHTML(h('div#bioCatalin'), '<p> Catalin is a Maths majour and has worked in B2B sales for 12 years. Design was always his passion and 3 years ago he started to dedicate himself to web design and front-end.<br/>At the beginning of 2017 he joined the XWiki, where he worked both on the business and the community side of XWiki, including the research team and CryptPad. </p>'),
+                        h('a.cp-soc-media', { href : 'https://twitter.com/catalinscr'}, [
+                                h('i.fa.fa-twitter')
+                            ]),
+                        h('a.cp-soc-media', { href : 'https://www.linkedin.com/in/catalinscripcariu/'}, [
+                                h('i.fa.fa-linkedin')
+                            ])
                     ]),
-                    h('div.col-md-4', [
-                        h('img.bio-avatar', {'src': '/customize/images/ludovic.jpg'}),
+                ]),
+                h('div.row.align-items-center.cp-margin-bot', [
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.cp-bio-avatar', [
+                        h('img.img-fluid', {'src': '/customize/images/LudovicDuboist.jpg'})
+                            ]),
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.cp-profile-det', [
                         h('h3', "Ludovic Dubost"),
-                        setHTML(h('div#bio'), '<p>A graduate of PolyTech (X90) and Telecom School in Paris, Ludovic Dubost started his career as a software architect for Netscape Communications Europe. He then became CTO of NetValue, one of the first French start-ups that went public. He left NetValue after the company was purchased by Nielsen/NetRatings and in 2004 launched XWiki, the next generation wiki.</p><p>Since the very beginning, Ludovic has been immensely helpful to the CryptPad project. He believed in the idea when there was nothing more than the collaborative pad and his help with sales strategy for the project.</p>')
-                    ])
+                        h('hr'),
+                        setHTML(h('div#bioLudovic'), '<p>A graduate of PolyTech (X90) and Telecom School in Paris, Ludovic Dubost started his career as a software architect for Netscape Communications Europe. He then became CTO of NetValue, one of the first French start-ups that went public. He left NetValue after the company was purchased by Nielsen/NetRatings and in 2004 launched XWiki, the next generation wiki.<br/>Since the very beginning, Ludovic has been immensely helpful to the CryptPad project. He believed in the idea when there was nothing more than the collaborative pad and his help with sales strategy for the project.</p>'),
+                        h('a.cp-soc-media', { href : 'https://twitter.com/ldubost'}, [
+                                h('i.fa.fa-twitter')
+                            ]),
+                        h('a.cp-soc-media', { href : 'https://github.com/ldubost'}, [
+                                h('i.fa.fa-github')
+                            ])
+                    ]),
                 ]),
             ]),
             infopageFooter()
@@ -333,10 +401,18 @@ define([
     Pages['/register/'] = Pages['/register/index.html'] = function () {
         return [h('div#cp-main', [
             infopageTopbar(),
+            h('div.container-fluid.cp-register-wel',[
+                h('div.container',[
+                    h('div.row',[
+                        h('div.col-12',[
+                            h('h1.text-center', Msg.register_header)
+                        ])
+                    ])
+                ])
+            ]),
             h('div.container.cp-container', [
-                h('div.row.align-items-center', [
+                h('div.row.align-items-center.cp-register-det', [
                 h('div#data.hidden.col-md-6', [
-                    h('h1', Msg.register_header),
                     setHTML(h('p.register-explanation'), Msg.register_explanation)
                 ]),
                 h('div#userForm.form-group.hidden.col-md-6', [
@@ -380,10 +456,18 @@ define([
                             'for': 'accept-terms',
                         }), Msg.register_acceptTerms),*/
                     ]),
-                    h('button#register.btn.btn-primary', Msg.login_register)
+                    h('button#register.btn.cp-login-register', Msg.login_register)
                 ])
                 ]),
+                h('div.row.cp-register-test',[
+                    h('hr'),
+                    h('div.col-12', [
+                        setHTML(h('p.test-details'), Msg.register_testimonial),
+                        h('a.cp-test-source.pull-right', { href : 'http://boingboing.net/2016/09/26/cryptpad-a-freeopen-end-to.html'}, Msg.register_testimonial_name)
+                    ])
+                ])
             ]),
+
             infopageFooter(),
         ])];
     };
@@ -411,8 +495,8 @@ define([
                             placeholder: Msg.login_password,
                         }),
                         h('div.extra', [
-                            h('button.btn.btn-primary.login.first', Msg.login_login),
-                            h('button#register.btn.btn-success.register', Msg.login_register)
+                            h('button.login.first.btn', Msg.login_login),
+                            h('button#register.btn.register.cp-login-register', Msg.login_register)
                         ])
                     ])
                 ]),

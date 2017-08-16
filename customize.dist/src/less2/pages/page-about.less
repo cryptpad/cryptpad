@@ -3,12 +3,8 @@
 
 .infopages_main();
 .infopages_topbar();
-
-.bio-avatar {
-    border-radius: 50%;
-    margin: 1em 0;
-    max-width: 300px;
-    max-height: 300px;
+#cp-main {
+    background: #fff;
 }
 .cp-about-intro {
 	padding-top: 3em;
@@ -21,7 +17,7 @@
     	color: #fff;
     	font-family: "Open Sans";
     	h1 {
-    		font-weight: bold;
+    		font-weight: 700;
     	}
     	a {
     		color: #fff;
@@ -31,5 +27,89 @@
     		padding-top: 1em;
     	}
     }
-
 }
+.cp-container {
+    .row {
+        background: #fff;
+    }
+    .cp-bio-avatar {
+        padding-right: 0;
+        @media (max-width: 991px) {
+            padding-right: 15px;
+        }
+        img {
+            @media (max-width: 991px) {
+                margin: 0 auto;
+                display: block;
+            }
+        }
+    }
+    .cp-bio-avatar-right    {
+        padding-right: 15px;
+        padding-left: 0;
+        @media (max-width: 991px) {
+            padding-left: 15px;
+        }
+    }
+}
+.cp-develop-about {
+    .cp-icon-cent {
+        width: 6rem;
+        background: #fff;
+        border-radius: 50%;
+        height: 6rem;
+        box-shadow: 0 5px 15px rgba(69,145,196, 0.3);
+        margin: 0 auto;
+        background-image: url(/customize/code.svg);
+        background-repeat: no-repeat;
+        margin-top: 1em;
+        margin-bottom: 1.5em;
+        background-position: 50%;
+        background-size: 4rem;
+    }
+    h2 {
+        margin-top: 0;
+        font-weight: 600;
+        color: #1E1F1F;
+        margin-bottom: 1.5em;
+    }
+}
+.cp-profile-det {
+    padding-left: 30px;
+    h3 {
+        color: #1E1F1F;
+        font-weight: 700;
+    }
+    p {
+        color: #3F4141;
+        margin-bottom: 1em;
+    }
+    hr {
+        margin-left: 0;
+        width: 15rem;
+        border-top: 2px solid @cryptpad_color_blue;
+    }
+    margin-bottom: 1em;
+}
+.cp-soc-media {
+        font-size: 1.5em;
+        color: @cryptpad_color_blue;
+        padding-right: 1em;
+        display: inline-block;
+        &:hover {
+            transform: scale(1.1);
+        }
+        &:visited {
+            color: @cryptpad_color_blue;
+        }
+}
+.cp-contrib {
+    margin-top: 3em;
+    .cp-icon-cent {
+        background-image: url(/customize/source-branch.svg);
+        background-position: 60%;
+    }
+}
+.cp-margin-bot {
+    margin-bottom: 1.5em;
+}		
