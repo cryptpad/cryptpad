@@ -121,10 +121,6 @@ define([
                 ]),
             ]),
             h('div.container.cp-container', [
-                /*h('center', [
-                    h('h1', Msg.about)
-                ]),
-                setHTML(h('p'), 'CryptPad is created inside of the Research Team at <a href="http://xwiki.com">XWiki SAS</a>, a small business located in Paris France and Iasi Romania. There are 3 core team members working on CryptPad plus a number of contributors both inside and outside of XWiki SAS.'),*/
                 h('div.row', [
                     h('div.cp-develop-about.col-12',[
                             h('div.cp-icon-cent'),
