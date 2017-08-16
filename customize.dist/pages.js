@@ -46,7 +46,9 @@ define([
             h('div.container', [
                 h('div.row', [
                     footerCol(null, [
-                        setHTML(h('div.cp-bio-foot'), '<p>With CryptPad, you can make quick collaborative documents for taking notes and writing down ideas together.</p>'),
+                        h('div.cp-bio-foot', [
+                            h('p', Msg.main_footerText)
+                        ])
                     ], ''),
                    /* footerCol(null, [
                         footLink('/about.html', 'about'),
