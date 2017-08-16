@@ -265,8 +265,8 @@ define(function () {
     out.profile_fieldSaved = 'Nouvelle valeur enregistrée: {0}';
 
     out.profile_inviteButton = "Inviter";
-    out.profile_inviteButtonTitle = 'Creer un lien pour inviter cet utilisateur à se connecter avec vous.';
-    out.profile_inviteExplanation = "Cliquer sur <strong>OK</strong> créera un lien vers un session de messagerie sécurisée <em>uniquement accessible par {0}.</em><br><br>Le lien peut être copié et partagé de manièé de manière publique.";
+    out.profile_inviteButtonTitle = 'Créer un lien pour inviter cet utilisateur à se connecter avec vous.';
+    out.profile_inviteExplanation = "Cliquer sur <strong>OK</strong> créera un lien vers une session de messagerie sécurisée <em>uniquement accessible par {0}.</em><br><br>Le lien peut être copié et partagé de manière publique.";
     out.profile_viewMyProfile = "Voir mon profil";
 
     // contacts/userlist
@@ -413,7 +413,7 @@ define(function () {
             "<li>Vous pouvez importer les pads récents de ce navigateur pour les avoir dans votre compte utilisateur.</li>",
             "<li>Si vous utilisez un ordinateur partagé, vous devez vous déconnecter avant de partir, fermer l'onglet n'est pas suffisant.</li>",
         "</ul>"
-    ];
+    ].join('');
 
     // Settings
     out.settings_cat_account = "Compte";
@@ -487,8 +487,8 @@ define(function () {
     out.todo_title = "CryptTodo";
     out.todo_newTodoNamePlaceholder = "Décrivez votre tâche...";
     out.todo_newTodoNameTitle = "Ajouter cette tâche à votre liste";
-    out.todo_markAsCompleteTitle = "Marquer tâche comme terminée";
-    out.todo_markAsIncompleteTitle = "Marquer tâche comme non incomplète";
+    out.todo_markAsCompleteTitle = "Marquer cette tâche comme terminée";
+    out.todo_markAsIncompleteTitle = "Marquer cette tâche comme incomplète";
     out.todo_removeTaskTitle = "Enlever cette tâche de votre liste";
 
     // pad
@@ -506,7 +506,7 @@ define(function () {
     //contact.html
     out.main_about_p2 = 'Si vous avez des questions ou commentaires, vous pouvez <a href="https://twitter.com/cryptpad"><i class="fa fa-twitter"></i>nous tweeter</a>, ouvrir une issue sur <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker"><i class="fa fa-github"></i>GitHub</a>, venir dire bonjour sur <a href="https://riot.im/app/#/room/#cryptpad:matrix.org" title="Matrix">notre <i class="fa fa-comment"></i>salle Matrix</a> ou IRC (#cryptpad sur irc.freenode.net), ou bien encore <a href="mailto:research@xwiki.com"><i class="fa fa-envelope"></i>nous envoyer un email</a>.';
 
-    out.main_info = "<h2>Collaborez avec confiance</h2><br>Développez vos idées en groupe avec des document partagés; la technologie <strong>Zero Knowledge</strong> sécurise vos données.";
+    out.main_info = "<h2>Collaborez avec confiance</h2><br>Développez vos idées en groupe avec des documents partagés; la technologie <strong>Zero Knowledge</strong> sécurise vos données.";
     out.main_catch_phrase = "Le Cloud Zero Knowledge";
 
     out.main_howitworks = 'Comment ça fonctionne';
@@ -589,7 +589,7 @@ define(function () {
     out.header_support = '<a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
     out.updated_0_header_logoTitle = 'Retourner vers votre CryptDrive';
     out.header_logoTitle = out.updated_0_header_logoTitle;
-    out.header_homeTitle = "Aller sur la page d'acceuil";
+    out.header_homeTitle = "Aller sur la page d'accueil";
 
     // Initial states
 
