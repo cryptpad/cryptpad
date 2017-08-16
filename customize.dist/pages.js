@@ -169,9 +169,6 @@ define([
                         h('h3', "Yann Flory"),
                         h('hr'),
                         setHTML(h('div#bioYann'), '<p>In 2015, Yann graduated with an engineering degree from Ecole Centrale de Lille majoring in Data Science. In his studies he worked on a project to detect defects in optical fiber using image processing technology.<br/>Upon joining XWiki SAS, Yann developed a Wiki page recommendation system, a common API for accessing data server-side and client-side, and an integrated development environment for development of XWiki applications.<br/>Yann is soft spoken but brutally efficient, he is known to say "It will take 5 minutes".</p>'),
-                        h('a.cp-soc-media', { href : 'https://twitter.com/'}, [
-                                h('i.fa.fa-twitter')
-                            ]),
                         h('a.cp-soc-media', { href : 'https://github.com/yflory/'}, [
                                 h('i.fa.fa-github')
                             ])
