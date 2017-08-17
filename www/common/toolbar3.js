@@ -5,6 +5,7 @@ define([
 ], function ($, Config, ApiConfig) {
     var Messages = {};
     var Cryptpad;
+    var Common;
 
     var Bar = {
         constants: {},
@@ -567,7 +568,9 @@ define([
             if (name === "") {
                 name = $input.attr('placeholder');
             }
-            Cryptpad.renamePad(name, null, function (err, newtitle) {
+                console.log('here');
+            Common.setPadTitleInDrive(name, function (err, newtitle) {
+                console.log('here');
                 if (err) { return console.error(err); }
                 $text.text(newtitle);
                 callback(null, newtitle);
@@ -957,6 +960,7 @@ define([
     Bar.create = function (cfg) {
         var config = cfg || {};
         Cryptpad = config.common;
+        Common = config.sfCommon;
         Messages = Cryptpad.Messages;
         config.readOnly = (typeof config.readOnly !== "undefined") ? (config.readOnly ? 1 : 0) : -1;
         config.displayed = config.displayed || [];

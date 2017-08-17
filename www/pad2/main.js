@@ -2,7 +2,6 @@ console.log('one');
 define([
     'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
-    '/common/sframe-chainpad-netflux-inner.js',
     '/bower_components/hyperjson/hyperjson.js',
     '/common/toolbar3.js',
     '/common/cursor.js',
@@ -22,7 +21,7 @@ define([
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less/cryptpad.less',
     'less!/customize/src/less/toolbar.less'
-], function ($, Crypto, CpNfInner, Hyperjson,
+], function ($, Crypto, Hyperjson,
     Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad, Cryptget, Links, nThen, SFCommon) {
     var saveAs = window.saveAs;
     var Messages = Cryptpad.Messages;
@@ -305,7 +304,7 @@ define([
 
         var initializing = true;
 
-        //var Title;
+        var Title;
         //var UserList;
         //var Metadata;
 
@@ -350,7 +349,7 @@ define([
                 }
             };*/
             if (!initializing) {
-                //TODO hjson[3].metadata.title = Title.title;
+                hjson[3].metadata.title = Title.title;
             } else if (Cryptpad.initialName && !hjson[3].metadata.title) {
                 hjson[3].metadata.title = Cryptpad.initialName;
             }
@@ -470,71 +469,21 @@ define([
         realtimeOptions.onInit = function (info) {
             console.log('onInit');
             var titleCfg = { getHeadingText: getHeadingText };
-            Title = Cryptpad.createTitle(titleCfg, realtimeOptions.onLocal, Cryptpad);
+            Title = common.createTitle(titleCfg, realtimeOptions.onLocal, common, cpNfInner.metadataMgr);
             var configTb = {
-                displayed: ['userlist', 'useradmin'],
-                //title: Title.getTitleConfig(),
+                displayed: ['userlist', 'title'],
+                title: Title.getTitleConfig(),
                 userList: cpNfInner.metadataMgr,
                 readOnly: readOnly,
                 ifrw: window,
                 realtime: info.realtime,
                 common: Cryptpad,
+                sfCommon: common,
                 $container: $bar,
                 $contentContainer: $('#cke_1_contents'),
             };
             toolbar = info.realtime.toolbar = Toolbar.create(configTb);
-            // TODO
-            return;
-
-            // TODO UserList not needed anymore?
-            // --> selectTemplate
-            // --> select username on first visit
-            //UserList = Cryptpad.createUserList(info, realtimeOptions.onLocal, Cryptget, Cryptpad);
-
-            var titleCfg = { getHeadingText: getHeadingText };
-            Title = Cryptpad.createTitle(titleCfg, realtimeOptions.onLocal, Cryptpad);
-
-            Metadata = Cryptpad.createMetadata(UserList, Title, null, Cryptpad);
-
-            var configTb = {
-                displayed: [
-                    'title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit', 'upgrade'],
-                userList: UserList.getToolbarConfig(),
-                share: {
-                    secret: secret,
-                    channel: info.channel
-                },
-                title: Title.getTitleConfig(),
-                common: Cryptpad,
-                readOnly: readOnly,
-                ifrw: window,
-                realtime: info.realtime,
-                network: info.network,
-                $container: $bar,
-                $contentContainer: $('#cke_1_contents'),
-            };
-            toolbar = info.realtime.toolbar = Toolbar.create(configTb);
-
-            var src = 'less!/customize/src/less/toolbar.less';
-            require([
-                src
-            ], function () {
-                var $html = $bar.closest('html');
-                $html
-                    .find('head style[data-original-src="' + src.replace(/less!/, '') + '"]')
-                    .appendTo($html.find('head'));
-            });
-
             Title.setToolbar(toolbar);
-
-            var $rightside = toolbar.$rightside;
-            var $drawer = toolbar.$drawer;
-
-            var editHash;
-
-            if (!readOnly) {
-                editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
-            }
 
             $bar.find('#cke_1_toolbar_collapser').hide();
             if (!readOnly) {
@@ -562,6 +511,89 @@ define([
                 });
                 $rightside.append($collapse);
             }
+
+            // TODO
+
+            return;
+
+            // TODO UserList not needed anymore?
+            // --> selectTemplate
+            // --> select username on first visit
+            //UserList = Cryptpad.createUserList(info, realtimeOptions.onLocal, Cryptget, Cryptpad);
+
+            //var titleCfg = { getHeadingText: getHeadingText };
+            //Title = Cryptpad.createTitle(titleCfg, realtimeOptions.onLocal, Cryptpad);
+
+            // Metadata not needed anymore?
+            // Title and defaultTitle handled by metadataMgr.onChange in sframe-common-title
+            //Metadata = Cryptpad.createMetadata(UserList, Title, null, Cryptpad);
+
+            /*var configTb = {
+                displayed: [
+                    'title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit', 'upgrade'],
+                userList: UserList.getToolbarConfig(),
+                share: {
+                    secret: secret,
+                    channel: info.channel
+                },
+                title: Title.getTitleConfig(),
+                common: Cryptpad,
+                readOnly: readOnly,
+                ifrw: window,
+                realtime: info.realtime,
+                network: info.network,
+                $container: $bar,
+                $contentContainer: $('#cke_1_contents'),
+            };
+            toolbar = info.realtime.toolbar = Toolbar.create(configTb);
+*/
+            var src = 'less!/customize/src/less/toolbar.less';
+            require([
+                src
+            ], function () {
+                var $html = $bar.closest('html');
+                $html
+                    .find('head style[data-original-src="' + src.replace(/less!/, '') + '"]')
+                    .appendTo($html.find('head'));
+            });
+
+            //Title.setToolbar(toolbar);
+
+            var $rightside = toolbar.$rightside;
+            var $drawer = toolbar.$drawer;
+
+            var editHash;
+
+            if (!readOnly) {
+                editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+            }
+
+            //$bar.find('#cke_1_toolbar_collapser').hide();
+            /*if (!readOnly) {
+                // Expand / collapse the toolbar
+                var $collapse = Cryptpad.createButton(null, true);
+                $collapse.removeClass('fa-question');
+                var updateIcon = function () {
+                    $collapse.removeClass('fa-caret-down').removeClass('fa-caret-up');
+                    var isCollapsed = !$bar.find('.cke_toolbox_main').is(':visible');
+                    if (isCollapsed) {
+                        if (!initializing) { Cryptpad.feedback('HIDETOOLBAR_PAD'); }
+                        $collapse.addClass('fa-caret-down');
+                    }
+                    else {
+                        if (!initializing) { Cryptpad.feedback('SHOWTOOLBAR_PAD'); }
+                        $collapse.addClass('fa-caret-up');
+                    }
+                };
+                updateIcon();
+                $collapse.click(function () {
+                    $(window).trigger('resize');
+                    $('.cke_toolbox_main').toggle();
+                    $(window).trigger('cryptpad-ck-toolbar');
+                    updateIcon();
+                });
+                $rightside.append($collapse);
+            }*/
 
             /* add a history button */
             var histConfig = {
@@ -657,7 +689,7 @@ define([
                     }
                 }
             } else {
-                //Title.updateTitle(Cryptpad.initialName || Title.defaultTitle);
+                Title.updateTitle(Cryptpad.initialName || Title.defaultTitle);
                 documentBody.innerHTML = Messages.initialState;
             }
 

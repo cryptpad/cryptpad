@@ -1,8 +1,10 @@
 define([
     '/bower_components/nthen/index.js',
     '/common/sframe-chainpad-netflux-inner.js',
-    '/common/sframe-channel.js'
-], function (nThen, CpNfInner, SFrameChannel) {
+    '/common/sframe-channel.js',
+    '/common/sframe-common-title.js'
+
+], function (nThen, CpNfInner, SFrameChannel, Title) {
 
     // Chainpad Netflux Inner
     var funcs = {};
@@ -22,9 +24,18 @@ define([
 
     funcs.setPadTitleInDrive = function (title, cb) {
         ctx.sframeChan.query('Q_SET_PAD_TITLE_IN_DRIVE', title, function (err) {
-            if (cb) { cb(err); }
+            if (cb) { cb(err, title); }
         });
     };
+
+    // Title module
+    funcs.createTitle = Title.create;
+
+    funcs.getDefaultTitle = function () {
+        if (!ctx.cpNfInner) { throw new Error("cpNfInner is not ready!"); }
+        return ctx.cpNfInner.metadataMgr.getMetadata().defaultTitle;
+    };
+
 
     Object.freeze(funcs);
     return { create: function (cb) {
