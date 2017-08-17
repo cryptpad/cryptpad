@@ -47,6 +47,9 @@ define([
                         profile: Cryptpad.getProfileUrl(),
                         curvePublic: Cryptpad.getProxy().curvePublic,
                         netfluxId: Cryptpad.getNetwork().webChannels[0].myID,
+                    },
+                    priv: {
+                        accountName: Cryptpad.getAccountName()
                     }
                 });
             });

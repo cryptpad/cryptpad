@@ -473,7 +473,7 @@ define([
             var titleCfg = { getHeadingText: getHeadingText };
             Title = Cryptpad.createTitle(titleCfg, realtimeOptions.onLocal, Cryptpad);
             var configTb = {
-                displayed: ['userlist'],
+                displayed: ['userlist', 'useradmin'],
                 //title: Title.getTitleConfig(),
                 userList: cpNfInner.metadataMgr,
                 readOnly: readOnly,

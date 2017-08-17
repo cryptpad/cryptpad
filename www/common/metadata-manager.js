@@ -5,6 +5,7 @@ define([], function () {
         var members = [];
         var metadataObj = UNINIT;
         var metadataLazyObj = UNINIT;
+        var priv = {};
         var dirty = true;
         var changeHandlers = [];
 
@@ -52,6 +53,9 @@ define([], function () {
 
         sframeChan.on('EV_METADATA_UPDATE', function (ev) {
             meta = ev;
+            if (ev.priv) {
+                priv = ev.priv;
+            }
             change(true);
         });
         sframeChan.on('EV_RT_CONNECT', function (ev) {
@@ -95,6 +99,9 @@ define([], function () {
                 checkUpdate(false);
                 var list = members.slice().filter(function (m) { return m.length === 32; });
                 return list.length - Object.keys(metadataObj.users).length;
+            },
+            getPrivatedata : function () {
+                return priv;
             }
         });
     };

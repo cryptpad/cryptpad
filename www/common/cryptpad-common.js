@@ -198,6 +198,9 @@ define([
         }
         return '';
     };
+    common.getAccountName = function () {
+        return localStorage[common.userNameKey];
+    };
 
     var randomToken = function () {
         return Math.random().toString(16).replace(/0./, '');
