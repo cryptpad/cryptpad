@@ -17,8 +17,7 @@ module.exports = {
 
     httpHeaders: {
         "X-XSS-Protection": "1; mode=block",
-        "X-Content-Type-Options": "nosniff",
-        'X-Frame-Options': 'SAMEORIGIN',
+        "X-Content-Type-Options": "nosniff"
     },
 
     contentSecurity: [
