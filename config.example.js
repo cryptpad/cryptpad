@@ -17,7 +17,8 @@ module.exports = {
 
     httpHeaders: {
         "X-XSS-Protection": "1; mode=block",
-        "X-Content-Type-Options": "nosniff"
+        "X-Content-Type-Options": "nosniff",
+        "Access-Control-Allow-Origin": "*"
     },
 
     contentSecurity: [
@@ -45,8 +46,8 @@ module.exports = {
         // data: is used by codemirror
         "img-src 'self' data: blob:",
 
-        // for accounts.cryptpad.fr authentication
-        "frame-ancestors 'self' accounts.cryptpad.fr",
+        // for accounts.cryptpad.fr authentication and pad2 cross-domain iframe sandbox
+        "frame-ancestors *",
     ].join('; '),
 
     // CKEditor requires significantly more lax content security policy in order to function.
@@ -70,6 +71,13 @@ module.exports = {
     ].join('; '),
 
     httpPort: 3000,
+
+    // This is for allowing the cross-domain iframe to function when developing
+    httpSafePort: 3001,
+
+    // This is for deployment in production, CryptPad uses a separate origin (domain) to host the
+    // cross-domain iframe. It can simply host the same content as CryptPad.
+    // httpSafeOrigin: "https://some-other-domain.xyz",
 
     /*  your server's websocket url is configurable
      *  (default: '/cryptpad_websocket')
