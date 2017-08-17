@@ -4,7 +4,7 @@ define([
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/sframe-chainpad-netflux-inner.js',
     '/bower_components/hyperjson/hyperjson.js',
-    '/common/toolbar2.js',
+    '/common/toolbar3.js',
     '/common/cursor.js',
     '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/TypingTests.js',
@@ -470,10 +470,24 @@ define([
 
         realtimeOptions.onInit = function (info) {
             console.log('onInit');
+            var configTb = {
+                displayed: ['userlist'],
+                userList: cpNfInner.metadataMgr,
+                readOnly: readOnly,
+                ifrw: window,
+                realtime: info.realtime,
+                common: Cryptpad,
+                $container: $bar,
+                $contentContainer: $('#cke_1_contents'),
+            };
+            toolbar = info.realtime.toolbar = Toolbar.create(configTb);
             // TODO
             return;
 
-            UserList = Cryptpad.createUserList(info, realtimeOptions.onLocal, Cryptget, Cryptpad);
+            // TODO UserList not needed anymore?
+            // --> selectTemplate
+            // --> select username on first visit
+            //UserList = Cryptpad.createUserList(info, realtimeOptions.onLocal, Cryptget, Cryptpad);
 
             var titleCfg = { getHeadingText: getHeadingText };
             Title = Cryptpad.createTitle(titleCfg, realtimeOptions.onLocal, Cryptpad);
@@ -651,6 +665,7 @@ define([
 
             if (readOnly) { return; }
             //TODO UserList.getLastName(toolbar.$userNameButton, newPad);
+            onLocal();
             editor.focus();
             if (newPad) {
                 cursor.setToEnd();
