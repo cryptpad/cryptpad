@@ -148,7 +148,7 @@ define([
                         content: { requireConf: RequireConfig },
                         q: 'INIT'
                     }), '*');
-                });
+                }, 1);
             });
         }
     };
