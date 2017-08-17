@@ -777,7 +777,7 @@ define([
         var userMenuCfg = {
             $initBlock: $userAdmin
         };
-        if (!config.hideDisplayName) { // TODO: config.userAdmin.hideDisplayName?
+        if (!config.hideDisplayName) {
             $.extend(true, userMenuCfg, {
                 displayNameCls: USERNAME_CLS,
                 changeNameButtonCls: USERBUTTON_CLS,
@@ -790,7 +790,8 @@ define([
         Cryptpad.createUserAdminMenu(userMenuCfg);
         $userAdmin.find('button').attr('title', Messages.userAccountButton);
 
-        var $userButton = toolbar.$userNameButton = $userAdmin.find('a.' + USERBUTTON_CLS);
+        // TODO iframe
+        /*var $userButton = toolbar.$userNameButton = $userAdmin.find('a.' + USERBUTTON_CLS);
         $userButton.click(function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -820,7 +821,7 @@ define([
                 }
                 updateDisplayName(toolbar, config);
             }, 0);
-        });
+        });*/
 
         updateDisplayName(toolbar, config);
 
