@@ -14,7 +14,7 @@ define([
     '/common/cryptget.js',
     '/pad/links.js',
     '/bower_components/nthen/index.js',
-    '/common/sframe-channel.js',
+    '/common/sframe-common.js',
 
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/diff-dom/diffDOM.js',
@@ -23,7 +23,7 @@ define([
     'less!/customize/src/less/cryptpad.less',
     'less!/customize/src/less/toolbar.less'
 ], function ($, Crypto, CpNfInner, Hyperjson,
-    Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad, Cryptget, Links, nThen, SFrameChannel) {
+    Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad, Cryptget, Links, nThen, SFCommon) {
     var saveAs = window.saveAs;
     var Messages = Cryptpad.Messages;
     var DiffDom = window.diffDOM;
@@ -252,7 +252,7 @@ define([
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var andThen = function (editor, Ckeditor, sframeChan) {
+    var andThen = function (editor, Ckeditor, common) {
         //var $iframe = $('#pad-iframe').contents();
         //var secret = Cryptpad.getSecrets();
         //var readOnly = secret.keys && !secret.keys.editKeyStr;
@@ -358,7 +358,6 @@ define([
         };
 
         var realtimeOptions = {
-            sframeChan: sframeChan,
             readOnly: readOnly,
             // really basic operational transform
             transformFunction : JsonOT.validate,
@@ -705,7 +704,7 @@ define([
             }
         };
 
-        cpNfInner = CpNfInner.start(realtimeOptions);
+        cpNfInner = common.startRealtime(realtimeOptions);
 
         Cryptpad.onLogout(function () { setEditable(false); });
 
@@ -748,14 +747,14 @@ define([
     var main = function () {
         var Ckeditor;
         var editor;
-        var sframeChan;
+        var common;
 
         nThen(function (waitFor) {
             ckEditorAvailable(waitFor(function (ck) { Ckeditor = ck; }));
             $(waitFor(function () {
                 Cryptpad.addLoadingScreen();
             }));
-            SFrameChannel.create(window.top, waitFor(function (sfc) { sframeChan = sfc; }));
+            SFCommon.create(waitFor(function (c) { common = c; }));
         }).nThen(function (waitFor) {
             Ckeditor.config.toolbarCanCollapse = true;
             if (screen.height < 800) {
@@ -775,7 +774,7 @@ define([
                     onConnectError();
                 }
             });
-            andThen(editor, Ckeditor, sframeChan);
+            andThen(editor, Ckeditor, common);
         });
     };
     main();
