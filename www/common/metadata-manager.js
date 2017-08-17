@@ -72,7 +72,7 @@ define([], function () {
             },
             getMetadata: function () {
                 checkUpdate();
-                return metadataObj;
+                return Object.freeze(JSON.parse(JSON.stringify(metadataObj)));
             },
             onChange: function (f) { changeHandlers.push(f); }
         });

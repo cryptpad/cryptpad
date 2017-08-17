@@ -1,17 +1,20 @@
 
 define([
+    '/api/config',
     '/common/sframe-channel.js',
     'jquery',
     '/common/sframe-chainpad-netflux-outer.js',
     '/bower_components/nthen/index.js',
     '/common/cryptpad-common.js',
     '/bower_components/chainpad-crypto/crypto.js'
-], function (SFrameChannel, $, CpNfOuter, nThen, Cryptpad, Crypto) {
+], function (ApiConfig, SFrameChannel, $, CpNfOuter, nThen, Cryptpad, Crypto) {
     console.log('xxx');
     var sframeChan;
     nThen(function (waitFor) {
         $(waitFor());
     }).nThen(function (waitFor) {
+        $('#sbox-iframe').attr('src',
+            ApiConfig.httpSafeOrigin + '/pad2/inner.html?' + ApiConfig.requireConf.urlArgs);
         SFrameChannel.create($('#sbox-iframe')[0].contentWindow, waitFor(function (sfc) {
             sframeChan = sfc;
             console.log('sframe initialized');
