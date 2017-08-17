@@ -515,7 +515,7 @@ define([
             console.error("config.title", config);
             throw new Error("config.title is not an object");
         }
-        var callback = config.title.onRename;
+        var updateTitle = config.title.updateTitle;
         var placeholder = config.title.defaultName;
         var suggestName = config.title.suggestName;
 
@@ -568,12 +568,9 @@ define([
             if (name === "") {
                 name = $input.attr('placeholder');
             }
-                console.log('here');
-            Common.setPadTitleInDrive(name, function (err, newtitle) {
-                console.log('here');
+            updateTitle(name, function (err, newtitle) {
                 if (err) { return console.error(err); }
-                $text.text(newtitle);
-                callback(null, newtitle);
+                //$text.text(newtitle);
                 $input.hide();
                 $text.show();
                 $pencilIcon.show();

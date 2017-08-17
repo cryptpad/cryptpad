@@ -93,6 +93,10 @@ define([], function () {
                 metadataLazyObj = JSON.parse(JSON.stringify(m));
                 change(false);
             },
+            updateTitle: function (t) {
+                metadataObj.title = t;
+                change(true);
+            },
             getMetadata: function () {
                 checkUpdate(false);
                 return Object.freeze(JSON.parse(JSON.stringify(metadataObj)));

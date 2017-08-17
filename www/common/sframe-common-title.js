@@ -12,8 +12,8 @@ define(['jquery'], function ($) {
 
         var getHeadingText = cfg.getHeadingText || function () { return; };
 
-        var updateLocalTitle = function (newTitle) {
-            console.log(newTitle);
+/*        var updateLocalTitle = function (newTitle) {
+            console.error(newTitle);
             exp.title = newTitle;
             onLocal();
             if (typeof cfg.updateLocalTitle === "function") {
@@ -21,7 +21,7 @@ define(['jquery'], function ($) {
             } else {
                 document.title = newTitle;
             }
-        };
+        };*/
 
         var $title;
         exp.setToolbar = function (toolbar) {
@@ -39,11 +39,11 @@ define(['jquery'], function ($) {
             }
         };
 
-        var renameCb = function (err, newTitle) {
+        /*var renameCb = function (err, newTitle) {
             if (err) { return; }
-            updateLocalTitle(newTitle);
             onLocal();
-        };
+            //updateLocalTitle(newTitle);
+        };*/
 
         // update title: href is optional; if not specified, we use window.location.href
         exp.updateTitle = function (newTitle, cb) {
@@ -58,11 +58,10 @@ define(['jquery'], function ($) {
                     updateLocalTitle(oldTitle);
                     return void cb(err);
                 }
-                updateLocalTitle(data);
+                metadataMgr.updateTitle(newTitle);
+                //onLocal();
                 cb(null, data);
                 if (!$title) { return; }
-                $title.find('span.title').text(data);
-                $title.find('input').val(data);
             });
         };
 
@@ -75,12 +74,14 @@ define(['jquery'], function ($) {
 
         metadataMgr.onChange(function () {
             var md = metadataMgr.getMetadata();
-            exp.updateTitle(md.title || md.defaultTitle);
+            $title.find('span.title').text(md.title || md.defaultTitle);
+            $title.find('input').val(md.title || md.defaultTitle);
+            //exp.updateTitle(md.title || md.defaultTitle);
         });
 
         exp.getTitleConfig = function () {
             return {
-                onRename: renameCb,
+                updateTitle: exp.updateTitle,
                 suggestName: suggestTitle,
                 defaultName: exp.defaultTitle
             };
