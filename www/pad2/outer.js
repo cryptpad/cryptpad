@@ -33,7 +33,10 @@ define([
             //console.log('EV_METADATA_UPDATE');
             var name;
             nThen(function (waitFor) {
-                Cryptpad.getLastName(waitFor(function (n) { name = n }));
+                Cryptpad.getLastName(waitFor(function (err, n) {
+                    if (err) { console.log(err); }
+                    name = n;
+                }));
             }).nThen(function (waitFor) {
                 sframeChan.event('EV_METADATA_UPDATE', {
                     doc: {
@@ -68,6 +71,19 @@ define([
         sframeChan.on('Q_SET_PAD_TITLE_IN_DRIVE', function (newTitle, cb) {
             Cryptpad.renamePad(newTitle, undefined, function (err) {
                 if (err) { cb('ERROR'); } else { cb(); }
+            });
+        });
+
+        sframeChan.on('Q_SETTINGS_SET_DISPLAY_NAME', function (newName, cb) {
+            Cryptpad.setAttribute('username', newName, function (err) {
+                if (err) {
+                    console.log("Couldn't set username");
+                    console.error(err);
+                    cb('ERROR');
+                    return;
+                }
+                Cryptpad.changeDisplayName(newName, true);
+                cb();
             });
         });
 

@@ -41,4 +41,7 @@ define({
     // iframe and synchronized with the other users. This will not trigger a EV_METADATA_UPDATE
     // because the metadata contained in EV_METADATA_UPDATE does not contain the pad title.
     'Q_SET_PAD_TITLE_IN_DRIVE': true,
+
+    // Update the user's display-name which will be shown to contacts and people in the same pads.
+    'Q_SETTINGS_SET_DISPLAY_NAME': true,
 });
