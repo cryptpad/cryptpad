@@ -26,6 +26,12 @@ define([
         });
     };
 
+    funcs.setDisplayName = function (name, cb) {
+        ctx.sframeChan.query('Q_SETTINGS_SET_DISPLAY_NAME', name, function (err) {
+            if (cb) { cb(err); }
+        });
+    };
+
     Object.freeze(funcs);
     return { create: function (cb) {
         nThen(function (waitFor) {
