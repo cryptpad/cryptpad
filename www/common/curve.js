@@ -50,25 +50,35 @@ define([
     };
 
     Curve.deriveKeys = function (theirs, mine) {
-        var pub = decodeBase64(theirs);
-        var secret = decodeBase64(mine);
+        try {
+            var pub = decodeBase64(theirs);
+            var secret = decodeBase64(mine);
 
-        var sharedSecret = Nacl.box.before(pub, secret);
-        var salt = decodeUTF8('CryptPad.signingKeyGenerationSalt');
+            var sharedSecret = Nacl.box.before(pub, secret);
+            var salt = decodeUTF8('CryptPad.signingKeyGenerationSalt');
 
-        // 64 uint8s
-        var hash = Nacl.hash(concatenateUint8s([salt, sharedSecret]));
-        var signKp = Nacl.sign.keyPair.fromSeed(hash.subarray(0, 32));
-        var cryptKey = hash.subarray(32, 64);
+            // 64 uint8s
+            var hash = Nacl.hash(concatenateUint8s([salt, sharedSecret]));
+            var signKp = Nacl.sign.keyPair.fromSeed(hash.subarray(0, 32));
+            var cryptKey = hash.subarray(32, 64);
 
-        return {
-            cryptKey: encodeBase64(cryptKey),
-            signKey: encodeBase64(signKp.secretKey),
-            validateKey: encodeBase64(signKp.publicKey)
-        };
+            return {
+                cryptKey: encodeBase64(cryptKey),
+                signKey: encodeBase64(signKp.secretKey),
+                validateKey: encodeBase64(signKp.publicKey)
+            };
+        } catch (e) {
+            console.error('invalid keys or other problem deriving keys');
+            console.error(e);
+            return null;
+        }
     };
 
     Curve.createEncryptor = function (keys) {
+        if (!keys || typeof(keys) !== 'object') {
+            return void console.error("invalid input for createEncryptor");
+        }
+
         var cryptKey = decodeBase64(keys.cryptKey);
         var signKey = decodeBase64(keys.signKey);
         var validateKey = decodeBase64(keys.validateKey);
