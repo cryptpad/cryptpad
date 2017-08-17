@@ -20,18 +20,21 @@ define([], function () {
             }
             var mdo = {};
             // We don't want to add our user data to the object multiple times.
-            var containsYou = false;
+            //var containsYou = false;
             //console.log(metadataObj);
+            console.log(metadataObj.users);
             Object.keys(metadataObj.users).forEach(function (x) {
                 if (members.indexOf(x) === -1) { return; }
                 mdo[x] = metadataObj.users[x];
-                if (metadataObj.users[x].uid === meta.user.uid) {
+                /*if (metadataObj.users[x].uid === meta.user.uid) {
                     //console.log('document already contains you');
                     containsYou = true;
-                }
+                }*/
             });
-            if (!containsYou) { mdo[meta.user.netfluxId] = meta.user; }
+            //if (!containsYou) { mdo[meta.user.netfluxId] = meta.user; }
+            mdo[meta.user.netfluxId] = meta.user;
             metadataObj.users = mdo;
+
             dirty = false;
             changeHandlers.forEach(function (f) { f(); });
         };
@@ -74,7 +77,14 @@ define([], function () {
                 checkUpdate();
                 return metadataObj;
             },
-            onChange: function (f) { changeHandlers.push(f); }
+            onChange: function (f) { changeHandlers.push(f); },
+            getNetfluxId: function () {
+                return meta && meta.user && meta.user.netfluxId;
+            },
+            getUserlist: function () {
+                var list = members.slice().filter(function (m) { return m.length === 32; });
+                return list;
+            }
         });
     };
     return Object.freeze({ create: create });
