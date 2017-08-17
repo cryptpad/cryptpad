@@ -61,19 +61,28 @@ define([
             $iframe.find('.CodeMirror').addClass('fullPage');
             editor = CodeMirror.editor;
 
-            var setIndentation = APP.setIndentation = function (units) {
+            var setIndentation = APP.setIndentation = function (units, useTabs) {
                 if (typeof(units) !== 'number') { return; }
                 editor.setOption('indentUnit', units);
                 editor.setOption('tabSize', units);
-                //editor.setOption('indentWithTabs', true);
+                editor.setOption('indentWithTabs', useTabs);
             };
 
             var indentKey = 'cryptpad.indentUnit';
+            var useTabsKey = 'cryptpad.indentWithTabs';
+
             var proxy = Cryptpad.getProxy();
-            proxy.on('change', [indentKey], function (o, n) {
-                APP.setIndentation(n);
-            });
-            setIndentation(proxy[indentKey]);
+
+            var updateIndentSettings = function () {
+                var indentUnit = proxy[indentKey];
+                var useTabs = proxy[useTabsKey];
+                setIndentation(
+                    typeof(indentUnit) === 'number'? indentUnit: 2,
+                    typeof(useTabs) === 'boolean'? useTabs: false);
+            };
+
+            proxy.on('change', [indentKey], updateIndentSettings);
+            proxy.on('change', [useTabsKey], updateIndentSettings);
 
             var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
 
@@ -401,6 +410,7 @@ define([
                     }
                 });
 
+/*
                 // add the splitter
                 if (!$iframe.has('.cp-splitter').length) {
                     var $preview = $iframe.find('#previewContainer');
@@ -428,6 +438,7 @@ define([
                         });
                     });
                 }
+*/
 
                 Cryptpad.removeLoadingScreen();
                 setEditable(true);

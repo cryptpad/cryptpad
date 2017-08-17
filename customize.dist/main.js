@@ -30,6 +30,9 @@ define([
                 return;
             }
 
+            $main.find('a[href="/drive/"] div.pad-button-text h4')
+                .text(Messages.main_yourCryptDrive);
+
             var name = localStorage[Cryptpad.userNameKey] || sessionStorage[Cryptpad.userNameKey];
             var $loggedInBlock = $main.find('#loggedIn');
             var $hello = $loggedInBlock.find('#loggedInHello');

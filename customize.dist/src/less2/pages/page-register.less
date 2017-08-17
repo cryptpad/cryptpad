@@ -19,14 +19,112 @@
         #register {
             margin-top: 16px;
             font-size: 1.25em;
+            min-width: 30%; // conflict?
             width: 30%;
+            @media (max-width: 500px) {
+                width: 45%;
+            }
         }
     }
+    padding-bottom: 3em;
+    min-height: 5vh;
 }
-
 .alertify {
     // workaround for alertify making empty p
     p:empty {
         display: none;
     }
+}
+.cp-register-wel {
+    padding-top: 6em;
+    padding-bottom: 20em;
+    background-image: url(/customize/bkregister.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    h1 {
+        font-weight: 700;
+        color: #fff;
+        text-shadow: 0 1px 5px rgba(0,0,0,.2);
+    }
+}
+.cp-register-det {
+    margin-top: -7em;
+    background: #fff;
+    box-shadow: 0 5px 15px rgba(69,145,196, 0.3);
+    #data {
+        background: #4591C4;  /* fallback for old browsers */
+        background: -webkit-linear-gradient(to right, #FF7C4F, #4592C4);  /* Chrome 10-25, Safari 5.1-6 */
+        background: linear-gradient(to right, #FF7C4F, #4592C4); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        padding-top: 3em;
+        padding-bottom: 7em;
+        padding-left: 30px;
+        padding-right: 30px;
+        p {
+            color: #fff;
+            li {
+                margin-bottom: 1em;
+            }
+            .fa {
+                font-size: 1.5em;
+                padding-right: 10px;
+                color: #000;
+            }
+        }
+        h3 {
+            font-weight: 700;
+            margin-bottom: 1em;
+        }
+    }
+    #userForm {
+        padding-top: 3em;
+        padding-bottom: 2em;
+        .form-control {
+            border-radius: 0;
+            color: @cryptpad_text_col;
+            margin-top: 1em;
+            &:focus {
+                border-color: @cryptpad_color_blue;
+            }
+        }
+        .checkbox-container {
+            color: @cryptpad_text_col;
+        }
+    }
+    .cp-login-register {
+        color: @cryptpad_color_blue;
+        background: #fff;
+        border: 2px solid @cryptpad_color_blue;
+        border-radius: 0;
+        &:hover {
+            transform: scale(1.05);
+        }
+    }
+}
+.cp-register-test {
+    margin-top: 3em;
+    hr {
+        width: 15rem;
+        border-top: 2px solid @cryptpad_color_blue;
+        margin-top: 0;
+        margin-bottom: 2em;
+    }
+    p {
+        margin-bottom: 0;
+    }
+    .cp-test-source {
+        font-style: italic;
+    }
+    .test-details {
+        padding-left: 4em;
+        background-image: url(/customize/testimonial.svg);
+        background-repeat: no-repeat;
+        background-position: left top;
+        background-size: 3em;
+        color: @cryptpad_text_col;
+    }
+
+}
+#cp-main {
+    background: #fff;
 }
