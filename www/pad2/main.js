@@ -485,6 +485,8 @@ define([
             toolbar = info.realtime.toolbar = Toolbar.create(configTb);
             Title.setToolbar(toolbar);
 
+            var $rightside = toolbar.$rightside;
+
             $bar.find('#cke_1_toolbar_collapser').hide();
             if (!readOnly) {
                 // Expand / collapse the toolbar
@@ -559,7 +561,7 @@ define([
 
             //Title.setToolbar(toolbar);
 
-            var $rightside = toolbar.$rightside;
+            //var $rightside = toolbar.$rightside;
             var $drawer = toolbar.$drawer;
 
             var editHash;
