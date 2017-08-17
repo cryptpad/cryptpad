@@ -347,12 +347,12 @@ define([
                     defaultTitle: Title.defaultTitle,
                     type: 'pad'
                 }
-            };*/
+            };
             if (!initializing) {
                 hjson[3].metadata.title = Title.title;
             } else if (Cryptpad.initialName && !hjson[3].metadata.title) {
                 hjson[3].metadata.title = Cryptpad.initialName;
-            }
+            }*/
             return stringify(hjson);
         };
 

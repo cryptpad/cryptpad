@@ -15,6 +15,9 @@ define([], function () {
         var priv = {};
         var dirty = true;
         var changeHandlers = [];
+        var lazyChangeHandlers = [];
+
+        var rememberedTitle;
 
         var checkUpdate = function (lazy) {
             if (!dirty) { return; }
@@ -45,11 +48,17 @@ define([], function () {
             mdo[meta.user.netfluxId] = meta.user;
             metadataObj.users = mdo;
             var lazyUserStr = JSON.stringify(metadataLazyObj.users[meta.user.netfluxId]);
+            dirty = false;
             if (lazy || lazyUserStr !== JSON.stringify(meta.user)) {
                 metadataLazyObj.users = mdo;
+                lazyChangeHandlers.forEach(function (f) { f(); });
             }
 
-            dirty = false;
+            if (metadataObj.title !== rememberedTitle) {
+                console.log("Title update\n" + metadataObj.title + '\n');
+                rememberedTitle = metadataObj.title;
+            }
+
             changeHandlers.forEach(function (f) { f(); });
         };
         var change = function (lazy) {
@@ -101,6 +110,7 @@ define([], function () {
                 return metadataLazyObj;
             },
             onChange: function (f) { changeHandlers.push(f); },
+            onChangeLazy: function (f) { lazyChangeHandlers.push(f); },
             isConnected : function () {
                 return members.indexOf(meta.user.netfluxId) !== -1;
             },

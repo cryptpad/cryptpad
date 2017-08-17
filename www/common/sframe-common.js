@@ -14,6 +14,7 @@ define([
         if (ctx.cpNfInner) { return ctx.cpNfInner; }
         options.sframeChan = ctx.sframeChan;
         ctx.cpNfInner = CpNfInner.start(options);
+        ctx.cpNfInner.metadataMgr.onChangeLazy(options.onLocal);
         return ctx.cpNfInner;
     };
 
