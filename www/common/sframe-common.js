@@ -20,8 +20,10 @@ define([
         return ctx.cpNfInner.metadataMgr.getPrivateData().accountName;
     };
 
-    funcs.setTitle = function (title /*:string*/, cb) {
-
+    funcs.setPadTitleInDrive = function (title, cb) {
+        ctx.sframeChan.query('Q_SET_PAD_TITLE_IN_DRIVE', title, function (err) {
+            if (cb) { cb(err); }
+        });
     };
 
     Object.freeze(funcs);
@@ -29,7 +31,7 @@ define([
         nThen(function (waitFor) {
             SFrameChannel.create(window.top, waitFor(function (sfc) { ctx.sframeChan = sfc; }));
             // CpNfInner.start() should be here....
-        }).nThen(function (waitFor) {
+        }).nThen(function () {
             cb(funcs);
         });
     } };

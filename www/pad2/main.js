@@ -754,7 +754,7 @@ define([
             $(waitFor(function () {
                 Cryptpad.addLoadingScreen();
             }));
-            SFCommon.create(waitFor(function (c) { common = c; }));
+            SFCommon.create(waitFor(function (c) { module.common = common = c; }));
         }).nThen(function (waitFor) {
             Ckeditor.config.toolbarCanCollapse = true;
             if (screen.height < 800) {

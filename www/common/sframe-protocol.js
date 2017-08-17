@@ -34,5 +34,11 @@ define({
     // Called from the outside, this informs the inside whenever the user's data has been changed.
     // The argument is the object representing the content of the user profile minus the netfluxID
     // which changes per-reconnect.
-    'EV_METADATA_UPDATE': true
+    'EV_METADATA_UPDATE': true,
+
+    // Takes one argument only, the title to set for the CURRENT pad which the user is looking at.
+    // This changes the pad title in drive ONLY, the pad title needs to be changed inside of the
+    // iframe and synchronized with the other users. This will not trigger a EV_METADATA_UPDATE
+    // because the metadata contained in EV_METADATA_UPDATE does not contain the pad title.
+    'Q_SET_PAD_TITLE_IN_DRIVE': true,
 });
