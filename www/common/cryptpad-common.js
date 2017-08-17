@@ -571,6 +571,7 @@ define([
         _onDisplayNameChanged.forEach(function (h) {
             h(newName, isLocal);
         });
+        common.clearTooltips();
     };
 
     // STORAGE
