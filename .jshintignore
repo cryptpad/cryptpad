@@ -9,3 +9,5 @@ www/scratch
 www/common/toolbar.js
 www/common/hyperscript.js
 www/common/tippy.min.js
+
+www/pad/wysiwygarea-plugin.js

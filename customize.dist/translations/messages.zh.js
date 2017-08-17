@@ -505,7 +505,7 @@ define(function () {
 
     // Readme
 
-    out.driveReadmeTitle = "什麼是 CryptDrive?";
+    out.driveReadmeTitle = "什麼是 CryptPad?";
     out.readme_welcome = "歡迎來到 CryptPad !";
     out.readme_p1 = "歡迎來到 CryptPad, 這裏你可以獨自作個人筆記或是和別人共享協作。";
     out.readme_p2 = "這個工作檔案可以讓你快速地了解如何使用 CryptPad 作筆記，有效地整理管理文件工作檔案。";

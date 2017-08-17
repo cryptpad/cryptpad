@@ -336,10 +336,10 @@ define(function () {
     out.updated_0_fm_info_trash = 'Empty your trash to free space in your CryptDrive.';
     out.fm_info_trash = out.updated_0_fm_info_trash;
     out.fm_info_allFiles = 'Contains all the files from "Documents", "Unsorted" and "Trash". You can\'t move or remove files from here.'; // Same here
-    out.fm_info_anonymous = 'You are not logged in so these pads may be deleted (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">find out why</a>). ' +
+    out.fm_info_anonymous = 'You are not logged in so your pads will expire after 3 months (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">find out more</a>). ' +
                             '<a href="/register/">Sign up</a> or <a href="/login/">Log in</a> to keep them alive.';
     out.fm_alert_backupUrl = "Backup link for this drive.<br>" +
-                             "It is <strong>highly recommended</strong> that you keep ip for yourself only.<br>" +
+                             "It is <strong>highly recommended</strong> that you keep it secret.<br>" +
                              "You can use it to retrieve all your files in case your browser memory got erased.<br>" +
                              "Anybody with that link can edit or remove all the files in your file manager.<br>";
     out.fm_alert_anonymous = "Hello there, you are currently using CryptPad anonymously, that's ok but your pads may be deleted after a period of " +
@@ -404,13 +404,15 @@ define(function () {
 
     out.register_header = "Welcome to CryptPad";
     out.register_explanation = [
-        "<p>Lets go over a couple things first</p>",
-        "<ul>",
-            "<li>Your password is your secret key which encrypts all of your pads. If you lose it there is no way we can recover your data.</li>",
-            "<li>You can import pads which were recently viewed in your browser so you have them in your account.</li>",
-            "<li>If you are using a shared computer, you need to log out when you are done, closing the tab is not enough.</li>",
+        "<h3>Lets go over a couple things first:</h3>",
+        "<ul class='list-unstyled'>",
+            "<li><i class='fa fa-info-circle'> </i> Your password is your secret key which encrypts all of your pads. If you lose it there is no way we can recover your data.</li>",
+            "<li><i class='fa fa-info-circle'> </i> You can import pads which were recently viewed in your browser so you have them in your account.</li>",
+            "<li><i class='fa fa-info-circle'> </i> If you are using a shared computer, you need to log out when you are done, closing the tab is not enough.</li>",
         "</ul>"
     ].join('');
+    out.register_testimonial =" \"Tools like Etherpad and Google Docs [...] all share a weakness, which is that whomever owns the document server can see everything you're typing. Cryptpad is a free/open project that uses some of the ideas behind blockchain to implement a \"zero-knowledge\" version of a collaborative document editor, ensuring that only the people working on a document can see it.\"  ";
+    out.register_testimonial_name = "Cory Doctorow";
 
     out.register_writtenPassword = "I have written down my username and password, proceed";
     out.register_cancel = "Go back";
@@ -422,6 +424,7 @@ define(function () {
     // Settings
     out.settings_cat_account = "Account";
     out.settings_cat_drive = "CryptDrive";
+    out.settings_cat_code = "Code";
     out.settings_title = "Settings";
     out.settings_save = "Save";
 
@@ -468,6 +471,9 @@ define(function () {
     out.settings_logoutEverywhere = "Force log out of all other web sessions";
     out.settings_logoutEverywhereConfirm = "Are you sure? You will need to log in with all your devices.";
 
+    out.settings_codeIndentation = 'Code editor indentation (spaces)';
+    out.settings_codeUseTabs = "Indent using tabs (instead of spaces)";
+
     out.upload_title = "File upload";
     out.upload_serverError = "Server Error: unable to upload your file at this time.";
     out.upload_uploadPending = "You already have an upload in progress. Cancel it and upload your new file?";
@@ -508,7 +514,7 @@ define(function () {
     // contact.html
     out.main_about_p2 = 'If you have any questions or comments, feel free to reach out! You can <a href="https://twitter.com/cryptpad"><i class="fa fa-twitter"></i>tweet us</a>, open an issue <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">on <i class="fa fa-github"></i>GitHub</a>. Come say hi on <a href="https://riot.im/app/#/room/#cryptpad:matrix.org" title="Matrix">our <i class="fa fa-comment"></i>Matrix channel</a> or IRC (#cryptpad on irc.freenode.net), or <a href="mailto:research@xwiki.com"><i class="fa fa-envelope"></i>send us an email</a>.';
 
-    out.main_info = "<h1>Collaborate in Confidence</h1><br> Grow your ideas together with shared documents while <strong>Zero Knowledge</strong> technology secures your privacy; even from us.";
+    out.main_info = "<h2>Collaborate in Confidence</h2> Grow your ideas together with shared documents while <strong>Zero Knowledge</strong> technology secures your privacy; <strong>even from us</strong>.";
     out.main_catch_phrase = "The Zero Knowledge Cloud";
 
     out.main_howitworks = 'How It Works';
@@ -538,6 +544,8 @@ define(function () {
     out.main_pollPad = 'Poll or Schedule';
     out.main_whiteboardPad = 'Whiteboard';
     out.main_localPads = 'Local Pads';
+    out.main_yourCryptDrive = 'Your CryptDrive';
+    out.main_footerText = "With CryptPad, you can make quick collaborative documents for taking notes and writing down ideas together.";
 
     out.footer_applications = "Applications";
     out.footer_contact = "Contact";
@@ -654,7 +662,7 @@ define(function () {
 
     // Readme
 
-    out.driveReadmeTitle = "What is CryptDrive?";
+    out.driveReadmeTitle = "What is CryptPad?";
     out.readme_welcome = "Welcome to CryptPad !";
     out.readme_p1 = "Welcome to CryptPad, this is where you can take note of things alone and with friends.";
     out.readme_p2 = "This pad will give you a quick walk through of how you can use CryptPad to take notes, keep them organized and work together on them.";

@@ -6,22 +6,18 @@
 // Basic setup for info pages, this should be used at the global level
 .infopages_main () {
     background-color: @colortheme_info-background;
-
     a {
         color: @cryptpad_color_blue;
-        &:visited { color: darken(@cryptpad_color_blue, 10%); }
+        &:visited { color: darken(@cryptpad_color_blue, 5%); }
     }
     a:hover {
         opacity: 1;
     }
-
     border: 0;
     padding: 0;
     margin: 0;
-
     font-size: 16px;
     font-family: @colortheme_font;
-
     .cp-container {
         font-size: 16px;
         padding-top: @infopages_padding;
@@ -41,24 +37,19 @@
             margin-top: 1em;
             margin-bottom: 0.5em;
         }
-
         img {
             &.left {
                 float: left;
             }
-
             max-width: 100%;
         }
-
         .form-group {
             & > * {
                 margin-top: 0.5em;
             }
-
             display: flex;
             flex-direction: column;
             align-items: center;
-
             .checkbox-container {
                 width: 100%;
                 display: flex;
@@ -72,7 +63,6 @@
             }
         }
     }
-
     footer {
         background-color: @cryptpad_color_blue;
         .container {
@@ -82,7 +72,7 @@
         a {
             color: #fff;
             &:visited {
-                color: darken(#fff, 10%);
+                color: darken(#fff, 5%);
             };
         }
         margin-bottom: 1em;
@@ -130,12 +120,10 @@
         z-index: 9001;
         position: fixed;
         top: 0;
-
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-
         box-sizing: border-box;
         width: 100%;
         height: @infopages_infobar-height;
@@ -144,24 +132,20 @@
         vertical-align: middle;
         font-size: 1.25em;
         line-height: 1.25em;
-
         cursor: default;
         user-select: none;
         -moz-user-select: none;
         -webkit-user-select: none;
         -ms-user-select: none;
-
         .navbar-nav {
             display: flex;
             align-items: center;
         }
-
         a {
             font-weight: 500;
             padding: 0.6em;
             .infopages_link()
         }
-
         .cp-logo {
             margin-right: 0.5em;
         }
