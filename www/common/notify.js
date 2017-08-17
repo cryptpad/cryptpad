@@ -1,4 +1,11 @@
 (function () {
+    var Mod = function (ApiConfig) {
+        var requireConf;
+        if (ApiConfig && ApiConfig.requireConf) {
+            requireConf = ApiConfig.requireConf;
+        }
+        var urlArgs = typeof(requireConf.urlArgs) === 'string'? '?' + urlArgs: '';
+
     var Module = {};
 
     var isSupported = Module.isSupported = function () {
@@ -41,8 +48,8 @@
         }
     };
 
-    var DEFAULT_MAIN = '/customize/main-favicon.png';
-    var DEFAULT_ALT = '/customize/alt-favicon.png';
+    var DEFAULT_MAIN = '/customize/main-favicon.png' + urlArgs;
+    var DEFAULT_ALT = '/customize/alt-favicon.png' + urlArgs;
 
     var createFavicon = function () {
         console.log("creating favicon");
@@ -110,13 +117,13 @@
             cancel: cancel,
         };
     };
+        return Module;
+    };
 
     if (typeof(module) !== 'undefined' && module.exports) {
         module.exports = Module;
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-        define(function () {
-            return Module;
-        });
+        define(['/api/config'], Mod);
     } else {
         window.Visible = Module;
     }
