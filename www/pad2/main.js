@@ -341,7 +341,7 @@ define([
         var stringifyDOM = module.stringifyDOM = function (dom) {
             var hjson = Hyperjson.fromDOM(dom, isNotMagicLine, brFilter);
             hjson[3] = {
-                metadata: cpNfInner.metadataMgr.getMetadata()
+                metadata: cpNfInner.metadataMgr.getMetadataLazy()
             };
             /*hjson[3] = { TODO
                     users: UserList.userData,
@@ -470,8 +470,11 @@ define([
 
         realtimeOptions.onInit = function (info) {
             console.log('onInit');
+            var titleCfg = { getHeadingText: getHeadingText };
+            Title = Cryptpad.createTitle(titleCfg, realtimeOptions.onLocal, Cryptpad);
             var configTb = {
                 displayed: ['userlist'],
+                //title: Title.getTitleConfig(),
                 userList: cpNfInner.metadataMgr,
                 readOnly: readOnly,
                 ifrw: window,

@@ -122,7 +122,7 @@ define([
     // Userlist elements
 
     var getOtherUsers = function(config) {
-        var userList = config.userList.getUserlist();
+        //var userList = config.userList.getUserlist();
         var userData = config.userList.getMetadata().users;
 
         var i = 0; // duplicates counter
@@ -130,12 +130,12 @@ define([
 
         // Display only one time each user (if he is connected in multiple tabs)
         var uids = [];
-        userList.forEach(function(user) {
+        Object.keys(userData).forEach(function(user) {
             //if (user !== userNetfluxId) {
                 var data = userData[user] || {};
                 var userId = data.uid;
                 if (!userId) { return; }
-                data.netfluxId = user;
+                //data.netfluxId = user;
                 if (uids.indexOf(userId) === -1) {// && (!myUid || userId !== myUid)) {
                     uids.push(userId);
                     list.push(data);
@@ -176,16 +176,15 @@ define([
         var $userButtons = toolbar.userlist;
         var $userlistContent = toolbar.userlistContent;
 
-        var userList = config.userList.getUserlist();
-        var userData = config.userList.getMetadata().users;
-console.log(userList, userData);
-        var numberOfUsers = userList.length;
+        var metadataMgr = config.userList;
+        var userData = metadataMgr.getMetadata().users;
+        var viewers = metadataMgr.getViewers();
 
         // If we are using old pads (readonly unavailable), only editing users are in userList.
         // With new pads, we also have readonly users in userList, so we have to intersect with
         // the userData to have only the editing users. We can't use userData directly since it
         // may contain data about users that have already left the channel.
-        userList = config.readOnly === -1 ? userList : arrayIntersect(userList, Object.keys(userData));
+        //userList = config.readOnly === -1 ? userList : arrayIntersect(userList, Object.keys(userData));
 
         // Names of editing users
         var others = getOtherUsers(config);
@@ -198,8 +197,8 @@ console.log(userList, userData);
             return na.toLowerCase() > nb.toLowerCase();
         });
 
-        var numberOfEditUsers = userList.length - duplicates;
-        var numberOfViewUsers = numberOfUsers - userList.length;
+        var numberOfEditUsers = Object.keys(userData).length - duplicates;
+        var numberOfViewUsers = viewers;
 
         // Update the userlist
         var $editUsers = $userlistContent.find('.' + USERLIST_CLS).html('');
@@ -287,8 +286,7 @@ console.log(userList, userData);
             //userList.change.push
             var metadataMgr = config.userList;
             metadataMgr.onChange(function () {
-                var users = metadataMgr.getUserlist();
-                if (users.indexOf(metadataMgr.getNetfluxId()) !== -1) {toolbar.connected = true;}
+                if (metadataMgr.isConnected()) {toolbar.connected = true;}
                 if (!toolbar.connected) { return; }
                 //if (config.userList.data) {
                     updateUserList(toolbar, config);

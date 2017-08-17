@@ -4,10 +4,11 @@ define([], function () {
         var meta = UNINIT;
         var members = [];
         var metadataObj = UNINIT;
+        var metadataLazyObj = UNINIT;
         var dirty = true;
         var changeHandlers = [];
 
-        var checkUpdate = function () {
+        var checkUpdate = function (lazy) {
             if (!dirty) { return; }
             if (meta === UNINIT) { throw new Error(); }
             if (metadataObj === UNINIT) {
@@ -17,6 +18,7 @@ define([], function () {
                     type: meta.doc.type,
                     users: {}
                 };
+                metadataLazyObj = JSON.parse(JSON.stringify(metadataObj));
             }
             var mdo = {};
             // We don't want to add our user data to the object multiple times.
@@ -34,56 +36,65 @@ define([], function () {
             //if (!containsYou) { mdo[meta.user.netfluxId] = meta.user; }
             mdo[meta.user.netfluxId] = meta.user;
             metadataObj.users = mdo;
+            if (lazy) {
+                metadataLazyObj.users = mdo;
+            }
 
             dirty = false;
             changeHandlers.forEach(function (f) { f(); });
         };
-        var change = function () {
+        var change = function (lazy) {
             dirty = true;
-            setTimeout(checkUpdate);
+            setTimeout(function () {
+                checkUpdate(lazy);
+            });
         };
 
         sframeChan.on('EV_METADATA_UPDATE', function (ev) {
             meta = ev;
-            change();
+            change(true);
         });
         sframeChan.on('EV_RT_CONNECT', function (ev) {
             meta.user.netfluxId = ev.myID;
             members = ev.members;
-            change();
+            change(true);
         });
         sframeChan.on('EV_RT_JOIN', function (ev) {
             members.push(ev);
-            change();
+            change(false);
         });
         sframeChan.on('EV_RT_LEAVE', function (ev) {
             var idx = members.indexOf(ev);
             if (idx === -1) { console.log('Error: ' + ev + ' not in members'); return; }
             members.splice(idx, 1);
-            change();
+            change(false);
         });
         sframeChan.on('EV_RT_DISCONNECT', function () {
             members = [];
-            change();
+            change(true);
         });
 
         return Object.freeze({
             updateMetadata: function (m) {
                 if (JSON.stringify(metadataObj) === JSON.stringify(m)) { return; }
                 metadataObj = m;
-                change();
+                change(true);
             },
             getMetadata: function () {
-                checkUpdate();
+                checkUpdate(false);
                 return metadataObj;
             },
-            onChange: function (f) { changeHandlers.push(f); },
-            getNetfluxId: function () {
-                return meta && meta.user && meta.user.netfluxId;
+            getMetadataLazy: function () {
+                return metadataLazyObj;
             },
-            getUserlist: function () {
+            onChange: function (f) { changeHandlers.push(f); },
+            isConnected : function () {
+                return members.indexOf(meta.user.netfluxId) !== -1;
+            },
+            getViewers : function () {
+                checkUpdate(false);
                 var list = members.slice().filter(function (m) { return m.length === 32; });
-                return list;
+                return list.length - Object.keys(metadataObj.users).length;
             }
         });
     };
