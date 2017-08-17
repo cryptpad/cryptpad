@@ -4,6 +4,13 @@ define([], function () {
         var meta = UNINIT;
         var members = [];
         var metadataObj = UNINIT;
+        // This object reflects the metadata which is in the document at this moment.
+        // Normally when a person leaves the pad, everybody sees them leave and updates
+        // their metadata, this causes everyone to fight to change the document and
+        // operational transform doesn't like it. So this is a lazy object which is
+        // only updated either:
+        // 1. On changes to the metadata that come in from someone else
+        // 2. On changes connects, disconnects or changes to your own metadata
         var metadataLazyObj = UNINIT;
         var priv = {};
         var dirty = true;
@@ -37,7 +44,8 @@ define([], function () {
             //if (!containsYou) { mdo[meta.user.netfluxId] = meta.user; }
             mdo[meta.user.netfluxId] = meta.user;
             metadataObj.users = mdo;
-            if (lazy) {
+            var lazyUserStr = JSON.stringify(metadataLazyObj.users[meta.user.netfluxId]);
+            if (lazy || lazyUserStr !== JSON.stringify(meta.user)) {
                 metadataLazyObj.users = mdo;
             }
 
@@ -81,8 +89,9 @@ define([], function () {
         return Object.freeze({
             updateMetadata: function (m) {
                 if (JSON.stringify(metadataObj) === JSON.stringify(m)) { return; }
-                metadataObj = m;
-                change(true);
+                metadataObj = JSON.parse(JSON.stringify(m));
+                metadataLazyObj = JSON.parse(JSON.stringify(m));
+                change(false);
             },
             getMetadata: function () {
                 checkUpdate(false);
