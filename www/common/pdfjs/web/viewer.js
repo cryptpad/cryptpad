@@ -343,8 +343,8 @@ function isDataSchema(url) {
 function getPDFFileNameFromURL(url) {
   var query;
   var title;
-  if (/\?/.test(url)) {
-    url.replace(/\?(.*)$/, function (all, t) {
+  if (/\#/.test(url)) {
+    url.replace(/\#(.*)$/, function (all, t) {
       title = t;
     });
   }
