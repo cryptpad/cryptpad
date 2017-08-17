@@ -50,19 +50,9 @@ define(['jquery'], function ($) {
             cb = cb || $.noop;
             if (newTitle === exp.title) { return; }
             // Change the title now, and set it back to the old value if there is an error
-            var oldTitle = exp.title;
-            Common.setPadTitleInDrive(newTitle, function (err, data) {
-                if (err) {
-                    console.log("Couldn't set pad title");
-                    console.error(err);
-                    updateLocalTitle(oldTitle);
-                    return void cb(err);
-                }
-                metadataMgr.updateTitle(newTitle);
-                //onLocal();
-                cb(null, data);
-                if (!$title) { return; }
-            });
+            //var oldTitle = exp.title;
+            Common.updateTitle(newTitle, cb)
+            //cb(null, newTitle);
         };
 
         // TODO not needed?

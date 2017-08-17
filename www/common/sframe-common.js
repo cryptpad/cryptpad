@@ -2,9 +2,10 @@ define([
     '/bower_components/nthen/index.js',
     '/common/sframe-chainpad-netflux-inner.js',
     '/common/sframe-channel.js',
-    '/common/sframe-common-title.js'
+    '/common/sframe-common-title.js',
+    '/common/metadata-manager.js',
 
-], function (nThen, CpNfInner, SFrameChannel, Title) {
+], function (nThen, CpNfInner, SFrameChannel, Title, MetadataMgr) {
 
     // Chainpad Netflux Inner
     var funcs = {};
@@ -13,6 +14,7 @@ define([
     funcs.startRealtime = function (options) {
         if (ctx.cpNfInner) { return ctx.cpNfInner; }
         options.sframeChan = ctx.sframeChan;
+        options.metadataMgr = ctx.metadataMgr;
         ctx.cpNfInner = CpNfInner.start(options);
         ctx.cpNfInner.metadataMgr.onChangeLazy(options.onLocal);
         return ctx.cpNfInner;
@@ -23,10 +25,10 @@ define([
         return ctx.cpNfInner.metadataMgr.getPrivateData().accountName;
     };
 
-    funcs.setPadTitleInDrive = function (title, cb) {
-        ctx.sframeChan.query('Q_SET_PAD_TITLE_IN_DRIVE', title, function (err) {
-            if (cb) { cb(err, title); }
-        });
+    var titleUpdated;
+    funcs.updateTitle = function (title, cb) {
+        ctx.metadataMgr.updateTitle(title);
+        titleUpdated = cb;
     };
 
     // Title module
@@ -49,6 +51,13 @@ define([
             SFrameChannel.create(window.top, waitFor(function (sfc) { ctx.sframeChan = sfc; }));
             // CpNfInner.start() should be here....
         }).nThen(function () {
+            ctx.metadataMgr = MetadataMgr.create(ctx.sframeChan);
+            ctx.metadataMgr.onTitleChange(function (title) {
+                ctx.sframeChan.query('Q_SET_PAD_TITLE_IN_DRIVE', title, function (err) {
+                    if (err) { return; }
+                    if (titleUpdated) { titleUpdated(undefined, title); }
+                });
+            });
             cb(funcs);
         });
     } };

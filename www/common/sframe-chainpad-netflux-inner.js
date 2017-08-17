@@ -15,9 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 define([
-    '/common/metadata-manager.js',
     '/bower_components/chainpad/chainpad.dist.js'
-], function (MetadataMgr) {
+], function () {
     var ChainPad = window.ChainPad;
     var module = { exports: {} };
 
@@ -39,13 +38,12 @@ define([
         var logLevel = typeof(config.logLevel) !== 'undefined'? config.logLevel : 1;
         var readOnly = config.readOnly || false;
         var sframeChan = config.sframeChan;
+        var metadataMgr = config.metadataMgr;
         config = undefined;
 
         var chainpad;
         var myID;
         var isReady = false;
-
-        var metadataMgr = MetadataMgr.create(sframeChan);
 
         sframeChan.on('EV_RT_DISCONNECT', function () {
             isReady = false;

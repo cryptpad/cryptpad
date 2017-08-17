@@ -725,6 +725,7 @@ define([
         realtimeOptions.onError = onConnectError;
 
         var onLocal = realtimeOptions.onLocal = function () {
+            console.log('onlocal');
             if (initializing) { return; }
             if (isHistoryMode) { return; }
             if (readOnly) { return; }

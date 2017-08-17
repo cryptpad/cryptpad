@@ -16,6 +16,7 @@ define([], function () {
         var dirty = true;
         var changeHandlers = [];
         var lazyChangeHandlers = [];
+        var titleChangeHandlers = [];
 
         var rememberedTitle;
 
@@ -50,13 +51,14 @@ define([], function () {
             var lazyUserStr = JSON.stringify(metadataLazyObj.users[meta.user.netfluxId]);
             dirty = false;
             if (lazy || lazyUserStr !== JSON.stringify(meta.user)) {
-                metadataLazyObj.users = mdo;
+                metadataLazyObj = JSON.parse(JSON.stringify(metadataObj));
                 lazyChangeHandlers.forEach(function (f) { f(); });
             }
 
             if (metadataObj.title !== rememberedTitle) {
                 console.log("Title update\n" + metadataObj.title + '\n');
                 rememberedTitle = metadataObj.title;
+                titleChangeHandlers.forEach(function (f) { f(metadataObj.title); });
             }
 
             changeHandlers.forEach(function (f) { f(); });
@@ -113,6 +115,7 @@ define([], function () {
             getMetadataLazy: function () {
                 return metadataLazyObj;
             },
+            onTitleChange: function (f) { titleChangeHandlers.push(f); },
             onChange: function (f) { changeHandlers.push(f); },
             onChangeLazy: function (f) { lazyChangeHandlers.push(f); },
             isConnected : function () {
