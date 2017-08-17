@@ -65,6 +65,12 @@ define([
             }
         });
 
+        sframeChan.on('Q_SET_PAD_TITLE_IN_DRIVE', function (newTitle, cb) {
+            Cryptpad.renamePad(newTitle, undefined, function (err) {
+                if (err) { cb('ERROR'); } else { cb(); }
+            });
+        });
+
         CpNfOuter.start({
             sframeChan: sframeChan,
             channel: secret.channel,
