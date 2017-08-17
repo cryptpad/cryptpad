@@ -121,10 +121,10 @@
     };
 
     if (typeof(module) !== 'undefined' && module.exports) {
-        module.exports = Module;
+        module.exports = Mod();
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
         define(['/api/config'], Mod);
     } else {
-        window.Visible = Module;
+        window.Visible = Mod();
     }
 }());
