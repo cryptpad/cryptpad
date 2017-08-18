@@ -189,10 +189,10 @@ define([
                         h('h3', "Pierre Bondoerffer"),
                         h('hr'),
                         setHTML(h('div#bioPierre'), '<p>Resident CSS wizard and emoji extraordinaire, Pierre is passionate about anything related to technology. He loves to hack around computers and put parts together.<br/>He is currently studying at 42, where he learns about algorithms, networking, kernel programming and graphics.<br/>As a part of an internship, he joined XWiki SAS and worked on CryptPad to improve user experience. He also maintains the Spanish translation.</p>'),
-                        h('a.cp-soc-media', { href : 'https://twitter.com/cjdelisle'}, [
+                        h('a.cp-soc-media', { href : 'https://twitter.com/pbondoer'}, [
                                 h('i.fa.fa-twitter')
                             ]),
-                        h('a.cp-soc-media', { href : 'https://github.com/cjdelisle'}, [
+                        h('a.cp-soc-media', { href : 'https://github.com/pbondoer'}, [
                                 h('i.fa.fa-github')
                             ])
                     ]),
