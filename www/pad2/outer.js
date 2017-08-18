@@ -60,8 +60,9 @@ define([
                     priv: {
                         accountName: Cryptpad.getAccountName(),
                         origin: window.location.origin,
+                        pathname: window.location.pathname,
                         readOnly: readOnly,
-                        availableHashes: Object.keys(hashes)
+                        availableHashes: hashes
                     }
                 });
             });

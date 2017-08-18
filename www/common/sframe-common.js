@@ -63,12 +63,12 @@ define([
         });
     };
 
-    funcs.storeLinkToClipboard = function (readOnly, cb) {
+/*    funcs.storeLinkToClipboard = function (readOnly, cb) {
         ctx.sframeChan.query('Q_STORE_LINK_TO_CLIPBOARD', readOnly, function (err) {
             if (cb) { cb(err); }
         });
     };
-
+*/
     // TODO
 
     funcs.feedback = function () {};

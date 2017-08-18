@@ -365,14 +365,13 @@ define([
             throw new Error("You must provide a `metadataMgr` to display the userlist");
         }
         var metadataMgr = config.metadataMgr;
-        var $shareIcon = $('<span>', {'class': 'fa fa-share-alt'});
-        var availableHashes = metadataMgr.getPrivateData().availableHashes;
+        var origin = config.metadataMgr.getPrivateData().origin;
+        var pathname = config.metadataMgr.getPrivateData().pathname;
+        var hashes = metadataMgr.getPrivateData().availableHashes;
         var readOnly = metadataMgr.getPrivateData().readOnly;
+
+        var $shareIcon = $('<span>', {'class': 'fa fa-share-alt'});
         var options = [];
-        var hashes = {
-            editHash: availableHashes.indexOf('editHash') !== -1,
-            viewHash: availableHashes.indexOf('viewHash') !== -1
-        };
 
         if (hashes.editHash) {
             options.push({
@@ -380,7 +379,6 @@ define([
                 attributes: {title: Messages.editShareTitle, 'class': 'editShare'},
                 content: '<span class="fa fa-users"></span> ' + Messages.editShare
             });
-            /* TODO iframe
             if (readOnly) {
                 // We're in view mode, display the "open editing link" button
                 options.push({
@@ -388,13 +386,12 @@ define([
                     attributes: {
                         title: Messages.editOpenTitle,
                         'class': 'editOpen',
-                        href: window.location.pathname + '#' + hashes.editHash,
+                        href: origin + pathname + '#' + hashes.editHash,
                         target: '_blank'
                     },
                     content: '<span class="fa fa-users"></span> ' + Messages.editOpen
                 });
             }
-            */
             options.push({tag: 'hr'});
         }
         if (hashes.viewHash) {
@@ -403,7 +400,6 @@ define([
                 attributes: {title: Messages.viewShareTitle, 'class': 'viewShare'},
                 content: '<span class="fa fa-eye"></span> ' + Messages.viewShare
             });
-            /* TODO iframe
             if (!readOnly) {
                 // We're in edit mode, display the "open readonly" button
                 options.push({
@@ -411,13 +407,12 @@ define([
                     attributes: {
                         title: Messages.viewOpenTitle,
                         'class': 'viewOpen',
-                        href: window.location.pathname + '#' + hashes.viewHash,
+                        href: origin + pathname + '#' + hashes.viewHash,
                         target: '_blank'
                     },
                     content: '<span class="fa fa-eye"></span> ' + Messages.viewOpen
                 });
             }
-            */
         }
         var dropdownConfigShare = {
             text: $('<div>').append($shareIcon).html(),
@@ -431,16 +426,22 @@ define([
 
         if (hashes.editHash) {
             $shareBlock.find('a.editShare').click(function () {
-                Common.storeLinkToClipboard(false, function (err) {
+                /*Common.storeLinkToClipboard(false, function (err) {
                     if (!err) { Cryptpad.log(Messages.shareSuccess); }
-                });
+                });*/
+                var url = origin + pathname + '#' + hashes.editHash;
+                var success = Cryptpad.Clipboard.copy(url);
+                if (success) { Cryptpad.log(Messages.shareSuccess); }
             });
         }
         if (hashes.viewHash) {
             $shareBlock.find('a.viewShare').click(function () {
-                Common.storeLinkToClipboard(true, function (err) {
+                /*Common.storeLinkToClipboard(true, function (err) {
                     if (!err) { Cryptpad.log(Messages.shareSuccess); }
-                });
+                });*/
+                var url = origin + pathname + '#' + hashes.viewHash;
+                var success = Cryptpad.Clipboard.copy(url);
+                if (success) { Cryptpad.log(Messages.shareSuccess); }
             });
         }
 
@@ -786,7 +787,9 @@ define([
     // Events
     var initClickEvents = function (toolbar, config) {
         var removeDropdowns =  function () {
-            toolbar.$toolbar.find('.cryptpad-dropdown').hide();
+            window.setTimeout(function () {
+                toolbar.$toolbar.find('.cryptpad-dropdown').hide();
+            });
         };
         var cancelEditTitle = function (e) {
             // Now we want to apply the title even if we click somewhere else

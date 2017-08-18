@@ -35,7 +35,8 @@ define(['jquery'], function ($) {
             if (isDefaultTitle()) {
                 return getHeadingText() || fallback || "";
             } else {
-                return exp.title || getHeadingText() || exp.defaultTitle;
+                var title = metadataMgr.getMetadata().title;
+                return title || getHeadingText() || exp.defaultTitle;
             }
         };
 
