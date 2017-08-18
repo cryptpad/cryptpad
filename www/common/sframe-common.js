@@ -3,9 +3,10 @@ define([
     '/common/sframe-chainpad-netflux-inner.js',
     '/common/sframe-channel.js',
     '/common/sframe-common-title.js',
+    '/common/sframe-common-interface.js',
     '/common/metadata-manager.js',
 
-], function (nThen, CpNfInner, SFrameChannel, Title, MetadataMgr) {
+], function (nThen, CpNfInner, SFrameChannel, Title, UI, MetadataMgr) {
 
     // Chainpad Netflux Inner
     var funcs = {};
@@ -31,6 +32,9 @@ define([
         titleUpdated = cb;
     };
 
+    // UI
+    funcs.createUserAdminMenu = UI.createUserAdminMenu;
+
     // Title module
     funcs.createTitle = Title.create;
 
@@ -39,11 +43,33 @@ define([
         return ctx.cpNfInner.metadataMgr.getMetadata().defaultTitle;
     };
 
+
+
     funcs.setDisplayName = function (name, cb) {
         ctx.sframeChan.query('Q_SETTINGS_SET_DISPLAY_NAME', name, function (err) {
             if (cb) { cb(err); }
         });
     };
+
+    funcs.logout = function (cb) {
+        ctx.sframeChan.query('Q_LOGOUT', null, function (err) {
+            if (cb) { cb(err); }
+        });
+    };
+
+    funcs.setLoginRedirect = function (cb) {
+        ctx.sframeChan.query('Q_SET_LOGIN_REDIRECT', null, function (err) {
+            if (cb) { cb(err); }
+        });
+    };
+
+    funcs.storeLinkToClipboard = function (readOnly, cb) {
+        ctx.sframeChan.query('Q_STORE_LINK_TO_CLIPBOARD', readOnly, function (err) {
+            if (cb) { cb(err); }
+        });
+    };
+
+    // TODO
 
     funcs.feedback = function () {};
 

@@ -10,6 +10,7 @@ define([
 ], function (ApiConfig, SFrameChannel, $, CpNfOuter, nThen, Cryptpad, Crypto) {
     console.log('xxx');
     var sframeChan;
+    var hashes;
     nThen(function (waitFor) {
         $(waitFor());
     }).nThen(function (waitFor) {
@@ -21,10 +22,15 @@ define([
         }));
         Cryptpad.ready(waitFor());
     }).nThen(function (waitFor) {
+        Cryptpad.getShareHashes(function (err, h) {
+            hashes = h;
+            waitFor()();
+        });
+    }).nThen(function (waitFor) {
         var secret = Cryptpad.getSecrets();
         var readOnly = secret.keys && !secret.keys.editKeyStr;
         if (!secret.keys) { secret.keys = secret.key; }
-        
+
         var parsed = Cryptpad.parsePadUrl(window.location.href);
         parsed.type = parsed.type.replace('pad2', 'pad');
         if (!parsed.type) { throw new Error(); }
@@ -52,7 +58,10 @@ define([
                         netfluxId: Cryptpad.getNetwork().webChannels[0].myID,
                     },
                     priv: {
-                        accountName: Cryptpad.getAccountName()
+                        accountName: Cryptpad.getAccountName(),
+                        origin: window.location.origin,
+                        readOnly: readOnly,
+                        availableHashes: Object.keys(hashes)
                     }
                 });
             });
@@ -85,6 +94,29 @@ define([
                 Cryptpad.changeDisplayName(newName, true);
                 cb();
             });
+        });
+
+        sframeChan.on('Q_LOGOUT', function (data, cb) {
+            Cryptpad.logout(cb);
+        });
+
+        sframeChan.on('Q_SET_LOGIN_REDIRECT', function (data, cb) {
+            sessionStorage.redirectTo = window.location.href;
+            cb();
+        });
+
+        sframeChan.on('Q_STORE_LINK_TO_CLIPBOARD', function (readOnly, cb) {
+            if (readOnly) {
+                if (!hashes.viewHash) { return void cb('E_INVALID_HASH'); }
+                var url = window.location.origin + window.location.pathname + '#' + hashes.viewHash;
+                var success = Cryptpad.Clipboard.copy(url);
+                cb(!success);
+                return;
+            }
+            if (!hashes.editHash) { return void cb('E_INVALID_HASH'); }
+            var eUrl = window.location.origin + window.location.pathname + '#' + hashes.editHash;
+            var eSuccess = Cryptpad.Clipboard.copy(eUrl);
+            cb(!eSuccess);
         });
 
         CpNfOuter.start({
