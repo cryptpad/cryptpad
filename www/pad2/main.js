@@ -487,6 +487,16 @@ define([
 
             var $rightside = toolbar.$rightside;
 
+            var src = 'less!/customize/src/less/toolbar.less';
+            require([
+                src
+            ], function () {
+                var $html = $bar.closest('html');
+                $html
+                    .find('head style[data-original-src="' + src.replace(/less!/, '') + '"]')
+                    .appendTo($html.find('head'));
+            });
+
             $bar.find('#cke_1_toolbar_collapser').hide();
             if (!readOnly) {
                 // Expand / collapse the toolbar
@@ -549,7 +559,7 @@ define([
             };
             toolbar = info.realtime.toolbar = Toolbar.create(configTb);
 */
-            var src = 'less!/customize/src/less/toolbar.less';
+            /*var src = 'less!/customize/src/less/toolbar.less';
             require([
                 src
             ], function () {
@@ -557,7 +567,7 @@ define([
                 $html
                     .find('head style[data-original-src="' + src.replace(/less!/, '') + '"]')
                     .appendTo($html.find('head'));
-            });
+            });*/
 
             //Title.setToolbar(toolbar);
 

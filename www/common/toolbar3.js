@@ -358,7 +358,7 @@ define([
             $content.css('margin-top', h+'px');
         });
         $closeIcon.click(function () {
-            Cryptpad.setAttribute('userlist-drawer', false);
+            //Cryptpad.setAttribute('userlist-drawer', false); TODO iframe
             hide();
         });
         $button.click(function () {
@@ -368,9 +368,9 @@ define([
             visible = !visible;
             // TODO iframe
             //Cryptpad.setAttribute('userlist-drawer', visible);
-            //Cryptpad.feedback(visible?'USERLIST_SHOW': 'USERLIST_HIDE');
+            Common.feedback(visible?'USERLIST_SHOW': 'USERLIST_HIDE');
         });
-
+        show();
         // TODO iframe
         /*Cryptpad.getAttribute('userlist-drawer', function (err, val) {
             if (val === false || mobile) { return void hide(); }
@@ -773,6 +773,11 @@ define([
     };
 
     var createUserAdmin = function (toolbar, config) {
+        if (!config.metadataMgr) {
+            throw new Error("You must provide a `metadataMgr` to display the user menu");
+        }
+        var metadataMgr = config.metadataMgr;
+        var myData = metadataMgr.getMetadata().users[metadataMgr.getNetfluxId()];
         var $userAdmin = toolbar.$userAdmin.find('.'+USERADMIN_CLS).show();
         var userMenuCfg = {
             $initBlock: $userAdmin
@@ -795,22 +800,23 @@ define([
         $userButton.click(function (e) {
             e.preventDefault();
             e.stopPropagation();
-            Cryptpad.getLastName(function (err, lastName) {
-                if (err) { return void console.error("Cannot get last name", err); }
+            var lastName = myData.displayName;
+            //Cryptpad.getLastName(function (err, lastName) {
+                //if (err) { return void console.error("Cannot get last name", err); }
                 Cryptpad.prompt(Messages.changeNamePrompt, lastName || '', function (newName) {
                     if (newName === null && typeof(lastName) === "string") { return; }
                     if (newName === null) { newName = ''; }
-                    else { Cryptpad.feedback('NAME_CHANGED'); }
-                    Cryptpad.setAttribute('username', newName, function (err) {
+                    else { Common.feedback('NAME_CHANGED'); }
+                    Common.setDisplayName(newName, function (err) {
                         if (err) {
                             console.log("Couldn't set username");
                             console.error(err);
                             return;
                         }
-                        Cryptpad.changeDisplayName(newName, true);
+                        //Cryptpad.changeDisplayName(newName, true); Already done?
                     });
                 });
-            });
+            //});
         });
         Cryptpad.onDisplayNameChanged(function () {
             window.setTimeout(function () {

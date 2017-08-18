@@ -45,6 +45,8 @@ define([
         });
     };
 
+    funcs.feedback = function () {};
+
     Object.freeze(funcs);
     return { create: function (cb) {
         nThen(function (waitFor) {
