@@ -128,6 +128,9 @@ define([], function () {
             },
             getPrivatedata : function () {
                 return priv;
+            },
+            getNetfluxId : function () {
+                return meta.user.netfluxId;
             }
         });
     };

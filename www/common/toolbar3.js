@@ -124,7 +124,7 @@ define([
 
     var getOtherUsers = function(config) {
         //var userList = config.userList.getUserlist();
-        var userData = config.userList.getMetadata().users;
+        var userData = config.metadataMgr.getMetadata().users;
 
         var i = 0; // duplicates counter
         var list = [];
@@ -177,7 +177,7 @@ define([
         var $userButtons = toolbar.userlist;
         var $userlistContent = toolbar.userlistContent;
 
-        var metadataMgr = config.userList;
+        var metadataMgr = config.metadataMgr;
         var userData = metadataMgr.getMetadata().users;
         var viewers = metadataMgr.getViewers();
 
@@ -282,10 +282,10 @@ define([
 
     var initUserList = function (toolbar, config) {
         // TODO clean comments
-        if (config.userList) { /* && config.userList.list && config.userList.userNetfluxId) {*/
+        if (config.metadataMgr) { /* && config.userList.list && config.userList.userNetfluxId) {*/
             //var userList = config.userList.list;
             //userList.change.push
-            var metadataMgr = config.userList;
+            var metadataMgr = config.metadataMgr;
             metadataMgr.onChange(function () {
                 if (metadataMgr.isConnected()) {toolbar.connected = true;}
                 if (!toolbar.connected) { return; }
@@ -300,9 +300,9 @@ define([
     // Create sub-elements
 
     var createUserList = function (toolbar, config) {
-        if (!config.userList) { /* || !config.userList.list ||
+        if (!config.metadataMgr) { /* || !config.userList.list ||
             !config.userList.data || !config.userList.userNetfluxId) {*/
-            throw new Error("You must provide a `userList` object to display the userlist");
+            throw new Error("You must provide a `metadataMgr` to display the userlist");
         }
         var $content = $('<div>', {'class': 'userlist-drawer'});
         $content.on('drop dragover', function (e) {
@@ -791,7 +791,7 @@ define([
         $userAdmin.find('button').attr('title', Messages.userAccountButton);
 
         // TODO iframe
-        /*var $userButton = toolbar.$userNameButton = $userAdmin.find('a.' + USERBUTTON_CLS);
+        var $userButton = toolbar.$userNameButton = $userAdmin.find('a.' + USERBUTTON_CLS);
         $userButton.click(function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -815,13 +815,13 @@ define([
         Cryptpad.onDisplayNameChanged(function () {
             window.setTimeout(function () {
                 Cryptpad.findCancelButton().click();
-                if (config.userList) {
+                if (config.metadataMgr) {
                     updateUserList(toolbar, config);
                     return;
                 }
                 updateDisplayName(toolbar, config);
             }, 0);
-        });*/
+        });
 
         updateDisplayName(toolbar, config);
 
@@ -867,10 +867,10 @@ define([
     var initNotifications = function (toolbar, config) {
         // Display notifications when users are joining/leaving the session
         var oldUserData;
-        if (!config.userList || !config.userList.list || !config.userList.userNetfluxId) { return; }
-        var userList = config.userList.list;
-        var userNetfluxId = config.userList.userNetfluxId;
-        if (typeof Cryptpad !== "undefined" && userList) {
+        if (!config.metadataMgr) { return; }
+        var metadataMgr = config.metadataMgr;
+        var userNetfluxId = metadataMgr.getNetfluxId();
+        if (typeof Cryptpad !== "undefined") {
             var notify = function(type, name, oldname) {
                 // type : 1 (+1 user), 0 (rename existing user), -1 (-1 user)
                 if (typeof name === "undefined") { return; }
@@ -909,14 +909,17 @@ define([
                 return count;
             };
 
-            userList.change.push(function (newdata) {
+            metadataMgr.onChange(function () {
+                var newdata = metadataMgr.getMetadata().users;
+                var netfluxIds = Object.keys(newdata);
                 // Notify for disconnected users
                 if (typeof oldUserData !== "undefined") {
                     for (var u in oldUserData) {
                         // if a user's uid is still present after having left, don't notify
-                        if (userList.users.indexOf(u) === -1) {
+                        if (netfluxIds.indexOf(u) === -1) {
                             var temp = JSON.parse(JSON.stringify(oldUserData[u]));
                             delete oldUserData[u];
+                            if (temp.uid === newdata[userNetfluxId].uid) { return; }
                             if (userPresent(u, temp, newdata || oldUserData) < 1) {
                                 notify(-1, temp.name);
                             }
@@ -934,7 +937,7 @@ define([
                     return;
                 }
                 for (var k in newdata) {
-                    if (k !== userNetfluxId && userList.users.indexOf(k) !== -1) {
+                    if (k !== userNetfluxId && netfluxIds.indexOf(k) !== -1) {
                         if (typeof oldUserData[k] === "undefined") {
                             // if the same uid is already present in the userdata, don't notify
                             if (!userPresent(k, newdata[k], oldUserData)) {
@@ -1022,7 +1025,7 @@ define([
             //checkLag(toolbar, config);
         };
         toolbar.reconnecting = function (userId) {
-            if (config.userList) { config.userList.userNetfluxId = userId; }
+            //if (config.metadataMgr) { config.userList.userNetfluxId = userId; } TODO
             toolbar.connected = false;
             if (toolbar.spinner) {
                 toolbar.spinner.text(Messages.reconnecting);

@@ -471,9 +471,9 @@ define([
             var titleCfg = { getHeadingText: getHeadingText };
             Title = common.createTitle(titleCfg, realtimeOptions.onLocal, common, cpNfInner.metadataMgr);
             var configTb = {
-                displayed: ['userlist', 'title'],
+                displayed: ['userlist', 'title', 'useradmin'],
                 title: Title.getTitleConfig(),
-                userList: cpNfInner.metadataMgr,
+                metadataMgr: cpNfInner.metadataMgr,
                 readOnly: readOnly,
                 ifrw: window,
                 realtime: info.realtime,
