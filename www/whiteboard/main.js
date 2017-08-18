@@ -11,6 +11,7 @@ define([
     '/common/cryptget.js',
     '/whiteboard/colors.js',
     '/customize/application_config.js',
+    '/common/common-thumbnail.js',
     '/bower_components/secure-fabric.js/dist/fabric.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
 
@@ -19,7 +20,7 @@ define([
     'less!/customize/src/less/cryptpad.less',
     'less!/whiteboard/whiteboard.less',
     'less!/customize/src/less/toolbar.less',
-], function ($, Config, Realtime, Crypto, Toolbar, TextPatcher, JSONSortify, JsonOT, Cryptpad, Cryptget, Colors, AppConfig) {
+], function ($, Config, Realtime, Crypto, Toolbar, TextPatcher, JSONSortify, JsonOT, Cryptpad, Cryptget, Colors, AppConfig, Thumb) {
     var saveAs = window.saveAs;
     var Messages = Cryptpad.Messages;
 
@@ -212,13 +213,18 @@ window.canvas = canvas;
 
         module.FM = Cryptpad.createFileManager({});
         module.upload = function (title) {
-            $canvas[0].toBlob(function (blob) {
-                blob.name = title;
-                var reader = new FileReader();
-                reader.onloadend = function () {
-                    module.FM.handleFile(blob);
-                };
-                reader.readAsArrayBuffer(blob);
+            var canvas = $canvas[0];
+            var finish = function (thumb) {
+                canvas.toBlob(function (blob) {
+                    blob.name = title;
+                    module.FM.handleFile(blob, void 0, thumb);
+                });
+            };
+
+            Thumb.fromCanvas(canvas, function (e, blob) {
+                // carry on even if you can't get a thumbnail
+                if (e) { console.error(e); }
+                finish(blob);
             });
         };
 
