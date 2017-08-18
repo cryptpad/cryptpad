@@ -470,13 +470,16 @@
                     
                     // CryptPad
                     var _iframe = window._iframe = iframe.$;
-                    var fw = this;
+					var fw = this;
+					_iframe.contentWindow.onload = function () {}
                     var intr = setInterval(function () {
                         //console.log(_iframe.contentWindow.document.body);
-                        if (_iframe.contentWindow && _iframe.contentWindow.document && _iframe.contentWindow.document.body) {
-                            clearInterval(intr);
-                            CKEDITOR.tools.callFunction(fw._.frameLoadedHandler, _iframe.contentWindow);
-                        }
+						if (!_iframe.contentWindow) { return; }
+						if (!_iframe.contentWindow.document) { return; }
+						if (_iframe.contentWindow.document.readyState !== 'complete') { return; }
+						if (!_iframe.contentWindow.document.getElementsByTagName('title').length) { return; }
+						clearInterval(intr);
+						CKEDITOR.tools.callFunction(fw._.frameLoadedHandler, _iframe.contentWindow);
                     }, 10);
                     return;
 

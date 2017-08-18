@@ -8,6 +8,8 @@ define([
     var BAD_STATE_TIMEOUT = typeof(AppConfig.badStateTimeout) === 'number'?
         AppConfig.badStateTimeout: 30000;
 
+    var connected = false;
+
     /*
         TODO make this not blow up when disconnected or lagging...
     */
@@ -20,6 +22,7 @@ define([
             }
 
             var to = setTimeout(function () {
+                if (!connected) { return; }
                 realtime.abort();
                 // don't launch more than one popup
                 if (common.infiniteSpinnerDetected) { return; }
@@ -36,6 +39,11 @@ define([
                 cb();
             });
         }, 0);
+    };
+
+    common.setConnectionState = function (bool) {
+        if (typeof(bool) !== 'boolean') { return; }
+        connected = bool;
     };
 
     return common;

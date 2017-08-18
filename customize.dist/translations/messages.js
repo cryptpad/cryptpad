@@ -404,13 +404,15 @@ define(function () {
 
     out.register_header = "Welcome to CryptPad";
     out.register_explanation = [
-        "<p>Lets go over a couple things first</p>",
-        "<ul>",
-            "<li>Your password is your secret key which encrypts all of your pads. If you lose it there is no way we can recover your data.</li>",
-            "<li>You can import pads which were recently viewed in your browser so you have them in your account.</li>",
-            "<li>If you are using a shared computer, you need to log out when you are done, closing the tab is not enough.</li>",
+        "<h3>Lets go over a couple things first:</h3>",
+        "<ul class='list-unstyled'>",
+            "<li><i class='fa fa-info-circle'> </i> Your password is your secret key which encrypts all of your pads. If you lose it there is no way we can recover your data.</li>",
+            "<li><i class='fa fa-info-circle'> </i> You can import pads which were recently viewed in your browser so you have them in your account.</li>",
+            "<li><i class='fa fa-info-circle'> </i> If you are using a shared computer, you need to log out when you are done, closing the tab is not enough.</li>",
         "</ul>"
     ].join('');
+    out.register_testimonial =" \"Tools like Etherpad and Google Docs [...] all share a weakness, which is that whomever owns the document server can see everything you're typing. Cryptpad is a free/open project that uses some of the ideas behind blockchain to implement a \"zero-knowledge\" version of a collaborative document editor, ensuring that only the people working on a document can see it.\"  ";
+    out.register_testimonial_name = "Cory Doctorow";
 
     out.register_writtenPassword = "I have written down my username and password, proceed";
     out.register_cancel = "Go back";
@@ -512,7 +514,7 @@ define(function () {
     // contact.html
     out.main_about_p2 = 'If you have any questions or comments, feel free to reach out! You can <a href="https://twitter.com/cryptpad"><i class="fa fa-twitter"></i>tweet us</a>, open an issue <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">on <i class="fa fa-github"></i>GitHub</a>. Come say hi on <a href="https://riot.im/app/#/room/#cryptpad:matrix.org" title="Matrix">our <i class="fa fa-comment"></i>Matrix channel</a> or IRC (#cryptpad on irc.freenode.net), or <a href="mailto:research@xwiki.com"><i class="fa fa-envelope"></i>send us an email</a>.';
 
-    out.main_info = "<h1>Collaborate in Confidence</h1><br> Grow your ideas together with shared documents while <strong>Zero Knowledge</strong> technology secures your privacy; even from us.";
+    out.main_info = "<h2>Collaborate in Confidence</h2> Grow your ideas together with shared documents while <strong>Zero Knowledge</strong> technology secures your privacy; <strong>even from us</strong>.";
     out.main_catch_phrase = "The Zero Knowledge Cloud";
 
     out.main_howitworks = 'How It Works';
@@ -543,6 +545,7 @@ define(function () {
     out.main_whiteboardPad = 'Whiteboard';
     out.main_localPads = 'Local Pads';
     out.main_yourCryptDrive = 'Your CryptDrive';
+    out.main_footerText = "With CryptPad, you can make quick collaborative documents for taking notes and writing down ideas together.";
 
     out.footer_applications = "Applications";
     out.footer_contact = "Contact";
@@ -682,13 +685,13 @@ define(function () {
 
     // Tips
     out.tips = {};
-    out.tips.lag = "The green icon in the upper right shows the quality of your internet connection to the CryptPad server.";
     out.tips.shortcuts = "`ctrl+b`, `ctrl+i` and `ctrl+u` are quick shortcuts for bold, italic and underline.";
     out.tips.indent = "In numbered and bulleted lists, you can use tab or shift+tab to quickly increase or decrease indentation.";
-    out.tips.title = "You can set the title of your pad by clicking the top center.";
     out.tips.store = "Every time you visit a pad, if you're logged in it will be saved to your CryptDrive.";
     out.tips.marker = "You can highlight text in a pad using the \"marker\" item in the styles dropdown menu.";
     out.tips.driveUpload = "Registered users can upload encrypted files by dragging and dropping them into their CryptDrive.";
+    out.tips.filenames = "You can rename files in your CryptDrive, this name is just for you.";
+    out.tips.drive = "Logged in users can organize their files in their CryptDrive, accessible from the CryptPad icon at the top left of all pads.";
 
     out.feedback_about = "If you're reading this, you were probably curious why CryptPad is requesting web pages when you perform certain actions";
     out.feedback_privacy = "We care about your privacy, and at the same time we want CryptPad to be very easy to use.  We use this file to figure out which UI features matter to our users, by requesting it along with a parameter specifying which action was taken.";

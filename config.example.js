@@ -82,23 +82,6 @@ module.exports = {
      */
     websocketPath: '/cryptpad_websocket',
 
-    /*  it is assumed that your websocket will bind to the same port as http
-     *  you can override this behaviour by supplying a number via websocketPort
-     */
-    //websocketPort: 3000,
-
-    /*  if you want to run a different version of CryptPad but using the same websocket
-     *  server, you should use the other server port as websocketPort and disable
-     *  the websockets on that server
-     */
-    //useExternalWebsocket: false,
-
-    /*  If CryptPad is proxied without using https, the server needs to know.
-     *  Specify 'useSecureWebsockets: true' so that it can send
-     *  Content Security Policy Headers that prevent http and https from mixing
-     */
-     useSecureWebsockets: false,
-
     /*  CryptPad can log activity to stdout
      *  This may be useful for debugging
      */
@@ -237,14 +220,6 @@ module.exports = {
      *  you can suppress them
      */
     suppressRPCErrors: false,
-
-
-    /* WARNING: EXPERIMENTAL
-     *
-     *  CryptPad features experimental support for encrypted file upload.
-     *  Our encryption format is still liable to change. As such, we do not
-     *  guarantee that files uploaded now will be supported in the future
-     */
 
     /*  Setting this value to anything other than true will cause file upload
      *  attempts to be rejected outright.

@@ -313,6 +313,10 @@ define([
                 if (!readOnly && !initializing) {
                     userDocStateDom.setAttribute("contenteditable", "true"); // lol wtf
                 }
+                $(userDocStateDom).find('script, applet, object, iframe').remove();
+                $(userDocStateDom).find('a').filter(function (i, x) {
+                    return ! /^(https|http|ftp):\/\/[^\s\n]*$/.test(x.getAttribute('href'));
+                }).remove();
                 var patch = (DD).diff(inner, userDocStateDom);
                 (DD).apply(inner, patch);
                 if (readOnly) {
@@ -625,8 +629,10 @@ define([
                         if (stringify(hjson2) !== stringify(hjson)) {
                             console.log('err');
                             console.error("shjson2 !== shjson");
-                            Cryptpad.errorLoadingScreen(Messages.wrongApp);
-                            throw new Error();
+                            // TODO(cjd): This is removed because the XSS filter in applyHjson()
+                            //            is applied on incoming content so it causes this to fail.
+                            //Cryptpad.errorLoadingScreen(Messages.wrongApp);
+                            //throw new Error();
                         }
                     }
                 } else {

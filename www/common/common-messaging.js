@@ -256,7 +256,7 @@ define([
             var $friend = ui.getFriend(curvePublic);
             var $chat = ui.getChannel(curvePublic);
             $friend.remove();
-            $chat.remove();
+            if ($chat) { $chat.remove(); }
             ui.showInfo();
         };
 
@@ -892,7 +892,7 @@ define([
     var addToFriendList = Msg.addToFriendList = function (common, data, cb) {
         var proxy = common.getProxy();
         var friends = getFriendList(proxy);
-        var pubKey = data.curvePublic;
+        var pubKey = data.curvePublic; // todo validata data
 
         if (pubKey === proxy.curvePublic) { return void cb("E_MYKEY"); }
 
@@ -938,7 +938,7 @@ define([
                     var todo = function (yes) {
                         if (yes) {
                             pending[sender] = msgData;
-                            msg = ["FRIEND_REQ_OK", chan, createData(common, msgData.channel)];
+                            msg = ["FRIEND_REQ_OK", chan, createData(proxy, msgData.channel)];
                         }
                         msgStr = Crypto.encrypt(JSON.stringify(msg), key);
                         network.sendto(sender, msgStr);
@@ -1005,7 +1005,7 @@ define([
         if (!parsed.hashData) { return; }
         // Message
         var chan = parsed.hashData.channel;
-        var myData = createData(common);
+        var myData = createData(common.getProxy());
         var msg = ["FRIEND_REQ", chan, myData];
         // Encryption
         var keyStr = parsed.hashData.key;

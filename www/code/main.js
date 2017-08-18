@@ -410,6 +410,7 @@ define([
                     }
                 });
 
+/*
                 // add the splitter
                 if (!$iframe.has('.cp-splitter').length) {
                     var $preview = $iframe.find('#previewContainer');
@@ -437,6 +438,7 @@ define([
                         });
                     });
                 }
+*/
 
                 Cryptpad.removeLoadingScreen();
                 setEditable(true);
