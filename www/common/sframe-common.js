@@ -112,7 +112,7 @@ define([
                 if (callback) {
                     button
                     .click(prepareFeedback(type))
-                    .click(UI.importContent('text/plain', function (content, file) {
+                    .click(Cryptpad.importContent('text/plain', function (content, file) {
                         callback(content, file);
                     }, {accept: data ? data.accept : undefined}));
                 }

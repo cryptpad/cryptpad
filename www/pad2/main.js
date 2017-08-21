@@ -528,6 +528,18 @@ define([
                 $('.cke_toolbox_main').hide();
             }
 
+            /* add an export button */
+            var $export = Cryptpad.createButton('export', true, {}, exportFile);
+            $drawer.append($export);
+
+            if (!readOnly) {
+                /* add an import button */
+                var $import = Cryptpad.createButton('import', true, {
+                    accept: 'text/html'
+                }, importFile);
+                $drawer.append($import);
+            }
+
             /* add a forget button */
             var forgetCb = function (err) {
                 if (err) { return; }
@@ -640,16 +652,16 @@ define([
             }
 
             /* add an export button */
-            var $export = Cryptpad.createButton('export', true, {}, exportFile);
+            /*var $export = Cryptpad.createButton('export', true, {}, exportFile);
             $drawer.append($export);
-
-            if (!readOnly) {
+*/
+            //if (!readOnly) {
                 /* add an import button */
-                var $import = Cryptpad.createButton('import', true, {
+            /*    var $import = Cryptpad.createButton('import', true, {
                     accept: 'text/html'
                 }, importFile);
                 $drawer.append($import);
-            }
+            }*/
 
             /* add a forget button */
 /*            var forgetCb = function (err) {
