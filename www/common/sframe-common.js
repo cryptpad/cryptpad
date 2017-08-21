@@ -8,8 +8,10 @@ define([
     '/common/sframe-common-history.js',
     '/common/metadata-manager.js',
 
+    '/customize/application_config.js',
     '/common/cryptpad-common.js'
-], function (nThen, Messages, CpNfInner, SFrameChannel, Title, UI, History, MetadataMgr, Cryptpad) {
+], function (nThen, Messages, CpNfInner, SFrameChannel, Title, UI, History, MetadataMgr,
+    AppConfig, Cryptpad) {
 
     // Chainpad Netflux Inner
     var funcs = {};
@@ -138,7 +140,7 @@ define([
                 }
                 break;
             case 'template':
-                //if (!AppConfig.enableTemplates) { return; }
+                if (!AppConfig.enableTemplates) { return; }
                 button = $('<button>', {
                     title: Messages.saveTemplateButton,
                 }).append($('<span>', {'class':'fa fa-bookmark', style: 'font:'+size+' FontAwesome'}));
@@ -214,10 +216,10 @@ define([
                 }
                 break;
             case 'history':
-                /*if (!AppConfig.enableHistory) {
+                if (!AppConfig.enableHistory) {
                     button = $('<span>');
                     break;
-                }*/
+                }
                 button = $('<button>', {
                     title: Messages.historyButton,
                     'class': "fa fa-history history",
