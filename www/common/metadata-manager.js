@@ -126,7 +126,7 @@ define([], function () {
                 var list = members.slice().filter(function (m) { return m.length === 32; });
                 return list.length - Object.keys(metadataObj.users).length;
             },
-            getPrivatedata : function () {
+            getPrivateData : function () {
                 return priv;
             },
             getNetfluxId : function () {

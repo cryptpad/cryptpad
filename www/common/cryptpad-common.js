@@ -1794,6 +1794,26 @@ define([
         return $userAdmin;
     };
 
+    common.getShareHashes = function (cb) {
+        common.getRecentPads(function (err, recent) {
+            var parsed = parsePadUrl(window.location.href);
+            if (!parsed.type || !parsed.hashData) { return void cb('E_INVALID_HREF'); }
+            var secret = common.getSecrets(parsed.type, parsed.hash);
+            var channel = common.base64ToHex(parsed.hashData.channel);
+            var hashes = common.getHashes(channel, secret);
+            var options = [];
+
+            // If we have a stronger version in drive, add it and add a redirect button
+            var stronger = recent && common.findStronger(null, recent);
+            if (stronger) {
+                var parsed = parsePadUrl(stronger);
+                hashes.editHash = parsed.hash;
+            }
+
+            cb(null, hashes);
+        });
+    };
+
     var CRYPTPAD_VERSION = 'cryptpad-version';
     var updateLocalVersion = function () {
         // Check for CryptPad updates

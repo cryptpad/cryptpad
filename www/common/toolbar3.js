@@ -153,24 +153,7 @@ define([
             return $.inArray(i, b) > -1;
         });
     };
-    var updateDisplayName = function (toolbar, config) {
-        // Change username in useradmin dropdown
-        var name = Cryptpad.getDisplayName();
-        if (config.displayed.indexOf('useradmin') !== -1) {
-            var $userAdminElement = toolbar.$userAdmin;
-            var $userElement = $userAdminElement.find('.' + USERNAME_CLS);
-            $userElement.show();
-            if (config.readOnly === 1) {
-                $userElement.addClass(READONLY_CLS).text(Messages.readonly);
-            }
-            else {
-                if (!name) {
-                    name = Messages.anonymous;
-                }
-                $userElement.removeClass(READONLY_CLS).text(name);
-            }
-        }
-    };
+
     var avatars = {};
     var updateUserList = function (toolbar, config) {
         // Make sure the elements are displayed
@@ -276,8 +259,6 @@ define([
         var fa_viewusers = '<span class="fa fa-eye"></span>';
         var $spansmall = $('<span>').html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
         $userButtons.find('.buttonTitle').html('').append($spansmall);
-
-        updateDisplayName(toolbar, config);
     };
 
     var initUserList = function (toolbar, config) {
@@ -300,8 +281,7 @@ define([
     // Create sub-elements
 
     var createUserList = function (toolbar, config) {
-        if (!config.metadataMgr) { /* || !config.userList.list ||
-            !config.userList.data || !config.userList.userNetfluxId) {*/
+        if (!config.metadataMgr) {
             throw new Error("You must provide a `metadataMgr` to display the userlist");
         }
         var $content = $('<div>', {'class': 'userlist-drawer'});
@@ -381,107 +361,92 @@ define([
     };
 
     var createShare = function (toolbar, config) {
-        var secret = Cryptpad.find(config, ['share', 'secret']);
-        var channel = Cryptpad.find(config, ['share', 'channel']);
-        if (!secret || !channel) {
-            throw new Error("Unable to display the share button: share.secret and share.channel required");
+        if (!config.metadataMgr) {
+            throw new Error("You must provide a `metadataMgr` to display the userlist");
         }
-        Cryptpad.getRecentPads(function (err, recent) {
-            var $shareIcon = $('<span>', {'class': 'fa fa-share-alt'});
-            var hashes = Cryptpad.getHashes(channel, secret);
-            var options = [];
+        var metadataMgr = config.metadataMgr;
+        var origin = config.metadataMgr.getPrivateData().origin;
+        var pathname = config.metadataMgr.getPrivateData().pathname;
+        var hashes = metadataMgr.getPrivateData().availableHashes;
+        var readOnly = metadataMgr.getPrivateData().readOnly;
 
-            // If we have a stronger version in drive, add it and add a redirect button
-            var stronger = recent && Cryptpad.findStronger(null, recent);
-            if (stronger) {
-                var parsed = Cryptpad.parsePadUrl(stronger);
-                hashes.editHash = parsed.hash;
-            }
+        var $shareIcon = $('<span>', {'class': 'fa fa-share-alt'});
+        var options = [];
 
-            if (hashes.editHash) {
+        if (hashes.editHash) {
+            options.push({
+                tag: 'a',
+                attributes: {title: Messages.editShareTitle, 'class': 'editShare'},
+                content: '<span class="fa fa-users"></span> ' + Messages.editShare
+            });
+            if (readOnly) {
+                // We're in view mode, display the "open editing link" button
                 options.push({
                     tag: 'a',
-                    attributes: {title: Messages.editShareTitle, 'class': 'editShare'},
-                    content: '<span class="fa fa-users"></span> ' + Messages.editShare
+                    attributes: {
+                        title: Messages.editOpenTitle,
+                        'class': 'editOpen',
+                        href: origin + pathname + '#' + hashes.editHash,
+                        target: '_blank'
+                    },
+                    content: '<span class="fa fa-users"></span> ' + Messages.editOpen
                 });
-                if (stronger) {
-                    // We're in view mode, display the "open editing link" button
-                    options.push({
-                        tag: 'a',
-                        attributes: {
-                            title: Messages.editOpenTitle,
-                            'class': 'editOpen',
-                            href: window.location.pathname + '#' + hashes.editHash,
-                            target: '_blank'
-                        },
-                        content: '<span class="fa fa-users"></span> ' + Messages.editOpen
-                    });
-                }
-                options.push({tag: 'hr'});
             }
-            if (hashes.viewHash) {
+            options.push({tag: 'hr'});
+        }
+        if (hashes.viewHash) {
+            options.push({
+                tag: 'a',
+                attributes: {title: Messages.viewShareTitle, 'class': 'viewShare'},
+                content: '<span class="fa fa-eye"></span> ' + Messages.viewShare
+            });
+            if (!readOnly) {
+                // We're in edit mode, display the "open readonly" button
                 options.push({
                     tag: 'a',
-                    attributes: {title: Messages.viewShareTitle, 'class': 'viewShare'},
-                    content: '<span class="fa fa-eye"></span> ' + Messages.viewShare
-                });
-                if (hashes.editHash && !stronger) {
-                    // We're in edit mode, display the "open readonly" button
-                    options.push({
-                        tag: 'a',
-                        attributes: {
-                            title: Messages.viewOpenTitle,
-                            'class': 'viewOpen',
-                            href: window.location.pathname + '#' + hashes.viewHash,
-                            target: '_blank'
-                        },
-                        content: '<span class="fa fa-eye"></span> ' + Messages.viewOpen
-                    });
-                }
-            }
-            if (hashes.fileHash) {
-                options.push({
-                    tag: 'a',
-                    attributes: {title: Messages.viewShareTitle, 'class': 'fileShare'},
-                    content: '<span class="fa fa-eye"></span> ' + Messages.viewShare
+                    attributes: {
+                        title: Messages.viewOpenTitle,
+                        'class': 'viewOpen',
+                        href: origin + pathname + '#' + hashes.viewHash,
+                        target: '_blank'
+                    },
+                    content: '<span class="fa fa-eye"></span> ' + Messages.viewOpen
                 });
             }
-            var dropdownConfigShare = {
-                text: $('<div>').append($shareIcon).html(),
-                options: options,
-                feedback: 'SHARE_MENU',
-            };
-            var $shareBlock = Cryptpad.createDropdown(dropdownConfigShare);
-            //$shareBlock.find('button').attr('id', 'shareButton');
-            $shareBlock.find('.dropdown-bar-content').addClass(SHARE_CLS).addClass(EDITSHARE_CLS).addClass(VIEWSHARE_CLS);
-            $shareBlock.addClass('shareButton');
-            $shareBlock.find('button').attr('title', Messages.shareButton);
+        }
+        var dropdownConfigShare = {
+            text: $('<div>').append($shareIcon).html(),
+            options: options,
+            feedback: 'SHARE_MENU',
+        };
+        var $shareBlock = Cryptpad.createDropdown(dropdownConfigShare);
+        $shareBlock.find('.dropdown-bar-content').addClass(SHARE_CLS).addClass(EDITSHARE_CLS).addClass(VIEWSHARE_CLS);
+        $shareBlock.addClass('shareButton');
+        $shareBlock.find('button').attr('title', Messages.shareButton);
 
-            if (hashes.editHash) {
-                $shareBlock.find('a.editShare').click(function () {
-                    var url = window.location.origin + window.location.pathname + '#' + hashes.editHash;
-                    var success = Cryptpad.Clipboard.copy(url);
-                    if (success) { Cryptpad.log(Messages.shareSuccess); }
-                });
-            }
-            if (hashes.viewHash) {
-                $shareBlock.find('a.viewShare').click(function () {
-                    var url = window.location.origin + window.location.pathname + '#' + hashes.viewHash ;
-                    var success = Cryptpad.Clipboard.copy(url);
-                    if (success) { Cryptpad.log(Messages.shareSuccess); }
-                });
-            }
-            if (hashes.fileHash) {
-                $shareBlock.find('a.fileShare').click(function () {
-                    var url = window.location.origin + window.location.pathname + '#' + hashes.fileHash ;
-                    var success = Cryptpad.Clipboard.copy(url);
-                    if (success) { Cryptpad.log(Messages.shareSuccess); }
-                });
-            }
+        if (hashes.editHash) {
+            $shareBlock.find('a.editShare').click(function () {
+                /*Common.storeLinkToClipboard(false, function (err) {
+                    if (!err) { Cryptpad.log(Messages.shareSuccess); }
+                });*/
+                var url = origin + pathname + '#' + hashes.editHash;
+                var success = Cryptpad.Clipboard.copy(url);
+                if (success) { Cryptpad.log(Messages.shareSuccess); }
+            });
+        }
+        if (hashes.viewHash) {
+            $shareBlock.find('a.viewShare').click(function () {
+                /*Common.storeLinkToClipboard(true, function (err) {
+                    if (!err) { Cryptpad.log(Messages.shareSuccess); }
+                });*/
+                var url = origin + pathname + '#' + hashes.viewHash;
+                var success = Cryptpad.Clipboard.copy(url);
+                if (success) { Cryptpad.log(Messages.shareSuccess); }
+            });
+        }
 
-            toolbar.$leftside.append($shareBlock);
-            toolbar.share = $shareBlock;
-        });
+        toolbar.$leftside.append($shareBlock);
+        toolbar.share = $shareBlock;
 
         return "Loading share button";
     };
@@ -738,11 +703,10 @@ define([
         return $limit;
     };
 
-    var createNewPad = function (toolbar) {
-        /*var $newPad = $('<span>', {
-            'class': NEWPAD_CLS + " dropdown-bar"
-        }).appendTo(toolbar.$top);*/
+    var createNewPad = function (toolbar, config) {
         var $newPad = toolbar.$top.find('.'+NEWPAD_CLS).show();
+
+        var origin = config.metadataMgr.getPrivateData().origin;
 
         var pads_options = [];
         Config.availablePadTypes.forEach(function (p) {
@@ -753,7 +717,7 @@ define([
                 tag: 'a',
                 attributes: {
                     'target': '_blank',
-                    'href': '/' + p + '/',
+                    'href': origin + '/' + p + '/',
                 },
                 content: $('<div>').append(Cryptpad.getIcon(p)).html() + Messages.type[p]
             });
@@ -777,10 +741,11 @@ define([
             throw new Error("You must provide a `metadataMgr` to display the user menu");
         }
         var metadataMgr = config.metadataMgr;
-        var myData = metadataMgr.getMetadata().users[metadataMgr.getNetfluxId()];
         var $userAdmin = toolbar.$userAdmin.find('.'+USERADMIN_CLS).show();
         var userMenuCfg = {
-            $initBlock: $userAdmin
+            $initBlock: $userAdmin,
+            metadataMgr: metadataMgr,
+            Common: Common
         };
         if (!config.hideDisplayName) {
             $.extend(true, userMenuCfg, {
@@ -792,44 +757,29 @@ define([
             userMenuCfg.displayName = 1;
             userMenuCfg.displayChangeName = 1;
         }
-        Cryptpad.createUserAdminMenu(userMenuCfg);
+        Common.createUserAdminMenu(userMenuCfg);
         $userAdmin.find('button').attr('title', Messages.userAccountButton);
 
-        // TODO iframe
         var $userButton = toolbar.$userNameButton = $userAdmin.find('a.' + USERBUTTON_CLS);
         $userButton.click(function (e) {
             e.preventDefault();
             e.stopPropagation();
-            var lastName = myData.displayName;
-            //Cryptpad.getLastName(function (err, lastName) {
-                //if (err) { return void console.error("Cannot get last name", err); }
-                Cryptpad.prompt(Messages.changeNamePrompt, lastName || '', function (newName) {
-                    if (newName === null && typeof(lastName) === "string") { return; }
-                    if (newName === null) { newName = ''; }
-                    else { Common.feedback('NAME_CHANGED'); }
-                    Common.setDisplayName(newName, function (err) {
-                        if (err) {
-                            console.log("Couldn't set username");
-                            console.error(err);
-                            return;
-                        }
-                        //Cryptpad.changeDisplayName(newName, true); Already done?
-                    });
+            var myData = metadataMgr.getMetadata().users[metadataMgr.getNetfluxId()];
+            var lastName = myData.name;
+            Cryptpad.prompt(Messages.changeNamePrompt, lastName || '', function (newName) {
+                if (newName === null && typeof(lastName) === "string") { return; }
+                if (newName === null) { newName = ''; }
+                else { Common.feedback('NAME_CHANGED'); }
+                Common.setDisplayName(newName, function (err) {
+                    if (err) {
+                        console.log("Couldn't set username");
+                        console.error(err);
+                        return;
+                    }
+                    //Cryptpad.changeDisplayName(newName, true); Already done?
                 });
-            //});
+            });
         });
-        Cryptpad.onDisplayNameChanged(function () {
-            window.setTimeout(function () {
-                Cryptpad.findCancelButton().click();
-                if (config.metadataMgr) {
-                    updateUserList(toolbar, config);
-                    return;
-                }
-                updateDisplayName(toolbar, config);
-            }, 0);
-        });
-
-        updateDisplayName(toolbar, config);
 
         return $userAdmin;
     };
@@ -837,7 +787,9 @@ define([
     // Events
     var initClickEvents = function (toolbar, config) {
         var removeDropdowns =  function () {
-            toolbar.$toolbar.find('.cryptpad-dropdown').hide();
+            window.setTimeout(function () {
+                toolbar.$toolbar.find('.cryptpad-dropdown').hide();
+            });
         };
         var cancelEditTitle = function (e) {
             // Now we want to apply the title even if we click somewhere else
@@ -886,7 +838,7 @@ define([
                         Cryptpad.log(Messages._getKey("notifyJoined", [name]));
                         break;
                     case 0:
-                        oldname = (oldname === "") ? Messages.anonymous : oldname;
+                        oldname = (!oldname) ? Messages.anonymous : oldname;
                         Cryptpad.log(Messages._getKey("notifyRenamed", [oldname, name]));
                         break;
                     case -1:
@@ -988,14 +940,14 @@ define([
         // Create the subelements
         var tb = {};
         tb['userlist'] = createUserList;
-        tb['share'] = createShare;
-        tb['fileshare'] = createFileShare;
+        tb['share'] = createShare; //TODO
+        tb['fileshare'] = createFileShare;//TODO
         tb['title'] = createTitle;
-        tb['pageTitle'] = createPageTitle;
+        tb['pageTitle'] = createPageTitle;//TODO
         tb['lag'] = $.noop;
         tb['spinner'] = createSpinner;
         tb['state'] = $.noop;
-        tb['limit'] = createLimit;
+        tb['limit'] = createLimit; // TODO
         tb['upgrade'] = $.noop;
         tb['newpad'] = createNewPad;
         tb['useradmin'] = createUserAdmin;

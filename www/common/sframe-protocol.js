@@ -44,4 +44,14 @@ define({
 
     // Update the user's display-name which will be shown to contacts and people in the same pads.
     'Q_SETTINGS_SET_DISPLAY_NAME': true,
+
+    // Log the user out in all the tabs
+    'Q_LOGOUT': true,
+
+    // When moving to the login or register page from a pad, we need to redirect to that pad at the
+    // end of the login process. This query set the current href to the sessionStorage.
+    'Q_SET_LOGIN_REDIRECT': true,
+
+    // Store the editing or readonly link of the current pad to the clipboard (share button)
+    'Q_STORE_LINK_TO_CLIPBOARD': true,
 });

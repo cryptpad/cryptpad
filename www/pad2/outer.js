@@ -21,6 +21,7 @@ define([
     ], function (SFrameChannel, CpNfOuter, nThen, Cryptpad, Crypto) {
         console.log('xxx');
         var sframeChan;
+        var hashes;
         nThen(function (waitFor) {
             $(waitFor());
         }).nThen(function (waitFor) {
@@ -29,6 +30,8 @@ define([
                 console.log('sframe initialized');
             }));
             Cryptpad.ready(waitFor());
+        }).nThen(function (waitFor) {
+            Cryptpad.getShareHashes(waitFor(function (err, h) { hashes = h; }));
         }).nThen(function (waitFor) {
             var secret = Cryptpad.getSecrets();
             var readOnly = secret.keys && !secret.keys.editKeyStr;
@@ -61,7 +64,11 @@ define([
                             netfluxId: Cryptpad.getNetwork().webChannels[0].myID,
                         },
                         priv: {
-                            accountName: Cryptpad.getAccountName()
+                            accountName: Cryptpad.getAccountName(),
+                            origin: window.location.origin,
+                            pathname: window.location.pathname,
+                            readOnly: readOnly,
+                            availableHashes: hashes
                         }
                     });
                 });
@@ -94,6 +101,15 @@ define([
                     Cryptpad.changeDisplayName(newName, true);
                     cb();
                 });
+            });
+
+            sframeChan.on('Q_LOGOUT', function (data, cb) {
+                Cryptpad.logout(cb);
+            });
+
+            sframeChan.on('Q_SET_LOGIN_REDIRECT', function (data, cb) {
+                sessionStorage.redirectTo = window.location.href;
+                cb();
             });
 
             CpNfOuter.start({
