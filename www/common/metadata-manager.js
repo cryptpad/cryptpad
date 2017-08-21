@@ -36,7 +36,6 @@ define([], function () {
             // We don't want to add our user data to the object multiple times.
             //var containsYou = false;
             //console.log(metadataObj);
-            console.log(metadataObj.users);
             Object.keys(metadataObj.users).forEach(function (x) {
                 if (members.indexOf(x) === -1) { return; }
                 mdo[x] = metadataObj.users[x];

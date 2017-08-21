@@ -829,6 +829,13 @@ define([
         });
     };
 
+    // SFRAME: talk to anon_rpc from the iframe
+    common.anonRpcMsg = function (msg, data, cb) {
+        if (!msg) { return; }
+        if (!anon_rpc) { return void cb('ANON_RPC_NOT_READY'); }
+        anon_rpc.send(msg, data, cb);
+    };
+
     common.getFileSize = function (href, cb) {
         if (!anon_rpc) { return void cb('ANON_RPC_NOT_READY'); }
         //if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
@@ -1256,7 +1263,7 @@ define([
       }
       return arr;
     };
-    var getFirstEmojiOrCharacter = function (str) {
+    var getFirstEmojiOrCharacter = common.getFirstEmojiOrCharacter = function (str) {
       if (!str || !str.trim()) { return '?'; }
       var emojis = emojiStringToArray(str);
       return isEmoji(emojis[0])? emojis[0]: str[0];
@@ -1645,6 +1652,7 @@ define([
         return $block;
     };
 
+    // SFRAME: moved to sframe-common-interface.js
     common.createUserAdminMenu = function (config) {
         var $displayedName = $('<span>', {'class': config.displayNameCls || 'displayName'});
         var accountName = localStorage[common.userNameKey];

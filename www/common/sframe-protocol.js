@@ -54,4 +54,7 @@ define({
 
     // Store the editing or readonly link of the current pad to the clipboard (share button)
     'Q_STORE_LINK_TO_CLIPBOARD': true,
+
+    // Use anonymous rpc from inside the iframe (for avatars & pin usage)
+    'Q_ANON_RPC_MESSAGE': true,
 });

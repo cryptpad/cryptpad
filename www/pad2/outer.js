@@ -84,6 +84,12 @@ define([
                 }
             });
 
+            sframeChan.on('Q_ANON_RPC_MESSAGE', function (data, cb) {
+                Cryptpad.anonRpcMsg(data.msg, data.content, function (err, response) {
+                    cb({error: err, response: response});
+                });
+            });
+
             sframeChan.on('Q_SET_PAD_TITLE_IN_DRIVE', function (newTitle, cb) {
                 Cryptpad.renamePad(newTitle, undefined, function (err) {
                     if (err) { cb('ERROR'); } else { cb(); }

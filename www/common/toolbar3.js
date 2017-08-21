@@ -234,7 +234,7 @@ define([
                 $span.append(avatars[data.avatar]);
                 $span.append($rightCol);
             } else {
-                Cryptpad.displayAvatar($span, data.avatar, name, function ($img) {
+                Common.displayAvatar(Common, $span, data.avatar, name, function ($img) {
                     if (data.avatar && $img) {
                         avatars[data.avatar] = $img[0].outerHTML;
                     }

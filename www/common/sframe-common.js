@@ -34,6 +34,7 @@ define([
 
     // UI
     funcs.createUserAdminMenu = UI.createUserAdminMenu;
+    funcs.displayAvatar = UI.displayAvatar;
 
     // Title module
     funcs.createTitle = Title.create;
@@ -42,8 +43,6 @@ define([
         if (!ctx.cpNfInner) { throw new Error("cpNfInner is not ready!"); }
         return ctx.cpNfInner.metadataMgr.getMetadata().defaultTitle;
     };
-
-
 
     funcs.setDisplayName = function (name, cb) {
         ctx.sframeChan.query('Q_SETTINGS_SET_DISPLAY_NAME', name, function (err) {
@@ -60,6 +59,15 @@ define([
     funcs.setLoginRedirect = function (cb) {
         ctx.sframeChan.query('Q_SET_LOGIN_REDIRECT', null, function (err) {
             if (cb) { cb(err); }
+        });
+    };
+
+    funcs.sendAnonRpcMsg = function (msg, content, cb) {
+        ctx.sframeChan.query('Q_ANON_RPC_MESSAGE', {
+            msg: msg,
+            content: content
+        }, function (err, data) {
+            if (cb) { cb(data); }
         });
     };
 

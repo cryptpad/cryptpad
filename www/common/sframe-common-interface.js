@@ -1,9 +1,106 @@
 define([
     'jquery',
-    '/common/cryptpad-common.js'
-], function ($, Cryptpad) {
+    '/common/cryptpad-common.js',
+    '/common/media-tag.js',
+], function ($, Cryptpad, MediaTag) {
     var UI = {};
     var Messages = Cryptpad.Messages;
+
+    /**
+     * Requirements from cryptpad-common.js
+     * getFileSize
+     *  - hrefToHexChannelId
+     * displayAvatar
+     *  - getFirstEmojiOrCharacter
+     *  - parsePadUrl
+     *  - getSecrets
+     *  - base64ToHex
+     *  - getBlobPathFromHex
+     *  - bytesToMegabytes
+     * createUserAdminMenu
+     *  - fixHTML
+     *  - createDropdown
+    */
+
+    UI.getFileSize = function (Common, href, cb) {
+        var channelId = Cryptpad.hrefToHexChannelId(href);
+        Common.sendAnonRpcMsg("GET_FILE_SIZE", channelId, function (data) {
+            if (!data) { return void cb("No response"); }
+            if (data.error) { return void cb(data.error); }
+            if (data.response && data.response.length && typeof(data.response[0]) === 'number') {
+                return void cb(void 0, data.response[0]);
+            } else {
+                cb('INVALID_RESPONSE');
+            }
+        });
+    };
+
+    UI.displayAvatar = function (Common, $container, href, name, cb) {
+        var MutationObserver = window.MutationObserver;
+        var displayDefault = function () {
+            var text = Cryptpad.getFirstEmojiOrCharacter(name);
+            var $avatar = $('<span>', {'class': 'default'}).text(text);
+            $container.append($avatar);
+            if (cb) { cb(); }
+        };
+
+        if (!href) { return void displayDefault(); }
+        var parsed = Cryptpad.parsePadUrl(href);
+        var secret = Cryptpad.getSecrets('file', parsed.hash);
+        if (secret.keys && secret.channel) {
+            var cryptKey = secret.keys && secret.keys.fileKeyStr;
+            var hexFileName = Cryptpad.base64ToHex(secret.channel);
+            var src = Cryptpad.getBlobPathFromHex(hexFileName);
+            UI.getFileSize(Common, href, function (e, data) {
+                if (e) {
+                    displayDefault();
+                    return void console.error(e);
+                }
+                if (typeof data !== "number") { return void displayDefault(); }
+                if (Cryptpad.bytesToMegabytes(data) > 0.5) { return void displayDefault(); }
+                var $img = $('<media-tag>').appendTo($container);
+                $img.attr('src', src);
+                $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
+                var observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.type === 'childList' && mutation.addedNodes.length) {
+                            if (mutation.addedNodes.length > 1 ||
+                                mutation.addedNodes[0].nodeName !== 'IMG') {
+                                $img.remove();
+                                return void displayDefault();
+                            }
+                            var $image = $img.find('img');
+                            var onLoad = function () {
+                                var img = new Image();
+                                img.onload = function () {
+                                    var w = img.width;
+                                    var h = img.height;
+                                    if (w>h) {
+                                        $image.css('max-height', '100%');
+                                        $img.css('flex-direction', 'column');
+                                        if (cb) { cb($img); }
+                                        return;
+                                    }
+                                    $image.css('max-width', '100%');
+                                    $img.css('flex-direction', 'row');
+                                    if (cb) { cb($img); }
+                                };
+                                img.src = $image.attr('src');
+                            };
+                            if ($image[0].complete) { onLoad(); }
+                            $image.on('load', onLoad);
+                        }
+                    });
+                });
+                observer.observe($img[0], {
+                    attributes: false,
+                    childList: true,
+                    characterData: false
+                });
+                MediaTag($img[0]);
+            });
+        }
+    };
 
     UI.createUserAdminMenu = function (config) {
         var Common = config.Common;
@@ -118,10 +215,9 @@ define([
             var newName = myData.name;
             var url = myData.avatar;
             $displayName.text(newName || Messages.anonymous);
-            console.log(newName || Messages.anonymous);
             if (accountName) {
                 $avatar.html('');
-                Cryptpad.displayAvatar($avatar, url, newName, function ($img) {
+                UI.displayAvatar(Common, $avatar, url, newName, function ($img) {
                     if ($img) {
                         $userAdmin.find('button').addClass('avatar');
                     }
