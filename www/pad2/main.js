@@ -486,6 +486,7 @@ define([
             Title.setToolbar(toolbar);
 
             var $rightside = toolbar.$rightside;
+            var $drawer = toolbar.$drawer;
 
             var src = 'less!/customize/src/less/toolbar.less';
             require([
@@ -524,6 +525,13 @@ define([
                 $rightside.append($collapse);
             }
 
+            /* add a forget button */
+            var forgetCb = function (err) {
+                if (err) { return; }
+                setEditable(false);
+            };
+            var $forgetPad = common.createButton('forget', true, {}, forgetCb);
+            $rightside.append($forgetPad);
             // TODO
 
             return;
@@ -572,7 +580,6 @@ define([
             //Title.setToolbar(toolbar);
 
             //var $rightside = toolbar.$rightside;
-            var $drawer = toolbar.$drawer;
 
             var editHash;
 
@@ -642,15 +649,15 @@ define([
             }
 
             /* add a forget button */
-            var forgetCb = function (err) {
+/*            var forgetCb = function (err) {
                 if (err) { return; }
                 setEditable(false);
             };
             var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
             $rightside.append($forgetPad);
-
+*/
             // set the hash
-            if (!readOnly) { Cryptpad.replaceHash(editHash); }
+            //if (!readOnly) { Cryptpad.replaceHash(editHash); }
         };
 
         // this should only ever get called once, when the chain syncs

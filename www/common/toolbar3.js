@@ -75,8 +75,6 @@ define([
         .append($('<div>', {'class': RIGHTSIDE_CLS}))
         .append($('<div>', {'class': HISTORY_CLS}));
 
-        // TODO
-        /*
         var $rightside = $toolbar.find('.'+RIGHTSIDE_CLS);
         if (!config.hideDrawer) {
             var $drawerContent = $('<div>', {
@@ -104,7 +102,7 @@ define([
                 $drawerContent.hide();
             };
             $drawerContent.blur(onBlur);
-        }*/
+        }
 
         // The 'notitle' class removes the line added for the title with a small screen
         if (!config.title || typeof config.title !== "object") {

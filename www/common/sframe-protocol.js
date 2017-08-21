@@ -62,4 +62,6 @@ define({
     // display a warning
     'Q_GET_PIN_LIMIT_STATUS': true,
 
+    // Move a pad to the trash using the forget button
+    'Q_MOVE_TO_TRASH': true,
 });

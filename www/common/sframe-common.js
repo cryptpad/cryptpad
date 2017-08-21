@@ -1,12 +1,14 @@
 define([
     '/bower_components/nthen/index.js',
+    '/customize/messages.js',
     '/common/sframe-chainpad-netflux-inner.js',
     '/common/sframe-channel.js',
     '/common/sframe-common-title.js',
     '/common/sframe-common-interface.js',
     '/common/metadata-manager.js',
 
-], function (nThen, CpNfInner, SFrameChannel, Title, UI, MetadataMgr) {
+    '/common/cryptpad-common.js'
+], function (nThen, Messages, CpNfInner, SFrameChannel, Title, UI, MetadataMgr, Cryptpad) {
 
     // Chainpad Netflux Inner
     var funcs = {};
@@ -21,7 +23,7 @@ define([
         return ctx.cpNfInner;
     };
 
-    funcs.isLoggedIn = function () {
+    var isLoggedIn = funcs.isLoggedIn = function () {
         if (!ctx.cpNfInner) { throw new Error("cpNfInner is not ready!"); }
         return ctx.cpNfInner.metadataMgr.getPrivateData().accountName;
     };
@@ -77,16 +79,169 @@ define([
         });
     };
 
+    // TODO
+
+    funcs.feedback = function () {};
+    var prepareFeedback = function () {};
+
+    // BUTTONS
+    var isStrongestStored = function () {
+        var data = ctx.metadataMgr.getPrivateData();
+        return !data.readOnly || !data.availableHashes.editHash;
+    };
+    funcs.createButton = function (type, rightside, data, callback) {
+        var button;
+        var size = "17px";
+        switch (type) {
+            case 'export':
+                button = $('<button>', {
+                    'class': 'fa fa-download',
+                    title: Messages.exportButtonTitle,
+                }).append($('<span>', {'class': 'drawer'}).text(Messages.exportButton));
+
+                button.click(prepareFeedback(type));
+                if (callback) {
+                    button.click(callback);
+                }
+                break;
+            case 'import':
+                button = $('<button>', {
+                    'class': 'fa fa-upload',
+                    title: Messages.importButtonTitle,
+                }).append($('<span>', {'class': 'drawer'}).text(Messages.importButton));
+                if (callback) {
+                    button
+                    .click(prepareFeedback(type))
+                    .click(UI.importContent('text/plain', function (content, file) {
+                        callback(content, file);
+                    }, {accept: data ? data.accept : undefined}));
+                }
+                break;
+            case 'template':
+                if (!AppConfig.enableTemplates) { return; }
+                button = $('<button>', {
+                    title: Messages.saveTemplateButton,
+                }).append($('<span>', {'class':'fa fa-bookmark', style: 'font:'+size+' FontAwesome'}));
+                if (data.rt && data.Crypt) {
+                    button
+                    .click(function () {
+                        var title = data.getTitle() || document.title;
+                        var todo = function (val) {
+                            if (typeof(val) !== "string") { return; }
+                            var toSave = data.rt.getUserDoc();
+                            if (val.trim()) {
+                                val = val.trim();
+                                title = val;
+                                try {
+                                    var parsed = JSON.parse(toSave);
+                                    var meta;
+                                    if (Array.isArray(parsed) && typeof(parsed[3]) === "object") {
+                                        meta = parsed[3].metadata; // pad
+                                    } else if (parsed.info) {
+                                        meta = parsed.info; // poll
+                                    } else {
+                                        meta = parsed.metadata;
+                                    }
+                                    if (typeof(meta) === "object") {
+                                        meta.title = val;
+                                        meta.defaultTitle = val;
+                                        delete meta.users;
+                                    }
+                                    toSave = JSON.stringify(parsed);
+                                } catch(e) {
+                                    console.error("Parse error while setting the title", e);
+                                }
+                            }
+                            var p = parsePadUrl(window.location.href);
+                            if (!p.type) { return; }
+                            var hash = createRandomHash();
+                            var href = '/' + p.type + '/#' + hash;
+                            data.Crypt.put(hash, toSave, function (e) {
+                                if (e) { throw new Error(e); }
+                                common.addTemplate(makePad(href, title));
+                                whenRealtimeSyncs(getStore().getProxy().info.realtime, function () {
+                                    common.alert(Messages.templateSaved);
+                                    common.feedback('TEMPLATE_CREATED');
+                                });
+                            });
+                        };
+                        common.prompt(Messages.saveTemplatePrompt, title || document.title, todo);
+                    });
+                }
+                break;
+            case 'forget':
+                button = $('<button>', {
+                    id: 'cryptpad-forget',
+                    title: Messages.forgetButtonTitle,
+                    'class': "fa fa-trash cryptpad-forget",
+                    style: 'font:'+size+' FontAwesome'
+                });
+                if (!isStrongestStored()) {
+                    button.addClass('hidden');
+                }
+                if (callback) {
+                    button
+                    .click(prepareFeedback(type))
+                    .click(function() {
+                        var msg = isLoggedIn() ? Messages.forgetPrompt : Messages.fm_removePermanentlyDialog;
+                        Cryptpad.confirm(msg, function (yes) {
+                            if (!yes) { return; }
+                            ctx.sframeChan.query('Q_MOVE_TO_TRASH', null, function (err) {
+                                if (err) { return void callback(err); }
+                                var cMsg = isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
+                                Cryptpad.alert(cMsg, undefined, true);
+                                callback();
+                                return;
+                            });
+                        });
+
+                    });
+                }
+                break;
+            case 'history':
+                if (!AppConfig.enableHistory) {
+                    button = $('<span>');
+                    break;
+                }
+                button = $('<button>', {
+                    title: Messages.historyButton,
+                    'class': "fa fa-history history",
+                }).append($('<span>', {'class': 'drawer'}).text(Messages.historyText));
+                if (data.histConfig) {
+                    button
+                    .click(prepareFeedback(type))
+                    .on('click', function () {
+                        common.getHistory(data.histConfig);
+                    });
+                }
+                break;
+            case 'more':
+                button = $('<button>', {
+                    title: Messages.moreActions || 'TODO',
+                    'class': "drawer-button fa fa-ellipsis-h",
+                    style: 'font:'+size+' FontAwesome'
+                });
+                break;
+            default:
+                button = $('<button>', {
+                    'class': "fa fa-question",
+                    style: 'font:'+size+' FontAwesome'
+                })
+                .click(prepareFeedback(type));
+        }
+        if (rightside) {
+            button.addClass('rightside-button');
+        }
+        return button;
+        
+    };
 /*    funcs.storeLinkToClipboard = function (readOnly, cb) {
         ctx.sframeChan.query('Q_STORE_LINK_TO_CLIPBOARD', readOnly, function (err) {
             if (cb) { cb(err); }
         });
     };
 */
-    // TODO
-
-    funcs.feedback = function () {};
-
+    
     Object.freeze(funcs);
     return { create: function (cb) {
         nThen(function (waitFor) {

@@ -1039,6 +1039,28 @@ define([
         };
     };
 
+    // Forget button
+    var moveToTrash = common.moveToTrash = function (cb) {
+        var href = window.location.href;
+        common.forgetPad(href, function (err) {
+            if (err) {
+                console.log("unable to forget pad");
+                console.error(err);
+                cb(err, null);
+                return;
+            }
+            var n = getNetwork();
+            var r = getRealtime();
+            if (n && r) {
+                whenRealtimeSyncs(r, function () {
+                    n.disconnect();
+                    cb();
+                });
+            } else {
+                cb();
+            }
+        });
+    };
     common.createButton = function (type, rightside, data, callback) {
         var button;
         var size = "17px";
@@ -1164,25 +1186,11 @@ define([
                         var msg = isLoggedIn() ? Messages.forgetPrompt : Messages.fm_removePermanentlyDialog;
                         common.confirm(msg, function (yes) {
                             if (!yes) { return; }
-                            common.forgetPad(href, function (err) {
-                                if (err) {
-                                    console.log("unable to forget pad");
-                                    console.error(err);
-                                    callback(err, null);
-                                    return;
-                                }
-                                var n = getNetwork();
-                                var r = getRealtime();
-                                if (n && r) {
-                                    whenRealtimeSyncs(r, function () {
-                                        n.disconnect();
-                                        callback();
-                                    });
-                                } else {
-                                    callback();
-                                }
+                            moveToTrash(function (err) {
+                                if (err) { return void callback(err); }
                                 var cMsg = isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
                                 common.alert(cMsg, undefined, true);
+                                callback();
                                 return;
                             });
                         });

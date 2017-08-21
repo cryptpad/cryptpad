@@ -1157,6 +1157,7 @@ define([
             if (!href) { return $icon; }
 
             if (href.indexOf('/pad/') !== -1) { $icon = Cryptpad.getIcon('pad'); }
+            else if (href.indexOf('/pad2/') !== -1) { $icon = Cryptpad.getIcon('pad'); } // SFRAME
             else if (href.indexOf('/code/') !== -1) { $icon = Cryptpad.getIcon('code'); }
             else if (href.indexOf('/slide/') !== -1) { $icon = Cryptpad.getIcon('slide'); }
             else if (href.indexOf('/poll/') !== -1) { $icon = Cryptpad.getIcon('poll'); }

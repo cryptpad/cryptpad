@@ -132,6 +132,10 @@ define([
                 });
             });
 
+            sframeChan.on('Q_MOVE_TO_TRASH', function (data, cb) {
+                Cryptpad.moveToTrash(cb);
+            });
+
             CpNfOuter.start({
                 sframeChan: sframeChan,
                 channel: secret.channel,
