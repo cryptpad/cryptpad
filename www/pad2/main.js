@@ -528,6 +528,17 @@ define([
                 $('.cke_toolbox_main').hide();
             }
 
+            /* add a history button */
+            var histConfig = {
+                onLocal: realtimeOptions.onLocal,
+                onRemote: realtimeOptions.onRemote,
+                setHistory: setHistory,
+                applyVal: function (val) { applyHjson(val || '["BODY",{},[]]'); },
+                $toolbar: $bar
+            };
+            var $hist = common.createButton('history', true, {histConfig: histConfig});
+            $drawer.append($hist);
+
             /* add an export button */
             var $export = Cryptpad.createButton('export', true, {}, exportFile);
             $drawer.append($export);

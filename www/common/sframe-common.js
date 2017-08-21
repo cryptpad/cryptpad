@@ -5,14 +5,17 @@ define([
     '/common/sframe-channel.js',
     '/common/sframe-common-title.js',
     '/common/sframe-common-interface.js',
+    '/common/sframe-common-history.js',
     '/common/metadata-manager.js',
 
     '/common/cryptpad-common.js'
-], function (nThen, Messages, CpNfInner, SFrameChannel, Title, UI, MetadataMgr, Cryptpad) {
+], function (nThen, Messages, CpNfInner, SFrameChannel, Title, UI, History, MetadataMgr, Cryptpad) {
 
     // Chainpad Netflux Inner
     var funcs = {};
     var ctx = {};
+
+    funcs.Messages = Messages;
 
     funcs.startRealtime = function (options) {
         if (ctx.cpNfInner) { return ctx.cpNfInner; }
@@ -21,6 +24,13 @@ define([
         ctx.cpNfInner = CpNfInner.start(options);
         ctx.cpNfInner.metadataMgr.onChangeLazy(options.onLocal);
         return ctx.cpNfInner;
+    };
+
+    funcs.getMetadataMgr = function () {
+        return ctx.metadataMgr;
+    };
+    funcs.getCryptpadCommon = function () {
+        return Cryptpad;
     };
 
     var isLoggedIn = funcs.isLoggedIn = function () {
@@ -37,6 +47,9 @@ define([
     // UI
     funcs.createUserAdminMenu = UI.createUserAdminMenu;
     funcs.displayAvatar = UI.displayAvatar;
+
+    // History
+    funcs.getHistory = function (config) { return History.create(funcs, config); };
 
     // Title module
     funcs.createTitle = Title.create;
@@ -77,6 +90,13 @@ define([
         ctx.sframeChan.query('Q_GET_PIN_LIMIT_STATUS', null, function (err, data) {
             cb(data.error, data.overLimit, data.limits);
         });
+    };
+
+    funcs.getFullHistory = function (realtime, cb) {
+        ctx.sframeChan.on('EV_RT_HIST_MESSAGE', function (content) {
+            realtime.message(content);
+        });
+        ctx.sframeChan.query('Q_GET_FULL_HISTORY', null, cb);
     };
 
     // TODO
@@ -199,10 +219,10 @@ define([
                 }
                 break;
             case 'history':
-                if (!AppConfig.enableHistory) {
+                /*if (!AppConfig.enableHistory) {
                     button = $('<span>');
                     break;
-                }
+                }*/
                 button = $('<button>', {
                     title: Messages.historyButton,
                     'class': "fa fa-history history",
@@ -211,7 +231,7 @@ define([
                     button
                     .click(prepareFeedback(type))
                     .on('click', function () {
-                        common.getHistory(data.histConfig);
+                        funcs.getHistory(data.histConfig);
                     });
                 }
                 break;
