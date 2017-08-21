@@ -1,8 +1,9 @@
 define([
     '/api/config',
     'jquery',
-    '/common/requireconfig.js'
-], function (ApiConfig, $, RequireConfig) {
+    '/common/requireconfig.js',
+    '/common/cryptget.js'
+], function (ApiConfig, $, RequireConfig, Cryptget) {
     $(function () {
         var req = {
             cfg: RequireConfig,
@@ -134,6 +135,11 @@ define([
 
             sframeChan.on('Q_MOVE_TO_TRASH', function (data, cb) {
                 Cryptpad.moveToTrash(cb);
+            });
+
+
+            sframeChan.on('Q_SAVE_AS_TEMPLATE', function (data, cb) {
+                Cryptpad.saveAsTemplate(Cryptget.put, data, cb);
             });
 
             sframeChan.on('Q_GET_FULL_HISTORY', function (data, cb) {

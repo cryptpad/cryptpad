@@ -1061,6 +1061,19 @@ define([
             }
         });
     };
+    var saveAsTemplate = common.saveAsTemplate = function (Cryptput, data, cb) {
+        var p = parsePadUrl(window.location.href);
+        if (!p.type) { return; }
+        var hash = createRandomHash();
+        var href = '/' + p.type + '/#' + hash;
+        Cryptput(hash, data.toSave, function (e) {
+            if (e) { throw new Error(e); }
+            common.addTemplate(makePad(href, data.title));
+            whenRealtimeSyncs(getStore().getProxy().info.realtime, function () {
+                cb();
+            });
+        });
+    };
     common.createButton = function (type, rightside, data, callback) {
         var button;
         var size = "17px";
@@ -1149,17 +1162,12 @@ define([
                                     console.error("Parse error while setting the title", e);
                                 }
                             }
-                            var p = parsePadUrl(window.location.href);
-                            if (!p.type) { return; }
-                            var hash = createRandomHash();
-                            var href = '/' + p.type + '/#' + hash;
-                            data.Crypt.put(hash, toSave, function (e) {
-                                if (e) { throw new Error(e); }
-                                common.addTemplate(makePad(href, title));
-                                whenRealtimeSyncs(getStore().getProxy().info.realtime, function () {
-                                    common.alert(Messages.templateSaved);
-                                    common.feedback('TEMPLATE_CREATED');
-                                });
+                            saveAsTemplate(data.Crypt.put, {
+                                title: title,
+                                toSave: toSave
+                            }, function () {
+                                common.alert(Messages.templateSaved);
+                                common.feedback('TEMPLATE_CREATED');
                             });
                         };
                         common.prompt(Messages.saveTemplatePrompt, title || document.title, todo);

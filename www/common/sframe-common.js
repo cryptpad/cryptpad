@@ -138,11 +138,11 @@ define([
                 }
                 break;
             case 'template':
-                if (!AppConfig.enableTemplates) { return; }
+                //if (!AppConfig.enableTemplates) { return; }
                 button = $('<button>', {
                     title: Messages.saveTemplateButton,
                 }).append($('<span>', {'class':'fa fa-bookmark', style: 'font:'+size+' FontAwesome'}));
-                if (data.rt && data.Crypt) {
+                if (data.rt) {
                     button
                     .click(function () {
                         var title = data.getTitle() || document.title;
@@ -172,20 +172,15 @@ define([
                                     console.error("Parse error while setting the title", e);
                                 }
                             }
-                            var p = parsePadUrl(window.location.href);
-                            if (!p.type) { return; }
-                            var hash = createRandomHash();
-                            var href = '/' + p.type + '/#' + hash;
-                            data.Crypt.put(hash, toSave, function (e) {
-                                if (e) { throw new Error(e); }
-                                common.addTemplate(makePad(href, title));
-                                whenRealtimeSyncs(getStore().getProxy().info.realtime, function () {
-                                    common.alert(Messages.templateSaved);
-                                    common.feedback('TEMPLATE_CREATED');
-                                });
+                            ctx.sframeChan.query('Q_SAVE_AS_TEMPLATE', {
+                                title: title,
+                                toSave: toSave
+                            }, function () {
+                                Cryptpad.alert(Messages.templateSaved);
+                                funcs.feedback('TEMPLATE_CREATED');
                             });
                         };
-                        common.prompt(Messages.saveTemplatePrompt, title || document.title, todo);
+                        Cryptpad.prompt(Messages.saveTemplatePrompt, title, todo);
                     });
                 }
                 break;

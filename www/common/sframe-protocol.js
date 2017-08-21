@@ -69,5 +69,9 @@ define({
     // Callback is called when the FULL_HISTORY_END message is received in the outside.
     'Q_GET_FULL_HISTORY': true,
     // When a (full) history message is received from the server.
-    'EV_RT_HIST_MESSAGE': true
+    'EV_RT_HIST_MESSAGE': true,
+
+    // Save a pad as a template using the toolbar button
+    'Q_SAVE_AS_TEMPLATE': true,
+
 });

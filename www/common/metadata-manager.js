@@ -32,6 +32,8 @@ define([], function () {
                 };
                 metadataLazyObj = JSON.parse(JSON.stringify(metadataObj));
             }
+            if (!metadataObj.users) { metadataObj.users = {}; }
+            if (!metadataLazyObj.users) { metadataLazyObj.users = {}; }
             var mdo = {};
             // We don't want to add our user data to the object multiple times.
             //var containsYou = false;

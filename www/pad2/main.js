@@ -539,6 +539,15 @@ define([
             var $hist = common.createButton('history', true, {histConfig: histConfig});
             $drawer.append($hist);
 
+            //if (!Cryptpad.isTemplate(window.location.href)) {
+                var templateObj = {
+                    rt: info.realtime,
+                    getTitle: function () { return metadataMgr.getMetadata().title; }
+                };
+                var $templateButton = common.createButton('template', true, templateObj);
+                $rightside.append($templateButton);
+            //}
+
             /* add an export button */
             var $export = Cryptpad.createButton('export', true, {}, exportFile);
             $drawer.append($export);
@@ -641,7 +650,7 @@ define([
             }*/
 
             /* add a history button */
-            var histConfig = {
+            /*var histConfig = {
                 onLocal: realtimeOptions.onLocal,
                 onRemote: realtimeOptions.onRemote,
                 setHistory: setHistory,
@@ -650,7 +659,7 @@ define([
             };
             var $hist = Cryptpad.createButton('history', true, {histConfig: histConfig});
             $drawer.append($hist);
-
+*/
             /* save as template */
             if (!Cryptpad.isTemplate(window.location.href)) {
                 var templateObj = {
