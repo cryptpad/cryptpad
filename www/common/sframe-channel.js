@@ -126,7 +126,7 @@ define([
                     data = undefined;
                 });
             } else if (typeof(data.q) === 'undefined' && queries[data.txid]) {
-                queries[data.txid](msg, msg);
+                queries[data.txid](data, msg);
             } else if (data.txid === txid) {
                 // stray message from init
                 return;

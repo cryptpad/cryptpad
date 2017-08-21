@@ -940,7 +940,7 @@ define([
         // Create the subelements
         var tb = {};
         tb['userlist'] = createUserList;
-        tb['share'] = createShare; //TODO
+        tb['share'] = createShare;
         tb['fileshare'] = createFileShare;//TODO
         tb['title'] = createTitle;
         tb['pageTitle'] = createPageTitle;//TODO
