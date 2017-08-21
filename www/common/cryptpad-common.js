@@ -1803,13 +1803,15 @@ define([
         return $userAdmin;
     };
 
-    common.getShareHashes = function (cb) {
+    common.getShareHashes = function (secret, cb) {
+        if (!window.location.hash) {
+            var hashes = common.getHashes(secret.channel, secret);
+            return void cb(null, hashes);
+        }
         common.getRecentPads(function (err, recent) {
             var parsed = parsePadUrl(window.location.href);
             if (!parsed.type || !parsed.hashData) { return void cb('E_INVALID_HREF'); }
-            var secret = common.getSecrets(parsed.type, parsed.hash);
-            var channel = common.base64ToHex(parsed.hashData.channel);
-            var hashes = common.getHashes(channel, secret);
+            var hashes = common.getHashes(secret.channel, secret);
             var options = [];
 
             // If we have a stronger version in drive, add it and add a redirect button

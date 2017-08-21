@@ -6,7 +6,7 @@ define(['jquery'], function ($) {
 
         exp.defaultTitle = Common.getDefaultTitle();
 
-        exp.title = document.title; // TOOD slides
+        exp.title = document.title;
 
         cfg = cfg || {};
 

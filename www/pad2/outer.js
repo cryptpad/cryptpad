@@ -22,6 +22,7 @@ define([
         console.log('xxx');
         var sframeChan;
         var hashes;
+        var secret;
         nThen(function (waitFor) {
             $(waitFor());
         }).nThen(function (waitFor) {
@@ -31,12 +32,15 @@ define([
             }));
             Cryptpad.ready(waitFor());
         }).nThen(function (waitFor) {
-            Cryptpad.getShareHashes(waitFor(function (err, h) { hashes = h; }));
+            secret = Cryptpad.getSecrets();
+            if (!secret.channel) {
+                // New pad: create a new random channel id
+                secret.channel = Cryptpad.createChannelId();
+            }
+            Cryptpad.getShareHashes(secret, waitFor(function (err, h) { hashes = h; }));
         }).nThen(function (waitFor) {
-            var secret = Cryptpad.getSecrets();
             var readOnly = secret.keys && !secret.keys.editKeyStr;
             if (!secret.keys) { secret.keys = secret.key; }
-            
             var parsed = Cryptpad.parsePadUrl(window.location.href);
             parsed.type = parsed.type.replace('pad2', 'pad');
             if (!parsed.type) { throw new Error(); }
