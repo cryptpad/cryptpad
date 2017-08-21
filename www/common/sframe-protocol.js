@@ -57,4 +57,9 @@ define({
 
     // Use anonymous rpc from inside the iframe (for avatars & pin usage)
     'Q_ANON_RPC_MESSAGE': true,
+
+    // Check the pin limit to determine if we can store the pad in the drive or if we should
+    // display a warning
+    'Q_GET_PIN_LIMIT_STATUS': true,
+
 });

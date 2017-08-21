@@ -71,6 +71,12 @@ define([
         });
     };
 
+    funcs.isOverPinLimit = function (cb) {
+        ctx.sframeChan.query('Q_GET_PIN_LIMIT_STATUS', null, function (err, data) {
+            cb(data.error, data.overLimit, data.limits);
+        });
+    };
+
 /*    funcs.storeLinkToClipboard = function (readOnly, cb) {
         ctx.sframeChan.query('Q_STORE_LINK_TO_CLIPBOARD', readOnly, function (err) {
             if (cb) { cb(err); }

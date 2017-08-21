@@ -118,6 +118,16 @@ define([
                 cb();
             });
 
+            sframeChan.on('Q_GET_PIN_LIMIT_STATUS', function (data, cb) {
+                Cryptpad.isOverPinLimit(function (e, overLimit, limits) {
+                    cb({
+                        error: e,
+                        overLimit: overLimit,
+                        limits: limits
+                    });
+                });
+            });
+
             CpNfOuter.start({
                 sframeChan: sframeChan,
                 channel: secret.channel,

@@ -1314,6 +1314,7 @@ define([
         'image/jpg',
         'image/gif',
     ];
+    // SFRAME: copied to sframe-common-interface.js
     common.displayAvatar = function ($container, href, name, cb) {
         var MutationObserver = window.MutationObserver;
         var displayDefault = function () {

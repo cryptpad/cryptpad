@@ -698,7 +698,7 @@ define([
                 });
             }
         };
-        Cryptpad.isOverPinLimit(todo);
+        Common.isOverPinLimit(todo);
 
         return $limit;
     };
