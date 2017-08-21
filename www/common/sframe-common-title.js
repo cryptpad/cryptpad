@@ -49,10 +49,7 @@ define(['jquery'], function ($) {
         exp.updateTitle = function (newTitle, cb) {
             cb = cb || $.noop;
             if (newTitle === exp.title) { return; }
-            // Change the title now, and set it back to the old value if there is an error
-            //var oldTitle = exp.title;
-            Common.updateTitle(newTitle, cb)
-            //cb(null, newTitle);
+            Common.updateTitle(newTitle, cb);
         };
 
         // TODO not needed?

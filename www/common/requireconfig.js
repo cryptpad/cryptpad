@@ -4,7 +4,7 @@ define([
     var out = {
         // fix up locations so that relative urls work.
         baseUrl: window.location.pathname,
-        paths: {
+        paths: { 
             // jquery declares itself as literally "jquery" so it cannot be pulled by path :(
             "jquery": "/bower_components/jquery/dist/jquery.min",
             // json.sortify same
