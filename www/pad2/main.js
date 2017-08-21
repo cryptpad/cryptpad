@@ -539,14 +539,14 @@ define([
             var $hist = common.createButton('history', true, {histConfig: histConfig});
             $drawer.append($hist);
 
-            //if (!Cryptpad.isTemplate(window.location.href)) {
+            if (!metadataMgr.getPrivateData().isTemplate) {
                 var templateObj = {
                     rt: info.realtime,
                     getTitle: function () { return metadataMgr.getMetadata().title; }
                 };
                 var $templateButton = common.createButton('template', true, templateObj);
                 $rightside.append($templateButton);
-            //}
+            }
 
             /* add an export button */
             var $export = Cryptpad.createButton('export', true, {}, exportFile);
@@ -567,132 +567,6 @@ define([
             };
             var $forgetPad = common.createButton('forget', true, {}, forgetCb);
             $rightside.append($forgetPad);
-            // TODO
-
-            return;
-
-            // TODO UserList not needed anymore?
-            // --> selectTemplate
-            // --> select username on first visit
-            //UserList = Cryptpad.createUserList(info, realtimeOptions.onLocal, Cryptget, Cryptpad);
-
-            //var titleCfg = { getHeadingText: getHeadingText };
-            //Title = Cryptpad.createTitle(titleCfg, realtimeOptions.onLocal, Cryptpad);
-
-            // Metadata not needed anymore?
-            // Title and defaultTitle handled by metadataMgr.onChange in sframe-common-title
-            //Metadata = Cryptpad.createMetadata(UserList, Title, null, Cryptpad);
-
-            /*var configTb = {
-                displayed: [
-                    'title', 'useradmin', 'spinner', 'lag', 'state', 'share', 'userlist', 'newpad', 'limit', 'upgrade'],
-                userList: UserList.getToolbarConfig(),
-                share: {
-                    secret: secret,
-                    channel: info.channel
-                },
-                title: Title.getTitleConfig(),
-                common: Cryptpad,
-                readOnly: readOnly,
-                ifrw: window,
-                realtime: info.realtime,
-                network: info.network,
-                $container: $bar,
-                $contentContainer: $('#cke_1_contents'),
-            };
-            toolbar = info.realtime.toolbar = Toolbar.create(configTb);
-*/
-            /*var src = 'less!/customize/src/less/toolbar.less';
-            require([
-                src
-            ], function () {
-                var $html = $bar.closest('html');
-                $html
-                    .find('head style[data-original-src="' + src.replace(/less!/, '') + '"]')
-                    .appendTo($html.find('head'));
-            });*/
-
-            //Title.setToolbar(toolbar);
-
-            //var $rightside = toolbar.$rightside;
-
-            var editHash;
-
-            if (!readOnly) {
-                editHash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
-            }
-
-            //$bar.find('#cke_1_toolbar_collapser').hide();
-            /*if (!readOnly) {
-                // Expand / collapse the toolbar
-                var $collapse = Cryptpad.createButton(null, true);
-                $collapse.removeClass('fa-question');
-                var updateIcon = function () {
-                    $collapse.removeClass('fa-caret-down').removeClass('fa-caret-up');
-                    var isCollapsed = !$bar.find('.cke_toolbox_main').is(':visible');
-                    if (isCollapsed) {
-                        if (!initializing) { Cryptpad.feedback('HIDETOOLBAR_PAD'); }
-                        $collapse.addClass('fa-caret-down');
-                    }
-                    else {
-                        if (!initializing) { Cryptpad.feedback('SHOWTOOLBAR_PAD'); }
-                        $collapse.addClass('fa-caret-up');
-                    }
-                };
-                updateIcon();
-                $collapse.click(function () {
-                    $(window).trigger('resize');
-                    $('.cke_toolbox_main').toggle();
-                    $(window).trigger('cryptpad-ck-toolbar');
-                    updateIcon();
-                });
-                $rightside.append($collapse);
-            }*/
-
-            /* add a history button */
-            /*var histConfig = {
-                onLocal: realtimeOptions.onLocal,
-                onRemote: realtimeOptions.onRemote,
-                setHistory: setHistory,
-                applyVal: function (val) { applyHjson(val || '["BODY",{},[]]'); },
-                $toolbar: $bar
-            };
-            var $hist = Cryptpad.createButton('history', true, {histConfig: histConfig});
-            $drawer.append($hist);
-*/
-            /* save as template */
-            if (!Cryptpad.isTemplate(window.location.href)) {
-                var templateObj = {
-                    rt: info.realtime,
-                    Crypt: Cryptget,
-                    getTitle: function () { return document.title; }
-                };
-                var $templateButton = Cryptpad.createButton('template', true, templateObj);
-                $rightside.append($templateButton);
-            }
-
-            /* add an export button */
-            /*var $export = Cryptpad.createButton('export', true, {}, exportFile);
-            $drawer.append($export);
-*/
-            //if (!readOnly) {
-                /* add an import button */
-            /*    var $import = Cryptpad.createButton('import', true, {
-                    accept: 'text/html'
-                }, importFile);
-                $drawer.append($import);
-            }*/
-
-            /* add a forget button */
-/*            var forgetCb = function (err) {
-                if (err) { return; }
-                setEditable(false);
-            };
-            var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
-            $rightside.append($forgetPad);
-*/
-            // set the hash
-            //if (!readOnly) { Cryptpad.replaceHash(editHash); }
         };
 
         // this should only ever get called once, when the chain syncs

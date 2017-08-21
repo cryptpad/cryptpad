@@ -73,7 +73,8 @@ define([
                             origin: window.location.origin,
                             pathname: window.location.pathname,
                             readOnly: readOnly,
-                            availableHashes: hashes
+                            availableHashes: hashes,
+                            isTemplate: Cryptpad.isTemplate(window.location.href)
                         }
                     });
                 });
@@ -136,7 +137,6 @@ define([
             sframeChan.on('Q_MOVE_TO_TRASH', function (data, cb) {
                 Cryptpad.moveToTrash(cb);
             });
-
 
             sframeChan.on('Q_SAVE_AS_TEMPLATE', function (data, cb) {
                 Cryptpad.saveAsTemplate(Cryptget.put, data, cb);
