@@ -260,7 +260,7 @@ define([
         //}
         var readOnly = false; // TODO
         var cpNfInner;
-
+        var metadataMgr;
 
         var $bar = $('#cke_1_toolbox');
 
@@ -340,7 +340,7 @@ define([
         var stringifyDOM = module.stringifyDOM = function (dom) {
             var hjson = Hyperjson.fromDOM(dom, isNotMagicLine, brFilter);
             hjson[3] = {
-                metadata: cpNfInner.metadataMgr.getMetadataLazy()
+                metadata: metadataMgr.getMetadataLazy()
             };
             /*hjson[3] = { TODO
                     users: UserList.userData,
@@ -402,7 +402,7 @@ define([
             }
 
             if (newInner[3]) {
-                cpNfInner.metadataMgr.updateMetadata(newInner[3].metadata);
+                metadataMgr.updateMetadata(newInner[3].metadata);
             }
 
             // build a dom from HJSON, diff, and patch the editor
@@ -467,13 +467,14 @@ define([
         };
 
         realtimeOptions.onInit = function (info) {
+            readOnly = metadataMgr.getPrivateData().readOnly;
             console.log('onInit');
             var titleCfg = { getHeadingText: getHeadingText };
-            Title = common.createTitle(titleCfg, realtimeOptions.onLocal, common, cpNfInner.metadataMgr);
+            Title = common.createTitle(titleCfg, realtimeOptions.onLocal, common, metadataMgr);
             var configTb = {
                 displayed: ['userlist', 'title', 'useradmin', 'spinner', 'newpad', 'share', 'limit'],
                 title: Title.getTitleConfig(),
-                metadataMgr: cpNfInner.metadataMgr,
+                metadataMgr: metadataMgr,
                 readOnly: readOnly,
                 ifrw: window,
                 realtime: info.realtime,
@@ -523,6 +524,8 @@ define([
                     updateIcon();
                 });
                 $rightside.append($collapse);
+            } else {
+                $('.cke_toolbox_main').hide();
             }
 
             /* add a forget button */
@@ -691,7 +694,7 @@ define([
                 // XXX Metadata.update(shjson);
                 var parsed = JSON.parse(shjson);
                 if (parsed[3] && parsed[3].metadata) {
-                    cpNfInner.metadataMgr.updateMetadata(parsed[3].metadata);
+                    metadataMgr.updateMetadata(parsed[3].metadata);
                 }
 
                 if (!readOnly) {
@@ -757,6 +760,7 @@ define([
         };
 
         cpNfInner = common.startRealtime(realtimeOptions);
+        metadataMgr = cpNfInner.metadataMgr;
 
         Cryptpad.onLogout(function () { setEditable(false); });
 
