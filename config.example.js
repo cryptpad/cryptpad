@@ -2,6 +2,7 @@
 /*
     globals module
 */
+var domain = ' http://localhost:3000/';
 module.exports = {
 
     // the address you want to bind to, :: means all ipv4 and ipv6 addresses
@@ -23,9 +24,9 @@ module.exports = {
 
     contentSecurity: [
         "default-src 'none'",
-        "style-src 'unsafe-inline' 'self'",
-        "script-src 'self'",
-        "font-src 'self' data:",
+        "style-src 'unsafe-inline' 'self' " + domain,
+        "script-src 'self'" + domain,
+        "font-src 'self' data:" + domain,
 
         /*  child-src is used to restrict iframes to a set of allowed domains.
          *  connect-src is used to restrict what domains can connect to the websocket.
@@ -33,7 +34,7 @@ module.exports = {
          *  it is recommended that you configure these fields to match the
          *  domain which will serve your CryptPad instance.
          */
-        "child-src 'self' blob: *",
+        "child-src blob: *",
 
         "media-src * blob:",
 
@@ -41,10 +42,10 @@ module.exports = {
             if you are deploying to production, you'll probably want to remove
             the ws://* directive, and change '*' to your domain
          */
-        "connect-src 'self' ws: wss: blob:",
+        "connect-src 'self' ws: wss: blob:" + domain,
 
         // data: is used by codemirror
-        "img-src 'self' data: blob:",
+        "img-src 'self' data: blob:" + domain,
 
         // for accounts.cryptpad.fr authentication and pad2 cross-domain iframe sandbox
         "frame-ancestors *",
@@ -53,18 +54,18 @@ module.exports = {
     // CKEditor requires significantly more lax content security policy in order to function.
     padContentSecurity: [
         "default-src 'none'",
-        "style-src 'unsafe-inline' 'self'",
+        "style-src 'unsafe-inline' 'self'" + domain,
         // Unsafe inline, unsafe-eval are needed for ckeditor :(
-        "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
-        "font-src 'self'",
+        "script-src 'self' 'unsafe-eval' 'unsafe-inline'" + domain,
+        "font-src 'self'" + domain,
 
         /*  See above under 'contentSecurity' as to how these values should be
          *  configured for best effect.
          */
-         "child-src 'self' *",
+         "child-src *",
 
         // see the comment above in the 'contentSecurity' section
-         "connect-src 'self' ws: wss:",
+         "connect-src 'self' ws: wss:" + domain,
 
         // (insecure remote) images are included by users of the wysiwyg who embed photos in their pads
         "img-src * blob:",

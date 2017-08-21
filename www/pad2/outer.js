@@ -8,6 +8,7 @@ define([
         var req = {
             cfg: RequireConfig,
             req: [ '/common/loading.js' ],
+            pfx: window.location.origin
         };
         $('#sbox-iframe').attr('src',
             ApiConfig.httpSafeOrigin + '/pad2/inner.html?' + ApiConfig.requireConf.urlArgs +
