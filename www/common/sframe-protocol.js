@@ -52,16 +52,22 @@ define({
     // end of the login process. This query set the current href to the sessionStorage.
     'Q_SET_LOGIN_REDIRECT': true,
 
-    // Store the editing or readonly link of the current pad to the clipboard (share button)
+    // Store the editing or readonly link of the current pad to the clipboard (share button).
     'Q_STORE_LINK_TO_CLIPBOARD': true,
 
-    // Use anonymous rpc from inside the iframe (for avatars & pin usage)
+    // Use anonymous rpc from inside the iframe (for avatars & pin usage).
     'Q_ANON_RPC_MESSAGE': true,
 
-    // Check the pin limit to determine if we can store the pad in the drive or if we should
+    // Check the pin limit to determine if we can store the pad in the drive or if we should.
     // display a warning
     'Q_GET_PIN_LIMIT_STATUS': true,
 
-    // Move a pad to the trash using the forget button
+    // Move a pad to the trash when using the forget button.
     'Q_MOVE_TO_TRASH': true,
+
+    // Request the full history from the server when the users clicks on the history button.
+    // Callback is called when the FULL_HISTORY_END message is received in the outside.
+    'Q_GET_FULL_HISTORY': true,
+    // When a (full) history message is received from the server.
+    'EV_RT_HIST_MESSAGE': true
 });

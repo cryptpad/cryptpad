@@ -136,6 +136,41 @@ define([
                 Cryptpad.moveToTrash(cb);
             });
 
+            sframeChan.on('Q_GET_FULL_HISTORY', function (data, cb) {
+                var network = Cryptpad.getNetwork();
+                var hkn = network.historyKeeper;
+                var crypto = Crypto.createEncryptor(secret.keys);
+                // Get the history messages and send them to the iframe
+                var parse = function (msg) {
+                    try {
+                        return JSON.parse(msg);
+                    } catch (e) {
+                        return null;
+                    }
+                };
+                var onMsg = function (msg) {
+                    var parsed = parse(msg);
+                    if (parsed[0] === 'FULL_HISTORY_END') {
+                        console.log('END');
+                        cb();
+                        return;
+                    }
+                    if (parsed[0] !== 'FULL_HISTORY') { return; }
+                    if (parsed[1] && parsed[1].validateKey) { // First message
+                        secret.keys.validateKey = parsed[1].validateKey;
+                        return;
+                    }
+                    msg = parsed[1][4];
+                    if (msg) {
+                        msg = msg.replace(/^cp\|/, '');
+                        var decryptedMsg = crypto.decrypt(msg, secret.keys.validateKey);
+                        sframeChan.event('EV_RT_HIST_MESSAGE', decryptedMsg);
+                    }
+                };
+                network.on('message', onMsg);
+                network.sendto(hkn, JSON.stringify(['GET_FULL_HISTORY', secret.channel, secret.keys.validateKey]));
+            });
+
             CpNfOuter.start({
                 sframeChan: sframeChan,
                 channel: secret.channel,
