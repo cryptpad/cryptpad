@@ -2092,7 +2092,10 @@ define([
                 var $rootIcon = filesOp.isFolderEmpty(files[ROOT]) ?
                     (isRootOpened ? $folderOpenedEmptyIcon : $folderEmptyIcon) :
                     (isRootOpened ? $folderOpenedIcon : $folderIcon);
-                var $rootElement = createTreeElement(ROOT_NAME, $rootIcon.clone(), [ROOT], false, true, false, isRootOpened);
+                var $rootElement = createTreeElement(ROOT_NAME, $rootIcon.clone(), [ROOT], false, true, true, isRootOpened);
+                if (!filesOp.hasSubfolder(root)) {
+                    $rootElement.find('.expcol').css('visibility', 'hidden');
+                }
                 $rootElement.addClass('root');
                 $rootElement.find('>.element-row').contextmenu(openDirectoryContextMenu);
                 $('<ul>', {'class': 'docTree'}).append($rootElement).appendTo($container);

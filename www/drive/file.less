@@ -190,7 +190,8 @@ span {
     }
     .docTree {
         margin-top: 20px;
-        padding: 0 0 0 20px;
+        //padding: 0 0 0 20px;
+        padding: 0;
         cursor: auto;
         &li, li {
             padding: 0;
@@ -302,6 +303,24 @@ span {
         &:before {
             position:relative;
             top: -1px;
+        }
+    }
+    .docTree {
+        .root > .element-row > .expcol {
+            position: relative;
+            top:0;
+            left: -10px;
+        }
+        .root > .element-row > .folder {
+            margin-left: -5px;
+        }
+        .root {
+            &> .element-row {
+                padding-left: 20px;
+            }
+            &> ul {
+                padding-left: 30px;
+            }
         }
     }
 
