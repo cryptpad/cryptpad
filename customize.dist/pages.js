@@ -635,6 +635,10 @@ define([
         return loadingScreen();
     };
 
+    Pages['/contacts2/'] = Pages['/contacts2/index.html'] = function () {
+        return loadingScreen();
+    };
+
     Pages['/pad/'] = Pages['/pad/index.html'] = function () {
         return loadingScreen();
     };

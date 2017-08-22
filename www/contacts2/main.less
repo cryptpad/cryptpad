@@ -1,0 +1,244 @@
+@import "/customize/src/less/variables.less";
+@import "/customize/src/less/mixins.less";
+
+@button-border: 2px;
+@bg-color: @toolbar-friends-bg;
+@color: @toolbar-friends-color;
+
+html, body {
+    margin: 0px;
+    height: 100%;
+}
+
+#toolbar {
+    display: flex; // We need this to remove a 3px border at the bottom of the toolbar
+}
+
+body {
+    display: flex;
+    flex-flow: column;
+}
+#app {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 0;
+}
+
+#app.ready {
+    //background: url('/customize/bg3.jpg') no-repeat center center;
+    background-size: cover;
+    background-position: center;
+}
+.cryptpad-toolbar {
+    padding: 0px;
+    display: inline-block;
+}
+
+
+@keyframes example {
+    0% {
+        background: rgba(0,0,0,0.1);
+    }
+    50% {
+        background: rgba(0,0,0,0.3);
+    }
+    100% {
+        background: rgba(0,0,0,0.1);
+    }
+}
+#friendList {
+    width: 350px;
+    height: 100%;
+    background-color: lighten(@bg-color, 10%);
+    .friend {
+        background: rgba(0,0,0,0.1);
+        padding: 5px;
+        margin: 10px;
+        cursor: pointer;
+        &:hover {
+            background-color: rgba(0,0,0,0.3);
+        }
+        &.notify {
+            animation: example 2s ease-in-out infinite;
+        }
+    }
+}
+
+#friendList .friend, #messaging .avatar {
+    .avatar(30px);
+    &.avatar {
+        display: flex;
+    }
+    cursor: pointer;
+    color: @color;
+    media-tag {
+        img {
+            color: #000;
+        }
+    }
+    media-tag, .default {
+        margin-right: 5px;
+    }
+    .status {
+        width: 5px;
+        display: inline-block;
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        opacity: 0.7;
+        background-color: #777;
+        &.online {
+            background-color: green;
+        }
+        &.offline {
+            background-color: red;
+        }
+    }
+}
+
+#friendList {
+    .friend {
+        position: relative;
+    }
+    .remove {
+        cursor: pointer;
+        width: 20px;
+        &:hover {
+            color: darken(@color, 20%);
+        }
+    }
+}
+
+.placeholder (@color: #bbb) {
+    &::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+        color: @color;
+    }
+    &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+        color: @color;
+        opacity:  1;
+    }
+    &::-moz-placeholder { /* Mozilla Firefox 19+ */
+        color: @color;
+        opacity:  1;
+    }
+    &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+        color: @color;
+    }
+    &::-ms-input-placeholder { /* Microsoft Edge */
+        color: @color;
+    }
+}
+
+#messaging {
+    flex: 1;
+    height: 100%;
+    background-color: lighten(@bg-color, 20%);
+    min-width: 0;
+
+    .info {
+        padding: 20px;
+    }
+    .header {
+        background-color: lighten(@bg-color, 15%);
+        padding: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 50px;
+
+        .hover () {
+            height: 100%;
+            line-height: 30px;
+            padding: 10px;
+            &:hover {
+                background-color: rgba(50,50,50,0.3);
+            }
+        }
+
+        .avatar,
+        .right-col {
+             flex:1 1 auto;
+        }
+        .remove-history {
+            .hover;
+        }
+        .avatar {
+            margin: 10px;
+        }
+        .more-history {
+            display: none;
+            //.hover;
+        }
+    }
+    .chat {
+        height: 100%;
+        display: flex;
+        flex-flow: column;
+        .messages {
+            padding: 0 20px;
+            margin: 10px 0;
+            flex: 1;
+            overflow-x: auto;
+            .message {
+                & > div {
+                    padding: 0 10px;
+                }
+                .content {
+                    overflow: hidden;
+                    word-wrap: break-word;
+                    &> * {
+                        margin: 0;
+                    }
+                }
+                .date {
+                    display: none;
+                    font-style: italic;
+                }
+                .sender {
+                    margin-top: 10px;
+                    font-weight: bold;
+                    background-color: rgba(0,0,0,0.1);
+                }
+            }
+        }
+    }
+    .input {
+        background-color: lighten(@bg-color, 15%);
+        height: auto;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 75px;
+        textarea {
+            margin: 5px 0;
+            padding: 0 10px;
+            border: none;
+            height: 50px;
+            flex: 1;
+            background-color: darken(@bg-color, 10%);
+            color: @color;
+            resize: none;
+            line-height: 50px;
+            overflow-y: auto;
+            .placeholder(#bbb);
+            &[disabled=true] {
+                .placeholder(#999);
+            }
+            &:placeholder-shown { line-height: 50px; }
+        }
+        button {
+            height: 50px;
+            border-radius: 0;
+            border: none;
+            background-color: darken(@bg-color, 15%);
+            &:hover {
+                background-color: darken(@bg-color, 20%);
+            }
+        }
+    }
+}
+
