@@ -2,7 +2,7 @@
 define([
     '/common/requireconfig.js'
 ], function (RequireConfig) {
-    require.config(RequireConfig);
+    require.config(RequireConfig());
 
     // most of CryptPad breaks if you don't support isArray
     if (!Array.isArray) {

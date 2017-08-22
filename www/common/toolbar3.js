@@ -605,7 +605,7 @@ define([
             title: buttonTitle,
             'class': "cryptpad-logo"
         }).append($('<img>', {
-            src: '/customize/images/logo_white.png'
+            src: '/customize/images/logo_white.png?' + ApiConfig.requireConf.urlArgs
         }));
         var onClick = function (e) {
             e.preventDefault();

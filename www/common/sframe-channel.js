@@ -145,7 +145,7 @@ define([
                 intr = setInterval(function () {
                     ow.postMessage(JSON.stringify({
                         txid: txid,
-                        content: { requireConf: RequireConfig },
+                        content: { requireConf: RequireConfig() },
                         q: 'INIT'
                     }), '*');
                 }, 1);
