@@ -161,6 +161,7 @@ define([
         var metadataMgr = config.metadataMgr;
         var userData = metadataMgr.getMetadata().users;
         var viewers = metadataMgr.getViewers();
+        var origin = config.metadataMgr.getPrivateData().origin;
 
         // If we are using old pads (readonly unavailable), only editing users are in userList.
         // With new pads, we also have readonly users in userList, so we have to intersect with
@@ -225,7 +226,7 @@ define([
             if (data.profile) {
                 $span.addClass('clickable');
                 $span.click(function () {
-                    window.open('/profile/#' + data.profile);
+                    window.open(origin+'/profile/#' + data.profile);
                 });
             }
             if (data.avatar && avatars[data.avatar]) {
