@@ -174,6 +174,7 @@ define([
     var $closeIcon = $('<span>', {"class": "fa fa-window-close"});
     var $backupIcon = $('<span>', {"class": "fa fa-life-ring"});
     var $searchIcon = $('<span>', {"class": "fa fa-search searchIcon"});
+    var $addIcon = $('<span>', {"class": "fa fa-plus"});
 
     var history = {
         isHistoryMode: false,
@@ -1994,6 +1995,21 @@ define([
                     if (filesOp.isFolder(root[key])) { return; }
                     var $element = createElement(path, key, root, false);
                     $element.appendTo($list);
+                });
+
+                var $element = $('<li>', {
+                    'class': 'element-row grid-element addpad'
+                }).prepend($addIcon.clone()).appendTo($list);
+                $element.attr('title', "TODO: Add a pad");
+                $element.click(function () {
+                    window.setTimeout(function () {
+                        $driveToolbar.find('.leftside .dropdown-bar-content').show();
+                    });
+                    /*var $content = $driveToolbar.find('.leftside .dropdown-bar-content').html();
+                    var $container = $('<div>').append($('<div>', {id:'cryptpad-add-pad'}));
+                    Cryptpad.alert($container.html(),null,true);
+                    var $c = $('body > .alertify').last().find('#cryptpad-add-pad');
+                    $c.append($content);*/
                 });
             }
             //$content.append($toolbar).append($title).append($info).append($dirContent);
