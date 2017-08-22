@@ -1,4 +1,22 @@
-console.log('one');
+require(['/api/config'], function (ApiConfig) {
+    // see ckeditor_base.js getUrl()
+    window.CKEDITOR_GETURL = function (resource) {
+        if (resource.indexOf( '/' ) === 0) {
+            resource = window.CKEDITOR.basePath.replace(/\/bower_components\/.*/, '') + resource;
+        } else if (resource.indexOf(':/') === -1) {
+            resource = window.CKEDITOR.basePath + resource;
+        }
+        if (resource[resource.length - 1] !== '/' && resource.indexOf('ver=') === -1) {
+            var args = ApiConfig.requireConf.urlArgs;
+            if (resource.indexOf('/bower_components/') !== -1) {
+                args = 'ver=' + window.CKEDITOR.timestamp;
+            }
+            resource += (resource.indexOf('?') >= 0 ? '&' : '?') + args;
+        }
+        return resource;
+    };
+    require(['/bower_components/ckeditor/ckeditor.js']);
+});
 define([
     'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
@@ -14,15 +32,17 @@ define([
     '/pad/links.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
+    '/api/config',
 
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/diff-dom/diffDOM.js',
 
+    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less/cryptpad.less',
     'less!/customize/src/less/toolbar.less'
 ], function ($, Crypto, Hyperjson,
-    Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad, Cryptget, Links, nThen, SFCommon) {
+    Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad, Cryptget, Links, nThen, SFCommon, ApiConfig) {
     var saveAs = window.saveAs;
     var Messages = Cryptpad.Messages;
     var DiffDom = window.diffDOM;
@@ -725,6 +745,8 @@ define([
             } else {
                 $('meta[name=viewport]').attr('content', 'width=device-width, initial-scale=1.0, user-scalable=yes');
             }
+            // Used in ckeditor-config.js
+            Ckeditor.CRYPTPAD_URLARGS = ApiConfig.requireConf.urlArgs;
             editor = Ckeditor.replace('editor1', {
                 customConfig: '/customize/ckeditor-config.js',
             });

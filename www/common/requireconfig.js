@@ -21,5 +21,7 @@ define([
         }
     };
     Object.keys(ApiConfig.requireConf).forEach(function (k) { out[k] = ApiConfig.requireConf[k]; });
-    return out;
+    return function () {
+        return JSON.parse(JSON.stringify(out));
+    };
 });

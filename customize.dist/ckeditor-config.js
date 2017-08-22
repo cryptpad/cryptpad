@@ -27,7 +27,7 @@ CKEDITOR.editorConfig = function( config ) {
 
     config.font_defaultLabel = 'Arial';
     config.fontSize_defaultLabel = '16';
-    config.contentsCss = '/customize/ckeditor-contents.css';
+    config.contentsCss = '/customize/ckeditor-contents.css?' + CKEDITOR.CRYPTPAD_URLARGS;
 
     config.keystrokes = [
         [ CKEDITOR.ALT + 121 /*F10*/, 'toolbarFocus' ],
@@ -55,3 +55,17 @@ CKEDITOR.editorConfig = function( config ) {
     //skin: 'moono-dark,/pad/themes/moono-dark/'
     //skin: 'office2013,/pad/themes/office2013/'
 };
+
+(function () {
+    // These are overrides inside of ckeditor which add ?ver= to the CSS files so that
+    // every part of ckeditor will get in the browser cache.
+    var fix = function (x) {
+        if (x.map) { return x.map(fix); }
+        console.log('> ' + x);
+        return (/\/bower_components\/.*\.css$/.test(x)) ? (x + '?ver=' + CKEDITOR.timestamp) : x;
+    };
+    CKEDITOR.tools._buildStyleHtml = CKEDITOR.tools.buildStyleHtml;
+    CKEDITOR.document._appendStyleSheet = CKEDITOR.document.appendStyleSheet;
+    CKEDITOR.tools.buildStyleHtml = function (x) { return CKEDITOR.tools._buildStyleHtml(fix(x)); };
+    CKEDITOR.document.appendStyleSheet = function (x) { return CKEDITOR.document._appendStyleSheet(fix(x)); };
+}());

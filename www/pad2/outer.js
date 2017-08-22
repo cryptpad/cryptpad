@@ -4,14 +4,17 @@ define([
     '/common/requireconfig.js',
     '/common/cryptget.js'
 ], function (ApiConfig, $, RequireConfig, Cryptget) {
+    var requireConfig = RequireConfig();
     $(function () {
         var req = {
-            cfg: RequireConfig,
+            cfg: requireConfig,
             req: [ '/common/loading.js' ],
             pfx: window.location.origin
         };
+        window.rc = requireConfig;
+        window.apiconf = ApiConfig;
         $('#sbox-iframe').attr('src',
-            ApiConfig.httpSafeOrigin + '/pad2/inner.html?' + ApiConfig.requireConf.urlArgs +
+            ApiConfig.httpSafeOrigin + '/pad2/inner.html?' + requireConfig.urlArgs +
                 '#' + encodeURIComponent(JSON.stringify(req)));
     });
     require([
@@ -21,7 +24,6 @@ define([
         '/common/cryptpad-common.js',
         '/bower_components/chainpad-crypto/crypto.js'
     ], function (SFrameChannel, CpNfOuter, nThen, Cryptpad, Crypto) {
-        console.log('xxx');
         var sframeChan;
         var hashes;
         var secret;
