@@ -75,7 +75,8 @@ define([
                             pathname: window.location.pathname,
                             readOnly: readOnly,
                             availableHashes: hashes,
-                            isTemplate: Cryptpad.isTemplate(window.location.href)
+                            isTemplate: Cryptpad.isTemplate(window.location.href),
+                            feedbackAllowed: Cryptpad.isFeedbackAllowed()
                         }
                     });
                 });

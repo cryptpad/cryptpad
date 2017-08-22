@@ -508,11 +508,11 @@ define([
                     $collapse.removeClass('fa-caret-down').removeClass('fa-caret-up');
                     var isCollapsed = !$bar.find('.cke_toolbox_main').is(':visible');
                     if (isCollapsed) {
-                        if (!initializing) { Cryptpad.feedback('HIDETOOLBAR_PAD'); }
+                        if (!initializing) { common.feedback('HIDETOOLBAR_PAD'); }
                         $collapse.addClass('fa-caret-down');
                     }
                     else {
-                        if (!initializing) { Cryptpad.feedback('SHOWTOOLBAR_PAD'); }
+                        if (!initializing) { common.feedback('SHOWTOOLBAR_PAD'); }
                         $collapse.addClass('fa-caret-up');
                     }
                 };
@@ -701,7 +701,7 @@ define([
 
             var id = classes[0];
             if (typeof(id) === 'string') {
-                Cryptpad.feedback(id.toUpperCase());
+                common.feedback(id.toUpperCase());
             }
         });
     };
