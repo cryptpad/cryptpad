@@ -871,7 +871,7 @@ define([
                         if (netfluxIds.indexOf(u) === -1) {
                             var temp = JSON.parse(JSON.stringify(oldUserData[u]));
                             delete oldUserData[u];
-                            if (temp.uid === newdata[userNetfluxId].uid) { return; }
+                            if (temp && newdata[userNetfluxId] && temp.uid === newdata[userNetfluxId].uid) { return; }
                             if (userPresent(u, temp, newdata || oldUserData) < 1) {
                                 notify(-1, temp.name);
                             }
