@@ -7,7 +7,7 @@ define([
 ], function (nThen, ApiConfig, $, RequireConfig) {
     var requireConfig = RequireConfig();
 
-    // Loaded in load #3
+    // Loaded in load #2
     var CpNfOuter;
     var Cryptpad;
     var Crypto;
@@ -45,7 +45,7 @@ define([
         window.addEventListener('message', onMsg);
 
     }).nThen(function (waitFor) {
-        // Load #3, the loading screen is up so grab whatever you need...
+        // Load #2, the loading screen is up so grab whatever you need...
         require([
             '/common/sframe-chainpad-netflux-outer.js',
             '/common/cryptpad-common.js',
