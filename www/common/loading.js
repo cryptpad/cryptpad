@@ -1,5 +1,5 @@
 define([
-    'less!/customize/src/less/cryptpad.less'
+    'less!/customize/src/less/loading.less'
 ], function () {
     var urlArgs = window.location.href.replace(/^.*\?([^\?]*)$/, function (all, x) { return x; });
     var elem = document.createElement('div');

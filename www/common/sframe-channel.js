@@ -105,7 +105,6 @@ define([
             insideHandlers.push(content);
         }, true);
 
-        var intr;
         var txid;
         window.addEventListener('message', function (msg) {
             var data = JSON.parse(msg.data);
@@ -113,12 +112,8 @@ define([
                 console.log("DROP Message from unexpected source");
                 console.log(msg);
             } else if (!otherWindow) {
-                if (data.txid !== txid) {
-                    console.log("DROP Message with weird txid");
-                    return;
-                }
-                clearInterval(intr);
                 otherWindow = ow;
+                ow.postMessage(JSON.stringify({ txid: data.txid }), '*');
                 cb(chan);
             } else if (typeof(data.q) === 'string' && handlers[data.q]) {
                 handlers[data.q].forEach(function (f) {
@@ -139,17 +134,6 @@ define([
             // we're in the sandbox
             otherWindow = ow;
             cb(chan);
-        } else {
-            require(['/common/requireconfig.js'], function (RequireConfig) {
-                txid = mkTxid();
-                intr = setInterval(function () {
-                    ow.postMessage(JSON.stringify({
-                        txid: txid,
-                        content: { requireConf: RequireConfig() },
-                        q: 'INIT'
-                    }), '*');
-                }, 1);
-            });
         }
     };
 

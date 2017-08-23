@@ -9,11 +9,22 @@ if (req.pfx) {
     };
 }
 require.config(req.cfg);
-if (req.req) { require(req.req, function () { }); }
-window.addEventListener('message', function (msg) {
+var txid = Math.random().toString(16).replace('0.', '');
+var intr;
+var ready = function () {
+    intr = setInterval(function () {
+        if (typeof(txid) !== 'string') { return; }
+        window.parent.postMessage(JSON.stringify({ q: 'READY', txid: txid }), '*');
+    }, 1);
+};
+if (req.req) { require(req.req, ready); } else { ready(); }
+var onReply = function (msg) {
     var data = JSON.parse(msg.data);
-    if (data.q !== 'INIT') { return; }
-    msg.source.postMessage(JSON.stringify({ txid: data.txid, content: 'OK' }), '*');
+    if (data.txid !== txid) { return; }
+    clearInterval(intr);
+    txid = {};
+    window.removeEventListener('message', onReply);
     require(['/common/sframe-boot2.js'], function () { });
-});
+};
+window.addEventListener('message', onReply);
 }());
