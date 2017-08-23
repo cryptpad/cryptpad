@@ -4,7 +4,7 @@
 var req = JSON.parse(decodeURIComponent(window.location.hash.substring(1)));
 req.cfg = req.cfg || {};
 if (req.pfx) {
-    req.cfg.onNodeCreated = function (node, config, module, path) {
+    req.cfg.onNodeCreated = function (node /*, config, module, path*/) {
         node.setAttribute('src', req.pfx + node.getAttribute('src'));
     };
 }

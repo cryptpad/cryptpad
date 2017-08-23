@@ -42,7 +42,7 @@ define([
                 secret.channel = Cryptpad.createChannelId();
             }
             Cryptpad.getShareHashes(secret, waitFor(function (err, h) { hashes = h; }));
-        }).nThen(function (waitFor) {
+        }).nThen(function (/*waitFor*/) {
             var readOnly = secret.keys && !secret.keys.editKeyStr;
             if (!secret.keys) { secret.keys = secret.key; }
             var parsed = Cryptpad.parsePadUrl(window.location.href);
@@ -57,7 +57,7 @@ define([
                         if (err) { console.log(err); }
                         name = n;
                     }));
-                }).nThen(function (waitFor) {
+                }).nThen(function (/*waitFor*/) {
                     sframeChan.event('EV_METADATA_UPDATE', {
                         doc: {
                             defaultTitle: defaultTitle,

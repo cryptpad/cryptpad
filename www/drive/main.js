@@ -1818,7 +1818,7 @@ define([
             var limit = 20;
             var i = 0;
             filesList.forEach(function (id) {
-                if (i >= 20) { return; }
+                if (i >= limit) { return; }
                 // Check path (pad exists and not in trash)
                 var paths = filesOp.findFile(id);
                 if (!paths.length) { return; }

@@ -41,7 +41,7 @@ define([], function () {
             messageFromInner(message, cb);
         });        
 
-        var onReady = function (wc) {
+        var onReady = function () {
             // Trigger onReady only if not ready yet. This is important because the history keeper sends a direct
             // message through "network" when it is synced, and it triggers onReady for each channel joined.
             if (!initializing) { return; }
@@ -215,7 +215,7 @@ define([], function () {
             sframeChan.event('EV_RT_DISCONNECT');
         });
 
-        network.on('reconnect', function (uid) {
+        network.on('reconnect', function () {
             initializing = true;
             connectTo(network, false);
         });

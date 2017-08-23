@@ -37,7 +37,7 @@ define([
     // User admin menu
     var USERADMIN_CLS = Bar.constants.user = 'cryptpad-user-dropdown';
     var USERNAME_CLS = Bar.constants.username = 'cryptpad-toolbar-username';
-    var READONLY_CLS = Bar.constants.readonly = 'cryptpad-readonly';
+    /*var READONLY_CLS = */Bar.constants.readonly = 'cryptpad-readonly';
     var USERBUTTON_CLS = Bar.constants.changeUsername = "cryptpad-change-username";
 
     // Create the toolbar element
@@ -146,11 +146,6 @@ define([
             duplicates: i
         };
     };
-    var arrayIntersect = function(a, b) {
-        return $.grep(a, function(i) {
-            return $.inArray(i, b) > -1;
-        });
-    };
 
     var avatars = {};
     var updateUserList = function (toolbar, config) {
@@ -196,7 +191,7 @@ define([
             var name = data.name || Messages.anonymous;
             var $span = $('<span>', {'class': 'avatar'});
             var $rightCol = $('<span>', {'class': 'right-col'});
-            var $nameSpan = $('<span>', {'class': 'name'}).text(name).appendTo($rightCol);
+            //var $nameSpan = $('<span>', {'class': 'name'}).text(name).appendTo($rightCol);
             //var proxy = Cryptpad.getProxy();
             //var isMe = data.curvePublic === proxy.curvePublic;
 
@@ -532,7 +527,7 @@ define([
             if (name === "") {
                 name = $input.attr('placeholder');
             }
-            updateTitle(name, function (err, newtitle) {
+            updateTitle(name, function (err/*, newtitle*/) {
                 if (err) { return console.error(err); }
                 //$text.text(newtitle);
                 $input.hide();
@@ -981,7 +976,7 @@ define([
             }
             //checkLag(toolbar, config);
         };
-        toolbar.reconnecting = function (userId) {
+        toolbar.reconnecting = function (/*userId*/) {
             //if (config.metadataMgr) { config.userList.userNetfluxId = userId; } TODO
             toolbar.connected = false;
             if (toolbar.spinner) {

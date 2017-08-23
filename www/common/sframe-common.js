@@ -1,4 +1,5 @@
 define([
+    'jquery',
     '/bower_components/nthen/index.js',
     '/customize/messages.js',
     '/common/sframe-chainpad-netflux-inner.js',
@@ -10,7 +11,7 @@ define([
 
     '/customize/application_config.js',
     '/common/cryptpad-common.js'
-], function (nThen, Messages, CpNfInner, SFrameChannel, Title, UI, History, MetadataMgr,
+], function ($, nThen, Messages, CpNfInner, SFrameChannel, Title, UI, History, MetadataMgr,
     AppConfig, Cryptpad) {
 
     // Chainpad Netflux Inner
@@ -109,7 +110,7 @@ define([
             } catch (e) { return void console.error(e); }
         }
         var randomToken = Math.random().toString(16).replace(/0./, '');
-        var origin = ctx.metadataMgr.getPrivateData().origin;
+        //var origin = ctx.metadataMgr.getPrivateData().origin;
         var href = /*origin +*/ '/common/feedback.html?' + action + '=' + randomToken;
         $.ajax({
             type: "HEAD",

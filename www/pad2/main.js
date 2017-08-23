@@ -281,6 +281,7 @@ define([
         var readOnly = false; // TODO
         var cpNfInner;
         var metadataMgr;
+        var onLocal;
 
         var $bar = $('#cke_1_toolbox');
 
@@ -670,7 +671,7 @@ define([
 
         realtimeOptions.onError = onConnectError;
 
-        var onLocal = realtimeOptions.onLocal = function () {
+        onLocal = realtimeOptions.onLocal = function () {
             console.log('onlocal');
             if (initializing) { return; }
             if (isHistoryMode) { return; }
@@ -751,7 +752,7 @@ define([
                 customConfig: '/customize/ckeditor-config.js',
             });
             editor.on('instanceReady', waitFor());
-        }).nThen(function (waitFor) {
+        }).nThen(function (/*waitFor*/) {
             Links.addSupportForOpeningLinksInNewTab(Ckeditor);
             Cryptpad.onError(function (info) {
                 if (info && info.type === "store") {

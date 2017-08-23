@@ -110,8 +110,6 @@ define(['/api/config'], function (ApiConfig) {
             cancel: cancel,
         };
     };
-        return Module;
-    };
 
     return Module;
 });

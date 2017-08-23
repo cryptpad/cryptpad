@@ -1198,7 +1198,6 @@ define([
                     button
                     .click(prepareFeedback(type))
                     .click(function() {
-                        var href = window.location.href;
                         var msg = isLoggedIn() ? Messages.forgetPrompt : Messages.fm_removePermanentlyDialog;
                         common.confirm(msg, function (yes) {
                             if (!yes) { return; }
@@ -1836,13 +1835,12 @@ define([
             var parsed = parsePadUrl(window.location.href);
             if (!parsed.type || !parsed.hashData) { return void cb('E_INVALID_HREF'); }
             var hashes = common.getHashes(secret.channel, secret);
-            var options = [];
 
             // If we have a stronger version in drive, add it and add a redirect button
             var stronger = recent && common.findStronger(null, recent);
             if (stronger) {
-                var parsed = parsePadUrl(stronger);
-                hashes.editHash = parsed.hash;
+                var parsed2 = parsePadUrl(stronger);
+                hashes.editHash = parsed2.hash;
             }
 
             cb(null, hashes);
