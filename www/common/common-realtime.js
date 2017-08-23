@@ -13,7 +13,7 @@ define([
     /*
         TODO make this not blow up when disconnected or lagging...
     */
-    common.whenRealtimeSyncs = function (realtime, cb) {
+    common.whenRealtimeSyncs = function (Cryptpad, realtime, cb) {
         realtime.sync();
 
         window.setTimeout(function () {
@@ -28,7 +28,7 @@ define([
                 if (common.infiniteSpinnerDetected) { return; }
 
                 // inform the user their session is in a bad state
-                common.confirm(Messages.realtime_unrecoverableError, function (yes) {
+                Cryptpad.confirm(Messages.realtime_unrecoverableError, function (yes) {
                     if (!yes) { return; }
                     window.location.reload();
                 });

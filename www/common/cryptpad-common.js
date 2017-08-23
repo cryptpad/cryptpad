@@ -132,7 +132,9 @@ define([
     common.initMessagingUI = Messaging.UI.init;
 
     // Realtime
-    var whenRealtimeSyncs = common.whenRealtimeSyncs = Realtime.whenRealtimeSyncs;
+    var whenRealtimeSyncs = common.whenRealtimeSyncs = function (realtime, cb) {
+        Realtime.whenRealtimeSyncs(common, realtime, cb);
+    };
 
     // Userlist
     common.createUserList = UserList.create;
