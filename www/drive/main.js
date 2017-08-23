@@ -51,6 +51,8 @@ define([
     var TEMPLATE_NAME = Messages.fm_templateName;
     var TRASH = "trash";
     var TRASH_NAME = Messages.fm_trashName;
+    var RECENT = "recent";
+    var RECENT_NAME = "Recent pads";
 
     var LOCALSTORAGE_LAST = "cryptpad-file-lastOpened";
     var LOCALSTORAGE_OPENED = "cryptpad-file-openedFolders";
@@ -172,6 +174,7 @@ define([
     var $closeIcon = $('<span>', {"class": "fa fa-window-close"});
     var $backupIcon = $('<span>', {"class": "fa fa-life-ring"});
     var $searchIcon = $('<span>', {"class": "fa fa-search searchIcon"});
+    var $addIcon = $('<span>', {"class": "fa fa-plus"});
 
     var history = {
         isHistoryMode: false,
@@ -233,9 +236,10 @@ define([
 
         // Categories dislayed in the menu
         // _WORKGROUP_ : do not display unsorted
-        var displayedCategories = [ROOT, TRASH, SEARCH];
+        var displayedCategories = [ROOT, TRASH, SEARCH, RECENT];
         if (AppConfig.enableTemplates) { displayedCategories.push(TEMPLATE); }
         if (isWorkgroup()) { displayedCategories = [ROOT, TRASH, SEARCH]; }
+        var virtualCategories = [SEARCH, RECENT];
 
         if (!APP.loggedIn) {
             displayedCategories = [FILES_DATA];
@@ -1259,6 +1263,7 @@ define([
                 case TEMPLATE: pName = TEMPLATE_NAME; break;
                 case FILES_DATA: pName = FILES_DATA_NAME; break;
                 case SEARCH: pName = SEARCH_NAME; break;
+                case RECENT: pName = RECENT_NAME; break;
                 default: pName = name;
             }
             return pName;
@@ -1317,6 +1322,9 @@ define([
                     break;
                 case FILES_DATA:
                     msg = Messages.fm_info_allFiles;
+                    break;
+                case RECENT:
+                    msg = Messages.fm_info_recent || 'TODO';
                     break;
                 default:
                     msg = undefined;
@@ -1805,6 +1813,50 @@ define([
             });
         };
 
+        var displayRecent = function ($list) {
+            var filesList = filesOp.getRecentPads();
+            var limit = 20;
+            var i = 0;
+            filesList.forEach(function (id) {
+                if (i >= 20) { return; }
+                // Check path (pad exists and not in trash)
+                var paths = filesOp.findFile(id);
+                if (!paths.length) { return; }
+                var path = paths[0];
+                if (filesOp.isPathIn(path, [TRASH])) { return; }
+                // Display the pad
+                var file = filesOp.getFileData(id);
+                if (!file) {
+                    //debug("Unsorted or template returns an element not present in filesData: ", href);
+                    file = { title: Messages.fm_noname };
+                    //return;
+                }
+                var $icon = getFileIcon(id);
+                var ro = filesOp.isReadOnlyFile(id);
+                // ro undefined mens it's an old hash which doesn't support read-only
+                var roClass = typeof(ro) === 'undefined' ? ' noreadonly' : ro ? ' readonly' : '';
+                var $element = $('<li>', {
+                    'class': 'file-element element element-row' + roClass,
+                });
+                addFileData(id, $element);
+                $element.prepend($icon).dblclick(function () {
+                    openFile(id);
+                });
+                $element.data('path', path);
+                $element.click(function(e) {
+                    e.stopPropagation();
+                    onElementClick(e, $element, path);
+                });
+                $element.contextmenu(openDefaultContextMenu);
+                $element.data('context', $defaultContextMenu);
+                /*if (draggable) {
+                    addDragAndDropHandlers($element, path, false, false);
+                }*/
+                $list.append($element);
+                i++;
+            });
+        };
+
         // Display the selected directory into the content part (rightside)
         // NOTE: Elements in the trash are not using the same storage structure as the others
         // _WORKGROUP_ : do not change the lastOpenedFolder value in localStorage
@@ -1833,9 +1885,11 @@ define([
             var isTemplate = filesOp.comparePath(path, [TEMPLATE]);
             var isAllFiles = filesOp.comparePath(path, [FILES_DATA]);
             var isSearch = path[0] === SEARCH;
+            var isRecent = path[0] === RECENT;
+            var isVirtual = virtualCategories.indexOf(path[0]) !== -1;
 
-            var root = isSearch ? undefined : filesOp.find(path);
-            if (!isSearch && typeof(root) === "undefined") {
+            var root = isVirtual ? undefined : filesOp.find(path);
+            if (!isVirtual && typeof(root) === "undefined") {
                 log(Messages.fm_unknownFolderError);
                 debug("Unable to locate the selected directory: ", path);
                 var parentPath = path.slice();
@@ -1921,6 +1975,8 @@ define([
                 displayTrashRoot($list, $folderHeader, $fileHeader);
             } else if (isSearch) {
                 displaySearch($list, path[1]);
+            } else if (isRecent) {
+                displayRecent($list);
             } else {
                 $dirContent.contextmenu(openContentContextMenu);
                 if (filesOp.hasSubfolder(root)) { $list.append($folderHeader); }
@@ -1939,6 +1995,21 @@ define([
                     if (filesOp.isFolder(root[key])) { return; }
                     var $element = createElement(path, key, root, false);
                     $element.appendTo($list);
+                });
+
+                var $element = $('<li>', {
+                    'class': 'element-row grid-element addpad'
+                }).prepend($addIcon.clone()).appendTo($list);
+                $element.attr('title', "TODO: Add a pad");
+                $element.click(function () {
+                    window.setTimeout(function () {
+                        $driveToolbar.find('.leftside .dropdown-bar-content').show();
+                    });
+                    /*var $content = $driveToolbar.find('.leftside .dropdown-bar-content').html();
+                    var $container = $('<div>').append($('<div>', {id:'cryptpad-add-pad'}));
+                    Cryptpad.alert($container.html(),null,true);
+                    var $c = $('body > .alertify').last().find('#cryptpad-add-pad');
+                    $c.append($content);*/
                 });
             }
             //$content.append($toolbar).append($title).append($info).append($dirContent);
@@ -2037,7 +2108,10 @@ define([
                 var $rootIcon = filesOp.isFolderEmpty(files[ROOT]) ?
                     (isRootOpened ? $folderOpenedEmptyIcon : $folderEmptyIcon) :
                     (isRootOpened ? $folderOpenedIcon : $folderIcon);
-                var $rootElement = createTreeElement(ROOT_NAME, $rootIcon.clone(), [ROOT], false, true, false, isRootOpened);
+                var $rootElement = createTreeElement(ROOT_NAME, $rootIcon.clone(), [ROOT], false, true, true, isRootOpened);
+                if (!filesOp.hasSubfolder(root)) {
+                    $rootElement.find('.expcol').css('visibility', 'hidden');
+                }
                 $rootElement.addClass('root');
                 $rootElement.find('>.element-row').contextmenu(openDirectoryContextMenu);
                 $('<ul>', {'class': 'docTree'}).append($rootElement).appendTo($container);
@@ -2093,6 +2167,15 @@ define([
             $container.append($trashList);
         };
 
+        var createRecent = function ($container, path) {
+            var $icon = $templateIcon.clone(); //TODO
+            var isOpened = filesOp.comparePath(path, currentPath);
+            var $element = createTreeElement(RECENT_NAME, $icon, [RECENT], false, false, false, isOpened);
+            $element.addClass('root');
+            var $list = $('<ul>', { id: 'recentTree', 'class': 'category' }).append($element);
+            $container.append($list);
+        };
+
         var search = APP.Search = {};
         var createSearch = function ($container) {
             var isInSearch = currentPath[0] === SEARCH;
@@ -2145,6 +2228,7 @@ define([
             $tree.html('');
             if (displayedCategories.indexOf(SEARCH) !== -1) { createSearch($tree); }
             var $div = $('<div>', {'class': 'categories-container'}).appendTo($tree);
+            if (displayedCategories.indexOf(RECENT) !== -1) { createRecent($div, [RECENT]); }
             if (displayedCategories.indexOf(ROOT) !== -1) { createTree($div, [ROOT]); }
             if (displayedCategories.indexOf(TEMPLATE) !== -1) { createTemplate($div, [TEMPLATE]); }
             if (displayedCategories.indexOf(FILES_DATA) !== -1) { createAllFiles($div, [FILES_DATA]); }

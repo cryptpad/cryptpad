@@ -101,10 +101,29 @@ define([
         ctx.sframeChan.query('Q_GET_FULL_HISTORY', null, cb);
     };
 
-    // TODO
+    funcs.feedback = function (action, force) {
+        if (force !== true) {
+            if (!action) { return; }
+            try {
+                if (!ctx.metadataMgr.getPrivateData().feedbackAllowed) { return; }
+            } catch (e) { return void console.error(e); }
+        }
+        var randomToken = Math.random().toString(16).replace(/0./, '');
+        var origin = ctx.metadataMgr.getPrivateData().origin;
+        var href = /*origin +*/ '/common/feedback.html?' + action + '=' + randomToken;
+        $.ajax({
+            type: "HEAD",
+            url: href,
+        });
+    };
+    var prepareFeedback = function (key) {
+        if (typeof(key) !== 'string') { return $.noop; }
 
-    funcs.feedback = function () {};
-    var prepareFeedback = function () {};
+        var type = ctx.metadataMgr.getMetadata().type;
+        return function () {
+            funcs.feedback((key + (type? '_' + type: '')).toUpperCase());
+        };
+    };
 
     // BUTTONS
     var isStrongestStored = function () {

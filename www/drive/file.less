@@ -190,7 +190,8 @@ span {
     }
     .docTree {
         margin-top: 20px;
-        padding: 0 0 0 20px;
+        //padding: 0 0 0 20px;
+        padding: 0;
         cursor: auto;
         &li, li {
             padding: 0;
@@ -302,6 +303,24 @@ span {
         &:before {
             position:relative;
             top: -1px;
+        }
+    }
+    .docTree {
+        .root > .element-row > .expcol {
+            position: relative;
+            top:0;
+            left: -10px;
+        }
+        .root > .element-row > .folder {
+            margin-left: -5px;
+        }
+        .root {
+            &> .element-row {
+                padding-left: 20px;
+            }
+            &> ul {
+                padding-left: 30px;
+            }
         }
     }
 
@@ -478,9 +497,26 @@ span {
         .listElement {
             display: none;
         }
+        .addpad {
+            cursor: pointer;
+            opacity: 0.5;
+            padding: 0;
+            &:hover {
+                opacity: 0.7;
+            }
+            .fa {
+                cursor: pointer;
+                font-size: 100px;
+                line-height: 140px;
+                margin: 0;
+            }
+        }
     }
 
     .list {
+        .grid-element {
+            display: none;
+        }
         // Make it act as a table!
         padding-left: 20px;
         ul {

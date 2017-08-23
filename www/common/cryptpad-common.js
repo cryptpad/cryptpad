@@ -205,6 +205,13 @@ define([
     var randomToken = function () {
         return Math.random().toString(16).replace(/0./, '');
     };
+
+    common.isFeedbackAllowed = function () {
+        try {
+            if (!getStore().getProxy().proxy.allowUserFeedback) { return; }
+            return true;
+        } catch (e) { return void console.error(e); }
+    };
     var feedback = common.feedback = function (action, force) {
         if (force !== true) {
             if (!action) { return; }
