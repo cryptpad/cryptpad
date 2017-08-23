@@ -581,6 +581,7 @@ define([
         _onDisplayNameChanged.forEach(function (h) {
             h(newName, isLocal);
         });
+        common.clearTooltips();
     };
 
     // STORAGE
@@ -1905,11 +1906,17 @@ define([
 
         Store.ready(function (err, storeObj) {
             store = common.store = env.store = storeObj;
-
             common.addDirectMessageHandler(common);
 
             var proxy = getProxy();
             var network = getNetwork();
+
+            network.on('disconnect', function () {
+                Realtime.setConnectionState(false);
+            });
+            network.on('reconnect', function () {
+                Realtime.setConnectionState(true);
+            });
 
             if (Object.keys(proxy).length === 1) {
                 feedback("FIRST_APP_USE", true);
