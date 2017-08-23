@@ -191,7 +191,7 @@ define([
             var name = data.name || Messages.anonymous;
             var $span = $('<span>', {'class': 'avatar'});
             var $rightCol = $('<span>', {'class': 'right-col'});
-            //var $nameSpan = $('<span>', {'class': 'name'}).text(name).appendTo($rightCol);
+            $('<span>', {'class': 'name'}).text(name).appendTo($rightCol);
             //var proxy = Cryptpad.getProxy();
             //var isMe = data.curvePublic === proxy.curvePublic;
 
