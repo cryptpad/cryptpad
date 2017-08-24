@@ -1,13 +1,10 @@
 define([
+    '/common/common-util.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function () {
+], function (Util) {
     var Nacl = window.nacl;
 
-    var uid = function () {
-        return Number(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER))
-            .toString(32).replace(/\./g, '');
-    };
-
+    var uid = Util.uid;
     var signMsg = function (data, signKey) {
         var buffer = Nacl.util.decodeUTF8(JSON.stringify(data));
         return Nacl.util.encodeBase64(Nacl.sign.detached(buffer, signKey));

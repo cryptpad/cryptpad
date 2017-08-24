@@ -98,6 +98,7 @@ define([
     common.createRandomInteger = Util.createRandomInteger;
     common.getAppType = Util.getAppType;
     common.notAgainForAnother = Util.notAgainForAnother;
+    common.uid = Util.uid;
 
     // import hash utilities for export
     var createRandomHash = common.createRandomHash = Hash.createRandomHash;
