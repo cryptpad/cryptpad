@@ -10,18 +10,33 @@ define([
     var UI = {};
     var Messages = Cryptpad.Messages;
 
-    var stub = function (label) {
-        console.error('stub: ' + label);
+    var m = function (md) {
+        var d = h('div.content');
+        d.innerHTML = Marked(md || '');
+        return d;
     };
 
     var dataQuery = function (curvePublic) {
         return '[data-key="' + curvePublic + '"]';
     };
 
+    var initChannel = function (state, curvePublic, info) {
+        console.log('initializing channel for [%s]', curvePublic);
+        //console.log(info);
+        state.channels[curvePublic] = {
+            messages: [],
+            HEAD: info.lastKnownHash,
+        };
+    };
+
     UI.create = function (messenger, $userlist, $messages) {
-        var state = {
+        var state = window.state = {
             active: '',
         };
+
+        state.channels = {};
+        var displayNames = state.displayNames = {};
+
         var avatars = state.avatars = {};
         var setActive = function (curvePublic) {
             state.active = curvePublic;
@@ -48,17 +63,40 @@ define([
                 title: msg.time? new Date(msg.time).toLocaleString(): '?',
             }, [
                 name? h('div.sender', name): undefined,
-                h('div.content', msg.text),
+                m(msg.text),
             ]);
+        };
+
+        var getChat = function (curvePublic) {
+            return $messages.find(dataQuery(curvePublic));
         };
 
         markup.chatbox = function (curvePublic, data) {
             var moreHistory = h('span.more-history', ['get more history']); // TODO translate
             var displayName = data.displayName;
 
+            var fetching = false;
             $(moreHistory).click(function () {
-                stub('get older history');
+                //stub('get older history');
                 console.log('getting history');
+
+                // get oldest known message...
+                var channel = state.channels[curvePublic];
+                var sig = !(channel.messages && channel.messages.length)?
+                    channel.HEAD: channel.messages[0].sig;
+
+                fetching = true;
+                var $messages = $(getChat(curvePublic)).find('.messages');
+                messenger.getMoreHistory(curvePublic, sig, 10, function (e, history) {
+                    fetching = false;
+                    if (e) { return void console.error(e); }
+                    history.forEach(function (msg) {
+                        channel.messages.unshift(msg);
+                        var name = displayNames[msg.channel];
+                        var el_message = markup.message(msg, name);
+                        $messages.prepend(el_message);
+                    });
+                });
             });
 
             var removeHistory = h('span.remove-history.fa.fa-eraser', {
@@ -110,6 +148,7 @@ define([
 
             var sending = false;
             var send = function (content) {
+                if (typeof(content) !== 'string' || !content.trim()) { return; }
                 if (sending) { return false; }
                 sending = true;
                 messenger.sendMessage(curvePublic, content, function (e) {
@@ -170,14 +209,11 @@ define([
             $messages.find('.info').hide();
         };
 
-        var getChat = function (curvePublic) {
-            return $messages.find(dataQuery(curvePublic));
-        };
-
         var updateStatus = function (curvePublic) {
             var $status = find.inList(curvePublic).find('.status');
+            // FIXME this stopped working :(
             messenger.getStatus(curvePublic, function (e, online) {
-                if (e) { return void console.error(e); }
+                if (e) { return void console.error(curvePublic, e); }
                 if (online) {
                     return void $status
                         .removeClass('offline').addClass('online');
@@ -187,17 +223,34 @@ define([
         };
 
         var display = function (curvePublic) {
+            var channel = state.channels[curvePublic];
+            var lastMsg = channel.messages.slice(-1)[0];
+
+            if (lastMsg) {
+                channel.HEAD = lastMsg.sig;
+                messenger.setChannelHead(curvePublic, channel.HEAD, function (e) {
+                    if (e) { console.error(e); }
+                });
+            }
+
             setActive(curvePublic);
             unnotify(curvePublic);
             var $chat = getChat(curvePublic);
             hideInfo();
             $messages.find('div.chat[data-key]').hide();
             if ($chat.length) {
+                var $chat_messages = $chat.find('div.message');
+                if (!$chat_messages.length) {
+                    var $more = $chat.find('.more-history');
+                    console.log($more);
+                    $more.click();
+                }
                 return void $chat.show();
             }
             messenger.getFriendInfo(curvePublic, function (e, info) {
                 if (e) { return void console.error(e); } // FIXME
-                $messages.append(markup.chatbox(curvePublic, info));
+                var chatbox = markup.chatbox(curvePublic, info);
+                $messages.append(chatbox);
             });
         };
 
@@ -208,9 +261,9 @@ define([
             });
         };
 
-        var friendExistsInUserList = function (curvePublic) {
+/*      var friendExistsInUserList = function (curvePublic) {
             return !!$userlist.find(dataQuery(curvePublic)).length;
-        };
+        }; */
 
         markup.friend = function (data) {
             var curvePublic = data.curvePublic;
@@ -241,8 +294,10 @@ define([
                     Cryptpad.fixHTML(data.displayName)
                 ]), function (yes) {
                     if (!yes) { return; }
-                    stub('remove friend: ' + curvePublic);
                     removeFriend(curvePublic);
+                    // TODO remove friend from userlist ui
+                    // FIXME seems to trigger EJOINED from netflux-websocket (from server);
+                    // (tried to join a channel in which you were already present)
                 });
             });
 
@@ -261,32 +316,53 @@ define([
             return $friend;
         };
 
-        var displayNames = {};
 
+        var initializing = true;
+
+        // TODO handle scrolling.
         messenger.on('message', function (message) {
             console.log(JSON.stringify(message));
-            Cryptpad.notify();
+            if (!initializing) { Cryptpad.notify(); }
             var curvePublic = message.curve;
-
-            if (!isActive(curvePublic)) { notify(curvePublic); }
 
             var name = displayNames[curvePublic];
             var chat = getChat(curvePublic, name);
             var el_message = markup.message(message, name);
 
+            state.channels[curvePublic].messages.push(message);
+
             var $chat = $(chat);
-            console.log(chat, $chat, el_message.outerHTML);
             $chat.find('.messages').append(el_message);
 
+            var channel = state.channels[curvePublic];
+            if (!channel) {
+                console.error('expected channel [%s] to be open', curvePublic);
+                return;
+            }
+
+            if (isActive(curvePublic)) {
+                channel.HEAD = message.sig;
+                messenger.setChannelHead(curvePublic, message.sig, function (e) {
+                    if (e) { return void console.error(e); }
+                });
+                return;
+            }
+            var lastMsg = channel.messages.slice(-1)[0];
+            if (lastMsg.sig !== channel.HEAD) {
+                return void notify(curvePublic);
+            }
+            unnotify(curvePublic);
             // TODO notify if a message is newer than `lastKnownHash`
         });
 
         messenger.on('join', function (curvePublic, channel) {
-            console.log('join', curvePublic, channel);
+            //console.log('join', curvePublic, channel);
+            channel = channel;
             updateStatus(curvePublic);
         });
         messenger.on('leave', function (curvePublic, channel) {
-            console.log('leave', curvePublic, channel);
+            //console.log('leave', curvePublic, channel);
+            channel = channel;
             updateStatus(curvePublic);
         });
 
@@ -300,20 +376,42 @@ define([
             messenger.updateMyData();
         });
 
-        messenger.getFriendList(function (e, keys) {
-            keys.forEach(function (k) {
-                messenger.openFriendChannel(k, function (e) {
-                    if (e) { return void console.error(e); }
-                    // don't add friends that are already in your userlist
-                    if (friendExistsInUserList(k)) { return; }
+        // FIXME dirty hack
+        messenger.getMyInfo(function (e, info) {
+            displayNames[info.curvePublic] = info.displayName;
+        });
 
-                    messenger.getFriendInfo(k, function (e, info) {
-                        if (e) { return console.error(e); }
-                        var curvePublic = info.curvePublic;
-                        var name = displayNames[curvePublic] = info.displayName;
-                        var friend = markup.friend(info, name);
-                        $userlist.append(friend);
+        messenger.getFriendList(function (e, keys) {
+            var count = keys.length + 1;
+
+            var ready = function () {
+                count--;
+                if (count === 0) {
+                    initializing = false;
+                    Cryptpad.removeLoadingScreen();
+                }
+            };
+
+            ready();
+            keys.forEach(function (curvePublic) {
+                messenger.getFriendInfo(curvePublic, function (e, info) {
+                    if (e) { return void console.error(e); }
+                    var name = displayNames[curvePublic] = info.displayName;
+                    initChannel(state, curvePublic, info);
+
+                    var chatbox = markup.chatbox(curvePublic, info);
+                    $(chatbox).hide();
+                    $messages.append(chatbox);
+
+                    var friend = markup.friend(info, name);
+                    $userlist.append(friend);
+                    messenger.openFriendChannel(curvePublic, function (e) {
+                        if (e) { return void console.error(e); }
+                        ready(info);
+                        ready();
                         updateStatus(curvePublic);
+                        // don't add friends that are already in your userlist
+                        //if (friendExistsInUserList(k)) { return; }
                     });
                 });
             });

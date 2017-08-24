@@ -62,14 +62,8 @@ define([
         $('<li>').text(Messages.contacts_info3).appendTo($ul);
         //$('<li>').text(Messages.contacts_info4).appendTo($ul);
 
-
-        //var ui = APP.ui = Cryptpad.initMessagingUI(Cryptpad, $list, $messages);
-        //APP.messenger = Cryptpad.initMessaging(Cryptpad, ui);
-
         var messenger = window.messenger = Messenger.messenger(Cryptpad);
         UI.create(messenger, $list, $messages);
-
-        Cryptpad.removeLoadingScreen();
     };
 
     Cryptpad.ready(function () {

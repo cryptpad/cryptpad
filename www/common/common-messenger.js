@@ -82,33 +82,6 @@ define([
         });
     };
 
-    var getMoreHistory = function (network, chan, hash, count) {
-        var msg = [ 'GET_HISTORY_RANGE', chan.id, {
-                from: hash,
-                count: count,
-            }
-        ];
-
-        network.sendto(network.historyKeeper, JSON.stringify(msg)).then(function () {
-        }, function (err) {
-            throw new Error(err);
-        });
-    };
-    getMoreHistory = getMoreHistory; // FIXME
-
-    var getChannelMessagesSince = function (network, proxy, chan, data, keys) {
-        var cfg = {
-            validateKey: keys.validateKey,
-            owners: [proxy.edPublic, data.edPublic],
-            lastKnownHash: data.lastKnownHash
-        };
-        var msg = ['GET_HISTORY', chan.id, cfg];
-        network.sendto(network.historyKeeper, JSON.stringify(msg))
-          .then($.noop, function (err) {
-            throw new Error(err);
-        });
-    };
-
     // Invitation
     // FIXME there are too many functions with this name
     var addToFriendList = Msg.addToFriendList = function (common, data, cb) {
@@ -247,13 +220,20 @@ define([
     };
 
     Msg.messenger = function (common) {
+        'use strict';
         var messenger = {
             handlers: {
                 message: [],
                 join: [],
                 leave: [],
                 update: [],
+                new_friend: [],
             },
+            range_requests: {},
+        };
+
+        var eachHandler = function (type, g) {
+            messenger.handlers[type].forEach(g);
         };
 
         messenger.on = function (type, f) {
@@ -297,6 +277,38 @@ define([
             var chanId = friend.channel;
             if (!chanId) { return; }
             return channels[chanId];
+        };
+
+        var initRangeRequest = function (txid, curvePublic, sig, cb) {
+            messenger.range_requests[txid] = {
+                messages: [],
+                cb: cb,
+                curvePublic: curvePublic,
+                sig: sig,
+            };
+        };
+
+        var getRangeRequest = function (txid) {
+            return messenger.range_requests[txid];
+        };
+
+        messenger.getMoreHistory = function (curvePublic, hash, count, cb) {
+            if (typeof(cb) !== 'function') { return; }
+            var chan = getChannel(curvePublic);
+            var txid = common.uid();
+            initRangeRequest(txid, curvePublic, hash, cb);
+            // FIXME hash is not necessarily defined.
+            var msg = [ 'GET_HISTORY_RANGE', chan.id, {
+                    from: hash,
+                    count: count,
+                    txid: txid,
+                }
+            ];
+
+            network.sendto(network.historyKeeper, JSON.stringify(msg)).then(function () {
+            }, function (err) {
+                throw new Error(err);
+            });
         };
 
         var getCurveForChannel = function (id) {
@@ -370,6 +382,27 @@ define([
             var rMsgStr = JSON.stringify(rMsg);
             var cryptMsg = channel.encryptor.encrypt(rMsgStr);
             network.sendto(sender, cryptMsg);
+        };
+
+        var orderMessages = function (curvePublic, new_messages, sig) {
+            var channel = getChannel(curvePublic);
+            var messages = channel.messages;
+            var idx;
+            messages.some(function (msg, i) {
+                if (msg.sig === sig) { idx = i; }
+                return true;
+            });
+
+            if (typeof(idx) !== 'undefined') {
+                console.error('found old message at %s', idx);
+            } else {
+                console.error("did not find desired message");
+            }
+
+            // TODO improve performance
+            new_messages.reverse().forEach(function (msg) {
+                messages.unshift(msg);
+            });
         };
 
         var pushMsg = function (channel, cryptMsg) {
@@ -447,7 +480,8 @@ define([
                     var msgStr = JSON.stringify(msg);
                     var cryptMsg = channel.encryptor.encrypt(msgStr);
                     channel.wc.bcast(cryptMsg).then(function () {
-                        channel.refresh();
+                        // TODO send event
+                        //channel.refresh();
                     }, function (err) {
                         console.error(err);
                     });
@@ -468,6 +502,56 @@ define([
         var onDirectMessage = function (common, msg, sender) {
             if (sender !== Msg.hk) { return void onIdMessage(msg, sender); }
             var parsed = JSON.parse(msg);
+
+            if (/HISTORY_RANGE/.test(parsed[0])) {
+                //console.log(parsed);
+                var txid = parsed[1];
+                var req = getRangeRequest(txid);
+                var type = parsed[0];
+                if (!req) {
+                    return void console.error("received response to unknown request");
+                }
+
+                if (type === 'HISTORY_RANGE') {
+                    //console.log(parsed);
+                    req.messages.push(parsed[2]); // TODO use pushMsg instead
+                } else if (type === 'HISTORY_RANGE_END') {
+                    // process all the messages (decrypt)
+                    var curvePublic = req.curvePublic;
+                    var channel = getChannel(curvePublic);
+
+                    var decrypted = req.messages.map(function (msg) {
+                        if (msg[2] !== 'MSG') { return; }
+                        try {
+                            return {
+                                d: JSON.parse(channel.encryptor.decrypt(msg[4])),
+                                sig: msg[4].slice(0, 64),
+                            };
+                        } catch (e) {
+                            console.log('failed to decrypt');
+                            return null;
+                        }
+                    }).filter(function (decrypted) {
+                        return decrypted;
+                    }).map(function (O) {
+                        return {
+                            type: O.d[0],
+                            sig: O.sig,
+                            channel: O.d[1],
+                            time: O.d[2],
+                            text: O.d[3],
+                            curve: curvePublic,
+                        };
+                    });
+
+                    orderMessages(curvePublic, decrypted, req.sig);
+                    return void req.cb(void 0, decrypted);
+                } else {
+                    console.log(parsed);
+                }
+                return;
+            }
+
             if ((parsed.validateKey || parsed.owners) && parsed.channel) {
                 return;
             }
@@ -510,12 +594,14 @@ define([
         });
 
         messenger.removeFriend = function (curvePublic, cb) {
-            // TODO throw if no callback
+            if (typeof(cb) !== 'function') { throw new Error('NO_CALLBACK'); }
             var data = getFriend(proxy, curvePublic);
             var channel = channels[data.channel];
             var msg = [Types.unfriend, proxy.curvePublic, +new Date()];
             var msgStr = JSON.stringify(msg);
             var cryptMsg = channel.encryptor.encrypt(msgStr);
+
+            // TODO emit remove_friend event?
             channel.wc.bcast(cryptMsg).then(function () {
                 delete friends[curvePublic];
                 Realtime.whenRealtimeSyncs(realtime, function () {
@@ -527,8 +613,20 @@ define([
             });
         };
 
-        // Open the channels
-        // TODO (curvePublic, cb) => (e) // READY
+        var getChannelMessagesSince = function (chan, data, keys) {
+            console.log('Fetching [%s] messages since [%s]', data.curvePublic, data.lastKnownHash || '');
+            var cfg = {
+                validateKey: keys.validateKey,
+                owners: [proxy.edPublic, data.edPublic],
+                lastKnownHash: data.lastKnownHash
+            };
+            var msg = ['GET_HISTORY', chan.id, cfg];
+            network.sendto(network.historyKeeper, JSON.stringify(msg))
+              .then($.noop, function (err) {
+                throw new Error(err);
+            });
+        };
+
         var openFriendChannel = function (data, f) {
             var keys = Curve.deriveKeys(data.curvePublic, proxy.curvePrivate);
             var encryptor = Curve.createEncryptor(keys);
@@ -570,6 +668,8 @@ define([
                 var onJoining = function (peer) {
                     if (peer === Msg.hk) { return; }
                     if (channel.userList.indexOf(peer) !== -1) { return; }
+
+                    // FIXME this doesn't seem to be mapping correctly
                     channel.userList.push(peer);
                     var msg = [Types.mapId, proxy.curvePublic, chan.myID];
                     var msgStr = JSON.stringify(msg);
@@ -584,7 +684,7 @@ define([
                 chan.on('join', onJoining);
                 chan.on('leave', function (peer) {
                     var curvePublic = channel.mapId[peer];
-                    console.log(curvePublic);
+                    console.log(curvePublic); // FIXME
 
                     var i = channel.userList.indexOf(peer);
                     while (i !== -1) {
@@ -598,7 +698,8 @@ define([
                     });
                 });
 
-                getChannelMessagesSince(network, proxy, chan, data, keys);
+                // FIXME don't subscribe to the channel implicitly
+                getChannelMessagesSince(chan, data, keys);
             }, function (err) {
                 console.error(err);
             });
@@ -633,10 +734,10 @@ define([
             }));
         };
 
+/*
         messenger.openFriendChannels = function () {
             eachFriend(friends, openFriendChannel);
-        };
-
+        };*/
 
         messenger.openFriendChannel = function (curvePublic, cb) {
             if (typeof(curvePublic) !== 'string') { return void cb('INVALID_ID'); }
@@ -694,8 +795,38 @@ define([
         messenger.getFriendInfo = function (curvePublic, cb) {
             var friend = friends[curvePublic];
             if (!friend) { return void cb('NO_SUCH_FRIEND'); }
-            cb(void 0, friend);
+            // this clone will be redundant when ui uses postmessage
+            cb(void 0, clone(friend));
         };
+
+        messenger.getMyInfo = function (cb) {
+            cb(void 0, {
+                curvePublic: proxy.curvePublic,
+                displayName: common.getDisplayName(),
+            });
+        };
+
+        // TODO listen for changes to your friend list
+        // emit 'update' events for clients
+
+        //var update = function (curvePublic
+        proxy.on('change', ['friends'], function (o, n, p) {
+            var curvePublic;
+            if (o === undefined) {
+                // new friend added
+                curvePublic = p.slice(-1)[0];
+                eachHandler('new_friend', function (f) {
+                    f(clone(n), curvePublic);
+                });
+                return;
+            }
+
+            console.error(o, n, p);
+        }).on('remove', ['friends'], function (o, p) {
+            console.error(o, p);
+        });
+
+        Object.freeze(messenger);
 
         return messenger;
     };
