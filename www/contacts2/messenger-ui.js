@@ -58,9 +58,12 @@ define([
         };
 
         var markup = {};
-        markup.message = function (msg, name) {
+        markup.message = function (msg) {
+            var curvePublic = msg.author;
+            var name = displayNames[msg.author];
             return h('div.message', {
                 title: msg.time? new Date(msg.time).toLocaleString(): '?',
+                'data-key': curvePublic,
             }, [
                 name? h('div.sender', name): undefined,
                 m(msg.text),
@@ -71,13 +74,25 @@ define([
             return $messages.find(dataQuery(curvePublic));
         };
 
+        var normalizeLabels = function ($messagebox) {
+            $messagebox.find('div.message').toArray().reduce(function (a, b) {
+                var $b = $(b);
+                if ($(a).data('key') === $b.data('key')) {
+                    $b.find('.sender').hide();
+                    return a;
+                }
+                return b;
+            });
+        };
+
         markup.chatbox = function (curvePublic, data) {
-            var moreHistory = h('span.more-history', ['get more history']); // TODO translate
+            var moreHistory = h('span.more-history.fa.fa-history', {
+                title: Messages.contacts_fetchHistory,
+            });
             var displayName = data.displayName;
 
             var fetching = false;
             $(moreHistory).click(function () {
-                //stub('get older history');
                 console.log('getting history');
 
                 // get oldest known message...
@@ -86,16 +101,16 @@ define([
                     channel.HEAD: channel.messages[0].sig;
 
                 fetching = true;
-                var $messages = $(getChat(curvePublic)).find('.messages');
+                var $messagebox = $(getChat(curvePublic)).find('.messages');
                 messenger.getMoreHistory(curvePublic, sig, 10, function (e, history) {
                     fetching = false;
                     if (e) { return void console.error(e); }
                     history.forEach(function (msg) {
                         channel.messages.unshift(msg);
-                        var name = displayNames[msg.channel];
-                        var el_message = markup.message(msg, name);
-                        $messages.prepend(el_message);
+                        var el_message = markup.message(msg);
+                        $messagebox.prepend(el_message);
                     });
+                    normalizeLabels($messagebox);
                 });
             });
 
@@ -159,6 +174,10 @@ define([
                     input.value = '';
                     sending = false;
                     console.log('sent successfully');
+                    var $messagebox = $(messages);
+
+                    var height = $messagebox[0].scrollHeight;
+                    $messagebox.scrollTop(height);
                 });
             };
 
@@ -327,12 +346,13 @@ define([
 
             var name = displayNames[curvePublic];
             var chat = getChat(curvePublic, name);
-            var el_message = markup.message(message, name);
+            var el_message = markup.message(message);
 
             state.channels[curvePublic].messages.push(message);
 
             var $chat = $(chat);
-            $chat.find('.messages').append(el_message);
+            var $messagebox = $chat.find('.messages').append(el_message);
+            normalizeLabels($messagebox);
 
             var channel = state.channels[curvePublic];
             if (!channel) {

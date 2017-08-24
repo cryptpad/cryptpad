@@ -421,7 +421,7 @@ define([
                 var res = {
                     type: parsedMsg[0],
                     sig: sig,
-                    channel: parsedMsg[1],
+                    author: parsedMsg[1],
                     time: parsedMsg[2],
                     text: parsedMsg[3],
                     // this makes debugging a whole lot easier
@@ -537,7 +537,7 @@ define([
                         return {
                             type: O.d[0],
                             sig: O.sig,
-                            channel: O.d[1],
+                            author: O.d[1],
                             time: O.d[2],
                             text: O.d[3],
                             curve: curvePublic,
