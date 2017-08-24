@@ -228,6 +228,7 @@ define([
                 leave: [],
                 update: [],
                 new_friend: [],
+                unfriend: [],
             },
             range_requests: {},
         };
@@ -371,8 +372,8 @@ define([
             // check that the responding peer's encrypted netflux id matches
             // the sender field. This is to prevent replay attacks.
             if (parsed[2] !== sender || !parsed[1]) { return; }
-            channel.mapId[sender] = parsed[1]; // HERE
-            messenger.handlers.join.forEach(function (f) {
+            channel.mapId[sender] = parsed[1];
+            eachHandler('join', function (f) {
                 f(parsed[1], channel.id);
             });
 
@@ -431,7 +432,7 @@ define([
                 // TODO emit message event
                 channel.messages.push(res);
 
-                messenger.handlers.message.forEach(function (f) {
+                eachHandler('message', function (f) {
                     f(res);
                 });
 
@@ -693,7 +694,7 @@ define([
                     }
                     // update status
                     if (!curvePublic) { return; }
-                    messenger.handlers.leave.forEach(function (f) {
+                    eachHandler('leave', function (f) {
                         f(curvePublic, channel.id);
                     });
                 });
@@ -823,6 +824,7 @@ define([
 
             console.error(o, n, p);
         }).on('remove', ['friends'], function (o, p) {
+            // TODO eachHandler('unfriend', function (f) { f(); });
             console.error(o, p);
         });
 
