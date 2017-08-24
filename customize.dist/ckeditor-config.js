@@ -61,7 +61,6 @@ CKEDITOR.editorConfig = function( config ) {
     // every part of ckeditor will get in the browser cache.
     var fix = function (x) {
         if (x.map) { return x.map(fix); }
-        console.log('> ' + x);
         return (/\/bower_components\/.*\.css$/.test(x)) ? (x + '?ver=' + CKEDITOR.timestamp) : x;
     };
     CKEDITOR.tools._buildStyleHtml = CKEDITOR.tools.buildStyleHtml;

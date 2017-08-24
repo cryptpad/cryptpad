@@ -153,12 +153,16 @@ define([], function () {
                     if (message) {
                         // Do not remove wcObject, it allows us to use a new 'wc' without changing the handler if we
                         // want to keep the same chainpad (realtime) object
-                        wcObject.wc.bcast(message).then(function() {
-                            cb('OK');
-                        }, function(err) {
-                            // The message has not been sent, display the error.
-                            console.error(err);
-                        });
+                        try {
+                            wcObject.wc.bcast(message).then(function() {
+                                cb('OK');
+                            }, function(err) {
+                                // The message has not been sent, display the error.
+                                console.error(err);
+                            });
+                        } catch (e) {
+                            cb('ERROR');
+                        }
                     }
                 };
                 queue.forEach(function (arr) { messageFromInner(arr[0], arr[1]); });

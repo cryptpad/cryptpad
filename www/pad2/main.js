@@ -117,13 +117,6 @@ define([
         'AUDIO'
     ];
 
-    var openLink = function (e) {
-        var el = e.currentTarget;
-        if (!el || el.nodeName !== 'A') { return; }
-        var href = el.getAttribute('href');
-        if (href) { window.open(href, '_blank'); }
-    };
-
     var getHTML = function (inner) {
         return ('<!DOCTYPE html>\n' + '<html>\n' + inner.innerHTML);
     };
@@ -303,11 +296,20 @@ define([
             el.setAttribute('class', 'non-realtime');
         });
 
-        var documentBody = $html.find('iframe')[0].contentWindow.document.body;
+        var ifrWindow = $html.find('iframe')[0].contentWindow;
+
+        var documentBody = ifrWindow.document.body;
 
         var inner = window.inner = documentBody;
 
         var cursor = module.cursor = Cursor(inner);
+
+        var openLink = function (e) {
+            var el = e.currentTarget;
+            if (!el || el.nodeName !== 'A') { return; }
+            var href = el.getAttribute('href');
+            if (href) { ifrWindow.open(href, '_blank'); }
+        };
 
         var setEditable = module.setEditable = function (bool) {
             if (bool) {
@@ -733,7 +735,10 @@ define([
         var common;
 
         nThen(function (waitFor) {
-            ckEditorAvailable(waitFor(function (ck) { Ckeditor = ck; }));
+            ckEditorAvailable(waitFor(function (ck) {
+                Ckeditor = ck;
+                require(['/pad2/wysiwygarea-plugin.js'], waitFor());
+            }));
             $(waitFor(function () {
                 Cryptpad.addLoadingScreen();
             }));
