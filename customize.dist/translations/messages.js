@@ -293,6 +293,7 @@ define(function () {
     out.contacts_removeHistoryTitle = 'Clean the chat history';
     out.contacts_confirmRemoveHistory = 'Are you sure you want to permanently remove your chat history? Data cannot be restored';
     out.contacts_removeHistoryServerError = 'There was an error while removing your chat history. Try again later';
+    out.contacts_fetchHistory = "Retrieve older history";
 
     // File manager
 
