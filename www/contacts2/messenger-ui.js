@@ -4,6 +4,7 @@ define([
     '/common/hyperscript.js',
     '/bower_components/marked/marked.min.js',
 ], function ($, Cryptpad, h, Marked) {
+    'use strict';
     // TODO use our fancy markdown and support media-tags
     Marked.setOptions({ sanitize: true, });
 
@@ -22,7 +23,6 @@ define([
 
     var initChannel = function (state, curvePublic, info) {
         console.log('initializing channel for [%s]', curvePublic);
-        //console.log(info);
         state.channels[curvePublic] = {
             messages: [],
             HEAD: info.lastKnownHash,
@@ -317,7 +317,7 @@ define([
                     // TODO remove friend from userlist ui
                     // FIXME seems to trigger EJOINED from netflux-websocket (from server);
                     // (tried to join a channel in which you were already present)
-                });
+                }, undefined, true);
             });
 
             if (data.avatar && avatars[data.avatar]) {
@@ -338,7 +338,6 @@ define([
 
         var initializing = true;
 
-        // TODO handle scrolling.
         messenger.on('message', function (message) {
             console.log(JSON.stringify(message));
             if (!initializing) { Cryptpad.notify(); }
@@ -372,7 +371,6 @@ define([
                 return void notify(curvePublic);
             }
             unnotify(curvePublic);
-            // TODO notify if a message is newer than `lastKnownHash`
         });
 
         messenger.on('join', function (curvePublic, channel) {
