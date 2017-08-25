@@ -10,9 +10,10 @@ define([
     '/common/metadata-manager.js',
 
     '/customize/application_config.js',
-    '/common/cryptpad-common.js'
+    '/common/cryptpad-common.js',
+    '/common/common-realtime.js'
 ], function ($, nThen, Messages, CpNfInner, SFrameChannel, Title, UI, History, MetadataMgr,
-    AppConfig, Cryptpad) {
+    AppConfig, Cryptpad, CommonRealtime) {
 
     // Chainpad Netflux Inner
     var funcs = {};
@@ -292,6 +293,10 @@ define([
                     if (titleUpdated) { titleUpdated(undefined, title); }
                 });
             });
+
+            ctx.sframeChan.on('EV_RT_CONNECT', function () { CommonRealtime.setConnectionState(true); });
+            ctx.sframeChan.on('EV_RT_DISCONNECT', function () { CommonRealtime.setConnectionState(false); });
+
             cb(funcs);
         });
     } };

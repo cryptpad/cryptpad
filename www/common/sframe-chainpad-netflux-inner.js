@@ -67,9 +67,7 @@ define([
                 logLevel: logLevel
             });
             chainpad.onMessage(function(message, cb) {
-                sframeChan.query('Q_RT_MESSAGE', message, function (ret) {
-                    if (ret === 'OK') { cb(); }
-                });
+                sframeChan.query('Q_RT_MESSAGE', message, cb);
             });
             chainpad.onPatch(function () {
                 onRemote({ realtime: chainpad });

@@ -155,13 +155,14 @@ define([], function () {
                         // want to keep the same chainpad (realtime) object
                         try {
                             wcObject.wc.bcast(message).then(function() {
-                                cb('OK');
+                                cb();
                             }, function(err) {
                                 // The message has not been sent, display the error.
                                 console.error(err);
                             });
                         } catch (e) {
-                            cb('ERROR');
+                            console.log(e);
+                            // Just skip calling back and it will fail on the inside.
                         }
                     }
                 };
@@ -214,6 +215,7 @@ define([], function () {
         };
 
         network.on('disconnect', function (reason) {
+            console.log('disconnect');
             if (isIntentionallyLeaving) { return; }
             if (reason === "network.disconnect() called") { return; }
             sframeChan.event('EV_RT_DISCONNECT');

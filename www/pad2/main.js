@@ -33,6 +33,7 @@ define([
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/api/config',
+    '/common/common-realtime.js',
 
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/diff-dom/diffDOM.js',
@@ -41,8 +42,24 @@ define([
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less/cryptpad.less',
     'less!/customize/src/less/toolbar.less'
-], function ($, Crypto, Hyperjson,
-    Toolbar, Cursor, JsonOT, TypingTest, JSONSortify, TextPatcher, Cryptpad, Cryptget, Links, nThen, SFCommon, ApiConfig) {
+], function (
+    $,
+    Crypto,
+    Hyperjson,
+    Toolbar,
+    Cursor,
+    JsonOT,
+    TypingTest,
+    JSONSortify,
+    TextPatcher,
+    Cryptpad,
+    Cryptget,
+    Links,
+    nThen,
+    SFCommon,
+    ApiConfig,
+    CommonRealtime)
+{
     var saveAs = window.saveAs;
     var Messages = Cryptpad.Messages;
     var DiffDom = window.diffDOM;
@@ -321,6 +338,8 @@ define([
                 inner.setAttribute('contenteditable', bool);
             }
         };
+
+        CommonRealtime.onInfiniteSpinner(function () { setEditable(false); });
 
         // don't let the user edit until the pad is ready
         setEditable(false);
