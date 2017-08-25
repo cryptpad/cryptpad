@@ -4,9 +4,12 @@ define([
     '/common/toolbar2.js',
     '/common/cryptpad-common.js',
 
+    '/common/common-messenger.js',
+    '/contacts/messenger-ui.js',
+
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less/cryptpad.less',
-], function ($, Crypto, Toolbar, Cryptpad) {
+], function ($, Crypto, Toolbar, Cryptpad, Messenger, UI) {
     var Messages = Cryptpad.Messages;
 
     var APP = window.APP = {
@@ -46,13 +49,10 @@ define([
             console.error('reconnecting: ', uid);
             Cryptpad.findOKButton().click();
 
-            APP.messenger.cleanFriendChannels();
-            APP.messenger.openFriendChannels();
-            APP.messenger.setEditable(true);
+            //APP.messenger.cleanFriendChannels();
+            //APP.messenger.openFriendChannels();
+            //APP.messenger.setEditable(true);
         });
-
-        var ui = APP.ui = Cryptpad.initMessagingUI(Cryptpad, $list, $messages);
-        APP.messenger = Cryptpad.initMessaging(Cryptpad, ui);
 
         var $infoBlock = $('<div>', {'class': 'info'}).appendTo($messages);
         $('<h2>').text(Messages.contacts_info1).appendTo($infoBlock);
@@ -61,7 +61,8 @@ define([
         $('<li>').text(Messages.contacts_info3).appendTo($ul);
         //$('<li>').text(Messages.contacts_info4).appendTo($ul);
 
-        Cryptpad.removeLoadingScreen();
+        var messenger = window.messenger = Messenger.messenger(Cryptpad);
+        UI.create(messenger, $list, $messages);
     };
 
     Cryptpad.ready(function () {
