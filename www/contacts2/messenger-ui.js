@@ -13,7 +13,12 @@ define([
 
     var m = function (md) {
         var d = h('div.content');
-        d.innerHTML = Marked(md || '');
+        try {
+            d.innerHTML = Marked(md || '');
+        } catch (e) {
+            console.error(md);
+            console.error(e);
+        }
         return d;
     };
 
@@ -82,7 +87,7 @@ define([
                     return a;
                 }
                 return b;
-            });
+            }, []);
         };
 
         markup.chatbox = function (curvePublic, data) {
@@ -106,6 +111,11 @@ define([
                     fetching = false;
                     if (e) { return void console.error(e); }
                     history.forEach(function (msg) {
+                        if (msg.type !== 'MSG') {
+                            // handle other types of messages?
+                            return;
+                        }
+
                         channel.messages.unshift(msg);
                         var el_message = markup.message(msg);
                         $messagebox.prepend(el_message);
@@ -386,7 +396,15 @@ define([
 
         // change in your friend list
         messenger.on('update', function (info, curvePublic) {
-            curvePublic = curvePublic;
+            console.log(info, curvePublic);
+            var name = displayNames[curvePublic] = info.displayName;
+
+            // update label in friend list
+            find.inList(curvePublic).find('.name').text(name);
+
+            // update title bar and messages
+            $messages.find(dataQuery(curvePublic) + ' .header .name, div.message'+
+                dataQuery(curvePublic) + ' div.sender').text(name).text(name);
         });
 
         Cryptpad.onDisplayNameChanged(function () {

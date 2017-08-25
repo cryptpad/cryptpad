@@ -395,9 +395,9 @@ define([
             });
 
             if (typeof(idx) !== 'undefined') {
-                console.error('found old message at %s', idx);
+                //console.error('found old message at %s', idx);
             } else {
-                console.error("did not find desired message");
+                //console.error("did not find desired message");
             }
 
             // TODO improve performance
@@ -439,9 +439,8 @@ define([
                 return true;
             }
             if (parsedMsg[0] === Types.update) {
-                // TODO emit update event
-
                 if (parsedMsg[1] === proxy.curvePublic) { return; }
+                var curvePublic = parsedMsg[1];
                 var newdata = parsedMsg[3];
                 var data = getFriend(proxy, parsedMsg[1]);
                 var types = [];
@@ -451,13 +450,19 @@ define([
                         data[k] = newdata[k];
                     }
                 });
-                //channel.updateUI(types);
+
+                eachHandler('update', function (f) {
+                    f(clone(newdata), curvePublic);
+                });
                 return;
             }
             if (parsedMsg[0] === Types.unfriend) {
+                console.log('UNFRIEND');
                 removeFromFriendList(proxy, realtime, channel.friendEd, function () {
                     channel.wc.leave(Types.unfriend);
                     //channel.removeUI();
+
+
                 });
                 return;
             }
@@ -483,6 +488,9 @@ define([
                     channel.wc.bcast(cryptMsg).then(function () {
                         // TODO send event
                         //channel.refresh();
+                        eachHandler('update', function (f) {
+                            f(myData, myData.curvePublic);
+                        });
                     }, function (err) {
                         console.error(err);
                     });
