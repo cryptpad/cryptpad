@@ -38,7 +38,8 @@ var setHeaders = (function () {
         if (headers['Content-Security-Policy'].indexOf('frame-ancestors') === -1) {
             // backward compat for those who do not merge the new version of the config
             // when updating. This prevents endless spinner if someone clicks donate.
-            headers['Content-Security-Policy'] += "frame-ancestors 'self' accounts.cryptpad.fr;";
+            // It also fixes the cross-domain iframe.
+            headers['Content-Security-Policy'] += "frame-ancestors *;";
         }
     }
     const padHeaders = clone(headers);
@@ -47,7 +48,7 @@ var setHeaders = (function () {
     }
     if (Object.keys(headers).length) {
         return function (req, res) {
-            const h = /^\/pad\/inner\.html.*/.test(req.url) ? padHeaders : headers;
+            const h = /^\/pad(2)?\/inner\.html.*/.test(req.url) ? padHeaders : headers;
             for (let header in h) { res.setHeader(header, h[header]); }
         };
     }
@@ -124,18 +125,29 @@ if (config.privKeyAndCertFiles) {
 app.get('/api/config', function(req, res){
     var host = req.headers.host.replace(/\:[0-9]+/, '');
     res.setHeader('Content-Type', 'text/javascript');
-    res.send('define(' + JSON.stringify({
-        requireConf: {
-            waitSeconds: 60,
-            urlArgs: 'ver=' + Package.version + (DEV_MODE? '-' + (+new Date()): ''),
-        },
-        removeDonateButton: (config.removeDonateButton === true),
-        allowSubscriptions: (config.allowSubscriptions === true),
-
-        websocketPath: config.useExternalWebsocket ? undefined : config.websocketPath,
-        websocketURL:'ws' + ((useSecureWebsockets) ? 's' : '') + '://' + host + ':' +
-            websocketPort + '/cryptpad_websocket',
-    }) + ');');
+    res.send('define(function(){\n' + [
+        'var obj = ' + JSON.stringify({
+            requireConf: {
+                waitSeconds: 60,
+                urlArgs: 'ver=' + Package.version + (DEV_MODE? '-' + (+new Date()): ''),
+            },
+            removeDonateButton: (config.removeDonateButton === true),
+            allowSubscriptions: (config.allowSubscriptions === true),
+            websocketPath: config.useExternalWebsocket ? undefined : config.websocketPath,
+            websocketURL:'ws' + ((useSecureWebsockets) ? 's' : '') + '://' + host + ':' +
+                websocketPort + '/cryptpad_websocket',
+        }, null, '\t'),
+        'obj.httpSafeOrigin = ' + (function () {
+            if (config.httpSafeOrigin) { return config.httpSafeOrigin; }
+            if (config.httpSafePort) {
+                return "(function () { return window.location.origin.replace(/\:[0-9]+$/, ':" +
+                    config.httpSafePort + "'); }())";
+            }
+            return 'window.location.origin';
+        }()),
+        'return obj',
+        '});'
+    ].join(';\n'));
 });
 
 var httpServer = httpsOpts ? Https.createServer(httpsOpts, app) : Http.createServer(app);
@@ -149,6 +161,9 @@ httpServer.listen(config.httpPort,config.httpAddress,function(){
 
     console.log('\n[%s] server available http://%s%s', new Date().toISOString(), hostName, ps);
 });
+if (config.httpSafePort) {
+    Http.createServer(app).listen(config.httpSafePort, config.httpAddress);
+}
 
 var wsConfig = { server: httpServer };
 

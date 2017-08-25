@@ -413,6 +413,15 @@ define([
             });
             return ret;
         };
+        exp.getRecentPads = function () {
+            var allFiles = files[FILES_DATA];
+            var sorted = Object.keys(allFiles)
+                .sort(function (a,b) {
+                    return allFiles[a].atime < allFiles[b].atime;
+                })
+                .map(function (str) { return Number(str); });
+            return sorted;
+        };
 
         /**
          * OPERATIONS
