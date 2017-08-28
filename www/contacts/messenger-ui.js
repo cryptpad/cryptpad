@@ -31,6 +31,7 @@ define([
         state.channels[curvePublic] = {
             messages: [],
             HEAD: info.lastKnownHash,
+            TAIL: null,
         };
     };
 
@@ -97,24 +98,50 @@ define([
             var displayName = data.displayName;
 
             var fetching = false;
-            $(moreHistory).click(function () {
-                console.log('getting history');
+            var $moreHistory = $(moreHistory).click(function () {
+                if (fetching) { return; }
 
                 // get oldest known message...
                 var channel = state.channels[curvePublic];
-                var sig = !(channel.messages && channel.messages.length)?
-                    channel.HEAD: channel.messages[0].sig;
+
+                if (channel.exhausted) {
+                    return void $moreHistory.addClass('faded');
+                }
+
+                console.log('getting history');
+                var sig = channel.TAIL || channel.HEAD;
 
                 fetching = true;
                 var $messagebox = $(getChat(curvePublic)).find('.messages');
                 messenger.getMoreHistory(curvePublic, sig, 10, function (e, history) {
                     fetching = false;
                     if (e) { return void console.error(e); }
+
+                    if (history.length === 0) {
+                        channel.exhausted = true;
+                        return;
+                    }
+
                     history.forEach(function (msg) {
-                        if (msg.type !== 'MSG') {
-                            // handle other types of messages?
-                            return;
+                        if (channel.exhausted) { return; }
+                        if (msg.sig) {
+                            if (msg.sig === channel.TAIL) {
+                                console.error('No more messages to fetch');
+                                channel.exhausted = true;
+                                console.log(channel);
+                                return;
+                            } else {
+                                channel.TAIL = msg.sig;
+                            }
+                        } else {
+                            return void console.error('expected signature');
                         }
+                        if (msg.type !== 'MSG') { return; }
+
+                    // FIXME Schlameil the painter (performance does not scale well)
+                        if (channel.messages.some(function (old) {
+                            return msg.sig === old.sig;
+                        })) { return; }
 
                         channel.messages.unshift(msg);
                         var el_message = markup.message(msg);
@@ -277,7 +304,6 @@ define([
                 var $chat_messages = $chat.find('div.message');
                 if (!$chat_messages.length) {
                     var $more = $chat.find('.more-history');
-                    console.log($more);
                     $more.click();
                 }
                 return void $chat.show();
@@ -350,22 +376,38 @@ define([
             return $friend;
         };
 
+        var isBottomedOut = function ($elem) {
+            return ($elem[0].scrollHeight - $elem.scrollTop() === $elem.outerHeight());
+        };
 
         var initializing = true;
-
         messenger.on('message', function (message) {
-            console.log(JSON.stringify(message));
             if (!initializing) { Cryptpad.notify(); }
             var curvePublic = message.curve;
 
             var name = displayNames[curvePublic];
             var chat = getChat(curvePublic, name);
+
+            console.log(message);
+
             var el_message = markup.message(message);
 
             state.channels[curvePublic].messages.push(message);
 
             var $chat = $(chat);
-            var $messagebox = $chat.find('.messages').append(el_message);
+
+            if (!$chat.length) {
+                console.error("Got a message but the chat isn't open");
+            }
+
+            var $messagebox = $chat.find('.messages');
+            var shouldScroll = isBottomedOut($messagebox);
+
+            $messagebox.append(el_message);
+
+            if (shouldScroll) {
+                $messagebox.scrollTop($messagebox.outerHeight());
+            }
             normalizeLabels($messagebox);
 
             var channel = state.channels[curvePublic];
@@ -409,12 +451,47 @@ define([
                 dataQuery(curvePublic) + ' div.sender').text(name).text(name);
         });
 
+        var connectToFriend = function (curvePublic, cb) {
+            messenger.getFriendInfo(curvePublic, function (e, info) {
+                if (e) { return void console.error(e); }
+                var name = displayNames[curvePublic] = info.displayName;
+                initChannel(state, curvePublic, info);
+
+                var chatbox = markup.chatbox(curvePublic, info);
+                $(chatbox).hide();
+                $messages.append(chatbox);
+
+                var friend = markup.friend(info, name);
+                $userlist.append(friend);
+                messenger.openFriendChannel(curvePublic, function (e) {
+                    if (e) { return void console.error(e); }
+                    cb();
+                    updateStatus(curvePublic);
+                    // don't add friends that are already in your userlist
+                    //if (friendExistsInUserList(k)) { return; }
+                });
+            });
+        };
+
+        messenger.on('friend', function (curvePublic) {
+            console.log('new friend: ', curvePublic);
+            //console.error("TODO redraw user list");
+            //console.error("TODO connect to new friend");
+            // FIXME this doesn't work right now because the friend hasn't been fully added?
+            connectToFriend(curvePublic, function () {
+                //console.error('connected');
+            });
+        });
+
         messenger.on('unfriend', function (curvePublic) {
-            console.log(curvePublic);
+            console.log('unfriend', curvePublic);
+            find.inList(curvePublic).remove();
+            console.error('TODO remove chatbox');
+            console.error('TODO show something if that chatbox was active');
         });
 
         Cryptpad.onDisplayNameChanged(function () {
-            messenger.checkNewFriends();
+            //messenger.checkNewFriends();
             messenger.updateMyData();
         });
 
@@ -425,7 +502,6 @@ define([
 
         messenger.getFriendList(function (e, keys) {
             var count = keys.length + 1;
-
             var ready = function () {
                 count--;
                 if (count === 0) {
@@ -433,29 +509,10 @@ define([
                     Cryptpad.removeLoadingScreen();
                 }
             };
-
             ready();
+
             keys.forEach(function (curvePublic) {
-                messenger.getFriendInfo(curvePublic, function (e, info) {
-                    if (e) { return void console.error(e); }
-                    var name = displayNames[curvePublic] = info.displayName;
-                    initChannel(state, curvePublic, info);
-
-                    var chatbox = markup.chatbox(curvePublic, info);
-                    $(chatbox).hide();
-                    $messages.append(chatbox);
-
-                    var friend = markup.friend(info, name);
-                    $userlist.append(friend);
-                    messenger.openFriendChannel(curvePublic, function (e) {
-                        if (e) { return void console.error(e); }
-                        ready(info);
-                        ready();
-                        updateStatus(curvePublic);
-                        // don't add friends that are already in your userlist
-                        //if (friendExistsInUserList(k)) { return; }
-                    });
-                });
+                connectToFriend(curvePublic, ready);
             });
         });
     };
