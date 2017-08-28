@@ -242,7 +242,13 @@ define([
             var $status = find.inList(curvePublic).find('.status');
             // FIXME this stopped working :(
             messenger.getStatus(curvePublic, function (e, online) {
-                if (e) { return void console.error(curvePublic, e); }
+                // if error maybe you shouldn't display this friend...
+                if (e) {
+                    find.inList(curvePublic).hide();
+                    getChat(curvePublic).hide();
+
+                    return void console.error(curvePublic, e);
+                }
                 if (online) {
                     return void $status
                         .removeClass('offline').addClass('online');
@@ -286,13 +292,10 @@ define([
         var removeFriend = function (curvePublic) {
             messenger.removeFriend(curvePublic, function (e, removed) {
                 if (e) { return void console.error(e); }
+                find.inList(curvePublic).remove();
                 console.log(removed);
             });
         };
-
-/*      var friendExistsInUserList = function (curvePublic) {
-            return !!$userlist.find(dataQuery(curvePublic)).length;
-        }; */
 
         markup.friend = function (data) {
             var curvePublic = data.curvePublic;
@@ -323,7 +326,9 @@ define([
                     Cryptpad.fixHTML(data.displayName)
                 ]), function (yes) {
                     if (!yes) { return; }
-                    removeFriend(curvePublic);
+                    removeFriend(curvePublic, function (e) {
+                        if (e) { return void console.error(e); }
+                    });
                     // TODO remove friend from userlist ui
                     // FIXME seems to trigger EJOINED from netflux-websocket (from server);
                     // (tried to join a channel in which you were already present)
@@ -384,19 +389,16 @@ define([
         });
 
         messenger.on('join', function (curvePublic, channel) {
-            //console.log('join', curvePublic, channel);
             channel = channel;
             updateStatus(curvePublic);
         });
         messenger.on('leave', function (curvePublic, channel) {
-            //console.log('leave', curvePublic, channel);
             channel = channel;
             updateStatus(curvePublic);
         });
 
         // change in your friend list
         messenger.on('update', function (info, curvePublic) {
-            console.log(info, curvePublic);
             var name = displayNames[curvePublic] = info.displayName;
 
             // update label in friend list
@@ -405,6 +407,10 @@ define([
             // update title bar and messages
             $messages.find(dataQuery(curvePublic) + ' .header .name, div.message'+
                 dataQuery(curvePublic) + ' div.sender').text(name).text(name);
+        });
+
+        messenger.on('unfriend', function (curvePublic) {
+            console.log(curvePublic);
         });
 
         Cryptpad.onDisplayNameChanged(function () {

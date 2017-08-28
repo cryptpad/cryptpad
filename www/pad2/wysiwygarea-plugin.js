@@ -55,7 +55,12 @@ define(['/api/config'], function (ApiConfig) {
 
             // Asynchronous iframe loading is only required in IE>8 and Gecko (other reasons probably).
             // Do not use it on WebKit as it'll break the browser-back navigation.
-            var useOnloadEvent = ( CKEDITOR.env.ie && !CKEDITOR.env.edge ) || CKEDITOR.env.gecko;
+			var useOnloadEvent = ( CKEDITOR.env.ie && !CKEDITOR.env.edge ) || CKEDITOR.env.gecko;
+
+			// CryptPad
+			// This breaks Edge so lets use async all of the time
+			useOnloadEvent = true;
+
             if ( useOnloadEvent )
                 iframe.on( 'load', onLoad );
 

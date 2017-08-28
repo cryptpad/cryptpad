@@ -122,7 +122,6 @@ define([
     common.createInviteUrl = Hash.createInviteUrl;
 
     // Messaging
-    common.initMessaging = Messaging.init;
     common.addDirectMessageHandler = Messaging.addDirectMessageHandler;
     common.inviteFromUserlist = Messaging.inviteFromUserlist;
     common.getFriendList = Messaging.getFriendList;
@@ -130,7 +129,6 @@ define([
     common.createData = Messaging.createData;
     common.getPendingInvites = Messaging.getPending;
     common.getLatestMessages = Messaging.getLatestMessages;
-    common.initMessagingUI = Messaging.UI.init;
 
     // Realtime
     var whenRealtimeSyncs = common.whenRealtimeSyncs = function (realtime, cb) {
@@ -813,6 +811,9 @@ define([
 
     common.pinPads = function (pads, cb) {
         if (!pinsReady()) { return void cb ('RPC_NOT_READY'); }
+        if (typeof(cb) !== 'function') {
+            console.error('expected a callback');
+        }
 
         rpc.pin(pads, function (e, hash) {
             if (e) { return void cb(e); }
