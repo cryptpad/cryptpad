@@ -585,7 +585,7 @@ define([
         }).appendTo($hoverable).text(config.pageTitle);
     };
 
-    var createLinkToMain = function (toolbar) {
+    var createLinkToMain = function (toolbar, config) {
         var $linkContainer = $('<span>', {
             'class': "cryptpad-link"
         }).appendTo(toolbar.$top);
@@ -593,7 +593,9 @@ define([
         // We need to override the "a" tag action here because it is inside the iframe!
         var inDrive = /^\/drive/;
 
-        var href = inDrive ? '/index.html' : '/drive/';
+        var origin = config.metadataMgr.getPrivateData().origin;
+
+        var href = inDrive ? origin+'/index.html' : origin+'/drive/';
         var buttonTitle = inDrive ? Messages.header_homeTitle : Messages.header_logoTitle;
 
         var $aTag = $('<a>', {
@@ -609,7 +611,7 @@ define([
                 window.open(href);
                 return;
             }
-            window.location = href;
+            window.top.location = href;
         };
 
         var onContext = function (e) { e.stopPropagation(); };
