@@ -24,6 +24,10 @@ types of messages:
         var hkn = network.historyKeeper;
         var txid = uid();
 
+        if (typeof(cb) !== 'function') {
+            return console.error('expected callback');
+        }
+
         var pending = ctx.pending[txid] = function (err, response) {
             cb(err, response);
         };

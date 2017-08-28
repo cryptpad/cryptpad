@@ -16,6 +16,10 @@ define([
         TODO make this not blow up when disconnected or lagging...
     */
     common.whenRealtimeSyncs = function (Cryptpad, realtime, cb) {
+        if (typeof(realtime.getAuthDoc) !== 'function') {
+            return void console.error('improper use of this function');
+        }
+
         window.setTimeout(function () {
             if (realtime.getAuthDoc() === realtime.getUserDoc()) {
                 return void cb();

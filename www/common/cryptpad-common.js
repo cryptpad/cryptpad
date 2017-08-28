@@ -122,7 +122,6 @@ define([
     common.createInviteUrl = Hash.createInviteUrl;
 
     // Messaging
-    common.initMessaging = Messaging.init;
     common.addDirectMessageHandler = Messaging.addDirectMessageHandler;
     common.inviteFromUserlist = Messaging.inviteFromUserlist;
     common.getFriendList = Messaging.getFriendList;
@@ -130,7 +129,6 @@ define([
     common.createData = Messaging.createData;
     common.getPendingInvites = Messaging.getPending;
     common.getLatestMessages = Messaging.getLatestMessages;
-    common.initMessagingUI = Messaging.UI.init;
 
     // Realtime
     var whenRealtimeSyncs = common.whenRealtimeSyncs = function (realtime, cb) {
@@ -813,6 +811,9 @@ define([
 
     common.pinPads = function (pads, cb) {
         if (!pinsReady()) { return void cb ('RPC_NOT_READY'); }
+        if (typeof(cb) !== 'function') {
+            console.error('expected a callback');
+        }
 
         rpc.pin(pads, function (e, hash) {
             if (e) { return void cb(e); }
@@ -1427,23 +1428,37 @@ define([
         return $icon;
     };
 
-    common.createFileDialog = function (cfg) {
+    common.createModal = function (cfg) {
         var $body = cfg.$body || $('body');
-        var $blockContainer = $body.find('#fileDialog');
+        var $blockContainer = $body.find('#'+cfg.id);
         if (!$blockContainer.length) {
-            $blockContainer = $('<div>', {id: "fileDialog"}).appendTo($body);
+            $blockContainer = $('<div>', {
+                'class': 'cp-modal-container',
+                'id': cfg.id
+            });
         }
-        $blockContainer.html('');
+        $blockContainer.html('').appendTo($body);
         var $block = $('<div>', {'class': 'cp-modal'}).appendTo($blockContainer);
         $('<span>', {
-            'class': 'close fa fa-times',
+            'class': 'cp-modal-close fa fa-times',
             'title': Messages.filePicker_close
         }).click(function () {
             $blockContainer.hide();
         }).appendTo($block);
+        $body.keydown(function (e) {
+            if (e.which === 27) { $blockContainer.hide(); }
+        });
+        return $blockContainer;
+    };
+    common.createFileDialog = function (cfg) {
+        var $blockContainer = common.createModal({
+            id: 'fileDialog',
+            $body: cfg.$body
+        });
+        var $block = $blockContainer.find('.cp-modal');
         var $description = $('<p>').text(Messages.filePicker_description);
         $block.append($description);
-        var $filter = $('<p>', {'class': 'cp-form'}).appendTo($block);
+        var $filter = $('<p>', {'class': 'cp-modal-form'}).appendTo($block);
         var $container = $('<span>', {'class': 'fileContainer'}).appendTo($block);
         var updateContainer = function () {
             $container.html('');
@@ -1483,9 +1498,6 @@ define([
             $blockContainer.hide();
         }));
         updateContainer();
-        $body.keydown(function (e) {
-            if (e.which === 27) { $blockContainer.hide(); }
-        });
         $blockContainer.show();
     };
 

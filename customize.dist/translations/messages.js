@@ -303,6 +303,7 @@ define(function () {
     out.fm_filesDataName = "All files";
     out.fm_templateName = "Templates";
     out.fm_searchName = "Search";
+    out.fm_recentPadsName = "Recent pads";
     out.fm_searchPlaceholder = "Search...";
     out.fm_newButton = "New";
     out.fm_newButtonTitle = "Create a new pad or folder, import a file in the current folder";
@@ -334,6 +335,7 @@ define(function () {
     out.fm_info_root = "Create as many nested folders here as you want to sort your files.";
     out.fm_info_unsorted = 'Contains all the files you\'ve visited that are not yet sorted in "Documents" or moved to the "Trash".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
     out.fm_info_template = 'Contains all the pads stored as templates and that you can re-use when you create a new pad.';
+    out.fm_info_recent = "List the recently modified or opened pads.";
     out.updated_0_fm_info_trash = 'Empty your trash to free space in your CryptDrive.';
     out.fm_info_trash = out.updated_0_fm_info_trash;
     out.fm_info_allFiles = 'Contains all the files from "Documents", "Unsorted" and "Trash". You can\'t move or remove files from here.'; // Same here

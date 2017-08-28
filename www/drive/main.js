@@ -52,7 +52,7 @@ define([
     var TRASH = "trash";
     var TRASH_NAME = Messages.fm_trashName;
     var RECENT = "recent";
-    var RECENT_NAME = "Recent pads";
+    var RECENT_NAME = Messages.fm_recentPadsName;
 
     var LOCALSTORAGE_LAST = "cryptpad-file-lastOpened";
     var LOCALSTORAGE_OPENED = "cryptpad-file-openedFolders";
@@ -163,6 +163,7 @@ define([
     //var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
     var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
     var $templateIcon = $('<span>', {"class": "fa fa-cubes"});
+    var $recentIcon = $('<span>', {"class": "fa fa-clock-o"});
     var $trashIcon = $('<span>', {"class": "fa fa-trash-o"});
     var $trashEmptyIcon = $('<span>', {"class": "fa fa-trash-o"});
     //var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o expcol"});
@@ -1324,7 +1325,7 @@ define([
                     msg = Messages.fm_info_allFiles;
                     break;
                 case RECENT:
-                    msg = Messages.fm_info_recent || 'TODO';
+                    msg = Messages.fm_info_recent;
                     break;
                 default:
                     msg = undefined;
@@ -1388,9 +1389,62 @@ define([
             $container.append($listButton).append($gridButton);
         };
 
+        var getNewPadTypes = function () {
+            var arr = [];
+            AppConfig.availablePadTypes.forEach(function (type) {
+                if (type === 'drive') { return; }
+                if (type === 'contacts') { return; }
+                if (type === 'todo') { return; }
+                if (type === 'file') { return; }
+                if (!Cryptpad.isLoggedIn() && AppConfig.registeredOnlyTypes &&
+                    AppConfig.registeredOnlyTypes.indexOf(type) !== -1) {
+                    return;
+                }
+                arr.push(type);
+            });
+            return arr;
+        };
+        var addNewPadHandlers = function ($block, isInRoot) {
+            // Handlers
+            if (isInRoot) {
+                var onCreated = function (err, info) {
+                    if (err) {
+                        if (err === E_OVER_LIMIT) {
+                            return void Cryptpad.alert(Messages.pinLimitDrive, null, true);
+                        }
+                        return void Cryptpad.alert(Messages.fm_error_cantPin);
+                    }
+                    module.newFolder = info.newPath;
+                    refresh();
+                };
+                $block.find('a.newFolder, li.newFolder').click(function () {
+                    filesOp.addFolder(currentPath, null, onCreated);
+                });
+                $block.find('a.uploadFile, li.uploadFile').click(function () {
+                    var $input = $('<input>', {
+                        'type': 'file',
+                        'style': 'display: none;'
+                    }).on('change', function (e) {
+                        var file = e.target.files[0];
+                        var ev = {
+                            target: $content[0]
+                        };
+                        APP.FM.handleFile(file, ev);
+                    });
+                    $input.click();
+                });
+            }
+            $block.find('a.newdoc, li.newdoc').click(function () {
+                var type = $(this).attr('data-type') || 'pad';
+                sessionStorage[Cryptpad.newPadPathKey] = filesOp.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
+                window.open('/' + type + '/');
+            });
+        };
         var createNewButton = function (isInRoot, $container) {
             if (!APP.editable) { return; }
             if (!APP.loggedIn) { return; } // Anonymous users can use the + menu in the toolbar
+
+            if (!filesOp.isPathIn(currentPath, [ROOT, 'hrefArray'])) { return; }
 
             // Create dropdown
             var options = [];
@@ -1408,13 +1462,7 @@ define([
                 });
                 options.push({tag: 'hr'});
             }
-            AppConfig.availablePadTypes.forEach(function (type) {
-                if (type === 'drive') { return; }
-                if (type === 'contacts') { return; }
-                if (!Cryptpad.isLoggedIn() && AppConfig.registeredOnlyTypes &&
-                    AppConfig.registeredOnlyTypes.indexOf(type) !== -1) {
-                    return;
-                }
+            getNewPadTypes().forEach(function (type) {
                 var attributes = {
                     'class': 'newdoc',
                     'data-type': type,
@@ -1440,40 +1488,7 @@ define([
             $block.find('button').addClass('new');
             $block.find('button').attr('title', Messages.fm_newButtonTitle);
 
-            // Handlers
-            if (isInRoot) {
-                var onCreated = function (err, info) {
-                    if (err) {
-                        if (err === E_OVER_LIMIT) {
-                            return void Cryptpad.alert(Messages.pinLimitDrive, null, true);
-                        }
-                        return void Cryptpad.alert(Messages.fm_error_cantPin);
-                    }
-                    module.newFolder = info.newPath;
-                    refresh();
-                };
-                $block.find('a.newFolder').click(function () {
-                    filesOp.addFolder(currentPath, null, onCreated);
-                });
-                $block.find('a.uploadFile').click(function () {
-                    var $input = $('<input>', {
-                        'type': 'file',
-                        'style': 'display: none;'
-                    }).on('change', function (e) {
-                        var file = e.target.files[0];
-                        var ev = {
-                            target: $content[0]
-                        };
-                        APP.FM.handleFile(file, ev);
-                    });
-                    $input.click();
-                });
-            }
-            $block.find('a.newdoc').click(function () {
-                var type = $(this).attr('data-type') || 'pad';
-                sessionStorage[Cryptpad.newPadPathKey] = filesOp.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
-                window.open('/' + type + '/');
-            });
+            addNewPadHandlers($block, isInRoot);
 
             $container.append($block);
         };
@@ -1646,6 +1661,58 @@ define([
             return keys;
         };
 
+        // Create the ghost icon to add pads/folders
+        var createNewPadIcons = function ($block, isInRoot) {
+            var $container = $('<div>');
+            if (isInRoot) {
+                // Folder
+                var $element1 = $('<li>', {
+                    'class': 'newFolder element-row grid-element'
+                }).prepend($folderIcon.clone()).appendTo($container);
+                $element1.append($('<span>', {'class': 'name'}).text(Messages.fm_folder));
+                // File
+                var $element2 = $('<li>', {
+                    'class': 'uploadFile element-row grid-element'
+                }).prepend(getIcon('file')).appendTo($container);
+                $element2.append($('<span>', {'class': 'name'}).text(Messages.uploadButton));
+            }
+            // Pads
+            getNewPadTypes().forEach(function (type) {
+                var $element = $('<li>', {
+                    'class': 'newdoc element-row grid-element'
+                }).prepend(getIcon(type)).appendTo($container);
+                $element.append($('<span>', {'class': 'name'}).text(Messages.type[type]));
+                $element.attr('data-type', type);
+            });
+
+            $container.find('.element-row').click(function () {
+                $block.hide();
+            });
+            return $container;
+        };
+        var createGhostIcon = function ($list) {
+            var isInRoot = currentPath[0] === ROOT;
+            var $element = $('<li>', {
+                'class': 'element-row grid-element addpad'
+            }).prepend($addIcon.clone()).appendTo($list);
+            $element.append($('<span>', {'class': 'name'}).text(Messages.fm_newFile));
+            $element.attr('title', Messages.fm_newFile);
+            $element.click(function () {
+                var $modal = Cryptpad.createModal({
+                    id: 'addPadDialog',
+                    $body: $iframe.find('body')
+                });
+                var $title = $('<h3>').text(Messages.fm_newFile);
+                var $description = $('<p>').text(Messages.fm_newButtonTitle);
+                $modal.find('.cp-modal').append($title);
+                $modal.find('.cp-modal').append($description);
+                var $content = createNewPadIcons($modal, isInRoot);
+                $modal.find('.cp-modal').append($content);
+                $modal.show();
+                addNewPadHandlers($modal, isInRoot);
+            });
+        };
+
         // Drive content toolbar
         var createToolbar = function () {
             var $toolbar = $driveToolbar;
@@ -1704,6 +1771,7 @@ define([
                 }
                 $container.append($element);
             });
+            createGhostIcon($container);
         };
 
         var displayAllFiles = function ($container) {
@@ -1997,22 +2065,8 @@ define([
                     $element.appendTo($list);
                 });
 
-                var $element = $('<li>', {
-                    'class': 'element-row grid-element addpad'
-                }).prepend($addIcon.clone()).appendTo($list);
-                $element.attr('title', "TODO: Add a pad");
-                $element.click(function () {
-                    window.setTimeout(function () {
-                        $driveToolbar.find('.leftside .dropdown-bar-content').show();
-                    });
-                    /*var $content = $driveToolbar.find('.leftside .dropdown-bar-content').html();
-                    var $container = $('<div>').append($('<div>', {id:'cryptpad-add-pad'}));
-                    Cryptpad.alert($container.html(),null,true);
-                    var $c = $('body > .alertify').last().find('#cryptpad-add-pad');
-                    $c.append($content);*/
-                });
+                createGhostIcon($list);
             }
-            //$content.append($toolbar).append($title).append($info).append($dirContent);
             $content.append($info).append($dirContent);
 
             var $truncated = $('<span>', {'class': 'truncated'}).text('...');
@@ -2168,7 +2222,7 @@ define([
         };
 
         var createRecent = function ($container, path) {
-            var $icon = $templateIcon.clone(); //TODO
+            var $icon = $recentIcon.clone();
             var isOpened = filesOp.comparePath(path, currentPath);
             var $element = createTreeElement(RECENT_NAME, $icon, [RECENT], false, false, false, isOpened);
             $element.addClass('root');

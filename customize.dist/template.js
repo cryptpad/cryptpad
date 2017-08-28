@@ -9,7 +9,7 @@ define([
 $(function () {
     var $body = $('body');
     var isMainApp = function () {
-        return /^\/(pad|code|slide|poll|whiteboard|file|media|contacts|contacts2|drive|settings|profile|todo)\/$/.test(location.pathname);
+        return /^\/(pad|code|slide|poll|whiteboard|file|media|contacts|drive|settings|profile|todo)\/$/.test(location.pathname);
     };
 
     var infoPage = function () {
@@ -55,9 +55,6 @@ $(function () {
                 } else if (/^\/contacts\/$/.test(pathname)) {
                     $('body').append(h('body', Pages[pathname]()).innerHTML);
                     require([ '/contacts/main.js' ], ready);
-                } else if (/contacts2/.test(pathname)) {
-                    $('body').append(h('body', Pages[pathname]()).innerHTML);
-                    require([ '/contacts2/main.js' ], ready);
                 } else if (/pad/.test(pathname)) {
                     $('body').append(h('body', Pages[pathname]()).innerHTML);
                     require([ '/pad/main.js' ], ready);
