@@ -4,8 +4,8 @@ define([
     '/common/curve.js',
     '/common/common-hash.js',
     '/common/common-realtime.js'
-//  '/bower_components/marked/marked.min.js'
 ], function ($, Crypto, Curve, Hash, Realtime) {
+    'use strict';
     var Msg = {
         inputs: [],
     };
@@ -37,7 +37,6 @@ define([
         };
     };
 
-    // TODO make this async
     var getFriend = function (proxy, pubkey) {
         if (pubkey === proxy.curvePublic) {
             var data = createData(proxy);
@@ -96,8 +95,7 @@ define([
     var pendingRequests = [];
 
     /*  Used to accept friend requests within apps other than /contacts/ */
-    // TODO move this into MSG.messenger
-    // as _openGroupChannel_
+    // TODO rename as _openGroupChannel_
     Msg.addDirectMessageHandler = function (common) {
         var network = common.getNetwork();
         var proxy = common.getProxy();
@@ -239,18 +237,10 @@ define([
             stack.push(f);
         };
 
-        // TODO openGroupChannel
-        messenger.openGroupChannel = function (hash, cb) {
-            // sets up infrastructure for a one to one channel using curve cryptography
+/*      messenger.openGroupChannel = function (hash, cb) {
+            // TODO set up infrastructure for a many to many channel
             cb = cb;
-        };
-
-        //var ready = messenger.ready = [];
-
-        var DEBUG = function (label) {
-            console.log('event:' + label);
-        };
-        DEBUG = DEBUG; // FIXME
+        };  */
 
         var channels = messenger.channels = {};
 
@@ -286,10 +276,22 @@ define([
 
         messenger.getMoreHistory = function (curvePublic, hash, count, cb) {
             if (typeof(cb) !== 'function') { return; }
+
+            if (typeof(hash) !== 'string') {
+                // FIXME hash is not necessarily defined.
+                // What does this mean?
+                console.error("not sure what to do here");
+                return;
+            }
+
             var chan = getChannel(curvePublic);
+            if (typeof(chan) === 'undefined') {
+                console.error("chan is undefined. we're going to have a problem here");
+                return;
+            }
+
             var txid = common.uid();
             initRangeRequest(txid, curvePublic, hash, cb);
-            // FIXME hash is not necessarily defined.
             var msg = [ 'GET_HISTORY_RANGE', chan.id, {
                     from: hash,
                     count: count,
@@ -337,13 +339,7 @@ define([
             var decryptedMsg = channel.encryptor.decrypt(msg);
 
             if (decryptedMsg === null) {
-                // console.error('unable to decrypt message');
-                // console.error('potentially meant for yourself');
-
-                // message failed to parse, meaning somebody sent it to you but
-                // encrypted it with the wrong key, or you're sending a message to
-                // yourself in a different tab.
-                return;
+                return void console.error("Failed to decrypt message");
             }
 
             if (!decryptedMsg) {
@@ -379,35 +375,27 @@ define([
         var orderMessages = function (curvePublic, new_messages, sig) {
             var channel = getChannel(curvePublic);
             var messages = channel.messages;
-            var idx;
-            messages.some(function (msg, i) {
-                if (msg.sig === sig) { idx = i; }
-                return true;
-            });
 
-            if (typeof(idx) !== 'undefined') {
-                //console.error('found old message at %s', idx);
-            } else {
-                //console.error("did not find desired message");
-            }
-
-            // TODO improve performance
+            // TODO improve performance, guarantee correct ordering
             new_messages.reverse().forEach(function (msg) {
                 messages.unshift(msg);
             });
         };
 
+        var removeFromFriendList = function (curvePublic, cb) {
+            if (!proxy.friends) { return; }
+            var friends = proxy.friends;
+            delete friends[curvePublic];
+            Realtime.whenRealtimeSyncs(common, realtime, cb);
+        };
+
         var pushMsg = function (channel, cryptMsg) {
             var msg = channel.encryptor.decrypt(cryptMsg);
-
-            // TODO emit new message event or something
-            // extension point for other apps
-            //console.log(msg);
-
             var sig = cryptMsg.slice(0, 64);
             if (msgAlreadyKnown(channel, sig)) { return; }
 
             var parsedMsg = JSON.parse(msg);
+            var curvePublic;
             if (parsedMsg[0] === Types.message) {
                 // TODO validate messages here
                 var res = {
@@ -420,9 +408,7 @@ define([
                     curve: getCurveForChannel(channel.id),
                 };
 
-                // TODO emit message event
                 channel.messages.push(res);
-
                 eachHandler('message', function (f) {
                     f(res);
                 });
@@ -431,7 +417,7 @@ define([
             }
             if (parsedMsg[0] === Types.update) {
                 if (parsedMsg[1] === proxy.curvePublic) { return; }
-                var curvePublic = parsedMsg[1];
+                curvePublic = parsedMsg[1];
                 var newdata = parsedMsg[3];
                 var data = getFriend(proxy, parsedMsg[1]);
                 var types = [];
@@ -448,12 +434,16 @@ define([
                 return;
             }
             if (parsedMsg[0] === Types.unfriend) {
-                console.log('UNFRIEND');
-                removeFromFriendList(proxy, realtime, channel.friendEd, function () {
+                curvePublic = parsedMsg[1];
+                delete friends[curvePublic];
+
+                removeFromFriendList(parsedMsg[1], function () {
                     channel.wc.leave(Types.unfriend);
-                    //channel.removeUI();
-
-
+                    eachHandler('unfriend', function (f) {
+                        f=f; // FIXME
+                        // TODO
+                        console.log('unfriend');
+                    });
                 });
                 return;
             }
@@ -479,12 +469,12 @@ define([
                     channel.wc.bcast(cryptMsg).then(function () {
                         // TODO send event
                         //channel.refresh();
-                        eachHandler('update', function (f) {
-                            f(myData, myData.curvePublic);
-                        });
                     }, function (err) {
                         console.error(err);
                     });
+                });
+                eachHandler('update', function (f) {
+                    f(myData, myData.curvePublic);
                 });
                 friends.me = myData;
             }
@@ -596,21 +586,43 @@ define([
         messenger.removeFriend = function (curvePublic, cb) {
             if (typeof(cb) !== 'function') { throw new Error('NO_CALLBACK'); }
             var data = getFriend(proxy, curvePublic);
+
+            if (!data) {
+                // friend is not valid
+                console.error('friend is not valid');
+                return;
+            }
+
             var channel = channels[data.channel];
+            if (!channel) {
+                return void cb("NO_SUCH_CHANNEL");
+            }
+
+            if (!network.webChannels.some(function (wc) {
+                return wc.id === channel.id;
+            })) {
+                console.error('bad channel: ', curvePublic);
+            }
+
             var msg = [Types.unfriend, proxy.curvePublic, +new Date()];
             var msgStr = JSON.stringify(msg);
             var cryptMsg = channel.encryptor.encrypt(msgStr);
 
             // TODO emit remove_friend event?
-            channel.wc.bcast(cryptMsg).then(function () {
-                delete friends[curvePublic];
-                Realtime.whenRealtimeSyncs(realtime, function () {
-                    cb();
+            try {
+                channel.wc.bcast(cryptMsg).then(function () {
+                    delete friends[curvePublic];
+                    delete channels[curvePublic];
+                    Realtime.whenRealtimeSyncs(common, realtime, function () {
+                        cb();
+                    });
+                }, function (err) {
+                    console.error(err);
+                    cb(err);
                 });
-            }, function (err) {
-                console.error(err);
-                cb(err);
-            });
+            } catch (e) {
+                cb(e);
+            }
         };
 
         var getChannelMessagesSince = function (chan, data, keys) {
@@ -823,8 +835,9 @@ define([
 
             console.error(o, n, p);
         }).on('remove', ['friends'], function (o, p) {
-            // TODO eachHandler('unfriend', function (f) { f(); });
-            console.error(o, p);
+            eachHandler('unfriend', function (f) {
+                f(p[1]); // TODO
+            });
         });
 
         Object.freeze(messenger);
