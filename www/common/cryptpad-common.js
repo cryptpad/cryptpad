@@ -1851,6 +1851,11 @@ define([
             if (!parsed.type || !parsed.hashData) { return void cb('E_INVALID_HREF'); }
             var hashes = common.getHashes(secret.channel, secret);
 
+            if (!hashes.editHash && !hashes.viewHash && parsed.hashData && !parsed.hashData.mode) {
+                // It means we're using an old hash
+                hashes.editHash = window.location.hash.slice(1);
+            }
+
             // If we have a stronger version in drive, add it and add a redirect button
             var stronger = recent && common.findStronger(null, recent);
             if (stronger) {
