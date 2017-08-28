@@ -320,6 +320,7 @@ define([
             }
         };
         $content.on('mousedown', function (e) {
+            if (currentPath[0] === SEARCH) { return; }
             if (e.which !== 1) { return; }
             $content.focus();
             sel.down = true;
