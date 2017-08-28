@@ -811,6 +811,9 @@ define([
 
     common.pinPads = function (pads, cb) {
         if (!pinsReady()) { return void cb ('RPC_NOT_READY'); }
+        if (typeof(cb) !== 'function') {
+            console.error('expected a callback');
+        }
 
         rpc.pin(pads, function (e, hash) {
             if (e) { return void cb(e); }
