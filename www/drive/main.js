@@ -2764,7 +2764,8 @@ define([
                     console.error(e);
                     refresh();
                 }
-            }
+            },
+            body: $iframe.find('body')
         };
         APP.FM = Cryptpad.createFileManager(fmConfig);
 
