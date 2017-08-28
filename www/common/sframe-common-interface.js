@@ -214,12 +214,14 @@ define([
             var newName = myData.name;
             var url = myData.avatar;
             $displayName.text(newName || Messages.anonymous);
-            $avatar.html('');
-            UI.displayAvatar(Common, $avatar, url, newName, function ($img) {
-                if ($img) {
-                    $userAdmin.find('button').addClass('avatar');
-                }
-            });
+            if (accountName) {
+                $avatar.html('');
+                UI.displayAvatar(Common, $avatar, url, newName, function ($img) {
+                    if ($img) {
+                        $userAdmin.find('button').addClass('avatar');
+                    }
+                });
+            }
         };
         metadataMgr.onChange(updateButton);
         updateButton();
