@@ -127,6 +127,7 @@ define([
         });
 
         sframeChan.on('Q_SET_PAD_TITLE_IN_DRIVE', function (newTitle, cb) {
+            document.title = newTitle;
             Cryptpad.renamePad(newTitle, undefined, function (err) {
                 if (err) { cb('ERROR'); } else { cb(); }
             });
