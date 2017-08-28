@@ -176,6 +176,7 @@ define([
 
         sframeChan.on('Q_SEND_FRIEND_REQUEST', function (netfluxId, cb) {
             Cryptpad.inviteFromUserlist(Cryptpad, netfluxId);
+            cb();
         });
         Cryptpad.onFriendRequest = function (confirmText, cb) {
             sframeChan.query('Q_INCOMING_FRIEND_REQUEST', confirmText, function (err, data) {
