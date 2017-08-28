@@ -47,15 +47,6 @@ define([
         return proxy.friends ? proxy.friends[pubkey] : undefined;
     };
 
-    // TODO make this async
-    var removeFromFriendList = function (proxy, realtime, curvePublic, cb) {
-        if (!proxy.friends) { return; }
-        var friends = proxy.friends;
-        delete friends[curvePublic];
-        Realtime.whenRealtimeSyncs(realtime, cb);
-    };
-
-    // TODO make this async
     var getFriendList = Msg.getFriendList = function (proxy) {
         if (!proxy.friends) { proxy.friends = {}; }
         return proxy.friends;
@@ -93,9 +84,11 @@ define([
 
         friends[pubKey] = data;
 
-        Realtime.whenRealtimeSyncs(common.getRealtime(), function () {
+        Realtime.whenRealtimeSyncs(common, common.getRealtime(), function () {
             cb();
-            common.pinPads([data.channel]);
+            common.pinPads([data.channel], function (e) {
+                if (e) { console.error(e); }
+            });
         });
         common.changeDisplayName(proxy[common.displayNameKey]);
     };
@@ -213,14 +206,12 @@ define([
             pendingRequests.push(netfluxId);
             var proxy = common.getProxy();
             // this redraws the userlist after a change has occurred
-            // TODO rename this function to reflect its purpose
             common.changeDisplayName(proxy[common.displayNameKey]);
         }
         network.sendto(netfluxId, msgStr);
     };
 
     Msg.messenger = function (common) {
-        'use strict';
         var messenger = {
             handlers: {
                 message: [],

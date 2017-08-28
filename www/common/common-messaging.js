@@ -79,9 +79,11 @@ define([
 
         friends[pubKey] = data;
 
-        Realtime.whenRealtimeSyncs(common.getRealtime(), function () {
+        Realtime.whenRealtimeSyncs(common, common.getRealtime(), function () {
             cb();
-            common.pinPads([data.channel]);
+            common.pinPads([data.channel], function (e) {
+                if (e) { console.error(e); }
+            });
         });
         common.changeDisplayName(proxy[common.displayNameKey]);
     };
