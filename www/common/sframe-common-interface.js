@@ -43,7 +43,6 @@ define([
             $container.append($avatar);
             if (cb) { cb(); }
         };
-
         if (!href) { return void displayDefault(); }
         var parsed = Cryptpad.parsePadUrl(href);
         var secret = Cryptpad.getSecrets('file', parsed.hash);
@@ -210,19 +209,17 @@ define([
 
         var $avatar = $userAdmin.find('.buttonTitle');
         var updateButton = function () {
-            var myData = metadataMgr.getMetadata().users[metadataMgr.getNetfluxId()];
+            var myData = metadataMgr.getUserData();
             if (!myData) { return; }
             var newName = myData.name;
             var url = myData.avatar;
             $displayName.text(newName || Messages.anonymous);
-            if (accountName) {
-                $avatar.html('');
-                UI.displayAvatar(Common, $avatar, url, newName, function ($img) {
-                    if ($img) {
-                        $userAdmin.find('button').addClass('avatar');
-                    }
-                });
-            }
+            $avatar.html('');
+            UI.displayAvatar(Common, $avatar, url, newName, function ($img) {
+                if ($img) {
+                    $userAdmin.find('button').addClass('avatar');
+                }
+            });
         };
         metadataMgr.onChange(updateButton);
         updateButton();
