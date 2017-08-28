@@ -64,6 +64,9 @@ define([
             });
         window.setTimeout(function () {
             findOKButton().focus();
+            if (typeof(UI.notify) === 'function') {
+                UI.notify();
+            }
         });
     };
 
@@ -97,6 +100,9 @@ define([
                 cb(null, ev);
                 stopListening(keyHandler);
             });
+        if (typeof(UI.notify) === 'function') {
+            UI.notify();
+        }
     };
 
     UI.confirm = function (msg, cb, opt, force, styleCB) {
@@ -141,6 +147,9 @@ define([
                 styleCB($ok.closest('.dialog'));
             }
         }, 0);
+        if (typeof(UI.notify) === 'function') {
+            UI.notify();
+        }
     };
 
     UI.log = function (msg) {
