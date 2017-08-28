@@ -145,12 +145,12 @@ define([
                     // FIXME clarify this function's name
                     addToFriendList(common, msgData, function (err) {
                         if (err) {
-                            return void Cryptpad.onFriendComplete({
+                            return void common.onFriendComplete({
                                 logText: common.Messages.contacts_addError,
                                 netfluxId: sender
                             });
                         }
-                        Cryptpad.onFriendComplete({
+                        common.onFriendComplete({
                             logText: common.Messages.contacts_added,
                             netfluxId: sender
                         });
@@ -163,7 +163,7 @@ define([
                 if (msg[0] === "FRIEND_REQ_NOK") {
                     var i = pendingRequests.indexOf(sender);
                     if (i !== -1) { pendingRequests.splice(i, 1); }
-                    Cryptpad.onFriendComplete({
+                    common.onFriendComplete({
                         logText: common.Messages.contacts_rejected,
                         netfluxId: sender
                     });
@@ -175,12 +175,12 @@ define([
                     if (!data) { return; }
                     addToFriendList(common, data, function (err) {
                         if (err) {
-                            return void Cryptpad.onFriendComplete({
+                            return void common.onFriendComplete({
                                 logText: common.Messages.contacts_addError,
                                 netfluxId: sender
                             });
                         }
-                        Cryptpad.onFriendComplete({
+                        common.onFriendComplete({
                             logText: common.Messages.contacts_added,
                             netfluxId: sender
                         });
