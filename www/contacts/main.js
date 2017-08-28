@@ -23,7 +23,6 @@ define([
 
         var ifrw = $('#pad-iframe')[0].contentWindow;
         var $iframe = $('#pad-iframe').contents();
-        //var $appContainer = $iframe.find('#app');
         var $list = $iframe.find('#friendList');
         var $messages = $iframe.find('#messaging');
         var $bar = $iframe.find('.toolbar-container');
@@ -43,15 +42,10 @@ define([
 
         Cryptpad.getProxy().on('disconnect', function () {
             Cryptpad.alert(Messages.common_connectionLost, undefined, true);
-            Cryptpad.enableMessaging(false);
         });
         Cryptpad.getProxy().on('reconnect', function (uid) {
             console.error('reconnecting: ', uid);
             Cryptpad.findOKButton().click();
-
-            //APP.messenger.cleanFriendChannels();
-            //APP.messenger.openFriendChannels();
-            //APP.messenger.setEditable(true);
         });
 
         var $infoBlock = $('<div>', {'class': 'info'}).appendTo($messages);
@@ -59,7 +53,6 @@ define([
         var $ul = $('<ul>').appendTo($infoBlock);
         $('<li>').text(Messages.contacts_info2).appendTo($ul);
         $('<li>').text(Messages.contacts_info3).appendTo($ul);
-        //$('<li>').text(Messages.contacts_info4).appendTo($ul);
 
         var messenger = window.messenger = Messenger.messenger(Cryptpad);
         UI.create(messenger, $list, $messages);

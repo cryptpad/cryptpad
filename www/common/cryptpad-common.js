@@ -122,7 +122,6 @@ define([
     common.createInviteUrl = Hash.createInviteUrl;
 
     // Messaging
-    common.initMessaging = Messaging.init;
     common.addDirectMessageHandler = Messaging.addDirectMessageHandler;
     common.inviteFromUserlist = Messaging.inviteFromUserlist;
     common.getFriendList = Messaging.getFriendList;
@@ -130,7 +129,6 @@ define([
     common.createData = Messaging.createData;
     common.getPendingInvites = Messaging.getPending;
     common.getLatestMessages = Messaging.getLatestMessages;
-    common.initMessagingUI = Messaging.UI.init;
 
     // Realtime
     var whenRealtimeSyncs = common.whenRealtimeSyncs = function (realtime, cb) {

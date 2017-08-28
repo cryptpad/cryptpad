@@ -290,10 +290,6 @@ define([
             });
         };
 
-/*      var friendExistsInUserList = function (curvePublic) {
-            return !!$userlist.find(dataQuery(curvePublic)).length;
-        }; */
-
         markup.friend = function (data) {
             var curvePublic = data.curvePublic;
             var friend = h('div.friend.avatar', {
@@ -384,19 +380,16 @@ define([
         });
 
         messenger.on('join', function (curvePublic, channel) {
-            //console.log('join', curvePublic, channel);
             channel = channel;
             updateStatus(curvePublic);
         });
         messenger.on('leave', function (curvePublic, channel) {
-            //console.log('leave', curvePublic, channel);
             channel = channel;
             updateStatus(curvePublic);
         });
 
         // change in your friend list
         messenger.on('update', function (info, curvePublic) {
-            console.log(info, curvePublic);
             var name = displayNames[curvePublic] = info.displayName;
 
             // update label in friend list
