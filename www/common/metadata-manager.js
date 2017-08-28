@@ -47,7 +47,9 @@ define([], function () {
                 }*/
             });
             //if (!containsYou) { mdo[meta.user.netfluxId] = meta.user; }
-            mdo[meta.user.netfluxId] = meta.user;
+            if (!priv.readOnly) {
+                mdo[meta.user.netfluxId] = meta.user;
+            }
             metadataObj.users = mdo;
             var lazyUserStr = JSON.stringify(metadataLazyObj.users[meta.user.netfluxId]);
             dirty = false;
