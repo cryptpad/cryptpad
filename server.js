@@ -10,7 +10,13 @@ var NetfluxSrv = require('./node_modules/chainpad-server/NetfluxWebsocketSrv');
 var Package = require('./package.json');
 var Path = require("path");
 
-var config = require('./config');
+var config;
+try {
+    config = require('./config');
+} catch (e) {
+    console.log("You can customize the configuration by copying config.example.js to config.js");
+    config = require('./config.example');
+}
 var websocketPort = config.websocketPort || config.httpPort;
 var useSecureWebsockets = config.useSecureWebsockets || false;
 
