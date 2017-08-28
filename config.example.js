@@ -35,6 +35,8 @@ module.exports = {
          *  domain which will serve your CryptPad instance.
          */
         "child-src blob: *",
+        // IE/Edge
+        "frame-src blob: *",
 
         "media-src * blob:",
 
@@ -62,7 +64,9 @@ module.exports = {
         /*  See above under 'contentSecurity' as to how these values should be
          *  configured for best effect.
          */
-         "child-src *",
+        "child-src *",
+        // IE/Edge
+        "frame-src *",
 
         // see the comment above in the 'contentSecurity' section
          "connect-src 'self' ws: wss:" + domain,
