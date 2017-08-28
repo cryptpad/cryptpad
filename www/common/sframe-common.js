@@ -103,6 +103,17 @@ define([
         ctx.sframeChan.query('Q_GET_FULL_HISTORY', null, cb);
     };
 
+    // Friends
+    var pendingFriends = [];
+    funcs.getPendingFriends = function () {
+        return pendingFriends.slice();
+    };
+    funcs.sendFriendRequest = function (netfluxId) {
+        ctx.sframeChan.query('Q_SEND_FRIEND_REQUEST', netfluxId, $.noop);
+        pendingFriends.push(netfluxId);
+    };
+
+    // Feedback
     funcs.feedback = function (action, force) {
         if (force !== true) {
             if (!action) { return; }
@@ -296,6 +307,16 @@ define([
 
             ctx.sframeChan.on('EV_RT_CONNECT', function () { CommonRealtime.setConnectionState(true); });
             ctx.sframeChan.on('EV_RT_DISCONNECT', function () { CommonRealtime.setConnectionState(false); });
+
+
+            ctx.sframeChan.on('Q_INCOMING_FRIEND_REQUEST', function (confirmMsg, cb) {
+                Cryptpad.confirm(confirmMsg, cb, null, true);
+            });
+            ctx.sframeChan.on('EV_FRIEND_REQUEST', function (data) {
+                var i = pendingFriends.indexOf(data.sender);
+                if (i !== -1) { pendingFriends.splice(i, 1); }
+                Cryptpad.log(data.logText);
+            });
 
             cb(funcs);
         });

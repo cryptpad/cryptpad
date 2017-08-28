@@ -74,4 +74,8 @@ define({
     // Save a pad as a template using the toolbar button
     'Q_SAVE_AS_TEMPLATE': true,
 
+    // Friend requests from the userlist
+    'Q_SEND_FRIEND_REQUEST': true, // Up query
+    'Q_INCOMING_FRIEND_REQUEST': true, // Down query
+    'EV_FRIEND_REQUEST': true, // Down event when the request is complete
 });

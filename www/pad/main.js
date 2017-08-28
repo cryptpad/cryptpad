@@ -104,7 +104,8 @@ define([
                         readOnly: readOnly,
                         availableHashes: hashes,
                         isTemplate: Cryptpad.isTemplate(window.location.href),
-                        feedbackAllowed: Cryptpad.isFeedbackAllowed()
+                        feedbackAllowed: Cryptpad.isFeedbackAllowed(),
+                        friends: Cryptpad.getProxy().friends || {}
                     }
                 });
             });
@@ -172,6 +173,18 @@ define([
         sframeChan.on('Q_SAVE_AS_TEMPLATE', function (data, cb) {
             Cryptpad.saveAsTemplate(Cryptget.put, data, cb);
         });
+
+        sframeChan.on('Q_SEND_FRIEND_REQUEST', function (netfluxId, cb) {
+            Cryptpad.inviteFromUserlist(Cryptpad, netfluxId);
+        });
+        Cryptpad.onFriendRequest = function (confirmText, cb) {
+            sframeChan.query('Q_INCOMING_FRIEND_REQUEST', confirmText, function (err, data) {
+                cb(data);
+            });
+        };
+        Cryptpad.onFriendComplete = function (data) {
+            sframeChan.event('EV_FRIEND_REQUEST', data);
+        };
 
         sframeChan.on('Q_GET_FULL_HISTORY', function (data, cb) {
             var network = Cryptpad.getNetwork();

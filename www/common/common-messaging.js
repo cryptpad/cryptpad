@@ -134,7 +134,8 @@ define([
                     var confirmMsg = common.Messages._getKey('contacts_request', [
                         common.fixHTML(msgData.displayName)
                     ]);
-                    common.confirm(confirmMsg, todo, null, true);
+                    common.onFriendRequest(confirmMsg, todo);
+                    //common.confirm(confirmMsg, todo, null, true);
                     return;
                 }
                 if (msg[0] === "FRIEND_REQ_OK") {
@@ -144,9 +145,15 @@ define([
                     // FIXME clarify this function's name
                     addToFriendList(common, msgData, function (err) {
                         if (err) {
-                            return void common.log(common.Messages.contacts_addError);
+                            return void Cryptpad.onFriendComplete({
+                                logText: common.Messages.contacts_addError,
+                                netfluxId: sender
+                            });
                         }
-                        common.log(common.Messages.contacts_added);
+                        Cryptpad.onFriendComplete({
+                            logText: common.Messages.contacts_added,
+                            netfluxId: sender
+                        });
                         var msg = ["FRIEND_REQ_ACK", chan];
                         var msgStr = Crypto.encrypt(JSON.stringify(msg), key);
                         network.sendto(sender, msgStr);
@@ -156,7 +163,10 @@ define([
                 if (msg[0] === "FRIEND_REQ_NOK") {
                     var i = pendingRequests.indexOf(sender);
                     if (i !== -1) { pendingRequests.splice(i, 1); }
-                    common.log(common.Messages.contacts_rejected);
+                    Cryptpad.onFriendComplete({
+                        logText: common.Messages.contacts_rejected,
+                        netfluxId: sender
+                    });
                     common.changeDisplayName(proxy[common.displayNameKey]);
                     return;
                 }
@@ -165,9 +175,15 @@ define([
                     if (!data) { return; }
                     addToFriendList(common, data, function (err) {
                         if (err) {
-                            return void common.log(common.Messages.contacts_addError);
+                            return void Cryptpad.onFriendComplete({
+                                logText: common.Messages.contacts_addError,
+                                netfluxId: sender
+                            });
                         }
-                        common.log(common.Messages.contacts_added);
+                        Cryptpad.onFriendComplete({
+                            logText: common.Messages.contacts_added,
+                            netfluxId: sender
+                        });
                     });
                     return;
                 }

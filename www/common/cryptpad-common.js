@@ -1922,6 +1922,13 @@ define([
             delete sessionStorage[newPadPathKey];
         }
 
+        common.onFriendRequest = function (confirmText, cb) {
+            common.confirm(confirmText, cb, null, true);
+        };
+        common.onFriendComplete = function (data) {
+            common.log(data.logText);
+        };
+
         Store.ready(function (err, storeObj) {
             store = common.store = env.store = storeObj;
             common.addDirectMessageHandler(common);

@@ -156,7 +156,10 @@ define([
         var metadataMgr = config.metadataMgr;
         var userData = metadataMgr.getMetadata().users;
         var viewers = metadataMgr.getViewers();
-        var origin = config.metadataMgr.getPrivateData().origin;
+        var priv = metadataMgr.getPrivateData();
+        var origin = priv.origin;
+        var friends = priv.friends;
+        var user = metadataMgr.getUserData();
 
         // If we are using old pads (readonly unavailable), only editing users are in userList.
         // With new pads, we also have readonly users in userList, so we have to intersect with
@@ -186,22 +189,20 @@ define([
 
         // Editors
         // TODO iframe enable friends
-        //var pendingFriends = Cryptpad.getPendingInvites();
+        var pendingFriends = Common.getPendingFriends();
         editUsersNames.forEach(function (data) {
             var name = data.name || Messages.anonymous;
             var $span = $('<span>', {'class': 'avatar'});
             var $rightCol = $('<span>', {'class': 'right-col'});
-            $('<span>', {'class': 'name'}).text(name).appendTo($rightCol);
-            //var proxy = Cryptpad.getProxy();
-            //var isMe = data.curvePublic === proxy.curvePublic;
-
-            /*if (Cryptpad.isLoggedIn() && data.curvePublic) {
+            var $nameSpan = $('<span>', {'class': 'name'}).text(name).appendTo($rightCol);
+            var isMe = data.curvePublic === user.curvePublic;
+            if (Common.isLoggedIn() && data.curvePublic) {
                 if (isMe) {
                     $span.attr('title', Messages._getKey('userlist_thisIsYou', [
                         name
                     ]));
                     $nameSpan.text(name);
-                } else if (!proxy.friends || !proxy.friends[data.curvePublic]) {
+                } else if (!friends[data.curvePublic]) {
                     if (pendingFriends.indexOf(data.netfluxId) !== -1) {
                         $('<span>', {'class': 'friend'}).text(Messages.userlist_pending)
                             .appendTo($rightCol);
@@ -213,11 +214,11 @@ define([
                             ])
                         }).appendTo($rightCol).click(function (e) {
                             e.stopPropagation();
-                            Cryptpad.inviteFromUserlist(Cryptpad, data.netfluxId);
+                            Common.sendFriendRequest(data.netfluxId);
                         });
                     }
                 }
-            }*/
+            }
             if (data.profile) {
                 $span.addClass('clickable');
                 $span.click(function () {
