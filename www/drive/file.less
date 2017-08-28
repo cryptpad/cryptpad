@@ -506,9 +506,9 @@ span {
             }
             .fa {
                 cursor: pointer;
-                font-size: 100px;
-                line-height: 140px;
-                margin: 0;
+                font-size: 90px;
+                margin-top: 5px;
+                margin-bottom: 0;
             }
         }
     }
@@ -595,6 +595,34 @@ span {
 #folderContent {
     padding-right: 10px;
     flex: 1;
+}
+
+#addPadDialog.cp-modal-container {
+    .fileIcon;
+
+    li:not(.selected):hover {
+        border: 1px solid white;
+    }
+    .cp-modal {
+        display: flex;
+        flex-flow: column;
+        li, li .fa {
+            cursor: pointer;
+        }
+        &> p {
+            margin: 50px;
+        }
+        &> div {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-content: center;
+            .uploadFile {
+                break-after: always;
+                page-break-after: always;
+            }
+        }
+    }
 }
 
 
