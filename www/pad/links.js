@@ -29,7 +29,7 @@ define(['/common/cryptpad-common.js'], function (Cryptpad) {
                         if (anchor) {
                             var href = anchor.getAttribute('href');
                             if (href) {
-                                 var bounceHref = window.location.origin + '/bounce/#' + encodeURIComponent(href);
+                                var bounceHref = window.location.origin + '/bounce/#' + encodeURIComponent(href);
                                 window.open(bounceHref);
                             }
                         }
