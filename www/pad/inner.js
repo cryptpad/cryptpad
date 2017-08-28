@@ -778,7 +778,7 @@ define([
             });
             editor.on('instanceReady', waitFor());
         }).nThen(function (/*waitFor*/) {
-            Links.addSupportForOpeningLinksInNewTab(Ckeditor);
+            Links.addSupportForOpeningLinksInNewTab(Ckeditor)({editor: editor});
             Cryptpad.onError(function (info) {
                 if (info && info.type === "store") {
                     onConnectError();
