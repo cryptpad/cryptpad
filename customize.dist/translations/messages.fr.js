@@ -301,6 +301,7 @@ define(function () {
     out.fm_filesDataName = "Tous les fichiers";
     out.fm_templateName = "Modèles";
     out.fm_searchName = "Recherche";
+    out.fm_recentPadsName = "Pads récents";
     out.fm_searchPlaceholder = "Rechercher...";
     out.fm_newButton = "Nouveau";
     out.fm_newButtonTitle = "Créer un nouveau pad ou un dossier, importer un fichier dans le dossier courant";
@@ -332,6 +333,7 @@ define(function () {
     out.fm_info_root = "Créez ici autant de dossiers que vous le souhaitez pour trier vos fichiers.";
     out.fm_info_unsorted = 'Contient tous les pads que vous avez ouvert et qui ne sont pas triés dans "Documents" ou déplacés vers la "Corbeille".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
     out.fm_info_template = "Contient tous les fichiers que vous avez sauvés en tant que modèle afin de les réutiliser lors de la création d'un nouveau pad.";
+    out.fm_info_recent = "Liste les derniers pads que vous avez modifiés ou ouverts.";
     out.updated_0_fm_info_trash = "Vider la corbeille permet de libérer de l'espace dans votre CryptDrive";
     out.fm_info_trash = out.updated_0_fm_info_trash;
     out.fm_info_allFiles = 'Contient tous les fichiers de "Documents", "Fichiers non triés" et "Corbeille". Vous ne pouvez pas supprimer ou déplacer des fichiers depuis cet endroit.'; // Same here

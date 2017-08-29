@@ -293,6 +293,7 @@ define(function () {
     out.contacts_removeHistoryTitle = 'Clean the chat history';
     out.contacts_confirmRemoveHistory = 'Are you sure you want to permanently remove your chat history? Data cannot be restored';
     out.contacts_removeHistoryServerError = 'There was an error while removing your chat history. Try again later';
+    out.contacts_fetchHistory = "Retrieve older history";
 
     // File manager
 
@@ -302,6 +303,7 @@ define(function () {
     out.fm_filesDataName = "All files";
     out.fm_templateName = "Templates";
     out.fm_searchName = "Search";
+    out.fm_recentPadsName = "Recent pads";
     out.fm_searchPlaceholder = "Search...";
     out.fm_newButton = "New";
     out.fm_newButtonTitle = "Create a new pad or folder, import a file in the current folder";
@@ -333,6 +335,7 @@ define(function () {
     out.fm_info_root = "Create as many nested folders here as you want to sort your files.";
     out.fm_info_unsorted = 'Contains all the files you\'ve visited that are not yet sorted in "Documents" or moved to the "Trash".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
     out.fm_info_template = 'Contains all the pads stored as templates and that you can re-use when you create a new pad.';
+    out.fm_info_recent = "List the recently modified or opened pads.";
     out.updated_0_fm_info_trash = 'Empty your trash to free space in your CryptDrive.';
     out.fm_info_trash = out.updated_0_fm_info_trash;
     out.fm_info_allFiles = 'Contains all the files from "Documents", "Unsorted" and "Trash". You can\'t move or remove files from here.'; // Same here
@@ -685,13 +688,13 @@ define(function () {
 
     // Tips
     out.tips = {};
-    out.tips.lag = "The green icon in the upper right shows the quality of your internet connection to the CryptPad server.";
     out.tips.shortcuts = "`ctrl+b`, `ctrl+i` and `ctrl+u` are quick shortcuts for bold, italic and underline.";
     out.tips.indent = "In numbered and bulleted lists, you can use tab or shift+tab to quickly increase or decrease indentation.";
-    out.tips.title = "You can set the title of your pad by clicking the top center.";
     out.tips.store = "Every time you visit a pad, if you're logged in it will be saved to your CryptDrive.";
     out.tips.marker = "You can highlight text in a pad using the \"marker\" item in the styles dropdown menu.";
     out.tips.driveUpload = "Registered users can upload encrypted files by dragging and dropping them into their CryptDrive.";
+    out.tips.filenames = "You can rename files in your CryptDrive, this name is just for you.";
+    out.tips.drive = "Logged in users can organize their files in their CryptDrive, accessible from the CryptPad icon at the top left of all pads.";
 
     out.feedback_about = "If you're reading this, you were probably curious why CryptPad is requesting web pages when you perform certain actions";
     out.feedback_privacy = "We care about your privacy, and at the same time we want CryptPad to be very easy to use.  We use this file to figure out which UI features matter to our users, by requesting it along with a parameter specifying which action was taken.";

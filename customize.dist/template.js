@@ -52,7 +52,7 @@ $(function () {
                 } else if (/\/file\//.test(pathname)) {
                     $('body').append(h('body', Pages[pathname]()).innerHTML);
                     require([ '/file/main.js' ], ready);
-                } else if (/contacts/.test(pathname)) {
+                } else if (/^\/contacts\/$/.test(pathname)) {
                     $('body').append(h('body', Pages[pathname]()).innerHTML);
                     require([ '/contacts/main.js' ], ready);
                 } else if (/pad/.test(pathname)) {

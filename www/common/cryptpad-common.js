@@ -98,6 +98,7 @@ define([
     common.createRandomInteger = Util.createRandomInteger;
     common.getAppType = Util.getAppType;
     common.notAgainForAnother = Util.notAgainForAnother;
+    common.uid = Util.uid;
 
     // import hash utilities for export
     var createRandomHash = common.createRandomHash = Hash.createRandomHash;
@@ -121,7 +122,6 @@ define([
     common.createInviteUrl = Hash.createInviteUrl;
 
     // Messaging
-    common.initMessaging = Messaging.init;
     common.addDirectMessageHandler = Messaging.addDirectMessageHandler;
     common.inviteFromUserlist = Messaging.inviteFromUserlist;
     common.getFriendList = Messaging.getFriendList;
@@ -129,10 +129,11 @@ define([
     common.createData = Messaging.createData;
     common.getPendingInvites = Messaging.getPending;
     common.getLatestMessages = Messaging.getLatestMessages;
-    common.initMessagingUI = Messaging.UI.init;
 
     // Realtime
-    var whenRealtimeSyncs = common.whenRealtimeSyncs = Realtime.whenRealtimeSyncs;
+    var whenRealtimeSyncs = common.whenRealtimeSyncs = function (realtime, cb) {
+        Realtime.whenRealtimeSyncs(common, realtime, cb);
+    };
 
     // Userlist
     common.createUserList = UserList.create;
@@ -198,15 +199,28 @@ define([
         }
         return '';
     };
+    common.getAccountName = function () {
+        return localStorage[common.userNameKey];
+    };
 
     var randomToken = function () {
         return Math.random().toString(16).replace(/0./, '');
     };
+
+    common.isFeedbackAllowed = function () {
+        try {
+            if (!getStore().getProxy().proxy.allowUserFeedback) { return false; }
+            return true;
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
+    };
     var feedback = common.feedback = function (action, force) {
+        if (!action) { return; }
         if (force !== true) {
-            if (!action) { return; }
             try {
-                if (!getStore().getProxy().proxy.allowUserFeedback) { return; }
+                if (!common.isFeedbackAllowed()) { return; }
             } catch (e) { return void console.error(e); }
         }
 
@@ -800,6 +814,9 @@ define([
 
     common.pinPads = function (pads, cb) {
         if (!pinsReady()) { return void cb ('RPC_NOT_READY'); }
+        if (typeof(cb) !== 'function') {
+            console.error('expected a callback');
+        }
 
         rpc.pin(pads, function (e, hash) {
             if (e) { return void cb(e); }
@@ -825,6 +842,13 @@ define([
             }
             cb(err, bytes);
         });
+    };
+
+    // SFRAME: talk to anon_rpc from the iframe
+    common.anonRpcMsg = function (msg, data, cb) {
+        if (!msg) { return; }
+        if (!anon_rpc) { return void cb('ANON_RPC_NOT_READY'); }
+        anon_rpc.send(msg, data, cb);
     };
 
     common.getFileSize = function (href, cb) {
@@ -1030,6 +1054,41 @@ define([
         };
     };
 
+    // Forget button
+    var moveToTrash = common.moveToTrash = function (cb) {
+        var href = window.location.href;
+        common.forgetPad(href, function (err) {
+            if (err) {
+                console.log("unable to forget pad");
+                console.error(err);
+                cb(err, null);
+                return;
+            }
+            var n = getNetwork();
+            var r = getRealtime();
+            if (n && r) {
+                whenRealtimeSyncs(r, function () {
+                    n.disconnect();
+                    cb();
+                });
+            } else {
+                cb();
+            }
+        });
+    };
+    var saveAsTemplate = common.saveAsTemplate = function (Cryptput, data, cb) {
+        var p = parsePadUrl(window.location.href);
+        if (!p.type) { return; }
+        var hash = createRandomHash();
+        var href = '/' + p.type + '/#' + hash;
+        Cryptput(hash, data.toSave, function (e) {
+            if (e) { throw new Error(e); }
+            common.addTemplate(makePad(href, data.title));
+            whenRealtimeSyncs(getStore().getProxy().info.realtime, function () {
+                cb();
+            });
+        });
+    };
     common.createButton = function (type, rightside, data, callback) {
         var button;
         var size = "17px";
@@ -1118,17 +1177,12 @@ define([
                                     console.error("Parse error while setting the title", e);
                                 }
                             }
-                            var p = parsePadUrl(window.location.href);
-                            if (!p.type) { return; }
-                            var hash = createRandomHash();
-                            var href = '/' + p.type + '/#' + hash;
-                            data.Crypt.put(hash, toSave, function (e) {
-                                if (e) { throw new Error(e); }
-                                common.addTemplate(makePad(href, title));
-                                whenRealtimeSyncs(getStore().getProxy().info.realtime, function () {
-                                    common.alert(Messages.templateSaved);
-                                    common.feedback('TEMPLATE_CREATED');
-                                });
+                            saveAsTemplate(data.Crypt.put, {
+                                title: title,
+                                toSave: toSave
+                            }, function () {
+                                common.alert(Messages.templateSaved);
+                                common.feedback('TEMPLATE_CREATED');
                             });
                         };
                         common.prompt(Messages.saveTemplatePrompt, title || document.title, todo);
@@ -1151,29 +1205,14 @@ define([
                     button
                     .click(prepareFeedback(type))
                     .click(function() {
-                        var href = window.location.href;
                         var msg = isLoggedIn() ? Messages.forgetPrompt : Messages.fm_removePermanentlyDialog;
                         common.confirm(msg, function (yes) {
                             if (!yes) { return; }
-                            common.forgetPad(href, function (err) {
-                                if (err) {
-                                    console.log("unable to forget pad");
-                                    console.error(err);
-                                    callback(err, null);
-                                    return;
-                                }
-                                var n = getNetwork();
-                                var r = getRealtime();
-                                if (n && r) {
-                                    whenRealtimeSyncs(r, function () {
-                                        n.disconnect();
-                                        callback();
-                                    });
-                                } else {
-                                    callback();
-                                }
+                            moveToTrash(function (err) {
+                                if (err) { return void callback(err); }
                                 var cMsg = isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
                                 common.alert(cMsg, undefined, true);
+                                callback();
                                 return;
                             });
                         });
@@ -1254,7 +1293,7 @@ define([
       }
       return arr;
     };
-    var getFirstEmojiOrCharacter = function (str) {
+    var getFirstEmojiOrCharacter = common.getFirstEmojiOrCharacter = function (str) {
       if (!str || !str.trim()) { return '?'; }
       var emojis = emojiStringToArray(str);
       return isEmoji(emojis[0])? emojis[0]: str[0];
@@ -1305,6 +1344,7 @@ define([
         'image/jpg',
         'image/gif',
     ];
+    // SFRAME: copied to sframe-common-interface.js
     common.displayAvatar = function ($container, href, name, cb) {
         var MutationObserver = window.MutationObserver;
         var displayDefault = function () {
@@ -1391,23 +1431,37 @@ define([
         return $icon;
     };
 
-    common.createFileDialog = function (cfg) {
+    common.createModal = function (cfg) {
         var $body = cfg.$body || $('body');
-        var $blockContainer = $body.find('#fileDialog');
+        var $blockContainer = $body.find('#'+cfg.id);
         if (!$blockContainer.length) {
-            $blockContainer = $('<div>', {id: "fileDialog"}).appendTo($body);
+            $blockContainer = $('<div>', {
+                'class': 'cp-modal-container',
+                'id': cfg.id
+            });
         }
-        $blockContainer.html('');
+        $blockContainer.html('').appendTo($body);
         var $block = $('<div>', {'class': 'cp-modal'}).appendTo($blockContainer);
         $('<span>', {
-            'class': 'close fa fa-times',
+            'class': 'cp-modal-close fa fa-times',
             'title': Messages.filePicker_close
         }).click(function () {
             $blockContainer.hide();
         }).appendTo($block);
+        $body.keydown(function (e) {
+            if (e.which === 27) { $blockContainer.hide(); }
+        });
+        return $blockContainer;
+    };
+    common.createFileDialog = function (cfg) {
+        var $blockContainer = common.createModal({
+            id: 'fileDialog',
+            $body: cfg.$body
+        });
+        var $block = $blockContainer.find('.cp-modal');
         var $description = $('<p>').text(Messages.filePicker_description);
         $block.append($description);
-        var $filter = $('<p>', {'class': 'cp-form'}).appendTo($block);
+        var $filter = $('<p>', {'class': 'cp-modal-form'}).appendTo($block);
         var $container = $('<span>', {'class': 'fileContainer'}).appendTo($block);
         var updateContainer = function () {
             $container.html('');
@@ -1447,9 +1501,6 @@ define([
             $blockContainer.hide();
         }));
         updateContainer();
-        $body.keydown(function (e) {
-            if (e.which === 27) { $blockContainer.hide(); }
-        });
         $blockContainer.show();
     };
 
@@ -1643,6 +1694,7 @@ define([
         return $block;
     };
 
+    // SFRAME: moved to sframe-common-interface.js
     common.createUserAdminMenu = function (config) {
         var $displayedName = $('<span>', {'class': config.displayNameCls || 'displayName'});
         var accountName = localStorage[common.userNameKey];
@@ -1792,6 +1844,32 @@ define([
         return $userAdmin;
     };
 
+    common.getShareHashes = function (secret, cb) {
+        if (!window.location.hash) {
+            var hashes = common.getHashes(secret.channel, secret);
+            return void cb(null, hashes);
+        }
+        common.getRecentPads(function (err, recent) {
+            var parsed = parsePadUrl(window.location.href);
+            if (!parsed.type || !parsed.hashData) { return void cb('E_INVALID_HREF'); }
+            var hashes = common.getHashes(secret.channel, secret);
+
+            if (!hashes.editHash && !hashes.viewHash && parsed.hashData && !parsed.hashData.mode) {
+                // It means we're using an old hash
+                hashes.editHash = window.location.hash.slice(1);
+            }
+
+            // If we have a stronger version in drive, add it and add a redirect button
+            var stronger = recent && common.findStronger(null, recent);
+            if (stronger) {
+                var parsed2 = parsePadUrl(stronger);
+                hashes.editHash = parsed2.hash;
+            }
+
+            cb(null, hashes);
+        });
+    };
+
     var CRYPTPAD_VERSION = 'cryptpad-version';
     var updateLocalVersion = function () {
         // Check for CryptPad updates
@@ -1847,13 +1925,26 @@ define([
             delete sessionStorage[newPadPathKey];
         }
 
+        common.onFriendRequest = function (confirmText, cb) {
+            common.confirm(confirmText, cb, null, true);
+        };
+        common.onFriendComplete = function (data) {
+            common.log(data.logText);
+        };
+
         Store.ready(function (err, storeObj) {
             store = common.store = env.store = storeObj;
-
             common.addDirectMessageHandler(common);
 
             var proxy = getProxy();
             var network = getNetwork();
+
+            network.on('disconnect', function () {
+                Realtime.setConnectionState(false);
+            });
+            network.on('reconnect', function () {
+                Realtime.setConnectionState(true);
+            });
 
             if (Object.keys(proxy).length === 1) {
                 feedback("FIRST_APP_USE", true);
@@ -1863,8 +1954,13 @@ define([
                 feedback("NO_PROXIES");
             }
 
-            if (/CRYPTPAD_SHIM/.test(Array.isArray.toString())) {
+            var shimPattern = /CRYPTPAD_SHIM/;
+            if (shimPattern.test(Array.isArray.toString())) {
                 feedback("NO_ISARRAY");
+            }
+
+            if (shimPattern.test(Array.prototype.fill.toString())) {
+                feedback("NO_ARRAYFILL");
             }
 
             common.reportScreenDimensions();

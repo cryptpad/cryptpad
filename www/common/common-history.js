@@ -38,13 +38,13 @@ define([
         var parsed = config.href ? common.parsePadUrl(config.href) : {};
         var secret = common.getSecrets(parsed.type, parsed.hash);
 
-        History.readOnly = 1;
+        History.readOnly = 0;
         if (!secret.keys) {
             secret.keys = secret.key;
-            History.readOnly = 2;
+            History.readOnly = 0;
         }
         else if (!secret.keys.validateKey) {
-            History.readOnly = 0;
+            History.readOnly = 1;
         }
 
         var crypto = Crypto.createEncryptor(secret.keys);
@@ -203,7 +203,7 @@ define([
                 'class':'revertHistory buttonSuccess',
                 title: Messages.history_restoreTitle
             }).text(Messages.history_restore).appendTo($nav);
-            if (!History.readOnly) { $rev.hide(); }
+            if (History.readOnly) { $rev.hide(); }
 
             onUpdate = function () {
                 $cur.attr('max', states.length);

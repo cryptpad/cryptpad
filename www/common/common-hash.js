@@ -214,6 +214,10 @@ Version 1
 
     Hash.getHashes = function (channel, secret) {
         var hashes = {};
+        if (!secret.keys) {
+            console.error('e');
+            return hashes;
+        }
         if (secret.keys.editKeyStr) {
             hashes.editHash = getEditHashFromKeys(channel, secret.keys);
         }
