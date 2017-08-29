@@ -26,7 +26,7 @@ define([], function () {
             if (metadataObj === UNINIT) {
                 metadataObj = {
                     defaultTitle: meta.doc.defaultTitle,
-                    title: meta.doc.defaultTitle,
+                    //title: meta.doc.defaultTitle,
                     type: meta.doc.type,
                     users: {}
                 };
