@@ -151,6 +151,10 @@ define([
             Cryptpad.logout(cb);
         });
 
+        sframeChan.on('EV_NOTIFY', function () {
+            Cryptpad.notify();
+        });
+
         sframeChan.on('Q_SET_LOGIN_REDIRECT', function (data, cb) {
             sessionStorage.redirectTo = window.location.href;
             cb();

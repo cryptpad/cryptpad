@@ -489,7 +489,7 @@ define([
             // Notify only when the content has changed, not when someone has joined/left
             var oldSInner = stringify(JSON.parse(oldShjson)[2]);
             if (newSInner && newSInner !== oldSInner) {
-                Cryptpad.notify();
+                common.notify();
             }
         };
 

@@ -78,4 +78,8 @@ define({
     'Q_SEND_FRIEND_REQUEST': true, // Up query
     'Q_INCOMING_FRIEND_REQUEST': true, // Down query
     'EV_FRIEND_REQUEST': true, // Down event when the request is complete
+
+    // Set the tab notification when the content of the pad changes
+    'EV_NOTIFY': true,
+
 });

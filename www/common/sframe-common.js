@@ -75,6 +75,10 @@ define([
         });
     };
 
+    funcs.notify = function () {
+        ctx.sframeChan.event('EV_NOTIFY');
+    };
+
     funcs.setLoginRedirect = function (cb) {
         ctx.sframeChan.query('Q_SET_LOGIN_REDIRECT', null, function (err) {
             if (cb) { cb(err); }
