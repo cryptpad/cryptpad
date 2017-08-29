@@ -209,15 +209,18 @@ define([
 
     common.isFeedbackAllowed = function () {
         try {
-            if (!getStore().getProxy().proxy.allowUserFeedback) { return; }
+            if (!getStore().getProxy().proxy.allowUserFeedback) { return false; }
             return true;
-        } catch (e) { return void console.error(e); }
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
     };
     var feedback = common.feedback = function (action, force) {
+        if (!action) { return; }
         if (force !== true) {
-            if (!action) { return; }
             try {
-                if (!getStore().getProxy().proxy.allowUserFeedback) { return; }
+                if (!common.isFeedbackAllowed()) { return; }
             } catch (e) { return void console.error(e); }
         }
 
@@ -1951,8 +1954,13 @@ define([
                 feedback("NO_PROXIES");
             }
 
-            if (/CRYPTPAD_SHIM/.test(Array.isArray.toString())) {
+            var shimPattern = /CRYPTPAD_SHIM/;
+            if (shimPattern.test(Array.isArray.toString())) {
                 feedback("NO_ISARRAY");
+            }
+
+            if (shimPattern.test(Array.prototype.fill.toString())) {
+                feedback("NO_ARRAYFILL");
             }
 
             common.reportScreenDimensions();

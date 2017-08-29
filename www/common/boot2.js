@@ -11,6 +11,16 @@ define([
         };
     }
 
+    // file encryption/decryption won't work if you don't have Array.fill
+    if (typeof(Array.prototype.fill) !== 'function') {
+        Array.prototype.fill = function (x) { // CRYPTPAD_SHIM
+            var i = 0;
+            var l = this.length;
+            for (;i < l; i++) { this[i] = x; }
+            return this;
+        };
+    }
+
     var failStore = function () {
         console.error(new Error('wut'));
         require(['jquery'], function ($) {
