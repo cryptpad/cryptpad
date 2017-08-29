@@ -596,7 +596,7 @@ define([
 
         var origin = config.metadataMgr.getPrivateData().origin;
 
-        var href = inDrive ? origin+'/index.html' : origin+'/drive/';
+        var href = inDrive.test(origin) ? origin+'/index.html' : origin+'/drive/';
         var buttonTitle = inDrive ? Messages.header_homeTitle : Messages.header_logoTitle;
 
         var $aTag = $('<a>', {

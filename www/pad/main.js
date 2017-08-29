@@ -234,5 +234,6 @@ define([
                 Cryptpad.replaceHash(Cryptpad.getEditHashFromKeys(wc.id, secret.keys));
             }
         });
+        Cryptpad.reportAppUsage();
     });
 });
