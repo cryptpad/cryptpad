@@ -10,7 +10,13 @@ define([
 
     var module = { exports: {} };
     var key = Config.requireConf.urlArgs;
-    var localStorage = window.localStorage || {};
+    var localStorage;
+    try {
+        localStorage = window.localStorage || {};
+    } catch (e) {
+        console.error(e);
+        localStorage = {};
+    }
 
     var fixURL = function (url) {
         var mark = (url.indexOf('?') !== -1) ? '&' : '?';
