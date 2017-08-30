@@ -176,7 +176,8 @@ define([
 
         var $inputBlock = $('<div>', {
             'class': 'inputBlock',
-        }).appendTo($div);
+        }).css('flex-flow', 'column')
+        .appendTo($div);
 
         var $input = $('<input>', {
             type: 'checkbox',
@@ -186,16 +187,9 @@ define([
             proxy[key] = val;
         }).appendTo($inputBlock);
 
-        proxy.on('change', [key], function (o, n) { $input.val(n); });
+        $input[0].checked = !!proxy[key];
+        proxy.on('change', [key], function (o, n) { $input[0].checked = !!n; });
 
-        Cryptpad.getAttribute('indentUnit', function (e, val) {
-            if (e) { return void console.error(e); }
-            if (typeof(val) !== 'number') {
-                $input.val(2);
-            } else {
-                $input.val(val);
-            }
-        });
         return $div;
     };
 

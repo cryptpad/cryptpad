@@ -208,15 +208,17 @@ define([
         var $displayName = $userAdmin.find('.'+displayNameCls);
 
         var $avatar = $userAdmin.find('.buttonTitle');
+        var oldUrl;
         var updateButton = function () {
             var myData = metadataMgr.getUserData();
             if (!myData) { return; }
             var newName = myData.name;
             var url = myData.avatar;
             $displayName.text(newName || Messages.anonymous);
-            if (accountName) {
+            if (accountName && oldUrl !== url) {
                 $avatar.html('');
                 UI.displayAvatar(Common, $avatar, url, newName, function ($img) {
+                    oldUrl = url;
                     if ($img) {
                         $userAdmin.find('button').addClass('avatar');
                     }

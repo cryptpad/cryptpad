@@ -73,7 +73,7 @@ define([
 
             var proxy = Cryptpad.getProxy();
 
-            var updateIndentSettings = function () {
+            var updateIndentSettings = APP.updateIndentSettings = function () {
                 var indentUnit = proxy[indentKey];
                 var useTabs = proxy[useTabsKey];
                 setIndentation(
@@ -208,6 +208,9 @@ define([
                 $previewContainer.hide();
                 APP.$previewButton.removeClass('active');
                 $codeMirror.addClass('fullPage');
+                if (typeof(APP.updateIndentSettings) === 'function') {
+                    APP.updateIndentSettings();
+                }
             };
 
             config.onInit = function (info) {

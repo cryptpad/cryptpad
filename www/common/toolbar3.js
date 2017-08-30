@@ -188,7 +188,6 @@ define([
         var $editUsersList = $('<div>', {'class': 'userlist-others'});
 
         // Editors
-        // TODO iframe enable friends
         var pendingFriends = Common.getPendingFriends();
         editUsersNames.forEach(function (data) {
             var name = data.name || Messages.anonymous;

@@ -18,13 +18,6 @@ define([
         if (!document.body) { return; }
         clearInterval(intr);
         document.body.appendChild(elem);
-        require([
-            '/customize/messages.js',
-
-            'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
-        ], function (Messages) {
-            document.getElementById('cp-loading-message').innerText = Messages.loading;
-        });
     };
     intr = setInterval(append, 100);
     append();
