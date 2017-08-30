@@ -773,11 +773,18 @@ define([
             }
             // Used in ckeditor-config.js
             Ckeditor.CRYPTPAD_URLARGS = ApiConfig.requireConf.urlArgs;
-            editor = Ckeditor.replace('editor1', {
+            module.ckeditor = editor = Ckeditor.replace('editor1', {
                 customConfig: '/customize/ckeditor-config.js',
             });
             editor.on('instanceReady', waitFor());
         }).nThen(function (/*waitFor*/) {
+            if (Ckeditor.env.safari) {
+                var fixIframe = function () {
+                    $('iframe.cke_wysiwyg_frame').height($('#cke_1_contents').height());
+                };
+                $(window).resize(fixIframe);
+                fixIframe();
+            }
             Links.addSupportForOpeningLinksInNewTab(Ckeditor)({editor: editor});
             Cryptpad.onError(function (info) {
                 if (info && info.type === "store") {
