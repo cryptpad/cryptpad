@@ -18,7 +18,7 @@ define([], function () {
                     var key = parsed.hash + '.' + attr;
                     var key2 = parsed.hash.slice(0,-1) + '.' + attr;// old pads not ending with /
                     if (typeof(files[key]) !== "undefined" || typeof(files[key2]) !== "undefined") {
-                        debug("Migrating pad attribute", attr, "for pad", id);
+                        console.log("Migrating pad attribute", attr, "for pad", id);
                         el[attr] = files[key] || files[key2];
                         delete files[key];
                         delete files[key2];
@@ -28,7 +28,7 @@ define([], function () {
             var filesData = files.filesData;
             if (!filesData) { return; }
 
-            var el, id, parsed;
+            var el, parsed;
             for (var id in filesData) {
                 id = Number(id);
                 el = filesData[id];

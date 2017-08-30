@@ -131,6 +131,7 @@ define([
     };
     var createIndentUnitSelector = function (obj) {
         var proxy = obj.proxy;
+        proxy.settings = proxy.settings || {};
 
         var $div = $('<div>', {
             'class': 'indentUnit element'
@@ -148,26 +149,28 @@ define([
         }).on('change', function () {
             var val = parseInt($input.val());
             if (typeof(val) !== 'number') { return; }
-            proxy['cryptpad.indentUnit'] = val;
+            proxy.settings.indentUnit = val;
         }).appendTo($inputBlock);
 
-        proxy.on('change', [ 'cryptpad.indentUnit', ], function (o, n) { $input.val(n); });
+        proxy.on('change', [ 'settings', 'indentUnit', ], function (o, n) { $input.val(n); });
 
-        Cryptpad.getAttribute('indentUnit', function (e, val) {
-            if (e) { return void console.error(e); }
+        //Cryptpad.getAttribute('indentUnit', function (e, val) {
+            //if (e) { return void console.error(e); }
+            var val = proxy.settings.indentUnit;
             if (typeof(val) !== 'number') {
                 $input.val(2);
             } else {
                 $input.val(val);
             }
-        });
+        //});
         return $div;
     };
 
     var createIndentTypeSelector = function (obj) {
         var proxy = obj.proxy;
+        proxy.settings = proxy.settings || {};
 
-        var key = 'cryptpad.indentWithTabs';
+        var key = 'indentWithTabs';
 
         var $div = $('<div>', {
             'class': 'indentType element'
@@ -184,11 +187,11 @@ define([
         }).on('change', function () {
             var val = $input.is(':checked');
             if (typeof(val) !== 'boolean') { return; }
-            proxy[key] = val;
+            proxy.settings[key] = val;
         }).appendTo($inputBlock);
 
-        $input[0].checked = !!proxy[key];
-        proxy.on('change', [key], function (o, n) { $input[0].checked = !!n; });
+        $input[0].checked = !!proxy.settings[key];
+        proxy.on('change', ['settings', key], function (o, n) { $input[0].checked = !!n; });
 
         return $div;
     };

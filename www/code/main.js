@@ -68,21 +68,21 @@ define([
                 editor.setOption('indentWithTabs', useTabs);
             };
 
-            var indentKey = 'cryptpad.indentUnit';
-            var useTabsKey = 'cryptpad.indentWithTabs';
+            var indentKey = 'indentUnit';
+            var useTabsKey = 'indentWithTabs';
 
             var proxy = Cryptpad.getProxy();
 
             var updateIndentSettings = APP.updateIndentSettings = function () {
-                var indentUnit = proxy[indentKey];
-                var useTabs = proxy[useTabsKey];
+                var indentUnit = proxy.settings[indentKey];
+                var useTabs = proxy.settings[useTabsKey];
                 setIndentation(
                     typeof(indentUnit) === 'number'? indentUnit: 2,
                     typeof(useTabs) === 'boolean'? useTabs: false);
             };
 
-            proxy.on('change', [indentKey], updateIndentSettings);
-            proxy.on('change', [useTabsKey], updateIndentSettings);
+            proxy.on('change', ['settings', indentKey], updateIndentSettings);
+            proxy.on('change', ['settings', useTabsKey], updateIndentSettings);
 
             var $bar = $('#pad-iframe')[0].contentWindow.$('#cme_toolbox');
 

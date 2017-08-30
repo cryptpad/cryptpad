@@ -84,7 +84,6 @@ define([
         var readOnly = false;
         var cpNfInner;
         var metadataMgr;
-        var onLocal;
         var $bar = $('#cme_toolbox');
 
         var isHistoryMode = false;
@@ -110,21 +109,17 @@ define([
             editor.setOption('indentWithTabs', useTabs);
         };
 
-        var indentKey = 'cryptpad.indentUnit';
-        var useTabsKey = 'cryptpad.indentWithTabs';
-
+        var indentKey = 'indentUnit';
+        var useTabsKey = 'indentWithTabs';
         var updateIndentSettings = function () {
-            var indentUnit = proxy[indentKey];
-            var useTabs = proxy[useTabsKey];
+            if (!metadataMgr) { return; }
+            var data = metadataMgr.getPrivateData().settings;
+            var indentUnit = data[indentKey];
+            var useTabs = data[useTabsKey];
             setIndentation(
                 typeof(indentUnit) === 'number'? indentUnit: 2,
                 typeof(useTabs) === 'boolean'? useTabs: false);
         };
-
-        //proxy.on('change', [indentKey], updateIndentSettings); TODO RPC
-        //proxy.on('change', [useTabsKey], updateIndentSettings); TODO RPC
-
-
 
         var setEditable = APP.setEditable = function (bool) {
             if (readOnly && bool) { return; }
@@ -132,8 +127,6 @@ define([
         };
 
         var Title;
-        var UserList;
-        var Metadata;
 
         var config = {
             readOnly: readOnly,
@@ -260,6 +253,9 @@ define([
         };
 
         config.onInit = function (info) {
+            metadataMgr.onChangeLazy(updateIndentSettings);
+            updateIndentSettings();
+
             readOnly = metadataMgr.getPrivateData().readOnly;
 
             var titleCfg = { getHeadingText: CodeMirror.getHeadingText };

@@ -82,4 +82,6 @@ define({
     // Set the tab notification when the content of the pad changes
     'EV_NOTIFY': true,
 
+    // Send the new settings to the inner iframe when they are changed in the proxy
+    'EV_SETTINGS_UPDATE': true,
 });

@@ -286,15 +286,15 @@ define([
             button.addClass('rightside-button');
         }
         return button;
-        
     };
+
 /*    funcs.storeLinkToClipboard = function (readOnly, cb) {
         ctx.sframeChan.query('Q_STORE_LINK_TO_CLIPBOARD', readOnly, function (err) {
             if (cb) { cb(err); }
         });
     };
 */
-    
+
     Object.freeze(funcs);
     return { create: function (cb) {
         nThen(function (waitFor) {

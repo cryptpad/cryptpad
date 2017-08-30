@@ -9,15 +9,6 @@ define([
     var requireConfig = RequireConfig();
 
     // Loaded in load #2
-    var CpNfOuter;
-    var Cryptpad;
-    var Crypto;
-    var Cryptget;
-
-    var sframeChan;
-    var secret;
-    var hashes;
-
     nThen(function (waitFor) {
         $(waitFor());
     }).nThen(function (waitFor) {

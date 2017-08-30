@@ -46,6 +46,7 @@ define([
             var parsed = Cryptpad.parsePadUrl(window.location.href);
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Cryptpad.getDefaultName(parsed);
+            var proxy = Cryptpad.getProxy();
             var updateMeta = function () {
                 //console.log('EV_METADATA_UPDATE');
                 var name;
@@ -65,7 +66,7 @@ define([
                             uid: Cryptpad.getUid(),
                             avatar: Cryptpad.getAvatarUrl(),
                             profile: Cryptpad.getProfileUrl(),
-                            curvePublic: Cryptpad.getProxy().curvePublic,
+                            curvePublic: proxy.curvePublic,
                             netfluxId: Cryptpad.getNetwork().webChannels[0].myID,
                         },
                         priv: {
@@ -76,13 +77,15 @@ define([
                             availableHashes: hashes,
                             isTemplate: Cryptpad.isTemplate(window.location.href),
                             feedbackAllowed: Cryptpad.isFeedbackAllowed(),
-                            friends: Cryptpad.getProxy().friends || {}
+                            friends: proxy.friends || {},
+                            settings: proxy.settings || {}
                         }
                     });
                 });
             };
             Cryptpad.onDisplayNameChanged(updateMeta);
             sframeChan.onReg('EV_METADATA_UPDATE', updateMeta);
+            proxy.on('change', 'settings', updateMeta);
 
             Cryptpad.onError(function (info) {
                 console.log('error');
