@@ -222,21 +222,19 @@ define([
         ];
 
         var onModeChanged = function (mode) {
-            // TODO
-            return;
-            var $codeMirror = $iframe.find('.CodeMirror');
+            var $codeMirror = $('.CodeMirror');
             window.clearTimeout(APP.previewTo);
             $codeMirror.addClass('transition');
             APP.previewTo = window.setTimeout(function () {
                 $codeMirror.removeClass('transition');
             }, 500);
-            if (mediaTagModes.indexOf(mode) !== -1) {
+            /*if (mediaTagModes.indexOf(mode) !== -1) {
                 APP.$mediaTagButton.show();
-            } else { APP.$mediaTagButton.hide(); }
+            } else { APP.$mediaTagButton.hide(); }*/// TODO
 
             if (mode === "markdown") {
                 APP.$previewButton.show();
-                Cryptpad.getPadAttribute('previewMode', function (e, data) {
+                common.getPadAttribute('previewMode', function (e, data) {
                     if (e) { return void console.error(e); }
                     if (data !== false) {
                         $previewContainer.show();
@@ -323,6 +321,45 @@ define([
             var $forgetPad = common.createButton('forget', true, {}, forgetCb);
             $rightside.append($forgetPad);
 
+            var $previewButton = APP.$previewButton = common.createButton(null, true);
+            $previewButton.removeClass('fa-question').addClass('fa-eye');
+            $previewButton.attr('title', Messages.previewButtonTitle);
+            $previewButton.click(function () {
+                var $codeMirror = $('.CodeMirror');
+                window.clearTimeout(APP.previewTo);
+                $codeMirror.addClass('transition');
+                APP.previewTo = window.setTimeout(function () {
+                    $codeMirror.removeClass('transition');
+                }, 500);
+                if (CodeMirror.highlightMode !== 'markdown') {
+                    $previewContainer.show();
+                }
+                $previewContainer.toggle();
+                if ($previewContainer.is(':visible')) {
+                    forceDrawPreview();
+                    $codeMirror.removeClass('fullPage');
+                    $previewButton.addClass('active');
+                    common.setPadAttribute('previewMode', true, function (e) {
+                        if (e) { return console.log(e); }
+                    });
+                } else {
+                    $codeMirror.addClass('fullPage');
+                    $previewButton.removeClass('active');
+                    common.setPadAttribute('previewMode', false, function (e) {
+                        if (e) { return console.log(e); }
+                    });
+                }
+            });
+            $rightside.append($previewButton);
+
+            if (!readOnly) {
+                CodeMirror.configureTheme(function () {
+                    CodeMirror.configureLanguage(null, onModeChanged);
+                });
+            }
+            else {
+                CodeMirror.configureTheme();
+            }
             // TODO
             return;
 
@@ -345,45 +382,6 @@ define([
                 Cryptpad.createFileDialog(fileDialogCfg);
             }).appendTo($rightside);
 
-            var $previewButton = APP.$previewButton = Cryptpad.createButton(null, true);
-            $previewButton.removeClass('fa-question').addClass('fa-eye');
-            $previewButton.attr('title', Messages.previewButtonTitle);
-            $previewButton.click(function () {
-                var $codeMirror = $iframe.find('.CodeMirror');
-                window.clearTimeout(APP.previewTo);
-                $codeMirror.addClass('transition');
-                APP.previewTo = window.setTimeout(function () {
-                    $codeMirror.removeClass('transition');
-                }, 500);
-                if (CodeMirror.highlightMode !== 'markdown') {
-                    $previewContainer.show();
-                }
-                $previewContainer.toggle();
-                if ($previewContainer.is(':visible')) {
-                    forceDrawPreview();
-                    $codeMirror.removeClass('fullPage');
-                    Cryptpad.setPadAttribute('previewMode', true, function (e) {
-                        if (e) { return console.log(e); }
-                    });
-                    $previewButton.addClass('active');
-                } else {
-                    $codeMirror.addClass('fullPage');
-                    $previewButton.removeClass('active');
-                    Cryptpad.setPadAttribute('previewMode', false, function (e) {
-                        if (e) { return console.log(e); }
-                    });
-                }
-            });
-            $rightside.append($previewButton);
-
-            if (!readOnly) {
-                CodeMirror.configureTheme(function () {
-                    CodeMirror.configureLanguage(null, onModeChanged);
-                });
-            }
-            else {
-                CodeMirror.configureTheme();
-            }
         };
 
         config.onReady = function (info) {
@@ -439,14 +437,13 @@ define([
             }
 
 
-/* TODO RPC
-            Cryptpad.getPadAttribute('previewMode', function (e, data) {
+            common.getPadAttribute('previewMode', function (e, data) {
                 if (e) { return void console.error(e); }
                 if (data === false && APP.$previewButton) {
                     APP.$previewButton.click();
                 }
             });
-*/
+
 
 /*
             // add the splitter

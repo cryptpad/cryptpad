@@ -200,6 +200,21 @@ define([
                 network.sendto(hkn, JSON.stringify(['GET_FULL_HISTORY', secret.channel, secret.keys.validateKey]));
             });
 
+            sframeChan.on('Q_GET_PAD_ATTRIBUTE', function (data, cb) {
+                Cryptpad.getPadAttribute(data.key, function (e, data) {
+                    cb({
+                        error: e,
+                        data: data
+                    });
+                });
+            });
+            sframeChan.on('Q_SET_PAD_ATTRIBUTE', function (data, cb) {
+                Cryptpad.setPadAttribute(data.key, data.value, function (e) {
+                    cb({error:e});
+                });
+            });
+
+
             CpNfOuter.start({
                 sframeChan: sframeChan,
                 channel: secret.channel,

@@ -146,6 +146,7 @@ define([
             if (!attr || !attr.trim()) { return void cb("E_INVAL_ATTR"); }
             var data = getFileData(id);
             data[attr] = value;
+            cb(null);
         };
 
         // PATHS

@@ -107,6 +107,22 @@ define([
         ctx.sframeChan.query('Q_GET_FULL_HISTORY', null, cb);
     };
 
+    funcs.getPadAttribute = function (key, cb) {
+        ctx.sframeChan.query('Q_GET_PAD_ATTRIBUTE', {
+            key: key
+        }, function (err, res) {
+            cb (err || res.error, res.data);
+        });
+    };
+    funcs.setPadAttribute = function (key, value, cb) {
+        ctx.sframeChan.query('Q_SET_PAD_ATTRIBUTE', {
+            key: key,
+            value: value
+        }, function (err, data) {
+            cb();
+        });
+    };
+
     // Friends
     var pendingFriends = [];
     funcs.getPendingFriends = function () {
