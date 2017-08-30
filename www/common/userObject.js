@@ -816,6 +816,7 @@ define([
                 }
                 try {
                     debug("Migrating file system...");
+                    Cryptpad.feedback('Migrate-oldFilesData', true);
                     files.migrate = 1;
                     var next = function () {
                         var oldData = files[OLD_FILES_DATA].slice();

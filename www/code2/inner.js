@@ -81,7 +81,7 @@ define([
     };
 
     var andThen = function (editor, CodeMirror, common) {
-        var readOnly = false; // TODO
+        var readOnly = false;
         var cpNfInner;
         var metadataMgr;
         var onLocal;
@@ -112,8 +112,6 @@ define([
 
         var indentKey = 'cryptpad.indentUnit';
         var useTabsKey = 'cryptpad.indentWithTabs';
-
-        //var proxy = Cryptpad.getProxy();
 
         var updateIndentSettings = function () {
             var indentUnit = proxy[indentKey];
