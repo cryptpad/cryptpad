@@ -1,4 +1,4 @@
-define([], function () {
+define(['json.sortify'], function (Sortify) {
     var UNINIT = 'uninitialized';
     var create = function (sframeChan) {
         var meta = UNINIT;
@@ -102,7 +102,9 @@ define([], function () {
 
         return Object.freeze({
             updateMetadata: function (m) {
-                if (JSON.stringify(metadataObj) === JSON.stringify(m)) { return; }
+                // JSON.parse(JSON.stringify()) reorders the json, so we have to use sortify even
+                // if it's on our own computer
+                if (Sortify(metadataLazyObj) === Sortify(m)) { return; }
                 metadataObj = JSON.parse(JSON.stringify(m));
                 metadataLazyObj = JSON.parse(JSON.stringify(m));
                 change(false);

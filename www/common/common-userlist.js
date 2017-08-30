@@ -1,4 +1,4 @@
-define(function () {
+define(['json.sortify'], function (Sortify) {
     var module = {};
 
     module.create = function (info, onLocal, Cryptget, Cryptpad) {
@@ -15,6 +15,7 @@ define(function () {
         var parsed = Cryptpad.parsePadUrl(window.location.href);
         var appType = parsed ? parsed.type : undefined;
 
+        var oldUserData = {};
         var addToUserData = exp.addToUserData = function(data) {
             var users = userList.users;
             for (var attrname in data) { userData[attrname] = data[attrname]; }
@@ -28,6 +29,10 @@ define(function () {
             }
 
             if(userList && typeof userList.onChange === "function") {
+                // Make sure we don't update the userlist everytime someone makes a change to the pad
+                if (Sortify(oldUserData) === Sortify(userData)) { return; }
+                oldUserData = JSON.parse(JSON.stringify(userData));
+
                 userList.onChange(userData);
             }
         };

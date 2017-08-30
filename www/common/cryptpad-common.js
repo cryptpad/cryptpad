@@ -1793,12 +1793,15 @@ define([
         };
         var $userAdmin = createDropdown(dropdownConfigUser);
 
+        var oldUrl;
         if (account && !config.static && store) {
             var $avatar = $userAdmin.find('.buttonTitle');
             var updateButton = function (newName) {
                 var profile = store.getProfile();
                 var url = profile && profile.avatar;
 
+                if (oldUrl === url) { return; }
+                oldUrl = url;
                 $avatar.html('');
                 common.displayAvatar($avatar, url, newName, function ($img) {
                     if ($img) {
