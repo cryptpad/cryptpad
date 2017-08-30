@@ -778,13 +778,13 @@ define([
             });
             editor.on('instanceReady', waitFor());
         }).nThen(function (/*waitFor*/) {
-            if (Ckeditor.env.safari) {
+            /*if (Ckeditor.env.safari) {
                 var fixIframe = function () {
                     $('iframe.cke_wysiwyg_frame').height($('#cke_1_contents').height());
                 };
                 $(window).resize(fixIframe);
                 fixIframe();
-            }
+            }*/
             Links.addSupportForOpeningLinksInNewTab(Ckeditor)({editor: editor});
             Cryptpad.onError(function (info) {
                 if (info && info.type === "store") {
