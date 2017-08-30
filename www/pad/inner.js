@@ -592,12 +592,12 @@ define([
             }
 
             /* add an export button */
-            var $export = Cryptpad.createButton('export', true, {}, exportFile);
+            var $export = common.createButton('export', true, {}, exportFile);
             $drawer.append($export);
 
             if (!readOnly) {
                 /* add an import button */
-                var $import = Cryptpad.createButton('import', true, {
+                var $import = common.createButton('import', true, {
                     accept: 'text/html'
                 }, importFile);
                 $drawer.append($import);

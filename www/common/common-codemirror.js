@@ -16,7 +16,8 @@ define([
         CodeMirror.modeURL = "cm/mode/%N/%N";
 
         var $pad = $('#pad-iframe');
-        var $textarea = exp.$textarea = $pad.contents().find('#editor1');
+        var $textarea = exp.$textarea = $('#editor1');
+        if (!$textarea.length) { $textarea = exp.$textarea = $pad.contents().find('#editor1'); }
 
         var Title;
         var onLocal = function () {};
@@ -228,6 +229,7 @@ define([
                 var ext = /.+\.([^.]+)$/.exec(file.name);
                 if (ext[1]) {
                     mode = CMeditor.findModeByExtension(ext[1]);
+                    mode = mode && mode.mode || null;
                 }
             } else {
                 mode = mime && mime.mode || null;

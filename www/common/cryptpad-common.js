@@ -80,6 +80,7 @@ define([
     common.getIcon = UI.getIcon;
     common.addTooltips = UI.addTooltips;
     common.clearTooltips = UI.clearTooltips;
+    common.importContent = UI.importContent;
 
     // import common utilities for export
     common.find = Util.find;
