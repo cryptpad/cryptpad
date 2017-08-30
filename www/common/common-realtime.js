@@ -44,7 +44,7 @@ define([
                 // inform the user their session is in a bad state
                 Cryptpad.confirm(Messages.realtime_unrecoverableError, function (yes) {
                     if (!yes) { return; }
-                    window.location.reload();
+                    window.parent.location.reload();
                 });
                 common.infiniteSpinnerDetected = true;
             }, 2000);
