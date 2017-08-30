@@ -410,7 +410,7 @@ define([
                 }),
                 h('div.spinnerContainer',
                     h('span.fa.fa-circle-o-notch.fa-spin.fa-4x.fa-fw')),
-                h('p', Msg.loading)
+                h('p'),
             ])
         );
     };

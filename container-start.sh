@@ -9,15 +9,20 @@ mkdir -p customize
 # Linking config.js
 [ ! -h config.js ] && echo "Linking config.js" && ln -s customize/config.js config.js
 
+# Thanks to http://stackoverflow.com/a/10467453
+sedeasy() {
+  sed -i "s/$1/$(echo $2 | sed -e 's/[\/&]/\\&/g')/g" $3
+}
+
 # Configure
 [ -n "$USE_SSL" ] && echo "Using secure websockets: $USE_SSL" \
-  && sed -i "s/useSecureWebsockets: .*/useSecureWebsockets: ${USE_SSL},/g" customize/config.js
+  && sedeasy "useSecureWebsockets: [^,]*," "useSecureWebsockets: ${USE_SSL}," customize/config.js
 
 [ -n "$STORAGE" ] && echo "Using storage adapter: $STORAGE" \
-  && sed -i "s/storage: .*/storage: ${STORAGE},/g" customize/config.js
+  && sedeasy "storage: [^,]*," "storage: ${STORAGE}," customize/config.js
 
 [ -n "$LOG_TO_STDOUT" ] && echo "Logging to stdout: $LOG_TO_STDOUT" \
-  && sed -i "s/logToStdout: .*/logToStdout: ${LOG_TO_STDOUT},/g" customize/config.js
+  && sedeasy "logToStdout: [^,]*," "logToStdout: ${LOG_TO_STDOUT}," customize/config.js
 
 
 exec node ./server.js
