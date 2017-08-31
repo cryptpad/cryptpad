@@ -12,3 +12,5 @@ www/common/tippy.min.js
 
 www/pad/wysiwygarea-plugin.js
 www/pad2/wysiwygarea-plugin.js
+
+www/common/media-tag-nacl.min.js
