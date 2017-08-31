@@ -387,12 +387,40 @@ define([
         };
         exp.search = function (value) {
             if (typeof(value) !== "string") { return []; }
+            value = value.trim();
             var res = [];
             // Search title
             var allFilesList = files[FILES_DATA];
             var lValue = value.toLowerCase();
+
+            // parse the search string into tags
+            var tags;
+            lValue.replace(/^#(.*)/, function (all, t) {
+                tags = t.split(/\s+/)
+                .map(function (tag) {
+                    return tag.replace(/^#/, '');
+                }).filter(function (x) {
+                    return x;
+                });
+            });
+
+            /* returns true if an entry's tags are at least a partial match for
+                one of the specified tags */
+            var containsSearchedTag = function (T) {
+                if (!tags) { return false; }
+                if (!T.length) { return false; }
+                return tags.some(function (tag) {
+                    return T.some(function (t) {
+                        return t.indexOf(tag) !== -1;
+                    });
+                });
+            };
+
             getFiles([FILES_DATA]).forEach(function (id) {
                 var data = allFilesList[id];
+                if (Array.isArray(data.tags) && containsSearchedTag(data.tags)) {
+                    res.push(id);
+                } else
                 if ((data.title && data.title.toLowerCase().indexOf(lValue) !== -1) ||
                     (data.filename && data.filename.toLowerCase().indexOf(lValue) !== -1)) {
                     res.push(id);
