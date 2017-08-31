@@ -280,53 +280,55 @@ define([
     Pages['/contact.html'] = function () {
         return h('div#cp-main', [
             infopageTopbar(),
-            h('div.container-fluid.cp-contdet',
+            h('div.container-fluid.cp-contdet', [
                 h('row.col-12.col-sm-12',
                     h('h1.text-center', Msg.contact )
-                ),
-            ),
+                )
+            ]),
             h('div.container.cp-container', [
-                setHTML(h('p'), Msg.main_about_p2),
-                h('div.row.cp-iconCont',
+                h('div.row.cp-iconCont', [
+                    h('div.col-12',
+                        setHTML(h('p.text-center'), Msg.main_about_p2)
+                    ),
                     h('div.col-4.col-sm-2', 
-                                setHTML(h('p'), Msg.main_about_p21),
+                                setHTML(h('p'), Msg.main_about_p21)
                     ),
                     h('div.col-4.col-sm-2',
                         h('a.card', {href : "#"}, 
                             h('div.card-body', 
-                                setHTML(h('p'), Msg.main_about_p22),
+                                setHTML(h('p'), Msg.main_about_p22)
                             )
                         )
                     ),
                     h('div.col-4.col-sm-2',
                         h('a.card', 
                             h('div.card-body', 
-                                setHTML(h('p'), Msg.main_about_p21),
+                                setHTML(h('p'), Msg.main_about_p21)
                             )
                         )
                     ),
                     h('div.col-4.col-sm-2',
                         h('a.card', 
                             h('div.card-body', 
-                                setHTML(h('p'), Msg.main_about_p21),
+                                setHTML(h('p'), Msg.main_about_p21)
                             )
                         )
                     ),
                     h('div.col-4.col-sm-2',
                         h('div.card', 
                             h('div.card-body', 
-                                setHTML(h('p'), Msg.main_about_p21),
+                                setHTML(h('p'), Msg.main_about_p21)
                             )
                         )
                     ),
                     h('div.col-4.col-sm-2',
                         h('div.card', 
                             h('div.card-body', 
-                                setHTML(h('p'), Msg.main_about_p21),
+                                setHTML(h('p'), Msg.main_about_p21)
                             )
                         )
                     ),
-                )
+                ]),
             ]),
             infopageFooter(),
         ]);
