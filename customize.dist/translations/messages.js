@@ -520,7 +520,7 @@ define(function () {
     out.main_about_p23 = 'open an issue on GitHub';
     out.main_about_p24 = 'say Hello (Matrix)';
     out.main_about_p25 = 'send us an email';
-    out.main_about_p26 = 'If you have any questions or comments, feel free to reach out!'
+    out.main_about_p26 = 'If you have any questions or comments, feel free to reach out!';
 
     out.main_info = "<h2>Collaborate in Confidence</h2> Grow your ideas together with shared documents while <strong>Zero Knowledge</strong> technology secures your privacy; <strong>even from us</strong>.";
     out.main_catch_phrase = "The Zero Knowledge Cloud";
