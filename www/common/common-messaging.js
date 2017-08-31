@@ -48,9 +48,10 @@ define([
         });
     };
 
-    Msg.getFriendChannelsList = function (proxy) {
+    Msg.getFriendChannelsList = function (common) {
         var list = [];
-        eachFriend(proxy, function (friend) {
+        var proxy = common.getProxy();
+        eachFriend(proxy.friends, function (friend) {
             list.push(friend.channel);
         });
         return list;
