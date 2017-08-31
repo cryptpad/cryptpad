@@ -7,3 +7,51 @@
 .fa {
     padding-right: 0.25em;
 }
+#cp-main {
+	background-color: #fff;
+}
+.cp-container {
+	background: #fff;
+	.cp-iconCont{
+		div {
+			.card {
+				padding: 3.5em 1em 1em 1em;
+				box-shadow: 0 5px 15px rgba(69,145,196, 0.3);
+				border-color: #fff;
+				text-align: center;
+				&:hover, &:focus {
+					text-decoration: none;
+					box-shadow: 0 2px 4px rgba(69, 145, 196, 0.6);
+				}
+			}
+			&:nth-child(3) {
+				.card {
+					background-image: url(/customize/images/twitter.svg);
+		        	background-repeat: no-repeat;
+		        	background-position: 50% 10%;
+		        	background-size: 3rem;
+				}
+			}
+			&:nth-child(4) {
+				.card {
+					background-image: url(/customize/images/issue.svg);
+		        	background-repeat: no-repeat;
+		        	background-position: 50% 10%;
+		        	background-size: 3rem;
+				}
+			}
+		}
+	}
+}
+.cp-contdet {
+	padding-top: 3em;
+    padding-bottom: 3em;
+    background-image: url(/customize/images/bkcontact.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    h1 {
+        font-weight: 700;
+        color: #fff;
+    }
+}
