@@ -62,6 +62,7 @@ define([
 
         ret.setPadAttribute = filesOp.setAttribute;
         ret.getPadAttribute = filesOp.getAttribute;
+        ret.getIdFromHref = filesOp.getIdFromHref;
 
         ret.getDrive = function (key, cb) {
             cb(void 0, storeObj.drive[key]);

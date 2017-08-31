@@ -497,6 +497,68 @@ define([
             cb(err, data);
         });
     };
+
+    /*  this returns a reference to your proxy. changing it will change your drive.
+    */
+    var getFileEntry = common.getFileEntry = function (href, cb) {
+        if (typeof(cb) !== 'function') { return; }
+        var store = getStore();
+        if (!store) { return void cb('NO_STORE'); }
+        href = href || (window.location.pathname + window.location.hash);
+        var id = store.getIdFromHref(href);
+        if (!id) { return void cb('NO_ID'); }
+        var entry = common.find(getProxy(), [
+            'drive',
+            'filesData',
+            id
+        ]);
+        cb(void 0, entry);
+    };
+
+    common.tagPad = function (href, tag, cb) {
+        if (typeof(cb) !== 'function') {
+            return void console.error('EXPECTED_CALLBACK');
+        }
+        if (typeof(tag) !== 'string') { return void cb('INVALID_TAG'); }
+        getFileEntry(href, function (e, entry) {
+            if (e) { return void cb(e); }
+            if (!entry) { cb('NO_ENTRY'); }
+            if (!entry.tags) {
+                entry.tags = [tag];
+            } else if (entry.tags.indexOf(tag) === -1) {
+                entry.tags.push(tag);
+            }
+            cb();
+        });
+    };
+
+    common.untagPad = function (href, tag, cb) {
+        if (typeof(cb) !== 'function') {
+            return void console.error('EXPECTED_CALLBACK');
+        }
+        if (typeof(tag) !== 'string') { return void cb('INVALID_TAG'); }
+        getFileEntry(href, function (e, entry) {
+            if (e) { return void cb(e); }
+            if (!entry) { cb('NO_ENTRY'); }
+            if (!entry.tags) { return void cb(); }
+            var idx = entry.tags.indexOf(tag);
+            if (idx === -1) { return void cb(); }
+            entry.tags.splice(idx, 1);
+            cb();
+        });
+    };
+
+    common.getPadTags = function (href, cb) {
+        if (typeof(cb) !== 'function') { return; }
+        getFileEntry(href, function (e, entry) {
+            if (entry) {
+                return void cb(void 0, entry.tags?
+                    JSON.parse(JSON.stringify(entry.tags)): []);
+            }
+            return cb('NO_ENTRY');
+        });
+    };
+
     common.getLSAttribute = function (attr) {
         return localStorage[attr];
     };
