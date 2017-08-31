@@ -280,9 +280,45 @@ define([
     Pages['/contact.html'] = function () {
         return h('div#cp-main', [
             infopageTopbar(),
+            h('div.container-fluid.cp-contdet', [
+                h('row.col-12.col-sm-12',
+                    h('h1.text-center', Msg.contact )
+                )
+            ]),
             h('div.container.cp-container', [
-                h('center', h('h1', Msg.contact)),
-                setHTML(h('p'), Msg.main_about_p2)
+                h('div.row.cp-iconCont.align-items-center', [
+                    h('div.col-12',
+                        setHTML(h('h4.text-center'), Msg.main_about_p26)
+                    ),
+                    h('div.col-6.col-sm-3.col-md-3.col-lg-3',
+                        h('a.card', {href : "https://twitter.com/cryptpad"}, 
+                            h('div.card-body', 
+                                setHTML(h('p'), Msg.main_about_p22)
+                            )
+                        )
+                    ),
+                    h('div.col-6.col-sm-3.col-md-3.col-lg-3',
+                        h('a.card', {href : "https://github.com/xwiki-labs/cryptpad/issues/"},
+                            h('div.card-body', 
+                                setHTML(h('p'), Msg.main_about_p23)
+                            )
+                        )
+                    ),
+                    h('div.col-6.col-sm-3.col-md-3.col-lg-3',
+                        h('a.card', {href : "https://riot.im/app/#/room/#cryptpad:matrix.org"},
+                            h('div.card-body', 
+                                setHTML(h('p'), Msg.main_about_p24)
+                            )
+                        )
+                    ),
+                    h('div.col-6.col-sm-3.col-md-3.col-lg-3',
+                        h('a.card', {href : "mailto:research@xwiki.com"},
+                            h('div.card-body', 
+                                setHTML(h('p'), Msg.main_about_p25)
+                            )
+                        )
+                    ),
+                ]),
             ]),
             infopageFooter(),
         ]);
