@@ -516,8 +516,11 @@ define(function () {
 
     // contact.html
     out.main_about_p2 = 'If you have any questions or comments, feel free to reach out!<br/>You can <a href="https://twitter.com/cryptpad"><i class="fa fa-twitter"></i>tweet us</a>, open an issue <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">on <i class="fa fa-github"></i>GitHub</a>. Come say hi on <a href="https://riot.im/app/#/room/#cryptpad:matrix.org" title="Matrix">our <i class="fa fa-comment"></i>Matrix channel</a> or IRC (#cryptpad on irc.freenode.net), or <a href="mailto:research@xwiki.com"><i class="fa fa-envelope"></i>send us an email</a>.';
-    out.main_about_p21 = 'You can';
     out.main_about_p22 = 'Tweet us';
+    out.main_about_p23 = 'open an issue on GitHub';
+    out.main_about_p24 = 'say Hello (Matrix)';
+    out.main_about_p25 = 'send us an email';
+    out.main_about_p26 = 'If you have any questions or comments, feel free to reach out!'
 
     out.main_info = "<h2>Collaborate in Confidence</h2> Grow your ideas together with shared documents while <strong>Zero Knowledge</strong> technology secures your privacy; <strong>even from us</strong>.";
     out.main_catch_phrase = "The Zero Knowledge Cloud";

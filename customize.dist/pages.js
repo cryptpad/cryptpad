@@ -286,45 +286,35 @@ define([
                 )
             ]),
             h('div.container.cp-container', [
-                h('div.row.cp-iconCont', [
+                h('div.row.cp-iconCont.align-items-center', [
                     h('div.col-12',
-                        setHTML(h('p.text-center'), Msg.main_about_p2)
+                        setHTML(h('h4.text-center'), Msg.main_about_p26)
                     ),
-                    h('div.col-4.col-sm-2', 
-                                setHTML(h('p'), Msg.main_about_p21)
-                    ),
-                    h('div.col-4.col-sm-2',
-                        h('a.card', {href : "#"}, 
+                    h('div.col-6.col-sm-3.col-md-3.col-lg-3',
+                        h('a.card', {href : "https://twitter.com/cryptpad"}, 
                             h('div.card-body', 
                                 setHTML(h('p'), Msg.main_about_p22)
                             )
                         )
                     ),
-                    h('div.col-4.col-sm-2',
-                        h('a.card', 
+                    h('div.col-6.col-sm-3.col-md-3.col-lg-3',
+                        h('a.card', {href : "https://github.com/xwiki-labs/cryptpad/issues/"},
                             h('div.card-body', 
-                                setHTML(h('p'), Msg.main_about_p21)
+                                setHTML(h('p'), Msg.main_about_p23)
                             )
                         )
                     ),
-                    h('div.col-4.col-sm-2',
-                        h('a.card', 
+                    h('div.col-6.col-sm-3.col-md-3.col-lg-3',
+                        h('a.card', {href : "https://riot.im/app/#/room/#cryptpad:matrix.org"},
                             h('div.card-body', 
-                                setHTML(h('p'), Msg.main_about_p21)
+                                setHTML(h('p'), Msg.main_about_p24)
                             )
                         )
                     ),
-                    h('div.col-4.col-sm-2',
-                        h('div.card', 
+                    h('div.col-6.col-sm-3.col-md-3.col-lg-3',
+                        h('a.card', {href : "mailto:research@xwiki.com"},
                             h('div.card-body', 
-                                setHTML(h('p'), Msg.main_about_p21)
-                            )
-                        )
-                    ),
-                    h('div.col-4.col-sm-2',
-                        h('div.card', 
-                            h('div.card-body', 
-                                setHTML(h('p'), Msg.main_about_p21)
+                                setHTML(h('p'), Msg.main_about_p25)
                             )
                         )
                     ),
