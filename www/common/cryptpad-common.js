@@ -1966,6 +1966,9 @@ define([
                 feedback("NO_ARRAYFILL");
             }
 
+            if (typeof(Symbol) === 'undefined') {
+                feedback('NO_SYMBOL');
+            }
             common.reportScreenDimensions();
             common.reportLanguage();
 
