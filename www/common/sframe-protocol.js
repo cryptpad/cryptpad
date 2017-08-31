@@ -88,4 +88,12 @@ define({
     // Get and set pad attributes stored in the drive from the inner iframe
     'Q_GET_PAD_ATTRIBUTE': true,
     'Q_SET_PAD_ATTRIBUTE': true,
+
+    // Get all the files from the drive to display them in a file picker secure app
+    'Q_GET_FILES_LIST': true,
+
+    // File upload queries and events
+    'Q_UPLOAD_FILE': true,
+    'EV_FILE_UPLOAD_STATE': true,
+    'Q_CANCEL_PENDING_FILE_UPLOAD': true,
 });

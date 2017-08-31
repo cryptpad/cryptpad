@@ -7,12 +7,13 @@ define([
     '/common/sframe-common-title.js',
     '/common/sframe-common-interface.js',
     '/common/sframe-common-history.js',
+    '/common/sframe-common-file.js',
     '/common/metadata-manager.js',
 
     '/customize/application_config.js',
     '/common/cryptpad-common.js',
     '/common/common-realtime.js'
-], function ($, nThen, Messages, CpNfInner, SFrameChannel, Title, UI, History, MetadataMgr,
+], function ($, nThen, Messages, CpNfInner, SFrameChannel, Title, UI, History, File, MetadataMgr,
     AppConfig, Cryptpad, CommonRealtime) {
 
     // Chainpad Netflux Inner
@@ -36,6 +37,9 @@ define([
     funcs.getCryptpadCommon = function () {
         return Cryptpad;
     };
+    funcs.getSframeChannel = function () {
+        return ctx.sframeChan;
+    };
 
     var isLoggedIn = funcs.isLoggedIn = function () {
         if (!ctx.cpNfInner) { throw new Error("cpNfInner is not ready!"); }
@@ -51,6 +55,7 @@ define([
     // UI
     funcs.createUserAdminMenu = UI.createUserAdminMenu;
     funcs.displayAvatar = UI.displayAvatar;
+    funcs.createFileDialog = UI.createFileDialog;
 
     // History
     funcs.getHistory = function (config) { return History.create(funcs, config); };
@@ -118,10 +123,14 @@ define([
         ctx.sframeChan.query('Q_SET_PAD_ATTRIBUTE', {
             key: key,
             value: value
-        }, function (err, data) {
-            cb();
-        });
+        }, cb);
     };
+
+    // Files
+    funcs.uploadFile = function (data, cb) {
+        ctx.sframeChan.query('Q_UPLOAD_FILE', data, cb);
+    };
+    funcs.createFileManager = function (config) { return File.create(funcs, config); };
 
     // Friends
     var pendingFriends = [];
@@ -149,7 +158,7 @@ define([
             url: href,
         });
     };
-    var prepareFeedback = function (key) {
+    var prepareFeedback = funcs.prepareFeedback = function (key) {
         if (typeof(key) !== 'string') { return $.noop; }
 
         var type = ctx.metadataMgr.getMetadata().type;
@@ -302,6 +311,14 @@ define([
             button.addClass('rightside-button');
         }
         return button;
+    };
+
+
+    // Can, only be called by the filepicker app
+    funcs.getFilesList = function (cb) {
+        ctx.sframeChan.query('Q_GET_FILES_LIST', null, function (err, data) {
+            cb(err || data.error, data.data);
+        });
     };
 
 /*    funcs.storeLinkToClipboard = function (readOnly, cb) {

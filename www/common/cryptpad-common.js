@@ -723,7 +723,7 @@ define([
         var proxy = store.getProxy();
         var fo = proxy.fo;
         var hashes = [];
-        var list = fo.getFiles().filter(function (id) {
+        var list = fo.getFiles([fo.ROOT]).filter(function (id) {
             var href = fo.getFileData(id).href;
             var parsed = parsePadUrl(href);
             if ((parsed.type === 'file' || parsed.type === 'media')
@@ -733,6 +733,26 @@ define([
             }
         });
         return list;
+    };
+    // Needed for the secure filepicker app
+    common.getSecureFilesList = function (cb) {
+        var store = common.getStore();
+        if (!store) { return void cb("Store is not ready"); }
+        var proxy = store.getProxy();
+        var fo = proxy.fo;
+        var list = {};
+        var hashes = [];
+        fo.getFiles([fo.ROOT]).forEach(function (id) {
+            var data = fo.getFileData(id);
+            var parsed = parsePadUrl(data.href);
+            if ((parsed.type === 'file' || parsed.type === 'media')
+                 && hashes.indexOf(parsed.hash) === -1) {
+                hashes.push(parsed.hash);
+                list[id] = data;
+            }
+        });
+        console.log(list);
+        cb (null, list);
     };
 
     var getUserChannelList = common.getUserChannelList = function () {
@@ -952,6 +972,9 @@ define([
         if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
         rpc.uploadCancel(cb);
     };
+
+
+    common.uploadFileSecure = Files.upload;
 
     /*  Create a usage bar which keeps track of how much storage space is used
         by your CryptDrive. The getPinnedUsage RPC is one of the heavier calls,
@@ -1414,7 +1437,7 @@ define([
     };
 
     // This is duplicated in drive/main.js, it should be unified
-    var getFileIcon = function (data) {
+    var getFileIcon = common.getFileIcon = function (data) {
         var $icon = common.getIcon();
 
         if (!data) { return $icon; }

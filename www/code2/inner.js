@@ -487,10 +487,9 @@ define([
             }
             //UserList.getLastName(toolbar.$userNameButton, isNew);
 
-            /* TODO RPC
             var fmConfig = {
-                dropArea: $iframe.find('.CodeMirror'),
-                body: $iframe.find('body'),
+                dropArea: $('.CodeMirror'),
+                body: $('body'),
                 onUploaded: function (ev, data) {
                     //var cursor = editor.getCursor();
                     //var cleanName = data.name.replace(/[\[\]]/g, '');
@@ -502,8 +501,7 @@ define([
                     editor.replaceSelection(mt);
                 }
             };
-            APP.FM = Cryptpad.createFileManager(fmConfig);
-            */
+            APP.FM = common.createFileManager(fmConfig);
         };
 
         config.onRemote = function () {
@@ -619,15 +617,12 @@ define([
         nThen(function (waitFor) {
             cmEditorAvailable(waitFor(function (cm) {
                 CM = cm;
-                console.log('cm');
             }));
             $(waitFor(function () {
                 Cryptpad.addLoadingScreen();
             }));
-            SFCommon.create(waitFor(function (c) { console.log('common'); APP.common = common = c; }));
-            console.log('nThen1');
+            SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
         }).nThen(function (/*waitFor*/) {
-            console.log('nThen2');
             CodeMirror = Cryptpad.createCodemirror(window, Cryptpad, null, CM);
             $('.CodeMirror').addClass('fullPage');
             editor = CodeMirror.editor;

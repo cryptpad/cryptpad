@@ -19,6 +19,11 @@ define([
         var NEW_FOLDER_NAME = Messages.fm_newFolder;
         var NEW_FILE_NAME = Messages.fm_newFile;
 
+        exp.ROOT = ROOT;
+        exp.UNSORTED = UNSORTED;
+        exp.TRASH = TRASH;
+        exp.TEMPLATE = TEMPLATE;
+
         // Logging
         var logging = function () {
             console.log.apply(console, arguments);

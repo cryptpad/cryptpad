@@ -215,6 +215,38 @@ define([
             });
 
 
+            sframeChan.on('Q_UPLOAD_FILE', function (data, cb) {
+                var sendEvent = function (data) {
+                    sframeChan.event("EV_FILE_UPLOAD_STATE", data);
+                };
+                var updateProgress = function (progressValue) {
+                    sendEvent({
+                        progress: progressValue
+                    });
+                };
+                var onComplete = function (href) {
+                    sendEvent({
+                        complete: true,
+                        href: href
+                    });
+                };
+                var onError = function (e) {
+                    sendEvent({
+                        error: e
+                    });
+                };
+                var onPending = function (cb) {
+                    sframeChan.query('Q_CANCEL_PENDING_FILE_UPLOAD', null, function (err, data) {
+                        if (data) {
+                            cb();
+                        }
+                    });
+                };
+                data.blob = Crypto.Nacl.util.decodeBase64(data.blob);
+                Cryptpad.uploadFileSecure(data, data.noStore, Cryptpad, updateProgress, onComplete, onError, onPending);
+                cb();
+            });
+
             CpNfOuter.start({
                 sframeChan: sframeChan,
                 channel: secret.channel,

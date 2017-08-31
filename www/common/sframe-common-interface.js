@@ -260,6 +260,60 @@ define([
 
         return $userAdmin;
     };
-    
+
+    UI.createFileDialog = function (cfg) {
+        var common = cfg.common;
+        var $blockContainer = Cryptpad.createModal({
+            id: 'fileDialog',
+            $body: cfg.$body
+        });
+        var $block = $blockContainer.find('.cp-modal');
+        var $description = $('<p>').text(Messages.filePicker_description);
+        $block.append($description);
+        var $filter = $('<p>', {'class': 'cp-modal-form'}).appendTo($block);
+        var $container = $('<span>', {'class': 'fileContainer'}).appendTo($block);
+        var updateContainer = function () {
+            $container.html('');
+            var filter = $filter.find('.filter').val().trim();
+            var todo = function (err, list) {
+                if (err) { return void console.error(err); }
+                Object.keys(list).forEach(function (id) {
+                    var data = list[id];
+                    var name = data.title || '?';
+                    if (filter && name.toLowerCase().indexOf(filter.toLowerCase()) === -1) {
+                        return;
+                    }
+                    var $span = $('<span>', {
+                        'class': 'element',
+                        'title': name,
+                    }).appendTo($container);
+                    $span.append(Cryptpad.getFileIcon(data));
+                    $span.append(name);
+                    $span.click(function () {
+                        if (typeof cfg.onSelect === "function") { cfg.onSelect(data.href); }
+                        $blockContainer.hide();
+                    });
+                });
+            };
+            common.getFilesList(todo);
+        };
+        var to;
+        $('<input>', {
+            type: 'text',
+            'class': 'filter',
+            'placeholder': Messages.filePicker_filter
+        }).appendTo($filter).on('keypress', function () {
+            if (to) { window.clearTimeout(to); }
+            to = window.setTimeout(updateContainer, 300);
+        });
+        //$filter.append(' '+Messages.or+' ');
+        /*var data = {FM: cfg.data.FM};
+        $filter.append(common.createButton('upload', false, data, function () {
+            $blockContainer.hide();
+        }));*/
+        updateContainer();
+        $blockContainer.show();
+    };
+
     return UI;
 });
