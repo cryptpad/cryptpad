@@ -9,6 +9,11 @@ define([
     var TRASH = module.TRASH = "trash";
     var TEMPLATE = module.TEMPLATE = "template";
 
+    var clone = function (o) {
+        try { return JSON.parse(JSON.stringify(o)); }
+        catch (e) { return undefined; }
+    };
+
     module.init = function (files, config) {
         var exp = {};
         var Cryptpad = config.Cryptpad;
@@ -137,7 +142,7 @@ define([
             var id = exp.getIdFromHref(href);
             if (!id) { return void cb(null, undefined); }
             var data = getFileData(id);
-            cb(null, data[attr]);
+            cb(null, clone(data[attr]));
         };
         exp.setAttribute = function (href, attr, value, cb) {
             cb = cb || $.noop;
@@ -145,7 +150,7 @@ define([
             if (!id) { return void cb("E_INVAL_HREF"); }
             if (!attr || !attr.trim()) { return void cb("E_INVAL_ATTR"); }
             var data = getFileData(id);
-            data[attr] = value;
+            data[attr] = clone(value);
         };
 
         // PATHS
