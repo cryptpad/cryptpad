@@ -56,6 +56,8 @@ define([
     funcs.createUserAdminMenu = UI.createUserAdminMenu;
     funcs.displayAvatar = UI.displayAvatar;
     funcs.createFileDialog = UI.createFileDialog;
+    funcs.initFilePicker = UI.initFilePicker;
+    funcs.openFilePicker = UI.openFilePicker;
 
     // History
     funcs.getHistory = function (config) { return History.create(funcs, config); };
@@ -199,6 +201,30 @@ define([
                         callback(content, file);
                     }, {accept: data ? data.accept : undefined}));
                 }
+                break;
+            case 'upload':
+                button = $('<button>', {
+                    'class': 'btn btn-primary new',
+                    title: Messages.uploadButtonTitle,
+                }).append($('<span>', {'class':'fa fa-upload'})).append(' '+Messages.uploadButton);
+                if (!data.FM) { return; }
+                var $input = $('<input>', {
+                    'type': 'file',
+                    'style': 'display: none;'
+                }).on('change', function (e) {
+                    var file = e.target.files[0];
+                    var ev = {
+                        target: data.target
+                    };
+                    if (data.filter && !data.filter(file)) {
+                        Cryptpad.log('TODO: invalid avatar (type or size)');
+                        return;
+                    }
+                    data.FM.handleFile(file, ev);
+                    if (callback) { callback(); }
+                });
+                if (data.accept) { $input.attr('accept', data.accept); }
+                button.click(function () { $input.click(); });
                 break;
             case 'template':
                 if (!AppConfig.enableTemplates) { return; }

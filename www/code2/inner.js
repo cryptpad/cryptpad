@@ -228,9 +228,9 @@ define([
             APP.previewTo = window.setTimeout(function () {
                 $codeMirror.removeClass('transition');
             }, 500);
-            /*if (mediaTagModes.indexOf(mode) !== -1) {
+            if (mediaTagModes.indexOf(mode) !== -1) {
                 APP.$mediaTagButton.show();
-            } else { APP.$mediaTagButton.hide(); }*/// TODO
+            } else { APP.$mediaTagButton.hide(); }
 
             if (mode === "markdown") {
                 APP.$previewButton.show();
@@ -360,26 +360,20 @@ define([
             else {
                 CodeMirror.configureTheme();
             }
-            // TODO
-            return;
 
             var fileDialogCfg = {
-                $body: $iframe.find('body'),
-                onSelect: function (href) {
-                    var parsed = Cryptpad.parsePadUrl(href);
-                    var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
-                    var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
-                    var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '"></media-tag>';
+                onSelect: function (data) {
+                    var mt = '<media-tag src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>';
                     editor.replaceSelection(mt);
-                },
-                data: APP
+                }
             };
+            common.initFilePicker(common, fileDialogCfg);
             APP.$mediaTagButton = $('<button>', {
                 title: Messages.filePickerButton,
                 'class': 'rightside-button fa fa-picture-o',
                 style: 'font-size: 17px'
             }).click(function () {
-                Cryptpad.createFileDialog(fileDialogCfg);
+                common.openFilePicker(common);
             }).appendTo($rightside);
 
         };

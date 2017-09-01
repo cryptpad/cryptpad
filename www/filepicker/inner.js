@@ -34,9 +34,35 @@ define([
     var andThen = function (common) {
         //var metadataMgr = common.getMetadataMgr();
         var $body = $('body');
+        var sframeChan = common.getSframeChannel();
+
+        var onFilePicked = function (data) {
+            var parsed = Cryptpad.parsePadUrl(data.url);
+            var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+            var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
+            sframeChan.event("EV_FILE_PICKED", {
+                src: src,
+                key: parsed.hashData.key
+            });
+        };
+
+        var fmConfig = {
+            body: $('body'),
+            noHandlers: true,
+            onUploaded: function (ev, data) {
+                onFilePicked(data);
+            }
+        };
+        APP.FM = common.createFileManager(fmConfig);
         var cfg = {
             $body: $body,
-            common: common
+            common: common,
+            onSelect: function (url) {
+                onFilePicked({url: url});
+            },
+            data: {
+                FM: APP.FM
+            }
         };
         common.createFileDialog(cfg);
         Cryptpad.removeLoadingScreen();

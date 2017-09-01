@@ -261,18 +261,40 @@ define([
         return $userAdmin;
     };
 
+    // createFileDialog can only be used in filepicker due to access rights restrictions
     UI.createFileDialog = function (cfg) {
         var common = cfg.common;
+        var sframeChan = common.getSframeChannel();
+        var updateContainer;
+        var hideFileDialog = function () {
+            sframeChan.event('EV_FILE_PICKER_CLOSE');
+        };
+        // Create modal
         var $blockContainer = Cryptpad.createModal({
             id: 'fileDialog',
-            $body: cfg.$body
-        });
+            $body: cfg.$body,
+            onClose: hideFileDialog
+        }).show();
+        // Set the fixed content
         var $block = $blockContainer.find('.cp-modal');
         var $description = $('<p>').text(Messages.filePicker_description);
         $block.append($description);
         var $filter = $('<p>', {'class': 'cp-modal-form'}).appendTo($block);
+        var to;
+        $('<input>', {
+            type: 'text',
+            'class': 'filter',
+            'placeholder': Messages.filePicker_filter
+        }).appendTo($filter).on('keypress', function () {
+            if (to) { window.clearTimeout(to); }
+            to = window.setTimeout(updateContainer, 300);
+        });
+        $filter.append(common.createButton('upload', false, cfg.data, function () {
+            hideFileDialog();
+        }));
         var $container = $('<span>', {'class': 'fileContainer'}).appendTo($block);
-        var updateContainer = function () {
+        // Update the files list when needed
+        updateContainer = function () {
             $container.html('');
             var filter = $filter.find('.filter').val().trim();
             var todo = function (err, list) {
@@ -291,28 +313,27 @@ define([
                     $span.append(name);
                     $span.click(function () {
                         if (typeof cfg.onSelect === "function") { cfg.onSelect(data.href); }
-                        $blockContainer.hide();
+                        hideFileDialog();
                     });
                 });
             };
             common.getFilesList(todo);
         };
-        var to;
-        $('<input>', {
-            type: 'text',
-            'class': 'filter',
-            'placeholder': Messages.filePicker_filter
-        }).appendTo($filter).on('keypress', function () {
-            if (to) { window.clearTimeout(to); }
-            to = window.setTimeout(updateContainer, 300);
-        });
-        //$filter.append(' '+Messages.or+' ');
-        /*var data = {FM: cfg.data.FM};
-        $filter.append(common.createButton('upload', false, data, function () {
-            $blockContainer.hide();
-        }));*/
         updateContainer();
-        $blockContainer.show();
+        sframeChan.on('EV_FILE_PICKER_REFRESH', updateContainer);
+    };
+
+
+    UI.initFilePicker = function (common, cfg) {
+        var onSelect = cfg.onSelect || $.noop;
+        var sframeChan = common.getSframeChannel();
+        sframeChan.on("EV_FILE_PICKED", function (data) {
+            onSelect(data);
+        });
+    };
+    UI.openFilePicker = function (common) {
+        var sframeChan = common.getSframeChannel();
+        sframeChan.event("EV_FILE_PICKER_OPEN");
     };
 
     return UI;

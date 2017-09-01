@@ -751,7 +751,6 @@ define([
                 list[id] = data;
             }
         });
-        console.log(list);
         cb (null, list);
     };
 
@@ -1464,16 +1463,24 @@ define([
                 'id': cfg.id
             });
         }
+        var hide = function () {
+            if (cfg.onClose) { return void cfg.onClose(); }
+            $blockContainer.hide();
+        };
         $blockContainer.html('').appendTo($body);
         var $block = $('<div>', {'class': 'cp-modal'}).appendTo($blockContainer);
         $('<span>', {
             'class': 'cp-modal-close fa fa-times',
             'title': Messages.filePicker_close
-        }).click(function () {
-            $blockContainer.hide();
-        }).appendTo($block);
+        }).click(hide).appendTo($block);
+        $body.click(hide);
+        $block.click(function (e) {
+            e.stopPropagation();
+        });
         $body.keydown(function (e) {
-            if (e.which === 27) { $blockContainer.hide(); }
+            if (e.which === 27) {
+                hide();
+            }
         });
         return $blockContainer;
     };

@@ -89,6 +89,14 @@ define({
     'Q_GET_PAD_ATTRIBUTE': true,
     'Q_SET_PAD_ATTRIBUTE': true,
 
+    // Open/close the File picker (sent from the iframe to the outside)
+    'EV_FILE_PICKER_OPEN': true,
+    'EV_FILE_PICKER_CLOSE': true,
+    'EV_FILE_PICKER_REFRESH': true,
+    // File selected in the file picker: sent from the filepicker iframe to the outside
+    // and then send to the inner iframe
+    'EV_FILE_PICKED': true,
+
     // Get all the files from the drive to display them in a file picker secure app
     'Q_GET_FILES_LIST': true,
 

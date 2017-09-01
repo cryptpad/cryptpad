@@ -14,6 +14,7 @@ define([
         var Crypto;
         var Cryptget;
         var sframeChan;
+        var FilePicker;
 
         nThen(function (waitFor) {
             // Load #2, the loading screen is up so grab whatever you need...
@@ -23,11 +24,14 @@ define([
                 '/bower_components/chainpad-crypto/crypto.js',
                 '/common/cryptget.js',
                 '/common/sframe-channel.js',
-            ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, SFrameChannel) {
+                '/filepicker/main.js',
+            ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, SFrameChannel,
+            _FilePicker) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = _Crypto;
                 Cryptget = _Cryptget;
+                FilePicker = _FilePicker;
                 SFrameChannel.create($('#sbox-iframe')[0].contentWindow, waitFor(function (sfc) {
                     sframeChan = sfc;
                 }));
@@ -215,7 +219,7 @@ define([
             });
 
 
-            sframeChan.on('Q_UPLOAD_FILE', function (data, cb) {
+            var onFileUpload = function (sframeChan, data, cb) {
                 var sendEvent = function (data) {
                     sframeChan.event("EV_FILE_UPLOAD_STATE", data);
                 };
@@ -245,6 +249,31 @@ define([
                 data.blob = Crypto.Nacl.util.decodeBase64(data.blob);
                 Cryptpad.uploadFileSecure(data, data.noStore, Cryptpad, updateProgress, onComplete, onError, onPending);
                 cb();
+            };
+            sframeChan.on('Q_UPLOAD_FILE', function (data, cb) {
+                onFileUpload(sframeChan, data, cb);
+            });
+
+            var FP = {};
+            var initFilePicker = function () {
+                var config = {};
+                config.onFilePicked = function (data) {
+                    sframeChan.event('EV_FILE_PICKED', data);
+                };
+                config.onClose = function () {
+                    FP.$iframe.hide();
+                };
+                config.onFileUpload = onFileUpload;
+                if (!FP.$iframe) {
+                    FP.$iframe = $('<iframe>', {id: 'sbox-filePicker-iframe'}).appendTo($('body'));
+                    FP.picker = FilePicker.create(config);
+                } else {
+                    FP.$iframe.show();
+                    FP.picker.refresh();
+                }
+            };
+            sframeChan.on('EV_FILE_PICKER_OPEN', function () {
+                initFilePicker();
             });
 
             CpNfOuter.start({
