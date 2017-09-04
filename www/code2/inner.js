@@ -410,6 +410,8 @@ define([
                 if (hjson.highlightMode) {
                     CodeMirror.setMode(hjson.highlightMode, onModeChanged);
                 }
+            } else {
+                Title.updateTitle(Cryptpad.initialName || Title.defaultTitle);
             }
 
             if (!CodeMirror.highlightMode) {
