@@ -51,5 +51,16 @@ define(function() {
     config.loginSalt = '';
     config.badStateTimeout = 30000;
 
+    config.applicationsIcon = {
+        file: 'fa-file-text-o',
+        pad: 'fa-file-word-o',
+        code: 'fa-file-code-o',
+        slide: 'fa-file-powerpoint-o',
+        poll: 'fa-calendar',
+        whiteboard: 'fa-paint-brush',
+        todo: 'fa-tasks',
+        contacts: 'fa-users',
+    };
+
     return config;
 });

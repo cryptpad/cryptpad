@@ -1,5 +1,6 @@
 @import (once) "./colortheme.less";
 @import (once) "./browser.less";
+@import (once) "./modal-theme.less";
 
 .alertify_main () {
     @alertify-fore: @colortheme_modal-fg;
@@ -19,13 +20,14 @@
     @alertify-input-bg: @colortheme_modal-input;
     @alertify-input-fg: @colortheme_modal-fg;
 
-    @alertify_padding-base: @colortheme_modal-padding;
-    @alertify_box-shadow: @colortheme_modal-shadow;
+    @alertify_padding-base: @modal_padding;
+    @alertify_box-shadow: @modal_shadow;
 
     // Logs to show that something has happened
     // These show only once
 
     .alertify-logs {
+        z-index:10000;
         @media print {
             visibility: hidden;
         }

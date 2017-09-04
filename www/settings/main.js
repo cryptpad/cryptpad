@@ -479,7 +479,7 @@ define([
 
     $(function () {
         $(window).click(function () {
-            $('.cryptpad-dropdown').hide();
+            $('.cp-dropdown-content').hide();
         });
 
         APP.$container = $('#container');

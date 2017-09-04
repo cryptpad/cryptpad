@@ -64,8 +64,8 @@ define([
             'class': USER_CLS
         }).appendTo($topContainer);
         $('<span>', {'class': LIMIT_CLS}).hide().appendTo($userContainer);
-        $('<span>', {'class': NEWPAD_CLS + ' dropdown-bar'}).hide().appendTo($userContainer);
-        $('<span>', {'class': USERADMIN_CLS + ' dropdown-bar'}).hide().appendTo($userContainer);
+        $('<span>', {'class': NEWPAD_CLS + ' cp-dropdown-container'}).hide().appendTo($userContainer);
+        $('<span>', {'class': USERADMIN_CLS + ' cp-dropdown-container'}).hide().appendTo($userContainer);
 
         $toolbar.append($topContainer)
         .append($('<div>', {'class': LEFTSIDE_CLS}))
@@ -75,7 +75,7 @@ define([
         var $rightside = $toolbar.find('.'+RIGHTSIDE_CLS);
         if (!config.hideDrawer) {
             var $drawerContent = $('<div>', {
-                'class': DRAWER_CLS,// + ' dropdown-bar-content cryptpad-dropdown'
+                'class': DRAWER_CLS,
                 'tabindex': 1
             }).appendTo($rightside).hide();
             var $drawer = Cryptpad.createButton('more', true).appendTo($rightside);
@@ -270,7 +270,7 @@ define([
         var fa_editusers = '<span class="fa fa-users"></span>';
         var fa_viewusers = '<span class="fa fa-eye"></span>';
         var $spansmall = $('<span>').html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
-        $userButtons.find('.buttonTitle').html('').append($spansmall);
+        $userButtons.find('.cp-dropdown-button-title').html('').append($spansmall);
 
         updateDisplayName(toolbar, config);
     };
@@ -311,7 +311,7 @@ define([
         var $container = $('<span>', {id: 'userButtons', title: Messages.userListButton});
 
         var $button = $('<button>').appendTo($container);
-        $('<span>',{'class': 'buttonTitle'}).appendTo($button);
+        $('<span>',{'class': 'cp-dropdown-button-title'}).appendTo($button);
 
         toolbar.$leftside.prepend($container);
 
@@ -444,7 +444,7 @@ define([
             };
             var $shareBlock = Cryptpad.createDropdown(dropdownConfigShare);
             //$shareBlock.find('button').attr('id', 'shareButton');
-            $shareBlock.find('.dropdown-bar-content').addClass(SHARE_CLS).addClass(EDITSHARE_CLS).addClass(VIEWSHARE_CLS);
+            $shareBlock.find('.cp-dropdown-content').addClass(SHARE_CLS).addClass(EDITSHARE_CLS).addClass(VIEWSHARE_CLS);
             $shareBlock.addClass('shareButton');
             $shareBlock.find('button').attr('title', Messages.shareButton);
 
@@ -731,9 +731,6 @@ define([
     };
 
     var createNewPad = function (toolbar) {
-        /*var $newPad = $('<span>', {
-            'class': NEWPAD_CLS + " dropdown-bar"
-        }).appendTo(toolbar.$top);*/
         var $newPad = toolbar.$top.find('.'+NEWPAD_CLS).show();
 
         var pads_options = [];
@@ -822,7 +819,7 @@ define([
     // Events
     var initClickEvents = function (toolbar, config) {
         var removeDropdowns =  function () {
-            toolbar.$toolbar.find('.cryptpad-dropdown').hide();
+            toolbar.$toolbar.find('.cp-dropdown-content').hide();
         };
         var cancelEditTitle = function (e) {
             // Now we want to apply the title even if we click somewhere else

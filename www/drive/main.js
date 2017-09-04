@@ -1154,23 +1154,8 @@ define([
 
         // This is duplicated in cryptpad-common, it should be unified
         var getFileIcon = function (id) {
-            var $icon = Cryptpad.getIcon();
-
             var data = filesOp.getFileData(id);
-            if (!data) { return $icon; }
-
-            var href = data.href;
-            if (!href) { return $icon; }
-
-            if (href.indexOf('/pad/') !== -1) { $icon = Cryptpad.getIcon('pad'); }
-            else if (href.indexOf('/pad2/') !== -1) { $icon = Cryptpad.getIcon('pad'); } // SFRAME
-            else if (href.indexOf('/code/') !== -1) { $icon = Cryptpad.getIcon('code'); }
-            else if (href.indexOf('/slide/') !== -1) { $icon = Cryptpad.getIcon('slide'); }
-            else if (href.indexOf('/poll/') !== -1) { $icon = Cryptpad.getIcon('poll'); }
-            else if (href.indexOf('/whiteboard/') !== -1) { $icon = Cryptpad.getIcon('whiteboard'); }
-            else if (href.indexOf('/file/') !== -1) { $icon = Cryptpad.getIcon('file'); }
-
-            return $icon;
+            return Cryptpad.getFileIcon(data);
         };
         var getIcon = Cryptpad.getIcon;
 
@@ -1356,10 +1341,6 @@ define([
 
         // Create the button allowing the user to switch from list to icons modes
         var createViewModeButton = function ($container) {
-            /*var $block = $('<div>', {
-                'class': 'dropdown-bar right changeViewModeContainer'
-            });*/
-
             var $listButton = $listIcon.clone().addClass('element');
             var $gridButton = $gridIcon.clone().addClass('element');
 
@@ -1495,7 +1476,7 @@ define([
         };
 
         var hideNewButton = function () {
-            $iframe.find('.dropdown-bar-content').hide();
+            $iframe.find('.cp-dropdown-content').hide();
         };
 
         var SORT_FOLDER_DESC = 'sortFoldersDesc';
@@ -2004,7 +1985,7 @@ define([
             createTitle($toolbar.find('.path'), path);
 
             if (APP.mobile()) {
-                var $context = $('<button>', {'class': 'element right dropdown-bar', id: 'contextButton'});
+                var $context = $('<button>', {'class': 'element right cp-dropdown-container', id: 'contextButton'});
                 $context.append($('<span>', {'class': 'fa fa-caret-down'}));
                 $context.appendTo($toolbar.find('.rightside'));
                 $context.click(function (e) {
@@ -2301,7 +2282,7 @@ define([
             $trashContextMenu.hide();
             $contentContextMenu.hide();
             $defaultContextMenu.hide();
-            $iframe.find('.cryptpad-dropdown').hide();
+            $iframe.find('.cp-dropdown-content').hide();
         };
 
         var stringifyPath = function (path) {
@@ -2335,7 +2316,7 @@ define([
 
         // Disable middle click in the context menu to avoid opening /drive/inner.html# in new tabs
         $(ifrw).click(function (e) {
-            if (!e.target || !$(e.target).parents('.cryptpad-dropdown').length) { return; }
+            if (!e.target || !$(e.target).parents('.cp-dropdown-content').length) { return; }
             if (e.which !== 1) {
                 e.stopPropagation();
                 return false;
@@ -2919,6 +2900,8 @@ define([
             };
 
             if (!readOnly && !APP.loggedIn) {
+                // TODO secure drive
+                // cryptpad-backup --> cp-toolbar-backup
                 var $backupButton = Cryptpad.createButton('', true).removeClass('fa').removeClass('fa-question').addClass('cryptpad-backup');
                 $backupButton.append($backupIcon.clone().css('marginRight', '0px'));
                 $backupButton.attr('title', Messages.fm_backup_title);

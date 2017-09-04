@@ -17,9 +17,7 @@ define([
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'less!/customize/src/less/cryptpad.less',
-    'less!/customize/src/less/toolbar.less',
-    'less!/code2/code.less',
+    'less!/customize/src/less2/main.less',
 
     'css!cm/lib/codemirror.css',
     'css!cm/addon/dialog/dialog.css',
@@ -88,9 +86,9 @@ define([
 
         var isHistoryMode = false;
 
-        var $contentContainer = $('#editorContainer');
-        var $previewContainer = $('#previewContainer');
-        var $preview = $('#preview');
+        var $contentContainer = $('#cp-app-code-editor');
+        var $previewContainer = $('#cp-app-code-preview');
+        var $preview = $('#cp-app-code-preview-content');
         $preview.click(function (e) {
             if (!e.target) { return; }
             var $t = $(e.target);
@@ -370,7 +368,7 @@ define([
             common.initFilePicker(common, fileDialogCfg);
             APP.$mediaTagButton = $('<button>', {
                 title: Messages.filePickerButton,
-                'class': 'rightside-button fa fa-picture-o',
+                'class': 'cp-toolbar-rightside-button fa fa-picture-o',
                 style: 'font-size: 17px'
             }).click(function () {
                 common.openFilePicker(common);

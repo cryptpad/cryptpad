@@ -39,7 +39,7 @@ define([
         var MutationObserver = window.MutationObserver;
         var displayDefault = function () {
             var text = Cryptpad.getFirstEmojiOrCharacter(name);
-            var $avatar = $('<span>', {'class': 'default'}).text(text);
+            var $avatar = $('<span>', {'class': 'cp-avatar-default'}).text(text);
             $container.append($avatar);
             if (cb) { cb(); }
         };
@@ -207,7 +207,7 @@ define([
 
         var $displayName = $userAdmin.find('.'+displayNameCls);
 
-        var $avatar = $userAdmin.find('.buttonTitle');
+        var $avatar = $userAdmin.find('.cp-dropdown-button-title');
         var oldUrl;
         var updateButton = function () {
             var myData = metadataMgr.getUserData();
@@ -220,7 +220,7 @@ define([
                 UI.displayAvatar(Common, $avatar, url, newName, function ($img) {
                     oldUrl = url;
                     if ($img) {
-                        $userAdmin.find('button').addClass('avatar');
+                        $userAdmin.find('button').addClass('cp-avatar');
                     }
                 });
             }
@@ -271,7 +271,7 @@ define([
         };
         // Create modal
         var $blockContainer = Cryptpad.createModal({
-            id: 'fileDialog',
+            id: 'cp-filepicker-dialog',
             $body: cfg.$body,
             onClose: hideFileDialog
         }).show();
@@ -283,7 +283,7 @@ define([
         var to;
         $('<input>', {
             type: 'text',
-            'class': 'filter',
+            'class': 'cp-filepicker-filter',
             'placeholder': Messages.filePicker_filter
         }).appendTo($filter).on('keypress', function () {
             if (to) { window.clearTimeout(to); }
@@ -292,11 +292,11 @@ define([
         $filter.append(common.createButton('upload', false, cfg.data, function () {
             hideFileDialog();
         }));
-        var $container = $('<span>', {'class': 'fileContainer'}).appendTo($block);
+        var $container = $('<span>', {'class': 'cp-filepicker-content'}).appendTo($block);
         // Update the files list when needed
         updateContainer = function () {
             $container.html('');
-            var filter = $filter.find('.filter').val().trim();
+            var filter = $filter.find('.cp-filepicker-filter').val().trim();
             var todo = function (err, list) {
                 if (err) { return void console.error(err); }
                 Object.keys(list).forEach(function (id) {
@@ -306,7 +306,7 @@ define([
                         return;
                     }
                     var $span = $('<span>', {
-                        'class': 'element',
+                        'class': 'cp-filepicker-content-element',
                         'title': name,
                     }).appendTo($container);
                     $span.append(Cryptpad.getFileIcon(data));

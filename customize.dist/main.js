@@ -15,7 +15,7 @@ define([
         var $main = $('#mainBlock');
 
         $(window).click(function () {
-            $('.cryptpad-dropdown').hide();
+            $('.cp-dropdown-content').hide();
         });
 
         // main block is hidden in case javascript is disabled
@@ -61,7 +61,7 @@ define([
         var displayCreateButtons = function () {
             var $parent = $('#buttons');
             var options = [];
-            var $container = $('<div>', {'class': 'dropdown-bar'}).appendTo($parent);
+            var $container = $('<div>', {'class': 'cp-dropdown-container'}).appendTo($parent);
             Config.availablePadTypes.forEach(function (el) {
                 if (el === 'drive') { return; }
                 if (!Cryptpad.isLoggedIn() && Config.registeredOnlyTypes &&

@@ -14,36 +14,37 @@ define([
     var SPINNER_DISAPPEAR_TIME = 1000;
 
     // Toolbar parts
-    var TOOLBAR_CLS = Bar.constants.toolbar = 'cryptpad-toolbar';
-    var TOP_CLS = Bar.constants.top = 'cryptpad-toolbar-top';
-    var LEFTSIDE_CLS = Bar.constants.leftside = 'cryptpad-toolbar-leftside';
-    var RIGHTSIDE_CLS = Bar.constants.rightside = 'cryptpad-toolbar-rightside';
-    var DRAWER_CLS = Bar.constants.drawer = 'drawer-content';
-    var HISTORY_CLS = Bar.constants.history = 'cryptpad-toolbar-history';
+    var TOOLBAR_CLS = Bar.constants.toolbar = 'cp-toolbar';
+    var TOP_CLS = Bar.constants.top = 'cp-toolbar-top';
+    var LEFTSIDE_CLS = Bar.constants.leftside = 'cp-toolbar-leftside';
+    var RIGHTSIDE_CLS = Bar.constants.rightside = 'cp-toolbar-rightside';
+    var DRAWER_CLS = Bar.constants.drawer = 'cp-toolbar-drawer-content';
+    var HISTORY_CLS = Bar.constants.history = 'cp-toolbar-history';
 
     // Userlist
-    var USERLIST_CLS = Bar.constants.userlist = "cryptpad-dropdown-users";
-    var EDITSHARE_CLS = Bar.constants.editShare = "cryptpad-dropdown-editShare";
-    var VIEWSHARE_CLS = Bar.constants.viewShare = "cryptpad-dropdown-viewShare";
-    var SHARE_CLS = Bar.constants.viewShare = "cryptpad-dropdown-share";
+    var USERLIST_CLS = Bar.constants.userlist = "cp-toolbar-users";
+    var EDITSHARE_CLS = Bar.constants.editShare = "cp-toolbar-share-edit";
+    var VIEWSHARE_CLS = Bar.constants.viewShare = "cp-toolbar-share-view";
+    var SHARE_CLS = Bar.constants.viewShare = "cp-toolbar-share";
 
     // Top parts
-    var USER_CLS = Bar.constants.userAdmin = "cryptpad-user";
-    var SPINNER_CLS = Bar.constants.spinner = 'cryptpad-spinner';
-    var LIMIT_CLS = Bar.constants.lag = 'cryptpad-limit';
-    var TITLE_CLS = Bar.constants.title = "cryptpad-title";
-    var NEWPAD_CLS = Bar.constants.newpad = "cryptpad-new";
+    var USER_CLS = Bar.constants.userAdmin = "cp-toolbar-user";
+    var SPINNER_CLS = Bar.constants.spinner = 'cp-toolbar-spinner';
+    var LIMIT_CLS = Bar.constants.limit = 'cp-toolbar-limit';
+    var TITLE_CLS = Bar.constants.title = "cp-toolbar-title";
+    var NEWPAD_CLS = Bar.constants.newpad = "cp-toolbar-new";
+    var LINK_CLS = Bar.constants.link = "cp-toolbar-link";
 
     // User admin menu
-    var USERADMIN_CLS = Bar.constants.user = 'cryptpad-user-dropdown';
-    var USERNAME_CLS = Bar.constants.username = 'cryptpad-toolbar-username';
-    /*var READONLY_CLS = */Bar.constants.readonly = 'cryptpad-readonly';
-    var USERBUTTON_CLS = Bar.constants.changeUsername = "cryptpad-change-username";
+    var USERADMIN_CLS = Bar.constants.user = 'cp-toolbar-user-dropdown';
+    var USERNAME_CLS = Bar.constants.username = 'cp-toolbar-user-name';
+    /*var READONLY_CLS = */Bar.constants.readonly = 'cp-toolbar-readonly';
+    var USERBUTTON_CLS = Bar.constants.changeUsername = "cp-toolbar-user-rename";
 
     // Create the toolbar element
 
     var uid = function () {
-        return 'cryptpad-uid-' + String(Math.random()).substring(2);
+        return 'cp-toolbar-uid-' + String(Math.random()).substring(2);
     };
 
     var createRealtimeToolbar = function (config) {
@@ -54,21 +55,14 @@ define([
             id: uid(),
         });
 
-        // TODO iframe
-        // var parsed = Cryptpad.parsePadUrl(window.location.href);
-        var parsed = { type:'pad' };
-        if (typeof parsed.type === "string") {
-            config.$container.parents('body').addClass('app-' + parsed.type);
-        }
-
         var $topContainer = $('<div>', {'class': TOP_CLS});
-        $('<span>', {'class': 'filler'}).appendTo($topContainer);
+        $('<span>', {'class': 'cp-toolbar-top-filler'}).appendTo($topContainer);
         var $userContainer = $('<span>', {
             'class': USER_CLS
         }).appendTo($topContainer);
         $('<span>', {'class': LIMIT_CLS}).hide().appendTo($userContainer);
-        $('<span>', {'class': NEWPAD_CLS + ' dropdown-bar'}).hide().appendTo($userContainer);
-        $('<span>', {'class': USERADMIN_CLS + ' dropdown-bar'}).hide().appendTo($userContainer);
+        $('<span>', {'class': NEWPAD_CLS + ' cp-dropdown-container'}).hide().appendTo($userContainer);
+        $('<span>', {'class': USERADMIN_CLS + ' cp-dropdown-container'}).hide().appendTo($userContainer);
 
         $toolbar.append($topContainer)
         .append($('<div>', {'class': LEFTSIDE_CLS}))
@@ -78,27 +72,27 @@ define([
         var $rightside = $toolbar.find('.'+RIGHTSIDE_CLS);
         if (!config.hideDrawer) {
             var $drawerContent = $('<div>', {
-                'class': DRAWER_CLS,// + ' dropdown-bar-content cryptpad-dropdown'
+                'class': DRAWER_CLS,
                 'tabindex': 1
             }).appendTo($rightside).hide();
-            var $drawer = Cryptpad.createButton('more', true).appendTo($rightside);
+            var $drawer = Common.createButton('more', true).appendTo($rightside);
             $drawer.click(function () {
                 $drawerContent.toggle();
-                $drawer.removeClass('active');
+                $drawer.removeClass('cp-toolbar-button-active');
                 if ($drawerContent.is(':visible')) {
-                    $drawer.addClass('active');
+                    $drawer.addClass('cp-toolbar-button-active');
                     $drawerContent.focus();
                 }
             });
             var onBlur = function (e) {
                 if (e.relatedTarget) {
-                    if ($(e.relatedTarget).is('.drawer-button')) { return; }
+                    if ($(e.relatedTarget).is('.cp-toolbar-drawer-button')) { return; }
                     if ($(e.relatedTarget).parents('.'+DRAWER_CLS).length) {
                         $(e.relatedTarget).blur(onBlur);
                         return;
                     }
                 }
-                $drawer.removeClass('active');
+                $drawer.removeClass('cp-toolbar-button-active');
                 $drawerContent.hide();
             };
             $drawerContent.blur(onBlur);
@@ -106,7 +100,7 @@ define([
 
         // The 'notitle' class removes the line added for the title with a small screen
         if (!config.title || typeof config.title !== "object") {
-            $toolbar.addClass('notitle');
+            $toolbar.addClass('cp-toolbar-notitle');
         }
 
         $container.prepend($toolbar);
@@ -185,15 +179,15 @@ define([
         var $editUsers = $userlistContent.find('.' + USERLIST_CLS).html('');
         Cryptpad.clearTooltips();
 
-        var $editUsersList = $('<div>', {'class': 'userlist-others'});
+        var $editUsersList = $('<div>', {'class': 'cp-toolbar-userlist-others'});
 
         // Editors
         var pendingFriends = Common.getPendingFriends();
         editUsersNames.forEach(function (data) {
             var name = data.name || Messages.anonymous;
-            var $span = $('<span>', {'class': 'avatar'});
-            var $rightCol = $('<span>', {'class': 'right-col'});
-            var $nameSpan = $('<span>', {'class': 'name'}).text(name).appendTo($rightCol);
+            var $span = $('<span>', {'class': 'cp-avatar'});
+            var $rightCol = $('<span>', {'class': 'cp-toolbar-userlist-rightcol'});
+            var $nameSpan = $('<span>', {'class': 'cp-toolbar-userlist-name'}).text(name).appendTo($rightCol);
             var isMe = data.curvePublic === user.curvePublic;
             if (Common.isLoggedIn() && data.curvePublic) {
                 if (isMe) {
@@ -203,11 +197,11 @@ define([
                     $nameSpan.text(name);
                 } else if (!friends[data.curvePublic]) {
                     if (pendingFriends.indexOf(data.netfluxId) !== -1) {
-                        $('<span>', {'class': 'friend'}).text(Messages.userlist_pending)
+                        $('<span>', {'class': 'cp-toolbar-userlist-friend'}).text(Messages.userlist_pending)
                             .appendTo($rightCol);
                     } else {
                         $('<span>', {
-                            'class': 'fa fa-user-plus friend',
+                            'class': 'fa fa-user-plus cp-toolbar-userlist-friend',
                             'title': Messages._getKey('userlist_addAsFriendTitle', [
                                 name
                             ])
@@ -219,7 +213,7 @@ define([
                 }
             }
             if (data.profile) {
-                $span.addClass('clickable');
+                $span.addClass('cp-userlist-clickable');
                 $span.click(function () {
                     window.open(origin+'/profile/#' + data.profile);
                 });
@@ -242,7 +236,7 @@ define([
 
         // Viewers
         if (numberOfViewUsers > 0) {
-            var viewText = '<div class="viewer">';
+            var viewText = '<div class="cp-toolbar-userlist-viewer">';
             var viewerText = numberOfViewUsers !== 1 ? Messages.viewers : Messages.viewer;
             viewText += numberOfViewUsers + ' ' + viewerText + '</div>';
             $editUsers.append(viewText);
@@ -252,7 +246,7 @@ define([
         var fa_editusers = '<span class="fa fa-users"></span>';
         var fa_viewusers = '<span class="fa fa-eye"></span>';
         var $spansmall = $('<span>').html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
-        $userButtons.find('.buttonTitle').html('').append($spansmall);
+        $userButtons.find('.cp-dropdown-button-title').html('').append($spansmall);
     };
 
     var initUserList = function (toolbar, config) {
@@ -278,21 +272,21 @@ define([
         if (!config.metadataMgr) {
             throw new Error("You must provide a `metadataMgr` to display the userlist");
         }
-        var $content = $('<div>', {'class': 'userlist-drawer'});
+        var $content = $('<div>', {'class': 'cp-toolbar-userlist-drawer'});
         $content.on('drop dragover', function (e) {
             e.preventDefault();
             e.stopPropagation();
         });
-        var $closeIcon = $('<span>', {"class": "fa fa-window-close close"}).appendTo($content);
+        var $closeIcon = $('<span>', {"class": "fa fa-window-close cp-toolbar-userlist-drawer-close"}).appendTo($content);
         $('<h2>').text(Messages.users).appendTo($content);
         $('<p>', {'class': USERLIST_CLS}).appendTo($content);
 
         toolbar.userlistContent = $content;
 
-        var $container = $('<span>', {id: 'userButtons', title: Messages.userListButton});
+        var $container = $('<span>', {id: 'cp-toolbar-userlist-drawer-open', title: Messages.userListButton});
 
         var $button = $('<button>').appendTo($container);
-        $('<span>',{'class': 'buttonTitle'}).appendTo($button);
+        $('<span>',{'class': 'cp-dropdown-button-title'}).appendTo($button);
 
         toolbar.$leftside.prepend($container);
 
@@ -304,7 +298,7 @@ define([
         var mobile = $('body').width() <= 600;
         var hide = function () {
             $content.hide();
-            $button.removeClass('active');
+            $button.removeClass('cp-toolbar-button-active');
             $ck.css({
                 'padding-left': '',
             });
@@ -314,7 +308,7 @@ define([
             if (mobile) {
                 $ck.hide();
             }
-            $button.addClass('active');
+            $button.addClass('cp-toolbar-button-active');
             $ck.css({
                 'padding-left': '175px',
             });
@@ -370,7 +364,7 @@ define([
         if (hashes.editHash) {
             options.push({
                 tag: 'a',
-                attributes: {title: Messages.editShareTitle, 'class': 'editShare'},
+                attributes: {title: Messages.editShareTitle, 'class': 'cp-toolbar-share-edit-copy'},
                 content: '<span class="fa fa-users"></span> ' + Messages.editShare
             });
             if (readOnly) {
@@ -379,7 +373,7 @@ define([
                     tag: 'a',
                     attributes: {
                         title: Messages.editOpenTitle,
-                        'class': 'editOpen',
+                        'class': 'cp-toolbar-share-edit-open',
                         href: origin + pathname + '#' + hashes.editHash,
                         target: '_blank'
                     },
@@ -391,7 +385,7 @@ define([
         if (hashes.viewHash) {
             options.push({
                 tag: 'a',
-                attributes: {title: Messages.viewShareTitle, 'class': 'viewShare'},
+                attributes: {title: Messages.viewShareTitle, 'class': 'cp-toolbar-share-view-copy'},
                 content: '<span class="fa fa-eye"></span> ' + Messages.viewShare
             });
             if (!readOnly) {
@@ -400,7 +394,7 @@ define([
                     tag: 'a',
                     attributes: {
                         title: Messages.viewOpenTitle,
-                        'class': 'viewOpen',
+                        'class': 'cp-toolbar-share-view-open',
                         href: origin + pathname + '#' + hashes.viewHash,
                         target: '_blank'
                     },
@@ -414,12 +408,12 @@ define([
             feedback: 'SHARE_MENU',
         };
         var $shareBlock = Cryptpad.createDropdown(dropdownConfigShare);
-        $shareBlock.find('.dropdown-bar-content').addClass(SHARE_CLS).addClass(EDITSHARE_CLS).addClass(VIEWSHARE_CLS);
-        $shareBlock.addClass('shareButton');
+        $shareBlock.find('.cp-dropdown-content').addClass(SHARE_CLS).addClass(EDITSHARE_CLS).addClass(VIEWSHARE_CLS);
+        $shareBlock.addClass('cp-toolbar-share-button');
         $shareBlock.find('button').attr('title', Messages.shareButton);
 
         if (hashes.editHash) {
-            $shareBlock.find('a.editShare').click(function () {
+            $shareBlock.find('a.cp-toolbar-share-edit-copy').click(function () {
                 /*Common.storeLinkToClipboard(false, function (err) {
                     if (!err) { Cryptpad.log(Messages.shareSuccess); }
                 });*/
@@ -429,7 +423,7 @@ define([
             });
         }
         if (hashes.viewHash) {
-            $shareBlock.find('a.viewShare').click(function () {
+            $shareBlock.find('a.cp-toolbar-share-view-copy').click(function () {
                 /*Common.storeLinkToClipboard(true, function (err) {
                     if (!err) { Cryptpad.log(Messages.shareSuccess); }
                 });*/
@@ -451,7 +445,7 @@ define([
         }
         var $shareIcon = $('<span>', {'class': 'fa fa-share-alt'});
         var $button = $('<button>', {'title': Messages.shareButton}).append($shareIcon);
-        $button.addClass('shareButton');
+        $button.addClass('cp-toolbar-share-button');
         $button.click(function () {
             var url = window.location.href;
             var success = Cryptpad.Clipboard.copy(url);
@@ -464,11 +458,10 @@ define([
 
     var createTitle = function (toolbar, config) {
         var $titleContainer = $('<span>', {
-            id: 'toolbarTitle',
             'class': TITLE_CLS
         }).appendTo(toolbar.$top);
 
-        var $hoverable = $('<span>', {'class': 'hoverable'}).appendTo($titleContainer);
+        var $hoverable = $('<span>', {'class': 'cp-toolbar-title-hoverable'}).appendTo($titleContainer);
 
         if (typeof config.title !== "object") {
             console.error("config.title", config);
@@ -480,18 +473,18 @@ define([
 
         // Buttons
         var $text = $('<span>', {
-            'class': 'title'
+            'class': 'cp-toolbar-title-value'
         }).appendTo($hoverable);
         var $pencilIcon = $('<span>', {
-            'class': 'pencilIcon',
+            'class': 'cp-toolbar-title-edit',
             'title': Messages.clickToEdit
         });
         var $saveIcon = $('<span>', {
-            'class': 'saveIcon',
+            'class': 'cp-toolbar-title-save',
             'title': Messages.saveTitle
         }).hide();
         if (config.readOnly === 1) {
-            $titleContainer.append($('<span>', {'class': 'readOnly'})
+            $titleContainer.append($('<span>', {'class': 'cp-toolbar-title-readonly'})
                 .text('('+Messages.readonly+')'));
         }
         if (config.readOnly === 1 || typeof(Cryptpad) === "undefined") { return $titleContainer; }
@@ -501,14 +494,14 @@ define([
         }).appendTo($hoverable).hide();
         if (config.readOnly !== 1) {
             $text.attr("title", Messages.clickToEdit);
-            $text.addClass("editable");
+            $text.addClass("cp-toolbar-title-editable");
             var $icon = $('<span>', {
-                'class': 'fa fa-pencil readonly',
+                'class': 'fa fa-pencil cp-toolbar-title-icon-readonly',
                 style: 'font-family: FontAwesome;'
             });
             $pencilIcon.append($icon).appendTo($hoverable);
             var $icon2 = $('<span>', {
-                'class': 'fa fa-check readonly',
+                'class': 'fa fa-check cp-toolbar-title-icon-readonly',
                 style: 'font-family: FontAwesome;'
             });
             $saveIcon.append($icon2).appendTo($hoverable);
@@ -571,23 +564,22 @@ define([
     var createPageTitle = function (toolbar, config) {
         if (config.title || !config.pageTitle) { return; }
         var $titleContainer = $('<span>', {
-            id: 'toolbarTitle',
             'class': TITLE_CLS
         }).appendTo(toolbar.$top);
 
         toolbar.$top.find('.filler').hide();
 
-        var $hoverable = $('<span>', {'class': 'hoverable'}).appendTo($titleContainer);
+        var $hoverable = $('<span>', {'class': 'cp-toolbar-title-hoverable'}).appendTo($titleContainer);
 
         // Buttons
         $('<span>', {
-            'class': 'title pageTitle'
+            'class': 'cp-toolbar-title-value cp-toolbar-title-value-page'
         }).appendTo($hoverable).text(config.pageTitle);
     };
 
     var createLinkToMain = function (toolbar, config) {
         var $linkContainer = $('<span>', {
-            'class': "cryptpad-link"
+            'class': LINK_CLS
         }).appendTo(toolbar.$top);
 
         // We need to override the "a" tag action here because it is inside the iframe!
@@ -601,7 +593,7 @@ define([
         var $aTag = $('<a>', {
             href: href,
             title: buttonTitle,
-            'class': "cryptpad-logo"
+            'class': "cp-toolbar-link-logo"
         }).append($('<img>', {
             src: '/customize/images/logo_white.png?' + ApiConfig.requireConf.urlArgs
         }));
@@ -784,7 +776,7 @@ define([
     var initClickEvents = function (toolbar, config) {
         var removeDropdowns =  function () {
             window.setTimeout(function () {
-                toolbar.$toolbar.find('.cryptpad-dropdown').hide();
+                toolbar.$toolbar.find('.cp-dropdown-content').hide();
             });
         };
         var cancelEditTitle = function (e) {

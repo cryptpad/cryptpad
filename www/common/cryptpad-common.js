@@ -1444,12 +1444,8 @@ define([
         var href = data.href;
         if (!href) { return $icon; }
 
-        if (href.indexOf('/pad/') !== -1) { $icon = common.getIcon('pad'); }
-        else if (href.indexOf('/code/') !== -1) { $icon = common.getIcon('code'); }
-        else if (href.indexOf('/slide/') !== -1) { $icon = common.getIcon('slide'); }
-        else if (href.indexOf('/poll/') !== -1) { $icon = common.getIcon('poll'); }
-        else if (href.indexOf('/whiteboard/') !== -1) { $icon = common.getIcon('whiteboard'); }
-        else if (href.indexOf('/file/') !== -1) { $icon = common.getIcon('file'); }
+        var type = common.parsePadUrl(href).type;
+        $icon = common.getIcon(type);
 
         return $icon;
     };
@@ -1558,7 +1554,7 @@ define([
         // Container
         var $container = $(config.container);
         var containerConfig = {
-            'class': 'dropdown-bar'
+            'class': 'cp-dropdown-container'
         };
         if (config.buttonTitle) {
             containerConfig.title = config.buttonTitle;
@@ -1571,14 +1567,14 @@ define([
         // Button
         var $button = $('<button>', {
             'class': ''
-        }).append($('<span>', {'class': 'buttonTitle'}).html(config.text || ""));
+        }).append($('<span>', {'class': 'cp-dropdown-button-title'}).html(config.text || ""));
         /*$('<span>', {
             'class': 'fa fa-caret-down',
         }).appendTo($button);*/
 
         // Menu
-        var $innerblock = $('<div>', {'class': 'cryptpad-dropdown dropdown-bar-content'});
-        if (config.left) { $innerblock.addClass('left'); }
+        var $innerblock = $('<div>', {'class': 'cp-dropdown-content'});
+        if (config.left) { $innerblock.addClass('cp-dropdown-left'); }
 
         config.options.forEach(function (o) {
             if (!isValidOption(o)) { return; }
@@ -1591,8 +1587,8 @@ define([
 
         var setActive = function ($el) {
             if ($el.length !== 1) { return; }
-            $innerblock.find('.active').removeClass('active');
-            $el.addClass('active');
+            $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element(active');
+            $el.addClass('cp-dropdown-element-active');
             var scroll = $el.position().top + $innerblock.scrollTop();
             if (scroll < $innerblock.scrollTop()) {
                 $innerblock.scrollTop(scroll);
@@ -1607,7 +1603,7 @@ define([
 
         var show = function () {
             $innerblock.show();
-            $innerblock.find('.active').removeClass('active');
+            $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
             if (config.isSelect && value) {
                 var $val = $innerblock.find('[data-value="'+value+'"]');
                 setActive($val);
@@ -1619,10 +1615,10 @@ define([
         $container.click(function (e) {
             e.stopPropagation();
             var state = $innerblock.is(':visible');
-            $('.dropdown-bar-content').hide();
+            $('.cp-dropdown-content').hide();
             try {
                 $('iframe').each(function (idx, ifrw) {
-                    $(ifrw).contents().find('.dropdown-bar-content').hide();
+                    $(ifrw).contents().find('.cp-dropdown-content').hide();
                 });
             } catch (er) {
                 // empty try catch in case this iframe is problematic (cross-origin)
@@ -1638,7 +1634,7 @@ define([
             var pressed = '';
             var to;
             $container.keydown(function (e) {
-                var $value = $innerblock.find('[data-value].active');
+                var $value = $innerblock.find('[data-value].cp-dropdown-element-active');
                 if (e.which === 38) { // Up
                     if ($value.length) {
                         var $prev = $value.prev();
@@ -1679,7 +1675,7 @@ define([
                 value = val;
                 var $val = $innerblock.find('[data-value="'+val+'"]');
                 var textValue = name || $val.html() || val;
-                $button.find('.buttonTitle').html(textValue);
+                $button.find('.cp-dropdown-button-title').html(textValue);
             };
             $container.getValue = function () {
                 return value || '';
@@ -1826,7 +1822,7 @@ define([
 
         var oldUrl;
         if (account && !config.static && store) {
-            var $avatar = $userAdmin.find('.buttonTitle');
+            var $avatar = $userAdmin.find('.cp-dropdown-button-title');
             var updateButton = function (newName) {
                 var profile = store.getProfile();
                 var url = profile && profile.avatar;
