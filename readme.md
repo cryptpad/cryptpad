@@ -20,6 +20,8 @@ It also contains information on keeping your instance of CryptPad up to date.
 
 See [Cryptpad-Docker](docs/cryptpad-docker.md)
 
+
+
 # Security
 
 CryptPad is *private*, not *anonymous*. Privacy protects your data, anonymity protects you.
