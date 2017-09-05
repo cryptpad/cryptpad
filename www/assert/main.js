@@ -228,7 +228,7 @@ define([
                 th.src = URL.createObjectURL(thumb);
                 th.onload = function () {
                     $(document.body).append($(th).addClass('thumb'));
-                    cb(th.width === 100 && th.height === 100);
+                    cb(th.width === Thumb.dimension && th.height === Thumb.dimension);
                 };
             });
         });
