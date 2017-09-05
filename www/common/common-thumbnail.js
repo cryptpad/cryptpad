@@ -3,7 +3,7 @@ define([
 ], function () {
     var Nacl = window.nacl;
     var Thumb = {
-        dimension: 75, // thumbnails are all 150px
+        dimension: 100,
     };
 
     var supportedTypes = [
