@@ -91,6 +91,8 @@ define([
                 Title.updateTitle(title || Title.defaultTitle);
                 toolbar.addElement(['pageTitle'], {pageTitle: title});
 
+                console.error(metadata);
+
                 var displayFile = function (ev, sizeMb, CB) {
                     var called_back;
                     var cb = function (e) {
