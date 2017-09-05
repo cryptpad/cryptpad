@@ -4,7 +4,8 @@ define([
     '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     '/common/userObject.js',
-], function ($, Listmap, Crypto, TextPatcher, FO) {
+    '/common/migrate-user-object.js'
+], function ($, Listmap, Crypto, TextPatcher, FO, Migrate) {
     /*
         This module uses localStorage, which is synchronous, but exposes an
         asyncronous API. This is so that we can substitute other storage
@@ -154,6 +155,8 @@ define([
         });
         var todo = function () {
             fo.fixFiles();
+
+            Migrate(proxy, Cryptpad);
 
             //storeObj = proxy;
             store = initStore(fo, proxy, exp);

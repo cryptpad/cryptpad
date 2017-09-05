@@ -1,0 +1,55 @@
+@import (once) '../../customize/src/less2/include/colortheme.less';
+@import (once) '../../customize/src/less2/include/modal.less';
+@import (once) '../../customize/src/less2/include/icon-colors.less';
+@import (once) '../../customize/src/less2/include/fileupload.less';
+
+.iconColors_main();
+.fileupload_main();
+
+#cp-filepicker-dialog {
+    display: none;
+    .cp-modal {
+        .cp-filepicker-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            overflow-y: auto;
+        }
+
+        .cp-filepicker-content-element {
+            @darker: darken(@colortheme_modal-fg, 30%);
+
+            width: 200px;
+            min-width: 200px;
+            height: 1em;
+            padding: 0.5em;
+            margin: 5px;
+            box-sizing: content-box;
+
+            text-align: left;
+            line-height: 1em;
+            cursor: pointer;
+
+            background-color: #111;
+            color: @darker;
+
+            transition: all 0.1s;
+
+            &:hover {
+                color: @colortheme_modal-fg;
+            }
+
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            align-items: center;
+
+            .fa {
+                cursor: pointer;
+                margin-right: 0.5em;
+            }
+        }
+    }
+}
+

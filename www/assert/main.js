@@ -5,8 +5,9 @@ define([
     'json.sortify',
     '/common/cryptpad-common.js',
     '/drive/tests.js',
-    '/common/test.js'
-], function ($, Hyperjson, TextPatcher, Sortify, Cryptpad, Drive, Test) {
+    '/common/test.js',
+    '/common/common-thumbnail.js',
+], function ($, Hyperjson, TextPatcher, Sortify, Cryptpad, Drive, Test, Thumb) {
     window.Hyperjson = Hyperjson;
     window.TextPatcher = TextPatcher;
     window.Sortify = Sortify;
@@ -207,6 +208,31 @@ define([
         return cb(true);
     }, "version 2 hash failed to parse correctly");
 
+    assert(function (cb) {
+        var getBlob = function (url, cb) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", url, true);
+            xhr.responseType = "blob";
+            xhr.onload = function () {
+                cb(void 0, this.response);
+            };
+            xhr.send();
+        };
+
+        var $img = $('img#thumb-orig');
+        getBlob($img.attr('src'), function (e, blob) {
+            console.log(e, blob);
+            Thumb.fromImageBlob(blob, function (e, thumb) {
+                console.log(thumb);
+                var th = new Image();
+                th.src = URL.createObjectURL(thumb);
+                th.onload = function () {
+                    $(document.body).append($(th).addClass('thumb'));
+                    cb(th.width === Thumb.dimension && th.height === Thumb.dimension);
+                };
+            });
+        });
+    });
 
     Drive.test(assert);
 

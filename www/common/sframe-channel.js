@@ -109,8 +109,9 @@ define([
         window.addEventListener('message', function (msg) {
             var data = JSON.parse(msg.data);
             if (ow !== msg.source) {
-                console.log("DROP Message from unexpected source");
-                console.log(msg);
+                return;
+                //console.log("DROP Message from unexpected source");
+                //console.log(msg);
             } else if (!otherWindow) {
                 otherWindow = ow;
                 ow.postMessage(JSON.stringify({ txid: data.txid }), '*');

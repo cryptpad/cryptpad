@@ -39,7 +39,7 @@ define([
         var MutationObserver = window.MutationObserver;
         var displayDefault = function () {
             var text = Cryptpad.getFirstEmojiOrCharacter(name);
-            var $avatar = $('<span>', {'class': 'default'}).text(text);
+            var $avatar = $('<span>', {'class': 'cp-avatar-default'}).text(text);
             $container.append($avatar);
             if (cb) { cb(); }
         };
@@ -207,7 +207,7 @@ define([
 
         var $displayName = $userAdmin.find('.'+displayNameCls);
 
-        var $avatar = $userAdmin.find('.buttonTitle');
+        var $avatar = $userAdmin.find('.cp-dropdown-button-title');
         var oldUrl;
         var updateButton = function () {
             var myData = metadataMgr.getUserData();
@@ -220,7 +220,7 @@ define([
                 UI.displayAvatar(Common, $avatar, url, newName, function ($img) {
                     oldUrl = url;
                     if ($img) {
-                        $userAdmin.find('button').addClass('avatar');
+                        $userAdmin.find('button').addClass('cp-avatar');
                     }
                 });
             }
@@ -260,6 +260,44 @@ define([
 
         return $userAdmin;
     };
-    
+
+    UI.initFilePicker = function (common, cfg) {
+        var onSelect = cfg.onSelect || $.noop;
+        var sframeChan = common.getSframeChannel();
+        sframeChan.on("EV_FILE_PICKED", function (data) {
+            onSelect(data);
+        });
+    };
+    UI.openFilePicker = function (common, types) {
+        var sframeChan = common.getSframeChannel();
+        sframeChan.event("EV_FILE_PICKER_OPEN", types);
+    };
+
+    UI.openTemplatePicker = function (common) {
+        var metadataMgr = common.getMetadataMgr();
+        var type = metadataMgr.getMetadataLazy().type;
+        var first = true; // We can only pick a template once (for a new document)
+        var fileDialogCfg = {
+            onSelect: function (data) {
+                if (data.type === type && first) {
+                    Cryptpad.addLoadingScreen(null, true);
+                    var sframeChan = common.getSframeChannel();
+                    sframeChan.query('Q_TEMPLATE_USE', data.href, function () {
+                        first = false;
+                        Cryptpad.removeLoadingScreen();
+                        common.feedback('TEMPLATE_USED');
+                    });
+                    return;
+                }
+            }
+        };
+        common.initFilePicker(common, fileDialogCfg);
+        var pickerCfg = {
+            types: [type],
+            where: ['template']
+        };
+        common.openFilePicker(common, pickerCfg);
+    };
+
     return UI;
 });

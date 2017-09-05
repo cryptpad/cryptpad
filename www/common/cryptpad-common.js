@@ -80,6 +80,7 @@ define([
     common.getIcon = UI.getIcon;
     common.addTooltips = UI.addTooltips;
     common.clearTooltips = UI.clearTooltips;
+    common.importContent = UI.importContent;
 
     // import common utilities for export
     common.find = Util.find;
@@ -617,6 +618,16 @@ define([
         });
         common.findOKButton().text(Messages.cancelButton);
     };
+    // Secure iframes
+    common.useTemplate = function (href, Crypt, cb) {
+        var parsed = parsePadUrl(href);
+        if(!parsed) { throw new Error("Cannot get template hash"); }
+        Crypt.get(parsed.hash, function (err, val) {
+            if (err) { throw new Error(err); }
+            var p = parsePadUrl(window.location.href);
+            Crypt.put(p.hash, val, cb);
+        });
+    };
 
     // STORAGE
     /* fetch and migrate your pad history from the store */
@@ -784,7 +795,7 @@ define([
         var proxy = store.getProxy();
         var fo = proxy.fo;
         var hashes = [];
-        var list = fo.getFiles().filter(function (id) {
+        var list = fo.getFiles([fo.ROOT]).filter(function (id) {
             var href = fo.getFileData(id).href;
             var parsed = parsePadUrl(href);
             if ((parsed.type === 'file' || parsed.type === 'media')
@@ -794,6 +805,27 @@ define([
             }
         });
         return list;
+    };
+    // Needed for the secure filepicker app
+    common.getSecureFilesList = function (filter, cb) {
+        var store = common.getStore();
+        if (!store) { return void cb("Store is not ready"); }
+        var proxy = store.getProxy();
+        var fo = proxy.fo;
+        var list = {};
+        var hashes = [];
+        var types = filter.types;
+        var where = filter.where;
+        fo.getFiles(where).forEach(function (id) {
+            var data = fo.getFileData(id);
+            var parsed = parsePadUrl(data.href);
+            if ((!types || types.length === 0 || types.indexOf(parsed.type) !== -1)
+                 && hashes.indexOf(parsed.hash) === -1) {
+                hashes.push(parsed.hash);
+                list[id] = data;
+            }
+        });
+        cb (null, list);
     };
 
     var getUserChannelList = common.getUserChannelList = function () {
@@ -1013,6 +1045,9 @@ define([
         if (!pinsReady()) { return void cb('RPC_NOT_READY'); }
         rpc.uploadCancel(cb);
     };
+
+
+    common.uploadFileSecure = Files.upload;
 
     /*  Create a usage bar which keeps track of how much storage space is used
         by your CryptDrive. The getPinnedUsage RPC is one of the heavier calls,
@@ -1475,7 +1510,7 @@ define([
     };
 
     // This is duplicated in drive/main.js, it should be unified
-    var getFileIcon = function (data) {
+    var getFileIcon = common.getFileIcon = function (data) {
         var $icon = common.getIcon();
 
         if (!data) { return $icon; }
@@ -1483,12 +1518,8 @@ define([
         var href = data.href;
         if (!href) { return $icon; }
 
-        if (href.indexOf('/pad/') !== -1) { $icon = common.getIcon('pad'); }
-        else if (href.indexOf('/code/') !== -1) { $icon = common.getIcon('code'); }
-        else if (href.indexOf('/slide/') !== -1) { $icon = common.getIcon('slide'); }
-        else if (href.indexOf('/poll/') !== -1) { $icon = common.getIcon('poll'); }
-        else if (href.indexOf('/whiteboard/') !== -1) { $icon = common.getIcon('whiteboard'); }
-        else if (href.indexOf('/file/') !== -1) { $icon = common.getIcon('file'); }
+        var type = common.parsePadUrl(href).type;
+        $icon = common.getIcon(type);
 
         return $icon;
     };
@@ -1502,16 +1533,24 @@ define([
                 'id': cfg.id
             });
         }
+        var hide = function () {
+            if (cfg.onClose) { return void cfg.onClose(); }
+            $blockContainer.hide();
+        };
         $blockContainer.html('').appendTo($body);
         var $block = $('<div>', {'class': 'cp-modal'}).appendTo($blockContainer);
         $('<span>', {
             'class': 'cp-modal-close fa fa-times',
             'title': Messages.filePicker_close
-        }).click(function () {
-            $blockContainer.hide();
-        }).appendTo($block);
+        }).click(hide).appendTo($block);
+        $body.click(hide);
+        $block.click(function (e) {
+            e.stopPropagation();
+        });
         $body.keydown(function (e) {
-            if (e.which === 27) { $blockContainer.hide(); }
+            if (e.which === 27) {
+                hide();
+            }
         });
         return $blockContainer;
     };
@@ -1589,7 +1628,7 @@ define([
         // Container
         var $container = $(config.container);
         var containerConfig = {
-            'class': 'dropdown-bar'
+            'class': 'cp-dropdown-container'
         };
         if (config.buttonTitle) {
             containerConfig.title = config.buttonTitle;
@@ -1602,14 +1641,14 @@ define([
         // Button
         var $button = $('<button>', {
             'class': ''
-        }).append($('<span>', {'class': 'buttonTitle'}).html(config.text || ""));
+        }).append($('<span>', {'class': 'cp-dropdown-button-title'}).html(config.text || ""));
         /*$('<span>', {
             'class': 'fa fa-caret-down',
         }).appendTo($button);*/
 
         // Menu
-        var $innerblock = $('<div>', {'class': 'cryptpad-dropdown dropdown-bar-content'});
-        if (config.left) { $innerblock.addClass('left'); }
+        var $innerblock = $('<div>', {'class': 'cp-dropdown-content'});
+        if (config.left) { $innerblock.addClass('cp-dropdown-left'); }
 
         config.options.forEach(function (o) {
             if (!isValidOption(o)) { return; }
@@ -1622,8 +1661,8 @@ define([
 
         var setActive = function ($el) {
             if ($el.length !== 1) { return; }
-            $innerblock.find('.active').removeClass('active');
-            $el.addClass('active');
+            $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element(active');
+            $el.addClass('cp-dropdown-element-active');
             var scroll = $el.position().top + $innerblock.scrollTop();
             if (scroll < $innerblock.scrollTop()) {
                 $innerblock.scrollTop(scroll);
@@ -1638,7 +1677,7 @@ define([
 
         var show = function () {
             $innerblock.show();
-            $innerblock.find('.active').removeClass('active');
+            $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
             if (config.isSelect && value) {
                 var $val = $innerblock.find('[data-value="'+value+'"]');
                 setActive($val);
@@ -1650,10 +1689,10 @@ define([
         $container.click(function (e) {
             e.stopPropagation();
             var state = $innerblock.is(':visible');
-            $('.dropdown-bar-content').hide();
+            $('.cp-dropdown-content').hide();
             try {
                 $('iframe').each(function (idx, ifrw) {
-                    $(ifrw).contents().find('.dropdown-bar-content').hide();
+                    $(ifrw).contents().find('.cp-dropdown-content').hide();
                 });
             } catch (er) {
                 // empty try catch in case this iframe is problematic (cross-origin)
@@ -1669,7 +1708,7 @@ define([
             var pressed = '';
             var to;
             $container.keydown(function (e) {
-                var $value = $innerblock.find('[data-value].active');
+                var $value = $innerblock.find('[data-value].cp-dropdown-element-active');
                 if (e.which === 38) { // Up
                     if ($value.length) {
                         var $prev = $value.prev();
@@ -1710,7 +1749,7 @@ define([
                 value = val;
                 var $val = $innerblock.find('[data-value="'+val+'"]');
                 var textValue = name || $val.html() || val;
-                $button.find('.buttonTitle').html(textValue);
+                $button.find('.cp-dropdown-button-title').html(textValue);
             };
             $container.getValue = function () {
                 return value || '';
@@ -1857,7 +1896,7 @@ define([
 
         var oldUrl;
         if (account && !config.static && store) {
-            var $avatar = $userAdmin.find('.buttonTitle');
+            var $avatar = $userAdmin.find('.cp-dropdown-button-title');
             var updateButton = function (newName) {
                 var profile = store.getProfile();
                 var url = profile && profile.avatar;

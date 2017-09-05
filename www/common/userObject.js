@@ -24,6 +24,11 @@ define([
         var NEW_FOLDER_NAME = Messages.fm_newFolder;
         var NEW_FILE_NAME = Messages.fm_newFile;
 
+        exp.ROOT = ROOT;
+        exp.UNSORTED = UNSORTED;
+        exp.TRASH = TRASH;
+        exp.TEMPLATE = TEMPLATE;
+
         // Logging
         var logging = function () {
             console.log.apply(console, arguments);
@@ -151,6 +156,7 @@ define([
             if (!attr || !attr.trim()) { return void cb("E_INVAL_ATTR"); }
             var data = getFileData(id);
             data[attr] = clone(value);
+            cb(null);
         };
 
         // PATHS
@@ -849,6 +855,7 @@ define([
                 }
                 try {
                     debug("Migrating file system...");
+                    Cryptpad.feedback('Migrate-oldFilesData', true);
                     files.migrate = 1;
                     var next = function () {
                         var oldData = files[OLD_FILES_DATA].slice();

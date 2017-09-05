@@ -280,28 +280,13 @@ define([
         };
     };
 
-    var $fileIcon = $('<span>', {"class": "fa fa-file-text-o file icon"});
-    var $fileAppIcon = $('<span>', {"class": "fa fa-file-text-o file icon fileColor"});
-    var $padIcon = $('<span>', {"class": "fa fa-file-word-o file icon padColor"});
-    var $codeIcon = $('<span>', {"class": "fa fa-file-code-o file icon codeColor"});
-    var $slideIcon = $('<span>', {"class": "fa fa-file-powerpoint-o file icon slideColor"});
-    var $pollIcon = $('<span>', {"class": "fa fa-calendar file icon pollColor"});
-    var $whiteboardIcon = $('<span>', {"class": "fa fa-paint-brush whiteboardColor"});
-    var $todoIcon = $('<span>', {"class": "fa fa-tasks todoColor"});
-    var $contactsIcon = $('<span>', {"class": "fa fa-users friendsColor"});
+    var $defaultIcon = $('<span>', {"class": "fa fa-file-text-o"});
     UI.getIcon = function (type) {
-        var $icon;
+        var $icon = $defaultIcon.clone();
 
-        switch(type) {
-            case 'pad': $icon = $padIcon.clone(); break;
-            case 'file': $icon = $fileAppIcon.clone(); break;
-            case 'code': $icon = $codeIcon.clone(); break;
-            case 'slide': $icon = $slideIcon.clone(); break;
-            case 'poll': $icon = $pollIcon.clone(); break;
-            case 'whiteboard': $icon = $whiteboardIcon.clone(); break;
-            case 'todo': $icon = $todoIcon.clone(); break;
-            case 'contacts': $icon = $contactsIcon.clone(); break;
-            default: $icon = $fileIcon.clone();
+        if (AppConfig.applicationsIcon && AppConfig.applicationsIcon[type]) {
+            var appClass = ' cp-icon-color-'+type;
+            $icon = $('<span>', {'class': 'fa ' + AppConfig.applicationsIcon[type] + appClass});
         }
 
         return $icon;

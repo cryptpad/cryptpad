@@ -7,12 +7,13 @@ define([
     '/common/sframe-common-title.js',
     '/common/sframe-common-interface.js',
     '/common/sframe-common-history.js',
+    '/common/sframe-common-file.js',
     '/common/metadata-manager.js',
 
     '/customize/application_config.js',
     '/common/cryptpad-common.js',
     '/common/common-realtime.js'
-], function ($, nThen, Messages, CpNfInner, SFrameChannel, Title, UI, History, MetadataMgr,
+], function ($, nThen, Messages, CpNfInner, SFrameChannel, Title, UI, History, File, MetadataMgr,
     AppConfig, Cryptpad, CommonRealtime) {
 
     // Chainpad Netflux Inner
@@ -36,6 +37,9 @@ define([
     funcs.getCryptpadCommon = function () {
         return Cryptpad;
     };
+    funcs.getSframeChannel = function () {
+        return ctx.sframeChan;
+    };
 
     var isLoggedIn = funcs.isLoggedIn = function () {
         if (!ctx.cpNfInner) { throw new Error("cpNfInner is not ready!"); }
@@ -51,6 +55,9 @@ define([
     // UI
     funcs.createUserAdminMenu = UI.createUserAdminMenu;
     funcs.displayAvatar = UI.displayAvatar;
+    funcs.initFilePicker = UI.initFilePicker;
+    funcs.openFilePicker = UI.openFilePicker;
+    funcs.openTemplatePicker = UI.openTemplatePicker;
 
     // History
     funcs.getHistory = function (config) { return History.create(funcs, config); };
@@ -107,6 +114,26 @@ define([
         ctx.sframeChan.query('Q_GET_FULL_HISTORY', null, cb);
     };
 
+    funcs.getPadAttribute = function (key, cb) {
+        ctx.sframeChan.query('Q_GET_PAD_ATTRIBUTE', {
+            key: key
+        }, function (err, res) {
+            cb (err || res.error, res.data);
+        });
+    };
+    funcs.setPadAttribute = function (key, value, cb) {
+        ctx.sframeChan.query('Q_SET_PAD_ATTRIBUTE', {
+            key: key,
+            value: value
+        }, cb);
+    };
+
+    // Files
+    funcs.uploadFile = function (data, cb) {
+        ctx.sframeChan.query('Q_UPLOAD_FILE', data, cb);
+    };
+    funcs.createFileManager = function (config) { return File.create(funcs, config); };
+
     // Friends
     var pendingFriends = [];
     funcs.getPendingFriends = function () {
@@ -133,7 +160,7 @@ define([
             url: href,
         });
     };
-    var prepareFeedback = function (key) {
+    var prepareFeedback = funcs.prepareFeedback = function (key) {
         if (typeof(key) !== 'string') { return $.noop; }
 
         var type = ctx.metadataMgr.getMetadata().type;
@@ -155,7 +182,7 @@ define([
                 button = $('<button>', {
                     'class': 'fa fa-download',
                     title: Messages.exportButtonTitle,
-                }).append($('<span>', {'class': 'drawer'}).text(Messages.exportButton));
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.exportButton));
 
                 button.click(prepareFeedback(type));
                 if (callback) {
@@ -166,7 +193,7 @@ define([
                 button = $('<button>', {
                     'class': 'fa fa-upload',
                     title: Messages.importButtonTitle,
-                }).append($('<span>', {'class': 'drawer'}).text(Messages.importButton));
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.importButton));
                 if (callback) {
                     button
                     .click(prepareFeedback(type))
@@ -174,6 +201,30 @@ define([
                         callback(content, file);
                     }, {accept: data ? data.accept : undefined}));
                 }
+                break;
+            case 'upload':
+                button = $('<button>', {
+                    'class': 'btn btn-primary new',
+                    title: Messages.uploadButtonTitle,
+                }).append($('<span>', {'class':'fa fa-upload'})).append(' '+Messages.uploadButton);
+                if (!data.FM) { return; }
+                var $input = $('<input>', {
+                    'type': 'file',
+                    'style': 'display: none;'
+                }).on('change', function (e) {
+                    var file = e.target.files[0];
+                    var ev = {
+                        target: data.target
+                    };
+                    if (data.filter && !data.filter(file)) {
+                        Cryptpad.log('TODO: invalid avatar (type or size)');
+                        return;
+                    }
+                    data.FM.handleFile(file, ev);
+                    if (callback) { callback(); }
+                });
+                if (data.accept) { $input.attr('accept', data.accept); }
+                button.click(function () { $input.click(); });
                 break;
             case 'template':
                 if (!AppConfig.enableTemplates) { return; }
@@ -230,7 +281,7 @@ define([
                     style: 'font:'+size+' FontAwesome'
                 });
                 if (!isStrongestStored()) {
-                    button.addClass('hidden');
+                    button.addClass('cp-toolbar-hidden');
                 }
                 if (callback) {
                     button
@@ -259,7 +310,7 @@ define([
                 button = $('<button>', {
                     title: Messages.historyButton,
                     'class': "fa fa-history history",
-                }).append($('<span>', {'class': 'drawer'}).text(Messages.historyText));
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.historyText));
                 if (data.histConfig) {
                     button
                     .click(prepareFeedback(type))
@@ -271,7 +322,7 @@ define([
             case 'more':
                 button = $('<button>', {
                     title: Messages.moreActions || 'TODO',
-                    'class': "drawer-button fa fa-ellipsis-h",
+                    'class': "cp-toolbar-drawer-button fa fa-ellipsis-h",
                     style: 'font:'+size+' FontAwesome'
                 });
                 break;
@@ -283,18 +334,26 @@ define([
                 .click(prepareFeedback(type));
         }
         if (rightside) {
-            button.addClass('rightside-button');
+            button.addClass('cp-toolbar-rightside-button');
         }
         return button;
-        
     };
+
+
+    // Can, only be called by the filepicker app
+    funcs.getFilesList = function (types, cb) {
+        ctx.sframeChan.query('Q_GET_FILES_LIST', types, function (err, data) {
+            cb(err || data.error, data.data);
+        });
+    };
+
 /*    funcs.storeLinkToClipboard = function (readOnly, cb) {
         ctx.sframeChan.query('Q_STORE_LINK_TO_CLIPBOARD', readOnly, function (err) {
             if (cb) { cb(err); }
         });
     };
 */
-    
+
     Object.freeze(funcs);
     return { create: function (cb) {
         nThen(function (waitFor) {

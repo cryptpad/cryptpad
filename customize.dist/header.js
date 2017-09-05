@@ -41,7 +41,7 @@ define([
         $userAdmin.find('button').addClass('btn').addClass('btn-secondary');
 
         $(window).click(function () {
-            $('.cryptpad-dropdown').hide();
+            $('.cp-dropdown-content').hide();
         });
 
         if (Cryptpad.isLoggedIn() && ApiConfig.allowSubscriptions) {

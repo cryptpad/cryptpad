@@ -1,0 +1,52 @@
+@import (once) './colortheme.less';
+@import (once) './modal.less';
+
+.fileupload_main () {
+    /* Upload status table */
+    #cp-fileupload {
+        .modal_base();
+        position: absolute;
+        left: 10vw; right: 10vw;
+        bottom: 10vh;
+        opacity: 0.9;
+        box-sizing: border-box;
+        z-index: 1000000;
+        display: none;
+        #cp-fileupload-table {
+            width: 80vw;
+            tr:nth-child(1) {
+                background-color: darken(@colortheme_modal-bg, 20%);
+                td {
+                    text-align: center;
+                    font-weight: bold;
+                    padding: 0.25em;
+                }
+            }
+            @upload_pad_h: 0.25em;
+            @upload_pad_v: 0.5em;
+
+            td {
+                padding: @upload_pad_h @upload_pad_v;
+            }
+            .cp-fileupload-table-progress {
+                width: 200px;
+                position: relative;
+                text-align: center;
+                box-sizing: border-box;
+            }
+            .cp-fileupload-table-progress-container {
+                position: absolute;
+                width: 0px;
+                left: @upload_pad_v;
+                top: @upload_pad_h; bottom: @upload_pad_h;
+                background-color: rgba(0,0,255,0.3);
+                z-index: -1;
+            }
+            .cp-fileupload-table-cancel { text-align: center; }
+            .fa.cancel {
+                color: rgb(255, 0, 115);
+            }
+        }
+    }
+}
+

@@ -1,12 +1,13 @@
 define([
     'jquery',
     '/file/file-crypto.js',
+    '/common/common-thumbnail.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function ($, FileCrypto) {
+], function ($, FileCrypto, Thumb) {
     var Nacl = window.nacl;
     var module = {};
 
-    var blobToArrayBuffer = function (blob, cb) {
+    var blobToArrayBuffer = module.blobToArrayBuffer = function (blob, cb) {
         var reader = new FileReader();
         reader.onloadend = function () {
             cb(void 0, this.result);
@@ -21,6 +22,85 @@ define([
             console.error(e);
             return null;
         }
+    };
+
+    module.upload = function (file, noStore, common, updateProgress, onComplete, onError, onPending) {
+        var u8 = file.blob; // This is not a blob but a uint8array
+        var metadata = file.metadata;
+
+        var key = Nacl.randomBytes(32);
+        var next = FileCrypto.encrypt(u8, metadata, key);
+
+        var estimate = FileCrypto.computeEncryptedSize(u8.length, metadata);
+
+        var sendChunk = function (box, cb) {
+            var enc = Nacl.util.encodeBase64(box);
+            common.rpc.send.unauthenticated('UPLOAD', enc, function (e, msg) {
+                cb(e, msg);
+            });
+        };
+
+        var actual = 0;
+        var again = function (err, box) {
+            if (err) { throw new Error(err); }
+            if (box) {
+                actual += box.length;
+                var progressValue = (actual / estimate * 100);
+                updateProgress(progressValue);
+
+                return void sendChunk(box, function (e) {
+                    if (e) { return console.error(e); }
+                    next(again);
+                });
+            }
+
+            if (actual !== estimate) {
+                console.error('Estimated size does not match actual size');
+            }
+
+            // if not box then done
+            common.uploadComplete(function (e, id) {
+                if (e) { return void console.error(e); }
+                var uri = ['', 'blob', id.slice(0,2), id].join('/');
+                console.log("encrypted blob is now available as %s", uri);
+
+                var b64Key = Nacl.util.encodeBase64(key);
+
+                var hash = common.getFileHashFromKeys(id, b64Key);
+                var href = '/file/#' + hash;
+
+                var title = metadata.name;
+
+                if (noStore) { return void onComplete(href); }
+
+                common.renamePad(title || "", href, function (err) {
+                    if (err) { return void console.error(err); }
+                    onComplete(href);
+                });
+            });
+        };
+
+        common.uploadStatus(estimate, function (e, pending) {
+            if (e) {
+                console.error(e);
+                onError(e);
+                return;
+            }
+
+            if (pending) {
+                return void onPending(function () {
+                    // if the user wants to cancel the pending upload to execute that one
+                    common.uploadCancel(function (e, res) {
+                        if (e) {
+                            return void console.error(e);
+                        }
+                        console.log(res);
+                        next(again);
+                    });
+                });
+            }
+            next(again);
+        });
     };
 
     module.create = function (common, config) {
@@ -62,7 +142,8 @@ define([
         };
 
         var upload = function (file) {
-            var blob = file.blob;
+            var blob = file.blob; // This is not a blob but an array buffer
+            var u8 = new Uint8Array(blob);
             var metadata = file.metadata;
             var id = file.id;
             if (queue.inProgress) { return; }
@@ -83,112 +164,49 @@ define([
                 });
             };
 
-            var u8 = new Uint8Array(blob);
+            var onComplete = function (href) {
+                $link.attr('href', href)
+                    .click(function (e) {
+                        e.preventDefault();
+                        window.open($link.attr('href'), '_blank');
+                    });
+                var title = metadata.name;
+                common.log(Messages._getKey('upload_success', [title]));
+                common.prepareFeedback('upload')();
 
-            var key = Nacl.randomBytes(32);
-            var next = FileCrypto.encrypt(u8, metadata, key);
+                if (config.onUploaded) {
+                    var data = getData(file, href);
+                    config.onUploaded(file.dropEvent, data);
+                }
 
-            var estimate = FileCrypto.computeEncryptedSize(blob.byteLength, metadata);
+                queue.inProgress = false;
+                queue.next();
+            };
 
-            var sendChunk = function (box, cb) {
-                var enc = Nacl.util.encodeBase64(box);
-                common.rpc.send.unauthenticated('UPLOAD', enc, function (e, msg) {
-                    console.log(box);
-                    cb(e, msg);
+            var onError = function (e) {
+                queue.inProgress = false;
+                queue.next();
+                if (e === 'TOO_LARGE') {
+                    // TODO update table to say too big?
+                    return void common.alert(Messages.upload_tooLarge);
+                }
+                if (e === 'NOT_ENOUGH_SPACE') {
+                    // TODO update table to say not enough space?
+                    return void common.alert(Messages.upload_notEnoughSpace);
+                }
+                console.error(e);
+                return void common.alert(Messages.upload_serverError);
+            };
+
+            var onPending = function (cb) {
+                common.confirm(Messages.upload_uploadPending, function (yes) {
+                    if (!yes) { return; }
+                    cb();
                 });
             };
 
-            var actual = 0;
-            var again = function (err, box) {
-                if (err) { throw new Error(err); }
-                if (box) {
-                    actual += box.length;
-                    var progressValue = (actual / estimate * 100);
-                    updateProgress(progressValue);
-
-                    return void sendChunk(box, function (e) {
-                        if (e) { return console.error(e); }
-                        next(again);
-                    });
-                }
-
-                if (actual !== estimate) {
-                    console.error('Estimated size does not match actual size');
-                }
-
-                // if not box then done
-                common.uploadComplete(function (e, id) {
-                    if (e) { return void console.error(e); }
-                    var uri = ['', 'blob', id.slice(0,2), id].join('/');
-                    console.log("encrypted blob is now available as %s", uri);
-
-                    var b64Key = Nacl.util.encodeBase64(key);
-
-                    var hash = common.getFileHashFromKeys(id, b64Key);
-                    var href = '/file/#' + hash;
-                    $link.attr('href', href)
-                        .click(function (e) {
-                            e.preventDefault();
-                            window.open($link.attr('href'), '_blank');
-                        });
-
-                    var title = metadata.name;
-
-                    var onComplete = function () {
-                        common.log(Messages._getKey('upload_success', [title]));
-                        common.prepareFeedback('upload')();
-
-                        if (config.onUploaded) {
-                            var data = getData(file, href);
-                            config.onUploaded(file.dropEvent, data);
-                        }
-
-                        queue.inProgress = false;
-                        queue.next();
-                    };
-
-                    if (config.noStore) { return void onComplete(); }
-
-                    common.renamePad(title || "", href, function (err) {
-                        if (err) { return void console.error(err); } // TODO
-                        onComplete();
-                    });
-                    //Title.updateTitle(title || "", href);
-                    //APP.toolbar.title.show();
-                });
-            };
-
-            common.uploadStatus(estimate, function (e, pending) {
-                if (e) {
-                    queue.inProgress = false;
-                    queue.next();
-                    if (e === 'TOO_LARGE') {
-                        // TODO update table to say too big?
-                        return void common.alert(Messages.upload_tooLarge);
-                    }
-                    if (e === 'NOT_ENOUGH_SPACE') {
-                        // TODO update table to say not enough space?
-                        return void common.alert(Messages.upload_notEnoughSpace);
-                    }
-                    console.error(e);
-                    return void common.alert(Messages.upload_serverError);
-                }
-
-                if (pending) {
-                    // TODO keep this message in case of pending files in another window?
-                    return void common.confirm(Messages.upload_uploadPending, function (yes) {
-                        if (!yes) { return; }
-                        common.uploadCancel(function (e, res) {
-                            if (e) {
-                                return void console.error(e);
-                            }
-                            console.log(res);
-                            next(again);
-                        });
-                    });
-                }
-                next(again);
-            });
+            file.blob = u8;
+            module.upload(file, config.noStore, common, updateProgress, onComplete, onError, onPending);
         };
 
         var prettySize = function (bytes) {
@@ -246,30 +264,46 @@ define([
 
         var handleFile = File.handleFile = function (file, e, thumbnail) {
             var thumb;
-            var finish = function (arrayBuffer) {
+            var file_arraybuffer;
+            var finish = function () {
                 var metadata = {
                     name: file.name,
                     type: file.type,
                 };
                 if (thumb) { metadata.thumbnail = thumb; }
                 queue.push({
-                    blob: arrayBuffer,
+                    blob: file_arraybuffer,
                     metadata: metadata,
                     dropEvent: e
                 });
             };
 
-            var processFile = function () {
-                blobToArrayBuffer(file, function (e, buffer) {
-                    finish(buffer);
-                });
-            };
-
-            if (!thumbnail) { return void processFile(); }
-            blobToArrayBuffer(thumbnail, function (e, buffer) {
+            blobToArrayBuffer(file, function (e, buffer) {
                 if (e) { console.error(e); }
-                thumb = arrayBufferToString(buffer);
-                processFile();
+                file_arraybuffer = buffer;
+                if (thumbnail) { // there is already a thumbnail
+                    return blobToArrayBuffer(thumbnail, function (e, buffer) {
+                        if (e) { console.error(e); }
+                        thumb = arrayBufferToString(buffer);
+                        finish();
+                    });
+                }
+
+                if (!Thumb.isSupportedType(file.type)) { return finish(); }
+                // make a resized thumbnail from the image..
+                Thumb.fromImageBlob(file, function (e, thumb_blob) {
+                    if (e) { console.error(e); }
+                    if (!thumb_blob) { return finish(); }
+
+                    blobToArrayBuffer(thumb_blob, function (e, buffer) {
+                        if (e) {
+                            console.error(e);
+                            return finish();
+                        }
+                        thumb = arrayBufferToString(buffer);
+                        finish();
+                    });
+                });
             });
         };
 
