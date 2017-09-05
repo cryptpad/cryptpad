@@ -668,7 +668,12 @@ define([
             initializing = false;
 
             if (readOnly) { return; }
-            //TODO UserList.getLastName(toolbar.$userNameButton, newPad);
+
+
+            if (newPad) {
+                common.openTemplatePicker(common);
+            }
+
             onLocal();
             editor.focus();
             if (newPad) {
