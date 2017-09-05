@@ -206,10 +206,14 @@ define([
         var nonce = createNonce();
 
         // encode metadata
-        var metaBuffer = Array.prototype.slice
-            .call(Nacl.util.decodeUTF8(JSON.stringify(metadata)));
+        var plaintext = Nacl.util.decodeUTF8(JSON.stringify(metadata));
 
-        var plaintext = new Uint8Array(metaBuffer);
+        // if metadata is too large, drop the thumbnail.
+        if (plaintext.length > 65535) {
+            var temp = JSON.parse(JSON.stringify(metadata));
+            delete metadata.thumbnail;
+            plaintext = Nacl.util.decodeUTF8(JSON.stringify(temp));
+        }
 
         var i = 0;
 
