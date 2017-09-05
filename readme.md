@@ -20,6 +20,10 @@ It also contains information on keeping your instance of CryptPad up to date.
 
 See [Cryptpad-Docker](docs/cryptpad-docker.md)
 
+## Setup using Ansible
+
+See [Ansible Role for Cryptpad](https://github.com/systemli/ansible-role-cryptpad)
+
 # Security
 
 CryptPad is *private*, not *anonymous*. Privacy protects your data, anonymity protects you.
