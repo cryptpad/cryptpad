@@ -128,7 +128,7 @@ define([
                 registering = true;
                 // setTimeout 100ms to remove the keyboard on mobile devices before the loading screen pops up
                 window.setTimeout(function () {
-                    Cryptpad.addLoadingScreen(Messages.login_hashing);
+                    Cryptpad.addLoadingScreen({loadingText: Messages.login_hashing});
                     // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed after hashing the password
                     window.setTimeout(function () {
                         Login.loginOrRegister(uname, passwd, true, function (err, result) {

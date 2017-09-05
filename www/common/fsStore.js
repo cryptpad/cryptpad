@@ -274,7 +274,7 @@ define([
                     }
                 });
                 Cryptpad.logout();
-                Cryptpad.addLoadingScreen(undefined, true);
+                Cryptpad.addLoadingScreen({hideTips: true});
                 Cryptpad.errorLoadingScreen(Cryptpad.Messages.onLogout, true);
                 if (exp.info) {
                     exp.info.network.disconnect();

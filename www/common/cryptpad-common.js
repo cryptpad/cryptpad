@@ -603,7 +603,7 @@ define([
                 e.preventDefault();
                 var parsed = parsePadUrl(t.href);
                 if(!parsed) { throw new Error("Cannot get template hash"); }
-                common.addLoadingScreen(null, true);
+                common.addLoadingScreen({hideTips: true});
                 Crypt.get(parsed.hash, function (err, val) {
                     if (err) { throw new Error(err); }
                     var p = parsePadUrl(window.location.href);
