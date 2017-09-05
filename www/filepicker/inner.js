@@ -161,7 +161,7 @@ define([
 
         nThen(function (waitFor) {
             $(waitFor(function () {
-                Cryptpad.addLoadingScreen(null, true);
+                Cryptpad.addLoadingScreen({hideTips: true, hideLogo: true});
             }));
             SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
         }).nThen(function (/*waitFor*/) {

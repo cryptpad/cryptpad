@@ -280,7 +280,7 @@ define([
         var fileDialogCfg = {
             onSelect: function (data) {
                 if (data.type === type && first) {
-                    Cryptpad.addLoadingScreen(null, true);
+                    Cryptpad.addLoadingScreen({hideTips: true});
                     var sframeChan = common.getSframeChannel();
                     sframeChan.query('Q_TEMPLATE_USE', data.href, function () {
                         first = false;

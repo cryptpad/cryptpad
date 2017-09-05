@@ -193,7 +193,11 @@ define([
         var rdm = Math.floor(Math.random() * keys.length);
         return Messages.tips[keys[rdm]];
     };
-    UI.addLoadingScreen = function (loadingText, hideTips) {
+    UI.addLoadingScreen = function (config) {
+        config = config || {};
+        var loadingText = config.loadingText;
+        var hideTips = config.hideTips;
+        var hideLogo = config.hideLogo;
         var $loading, $container;
         if ($('#' + LOADING).length) {
             $loading = $('#' + LOADING).show();
@@ -204,7 +208,9 @@ define([
         } else {
             $loading = $('<div>', {id: LOADING});
             $container = $('<div>', {'class': 'loadingContainer'});
-            $container.append('<img class="cryptofist" src="/customize/cryptofist_small.png" />');
+            if (!hideLogo) {
+                $container.append('<img class="cryptofist" src="/customize/cryptofist_small.png" />');
+            }
             var $spinner = $('<div>', {'class': 'spinnerContainer'});
             UI.spinner($spinner).show();
             var $text = $('<p>').text(loadingText || Messages.loading);
@@ -236,7 +242,7 @@ define([
         // jquery.fadeout can get stuck
     };
     UI.errorLoadingScreen = function (error, transparent) {
-        if (!$('#' + LOADING).is(':visible')) { UI.addLoadingScreen(undefined, true); }
+        if (!$('#' + LOADING).is(':visible')) { UI.addLoadingScreen({hideTips: true}); }
         $('.spinnerContainer').hide();
         if (transparent) { $('#' + LOADING).css('opacity', 0.8); }
         $('#' + LOADING).find('p').html(error || Messages.error);

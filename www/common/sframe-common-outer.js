@@ -272,6 +272,7 @@ define([
                     FP.$iframe.show();
                     FP.picker.refresh(types);
                 }
+                FP.$iframe.focus();
             };
             sframeChan.on('EV_FILE_PICKER_OPEN', function (data) {
                 initFilePicker(data);
