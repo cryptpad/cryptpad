@@ -3,7 +3,18 @@ define([
 ], function () {
     var Nacl = window.nacl;
     var Thumb = {
-        dimension: 150, // thumbnails are all 150px
+        dimension: 75, // thumbnails are all 150px
+    };
+
+    var supportedTypes = [
+        'image/png',
+        'image/jpeg',
+        'image/jpg',
+        'image/gif', // TODO confirm this is true
+    ];
+
+    Thumb.isSupportedType = function (type) {
+        return supportedTypes.indexOf(type) !== -1;
     };
 
     // create thumbnail image from metadata
@@ -27,20 +38,65 @@ define([
         }
     };
 
+    var getResizedDimensions = function (img) {
+        var h = img.height;
+        var w = img.width;
+
+        var dim = Thumb.dimension;
+        // if the image is too small, don't bother making a thumbnail
+        if (h <= dim || w <= dim) { return null; }
+
+        // the image is taller than it is wide, so scale to that.
+        var r = dim / (h > w? h: w); // ratio
+
+        var d;
+        if (h > w) {
+            d = Math.floor(((h * r) - dim) / 2);
+            return {
+                x1: 0,
+                x2: dim,
+                y1: d,
+                y2: dim + d,
+            };
+        } else {
+            d = Math.floor(((w * r) - dim) / 2);
+            return {
+                x1: d,
+                x2: dim + d,
+                y1: 0,
+                y2: dim,
+            };
+        }
+    };
+
     // assumes that your canvas is square
     // nodeback returning blob
-    Thumb.fromCanvas = function (canvas, cb) {
-        canvas = canvas;
+    Thumb.fromCanvas = Thumb.fromImage = function (canvas, cb) {
         var c2 = document.createElement('canvas');
-        var d = Thumb.dimension;
-        c2.width = d;
-        c2.height = 2;
+        var D = getResizedDimensions(canvas);
+        if (!D) { return void cb('TOO_SMALL'); }
+
+        c2.width = Thumb.dimension;
+        c2.height = Thumb.dimension;
 
         var ctx = c2.getContext('2d');
-        ctx.drawImage(canvas, 0, 0, d, d);
+        ctx.drawImage(canvas, D.x1, D.y1, D.x2, D.y2);
         c2.toBlob(function (blob) {
             cb(void 0, blob);
         });
+    };
+
+    Thumb.fromImageBlob = function (blob, cb) {
+        var url = URL.createObjectURL(blob);
+        var img = new Image();
+
+        img.onload = function () {
+            Thumb.fromImage(img, cb);
+        };
+        img.onerror = function () {
+            cb('ERROR');
+        };
+        img.src = url;
     };
 
     Thumb.fromVideo = function (video, cb) {
