@@ -1396,6 +1396,23 @@ define([
       return isEmoji(emojis[0])? emojis[0]: str[0];
     };
 
+    common.getMediatagScript = function () {
+        var origin = window.location.origin;
+        return '<script src="' + origin + '/common/media-tag-nacl.min.js"></script>';
+    };
+    common.getMediatagFromHref = function (href) {
+        var parsed = common.parsePadUrl(href);
+        var secret = common.getSecrets('file', parsed.hash);
+        if (secret.keys && secret.channel) {
+            var cryptKey = secret.keys && secret.keys.fileKeyStr;
+            var hexFileName = common.base64ToHex(secret.channel);
+            var origin = Config.fileHost || window.location.origin;
+            var src = origin + common.getBlobPathFromHex(hexFileName);
+            return '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + cryptKey + '">' +
+                   '</media-tag>';
+        }
+        return;
+    };
     $(window.document).on('decryption', function (e) {
         var decrypted = e.originalEvent;
         if (decrypted.callback) {

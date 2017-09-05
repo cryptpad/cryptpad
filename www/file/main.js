@@ -107,6 +107,8 @@ define([
                     $mt.attr('src', '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName);
                     $mt.attr('data-crypto-key', 'cryptpad:'+cryptKey);
 
+                    var rightsideDisplayed = false;
+
                     $(window.document).on('decryption', function (e) {
                         var decrypted = e.originalEvent;
                         if (decrypted.callback) {
@@ -127,12 +129,15 @@ define([
                         text += '<em>' + Messages._getKey('formattedMB', [sizeMb]) + '</em>';
                         $dlButton.html(text);
 
-                        toolbar.$rightside.append(Cryptpad.createButton('export', true, {}, function () {
-                            saveAs(decrypted.blob, decrypted.metadata.name);
-                        }))
-                        .append(Cryptpad.createButton('forget', true, {}, function () {
-                            // not sure what to do here
-                        }));
+                        if (!rightsideDisplayed) {
+                            toolbar.$rightside.append(Cryptpad.createButton('export', true, {}, function () {
+                                saveAs(decrypted.blob, decrypted.metadata.name);
+                            }))
+                            .append(Cryptpad.createButton('forget', true, {}, function () {
+                                // not sure what to do here
+                            }));
+                            rightsideDisplayed = true;
+                        }
 
                         // make pdfs big
                         var toolbarHeight = $iframe.find('#toolbar').height();

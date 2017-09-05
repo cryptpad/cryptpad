@@ -481,17 +481,68 @@ define([
         if (!window.location.hash) {
             throw new Error("Unable to display the share button: hash required in the URL");
         }
+        // Create dropdowns
         var $shareIcon = $('<span>', {'class': 'fa fa-share-alt'});
-        var $button = $('<button>', {'title': Messages.shareButton}).append($shareIcon);
-        $button.addClass('shareButton');
-        $button.click(function () {
-            var url = window.location.href;
+        var options = [];
+        options.push({
+            tag: 'a',
+            attributes: {title: Messages.editShareTitle, 'class': 'fileShare'},
+            content: '<span class="fa fa-file"></span> ' + Messages.fileShare
+        });
+        options.push({
+            tag: 'a',
+            attributes: {title: Messages.editShareTitle, 'class': 'fileEmbed'},
+            content: '<span class="fa fa-file"></span> ' + Messages.fileEmbed
+        });
+        var dropdownConfigShare = {
+            text: $('<div>').append($shareIcon).html(),
+            options: options,
+            feedback: 'FILESHARE_MENU',
+        };
+        var $shareBlock = Cryptpad.createDropdown(dropdownConfigShare);
+        $shareBlock.find('.cp-dropdown-content').addClass(SHARE_CLS);
+        $shareBlock.addClass('shareButton');
+        $shareBlock.find('button').attr('title', Messages.shareButton);
+
+        // Add handlers
+        var url = window.location.href;
+        $shareBlock.find('a.fileShare').click(function () {
             var success = Cryptpad.Clipboard.copy(url);
             if (success) { Cryptpad.log(Messages.shareSuccess); }
         });
+        $shareBlock.find('a.fileEmbed').click(function () {
+            var $content = $('<div>');
+            $('<input>', {'style':'display:none;'}).appendTo($content);
+            $('<h3>').text(Messages.fileEmbedTitle).appendTo($content);
+            var $script = $('<p>').text(Messages.fileEmbedScript).appendTo($content);
+            $('<br>').appendTo($script);
+            var scriptId = uid();
+            $('<input>', {
+                type: 'text',
+                id: scriptId,
+                readonly: 'readonly',
+                value: Cryptpad.getMediatagScript(),
+            }).appendTo($script);
+            var $tag = $('<p>').text(Messages.fileEmbedTag).appendTo($content);
+            $('<br>').appendTo($tag);
+            var tagId = uid();
+            $('<input>', {
+                type:'text',
+                id: tagId,
+                readonly:'readonly',
+                value:Cryptpad.getMediatagFromHref(url),
+            }).appendTo($tag);
+            Cryptpad.alert($content.html(), null, true);
+            $('#'+scriptId).click(function () {
+                this.select();
+            });
+            $('#'+tagId).click(function () {
+                this.select();
+            });
+        });
 
-        toolbar.$leftside.append($button);
-        return $button;
+        toolbar.$leftside.append($shareBlock);
+        return $shareBlock;
     };
 
     var createTitle = function (toolbar, config) {
