@@ -440,6 +440,7 @@ define([
     };
 
     var createFileShare = function (toolbar) {
+        throw new Error('TODO: Update createFileShare to add "embed" and work in secure iframes');
         if (!window.location.hash) {
             throw new Error("Unable to display the share button: hash required in the URL");
         }

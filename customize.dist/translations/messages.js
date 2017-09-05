@@ -173,6 +173,11 @@ define(function () {
     out.viewShareTitle = "Copy the read-only link to clipboard";
     out.viewOpen = "Open read-only link in a new tab";
     out.viewOpenTitle = "Open this pad in read-only mode in a new tab";
+    out.fileShare = "Copy link";
+    out.fileEmbed = "Get embed code";
+    out.fileEmbedTitle = "Embed the file in an external page";
+    out.fileEmbedScript = "To embed this file, include this script once in your page to load the Media Tag:";
+    out.fileEmbedTag = "Then place this Media Tag wherever in your page you would like to embed:";
 
     out.notifyJoined = "{0} has joined the collaborative session";
     out.notifyRenamed = "{0} is now known as {1}";
