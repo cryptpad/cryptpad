@@ -185,7 +185,7 @@ define([
                     });
                 }
                 if (plaintext) {
-                    if (i * cypherChunkLength < u8.length) { // not done
+                    if ((2 + metadataLength + i * cypherChunkLength) < u8.length) { // not done
                         chunks.push(plaintext);
                         return setTimeout(again);
                     }
