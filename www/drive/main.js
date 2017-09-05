@@ -2260,7 +2260,9 @@ define([
         };
 
         module.resetTree = function () {
-            var s = $tree.scrollTop() || 0;
+            var $categories = $tree.find('.categories-container');
+            var s = $categories.scrollTop() || 0;
+
             $tree.html('');
             if (displayedCategories.indexOf(SEARCH) !== -1) { createSearch($tree); }
             var $div = $('<div>', {'class': 'categories-container'}).appendTo($tree);
@@ -2270,10 +2272,9 @@ define([
             if (displayedCategories.indexOf(FILES_DATA) !== -1) { createAllFiles($div, [FILES_DATA]); }
             if (displayedCategories.indexOf(TRASH) !== -1) { createTrash($div, [TRASH]); }
 
-            //$tree.append($('<div>', {'class': 'filler'}));
             $tree.append(APP.$limit);
-
-            $tree.scrollTop(s);
+            $categories = $tree.find('.categories-container');
+            $categories.scrollTop(s);
         };
 
         module.hideMenu = function () {
