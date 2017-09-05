@@ -2094,6 +2094,8 @@ define([
                 // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
                 // won't work. We have to reset it now to make sure it uses a correct "body"
                 UI.Alertify.reset();
+                // clear any tooltips that might get hung
+                setInterval(function () { common.clearTooltips(); }, 5000);
 
                 // Load the new pad when the hash has changed
                 var oldHref  = document.location.href;
