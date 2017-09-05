@@ -82,7 +82,9 @@ define([
                             isTemplate: Cryptpad.isTemplate(window.location.href),
                             feedbackAllowed: Cryptpad.isFeedbackAllowed(),
                             friends: proxy.friends || {},
-                            settings: proxy.settings || {}
+                            settings: proxy.settings || {},
+                            isPresent: parsed.hashData && parsed.hashData.present,
+                            isEmbed: parsed.hashData && parsed.hashData.embed,
                         }
                     });
                 });
@@ -290,6 +292,13 @@ define([
                 readOnly: readOnly,
                 crypto: Crypto.createEncryptor(secret.keys),
                 onConnect: function (wc) {
+                    if (window.location.hash && window.location.hash !== '#') {
+                        window.location = parsed.getUrl({
+                            present: parsed.hashData.present,
+                            embed: parsed.hashData.embed
+                        });
+                        return;
+                    }
                     if (readOnly) { return; }
                     Cryptpad.replaceHash(Cryptpad.getEditHashFromKeys(wc.id, secret.keys));
                 }

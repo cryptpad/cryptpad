@@ -193,6 +193,39 @@ define([
             && secret.hashData.present);
     }, "Couldn't handle multiple successive slashes");
 
+    // test support for present & embed mode in hashes
+    assert(function (cb) {
+        var secret = Cryptpad.parsePadUrl('/pad/#/1/edit//CmN5+YJkrHFS3NSBg-P7Sg/DNZ2wcG683GscU4fyOyqA87G/embed/present/');
+        return cb(secret.hashData.version === 1
+            && secret.hashData.mode === "edit"
+            && secret.hashData.channel === "CmN5+YJkrHFS3NSBg-P7Sg"
+            && secret.hashData.key === "DNZ2wcG683GscU4fyOyqA87G"
+            && secret.hashData.present
+            && secret.hashData.embed);
+    }, "Couldn't handle multiple successive slashes");
+
+    // test support for present & embed mode in hashes
+    assert(function (cb) {
+        var secret = Cryptpad.parsePadUrl('/pad/#/1/edit//CmN5+YJkrHFS3NSBg-P7Sg/DNZ2wcG683GscU4fyOyqA87G/present/embed');
+        return cb(secret.hashData.version === 1
+            && secret.hashData.mode === "edit"
+            && secret.hashData.channel === "CmN5+YJkrHFS3NSBg-P7Sg"
+            && secret.hashData.key === "DNZ2wcG683GscU4fyOyqA87G"
+            && secret.hashData.present
+            && secret.hashData.embed);
+    }, "Couldn't handle multiple successive slashes");
+
+    // test support for embed mode in hashes
+    assert(function (cb) {
+        var secret = Cryptpad.parsePadUrl('/pad/#/1/edit//CmN5+YJkrHFS3NSBg-P7Sg/DNZ2wcG683GscU4fyOyqA87G///embed//');
+        return cb(secret.hashData.version === 1
+            && secret.hashData.mode === "edit"
+            && secret.hashData.channel === "CmN5+YJkrHFS3NSBg-P7Sg"
+            && secret.hashData.key === "DNZ2wcG683GscU4fyOyqA87G"
+            && !secret.hashData.present
+            && secret.hashData.embed);
+    }, "Couldn't handle multiple successive slashes");
+
     // test support for trailing slash
     assert(function (cb) {
         var secret = Cryptpad.parsePadUrl('/pad/#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI/');

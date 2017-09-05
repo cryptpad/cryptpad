@@ -674,7 +674,8 @@ define([
         var href = typeof padHref === "string" ? padHref : window.location.href;
         var parsed = parsePadUrl(href);
         if (!parsed.hash) { return; }
-        href = getRelativeHref(href);
+        href = parsed.getUrl({present: parsed.present});
+        //href = getRelativeHref(href);
         // getRecentPads return the array from the drive, not a copy
         // We don't have to call "set..." at the end, everything is stored with listmap
         getRecentPads(function (err, recent) {

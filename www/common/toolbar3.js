@@ -50,6 +50,12 @@ define([
     var createRealtimeToolbar = function (config) {
         if (!config.$container) { return; }
         var $container = config.$container;
+
+        var isEmbed = Bar.isEmbed = config.metadataMgr.getPrivateData().isEmbed;
+        if (isEmbed) {
+            $container.hide();
+        }
+
         var $toolbar = $('<div>', {
             'class': TOOLBAR_CLS,
             id: uid(),
@@ -304,6 +310,7 @@ define([
             });
         };
         var show = function () {
+            if (Bar.isEmbed) { $content.hide(); return; }
             $content.show();
             if (mobile) {
                 $ck.hide();
@@ -440,7 +447,7 @@ define([
     };
 
     var createFileShare = function (toolbar) {
-        throw new Error('TODO: Update createFileShare to add "embed" and work in secure iframes');
+        if (true) { throw new Error('TODO: Update createFileShare to add "embed" and work in secure iframes'); }
         if (!window.location.hash) {
             throw new Error("Unable to display the share button: hash required in the URL");
         }
