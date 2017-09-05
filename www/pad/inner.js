@@ -369,6 +369,8 @@ define([
 
             if (!readOnly && !initializing) {
                 userDocStateDom.setAttribute("contenteditable", "true"); // lol wtf
+            } else if (readOnly) {
+                userDocStateDom.removeAttribute("contenteditable");
             }
             var patch = (DD).diff(inner, userDocStateDom);
             (DD).apply(inner, patch);
