@@ -35,10 +35,10 @@ define([
         };
 
         var uid = function () {
-            return 'file-' + String(Math.random()).substring(2);
+            return 'cp-fileupload-element-' + String(Math.random()).substring(2);
         };
 
-        var $table = File.$table = $('<table>', { id: 'uploadStatus' });
+        var $table = File.$table = $('<table>', { id: 'cp-fileupload-table' });
         var $thead = $('<tr>').appendTo($table);
         $('<td>').text(Messages.upload_name).appendTo($thead);
         $('<td>').text(Messages.upload_size).appendTo($thead);
@@ -46,7 +46,7 @@ define([
         $('<td>').text(Messages.cancel).appendTo($thead);
 
         var createTableContainer = function ($body) {
-            File.$container = $('<div>', { id: 'uploadStatusContainer' }).append($table).appendTo($body);
+            File.$container = $('<div>', { id: 'cp-fileupload' }).append($table).appendTo($body);
             return File.$container;
         };
 
@@ -74,11 +74,11 @@ define([
 
             var $row = $table.find('tr[id="'+id+'"]');
 
-            $row.find('.upCancel').html('-');
-            var $pv = $row.find('.progressValue');
-            var $pb = $row.find('.progressContainer');
-            var $pc = $row.find('.upProgress');
-            var $link = $row.find('.upLink');
+            $row.find('.cp-fileupload-table-cancel').html('-');
+            var $pv = $row.find('.cp-fileupload-table-progress-value');
+            var $pb = $row.find('.cp-fileupload-table-progress-container');
+            var $pc = $row.find('.cp-fileupload-table-progress');
+            var $link = $row.find('.cp-fileupload-table-link');
 
             var sframeChan = common.getSframeChannel();
 
@@ -180,27 +180,27 @@ define([
             $table.show();
             var estimate = FileCrypto.computeEncryptedSize(obj.blob.byteLength, obj.metadata);
 
-            var $progressBar = $('<div>', {'class':'progressContainer'});
-            var $progressValue = $('<span>', {'class':'progressValue'}).text(Messages.upload_pending);
+            var $progressBar = $('<div>', {'class':'cp-fileupload-table-progress-container'});
+            var $progressValue = $('<span>', {'class':'cp-fileupload-table-progress-value'}).text(Messages.upload_pending);
 
             var $tr = $('<tr>', {id: id}).appendTo($table);
 
-            var $cancel = $('<span>', {'class': 'cancel fa fa-times'}).click(function () {
+            var $cancel = $('<span>', {'class': 'cp-fileupload-table-cancel-button fa fa-times'}).click(function () {
                 queue.queue = queue.queue.filter(function (el) { return el.id !== id; });
                 $cancel.remove();
-                $tr.find('.upCancel').text('-');
-                $tr.find('.progressValue').text(Messages.upload_cancelled);
+                $tr.find('.cp-fileupload-table-cancel').text('-');
+                $tr.find('.cp-fileupload-table-progress-value').text(Messages.upload_cancelled);
             });
 
             var $link = $('<a>', {
-                'class': 'upLink',
+                'class': 'cp-fileupload-table-link',
                 'rel': 'noopener noreferrer'
             }).text(obj.metadata.name);
 
             $('<td>').append($link).appendTo($tr);
             $('<td>').text(prettySize(estimate)).appendTo($tr);
-            $('<td>', {'class': 'upProgress'}).append($progressBar).append($progressValue).appendTo($tr);
-            $('<td>', {'class': 'upCancel'}).append($cancel).appendTo($tr);
+            $('<td>', {'class': 'cp-fileupload-table-progress'}).append($progressBar).append($progressValue).appendTo($tr);
+            $('<td>', {'class': 'cp-fileupload-table-cancel'}).append($cancel).appendTo($tr);
 
             queue.next();
         };
@@ -253,14 +253,14 @@ define([
                 e.preventDefault();
                 e.stopPropagation();
                 counter++;
-                $hoverArea.addClass('hovering');
+                $hoverArea.addClass('cp-fileupload-hovering');
             })
             .on('dragleave', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 counter--;
                 if (counter <= 0) {
-                    $hoverArea.removeClass('hovering');
+                    $hoverArea.removeClass('cp-fileupload-hovering');
                 }
             });
 
@@ -274,7 +274,7 @@ define([
 
                 var dropped = e.originalEvent.dataTransfer.files;
                 counter = 0;
-                $hoverArea.removeClass('hovering');
+                $hoverArea.removeClass('cp-fileupload-hovering');
                 onFileDrop(dropped, e);
             });
         };

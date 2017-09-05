@@ -9,9 +9,7 @@ define([
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'less!/customize/src/less/cryptpad.less',
-    'less!/customize/src/less/toolbar.less',
-    'less!/common/file-dialog.less',
+    'less!/customize/src/less2/main.less',
 ], function (
     $,
     Crypto,
@@ -46,6 +44,7 @@ define([
             });
         };
 
+        // File uploader
         var fmConfig = {
             body: $('body'),
             noHandlers: true,
@@ -54,17 +53,75 @@ define([
             }
         };
         APP.FM = common.createFileManager(fmConfig);
-        var cfg = {
-            $body: $body,
-            common: common,
-            onSelect: function (url) {
-                onFilePicked({url: url});
-            },
-            data: {
-                FM: APP.FM
-            }
+
+        // Create file picker
+        var onSelect = function (url) {
+            onFilePicked({url: url});
         };
-        common.createFileDialog(cfg);
+        var data = {
+            FM: APP.FM
+        };
+        var createFileDialog = function (cfg) {
+            var sframeChan = common.getSframeChannel();
+            var updateContainer;
+            var hideFileDialog = function () {
+                sframeChan.event('EV_FILE_PICKER_CLOSE');
+            };
+            // Create modal
+            var $blockContainer = Cryptpad.createModal({
+                id: 'cp-filepicker-dialog',
+                $body: $body,
+                onClose: hideFileDialog
+            }).show();
+            // Set the fixed content
+            var $block = $blockContainer.find('.cp-modal');
+            var $description = $('<p>').text(Messages.filePicker_description);
+            $block.append($description);
+            var $filter = $('<p>', {'class': 'cp-modal-form'}).appendTo($block);
+            var to;
+            $('<input>', {
+                type: 'text',
+                'class': 'cp-filepicker-filter',
+                'placeholder': Messages.filePicker_filter
+            }).appendTo($filter).on('keypress', function () {
+                if (to) { window.clearTimeout(to); }
+                to = window.setTimeout(updateContainer, 300);
+            });
+            $filter.append(common.createButton('upload', false, data, function () {
+                hideFileDialog();
+            }));
+            var $container = $('<span>', {'class': 'cp-filepicker-content'}).appendTo($block);
+            // Update the files list when needed
+            updateContainer = function () {
+                $container.html('');
+                var filter = $filter.find('.cp-filepicker-filter').val().trim();
+                var todo = function (err, list) {
+                    if (err) { return void console.error(err); }
+                    Object.keys(list).forEach(function (id) {
+                        var data = list[id];
+                        var name = data.title || '?';
+                        if (filter && name.toLowerCase().indexOf(filter.toLowerCase()) === -1) {
+                            return;
+                        }
+                        var $span = $('<span>', {
+                            'class': 'cp-filepicker-content-element',
+                            'title': name,
+                        }).appendTo($container);
+                        $span.append(Cryptpad.getFileIcon(data));
+                        $span.append(name);
+                        $span.click(function () {
+                            if (typeof onSelect === "function") { onSelect(data.href); }
+                            hideFileDialog();
+                        });
+                    });
+                };
+                common.getFilesList(todo);
+            };
+            updateContainer();
+            sframeChan.on('EV_FILE_PICKER_REFRESH', updateContainer);
+        };
+        createFileDialog();
+
         Cryptpad.removeLoadingScreen();
     };
 

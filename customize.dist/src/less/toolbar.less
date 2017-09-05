@@ -1,8 +1,16 @@
 @import "./variables.less";
 @import "./mixins.less";
 
-@import "./dropdown.less";
+@import (once) "../less2/include/dropdown.less";
 @import (once) "../less2/include/colortheme.less";
+@import (once) "../less2/include/ckeditor-fix.less";
+@import (once) "../less2/include/icon-colors.less";
+
+.dropdown_main();
+
+.ckeditor_fix();
+
+.iconColors_main();
 
 .unselectable {
     -webkit-touch-callout: none;
@@ -13,50 +21,8 @@
     user-select: none;
 }
 
-.cke_reset_all * {
-    color: inherit;
-}
-
-
-// Classes used in common-interface.js
-.padColor { color: @toolbar-pad-bg; }
-.codeColor { color: @toolbar-code-bg; }
-.slideColor { color: @toolbar-slide-bg; }
-.pollColor { color: @toolbar-poll-bg; }
-.fileColor { color: @toolbar-file-bg; }
-.friendsColor { color: @toolbar-friends-bg; }
-.whiteboardColor { color: @toolbar-whiteboard-bg; }
-.driveColor { color: @toolbar-drive-bg; }
-.settingsColor { color: @toolbar-settings-bg; }
-.profileColor { color: @toolbar-settings-bg; }
-.defaultColor { color: @toolbar-default-bg; }
-.todoColor { color:@toolbar-todo-bg; }
-
 .toolbar-container {
     display: flex;
-}
-#cke_editor1 .cke_inner {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    display: flex;
-    flex-flow: column;
-}
-.cke_toolbox_main {
-    display: inline-block;
-    margin-bottom: -3px;
-}
-#cke_1_contents {
-    flex: 1;
-    margin-top: -1px;
-    display: flex;
-    overflow: visible;
-    iframe {
-        min-height: 100%;
-        width: 100%;
-    }
 }
 
 body .userlist-drawer {
@@ -201,36 +167,9 @@ body {
                 background: darken(@bgcolor, 10%);
                 color: @color;
             }
-            .dropdown-bar-content.left a {
+            .cp-dropdown-content.cp-dropdown-left a {
                 color: black;
             }
-            /*.dropdown-bar-content {
-                background: darken(@bgcolor, 5%);
-                border: 1px solid @color;
-                color: @color;
-                a {
-                    color: @color;
-                    &.active {
-                        background-color: darken(@bgcolor, 10%);
-                        color: @color;
-                    }
-                    &:hover {
-                        background-color: @bgcolor;
-                        color: @color;
-                    }
-                }
-                hr {
-                    background-color: darken(@bgcolor, 15%);
-                }
-                p {
-                    h2 {
-                        background-color: darken(@bgcolor, 10%);
-                    }
-                    .accountData {
-                        background-color: @bgcolor;
-                    }
-                }
-            }*/
         }
     }
 
@@ -322,7 +261,7 @@ body .cryptpad-toolbar {
     width: 100%;
     z-index: 9001;
 
-    .dropdown-bar {
+    .cp-dropdown-container {
         //height: 100%;
         //display: inline-block;
         button {
@@ -865,7 +804,7 @@ body .cryptpad-toolbar {
             &:hover {
                 background-color: rgba(0,0,0,0.4);
             }
-            .dropdown-bar-content {
+            .cp-dropdown-content {
                 margin: 0;
             }
             button {
@@ -929,7 +868,7 @@ body .cryptpad-toolbar {
         border-radius: 0;
         height: 100%;
     }
-    .dropdown-bar-content {
+    .cp-dropdown-content {
         margin-top: -1px;
     }
 

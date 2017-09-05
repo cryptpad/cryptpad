@@ -40,8 +40,7 @@ define([
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'less!/customize/src/less/cryptpad.less',
-    'less!/customize/src/less/toolbar.less'
+    'less!/customize/src/less2/main.less',
 ], function (
     $,
     Crypto,
@@ -545,7 +544,7 @@ define([
             $bar.find('#cke_1_toolbar_collapser').hide();
             if (!readOnly) {
                 // Expand / collapse the toolbar
-                var $collapse = Cryptpad.createButton(null, true);
+                var $collapse = common.createButton(null, true);
                 $collapse.removeClass('fa-question');
                 var updateIcon = function () {
                     $collapse.removeClass('fa-caret-down').removeClass('fa-caret-up');

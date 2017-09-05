@@ -62,7 +62,7 @@ define(['jquery'], function ($) {
 
         metadataMgr.onChange(function () {
             var md = metadataMgr.getMetadata();
-            $title.find('span.title').text(md.title || md.defaultTitle);
+            $title.find('span.cp-toolbar-title-value').text(md.title || md.defaultTitle);
             $title.find('input').val(md.title || md.defaultTitle);
             exp.title = md.title;
             //exp.updateTitle(md.title || md.defaultTitle);

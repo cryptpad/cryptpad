@@ -182,7 +182,7 @@ define([
                 button = $('<button>', {
                     'class': 'fa fa-download',
                     title: Messages.exportButtonTitle,
-                }).append($('<span>', {'class': 'drawer'}).text(Messages.exportButton));
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.exportButton));
 
                 button.click(prepareFeedback(type));
                 if (callback) {
@@ -193,7 +193,7 @@ define([
                 button = $('<button>', {
                     'class': 'fa fa-upload',
                     title: Messages.importButtonTitle,
-                }).append($('<span>', {'class': 'drawer'}).text(Messages.importButton));
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.importButton));
                 if (callback) {
                     button
                     .click(prepareFeedback(type))
@@ -281,7 +281,7 @@ define([
                     style: 'font:'+size+' FontAwesome'
                 });
                 if (!isStrongestStored()) {
-                    button.addClass('hidden');
+                    button.addClass('cp-toolbar-hidden');
                 }
                 if (callback) {
                     button
@@ -310,7 +310,7 @@ define([
                 button = $('<button>', {
                     title: Messages.historyButton,
                     'class': "fa fa-history history",
-                }).append($('<span>', {'class': 'drawer'}).text(Messages.historyText));
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.historyText));
                 if (data.histConfig) {
                     button
                     .click(prepareFeedback(type))
@@ -322,7 +322,7 @@ define([
             case 'more':
                 button = $('<button>', {
                     title: Messages.moreActions || 'TODO',
-                    'class': "drawer-button fa fa-ellipsis-h",
+                    'class': "cp-toolbar-drawer-button fa fa-ellipsis-h",
                     style: 'font:'+size+' FontAwesome'
                 });
                 break;
@@ -334,7 +334,7 @@ define([
                 .click(prepareFeedback(type));
         }
         if (rightside) {
-            button.addClass('rightside-button');
+            button.addClass('cp-toolbar-rightside-button');
         }
         return button;
     };
