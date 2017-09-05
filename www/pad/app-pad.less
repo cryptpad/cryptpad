@@ -20,11 +20,24 @@
         height: 28px;
         padding: 2px 0;
     }
-    #cke_1_top .cryptpad-toolbar {
+    #cke_1_top .cp-toolbar {
         padding: 0;
         display: block;
     }
     .cke_wysiwyg_frame {
         min-width: 60%;
+    }
+}
+
+.cke_wysiwyg_frame {
+    min-width: 60%;
+}
+
+@media print {
+    #cke_1_top {
+        display:none !important;
+    }
+    &.cp-app-pad .cp-toolbar-userlist-drawer {
+      display:none;
     }
 }

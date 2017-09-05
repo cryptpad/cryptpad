@@ -560,6 +560,24 @@ define([
         });
     };
 
+    common.listAllTags = function (cb) {
+        var all = [];
+        var proxy = getProxy();
+        var files = common.find(proxy, ['drive', 'filesData']);
+
+        if (typeof(files) !== 'object') { return cb('invalid_drive'); }
+        Object.keys(files).forEach(function (k) {
+            var file = files[k];
+            if (!Array.isArray(file.tags)) { return; }
+            file.tags.forEach(function (tag) {
+                if (all.indexOf(tag) === -1) {
+                    all.push(tag);
+                }
+            });
+        });
+        cb(void 0, all);
+    };
+
     common.getLSAttribute = function (attr) {
         return localStorage[attr];
     };
