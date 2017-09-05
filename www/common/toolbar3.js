@@ -699,7 +699,7 @@ define([
         var pads_options = [];
         Config.availablePadTypes.forEach(function (p) {
             if (p === 'drive') { return; }
-            if (!Cryptpad.isLoggedIn() && Config.registeredOnlyTypes &&
+            if (!Common.isLoggedIn() && Config.registeredOnlyTypes &&
                 Config.registeredOnlyTypes.indexOf(p) !== -1) { return; }
             pads_options.push({
                 tag: 'a',
