@@ -255,7 +255,7 @@ define([
             });
 
             var FP = {};
-            var initFilePicker = function () {
+            var initFilePicker = function (types) {
                 var config = {};
                 config.onFilePicked = function (data) {
                     sframeChan.event('EV_FILE_PICKED', data);
@@ -264,16 +264,21 @@ define([
                     FP.$iframe.hide();
                 };
                 config.onFileUpload = onFileUpload;
+                config.types = types;
                 if (!FP.$iframe) {
                     FP.$iframe = $('<iframe>', {id: 'sbox-filePicker-iframe'}).appendTo($('body'));
                     FP.picker = FilePicker.create(config);
                 } else {
                     FP.$iframe.show();
-                    FP.picker.refresh();
+                    FP.picker.refresh(types);
                 }
             };
-            sframeChan.on('EV_FILE_PICKER_OPEN', function () {
-                initFilePicker();
+            sframeChan.on('EV_FILE_PICKER_OPEN', function (data) {
+                initFilePicker(data);
+            });
+
+            sframeChan.on('Q_TEMPLATE_USE', function (href, cb) {
+                Cryptpad.useTemplate(href, Cryptget, cb);
             });
 
             CpNfOuter.start({

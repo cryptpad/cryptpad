@@ -55,9 +55,9 @@ define([
     // UI
     funcs.createUserAdminMenu = UI.createUserAdminMenu;
     funcs.displayAvatar = UI.displayAvatar;
-    funcs.createFileDialog = UI.createFileDialog;
     funcs.initFilePicker = UI.initFilePicker;
     funcs.openFilePicker = UI.openFilePicker;
+    funcs.openTemplatePicker = UI.openTemplatePicker;
 
     // History
     funcs.getHistory = function (config) { return History.create(funcs, config); };
@@ -341,8 +341,8 @@ define([
 
 
     // Can, only be called by the filepicker app
-    funcs.getFilesList = function (cb) {
-        ctx.sframeChan.query('Q_GET_FILES_LIST', null, function (err, data) {
+    funcs.getFilesList = function (types, cb) {
+        ctx.sframeChan.query('Q_GET_FILES_LIST', types, function (err, data) {
             cb(err || data.error, data.data);
         });
     };

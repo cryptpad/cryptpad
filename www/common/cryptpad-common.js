@@ -556,6 +556,16 @@ define([
         });
         common.findOKButton().text(Messages.cancelButton);
     };
+    // Secure iframes
+    common.useTemplate = function (href, Crypt, cb) {
+        var parsed = parsePadUrl(href);
+        if(!parsed) { throw new Error("Cannot get template hash"); }
+        Crypt.get(parsed.hash, function (err, val) {
+            if (err) { throw new Error(err); }
+            var p = parsePadUrl(window.location.href);
+            Crypt.put(p.hash, val, cb);
+        });
+    };
 
     // STORAGE
     /* fetch and migrate your pad history from the store */
@@ -735,17 +745,19 @@ define([
         return list;
     };
     // Needed for the secure filepicker app
-    common.getSecureFilesList = function (cb) {
+    common.getSecureFilesList = function (filter, cb) {
         var store = common.getStore();
         if (!store) { return void cb("Store is not ready"); }
         var proxy = store.getProxy();
         var fo = proxy.fo;
         var list = {};
         var hashes = [];
-        fo.getFiles([fo.ROOT]).forEach(function (id) {
+        var types = filter.types;
+        var where = filter.where;
+        fo.getFiles(where).forEach(function (id) {
             var data = fo.getFileData(id);
             var parsed = parsePadUrl(data.href);
-            if ((parsed.type === 'file' || parsed.type === 'media')
+            if ((!types || types.length === 0 || types.indexOf(parsed.type) !== -1)
                  && hashes.indexOf(parsed.hash) === -1) {
                 hashes.push(parsed.hash);
                 list[id] = data;

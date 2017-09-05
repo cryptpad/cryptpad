@@ -100,6 +100,9 @@ define({
     // Get all the files from the drive to display them in a file picker secure app
     'Q_GET_FILES_LIST': true,
 
+    // Template picked, replace the content of the pad
+    'Q_TEMPLATE_USE': true,
+
     // File upload queries and events
     'Q_UPLOAD_FILE': true,
     'EV_FILE_UPLOAD_STATE': true,

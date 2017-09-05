@@ -6,6 +6,7 @@ define([
     '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
+    'json.sortify',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -17,7 +18,8 @@ define([
     JsonOT,
     Cryptpad,
     nThen,
-    SFCommon)
+    SFCommon,
+    Sortify)
 {
     var Messages = Cryptpad.Messages;
 
@@ -30,17 +32,30 @@ define([
     };
 
     var andThen = function (common) {
-        //var metadataMgr = common.getMetadataMgr();
+        var metadataMgr = common.getMetadataMgr();
         var $body = $('body');
         var sframeChan = common.getSframeChannel();
+        var filters = metadataMgr.getPrivateData().types;
 
+        var hideFileDialog = function () {
+            sframeChan.event('EV_FILE_PICKER_CLOSE');
+        };
         var onFilePicked = function (data) {
             var parsed = Cryptpad.parsePadUrl(data.url);
-            var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
-            var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
+            hideFileDialog();
+            if (parsed.type === 'file') {
+                var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+                var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
+                sframeChan.event("EV_FILE_PICKED", {
+                    type: parsed.type,
+                    src: src,
+                    key: parsed.hashData.key
+                });
+                return;
+            }
             sframeChan.event("EV_FILE_PICKED", {
-                src: src,
-                key: parsed.hashData.key
+                type: parsed.type,
+                href: data.url,
             });
         };
 
@@ -61,12 +76,9 @@ define([
         var data = {
             FM: APP.FM
         };
-        var createFileDialog = function (cfg) {
-            var sframeChan = common.getSframeChannel();
-            var updateContainer;
-            var hideFileDialog = function () {
-                sframeChan.event('EV_FILE_PICKER_CLOSE');
-            };
+        var updateContainer;
+        var createFileDialog = function () {
+            var types = filters.types;
             // Create modal
             var $blockContainer = Cryptpad.createModal({
                 id: 'cp-filepicker-dialog',
@@ -75,8 +87,16 @@ define([
             }).show();
             // Set the fixed content
             var $block = $blockContainer.find('.cp-modal');
-            var $description = $('<p>').text(Messages.filePicker_description);
+
+            // Description
+            var text = Messages.filePicker_description;
+            if (types.length === 1 && types[0] !== 'file') {
+                // Should be Templates
+                text = Messages.selectTemplate;
+            }
+            var $description = $('<p>').text(text);
             $block.append($description);
+
             var $filter = $('<p>', {'class': 'cp-modal-form'}).appendTo($block);
             var to;
             $('<input>', {
@@ -87,9 +107,12 @@ define([
                 if (to) { window.clearTimeout(to); }
                 to = window.setTimeout(updateContainer, 300);
             });
-            $filter.append(common.createButton('upload', false, data, function () {
-                hideFileDialog();
-            }));
+
+            //If file, display the upload button
+            if (types.indexOf('file') !== -1) {
+                $filter.append(common.createButton('upload', false, data));
+            }
+
             var $container = $('<span>', {'class': 'cp-filepicker-content'}).appendTo($block);
             // Update the files list when needed
             updateContainer = function () {
@@ -111,15 +134,23 @@ define([
                         $span.append(name);
                         $span.click(function () {
                             if (typeof onSelect === "function") { onSelect(data.href); }
-                            hideFileDialog();
                         });
                     });
                 };
-                common.getFilesList(todo);
+                common.getFilesList(filters, todo);
             };
             updateContainer();
-            sframeChan.on('EV_FILE_PICKER_REFRESH', updateContainer);
         };
+        sframeChan.on('EV_FILE_PICKER_REFRESH', function (newFilters) {
+            console.log(Sortify(filters));
+            console.log(Sortify(newFilters));
+            if (Sortify(filters) !== Sortify(newFilters)) {
+                $body.html('');
+                filters = newFilters;
+                return void createFileDialog();
+            }
+            updateContainer();
+        });
         createFileDialog();
 
         Cryptpad.removeLoadingScreen();
@@ -134,12 +165,19 @@ define([
             }));
             SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
         }).nThen(function (/*waitFor*/) {
+            var metadataMgr = common.getMetadataMgr();
             Cryptpad.onError(function (info) {
                 if (info && info.type === "store") {
                     onConnectError();
                 }
             });
-            andThen(common);
+            if (metadataMgr.getMetadataLazy() !== 'uninitialized') {
+                andThen(common);
+                return;
+            }
+            metadataMgr.onChange(function () {
+                andThen(common);
+            });
         });
     };
     main();

@@ -73,6 +73,7 @@ define(['json.sortify'], function (Sortify) {
             });
         };
 
+        console.log('here register');
         sframeChan.on('EV_METADATA_UPDATE', function (ev) {
             meta = ev;
             if (ev.priv) {

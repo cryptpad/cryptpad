@@ -46,7 +46,9 @@ define([
         $('<td>').text(Messages.cancel).appendTo($thead);
 
         var createTableContainer = function ($body) {
+            console.log($body);
             File.$container = $('<div>', { id: 'cp-fileupload' }).append($table).appendTo($body);
+            console.log('done');
             return File.$container;
         };
 
@@ -62,6 +64,25 @@ define([
             return data;
         };
 
+        var sframeChan = common.getSframeChannel();
+        var onError = $.noop,
+            onComplete = $.noop,
+            updateProgress = $.noop,
+            onPending = $.noop;
+        sframeChan.on('EV_FILE_UPLOAD_STATE', function (data) {
+            if (data.error) {
+                return void onError(data.error);
+            }
+            if (data.complete && data.href) {
+                return void onComplete(data.href);
+            }
+            if (typeof data.progress !== "undefined") {
+                return void updateProgress(data.progress);
+            }
+        });
+        sframeChan.on('Q_CANCEL_PENDING_FILE_UPLOAD', function (data, cb) {
+            onPending(cb);
+        });
         var upload = function (file) {
             var blob = file.blob; // This is not a blob but an array buffer
             var u8 = new Uint8Array(blob);
@@ -80,16 +101,14 @@ define([
             var $pc = $row.find('.cp-fileupload-table-progress');
             var $link = $row.find('.cp-fileupload-table-link');
 
-            var sframeChan = common.getSframeChannel();
-
-            var updateProgress = function (progressValue) {
+            updateProgress = function (progressValue) {
                 $pv.text(Math.round(progressValue*100)/100 + '%');
                 $pb.css({
                     width: (progressValue/100)*$pc.width()+'px'
                 });
             };
 
-            var onComplete = function (href) {
+            onComplete = function (href) {
                 $link.attr('href', href)
                     .click(function (e) {
                         e.preventDefault();
@@ -108,7 +127,7 @@ define([
                 queue.next();
             };
 
-            var onError = function (e) {
+            onError = function (e) {
                 queue.inProgress = false;
                 queue.next();
                 if (e === 'TOO_LARGE') {
@@ -123,24 +142,10 @@ define([
                 return void Cryptpad.alert(Messages.upload_serverError);
             };
 
-            var onPending = function (cb) {
+            onPending = function (cb) {
                 Cryptpad.confirm(Messages.upload_uploadPending, cb);
             };
 
-            sframeChan.on('EV_FILE_UPLOAD_STATE', function (data) {
-                if (data.error) {
-                    return void onError(data.error);
-                }
-                if (data.complete && data.href) {
-                    return void onComplete(data.href);
-                }
-                if (typeof data.progress !== "undefined") {
-                    return void updateProgress(data.progress);
-                }
-            });
-            sframeChan.on('Q_CANCEL_PENDING_FILE_UPLOAD', function (data, cb) {
-                onPending(cb);
-            });
             file.noStore = config.noStore;
             try {
                 file.blob = Nacl.util.encodeBase64(u8);
@@ -168,7 +173,8 @@ define([
                 return;
             }
             if (queue.inProgress) { return; }
-            File.$container.show();
+            // setTimeout to fix a firefox error 'NS_ERROR_NOT_AVAILABLE'
+            window.setTimeout(function () { File.$container.show(); });
             var file = queue.queue.shift();
             upload(file);
         };
@@ -177,7 +183,8 @@ define([
             obj.id = id;
             queue.queue.push(obj);
 
-            $table.show();
+            // setTimeout to fix a firefox error 'NS_ERROR_NOT_AVAILABLE'
+            window.setTimeout(function () { $table.show(); });
             var estimate = FileCrypto.computeEncryptedSize(obj.blob.byteLength, obj.metadata);
 
             var $progressBar = $('<div>', {'class':'cp-fileupload-table-progress-container'});

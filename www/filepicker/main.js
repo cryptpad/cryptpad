@@ -84,7 +84,8 @@ define([
                                 pathname: window.location.pathname,
                                 feedbackAllowed: Cryptpad.isFeedbackAllowed(),
                                 friends: proxy.friends || {},
-                                settings: proxy.settings || {}
+                                settings: proxy.settings || {},
+                                types: config.types
                             }
                         });
                     });
@@ -117,9 +118,9 @@ define([
                     });
                 });
 
-                sframeChan.on('Q_GET_FILES_LIST', function (data, cb) {
+                sframeChan.on('Q_GET_FILES_LIST', function (types, cb) {
                     console.error("TODO: make sure Q_GET_FILES_LIST is only available from filepicker");
-                    Cryptpad.getSecureFilesList(function (err, data) {
+                    Cryptpad.getSecureFilesList(types, function (err, data) {
                         cb({
                             error: err,
                             data: data
@@ -128,21 +129,19 @@ define([
                 });
 
                 sframeChan.on('EV_FILE_PICKER_CLOSE', function () {
-                    console.log('close file picker;..');
                     config.onClose();
                 });
                 sframeChan.on('EV_FILE_PICKED', function (data) {
                     config.onFilePicked(data);
-                    console.log(data);
                 });
                 sframeChan.on('Q_UPLOAD_FILE', function (data, cb) {
                     config.onFileUpload(sframeChan, data, cb);
                 });
             });
         });
-        var refresh = function () {
+        var refresh = function (types) {
             if (!sframeChan) { return; }
-            sframeChan.event('EV_FILE_PICKER_REFRESH');
+            sframeChan.event('EV_FILE_PICKER_REFRESH', types);
         };
         return {
             refresh: refresh
