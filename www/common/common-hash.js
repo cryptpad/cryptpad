@@ -123,7 +123,7 @@ Version 1
             if (!ret.type) { return url; }
             url += ret.type + '/';
             if (!ret.hashData) { return url; }
-            if (ret.hashData.type !== 'pad') { return url + '/#' + ret.hash; }
+            if (ret.hashData.type !== 'pad') { return url + '#' + ret.hash; }
             if (ret.hashData.version !== 1) { throw new Error("Only v1 hashes are managed here."); }
             url += '#/' + ret.hashData.version +
                    '/' + ret.hashData.mode +
