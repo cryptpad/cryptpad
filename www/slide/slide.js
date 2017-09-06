@@ -1,7 +1,7 @@
 define([
     'jquery',
     '/common/diffMarked.js',
-    '/common/cryptpad-common.js.js',
+    '/common/cryptpad-common.js',
 ],function ($, DiffMd, Cryptpad) {
 
     var Slide = {
