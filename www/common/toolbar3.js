@@ -256,17 +256,12 @@ define([
     };
 
     var initUserList = function (toolbar, config) {
-        // TODO clean comments
-        if (config.metadataMgr) { /* && config.userList.list && config.userList.userNetfluxId) {*/
-            //var userList = config.userList.list;
-            //userList.change.push
+        if (config.metadataMgr) {
             var metadataMgr = config.metadataMgr;
             metadataMgr.onChange(function () {
                 if (metadataMgr.isConnected()) {toolbar.connected = true;}
                 if (!toolbar.connected) { return; }
-                //if (config.userList.data) {
-                    updateUserList(toolbar, config);
-                //}
+                updateUserList(toolbar, config);
             });
         }
     };
@@ -333,7 +328,7 @@ define([
             $content.css('margin-top', h+'px');
         });
         $closeIcon.click(function () {
-            //Cryptpad.setAttribute('userlist-drawer', false); TODO iframe
+            Common.setAttribute(['toolbar', 'userlist-drawer'], false);
             hide();
         });
         $button.click(function () {
@@ -341,16 +336,14 @@ define([
             if (visible) { hide(); }
             else { show(); }
             visible = !visible;
-            // TODO iframe
-            //Cryptpad.setAttribute('userlist-drawer', visible);
+            Common.setAttribute(['toolbar', 'userlist-drawer'], visible);
             Common.feedback(visible?'USERLIST_SHOW': 'USERLIST_HIDE');
         });
         show();
-        // TODO iframe
-        /*Cryptpad.getAttribute('userlist-drawer', function (err, val) {
+        Common.getAttribute(['toolbar', 'userlist-drawer'], function (err, val) {
             if (val === false || mobile) { return void hide(); }
             show();
-        });*/
+        });
 
         return $container;
     };

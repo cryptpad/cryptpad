@@ -2774,7 +2774,7 @@ define([
             myUserNameTemp = myUserNameTemp.substr(0, 32);
         }
         var myUserName = myUserNameTemp;
-        Cryptpad.setAttribute('username', myUserName, function (err) {
+        Cryptpad.setDisplayName(myUserName, function (err) {
             if (err) {
                 logError("Couldn't set username", err);
                 return;

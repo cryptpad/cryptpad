@@ -131,33 +131,6 @@ define([
         });
     };
 
-    /*
-    var addDisplayName = function ($container) {
-        var $block = $('<div>', {id: DISPLAYNAME_ID}).appendTo($container);
-        var getValue = function (cb) {
-            Cryptpad.getLastName(function (err, name) {
-                if (err) { return void console.error(err); }
-                cb(name);
-            });
-        };
-        if (APP.readOnly) {
-            var $span = $('<span>', {'class': DISPLAYNAME_ID}).appendTo($block);
-            getValue(function (value) {
-                $span.text(value);
-            });
-            return;
-        }
-        var setValue = function (value, cb) {
-            Cryptpad.setAttribute('username', value, function (err) {
-                cb(err);
-            });
-        };
-        var placeholder = Messages.anonymous;
-        var rt = Cryptpad.getStore().getProxy().info.realtime;
-        createEditableInput($block, DISPLAYNAME_ID, placeholder, 32, getValue, setValue, rt);
-    };
-    */
-
 /* jshint ignore:start */
     var isFriend = function (proxy, edKey) {
         var friends = Cryptpad.find(proxy, ['friends']);

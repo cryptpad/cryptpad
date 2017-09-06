@@ -61,8 +61,46 @@ define([
             cb(void 0, res);
         };
 
-        ret.setPadAttribute = filesOp.setAttribute;
-        ret.getPadAttribute = filesOp.getAttribute;
+        var getAttributeObject = function (attr) {
+            if (typeof attr === "string") {
+                console.error('DEPRECATED: use setAttribute with an array, not a string');
+                return {
+                    obj: storeObj.settings,
+                    key: attr
+                };
+            }
+            if (!Array.isArray(attr)) { throw new Error("Attribute must be string or array"); }
+            if (attr.length === 0) { throw new Error("Attribute can't be empty"); }
+            var obj = storeObj.settings;
+            attr.forEach(function (el, i) {
+                if (i === attr.length-1) { return; }
+                if (!obj[el]) {
+                    obj[el] = {};
+                }
+                else if (typeof obj[el] !== "object") { throw new Error("Wrong attribute"); }
+                obj = obj[el];
+            });
+            return {
+                obj: obj,
+                key: attr[attr.length-1]
+            };
+        };
+        ret.setAttribute = function (attr, value, cb) {
+            try {
+                var object = getAttributeObject(attr);
+                object.obj[object.key] = value;
+            } catch (e) { return void cb(e); }
+            cb();
+        };
+        ret.getAttribute = function (attr, cb) {
+            var object;
+            try {
+                object = getAttributeObject(attr);
+            } catch (e) { return void cb(e); }
+            cb(null, object.obj[object.key]);
+        };
+        ret.setPadAttribute = filesOp.setPadAttribute;
+        ret.getPadAttribute = filesOp.getPadAttribute;
         ret.getIdFromHref = filesOp.getIdFromHref;
 
         ret.getDrive = function (key, cb) {

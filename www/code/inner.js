@@ -112,6 +112,7 @@ define([
         var updateIndentSettings = function () {
             if (!metadataMgr) { return; }
             var data = metadataMgr.getPrivateData().settings;
+            data = data.codemirror || {};
             var indentUnit = data[indentKey];
             var useTabs = data[useTabsKey];
             setIndentation(
@@ -255,7 +256,7 @@ define([
             readOnly = metadataMgr.getPrivateData().readOnly;
 
             var titleCfg = { getHeadingText: CodeMirror.getHeadingText };
-            Title = common.createTitle(titleCfg, config.onLocal, common, metadataMgr);
+            Title = common.createTitle(titleCfg, config.onLocal, common);
 
             var configTb = {
                 displayed: ['title', 'useradmin', 'spinner', 'share', 'userlist', 'newpad', 'limit'],

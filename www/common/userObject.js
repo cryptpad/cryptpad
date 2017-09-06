@@ -142,14 +142,14 @@ define([
             if (type === 'name') { return data.filename; }
             return data.filename || data.title || NEW_FILE_NAME;
         };
-        exp.getAttribute = function (href, attr, cb) {
+        exp.getPadAttribute = function (href, attr, cb) {
             cb = cb || $.noop;
             var id = exp.getIdFromHref(href);
             if (!id) { return void cb(null, undefined); }
             var data = getFileData(id);
             cb(null, clone(data[attr]));
         };
-        exp.setAttribute = function (href, attr, value, cb) {
+        exp.setPadAttribute = function (href, attr, value, cb) {
             cb = cb || $.noop;
             var id = exp.getIdFromHref(href);
             if (!id) { return void cb("E_INVAL_HREF"); }

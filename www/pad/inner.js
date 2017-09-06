@@ -514,7 +514,7 @@ define([
             readOnly = metadataMgr.getPrivateData().readOnly;
             console.log('onInit');
             var titleCfg = { getHeadingText: getHeadingText };
-            Title = common.createTitle(titleCfg, realtimeOptions.onLocal, common, metadataMgr);
+            Title = common.createTitle(titleCfg, realtimeOptions.onLocal, common);
             var configTb = {
                 displayed: ['userlist', 'title', 'useradmin', 'spinner', 'newpad', 'share', 'limit'],
                 title: Title.getTitleConfig(),

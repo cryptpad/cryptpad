@@ -46,12 +46,6 @@ define([
         return ctx.cpNfInner.metadataMgr.getPrivateData().accountName;
     };
 
-    var titleUpdated;
-    funcs.updateTitle = function (title, cb) {
-        ctx.metadataMgr.updateTitle(title);
-        titleUpdated = cb;
-    };
-
     // UI
     funcs.createUserAdminMenu = UI.createUserAdminMenu;
     funcs.displayAvatar = UI.displayAvatar;
@@ -65,10 +59,7 @@ define([
     // Title module
     funcs.createTitle = Title.create;
 
-    funcs.getDefaultTitle = function () {
-        if (!ctx.cpNfInner) { throw new Error("cpNfInner is not ready!"); }
-        return ctx.cpNfInner.metadataMgr.getMetadata().defaultTitle;
-    };
+    // Misc
 
     funcs.setDisplayName = function (name, cb) {
         ctx.sframeChan.query('Q_SETTINGS_SET_DISPLAY_NAME', name, function (err) {
@@ -76,6 +67,7 @@ define([
         });
     };
 
+    // Window
     funcs.logout = function (cb) {
         ctx.sframeChan.query('Q_LOGOUT', null, function (err) {
             if (cb) { cb(err); }
@@ -92,6 +84,7 @@ define([
         });
     };
 
+    // Store
     funcs.sendAnonRpcMsg = function (msg, content, cb) {
         ctx.sframeChan.query('Q_ANON_RPC_MESSAGE', {
             msg: msg,
@@ -123,6 +116,21 @@ define([
     };
     funcs.setPadAttribute = function (key, value, cb) {
         ctx.sframeChan.query('Q_SET_PAD_ATTRIBUTE', {
+            key: key,
+            value: value
+        }, cb);
+    };
+
+    funcs.getAttribute = function (key, cb) {
+        ctx.sframeChan.query('Q_GET_ATTRIBUTE', {
+            key: key
+        }, function (err, res) {
+            cb (err || res.error, res.data);
+        });
+    };
+    funcs.setAttribute = function (key, value, cb) {
+        cb = cb || $.noop;
+        ctx.sframeChan.query('Q_SET_ATTRIBUTE', {
             key: key,
             value: value
         }, cb);
@@ -361,12 +369,6 @@ define([
             // CpNfInner.start() should be here....
         }).nThen(function () {
             ctx.metadataMgr = MetadataMgr.create(ctx.sframeChan);
-            ctx.metadataMgr.onTitleChange(function (title) {
-                ctx.sframeChan.query('Q_SET_PAD_TITLE_IN_DRIVE', title, function (err) {
-                    if (err) { return; }
-                    if (titleUpdated) { titleUpdated(undefined, title); }
-                });
-            });
 
             ctx.sframeChan.on('EV_RT_CONNECT', function () { CommonRealtime.setConnectionState(true); });
             ctx.sframeChan.on('EV_RT_DISCONNECT', function () { CommonRealtime.setConnectionState(false); });

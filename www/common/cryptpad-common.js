@@ -194,11 +194,14 @@ define([
             return store.getProfile().avatar;
         }
     };
-    common.getDisplayName = function () {
+    common.getDisplayName = function (cb) {
+        var name;
         if (getProxy()) {
-            return getProxy()[common.displayNameKey] || '';
+            name = getProxy()[common.displayNameKey];
         }
-        return '';
+        name = name || '';
+        if (typeof cb === "function") { cb(null, name); }
+        return name;
     };
     common.getAccountName = function () {
         return localStorage[common.userNameKey];
@@ -479,11 +482,22 @@ define([
         var href = getRelativeHref(window.location.href);
         getStore().setPadAttribute(href, attr, value, cb);
     };
+    common.setDisplayName = function (value, cb) {
+        if (getProxy()) {
+            getProxy()[common.displayNameKey] = value;
+        }
+        if (typeof cb === "function") { cb(); }
+    };
     common.setAttribute = function (attr, value, cb) {
-        getStore().set(["cryptpad", attr].join('.'), value, function (err, data) {
+        getStore().setAttribute(attr, value, function (err, data) {
             if (cb) { cb(err, data); }
         });
     };
+    /*common.setAttribute = function (attr, value, cb) {
+        getStore().set(["cryptpad", attr].join('.'), value, function (err, data) {
+            if (cb) { cb(err, data); }
+        });
+    };*/
     common.setLSAttribute = function (attr, value) {
         localStorage[attr] = value;
     };
@@ -494,10 +508,15 @@ define([
         getStore().getPadAttribute(href, attr, cb);
     };
     common.getAttribute = function (attr, cb) {
-        getStore().get(["cryptpad", attr].join('.'), function (err, data) {
+        getStore().getAttribute(attr, function (err, data) {
             cb(err, data);
         });
     };
+    /*common.getAttribute = function (attr, cb) {
+        getStore().get(["cryptpad", attr].join('.'), function (err, data) {
+            cb(err, data);
+        });
+    };*/
 
     /*  this returns a reference to your proxy. changing it will change your drive.
     */
@@ -661,11 +680,12 @@ define([
     };
 
     // STORAGE: Display Name
-    common.getLastName = function (cb) {
-        common.getAttribute('username', function (err, userName) {
+    common.getLastName = common.getDisplayName;
+   /* function (cb) {
+        common.getDisplayName(function (err, userName) {
             cb(err, userName);
         });
-    };
+    };*/
     var _onDisplayNameChanged = [];
     common.onDisplayNameChanged = function (h) {
         if (typeof(h) !== "function") { return; }

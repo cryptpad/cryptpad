@@ -21,7 +21,7 @@ define([
 
     $(function () {
 
-    var HIDE_INTRODUCTION_TEXT = "hide_poll_text";
+    var HIDE_INTRODUCTION_TEXT = "hide-text";
     var defaultName;
 
     var secret = Cryptpad.getSecrets();
@@ -782,10 +782,10 @@ var create = function (info) {
         .on('disconnect', disconnect)
         .on('reconnect', reconnect);
 
-        Cryptpad.getAttribute(HIDE_INTRODUCTION_TEXT, function (e, value) {
+        Cryptpad.getAttribute(['poll', HIDE_INTRODUCTION_TEXT], function (e, value) {
             if (e) { console.error(e); }
             if (!value) {
-                Cryptpad.setAttribute(HIDE_INTRODUCTION_TEXT, "1", function (e) {
+                Cryptpad.setAttribute(['poll', HIDE_INTRODUCTION_TEXT], "1", function (e) {
                     if (e) { console.error(e); }
                 });
                 showHelp(true);

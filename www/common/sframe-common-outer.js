@@ -115,7 +115,7 @@ define([
             });
 
             sframeChan.on('Q_SETTINGS_SET_DISPLAY_NAME', function (newName, cb) {
-                Cryptpad.setAttribute('username', newName, function (err) {
+                Cryptpad.setDisplayName(newName, function (err) {
                     if (err) {
                         console.log("Couldn't set username");
                         console.error(err);
@@ -216,6 +216,20 @@ define([
             });
             sframeChan.on('Q_SET_PAD_ATTRIBUTE', function (data, cb) {
                 Cryptpad.setPadAttribute(data.key, data.value, function (e) {
+                    cb({error:e});
+                });
+            });
+
+            sframeChan.on('Q_GET_ATTRIBUTE', function (data, cb) {
+                Cryptpad.getAttribute(data.key, function (e, data) {
+                    cb({
+                        error: e,
+                        data: data
+                    });
+                });
+            });
+            sframeChan.on('Q_SET_ATTRIBUTE', function (data, cb) {
+                Cryptpad.setAttribute(data.key, data.value, function (e) {
                     cb({error:e});
                 });
             });

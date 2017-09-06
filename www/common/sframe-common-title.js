@@ -3,25 +3,16 @@ define(['jquery'], function ($) {
 
     module.create = function (cfg, onLocal, Common, metadataMgr) {
         var exp = {};
+        var metadataMgr = Common.getMetadataMgr();
+        var sframeChan = Common.getSframeChannel();
+        var titleUpdated;
 
-        exp.defaultTitle = Common.getDefaultTitle();
-
+        exp.defaultTitle = metadataMgr.getMetadata().defaultTitle;
         exp.title = document.title;
 
         cfg = cfg || {};
 
         var getHeadingText = cfg.getHeadingText || function () { return; };
-
-/*        var updateLocalTitle = function (newTitle) {
-            console.error(newTitle);
-            exp.title = newTitle;
-            onLocal();
-            if (typeof cfg.updateLocalTitle === "function") {
-                cfg.updateLocalTitle(newTitle);
-            } else {
-                document.title = newTitle;
-            }
-        };*/
 
         var $title;
         exp.setToolbar = function (toolbar) {
@@ -29,6 +20,7 @@ define(['jquery'], function ($) {
         };
 
         exp.getTitle = function () { return exp.title; };
+
         var isDefaultTitle = exp.isDefaultTitle = function (){return exp.title === exp.defaultTitle;};
 
         var suggestTitle = exp.suggestTitle = function (fallback) {
@@ -40,32 +32,25 @@ define(['jquery'], function ($) {
             }
         };
 
-        /*var renameCb = function (err, newTitle) {
-            if (err) { return; }
-            onLocal();
-            //updateLocalTitle(newTitle);
-        };*/
-
         // update title: href is optional; if not specified, we use window.location.href
         exp.updateTitle = function (newTitle, cb) {
             cb = cb || $.noop;
             if (newTitle === exp.title) { return; }
-            Common.updateTitle(newTitle, cb);
+            metadataMgr.updateTitle(newTitle);
+            titleUpdated = cb;
         };
-
-        // TODO not needed?
-        /*exp.updateDefaultTitle = function (newDefaultTitle) {
-            exp.defaultTitle = newDefaultTitle;
-            if (!$title) { return; }
-            $title.find('input').attr("placeholder", exp.defaultTitle);
-        };*/
 
         metadataMgr.onChange(function () {
             var md = metadataMgr.getMetadata();
             $title.find('span.cp-toolbar-title-value').text(md.title || md.defaultTitle);
             $title.find('input').val(md.title || md.defaultTitle);
             exp.title = md.title;
-            //exp.updateTitle(md.title || md.defaultTitle);
+        });
+        metadataMgr.onTitleChange(function (title) {
+            sframeChan.query('Q_SET_PAD_TITLE_IN_DRIVE', title, function (err) {
+                if (err) { return; }
+                if (titleUpdated) { titleUpdated(undefined, title); }
+            });
         });
 
         exp.getTitleConfig = function () {

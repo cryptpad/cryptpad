@@ -351,7 +351,7 @@ define([
             $content.css('margin-top', h+'px');
         });
         $closeIcon.click(function () {
-            Cryptpad.setAttribute('userlist-drawer', false);
+            Cryptpad.setAttribute(['toolbar', 'userlist-drawer'], false);
             hide();
         });
         $button.click(function () {
@@ -359,11 +359,11 @@ define([
             if (visible) { hide(); }
             else { show(); }
             visible = !visible;
-            Cryptpad.setAttribute('userlist-drawer', visible);
+            Cryptpad.setAttribute(['toolbar', 'userlist-drawer'], visible);
             Cryptpad.feedback(visible?'USERLIST_SHOW': 'USERLIST_HIDE');
         });
 
-        Cryptpad.getAttribute('userlist-drawer', function (err, val) {
+        Cryptpad.getAttribute(['toolbar', 'userlist-drawer'], function (err, val) {
             if (val === false || mobile) { return void hide(); }
             show();
         });
@@ -840,7 +840,7 @@ define([
                     if (newName === null && typeof(lastName) === "string") { return; }
                     if (newName === null) { newName = ''; }
                     else { Cryptpad.feedback('NAME_CHANGED'); }
-                    Cryptpad.setAttribute('username', newName, function (err) {
+                    Cryptpad.setDisplayName(newName, function (err) {
                         if (err) {
                             console.log("Couldn't set username");
                             console.error(err);
