@@ -408,6 +408,15 @@ define([
                     content: '<span class="fa fa-eye"></span> ' + Messages.viewOpen
                 });
             }
+            options.push({tag: 'hr'});
+            options.push({
+                tag: 'a',
+                attributes: {
+                    title: Messages.viewEmbedTitle,
+                    'class': 'cp-toolbar-share-view-embed',
+                },
+                content: '<span class="fa fa-eye"></span> ' + Messages.getEmbedCode
+            });
         }
         var dropdownConfigShare = {
             text: $('<div>').append($shareIcon).html(),
@@ -437,6 +446,31 @@ define([
                 var url = origin + pathname + '#' + hashes.viewHash;
                 var success = Cryptpad.Clipboard.copy(url);
                 if (success) { Cryptpad.log(Messages.shareSuccess); }
+            });
+            $shareBlock.find('a.cp-toolbar-share-view-embed').click(function () {
+                var url = origin + pathname + '#' + hashes.viewHash;
+                var parsed = Cryptpad.parsePadUrl(url);
+                url = origin + parsed.getUrl({embed: true});
+                // Alertify content
+                var $content = $('<div>');
+                $('<input>', {'style':'display:none;'}).appendTo($content);
+                $('<h3>').text(Messages.viewEmbedTitle).appendTo($content);
+                var $tag = $('<p>').text(Messages.fileEmbedTag).appendTo($content);
+                $('<br>').appendTo($tag);
+                var iframeId = uid();
+                var iframeEmbed = '<iframe src="' + url + '"></iframe>';
+                $('<input>', {
+                    type: 'text',
+                    id: iframeId,
+                    readonly: 'readonly',
+                    value: iframeEmbed,
+                }).appendTo($tag);
+                Cryptpad.alert($content.html(), null, true);
+                $('#'+iframeId).click(function () {
+                    this.select();
+                });
+                //var success = Cryptpad.Clipboard.copy(url);
+                //if (success) { Cryptpad.log(Messages.shareSuccess); }
             });
         }
 
@@ -611,7 +645,7 @@ define([
                 window.open(href);
                 return;
             }
-            window.top.location = href;
+            window.parent.location = href;
         };
 
         var onContext = function (e) { e.stopPropagation(); };

@@ -491,8 +491,8 @@ define([
         });
         options.push({
             tag: 'a',
-            attributes: {title: Messages.editShareTitle, 'class': 'fileEmbed'},
-            content: '<span class="fa fa-file"></span> ' + Messages.fileEmbed
+            attributes: {title: Messages.fileEmbedTitle, 'class': 'fileEmbed'},
+            content: '<span class="fa fa-file"></span> ' + Messages.getEmbedCode
         });
         var dropdownConfigShare = {
             text: $('<div>').append($shareIcon).html(),

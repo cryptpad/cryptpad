@@ -7,7 +7,7 @@ define([
         return Math.random().toString(16).replace('0.', '') + Math.random().toString(16).replace('0.', '');
     };
 
-    var create = function (ow, cb) {
+    var create = function (ow, cb, isSandbox) {
         var otherWindow;
         var handlers = {};
         var queries = {};
@@ -131,7 +131,7 @@ define([
                 console.log(msg);
             }
         });
-        if (window !== window.top) {
+        if (isSandbox) {
             // we're in the sandbox
             otherWindow = ow;
             cb(chan);
