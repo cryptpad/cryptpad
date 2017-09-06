@@ -228,7 +228,7 @@ define([
                 $span.append(avatars[data.avatar]);
                 $span.append($rightCol);
             } else {
-                Common.displayAvatar(Common, $span, data.avatar, name, function ($img) {
+                Common.displayAvatar($span, data.avatar, name, function ($img) {
                     if (data.avatar && $img) {
                         avatars[data.avatar] = $img[0].outerHTML;
                     }
@@ -767,8 +767,6 @@ define([
         var $userAdmin = toolbar.$userAdmin.find('.'+USERADMIN_CLS).show();
         var userMenuCfg = {
             $initBlock: $userAdmin,
-            metadataMgr: metadataMgr,
-            Common: Common
         };
         if (!config.hideDisplayName) {
             $.extend(true, userMenuCfg, {

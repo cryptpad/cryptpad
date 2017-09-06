@@ -23,6 +23,11 @@ define([
         }
     };
 
+    module.uploadFile = function (common, data, cb) {
+        var sframeChan = common.getSframeChannel();
+        sframeChan.query('Q_UPLOAD_FILE', data, cb);
+    };
+
     module.create = function (common, config) {
         var File = {};
         var Cryptpad = common.getCryptpadCommon();

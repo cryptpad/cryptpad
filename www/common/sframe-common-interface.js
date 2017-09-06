@@ -22,6 +22,173 @@ define([
      *  - createDropdown
     */
 
+    UI.createButton = function (common, type, rightside, data, callback) {
+        var AppConfig = common.getAppConfig();
+        var button;
+        var size = "17px";
+        switch (type) {
+            case 'export':
+                button = $('<button>', {
+                    'class': 'fa fa-download',
+                    title: Messages.exportButtonTitle,
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.exportButton));
+
+                button.click(common.prepareFeedback(type));
+                if (callback) {
+                    button.click(callback);
+                }
+                break;
+            case 'import':
+                button = $('<button>', {
+                    'class': 'fa fa-upload',
+                    title: Messages.importButtonTitle,
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.importButton));
+                if (callback) {
+                    button
+                    .click(common.prepareFeedback(type))
+                    .click(Cryptpad.importContent('text/plain', function (content, file) {
+                        callback(content, file);
+                    }, {accept: data ? data.accept : undefined}));
+                }
+                break;
+            case 'upload':
+                button = $('<button>', {
+                    'class': 'btn btn-primary new',
+                    title: Messages.uploadButtonTitle,
+                }).append($('<span>', {'class':'fa fa-upload'})).append(' '+Messages.uploadButton);
+                if (!data.FM) { return; }
+                var $input = $('<input>', {
+                    'type': 'file',
+                    'style': 'display: none;'
+                }).on('change', function (e) {
+                    var file = e.target.files[0];
+                    var ev = {
+                        target: data.target
+                    };
+                    if (data.filter && !data.filter(file)) {
+                        Cryptpad.log('TODO: invalid avatar (type or size)');
+                        return;
+                    }
+                    data.FM.handleFile(file, ev);
+                    if (callback) { callback(); }
+                });
+                if (data.accept) { $input.attr('accept', data.accept); }
+                button.click(function () { $input.click(); });
+                break;
+            case 'template':
+                if (!AppConfig.enableTemplates) { return; }
+                button = $('<button>', {
+                    title: Messages.saveTemplateButton,
+                }).append($('<span>', {'class':'fa fa-bookmark', style: 'font:'+size+' FontAwesome'}));
+                if (data.rt) {
+                    button
+                    .click(function () {
+                        var title = data.getTitle() || document.title;
+                        var todo = function (val) {
+                            if (typeof(val) !== "string") { return; }
+                            var toSave = data.rt.getUserDoc();
+                            if (val.trim()) {
+                                val = val.trim();
+                                title = val;
+                                try {
+                                    var parsed = JSON.parse(toSave);
+                                    var meta;
+                                    if (Array.isArray(parsed) && typeof(parsed[3]) === "object") {
+                                        meta = parsed[3].metadata; // pad
+                                    } else if (parsed.info) {
+                                        meta = parsed.info; // poll
+                                    } else {
+                                        meta = parsed.metadata;
+                                    }
+                                    if (typeof(meta) === "object") {
+                                        meta.title = val;
+                                        meta.defaultTitle = val;
+                                        delete meta.users;
+                                    }
+                                    toSave = JSON.stringify(parsed);
+                                } catch(e) {
+                                    console.error("Parse error while setting the title", e);
+                                }
+                            }
+                            ctx.sframeChan.query('Q_SAVE_AS_TEMPLATE', {
+                                title: title,
+                                toSave: toSave
+                            }, function () {
+                                Cryptpad.alert(Messages.templateSaved);
+                                common.feedback('TEMPLATE_CREATED');
+                            });
+                        };
+                        Cryptpad.prompt(Messages.saveTemplatePrompt, title, todo);
+                    });
+                }
+                break;
+            case 'forget':
+                button = $('<button>', {
+                    id: 'cryptpad-forget',
+                    title: Messages.forgetButtonTitle,
+                    'class': "fa fa-trash cryptpad-forget",
+                    style: 'font:'+size+' FontAwesome'
+                });
+                if (!common.isStrongestStored()) {
+                    button.addClass('cp-toolbar-hidden');
+                }
+                if (callback) {
+                    button
+                    .click(common.prepareFeedback(type))
+                    .click(function() {
+                        var msg = isLoggedIn() ? Messages.forgetPrompt : Messages.fm_removePermanentlyDialog;
+                        Cryptpad.confirm(msg, function (yes) {
+                            if (!yes) { return; }
+                            ctx.sframeChan.query('Q_MOVE_TO_TRASH', null, function (err) {
+                                if (err) { return void callback(err); }
+                                var cMsg = isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
+                                Cryptpad.alert(cMsg, undefined, true);
+                                callback();
+                                return;
+                            });
+                        });
+
+                    });
+                }
+                break;
+            case 'history':
+                if (!AppConfig.enableHistory) {
+                    button = $('<span>');
+                    break;
+                }
+                button = $('<button>', {
+                    title: Messages.historyButton,
+                    'class': "fa fa-history history",
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.historyText));
+                if (data.histConfig) {
+                    button
+                    .click(common.prepareFeedback(type))
+                    .on('click', function () {
+                        common.getHistory(data.histConfig);
+                    });
+                }
+                break;
+            case 'more':
+                button = $('<button>', {
+                    title: Messages.moreActions || 'TODO',
+                    'class': "cp-toolbar-drawer-button fa fa-ellipsis-h",
+                    style: 'font:'+size+' FontAwesome'
+                });
+                break;
+            default:
+                button = $('<button>', {
+                    'class': "fa fa-question",
+                    style: 'font:'+size+' FontAwesome'
+                })
+                .click(common.prepareFeedback(type));
+        }
+        if (rightside) {
+            button.addClass('cp-toolbar-rightside-button');
+        }
+        return button;
+    };
+
+
     UI.getFileSize = function (Common, href, cb) {
         var channelId = Cryptpad.hrefToHexChannelId(href);
         Common.sendAnonRpcMsg("GET_FILE_SIZE", channelId, function (data) {
@@ -101,9 +268,8 @@ define([
         }
     };
 
-    UI.createUserAdminMenu = function (config) {
-        var Common = config.Common;
-        var metadataMgr = config.metadataMgr;
+    UI.createUserAdminMenu = function (Common, config) {
+        var metadataMgr = Common.getMetadataMgr();
 
         var displayNameCls = config.displayNameCls || 'displayName';
         var $displayedName = $('<span>', {'class': displayNameCls});
