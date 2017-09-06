@@ -173,6 +173,9 @@ define(function () {
     out.viewOpenTitle = "Ouvrir le lien en lecture seule dans un nouvel onglet";
     out.fileShare = "Copier le lien";
     out.getEmbedCode = "Obtenir le code d'intégration";
+    out.viewEmbedTitle = "Intégrer le pad dans une page web";
+    out.viewEmbedTag = "Pour intégrer ce pad, veuillez inclure l'iframe suivant dans votre page là om vous souhaitez l'afficher. Vous pouvez changer sa taille en utilisant du code CSS ou des attributs HTML."
+    To embed this pad, include this iframe in your page wherever you want. You can style it using CSS or HTML attributes.";
     out.fileEmbedTitle = "Intégrer le fichier dans une page web";
     out.fileEmbedScript = "Pour intégrer un fichier, veuillez inclure le script suivant une fois dans votre page afin de pouvoir charger le Media Tag :";
     out.fileEmbedTag = "Ensuite vous pouvez placer ce Media Tag où vous souhaitez dans votre page pour l'intégrer :";
