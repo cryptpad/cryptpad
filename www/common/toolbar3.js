@@ -611,7 +611,7 @@ define([
                 window.open(href);
                 return;
             }
-            window.top.location = href;
+            window.parent.location = href;
         };
 
         var onContext = function (e) { e.stopPropagation(); };

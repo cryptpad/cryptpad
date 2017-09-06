@@ -230,31 +230,31 @@ define([
 
         $userAdmin.find('a.logout').click(function () {
             Common.logout(function () {
-                window.top.location = origin+'/';
+                window.parent.location = origin+'/';
             });
         });
         $userAdmin.find('a.settings').click(function () {
             if (padType) {
                 window.open(origin+'/settings/');
             } else {
-                window.top.location = origin+'/settings/';
+                window.parent.location = origin+'/settings/';
             }
         });
         $userAdmin.find('a.profile').click(function () {
             if (padType) {
                 window.open(origin+'/profile/');
             } else {
-                window.top.location = origin+'/profile/';
+                window.parent.location = origin+'/profile/';
             }
         });
         $userAdmin.find('a.login').click(function () {
             Common.setLoginRedirect(function () {
-                window.top.location = origin+'/login/';
+                window.parent.location = origin+'/login/';
             });
         });
         $userAdmin.find('a.register').click(function () {
             Common.setLoginRedirect(function () {
-                window.top.location = origin+'/register/';
+                window.parent.location = origin+'/register/';
             });
         });
 

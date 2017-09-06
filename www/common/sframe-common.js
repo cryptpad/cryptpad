@@ -298,7 +298,7 @@ define([
     Object.freeze(funcs);
     return { create: function (cb) {
         nThen(function (waitFor) {
-            SFrameChannel.create(window.top, waitFor(function (sfc) { ctx.sframeChan = sfc; }));
+            SFrameChannel.create(window.parent, waitFor(function (sfc) { ctx.sframeChan = sfc; }), true);
             // CpNfInner.start() should be here....
         }).nThen(function () {
             ctx.metadataMgr = MetadataMgr.create(ctx.sframeChan);
