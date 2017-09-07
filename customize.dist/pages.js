@@ -437,7 +437,7 @@ define([
         ];
     };
 
-    var loadingScreen = function () {
+    var loadingScreen = Pages.loadingScreen = function () {
         return h('div#loading', 
             h('div.loadingContainer', [
                 h('img.cryptofist', {
@@ -448,6 +448,12 @@ define([
                 h('p'),
             ])
         );
+    };
+
+    var hiddenLoader = function () {
+        var loader = loadingScreen();
+        loader.style.display = 'none';
+        return loader;
     };
 
     Pages['/user/'] = Pages['/user/index.html'] = function () {
@@ -525,6 +531,7 @@ define([
             ]),
 
             infopageFooter(),
+            hiddenLoader(),
         ])];
     };
 
@@ -558,6 +565,7 @@ define([
                 ]),
             ]),
             infopageFooter(),
+            hiddenLoader(),
         ])];
     };
 
