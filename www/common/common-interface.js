@@ -7,10 +7,11 @@ define([
     '/common/notify.js',
     '/common/visible.js',
     '/common/tippy.min.js',
+    '/customize/pages.js',
     '/common/hyperscript.js',
     '/bower_components/bootstrap-tokenfield/dist/bootstrap-tokenfield.js',
     'css!/common/tippy.css',
-], function ($, Messages, Util, AppConfig, Alertify, Notify, Visible, Tippy, h) {
+], function ($, Messages, Util, AppConfig, Alertify, Notify, Visible, Tippy, Pages, h) {
     var UI = {};
 
     /*
@@ -171,7 +172,7 @@ define([
      */
     UI.spinner = function (parent) {
         var $target = $('<span>', {
-            'class': 'fa fa-spinner fa-pulse fa-4x fa-fw'
+            'class': 'fa fa-circle-o-notch fa-spin fa-4x fa-fw',
         }).hide();
 
         $(parent).append($target);
@@ -212,16 +213,15 @@ define([
             }
             $container = $loading.find('.loadingContainer');
         } else {
-            $loading = $('<div>', {id: LOADING});
-            $container = $('<div>', {'class': 'loadingContainer'});
-            if (!hideLogo) {
-                $container.append('<img class="cryptofist" src="/customize/cryptofist_small.png" />');
+            $loading = $(Pages.loadingScreen());
+            $container = $loading.find('.loadingContainer');
+            if (hideLogo) {
+                $loading.find('img').hide();
+            } else {
+                $loading.find('img').show();
             }
-            var $spinner = $('<div>', {'class': 'spinnerContainer'});
-            UI.spinner($spinner).show();
-            var $text = $('<p>').text(loadingText || Messages.loading);
-            $container.append($spinner).append($text);
-            $loading.append($container);
+            var $spinner = $loading.find('.spinnerContainer');
+            $spinner.show();
             $('body').append($loading);
         }
         if (Messages.tips && !hideTips) {
