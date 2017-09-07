@@ -81,6 +81,8 @@ define([
     common.addTooltips = UI.addTooltips;
     common.clearTooltips = UI.clearTooltips;
     common.importContent = UI.importContent;
+    common.tokenField = UI.tokenField;
+    common.dialog = UI.dialog;
 
     // import common utilities for export
     common.find = Util.find;
@@ -1380,6 +1382,20 @@ define([
                 })
                 .click(prepareFeedback(type));
                 break;
+            case 'hashtag':
+                button = $('<button>', {
+                    'class': 'fa fa-hashtag',
+                })
+                .click(prepareFeedback(type))
+                .click(function () {
+                    // TODO fetch pad tags before presenting dialog to user
+                    var dialog = Cryptpad.dialog.tagPrompt([], function (tags) {
+                        if (!Array.isArray(tags)) { return; }
+                        console.error(tags);
+                        // TODO do something with the tags the user entered
+                    });
+                    document.body.appendChild(dialog);
+                });
             default:
                 button = $('<button>', {
                     'class': "fa fa-question",

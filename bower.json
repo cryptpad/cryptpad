@@ -41,6 +41,7 @@
     "bootstrap": "#v4.0.0-alpha.6",
     "diff-dom": "2.1.1",
     "nthen": "^0.1.5",
-    "open-sans-fontface": "^1.4.2"
+    "open-sans-fontface": "^1.4.2",
+    "bootstrap-tokenfield": "^0.12.1"
   }
 }

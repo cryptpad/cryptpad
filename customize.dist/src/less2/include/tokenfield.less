@@ -1,0 +1,94 @@
+.tokenfield_main () {
+    .tokenfield {
+        .unselectable () {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .unselectable();
+        height: auto;
+        min-height: 34px;
+        padding-bottom: 0px;
+        &.focus {
+            border-color: #66afe9;
+            outline: 0;
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, 0.6);
+        }
+        .token {
+            box-sizing: border-box;
+            border-radius: 3px;
+            display: inline-block;
+            border: 1px solid #d9d9d9;
+            background-color: #ededed;
+            white-space: nowrap;
+            margin: -1px 5px 5px 0;
+            vertical-align: center;
+            cursor: default;
+
+            color: #222;
+
+            &:hover {
+                border-color: #b9b9b9;
+            }
+            &.invalid {
+                background: none;
+                border: 1px solid transparent;
+                border-radius: 0;
+                border-bottom: 1px dotted #d9534f;
+            }
+            &.invalid.active {
+                background: #ededed;
+                border: 1px solid #ededed;
+                border-radius: 3px;
+            }
+            .token-label {
+                display: inline-block;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                padding-left: 4px;
+                vertical-align: center;
+            }
+            .close {
+                font-family: Arial;
+                display: inline-block;
+                line-height: 100%;
+                font-size: 1.1em;
+                margin-left: 5px;
+                float: none;
+                height: 100%;
+                vertical-align: center;
+                padding-right: 4px;
+            }
+            &.active {
+                border-color: #52a8ec;
+                border-color: rgba(82, 168, 236, 0.8);
+            }
+            &.duplicate {
+                border-color: #ebccd1;
+            }
+        }
+        .token-input {
+            background: none;
+            width: 0%; //60px;
+            min-width: 60px;
+            border: 0;
+            padding: 0;
+            margin-bottom: 6px;
+            box-shadow: none;
+            max-width: 100%;
+            &:focus {
+                border-color: transparent;
+                outline: 0;
+                box-shadow: none;
+            }
+        }
+        &.disabled {
+            cursor: not-allowed;
+            background-color: #eeeeee;
+        }
+    }
+}

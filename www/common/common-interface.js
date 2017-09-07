@@ -7,9 +7,10 @@ define([
     '/common/notify.js',
     '/common/visible.js',
     '/common/tippy.min.js',
+    '/common/hyperscript.js',
+    '/bower_components/bootstrap-tokenfield/dist/bootstrap-tokenfield.js',
     'css!/common/tippy.css',
-], function ($, Messages, Util, AppConfig, Alertify, Notify, Visible, Tippy) {
-
+], function ($, Messages, Util, AppConfig, Alertify, Notify, Visible, Tippy, h) {
     var UI = {};
 
     /*
@@ -20,11 +21,17 @@ define([
     // set notification timeout
     Alertify._$$alertify.delay = AppConfig.notificationTimeout || 5000;
 
-    var findCancelButton = UI.findCancelButton = function () {
+    var findCancelButton = UI.findCancelButton = function (root) {
+        if (root) {
+            return $(root).find('button.cancel').last();
+        }
         return $('button.cancel').last();
     };
 
-    var findOKButton = UI.findOKButton = function () {
+    var findOKButton = UI.findOKButton = function (root) {
+        if (root) {
+            return $(root).find('button.ok').last();
+        }
         return $('button.ok').last();
     };
 
@@ -33,7 +40,6 @@ define([
             switch (e.which) {
                 case 27: // cancel
                     if (typeof(no) === 'function') { no(e); }
-                    no();
                     break;
                 case 13: // enter
                     if (typeof(yes) === 'function') { yes(e); }
@@ -361,6 +367,127 @@ define([
                 subtree: true
             });
         }
+    };
+
+    UI.tokenField = function (target) {
+        var t = {
+            element: target || h('input'),
+        };
+        var $t = t.tokenfield = $(t.element).tokenfield();
+        t.getTokens = function () {
+            return $t.tokenfield('getTokens').map(function (token) {
+                return token.value;
+            });
+        };
+
+        t.preventDuplicates = function (cb) {
+            $t.on('tokenfield:createtoken', function (ev) {
+                var val;
+                if (t.getTokens().some(function (t) {
+                    if (t === ev.attrs.value) { return ((val = t)); }
+                })) {
+                    ev.preventDefault();
+                    if (typeof(cb) === 'function') { cb(val); }
+                }
+            });
+            return t;
+        };
+
+        t.setTokens = function (tokens) {
+            $t.tokenfield('setTokens',
+                tokens.map(function (token) {
+                    return {
+                        value: token,
+                        label: token,
+                    };
+                }));
+        };
+
+        t.focus = function () {
+            var $temp = $t.closest('.tokenfield').find('.token-input');
+            $temp.css('width', '20%');
+            $t.tokenfield('focusInput', $temp[0]);
+        };
+
+        return t;
+    };
+
+    var dialog = UI.dialog = {};
+    dialog.okButton = function () {
+        return h('button.ok', { tabindex: '2', }, Messages.okButton);
+    };
+
+    dialog.cancelButton = function () {
+        return h('button.cancel', { tabindex: '1'}, Messages.cancelButton);
+    };
+
+    dialog.message = function (text) {
+        return h('p.message', text);
+    };
+
+    dialog.textInput = function (opt) {
+        return h('input', opt || {
+            placeholder: '',
+            type: 'text',
+            'class': 'cp-text-input',
+        });
+    };
+
+    dialog.nav = function (content) {
+        return h('nav', content || [
+            dialog.cancelButton(),
+            dialog.okButton(),
+        ]);
+    };
+
+    dialog.frame = function (content) {
+        return h('div.alertify', [
+            h('div.dialog', [
+                h('div', content),
+            ])
+        ]);
+    };
+
+    dialog.tagPrompt = function (tags, cb) {
+        var input = dialog.textInput();
+
+        var tagger = dialog.frame([
+            dialog.message('make some tags'), // TODO translate
+            input,
+            dialog.nav(),
+        ]);
+
+        var field = UI.tokenField(input).preventDuplicates(function (val) {
+            UI.warn('Duplicate tag: ' + val); // TODO translate
+        });
+
+        var close = Util.once(function () {
+            var $t = $(tagger).fadeOut(150, function () { $t.remove(); });
+        });
+
+        var listener = listenForKeys(function () {}, function () {
+            close();
+            stopListening(listener);
+        });
+
+        var CB = Util.once(cb);
+        findOKButton(tagger).click(function () {
+            var tokens = field.getTokens();
+            close();
+            CB(tokens);
+        });
+        findCancelButton(tagger).click(function () {
+            close();
+            CB(null);
+        });
+
+        // :(
+        setTimeout(function () {
+            field.setTokens(tags);
+            field.focus();
+        });
+
+        return tagger;
     };
 
     return UI;
