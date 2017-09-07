@@ -374,7 +374,7 @@ define([
         var $displayName = $userAdmin.find('.'+displayNameCls);
 
         var $avatar = $userAdmin.find('.cp-dropdown-button-title');
-        var oldUrl;
+        var oldUrl = '';
         var updateButton = function () {
             var myData = metadataMgr.getUserData();
             if (!myData) { return; }
@@ -383,7 +383,7 @@ define([
             $displayName.text(newName || Messages.anonymous);
             if (accountName && oldUrl !== url) {
                 $avatar.html('');
-                UI.displayAvatar(Common, $avatar, url, newName, function ($img) {
+                UI.displayAvatar(Common, $avatar, url, newName || Messages.anonymous, function ($img) {
                     oldUrl = url;
                     if ($img) {
                         $userAdmin.find('button').addClass('cp-avatar');

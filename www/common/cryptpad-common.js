@@ -1967,7 +1967,7 @@ define([
         };
         var $userAdmin = createDropdown(dropdownConfigUser);
 
-        var oldUrl;
+        var oldUrl = '';
         if (account && !config.static && store) {
             var $avatar = $userAdmin.find('.cp-dropdown-button-title');
             var updateButton = function (newName) {
@@ -1977,7 +1977,7 @@ define([
                 if (oldUrl === url) { return; }
                 oldUrl = url;
                 $avatar.html('');
-                common.displayAvatar($avatar, url, newName, function ($img) {
+                common.displayAvatar($avatar, url, newName || Messages.anonymous, function ($img) {
                     if ($img) {
                         $userAdmin.find('button').addClass('avatar');
                     }
