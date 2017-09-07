@@ -4,6 +4,9 @@ define([
     '/common/cryptpad-common.js',
     '/common/test.js',
     '/common/credential.js', // preloaded for login.js
+
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/customize/src/less/loading.less',
 ], function ($, Login, Cryptpad, Test) {
     var Messages = Cryptpad.Messages;
 
@@ -128,7 +131,10 @@ define([
                 registering = true;
                 // setTimeout 100ms to remove the keyboard on mobile devices before the loading screen pops up
                 window.setTimeout(function () {
-                    Cryptpad.addLoadingScreen({loadingText: Messages.login_hashing});
+                    Cryptpad.addLoadingScreen({
+                        loadingText: Messages.login_hashing,
+                        hideTips: true,
+                    });
                     // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed after hashing the password
                     window.setTimeout(function () {
                         Login.loginOrRegister(uname, passwd, true, function (err, result) {
@@ -193,7 +199,7 @@ define([
                             logMeIn(result);
                         });
                     }, 0);
-                }, 100);
+                }, 200);
             }, {
                 ok: Messages.register_writtenPassword,
                 cancel: Messages.register_cancel,
