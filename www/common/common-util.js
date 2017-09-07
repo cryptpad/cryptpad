@@ -170,5 +170,15 @@ define([], function () {
         return parts[0];
     };
 
+    /* for wrapping async functions such that they can only be called once */
+    Util.once = function (f) {
+        var called;
+        return function () {
+            if (called) { return; }
+            called = true;
+            f.apply(this, Array.prototype.slice.call(arguments));
+        };
+    };
+
     return Util;
 });
