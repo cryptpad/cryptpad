@@ -109,4 +109,8 @@ define({
     'Q_UPLOAD_FILE': true,
     'EV_FILE_UPLOAD_STATE': true,
     'Q_CANCEL_PENDING_FILE_UPLOAD': true,
+
+    // Present mode URL
+    'Q_PRESENT_URL_GET_VALUE': true,
+    'EV_PRESENT_URL_SET_VALUE': true,
 });

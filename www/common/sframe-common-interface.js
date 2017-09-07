@@ -26,6 +26,7 @@ define([
         var AppConfig = common.getAppConfig();
         var button;
         var size = "17px";
+        var sframeChan = common.getSframeChannel();
         switch (type) {
             case 'export':
                 button = $('<button>', {
@@ -110,7 +111,7 @@ define([
                                     console.error("Parse error while setting the title", e);
                                 }
                             }
-                            ctx.sframeChan.query('Q_SAVE_AS_TEMPLATE', {
+                            sframeChan.query('Q_SAVE_AS_TEMPLATE', {
                                 title: title,
                                 toSave: toSave
                             }, function () {
@@ -136,12 +137,12 @@ define([
                     button
                     .click(common.prepareFeedback(type))
                     .click(function() {
-                        var msg = isLoggedIn() ? Messages.forgetPrompt : Messages.fm_removePermanentlyDialog;
+                        var msg = common.isLoggedIn() ? Messages.forgetPrompt : Messages.fm_removePermanentlyDialog;
                         Cryptpad.confirm(msg, function (yes) {
                             if (!yes) { return; }
-                            ctx.sframeChan.query('Q_MOVE_TO_TRASH', null, function (err) {
+                            sframeChan.query('Q_MOVE_TO_TRASH', null, function (err) {
                                 if (err) { return void callback(err); }
-                                var cMsg = isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
+                                var cMsg = common.isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
                                 Cryptpad.alert(cMsg, undefined, true);
                                 callback();
                                 return;
@@ -150,6 +151,13 @@ define([
 
                     });
                 }
+                break;
+            case 'present':
+                button = $('<button>', {
+                    title: Messages.presentButtonTitle,
+                    'class': "fa fa-play-circle cp-app-slide-present-button", // used in slide.js
+                    style: 'font:'+size+' FontAwesome'
+                });
                 break;
             case 'history':
                 if (!AppConfig.enableHistory) {

@@ -8,7 +8,7 @@ define([], function () {
         var version = userObject.version || 0;
 
         // Migration 1: pad attributes moved to filesData
-        var migrateAttributes = function () {
+        var migratePadAttributesToData = function () {
             var files = userObject && userObject.drive;
             if (!files) { return; }
 
@@ -39,7 +39,7 @@ define([], function () {
             // Migration done
         };
         if (version < 1) {
-            migrateAttributes();
+            migratePadAttributesToData();
             Cryptpad.feedback('Migrate-1', true);
             userObject.version = version = 1;
         }

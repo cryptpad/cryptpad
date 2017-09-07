@@ -149,20 +149,21 @@ define([
         }).on('change', function () {
             var val = parseInt($input.val());
             if (typeof(val) !== 'number') { return; }
-            proxy.settings.indentUnit = val;
+            Cryptpad.setAttribute(['codemirror', 'indentUnit'], val);
         }).appendTo($inputBlock);
 
-        proxy.on('change', [ 'settings', 'indentUnit', ], function (o, n) { $input.val(n); });
+        proxy.on('change', [ 'settings', 'codemirror', 'indentUnit', ], function (o, n) {
+            $input.val(n);
+        });
 
-        //Cryptpad.getAttribute('indentUnit', function (e, val) {
-            //if (e) { return void console.error(e); }
-            var val = proxy.settings.indentUnit;
+        Cryptpad.getAttribute(['codemirror', 'indentUnit'], function (e, val) {
+            if (e) { return void console.error(e); }
             if (typeof(val) !== 'number') {
                 $input.val(2);
             } else {
                 $input.val(val);
             }
-        //});
+        });
         return $div;
     };
 
@@ -187,12 +188,18 @@ define([
         }).on('change', function () {
             var val = $input.is(':checked');
             if (typeof(val) !== 'boolean') { return; }
-            proxy.settings[key] = val;
+            Cryptpad.setAttribute(['codemirror', key], val);
         }).appendTo($inputBlock);
 
         $input[0].checked = !!proxy.settings[key];
-        proxy.on('change', ['settings', key], function (o, n) { $input[0].checked = !!n; });
+        proxy.on('change', ['settings', 'codemirror', key], function (o, n) {
+            $input[0].checked = !!n;
+        });
 
+        Cryptpad.getAttribute(['codemirror', key], function (e, val) {
+            if (e) { return void console.error(e); }
+            $input[0].checked = !!val;
+        });
         return $div;
     };
 

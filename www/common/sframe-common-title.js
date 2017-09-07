@@ -1,7 +1,7 @@
 define(['jquery'], function ($) {
     var module = {};
 
-    module.create = function (Common, cfg, onLocal) {
+    module.create = function (Common, cfg) {
         var exp = {};
         var metadataMgr = Common.getMetadataMgr();
         var sframeChan = Common.getSframeChannel();

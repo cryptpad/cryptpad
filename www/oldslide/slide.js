@@ -1,7 +1,8 @@
 define([
     'jquery',
     '/common/diffMarked.js',
-],function ($, DiffMd) {
+    '/common/cryptpad-common.js',
+],function ($, DiffMd, Cryptpad) {
 
     var Slide = {
         index: 0,
@@ -12,13 +13,13 @@ define([
     var ifrw;
     var $modal;
     var $content;
+    var $pad;
     var placeholder;
     var options;
     var separator = '<hr data-pewpew="pezpez">';
     var separatorReg = /<hr data\-pewpew="pezpez">/g;
-    var slideClass = 'cp-app-slide-frame';
+    var slideClass = 'slide-frame';
     var Title;
-    var Common;
 
     Slide.onChange = function (f) {
         if (typeof(f) === 'function') {
@@ -59,21 +60,21 @@ define([
     };
 
     var fixCSS = function (css) {
-        var append = '.cp #cp-app-slide-print .cp-app-slide-frame ';
-        var append2 = '.cp div#cp-app-slide-modal #cp-app-slide-modal-content .cp-app-slide-frame ';
+        var append = '.cp #print .slide-frame ';
+        var append2 = '.cp div#modal #content .slide-frame ';
         return css.replace(/(\n*)([^\n}]+)\s*\{/g, '$1' + append + '$2,' + append2 + '$2 {');
     };
 
     var goTo = Slide.goTo = function (i) {
         i = i || 0;
         Slide.index = i;
-        $content.find('.cp-app-slide-container').first().css('margin-left', -(i*100)+'%');
+        $content.find('.slide-container').first().css('margin-left', -(i*100)+'%');
         updateFontSize();
         change(Slide.lastIndex, Slide.index);
-        $modal.find('#cp-app-slide-modal-left > span').css({
+        $modal.find('#button_left > span').css({
             opacity: Slide.index === 0? 0: 1
         });
-        $modal.find('#cp-app-slide-modal-right > span').css({
+        $modal.find('#button_right > span').css({
             opacity: Slide.index === (getNumberOfSlides() -1)? 0: 1
         });
     };
@@ -81,29 +82,29 @@ define([
         if (typeof(Slide.content) !== 'string') { return; }
 
         var c = Slide.content;
-        var m = '<span class="cp-app-slide-container"><span class="'+slideClass+'">'+DiffMd.render(c).replace(separatorReg, '</span></span><span class="cp-app-slide-container"><span class="'+slideClass+'">')+'</span></span>';
+        var m = '<span class="slide-container"><span class="'+slideClass+'">'+DiffMd.render(c).replace(separatorReg, '</span></span><span class="slide-container"><span class="'+slideClass+'">')+'</span></span>';
 
         DiffMd.apply(m, $content);
 
         var length = getNumberOfSlides();
-        $modal.find('style.cp-app-slide-style').remove();
+        $modal.find('style.slideStyle').remove();
         if (options.style && Slide.shown) {
-            $modal.prepend($('<style>', {'class': 'cp-app-slide-style'}).text(fixCSS(options.style)));
+            $modal.prepend($('<style>', {'class': 'slideStyle'}).text(fixCSS(options.style)));
         }
-        $content.find('.cp-app-slide-frame').each(function (i, el) {
+        $content.find('.slide-frame').each(function (i, el) {
             if (options.slide) {
-                $('<div>', {'class': 'cp-app-slide-number'}).text((i+1)+'/'+length).appendTo($(el));
+                $('<div>', {'class': 'slideNumber'}).text((i+1)+'/'+length).appendTo($(el));
             }
             if (options.date) {
-                $('<div>', {'class': 'cp-app-slide-date'}).text(new Date().toLocaleDateString()).appendTo($(el));
+                $('<div>', {'class': 'slideDate'}).text(new Date().toLocaleDateString()).appendTo($(el));
             }
             if (options.title) {
-                $('<div>', {'class': 'cp-app-slide-title'}).text(Title.title).appendTo($(el));
+                $('<div>', {'class': 'slideTitle'}).text(Title.title).appendTo($(el));
             }
         });
-        $content.removeClass('cp-app-slide-transition');
+        $content.removeClass('transition');
         if (options.transition || typeof(options.transition) === "undefined") {
-            $content.addClass('cp-app-slide-transition');
+            $content.addClass('transition');
         }
         //$content.find('.' + slideClass).hide();
         //$content.find('.' + slideClass + ':eq( ' + i + ' )').show();
@@ -115,29 +116,46 @@ define([
         draw(Slide.index);
     };
 
+    var isPresentURL = Slide.isPresentURL = function () {
+        var parsed = Cryptpad.parsePadUrl(window.location.href);
+        return parsed && parsed.hashData && parsed.hashData.present;
+    };
+
     var show = Slide.show = function (bool, content) {
+        var parsed = Cryptpad.parsePadUrl(window.location.href);
+        var hashData = parsed.hashData || {};
         Slide.shown = bool;
         if (bool) {
             Slide.update(content);
             Slide.draw(Slide.index);
-            $modal.addClass('cp-app-slide-shown');
+            $modal.addClass('shown');
             $(ifrw).focus();
             change(null, Slide.index);
-            Common.setPresentUrl(true);
-            $('.cp-app-slide-present-button').hide();
+            if (!isPresentURL()) {
+                window.location += parsed.getUrl({present: true, embed: hashData.embed});
+            }
+            $pad.contents().find('.cryptpad-present-button').hide();
+            $pad.contents().find('.cryptpad-source-button').show();
+            $pad.addClass('fullscreen');
+            $('#iframe-container').addClass('fullscreen');
+            $('.top-bar').hide();
             updateFontSize();
             return;
         }
-        Common.setPresentUrl(false);
+        window.location = parsed.getUrl({embed: hashData.embed});
         change(Slide.index, null);
-        $('.cp-app-slide-present-button').show();
-        $('.cp-app-slide-source-button').hide();
-        $modal.removeClass('cp-app-slide-shown');
+        $pad.contents().find('.cryptpad-present-button').show();
+        $pad.contents().find('.cryptpad-source-button').hide();
+        $pad.removeClass('fullscreen');
+        $('#iframe-container').removeClass('fullscreen');
+        $('.top-bar').show();
+        $modal.removeClass('shown');
         updateFontSize();
     };
 
     Slide.update = function (content) {
         updateFontSize();
+        //if (!init) { return; }
         if (!content) { content = ''; }
         var old = Slide.content;
         Slide.content = content.replace(/\n\s*\-\-\-\s*\n/g, '\n\n'+separator+'\n\n');
@@ -181,34 +199,33 @@ define([
     };
 
     var addEvent = function () {
-        console.log($modal);
         var icon_to;
         $modal.mousemove(function () {
-            var $buttons = $modal.find('.cp-app-slide-modal-button');
+            var $buttons = $modal.find('.button');
             $buttons.show();
             if (icon_to) { window.clearTimeout(icon_to); }
             icon_to = window.setTimeout(function() {
                 $buttons.fadeOut();
             }, 1000);
         });
-        $modal.find('#cp-app-slide-modal-exit').click(function () {
+        $modal.find('#button_exit').click(function () {
             var ev = $.Event("keyup");
             ev.which = 27;
             $modal.trigger(ev);
         });
-        $modal.find('#cp-app-slide-modal-left').click(function () {
+        $modal.find('#button_left').click(function () {
             var ev = $.Event("keyup");
             ev.which = 37;
             $modal.trigger(ev);
         });
-        $modal.find('#cp-app-slide-modal-right').click(function () {
+        $modal.find('#button_right').click(function () {
             console.log('right');
             var ev = $.Event("keyup");
             ev.which = 39;
             $modal.trigger(ev);
         });
 
-        $('.CodeMirror').keyup(function (e) { e.stopPropagation(); });
+        $pad.contents().find('.CodeMirror').keyup(function (e) { e.stopPropagation(); });
         $(ifrw).on('keyup', function (e) {
             //if (!Slide.shown) { return; }
             if (e.ctrlKey) { return; }
@@ -285,11 +302,11 @@ define([
     };
 
 
-    Slide.setModal = function (common, $m, $c, opt, ph) {
-        Common = common;
+    Slide.setModal = function ($m, $c, $p, iframe, opt, ph) {
         $modal = Slide.$modal = $m;
         $content = Slide.$content = $c;
-        ifrw = Slide.ifrw = window;
+        $pad = Slide.$pad = $p;
+        ifrw = Slide.ifrw = iframe;
         placeholder = Slide.placeholder = ph;
         options = Slide.options = opt;
         addEvent();

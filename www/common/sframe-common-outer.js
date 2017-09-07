@@ -234,7 +234,21 @@ define([
                 });
             });
 
+            // Present mode URL
+            sframeChan.on('Q_PRESENT_URL_GET_VALUE', function (data, cb) {
+                var parsed = Cryptpad.parsePadUrl(window.location.href);
+                cb(parsed.hashData && parsed.hashData.present);
+            });
+            sframeChan.on('EV_PRESENT_URL_SET_VALUE', function (data) {
+                var parsed = Cryptpad.parsePadUrl(window.location.href);
+                window.location.href = parsed.getUrl({
+                    embed: parsed.hashData.embed,
+                    present: data
+                });
+            });
 
+
+            // File upload
             var onFileUpload = function (sframeChan, data, cb) {
                 var sendEvent = function (data) {
                     sframeChan.event("EV_FILE_UPLOAD_STATE", data);
@@ -270,6 +284,7 @@ define([
                 onFileUpload(sframeChan, data, cb);
             });
 
+            // File picker
             var FP = {};
             var initFilePicker = function (types) {
                 var config = {};

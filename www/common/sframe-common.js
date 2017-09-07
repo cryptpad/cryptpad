@@ -8,12 +8,14 @@ define([
     '/common/sframe-common-interface.js',
     '/common/sframe-common-history.js',
     '/common/sframe-common-file.js',
+    '/common/sframe-common-codemirror.js',
     '/common/metadata-manager.js',
 
     '/customize/application_config.js',
     '/common/cryptpad-common.js',
     '/common/common-realtime.js'
-], function ($, nThen, Messages, CpNfInner, SFrameChannel, Title, UI, History, File, MetadataMgr,
+], function ($, nThen, Messages, CpNfInner, SFrameChannel, Title, UI, History, File, CodeMirror,
+    MetadataMgr,
     AppConfig, Cryptpad, CommonRealtime) {
 
     // Chainpad Netflux Inner
@@ -36,7 +38,7 @@ define([
     funcs.getSframeChannel = function () { return ctx.sframeChan; };
     funcs.getAppConfig = function () { return AppConfig; };
 
-    var isLoggedIn = funcs.isLoggedIn = function () {
+    funcs.isLoggedIn = function () {
         if (!ctx.cpNfInner) { throw new Error("cpNfInner is not ready!"); }
         return ctx.cpNfInner.metadataMgr.getPrivateData().accountName;
     };
@@ -69,12 +71,8 @@ define([
     funcs.uploadFile = callWithCommon(File.uploadFile);
     funcs.createFileManager = callWithCommon(File.create);
 
-    // Misc
-
-    funcs.setDisplayName = function (name, cb) {
-        cb = cb || $.noop;
-        ctx.sframeChan.query('Q_SETTINGS_SET_DISPLAY_NAME', name, cb);
-    };
+    // CodeMirror
+    funcs.initCodeMirrorApp = callWithCommon(CodeMirror.create);
 
     // Window
     funcs.logout = function (cb) {
@@ -89,6 +87,13 @@ define([
     funcs.setLoginRedirect = function (cb) {
         cb = cb || $.noop;
         ctx.sframeChan.query('Q_SET_LOGIN_REDIRECT', null, cb);
+    };
+
+    funcs.isPresentUrl = function (cb) {
+        ctx.sframeChan.query('Q_PRESENT_URL_GET_VALUE', null, cb);
+    };
+    funcs.setPresentUrl = function (value) {
+        ctx.sframeChan.event('EV_PRESENT_URL_SET_VALUE', value);
     };
 
     // Store
@@ -146,6 +151,11 @@ define([
     funcs.isStrongestStored = function () {
         var data = ctx.metadataMgr.getPrivateData();
         return !data.readOnly || !data.availableHashes.editHash;
+    };
+
+    funcs.setDisplayName = function (name, cb) {
+        cb = cb || $.noop;
+        ctx.sframeChan.query('Q_SETTINGS_SET_DISPLAY_NAME', name, cb);
     };
 
     // Friends
