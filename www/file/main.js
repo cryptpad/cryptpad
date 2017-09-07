@@ -91,7 +91,14 @@ define([
                 Title.updateTitle(title || Title.defaultTitle);
                 toolbar.addElement(['pageTitle'], {pageTitle: title});
 
-                var displayFile = function (ev, sizeMb) {
+                var displayFile = function (ev, sizeMb, CB) {
+                    var called_back;
+                    var cb = function (e) {
+                        if (called_back) { return; }
+                        called_back = true;
+                        if (CB) { CB(e); }
+                    };
+
                     var $mt = $dlview.find('media-tag');
                     var cryptKey = secret.keys && secret.keys.fileKeyStr;
                     var hexFileName = Cryptpad.base64ToHex(secret.channel);
@@ -127,7 +134,7 @@ define([
 
                         // make pdfs big
                         var toolbarHeight = $iframe.find('#toolbar').height();
-                        $iframe.find('media-tag iframe').css({
+                        var $another_iframe = $iframe.find('media-tag iframe').css({
                             'height': 'calc(100vh - ' + toolbarHeight + 'px)',
                             'width': '100vw',
                             'position': 'absolute',
@@ -135,10 +142,19 @@ define([
                             'left': 0,
                             'border': 0
                         });
+
+                        if ($another_iframe.length) {
+                            $another_iframe.load(function () {
+                                cb();
+                            });
+                        } else {
+                            cb();
+                        }
                     })
                     .on('decryptionError', function (e) {
                         var error = e.originalEvent;
-                        Cryptpad.alert(error.message);
+                        //Cryptpad.alert(error.message);
+                        cb(error.message);
                     })
                     .on('decryptionProgress', function (e) {
                         var progress = e.originalEvent;
@@ -188,7 +204,9 @@ define([
                     var onClick = function (ev) {
                         if (decrypting) { return; }
                         decrypting = true;
-                        displayFile(ev, sizeMb);
+                        displayFile(ev, sizeMb, function (err) {
+                            if (err) { Cryptpad.alert(err); }
+                        });
                     };
                     if (typeof(sizeMb) === 'number' && sizeMb < 5) { return void onClick(); }
                     $dlform.find('#dl, #progress').click(onClick);

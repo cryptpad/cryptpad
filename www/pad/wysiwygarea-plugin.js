@@ -8,9 +8,9 @@
  *		mode, which handles the main editing area space.
  */
 
-( function() {
+define(['/api/config'], function (ApiConfig) {
     var framedWysiwyg;
-    var iframe;
+	var iframe;
 
 	CKEDITOR.plugins.registered.wysiwygarea.init = function( editor ) {
         if ( editor.config.fullPage ) {
@@ -39,7 +39,7 @@
             }
             
             // CryptPad
-            src = '/pad/ckeditor-inner.html';
+            src = '/pad/ckeditor-inner.html?' + ApiConfig.requireConf.urlArgs;
 
             iframe = CKEDITOR.dom.element.createFromHtml( '<iframe src="' + src + '" frameBorder="0"></iframe>' );
             iframe.setStyles( { width: '100%', height: '100%' } );
@@ -55,7 +55,12 @@
 
             // Asynchronous iframe loading is only required in IE>8 and Gecko (other reasons probably).
             // Do not use it on WebKit as it'll break the browser-back navigation.
-            var useOnloadEvent = ( CKEDITOR.env.ie && !CKEDITOR.env.edge ) || CKEDITOR.env.gecko;
+			var useOnloadEvent = ( CKEDITOR.env.ie && !CKEDITOR.env.edge ) || CKEDITOR.env.gecko;
+
+			// CryptPad
+			// This breaks Edge so lets use async all of the time
+			useOnloadEvent = true;
+
             if ( useOnloadEvent )
                 iframe.on( 'load', onLoad );
 
@@ -641,7 +646,7 @@
 
 		return css.join( '\n' );
 	}
-} )();
+});
 
 /**
  * Disables the ability to resize objects (images and tables) in the editing area.

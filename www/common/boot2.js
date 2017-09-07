@@ -1,29 +1,23 @@
 // This is stage 1, it can be changed but you must bump the version of the project.
-define([], function () {
-    // fix up locations so that relative urls work.
-    require.config({
-        baseUrl: window.location.pathname,
-        paths: {
-            // jquery declares itself as literally "jquery" so it cannot be pulled by path :(
-            "jquery": "/bower_components/jquery/dist/jquery.min",
-            // json.sortify same
-            "json.sortify": "/bower_components/json.sortify/dist/JSON.sortify",
-            //"pdfjs-dist/build/pdf": "/bower_components/pdfjs-dist/build/pdf",
-            //"pdfjs-dist/build/pdf.worker": "/bower_components/pdfjs-dist/build/pdf.worker"
-            cm: '/bower_components/codemirror'
-        },
-        map: {
-            '*': {
-                'css': '/bower_components/require-css/css.js',
-                'less': '/common/RequireLess.js',
-            }
-        }
-    });
+define([
+    '/common/requireconfig.js'
+], function (RequireConfig) {
+    require.config(RequireConfig());
 
     // most of CryptPad breaks if you don't support isArray
     if (!Array.isArray) {
         Array.isArray = function(arg) { // CRYPTPAD_SHIM
             return Object.prototype.toString.call(arg) === '[object Array]';
+        };
+    }
+
+    // file encryption/decryption won't work if you don't have Array.fill
+    if (typeof(Array.prototype.fill) !== 'function') {
+        Array.prototype.fill = function (x) { // CRYPTPAD_SHIM
+            var i = 0;
+            var l = this.length;
+            for (;i < l; i++) { this[i] = x; }
+            return this;
         };
     }
 

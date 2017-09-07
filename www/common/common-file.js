@@ -6,6 +6,23 @@ define([
     var Nacl = window.nacl;
     var module = {};
 
+    var blobToArrayBuffer = function (blob, cb) {
+        var reader = new FileReader();
+        reader.onloadend = function () {
+            cb(void 0, this.result);
+        };
+        reader.readAsArrayBuffer(blob);
+    };
+
+    var arrayBufferToString = function (AB) {
+        try {
+            return Nacl.util.encodeBase64(new Uint8Array(AB));
+        } catch (e) {
+            console.error(e);
+            return null;
+        }
+    };
+
     module.create = function (common, config) {
         var File = {};
 
@@ -227,19 +244,33 @@ define([
             queue.next();
         };
 
-        var handleFile = File.handleFile = function (file, e) {
-            var reader = new FileReader();
-            reader.onloadend = function () {
+        var handleFile = File.handleFile = function (file, e, thumbnail) {
+            var thumb;
+            var finish = function (arrayBuffer) {
+                var metadata = {
+                    name: file.name,
+                    type: file.type,
+                };
+                if (thumb) { metadata.thumbnail = thumb; }
                 queue.push({
-                    blob: this.result,
-                    metadata: {
-                        name: file.name,
-                        type: file.type,
-                    },
+                    blob: arrayBuffer,
+                    metadata: metadata,
                     dropEvent: e
                 });
             };
-            reader.readAsArrayBuffer(file);
+
+            var processFile = function () {
+                blobToArrayBuffer(file, function (e, buffer) {
+                    finish(buffer);
+                });
+            };
+
+            if (!thumbnail) { return void processFile(); }
+            blobToArrayBuffer(thumbnail, function (e, buffer) {
+                if (e) { console.error(e); }
+                thumb = arrayBufferToString(buffer);
+                processFile();
+            });
         };
 
         var onFileDrop = File.onFileDrop = function (file, e) {

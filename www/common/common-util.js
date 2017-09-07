@@ -7,6 +7,11 @@ define([], function () {
         }, map));
     };
 
+    Util.uid = function () {
+        return Number(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER))
+            .toString(32).replace(/\./g, '');
+    };
+
     Util.fixHTML = function (str) {
         if (!str) { return ''; }
         return str.replace(/[<>&"']/g, function (x) {

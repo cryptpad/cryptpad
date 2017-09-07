@@ -77,7 +77,7 @@ define([
                     ])
                 ])
             ]),
-            h('div.cp-version-footer', "CryptPad v1.13.0 (Naiad)")
+            h('div.cp-version-footer', "CryptPad v1.14.0 (Ouroboros)")
         ]);
     };
 
@@ -291,32 +291,54 @@ define([
     Pages['/what-is-cryptpad.html'] = function () {
         return h('div#cp-main', [
             infopageTopbar(),
-            h('div.container.cp-container', [
-                h('center', h('h1', Msg.whatis_title)),
-                setHTML(h('h2'), Msg.whatis_collaboration),
-                setHTML(h('p'), Msg.whatis_collaboration_p1),
-                h('img', { src: '/customize/images/pad_screenshot.png?' + urlArgs }),
-                setHTML(h('p'), Msg.whatis_collaboration_p2),
-                setHTML(h('p'), Msg.whatis_collaboration_p3),
-                setHTML(h('h2'), Msg.whatis_zeroknowledge),
-                h('div.row', [
-                    h('div.col-md-4.align-self-center', [
-                        h('img#zeroknowledge', { src: '/customize/images/zeroknowledge_small.png?' + urlArgs }),
+            h('div.container-fluid.cp-what-is',[
+                h('div.container',[
+                    h('div.row',[
+                        h('div.col-12.text-center', h('h1', Msg.whatis_title)),
                     ]),
-                    h('div.col-md-8', [
+                ]),
+            ]),
+            h('div.container.cp-container', [
+                h('div.row.align-items-center', [
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6', [
+                        setHTML(h('h2'), Msg.whatis_collaboration),
+                        setHTML(h('p'), Msg.whatis_collaboration_p1),
+                        setHTML(h('p'), Msg.whatis_collaboration_p2),
+                        setHTML(h('p'), Msg.whatis_collaboration_p3),
+                    ]),
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6', [
+                        h('img', { src: '/customize/images/pad_screenshot.png?' + urlArgs }),
+                    ]),
+                ]),
+                h('div.row.align-items-center', [
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.push-lg-6', [
+                        setHTML(h('h2'), Msg.whatis_zeroknowledge),
                         setHTML(h('p'), Msg.whatis_zeroknowledge_p1),
                         setHTML(h('p'), Msg.whatis_zeroknowledge_p2),
                         setHTML(h('p'), Msg.whatis_zeroknowledge_p3),
                     ]),
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.pull-lg-6', [
+                        h('img#zeroknowledge', { src: '/customize/images/zeroknowledge_small.png?' + urlArgs }),
+                    ]),
                 ]),
-                setHTML(h('h2'), Msg.whatis_drive),
-                setHTML(h('p'), Msg.whatis_drive_p1),
-                h('img', { src: '/customize/images/drive_screenshot.png?' + urlArgs }),
-                setHTML(h('p'), Msg.whatis_drive_p2),
-                setHTML(h('p'), Msg.whatis_drive_p3),
-                setHTML(h('h2'), Msg.whatis_business),
-                setHTML(h('p'), Msg.whatis_business_p1),
-                setHTML(h('p'), Msg.whatis_business_p2),
+                h('div.row.align-items-center', [
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6', [
+                        setHTML(h('h2'), Msg.whatis_drive),
+                        setHTML(h('p'), Msg.whatis_drive_p1),
+                        setHTML(h('p'), Msg.whatis_drive_p2),
+                        setHTML(h('p'), Msg.whatis_drive_p3),
+                    ]),
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6', [
+                        h('img', { src: '/customize/images/drive_screenshot.png?' + urlArgs }),
+                    ]),
+                ]),
+                h('div.row.align-items-center', [
+                    h('div.col-12', [
+                        setHTML(h('h2.text-center'), Msg.whatis_business),
+                        setHTML(h('p'), Msg.whatis_business_p1),
+                        setHTML(h('p'), Msg.whatis_business_p2),
+                    ]),
+                ]),
             ]),
             infopageFooter(),
         ]);
@@ -388,7 +410,7 @@ define([
                 }),
                 h('div.spinnerContainer',
                     h('span.fa.fa-circle-o-notch.fa-spin.fa-4x.fa-fw')),
-                h('p', Msg.loading)
+                h('p'),
             ])
         );
     };
