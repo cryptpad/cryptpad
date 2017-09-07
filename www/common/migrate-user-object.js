@@ -64,5 +64,37 @@ define([], function () {
             Cryptpad.feedback('Migrate-2', true);
             userObject.version = version = 2;
         }
+
+
+        // Migration 3: global attributes from root to 'settings' subobjects
+        var migrateAttributes = function () {
+            var drawer = 'cryptpad.userlist-drawer';
+            var polls = 'cryptpad.hide_poll_text';
+            var indentKey = 'indentUnit';
+            var useTabsKey = 'indentWithTabs';
+            var settings = userObject.settings = userObject.settings || {};
+            if (settings[indentKey] || settings[useTabsKey]) {
+                settings.codemirror = settings.codemirror || {};
+                settings.codemirror.indentUnit = settings[indentKey];
+                settings.codemirror.indentWithTabs = settings[useTabsKey];
+                delete settings[indentKey];
+                delete settings[useTabsKey];
+            }
+            if (userObject[drawer]) {
+                settings.toolbar = settings.toolbar || {};
+                settings.toolbar['userlist-drawer'] = userObject[drawer];
+                delete userObject[drawer];
+            }
+            if (userObject[polls]) {
+                settings.poll = settings.poll || {};
+                settings.poll['hide-text'] = userObject[polls];
+                delete userObject[polls];
+            }
+        };
+        if (version < 3) {
+            migrateAttributes();
+            Cryptpad.feedback('Migrate-3', true);
+            userObject.version = version = 3;
+        }
     };
 });

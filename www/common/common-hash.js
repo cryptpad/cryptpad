@@ -68,7 +68,9 @@ Version 1
                 parsed.mode = hashArr[2];
                 parsed.channel = hashArr[3];
                 parsed.key = hashArr[4].replace(/-/g, '/');
-                parsed.present = typeof(hashArr[5]) === "string" && hashArr[5] === 'present';
+                var options = hashArr.slice(5);
+                parsed.present = options.indexOf('present') !== -1;
+                parsed.embed = options.indexOf('embed') !== -1;
                 return parsed;
             }
             return parsed;
@@ -114,6 +116,27 @@ Version 1
         if (href.slice(-1) !== '/') { href += '/'; }
 
         var idx;
+
+        ret.getUrl = function (options) {
+            options = options || {};
+            var url = '/';
+            if (!ret.type) { return url; }
+            url += ret.type + '/';
+            if (!ret.hashData) { return url; }
+            if (ret.hashData.type !== 'pad') { return url + '#' + ret.hash; }
+            if (ret.hashData.version !== 1) { throw new Error("Only v1 hashes are managed here."); }
+            url += '#/' + ret.hashData.version +
+                   '/' + ret.hashData.mode +
+                   '/' + ret.hashData.channel.replace(/\//g, '-') +
+                   '/' + ret.hashData.key.replace(/\//g, '-') +'/';
+            if (options.embed) {
+                url += 'embed/';
+            }
+            if (options.present) {
+                url += 'present/';
+            }
+            return url;
+        };
 
         if (!/^https*:\/\//.test(href)) {
             idx = href.indexOf('/#');

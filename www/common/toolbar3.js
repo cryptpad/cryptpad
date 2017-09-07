@@ -50,6 +50,12 @@ define([
     var createRealtimeToolbar = function (config) {
         if (!config.$container) { return; }
         var $container = config.$container;
+
+        var isEmbed = Bar.isEmbed = config.metadataMgr.getPrivateData().isEmbed;
+        if (isEmbed) {
+            $container.hide();
+        }
+
         var $toolbar = $('<div>', {
             'class': TOOLBAR_CLS,
             id: uid(),
@@ -222,7 +228,7 @@ define([
                 $span.append(avatars[data.avatar]);
                 $span.append($rightCol);
             } else {
-                Common.displayAvatar(Common, $span, data.avatar, name, function ($img) {
+                Common.displayAvatar($span, data.avatar, name, function ($img) {
                     if (data.avatar && $img) {
                         avatars[data.avatar] = $img[0].outerHTML;
                     }
@@ -250,17 +256,12 @@ define([
     };
 
     var initUserList = function (toolbar, config) {
-        // TODO clean comments
-        if (config.metadataMgr) { /* && config.userList.list && config.userList.userNetfluxId) {*/
-            //var userList = config.userList.list;
-            //userList.change.push
+        if (config.metadataMgr) {
             var metadataMgr = config.metadataMgr;
             metadataMgr.onChange(function () {
                 if (metadataMgr.isConnected()) {toolbar.connected = true;}
                 if (!toolbar.connected) { return; }
-                //if (config.userList.data) {
-                    updateUserList(toolbar, config);
-                //}
+                updateUserList(toolbar, config);
             });
         }
     };
@@ -304,6 +305,7 @@ define([
             });
         };
         var show = function () {
+            if (Bar.isEmbed) { $content.hide(); return; }
             $content.show();
             if (mobile) {
                 $ck.hide();
@@ -326,7 +328,7 @@ define([
             $content.css('margin-top', h+'px');
         });
         $closeIcon.click(function () {
-            //Cryptpad.setAttribute('userlist-drawer', false); TODO iframe
+            Common.setAttribute(['toolbar', 'userlist-drawer'], false);
             hide();
         });
         $button.click(function () {
@@ -334,16 +336,14 @@ define([
             if (visible) { hide(); }
             else { show(); }
             visible = !visible;
-            // TODO iframe
-            //Cryptpad.setAttribute('userlist-drawer', visible);
+            Common.setAttribute(['toolbar', 'userlist-drawer'], visible);
             Common.feedback(visible?'USERLIST_SHOW': 'USERLIST_HIDE');
         });
         show();
-        // TODO iframe
-        /*Cryptpad.getAttribute('userlist-drawer', function (err, val) {
+        Common.getAttribute(['toolbar', 'userlist-drawer'], function (err, val) {
             if (val === false || mobile) { return void hide(); }
             show();
-        });*/
+        });
 
         return $container;
     };
@@ -401,6 +401,15 @@ define([
                     content: '<span class="fa fa-eye"></span> ' + Messages.viewOpen
                 });
             }
+            options.push({tag: 'hr'});
+            options.push({
+                tag: 'a',
+                attributes: {
+                    title: Messages.viewEmbedTitle,
+                    'class': 'cp-toolbar-share-view-embed',
+                },
+                content: '<span class="fa fa-eye"></span> ' + Messages.getEmbedCode
+            });
         }
         var dropdownConfigShare = {
             text: $('<div>').append($shareIcon).html(),
@@ -431,6 +440,31 @@ define([
                 var success = Cryptpad.Clipboard.copy(url);
                 if (success) { Cryptpad.log(Messages.shareSuccess); }
             });
+            $shareBlock.find('a.cp-toolbar-share-view-embed').click(function () {
+                var url = origin + pathname + '#' + hashes.viewHash;
+                var parsed = Cryptpad.parsePadUrl(url);
+                url = origin + parsed.getUrl({embed: true});
+                // Alertify content
+                var $content = $('<div>');
+                $('<input>', {'style':'display:none;'}).appendTo($content);
+                $('<h3>').text(Messages.viewEmbedTitle).appendTo($content);
+                var $tag = $('<p>').text(Messages.fileEmbedTag).appendTo($content);
+                $('<br>').appendTo($tag);
+                var iframeId = uid();
+                var iframeEmbed = '<iframe src="' + url + '"></iframe>';
+                $('<input>', {
+                    type: 'text',
+                    id: iframeId,
+                    readonly: 'readonly',
+                    value: iframeEmbed,
+                }).appendTo($tag);
+                Cryptpad.alert($content.html(), null, true);
+                $('#'+iframeId).click(function () {
+                    this.select();
+                });
+                //var success = Cryptpad.Clipboard.copy(url);
+                //if (success) { Cryptpad.log(Messages.shareSuccess); }
+            });
         }
 
         toolbar.$leftside.append($shareBlock);
@@ -440,7 +474,7 @@ define([
     };
 
     var createFileShare = function (toolbar) {
-        try { throw new Error('TODO: Update createFileShare to add "embed" and work in secure iframes'); } catch (e) { return; }
+        if (true) { throw new Error('TODO: Update createFileShare to add "embed" and work in secure iframes'); }
         if (!window.location.hash) {
             throw new Error("Unable to display the share button: hash required in the URL");
         }
@@ -604,7 +638,7 @@ define([
                 window.open(href);
                 return;
             }
-            window.top.location = href;
+            window.parent.location = href;
         };
 
         var onContext = function (e) { e.stopPropagation(); };
@@ -733,8 +767,6 @@ define([
         var $userAdmin = toolbar.$userAdmin.find('.'+USERADMIN_CLS).show();
         var userMenuCfg = {
             $initBlock: $userAdmin,
-            metadataMgr: metadataMgr,
-            Common: Common
         };
         if (!config.hideDisplayName) {
             $.extend(true, userMenuCfg, {

@@ -1,7 +1,8 @@
 define([
     'jquery',
     '/common/diffMarked.js',
-],function ($, DiffMd) {
+    '/common/cryptpad-common.js',
+],function ($, DiffMd, Cryptpad) {
 
     var Slide = {
         index: 0,
@@ -116,13 +117,13 @@ define([
     };
 
     var isPresentURL = Slide.isPresentURL = function () {
-        var hash = window.location.hash;
-        // Present mode has /present at the end of the hash
-        var urlLastFragment = hash.slice(hash.lastIndexOf('/')+1);
-        return urlLastFragment === "present";
+        var parsed = Cryptpad.parsePadUrl(window.location.href);
+        return parsed && parsed.hashData && parsed.hashData.present;
     };
 
     var show = Slide.show = function (bool, content) {
+        var parsed = Cryptpad.parsePadUrl(window.location.href);
+        var hashData = parsed.hashData || {};
         Slide.shown = bool;
         if (bool) {
             Slide.update(content);
@@ -131,10 +132,7 @@ define([
             $(ifrw).focus();
             change(null, Slide.index);
             if (!isPresentURL()) {
-                if (window.location.href.slice(-1) !== '/') {
-                    window.location.hash += '/';
-                }
-                window.location.hash += 'present';
+                window.location += parsed.getUrl({present: true, embed: hashData.embed});
             }
             $pad.contents().find('.cryptpad-present-button').hide();
             $pad.contents().find('.cryptpad-source-button').show();
@@ -144,7 +142,7 @@ define([
             updateFontSize();
             return;
         }
-        window.location.hash = window.location.hash.replace(/\/present$/, '/');
+        window.location = parsed.getUrl({embed: hashData.embed});
         change(Slide.index, null);
         $pad.contents().find('.cryptpad-present-button').show();
         $pad.contents().find('.cryptpad-source-button').hide();

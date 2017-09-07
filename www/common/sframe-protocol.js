@@ -85,7 +85,9 @@ define({
     // Send the new settings to the inner iframe when they are changed in the proxy
     'EV_SETTINGS_UPDATE': true,
 
-    // Get and set pad attributes stored in the drive from the inner iframe
+    // Get and set (pad) attributes stored in the drive from the inner iframe
+    'Q_GET_ATTRIBUTE': true,
+    'Q_SET_ATTRIBUTE': true,
     'Q_GET_PAD_ATTRIBUTE': true,
     'Q_SET_PAD_ATTRIBUTE': true,
 

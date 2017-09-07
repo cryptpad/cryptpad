@@ -82,7 +82,9 @@ define([
                             isTemplate: Cryptpad.isTemplate(window.location.href),
                             feedbackAllowed: Cryptpad.isFeedbackAllowed(),
                             friends: proxy.friends || {},
-                            settings: proxy.settings || {}
+                            settings: proxy.settings || {},
+                            isPresent: parsed.hashData && parsed.hashData.present,
+                            isEmbed: parsed.hashData && parsed.hashData.embed,
                         }
                     });
                 });
@@ -113,7 +115,7 @@ define([
             });
 
             sframeChan.on('Q_SETTINGS_SET_DISPLAY_NAME', function (newName, cb) {
-                Cryptpad.setAttribute('username', newName, function (err) {
+                Cryptpad.setDisplayName(newName, function (err) {
                     if (err) {
                         console.log("Couldn't set username");
                         console.error(err);
@@ -218,6 +220,20 @@ define([
                 });
             });
 
+            sframeChan.on('Q_GET_ATTRIBUTE', function (data, cb) {
+                Cryptpad.getAttribute(data.key, function (e, data) {
+                    cb({
+                        error: e,
+                        data: data
+                    });
+                });
+            });
+            sframeChan.on('Q_SET_ATTRIBUTE', function (data, cb) {
+                Cryptpad.setAttribute(data.key, data.value, function (e) {
+                    cb({error:e});
+                });
+            });
+
 
             var onFileUpload = function (sframeChan, data, cb) {
                 var sendEvent = function (data) {
@@ -290,6 +306,13 @@ define([
                 readOnly: readOnly,
                 crypto: Crypto.createEncryptor(secret.keys),
                 onConnect: function (wc) {
+                    if (window.location.hash && window.location.hash !== '#') {
+                        window.location = parsed.getUrl({
+                            present: parsed.hashData.present,
+                            embed: parsed.hashData.embed
+                        });
+                        return;
+                    }
                     if (readOnly) { return; }
                     Cryptpad.replaceHash(Cryptpad.getEditHashFromKeys(wc.id, secret.keys));
                 }

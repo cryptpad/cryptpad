@@ -174,7 +174,9 @@ define(function () {
     out.viewOpen = "Open read-only link in a new tab";
     out.viewOpenTitle = "Open this pad in read-only mode in a new tab";
     out.fileShare = "Copy link";
-    out.fileEmbed = "Get embed code";
+    out.getEmbedCode = "Get embed code";
+    out.viewEmbedTitle = "Embed the pad in an external page";
+    out.viewEmbedTag = "To embed this pad, include this iframe in your page wherever you want. You can style it using CSS or HTML attributes.";
     out.fileEmbedTitle = "Embed the file in an external page";
     out.fileEmbedScript = "To embed this file, include this script once in your page to load the Media Tag:";
     out.fileEmbedTag = "Then place this Media Tag wherever in your page you would like to embed:";

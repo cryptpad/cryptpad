@@ -112,6 +112,7 @@ define([
         var updateIndentSettings = function () {
             if (!metadataMgr) { return; }
             var data = metadataMgr.getPrivateData().settings;
+            data = data.codemirror || {};
             var indentUnit = data[indentKey];
             var useTabs = data[useTabsKey];
             setIndentation(
@@ -255,7 +256,7 @@ define([
             readOnly = metadataMgr.getPrivateData().readOnly;
 
             var titleCfg = { getHeadingText: CodeMirror.getHeadingText };
-            Title = common.createTitle(titleCfg, config.onLocal, common, metadataMgr);
+            Title = common.createTitle(titleCfg, config.onLocal);
 
             var configTb = {
                 displayed: ['title', 'useradmin', 'spinner', 'share', 'userlist', 'newpad', 'limit'],
@@ -368,7 +369,7 @@ define([
                     }
                 }
             };
-            common.initFilePicker(common, fileDialogCfg);
+            common.initFilePicker(fileDialogCfg);
             APP.$mediaTagButton = $('<button>', {
                 title: Messages.filePickerButton,
                 'class': 'cp-toolbar-rightside-button fa fa-picture-o',
@@ -378,7 +379,7 @@ define([
                     types: ['file'],
                     where: ['root']
                 };
-                common.openFilePicker(common, pickerCfg);
+                common.openFilePicker(pickerCfg);
             }).appendTo($rightside);
 
         };
@@ -488,7 +489,7 @@ define([
             }
 
             if (isNew) {
-                common.openTemplatePicker(common);
+                common.openTemplatePicker();
             }
 
             var fmConfig = {
