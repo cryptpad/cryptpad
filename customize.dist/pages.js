@@ -1,11 +1,10 @@
 define([
     '/api/config',
     '/common/hyperscript.js',
-    '/common/cryptpad-common.js',
+    '/customize/messages.js',
     'jquery'
-], function (Config, h, Cryptpad, $) {
+], function (Config, h, Msg, $) {
     var Pages = {};
-    var Msg = Cryptpad.Messages;
     var urlArgs = Config.requireConf.urlArgs;
 
     var setHTML = function (e, html) {
