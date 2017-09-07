@@ -1410,13 +1410,14 @@ define([
                 .click(prepareFeedback(type))
                 .click(function () {
                     // TODO fetch pad tags before presenting dialog to user
-                    var dialog = Cryptpad.dialog.tagPrompt([], function (tags) {
+                    var dialog = UI.dialog.tagPrompt([], function (tags) {
                         if (!Array.isArray(tags)) { return; }
                         console.error(tags);
                         // TODO do something with the tags the user entered
                     });
                     document.body.appendChild(dialog);
                 });
+                break;
             default:
                 button = $('<button>', {
                     'class': "fa fa-question",
