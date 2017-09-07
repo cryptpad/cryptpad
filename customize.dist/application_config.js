@@ -49,6 +49,8 @@ define(function() {
         users.
     */
     config.loginSalt = '';
+    config.minimum_password_length = 8;
+
     config.badStateTimeout = 30000;
 
     config.applicationsIcon = {

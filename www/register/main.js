@@ -7,7 +7,7 @@ define([
 
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less/loading.less',
-], function ($, Login, Cryptpad, Test) {
+], function ($, Login, Cryptpad, Test, Cred) {
     var Messages = Cryptpad.Messages;
 
     $(function () {
@@ -138,7 +138,8 @@ define([
                     // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed after hashing the password
                     window.setTimeout(function () {
                         Login.loginOrRegister(uname, passwd, true, function (err, result) {
-                            var proxy = result.proxy;
+                            var proxy;
+                            if (result) { proxy = result.proxy; }
 
                             if (err) {
                                 switch (err) {
@@ -159,6 +160,16 @@ define([
                                     case 'INVAL_PASS':
                                         Cryptpad.removeLoadingScreen(function () {
                                             Cryptpad.alert(Messages.login_invalPass, function () {
+                                                registering = false;
+                                            });
+                                        });
+                                        break;
+                                    case 'PASS_TOO_SHORT':
+                                        Cryptpad.removeLoadingScreen(function () {
+                                            var warning = Messages._getKey('register_passwordTooShort', [
+                                                Cred.MINIMUM_PASSWORD_LENGTH
+                                            ]);
+                                            Cryptpad.alert(warning, function () {
                                                 registering = false;
                                             });
                                         });
