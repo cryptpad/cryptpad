@@ -58,11 +58,28 @@ define([
 
     var dialog = UI.dialog = {};
 
-    dialog.selectable = function (value) {
-        var input = h('input', {
+    var merge = function (a, b) {
+        var c = {};
+        if (a) {
+            Object.keys(a).forEach(function (k) {
+                c[k] = a[k];
+            });
+        }
+        if (b) {
+            Object.keys(b).forEach(function (k) {
+                c[k] = b[k];
+            });
+        }
+        return c;
+    };
+
+    dialog.selectable = function (value, opt) {
+        var attrs = merge({
             type: 'text',
             readonly: 'readonly',
-        });
+        }, opt);
+
+        var input = h('input', attrs);
         $(input).val(value).click(function () {
             input.select();
         });
@@ -78,7 +95,7 @@ define([
     };
 
     dialog.message = function (text) {
-        return h('p.message', text);
+        return h('p.msg', text);
     };
 
     dialog.textInput = function (opt) {
@@ -191,12 +208,20 @@ define([
 
     UI.alert = function (msg, cb, force) {
         cb = cb || function () {};
-        if (typeof(msg) === 'string' && force !== true) {
-            msg = Util.fixHTML(msg);
+
+        var message;
+        if (typeof(msg) === 'string') {
+            // sanitize
+            if (!force) { msg = Util.fixHTML(msg); }
+            message = dialog.message();
+            message.innerHTML = msg;
+        } else {
+            message = dialog.message(msg);
         }
+
         var ok = dialog.okButton();
         var frame = dialog.frame([
-            dialog.message(msg),
+            message,
             dialog.nav(ok),
         ]);
 
