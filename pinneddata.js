@@ -81,6 +81,7 @@ nThen((waitFor) => {
         sema.take((returnAfter) => {
             Fs.stat(f, waitFor(returnAfter((err, st) => {
                 if (err) { throw err; }
+                st.filename = f;
                 dsFileStats[f.replace(/^.*\/([^\/\.]*)(\.ndjson)?$/, (all, a) => (a))] = st;
             })));
         });
@@ -118,18 +119,27 @@ nThen((waitFor) => {
 }).nThen(() => {
     if (process.argv.indexOf('--unpinned') > -1) {
         const ot = process.argv.indexOf('--olderthan');
-        let before = 0;
+        let before = Infinity;
         if (ot > -1) {
             before = new Date(process.argv[ot+1]);
             if (isNaN(before)) {
                 throw new Error('--olderthan error [' + process.argv[ot+1] + '] not a valid date');
             }
         }
+        const bot = process.argv.indexOf('--blobsolderthan');
+        let blobsbefore = before;
+        if (bot > -1) {
+            blobsbefore = new Date(process.argv[bot+1]);
+            if (isNaN(blobsbefore)) {
+                throw new Error('--blobsolderthan error [' + process.argv[bot+1] + '] not a valid date');
+            }
+        }
         Object.keys(dsFileStats).forEach((f) => {
             if (!(f in pinned)) {
-                if ((+dsFileStats[f].mtime) >= before) { return; }
-                console.log("./datastore/" + f.slice(0,2) + "/" + f + ".ndjson " +
-                    dsFileStats[f].size + " " + (+dsFileStats[f].mtime));
+                const isBlob = dsFileStats[f].filename.indexOf('.ndjson') === -1;
+                if ((+dsFileStats[f].mtime) >= ((isBlob) ? blobsbefore : before)) { return; }
+                console.log(dsFileStats[f].filename + " " + dsFileStats[f].size + " " +
+                    (+dsFileStats[f].mtime));
             }
         });
     } else {
