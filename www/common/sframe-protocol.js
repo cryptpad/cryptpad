@@ -104,6 +104,8 @@ define({
 
     // Template picked, replace the content of the pad
     'Q_TEMPLATE_USE': true,
+    // Check if we have template(s) for the selected pad type
+    'Q_TEMPLATE_EXIST': true,
 
     // File upload queries and events
     'Q_UPLOAD_FILE': true,
