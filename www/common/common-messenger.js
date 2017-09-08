@@ -3,8 +3,7 @@ define([
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/curve.js',
     '/common/common-hash.js',
-    '/common/common-realtime.js'
-], function ($, Crypto, Curve, Hash, Realtime) {
+], function ($, Crypto, Curve, Hash) {
     'use strict';
     var Msg = {
         inputs: [],
@@ -242,7 +241,7 @@ define([
             if (!proxy.friends) { return; }
             var friends = proxy.friends;
             delete friends[curvePublic];
-            Realtime.whenRealtimeSyncs(common, realtime, cb);
+            common.whenRealtimeSyncs(realtime, cb);
         };
 
         var pushMsg = function (channel, cryptMsg) {
@@ -472,7 +471,7 @@ define([
                 channel.wc.bcast(cryptMsg).then(function () {
                     delete friends[curvePublic];
                     delete channels[curvePublic];
-                    Realtime.whenRealtimeSyncs(common, realtime, function () {
+                    common.whenRealtimeSyncs(realtime, function () {
                         cb();
                     });
                 }, function (err) {

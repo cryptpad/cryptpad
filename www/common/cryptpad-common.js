@@ -1089,6 +1089,7 @@ define([
     */
     var LIMIT_REFRESH_RATE = 30000; // milliseconds
     common.createUsageBar = function (cb) {
+        if (!isLoggedIn()) { return cb("NOT_LOGGED_IN"); }
         // getPinnedUsage updates common.account.usage, and other values
         // so we can just use those and only check for errors
         var $container = $('<span>', {'class':'limit-container'});

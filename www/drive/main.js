@@ -2340,9 +2340,9 @@ define([
             $('<br>').appendTo($d);
             if (!ro) {
                 $('<label>', {'for': 'propLink'}).text(Messages.editShare).appendTo($d);
-                $('<input>', {'id': 'propLink', 'readonly': 'readonly', 'value': base + data.href})
-                .click(function () { $(this).select(); })
-                .appendTo($d);
+                $d.append(Cryptpad.dialog.selectable(base + data.href, {
+                    id: 'propLink',
+                }));
             }
 
             var parsed = Cryptpad.parsePadUrl(data.href);
@@ -2350,9 +2350,9 @@ define([
                 var roLink = ro ? base + data.href : getReadOnlyUrl(el);
                 if (roLink) {
                     $('<label>', {'for': 'propROLink'}).text(Messages.viewShare).appendTo($d);
-                    $('<input>', {'id': 'propROLink', 'readonly': 'readonly', 'value': roLink})
-                    .click(function () { $(this).select(); })
-                    .appendTo($d);
+                    $d.append(Cryptpad.dialog.selectable(roLink, {
+                        id: 'propROLink',
+                    }));
                 }
             }
 
@@ -2370,20 +2370,17 @@ define([
                         return void cb(void 0, $d);
                     }
                     var KB = Cryptpad.bytesToKilobytes(bytes);
+
+                    var formatted = Messages._getKey('formattedKB', [KB]);
                     $('<br>').appendTo($d);
 
                     $('<label>', {
                         'for': 'size'
                     }).text(Messages.fc_sizeInKilobytes).appendTo($d);
 
-                    $('<input>', {
+                    $d.append(Cryptpad.dialog.selectable(formatted, {
                         id: 'size',
-                        readonly: 'readonly',
-                        value: KB + 'KB',
-                    })
-                    .click(function () { $(this).select(); })
-                    .appendTo($d);
-
+                    }));
                     cb(void 0, $d);
                 });
             } else {
@@ -2439,8 +2436,7 @@ define([
                 var el = filesOp.find(paths[0].path);
                 getProperties(el, function (e, $prop) {
                     if (e) { return void logError(e); }
-                    Cryptpad.alert('', undefined, true);
-                    $('.alertify .msg').html("").append($prop);
+                    Cryptpad.alert($prop[0], undefined, true);
                 });
             }
             module.hideMenu();
@@ -2491,8 +2487,7 @@ define([
                 var el = filesOp.find(paths[0].path);
                 getProperties(el, function (e, $prop) {
                     if (e) { return void logError(e); }
-                    Cryptpad.alert('', undefined, true);
-                    $('.alertify .msg').html("").append($prop);
+                    Cryptpad.alert($prop[0], undefined, true);
                 });
             }
             module.hideMenu();
