@@ -131,6 +131,7 @@ define(function () {
     out.saveTemplatePrompt = "Choose a title for the template";
     out.templateSaved = "Template saved!";
     out.selectTemplate = "Select a template or press escape";
+    out.useTemplate = "You have available templates for that type of pad. Do you want to use one?";
 
     out.previewButtonTitle = "Display or hide the Markdown preview mode";
 
@@ -409,6 +410,8 @@ define(function () {
     out.register_importRecent = "Import pad history (Recommended)";
     out.register_acceptTerms = "I accept <a href='/terms.html' tabindex='-1'>the terms of service</a>";
     out.register_passwordsDontMatch = "Passwords do not match!";
+    out.register_passwordTooShort = "Passwords must be at least {0} characters long.";
+
     out.register_mustAcceptTerms = "You must accept the terms of service.";
     out.register_mustRememberPass = "We cannot reset your password if you forget it. It's very important that you remember it! Please check the checkbox to confirm.";
 

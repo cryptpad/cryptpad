@@ -129,6 +129,7 @@ define(function () {
     out.saveTemplatePrompt = "Choisir un titre pour ce modèle";
     out.templateSaved = "Modèle enregistré !";
     out.selectTemplate = "Sélectionner un modèle ou appuyer sur Échap";
+    out.useTemplate = "Vous posséder des modèles pour ce type de pad, souhaitez-vous en utiliser un?";
 
     out.previewButtonTitle = "Afficher ou cacher la prévisualisation de Markdown";
 

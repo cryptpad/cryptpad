@@ -4,7 +4,10 @@ define([
     '/common/cryptpad-common.js',
     '/common/test.js',
     '/common/credential.js', // preloaded for login.js
-], function ($, Login, Cryptpad, Test) {
+
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/customize/src/less/loading.less',
+], function ($, Login, Cryptpad, Test, Cred) {
     var Messages = Cryptpad.Messages;
 
     $(function () {
@@ -128,11 +131,15 @@ define([
                 registering = true;
                 // setTimeout 100ms to remove the keyboard on mobile devices before the loading screen pops up
                 window.setTimeout(function () {
-                    Cryptpad.addLoadingScreen({loadingText: Messages.login_hashing});
+                    Cryptpad.addLoadingScreen({
+                        loadingText: Messages.login_hashing,
+                        hideTips: true,
+                    });
                     // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed after hashing the password
                     window.setTimeout(function () {
                         Login.loginOrRegister(uname, passwd, true, function (err, result) {
-                            var proxy = result.proxy;
+                            var proxy;
+                            if (result) { proxy = result.proxy; }
 
                             if (err) {
                                 switch (err) {
@@ -153,6 +160,16 @@ define([
                                     case 'INVAL_PASS':
                                         Cryptpad.removeLoadingScreen(function () {
                                             Cryptpad.alert(Messages.login_invalPass, function () {
+                                                registering = false;
+                                            });
+                                        });
+                                        break;
+                                    case 'PASS_TOO_SHORT':
+                                        Cryptpad.removeLoadingScreen(function () {
+                                            var warning = Messages._getKey('register_passwordTooShort', [
+                                                Cred.MINIMUM_PASSWORD_LENGTH
+                                            ]);
+                                            Cryptpad.alert(warning, function () {
                                                 registering = false;
                                             });
                                         });
@@ -193,7 +210,7 @@ define([
                             logMeIn(result);
                         });
                     }, 0);
-                }, 100);
+                }, 200);
             }, {
                 ok: Messages.register_writtenPassword,
                 cancel: Messages.register_cancel,

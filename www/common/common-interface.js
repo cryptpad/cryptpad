@@ -7,9 +7,11 @@ define([
     '/common/notify.js',
     '/common/visible.js',
     '/common/tippy.min.js',
+    '/customize/pages.js',
+    '/common/hyperscript.js',
+    '/bower_components/bootstrap-tokenfield/dist/bootstrap-tokenfield.js',
     'css!/common/tippy.css',
-], function ($, Messages, Util, AppConfig, Alertify, Notify, Visible, Tippy) {
-
+], function ($, Messages, Util, AppConfig, Alertify, Notify, Visible, Tippy, Pages, h) {
     var UI = {};
 
     /*
@@ -20,11 +22,17 @@ define([
     // set notification timeout
     Alertify._$$alertify.delay = AppConfig.notificationTimeout || 5000;
 
-    var findCancelButton = UI.findCancelButton = function () {
+    var findCancelButton = UI.findCancelButton = function (root) {
+        if (root) {
+            return $(root).find('button.cancel').last();
+        }
         return $('button.cancel').last();
     };
 
-    var findOKButton = UI.findOKButton = function () {
+    var findOKButton = UI.findOKButton = function (root) {
+        if (root) {
+            return $(root).find('button.ok').last();
+        }
         return $('button.ok').last();
     };
 
@@ -33,7 +41,6 @@ define([
             switch (e.which) {
                 case 27: // cancel
                     if (typeof(no) === 'function') { no(e); }
-                    no();
                     break;
                 case 13: // enter
                     if (typeof(yes) === 'function') { yes(e); }
@@ -49,21 +56,161 @@ define([
         $(window).off('keyup', handler);
     };
 
+    var dialog = UI.dialog = {};
+
+    dialog.selectable = function (value) {
+        var input = h('input', {
+            type: 'text',
+            readonly: 'readonly',
+        });
+        $(input).val(value).click(function () {
+            input.select();
+        });
+        return input;
+    };
+
+    dialog.okButton = function () {
+        return h('button.ok', { tabindex: '2', }, Messages.okButton);
+    };
+
+    dialog.cancelButton = function () {
+        return h('button.cancel', { tabindex: '1'}, Messages.cancelButton);
+    };
+
+    dialog.message = function (text) {
+        return h('p.message', text);
+    };
+
+    dialog.textInput = function (opt) {
+        return h('input', opt || {
+            placeholder: '',
+            type: 'text',
+            'class': 'cp-text-input',
+        });
+    };
+
+    dialog.nav = function (content) {
+        return h('nav', content || [
+            dialog.cancelButton(),
+            dialog.okButton(),
+        ]);
+    };
+
+    dialog.frame = function (content) {
+        return h('div.alertify', [
+            h('div.dialog', [
+                h('div', content),
+            ])
+        ]);
+    };
+
+    UI.tokenField = function (target) {
+        var t = {
+            element: target || h('input'),
+        };
+        var $t = t.tokenfield = $(t.element).tokenfield();
+        t.getTokens = function () {
+            return $t.tokenfield('getTokens').map(function (token) {
+                return token.value;
+            });
+        };
+
+        t.preventDuplicates = function (cb) {
+            $t.on('tokenfield:createtoken', function (ev) {
+                var val;
+                if (t.getTokens().some(function (t) {
+                    if (t === ev.attrs.value) { return ((val = t)); }
+                })) {
+                    ev.preventDefault();
+                    if (typeof(cb) === 'function') { cb(val); }
+                }
+            });
+            return t;
+        };
+
+        t.setTokens = function (tokens) {
+            $t.tokenfield('setTokens',
+                tokens.map(function (token) {
+                    return {
+                        value: token,
+                        label: token,
+                    };
+                }));
+        };
+
+        t.focus = function () {
+            var $temp = $t.closest('.tokenfield').find('.token-input');
+            $temp.css('width', '20%');
+            $t.tokenfield('focusInput', $temp[0]);
+        };
+
+        return t;
+    };
+
+    dialog.tagPrompt = function (tags, cb) {
+        var input = dialog.textInput();
+
+        var tagger = dialog.frame([
+            dialog.message('make some tags'), // TODO translate
+            input,
+            dialog.nav(),
+        ]);
+
+        var field = UI.tokenField(input).preventDuplicates(function (val) {
+            UI.warn('Duplicate tag: ' + val); // TODO translate
+        });
+
+        var close = Util.once(function () {
+            var $t = $(tagger).fadeOut(150, function () { $t.remove(); });
+        });
+
+        var listener = listenForKeys(function () {}, function () {
+            close();
+            stopListening(listener);
+        });
+
+        var CB = Util.once(cb);
+        findOKButton(tagger).click(function () {
+            var tokens = field.getTokens();
+            close();
+            CB(tokens);
+        });
+        findCancelButton(tagger).click(function () {
+            close();
+            CB(null);
+        });
+
+        // :(
+        setTimeout(function () {
+            field.setTokens(tags);
+            field.focus();
+        });
+
+        return tagger;
+    };
+
     UI.alert = function (msg, cb, force) {
         cb = cb || function () {};
-        if (force !== true) { msg = Util.fixHTML(msg); }
-        var close = function () {
-            findOKButton().click();
-        };
-        var keyHandler = listenForKeys(close, close);
-        Alertify
-            .okBtn(Messages.okButton || 'OK')
-            .alert(msg, function (ev) {
-                cb(ev);
-                stopListening(keyHandler);
-            });
-        window.setTimeout(function () {
-            findOKButton().focus();
+        if (typeof(msg) === 'string' && force !== true) {
+            msg = Util.fixHTML(msg);
+        }
+        var ok = dialog.okButton();
+        var frame = dialog.frame([
+            dialog.message(msg),
+            dialog.nav(ok),
+        ]);
+
+        var listener;
+        var close = Util.once(function () {
+            $(frame).fadeOut(150, function () { $(this).remove(); });
+            stopListening(listener);
+        });
+        listener = listenForKeys(close, close);
+        var $ok = $(ok).click(close);
+
+        document.body.appendChild(frame);
+        setTimeout(function () {
+            $ok.focus();
             if (typeof(UI.notify) === 'function') {
                 UI.notify();
             }
@@ -165,7 +312,7 @@ define([
      */
     UI.spinner = function (parent) {
         var $target = $('<span>', {
-            'class': 'fa fa-spinner fa-pulse fa-4x fa-fw'
+            'class': 'fa fa-circle-o-notch fa-spin fa-4x fa-fw',
         }).hide();
 
         $(parent).append($target);
@@ -206,16 +353,15 @@ define([
             }
             $container = $loading.find('.loadingContainer');
         } else {
-            $loading = $('<div>', {id: LOADING});
-            $container = $('<div>', {'class': 'loadingContainer'});
-            if (!hideLogo) {
-                $container.append('<img class="cryptofist" src="/customize/cryptofist_small.png" />');
+            $loading = $(Pages.loadingScreen());
+            $container = $loading.find('.loadingContainer');
+            if (hideLogo) {
+                $loading.find('img').hide();
+            } else {
+                $loading.find('img').show();
             }
-            var $spinner = $('<div>', {'class': 'spinnerContainer'});
-            UI.spinner($spinner).show();
-            var $text = $('<p>').text(loadingText || Messages.loading);
-            $container.append($spinner).append($text);
-            $loading.append($container);
+            var $spinner = $loading.find('.spinnerContainer');
+            $spinner.show();
             $('body').append($loading);
         }
         if (Messages.tips && !hideTips) {

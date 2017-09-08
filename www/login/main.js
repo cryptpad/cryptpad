@@ -1,7 +1,10 @@
 define([
     'jquery',
     '/common/cryptpad-common.js',
-    '/common/login.js'
+    '/common/login.js',
+
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/customize/src/less/loading.less',
 ], function ($, Cryptpad, Login) {
     $(function () {
         var $main = $('#mainBlock');
@@ -72,7 +75,10 @@ define([
 
             // setTimeout 100ms to remove the keyboard on mobile devices before the loading screen pops up
             window.setTimeout(function () {
-                Cryptpad.addLoadingScreen({loadingText: Messages.login_hashing});
+                Cryptpad.addLoadingScreen({
+                    loadingText: Messages.login_hashing,
+                    hideTips: true,
+                });
                 // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed after hashing the password
                 window.setTimeout(function () {
                     loginReady(function () {

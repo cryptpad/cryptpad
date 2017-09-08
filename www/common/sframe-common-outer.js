@@ -312,6 +312,10 @@ define([
             sframeChan.on('Q_TEMPLATE_USE', function (href, cb) {
                 Cryptpad.useTemplate(href, Cryptget, cb);
             });
+            sframeChan.on('Q_TEMPLATE_EXIST', function (type, cb) {
+                var hasTemplate = Cryptpad.listTemplates(type).length > 0;
+                cb(hasTemplate);
+            });
 
 
             sframeChan.ready();

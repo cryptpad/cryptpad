@@ -65,6 +65,12 @@
         height: 100%;
         z-index: 99999;
 
+        .message {
+            h1, h2, h3, h4, h5, h6 {
+                color: @alertify-fg;
+            }
+        }
+
         h1, h2, h3 {
             margin-top: 0;
         }
@@ -85,6 +91,20 @@
 
         .dialog {
             padding: 12px;
+/*
+            div.tokenfield {
+                .token {
+                    //border: 1px solid red;
+                    //color: red;
+                }
+
+                color: @colortheme_light-base;
+                background-color: @alertify-dialog-bg;
+
+                input[id$="tokenfield"][type="text"].token-input {
+                    background-color: @alertify-dialog-bg !important;
+                }
+            }*/
         }
 
         .dialog, .alert {
@@ -308,6 +328,5 @@
                 pointer-events: auto;
             }
         }
-
     }
 }

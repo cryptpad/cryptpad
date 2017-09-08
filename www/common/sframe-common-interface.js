@@ -382,9 +382,9 @@ define([
         var $displayName = $userAdmin.find('.'+displayNameCls);
 
         var $avatar = $userAdmin.find('.cp-dropdown-button-title');
-        var oldUrl;
         var loadingAvatar;
         var to;
+        var oldUrl = '';
         var updateButton = function () {
             var myData = metadataMgr.getUserData();
             if (!myData) { return; }
@@ -400,7 +400,7 @@ define([
             $displayName.text(newName || Messages.anonymous);
             if (accountName && oldUrl !== url) {
                 $avatar.html('');
-                UI.displayAvatar(Common, $avatar, url, newName, function ($img) {
+                UI.displayAvatar(Common, $avatar, url, newName || Messages.anonymous, function ($img) {
                     oldUrl = url;
                     if ($img) {
                         $userAdmin.find('button').addClass('cp-avatar');
@@ -462,28 +462,37 @@ define([
     UI.openTemplatePicker = function (common) {
         var metadataMgr = common.getMetadataMgr();
         var type = metadataMgr.getMetadataLazy().type;
-        var first = true; // We can only pick a template once (for a new document)
-        var fileDialogCfg = {
-            onSelect: function (data) {
-                if (data.type === type && first) {
-                    Cryptpad.addLoadingScreen({hideTips: true});
-                    var sframeChan = common.getSframeChannel();
-                    sframeChan.query('Q_TEMPLATE_USE', data.href, function () {
-                        first = false;
-                        Cryptpad.removeLoadingScreen();
-                        common.feedback('TEMPLATE_USED');
-                    });
-                    return;
+        var sframeChan = common.getSframeChannel();
+
+        var onConfirm = function (yes) {
+            if (!yes) { return; }
+            var first = true; // We can only pick a template once (for a new document)
+            var fileDialogCfg = {
+                onSelect: function (data) {
+                    if (data.type === type && first) {
+                        Cryptpad.addLoadingScreen({hideTips: true});
+                        sframeChan.query('Q_TEMPLATE_USE', data.href, function () {
+                            first = false;
+                            Cryptpad.removeLoadingScreen();
+                            common.feedback('TEMPLATE_USED');
+                        });
+                        return;
+                    }
                 }
+            };
+            common.initFilePicker(fileDialogCfg);
+            var pickerCfg = {
+                types: [type],
+                where: ['template']
+            };
+            common.openFilePicker(pickerCfg);
+        };
+
+        sframeChan.query("Q_TEMPLATE_EXIST", type, function (err, data) {
+            if (data) {
+                Cryptpad.confirm(Messages.useTemplate, onConfirm);
             }
-        };
-        common.initFilePicker(fileDialogCfg);
-        var pickerCfg = {
-            types: [type],
-            where: ['template']
-        };
-        console.log(pickerCfg);
-        common.openFilePicker(pickerCfg);
+        });
     };
 
     return UI;

@@ -516,29 +516,11 @@ define([
             $('<h3>').text(Messages.fileEmbedTitle).appendTo($content);
             var $script = $('<p>').text(Messages.fileEmbedScript).appendTo($content);
             $('<br>').appendTo($script);
-            var scriptId = uid();
-            $('<input>', {
-                type: 'text',
-                id: scriptId,
-                readonly: 'readonly',
-                value: Cryptpad.getMediatagScript(),
-            }).appendTo($script);
+            $script.append(Cryptpad.dialog.selectable(Cryptpad.getMediatagScript()));
             var $tag = $('<p>').text(Messages.fileEmbedTag).appendTo($content);
             $('<br>').appendTo($tag);
-            var tagId = uid();
-            $('<input>', {
-                type:'text',
-                id: tagId,
-                readonly:'readonly',
-                value:Cryptpad.getMediatagFromHref(url),
-            }).appendTo($tag);
-            Cryptpad.alert($content.html(), null, true);
-            $('#'+scriptId).click(function () {
-                this.select();
-            });
-            $('#'+tagId).click(function () {
-                this.select();
-            });
+            $tag.append(Cryptpad.dialog.selectable(Cryptpad.getMediatagFromHref(url)));
+            Cryptpad.alert($content[0], null, true);
         });
 
         toolbar.$leftside.append($shareBlock);
