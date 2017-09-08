@@ -90,7 +90,7 @@ define([
 
             // Description
             var text = Messages.filePicker_description;
-            if (types.length === 1 && types[0] !== 'file') {
+            if (types && types.length === 1 && types[0] !== 'file') {
                 // Should be Templates
                 text = Messages.selectTemplate;
             }
