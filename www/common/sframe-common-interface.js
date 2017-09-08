@@ -442,27 +442,37 @@ define([
     UI.openTemplatePicker = function (common) {
         var metadataMgr = common.getMetadataMgr();
         var type = metadataMgr.getMetadataLazy().type;
-        var first = true; // We can only pick a template once (for a new document)
-        var fileDialogCfg = {
-            onSelect: function (data) {
-                if (data.type === type && first) {
-                    Cryptpad.addLoadingScreen({hideTips: true});
-                    var sframeChan = common.getSframeChannel();
-                    sframeChan.query('Q_TEMPLATE_USE', data.href, function () {
-                        first = false;
-                        Cryptpad.removeLoadingScreen();
-                        common.feedback('TEMPLATE_USED');
-                    });
-                    return;
+        var sframeChan = common.getSframeChannel();
+
+        var onConfirm = function (yes) {
+            if (!yes) { return; }
+            var first = true; // We can only pick a template once (for a new document)
+            var fileDialogCfg = {
+                onSelect: function (data) {
+                    if (data.type === type && first) {
+                        Cryptpad.addLoadingScreen({hideTips: true});
+                        sframeChan.query('Q_TEMPLATE_USE', data.href, function () {
+                            first = false;
+                            Cryptpad.removeLoadingScreen();
+                            common.feedback('TEMPLATE_USED');
+                        });
+                        return;
+                    }
                 }
+            };
+            common.initFilePicker(fileDialogCfg);
+            var pickerCfg = {
+                types: [type],
+                where: ['template']
+            };
+            common.openFilePicker(pickerCfg);
+        };
+
+        sframeChan.query("Q_TEMPLATE_EXIST", type, function (err, data) {
+            if (data) {
+                Cryptpad.confirm(Messages.useTemplate, onConfirm);
             }
-        };
-        common.initFilePicker(common, fileDialogCfg);
-        var pickerCfg = {
-            types: [type],
-            where: ['template']
-        };
-        common.openFilePicker(common, pickerCfg);
+        });
     };
 
     return UI;

@@ -131,6 +131,7 @@ define(function () {
     out.saveTemplatePrompt = "Choose a title for the template";
     out.templateSaved = "Template saved!";
     out.selectTemplate = "Select a template or press escape";
+    out.useTemplate = "You have available templates for that type of pad. Do you want to use one?";
 
     out.previewButtonTitle = "Display or hide the Markdown preview mode";
 
