@@ -313,6 +313,8 @@ define([
                 Cryptpad.useTemplate(href, Cryptget, cb);
             });
 
+
+            sframeChan.ready();
             CpNfOuter.start({
                 sframeChan: sframeChan,
                 channel: secret.channel,

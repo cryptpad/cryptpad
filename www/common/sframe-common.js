@@ -228,6 +228,7 @@ define([
                 Cryptpad.log(data.logText);
             });
 
+            ctx.sframeChan.ready();
             cb(funcs);
         });
     } };
