@@ -86,12 +86,12 @@ define([
         return input;
     };
 
-    dialog.okButton = function () {
-        return h('button.ok', { tabindex: '2', }, Messages.okButton);
+    dialog.okButton = function (content) {
+        return h('button.ok', { tabindex: '2', }, content || Messages.okButton);
     };
 
-    dialog.cancelButton = function () {
-        return h('button.cancel', { tabindex: '1'}, Messages.cancelButton);
+    dialog.cancelButton = function (content) {
+        return h('button.cancel', { tabindex: '1'}, content || Messages.cancelButton);
     };
 
     dialog.message = function (text) {
@@ -99,11 +99,11 @@ define([
     };
 
     dialog.textInput = function (opt) {
-        return h('input', opt || {
-            placeholder: '',
+        var attrs = merge({
             type: 'text',
             'class': 'cp-text-input',
-        });
+        }, opt);
+        return h('input', attrs);
     };
 
     dialog.nav = function (content) {
@@ -236,92 +236,102 @@ define([
         document.body.appendChild(frame);
         setTimeout(function () {
             $ok.focus();
-            if (typeof(UI.notify) === 'function') {
-                UI.notify();
-            }
+            UI.notify();
         });
     };
 
     UI.prompt = function (msg, def, cb, opt, force) {
-        opt = opt || {};
         cb = cb || function () {};
-        if (force !== true) { msg = Util.fixHTML(msg); }
+        opt = opt || {};
 
-        var keyHandler = listenForKeys(function () { // yes
-            findOKButton().click();
-        }, function () { // no
-            findCancelButton().click();
+        var input = dialog.textInput();
+        input.value = typeof(def) === 'string'? def: '';
+
+        var message;
+        if (typeof(msg) === 'string') {
+            if (!force) { msg = Util.fixHTML(msg); }
+            message = dialog.message();
+            message.innerHTML = msg;
+        } else {
+            message = dialog.message(msg);
+        }
+
+        var ok = dialog.okButton(opt.ok);
+        var cancel = dialog.cancelButton(opt.cancel);
+        var frame = dialog.frame([
+            message,
+            input,
+            dialog.nav([ cancel, ok, ]),
+        ]);
+
+        var listener;
+        var close = Util.once(function () {
+            $(frame).fadeOut(150, function () { $(this).remove(); });
+            stopListening(listener);
         });
 
-        // Make sure we don't call both the "yes" and "no" handlers if we use "findOKButton().click()"
-        // in the callback
-        var isClicked = false;
+        var $ok = $(ok).click(function (ev) { cb(input.value, ev); });
+        var $cancel = $(cancel).click(function (ev) { cb(null, ev); });
+        listener = listenForKeys(function () { // yes
+            close(); $ok.click();
+        }, function () { // no
+            close(); $cancel.click();
+        });
 
-        Alertify
-            .defaultValue(def || '')
-            .okBtn(opt.ok || Messages.okButton || 'OK')
-            .cancelBtn(opt.cancel || Messages.cancelButton || 'Cancel')
-            .prompt(msg, function (val, ev) {
-                if (isClicked) { return; }
-                isClicked = true;
-                cb(val, ev);
-                stopListening(keyHandler);
-            }, function (ev) {
-                if (isClicked) { return; }
-                isClicked = true;
-                cb(null, ev);
-                stopListening(keyHandler);
-            });
-        if (typeof(UI.notify) === 'function') {
+        document.body.appendChild(frame);
+        setTimeout(function () {
+            input.select().focus();
             UI.notify();
-        }
+        });
     };
 
     UI.confirm = function (msg, cb, opt, force, styleCB) {
-        opt = opt || {};
         cb = cb || function () {};
-        if (force !== true) { msg = Util.fixHTML(msg); }
+        opt = opt || {};
 
-        var keyHandler = listenForKeys(function () {
-            findOKButton().click();
-        }, function () {
-            findCancelButton().click();
+        var message;
+        if (typeof(msg) === 'string') {
+            if (!force) { msg = Util.fixHTML(msg); }
+            message = dialog.message();
+            message.innerHTML = msg;
+        } else {
+            message = dialog.message(msg);
+        }
+
+        var ok = dialog.okButton(opt.ok);
+        var cancel = dialog.cancelButton(opt.cancel);
+
+        var frame = dialog.frame([
+            message,
+            dialog.nav(opt.reverseOrder?
+                [ok, cancel]: [cancel, ok]),
+        ]);
+
+        var listener;
+        var close = Util.once(function () {
+            $(frame).fadeOut(150, function () { $(this).remove(); });
+            stopListening(listener);
         });
 
-        // Make sure we don't call both the "yes" and "no" handlers if we use "findOKButton().click()"
-        // in the callback
-        var isClicked = false;
+        var $ok = $(ok).click(function (ev) { close(); cb(true, ev); });
+        var $cancel = $(cancel).click(function (ev) { close(); cb(false, ev); });
 
-        Alertify
-            .okBtn(opt.ok || Messages.okButton || 'OK')
-            .cancelBtn(opt.cancel || Messages.cancelButton || 'Cancel')
-            .confirm(msg, function () {
-                if (isClicked) { return; }
-                isClicked = true;
-                cb(true);
-                stopListening(keyHandler);
-            }, function () {
-                if (isClicked) { return; }
-                isClicked = true;
-                cb(false);
-                stopListening(keyHandler);
-            });
+        if (opt.cancelClass) { $cancel.addClass(opt.cancelClass); }
+        if (opt.okClass) { $ok.addClass(opt.okClass); }
 
-        window.setTimeout(function () {
-            var $ok = findOKButton();
-            var $cancel = findCancelButton();
-            if (opt.okClass) { $ok.addClass(opt.okClass); }
-            if (opt.cancelClass) { $cancel.addClass(opt.cancelClass); }
-            if (opt.reverseOrder) {
-                $ok.insertBefore($ok.prev());
-            }
+        listener = listenForKeys(function () {
+            $ok.click();
+        }, function () {
+            $cancel.click();
+        });
+
+        document.body.appendChild(frame);
+        setTimeout(function () {
+            UI.notify();
             if (typeof(styleCB) === 'function') {
                 styleCB($ok.closest('.dialog'));
             }
-        }, 0);
-        if (typeof(UI.notify) === 'function') {
-            UI.notify();
-        }
+        });
     };
 
     UI.log = function (msg) {
