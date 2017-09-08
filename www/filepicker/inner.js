@@ -117,7 +117,8 @@ define([
             // Update the files list when needed
             updateContainer = function () {
                 $container.html('');
-                var filter = $filter.find('.cp-filepicker-filter').val().trim();
+                var $input = $filter.find('.cp-filepicker-filter');
+                var filter = $input.val().trim();
                 var todo = function (err, list) {
                     if (err) { return void console.error(err); }
                     Object.keys(list).forEach(function (id) {
@@ -136,6 +137,7 @@ define([
                             if (typeof onSelect === "function") { onSelect(data.href); }
                         });
                     });
+                    $input.focus();
                 };
                 common.getFilesList(filters, todo);
             };
