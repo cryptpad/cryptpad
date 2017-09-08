@@ -43,7 +43,13 @@ define({
     // This changes the pad title in drive ONLY, the pad title needs to be changed inside of the
     // iframe and synchronized with the other users. This will not trigger a EV_METADATA_UPDATE
     // because the metadata contained in EV_METADATA_UPDATE does not contain the pad title.
+    // It also sets the page (tab) title to the selected title, unles it is overridden by
+    // the EV_SET_TAB_TITLE event.
     'Q_SET_PAD_TITLE_IN_DRIVE': true,
+    // Set the page title (tab title) to the selected value which will override the pad title.
+    // The new title value can contain {title}, which will be replaced by the pad title when it
+    // is set or modified.
+    'EV_SET_TAB_TITLE': true,
 
     // Update the user's display-name which will be shown to contacts and people in the same pads.
     'Q_SETTINGS_SET_DISPLAY_NAME': true,

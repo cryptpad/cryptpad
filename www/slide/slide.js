@@ -128,6 +128,7 @@ define([
             updateFontSize();
             return;
         }
+        Common.setTabTitle(); // Remove the slide number from the title
         Common.setPresentUrl(false);
         change(Slide.index, null);
         $('.cp-app-slide-present-button').show();

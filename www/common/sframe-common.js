@@ -83,6 +83,9 @@ define([
     funcs.notify = function () {
         ctx.sframeChan.event('EV_NOTIFY');
     };
+    funcs.setTabTitle = function (newTitle) {
+        ctx.sframeChan.event('EV_SET_TAB_TITLE', newTitle);
+    };
 
     funcs.setLoginRedirect = function (cb) {
         cb = cb || $.noop;

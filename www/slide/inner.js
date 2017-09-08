@@ -124,16 +124,6 @@ define([
             }
         };
 
-        var setTabTitle = function (title) {
-            console.error('TODO'); // TODO iframe
-            return;
-            var slideNumber = '';
-            if (Slide.shown) { //Slide.index && Slide.content.length) {
-                slideNumber = ' (' + Slide.index + '/' + Slide.content.length + ')';
-            }
-            document.title = title + slideNumber;
-        };
-
         var $contentContainer = $('#cp-app-slide-editor');
         var $modal = $('#cp-app-slide-modal');
         var $content = $('#cp-app-slide-modal-content');
@@ -593,15 +583,13 @@ define([
             });
 
             Slide.onChange(function (o, n, l) {
-                console.log('TODO: remove that part?');
                 var slideNumber = '';
                 if (n !== null) {
                     if (Slide.shown) {
                         slideNumber = ' (' + (++n) + '/' + l + ')';
                     }
                 }
-                // TODO iframe
-                document.title = Title.title + slideNumber;
+                common.setTabTitle('{title}' + slideNumber);
             });
 
             setEditable(!readOnly);
