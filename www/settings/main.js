@@ -75,9 +75,7 @@ define([
             var userHref = Cryptpad.getUserHrefFromKeys(accountName, publicKey);
             var $pubLabel = $('<span>', {'class': 'label'})
                 .text(Messages.settings_publicSigningKey);
-            var $pubKey = $('<input>', {type: 'text', readonly: true})
-                .val(userHref);
-            $key.append($pubLabel).append($pubKey);
+            $key.append($pubLabel).append(Cryptpad.dialog.selectable(userHref));
         }
 
         return $div;
