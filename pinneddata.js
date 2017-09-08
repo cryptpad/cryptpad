@@ -117,8 +117,17 @@ nThen((waitFor) => {
     });
 }).nThen(() => {
     if (process.argv.indexOf('--unpinned') > -1) {
+        const ot = process.argv.indexOf('--olderthan');
+        let before = 0;
+        if (ot > -1) {
+            before = new Date(process.argv[ot+1]);
+            if (isNaN(before)) {
+                throw new Error('--olderthan error [' + process.argv[ot+1] + '] not a valid date');
+            }
+        }
         Object.keys(dsFileStats).forEach((f) => {
             if (!(f in pinned)) {
+                if ((+dsFileStats[f].mtime) >= before) { return; }
                 console.log("./datastore/" + f.slice(0,2) + "/" + f + ".ndjson " +
                     dsFileStats[f].size + " " + (+dsFileStats[f].mtime));
             }
