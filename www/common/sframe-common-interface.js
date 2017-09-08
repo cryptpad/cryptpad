@@ -383,9 +383,18 @@ define([
 
         var $avatar = $userAdmin.find('.cp-dropdown-button-title');
         var oldUrl;
+        var loadingAvatar;
+        var to;
         var updateButton = function () {
             var myData = metadataMgr.getUserData();
             if (!myData) { return; }
+            if (loadingAvatar) {
+                // Try again in 200ms
+                window.clearTimeout(to);
+                to = window.setTimeout(updateButton, 200);
+                return;
+            }
+            loadingAvatar = true;
             var newName = myData.name;
             var url = myData.avatar;
             $displayName.text(newName || Messages.anonymous);
@@ -396,8 +405,11 @@ define([
                     if ($img) {
                         $userAdmin.find('button').addClass('cp-avatar');
                     }
+                    loadingAvatar = false;
                 });
+                return;
             }
+            loadingAvatar = false;
         };
         metadataMgr.onChange(updateButton);
         updateButton();
@@ -465,12 +477,13 @@ define([
                 }
             }
         };
-        common.initFilePicker(common, fileDialogCfg);
+        common.initFilePicker(fileDialogCfg);
         var pickerCfg = {
             types: [type],
             where: ['template']
         };
-        common.openFilePicker(common, pickerCfg);
+        console.log(pickerCfg);
+        common.openFilePicker(pickerCfg);
     };
 
     return UI;

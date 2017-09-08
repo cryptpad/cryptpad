@@ -608,7 +608,6 @@ define([
             initializing = false;
 
             onLocal(); // push local state to avoid parse errors later.
-            console.log(editor.getValue());
             Slide.update(editor.getValue());
             Cryptpad.removeLoadingScreen();
 
@@ -736,9 +735,11 @@ define([
                     onConnectError();
                 }
             });
-            common.isPresentUrl(function (err, val) {
-                isPresentMode = val;
-                andThen(editor, CodeMirror, common);
+            common.getSframeChannel().onReady(function () {
+                common.isPresentUrl(function (err, val) {
+                    isPresentMode = val;
+                    andThen(editor, CodeMirror, common);
+                });
             });
         });
     };

@@ -239,8 +239,6 @@ define([
         });
     };
 
-    $(window).resize(Slide.updateFontSize);
-
     // Swipe
     var addSwipeEvents = function () {
         var touch = {
@@ -294,6 +292,7 @@ define([
         options = Slide.options = opt;
         addEvent();
         addSwipeEvents();
+        $(window).resize(Slide.updateFontSize);
     };
 
     Slide.setTitle = function (titleObj) {

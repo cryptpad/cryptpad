@@ -17,6 +17,9 @@ define({
     // When either the outside or inside registers a query handler, this is sent.
     'EV_REGISTER_HANDLER': true,
 
+    // When an iframe is ready to receive messages
+    'EV_RPC_READY': true,
+
     // Realtime events called from the outside.
     // When someone joins the pad, argument is a string with their netflux id.
     'EV_RT_JOIN': true,
