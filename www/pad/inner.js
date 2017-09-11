@@ -33,7 +33,6 @@ define([
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/api/config',
-    '/common/common-realtime.js',
 
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/diff-dom/diffDOM.js',
@@ -56,8 +55,7 @@ define([
     Links,
     nThen,
     SFCommon,
-    ApiConfig,
-    CommonRealtime)
+    ApiConfig)
 {
     var saveAs = window.saveAs;
     var Messages = Cryptpad.Messages;
@@ -338,8 +336,6 @@ define([
                 inner.setAttribute('contenteditable', bool);
             }
         };
-
-        CommonRealtime.onInfiniteSpinner(function () { setEditable(false); });
 
         // don't let the user edit until the pad is ready
         setEditable(false);
@@ -726,6 +722,15 @@ define([
 
         cpNfInner = common.startRealtime(realtimeOptions);
         metadataMgr = cpNfInner.metadataMgr;
+
+        cpNfInner.onInfiniteSpinner(function () {
+            setEditable(false);
+            Cryptpad.confirm(Messages.realtime_unrecoverableError, function (yes) {
+                if (!yes) { return; }
+                common.gotoURL();
+                //window.parent.location.reload();
+            });
+        });
 
         Cryptpad.onLogout(function () { setEditable(false); });
 

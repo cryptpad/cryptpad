@@ -121,6 +121,9 @@ define({
     'EV_FILE_UPLOAD_STATE': true,
     'Q_CANCEL_PENDING_FILE_UPLOAD': true,
 
+    // Make the browser window navigate to a given URL, if no URL is passed then it will reload.
+    'EV_GOTO_URL': true,
+
     // Present mode URL
     'Q_PRESENT_URL_GET_VALUE': true,
     'EV_PRESENT_URL_SET_VALUE': true,

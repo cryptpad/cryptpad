@@ -711,6 +711,7 @@ define([
             }, local ? 0 : SPINNER_DISAPPEAR_TIME);
         };
         if (Cryptpad) {
+            Cryptpad.beginDetectingInfiniteSpinner(config.realtime);
             Cryptpad.whenRealtimeSyncs(config.realtime, onSynced);
             return;
         }
@@ -733,6 +734,9 @@ define([
         // receive a patch.
         if (Cryptpad) {
             typing = 0;
+            // We're just placing this detector here because it used to be triggered by
+            // whenRealtimeSyncs() and now it is not because in sframe it is handled differently.
+            Cryptpad.beginDetectingInfiniteSpinner(config.realtime);
             Cryptpad.whenRealtimeSyncs(config.realtime, function () {
                 kickSpinner(toolbar, config);
             });

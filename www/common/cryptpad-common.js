@@ -138,6 +138,10 @@ define([
         Realtime.whenRealtimeSyncs(common, realtime, cb);
     };
 
+    common.beginDetectingInfiniteSpinner = function (realtime) {
+        Realtime.beginDetectingInfiniteSpinner(common, realtime);
+    };
+
     // Userlist
     common.createUserList = UserList.create;
 

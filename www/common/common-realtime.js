@@ -19,36 +19,37 @@ define([
         if (typeof(realtime.getAuthDoc) !== 'function') {
             return void console.error('improper use of this function');
         }
-
         window.setTimeout(function () {
             if (realtime.getAuthDoc() === realtime.getUserDoc()) {
                 return void cb();
             } else {
                 realtime.onSettle(cb);
             }
-
-            if (intr) { return; }
-            intr = window.setInterval(function () {
-                var l;
-                try {
-                    l = realtime.getLag();
-                } catch (e) {
-                    throw new Error("ChainPad.getLag() does not exist, please `bower update`");
-                }
-                if (l.lag < BAD_STATE_TIMEOUT || !connected) { return; }
-                realtime.abort();
-                // don't launch more than one popup
-                if (common.infiniteSpinnerDetected) { return; }
-                infiniteSpinnerHandlers.forEach(function (ish) { ish(); });
-
-                // inform the user their session is in a bad state
-                Cryptpad.confirm(Messages.realtime_unrecoverableError, function (yes) {
-                    if (!yes) { return; }
-                    window.parent.location.reload();
-                });
-                common.infiniteSpinnerDetected = true;
-            }, 2000);
         }, 0);
+    };
+
+    common.beginDetectingInfiniteSpinner = function (Cryptpad, realtime) {
+        if (intr) { return; }
+        intr = window.setInterval(function () {
+            var l;
+            try {
+                l = realtime.getLag();
+            } catch (e) {
+                throw new Error("ChainPad.getLag() does not exist, please `bower update`");
+            }
+            if (l.lag < BAD_STATE_TIMEOUT || !connected) { return; }
+            realtime.abort();
+            // don't launch more than one popup
+            if (common.infiniteSpinnerDetected) { return; }
+            infiniteSpinnerHandlers.forEach(function (ish) { ish(); });
+
+            // inform the user their session is in a bad state
+            Cryptpad.confirm(Messages.realtime_unrecoverableError, function (yes) {
+                if (!yes) { return; }
+                window.parent.location.reload();
+            });
+            common.infiniteSpinnerDetected = true;
+        }, 2000);
     };
 
     common.onInfiniteSpinner = function (f) { infiniteSpinnerHandlers.push(f); };
