@@ -617,9 +617,33 @@ span {
             flex-wrap: wrap;
             justify-content: center;
             align-content: center;
+            overflow-y: auto;
             .uploadFile {
                 break-after: always;
                 page-break-after: always;
+            }
+        }
+    }
+
+    @media screen and (max-height: @browser_media-not-big) {
+        .cp-modal {
+            & > p {
+                display: none;
+            }
+            & > div {
+                align-content: unset;
+                li {
+                    height: 40px;
+                    width: 90%;
+                    display: flex;
+                    align-items: center;
+                    .fa {
+                        font-size: 32px;
+                    }
+                    .name {
+                        height: auto;
+                    }
+                }
             }
         }
     }

@@ -1691,7 +1691,7 @@ define([
                 $modal.find('.cp-modal').append($description);
                 var $content = createNewPadIcons($modal, isInRoot);
                 $modal.find('.cp-modal').append($content);
-                $modal.show();
+                window.setTimeout(function () { $modal.show(); });
                 addNewPadHandlers($modal, isInRoot);
             });
         };
