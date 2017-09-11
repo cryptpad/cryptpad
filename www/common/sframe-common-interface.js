@@ -490,7 +490,10 @@ define([
 
         sframeChan.query("Q_TEMPLATE_EXIST", type, function (err, data) {
             if (data) {
-                Cryptpad.confirm(Messages.useTemplate, onConfirm);
+                Cryptpad.confirm(Messages.useTemplate, onConfirm, {
+                    ok: Messages.useTemplateOK,
+                    cancel: Messages.useTemplateCancel,
+                });
             }
         });
     };
