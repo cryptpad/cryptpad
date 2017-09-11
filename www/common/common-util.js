@@ -1,6 +1,28 @@
 define([], function () {
     var Util = {};
 
+    // If once is true, after the event has been fired, any further handlers which are
+    // registered will fire immediately, and this type of event cannot be fired twice.
+    Util.mkEvent = function (once) {
+        var handlers = [];
+        var fired = false;
+        return {
+            reg: function (cb) {
+                if (once && fired) { return void setTimeout(cb); }
+                handlers.push(cb);
+            },
+            unreg: function (cb) {
+                if (handlers.indexOf(cb) === -1) { throw new Error("Not registered"); }
+                handlers.splice(handlers.indexOf(cb), 1);
+            },
+            fire: function () {
+                if (fired) { return; }
+                fired = true;
+                handlers.forEach(function (h) { h(); });
+            }
+        };
+    };
+
     Util.find = function (map, path) {
         return (map && path.reduce(function (p, n) {
             return typeof(p[n]) !== 'undefined' && p[n];

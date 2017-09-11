@@ -298,6 +298,14 @@ define([
                 Cryptpad.useTemplate(href, Cryptget, cb);
             });
 
+            sframeChan.on('EV_GOTO_URL', function (url) {
+                if (url) {
+                    window.location.href = url;
+                } else {
+                    window.location.reload();
+                }
+            });
+
             CpNfOuter.start({
                 sframeChan: sframeChan,
                 channel: secret.channel,
