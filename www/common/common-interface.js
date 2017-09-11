@@ -285,7 +285,7 @@ define([
         });
     };
 
-    UI.confirm = function (msg, cb, opt, force, styleCB) {
+    UI.confirm = function (msg, cb, opt, force) {
         cb = cb || function () {};
         opt = opt || {};
 
@@ -328,8 +328,8 @@ define([
         document.body.appendChild(frame);
         setTimeout(function () {
             UI.notify();
-            if (typeof(styleCB) === 'function') {
-                styleCB($ok.closest('.dialog'));
+            if (typeof(opt.done) === 'function') {
+                opt.done($ok.closest('.dialog'));
             }
         });
     };
