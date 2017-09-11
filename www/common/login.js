@@ -89,7 +89,7 @@ define([
         if (!Cred.isValidUsername(uname)) { return void cb('INVAL_USER'); }
         if (!Cred.isValidPassword(passwd)) { return void cb('INVAL_PASS'); }
         if (isRegister && !Cred.isLongEnoughPassword(passwd)) {
-            return void cb('PASS_TOO_SHORT'); }
+            return void cb('PASS_TOO_SHORT');
         }
 
         Cred.deriveFromPassphrase(uname, passwd, 128, function (bytes) {
