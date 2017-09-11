@@ -34,7 +34,7 @@ define(['jquery'], function ($) {
 
         exp.updateTitle = function (newTitle, cb) {
             cb = cb || $.noop;
-            if (newTitle === exp.title) { return; }
+            if (newTitle === exp.title) { return void cb(); }
             metadataMgr.updateTitle(newTitle);
             titleUpdated = cb;
         };

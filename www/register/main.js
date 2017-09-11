@@ -217,9 +217,10 @@ define([
                 cancelClass: 'safe',
                 okClass: 'danger',
                 reverseOrder: true,
-            }, true, function ($dialog) {
-                $dialog.find('> div').addClass('half');
-            });
+                done: function ($dialog) {
+                    $dialog.find('> div').addClass('half');
+                },
+            }, true);
             }, 150);
         });
 
