@@ -228,8 +228,8 @@ define([
                 $codeMirror.removeClass('transition');
             }, 500);
             if (mediaTagModes.indexOf(mode) !== -1) {
-                APP.$mediaTagButton.show();
-            } else { APP.$mediaTagButton.hide(); }
+                $(APP.$mediaTagButton).show();
+            } else { $(APP.$mediaTagButton).hide(); }
 
             if (mode === "markdown") {
                 APP.$previewButton.show();
