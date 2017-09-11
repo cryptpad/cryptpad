@@ -673,11 +673,7 @@ define([
                 $spin.text(Messages.saved);
             }, local ? 0 : SPINNER_DISAPPEAR_TIME);
         };
-        if (Cryptpad) {
-            Cryptpad.whenRealtimeSyncs(config.realtime, onSynced);
-            return;
-        }
-        onSynced();
+        config.sfCommon.whenRealtimeSyncs(onSynced);
     };
     var ks = function (toolbar, config, local) {
         return function () {
@@ -694,12 +690,10 @@ define([
         }
         // without this, users in read-only mode say 'synchronizing' until they
         // receive a patch.
-        if (Cryptpad) {
-            typing = 0;
-            Cryptpad.whenRealtimeSyncs(config.realtime, function () {
-                kickSpinner(toolbar, config);
-            });
-        }
+        typing = 0;
+        config.sfCommon.whenRealtimeSyncs(function () {
+            kickSpinner(toolbar, config);
+        });
         return $spin;
     };
 

@@ -13,10 +13,25 @@ define([
 
     '/customize/application_config.js',
     '/common/cryptpad-common.js',
-    '/common/common-realtime.js'
-], function ($, nThen, Messages, CpNfInner, SFrameChannel, Title, UI, History, File, CodeMirror,
+    '/common/common-realtime.js',
+    '/common/common-util.js'
+], function (
+    $,
+    nThen,
+    Messages,
+    CpNfInner,
+    SFrameChannel,
+    Title,
+    UI,
+    History,
+    File,
+    CodeMirror,
     MetadataMgr,
-    AppConfig, Cryptpad, CommonRealtime) {
+    AppConfig,
+    Cryptpad,
+    CommonRealtime,
+    Util
+) {
 
     // Chainpad Netflux Inner
     var funcs = {};
@@ -24,12 +39,15 @@ define([
 
     funcs.Messages = Messages;
 
+    var evRealtimeSynced = Util.mkEvent(true);
+
     funcs.startRealtime = function (options) {
         if (ctx.cpNfInner) { return ctx.cpNfInner; }
         options.sframeChan = ctx.sframeChan;
         options.metadataMgr = ctx.metadataMgr;
         ctx.cpNfInner = CpNfInner.start(options);
         ctx.cpNfInner.metadataMgr.onChangeLazy(options.onLocal);
+        ctx.cpNfInner.whenRealtimeSyncs(function () { evRealtimeSynced.fire(); });
         return ctx.cpNfInner;
     };
 
@@ -209,6 +227,10 @@ define([
             if (cb) { cb(err); }
         });
     }; */
+
+    funcs.gotoURL = function (url) { ctx.sframeChan.event('EV_GOTO_URL', url); };
+
+    funcs.whenRealtimeSyncs = evRealtimeSynced.reg;
 
     Object.freeze(funcs);
     return { create: function (cb) {

@@ -333,8 +333,16 @@ define([
                 cb(hasTemplate);
             });
 
+            sframeChan.on('EV_GOTO_URL', function (url) {
+                if (url) {
+                    window.location.href = url;
+                } else {
+                    window.location.reload();
+                }
+            });
 
             sframeChan.ready();
+
             CpNfOuter.start({
                 sframeChan: sframeChan,
                 channel: secret.channel,
