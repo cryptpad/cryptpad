@@ -548,7 +548,7 @@ define([
                 // Expand / collapse the toolbar
                 var $collapse = common.createButton(null, true);
                 $collapse.removeClass('fa-question');
-                var updateIcon = function (isVisible, force) {
+                var updateIcon = function (isVisible) {
                     $collapse.removeClass('fa-caret-down').removeClass('fa-caret-up');
                     if (!isVisible) {
                         if (!initializing) { common.feedback('HIDETOOLBAR_PAD'); }
