@@ -135,7 +135,7 @@ li {
 
 .selected {
     border: 1px dotted #bbb;
-    background: #666;
+    background: #666 !important;
     color: #eee;
     margin: -1px;
     .fa-minus-square-o, .fa-plus-square-o {
@@ -200,6 +200,9 @@ span {
             }
             input {
                 width: ~"calc(100% - 30px)";
+                padding: 0 10px;
+                border: 0;
+                color: lighten(@tree-fg, 40%);
             }
             & > span.element-row {
                 overflow: hidden;
