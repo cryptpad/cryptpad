@@ -360,28 +360,29 @@ define([
                 CodeMirror.configureTheme();
             }
 
-            var fileDialogCfg = {
-                onSelect: function (data) {
-                    if (data.type === 'file') {
-                        var mt = '<media-tag src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>';
-                        editor.replaceSelection(mt);
-                        return;
+            if (!readOnly) {
+                var fileDialogCfg = {
+                    onSelect: function (data) {
+                        if (data.type === 'file') {
+                            var mt = '<media-tag src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>';
+                            editor.replaceSelection(mt);
+                            return;
+                        }
                     }
-                }
-            };
-            common.initFilePicker(fileDialogCfg);
-            APP.$mediaTagButton = $('<button>', {
-                title: Messages.filePickerButton,
-                'class': 'cp-toolbar-rightside-button fa fa-picture-o',
-                style: 'font-size: 17px'
-            }).click(function () {
-                var pickerCfg = {
-                    types: ['file'],
-                    where: ['root']
                 };
-                common.openFilePicker(pickerCfg);
-            }).appendTo($rightside);
-
+                common.initFilePicker(fileDialogCfg);
+                APP.$mediaTagButton = $('<button>', {
+                    title: Messages.filePickerButton,
+                    'class': 'cp-toolbar-rightside-button fa fa-picture-o',
+                    style: 'font-size: 17px'
+                }).click(function () {
+                    var pickerCfg = {
+                        types: ['file'],
+                        where: ['root']
+                    };
+                    common.openFilePicker(pickerCfg);
+                }).appendTo($rightside);
+            }
         };
 
         config.onReady = function (info) {
