@@ -128,6 +128,7 @@ define([
             updateFontSize();
             return;
         }
+        if (Slide.isEmbed) { return; }
         Common.setTabTitle(); // Remove the slide number from the title
         Common.setPresentUrl(false);
         change(Slide.index, null);
@@ -294,6 +295,10 @@ define([
         addEvent();
         addSwipeEvents();
         $(window).resize(Slide.updateFontSize);
+        Slide.isEmbed = common.getMetadataMgr().getPrivateData().isEmbed;
+        if (Slide.isEmbed) {
+            $modal.find('#cp-app-slide-modal-exit').remove();
+        }
     };
 
     Slide.setTitle = function (titleObj) {
