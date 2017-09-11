@@ -548,10 +548,9 @@ define([
                 // Expand / collapse the toolbar
                 var $collapse = common.createButton(null, true);
                 $collapse.removeClass('fa-question');
-                var updateIcon = function () {
+                var updateIcon = function (isVisible) {
                     $collapse.removeClass('fa-caret-down').removeClass('fa-caret-up');
-                    var isCollapsed = !$bar.find('.cke_toolbox_main').is(':visible');
-                    if (isCollapsed) {
+                    if (!isVisible) {
                         if (!initializing) { common.feedback('HIDETOOLBAR_PAD'); }
                         $collapse.addClass('fa-caret-down');
                     }
@@ -565,7 +564,18 @@ define([
                     $(window).trigger('resize');
                     $('.cke_toolbox_main').toggle();
                     $(window).trigger('cryptpad-ck-toolbar');
-                    updateIcon();
+                    var isVisible = $bar.find('.cke_toolbox_main').is(':visible');
+                    common.setAttribute(['pad', 'showToolbar'], isVisible);
+                    updateIcon(isVisible);
+                });
+                common.getAttribute(['pad', 'showToolbar'], function (err, data) {
+                    if (typeof(data) === "undefined" || data) {
+                        $('.cke_toolbox_main').show();
+                        updateIcon(true);
+                        return;
+                    }
+                    $('.cke_toolbox_main').hide();
+                    updateIcon(false);
                 });
                 $rightside.append($collapse);
             } else {

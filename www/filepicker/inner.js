@@ -78,7 +78,7 @@ define([
         };
         var updateContainer;
         var createFileDialog = function () {
-            var types = filters.types;
+            var types = filters.types || [];
             // Create modal
             var $blockContainer = Cryptpad.createModal({
                 id: 'cp-filepicker-dialog',

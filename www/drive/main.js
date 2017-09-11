@@ -1263,7 +1263,8 @@ define([
             if (APP.mobile() && !noStyle) { // noStyle means title in search result
                 return $container;
             }
-            var el = path[0] === SEARCH ? undefined : filesOp.find(path);
+            var isVirtual = virtualCategories.indexOf(path[0]) !== -1;
+            var el = isVirtual ? undefined : filesOp.find(path);
             path = path[0] === SEARCH ? path.slice(0,1) : path;
             path.forEach(function (p, idx) {
                 if (isTrash && [2,3].indexOf(idx) !== -1) { return; }
@@ -1690,7 +1691,7 @@ define([
                 $modal.find('.cp-modal').append($description);
                 var $content = createNewPadIcons($modal, isInRoot);
                 $modal.find('.cp-modal').append($content);
-                $modal.show();
+                window.setTimeout(function () { $modal.show(); });
                 addNewPadHandlers($modal, isInRoot);
             });
         };
@@ -2057,7 +2058,7 @@ define([
                 if ($name.length === 0) { return; }
                 if ($name[0].scrollHeight > $name[0].clientHeight) {
                     var $tr = $truncated.clone();
-                    $tr.attr('title', $name.attr('title'));
+                    $tr.attr('title', $name.text());
                     $(el).append($tr);
                 }
             });

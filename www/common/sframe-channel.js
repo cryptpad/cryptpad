@@ -105,6 +105,21 @@ define([
             insideHandlers.push(content);
         }, true);
 
+        // Make sure both iframes are ready
+        var readyHandlers = [];
+        chan.onReady = function (h) {
+            if (typeof(h) !== "function") { return; }
+            readyHandlers.push(h);
+        };
+        chan.ready = function () {
+            chan.whenReg('EV_RPC_READY', function () {
+                chan.event('EV_RPC_READY');
+            });
+            chan.on('EV_RPC_READY', function () {
+                readyHandlers.forEach(function (h) { h(); });
+            });
+        };
+
         var txid;
         window.addEventListener('message', function (msg) {
             var data = JSON.parse(msg.data);

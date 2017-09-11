@@ -43,5 +43,8 @@
     "nthen": "^0.1.5",
     "open-sans-fontface": "^1.4.2",
     "bootstrap-tokenfield": "^0.12.1"
+  },
+  "resolutions": {
+    "bootstrap": "v4.0.0-alpha.6"
   }
 }
