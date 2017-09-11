@@ -1,40 +1,38 @@
 <!DOCTYPE html>
-<html class="cp slide">
+<html>
 <head>
     <title>CryptPad</title>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="no-referrer" />
-    <script async data-bootload="/customize/template.js" data-main="/common/boot.js?ver=1.0" src="/bower_components/requirejs/require.js?ver=2.3.5"></script>
+    <script async data-bootload="main.js" data-main="/common/boot.js?ver=1.0" src="/bower_components/requirejs/require.js?ver=2.3.5"></script>
     <style>
         html, body {
-            overflow-y: hidden;
-        }
-        #iframe-container {
-            position: fixed;
-            top: 0px;
-            bottom: 0px;
-            right: 0px;
-            left: 0px;
+            margin: 0px;
             padding: 0px;
         }
-        #pad-iframe {
+        #sbox-iframe {
+            position:fixed;
+            top:0px;
+            left:0px;
+            bottom:0px;
+            right:0px;
             width:100%;
             height:100%;
             border:none;
             margin:0;
             padding:0;
             overflow:hidden;
-            box-sizing: border-box;
         }
-        body #pad-iframe.fullscreen {
-            top: 0px;
+        #sbox-filePicker-iframe {
+            position: fixed;
+            top:0; left:0;
+            bottom:0; right:0;
+            width:100%;
             height: 100%;
+            border: 0;
         }
-     </style>
+    </style>
 </head>
 <body>
-    <div id="iframe-container">
-        <iframe id="pad-iframe", name="pad-iframe"></iframe><script src="/common/noscriptfix.js"></script>
-    </div>
-
+<iframe id="sbox-iframe">

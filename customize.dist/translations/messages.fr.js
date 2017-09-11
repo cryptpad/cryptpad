@@ -129,6 +129,7 @@ define(function () {
     out.saveTemplatePrompt = "Choisir un titre pour ce modèle";
     out.templateSaved = "Modèle enregistré !";
     out.selectTemplate = "Sélectionner un modèle ou appuyer sur Échap";
+    out.useTemplate = "Vous posséder des modèles pour ce type de pad, souhaitez-vous en utiliser un?";
 
     out.previewButtonTitle = "Afficher ou cacher la prévisualisation de Markdown";
 
@@ -299,6 +300,7 @@ define(function () {
     out.contacts_removeHistoryTitle = "Supprimer l'historique du chat";
     out.contacts_confirmRemoveHistory = 'Êtes-vous sûr de vouloir supprimer définitivement l\'historique de votre chat ? Les messages ne pourront pas être restaurés.';
     out.contacts_removeHistoryServerError = 'Une erreur est survenue lors de la supprimer de l\'historique du chat. Veuillez réessayer plus tard.';
+    out.contacts_fetchHistory = "Récupérer l'historique plus ancien";
 
     // File manager
 
@@ -407,6 +409,8 @@ define(function () {
     out.register_importRecent = "Importer l'historique (Recommendé)";
     out.register_acceptTerms = "J'accepte <a href='/terms.html' tabindex='-1'>les conditions d'utilisation</a>";
     out.register_passwordsDontMatch = "Les mots de passe doivent être identiques!";
+    out.register_passwordTooShort = "Les mots de passe doivent contenir au moins {0} caractères.";
+
     out.register_mustAcceptTerms = "Vous devez accepter les conditions d'utilisation.";
     out.register_mustRememberPass = "Nous ne pouvons pas réinitialiser votre mot de passe si vous l'oubliez. C'est important que vous vous en souveniez! Veuillez cocher la case pour confirmer.";
     out.register_writtenPassword = "J'ai bien noté mon nom d'utilisateur et mon mot de passe, continuer";

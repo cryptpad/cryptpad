@@ -107,12 +107,28 @@ define([
                 });
             });
 
+            var currentTitle;
+            var currentTabTitle;
+            var setDocumentTitle = function () {
+                if (!currentTabTitle) {
+                    document.title = currentTitle || 'CryptPad';
+                    return;
+                }
+                var title = currentTabTitle.replace(/\{title\}/g, currentTitle || 'CryptPad');
+                document.title = title;
+            };
             sframeChan.on('Q_SET_PAD_TITLE_IN_DRIVE', function (newTitle, cb) {
-                document.title = newTitle;
+                currentTitle = newTitle;
+                setDocumentTitle();
                 Cryptpad.renamePad(newTitle, undefined, function (err) {
                     if (err) { cb('ERROR'); } else { cb(); }
                 });
             });
+            sframeChan.on('EV_SET_TAB_TITLE', function (newTabTitle) {
+                currentTabTitle = newTabTitle;
+                setDocumentTitle();
+            });
+
 
             sframeChan.on('Q_SETTINGS_SET_DISPLAY_NAME', function (newName, cb) {
                 Cryptpad.setDisplayName(newName, function (err) {
@@ -234,7 +250,21 @@ define([
                 });
             });
 
+            // Present mode URL
+            sframeChan.on('Q_PRESENT_URL_GET_VALUE', function (data, cb) {
+                var parsed = Cryptpad.parsePadUrl(window.location.href);
+                cb(parsed.hashData && parsed.hashData.present);
+            });
+            sframeChan.on('EV_PRESENT_URL_SET_VALUE', function (data) {
+                var parsed = Cryptpad.parsePadUrl(window.location.href);
+                window.location.href = parsed.getUrl({
+                    embed: parsed.hashData.embed,
+                    present: data
+                });
+            });
 
+
+            // File upload
             var onFileUpload = function (sframeChan, data, cb) {
                 var sendEvent = function (data) {
                     sframeChan.event("EV_FILE_UPLOAD_STATE", data);
@@ -270,6 +300,7 @@ define([
                 onFileUpload(sframeChan, data, cb);
             });
 
+            // File picker
             var FP = {};
             var initFilePicker = function (types) {
                 var config = {};
@@ -297,6 +328,10 @@ define([
             sframeChan.on('Q_TEMPLATE_USE', function (href, cb) {
                 Cryptpad.useTemplate(href, Cryptget, cb);
             });
+            sframeChan.on('Q_TEMPLATE_EXIST', function (type, cb) {
+                var hasTemplate = Cryptpad.listTemplates(type).length > 0;
+                cb(hasTemplate);
+            });
 
             sframeChan.on('EV_GOTO_URL', function (url) {
                 if (url) {
@@ -305,6 +340,8 @@ define([
                     window.location.reload();
                 }
             });
+
+            sframeChan.ready();
 
             CpNfOuter.start({
                 sframeChan: sframeChan,

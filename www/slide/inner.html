@@ -1,33 +1,34 @@
 <!DOCTYPE html>
-<html>
+<html class="cp-app-noscroll cp-app-print">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-    <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
-    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
-    <script async data-bootload="inner.js" data-main="/common/boot.js?ver=1.0" src="/bower_components/requirejs/require.js?ver=2.3.5"></script>
-    <style>.loading-hidden { display: none; } </style>
+    <script async data-bootload="/slide/inner.js" data-main="/common/sframe-boot.js?ver=1.1" src="/bower_components/requirejs/require.js?ver=2.3.5"></script>
+    <style>
+        .loading-hidden { display: none; }
+        #editor1 { display: none; }
+    </style>
 </head>
-<body class="loading-hidden">
-    <div id="bar"></div>
-<!--    <textarea></textarea>-->
-    <div id="cme_toolbox" class="toolbar-container"></div>
-
-    <div id="editorContainer">
+<body class="cp-app-slide">
+    <div id="cme_toolbox" class="cp-toolbar-container"></div>
+    <div id="cp-app-slide-editor">
         <textarea id="editor1" name="editor1"></textarea>
-        <div class="cp slide" tabindex="2">
-            <div id="modal">
-                <div id="button_exit" class="button"><span class="fa fa-times"></span></div>
-                <div id="button_left" class="button"><span class="fa fa-chevron-left"></span></div>
-                <div id="button_right" class="button"><span class="fa fa-chevron-right"></span></div>
-                <div id="content"></div>
+        <div class="cp-app-slide-viewer" tabindex="2">
+            <div id="cp-app-slide-modal">
+                <div id="cp-app-slide-modal-exit" class="cp-app-slide-modal-button">
+                    <span class="fa fa-times"></span>
+                </div>
+                <div id="cp-app-slide-modal-left" class="cp-app-slide-modal-button">
+                    <span class="fa fa-chevron-left"></span>
+                </div>
+                <div id="cp-app-slide-modal-right" class="cp-app-slide-modal-button">
+                    <span class="fa fa-chevron-right"></span>
+                </div>
+                <div id="cp-app-slide-modal-content"></div>
             </div>
-            <div id="print"></div>
+            <div id="cp-app-slide-print"></div>
         </div>
     </div>
-    <div id="nope"></div>
-    <div id="colorPicker_check"></div>
+    <div id="cp-app-slide-colorpicker"></div>
 </body>
 </html>
 

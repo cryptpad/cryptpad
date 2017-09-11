@@ -5,8 +5,8 @@ define([
     var Cred = {};
     var Scrypt = window.scrypt;
 
-    Cred.MINIMUM_PASSWORD_LENGTH = typeof(AppConfig.minimum_password_length) === 'number'?
-        AppConfig.minimum_password_length: 8;
+    Cred.MINIMUM_PASSWORD_LENGTH = typeof(AppConfig.minimumPasswordLength) === 'number'?
+        AppConfig.minimumPasswordLength: 8;
 
     Cred.isLongEnoughPassword = function (passwd) {
         return passwd.length >= Cred.MINIMUM_PASSWORD_LENGTH;

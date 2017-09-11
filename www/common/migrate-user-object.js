@@ -8,7 +8,7 @@ define([], function () {
         var version = userObject.version || 0;
 
         // Migration 1: pad attributes moved to filesData
-        var migrateAttributes = function () {
+        var migratePadAttributesToData = function () {
             var files = userObject && userObject.drive;
             if (!files) { return; }
 
@@ -39,62 +39,43 @@ define([], function () {
             // Migration done
         };
         if (version < 1) {
-            migrateAttributes();
+            migratePadAttributesToData();
             Cryptpad.feedback('Migrate-1', true);
             userObject.version = version = 1;
         }
 
-
-        // Migration 2: indentation settings for CodeMirror moved from root to 'settings'
-        var migrateIndent = function () {
-            var indentKey = 'cryptpad.indentUnit';
-            var useTabsKey = 'cryptpad.indentWithTabs';
-            userObject.settings = userObject.settings || {};
-            if (userObject[indentKey]) {
-                userObject.settings.indentUnit = userObject[indentKey];
-                delete userObject[indentKey];
-            }
-            if (userObject[useTabsKey]) {
-                userObject.settings.indentWithTabs = userObject[useTabsKey];
-                delete userObject[useTabsKey];
-            }
-        };
-        if (version < 2) {
-            migrateIndent();
-            Cryptpad.feedback('Migrate-2', true);
-            userObject.version = version = 2;
-        }
-
-
-        // Migration 3: global attributes from root to 'settings' subobjects
+        // Migration 2: global attributes from root to 'settings' subobjects
         var migrateAttributes = function () {
             var drawer = 'cryptpad.userlist-drawer';
             var polls = 'cryptpad.hide_poll_text';
-            var indentKey = 'indentUnit';
-            var useTabsKey = 'indentWithTabs';
+            var indentKey = 'cryptpad.indentUnit';
+            var useTabsKey = 'cryptpad.indentWithTabs';
             var settings = userObject.settings = userObject.settings || {};
-            if (settings[indentKey] || settings[useTabsKey]) {
+            if (typeof(userObject[indentKey]) !== "undefined") {
                 settings.codemirror = settings.codemirror || {};
-                settings.codemirror.indentUnit = settings[indentKey];
-                settings.codemirror.indentWithTabs = settings[useTabsKey];
-                delete settings[indentKey];
-                delete settings[useTabsKey];
+                settings.codemirror.indentUnit = userObject[indentKey];
+                delete userObject[indentKey];
             }
-            if (userObject[drawer]) {
+            if (typeof(userObject[useTabsKey]) !== "undefined") {
+                settings.codemirror = settings.codemirror || {};
+                settings.codemirror.indentWithTabs = userObject[useTabsKey];
+                delete userObject[useTabsKey];
+            }
+            if (typeof(userObject[drawer]) !== "undefined") {
                 settings.toolbar = settings.toolbar || {};
                 settings.toolbar['userlist-drawer'] = userObject[drawer];
                 delete userObject[drawer];
             }
-            if (userObject[polls]) {
+            if (typeof(userObject[polls]) !== "undefined") {
                 settings.poll = settings.poll || {};
                 settings.poll['hide-text'] = userObject[polls];
                 delete userObject[polls];
             }
         };
-        if (version < 3) {
+        if (version < 2) {
             migrateAttributes();
-            Cryptpad.feedback('Migrate-3', true);
-            userObject.version = version = 3;
+            Cryptpad.feedback('Migrate-2', true);
+            userObject.version = version = 2;
         }
     };
 });

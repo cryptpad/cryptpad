@@ -14,10 +14,16 @@ body.cp-page-terms { @import "./pages/page-terms.less"; }
 // Set the HTML style for the apps which shouldn't have a body scrollbar
 html.cp-app-noscroll {
     @import "./include/app-noscroll.less";
-    .noscroll_main();
+    .app-noscroll_main();
+}
+// Set the HTML style for printing slides
+html.cp-app-print {
+    @import "./include/app-print.less";
+    .app-print_main();
 }
 
 body.cp-app-pad { @import "../../../pad/app-pad.less"; }
 body.cp-app-code { @import "../../../code/app-code.less"; }
+body.cp-app-slide { @import "../../../slide/app-slide.less"; }
 body.cp-app-filepicker { @import "../../../filepicker/app-filepicker.less"; }
 

@@ -499,11 +499,6 @@ define([
             if (cb) { cb(err, data); }
         });
     };
-    /*common.setAttribute = function (attr, value, cb) {
-        getStore().set(["cryptpad", attr].join('.'), value, function (err, data) {
-            if (cb) { cb(err, data); }
-        });
-    };*/
     common.setLSAttribute = function (attr, value) {
         localStorage[attr] = value;
     };
@@ -518,11 +513,6 @@ define([
             cb(err, data);
         });
     };
-    /*common.getAttribute = function (attr, cb) {
-        getStore().get(["cryptpad", attr].join('.'), function (err, data) {
-            cb(err, data);
-        });
-    };*/
 
     /*  this returns a reference to your proxy. changing it will change your drive.
     */
@@ -1103,6 +1093,7 @@ define([
     */
     var LIMIT_REFRESH_RATE = 30000; // milliseconds
     common.createUsageBar = function (cb) {
+        if (!isLoggedIn()) { return cb("NOT_LOGGED_IN"); }
         // getPinnedUsage updates common.account.usage, and other values
         // so we can just use those and only check for errors
         var $container = $('<span>', {'class':'limit-container'});
@@ -1738,7 +1729,7 @@ define([
 
         var setActive = function ($el) {
             if ($el.length !== 1) { return; }
-            $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element(active');
+            $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
             $el.addClass('cp-dropdown-element-active');
             var scroll = $el.position().top + $innerblock.scrollTop();
             if (scroll < $innerblock.scrollTop()) {

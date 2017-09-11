@@ -1,7 +1,7 @@
 define(['jquery'], function ($) {
     var module = {};
 
-    module.create = function (Common, cfg, onLocal) {
+    module.create = function (Common, cfg) {
         var exp = {};
         var metadataMgr = Common.getMetadataMgr();
         var sframeChan = Common.getSframeChannel();
@@ -32,7 +32,6 @@ define(['jquery'], function ($) {
             }
         };
 
-        // update title: href is optional; if not specified, we use window.location.href
         exp.updateTitle = function (newTitle, cb) {
             cb = cb || $.noop;
             if (newTitle === exp.title) { return; }

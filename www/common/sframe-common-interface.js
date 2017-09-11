@@ -26,6 +26,7 @@ define([
         var AppConfig = common.getAppConfig();
         var button;
         var size = "17px";
+        var sframeChan = common.getSframeChannel();
         switch (type) {
             case 'export':
                 button = $('<button>', {
@@ -110,7 +111,7 @@ define([
                                     console.error("Parse error while setting the title", e);
                                 }
                             }
-                            ctx.sframeChan.query('Q_SAVE_AS_TEMPLATE', {
+                            sframeChan.query('Q_SAVE_AS_TEMPLATE', {
                                 title: title,
                                 toSave: toSave
                             }, function () {
@@ -136,12 +137,12 @@ define([
                     button
                     .click(common.prepareFeedback(type))
                     .click(function() {
-                        var msg = isLoggedIn() ? Messages.forgetPrompt : Messages.fm_removePermanentlyDialog;
+                        var msg = common.isLoggedIn() ? Messages.forgetPrompt : Messages.fm_removePermanentlyDialog;
                         Cryptpad.confirm(msg, function (yes) {
                             if (!yes) { return; }
-                            ctx.sframeChan.query('Q_MOVE_TO_TRASH', null, function (err) {
+                            sframeChan.query('Q_MOVE_TO_TRASH', null, function (err) {
                                 if (err) { return void callback(err); }
-                                var cMsg = isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
+                                var cMsg = common.isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
                                 Cryptpad.alert(cMsg, undefined, true);
                                 callback();
                                 return;
@@ -150,6 +151,13 @@ define([
 
                     });
                 }
+                break;
+            case 'present':
+                button = $('<button>', {
+                    title: Messages.presentButtonTitle,
+                    'class': "fa fa-play-circle cp-app-slide-present-button", // used in slide.js
+                    style: 'font:'+size+' FontAwesome'
+                });
                 break;
             case 'history':
                 if (!AppConfig.enableHistory) {
@@ -374,10 +382,19 @@ define([
         var $displayName = $userAdmin.find('.'+displayNameCls);
 
         var $avatar = $userAdmin.find('.cp-dropdown-button-title');
+        var loadingAvatar;
+        var to;
         var oldUrl = '';
         var updateButton = function () {
             var myData = metadataMgr.getUserData();
             if (!myData) { return; }
+            if (loadingAvatar) {
+                // Try again in 200ms
+                window.clearTimeout(to);
+                to = window.setTimeout(updateButton, 200);
+                return;
+            }
+            loadingAvatar = true;
             var newName = myData.name;
             var url = myData.avatar;
             $displayName.text(newName || Messages.anonymous);
@@ -388,8 +405,11 @@ define([
                     if ($img) {
                         $userAdmin.find('button').addClass('cp-avatar');
                     }
+                    loadingAvatar = false;
                 });
+                return;
             }
+            loadingAvatar = false;
         };
         metadataMgr.onChange(updateButton);
         updateButton();
@@ -442,27 +462,37 @@ define([
     UI.openTemplatePicker = function (common) {
         var metadataMgr = common.getMetadataMgr();
         var type = metadataMgr.getMetadataLazy().type;
-        var first = true; // We can only pick a template once (for a new document)
-        var fileDialogCfg = {
-            onSelect: function (data) {
-                if (data.type === type && first) {
-                    Cryptpad.addLoadingScreen({hideTips: true});
-                    var sframeChan = common.getSframeChannel();
-                    sframeChan.query('Q_TEMPLATE_USE', data.href, function () {
-                        first = false;
-                        Cryptpad.removeLoadingScreen();
-                        common.feedback('TEMPLATE_USED');
-                    });
-                    return;
+        var sframeChan = common.getSframeChannel();
+
+        var onConfirm = function (yes) {
+            if (!yes) { return; }
+            var first = true; // We can only pick a template once (for a new document)
+            var fileDialogCfg = {
+                onSelect: function (data) {
+                    if (data.type === type && first) {
+                        Cryptpad.addLoadingScreen({hideTips: true});
+                        sframeChan.query('Q_TEMPLATE_USE', data.href, function () {
+                            first = false;
+                            Cryptpad.removeLoadingScreen();
+                            common.feedback('TEMPLATE_USED');
+                        });
+                        return;
+                    }
                 }
+            };
+            common.initFilePicker(fileDialogCfg);
+            var pickerCfg = {
+                types: [type],
+                where: ['template']
+            };
+            common.openFilePicker(pickerCfg);
+        };
+
+        sframeChan.query("Q_TEMPLATE_EXIST", type, function (err, data) {
+            if (data) {
+                Cryptpad.confirm(Messages.useTemplate, onConfirm);
             }
-        };
-        common.initFilePicker(common, fileDialogCfg);
-        var pickerCfg = {
-            types: [type],
-            where: ['template']
-        };
-        common.openFilePicker(common, pickerCfg);
+        });
     };
 
     return UI;

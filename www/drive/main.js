@@ -1263,7 +1263,8 @@ define([
             if (APP.mobile() && !noStyle) { // noStyle means title in search result
                 return $container;
             }
-            var el = path[0] === SEARCH ? undefined : filesOp.find(path);
+            var isVirtual = virtualCategories.indexOf(path[0]) !== -1;
+            var el = isVirtual ? undefined : filesOp.find(path);
             path = path[0] === SEARCH ? path.slice(0,1) : path;
             path.forEach(function (p, idx) {
                 if (isTrash && [2,3].indexOf(idx) !== -1) { return; }
@@ -1690,7 +1691,7 @@ define([
                 $modal.find('.cp-modal').append($description);
                 var $content = createNewPadIcons($modal, isInRoot);
                 $modal.find('.cp-modal').append($content);
-                $modal.show();
+                window.setTimeout(function () { $modal.show(); });
                 addNewPadHandlers($modal, isInRoot);
             });
         };
@@ -2057,7 +2058,7 @@ define([
                 if ($name.length === 0) { return; }
                 if ($name[0].scrollHeight > $name[0].clientHeight) {
                     var $tr = $truncated.clone();
-                    $tr.attr('title', $name.attr('title'));
+                    $tr.attr('title', $name.text());
                     $(el).append($tr);
                 }
             });
@@ -2339,9 +2340,9 @@ define([
             $('<br>').appendTo($d);
             if (!ro) {
                 $('<label>', {'for': 'propLink'}).text(Messages.editShare).appendTo($d);
-                $('<input>', {'id': 'propLink', 'readonly': 'readonly', 'value': base + data.href})
-                .click(function () { $(this).select(); })
-                .appendTo($d);
+                $d.append(Cryptpad.dialog.selectable(base + data.href, {
+                    id: 'propLink',
+                }));
             }
 
             var parsed = Cryptpad.parsePadUrl(data.href);
@@ -2349,9 +2350,9 @@ define([
                 var roLink = ro ? base + data.href : getReadOnlyUrl(el);
                 if (roLink) {
                     $('<label>', {'for': 'propROLink'}).text(Messages.viewShare).appendTo($d);
-                    $('<input>', {'id': 'propROLink', 'readonly': 'readonly', 'value': roLink})
-                    .click(function () { $(this).select(); })
-                    .appendTo($d);
+                    $d.append(Cryptpad.dialog.selectable(roLink, {
+                        id: 'propROLink',
+                    }));
                 }
             }
 
@@ -2369,20 +2370,17 @@ define([
                         return void cb(void 0, $d);
                     }
                     var KB = Cryptpad.bytesToKilobytes(bytes);
+
+                    var formatted = Messages._getKey('formattedKB', [KB]);
                     $('<br>').appendTo($d);
 
                     $('<label>', {
                         'for': 'size'
                     }).text(Messages.fc_sizeInKilobytes).appendTo($d);
 
-                    $('<input>', {
+                    $d.append(Cryptpad.dialog.selectable(formatted, {
                         id: 'size',
-                        readonly: 'readonly',
-                        value: KB + 'KB',
-                    })
-                    .click(function () { $(this).select(); })
-                    .appendTo($d);
-
+                    }));
                     cb(void 0, $d);
                 });
             } else {
@@ -2438,8 +2436,7 @@ define([
                 var el = filesOp.find(paths[0].path);
                 getProperties(el, function (e, $prop) {
                     if (e) { return void logError(e); }
-                    Cryptpad.alert('', undefined, true);
-                    $('.alertify .msg').html("").append($prop);
+                    Cryptpad.alert($prop[0], undefined, true);
                 });
             }
             module.hideMenu();
@@ -2490,8 +2487,7 @@ define([
                 var el = filesOp.find(paths[0].path);
                 getProperties(el, function (e, $prop) {
                     if (e) { return void logError(e); }
-                    Cryptpad.alert('', undefined, true);
-                    $('.alertify .msg').html("").append($prop);
+                    Cryptpad.alert($prop[0], undefined, true);
                 });
             }
             module.hideMenu();
