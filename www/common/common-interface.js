@@ -237,6 +237,7 @@ define([
         setTimeout(function () {
             $ok.focus();
             UI.notify();
+            if (!document.hasFocus()) { window.focus(); }
         });
     };
 
@@ -282,6 +283,7 @@ define([
         setTimeout(function () {
             input.select().focus();
             UI.notify();
+            if (!document.hasFocus()) { window.focus(); }
         });
     };
 
@@ -331,6 +333,7 @@ define([
             if (typeof(opt.done) === 'function') {
                 opt.done($ok.closest('.dialog'));
             }
+            if (!document.hasFocus()) { window.focus(); }
         });
     };
 
