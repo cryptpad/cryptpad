@@ -657,9 +657,6 @@ define([
             var fData = files[FILES_DATA];
             getFiles([FILES_DATA]).forEach(function (id) {
                 if (filesList.indexOf(id) === -1) {
-                    if (fData[id] && fData[id].href) {
-                        removePadAttribute(fData[id].href);
-                    }
                     spliceFileData(id);
                 }
             });
