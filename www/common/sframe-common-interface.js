@@ -2,7 +2,11 @@ define([
     'jquery',
     '/common/cryptpad-common.js',
     '/common/media-tag.js',
-], function ($, Cryptpad, MediaTag) {
+    '/common/tippy.min.js',
+    '/customize/application_config.js',
+
+    'css!/common/tippy.css',
+], function ($, Cryptpad, MediaTag, Tippy, AppConfig) {
     var UI = {};
     var Messages = Cryptpad.Messages;
 
@@ -495,6 +499,59 @@ define([
                     cancel: Messages.useTemplateCancel,
                 });
             }
+        });
+    };
+
+    UI.addTooltips = function () {
+        var MutationObserver = window.MutationObserver;
+        var delay = typeof(AppConfig.tooltipDelay) === "number" ? AppConfig.tooltipDelay : 500;
+        var addTippy = function (i, el) {
+            if (el.nodeName === 'IFRAME') { return; }
+            Tippy(el, {
+                position: 'bottom',
+                distance: 0,
+                performance: true,
+                dynamicTitle: true,
+                delay: [delay, 0]
+            });
+        };
+        var clearTooltips = function () {
+            $('.tippy-popper').each(function (i, el) {
+                if ($('[aria-describedby=' + el.getAttribute('id') + ']').length === 0) {
+                    el.remove();
+                }
+            });
+        };
+        // This is the robust solution to remove dangling tooltips
+        // The mutation observer does not always find removed nodes.
+        setInterval(clearTooltips, delay);
+        var checkRemoved = function (x) {
+            var out = false;
+            $(x).find('[aria-describedby]').each(function (i, el) {
+                var id = el.getAttribute('aria-describedby');
+                if (id.indexOf('tippy-tooltip-') !== 0) { return; }
+                out = true;
+            });
+            return out;
+        };
+        $('[title]').each(addTippy);
+        var observer = new MutationObserver(function(mutations) {
+            var removed = false;
+            mutations.forEach(function(mutation) {
+                for (var i = 0; i < mutation.addedNodes.length; i++) {
+                    $(mutation.addedNodes[i]).find('[title]').each(addTippy);
+                }
+                for (var j = 0; j < mutation.removedNodes.length; j++) {
+                    removed |= checkRemoved(mutation.removedNodes[j]);
+                }
+            });
+            if (removed) { clearTooltips(); }
+        });
+        observer.observe($('body')[0], {
+            attributes: false,
+            childList: true,
+            characterData: false,
+            subtree: true
         });
     };
 
