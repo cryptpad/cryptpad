@@ -682,6 +682,14 @@ define([
         cpNfInner = common.startRealtime(config);
         metadataMgr = cpNfInner.metadataMgr;
 
+        cpNfInner.onInfiniteSpinner(function () {
+            setEditable(false);
+            Cryptpad.confirm(Messages.realtime_unrecoverableError, function (yes) {
+                if (!yes) { return; }
+                common.gotoURL();
+            });
+        });
+
         editor.on('change', onLocal);
 
         Cryptpad.onLogout(function () { setEditable(false); });
