@@ -16,7 +16,7 @@ define(['jquery'], function ($) {
 
         var $title;
         exp.setToolbar = function (toolbar) {
-            $title = toolbar && toolbar.title;
+            $title = toolbar && (toolbar.title || toolbar.pageTitle);
         };
 
         exp.getTitle = function () { return exp.title; };
@@ -41,8 +41,10 @@ define(['jquery'], function ($) {
 
         metadataMgr.onChange(function () {
             var md = metadataMgr.getMetadata();
-            $title.find('span.cp-toolbar-title-value').text(md.title || md.defaultTitle);
-            $title.find('input').val(md.title || md.defaultTitle);
+            if ($title) {
+                $title.find('span.cp-toolbar-title-value').text(md.title || md.defaultTitle);
+                $title.find('input').val(md.title || md.defaultTitle);
+            }
             exp.title = md.title;
         });
         metadataMgr.onTitleChange(function (title) {

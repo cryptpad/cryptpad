@@ -1,0 +1,130 @@
+@import (once) "../../customize/src/less2/include/browser.less";
+@import (once) "../../customize/src/less2/include/toolbar.less";
+@import (once) "../../customize/src/less2/include/markdown.less";
+@import (once) '../../customize/src/less2/include/fileupload.less';
+@import (once) '../../customize/src/less2/include/alertify.less';
+
+.toolbar_main();
+.fileupload_main();
+.alertify_main();
+
+@button-border: 2px;
+
+/*html, body {
+    margin: 0px;
+    height: 100%;
+}*/
+
+// body
+display: flex;
+flex-flow: column;
+
+#cp-app-file-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#cp-app-file-content.ready {
+    //background: url('/customize/bg3.jpg') no-repeat center center;
+    background-size: cover;
+    background-position: center;
+}
+
+#cp-app-file-upfile, #cp-app-file-dlfile {
+    display: block;
+    height: 100%;
+    width: 100%;
+    border: @button-border solid black;
+}
+
+.cp-app-file-input {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+media-tag {
+    img {
+        max-width: 100%;
+        max-height: ~"calc(100vh - 96px)";
+    }
+}
+
+#cp-app-file-upload-form, #cp-app-file-download-form {
+    padding: 0px;
+    margin: 0px;
+
+    position: relative;
+    width: 50vh;
+    height: 50vh;
+    display: block;
+    margin: 50px auto;
+    max-width: 80vw;
+    label {
+        line-height: ~"calc(50vh - 20px)";
+        text-align: center;
+        position: relative;
+        padding: 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        height: 50vh;
+        box-sizing: border-box;
+    }
+}
+#cp-app-file-download-form {
+    label {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        white-space: normal;
+        word-wrap: break-word;
+        span {
+            width: 50vh;
+            max-width: 80vw;
+            text-align: center;
+            line-height: 1.5em;
+        }
+    }
+}
+.cp-app-file-hovering {
+    background-color: rgba(255, 0, 115, 0.5) !important;
+}
+
+.cp-app-file-block {
+    display: block;
+}
+.cp-app-file-hidden {
+    display: none;
+}
+.cp-app-file-input + label {
+    //border: 2px solid black;
+    //background-color: rgba(50, 50, 50, .10);
+    display: block;
+}
+
+.cp-app-file-input:focus + label,
+.cp-app-file-input + label:hover {
+    //background-color: rgba(50, 50, 50, 0.30);
+}
+
+#cp-app-file-dlprogress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+
+
+    transition: width 200ms;
+    width: 0%;
+    max-width: 100%;
+    max-height: 100%;
+    background-color: rgba(255, 0, 115, 0.75);
+    z-index: 10000;
+    display: block;
+}

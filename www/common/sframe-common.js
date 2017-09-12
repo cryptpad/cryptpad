@@ -57,8 +57,7 @@ define([
     funcs.getAppConfig = function () { return AppConfig; };
 
     funcs.isLoggedIn = function () {
-        if (!ctx.cpNfInner) { throw new Error("cpNfInner is not ready!"); }
-        return ctx.cpNfInner.metadataMgr.getPrivateData().accountName;
+        return ctx.metadataMgr.getPrivateData().accountName;
     };
 
     // MISC
@@ -78,6 +77,7 @@ define([
     funcs.openTemplatePicker = callWithCommon(UI.openTemplatePicker);
     funcs.displayAvatar = callWithCommon(UI.displayAvatar);
     funcs.createButton = callWithCommon(UI.createButton);
+    funcs.getFileSize = callWithCommon(UI.getFileSize);
 
     // History
     funcs.getHistory = callWithCommon(History.create);
@@ -88,6 +88,24 @@ define([
     // Files
     funcs.uploadFile = callWithCommon(File.uploadFile);
     funcs.createFileManager = callWithCommon(File.create);
+    funcs.getMediatagScript = function () {
+        var origin = ctx.metadataMgr.getPrivateData().origin;
+        return '<script src="' + origin + '/common/media-tag-nacl.min.js"></script>';
+    };
+    funcs.getMediatagFromHref = function (href) {
+        var parsed = Cryptpad.parsePadUrl(href);
+        var secret = Cryptpad.getSecrets('file', parsed.hash);
+        var data = ctx.metadataMgr.getPrivateData();
+        if (secret.keys && secret.channel) {
+            var cryptKey = secret.keys && secret.keys.fileKeyStr;
+            var hexFileName = Cryptpad.base64ToHex(secret.channel);
+            var origin = data.fileHost || data.origin;
+            var src = origin + Cryptpad.getBlobPathFromHex(hexFileName);
+            return '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + cryptKey + '">' +
+                   '</media-tag>';
+        }
+        return;
+    };
 
     // CodeMirror
     funcs.initCodeMirrorApp = callWithCommon(CodeMirror.create);
@@ -171,6 +189,7 @@ define([
 
     funcs.isStrongestStored = function () {
         var data = ctx.metadataMgr.getPrivateData();
+        if (data.availableHashes.fileHash) { return true; }
         return !data.readOnly || !data.availableHashes.editHash;
     };
 
