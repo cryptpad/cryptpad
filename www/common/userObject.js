@@ -1012,7 +1012,7 @@ define([
                 var toClean = [];
                 us.forEach(function (el, idx) {
                     if (!isFile(el, true) || rootFiles.indexOf(el) !== -1) {
-                        toClean.push(idx);
+                        toClean.push(el);
                     }
                     if (typeof el === "string") {
                         // We have an old file (href) which is not in filesData: add it
@@ -1024,12 +1024,15 @@ define([
                         var data = files[FILES_DATA][el];
                         if (!data) {
                             debug("An element in TEMPLATE doesn't have associated data", el);
-                            toClean.push(idx);
+                            toClean.push(el);
                         }
                     }
                 });
-                toClean.forEach(function (idx) {
-                    us.splice(idx, 1);
+                toClean.forEach(function (el) {
+                    var idx = us.indexOf(el);
+                    if (idx !== -1) {
+                        us.splice(idx, 1);
+                    }
                 });
             };
             var migrateAttributes = function (el, id, parsed) {
