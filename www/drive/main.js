@@ -176,6 +176,8 @@ define([
     var $backupIcon = $('<span>', {"class": "fa fa-life-ring"});
     var $searchIcon = $('<span>', {"class": "fa fa-search searchIcon"});
     var $addIcon = $('<span>', {"class": "fa fa-plus"});
+    var $renamedIcon = $('<span>', {"class": "fa fa-flag"});
+    var $readonlyIcon = $('<span>', {"class": "fa fa-eye"});
 
     var history = {
         isHistoryMode: false,
@@ -1119,19 +1121,27 @@ define([
             var data = filesOp.getFileData(element);
             if (!data) { return void logError("No data for the file", element); }
 
+            var hrefData = Cryptpad.parsePadUrl(data.href);
+            var $state = $('<span>', {'class': 'state'});
+            if (hrefData.hashData && hrefData.hashData.mode === 'view') {
+                var $ro = $readonlyIcon.clone().appendTo($state);
+                $ro.attr('title', Messages.readonly);
+            }
+            if (data.filename && data.filename !== data.title) {
+                var $renamed = $renamedIcon.clone().appendTo($state);
+                $renamed.attr('title', "TODO: you've set a custom name for this pad. Its shared title is:\n<b>{0}</b>");
+            }
+
             var name = filesOp.getTitle(element);
 
             // The element with the class '.name' is underlined when the 'li' is hovered
             var $name = $('<span>', {'class': 'name'}).text(name);
             $span.html('');
             $span.append($name);
+            $span.append($state);
 
-            var hrefData = Cryptpad.parsePadUrl(data.href);
             var type = Messages.type[hrefData.type] || hrefData.type;
             var $type = $('<span>', {'class': 'type listElement'}).text(type);
-            if (hrefData.hashData && hrefData.hashData.mode === 'view') {
-                $type.append(' (' + Messages.readonly+ ')');
-            }
             var $adate = $('<span>', {'class': 'atime listElement'}).text(getDate(data.atime));
             var $cdate = $('<span>', {'class': 'ctime listElement'}).text(getDate(data.ctime));
             $span.append($type);
@@ -1147,9 +1157,10 @@ define([
             var sf = filesOp.hasSubfolder(element);
             var files = filesOp.hasFile(element);
             var $name = $('<span>', {'class': 'name'}).text(key);
+            var $state = $('<span>', {'class': 'state'});
             var $subfolders = $('<span>', {'class': 'folders listElement'}).text(sf);
             var $files = $('<span>', {'class': 'files listElement'}).text(files);
-            $span.append($name).append($subfolders).append($files);
+            $span.append($name).append($state).append($subfolders).append($files);
         };
 
         // This is duplicated in cryptpad-common, it should be unified
@@ -1542,9 +1553,11 @@ define([
             //var $fohElement = $('<span>', {'class': 'element'}).appendTo($folderHeader);
             var $fhIcon = $('<span>', {'class': 'icon'});
             var $name = $('<span>', {'class': 'name foldername clickable'}).text(Messages.fm_folderName).click(onSortByClick);
+            var $state = $('<span>', {'class': 'state'});
             var $subfolders = $('<span>', {'class': 'folders listElement'}).text(Messages.fm_numberOfFolders);
             var $files = $('<span>', {'class': 'files listElement'}).text(Messages.fm_numberOfFiles);
-            $fohElement.append($fhIcon).append($name).append($subfolders).append($files);
+            $fohElement.append($fhIcon).append($name).append($state)
+                        .append($subfolders).append($files);
             addFolderSortIcon($fohElement);
             return $fohElement;
         };
@@ -1566,11 +1579,12 @@ define([
             //var $fihElement = $('<span>', {'class': 'element'}).appendTo($fileHeader);
             var $fhIcon = $('<span>', {'class': 'icon'});
             var $fhName = $('<span>', {'class': 'name filename clickable'}).text(Messages.fm_fileName).click(onSortByClick);
+            var $fhState = $('<span>', {'class': 'state'});
             var $fhType = $('<span>', {'class': 'type clickable'}).text(Messages.fm_type).click(onSortByClick);
             var $fhAdate = $('<span>', {'class': 'atime clickable'}).text(Messages.fm_lastAccess).click(onSortByClick);
             var $fhCdate = $('<span>', {'class': 'ctime clickable'}).text(Messages.fm_creation).click(onSortByClick);
             // If displayTitle is false, it means the "name" is the title, so do not display the "name" header
-            $fihElement.append($fhIcon).append($fhName).append($fhType);
+            $fihElement.append($fhIcon).append($fhName).append($fhState).append($fhType);
             if (!isWorkgroup()) {
                 $fihElement.append($fhAdate).append($fhCdate);
             }

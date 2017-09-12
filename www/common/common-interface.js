@@ -36,8 +36,9 @@ define([
         return $('button.ok').last();
     };
 
-    var listenForKeys = UI.listenForKeys = function (yes, no) {
+    var listenForKeys = UI.listenForKeys = function (yes, no, el) {
         var handler = function (e) {
+            e.stopPropagation();
             switch (e.which) {
                 case 27: // cancel
                     if (typeof(no) === 'function') { no(e); }
@@ -48,7 +49,7 @@ define([
             }
         };
 
-        $(window).keyup(handler);
+        $(el || window).keydown(handler);
         return handler;
     };
 
@@ -114,7 +115,9 @@ define([
     };
 
     dialog.frame = function (content) {
-        return h('div.alertify', [
+        return h('div.alertify', {
+            tabindex: 1,
+        }, [
             h('div.dialog', [
                 h('div', content),
             ])
@@ -229,6 +232,7 @@ define([
         var close = Util.once(function () {
             $(frame).fadeOut(150, function () { $(this).remove(); });
             stopListening(listener);
+            cb();
         });
         listener = listenForKeys(close, close);
         var $ok = $(ok).click(close);
@@ -237,7 +241,6 @@ define([
         setTimeout(function () {
             $ok.focus();
             UI.notify();
-            if (!document.hasFocus()) { window.focus(); }
         });
     };
 
@@ -283,7 +286,6 @@ define([
         setTimeout(function () {
             input.select().focus();
             UI.notify();
-            if (!document.hasFocus()) { window.focus(); }
         });
     };
 
@@ -330,10 +332,10 @@ define([
         document.body.appendChild(frame);
         setTimeout(function () {
             UI.notify();
+            $(frame).find('.ok').focus();
             if (typeof(opt.done) === 'function') {
                 opt.done($ok.closest('.dialog'));
             }
-            if (!document.hasFocus()) { window.focus(); }
         });
     };
 

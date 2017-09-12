@@ -115,6 +115,15 @@ define([
             var doesAccept = $checkAcceptTerms[0].checked;
 
             /* basic validation */
+            if (!Cred.isLongEnoughPassword(passwd)) {
+                var warning = Messages._getKey('register_passwordTooShort', [
+                    Cred.MINIMUM_PASSWORD_LENGTH
+                ]);
+                return void Cryptpad.alert(warning, function () {
+                    registering = false;
+                });
+            }
+
             if (passwd !== confirmPassword) { // do their passwords match?
                 return void Cryptpad.alert(Messages.register_passwordsDontMatch);
             }
