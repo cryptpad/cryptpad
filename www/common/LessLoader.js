@@ -19,8 +19,14 @@ define([
     }
 
     var fixURL = function (url) {
-        var mark = (url.indexOf('?') !== -1) ? '&' : '?';
-        return url + mark + key;
+        // data: blob: etc
+        if (!/^(\/|http)/.test(url)) { return url; }
+        var ua = url.split('#');
+        var mark = (ua[0].indexOf('?') !== -1) ? '&' : '?';
+        ua[0] = ua[0] + mark + key;
+        var out = ua.join('#');
+        console.log(url + "  -->  " + out);
+        return out;
     };
 
     var doXHR = Less.FileManager.prototype.doXHR;
@@ -48,6 +54,22 @@ define([
         localStorage['LESS_CACHE'] = key;
     };
 
+    var fixAllURLs = function (source) {
+        var urlRegEx = /@import\s*("([^"]*)"|'([^']*)')|url\s*\(\s*(\s*"([^"]*)"|'([^']*)'|[^\)]*\s*)\s*\)/ig;
+        var result, url;
+
+        while (!!(result = urlRegEx.exec(source))) {
+            url = result[3] || result[2] || result[5] || result[6] || result[4];
+            var newUrl = fixURL(url);
+            var quoteLen = result[5] || result[6] ? 1 : 0;
+            source = source.substr(0, urlRegEx.lastIndex - url.length - quoteLen - 1)
+               + newUrl + source.substr(urlRegEx.lastIndex - quoteLen - 1);
+            urlRegEx.lastIndex = urlRegEx.lastIndex + (newUrl.length - url.length);
+        }
+
+        return source;
+    };
+
     module.exports.load = function (url /*:string*/, cb /*:()=>void*/) {
         checkCache();
         if (localStorage['LESS_CACHE|' + key + '|' + url]) {
@@ -60,8 +82,11 @@ define([
                 console.log(err);
                 return;
             }
-            localStorage['LESS_CACHE|' + key + '|' + url] = css.css;
-            inject(css.css, url);
+            var output = fixAllURLs(css.css);
+            window.lc = window.lc || {};
+            window.lc['LESS_CACHE|' + key + '|' + url] = output;
+            localStorage['LESS_CACHE|' + key + '|' + url] = output;
+            inject(output, url);
             cb();
         }, window.less);
     };
