@@ -1,7 +1,8 @@
 // This file provides the API for the channel for talking to and from the sandbox iframe.
 define([
-    '/common/sframe-protocol.js'
-], function (SFrameProtocol) {
+    '/common/sframe-protocol.js',
+    '/common/common-util.js'
+], function (SFrameProtocol, Util) {
 
     var mkTxid = function () {
         return Math.random().toString(16).replace('0.', '') + Math.random().toString(16).replace('0.', '');
@@ -9,6 +10,7 @@ define([
 
     var create = function (ow, cb, isSandbox) {
         var otherWindow;
+        var evReady = Util.mkEvent(true);
         var handlers = {};
         var queries = {};
 
@@ -34,11 +36,13 @@ define([
                 delete queries[txid];
                 cb(undefined, data.content, msg);
             };
-            otherWindow.postMessage(JSON.stringify({
-                txid: txid,
-                content: content,
-                q: q
-            }), '*');
+            evReady.reg(function () {
+                otherWindow.postMessage(JSON.stringify({
+                    txid: txid,
+                    content: content,
+                    q: q
+                }), '*');
+            });
         };
 
         // Fire an event.  channel.event('EV_SOMETHING', { args: "whatever" });
@@ -50,7 +54,9 @@ define([
             if (e.indexOf('EV_') !== 0) {
                 throw new Error('please only use events (starting with EV_) for event messages');
             }
-            otherWindow.postMessage(JSON.stringify({ content: content, q: e }), '*');
+            evReady.reg(function () {
+                otherWindow.postMessage(JSON.stringify({ content: content, q: e }), '*');
+            });
         };
 
         // Be notified on query or event.  channel.on('EV_SOMETHING', function (args, reply) { ... });
@@ -106,17 +112,13 @@ define([
         }, true);
 
         // Make sure both iframes are ready
-        var readyHandlers = [];
         chan.onReady = function (h) {
             if (typeof(h) !== "function") { return; }
-            readyHandlers.push(h);
+            chan.on('EV_RPC_READY', function () { h(); });
         };
         chan.ready = function () {
             chan.whenReg('EV_RPC_READY', function () {
                 chan.event('EV_RPC_READY');
-            });
-            chan.on('EV_RPC_READY', function () {
-                readyHandlers.forEach(function (h) { h(); });
             });
         };
 
@@ -129,6 +131,7 @@ define([
                 //console.log(msg);
             } else if (!otherWindow) {
                 otherWindow = ow;
+                evReady.fire();
                 ow.postMessage(JSON.stringify({ txid: data.txid }), '*');
                 cb(chan);
             } else if (typeof(data.q) === 'string' && handlers[data.q]) {
@@ -149,6 +152,7 @@ define([
         if (isSandbox) {
             // we're in the sandbox
             otherWindow = ow;
+            evReady.fire();
             cb(chan);
         }
     };
