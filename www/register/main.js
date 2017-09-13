@@ -252,8 +252,8 @@ define([
 
         Test(function () {
             $uname.val('test' + Math.random());
-            $passwd.val('test');
-            $confirm.val('test');
+            $passwd.val('testtest');
+            $confirm.val('testtest');
             $checkImport[0].checked = true;
             $checkAcceptTerms[0].checked = true;
             $register.click();
