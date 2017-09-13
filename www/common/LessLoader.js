@@ -18,12 +18,15 @@ define([
         localStorage = {};
     }
 
-    var fixURL = function (url) {
+    var fixURL = function (url, parent) {
         // data: blob: etc
-        if (!/^(\/|http)/.test(url)) { return url; }
+        if (/^[a-zA-Z0-9]*:/.test(url)) { return url; }
         var ua = url.split('#');
         var mark = (ua[0].indexOf('?') !== -1) ? '&' : '?';
         ua[0] = ua[0] + mark + key;
+        if (ua[0].indexOf(':') === -1 && ua[0].indexOf('/') && parent) {
+            ua[0] = parent.replace(/\/[^\/]*$/, '/') + ua[0];
+        }
         var out = ua.join('#');
         console.log(url + "  -->  " + out);
         return out;
@@ -54,13 +57,13 @@ define([
         localStorage['LESS_CACHE'] = key;
     };
 
-    var fixAllURLs = function (source) {
+    var fixAllURLs = function (source, parent) {
         var urlRegEx = /@import\s*("([^"]*)"|'([^']*)')|url\s*\(\s*(\s*"([^"]*)"|'([^']*)'|[^\)]*\s*)\s*\)/ig;
         var result, url;
 
         while (!!(result = urlRegEx.exec(source))) {
             url = result[3] || result[2] || result[5] || result[6] || result[4];
-            var newUrl = fixURL(url);
+            var newUrl = fixURL(url, parent);
             var quoteLen = result[5] || result[6] ? 1 : 0;
             source = source.substr(0, urlRegEx.lastIndex - url.length - quoteLen - 1)
                + newUrl + source.substr(urlRegEx.lastIndex - quoteLen - 1);
@@ -70,6 +73,24 @@ define([
         return source;
     };
 
+    var loadCSS = function (url, cb) {
+        var xhr = new window.XMLHttpRequest();
+        xhr.open("GET", fixURL(url), true);
+        xhr.responseType = 'text';
+        xhr.onload = function () {
+            if (/^4/.test('' + this.status)) { return cb("error loading " + url); }
+            cb(undefined, xhr.response);
+        };
+        xhr.send(null);
+    };
+
+    var loadLess = function (url, cb) {
+        Less.render('@import (multiple) "' + url + '";', {}, function(err, css) {
+            if (err) { return void cb(err); }
+            cb(undefined, css.css);
+        }, window.less);
+    };
+
     module.exports.load = function (url /*:string*/, cb /*:()=>void*/) {
         checkCache();
         if (localStorage['LESS_CACHE|' + key + '|' + url]) {
@@ -77,18 +98,12 @@ define([
             cb();
             return;
         }
-        Less.render('@import (multiple) "' + url + '";', {}, function(err, css) {
-            if (err) {
-                console.log(err);
-                return;
-            }
-            var output = fixAllURLs(css.css);
-            window.lc = window.lc || {};
-            window.lc['LESS_CACHE|' + key + '|' + url] = output;
+        ((/\.less([\?\#].*)?$/.test(url)) ? loadLess : loadCSS)(url, function (err, css) {
+            var output = fixAllURLs(css, url);
             localStorage['LESS_CACHE|' + key + '|' + url] = output;
             inject(output, url);
             cb();
-        }, window.less);
+        });
     };
 
     return module.exports;
