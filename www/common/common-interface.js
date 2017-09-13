@@ -215,9 +215,10 @@ define([
             force = opt.force || false;
         } else if (typeof(opt) === 'boolean') {
             force = opt;
+        }
+        if (typeof(opt) !== 'object') {
             opt = {};
         }
-
         cb = cb || function () {};
 
         var message;
