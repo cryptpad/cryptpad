@@ -9,7 +9,7 @@ define([
     //'/common/media-tag.js',
     //'/bower_components/file-saver/FileSaver.min.js',
 
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less/cryptpad.less',
 ], function ($, Crypto, Listmap, Toolbar, Cryptpad, Todo) {
     var Messages = Cryptpad.Messages;

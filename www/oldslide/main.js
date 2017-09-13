@@ -10,7 +10,7 @@ define([
     '/common/cryptget.js',
     '/slide/slide.js',
 
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less/cryptpad.less',
 ], function ($, Crypto, Realtime, TextPatcher, Toolbar, JSONSortify, JsonOT, Cryptpad, Cryptget, Slide) {
     var Messages = Cryptpad.Messages;

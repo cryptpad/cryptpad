@@ -10,7 +10,7 @@ define([
     '/common/toolbar2.js',
     '/bower_components/file-saver/FileSaver.min.js',
 
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/customize/src/less/toolbar.less',
     'less!/customize/src/less/cryptpad.less',

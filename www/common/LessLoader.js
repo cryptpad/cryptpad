@@ -28,7 +28,7 @@ define([
             ua[0] = parent.replace(/\/[^\/]*$/, '/') + ua[0];
         }
         var out = ua.join('#');
-        console.log(url + "  -->  " + out);
+        //console.log(url + "  -->  " + out);
         return out;
     };
 

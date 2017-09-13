@@ -7,7 +7,7 @@ define([
     '/common/common-messenger.js',
     '/contacts/messenger-ui.js',
 
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less/cryptpad.less',
 ], function ($, Crypto, Toolbar, Cryptpad, Messenger, UI) {
     var Messages = Cryptpad.Messages;

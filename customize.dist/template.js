@@ -4,7 +4,7 @@ define([
     '/common/cryptpad-common.js',
     '/customize/pages.js',
 
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, h, Cryptpad, Pages) {
 $(function () {
     var $body = $('body');

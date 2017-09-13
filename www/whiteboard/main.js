@@ -15,7 +15,7 @@ define([
     '/bower_components/secure-fabric.js/dist/fabric.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
 
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/customize/src/less/cryptpad.less',
     'less!/whiteboard/whiteboard.less',
