@@ -2024,6 +2024,7 @@ define([
         common.getRecentPads(function (err, recent) {
             var parsed = parsePadUrl(window.location.href);
             if (!parsed.type || !parsed.hashData) { return void cb('E_INVALID_HREF'); }
+            if (parsed.type === 'file') { secret.channel = Util.base64ToHex(secret.channel); }
             var hashes = common.getHashes(secret.channel, secret);
 
             if (!hashes.editHash && !hashes.viewHash && parsed.hashData && !parsed.hashData.mode) {

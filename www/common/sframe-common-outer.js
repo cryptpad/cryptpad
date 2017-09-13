@@ -6,7 +6,9 @@ define([
 ], function (nThen, ApiConfig, $) {
     var common = {};
 
-    common.start = function () {
+    common.start = function (cfg) {
+        cfg = cfg || {};
+        var realtime = !cfg.noRealtime;
         var secret;
         var hashes;
         var CpNfOuter;
@@ -60,7 +62,7 @@ define([
                         name = n;
                     }));
                 }).nThen(function (/*waitFor*/) {
-                    sframeChan.event('EV_METADATA_UPDATE', {
+                    var metaObj = {
                         doc: {
                             defaultTitle: defaultTitle,
                             type: parsed.type
@@ -77,6 +79,7 @@ define([
                             accountName: Cryptpad.getAccountName(),
                             origin: window.location.origin,
                             pathname: window.location.pathname,
+                            fileHost: ApiConfig.fileHost,
                             readOnly: readOnly,
                             availableHashes: hashes,
                             isTemplate: Cryptpad.isTemplate(window.location.href),
@@ -86,7 +89,11 @@ define([
                             isPresent: parsed.hashData && parsed.hashData.present,
                             isEmbed: parsed.hashData && parsed.hashData.embed,
                         }
-                    });
+                    };
+                    if (cfg.addData) {
+                        cfg.addData(metaObj.priv, Cryptpad);
+                    }
+                    sframeChan.event('EV_METADATA_UPDATE', metaObj);
                 });
             };
             Cryptpad.onDisplayNameChanged(updateMeta);
@@ -341,7 +348,15 @@ define([
                 }
             });
 
+            if (cfg.addRpc) {
+                cfg.addRpc(sframeChan, Cryptpad);
+            }
+
             sframeChan.ready();
+
+            Cryptpad.reportAppUsage();
+
+            if (!realtime) { return; }
 
             CpNfOuter.start({
                 sframeChan: sframeChan,
@@ -362,7 +377,6 @@ define([
                     Cryptpad.replaceHash(Cryptpad.getEditHashFromKeys(wc.id, secret.keys));
                 }
             });
-            Cryptpad.reportAppUsage();
         });
     };
 

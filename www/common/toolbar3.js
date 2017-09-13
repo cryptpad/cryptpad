@@ -344,6 +344,7 @@ define([
             show();
         });
 
+        initUserList(toolbar, config);
         return $container;
     };
 
@@ -472,22 +473,59 @@ define([
         return "Loading share button";
     };
 
-    var createFileShare = function (toolbar) {
-        if (true) { throw new Error('TODO: Update createFileShare to add "embed" and work in secure iframes'); }
-        if (!window.location.hash) {
-            throw new Error("Unable to display the share button: hash required in the URL");
+    var createFileShare = function (toolbar, config) {
+        if (!config.metadataMgr) {
+            throw new Error("You must provide a `metadataMgr` to display the userlist");
         }
+        var metadataMgr = config.metadataMgr;
+        var origin = config.metadataMgr.getPrivateData().origin;
+        var pathname = config.metadataMgr.getPrivateData().pathname;
+        var hashes = metadataMgr.getPrivateData().availableHashes;
+        var url = origin + pathname + '#' + hashes.fileHash;
+
+
         var $shareIcon = $('<span>', {'class': 'fa fa-share-alt'});
-        var $button = $('<button>', {'title': Messages.shareButton}).append($shareIcon);
-        $button.addClass('cp-toolbar-share-button');
-        $button.click(function () {
-            var url = window.location.href;
+        var options = [];
+        options.push({
+            tag: 'a',
+            attributes: {title: Messages.editShareTitle, 'class': 'cp-toolbar-share-file-copy'},
+            content: '<span class="fa fa-file"></span> ' + Messages.fileShare
+        });
+        options.push({
+            tag: 'a',
+            attributes: {title: Messages.fileEmbedTitle, 'class': 'cp-toolbar-share-file-embed'},
+            content: '<span class="fa fa-file"></span> ' + Messages.getEmbedCode
+        });
+        var dropdownConfigShare = {
+            text: $('<div>').append($shareIcon).html(),
+            options: options,
+            feedback: 'FILESHARE_MENU',
+        };
+        var $shareBlock = Cryptpad.createDropdown(dropdownConfigShare);
+        $shareBlock.find('.cp-dropdown-content').addClass(SHARE_CLS);
+        $shareBlock.addClass('cp-toolbar-share-button');
+        $shareBlock.find('button').attr('title', Messages.shareButton);
+
+        // Add handlers
+        $shareBlock.find('a.cp-toolbar-share-file-copy').click(function () {
             var success = Cryptpad.Clipboard.copy(url);
             if (success) { Cryptpad.log(Messages.shareSuccess); }
         });
+        $shareBlock.find('a.cp-toolbar-share-file-embed').click(function () {
+            var $content = $('<div>');
+            $('<input>', {'style':'display:none;'}).appendTo($content);
+            $('<h3>').text(Messages.fileEmbedTitle).appendTo($content);
+            var $script = $('<p>').text(Messages.fileEmbedScript).appendTo($content);
+            $('<br>').appendTo($script);
+            $script.append(Cryptpad.dialog.selectable(Common.getMediatagScript()));
+            var $tag = $('<p>').text(Messages.fileEmbedTag).appendTo($content);
+            $('<br>').appendTo($tag);
+            $tag.append(Cryptpad.dialog.selectable(Common.getMediatagFromHref(url)));
+            Cryptpad.alert($content[0], null, true);
+        });
 
-        toolbar.$leftside.append($button);
-        return $button;
+        toolbar.$leftside.append($shareBlock);
+        return $shareBlock;
     };
 
     var createTitle = function (toolbar, config) {
@@ -819,13 +857,13 @@ define([
             $title.find('input').trigger(ev);
         };
         // Click in the main window
-        var w = config.ifrw || window;
+        var w = window;
         $(w).on('click', removeDropdowns);
         $(w).on('click', cancelEditTitle);
         // Click in iframes
         try {
             if (w.$ && w.$('iframe').length) {
-                config.ifrw.$('iframe').each(function (i, el) {
+                w.$('iframe').each(function (i, el) {
                     $(el.contentWindow).on('click', removeDropdowns);
                     $(el.contentWindow).on('click', cancelEditTitle);
                 });
@@ -955,9 +993,9 @@ define([
         var tb = {};
         tb['userlist'] = createUserList;
         tb['share'] = createShare;
-        tb['fileshare'] = createFileShare;//TODO
+        tb['fileshare'] = createFileShare;
         tb['title'] = createTitle;
-        tb['pageTitle'] = createPageTitle;//TODO
+        tb['pageTitle'] = createPageTitle;
         tb['lag'] = $.noop;
         tb['spinner'] = createSpinner;
         tb['state'] = $.noop;
@@ -979,7 +1017,6 @@ define([
         };
 
         addElement(config.displayed, {}, true);
-        initUserList(toolbar, config);
 
         toolbar['linkToMain'] = createLinkToMain(toolbar, config);
 
