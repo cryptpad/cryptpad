@@ -279,22 +279,25 @@ define([
         ]);
 
         var listener;
-        var close = Util.once(function () {
-            $(frame).fadeOut(150, function () { $(this).remove(); });
-            stopListening(listener);
+        var close = Util.once(function (result, ev) {
+            var $frame = $(frame).fadeOut(150, function () {
+                stopListening(listener);
+                $frame.remove();
+                cb(result, ev);
+            });
         });
 
-        var $ok = $(ok).click(function (ev) { cb(input.value, ev); });
-        var $cancel = $(cancel).click(function (ev) { cb(null, ev); });
+        var $ok = $(ok).click(function (ev) { close(input.value, ev); });
+        var $cancel = $(cancel).click(function (ev) { close(null, ev); });
         listener = listenForKeys(function () { // yes
-            close(); $ok.click();
+            $ok.click();
         }, function () { // no
-            close(); $cancel.click();
+            $cancel.click();
         });
 
         document.body.appendChild(frame);
         setTimeout(function () {
-            input.select().focus();
+            $(input).select().focus();
             UI.notify();
         });
     };
@@ -322,13 +325,14 @@ define([
         ]);
 
         var listener;
-        var close = Util.once(function () {
+        var close = Util.once(function (bool, ev) {
             $(frame).fadeOut(150, function () { $(this).remove(); });
             stopListening(listener);
+            cb(bool, ev);
         });
 
-        var $ok = $(ok).click(function (ev) { close(); cb(true, ev); });
-        var $cancel = $(cancel).click(function (ev) { close(); cb(false, ev); });
+        var $ok = $(ok).click(function (ev) { close(true, ev); });
+        var $cancel = $(cancel).click(function (ev) { close(false, ev); });
 
         if (opt.cancelClass) { $cancel.addClass(opt.cancelClass); }
         if (opt.okClass) { $ok.addClass(opt.okClass); }
