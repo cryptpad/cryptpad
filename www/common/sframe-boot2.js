@@ -10,17 +10,6 @@ define(['/common/requireconfig.js'], function (RequireConfig) {
         };
     }
 
-    // In the event that someone clicks a link in the iframe, it's going to cause the iframe
-    // to navigate away from the pad which is going to be a mess. Instead we'll just reload
-    // the top level and then it will be simply that a link doesn't work properly.
-    window.onunload = function () {
-        window.parent.location.reload();
-    };
-
-    // Make sure anything which might have leaked to the localstorage is always cleaned up.
-    try { window.localStorage.clear(); } catch (e) { }
-    try { window.sessionStorage.clear(); } catch (e) { }
-
     var mkFakeStore = function () {
         var fakeStorage = {
             getItem: function (k) { return fakeStorage[k]; },

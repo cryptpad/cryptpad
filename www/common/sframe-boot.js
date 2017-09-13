@@ -1,7 +1,37 @@
 // Stage 0, this gets cached which means we can't change it. boot2-sframe.js is changable.
 // Note that this file is meant to be executed only inside of a sandbox iframe.
+//
+// IF YOU EDIT THIS FILE, bump the version (replace 1.3 in the following command with the next version.)
+// grep -nr '/common/sframe-boot.js?ver=' | sed 's/:.*$//' | while read x; do \
+//    sed -i -e 's@/common/sframe-boot.js?ver=[^"]*@/common/sframe-boot.js?ver=1.3@' $x; done
 ;(function () {
 var afterLoaded = function (req) {
+    var localStorage = {};
+    if (req.cfg && req.cfg.urlArgs) {
+        try {
+            localStorage = window.localStorage;
+            if (localStorage['CRYPTPAD_VERSION'] !== req.cfg.urlArgs) {
+                // new version, flush
+                Object.keys(localStorage).forEach(function (k) {
+                    if (!k.indexOf('CRYPTPAD_CACHE_')) { delete localStorage[k]; }
+                });
+                localStorage['CRYPTPAD_VERSION'] = req.cfg.urlArgs;
+            }
+        } catch (e) {
+            console.error(e);
+            localStorage = {};
+        }
+    }
+    window.cryptpadCache = Object.freeze({
+        put: function (k, v, cb) {
+            cb = cb || function () { };
+            setTimeout(function () { localStorage['CRYPTPAD_CACHE_' + k] = v; cb(); });
+        },
+        get: function (k, cb) {
+            if (!cb) { throw new Error(); }
+            setTimeout(function () { cb(localStorage['CRYPTPAD_CACHE_' + k]); });
+        }
+    });
     req.cfg = req.cfg || {};
     if (req.pfx) {
         req.cfg.onNodeCreated = function (node /*, config, module, path*/) {
