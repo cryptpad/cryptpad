@@ -454,9 +454,13 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var type = metadataMgr.getMetadataLazy().type;
         var sframeChan = common.getSframeChannel();
+        var focus;
 
         var onConfirm = function (yes) {
-            if (!yes) { return; }
+            if (!yes) {
+                if (focus) { focus.focus(); }
+                return;
+            }
             var first = true; // We can only pick a template once (for a new document)
             var fileDialogCfg = {
                 onSelect: function (data) {
@@ -467,6 +471,7 @@ define([
                             Cryptpad.removeLoadingScreen();
                             common.feedback('TEMPLATE_USED');
                         });
+                        if (focus) { focus.focus(); }
                         return;
                     }
                 }
@@ -481,6 +486,7 @@ define([
 
         sframeChan.query("Q_TEMPLATE_EXIST", type, function (err, data) {
             if (data) {
+                focus = document.activeElement;
                 Cryptpad.confirm(Messages.useTemplate, onConfirm, {
                     ok: Messages.useTemplateOK,
                     cancel: Messages.useTemplateCancel,
