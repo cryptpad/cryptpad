@@ -1,22 +1,37 @@
 /*@flow*/
 /*:: const define = () => {}; */
 define([
-    '/api/config',
-    '/bower_components/less/dist/less.min.js'
-], function (Config, Less) { /*::});module.exports = (function() {
+    '/api/config'
+], function (Config) { /*::});module.exports = (function() {
     const Config = (undefined:any);
-    const Less = (undefined:any);
     */
 
     var module = { exports: {} };
     var key = Config.requireConf.urlArgs;
-    var localStorage;
+    var localStorage = {};
     try {
         localStorage = window.localStorage || {};
+        if (localStorage['LESS_CACHE'] !== key) {
+            Object.keys(localStorage).forEach(function (k) {
+                if (k.indexOf('LESS_CACHE|') !== 0) { return; }
+                delete localStorage[k];
+            });
+            localStorage['LESS_CACHE'] = key;
+        }
     } catch (e) {
         console.error(e);
         localStorage = {};
     }
+
+    var cacheGet = function (k, cb) {
+        if (window.cryptpadCache) { return void window.cryptpadCache.get(k, cb); }
+        setTimeout(function () { cb(localStorage['LESS_CACHE|' + key + '|' + k]); })
+    };
+    var cachePut = function (k, v, cb) {
+        if (window.cryptpadCache) { return void window.cryptpadCache.put(k, v, cb); }
+        cb = cb || function () { };
+        setTimeout(function () { localStorage['LESS_CACHE|' + key + '|' + k] = v; cb(); });
+    };
 
     var fixURL = function (url, parent) {
         // data: blob: etc
@@ -32,13 +47,6 @@ define([
         return out;
     };
 
-    var doXHR = Less.FileManager.prototype.doXHR;
-    Less.FileManager.prototype.doXHR = function (url, type, callback, errback) {
-        url = fixURL(url);
-        //console.log("xhr: " + url);
-        return doXHR(url, type, callback, errback);
-    };
-
     var inject = function (cssText, url) {
         var curStyle = document.createElement('style');
         curStyle.setAttribute('data-original-src', url);
@@ -46,15 +54,6 @@ define([
         curStyle.appendChild(document.createTextNode(cssText));
         if (!document.head) { throw new Error(); }
         document.head.appendChild(curStyle);
-    };
-
-    var checkCache = function () {
-        if (localStorage['LESS_CACHE'] === key) { return; }
-        Object.keys(localStorage).forEach(function (k) {
-            if (k.indexOf('LESS_CACHE|') !== 0) { return; }
-            delete localStorage[k];
-        });
-        localStorage['LESS_CACHE'] = key;
     };
 
     var fixAllURLs = function (source, parent) {
@@ -84,25 +83,46 @@ define([
         xhr.send(null);
     };
 
+    var lessEngine;
+    var getLessEngine = function (cb) {
+        if (lessEngine) {
+            cb(lessEngine);
+        } else {
+            require(['/bower_components/less/dist/less.min.js'], function (Less) {
+                lessEngine = Less;
+                var doXHR = lessEngine.FileManager.prototype.doXHR;
+                lessEngine.FileManager.prototype.doXHR = function (url, type, callback, errback) {
+                    url = fixURL(url);
+                    //console.log("xhr: " + url);
+                    return doXHR(url, type, callback, errback);
+                };
+                cb(lessEngine);
+            });
+        }
+    };
+
     var loadLess = function (url, cb) {
-        Less.render('@import (multiple) "' + url + '";', {}, function(err, css) {
-            if (err) { return void cb(err); }
-            cb(undefined, css.css);
-        }, window.less);
+        getLessEngine(function (less) {
+            less.render('@import (multiple) "' + url + '";', {}, function(err, css) {
+                if (err) { return void cb(err); }
+                cb(undefined, css.css);
+            }, window.less);
+        });
     };
 
     module.exports.load = function (url /*:string*/, cb /*:()=>void*/) {
-        checkCache();
-        if (localStorage['LESS_CACHE|' + key + '|' + url]) {
-            inject(localStorage['LESS_CACHE|' + key + '|' + url], url);
-            cb();
-            return;
-        }
-        ((/\.less([\?\#].*)?$/.test(url)) ? loadLess : loadCSS)(url, function (err, css) {
-            var output = fixAllURLs(css, url);
-            localStorage['LESS_CACHE|' + key + '|' + url] = output;
-            inject(output, url);
-            cb();
+        cacheGet(url, function (css) {
+            if (css) {
+                inject(css, url);
+                return void cb();
+            }
+            console.log('CACHE MISS ' + url);
+            ((/\.less([\?\#].*)?$/.test(url)) ? loadLess : loadCSS)(url, function (err, css) {
+                var output = fixAllURLs(css, url);
+                cachePut(url, output);
+                inject(output, url);
+                cb();
+            });
         });
     };
 
