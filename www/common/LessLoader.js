@@ -25,7 +25,7 @@ define([
 
     var cacheGet = function (k, cb) {
         if (window.cryptpadCache) { return void window.cryptpadCache.get(k, cb); }
-        setTimeout(function () { cb(localStorage['LESS_CACHE|' + key + '|' + k]); })
+        setTimeout(function () { cb(localStorage['LESS_CACHE|' + key + '|' + k]); });
     };
     var cachePut = function (k, v, cb) {
         if (window.cryptpadCache) { return void window.cryptpadCache.put(k, v, cb); }
