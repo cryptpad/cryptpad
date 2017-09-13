@@ -38,7 +38,7 @@ $(function () {
             };
 
             require([
-                'less!/customize/src/less/loading.less'
+                'less!/customize/src/less2/loading.less'
             ], function () {
                 if (/whiteboard/.test(pathname)) {
                     $('body').html(h('body', Pages[pathname]()).innerHTML);

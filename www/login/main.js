@@ -4,7 +4,6 @@ define([
     '/common/login.js',
 
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'less!/customize/src/less/loading.less',
 ], function ($, Cryptpad, Login) {
     $(function () {
         var $main = $('#mainBlock');

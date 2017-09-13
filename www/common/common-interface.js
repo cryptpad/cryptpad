@@ -372,7 +372,7 @@ define([
         };
     };
 
-    var LOADING = 'loading';
+    var LOADING = 'cp-loading';
 
     var getRandomTip = function () {
         if (!Messages.tips || !Object.keys(Messages.tips).length) { return ''; }
@@ -391,21 +391,21 @@ define([
             if (loadingText) {
                 $('#' + LOADING).find('p').text(loadingText);
             }
-            $container = $loading.find('.loadingContainer');
+            $container = $loading.find('.cp-loading-container');
         } else {
             $loading = $(Pages.loadingScreen());
-            $container = $loading.find('.loadingContainer');
+            $container = $loading.find('.cp-loading-container');
             if (hideLogo) {
                 $loading.find('img').hide();
             } else {
                 $loading.find('img').show();
             }
-            var $spinner = $loading.find('.spinnerContainer');
+            var $spinner = $loading.find('.cp-loading-spinner-container');
             $spinner.show();
             $('body').append($loading);
         }
         if (Messages.tips && !hideTips) {
-            var $loadingTip = $('<div>', {'id': 'loadingTip'});
+            var $loadingTip = $('<div>', {'id': 'cp-loading-tip'});
             $('<span>', {'class': 'tips'}).text(getRandomTip()).appendTo($loadingTip);
             $loadingTip.css({
                 'bottom': $('body').height()/2 - $container.height()/2 + 20 + 'px'
@@ -415,7 +415,7 @@ define([
     };
     UI.removeLoadingScreen = function (cb) {
         $('#' + LOADING).fadeOut(750, cb);
-        var $tip = $('#loadingTip').css('top', '')
+        var $tip = $('#cp-loading-tip').css('top', '')
         // loading.less sets transition-delay: $wait-time
         // and               transition: opacity $fadeout-time
             .css({
@@ -429,7 +429,7 @@ define([
     };
     UI.errorLoadingScreen = function (error, transparent) {
         if (!$('#' + LOADING).is(':visible')) { UI.addLoadingScreen({hideTips: true}); }
-        $('.spinnerContainer').hide();
+        $('.cp-loading-spinner-container').hide();
         if (transparent) { $('#' + LOADING).css('opacity', 0.8); }
         $('#' + LOADING).find('p').html(error || Messages.error);
     };
