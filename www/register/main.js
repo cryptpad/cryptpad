@@ -5,7 +5,7 @@ define([
     '/common/test.js',
     '/common/credential.js', // preloaded for login.js
 
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, Login, Cryptpad, Test, Cred) {
     var Messages = Cryptpad.Messages;
 

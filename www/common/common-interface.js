@@ -209,7 +209,15 @@ define([
         return tagger;
     };
 
-    UI.alert = function (msg, cb, force) {
+    UI.alert = function (msg, cb, opt) {
+        var force = false;
+        if (typeof(opt) === 'object') {
+            force = opt.force || false;
+        } else if (typeof(opt) === 'boolean') {
+            force = opt;
+            opt = {};
+        }
+
         cb = cb || function () {};
 
         var message;
@@ -228,6 +236,7 @@ define([
             dialog.nav(ok),
         ]);
 
+        if (opt.forefront) { $(frame).addClass('forefront'); }
         var listener;
         var close = Util.once(function () {
             $(frame).fadeOut(150, function () { $(this).remove(); });

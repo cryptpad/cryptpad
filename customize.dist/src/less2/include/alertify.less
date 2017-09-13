@@ -3,6 +3,7 @@
 @import (once) "./modal-theme.less";
 
 .alertify_main () {
+    @max-z-index: 2147483647;
     @alertify-fore: @colortheme_modal-fg;
     @alertify-base: @colortheme_modal-bg;
 
@@ -27,7 +28,7 @@
     // These show only once
 
     .alertify-logs {
-        z-index:10000;
+        z-index:10000; // alertify logs
         @media print {
             visibility: hidden;
         }
@@ -63,7 +64,10 @@
         bottom: 0;
         width: 100%;
         height: 100%;
-        z-index: 99999;
+        z-index: 99999; // alertify container
+        &.forefront {
+            z-index: @max-z-index; // alertify max forefront
+        }
 
         .message {
             h1, h2, h3, h4, h5, h6 {
@@ -236,7 +240,7 @@
     .alertify-logs {
 
         position: fixed;
-        z-index: 99999;
+        z-index: 99999; // alertify logs
 
         &.bottom, &:not(.top) {
             bottom: 16px;
