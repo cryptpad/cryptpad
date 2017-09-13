@@ -10,7 +10,7 @@
         bottom: 10vh;
         opacity: 0.9;
         box-sizing: border-box;
-        z-index: 1000000;
+        z-index: 1000000; //Z file upload table container
         display: none;
         #cp-fileupload-table {
             width: 80vw;
@@ -40,7 +40,7 @@
                 left: @upload_pad_v;
                 top: @upload_pad_h; bottom: @upload_pad_h;
                 background-color: rgba(0,0,255,0.3);
-                z-index: -1;
+                z-index: -1; //Z file upload progress container
             }
             .cp-fileupload-table-cancel { text-align: center; }
             .fa.cancel {

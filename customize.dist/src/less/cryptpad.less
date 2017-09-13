@@ -296,7 +296,7 @@ noscript {
         left: 0;
         bottom: 0;
         right: 0;
-        z-index: 2;
+        z-index: 2; // noscriptContainer
         #noscript {
             width: 1000px;
             display: flex;
@@ -341,7 +341,7 @@ noscript {
     left: 0;
     right: 0;
     margin: auto;
-    z-index: 1;
+    z-index: 1; // #main, #main_other
 
     font-size: medium;
 
@@ -607,7 +607,7 @@ noscript {
             background: blue;
             position: absolute;
             left: 0;
-            z-index:1;
+            z-index:1; // .usage
             &.normal {
                 background: @toolbar-green;
             }
@@ -622,7 +622,7 @@ noscript {
             position: relative;
             color: black;
             text-shadow: 1px 0 2px white, 0 1px 2px white, -1px 0 2px white, 0 -1px 2px white;
-            z-index: 2;
+            z-index: 2; // .usageText
             font-size: @main-font-size;
             font-weight: bold;
         }
@@ -644,7 +644,7 @@ noscript {
     bottom: 10vh;
     opacity: 0.9;
     box-sizing: border-box;
-    z-index: 10000;
+    z-index: 10000; // #uploadStatusContainer
     display: none;
     #uploadStatus {
         width: 80vw;
@@ -674,7 +674,7 @@ noscript {
             left: @upload_pad_v;
             top: @upload_pad_h; bottom: @upload_pad_h;
             background-color: rgba(0,0,255,0.3);
-            z-index: -1;
+            z-index: -1; // .progressContainer
         }
         .upCancel { text-align: center; }
         .fa.cancel {

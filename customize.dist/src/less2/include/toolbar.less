@@ -274,7 +274,7 @@
 
         font: @toolbar_button-font;
         width: 100%;
-        z-index: 9001;
+        z-index: 10000; // cp-toolbar
 
         .cp-dropdown-container {
             //height: 100%;
@@ -597,7 +597,7 @@
                 vertical-align: top;
             }
             .cp-toolbar-user-dropdown {
-                z-index: 10000;
+                z-index: 10000; //Z cp-toolbar-user-dropdown
                 //margin-left: 20px;
                 height: 64px;
                 width: 64px;
@@ -737,7 +737,7 @@
             background: @colortheme_dropdown-bg;
             display: flex;
             flex-flow: column;
-            z-index:10000;
+            z-index:10000; //Z cp-toolbar-drawer-content
             color: black;
             .fa {
                 font-size: 17px;
