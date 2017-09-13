@@ -1,31 +1,31 @@
-@import "./variables.less";
-@import (once) "../less2/include/colortheme.less";
+@import (once) "./include/colortheme.less";
+@import (once) "./include/browser.less";
 
-#loading {
+#cp-loading {
     position: fixed;
     z-index: 10000000; // #loading
     top: 0px;
     bottom: 0px;
     left: 0px;
     right: 0px;
-    background: @bg-loading;
-    color: @color-loading;
+    background: @colortheme_loading-bg;
+    color: @colortheme_loading-color;
     text-align: center;
     font-size: 1.5em;
-    .loadingContainer {
+    .cp-loading-container {
         margin-top: 50vh;
         transform: translateY(-50%);
     }
-    .cryptofist {
+    .cp-loading-cryptofist {
         margin-left: auto;
         margin-right: auto;
         height: 300px;
         margin-bottom: 2em;
-        @media screen and (max-height: @media-short-screen) {
+        @media screen and (max-height: @browser_media-short-screen) {
             display: none;
         }
     }
-    .spinnerContainer {
+    .cp-loading-spinner-container {
         position: relative;
         height: 100px;
         > div {
@@ -33,7 +33,7 @@
         }
     }
 }
-#loadingTip {
+#cp-loading-tip {
     position: fixed;
     z-index: 100000; // loading tip
     top: 80%;
@@ -43,12 +43,12 @@
 
     transition: opacity 750ms;
     transition-delay: 3000ms;
-    @media screen and (max-height: @media-medium-screen) {
+    @media screen and (max-height: @browser_media-medium-screen) {
         display: none;
     }
     span {
-        background-color: @bg-loading;
-        color: @color-loading;
+        background: @colortheme_loading-bg;
+        color: @colortheme_loading-color;
         text-align: center;
         font-size: 1.5em;
         opacity: 0.7;
@@ -58,3 +58,4 @@
         display: inline-block;
     }
 }
+

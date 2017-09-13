@@ -49,6 +49,7 @@ define([
             readOnly: true
         });
         editor.setValue(Messages.codeInitialState);
+        editor.focus();
 
         var setMode = exp.setMode = function (mode, cb) {
             exp.highlightMode = mode;

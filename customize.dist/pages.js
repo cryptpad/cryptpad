@@ -438,12 +438,12 @@ define([
     };
 
     var loadingScreen = Pages.loadingScreen = function () {
-        return h('div#loading', 
-            h('div.loadingContainer', [
-                h('img.cryptofist', {
+        return h('div#cp-loading', 
+            h('div.cp-loading-container', [
+                h('img.cp-loading-cryptofist', {
                     src: '/customize/cryptpad-new-logo-colors-logoonly.png?' + urlArgs
                 }),
-                h('div.spinnerContainer',
+                h('div.cp-loading-spinner-container',
                     h('span.fa.fa-circle-o-notch.fa-spin.fa-4x.fa-fw')),
                 h('p'),
             ])
