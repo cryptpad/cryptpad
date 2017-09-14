@@ -202,5 +202,9 @@ define([], function () {
         };
     };
 
+    Util.slice = function (A) {
+        return Array.prototype.slice.call(A);
+    };
+
     return Util;
 });
