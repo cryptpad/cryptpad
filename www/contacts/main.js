@@ -6,19 +6,21 @@ define([
 
     '/common/common-messenger.js',
     '/contacts/messenger-ui.js',
+    '/bower_components/nthen/index.js',
 
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less/cryptpad.less',
-], function ($, Crypto, Toolbar, Cryptpad, Messenger, UI) {
+], function ($, Crypto, Toolbar, Cryptpad, Messenger, UI, Nthen) {
     var Messages = Cryptpad.Messages;
-
     var APP = window.APP = {
         Cryptpad: Cryptpad
     };
 
-    $(function () {
-
-    var andThen = function () {
+    Nthen(function (waitFor) {
+        $(waitFor());
+    }).nThen(function (waitFor) {
+        Cryptpad.ready(waitFor(Cryptpad.reportAppUsage));
+    }).nThen(function () {
         Cryptpad.addLoadingScreen();
 
         var ifrw = $('#pad-iframe')[0].contentWindow;
@@ -56,12 +58,5 @@ define([
 
         var messenger = window.messenger = Messenger.messenger(Cryptpad);
         UI.create(messenger, $list, $messages);
-    };
-
-    Cryptpad.ready(function () {
-        andThen();
-        Cryptpad.reportAppUsage();
-    });
-
     });
 });
