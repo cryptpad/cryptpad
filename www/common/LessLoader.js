@@ -118,6 +118,7 @@ define([
             }
             console.log('CACHE MISS ' + url);
             ((/\.less([\?\#].*)?$/.test(url)) ? loadLess : loadCSS)(url, function (err, css) {
+                if (err) { console.log(err); }
                 var output = fixAllURLs(css, url);
                 cachePut(url, output);
                 inject(output, url);
