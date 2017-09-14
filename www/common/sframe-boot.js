@@ -2,7 +2,7 @@
 // Note that this file is meant to be executed only inside of a sandbox iframe.
 //
 // IF YOU EDIT THIS FILE, bump the version (replace 1.3 in the following command with the next version.)
-// grep -nr '/common/sframe-boot.js?ver=' | sed 's/:.*$//' | while read x; do \
+// grep -nr '/common/sframe-boot.js?ver=' | sed 's/:.*$//' | grep -v 'sframe-boot.js:' | while read x; do \
 //    sed -i -e 's@/common/sframe-boot.js?ver=[^"]*@/common/sframe-boot.js?ver=1.3@' $x; done
 ;(function () {
 var afterLoaded = function (req) {
