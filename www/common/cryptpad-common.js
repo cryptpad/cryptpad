@@ -20,9 +20,10 @@ define([
     '/common/pinpad.js',
     '/customize/application_config.js',
     '/common/media-tag.js',
+    '/bower_components/nthen/index.js',
 ], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Metadata,
             Messaging, CodeMirror, Files, FileCrypto, Realtime, Clipboard,
-            Pinpad, AppConfig, MediaTag) {
+            Pinpad, AppConfig, MediaTag, Nthen) {
 
     // Configure MediaTags to use our local viewer
     if (MediaTag && MediaTag.PdfPlugin) {
@@ -2071,23 +2072,8 @@ define([
 
     return function (f) {
         if (initialized) {
-            return void window.setTimeout(function () {
-                f(void 0, env);
-            });
+            return void setTimeout(function () { f(void 0, env); });
         }
-        var block = 0;
-
-        var cb = function () {
-            block--;
-            if (!block) {
-                initialized = true;
-
-                updateLocalVersion();
-                common.addTooltips();
-                f(void 0, env);
-                if (typeof(window.onhashchange) === 'function') { window.onhashchange(); }
-            }
-        };
 
         if (sessionStorage[newPadNameKey]) {
             common.initialName = sessionStorage[newPadNameKey];
@@ -2097,7 +2083,6 @@ define([
             common.initialPath = sessionStorage[newPadPathKey];
             delete sessionStorage[newPadPathKey];
         }
-
         common.onFriendRequest = function (confirmText, cb) {
             common.confirm(confirmText, cb, null, true);
         };
@@ -2105,20 +2090,9 @@ define([
             common.log(data.logText);
         };
 
-        Store.ready(function (err, storeObj) {
-            store = common.store = env.store = storeObj;
-            common.addDirectMessageHandler(common);
-
-            var proxy = getProxy();
-            var network = getNetwork();
-
-            network.on('disconnect', function () {
-                Realtime.setConnectionState(false);
-            });
-            network.on('reconnect', function () {
-                Realtime.setConnectionState(true);
-            });
-
+        var proxy;
+        var network;
+        var provideFeedback = function () {
             if (Object.keys(proxy).length === 1) {
                 feedback("FIRST_APP_USE", true);
             }
@@ -2141,110 +2115,123 @@ define([
             }
             common.reportScreenDimensions();
             common.reportLanguage();
+        };
 
-            $(function() {
-                // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
-                // won't work. We have to reset it now to make sure it uses a correct "body"
-                UI.Alertify.reset();
-                // clear any tooltips that might get hung
-                setInterval(function () { common.clearTooltips(); }, 5000);
-
-                // Load the new pad when the hash has changed
-                var oldHref  = document.location.href;
-                window.onhashchange = function () {
-                    var newHref = document.location.href;
-                    var parsedOld = parsePadUrl(oldHref).hashData;
-                    var parsedNew = parsePadUrl(newHref).hashData;
-                    if (parsedOld && parsedNew && (
-                          parsedOld.type !== parsedNew.type
-                          || parsedOld.channel !== parsedNew.channel
-                          || parsedOld.mode !== parsedNew.mode
-                          || parsedOld.key !== parsedNew.key)) {
-                        if (!parsedOld.channel) { oldHref = newHref; return; }
-                        document.location.reload();
-                        return;
-                    }
-                    if (parsedNew) {
-                        oldHref = newHref;
-                    }
-                };
-
-                if (PINNING_ENABLED && isLoggedIn()) {
-                    console.log("logged in. pads will be pinned");
-                    block++;
-
-                    Pinpad.create(network, proxy, function (e, call) {
-                        if (e) {
-                            console.error(e);
-                            return cb();
-                        }
-
-                        console.log('RPC handshake complete');
-                        rpc = common.rpc = env.rpc = call;
-
-                        common.getPinLimit(function (e, limit, plan, note) {
-                            if (e) { return void console.error(e); }
-                            common.account.limit = limit;
-                            localStorage.plan = common.account.plan = plan;
-                            common.account.note = note;
-                            cb();
-                        });
-
-                        common.arePinsSynced(function (err, yes) {
-                            if (!yes) {
-                                common.resetPins(function (err) {
-                                    if (err) {
-                                        console.error("Pin Reset Error");
-                                        return console.error(err);
-                                    }
-                                    console.log('RESET DONE');
-                                });
-                            }
-                        });
-                    });
-                } else if (PINNING_ENABLED) {
-                    console.log('not logged in. pads will not be pinned');
-                } else {
-                    console.log('pinning disabled');
-                }
-
-                block++;
-                require([
-                    '/common/rpc.js',
-                ], function (Rpc) {
-                    Rpc.createAnonymous(network, function (e, call) {
-                        if (e) {
-                            console.error(e);
-                            return void cb();
-                        }
-                        anon_rpc = common.anon_rpc = env.anon_rpc = call;
-                        cb();
-                    });
+        Nthen(function (waitFor) {
+            Store.ready(waitFor(function (err, storeObj) {
+                store = common.store = env.store = storeObj;
+                common.addDirectMessageHandler(common);
+                proxy = getProxy();
+                network = getNetwork();
+                network.on('disconnect', function () {
+                    Realtime.setConnectionState(false);
                 });
+                network.on('reconnect', function () {
+                    Realtime.setConnectionState(true);
+                });
+                provideFeedback();
+            }), common);
+        }).nThen(function (waitFor) {
+            $(waitFor());
+        }).nThen(function (waitFor) {
+            // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
+            // won't work. We have to reset it now to make sure it uses a correct "body"
+            UI.Alertify.reset();
+            // clear any tooltips that might get hung
+            setInterval(function () { common.clearTooltips(); }, 5000);
 
-
-                // Everything's ready, continue...
-                if($('#pad-iframe').length) {
-                    block++;
-                    var $iframe = $('#pad-iframe');
-                    var iframe = $iframe[0];
-                    var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                    if (iframeDoc.readyState === 'complete') {
-                        cb();
-                        return;
-                    }
-                    $iframe.load(cb);
+            // Load the new pad when the hash has changed
+            var oldHref  = document.location.href;
+            window.onhashchange = function () {
+                var newHref = document.location.href;
+                var parsedOld = parsePadUrl(oldHref).hashData;
+                var parsedNew = parsePadUrl(newHref).hashData;
+                if (parsedOld && parsedNew && (
+                      parsedOld.type !== parsedNew.type
+                      || parsedOld.channel !== parsedNew.channel
+                      || parsedOld.mode !== parsedNew.mode
+                      || parsedOld.key !== parsedNew.key)) {
+                    if (!parsedOld.channel) { oldHref = newHref; return; }
+                    document.location.reload();
                     return;
                 }
+                if (parsedNew) { oldHref = newHref; }
+            };
 
-                block++;
-                cb();
+            if (PINNING_ENABLED && isLoggedIn()) {
+                console.log("logged in. pads will be pinned");
+                var w0 = waitFor();
+                Pinpad.create(network, proxy, function (e, call) {
+                    if (e) {
+                        console.error(e);
+                        return w0();
+                    }
+
+                    console.log('RPC handshake complete');
+                    rpc = common.rpc = env.rpc = call;
+
+                    common.getPinLimit(function (e, limit, plan, note) {
+                        if (e) { return void console.error(e); }
+                        common.account.limit = limit;
+                        localStorage.plan = common.account.plan = plan;
+                        common.account.note = note;
+                        w0();
+                    });
+
+                    common.arePinsSynced(function (err, yes) {
+                        if (!yes) {
+                            common.resetPins(function (err) {
+                                if (err) {
+                                    console.error("Pin Reset Error");
+                                    return console.error(err);
+                                }
+                                console.log('RESET DONE');
+                            });
+                        }
+                    });
+                });
+            } else if (PINNING_ENABLED) {
+                console.log('not logged in. pads will not be pinned');
+            } else {
+                console.log('pinning disabled');
+            }
+
+            var w1 = waitFor();
+            require([
+                '/common/rpc.js',
+            ], function (Rpc) {
+                Rpc.createAnonymous(network, function (e, call) {
+                    if (e) {
+                        console.error(e);
+                        return void w1();
+                    }
+                    anon_rpc = common.anon_rpc = env.anon_rpc = call;
+                    w1();
+                });
             });
-        }, common);
+
+            // Everything's ready, continue...
+            if($('#pad-iframe').length) {
+                var w2 = waitFor();
+                var $iframe = $('#pad-iframe');
+                var iframe = $iframe[0];
+                var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                if (iframeDoc.readyState === 'complete') {
+                    return void w2();
+                }
+                $iframe.load(w2); //cb);
+            }
+        }).nThen(function () {
+            updateLocalVersion();
+            common.addTooltips();
+            f(void 0, env);
+            if (typeof(window.onhashchange) === 'function') { window.onhashchange(); }
+        });
     };
 
     }());
 
+    // MAGIC that happens implicitly
     $(function () {
         Messages._applyTranslation();
     });
