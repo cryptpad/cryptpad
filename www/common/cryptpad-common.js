@@ -2075,6 +2075,21 @@ define([
             return void setTimeout(function () { f(void 0, env); });
         }
 
+        if (sessionStorage[newPadNameKey]) {
+            common.initialName = sessionStorage[newPadNameKey];
+            delete sessionStorage[newPadNameKey];
+        }
+        if (sessionStorage[newPadPathKey]) {
+            common.initialPath = sessionStorage[newPadPathKey];
+            delete sessionStorage[newPadPathKey];
+        }
+        common.onFriendRequest = function (confirmText, cb) {
+            common.confirm(confirmText, cb, null, true);
+        };
+        common.onFriendComplete = function (data) {
+            common.log(data.logText);
+        };
+
         var proxy;
         var network;
         var provideFeedback = function () {
@@ -2103,21 +2118,6 @@ define([
         };
 
         Nthen(function (waitFor) {
-            if (sessionStorage[newPadNameKey]) {
-                common.initialName = sessionStorage[newPadNameKey];
-                delete sessionStorage[newPadNameKey];
-            }
-            if (sessionStorage[newPadPathKey]) {
-                common.initialPath = sessionStorage[newPadPathKey];
-                delete sessionStorage[newPadPathKey];
-            }
-            common.onFriendRequest = function (confirmText, cb) {
-                common.confirm(confirmText, cb, null, true);
-            };
-            common.onFriendComplete = function (data) {
-                common.log(data.logText);
-            };
-        }).nThen(function (waitFor) {
             Store.ready(waitFor(function (err, storeObj) {
                 store = common.store = env.store = storeObj;
                 common.addDirectMessageHandler(common);
