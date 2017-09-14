@@ -215,9 +215,10 @@ define([
             force = opt.force || false;
         } else if (typeof(opt) === 'boolean') {
             force = opt;
+        }
+        if (typeof(opt) !== 'object') {
             opt = {};
         }
-
         cb = cb || function () {};
 
         var message;
@@ -278,22 +279,25 @@ define([
         ]);
 
         var listener;
-        var close = Util.once(function () {
-            $(frame).fadeOut(150, function () { $(this).remove(); });
-            stopListening(listener);
+        var close = Util.once(function (result, ev) {
+            var $frame = $(frame).fadeOut(150, function () {
+                stopListening(listener);
+                $frame.remove();
+                cb(result, ev);
+            });
         });
 
-        var $ok = $(ok).click(function (ev) { cb(input.value, ev); });
-        var $cancel = $(cancel).click(function (ev) { cb(null, ev); });
+        var $ok = $(ok).click(function (ev) { close(input.value, ev); });
+        var $cancel = $(cancel).click(function (ev) { close(null, ev); });
         listener = listenForKeys(function () { // yes
-            close(); $ok.click();
+            $ok.click();
         }, function () { // no
-            close(); $cancel.click();
+            $cancel.click();
         });
 
         document.body.appendChild(frame);
         setTimeout(function () {
-            input.select().focus();
+            $(input).select().focus();
             UI.notify();
         });
     };
@@ -321,13 +325,14 @@ define([
         ]);
 
         var listener;
-        var close = Util.once(function () {
+        var close = Util.once(function (bool, ev) {
             $(frame).fadeOut(150, function () { $(this).remove(); });
             stopListening(listener);
+            cb(bool, ev);
         });
 
-        var $ok = $(ok).click(function (ev) { close(); cb(true, ev); });
-        var $cancel = $(cancel).click(function (ev) { close(); cb(false, ev); });
+        var $ok = $(ok).click(function (ev) { close(true, ev); });
+        var $cancel = $(cancel).click(function (ev) { close(false, ev); });
 
         if (opt.cancelClass) { $cancel.addClass(opt.cancelClass); }
         if (opt.okClass) { $ok.addClass(opt.okClass); }
@@ -381,7 +386,7 @@ define([
         };
     };
 
-    var LOADING = 'loading';
+    var LOADING = 'cp-loading';
 
     var getRandomTip = function () {
         if (!Messages.tips || !Object.keys(Messages.tips).length) { return ''; }
@@ -400,21 +405,21 @@ define([
             if (loadingText) {
                 $('#' + LOADING).find('p').text(loadingText);
             }
-            $container = $loading.find('.loadingContainer');
+            $container = $loading.find('.cp-loading-container');
         } else {
             $loading = $(Pages.loadingScreen());
-            $container = $loading.find('.loadingContainer');
+            $container = $loading.find('.cp-loading-container');
             if (hideLogo) {
                 $loading.find('img').hide();
             } else {
                 $loading.find('img').show();
             }
-            var $spinner = $loading.find('.spinnerContainer');
+            var $spinner = $loading.find('.cp-loading-spinner-container');
             $spinner.show();
             $('body').append($loading);
         }
         if (Messages.tips && !hideTips) {
-            var $loadingTip = $('<div>', {'id': 'loadingTip'});
+            var $loadingTip = $('<div>', {'id': 'cp-loading-tip'});
             $('<span>', {'class': 'tips'}).text(getRandomTip()).appendTo($loadingTip);
             $loadingTip.css({
                 'bottom': $('body').height()/2 - $container.height()/2 + 20 + 'px'
@@ -424,7 +429,7 @@ define([
     };
     UI.removeLoadingScreen = function (cb) {
         $('#' + LOADING).fadeOut(750, cb);
-        var $tip = $('#loadingTip').css('top', '')
+        var $tip = $('#cp-loading-tip').css('top', '')
         // loading.less sets transition-delay: $wait-time
         // and               transition: opacity $fadeout-time
             .css({
@@ -438,7 +443,7 @@ define([
     };
     UI.errorLoadingScreen = function (error, transparent) {
         if (!$('#' + LOADING).is(':visible')) { UI.addLoadingScreen({hideTips: true}); }
-        $('.spinnerContainer').hide();
+        $('.cp-loading-spinner-container').hide();
         if (transparent) { $('#' + LOADING).css('opacity', 0.8); }
         $('#' + LOADING).find('p').html(error || Messages.error);
     };

@@ -837,7 +837,7 @@ define([
     };
 
     // Events
-    var initClickEvents = function (toolbar, config) {
+    var initClickEvents = function (toolbar) {
         var removeDropdowns =  function () {
             window.setTimeout(function () {
                 toolbar.$toolbar.find('.cp-dropdown-content').hide();

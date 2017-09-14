@@ -200,20 +200,7 @@ define([
         return button;
     };
 
-
-    UI.getFileSize = function (Common, href, cb) {
-        var channelId = Cryptpad.hrefToHexChannelId(href);
-        Common.sendAnonRpcMsg("GET_FILE_SIZE", channelId, function (data) {
-            if (!data) { return void cb("No response"); }
-            if (data.error) { return void cb(data.error); }
-            if (data.response && data.response.length && typeof(data.response[0]) === 'number') {
-                return void cb(void 0, data.response[0]);
-            } else {
-                cb('INVALID_RESPONSE');
-            }
-        });
-    };
-
+    // Avatars
     UI.displayAvatar = function (Common, $container, href, name, cb) {
         var MutationObserver = window.MutationObserver;
         var displayDefault = function () {
@@ -229,7 +216,7 @@ define([
             var cryptKey = secret.keys && secret.keys.fileKeyStr;
             var hexFileName = Cryptpad.base64ToHex(secret.channel);
             var src = Cryptpad.getBlobPathFromHex(hexFileName);
-            UI.getFileSize(Common, href, function (e, data) {
+            Common.getFileSize(href, function (e, data) {
                 if (e) {
                     displayDefault();
                     return void console.error(e);
@@ -467,9 +454,13 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var type = metadataMgr.getMetadataLazy().type;
         var sframeChan = common.getSframeChannel();
+        var focus;
 
         var onConfirm = function (yes) {
-            if (!yes) { return; }
+            if (!yes) {
+                if (focus) { focus.focus(); }
+                return;
+            }
             var first = true; // We can only pick a template once (for a new document)
             var fileDialogCfg = {
                 onSelect: function (data) {
@@ -480,6 +471,7 @@ define([
                             Cryptpad.removeLoadingScreen();
                             common.feedback('TEMPLATE_USED');
                         });
+                        if (focus) { focus.focus(); }
                         return;
                     }
                 }
@@ -494,6 +486,7 @@ define([
 
         sframeChan.query("Q_TEMPLATE_EXIST", type, function (err, data) {
             if (data) {
+                focus = document.activeElement;
                 Cryptpad.confirm(Messages.useTemplate, onConfirm, {
                     ok: Messages.useTemplateOK,
                     cancel: Messages.useTemplateCancel,

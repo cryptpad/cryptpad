@@ -259,7 +259,7 @@ body .cryptpad-toolbar {
 
     font: @toolbar-button-font;
     width: 100%;
-    z-index: 9001;
+    z-index: 10000; // body, .cryptpad-toolbar
 
     .cp-dropdown-container {
         //height: 100%;
@@ -792,7 +792,7 @@ body .cryptpad-toolbar {
             cursor: pointer;
         }
         .cryptpad-user-dropdown {
-            z-index: 10000;
+            z-index: 10000; // .cryptpad-user-dropdown
             //margin-left: 20px;
             height: 64px;
             width: 64px;
@@ -915,7 +915,7 @@ body .cryptpad-toolbar {
         background: @dropdown-bg;
         display: flex;
         flex-flow: column;
-        z-index:10000;
+        z-index:10000; // .drawer-content
         color: black;
         .fa {
             font-size: 17px;

@@ -6,7 +6,6 @@ define([
     '/common/credential.js', // preloaded for login.js
 
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'less!/customize/src/less/loading.less',
 ], function ($, Login, Cryptpad, Test, Cred) {
     var Messages = Cryptpad.Messages;
 
@@ -252,8 +251,8 @@ define([
 
         Test(function () {
             $uname.val('test' + Math.random());
-            $passwd.val('test');
-            $confirm.val('test');
+            $passwd.val('testtest');
+            $confirm.val('testtest');
             $checkImport[0].checked = true;
             $checkAcceptTerms[0].checked = true;
             $register.click();

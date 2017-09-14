@@ -163,14 +163,6 @@ define([
                 content: textValue,
                 metadata: metadataMgr.getMetadataLazy()
             };
-            /*    metadata: {
-                    users: UserList.userData,
-                    defaultTitle: Title.defaultTitle
-                }
-            };
-            if (!initializing) {
-                obj.metadata.title = Title.title;
-            }*/
             // set mode too...
             obj.highlightMode = CodeMirror.highlightMode;
 
@@ -427,9 +419,6 @@ define([
                 CodeMirror.setMode('markdown', onModeChanged);
                 //console.log("%s => %s", CodeMirror.highlightMode, CodeMirror.$language.val());
             }
-
-            // Update the user list (metadata) from the hyperjson
-            //Metadata.update(userDoc);
 
             if (newDoc) {
                 editor.setValue(newDoc);

@@ -77,7 +77,6 @@ define([
     funcs.openTemplatePicker = callWithCommon(UI.openTemplatePicker);
     funcs.displayAvatar = callWithCommon(UI.displayAvatar);
     funcs.createButton = callWithCommon(UI.createButton);
-    funcs.getFileSize = callWithCommon(UI.getFileSize);
 
     // History
     funcs.getHistory = callWithCommon(History.create);
@@ -106,6 +105,19 @@ define([
         }
         return;
     };
+    funcs.getFileSize = function (href, cb) {
+        var channelId = Cryptpad.hrefToHexChannelId(href);
+        funcs.sendAnonRpcMsg("GET_FILE_SIZE", channelId, function (data) {
+            if (!data) { return void cb("No response"); }
+            if (data.error) { return void cb(data.error); }
+            if (data.response && data.response.length && typeof(data.response[0]) === 'number') {
+                return void cb(void 0, data.response[0]);
+            } else {
+                cb('INVALID_RESPONSE');
+            }
+        });
+    };
+
 
     // CodeMirror
     funcs.initCodeMirrorApp = callWithCommon(CodeMirror.create);
