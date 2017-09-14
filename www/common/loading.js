@@ -1,11 +1,73 @@
-define([
-    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'less!/customize/src/less2/loading.less'
-], function () {
+define([], function () {
+    var loadingStyle = (function(){/*
+#cp-loading {
+  position: fixed;
+  z-index: 10000000;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  background: #222;
+  color: #fafafa;
+  text-align: center;
+  font-size: 1.5em;
+}
+#cp-loading .cp-loading-container {
+  margin-top: 50vh;
+  transform: translateY(-50%);
+}
+#cp-loading .cp-loading-cryptofist {
+  margin-left: auto;
+  margin-right: auto;
+  height: 300px;
+  margin-bottom: 2em;
+}
+@media screen and (max-height: 450px) {
+  #cp-loading .cp-loading-cryptofist {
+    display: none;
+  }
+}
+#cp-loading .cp-loading-spinner-container {
+  position: relative;
+  height: 100px;
+}
+#cp-loading .cp-loading-spinner-container > div {
+  height: 100px;
+}
+#cp-loading-tip {
+  position: fixed;
+  z-index: 100000;
+  top: 80%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  transition: opacity 750ms;
+  transition-delay: 3000ms;
+}
+@media screen and (max-height: 600px) {
+  #cp-loading-tip {
+    display: none;
+  }
+}
+#cp-loading-tip span {
+  background: #222;
+  color: #fafafa;
+  text-align: center;
+  font-size: 1.5em;
+  opacity: 0.7;
+  font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
+  padding: 15px;
+  max-width: 60%;
+  display: inline-block;
+}
+*/}).toString().slice(14, -3);
     var urlArgs = window.location.href.replace(/^.*\?([^\?]*)$/, function (all, x) { return x; });
     var elem = document.createElement('div');
     elem.setAttribute('id', 'cp-loading');
     elem.innerHTML = [
+        '<style>',
+        loadingStyle,
+        '</style>',
         '<div class="cp-loading-container">',
             '<img class="cp-loading-cryptofist" src="/customize/cryptpad-new-logo-colors-logoonly.png?' + urlArgs + '">',
             '<div class="cp-loading-spinner-container">',

@@ -20,5 +20,7 @@ define(['/common/requireconfig.js'], function (RequireConfig) {
     window.__defineGetter__('localStorage', function () { return mkFakeStore(); });
     window.__defineGetter__('sessionStorage', function () { return mkFakeStore(); });
 
+    window.CRYPTPAD_INSIDE = true;
+
     require([document.querySelector('script[data-bootload]').getAttribute('data-bootload')]);
 });

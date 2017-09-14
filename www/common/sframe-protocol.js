@@ -127,4 +127,7 @@ define({
     // Present mode URL
     'Q_PRESENT_URL_GET_VALUE': true,
     'EV_PRESENT_URL_SET_VALUE': true,
+
+    // Put one or more entries to the cache which will go in localStorage.
+    'EV_CACHE_PUT': true,
 });

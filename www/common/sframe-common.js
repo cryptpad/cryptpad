@@ -271,6 +271,19 @@ define([
         }).nThen(function () {
             ctx.metadataMgr = MetadataMgr.create(ctx.sframeChan);
 
+            ctx.sframeChan.whenReg('EV_CACHE_PUT', function () {
+                if (Object.keys(window.cryptpadCache.updated).length) {
+                    ctx.sframeChan.event('EV_CACHE_PUT', window.cryptpadCache.updated);
+                }
+                window.cryptpadCache._put = window.cryptpadCache.put;
+                window.cryptpadCache.put = function (k, v, cb) {
+                    window.cryptpadCache._put(k, v, cb);
+                    var x = {};
+                    x[k] = v;
+                    ctx.sframeChan.event('EV_CACHE_PUT', x);
+                };
+            });
+
             UI.addTooltips();
 
             ctx.sframeChan.on('EV_RT_CONNECT', function () { CommonRealtime.setConnectionState(true); });
