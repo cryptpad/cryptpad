@@ -8,7 +8,7 @@ define([
         return Math.random().toString(16).replace('0.', '') + Math.random().toString(16).replace('0.', '');
     };
 
-    var create = function (ow, cb, isSandbox) {
+    var create = function (ow, cb, isSandbox, sendData) {
         var otherWindow;
         var evReady = Util.mkEvent(true);
         var handlers = {};
@@ -47,7 +47,6 @@ define([
 
         // Fire an event.  channel.event('EV_SOMETHING', { args: "whatever" });
         var event = chan.event = function (e, content) {
-            if (!otherWindow) { throw new Error('not yet initialized'); }
             if (!SFrameProtocol[e]) {
                 throw new Error('please only fire events that are defined in sframe-protocol.js');
             }
@@ -63,7 +62,6 @@ define([
         // If the type is a query, your handler will be invoked with a reply function that takes
         // one argument (the content to reply with).
         chan.on = function (queryType, handler, quiet) {
-            if (!otherWindow && !quiet) { throw new Error('not yet initialized'); }
             if (!SFrameProtocol[queryType]) {
                 throw new Error('please only register handlers which are defined in sframe-protocol.js');
             }
@@ -85,7 +83,6 @@ define([
         // when that handler is first registered.
         // channel.whenReg('Q_SOMETHING', function () { ...query Q_SOMETHING?... });
         chan.whenReg = function (queryType, cb, always) {
-            if (!otherWindow) { throw new Error('not yet initialized'); }
             if (!SFrameProtocol[queryType]) {
                 throw new Error('please only register handlers which are defined in sframe-protocol.js');
             }
@@ -109,7 +106,8 @@ define([
                 delete callWhenRegistered[content];
             }
             insideHandlers.push(content);
-        }, true);
+        });
+        chan.whenReg('EV_REGISTER_HANDLER', evReady.fire);
 
         // Make sure both iframes are ready
         chan.onReady = function (h) {
@@ -131,8 +129,9 @@ define([
                 //console.log(msg);
             } else if (!otherWindow) {
                 otherWindow = ow;
-                evReady.fire();
-                ow.postMessage(JSON.stringify({ txid: data.txid }), '*');
+                sendData = sendData || {};
+                sendData.txid = data.txid;
+                ow.postMessage(JSON.stringify(sendData), '*');
                 cb(chan);
             } else if (typeof(data.q) === 'string' && handlers[data.q]) {
                 handlers[data.q].forEach(function (f) {

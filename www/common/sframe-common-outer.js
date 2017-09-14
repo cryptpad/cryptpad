@@ -34,12 +34,34 @@ define([
                 Crypto = _Crypto;
                 Cryptget = _Cryptget;
                 FilePicker = _FilePicker;
+
+                if (localStorage.CRYPTPAD_URLARGS !== ApiConfig.requireConf.urlArgs) {
+                    console.log("New version, flushing cache");
+                    Object.keys(localStorage).forEach(function (k) {
+                        if (k.indexOf('CRYPTPAD_CACHE|') !== 0) { return; }
+                        delete localStorage[k];
+                    });
+                    localStorage.CRYPTPAD_URLARGS = ApiConfig.requireConf.urlArgs;
+                }
+                var cache = {};
+                Object.keys(localStorage).forEach(function (k) {
+                    if (k.indexOf('CRYPTPAD_CACHE|') !== 0) { return; }
+                    cache[k.slice(('CRYPTPAD_CACHE|').length)] = localStorage[k];
+                });
+
                 SFrameChannel.create($('#sbox-iframe')[0].contentWindow, waitFor(function (sfc) {
                     sframeChan = sfc;
-                }));
+                }), false, { cache: cache });
                 Cryptpad.ready(waitFor());
             }));
         }).nThen(function (waitFor) {
+
+            sframeChan.on('EV_CACHE_PUT', function (x) {
+                Object.keys(x).forEach(function (k) {
+                    localStorage['CRYPTPAD_CACHE|' + k] = x[k];
+                });
+            });
+
             secret = Cryptpad.getSecrets();
             if (!secret.channel) {
                 // New pad: create a new random channel id
