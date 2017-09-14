@@ -47,12 +47,15 @@ var afterLoaded = function (req) {
     window.addEventListener('message', onReply);
 };
 
-var intr = setInterval(function () {
+var load0 = function () {
     try {
         var req = JSON.parse(decodeURIComponent(window.location.hash.substring(1)));
-        clearInterval(intr);
         afterLoaded(req);
-    } catch (e) { console.error(e); }
-}, 100);
+    } catch (e) {
+        console.error(e);
+        setTimeout(load0, 100);
+    }
+};
+load0();
 
 }());
