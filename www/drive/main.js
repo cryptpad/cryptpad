@@ -1129,7 +1129,7 @@ define([
             }
             if (data.filename && data.filename !== data.title) {
                 var $renamed = $renamedIcon.clone().appendTo($state);
-                $renamed.attr('title', "TODO: you've set a custom name for this pad. Its shared title is:\n<b>{0}</b>");
+                $renamed.attr('title', Messages._getKey('fm_renamedPad', [data.title]));
             }
 
             var name = filesOp.getTitle(element);

@@ -881,9 +881,9 @@ define([
             editor.on('instanceReady', waitFor());
         }).nThen(function (/*waitFor*/) {
             editor.plugins.mediatag.translations = {
-                title: 'TODO: TITLE',
-                width: 'TODO: width',
-                height: 'TODO: height'
+                title: Messages.pad_mediatagTitle,
+                width: Messages.pad_mediatagWidth,
+                height: Messages.pad_mediatagHeight
             };
             /*if (Ckeditor.env.safari) {
                 var fixIframe = function () {
