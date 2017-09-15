@@ -32,6 +32,7 @@ define([
     '/pad/links.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
+    '/common/media-tag.js',
     '/api/config',
 
     '/bower_components/file-saver/FileSaver.min.js',
@@ -55,6 +56,7 @@ define([
     Links,
     nThen,
     SFCommon,
+    MediaTag,
     ApiConfig)
 {
     var saveAs = window.saveAs;
@@ -113,6 +115,15 @@ define([
         if (hj[1].type === '_moz') { hj[1].type = undefined; }
         return hj;
     };
+    var mediatagContentFilter = function (hj) {
+        if (hj[0] === 'MEDIA-TAG') { hj[2] = []; }
+        return hj;
+    };
+    var hjsonFilters = function (hj) {
+        brFilter(hj);
+        mediatagContentFilter(hj);
+        return hj;
+    };
 
     var onConnectError = function () {
         Cryptpad.errorLoadingScreen(Messages.websocketError);
@@ -124,11 +135,11 @@ define([
 
     var forbiddenTags = [
         'SCRIPT',
-        'IFRAME',
+        //'IFRAME',
         'OBJECT',
         'APPLET',
-        'VIDEO',
-        'AUDIO'
+        //'VIDEO',
+        //'AUDIO'
     ];
 
     var getHTML = function (inner) {
@@ -359,6 +370,48 @@ define([
 
         var DD = new DiffDom(mkDiffOptions(cursor, readOnly));
 
+        var mediaMap = {};
+        var restoreMediaTags = function (tempDom) {
+            var pattern = /(<media-tag contenteditable="false" data-crypto-key="([^"]*)" src="([^"]*)" tabindex="1">)<\/media-tag>/i;
+            var tags = tempDom.querySelectorAll('media-tag:empty');
+            Cryptpad.slice(tags).forEach(function (tag) {
+                if (pattern.length !== 4) { return; }
+                var src = pattern[3];
+                if (mediaMap[src]) {
+                    mediaMap[src].forEach(function (n) {
+                        tag.appendChild(n);
+                    });
+                }
+            });
+        };
+        var displayMediaTags = function (dom) {
+            setTimeout(function () { // Just in case
+                var tags = dom.querySelectorAll('media-tag:empty');
+                Cryptpad.slice(tags).forEach(function (el) {
+                    MediaTag(el);
+                    $(el).on('keydown', function (e) {
+                        if ([8,46].indexOf(e.which) !== -1) {
+                            $(el).remove();
+                            onLocal();
+                        }
+                    });
+                    var observer = new MutationObserver(function(mutations) {
+                        mutations.forEach(function(mutation) {
+                            if (mutation.type === 'childList') {
+                                var list_values = [].slice.call(el.children);
+                                mediaMap[el.getAttribute('src')] = list_values;
+                            }
+                        });
+                    });
+                    observer.observe(el, {
+                        attributes: false,
+                        childList: true,
+                        characterData: false
+                    });
+                });
+            });
+        };
+
         // apply patches, and try not to lose the cursor in the process!
         var applyHjson = function (shjson) {
             var userDocStateDom = hjsonToDom(JSON.parse(shjson));
@@ -368,8 +421,10 @@ define([
             } else if (readOnly) {
                 userDocStateDom.removeAttribute("contenteditable");
             }
+            restoreMediaTags(userDocStateDom);
             var patch = (DD).diff(inner, userDocStateDom);
             (DD).apply(inner, patch);
+            displayMediaTags(inner);
             if (readOnly) {
                 var $links = $(inner).find('a');
                 // off so that we don't end up with multiple identical handlers
@@ -378,7 +433,7 @@ define([
         };
 
         var stringifyDOM = module.stringifyDOM = function (dom) {
-            var hjson = Hyperjson.fromDOM(dom, isNotMagicLine, brFilter);
+            var hjson = Hyperjson.fromDOM(dom, isNotMagicLine, hjsonFilters);
             hjson[3] = {
                 metadata: metadataMgr.getMetadataLazy()
             };
@@ -617,6 +672,30 @@ define([
             };
             var $forgetPad = common.createButton('forget', true, {}, forgetCb);
             $rightside.append($forgetPad);
+
+            if (!readOnly) {
+                var fileDialogCfg = {
+                    onSelect: function (data) {
+                        if (data.type === 'file') {
+                            var mt = '<media-tag contenteditable="false" src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '" tabindex="1"></media-tag>';
+                            editor.insertElement(CKEDITOR.dom.element.createFromHtml(mt));
+                            return;
+                        }
+                    }
+                };
+                common.initFilePicker(fileDialogCfg);
+                APP.$mediaTagButton = $('<button>', {
+                    title: Messages.filePickerButton,
+                    'class': 'cp-toolbar-rightside-button fa fa-picture-o',
+                    style: 'font-size: 17px'
+                }).click(function () {
+                    var pickerCfg = {
+                        types: ['file'],
+                        where: ['root']
+                    };
+                    common.openFilePicker(pickerCfg);
+                }).appendTo($rightside);
+            }
         };
 
         // this should only ever get called once, when the chain syncs
@@ -713,6 +792,7 @@ define([
 
             // stringify the json and send it into chainpad
             var shjson = stringifyDOM(inner);
+            displayMediaTags(inner);
 
             module.patchText(shjson);
             if (module.realtime.getUserDoc() !== shjson) {
@@ -794,11 +874,17 @@ define([
             }
             // Used in ckeditor-config.js
             Ckeditor.CRYPTPAD_URLARGS = ApiConfig.requireConf.urlArgs;
+            Ckeditor.plugins.addExternal('mediatag','/pad/', 'mediatag-plugin.js');
             module.ckeditor = editor = Ckeditor.replace('editor1', {
                 customConfig: '/customize/ckeditor-config.js',
             });
             editor.on('instanceReady', waitFor());
         }).nThen(function (/*waitFor*/) {
+            editor.plugins.mediatag.translations = {
+                title: 'TODO: TITLE',
+                width: 'TODO: width',
+                height: 'TODO: height'
+            };
             /*if (Ckeditor.env.safari) {
                 var fixIframe = function () {
                     $('iframe.cke_wysiwyg_frame').height($('#cke_1_contents').height());
