@@ -129,7 +129,7 @@ define([
                                 console.error('No more messages to fetch');
                                 channel.exhausted = true;
                                 console.log(channel);
-                                return;
+                                return void $moreHistory.addClass('faded');
                             } else {
                                 channel.TAIL = msg.sig;
                             }
