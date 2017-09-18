@@ -533,7 +533,7 @@ define([
                     APP.patchText(shjson2);
                 }
             }
-            if (oldDoc !== remoteDoc) { Cryptpad.notify(); }
+            if (oldDoc !== remoteDoc) { common.notify(); }
         };
 
         config.onAbort = function () {

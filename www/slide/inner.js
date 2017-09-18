@@ -655,7 +655,7 @@ define([
                 }
             }
             Slide.update(remoteDoc);
-            if (oldDoc !== remoteDoc) { Cryptpad.notify(); }
+            if (oldDoc !== remoteDoc) { common.notify(); }
         };
 
         config.onAbort = function () {
