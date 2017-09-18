@@ -1198,6 +1198,13 @@ define([
                 draggable: true,
                 'class': 'element-row'
             });
+            if (!isFolder && Array.isArray(APP.selectedFiles)) {
+                var idx = APP.selectedFiles.indexOf(element);
+                if (idx !== -1) {
+                    $element.addClass('selected');
+                    APP.selectedFiles.splice(idx, 1);
+                }
+            }
             if (isFolder) {
                 addFolderData(element, key, $element);
             } else {
@@ -1751,6 +1758,13 @@ define([
                     'class': 'file-element element element-row' + roClass,
                     draggable: draggable
                 });
+                if (Array.isArray(APP.selectedFiles)) {
+                    var idx = APP.selectedFiles.indexOf(id);
+                    if (idx !== -1) {
+                        $element.addClass('selected');
+                        APP.selectedFiles.splice(idx, 1);
+                    }
+                }
                 addFileData(id, $element);
                 $element.prepend($icon).dblclick(function () {
                     openFile(id);
@@ -1864,6 +1878,7 @@ define([
                             e.preventDefault();
                             if (filesOp.isInTrashRoot(parentPath)) { parentPath = [TRASH]; }
                             else { parentPath.pop(); }
+                            APP.selectedFiles = [r.id];
                             module.displayDirectory(parentPath);
                         });
                     }

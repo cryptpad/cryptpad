@@ -446,6 +446,7 @@ define([
             res.forEach(function (l) {
                 //var paths = findFile(l);
                 ret.push({
+                    id: l,
                     paths: findFile(l),
                     data: exp.getFileData(l)
                 });
