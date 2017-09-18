@@ -1,62 +1,57 @@
+// Load #1, load as little as possible because we are in a race to get the loading screen up.
 define([
-    'jquery',
-    '/bower_components/chainpad-crypto/crypto.js',
-    '/common/toolbar2.js',
-    '/common/cryptpad-common.js',
-
-    '/common/common-messenger.js',
-    '/contacts/messenger-ui.js',
     '/bower_components/nthen/index.js',
+    '/api/config',
+    'jquery',
+    '/common/requireconfig.js',
+    '/common/sframe-common-outer.js'
+], function (nThen, ApiConfig, $, RequireConfig, SFCommonO) {
+    var requireConfig = RequireConfig();
+    var addRpc = function (sFrameChan, Cryptpad) {
+        Cryptpad = Cryptpad;
 
-    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'less!/customize/src/less/cryptpad.less',
-], function ($, Crypto, Toolbar, Cryptpad, Messenger, UI, Nthen) {
-    var Messages = Cryptpad.Messages;
-    var APP = window.APP = {
-        Cryptpad: Cryptpad
+        // protocols must still be declared in sframe-protocol.js
+        /*
+        sFrameChan.on('Q_HEY_BUDDY', function (data, cb) {
+            cb({
+                error: null,
+                response: "HEY BUDDY",
+            });
+        });
+        */
     };
 
-    Nthen(function (waitFor) {
+    // Loaded in load #2
+    nThen(function (waitFor) {
         $(waitFor());
     }).nThen(function (waitFor) {
-        Cryptpad.ready(waitFor(Cryptpad.reportAppUsage));
-    }).nThen(function () {
-        Cryptpad.addLoadingScreen();
-
-        var ifrw = $('#pad-iframe')[0].contentWindow;
-        var $iframe = $('#pad-iframe').contents();
-        var $list = $iframe.find('#friendList');
-        var $messages = $iframe.find('#messaging');
-        var $bar = $iframe.find('.toolbar-container');
-
-        var displayed = ['useradmin', 'newpad', 'limit', 'pageTitle'];
-
-        var configTb = {
-            displayed: displayed,
-            ifrw: ifrw,
-            common: Cryptpad,
-            $container: $bar,
-            network: Cryptpad.getNetwork(),
-            pageTitle: Messages.contacts_title,
+        var req = {
+            cfg: requireConfig,
+            req: [ '/common/loading.js' ],
+            pfx: window.location.origin
         };
-        var toolbar = APP.toolbar = Toolbar.create(configTb);
-        toolbar.$rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
+        window.rc = requireConfig;
+        window.apiconf = ApiConfig;
+        $('#sbox-iframe').attr('src',
+            ApiConfig.httpSafeOrigin + '/contacts/inner.html?' + requireConfig.urlArgs +
+                '#' + encodeURIComponent(JSON.stringify(req)));
 
-        Cryptpad.getProxy().on('disconnect', function () {
-            Cryptpad.alert(Messages.common_connectionLost, undefined, true);
+        // This is a cheap trick to avoid loading sframe-channel in parallel with the
+        // loading screen setup.
+        var done = waitFor();
+        var onMsg = function (msg) {
+            var data = JSON.parse(msg.data);
+            if (data.q !== 'READY') { return; }
+            window.removeEventListener('message', onMsg);
+            var _done = done;
+            done = function () { };
+            _done();
+        };
+        window.addEventListener('message', onMsg);
+    }).nThen(function (/*waitFor*/) {
+        SFCommonO.start({
+            noRealtime: true,
+            addRpc: addRpc,
         });
-        Cryptpad.getProxy().on('reconnect', function (uid) {
-            console.error('reconnecting: ', uid);
-            Cryptpad.findOKButton().click();
-        });
-
-        var $infoBlock = $('<div>', {'class': 'info'}).appendTo($messages);
-        $('<h2>').text(Messages.contacts_info1).appendTo($infoBlock);
-        var $ul = $('<ul>').appendTo($infoBlock);
-        $('<li>').text(Messages.contacts_info2).appendTo($ul);
-        $('<li>').text(Messages.contacts_info3).appendTo($ul);
-
-        var messenger = window.messenger = Messenger.messenger(Cryptpad);
-        UI.create(messenger, $list, $messages);
     });
 });
