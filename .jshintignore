@@ -11,6 +11,7 @@ www/common/hyperscript.js
 www/common/tippy.min.js
 
 www/pad/wysiwygarea-plugin.js
-www/pad2/wysiwygarea-plugin.js
+www/pad/mediatag-plugin.js
+www/pad/mediatag-plugin-dialog.js
 
 www/common/media-tag-nacl.min.js
