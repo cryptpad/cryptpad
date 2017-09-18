@@ -1777,10 +1777,10 @@ define([
                     draggable: draggable
                 });
                 if (Array.isArray(APP.selectedFiles)) {
-                    var idx = APP.selectedFiles.indexOf(id);
-                    if (idx !== -1) {
+                    var sidx = APP.selectedFiles.indexOf(id);
+                    if (sidx !== -1) {
                         $element.addClass('selected');
-                        APP.selectedFiles.splice(idx, 1);
+                        APP.selectedFiles.splice(sidx, 1);
                     }
                 }
                 addFileData(id, $element);
