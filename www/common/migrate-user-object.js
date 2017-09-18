@@ -77,5 +77,19 @@ define([], function () {
             Cryptpad.feedback('Migrate-2', true);
             userObject.version = version = 2;
         }
+
+
+
+        // Migration 3: language from localStorage to settings
+        var migrateLanguage = function () {
+            if (!localStorage.CRYPTPAD_LANG) { return; }
+            var l = localStorage.CRYPTPAD_LANG;
+            userObject.settings.language = l;
+        };
+        if (version < 3) {
+            migrateLanguage();
+            Cryptpad.feedback('Migrate-3', true);
+            userObject.version = version = 3;
+        }
     };
 });

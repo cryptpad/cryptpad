@@ -184,6 +184,9 @@ define([
         }
         return;
     };
+    common.getLanguage = function () {
+        return Messages._languageUsed;
+    };
     common.getUserlist = function () {
         if (store) {
             if (store.getProxy() && store.getProxy().info) {

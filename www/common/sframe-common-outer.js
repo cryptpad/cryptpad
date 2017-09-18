@@ -51,7 +51,7 @@ define([
 
                 SFrameChannel.create($('#sbox-iframe')[0].contentWindow, waitFor(function (sfc) {
                     sframeChan = sfc;
-                }), false, { cache: cache });
+                }), false, { cache: cache, language: Cryptpad.getLanguage() });
                 Cryptpad.ready(waitFor());
             }));
         }).nThen(function (waitFor) {
