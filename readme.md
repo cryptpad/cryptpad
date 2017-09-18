@@ -16,6 +16,10 @@ Installing CryptPad is pretty straightforward. You can read all about it in the
 
 It also contains information on keeping your instance of CryptPad up to date.
 
+## Current version
+
+CryptPad v1.15.0 (Poukai) released the 12th September 2017
+
 ## Setup using Docker
 
 See [Cryptpad-Docker](docs/cryptpad-docker.md)
