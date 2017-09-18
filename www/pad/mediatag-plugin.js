@@ -25,6 +25,9 @@
             'media-tag iframe{' +
                 'border: 6px solid #eee;' +
             '}' +
+            'media-tag img{' +
+                'vertical-align: top;' +
+            '}' +
             'media-tag *{' +
                 'width:100%; height:100%;' +
             '}');

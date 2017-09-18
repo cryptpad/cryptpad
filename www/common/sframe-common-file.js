@@ -290,10 +290,22 @@ define([
                 onFileDrop(dropped, e);
             });
         };
+        var createCkeditorDropHandler = function () {
+            var editor = config.ckeditor;
+            editor.document.on('drop', function (ev) {
+                var dropped = ev.data.$.dataTransfer.files;
+                onFileDrop(dropped, ev);
+                ev.data.preventDefault(true);
+            });
+        };
 
         var createUploader = function ($area, $hover, $body) {
             if (!config.noHandlers) {
-                createAreaHandlers($area, null);
+                if (config.ckeditor) {
+                    createCkeditorDropHandler();
+                } else {
+                    createAreaHandlers($area, null);
+                }
             }
             createTableContainer($body);
         };

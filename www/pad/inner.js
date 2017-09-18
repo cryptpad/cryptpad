@@ -762,6 +762,20 @@ define([
             }
 
             onLocal();
+
+            var fmConfig = {
+                ckeditor: editor,
+                body: $('body'),
+                onUploaded: function (ev, data) {
+                    var parsed = Cryptpad.parsePadUrl(data.url);
+                    var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+                    var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
+                    var mt = '<media-tag contenteditable="false" src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '" tabindex="1"></media-tag>';
+                    editor.insertElement(CKEDITOR.dom.element.createFromHtml(mt));
+                }
+            };
+            APP.FM = common.createFileManager(fmConfig);
+
             editor.focus();
             if (newPad) {
                 cursor.setToEnd();
@@ -772,10 +786,8 @@ define([
 
         realtimeOptions.onConnectionChange = function (info) {
             setEditable(info.state);
-            //toolbar.failed(); TODO
             if (info.state) {
                 initializing = true;
-                //toolbar.reconnecting(info.myId); // TODO
                 Cryptpad.findOKButton().click();
             } else {
                 Cryptpad.alert(Messages.common_connectionLost, undefined, true);
