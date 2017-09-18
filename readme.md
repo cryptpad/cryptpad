@@ -19,6 +19,7 @@ It also contains information on keeping your instance of CryptPad up to date.
 ## Current version
 
 CryptPad v1.15.0 (Poukai) released the 12th September 2017
+See [Cryptad-Releases](docs/releases)
 
 ## Setup using Docker
 
