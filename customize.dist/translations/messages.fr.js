@@ -157,6 +157,10 @@ define(function () {
     out.filePicker_filter = "Filtrez les fichiers par leur nom";
     out.or = 'ou';
 
+    out.tags_title = "Mots-clés du pad";
+    out.tags_add = "Modifier les mots-clés du pad";
+    out.tags_duplicate = "Mot-clé déjà présent : {0}";
+
     out.slideOptionsText = "Options";
     out.slideOptionsTitle = "Personnaliser la présentation";
     out.slideOptionsButton = "Enregistrer (Entrée)";
@@ -367,6 +371,7 @@ define(function () {
     out.fm_viewListButton = "Liste";
     out.fm_viewGridButton = "Grille";
     out.fm_renamedPad = "Vous avez renommé ce pad dans votre Drive. Son titre est:<br><b>{0}</b>";
+    out.fm_prop_tagsList = "Mots-clés";
     // File - Context menu
     out.fc_newfolder = "Nouveau dossier";
     out.fc_rename = "Renommer";

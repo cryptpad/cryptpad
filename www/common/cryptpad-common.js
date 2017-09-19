@@ -536,6 +536,17 @@ define([
         cb(void 0, entry);
     };
 
+    common.resetTags = function (href, tags, cb) {
+        cb = cb || $.noop;
+        if (!Array.isArray(tags)) { return void cb('INVALID_TAGS'); }
+        getFileEntry(href, function (e, entry) {
+            if (e) { return void cb(e); }
+            if (!entry) { cb('NO_ENTRY'); }
+            entry.tags = tags.slice();
+            cb();
+        });
+    };
+
     common.tagPad = function (href, tag, cb) {
         if (typeof(cb) !== 'function') {
             return void console.error('EXPECTED_CALLBACK');

@@ -159,6 +159,10 @@ define(function () {
     out.filePicker_filter = "Filter files by name";
     out.or = 'or';
 
+    out.tags_title = "Tags";
+    out.tags_add = "Update this pad's tags";
+    out.tags_duplicate = "Duplicate tag: {0}";
+
     out.slideOptionsText = "Options";
     out.slideOptionsTitle = "Customize your slides";
     out.slideOptionsButton = "Save (enter)";
@@ -368,6 +372,7 @@ define(function () {
     out.fm_viewListButton = "List view";
     out.fm_viewGridButton = "Grid view";
     out.fm_renamedPad = "You've set a custom name for this pad. Its shared title is:<br><b>{0}</b>";
+    out.fm_prop_tagsList = "Tags";
     // File - Context menu
     out.fc_newfolder = "New folder";
     out.fc_rename = "Rename";

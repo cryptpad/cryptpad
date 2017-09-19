@@ -2408,6 +2408,13 @@ define([
                 }
             }
 
+            if (data.tags && Array.isArray(data.tags)) {
+                $('<label>', {'for': 'cp-drive-tags'}).text(Messages.fm_prop_tagsList).appendTo($d);
+                $d.append(Cryptpad.dialog.selectable(data.tags.join(', '), {
+                    id: 'cp-drive-tags',
+                }));
+            }
+
             if (APP.loggedIn && AppConfig.enablePinning) {
                 // check the size of this file...
                 console.log(data.href);
