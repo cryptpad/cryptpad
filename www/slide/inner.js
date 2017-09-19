@@ -552,7 +552,8 @@ define([
                     metadataMgr.updateMetadata(hjson.metadata);
                 }
                 if (typeof (hjson) !== 'object' || Array.isArray(hjson) ||
-                    (typeof(hjson.type) !== 'undefined' && hjson.type !== 'code')) {
+                    (hjson.metadata && typeof(hjson.metadata.type) !== 'undefined' &&
+                     hjson.metadata.type !== 'slide')) {
                     var errorText = Messages.typeError;
                     Cryptpad.errorLoadingScreen(errorText);
                     throw new Error(errorText);

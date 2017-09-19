@@ -575,64 +575,61 @@ define([
 
     Pages['/whiteboard/'] = Pages['/whiteboard/index.html'] = function () {
         return [
-            appToolbar(),
-            h('div#canvas-area', h('canvas#canvas', {
+            h('div#cp-toolbar.cp-toolbar-container'),
+            h('div#cp-app-whiteboard-canvas-area', h('canvas#cp-app-whiteboard-canvas', {
                 width: 600,
                 height: 600
             })),
-            h('div#controls', {
+            h('div#cp-app-whiteboard-controls', {
                 style: {
                     display: 'block',
                 }
             }, [
-                h('button#clear.btn.btn-danger', Msg.canvas_clear), ' ',
-                h('button#toggleDraw.btn.btn-secondary', Msg.canvas_disable),
-                h('button#delete.btn.btn-secondary', {
+                h('button#cp-app-whiteboard-clear.btn.btn-danger', Msg.canvas_clear), ' ',
+                h('button#cp-app-whiteboard-toggledraw.btn.btn-secondary', Msg.canvas_disable),
+                h('button#cp-app-whiteboard-delete.btn.btn-secondary', {
                     style: {
                         display: 'none',
                     }
                 }, Msg.canvas_delete),
-                h('div.range-group', [
+                h('div.cp-app-whiteboard-range-group', [
                     h('label', {
-                        'for': 'width'
+                        'for': 'cp-app-whiteboard-width'
                     }, Msg.canvas_width),
-                    h('input#width', {
+                    h('input#cp-app-whiteboard-width', {
                         type: 'range',
-                        value: "5",
                         min: "1",
                         max: "100"
                     }),
-                    h('span#width-val', '5px')
+                    h('span#cp-app-whiteboard-width-val', '5px')
                 ]),
-                h('div.range-group', [
+                h('div.cp-app-whiteboard-range-group', [
                     h('label', {
-                        'for': 'opacity',
+                        'for': 'cp-app-whiteboard-opacity',
                     }, Msg.canvas_opacity),
-                    h('input#opacity', {
+                    h('input#cp-app-whiteboard-opacity', {
                         type: 'range',
-                        value: "1",
                         min: "0.1",
                         max: "1",
                         step: "0.1"
                     }),
-                    h('span#opacity-val', '100%')
+                    h('span#cp-app-whiteboard-opacity-val', '100%')
                 ]),
-                h('span.selected', [
+                h('span.cp-app-whiteboard-selected.cp-app-whiteboard-unselectable', [
                     h('img', {
                         title: Msg.canvas_currentBrush
                     })
                 ])
             ]),
-            setHTML(h('div#colors'), '&nbsp;'),
-            loadingScreen(),
-            h('div#cursors', {
+            setHTML(h('div#cp-app-whiteboard-colors'), '&nbsp;'),
+            h('div#cp-app-whiteboard-cursors', {
                 style: {
                     display: 'none',
                     background: 'white',
                     'text-align': 'center',
                 }
             }),
-            h('div#pickers'),
+            h('div#cp-app-whiteboard-pickers'),
         ];
     };
 
