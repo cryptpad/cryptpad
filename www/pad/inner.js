@@ -678,13 +678,13 @@ define([
                     onSelect: function (data) {
                         if (data.type === 'file') {
                             var mt = '<media-tag contenteditable="false" src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '" tabindex="1"></media-tag>';
-                            editor.insertElement(CKEDITOR.dom.element.createFromHtml(mt));
+                            editor.insertElement(window.CKEDITOR.dom.element.createFromHtml(mt));
                             return;
                         }
                     }
                 };
                 common.initFilePicker(fileDialogCfg);
-                APP.$mediaTagButton = $('<button>', {
+                window.APP.$mediaTagButton = $('<button>', {
                     title: Messages.filePickerButton,
                     'class': 'cp-toolbar-rightside-button fa fa-picture-o',
                     style: 'font-size: 17px'
@@ -771,10 +771,10 @@ define([
                     var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
                     var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
                     var mt = '<media-tag contenteditable="false" src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '" tabindex="1"></media-tag>';
-                    editor.insertElement(CKEDITOR.dom.element.createFromHtml(mt));
+                    editor.insertElement(window.CKEDITOR.dom.element.createFromHtml(mt));
                 }
             };
-            APP.FM = common.createFileManager(fmConfig);
+            window.APP.FM = common.createFileManager(fmConfig);
 
             editor.focus();
             if (newPad) {
