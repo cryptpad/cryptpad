@@ -623,19 +623,6 @@ define([
             throw new Error('unsupported datatype: '+ DeepProxy.type(cfg.data));
         }
 
-        if (!cfg.crypto) {
-            // complain and stub
-            console.log("[chainpad-listmap] no crypto module provided. messages will not be encrypted");
-            cfg.crypto = {
-                encrypt: function (msg) {
-                    return msg;
-                },
-                decrypt: function (msg) {
-                    return msg;
-                }
-            };
-        }
-
         var realtimeOptions = {
             userName: cfg.userName,
             initialState: Sortify(cfg.data),
