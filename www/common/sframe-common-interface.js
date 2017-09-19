@@ -182,10 +182,17 @@ define([
                 break;
             case 'more':
                 button = $('<button>', {
-                    title: Messages.moreActions || 'TODO',
+                    title: Messages.moreActions,
                     'class': "cp-toolbar-drawer-button fa fa-ellipsis-h",
                     style: 'font:'+size+' FontAwesome'
                 });
+                break;
+            case 'savetodrive':
+                button = $('<button>', {
+                    'class': 'fa fa-cloud-upload',
+                    title: Messages.canvas_saveToDrive,
+                })
+                .click(common.prepareFeedback(type));
                 break;
             default:
                 button = $('<button>', {
