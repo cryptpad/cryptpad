@@ -694,6 +694,10 @@ define([
                     };
                     common.openFilePicker(pickerCfg);
                 }).appendTo($rightside);
+
+
+                $tags = common.createButton('hashtag', true);
+                $rightside.append($tags);
             }
         };
 

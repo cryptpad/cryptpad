@@ -370,6 +370,20 @@ define([
                 }
             });
 
+            sframeChan.on('Q_TAGS_GET', function (data, cb) {
+                Cryptpad.getPadTags(null, function (err, data) {
+                    cb({
+                        error: err,
+                        data: data
+                    });
+                });
+            });
+
+            sframeChan.on('EV_TAGS_SET', function (data) {
+                console.log(data);
+                Cryptpad.resetTags(null, data);
+            });
+
             if (cfg.addRpc) {
                 cfg.addRpc(sframeChan, Cryptpad);
             }

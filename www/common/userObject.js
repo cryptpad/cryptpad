@@ -415,6 +415,7 @@ define([
             var containsSearchedTag = function (T) {
                 if (!tags) { return false; }
                 if (!T.length) { return false; }
+                T = T.map(function (t) { return t.toLowerCase(); });
                 return tags.some(function (tag) {
                     return T.some(function (t) {
                         return t.indexOf(tag) !== -1;
