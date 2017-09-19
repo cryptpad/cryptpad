@@ -161,7 +161,7 @@ define(function () {
 
     out.tags_title = "Tags";
     out.tags_add = "Update this pad's tags";
-    out.tags_duplicate = "Duplicate tag: {0}"
+    out.tags_duplicate = "Duplicate tag: {0}";
 
     out.slideOptionsText = "Options";
     out.slideOptionsTitle = "Customize your slides";

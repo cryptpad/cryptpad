@@ -696,7 +696,7 @@ define([
                 }).appendTo($rightside);
 
 
-                $tags = common.createButton('hashtag', true);
+                var $tags = common.createButton('hashtag', true);
                 $rightside.append($tags);
             }
         };

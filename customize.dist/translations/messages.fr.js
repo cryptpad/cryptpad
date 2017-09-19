@@ -159,7 +159,7 @@ define(function () {
 
     out.tags_title = "Mots-clés du pad";
     out.tags_add = "Modifier les mots-clés du pad";
-    out.tags_duplicate = "Mot-clé déjà présent : {0}"
+    out.tags_duplicate = "Mot-clé déjà présent : {0}";
 
     out.slideOptionsText = "Options";
     out.slideOptionsTitle = "Personnaliser la présentation";
