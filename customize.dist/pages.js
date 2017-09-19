@@ -615,7 +615,7 @@ define([
                     }),
                     h('span#cp-app-whiteboard-opacity-val', '100%')
                 ]),
-                h('span.cp-app-whiteboard-selected', [
+                h('span.cp-app-whiteboard-selected.cp-app-whiteboard-unselectable', [
                     h('img', {
                         title: Msg.canvas_currentBrush
                     })

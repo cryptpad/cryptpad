@@ -61,6 +61,7 @@ define([
     };
 
     var andThen = function (common) {
+        var config = {};
         /* Initialize Fabric */
         var canvas = APP.canvas = new Fabric.Canvas('cp-app-whiteboard-canvas', {
             containerClass: 'cp-app-whiteboard-canvas-container'
@@ -81,6 +82,7 @@ define([
 
         // Brush
 
+        var readOnly = false;
         var brush = {
             color: '#000000',
             opacity: 1
@@ -195,7 +197,7 @@ define([
                 canvas.discardActiveGroup();
             }
             canvas.renderAll();
-            APP.onLocal();
+            config.onLocal();
         };
         $deleteButton.click(deleteSelection);
         $(window).on('keyup', function (e) {
@@ -250,9 +252,8 @@ define([
         var Title;
         var cpNfInner;
         var metadataMgr;
-        var readOnly = false;
 
-        var config = {
+        config = {
             readOnly: readOnly,
             transformFunction: JsonOT.validate,
             // cryptpad debug logging (default is 1)
@@ -287,7 +288,7 @@ define([
                         'background-color': c,
                     });
                     palette.splice(i, 1, c);
-                    config.onLocal();
+                    APP.updateLocalPalette(palette);
                     setColor(c);
                 });
             });
@@ -304,14 +305,13 @@ define([
                 first = false;
             }
         };
-        var updateLocalPalette = function (newPalette) {
+        var updateLocalPalette = APP.updateLocalPalette = function (newPalette) {
             updatePalette(newPalette);
             var metadata = JSON.parse(JSON.stringify(metadataMgr.getMetadata()));
             metadata.palette = newPalette;
             metadataMgr.updateMetadata(metadata);
-            onLocal();
+            config.onLocal();
         };
-        updatePalette(palette);
 
         var makeColorButton = function ($container) {
             var $testColor = $('<input>', { type: 'color', value: '!' });
@@ -360,6 +360,7 @@ define([
         };
 
         config.onInit = function (info) {
+            updateLocalPalette(palette);
             readOnly = metadataMgr.getPrivateData().readOnly;
 
             Title = common.createTitle({}, config.onLocal);
@@ -379,7 +380,6 @@ define([
             Title.setToolbar(toolbar);
 
             var $rightside = toolbar.$rightside;
-            var $drawer = toolbar.$drawer;
 
             /* save as template */
             if (!metadataMgr.getPrivateData().isTemplate) {
@@ -417,7 +417,7 @@ define([
             metadataMgr.onChange(function () {
                 var md = metadataMgr.getMetadata();
                 if (md.palette) {
-                    updatePalette(md.palette);
+                    updateLocalPalette(md.palette);
                 }
             });
         };
@@ -435,7 +435,6 @@ define([
             var isNew = false;
             if (userDoc === "" || userDoc === "{}") { isNew = true; }
 
-            var newDoc = "";
             if (userDoc !== "") {
                 var hjson = JSON.parse(userDoc);
 
