@@ -679,7 +679,6 @@ define([
 
         var onLocal = realtimeOptions.onLocal = function () {
             if (initializing) { return; }
-            if (readOnly) { return; }
             var strung = isFakeProxy? DeepProxy.stringifyFakeProxy(proxy): Sortify(proxy);
             patchText(strung);
 
