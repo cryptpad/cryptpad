@@ -378,7 +378,6 @@ define([
         };
 
         config.onReady = function (info) {
-            console.log('onready');
             if (APP.realtime !== info.realtime) {
                 var realtime = APP.realtime = info.realtime;
                 APP.patchText = TextPatcher.create({
@@ -400,7 +399,8 @@ define([
                     metadataMgr.updateMetadata(hjson.metadata);
                 }
                 if (typeof (hjson) !== 'object' || Array.isArray(hjson) ||
-                    (typeof(hjson.type) !== 'undefined' && hjson.type !== 'code')) {
+                    (hjson.metadata && typeof(hjson.metadata.type) !== 'undefined' &&
+                     hjson.metadata.type !== 'code')) {
                     var errorText = Messages.typeError;
                     Cryptpad.errorLoadingScreen(errorText);
                     throw new Error(errorText);

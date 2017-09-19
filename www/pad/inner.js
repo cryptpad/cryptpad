@@ -563,7 +563,6 @@ define([
 
         realtimeOptions.onInit = function (info) {
             readOnly = metadataMgr.getPrivateData().readOnly;
-            console.log('onInit');
             var titleCfg = { getHeadingText: getHeadingText };
             Title = common.createTitle(titleCfg, realtimeOptions.onLocal);
             var configTb = {
@@ -700,7 +699,6 @@ define([
 
         // this should only ever get called once, when the chain syncs
         realtimeOptions.onReady = function (info) {
-            console.log('onReady');
             if (!module.isMaximized) {
                 module.isMaximized = true;
                 $('iframe.cke_wysiwyg_frame').css('width', '');
@@ -723,10 +721,13 @@ define([
             if (shjson === '') { newPad = true; }
 
             if (!newPad) {
+                if (shjson[0] !== '[') {
+                    var errorText = Messages.typeError;
+                    Cryptpad.errorLoadingScreen(errorText);
+                    throw new Error(errorText);
+                }
                 applyHjson(shjson);
 
-                // Update the user list (metadata) from the hyperjson
-                // XXX Metadata.update(shjson);
                 var parsed = JSON.parse(shjson);
                 if (parsed[3] && parsed[3].metadata) {
                     metadataMgr.updateMetadata(parsed[3].metadata);
