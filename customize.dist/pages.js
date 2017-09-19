@@ -598,7 +598,6 @@ define([
                     }, Msg.canvas_width),
                     h('input#cp-app-whiteboard-width', {
                         type: 'range',
-                        value: "5",
                         min: "1",
                         max: "100"
                     }),
@@ -610,7 +609,6 @@ define([
                     }, Msg.canvas_opacity),
                     h('input#cp-app-whiteboard-opacity', {
                         type: 'range',
-                        value: "1",
                         min: "0.1",
                         max: "1",
                         step: "0.1"

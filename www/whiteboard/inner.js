@@ -456,7 +456,7 @@ define([
             Cryptpad.removeLoadingScreen();
             setEditable(!readOnly);
             initializing = false;
-            config.onRemote();
+            config.onLocal();
 
             if (readOnly) { return; }
             if (isNew) {
@@ -535,7 +535,8 @@ define([
         nThen(function (waitFor) {
             $(waitFor(function () {
                 Cryptpad.addLoadingScreen();
-                $('body').append(Pages['/whiteboard/']());
+                var $div = $('<div>').append(Pages['/whiteboard/']());
+                $('body').append($div.html());
             }));
             SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
         }).nThen(function (/*waitFor*/) {
