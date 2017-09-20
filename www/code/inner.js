@@ -238,7 +238,7 @@ define([
                     if (data !== false) {
                         $previewContainer.show();
                         APP.$previewButton.addClass('active');
-                        $codeMirror.removeClass('fullPage');
+                        $codeMirror.removeClass('cp-app-code-fullpage');
                     }
                 });
                 return;
@@ -246,7 +246,7 @@ define([
             APP.$previewButton.hide();
             $previewContainer.hide();
             APP.$previewButton.removeClass('active');
-            $codeMirror.addClass('fullPage');
+            $codeMirror.addClass('cp-app-code-fullpage');
         };
 
         config.onInit = function (info) {
@@ -615,7 +615,7 @@ define([
             SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
         }).nThen(function (/*waitFor*/) {
             CodeMirror = common.initCodeMirrorApp(null, CM);
-            $('.CodeMirror').addClass('fullPage');
+            $('.CodeMirror').addClass('cp-app-code-fullpage');
             editor = CodeMirror.editor;
             Cryptpad.onError(function (info) {
                 if (info && info.type === "store") {
