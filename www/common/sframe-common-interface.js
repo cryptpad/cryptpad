@@ -203,12 +203,11 @@ define([
                 .click(function () {
                     sframeChan.query('Q_TAGS_GET', null, function (err, res) {
                         if (err || res.error) { return void console.error(err || res.error); }
-                        var dialog = Cryptpad.dialog.tagPrompt(res.data, function (tags) {
+                        Cryptpad.dialog.tagPrompt(res.data, function (tags) {
                             if (!Array.isArray(tags)) { return; }
                             console.error(tags);
                             sframeChan.event('EV_TAGS_SET', tags);
                         });
-                        document.body.appendChild(dialog);
                     });
                 });
                 break;
