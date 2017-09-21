@@ -21,6 +21,15 @@ define([
         var createRealtime = function () {
             return ChainPad.create({
                 userName: 'history',
+                validateContent: function (content) {
+                    try {
+                        JSON.parse(content);
+                        return true;
+                    } catch (e) {
+                        console.log('Failed to parse, rejecting patch');
+                        return false;
+                    }
+                },
                 initialState: '',
                 transformFunction: JsonOT.validate,
                 logLevel: 0,
@@ -69,9 +78,9 @@ define([
             config.onLocal();
             config.onRemote();
         };
-        var onReady = function () {
-            config.setHistory(true);
-        };
+
+        config.setHistory(true);
+        var onReady = function () { };
 
         var Messages = common.Messages;
         var Cryptpad = common.getCryptpadCommon();
