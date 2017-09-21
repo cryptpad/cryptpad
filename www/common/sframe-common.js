@@ -171,10 +171,14 @@ define([
     };
 
     funcs.getFullHistory = function (realtime, cb) {
-        ctx.sframeChan.on('EV_RT_HIST_MESSAGE', function (content) {
-            realtime.message(content);
+        ctx.sframeChan.query('Q_GET_FULL_HISTORY', null, function (err, messages) {
+            if (err) { return void console.error(err); }
+            if (!Array.isArray(messages)) { return; }
+            messages.forEach(function (m) {
+                realtime.message(m);
+            });
+            cb();
         });
-        ctx.sframeChan.query('Q_GET_FULL_HISTORY', null, cb);
     };
 
     funcs.getPadAttribute = function (key, cb) {
