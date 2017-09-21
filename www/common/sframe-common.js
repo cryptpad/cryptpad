@@ -77,6 +77,7 @@ define([
     funcs.openTemplatePicker = callWithCommon(UI.openTemplatePicker);
     funcs.displayAvatar = callWithCommon(UI.displayAvatar);
     funcs.createButton = callWithCommon(UI.createButton);
+    funcs.createUsageBar = callWithCommon(UI.createUsageBar);
 
     // History
     funcs.getHistory = callWithCommon(History.create);
@@ -154,6 +155,12 @@ define([
             content: content
         }, function (err, data) {
             if (cb) { cb(data); }
+        });
+    };
+    funcs.getPinUsage = function (cb) {
+        cb = cb || $.noop;
+        ctx.sframeChan.query('Q_PIN_GET_USAGE', null, function (err, data) {
+            cb(err || data.error, data.data);
         });
     };
 
@@ -281,6 +288,18 @@ define([
                     var x = {};
                     x[k] = v;
                     ctx.sframeChan.event('EV_CACHE_PUT', x);
+                };
+            });
+            ctx.sframeChan.whenReg('EV_LOCALSTORE_PUT', function () {
+                if (Object.keys(window.cryptpadStore.updated).length) {
+                    ctx.sframeChan.event('EV_LOCALSTORE_PUT', window.cryptpadStore.updated);
+                }
+                window.cryptpadStore._put = window.cryptpadStore.put;
+                window.cryptpadStore.put = function (k, v, cb) {
+                    window.cryptpadStore._put(k, v, cb);
+                    var x = {};
+                    x[k] = v;
+                    ctx.sframeChan.event('EV_LOCALSTORE_PUT', x);
                 };
             });
 

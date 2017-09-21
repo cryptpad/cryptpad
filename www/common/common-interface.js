@@ -245,7 +245,7 @@ define([
             stopListening(listener);
             cb();
         });
-        listener = listenForKeys(close, close);
+        listener = listenForKeys(close, close, ok);
         var $ok = $(ok).click(close);
 
         document.body.appendChild(frame);
@@ -294,7 +294,7 @@ define([
             $ok.click();
         }, function () { // no
             $cancel.click();
-        });
+        }, input);
 
         document.body.appendChild(frame);
         setTimeout(function () {

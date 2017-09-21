@@ -51,9 +51,7 @@ define([
         $('<td>').text(Messages.cancel).appendTo($thead);
 
         var createTableContainer = function ($body) {
-            console.log($body);
             File.$container = $('<div>', { id: 'cp-fileupload' }).append($table).appendTo($body);
-            console.log('done');
             return File.$container;
         };
 

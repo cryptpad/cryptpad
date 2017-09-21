@@ -67,6 +67,9 @@ define({
     // Use anonymous rpc from inside the iframe (for avatars & pin usage).
     'Q_ANON_RPC_MESSAGE': true,
 
+    // Get the user's pin limit, usage and plan
+    'Q_PIN_GET_USAGE': true,
+
     // Check the pin limit to determine if we can store the pad in the drive or if we should.
     // display a warning
     'Q_GET_PIN_LIMIT_STATUS': true,
@@ -129,7 +132,10 @@ define({
     'EV_PRESENT_URL_SET_VALUE': true,
 
     // Put one or more entries to the cache which will go in localStorage.
+    // Cache is wiped after each new release
     'EV_CACHE_PUT': true,
+    // Put one or more entries to the localStore which will go in localStorage.
+    'EV_LOCALSTORE_PUT': true,
 
     // Set and get the tags using the tag prompt button
     'Q_TAGS_GET': true,

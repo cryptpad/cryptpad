@@ -487,6 +487,7 @@ define([
                 files[FILES_DATA][id] = data;
                 cb(null, id);
             };
+            // TODO
             if (!Cryptpad.isLoggedIn() || !AppConfig.enablePinning || config.testMode) {
                 return void todo();
             }
@@ -585,6 +586,7 @@ define([
 
         // ADD
         var add = exp.add = function (id, path) {
+            // TODO
             if (!Cryptpad.isLoggedIn() && !config.testMode) { return; }
             var data = files[FILES_DATA][id];
             if (!data || typeof(data) !== "object") { return; }
@@ -624,6 +626,7 @@ define([
         exp.forget = function (href) {
             var id = getIdFromHref(href);
             if (!id) { return; }
+            // TODO
             if (!Cryptpad.isLoggedIn() && !config.testMode) {
                 // delete permanently
                 exp.removePadAttribute(href);
@@ -653,6 +656,7 @@ define([
         };
         var checkDeletedFiles = function () {
             // Nothing in OLD_FILES_DATA for workgroups
+            // TODO
             if (workgroup || (!Cryptpad.isLoggedIn() && !config.testMode)) { return; }
 
             var filesList = getFiles([ROOT, 'hrefArray', TRASH]);
@@ -680,6 +684,7 @@ define([
             var trashPaths = paths.filter(function(x) { return isPathIn(x, [TRASH]); });
             var allFilesPaths = paths.filter(function(x) { return isPathIn(x, [FILES_DATA]); });
 
+            // TODO
             if (!Cryptpad.isLoggedIn() && !config.testMode) {
                 allFilesPaths.forEach(function (path) {
                     var el = find(path);
@@ -855,6 +860,7 @@ define([
                 }
                 try {
                     debug("Migrating file system...");
+                    // TODO
                     Cryptpad.feedback('Migrate-oldFilesData', true);
                     files.migrate = 1;
                     var next = function () {
@@ -904,6 +910,7 @@ define([
                     };
                     if (exp.rt) {
                         exp.rt.sync();
+                        // TODO
                         Cryptpad.whenRealtimeSyncs(exp.rt, next);
                     } else {
                         window.setTimeout(next, 1000);
@@ -1079,6 +1086,7 @@ define([
 
                     migrateAttributes(el, id, parsed);
 
+                    // TODO
                     if ((Cryptpad.isLoggedIn() || config.testMode) && rootFiles.indexOf(id) === -1) {
                         debug("An element in filesData was not in ROOT, TEMPLATE or TRASH.", id, el);
                         var newName = Cryptpad.createChannelId();
