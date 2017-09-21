@@ -570,12 +570,12 @@ define([
     };
 
     var appToolbar = function () {
-        return h('div#toolbar.toolbar-container');
+        return h('div#cp-toolbar.cp-toolbar-container');
     };
 
     Pages['/whiteboard/'] = Pages['/whiteboard/index.html'] = function () {
         return [
-            h('div#cp-toolbar.cp-toolbar-container'),
+            appToolbar(),
             h('div#cp-app-whiteboard-canvas-area', h('canvas#cp-app-whiteboard-canvas', {
                 width: 600,
                 height: 600
@@ -680,8 +680,7 @@ define([
                         ])
                     ])
                 ])
-            ]),
-            loadingScreen()
+            ])
         ];
     };
 

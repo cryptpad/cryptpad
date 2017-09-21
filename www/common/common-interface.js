@@ -136,7 +136,7 @@ define([
         };
 
         var $root = $t.parent();
-        $t.on('tokenfield:removetoken', function (e) {
+        $t.on('tokenfield:removetoken', function () {
             $root.find('.token-input').focus();
         });
 
@@ -184,10 +184,6 @@ define([
 
         var field = UI.tokenField(input).preventDuplicates(function (val) {
             UI.warn(Messages._getKey('tags_duplicate', [val]));
-        });
-
-        var close = Util.once(function () {
-            var $t = $(tagger).fadeOut(150, function () { $t.remove(); });
         });
 
         var listener;
