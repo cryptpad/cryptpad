@@ -101,12 +101,66 @@ min-height: auto;
     }
 }
 
-img.icon {
+/* local mixins */
+.fileIcon {
+    li {
+        display: inline-block;
+        margin: 10px 10px;
+        width: 140px;
+        height: 140px;
+        text-align: center;
+        vertical-align: top;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-top: 5px;
+        padding-bottom: 5px;
+
+        &:not(.cp-app-drive-element-selected):not(.cp-app-drive-element-selected-tmp) {
+            border: 1px solid #CCC;
+        }
+        .cp-app-drive-element-name {
+            width: 100%;
+            height: 48px;
+            margin: 8px 0;
+            display: inline-block;
+            //align-items: center;
+            //justify-content: center;
+            overflow: hidden;
+            //text-overflow: ellipsis;
+            word-wrap: break-word;
+        }
+        .cp-app-drive-element-truncated {
+            display: block;
+            position: absolute;
+            bottom: 0px;
+            left: 0; right: 0;
+            text-align: center;
+        }
+        img.cp-app-drive-content-icon {
+            height: 48px;
+            max-height: none;
+            max-width: none;
+            margin: 8px 0;
+        }
+        .fa {
+            display: block;
+            margin: auto;
+            font-size: 48px;
+            margin: 8px 0;
+            text-align: center;
+            &.listonly {
+                display: none;
+            }
+        }
+    }
+}
+
+img.cp-app-drive-icon {
     max-width: 20px;
     max-height: 16px;
 }
 
-.unselectable {
+.cp-unselectable {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -115,7 +169,7 @@ img.icon {
     user-select: none;
 }
 
-.app-container {
+.cp-app-drive-container {
     flex: 1;
     overflow: auto;
     width: 100%;
@@ -123,18 +177,18 @@ img.icon {
     flex-flow: row;
     @media screen and (max-width: @size-mobile) {
         display: block;
-        #driveToolbar {
+        #cp-app-drive-toolbar {
             .path .element {
                 display: none;
             }
         }
-        #tree {
+        #cp-app-drive-tree {
             resize: none;
             width: 100%;
             max-width: unset;
             max-height: unset;
             border-bottom: 1px solid @toolbar-border-col;
-            .category {
+            .cp-app-drive-tree-category {
                 margin-top: 0.5em;
             }
         }
@@ -171,7 +225,7 @@ li {
     user-select: none;
 }
 
-.contextMenu {
+.cp-app-drive-context {
     display: none;
     position: absolute;
     z-index: 500;
@@ -184,12 +238,12 @@ li {
     }
 }
 
-.droppable {
+.cp-app-drive-element-droppable {
     background-color: #FE9A2E;
     color: #222;
 }
 
-.selected {
+.cp-app-drive-element-selected {
     background: #666 !important;
     color: #eee;
     margin: -1px;
@@ -198,7 +252,7 @@ li {
     }
 }
 
-.selectedTmp {
+.cp-app-drive-element-selected-tmp {
     border: 1px dotted #bbb;
     background: #AAA;
     color: #ddd;
@@ -218,7 +272,7 @@ span {
 /* TREE */
 
 
-#tree {
+#cp-app-drive-tree {
     font-size: @main-font-size;
     //border-right: 1px solid #ccc;
     box-sizing: border-box;
@@ -234,23 +288,23 @@ span {
     display: flex;
     flex-flow: column;
     max-height: 100%;
-    .categories-container {
+    .cp-app-drive-tree-categories-container {
         flex: 1;
         max-width: 500px;
         overflow: auto;
     }
-    img.icon {
+    img.cp-app-drive-icon {
         margin-bottom: 3px;
         margin-left: -2px;
     }
-    .docTree {
+    .cp-app-drive-tree-docs {
         margin-top: 20px;
         //padding: 0 0 0 20px;
         padding: 0;
         cursor: auto;
         &li, li {
             padding: 0;
-            &.collapsed ul {
+            &.cp-app-drive-element-collapsed ul {
                 display: none;
             }
             input {
@@ -259,7 +313,7 @@ span {
                 border: 0;
                 color: lighten(@tree-fg, 40%);
             }
-            & > span.element-row {
+            & > span.cp-app-drive-element-row {
                 overflow: hidden;
                 text-overflow: ellipsis;
                 //min-width: ~"calc(100% + 5px)";
@@ -272,23 +326,23 @@ span {
                 margin-left: -5px;
                 padding-left: 5px;
             }
-            & > span.element-row:not(.selected):not(.active):hover {
+            & > span.cp-app-drive-element-row:not(.cp-app-drive-element-selected):not(.cp-app-drive-element-active):hover {
                 //background-color: @drive-hover;
             }
         }
     }
-    span.element {
+    span.cp-app-drive-element {
         cursor: pointer;
     }
-    /*.active {
-        &:not(.selected):not(.droppable) {
+    /*.cp-app-drive-element-active {
+        &:not(.cp-app-drive-element-selected):not(.cp-app-drive-element-droppable) {
             background-color: darken(@drive-hover, 15%);
         }
     }*/
-    .category {
+    .cp-app-drive-tree-category {
         margin: 0;
         margin-top: 15px;
-        .root {
+        .cp-app-drive-tree-root {
             &> .fa {
                 min-width: 30px;
                 cursor: pointer;
@@ -296,7 +350,7 @@ span {
         }
         li {
             padding: 0;
-            .element-row {
+            .cp-app-drive-element-row {
                 display: block;
                 padding-left: 20px;
                 .leftsideCategory();
@@ -307,16 +361,13 @@ span {
             }
         }
     }
-    .category:last-child {
+    .cp-app-drive-tree-category:last-child {
         margin-bottom: 20px;
-    }
-    #allfilesTree {
-        margin-top: 0;
     }
     .limit-container {
         margin-top: 0;
     }
-    #searchContainer {
+    #cp-app-drive-tree-search {
         text-align: center;
         padding: 0;
         position: relative;
@@ -338,14 +389,14 @@ span {
                 outline-width: 0px;
             }
         }
-        .searchIcon {
+        .cp-app-drive-tree-search-con {
             color: @toolbar-drive-color;
             position: absolute;
             left: 20px; // TODO align with drive categories
             top: 8px;
         }
     }
-    .fa.expcol {
+    .fa.cp-app-drive-icon-expcol {
         margin-left: -10px;
         font-size: 14px;
         position: absolute;
@@ -363,17 +414,17 @@ span {
             top: -1px;
         }
     }
-    .docTree {
-        .root > .element-row > .expcol {
+    .cp-app-drive-tree-docs {
+        .cp-app-drive-tree-root > .cp-app-drive-element-row > .cp-app-drive-icon-expcol {
             position: relative;
             top:0;
             left: -10px;
         }
-        .root > .element-row > .folder {
+        .cp-app-drive-tree-root > .cp-app-drive-element-row > .cp-app-drive-icon-folder {
             margin-left: -5px;
         }
-        .root {
-            &> .element-row {
+        .cp-app-drive-tree-root {
+            &> .cp-app-drive-element-row {
                 padding-left: 20px;
             }
             &> ul {
@@ -383,7 +434,7 @@ span {
     }
 
     // Expand/collapse lines
-    .docTree ul {
+    .cp-app-drive-tree-docs ul {
         margin: 0px 0px 0px 10px;
         list-style: none;
         padding-left: 10px;
@@ -409,7 +460,7 @@ span {
                 border-left: 1px solid @tree-lines-col;
                 height: 100%;
             }
-            &.root {
+            &.cp-app-drive-tree-root {
                 margin: 0px 0px 0px -10px;
                 &:before {
                     display: none;
@@ -426,7 +477,7 @@ span {
 }
 
 /* CONTENT */
-#rightCol {
+#cp-app-drive-content-container {
     display: flex;
     flex-flow: column;
     flex: 1;
@@ -434,7 +485,7 @@ span {
     // https://stackoverflow.com/questions/38223879/white-space-nowrap-breaks-flexbox-layout
     min-width: 0;
 }
-#content {
+#cp-app-drive-content {
     box-sizing: border-box;
     background: @content-bg;
     color: @content-fg;
@@ -443,20 +494,20 @@ span {
     display: flex;
     flex-flow: column;
     position: relative;
-    .selectBox {
+    .cp-app-drive-content-select-box {
         display: none;
         background-color: rgba(100, 100, 100, 0.7);
         position: absolute;
         z-index: 50;
     }
-    &.readonly {
+    &.cp-app-drive-readonly {
         background: @content-bg-ro;
     }
     h1 {
         padding-left: 10px;
         margin-top: 10px;
     }
-    .info-box {
+    .cp-app-drive-content-info-box {
         line-height: 2em;
         padding: 0.25em 0.75em;
         margin: 1em;
@@ -466,28 +517,26 @@ span {
             float: right;
             margin-top: 0.5em;
         }
-        &.noclose {
-        }
     }
     li {
         cursor: default;
-        &:not(.header) {
+        &:not(.cp-app-drive-element-header) {
             *:not(input) {
                 /*pointer-events: none;*/
             }
             &:hover {
-                &:not(.selected, .selectedTmp) {
+                &:not(.-cp-app-drive-element-selected, .cp-app-drive-element-selected-tmp) {
                     background-color: @drive-hover;
                 }
-                .name {
+                .cp-app-drive-element-name {
                     /*text-decoration: underline;*/
                 }
             }
         }
     }
-    #folderContent {
+    #cp-app-drive-content-folder {
         li {
-            &.searchResult {
+            &.cp-app-drive-search-result {
                 border-bottom: 1px solid @info-box-border;
                 display: block;
                 &:hover {
@@ -495,13 +544,13 @@ span {
                 }
                 table {
                     width: 100%;
-                    .label2 {
+                    .cp-app-drive-search-label2 {
                         width: 150px;
                         font-size: 15px;
                         text-align: right;
                         padding-right: 15px;
                     }
-                    .openDir {
+                    .cp-app-drive-search-opendir {
                         a {
                             cursor: pointer;
                             color: #41b7d8;
@@ -511,25 +560,25 @@ span {
                             }
                         }
                     }
-                    .path {
+                    .cp-app-drive-search-path {
                         font-style: italic;
                         direction: rtl;
-                        .element {
+                        .cp-app-drive-path-element {
                             display: inline-block;
                             margin-right: 5px;
                         }
                     }
-                    .title {
+                    .cp-app-drive-search-title {
                         font-weight: bold;
                         cursor: pointer;
                         &:hover {
                             background-color: @drive-hover;
                         }
                     }
-                    .col2 {
+                    .cp-app-drive-search-col2 {
                         width: 250px;
                     }
-                    td.icon {
+                    td.cp-app-drive-search-icon {
                         width: 50px;
                         font-size: 40px;
                     }
@@ -537,21 +586,21 @@ span {
             }
         }
     }
-    .element {
-        .truncated { display: none; }
+    .cp-app-drive-element {
+        .cp-app-drive-element-truncated { display: none; }
     }
-    div.grid {
+    div.cp-app-drive-content-grid {
         padding: 20px;
         .fileIcon;
         li {
-            &.element {
+            &.cp-app-drive-element {
                 position: relative;
             }
             input {
                 width: 100%;
                 margin-top: 5px;
             }
-            .state {
+            .cp-app-drive-element-state {
                 position: absolute;
                 top: 3px;
                 right: 3px;
@@ -561,10 +610,10 @@ span {
                 }
             }
         }
-        .listElement {
+        .cp-app-drive-element-list {
             display: none;
         }
-        .addpad {
+        .cp-app-drive-new-ghost {
             cursor: pointer;
             opacity: 0.5;
             padding: 0;
@@ -580,8 +629,8 @@ span {
         }
     }
 
-    .list {
-        .grid-element {
+    .cp-app-drive-content-list {
+        .cp-app-drive-element-grid {
             display: none;
         }
         // Make it act as a table!
@@ -597,11 +646,11 @@ span {
                 padding: 0 5px;
                 display: table-cell;
             }
-            &:not(.header) {
+            &:not(.cp-app-drive-element-header) {
                 height: @toolbar-line-height;
                 line-height: @toolbar-line-height;
             }
-            &.header {
+            &.cp-app-drive-element-header {
                 cursor: default;
                 color: @table-header-fg;
                 span {
@@ -614,10 +663,10 @@ span {
                 }
                 &> span {
                     padding: 15px 5px;
-                    &.active {
+                    &.cp-app-drive-sort-active {
                         font-weight: bold;
                     }
-                    &.clickable {
+                    &.cp-app-drive-sort-clickable {
                         cursor: pointer;
                         &:hover {
                             background: @table-header-bg;
@@ -626,29 +675,29 @@ span {
                 }
             }
         }
-        .element {
+        .cp-app-drive-element {
             span {
                 overflow: hidden;
                 white-space: nowrap;
                 box-sizing: border-box;
-                &.state {
+                &.cp-app-drive-element-state {
                     .fa:not(:last-child) {
                         margin-right: 5px;
                     }
                 }
-                &.icon, &.state {
+                &.cp-app-drive-content-icon, &.cp-app-drive-element-state {
                     width: 30px;
                 }
-                &.type, &.atime, &.ctime {
+                &.cp-app-drive-element-type, &.cp-app-drive-element-atime, &.cp-app-drive-element-ctime {
                     width: 175px;
                 }
-                &.title {
+                &.cp-app-drive-element-title {
                     width: 250px;
                     @media screen and (max-width: 1200px) {
                         display: none;
                     }
                 }
-                &.folders, &.files {
+                &.cp-app-drive-element-folders, &.cp-app-drive-element-files {
                     width: 150px;
                 }
             }
@@ -656,23 +705,15 @@ span {
     }
 }
 
-.parentFolder {
-    cursor: pointer;
-    margin-left: 10px;
-    &:hover {
-        text-decoration: underline;
-    }
-}
-
-#folderContent {
+#cp-app-drive-content-folder {
     padding-right: 10px;
     flex: 1;
 }
 
-#addPadDialog.cp-modal-container {
+#cp-app-drive-new-ghost-dialog.cp-modal-container {
     .fileIcon;
 
-    li:not(.selected):hover {
+    li:not(.cp-app-drive-element-selected):hover {
         border: 1px solid white;
     }
     .cp-modal {
@@ -690,7 +731,7 @@ span {
             justify-content: center;
             align-content: center;
             overflow-y: auto;
-            .uploadFile {
+            .cp-app-drive-new-upload {
                 break-after: always;
                 page-break-after: always;
             }
@@ -712,7 +753,7 @@ span {
                     .fa {
                         font-size: 32px;
                     }
-                    .name {
+                    .cp-app-drive-new-name {
                         height: auto;
                     }
                 }
@@ -724,7 +765,7 @@ span {
 
 /* Toolbar */
 
-#driveToolbar {
+#cp-app-drive-toolbar {
     background: lighten(@toolbar-drive-bg, 8%);
     color: @toolbar-drive-color;
     //height: 30px;
@@ -744,11 +785,6 @@ span {
         }
     }
 
-    .newPadContainer {
-        display: inline-block;
-        height: 100%;
-    }
-
     .history {
         float: right;
         .cp-toolbar-drawer-element {
@@ -756,7 +792,7 @@ span {
         }
     }
 
-    .rightside, .leftside {
+    .cp-app-drive-toolbar-rightside, .cp-app-drive-toolbar-leftside {
         display: inline-block;
         margin: 0;
         padding: 0;
@@ -782,23 +818,23 @@ span {
             &:hover {
                 background: @toolbar-drive-bg;
             }
-            &.active {
+            &.cp-app-drive-toolbar-active {
                 display: none;
             }
         }
     }
-    .rightside {
+    .cp-app-drive-toolbar-rightside {
         float: right;
         & > * {
             float: right;
         }
-        #contextButtonsContainer {
+        #cp-app-drive-toolbar-contextbuttons {
             display: inline-block;
             height: 100%;
         }
         padding-left: 10px;
     }
-    .leftside {
+    .cp-app-drive-toolbar-leftside {
         & > span {
             height: 100%;
             margin: 0;
@@ -839,7 +875,7 @@ span {
         margin-right: 2px;
     }
 
-    .path {
+    .cp-app-drive-path {
         flex: 1;
         width: 100%;
         height: @toolbar-line-height;
@@ -851,7 +887,7 @@ span {
         direction: rtl;
         max-width: 100%;
         text-align: left;
-        .element {
+        .cp-app-drive-path-element {
             display: inline-block;
             height: @toolbar-line-height;
             line-height: @toolbar-line-height;
@@ -862,10 +898,10 @@ span {
             color: @toolbar-drive-color;
             box-sizing: border-box;
             transition: all 0.15s;
-            &.separator {
+            &.cp-app-drive-path-separator {
                 color: #ccc;
             }
-            &.clickable {
+            &.cp-app-drive-path-lickable {
                 cursor: pointer;
                 &:hover {
                     background: darken(@toolbar-drive-bg, 15%);

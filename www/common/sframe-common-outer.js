@@ -294,6 +294,12 @@ define([
                 });
             });
 
+            sframeChan.on('Q_SESSIONSTORAGE_PUT', function (data, cb) {
+                sessionStorage[data.key] = data.value;
+                cb();
+            });
+
+
             // Present mode URL
             sframeChan.on('Q_PRESENT_URL_GET_VALUE', function (data, cb) {
                 var parsed = Cryptpad.parsePadUrl(window.location.href);
@@ -382,6 +388,12 @@ define([
                     window.location.href = url;
                 } else {
                     window.location.reload();
+                }
+            });
+
+            sframeChan.on('EV_OPEN_URL', function (url) {
+                if (url) {
+                    window.open(url);
                 }
             });
 

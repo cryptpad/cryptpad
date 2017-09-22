@@ -18,6 +18,7 @@ define([
         var exp = {};
         var Cryptpad = config.Cryptpad;
         var Messages = Cryptpad.Messages;
+        var loggedIn = config.loggedIn || Cryptpad.isLoggedIn();
 
         var FILES_DATA = module.FILES_DATA = exp.FILES_DATA = Cryptpad.storageKey;
         var OLD_FILES_DATA = module.OLD_FILES_DATA = exp.OLD_FILES_DATA = Cryptpad.oldStorageKey;
@@ -481,14 +482,14 @@ define([
 
         // FILES DATA
         exp.pushData = function (data, cb) {
+            // TODO: can only be called from outside atm
             if (typeof cb !== "function") { cb = function () {}; }
             var todo = function () {
                 var id = Cryptpad.createRandomInteger();
                 files[FILES_DATA][id] = data;
                 cb(null, id);
             };
-            // TODO
-            if (!Cryptpad.isLoggedIn() || !AppConfig.enablePinning || config.testMode) {
+            if (!loggedIn || !AppConfig.enablePinning || config.testMode) {
                 return void todo();
             }
             Cryptpad.pinPads([Cryptpad.hrefToHexChannelId(data.href)], function (e) {
@@ -586,8 +587,7 @@ define([
 
         // ADD
         var add = exp.add = function (id, path) {
-            // TODO
-            if (!Cryptpad.isLoggedIn() && !config.testMode) { return; }
+            if (!loggedIn && !config.testMode) { return; }
             var data = files[FILES_DATA][id];
             if (!data || typeof(data) !== "object") { return; }
             var newPath = path, parentEl;
@@ -626,8 +626,7 @@ define([
         exp.forget = function (href) {
             var id = getIdFromHref(href);
             if (!id) { return; }
-            // TODO
-            if (!Cryptpad.isLoggedIn() && !config.testMode) {
+            if (!loggedIn && !config.testMode) {
                 // delete permanently
                 exp.removePadAttribute(href);
                 spliceFileData(id);
@@ -656,8 +655,7 @@ define([
         };
         var checkDeletedFiles = function () {
             // Nothing in OLD_FILES_DATA for workgroups
-            // TODO
-            if (workgroup || (!Cryptpad.isLoggedIn() && !config.testMode)) { return; }
+            if (workgroup || (!loggedIn && !config.testMode)) { return; }
 
             var filesList = getFiles([ROOT, 'hrefArray', TRASH]);
             getFiles([FILES_DATA]).forEach(function (id) {
@@ -684,8 +682,7 @@ define([
             var trashPaths = paths.filter(function(x) { return isPathIn(x, [TRASH]); });
             var allFilesPaths = paths.filter(function(x) { return isPathIn(x, [FILES_DATA]); });
 
-            // TODO
-            if (!Cryptpad.isLoggedIn() && !config.testMode) {
+            if (!loggedIn && !config.testMode) {
                 allFilesPaths.forEach(function (path) {
                     var el = find(path);
                     if (!el) { return; }
@@ -1086,8 +1083,7 @@ define([
 
                     migrateAttributes(el, id, parsed);
 
-                    // TODO
-                    if ((Cryptpad.isLoggedIn() || config.testMode) && rootFiles.indexOf(id) === -1) {
+                    if ((loggedIn || config.testMode) && rootFiles.indexOf(id) === -1) {
                         debug("An element in filesData was not in ROOT, TEMPLATE or TRASH.", id, el);
                         var newName = Cryptpad.createChannelId();
                         root[newName] = id;

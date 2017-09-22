@@ -2236,6 +2236,17 @@ define([
                 }
                 $iframe.load(w2); //cb);
             }
+        }).nThen(function (waitFor) {
+            if (sessionStorage.migrateAnonDrive) {
+                var w = waitFor();
+                require(['/common/mergeDrive.js'], function (Merge) {
+                    var hash = localStorage.FS_hash;
+                    Merge.anonDriveIntoUser(getStore().getProxy(), hash, function () {
+                        delete sessionStorage.migrateAnonDrive;
+                        w();
+                    });
+                });
+            }
         }).nThen(function () {
             updateLocalVersion();
             common.addTooltips();

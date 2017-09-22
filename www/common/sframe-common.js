@@ -210,6 +210,15 @@ define([
         }, cb);
     };
 
+    funcs.sessionStorage = {
+        put: function (key, value, cb) {
+            ctx.sframeChan.query('Q_SESSIONSTORAGE_PUT', {
+                key: key,
+                value: value
+            }, cb);
+        }
+    };
+
     funcs.isStrongestStored = function () {
         var data = ctx.metadataMgr.getPrivateData();
         if (data.availableHashes.fileHash) { return true; }
@@ -221,6 +230,9 @@ define([
         ctx.sframeChan.query('Q_SETTINGS_SET_DISPLAY_NAME', name, cb);
     };
 
+    funcs.mergeAnonDrive = function (cb) {
+        ctx.sframeChan.query('Q_MERGE_ANON_DRIVE', null, cb);
+    };
     // Friends
     var pendingFriends = [];
     funcs.getPendingFriends = function () {
@@ -271,6 +283,7 @@ define([
     }; */
 
     funcs.gotoURL = function (url) { ctx.sframeChan.event('EV_GOTO_URL', url); };
+    funcs.openURL = function (url) { ctx.sframeChan.event('EV_OPEN_URL', url); };
 
     funcs.whenRealtimeSyncs = evRealtimeSynced.reg;
 
