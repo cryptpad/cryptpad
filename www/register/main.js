@@ -85,6 +85,8 @@ define([
             Cryptpad.whenRealtimeSyncs(result.realtime, function () {
                 Cryptpad.login(result.userHash, result.userName, function () {
                     registering = false;
+                    /*
+                    FIXME: migration and readme not working if not redirected to drive
                     if (sessionStorage.redirectTo) {
                         var h = sessionStorage.redirectTo;
                         var parser = document.createElement('a');
@@ -95,6 +97,7 @@ define([
                             return;
                         }
                     }
+                    */
                     window.location.href = '/drive/';
                 });
             });

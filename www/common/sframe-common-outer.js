@@ -259,7 +259,7 @@ define([
                     if (msg) {
                         msg = msg.replace(/^cp\|/, '');
                         var decryptedMsg = crypto.decrypt(msg, secret.keys.validateKey);
-                        msgs.push(decryptedMsg)
+                        msgs.push(decryptedMsg);
                     }
                 };
                 network.on('message', onMsg);

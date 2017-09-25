@@ -112,10 +112,13 @@ define([
             };
 
             onComplete = function (href) {
+                var mdMgr = common.getMetadataMgr();
+                var origin = mdMgr.getPrivateData().origin;
+                $link.prepend($('<span>', {'class': 'fa fa-external-link'}));
                 $link.attr('href', href)
                     .click(function (e) {
                         e.preventDefault();
-                        window.open($link.attr('href'), '_blank');
+                        window.open(origin + $link.attr('href'), '_blank');
                     });
                 var title = metadata.name;
                 Cryptpad.log(Messages._getKey('upload_success', [title]));
