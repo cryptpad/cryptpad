@@ -9,18 +9,20 @@ define([
     var module = { exports: {} };
     var key = Config.requireConf.urlArgs;
     var localStorage = {};
-    try {
-        localStorage = window.localStorage || {};
-        if (localStorage['LESS_CACHE'] !== key) {
-            Object.keys(localStorage).forEach(function (k) {
-                if (k.indexOf('LESS_CACHE|') !== 0) { return; }
-                delete localStorage[k];
-            });
-            localStorage['LESS_CACHE'] = key;
+    if (!window.cryptpadCache) {
+        try {
+            localStorage = window.localStorage || {};
+            if (localStorage['LESS_CACHE'] !== key) {
+                Object.keys(localStorage).forEach(function (k) {
+                    if (k.indexOf('LESS_CACHE|') !== 0) { return; }
+                    delete localStorage[k];
+                });
+                localStorage['LESS_CACHE'] = key;
+            }
+        } catch (e) {
+            console.error(e);
+            localStorage = {};
         }
-    } catch (e) {
-        console.error(e);
-        localStorage = {};
     }
 
     var cacheGet = function (k, cb) {
