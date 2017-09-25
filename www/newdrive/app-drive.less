@@ -3,39 +3,27 @@
 @import (once) "../../customize/src/less2/include/markdown.less";
 @import (once) '../../customize/src/less2/include/fileupload.less';
 @import (once) '../../customize/src/less2/include/alertify.less';
+@import (once) '../../customize/src/less2/include/leftside-menu.less';
+@import (once) "../../customize/src/less2/include/tools.less";
+@import (once) "../../customize/src/less2/include/limit-bar.less";
 
 .toolbar_main();
 .fileupload_main();
 .alertify_main();
-@import (once) "../../customize/src/less/variables.less";
-@import (once) "../../customize/src/less/mixins.less";
+.limit-bar_main();
 
-@tree-bg: #eee;
-@tree-fg: #000;
-@tree-lines-col: #888;
+@drive_hover: #eee;
+@drive_hover-light: lighten(@drive_hover, 20%);
+@drive_info-box-bg: #d2e1f2;
+@drive_info-box-border: #bbb;
+@drive_table-header-fg: #555;
+@drive_table-header-bg: #e8e8e8;
+@drive_mobile-tree-border-col: #ccc;
 
-@drive-hover: #eee;
-@drive-hover-light: lighten(@drive-hover, 20%);
+@drive_content-fg: @colortheme_sidebar-right-fg;
+@drive_content-bg: @colortheme_sidebar-right-bg;
+@drive_content-bg-ro: darken(@drive_content-bg, 10%);
 
-@content-bg: #fff;
-@content-bg-ro: darken(@content-bg, 10%);
-@content-fg: @tree-fg;
-@info-box-bg: #d2e1f2;
-@info-box-border: #bbb;
-@table-header-fg: #555;
-@table-header-bg: #e8e8e8;
-
-@toolbar-bg: #ddd;
-@toolbar-fg: #555;
-@toolbar-border-col: #ccc;
-@toolbar-button-bg: #888;
-@toolbar-button-border: #888;
-@toolbar-button-bg-hover: #777;
-@toolbar-button-fg: #eee;
-@toolbar-path-bg: #fff;
-@toolbar-path-border: #888;
-
-@size-mobile: 600px;
 
 /* PAGE */
 
@@ -44,65 +32,12 @@ flex-flow: column;
 max-height: 100%;
 min-height: auto;
 
-// TODO: pin limit in a separate file, less2
-/* Pin limit */
-.limit-container {
-    @toolbar-green: #5cb85c;
-    display: inline-flex;
-    flex-flow: column-reverse;
-    width: 100%;
-    margin-top: 20px;
-    .cryptpad-limit-bar {
-        display: inline-block;
-        max-width: 100%;
-        margin: 3px;
-        box-sizing: border-box;
-        border: 1px solid #999;
-        background: white;
-        position: relative;
-        text-align: center;
-        vertical-align: middle;
-        width: ~"calc(100% - 6px)";
-        height: 25px;
-        line-height: 25px;
-        overflow: hidden;
-        .usage {
-            height: 100%;
-            display: inline-block;
-            background: blue;
-            position: absolute;
-            left: 0;
-            z-index:1; // .usage
-            &.normal {
-                background: @toolbar-green;
-            }
-            &.warning {
-                background: orange;
-            }
-            &.above {
-                background: red;
-            }
-        }
-        .usageText {
-            position: relative;
-            color: black;
-            text-shadow: 1px 0 2px white, 0 1px 2px white, -1px 0 2px white, 0 -1px 2px white;
-            z-index: 2; // .usageText
-            font-size: @main-font-size;
-            font-weight: bold;
-        }
-    }
-    .upgrade {
-        padding: 0;
-        line-height: 25px;
-        height: 25px;
-        margin: 0 3px;
-        border-radius: 0;
-    }
+.cp-unselectable {
+    .tools_unselectable();
 }
 
 /* local mixins */
-.fileIcon {
+.drive_fileIcon {
     li {
         display: inline-block;
         margin: 10px 10px;
@@ -160,22 +95,13 @@ img.cp-app-drive-icon {
     max-height: 16px;
 }
 
-.cp-unselectable {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
 .cp-app-drive-container {
     flex: 1;
     overflow: auto;
     width: 100%;
     display: flex;
     flex-flow: row;
-    @media screen and (max-width: @size-mobile) {
+    @media screen and (max-width: @browser_media-medium-screen) {
         display: block;
         #cp-app-drive-toolbar {
             .path .element {
@@ -187,22 +113,13 @@ img.cp-app-drive-icon {
             width: 100%;
             max-width: unset;
             max-height: unset;
-            border-bottom: 1px solid @toolbar-border-col;
+            border-bottom: 1px solid @drive_mobile-tree-border-col;
             .cp-app-drive-tree-category {
                 margin-top: 0.5em;
             }
         }
     }
 }
-
-.padColor { color: @toolbar-pad-bg; }
-.codeColor { color: @toolbar-code-bg; }
-.slideColor { color: @toolbar-slide-bg; }
-.pollColor { color: @toolbar-poll-bg; }
-.fileColor { color: @toolbar-file-bg; }
-.whiteboardColor { color: @toolbar-whiteboard-bg; }
-.driveColor { color: @toolbar-drive-bg; }
-.defaultColor { color: @toolbar-default-bg; }
 
 div:focus {
     outline: none;
@@ -231,7 +148,7 @@ li {
     z-index: 500;
     li {
         padding: 0;
-        font-size: @main-font-size;
+        font-size: @colortheme_app-font-size;
         a {
             cursor: pointer;
         }
@@ -248,7 +165,7 @@ li {
     color: #eee;
     margin: -1px;
     .fa-minus-square-o, .fa-plus-square-o {
-        color: @tree-fg;
+        color: @colortheme_sidebar-left-fg;
     }
 }
 
@@ -258,7 +175,7 @@ li {
     color: #ddd;
     margin: -1px;
     .fa-minus-square-o, .fa-plus-square-o {
-        color: @tree-fg;
+        color: @colortheme_sidebar-left-fg;
     }
 }
 
@@ -273,10 +190,10 @@ span {
 
 
 #cp-app-drive-tree {
-    font-size: @main-font-size;
+    font-size: @colortheme_app-font-size;
     //border-right: 1px solid #ccc;
     box-sizing: border-box;
-    background: @tree-bg;
+    background: @colortheme_sidebar-left-bg;
     overflow: auto;
     resize: horizontal;
     width: auto;
@@ -284,7 +201,7 @@ span {
     max-width: 500px;
     min-width: 200px;
     padding: 0px;
-    color: @tree-fg;
+    color: @colortheme_sidebar-left-fg;
     display: flex;
     flex-flow: column;
     max-height: 100%;
@@ -311,13 +228,13 @@ span {
                 width: ~"calc(100% - 30px)";
                 padding: 0 10px;
                 border: 0;
-                color: lighten(@tree-fg, 40%);
+                color: lighten(@colortheme_sidebar-left-fg, 40%);
             }
             & > span.cp-app-drive-element-row {
                 overflow: hidden;
                 text-overflow: ellipsis;
                 //min-width: ~"calc(100% + 5px)";
-                .leftsideCategory();
+                .leftside-menu-category_main();
                 width: ~"calc(100% + 5px)";
                 margin: 0;
                 margin-bottom: -6px;
@@ -327,18 +244,12 @@ span {
                 padding-left: 5px;
             }
             & > span.cp-app-drive-element-row:not(.cp-app-drive-element-selected):not(.cp-app-drive-element-active):hover {
-                //background-color: @drive-hover;
             }
         }
     }
     span.cp-app-drive-element {
         cursor: pointer;
     }
-    /*.cp-app-drive-element-active {
-        &:not(.cp-app-drive-element-selected):not(.cp-app-drive-element-droppable) {
-            background-color: darken(@drive-hover, 15%);
-        }
-    }*/
     .cp-app-drive-tree-category {
         margin: 0;
         margin-top: 15px;
@@ -353,7 +264,7 @@ span {
             .cp-app-drive-element-row {
                 display: block;
                 padding-left: 20px;
-                .leftsideCategory();
+                .leftside-menu-category_main();
                 margin: 0;
                 .fa {
                     width: 25px;
@@ -372,17 +283,17 @@ span {
         padding: 0;
         position: relative;
         input {
-            background: lighten(@toolbar-drive-bg, 8%);
-            color: @toolbar-drive-color;
-            .placeholderColor(@toolbar-drive-color);
+            background: lighten(@colortheme_drive-bg, 8%);
+            color: @colortheme_drive-color;
+            .tools_placeholder-color(@colortheme_drive-color);
             outline-width: 0px;
             border-radius: 0;
             width: 100%;
             //border: 1px solid #ccc;
             border: 0;
-            border-right: 1px solid lighten(@toolbar-drive-bg, 16%);
+            border-right: 1px solid lighten(@colortheme_drive-bg, 16%);
             //border-right: 0;
-            height: @toolbar-line-height;
+            height: @variables_bar-height;
             padding: 0 5px;
             padding-left: 45px;
             &:focus {
@@ -390,7 +301,7 @@ span {
             }
         }
         .cp-app-drive-tree-search-con {
-            color: @toolbar-drive-color;
+            color: @colortheme_drive-color;
             position: absolute;
             left: 20px; // TODO align with drive categories
             top: 8px;
@@ -446,9 +357,9 @@ span {
                 top: -11px;
                 content: '';
                 display: block;
-                border-left: 1px solid @tree-lines-col;
+                border-left: 1px solid @colortheme_sidebar-left-branch;
                 height: ~"calc(1em + 11px)";
-                border-bottom: 1px solid @tree-lines-col;
+                border-bottom: 1px solid @colortheme_sidebar-left-branch;
                 width: 15px;
             }
             &:after {
@@ -457,7 +368,7 @@ span {
                 bottom: -7px;
                 content: '';
                 display: block;
-                border-left: 1px solid @tree-lines-col;
+                border-left: 1px solid @colortheme_sidebar-left-branch;
                 height: 100%;
             }
             &.cp-app-drive-tree-root {
@@ -487,8 +398,8 @@ span {
 }
 #cp-app-drive-content {
     box-sizing: border-box;
-    background: @content-bg;
-    color: @content-fg;
+    background: @drive_content-bg;
+    color: @drive_content-fg;
     overflow: auto;
     flex: 1;
     display: flex;
@@ -501,7 +412,7 @@ span {
         z-index: 50;
     }
     &.cp-app-drive-readonly {
-        background: @content-bg-ro;
+        background: @drive_content-bg-ro;
     }
     h1 {
         padding-left: 10px;
@@ -511,7 +422,7 @@ span {
         line-height: 2em;
         padding: 0.25em 0.75em;
         margin: 1em;
-        background: @info-box-bg;
+        background: @drive_info-box-bg;
         span {
             cursor: pointer;
             float: right;
@@ -521,15 +432,9 @@ span {
     li {
         cursor: default;
         &:not(.cp-app-drive-element-header) {
-            *:not(input) {
-                /*pointer-events: none;*/
-            }
             &:hover {
                 &:not(.-cp-app-drive-element-selected, .cp-app-drive-element-selected-tmp) {
-                    background-color: @drive-hover;
-                }
-                .cp-app-drive-element-name {
-                    /*text-decoration: underline;*/
+                    background-color: @drive_hover;
                 }
             }
         }
@@ -537,7 +442,7 @@ span {
     #cp-app-drive-content-folder {
         li {
             &.cp-app-drive-search-result {
-                border-bottom: 1px solid @info-box-border;
+                border-bottom: 1px solid @drive_info-box-border;
                 display: block;
                 &:hover {
                     background-color: initial;
@@ -572,7 +477,7 @@ span {
                         font-weight: bold;
                         cursor: pointer;
                         &:hover {
-                            background-color: @drive-hover;
+                            background-color: @drive_hover;
                         }
                     }
                     .cp-app-drive-search-col2 {
@@ -591,7 +496,7 @@ span {
     }
     div.cp-app-drive-content-grid {
         padding: 20px;
-        .fileIcon;
+        .drive_fileIcon;
         li {
             &.cp-app-drive-element {
                 position: relative;
@@ -647,12 +552,12 @@ span {
                 display: table-cell;
             }
             &:not(.cp-app-drive-element-header) {
-                height: @toolbar-line-height;
-                line-height: @toolbar-line-height;
+                height: @variables_bar-height;
+                line-height: @variables_bar-height;
             }
             &.cp-app-drive-element-header {
                 cursor: default;
-                color: @table-header-fg;
+                color: @drive_table-header-fg;
                 span {
                     &:not(.fa) {
                         text-align: left;
@@ -669,7 +574,7 @@ span {
                     &.cp-app-drive-sort-clickable {
                         cursor: pointer;
                         &:hover {
-                            background: @table-header-bg;
+                            background: @drive_table-header-bg;
                         }
                     }
                 }
@@ -711,7 +616,7 @@ span {
 }
 
 #cp-app-drive-new-ghost-dialog.cp-modal-container {
-    .fileIcon;
+    .drive_fileIcon;
 
     li:not(.cp-app-drive-element-selected):hover {
         border: 1px solid white;
@@ -766,14 +671,14 @@ span {
 /* Toolbar */
 
 #cp-app-drive-toolbar {
-    background: lighten(@toolbar-drive-bg, 8%);
-    color: @toolbar-drive-color;
+    background: lighten(@colortheme_drive-bg, 8%);
+    color: @colortheme_drive-color;
     //height: 30px;
     //display: flex;
     //flex-flow: row;
     z-index: 100;
     box-sizing: border-box;
-    height: @toolbar-line-height;
+    height: @variables_bar-height;
     padding: 0;
     display: flex;
     flex-flow: row;
@@ -800,23 +705,23 @@ span {
             margin: 0;
         }
         button {
-            height: @toolbar-line-height;
+            height: @variables_bar-height;
             padding: 0 10px;
             border: none;
             border-radius: 0;
             box-sizing: border-box;
             background: transparent;
-            font-size: @main-font-size;
-            color: @toolbar-drive-color;
+            font-size: @colortheme_app-font-size;
+            color: @colortheme_drive-color;
             transition: all 0.15s;
             .drawer {
                 display: none;
             }
             .fa, span {
-                font-size: @main-font-size;
+                font-size: @colortheme_app-font-size;
             }
             &:hover {
-                background: @toolbar-drive-bg;
+                background: @colortheme_drive-bg;
             }
             &.cp-app-drive-toolbar-active {
                 display: none;
@@ -846,7 +751,7 @@ span {
             }
             .cp-dropdown-button-title {
                 display: inline-flex;
-                height: @toolbar-line-height;
+                height: @variables_bar-height;
                 align-items: center;
                 span:not(.fa) {
                     line-height: 23px;
@@ -856,9 +761,9 @@ span {
     }
 
     button {
-        font: @toolbar-button-font;
+        font: @colortheme_app-font;
         span {
-            font: @toolbar-button-font;
+            font: @colortheme_app-font;
         }
         .fa, &.fa {
             font-family: FontAwesome;
@@ -878,8 +783,8 @@ span {
     .cp-app-drive-path {
         flex: 1;
         width: 100%;
-        height: @toolbar-line-height;
-        line-height: @toolbar-line-height;
+        height: @variables_bar-height;
+        line-height: @variables_bar-height;
         cursor: default;
         width: auto;
         overflow: hidden;
@@ -889,13 +794,13 @@ span {
         text-align: left;
         .cp-app-drive-path-element {
             display: inline-block;
-            height: @toolbar-line-height;
-            line-height: @toolbar-line-height;
-            font-size: @main-font-size;
+            height: @variables_bar-height;
+            line-height: @variables_bar-height;
+            font-size: @colortheme_app-font-size;
             padding: 0 5px;
             border: 0;
-            background: darken(@toolbar-drive-bg, 10%);
-            color: @toolbar-drive-color;
+            background: darken(@colortheme_drive-bg, 10%);
+            color: @colortheme_drive-color;
             box-sizing: border-box;
             transition: all 0.15s;
             &.cp-app-drive-path-separator {
@@ -904,7 +809,7 @@ span {
             &.cp-app-drive-path-lickable {
                 cursor: pointer;
                 &:hover {
-                    background: darken(@toolbar-drive-bg, 15%);
+                    background: darken(@colortheme_drive-bg, 15%);
                 }
             }
         }

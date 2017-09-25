@@ -306,7 +306,7 @@ define([
         if (!common.isLoggedIn()) { return cb("NOT_LOGGED_IN"); }
         // getPinnedUsage updates common.account.usage, and other values
         // so we can just use those and only check for errors
-        var $container = $('<span>', {'class':'limit-container'});
+        var $container = $('<span>', {'class':'cp-limit-container'});
         var todo;
         var updateUsage = Cryptpad.notAgainForAnother(function () {
             common.getPinUsage(todo);
@@ -326,13 +326,13 @@ define([
             var limit = unit === 'GB'? Util.bytesToGigabytes(limit):
                 Util.bytesToMegabytes(limit);
 
-            var $limit = $('<span>', {'class': 'cryptpad-limit-bar'}).appendTo($container);
+            var $limit = $('<span>', {'class': 'cp-limit-bar'}).appendTo($container);
             var quota = usage/limit;
-            var $usage = $('<span>', {'class': 'usage'}).css('width', quota*100+'%');
+            var $usage = $('<span>', {'class': 'cp-limit-usage'}).css('width', quota*100+'%');
 
             var makeDonateButton = function () {
                 $('<a>', {
-                    'class': 'upgrade btn btn-success',
+                    'class': 'cp-limit-upgrade btn btn-success',
                     href: Cryptpad.donateURL,
                     rel: "noreferrer noopener",
                     target: "_blank",
@@ -341,7 +341,7 @@ define([
 
             var makeUpgradeButton = function () {
                 $('<a>', {
-                    'class': 'upgrade btn btn-success',
+                    'class': 'cp-limit-upgrade btn btn-success',
                     href: Cryptpad.upgradeURL,
                     rel: "noreferrer noopener",
                     target: "_blank",
@@ -372,10 +372,10 @@ define([
                 prettyLimit = Messages._getKey('formattedMB', [limit]);
             }
 
-            if (quota < 0.8) { $usage.addClass('normal'); }
-            else if (quota < 1) { $usage.addClass('warning'); }
-            else { $usage.addClass('above'); }
-            var $text = $('<span>', {'class': 'usageText'});
+            if (quota < 0.8) { $usage.addClass('cp-limit-usage-normal'); }
+            else if (quota < 1) { $usage.addClass('cp-limit-usage-warning'); }
+            else { $usage.addClass('cp-limit-usage-above'); }
+            var $text = $('<span>', {'class': 'cp-limit-usage-text'});
             $text.text(usage + ' / ' + prettyLimit);
             $limit.append($usage).append($text);
         };

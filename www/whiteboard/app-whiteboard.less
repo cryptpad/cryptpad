@@ -3,6 +3,7 @@
 @import (once) "../../customize/src/less2/include/markdown.less";
 @import (once) '../../customize/src/less2/include/fileupload.less';
 @import (once) '../../customize/src/less2/include/alertify.less';
+@import (once) '../../customize/src/less2/include/tools.less';
 
 .toolbar_main();
 .fileupload_main();
@@ -37,12 +38,7 @@
     }
 
     .cp-app-whiteboard-unselectable {
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
+        .tools_unselectable();
     }
 
     // contains user tools

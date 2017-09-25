@@ -2246,7 +2246,7 @@ define([
             $elementRow.data('path', path);
             addDragAndDropHandlers($elementRow, path, true, droppable);
             if (active) {
-                $elementRow.addClass('cp-app-drive-element-active');
+                $elementRow.addClass('cp-app-drive-element-active cp-leftside-active');
             }
             return $element;
         };
