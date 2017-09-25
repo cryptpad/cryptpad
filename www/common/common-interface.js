@@ -131,13 +131,19 @@ define([
         var $t = t.tokenfield = $(t.element).tokenfield();
         t.getTokens = function () {
             return $t.tokenfield('getTokens').map(function (token) {
-                return token.value;
+                return token.value.toLowerCase();
             });
         };
+
+        var $root = $t.parent();
+        $t.on('tokenfield:removetoken', function () {
+            $root.find('.token-input').focus();
+        });
 
         t.preventDuplicates = function (cb) {
             $t.on('tokenfield:createtoken', function (ev) {
                 var val;
+                ev.attrs.value = ev.attrs.value.toLowerCase();
                 if (t.getTokens().some(function (t) {
                     if (t === ev.attrs.value) { return ((val = t)); }
                 })) {
@@ -152,8 +158,8 @@ define([
             $t.tokenfield('setTokens',
                 tokens.map(function (token) {
                     return {
-                        value: token,
-                        label: token,
+                        value: token.toLowerCase(),
+                        label: token.toLowerCase(),
                     };
                 }));
         };
@@ -171,35 +177,38 @@ define([
         var input = dialog.textInput();
 
         var tagger = dialog.frame([
-            dialog.message('make some tags'), // TODO translate
+            dialog.message(Messages.tags_add),
             input,
             dialog.nav(),
         ]);
 
         var field = UI.tokenField(input).preventDuplicates(function (val) {
-            UI.warn('Duplicate tag: ' + val); // TODO translate
+            UI.warn(Messages._getKey('tags_duplicate', [val]));
         });
 
-        var close = Util.once(function () {
-            var $t = $(tagger).fadeOut(150, function () { $t.remove(); });
+        var listener;
+        var close = Util.once(function (result, ev) {
+            var $frame = $(tagger).fadeOut(150, function () {
+                stopListening(listener);
+                $frame.remove();
+                cb(result, ev);
+            });
         });
 
-        var listener = listenForKeys(function () {}, function () {
-            close();
-            stopListening(listener);
-        });
-
-        var CB = Util.once(cb);
-        findOKButton(tagger).click(function () {
+        var $ok = findOKButton(tagger).click(function () {
             var tokens = field.getTokens();
-            close();
-            CB(tokens);
+            close(tokens);
         });
-        findCancelButton(tagger).click(function () {
-            close();
-            CB(null);
+        var $cancel = findCancelButton(tagger).click(function () {
+            close(null);
+        });
+        listenForKeys(function () {
+            $ok.click();
+        }, function () {
+            $cancel.click();
         });
 
+        document.body.appendChild(tagger);
         // :(
         setTimeout(function () {
             field.setTokens(tags);

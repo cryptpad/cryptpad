@@ -688,7 +688,7 @@ define([
     };
 
     var typing = -1;
-    var kickSpinner = function (toolbar, config, local) {
+    var kickSpinner = function (toolbar, config/*, local*/) {
         if (!toolbar.spinner) { return; }
         var $spin = toolbar.spinner;
 
@@ -708,7 +708,7 @@ define([
                 window.clearInterval($spin.interval);
                 typing = -1;
                 $spin.text(Messages.saved);
-            }, local ? 0 : SPINNER_DISAPPEAR_TIME);
+            }, /*local ? 0 :*/ SPINNER_DISAPPEAR_TIME);
         };
         config.sfCommon.whenRealtimeSyncs(onSynced);
     };

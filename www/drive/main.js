@@ -164,10 +164,11 @@ define([
     var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
     var $templateIcon = $('<span>', {"class": "fa fa-cubes"});
     var $recentIcon = $('<span>', {"class": "fa fa-clock-o"});
-    var $trashIcon = $('<span>', {"class": "fa fa-trash-o"});
+    var $trashIcon = $('<span>', {"class": "fa fa-trash"});
     var $trashEmptyIcon = $('<span>', {"class": "fa fa-trash-o"});
     //var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o expcol"});
     var $expandIcon = $('<span>', {"class": "fa fa-plus-square-o expcol"});
+    var $emptyTrashIcon = $('<button>', {"class": "fa fa-ban"});
     var $listIcon = $('<button>', {"class": "fa fa-list"});
     var $gridIcon = $('<button>', {"class": "fa fa-th-large"});
     var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up sortasc"});
@@ -696,6 +697,11 @@ define([
         };
 
         var updateContextButton = function () {
+            if (filesOp.isPathIn(currentPath, [TRASH])) {
+                $driveToolbar.find('cp-app-drive-toolbar-emptytrash').show();
+            } else {
+                $driveToolbar.find('cp-app-drive-toolbar-emptytrash').hide();
+            }
             var $li = $content.find('.selected');
             if ($li.length === 0) {
                 $li = findDataHolder($tree.find('.active'));
@@ -1129,7 +1135,7 @@ define([
             }
             if (data.filename && data.filename !== data.title) {
                 var $renamed = $renamedIcon.clone().appendTo($state);
-                $renamed.attr('title', "TODO: you've set a custom name for this pad. Its shared title is:\n<b>{0}</b>");
+                $renamed.attr('title', Messages._getKey('fm_renamedPad', [data.title]));
             }
 
             var name = filesOp.getTitle(element);
@@ -1198,6 +1204,13 @@ define([
                 draggable: true,
                 'class': 'element-row'
             });
+            if (!isFolder && Array.isArray(APP.selectedFiles)) {
+                var idx = APP.selectedFiles.indexOf(element);
+                if (idx !== -1) {
+                    $element.addClass('selected');
+                    APP.selectedFiles.splice(idx, 1);
+                }
+            }
             if (isFolder) {
                 addFolderData(element, key, $element);
             } else {
@@ -1381,6 +1394,18 @@ define([
             $listButton.attr('title', Messages.fm_viewListButton);
             $gridButton.attr('title', Messages.fm_viewGridButton);
             $container.append($listButton).append($gridButton);
+        };
+        var createEmptyTrashButton = function ($container) {
+            var $button = $emptyTrashIcon.clone().addClass('element');
+            $button.addClass('cp-app-drive-toolbar-emptytrash');
+            $button.attr('title', Messages.fc_empty);
+            $button.click(function () {
+                Cryptpad.confirm(Messages.fm_emptyTrashDialog, function(res) {
+                    if (!res) { return; }
+                    filesOp.emptyTrash(refresh);
+                });
+            });
+            $container.append($button);
         };
 
         var getNewPadTypes = function () {
@@ -1751,6 +1776,13 @@ define([
                     'class': 'file-element element element-row' + roClass,
                     draggable: draggable
                 });
+                if (Array.isArray(APP.selectedFiles)) {
+                    var sidx = APP.selectedFiles.indexOf(id);
+                    if (sidx !== -1) {
+                        $element.addClass('selected');
+                        APP.selectedFiles.splice(sidx, 1);
+                    }
+                }
                 addFileData(id, $element);
                 $element.prepend($icon).dblclick(function () {
                     openFile(id);
@@ -1864,6 +1896,7 @@ define([
                             e.preventDefault();
                             if (filesOp.isInTrashRoot(parentPath)) { parentPath = [TRASH]; }
                             else { parentPath.pop(); }
+                            APP.selectedFiles = [r.id];
                             module.displayDirectory(parentPath);
                         });
                     }
@@ -1946,6 +1979,7 @@ define([
                 path = [ROOT];
             }
             var isInRoot = filesOp.isPathIn(path, [ROOT]);
+            var inTrash = filesOp.isPathIn(path, [TRASH]);
             var isTrashRoot = filesOp.comparePath(path, [TRASH]);
             var isTemplate = filesOp.comparePath(path, [TEMPLATE]);
             var isAllFiles = filesOp.comparePath(path, [FILES_DATA]);
@@ -1992,6 +2026,10 @@ define([
                 }
                 createViewModeButton($toolbar.find('.rightside'));
             }
+            if (inTrash) {
+                createEmptyTrashButton($toolbar.find('.rightside'));
+            }
+
             var $list = $('<ul>').appendTo($dirContent);
 
             // NewButton can be undefined if we're in read only mode
@@ -2368,6 +2406,13 @@ define([
                         id: 'propROLink',
                     }));
                 }
+            }
+
+            if (data.tags && Array.isArray(data.tags)) {
+                $('<label>', {'for': 'cp-drive-tags'}).text(Messages.fm_prop_tagsList).appendTo($d);
+                $d.append(Cryptpad.dialog.selectable(data.tags.join(', '), {
+                    id: 'cp-drive-tags',
+                }));
             }
 
             if (APP.loggedIn && AppConfig.enablePinning) {

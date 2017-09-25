@@ -1,11 +1,13 @@
 @import (once) "../../customize/src/less2/include/toolbar.less";
 @import (once) '../../customize/src/less2/include/alertify.less';
+@import (once) '../../customize/src/less2/include/tokenfield.less';
 
 .toolbar_main();
 .alertify_main();
 
 // body
 &.cp-app-pad {
+    .tokenfield_main();
     #cke_1_top {
         overflow: visible;
         padding: 0px;
@@ -38,6 +40,6 @@
         display:none !important;
     }
     &.cp-app-pad .cp-toolbar-userlist-drawer {
-      display:none;
+        display:none;
     }
 }

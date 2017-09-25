@@ -182,9 +182,33 @@ define([
                 break;
             case 'more':
                 button = $('<button>', {
-                    title: Messages.moreActions || 'TODO',
+                    title: Messages.moreActions,
                     'class': "cp-toolbar-drawer-button fa fa-ellipsis-h",
                     style: 'font:'+size+' FontAwesome'
+                });
+                break;
+            case 'savetodrive':
+                button = $('<button>', {
+                    'class': 'fa fa-cloud-upload',
+                    title: Messages.canvas_saveToDrive,
+                })
+                .click(common.prepareFeedback(type));
+                break;
+            case 'hashtag':
+                button = $('<button>', {
+                    'class': 'fa fa-hashtag',
+                    title: Messages.tags_title,
+                })
+                .click(common.prepareFeedback(type))
+                .click(function () {
+                    sframeChan.query('Q_TAGS_GET', null, function (err, res) {
+                        if (err || res.error) { return void console.error(err || res.error); }
+                        Cryptpad.dialog.tagPrompt(res.data, function (tags) {
+                            if (!Array.isArray(tags)) { return; }
+                            console.error(tags);
+                            sframeChan.event('EV_TAGS_SET', tags);
+                        });
+                    });
                 });
                 break;
             default:
@@ -294,7 +318,7 @@ define([
             $userAdminContent.append($userName);
             options.push({
                 tag: 'p',
-                attributes: {'class': 'accountData'},
+                attributes: {'class': 'cp-toolbar-account'},
                 content: $userAdminContent.html()
             });
         }

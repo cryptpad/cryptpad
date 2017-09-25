@@ -3,15 +3,11 @@ define([
     '/bower_components/hyperjson/hyperjson.js',
     '/common/toolbar3.js',
     '/bower_components/chainpad-json-validator/json-ot.js',
-    '/common/TypingTests.js',
     'json.sortify',
     '/bower_components/textpatcher/TextPatcher.js',
     '/common/cryptpad-common.js',
-    '/common/cryptget.js',
-    '/pad/links.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
-    '/api/config',
     '/customize/messages.js',
     '/common/common-util.js',
 
@@ -23,15 +19,11 @@ define([
     Hyperjson,
     Toolbar,
     JsonOT,
-    TypingTest,
     JSONSortify,
     TextPatcher,
     Cryptpad,
-    Cryptget,
-    Links,
     nThen,
     SFCommon,
-    ApiConfig,
     Messages,
     Util)
 {
@@ -90,12 +82,8 @@ define([
             return meta;
         };
 
-        var isEditable = function () {
-            return (state === STATE.READY && !readOnly);
-        };
-
         var stateChange = function (newState) {
-            var wasEditable = isEditable();
+            var wasEditable = (state === STATE.READY);
             if (state === STATE.INFINITE_SPINNER) { return; }
             if (newState === STATE.INFINITE_SPINNER) {
                 state = newState;
@@ -106,6 +94,7 @@ define([
             } else {
                 state = newState;
             }
+            console.log(state + '  ' + wasEditable);
             switch (state) {
                 case STATE.DISCONNECTED:
                 case STATE.INITIALIZING: {
@@ -118,7 +107,10 @@ define([
                 }
                 default:
             }
-            if (wasEditable !== isEditable()) { evEditableStateChange.fire(isEditable()); }
+            if (wasEditable !== (state === STATE.READY)) {
+                console.log("fire");
+                evEditableStateChange.fire(state === STATE.READY);
+            }
         };
 
         var onRemote = function () {

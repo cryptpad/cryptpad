@@ -230,7 +230,7 @@ define([
                     if (data !== false) {
                         $previewContainer.show();
                         APP.$previewButton.addClass('active');
-                        $codeMirror.removeClass('fullPage');
+                        $codeMirror.removeClass('cp-app-code-fullpage');
                     }
                 });
                 return;
@@ -238,7 +238,7 @@ define([
             APP.$previewButton.hide();
             $previewContainer.hide();
             APP.$previewButton.removeClass('active');
-            $codeMirror.addClass('fullPage');
+            $codeMirror.addClass('cp-app-code-fullpage');
         };
 
         config.onInit = function (info) {
@@ -374,11 +374,13 @@ define([
                     };
                     common.openFilePicker(pickerCfg);
                 }).appendTo($rightside);
+
+                var $tags = common.createButton('hashtag', true);
+                $rightside.append($tags);
             }
         };
 
         config.onReady = function (info) {
-            console.log('onready');
             if (APP.realtime !== info.realtime) {
                 var realtime = APP.realtime = info.realtime;
                 APP.patchText = TextPatcher.create({
@@ -400,7 +402,8 @@ define([
                     metadataMgr.updateMetadata(hjson.metadata);
                 }
                 if (typeof (hjson) !== 'object' || Array.isArray(hjson) ||
-                    (typeof(hjson.type) !== 'undefined' && hjson.type !== 'code')) {
+                    (hjson.metadata && typeof(hjson.metadata.type) !== 'undefined' &&
+                     hjson.metadata.type !== 'code')) {
                     var errorText = Messages.typeError;
                     Cryptpad.errorLoadingScreen(errorText);
                     throw new Error(errorText);
@@ -437,35 +440,35 @@ define([
             });
 
 
-/*
+
             // add the splitter
-            if (!$iframe.has('.cp-splitter').length) {
-                var $preview = $iframe.find('#previewContainer');
+            if (!$('.cp-splitter').length) {
                 var splitter = $('<div>', {
                     'class': 'cp-splitter'
-                }).appendTo($preview);
+                }).appendTo($previewContainer);
 
                 $preview.on('scroll', function() {
                     splitter.css('top', $preview.scrollTop() + 'px');
                 });
 
-                var $target = $iframe.find('.CodeMirror');
+                var $target = $('.CodeMirror');
 
                 splitter.on('mousedown', function (e) {
                     e.preventDefault();
                     var x = e.pageX;
                     var w = $target.width();
 
-                    $iframe.on('mouseup mousemove', function handler(evt) {
+                    $(window).on('mouseup mousemove', function handler(evt) {
                         if (evt.type === 'mouseup') {
-                            $iframe.off('mouseup mousemove', handler);
+                            $(window).off('mouseup mousemove', handler);
                             return;
                         }
                         $target.css('width', (w - x + evt.pageX) + 'px');
+                        editor.refresh();
                     });
                 });
             }
-*/
+
 
             Cryptpad.removeLoadingScreen();
             setEditable(!readOnly);
@@ -533,7 +536,7 @@ define([
                     APP.patchText(shjson2);
                 }
             }
-            if (oldDoc !== remoteDoc) { Cryptpad.notify(); }
+            if (oldDoc !== remoteDoc) { common.notify(); }
         };
 
         config.onAbort = function () {
@@ -604,7 +607,7 @@ define([
             SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
         }).nThen(function (/*waitFor*/) {
             CodeMirror = common.initCodeMirrorApp(null, CM);
-            $('.CodeMirror').addClass('fullPage');
+            $('.CodeMirror').addClass('cp-app-code-fullpage');
             editor = CodeMirror.editor;
             Cryptpad.onError(function (info) {
                 if (info && info.type === "store") {

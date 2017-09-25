@@ -42,6 +42,7 @@ var afterLoaded = function (req) {
             updated: updated,
             cache: data.cache
         };
+        window.cryptpadLanguage = data.language;
         require(['/common/sframe-boot2.js'], function () { });
     };
     window.addEventListener('message', onReply);

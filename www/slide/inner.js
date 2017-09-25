@@ -516,6 +516,9 @@ define([
                     };
                     common.openFilePicker(pickerCfg);
                 }).appendTo($rightside);
+
+                var $tags = common.createButton('hashtag', true);
+                $rightside.append($tags);
             }
 
             metadataMgr.onChange(function () {
@@ -552,7 +555,8 @@ define([
                     metadataMgr.updateMetadata(hjson.metadata);
                 }
                 if (typeof (hjson) !== 'object' || Array.isArray(hjson) ||
-                    (typeof(hjson.type) !== 'undefined' && hjson.type !== 'code')) {
+                    (hjson.metadata && typeof(hjson.metadata.type) !== 'undefined' &&
+                     hjson.metadata.type !== 'slide')) {
                     var errorText = Messages.typeError;
                     Cryptpad.errorLoadingScreen(errorText);
                     throw new Error(errorText);
@@ -655,7 +659,7 @@ define([
                 }
             }
             Slide.update(remoteDoc);
-            if (oldDoc !== remoteDoc) { Cryptpad.notify(); }
+            if (oldDoc !== remoteDoc) { common.notify(); }
         };
 
         config.onAbort = function () {

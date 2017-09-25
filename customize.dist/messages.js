@@ -15,6 +15,7 @@ var map = {
 var getStoredLanguage = function () { return localStorage.getItem(LS_LANG); };
 var getBrowserLanguage = function () { return navigator.language || navigator.userLanguage; };
 var getLanguage = function () {
+    if (window.cryptpadLanguage) { return window.cryptpadLanguage; }
     if (getStoredLanguage()) { return getStoredLanguage(); }
     var l = getBrowserLanguage() || '';
     if (Object.keys(map).indexOf(l) !== -1) {

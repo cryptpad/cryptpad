@@ -129,6 +129,10 @@ define([
             return messenger.range_requests[txid];
         };
 
+        var deleteRangeRequest = function (txid) {
+            delete messenger.range_requests[txid];
+        };
+
         messenger.getMoreHistory = function (curvePublic, hash, count, cb) {
             if (typeof(cb) !== 'function') { return; }
 
@@ -393,7 +397,8 @@ define([
                     });
 
                     orderMessages(curvePublic, decrypted, req.sig);
-                    return void req.cb(void 0, decrypted);
+                    req.cb(void 0, decrypted);
+                    return deleteRangeRequest(txid);
                 } else {
                     console.log(parsed);
                 }

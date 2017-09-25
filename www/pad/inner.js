@@ -26,7 +26,9 @@ define([
     '/customize/messages.js',
     '/pad/links.js',
     '/bower_components/nthen/index.js',
+    '/common/media-tag.js',
     '/api/config',
+    '/common/cryptpad-common.js',
 
     '/bower_components/diff-dom/diffDOM.js',
 
@@ -42,7 +44,9 @@ define([
     Messages,
     Links,
     nThen,
-    ApiConfig)
+    MediaTag,
+    ApiConfig,
+    Cryptpad)
 {
     var DiffDom = window.diffDOM;
 
@@ -78,9 +82,18 @@ define([
             el.getAttribute('class').split(' ').indexOf('non-realtime') !== -1);
     };
 
-    /* catch `type="_moz"` before it goes over the wire */
-    var brFilter = function (hj) {
-        if (hj[1].type === '_moz') { hj[1].type = undefined; }
+    var hjsonFilters = function (hj) {
+        /* catch `type="_moz"` before it goes over the wire */
+        var brFilter = function (hj) {
+            if (hj[1].type === '_moz') { hj[1].type = undefined; }
+            return hj;
+        };
+        var mediatagContentFilter = function (hj) {
+            if (hj[0] === 'MEDIA-TAG') { hj[2] = []; }
+            return hj;
+        };
+        brFilter(hj);
+        mediatagContentFilter(hj);
         return hj;
     };
 
@@ -90,11 +103,11 @@ define([
 
     var forbiddenTags = [
         'SCRIPT',
-        'IFRAME',
+        //'IFRAME',
         'OBJECT',
         'APPLET',
-        'VIDEO',
-        'AUDIO'
+        //'VIDEO',
+        //'AUDIO'
     ];
 
     var getHTML = function (inner) {
@@ -308,11 +321,38 @@ define([
         };
 
         if (!framework.isReadOnly()) {
+            console.log('\n\n\n\n\nREGISTER\n\n\n\n\n');
             framework.onEditableChange(function () {
+                console.log("Editable change");
                 var locked = framework.isLocked();
                 $(inner).css({ 'background-color': ((locked) ? '#aaa' : '') });
                 inner.setAttribute('contenteditable', !locked);
             });
+
+            var fileDialogCfg = {
+                onSelect: function (data) {
+                    if (data.type === 'file') {
+                        var mt = '<media-tag contenteditable="false" src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '" tabindex="1"></media-tag>';
+                        editor.insertElement(window.CKEDITOR.dom.element.createFromHtml(mt));
+                        return;
+                    }
+                }
+            };
+            framework._.sfCommon.initFilePicker(fileDialogCfg);
+            window.APP.$mediaTagButton = $('<button>', {
+                title: Messages.filePickerButton,
+                'class': 'cp-toolbar-rightside-button fa fa-picture-o',
+                style: 'font-size: 17px'
+            }).click(function () {
+                var pickerCfg = {
+                    types: ['file'],
+                    where: ['root']
+                };
+                framework._.sfCommon.openFilePicker(pickerCfg);
+            }).appendTo(framework._.toolbar.$rightside);
+
+            var $tags = framework._.sfCommon.createButton('hashtag', true);
+            framework._.toolbar.$rightside.append($tags);
         }
 
         framework.setTitleRecommender(function () {
@@ -328,15 +368,65 @@ define([
 
         var DD = new DiffDom(mkDiffOptions(cursor, framework.isReadOnly()));
 
+        var mediaMap = {};
+        var restoreMediaTags = function (tempDom) {
+            var pattern = /(<media-tag contenteditable="false" data-crypto-key="([^"]*)" src="([^"]*)" tabindex="1">)<\/media-tag>/i;
+            var tags = tempDom.querySelectorAll('media-tag:empty');
+            Array.prototype.slice.call(tags).forEach(function (tag) {
+                if (pattern.length !== 4) { return; }
+                var src = pattern[3];
+                if (mediaMap[src]) {
+                    mediaMap[src].forEach(function (n) {
+                        tag.appendChild(n);
+                    });
+                }
+            });
+        };
+        var displayMediaTags = function (dom) {
+            setTimeout(function () { // Just in case
+                var tags = dom.querySelectorAll('media-tag:empty');
+                console.log(Array.prototype.slice.call(tags));
+                Array.prototype.slice.call(tags).forEach(function (el) {
+                    MediaTag(el);
+                    $(el).on('keydown', function (e) {
+                        if ([8,46].indexOf(e.which) !== -1) {
+                            $(el).remove();
+                            framework.localChange();
+                        }
+                    });
+                    var observer = new MutationObserver(function(mutations) {
+                        mutations.forEach(function(mutation) {
+                            if (mutation.type === 'childList') {
+                                var list_values = [].slice.call(el.children);
+                                mediaMap[el.getAttribute('src')] = list_values;
+                            }
+                        });
+                    });
+                    observer.observe(el, {
+                        attributes: false,
+                        childList: true,
+                        characterData: false
+                    });
+                });
+            });
+        };
+
         // apply patches, and try not to lose the cursor in the process!
         framework.onContentUpdate(function (hjson) {
+            if (!Array.isArray(hjson)) {
+                var errorText = Messages.typeError;
+                Cryptpad.errorLoadingScreen(errorText);
+                throw new Error(errorText);
+            }
             var userDocStateDom = hjsonToDom(hjson);
 
             userDocStateDom.setAttribute("contenteditable",
                 inner.getAttribute('contenteditable'));
 
+            restoreMediaTags(userDocStateDom);
             var patch = (DD).diff(inner, userDocStateDom);
             (DD).apply(inner, patch);
+            displayMediaTags(inner);
             if (framework.isReadOnly()) {
                 var $links = $(inner).find('a');
                 // off so that we don't end up with multiple identical handlers
@@ -345,7 +435,7 @@ define([
         });
 
         framework.setContentGetter(function () {
-            return Hyperjson.fromDOM(inner, isNotMagicLine, brFilter);
+            return Hyperjson.fromDOM(inner, isNotMagicLine, hjsonFilters);
         });
 
         $bar.find('#cke_1_toolbar_collapser').hide();
@@ -365,11 +455,22 @@ define([
 
             editor.focus();
             if (newPad) {
-                documentBody.innerHTML = Messages.initialState;
                 cursor.setToEnd();
             } else if (framework.isReadOnly()) {
                 cursor.setToStart();
             }
+            var fmConfig = {
+                ckeditor: editor,
+                body: $('body'),
+                onUploaded: function (ev, data) {
+                    var parsed = Cryptpad.parsePadUrl(data.url);
+                    var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+                    var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
+                    var mt = '<media-tag contenteditable="false" src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '" tabindex="1"></media-tag>';
+                    editor.insertElement(window.CKEDITOR.dom.element.createFromHtml(mt));
+                }
+            };
+            window.APP.FM = framework._.sfCommon.createFileManager(fmConfig);
         });
 
         framework.onDefaultContentNeeded(function () {
@@ -457,12 +558,18 @@ define([
             }
             // Used in ckeditor-config.js
             Ckeditor.CRYPTPAD_URLARGS = ApiConfig.requireConf.urlArgs;
+            Ckeditor.plugins.addExternal('mediatag','/pad/', 'mediatag-plugin.js');
             module.ckeditor = editor = Ckeditor.replace('editor1', {
                 customConfig: '/customize/ckeditor-config.js',
             });
             editor.on('instanceReady', waitFor());
         }).nThen(function (waitFor) {
             Framework.create({}, waitFor(function (fw) { window.APP.framework = framework = fw; }));
+            editor.plugins.mediatag.translations = {
+                title: Messages.pad_mediatagTitle,
+                width: Messages.pad_mediatagWidth,
+                height: Messages.pad_mediatagHeight
+            };
             Links.addSupportForOpeningLinksInNewTab(Ckeditor)({editor: editor});
         }).nThen(function (/*waitFor*/) {
             andThen2(editor, Ckeditor, framework);

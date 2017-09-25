@@ -130,4 +130,9 @@ define({
 
     // Put one or more entries to the cache which will go in localStorage.
     'EV_CACHE_PUT': true,
+
+    // Set and get the tags using the tag prompt button
+    'Q_TAGS_GET': true,
+    'EV_TAGS_SET': true,
+
 });

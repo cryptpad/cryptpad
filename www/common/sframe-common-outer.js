@@ -51,7 +51,7 @@ define([
 
                 SFrameChannel.create($('#sbox-iframe')[0].contentWindow, waitFor(function (sfc) {
                     sframeChan = sfc;
-                }), false, { cache: cache });
+                }), false, { cache: cache, language: Cryptpad.getLanguage() });
                 Cryptpad.ready(waitFor());
             }));
         }).nThen(function (waitFor) {
@@ -228,23 +228,22 @@ define([
                         return null;
                     }
                 };
+                var msgs = [];
                 var onMsg = function (msg) {
                     var parsed = parse(msg);
                     if (parsed[0] === 'FULL_HISTORY_END') {
-                        console.log('END');
-                        cb();
+                        cb(msgs);
                         return;
                     }
                     if (parsed[0] !== 'FULL_HISTORY') { return; }
                     if (parsed[1] && parsed[1].validateKey) { // First message
-                        secret.keys.validateKey = parsed[1].validateKey;
                         return;
                     }
                     msg = parsed[1][4];
                     if (msg) {
                         msg = msg.replace(/^cp\|/, '');
                         var decryptedMsg = crypto.decrypt(msg, secret.keys.validateKey);
-                        sframeChan.event('EV_RT_HIST_MESSAGE', decryptedMsg);
+                        msgs.push(decryptedMsg);
                     }
                 };
                 network.on('message', onMsg);
@@ -368,6 +367,20 @@ define([
                 } else {
                     window.location.reload();
                 }
+            });
+
+            sframeChan.on('Q_TAGS_GET', function (data, cb) {
+                Cryptpad.getPadTags(null, function (err, data) {
+                    cb({
+                        error: err,
+                        data: data
+                    });
+                });
+            });
+
+            sframeChan.on('EV_TAGS_SET', function (data) {
+                console.log(data);
+                Cryptpad.resetTags(null, data);
             });
 
             if (cfg.addRpc) {
