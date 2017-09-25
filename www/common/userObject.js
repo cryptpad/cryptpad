@@ -456,7 +456,7 @@ define([
         };
         exp.getRecentPads = function () {
             var allFiles = files[FILES_DATA];
-            var sorted = Object.keys(allFiles)
+            var sorted = Object.keys(allFiles).filter(function (a) { return allFiles[a]; })
                 .sort(function (a,b) {
                     return allFiles[a].atime < allFiles[b].atime;
                 })
@@ -1037,20 +1037,6 @@ define([
                     }
                 });
             };
-            var migrateAttributes = function (el, id, parsed) {
-                // Migrate old pad attributes
-                ['userid', 'previewMode'].forEach(function (attr) {
-                    var key = parsed.hash + '.' + attr;
-                    var key2 = parsed.hash.slice(0,-1) + '.' + attr;// old pads not ending with /
-                    if (typeof(files[key]) !== "undefined" || typeof(files[key2]) !== "undefined") {
-                        debug("Migrating pad attribute", attr, "for pad", id);
-                        el[attr] = files[key] || files[key2];
-                        delete files[key];
-                        delete files[key2];
-                    }
-                });
-                // Migration done
-            };
             var fixFilesData = function () {
                 if (typeof files[FILES_DATA] !== "object") { debug("OLD_FILES_DATA was not an object"); files[FILES_DATA] = {}; }
                 var fd = files[FILES_DATA];
@@ -1076,8 +1062,6 @@ define([
                         toClean.push(id);
                         continue;
                     }
-
-                    migrateAttributes(el, id, parsed);
 
                     if ((Cryptpad.isLoggedIn() || config.testMode) && rootFiles.indexOf(id) === -1) {
                         debug("An element in filesData was not in ROOT, TEMPLATE or TRASH.", id, el);
