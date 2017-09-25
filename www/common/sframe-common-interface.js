@@ -318,7 +318,7 @@ define([
             $userAdminContent.append($userName);
             options.push({
                 tag: 'p',
-                attributes: {'class': 'accountData'},
+                attributes: {'class': 'cp-toolbar-account'},
                 content: $userAdminContent.html()
             });
         }
