@@ -16,7 +16,7 @@ define([], function () {
                 handlers.splice(handlers.indexOf(cb), 1);
             },
             fire: function () {
-                if (fired) { return; }
+                if (once && fired) { return; }
                 fired = true;
                 var args = Array.prototype.slice.call(arguments);
                 handlers.forEach(function (h) { h.apply(null, args); });
