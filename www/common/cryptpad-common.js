@@ -2237,6 +2237,35 @@ define([
                 $iframe.load(w2); //cb);
             }
         }).nThen(function (waitFor) {
+            if (sessionStorage.createReadme) {
+                var w = waitFor();
+                require(['/common/cryptget.js'], function (Crypt) {
+                    var hash = common.createRandomHash();
+                    Crypt.put(hash, Messages.driveReadme, function (e) {
+                        if (e) {
+                            console.error("Error while creating the default pad:", e);
+                            return void w();
+                        }
+                        var href = '/pad/#' + hash;
+                        var data = {
+                            href: href,
+                            title: Messages.driveReadmeTitle,
+                            atime: new Date().toISOString(),
+                            ctime: new Date().toISOString()
+                        };
+                        common.getFO().pushData(data, function (e, id) {
+                            if (e) {
+                                console.error("Error while creating the default pad:", e);
+                                return void w();
+                            }
+                            common.getFO().add(id);
+                            w();
+                        });
+                    });
+                    delete sessionStorage.createReadme;
+                });
+            }
+        }).nThen(function (waitFor) {
             if (sessionStorage.migrateAnonDrive) {
                 var w = waitFor();
                 require(['/common/mergeDrive.js'], function (Merge) {

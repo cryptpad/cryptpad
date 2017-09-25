@@ -2828,32 +2828,6 @@ define([
             refresh();
         };
 
-        var createReadme = function (proxy, cb) {
-            if (sessionStorage.createReadme) {
-                var hash = Cryptpad.createRandomHash();
-                Get.put(hash, Messages.driveReadme, function (e) {
-                    if (e) { logError(e); }
-                    var href = '/pad/#' + hash;
-                    var data = {
-                        href: href,
-                        title: Messages.driveReadmeTitle,
-                        atime: new Date().toISOString(),
-                        ctime: new Date().toISOString()
-                    };
-                    filesOp.pushData(data, function (e, id) {
-                        if (e) {
-                            return void console.error("Error while creating the default pad:", e);
-                        }
-                        filesOp.add(id);
-                        if (typeof(cb) === "function") { cb(); }
-                    });
-                });
-                delete sessionStorage.createReadme;
-                return;
-            }
-            if (typeof(cb) === "function") { cb(); }
-        };
-
         var fmConfig = {
             noHandlers: true,
             onUploaded: function (ev, data) {
@@ -2880,11 +2854,8 @@ define([
         };
         APP.FM = common.createFileManager(fmConfig);
 
-        createReadme(proxy, function () {
-            refresh();
-            //APP.userList.onChange();
-            Cryptpad.removeLoadingScreen();
-        });
+        refresh();
+        Cryptpad.removeLoadingScreen();
     };
 
     var setHistory = function (bool, update) {
