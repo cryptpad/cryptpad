@@ -111,12 +111,14 @@ define([
                     var newFo = newData.fo;
                     var oldRecentPads = parsed.drive[newFo.FILES_DATA];
                     var newRecentPads = proxy.drive[newFo.FILES_DATA];
-                    var newFiles = newFo.getFiles([newFo.FILES_DATA]);
                     var oldFiles = oldFo.getFiles([newFo.FILES_DATA]);
+                    var newHrefs = Object.keys(newRecentPads).map(function (id) {
+                        return newRecentPads[id].href;
+                    });
                     oldFiles.forEach(function (id) {
                         var href = oldRecentPads[id].href;
                         // Do not migrate a pad if we already have it, it would create a duplicate in the drive
-                        if (newFiles.indexOf(id) !== -1) { return; }
+                        if (newHrefs.indexOf(href) !== -1) { return; }
                         // If we have a stronger version, do not add the current href
                         if (Cryptpad.findStronger(href, newRecentPads)) { return; }
                         // If we have a weaker version, replace the href by the new one
