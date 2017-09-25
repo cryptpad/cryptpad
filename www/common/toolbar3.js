@@ -688,7 +688,7 @@ define([
     };
 
     var typing = -1;
-    var kickSpinner = function (toolbar, config, local) {
+    var kickSpinner = function (toolbar, config/*, local*/) {
         if (!toolbar.spinner) { return; }
         var $spin = toolbar.spinner;
 
