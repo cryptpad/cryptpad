@@ -708,7 +708,7 @@ define([
                 window.clearInterval($spin.interval);
                 typing = -1;
                 $spin.text(Messages.saved);
-            }, local ? 0 : SPINNER_DISAPPEAR_TIME);
+            }, /*local ? 0 :*/ SPINNER_DISAPPEAR_TIME);
         };
         config.sfCommon.whenRealtimeSyncs(onSynced);
     };
