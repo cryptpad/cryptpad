@@ -18,7 +18,8 @@ define([], function () {
             fire: function () {
                 if (fired) { return; }
                 fired = true;
-                handlers.forEach(function (h) { h(); });
+                var args = Array.prototype.slice.call(arguments);
+                handlers.forEach(function (h) { h.apply(null, args); });
             }
         };
     };
