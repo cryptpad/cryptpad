@@ -36,7 +36,7 @@ define([], function () {
 }
 #cp-loading-tip {
   position: fixed;
-  z-index: 100000;
+  z-index: 10000000;
   top: 80%;
   left: 0;
   right: 0;
