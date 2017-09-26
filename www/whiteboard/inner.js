@@ -433,6 +433,7 @@ define([
 
             var userDoc = APP.realtime.getUserDoc();
             var isNew = false;
+            var newDoc = '';
             if (userDoc === "" || userDoc === "{}") { isNew = true; }
 
             if (userDoc !== "") {
@@ -448,15 +449,19 @@ define([
                     Cryptpad.errorLoadingScreen(errorText);
                     throw new Error(errorText);
                 }
+                newDoc = hjson.content;
             } else {
                 Title.updateTitle(Cryptpad.initialName || Title.defaultTitle);
             }
+            if (newDoc) {
+                canvas.loadFromJSON(newDoc);
+                canvas.renderAll();
+            }
 
-            Cryptpad.removeLoadingScreen();
             setEditable(!readOnly);
             initializing = false;
             config.onLocal();
-
+            Cryptpad.removeLoadingScreen();
             if (readOnly) { return; }
             if (isNew) {
                 common.openTemplatePicker();
