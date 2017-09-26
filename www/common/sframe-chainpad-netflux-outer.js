@@ -154,7 +154,9 @@ define([], function () {
                         // Do not remove wcObject, it allows us to use a new 'wc' without changing the handler if we
                         // want to keep the same chainpad (realtime) object
                         try {
+                            if (window.Cryptpad_SUPPRESS_MSG) { return; }
                             wcObject.wc.bcast(message).then(function() {
+                                if (window.Cryptpad_SUPPRESS_ACK) { return; }
                                 cb();
                             }, function(err) {
                                 // The message has not been sent, display the error.
