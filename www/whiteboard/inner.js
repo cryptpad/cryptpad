@@ -516,7 +516,7 @@ define([
 
         canvas.on('mouse:up', onLocal);
 
-        $('#clear').on('click', function () {
+        $('#cp-app-whiteboard-clear').on('click', function () {
             canvas.clear();
             onLocal();
         });
