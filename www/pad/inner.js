@@ -372,11 +372,9 @@ define([
 
         var mediaMap = {};
         var restoreMediaTags = function (tempDom) {
-            var pattern = /(<media-tag contenteditable="false" data-crypto-key="([^"]*)" src="([^"]*)" tabindex="1">)<\/media-tag>/i;
             var tags = tempDom.querySelectorAll('media-tag:empty');
             Cryptpad.slice(tags).forEach(function (tag) {
-                if (pattern.length !== 4) { return; }
-                var src = pattern[3];
+                var src = tag.getAttribute('src');
                 if (mediaMap[src]) {
                     mediaMap[src].forEach(function (n) {
                         tag.appendChild(n);
