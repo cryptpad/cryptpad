@@ -321,9 +321,7 @@ define([
         };
 
         if (!framework.isReadOnly()) {
-            console.log('\n\n\n\n\nREGISTER\n\n\n\n\n');
             framework.onEditableChange(function () {
-                console.log("Editable change");
                 var locked = framework.isLocked();
                 $(inner).css({ 'background-color': ((locked) ? '#aaa' : '') });
                 inner.setAttribute('contenteditable', !locked);
@@ -350,9 +348,6 @@ define([
                 };
                 framework._.sfCommon.openFilePicker(pickerCfg);
             }).appendTo(framework._.toolbar.$rightside);
-
-            var $tags = framework._.sfCommon.createButton('hashtag', true);
-            framework._.toolbar.$rightside.append($tags);
         }
 
         framework.setTitleRecommender(function () {

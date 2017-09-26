@@ -117,7 +117,7 @@ define([
             if (state !== STATE.READY) { return; }
 
             var oldContent = normalize(contentGetter());
-            var newContentStr = cpNfInner.realtime.getUserDoc();
+            var newContentStr = cpNfInner.chainpad.getUserDoc();
 
             var newContent = normalize(JSON.parse(newContentStr));
             var meta = extractMetadata(newContent);
@@ -346,7 +346,6 @@ define([
                 title: title.getTitleConfig(),
                 metadataMgr: cpNfInner.metadataMgr,
                 readOnly: readOnly,
-                ifrw: window,
                 realtime: cpNfInner.chainpad,
                 common: Cryptpad,
                 sfCommon: common,
