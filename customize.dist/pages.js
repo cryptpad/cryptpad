@@ -570,6 +570,9 @@ define([
     };
 
     var appToolbar = function () {
+        return h('div#toolbar.cryptpad-toolbar');
+    };
+    var appToolbar3 = function () {
         return h('div#cp-toolbar.cp-toolbar-container');
     };
 
