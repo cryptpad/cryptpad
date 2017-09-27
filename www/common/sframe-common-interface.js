@@ -320,9 +320,9 @@ define([
             $container.html('');
             var unit = Util.magnitudeOfBytes(limit);
 
-            var usage = unit === 'GB'? Util.bytesToGigabytes(usage):
+            usage = unit === 'GB'? Util.bytesToGigabytes(usage):
                 Util.bytesToMegabytes(usage);
-            var limit = unit === 'GB'? Util.bytesToGigabytes(limit):
+            limit = unit === 'GB'? Util.bytesToGigabytes(limit):
                 Util.bytesToMegabytes(limit);
 
             var $limit = $('<span>', {'class': 'cp-limit-bar'}).appendTo($container);
