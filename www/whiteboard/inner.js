@@ -363,7 +363,7 @@ define([
             updateLocalPalette(palette);
             readOnly = metadataMgr.getPrivateData().readOnly;
 
-            Title = common.createTitle({}, config.onLocal);
+            Title = common.createTitle({});
 
             var configTb = {
                 displayed: ['title', 'useradmin', 'spinner', 'share', 'userlist', 'newpad', 'limit'],

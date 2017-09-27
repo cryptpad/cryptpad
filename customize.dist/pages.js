@@ -638,48 +638,45 @@ define([
 
     Pages['/poll/'] = Pages['/poll/index.html'] = function () {
         return [
-            appToolbar(),
-            h('div#content', [
-                h('div#poll', [
-                    h('div#howItWorks', [
+            appToolbar3(),
+            h('div#cp-app-poll-content', [
+                h('div#cp-app-poll-form', [
+                    h('div#cp-app-poll-help', [
                         h('h1', 'CryptPoll'),
                         setHTML(h('h2'), Msg.poll_subtitle),
                         h('p', Msg.poll_p_save),
                         h('p', Msg.poll_p_encryption)
                     ]),
-                    h('div.upper', [
-                        h('button#publish.btn.btn-success', {
+                    h('div.cp-app-poll-upper', [
+                        h('button#cp-app-poll-action-publish.btn.btn-success', {
                             style: { display: 'none' }
                         }, Msg.poll_publish_button),
-                        h('button#admin.btn.btn-primary', {
+                        h('button#cp-app-poll-action-admin.btn.btn-primary', {
                             style: { display: 'none' },
                             title: Msg.poll_admin_button
                         }, Msg.poll_admin_button),
-                        h('button#help.btn.btn-secondary', {
+                        h('button#cp-app-poll-action-help.btn.btn-secondary', {
                             title: Msg.poll_show_help_button
                         }, Msg.poll_show_help_button)
                     ]),
-                    h('div.realtime', [
+                    h('div.cp-app-poll-realtime', [
                         h('br'),
                         h('center', [
-                            h('textarea#description', {
+                            h('textarea#cp-app-poll-description', {
                                 rows: "5",
                                 cols: "50",
                                 disabled: true
                             }),
                             h('br')
                         ]),
-                        h('div#tableContainer', [
-                            h('div#tableScroll'),
-                            h('button#create-user.btn.btn-secondary', {
+                        h('div#cp-app-poll-table-container', [
+                            h('div#cp-app-poll-table-scroll'),
+                            h('button#cp-app-poll-create-user.btn.btn-secondary', {
                                 title: Msg.poll_create_user
                             }, h('span.fa.fa-plus')),
-                            h('button#create-option.btn.btn-secondary', {
+                            h('button#cp-app-poll-create-option.btn.btn-secondary', {
                                 title: Msg.poll_create_option
                             }, h('span.fa.fa-plus')),
-                            h('button#commit.btn.btn-secondary', {
-                                title: Msg.poll_commit
-                            }, h('span.fa.fa-check'))
                         ])
                     ])
                 ])
