@@ -381,7 +381,7 @@ define([
                 if (!yes) { return; }
                 $spinner.show();
                 $ok.hide();
-                Merge.anonDriveIntoUser(obj.proxy, function () {
+                Merge.anonDriveIntoUser(obj, localStorage.FS_hash, function () {
                     $spinner.hide();
                     $ok.show();
                     Cryptpad.alert(Messages.settings_importDone);

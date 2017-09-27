@@ -1,4 +1,5 @@
 @import "/customize/src/less/variables.less";
+@import (once) "/customize/src/less2/include/tools.less";
 
 .fontface(@family, @src, @style: normal, @weight: 400, @fmt: 'truetype'){
     @font-face {
@@ -39,26 +40,6 @@
     background: linear-gradient(@start, @end); /* Standard syntax */
 }
 
-.placeholderColor (@color) {
-    &::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-        color: @color;;
-    }
-    &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-        color: @color;
-        opacity: 1;
-    }
-    &::-moz-placeholder { /* Mozilla Firefox 19+ */
-        color: @color;
-        opacity: 1;
-    }
-    &:-ms-input-placeholder { /* Internet Explorer 10-11 */
-        color: @color;
-    }
-    &::-ms-input-placeholder { /* Microsoft Edge */
-        color: @color;
-    }
-}
-
 .avatar (@width) {
     &.avatar {
     overflow: hidden;
@@ -83,7 +64,7 @@
         box-sizing: content-box;
     }
     .default {
-        .unselectable();
+        .tools_unselectable();
         background: white;
         color: black;
         font-size: @width/1.2;
@@ -122,7 +103,7 @@
 }
 
 .leftsideCategory {
-    .unselectable();
+    .tools_unselectable();
     padding: 5px 20px;
     margin: 15px 0;
     cursor: pointer;

@@ -570,12 +570,15 @@ define([
     };
 
     var appToolbar = function () {
+        return h('div#toolbar.cryptpad-toolbar');
+    };
+    var appToolbar3 = function () {
         return h('div#cp-toolbar.cp-toolbar-container');
     };
 
     Pages['/whiteboard/'] = Pages['/whiteboard/index.html'] = function () {
         return [
-            appToolbar(),
+            appToolbar3(),
             h('div#cp-app-whiteboard-canvas-area', h('canvas#cp-app-whiteboard-canvas', {
                 width: 600,
                 height: 600
