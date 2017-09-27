@@ -38,7 +38,6 @@ define([], function () {
         var queue = [];
         var messageFromInner = function (m, cb) { queue.push([ m, cb ]); };
         sframeChan.on('Q_RT_MESSAGE', function (message, cb) {
-            console.log(message);
             messageFromInner(message, cb);
         });        
 

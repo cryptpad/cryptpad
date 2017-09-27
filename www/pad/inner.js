@@ -291,7 +291,48 @@ define([
         framework._.toolbar.$rightside.append($collapse);
     };
 
+    var displayMediaTags = function (framework, dom, mediaTagMap) {
+        setTimeout(function () { // Just in case
+            var tags = dom.querySelectorAll('media-tag:empty');
+            Array.prototype.slice.call(tags).forEach(function (el) {
+                MediaTag(el);
+                $(el).on('keydown', function (e) {
+                    if ([8,46].indexOf(e.which) !== -1) {
+                        $(el).remove();
+                        framework.localChange();
+                    }
+                });
+                var observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.type === 'childList') {
+                            var list_values = [].slice.call(el.children);
+                            mediaTagMap[el.getAttribute('src')] = list_values;
+                        }
+                    });
+                });
+                observer.observe(el, {
+                    attributes: false,
+                    childList: true,
+                    characterData: false
+                });
+            });
+        });
+    };
+
+    var restoreMediaTags = function (tempDom, mediaTagMap) {
+        var tags = tempDom.querySelectorAll('media-tag:empty');
+        Array.prototype.slice.call(tags).forEach(function (tag) {
+            var src = tag.getAttribute('src');
+            if (mediaTagMap[src]) {
+                mediaTagMap[src].forEach(function (n) {
+                    tag.appendChild(n);
+                });
+            }
+        });
+    };
+
     var andThen2 = function (editor, Ckeditor, framework) {
+        var mediaTagMap = {}
         var $bar = $('#cke_1_toolbox');
         var $html = $bar.closest('html');
         var $faLink = $html.find('head link[href*="/bower_components/components-font-awesome/css/font-awesome.min.css"]');
@@ -363,47 +404,6 @@ define([
 
         var DD = new DiffDom(mkDiffOptions(cursor, framework.isReadOnly()));
 
-        var mediaMap = {};
-        var restoreMediaTags = function (tempDom) {
-            var tags = tempDom.querySelectorAll('media-tag:empty');
-            Array.prototype.slice.call(tags).forEach(function (tag) {
-                var src = tag.getAttribute('src');
-                if (mediaMap[src]) {
-                    mediaMap[src].forEach(function (n) {
-                        tag.appendChild(n);
-                    });
-                }
-            });
-        };
-        var displayMediaTags = function (dom) {
-            setTimeout(function () { // Just in case
-                var tags = dom.querySelectorAll('media-tag:empty');
-                console.log(Array.prototype.slice.call(tags));
-                Array.prototype.slice.call(tags).forEach(function (el) {
-                    MediaTag(el);
-                    $(el).on('keydown', function (e) {
-                        if ([8,46].indexOf(e.which) !== -1) {
-                            $(el).remove();
-                            framework.localChange();
-                        }
-                    });
-                    var observer = new MutationObserver(function(mutations) {
-                        mutations.forEach(function(mutation) {
-                            if (mutation.type === 'childList') {
-                                var list_values = [].slice.call(el.children);
-                                mediaMap[el.getAttribute('src')] = list_values;
-                            }
-                        });
-                    });
-                    observer.observe(el, {
-                        attributes: false,
-                        childList: true,
-                        characterData: false
-                    });
-                });
-            });
-        };
-
         // apply patches, and try not to lose the cursor in the process!
         framework.onContentUpdate(function (hjson) {
             if (!Array.isArray(hjson)) {
@@ -416,10 +416,10 @@ define([
             userDocStateDom.setAttribute("contenteditable",
                 inner.getAttribute('contenteditable'));
 
-            restoreMediaTags(userDocStateDom);
+            restoreMediaTags(userDocStateDom, mediaTagMap);
             var patch = (DD).diff(inner, userDocStateDom);
             (DD).apply(inner, patch);
-            displayMediaTags(inner);
+            displayMediaTags(framework, inner, mediaTagMap);
             if (framework.isReadOnly()) {
                 var $links = $(inner).find('a');
                 // off so that we don't end up with multiple identical handlers
@@ -428,6 +428,7 @@ define([
         });
 
         framework.setContentGetter(function () {
+            displayMediaTags(framework, inner, mediaTagMap);
             return Hyperjson.fromDOM(inner, isNotMagicLine, hjsonFilters);
         });
 
@@ -452,6 +453,7 @@ define([
             } else if (framework.isReadOnly()) {
                 cursor.setToStart();
             }
+
             var fmConfig = {
                 ckeditor: editor,
                 body: $('body'),

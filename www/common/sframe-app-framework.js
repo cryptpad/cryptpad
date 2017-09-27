@@ -66,20 +66,16 @@ define([
         var normalize = function (x) { return x; };
 
         var extractMetadata = function (content) {
-            var meta = {};
             if (Array.isArray(content)) {
-                var m = content.pop();
+                var m = content[content.length - 1];
                 if (typeof(m.metadata) === 'object') {
                     // pad
-                    meta = m.metadata;
-                } else {
-                    content.push(m);
+                    return m.metadata;
                 }
             } else if (typeof(content.metadata) === 'object') {
-                meta = content.metadata;
-                delete content.metadata;
+                return content.metadata;
             }
-            return meta;
+            return;
         };
 
         var stateChange = function (newState) {
@@ -94,7 +90,6 @@ define([
             } else {
                 state = newState;
             }
-            console.log(state + '  ' + wasEditable);
             switch (state) {
                 case STATE.DISCONNECTED:
                 case STATE.INITIALIZING: {
@@ -108,7 +103,6 @@ define([
                 default:
             }
             if (wasEditable !== (state === STATE.READY)) {
-                console.log("fire");
                 evEditableStateChange.fire(state === STATE.READY);
             }
         };
@@ -119,9 +113,10 @@ define([
             var oldContent = normalize(contentGetter());
             var newContentStr = cpNfInner.chainpad.getUserDoc();
 
-            var newContent = normalize(JSON.parse(newContentStr));
+            var newContent = JSON.parse(newContentStr);
             var meta = extractMetadata(newContent);
             cpNfInner.metadataMgr.updateMetadata(meta);
+            newContent = normalize(newContent);
 
             evContentUpdate.fire(newContent);
 
@@ -209,8 +204,7 @@ define([
 
             if (!newPad) {
                 var newContent = JSON.parse(newContentStr);
-                var meta = extractMetadata(newContent);
-                cpNfInner.metadataMgr.updateMetadata(meta);
+                cpNfInner.metadataMgr.updateMetadata(extractMetadata(newContent));
                 newContent = normalize(newContent);
                 evContentUpdate.fire(newContent);
 
@@ -230,13 +224,13 @@ define([
                 }
             } else {
                 title.updateTitle(Cryptpad.initialName || title.defaultTitle);
+                evOnDefaultContentNeeded.fire();
             }
-
+            stateChange(STATE.READY);
             if (!readOnly) { onLocal(); }
             evOnReady.fire(newPad);
 
             Cryptpad.removeLoadingScreen(emitResize);
-            stateChange(STATE.READY);
 
             if (newPad) {
                 common.openTemplatePicker();
@@ -297,8 +291,8 @@ define([
                         return false;
                     }
                 },
-                onRemote: function () { evStart.reg(onRemote); },
-                onLocal: function () { evStart.reg(onLocal); },
+                onRemote: onRemote,
+                onLocal: onLocal,
                 onInit: function () { stateChange(STATE.INITIALIZING); },
                 onReady: function () { evStart.reg(onReady); },
                 onConnectionChange: onConnectionChange
