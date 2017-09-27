@@ -49,6 +49,7 @@ define([
         var evEditableStateChange = Util.mkEvent();
         var evOnReady = Util.mkEvent();
         var evOnDefaultContentNeeded = Util.mkEvent();
+        var evCreated = Util.mkEvent(true);
 
         var evStart = Util.mkEvent(true);
 
@@ -59,6 +60,11 @@ define([
         var title;
         var toolbar;
         var state = STATE.DISCONNECTED;
+
+        var toolbarContainer = options.toolbarContainer ||
+            (function () { throw new Error("toolbarContainer must be specified"); }());
+        var contentContainer = options.contentContainer ||
+            (function () { throw new Error("contentContainer must be specified"); }());
 
 
         var titleRecommender = function () { return false; };
@@ -247,9 +253,10 @@ define([
 
         var setFileExporter = function (extension, fe) {
             var $export = common.createButton('export', true, {}, function () {
+                var ext = (typeof(extension) === 'function') ? extension() : extension;
                 var suggestion = title.suggestTitle('cryptpad-document');
                 Cryptpad.prompt(Messages.exportPrompt,
-                    Cryptpad.fixFileName(suggestion) + '.html', function (filename)
+                    Cryptpad.fixFileName(suggestion) + '.' + ext, function (filename)
                 {
                     if (!(typeof(filename) === 'string' && filename)) { return; }
                     var blob = fe();
@@ -259,11 +266,11 @@ define([
             toolbar.$drawer.append($export);
         };
 
-        var setFileImporter = function (mimeType, fi) {
+        var setFileImporter = function (options, fi) {
             if (readOnly) { return; }
             toolbar.$drawer.append(
-                common.createButton('import', true, { accept: mimeType }, function (c) {
-                    evContentUpdate.fire(fi(c));
+                common.createButton('import', true, options, function (c, f) {
+                    evContentUpdate.fire(fi(c, f));
                     onLocal();
                 })
             );
@@ -275,6 +282,7 @@ define([
         };
 
         nThen(function (waitFor) {
+            Cryptpad.addLoadingScreen();
             SFCommon.create(waitFor(function (c) { common = c; }));
         }).nThen(function (waitFor) {
             cpNfInner = common.startRealtime({
@@ -327,12 +335,25 @@ define([
                     onConnectError();
                 }
             });
+        }).nThen(function (waitFor) {
+
+            var done = waitFor();
+            var intr;
+            var check = function () {
+                if (!$(toolbarContainer).length) { return; }
+                if (!$(contentContainer).length) { return; }
+                if ($(toolbarContainer).length !== 1) { throw new Error("multiple toolbarContainers"); }
+                if ($(contentContainer).length !== 1) { throw new Error("multiple contentContainers"); }
+                clearInterval(intr);
+                done();
+            };
+            intr = setInterval(function () {
+                console.log('waited 50ms for toolbar and content containers');
+                check();
+            }, 50);
+            check();
 
         }).nThen(function () {
-
-            var $bar = $('#cke_1_toolbox'); // TODO
-
-            if (!$bar.length) { throw new Error(); }
 
             title = common.createTitle({ getHeadingText: titleRecommender }, onLocal);
             var configTb = {
@@ -343,8 +364,8 @@ define([
                 realtime: cpNfInner.chainpad,
                 common: Cryptpad,
                 sfCommon: common,
-                $container: $bar,
-                $contentContainer: $('#cke_1_contents'), // TODO
+                $container: $(toolbarContainer),
+                $contentContainer: $(contentContainer)
             };
             toolbar = Toolbar.create(configTb);
             title.setToolbar(toolbar);
@@ -357,7 +378,7 @@ define([
                 applyVal: function (val) {
                     evContentUpdate.fire(JSON.parse(val) || ["BODY",{},[]]);
                 },
-                $toolbar: $bar
+                $toolbar: $(toolbarContainer)
             };
             var $hist = common.createButton('history', true, {histConfig: histConfig});
             toolbar.$drawer.append($hist);
@@ -447,7 +468,9 @@ define([
                     title: title
                 }
             }));
+            evCreated.fire();
         });
+        return evCreated.reg;
     };
     return { create: create };
 });

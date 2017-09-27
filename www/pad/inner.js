@@ -332,7 +332,7 @@ define([
     };
 
     var andThen2 = function (editor, Ckeditor, framework) {
-        var mediaTagMap = {}
+        var mediaTagMap = {};
         var $bar = $('#cke_1_toolbox');
         var $html = $bar.closest('html');
         var $faLink = $html.find('head link[href*="/bower_components/components-font-awesome/css/font-awesome.min.css"]');
@@ -472,14 +472,12 @@ define([
             documentBody.innerHTML = Messages.initialState;
         });
 
-        framework.setFileImporter('text/html', function (content) {
+        framework.setFileImporter({ accept: 'text/html' }, function (content) {
             return Hyperjson.fromDOM(domFromHTML(content).body);
         });
 
-        framework.setFileExporter("html", function () {
-            var html = getHTML(inner);
-            var blob = new Blob([html], {type: "text/html;charset=utf-8"});
-            return blob;
+        framework.setFileExporter('html', function () {
+            return new Blob([ getHTML(inner) ], { type: "text/html;charset=utf-8" });
         });
 
         framework.setNormalizer(function (hjson) {
@@ -538,34 +536,43 @@ define([
         var framework;
 
         nThen(function (waitFor) {
-            ckEditorAvailable(waitFor(function (ck) {
-                Ckeditor = ck;
-                require(['/pad/wysiwygarea-plugin.js'], waitFor());
-            }));
-            $(waitFor());
-        }).nThen(function (waitFor) {
-            Ckeditor.config.toolbarCanCollapse = true;
-            if (screen.height < 800) {
-                Ckeditor.config.toolbarStartupExpanded = false;
-                $('meta[name=viewport]').attr('content', 'width=device-width, initial-scale=1.0, user-scalable=no');
-            } else {
-                $('meta[name=viewport]').attr('content', 'width=device-width, initial-scale=1.0, user-scalable=yes');
-            }
-            // Used in ckeditor-config.js
-            Ckeditor.CRYPTPAD_URLARGS = ApiConfig.requireConf.urlArgs;
-            Ckeditor.plugins.addExternal('mediatag','/pad/', 'mediatag-plugin.js');
-            module.ckeditor = editor = Ckeditor.replace('editor1', {
-                customConfig: '/customize/ckeditor-config.js',
-            });
-            editor.on('instanceReady', waitFor());
-        }).nThen(function (waitFor) {
-            Framework.create({}, waitFor(function (fw) { window.APP.framework = framework = fw; }));
-            editor.plugins.mediatag.translations = {
-                title: Messages.pad_mediatagTitle,
-                width: Messages.pad_mediatagWidth,
-                height: Messages.pad_mediatagHeight
-            };
-            Links.addSupportForOpeningLinksInNewTab(Ckeditor)({editor: editor});
+            Framework.create({
+                toolbarContainer: '#cke_1_toolbox',
+                contentContainer: '#cke_1_contents'
+            }, waitFor(function (fw) { window.APP.framework = framework = fw; }));
+
+            nThen(function (waitFor) {
+                ckEditorAvailable(waitFor(function (ck) {
+                    Ckeditor = ck;
+                    require(['/pad/wysiwygarea-plugin.js'], waitFor());
+                }));
+                $(waitFor());
+            }).nThen(function (waitFor) {
+                Ckeditor.config.toolbarCanCollapse = true;
+                if (screen.height < 800) {
+                    Ckeditor.config.toolbarStartupExpanded = false;
+                    $('meta[name=viewport]').attr('content',
+                        'width=device-width, initial-scale=1.0, user-scalable=no');
+                } else {
+                    $('meta[name=viewport]').attr('content',
+                        'width=device-width, initial-scale=1.0, user-scalable=yes');
+                }
+                // Used in ckeditor-config.js
+                Ckeditor.CRYPTPAD_URLARGS = ApiConfig.requireConf.urlArgs;
+                Ckeditor.plugins.addExternal('mediatag','/pad/', 'mediatag-plugin.js');
+                module.ckeditor = editor = Ckeditor.replace('editor1', {
+                    customConfig: '/customize/ckeditor-config.js',
+                });
+                editor.on('instanceReady', waitFor());
+            }).nThen(function () {
+                editor.plugins.mediatag.translations = {
+                    title: Messages.pad_mediatagTitle,
+                    width: Messages.pad_mediatagWidth,
+                    height: Messages.pad_mediatagHeight
+                };
+                Links.addSupportForOpeningLinksInNewTab(Ckeditor)({editor: editor});
+            }).nThen(waitFor());
+
         }).nThen(function (/*waitFor*/) {
             andThen2(editor, Ckeditor, framework);
         });

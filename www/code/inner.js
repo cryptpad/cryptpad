@@ -1,23 +1,14 @@
 define([
     'jquery',
-    '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/textpatcher/TextPatcher.js',
-    '/common/toolbar3.js',
-    'json.sortify',
-    '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/cryptpad-common.js',
-    '/common/cryptget.js',
     '/common/diffMarked.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
-    '/api/config',
-    '/common/common-realtime.js',
-
+    '/common/sframe-app-framework.js',
+    '/common/common-util.js',
+    '/common/modes.js',
     'cm/lib/codemirror',
-
-    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'less!/customize/src/less2/main.less',
 
     'css!cm/lib/codemirror.css',
     'css!cm/addon/dialog/dialog.css',
@@ -47,81 +38,78 @@ define([
 
 ], function (
     $,
-    Crypto,
     TextPatcher,
-    Toolbar,
-    JSONSortify,
-    JsonOT,
     Cryptpad,
-    Cryptget,
     DiffMd,
     nThen,
     SFCommon,
-    ApiConfig,
-    CommonRealtime,
+    Framework,
+    Util,
+    Modes,
     CMeditor)
 {
     window.CodeMirror = CMeditor;
     var Messages = Cryptpad.Messages;
 
-    var APP = window.APP = {
-        Cryptpad: Cryptpad,
-    };
+    var canonicalize = function (t) { return t.replace(/\r\n/g, '\n'); };
 
-    var stringify = function (obj) {
-        return JSONSortify(obj);
-    };
+    var MEDIA_TAG_MODES = Object.freeze([
+        'markdown',
+        'html',
+        'htmlembedded',
+        'htmlmixed',
+        'index.html',
+        'php',
+        'velocity',
+        'xml',
+    ]);
 
-    var toolbar;
-
-    var onConnectError = function () {
-        Cryptpad.errorLoadingScreen(Messages.websocketError);
-    };
-
-    var andThen = function (editor, CodeMirror, common) {
-        var readOnly = false;
-        var cpNfInner;
-        var metadataMgr;
-        var $bar = $('#cme_toolbox');
-
-        var isHistoryMode = false;
-
-        var setEditable = APP.setEditable = function (bool) {
-            if (readOnly && bool) { return; }
-            editor.setOption('readOnly', !bool);
-        };
-
-        var Title;
-
-        var config = {
-            readOnly: readOnly,
-            transformFunction: JsonOT.validate,
-            // cryptpad debug logging (default is 1)
-            // logLevel: 0,
-            validateContent: function (content) {
-                try {
-                    JSON.parse(content);
-                    return true;
-                } catch (e) {
-                    console.log("Failed to parse, rejecting patch");
-                    return false;
-                }
-            }
-        };
-
-        var canonicalize = function (t) { return t.replace(/\r\n/g, '\n'); };
-
-        var setHistory = function (bool, update) {
-            isHistoryMode = bool;
-            setEditable(!bool);
-            if (!bool && update) {
-                config.onRemote();
-            }
-        };
-
-        var $contentContainer = $('#cp-app-code-editor');
+    var mkPreviewPane = function (editor, CodeMirror, framework) {
         var $previewContainer = $('#cp-app-code-preview');
         var $preview = $('#cp-app-code-preview-content');
+        var $codeMirror = $('.CodeMirror');
+        var forceDrawPreview = function () {
+            try {
+                DiffMd.apply(DiffMd.render(editor.getValue()), $preview);
+            } catch (e) { console.error(e); }
+        };
+        var drawPreview = Util.throttle(function () {
+            if (CodeMirror.highlightMode !== 'markdown') { return; }
+            if (!$previewContainer.is(':visible')) { return; }
+            forceDrawPreview();
+        }, 150);
+
+        var $previewButton = framework._.sfCommon.createButton(null, true);
+        $previewButton.removeClass('fa-question').addClass('fa-eye');
+        $previewButton.attr('title', Messages.previewButtonTitle);
+        var previewTo;
+        $previewButton.click(function () {
+            clearTimeout(previewTo);
+            $codeMirror.addClass('transition');
+            previewTo = setTimeout(function () {
+                $codeMirror.removeClass('transition');
+            }, 500);
+            if (CodeMirror.highlightMode !== 'markdown') {
+                $previewContainer.show();
+            }
+            $previewContainer.toggle();
+            if ($previewContainer.is(':visible')) {
+                forceDrawPreview();
+                $codeMirror.removeClass('cp-ap-code-fullpage');
+                $previewButton.addClass('cp-toolbar-button-active');
+                framework._.sfCommon.setPadAttribute('previewMode', true, function (e) {
+                    if (e) { return console.log(e); }
+                });
+            } else {
+                $codeMirror.addClass('cp-app-code-fullpage');
+                $previewButton.removeClass('cp-toolbar-button-active');
+                framework._.sfCommon.setPadAttribute('previewMode', false, function (e) {
+                    if (e) { return console.log(e); }
+                });
+            }
+        });
+        framework._.toolbar.$rightside.append($previewButton);
+
         $preview.click(function (e) {
             if (!e.target) { return; }
             var $t = $(e.target);
@@ -133,7 +121,70 @@ define([
             }
         });
 
-        var setIndentation = APP.setIndentation = function (units, useTabs) {
+        var modeChange = function (mode) {
+            if (mode === "markdown") {
+                $previewButton.show();
+                framework._.sfCommon.getPadAttribute('previewMode', function (e, data) {
+                    if (e) { return void console.error(e); }
+                    if (data !== false) {
+                        $previewContainer.show();
+                        $previewButton.addClass('active');
+                        $codeMirror.removeClass('cp-app-code-fullpage');
+                    }
+                });
+                return;
+            }
+            $previewButton.hide();
+            $previewContainer.hide();
+            $previewButton.removeClass('active');
+            $codeMirror.addClass('cp-app-code-fullpage');
+        };
+
+        framework.onReady(function () {
+            // add the splitter
+            if ($('.cp-splitter').length) { return; }
+            var splitter = $('<div>', {
+                'class': 'cp-splitter'
+            }).appendTo($previewContainer);
+
+            $preview.on('scroll', function() {
+                splitter.css('top', $preview.scrollTop() + 'px');
+            });
+
+            var $target = $('.CodeMirror');
+
+            splitter.on('mousedown', function (e) {
+                e.preventDefault();
+                var x = e.pageX;
+                var w = $target.width();
+
+                $(window).on('mouseup mousemove', function handler(evt) {
+                    if (evt.type === 'mouseup') {
+                        $(window).off('mouseup mousemove', handler);
+                        return;
+                    }
+                    $target.css('width', (w - x + evt.pageX) + 'px');
+                    editor.refresh();
+                });
+            });
+        });
+
+        framework._.sfCommon.getPadAttribute('previewMode', function (e, data) {
+            if (e) { return void console.error(e); }
+            if (data === false && $previewButton) {
+                $previewButton.click();
+            }
+        });
+
+        return {
+            forceDraw: forceDrawPreview,
+            draw: drawPreview,
+            modeChange: modeChange
+        };
+    };
+
+    var mkIndentSettings = function (editor, metadataMgr) {
+        var setIndentation = function (units, useTabs) {
             if (typeof(units) !== 'number') { return; }
             editor.setOption('indentUnit', units);
             editor.setOption('tabSize', units);
@@ -152,337 +203,98 @@ define([
                 typeof(indentUnit) === 'number'? indentUnit: 2,
                 typeof(useTabs) === 'boolean'? useTabs: false);
         };
+        metadataMgr.onChangeLazy(updateIndentSettings);
+        updateIndentSettings();
+    };
 
-        CommonRealtime.onInfiniteSpinner(function () { setEditable(false); });
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        setEditable(false);
-        var initializing = true;
+    var andThen2 = function (editor, CodeMirror, framework) {
 
-        var stringifyInner = function (textValue) {
-            var obj = {
-                content: textValue,
-                metadata: metadataMgr.getMetadataLazy()
-            };
-            // set mode too...
-            obj.highlightMode = CodeMirror.highlightMode;
+        var $toolbarContainer = $('#cme_toolbox');
+        var common = framework._.sfCommon;
 
-            // stringify the json and send it into chainpad
-            return stringify(obj);
-        };
+        var previewPane = mkPreviewPane(editor, CodeMirror, framework);
+        var evModeChange = Util.mkEvent();
+        evModeChange.reg(previewPane.modeChange);
 
-        var forceDrawPreview = function () {
-            try {
-                DiffMd.apply(DiffMd.render(editor.getValue()), $preview);
-            } catch (e) { console.error(e); }
-        };
+        mkIndentSettings(editor, framework._.cpNfInner.metadataMgr);
+        CodeMirror.init(framework.localChange, framework._.title, framework._.toolbar);
 
-        var drawPreview = Cryptpad.throttle(function () {
-            if (CodeMirror.highlightMode !== 'markdown') { return; }
-            if (!$previewContainer.is(':visible')) { return; }
-            forceDrawPreview();
-        }, 150);
-
-        var onLocal = config.onLocal = function () {
-            if (initializing) { return; }
-            if (isHistoryMode) { return; }
-            if (readOnly) { return; }
-
-            editor.save();
-
-            drawPreview();
-
-            var textValue = canonicalize(CodeMirror.$textarea.val());
-            var shjson = stringifyInner(textValue);
-
-            APP.patchText(shjson);
-
-            if (APP.realtime.getUserDoc() !== shjson) {
-                console.error("realtime.getUserDoc() !== shjson");
-            }
-        };
-
-        var mediaTagModes = [
-            'markdown',
-            'html',
-            'htmlembedded',
-            'htmlmixed',
-            'index.html',
-            'php',
-            'velocity',
-            'xml',
-        ];
-
-        var onModeChanged = function (mode) {
-            var $codeMirror = $('.CodeMirror');
-            window.clearTimeout(APP.previewTo);
-            $codeMirror.addClass('transition');
-            APP.previewTo = window.setTimeout(function () {
-                $codeMirror.removeClass('transition');
-            }, 500);
-            if (mediaTagModes.indexOf(mode) !== -1) {
-                $(APP.$mediaTagButton).show();
-            } else { $(APP.$mediaTagButton).hide(); }
-
-            if (mode === "markdown") {
-                APP.$previewButton.show();
-                common.getPadAttribute('previewMode', function (e, data) {
-                    if (e) { return void console.error(e); }
-                    if (data !== false) {
-                        $previewContainer.show();
-                        APP.$previewButton.addClass('active');
-                        $codeMirror.removeClass('cp-app-code-fullpage');
+        if (!framework.isReadOnly()) {
+            var fileDialogCfg = {
+                onSelect: function (data) {
+                    if (data.type === 'file') {
+                        var mt = '<media-tag src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>';
+                        editor.replaceSelection(mt);
+                        return;
                     }
-                });
-                return;
-            }
-            APP.$previewButton.hide();
-            $previewContainer.hide();
-            APP.$previewButton.removeClass('active');
-            $codeMirror.addClass('cp-app-code-fullpage');
-        };
-
-        config.onInit = function (info) {
-            metadataMgr.onChangeLazy(updateIndentSettings);
-            updateIndentSettings();
-
-            readOnly = metadataMgr.getPrivateData().readOnly;
-
-            var titleCfg = { getHeadingText: CodeMirror.getHeadingText };
-            Title = common.createTitle(titleCfg, config.onLocal);
-
-            var configTb = {
-                displayed: ['title', 'useradmin', 'spinner', 'share', 'userlist', 'newpad', 'limit'],
-                title: Title.getTitleConfig(),
-                metadataMgr: metadataMgr,
-                readOnly: readOnly,
-                ifrw: window,
-                realtime: info.realtime,
-                common: Cryptpad,
-                sfCommon: common,
-                $container: $bar,
-                $contentContainer: $contentContainer
-            };
-            toolbar = APP.toolbar = Toolbar.create(configTb);
-            Title.setToolbar(toolbar);
-            CodeMirror.init(config.onLocal, Title, toolbar);
-
-            var $rightside = toolbar.$rightside;
-            var $drawer = toolbar.$drawer;
-
-            /* add a history button */
-            var histConfig = {
-                onLocal: config.onLocal,
-                onRemote: config.onRemote,
-                setHistory: setHistory,
-                applyVal: function (val) {
-                    var remoteDoc = JSON.parse(val || '{}').content;
-                    editor.setValue(remoteDoc || '');
-                    editor.save();
-                },
-                $toolbar: $bar
-            };
-            var $hist = common.createButton('history', true, {histConfig: histConfig});
-            $drawer.append($hist);
-
-            /* save as template */
-            if (!metadataMgr.getPrivateData().isTemplate) {
-                var templateObj = {
-                    rt: info.realtime,
-                    getTitle: function () { return metadataMgr.getMetadata().title; }
-                };
-                var $templateButton = common.createButton('template', true, templateObj);
-                $rightside.append($templateButton);
-            }
-
-            /* add an export button */
-            var $export = common.createButton('export', true, {}, CodeMirror.exportText);
-            $drawer.append($export);
-
-            if (!readOnly) {
-                /* add an import button */
-                var $import = common.createButton('import', true, {}, CodeMirror.importText);
-                $drawer.append($import);
-            }
-
-            /* add a forget button */
-            var forgetCb = function (err) {
-                if (err) { return; }
-                setEditable(false);
-            };
-            var $forgetPad = common.createButton('forget', true, {}, forgetCb);
-            $rightside.append($forgetPad);
-
-            var $previewButton = APP.$previewButton = common.createButton(null, true);
-            $previewButton.removeClass('fa-question').addClass('fa-eye');
-            $previewButton.attr('title', Messages.previewButtonTitle);
-            $previewButton.click(function () {
-                var $codeMirror = $('.CodeMirror');
-                window.clearTimeout(APP.previewTo);
-                $codeMirror.addClass('transition');
-                APP.previewTo = window.setTimeout(function () {
-                    $codeMirror.removeClass('transition');
-                }, 500);
-                if (CodeMirror.highlightMode !== 'markdown') {
-                    $previewContainer.show();
                 }
-                $previewContainer.toggle();
-                if ($previewContainer.is(':visible')) {
-                    forceDrawPreview();
-                    $codeMirror.removeClass('cp-ap-code-fullpage');
-                    $previewButton.addClass('cp-toolbar-button-active');
-                    common.setPadAttribute('previewMode', true, function (e) {
-                        if (e) { return console.log(e); }
-                    });
+            };
+            common.initFilePicker(fileDialogCfg);
+            var $mediaTagButton = $('<button>', {
+                title: Messages.filePickerButton,
+                'class': 'cp-toolbar-rightside-button fa fa-picture-o',
+                style: 'font-size: 17px'
+            }).click(function () {
+                var pickerCfg = {
+                    types: ['file'],
+                    where: ['root']
+                };
+                common.openFilePicker(pickerCfg);
+            }).appendTo(framework._.toolbar.$rightside);
+            evModeChange.reg(function (mode) {
+                if (MEDIA_TAG_MODES.indexOf(mode) !== -1) {
+                    $($mediaTagButton).show();
                 } else {
-                    $codeMirror.addClass('cp-app-code-fullpage');
-                    $previewButton.removeClass('cp-toolbar-button-active');
-                    common.setPadAttribute('previewMode', false, function (e) {
-                        if (e) { return console.log(e); }
-                    });
+                    $($mediaTagButton).hide();
                 }
             });
-            $rightside.append($previewButton);
+        }
 
-            if (!readOnly) {
-                CodeMirror.configureTheme(function () {
-                    CodeMirror.configureLanguage(null, onModeChanged);
-                });
+        if (!framework.isReadOnly()) {
+            CodeMirror.configureTheme(function () {
+                CodeMirror.configureLanguage(null, evModeChange.fire);
+            });
+        } else {
+            CodeMirror.configureTheme();
+        }
+
+        ////
+
+        framework.onContentUpdate(function (newContent) {
+            var oldDoc = canonicalize(CodeMirror.$textarea.val());
+            var remoteDoc = newContent.content;
+            var highlightMode = newContent.highlightMode;
+            if (highlightMode && highlightMode !== CodeMirror.highlightMode) {
+                CodeMirror.setMode(highlightMode, evModeChange.fire);
             }
-            else {
-                CodeMirror.configureTheme();
-            }
+            CodeMirror.setValueAndCursor(oldDoc, remoteDoc, TextPatcher);
+            previewPane.draw();
+        });
 
-            if (!readOnly) {
-                var fileDialogCfg = {
-                    onSelect: function (data) {
-                        if (data.type === 'file') {
-                            var mt = '<media-tag src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>';
-                            editor.replaceSelection(mt);
-                            return;
-                        }
-                    }
-                };
-                common.initFilePicker(fileDialogCfg);
-                APP.$mediaTagButton = $('<button>', {
-                    title: Messages.filePickerButton,
-                    'class': 'cp-toolbar-rightside-button fa fa-picture-o',
-                    style: 'font-size: 17px'
-                }).click(function () {
-                    var pickerCfg = {
-                        types: ['file'],
-                        where: ['root']
-                    };
-                    common.openFilePicker(pickerCfg);
-                }).appendTo($rightside);
+        framework.setContentGetter(function () {
+            editor.save();
+            previewPane.draw();
+            return {
+                content: canonicalize(CodeMirror.$textarea.val()),
+                highlightMode: CodeMirror.highlightMode
+            };
+        });
 
-                var $tags = common.createButton('hashtag', true);
-                $rightside.append($tags);
-            }
-        };
+        framework.onEditableChange(function () {
+            editor.setOption('readOnly', framework.isLocked() || framework.isReadOnly());
+        });
 
-        config.onReady = function (info) {
-            if (APP.realtime !== info.realtime) {
-                var realtime = APP.realtime = info.realtime;
-                APP.patchText = TextPatcher.create({
-                    realtime: realtime,
-                    //logging: true
-                });
-            }
+        framework.setTitleRecommender(CodeMirror.getHeadingText);
 
-            var userDoc = APP.realtime.getUserDoc();
-
-            var isNew = false;
-            if (userDoc === "" || userDoc === "{}") { isNew = true; }
-
-            var newDoc = "";
-            if (userDoc !== "") {
-                var hjson = JSON.parse(userDoc);
-
-                if (hjson && hjson.metadata) {
-                    metadataMgr.updateMetadata(hjson.metadata);
-                }
-                if (typeof (hjson) !== 'object' || Array.isArray(hjson) ||
-                    (hjson.metadata && typeof(hjson.metadata.type) !== 'undefined' &&
-                     hjson.metadata.type !== 'code')) {
-                    var errorText = Messages.typeError;
-                    Cryptpad.errorLoadingScreen(errorText);
-                    throw new Error(errorText);
-                }
-
-                newDoc = hjson.content;
-
-                if (hjson.highlightMode) {
-                    CodeMirror.setMode(hjson.highlightMode, onModeChanged);
-                }
-            } else {
-                Title.updateTitle(Cryptpad.initialName || Title.defaultTitle);
-            }
-
-            if (!CodeMirror.highlightMode) {
-                CodeMirror.setMode('markdown', onModeChanged);
+        framework.onReady(function (newPad) {
+            if (newPad && !CodeMirror.highlightMode) {
+                CodeMirror.setMode('markdown', evModeChange.fire);
                 //console.log("%s => %s", CodeMirror.highlightMode, CodeMirror.$language.val());
-            }
-
-            if (newDoc) {
-                editor.setValue(newDoc);
-            }
-
-            if (Cryptpad.initialName && Title.isDefaultTitle()) {
-                Title.updateTitle(Cryptpad.initialName);
-            }
-
-
-            common.getPadAttribute('previewMode', function (e, data) {
-                if (e) { return void console.error(e); }
-                if (data === false && APP.$previewButton) {
-                    APP.$previewButton.click();
-                }
-            });
-
-
-
-            // add the splitter
-            if (!$('.cp-splitter').length) {
-                var splitter = $('<div>', {
-                    'class': 'cp-splitter'
-                }).appendTo($previewContainer);
-
-                $preview.on('scroll', function() {
-                    splitter.css('top', $preview.scrollTop() + 'px');
-                });
-
-                var $target = $('.CodeMirror');
-
-                splitter.on('mousedown', function (e) {
-                    e.preventDefault();
-                    var x = e.pageX;
-                    var w = $target.width();
-
-                    $(window).on('mouseup mousemove', function handler(evt) {
-                        if (evt.type === 'mouseup') {
-                            $(window).off('mouseup mousemove', handler);
-                            return;
-                        }
-                        $target.css('width', (w - x + evt.pageX) + 'px');
-                        editor.refresh();
-                    });
-                });
-            }
-
-
-            Cryptpad.removeLoadingScreen();
-            setEditable(!readOnly);
-            initializing = false;
-
-            onLocal(); // push local state to avoid parse errors later.
-
-            if (readOnly) {
-                config.onRemote();
-                return;
-            }
-
-            if (isNew) {
-                common.openTemplatePicker();
             }
 
             var fmConfig = {
@@ -499,122 +311,85 @@ define([
                     editor.replaceSelection(mt);
                 }
             };
-            APP.FM = common.createFileManager(fmConfig);
-        };
-
-        config.onRemote = function () {
-            if (initializing) { return; }
-            if (isHistoryMode) { return; }
-
-            var oldDoc = canonicalize(CodeMirror.$textarea.val());
-            var shjson = APP.realtime.getUserDoc();
-
-            // Update the user list (metadata) from the hyperjson
-            //Metadata.update(shjson);
-
-            var hjson = JSON.parse(shjson);
-            var remoteDoc = hjson.content;
-
-            if (hjson.metadata) {
-                metadataMgr.updateMetadata(hjson.metadata);
-            }
-
-            var highlightMode = hjson.highlightMode;
-            if (highlightMode && highlightMode !== APP.highlightMode) {
-                CodeMirror.setMode(highlightMode, onModeChanged);
-            }
-
-            CodeMirror.setValueAndCursor(oldDoc, remoteDoc, TextPatcher);
-            drawPreview();
-
-            if (!readOnly) {
-                var textValue = canonicalize(CodeMirror.$textarea.val());
-                var shjson2 = stringifyInner(textValue);
-                if (shjson2 !== shjson) {
-                    console.error("shjson2 !== shjson");
-                    TextPatcher.log(shjson, TextPatcher.diff(shjson, shjson2));
-                    APP.patchText(shjson2);
-                }
-            }
-            if (oldDoc !== remoteDoc) { common.notify(); }
-        };
-
-        config.onAbort = function () {
-            // inform of network disconnect
-            setEditable(false);
-            toolbar.failed();
-            Cryptpad.alert(Messages.common_connectionLost, undefined, true);
-        };
-
-        config.onConnectionChange = function (info) {
-            setEditable(info.state);
-            //toolbar.failed();
-            if (info.state) {
-                initializing = true;
-                //toolbar.reconnecting(info.myId);
-                Cryptpad.findOKButton().click();
-            } else {
-                Cryptpad.alert(Messages.common_connectionLost, undefined, true);
-            }
-        };
-
-        config.onError = onConnectError;
-
-        cpNfInner = common.startRealtime(config);
-        metadataMgr = cpNfInner.metadataMgr;
-
-        cpNfInner.onInfiniteSpinner(function () {
-            setEditable(false);
-            Cryptpad.confirm(Messages.realtime_unrecoverableError, function (yes) {
-                if (!yes) { return; }
-                common.gotoURL();
-            });
+            common.createFileManager(fmConfig);
         });
 
-        editor.on('change', onLocal);
+        framework.onDefaultContentNeeded(function () {
+             editor.setValue(Messages.codeInitialState);
+        });
 
-        Cryptpad.onLogout(function () { setEditable(false); });
-    };
-
-    var CMEDITOR_CHECK_INTERVAL = 100;
-    var cmEditorAvailable = function (cb) {
-        var intr;
-        var check = function () {
-            if (window.CodeMirror) {
-                clearTimeout(intr);
-                cb(window.CodeMirror);
+        framework.setFileExporter(
+            function () {
+                return (Modes.extensionOf(CodeMirror.highlightMode) || '.txt').slice(1);
+            },
+            function () {
+                return new Blob([ editor.getValue() ], { type: 'text/plain;charset=utf-8' });
             }
-        };
-        intr = setInterval(function () {
-            console.log("CodeMirror was not defined. Trying again in %sms", CMEDITOR_CHECK_INTERVAL);
-            check();
-        }, CMEDITOR_CHECK_INTERVAL);
-        check();
+        );
+
+        framework.setFileImporter({}, function (content, file) {
+            var mime = CodeMirror.findModeByMIME(file.type);
+            var mode;
+            if (!mime) {
+                var ext = /.+\.([^.]+)$/.exec(file.name);
+                if (ext[1]) {
+                    mode = CMeditor.findModeByExtension(ext[1]);
+                    mode = mode && mode.mode || null;
+                }
+            } else {
+                mode = mime && mime.mode || null;
+            }
+            if (mode && Modes.list.some(function (o) { return o.mode === mode; })) {
+                CodeMirror.setMode(mode);
+                $toolbarContainer.find('#language-mode').val(mode);
+            } else {
+                console.log("Couldn't find a suitable highlighting mode: %s", mode);
+                CodeMirror.setMode('text');
+                $toolbarContainer.find('#language-mode').val('text');
+            }
+            return content;
+        });
+
+        framework.setNormalizer(function (c) {
+            return {
+                content: c.content,
+                highlightMode: c.highlightMode
+            };
+        });
+
+        editor.on('change', framework.localChange);
+
+        framework.start();
     };
+
     var main = function () {
-        var CM;
         var CodeMirror;
         var editor;
         var common;
+        var framework;
 
         nThen(function (waitFor) {
-            cmEditorAvailable(waitFor(function (cm) {
-                CM = cm;
-            }));
-            $(waitFor(function () {
-                Cryptpad.addLoadingScreen();
-            }));
-            SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
+
+            Framework.create({
+                toolbarContainer: '#cme_toolbox',
+                contentContainer: '#cp-app-code-editor'
+            }, waitFor(function (fw) { framework = fw; }));
+
+            nThen(function (waitFor) {
+                $(waitFor());
+                // TODO(cjd): This is crap but we cannot bring up codemirror until after
+                //            the CryptPad Common is up and we can't bring up framework
+                //            without codemirror.
+                SFCommon.create(waitFor(function (c) { common = c; }));
+            }).nThen(function () {
+                CodeMirror = common.initCodeMirrorApp(null, CMeditor);
+                $('.CodeMirror').addClass('cp-app-code-fullpage');
+                editor = CodeMirror.editor;
+            }).nThen(waitFor());
+
         }).nThen(function (/*waitFor*/) {
-            CodeMirror = common.initCodeMirrorApp(null, CM);
-            $('.CodeMirror').addClass('cp-app-code-fullpage');
-            editor = CodeMirror.editor;
-            Cryptpad.onError(function (info) {
-                if (info && info.type === "store") {
-                    onConnectError();
-                }
-            });
-            andThen(editor, CodeMirror, common);
+            console.log('hi');
+            andThen2(editor, CodeMirror, framework);
         });
     };
     main();

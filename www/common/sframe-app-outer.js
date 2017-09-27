@@ -8,7 +8,6 @@ define([
 ], function (nThen, ApiConfig, $, RequireConfig, SFCommonO) {
     var requireConfig = RequireConfig();
 
-    // Loaded in load #2
     nThen(function (waitFor) {
         $(waitFor());
     }).nThen(function (waitFor) {
@@ -20,8 +19,8 @@ define([
         window.rc = requireConfig;
         window.apiconf = ApiConfig;
         $('#sbox-iframe').attr('src',
-            ApiConfig.httpSafeOrigin + '/pad/inner.html?' + requireConfig.urlArgs +
-                '#' + encodeURIComponent(JSON.stringify(req)));
+            ApiConfig.httpSafeOrigin + window.location.pathname + 'inner.html?' +
+                requireConfig.urlArgs + '#' + encodeURIComponent(JSON.stringify(req)));
 
         // This is a cheap trick to avoid loading sframe-channel in parallel with the
         // loading screen setup.
