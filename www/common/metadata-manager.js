@@ -51,9 +51,9 @@ define(['json.sortify'], function (Sortify) {
                 mdo[meta.user.netfluxId] = meta.user;
             }
             metadataObj.users = mdo;
-            var lazyUserStr = JSON.stringify(metadataLazyObj.users[meta.user.netfluxId]);
+            var lazyUserStr = Sortify(metadataLazyObj.users[meta.user.netfluxId]);
             dirty = false;
-            if (lazy || lazyUserStr !== JSON.stringify(meta.user)) {
+            if (lazy || lazyUserStr !== Sortify(meta.user)) {
                 metadataLazyObj = JSON.parse(JSON.stringify(metadataObj));
                 lazyChangeHandlers.forEach(function (f) { f(); });
             }
@@ -105,6 +105,7 @@ define(['json.sortify'], function (Sortify) {
             updateMetadata: function (m) {
                 // JSON.parse(JSON.stringify()) reorders the json, so we have to use sortify even
                 // if it's on our own computer
+                if (!m) { return; }
                 if (Sortify(metadataLazyObj) === Sortify(m)) { return; }
                 metadataObj = JSON.parse(JSON.stringify(m));
                 metadataLazyObj = JSON.parse(JSON.stringify(m));
