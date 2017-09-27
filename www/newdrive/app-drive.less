@@ -1,99 +1,125 @@
-@import "/customize/src/less/variables.less";
-@import "/customize/src/less/mixins.less";
-@import (once) "/customize/src/less2/include/tools.less";
+@import (once) "../../customize/src/less2/include/browser.less";
+@import (once) "../../customize/src/less2/include/toolbar.less";
+@import (once) "../../customize/src/less2/include/markdown.less";
+@import (once) '../../customize/src/less2/include/fileupload.less';
+@import (once) '../../customize/src/less2/include/alertify.less';
+@import (once) '../../customize/src/less2/include/leftside-menu.less';
+@import (once) "../../customize/src/less2/include/tools.less";
+@import (once) "../../customize/src/less2/include/limit-bar.less";
 
-@tree-bg: #eee;
-@tree-fg: #000;
-@tree-lines-col: #888;
+.toolbar_main();
+.fileupload_main();
+.alertify_main();
+.limit-bar_main();
 
-@drive-hover: #eee;
-@drive-hover-light: lighten(@drive-hover, 20%);
+@drive_hover: #eee;
+@drive_hover-light: lighten(@drive_hover, 20%);
+@drive_info-box-bg: #d2e1f2;
+@drive_info-box-border: #bbb;
+@drive_table-header-fg: #555;
+@drive_table-header-bg: #e8e8e8;
+@drive_mobile-tree-border-col: #ccc;
 
-@content-bg: #fff;
-@content-bg-ro: darken(@content-bg, 10%);
-@content-fg: @tree-fg;
-@info-box-bg: #d2e1f2;
-@info-box-border: #bbb;
-@table-header-fg: #555;
-@table-header-bg: #e8e8e8;
+@drive_content-fg: @colortheme_sidebar-right-fg;
+@drive_content-bg: @colortheme_sidebar-right-bg;
+@drive_content-bg-ro: darken(@drive_content-bg, 10%);
 
-@toolbar-bg: #ddd;
-@toolbar-fg: #555;
-@toolbar-border-col: #ccc;
-@toolbar-button-bg: #888;
-@toolbar-button-border: #888;
-@toolbar-button-bg-hover: #777;
-@toolbar-button-fg: #eee;
-@toolbar-path-bg: #fff;
-@toolbar-path-border: #888;
-
-@size-mobile: 600px;
 
 /* PAGE */
 
-html, body {
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-    position: relative;
-    font-size: @main-font-size;
-    overflow: auto;
+display: flex;
+flex-flow: column;
+max-height: 100%;
+min-height: auto;
+
+.cp-unselectable {
+    .tools_unselectable();
 }
 
-body {
-    display: flex;
-    flex-flow: column;
-}
-img.icon {
-    max-width: 20px;
-    max-height: 16px;
-}
+/* local mixins */
+.drive_fileIcon {
+    li {
+        display: inline-block;
+        margin: 10px 10px;
+        width: 140px;
+        height: 140px;
+        text-align: center;
+        vertical-align: top;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-top: 5px;
+        padding-bottom: 5px;
 
-.unselectable {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-.app-container {
-    flex: 1;
-    overflow: auto;
-    width: 100%;
-    display: flex;
-    flex-flow: row;
-    @media screen and (max-width: @size-mobile) {
-        display: block;
-        #driveToolbar {
-            .path .element {
-                display: none;
-            }
+        &:not(.cp-app-drive-element-selected):not(.cp-app-drive-element-selected-tmp) {
+            border: 1px solid #CCC;
         }
-        #tree {
-            resize: none;
+        .cp-app-drive-element-name {
             width: 100%;
-            max-width: unset;
-            max-height: unset;
-            border-bottom: 1px solid @toolbar-border-col;
-            .category {
-                margin-top: 0.5em;
+            height: 48px;
+            margin: 8px 0;
+            display: inline-block;
+            //align-items: center;
+            //justify-content: center;
+            overflow: hidden;
+            //text-overflow: ellipsis;
+            word-wrap: break-word;
+        }
+        .cp-app-drive-element-truncated {
+            display: block;
+            position: absolute;
+            bottom: 0px;
+            left: 0; right: 0;
+            text-align: center;
+        }
+        img.cp-app-drive-content-icon {
+            height: 48px;
+            max-height: none;
+            max-width: none;
+            margin: 8px 0;
+        }
+        .fa {
+            display: block;
+            margin: auto;
+            font-size: 48px;
+            margin: 8px 0;
+            text-align: center;
+            &.listonly {
+                display: none;
             }
         }
     }
 }
 
-.padColor { color: @toolbar-pad-bg; }
-.codeColor { color: @toolbar-code-bg; }
-.slideColor { color: @toolbar-slide-bg; }
-.pollColor { color: @toolbar-poll-bg; }
-.fileColor { color: @toolbar-file-bg; }
-.whiteboardColor { color: @toolbar-whiteboard-bg; }
-.driveColor { color: @toolbar-drive-bg; }
-.defaultColor { color: @toolbar-default-bg; }
+img.cp-app-drive-icon {
+    max-width: 20px;
+    max-height: 16px;
+}
+
+.cp-app-drive-container {
+    flex: 1;
+    overflow: auto;
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    @media screen and (max-width: @browser_media-medium-screen) {
+        display: block;
+        #cp-app-drive-toolbar {
+            .path .element {
+                display: none;
+            }
+        }
+        #cp-app-drive-tree {
+            resize: none;
+            width: 100%;
+            max-width: unset;
+            max-height: unset;
+            border-bottom: 1px solid @drive_mobile-tree-border-col;
+            .cp-app-drive-tree-category {
+                margin-top: 0.5em;
+            }
+        }
+    }
+}
 
 div:focus {
     outline: none;
@@ -116,40 +142,40 @@ li {
     user-select: none;
 }
 
-.contextMenu {
+.cp-app-drive-context {
     display: none;
     position: absolute;
     z-index: 500;
     li {
         padding: 0;
-        font-size: @main-font-size;
+        font-size: @colortheme_app-font-size;
         a {
             cursor: pointer;
         }
     }
 }
 
-.droppable {
+.cp-app-drive-element-droppable {
     background-color: #FE9A2E;
     color: #222;
 }
 
-.selected {
+.cp-app-drive-element-selected {
     background: #666 !important;
     color: #eee;
     margin: -1px;
     .fa-minus-square-o, .fa-plus-square-o {
-        color: @tree-fg;
+        color: @colortheme_sidebar-left-fg;
     }
 }
 
-.selectedTmp {
+.cp-app-drive-element-selected-tmp {
     border: 1px dotted #bbb;
     background: #AAA;
     color: #ddd;
     margin: -1px;
     .fa-minus-square-o, .fa-plus-square-o {
-        color: @tree-fg;
+        color: @colortheme_sidebar-left-fg;
     }
 }
 
@@ -163,11 +189,11 @@ span {
 /* TREE */
 
 
-#tree {
-    font-size: @main-font-size;
+#cp-app-drive-tree {
+    font-size: @colortheme_app-font-size;
     //border-right: 1px solid #ccc;
     box-sizing: border-box;
-    background: @tree-bg;
+    background: @colortheme_sidebar-left-bg;
     overflow: auto;
     resize: horizontal;
     width: auto;
@@ -175,40 +201,40 @@ span {
     max-width: 500px;
     min-width: 200px;
     padding: 0px;
-    color: @tree-fg;
+    color: @colortheme_sidebar-left-fg;
     display: flex;
     flex-flow: column;
     max-height: 100%;
-    .categories-container {
+    .cp-app-drive-tree-categories-container {
         flex: 1;
         max-width: 500px;
         overflow: auto;
     }
-    img.icon {
+    img.cp-app-drive-icon {
         margin-bottom: 3px;
         margin-left: -2px;
     }
-    .docTree {
+    .cp-app-drive-tree-docs {
         margin-top: 20px;
         //padding: 0 0 0 20px;
         padding: 0;
         cursor: auto;
         &li, li {
             padding: 0;
-            &.collapsed ul {
+            &.cp-app-drive-element-collapsed ul {
                 display: none;
             }
             input {
                 width: ~"calc(100% - 30px)";
                 padding: 0 10px;
                 border: 0;
-                color: lighten(@tree-fg, 40%);
+                color: lighten(@colortheme_sidebar-left-fg, 40%);
             }
-            & > span.element-row {
+            & > span.cp-app-drive-element-row {
                 overflow: hidden;
                 text-overflow: ellipsis;
                 //min-width: ~"calc(100% + 5px)";
-                .leftsideCategory();
+                .leftside-menu-category_main();
                 width: ~"calc(100% + 5px)";
                 margin: 0;
                 margin-bottom: -6px;
@@ -217,23 +243,17 @@ span {
                 margin-left: -5px;
                 padding-left: 5px;
             }
-            & > span.element-row:not(.selected):not(.active):hover {
-                //background-color: @drive-hover;
+            & > span.cp-app-drive-element-row:not(.cp-app-drive-element-selected):not(.cp-app-drive-element-active):hover {
             }
         }
     }
-    span.element {
+    span.cp-app-drive-element {
         cursor: pointer;
     }
-    /*.active {
-        &:not(.selected):not(.droppable) {
-            background-color: darken(@drive-hover, 15%);
-        }
-    }*/
-    .category {
+    .cp-app-drive-tree-category {
         margin: 0;
         margin-top: 15px;
-        .root {
+        .cp-app-drive-tree-root {
             &> .fa {
                 min-width: 30px;
                 cursor: pointer;
@@ -241,10 +261,10 @@ span {
         }
         li {
             padding: 0;
-            .element-row {
+            .cp-app-drive-element-row {
                 display: block;
                 padding-left: 20px;
-                .leftsideCategory();
+                .leftside-menu-category_main();
                 margin: 0;
                 .fa {
                     width: 25px;
@@ -252,45 +272,42 @@ span {
             }
         }
     }
-    .category:last-child {
+    .cp-app-drive-tree-category:last-child {
         margin-bottom: 20px;
-    }
-    #allfilesTree {
-        margin-top: 0;
     }
     .limit-container {
         margin-top: 0;
     }
-    #searchContainer {
+    #cp-app-drive-tree-search {
         text-align: center;
         padding: 0;
         position: relative;
         input {
-            background: lighten(@toolbar-drive-bg, 8%);
-            color: @toolbar-drive-color;
-            .tools_placeholder-color(@toolbar-drive-color);
+            background: lighten(@colortheme_drive-bg, 8%);
+            color: @colortheme_drive-color;
+            .tools_placeholder-color(@colortheme_drive-color);
             outline-width: 0px;
             border-radius: 0;
             width: 100%;
             //border: 1px solid #ccc;
             border: 0;
-            border-right: 1px solid lighten(@toolbar-drive-bg, 16%);
+            border-right: 1px solid lighten(@colortheme_drive-bg, 16%);
             //border-right: 0;
-            height: @toolbar-line-height;
+            height: @variables_bar-height;
             padding: 0 5px;
             padding-left: 45px;
             &:focus {
                 outline-width: 0px;
             }
         }
-        .searchIcon {
-            color: @toolbar-drive-color;
+        .cp-app-drive-tree-search-con {
+            color: @colortheme_drive-color;
             position: absolute;
             left: 20px; // TODO align with drive categories
             top: 8px;
         }
     }
-    .fa.expcol {
+    .fa.cp-app-drive-icon-expcol {
         margin-left: -10px;
         font-size: 14px;
         position: absolute;
@@ -308,17 +325,17 @@ span {
             top: -1px;
         }
     }
-    .docTree {
-        .root > .element-row > .expcol {
+    .cp-app-drive-tree-docs {
+        .cp-app-drive-tree-root > .cp-app-drive-element-row > .cp-app-drive-icon-expcol {
             position: relative;
             top:0;
             left: -10px;
         }
-        .root > .element-row > .folder {
+        .cp-app-drive-tree-root > .cp-app-drive-element-row > .cp-app-drive-icon-folder {
             margin-left: -5px;
         }
-        .root {
-            &> .element-row {
+        .cp-app-drive-tree-root {
+            &> .cp-app-drive-element-row {
                 padding-left: 20px;
             }
             &> ul {
@@ -328,7 +345,7 @@ span {
     }
 
     // Expand/collapse lines
-    .docTree ul {
+    .cp-app-drive-tree-docs ul {
         margin: 0px 0px 0px 10px;
         list-style: none;
         padding-left: 10px;
@@ -340,9 +357,9 @@ span {
                 top: -11px;
                 content: '';
                 display: block;
-                border-left: 1px solid @tree-lines-col;
+                border-left: 1px solid @colortheme_sidebar-left-branch;
                 height: ~"calc(1em + 11px)";
-                border-bottom: 1px solid @tree-lines-col;
+                border-bottom: 1px solid @colortheme_sidebar-left-branch;
                 width: 15px;
             }
             &:after {
@@ -351,10 +368,10 @@ span {
                 bottom: -7px;
                 content: '';
                 display: block;
-                border-left: 1px solid @tree-lines-col;
+                border-left: 1px solid @colortheme_sidebar-left-branch;
                 height: 100%;
             }
-            &.root {
+            &.cp-app-drive-tree-root {
                 margin: 0px 0px 0px -10px;
                 &:before {
                     display: none;
@@ -371,7 +388,7 @@ span {
 }
 
 /* CONTENT */
-#rightCol {
+#cp-app-drive-content-container {
     display: flex;
     flex-flow: column;
     flex: 1;
@@ -379,74 +396,66 @@ span {
     // https://stackoverflow.com/questions/38223879/white-space-nowrap-breaks-flexbox-layout
     min-width: 0;
 }
-#content {
+#cp-app-drive-content {
     box-sizing: border-box;
-    background: @content-bg;
-    color: @content-fg;
+    background: @drive_content-bg;
+    color: @drive_content-fg;
     overflow: auto;
     flex: 1;
     display: flex;
     flex-flow: column;
     position: relative;
-    .selectBox {
+    .cp-app-drive-content-select-box {
         display: none;
         background-color: rgba(100, 100, 100, 0.7);
         position: absolute;
         z-index: 50;
     }
-    &.readonly {
-        background: @content-bg-ro;
+    &.cp-app-drive-readonly {
+        background: @drive_content-bg-ro;
     }
     h1 {
         padding-left: 10px;
         margin-top: 10px;
     }
-    .info-box {
+    .cp-app-drive-content-info-box {
         line-height: 2em;
         padding: 0.25em 0.75em;
         margin: 1em;
-        background: @info-box-bg;
+        background: @drive_info-box-bg;
         span {
             cursor: pointer;
             float: right;
             margin-top: 0.5em;
         }
-        &.noclose {
-        }
     }
     li {
         cursor: default;
-        &:not(.header) {
-            *:not(input) {
-                /*pointer-events: none;*/
-            }
+        &:not(.cp-app-drive-element-header) {
             &:hover {
-                &:not(.selected, .selectedTmp) {
-                    background-color: @drive-hover;
-                }
-                .name {
-                    /*text-decoration: underline;*/
+                &:not(.-cp-app-drive-element-selected, .cp-app-drive-element-selected-tmp) {
+                    background-color: @drive_hover;
                 }
             }
         }
     }
-    #folderContent {
+    #cp-app-drive-content-folder {
         li {
-            &.searchResult {
-                border-bottom: 1px solid @info-box-border;
+            &.cp-app-drive-search-result {
+                border-bottom: 1px solid @drive_info-box-border;
                 display: block;
                 &:hover {
                     background-color: initial;
                 }
                 table {
                     width: 100%;
-                    .label2 {
+                    .cp-app-drive-search-label2 {
                         width: 150px;
                         font-size: 15px;
                         text-align: right;
                         padding-right: 15px;
                     }
-                    .openDir {
+                    .cp-app-drive-search-opendir {
                         a {
                             cursor: pointer;
                             color: #41b7d8;
@@ -456,25 +465,25 @@ span {
                             }
                         }
                     }
-                    .path {
+                    .cp-app-drive-search-path {
                         font-style: italic;
                         direction: rtl;
-                        .element {
+                        .cp-app-drive-path-element {
                             display: inline-block;
                             margin-right: 5px;
                         }
                     }
-                    .title {
+                    .cp-app-drive-search-title {
                         font-weight: bold;
                         cursor: pointer;
                         &:hover {
-                            background-color: @drive-hover;
+                            background-color: @drive_hover;
                         }
                     }
-                    .col2 {
+                    .cp-app-drive-search-col2 {
                         width: 250px;
                     }
-                    td.icon {
+                    td.cp-app-drive-search-icon {
                         width: 50px;
                         font-size: 40px;
                     }
@@ -482,21 +491,21 @@ span {
             }
         }
     }
-    .element {
-        .truncated { display: none; }
+    .cp-app-drive-element {
+        .cp-app-drive-element-truncated { display: none; }
     }
-    div.grid {
+    div.cp-app-drive-content-grid {
         padding: 20px;
-        .fileIcon;
+        .drive_fileIcon;
         li {
-            &.element {
+            &.cp-app-drive-element {
                 position: relative;
             }
             input {
                 width: 100%;
                 margin-top: 5px;
             }
-            .state {
+            .cp-app-drive-element-state {
                 position: absolute;
                 top: 3px;
                 right: 3px;
@@ -506,10 +515,10 @@ span {
                 }
             }
         }
-        .listElement {
+        .cp-app-drive-element-list {
             display: none;
         }
-        .addpad {
+        .cp-app-drive-new-ghost {
             cursor: pointer;
             opacity: 0.5;
             padding: 0;
@@ -525,8 +534,8 @@ span {
         }
     }
 
-    .list {
-        .grid-element {
+    .cp-app-drive-content-list {
+        .cp-app-drive-element-grid {
             display: none;
         }
         // Make it act as a table!
@@ -542,13 +551,13 @@ span {
                 padding: 0 5px;
                 display: table-cell;
             }
-            &:not(.header) {
-                height: @toolbar-line-height;
-                line-height: @toolbar-line-height;
+            &:not(.cp-app-drive-element-header) {
+                height: @variables_bar-height;
+                line-height: @variables_bar-height;
             }
-            &.header {
+            &.cp-app-drive-element-header {
                 cursor: default;
-                color: @table-header-fg;
+                color: @drive_table-header-fg;
                 span {
                     &:not(.fa) {
                         text-align: left;
@@ -559,41 +568,41 @@ span {
                 }
                 &> span {
                     padding: 15px 5px;
-                    &.active {
+                    &.cp-app-drive-sort-active {
                         font-weight: bold;
                     }
-                    &.clickable {
+                    &.cp-app-drive-sort-clickable {
                         cursor: pointer;
                         &:hover {
-                            background: @table-header-bg;
+                            background: @drive_table-header-bg;
                         }
                     }
                 }
             }
         }
-        .element {
+        .cp-app-drive-element {
             span {
                 overflow: hidden;
                 white-space: nowrap;
                 box-sizing: border-box;
-                &.state {
+                &.cp-app-drive-element-state {
                     .fa:not(:last-child) {
                         margin-right: 5px;
                     }
                 }
-                &.icon, &.state {
+                &.cp-app-drive-content-icon, &.cp-app-drive-element-state {
                     width: 30px;
                 }
-                &.type, &.atime, &.ctime {
+                &.cp-app-drive-element-type, &.cp-app-drive-element-atime, &.cp-app-drive-element-ctime {
                     width: 175px;
                 }
-                &.title {
+                &.cp-app-drive-element-title {
                     width: 250px;
                     @media screen and (max-width: 1200px) {
                         display: none;
                     }
                 }
-                &.folders, &.files {
+                &.cp-app-drive-element-folders, &.cp-app-drive-element-files {
                     width: 150px;
                 }
             }
@@ -601,23 +610,15 @@ span {
     }
 }
 
-.parentFolder {
-    cursor: pointer;
-    margin-left: 10px;
-    &:hover {
-        text-decoration: underline;
-    }
-}
-
-#folderContent {
+#cp-app-drive-content-folder {
     padding-right: 10px;
     flex: 1;
 }
 
-#addPadDialog.cp-modal-container {
-    .fileIcon;
+#cp-app-drive-new-ghost-dialog.cp-modal-container {
+    .drive_fileIcon;
 
-    li:not(.selected):hover {
+    li:not(.cp-app-drive-element-selected):hover {
         border: 1px solid white;
     }
     .cp-modal {
@@ -635,7 +636,7 @@ span {
             justify-content: center;
             align-content: center;
             overflow-y: auto;
-            .uploadFile {
+            .cp-app-drive-new-upload {
                 break-after: always;
                 page-break-after: always;
             }
@@ -657,7 +658,7 @@ span {
                     .fa {
                         font-size: 32px;
                     }
-                    .name {
+                    .cp-app-drive-new-name {
                         height: auto;
                     }
                 }
@@ -669,15 +670,15 @@ span {
 
 /* Toolbar */
 
-#driveToolbar {
-    background: lighten(@toolbar-drive-bg, 8%);
-    color: @toolbar-drive-color;
+#cp-app-drive-toolbar {
+    background: lighten(@colortheme_drive-bg, 8%);
+    color: @colortheme_drive-color;
     //height: 30px;
     //display: flex;
     //flex-flow: row;
     z-index: 100;
     box-sizing: border-box;
-    height: @toolbar-line-height;
+    height: @variables_bar-height;
     padding: 0;
     display: flex;
     flex-flow: row;
@@ -689,16 +690,14 @@ span {
         }
     }
 
-    .newPadContainer {
-        display: inline-block;
-        height: 100%;
-    }
-
     .history {
         float: right;
+        .cp-toolbar-drawer-element {
+            display: none;
+        }
     }
 
-    .rightside, .leftside {
+    .cp-app-drive-toolbar-rightside, .cp-app-drive-toolbar-leftside {
         display: inline-block;
         margin: 0;
         padding: 0;
@@ -706,41 +705,41 @@ span {
             margin: 0;
         }
         button {
-            height: @toolbar-line-height;
+            height: @variables_bar-height;
             padding: 0 10px;
             border: none;
             border-radius: 0;
             box-sizing: border-box;
             background: transparent;
-            font-size: @main-font-size;
-            color: @toolbar-drive-color;
+            font-size: @colortheme_app-font-size;
+            color: @colortheme_drive-color;
             transition: all 0.15s;
             .drawer {
                 display: none;
             }
             .fa, span {
-                font-size: @main-font-size;
+                font-size: @colortheme_app-font-size;
             }
             &:hover {
-                background: @toolbar-drive-bg;
+                background: @colortheme_drive-bg;
             }
-            &.active {
+            &.cp-app-drive-toolbar-active {
                 display: none;
             }
         }
     }
-    .rightside {
+    .cp-app-drive-toolbar-rightside {
         float: right;
         & > * {
             float: right;
         }
-        #contextButtonsContainer {
+        #cp-app-drive-toolbar-contextbuttons {
             display: inline-block;
             height: 100%;
         }
         padding-left: 10px;
     }
-    .leftside {
+    .cp-app-drive-toolbar-leftside {
         & > span {
             height: 100%;
             margin: 0;
@@ -752,7 +751,7 @@ span {
             }
             .cp-dropdown-button-title {
                 display: inline-flex;
-                height: @toolbar-line-height;
+                height: @variables_bar-height;
                 align-items: center;
                 span:not(.fa) {
                     line-height: 23px;
@@ -762,9 +761,9 @@ span {
     }
 
     button {
-        font: @toolbar-button-font;
+        font: @colortheme_app-font;
         span {
-            font: @toolbar-button-font;
+            font: @colortheme_app-font;
         }
         .fa, &.fa {
             font-family: FontAwesome;
@@ -781,11 +780,11 @@ span {
         margin-right: 2px;
     }
 
-    .path {
+    .cp-app-drive-path {
         flex: 1;
         width: 100%;
-        height: @toolbar-line-height;
-        line-height: @toolbar-line-height;
+        height: @variables_bar-height;
+        line-height: @variables_bar-height;
         cursor: default;
         width: auto;
         overflow: hidden;
@@ -793,24 +792,24 @@ span {
         direction: rtl;
         max-width: 100%;
         text-align: left;
-        .element {
+        .cp-app-drive-path-element {
             display: inline-block;
-            height: @toolbar-line-height;
-            line-height: @toolbar-line-height;
-            font-size: @main-font-size;
+            height: @variables_bar-height;
+            line-height: @variables_bar-height;
+            font-size: @colortheme_app-font-size;
             padding: 0 5px;
             border: 0;
-            background: darken(@toolbar-drive-bg, 10%);
-            color: @toolbar-drive-color;
+            background: darken(@colortheme_drive-bg, 10%);
+            color: @colortheme_drive-color;
             box-sizing: border-box;
             transition: all 0.15s;
-            &.separator {
+            &.cp-app-drive-path-separator {
                 color: #ccc;
             }
-            &.clickable {
+            &.cp-app-drive-path-lickable {
                 cursor: pointer;
                 &:hover {
-                    background: darken(@toolbar-drive-bg, 15%);
+                    background: darken(@colortheme_drive-bg, 15%);
                 }
             }
         }

@@ -67,6 +67,9 @@ define({
     // Use anonymous rpc from inside the iframe (for avatars & pin usage).
     'Q_ANON_RPC_MESSAGE': true,
 
+    // Get the user's pin limit, usage and plan
+    'Q_PIN_GET_USAGE': true,
+
     // Check the pin limit to determine if we can store the pad in the drive or if we should.
     // display a warning
     'Q_GET_PIN_LIMIT_STATUS': true,
@@ -123,16 +126,28 @@ define({
 
     // Make the browser window navigate to a given URL, if no URL is passed then it will reload.
     'EV_GOTO_URL': true,
+    // Make the parent window open a given URL in a new tab. It allows us to keep sessionStorage
+    // form the parent window.
+    'EV_OPEN_URL': true,
 
     // Present mode URL
     'Q_PRESENT_URL_GET_VALUE': true,
     'EV_PRESENT_URL_SET_VALUE': true,
 
     // Put one or more entries to the cache which will go in localStorage.
+    // Cache is wiped after each new release
     'EV_CACHE_PUT': true,
+    // Put one or more entries to the localStore which will go in localStorage.
+    'EV_LOCALSTORE_PUT': true,
+    // Put one entry in the parent sessionStorage
+    'Q_SESSIONSTORAGE_PUT': true,
 
     // Set and get the tags using the tag prompt button
     'Q_TAGS_GET': true,
     'EV_TAGS_SET': true,
+
+    // Merge the anonymous drive (FS_hash) into the current logged in user's drive, to keep the pads
+    // in the drive at registration.
+    'Q_MERGE_ANON_DRIVE': true,
 
 });

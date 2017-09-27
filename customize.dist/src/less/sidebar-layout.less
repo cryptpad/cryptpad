@@ -1,10 +1,11 @@
 @import '/customize/src/less/variables.less';
 @import '/customize/src/less/mixins.less';
+@import (once) "/customize/src/less2/include/colortheme.less";
 
-@leftside-bg: #eee;
-@leftside-color: #000;
-@rightside-color: #000;
-@description-color: #777;
+@leftside-bg: @colortheme_sidebar-left-bg;
+@leftside-color: @colortheme_sidebar-left-fg;
+@rightside-color: @colortheme_sidebar-right-fg;
+@description-color: @colortheme_sidebar-description;
 
 @button-width: 400px;
 
