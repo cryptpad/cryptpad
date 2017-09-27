@@ -180,7 +180,7 @@ define([
     var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up sortasc"});
     var $sortDescIcon = $('<span>', {"class": "fa fa-angle-down sortdesc"});
     var $closeIcon = $('<span>', {"class": "fa fa-window-close"});
-    var $backupIcon = $('<span>', {"class": "fa fa-life-ring"});
+    //var $backupIcon = $('<span>', {"class": "fa fa-life-ring"});
     var $searchIcon = $('<span>', {"class": "fa fa-search cp-app-drive-tree-search-con"});
     var $addIcon = $('<span>', {"class": "fa fa-plus"});
     var $renamedIcon = $('<span>', {"class": "fa fa-flag"});
@@ -2866,20 +2866,10 @@ define([
         }
     };
 
-    var migrateAnonDrive = function (proxy, cb) {
-        if (sessionStorage.migrateAnonDrive) {
-            Merge.anonDriveIntoUser(proxy, function () {
-                delete sessionStorage.migrateAnonDrive;
-                if (typeof(cb) === "function") { cb(); }
-            });
-        } else {
-            if (typeof(cb) === "function") { cb(); }
-        }
-    };
-
     var main = function () {
         var common;
         var proxy;
+        var readOnly;
 
         nThen(function (waitFor) {
             $(waitFor(function () {
@@ -2929,7 +2919,6 @@ define([
                 });
 
                 metadataMgr = common.getMetadataMgr();
-                readOnly = metadataMgr.getPrivateData().readOnly;
 
                 var configTb = {
                     displayed: ['useradmin', 'pageTitle', 'newpad', 'limit'],
@@ -2941,11 +2930,10 @@ define([
                     sfCommon: common,
                     $container: APP.$bar
                 };
-                toolbar = APP.toolbar = Toolbar.create(configTb);
+                var toolbar = APP.toolbar = Toolbar.create(configTb);
 
                 var $rightside = toolbar.$rightside;
                 $rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
-                var $userBlock = toolbar.$userAdmin;
                 APP.$displayName = APP.$bar.find('.' + Toolbar.constants.username);
 
                 /* add the usage */
