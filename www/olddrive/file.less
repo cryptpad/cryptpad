@@ -1,5 +1,6 @@
 @import "/customize/src/less/variables.less";
 @import "/customize/src/less/mixins.less";
+@import (once) "/customize/src/less2/include/tools.less";
 
 @tree-bg: #eee;
 @tree-fg: #000;
@@ -267,7 +268,7 @@ span {
         input {
             background: lighten(@toolbar-drive-bg, 8%);
             color: @toolbar-drive-color;
-            .placeholderColor(@toolbar-drive-color);
+            .tools_placeholder-color(@toolbar-drive-color);
             outline-width: 0px;
             border-radius: 0;
             width: 100%;
