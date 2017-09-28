@@ -4,7 +4,7 @@ define([
     '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     '/common/userObject.js',
-    '/common/migrate-user-object.js'
+    '/common/migrate-user-object.js',
 ], function ($, Listmap, Crypto, TextPatcher, FO, Migrate) {
     /*
         This module uses localStorage, which is synchronous, but exposes an
@@ -196,11 +196,11 @@ define([
 
             Migrate(proxy, Cryptpad);
 
-            //storeObj = proxy;
             store = initStore(fo, proxy, exp);
             if (typeof(f) === 'function') {
                 f(void 0, store);
             }
+            //storeObj = proxy;
 
             var requestLogin = function () {
                 // log out so that you don't go into an endless loop...

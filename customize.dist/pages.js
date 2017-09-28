@@ -578,7 +578,7 @@ define([
 
     Pages['/whiteboard/'] = Pages['/whiteboard/index.html'] = function () {
         return [
-            appToolbar(),
+            appToolbar3(),
             h('div#cp-app-whiteboard-canvas-area', h('canvas#cp-app-whiteboard-canvas', {
                 width: 600,
                 height: 600

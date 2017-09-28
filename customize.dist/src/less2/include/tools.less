@@ -1,0 +1,27 @@
+.tools_placeholder-color (@color) {
+    &::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+        color: @color;;
+    }
+    &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+        color: @color;
+        opacity: 1;
+    }
+    &::-moz-placeholder { /* Mozilla Firefox 19+ */
+        color: @color;
+        opacity: 1;
+    }
+    &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+        color: @color;
+    }
+    &::-ms-input-placeholder { /* Microsoft Edge */
+        color: @color;
+    }
+}
+
+.tools_unselectable () {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
