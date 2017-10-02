@@ -1,19 +1,12 @@
 define([
     'jquery',
-    '/bower_components/chainpad-crypto/crypto.js',
-    '/bower_components/textpatcher/TextPatcher.js',
-    '/common/toolbar3.js',
     'json.sortify',
-    '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/cryptpad-common.js',
-    '/common/cryptget.js',
-    '/common/diffMarked.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
-    '/api/config',
-    '/common/common-realtime.js',
     '/slide/slide.js',
-
+    '/common/sframe-app-framework.js',
+    '/common/common-util.js',
     'cm/lib/codemirror',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -48,150 +41,84 @@ define([
 
 ], function (
     $,
-    Crypto,
-    TextPatcher,
-    Toolbar,
     JSONSortify,
-    JsonOT,
     Cryptpad,
-    Cryptget,
-    DiffMd,
     nThen,
     SFCommon,
-    ApiConfig,
-    CommonRealtime,
     Slide,
+    Framework,
+    Util,
     CMeditor)
 {
     window.CodeMirror = CMeditor;
     var Messages = Cryptpad.Messages;
 
-    var APP = window.APP = {
-        Cryptpad: Cryptpad,
-    };
     var SLIDE_BACKCOLOR_ID = "cp-app-slide-toolbar-backcolor";
     var SLIDE_COLOR_ID = "cp-app-slide-toolbar-color";
 
-    var stringify = function (obj) {
-        return JSONSortify(obj);
+    var mkLess = function (less) { 
+        return (
+            '#cp-app-slide-print .cp-app-slide-frame, ' +
+            '#cp-app-slide-modal #cp-app-slide-modal-content .cp-app-slide-frame {\r\n' +
+                less +
+            '\r\n}'
+        );
     };
 
-    var toolbar;
-    var isPresentMode;
-
-    var onConnectError = function () {
-        Cryptpad.errorLoadingScreen(Messages.websocketError);
-    };
-
-    var andThen = function (editor, CodeMirror, common) {
-        var readOnly = false;
-        var cpNfInner;
-        var metadataMgr;
-        var $bar = $('#cme_toolbox');
-
-        var isHistoryMode = false;
-
-        var setEditable = APP.setEditable = function (bool) {
-            if (readOnly && bool) { return; }
-            editor.setOption('readOnly', !bool);
-        };
-
-        var Title;
-
-        var config = {
-            readOnly: readOnly,
-            transformFunction: JsonOT.validate,
-            // cryptpad debug logging (default is 1)
-            // logLevel: 0,
-            validateContent: function (content) {
-                try {
-                    JSON.parse(content);
-                    return true;
-                } catch (e) {
-                    console.log("Failed to parse, rejecting patch");
-                    return false;
-                }
+    var mkSlidePreviewPane = function (framework, $contentContainer) {
+        var $previewButton = framework._.sfCommon.createButton(null, true);
+        $previewButton.removeClass('fa-question').addClass('fa-eye');
+        $previewButton.attr('title', Messages.previewButtonTitle);
+        $previewButton.click(function () {
+            var $c = $contentContainer;
+            if ($c.hasClass('cp-app-slide-preview')) {
+                framework._.sfCommon.setPadAttribute('previewMode', false, function (e) {
+                    if (e) { return console.log(e); }
+                });
+                $previewButton.removeClass('cp-toolbar-button-active');
+                return void $c.removeClass('cp-app-slide-preview');
             }
-        };
+            framework._.sfCommon.setPadAttribute('previewMode', true, function (e) {
+                if (e) { return console.log(e); }
+            });
+            $c.addClass('cp-app-slide-preview');
+            $previewButton.addClass('cp-toolbar-button-active');
+            Slide.updateFontSize();
+        });
+        framework._.toolbar.$rightside.append($previewButton);
 
-        var canonicalize = function (t) { return t.replace(/\r\n/g, '\n'); };
-
-        var setHistory = function (bool, update) {
-            isHistoryMode = bool;
-            setEditable(!bool);
-            if (!bool && update) {
-                config.onRemote();
-            }
-        };
-
-        var $contentContainer = $('#cp-app-slide-editor');
-        var $modal = $('#cp-app-slide-modal');
-        var $content = $('#cp-app-slide-modal-content');
-        var $print = $('#cp-app-slide-print');
-        var slideOptions = {};
-        var initialState = Messages.slideInitialState;
-        var textColor;
-        var backColor;
-
-        $content.click(function (e) {
-            if (!e.target) { return; }
-            var $t = $(e.target);
-            if ($t.is('a') || $t.parents('a').length) {
-                e.preventDefault();
-                var $a = $t.is('a') ? $t : $t.parents('a').first();
-                var href = $a.attr('href');
-                window.open(href);
+        framework._.sfCommon.getPadAttribute('previewMode', function (e, data) {
+            if (e) { return void console.error(e); }
+            if (data !== false && $previewButton) {
+                $previewButton.click();
             }
         });
+    };
 
-        Slide.setModal(common, $modal, $content, slideOptions, initialState);
+    var mkPrintButton = function (framework, editor, $content, $print, $toolbarDrawer) {
+        var $printButton = $('<button>', {
+            title: Messages.printButtonTitle,
+            'class': 'cp-toolbar-rightside-button fa fa-print',
+            style: 'font-size: 17px'
+        }).click(function () {
+            Slide.update(editor.getValue(), true);
+            $print.html($content.html());
+            // TODO use translation key
+            Cryptpad.confirm("Are you sure you want to print?", function (yes) {
+                if (yes) {
+                    window.focus();
+                    window.print();
+                }
+            }, {ok: Messages.printButton});
+            framework.feedback('PRINT_SLIDES');
+        }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.printText));
+        $toolbarDrawer.append($printButton);
+    };
 
-        var enterPresentationMode = function (shouldLog) {
-            Slide.show(true, editor.getValue());
-            if (shouldLog) {
-                Cryptpad.log(Messages.presentSuccess);
-            }
-        };
-
-        if (isPresentMode) {
-            enterPresentationMode(true);
-        }
-
-        CommonRealtime.onInfiniteSpinner(function () { setEditable(false); });
-
-        setEditable(false);
-        var initializing = true;
-
-        var stringifyInner = function (textValue) {
-            var obj = {
-                content: textValue,
-                metadata: metadataMgr.getMetadataLazy()
-            };
-
-            // stringify the json and send it into chainpad
-            return stringify(obj);
-        };
-
-        var onLocal = config.onLocal = function () {
-            if (initializing) { return; }
-            if (isHistoryMode) { return; }
-            if (readOnly) { return; }
-
-            editor.save();
-
-            var textValue = canonicalize(CodeMirror.$textarea.val());
-            var shjson = stringifyInner(textValue);
-
-            APP.patchText(shjson);
-            Slide.update(textValue);
-
-            if (APP.realtime.getUserDoc() !== shjson) {
-                console.error("realtime.getUserDoc() !== shjson");
-            }
-        };
-
+    var mkSlideOptionsButton = function (framework, slideOptions, $toolbarDrawer) {
+        var metadataMgr = framework._.cpNfInner.metadataMgr;
         var updateSlideOptions = function (newOpt) {
-            if (stringify(newOpt) !== stringify(slideOptions)) {
+            if (JSONSortify(newOpt) !== JSONSortify(slideOptions)) {
                 $.extend(slideOptions, newOpt);
                 // TODO: manage realtime + cursor in the "options" modal ??
                 Slide.updateOptions();
@@ -202,38 +129,16 @@ define([
             var metadata = JSON.parse(JSON.stringify(metadataMgr.getMetadata()));
             metadata.slideOptions = slideOptions;
             metadataMgr.updateMetadata(metadata);
-            onLocal();
+            framework.localChange();
         };
-        var updateColors = function (text, back) {
-            if (text) {
-                textColor = text;
-                $modal.css('color', text);
-                $modal.css('border-color', text);
-                $('#' + SLIDE_COLOR_ID).css('color', text);
-            }
-            if (back) {
-                backColor = back;
-                $modal.css('background-color', back);
-                $('#' + SLIDE_BACKCOLOR_ID).css('color', back);
-            }
-        };
-        var updateLocalColors = function (text, back) {
-            updateColors(text, back);
-            var metadata = JSON.parse(JSON.stringify(metadataMgr.getMetadata()));
-            if (backColor) { metadata.backColor = backColor; }
-            if (textColor) { metadata.color = textColor; }
-            metadataMgr.updateMetadata(metadata);
-            onLocal();
-            console.log(metadataMgr.getMetadata());
-        };
-
-        var createPrintDialog = function () {
+        var createPrintDialog = function (invalidStyle) {
             var slideOptionsTmp = {
                 title: false,
                 slide: false,
                 date: false,
                 transition: true,
-                style: ''
+                style: '',
+                styleLess: ''
             };
 
             $.extend(slideOptionsTmp, slideOptions);
@@ -299,14 +204,45 @@ define([
                 .on('keydown keyup', function (e) {
                     e.stopPropagation();
                 });
-            $textarea.val(slideOptionsTmp.style);
+            $textarea.val(invalidStyle || slideOptionsTmp.styleLess || slideOptionsTmp.style);
             window.setTimeout(function () { $textarea.focus(); }, 0);
 
-            var h;
+            require(['/bower_components/less/dist/less.min.js'], function () { });
+            var parseLess = function (less, cb) {
+                require(['/bower_components/less/dist/less.min.js'], function (Less) {
+                    Less.render(less, {}, function(err, css) {
+                        if (err) { return void cb(err); }
+                        cb(undefined, css.css);
+                    }, window.less);
+                });
+            };
 
+            var h;
             var todo = function () {
-                slideOptionsTmp.style = $textarea.val();
-                updateLocalOptions(slideOptionsTmp);
+                if ($textarea.val() !== slideOptionsTmp.styleLess) {
+                    var less = slideOptionsTmp.styleLess = $textarea.val();
+                    slideOptionsTmp.style = '';
+                    parseLess(mkLess(less), function (err, css) {
+                        if (err) {
+                            console.log(err);
+                            Cryptpad.alert(
+                                '<strong>' + Messages.slide_invalidLess + '</strong>' +
+                                '<br>' +
+                                '<pre class="cp-slide-css-error">' + Util.fixHTML(
+                                    'Line: ' + (err.line - 1) + '\n' +
+                                    err.extract[err.line - 1] + '\n' +
+                                    new Array(err.column+1).join(' ') +
+                                    '^--- ' + err.message
+                                ) + '</pre>'
+                                /*Messages.slide_badLess*/, function () {
+                                $('body').append(createPrintDialog(less));
+                            }, true);
+                        } else {
+                            slideOptionsTmp.style = css;
+                            updateLocalOptions(slideOptionsTmp);
+                        }
+                    });
+                }
                 $container.remove();
                 Cryptpad.stopListening(h);
             };
@@ -324,270 +260,190 @@ define([
             return $container;
         };
 
-        config.onInit = function (info) {
-            readOnly = metadataMgr.getPrivateData().readOnly;
+        var $slideOptions = $('<button>', {
+            title: Messages.slideOptionsTitle,
+            'class': 'cp-toolbar-rightside-button fa fa-cog',
+            style: 'font-size: 17px'
+        }).click(function () {
+            $('body').append(createPrintDialog());
+        }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.slideOptionsText));
+        $toolbarDrawer.append($slideOptions);
 
-            var titleCfg = { getHeadingText: CodeMirror.getHeadingText };
-            Title = common.createTitle(titleCfg, config.onLocal);
-            Slide.setTitle(Title);
-
-            var configTb = {
-                displayed: ['title', 'useradmin', 'spinner', 'share', 'userlist', 'newpad', 'limit'],
-                title: Title.getTitleConfig(),
-                metadataMgr: metadataMgr,
-                readOnly: readOnly,
-                ifrw: window,
-                realtime: info.realtime,
-                common: Cryptpad,
-                sfCommon: common,
-                $container: $bar,
-                $contentContainer: $contentContainer
-            };
-            toolbar = APP.toolbar = Toolbar.create(configTb);
-            Title.setToolbar(toolbar);
-            CodeMirror.init(config.onLocal, Title, toolbar);
-
-            var $rightside = toolbar.$rightside;
-            var $drawer = toolbar.$drawer;
-
-            /* add a history button */
-            var histConfig = {
-                onLocal: config.onLocal,
-                onRemote: config.onRemote,
-                setHistory: setHistory,
-                applyVal: function (val) {
-                    var remoteDoc = JSON.parse(val || '{}').content;
-                    editor.setValue(remoteDoc || '');
-                    editor.save();
-                },
-                $toolbar: $bar
-            };
-            var $hist = common.createButton('history', true, {histConfig: histConfig});
-            $drawer.append($hist);
-
-            /* save as template */
-            if (!metadataMgr.getPrivateData().isTemplate) {
-                var templateObj = {
-                    rt: info.realtime,
-                    getTitle: function () { return metadataMgr.getMetadata().title; }
-                };
-                var $templateButton = common.createButton('template', true, templateObj);
-                $rightside.append($templateButton);
+        metadataMgr.onChange(function () {
+            var md = metadataMgr.getMetadata();
+            if (md.slideOptions) {
+                updateLocalOptions(md.slideOptions);
             }
+        });
+    };
 
-            /* add an export button */
-            var $export = common.createButton('export', true, {}, CodeMirror.exportText);
-            $drawer.append($export);
+    var mkColorConfiguration = function (framework, $modal) {
+        var textColor;
+        var backColor;
+        var metadataMgr = framework._.cpNfInner.metadataMgr;
 
-            if (!readOnly) {
-                /* add an import button */
-                var $import = common.createButton('import', true, {}, CodeMirror.importText);
-                $drawer.append($import);
+        var updateColors = function (text, back) {
+            if (text) {
+                textColor = text;
+                $modal.css('color', text);
+                $modal.css('border-color', text);
+                $('#' + SLIDE_COLOR_ID).css('color', text);
             }
-
-            /* add a forget button */
-            var forgetCb = function (err) {
-                if (err) { return; }
-                setEditable(false);
-            };
-            var $forgetPad = common.createButton('forget', true, {}, forgetCb);
-            $rightside.append($forgetPad);
-
-            var $previewButton = APP.$previewButton = common.createButton(null, true);
-            $previewButton.removeClass('fa-question').addClass('fa-eye');
-            $previewButton.attr('title', Messages.previewButtonTitle);
-            $previewButton.click(function () {
-                var $c = $contentContainer;
-                if ($c.hasClass('cp-app-slide-preview')) {
-                    common.setPadAttribute('previewMode', false, function (e) {
-                        if (e) { return console.log(e); }
-                    });
-                    $previewButton.removeClass('cp-toolbar-button-active');
-                    return void $c.removeClass('cp-app-slide-preview');
-                }
-                common.setPadAttribute('previewMode', true, function (e) {
-                    if (e) { return console.log(e); }
-                });
-                $c.addClass('cp-app-slide-preview');
-                $previewButton.addClass('cp-toolbar-button-active');
-                Slide.updateFontSize();
-            });
-            $rightside.append($previewButton);
-
-            var $printButton = $('<button>', {
-                title: Messages.printButtonTitle,
-                'class': 'cp-toolbar-rightside-button fa fa-print',
-                style: 'font-size: 17px'
-            }).click(function () {
-                Slide.update(editor.getValue(), true);
-                $print.html($content.html());
-                // TODO use translation key
-                Cryptpad.confirm("Are you sure you want to print?", function (yes) {
-                    if (yes) {
-                        window.focus();
-                        window.print();
-                    }
-                }, {ok: Messages.printButton});
-                common.feedback('PRINT_SLIDES');
-            }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.printText));
-            $drawer.append($printButton);
-
-            var $slideOptions = $('<button>', {
-                title: Messages.slideOptionsTitle,
-                'class': 'cp-toolbar-rightside-button fa fa-cog',
-                style: 'font-size: 17px'
-            }).click(function () {
-                $('body').append(createPrintDialog());
-            }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.slideOptionsText));
-            $drawer.append($slideOptions);
-
-            var $present = common.createButton('present', true)
-                .click(function () {
-                enterPresentationMode(true);
-            });
-            $rightside.append($present);
-
-            var configureColors = function () {
-                var $back = $('<button>', {
-                    id: SLIDE_BACKCOLOR_ID,
-                    'class': 'fa fa-square cp-toolbar-rightside-button',
-                    'style': 'font-family: FontAwesome; color: #000;',
-                    title: Messages.backgroundButtonTitle
-                });
-                var $text = $('<button>', {
-                    id: SLIDE_COLOR_ID,
-                    'class': 'fa fa-i-cursor cp-toolbar-rightside-button',
-                    'style': 'font-family: FontAwesome; font-weight: bold; color: #fff;',
-                    title: Messages.colorButtonTitle
-                });
-                var $testColor = $('<input>', { type: 'color', value: '!' });
-                var $check = $("#cp-app-slide-colorpicker");
-                if ($testColor.attr('type') !== "color" || $testColor.val() === '!') { return; }
-                $back.on('click', function() {
-                    var $picker = $('<input>', { type: 'color', value: backColor })
-                        .css({ display: 'none', })
-                        .on('change', function() {
-                            updateLocalColors(undefined, this.value);
-                            $check.html('');
-                        });
-                    $check.append($picker);
-                    setTimeout(function() {
-                        $picker.click();
-                    }, 0);
-                });
-                $text.on('click', function() {
-                    var $picker = $('<input>', { type: 'color', value: textColor })
-                        .css({ display: 'none', })
-                        .on('change', function() {
-                            updateLocalColors(this.value, undefined);
-                            $check.html('');
-                        });
-                    $check.append($picker);
-                    setTimeout(function() {
-                        $picker.click();
-                    }, 0);
-                });
-
-                $rightside.append($back).append($text);
-            };
-            configureColors();
-
-            CodeMirror.configureTheme();
-
-            if (!readOnly) {
-                var fileDialogCfg = {
-                    onSelect: function (data) {
-                        if (data.type === 'file') {
-                            var mt = '<media-tag src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>';
-                            editor.replaceSelection(mt);
-                            return;
-                        }
-                    }
-                };
-                common.initFilePicker(fileDialogCfg);
-                APP.$mediaTagButton = $('<button>', {
-                    title: Messages.filePickerButton,
-                    'class': 'cp-toolbar-rightside-button fa fa-picture-o',
-                    style: 'font-size: 17px'
-                }).click(function () {
-                    var pickerCfg = {
-                        types: ['file'],
-                        where: ['root']
-                    };
-                    common.openFilePicker(pickerCfg);
-                }).appendTo($rightside);
-
-                var $tags = common.createButton('hashtag', true);
-                $rightside.append($tags);
+            if (back) {
+                backColor = back;
+                $modal.css('background-color', back);
+                $('#' + SLIDE_BACKCOLOR_ID).css('color', back);
             }
-
-            metadataMgr.onChange(function () {
-                var md = metadataMgr.getMetadata();
-                if (md.color || md.backColor) {
-                    updateLocalColors(md.color, md.backColor);
-                }
-                if (md.slideOptions) {
-                    updateLocalOptions(md.slideOptions);
-                }
-            });
+        };
+        var updateLocalColors = function (text, back) {
+            updateColors(text, back);
+            var metadata = JSON.parse(JSON.stringify(metadataMgr.getMetadata()));
+            if (backColor) { metadata.backColor = backColor; }
+            if (textColor) { metadata.color = textColor; }
+            metadataMgr.updateMetadata(metadata);
+            framework.localChange();
+            console.log(metadataMgr.getMetadata());
         };
 
-        config.onReady = function (info) {
-            console.log('onready');
-            if (APP.realtime !== info.realtime) {
-                var realtime = APP.realtime = info.realtime;
-                APP.patchText = TextPatcher.create({
-                    realtime: realtime,
-                    //logging: true
-                });
+        var $back = $('<button>', {
+            id: SLIDE_BACKCOLOR_ID,
+            'class': 'fa fa-square cp-toolbar-rightside-button',
+            'style': 'font-family: FontAwesome; color: #000;',
+            title: Messages.backgroundButtonTitle
+        });
+        var $text = $('<button>', {
+            id: SLIDE_COLOR_ID,
+            'class': 'fa fa-i-cursor cp-toolbar-rightside-button',
+            'style': 'font-family: FontAwesome; font-weight: bold; color: #fff;',
+            title: Messages.colorButtonTitle
+        });
+        var $testColor = $('<input>', { type: 'color', value: '!' });
+        var $check = $("#cp-app-slide-colorpicker");
+        if ($testColor.attr('type') !== "color" || $testColor.val() === '!') { return; }
+
+        var $backgroundPicker = $('<input>', { type: 'color', value: backColor })
+            .css({ display: 'none', })
+            .on('change', function() { updateLocalColors(undefined, this.value); });
+        $check.append($backgroundPicker);
+        $back.on('click', function() {
+            $backgroundPicker.val(backColor);
+            $backgroundPicker.click();
+        });
+
+        var $foregroundPicker = $('<input>', { type: 'color', value: textColor })
+            .css({ display: 'none', })
+            .on('change', function() { updateLocalColors(this.value, undefined); });
+        $check.append($foregroundPicker);
+        $text.on('click', function() {
+            $foregroundPicker.val(textColor);
+            $foregroundPicker.click();
+        });
+
+        framework._.toolbar.$rightside.append($back).append($text);
+
+        metadataMgr.onChange(function () {
+            var md = metadataMgr.getMetadata();
+            if (md.color || md.backColor) {
+                updateLocalColors(md.color, md.backColor);
             }
+        });
+    };
 
-            var userDoc = APP.realtime.getUserDoc();
-
-            var isNew = false;
-            if (userDoc === "" || userDoc === "{}") { isNew = true; }
-
-            var newDoc = "";
-            if (userDoc !== "") {
-                var hjson = JSON.parse(userDoc);
-
-                if (hjson && hjson.metadata) {
-                    metadataMgr.updateMetadata(hjson.metadata);
+    var mkFilePicker = function (framework, editor) {
+        var fileDialogCfg = {
+            onSelect: function (data) {
+                if (data.type === 'file') {
+                    var mt = '<media-tag src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>';
+                    editor.replaceSelection(mt);
+                    return;
                 }
-                if (typeof (hjson) !== 'object' || Array.isArray(hjson) ||
-                    (hjson.metadata && typeof(hjson.metadata.type) !== 'undefined' &&
-                     hjson.metadata.type !== 'slide')) {
-                    var errorText = Messages.typeError;
-                    Cryptpad.errorLoadingScreen(errorText);
-                    throw new Error(errorText);
-                }
-
-                newDoc = hjson.content;
-
-                if (hjson.highlightMode) {
-                    CodeMirror.setMode(hjson.highlightMode);
-                }
-            } else {
-                Title.updateTitle(Cryptpad.initialName || Title.defaultTitle);
             }
+        };
+        framework._.sfCommon.initFilePicker(fileDialogCfg);
+        $('<button>', {
+            title: Messages.filePickerButton,
+            'class': 'cp-toolbar-rightside-button fa fa-picture-o',
+            style: 'font-size: 17px'
+        }).click(function () {
+            var pickerCfg = {
+                types: ['file'],
+                where: ['root']
+            };
+            framework._.sfCommon.openFilePicker(pickerCfg);
+        }).appendTo(framework._.toolbar.$rightside);
 
-            if (!CodeMirror.highlightMode) {
-                CodeMirror.setMode('markdown');
+        var $tags = framework._.sfCommon.createButton('hashtag', true);
+        framework._.toolbar.$rightside.append($tags);
+    };
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    var andThen2 = function (editor, CodeMirror, framework, isPresentMode) {
+
+        var $contentContainer = $('#cp-app-slide-editor');
+        var $modal = $('#cp-app-slide-modal');
+        var $content = $('#cp-app-slide-modal-content');
+        var $print = $('#cp-app-slide-print');
+        var slideOptions = {};
+
+        var $toolbarDrawer = framework._.toolbar.$drawer;
+
+        $content.click(function (e) {
+            if (!e.target) { return; }
+            var $t = $(e.target);
+            if ($t.is('a') || $t.parents('a').length) {
+                e.preventDefault();
+                var $a = $t.is('a') ? $t : $t.parents('a').first();
+                var href = $a.attr('href');
+                window.open(href);
             }
+        });
 
-            editor.setValue(newDoc || initialState);
+        Slide.setModal(framework._.sfCommon, $modal, $content, slideOptions, Messages.slideInitialState);
+        mkPrintButton(framework, editor, $content, $print, $toolbarDrawer);
+        mkSlideOptionsButton(framework, slideOptions, $toolbarDrawer);
+        mkColorConfiguration(framework, $modal);
+        mkFilePicker(framework, editor);
+        mkSlidePreviewPane(framework, $contentContainer);
 
-            if (Cryptpad.initialName && Title.isDefaultTitle()) {
-                Title.updateTitle(Cryptpad.initialName);
+        CodeMirror.configureTheme();
+
+        var enterPresentationMode = function (shouldLog) {
+            Slide.show(true, editor.getValue());
+            if (shouldLog) {
+                Cryptpad.log(Messages.presentSuccess);
             }
+        };
 
-            common.getPadAttribute('previewMode', function (e, data) {
-                if (e) { return void console.error(e); }
-                if (data !== false && APP.$previewButton) {
-                    APP.$previewButton.click();
-                }
-            });
+        if (isPresentMode) { enterPresentationMode(true); }
 
+        framework.onContentUpdate(function (newContent) {
+            CodeMirror.contentUpdate(newContent);
+            Slide.update(newContent.content);
+        });
+
+        framework.setContentGetter(function () {
+            console.log(framework._.title.title);
+            var content = CodeMirror.getContent();
+            Slide.update(content.content);
+            return content;
+        });
+
+        framework.onEditableChange(function () {
+            editor.setOption('readOnly', framework.isLocked() || framework.isReadOnly());
+        });
+
+        framework.setTitleRecommender(function () {
+            console.log('titleRecommender');
+            return CodeMirror.getHeadingText();
+        });
+
+        framework.onReady(function (/*newPad*/) {
+            CodeMirror.setMode('markdown', function () { });
             Slide.onChange(function (o, n, l) {
                 var slideNumber = '';
                 if (n !== null) {
@@ -595,153 +451,58 @@ define([
                         slideNumber = ' (' + (++n) + '/' + l + ')';
                     }
                 }
-                common.setTabTitle('{title}' + slideNumber);
+                framework._.sfCommon.setTabTitle('{title}' + slideNumber);
             });
-
-            setEditable(!readOnly);
-            initializing = false;
-
-            onLocal(); // push local state to avoid parse errors later.
             Slide.update(editor.getValue());
-            Cryptpad.removeLoadingScreen();
-
-            if (readOnly) {
-                config.onRemote();
-                return;
-            }
-
-            if (isNew) {
-                common.openTemplatePicker();
-            }
-
-            var fmConfig = {
-                dropArea: $('.CodeMirror'),
-                body: $('body'),
-                onUploaded: function (ev, data) {
-                    var parsed = Cryptpad.parsePadUrl(data.url);
-                    var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
-                    var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
-                    var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '"></media-tag>';
-                    editor.replaceSelection(mt);
-                }
-            };
-            APP.FM = common.createFileManager(fmConfig);
-        };
-
-        config.onRemote = function () {
-            if (initializing) { return; }
-            if (isHistoryMode) { return; }
-
-            var oldDoc = canonicalize(CodeMirror.$textarea.val());
-            var shjson = APP.realtime.getUserDoc();
-
-            var hjson = JSON.parse(shjson);
-            var remoteDoc = hjson.content;
-
-            if (hjson.metadata) {
-                metadataMgr.updateMetadata(hjson.metadata);
-            }
-
-            var highlightMode = hjson.highlightMode;
-            if (highlightMode && highlightMode !== APP.highlightMode) {
-                CodeMirror.setMode(highlightMode);
-            }
-
-            CodeMirror.setValueAndCursor(oldDoc, remoteDoc, TextPatcher);
-
-            if (!readOnly) {
-                var textValue = canonicalize(CodeMirror.$textarea.val());
-                var shjson2 = stringifyInner(textValue);
-                if (shjson2 !== shjson) {
-                    console.error("shjson2 !== shjson");
-                    TextPatcher.log(shjson, TextPatcher.diff(shjson, shjson2));
-                    APP.patchText(shjson2);
-                }
-            }
-            Slide.update(remoteDoc);
-            if (oldDoc !== remoteDoc) { common.notify(); }
-        };
-
-        config.onAbort = function () {
-            // inform of network disconnect
-            setEditable(false);
-            toolbar.failed();
-            Cryptpad.alert(Messages.common_connectionLost, undefined, true);
-        };
-
-        config.onConnectionChange = function (info) {
-            setEditable(info.state);
-            //toolbar.failed();
-            if (info.state) {
-                initializing = true;
-                //toolbar.reconnecting(info.myId);
-                Cryptpad.findOKButton().click();
-            } else {
-                Cryptpad.alert(Messages.common_connectionLost, undefined, true);
-            }
-        };
-
-        config.onError = onConnectError;
-
-        cpNfInner = common.startRealtime(config);
-        metadataMgr = cpNfInner.metadataMgr;
-
-        cpNfInner.onInfiniteSpinner(function () {
-            setEditable(false);
-            Cryptpad.confirm(Messages.realtime_unrecoverableError, function (yes) {
-                if (!yes) { return; }
-                common.gotoURL();
-            });
         });
 
-        editor.on('change', onLocal);
+        framework.onDefaultContentNeeded(function () {
+            CodeMirror.contentUpdate({ content: Messages.slideInitialState });
+        });
 
-        Cryptpad.onLogout(function () { setEditable(false); });
+        Slide.setTitle(framework._.title);
+
+        framework._.toolbar.$rightside.append(
+            framework._.sfCommon.createButton('present', true).click(function () {
+                enterPresentationMode(true);
+            })
+        );
+
+        editor.on('change', framework.localChange);
+
+        framework.start();
     };
 
-    var CMEDITOR_CHECK_INTERVAL = 100;
-    var cmEditorAvailable = function (cb) {
-        var intr;
-        var check = function () {
-            if (window.CodeMirror) {
-                clearTimeout(intr);
-                cb(window.CodeMirror);
-            }
-        };
-        intr = setInterval(function () {
-            console.log("CodeMirror was not defined. Trying again in %sms", CMEDITOR_CHECK_INTERVAL);
-            check();
-        }, CMEDITOR_CHECK_INTERVAL);
-        check();
-    };
     var main = function () {
-        var CM;
         var CodeMirror;
         var editor;
         var common;
+        var framework;
 
         nThen(function (waitFor) {
-            cmEditorAvailable(waitFor(function (cm) {
-                CM = cm;
-            }));
-            $(waitFor(function () {
-                Cryptpad.addLoadingScreen();
-            }));
-            SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
+
+            Framework.create({
+                toolbarContainer: '#cme_toolbox',
+                contentContainer: '#cp-app-slide-editor'
+            }, waitFor(function (fw) { framework = fw; }));
+
+            nThen(function (waitFor) {
+                $(waitFor());
+                // TODO(cjd): This is crap but we cannot bring up codemirror until after
+                //            the CryptPad Common is up and we can't bring up framework
+                //            without codemirror.
+                SFCommon.create(waitFor(function (c) { common = c; }));
+            }).nThen(function () {
+                CodeMirror = common.initCodeMirrorApp(null, CMeditor);
+                $('.CodeMirror').addClass('fullPage');
+                editor = CodeMirror.editor;
+            }).nThen(waitFor());
+
+        }).nThen(function (waitFor) {
+            common.getSframeChannel().onReady(waitFor());
         }).nThen(function (/*waitFor*/) {
-            CodeMirror = common.initCodeMirrorApp(null, CM);
-            $('.CodeMirror').addClass('fullPage');
-            editor = CodeMirror.editor;
-            Cryptpad.onError(function (info) {
-                if (info && info.type === "store") {
-                    onConnectError();
-                }
-            });
-            common.getSframeChannel().onReady(function () {
-                common.isPresentUrl(function (err, val) {
-                    isPresentMode = val;
-                    andThen(editor, CodeMirror, common);
-                });
+            common.isPresentUrl(function (err, val) {
+                andThen2(editor, CodeMirror, framework, val);
             });
         });
     };

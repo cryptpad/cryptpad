@@ -166,6 +166,7 @@ define(function () {
     out.slideOptionsText = "Options";
     out.slideOptionsTitle = "Customize your slides";
     out.slideOptionsButton = "Save (enter)";
+    out.slide_invalidLess = "Invalid custom style";
 
     out.languageButton = "Language";
     out.languageButtonTitle = "Select the language to use for the syntax highlighting";

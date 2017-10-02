@@ -376,7 +376,9 @@ define([
 
         }).nThen(function () {
 
-            title = common.createTitle({ getHeadingText: titleRecommender }, onLocal);
+            title = common.createTitle({
+                getHeadingText: function () { return titleRecommender(); }
+            }, onLocal);
             var configTb = {
                 displayed: ['userlist', 'title', 'useradmin', 'spinner', 'newpad', 'share', 'limit'],
                 title: title.getTitleConfig(),

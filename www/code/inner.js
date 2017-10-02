@@ -51,8 +51,6 @@ define([
     window.CodeMirror = CMeditor;
     var Messages = Cryptpad.Messages;
 
-    var canonicalize = function (t) { return t.replace(/\r\n/g, '\n'); };
-
     var MEDIA_TAG_MODES = Object.freeze([
         'markdown',
         'html',
@@ -142,7 +140,6 @@ define([
 
         framework.onReady(function () {
             // add the splitter
-            if ($('.cp-splitter').length) { return; }
             var splitter = $('<div>', {
                 'class': 'cp-splitter'
             }).appendTo($previewContainer);
@@ -266,23 +263,19 @@ define([
         ////
 
         framework.onContentUpdate(function (newContent) {
-            var oldDoc = canonicalize(CodeMirror.$textarea.val());
-            var remoteDoc = newContent.content;
+            CodeMirror.contentUpdate(newContent);
             var highlightMode = newContent.highlightMode;
             if (highlightMode && highlightMode !== CodeMirror.highlightMode) {
                 CodeMirror.setMode(highlightMode, evModeChange.fire);
             }
-            CodeMirror.setValueAndCursor(oldDoc, remoteDoc, TextPatcher);
             previewPane.draw();
         });
 
         framework.setContentGetter(function () {
-            editor.save();
+            var content = CodeMirror.getContent();
+            content.highlightMode = CodeMirror.highlightMode;
             previewPane.draw();
-            return {
-                content: canonicalize(CodeMirror.$textarea.val()),
-                highlightMode: CodeMirror.highlightMode
-            };
+            return content;
         });
 
         framework.onEditableChange(function () {

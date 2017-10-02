@@ -3,9 +3,10 @@ define([
     '/common/modes.js',
     '/common/themes.js',
     '/common/cryptpad-common.js',
+    '/bower_components/textpatcher/TextPatcher.js',
 
     '/bower_components/file-saver/FileSaver.min.js'
-], function ($, Modes, Themes, Cryptpad) {
+], function ($, Modes, Themes, Cryptpad, TextPatcher) {
     var saveAs = window.saveAs;
     var module = {};
 
@@ -303,6 +304,42 @@ define([
             }
 
             editor.scrollTo(scroll.left, scroll.top);
+        };
+
+        /////
+
+        var canonicalize = function (t) { return t.replace(/\r\n/g, '\n'); };
+
+
+
+        exp.contentUpdate = function (newContent) {
+            var oldDoc = canonicalize($textarea.val());
+            var remoteDoc = newContent.content;
+            exp.setValueAndCursor(oldDoc, remoteDoc, TextPatcher);
+        };
+
+        exp.getContent = function () {
+            editor.save();
+            return { content: canonicalize($textarea.val()) };
+        };
+
+        exp.mkFileManager = function (framework) {
+            var fmConfig = {
+                dropArea: $('.CodeMirror'),
+                body: $('body'),
+                onUploaded: function (ev, data) {
+                    //var cursor = editor.getCursor();
+                    //var cleanName = data.name.replace(/[\[\]]/g, '');
+                    //var text = '!['+cleanName+']('+data.url+')';
+                    var parsed = Cryptpad.parsePadUrl(data.url);
+                    var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+                    var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
+                    var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' +
+                        parsed.hashData.key + '"></media-tag>';
+                    editor.replaceSelection(mt);
+                }
+            };
+            framework._.sfCommon.createFileManager(fmConfig);
         };
 
         return exp;

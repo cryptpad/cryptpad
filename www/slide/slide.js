@@ -58,12 +58,6 @@ define([
         // $print.css('font-size', (20*9/16)+'vw');
     };
 
-    var fixCSS = function (css) {
-        var append = '.cp #cp-app-slide-print .cp-app-slide-frame ';
-        var append2 = '.cp div#cp-app-slide-modal #cp-app-slide-modal-content .cp-app-slide-frame ';
-        return css.replace(/(\n*)([^\n}]+)\s*\{/g, '$1' + append + '$2,' + append2 + '$2 {');
-    };
-
     var goTo = Slide.goTo = function (i) {
         i = i || 0;
         Slide.index = i;
@@ -87,8 +81,8 @@ define([
 
         var length = getNumberOfSlides();
         $modal.find('style.cp-app-slide-style').remove();
-        if (options.style && Slide.shown) {
-            $modal.prepend($('<style>', {'class': 'cp-app-slide-style'}).text(fixCSS(options.style)));
+        if (options.style) {
+            $modal.prepend($('<style>', {'class': 'cp-app-slide-style'}).text(options.style));
         }
         $content.find('.cp-app-slide-frame').each(function (i, el) {
             if (options.slide) {
