@@ -426,6 +426,7 @@ define([
 
             getFiles([FILES_DATA]).forEach(function (id) {
                 var data = allFilesList[id];
+                if (!data) { return; }
                 if (Array.isArray(data.tags) && containsSearchedTag(data.tags)) {
                     res.push(id);
                 } else
