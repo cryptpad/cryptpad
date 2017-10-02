@@ -1,4 +1,7 @@
-define(['jquery'], function ($) {
+define([
+    'jquery',
+    '/common/common-util.js'
+], function ($, Util) {
     var module = {};
 
     module.create = function (Common, cfg) {
@@ -6,6 +9,7 @@ define(['jquery'], function ($) {
         var metadataMgr = Common.getMetadataMgr();
         var sframeChan = Common.getSframeChannel();
         var titleUpdated;
+        var evTitleChange = Util.mkEvent();
 
         exp.defaultTitle = metadataMgr.getMetadata().defaultTitle;
         exp.title = document.title;
@@ -50,6 +54,7 @@ define(['jquery'], function ($) {
         metadataMgr.onTitleChange(function (title) {
             sframeChan.query('Q_SET_PAD_TITLE_IN_DRIVE', title, function (err) {
                 if (err) { return; }
+                evTitleChange.fire(title);
                 if (titleUpdated) { titleUpdated(undefined, title); }
             });
         });
@@ -61,6 +66,8 @@ define(['jquery'], function ($) {
                 defaultName: exp.defaultTitle
             };
         };
+
+        exp.onTitleChange = evTitleChange.reg;
 
         return exp;
     };

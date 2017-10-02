@@ -303,6 +303,7 @@ define([
 
     Slide.setTitle = function (titleObj) {
         Title = titleObj;
+        Title.onTitleChange(function () { draw(Slide.index); });
     };
 
     return Slide;
