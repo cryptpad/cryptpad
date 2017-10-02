@@ -7,19 +7,8 @@ define([
     '/common/sframe-common-outer.js'
 ], function (nThen, ApiConfig, $, RequireConfig, SFCommonO) {
     var requireConfig = RequireConfig();
-    var addRpc = function (sFrameChan, Cryptpad) {
-        Cryptpad = Cryptpad;
 
-        // protocols must still be declared in sframe-protocol.js
-        /*
-        sFrameChan.on('Q_HEY_BUDDY', function (data, cb) {
-            cb({
-                error: null,
-                response: "HEY BUDDY",
-            });
-        });
-        */
-    };
+    var messenger;
 
     // Loaded in load #2
     nThen(function (waitFor) {
@@ -51,7 +40,7 @@ define([
     }).nThen(function (/*waitFor*/) {
         SFCommonO.start({
             noRealtime: true,
-            addRpc: addRpc,
+            messaging: true,
         });
     });
 });

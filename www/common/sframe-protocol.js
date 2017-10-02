@@ -130,4 +130,21 @@ define({
 
     // Put one or more entries to the cache which will go in localStorage.
     'EV_CACHE_PUT': true,
+
+    // Contacts
+    'EV_CONTACTS_MESSAGE': true,
+    'EV_CONTACTS_JOIN': true,
+    'EV_CONTACTS_LEAVE': true,
+    'EV_CONTACTS_UPDATE': true,
+    'EV_CONTACTS_FRIEND': true,
+    'EV_CONTACTS_UNFRIEND': true,
+    'Q_CONTACTS_GET_FRIEND_LIST': true,
+    'Q_CONTACTS_GET_MY_INFO': true,
+    'Q_CONTACTS_GET_FRIEND_INFO': true,
+    'Q_CONTACTS_OPEN_FRIEND_CHANNEL': true,
+    'Q_CONTACTS_GET_STATUS': true,
+    'Q_CONTACTS_GET_MORE_HISTORY': true,
+    'Q_CONTACTS_SEND_MESSAGE': true,
+    'Q_CONTACTS_SET_CHANNEL_HEAD': true,
+
 });

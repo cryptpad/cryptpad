@@ -510,7 +510,6 @@ define([
                 }
             };
             ready();
-
             keys.forEach(function (curvePublic) {
                 connectToFriend(curvePublic, ready);
             });

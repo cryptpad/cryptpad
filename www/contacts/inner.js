@@ -8,6 +8,7 @@ define([
     '/common/sframe-common.js',
     '/common/hyperscript.js',
     '/contacts/messenger-ui.js',
+    '/common/sframe-messenger-inner.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -21,7 +22,8 @@ define([
     nThen,
     SFCommon,
     h,
-    UI
+    UI,
+    Messenger
     )
 {
     var Messages = Cryptpad.Messages;
@@ -78,32 +80,14 @@ define([
             pageTitle: Messages.contacts_title,
             metadataMgr: common.getMetadataMgr(),
         };
-        var toolbar = APP.toolbar = Toolbar.create(configTb);
-        toolbar = toolbar; // FIXME;
+        APP.toolbar = Toolbar.create(configTb);
 
-var stub = function () {
-    var p;
-    var t = function(){
-        console.error('called with arguments', Cryptpad.slice(arguments));
-        return p;
-    };
-    p = new Proxy(t, {
-        set: function (o, k, v) {
-            console.error('setting %s to %s', k, v);
-            o[k] = v;
-            return true;
-        }, get: function (o, k) {
-            console.error('getting %s', k);
-            return typeof(o[k]) !== 'undefined'? o[k]: p;
-        }
-    });
-    return p;
-};
+        var messenger = Messenger.create(sFrameChan);
 
-        var messengerStub = stub();
-        UI.create(messengerStub, $(friendList), $(messaging));
+        UI.create(messenger, $(friendList), $(messaging));
 
         Cryptpad.removeLoadingScreen();
+
 /*
         sFrameChan.query('Q_HEY_BUDDY', null, function (err, data) {
             if (!data) { return; }
