@@ -47,9 +47,8 @@ define([
     var create = function (options, cb) {
         var evContentUpdate = Util.mkEvent();
         var evEditableStateChange = Util.mkEvent();
-        var evOnReady = Util.mkEvent();
+        var evOnReady = Util.mkEvent(true);
         var evOnDefaultContentNeeded = Util.mkEvent();
-        var evCreated = Util.mkEvent(true);
 
         var evStart = Util.mkEvent(true);
 
@@ -69,7 +68,20 @@ define([
 
         var titleRecommender = function () { return false; };
         var contentGetter = function () { return UNINITIALIZED; };
-        var normalize = function (x) { return x; };
+        var normalize0 = function (x) { return x; };
+
+        var normalize = function (x) {
+            x = normalize0(x);
+            if (Array.isArray(x)) {
+                var outa = Array.prototype.slice.call(x);
+                if (typeof(outa[outa.length-1].metadata) === 'object') { outa.pop(); }
+                return outa;
+            } else if (typeof(x) === 'object') {
+                var outo = $.extend({}, x);
+                delete outo.metadata;
+                return outo;
+            }
+        };
 
         var extractMetadata = function (content) {
             if (Array.isArray(content)) {
@@ -113,6 +125,15 @@ define([
             }
         };
 
+        var contentUpdate = function (newContent) {
+            try {
+                evContentUpdate.fire(newContent);
+            } catch (e) {
+                console.log(e.stack);
+                Cryptpad.errorLoadingScreen(e.message);
+            }
+        };
+
         var onRemote = function () {
             if (state !== STATE.READY) { return; }
 
@@ -124,7 +145,7 @@ define([
             cpNfInner.metadataMgr.updateMetadata(meta);
             newContent = normalize(newContent);
 
-            evContentUpdate.fire(newContent);
+            contentUpdate(newContent);
 
             if (!readOnly) {
                 var newContent2NoMeta = normalize(contentGetter());
@@ -212,7 +233,7 @@ define([
                 var newContent = JSON.parse(newContentStr);
                 cpNfInner.metadataMgr.updateMetadata(extractMetadata(newContent));
                 newContent = normalize(newContent);
-                evContentUpdate.fire(newContent);
+                contentUpdate(newContent);
 
                 if (!readOnly) {
                     var newContent2NoMeta = normalize(contentGetter());
@@ -270,7 +291,7 @@ define([
             if (readOnly) { return; }
             toolbar.$drawer.append(
                 common.createButton('import', true, options, function (c, f) {
-                    evContentUpdate.fire(fi(c, f));
+                    contentUpdate(fi(c, f));
                     onLocal();
                 })
             );
@@ -376,7 +397,7 @@ define([
                 onRemote: onRemote,
                 setHistory: setHistoryMode,
                 applyVal: function (val) {
-                    evContentUpdate.fire(JSON.parse(val) || ["BODY",{},[]]);
+                    contentUpdate(JSON.parse(val) || ["BODY",{},[]]);
                 },
                 $toolbar: $(toolbarContainer)
             };
@@ -428,6 +449,7 @@ define([
 
                 // Register to be called when the pad has completely loaded
                 // (just before the loading screen is removed).
+                // This is only called ONCE.
                 onReady: evOnReady.reg,
 
                 // Register to be called when a new pad is being setup and default content is
@@ -449,7 +471,7 @@ define([
 
                 // Set a function which will normalize the content returned by the content getter
                 // such as removing extra fields.
-                setNormalizer: function (n) { normalize = n; },
+                setNormalizer: function (n) { normalize0 = n; },
 
                 // Call the CryptPad feedback API.
                 feedback: feedback,
@@ -468,9 +490,7 @@ define([
                     title: title
                 }
             }));
-            evCreated.fire();
         });
-        return evCreated.reg;
     };
     return { create: create };
 });
