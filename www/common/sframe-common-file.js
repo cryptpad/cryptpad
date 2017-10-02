@@ -51,9 +51,7 @@ define([
         $('<td>').text(Messages.cancel).appendTo($thead);
 
         var createTableContainer = function ($body) {
-            console.log($body);
             File.$container = $('<div>', { id: 'cp-fileupload' }).append($table).appendTo($body);
-            console.log('done');
             return File.$container;
         };
 
@@ -114,10 +112,13 @@ define([
             };
 
             onComplete = function (href) {
+                var mdMgr = common.getMetadataMgr();
+                var origin = mdMgr.getPrivateData().origin;
+                $link.prepend($('<span>', {'class': 'fa fa-external-link'}));
                 $link.attr('href', href)
                     .click(function (e) {
                         e.preventDefault();
-                        window.open($link.attr('href'), '_blank');
+                        window.open(origin + $link.attr('href'), '_blank');
                     });
                 var title = metadata.name;
                 Cryptpad.log(Messages._getKey('upload_success', [title]));
@@ -290,10 +291,22 @@ define([
                 onFileDrop(dropped, e);
             });
         };
+        var createCkeditorDropHandler = function () {
+            var editor = config.ckeditor;
+            editor.document.on('drop', function (ev) {
+                var dropped = ev.data.$.dataTransfer.files;
+                onFileDrop(dropped, ev);
+                ev.data.preventDefault(true);
+            });
+        };
 
         var createUploader = function ($area, $hover, $body) {
             if (!config.noHandlers) {
-                createAreaHandlers($area, null);
+                if (config.ckeditor) {
+                    createCkeditorDropHandler();
+                } else {
+                    createAreaHandlers($area, null);
+                }
             }
             createTableContainer($body);
         };

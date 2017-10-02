@@ -184,6 +184,9 @@ define([
         }
         return;
     };
+    common.getLanguage = function () {
+        return Messages._languageUsed;
+    };
     common.getUserlist = function () {
         if (store) {
             if (store.getProxy() && store.getProxy().info) {
@@ -531,6 +534,17 @@ define([
             id
         ]);
         cb(void 0, entry);
+    };
+
+    common.resetTags = function (href, tags, cb) {
+        cb = cb || $.noop;
+        if (!Array.isArray(tags)) { return void cb('INVALID_TAGS'); }
+        getFileEntry(href, function (e, entry) {
+            if (e) { return void cb(e); }
+            if (!entry) { cb('NO_ENTRY'); }
+            entry.tags = tags.slice();
+            cb();
+        });
     };
 
     common.tagPad = function (href, tag, cb) {
@@ -2221,6 +2235,46 @@ define([
                     return void w2();
                 }
                 $iframe.load(w2); //cb);
+            }
+        }).nThen(function (waitFor) {
+            if (sessionStorage.createReadme) {
+                var w = waitFor();
+                require(['/common/cryptget.js'], function (Crypt) {
+                    var hash = common.createRandomHash();
+                    Crypt.put(hash, Messages.driveReadme, function (e) {
+                        if (e) {
+                            console.error("Error while creating the default pad:", e);
+                            return void w();
+                        }
+                        var href = '/pad/#' + hash;
+                        var data = {
+                            href: href,
+                            title: Messages.driveReadmeTitle,
+                            atime: new Date().toISOString(),
+                            ctime: new Date().toISOString()
+                        };
+                        common.getFO().pushData(data, function (e, id) {
+                            if (e) {
+                                console.error("Error while creating the default pad:", e);
+                                return void w();
+                            }
+                            common.getFO().add(id);
+                            w();
+                        });
+                    });
+                    delete sessionStorage.createReadme;
+                });
+            }
+        }).nThen(function (waitFor) {
+            if (sessionStorage.migrateAnonDrive) {
+                var w = waitFor();
+                require(['/common/mergeDrive.js'], function (Merge) {
+                    var hash = localStorage.FS_hash;
+                    Merge.anonDriveIntoUser(getStore().getProxy(), hash, function () {
+                        delete sessionStorage.migrateAnonDrive;
+                        w();
+                    });
+                });
             }
         }).nThen(function () {
             updateLocalVersion();

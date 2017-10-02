@@ -42,6 +42,26 @@ var afterLoaded = function (req) {
             updated: updated,
             cache: data.cache
         };
+        data.localStore = data.localStore || {};
+        var lsUpdated = {};
+        window.cryptpadStore = {
+            get: function (k, cb) {
+                setTimeout(function () { cb(data.localStore[k]); });
+            },
+            getAll: function (cb) {
+                setTimeout(function () {
+                    cb(JSON.parse(JSON.stringify(data.localStore)));
+                });
+            },
+            put: function (k, v, cb) {
+                cb = cb || function () { };
+                lsUpdated[k] = v;
+                setTimeout(function () { data.localStore[k] = v; cb(); });
+            },
+            updated: lsUpdated,
+            store: data.localStore
+        };
+        window.cryptpadLanguage = data.language;
         require(['/common/sframe-boot2.js'], function () { });
     };
     window.addEventListener('message', onReply);

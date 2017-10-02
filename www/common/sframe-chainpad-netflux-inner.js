@@ -46,7 +46,21 @@ define([
         var metadataMgr = config.metadataMgr;
         config = undefined;
 
-        var chainpad;
+        var chainpad = ChainPad.create({
+            userName: userName,
+            initialState: initialState,
+            transformFunction: transformFunction,
+            validateContent: validateContent,
+            avgSyncMilliseconds: avgSyncMilliseconds,
+            logLevel: logLevel
+        });
+        chainpad.onMessage(function(message, cb) {
+            sframeChan.query('Q_RT_MESSAGE', message, cb);
+        });
+        chainpad.onPatch(function () {
+            onRemote({ realtime: chainpad });
+        });
+
         var myID;
         var isReady = false;
         var evConnected = Util.mkEvent(true);
@@ -67,33 +81,20 @@ define([
 
         sframeChan.on('EV_RT_DISCONNECT', function () {
             isReady = false;
-            if (chainpad) { chainpad.abort(); }
+            chainpad.abort();
             onConnectionChange({ state: false });
         });
         sframeChan.on('EV_RT_CONNECT', function (content) {
             //content.members.forEach(userList.onJoin);
-            myID = content.myID;
             isReady = false;
-            if (chainpad) {
+            if (myID) {
                 // it's a reconnect
-                if (chainpad) { chainpad.start(); }
+                myID = content.myID;
+                chainpad.start();
                 onConnectionChange({ state: true, myId: myID });
                 return;
             }
-            chainpad = ChainPad.create({
-                userName: userName,
-                initialState: initialState,
-                transformFunction: transformFunction,
-                validateContent: validateContent,
-                avgSyncMilliseconds: avgSyncMilliseconds,
-                logLevel: logLevel
-            });
-            chainpad.onMessage(function(message, cb) {
-                sframeChan.query('Q_RT_MESSAGE', message, cb);
-            });
-            chainpad.onPatch(function () {
-                onRemote({ realtime: chainpad });
-            });
+            myID = content.myID;
             onInit({
                 myID: myID,
                 realtime: chainpad,
@@ -130,7 +131,8 @@ define([
             getMyID: function () { return myID; },
             metadataMgr: metadataMgr,
             whenRealtimeSyncs: whenRealtimeSyncs,
-            onInfiniteSpinner: evInfiniteSpinner.reg
+            onInfiniteSpinner: evInfiniteSpinner.reg,
+            chainpad: chainpad,
         });
     };
     return Object.freeze(module.exports);

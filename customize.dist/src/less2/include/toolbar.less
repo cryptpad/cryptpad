@@ -5,6 +5,7 @@
 @import (once) "./avatar.less";
 @import (once) "./toolbar-history.less";
 @import (once) "./icon-colors.less";
+@import (once) "./tools.less";
 
 
 .toolbar_main () {
@@ -12,15 +13,6 @@
     @toolbar_line-height: 32px;
     @toolbar_top-height: 64px;
     @toolbar_button-font: @colortheme_app-font;
-
-    .unselectable () {
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-    }
 
     .dropdown_main();
     .ckeditor_fix();
@@ -270,7 +262,7 @@
             font-family: FontAwesome;
         }
 
-        .unselectable();
+        .tools_unselectable();
 
         font: @toolbar_button-font;
         width: 100%;
@@ -289,7 +281,7 @@
 
         button {
             transition: all 0.15s;
-            .unselectable();
+            .tools_unselectable();
             &.cp-toolbar-hidden {
                 display: none;
             }
@@ -655,6 +647,14 @@
                             margin: 8px;
                         }
                         border: 0;
+                    }
+                }
+            }
+            p.cp-toolbar-account {
+                &> span {
+                    font-weight: bold;
+                    span {
+                        font-weight: normal;
                     }
                 }
             }

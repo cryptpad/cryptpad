@@ -1,7 +1,6 @@
-define(['/common/cryptpad-common.js'], function (Cryptpad) {
+define(['/customize/messages.js'], function (Messages) {
     // Adds a context menu entry to open the selected link in a new tab.
     // See https://github.com/xwiki-contrib/application-ckeditor/commit/755d193497bf23ed874d874b4ae92fbee887fc10
-    var Messages = Cryptpad.Messages;
     return {
         addSupportForOpeningLinksInNewTab : function (Ckeditor) {
                 // Returns the DOM element of the active (currently focused) link. It has also support for linked image widgets.

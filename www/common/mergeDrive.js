@@ -83,9 +83,9 @@ define([
         });
     };
 
-    exp.anonDriveIntoUser = function (proxy, cb) {
+    exp.anonDriveIntoUser = function (proxyData, fsHash, cb) {
         // Make sure we have an FS_hash and we don't use it, otherwise just stop the migration and cb
-        if (!localStorage.FS_hash || !Cryptpad.isLoggedIn()) {
+        if (!fsHash || !Cryptpad.isLoggedIn()) {
             if (typeof(cb) === "function") { return void cb(); }
         }
         // Get the content of FS_hash and then merge the objects, remove the migration key and cb
@@ -102,21 +102,23 @@ define([
                 return;
             }
             if (parsed) {
+                var proxy = proxyData.proxy;
                 var oldFo = FO.init(parsed.drive, {
                     Cryptpad: Cryptpad
                 });
                 var onMigrated = function () {
                     oldFo.fixFiles();
-                    var newData = Cryptpad.getStore().getProxy();
-                    var newFo = newData.fo;
+                    var newFo = proxyData.fo;
                     var oldRecentPads = parsed.drive[newFo.FILES_DATA];
                     var newRecentPads = proxy.drive[newFo.FILES_DATA];
-                    var newFiles = newFo.getFiles([newFo.FILES_DATA]);
                     var oldFiles = oldFo.getFiles([newFo.FILES_DATA]);
+                    var newHrefs = Object.keys(newRecentPads).map(function (id) {
+                        return newRecentPads[id].href;
+                    });
                     oldFiles.forEach(function (id) {
                         var href = oldRecentPads[id].href;
                         // Do not migrate a pad if we already have it, it would create a duplicate in the drive
-                        if (newFiles.indexOf(id) !== -1) { return; }
+                        if (newHrefs.indexOf(href) !== -1) { return; }
                         // If we have a stronger version, do not add the current href
                         if (Cryptpad.findStronger(href, newRecentPads)) { return; }
                         // If we have a weaker version, replace the href by the new one
@@ -150,7 +152,7 @@ define([
                     if (!proxy.FS_hashes || !Array.isArray(proxy.FS_hashes)) {
                         proxy.FS_hashes = [];
                     }
-                    proxy.FS_hashes.push(localStorage.FS_hash);
+                    proxy.FS_hashes.push(fsHash);
                     if (typeof(cb) === "function") { cb(); }
                 };
                 oldFo.migrate(onMigrated);
@@ -158,7 +160,7 @@ define([
             }
             if (typeof(cb) === "function") { cb(); }
         };
-        Crypt.get(localStorage.FS_hash, todo);
+        Crypt.get(fsHash, todo);
     };
 
     return exp;

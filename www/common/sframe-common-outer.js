@@ -47,14 +47,21 @@ define([
                     localStorage.CRYPTPAD_URLARGS = ApiConfig.requireConf.urlArgs;
                 }
                 var cache = {};
+                var localStore = {};
                 Object.keys(localStorage).forEach(function (k) {
-                    if (k.indexOf('CRYPTPAD_CACHE|') !== 0) { return; }
-                    cache[k.slice(('CRYPTPAD_CACHE|').length)] = localStorage[k];
+                    if (k.indexOf('CRYPTPAD_CACHE|') === 0) {
+                        cache[k.slice(('CRYPTPAD_CACHE|').length)] = localStorage[k];
+                        return;
+                    }
+                    if (k.indexOf('CRYPTPAD_STORE|') === 0) {
+                        localStore[k.slice(('CRYPTPAD_STORE|').length)] = localStorage[k];
+                        return;
+                    }
                 });
 
                 SFrameChannel.create($('#sbox-iframe')[0].contentWindow, waitFor(function (sfc) {
                     sframeChan = sfc;
-                }), false, { cache: cache });
+                }), false, { cache: cache, localStore: localStore, language: Cryptpad.getLanguage() });
                 Cryptpad.ready(waitFor());
             }));
         }).nThen(function (waitFor) {
@@ -64,8 +71,17 @@ define([
                     localStorage['CRYPTPAD_CACHE|' + k] = x[k];
                 });
             });
+            sframeChan.on('EV_LOCALSTORE_PUT', function (x) {
+                Object.keys(x).forEach(function (k) {
+                    if (typeof(x[k]) === "undefined") {
+                        delete localStorage['CRYPTPAD_STORE|' + k];
+                        return;
+                    }
+                    localStorage['CRYPTPAD_STORE|' + k] = x[k];
+                });
+            });
 
-            secret = Cryptpad.getSecrets();
+            secret = cfg.getSecrets ? cfg.getSecrets(Cryptpad) : Cryptpad.getSecrets();
             if (!secret.channel) {
                 // New pad: create a new random channel id
                 secret.channel = Cryptpad.createChannelId();
@@ -231,23 +247,22 @@ define([
                         return null;
                     }
                 };
+                var msgs = [];
                 var onMsg = function (msg) {
                     var parsed = parse(msg);
                     if (parsed[0] === 'FULL_HISTORY_END') {
-                        console.log('END');
-                        cb();
+                        cb(msgs);
                         return;
                     }
                     if (parsed[0] !== 'FULL_HISTORY') { return; }
                     if (parsed[1] && parsed[1].validateKey) { // First message
-                        secret.keys.validateKey = parsed[1].validateKey;
                         return;
                     }
                     msg = parsed[1][4];
                     if (msg) {
                         msg = msg.replace(/^cp\|/, '');
                         var decryptedMsg = crypto.decrypt(msg, secret.keys.validateKey);
-                        sframeChan.event('EV_RT_HIST_MESSAGE', decryptedMsg);
+                        msgs.push(decryptedMsg);
                     }
                 };
                 network.on('message', onMsg);
@@ -281,6 +296,12 @@ define([
                     cb({error:e});
                 });
             });
+
+            sframeChan.on('Q_SESSIONSTORAGE_PUT', function (data, cb) {
+                sessionStorage[data.key] = data.value;
+                cb();
+            });
+
 
             // Present mode URL
             sframeChan.on('Q_PRESENT_URL_GET_VALUE', function (data, cb) {
@@ -371,6 +392,35 @@ define([
                 } else {
                     window.location.reload();
                 }
+            });
+
+            sframeChan.on('EV_OPEN_URL', function (url) {
+                if (url) {
+                    window.open(url);
+                }
+            });
+
+            sframeChan.on('Q_TAGS_GET', function (data, cb) {
+                Cryptpad.getPadTags(null, function (err, data) {
+                    cb({
+                        error: err,
+                        data: data
+                    });
+                });
+            });
+
+            sframeChan.on('EV_TAGS_SET', function (data) {
+                console.log(data);
+                Cryptpad.resetTags(null, data);
+            });
+
+            sframeChan.on('Q_PIN_GET_USAGE', function (data, cb) {
+                Cryptpad.isOverPinLimit(function (err, overLimit, data) {
+                    cb({
+                        error: err,
+                        data: data
+                    });
+                });
             });
 
             if (cfg.addRpc) {
@@ -487,7 +537,7 @@ define([
             CpNfOuter.start({
                 sframeChan: sframeChan,
                 channel: secret.channel,
-                network: Cryptpad.getNetwork(),
+                network: cfg.newNetwork || Cryptpad.getNetwork(),
                 validateKey: secret.keys.validateKey || undefined,
                 readOnly: readOnly,
                 crypto: Crypto.createEncryptor(secret.keys),
@@ -499,7 +549,7 @@ define([
                         });
                         return;
                     }
-                    if (readOnly) { return; }
+                    if (readOnly || cfg.noHash) { return; }
                     Cryptpad.replaceHash(Cryptpad.getEditHashFromKeys(wc.id, secret.keys));
                 }
             });

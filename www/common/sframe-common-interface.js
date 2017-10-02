@@ -1,12 +1,14 @@
 define([
     'jquery',
+    '/api/config',
     '/common/cryptpad-common.js',
+    '/common/common-util.js',
     '/common/media-tag.js',
     '/common/tippy.min.js',
     '/customize/application_config.js',
 
     'css!/common/tippy.css',
-], function ($, Cryptpad, MediaTag, Tippy, AppConfig) {
+], function ($, Config, Cryptpad, Util, MediaTag, Tippy, AppConfig) {
     var UI = {};
     var Messages = Cryptpad.Messages;
 
@@ -182,9 +184,33 @@ define([
                 break;
             case 'more':
                 button = $('<button>', {
-                    title: Messages.moreActions || 'TODO',
+                    title: Messages.moreActions,
                     'class': "cp-toolbar-drawer-button fa fa-ellipsis-h",
                     style: 'font:'+size+' FontAwesome'
+                });
+                break;
+            case 'savetodrive':
+                button = $('<button>', {
+                    'class': 'fa fa-cloud-upload',
+                    title: Messages.canvas_saveToDrive,
+                })
+                .click(common.prepareFeedback(type));
+                break;
+            case 'hashtag':
+                button = $('<button>', {
+                    'class': 'fa fa-hashtag',
+                    title: Messages.tags_title,
+                })
+                .click(common.prepareFeedback(type))
+                .click(function () {
+                    sframeChan.query('Q_TAGS_GET', null, function (err, res) {
+                        if (err || res.error) { return void console.error(err || res.error); }
+                        Cryptpad.dialog.tagPrompt(res.data, function (tags) {
+                            if (!Array.isArray(tags)) { return; }
+                            console.error(tags);
+                            sframeChan.event('EV_TAGS_SET', tags);
+                        });
+                    });
                 });
                 break;
             default:
@@ -267,6 +293,103 @@ define([
         }
     };
 
+    /*  Create a usage bar which keeps track of how much storage space is used
+        by your CryptDrive. The getPinnedUsage RPC is one of the heavier calls,
+        so we throttle its usage. Clients will not update more than once per
+        LIMIT_REFRESH_RATE. It will be update at least once every three such intervals
+        If changes are made to your drive in the interim, they will trigger an
+        update.
+    */
+    var LIMIT_REFRESH_RATE = 30000; // milliseconds
+    UI.createUsageBar = function (common, cb) {
+        if (!common.isLoggedIn()) { return cb("NOT_LOGGED_IN"); }
+        // getPinnedUsage updates common.account.usage, and other values
+        // so we can just use those and only check for errors
+        var $container = $('<span>', {'class':'cp-limit-container'});
+        var todo;
+        var updateUsage = Cryptpad.notAgainForAnother(function () {
+            common.getPinUsage(todo);
+        }, LIMIT_REFRESH_RATE);
+
+        todo = function (err, data) {
+            if (err) { return void console.error(err); }
+
+            var usage = data.usage;
+            var limit = data.limit;
+            var plan = data.plan;
+            $container.html('');
+            var unit = Util.magnitudeOfBytes(limit);
+
+            usage = unit === 'GB'? Util.bytesToGigabytes(usage):
+                Util.bytesToMegabytes(usage);
+            limit = unit === 'GB'? Util.bytesToGigabytes(limit):
+                Util.bytesToMegabytes(limit);
+
+            var $limit = $('<span>', {'class': 'cp-limit-bar'}).appendTo($container);
+            var quota = usage/limit;
+            var $usage = $('<span>', {'class': 'cp-limit-usage'}).css('width', quota*100+'%');
+
+            var makeDonateButton = function () {
+                $('<a>', {
+                    'class': 'cp-limit-upgrade btn btn-success',
+                    href: Cryptpad.donateURL,
+                    rel: "noreferrer noopener",
+                    target: "_blank",
+                }).text(Messages.supportCryptpad).appendTo($container);
+            };
+
+            var makeUpgradeButton = function () {
+                $('<a>', {
+                    'class': 'cp-limit-upgrade btn btn-success',
+                    href: Cryptpad.upgradeURL,
+                    rel: "noreferrer noopener",
+                    target: "_blank",
+                }).text(Messages.upgradeAccount).appendTo($container);
+            };
+
+            if (!Config.removeDonateButton) {
+                if (!common.isLoggedIn() || !Config.allowSubscriptions) {
+                    // user is not logged in, or subscriptions are disallowed
+                    makeDonateButton();
+                } else if (!plan) {
+                    // user is logged in and subscriptions are allowed
+                    // and they don't have one. show upgrades
+                    makeUpgradeButton();
+                } else {
+                    // they have a plan. show nothing
+                }
+            }
+
+            var prettyUsage;
+            var prettyLimit;
+
+            if (unit === 'GB') {
+                prettyUsage = Messages._getKey('formattedGB', [usage]);
+                prettyLimit = Messages._getKey('formattedGB', [limit]);
+            } else {
+                prettyUsage = Messages._getKey('formattedMB', [usage]);
+                prettyLimit = Messages._getKey('formattedMB', [limit]);
+            }
+
+            if (quota < 0.8) { $usage.addClass('cp-limit-usage-normal'); }
+            else if (quota < 1) { $usage.addClass('cp-limit-usage-warning'); }
+            else { $usage.addClass('cp-limit-usage-above'); }
+            var $text = $('<span>', {'class': 'cp-limit-usage-text'});
+            $text.text(usage + ' / ' + prettyLimit);
+            $limit.append($usage).append($text);
+        };
+
+        setInterval(function () {
+            updateUsage();
+        }, LIMIT_REFRESH_RATE * 3);
+
+        updateUsage();
+        /*getProxy().on('change', ['drive'], function () {
+            updateUsage();
+        }); TODO*/
+        cb(null, $container);
+    };
+
     UI.createUserAdminMenu = function (Common, config) {
         var metadataMgr = Common.getMetadataMgr();
 
@@ -294,7 +417,7 @@ define([
             $userAdminContent.append($userName);
             options.push({
                 tag: 'p',
-                attributes: {'class': 'accountData'},
+                attributes: {'class': 'cp-toolbar-account'},
                 content: $userAdminContent.html()
             });
         }
