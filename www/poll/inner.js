@@ -75,14 +75,51 @@ define([
 
 
 
+    var copyObject = function (obj) {
+        return JSON.parse(JSON.stringify(obj));
+    };
 
 
 
+    /*
+        Make sure that the realtime data structure has all the required fields
+    */
+    var prepareProxy = function (proxy, schema) {
+        if (proxy && proxy.version === 1) { return; }
+        debug("Configuring proxy schema...");
+
+        proxy.metadata = proxy.metadata || schema.metadata;
+        Object.keys(schema.metadata).forEach(function (k) {
+            if (!proxy.metadata[k]) { proxy.metadata[k] = schema.metadata[k]; }
+        });
+
+        proxy.content = proxy.content || schema.content;
+        Object.keys(schema.content).forEach(function (k) {
+            if (!proxy.content[k]) { proxy.content[k] = schema.content[k]; }
+        });
+
+        proxy.version = 1;
+        proxy.type = 'poll';
+    };
 
 
+
+    var setUserId = function (id, cb) {
+        cb  =cb || $.noop;
+        APP.userid = id;
+        common.setPadAttribute('userid', id, function (e) {
+            if (e) {
+                console.error(e);
+                return void cb(e);
+            }
+            cb();
+        });
+    };
 
     var sortColumns = function (order, firstcol) {
         var colsOrder = order.slice();
+        // Never put at the first position an uncommitted column
+        if (APP.proxy.content.colsOrder.indexOf(firstcol) === -1) { return colsOrder; }
         colsOrder.sort(function (a, b) {
             return (a === firstcol) ? -1 :
                         ((b === firstcol) ? 1 : 0);
@@ -90,8 +127,9 @@ define([
         return colsOrder;
     };
 
-    var isOwnColumnCommitted = function () {
-        return APP.proxy && APP.proxy.content.colsOrder.indexOf(APP.userid) !== -1;
+    var isUncommitted = function (id) {
+        return APP.uncommitted.content.colsOrder.indexOf(id) !== -1 ||
+               APP.uncommitted.content.rowsOrder.indexOf(id) !== -1;
     };
 
     var mergeUncommitted = function (proxy, uncommitted, commit) {
@@ -101,11 +139,6 @@ define([
         } else {
             newObj = $.extend(true, {}, proxy);
         }
-        // We have uncommitted data only if the user's column is not in the proxy
-        // If it is already is the proxy, nothing to merge
-        /*if (isOwnColumnCommitted()) {
-            return newObj;
-        }*/
 
         // Merge uncommitted into the proxy
         uncommitted.content.colsOrder = uncommitted.content.colsOrder || [];
@@ -129,9 +162,9 @@ define([
             if (newObj.content.rowsOrder.indexOf(x) !== -1) { return; }
             newObj.content.rowsOrder.push(x);
         });
-        for (var k in uncommitted.content.rows) {
-            if (!newObj.content.rows[k]) {
-                newObj.content.rows[k] = uncommitted.content.rows[k];
+        for (var m in uncommitted.content.rows) {
+            if (!newObj.content.rows[m]) {
+                newObj.content.rows[m] = uncommitted.content.rows[m];
             }
         }
 
@@ -143,26 +176,46 @@ define([
     };
 
     var styleUncommittedColumn = function () {
-        var id = APP.userid;
+        var userid = APP.userid;
 
         // TODO: move?
         // Enable input for the userid column
-        $('input[disabled="disabled"][data-rt-id^="' + id + '"]').removeAttr('disabled');
-        $('input[type="number"][data-rt-id^="' + id + '"]').addClass('enabled');
-        $('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').addClass('fa-unlock').removeClass('fa-lock').attr('title', Messages.poll_unlocked);
+        $('input[disabled="disabled"][data-rt-id^="' + userid + '"]').removeAttr('disabled')
+            .attr('placeholder', Messages.poll_userPlaceholder);
+        $('input[type="number"][data-rt-id^="' + userid + '"]').addClass('enabled');
+        $('.cp-app-poll-table-lock[data-rt-id="' + userid + '"]').remove();
+        $('[data-rt-id^="' + userid + '"]').closest('td')
+            .addClass("cp-app-poll-table-own");
+        $('.cp-app-poll-table-bookmark[data-rt-id="' + userid + '"]').css('visibility', '')
+            .removeClass('fa-bookmark-o').addClass('fa-bookmark')
+            .attr('title', 'TODO: this is your bookmarked column. It will always be unlocked and displayed at the beginning for you');
+        //.addClass('fa-unlock').removeClass('fa-lock').attr('title', Messages.poll_unlocked);
+        //$('.cp-app-poll-table-remove[data-rt-id="' + userid + '"]').remove();
 
+        var $scroll = $('#cp-app-poll-table-scroll');
+        var hasScroll = $scroll.width() < $scroll[0].scrollWidth;
         APP.uncommitted.content.colsOrder.forEach(function(id) {
             // Enable the checkboxes for the uncommitted column
             $('input[disabled="disabled"][data-rt-id^="' + id + '"]').removeAttr('disabled');
             $('input[type="number"][data-rt-id^="' + id + '"]').addClass('enabled');
-            $('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').addClass('fa-unlock').removeClass('fa-lock').attr('title', Messages.poll_unlocked);
+            $('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').remove();
+            //.addClass('fa-unlock').removeClass('fa-lock').attr('title', Messages.poll_unlocked);
+            $('.cp-app-poll-table-remove[data-rt-id="' + id + '"]').remove();
+            $('.cp-app-poll-table-bookmark[data-rt-id="' + id + '"]').remove();
 
-            $('[data-rt-id^="' + id + '"]').closest('td').addClass("cp-app-poll-table-uncommitted");
             $('td.cp-app-poll-table-uncommitted .cover').addClass("cp-app-poll-table-uncommitted");
+            var $uncommittedCol = $('[data-rt-id^="' + id + '"]').closest('td');
+            $uncommittedCol.addClass("cp-app-poll-table-uncommitted");
+
+            if (hasScroll) {
+                $uncommittedCol.css('right', '100px');
+            }
         });
         APP.uncommitted.content.rowsOrder.forEach(function(id) {
             // Enable the checkboxes for the uncommitted column
             $('input[disabled="disabled"][data-rt-id="' + id + '"]').removeAttr('disabled');
+            $('.cp-app-poll-table-edit[data-rt-id="' + id + '"]').remove();
+            $('.cp-app-poll-table-remove[data-rt-id="' + id + '"]').remove();
 
             $('[data-rt-id="' + id + '"]').closest('tr').addClass("cp-app-poll-table-uncommitted");
             //$('td.uncommitted .cover').addClass("uncommitted");
@@ -187,10 +240,20 @@ define([
     };
 
     var updateTableButtons = function () {
-        var $createOption = APP.$table.find('tfoot tr td:first-child');
+        var uncomColId = APP.uncommitted.content.colsOrder[0];
+        var uncomRowId = APP.uncommitted.content.rowsOrder[0];
+        var $createOption = APP.$table.find('tbody input[data-rt-id="' + uncomRowId+'"]')
+                                .closest('td').find('> div');
         $createOption.append(APP.$createRow);
+        var $createUser = APP.$table.find('thead input[data-rt-id="' + uncomColId + '"]')
+                                .closest('td');
+        $createUser.prepend(APP.$createCol);
 
-        $('#cp-app-poll-create-user, #cp-app-poll-create-option').css('display', 'inline-flex');
+        if (APP.proxy.content.colsOrder.indexOf(APP.userid) === -1) {
+            APP.$table.find('.cp-app-poll-table-bookmark').css('visibility', '');
+        }
+
+        //$('#cp-app-poll-create-user, #cp-app-poll-create-option').css('display', 'inline-flex');
         if (!APP.proxy ||
             !APP.proxy.content.rowsOrder ||
             APP.proxy.content.rowsOrder.length === 0) {
@@ -206,14 +269,56 @@ define([
         if (bool) {
             if (APP.$publish) { APP.$publish.hide(); }
             if (APP.$admin) { APP.$admin.show(); }
-            $('#cp-app-poll-create-option').hide();
-            $('.cp-app-poll-table-remove[data-rt-id^="y"], .cp-app-poll-table-edit[data-rt-id^="y"]').hide();
+            $('#cp-app-poll-form').addClass('cp-app-poll-published');
         } else {
             if (APP.$publish) { APP.$publish.show(); }
             if (APP.$admin) { APP.$admin.hide(); }
-            $('#cp-app-poll-create-option').show();
-            $('.cp-app-poll-table-remove[data-rt-id^="y"], .cp-app-poll-table-edit[data-rt-id^="y"]').show();
+            $('#cp-app-poll-form').removeClass('cp-app-poll-published');
         }
+    };
+
+    var addCount = function () {
+        var $scroll = $('#cp-app-poll-table-scroll');
+        var hasScroll = $scroll.width() < $scroll[0].scrollWidth;
+        var $countCol = $('tr td:last-child');
+        if (hasScroll) {
+            $countCol.css('right', '0');
+        }
+        var $thead = APP.$table.find('thead');
+        var $tr = APP.$table.find('tbody tr').first();
+        $thead.find('tr td').last()
+            .css({
+                'height': $thead.height()+'px',
+                'text-align': 'center',
+                'line-height': $thead.height()+'px'
+            })
+            .text('TOTAL'); // TODO
+        var winner = {
+            v: 0,
+            ids: []
+        };
+        APP.proxy.content.rowsOrder.forEach(function (rId) {
+            var count = Object.keys(APP.proxy.content.cells)
+                .filter(function (k) {
+                    return k.indexOf(rId) !== -1 && APP.proxy.content.cells[k] === 1;
+                }).length;
+            if (count > winner.v) {
+                winner.v = count;
+                winner.ids = [rId];
+            } else if (count && count === winner.v) {
+                winner.ids.push(rId);
+            }
+            APP.$table.find('[data-rt-count-id="' + rId + '"]')
+                .text(count)
+                .css({
+                    'height': $tr.height()+'px',
+                    'line-height': $tr.height()+'px'
+                });
+        });
+        winner.ids.forEach(function (rId) {
+            $('[data-rt-id="' + rId + '"]').closest('td').addClass('cp-app-poll-table-winner');
+            $('[data-rt-count-id="' + rId + '"]').addClass('cp-app-poll-table-winner');
+        });
     };
 
     var updateDisplayedTable = function () {
@@ -221,6 +326,7 @@ define([
         unlockElements();
         updateTableButtons();
         setTablePublished(APP.proxy.published);
+        addCount();
 
         /*
         APP.proxy.table.rowsOrder.forEach(function (rowId) {
@@ -283,14 +389,6 @@ define([
             readOnly: readOnly
         };
 
-        //Render.updateTable(table, displayedObj, conf);
-
-        /*  FIXME browser autocomplete fills in new fields sometimes
-            calling updateTable twice removes the autofilled in values
-            setting autocomplete="off" is not reliable
-
-            https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion
-        */
         common.notify();
 
         var getFocus = function () {
@@ -298,23 +396,36 @@ define([
             if (!active) { return; }
             return {
                 el: active,
+                id: $(active).attr('data-rt-id'),
                 start: active.selectionStart,
                 end: active.selectionEnd
             };
         };
         var setFocus = function (obj) {
-            if (obj.el) { obj.el.focus(); }
+            var el;
+            if (document.body.contains(obj.el)) { el = obj.el; }
+            else if($('input[data-rt-id="' + obj.id + '"]').length) {
+                el = $('input[data-rt-id="' + obj.id + '"]')[0];
+            }
             else { return; }
-            if (obj.start) { obj.el.selectionStart = obj.start; }
-            if (obj.end) { obj.el.selectionEnd = obj.end; }
+            el.focus();
+            if (obj.start) { el.selectionStart = obj.start; }
+            if (obj.end) { el.selectionEnd = obj.end; }
         };
 
         var updateTable = function () {
             var displayedObj2 = mergeUncommitted(APP.proxy, APP.uncommitted);
             var f = getFocus();
+            APP.$createRow.detach();
+            APP.$createCol.detach();
             Render.updateTable(table, displayedObj2, conf);
-            APP.proxy.content.rowsOrder.forEach(function (rowId) {
-                $('input[data-rt-id="' + rowId +'"]').val(APP.proxy.content.rows[rowId] || '');
+            // Fix autocomplete bug:
+            displayedObj2.content.rowsOrder.forEach(function (rowId) {
+                $('input[data-rt-id="' + rowId +'"]').val(displayedObj2.content.rows[rowId] || '');
+            });
+            displayedObj2.content.colsOrder.forEach(function (rowId) {
+                $('input[data-rt-id="' + rowId +'"]')
+                    .val(displayedObj2.content.cols[rowId] || '');
             });
             updateDisplayedTable();
             setFocus(f);
@@ -339,6 +450,10 @@ define([
         return input.getAttribute && input.getAttribute('data-rt-id');
     };
 
+    var handleBookmark = function (id) {
+        setUserId(id === APP.userid ? '' : id, change);
+    };
+
     /*  Called whenever an event is fired on an input element */
     var handleInput = function (input) {
         var type = input.type.toLowerCase();
@@ -349,9 +464,7 @@ define([
         var object = APP.proxy;
 
         var x = Render.getCoordinates(id)[0];
-        if (type !== "row" && x === APP.userid && APP.proxy.content.colsOrder.indexOf(x) === -1) {
-            object = APP.uncommitted;
-        }
+        if (isUncommitted(id)) { object = APP.uncommitted; }
 
         switch (type) {
             case 'text':
@@ -383,7 +496,6 @@ define([
 
     var hideInputs = function (id) {
         if (APP.readOnly) { return; }
-        console.log(id);
         if (id) {
             var type = Render.typeofId(id);
             console.log(type);
@@ -404,6 +516,8 @@ define([
             .indexOf('cp-app-poll-table-remove') !== -1;
         var isEdit = span.className && span.className.split(' ')
             .indexOf('cp-app-poll-table-edit') !== -1;
+        var isBookmark = span.className && span.className.split(' ')
+            .indexOf('cp-app-poll-table-bookmark') !== -1;
         var isLock = span.className && span.className.split(' ')
             .indexOf('cp-app-poll-table-lock') !== -1;
         var isLocked = span.className && span.className.split(' ').indexOf('fa-lock') !== -1;
@@ -431,6 +545,9 @@ define([
                         change();
                     });
                 });
+            } else if (isBookmark) {
+                //hideInputs(span);
+                handleBookmark(id);
             } else if (isLock && isLocked) {
                 //hideInputs(span);
                 unlockColumn(id, function () {
@@ -466,19 +583,30 @@ define([
         var nodeName = target && target.nodeName;
         //var shouldLock = $(target).hasClass('fa-unlock');
 
-        if ((!$(target).parents('#cp-app-poll-table tbody').length &&
+        /*if ((!$(target).parents('#cp-app-poll-table tbody').length &&
             $(target).hasClass('cp-app-poll-table-lock'))) {
             //hideInputs(e);
-        }
+        }*/
 
         switch (nodeName) {
             case 'INPUT':
                 if (isKeyup && (e.keyCode === 13 || e.keyCode === 27)) {
                     var id = target.getAttribute('data-rt-id');
+                    if ($(target).parents('.cp-app-poll-table-uncommitted').length
+                        && e.keyCode === 13) {
+                        var type = Render.typeofId(id);
+                        if (type === "row") { APP.$createRow.click(); }
+                        else if (type === "col") { APP.$createCol.click(); }
+                        break;
+                    }
                     hideInputs(id);
                     break;
                 }
-                if ($(target).is('input[type="number"]')) { console.error("number input focused?"); break; }
+                if ($(target).is('input[type="number"]')) {
+                    // Nothing to do...
+                    //console.error("number input focused?");
+                    break;
+                }
 
                 handleInput(target);
                 break;
@@ -506,27 +634,6 @@ define([
     };
 
     /*
-        Make sure that the realtime data structure has all the required fields
-    */
-    var prepareProxy = function (proxy, schema) {
-        if (proxy && proxy.version === 1) { return; }
-        debug("Configuring proxy schema...");
-
-        proxy.metadata = proxy.metadata || schema.metadata;
-        Object.keys(schema.metadata).forEach(function (k) {
-            if (!proxy.metadata[k]) { proxy.metadata[k] = schema.metadata[k]; }
-        });
-
-        proxy.content = proxy.content || schema.content;
-        Object.keys(schema.content).forEach(function (k) {
-            if (!proxy.content[k]) { proxy.content[k] = schema.content[k]; }
-        });
-
-        proxy.version = 1;
-        proxy.type = 'poll';
-    };
-
-    /*
 
     */
     var publish = APP.publish = function (bool) {
@@ -549,10 +656,6 @@ define([
 
         $('#cp-app-poll-help').toggle(help);
         $('#cp-app-poll-action-help').text(msg);
-    };
-
-    var copyObject = function (obj) {
-        return JSON.parse(JSON.stringify(obj));
     };
 
 
@@ -588,9 +691,9 @@ define([
         }
     };
 
-    var updateDescription = function (n) {
+    var updateDescription = function (old, n) {
         var o = APP.$description.val();
-        var op = TextPatcher.diff(o, n);
+        var op = TextPatcher.diff(o, n || '');
         var el = APP.$description[0];
 
         var selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
@@ -604,10 +707,7 @@ define([
         common.notify();
     };
     var updateLocalDescription = function (n) {
-        var md = copyObject(metadataMgr.getMetadata());
-        md.description = n;
-        metadataMgr.updateMetadata(md);
-        APP.proxy.metadata.description = n;
+        APP.proxy.description = n;
     };
 
     var onReady = function (info, userid, readOnly) {
@@ -639,7 +739,7 @@ define([
                 throw new Error(errorText);
             }
         } else {
-            //Title.updateTitle(Title.defaultTitle);
+            Title.updateTitle(Title.defaultTitle);
         }
 
         if (typeof(proxy.type) === 'undefined') {
@@ -675,13 +775,13 @@ define([
         var $table = APP.$table = $(Render.asHTML(displayedObj, null, colsOrder, readOnly));
 
         var getUncommitted = function (type) {
-            var ret = {};
+            var ret = {}, toRemove;
             var uncommitted = APP.uncommitted.content;
             if (type === 'col') {
                 ret.colsOrder = uncommitted.colsOrder.slice();
                 ret.cols = copyObject(uncommitted.cols);
                 // get only the cells corresponding to the committed rows
-                var toRemove = Object.keys(uncommitted.cells).filter(function (coor) {
+                toRemove = Object.keys(uncommitted.cells).filter(function (coor) {
                     var c = Render.getCoordinates(coor);
                     return APP.proxy.content.rowsOrder.indexOf(c[1]) !== -1;
                 });
@@ -699,7 +799,7 @@ define([
             ret.rowsOrder = uncommitted.rowsOrder.slice();
             ret.rows = copyObject(uncommitted.rows);
             // get only the cells corresponding to the committed rows
-            var toRemove = Object.keys(uncommitted.cells).filter(function (coor) {
+            toRemove = Object.keys(uncommitted.cells).filter(function (coor) {
                 var c = Render.getCoordinates(coor);
                 return APP.proxy.content.colsOrder.indexOf(c[1]) !== -1;
             });
@@ -710,6 +810,7 @@ define([
             });
             uncommitted.rowsOrder = [Render.rowuid()];
             uncommitted.rows = {};
+            console.log(JSON.stringify(ret, 0, 2));
             return ret;
         };
         APP.$createCol = $('#cp-app-poll-create-user').click(function () {
@@ -722,22 +823,12 @@ define([
         });
         APP.$createRow = $('#cp-app-poll-create-option').click(function () {
             var uncommittedCopy = { content: getUncommitted('row') };
-            var id = uncommittedCopy.content.rowsOrder[0];
             mergeUncommitted(proxy, uncommittedCopy, true);
             change(null, null, null, null, function() {
-                handleSpan($('.cp-app-poll-table-edit[data-rt-id="' + id + '"]')[0]);
+                var newId = APP.uncommitted.content.rowsOrder[0];
+                $('input[data-rt-id="' + newId + '"]').focus();
             });
         });
-
-        // Commit button
-        APP.$commit = $('#commit').click(function () {
-            var uncommittedCopy = copyObject(APP.uncommitted);
-            APP.uncommitted = {};
-            prepareProxy(APP.uncommitted, copyObject(Render.Example));
-            mergeUncommitted(proxy, uncommittedCopy, true);
-            APP.$commit.hide();
-            change();
-        }).remove(); // TODO
 
         // #publish button is removed in readonly
         APP.$publish = $('#cp-app-poll-action-publish')
@@ -756,9 +847,7 @@ define([
             });
 
         if (!readOnly) {
-            common.setPadAttribute('userid', userid, function (e) {
-                if (e) { console.error(e); }
-            });
+            setUserId(userid);
         }
 
         // Description
@@ -775,6 +864,7 @@ define([
 
         $('#cp-app-poll-table-scroll').html('').prepend($table);
         updateDisplayedTable();
+        updateDescription(null, APP.proxy.description);
 
         $table
             .click(handleClick)
@@ -786,16 +876,19 @@ define([
         });
 
         proxy
-            .on('change', ['metadata'], function (o, n, p) {
+            .on('change', ['metadata'], function () {
                 metadataMgr.updateMetadata(proxy.metadata);
             })
             .on('change', ['content'], change)
+            .on('change', ['description'], updateDescription)
             .on('remove', [], change);
 
         // If the user's column is not committed, add his username
         var $userInput = $('.cp-app-poll-table-uncommitted > input[data-rt-id^='+ APP.userid +']');
         if ($userInput.val() === '') {
-            $userInput.val(metadataMgr.getUserData().name);
+            var uname = metadataMgr.getUserData().name;
+            APP.uncommitted.content.cols[APP.userid] = uname;
+            $userInput.val(uname);
         }
 
         APP.ready = true;
@@ -856,9 +949,6 @@ define([
 
         metadataMgr.onChange(function () {
             var md = copyObject(metadataMgr.getMetadata());
-            if (md.description) {
-                updateDescription(md.description);
-            }
             APP.proxy.metadata = md;
         });
         return; // TODO

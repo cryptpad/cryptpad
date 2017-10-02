@@ -11,10 +11,19 @@
 .tokenfield_main();
 
 @poll-fore: #555;
-@poll-th-bg: #aaa;
-@poll-th-user-bg: #999;
-@poll-td-bg: #aaa;
-@poll-editing: #88b8cc;
+
+@poll-th-bg: #005bef;
+@poll-th-fg: #fff;
+@poll-th-user-bg: darken(@poll-th-bg, 10%);
+@poll-editing: lighten(@poll-th-bg, 10%);
+@poll-winner: darken(@poll-th-bg, 15%);
+@poll-td-bg: @poll-th-bg;
+@poll-td-fg: @poll-th-fg;
+
+@poll-uncommitted-cell: #eee;
+@poll-uncommitted-bg: #ddd; //lighten(@poll-th-bg, 50%);
+@poll-uncommitted-text: black;
+
 @poll-placeholder: #666;
 @poll-border-color: #555;
 @poll-cover-color: #000;
@@ -35,17 +44,19 @@ overflow-x: hidden;
     #cp-app-poll-form {
         flex: 1;
         overflow-y: auto;
+        &.cp-app-poll-published {
+            #cp-app-poll-create-option {
+                display: none;
+            }
+            .cp-app-poll-table-remove[data-rt-id^="y"], .cp-app-poll-table-edit[data-rt-id^="y"] {
+                display: none;
+            }
+            tr.cp-app-poll-table-uncommitted {
+                display: none;
+            }
+        }
     }
 }
-
-/*.cp-toolbar-container h2 {
-    font: normal normal normal 12px Arial, Helvetica, Tahoma, Verdana, Sans-Serif;
-    color: #000;
-    line-height: auto;
-}
-.cp-toolbar-container {
-    display: block;
-}*/
 
 .cp-app-poll-table-text-cell input[type="text"] {
     width: 400px;
@@ -64,8 +75,9 @@ input[type="text"][disabled], textarea[disabled] {
 
 // The placeholder color only seems to effect Safari when not set
 
-input[type="text"]::placeholder {
-    color: @poll-placeholder;
+input[type="text"][disabled]::placeholder {
+    //color: @poll-placeholder;
+    opacity: 1;
 }
 
 table#cp-app-poll-table {
@@ -73,12 +85,13 @@ table#cp-app-poll-table {
 }
 #cp-app-poll-table-container {
     position: relative;
-    padding: 29px;
-    padding-right: 79px;
+    padding: 30px 0;
+    width: ~"calc(100% - 30px)";
 }
 #cp-app-poll-table-container button {
-    height: 2rem;
-    display: none;
+    //display: none;
+    border-radius: 0;
+    border: 0;
 }
 #cp-app-poll-publish {
     display: none;
@@ -88,21 +101,23 @@ table#cp-app-poll-table {
     margin-bottom: 15px;
 }
 #cp-app-poll-create-user {
-    position: absolute;
-    display: inline-block;
-    /*left: 0px;*/
-    top: 55px;
+    display: inline-flex;
+    height: 24px;
+    padding: 0;
     width: 50px;
     overflow: hidden;
 }
 #cp-app-poll-create-option {
+    display: inline-flex;
     width: 50px;
+    height: 24px;
+    padding: 0;
 }
 #cp-app-poll-table-scroll {
     overflow-y: hidden;
     overflow-x: auto;
-    margin-left: calc(~"30% - 50px + 31px");
-    max-width: 70%;
+    margin-left: ~"calc(25% + 30px)";
+    max-width: ~"calc(75% - 30px - 100px - 100px)";
     width: auto;
     display: inline-block;
 }
@@ -145,45 +160,12 @@ table {
     margin: 20px;
 }
 tbody {
-    border: 1px solid @poll-border-color;
+    //border: 1px solid @poll-border-color;
     * {
         box-sizing: border-box;
     }
     tr {
         text-align: center;
-        &:first-of-type th{
-            font-size: 20px;
-            border-top: 0px;
-            font-weight: bold;
-            padding: 10px;
-            text-decoration: underline;
-            &.table-refresh {
-                color: @colortheme_cp-green;
-                text-decoration: none;
-                cursor: pointer;
-            }
-
-        }
-        &:nth-child(odd) {
-            background-color: @colortheme_light-base;
-        }
-        th:first-of-type {
-            border-left: 0px;
-        }
-        th {
-            box-sizing: border-box;
-            border: 1px solid @poll-border-color;
-        }
-        th, td {
-            color: @poll-fore;
-
-            .cp-app-poll-table-remove {
-                cursor: pointer;
-            }
-        }
-        th:last-child {
-            border-right: 0px;
-        }
     }
 
     td {
@@ -222,12 +204,48 @@ div.cp-app-poll-realtime {
         .cp-app-poll-table-editing {
             background-color: @poll-editing;
         }
+        .cp-app-poll-table-uncommitted {
+            .cp-app-poll-table-cover {
+                background-color: @poll-uncommitted-cell !important;
+            }
+            div.cp-app-poll-table-text-cell {
+                background-color: @poll-uncommitted-bg !important;
+                color: @poll-uncommitted-text !important;
+                input {
+                    width: ~"calc(100% - 80px)" !important;
+                    vertical-align: middle;
+                }
+            }
+            text-align: center;
+            background-color: @poll-uncommitted-bg !important;
+            color: @poll-uncommitted-text !important;
+        }
         tr {
+            height: 28px;
+            /* Options */
             td:first-child {
                 position:absolute;
-                left: 29px;
+                left: 30px;
                 top: auto;
-                width: ~"calc(30% - 50px)";
+                width: 25%;
+            }
+            /* Uncommitted column */
+            td:nth-last-child(2) {
+                position: absolute;
+                top: auto;
+                width: 100px;
+                min-width: unset !important;
+                height: auto !important;
+            }
+            /* Results */
+            td:last-child {
+                color: @poll-th-fg;
+                position:absolute;
+                top: auto;
+                margin-left: 100px;
+                width: 100px;
+                min-width: unset !important;
+                background-color: @poll-th-bg;
             }
             td {
                 padding: 0px;
@@ -243,10 +261,11 @@ div.cp-app-poll-realtime {
                         width: 90%;
                         height: 100%;
                         border: 0px;
+                        margin: 2px;
                         &[disabled] {
                             background-color: transparent;
-                            color: @poll-fg;
-                            font-weight: bold;
+                            color: @poll-td-fg;
+                            //font-weight: bold;
                         }
                     }
                 }
@@ -279,8 +298,11 @@ div.cp-app-poll-realtime {
                                     display: none;
 
                                     ~ .cp-app-poll-table-cover {
+                                        line-height: 28px;
                                         display: block;
                                         font-weight: bold;
+                                        height: 100%;
+                                        display: block;
 
                                         color: @poll-cover-color;
 
@@ -288,18 +310,6 @@ div.cp-app-poll-realtime {
                                             height: 100%;
                                         }
 
-                                        display: block;
-                                        &.yes {
-                                            background-color: @colortheme_cp-green;
-                                        }
-
-                                        &.uncommitted {
-                                            background: #ddd;
-                                        }
-
-                                        &.mine {
-                                            display: none;
-                                        }
                                     }
                                 }
                             }
@@ -350,22 +360,40 @@ div.cp-app-poll-realtime {
             td {
                 padding: 0px 5px;
                 background: @poll-th-bg;
-                border-radius: 20px 20px 0 0;
+                color: @poll-th-fg;
+                &:not(:last-child) {
+                    border-right: 1px solid rgba(255,255,255,0.2);
+                }
+                &:nth-last-child(2) {
+                    border-right: 1px solid @poll-border-color;
+                }
                 //text-align: center;
-                &:nth-of-type(2) {
+                &.cp-app-poll-table-own {
                     background: @poll-th-user-bg;
                     .cp-app-poll-table-lock {
                         cursor: default;
                     }
                 }
+                .cp-app-poll-table-buttons {
+                    display: flex;
+                    justify-content: space-between;
+                    flex-wrap: wrap;
+                    align-items: center;
+                    span {
+                        cursor: pointer;
+                        width: 1em;
+                        text-align: center;
+                    }
+                }
                 input {
                     &[type="text"] {
-                        width: 100%;
+                        break-after: always;
+                        width: ~"calc(100% - 2px)"; // borders...
                         box-sizing: border-box;
                         padding: 1px 5px;
+                        margin: 1px;
                         &[disabled] {
-                            color: @poll-fg;
-                            border: 1px solid transparent;
+                            color: @poll-th-fg;
                         }
                     }
                 }
@@ -373,24 +401,26 @@ div.cp-app-poll-realtime {
         }
 
         tbody {
-            td:not(.cp-app-poll-table-editing) {
-                .cp-app-poll-table-text-cell {
-                    background: @poll-td-bg;
-                }
+            td:first-child {
+                background: @poll-td-bg;
+                color: @poll-td-fg;
+            }
+            td.cp-app-poll-table-winner {
+                background-color: @poll-winner;
+                &:last-child { font-weight: bold; }
             }
             .cp-app-poll-table-text-cell {
-                //border-radius: 20px 0 0 20px;
                 input[type="text"] {
                     width: ~"calc(100% - 50px)";
                     padding: 0 0.5em;
                 }
                 .cp-app-poll-table-edit {
                     float:right;
-                    margin: 0 10px 0 0;
+                    margin: 2px 10px 0 0;
                 }
                 .cp-app-poll-table-remove {
                     float: left;
-                    margin: 0 0 0 10px;
+                    margin: 2px 0 0 10px;
                 }
             }
             tr:not(:first-child) {
@@ -402,21 +432,10 @@ div.cp-app-poll-realtime {
             }
         }
         .cp-app-poll-table-edit {
-            color: @poll-cover-color;
+            //color: @poll-cover-color;
             cursor: pointer;
             float: left;
             margin-left: 10px;
-        }
-
-        .cp-app-poll-table-lock {
-            margin-left: ~"calc(50% - 0.5em)";
-            cursor: pointer;
-            width: 1em;
-            text-align: center;
-        }
-        .cp-app-poll-table-remove {
-            float: right;
-            margin-right: 10px;
         }
 
         thead {
@@ -442,31 +461,9 @@ div.cp-app-poll-realtime {
             }
         }
         tfoot {
-            tr {
-                border: none;
-                td {
-                    border: none;
-                    text-align: center;
-                    .save {
-                        padding: 15px;
-                        border-top-left-radius: 5px;
-                        border-top-right-radius: 5px;
-                    }
-                }
-            }
+            display: none;
         }
     }
-
-    #adduser,
-    #addoption {
-        color: @colortheme_cp-green;
-        border: 1px solid @colortheme_cp-green;
-        padding: 15px;
-        cursor: pointer;
-    }
-
-    #adduser { .top-left; }
-    #addoption { .bottom-left; }
 }
 
 .btn {

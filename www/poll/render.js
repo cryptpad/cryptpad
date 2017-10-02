@@ -217,11 +217,11 @@ var Renderer = function (Cryptpad) {
                         'data-rt-id': col,
                         type: 'text',
                         value: getColumnValue(obj, col) || "",
-                        placeholder: Cryptpad.Messages.poll_userPlaceholder,
+                        placeholder: Cryptpad.Messages.anonymous,
                         disabled: 'disabled'
                     };
                     return result;
-                }));
+                })).concat([null]);
             }
             if (i === rows.length) {
                 return [null].concat(cols.map(function () {
@@ -254,7 +254,9 @@ var Renderer = function (Cryptpad) {
                     result.value = val;
                 }
                 return result;
-            }));
+            })).concat([{
+                'data-rt-count-id': row
+            }]);
         });
     };
 
@@ -282,13 +284,25 @@ var Renderer = function (Cryptpad) {
         }, []];
     };
 
+    var makeBookmarkElement = Render.makeBookmarkElement = function (id) {
+        return ['SPAN', {
+            'data-rt-id': id,
+            'title': 'TODO: Bookmark this column so that it is always unlocked and displayed at the beginning for you.',
+            'style': 'visibility: hidden;',
+            class: 'cp-app-poll-table-bookmark fa fa-bookmark-o',
+        }, []];
+    };
+
     var makeHeadingCell = Render.makeHeadingCell = function (cell, readOnly) {
         if (!cell) { return ['TD', {}, []]; }
         if (cell.type === 'text') {
             var elements = [['INPUT', cell, []]];
             if (!readOnly) {
-                elements.unshift(makeRemoveElement(cell['data-rt-id']));
-                elements.unshift(makeLockElement(cell['data-rt-id']));
+                var buttons = [];
+                buttons.unshift(makeRemoveElement(cell['data-rt-id']));
+                buttons.unshift(makeLockElement(cell['data-rt-id']));
+                buttons.unshift(makeBookmarkElement(cell['data-rt-id']));
+                elements.unshift(['DIV', {'class': 'cp-app-poll-table-buttons'}, buttons]);
             }
             return ['TD', {}, elements];
         }

@@ -17,6 +17,7 @@ define(['jquery'], function ($) {
         var $title;
         exp.setToolbar = function (toolbar) {
             $title = toolbar && (toolbar.title || toolbar.pageTitle);
+            console.log('SET TOOLBAR');
         };
 
         exp.getTitle = function () { return exp.title; };
@@ -40,6 +41,7 @@ define(['jquery'], function ($) {
         };
 
         metadataMgr.onChange(function () {
+            console.error('METADATA CHANGE');
             var md = metadataMgr.getMetadata();
             if ($title) {
                 $title.find('span.cp-toolbar-title-value').text(md.title || md.defaultTitle);
