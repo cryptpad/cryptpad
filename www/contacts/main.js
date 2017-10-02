@@ -8,8 +8,6 @@ define([
 ], function (nThen, ApiConfig, $, RequireConfig, SFCommonO) {
     var requireConfig = RequireConfig();
 
-    var messenger;
-
     // Loaded in load #2
     nThen(function (waitFor) {
         $(waitFor());

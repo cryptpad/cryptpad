@@ -27,7 +27,7 @@ define([], function () {
         sFrameChan.on('EV_CONTACTS_JOIN', function (err, data) {
             if (err || data.error) { return void console.error(err || data.error); }
             _handlers.join.forEach(function (f) {
-                f(data.curvePublic, data.channel)
+                f(data.curvePublic, data.channel);
             });
         });
         sFrameChan.on('EV_CONTACTS_LEAVE', function (err, data) {

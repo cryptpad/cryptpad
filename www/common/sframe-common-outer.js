@@ -407,7 +407,7 @@ define([
                 });
 
                 sframeChan.on('Q_CONTACTS_OPEN_FRIEND_CHANNEL', function (curvePublic, cb) {
-                    messenger.openFriendChannel(curvePublic, function (e, data) {
+                    messenger.openFriendChannel(curvePublic, function (e) {
                         cb({ error: e, });
                     });
                 });
