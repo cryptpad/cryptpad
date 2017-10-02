@@ -28,7 +28,8 @@ define([
     '/bower_components/nthen/index.js',
     '/common/media-tag.js',
     '/api/config',
-    '/common/cryptpad-common.js',
+    '/common/common-hash.js',
+    '/common/common-util.js',
 
     '/bower_components/diff-dom/diffDOM.js',
 
@@ -46,7 +47,8 @@ define([
     nThen,
     MediaTag,
     ApiConfig,
-    Cryptpad)
+    Hash,
+    Util)
 {
     var DiffDom = window.diffDOM;
 
@@ -406,11 +408,7 @@ define([
 
         // apply patches, and try not to lose the cursor in the process!
         framework.onContentUpdate(function (hjson) {
-            if (!Array.isArray(hjson)) {
-                var errorText = Messages.typeError;
-                Cryptpad.errorLoadingScreen(errorText);
-                throw new Error(errorText);
-            }
+            if (!Array.isArray(hjson)) { throw new Error(Messages.typeError); }
             var userDocStateDom = hjsonToDom(hjson);
 
             userDocStateDom.setAttribute("contenteditable",
@@ -458,8 +456,8 @@ define([
                 ckeditor: editor,
                 body: $('body'),
                 onUploaded: function (ev, data) {
-                    var parsed = Cryptpad.parsePadUrl(data.url);
-                    var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+                    var parsed = Hash.parsePadUrl(data.url);
+                    var hexFileName = Util.base64ToHex(parsed.hashData.channel);
                     var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
                     var mt = '<media-tag contenteditable="false" src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '" tabindex="1"></media-tag>';
                     editor.insertElement(window.CKEDITOR.dom.element.createFromHtml(mt));
