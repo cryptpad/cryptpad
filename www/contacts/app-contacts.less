@@ -65,6 +65,11 @@
             padding: 5px;
             margin: 10px;
             cursor: pointer;
+            .right-col {
+                margin-left: 5px;
+                display: flex;
+                flex-flow: column;
+            }
             &:hover {
                 background-color: rgba(0,0,0,0.3);
             }
@@ -74,9 +79,9 @@
         }
     }
 
-    #friendList .friend, #messaging .avatar {
+    #friendList .friend, #messaging .cp-avatar {
         .avatar_main(30px);
-        &.avatar {
+        &.cp-avatar {
             display: flex;
         }
         cursor: pointer;
@@ -173,7 +178,7 @@
             .remove-history {
                 .hover;
             }
-            .avatar {
+            .cp-avatar {
                 margin: 10px;
             }
             .more-history {

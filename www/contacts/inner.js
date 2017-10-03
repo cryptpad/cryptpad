@@ -81,10 +81,11 @@ define([
             metadataMgr: common.getMetadataMgr(),
         };
         APP.toolbar = Toolbar.create(configTb);
+        APP.toolbar.$rightside.hide();
 
         var messenger = Messenger.create(sFrameChan);
 
-        UI.create(messenger, $(friendList), $(messaging));
+        UI.create(messenger, $(friendList), $(messaging), common);
 
         Cryptpad.removeLoadingScreen();
 
