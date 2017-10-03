@@ -289,7 +289,7 @@ var Renderer = function (Cryptpad) {
             'data-rt-id': id,
             'title': Cryptpad.Messages.poll_bookmark_col,
             'style': 'visibility: hidden;',
-            class: 'cp-app-poll-table-bookmark fa fa-bookmark-o',
+            class: 'cp-app-poll-table-bookmark fa fa-thumb-tack',
         }, []];
     };
 

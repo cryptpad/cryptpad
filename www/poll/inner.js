@@ -34,6 +34,7 @@ define([
     Renderer)
 {
     var Messages = Cryptpad.Messages;
+    var saveAs = window.saveAs;
 
     var Render = Renderer(Cryptpad);
     var APP = window.APP = {
@@ -58,6 +59,59 @@ define([
     var copyObject = function (obj) {
         return JSON.parse(JSON.stringify(obj));
     };
+
+    var getCSV = APP.getCSV = function () {
+        if (!APP.proxy) { return; }
+        var data = copyObject(APP.proxy.content);
+        var res = '';
+
+        var escapeStr = function (str) {
+            return '"' + str.replace(/"/g, '""') + '"';
+        };
+
+        [null].concat(data.rowsOrder).forEach(function (rowId, i) {
+            [null].concat(data.colsOrder).forEach(function (colId, j) {
+                // thead
+                if (i === 0) {
+                    if (j === 0) { res += ','; return; }
+                    if (!colId) { throw new Error("Invalid data"); }
+                    res += escapeStr(data.cols[colId] || Messages.anonymous) + ',';
+                    return;
+                }
+                // tbody
+                if (!rowId) { throw new Error("Invalid data"); }
+                if (j === 0) {
+                    res += escapeStr(data.rows[rowId] || Messages.poll_optionPlaceholder) + ',';
+                    return;
+                }
+                if (!colId) { throw new Error("Invalid data"); }
+                res += (data.cells[colId + '_' + rowId] || 3) + ',';
+            });
+            // last column: total
+            // thead
+            if (i === 0) {
+                res += escapeStr(Messages.poll_total) + '\n';
+                return;
+            }
+            // tbody
+            if (!rowId) { throw new Error("Invalid data"); }
+            res += APP.count[rowId] || '?';
+            res += '\n';
+        });
+
+        return res;
+    };
+    var exportFile = function () {
+        var csv = getCSV();
+        var suggestion = Title.suggestTitle(Title.defaultTitle);
+        Cryptpad.prompt(Messages.exportPrompt,
+            Cryptpad.fixFileName(suggestion) + '.csv', function (filename) {
+            if (!(typeof(filename) === 'string' && filename)) { return; }
+            var blob = new Blob([csv], {type: "application/csv;charset=utf-8"});
+            saveAs(blob, filename);
+        });
+    };
+
 
     /*
         Make sure that the realtime data structure has all the required fields
@@ -168,7 +222,7 @@ define([
         $('[data-rt-id^="' + userid + '"]').closest('td')
             .addClass("cp-app-poll-table-own");
         $('.cp-app-poll-table-bookmark[data-rt-id="' + userid + '"]').css('visibility', '')
-            .removeClass('fa-bookmark-o').addClass('fa-bookmark')
+            .addClass('cp-app-poll-table-bookmark-full')
             .attr('title', Messages.poll_bookmarked_col);
     };
     var styleUncommittedColumn = function () {
@@ -273,6 +327,7 @@ define([
             v: 0,
             ids: []
         };
+        APP.count = {};
         APP.proxy.content.rowsOrder.forEach(function (rId) {
             var count = Object.keys(APP.proxy.content.cells)
                 .filter(function (k) {
@@ -284,6 +339,7 @@ define([
             } else if (count && count === winner.v) {
                 winner.ids.push(rId);
             }
+            APP.count[rId] = count;
             APP.$table.find('[data-rt-count-id="' + rId + '"]')
                 .text(count)
                 .css({
@@ -928,12 +984,17 @@ define([
             $rightside.append($templateButton);
         }
 
-        var $help = common.createButton().click(function () { showHelp(); }).appendTo($rightside);
+        /* add an export button */
+        var $export = common.createButton('export', true, {}, exportFile);
+        $rightside.append($export);
+
+        var $help = common.createButton('', true).click(function () { showHelp(); })
+            .appendTo($rightside);
         APP.$helpButton = $help;
         updateHelpButton();
 
         if (APP.readOnly) { publish(true); return; }
-        var $publish = common.createButton()
+        var $publish = common.createButton('', true)
             .removeClass('fa-question').addClass('fa-check')
             .click(function () { publish(!APP.proxy.published); }).appendTo($rightside);
         APP.$publishButton = $publish;
