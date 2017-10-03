@@ -447,7 +447,6 @@ define([
                     });
                 });
                 sframeChan.on('Q_CONTACTS_GET_FRIEND_INFO', function (curvePublic, cb) {
-                    console.error(curvePublic);
                     messenger.getFriendInfo(curvePublic, function (e, info) {
                         cb({
                             error: e,

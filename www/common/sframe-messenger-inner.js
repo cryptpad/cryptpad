@@ -18,38 +18,32 @@ define([], function () {
             _handlers[key].push(f);
         };
 
-        sFrameChan.on('EV_CONTACTS_MESSAGE', function (err, data) {
-            //if (err || data.error) { return void console.error(err || data.error); }
+        sFrameChan.on('EV_CONTACTS_MESSAGE', function (data) {
             _handlers.message.forEach(function (f) {
-                f(err || data.error, data);
+                f(data);
             });
         });
-        sFrameChan.on('EV_CONTACTS_JOIN', function (err, data) {
-            if (err || data.error) { return void console.error(err || data.error); }
+        sFrameChan.on('EV_CONTACTS_JOIN', function (data) {
             _handlers.join.forEach(function (f) {
                 f(data.curvePublic, data.channel);
             });
         });
-        sFrameChan.on('EV_CONTACTS_LEAVE', function (err, data) {
-            if (err || data.error) { return void console.error(err || data.error); }
+        sFrameChan.on('EV_CONTACTS_LEAVE', function (data) {
             _handlers.leave.forEach(function (f) {
                 f(data.curvePublic, data.channel);
             });
         });
-        sFrameChan.on('EV_CONTACTS_UPDATE', function (err, data) {
-            if (err || data.error) { return void console.error(err || data.error); }
+        sFrameChan.on('EV_CONTACTS_UPDATE', function (data) {
             _handlers.update.forEach(function (f) {
                 f(data.info, data.curvePublic);
             });
         });
-        sFrameChan.on('EV_CONTACTS_FRIEND', function (err, data) {
-            if (err || data.error) { return void console.error(err || data.error); }
+        sFrameChan.on('EV_CONTACTS_FRIEND', function (data) {
             _handlers.friend.forEach(function (f) {
                 f(data.curvePublic);
             });
         });
-        sFrameChan.on('EV_CONTACTS_UNFRIEND', function (err, data) {
-            if (err || data.error) { return void console.error(err || data.error); }
+        sFrameChan.on('EV_CONTACTS_UNFRIEND', function (data) {
             _handlers.unfriend.forEach(function (f) {
                 f(data.curvePublic);
             });
@@ -58,7 +52,6 @@ define([], function () {
         /*** QUERIES ***/
         messenger.getFriendList = function (cb) {
             sFrameChan.query('Q_CONTACTS_GET_FRIEND_LIST', null, function (err, data) {
-                console.error('GET FRIEND LIST');
                 cb(err || data.error, data.data);
             });
         };
