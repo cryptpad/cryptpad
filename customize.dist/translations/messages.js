@@ -160,7 +160,9 @@ define(function () {
     out.or = 'or';
 
     out.tags_title = "Tags";
-    out.tags_add = "Update this pad's tags";
+    out.tags_add = "Update this page's tags";
+    out.tags_searchHint = "Find files by their tags by searching in your CryptDrive";
+
     out.tags_duplicate = "Duplicate tag: {0}";
 
     out.slideOptionsText = "Options";
