@@ -137,7 +137,8 @@ define([
                             }))
                             .append(common.createButton('forget', true, {}, function () {
                                 // not sure what to do here
-                            }));
+                            }))
+                            .append(common.createButton('hashtag', true));
                             rightsideDisplayed = true;
                         }
 

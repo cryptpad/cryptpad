@@ -409,6 +409,7 @@ define([
                 setEditable(false);
             });
             $rightside.append($forget);
+            common.createButton('hashtag', true).appendTo($rightside);
 
             if (!readOnly) {
                 makeColorButton($rightside);
