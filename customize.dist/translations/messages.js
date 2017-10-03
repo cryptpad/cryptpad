@@ -138,7 +138,6 @@ define(function () {
     out.previewButtonTitle = "Display or hide the Markdown preview mode";
 
     out.presentButtonTitle = "Enter presentation mode";
-    out.presentSuccess = 'Hit ESC to exit presentation mode';
 
     out.backgroundButtonTitle = 'Change the background color in the presentation';
     out.colorButtonTitle = 'Change the text color in presentation mode';

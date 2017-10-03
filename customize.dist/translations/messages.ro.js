@@ -77,7 +77,6 @@ define(function () {
     out.templateSaved = "Șablon salvat!";
     out.selectTemplate = "Selectează un șablon sau apasă escape";
     out.presentButtonTitle = "Intră în modul de prezentare";
-    out.presentSuccess = "Apasă ESC pentru a ieși din modul de prezentare";
     out.backgroundButtonTitle = "Schimbă culoarea de fundal din prezentare";
     out.colorButtonTitle = "Schimbă culoarea textului în modul de prezentare";
     out.printButton = "Printează (enter)";

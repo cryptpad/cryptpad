@@ -128,7 +128,6 @@ define(function () {
     out.previewButtonTitle = "Mostrar ou esconder o modo de visualização markdown";
 
     out.presentButtonTitle = "Entrar no modo apresentação";
-    out.presentSuccess = 'Pressione ESC para sair do modo de apresentação';
 
     out.backgroundButtonTitle = 'Mudar cor do fundo da apresentação';
     out.colorButtonTitle = 'Mudar a cor do texto no modo apresentação';

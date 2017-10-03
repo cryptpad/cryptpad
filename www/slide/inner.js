@@ -224,7 +224,6 @@ define([
                     slideOptionsTmp.style = '';
                     parseLess(mkLess(less), function (err, css) {
                         if (err) {
-                            console.log(err);
                             Cryptpad.alert(
                                 '<strong>' + Messages.slide_invalidLess + '</strong>' +
                                 '<br>' +
@@ -302,7 +301,6 @@ define([
             if (textColor) { metadata.color = textColor; }
             metadataMgr.updateMetadata(metadata);
             framework.localChange();
-            console.log(metadataMgr.getMetadata());
         };
 
         var $back = $('<button>', {
@@ -412,14 +410,9 @@ define([
 
         CodeMirror.configureTheme();
 
-        var enterPresentationMode = function (shouldLog) {
-            Slide.show(true, editor.getValue());
-            if (shouldLog) {
-                Cryptpad.log(Messages.presentSuccess);
-            }
-        };
+        var enterPresentationMode = function () { Slide.show(true, editor.getValue()); };
 
-        if (isPresentMode) { enterPresentationMode(true); }
+        if (isPresentMode) { enterPresentationMode(); }
 
         framework.onContentUpdate(function (newContent) {
             CodeMirror.contentUpdate(newContent);
@@ -463,9 +456,7 @@ define([
         Slide.setTitle(framework._.title);
 
         framework._.toolbar.$rightside.append(
-            framework._.sfCommon.createButton('present', true).click(function () {
-                enterPresentationMode(true);
-            })
+            framework._.sfCommon.createButton('present', true).click(enterPresentationMode)
         );
 
         editor.on('change', framework.localChange);

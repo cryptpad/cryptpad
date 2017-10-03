@@ -50,7 +50,6 @@ define(function () {
     out.shareSuccess = 'URL copiada al portapapeles';
 
     out.presentButtonTitle = "Entrar en el modo presentación";
-    out.presentSuccess = 'ESC para salir del modo presentación';
 
     out.backgroundButtonTitle = 'Cambiar el color de fondo en el modo presentación';
     out.colorButtonTitle = 'Cambiar el color de texto en el modo presentación';

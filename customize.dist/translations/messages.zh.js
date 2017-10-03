@@ -116,7 +116,6 @@ define(function () {
     out.previewButtonTitle = "顯示或隱藏 Markdown 預覽模式";
 
     out.presentButtonTitle = "輸入簡報模式";
-    out.presentSuccess = '按 ESC 以退出簡報模式';
 
     out.backgroundButtonTitle = '改變簡報的顏色背景';
     out.colorButtonTitle = '在簡報模式下改變文字顏色';

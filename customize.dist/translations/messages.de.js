@@ -53,7 +53,6 @@
       out.shareSuccess = 'Die URL wurde in die Zwischenablage kopiert';
 
       out.presentButtonTitle = "Präsentationsmodus starten";
-      out.presentSuccess = 'Drücke ESC um den Präsentationsmodus zu verlassen!';
 
       out.backgroundButtonTitle = 'Die Hintergrundfarbe der Präsentation ändern';
       out.colorButtonTitle = 'Die Textfarbe im Präsentationsmodus ändern';
