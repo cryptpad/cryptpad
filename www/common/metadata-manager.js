@@ -68,7 +68,6 @@ define(['json.sortify'], function (Sortify) {
         };
         var change = function (lazy) {
             dirty = true;
-            console.error('METADATA CHANGE CALLED');
             setTimeout(function () {
                 checkUpdate(lazy);
             });

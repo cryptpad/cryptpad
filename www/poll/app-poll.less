@@ -21,6 +21,8 @@
 @poll-td-bg: @poll-th-bg;
 @poll-td-fg: @poll-th-fg;
 
+@poll-help-bg: #bbffbb; // lightgreen
+
 @poll-uncommitted-cell: #eee;
 @poll-uncommitted-bg: #ddd; //lighten(@poll-th-bg, 50%);
 @poll-uncommitted-text: black;
@@ -116,29 +118,48 @@ table#cp-app-poll-table {
     display: inline-block;
 }
 #cp-app-poll-description {
+    &~ .CodeMirror {
+        margin: auto;
+        min-width: 80%;
+        width: 80%;
+        min-height: 200px;
+        border: 1px solid black;
+    }
+}
+#cp-app-poll-description-published {
+    display: none;
     padding: 15px;
     margin: auto;
 
     min-width: 80%;
     width: 80%;
     min-height: 7em;
-    font: @colortheme_app-font;
-    //font-size: 20px;
-    /*font-weight: bold;*/
-    border: 1px solid black;
-
-}
-#cp-app-poll-description[disabled] {
-    resize: none;
     color: #000;
     border: 1px solid transparent;
     background-color: #eeeeee;
     font: @colortheme_app-font;
+    text-align: left;
+}
+.cp-app-poll-published {
+    #cp-app-poll-description {
+        display: none;
+        &~ .CodeMirror {
+            display: none;
+        }
+    }
+    #cp-app-poll-description-published {
+        display: block;
+        &:empty {
+            display: none;
+        }
+    }
 }
 
 #cp-app-poll-help {
-    width: 80%;
+    width: 100%;
     margin: auto;
+    padding: 20px 10%;
+    background: @poll-help-bg;
 }
 
 // from cryptpad.less

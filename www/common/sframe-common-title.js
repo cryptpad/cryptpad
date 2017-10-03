@@ -41,7 +41,6 @@ define(['jquery'], function ($) {
         };
 
         metadataMgr.onChange(function () {
-            console.error('METADATA CHANGE');
             var md = metadataMgr.getMetadata();
             if ($title) {
                 $title.find('span.cp-toolbar-title-value').text(md.title || md.defaultTitle);

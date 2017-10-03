@@ -646,12 +646,13 @@ define([
                     ]),
                     h('div.cp-app-poll-realtime', [
                         h('br'),
-                        h('center', [
+                        h('div', [
                             h('textarea#cp-app-poll-description', {
                                 rows: "5",
                                 cols: "50",
                                 disabled: true
                             }),
+                            h('div#cp-app-poll-description-published'),
                             h('br')
                         ]),
                         h('div#cp-app-poll-table-container', [

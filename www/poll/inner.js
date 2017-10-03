@@ -12,6 +12,12 @@ define([
     '/common/sframe-chainpad-listmap.js',
     '/customize/pages.js',
     '/poll/render.js',
+    '/common/diffMarked.js',
+    '/common/sframe-common-codemirror.js',
+
+    'cm/lib/codemirror',
+    'cm/mode/markdown/markdown',
+    'css!cm/lib/codemirror.css',
 
     '/bower_components/file-saver/FileSaver.min.js',
 
@@ -31,7 +37,10 @@ define([
     AppConfig,
     Listmap,
     Pages,
-    Renderer)
+    Renderer,
+    DiffMd,
+    SframeCM,
+    CMeditor)
 {
     var Messages = Cryptpad.Messages;
     var saveAs = window.saveAs;
@@ -138,7 +147,7 @@ define([
         Set the user id (user column) in the pad attributes
     */
     var setUserId = function (id, cb) {
-        cb  =cb || $.noop;
+        cb = cb || $.noop;
         APP.userid = id;
         common.setPadAttribute('userid', id, function (e) {
             if (e) {
@@ -213,6 +222,7 @@ define([
 
     var styleUserColumn = function () {
         var userid = APP.userid;
+        if (!userid) { return; }
 
         // Enable input for the userid column
         $('input[disabled="disabled"][data-rt-id^="' + userid + '"]').removeAttr('disabled')
@@ -538,6 +548,7 @@ define([
 
     /*  Called whenever an event is fired on a span */
     var handleSpan = function (span) {
+        if (!span) { return; }
         var id = span.getAttribute('data-rt-id');
         var type = Render.typeofId(id);
         var isRemove = span.className && span.className.split(' ')
@@ -570,6 +581,7 @@ define([
                     if (!res) { return; }
                     Render.removeColumn(APP.proxy, id, function () {
                         change();
+                        if (id === APP.userid) { setUserId(''); }
                     });
                 });
             } else if (isBookmark) {
@@ -674,9 +686,9 @@ define([
             bool = true;
         }
         setTablePublished(bool);
-        ['textarea'].forEach(function (sel) {
+        /*['textarea'].forEach(function (sel) {
             $(sel).attr('disabled', bool);
-        });
+        });*/
         updatePublishButton();
     };
 
@@ -722,23 +734,19 @@ define([
         }
     };
 
+    var updatePublishedDescription = function () {
+        var v = APP.editor.getValue();
+        DiffMd.apply(DiffMd.render(v || Messages.poll_descriptionHint), APP.$descriptionPublished);
+    };
     var updateDescription = function (old, n) {
         var o = APP.$description.val();
-        var op = TextPatcher.diff(o, n || '');
-        var el = APP.$description[0];
-
-        var selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
-            return TextPatcher.transformCursor(el[attr], op);
-        });
-        APP.$description.val(n);
-        if (op) {
-            el.selectionStart = selects[0];
-            el.selectionEnd = selects[1];
-        }
+        SframeCM.setValueAndCursor(APP.editor, o, n, TextPatcher);
+        updatePublishedDescription();
         common.notify();
     };
     var updateLocalDescription = function (n) {
         APP.proxy.description = n;
+        updatePublishedDescription();
     };
 
     var onReady = function (info, userid) {
@@ -847,6 +855,7 @@ define([
         APP.$createCol = $('#cp-app-poll-create-user').click(function () {
             var uncommittedCopy = { content: getUncommitted('col') };
             var id = uncommittedCopy.content.colsOrder[0];
+            if (!APP.userid) { setUserId(id); }
             mergeUncommitted(proxy, uncommittedCopy, true);
             change(null, null, null, null, function() {
                 handleSpan($('.cp-app-poll-table-lock[data-rt-id="' + id + '"]')[0]);
@@ -861,21 +870,11 @@ define([
             });
         });
 
-        if (!APP.readOnly) {
-            setUserId(userid);
-        }
-
         // Description
-        var resize = function () {
-            var lineCount = APP.$description.val().split('\n').length;
-            APP.$description.css('height', lineCount + 'rem');
-        };
-        APP.$description.on('change keyup', function () {
-            var val = APP.$description.val();
+        APP.editor.on('change', function () {
+            var val = APP.editor.getValue();
             updateLocalDescription(val);
-            resize();
         });
-        resize();
 
         $('#cp-app-poll-table-scroll').html('').prepend($table);
         updateDisplayedTable();
@@ -1031,8 +1030,17 @@ define([
             APP.$body = $('body');
             APP.$bar = $('#cp-toolbar');
             APP.$content = $('#cp-app-poll-content');
+            APP.$descriptionPublished = $('#cp-app-poll-description-published');
             APP.$description = $('#cp-app-poll-description')
                 .attr('placeholder', Messages.poll_descriptionHint || 'description');
+
+            APP.editor = CMeditor.fromTextArea(APP.$description[0], {
+                lineNumbers: true,
+                lineWrapping: true,
+                styleActiveLine : true,
+                mode: "markdown",
+            });
+
 
             var listmapConfig = {
                 data: {},
