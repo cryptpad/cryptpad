@@ -725,6 +725,7 @@ define(function () {
     out.tips.drive = "Logged in users can organize their files in their CryptDrive, accessible from the CryptPad icon at the top left of all pads.";
     out.tips.profile = "Registered users can create a profile from the user menu in the top right.";
     out.tips.avatars = "You can upload an avatar in your profile. People will see it when you collaborate in a pad.";
+    out.tips.tags = "You can hashtag pads, and then search by tag in your CryptDrive.";
 
     out.feedback_about = "If you're reading this, you were probably curious why CryptPad is requesting web pages when you perform certain actions";
     out.feedback_privacy = "We care about your privacy, and at the same time we want CryptPad to be very easy to use.  We use this file to figure out which UI features matter to our users, by requesting it along with a parameter specifying which action was taken.";
