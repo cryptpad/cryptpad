@@ -2,7 +2,6 @@ define([
     'jquery',
     '/bower_components/textpatcher/TextPatcher.js',
     '/common/toolbar3.js',
-    'json.sortify',
     '/common/cryptpad-common.js',
     '/common/common-util.js',
     '/common/cryptget.js',
@@ -23,7 +22,6 @@ define([
     $,
     TextPatcher,
     Toolbar,
-    JSONSortify,
     Cryptpad,
     Util,
     Cryptget,
@@ -51,35 +49,15 @@ define([
 
     var debug = $.noop; //console.log;
 
-    var stringify = function (obj) {
-        return JSONSortify(obj);
-    };
-
-    var onConnectError = function () {
-        Cryptpad.errorLoadingScreen(Messages.websocketError);
-    };
-
     var HIDE_INTRODUCTION_TEXT = "hide-text";
 
     var metadataMgr;
     var Title;
-    var defaultName;
     var common;
-    var readOnly;
-
-
-
-
-
-
-
-
 
     var copyObject = function (obj) {
         return JSON.parse(JSON.stringify(obj));
     };
-
-
 
     /*
         Make sure that the realtime data structure has all the required fields
@@ -102,8 +80,9 @@ define([
         proxy.type = 'poll';
     };
 
-
-
+    /*
+        Set the user id (user column) in the pad attributes
+    */
     var setUserId = function (id, cb) {
         cb  =cb || $.noop;
         APP.userid = id;
@@ -128,8 +107,11 @@ define([
     };
 
     var isUncommitted = function (id) {
-        return APP.uncommitted.content.colsOrder.indexOf(id) !== -1 ||
-               APP.uncommitted.content.rowsOrder.indexOf(id) !== -1;
+        var idArr = id.split('_');
+        var idx = idArr[0];
+        var idy = idArr[1] || idArr[0]; // if id is y-{...} (no 'x'), use idArr[0] as 'y' coordinate
+        return APP.uncommitted.content.colsOrder.indexOf(idx) !== -1 ||
+               APP.uncommitted.content.rowsOrder.indexOf(idy) !== -1;
     };
 
     var mergeUncommitted = function (proxy, uncommitted, commit) {
@@ -175,10 +157,9 @@ define([
         return newObj;
     };
 
-    var styleUncommittedColumn = function () {
+    var styleUserColumn = function () {
         var userid = APP.userid;
 
-        // TODO: move?
         // Enable input for the userid column
         $('input[disabled="disabled"][data-rt-id^="' + userid + '"]').removeAttr('disabled')
             .attr('placeholder', Messages.poll_userPlaceholder);
@@ -188,10 +169,9 @@ define([
             .addClass("cp-app-poll-table-own");
         $('.cp-app-poll-table-bookmark[data-rt-id="' + userid + '"]').css('visibility', '')
             .removeClass('fa-bookmark-o').addClass('fa-bookmark')
-            .attr('title', 'TODO: this is your bookmarked column. It will always be unlocked and displayed at the beginning for you');
-        //.addClass('fa-unlock').removeClass('fa-lock').attr('title', Messages.poll_unlocked);
-        //$('.cp-app-poll-table-remove[data-rt-id="' + userid + '"]').remove();
-
+            .attr('title', Messages.poll_bookmarked_col);
+    };
+    var styleUncommittedColumn = function () {
         var $scroll = $('#cp-app-poll-table-scroll');
         var hasScroll = $scroll.width() < $scroll[0].scrollWidth;
         APP.uncommitted.content.colsOrder.forEach(function(id) {
@@ -222,7 +202,6 @@ define([
             //$('.uncommitted input[type="text"]').attr("placeholder", Messages.poll_userPlaceholder);
         });
     };
-
     var unlockElements = function () {
         APP.unlocked.row.forEach(function (id) {
             var $input = $('input[type="text"][disabled="disabled"][data-rt-id="' + id + '"]').removeAttr('disabled');
@@ -238,7 +217,6 @@ define([
                 .removeClass('fa-lock').attr('title', Messages.poll_unlocked);
         });
     };
-
     var updateTableButtons = function () {
         var uncomColId = APP.uncommitted.content.colsOrder[0];
         var uncomRowId = APP.uncommitted.content.rowsOrder[0];
@@ -264,7 +242,6 @@ define([
             //$('#create-user').css('left', width + 30 + 'px');
         }
     };
-
     var setTablePublished = function (bool) {
         if (bool) {
             if (APP.$publish) { APP.$publish.hide(); }
@@ -276,7 +253,6 @@ define([
             $('#cp-app-poll-form').removeClass('cp-app-poll-published');
         }
     };
-
     var addCount = function () {
         var $scroll = $('#cp-app-poll-table-scroll');
         var hasScroll = $scroll.width() < $scroll[0].scrollWidth;
@@ -292,7 +268,7 @@ define([
                 'text-align': 'center',
                 'line-height': $thead.height()+'px'
             })
-            .text('TOTAL'); // TODO
+            .text(Messages.poll_total);
         var winner = {
             v: 0,
             ids: []
@@ -322,16 +298,12 @@ define([
     };
 
     var updateDisplayedTable = function () {
+        styleUserColumn();
         styleUncommittedColumn();
         unlockElements();
         updateTableButtons();
         setTablePublished(APP.proxy.published);
         addCount();
-
-        /*
-        APP.proxy.table.rowsOrder.forEach(function (rowId) {
-            $('[data-rt-id="' + rowId +'"]').val(APP.proxy.table.rows[rowId] || '');
-        });*/
     };
 
     var unlockColumn = function (id, cb) {
@@ -386,7 +358,7 @@ define([
         var colsOrder = sortColumns(displayedObj.content.colsOrder, APP.userid);
         var conf = {
             cols: colsOrder,
-            readOnly: readOnly
+            readOnly: APP.readOnly
         };
 
         common.notify();
@@ -530,7 +502,6 @@ define([
                     });
                 });
             } else if (isEdit) {
-                //hideInputs(span);
                 unlockRow(id, function () {
                     change(null, null, null, null, function() {
                         $('input[data-rt-id="' + id + '"]').focus();
@@ -546,10 +517,8 @@ define([
                     });
                 });
             } else if (isBookmark) {
-                //hideInputs(span);
                 handleBookmark(id);
             } else if (isLock && isLocked) {
-                //hideInputs(span);
                 unlockColumn(id, function () {
                     change(null, null, null, null, function() {
                         $('input[data-rt-id="' + id + '"]').focus();
@@ -581,12 +550,6 @@ define([
         if (!target) { return void debug("NO TARGET"); }
 
         var nodeName = target && target.nodeName;
-        //var shouldLock = $(target).hasClass('fa-unlock');
-
-        /*if ((!$(target).parents('#cp-app-poll-table tbody').length &&
-            $(target).hasClass('cp-app-poll-table-lock'))) {
-            //hideInputs(e);
-        }*/
 
         switch (nodeName) {
             case 'INPUT':
@@ -619,9 +582,6 @@ define([
                 handleInput(input[0]);
                 break;
             case 'SPAN':
-                /*if (shouldLock) {
-                    break;
-                }*/
                 handleSpan(target);
                 break;
             case undefined:
@@ -636,17 +596,45 @@ define([
     /*
 
     */
+    var updatePublishButton = function () {
+        if (!APP.ready || !APP.proxy || !APP.$publishButton) { return; }
+        var p = APP.proxy.published;
+        var msg = (p ? Messages.poll_admin_button : Messages.poll_publish_button);
+        APP.$publishButton.attr('title', msg);
+        if (p) {
+            APP.$publishButton.removeClass('fa-check').addClass('fa-pencil');
+            return;
+        }
+        APP.$publishButton.addClass('fa-check').removeClass('fa-pencil');
+    };
     var publish = APP.publish = function (bool) {
-        if (!APP.ready) { return; }
-        if (APP.proxy.published !== bool) {
-            APP.proxy.published = bool;
+        if (!APP.readOnly) {
+            if (!APP.ready) { return; }
+            if (APP.proxy.published !== bool) {
+                APP.proxy.published = bool;
+            }
+        } else {
+            // If readOnly, always put the app in published mode
+            bool = true;
         }
         setTablePublished(bool);
         ['textarea'].forEach(function (sel) {
             $(sel).attr('disabled', bool);
         });
+        updatePublishButton();
     };
 
+    var updateHelpButton = function () {
+        if (!APP.$helpButton) { return; }
+        var help = $('#cp-app-poll-help').is(':visible');
+        var msg = (help ? Messages.poll_hide_help_button : Messages.poll_show_help_button);
+        APP.$helpButton.attr('title', msg);
+        if (help) {
+            APP.$helpButton.addClass('cp-toolbar-button-active');
+            return;
+        }
+        APP.$helpButton.removeClass('cp-toolbar-button-active');
+    };
     var showHelp = function(help) {
         if (typeof help === 'undefined') {
             help = !$('#cp-app-poll-help').is(':visible');
@@ -656,21 +644,8 @@ define([
 
         $('#cp-app-poll-help').toggle(help);
         $('#cp-app-poll-action-help').text(msg);
+        updateHelpButton();
     };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     var setEditable = function (editable) {
         APP.readOnly = !editable;
@@ -710,7 +685,7 @@ define([
         APP.proxy.description = n;
     };
 
-    var onReady = function (info, userid, readOnly) {
+    var onReady = function (info, userid) {
         var proxy = APP.proxy;
 
         var isNew = false;
@@ -750,7 +725,7 @@ define([
         var uncommitted = APP.uncommitted = {};
         prepareProxy(proxy, copyObject(Render.Example));
         prepareProxy(uncommitted, copyObject(Render.Example));
-        if (!readOnly) {
+        if (!APP.readOnly) {
             var coluid = Render.coluid();
             if (proxy.content.colsOrder.indexOf(userid) === -1 &&
                 uncommitted.content.colsOrder.indexOf(userid) === -1) {
@@ -772,7 +747,7 @@ define([
 
         var colsOrder = sortColumns(displayedObj.content.colsOrder, userid);
 
-        var $table = APP.$table = $(Render.asHTML(displayedObj, null, colsOrder, readOnly));
+        var $table = APP.$table = $(Render.asHTML(displayedObj, null, colsOrder, APP.readOnly));
 
         var getUncommitted = function (type) {
             var ret = {}, toRemove;
@@ -830,23 +805,7 @@ define([
             });
         });
 
-        // #publish button is removed in readonly
-        APP.$publish = $('#cp-app-poll-action-publish')
-            .click(function () {
-                publish(true);
-            });
-
-        APP.$admin = $('#cp-app-poll-action-admin')
-            .click(function () {
-                publish(false);
-            });
-
-        APP.$help = $('#cp-app-poll-action-help')
-            .click(function () {
-                showHelp();
-            });
-
-        if (!readOnly) {
+        if (!APP.readOnly) {
             setUserId(userid);
         }
 
@@ -899,19 +858,18 @@ define([
         }
 
         Cryptpad.removeLoadingScreen();
+        if (isNew) {
+            common.openTemplatePicker();
+        }
     };
 
     var onDisconnect = function () {
         setEditable(false);
-        // TODO toolar.failed?
-        APP.toolbar.failed();
         Cryptpad.alert(Messages.common_connectionLost, undefined, true);
     };
 
-    var onReconnect = function (info) {
+    var onReconnect = function () {
         setEditable(true);
-        // TODO: reconnecting??
-        APP.toolbar.reconnecting(info.myId);
         Cryptpad.findOKButton().click();
     };
 
@@ -934,14 +892,14 @@ define([
             displayed: ['title', 'useradmin', 'spinner', 'share', 'userlist', 'newpad', 'limit'],
             title: Title.getTitleConfig(),
             metadataMgr: metadataMgr,
-            readOnly: readOnly,
+            readOnly: APP.readOnly,
             realtime: info.realtime,
             common: Cryptpad,
             sfCommon: common,
             $container: APP.$bar,
             $contentContainer: APP.$content
         };
-        var toolbar = APP.toolbar = Toolbar.create(configTb);
+        APP.toolbar = Toolbar.create(configTb);
 
         Title.setToolbar(APP.toolbar);
 
@@ -951,32 +909,35 @@ define([
             var md = copyObject(metadataMgr.getMetadata());
             APP.proxy.metadata = md;
         });
-        return; // TODO
-
-
-
 
         /* add a forget button */
         var forgetCb = function (err) {
             if (err) { return; }
             setEditable(false);
         };
-        var $forgetPad = Cryptpad.createButton('forget', true, {}, forgetCb);
+        var $forgetPad = common.createButton('forget', true, {}, forgetCb);
         $rightside.append($forgetPad);
 
-        // set the hash
-        if (!readOnly) { Cryptpad.replaceHash(editHash); }
-
         /* save as template */
-        if (!Cryptpad.isTemplate(window.location.href)) {
+        if (!metadataMgr.getPrivateData().isTemplate) {
             var templateObj = {
                 rt: info.realtime,
-                Crypt: Cryptget,
-                getTitle: function () { return document.title; }
+                getTitle: function () { return metadataMgr.getMetadata().title; }
             };
-            var $templateButton = Cryptpad.createButton('template', true, templateObj);
+            var $templateButton = common.createButton('template', true, templateObj);
             $rightside.append($templateButton);
         }
+
+        var $help = common.createButton().click(function () { showHelp(); }).appendTo($rightside);
+        APP.$helpButton = $help;
+        updateHelpButton();
+
+        if (APP.readOnly) { publish(true); return; }
+        var $publish = common.createButton()
+            .removeClass('fa-question').addClass('fa-check')
+            .click(function () { publish(!APP.proxy.published); }).appendTo($rightside);
+        APP.$publishButton = $publish;
+        updatePublishButton();
     };
 
 
@@ -998,7 +959,7 @@ define([
             }
             metadataMgr.onChange(function () {
                 if (typeof(metadataMgr.getPrivateData().readOnly) === 'boolean') {
-                    readOnly = metadataMgr.getPrivateData().readOnly;
+                    APP.readOnly = metadataMgr.getPrivateData().readOnly;
                     privReady();
                 }
             });
@@ -1018,11 +979,10 @@ define([
                 logLevel: 1
             };
 
-            if (readOnly) {
-                $('#cp-app-poll-create-user, #cp-app-poll-create-option, #cp-app-poll-action-publish, #cp-app-poll-action-admin').remove();
+            if (APP.readOnly) {
+                $('#cp-app-poll-create-user, #cp-app-poll-create-option').remove();
             }
 
-            var metadataMgr;
             var rt = APP.rt = Listmap.create(listmapConfig);
             APP.proxy = rt.proxy;
 
@@ -1032,7 +992,7 @@ define([
                         if (e) { console.error(e); }
                         if (!userid) { userid = Render.coluid(); }
                         APP.userid = userid;
-                        onReady(info, userid, readOnly);
+                        onReady(info, userid);
                     });
                  })
                  .on('disconnect', onDisconnect)
@@ -1049,13 +1009,6 @@ define([
                     showHelp(false);
                 }
             });
-
-            /*Cryptpad.onError(function (info) {
-                if (info && info.type === "store") {
-                    onConnectError();
-                }
-            });*/
-            //Cryptpad.onLogout(function () { setEditable(false); });
         });
     };
     main();

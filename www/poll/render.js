@@ -287,7 +287,7 @@ var Renderer = function (Cryptpad) {
     var makeBookmarkElement = Render.makeBookmarkElement = function (id) {
         return ['SPAN', {
             'data-rt-id': id,
-            'title': 'TODO: Bookmark this column so that it is always unlocked and displayed at the beginning for you.',
+            'title': Cryptpad.Messages.poll_bookmark_col,
             'style': 'visibility: hidden;',
             class: 'cp-app-poll-table-bookmark fa fa-bookmark-o',
         }, []];

@@ -4,6 +4,7 @@
 @import (once) '../../customize/src/less2/include/fileupload.less';
 @import (once) '../../customize/src/less2/include/alertify.less';
 @import (once) '../../customize/src/less2/include/tokenfield.less';
+@import (once) '../../customize/src/less2/include/tools.less';
 
 .toolbar_main();
 .fileupload_main();
@@ -93,13 +94,6 @@ table#cp-app-poll-table {
     border-radius: 0;
     border: 0;
 }
-#cp-app-poll-publish {
-    display: none;
-}
-#cp-app-poll-action-publish, #cp-app-poll-action-admin {
-    margin-top: 15px;
-    margin-bottom: 15px;
-}
 #cp-app-poll-create-user {
     display: inline-flex;
     height: 24px;
@@ -128,28 +122,23 @@ table#cp-app-poll-table {
     min-width: 80%;
     width: 80%;
     min-height: 7em;
-    font-size: 20px;
-    font-weight: bold;
+    font: @colortheme_app-font;
+    //font-size: 20px;
+    /*font-weight: bold;*/
     border: 1px solid black;
 
 }
 #cp-app-poll-description[disabled] {
     resize: none;
     color: #000;
-    border: 1px solid #444;
+    border: 1px solid transparent;
+    background-color: #eeeeee;
+    font: @colortheme_app-font;
 }
 
 #cp-app-poll-help {
     width: 80%;
     margin: auto;
-}
-div.cp-app-poll-upper {
-    width: 80%;
-    margin: auto;
-
-    & > * {
-        margin-right: 1em;
-    }
 }
 
 // from cryptpad.less
@@ -169,6 +158,7 @@ tbody {
     }
 
     td {
+        .tools_unselectable();
         border-right: 1px solid @poll-border-color;
         padding: 12px;
         padding-top: 0px;
@@ -274,7 +264,7 @@ div.cp-app-poll-realtime {
                     margin: 0px;
                     padding: 0px;
                     height: 100%;
-                    min-width: 150px;
+                    min-width: 100px;
 
                     div.cp-app-poll-table-checkbox-contain {
                         display: inline-block;
@@ -387,6 +377,8 @@ div.cp-app-poll-realtime {
                 }
                 input {
                     &[type="text"] {
+                        overflow: hidden;
+                        text-overflow: ellipsis;
                         break-after: always;
                         width: ~"calc(100% - 2px)"; // borders...
                         box-sizing: border-box;

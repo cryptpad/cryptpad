@@ -256,6 +256,10 @@ define(function () {
     out.poll_show_help_button = "Afficher l'aide";
     out.poll_hide_help_button = "Cacher l'aide";
 
+    out.poll_bookmark_col = "Marquer cette colonne comme favorite pour qu'elle soit toujours déverouillée et affichée en première position.";
+    out.poll_bookmarked_col = "Voici votre colonne favorite; elle sera toujours dévérouillée et affichée en première position.";
+    out.poll_total = 'TOTAL';
+
     // Canvas
     out.canvas_clear = "Nettoyer";
     out.canvas_delete = "Supprimer la sélection";

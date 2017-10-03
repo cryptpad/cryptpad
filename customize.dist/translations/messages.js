@@ -258,6 +258,10 @@ define(function () {
     out.poll_show_help_button = "Show help";
     out.poll_hide_help_button = "Hide help";
 
+    out.poll_bookmark_col = 'Bookmark this column so that it is always unlocked and displayed at the beginning for you';
+    out.poll_bookmarked_col = 'This is your bookmarked column. It will always be unlocked and displayed at the beginning for you.';
+    out.poll_total = 'TOTAL';
+
     // Canvas
     out.canvas_clear = "Clear";
     out.canvas_delete = "Delete selection";

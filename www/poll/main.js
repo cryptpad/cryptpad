@@ -5,7 +5,7 @@ define([
     'jquery',
     '/common/requireconfig.js',
     '/common/sframe-common-outer.js',
-], function (nThen, ApiConfig, $, RequireConfig, SFCommonO, Cryptpad, Netflux) {
+], function (nThen, ApiConfig, $, RequireConfig, SFCommonO) {
     var requireConfig = RequireConfig();
 
     // Loaded in load #2

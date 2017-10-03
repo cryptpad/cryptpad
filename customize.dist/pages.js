@@ -570,15 +570,12 @@ define([
     };
 
     var appToolbar = function () {
-        return h('div#toolbar.cryptpad-toolbar');
-    };
-    var appToolbar3 = function () {
         return h('div#cp-toolbar.cp-toolbar-container');
     };
 
     Pages['/whiteboard/'] = Pages['/whiteboard/index.html'] = function () {
         return [
-            appToolbar3(),
+            appToolbar(),
             h('div#cp-app-whiteboard-canvas-area', h('canvas#cp-app-whiteboard-canvas', {
                 width: 600,
                 height: 600
@@ -638,7 +635,7 @@ define([
 
     Pages['/poll/'] = Pages['/poll/index.html'] = function () {
         return [
-            appToolbar3(),
+            appToolbar(),
             h('div#cp-app-poll-content', [
                 h('div#cp-app-poll-form', [
                     h('div#cp-app-poll-help', [
@@ -646,18 +643,6 @@ define([
                         setHTML(h('h2'), Msg.poll_subtitle),
                         h('p', Msg.poll_p_save),
                         h('p', Msg.poll_p_encryption)
-                    ]),
-                    h('div.cp-app-poll-upper', [
-                        h('button#cp-app-poll-action-publish.btn.btn-success', {
-                            style: { display: 'none' }
-                        }, Msg.poll_publish_button),
-                        h('button#cp-app-poll-action-admin.btn.btn-primary', {
-                            style: { display: 'none' },
-                            title: Msg.poll_admin_button
-                        }, Msg.poll_admin_button),
-                        h('button#cp-app-poll-action-help.btn.btn-secondary', {
-                            title: Msg.poll_show_help_button
-                        }, Msg.poll_show_help_button)
                     ]),
                     h('div.cp-app-poll-realtime', [
                         h('br'),
