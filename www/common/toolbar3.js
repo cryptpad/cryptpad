@@ -448,7 +448,7 @@ define([
                 var $content = $('<div>');
                 $('<input>', {'style':'display:none;'}).appendTo($content);
                 $('<h3>').text(Messages.viewEmbedTitle).appendTo($content);
-                var $tag = $('<p>').text(Messages.fileEmbedTag).appendTo($content);
+                var $tag = $('<p>').text(Messages.viewEmbedTag).appendTo($content);
                 $('<br>').appendTo($tag);
                 var iframeId = uid();
                 var iframeEmbed = '<iframe src="' + url + '"></iframe>';
