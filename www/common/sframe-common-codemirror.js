@@ -211,26 +211,18 @@ define([
             Common.getAttribute(themeKey, todo);
         };
 
-        exp.exportText = function () {
-            var text = editor.getValue();
-
-            var ext = Modes.extensionOf(exp.highlightMode);
-
-            var title = Cryptpad.fixFileName(Title ? Title.suggestTitle('cryptpad') : "?") + (ext || '.txt');
-
-            Cryptpad.prompt(Messages.exportPrompt, title, function (filename) {
-                if (filename === null) { return; }
-                var blob = new Blob([text], {
-                    type: 'text/plain;charset=utf-8'
-                });
-                saveAs(blob, filename);
-            });
+        exp.getContentExtension = function () {
+            console.log(Modes.extensionOf(exp.highlightMode));
+            console.log(exp.highlightMode);
+            return (Modes.extensionOf(exp.highlightMode) || '.txt').slice(1);
         };
-        exp.importText = function (content, file) {
-            var $bar = $('#cme_toolbox');
-            var mode;
+        exp.fileExporter = function () {
+            return new Blob([ editor.getValue() ], { type: 'text/plain;charset=utf-8' });
+        };
+        exp.fileImporter = function (content, file) {
+            var $toolbarContainer = $('#cme_toolbox');
             var mime = CodeMirror.findModeByMIME(file.type);
-
+            var mode;
             if (!mime) {
                 var ext = /.+\.([^.]+)$/.exec(file.name);
                 if (ext[1]) {
@@ -240,18 +232,15 @@ define([
             } else {
                 mode = mime && mime.mode || null;
             }
-
             if (mode && Modes.list.some(function (o) { return o.mode === mode; })) {
-                setMode(mode);
-                $bar.find('#language-mode').val(mode);
+                exp.setMode(mode);
+                $toolbarContainer.find('#language-mode').val(mode);
             } else {
                 console.log("Couldn't find a suitable highlighting mode: %s", mode);
-                setMode('text');
-                $bar.find('#language-mode').val('text');
+                exp.setMode('text');
+                $toolbarContainer.find('#language-mode').val('text');
             }
-
-            editor.setValue(content);
-            onLocal();
+            return { content: content };
         };
 
         var cursorToPos = function(cursor, oldText) {

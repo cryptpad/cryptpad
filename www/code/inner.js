@@ -204,6 +204,20 @@ define([
         updateIndentSettings();
     };
 
+    var mkFilePicker = function (framework, editor, evModeChange) {
+        evModeChange.reg(function (mode) {
+            if (MEDIA_TAG_MODES.indexOf(mode) !== -1) {
+                // Embedding is endabled
+                framework.setMediaTagEmbedder(function (mt) {
+                    editor.replaceSelection($(mt)[0].outerHTML);
+                });
+            } else {
+                // Embedding is disabled
+                framework.setMediaTagEmbedder();
+            }
+        });
+    };
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -211,7 +225,6 @@ define([
 
     var andThen2 = function (editor, CodeMirror, framework) {
 
-        var $toolbarContainer = $('#cme_toolbox');
         var common = framework._.sfCommon;
 
         var previewPane = mkPreviewPane(editor, CodeMirror, framework);
@@ -220,37 +233,7 @@ define([
 
         mkIndentSettings(editor, framework._.cpNfInner.metadataMgr);
         CodeMirror.init(framework.localChange, framework._.title, framework._.toolbar);
-
-        if (!framework.isReadOnly()) {
-            var fileDialogCfg = {
-                onSelect: function (data) {
-                    if (data.type === 'file') {
-                        var mt = '<media-tag src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>';
-                        editor.replaceSelection(mt);
-                        return;
-                    }
-                }
-            };
-            common.initFilePicker(fileDialogCfg);
-            var $mediaTagButton = $('<button>', {
-                title: Messages.filePickerButton,
-                'class': 'cp-toolbar-rightside-button fa fa-picture-o',
-                style: 'font-size: 17px'
-            }).click(function () {
-                var pickerCfg = {
-                    types: ['file'],
-                    where: ['root']
-                };
-                common.openFilePicker(pickerCfg);
-            }).appendTo(framework._.toolbar.$rightside);
-            evModeChange.reg(function (mode) {
-                if (MEDIA_TAG_MODES.indexOf(mode) !== -1) {
-                    $($mediaTagButton).show();
-                } else {
-                    $($mediaTagButton).hide();
-                }
-            });
-        }
+        mkFilePicker(framework, editor, evModeChange);
 
         if (!framework.isReadOnly()) {
             CodeMirror.configureTheme(function () {
@@ -311,37 +294,8 @@ define([
              editor.setValue(Messages.codeInitialState);
         });
 
-        framework.setFileExporter(
-            function () {
-                return (Modes.extensionOf(CodeMirror.highlightMode) || '.txt').slice(1);
-            },
-            function () {
-                return new Blob([ editor.getValue() ], { type: 'text/plain;charset=utf-8' });
-            }
-        );
-
-        framework.setFileImporter({}, function (content, file) {
-            var mime = CodeMirror.findModeByMIME(file.type);
-            var mode;
-            if (!mime) {
-                var ext = /.+\.([^.]+)$/.exec(file.name);
-                if (ext[1]) {
-                    mode = CMeditor.findModeByExtension(ext[1]);
-                    mode = mode && mode.mode || null;
-                }
-            } else {
-                mode = mime && mime.mode || null;
-            }
-            if (mode && Modes.list.some(function (o) { return o.mode === mode; })) {
-                CodeMirror.setMode(mode);
-                $toolbarContainer.find('#language-mode').val(mode);
-            } else {
-                console.log("Couldn't find a suitable highlighting mode: %s", mode);
-                CodeMirror.setMode('text');
-                $toolbarContainer.find('#language-mode').val('text');
-            }
-            return content;
-        });
+        framework.setFileExporter(CodeMirror.getContentExtension, CodeMirror.fileExporter);
+        framework.setFileImporter({}, CodeMirror.fileImporter);
 
         framework.setNormalizer(function (c) {
             return {

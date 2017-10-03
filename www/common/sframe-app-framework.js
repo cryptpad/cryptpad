@@ -52,6 +52,9 @@ define([
 
         var evStart = Util.mkEvent(true);
 
+        var mediaTagEmbedder;
+        var $embedButton;
+
         var common;
         var cpNfInner;
         var textPatcher;
@@ -302,6 +305,42 @@ define([
             common.feedback(action, force);
         };
 
+        var createFilePicker = function () {
+            common.initFilePicker({
+                onSelect: function (data) {
+                    if (data.type !== 'file') {
+                        console.log("Unexpected data type picked " + data.type);
+                        return;
+                    }
+                    if (!mediaTagEmbedder) { console.log('mediaTagEmbedder missing'); return; }
+                    if (data.type !== 'file') { console.log('unhandled embed type ' + data.type); return; } 
+                    var privateDat = cpNfInner.metadataMgr.getPrivateData();
+                    var origin = privateDat.fileHost || privateDat.origin;
+                    var src = origin + data.src;
+                    mediaTagEmbedder($('<media-tag src="' + src +
+                        '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>'));
+                }
+            });
+            $embedButton = $('<button>', {
+                title: Messages.filePickerButton,
+                'class': 'cp-toolbar-rightside-button fa fa-picture-o',
+                style: 'font-size: 17px'
+            }).click(function () {
+                common.openFilePicker({
+                    types: ['file'],
+                    where: ['root']
+                });
+            }).appendTo(toolbar.$rightside).hide();
+        };
+        var setMediaTagEmbedder = function (mte) {
+            if (!mte || readOnly) {
+                $embedButton.hide();
+                return;
+            }
+            $embedButton.show();
+            mediaTagEmbedder = mte;
+        };
+
         nThen(function (waitFor) {
             Cryptpad.addLoadingScreen();
             SFCommon.create(waitFor(function (c) { common = c; }));
@@ -424,6 +463,8 @@ define([
             var $tags = common.createButton('hashtag', true);
             toolbar.$rightside.append($tags);
 
+            createFilePicker();
+
             cb(Object.freeze({
                 // Register an event to be informed of a content update coming from remote
                 // This event will pass you the object.
@@ -474,6 +515,12 @@ define([
                 // Set a function which will normalize the content returned by the content getter
                 // such as removing extra fields.
                 setNormalizer: function (n) { normalize0 = n; },
+
+                // Set a function which should take a jquery element which is a media tag and place
+                // it in the document. If this is not called then there will be no embed button,
+                // if this is called a second time with a null function, it will remove the embed
+                // button from the toolbar.
+                setMediaTagEmbedder: setMediaTagEmbedder,
 
                 // Call the CryptPad feedback API.
                 feedback: feedback,

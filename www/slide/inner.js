@@ -241,6 +241,8 @@ define([
                             updateLocalOptions(slideOptionsTmp);
                         }
                     });
+                } else {
+                    updateLocalOptions(slideOptionsTmp);
                 }
                 $container.remove();
                 Cryptpad.stopListening(h);
@@ -348,31 +350,23 @@ define([
     };
 
     var mkFilePicker = function (framework, editor) {
-        var fileDialogCfg = {
-            onSelect: function (data) {
-                if (data.type === 'file') {
-                    var mt = '<media-tag src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>';
-                    editor.replaceSelection(mt);
-                    return;
-                }
-            }
-        };
-        framework._.sfCommon.initFilePicker(fileDialogCfg);
-        $('<button>', {
-            title: Messages.filePickerButton,
-            'class': 'cp-toolbar-rightside-button fa fa-picture-o',
-            style: 'font-size: 17px'
-        }).click(function () {
-            var pickerCfg = {
-                types: ['file'],
-                where: ['root']
-            };
-            framework._.sfCommon.openFilePicker(pickerCfg);
-        }).appendTo(framework._.toolbar.$rightside);
-
-        var $tags = framework._.sfCommon.createButton('hashtag', true);
-        framework._.toolbar.$rightside.append($tags);
+        framework.setMediaTagEmbedder(function (mt) {
+            editor.replaceSelection($(mt)[0].outerHTML);
+        });
     };
+
+    var activateLinks = function ($content) {
+        $content.click(function (e) {
+            if (!e.target) { return; }
+            var $t = $(e.target);
+            if ($t.is('a') || $t.parents('a').length) {
+                e.preventDefault();
+                var $a = $t.is('a') ? $t : $t.parents('a').first();
+                var href = $a.attr('href');
+                window.open(href);
+            }
+        });
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -390,17 +384,7 @@ define([
 
         var $toolbarDrawer = framework._.toolbar.$drawer;
 
-        $content.click(function (e) {
-            if (!e.target) { return; }
-            var $t = $(e.target);
-            if ($t.is('a') || $t.parents('a').length) {
-                e.preventDefault();
-                var $a = $t.is('a') ? $t : $t.parents('a').first();
-                var href = $a.attr('href');
-                window.open(href);
-            }
-        });
-
+        activateLinks($content);
         Slide.setModal(framework._.sfCommon, $modal, $content, slideOptions, Messages.slideInitialState);
         mkPrintButton(framework, editor, $content, $print, $toolbarDrawer);
         mkSlideOptionsButton(framework, slideOptions, $toolbarDrawer);
@@ -409,10 +393,6 @@ define([
         mkSlidePreviewPane(framework, $contentContainer);
 
         CodeMirror.configureTheme();
-
-        var enterPresentationMode = function () { Slide.show(true, editor.getValue()); };
-
-        if (isPresentMode) { enterPresentationMode(); }
 
         framework.onContentUpdate(function (newContent) {
             CodeMirror.contentUpdate(newContent);
@@ -455,11 +435,16 @@ define([
 
         Slide.setTitle(framework._.title);
 
+        var enterPresentationMode = function () { Slide.show(true, editor.getValue()); };
         framework._.toolbar.$rightside.append(
             framework._.sfCommon.createButton('present', true).click(enterPresentationMode)
         );
+        if (isPresentMode) { enterPresentationMode(); }
 
         editor.on('change', framework.localChange);
+
+        framework.setFileExporter(CodeMirror.getContentExtension, CodeMirror.fileExporter);
+        framework.setFileImporter({}, CodeMirror.fileImporter);
 
         framework.start();
     };

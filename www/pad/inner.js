@@ -363,35 +363,11 @@ define([
             if (href) { ifrWindow.open(bounceHref, '_blank'); }
         };
 
-        if (!framework.isReadOnly()) {
-            framework.onEditableChange(function () {
-                var locked = framework.isLocked();
-                $(inner).css({ 'background-color': ((locked) ? '#aaa' : '') });
-                inner.setAttribute('contenteditable', !locked);
-            });
-
-            var fileDialogCfg = {
-                onSelect: function (data) {
-                    if (data.type === 'file') {
-                        var mt = '<media-tag contenteditable="false" src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '" tabindex="1"></media-tag>';
-                        editor.insertElement(window.CKEDITOR.dom.element.createFromHtml(mt));
-                        return;
-                    }
-                }
-            };
-            framework._.sfCommon.initFilePicker(fileDialogCfg);
-            window.APP.$mediaTagButton = $('<button>', {
-                title: Messages.filePickerButton,
-                'class': 'cp-toolbar-rightside-button fa fa-picture-o',
-                style: 'font-size: 17px'
-            }).click(function () {
-                var pickerCfg = {
-                    types: ['file'],
-                    where: ['root']
-                };
-                framework._.sfCommon.openFilePicker(pickerCfg);
-            }).appendTo(framework._.toolbar.$rightside);
-        }
+        framework.setMediaTagEmbedder(function ($mt) {
+            $mt.attr('contenteditable', 'false');
+            $mt.attr('tabindex', '1');
+            editor.insertElement(new window.CKEDITOR.dom.element($mt[0]));
+        });
 
         framework.setTitleRecommender(function () {
             var text;

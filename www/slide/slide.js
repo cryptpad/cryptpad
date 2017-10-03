@@ -115,7 +115,10 @@ define([
             Slide.update(content);
             Slide.draw(Slide.index);
             $modal.addClass('cp-app-slide-shown');
+
+            $('textarea').blur();
             $(ifrw).focus();
+
             change(null, Slide.index);
             Common.setPresentUrl(true);
             $('.cp-app-slide-present-button').hide();
