@@ -743,7 +743,6 @@ define([
     };
     var updateDescription = function (old, n) {
         var o = APP.editor.getValue();
-        console.error(n);
         SframeCM.setValueAndCursor(APP.editor, o, n, TextPatcher);
         updatePublishedDescription();
         common.notify();
@@ -751,6 +750,119 @@ define([
     var updateLocalDescription = function (n) {
         APP.proxy.description = n;
         updatePublishedDescription();
+    };
+
+    var getCommentId = Render.Uid('c');
+    var removeComment = function (uid) {
+        var idx;
+        APP.proxy.comments.some(function (c, i) {
+            if (c.uid === uid) {
+                console.log('found');
+                idx = i;
+                return true;
+            }
+        });
+        if (idx) {
+            APP.proxy.comments.splice(idx, 1);
+        }
+        APP.updateComments();
+    };
+    /*var editComment = function (id) {
+        // TODO
+    };*/
+    var avatars = {};
+    var updateComments = APP.updateComments = function () {
+        if (!APP.proxy.comments) { APP.proxy.comments = []; }
+
+        var profile;
+        if (common.isLoggedIn()) {
+            profile = metadataMgr.getUserData().profile;
+        }
+
+        var $comments = APP.$comments.html('');
+        var comments = APP.proxy.comments;
+        comments.forEach(function (c) {
+            var $c = $('<div>', {
+                'class': 'cp-app-poll-comments-list-el'
+            }).prependTo($comments);
+            // Metadata
+            var $data = $('<div>', { 'class': 'cp-app-poll-comments-list-data' }).appendTo($c);
+            var $avatar = $('<span>', {
+                'class': 'cp-app-poll-comments-list-data-avatar cp-avatar'
+            }).appendTo($data);
+            if (c.avatar && avatars[c.avatar]) {
+                $avatar.append(avatars[c.avatar]);
+            } else {
+                common.displayAvatar($avatar, c.avatar, c.name, function ($img) {
+                    if (c.avatar && $img.length) { avatars[c.avatar] = $img[0].outerHTML; }
+                });
+            }
+            if (c.profile) {
+                $('<a>', {
+                    'href': APP.origin + '/profile/#' + c.profile,
+                    'target': '_blank',
+                    'class': 'cp-app-poll-comments-list-data-name'
+                }).appendTo($data).text(c.name);
+            } else {
+                $('<span>', {
+                    'class': 'cp-app-poll-comments-list-data-name'
+                }).appendTo($data).text(c.name);
+            }
+            $('<span>', {
+                'class': 'cp-app-poll-comments-list-data-time'
+            }).appendTo($data).text(new Date(c.time).toLocaleString());
+
+            // Message
+            var $msg = $('<div>', { 'class': 'cp-app-poll-comments-list-msg' }).appendTo($c);
+            $('<div>', {
+                'class': 'cp-app-poll-comments-list-msg-text'
+            }).appendTo($msg).text(c.msg);
+            var $actions = $('<div>', {
+                'class': 'cp-app-poll-comments-list-msg-actions'
+            }).appendTo($msg);
+
+            // Actions
+            if (!c.profile || c.profile === profile) {
+                $('<button>', {
+                    'class': 'fa fa-times',
+                    'title': 'TODO: remove comment',
+                    'data-rt-id': c.uid
+                }).appendTo($actions).click(function () { removeComment(c.uid); });
+                /*$('<button>', {
+                    'class': 'fa fa-pencil',
+                    'title': 'TODO: edit comment',
+                    'data-rt-id': c.uid
+                }).appendTo($actions).click(editComment);*/
+            }
+        });
+        common.notify();
+    };
+    var resetComment = function () {
+        APP.$addComment.find('.cp-app-poll-comments-add-name').val('');
+        APP.$addComment.find('.cp-app-poll-comments-add-msg').val('');
+    };
+    var addComment = function () {
+        if (!APP.proxy.comments) { APP.proxy.comments = []; }
+        var name = APP.$addComment.find('.cp-app-poll-comments-add-name').val();
+        var msg = APP.$addComment.find('.cp-app-poll-comments-add-msg').val();
+        var time = +new Date();
+
+        var profile, avatar;
+        if (common.isLoggedIn()) {
+            profile = metadataMgr.getUserData().profile;
+            avatar = metadataMgr.getUserData().avatar;
+        }
+
+        APP.proxy.comments.push({
+            msg: msg,
+            name: name,
+            time: time,
+            uid: getCommentId(),
+            profile: profile,
+            avatar: avatar
+        });
+        resetComment();
+        updateComments();
     };
 
     var checkDeletedCells = function () {
@@ -893,10 +1005,19 @@ define([
             var val = APP.editor.getValue();
             updateLocalDescription(val);
         });
+        APP.$addComment.find('.cp-app-poll-comments-add-submit').click(addComment);
+        APP.$addComment.find('.cp-app-poll-comments-add-cancel').click(resetComment);
 
         $('#cp-app-poll-table-scroll').html('').prepend($table);
         updateDisplayedTable();
         updateDescription(null, APP.proxy.description || '');
+
+        // Initialize author name for comments.
+        // Disable name modification for logged in users
+        var $cName = APP.$addComment.find('.cp-app-poll-comments-add-name')
+            .val(metadataMgr.getUserData().name || '');
+        if (common.isLoggedIn()) { $cName.attr('disabled', 'disabled'); }
+        updateComments();
 
         $table
             .click(handleClick)
@@ -913,6 +1034,7 @@ define([
             })
             .on('change', ['content'], change)
             .on('change', ['description'], updateDescription)
+            .on('change', ['comments'], updateComments)
             .on('remove', [], change);
 
         // If the user's column is not committed, add his username
@@ -1070,12 +1192,15 @@ define([
             APP.loggedIn = common.isLoggedIn();
             APP.SFCommon = common;
 
+            APP.origin = common.getMetadataMgr().getPrivateData().origin;
+
             APP.$body = $('body');
             APP.$bar = $('#cp-toolbar');
             APP.$content = $('#cp-app-poll-content');
             APP.$descriptionPublished = $('#cp-app-poll-description-published');
             APP.$description = $('#cp-app-poll-description');
-                //.attr('placeholder', Messages.poll_descriptionHint || 'description');
+            APP.$comments = $('#cp-app-poll-comments-list');
+            APP.$addComment = $('#cp-app-poll-comments-add');
 
             APP.editor = CMeditor.fromTextArea(APP.$description[0], {
                 lineNumbers: true,
@@ -1092,7 +1217,8 @@ define([
             };
 
             if (APP.readOnly) {
-                $('#cp-app-poll-create-user, #cp-app-poll-create-option').remove();
+                $('#cp-app-poll-create-user, #cp-app-poll-create-option, #cp-app-poll-comments-add')
+                    .remove();
             }
 
             var rt = APP.rt = Listmap.create(listmapConfig);

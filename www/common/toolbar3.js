@@ -228,7 +228,7 @@ define([
                 $span.append($rightCol);
             } else {
                 Common.displayAvatar($span, data.avatar, name, function ($img) {
-                    if (data.avatar && $img) {
+                    if (data.avatar && $img.length) {
                         avatars[data.avatar] = $img[0].outerHTML;
                     }
                     $span.append($rightCol);

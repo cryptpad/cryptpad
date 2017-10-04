@@ -9,9 +9,10 @@ define([
     var Example = {
         metadata: {
             title: '',
-            description: '',
             userData: {}
         },
+        description: '',
+        comments: [],
         content: {
 /*  TODO
 

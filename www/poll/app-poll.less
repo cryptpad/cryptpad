@@ -5,6 +5,7 @@
 @import (once) '../../customize/src/less2/include/alertify.less';
 @import (once) '../../customize/src/less2/include/tokenfield.less';
 @import (once) '../../customize/src/less2/include/tools.less';
+@import (once) '../../customize/src/less2/include/avatar.less';
 
 .toolbar_main();
 .fileupload_main();
@@ -485,6 +486,65 @@ div.cp-app-poll-realtime {
         }
         tfoot {
             display: none;
+        }
+    }
+    #cp-app-poll-comments {
+        width: 50%;
+        margin: 20px auto;
+        min-width: 400px;
+        #cp-app-poll-comments-add {
+            input, textarea {
+                border: 1px solid black;
+                width: 90%;
+                margin: 5px 5%;
+            }
+            input {
+                padding: 5px;
+                height: 26px;
+                &[disabled] {
+                    background: #eee;
+                }
+            }
+            textarea {
+                padding: 5px;
+                height: 8em;
+                line-height: 1.5em;
+            }
+            text-align: center;
+        }
+        #cp-app-poll-comments-list {
+            .cp-app-poll-comments-list-el {
+                width: 90%;
+                margin: 5px 5%;
+            }
+            .cp-app-poll-comments-list-msg {
+                display: flex;
+                background: #eee;
+                padding: 5px 10px;
+                .cp-app-poll-comments-list-msg-text {
+                    flex: 1;
+                    white-space: pre;
+                }
+                .cp-app-poll-comments-list-msg-actions {
+                    button {
+                        border-radius: 0;
+                        width: 25px;
+                        padding: 0;
+                        line-height: 20px;
+                    }
+                }
+            }
+            .cp-app-poll-comments-list-data {
+                background: #ddd;
+                padding: 5px 10px;
+                display: flex;
+                align-items: center;
+                .cp-app-poll-comments-list-data-name {
+                    margin-left: 10px;
+                    flex: 1;
+                }
+                .cp-app-poll-comments-list-data-avatar { .avatar_main(30px); }
+            }
         }
     }
 }

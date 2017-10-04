@@ -664,6 +664,19 @@ define([
                             h('button#cp-app-poll-create-option.btn.btn-secondary', {
                                 title: Msg.poll_create_option
                             }, h('span.fa.fa-plus')),
+                        ]),
+                        h('div#cp-app-poll-comments', [
+                            h('h2#cp-app-poll-comments-add-title', "TODO: add comment"),
+                            h('div#cp-app-poll-comments-add', [
+                                h('input.cp-app-poll-comments-add-name', {
+                                    type: 'text'
+                                }),
+                                h('textarea.cp-app-poll-comments-add-msg'),
+                                h('button.cp-app-poll-comments-add-submit', "TODO: SUBMIT"),
+                                h('button.cp-app-poll-comments-add-cancel', "TODO: CANCEL")
+                            ]),
+                            h('h2#cp-app-poll-comments-list-title', "TODO: comments"),
+                            h('div#cp-app-poll-comments-list')
                         ])
                     ])
                 ])
