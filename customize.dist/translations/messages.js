@@ -248,7 +248,9 @@ define(function () {
     out.poll_removeUser = "Are you sure you'd like to remove this user?";
 
     out.poll_titleHint = "Title";
-    out.poll_descriptionHint = "Describe your poll, and use the 'publish' button when you're done. Anyone with the link can change the description, but this is discouraged.";
+    out.poll_descriptionHint = "Describe your poll, and use the ✓ (publish) button when you're done.\n" +
+                               "The description can be written using markdown syntax and you can embed media elements from your CryptDrive.\n" +
+                               "Anyone with the link can change the description, but this is discouraged.";
 
     out.poll_remove = "Remove";
     out.poll_edit = "Edit";

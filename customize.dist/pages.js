@@ -650,6 +650,7 @@ define([
                             h('textarea#cp-app-poll-description', {
                                 rows: "5",
                                 cols: "50",
+                                placeholder: Msg.poll_descriptionHint,
                                 disabled: true
                             }),
                             h('div#cp-app-poll-description-published'),

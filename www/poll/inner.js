@@ -16,6 +16,7 @@ define([
     '/common/sframe-common-codemirror.js',
 
     'cm/lib/codemirror',
+    'cm/addon/display/placeholder',
     'cm/mode/markdown/markdown',
     'css!cm/lib/codemirror.css',
 
@@ -685,11 +686,13 @@ define([
             // If readOnly, always put the app in published mode
             bool = true;
         }
+        $(APP.$mediaTagButton).toggle(!bool);
         setTablePublished(bool);
         /*['textarea'].forEach(function (sel) {
             $(sel).attr('disabled', bool);
         });*/
         updatePublishButton();
+        APP.editor.refresh();
     };
 
     var updateHelpButton = function () {
@@ -736,10 +739,11 @@ define([
 
     var updatePublishedDescription = function () {
         var v = APP.editor.getValue();
-        DiffMd.apply(DiffMd.render(v || Messages.poll_descriptionHint), APP.$descriptionPublished);
+        DiffMd.apply(DiffMd.render(v || ''), APP.$descriptionPublished);
     };
     var updateDescription = function (old, n) {
-        var o = APP.$description.val();
+        var o = APP.editor.getValue();
+        console.error(n);
         SframeCM.setValueAndCursor(APP.editor, o, n, TextPatcher);
         updatePublishedDescription();
         common.notify();
@@ -749,6 +753,18 @@ define([
         updatePublishedDescription();
     };
 
+    var checkDeletedCells = function () {
+        // faster than forEach?
+        var c;
+        for (var k in APP.proxy.content.cells) {
+            c = Render.getCoordinates(k);
+            if (APP.proxy.content.colsOrder.indexOf(c[0]) === -1 ||
+                APP.proxy.content.rowsOrder.indexOf(c[1]) === -1) {
+                console.log('deleting ' + k);
+                delete APP.proxy.content.cells[k];
+            }
+        }
+    };
     var onReady = function (info, userid) {
         var proxy = APP.proxy;
 
@@ -767,6 +783,8 @@ define([
                 proxy.content = proxy.table;
                 delete proxy.table;
             }
+            checkDeletedCells();
+
             if (proxy && proxy.metadata) {
                 metadataMgr.updateMetadata(proxy.metadata);
             }
@@ -878,7 +896,7 @@ define([
 
         $('#cp-app-poll-table-scroll').html('').prepend($table);
         updateDisplayedTable();
-        updateDescription(null, APP.proxy.description);
+        updateDescription(null, APP.proxy.description || '');
 
         $table
             .click(handleClick)
@@ -998,6 +1016,31 @@ define([
             .click(function () { publish(!APP.proxy.published); }).appendTo($rightside);
         APP.$publishButton = $publish;
         updatePublishButton();
+
+        var fileDialogCfg = {
+            onSelect: function (data) {
+                if (data.type === 'file' && APP.editor) {
+                    var mt = '<media-tag src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>';
+                    APP.editor.replaceSelection(mt);
+                    return;
+                }
+            }
+        };
+        common.initFilePicker(fileDialogCfg);
+        APP.$mediaTagButton = $('<button>', {
+            title: Messages.filePickerButton,
+            'class': 'cp-toolbar-rightside-button fa fa-picture-o',
+            style: 'font-size: 17px'
+        }).click(function () {
+            var pickerCfg = {
+                types: ['file'],
+                where: ['root']
+            };
+            common.openFilePicker(pickerCfg);
+        }).appendTo($rightside);
+
+        var $tags = common.createButton('hashtag', true);
+        $rightside.append($tags);
     };
 
 
@@ -1031,8 +1074,8 @@ define([
             APP.$bar = $('#cp-toolbar');
             APP.$content = $('#cp-app-poll-content');
             APP.$descriptionPublished = $('#cp-app-poll-description-published');
-            APP.$description = $('#cp-app-poll-description')
-                .attr('placeholder', Messages.poll_descriptionHint || 'description');
+            APP.$description = $('#cp-app-poll-description');
+                //.attr('placeholder', Messages.poll_descriptionHint || 'description');
 
             APP.editor = CMeditor.fromTextArea(APP.$description[0], {
                 lineNumbers: true,

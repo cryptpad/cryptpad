@@ -124,6 +124,9 @@ table#cp-app-poll-table {
         width: 80%;
         min-height: 200px;
         border: 1px solid black;
+        .CodeMirror-placeholder {
+            color: #777;
+        }
     }
 }
 #cp-app-poll-description-published {
@@ -139,6 +142,10 @@ table#cp-app-poll-table {
     background-color: #eeeeee;
     font: @colortheme_app-font;
     text-align: left;
+    media-tag > * {
+        max-width: 100%;
+        max-height: 20em;
+    }
 }
 .cp-app-poll-published {
     #cp-app-poll-description {

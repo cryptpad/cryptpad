@@ -246,7 +246,9 @@ define(function () {
     out.poll_removeUser = "Êtes-vous sûr de vouloir supprimer cet utilisateur ?";
 
     out.poll_titleHint = "Titre";
-    out.poll_descriptionHint = "Description";
+    out.poll_descriptionHint = "Décrivez votre sondage puis cliquer sur le bouton ✓ (Publier).\n" +
+                               "La description peut contenir de la syntaxe markdown, et vous pouvez y ajouter des images stockées dans votre CryptDrive.\n" +
+                               "Toutes les personnes possédant le lien d'édition de ce sondage peuvent modifier la description, bien que ce soit déconseillé.";
 
     out.poll_remove = "Supprimer";
     out.poll_edit = "Modifier";
