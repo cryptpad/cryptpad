@@ -666,16 +666,18 @@ define([
                             }, h('span.fa.fa-plus')),
                         ]),
                         h('div#cp-app-poll-comments', [
-                            h('h2#cp-app-poll-comments-add-title', "TODO: add comment"),
+                            h('h2#cp-app-poll-comments-add-title', Msg.poll_comment_add),
                             h('div#cp-app-poll-comments-add', [
                                 h('input.cp-app-poll-comments-add-name', {
                                     type: 'text'
                                 }),
                                 h('textarea.cp-app-poll-comments-add-msg'),
-                                h('button.cp-app-poll-comments-add-submit', "TODO: SUBMIT"),
-                                h('button.cp-app-poll-comments-add-cancel', "TODO: CANCEL")
+                                h('button.cp-app-poll-comments-add-submit.btn.btn-secondary',
+                                    Msg.poll_comment_submit),
+                                h('button.cp-app-poll-comments-add-cancel.btn.btn-secondary',
+                                    Msg.cancel)
                             ]),
-                            h('h2#cp-app-poll-comments-list-title', "TODO: comments"),
+                            h('h2#cp-app-poll-comments-list-title', Msg.poll_comment_list),
                             h('div#cp-app-poll-comments-list')
                         ])
                     ])

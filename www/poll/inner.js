@@ -183,7 +183,7 @@ define([
         if (commit) {
             newObj = proxy;
         } else {
-            newObj = $.extend(true, {}, proxy);
+            newObj = copyObject(proxy);
         }
 
         // Merge uncommitted into the proxy
@@ -221,14 +221,40 @@ define([
         return newObj;
     };
 
+    var enableColumn = function (id) {
+        var $input = $('input[disabled="disabled"][data-rt-id^="' + id + '"]')
+            .removeAttr('disabled');
+        $input.closest('td').addClass('cp-app-poll-table-editing');
+        $('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').addClass('fa-unlock')
+            .removeClass('fa-lock').attr('title', Messages.poll_unlocked);
+    };
+    var disableColumn = function (id) {
+        var $input = $('input[data-rt-id^="' + id + '"]')
+            .attr('disabled', 'disabled');
+        $input.closest('td').removeClass('cp-app-poll-table-editing');
+        $('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').addClass('fa-lock')
+            .removeClass('fa-unlock').attr('title', Messages.poll_locked);
+    };
+    var enableRow = function (id) {
+        var $input = $('input[type="text"][disabled="disabled"][data-rt-id="' + id + '"]').removeAttr('disabled');
+        $input.closest('td').addClass('cp-app-poll-table-editing');
+        $('span.cp-app-poll-table-edit[data-rt-id="' + id + '"]').css('visibility', 'hidden');
+    };
+    var disableRow = function (id) {
+        var $input = $('input[type="text"][data-rt-id="' + id + '"]')
+            .attr('disabled', 'disabled');
+        $input.closest('td').removeClass('cp-app-poll-table-editing');
+        $('span.cp-app-poll-table-edit[data-rt-id="' + id + '"]').css('visibility', 'visible');
+    };
+
     var styleUserColumn = function () {
         var userid = APP.userid;
         if (!userid) { return; }
 
         // Enable input for the userid column
-        $('input[disabled="disabled"][data-rt-id^="' + userid + '"]').removeAttr('disabled')
+        enableColumn(userid);
+        $('input[disabled="disabled"][data-rt-id^="' + userid + '"]')
             .attr('placeholder', Messages.poll_userPlaceholder);
-        $('input[type="number"][data-rt-id^="' + userid + '"]').addClass('enabled');
         $('.cp-app-poll-table-lock[data-rt-id="' + userid + '"]').remove();
         $('[data-rt-id^="' + userid + '"]').closest('td')
             .addClass("cp-app-poll-table-own");
@@ -241,10 +267,8 @@ define([
         var hasScroll = $scroll.width() < $scroll[0].scrollWidth;
         APP.uncommitted.content.colsOrder.forEach(function(id) {
             // Enable the checkboxes for the uncommitted column
-            $('input[disabled="disabled"][data-rt-id^="' + id + '"]').removeAttr('disabled');
-            $('input[type="number"][data-rt-id^="' + id + '"]').addClass('enabled');
+            enableColumn(id);
             $('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').remove();
-            //.addClass('fa-unlock').removeClass('fa-lock').attr('title', Messages.poll_unlocked);
             $('.cp-app-poll-table-remove[data-rt-id="' + id + '"]').remove();
             $('.cp-app-poll-table-bookmark[data-rt-id="' + id + '"]').remove();
 
@@ -258,29 +282,16 @@ define([
         });
         APP.uncommitted.content.rowsOrder.forEach(function(id) {
             // Enable the checkboxes for the uncommitted column
-            $('input[disabled="disabled"][data-rt-id="' + id + '"]').removeAttr('disabled');
+            enableRow(id);
             $('.cp-app-poll-table-edit[data-rt-id="' + id + '"]').remove();
             $('.cp-app-poll-table-remove[data-rt-id="' + id + '"]').remove();
 
             $('[data-rt-id="' + id + '"]').closest('tr').addClass("cp-app-poll-table-uncommitted");
-            //$('td.uncommitted .cover').addClass("uncommitted");
-            //$('.uncommitted input[type="text"]').attr("placeholder", Messages.poll_userPlaceholder);
         });
     };
     var unlockElements = function () {
-        APP.unlocked.row.forEach(function (id) {
-            var $input = $('input[type="text"][disabled="disabled"][data-rt-id="' + id + '"]').removeAttr('disabled');
-            $input.parent().parent().addClass('cp-app-poll-table-editing');
-            $('span.cp-app-poll-table-edit[data-rt-id="' + id + '"]').css('visibility', 'hidden');
-        });
-        APP.unlocked.col.forEach(function (id) {
-            var $input = $('input[disabled="disabled"][data-rt-id^="' + id + '"]')
-                .removeAttr('disabled');
-            $input.parent().addClass('cp-app-poll-table-editing');
-            $('input[type="number"][data-rt-id^="' + id + '"]').addClass('enabled');
-            $('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').addClass('fa-unlock')
-                .removeClass('fa-lock').attr('title', Messages.poll_unlocked);
-        });
+        APP.unlocked.row.forEach(enableRow);
+        APP.unlocked.col.forEach(enableColumn);
     };
     var updateTableButtons = function () {
         var uncomColId = APP.uncommitted.content.colsOrder[0];
@@ -377,35 +388,31 @@ define([
         if (APP.unlocked.col.indexOf(id) === -1) {
             APP.unlocked.col.push(id);
         }
-        if (typeof(cb) === "function") {
-            cb();
-        }
+        enableColumn(id);
+        if (typeof(cb) === "function") { cb(); }
     };
     var unlockRow = function (id, cb) {
         if (APP.unlocked.row.indexOf(id) === -1) {
             APP.unlocked.row.push(id);
         }
-        if (typeof(cb) === "function") {
-            cb();
-        }
+        enableRow(id);
+        if (typeof(cb) === "function") { cb(); }
     };
     var lockColumn = function (id, cb) {
         var idx = APP.unlocked.col.indexOf(id);
         if (idx !== -1) {
             APP.unlocked.col.splice(idx, 1);
         }
-        if (typeof(cb) === "function") {
-            cb();
-        }
+        disableColumn(id);
+        if (typeof(cb) === "function") { cb(); }
     };
     var lockRow = function (id, cb) {
         var idx = APP.unlocked.row.indexOf(id);
         if (idx !== -1) {
             APP.unlocked.row.splice(idx, 1);
         }
-        if (typeof(cb) === "function") {
-            cb();
-        }
+        disableRow(id);
+        if (typeof(cb) === "function") { cb(); }
     };
 
     /*  Any time the realtime object changes, call this function */
@@ -419,14 +426,6 @@ define([
         }
 
         var table = APP.$table[0];
-
-        var displayedObj = mergeUncommitted(APP.proxy, APP.uncommitted);
-
-        var colsOrder = sortColumns(displayedObj.content.colsOrder, APP.userid);
-        var conf = {
-            cols: colsOrder,
-            readOnly: APP.readOnly
-        };
 
         common.notify();
 
@@ -453,18 +452,23 @@ define([
         };
 
         var updateTable = function () {
-            var displayedObj2 = mergeUncommitted(APP.proxy, APP.uncommitted);
+            var displayedObj = mergeUncommitted(APP.proxy, APP.uncommitted);
+            var colsOrder = sortColumns(displayedObj.content.colsOrder, APP.userid);
+            var conf = {
+                cols: colsOrder,
+                readOnly: APP.readOnly
+            };
             var f = getFocus();
             APP.$createRow.detach();
             APP.$createCol.detach();
-            Render.updateTable(table, displayedObj2, conf);
+            Render.updateTable(table, displayedObj, conf);
             // Fix autocomplete bug:
-            displayedObj2.content.rowsOrder.forEach(function (rowId) {
-                $('input[data-rt-id="' + rowId +'"]').val(displayedObj2.content.rows[rowId] || '');
+            displayedObj.content.rowsOrder.forEach(function (rowId) {
+                $('input[data-rt-id="' + rowId +'"]').val(displayedObj.content.rows[rowId] || '');
             });
-            displayedObj2.content.colsOrder.forEach(function (rowId) {
+            displayedObj.content.colsOrder.forEach(function (rowId) {
                 $('input[data-rt-id="' + rowId +'"]')
-                    .val(displayedObj2.content.cols[rowId] || '');
+                    .val(displayedObj.content.cols[rowId] || '');
             });
             updateDisplayedTable();
             setFocus(f);
@@ -475,9 +479,8 @@ define([
 
         if (throttle) {
             if (APP.throttled) { window.clearTimeout(APP.throttled); }
-            updateTable();
             APP.throttled = window.setTimeout(function () {
-                updateDisplayedTable();
+                updateTable();
             }, throttle);
             return;
         }
@@ -509,7 +512,7 @@ define([
             case 'text':
                 debug("text[rt-id='%s'] [%s]", id, input.value);
                 Render.setValue(object, id, input.value);
-                change(null, null, null, 50);
+                change(null, null, null, 250);
                 break;
             case 'number':
                 debug("checkbox[tr-id='%s'] %s", id, input.value);
@@ -537,14 +540,29 @@ define([
         if (APP.readOnly) { return; }
         if (id) {
             var type = Render.typeofId(id);
-            console.log(type);
-            if (type === 'col') { return void lockColumn(id, change); }
-            if (type === 'row') { return void lockRow(id, change); }
+            if (type === 'col') { return void lockColumn(id); }
+            if (type === 'row') { return void lockRow(id); }
             return;
         }
-        APP.unlocked.col = Cryptpad.deduplicateString([APP.userid].concat(APP.uncommitted.content.colsOrder).slice());
+        var keepColUnlocked = [APP.userid, APP.uncommitted.content.colsOrder[0]];
+        var keepRowUnlocked = APP.uncommitted.content.rowsOrder.slice();
+
+        var toLock = [];
+        APP.unlocked.col.forEach(function (id) {
+            if (keepColUnlocked.indexOf(id) !== -1) { return; }
+            toLock.push(id);
+        });
+        toLock.forEach(lockColumn);
+
+        toLockR = [];
+        APP.unlocked.row.forEach(function (id) {
+            if (keepRowUnlocked.indexOf(id) !== -1) { return; }
+            toLockR.push(id);
+        });
+        toLockR.forEach(lockRow);
+        /*APP.unlocked.col = Cryptpad.deduplicateString([APP.userid].concat(APP.uncommitted.content.colsOrder).slice());
         APP.unlocked.row = APP.uncommitted.content.rowsOrder.slice();
-        change();
+        change();*/
     };
 
     /*  Called whenever an event is fired on a span */
@@ -571,9 +589,7 @@ define([
                 });
             } else if (isEdit) {
                 unlockRow(id, function () {
-                    change(null, null, null, null, function() {
-                        $('input[data-rt-id="' + id + '"]').focus();
-                    });
+                    $('input[data-rt-id="' + id + '"]').focus();
                 });
             }
         } else if (type === 'col') {
@@ -589,15 +605,10 @@ define([
                 handleBookmark(id);
             } else if (isLock && isLocked) {
                 unlockColumn(id, function () {
-                    change(null, null, null, null, function() {
-                        $('input[data-rt-id="' + id + '"]').focus();
-                    });
+                    $('input[data-rt-id="' + id + '"]').focus();
                 });
             } else if (isLock) {
-                lockColumn(id, function () {
-                    change(null, null, null, null, function() {
-                    });
-                });
+                lockColumn(id);
             }
         } else if (type === 'cell') {
             change();
@@ -754,17 +765,7 @@ define([
 
     var getCommentId = Render.Uid('c');
     var removeComment = function (uid) {
-        var idx;
-        APP.proxy.comments.some(function (c, i) {
-            if (c.uid === uid) {
-                console.log('found');
-                idx = i;
-                return true;
-            }
-        });
-        if (idx) {
-            APP.proxy.comments.splice(idx, 1);
-        }
+        delete APP.proxy.comments[uid];
         APP.updateComments();
     };
     /*var editComment = function (id) {
@@ -772,7 +773,7 @@ define([
     };*/
     var avatars = {};
     var updateComments = APP.updateComments = function () {
-        if (!APP.proxy.comments) { APP.proxy.comments = []; }
+        if (!APP.proxy.comments) { APP.proxy.comments = {}; }
 
         var profile;
         if (common.isLoggedIn()) {
@@ -781,7 +782,10 @@ define([
 
         var $comments = APP.$comments.html('');
         var comments = APP.proxy.comments;
-        comments.forEach(function (c) {
+        Object.keys(copyObject(comments)).sort(function (a, b) {
+            return comments[a].time > comments[b].time;
+        }).forEach(function (k) {
+            var c = comments[k];
             var $c = $('<div>', {
                 'class': 'cp-app-poll-comments-list-el'
             }).prependTo($comments);
@@ -824,10 +828,10 @@ define([
             // Actions
             if (!c.profile || c.profile === profile) {
                 $('<button>', {
-                    'class': 'fa fa-times',
-                    'title': 'TODO: remove comment',
-                    'data-rt-id': c.uid
-                }).appendTo($actions).click(function () { removeComment(c.uid); });
+                    'class': 'btn btn-secondary fa fa-times',
+                    'title': Messages.poll_comment_remove,
+                    'data-rt-id': k
+                }).appendTo($actions).click(function () { removeComment(k); });
                 /*$('<button>', {
                     'class': 'fa fa-pencil',
                     'title': 'TODO: edit comment',
@@ -838,11 +842,12 @@ define([
         common.notify();
     };
     var resetComment = function () {
-        APP.$addComment.find('.cp-app-poll-comments-add-name').val('');
+        APP.$addComment.find('.cp-app-poll-comments-add-name')
+            .val(metadataMgr.getUserData().name || '');
         APP.$addComment.find('.cp-app-poll-comments-add-msg').val('');
     };
     var addComment = function () {
-        if (!APP.proxy.comments) { APP.proxy.comments = []; }
+        if (!APP.proxy.comments) { APP.proxy.comments = {}; }
         var name = APP.$addComment.find('.cp-app-poll-comments-add-name').val();
         var msg = APP.$addComment.find('.cp-app-poll-comments-add-msg').val();
         var time = +new Date();
@@ -853,14 +858,14 @@ define([
             avatar = metadataMgr.getUserData().avatar;
         }
 
-        APP.proxy.comments.push({
+        var uid = getCommentId();
+        APP.proxy.comments[uid] = {
             msg: msg,
             name: name,
             time: time,
-            uid: getCommentId(),
             profile: profile,
             avatar: avatar
-        });
+        };
         resetComment();
         updateComments();
     };
@@ -872,7 +877,6 @@ define([
             c = Render.getCoordinates(k);
             if (APP.proxy.content.colsOrder.indexOf(c[0]) === -1 ||
                 APP.proxy.content.rowsOrder.indexOf(c[1]) === -1) {
-                console.log('deleting ' + k);
                 delete APP.proxy.content.cells[k];
             }
         }
@@ -934,7 +938,7 @@ define([
 
             var rowuid = Render.rowuid();
             uncommitted.content.rowsOrder.push(rowuid);
-            unlockRow(coluid);
+            unlockRow(rowuid);
         }
 
         var displayedObj = mergeUncommitted(proxy, uncommitted, false);
@@ -943,6 +947,9 @@ define([
 
         var $table = APP.$table = $(Render.asHTML(displayedObj, null, colsOrder, APP.readOnly));
 
+        /*
+            Extract uncommitted data (row or column) and create a new uncommitted row or column
+        */
         var getUncommitted = function (type) {
             var ret = {}, toRemove;
             var uncommitted = APP.uncommitted.content;
@@ -979,7 +986,6 @@ define([
             });
             uncommitted.rowsOrder = [Render.rowuid()];
             uncommitted.rows = {};
-            console.log(JSON.stringify(ret, 0, 2));
             return ret;
         };
         APP.$createCol = $('#cp-app-poll-create-user').click(function () {
@@ -988,7 +994,8 @@ define([
             if (!APP.userid) { setUserId(id); }
             mergeUncommitted(proxy, uncommittedCopy, true);
             change(null, null, null, null, function() {
-                handleSpan($('.cp-app-poll-table-lock[data-rt-id="' + id + '"]')[0]);
+                unlockColumn(id);
+                unlockColumn(APP.uncommitted.content.colsOrder[0]);
             });
         });
         APP.$createRow = $('#cp-app-poll-create-option').click(function () {
@@ -1032,10 +1039,17 @@ define([
             .on('change', ['metadata'], function () {
                 metadataMgr.updateMetadata(proxy.metadata);
             })
-            .on('change', ['content'], change)
+            .on('change', ['content'], function () {
+                change(null, null, null, 100);
+            })
             .on('change', ['description'], updateDescription)
             .on('change', ['comments'], updateComments)
-            .on('remove', [], change);
+            .on('change', ['published'], function () {
+                publish(proxy.published);
+            })
+            .on('remove', [], function () {
+                change(null, null, null, 100);
+            });
 
         // If the user's column is not committed, add his username
         var $userInput = $('.cp-app-poll-table-uncommitted > input[data-rt-id^='+ APP.userid +']');

@@ -12,7 +12,7 @@ define([
             userData: {}
         },
         description: '',
-        comments: [],
+        comments: {},
         content: {
 /*  TODO
 

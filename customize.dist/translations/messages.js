@@ -264,6 +264,11 @@ define(function () {
     out.poll_bookmarked_col = 'This is your bookmarked column. It will always be unlocked and displayed at the beginning for you.';
     out.poll_total = 'TOTAL';
 
+    out.poll_comment_list = "Comments";
+    out.poll_comment_add = "Add a comment";
+    out.poll_comment_submit = "Send";
+    out.poll_comment_remove = "Delete this comment";
+
     // Canvas
     out.canvas_clear = "Clear";
     out.canvas_delete = "Delete selection";

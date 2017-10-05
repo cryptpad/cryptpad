@@ -45,6 +45,7 @@ overflow-x: hidden;
 #cp-app-poll-content {
     display: flex;
     flex: 1;
+    min-height: 0;
     #cp-app-poll-form {
         flex: 1;
         overflow-y: auto;
@@ -373,6 +374,7 @@ div.cp-app-poll-realtime {
             .tools_unselectable();
         }
         thead {
+            height: 52px;
             td {
                 padding: 0px 5px;
                 background: @poll-th-bg;
@@ -492,6 +494,10 @@ div.cp-app-poll-realtime {
         width: 50%;
         margin: 20px auto;
         min-width: 400px;
+        padding-bottom: 5px;
+        button {
+            border-radius: 0;
+        }
         #cp-app-poll-comments-add {
             input, textarea {
                 border: 1px solid black;
@@ -510,6 +516,9 @@ div.cp-app-poll-realtime {
                 height: 8em;
                 line-height: 1.5em;
             }
+            button {
+                padding: 10px;
+            }
             text-align: center;
         }
         #cp-app-poll-comments-list {
@@ -527,9 +536,8 @@ div.cp-app-poll-realtime {
                 }
                 .cp-app-poll-comments-list-msg-actions {
                     button {
-                        border-radius: 0;
-                        width: 25px;
                         padding: 0;
+                        width: 25px;
                         line-height: 20px;
                     }
                 }

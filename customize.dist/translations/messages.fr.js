@@ -262,6 +262,11 @@ define(function () {
     out.poll_bookmarked_col = "Voici votre colonne favorite; elle sera toujours dévérouillée et affichée en première position.";
     out.poll_total = 'TOTAL';
 
+    out.poll_comment_list = "Commentaires";
+    out.poll_comment_add = "Ajouter un commentaire";
+    out.poll_comment_submit = "Envoyer";
+    out.poll_comment_remove = "Supprimer ce commentaire";
+
     // Canvas
     out.canvas_clear = "Nettoyer";
     out.canvas_delete = "Supprimer la sélection";
