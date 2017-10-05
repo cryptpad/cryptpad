@@ -1465,11 +1465,11 @@ define([
                     APP.newFolder = info.newPath;
                     refresh();
                 };
-                $block.find('a.cp-app-drive-toolbar-new-folder, li.cp-app-drive-toolbar-new-folder')
+                $block.find('a.cp-app-drive-new-folder, li.cp-app-drive-new-folder')
                     .click(function () {
                     filesOp.addFolder(currentPath, null, onCreated);
                 });
-                $block.find('a.cp-app-drive-toolbar-new-upload, li.cp-app-drive-toolbar-new-upload')
+                $block.find('a.cp-app-drive-new-upload, li.cp-app-drive-new-upload')
                     .click(function () {
                     var $input = $('<input>', {
                         'type': 'file',
@@ -1484,7 +1484,7 @@ define([
                     $input.click();
                 });
             }
-            $block.find('a.cp-app-drive-toolbar-new-doc, li.cp-app-drive-toolbar-new-doc')
+            $block.find('a.cp-app-drive-new-doc, li.cp-app-drive-new-doc')
                 .click(function () {
                 var type = $(this).attr('data-type') || 'pad';
                 var path = filesOp.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
@@ -1504,20 +1504,20 @@ define([
             if (isInRoot) {
                 options.push({
                     tag: 'a',
-                    attributes: {'class': 'cp-app-drive-toolbar-new-older'},
+                    attributes: {'class': 'cp-app-drive-new-older'},
                     content: $('<div>').append($folderIcon.clone()).html() + Messages.fm_folder
                 });
                 options.push({tag: 'hr'});
                 options.push({
                     tag: 'a',
-                    attributes: {'class': 'cp-app-drive-toolbar-new-upload'},
+                    attributes: {'class': 'cp-app-drive-new-upload'},
                     content: $('<div>').append(getIcon('file')).html() + Messages.uploadButton
                 });
                 options.push({tag: 'hr'});
             }
             getNewPadTypes().forEach(function (type) {
                 var attributes = {
-                    'class': 'cp-app-drive-toolbar-new-doc',
+                    'class': 'cp-app-drive-new-doc',
                     'data-type': type,
                     'href': '#'
                 };
