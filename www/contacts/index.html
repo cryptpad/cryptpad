@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html class="cp pad">
+<html>
 <head>
     <title>CryptPad</title>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script async data-bootload="/customize/template.js" data-main="/common/boot.js?ver=1.0" src="/bower_components/requirejs/require.js?ver=2.3.5"></script>
+    <meta name="referrer" content="no-referrer" />
+    <script async data-bootload="main.js" data-main="/common/boot.js?ver=1.0" src="/bower_components/requirejs/require.js?ver=2.3.5"></script>
     <style>
         html, body {
             margin: 0px;
             padding: 0px;
         }
-        #pad-iframe {
+        #sbox-iframe {
             position:fixed;
             top:0px;
             left:0px;
@@ -23,8 +24,15 @@
             padding:0;
             overflow:hidden;
         }
+        #sbox-filePicker-iframe {
+            position: fixed;
+            top:0; left:0;
+            bottom:0; right:0;
+            width:100%;
+            height: 100%;
+            border: 0;
+        }
     </style>
 </head>
 <body>
-    <iframe id="pad-iframe"></iframe><script src="/common/noscriptfix.js"></script>
-
+<iframe id="sbox-iframe">

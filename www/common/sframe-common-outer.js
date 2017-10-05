@@ -17,6 +17,7 @@ define([
         var Cryptget;
         var sframeChan;
         var FilePicker;
+        var Messenger;
 
         nThen(function (waitFor) {
             // Load #2, the loading screen is up so grab whatever you need...
@@ -27,13 +28,15 @@ define([
                 '/common/cryptget.js',
                 '/common/sframe-channel.js',
                 '/filepicker/main.js',
+                '/common/common-messenger.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, SFrameChannel,
-            _FilePicker) {
+            _FilePicker, _Messenger) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = _Crypto;
                 Cryptget = _Cryptget;
                 FilePicker = _FilePicker;
+                Messenger = _Messenger;
 
                 if (localStorage.CRYPTPAD_URLARGS !== ApiConfig.requireConf.urlArgs) {
                     console.log("New version, flushing cache");
@@ -422,6 +425,106 @@ define([
 
             if (cfg.addRpc) {
                 cfg.addRpc(sframeChan, Cryptpad);
+            }
+
+            if (cfg.messaging) {
+                var messenger = Messenger.messenger(Cryptpad);
+
+                sframeChan.on('Q_CONTACTS_GET_FRIEND_LIST', function (data, cb) {
+                    messenger.getFriendList(function (e, keys) {
+                        cb({
+                            error: e,
+                            data: keys,
+                        });
+                    });
+                });
+                sframeChan.on('Q_CONTACTS_GET_MY_INFO', function (data, cb) {
+                    messenger.getMyInfo(function (e, info) {
+                        cb({
+                            error: e,
+                            data: info,
+                        });
+                    });
+                });
+                sframeChan.on('Q_CONTACTS_GET_FRIEND_INFO', function (curvePublic, cb) {
+                    messenger.getFriendInfo(curvePublic, function (e, info) {
+                        cb({
+                            error: e,
+                            data: info,
+                        });
+                    });
+                });
+
+                sframeChan.on('Q_CONTACTS_OPEN_FRIEND_CHANNEL', function (curvePublic, cb) {
+                    messenger.openFriendChannel(curvePublic, function (e) {
+                        cb({ error: e, });
+                    });
+                });
+
+                sframeChan.on('Q_CONTACTS_GET_STATUS', function (curvePublic, cb) {
+                    messenger.getStatus(curvePublic, function (e, online) {
+                        cb({
+                            error: e,
+                            data: online,
+                        });
+                    });
+                });
+
+                sframeChan.on('Q_CONTACTS_GET_MORE_HISTORY', function (opt, cb) {
+                    messenger.getMoreHistory(opt.curvePublic, opt.sig, opt.count, function (e, history) {
+                        cb({
+                            error: e,
+                            data: history,
+                        });
+                    });
+                });
+
+                sframeChan.on('Q_CONTACTS_SEND_MESSAGE', function (opt, cb) {
+                    messenger.sendMessage(opt.curvePublic, opt.content, function (e) {
+                        cb({
+                            error: e,
+                        });
+                    });
+                });
+                sframeChan.on('Q_CONTACTS_SET_CHANNEL_HEAD', function (opt, cb) {
+                    messenger.setChannelHead(opt.curvePublic, opt.sig, function (e) {
+                        cb({
+                            error: e
+                        });
+                    });
+                });
+
+                messenger.on('message', function (message) {
+                    sframeChan.event('EV_CONTACTS_MESSAGE', message);
+                });
+                messenger.on('join', function (curvePublic, channel) {
+                    sframeChan.event('EV_CONTACTS_JOIN', {
+                        curvePublic: curvePublic,
+                        channel: channel,
+                    });
+                });
+                messenger.on('leave', function (curvePublic, channel) {
+                    sframeChan.event('EV_CONTACTS_LEAVE', {
+                        curvePublic: curvePublic,
+                        channel: channel,
+                    });
+                });
+                messenger.on('update', function (info, curvePublic) {
+                    sframeChan.event('EV_CONTACTS_UPDATE', {
+                        curvePublic: curvePublic,
+                        info: info,
+                    });
+                });
+                messenger.on('friend', function (curvePublic) {
+                    sframeChan.event('EV_CONTACTS_FRIEND', {
+                        curvePublic: curvePublic,
+                    });
+                });
+                messenger.on('unfriend', function (curvePublic) {
+                    sframeChan.event('EV_CONTACTS_UNFRIEND', {
+                        curvePublic: curvePublic,
+                    });
+                });
             }
 
             sframeChan.ready();

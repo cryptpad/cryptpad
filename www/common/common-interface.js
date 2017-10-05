@@ -177,7 +177,10 @@ define([
         var input = dialog.textInput();
 
         var tagger = dialog.frame([
-            dialog.message(Messages.tags_add),
+            dialog.message([
+                Messages.tags_add,
+                h('p', Messages.tags_searchHint)
+            ]),
             input,
             dialog.nav(),
         ]);

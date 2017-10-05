@@ -35,7 +35,7 @@ define([
         };
     };
 
-    UI.create = function (messenger, $userlist, $messages) {
+    UI.create = function (messenger, $userlist, $messages, common) {
         var state = window.state = {
             active: '',
         };
@@ -168,7 +168,7 @@ define([
                 });
             });
 
-            var avatar = h('div.avatar');
+            var avatar = h('div.cp-avatar');
             var header = h('div.header', [
                 avatar,
                 moreHistory,
@@ -190,11 +190,11 @@ define([
             if (data.avatar && avatars[data.avatar]) {
                 $avatar.append(avatars[data.avatar]).append(rightCol);
             } else {
-                Cryptpad.displayAvatar($avatar, data.avatar, data.displayName, function ($img) {
+                common.displayAvatar($avatar, data.avatar, data.displayName, function ($img) {
                     if (data.avatar && $img) {
                         avatars[data.avatar] = $img[0].outerHTML;
                     }
-                    $avatar.append(rightCol);
+                    $(rightCol).insertAfter($avatar);
                 });
             }
 
@@ -325,7 +325,7 @@ define([
 
         markup.friend = function (data) {
             var curvePublic = data.curvePublic;
-            var friend = h('div.friend.avatar', {
+            var friend = h('div.friend.cp-avatar', {
                 'data-key': curvePublic,
             });
 
@@ -365,7 +365,7 @@ define([
                 $friend.append(avatars[data.avatar]);
                 $friend.append(rightCol);
             } else {
-                Cryptpad.displayAvatar($friend, data.avatar, data.displayName, function ($img) {
+                common.displayAvatar($friend, data.avatar, data.displayName, function ($img) {
                     if (data.avatar && $img) {
                         avatars[data.avatar] = $img[0].outerHTML;
                     }
@@ -510,7 +510,6 @@ define([
                 }
             };
             ready();
-
             keys.forEach(function (curvePublic) {
                 connectToFriend(curvePublic, ready);
             });
