@@ -152,7 +152,7 @@ define([
                 });
             });
             var dropdownConfig = {
-                text: 'Mode', // Button initial text
+                text: Messages.languageButton, // Button initial text
                 options: options, // Entries displayed in the menu
                 left: true, // Open to the left of the button
                 isSelect: true,
@@ -166,6 +166,7 @@ define([
             });
 
             if ($drawer) { $drawer.append($block); }
+            if (exp.highlightMode) { exp.setMode(exp.highlightMode); }
             if (cb) { cb(); }
         };
 
@@ -212,8 +213,6 @@ define([
         };
 
         exp.getContentExtension = function () {
-            console.log(Modes.extensionOf(exp.highlightMode));
-            console.log(exp.highlightMode);
             return (Modes.extensionOf(exp.highlightMode) || '.txt').slice(1);
         };
         exp.fileExporter = function () {
