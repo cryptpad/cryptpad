@@ -191,6 +191,8 @@ define([
 
         var listener;
         var close = Util.once(function (result, ev) {
+            ev.stopPropagation();
+            ev.preventDefault();
             var $frame = $(tagger).fadeOut(150, function () {
                 stopListening(listener);
                 $frame.remove();
@@ -198,17 +200,21 @@ define([
             });
         });
 
-        var $ok = findOKButton(tagger).click(function () {
+        var $ok = findOKButton(tagger).click(function (e) {
             var tokens = field.getTokens();
-            close(tokens);
+            close(tokens, e);
         });
-        var $cancel = findCancelButton(tagger).click(function () {
-            close(null);
+        var $cancel = findCancelButton(tagger).click(function (e) {
+            close(null, e);
         });
         listenForKeys(function () {
             $ok.click();
         }, function () {
             $cancel.click();
+        }, tagger);
+
+        $(tagger).on('click submit', function (e) {
+            e.stopPropagation();
         });
 
         document.body.appendChild(tagger);
