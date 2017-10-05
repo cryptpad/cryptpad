@@ -65,6 +65,7 @@ define([
                 Cryptpad.ready(waitFor());
             }));
         }).nThen(function (waitFor) {
+            $('#sbox-iframe').focus();
 
             sframeChan.on('EV_CACHE_PUT', function (x) {
                 Object.keys(x).forEach(function (k) {

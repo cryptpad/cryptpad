@@ -1,6 +1,5 @@
 define([
     'jquery',
-    '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/textpatcher/TextPatcher.js',
     '/common/toolbar3.js',
     'json.sortify',
@@ -12,7 +11,6 @@ define([
     '/common/common-realtime.js',
     '/common/userObject.js',
     '/customize/application_config.js',
-    '/common/mergeDrive.js',
     '/common/sframe-chainpad-listmap.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -20,7 +18,6 @@ define([
     'less!/customize/src/less2/main.less',
 ], function (
     $,
-    Crypto,
     TextPatcher,
     Toolbar,
     JSONSortify,
@@ -32,7 +29,6 @@ define([
     CommonRealtime,
     FO,
     AppConfig,
-    Merge,
     Listmap)
 {
     var Messages = Cryptpad.Messages;
