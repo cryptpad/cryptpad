@@ -509,7 +509,7 @@ define([
         var $icon = $defaultIcon.clone();
 
         if (AppConfig.applicationsIcon && AppConfig.applicationsIcon[type]) {
-            var appClass = ' cp-icon-color-'+type;
+            var appClass = ' cp-icon cp-icon-color-'+type;
             $icon = $('<span>', {'class': 'fa ' + AppConfig.applicationsIcon[type] + appClass});
         }
 

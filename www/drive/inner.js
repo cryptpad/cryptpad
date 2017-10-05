@@ -1835,7 +1835,7 @@ define([
                 var roClass = typeof(ro) === 'undefined' ? ' cp-app-drive-element-noreadonly' :
                                 ro ? ' cp-app-drive-element-readonly' : '';
                 var $element = $('<li>', {
-                    'class': 'cp-app-drive-element cp-app-drive-element-row' + roClass,
+                    'class': 'cp-app-drive-element cp-app-drive-element-file cp-app-drive-element-row' + roClass,
                     draggable: draggable
                 });
                 if (Array.isArray(APP.selectedFiles)) {
@@ -2011,7 +2011,7 @@ define([
                 var roClass = typeof(ro) === 'undefined' ? ' cp-app-drive-element-noreadonly' :
                                 ro ? ' cp-app-drive-element-readonly' : '';
                 var $element = $('<li>', {
-                    'class': 'cp-app-drive-element cp-app-drive-element-row' + roClass,
+                    'class': 'cp-app-drive-element cp-app-drive-element-file cp-app-drive-element-row' + roClass,
                 });
                 addFileData(id, $element);
                 $element.prepend($icon).dblclick(function () {
